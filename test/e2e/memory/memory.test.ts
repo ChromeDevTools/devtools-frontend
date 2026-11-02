@@ -610,14 +610,9 @@ describe('The Memory Panel', function() {
     assert.strictEqual(0, await getAddedCountFromComparisonRow(devToolsPage, rows[2]));
     assert.strictEqual(2, await getRemovedCountFromComparisonRow(devToolsPage, rows[2]));
   });
-});
-
-describe('The Memory Panel', () => {
-  setup({dockingMode: 'undocked'});
 
   it('Does not include backing store size in the shallow size of a JS Set', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('memory/set.html');
-    await navigateToMemoryTab(devToolsPage);
     const sizes = await runJSSetTest(devToolsPage);
 
     // The Set object is small, regardless of the contained content.

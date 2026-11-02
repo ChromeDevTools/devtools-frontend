@@ -129,7 +129,7 @@ export async function waitForSearchResultNumber(devToolsPage: DevToolsPage,
 export async function waitForSelectedRowWithText(devToolsPage: DevToolsPage,
                                                  text: string): Promise<puppeteer.ElementHandle<Element>> {
   return await devToolsPage.waitForFunction(async () => {
-    const selectedRow = await devToolsPage.$('.data-grid-data-grid-node.selected');
+    const selectedRow = await devToolsPage.$('#profile-views table.data .data-grid-data-grid-node.selected');
     if (!selectedRow) {
       return false;
     }
@@ -146,32 +146,53 @@ export async function waitForSelectedRowWithText(devToolsPage: DevToolsPage,
  */
 export async function findSearchResult(devToolsPage: DevToolsPage, searchResult: string,
                                        searchMatch?: string|RegExp): Promise<void> {
-  await devToolsPage.waitForFunction(async () => {
+  const matchesSearchMatch = (matchesText: string) => {
     if (!searchMatch) {
-      const match = await devToolsPage.waitFor('#profile-views table.data');
-      const result = await devToolsPage.$textContent(searchResult, match);
-      if (result) {
-        return true;
+      return true;
+    }
+    return typeof searchMatch === 'string' ? matchesText === searchMatch : searchMatch.test(matchesText);
+  };
+
+  const seenResults = new Set<string>();
+  while (true) {
+    const state = await devToolsPage.waitForFunction(async () => {
+      const selectedRow = await devToolsPage.$('#profile-views table.data .data-grid-data-grid-node.selected');
+      if (!selectedRow) {
+        return undefined;
       }
-    } else {
-      const matches = await devToolsPage.waitFor('.search-results-matches');
-      const matchesText = await matches.evaluate(element => {
-        return element.textContent;
-      });
-      if (typeof searchMatch === 'string' && matchesText === searchMatch) {
-        return true;
+      const objectId = await selectedRow.$eval('.object-value-id', el => el.textContent).catch(() => null);
+      if (!objectId) {
+        return undefined;
       }
-      if (typeof searchMatch !== 'string' && searchMatch.test(matchesText)) {
-        return true;
+      const matches = await devToolsPage.$('.search-results-matches');
+      const matchesText = matches ? await matches.evaluate(el => el.textContent) : '';
+      if (!matchesText) {
+        return undefined;
       }
+      const hasResultText = Boolean(await devToolsPage.$textContent(searchResult, selectedRow));
+      return {objectId, matchesText, matched: hasResultText && matchesSearchMatch(matchesText)};
+    });
+
+    if (state.matched) {
+      return;
     }
 
-    await devToolsPage.click('[aria-label="Show next result"]');
-    return;
-  });
+    const key = `${state.matchesText}:${state.objectId}`;
+    if (seenResults.has(key) || state.matchesText === '1 of 1') {
+      assert.fail(`Could not find search result "${searchResult}"`);
+    }
+    seenResults.add(key);
 
-  const match = await devToolsPage.waitFor('#profile-views');
-  await devToolsPage.waitForElementWithTextContent(searchResult, match);
+    await devToolsPage.click('[aria-label="Show next result"]');
+    await devToolsPage.waitForFunction(async () => {
+      const selectedRow = await devToolsPage.$('#profile-views table.data .data-grid-data-grid-node.selected');
+      if (!selectedRow) {
+        return false;
+      }
+      const objectId = await selectedRow.$eval('.object-value-id', el => el.textContent).catch(() => null);
+      return Boolean(objectId && objectId !== state.objectId);
+    });
+  }
 }
 
 const normalizRetainerName = (retainerName: string) => {
@@ -285,20 +306,50 @@ export async function changeAllocationSampleViewViaDropdown(devToolsPage: DevToo
 }
 
 export async function focusTableRowWithName(devToolsPage: DevToolsPage, text: string): Promise<void> {
-  const row = await devToolsPage.waitFor(`//span[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
-  await focusTableRow(devToolsPage, row);
+  await devToolsPage.waitForFunction(async () => {
+    const table = await devToolsPage.$('#profile-views table.data');
+    if (!table) {
+      return false;
+    }
+    const row = (await table.evaluateHandle((root, targetText) => {
+                  for (const span of root.querySelectorAll('span')) {
+                    if (span.textContent === targetText) {
+                      return span.closest('tr');
+                    }
+                  }
+                  return null;
+                }, text)).asElement() as puppeteer.ElementHandle<HTMLTableRowElement>| null;
+    if (!row) {
+      return false;
+    }
+    const cell = await devToolsPage.$('.numeric-column', row);
+    if (!cell) {
+      return false;
+    }
+    try {
+      await cell.click();
+    } catch {
+      return false;
+    }
+    return await row.evaluate(el => el.isConnected && el.classList.contains('selected') &&
+                                  Boolean(el.closest('.data-grid')?.contains(document.activeElement)));
+  });
 }
 
 export async function focusTableRow(devToolsPage: DevToolsPage, row: puppeteer.ElementHandle<Element>): Promise<void> {
   // Click in a numeric cell, to avoid accidentally clicking a link.
-  await devToolsPage.click('.numeric-column', {
-    root: row,
+  await devToolsPage.waitForFunction(async () => {
+    await devToolsPage.click('.numeric-column', {
+      root: row,
+    });
+    return await row.evaluate(el => el.classList.contains('selected'));
   });
 }
 
 export async function expandFocusedRow(devToolsPage: DevToolsPage): Promise<void> {
+  await devToolsPage.waitFor('#profile-views .selected.data-grid-data-grid-node.parent');
   await devToolsPage.pressKey('ArrowRight');
-  await devToolsPage.waitFor('.selected.data-grid-data-grid-node.expanded');
+  await devToolsPage.waitFor('#profile-views .selected.data-grid-data-grid-node.expanded');
 }
 
 function parseByteString(str: string): number {
@@ -331,7 +382,7 @@ export async function getSizesFromSelectedRow(devToolsPage: DevToolsPage): Promi
   shallowSize: number,
   retainedSize: number,
 }> {
-  const row = await devToolsPage.waitFor('.selected.data-grid-data-grid-node');
+  const row = await devToolsPage.waitFor('#profile-views .selected.data-grid-data-grid-node');
   return await getSizesFromRow(devToolsPage, row);
 }
 

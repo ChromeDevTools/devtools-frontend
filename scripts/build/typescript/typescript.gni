@@ -327,7 +327,7 @@ template("ts_library") {
   }
   _compiled_sources = rebase_path(_ref_sources, target_gen_dir)
   if (_has_handwritten_dts) {
-    _compiled_sources += rebase_path(_copied_dts_outputs, target_gen_dir)
+    _compiled_sources += rebase_path(_handwritten_dts, target_gen_dir)
   }
   _compiled_sources += rebase_path(_generated_dts, target_gen_dir)
 

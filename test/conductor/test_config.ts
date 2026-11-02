@@ -38,6 +38,10 @@ interface Config {
   verbose: number;
   artifactsDir: string;
   chromeBinary: string;
+  /** Additional Chrome features to enable, from `--enable-features`. */
+  enabledFeatures: string[];
+  /** Additional Chrome features to disable, from `--disable-features`. */
+  disabledFeatures: string[];
   debug: boolean;
   headless: boolean;
   coverage: boolean;
@@ -87,6 +91,10 @@ const diffUpdateFilters = sliceArrayFromElement(
 
 const onDiffUpdateAll = onDiffUpdate.length > 0 && diffUpdateFilters.length === 0;
 const onDiffUpdateSelected = onDiffUpdate.length > 0 ? diffUpdateFilters : false;
+
+function parseFeatures(value?: string|string[]): string[] {
+  return asArray(value).flatMap(v => v.split(',')).map(f => f.trim()).filter(Boolean);
+}
 
 function mochaGrep(): Config['mochaGrep'] {
   if (!(options['grep'] ?? options['fgrep'])) {
@@ -195,6 +203,8 @@ export const TestConfig: Config = {
   verbose: Number(options['verbose'] ?? 0),
   artifactsDir: options['artifacts-dir'] || getDefaultArtifactDir(),
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
+  enabledFeatures: parseFeatures(options['enable-features']),
+  disabledFeatures: parseFeatures(options['disable-features']),
   debug: options['debug'],
   headless: options['headless'] === undefined ? !options['debug'] : options['headless'],
   coverage: options['coverage'],

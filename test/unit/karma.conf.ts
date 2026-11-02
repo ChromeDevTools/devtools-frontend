@@ -210,10 +210,22 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       '--force-device-scale-factor=1',
     ];
 
+    const overriddenFeatures = new Set(
+        [...TestConfig.enabledFeatures, ...TestConfig.disabledFeatures].map(f => f.split(':')[0]),
+    );
+    const disabledFeatures = [
+      ...['DialMediaRouteProvider', 'WebUIReloadButton'].filter(f => !overriddenFeatures.has(f.split(':')[0])),
+      ...TestConfig.disabledFeatures,
+    ];
+    const featureFlags = [
+      ...(disabledFeatures.length > 0 ? [`--disable-features=${disabledFeatures.join(',')}`] : []),
+      ...(TestConfig.enabledFeatures.length > 0 ? [`--enable-features=${TestConfig.enabledFeatures.join(',')}`] : []),
+    ];
+
     return [
       '--remote-allow-origins=*',
       '--use-mock-keychain',
-      '--disable-features=DialMediaRouteProvider,WebUIReloadButton',
+      ...featureFlags,
       '--password-store=basic',
       '--disable-extensions',
       '--disable-gpu',

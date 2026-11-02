@@ -68,6 +68,8 @@ export interface CommandLineOptions {
   coverage: boolean;
   'artifacts-dir'?: string;
   'chrome-binary'?: string;
+  'enable-features'?: string|string[];
+  'disable-features'?: string|string[];
   'on-diff'?: string[];
   verbose: number;
   shuffle: boolean;
@@ -119,6 +121,14 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
       .option('chrome-binary', {
         type: 'string',
         desc: 'Path to a custom Chrome binary to run',
+      })
+      .option('enable-features', {
+        type: 'string',
+        desc: 'Comma-separated list of additional Chrome features to enable (can be repeated)',
+      })
+      .option('disable-features', {
+        type: 'string',
+        desc: 'Comma-separated list of additional Chrome features to disable (can be repeated)',
       })
       .option('on-diff', {
         type: 'string',

@@ -165,7 +165,19 @@ export class Launcher {
   }
 
   static async launchChrome(settings: BrowserSettings, serverPort: number): Promise<puppeteer.Browser> {
-    const disabledFeatures = settings.disabledFeatures ?? DEFAULT_BROWSER_SETTINGS.disabledFeatures;
+    const overriddenFeatures = new Set(
+        [...TestConfig.enabledFeatures, ...TestConfig.disabledFeatures].map(f => f.split(':')[0]),
+    );
+    const disabledFeatures = [
+      ...(settings.disabledFeatures ?? DEFAULT_BROWSER_SETTINGS.disabledFeatures)
+          .filter(f => !overriddenFeatures.has(f.split(':')[0])),
+      ...TestConfig.disabledFeatures,
+    ];
+    const enabledFeatures = [
+      ...(settings.enabledFeatures ?? DEFAULT_BROWSER_SETTINGS.enabledFeatures)
+          .filter(f => !overriddenFeatures.has(f.split(':')[0])),
+      ...TestConfig.enabledFeatures,
+    ];
     const launchArgs = [
       '--enable-experimental-web-platform-features',
       // This fingerprint may be generated from the certificate using
@@ -180,9 +192,14 @@ export class Launcher {
       '--site-per-process',  // Default on Desktop anyway, but ensure that we always use out-of-process frames when we intend to.
       '--disable-gpu',
       '--enable-crash-reporter',
-      `--disable-features=${disabledFeatures.join(',')}`,
       `--remote-debugging-port=0`,
     ];
+    if (disabledFeatures.length > 0) {
+      launchArgs.push(`--disable-features=${disabledFeatures.join(',')}`);
+    }
+    if (enabledFeatures.length > 0) {
+      launchArgs.push(`--enable-features=${enabledFeatures.join(',')}`);
+    }
 
     // In a chromium checkout with devtools_bundled_chromium_deps False, DevTools is bundled
     // into the //chrome binary.
@@ -243,13 +260,6 @@ export class Launcher {
     if (!opts.headless) {
       launchArgs.push(`--window-size=${windowWidth},${windowHeight}`);
     }
-    const enabledFeatures = settings.enabledFeatures ?? DEFAULT_BROWSER_SETTINGS.enabledFeatures;
-    // TODO: remove
-    const envChromeFeatures = process.env['CHROME_FEATURES'];
-    if (envChromeFeatures) {
-      enabledFeatures.push(envChromeFeatures);
-    }
-    launchArgs.push(`--enable-features=${enabledFeatures.join(',')}`);
 
     opts.args = launchArgs;
     return await puppeteer.launch(opts);

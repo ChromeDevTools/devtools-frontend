@@ -230,7 +230,7 @@
   }
 
   .pause-on-uncaught-exceptions {
-    margin-top: 3px;
+    margin-top: var(--sys-size-2);
   }
 
   .pause-on-caught-exceptions {

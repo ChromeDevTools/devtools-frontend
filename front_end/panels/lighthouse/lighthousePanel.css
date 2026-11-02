@@ -76,7 +76,7 @@ select.lighthouse-report {
     }
 
     &.lh-active + .lh-tools__dropdown {
-      clip: rect(calc(-1 * var(--sys-size-5)), 204px, 270px, -10px);  /* stylelint-disable-line property-no-deprecated */
+      clip: rect(calc(-1 * var(--sys-size-5)), var(--sys-size-26), var(--sys-size-30), calc(-1 * var(--sys-size-6)));  /* stylelint-disable-line property-no-deprecated */
     }
   }
 

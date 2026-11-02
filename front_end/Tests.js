@@ -251,6 +251,11 @@
    * @param panelName Name of the panel to show.
    */
   TestSuite.prototype.showPanel = function(panelName) {
+    // TODO(crbug.com/518066451): Remove fallback once https://crrev.com/c/8702200
+    // lands in chromium/src (see https://crrev.com/c/8704657).
+    if (!UI.ViewManager.ViewManager.instance().hasView(panelName)) {
+      return this.showExtensionSidebarPane(panelName);
+    }
     return UI.InspectorView.InspectorView.instance().showPanel(panelName);
   };
 
@@ -607,6 +612,21 @@
 
   TestSuite.prototype.switchToPanel = function(panelName) {
     this.showPanel(panelName).then(this.releaseControl.bind(this));
+    this.takeControl();
+  };
+
+  TestSuite.prototype.showExtensionSidebarPane = function(title) {
+    const viewManager = UI.ViewManager.ViewManager.instance();
+    for (const view of viewManager.views.values()) {
+      if (view.viewId().startsWith('extension-sidebar-') && view.title() === title) {
+        return viewManager.revealView(view);
+      }
+    }
+    return Promise.reject(new Error(`Extension sidebar pane '${title}' not found`));
+  };
+
+  TestSuite.prototype.switchToExtensionSidebarPane = function(title) {
+    this.showExtensionSidebarPane(title).then(this.releaseControl.bind(this));
     this.takeControl();
   };
 

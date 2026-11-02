@@ -1206,6 +1206,54 @@ describe('AidaClient', () => {
          assert.strictEqual(mapped.message, 'Server responded with invalid JSON');
          assert.strictEqual(mapped.cause, httpError);
        });
+
+    it('maps structured object with code 429 to AidaQuotaError', () => {
+      const structuredError = {
+        code: 429,
+        status: 'RESOURCE_EXHAUSTED',
+        message: 'You have exhausted your capacity on this model.',
+      };
+      const mapped = Host.AidaClient.mapError(structuredError);
+      assert.instanceOf(mapped, Host.AidaClient.AidaQuotaError);
+      assert.strictEqual(mapped.message, 'You have exhausted your capacity on this model.');
+      assert.strictEqual(mapped.cause, structuredError);
+    });
+
+    it('maps structured object with code 403 to AidaPermissionDeniedError', () => {
+      const structuredError = {
+        code: 403,
+        status: 'PERMISSION_DENIED',
+        message: 'Permission denied',
+      };
+      const mapped = Host.AidaClient.mapError(structuredError);
+      assert.instanceOf(mapped, Host.AidaClient.AidaPermissionDeniedError);
+      assert.strictEqual(mapped.message, 'Permission denied');
+      assert.strictEqual(mapped.cause, structuredError);
+    });
+
+    it('maps structured object with payload size message to AidaPayloadTooLargeError', () => {
+      const structuredError = {
+        code: 400,
+        status: 'INVALID_ARGUMENT',
+        message: 'Request payload size exceeds the limit',
+      };
+      const mapped = Host.AidaClient.mapError(structuredError);
+      assert.instanceOf(mapped, Host.AidaClient.AidaPayloadTooLargeError);
+      assert.strictEqual(mapped.message, 'Request payload size exceeds the limit');
+      assert.strictEqual(mapped.cause, structuredError);
+    });
+
+    it('maps structured object with code 500 to AidaUnknownError with message', () => {
+      const structuredError = {
+        code: 500,
+        status: 'INTERNAL',
+        message: 'Internal error',
+      };
+      const mapped = Host.AidaClient.mapError(structuredError);
+      assert.instanceOf(mapped, Host.AidaClient.AidaUnknownError);
+      assert.strictEqual(mapped.message, 'Internal error');
+      assert.strictEqual(mapped.cause, structuredError);
+    });
   });
 
   describe('with GCA client enabled', () => {
@@ -1253,6 +1301,33 @@ describe('AidaClient', () => {
         assert.instanceOf(err, Host.AidaClient.AidaQuotaError);
       }
       assert.isTrue(threw, 'generateCode did not throw');
+    });
+
+    it('doConversation rejects with AidaQuotaError when receiving streamed GCA error chunk', async () => {
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+          .callsFake(async (request, callback) => {
+            assert.isDefined(request.streamId);
+            const streamId = request.streamId;
+            await new Promise(resolve => setTimeout(resolve, 0));
+            Host.ResourceLoader.streamWrite(
+                streamId,
+                JSON.stringify([{
+                  error: {
+                    code: 429,
+                    message: 'You have exhausted your capacity on this model.',
+                    status: 'RESOURCE_EXHAUSTED',
+                  },
+                }]),
+            );
+            callback({statusCode: 200, response: ''});
+          });
+
+      try {
+        await getAllResults(provider);
+        assert.fail('doConversation did not throw');
+      } catch (err) {
+        assert.instanceOf(err, Host.AidaClient.AidaQuotaError);
+      }
     });
   });
 

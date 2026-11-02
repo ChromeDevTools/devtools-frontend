@@ -619,6 +619,16 @@ describe('AidaGcaTranslation', () => {
                          },
                        }]);
     });
+
+    it('translates a chunk response with an error without throwing', () => {
+      const gcaResponse = createGcaResponse({
+        error: {code: 429, message: 'Quota exceeded', status: 'RESOURCE_EXHAUSTED'},
+      });
+
+      assert.deepEqual(AidaGcaTranslation.gcaChunkResponseToAidaChunkResponse(gcaResponse), [{
+                         error: {code: 429, message: 'Quota exceeded', status: 'RESOURCE_EXHAUSTED'},
+                       }]);
+    });
   });
   it('translates a functionCallChunk with thoughtSignature', () => {
     const gcaResponse = createGcaResponse({

@@ -475,7 +475,7 @@ function convertAidaParamToGcaSchema<T extends string|number|symbol = string>(pa
 export function gcaChunkResponseToAidaChunkResponse(response: GCA.GenerateContentResponse): AIDA.AidaChunkResponse[] {
   try {
     if (response.error) {
-      throw new Error(JSON.stringify(response.error));
+      return [{error: response.error}];
     }
     const candidate = response.candidates?.[0];
     const parts = candidate?.content?.parts || [];

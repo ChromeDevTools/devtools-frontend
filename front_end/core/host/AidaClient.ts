@@ -543,8 +543,25 @@ export interface EventTypes {
   [Events.AIDA_AVAILABILITY_CHANGED]: AidaAccessPreconditions;
 }
 
+/**
+ * Checks whether any of the provided error strings indicate a quota or rate-limit failure.
+ *
+ * AIDA and GCA surface quota errors across different fields (status codes, human-readable
+ * messages, and serialized `google.rpc.ErrorInfo` details), so we check three substrings:
+ * - `'quota'`: direct AIDA error messages or details (for example,
+ *   `"Quota exceeded for quota metric 'AiCodeCompleteService'"` or `"USER_QUOTA_EXCEEDED"`).
+ * - `'resource_exhausted'`: the standard `google.rpc.Code` status string (for example,
+ *   `status: "RESOURCE_EXHAUSTED"` or `"RESOURCE_EXHAUSTED: quota exceeded"`).
+ * - `'rate_limit_exceeded'`: the `reason` field inside `google.rpc.ErrorInfo` details when
+ *   the message itself does not mention `'quota'` (for example, GCA returning
+ *   `message: "You have exhausted your capacity on this model."` with
+ *   `details: [{"reason": "RATE_LIMIT_EXCEEDED", "domain": "cloudcode-pa.googleapis.com"}]`).
+ */
 export function isQuotaError(...inputs: Array<string|undefined>): boolean {
-  return inputs.some(input => input?.toLowerCase().includes('quota'));
+  return inputs.some(input => {
+    const lower = input?.toLowerCase();
+    return lower?.includes('quota') || lower?.includes('resource_exhausted') || lower?.includes('rate_limit_exceeded');
+  });
 }
 
 export function isPayloadTooLargeError(...inputs: Array<string|undefined>): boolean {
@@ -552,8 +569,17 @@ export function isPayloadTooLargeError(...inputs: Array<string|undefined>): bool
 }
 
 /**
- * Maps AIDA-specific errors, DispatchHttpRequestErrors, strings, and generic
- * Errors to dedicated AidaClientError subclasses.
+ * Type guard that narrows an `unknown` error value in `mapError` to a plain key-value
+ * object so structured `google.rpc.Status` fields (`code`, `status`, `message`, `details`)
+ * can be safely inspected.
+ */
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Maps AIDA-specific errors, DispatchHttpRequestErrors, strings, structured
+ * error objects, and generic Errors to dedicated AidaClientError subclasses.
  */
 export function mapError(err: unknown, detail?: string): AidaClientError {
   if (err instanceof AidaClientError) {
@@ -602,5 +628,23 @@ export function mapError(err: unknown, detail?: string): AidaClientError {
   if (err instanceof Error) {
     return new AidaUnknownError(err.message, {cause: err});
   }
+
+  if (isRecord(err)) {
+    const code = typeof err.code === 'number' ? err.code : undefined;
+    const status = typeof err.status === 'string' ? err.status : undefined;
+    const message = typeof err.message === 'string' ? err.message : undefined;
+    const details = err.details !== undefined ? JSON.stringify(err.details) : undefined;
+    if (code === 429 || isQuotaError(status, message, details)) {
+      return new AidaQuotaError(message ?? 'Server responded: quota exceeded', {cause: err});
+    }
+    if (code === 403 || status === 'PERMISSION_DENIED') {
+      return new AidaPermissionDeniedError(message ?? 'Server responded: permission denied', {cause: err});
+    }
+    if (isPayloadTooLargeError(message, details)) {
+      return new AidaPayloadTooLargeError(message ?? 'Server responded: payload size exceeds the limit', {cause: err});
+    }
+    return new AidaUnknownError(message ?? JSON.stringify(err), {cause: err});
+  }
+
   return new AidaUnknownError(String(err));
 }

@@ -465,7 +465,14 @@ export interface AidaChunkResponse {
   functionCallChunk?: {
     functionCall: AidaFunctionCall,
   };
-  error?: string;
+  /**
+   * Error information returned in the chunk.
+   * Supports direct AIDA stream chunk error strings (for example,
+   * "RESOURCE_EXHAUSTED: quota exceeded") and structured google.rpc.Status
+   * error objects translated from GCA stream chunks (for example,
+   * {"code": 429, "message": "You have exhausted your capacity on this model.", "status": "RESOURCE_EXHAUSTED", "details": [...]}).
+   */
+  error?: string|Record<string, unknown>;
 }
 
 export function debugLog(...log: unknown[]): void {

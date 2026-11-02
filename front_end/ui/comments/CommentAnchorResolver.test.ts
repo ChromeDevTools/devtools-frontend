@@ -1680,6 +1680,160 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         getComputedStyleSpy.restore();
       }
     });
+
+    describe('sticky occluders', () => {
+      beforeEach(() => {
+        Comments.CommentAnchorResolver.setStickyOccluders(null);
+      });
+
+      afterEach(() => {
+        Comments.CommentAnchorResolver.setStickyOccluders(null);
+      });
+
+      function markOccluder(element: Element): void {
+        element.setAttribute(Comments.CommentAnchorResolver.STICKY_OCCLUDER_ATTRIBUTE, '');
+      }
+
+      function createScroller(rect: DOMRect, parent: Node = container): HTMLDivElement {
+        const scroller = document.createElement('div');
+        scroller.style.overflow = 'hidden auto';
+        scroller.getBoundingClientRect = () => rect;
+        parent.appendChild(scroller);
+        return scroller;
+      }
+
+      function createChild(parent: Node, text: string, rect: DOMRect): HTMLDivElement {
+        const child = document.createElement('div');
+        child.textContent = text;
+        child.getBoundingClientRect = () => rect;
+        parent.appendChild(child);
+        return child;
+      }
+
+      it('trims a row partly under a sticky header', () => {
+        const scroller = createScroller(new DOMRect(0, 0, 300, 200));
+        const header = createChild(scroller, 'Header', new DOMRect(0, 0, 300, 20));
+        markOccluder(header);
+        const row = createChild(scroller, 'Row', new DOMRect(0, 10, 300, 20));
+
+        const rect = Comments.CommentAnchorResolver.computeVisibleRect(row);
+        assert.isNotNull(rect);
+        assert.strictEqual(rect?.top, 20);
+        assert.strictEqual(rect?.bottom, 30);
+        assert.strictEqual(rect?.height, 10);
+      });
+
+      it('returns null for a row fully under a sticky header', () => {
+        const scroller = createScroller(new DOMRect(0, 0, 300, 200));
+        const header = createChild(scroller, 'Header', new DOMRect(0, 0, 300, 20));
+        markOccluder(header);
+        const row = createChild(scroller, 'Row', new DOMRect(0, 2, 300, 16));
+
+        assert.isNull(Comments.CommentAnchorResolver.computeVisibleRect(row));
+      });
+
+      it('does not trim an anchor inside the sticky header', () => {
+        const scroller = createScroller(new DOMRect(0, 0, 300, 200));
+        const header = createChild(scroller, '', new DOMRect(0, 0, 300, 20));
+        markOccluder(header);
+        const headerCell = createChild(header, 'Name', new DOMRect(0, 0, 100, 20));
+
+        const rect = Comments.CommentAnchorResolver.computeVisibleRect(headerCell);
+        assert.isNotNull(rect);
+        assert.strictEqual(rect?.top, 0);
+        assert.strictEqual(rect?.height, 20);
+      });
+
+      it('uses the current header height when it changes', () => {
+        const scroller = createScroller(new DOMRect(0, 0, 300, 200));
+        const header = createChild(scroller, 'Header', new DOMRect(0, 0, 300, 20));
+        markOccluder(header);
+        const row = createChild(scroller, 'Row', new DOMRect(0, 10, 300, 40));
+
+        assert.strictEqual(Comments.CommentAnchorResolver.computeVisibleRect(row)?.top, 20);
+
+        header.getBoundingClientRect = () => new DOMRect(0, 0, 300, 35);
+        assert.strictEqual(Comments.CommentAnchorResolver.computeVisibleRect(row)?.top, 35);
+      });
+
+      it('ignores an occluder that sticks to a different scroller', () => {
+        const scrollerA = createScroller(new DOMRect(0, 0, 300, 200));
+        const scrollerB = createScroller(new DOMRect(0, 0, 300, 200));
+        const headerB = createChild(scrollerB, 'Header B', new DOMRect(0, 0, 300, 20));
+        markOccluder(headerB);
+        const rowA = createChild(scrollerA, 'Row A', new DOMRect(0, 10, 300, 20));
+
+        const rect = Comments.CommentAnchorResolver.computeVisibleRect(rowA);
+        assert.isNotNull(rect);
+        assert.strictEqual(rect?.top, 10);
+        assert.strictEqual(rect?.height, 20);
+      });
+
+      it('trims against an occluder inside a shadow root whose scroller is outside it', () => {
+        const scroller = createScroller(new DOMRect(0, 0, 300, 200));
+        const host = document.createElement('div');
+        scroller.appendChild(host);
+        const shadow = host.attachShadow({mode: 'open'});
+        const header = createChild(shadow, 'Header', new DOMRect(0, 0, 300, 20));
+        markOccluder(header);
+        const row = createChild(shadow, 'Row', new DOMRect(0, 10, 300, 20));
+
+        const rect = Comments.CommentAnchorResolver.computeVisibleRect(row);
+        assert.isNotNull(rect);
+        assert.strictEqual(rect?.top, 20);
+        assert.strictEqual(rect?.height, 10);
+      });
+
+      it('stops trimming after the marker attribute is removed', () => {
+        const scroller = createScroller(new DOMRect(0, 0, 300, 200));
+        const header = createChild(scroller, 'Header', new DOMRect(0, 0, 300, 20));
+        markOccluder(header);
+        const row = createChild(scroller, 'Row', new DOMRect(0, 10, 300, 20));
+
+        assert.strictEqual(Comments.CommentAnchorResolver.computeVisibleRect(row)?.top, 20);
+
+        header.removeAttribute(Comments.CommentAnchorResolver.STICKY_OCCLUDER_ATTRIBUTE);
+        Comments.CommentAnchorResolver.clearClippingAncestorsCache();
+        assert.strictEqual(Comments.CommentAnchorResolver.computeVisibleRect(row)?.top, 10);
+      });
+
+      it('ignores an occluder that sticks to a nested scroller', () => {
+        const outer = createScroller(new DOMRect(0, 0, 300, 200));
+        const inner = createScroller(new DOMRect(0, 100, 300, 100), outer);
+        const innerHeader = createChild(inner, 'Inner header', new DOMRect(0, 0, 300, 20));
+        markOccluder(innerHeader);
+        const outerRow = createChild(outer, 'Outer row', new DOMRect(0, 10, 300, 20));
+
+        const rect = Comments.CommentAnchorResolver.computeVisibleRect(outerRow);
+        assert.isNotNull(rect);
+        assert.strictEqual(rect?.top, 10);
+        assert.strictEqual(rect?.height, 20);
+      });
+
+      it('uses the provided occluder list instead of scanning the DOM', () => {
+        const scroller = createScroller(new DOMRect(0, 0, 300, 200));
+        const markedHeader = createChild(scroller, 'Marked header', new DOMRect(0, 0, 300, 20));
+        markOccluder(markedHeader);
+        const providedHeader = createChild(scroller, 'Provided header', new DOMRect(0, 0, 300, 30));
+        const row = createChild(scroller, 'Row', new DOMRect(0, 10, 300, 40));
+
+        Comments.CommentAnchorResolver.setStickyOccluders([providedHeader]);
+        assert.strictEqual(Comments.CommentAnchorResolver.computeVisibleRect(row)?.top, 30);
+
+        Comments.CommentAnchorResolver.setStickyOccluders(null);
+        assert.strictEqual(Comments.CommentAnchorResolver.computeVisibleRect(row)?.top, 20);
+      });
+
+      it('skips provided occluders that are no longer connected', () => {
+        const scroller = createScroller(new DOMRect(0, 0, 300, 200));
+        const header = createChild(scroller, 'Header', new DOMRect(0, 0, 300, 20));
+        const row = createChild(scroller, 'Row', new DOMRect(0, 10, 300, 20));
+        Comments.CommentAnchorResolver.setStickyOccluders([header]);
+        header.remove();
+
+        assert.strictEqual(Comments.CommentAnchorResolver.computeVisibleRect(row)?.top, 10);
+      });
+    });
   });
 
   describe('CustomAnchorResolver integration', () => {

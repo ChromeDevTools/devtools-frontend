@@ -220,6 +220,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.dataTableColumnGroup = this.dataTable.createChild('colgroup');
 
     this.#dataTableHead = this.dataTable.createChild('thead');
+    // Sticky header: comment overlays for rows scrolled under it are clipped (see CommentAnchorResolver).
+    this.#dataTableHead.setAttribute('data-sticky-occluder', '');
     this.headerRow = this.#dataTableHead.createChild('tr');
 
     this.dataTableBody = this.dataTable.createChild('tbody');

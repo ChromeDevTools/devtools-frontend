@@ -712,6 +712,50 @@ describeWithEnvironment('CommentOverlayManager', () => {
       assert.lengthOf(pins, 0);
     });
 
+    it('clips the highlight against sticky occluders collected during rematch', async () => {
+      const clock = sinon.useFakeTimers();
+      try {
+        const scrollParent = document.createElement('div');
+        scrollParent.style.overflow = 'hidden auto';
+        scrollParent.getBoundingClientRect = () => new DOMRect(0, 0, 400, 200);
+        container.appendChild(scrollParent);
+
+        const header = document.createElement('div');
+        header.setAttribute(Comments.CommentAnchorResolver.STICKY_OCCLUDER_ATTRIBUTE, '');
+        header.getBoundingClientRect = () => new DOMRect(0, 0, 400, 20);
+        scrollParent.appendChild(header);
+
+        const item = document.createElement('div');
+        item.setAttribute('jslog', 'TreeItem; context: sticky-item');
+        item.textContent = 'color: red;';
+        item.getBoundingClientRect = () => new DOMRect(10, 10, 200, 40);
+        scrollParent.appendChild(item);
+
+        manager.start(container);
+        manager.setCommentMode(true);
+        const thread = manager.createComment(item, 'Under header');
+        assert.isNotNull(thread);
+        assert.strictEqual(manager.getHighlight(thread.id)?.top, 20);
+
+        // Re-render the header taller; the rematch scan must pick up the new element.
+        header.remove();
+        const tallerHeader = document.createElement('div');
+        tallerHeader.setAttribute(Comments.CommentAnchorResolver.STICKY_OCCLUDER_ATTRIBUTE, '');
+        tallerHeader.getBoundingClientRect = () => new DOMRect(0, 0, 400, 30);
+        scrollParent.prepend(tallerHeader);
+
+        await Promise.resolve();
+        clock.tick(250);
+
+        const highlight = manager.getHighlight(thread.id);
+        assert.exists(highlight);
+        assert.strictEqual(highlight.top, 30);
+        assert.strictEqual(highlight.height, 20);
+      } finally {
+        clock.restore();
+      }
+    });
+
     it('clips hover highlight to ancestor scroll container boundaries', () => {
       const scrollParent = document.createElement('div');
       scrollParent.style.overflow = 'hidden';

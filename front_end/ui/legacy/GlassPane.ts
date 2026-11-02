@@ -130,9 +130,6 @@ export class GlassPane {
       return;
     }
     this.#widget.detach(/* overrideHideOnDetach= */ true);
-    if (this.#onHideCallback) {
-      this.#onHideCallback();
-    }
   }
 
   #onDetach(): void {
@@ -147,6 +144,9 @@ export class GlassPane {
         this.onMouseDownBound,
         true,
     );
+    if (this.#onHideCallback) {
+      this.#onHideCallback();
+    }
   }
 
   private onMouseDown(event: Event): void {

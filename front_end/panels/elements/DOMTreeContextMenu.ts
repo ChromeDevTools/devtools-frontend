@@ -551,6 +551,6 @@ export async function showContextMenu(
   ElementsPanel.instance().populateAdornerSettingsContextMenu(contextMenu);
 
   contextMenu.appendApplicableItems(domNode);
-  void contextMenu.show();
+  await contextMenu.show();
   return contextMenu;
 }

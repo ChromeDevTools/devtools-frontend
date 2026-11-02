@@ -90,6 +90,11 @@ export class SoftContextMenu {
     this.document = document;
 
     this.glassPane = new GlassPane();
+    this.glassPane.setOnHideCallback(() => {
+      if (this.glassPane) {
+        this.discard();
+      }
+    });
     this.glassPane.setPointerEventsBehavior(
         this.parentMenu ? PointerEventsBehavior.PIERCE_GLASS_PANE : PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
     this.glassPane.registerRequiredCSS(softContextMenuStyles);
@@ -178,8 +183,9 @@ export class SoftContextMenu {
       this.focusRestorer.restore();
     }
     if (this.glassPane) {
-      this.glassPane.hide();
+      const glassPane = this.glassPane;
       delete this.glassPane;
+      glassPane.hide();
       if (this.hideOnUserMouseDownUnlessInMenu) {
         if (this.document) {
           this.document.body.removeEventListener('mousedown', this.hideOnUserMouseDownUnlessInMenu, false);

@@ -831,6 +831,67 @@ describeWithEnvironment('DOMTreeWidget', () => {
          }
        });
 
+    it('fetches and renders children of the document element when the document root is expanded manually', async () => {
+      // Models the Console case: the root is a document, it is rendered
+      // (omitRootDOMNode = false) and not expanded by default
+      // (expandRoot = false). Children are fetched lazily.
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const docNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.DOCUMENT_NODE,
+          nodeName: '#document',
+          localName: '',
+          nodeValue: '',
+          childNodeCount: 1,
+        });
+        const rootElementNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+          nodeId: 2 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          parentId: 1 as Protocol.DOM.NodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'root',
+          localName: 'root',
+          nodeValue: '',
+          childNodeCount: 1,
+        });
+        rootElementNode.parentNode = docNode;
+        sinon.stub(docNode, 'getChildNodes').callsFake(callback => {
+          docNode.childrenInternal = [rootElementNode];
+          callback(docNode.childrenInternal);
+        });
+        const getRootElementChildNodes = sinon.stub(rootElementNode, 'getChildNodes').callsFake(callback => {
+          const childNode = createTestDOMTree(domModel, {nodeId: 3, nodeName: 'child'});
+          childNode.parentNode = rootElementNode;
+          rootElementNode.childrenInternal = [childNode];
+          callback(rootElementNode.childrenInternal);
+        });
+
+        domTree.rootDOMNode = docNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        domTree.setNodeExpanded(docNode, true);
+        await waitForTreeUpdates();
+
+        sinon.assert.calledOnce(getRootElementChildNodes);
+        assert.isTrue(domTree.isNodeExpanded(rootElementNode));
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const docTreeElement = internalTree.rootElement().children()[0];
+        assert.lengthOf(docTreeElement.children(), 1);
+        const rootTreeElement = docTreeElement.children()[0];
+        assert.isTrue(rootTreeElement.expanded);
+        // The child element and the closing tag.
+        assert.lengthOf(rootTreeElement.children(), 2);
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('renders screenshot', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target, {includeCommonStyles: true});
       try {

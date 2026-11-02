@@ -38,7 +38,7 @@ export default `/*
 }
 
 .watch-expressions {
-  min-height: 26px;
+  min-height: var(--sys-size-11);
 }
 
 .watch-expression-title {

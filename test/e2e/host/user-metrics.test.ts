@@ -60,8 +60,8 @@ declare global {
 async function setupInspectorFrontendHostStub(devToolsPage: DevToolsPage) {
   const evaluate = async () => {
     // @ts-expect-error
-    const InspectorFrontendHost = await import('./core/host/InspectorFrontendHost.js');
-    const stub = new InspectorFrontendHost.InspectorFrontendHostStub();
+    const Host = await import('./core/host/host.js');
+    const stub = new Host.InspectorFrontendHost.InspectorFrontendHostStub();
     // globalThis.InspectorFrontendHost = stub;
     for (const prop of ['recordedCountHistograms', 'recordedEnumeratedHistograms', 'recordedPerformanceHistograms']) {
       // @ts-expect-error

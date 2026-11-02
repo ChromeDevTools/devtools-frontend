@@ -413,19 +413,21 @@ export const getAllPropertiesFromComputedPane = async(devToolsPage: DevToolsPage
   name: string,
   value: string,
 }>> => {
-  const properties = await devToolsPage.$$(COMPUTED_PROPERTY_SELECTOR);
-  return (await Promise.all(properties.map(elem => elem.evaluate(async node => {
-           const nameSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-name slot');
-           const valueSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-value slot');
-           const name = nameSlot?.assignedElements().at(0);
-           const value = valueSlot?.assignedElements().at(0);
+  return await devToolsPage.waitForFunction(async () => {
+    const properties = await devToolsPage.$$(COMPUTED_PROPERTY_SELECTOR);
+    const rendered = await Promise.all(properties.map(elem => elem.evaluate(node => {
+      const nameSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-name slot');
+      const valueSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-value slot');
+      const name = nameSlot?.assignedElements().at(0);
+      const value = valueSlot?.assignedElements().at(0);
 
-           return (!name || !value) ? null : {
-             name: name.textContent ? name.textContent.trim().replace(/:$/, '') : '',
-             value: value.textContent ? value.textContent.trim().replace(/;$/, '') : '',
-           };
-         }))))
-      .filter(prop => !!prop);
+      return (!name || !value) ? null : {
+        name: name.textContent ? name.textContent.trim().replace(/:$/, '') : '',
+        value: value.textContent ? value.textContent.trim().replace(/;$/, '') : '',
+      };
+    })));
+    return rendered.every(prop => prop !== null) ? rendered : undefined;
+  });
 };
 
 export const getPropertyFromComputedPane =

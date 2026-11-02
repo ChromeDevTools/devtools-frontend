@@ -18,5 +18,3 @@
 
 # 2026 Oct 29 gardener shift
 crbug.com/579806317 [ linux mac win32 ] test/e2e/emulation/media-query-inspector.test.ts:media_query_inspector:lists_all_the_media_queries [ Failure Pass ]
-
-crbug.com/579800143 [ linux mac win32 ] test/e2e/elements/computed-pane-properties.test.ts:the_computed_pane:can_display_the_css_properties_of_the_selected_element [ Failure Pass ]

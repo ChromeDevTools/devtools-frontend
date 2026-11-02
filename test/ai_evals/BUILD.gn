@@ -16,6 +16,7 @@ group("ai_evals") {
     "network",
     "performance",
     "sources",
+    "storage",
   ]
 }
 
@@ -62,5 +63,6 @@ generated_file("test_inputs") {
     "network",
     "performance",
     "sources",
+    "storage",
   ]
 }

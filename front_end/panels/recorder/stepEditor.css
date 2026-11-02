@@ -64,7 +64,7 @@
 }
 
 .gap.row {
-  gap: 5px;
+  gap: var(--sys-size-3);
 }
 
 .gap.row devtools-button {

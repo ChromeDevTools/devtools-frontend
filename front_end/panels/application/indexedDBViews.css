@@ -46,10 +46,6 @@
   font-size: unset !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.resources-toolbar {
-  padding-right: 10px;
-}
-
 .object-store-summary-bar {
   flex: 0 0 27px;
   line-height: 27px;

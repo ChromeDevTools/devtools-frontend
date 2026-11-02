@@ -3,14 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {
-  createTarget,
-} from '../../testing/EnvironmentHelpers.js';
-import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
-import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
@@ -18,8 +14,11 @@ import * as SDK from './sdk.js';
 const {urlString} = Platform.DevToolsPath;
 
 describe('ExecutionContext', () => {
-  setupRuntimeHooks();
-  setupSettingsHooks();
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
 
   function createExecutionContext(target: SDK.Target.Target, name?: string, isDefault?: boolean) {
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
@@ -30,42 +29,40 @@ describe('ExecutionContext', () => {
   }
 
   it('can be compared based on target type', () => {
-    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
-    const mainFrameTargetUnderTab = createTarget({type: SDK.Target.Type.FRAME, parentTarget: tabTarget});
-    assert.strictEqual(
-        SDK.RuntimeModel.ExecutionContext.comparator(
-            createExecutionContext(mainFrameTargetUnderTab),
-            createExecutionContext(createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTargetUnderTab}))),
-        -1);
+    const tabTarget = universe.createTarget({type: SDK.Target.Type.TAB});
+    const mainFrameTargetUnderTab = universe.createTarget({type: SDK.Target.Type.FRAME, parentTarget: tabTarget});
+    assert.strictEqual(SDK.RuntimeModel.ExecutionContext.comparator(
+                           createExecutionContext(mainFrameTargetUnderTab),
+                           createExecutionContext(universe.createTarget(
+                               {type: SDK.Target.Type.FRAME, parentTarget: mainFrameTargetUnderTab}))),
+                       -1);
 
-    assert.strictEqual(
-        SDK.RuntimeModel.ExecutionContext.comparator(
-            createExecutionContext(createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTargetUnderTab})),
-            createExecutionContext(
-                createTarget({type: SDK.Target.Type.ServiceWorker, parentTarget: mainFrameTargetUnderTab}))),
-        -1);
+    assert.strictEqual(SDK.RuntimeModel.ExecutionContext.comparator(
+                           createExecutionContext(universe.createTarget(
+                               {type: SDK.Target.Type.FRAME, parentTarget: mainFrameTargetUnderTab})),
+                           createExecutionContext(universe.createTarget(
+                               {type: SDK.Target.Type.ServiceWorker, parentTarget: mainFrameTargetUnderTab}))),
+                       -1);
 
-    assert.strictEqual(
-        SDK.RuntimeModel.ExecutionContext.comparator(
-            createExecutionContext(
-                createTarget({type: SDK.Target.Type.ServiceWorker, parentTarget: mainFrameTargetUnderTab})),
-            createExecutionContext(
-                createTarget({type: SDK.Target.Type.SHARED_WORKER, parentTarget: mainFrameTargetUnderTab}))),
-        -1);
+    assert.strictEqual(SDK.RuntimeModel.ExecutionContext.comparator(
+                           createExecutionContext(universe.createTarget(
+                               {type: SDK.Target.Type.ServiceWorker, parentTarget: mainFrameTargetUnderTab})),
+                           createExecutionContext(universe.createTarget(
+                               {type: SDK.Target.Type.SHARED_WORKER, parentTarget: mainFrameTargetUnderTab}))),
+                       -1);
 
-    assert.strictEqual(
-        SDK.RuntimeModel.ExecutionContext.comparator(
-            createExecutionContext(
-                createTarget({type: SDK.Target.Type.ServiceWorker, parentTarget: mainFrameTargetUnderTab})),
-            createExecutionContext(
-                createTarget({type: SDK.Target.Type.Worker, parentTarget: mainFrameTargetUnderTab}))),
-        -1);
+    assert.strictEqual(SDK.RuntimeModel.ExecutionContext.comparator(
+                           createExecutionContext(universe.createTarget(
+                               {type: SDK.Target.Type.ServiceWorker, parentTarget: mainFrameTargetUnderTab})),
+                           createExecutionContext(universe.createTarget(
+                               {type: SDK.Target.Type.Worker, parentTarget: mainFrameTargetUnderTab}))),
+                       -1);
   });
 
   it('can be compared based on target depth', () => {
-    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
-    const mainFrameTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: tabTarget});
-    const subframeTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTarget});
+    const tabTarget = universe.createTarget({type: SDK.Target.Type.TAB});
+    const mainFrameTarget = universe.createTarget({type: SDK.Target.Type.FRAME, parentTarget: tabTarget});
+    const subframeTarget = universe.createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTarget});
     assert.strictEqual(
         SDK.RuntimeModel.ExecutionContext.comparator(
             createExecutionContext(mainFrameTarget), createExecutionContext(subframeTarget)),
@@ -73,7 +70,7 @@ describe('ExecutionContext', () => {
   });
 
   it('can be compared based on defaultness', () => {
-    const target = createTarget({type: SDK.Target.Type.FRAME});
+    const target = universe.createTarget({type: SDK.Target.Type.FRAME});
     const defaultExecutionContext = createExecutionContext(target, 'name', /* isDefault=*/ true);
     const notDefaultExecutionContext = createExecutionContext(target, 'name', /* isDefault=*/ false);
     assert.strictEqual(
@@ -81,7 +78,7 @@ describe('ExecutionContext', () => {
   });
 
   it('can be compared based on name', () => {
-    const target = createTarget({type: SDK.Target.Type.FRAME});
+    const target = universe.createTarget({type: SDK.Target.Type.FRAME});
     const executionContextA = createExecutionContext(target, /* name=*/ 'a');
     const executionContextB = createExecutionContext(target, /* name=*/ 'b');
     assert.strictEqual(SDK.RuntimeModel.ExecutionContext.comparator(executionContextA, executionContextB), -1);

@@ -8,6 +8,54 @@ template("wasm_module") {
 
   action_foreach(target_name) {
     script = devtools_location_prepend + "scripts/build/wasm-as.py"
+    inputs = [
+      devtools_location_prepend + "node_modules/source-map/lib/array-set.js",
+      devtools_location_prepend + "node_modules/source-map/lib/base64-vlq.js",
+      devtools_location_prepend + "node_modules/source-map/lib/base64.js",
+      devtools_location_prepend +
+          "node_modules/source-map/lib/binary-search.js",
+      devtools_location_prepend + "node_modules/source-map/lib/mapping-list.js",
+      devtools_location_prepend + "node_modules/source-map/lib/quick-sort.js",
+      devtools_location_prepend +
+          "node_modules/source-map/lib/source-map-consumer.js",
+      devtools_location_prepend +
+          "node_modules/source-map/lib/source-map-generator.js",
+      devtools_location_prepend + "node_modules/source-map/lib/source-node.js",
+      devtools_location_prepend + "node_modules/source-map/lib/util.js",
+      devtools_location_prepend + "node_modules/source-map/package.json",
+      devtools_location_prepend + "node_modules/source-map/source-map.js",
+      devtools_location_prepend + "package.json",
+      devtools_location_prepend + "scripts/build/wasm_sourcemap.mjs",
+      devtools_location_prepend + "scripts/node_modules_hook.mjs",
+      devtools_location_prepend + "third_party/node/node.py",
+      devtools_location_prepend + "third_party/node/node_path.py",
+    ]
+    if (host_os == "win") {
+      inputs += [
+        "//third_party/node/win/node.exe",
+        devtools_location_prepend +
+            "third_party/emscripten-releases/install/bin/llvm-readobj.exe",
+        devtools_location_prepend +
+            "third_party/emscripten-releases/install/bin/wasm-as.exe",
+      ]
+    } else {
+      inputs += [
+        devtools_location_prepend +
+            "third_party/emscripten-releases/install/bin/llvm-readobj",
+        devtools_location_prepend +
+            "third_party/emscripten-releases/install/bin/wasm-as",
+      ]
+      if (host_os == "linux") {
+        inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
+      } else if (host_os == "mac") {
+        if (host_cpu == "arm64") {
+          inputs +=
+              [ "//third_party/node/mac_arm64/node-darwin-arm64/bin/node" ]
+        } else {
+          inputs += [ "//third_party/node/mac/node-darwin-x64/bin/node" ]
+        }
+      }
+    }
     outputs = [
       "$target_gen_dir/{{source_name_part}}.wasm",
       "$target_gen_dir/{{source_name_part}}.wasm.map",

@@ -219,6 +219,62 @@ describe('ResourceTreeModel', () => {
     sinon.assert.notCalled(resourceAdded);
   });
 
+  it('does not add the document resource on cross-target navigation while the document request is in flight',
+     async () => {
+       const parentTarget = universe.createTarget({connection});
+       await getInitializedResourceTreeModel(parentTarget);
+
+       const subframeTarget = universe.createTarget({
+         parentTarget,
+         type: SDK.Target.Type.FRAME,
+       });
+       await getInitializedResourceTreeModel(subframeTarget);
+       const subframe = getMainFrame(subframeTarget);
+
+       const url = urlString`http://example.com/page.html`;
+       const requestId = 'loader-2' as Protocol.Network.RequestId;
+       const loaderId = 'loader-2' as Protocol.Network.LoaderId;
+
+       const parentNetworkManager = parentTarget.model(SDK.NetworkManager.NetworkManager)!;
+       const subframeNetworkManager = subframeTarget.model(SDK.NetworkManager.NetworkManager)!;
+
+       const requestPromise = parentNetworkManager.once(SDK.NetworkManager.Events.RequestStarted);
+       parentNetworkManager.dispatcher.requestWillBeSent({
+         requestId,
+         loaderId,
+         frameId: subframe.id,
+         documentURL: url,
+         request: {
+           url,
+           method: 'GET',
+           headers: {},
+           initialPriority: Protocol.Network.ResourcePriority.High,
+           referrerPolicy: Protocol.Network.RequestReferrerPolicy.NoReferrer,
+         },
+         timestamp: 1 as Protocol.Network.MonotonicTime,
+         wallTime: 1 as Protocol.Network.TimeSinceEpoch,
+         initiator: {type: Protocol.Network.InitiatorType.Other},
+         redirectHasExtraInfo: false,
+       });
+
+       const {request} = await requestPromise;
+
+       const resourceAdded = sinon.spy();
+       subframe.resourceTreeModel().addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, resourceAdded);
+       navigate(subframe, {url, loaderId});
+
+       assert.isNull(subframe.resourceForURL(url));
+       sinon.assert.notCalled(resourceAdded);
+
+       subframeNetworkManager.dispatcher.loadingFinished({
+         requestId,
+         timestamp: 2 as Protocol.Network.MonotonicTime,
+         encodedDataLength: 0,
+       });
+
+       assert.strictEqual(subframe.resourceForURL(url)?.request, request);
+     });
+
   function getResourceTreeModel(target: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeModel {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);

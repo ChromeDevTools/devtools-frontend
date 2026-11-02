@@ -6,6 +6,7 @@ import type * as puppeteer from 'puppeteer-core';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';
 
+import {waitForSoftContextMenu} from './context-menu-helpers.js';
 import {closeSettings} from './settings-helpers.js';
 
 const DEVICE_TOOLBAR_TOGGLER_SELECTOR = '[aria-label="Toggle device toolbar"]';
@@ -43,8 +44,8 @@ export const showMediaQueryInspector = async(devToolsPage: DevToolsPage): Promis
     return;
   }
   await devToolsPage.click(DEVICE_TOOLBAR_OPTIONS_SELECTOR);
-  await devToolsPage.pressKey('ArrowDown');
-  await devToolsPage.pressKey('Enter');
+  const menu = await waitForSoftContextMenu(devToolsPage);
+  await devToolsPage.click('[aria-label="Show media queries"]', {root: menu});
   await devToolsPage.waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
 };
 

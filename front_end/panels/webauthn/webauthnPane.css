@@ -72,7 +72,7 @@
   }
 
   .webauthn-pane select {
-    width: 120px;
+    width: var(--sys-size-20);
   }
   /* Active Authenticator Section */
   .authenticator-section {

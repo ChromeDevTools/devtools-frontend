@@ -45,7 +45,8 @@ h3 {
 }
 
 .thumbnail {
-  height: 92px;
+  /* 80px (--sys-size-19) + 12px (--sys-size-6) = 92px to match the 144x92 preview_feature_video_thumbnail.svg height without inline descender gap. */
+  height: calc(var(--sys-size-19) + var(--sys-size-6));
 }
 
 .video {

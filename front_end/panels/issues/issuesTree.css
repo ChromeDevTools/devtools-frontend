@@ -234,8 +234,8 @@ devtools-icon.leading-issue-icon {
 
 .affected-resources-label,
 .resolutions-label {
-  margin-top: 5px;
-  font-size: 10px;
+  margin-top: var(--sys-size-3);
+  font-size: var(--sys-typescale-body5-size);
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;

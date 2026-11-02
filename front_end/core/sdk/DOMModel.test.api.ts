@@ -146,6 +146,59 @@ describe('DOMModel API Test', () => {
     });
     assert.strictEqual(evaluatedId, 'node');
   });
+
+  it('saves nodes from same-origin iframes to temporary variables in the correct frame',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget);
+
+       const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+       assert.isNotNull(domModel);
+
+       const consoleModel = primaryTarget.model(SDK.ConsoleModel.ConsoleModel);
+       assert.isNotNull(consoleModel);
+
+       await inspectedPage.goToHtml(`
+         <iframe id="frame" srcdoc="<div id='child'></div>"></iframe>
+       `);
+
+       const documentNode = await domModel.requestDocument();
+       assert.isNotNull(documentNode);
+       await documentNode.getSubtree(10, true);
+
+       const iframeNode = findNode(documentNode, n => n.getAttribute('id') === 'frame');
+       const childNode = findNode(documentNode, n => n.getAttribute('id') === 'child');
+       assert.isNotNull(iframeNode);
+       assert.isNotNull(childNode);
+       if (!iframeNode || !childNode) {
+         assert.fail('Could not find test nodes');
+       }
+
+       let commandEvaluatedPromise = consoleModel.once(SDK.ConsoleModel.Events.CommandEvaluated);
+       await iframeNode.saveNodeToTempVariable();
+       let commandEvaluated = await commandEvaluatedPromise;
+       assert.strictEqual(commandEvaluated.commandMessage.messageText, 'temp1');
+       assert.strictEqual(commandEvaluated.result?.description, 'iframe#frame');
+
+       const parentTempVariableId = await inspectedPage.evaluate(() => {
+         return (window as unknown as {temp1?: HTMLIFrameElement}).temp1?.id;
+       });
+       assert.strictEqual(parentTempVariableId, 'frame');
+
+       commandEvaluatedPromise = consoleModel.once(SDK.ConsoleModel.Events.CommandEvaluated);
+       await childNode.saveNodeToTempVariable();
+       commandEvaluated = await commandEvaluatedPromise;
+       assert.strictEqual(commandEvaluated.commandMessage.messageText, 'temp1');
+       assert.strictEqual(commandEvaluated.result?.description, 'div#child');
+
+       const childTempVariableId = await inspectedPage.evaluate(() => {
+         const childWindow =
+             (document.getElementById('frame') as HTMLIFrameElement).contentWindow as (Window & {temp1?: HTMLElement}) |
+             null;
+         return childWindow?.temp1?.id;
+       });
+       assert.strictEqual(childTempVariableId, 'child');
+     });
 });
 
 describe('DOMModel queries, search, frames, markers, and attributes', () => {

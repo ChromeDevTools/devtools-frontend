@@ -1308,10 +1308,15 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
   }
 
   async saveNodeToTempVariable(): Promise<void> {
-    const remoteObjectForConsole = await this.resolveToObject();
+    const runtimeModel = this.#domModel.runtimeModel();
+    const frameId = this.frameId() ?? this.ownerDocument?.frameId();
+    const executionContext =
+        (frameId ? runtimeModel.executionContexts().find(context => context.frameId === frameId && context.isDefault) :
+                   null) ??
+        runtimeModel.defaultExecutionContext();
+    const remoteObjectForConsole = await this.resolveToObject(undefined, executionContext?.id);
     const consoleModel = this.#domModel.target().model(ConsoleModel);
-    await consoleModel?.saveToTempVariable(remoteObjectForConsole?.runtimeModel().defaultExecutionContext() ?? null,
-                                           remoteObjectForConsole);
+    await consoleModel?.saveToTempVariable(executionContext, remoteObjectForConsole);
   }
 
   async scrollIntoView(): Promise<void> {

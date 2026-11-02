@@ -1,8 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -10,7 +8,7 @@ import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 import type * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type {TemplateResult} from '../../ui/lit/lit.js';
+import {Directives, html, render, type TemplateResult} from '../../ui/lit/lit.js';
 
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 
@@ -131,6 +129,22 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 }
 
+export interface ProfileFlameChartViewInput {
+  overviewPane: OverviewPane;
+  mainPane: PerfUI.FlameChart.FlameChart;
+}
+
+export type ProfileFlameChartView = (input: ProfileFlameChartViewInput, output: undefined, target: HTMLElement) => void;
+
+// clang-format off
+export const DEFAULT_VIEW: ProfileFlameChartView = (input, _output, target) => {
+  render(html`
+    <devtools-widget class="cpu-profile-flame-chart-overview-pane">${input.overviewPane.element}</devtools-widget>
+    <devtools-widget class="vbox flex-auto">${input.mainPane.element}</devtools-widget>
+  `, target, {container: {attributes: {id: 'cpu-flame-chart'}}});
+};
+// clang-format on
+
 const ProfileFlameChartBase: Common.ObjectWrapper.EventMixin<PerfUI.FlameChart.EventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
         UI.Widget.VBox,
@@ -144,21 +158,24 @@ export class ProfileFlameChart extends ProfileFlameChartBase implements UI.Searc
   readonly dataProvider: ProfileFlameChartDataProvider;
   searchResults: number[];
   searchResultIndex = -1;
+  readonly #view: ProfileFlameChartView;
 
-  constructor(searchableView: UI.SearchableView.SearchableView, dataProvider: ProfileFlameChartDataProvider,
-              element?: HTMLElement) {
+  constructor(
+      searchableView: UI.SearchableView.SearchableView,
+      dataProvider: ProfileFlameChartDataProvider,
+      element?: HTMLElement,
+      view: ProfileFlameChartView = DEFAULT_VIEW,
+  ) {
     super(element);
-    this.element.id = 'cpu-flame-chart';
+    this.#view = view;
 
     this.searchableView = searchableView;
     this.overviewPane = new OverviewPane(dataProvider);
-    this.overviewPane.show(this.element);
 
     this.mainPane = new PerfUI.FlameChart.FlameChart(dataProvider, this.overviewPane);
     this.mainPane.setBarHeight(15);
     this.mainPane.setTextBaseline(4);
     this.mainPane.setTextPadding(2);
-    this.mainPane.show(this.element);
     this.mainPane.addEventListener(PerfUI.FlameChart.Events.ENTRY_SELECTED, this.onEntrySelected, this);
     this.mainPane.addEventListener(PerfUI.FlameChart.Events.ENTRY_INVOKED, this.onEntryInvoked, this);
     this.entrySelected = false;
@@ -166,6 +183,22 @@ export class ProfileFlameChart extends ProfileFlameChartBase implements UI.Searc
     this.overviewPane.addEventListener(OverviewPaneEvents.WINDOW_CHANGED, this.onWindowChanged, this);
     this.dataProvider = dataProvider;
     this.searchResults = [];
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          overviewPane: this.overviewPane,
+          mainPane: this.mainPane,
+        },
+        undefined,
+        this.contentElement,
+    );
   }
 
   override focus(): void {
@@ -314,33 +347,90 @@ export class OverviewCalculator implements NetworkTimeCalculator.Calculator {
   }
 }
 
+export interface OverviewPaneViewInput {
+  overviewGridElement: HTMLElement;
+}
+
+export interface OverviewPaneViewOutput {
+  canvas?: HTMLCanvasElement;
+  container?: HTMLElement;
+}
+
+export type OverviewPaneView = (input: OverviewPaneViewInput, output: OverviewPaneViewOutput, target: HTMLElement) =>
+    void;
+
+// clang-format off
+export const DEFAULT_OVERVIEW_PANE_VIEW: OverviewPaneView = (input, output, target) => {
+  render(html`
+    <div class="cpu-profile-flame-chart-overview-container" ${Directives.ref(el => {
+      output.container = el as HTMLElement | undefined;
+    })}>
+      <canvas class="cpu-profile-flame-chart-overview-canvas" ${Directives.ref(el => {
+        output.canvas = el as HTMLCanvasElement | undefined;
+      })}></canvas>
+      ${input.overviewGridElement}
+    </div>
+  `, target, {container: {classes: ['cpu-profile-flame-chart-overview-pane']}});
+};
+// clang-format on
+
 const OverviewPaneBase: Common.ObjectWrapper.EventMixin<OverviewPaneEventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
         UI.Widget.VBox,
     );
 
 export class OverviewPane extends OverviewPaneBase implements PerfUI.FlameChart.FlameChartDelegate {
-  overviewContainer: HTMLElement;
+  readonly #view: OverviewPaneView;
+  readonly #viewOutput: OverviewPaneViewOutput = {};
   readonly overviewCalculator: OverviewCalculator;
   readonly overviewGrid: PerfUI.OverviewGrid.OverviewGrid;
-  overviewCanvas: HTMLCanvasElement;
   dataProvider: PerfUI.FlameChart.FlameChartDataProvider;
   windowTimeLeft?: number;
   windowTimeRight?: number;
   updateTimerId?: number;
 
-  constructor(dataProvider: PerfUI.FlameChart.FlameChartDataProvider) {
-    super();
-    this.element.classList.add('cpu-profile-flame-chart-overview-pane');
-    this.overviewContainer = this.element.createChild('div', 'cpu-profile-flame-chart-overview-container');
+  constructor(
+      dataProvider: PerfUI.FlameChart.FlameChartDataProvider,
+      element?: HTMLElement,
+      view: OverviewPaneView = DEFAULT_OVERVIEW_PANE_VIEW,
+  ) {
+    super(element);
+    this.#view = view;
     this.overviewCalculator = new OverviewCalculator(dataProvider.formatValue);
     this.overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('cpu-profile-flame-chart', this.overviewCalculator);
     this.overviewGrid.element.classList.add('fill');
-    this.overviewCanvas = this.overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas');
-    this.overviewContainer.appendChild(this.overviewGrid.element);
     this.dataProvider = dataProvider;
     this.overviewGrid.addEventListener(
         PerfUI.OverviewGrid.Events.WINDOW_CHANGED_WITH_POSITION, this.onWindowChanged, this);
+  }
+
+  get overviewContainer(): HTMLElement {
+    if (!this.#viewOutput.container) {
+      this.performUpdate();
+    }
+    return this.#viewOutput.container ?? this.contentElement;
+  }
+
+  get overviewCanvas(): HTMLCanvasElement|undefined {
+    if (!this.#viewOutput.canvas) {
+      this.performUpdate();
+    }
+    return this.#viewOutput.canvas;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          overviewGridElement: this.overviewGrid.element,
+        },
+        this.#viewOutput,
+        this.contentElement,
+    );
   }
 
   windowChanged(windowStartTime: number, windowEndTime: number): void {
@@ -386,7 +476,7 @@ export class OverviewPane extends OverviewPaneBase implements PerfUI.FlameChart.
   update(): void {
     this.updateTimerId = 0;
     const timelineData = this.timelineData();
-    if (!timelineData) {
+    if (!timelineData || !this.overviewCanvas) {
       return;
     }
     this.resetCanvas(
@@ -397,6 +487,9 @@ export class OverviewPane extends OverviewPaneBase implements PerfUI.FlameChart.
   }
 
   drawOverviewCanvas(): void {
+    if (!this.overviewCanvas) {
+      return;
+    }
     const canvasWidth = this.overviewCanvas.width;
     const canvasHeight = this.overviewCanvas.height;
     const drawData = this.calculateDrawData(canvasWidth);
@@ -450,6 +543,9 @@ export class OverviewPane extends OverviewPaneBase implements PerfUI.FlameChart.
   }
 
   resetCanvas(width: number, height: number): void {
+    if (!this.overviewCanvas) {
+      return;
+    }
     const ratio = window.devicePixelRatio;
     this.overviewCanvas.width = width * ratio;
     this.overviewCanvas.height = height * ratio;

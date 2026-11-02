@@ -108,6 +108,7 @@ devtools_ui_module("unittests") {
     "HeapSnapshotDataGrids.test.ts",
     "HeapSnapshotView.test.ts",
     "HeapTimelineOverview.test.ts",
+    "ProfileFlameChartDataProvider.test.ts",
   ]
 
   ts_deps = [
@@ -116,10 +117,12 @@ devtools_ui_module("unittests") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../models/bindings:bundle",
+    "../../models/cpu_profile:bundle",
     "../../models/issues_manager:bundle",
     "../../panels/elements:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",
   ]

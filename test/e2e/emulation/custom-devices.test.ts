@@ -185,6 +185,7 @@ describe('Custom devices', () => {
 
     // Make sure the device name field is what's focused.
     await devToolsPage.waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
+    await devToolsPage.waitFor('input[type="checkbox"][value="Desktop"]:checked');
 
     await setInputValue(FULL_BROWSER_VERSION_INPUT_SELECTOR, '1.1.5', devToolsPage);
 

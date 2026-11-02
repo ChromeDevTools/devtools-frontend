@@ -55,11 +55,7 @@ describe('WebCustomData', () => {
     it('returns undefined if the .json loading failed', async () => {
       const webCustomData = new Elements.WebCustomData.WebCustomData('http://does-not-matter.com/');
       fetchReject(new Error('failed to load'));
-      try {
-        await webCustomData.fetchPromiseForTest;
-        assert.isTrue(false, 'Expected await to throw');
-      } catch {
-      }
+      await webCustomData.fetchPromiseForTest;
 
       assert.isUndefined(webCustomData.findCssProperty('display'));
     });

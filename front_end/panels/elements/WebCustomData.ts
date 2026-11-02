@@ -30,7 +30,7 @@ export class WebCustomData {
                                        this.#data.set(property.name, property);
                                      }
                                    })
-                                   .catch();
+                                   .catch(() => {});
   }
 
   /**

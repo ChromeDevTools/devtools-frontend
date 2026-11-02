@@ -87,30 +87,27 @@ function drawBadge(context: CanvasRenderingContext2D, text: string, x: number, y
 export function drawAnchorHighlight(highlight: AnchorHighlight, context: CanvasRenderingContext2D,
                                     emulationScaleFactor: number, canvasWidth = 0, canvasHeight = 0): void {
   const config = highlight.imcbHighlightConfig;
+  const imcbBounds = emptyBounds();
+  const imcbPath = buildPath(highlight.imcbBorder, imcbBounds, emulationScaleFactor);
 
   // 1. Inset modifiers: If containingBlockBorder is provided, shade the difference between CB and IMCB.
   if (highlight.containingBlockBorder && (config.insetsFillColor || config.insetsHatchColor)) {
     const cbBounds = emptyBounds();
     const cbPath = buildPath(highlight.containingBlockBorder, cbBounds, emulationScaleFactor);
+    const clipPath = new Path2D();
+    clipPath.addPath(cbPath);
+    clipPath.addPath(imcbPath);
+
+    context.save();
+    context.clip(clipPath, 'evenodd');
     fillPathWithBoxStyle(context, cbPath, cbBounds, 0, {
       fillColor: config.insetsFillColor,
       hatchColor: config.insetsHatchColor,
     });
-
-    // Clear the IMCB area from the containing block fill so only the insets remain.
-    context.save();
-    context.globalCompositeOperation = 'destination-out';
-    const clearBounds = emptyBounds();
-    const clearPath = buildPath(highlight.imcbBorder, clearBounds, emulationScaleFactor);
-    context.fillStyle = 'white';
-    context.fill(clearPath);
     context.restore();
   }
 
   // 2. IMCB Rectangle
-  const imcbBounds = emptyBounds();
-  const imcbPath = buildPath(highlight.imcbBorder, imcbBounds, emulationScaleFactor);
-
   if (config.imcbFillColor) {
     context.save();
     context.fillStyle = config.imcbFillColor;

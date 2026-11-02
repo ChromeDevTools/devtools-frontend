@@ -59,6 +59,29 @@ describe('highlight_anchor', () => {
     });
   });
 
+  it('shades insets without erasing prior canvas content inside the IMCB', () => {
+    // Simulate an element highlight painted before drawAnchorHighlight.
+    context.fillStyle = 'rgb(0, 255, 0)';
+    context.fillRect(110, 110, 40, 40);
+
+    const highlight: AnchorHighlight = {
+      containingBlockBorder: createRectPath(50, 50, 400, 400),
+      imcbBorder: createRectPath(100, 100, 200, 200),
+      imcbHighlightConfig: {
+        insetsFillColor: 'rgb(255, 0, 0)',
+      },
+    };
+
+    drawAnchorHighlight(highlight, context, 1, canvas.width, canvas.height);
+
+    // Inset area (inside CB, outside IMCB) is shaded red.
+    assert.deepEqual([...context.getImageData(75, 75, 1, 1).data], [255, 0, 0, 255]);
+    // Empty area inside IMCB is not shaded by insets.
+    assert.deepEqual([...context.getImageData(200, 200, 1, 1).data], [0, 0, 0, 0]);
+    // Prior element highlight inside IMCB remains intact.
+    assert.deepEqual([...context.getImageData(125, 125, 1, 1).data], [0, 255, 0, 255]);
+  });
+
   it('draws anchor targets and badges', () => {
     const highlight: AnchorHighlight = {
       imcbBorder: createRectPath(100, 100, 200, 200),

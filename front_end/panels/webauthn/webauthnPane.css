@@ -136,8 +136,7 @@
     font: var(--sys-typescale-body5-medium);
     padding-right: var(--sys-size-6);
     text-align: left;
-    min-width: 152px;
-    line-height: 18px;
+    min-width: var(--sys-size-23);
   }
 
   ::part(action-button) {

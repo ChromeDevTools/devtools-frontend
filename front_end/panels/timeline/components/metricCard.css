@@ -170,7 +170,7 @@ details.environment-recs[open] > summary::before {
 }
 
 .tooltip-contents {
-  width: 350px;
+  width: var(--sys-size-32);
   max-width: max-content;
 }
 

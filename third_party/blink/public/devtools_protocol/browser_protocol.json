@@ -24878,6 +24878,17 @@
                             "description": "Maximum frame rate in frames per second.",
                             "optional": true,
                             "type": "integer"
+                        },
+                        {
+                            "name": "captureArea",
+                            "description": "The area to record. Defaults to `target`.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "string",
+                            "enum": [
+                                "target",
+                                "browserWindow"
+                            ]
                         }
                     ],
                     "returns": [

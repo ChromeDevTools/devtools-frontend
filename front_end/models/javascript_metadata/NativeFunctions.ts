@@ -8302,10 +8302,6 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
     signatures: [["input","?options"]]
   },
   {
-    name: "queryFeatureSupport",
-    signatures: [["feature"]]
-  },
-  {
     name: "setPrivateToken",
     signatures: [["privateToken"]]
   },

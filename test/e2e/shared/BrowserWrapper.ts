@@ -14,6 +14,13 @@ import {TestConfig} from '../../conductor/test_config.js';
 
 import {chromeLogin, configureDevToolsPreferences} from './auth-helper.js';
 
+/**
+ * Crashpad stores dumps in a shared per-user directory, which can contain
+ * dumps from earlier runs. Only dumps written after the test runner loaded
+ * belong to the current test run.
+ */
+const RUNNER_START_TIME = Date.now();
+
 export class BrowserWrapper {
   browser: puppeteer.Browser;
 
@@ -38,15 +45,17 @@ export class BrowserWrapper {
       return;
     }
     for (const file of fs.readdirSync(crashesPath)) {
+      const source = path.join(crashesPath, file);
       const target = path.join(TestConfig.artifactsDir, file);
       if (fs.existsSync(target)) {
         continue;
       }
+      const stat = fs.statSync(source, {throwIfNoEntry: false});
+      if (!stat || stat.mtimeMs < RUNNER_START_TIME) {
+        continue;
+      }
       console.error('Collecting crash dump:', file);
-      fs.copyFileSync(
-          path.join(crashesPath, file),
-          path.join(TestConfig.artifactsDir, file),
-      );
+      fs.copyFileSync(source, target);
     }
   }
 

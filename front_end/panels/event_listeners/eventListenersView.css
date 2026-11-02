@@ -5,7 +5,7 @@
  */
 
 .tree-outline-disclosure li {
-  padding: 0 0 0 5px;
+  padding: 0 0 0 var(--sys-size-3);
   overflow: hidden;
   display: flex;
   min-height: var(--sys-size-8);

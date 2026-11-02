@@ -9,7 +9,7 @@ import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 import {SourceFileEvents, waitForSourceFiles} from './sources-helpers.js';
 
-export const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"],[aria-label="Abrir rápido"]';
+export const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"],[aria-label="快速打开"]';
 const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item';
 
 const QUICK_OPEN_SELECTED_ITEM_SELECTOR = `${QUICK_OPEN_ITEMS_SELECTOR}.selected`;

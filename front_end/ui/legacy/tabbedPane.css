@@ -100,7 +100,8 @@
   }
 
   &:has(.status-dot) {
-    width: 9px;
+    /* 6px (.status-dot width) + 2px (padding-left) + 1px (.status-dot margin-left) */
+    width: calc(var(--sys-size-4) + var(--sys-size-2) + var(--sys-size-1));
   }
 }
 

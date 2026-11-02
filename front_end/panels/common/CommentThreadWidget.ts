@@ -80,15 +80,23 @@ const UIStrings = {
 
 const UIStringsNotTranslate = {
   /**
-   * @description Disclaimer text in the comment thread info tooltip.
+   * @description Disclaimer text in the info tooltips of the comment thread and the comments pane.
    */
   inputDisclaimer:
-      'Comment strings, DOM hierarchy snippets, tracked CSS and DOM changes, Visual Element (VE) paths and signatures, and tracked presenter changes are sent to the connected third-party agent to assist with debugging and code updates',
+      'Comments and content attached to comments, and DOM/CSS changes recorded in the comment mode are sent to the connected third-party agent to assist with debugging and code updates',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/common/CommentThreadWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
+
+/**
+ * Returns the disclaimer about the data that is sent to the connected agent. The comment thread and the comments
+ * pane both show it in their info tooltips.
+ */
+export function inputDisclaimer(): string {
+  return lockedString(UIStringsNotTranslate.inputDisclaimer);
+}
 
 /**
  * Either the DOM node the thread is anchored to, or a plain text label for anchors that are not
@@ -250,7 +258,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             variant="rich"
           >
             <div class="info-tooltip-container">
-              ${lockedString(UIStringsNotTranslate.inputDisclaimer)}
+              ${inputDisclaimer()}
             </div>
           </devtools-tooltip>
           <devtools-button

@@ -18,7 +18,7 @@ import commentsPaneStyles from './commentsPane.css.js';
 
 const {html, render, i18nTemplate, Directives: {ref, repeat}} = Lit;
 const {widget} = UI.Widget;
-const {computeCommentTitle} = CommonPanels.CommentThreadWidget;
+const {computeCommentTitle, inputDisclaimer} = CommonPanels.CommentThreadWidget;
 type Title = CommonPanels.CommentThreadWidget.Title;
 
 const UIStrings = {
@@ -92,17 +92,8 @@ const UIStrings = {
   sentComments: 'Sent comments',
 } as const;
 
-const UIStringsNotTranslate = {
-  /**
-   * @description Disclaimer text in the comments pane info tooltip.
-   */
-  inputDisclaimer:
-      'Comment strings, DOM hierarchy snippets, tracked CSS and DOM changes, Visual Element (VE) paths and signatures, and tracked presenter changes are sent to the connected third-party agent to assist with debugging and code updates',
-} as const;
-
 const str_ = i18n.i18n.registerUIStrings('panels/comments/CommentsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const lockedString = i18n.i18n.lockedString;
 
 export type Tab = 'queued'|'sent';
 
@@ -290,7 +281,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target:
         variant="rich"
       >
         <div class="info-tooltip-container">
-          ${lockedString(UIStringsNotTranslate.inputDisclaimer)}
+          ${inputDisclaimer()}
         </div>
       </devtools-tooltip>
       <button

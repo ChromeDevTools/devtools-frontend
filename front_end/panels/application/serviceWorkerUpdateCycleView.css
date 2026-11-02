@@ -89,8 +89,8 @@
   }
 
   .service-worker-update-timing-bar.install {
-    top: 5px;
-    height: 10px;
+    margin-block: auto;
+    height: var(--sys-size-5);
     background-color: var(--sys-color-cyan-bright);
   }
 

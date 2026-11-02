@@ -560,9 +560,8 @@ describe('Extensions', () => {
     server.addExtension(attackerDescriptor);
 
     const channel = new MessageChannel();
-    (server as unknown as {
-      registerExtension: (origin: Platform.DevToolsPath.UrlString, port: MessagePort) => void,
-    }).registerExtension(attackerOrigin, channel.port1);
+    window.dispatchEvent(
+        new MessageEvent('message', {data: 'registerExtension', origin: attackerOrigin, ports: [channel.port1]}));
 
     const responsePromise = new Promise<{
       command: string,
@@ -1419,11 +1418,9 @@ describe('Runtime hosts policy', () => {
    * GetResourceContent requests through it.
    */
   function registerExtensionForResourceContent(): (url: string) => Promise<ResourceContentResult> {
-    const server = PanelCommon.ExtensionServer.ExtensionServer.instance();
     const channel = new MessageChannel();
-    (server as unknown as {
-      registerExtension: (origin: Platform.DevToolsPath.UrlString, port: MessagePort) => void,
-    }).registerExtension(urlString`${getExtensionOrigin()}`, channel.port1);
+    window.dispatchEvent(new MessageEvent(
+        'message', {data: 'registerExtension', origin: urlString`${getExtensionOrigin()}`, ports: [channel.port1]}));
 
     let nextRequestId = 1;
     return (url: string): Promise<ResourceContentResult> => {
@@ -2856,9 +2853,8 @@ describe('Extension Panels', () => {
     server.addExtension(extensionDescriptor);
 
     const channel = new MessageChannel();
-    (server as unknown as {
-      registerExtension: (origin: Platform.DevToolsPath.UrlString, port: MessagePort) => void,
-    }).registerExtension(extensionOrigin, channel.port1);
+    window.dispatchEvent(
+        new MessageEvent('message', {data: 'registerExtension', origin: extensionOrigin, ports: [channel.port1]}));
 
     const responsePromise = new Promise<{
       command: string,

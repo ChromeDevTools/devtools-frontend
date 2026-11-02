@@ -87,6 +87,7 @@ node_script_test("devtools_e2e_tests") {
   data_deps = [
     ":test_inputs",
     ":tests",
+    "../../:favicon",
     "../../scripts/hosted_mode",
     "resources",
   ]

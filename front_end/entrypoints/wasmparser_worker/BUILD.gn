@@ -34,7 +34,10 @@ devtools_entrypoint("worker_entrypoint") {
 
   ts_deps = [ ":bundle" ]
 
-  visibility = [ "../../../front_end" ]
+  visibility = [
+    "../../../front_end",
+    "../../core/sdk/*",
+  ]
 
   visibility += devtools_entrypoints_visibility
 }

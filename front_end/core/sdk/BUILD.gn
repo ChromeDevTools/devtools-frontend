@@ -158,6 +158,8 @@ devtools_entrypoint("bundle") {
     "../../generated",
   ]
 
+  data_deps = [ "../../entrypoints/wasmparser_worker:worker_entrypoint" ]
+
   visibility = [ "*" ]
 }
 

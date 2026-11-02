@@ -1109,6 +1109,7 @@ export const assertSelectedNodeClasses =
 
 export const toggleAccessibilityPane = async(devToolsPage: DevToolsPage): Promise<void> => {
   let a11yPane = await devToolsPage.$('Accessibility', undefined, 'aria');
+  const wasOverflowed = !a11yPane;
   if (!a11yPane) {
     const elementsPanel = await devToolsPage.waitForAria('Elements panel');
     await devToolsPage.clickMoreTabsButton(elementsPanel);
@@ -1126,15 +1127,24 @@ export const toggleAccessibilityPane = async(devToolsPage: DevToolsPage): Promis
   await devToolsPage.waitFor('.source-order-checkbox');
   await devToolsPage.waitFor('[aria-label="ARIA attributes"]');
   await devToolsPage.waitFor('[aria-label="Computed properties"]');
-  await expectVeEvents(
-      devToolsPage,
-      [
-        veClick('Panel: elements > Toolbar: sidebar > DropDown: more-tabs > Menu > Action: accessibility.view'),
-        veImpressionsUnder('Panel: elements > Toolbar: sidebar',
-                           [veImpression('PanelTabHeader', 'accessibility.view')]),
-        veImpressionForAccessibilityPane(),
-      ],
-      undefined);
+  if (wasOverflowed) {
+    await expectVeEvents(
+        devToolsPage,
+        [
+          veClick('Panel: elements > Toolbar: sidebar > DropDown: more-tabs > Menu > Action: accessibility.view'),
+          veImpressionsUnder('Panel: elements > Toolbar: sidebar',
+                             [veImpression('PanelTabHeader', 'accessibility.view')]),
+          veImpressionForAccessibilityPane(),
+        ],
+        undefined);
+  } else {
+    await expectVeEvents(devToolsPage,
+                         [
+                           veClick('Panel: elements > Toolbar: sidebar > PanelTabHeader: accessibility.view'),
+                           veImpressionForAccessibilityPane(),
+                         ],
+                         undefined);
+  }
 };
 
 function veImpressionForAccessibilityPane() {

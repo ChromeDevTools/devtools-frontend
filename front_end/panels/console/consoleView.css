@@ -261,7 +261,7 @@
 .console-message-wrapper:not(.console-error-level, .console-warning-level) {
   & .console-message::before,
   & .console-user-command::before {
-    width: calc(100% - 25px);
+    width: calc(100% - var(--sys-size-11));
     content: "";
     display: block;
     position: absolute;

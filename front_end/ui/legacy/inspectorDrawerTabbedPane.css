@@ -5,8 +5,9 @@
  */
 
 .drawer-tabbed-pane.drawer-minimized-vertical {
-  min-width: 27px;
-  width: 27px;
+  /* 28px toolbar width minus 1px SplitWidget splitter border. */
+  min-width: calc(var(--sys-size-12) - var(--sys-size-1));
+  width: calc(var(--sys-size-12) - var(--sys-size-1));
 }
 
 .hide-element {

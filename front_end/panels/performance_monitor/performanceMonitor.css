@@ -69,10 +69,6 @@
   width: 210px;
 }
 
-.perfmon-indicator span {
-  flex: 0 0 135px;
-}
-
 .perfmon-indicator-value {
   flex: 0 0 var(--sys-size-17);
   text-align: right;

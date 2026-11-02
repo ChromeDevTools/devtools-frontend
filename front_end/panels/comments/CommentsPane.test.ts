@@ -121,6 +121,51 @@ describeWithEnvironment('CommentsPane', () => {
     );
   });
 
+  it('does not reveal an unresolved generated comment thread when clicked', async () => {
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+    const commentManager = new CommentManager.CommentManager.CommentManager();
+    const generatedThread = commentManager.createCommentThread(
+        {
+          vePath: 'Panel: elements > Tree: elements > TreeItem',
+          textSignature: 'div.changed',
+        },
+        'Changed color from red to blue.',
+        'DEVELOPER',
+        /* isGeneratedComment */ true,
+    );
+    generatedThread.save();
+    const {view} = await createWidget(commentManager);
+
+    view.input.onThreadClick(generatedThread, {left: 16, top: 450});
+
+    sinon.assert.notCalled(revealStub);
+  });
+
+  it('reveals a resolved generated comment thread when clicked', async () => {
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+    const commentManager = new CommentManager.CommentManager.CommentManager();
+    const generatedThread = commentManager.createCommentThread(
+        {
+          vePath: 'Panel: elements > Tree: elements > TreeItem',
+          textSignature: 'div.changed',
+        },
+        'Changed color from red to blue.',
+        'DEVELOPER',
+        /* isGeneratedComment */ true,
+    );
+    generatedThread.save();
+    generatedThread.resolve('Done');
+    const {view} = await createWidget(commentManager);
+
+    view.input.onThreadClick(generatedThread, {left: 16, top: 450});
+
+    sinon.assert.calledOnceWithExactly(
+        revealStub,
+        new CommentManager.CommentThread.RevealableThread(generatedThread, {left: 16, top: 450}),
+        false,
+    );
+  });
+
   describe('tabs', () => {
     it('selects the clicked tab and scrolls to its section', async () => {
       const commentManager = new CommentManager.CommentManager.CommentManager();
@@ -503,6 +548,32 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
     assert.isNotNull(item);
     assert.isNull(item.querySelector('.thread-status-sent'));
     assert.isNotNull(item.querySelector('.thread-status-working devtools-spinner'));
+  });
+
+  it('shows "See response" for resolved threads, including generated comments', () => {
+    const userThread = createMockThread('a.cta', 'User comment');
+    userThread.thread.resolve('Done');
+
+    const generatedThread = new CommentManager.CommentThread.CommentThread({
+      anchor: {vePath: 'Panel: elements > div.changed', textSignature: 'div.changed'},
+      comments: [{author: 'DEVELOPER', text: 'Changed color.', timestamp: 0}],
+      isGeneratedComment: true,
+    });
+    generatedThread.status = 'ACTIVE';
+    generatedThread.resolve('Done');
+
+    const target = renderView({
+      activeTab: 'sent',
+      sentThreads: [
+        userThread,
+        {thread: generatedThread, title: {text: 'div.changed'}, commentText: 'Changed color.'},
+      ],
+    });
+
+    const items = target.querySelectorAll('.comment-thread-item');
+    assert.lengthOf(items, 2);
+    assert.isNotNull(items[0].querySelector('devtools-button'));
+    assert.isNotNull(items[1].querySelector('devtools-button'));
   });
 
   it('does not trigger thread selection when pressing Enter or Space on the delete button', () => {

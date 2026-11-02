@@ -493,6 +493,11 @@ export class CommentsPane extends UI.Widget.Widget {
       thread: CommentManager.CommentManager.CommentThread,
       position?: {left: number, top: number},
       ): void => {
+    // Generated comments can only be revealed once resolved, to read the response.
+    if (thread.isGeneratedComment && thread.status !== 'RESOLVED') {
+      return;
+    }
+
     void Common.Revealer.reveal(new CommentManager.CommentThread.RevealableThread(thread, position));
   };
 

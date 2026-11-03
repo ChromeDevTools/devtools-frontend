@@ -19,8 +19,14 @@ import {createIcon, Icon} from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
-import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {
+  Directives,
+  html,
+  type LitTemplate,
+  nothing,
+  render,
+  type TemplateResult,
+} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -211,7 +217,7 @@ export class EnvFunctionRenderer extends EnvFunctionRendererBase {
       readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
     super();
   }
-  override render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): LitTemplate {
     const [, fallbackNodes] = ASTUtils.callArgs(match.node);
     if (match.value) {
       const substitution = context.tracing?.substitution();
@@ -252,8 +258,7 @@ export class FlexGridRenderer extends FlexGridRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch,
-                  context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     if (!this.#treeElement?.editable()) {
       return children;
@@ -317,8 +322,7 @@ export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch,
-                  context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): LitTemplate {
     const resolvedProperty = match.resolveProperty();
     if (!resolvedProperty) {
       return html`${match.text}`;
@@ -386,7 +390,7 @@ export class VariableRenderer extends VariableRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): LitTemplate {
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
@@ -480,7 +484,7 @@ export class VariableNameRenderer extends VariableNameRendererBase {
     this.#matchedStyles = matchedStyles;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): LitTemplate {
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return html`${match.text}`;
     }
@@ -532,7 +536,7 @@ export class AttributeRenderer extends AttributeRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): LitTemplate {
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
@@ -635,8 +639,7 @@ const LinearGradientRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Lin
 // clang-format off
 export class LinearGradientRenderer extends LinearGradientRendererBase {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch,
-                  context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch, context: RenderingContext): LitTemplate {
     const children = ASTUtils.children(match.node);
     const {nodes, cssControls} = Renderer.render(children, context);
     const angles = cssControls.get('angle');
@@ -670,7 +673,7 @@ export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBa
     this.#treeElement = treeElement;
   }
   override render(match: SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch,
-                  context: RenderingContext): Lit.LitTemplate {
+                  context: RenderingContext): LitTemplate {
     const color = context.findParent(match.node, SDK.CSSPropertyParserMatchers.ColorMatch);
     if (!color?.relativeColor) {
       return html`${match.text}`;
@@ -682,7 +685,7 @@ export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBa
       return html`${match.text}`;
     }
 
-    const evaluation = context.tracing?.applyEvaluation([], () => ({placeholder: html`${value.toFixed(3)}`}));
+    const evaluation = context.tracing?.applyEvaluation([], () => ({template: html`${value.toFixed(3)}`}));
     if (evaluation) {
       return evaluation;
     }
@@ -712,7 +715,7 @@ export class ColorRenderer extends ColorRendererBase {
   }
 
   #getValueChild(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): {
-    valueChild: Lit.LitTemplate,
+    valueChild: LitTemplate,
     cssControls?: CSSControlMap,
     childTracingContexts?: TracingContext[],
   } {
@@ -735,7 +738,7 @@ export class ColorRenderer extends ColorRendererBase {
     return {valueChild, cssControls, childTracingContexts};
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): LitTemplate {
     const {valueChild, cssControls, childTracingContexts} = this.#getValueChild(match, context);
     let colorText = context.matchedResult.getComputedText(match.node);
 
@@ -758,20 +761,15 @@ export class ColorRenderer extends ColorRendererBase {
     if (match.node.name === 'CallExpression' && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const displayColor = color.as(((color.alpha ?? 1) !== 1) ? Common.Color.Format.HEXA : Common.Color.Format.HEX);
-        const colorText = document.createElement('span');
-        colorText.textContent = displayColor.asString();
         const swatch =
             new ColorRenderer(this.#stylesContainer, null)
                 .renderColorSwatch(displayColor.isGamutClipped() ? color : (displayColor.nickname() ?? displayColor),
                                    match, context);
-        swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-          colorText.textContent = ev.data.color.asString();
-        });
         context.addControl('color', swatch);
-        return {placeholder: [swatch, colorText]};
+        return {template: html`${swatch}<span>${displayColor.asString()}</span>`};
       });
       if (evaluation) {
-        return html`${evaluation}`;
+        return evaluation;
       }
     }
 
@@ -882,16 +880,15 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
     this.#matchedStyles = matchedStyles;
   }
 
-  #renderContent(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, light: Lit.LitTemplate,
-                 dark: Lit.LitTemplate, activeColor?: CodeMirror.SyntaxNode[]): Lit.LitTemplate {
+  #renderContent(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, light: LitTemplate, dark: LitTemplate,
+                 activeColor?: CodeMirror.SyntaxNode[]): LitTemplate {
     const lightClasses = classMap({'inactive-value': activeColor === match.dark});
     const darkClasses = classMap({'inactive-value': activeColor === match.light});
     return html`<span>light-dark(<span class=${lightClasses}>${light}</span>, <span class=${darkClasses}>${
         dark}</span>)</span>`;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch,
-                  context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): LitTemplate {
     const {nodes: light, cssControls: lightControls} = Renderer.render(match.light, context);
     const {nodes: dark, cssControls: darkControls} = Renderer.render(match.dark, context);
     const content = this.#renderContent(match, light, dark);
@@ -920,9 +917,8 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
   }
 
   async applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext,
-                         colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: Lit.LitTemplate,
-                         dark: Lit.LitTemplate, lightControls: CSSControlMap,
-                         darkControls: CSSControlMap): Promise<Lit.LitTemplate> {
+                         colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: LitTemplate, dark: LitTemplate,
+                         lightControls: CSSControlMap, darkControls: CSSControlMap): Promise<LitTemplate> {
     const activeColor = await this.#activeColor(match);
     if (context.signal?.aborted || !activeColor) {
       return this.#renderContent(match, light, dark);
@@ -997,7 +993,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     this.#treeElement = treeElement;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): LitTemplate {
     const hookUpColorArg = (node: Node, onChange: (newColorText: string) => void): boolean => {
       if (node instanceof InlineEditor.ColorMixSwatch.ColorMixSwatch ||
           node instanceof InlineEditor.ColorSwatch.ColorSwatch) {
@@ -1050,28 +1046,25 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     if (nodeId !== undefined && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const initialColor = Common.Color.parse('#000') as Common.Color.Color;
-        const {promise, resolve} = Promise.withResolvers<string>();
         const swatch = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, match, context);
-        swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-          resolve(ev.data.color.asString());
-        });
         context.addControl('color', swatch);
-        const asyncEvalCallback = async(): Promise<boolean> => {
+        const asyncEvalCallback = async(): Promise<LitTemplate|null> => {
           const results = await this.#stylesContainer.cssModel()?.resolveValues(undefined, nodeId, colorMixText);
           if (context.signal?.aborted) {
-            return false;
+            return null;
           }
           if (results) {
             const color = Common.Color.parse(results[0]);
             if (color) {
-              swatch.setColor(color.as(Common.Color.Format.HEXA));
-              return true;
+              const formattedColor = color.as(Common.Color.Format.HEXA);
+              swatch.setColor(formattedColor);
+              return html`${swatch}<span>${formattedColor.asString()}</span>`;
             }
           }
-          return false;
+          return null;
         };
         return {
-          placeholder: html`${swatch}<span>${until(promise, initialColor.asString())}</span>`,
+          template: html`${swatch}<span>${initialColor.asString()}</span>`,
           asyncEvalCallback,
         };
       });
@@ -1107,7 +1100,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
       >${ifExpanded(() => {
         const color = swatch.mixedColor();
         if (!color) {
-          return Lit.nothing;
+          return nothing;
         }
         const rgb = color.as(Common.Color.Format.HEX);
         return html`${rgb.isGamutClipped() ? color.asString() : rgb.asString()}`;
@@ -1129,7 +1122,7 @@ export class ContrastColorRenderer extends ContrastColorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): LitTemplate {
     const content = html`<span>contrast-color(${Renderer.render(match.color, context).nodes})</span>`;
 
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
@@ -1168,7 +1161,7 @@ export class AngleRenderer extends AngleRendererBase {
     this.#treeElement = treeElement;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.AngleMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.AngleMatch, context: RenderingContext): LitTemplate {
     const angleText = match.text;
     if (!this.#treeElement?.editable()) {
       return html`${angleText}`;
@@ -1272,7 +1265,7 @@ export class LinkableNameRenderer extends LinkableNameRendererBase {
     }
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.LinkableNameMatch): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.LinkableNameMatch): LitTemplate {
     const {metric, jslogContext, ruleBlock, isDefined} = this.#getLinkData(match);
     // clang-format off
     const swatch = html`<devtools-link-swatch .data=${{
@@ -1309,8 +1302,8 @@ export class LinkableNameRenderer extends LinkableNameRendererBase {
                   @mouseup=${(ev: Event) => {
                     ev.consume(true);
                     void Common.Revealer.reveal(maybeAnimationGroup);
-                  }}></devtools-icon>` : Lit.nothing)) :
-          Lit.nothing;
+                  }}></devtools-icon>` : nothing)) :
+          nothing;
       return html`<span>${icon}${swatch}</span>`;
     }
     // clang-format on
@@ -1329,7 +1322,7 @@ export class BezierRenderer extends BezierRendererBase {
     super();
     this.#treeElement = treeElement;
   }
-  override render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): LitTemplate {
     const nodes = match.node.name === 'CallExpression' ? Renderer.render(ASTUtils.children(match.node), context).nodes :
                                                          match.text;
     if (!this.#treeElement?.editable() ||
@@ -1364,7 +1357,7 @@ export class AutoBaseRenderer extends AutoBaseRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): LitTemplate {
     const auto = Renderer.render(match.auto, context).nodes;
     const base = Renderer.render(match.base, context).nodes;
 
@@ -1548,8 +1541,8 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     return parts;
   }
 
-  renderContents(): Lit.LitTemplate {
-    const parts: Array<string|Lit.LitTemplate> = [];
+  renderContents(): LitTemplate {
+    const parts: Array<string|LitTemplate> = [];
     for (const part of this.#parts()) {
       if (parts.length > 0) {
         parts.push(' ');
@@ -1754,9 +1747,9 @@ export class ShadowRenderer extends ShadowRendererBase {
     return new ShadowModel(shadowType, properties, context);
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): LitTemplate {
     const shadows = ASTUtils.split(ASTUtils.siblings(ASTUtils.declValue(match.node)));
-    const result: Array<Node|Lit.LitTemplate> = [];
+    const result: Array<Node|LitTemplate> = [];
     // The text of the whole value is put together from the shadows below, so the changes that renderers make to their
     // parts need to be recorded in a tracking of their own to not be hidden by it.
     const nestedEdits = new ValueUpdateTracking(context.ast);
@@ -1801,7 +1794,7 @@ const GridTemplateRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.GridT
 // clang-format off
 export class GridTemplateRenderer extends GridTemplateRendererBase {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, context: RenderingContext): LitTemplate {
     if (match.lines.length <= 1) {
       return Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     }
@@ -1865,7 +1858,7 @@ export class LengthRenderer extends LengthRendererBase {
     this.#propertyName = propertyName;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): LitTemplate {
     const template = html`${match.text}`;
     const evaluation =
         context.tracing?.applyEvaluation([], () => ({
@@ -1885,7 +1878,7 @@ export class LengthRenderer extends LengthRendererBase {
     // clang-format on
   }
 
-  async getTooltipValue(match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<Lit.LitTemplate|null> {
+  async getTooltipValue(match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<LitTemplate|null> {
     const pixelValue =
         (await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text))?.[0];
     if (context.signal?.aborted || !pixelValue || pixelValue === match.text) {
@@ -1919,7 +1912,7 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
     this.#propertyName = propertyName;
   }
 
-  #renderArgs(renderedArgs: Lit.LitTemplate[], activeArgs?: boolean[]): Lit.TemplateResult {
+  #renderArgs(renderedArgs: LitTemplate[], activeArgs?: boolean[]): TemplateResult {
     return html`${renderedArgs.map((arg, idx) => {
       const classes = classMap({'inactive-value': activeArgs?.[idx] === false});
       return html`${idx === 0 ? nothing : ', '}<span class=${classes}>${arg}</span>`;
@@ -1927,7 +1920,7 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
-                  context: RenderingContext): Lit.LitTemplate {
+                  context: RenderingContext): LitTemplate {
     const childTracingContexts = context.tracing?.evaluation(match.args, {match, context});
     const renderedArgs = match.args.map(
         (arg, idx) =>
@@ -1953,7 +1946,7 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
   }
 
   async applyEvaluation(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
-                        context: RenderingContext): Promise<Lit.LitTemplate|null> {
+                        context: RenderingContext): Promise<LitTemplate|null> {
     const value = context.matchedResult.getComputedText(match.node, match => {
       if (match instanceof SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch) {
         const relativeColor =
@@ -1969,9 +1962,8 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
     return html`${evaled[0]}`;
   }
 
-  async applyMathFunction(renderedArgs: Lit.LitTemplate[],
-                          match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
-                          context: RenderingContext): Promise<Lit.LitTemplate> {
+  async applyMathFunction(renderedArgs: LitTemplate[], match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
+                          context: RenderingContext): Promise<LitTemplate> {
     // To understand which argument was selected by the function, we evaluate the function as well as all the arguments
     // and compare the function result to the values of all its arguments. Evaluating the arguments eliminates nested
     // function calls and normalizes all units to px.
@@ -2158,8 +2150,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         (child): child is StylePropertyTreeElement =>
             child instanceof StylePropertyTreeElement && child.property.name === propertyName);
   }
-
-  override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     // The text of the match is the value as authored, which may contain comments or var()s that resolve to the area.
     if (!this.#treeElement?.editable() ||
@@ -2207,7 +2198,6 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
           });
         }
       }
-
       const updateProperty = (propertyName: string, computedStyle: Map<string, string>|null): void => {
         const matchedStyles = active.treeElement.matchedStyles();
         const resolved = matchedStyles.resolveProperty(propertyName, active.treeElement.property.ownerStyle);
@@ -2338,8 +2328,8 @@ export class PositionTryRenderer extends PositionTryRendererBase {
     this.#treeElement = treeElement;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Lit.LitTemplate {
-    const content: Lit.LitTemplate[] = [];
+  override render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): LitTemplate {
+    const content: LitTemplate[] = [];
     if (match.preamble.length > 0) {
       const {nodes} = Renderer.render(match.preamble, context);
       content.push(nodes);
@@ -2518,7 +2508,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   carryOverCommittedProperty(previous: StylePropertyTreeElement): void {
     this.#lastCommittedProperty = previous.#lastCommittedProperty;
   }
-
   async gridNames(): Promise<Set<string>> {
     if (!SDK.CSSMetadata.cssMetadata().isGridNameAwareProperty(this.name)) {
       return new Set();
@@ -3135,10 +3124,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return swatch;
   }
 
-  getTracingTooltip(
-      functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null,
-      context: RenderingContext): Lit.TemplateResult {
+  getTracingTooltip(functionName: string, node: CodeMirror.SyntaxNode,
+                    matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>,
+                    computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null,
+                    context: RenderingContext): TemplateResult {
     if (context.tracing || !context.property) {
       return html`${functionName}`;
     }

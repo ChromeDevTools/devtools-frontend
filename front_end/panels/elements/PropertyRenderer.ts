@@ -55,7 +55,7 @@ export type RendererBase<MatchT extends SDK.CSSPropertyParser.Match> = abstract 
 
 export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
   readonly matchType: Platform.Constructor.Constructor<MatchT>;
-  render(match: MatchT, context: RenderingContext): Node[]|LitTemplate;
+  render(match: MatchT, context: RenderingContext): LitTemplate;
 }
 
 // A mixin to automatically expose the match type on specific renrerers
@@ -64,7 +64,7 @@ export function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(
     matchT: Platform.Constructor.Constructor<MatchT>): RendererBase<MatchT> {
   abstract class RendererBaseClass implements MatchRenderer<MatchT> {
     readonly matchType = matchT;
-    render(_match: MatchT, _context: RenderingContext): Node[]|LitTemplate {
+    render(_match: MatchT, _context: RenderingContext): LitTemplate {
       return nothing;
     }
   }
@@ -365,19 +365,11 @@ export class TracingContext {
 
   // After rendering the arguments of a function call, the TracingContext produced by TracingContext#evaluation need to
   // be passed here to determine whether the "current" function call should be evaluated or not. If so, the
-  // evaluation callback is run. The callback returns a template or placeholder nodes to render immediately, and
-  // optionally an async callback that resolves to the evaluated template (or a boolean indicating whether the
-  // in-place placeholder update succeeded).
+  // evaluation callback is run. The callback should return synchronously a template as placeholder to be
+  // rendered immediately and optionally a callback for asynchronous updates of the template.
   applyEvaluation(children: TracingContext[],
-                  evaluation: () => {placeholder: Node[], asyncEvalCallback?: () => Promise<boolean>}): Node[]|null;
-  applyEvaluation(children: TracingContext[],
-                  evaluation: () => ({placeholder: LitTemplate, asyncEvalCallback?: () => Promise<boolean>} |
-                                     {template: LitTemplate, asyncEvalCallback?: () => Promise<LitTemplate|null>})):
-      LitTemplate|null;
-  applyEvaluation(children: TracingContext[],
-                  evaluation: () => ({placeholder: Node[] | LitTemplate, asyncEvalCallback?: () => Promise<boolean>} |
-                                     {template: LitTemplate, asyncEvalCallback?: () => Promise<LitTemplate|null>})):
-      Node[]|LitTemplate|null {
+                  evaluation: () => {template: LitTemplate, asyncEvalCallback?: () => Promise<LitTemplate|null>}):
+      LitTemplate|null {
     if (this.#evaluationCount === 0 || children.some(child => child.#appliedEvaluations >= this.#evaluationCount)) {
       this.#setHasMoreEvaluations(true);
       children.forEach(child => this.#asyncEvalCallbacks.push(...child.#asyncEvalCallbacks));
@@ -386,10 +378,6 @@ export class TracingContext {
     this.#setAppliedEvaluations(children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) +
                                 1);
     const result = evaluation();
-    if ('placeholder' in result) {
-      this.#asyncEvalCallbacks.push(result.asyncEvalCallback);
-      return result.placeholder;
-    }
     if (!result.asyncEvalCallback) {
       this.#asyncEvalCallbacks.push(result.asyncEvalCallback);
       return result.template;
@@ -714,13 +702,6 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     return {nodes: html`${nodes}`, cssControls};
   }
 
-  static renderInto(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[], context: RenderingContext,
-                    parent: HTMLElement|DocumentFragment): {nodes: LitTemplate, cssControls: CSSControlMap} {
-    const {nodes, cssControls} = this.render(nodeOrNodes, context);
-    render(nodes, parent);
-    return {nodes, cssControls};
-  }
-
   renderedMatchForTest(_nodes: LitTemplate, _match: SDK.CSSPropertyParser.Match): void {
   }
 
@@ -730,8 +711,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         this.#context.renderers.get(match.constructor as Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>);
     if (renderer || match instanceof SDK.CSSPropertyParserMatchers.TextMatch) {
       const rendered = renderer?.render(match, this.#context) ?? html`<span>${match.text}</span>`;
-      const output =
-          highlight(this.#context.tracing?.highlighting, match, Array.isArray(rendered) ? html`${rendered}` : rendered);
+      const output = highlight(this.#context.tracing?.highlighting, match, rendered);
       this.renderedMatchForTest(output, match);
       if (this.#output.some(t => t !== nothing)) {
         const spacing = precedingSpace(node, this.#context.ast, this.#matchedResult);

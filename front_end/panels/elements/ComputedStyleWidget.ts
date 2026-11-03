@@ -43,7 +43,7 @@ import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 
 import * as ElementsComponents from './components/components.js';
 import computedStyleWidgetStyles from './computedStyleWidget.css.js';
@@ -52,7 +52,6 @@ import {categorizePropertyName, type Category, DefaultCategoryOrder} from './Pro
 import {Renderer, rendererBase, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 
-const {html, render} = Lit;
 const {bindToSetting} = UI.UIUtils;
 const {widget} = UI.Widget;
 
@@ -129,7 +128,7 @@ const createPropertyElement =
     (node: SDK.DOMModel.DOMNode, cache: Map<string, {name: Element, value: Element}>, propertyName: string,
      propertyValue: string, traceable: boolean, inherited: boolean,
      activeProperty: SDK.CSSProperty.CSSProperty|undefined, onContextMenu: ((event: Event) => void),
-     category?: Category): Lit.TemplateResult => {
+     category?: Category): TemplateResult => {
       const {name, value} = renderPropertyContents(node, cache, propertyName, propertyValue, category);
       // clang-format off
       return html`<devtools-widget
@@ -191,26 +190,17 @@ const createTraceElement =
 // clang-format off
 class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): LitTemplate {
     const color = Common.Color.parse(match.text);
     if (!color) {
-      return [document.createTextNode(match.text)];
+      return html`${match.text}`;
     }
 
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
     swatch.setReadonly(true);
     swatch.renderColor(color);
-    const valueElement = document.createElement('span');
-    valueElement.textContent = match.text;
-
-    swatch.addEventListener(
-        InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
-          const {data: {color}} = event;
-          valueElement.textContent = color.getAuthoredText() ?? color.asString();
-        });
-
     context.addControl('color', swatch);
-    return [swatch, valueElement];
+    return html`${swatch}<span>${match.text}</span>`;
   }
 
   matcher(): SDK.CSSPropertyParserMatchers.ColorMatcher {
@@ -290,7 +280,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           >${i18nString(UIStrings.group)}</devtools-checkbox>
         </devtools-toolbar>
       </div>
-      ` : Lit.nothing}
+      ` : nothing}
     ${input.computedStylesTree}
     ${!input.hasMatches ? html`<div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>` : ''}
   `, target);
@@ -632,9 +622,8 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
       propertyTraces: Map<string, SDK.CSSProperty.CSSProperty[]>,
       domNode: SDK.DOMModel.DOMNode,
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      ):
-      (node: TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>,
-       state: {isExpanded: boolean}) => Lit.TemplateResult {
+      ): (node: TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>,
+          state: {isExpanded: boolean}) => TemplateResult {
     return node => {
       const data = node.treeNodeData;
       if (data.tag === 'property') {

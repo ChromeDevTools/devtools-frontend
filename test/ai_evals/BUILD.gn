@@ -12,6 +12,7 @@ group("ai_evals") {
     ":harness_library",
     ":test_inputs",
     "accessibility",
+    "console",
     "elements",
     "network",
     "performance",
@@ -59,6 +60,7 @@ generated_file("test_inputs") {
   deps = [
     ":eval_tests",
     "accessibility",
+    "console",
     "elements",
     "network",
     "performance",

@@ -4214,9 +4214,9 @@ export const generatedProperties: CSSProperty[] = [
    "thin"
   ],
   "longhands": [
-   "outline-color",
+   "outline-width",
    "outline-style",
-   "outline-width"
+   "outline-color"
   ],
   "name": "outline"
  },

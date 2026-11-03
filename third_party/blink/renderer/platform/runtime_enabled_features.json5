@@ -1666,8 +1666,9 @@
       // https://drafts.csswg.org/css-values-4/ Appendix A
       // https://drafts.csswg.org/css-backgrounds/#layering
       // https://github.com/w3c/csswg-drafts/issues/7164
+      // Ship in M159, should be removed in M161.
       name: "CSSBackgroundLayerCountIndependence",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "CSSBorderRadiusSideShorthands",
@@ -2366,6 +2367,11 @@
     {
       // https://chromestatus.com/feature/5134293578285056
       name: "Database",
+    },
+    {
+      // Killswitch for https://crbug.com/40622827
+      name: "DateTimeFieldTypeWithoutSelection",
+      status: "stable",
     },
     {
       // https://crbug.com/473454959
@@ -3819,7 +3825,7 @@
     },
     {
       name: "ICUCapitalization",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "IgnoreLetterSpacingInCursiveScripts",

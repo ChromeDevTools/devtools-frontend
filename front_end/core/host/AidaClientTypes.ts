@@ -65,7 +65,7 @@ export interface FunctionPrimitiveParams extends BaseFunctionParam {
 
 export interface FunctionArrayParam extends BaseFunctionParam {
   type: ParametersTypes.ARRAY;
-  items: FunctionPrimitiveParams;
+  items: FunctionPrimitiveParams|FunctionObjectParam;
 }
 
 export interface FunctionObjectParam<T extends string|number|symbol = string> extends BaseFunctionParam {

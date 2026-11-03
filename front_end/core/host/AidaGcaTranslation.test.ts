@@ -209,6 +209,66 @@ describe('AidaGcaTranslation', () => {
 
       assert.deepEqual(AidaGcaTranslation.aidaDoConversationRequestToGcaRequest(aidaRequest), expectedGcaRequest);
     });
+
+    it('translates a function declaration with array of object parameters', () => {
+      const aidaRequest = createAidaDoConversationRequest({
+        function_declarations: [{
+          name: 'set_styles',
+          description: 'A description',
+          parameters: {
+            type: AidaClient.ParametersTypes.OBJECT,
+            description: 'Params',
+            properties: {
+              styles: {
+                type: AidaClient.ParametersTypes.ARRAY,
+                description: 'Style list',
+                items: {
+                  type: AidaClient.ParametersTypes.OBJECT,
+                  description: 'Style item',
+                  properties: {
+                    name: {type: AidaClient.ParametersTypes.STRING, description: 'Property name'},
+                    value: {type: AidaClient.ParametersTypes.STRING, description: 'Property value'},
+                  },
+                  required: ['name', 'value'],
+                },
+              },
+            },
+            required: ['styles'],
+          },
+        }],
+      });
+
+      const expectedGcaRequest = createGcaRequest('chat_console_insights', {
+        tools: [{
+          functionDeclarations: [{
+            name: 'set_styles',
+            description: 'A description',
+            parameters: {
+              type: GcaTypes.Type.OBJECT,
+              description: 'Params',
+              properties: {
+                styles: {
+                  type: GcaTypes.Type.ARRAY,
+                  description: 'Style list',
+                  items: {
+                    type: GcaTypes.Type.OBJECT,
+                    description: 'Style item',
+                    properties: {
+                      name: {type: GcaTypes.Type.STRING, description: 'Property name'},
+                      value: {type: GcaTypes.Type.STRING, description: 'Property value'},
+                    },
+                    required: ['name', 'value'],
+                  },
+                },
+              },
+              required: ['styles'],
+            },
+          }],
+        }],
+      });
+
+      assert.deepEqual(AidaGcaTranslation.aidaDoConversationRequestToGcaRequest(aidaRequest), expectedGcaRequest);
+    });
   });
 
   describe('GCA GenerateContentResponse to AIDA DoConversationResponse', () => {

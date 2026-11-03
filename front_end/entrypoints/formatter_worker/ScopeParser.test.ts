@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as FormatterAction from '../formatter_actions/formatter_actions.js';
 
@@ -197,6 +198,42 @@ describe('ScopeParser', () => {
       const scopeFn = scopes?.children[0];
       assert.strictEqual(scopeFn?.kind, FormatterAction.ScopeKind.ARROW_FUNCTION);
       assert.deepEqual(scopeFn?.nameMappingLocations, [10, 19]);
+    });
+
+    it('handles var redeclaration of function parameters inside nested blocks', () => {
+      const consoleAssertSpy = sinon.spy(console, 'assert');
+      const source = `
+        const fn = function(a, b) {
+          for (var i = 0; i < 1; i++) {
+            var a = 1;
+          }
+        };
+        function decl(x) {
+          {
+            var x = 2;
+          }
+        }
+      `;
+      const scopes = parseScopes(source);
+
+      assert.exists(scopes);
+      for (const call of consoleAssertSpy.getCalls()) {
+        assert.isTrue(Boolean(call.args[0]), 'Expected console.assert not to fail');
+      }
+
+      const exprScope = scopes.children[0];
+      assert.strictEqual(exprScope?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(
+          exprScope?.variables.get('a')?.uses.map(u => u.offset),
+          [source.indexOf('a, b'), source.indexOf('a = 1')],
+      );
+
+      const declScope = scopes.children[1];
+      assert.strictEqual(declScope?.kind, FormatterAction.ScopeKind.FUNCTION);
+      assert.deepEqual(
+          declScope?.variables.get('x')?.uses.map(u => u.offset),
+          [source.indexOf('x)'), source.indexOf('x = 2')],
+      );
     });
   });
 });

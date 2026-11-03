@@ -218,6 +218,82 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
       assert.deepEqual(
           info, {title: 'A mark', formattedTime: '1.61 s', warningElements: [], additionalElements: [], url: null});
     });
+
+    it('includes url path and origin in additionalElements when hovering over an event with a url', async function() {
+      await initTrackAppender(this, 'web-dev-with-commit.json.gz');
+      const events = allThreadEntriesInTrace(parsedTrace);
+      const profileCall = events.find(e => Trace.Types.Events.isProfileCall(e) && Boolean(e.callFrame.url));
+      if (!profileCall) {
+        throw new Error('Could not find profile call with URL');
+      }
+      const info = tracksAppender.popoverInfo(profileCall, 2);
+      assert.lengthOf(info.additionalElements, 1);
+      const urlElement = info.additionalElements[0];
+      const pathElement = urlElement.querySelector('.popoverinfo-url-path');
+      const originElement = urlElement.querySelector('.popoverinfo-url-origin');
+      assert.isOk(pathElement);
+      assert.isOk(originElement);
+      assert.isNotEmpty(pathElement.textContent);
+      assert.isNotEmpty(originElement.textContent);
+      assert.match(originElement.textContent, /^\(.*\)$/);
+    });
+
+    it('uses the provided view function to render the url element', async function() {
+      await initTrackAppender(this, 'web-dev-with-commit.json.gz');
+      const events = allThreadEntriesInTrace(parsedTrace);
+      const profileCall = events.find(e => Trace.Types.Events.isProfileCall(e) && Boolean(e.callFrame.url));
+      if (!profileCall) {
+        throw new Error('Could not find profile call with URL');
+      }
+      let passedInput: Timeline.CompatibilityTracksAppender.PopoverUrlViewInput|undefined;
+      const customView: Timeline.CompatibilityTracksAppender.PopoverUrlView = (input, _output, target) => {
+        passedInput = input;
+        const div = document.createElement('div');
+        div.className = 'custom-url-view';
+        target.appendChild(div);
+      };
+      const customAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
+          flameChartData, parsedTrace, entryData, entryTypeByLevel, null, customView);
+      customAppender.threadAppenders()[0]?.appendTrackAtLevel(0);
+      const info = customAppender.popoverInfo(profileCall, 0);
+      assert.isOk(passedInput);
+      assert.isNotEmpty(passedInput.path);
+      assert.isNotEmpty(passedInput.originWithEntity);
+      assert.lengthOf(info.additionalElements, 1);
+      assert.isTrue(info.additionalElements[0]?.classList.contains('custom-url-view'));
+    });
+
+    it('does not add an element if the view does not render an HTMLElement', async function() {
+      await initTrackAppender(this, 'web-dev-with-commit.json.gz');
+      const events = allThreadEntriesInTrace(parsedTrace);
+      const profileCall = events.find(e => Trace.Types.Events.isProfileCall(e) && Boolean(e.callFrame.url));
+      if (!profileCall) {
+        throw new Error('Could not find profile call with URL');
+      }
+      const emptyView: Timeline.CompatibilityTracksAppender.PopoverUrlView = () => {};
+      const customAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
+          flameChartData, parsedTrace, entryData, entryTypeByLevel, null, emptyView);
+      customAppender.threadAppenders()[0]?.appendTrackAtLevel(0);
+      const info = customAppender.popoverInfo(profileCall, 0);
+      assert.lengthOf(info.additionalElements, 0);
+    });
+  });
+
+  describe('renderPopoverUrl', () => {
+    it('renders path and origin elements with correct CSS classes and structure', () => {
+      const fragment = document.createDocumentFragment();
+      Timeline.CompatibilityTracksAppender.renderPopoverUrl({path: '/app.js', originWithEntity: 'example.com (Google)'},
+                                                            undefined, fragment);
+      const urlElement = fragment.firstElementChild;
+      assert.isOk(urlElement);
+      assert.strictEqual(urlElement.tagName, 'DIV');
+      const pathElement = urlElement.querySelector('.popoverinfo-url-path');
+      const originElement = urlElement.querySelector('.popoverinfo-url-origin');
+      assert.isOk(pathElement);
+      assert.isOk(originElement);
+      assert.strictEqual(pathElement.textContent, '/app.js');
+      assert.strictEqual(originElement.textContent, '(example.com (Google))');
+    });
   });
 
   it('can return the group for a given level', async () => {

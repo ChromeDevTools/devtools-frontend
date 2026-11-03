@@ -1,8 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -11,6 +9,7 @@ import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/tra
 import * as Workspace from '../../models/workspace/workspace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 
 import {AnimationsTrackAppender} from './AnimationsTrackAppender.js';
@@ -35,6 +34,23 @@ export interface PopoverInfo {
   url: string|null;
   warningElements: HTMLSpanElement[];
   additionalElements: HTMLElement[];
+}
+
+export interface PopoverUrlViewInput {
+  path: string;
+  originWithEntity: string;
+}
+
+export type PopoverUrlView = (input: PopoverUrlViewInput, output: undefined, target: DocumentFragment) => void;
+
+export function renderPopoverUrl(
+    input: PopoverUrlViewInput,
+    _output: undefined,
+    target: DocumentFragment,
+    ): void {
+  render(html`<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${
+             input.originWithEntity})</span></div>`,
+         target);
 }
 
 export function entryIsVisibleInTimeline(
@@ -197,6 +213,7 @@ export class CompatibilityTracksAppender {
   #layoutShiftsTrackAppender: LayoutShiftsTrackAppender;
   #threadAppenders: ThreadAppender[] = [];
   #entityMapper: Trace.EntityMapper.EntityMapper|null;
+  #view: PopoverUrlView;
 
   /**
    * @param flameChartData the data used by the flame chart renderer on
@@ -211,15 +228,16 @@ export class CompatibilityTracksAppender {
    * architecture and should be removed once all tracks use the new
    * system.
    * @param entityMapper 3P entity data for the trace.
+   * @param view function to render popover url content.
    */
-  constructor(
-      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace,
-      entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[],
-      entityMapper: Trace.EntityMapper.EntityMapper|null) {
+  constructor(flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace,
+              entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[],
+              entityMapper: Trace.EntityMapper.EntityMapper|null, view: PopoverUrlView = renderPopoverUrl) {
     this.#flameChartData = flameChartData;
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper;
     this.#entryData = entryData;
+    this.#view = view;
     this.#colorGenerator = new Common.Color.Generator(
         /* hueSpace= */ {min: 30, max: 55},
         /* satSpace= */ {min: 70, max: 100, count: 6},
@@ -635,14 +653,16 @@ export class CompatibilityTracksAppender {
     if (url) {
       const MAX_PATH_LENGTH = 45;
       const path = Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_PATH_LENGTH);
-      const urlElems = document.createElement('div');
-      urlElems.createChild('span', 'popoverinfo-url-path').textContent = path;
       const entity = this.#entityMapper ? this.#entityMapper.entityForEvent(event) : null;
       // Include entity with origin if it's non made-up entity, otherwise there'd be
       // repetition with the origin.
       const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity);
-      urlElems.createChild('span', 'popoverinfo-url-origin').textContent = `(${originWithEntity})`;
-      info.additionalElements.push(urlElems);
+      const fragment = document.createDocumentFragment();
+      this.#view({path, originWithEntity}, undefined, fragment);
+      const urlElement = fragment.firstElementChild;
+      if (urlElement instanceof HTMLElement) {
+        info.additionalElements.push(urlElement);
+      }
     }
 
     return info;

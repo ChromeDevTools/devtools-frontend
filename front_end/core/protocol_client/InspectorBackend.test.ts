@@ -45,5 +45,24 @@ describe('TargetBase', () => {
           reportStub, 'Protocol Warning: Attempted to dispatch an unspecified event \'Runtime.somethingStrange\'',
           message);
     });
+
+    it('skips dispatchers that do not implement a handler for the event', () => {
+      const connection = new MockCDPConnection();
+      const target = new ProtocolClient.InspectorBackend.TargetBase(null, 'session ID', connection);
+      const executionContextsCleared = sinon.stub();
+      target.registerRuntimeDispatcher({});
+      target.registerRuntimeDispatcher({executionContextsCleared});
+      const errorStub = sinon.stub(ProtocolClient.InspectorBackend.InspectorBackend, 'reportProtocolError');
+      const warningStub = sinon.stub(ProtocolClient.InspectorBackend.InspectorBackend, 'reportProtocolWarning');
+
+      target.dispatch({
+        sessionId: 'session ID',
+        method: 'Runtime.executionContextsCleared' as ProtocolClient.InspectorBackend.QualifiedName,
+      });
+
+      sinon.assert.calledOnce(executionContextsCleared);
+      sinon.assert.notCalled(errorStub);
+      sinon.assert.notCalled(warningStub);
+    });
   });
 });

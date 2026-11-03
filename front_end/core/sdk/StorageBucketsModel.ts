@@ -141,21 +141,6 @@ export class StorageBucketsModel extends SDKModel<EventTypes> implements Protoco
           `Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`);
     }
   }
-
-  indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
-  }
-
-  indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void {
-  }
-
-  cacheStorageListUpdated(_event: Protocol.Storage.CacheStorageListUpdatedEvent): void {
-  }
-
-  cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void {
-  }
-
-  privateVerificationTokensUpdated(): void {
-  }
 }
 
 SDKModel.register(StorageBucketsModel, {capabilities: Capability.STORAGE, autostart: false});

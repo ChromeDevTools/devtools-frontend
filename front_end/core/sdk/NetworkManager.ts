@@ -758,9 +758,6 @@ export class FetchDispatcher implements ProtocolProxyApi.FetchDispatcher {
         new InterceptedRequest(this.#multitargetNetworkManager, this.#fetchAgent, request, resourceType, requestId,
                                networkRequest, responseStatusCode, responseHeaders));
   }
-
-  authRequired({}: Protocol.Fetch.AuthRequiredEvent): void {
-  }
 }
 
 function multicastMembership(event: Pick<Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent, 'IPAddress'>&
@@ -1793,9 +1790,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   deviceBoundSessionEventOccurred(_params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void {
     this.#manager.dispatchEventToListeners(Events.DeviceBoundSessionEventOccurred, _params);
-  }
-
-  policyUpdated(): void {
   }
 
   /**

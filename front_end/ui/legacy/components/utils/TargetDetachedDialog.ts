@@ -21,9 +21,6 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel<void> implements
     }
   }
 
-  workerScriptLoaded(): void {
-  }
-
   detached({reason}: Protocol.Inspector.DetachedEvent): void {
     UI.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(reason);
   }

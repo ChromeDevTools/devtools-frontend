@@ -389,7 +389,10 @@ const emitApiEvent = (event: Protocol.Event, domainName: string, modulePrefix: s
   const prefix = `${modulePrefix}.${domainName}.`;
   emitTsComment(event);
   const params = event.parameters ? `params: ${prefix}${toEventPayloadName(event.name)}` : '';
-  emitLine(`${event.name}(${params}): void;`);
+  // Event handlers are optional, so that dispatchers only need to implement the
+  // events they care about. Adding new events to the protocol therefore doesn't
+  // require changes to existing dispatchers.
+  emitLine(`${event.name}?(${params}): void;`);
   emitLine();
 };
 

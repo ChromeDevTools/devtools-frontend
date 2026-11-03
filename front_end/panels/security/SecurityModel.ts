@@ -210,16 +210,10 @@ class SecurityDispatcher implements ProtocolProxyApi.SecurityDispatcher {
     this.model = model;
   }
 
-  securityStateChanged(_event: Protocol.Security.SecurityStateChangedEvent): void {
-  }
-
   visibleSecurityStateChanged({visibleSecurityState}: Protocol.Security.VisibleSecurityStateChangedEvent): void {
     const pageVisibleSecurityState = new PageVisibleSecurityState(
         visibleSecurityState.securityState, visibleSecurityState.certificateSecurityState || null,
         visibleSecurityState.safetyTipInfo || null, visibleSecurityState.securityStateIssueIds);
     this.model.dispatchEventToListeners(Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
-  }
-
-  certificateError(_event: Protocol.Security.CertificateErrorEvent): void {
   }
 }

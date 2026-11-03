@@ -48,24 +48,6 @@ export class PrivateVerificationTokensModel extends SDKModel<EventTypes> impleme
   privateVerificationTokensUpdated(): void {
     this.dispatchEventToListeners(Events.TOKENS_UPDATED);
   }
-
-  cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void {
-  }
-
-  cacheStorageListUpdated(_event: Protocol.Storage.CacheStorageListUpdatedEvent): void {
-  }
-
-  indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void {
-  }
-
-  indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
-  }
-
-  storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void {
-  }
-
-  storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
-  }
 }
 
 SDKModel.register(PrivateVerificationTokensModel, {capabilities: Capability.STORAGE, autostart: false});

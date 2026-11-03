@@ -101,12 +101,6 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
     }
   }
 
-  targetInfoChanged(_event: Protocol.Target.TargetInfoChangedEvent): void {
-  }
-
-  targetDestroyed(_event: Protocol.Target.TargetDestroyedEvent): void {
-  }
-
   async attachedToTarget({sessionId, targetInfo}: Protocol.Target.AttachedToTargetEvent): Promise<void> {
     let target: SDK.Target.Target;
     if (targetInfo.type === 'node_worker') {
@@ -159,9 +153,6 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
     if (onMessage) {
       onMessage.call(null, message);
     }
-  }
-
-  targetCrashed(_event: Protocol.Target.TargetCrashedEvent): void {
   }
 }
 

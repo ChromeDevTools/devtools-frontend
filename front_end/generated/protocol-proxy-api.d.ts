@@ -311,12 +311,12 @@ declare namespace ProtocolProxyApi {
      * The loadComplete event mirrors the load complete event sent by the browser to assistive
      * technology when the web page has finished loading.
      */
-    loadComplete(params: Protocol.Accessibility.LoadCompleteEvent): void;
+    loadComplete?(params: Protocol.Accessibility.LoadCompleteEvent): void;
 
     /**
      * The nodesUpdated event is sent every time a previously requested node has changed the in tree.
      */
-    nodesUpdated(params: Protocol.Accessibility.NodesUpdatedEvent): void;
+    nodesUpdated?(params: Protocol.Accessibility.NodesUpdatedEvent): void;
 
   }
 
@@ -393,22 +393,22 @@ declare namespace ProtocolProxyApi {
     /**
      * Event for when an animation has been cancelled.
      */
-    animationCanceled(params: Protocol.Animation.AnimationCanceledEvent): void;
+    animationCanceled?(params: Protocol.Animation.AnimationCanceledEvent): void;
 
     /**
      * Event for each animation that has been created.
      */
-    animationCreated(params: Protocol.Animation.AnimationCreatedEvent): void;
+    animationCreated?(params: Protocol.Animation.AnimationCreatedEvent): void;
 
     /**
      * Event for animation that has been started.
      */
-    animationStarted(params: Protocol.Animation.AnimationStartedEvent): void;
+    animationStarted?(params: Protocol.Animation.AnimationStartedEvent): void;
 
     /**
      * Event for animation that has been updated.
      */
-    animationUpdated(params: Protocol.Animation.AnimationUpdatedEvent): void;
+    animationUpdated?(params: Protocol.Animation.AnimationUpdatedEvent): void;
 
   }
 
@@ -438,7 +438,7 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface AuditsDispatcher {
-    issueAdded(params: Protocol.Audits.IssueAddedEvent): void;
+    issueAdded?(params: Protocol.Audits.IssueAddedEvent): void;
 
   }
 
@@ -470,7 +470,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Emitted when an address form is filled.
      */
-    addressFormFilled(params: Protocol.Autofill.AddressFormFilledEvent): void;
+    addressFormFilled?(params: Protocol.Autofill.AddressFormFilledEvent): void;
 
   }
 
@@ -500,13 +500,13 @@ declare namespace ProtocolProxyApi {
     /**
      * Called when the recording state for the service has been updated.
      */
-    recordingStateChanged(params: Protocol.BackgroundService.RecordingStateChangedEvent): void;
+    recordingStateChanged?(params: Protocol.BackgroundService.RecordingStateChangedEvent): void;
 
     /**
      * Called with all existing backgroundServiceEvents when enabled, and all new
      * events afterwards if enabled and recording.
      */
-    backgroundServiceEventReceived(params: Protocol.BackgroundService.BackgroundServiceEventReceivedEvent): void;
+    backgroundServiceEventReceived?(params: Protocol.BackgroundService.BackgroundServiceEventReceivedEvent): void;
 
   }
 
@@ -607,21 +607,21 @@ declare namespace ProtocolProxyApi {
      * Event for when a GATT operation of |type| to the peripheral with |address|
      * happened.
      */
-    gattOperationReceived(params: Protocol.BluetoothEmulation.GattOperationReceivedEvent): void;
+    gattOperationReceived?(params: Protocol.BluetoothEmulation.GattOperationReceivedEvent): void;
 
     /**
      * Event for when a characteristic operation of |type| to the characteristic
      * respresented by |characteristicId| happened. |data| and |writeType| is
      * expected to exist when |type| is write.
      */
-    characteristicOperationReceived(params: Protocol.BluetoothEmulation.CharacteristicOperationReceivedEvent): void;
+    characteristicOperationReceived?(params: Protocol.BluetoothEmulation.CharacteristicOperationReceivedEvent): void;
 
     /**
      * Event for when a descriptor operation of |type| to the descriptor
      * respresented by |descriptorId| happened. |data| is expected to exist when
      * |type| is write.
      */
-    descriptorOperationReceived(params: Protocol.BluetoothEmulation.DescriptorOperationReceivedEvent): void;
+    descriptorOperationReceived?(params: Protocol.BluetoothEmulation.DescriptorOperationReceivedEvent): void;
 
   }
 
@@ -749,12 +749,12 @@ declare namespace ProtocolProxyApi {
     /**
      * Fired when page is about to start a download.
      */
-    downloadWillBegin(params: Protocol.Browser.DownloadWillBeginEvent): void;
+    downloadWillBegin?(params: Protocol.Browser.DownloadWillBeginEvent): void;
 
     /**
      * Fired when download makes progress. Last call has |done| == true.
      */
-    downloadProgress(params: Protocol.Browser.DownloadProgressEvent): void;
+    downloadProgress?(params: Protocol.Browser.DownloadProgressEvent): void;
 
   }
 
@@ -991,30 +991,30 @@ declare namespace ProtocolProxyApi {
      * Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
      * web font.
      */
-    fontsUpdated(params: Protocol.CSS.FontsUpdatedEvent): void;
+    fontsUpdated?(params: Protocol.CSS.FontsUpdatedEvent): void;
 
     /**
      * Fires whenever a MediaQuery result changes (for example, after a browser window has been
      * resized.) The current implementation considers only viewport-dependent media features.
      */
-    mediaQueryResultChanged(): void;
+    mediaQueryResultChanged?(): void;
 
     /**
      * Fired whenever an active document stylesheet is added.
      */
-    styleSheetAdded(params: Protocol.CSS.StyleSheetAddedEvent): void;
+    styleSheetAdded?(params: Protocol.CSS.StyleSheetAddedEvent): void;
 
     /**
      * Fired whenever a stylesheet is changed as a result of the client operation.
      */
-    styleSheetChanged(params: Protocol.CSS.StyleSheetChangedEvent): void;
+    styleSheetChanged?(params: Protocol.CSS.StyleSheetChangedEvent): void;
 
     /**
      * Fired whenever an active document stylesheet is removed.
      */
-    styleSheetRemoved(params: Protocol.CSS.StyleSheetRemovedEvent): void;
+    styleSheetRemoved?(params: Protocol.CSS.StyleSheetRemovedEvent): void;
 
-    computedStyleUpdated(params: Protocol.CSS.ComputedStyleUpdatedEvent): void;
+    computedStyleUpdated?(params: Protocol.CSS.ComputedStyleUpdatedEvent): void;
 
   }
 
@@ -1090,13 +1090,13 @@ declare namespace ProtocolProxyApi {
      * This is fired whenever the list of available sinks changes. A sink is a
      * device or a software surface that you can cast to.
      */
-    sinksUpdated(params: Protocol.Cast.SinksUpdatedEvent): void;
+    sinksUpdated?(params: Protocol.Cast.SinksUpdatedEvent): void;
 
     /**
      * This is fired whenever the outstanding issue/error message changes.
      * |issueMessage| is empty if there is no issue.
      */
-    issueUpdated(params: Protocol.Cast.IssueUpdatedEvent): void;
+    issueUpdated?(params: Protocol.Cast.IssueUpdatedEvent): void;
 
   }
 
@@ -1436,98 +1436,98 @@ declare namespace ProtocolProxyApi {
     /**
      * Fired when `Element`'s attribute is modified.
      */
-    attributeModified(params: Protocol.DOM.AttributeModifiedEvent): void;
+    attributeModified?(params: Protocol.DOM.AttributeModifiedEvent): void;
 
     /**
      * Fired when `Element`'s adoptedStyleSheets are modified.
      */
-    adoptedStyleSheetsModified(params: Protocol.DOM.AdoptedStyleSheetsModifiedEvent): void;
+    adoptedStyleSheetsModified?(params: Protocol.DOM.AdoptedStyleSheetsModifiedEvent): void;
 
     /**
      * Fired when `Element`'s attribute is removed.
      */
-    attributeRemoved(params: Protocol.DOM.AttributeRemovedEvent): void;
+    attributeRemoved?(params: Protocol.DOM.AttributeRemovedEvent): void;
 
     /**
      * Mirrors `DOMCharacterDataModified` event.
      */
-    characterDataModified(params: Protocol.DOM.CharacterDataModifiedEvent): void;
+    characterDataModified?(params: Protocol.DOM.CharacterDataModifiedEvent): void;
 
     /**
      * Fired when `Container`'s child node count has changed.
      */
-    childNodeCountUpdated(params: Protocol.DOM.ChildNodeCountUpdatedEvent): void;
+    childNodeCountUpdated?(params: Protocol.DOM.ChildNodeCountUpdatedEvent): void;
 
     /**
      * Mirrors `DOMNodeInserted` event.
      */
-    childNodeInserted(params: Protocol.DOM.ChildNodeInsertedEvent): void;
+    childNodeInserted?(params: Protocol.DOM.ChildNodeInsertedEvent): void;
 
     /**
      * Mirrors `DOMNodeRemoved` event.
      */
-    childNodeRemoved(params: Protocol.DOM.ChildNodeRemovedEvent): void;
+    childNodeRemoved?(params: Protocol.DOM.ChildNodeRemovedEvent): void;
 
     /**
      * Called when distribution is changed.
      */
-    distributedNodesUpdated(params: Protocol.DOM.DistributedNodesUpdatedEvent): void;
+    distributedNodesUpdated?(params: Protocol.DOM.DistributedNodesUpdatedEvent): void;
 
     /**
      * Fired when `Document` has been totally updated. Node ids are no longer valid.
      */
-    documentUpdated(): void;
+    documentUpdated?(): void;
 
     /**
      * Fired when `Element`'s inline style is modified via a CSS property modification.
      */
-    inlineStyleInvalidated(params: Protocol.DOM.InlineStyleInvalidatedEvent): void;
+    inlineStyleInvalidated?(params: Protocol.DOM.InlineStyleInvalidatedEvent): void;
 
     /**
      * Called when a pseudo element is added to an element.
      */
-    pseudoElementAdded(params: Protocol.DOM.PseudoElementAddedEvent): void;
+    pseudoElementAdded?(params: Protocol.DOM.PseudoElementAddedEvent): void;
 
     /**
      * Called when top layer elements are changed.
      */
-    topLayerElementsUpdated(): void;
+    topLayerElementsUpdated?(): void;
 
     /**
      * Fired when a node's scrollability state changes.
      */
-    scrollableFlagUpdated(params: Protocol.DOM.ScrollableFlagUpdatedEvent): void;
+    scrollableFlagUpdated?(params: Protocol.DOM.ScrollableFlagUpdatedEvent): void;
 
     /**
      * Fired when a node's ad related state changes.
      */
-    adRelatedStateUpdated(params: Protocol.DOM.AdRelatedStateUpdatedEvent): void;
+    adRelatedStateUpdated?(params: Protocol.DOM.AdRelatedStateUpdatedEvent): void;
 
     /**
      * Fired when a node's starting styles changes.
      */
-    affectedByStartingStylesFlagUpdated(params: Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent): void;
+    affectedByStartingStylesFlagUpdated?(params: Protocol.DOM.AffectedByStartingStylesFlagUpdatedEvent): void;
 
     /**
      * Called when a pseudo element is removed from an element.
      */
-    pseudoElementRemoved(params: Protocol.DOM.PseudoElementRemovedEvent): void;
+    pseudoElementRemoved?(params: Protocol.DOM.PseudoElementRemovedEvent): void;
 
     /**
      * Fired when backend wants to provide client with the missing DOM structure. This happens upon
      * most of the calls requesting node ids.
      */
-    setChildNodes(params: Protocol.DOM.SetChildNodesEvent): void;
+    setChildNodes?(params: Protocol.DOM.SetChildNodesEvent): void;
 
     /**
      * Called when shadow root is popped from the element.
      */
-    shadowRootPopped(params: Protocol.DOM.ShadowRootPoppedEvent): void;
+    shadowRootPopped?(params: Protocol.DOM.ShadowRootPoppedEvent): void;
 
     /**
      * Called when shadow root is pushed into the element.
      */
-    shadowRootPushed(params: Protocol.DOM.ShadowRootPushedEvent): void;
+    shadowRootPushed?(params: Protocol.DOM.ShadowRootPushedEvent): void;
 
   }
 
@@ -1641,13 +1641,13 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface DOMStorageDispatcher {
-    domStorageItemAdded(params: Protocol.DOMStorage.DomStorageItemAddedEvent): void;
+    domStorageItemAdded?(params: Protocol.DOMStorage.DomStorageItemAddedEvent): void;
 
-    domStorageItemRemoved(params: Protocol.DOMStorage.DomStorageItemRemovedEvent): void;
+    domStorageItemRemoved?(params: Protocol.DOMStorage.DomStorageItemRemovedEvent): void;
 
-    domStorageItemUpdated(params: Protocol.DOMStorage.DomStorageItemUpdatedEvent): void;
+    domStorageItemUpdated?(params: Protocol.DOMStorage.DomStorageItemUpdatedEvent): void;
 
-    domStorageItemsCleared(params: Protocol.DOMStorage.DomStorageItemsClearedEvent): void;
+    domStorageItemsCleared?(params: Protocol.DOMStorage.DomStorageItemsClearedEvent): void;
 
   }
 
@@ -1678,7 +1678,7 @@ declare namespace ProtocolProxyApi {
      * A device request opened a user prompt to select a device. Respond with the
      * selectPrompt or cancelPrompt command.
      */
-    deviceRequestPrompted(params: Protocol.DeviceAccess.DeviceRequestPromptedEvent): void;
+    deviceRequestPrompted?(params: Protocol.DeviceAccess.DeviceRequestPromptedEvent): void;
 
   }
 
@@ -1981,14 +1981,14 @@ declare namespace ProtocolProxyApi {
     /**
      * Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
      */
-    virtualTimeBudgetExpired(): void;
+    virtualTimeBudgetExpired?(): void;
 
     /**
      * Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()
      * while device emulation is enabled. This allows the DevTools frontend to update the
      * emulated device orientation accordingly.
      */
-    screenOrientationLockChanged(params: Protocol.Emulation.ScreenOrientationLockChangedEvent): void;
+    screenOrientationLockChanged?(params: Protocol.Emulation.ScreenOrientationLockChangedEvent): void;
 
   }
 
@@ -2082,13 +2082,13 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface FedCmDispatcher {
-    dialogShown(params: Protocol.FedCm.DialogShownEvent): void;
+    dialogShown?(params: Protocol.FedCm.DialogShownEvent): void;
 
     /**
      * Triggered when a dialog is closed, either by user action, JS abort,
      * or a command below.
      */
-    dialogClosed(params: Protocol.FedCm.DialogClosedEvent): void;
+    dialogClosed?(params: Protocol.FedCm.DialogClosedEvent): void;
 
   }
 
@@ -2174,13 +2174,13 @@ declare namespace ProtocolProxyApi {
      * presence of the `location` header. Requests resulting from a redirect will
      * have `redirectedRequestId` field set.
      */
-    requestPaused(params: Protocol.Fetch.RequestPausedEvent): void;
+    requestPaused?(params: Protocol.Fetch.RequestPausedEvent): void;
 
     /**
      * Issued when the domain is enabled with handleAuthRequests set to true.
      * The request is paused until client responds with continueWithAuth.
      */
-    authRequired(params: Protocol.Fetch.AuthRequiredEvent): void;
+    authRequired?(params: Protocol.Fetch.AuthRequiredEvent): void;
 
   }
 
@@ -2397,7 +2397,7 @@ declare namespace ProtocolProxyApi {
      * Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
      * restore normal drag and drop behavior.
      */
-    dragIntercepted(params: Protocol.Input.DragInterceptedEvent): void;
+    dragIntercepted?(params: Protocol.Input.DragInterceptedEvent): void;
 
   }
 
@@ -2419,22 +2419,22 @@ declare namespace ProtocolProxyApi {
     /**
      * Fired when remote debugging connection is about to be terminated. Contains detach reason.
      */
-    detached(params: Protocol.Inspector.DetachedEvent): void;
+    detached?(params: Protocol.Inspector.DetachedEvent): void;
 
     /**
      * Fired when debugging target has crashed
      */
-    targetCrashed(): void;
+    targetCrashed?(): void;
 
     /**
      * Fired when debugging target has reloaded after crash
      */
-    targetReloadedAfterCrash(): void;
+    targetReloadedAfterCrash?(): void;
 
     /**
      * Fired on worker targets when main worker script and any imported scripts have been evaluated.
      */
-    workerScriptLoaded(): void;
+    workerScriptLoaded?(): void;
 
   }
 
@@ -2483,9 +2483,9 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface LayerTreeDispatcher {
-    layerPainted(params: Protocol.LayerTree.LayerPaintedEvent): void;
+    layerPainted?(params: Protocol.LayerTree.LayerPaintedEvent): void;
 
-    layerTreeDidChange(params: Protocol.LayerTree.LayerTreeDidChangeEvent): void;
+    layerTreeDidChange?(params: Protocol.LayerTree.LayerTreeDidChangeEvent): void;
 
   }
 
@@ -2521,7 +2521,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Issued when new message was logged.
      */
-    entryAdded(params: Protocol.Log.EntryAddedEvent): void;
+    entryAdded?(params: Protocol.Log.EntryAddedEvent): void;
 
   }
 
@@ -2542,30 +2542,30 @@ declare namespace ProtocolProxyApi {
      * This can be called multiple times, and can be used to set / override /
      * remove player properties. A null propValue indicates removal.
      */
-    playerPropertiesChanged(params: Protocol.Media.PlayerPropertiesChangedEvent): void;
+    playerPropertiesChanged?(params: Protocol.Media.PlayerPropertiesChangedEvent): void;
 
     /**
      * Send events as a list, allowing them to be batched on the browser for less
      * congestion. If batched, events must ALWAYS be in chronological order.
      */
-    playerEventsAdded(params: Protocol.Media.PlayerEventsAddedEvent): void;
+    playerEventsAdded?(params: Protocol.Media.PlayerEventsAddedEvent): void;
 
     /**
      * Send a list of any messages that need to be delivered.
      */
-    playerMessagesLogged(params: Protocol.Media.PlayerMessagesLoggedEvent): void;
+    playerMessagesLogged?(params: Protocol.Media.PlayerMessagesLoggedEvent): void;
 
     /**
      * Send a list of any errors that need to be delivered.
      */
-    playerErrorsRaised(params: Protocol.Media.PlayerErrorsRaisedEvent): void;
+    playerErrorsRaised?(params: Protocol.Media.PlayerErrorsRaisedEvent): void;
 
     /**
      * Called whenever a player is created, or when a new agent joins and receives
      * a list of active players. If an agent is restored, it will receive one
      * event for each active player.
      */
-    playerCreated(params: Protocol.Media.PlayerCreatedEvent): void;
+    playerCreated?(params: Protocol.Media.PlayerCreatedEvent): void;
 
   }
 
@@ -2832,161 +2832,161 @@ declare namespace ProtocolProxyApi {
     /**
      * Fired when data chunk was received over the network.
      */
-    dataReceived(params: Protocol.Network.DataReceivedEvent): void;
+    dataReceived?(params: Protocol.Network.DataReceivedEvent): void;
 
     /**
      * Fired when EventSource message is received.
      */
-    eventSourceMessageReceived(params: Protocol.Network.EventSourceMessageReceivedEvent): void;
+    eventSourceMessageReceived?(params: Protocol.Network.EventSourceMessageReceivedEvent): void;
 
     /**
      * Fired when HTTP request has failed to load.
      */
-    loadingFailed(params: Protocol.Network.LoadingFailedEvent): void;
+    loadingFailed?(params: Protocol.Network.LoadingFailedEvent): void;
 
     /**
      * Fired when HTTP request has finished loading.
      */
-    loadingFinished(params: Protocol.Network.LoadingFinishedEvent): void;
+    loadingFinished?(params: Protocol.Network.LoadingFinishedEvent): void;
 
     /**
      * Fired if request ended up loading from cache.
      */
-    requestServedFromCache(params: Protocol.Network.RequestServedFromCacheEvent): void;
+    requestServedFromCache?(params: Protocol.Network.RequestServedFromCacheEvent): void;
 
     /**
      * Fired when page is about to send HTTP request.
      */
-    requestWillBeSent(params: Protocol.Network.RequestWillBeSentEvent): void;
+    requestWillBeSent?(params: Protocol.Network.RequestWillBeSentEvent): void;
 
     /**
      * Fired when resource loading priority is changed
      */
-    resourceChangedPriority(params: Protocol.Network.ResourceChangedPriorityEvent): void;
+    resourceChangedPriority?(params: Protocol.Network.ResourceChangedPriorityEvent): void;
 
     /**
      * Fired when a signed exchange was received over the network
      */
-    signedExchangeReceived(params: Protocol.Network.SignedExchangeReceivedEvent): void;
+    signedExchangeReceived?(params: Protocol.Network.SignedExchangeReceivedEvent): void;
 
     /**
      * Fired when HTTP response is available.
      */
-    responseReceived(params: Protocol.Network.ResponseReceivedEvent): void;
+    responseReceived?(params: Protocol.Network.ResponseReceivedEvent): void;
 
     /**
      * Fired when WebSocket is closed.
      */
-    webSocketClosed(params: Protocol.Network.WebSocketClosedEvent): void;
+    webSocketClosed?(params: Protocol.Network.WebSocketClosedEvent): void;
 
     /**
      * Fired upon WebSocket creation.
      */
-    webSocketCreated(params: Protocol.Network.WebSocketCreatedEvent): void;
+    webSocketCreated?(params: Protocol.Network.WebSocketCreatedEvent): void;
 
     /**
      * Fired when WebSocket message error occurs.
      */
-    webSocketFrameError(params: Protocol.Network.WebSocketFrameErrorEvent): void;
+    webSocketFrameError?(params: Protocol.Network.WebSocketFrameErrorEvent): void;
 
     /**
      * Fired when WebSocket message is received.
      */
-    webSocketFrameReceived(params: Protocol.Network.WebSocketFrameReceivedEvent): void;
+    webSocketFrameReceived?(params: Protocol.Network.WebSocketFrameReceivedEvent): void;
 
     /**
      * Fired when WebSocket message is sent.
      */
-    webSocketFrameSent(params: Protocol.Network.WebSocketFrameSentEvent): void;
+    webSocketFrameSent?(params: Protocol.Network.WebSocketFrameSentEvent): void;
 
     /**
      * Fired when WebSocket handshake response becomes available.
      */
-    webSocketHandshakeResponseReceived(params: Protocol.Network.WebSocketHandshakeResponseReceivedEvent): void;
+    webSocketHandshakeResponseReceived?(params: Protocol.Network.WebSocketHandshakeResponseReceivedEvent): void;
 
     /**
      * Fired when WebSocket is about to initiate handshake.
      */
-    webSocketWillSendHandshakeRequest(params: Protocol.Network.WebSocketWillSendHandshakeRequestEvent): void;
+    webSocketWillSendHandshakeRequest?(params: Protocol.Network.WebSocketWillSendHandshakeRequestEvent): void;
 
     /**
      * Fired upon WebTransport creation.
      */
-    webTransportCreated(params: Protocol.Network.WebTransportCreatedEvent): void;
+    webTransportCreated?(params: Protocol.Network.WebTransportCreatedEvent): void;
 
     /**
      * Fired when WebTransport handshake is finished.
      */
-    webTransportConnectionEstablished(params: Protocol.Network.WebTransportConnectionEstablishedEvent): void;
+    webTransportConnectionEstablished?(params: Protocol.Network.WebTransportConnectionEstablishedEvent): void;
 
     /**
      * Fired when WebTransport is disposed.
      */
-    webTransportClosed(params: Protocol.Network.WebTransportClosedEvent): void;
+    webTransportClosed?(params: Protocol.Network.WebTransportClosedEvent): void;
 
     /**
      * Fired upon direct_socket.TCPSocket creation.
      */
-    directTCPSocketCreated(params: Protocol.Network.DirectTCPSocketCreatedEvent): void;
+    directTCPSocketCreated?(params: Protocol.Network.DirectTCPSocketCreatedEvent): void;
 
     /**
      * Fired when direct_socket.TCPSocket connection is opened.
      */
-    directTCPSocketOpened(params: Protocol.Network.DirectTCPSocketOpenedEvent): void;
+    directTCPSocketOpened?(params: Protocol.Network.DirectTCPSocketOpenedEvent): void;
 
     /**
      * Fired when direct_socket.TCPSocket is aborted.
      */
-    directTCPSocketAborted(params: Protocol.Network.DirectTCPSocketAbortedEvent): void;
+    directTCPSocketAborted?(params: Protocol.Network.DirectTCPSocketAbortedEvent): void;
 
     /**
      * Fired when direct_socket.TCPSocket is closed.
      */
-    directTCPSocketClosed(params: Protocol.Network.DirectTCPSocketClosedEvent): void;
+    directTCPSocketClosed?(params: Protocol.Network.DirectTCPSocketClosedEvent): void;
 
     /**
      * Fired when data is sent to tcp direct socket stream.
      */
-    directTCPSocketChunkSent(params: Protocol.Network.DirectTCPSocketChunkSentEvent): void;
+    directTCPSocketChunkSent?(params: Protocol.Network.DirectTCPSocketChunkSentEvent): void;
 
     /**
      * Fired when data is received from tcp direct socket stream.
      */
-    directTCPSocketChunkReceived(params: Protocol.Network.DirectTCPSocketChunkReceivedEvent): void;
+    directTCPSocketChunkReceived?(params: Protocol.Network.DirectTCPSocketChunkReceivedEvent): void;
 
-    directUDPSocketJoinedMulticastGroup(params: Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent): void;
+    directUDPSocketJoinedMulticastGroup?(params: Protocol.Network.DirectUDPSocketJoinedMulticastGroupEvent): void;
 
-    directUDPSocketLeftMulticastGroup(params: Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent): void;
+    directUDPSocketLeftMulticastGroup?(params: Protocol.Network.DirectUDPSocketLeftMulticastGroupEvent): void;
 
     /**
      * Fired upon direct_socket.UDPSocket creation.
      */
-    directUDPSocketCreated(params: Protocol.Network.DirectUDPSocketCreatedEvent): void;
+    directUDPSocketCreated?(params: Protocol.Network.DirectUDPSocketCreatedEvent): void;
 
     /**
      * Fired when direct_socket.UDPSocket connection is opened.
      */
-    directUDPSocketOpened(params: Protocol.Network.DirectUDPSocketOpenedEvent): void;
+    directUDPSocketOpened?(params: Protocol.Network.DirectUDPSocketOpenedEvent): void;
 
     /**
      * Fired when direct_socket.UDPSocket is aborted.
      */
-    directUDPSocketAborted(params: Protocol.Network.DirectUDPSocketAbortedEvent): void;
+    directUDPSocketAborted?(params: Protocol.Network.DirectUDPSocketAbortedEvent): void;
 
     /**
      * Fired when direct_socket.UDPSocket is closed.
      */
-    directUDPSocketClosed(params: Protocol.Network.DirectUDPSocketClosedEvent): void;
+    directUDPSocketClosed?(params: Protocol.Network.DirectUDPSocketClosedEvent): void;
 
     /**
      * Fired when message is sent to udp direct socket stream.
      */
-    directUDPSocketChunkSent(params: Protocol.Network.DirectUDPSocketChunkSentEvent): void;
+    directUDPSocketChunkSent?(params: Protocol.Network.DirectUDPSocketChunkSentEvent): void;
 
     /**
      * Fired when message is received from udp direct socket stream.
      */
-    directUDPSocketChunkReceived(params: Protocol.Network.DirectUDPSocketChunkReceivedEvent): void;
+    directUDPSocketChunkReceived?(params: Protocol.Network.DirectUDPSocketChunkReceivedEvent): void;
 
     /**
      * Fired when additional information about a requestWillBeSent event is available from the
@@ -2994,21 +2994,21 @@ declare namespace ProtocolProxyApi {
      * requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
      * or requestWillBeSentExtraInfo will be fired first for the same request.
      */
-    requestWillBeSentExtraInfo(params: Protocol.Network.RequestWillBeSentExtraInfoEvent): void;
+    requestWillBeSentExtraInfo?(params: Protocol.Network.RequestWillBeSentExtraInfoEvent): void;
 
     /**
      * Fired when additional information about a responseReceived event is available from the network
      * stack. Not every responseReceived event will have an additional responseReceivedExtraInfo for
      * it, and responseReceivedExtraInfo may be fired before or after responseReceived.
      */
-    responseReceivedExtraInfo(params: Protocol.Network.ResponseReceivedExtraInfoEvent): void;
+    responseReceivedExtraInfo?(params: Protocol.Network.ResponseReceivedExtraInfoEvent): void;
 
     /**
      * Fired when 103 Early Hints headers is received in addition to the common response.
      * Not every responseReceived event will have an responseReceivedEarlyHints fired.
      * Only one responseReceivedEarlyHints may be fired for eached responseReceived event.
      */
-    responseReceivedEarlyHints(params: Protocol.Network.ResponseReceivedEarlyHintsEvent): void;
+    responseReceivedEarlyHints?(params: Protocol.Network.ResponseReceivedEarlyHintsEvent): void;
 
     /**
      * Fired exactly once for each Trust Token operation. Depending on
@@ -3016,32 +3016,32 @@ declare namespace ProtocolProxyApi {
      * failed, the event is fired before the corresponding request was sent
      * or after the response was received.
      */
-    trustTokenOperationDone(params: Protocol.Network.TrustTokenOperationDoneEvent): void;
+    trustTokenOperationDone?(params: Protocol.Network.TrustTokenOperationDoneEvent): void;
 
     /**
      * Fired once security policy has been updated.
      */
-    policyUpdated(): void;
+    policyUpdated?(): void;
 
     /**
      * Is sent whenever a new report is added.
      * And after 'enableReportingApi' for all existing reports.
      */
-    reportingApiReportAdded(params: Protocol.Network.ReportingApiReportAddedEvent): void;
+    reportingApiReportAdded?(params: Protocol.Network.ReportingApiReportAddedEvent): void;
 
-    reportingApiReportUpdated(params: Protocol.Network.ReportingApiReportUpdatedEvent): void;
+    reportingApiReportUpdated?(params: Protocol.Network.ReportingApiReportUpdatedEvent): void;
 
-    reportingApiEndpointsChangedForOrigin(params: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void;
+    reportingApiEndpointsChangedForOrigin?(params: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void;
 
     /**
      * Triggered when the initial set of device bound sessions is added.
      */
-    deviceBoundSessionsAdded(params: Protocol.Network.DeviceBoundSessionsAddedEvent): void;
+    deviceBoundSessionsAdded?(params: Protocol.Network.DeviceBoundSessionsAddedEvent): void;
 
     /**
      * Triggered when a device bound session event occurs.
      */
-    deviceBoundSessionEventOccurred(params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void;
+    deviceBoundSessionEventOccurred?(params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void;
 
   }
 
@@ -3204,32 +3204,32 @@ declare namespace ProtocolProxyApi {
      * Fired when the node should be inspected. This happens after call to `setInspectMode` or when
      * user manually inspects an element.
      */
-    inspectNodeRequested(params: Protocol.Overlay.InspectNodeRequestedEvent): void;
+    inspectNodeRequested?(params: Protocol.Overlay.InspectNodeRequestedEvent): void;
 
     /**
      * Fired when the node should be highlighted. This happens after call to `setInspectMode`.
      */
-    nodeHighlightRequested(params: Protocol.Overlay.NodeHighlightRequestedEvent): void;
+    nodeHighlightRequested?(params: Protocol.Overlay.NodeHighlightRequestedEvent): void;
 
     /**
      * Fired when user asks to capture screenshot of some area on the page.
      */
-    screenshotRequested(params: Protocol.Overlay.ScreenshotRequestedEvent): void;
+    screenshotRequested?(params: Protocol.Overlay.ScreenshotRequestedEvent): void;
 
     /**
      * Fired when user asks to show the Inspect panel.
      */
-    inspectPanelShowRequested(params: Protocol.Overlay.InspectPanelShowRequestedEvent): void;
+    inspectPanelShowRequested?(params: Protocol.Overlay.InspectPanelShowRequestedEvent): void;
 
     /**
      * Fired when user asks to restore the Inspected Element floating window.
      */
-    inspectedElementWindowRestored(params: Protocol.Overlay.InspectedElementWindowRestoredEvent): void;
+    inspectedElementWindowRestored?(params: Protocol.Overlay.InspectedElementWindowRestoredEvent): void;
 
     /**
      * Fired when user cancels the inspect mode.
      */
-    inspectModeCanceled(): void;
+    inspectModeCanceled?(): void;
 
   }
 
@@ -3697,46 +3697,46 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface PageDispatcher {
-    domContentEventFired(params: Protocol.Page.DomContentEventFiredEvent): void;
+    domContentEventFired?(params: Protocol.Page.DomContentEventFiredEvent): void;
 
     /**
      * Emitted only when `page.interceptFileChooser` is enabled.
      */
-    fileChooserOpened(params: Protocol.Page.FileChooserOpenedEvent): void;
+    fileChooserOpened?(params: Protocol.Page.FileChooserOpenedEvent): void;
 
     /**
      * Fired when frame has been attached to its parent.
      */
-    frameAttached(params: Protocol.Page.FrameAttachedEvent): void;
+    frameAttached?(params: Protocol.Page.FrameAttachedEvent): void;
 
     /**
      * Fired when frame no longer has a scheduled navigation.
      * @deprecated
      */
-    frameClearedScheduledNavigation(params: Protocol.Page.FrameClearedScheduledNavigationEvent): void;
+    frameClearedScheduledNavigation?(params: Protocol.Page.FrameClearedScheduledNavigationEvent): void;
 
     /**
      * Fired when frame has been detached from its parent.
      */
-    frameDetached(params: Protocol.Page.FrameDetachedEvent): void;
+    frameDetached?(params: Protocol.Page.FrameDetachedEvent): void;
 
     /**
      * Fired before frame subtree is detached. Emitted before any frame of the
      * subtree is actually detached.
      */
-    frameSubtreeWillBeDetached(params: Protocol.Page.FrameSubtreeWillBeDetachedEvent): void;
+    frameSubtreeWillBeDetached?(params: Protocol.Page.FrameSubtreeWillBeDetachedEvent): void;
 
     /**
      * Fired once navigation of the frame has completed. Frame is now associated with the new loader.
      */
-    frameNavigated(params: Protocol.Page.FrameNavigatedEvent): void;
+    frameNavigated?(params: Protocol.Page.FrameNavigatedEvent): void;
 
     /**
      * Fired when opening document to write to.
      */
-    documentOpened(params: Protocol.Page.DocumentOpenedEvent): void;
+    documentOpened?(params: Protocol.Page.DocumentOpenedEvent): void;
 
-    frameResized(): void;
+    frameResized?(): void;
 
     /**
      * Fired when a navigation starts. This event is fired for both
@@ -3747,71 +3747,71 @@ declare namespace ProtocolProxyApi {
      * navigation becomes a cross-document navigation (such as in the case of a
      * frameset).
      */
-    frameStartedNavigating(params: Protocol.Page.FrameStartedNavigatingEvent): void;
+    frameStartedNavigating?(params: Protocol.Page.FrameStartedNavigatingEvent): void;
 
     /**
      * Fired when a renderer-initiated navigation is requested.
      * Navigation may still be cancelled after the event is issued.
      */
-    frameRequestedNavigation(params: Protocol.Page.FrameRequestedNavigationEvent): void;
+    frameRequestedNavigation?(params: Protocol.Page.FrameRequestedNavigationEvent): void;
 
     /**
      * Fired when frame schedules a potential navigation.
      * @deprecated
      */
-    frameScheduledNavigation(params: Protocol.Page.FrameScheduledNavigationEvent): void;
+    frameScheduledNavigation?(params: Protocol.Page.FrameScheduledNavigationEvent): void;
 
     /**
      * Fired when frame has started loading.
      */
-    frameStartedLoading(params: Protocol.Page.FrameStartedLoadingEvent): void;
+    frameStartedLoading?(params: Protocol.Page.FrameStartedLoadingEvent): void;
 
     /**
      * Fired when frame has stopped loading.
      */
-    frameStoppedLoading(params: Protocol.Page.FrameStoppedLoadingEvent): void;
+    frameStoppedLoading?(params: Protocol.Page.FrameStoppedLoadingEvent): void;
 
     /**
      * Fired when page is about to start a download.
      * Deprecated. Use Browser.downloadWillBegin instead.
      * @deprecated
      */
-    downloadWillBegin(params: Protocol.Page.DownloadWillBeginEvent): void;
+    downloadWillBegin?(params: Protocol.Page.DownloadWillBeginEvent): void;
 
     /**
      * Fired when download makes progress. Last call has |done| == true.
      * Deprecated. Use Browser.downloadProgress instead.
      * @deprecated
      */
-    downloadProgress(params: Protocol.Page.DownloadProgressEvent): void;
+    downloadProgress?(params: Protocol.Page.DownloadProgressEvent): void;
 
     /**
      * Fired when interstitial page was hidden
      */
-    interstitialHidden(): void;
+    interstitialHidden?(): void;
 
     /**
      * Fired when interstitial page was shown
      */
-    interstitialShown(): void;
+    interstitialShown?(): void;
 
     /**
      * Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) has been
      * closed.
      */
-    javascriptDialogClosed(params: Protocol.Page.JavascriptDialogClosedEvent): void;
+    javascriptDialogClosed?(params: Protocol.Page.JavascriptDialogClosedEvent): void;
 
     /**
      * Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to
      * open.
      */
-    javascriptDialogOpening(params: Protocol.Page.JavascriptDialogOpeningEvent): void;
+    javascriptDialogOpening?(params: Protocol.Page.JavascriptDialogOpeningEvent): void;
 
     /**
      * Fired for lifecycle events (navigation, load, paint, etc) in the current
      * target (including local frames).
      */
-    lifecycleEvent(params: Protocol.Page.LifecycleEventEvent): void;
+    lifecycleEvent?(params: Protocol.Page.LifecycleEventEvent): void;
 
     /**
      * Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
@@ -3819,35 +3819,35 @@ declare namespace ProtocolProxyApi {
      * main-frame history navigation where the document changes (non-same-document navigations),
      * when bfcache navigation fails.
      */
-    backForwardCacheNotUsed(params: Protocol.Page.BackForwardCacheNotUsedEvent): void;
+    backForwardCacheNotUsed?(params: Protocol.Page.BackForwardCacheNotUsedEvent): void;
 
-    loadEventFired(params: Protocol.Page.LoadEventFiredEvent): void;
+    loadEventFired?(params: Protocol.Page.LoadEventFiredEvent): void;
 
     /**
      * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
      */
-    navigatedWithinDocument(params: Protocol.Page.NavigatedWithinDocumentEvent): void;
+    navigatedWithinDocument?(params: Protocol.Page.NavigatedWithinDocumentEvent): void;
 
     /**
      * Compressed image data requested by the `startScreencast`.
      */
-    screencastFrame(params: Protocol.Page.ScreencastFrameEvent): void;
+    screencastFrame?(params: Protocol.Page.ScreencastFrameEvent): void;
 
     /**
      * Fired when the page with currently enabled screencast was shown or hidden `.
      */
-    screencastVisibilityChanged(params: Protocol.Page.ScreencastVisibilityChangedEvent): void;
+    screencastVisibilityChanged?(params: Protocol.Page.ScreencastVisibilityChangedEvent): void;
 
     /**
      * Fired when a new window is going to be opened, via window.open(), link click, form submission,
      * etc.
      */
-    windowOpen(params: Protocol.Page.WindowOpenEvent): void;
+    windowOpen?(params: Protocol.Page.WindowOpenEvent): void;
 
     /**
      * Issued for every compilation cache generated.
      */
-    compilationCacheProduced(params: Protocol.Page.CompilationCacheProducedEvent): void;
+    compilationCacheProduced?(params: Protocol.Page.CompilationCacheProducedEvent): void;
 
   }
 
@@ -3880,7 +3880,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Current values of the metrics.
      */
-    metrics(params: Protocol.Performance.MetricsEvent): void;
+    metrics?(params: Protocol.Performance.MetricsEvent): void;
 
   }
 
@@ -3896,7 +3896,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Sent when a performance timeline event is added. See reportPerformanceTimeline method.
      */
-    timelineEventAdded(params: Protocol.PerformanceTimeline.TimelineEventAddedEvent): void;
+    timelineEventAdded?(params: Protocol.PerformanceTimeline.TimelineEventAddedEvent): void;
 
   }
 
@@ -3910,29 +3910,29 @@ declare namespace ProtocolProxyApi {
     /**
      * Upsert. Currently, it is only emitted when a rule set added.
      */
-    ruleSetUpdated(params: Protocol.Preload.RuleSetUpdatedEvent): void;
+    ruleSetUpdated?(params: Protocol.Preload.RuleSetUpdatedEvent): void;
 
-    ruleSetRemoved(params: Protocol.Preload.RuleSetRemovedEvent): void;
+    ruleSetRemoved?(params: Protocol.Preload.RuleSetRemovedEvent): void;
 
     /**
      * Fired when a preload enabled state is updated.
      */
-    preloadEnabledStateUpdated(params: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void;
+    preloadEnabledStateUpdated?(params: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void;
 
     /**
      * Fired when a prefetch attempt is updated.
      */
-    prefetchStatusUpdated(params: Protocol.Preload.PrefetchStatusUpdatedEvent): void;
+    prefetchStatusUpdated?(params: Protocol.Preload.PrefetchStatusUpdatedEvent): void;
 
     /**
      * Fired when a prerender attempt is updated.
      */
-    prerenderStatusUpdated(params: Protocol.Preload.PrerenderStatusUpdatedEvent): void;
+    prerenderStatusUpdated?(params: Protocol.Preload.PrerenderStatusUpdatedEvent): void;
 
     /**
      * Send a list of sources for all preloading attempts in a document.
      */
-    preloadingAttemptSourcesUpdated(params: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void;
+    preloadingAttemptSourcesUpdated?(params: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void;
 
   }
 
@@ -3974,18 +3974,18 @@ declare namespace ProtocolProxyApi {
      * certificate errors at the same time.
      * @deprecated
      */
-    certificateError(params: Protocol.Security.CertificateErrorEvent): void;
+    certificateError?(params: Protocol.Security.CertificateErrorEvent): void;
 
     /**
      * The security state of the page changed.
      */
-    visibleSecurityStateChanged(params: Protocol.Security.VisibleSecurityStateChangedEvent): void;
+    visibleSecurityStateChanged?(params: Protocol.Security.VisibleSecurityStateChangedEvent): void;
 
     /**
      * The security state of the page changed. No longer being sent.
      * @deprecated
      */
-    securityStateChanged(params: Protocol.Security.SecurityStateChangedEvent): void;
+    securityStateChanged?(params: Protocol.Security.SecurityStateChangedEvent): void;
 
   }
 
@@ -4016,11 +4016,11 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface ServiceWorkerDispatcher {
-    workerErrorReported(params: Protocol.ServiceWorker.WorkerErrorReportedEvent): void;
+    workerErrorReported?(params: Protocol.ServiceWorker.WorkerErrorReportedEvent): void;
 
-    workerRegistrationUpdated(params: Protocol.ServiceWorker.WorkerRegistrationUpdatedEvent): void;
+    workerRegistrationUpdated?(params: Protocol.ServiceWorker.WorkerRegistrationUpdatedEvent): void;
 
-    workerVersionUpdated(params: Protocol.ServiceWorker.WorkerVersionUpdatedEvent): void;
+    workerVersionUpdated?(params: Protocol.ServiceWorker.WorkerVersionUpdatedEvent): void;
 
   }
 
@@ -4155,7 +4155,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaa1b8970169fd4883a6dc4a8f43f19b67
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext
      */
-    establishContextRequested(params: Protocol.SmartCardEmulation.EstablishContextRequestedEvent): void;
+    establishContextRequested?(params: Protocol.SmartCardEmulation.EstablishContextRequestedEvent): void;
 
     /**
      * Fired when |SCardReleaseContext| is called.
@@ -4164,7 +4164,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga6aabcba7744c5c9419fdd6404f73a934
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext
      */
-    releaseContextRequested(params: Protocol.SmartCardEmulation.ReleaseContextRequestedEvent): void;
+    releaseContextRequested?(params: Protocol.SmartCardEmulation.ReleaseContextRequestedEvent): void;
 
     /**
      * Fired when |SCardListReaders| is called.
@@ -4173,7 +4173,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga93b07815789b3cf2629d439ecf20f0d9
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa
      */
-    listReadersRequested(params: Protocol.SmartCardEmulation.ListReadersRequestedEvent): void;
+    listReadersRequested?(params: Protocol.SmartCardEmulation.ListReadersRequestedEvent): void;
 
     /**
      * Fired when |SCardGetStatusChange| is called. Timeout is specified in milliseconds.
@@ -4182,7 +4182,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea
      */
-    getStatusChangeRequested(params: Protocol.SmartCardEmulation.GetStatusChangeRequestedEvent): void;
+    getStatusChangeRequested?(params: Protocol.SmartCardEmulation.GetStatusChangeRequestedEvent): void;
 
     /**
      * Fired when |SCardCancel| is called.
@@ -4191,7 +4191,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel
      */
-    cancelRequested(params: Protocol.SmartCardEmulation.CancelRequestedEvent): void;
+    cancelRequested?(params: Protocol.SmartCardEmulation.CancelRequestedEvent): void;
 
     /**
      * Fired when |SCardConnect| is called.
@@ -4200,7 +4200,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta
      */
-    connectRequested(params: Protocol.SmartCardEmulation.ConnectRequestedEvent): void;
+    connectRequested?(params: Protocol.SmartCardEmulation.ConnectRequestedEvent): void;
 
     /**
      * Fired when |SCardDisconnect| is called.
@@ -4209,7 +4209,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect
      */
-    disconnectRequested(params: Protocol.SmartCardEmulation.DisconnectRequestedEvent): void;
+    disconnectRequested?(params: Protocol.SmartCardEmulation.DisconnectRequestedEvent): void;
 
     /**
      * Fired when |SCardTransmit| is called.
@@ -4218,7 +4218,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit
      */
-    transmitRequested(params: Protocol.SmartCardEmulation.TransmitRequestedEvent): void;
+    transmitRequested?(params: Protocol.SmartCardEmulation.TransmitRequestedEvent): void;
 
     /**
      * Fired when |SCardControl| is called.
@@ -4227,7 +4227,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol
      */
-    controlRequested(params: Protocol.SmartCardEmulation.ControlRequestedEvent): void;
+    controlRequested?(params: Protocol.SmartCardEmulation.ControlRequestedEvent): void;
 
     /**
      * Fired when |SCardGetAttrib| is called.
@@ -4236,7 +4236,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaacfec51917255b7a25b94c5104961602
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib
      */
-    getAttribRequested(params: Protocol.SmartCardEmulation.GetAttribRequestedEvent): void;
+    getAttribRequested?(params: Protocol.SmartCardEmulation.GetAttribRequestedEvent): void;
 
     /**
      * Fired when |SCardSetAttrib| is called.
@@ -4245,7 +4245,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#ga060f0038a4ddfd5dd2b8fadf3c3a2e4f
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib
      */
-    setAttribRequested(params: Protocol.SmartCardEmulation.SetAttribRequestedEvent): void;
+    setAttribRequested?(params: Protocol.SmartCardEmulation.SetAttribRequestedEvent): void;
 
     /**
      * Fired when |SCardStatus| is called.
@@ -4254,7 +4254,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae49c3c894ad7ac12a5b896bde70d0382
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa
      */
-    statusRequested(params: Protocol.SmartCardEmulation.StatusRequestedEvent): void;
+    statusRequested?(params: Protocol.SmartCardEmulation.StatusRequestedEvent): void;
 
     /**
      * Fired when |SCardBeginTransaction| is called.
@@ -4263,7 +4263,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gaddb835dce01a0da1d6ca02d33ee7d861
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction
      */
-    beginTransactionRequested(params: Protocol.SmartCardEmulation.BeginTransactionRequestedEvent): void;
+    beginTransactionRequested?(params: Protocol.SmartCardEmulation.BeginTransactionRequestedEvent): void;
 
     /**
      * Fired when |SCardEndTransaction| is called.
@@ -4272,7 +4272,7 @@ declare namespace ProtocolProxyApi {
      * PC/SC Lite: https://pcsclite.apdu.fr/api/group__API.html#gae8742473b404363e5c587f570d7e2f3b
      * Microsoft: https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction
      */
-    endTransactionRequested(params: Protocol.SmartCardEmulation.EndTransactionRequestedEvent): void;
+    endTransactionRequested?(params: Protocol.SmartCardEmulation.EndTransactionRequestedEvent): void;
 
   }
 
@@ -4424,31 +4424,31 @@ declare namespace ProtocolProxyApi {
     /**
      * A cache's contents have been modified.
      */
-    cacheStorageContentUpdated(params: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
+    cacheStorageContentUpdated?(params: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
 
     /**
      * A cache has been added/deleted.
      */
-    cacheStorageListUpdated(params: Protocol.Storage.CacheStorageListUpdatedEvent): void;
+    cacheStorageListUpdated?(params: Protocol.Storage.CacheStorageListUpdatedEvent): void;
 
     /**
      * The origin's IndexedDB object store has been modified.
      */
-    indexedDBContentUpdated(params: Protocol.Storage.IndexedDBContentUpdatedEvent): void;
+    indexedDBContentUpdated?(params: Protocol.Storage.IndexedDBContentUpdatedEvent): void;
 
     /**
      * The origin's IndexedDB database list has been modified.
      */
-    indexedDBListUpdated(params: Protocol.Storage.IndexedDBListUpdatedEvent): void;
+    indexedDBListUpdated?(params: Protocol.Storage.IndexedDBListUpdatedEvent): void;
 
-    storageBucketCreatedOrUpdated(params: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
+    storageBucketCreatedOrUpdated?(params: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
 
-    storageBucketDeleted(params: Protocol.Storage.StorageBucketDeletedEvent): void;
+    storageBucketDeleted?(params: Protocol.Storage.StorageBucketDeletedEvent): void;
 
     /**
      * Private Verification Tokens have been stored or deleted.
      */
-    privateVerificationTokensUpdated(): void;
+    privateVerificationTokensUpdated?(): void;
 
   }
 
@@ -4599,40 +4599,40 @@ declare namespace ProtocolProxyApi {
     /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
-    attachedToTarget(params: Protocol.Target.AttachedToTargetEvent): void;
+    attachedToTarget?(params: Protocol.Target.AttachedToTargetEvent): void;
 
     /**
      * Issued when detached from target for any reason (including `detachFromTarget` command). Can be
      * issued multiple times per target if multiple sessions have been attached to it.
      */
-    detachedFromTarget(params: Protocol.Target.DetachedFromTargetEvent): void;
+    detachedFromTarget?(params: Protocol.Target.DetachedFromTargetEvent): void;
 
     /**
      * Notifies about a new protocol message received from the session (as reported in
      * `attachedToTarget` event).
      */
-    receivedMessageFromTarget(params: Protocol.Target.ReceivedMessageFromTargetEvent): void;
+    receivedMessageFromTarget?(params: Protocol.Target.ReceivedMessageFromTargetEvent): void;
 
     /**
      * Issued when a possible inspection target is created.
      */
-    targetCreated(params: Protocol.Target.TargetCreatedEvent): void;
+    targetCreated?(params: Protocol.Target.TargetCreatedEvent): void;
 
     /**
      * Issued when a target is destroyed.
      */
-    targetDestroyed(params: Protocol.Target.TargetDestroyedEvent): void;
+    targetDestroyed?(params: Protocol.Target.TargetDestroyedEvent): void;
 
     /**
      * Issued when a target has crashed.
      */
-    targetCrashed(params: Protocol.Target.TargetCrashedEvent): void;
+    targetCrashed?(params: Protocol.Target.TargetCrashedEvent): void;
 
     /**
      * Issued when some information about a target has changed. This only happens between
      * `targetCreated` and `targetDestroyed`.
      */
-    targetInfoChanged(params: Protocol.Target.TargetInfoChangedEvent): void;
+    targetInfoChanged?(params: Protocol.Target.TargetInfoChangedEvent): void;
 
   }
 
@@ -4652,7 +4652,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Informs that port was successfully bound and got a specified connection id.
      */
-    accepted(params: Protocol.Tethering.AcceptedEvent): void;
+    accepted?(params: Protocol.Tethering.AcceptedEvent): void;
 
   }
 
@@ -4689,19 +4689,19 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface TracingDispatcher {
-    bufferUsage(params: Protocol.Tracing.BufferUsageEvent): void;
+    bufferUsage?(params: Protocol.Tracing.BufferUsageEvent): void;
 
     /**
      * Contains a bucket of collected trace events. When tracing is stopped collected events will be
      * sent as a sequence of dataCollected events followed by tracingComplete event.
      */
-    dataCollected(params: Protocol.Tracing.DataCollectedEvent): void;
+    dataCollected?(params: Protocol.Tracing.DataCollectedEvent): void;
 
     /**
      * Signals that tracing is stopped and there is no trace buffers pending flush, all data were
      * delivered via dataCollected events.
      */
-    tracingComplete(params: Protocol.Tracing.TracingCompleteEvent): void;
+    tracingComplete?(params: Protocol.Tracing.TracingCompleteEvent): void;
 
   }
 
@@ -4726,67 +4726,67 @@ declare namespace ProtocolProxyApi {
     /**
      * Notifies that a new BaseAudioContext has been created.
      */
-    contextCreated(params: Protocol.WebAudio.ContextCreatedEvent): void;
+    contextCreated?(params: Protocol.WebAudio.ContextCreatedEvent): void;
 
     /**
      * Notifies that an existing BaseAudioContext will be destroyed.
      */
-    contextWillBeDestroyed(params: Protocol.WebAudio.ContextWillBeDestroyedEvent): void;
+    contextWillBeDestroyed?(params: Protocol.WebAudio.ContextWillBeDestroyedEvent): void;
 
     /**
      * Notifies that existing BaseAudioContext has changed some properties (id stays the same)..
      */
-    contextChanged(params: Protocol.WebAudio.ContextChangedEvent): void;
+    contextChanged?(params: Protocol.WebAudio.ContextChangedEvent): void;
 
     /**
      * Notifies that the construction of an AudioListener has finished.
      */
-    audioListenerCreated(params: Protocol.WebAudio.AudioListenerCreatedEvent): void;
+    audioListenerCreated?(params: Protocol.WebAudio.AudioListenerCreatedEvent): void;
 
     /**
      * Notifies that a new AudioListener has been created.
      */
-    audioListenerWillBeDestroyed(params: Protocol.WebAudio.AudioListenerWillBeDestroyedEvent): void;
+    audioListenerWillBeDestroyed?(params: Protocol.WebAudio.AudioListenerWillBeDestroyedEvent): void;
 
     /**
      * Notifies that a new AudioNode has been created.
      */
-    audioNodeCreated(params: Protocol.WebAudio.AudioNodeCreatedEvent): void;
+    audioNodeCreated?(params: Protocol.WebAudio.AudioNodeCreatedEvent): void;
 
     /**
      * Notifies that an existing AudioNode has been destroyed.
      */
-    audioNodeWillBeDestroyed(params: Protocol.WebAudio.AudioNodeWillBeDestroyedEvent): void;
+    audioNodeWillBeDestroyed?(params: Protocol.WebAudio.AudioNodeWillBeDestroyedEvent): void;
 
     /**
      * Notifies that a new AudioParam has been created.
      */
-    audioParamCreated(params: Protocol.WebAudio.AudioParamCreatedEvent): void;
+    audioParamCreated?(params: Protocol.WebAudio.AudioParamCreatedEvent): void;
 
     /**
      * Notifies that an existing AudioParam has been destroyed.
      */
-    audioParamWillBeDestroyed(params: Protocol.WebAudio.AudioParamWillBeDestroyedEvent): void;
+    audioParamWillBeDestroyed?(params: Protocol.WebAudio.AudioParamWillBeDestroyedEvent): void;
 
     /**
      * Notifies that two AudioNodes are connected.
      */
-    nodesConnected(params: Protocol.WebAudio.NodesConnectedEvent): void;
+    nodesConnected?(params: Protocol.WebAudio.NodesConnectedEvent): void;
 
     /**
      * Notifies that AudioNodes are disconnected. The destination can be null, and it means all the outgoing connections from the source are disconnected.
      */
-    nodesDisconnected(params: Protocol.WebAudio.NodesDisconnectedEvent): void;
+    nodesDisconnected?(params: Protocol.WebAudio.NodesDisconnectedEvent): void;
 
     /**
      * Notifies that an AudioNode is connected to an AudioParam.
      */
-    nodeParamConnected(params: Protocol.WebAudio.NodeParamConnectedEvent): void;
+    nodeParamConnected?(params: Protocol.WebAudio.NodeParamConnectedEvent): void;
 
     /**
      * Notifies that an AudioNode is disconnected to an AudioParam.
      */
-    nodeParamDisconnected(params: Protocol.WebAudio.NodeParamDisconnectedEvent): void;
+    nodeParamDisconnected?(params: Protocol.WebAudio.NodeParamDisconnectedEvent): void;
 
   }
 
@@ -4866,24 +4866,24 @@ declare namespace ProtocolProxyApi {
     /**
      * Triggered when a credential is added to an authenticator.
      */
-    credentialAdded(params: Protocol.WebAuthn.CredentialAddedEvent): void;
+    credentialAdded?(params: Protocol.WebAuthn.CredentialAddedEvent): void;
 
     /**
      * Triggered when a credential is deleted, e.g. through
      * PublicKeyCredential.signalUnknownCredential().
      */
-    credentialDeleted(params: Protocol.WebAuthn.CredentialDeletedEvent): void;
+    credentialDeleted?(params: Protocol.WebAuthn.CredentialDeletedEvent): void;
 
     /**
      * Triggered when a credential is updated, e.g. through
      * PublicKeyCredential.signalCurrentUserDetails().
      */
-    credentialUpdated(params: Protocol.WebAuthn.CredentialUpdatedEvent): void;
+    credentialUpdated?(params: Protocol.WebAuthn.CredentialUpdatedEvent): void;
 
     /**
      * Triggered when a credential is used in a webauthn assertion.
      */
-    credentialAsserted(params: Protocol.WebAuthn.CredentialAssertedEvent): void;
+    credentialAsserted?(params: Protocol.WebAuthn.CredentialAssertedEvent): void;
 
   }
 
@@ -4914,22 +4914,22 @@ declare namespace ProtocolProxyApi {
     /**
      * Event fired when new tools are added.
      */
-    toolsAdded(params: Protocol.WebMCP.ToolsAddedEvent): void;
+    toolsAdded?(params: Protocol.WebMCP.ToolsAddedEvent): void;
 
     /**
      * Event fired when tools are removed.
      */
-    toolsRemoved(params: Protocol.WebMCP.ToolsRemovedEvent): void;
+    toolsRemoved?(params: Protocol.WebMCP.ToolsRemovedEvent): void;
 
     /**
      * Event fired when a tool invocation starts.
      */
-    toolInvoked(params: Protocol.WebMCP.ToolInvokedEvent): void;
+    toolInvoked?(params: Protocol.WebMCP.ToolInvokedEvent): void;
 
     /**
      * Event fired when a tool invocation completes or fails.
      */
-    toolResponded(params: Protocol.WebMCP.ToolRespondedEvent): void;
+    toolResponded?(params: Protocol.WebMCP.ToolRespondedEvent): void;
 
   }
 
@@ -5136,28 +5136,28 @@ declare namespace ProtocolProxyApi {
      * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
      * @deprecated
      */
-    breakpointResolved(params: Protocol.Debugger.BreakpointResolvedEvent): void;
+    breakpointResolved?(params: Protocol.Debugger.BreakpointResolvedEvent): void;
 
     /**
      * Fired when the virtual machine stopped on breakpoint or exception or any other stop criteria.
      */
-    paused(params: Protocol.Debugger.PausedEvent): void;
+    paused?(params: Protocol.Debugger.PausedEvent): void;
 
     /**
      * Fired when the virtual machine resumed execution.
      */
-    resumed(): void;
+    resumed?(): void;
 
     /**
      * Fired when virtual machine fails to parse the script.
      */
-    scriptFailedToParse(params: Protocol.Debugger.ScriptFailedToParseEvent): void;
+    scriptFailedToParse?(params: Protocol.Debugger.ScriptFailedToParseEvent): void;
 
     /**
      * Fired when virtual machine parses script. This event is also fired for all known and uncollected
      * scripts upon enabling debugger.
      */
-    scriptParsed(params: Protocol.Debugger.ScriptParsedEvent): void;
+    scriptParsed?(params: Protocol.Debugger.ScriptParsedEvent): void;
 
   }
 
@@ -5192,23 +5192,23 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface HeapProfilerDispatcher {
-    addHeapSnapshotChunk(params: Protocol.HeapProfiler.AddHeapSnapshotChunkEvent): void;
+    addHeapSnapshotChunk?(params: Protocol.HeapProfiler.AddHeapSnapshotChunkEvent): void;
 
     /**
      * If heap objects tracking has been started then backend may send update for one or more fragments
      */
-    heapStatsUpdate(params: Protocol.HeapProfiler.HeapStatsUpdateEvent): void;
+    heapStatsUpdate?(params: Protocol.HeapProfiler.HeapStatsUpdateEvent): void;
 
     /**
      * If heap objects tracking has been started then backend regularly sends a current value for last
      * seen object id and corresponding timestamp. If the were changes in the heap since last event
      * then one or more heapStatsUpdate events will be sent before a new lastSeenObjectId event.
      */
-    lastSeenObjectId(params: Protocol.HeapProfiler.LastSeenObjectIdEvent): void;
+    lastSeenObjectId?(params: Protocol.HeapProfiler.LastSeenObjectIdEvent): void;
 
-    reportHeapSnapshotProgress(params: Protocol.HeapProfiler.ReportHeapSnapshotProgressEvent): void;
+    reportHeapSnapshotProgress?(params: Protocol.HeapProfiler.ReportHeapSnapshotProgressEvent): void;
 
-    resetProfiles(): void;
+    resetProfiles?(): void;
 
   }
 
@@ -5253,12 +5253,12 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface ProfilerDispatcher {
-    consoleProfileFinished(params: Protocol.Profiler.ConsoleProfileFinishedEvent): void;
+    consoleProfileFinished?(params: Protocol.Profiler.ConsoleProfileFinishedEvent): void;
 
     /**
      * Sent when new profile recording is started using console.profile() call.
      */
-    consoleProfileStarted(params: Protocol.Profiler.ConsoleProfileStartedEvent): void;
+    consoleProfileStarted?(params: Protocol.Profiler.ConsoleProfileStartedEvent): void;
 
     /**
      * Reports coverage delta since the last poll (either from an event like this, or from
@@ -5266,7 +5266,7 @@ declare namespace ProtocolProxyApi {
      * coverage has been started. This event can be trigged by the embedder to, for example,
      * trigger collection of coverage data immediately at a certain point in time.
      */
-    preciseCoverageDeltaUpdate(params: Protocol.Profiler.PreciseCoverageDeltaUpdateEvent): void;
+    preciseCoverageDeltaUpdate?(params: Protocol.Profiler.PreciseCoverageDeltaUpdateEvent): void;
 
   }
 
@@ -5398,43 +5398,43 @@ declare namespace ProtocolProxyApi {
     /**
      * Notification is issued every time when binding is called.
      */
-    bindingCalled(params: Protocol.Runtime.BindingCalledEvent): void;
+    bindingCalled?(params: Protocol.Runtime.BindingCalledEvent): void;
 
     /**
      * Issued when console API was called.
      */
-    consoleAPICalled(params: Protocol.Runtime.ConsoleAPICalledEvent): void;
+    consoleAPICalled?(params: Protocol.Runtime.ConsoleAPICalledEvent): void;
 
     /**
      * Issued when unhandled exception was revoked.
      */
-    exceptionRevoked(params: Protocol.Runtime.ExceptionRevokedEvent): void;
+    exceptionRevoked?(params: Protocol.Runtime.ExceptionRevokedEvent): void;
 
     /**
      * Issued when exception was thrown and unhandled.
      */
-    exceptionThrown(params: Protocol.Runtime.ExceptionThrownEvent): void;
+    exceptionThrown?(params: Protocol.Runtime.ExceptionThrownEvent): void;
 
     /**
      * Issued when new execution context is created.
      */
-    executionContextCreated(params: Protocol.Runtime.ExecutionContextCreatedEvent): void;
+    executionContextCreated?(params: Protocol.Runtime.ExecutionContextCreatedEvent): void;
 
     /**
      * Issued when execution context is destroyed.
      */
-    executionContextDestroyed(params: Protocol.Runtime.ExecutionContextDestroyedEvent): void;
+    executionContextDestroyed?(params: Protocol.Runtime.ExecutionContextDestroyedEvent): void;
 
     /**
      * Issued when all executionContexts were cleared in browser
      */
-    executionContextsCleared(): void;
+    executionContextsCleared?(): void;
 
     /**
      * Issued when object should be inspected (for example, as a result of inspect() command line API
      * call).
      */
-    inspectRequested(params: Protocol.Runtime.InspectRequestedEvent): void;
+    inspectRequested?(params: Protocol.Runtime.InspectRequestedEvent): void;
 
   }
 

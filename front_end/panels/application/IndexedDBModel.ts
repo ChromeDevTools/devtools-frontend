@@ -414,21 +414,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
       this.dispatchEventToListeners(Events.IndexedDBContentUpdated, {databaseId, objectStoreName, model: this});
     }
   }
-
-  cacheStorageListUpdated(_event: Protocol.Storage.CacheStorageListUpdatedEvent): void {
-  }
-
-  cacheStorageContentUpdated(_event: Protocol.Storage.CacheStorageContentUpdatedEvent): void {
-  }
-
-  storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void {
-  }
-
-  storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
-  }
-
-  privateVerificationTokensUpdated(): void {
-  }
 }
 
 SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.STORAGE, autostart: false});

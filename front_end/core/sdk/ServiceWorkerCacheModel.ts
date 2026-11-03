@@ -267,21 +267,6 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
     }
   }
 
-  indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void {
-  }
-
-  indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void {
-  }
-
-  storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void {
-  }
-
-  storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
-  }
-
-  privateVerificationTokensUpdated(): void {
-  }
-
   setThrottlerSchedulesAsSoonAsPossibleForTest(): void {
     this.#scheduleAsSoonAsPossible = true;
   }

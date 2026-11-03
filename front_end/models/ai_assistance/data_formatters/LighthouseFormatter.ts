@@ -58,6 +58,8 @@ export class LighthouseFormatter {
     }
     lines.push('');
     lines.push('## Failing audits');
+    lines.push(
+        'Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.');
     for (const [categoryId, category] of Object.entries(report.categories)) {
       lines.push('');
       lines.push(`### ${category.title} (categoryId: "${categoryId}")`);

@@ -10,6 +10,7 @@ Lighthouse Version: 12.0.0
 - Accessibility: 100
 
 ## Failing audits
+Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.
 
 ### Performance (categoryId: "performance")
 - First Audit: 80
@@ -197,6 +198,7 @@ Mode: navigation
 - Agentic Browsing: 1/2 audits passed
 
 ## Failing audits
+Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.
 
 ### Performance (categoryId: "performance")
 - First Audit: 80
@@ -216,6 +218,7 @@ Lighthouse Version: 12.0.0
 - Performance: 50
 
 ## Failing audits
+Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.
 
 ### Performance (categoryId: "performance")
 - First Audit: 80
@@ -232,6 +235,7 @@ The following audits in this category errored:
   * An audit that threw an error during execution.
   * Error: Audit execution timed out
 === end content
+
 Title: LighthouseFormatter excludes hidden audits
 Content:
 # Lighthouse Report Summary
@@ -243,6 +247,7 @@ Lighthouse Version: 12.0.0
 - Performance: 100
 
 ## Failing audits
+Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.
 
 ### Performance (categoryId: "performance")
 - No failing audits.
@@ -325,6 +330,7 @@ Lighthouse Version: 12.0.0
 - Performance: 80
 
 ## Failing audits
+Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.
 
 ### Agentic Browsing (categoryId: "agentic-browsing")
 - No audits scored below 90, but these informative audits report findings:

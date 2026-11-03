@@ -10,6 +10,7 @@ Lighthouse Version: 1.0.0
 - Accessibility: 50
 
 ## Failing audits
+Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.
 
 ### Accessibility (categoryId: "accessibility")
 - Accessibility Audit: 50
@@ -25,7 +26,7 @@ Content:
 [
   {
     "title": "Lighthouse report",
-    "text": "# Lighthouse Report:\n# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Accessibility: 50\n\n## Failing audits\n\n### Accessibility (categoryId: \"accessibility\")\n- Accessibility Audit: 50\n# Audits for Accessibility\n\nThe following audits in this category have a score below 90 and may need attention:\n- **Accessibility Audit**: 50 (Fail)\n  * Description of accessibility audit"
+    "text": "# Lighthouse Report:\n# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Accessibility: 50\n\n## Failing audits\nOnly audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.\n\n### Accessibility (categoryId: \"accessibility\")\n- Accessibility Audit: 50\n# Audits for Accessibility\n\nThe following audits in this category have a score below 90 and may need attention:\n- **Accessibility Audit**: 50 (Fail)\n  * Description of accessibility audit"
   }
 ]
 === end content
@@ -41,6 +42,7 @@ Lighthouse Version: 1.0.0
 - Accessibility: 50
 
 ## Failing audits
+Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.
 
 ### Accessibility (categoryId: "accessibility")
 - Accessibility Audit: 50
@@ -51,7 +53,7 @@ Content:
 [
   {
     "title": "Lighthouse report",
-    "text": "# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Accessibility: 50\n\n## Failing audits\n\n### Accessibility (categoryId: \"accessibility\")\n- Accessibility Audit: 50"
+    "text": "# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Accessibility: 50\n\n## Failing audits\nOnly audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.\n\n### Accessibility (categoryId: \"accessibility\")\n- Accessibility Audit: 50"
   }
 ]
 === end content

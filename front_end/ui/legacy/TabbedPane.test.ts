@@ -819,6 +819,27 @@ describeWithEnvironment('TabbedPaneElement', () => {
       assert.strictEqual(tab1.tabElement.style.width, `${tab1.width()}px`);
     });
 
+    it('reserves space for multi-digit badges without truncating the tab title', async () => {
+      const widget = renderTabbedPane(html`
+        <div id="tab1" title="Annotations" badge="1">Content 1</div>
+        <div id="tab2" title="Annotations" badge="12">Content 2</div>
+        <div id="tab3" title="Annotations" badge="99+">Content 3</div>`);
+      await doubleRaf();
+
+      const tab1 = widget.tabsById.get('tab1')!;
+      const tab2 = widget.tabsById.get('tab2')!;
+      const tab3 = widget.tabsById.get('tab3')!;
+
+      assert.isAbove(tab2.width(), tab1.width(), '2-digit badge tab should measure wider than 1-digit badge tab');
+      assert.isAbove(tab3.width(), tab2.width(), '3-character badge tab should measure wider than 2-digit badge tab');
+
+      for (const tab of [tab1, tab2, tab3]) {
+        const titleEl = tab.tabElement.querySelector<HTMLElement>('.tabbed-pane-header-tab-title');
+        assert.exists(titleEl);
+        assert.strictEqual(titleEl.scrollWidth, titleEl.clientWidth, 'tab title should not be truncated');
+      }
+    });
+
     it('detaches slots from the tab header when the tab is closed', async () => {
       const widget = renderTabbedPane(html`<div id="tab1" title="Tab 1">Content 1</div>`);
       await doubleRaf();

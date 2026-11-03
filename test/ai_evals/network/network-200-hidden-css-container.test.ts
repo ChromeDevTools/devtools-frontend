@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {openNetworkTab} from '../../e2e/helpers/network-helpers.js';
 import {
   setupAndRunEvalApp,
   stopEvalApp,
@@ -28,12 +27,11 @@ describe('Network AI Eval: network-200-hidden-css-container', function() {
     },
   });
 
-  it('launches app, navigates to initial URL, and executes prompt', async ({devToolsPage, inspectedPage, evalTask}) => {
+  it('launches app, navigates to initial URL, and executes prompt', async ({inspectedPage, evalTask}) => {
     const app = await setupAndRunEvalApp('', 'network-200-hidden-css-container');
     try {
       assert.isDefined(app.config.initialUrl, 'Expected initial_url to be defined in task.textproto');
 
-      await openNetworkTab(devToolsPage);
       await inspectedPage.page.goto(app.config.initialUrl, {waitUntil: 'networkidle0'});
 
       await evalTask.executePrompt({

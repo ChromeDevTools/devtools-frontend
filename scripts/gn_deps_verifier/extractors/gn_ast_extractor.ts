@@ -119,6 +119,17 @@ export class GnAstExtractor {
 
   async getTargetsForFile(filePath: string): Promise<string[]> {
     const absPath = path.resolve(this.rootDir, filePath);
+    const targets = await this.#lookupTargetsForFile(absPath);
+    if (targets.length > 0 || !absPath.endsWith('.ts') || absPath.endsWith('.d.ts')) {
+      return targets;
+    }
+    // An import of a source that is missing from the source tree resolves to
+    // its .ts path (see TypeScriptImportExtractor), but the generator that
+    // writes the source may write a .d.ts instead.
+    return await this.#lookupTargetsForFile(absPath.slice(0, -'.ts'.length) + '.d.ts');
+  }
+
+  async #lookupTargetsForFile(absPath: string): Promise<string[]> {
     if (this.#fileToTarget.has(absPath)) {
       return Array.from(this.#fileToTarget.get(absPath) ?? new Set());
     }

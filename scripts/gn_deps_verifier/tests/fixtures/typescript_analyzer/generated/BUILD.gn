@@ -23,3 +23,22 @@ ts_library("properties") {
   sources = [ "$target_gen_dir/Properties.ts" ]
   deps = [ ":generate_properties" ]
 }
+
+generated_ts("generate_properties_types") {
+  script = "generate_properties.py"
+  inputs = [ "properties.json" ]
+  outputs = [ "$target_gen_dir/PropertiesTypes.d.ts" ]
+  args = [
+    "--input",
+    rebase_path("properties.json", root_build_dir),
+    "--output",
+    rebase_path("$target_gen_dir/PropertiesTypes.d.ts", root_build_dir),
+  ]
+}
+
+# A generated .d.ts: imports of PropertiesTypes.js must find this target.
+ts_library("properties_types") {
+  rootdir = target_gen_dir
+  sources = [ "$target_gen_dir/PropertiesTypes.d.ts" ]
+  deps = [ ":generate_properties_types" ]
+}

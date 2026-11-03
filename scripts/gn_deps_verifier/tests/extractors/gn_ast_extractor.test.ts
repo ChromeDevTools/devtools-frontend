@@ -135,6 +135,15 @@ describe('GnAstExtractor', () => {
       assert.deepEqual(target, ['//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer/generated:properties']);
     });
 
+    it('maps the .ts path of a generated .d.ts source to its target', async () => {
+      // An import of a source missing from the source tree resolves to its
+      // .ts path, while the generator writes a .d.ts.
+      const generatedPath = path.join(FIXTURES_DIR, 'typescript_analyzer/generated/PropertiesTypes.ts');
+      const target = await extractor.getTargetsForFile(generatedPath);
+      assert.deepEqual(target,
+                       ['//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer/generated:properties_types']);
+    });
+
     it('finds target declared in an ancestor BUILD.gn when nearer BUILD.gn exists without the source', async () => {
       const tempDir = await fs.promises.mkdtemp(path.join(import.meta.dirname, 'gn-test-'));
       try {

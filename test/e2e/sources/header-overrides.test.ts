@@ -31,7 +31,7 @@ const HEADER_ROW_SELECTOR = '.row';
 
 async function createHeaderOverride(devToolsPage: DevToolsPage) {
   await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
-  await devToolsPage.waitFor('.being-edited');
+  await devToolsPage.waitFor('devtools-prompt[editing]');
   await devToolsPage.typeText('.headers\n');
   await devToolsPage.click('.add-block');
   await devToolsPage.waitFor('.editable.apply-to');
@@ -69,9 +69,12 @@ async function editorTabHasPurpleDot(devToolsPage: DevToolsPage): Promise<boolea
 }
 
 async function fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage: DevToolsPage): Promise<boolean> {
+  await devToolsPage.waitForFunction(async () => {
+    const activeElement = await devToolsPage.activeElement();
+    const title = await activeElement.evaluate(el => el.getAttribute('title')) || '';
+    return /\/test\/e2e\/resources\/network\/\.headers$/.test(title);
+  });
   const element = await devToolsPage.activeElement();
-  const title = await element.evaluate(e => e.getAttribute('title')) || '';
-  assert.match(title, /\/test\/e2e\/resources\/network\/\.headers$/);
   const fileTreeIcon = await element.waitForSelector(
       '.navigator-file-tree-item .leading-icons devtools-file-source-icon >>> devtools-icon');
   if (!fileTreeIcon) {

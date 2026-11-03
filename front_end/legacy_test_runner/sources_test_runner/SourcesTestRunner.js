@@ -35,7 +35,7 @@ export const dumpNavigatorView = function(navigatorView, dumpIcons) {
         titleText = titleText + '[' + iconTypes.join(', ') + '] ';
       }
     }
-    titleText += treeElement.title;
+    titleText += treeElement.titleAsText();
     const nodeType = innerNavigatorView.nodeForTreeElement(treeElement)?.type;
     if (nodeType === Sources.NavigatorView.Types.FileSystem ||
         nodeType === Sources.NavigatorView.Types.FileSystemFolder) {

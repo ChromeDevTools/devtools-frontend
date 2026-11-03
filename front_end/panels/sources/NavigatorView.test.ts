@@ -835,7 +835,7 @@ describeWithEnvironment('NavigatorView', () => {
       // 5. other: 'data.json'
       const exampleComNode = findTreeElement(navigatorView, el => el.title === 'example.com');
       assert.exists(exampleComNode);
-      const childTitles = exampleComNode.children().map(c => c.title);
+      const childTitles = exampleComNode.children().map(c => c.titleAsText());
       assert.deepEqual(childTitles, [
         'folder',
         'index.html',
@@ -1188,6 +1188,239 @@ describeWithEnvironment('NavigatorView', () => {
         clock.restore();
       }
     });
+
+    function getPrompt(targetNode: Sources.NavigatorView.NavigatorUISourceCodeTreeNode):
+        UI.TextPrompt.TextPromptElement|null {
+      return (targetNode.treeElement?.titleElement as HTMLElement | undefined)
+                 ?.querySelector<UI.TextPrompt.TextPromptElement>('devtools-prompt') ??
+          null;
+    }
+
+    it('renames file via <devtools-prompt> on commit', async () => {
+      const {project, uiSourceCode, navigatorView, node} = await setupSourceNode();
+      assert.exists(node);
+
+      const renameStub = sinon.stub(uiSourceCode, 'rename').callsFake(async newTitle => {
+        sinon.stub(uiSourceCode, 'displayName').returns(newTitle);
+        return true;
+      });
+      const callbackSpy = sinon.spy();
+      const renameDone = new Promise<boolean>(resolve => node.rename(committed => {
+        callbackSpy(committed);
+        resolve(committed);
+      }));
+
+      assert.isTrue(node.isEditing);
+      assert.isTrue(navigatorView.isRenaming());
+      const prompt = getPrompt(node);
+      assert.exists(prompt);
+      assert.isTrue(prompt.hasAttribute('editing'));
+      assert.strictEqual(prompt.getAttribute('value'), 'script.js');
+      assert.isFalse(prompt.hasAttribute('aria-label'));
+
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('renamed.js'));
+      await renameDone;
+
+      sinon.assert.calledOnceWithExactly(renameStub, 'renamed.js' as Platform.DevToolsPath.RawPathString);
+      sinon.assert.calledOnceWithExactly(callbackSpy, true);
+      assert.isFalse(node.isEditing);
+      assert.isFalse(navigatorView.isRenaming());
+      assert.isFalse(prompt.hasAttribute('editing'));
+      assert.isFalse(prompt.hasAttribute('aria-label'));
+      assert.strictEqual(node.treeElement?.titleElement.textContent, 'renamed.js');
+      project.removeProject();
+    });
+
+    it('cancels renaming via <devtools-prompt> on cancel', async () => {
+      const {project, uiSourceCode, navigatorView, node} = await setupSourceNode();
+      assert.exists(node);
+
+      const renameStub = sinon.stub(uiSourceCode, 'rename');
+      const callbackSpy = sinon.spy();
+      node.rename(callbackSpy);
+
+      assert.isTrue(node.isEditing);
+      assert.isTrue(navigatorView.isRenaming());
+      assert.isFalse(navigatorView.shouldRenameOnMouseDown(node));
+      const prompt = getPrompt(node);
+      assert.exists(prompt);
+
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+
+      sinon.assert.notCalled(renameStub);
+      sinon.assert.calledOnceWithExactly(callbackSpy, false);
+      assert.isFalse(node.isEditing);
+      assert.isFalse(navigatorView.isRenaming());
+      assert.isFalse(prompt.hasAttribute('editing'));
+      assert.strictEqual(node.title, 'script.js');
+      assert.strictEqual(node.treeElement?.titleElement.textContent, 'script.js');
+      assert.strictEqual(node.treeElement?.titleAsText(), 'script.js');
+      project.removeProject();
+    });
+
+    it('renames dirty file without leading asterisk and restores asterisk on cancel', async () => {
+      const {project, uiSourceCode, navigatorView, node} = await setupSourceNode();
+      assert.exists(node);
+
+      uiSourceCode.setWorkingCopy('modified content');
+      assert.isTrue(uiSourceCode.isDirty());
+      assert.strictEqual(node.title, '*script.js');
+      assert.strictEqual(node.treeElement?.titleElement.textContent, '*script.js');
+      assert.strictEqual(node.treeElement?.titleAsText(), '*script.js');
+
+      const callbackSpy = sinon.spy();
+      node.rename(callbackSpy);
+
+      assert.isTrue(node.isEditing);
+      assert.isTrue(navigatorView.isRenaming());
+      const prompt = getPrompt(node);
+      assert.exists(prompt);
+      assert.strictEqual(prompt.getAttribute('value'), 'script.js');
+
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+
+      sinon.assert.calledOnceWithExactly(callbackSpy, false);
+      assert.isFalse(node.isEditing);
+      assert.isFalse(navigatorView.isRenaming());
+      assert.isFalse(prompt.hasAttribute('editing'));
+      assert.strictEqual(node.title, '*script.js');
+      assert.strictEqual(node.treeElement?.titleElement.textContent, '*script.js');
+      assert.strictEqual(node.treeElement?.titleAsText(), '*script.js');
+      project.removeProject();
+    });
+
+    it('does not steal focus or reveal when renaming', async () => {
+      const {project, navigatorView, node} = await setupSourceNode();
+      assert.exists(node);
+      const mainFrame = await getMainFrame(target);
+      const otherUrl = urlString`http://example.com/other.js`;
+      const {uiSourceCode: otherUiSourceCode} = addResourceAndUISourceCode(otherUrl, mainFrame, '', 'text/javascript');
+
+      navigatorView.selectNode(node);
+      node.rename();
+      assert.isTrue(navigatorView.isRenaming());
+
+      const revealed = navigatorView.revealUISourceCode(otherUiSourceCode, true);
+      assert.isNull(revealed);
+      assert.isTrue(navigatorView.isNodeSelected(node));
+
+      getPrompt(node)?.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      assert.isFalse(navigatorView.isRenaming());
+
+      const revealedAfter = navigatorView.revealUISourceCode(otherUiSourceCode, true);
+      assert.isNotNull(revealedAfter);
+      assert.isTrue(navigatorView.isNodeSelected(revealedAfter));
+
+      project.removeProject();
+    });
+
+    it('retries rename when UISourceCode.rename fails', async () => {
+      const {project, uiSourceCode, node} = await setupSourceNode();
+      assert.exists(node);
+
+      const renameStub = sinon.stub(uiSourceCode, 'rename');
+      const firstRenamePromise = Promise.resolve(false);
+      renameStub.onFirstCall().returns(firstRenamePromise);
+      renameStub.onSecondCall().resolves(true);
+
+      const callbackSpy = sinon.spy();
+      const renameDone = new Promise<boolean>(resolve => node.rename(committed => {
+        callbackSpy(committed);
+        resolve(committed);
+      }));
+
+      let prompt = getPrompt(node);
+      assert.exists(prompt);
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('invalid.js'));
+      await firstRenamePromise;
+      await Promise.resolve();
+
+      sinon.assert.notCalled(callbackSpy);
+      prompt = getPrompt(node);
+      assert.exists(prompt);
+      assert.isTrue(node.isEditing);
+
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('valid.js'));
+      await renameDone;
+
+      sinon.assert.calledOnceWithExactly(callbackSpy, true);
+      assert.isFalse(node.isEditing);
+      project.removeProject();
+    });
+
+    it('removes newly created file when rename is canceled', async () => {
+      const {project, navigatorView} = await setupSourceNode();
+      const removeSpy = sinon.spy();
+      const newUrl = urlString`http://example.com/new-script.js`;
+      const createdUISourceCode = project.createUISourceCode(newUrl, Common.ResourceType.resourceTypes.Script);
+      project.addUISourceCode(createdUISourceCode);
+      sinon.stub(createdUISourceCode, 'remove').callsFake(() => {
+        removeSpy();
+        project.removeUISourceCode(newUrl);
+      });
+
+      sinon.stub(project, 'createFile').resolves(createdUISourceCode);
+      const renameSpy = sinon.spy(navigatorView, 'rename');
+
+      await navigatorView.create(project, 'new-script.js' as Platform.DevToolsPath.EncodedPathString);
+      await navigatorView.updateComplete;
+
+      sinon.assert.calledOnce(renameSpy);
+      const [node, creatingNew] = renameSpy.firstCall.args;
+      assert.isTrue(creatingNew);
+      assert.isTrue(node.isEditing);
+
+      const prompt = getPrompt(node);
+      assert.exists(prompt);
+
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+
+      sinon.assert.calledOnce(removeSpy);
+      assert.isFalse(node.isEditing);
+      project.removeProject();
+    });
+
+    it('cancels rename and clears renaming state when UISourceCode is removed during rename', async () => {
+      const {project, uiSourceCode, navigatorView, node} = await setupSourceNode();
+      assert.exists(node);
+
+      const callbackSpy = sinon.spy();
+      node.rename(callbackSpy);
+      assert.isTrue(navigatorView.isRenaming());
+
+      const mainFrame = await getMainFrame(target);
+      const otherUrl = urlString`http://example.com/other.js`;
+      const {uiSourceCode: otherUISourceCode} =
+          addResourceAndUISourceCode(otherUrl, mainFrame, '', 'text/javascript', project);
+      await navigatorView.updateComplete;
+
+      project.removeUISourceCode(uiSourceCode.url());
+      await navigatorView.updateComplete;
+
+      assert.isFalse(navigatorView.isRenaming());
+      sinon.assert.calledOnceWithExactly(callbackSpy, false);
+
+      const revealedNode = navigatorView.revealUISourceCode(otherUISourceCode);
+      assert.isNotNull(revealedNode);
+
+      project.removeProject();
+    });
+
+    it('clears renaming state when NavigatorView is reset during rename', async () => {
+      const {project, navigatorView, node} = await setupSourceNode();
+      assert.exists(node);
+
+      const callbackSpy = sinon.spy();
+      node.rename(callbackSpy);
+      assert.isTrue(navigatorView.isRenaming());
+
+      navigatorView.reset();
+
+      assert.isFalse(navigatorView.isRenaming());
+      sinon.assert.calledOnceWithExactly(callbackSpy, false);
+
+      project.removeProject();
+    });
   });
 
   describe('context menus', () => {
@@ -1263,8 +1496,8 @@ describeWithEnvironment('NavigatorView', () => {
       assert.isTrue(navigatorView.isNodeExpanded(folderNode));
       assert.isTrue(folderNode.isPopulated());
       assert.lengthOf(folderTreeElement.children(), 2);
-      assert.strictEqual(folderTreeElement.children()[0].title, 'a.js');
-      assert.strictEqual(folderTreeElement.children()[1].title, 'b.js');
+      assert.strictEqual(folderTreeElement.children()[0].titleAsText(), 'a.js');
+      assert.strictEqual(folderTreeElement.children()[1].titleAsText(), 'b.js');
 
       project.removeProject();
     });

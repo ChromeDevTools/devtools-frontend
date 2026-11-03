@@ -123,7 +123,7 @@ describe('NetworkNavigatorView', () => {
       const file = folder?.firstChild();
 
       assert.strictEqual(folder?.title, 'example.com');
-      assert.strictEqual(file?.title, 'script.js');
+      assert.strictEqual(file?.titleAsText(), 'script.js');
 
       project.removeProject();
     });
@@ -228,7 +228,7 @@ describe('NetworkNavigatorView', () => {
          const exampleComNode = rootElement.firstChild();
          assert.exists(exampleComNode);
 
-         const childTitles = exampleComNode.children().map(child => child.title);
+         const childTitles = exampleComNode.children().map(child => child.titleAsText());
          assert.include(childTitles, 'external.css');
          assert.lengthOf(childTitles.filter(title => title === '(index)'), 1);
          assert.deepEqual(childTitles, ['(index)', 'gtm.js', 'external.css', 'favicon.ico']);
@@ -264,14 +264,15 @@ describe('NetworkNavigatorView', () => {
     let rootElement = navigatorView.scriptsTree.rootElement();
     assert.strictEqual(rootElement.childCount(), 1);
     assert.strictEqual(rootElement.firstChild()?.childCount(), 3);
-    assert.deepEqual(rootElement.firstChild()?.children().map(i => i.title), ['(index)', 'gtm.js', 'favicon.ico']);
+    assert.deepEqual(rootElement.firstChild()?.children().map(i => i.titleAsText()),
+                     ['(index)', 'gtm.js', 'favicon.ico']);
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
 
     rootElement = navigatorView.scriptsTree.rootElement();
     assert.strictEqual(rootElement.childCount(), 1);
     assert.strictEqual(rootElement.firstChild()?.childCount(), 2);
-    assert.deepEqual(rootElement.firstChild()?.children().map(i => i.title), ['(index)', 'background.bmp']);
+    assert.deepEqual(rootElement.firstChild()?.children().map(i => i.titleAsText()), ['(index)', 'background.bmp']);
 
     project.removeProject();
     anotherProject.removeProject();
@@ -814,15 +815,15 @@ describe('FilesNavigatorView', () => {
 
     const badProjectNode = children.find((c: UI.TreeOutline.TreeElement) => c.title === 'bad/foo/bar');
     assert.strictEqual(badProjectNode?.childCount(), 1);
-    assert.strictEqual(badProjectNode?.childAt(0)?.title, '2.js');
+    assert.strictEqual(badProjectNode?.childAt(0)?.titleAsText(), '2.js');
 
     const goodProjectNode = children.find((c: UI.TreeOutline.TreeElement) => c.title === 'good/foo/bar');
     assert.strictEqual(goodProjectNode?.childCount(), 1);
-    assert.strictEqual(goodProjectNode?.childAt(0)?.title, '1.js');
+    assert.strictEqual(goodProjectNode?.childAt(0)?.titleAsText(), '1.js');
 
     const uglyProjectNode = children.find((c: UI.TreeOutline.TreeElement) => c.title === 'ugly/bar');
     assert.strictEqual(uglyProjectNode?.childCount(), 1);
-    assert.strictEqual(uglyProjectNode?.childAt(0)?.title, '3.js');
+    assert.strictEqual(uglyProjectNode?.childAt(0)?.titleAsText(), '3.js');
 
     project1.removeProject();
     project2.removeProject();

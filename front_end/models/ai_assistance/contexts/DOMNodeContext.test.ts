@@ -97,6 +97,24 @@ describe('DOMNodeContext', function() {
     snapshotTester.assert(this, result);
   });
 
+  it('describes an element with a single child element node including its uid', async function() {
+    const childNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    childNode.nodeType.returns(1);
+    childNode.simpleSelector.returns('span.only-child');
+    childNode.backendNodeId.returns(42 as unknown as ReturnType<SDK.DOMModel.DOMNode['backendNodeId']>);
+
+    element.simpleSelector.returns('div#parentElement');
+    element.getChildNodesPromise.resolves([childNode]);
+    element.nextSibling = null;
+    element.previousSibling = null;
+    element.parentNode = null;
+
+    const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
+    const result = await nodeContext.describe();
+
+    assert.include(result, '* It only has 1 child element node: `span.only-child` (uid=42)');
+  });
+
   it('describes an element with siblings and a parent', async function() {
     const nextSibling = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     nextSibling.nodeType.returns(1);

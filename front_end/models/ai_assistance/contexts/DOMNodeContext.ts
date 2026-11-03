@@ -127,16 +127,17 @@ ${await this.describe()}`;
       const textChildNodes = childNodes.filter(childNode => childNode.nodeType() === SDK.DOMModel.NodeType.TEXT_NODE);
       const elementChildNodes =
           childNodes.filter(childNode => childNode.nodeType() === SDK.DOMModel.NodeType.ELEMENT_NODE);
+      const formattedChildren =
+          elementChildNodes.map(node => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(', ');
       switch (elementChildNodes.length) {
         case 0:
           output += '\n* It doesn\'t have any child element nodes';
           break;
         case 1:
-          output += `\n* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
+          output += `\n* It only has 1 child element node: ${formattedChildren}`;
           break;
         default:
-          output += `\n* It has ${elementChildNodes.length} child element nodes: ${
-              elementChildNodes.map(node => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(', ')}`;
+          output += `\n* It has ${elementChildNodes.length} child element nodes: ${formattedChildren}`;
       }
 
       switch (textChildNodes.length) {

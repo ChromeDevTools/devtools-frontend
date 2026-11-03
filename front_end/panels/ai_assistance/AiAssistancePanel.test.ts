@@ -1383,12 +1383,17 @@ describeWithEnvironment('AI Assistance Panel', () => {
     let expectedLearnSkill: number;
     let expectedToolCall: number;
     let expectedPermissionPromptShown: number;
+    let expectedPermissionAllowedOnce: number;
+    let expectedPermissionAllowedAlways: number;
+    let expectedPermissionRejected: number;
     let expectedError: number;
     let expectedContextDomNode: number;
     let expectedContextNone: number;
     let expectedStylingSkill: number;
     let expectedGetStylesTool: number;
     let expectedGetCookieValuesTool: number;
+    let expectedGetStorageValuesTool: number;
+    let expectedExecuteJsTool: number;
     let expectedInspectDomTool: number;
     let expectedLearnSkillsTool: number;
     let expectedMaxStepsError: number;
@@ -1411,12 +1416,17 @@ describeWithEnvironment('AI Assistance Panel', () => {
       expectedLearnSkill = await getVeHash('ai-v2-learn-skill');
       expectedToolCall = await getVeHash('ai-v2-tool-call');
       expectedPermissionPromptShown = await getVeHash('ai-permission-prompt-shown');
+      expectedPermissionAllowedOnce = await getVeHash('ai-permission-allowed-once');
+      expectedPermissionAllowedAlways = await getVeHash('ai-permission-allowed-always');
+      expectedPermissionRejected = await getVeHash('ai-permission-rejected');
       expectedError = await getVeHash('ai-v2-error');
       expectedContextDomNode = await getVeHash('ai-context-dom-node');
       expectedContextNone = await getVeHash('ai-context-none');
       expectedStylingSkill = await getVeHash('styling');
       expectedGetStylesTool = await getVeHash('get-styles');
       expectedGetCookieValuesTool = await getVeHash('get-cookie-values');
+      expectedGetStorageValuesTool = await getVeHash('get-storage-values');
+      expectedExecuteJsTool = await getVeHash('execute-java-script');
       expectedInspectDomTool = await getVeHash('inspect-dom');
       expectedLearnSkillsTool = await getVeHash('learn-skills');
       expectedMaxStepsError = await getVeHash('max-steps');
@@ -1593,6 +1603,84 @@ describeWithEnvironment('AI Assistance Panel', () => {
 
       confirmPromise.resolve(AiAssistanceModel.Tool.PermissionDecision.REJECT);
       await waitForLoadingToFinish(view);
+    });
+
+    it('logs per-tool permission decisions for allow-once, allow-always, and reject', async () => {
+      stubPerformanceNow();
+      const cookieConfirm = Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      const storageConfirm = Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      const jsConfirm = Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+
+      sinon.stub(AiAssistanceModel.AiAgent2.AiAgent2.prototype, 'run').returns((async function*() {
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+          callId: 'call-1',
+          description: 'Allow reading cookie session?',
+          confirm: cookieConfirm.resolve,
+          permissionPrompt: AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE,
+          toolName: 'getCookieValues',
+        };
+        await cookieConfirm.promise;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+          callId: 'call-2',
+          description: 'Allow reading storage?',
+          confirm: storageConfirm.resolve,
+          permissionPrompt: AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS,
+          toolName: 'getStorageValues',
+        };
+        await storageConfirm.promise;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+          callId: 'call-3',
+          description: 'Allow running JS?',
+          confirm: jsConfirm.resolve,
+          permissionPrompt: AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE,
+          toolName: 'executeJavaScript',
+        };
+        await jsConfirm.promise;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Done',
+          complete: true,
+        };
+      })());
+
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      nextInput.props.onTextSubmit('run tools');
+
+      const cookieDialog = await waitForSideEffectDialog(view);
+      // Ignored inside the 500 ms input-protection window; should not advance to the next prompt.
+      cookieDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+
+      approveSideEffect(cookieDialog, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+
+      const storageDialog = await waitForSideEffectDialog(view);
+      approveSideEffect(storageDialog, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS);
+
+      const jsDialog = await waitForSideEffectDialog(view);
+      jsDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.REJECT);
+      await waitForLoadingToFinish(view);
+
+      sinon.assert.calledOnceWithExactly(
+          recordFunctionCallStub.withArgs(sinon.match({name: expectedPermissionAllowedOnce})), {
+            name: expectedPermissionAllowedOnce,
+            context: expectedGetCookieValuesTool,
+          });
+      sinon.assert.calledOnceWithExactly(
+          recordFunctionCallStub.withArgs(sinon.match({name: expectedPermissionAllowedAlways})), {
+            name: expectedPermissionAllowedAlways,
+            context: expectedGetStorageValuesTool,
+          });
+      sinon.assert.calledOnceWithExactly(
+          recordFunctionCallStub.withArgs(sinon.match({name: expectedPermissionRejected})), {
+            name: expectedPermissionRejected,
+            context: expectedExecuteJsTool,
+          });
     });
 
     it('does not log tool, skill, permission, or error telemetry when replaying a read-only historic conversation',

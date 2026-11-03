@@ -1937,6 +1937,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             const approvalStep = step;
             approvalStep.javascriptCode = data.javascriptCode;
             const promptShownAt = performance.now();
+            const toolNameForLogging =
+                data.toolName !== undefined ? Platform.StringUtilities.toKebabCase(data.toolName) : undefined;
             approvalStep.state = {
               type: 'needs_approval',
               sideEffectDialog: {
@@ -1948,6 +1950,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                       performance.now() - promptShownAt < PERMISSION_PROMPT_INPUT_PROTECTION_MS) {
                     return;
                   }
+                  if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() &&
+                      !this.#conversation?.isReadOnly) {
+                    switch (decision) {
+                      case AiAssistanceModel.Tool.PermissionDecision.REJECT:
+                        void VisualLogging.logFunctionCall('ai-permission-rejected', toolNameForLogging);
+                        break;
+                      case AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE:
+                        void VisualLogging.logFunctionCall('ai-permission-allowed-once', toolNameForLogging);
+                        break;
+                      case AiAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS:
+                        void VisualLogging.logFunctionCall('ai-permission-allowed-always', toolNameForLogging);
+                        break;
+                    }
+                  }
                   data.confirm(decision);
                   approvalStep.state = {type: 'completed'};
                   this.requestUpdate();
@@ -1956,9 +1972,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             };
             commitStep();
             if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() && !this.#conversation?.isReadOnly) {
-              void VisualLogging.logFunctionCall(
-                  'ai-permission-prompt-shown',
-                  data.toolName !== undefined ? Platform.StringUtilities.toKebabCase(data.toolName) : undefined);
+              void VisualLogging.logFunctionCall('ai-permission-prompt-shown', toolNameForLogging);
             }
             break;
           }

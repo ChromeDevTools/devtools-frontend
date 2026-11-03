@@ -6,7 +6,7 @@
 .media-messages-header {
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  min-height: 26px;
+  flex: none;
 }
 
 .media-messages-body {

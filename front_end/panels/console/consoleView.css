@@ -293,7 +293,7 @@
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus .command-result-icon {
-  top: 3px;
+  top: var(--sys-size-1);
 }
 
 .console-message-wrapper .nesting-level-marker {

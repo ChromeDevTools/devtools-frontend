@@ -27,7 +27,7 @@
 }
 
 .network-config-fields > span:first-of-type {
-  padding: 3px 0;
+  padding: var(--sys-size-2) 0;
 }
 
 .panel-section-separator {

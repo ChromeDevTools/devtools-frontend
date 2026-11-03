@@ -33,6 +33,10 @@ const UIStrings = {
    */
   noRecordings: '(no recordings)',
   /**
+   * @description Status shown while Web Audio inspection is suspended, for example during a Performance recording.
+   */
+  webAudioInspectionPaused: 'Web Audio inspection paused',
+  /**
    * @description Label prefix for an audio context selection.
    * @example {realtime (1e03ec)} PH1
    */
@@ -79,6 +83,7 @@ const WEBAUDIO_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/webaudio' as Platform.DevToolsPath.UrlString;
 
 export interface ViewInput {
+  suspended: boolean;
   contexts: Protocol.WebAudio.BaseAudioContext[];
   selectedContextIndex: number;
   onContextSelectorSelectionChanged: (contextId: string) => void;
@@ -106,7 +111,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
     <style>${webAudioStyles}</style>
-    <div class="web-audio-toolbar-container vbox" role="toolbar">
+    <div class="web-audio-toolbar-container vbox" role="toolbar" ?hidden=${input.suspended}>
       <devtools-toolbar class="web-audio-toolbar" role="presentation"
           jslog=${VisualLogging.toolbar()}>
         <devtools-button ${bindToAction('components.collect-garbage')}></devtools-button>
@@ -126,6 +131,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       </devtools-toolbar>
     </div>
     <div class="web-audio-content-container vbox flex-auto">
+      ${input.suspended ? html`
+        <div class="web-audio-paused" role="status">${i18nString(UIStrings.webAudioInspectionPaused)}</div>
+      ` : html`
       ${!selectedContext ? html`
         <div class="web-audio-details-container vbox flex-auto">
           ${widget(UI.EmptyWidget.EmptyWidget,
@@ -179,6 +187,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                 (contextRealtimeData.renderCapacity * 100).toFixed(3)} %</span>
           </div>` : ''}
       </div>
+      `}
     </div>`, target, {container: {attributes: {jslog: `${VisualLogging.panel('web-audio').track({resize: true})}`}}});
   // clang-format on
 };
@@ -191,6 +200,7 @@ export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
   private readonly view: View;
   private selectedContextIndex = -1;
   private readonly pollRealtimeDataThrottler: Common.Throttler.Throttler;
+  #suspended = false;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super({useShadowDom: 'pure'});
@@ -206,13 +216,18 @@ export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
 
   override wasShown(): void {
     super.wasShown();
+    SDK.TargetManager.TargetManager.instance().addEventListener(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED,
+                                                                this.#updateSuspendedState, this);
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       this.addEventListeners(model);
     }
+    this.#updateSuspendedState();
   }
 
   override willHide(): void {
     super.willHide();
+    SDK.TargetManager.TargetManager.instance().removeEventListener(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED,
+                                                                   this.#updateSuspendedState, this);
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       this.removeEventListeners(model);
     }
@@ -230,12 +245,23 @@ export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
 
   override performUpdate(): void {
     const input = {
+      suspended: this.#suspended,
       contexts: [...this.contextSelectorItems],
       selectedContextIndex: this.selectedContextIndex,
       onContextSelectorSelectionChanged: this.onContextSelectorSelectionChanged.bind(this),
       contextRealtimeData: this.contextRealtimeData,
     };
     this.view(input, undefined, this.contentElement);
+  }
+
+  #updateSuspendedState(): void {
+    this.#suspended = SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
+    if (this.#suspended) {
+      this.reset();
+    } else {
+      void this.pollRealtimeDataThrottler.schedule(this.pollRealtimeData.bind(this));
+    }
+    this.requestUpdate();
   }
 
   private addEventListeners(webAudioModel: WebAudioModel): void {
@@ -305,6 +331,7 @@ export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
   private reset(): void {
     this.contextSelectorItems.replaceAll([]);
     this.selectedContextIndex = -1;
+    this.contextRealtimeData = null;
 
     this.knownContexts.clear();
     this.requestUpdate();
@@ -316,6 +343,9 @@ export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
   }
 
   private async pollRealtimeData(): Promise<void> {
+    if (this.#suspended || !this.isShowing()) {
+      return;
+    }
     if (this.selectedContextIndex < 0) {
       this.setContextRealtimeData(null);
       return;
@@ -334,6 +364,9 @@ export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
           continue;
         }
         const realtimeData = await model.requestRealtimeData(context.contextId);
+        if (this.#suspended || !this.isShowing()) {
+          return;
+        }
         if (realtimeData) {
           this.setContextRealtimeData(realtimeData);
         }

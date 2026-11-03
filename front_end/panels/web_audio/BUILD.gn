@@ -60,6 +60,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "WebAudioModel.test.ts",
     "WebAudioView.test.ts",
     "web_audio.test.ts",
   ]
@@ -67,6 +68,7 @@ devtools_ui_module("unittests") {
   ts_deps = [
     ":bundle",
     "../../core/platform:bundle",
+    "../../core/sdk:bundle",
     "../../generated",
     "../../testing",
     "../../ui/legacy:bundle",

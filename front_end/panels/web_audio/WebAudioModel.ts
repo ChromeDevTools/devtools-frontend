@@ -8,11 +8,13 @@ import type * as Protocol from '../../generated/protocol.js';
 
 export class WebAudioModel extends SDK.SDKModel.SDKModel<EventTypes> implements ProtocolProxyApi.WebAudioDispatcher {
   private enabled: boolean;
+  #suspended: boolean;
   private readonly agent: ProtocolProxyApi.WebAudioApi;
   constructor(target: SDK.Target.Target) {
     super(target);
 
     this.enabled = false;
+    this.#suspended = target.suspended();
 
     this.agent = target.webAudioAgent();
     target.registerWebAudioDispatcher(this);
@@ -34,23 +36,27 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel<EventTypes> implements 
   }
 
   override async suspendModel(): Promise<void> {
+    this.#suspended = true;
     this.dispatchEventToListeners(Events.MODEL_SUSPEND);
     await this.agent.invoke_disable();
+    this.flushContexts();
   }
 
   override async resumeModel(): Promise<void> {
-    if (!this.enabled) {
-      return await Promise.resolve();
+    if (this.enabled) {
+      await this.agent.invoke_enable();
     }
-    await this.agent.invoke_enable();
+    this.#suspended = false;
   }
 
   ensureEnabled(): void {
     if (this.enabled) {
       return;
     }
-    void this.agent.invoke_enable();
     this.enabled = true;
+    if (!this.#suspended) {
+      void this.agent.invoke_enable();
+    }
   }
 
   contextCreated({context}: Protocol.WebAudio.ContextCreatedEvent): void {
@@ -114,8 +120,11 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel<EventTypes> implements 
 
   async requestRealtimeData(contextId: Protocol.WebAudio.GraphObjectId):
       Promise<Protocol.WebAudio.ContextRealtimeData|null> {
+    if (this.#suspended) {
+      return null;
+    }
     const realtimeResponse = await this.agent.invoke_getRealtimeData({contextId});
-    return realtimeResponse.realtimeData;
+    return this.#suspended ? null : realtimeResponse.realtimeData;
   }
 }
 

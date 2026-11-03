@@ -14,8 +14,22 @@
   min-height: fit-content;
 }
 
+.web-audio-toolbar-container[hidden] {
+  display: none;
+}
+
 .web-audio-content-container {
   overflow-y: auto;
+}
+
+.web-audio-paused {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: var(--sys-typescale-headline5);
+  color: var(--sys-color-on-surface-subtle);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .web-audio-details-container {

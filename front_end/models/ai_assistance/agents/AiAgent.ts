@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as TextUtils from '../../../core/text_utils/text_utils.js';
@@ -1178,6 +1178,8 @@ export abstract class AiAgent<T> {
           rpcId: Host.AidaClient.RpcGlobalId|undefined,
           ): AsyncGenerator<ResponseData, void, void> {
     if (!textResponse) {
+      debugLog('[AiAgent] Model returned an empty text response without tool calls:',
+               {step: stepIndex + 1, rpcId, functionCalls});
       yield this.#createErrorResponse(ErrorType.UNKNOWN);
       return;
     }
@@ -1566,7 +1568,8 @@ export abstract class AiAgent<T> {
         aidaResponse,
       });
       try {
-        localStorage.setItem('aiAssistanceStructuredLog', JSON.stringify(this.#structuredLog));
+        Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem('aiAssistanceStructuredLog',
+                                                                     JSON.stringify(this.#structuredLog));
       } catch (err) {
         console.warn('Failed to write to local storage "aiAssistanceStructuredLog":', err);
       }

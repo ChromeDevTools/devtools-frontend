@@ -6,20 +6,14 @@
  * @file Local debugging utilities.
  */
 
+import * as Platform from '../../core/platform/platform.js';
+
 export function isDebugMode(): boolean {
-  try {
-    return Boolean(localStorage.getItem('debugAiAssistancePanelEnabled'));
-  } catch {
-    return false;
-  }
+  return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem('debugAiAssistancePanelEnabled'));
 }
 
 export function isStructuredLogEnabled(): boolean {
-  try {
-    return Boolean(localStorage.getItem('aiAssistanceStructuredLogEnabled'));
-  } catch {
-    return false;
-  }
+  return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem('aiAssistanceStructuredLogEnabled'));
 }
 
 export function debugLog(...log: unknown[]): void {
@@ -32,10 +26,11 @@ export function debugLog(...log: unknown[]): void {
 }
 
 function setDebugAiAssistanceEnabled(enabled: boolean): void {
+  const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
   if (enabled) {
-    localStorage.setItem('debugAiAssistancePanelEnabled', 'true');
+    localStorage?.setItem('debugAiAssistancePanelEnabled', 'true');
   } else {
-    localStorage.removeItem('debugAiAssistancePanelEnabled');
+    localStorage?.removeItem('debugAiAssistancePanelEnabled');
   }
   setAiAssistanceStructuredLogEnabled(enabled);
 }
@@ -43,10 +38,11 @@ function setDebugAiAssistanceEnabled(enabled: boolean): void {
 globalThis.setDebugAiAssistanceEnabled = setDebugAiAssistanceEnabled;
 
 function setAiAssistanceStructuredLogEnabled(enabled: boolean): void {
+  const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
   if (enabled) {
-    localStorage.setItem('aiAssistanceStructuredLogEnabled', 'true');
+    localStorage?.setItem('aiAssistanceStructuredLogEnabled', 'true');
   } else {
-    localStorage.removeItem('aiAssistanceStructuredLogEnabled');
+    localStorage?.removeItem('aiAssistanceStructuredLogEnabled');
   }
 }
 // @ts-expect-error

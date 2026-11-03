@@ -7,6 +7,7 @@ import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Host from '../../../core/host/host.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {mockAidaClient, MockAidaPayloadLimitError, MockAidaQuotaError} from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
@@ -422,6 +423,73 @@ describe('AiAgent', () => {
         },
       ]);
     });
+
+    it('should yield unknown error and log diagnostic details when model returns an empty text response without tool calls',
+       async () => {
+         const mockStorage: Storage = {
+           length: 0,
+           clear: () => {},
+           getItem: (key: string) => key === 'debugAiAssistancePanelEnabled' ? 'true' : null,
+           key: () => null,
+           removeItem: () => {},
+           setItem: () => {},
+         };
+         sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getLocalStorage').returns(mockStorage);
+         const consoleLogStub = sinon.stub(console, 'log');
+         const agent = new AiAgentMock({
+           aidaClient: mockAidaClient([[{explanation: '', metadata: {rpcGlobalId: 123}}]]),
+         });
+
+         const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+         assert.deepEqual(responses, [
+           {
+             type: AiAssistance.AiAgent.ResponseType.QUERYING,
+           },
+           {
+             type: AiAssistance.AiAgent.ResponseType.ERROR,
+             error: AiAssistance.AiAgent.ErrorType.UNKNOWN,
+           },
+         ]);
+         sinon.assert.calledWithExactly(consoleLogStub,
+                                        '[AiAgent] Model returned an empty text response without tool calls:',
+                                        {step: 1, rpcId: 123, functionCalls: undefined});
+       });
+
+    it('should yield unknown error and log functionCalls when model returns an empty text response with only suggestFollowUps',
+       async () => {
+         const mockStorage: Storage = {
+           length: 0,
+           clear: () => {},
+           getItem: (key: string) => key === 'debugAiAssistancePanelEnabled' ? 'true' : null,
+           key: () => null,
+           removeItem: () => {},
+           setItem: () => {},
+         };
+         sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getLocalStorage').returns(mockStorage);
+         const consoleLogStub = sinon.stub(console, 'log');
+         const functionCalls: [Host.AidaClient.AidaFunctionCall] = [
+           {name: 'suggestFollowUps', args: {suggestions: ['Follow-up question']}},
+         ];
+         const agent = new AiAgentMock({
+           aidaClient: mockAidaClient([[{explanation: '', functionCalls}]]),
+         });
+
+         const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+         assert.deepEqual(responses, [
+           {
+             type: AiAssistance.AiAgent.ResponseType.QUERYING,
+           },
+           {
+             type: AiAssistance.AiAgent.ResponseType.ERROR,
+             error: AiAssistance.AiAgent.ErrorType.UNKNOWN,
+           },
+         ]);
+         sinon.assert.calledWithExactly(consoleLogStub,
+                                        '[AiAgent] Model returned an empty text response without tool calls:',
+                                        {step: 1, rpcId: undefined, functionCalls});
+       });
 
     it('should yield quota error when aida throws AidaQuotaError', async () => {
       const agent = new AiAgentMock({

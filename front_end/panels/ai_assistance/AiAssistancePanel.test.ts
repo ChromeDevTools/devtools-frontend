@@ -4083,6 +4083,201 @@ describeWithEnvironment('AI Assistance Panel', () => {
       assert.strictEqual(stepPart?.step.action, 'executeJavaScript()');
       assert.strictEqual(stepPart?.step.javascriptCode, 'document.title = "Hello";');
     });
+
+    function createLighthouseReportWidget(fetchTime: string): AiAssistanceModel.AiAgent.LighthouseReportAiWidget {
+      const emptyCategory =
+          (id: string, title: string):
+              AiAssistanceModel.AiAgent.LighthouseReportAiWidget['data']['report']['categories']['accessibility'] => ({
+            id,
+            title,
+            score: 0.8,
+            manualDescription: '',
+            auditRefs: [],
+          });
+      return {
+        name: 'LIGHTHOUSE_REPORT',
+        data: {
+          report: {
+            lighthouseVersion: '12.0.0',
+            userAgent: 'test',
+            fetchTime,
+            timing: {total: 100},
+            finalDisplayedUrl: 'https://example.com',
+            artifacts: {Trace: {traceEvents: []}},
+            audits: {},
+            categories: {
+              accessibility: emptyCategory('accessibility', 'Accessibility'),
+              performance: emptyCategory('performance', 'Performance'),
+              'best-practices': emptyCategory('best-practices', 'Best Practices'),
+              seo: emptyCategory('seo', 'SEO'),
+              'agentic-browsing': emptyCategory('agentic-browsing', 'Agentic Browsing'),
+            },
+            categoryGroups: {},
+          },
+        },
+      };
+    }
+
+    it('supersedes matching context widgets on earlier context steps within the same turn while preserving unrelated context widgets',
+       async () => {
+         const reportWidgetA = createLighthouseReportWidget('2026-03-12T10:00:00.000Z');
+         const reportWidgetB = createLighthouseReportWidget('2026-03-12T10:05:00.000Z');
+         const reportWidgetC = createLighthouseReportWidget('2026-03-12T10:10:00.000Z');
+         const storageWidget: AiAssistanceModel.AiAgent.StorageBreakdownAiWidget = {
+           name: 'STORAGE_BREAKDOWN',
+           data: {
+             totalUsageBytes: 100,
+             totalQuotaBytes: 1000,
+             usageBreakdown: [],
+           },
+         };
+         const lighthouseContextB =
+             new AiAssistanceModel.LighthouseContext.LighthouseContext(reportWidgetB.data.report);
+         const lighthouseContextC =
+             new AiAssistanceModel.LighthouseContext.LighthouseContext(reportWidgetC.data.report);
+
+         const parts = await submitAndGetModelParts((async function*() {
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY, query: 'rerun lighthouse'};
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
+             details: [{title: 'Initial context', text: 'Report A and storage'}],
+             widgets: [reportWidgetA, storageWidget],
+           };
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.TITLE,
+             title: 'Running Lighthouse audits: accessibility (snapshot)',
+             callId: 'lh-1',
+           };
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+             action: 'runLighthouse(\'accessibility\', \'snapshot\')',
+             canceled: false,
+             callId: 'lh-1',
+           };
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE,
+             context: lighthouseContextB,
+             description: 'Lighthouse audit completed',
+             toolName: 'runLighthouse',
+           };
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
+             details: [{title: 'Lighthouse report', text: 'Report B'}],
+             widgets: [reportWidgetB],
+           };
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.TITLE,
+             title: 'Running Lighthouse audits: accessibility (navigation)',
+             callId: 'lh-2',
+           };
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+             action: 'runLighthouse(\'accessibility\', \'navigation\')',
+             canceled: false,
+             callId: 'lh-2',
+           };
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE,
+             context: lighthouseContextC,
+             description: 'Lighthouse audit completed',
+             toolName: 'runLighthouse',
+           };
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
+             details: [{title: 'Lighthouse report', text: 'Report C'}],
+             widgets: [reportWidgetC],
+           };
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Done', complete: true};
+         })());
+
+         const stepParts = parts.filter((part): part is AiAssistancePanel.ChatMessage.StepPart => part.type === 'step');
+         assert.lengthOf(stepParts, 5);
+         // First context step retains its non-matching STORAGE_BREAKDOWN widget while its LIGHTHOUSE_REPORT widget is removed.
+         assert.deepEqual(stepParts[0].step.widgets, [storageWidget]);
+         assert.deepEqual(stepParts[0].step.contextDetails, [{title: 'Initial context', text: 'Report A and storage'}]);
+         // Second context step had only a LIGHTHOUSE_REPORT widget, so its widgets property becomes undefined when superseded by Report C.
+         assert.isUndefined(stepParts[2].step.widgets);
+         assert.deepEqual(stepParts[2].step.contextDetails, [{title: 'Lighthouse report', text: 'Report B'}]);
+         // Final context step retains the latest LIGHTHOUSE_REPORT widget (Report C).
+         assert.deepEqual(stepParts[4].step.widgets, [reportWidgetC]);
+       });
+
+    it('preserves context widgets on previous turns when a subsequent turn supersedes its pre-tool context widget',
+       async () => {
+         const reportWidgetA = createLighthouseReportWidget('2026-03-12T10:00:00.000Z');
+         const reportWidgetB = createLighthouseReportWidget('2026-03-12T10:05:00.000Z');
+         const lighthouseContextB =
+             new AiAssistanceModel.LighthouseContext.LighthouseContext(reportWidgetB.data.report);
+
+         const runStub = sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run');
+         runStub.onFirstCall().returns((async function*() {
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
+             details: [{title: 'Lighthouse report', text: 'Report A'}],
+             widgets: [reportWidgetA],
+           };
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Turn 1 answer', complete: true};
+         })());
+         runStub.onSecondCall().returns((async function*() {
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
+             details: [{title: 'Lighthouse report', text: 'Report A'}],
+             widgets: [reportWidgetA],
+           };
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE,
+             context: lighthouseContextB,
+             description: 'Lighthouse audit completed',
+             toolName: 'runLighthouse',
+           };
+         })());
+         runStub.onThirdCall().returns((async function*() {
+           yield {
+             type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
+             details: [{title: 'Lighthouse report', text: 'Report B'}],
+             widgets: [reportWidgetB],
+           };
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+           yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Turn 2 answer', complete: true};
+         })());
+
+         const {panel, view} = await createAiAssistancePanel();
+         void panel.handleAction('freestyler.elements-floating-button');
+         const turn1Input = await view.nextInput;
+         assert(turn1Input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+         turn1Input.props.onTextSubmit('turn 1');
+         const turn1Done = await waitForLoadingToFinish(view);
+         assert(turn1Done.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+         turn1Done.props.onTextSubmit('turn 2');
+         const turn2Done = await waitForLoadingToFinish(view);
+         assert(turn2Done.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+         const modelMessages = turn2Done.props.messages.filter(
+             (msg): msg is AiAssistancePanel.ChatMessage.ModelChatMessage =>
+                 msg.entity === AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+         );
+         assert.lengthOf(modelMessages, 2);
+
+         const turn1Steps = modelMessages[0].parts.filter(
+             (part): part is AiAssistancePanel.ChatMessage.StepPart => part.type === 'step',
+         );
+         assert.lengthOf(turn1Steps, 1);
+         assert.deepEqual(turn1Steps[0].step.widgets, [reportWidgetA]);
+
+         const turn2Steps = modelMessages[1].parts.filter(
+             (part): part is AiAssistancePanel.ChatMessage.StepPart => part.type === 'step',
+         );
+         assert.lengthOf(turn2Steps, 3);
+         assert.isUndefined(turn2Steps[0].step.widgets);
+         assert.deepEqual(turn2Steps[2].step.widgets, [reportWidgetB]);
+       });
   });
 
   describe('permission prompt input protection', () => {

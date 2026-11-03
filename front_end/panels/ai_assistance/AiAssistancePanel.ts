@@ -1886,6 +1886,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             break;
           }
           case AiAssistanceModel.AiAgent.ResponseType.CONTEXT: {
+            // Supersede stale context widgets of the same type (such as an older Lighthouse report)
+            // within the current turn. Filter by widget name rather than clearing all widgets so
+            // cross-domain context changes (such as starting on a performance trace and running
+            // Lighthouse) preserve the earlier context's widgets.
+            if (data.widgets?.length) {
+              const newWidgetNames = new Set(data.widgets.map(widget => widget.name));
+              for (const part of systemMessage.parts) {
+                if (part.type === 'step' && part.step.contextDetails && part.step.widgets) {
+                  const remainingWidgets = part.step.widgets.filter(widget => !newWidgetNames.has(widget.name));
+                  part.step.widgets = remainingWidgets.length > 0 ? remainingWidgets : undefined;
+                }
+              }
+            }
             step.title = lockedString(UIStringsNotTranslate.analyzingData);
             step.contextDetails = data.details;
             step.widgets = data.widgets;

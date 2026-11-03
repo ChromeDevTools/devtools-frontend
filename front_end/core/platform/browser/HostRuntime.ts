@@ -154,7 +154,11 @@ export const HOST_RUNTIME: Api.HostRuntime.HostRuntime = {
   },
   getLocalStorage(): Storage |
       undefined {
-        return 'localStorage' in globalThis ? globalThis.localStorage : undefined;
+        try {
+          return 'localStorage' in globalThis ? globalThis.localStorage : undefined;
+        } catch {
+          return undefined;
+        }
       },
   getCacheStorage(): Api.HostRuntime.CacheStorageLike |
       undefined {

@@ -91,8 +91,9 @@ def popen(arguments, cwd=ROOT_DIRECTORY, env=os.environ.copy()):
         sys.exit(process.returncode)
 
 
-def runNode(file_to_execute, options):
-    process = subprocess.Popen([options.node_path, file_to_execute],
+def runNode(file_to_execute, arguments, options):
+    process = subprocess.Popen([options.node_path, file_to_execute] +
+                               arguments,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
@@ -104,8 +105,11 @@ def generate_protocol_typescript_definitions(options):
                                           'protocol_typescript',
                                           'protocol_dts_generator.ts')
 
-    node_found_errors, node_stderr = runNode(protocol_generator_script,
-                                             options)
+    node_found_errors, node_stderr = runNode(protocol_generator_script, [
+        '--output-dir',
+        path.join(ROOT_DIRECTORY, 'front_end', 'generated'),
+        path.join(PROTOCOL_LOCATION, 'browser_protocol.json'),
+    ], options)
 
     if node_found_errors:
         print('')

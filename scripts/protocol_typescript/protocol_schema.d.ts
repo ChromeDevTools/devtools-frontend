@@ -3,6 +3,11 @@
 // found in the LICENSE file.
 
 /**  Definition for protocol.json types */
+export interface ProtocolSchema {
+  version: Protocol.Version;
+  domains: Protocol.Domain[];
+}
+
 export namespace Protocol {
   export interface Version {
     major: string;

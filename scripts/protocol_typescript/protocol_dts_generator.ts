@@ -5,16 +5,22 @@
 /*
  * this script was taken from https://github.com/ChromeDevTools/devtools-protocol/tree/master/scripts
  * and adjusted slightly to fit within devtools-frontend
+ *
+ * Usage:
+ *   node protocol_dts_generator.ts --output-dir <dir> <protocol.json>...
+ *
+ * Writes protocol.ts, protocol-mapping.d.ts and protocol-proxy-api.d.ts into
+ * <dir> from the domains of the given PDL-derived protocol JSON files. The
+ * command line matches the copy of this script in Chromium
+ * (third_party/blink/public/devtools_protocol/scripts).
  */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import {parseArgs} from 'node:util';
 
-import protocolJson from '../../third_party/blink/public/devtools_protocol/browser_protocol.json' with {type : 'json'};
-
-import type {Protocol} from './protocol_schema.js';
+import type {Protocol, ProtocolSchema} from './protocol_schema.js';
 
 const removedDomains = new Set(['Console']);
-const protocolDomains: Protocol.Domain[] = protocolJson.domains.filter(({domain}) => !removedDomains.has(domain));
 
 let numIndents = 0;
 let emitStr = '';
@@ -443,26 +449,54 @@ const emitApi = (moduleName: string, protocolModuleName: string, domains: Protoc
 };
 
 const flushEmitToFile = (path: string) => {
-  console.log(`Wrote file: ${path}`);
   fs.writeFileSync(path, emitStr, {encoding: 'utf-8'});
   numIndents = 0;
   emitStr = '';
 };
 
-const main = () => {
-  const FRONTEND_GENERATED_DIR = path.resolve(import.meta.dirname, path.join('../../front_end/generated'));
+const parseCliArgs = (argv: string[]) => {
+  const {values, positionals: protocolFiles} = parseArgs({
+    args: argv,
+    options: {
+      'output-dir': {
+        type: 'string',
+      },
+    },
+    allowPositionals: true,
+    strict: true,
+  });
+  const outputDir = values['output-dir'];
+  if (!outputDir) {
+    throw new Error('--output-dir is required');
+  }
+  if (protocolFiles.length === 0) {
+    throw new Error('At least one protocol JSON file is required');
+  }
+  return {outputDir, protocolFiles};
+};
 
-  const destProtocolFilePath = path.join(FRONTEND_GENERATED_DIR, 'protocol.ts');
+const main = () => {
+  const {outputDir, protocolFiles} = parseCliArgs(process.argv.slice(2));
+
+  const protocolDomains: Protocol.Domain[] = [];
+  for (const file of protocolFiles) {
+    const protocol = JSON.parse(fs.readFileSync(file, 'utf-8')) as ProtocolSchema;
+    protocolDomains.push(...protocol.domains.filter(({domain}) => !removedDomains.has(domain)));
+  }
+
+  fs.mkdirSync(outputDir, {recursive: true});
+
+  const destProtocolFilePath = path.join(outputDir, 'protocol.ts');
   const protocolModuleName = path.basename(destProtocolFilePath, '.ts');
   emitModule(protocolDomains);
   flushEmitToFile(destProtocolFilePath);
 
-  const destMappingFilePath = path.join(FRONTEND_GENERATED_DIR, 'protocol-mapping.d.ts');
+  const destMappingFilePath = path.join(outputDir, 'protocol-mapping.d.ts');
   const mappingModuleName = 'ProtocolMapping';
   emitMapping(mappingModuleName, protocolModuleName, protocolDomains);
   flushEmitToFile(destMappingFilePath);
 
-  const destApiFilePath = path.join(FRONTEND_GENERATED_DIR, 'protocol-proxy-api.d.ts');
+  const destApiFilePath = path.join(outputDir, 'protocol-proxy-api.d.ts');
   const apiModuleName = 'ProtocolProxyApi';
   emitApi(apiModuleName, protocolModuleName, protocolDomains);
   flushEmitToFile(destApiFilePath);

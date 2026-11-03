@@ -548,7 +548,7 @@ dt-icon-label {
   background-color: var(--sys-color-tonal-container);
   color: var(--sys-color-on-tonal-container);
   font-weight: var(--ref-typeface-weight-bold);
-  font-size: 9px;
+  font-size: var(--sys-typescale-label-size);
   text-align: center;
 }
 

@@ -42,6 +42,10 @@ describe('AI Assistance', function() {
         if (!request.streamId) {
           throw new Error('No streamId');
         }
+        if (call >= messages.length) {
+          cb({statusCode: 500, response: ''});
+          throw new Error(`Unexpected AIDA request (call ${call + 1}, only ${messages.length} mocked)`);
+        }
         // An array entry is one response with several parts, such as
         // several function calls.
         const response = JSON.stringify(Array.isArray(messages[call]) ? messages[call] : [messages[call]]);
@@ -185,6 +189,8 @@ describe('AI Assistance', function() {
     if (sideEffectCount && throwOnSideEffect) {
       throw new Error('Unexpected side effect');
     }
+    await devtoolsPage.waitFor('section.chat-message.answer.is-last-message .ai-assistance-feedback-row');
+    await devtoolsPage.waitForNone('devtools-spinner');
     return JSON.parse(await devtoolsPage.evaluate((): string => {
       return localStorage.getItem('aiAssistanceStructuredLog') as string;
     })) as Log[];
@@ -826,7 +832,8 @@ describe('AI Assistance', function() {
         {functionResponse: {name: 'executeJavaScript', response: {result: '{"display":"block"}'}}},
       ],
     });
-    await devToolsPage.click('pierce/details.walkthrough-inline summary');
+    await devToolsPage.click('aria/Show thinking for prompt What are the color and display of this element?');
+    await devToolsPage.waitFor('details.walkthrough-inline[open]');
     await devToolsPage.waitForElementWithTextContent('Reading the color');
     await devToolsPage.waitForElementWithTextContent('Reading the display');
   });

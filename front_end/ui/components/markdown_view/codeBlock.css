@@ -43,7 +43,7 @@
 .codeblock .editor-wrapper .code {
   max-height: var(--code-block-max-code-height);
   overflow: auto;
-  padding-bottom: 10px;
+  padding-bottom: var(--sys-size-5);
 }
 
 .codeblock.no-toolbar .editor-wrapper {

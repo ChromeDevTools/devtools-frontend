@@ -950,7 +950,7 @@ Increasing the image compression factor could improve this image’s download si
 - Optimizations:
 This image file is larger than it needs to be (2048x1356) for its displayed dimensions (200x132). Use responsive images to reduce the image download size. (Est 41.4 kB)
 
-## Estimated savings: FCP 0 ms, LCP 100 ms
+## Estimated savings: FCP 0 ms, LCP 0 ms
 
 ## External resources:
 - https://developer.chrome.com/docs/performance/insights/image-delivery

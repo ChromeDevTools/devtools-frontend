@@ -16,6 +16,19 @@ import {
   type MetricResult,
 } from './Metric.js';
 
+function stripUrlHash(urlStr: string): string {
+  if (!urlStr.includes('#')) {
+    return urlStr;
+  }
+  try {
+    const url = new URL(urlStr);
+    url.hash = '';
+    return url.href;
+  } catch {
+    return urlStr;
+  }
+}
+
 class LargestContentfulPaint extends Metric {
   static override get coefficients(): MetricCoefficients {
     return {
@@ -38,6 +51,80 @@ class LargestContentfulPaint extends Metric {
     return !isImage || !isLowPriority;
   }
 
+  /**
+   * Finds the NetworkNode corresponding to the LCP image in the dependency graph, if LCP was an image.
+   */
+  static findLcpNode(dependencyGraph: Graph.Node,
+                     processedNavigation: Types.Simulation.ProcessedNavigation): Graph.NetworkNode|null {
+    const lcp = processedNavigation.timestamps.largestContentfulPaint;
+    if (!lcp) {
+      return null;
+    }
+
+    const lcpEvent = processedNavigation.largestContentfulPaintEvt;
+    if (lcpEvent?.args?.data?.type && lcpEvent.args.data.type !== 'image') {
+      return null;
+    }
+
+    const {lcpRequestId, lcpImageUrl} = processedNavigation;
+    if (!lcpRequestId && !lcpImageUrl) {
+      return null;
+    }
+
+    if (lcpRequestId) {
+      const idMatches: Graph.NetworkNode[] = [];
+      dependencyGraph.traverse(node => {
+        if (node.type !== 'network' || node.request.redirectDestination) {
+          return;
+        }
+        if (node.request.finished === false || node.endTime < 0 || node.startTime > lcp) {
+          return;
+        }
+        const baseRequestId = node.request.requestId.replace(/(:redirect|:duplicate)+$/, '');
+        if (baseRequestId === lcpRequestId) {
+          idMatches.push(node);
+        }
+      });
+      if (idMatches.length) {
+        idMatches.sort((a, b) => a.endTime - b.endTime);
+        return idMatches[0];
+      }
+    }
+
+    if (!lcpImageUrl) {
+      return null;
+    }
+
+    const normalizedLcpUrl = stripUrlHash(lcpImageUrl);
+    const lcpFrameId = lcpEvent?.args?.frame;
+    const urlMatches: Graph.NetworkNode[] = [];
+    dependencyGraph.traverse(node => {
+      if (node.type !== 'network' || node.request.redirectDestination) {
+        return;
+      }
+      if (node.request.finished === false || node.endTime < 0 || node.startTime > lcp) {
+        return;
+      }
+      if (lcpFrameId && node.request.frameId && node.request.frameId !== lcpFrameId) {
+        return;
+      }
+      if (node.request.resourceType && node.request.resourceType !== 'Image' && node.request.resourceType !== 'Media') {
+        return;
+      }
+      const matchesUrl = node.request.url === lcpImageUrl || stripUrlHash(node.request.url) === normalizedLcpUrl ||
+          Boolean(node.request.redirects?.some(r => r.url === lcpImageUrl || stripUrlHash(r.url) === normalizedLcpUrl));
+      if (matchesUrl) {
+        urlMatches.push(node);
+      }
+    });
+
+    if (!urlMatches.length) {
+      return null;
+    }
+    urlMatches.sort((a, b) => a.endTime - b.endTime);
+    return urlMatches[0];
+  }
+
   static override getOptimisticGraph(
       dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node {
     const {firstContentfulPaint: fcp, largestContentfulPaint: lcp} = processedNavigation.timestamps;
@@ -46,6 +133,40 @@ class LargestContentfulPaint extends Metric {
     }
     if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === 'text') {
       return FirstContentfulPaint.getOptimisticGraph(dependencyGraph, processedNavigation);
+    }
+
+    const lcpNode = LargestContentfulPaint.findLcpNode(dependencyGraph, processedNavigation);
+    if (lcpNode) {
+      const fcpOptimisticGraph = FirstContentfulPaint.getOptimisticGraph(dependencyGraph, processedNavigation);
+      const criticalNodeIds = new Set<string>();
+      fcpOptimisticGraph.traverse(node => criticalNodeIds.add(node.id));
+      criticalNodeIds.add(lcpNode.id);
+
+      // PageDependencyGraph.linkCPUNodes does not add CPUNode -> Image edges, so if the LCP image
+      // has any Script dependencies (e.g. JS-injected hero image or JS-injected stylesheet),
+      // include the CPU tasks that evaluated those scripts prior to the LCP request.
+      const initiatorScriptUrls = new Set<string>();
+      lcpNode.traverse(node => {
+        if (node.type === 'network' && node.request.resourceType === 'Script') {
+          initiatorScriptUrls.add(node.request.url);
+        }
+      }, node => node.getDependencies());
+
+      if (initiatorScriptUrls.size) {
+        dependencyGraph.traverse(node => {
+          if (node.type !== 'cpu' || node.startTime > lcpNode.startTime) {
+            return;
+          }
+          for (const url of node.getEvaluateScriptURLs()) {
+            if (initiatorScriptUrls.has(url)) {
+              criticalNodeIds.add(node.id);
+              break;
+            }
+          }
+        });
+      }
+
+      return dependencyGraph.cloneWithRelationships(node => criticalNodeIds.has(node.id));
     }
 
     return FirstContentfulPaint.getFirstPaintBasedGraph(dependencyGraph, {
@@ -72,7 +193,11 @@ class LargestContentfulPaint extends Metric {
     });
   }
 
-  static override getEstimateFromSimulation(simulationResult: Simulation.Result): Simulation.Result {
+  static override getEstimateFromSimulation(simulationResult: Simulation.Result, extras?: Extras): Simulation.Result {
+    if (extras?.optimistic) {
+      return simulationResult;
+    }
+
     const nodeTimesNotOffscreenImages = Array.from(simulationResult.nodeTimings.entries())
                                             .filter(entry => LargestContentfulPaint.isNotLowPriorityImageNode(entry[0]))
                                             .map(entry => entry[1].endTime);

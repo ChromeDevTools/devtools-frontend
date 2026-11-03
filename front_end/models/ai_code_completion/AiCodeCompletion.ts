@@ -4,8 +4,9 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
 
-import {debugLog} from './debug.js';
+const {debugCodeGenCompleteLog: debugLog} = AiUtils.Debug;
 
 /**
  * TODO(b/404796739): Remove these definitions of AgentOptions and RequestOptions and

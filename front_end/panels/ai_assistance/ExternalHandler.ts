@@ -55,7 +55,7 @@ export function getMatchingFlavorContext(
 }
 
 export async function handleExternalAIRequest(options: ExternalAIRequestOptions): Promise<unknown[]> {
-  localStorage.setItem('aiAssistanceStructuredLogEnabled', 'true');
+  AiAssistanceModel.Debug.setDevToolsAIDebug({assistance: true});
   localStorage.removeItem('aiAssistanceStructuredLog');
 
   const conversationType = resolveConversationType(options.context?.type);

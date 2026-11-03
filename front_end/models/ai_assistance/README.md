@@ -139,7 +139,7 @@ To aid debugging, you can enable the AI Assistance logging. This setting is stor
 1. Load up your local DevTools in Canary
 2. Load the AI Assistance Panel
 3. Open DevTools on DevTools.
-4. In the console, run `setDebugAiAssistanceEnabled(true)`.
+4. In the console, run `setDevToolsAIDebug({assistance: true})`.
 
 Now, when interacting with the AI and sending requests, you will see output logged to the console. You can use the `debugLog` helper to add your own logging as you are building out your feature.
 

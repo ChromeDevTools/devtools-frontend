@@ -22,7 +22,7 @@ import {
   type ToolName,
 } from '../tools/Tool.js';
 
-const {debugLog, isStructuredLogEnabled} = AiUtils.Debug;
+const {debugLog, isDebugMode} = AiUtils.Debug;
 
 type UrlString = Platform.DevToolsPath.UrlString;
 const MAX_SUGGESTION_LENGTH = 200;
@@ -1155,7 +1155,7 @@ export abstract class AiAgent<T> {
       request = this.buildRequest(outcome.functionResponses, Host.AidaClient.Role.ROLE_UNSPECIFIED);
     }
 
-    if (isStructuredLogEnabled()) {
+    if (isDebugMode()) {
       dispatchAiAssistanceDoneEvent();
     }
     return;
@@ -1562,7 +1562,7 @@ export abstract class AiAgent<T> {
       };
     }
 
-    if (isStructuredLogEnabled() && aidaResponse) {
+    if (isDebugMode() && aidaResponse) {
       this.#structuredLog.push({
         request: structuredClone(request),
         aidaResponse,

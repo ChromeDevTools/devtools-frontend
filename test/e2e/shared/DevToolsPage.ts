@@ -479,11 +479,12 @@ export class DevToolsPage extends PageWrapper {
     await this.evaluate(() => localStorage.removeItem('aiAssistanceStructuredLog'));
 
     await this.waitForFunction(async () => {
-      return await this.evaluate(() => 'setAiAssistanceStructuredLogEnabled' in window);
+      return await this.evaluate(() => 'setDevToolsAIDebug' in window);
     });
     await this.evaluate(() => {
-      // @ts-expect-error different context
-      setAiAssistanceStructuredLogEnabled(true);
+      if ('setDevToolsAIDebug' in window && typeof window.setDevToolsAIDebug === 'function') {
+        window.setDevToolsAIDebug({assistance: true});
+      }
     });
   }
 }

@@ -42,7 +42,8 @@ declare global {
                                    matches: string[],
                                    doesNotMatch?: string[],
                                  }>): Promise<{assertionFailures: string[], debugInfo: string, error?: string}>;
-    setDebugAiAssistanceEnabled?(enabled: boolean): void;
+    setDevToolsAIDebug?(config?: {assistance?: boolean, gca?: boolean, codeGenComplete?: boolean}):
+        {assistance: boolean, gca: boolean, codeGenComplete: boolean};
     // Define the structure expected for __commentElements if possible
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __commentElements?: Array<{comment: string, commentElement: Comment, targetElement: Element|null}>;

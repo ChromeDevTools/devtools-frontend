@@ -8,22 +8,22 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("ai_code_completion") {
-  sources = [
-    "AiCodeCompletion.ts",
-    "debug.ts",
-  ]
+  sources = [ "AiCodeCompletion.ts" ]
 
   ts_deps = [
     "../../core/host:bundle",
-    "../../core/platform:bundle",
     "../../core/root:bundle",
+    "../ai-utils:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
   entrypoint = "ai_code_completion.ts"
 
-  ts_deps = [ ":ai_code_completion" ]
+  ts_deps = [
+    ":ai_code_completion",
+    "../ai-utils:bundle",
+  ]
 
   visibility = [
     ":*",

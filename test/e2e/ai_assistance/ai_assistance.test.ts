@@ -93,12 +93,13 @@ describe('AI Assistance', function() {
   async function enableDebugModeForFreestyler(devtoolsPage: DevToolsPage): Promise<void> {
     await devtoolsPage.waitForFunction(async () => {
       return await devtoolsPage.evaluate(() => {
-        return 'setAiAssistanceStructuredLogEnabled' in window;
+        return 'setDevToolsAIDebug' in window;
       });
     });
     await devtoolsPage.evaluate(() => {
-      // @ts-expect-error different context
-      setAiAssistanceStructuredLogEnabled(true);
+      if ('setDevToolsAIDebug' in window && typeof window.setDevToolsAIDebug === 'function') {
+        window.setDevToolsAIDebug({assistance: true});
+      }
     });
   }
 

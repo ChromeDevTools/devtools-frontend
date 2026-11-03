@@ -429,7 +429,9 @@ describe('AiAgent', () => {
          const mockStorage: Storage = {
            length: 0,
            clear: () => {},
-           getItem: (key: string) => key === 'debugAiAssistancePanelEnabled' ? 'true' : null,
+           getItem: (key: string) => key === 'devToolsAiDebug' ?
+               JSON.stringify({assistance: true, gca: false, codeGenComplete: false}) :
+               null,
            key: () => null,
            removeItem: () => {},
            setItem: () => {},
@@ -461,7 +463,9 @@ describe('AiAgent', () => {
          const mockStorage: Storage = {
            length: 0,
            clear: () => {},
-           getItem: (key: string) => key === 'debugAiAssistancePanelEnabled' ? 'true' : null,
+           getItem: (key: string) => key === 'devToolsAiDebug' ?
+               JSON.stringify({assistance: true, gca: false, codeGenComplete: false}) :
+               null,
            key: () => null,
            removeItem: () => {},
            setItem: () => {},

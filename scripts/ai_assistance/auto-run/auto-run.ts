@@ -379,7 +379,7 @@ export class Example {
       this.log('[Info]: Got devtools page');
 
       await devtoolsPage.evaluate(() => {
-        localStorage.setItem('aiAssistanceStructuredLogEnabled', 'true');
+        localStorage.setItem('devToolsAiDebug', JSON.stringify({assistance: true, gca: false, codeGenComplete: false}));
       });
 
       // Delegate to executor's prepare

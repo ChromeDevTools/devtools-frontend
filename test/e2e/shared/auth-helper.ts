@@ -62,8 +62,7 @@ export async function configureDevToolsPreferences(page: puppeteer.Page): Promis
   await devtoolsPage.waitForFunction(() => window.location.origin.startsWith('devtools://'), {timeout: 1000})
       .catch(() => {});
   await devtoolsPage.evaluate(() => {
-    localStorage.setItem('debugAiAssistancePanelEnabled', 'true');
-    localStorage.setItem('aiAssistanceStructuredLogEnabled', 'true');
+    localStorage.setItem('devToolsAiDebug', JSON.stringify({assistance: true, gca: false, codeGenComplete: false}));
   });
   await devtoolsPage.close().catch((e: unknown) => console.error('Failed to close DevTools page:', e));
 }

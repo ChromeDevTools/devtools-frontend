@@ -1331,4 +1331,21 @@ describe('AidaClient', () => {
     });
   });
 
+  describe('debugLog', () => {
+    it('logs to console only when devToolsAiDebug has gca enabled', () => {
+      const store = new Map<string, string>();
+      sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getLocalStorage').returns({
+        getItem: (key: string) => store.get(key) ?? null,
+      } as Storage);
+      const consoleLogStub = sinon.stub(console, 'log');
+
+      Host.AidaClient.debugLog('hidden message');
+      sinon.assert.notCalled(consoleLogStub);
+
+      store.set('devToolsAiDebug', JSON.stringify({assistance: false, gca: true, codeGenComplete: false}));
+      Host.AidaClient.debugLog('visible message');
+      sinon.assert.calledOnceWithExactly(consoleLogStub, 'visible message');
+    });
+  });
+
 });

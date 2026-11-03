@@ -4,8 +4,9 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
 
-import {debugLog} from './debug.js';
+const {debugCodeGenCompleteLog: debugLog} = AiUtils.Debug;
 
 export const basePreamble =
     `You are a highly skilled senior software engineer with deep expertise across multiple web technologies and programming languages, including JavaScript, TypeScript, HTML, and CSS.

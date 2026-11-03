@@ -62,7 +62,8 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../ui/components/text_editor/*",
     "../ai_assistance/*",
-    "../ai_code_completion",
+    "../ai_code_completion/*",
+    "../ai_code_generation/*",
   ]
 
   visibility += devtools_models_visibility
@@ -91,6 +92,7 @@ devtools_foundation_module("foundation_unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
+    "../../core/platform:bundle",
     "../../testing",
   ]
 }

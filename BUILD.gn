@@ -135,6 +135,58 @@ generated_file("input_grd_files") {
   deps = [ "front_end" ]
 }
 
+# Files that are not bundled with Chrome (i.e. not part of the GRD), but are
+# fetched on demand from the remote DevTools server.
+generated_file("remote_files") {
+  outputs = [ "$target_gen_dir/remote_files.json" ]
+
+  data_keys = [ "remote_files" ]
+
+  output_conversion = "json"
+  rebase = target_gen_dir
+
+  deps = [ "front_end" ]
+}
+
+# Archive of all files that chrome-devtools-frontend.appspot.com serves, i.e.
+# the GRD files plus the remote-only files. Official builders upload this
+# archive for every Chrome version.
+#
+# The archive layout is independent of the location of DevTools in the source
+# tree: all files are stored under devtools-frontend/front_end/.
+action("devtools_frontend_zip") {
+  script = "scripts/build/zip_devtools_frontend.py"
+
+  deps = [
+    ":devtools_frontend_resources",
+    ":expected_grd_files",
+    ":remote_files",
+  ]
+
+  inputs = [
+    "$target_gen_dir/expected_grd_files.json",
+    "$target_gen_dir/remote_files.json",
+  ]
+
+  outputs = [ "$root_out_dir/devtools-frontend.zip" ]
+  depfile = "$target_gen_dir/$target_name.d"
+
+  args = [
+    "--file-list",
+    rebase_path("$target_gen_dir/expected_grd_files.json", root_build_dir),
+    "--file-list",
+    rebase_path("$target_gen_dir/remote_files.json", root_build_dir),
+    "--base-dir",
+    rebase_path(target_gen_dir, root_build_dir),
+    "--prefix",
+    "devtools-frontend",
+    "--output",
+    rebase_path("$root_out_dir/devtools-frontend.zip", root_build_dir),
+    "--depfile",
+    rebase_path(depfile, root_build_dir),
+  ]
+}
+
 _compressable_grd_files = filter_include(_expected_grd_files,
                                          [
                                            "*.css",

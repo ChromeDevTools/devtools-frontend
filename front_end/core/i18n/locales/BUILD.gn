@@ -71,7 +71,16 @@ group("locales") {
     data += [ "$target_gen_dir/$locale.json" ]
   }
 
+  _remote_files = []
+  foreach(locale, remote_devtools_locales) {
+    _remote_files += [ "$target_gen_dir/$locale.json" ]
+  }
+
   metadata = {
     grd_files = data
+
+    # Locales that are not bundled with Chrome, but fetched on demand from the
+    # remote DevTools server (see `remote_fetch_pattern`).
+    remote_files = _remote_files
   }
 }

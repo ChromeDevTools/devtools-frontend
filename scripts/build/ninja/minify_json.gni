@@ -10,6 +10,7 @@ template("minify_json") {
     forward_variables_from(invoker,
                            [
                              "deps",
+                             "metadata",
                              "sources",
                            ])
 

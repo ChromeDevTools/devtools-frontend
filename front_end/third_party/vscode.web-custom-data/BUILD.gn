@@ -6,4 +6,10 @@ import("../../../scripts/build/ninja/minify_json.gni")
 
 minify_json("web_custom_data") {
   sources = [ "package/data/browsers.css-data.json" ]
+
+  # The CSS data is not bundled with Chrome, but fetched on demand from the
+  # remote DevTools server (see WebCustomData.ts).
+  metadata = {
+    remote_files = [ "$target_gen_dir/browsers.css-data.json" ]
+  }
 }

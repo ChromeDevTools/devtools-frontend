@@ -88,5 +88,11 @@ group("lighthouse") {
   data_deps = public_deps
   metadata = {
     grd_files = get_target_outputs(":lighthouse-javascript-sources-release")
+
+    # Lighthouse locales are not bundled with Chrome, but fetched on demand
+    # from the remote DevTools server (see LighthouseWorkerService.ts).
+    remote_files =
+        filter_include(get_target_outputs(":lighthouse-locale-files"),
+                       [ "*/locales/*.json" ])
   }
 }

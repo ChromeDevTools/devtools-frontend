@@ -65,6 +65,7 @@ devtools_ui_module("unittests") {
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../../generated",
+    "../../../generated:deprecation",
     "../../../models/issues_manager:bundle",
     "../../../testing",
     "../../../third_party/marked:bundle",

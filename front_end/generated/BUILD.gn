@@ -40,9 +40,14 @@ ts_library("aria_properties") {
   deps = [ ":generate_aria_properties" ]
 }
 
+# Deprecation.ts stays committed in the source tree because its UIStrings are
+# collected for localization from there.
+ts_library("deprecation") {
+  sources = [ "Deprecation.ts" ]
+}
+
 ts_library("generated") {
   sources = [
-    "Deprecation.ts",
     "InspectorBackendCommands.ts",
     "SupportedCSSProperties.ts",
     "protocol-mapping.d.ts",

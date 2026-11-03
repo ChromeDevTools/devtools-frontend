@@ -58,6 +58,7 @@ devtools_foundation_module("issues_manager") {
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../generated",
+    "../../generated:deprecation",
     "../../models/bindings:bundle",
     "../../models/workspace:bundle",
     "../../third_party/marked:bundle",

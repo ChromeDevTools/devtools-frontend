@@ -166,6 +166,10 @@ AxeCoreTestRunner.processAxeResultNodesArray = function(nodes) {
 AxeCoreTestRunner.runValidation = async function(element, rules, config) {
   axe.configure({...DEFAULT_CONFIG, ...config});
 
+  if (element instanceof ShadowRoot) {
+    element = element.host;
+  }
+
   try {
     const results = await axe.run(element, {rules: {...DISABLED_RULES, ...rules}});
     const violations = AxeCoreTestRunner.processAxeResult(results.violations);

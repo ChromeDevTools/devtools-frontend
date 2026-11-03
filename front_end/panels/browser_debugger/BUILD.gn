@@ -89,6 +89,7 @@ devtools_ui_module("unittests") {
     "../../generated",
     "../../testing",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
     "../common:bundle",
   ]
 }

@@ -1010,6 +1010,22 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       assert.isFalse(pressEscape().defaultPrevented);
       assert.isTrue(commentManager.isCommentMode());
     });
+
+    it('stops handling Escape once the widget is hidden while a draft thread is open', () => {
+      const widget = renderWidget();
+      const el = document.createElement('div');
+      el.setAttribute('jslog', 'TreeItem; context: escape-hidden-draft-test');
+      el.textContent = 'escape hidden draft content';
+      renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+      commentManager.setCommentMode(true);
+      assert.isNotNull(overlayManager.createComment(el));
+      widget.detach();
+      el.remove();
+
+      assert.isFalse(pressEscape().defaultPrevented);
+      assert.isTrue(commentManager.isCommentMode());
+    });
   });
 
   it('closes draft comment thread UI, removes draft, and propagates click when clicking outside the popup',

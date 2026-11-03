@@ -368,8 +368,6 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   override willHide(): void {
     this.#clearCloseTimeout();
     this.#clearHover();
-    this.#removeDocumentListeners();
-    this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
         Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
         this.#onPositionsUpdated,
@@ -396,6 +394,9 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#onAgentAttachedChanged,
         this,
     );
+    this.#commentOverlayManager.stop();
+    this.#syncActiveThreadFromManager();
+    this.#removeDocumentListeners();
 
     super.willHide();
   }

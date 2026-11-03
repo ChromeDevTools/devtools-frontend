@@ -239,6 +239,7 @@ export interface SideEffectResponse extends ToolCallEvent {
   confirm: (decision: PermissionDecision) => void;
   permissionPrompt?: PermissionPrompt;
   permissionTitle?: string;
+  toolName?: string;
 }
 
 /**
@@ -1459,6 +1460,7 @@ export abstract class AiAgent<T> {
         javascriptCode,
         permissionPrompt: call.permissionPrompt,
         permissionTitle: call.permissionTitle,
+        toolName: name,
       };
 
       let decision = PermissionDecision.REJECT;

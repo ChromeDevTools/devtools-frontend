@@ -1955,6 +1955,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               },
             };
             commitStep();
+            if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() && !this.#conversation?.isReadOnly) {
+              void VisualLogging.logFunctionCall(
+                  'ai-permission-prompt-shown',
+                  data.toolName !== undefined ? Platform.StringUtilities.toKebabCase(data.toolName) : undefined);
+            }
             break;
           }
           case AiAssistanceModel.AiAgent.ResponseType.ACTION: {

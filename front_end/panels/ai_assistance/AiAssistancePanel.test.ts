@@ -1382,11 +1382,13 @@ describeWithEnvironment('AI Assistance Panel', () => {
     let expectedQuerySubmitted: number;
     let expectedLearnSkill: number;
     let expectedToolCall: number;
+    let expectedPermissionPromptShown: number;
     let expectedError: number;
     let expectedContextDomNode: number;
     let expectedContextNone: number;
     let expectedStylingSkill: number;
     let expectedGetStylesTool: number;
+    let expectedGetCookieValuesTool: number;
     let expectedInspectDomTool: number;
     let expectedLearnSkillsTool: number;
     let expectedMaxStepsError: number;
@@ -1397,6 +1399,9 @@ describeWithEnvironment('AI Assistance Panel', () => {
         devToolsAiV2Architecture: {
           enabled: true,
         },
+        devToolsAiNaturalLanguageInterface: {
+          enabled: true,
+        },
       });
       recordFunctionCallStub = sinon.stub(
           Host.InspectorFrontendHost.InspectorFrontendHostInstance,
@@ -1405,11 +1410,13 @@ describeWithEnvironment('AI Assistance Panel', () => {
       expectedQuerySubmitted = await getVeHash('ai-v2-query-submitted');
       expectedLearnSkill = await getVeHash('ai-v2-learn-skill');
       expectedToolCall = await getVeHash('ai-v2-tool-call');
+      expectedPermissionPromptShown = await getVeHash('ai-permission-prompt-shown');
       expectedError = await getVeHash('ai-v2-error');
       expectedContextDomNode = await getVeHash('ai-context-dom-node');
       expectedContextNone = await getVeHash('ai-context-none');
       expectedStylingSkill = await getVeHash('styling');
       expectedGetStylesTool = await getVeHash('get-styles');
+      expectedGetCookieValuesTool = await getVeHash('get-cookie-values');
       expectedInspectDomTool = await getVeHash('inspect-dom');
       expectedLearnSkillsTool = await getVeHash('learn-skills');
       expectedMaxStepsError = await getVeHash('max-steps');
@@ -1551,47 +1558,91 @@ describeWithEnvironment('AI Assistance Panel', () => {
       sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedError}));
     });
 
-    it('does not log tool, skill, or error telemetry when replaying a read-only historic conversation', async () => {
-      AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance({forceNew: true});
-      await AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().upsertHistoryEntry({
-        id: 'historic-1',
-        type: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
-        history: [
-          {
-            type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY,
-            query: 'Past question?',
-          },
-          {
-            type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
-            action: 'getStyles()',
-            output: 'color: blue;',
-            canceled: false,
-            toolName: 'getStyles',
-          },
-          {
-            type: AiAssistanceModel.AiAgent.ResponseType.ERROR,
-            error: AiAssistanceModel.AiAgent.ErrorType.MAX_STEPS,
-          },
-        ],
-      });
+    it('logs ai-permission-prompt-shown with the tool name when a permission prompt is shown', async () => {
+      const confirmPromise = Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      sinon.stub(AiAssistanceModel.AiAgent2.AiAgent2.prototype, 'run').returns((async function*() {
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+          description: 'Allow reading cookie session?',
+          confirm: confirmPromise.resolve,
+          permissionPrompt: AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE,
+          permissionTitle: 'Allow reading cookie values?',
+          toolName: 'getCookieValues',
+        };
+        await confirmPromise.promise;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Done',
+          complete: true,
+        };
+      })());
 
       const {panel, view} = await createAiAssistancePanel();
       void panel.handleAction('freestyler.elements-floating-button');
       const nextInput = await view.nextInput;
       assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-      recordFunctionCallStub.resetHistory();
 
-      const {contextMenu, id} = openHistoryContextMenu(nextInput, 'Past question?');
-      assert.isDefined(id);
-      contextMenu.invokeHandler(id);
-      const historicView = await view.nextInput;
-      assert(historicView.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-      assert.isTrue(historicView.props.isReadOnly);
+      nextInput.props.onTextSubmit('read cookies');
+      const promptView = await view.nextInput;
+      assert(promptView.state === AiAssistancePanel.ViewState.CHAT_VIEW);
 
-      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedToolCall}));
-      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedLearnSkill}));
-      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedError}));
+      sinon.assert.calledWith(recordFunctionCallStub, {
+        name: expectedPermissionPromptShown,
+        context: expectedGetCookieValuesTool,
+      });
+
+      confirmPromise.resolve(AiAssistanceModel.Tool.PermissionDecision.REJECT);
+      await waitForLoadingToFinish(view);
     });
+
+    it('does not log tool, skill, permission, or error telemetry when replaying a read-only historic conversation',
+       async () => {
+         AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance({forceNew: true});
+         await AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().upsertHistoryEntry({
+           id: 'historic-1',
+           type: AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
+           history: [
+             {
+               type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY,
+               query: 'Past question?',
+             },
+             {
+               type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+               description: 'Allow reading cookie session?',
+               toolName: 'getCookieValues',
+             },
+             {
+               type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+               action: 'getStyles()',
+               output: 'color: blue;',
+               canceled: false,
+               toolName: 'getStyles',
+             },
+             {
+               type: AiAssistanceModel.AiAgent.ResponseType.ERROR,
+               error: AiAssistanceModel.AiAgent.ErrorType.MAX_STEPS,
+             },
+           ],
+         });
+
+         const {panel, view} = await createAiAssistancePanel();
+         void panel.handleAction('freestyler.elements-floating-button');
+         const nextInput = await view.nextInput;
+         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         recordFunctionCallStub.resetHistory();
+
+         const {contextMenu, id} = openHistoryContextMenu(nextInput, 'Past question?');
+         assert.isDefined(id);
+         contextMenu.invokeHandler(id);
+         const historicView = await view.nextInput;
+         assert(historicView.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         assert.isTrue(historicView.props.isReadOnly);
+
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedToolCall}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedPermissionPromptShown}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedLearnSkill}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedError}));
+       });
 
     it('does not log ai-v2 query, tool, or error telemetry when devToolsAiV2Architecture is disabled', async () => {
       updateHostConfig({

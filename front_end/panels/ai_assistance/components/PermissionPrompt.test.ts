@@ -14,6 +14,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import type * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as AiAssistance from '../ai_assistance.js';
 
@@ -47,8 +48,8 @@ describeWithEnvironment('PermissionPrompt', () => {
     return target;
   }
 
-  function getButtons(target: HTMLElement): HTMLElement[] {
-    return Array.from(target.querySelectorAll<HTMLElement>('.permission-prompt devtools-button'));
+  function getButtons(target: HTMLElement): Buttons.Button.Button[] {
+    return Array.from(target.querySelectorAll<Buttons.Button.Button>('.permission-prompt devtools-button'));
   }
 
   it('renders nothing for a step that does not need approval', () => {
@@ -111,6 +112,25 @@ describeWithEnvironment('PermissionPrompt', () => {
 
     buttons[1].click();
     sinon.assert.calledOnceWithExactly(onAnswer, AIAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS);
+  });
+
+  it('sets dedicated visual logging contexts on the prompt and buttons', () => {
+    const target = renderPrompt(createStep({
+      permissionPrompt: AIAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS,
+    }));
+
+    const prompt = querySelectorErrorOnMissing(target, '.permission-prompt');
+    assert.strictEqual(prompt.getAttribute('jslog'), 'Section; context: ai-permission-prompt');
+
+    const buttons = getButtons(target);
+    assert.deepEqual(
+        buttons.map(b => b.jslogContext),
+        [
+          'ai-permission-reject',
+          'ai-permission-allow-always',
+          'ai-permission-allow-once',
+        ],
+    );
   });
 
   it('focuses the "No" button when the prompt appears', async () => {

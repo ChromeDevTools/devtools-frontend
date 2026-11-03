@@ -29,5 +29,5 @@
 .progress-indicator-shadow-container progress {
   flex: auto;
   margin: 0 var(--sys-size-2);
-  width: 100px;
+  width: var(--sys-size-19);
 }

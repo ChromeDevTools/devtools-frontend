@@ -223,10 +223,11 @@ export class Launcher {
     }
 
     // CDP commands in e2e and interaction should not generally take
-    // more than 20 seconds, but performance and AI eval tests might require more time.
+    // more than 20 seconds, but performance and AI eval tests might require more time
+    // (AI evals execute the full multi-turn LLM + tool loop inside a single evaluate call).
     const protocolTimeout = TestConfig.debug ? 0 :
         TestConfig.isPerfTest                ? 120_000 :
-        TestConfig.isAiEvalTest              ? 60_000 :
+        TestConfig.isAiEvalTest              ? 180_000 :
                                                20_000;
     const executablePath = TestConfig.chromeBinary;
     const headless = TestConfig.headless;

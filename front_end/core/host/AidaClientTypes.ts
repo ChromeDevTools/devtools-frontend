@@ -199,7 +199,11 @@ export interface DoConversationRequest {
   options?: ConversationOptions;
   metadata: RequestMetadata;
   functionality_type?: FunctionalityType;
-  client_feature?: ClientFeature;
+  /**
+   * Identifies the DevTools agent or feature making the request so GCA can resolve
+   * the corresponding server-side experience configuration.
+   */
+  client_feature: ClientFeature;
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

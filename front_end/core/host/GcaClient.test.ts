@@ -118,6 +118,7 @@ describe('GcaClient', () => {
 
     await gcaClient.conversationRequest({
       client: 'test',
+      client_feature: Host.AidaClient.ClientFeature.CHROME_CONSOLE_INSIGHTS,
       current_message: {parts: [{text: 'test'}], role: Host.AidaClient.Role.USER},
       metadata: {disable_user_content_logging: true, client_version: '1.2.3'},
     },
@@ -133,6 +134,7 @@ describe('GcaClient', () => {
     try {
       await gcaClient.conversationRequest({
         client: 'test',
+        client_feature: Host.AidaClient.ClientFeature.CHROME_CONSOLE_INSIGHTS,
         current_message: {parts: [{text: 'test'}], role: Host.AidaClient.Role.USER},
         metadata: {disable_user_content_logging: true, client_version: '1.2.3'},
       },

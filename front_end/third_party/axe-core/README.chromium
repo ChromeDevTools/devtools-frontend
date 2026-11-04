@@ -1,9 +1,8 @@
 Name: AXE-CORE Accessibility Audit
 Short Name: axe-core
 URL: https://github.com/dequelabs/axe-core/
-Version: N/A
-Date: 2017-07-24
-Revision: d02dba3223fefe525438330e40b5da5de81eeeb5
+Version: 3.3.2
+Revision: c39c3a3db4975fb39365acace3fe1ffa7893004d
 Update Mechanism: Manual
 License: MPL-2.0
 License File: LICENSE

@@ -399,7 +399,7 @@ ul > li.plain-enum::before {
 
 .affected-resources > .children.expanded {
   background: var(--sys-color-cdt-base-container);
-  padding: var(--sys-size-4) 0 9px 5px;
+  padding: var(--sys-size-4) 0 var(--sys-size-5) var(--sys-size-3);
 }
 
 .aggregated-issues-count {

@@ -48,7 +48,7 @@ devtools-create-recording-view {
 .separator {
   background-color: var(--sys-color-divider);
   width: var(--sys-size-1);
-  height: 17px;
+  height: var(--sys-size-8);
   margin: 0;
 }
 

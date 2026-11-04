@@ -20,7 +20,7 @@ h1 {
 .intro-steps {
   counter-reset: custom-counter;
   list-style: none;
-  margin: var(--sys-size-8) 0 30px 30px;
+  margin: var(--sys-size-8) 0 var(--sys-size-12) var(--sys-size-12);
   padding: 0;
 }
 

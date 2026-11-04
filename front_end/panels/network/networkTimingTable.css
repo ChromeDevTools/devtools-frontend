@@ -223,7 +223,7 @@ tr.synthetic {
 
 .network-timing-table td.network-timing-metric {
   white-space: nowrap;
-  max-width: 150px;
+  max-width: var(--sys-size-22);
   overflow-x: hidden;
   text-overflow: ellipsis;
 }

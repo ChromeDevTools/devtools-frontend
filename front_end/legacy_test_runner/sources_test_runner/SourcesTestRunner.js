@@ -11,6 +11,23 @@ import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
  * @param {!Sources.NavigatorView.NavigatorView} navigatorView
+ * @returns {!UI.TreeOutline.TreeOutline}
+ */
+function getNavigatorTreeOutline(navigatorView) {
+  return navigatorView.scriptsTree;
+}
+
+/**
+ * @param {!Sources.NavigatorView.NavigatorView} navigatorView
+ * @param {!UI.TreeElement} treeElement
+ * @returns {string|undefined}
+ */
+function getNavigatorNodeType(navigatorView, treeElement) {
+  return navigatorView.nodeForTreeElement(treeElement)?.type;
+}
+
+/**
+ * @param {!Sources.NavigatorView.NavigatorView} navigatorView
  * @param {boolean=} dumpIcons
  */
 export const dumpNavigatorView = function(navigatorView, dumpIcons) {
@@ -19,7 +36,7 @@ export const dumpNavigatorView = function(navigatorView, dumpIcons) {
       navigatorView :
       navigatorView.children().find(child => child instanceof Sources.NavigatorView.NavigatorView);
   innerNavigatorView.performUpdate();
-  dumpNavigatorTreeOutline(innerNavigatorView.scriptsTree);
+  dumpNavigatorTreeOutline(getNavigatorTreeOutline(innerNavigatorView));
 
   /**
    * @param {string} prefix
@@ -36,7 +53,7 @@ export const dumpNavigatorView = function(navigatorView, dumpIcons) {
       }
     }
     titleText += treeElement.titleAsText();
-    const nodeType = innerNavigatorView.nodeForTreeElement(treeElement)?.type;
+    const nodeType = getNavigatorNodeType(innerNavigatorView, treeElement);
     if (nodeType === Sources.NavigatorView.Types.FileSystem ||
         nodeType === Sources.NavigatorView.Types.FileSystemFolder) {
       const hasMappedFiles = treeElement.listItemElement.classList.contains('has-mapped-files');

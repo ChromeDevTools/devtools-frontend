@@ -113,7 +113,15 @@ describeWithEnvironment('NavigatorView', () => {
       }
       return node;
     }
-    return navigatorView.scriptsTree.rootElement().children().map(dumpElement);
+    return getTreeOutline(navigatorView).rootElement().children().map(dumpElement);
+  }
+
+  function getTreeOutline(navigatorView: Sources.NavigatorView.NavigatorView): UI.TreeOutline.TreeOutline {
+    return navigatorView.scriptsTree;
+  }
+
+  function isTreeHidden(navigatorView: Sources.NavigatorView.NavigatorView): boolean {
+    return Boolean(getTreeOutline(navigatorView).element.parentElement?.hasAttribute('hidden'));
   }
 
   function findTreeElement(
@@ -132,7 +140,7 @@ describeWithEnvironment('NavigatorView', () => {
       }
       return null;
     }
-    for (const rootChild of navigatorView.scriptsTree.rootElement().children()) {
+    for (const rootChild of getTreeOutline(navigatorView).rootElement().children()) {
       const found = search(rootChild);
       if (found) {
         return found;
@@ -181,12 +189,12 @@ describeWithEnvironment('NavigatorView', () => {
       treeElement.listItemElement.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}));
     } else if (action === 'enter') {
       treeElement.select(true);
-      navigatorView.scriptsTree.contentElement.dispatchEvent(
-          new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+      getTreeOutline(navigatorView)
+          .contentElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
     } else if (action === 'space') {
       treeElement.select(true);
-      navigatorView.scriptsTree.contentElement.dispatchEvent(
-          new KeyboardEvent('keydown', {key: ' ', keyCode: 32, bubbles: true}));
+      getTreeOutline(navigatorView)
+          .contentElement.dispatchEvent(new KeyboardEvent('keydown', {key: ' ', keyCode: 32, bubbles: true}));
     } else if (action === 'dblclick') {
       treeElement.listItemElement.dispatchEvent(
           new MouseEvent('dblclick', {bubbles: true, cancelable: true, button: options.button ?? 0}));
@@ -269,7 +277,7 @@ describeWithEnvironment('NavigatorView', () => {
 
     const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
     await navigatorView.updateComplete;
-    const children = navigatorView.scriptsTree.rootElement().children();
+    const children = getTreeOutline(navigatorView).rootElement().children();
     assert.lengthOf(children, 1, 'The NavigatorView root node should have 1 child before node removal');
     assert.strictEqual(children[0].title, 'top');
 
@@ -315,7 +323,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
-      const topChildren = navigatorView.scriptsTree.rootElement().children();
+      const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
 
@@ -359,7 +367,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
-      const topChildren = navigatorView.scriptsTree.rootElement().children();
+      const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
 
@@ -406,7 +414,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
-      const topChildren = navigatorView.scriptsTree.rootElement().children();
+      const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
 
@@ -437,7 +445,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
-      const topChildren = navigatorView.scriptsTree.rootElement().children();
+      const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
 
@@ -454,7 +462,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
-      const topChildren = navigatorView.scriptsTree.rootElement().children();
+      const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
 
@@ -476,7 +484,7 @@ describeWithEnvironment('NavigatorView', () => {
       const placeholderSlot = navigatorView.contentElement.querySelector('slot[name="placeholder"]');
       assert.exists(placeholderSlot);
       assert.isFalse(placeholderSlot.parentElement?.hasAttribute('hidden'));
-      assert.isTrue(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
+      assert.isTrue(isTreeHidden(navigatorView));
 
       const mainFrame = await getMainFrame(target);
       const url = urlString`http://example.com/script.js`;
@@ -484,12 +492,12 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       assert.isTrue(placeholderSlot.parentElement?.hasAttribute('hidden'));
-      assert.isFalse(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
+      assert.isFalse(isTreeHidden(navigatorView));
 
       project.removeUISourceCode(url);
       await navigatorView.updateComplete;
       assert.isFalse(placeholderSlot.parentElement?.hasAttribute('hidden'));
-      assert.isTrue(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
+      assert.isTrue(isTreeHidden(navigatorView));
     });
   });
 
@@ -703,7 +711,7 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager], viewSpy);
       await navigatorView.updateComplete;
       sinon.assert.calledOnce(viewSpy);
-      assert.strictEqual(viewSpy.firstCall.args[0].treeElement, navigatorView.scriptsTree.element);
+      assert.strictEqual(viewSpy.firstCall.args[0].treeElement, getTreeOutline(navigatorView).element);
       assert.isFalse(viewSpy.firstCall.args[0].showTree);
     });
   });
@@ -1175,7 +1183,7 @@ describeWithEnvironment('NavigatorView', () => {
         const treeElement = node.treeElement;
         assert.exists(treeElement);
         treeElement.select();
-        sinon.stub(navigatorView.scriptsTree.element, 'hasFocus').returns(true);
+        sinon.stub(getTreeOutline(navigatorView).element, 'hasFocus').returns(true);
 
         const renameSpy = sinon.spy(navigatorView, 'rename');
         mouseDownRow(navigatorView, 'script.js');
@@ -1542,7 +1550,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       assert.isTrue(navigatorView.isNodeSelected(node));
       sinon.stub(uiSourceCode, 'canRename').returns(true);
-      sinon.stub(navigatorView.scriptsTree.element, 'hasFocus').returns(true);
+      sinon.stub(getTreeOutline(navigatorView).element, 'hasFocus').returns(true);
       assert.isTrue(navigatorView.shouldRenameOnMouseDown(node));
 
       project.removeProject();
@@ -2029,7 +2037,7 @@ describeWithEnvironment('NavigatorView', () => {
          assert.isFalse(treeElement.listItemElement.classList.contains('has-mapped-files'));
 
          // Appending to scriptsTree root attaches treeElement and triggers onattach.
-         navigatorView.appendChild(navigatorView.scriptsTree.rootElement(), treeElement);
+         navigatorView.appendChild(getTreeOutline(navigatorView).rootElement(), treeElement);
 
          assert.isTrue(treeElement.listItemElement.classList.contains('has-mapped-files'));
          assert.isTrue(treeElement.expanded);

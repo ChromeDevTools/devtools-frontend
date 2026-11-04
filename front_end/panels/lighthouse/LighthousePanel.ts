@@ -406,11 +406,26 @@ export class LighthousePanel extends UI.Panel.Panel {
 
   static async executeLighthouseRecording(
       overrides?: LighthouseModel.RunTypes.RunOverrides,
+      options?: {signal?: AbortSignal},
       ): Promise<LighthouseModel.RunTypes.RunResult> {
+    if (options?.signal?.aborted) {
+      return {status: 'cancelled'};
+    }
     const panel = LighthousePanel.instance();
     await UI.ViewManager.ViewManager.instance().showView('lighthouse');
+    if (options?.signal?.aborted) {
+      return {status: 'cancelled'};
+    }
 
-    return await panel.handleCompleteRun(overrides);
+    const onAbort = (): void => {
+      void panel.handleRunCancel();
+    };
+    options?.signal?.addEventListener('abort', onAbort, {once: true});
+    try {
+      return await panel.handleCompleteRun(overrides);
+    } finally {
+      options?.signal?.removeEventListener('abort', onAbort);
+    }
   }
 }
 

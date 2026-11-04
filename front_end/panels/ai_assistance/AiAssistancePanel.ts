@@ -916,14 +916,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async #handlePerformanceRecordAndReload(): Promise<Trace.TraceModel.ParsedTrace> {
-    return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
+    return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload({
+      signal: this.#runAbortController.signal,
+    });
   }
 
   async #handleLighthouseRun(overrides?: LHModel.RunTypes.RunOverrides): Promise<LHModel.RunTypes.RunResult> {
-    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({
-      isAIControlled: true,
-      ...overrides,
-    });
+    return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording(
+        {
+          isAIControlled: true,
+          ...overrides,
+        },
+        {
+          signal: this.#runAbortController.signal,
+        });
   }
 
   #getDefaultConversationType(): AiAssistanceModel.AiHistoryStorage.ConversationType|undefined {

@@ -394,6 +394,26 @@ describe('TimelinePanel', function() {
         primaryTarget.dispose('test');
       }
     });
+
+    it('rejects and removes the recording listener when the abort signal fires', async function() {
+      const uiView = UI.ViewManager.ViewManager.instance({forceNew: true});
+      sinon.stub(uiView, 'showView');
+      const abortController = new AbortController();
+      sinon.stub(timeline, 'recordReload').callsFake(() => {
+        abortController.abort();
+      });
+
+      let thrownError: unknown;
+      try {
+        await Timeline.TimelinePanel.TimelinePanel.executeRecordAndReload({signal: abortController.signal});
+      } catch (err) {
+        thrownError = err;
+      }
+
+      assert.instanceOf(thrownError, Error);
+      assert.strictEqual(thrownError.message, 'Recording was aborted');
+      assert.isFalse(timeline.hasEventListeners(Timeline.TimelinePanel.Events.RECORDING_COMPLETED));
+    });
   });
 
   describe('saveToFile', function() {

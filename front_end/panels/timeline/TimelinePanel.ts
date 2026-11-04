@@ -3189,17 +3189,38 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     }
   }
 
-  static async executeRecordAndReload(): Promise<Trace.TraceModel.ParsedTrace> {
+  static async executeRecordAndReload(options?: {signal?: AbortSignal}): Promise<Trace.TraceModel.ParsedTrace> {
+    if (options?.signal?.aborted) {
+      throw new Error('Recording was aborted');
+    }
     await UI.ViewManager.ViewManager.instance().showView('timeline');
     await SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.pageAgent().invoke_bringToFront();
+    if (options?.signal?.aborted) {
+      throw new Error('Recording was aborted');
+    }
     const panelInstance = TimelinePanel.instance();
 
-    const result: EventTypes[Events.RECORDING_COMPLETED] = await new Promise(resolve => {
-      function listener(e: Common.EventTarget.EventTargetEvent<EventTypes[Events.RECORDING_COMPLETED]>): void {
-        resolve(e.data);
+    const result: EventTypes[Events.RECORDING_COMPLETED] = await new Promise((resolve, reject) => {
+      function cleanup(): void {
         panelInstance.removeEventListener(Events.RECORDING_COMPLETED, listener);
+        options?.signal?.removeEventListener('abort', onAbort);
+      }
+      function listener(e: Common.EventTarget.EventTargetEvent<EventTypes[Events.RECORDING_COMPLETED]>): void {
+        cleanup();
+        resolve(e.data);
+      }
+      function onAbort(): void {
+        cleanup();
+        // Only stop once State.RECORDING is reached; calling stopRecording()
+        // during State.START_PENDING nulls out this.controller while
+        // #startTraceRecording() is still awaiting setup.
+        if (panelInstance.state === State.RECORDING) {
+          void panelInstance.stopRecording();
+        }
+        reject(new Error('Recording was aborted'));
       }
       panelInstance.addEventListener(Events.RECORDING_COMPLETED, listener);
+      options?.signal?.addEventListener('abort', onAbort, {once: true});
       panelInstance.recordReload();
     });
 

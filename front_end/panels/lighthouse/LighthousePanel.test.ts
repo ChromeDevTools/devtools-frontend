@@ -112,6 +112,23 @@ describeWithEnvironment('LighthousePanel', () => {
     assert.deepEqual(result, {status: 'completed', report: REPORT_JSON});
   });
 
+  it('cancels the recording when the abort signal fires during an external request', async () => {
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+    const handleRunCancelSpy = sinon.spy(instance, 'handleRunCancel');
+    const abortController = new AbortController();
+    sinon.stub(instance, 'handleCompleteRun').callsFake(async () => {
+      abortController.abort();
+      return {status: 'cancelled'};
+    });
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+
+    const result = await Lighthouse.LighthousePanel.LighthousePanel.executeLighthouseRecording(
+        undefined, {signal: abortController.signal});
+
+    sinon.assert.calledOnce(handleRunCancelSpy);
+    assert.deepEqual(result, {status: 'cancelled'});
+  });
+
   it('returns the report when the run completes', async () => {
     const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
     const result = await instance.handleCompleteRun();

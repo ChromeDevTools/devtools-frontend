@@ -124,14 +124,6 @@
   flex: 0 0 var(--sys-size-19) !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.profile-text-view {
-  padding: 10px;
-  overflow: auto;
-  margin: 0;
-  user-select: text;
-  cursor: text;
-}
-
 .empty-landing-page {
   position: absolute;
   background-color: var(--sys-color-cdt-base-container);

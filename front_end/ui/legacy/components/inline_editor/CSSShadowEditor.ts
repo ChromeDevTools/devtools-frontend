@@ -40,7 +40,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const maxRange = 20;
 const defaultUnit = 'px';
 const sliderThumbRadius = 6;
-const canvasSize = 88;
+const canvasSize = 80;
 
 export interface CSSShadowModel {
   setInset(inset: boolean): void;

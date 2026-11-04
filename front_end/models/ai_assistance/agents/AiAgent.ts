@@ -262,6 +262,10 @@ export interface ContextChangeResponse {
    * to emit UI telemetry.
    */
   toolName?: string;
+  /**
+   * True when the call skipped a permission prompt via `AlwaysAllowedTools`.
+   */
+  autoApproved?: boolean;
 }
 
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {}
@@ -303,6 +307,10 @@ export interface ActionResponse extends ToolCallEvent {
    * `ai-v2-learn-skill` visual logging events.
    */
   loadedSkills?: string[];
+  /**
+   * True when the call skipped a permission prompt via `AlwaysAllowedTools`.
+   */
+  autoApproved?: boolean;
 }
 
 /**
@@ -1288,6 +1296,7 @@ export abstract class AiAgent<T> {
             context: result.context,
             widgets: result.widgets,
             toolName: functionCall.name,
+            autoApproved: result.autoApproved,
           };
           return {type: 'contextChanged'};
         }
@@ -1354,7 +1363,12 @@ export abstract class AiAgent<T> {
         result: unknown,
         widgets?: AiWidget[],
         loadedSkills?: string[],
-      }|{error: string}|{context: ConversationContext<unknown>, description: string, widgets?: AiWidget[]}> {
+      }|{error: string}|{
+        context: ConversationContext<unknown>,
+        description: string,
+        widgets?: AiWidget[],
+        autoApproved?: boolean,
+      }> {
     const callId = crypto.randomUUID();
     const call = this.#functionDeclarations.get(name);
     if (!call) {
@@ -1401,6 +1415,9 @@ export abstract class AiAgent<T> {
       return Boolean(allowedOriginResult && 'blocked' in allowedOriginResult);
     };
 
+    const isAlwaysAllowed = call.permissionPrompt === PermissionPrompt.ALLOW_ONCE_OR_ALWAYS &&
+        Boolean(this.#alwaysAllowedTools?.isAllowed(name as ToolName));
+
     // Turns an error thrown by the handler into an error result, so the other
     // calls in the same model response still run and the history keeps their
     // results. Races the handler against the abort signal so a hung tool call
@@ -1411,8 +1428,6 @@ export abstract class AiAgent<T> {
         return {error: 'Aborted'};
       }
       try {
-        const isAlwaysAllowed = call.permissionPrompt === PermissionPrompt.ALLOW_ONCE_OR_ALWAYS &&
-            this.#alwaysAllowedTools?.isAllowed(name as ToolName);
         const handlerPromise =
             call.handler(args, isAlwaysAllowed ? {...handlerOptions, approved: true} : handlerOptions);
         if (!signal) {
@@ -1549,6 +1564,7 @@ export abstract class AiAgent<T> {
         widgets: result.widgets,
         canceled: false,
         toolName: name,
+        autoApproved: isAlwaysAllowed,
         ...(result.loadedSkills ? {loadedSkills: result.loadedSkills} : {}),
       };
     }
@@ -1567,7 +1583,10 @@ export abstract class AiAgent<T> {
     debugLog(`[AiAgent] Tool '${name}' result:`, result);
 
     if ('context' in result) {
-      return result;
+      return {
+        ...result,
+        autoApproved: isAlwaysAllowed,
+      };
     }
 
     return result as {result: unknown, widgets?: AiWidget[]};

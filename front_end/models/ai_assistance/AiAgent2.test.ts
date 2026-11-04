@@ -890,9 +890,16 @@ describe('AiAgent2', () => {
     it('stores the tool when the user picks ALLOW_ALWAYS', async () => {
       const alwaysAllowedTools = new AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools(universe.settings);
 
-      await runGetCookieValuesApprovalFlow(AiAssistance.Tool.PermissionDecision.ALLOW_ALWAYS, {alwaysAllowedTools});
+      const {responses} = await runGetCookieValuesApprovalFlow(
+          AiAssistance.Tool.PermissionDecision.ALLOW_ALWAYS,
+          {alwaysAllowedTools, permissionPrompt: AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS});
 
       assert.isTrue(alwaysAllowedTools.isAllowed(AiAssistance.Tool.ToolName.GET_COOKIE_VALUES));
+      const cookieAction =
+          responses.find((r): r is AiAssistance.AiAgent.ActionResponse =>
+                             r.type === AiAssistance.AiAgent.ResponseType.ACTION && r.toolName === 'getCookieValues');
+      assert.exists(cookieAction);
+      assert.isFalse(cookieAction.autoApproved);
     });
 
     it('does not store the tool when the user picks ALLOW_ONCE', async () => {
@@ -914,6 +921,60 @@ describe('AiAgent2', () => {
       sinon.assert.calledOnce(handlerStub);
       assert.propertyVal(handlerStub.getCall(0).args[2], 'approved', true);
       assert.notExists(responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT));
+      const cookieAction =
+          responses.find((r): r is AiAssistance.AiAgent.ActionResponse =>
+                             r.type === AiAssistance.AiAgent.ResponseType.ACTION && r.toolName === 'getCookieValues');
+      assert.exists(cookieAction);
+      assert.isTrue(cookieAction.autoApproved);
+    });
+
+    it('sets autoApproved on CONTEXT_CHANGE when an always-allowed context tool skips the prompt', async () => {
+      const alwaysAllowedTools = new AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools(universe.settings);
+      alwaysAllowedTools.allow(AiAssistance.Tool.ToolName.RECORD_PERFORMANCE_TRACE);
+
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['performance']}}],
+        }],
+        [{
+          explanation: 'Recording trace',
+          functionCalls: [{name: 'recordPerformanceTrace', args: {}}],
+        }],
+      ]);
+
+      const agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient,
+        originLock: defaultOriginLock,
+        alwaysAllowedTools,
+      });
+
+      const recordTraceTool: AiAssistance.Tool.ContextTool<Record<string, never>, AiAssistance.AIContext.AgentFocus>|
+          undefined = AiAssistance.ToolRegistry.ToolRegistry.get('recordPerformanceTrace');
+      assert.exists(recordTraceTool);
+      sinon.stub(recordTraceTool, 'permissionPrompt').value(AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS);
+      const fakeContext = sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext);
+      const handlerStub = sinon.stub(recordTraceTool, 'handler').callsFake(async (_args, _capabilities, options) => {
+        if (options?.approved !== true) {
+          return {
+            requiresApproval: true,
+            description: 'Allow recording performance trace?',
+          };
+        }
+        return {
+          context: fakeContext,
+          description: 'User recorded a performance trace',
+        };
+      });
+
+      const responses = await Array.fromAsync(agent.run('measure performance', {selected: null}));
+
+      sinon.assert.calledOnce(handlerStub);
+      assert.propertyVal(handlerStub.getCall(0).args[2], 'approved', true);
+      assert.notExists(responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT));
+      const contextChange = getContextChangeResponse(responses);
+      assert.strictEqual(contextChange.toolName, 'recordPerformanceTrace');
+      assert.isTrue(contextChange.autoApproved);
     });
 
     it('still prompts for an always-allowed tool with an ALLOW_ONCE prompt', async () => {

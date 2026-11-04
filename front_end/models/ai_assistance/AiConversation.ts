@@ -354,6 +354,7 @@ export class AiConversation {
                            output: shouldRedact ? '<redacted>' : item.output,
                            widgets: undefined,
                            loadedSkills: undefined,
+                           autoApproved: undefined,
                          };
                        }
                        default:

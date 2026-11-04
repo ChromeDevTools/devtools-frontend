@@ -417,6 +417,7 @@ export const knownContextValues: Set<string> = new Set([
   'ai-permission-allow-once',
   'ai-permission-allowed-always',
   'ai-permission-allowed-once',
+  'ai-permission-auto-allowed',
   'ai-permission-prompt',
   'ai-permission-prompt-shown',
   'ai-permission-reject',

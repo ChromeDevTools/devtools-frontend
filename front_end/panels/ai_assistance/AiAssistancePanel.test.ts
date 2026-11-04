@@ -1386,6 +1386,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
     let expectedPermissionAllowedOnce: number;
     let expectedPermissionAllowedAlways: number;
     let expectedPermissionRejected: number;
+    let expectedPermissionAutoAllowed: number;
     let expectedError: number;
     let expectedContextDomNode: number;
     let expectedContextNone: number;
@@ -1419,6 +1420,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       expectedPermissionAllowedOnce = await getVeHash('ai-permission-allowed-once');
       expectedPermissionAllowedAlways = await getVeHash('ai-permission-allowed-always');
       expectedPermissionRejected = await getVeHash('ai-permission-rejected');
+      expectedPermissionAutoAllowed = await getVeHash('ai-permission-auto-allowed');
       expectedError = await getVeHash('ai-v2-error');
       expectedContextDomNode = await getVeHash('ai-context-dom-node');
       expectedContextNone = await getVeHash('ai-context-none');
@@ -1683,6 +1685,111 @@ describeWithEnvironment('AI Assistance Panel', () => {
           });
     });
 
+    it('logs ai-permission-auto-allowed only for tool calls auto-approved via AlwaysAllowedTools', async () => {
+      const node = createStubbedElementNodeInDocument('https://example.com');
+      const newDomContext = new AiAssistanceModel.DOMNodeContext.DOMNodeContext(node);
+
+      const runStub = sinon.stub(AiAssistanceModel.AiAgent2.AiAgent2.prototype, 'run');
+      runStub.onFirstCall().returns((async function*() {
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          action: 'getStyles()',
+          output: 'color: red;',
+          canceled: false,
+          toolName: 'getStyles',
+          autoApproved: false,
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          action: 'getCookieValues(["session"])',
+          output: '{}',
+          canceled: false,
+          toolName: 'getCookieValues',
+          autoApproved: true,
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE,
+          context: newDomContext,
+          description: 'Inspected element',
+          toolName: 'inspectDom',
+          autoApproved: true,
+        };
+      })());
+      runStub.onSecondCall().returns((async function*() {
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Done',
+          complete: true,
+        };
+      })());
+
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      nextInput.props.onTextSubmit('auto-allowed tools');
+      await waitForLoadingToFinish(view);
+
+      sinon.assert.calledWith(recordFunctionCallStub, {
+        name: expectedPermissionAutoAllowed,
+        context: expectedGetCookieValuesTool,
+      });
+      sinon.assert.calledWith(recordFunctionCallStub, {
+        name: expectedPermissionAutoAllowed,
+        context: expectedInspectDomTool,
+      });
+      sinon.assert.neverCalledWith(
+          recordFunctionCallStub,
+          sinon.match({name: expectedPermissionAutoAllowed, context: expectedGetStylesTool}),
+      );
+    });
+
+    it('does not log ai-permission-auto-allowed when devToolsAiNaturalLanguageInterface is disabled', async () => {
+      updateHostConfig({
+        devToolsAiV2Architecture: {enabled: true},
+        devToolsAiNaturalLanguageInterface: {enabled: false},
+      });
+      const node = createStubbedElementNodeInDocument('https://example.com');
+      const newDomContext = new AiAssistanceModel.DOMNodeContext.DOMNodeContext(node);
+
+      const runStub = sinon.stub(AiAssistanceModel.AiAgent2.AiAgent2.prototype, 'run');
+      runStub.onFirstCall().returns((async function*() {
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          action: 'getCookieValues(["session"])',
+          output: '{}',
+          canceled: false,
+          toolName: 'getCookieValues',
+          autoApproved: true,
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE,
+          context: newDomContext,
+          description: 'Inspected element',
+          toolName: 'inspectDom',
+          autoApproved: true,
+        };
+      })());
+      runStub.onSecondCall().returns((async function*() {
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ANSWER,
+          text: 'Done',
+          complete: true,
+        };
+      })());
+
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      nextInput.props.onTextSubmit('auto-allowed tools');
+      await waitForLoadingToFinish(view);
+
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedPermissionAutoAllowed}));
+    });
+
     it('does not log tool, skill, permission, or error telemetry when replaying a read-only historic conversation',
        async () => {
          AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance({forceNew: true});
@@ -1705,6 +1812,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
                output: 'color: blue;',
                canceled: false,
                toolName: 'getStyles',
+               autoApproved: true,
              },
              {
                type: AiAssistanceModel.AiAgent.ResponseType.ERROR,
@@ -1728,6 +1836,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
 
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedToolCall}));
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedPermissionPromptShown}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedPermissionAutoAllowed}));
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedLearnSkill}));
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedError}));
        });

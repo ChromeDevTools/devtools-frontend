@@ -1129,6 +1129,7 @@ describe('ContextSelectionAgent', function() {
           },
         }],
         canceled: false,
+        autoApproved: false,
       });
 
       const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
@@ -1239,6 +1240,7 @@ describe('ContextSelectionAgent', function() {
           },
         }],
         canceled: false,
+        autoApproved: false,
       });
 
       const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);

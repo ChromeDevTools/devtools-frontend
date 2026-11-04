@@ -140,7 +140,7 @@ details.environment-recs[open] > summary::before {
 
 .bucket-summaries.histogram {
   display: grid;
-  grid-template-columns: minmax(min-content, auto) minmax(var(--sys-size-14), 60px) max-content;
+  grid-template-columns: minmax(min-content, auto) minmax(var(--sys-size-14), var(--sys-size-18)) max-content;
   grid-auto-rows: 1fr;
   column-gap: var(--sys-size-5);
   place-items: center flex-end;

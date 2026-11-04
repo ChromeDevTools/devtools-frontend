@@ -92,7 +92,7 @@ ul {
 
 .clear-button,
 .delete-button {
-  margin-left: 5px;
+  margin-left: var(--sys-size-3);
 }
 
 .row:focus-within .delete-button,

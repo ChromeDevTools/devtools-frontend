@@ -17,6 +17,13 @@ node_ts_library("performance") {
     "lcp-load-delay-request-chain.test.ts",
     "lcp-load-duration-large-font.test.ts",
     "lcp-load-duration-large-image.test.ts",
+    "perf-problems-backend-latency.test.ts",
+    "perf-problems-bad-cls.test.ts",
+    "perf-problems-bad-inp.test.ts",
+    "perf-problems-bad-lcp.test.ts",
+    "perf-problems-low-lighthouse-score.test.ts",
+    "perf-problems-memory-leak.test.ts",
+    "perf-problems-smoothness-fps.test.ts",
   ]
 
   ts_deps = [

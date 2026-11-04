@@ -11,7 +11,7 @@ import * as Marked from '../../third_party/marked/marked.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getReleaseNote, type ReleaseNote, VideoType} from './ReleaseNoteText.js';
@@ -85,6 +85,20 @@ export class ReleaseNoteView extends UI.Panel.Panel {
           </div>
 
           <div class="feature-container">
+            ${releaseNote.announcement ? html`
+              <div class="feature announcement">
+                <div class="announcement-content">
+                  <h3>${releaseNote.announcement.title}</h3>
+                  <p>
+                    ${releaseNote.announcement.description}${
+                      releaseNote.announcement.link ? html`${' '}<devtools-link
+                        href=${releaseNote.announcement.link.url}
+                        jslogcontext="learn-more"
+                      >${releaseNote.announcement.link.text}</devtools-link>` : nothing}
+                  </p>
+                </div>
+              </div>
+            ` : nothing}
             <div class="video-container">
               ${releaseNote.videoLinks.map((value: {description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}) => {
                 return html`

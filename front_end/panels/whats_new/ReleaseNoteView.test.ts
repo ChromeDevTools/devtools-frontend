@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {before, it} from 'mocha';
+import {beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
@@ -19,38 +19,38 @@ const {urlString} = Platform.DevToolsPath;
 const CONTENT1 = 'Something something topic-1.\n';
 const CONTENT2 = 'Something something topic-2.\n';
 
+const BASE_RELEASE_NOTE: WhatsNew.ReleaseNoteText.ReleaseNote = {
+  version: 99,
+  header: 'What\'s new in DevTools 100',
+  markdownLinks: [
+    {
+      key: 'topic-1',
+      link: 'https://google.com.com/#topic-1',
+    },
+  ],
+  videoLinks: [
+    {
+      description: 'Highlight from the Chrome 132 update',
+      link: urlString`https://developer.chrome.com/blog/new-in-devtools-132/`,
+      type: WhatsNew.ReleaseNoteText.VideoType.WHATS_NEW,
+    },
+    {
+      description: 'DevTools tips',
+      link: urlString`https://developer.chrome.com/blog/devtools-tips-39`,
+      type: WhatsNew.ReleaseNoteText.VideoType.DEVTOOLS_TIPS,
+    },
+    {
+      description: 'Other',
+      link: urlString`https://developer.chrome.com/`,
+      type: WhatsNew.ReleaseNoteText.VideoType.OTHER,
+    },
+  ],
+  link: 'https://google.com',
+};
+
 describeWithEnvironment('Release Note View', () => {
-  before(() => {
-    WhatsNew.ReleaseNoteText.setReleaseNoteForTest(
-        {
-          version: 99,
-          header: 'What\'s new in DevTools 100',
-          markdownLinks: [
-            {
-              key: 'topic-1',
-              link: 'https://google.com.com/#topic-1',
-            },
-          ],
-          videoLinks: [
-            {
-              description: 'Highlight from the Chrome 132 update',
-              link: urlString`https://developer.chrome.com/blog/new-in-devtools-132/`,
-              type: WhatsNew.ReleaseNoteText.VideoType.WHATS_NEW,
-            },
-            {
-              description: 'DevTools tips',
-              link: urlString`https://developer.chrome.com/blog/devtools-tips-39`,
-              type: WhatsNew.ReleaseNoteText.VideoType.DEVTOOLS_TIPS,
-            },
-            {
-              description: 'Other',
-              link: urlString`https://developer.chrome.com/`,
-              type: WhatsNew.ReleaseNoteText.VideoType.OTHER,
-            },
-          ],
-          link: 'https://google.com',
-        },
-    );
+  beforeEach(() => {
+    WhatsNew.ReleaseNoteText.setReleaseNoteForTest(BASE_RELEASE_NOTE);
   });
 
   it('splits up markdown file content into separate sections', async () => {
@@ -159,5 +159,42 @@ describeWithEnvironment('Release Note View', () => {
     const expectedFilepaths = expectedThumbnails.map(src => new URL(src, import.meta.url).toString());
 
     assert.deepEqual(thumbnailFilepaths, expectedFilepaths);
+  });
+
+  it('omits announcement banner when not configured', async () => {
+    sinon.stub(WhatsNew.ReleaseNoteView.ReleaseNoteView, 'getFileContent').returns(Promise.resolve(''));
+    const releaseNoteView = new WhatsNew.ReleaseNoteView.ReleaseNoteView();
+    await releaseNoteView.updateComplete;
+
+    assert.isNull(releaseNoteView.contentElement.querySelector('.announcement'));
+  });
+
+  it('renders announcement banner with title, description, and link when configured', async () => {
+    WhatsNew.ReleaseNoteText.setReleaseNoteForTest({
+      ...BASE_RELEASE_NOTE,
+      announcement: {
+        title: 'Modern Web Guidance is now stable!',
+        description: 'Upgrade your coding agents with expert-vetted web development best practices.',
+        link: {
+          url: urlString`https://goo.gle/mwg-stable`,
+          text: 'Read the announcement',
+        },
+      },
+    });
+    sinon.stub(WhatsNew.ReleaseNoteView.ReleaseNoteView, 'getFileContent').returns(Promise.resolve(''));
+    const releaseNoteView = new WhatsNew.ReleaseNoteView.ReleaseNoteView();
+    await releaseNoteView.updateComplete;
+
+    const announcement = releaseNoteView.contentElement.querySelector<HTMLElement>('.announcement');
+    assert.isNotNull(announcement);
+    assert.strictEqual(announcement.querySelector('h3')?.textContent, 'Modern Web Guidance is now stable!');
+    assert.strictEqual(
+        announcement.querySelector('p')?.textContent?.trim(),
+        'Upgrade your coding agents with expert-vetted web development best practices. Read the announcement');
+
+    const link = announcement.querySelector<Link>('devtools-link');
+    assert.isNotNull(link);
+    assert.strictEqual(link.href, 'https://goo.gle/mwg-stable');
+    assert.strictEqual(link.textContent?.trim(), 'Read the announcement');
   });
 });

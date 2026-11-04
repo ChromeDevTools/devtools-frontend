@@ -11,9 +11,19 @@ import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.j
 
 let registeredLinks = false;
 
+export interface ReleaseNoteAnnouncement {
+  title: string;
+  description: string;
+  link?: {
+    url: Platform.DevToolsPath.UrlString,
+    text: string,
+  };
+}
+
 export interface ReleaseNote {
   version: number;
   header: string;
+  announcement?: ReleaseNoteAnnouncement;
   markdownLinks: Array<{key: string, link: string}>;
   videoLinks: Array<{description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}>;
   link: string;
@@ -40,8 +50,16 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 156,
+  version: 158,
   header: 'New in DevTools (November 2026)',
+  announcement: {
+    title: 'Modern Web Guidance is now stable!',
+    description: 'Upgrade your coding agents with expert-vetted web development best practices.',
+    link: {
+      url: 'https://goo.gle/mwg-stable' as Platform.DevToolsPath.UrlString,
+      text: 'Read the announcement',
+    },
+  },
   markdownLinks: [
     {
       key: 'mcp',

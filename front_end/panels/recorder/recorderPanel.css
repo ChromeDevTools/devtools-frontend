@@ -40,8 +40,8 @@ devtools-create-recording-view {
   flex-flow: row wrap;
   align-items: center;
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  padding: 0 5px;
-  gap: 3px;
+  padding: 0 var(--sys-size-3);
+  gap: var(--sys-size-2);
   flex-shrink: 0;
 }
 

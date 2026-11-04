@@ -111,7 +111,7 @@
 
   .authenticator-field-value {
     font: var(--sys-typescale-monospace-regular);
-    line-height: 18px;
+    line-height: var(--sys-typescale-body5-line-height);
   }
 
   .authenticator-field {

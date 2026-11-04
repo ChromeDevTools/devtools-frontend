@@ -5,6 +5,7 @@
 import '../../../ui/kit/kit.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {Directives, html, render, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -70,13 +71,16 @@ function renderChip(highlightInfo: HighlightInfo, input: ViewInput): TemplateRes
         </span>
       </button>
       <div class="delete-highlight-container">
-        <button class="delete-highlight-button" title=${i18nString(UIStrings.deleteHighlight)}
-            jslog=${VisualLogging.action('linear-memory-inspector.delete-highlight')
-                       .track({click:true})}
+        <devtools-button class="delete-highlight-button"
+            .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              iconName: 'cross',
+              size: Buttons.Button.Size.MICRO,
+              title: i18nString(UIStrings.deleteHighlight),
+              jslogContext: 'linear-memory-inspector.delete-highlight',
+            } as Buttons.Button.ButtonData}
             @click=${() => input.onDeleteHighlight(highlightInfo)}>
-          <devtools-icon name="cross" class="medium">
-          </devtools-icon>
-        </button>
+        </devtools-button>
       </div>
     </div>`;
     // clang-format off

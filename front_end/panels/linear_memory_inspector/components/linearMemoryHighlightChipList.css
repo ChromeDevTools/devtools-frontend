@@ -40,23 +40,7 @@
   border-radius: var(--sys-shape-corner-extra-small);
   width: var(--sys-size-11);
   align-items: center;
-  justify-content: center;
-}
-
-.delete-highlight-button {
-  cursor: pointer;
-  width: var(--sys-size-7);
-  height: var(--sys-size-7);
-  border: none;
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.delete-highlight-button:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-  border-radius: var(--sys-shape-corner-full);
+  justify-content: flex-end;
 }
 
 .jump-to-highlight-button {
@@ -68,15 +52,6 @@
   align-items: center;
   max-width: 100%;
   overflow: hidden;
-}
-
-.delete-highlight-button devtools-icon {
-  width: var(--sys-size-7);
-  height: var(--sys-size-7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--sys-shape-corner-full);
 }
 
 .source-code {

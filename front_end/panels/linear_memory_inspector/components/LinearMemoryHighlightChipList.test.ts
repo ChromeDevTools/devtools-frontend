@@ -10,6 +10,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
@@ -115,7 +116,7 @@ describe('LinearMemoryInspectorHighlightChipList', () => {
     await component.updateComplete;
 
     const button = component.contentElement.querySelector(HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR);
-    assert.instanceOf(button, HTMLButtonElement);
+    assert.instanceOf(button, Buttons.Button.Button);
     button.click();
 
     assert.isTrue(deleteHighlight.calledOnceWith(highlightInfo));
@@ -127,7 +128,7 @@ describe('LinearMemoryInspectorHighlightChipList', () => {
   });
 
   it('shows tooltip on delete highlight button', () => {
-    const button = component.contentElement.querySelector<HTMLButtonElement>(HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR)!;
+    const button = component.contentElement.querySelector<Buttons.Button.Button>(HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR)!;
     assert.strictEqual(button.title, 'Stop highlighting this memory');
   });
 });

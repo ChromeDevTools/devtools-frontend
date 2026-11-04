@@ -48,7 +48,10 @@ export default `/*
 
 .report-section {
   display: flex;
-  padding: var(--sys-size-7) var(--sys-size-9) 11px var(--sys-size-9);
+  /* 12px bottom padding (--sys-size-6) minus 1px border (--sys-size-1) = 11px. */
+  padding:
+    var(--sys-size-7) var(--sys-size-9)
+    calc(var(--sys-size-6) - var(--sys-size-1)) var(--sys-size-9);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-direction: column;
 }

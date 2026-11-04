@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-import { debugLog } from './debug.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
+const { debugCodeGenCompleteLog: debugLog } = AiUtils.Debug;
 /* clang-format off */
 export const consoleAdditionalContextFileContent = `/**
  * This file describes the execution environment of the Chrome DevTools Console.

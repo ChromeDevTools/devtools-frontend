@@ -5,6 +5,11 @@ import type * as CommentManager from '../../models/comment_manager/comment_manag
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 /**
+ * Returns the disclaimer about the data that is sent to the connected agent. The comment thread and the comments
+ * pane both show it in their info tooltips.
+ */
+export declare function inputDisclaimer(): string;
+/**
  * Either the DOM node the thread is anchored to, or a plain text label for anchors that are not
  * DOM nodes (e.g. network requests).
  */

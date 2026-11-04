@@ -37,7 +37,7 @@ export default `/**
   }
 
   .font-stats-item {
-    padding: 5px 1em;
+    padding: var(--sys-size-3) 1em;
 
     div {
       margin-bottom: var(--sys-size-2);

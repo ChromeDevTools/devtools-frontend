@@ -167,8 +167,25 @@ export var AidaInferenceLanguage;
     AidaInferenceLanguage["XML"] = "XML";
     AidaInferenceLanguage["UNKNOWN"] = "UNKNOWN";
 })(AidaInferenceLanguage || (AidaInferenceLanguage = {}));
+// Reads `devToolsAiDebug` directly because `core/host` cannot depend on `models/ai-utils`.
+function isGcaDebugMode() {
+    try {
+        const raw = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem('devToolsAiDebug');
+        if (!raw) {
+            return false;
+        }
+        const parsed = JSON.parse(raw);
+        if (typeof parsed !== 'object' || parsed === null) {
+            return false;
+        }
+        return Boolean(parsed.gca);
+    }
+    catch {
+        return false;
+    }
+}
 export function debugLog(...log) {
-    if (!Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem('debugAiServicesEnabled'))) {
+    if (!isGcaDebugMode()) {
         return;
     }
     // eslint-disable-next-line no-console

@@ -42,7 +42,6 @@ import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
@@ -304,6 +303,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     render(
     // clang-format off
     html `
+      <style>${watchExpressionsSidebarPaneStyles}</style>
       ${input.watchExpressions.length === 0
         ? html `<div class=gray-info-message tabindex=-1 >
         ${i18nString(UIStrings.noWatchExpressions)}
@@ -336,7 +336,6 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
     #expansionTrackers = new Map();
     constructor() {
         super({ useShadowDom: true });
-        this.registerRequiredCSS(watchExpressionsSidebarPaneStyles, objectValueStyles);
         this.#watchExpressions = [];
         this.#watchExpressionsSetting =
             Common.Settings.Settings.instance().createLocalSetting('watch-expressions', []);

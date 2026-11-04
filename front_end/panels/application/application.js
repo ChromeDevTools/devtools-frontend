@@ -26,12 +26,12 @@ __export(ApplicationPanelSidebar_exports, {
   StorageTreeElement: () => StorageTreeElement,
   SubAppsTreeElement: () => SubAppsTreeElement
 });
-import * as Common18 from "../../core/common/common.js";
+import * as Common19 from "../../core/common/common.js";
 import * as Host4 from "../../core/host/host.js";
 import * as i18n61 from "../../core/i18n/i18n.js";
-import * as Platform11 from "../../core/platform/platform.js";
+import * as Platform12 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
-import * as SDK24 from "../../core/sdk/sdk.js";
+import * as SDK25 from "../../core/sdk/sdk.js";
 
 // ../../front_end/generated/protocol.ts
 var Accessibility;
@@ -2138,6 +2138,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -3079,12 +3084,6 @@ var appManifestView_css_default = `/*
  */
 .report-field-name {
   flex-basis: 152px;
-}
-
-.manifest-view-header {
-  min-width: 600px;
-  flex-shrink: 0;
-  flex-grow: 0;
 }
 
 :host {
@@ -4726,27 +4725,6 @@ var backgroundServiceView_css_default = `/*
   flex-direction: column;
 }
 
-.background-service-preview {
-  position: absolute;
-  background-color: var(--sys-color-cdt-base-container);
-  justify-content: center;
-  align-items: center;
-  overflow: auto;
-  font-size: var(--sys-typescale-body3-size);
-  color: var(--sys-color-on-surface-subtle);
-}
-
-.background-service-preview > div {
-  max-width: 450px;
-  margin: 10px;
-  text-align: center;
-}
-
-.background-service-preview > div > p {
-  flex: none;
-  white-space: pre-line;
-}
-
 .background-service-shortcut {
   color: var(--sys-color-on-surface-subtle);
 }
@@ -6118,11 +6096,6 @@ devtools-button.help-button {
   position: relative;
 }
 
-button.text-link {
-  padding-left: var(--sys-size-2);
-  height: 26px;
-}
-
 .inline-button {
   padding-left: 1ex;
 }
@@ -6179,11 +6152,6 @@ button.text-link {
 
 .bold {
   font-weight: bold;
-}
-
-.link:not(button):has(devtools-icon) {
-  vertical-align: baseline;
-  margin-inline-start: 3px;
 }
 
 .inline-icon {
@@ -7923,18 +7891,8 @@ var indexedDBViews_css_default = `/*
   overflow: auto;
 }
 
-.indexed-db-header {
-  min-width: 400px;
-  flex-shrink: 0;
-  flex-grow: 0;
-}
-
 .source-code.indexed-db-key-path {
   font-size: unset !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.resources-toolbar {
-  padding-right: 10px;
 }
 
 .object-store-summary-bar {
@@ -8336,6 +8294,8 @@ var renderSummaryBar = (input) => {
 };
 var IDB_DATA_VIEW_DEFAULT_VIEW = (input, _output, target) => {
   render6(html6`
+    <style>${indexedDBViews_css_default}</style>
+    <style>${DataGrid.dataGridStyles}</style>
     ${renderToolbar(input)}
     <div class="data-grid-container">
       ${renderDataGrid(input)}
@@ -8376,8 +8336,6 @@ var IDBDataView = class extends UI9.View.SimpleView {
       viewId: "idb"
     });
     this.#view = view;
-    this.registerRequiredCSS(indexedDBViews_css_default);
-    this.registerRequiredCSS(DataGrid.dataGridStyles);
     this.model = model;
     this.databaseId = databaseId;
     this.isIndex = Boolean(index);
@@ -10062,9 +10020,13 @@ __export(PrivateVerificationTokensView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
   PrivateVerificationTokensView: () => PrivateVerificationTokensView
 });
+import "../../ui/legacy/components/data_grid/data_grid.js";
+import * as Common9 from "../../core/common/common.js";
 import * as i18n23 from "../../core/i18n/i18n.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as SDK12 from "../../core/sdk/sdk.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
-import { html as html9, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html9, render as render9 } from "../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/privateVerificationTokensView.css.js
@@ -10089,27 +10051,116 @@ var privateVerificationTokensView_css_default = `/*
   overflow: hidden;
 }
 
+.table-container {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  overflow: auto;
+}
+
+devtools-data-grid {
+  width: 100%;
+  border: none;
+}
+
 /*# sourceURL=${import.meta.resolve("./privateVerificationTokensView.css")} */`;
 
 // ../../front_end/panels/application/PrivateVerificationTokensView.ts
+var { repeat: repeat2 } = Directives5;
 var UIStrings12 = {
+  /**
+   * @description Text for the issuer of an item.
+   */
+  issuer: "Issuer",
+  /**
+   * @description Column header indicating whether the current origin is the issuer of the token.
+   */
+  isIssuer: "Is issuer",
+  /**
+   * @description Column header indicating whether the current origin is authorized to redeem the token.
+   */
+  isRedeemer: "Is redeemer",
   /**
    * @description Empty state message when no private verification tokens match the current origin.
    */
-  noPrivateVerificationTokens: "No private verification tokens for this origin"
+  noPrivateVerificationTokens: "No private verification tokens for this origin",
+  /**
+   * @description Column header for Token ID.
+   */
+  tokenId: "Token ID",
+  /**
+   * @description Column header for Public Key ID.
+   */
+  keyId: "Key ID",
+  /**
+   * @description Column header for token expiration date.
+   */
+  expiration: "Expiration",
+  /**
+   * @description Column header for token creation time.
+   */
+  creationTime: "Created",
+  /**
+   * @description Column header for token protocol version.
+   */
+  version: "Version",
+  /**
+   * @description Column header for base64 encoded token payload.
+   */
+  tokenPayload: "Token (Base64)"
 };
 var str_12 = i18n23.i18n.registerUIStrings("panels/application/PrivateVerificationTokensView.ts", UIStrings12);
 var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
-var DEFAULT_VIEW5 = (_input, _output, target) => {
+function renderView(input) {
+  const hasTokens = input.tokens.length > 0;
+  return html9`
+    <div class="pvt-view" jslog=${VisualLogging6.pane("private-verification-tokens")}>
+      <div class="table-container">
+        ${hasTokens ? html9`
+          <devtools-data-grid striped inline>
+            <table>
+              <tr>
+                <th id="issuer" weight="6" sortable>${i18nString12(UIStrings12.issuer)}</th>
+                <th id="is-issuer" type="boolean" align="center" weight="3" sortable>${i18nString12(UIStrings12.isIssuer)}</th>
+                <th id="is-redeemer" type="boolean" align="center" weight="3" sortable>${i18nString12(UIStrings12.isRedeemer)}</th>
+                <th id="id" weight="3" sortable>${i18nString12(UIStrings12.tokenId)}</th>
+                <th id="key-id" weight="2" sortable>${i18nString12(UIStrings12.keyId)}</th>
+                <th id="expiration" weight="5" sortable>${i18nString12(UIStrings12.expiration)}</th>
+                <th id="creation-time" weight="5" sortable>${i18nString12(UIStrings12.creationTime)}</th>
+                <th id="version" weight="2" sortable>${i18nString12(UIStrings12.version)}</th>
+                <th id="token" weight="2">${i18nString12(UIStrings12.tokenPayload)}</th>
+              </tr>
+              ${repeat2(input.tokens, (token) => token.id, (token) => html9`
+                <tr>
+                  <td>${token.issuerOrigin}</td>
+                  <td>${token.isIssuer}</td>
+                  <td>${token.isRedeemer}</td>
+                  <td>${token.id}</td>
+                  <td>${token.keyId}</td>
+                  <td>${token.expiration}</td>
+                  <td>${token.creationTime}</td>
+                  <td>${token.version}</td>
+                  <td class="monospace" title=${token.token}>${token.token}</td>
+                </tr>
+              `)}
+            </table>
+          </devtools-data-grid>
+        ` : html9`
+          ${UI12.Widget.widget(UI12.EmptyWidget.EmptyWidget, { header: i18nString12(UIStrings12.noPrivateVerificationTokens) })}
+        `}
+      </div>
+    </div>
+  `;
+}
+var DEFAULT_VIEW5 = (input, _output, target) => {
   render9(html9`
     <style>${privateVerificationTokensView_css_default}</style>
     <style>${UI12.inspectorCommonStyles}</style>
-    <div class="pvt-view" jslog=${VisualLogging6.pane("private-verification-tokens")}>
-      ${UI12.Widget.widget(UI12.EmptyWidget.EmptyWidget, { header: i18nString12(UIStrings12.noPrivateVerificationTokens) })}
-    </div>
+    ${renderView(input)}
   `, target);
 };
 var PrivateVerificationTokensView = class extends UI12.Widget.VBox {
+  #model = null;
   #view;
   constructor(element, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
@@ -10117,12 +10168,107 @@ var PrivateVerificationTokensView = class extends UI12.Widget.VBox {
   }
   wasShown() {
     super.wasShown();
+    const targetManager = SDK12.TargetManager.TargetManager.instance();
+    targetManager.observeModels(
+      SDK12.PrivateVerificationTokensModel.PrivateVerificationTokensModel,
+      this,
+      { scoped: true }
+    );
+    targetManager.addEventListener(SDK12.TargetManager.Events.INSPECTED_URL_CHANGED, this.requestUpdate, this);
+    targetManager.addModelListener(
+      SDK12.SecurityOriginManager.SecurityOriginManager,
+      SDK12.SecurityOriginManager.Events.MainSecurityOriginChanged,
+      this.requestUpdate,
+      this,
+      { scoped: true }
+    );
     this.requestUpdate();
   }
-  performUpdate() {
-    this.#view({}, void 0, this.contentElement);
+  willHide() {
+    super.willHide();
+    const targetManager = SDK12.TargetManager.TargetManager.instance();
+    targetManager.unobserveModels(SDK12.PrivateVerificationTokensModel.PrivateVerificationTokensModel, this);
+    targetManager.removeEventListener(SDK12.TargetManager.Events.INSPECTED_URL_CHANGED, this.requestUpdate, this);
+    targetManager.removeModelListener(
+      SDK12.SecurityOriginManager.SecurityOriginManager,
+      SDK12.SecurityOriginManager.Events.MainSecurityOriginChanged,
+      this.requestUpdate,
+      this
+    );
+    if (this.#model) {
+      this.modelRemoved(this.#model);
+    }
+  }
+  modelAdded(model) {
+    if (model.target() !== SDK12.TargetManager.TargetManager.instance().primaryPageTarget() || model === this.#model) {
+      return;
+    }
+    if (this.#model) {
+      this.modelRemoved(this.#model);
+    }
+    this.#model = model;
+    model.setTracking(true);
+    model.addEventListener(SDK12.PrivateVerificationTokensModel.Events.TOKENS_UPDATED, this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  modelRemoved(model) {
+    if (model !== this.#model) {
+      return;
+    }
+    model.setTracking(false);
+    model.removeEventListener(SDK12.PrivateVerificationTokensModel.Events.TOKENS_UPDATED, this.requestUpdate, this);
+    this.#model = null;
+  }
+  async performUpdate(signal) {
+    const model = this.#model;
+    let tokens = [];
+    if (model) {
+      const currentOrigin = getInspectedOrigin(model.target());
+      if (currentOrigin) {
+        const [rawTokens, configs] = await Promise.all([model.getTokens(), model.getIssuerConfigs()]);
+        if (signal?.aborted || this.#model !== model) {
+          return;
+        }
+        tokens = toTokenRows(rawTokens, configs, currentOrigin);
+      }
+    }
+    if (signal?.aborted) {
+      return;
+    }
+    this.#view({ tokens }, void 0, this.contentElement);
   }
 };
+function toTokenRows(rawTokens, configs, currentOrigin) {
+  const redeemersByIssuer = new Map(configs.map((config) => [extractOrigin(config.issuerOrigin), config.redeemerOrigins.map(extractOrigin)]));
+  return rawTokens.map((token) => {
+    const issuerOrigin = extractOrigin(token.issuerOrigin);
+    return {
+      id: token.id,
+      issuerOrigin,
+      isIssuer: issuerOrigin === currentOrigin,
+      isRedeemer: Boolean(redeemersByIssuer.get(issuerOrigin)?.includes(currentOrigin)),
+      keyId: token.keyId,
+      expiration: formatEpochTime(token.expiration),
+      creationTime: formatEpochTime(token.creationTime),
+      version: token.version,
+      token: token.token
+    };
+  }).filter((token) => token.isIssuer || token.isRedeemer).sort((a, b) => a.issuerOrigin.localeCompare(b.issuerOrigin) || Platform5.StringUtilities.naturalOrderComparator(a.id, b.id));
+}
+function getInspectedOrigin(target) {
+  const securityOriginManager = target.model(SDK12.SecurityOriginManager.SecurityOriginManager);
+  return extractOrigin(securityOriginManager?.mainSecurityOrigin() || target.inspectedURL());
+}
+function extractOrigin(url) {
+  return Common9.ParsedURL.ParsedURL.extractOrigin(url);
+}
+function formatEpochTime(seconds) {
+  if (!Number.isFinite(seconds) || seconds <= 0) {
+    return "\u2014";
+  }
+  const date = new Date(seconds * 1e3);
+  return Number.isNaN(date.getTime()) ? "\u2014" : date.toISOString();
+}
 
 // ../../front_end/panels/application/ReportingApiTreeElement.ts
 var ReportingApiTreeElement_exports = {};
@@ -10143,8 +10289,8 @@ __export(CrashReportContextView_exports, {
 });
 import "../../ui/legacy/legacy.js";
 import * as i18n25 from "../../core/i18n/i18n.js";
-import * as Platform5 from "../../core/platform/platform.js";
-import * as SDK12 from "../../core/sdk/sdk.js";
+import * as Platform6 from "../../core/platform/platform.js";
+import * as SDK13 from "../../core/sdk/sdk.js";
 import * as Buttons6 from "../../ui/components/buttons/buttons.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
 import { html as html10, render as render10 } from "../../ui/lit/lit.js";
@@ -10269,7 +10415,7 @@ var CrashReportContextView = class extends UI13.Widget.VBox {
     this.requestUpdate();
   }
   async performUpdate() {
-    const models = SDK12.TargetManager.TargetManager.instance().models(SDK12.CrashReportContextModel.CrashReportContextModel);
+    const models = SDK13.TargetManager.TargetManager.instance().models(SDK13.CrashReportContextModel.CrashReportContextModel);
     const allEntries = (await Promise.all(models.map((model) => model.getEntries()))).flat().filter((entry) => entry !== null);
     const frameData = this.#processFrameData(allEntries);
     this.#view(
@@ -10286,7 +10432,7 @@ var CrashReportContextView = class extends UI13.Widget.VBox {
         },
         onFilterChanged: (e) => {
           const text = e.detail;
-          const textFilterRegExp = text ? Platform5.StringUtilities.createPlainTextSearchRegex(text, "i") : null;
+          const textFilterRegExp = text ? Platform6.StringUtilities.createPlainTextSearchRegex(text, "i") : null;
           if (textFilterRegExp) {
             this.#filters = [
               { key: "key,value", regex: textFilterRegExp, negative: false }
@@ -10307,7 +10453,7 @@ var CrashReportContextView = class extends UI13.Widget.VBox {
     }
     const entriesByFrame = Map.groupBy(allEntries, (entry) => entry.frameId);
     return [...entriesByFrame.entries()].map(([frameId, frameEntries]) => {
-      const frame = SDK12.FrameManager.FrameManager.instance().getFrame(frameId);
+      const frame = SDK13.FrameManager.FrameManager.instance().getFrame(frameId);
       const url = frame?.url || i18nString13(UIStrings13.unknownFrame);
       const displayName = frame?.displayName() || url;
       return {
@@ -10342,7 +10488,7 @@ __export(ReportingApiView_exports, {
   i18nString: () => i18nString14
 });
 import * as i18n27 from "../../core/i18n/i18n.js";
-import * as SDK13 from "../../core/sdk/sdk.js";
+import * as SDK14 from "../../core/sdk/sdk.js";
 import * as SourceFrame from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
 import { html as html11, render as render11 } from "../../ui/lit/lit.js";
@@ -10425,22 +10571,22 @@ var ReportingApiView = class extends UI14.Widget.VBox {
     super();
     this.#view = view;
     this.#endpoints = /* @__PURE__ */ new Map();
-    SDK13.TargetManager.TargetManager.instance().observeModels(SDK13.NetworkManager.NetworkManager, this);
+    SDK14.TargetManager.TargetManager.instance().observeModels(SDK14.NetworkManager.NetworkManager, this);
     this.requestUpdate();
   }
   modelAdded(networkManager) {
-    if (networkManager.target() !== SDK13.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (networkManager.target() !== SDK14.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.#networkManager = networkManager;
     this.#networkManager.addEventListener(
-      SDK13.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin,
+      SDK14.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin,
       this.#onEndpointsChangedForOrigin,
       this
     );
-    this.#networkManager.addEventListener(SDK13.NetworkManager.Events.ReportingApiReportAdded, this.#onReportAdded, this);
+    this.#networkManager.addEventListener(SDK14.NetworkManager.Events.ReportingApiReportAdded, this.#onReportAdded, this);
     this.#networkManager.addEventListener(
-      SDK13.NetworkManager.Events.ReportingApiReportUpdated,
+      SDK14.NetworkManager.Events.ReportingApiReportUpdated,
       this.#onReportUpdated,
       this
     );
@@ -10452,17 +10598,17 @@ var ReportingApiView = class extends UI14.Widget.VBox {
       return;
     }
     this.#networkManager.removeEventListener(
-      SDK13.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin,
+      SDK14.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin,
       this.#onEndpointsChangedForOrigin,
       this
     );
     this.#networkManager.removeEventListener(
-      SDK13.NetworkManager.Events.ReportingApiReportAdded,
+      SDK14.NetworkManager.Events.ReportingApiReportAdded,
       this.#onReportAdded,
       this
     );
     this.#networkManager.removeEventListener(
-      SDK13.NetworkManager.Events.ReportingApiReportUpdated,
+      SDK14.NetworkManager.Events.ReportingApiReportUpdated,
       this.#onReportUpdated,
       this
     );
@@ -10657,7 +10803,7 @@ __export(ServiceWorkerCacheTreeElement_exports, {
   ServiceWorkerCacheTreeElement: () => ServiceWorkerCacheTreeElement
 });
 import * as i18n33 from "../../core/i18n/i18n.js";
-import * as SDK15 from "../../core/sdk/sdk.js";
+import * as SDK16 from "../../core/sdk/sdk.js";
 import { createIcon as createIcon6 } from "../../ui/kit/kit.js";
 import * as UI17 from "../../ui/legacy/legacy.js";
 
@@ -10671,10 +10817,10 @@ __export(ServiceWorkerCacheViews_exports, {
 });
 import "../../ui/legacy/legacy.js";
 import "../../ui/legacy/components/data_grid/data_grid.js";
-import * as Common9 from "../../core/common/common.js";
+import * as Common10 from "../../core/common/common.js";
 import * as i18n31 from "../../core/i18n/i18n.js";
-import * as Platform6 from "../../core/platform/platform.js";
-import * as SDK14 from "../../core/sdk/sdk.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as SDK15 from "../../core/sdk/sdk.js";
 import * as TextUtils3 from "../../core/text_utils/text_utils.js";
 import * as Buttons7 from "../../ui/components/buttons/buttons.js";
 import * as Geometry from "../../ui/geometry/geometry.js";
@@ -10819,6 +10965,7 @@ var str_16 = i18n31.i18n.registerUIStrings("panels/application/ServiceWorkerCach
 var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var DEFAULT_VIEW8 = (input, _output, target) => {
   render12(html12`
+    <style>${serviceWorkerCacheViews_css_default}</style>
     <devtools-toolbar class="data-view-toolbar" jslog=${VisualLogging9.toolbar()}>
       <devtools-button
         title=${i18nString16(UIStrings16.refresh)}
@@ -10873,8 +11020,8 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
             </tr>
             ${input.entries.map((item4, index) => {
     const requestUrl = item4.request.url();
-    const parsed = new Common9.ParsedURL.ParsedURL(requestUrl);
-    const name = parsed.isValid ? Platform6.StringUtilities.trimURL(requestUrl, parsed.domain()) : requestUrl;
+    const parsed = new Common10.ParsedURL.ParsedURL(requestUrl);
+    const name = parsed.isValid ? Platform7.StringUtilities.trimURL(requestUrl, parsed.domain()) : requestUrl;
     const responseType = item4.entry.responseType === "opaqueResponse" ? "opaque" : item4.entry.responseType === "opaqueRedirect" ? "opaqueredirect" : item4.entry.responseType;
     const varyHeader = item4.request.responseHeaders.find((header) => header.name.toLowerCase() === "vary")?.value || "";
     return html12`
@@ -10922,8 +11069,8 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
   #entries = [];
   #selectedRequest = null;
   cache;
-  #refreshThrottler = new Common9.Throttler.Throttler(300);
-  #entryPathFilterThrottler = new Common9.Throttler.Throttler(300);
+  #refreshThrottler = new Common10.Throttler.Throttler(300);
+  #entryPathFilterThrottler = new Common10.Throttler.Throttler(300);
   #refreshEnabled = true;
   entryPathFilter = "";
   returnCount = null;
@@ -10934,7 +11081,6 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
       viewId: "cache"
     });
     this.#view = view;
-    this.registerRequiredCSS(serviceWorkerCacheViews_css_default);
     this.model = model;
     this.cache = cache;
     this.update(cache);
@@ -10942,7 +11088,7 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
   wasShown() {
     super.wasShown();
     this.model.addEventListener(
-      SDK14.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED,
+      SDK15.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED,
       this.#cacheContentUpdated,
       this
     );
@@ -10951,7 +11097,7 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
   willHide() {
     super.willHide();
     this.model.removeEventListener(
-      SDK14.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED,
+      SDK15.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED,
       this.#cacheContentUpdated,
       this
     );
@@ -10977,7 +11123,7 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
     void this.updateData(true);
   }
   performUpdate() {
-    const bucketInfo = this.model.target().model(SDK14.StorageBucketsModel.StorageBucketsModel)?.getBucketByName(this.cache.storageBucket.storageKey, this.cache.storageBucket.name);
+    const bucketInfo = this.model.target().model(SDK15.StorageBucketsModel.StorageBucketsModel)?.getBucketByName(this.cache.storageBucket.storageKey, this.cache.storageBucket.name);
     this.#view(
       {
         entries: this.#entries,
@@ -11063,28 +11209,28 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
     }
     void this.#refreshThrottler.schedule(
       () => Promise.resolve(this.updateData(true)),
-      Common9.Throttler.Scheduling.AS_SOON_AS_POSSIBLE
+      Common10.Throttler.Scheduling.AS_SOON_AS_POSSIBLE
     );
   }
   createRequest(entry) {
-    const request = SDK14.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+    const request = SDK15.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
       "cache-storage-" + entry.requestURL,
       entry.requestURL,
-      Platform6.DevToolsPath.EmptyUrlString,
+      Platform7.DevToolsPath.EmptyUrlString,
       null
     );
     request.requestMethod = entry.requestMethod;
     request.setRequestHeaders(entry.requestHeaders);
     request.statusCode = entry.responseStatus;
     request.statusText = entry.responseStatusText;
-    request.protocol = new Common9.ParsedURL.ParsedURL(entry.requestURL).scheme;
+    request.protocol = new Common10.ParsedURL.ParsedURL(entry.requestURL).scheme;
     request.responseHeaders = entry.responseHeaders;
     request.setRequestHeadersText("");
     request.endTime = entry.responseTime;
     let header = entry.responseHeaders.find((header2) => header2.name.toLowerCase() === "content-type");
-    let mimeType = Platform6.MimeType.MimeType.PLAIN;
+    let mimeType = Platform7.MimeType.MimeType.PLAIN;
     if (header) {
-      const result = Platform6.MimeType.parseContentType(header.value);
+      const result = Platform7.MimeType.parseContentType(header.value);
       if (result.mimeType) {
         mimeType = result.mimeType;
       }
@@ -11092,9 +11238,9 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
     request.mimeType = mimeType;
     header = entry.responseHeaders.find((header2) => header2.name.toLowerCase() === "content-length");
     request.resourceSize = header && Number(header.value) || 0;
-    let resourceType = Common9.ResourceType.ResourceType.fromMimeType(mimeType);
+    let resourceType = Common10.ResourceType.ResourceType.fromMimeType(mimeType);
     if (!resourceType) {
-      resourceType = Common9.ResourceType.ResourceType.fromURL(entry.requestURL) || Common9.ResourceType.resourceTypes.Other;
+      resourceType = Common10.ResourceType.ResourceType.fromURL(entry.requestURL) || Common10.ResourceType.resourceTypes.Other;
     }
     request.setResourceType(resourceType);
     request.setContentDataProvider(this.requestContent.bind(this, request));
@@ -11143,7 +11289,7 @@ var RequestView = class extends UI16.Widget.VBox {
   constructor(requestOrElement, view = REQUEST_VIEW_DEFAULT_VIEW) {
     super(requestOrElement instanceof HTMLElement ? requestOrElement : void 0);
     this.#view = view;
-    this.#resourceViewTabSetting = Common9.Settings.Settings.instance().createSetting("cache-storage-view-tab", "preview");
+    this.#resourceViewTabSetting = Common10.Settings.Settings.instance().createSetting("cache-storage-view-tab", "preview");
     if (requestOrElement && !(requestOrElement instanceof HTMLElement)) {
       this.request = requestOrElement;
     }
@@ -11230,8 +11376,8 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
     this.swCacheModels.clear();
     this.swCacheTreeElements.clear();
     if (this.swCacheModelObserver) {
-      SDK15.TargetManager.TargetManager.instance().unobserveModels(
-        SDK15.ServiceWorkerCacheModel.ServiceWorkerCacheModel,
+      SDK16.TargetManager.TargetManager.instance().unobserveModels(
+        SDK16.ServiceWorkerCacheModel.ServiceWorkerCacheModel,
         this.swCacheModelObserver
       );
     }
@@ -11239,8 +11385,8 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
       modelAdded: (model) => this.serviceWorkerCacheModelAdded(model),
       modelRemoved: (model) => this.serviceWorkerCacheModelRemoved(model)
     };
-    SDK15.TargetManager.TargetManager.instance().observeModels(
-      SDK15.ServiceWorkerCacheModel.ServiceWorkerCacheModel,
+    SDK16.TargetManager.TargetManager.instance().observeModels(
+      SDK16.ServiceWorkerCacheModel.ServiceWorkerCacheModel,
       this.swCacheModelObserver,
       { scoped: true }
     );
@@ -11269,15 +11415,15 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
     for (const cache of model.caches()) {
       this.addCache(model, cache);
     }
-    model.addEventListener(SDK15.ServiceWorkerCacheModel.Events.CACHE_ADDED, this.cacheAdded, this);
-    model.addEventListener(SDK15.ServiceWorkerCacheModel.Events.CACHE_REMOVED, this.cacheRemoved, this);
+    model.addEventListener(SDK16.ServiceWorkerCacheModel.Events.CACHE_ADDED, this.cacheAdded, this);
+    model.addEventListener(SDK16.ServiceWorkerCacheModel.Events.CACHE_REMOVED, this.cacheRemoved, this);
   }
   serviceWorkerCacheModelRemoved(model) {
     for (const cache of model.caches()) {
       this.removeCache(model, cache);
     }
-    model.removeEventListener(SDK15.ServiceWorkerCacheModel.Events.CACHE_ADDED, this.cacheAdded, this);
-    model.removeEventListener(SDK15.ServiceWorkerCacheModel.Events.CACHE_REMOVED, this.cacheRemoved, this);
+    model.removeEventListener(SDK16.ServiceWorkerCacheModel.Events.CACHE_ADDED, this.cacheAdded, this);
+    model.removeEventListener(SDK16.ServiceWorkerCacheModel.Events.CACHE_REMOVED, this.cacheRemoved, this);
     this.swCacheModels.delete(model);
   }
   cacheAdded(event) {
@@ -11389,15 +11535,15 @@ __export(ServiceWorkersView_exports, {
 });
 import "../../ui/components/report_view/report_view.js";
 import "../../ui/kit/kit.js";
-import * as Common10 from "../../core/common/common.js";
+import * as Common11 from "../../core/common/common.js";
 import * as Host2 from "../../core/host/host.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
-import * as SDK17 from "../../core/sdk/sdk.js";
+import * as SDK18 from "../../core/sdk/sdk.js";
 import * as NetworkForward2 from "../network/forward/forward.js";
 import * as Buttons8 from "../../ui/components/buttons/buttons.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html14, nothing as nothing8, render as render14 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html14, nothing as nothing8, render as render14 } from "../../ui/lit/lit.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling from "../mobile_throttling/mobile_throttling.js";
 import * as ApplicationComponents9 from "./components/components.js";
@@ -11435,7 +11581,7 @@ var serviceWorkersView_css_default = `/*
 }
 
 .service-worker-version:not(:last-child) {
-  margin-bottom: 7px;
+  margin-bottom: var(--sys-size-4);
 }
 
 .service-worker-version-string {
@@ -11484,7 +11630,7 @@ var serviceWorkersView_css_default = `/*
 }
 
 .link {
-  margin-left: 7px;
+  margin-left: var(--sys-size-4);
 }
 
 .service-worker-editor-with-button {
@@ -11592,7 +11738,8 @@ devtools-icon.error-icon {
 .service-worker-section {
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   grid-column: 1 / 3;
-  padding: 0 var(--sys-size-9) 11px var(--sys-size-9);
+  /* 12px section bottom spacing (--sys-size-6) minus 1px bottom border (--sys-size-1). */
+  padding: 0 var(--sys-size-9) calc(var(--sys-size-6) - var(--sys-size-1)) var(--sys-size-9);
 }
 
 .service-worker-section-container {
@@ -11613,7 +11760,7 @@ __export(ServiceWorkerUpdateCycleView_exports, {
   ServiceWorkerUpdateNames: () => ServiceWorkerUpdateNames
 });
 import * as i18n35 from "../../core/i18n/i18n.js";
-import * as SDK16 from "../../core/sdk/sdk.js";
+import * as SDK17 from "../../core/sdk/sdk.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
 import { html as html13, nothing as nothing7, render as render13 } from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
@@ -11698,26 +11845,26 @@ var serviceWorkerUpdateCycleView_css_default = `/*
   }
 
   .service-worker-update-timing-bar.activate {
-    top: 5px;
-    height: 10px;
+    margin-block: auto;
+    height: var(--sys-size-5);
     background-color: var(--sys-color-yellow-bright);
   }
 
   .service-worker-update-timing-bar.wait {
-    top: 5px;
-    height: 10px;
+    margin-block: auto;
+    height: var(--sys-size-5);
     background-color: var(--sys-color-purple-bright);
   }
 
   .service-worker-update-timing-bar.install {
-    top: 5px;
-    height: 10px;
+    margin-block: auto;
+    height: var(--sys-size-5);
     background-color: var(--sys-color-cyan-bright);
   }
 
   .service-worker-update-timing-table > tbody > tr > td {
     padding: var(--sys-size-3) 0;
-    padding-right: 10px;
+    padding-right: var(--sys-size-5);
   }
 
   table.service-worker-update-timing-table > tbody > tr.service-worker-update-timing-table-header > td {
@@ -11909,10 +12056,10 @@ var ServiceWorkerUpdateCycleView = class extends UI18.Widget.Widget {
     }
     const versions = this.#registration.versionsByMode();
     const modes = [
-      SDK16.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE,
-      SDK16.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING,
-      SDK16.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING,
-      SDK16.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT
+      SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE,
+      SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING,
+      SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING,
+      SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT
     ];
     for (const mode of modes) {
       const version = versions.get(mode);
@@ -12198,12 +12345,12 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/application/ServiceWorkersView.ts", UIStrings19);
 var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var { until } = Directives5;
+var { until } = Directives6;
 var { widget: widget8 } = UI19.Widget;
 var { bindToSetting } = UI19.UIUtils;
 function renderToolbar2() {
-  const updateOnReloadSetting = Common10.Settings.Settings.instance().createSetting("service-worker-update-on-reload", false);
-  const bypassServiceWorkerSetting = Common10.Settings.Settings.instance().createSetting("bypass-service-worker", false);
+  const updateOnReloadSetting = Common11.Settings.Settings.instance().createSetting("service-worker-update-on-reload", false);
+  const bypassServiceWorkerSetting = Common11.Settings.Settings.instance().createSetting("bypass-service-worker", false);
   return html14`<devtools-toolbar class="service-worker-toolbar">
     ${MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox().element}
     <devtools-checkbox title=${i18nString19(UIStrings19.onPageReloadForceTheService)}
@@ -12236,10 +12383,10 @@ function renderOthersOriginView() {
 function getTimeStamp(registration) {
   const versions = registration.versionsByMode();
   let timestamp = 0;
-  const active = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
-  const installing = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING);
-  const waiting = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING);
-  const redundant = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT);
+  const active = versions.get(SDK18.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
+  const installing = versions.get(SDK18.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING);
+  const waiting = versions.get(SDK18.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING);
+  const redundant = versions.get(SDK18.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT);
   if (active) {
     timestamp = active.scriptResponseTime;
   } else if (waiting) {
@@ -12271,6 +12418,7 @@ function renderOriginReport(input) {
 var DEFAULT_VIEW10 = (input, _output, target) => {
   render14(
     html14`
+    <style>${serviceWorkersView_css_default}</style>
     <!-- This Origin Report -->
     ${renderOriginReport(input)}
     ${renderOthersOriginView()}`,
@@ -12302,12 +12450,11 @@ var ServiceWorkersView = class extends UI19.Widget.VBox {
       useShadowDom: true
     });
     this.#view = view;
-    this.registerRequiredCSS(serviceWorkersView_css_default);
     this.sections = /* @__PURE__ */ new Map();
     this.manager = null;
     this.securityOriginManager = null;
     this.eventListeners = /* @__PURE__ */ new Map();
-    SDK17.TargetManager.TargetManager.instance().observeModels(SDK17.ServiceWorkerManager.ServiceWorkerManager, this);
+    SDK18.TargetManager.TargetManager.instance().observeModels(SDK18.ServiceWorkerManager.ServiceWorkerManager, this);
   }
   wasShown() {
     super.wasShown();
@@ -12331,32 +12478,32 @@ var ServiceWorkersView = class extends UI19.Widget.VBox {
     this.#view(input, this.#output, this.contentElement);
   }
   modelAdded(serviceWorkerManager) {
-    if (serviceWorkerManager.target() !== SDK17.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (serviceWorkerManager.target() !== SDK18.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.manager = serviceWorkerManager;
-    this.securityOriginManager = serviceWorkerManager.target().model(SDK17.SecurityOriginManager.SecurityOriginManager);
+    this.securityOriginManager = serviceWorkerManager.target().model(SDK18.SecurityOriginManager.SecurityOriginManager);
     for (const registration of this.manager.registrations().values()) {
       this.updateRegistration(registration);
     }
     this.eventListeners.set(serviceWorkerManager, [
       this.manager.addEventListener(
-        SDK17.ServiceWorkerManager.Events.REGISTRATION_UPDATED,
+        SDK18.ServiceWorkerManager.Events.REGISTRATION_UPDATED,
         this.registrationUpdated,
         this
       ),
       this.manager.addEventListener(
-        SDK17.ServiceWorkerManager.Events.REGISTRATION_DELETED,
+        SDK18.ServiceWorkerManager.Events.REGISTRATION_DELETED,
         this.registrationDeleted,
         this
       ),
       this.securityOriginManager.addEventListener(
-        SDK17.SecurityOriginManager.Events.SecurityOriginAdded,
+        SDK18.SecurityOriginManager.Events.SecurityOriginAdded,
         this.requestUpdate,
         this
       ),
       this.securityOriginManager.addEventListener(
-        SDK17.SecurityOriginManager.Events.SecurityOriginRemoved,
+        SDK18.SecurityOriginManager.Events.SecurityOriginRemoved,
         this.requestUpdate,
         this
       )
@@ -12366,7 +12513,7 @@ var ServiceWorkersView = class extends UI19.Widget.VBox {
     if (!this.manager || this.manager !== serviceWorkerManager) {
       return;
     }
-    Common10.EventTarget.removeEventListeners(this.eventListeners.get(serviceWorkerManager) || []);
+    Common11.EventTarget.removeEventListeners(this.eventListeners.get(serviceWorkerManager) || []);
     this.eventListeners.delete(serviceWorkerManager);
     this.manager = null;
     this.securityOriginManager = null;
@@ -12531,7 +12678,7 @@ function renderSourceField(input, version) {
       <div class="report-field-value"></div>
     </div>`;
   }
-  const fileName = Common10.ParsedURL.ParsedURL.extractName(version.scriptURL);
+  const fileName = Common11.ParsedURL.ParsedURL.extractName(version.scriptURL);
   return html14`<div class="report-field">
     <div class="report-field-name">${i18nString19(UIStrings19.source)}</div>
     <div class="report-field-value">
@@ -12546,7 +12693,7 @@ function renderSourceField(input, version) {
               class="devtools-link link"
               tabindex="0"
               aria-label=${i18nString19(UIStrings19.sRegistrationErrors, { PH1: input.errorsLength })}
-              @click=${() => Common10.Console.Console.instance().show()}>
+              @click=${() => Common11.Console.Console.instance().show()}>
             <devtools-icon name="cross-circle-filled" class="error-icon">
             </devtools-icon>
             ${input.errorsLength}
@@ -12570,7 +12717,7 @@ function renderStatusField(input, active, waiting, installing, redundant) {
     "service-worker-active-circle",
     i18nString19(UIStrings19.sActivatedAndIsS, {
       PH1: active.id,
-      PH2: SDK17.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus]()
+      PH2: SDK18.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus]()
     }),
     active.isRunning() || active.isStarting() ? html14`
               <devtools-button .data=${{ jslogContext: "stop", variant: Buttons8.Button.Variant.OUTLINED }}
@@ -12695,7 +12842,7 @@ var Section = class extends UI19.Widget.VBox {
     super(element);
     this.fingerprint = null;
     this.clientInfoCache = /* @__PURE__ */ new Map();
-    this.throttler = new Common10.Throttler.Throttler(500);
+    this.throttler = new Common11.Throttler.Throttler(500);
     this.#view = view;
   }
   set section(data) {
@@ -12704,12 +12851,12 @@ var Section = class extends UI19.Widget.VBox {
     this.manager = data.manager;
     this.registration = data.registration;
     if (!this.pushNotificationDataSetting) {
-      this.pushNotificationDataSetting = Common10.Settings.Settings.instance().createLocalSetting(
+      this.pushNotificationDataSetting = Common11.Settings.Settings.instance().createLocalSetting(
         "push-data",
         i18nString19(UIStrings19.testPushMessageFromDevtools)
       );
-      this.syncTagNameSetting = Common10.Settings.Settings.instance().createLocalSetting("sync-tag-name", "test-tag-from-devtools");
-      this.periodicSyncTagNameSetting = Common10.Settings.Settings.instance().createLocalSetting("periodic-sync-tag-name", "test-tag-from-devtools");
+      this.syncTagNameSetting = Common11.Settings.Settings.instance().createLocalSetting("sync-tag-name", "test-tag-from-devtools");
+      this.periodicSyncTagNameSetting = Common11.Settings.Settings.instance().createLocalSetting("periodic-sync-tag-name", "test-tag-from-devtools");
     }
     if (registrationChanged) {
       this.clientInfoCache.clear();
@@ -12739,10 +12886,10 @@ var Section = class extends UI19.Widget.VBox {
     }
     this.fingerprint = fingerprint;
     const versions = this.registration.versionsByMode();
-    const active = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
-    const waiting = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING);
-    const installing = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING);
-    const redundant = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT);
+    const active = versions.get(SDK18.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
+    const waiting = versions.get(SDK18.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING);
+    const installing = versions.get(SDK18.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING);
+    const redundant = versions.get(SDK18.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT);
     const title = this.getTitle();
     const input = {
       title,
@@ -12777,7 +12924,7 @@ var Section = class extends UI19.Widget.VBox {
     void this.manager.updateRegistration(this.registration.id);
   }
   networkRequestsClicked() {
-    void Common10.Revealer.reveal(NetworkForward2.UIFilter.UIRequestFilter.filters([
+    void Common11.Revealer.reveal(NetworkForward2.UIFilter.UIRequestFilter.filters([
       {
         filterType: NetworkForward2.UIFilter.FilterType.Is,
         filterValue: NetworkForward2.UIFilter.IsFilterType.SERVICE_WORKER_INTERCEPTED
@@ -12848,7 +12995,7 @@ __export(StorageBucketsTreeElement_exports, {
   i18nString: () => i18nString20
 });
 import * as i18n39 from "../../core/i18n/i18n.js";
-import * as SDK18 from "../../core/sdk/sdk.js";
+import * as SDK19 from "../../core/sdk/sdk.js";
 import { createIcon as createIcon7 } from "../../ui/kit/kit.js";
 import { StorageMetadataView as StorageMetadataView3 } from "./components/components.js";
 var UIStrings20 = {
@@ -12882,26 +13029,26 @@ var StorageBucketsTreeParentElement = class extends ExpandableApplicationPanelTr
     this.setLink("https://github.com/WICG/storage-buckets/blob/gh-pages/explainer.md");
   }
   initialize() {
-    SDK18.TargetManager.TargetManager.instance().addModelListener(
-      SDK18.StorageBucketsModel.StorageBucketsModel,
-      SDK18.StorageBucketsModel.Events.BUCKET_ADDED,
+    SDK19.TargetManager.TargetManager.instance().addModelListener(
+      SDK19.StorageBucketsModel.StorageBucketsModel,
+      SDK19.StorageBucketsModel.Events.BUCKET_ADDED,
       this.bucketAdded,
       this
     );
-    SDK18.TargetManager.TargetManager.instance().addModelListener(
-      SDK18.StorageBucketsModel.StorageBucketsModel,
-      SDK18.StorageBucketsModel.Events.BUCKET_REMOVED,
+    SDK19.TargetManager.TargetManager.instance().addModelListener(
+      SDK19.StorageBucketsModel.StorageBucketsModel,
+      SDK19.StorageBucketsModel.Events.BUCKET_REMOVED,
       this.bucketRemoved,
       this
     );
-    SDK18.TargetManager.TargetManager.instance().addModelListener(
-      SDK18.StorageBucketsModel.StorageBucketsModel,
-      SDK18.StorageBucketsModel.Events.BUCKET_CHANGED,
+    SDK19.TargetManager.TargetManager.instance().addModelListener(
+      SDK19.StorageBucketsModel.StorageBucketsModel,
+      SDK19.StorageBucketsModel.Events.BUCKET_CHANGED,
       this.bucketChanged,
       this
     );
-    for (const bucketsModel of SDK18.TargetManager.TargetManager.instance().models(
-      SDK18.StorageBucketsModel.StorageBucketsModel
+    for (const bucketsModel of SDK19.TargetManager.TargetManager.instance().models(
+      SDK19.StorageBucketsModel.StorageBucketsModel
     )) {
       const buckets = bucketsModel.getBuckets();
       for (const bucket of buckets) {
@@ -12967,7 +13114,7 @@ var StorageBucketsTreeElement = class extends ExpandableApplicationPanelTreeElem
   view;
   constructor(resourcesPanel, model, bucketInfo) {
     const { bucket } = bucketInfo;
-    const { origin } = SDK18.StorageKeyManager.parseStorageKey(bucketInfo.bucket.storageKey);
+    const { origin } = SDK19.StorageKeyManager.parseStorageKey(bucketInfo.bucket.storageKey);
     super(resourcesPanel, `${bucket.name} - ${origin}`, "", "", "storage-bucket");
     this.bucketModel = model;
     this.storageBucketInfo = bucketInfo;
@@ -13024,14 +13171,14 @@ __export(StorageView_exports, {
 import "../../ui/components/report_view/report_view.js";
 import "../../ui/kit/kit.js";
 import "../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Common16 from "../../core/common/common.js";
+import * as Common17 from "../../core/common/common.js";
 import * as i18n53 from "../../core/i18n/i18n.js";
-import * as Platform9 from "../../core/platform/platform.js";
-import * as SDK22 from "../../core/sdk/sdk.js";
+import * as Platform10 from "../../core/platform/platform.js";
+import * as SDK23 from "../../core/sdk/sdk.js";
 import * as Buttons10 from "../../ui/components/buttons/buttons.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import * as UI27 from "../../ui/legacy/legacy.js";
-import { Directives as Directives7, html as html19, nothing as nothing12, render as render20 } from "../../ui/lit/lit.js";
+import { Directives as Directives8, html as html19, nothing as nothing12, render as render20 } from "../../ui/lit/lit.js";
 import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/application/ResourcesPanel.ts
@@ -13045,9 +13192,9 @@ __export(ResourcesPanel_exports, {
   StorageBucketRevealer: () => StorageBucketRevealer
 });
 import "../../ui/legacy/legacy.js";
-import * as Common15 from "../../core/common/common.js";
-import * as Platform8 from "../../core/platform/platform.js";
-import * as SDK21 from "../../core/sdk/sdk.js";
+import * as Common16 from "../../core/common/common.js";
+import * as Platform9 from "../../core/platform/platform.js";
+import * as SDK22 from "../../core/sdk/sdk.js";
 import * as SourceFrame5 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI26 from "../../ui/legacy/legacy.js";
 import { nothing as nothing11, render as render19 } from "../../ui/lit/lit.js";
@@ -13060,9 +13207,9 @@ __export(CookieItemsView_exports, {
   DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW: () => DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW,
   DEFAULT_VIEW: () => DEFAULT_VIEW12
 });
-import * as Common12 from "../../core/common/common.js";
+import * as Common13 from "../../core/common/common.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
-import * as SDK19 from "../../core/sdk/sdk.js";
+import * as SDK20 from "../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "../../models/ai_assistance/ai_assistance.js";
 import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
 import * as Geometry2 from "../../ui/geometry/geometry.js";
@@ -13094,7 +13241,6 @@ var cookieItemsView_css_default = `/*
   }
 
   .cookie-preview-widget-header-label {
-    line-height: 18px;
     flex-shrink: 0;
   }
 
@@ -13121,9 +13267,9 @@ __export(StorageItemsToolbar_exports, {
   StorageItemsToolbar: () => StorageItemsToolbar
 });
 import "../../ui/legacy/legacy.js";
-import * as Common11 from "../../core/common/common.js";
+import * as Common12 from "../../core/common/common.js";
 import * as i18n41 from "../../core/i18n/i18n.js";
-import * as Platform7 from "../../core/platform/platform.js";
+import * as Platform8 from "../../core/platform/platform.js";
 import * as Buttons9 from "../../ui/components/buttons/buttons.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
@@ -13192,7 +13338,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
     target
   );
 };
-var StorageItemsToolbarBase = Common11.ObjectWrapper.eventMixin(
+var StorageItemsToolbarBase = Common12.ObjectWrapper.eventMixin(
   UI20.Widget.VBox
 );
 var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbarBase {
@@ -13258,7 +13404,7 @@ var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbar
     this.metadataView.storageKey = storageKey;
   }
   filterChanged({ detail: text }) {
-    this.filterRegex = text ? new RegExp(Platform7.StringUtilities.escapeForRegExp(text), "i") : null;
+    this.filterRegex = text ? new RegExp(Platform8.StringUtilities.escapeForRegExp(text), "i") : null;
     this.dispatchEventToListeners(_StorageItemsToolbar.Events.REFRESH);
   }
   hasFilter() {
@@ -13381,7 +13527,7 @@ var CookiePreviewWidget = class extends UI21.Widget.VBox {
     this.view = view;
     this.setMinimumSize(230, 45);
     this.#cookie = null;
-    this.showDecodedSetting = Common12.Settings.Settings.instance().createSetting("cookie-view-show-decoded", false);
+    this.showDecodedSetting = Common13.Settings.Settings.instance().createSetting("cookie-view-show-decoded", false);
     this.requestUpdate();
   }
   set cookie(cookie) {
@@ -13475,11 +13621,11 @@ var CookieItemsView = class extends UI21.Widget.VBox {
     this.requestUpdate();
   }
   setCookiesDomain(model, domain) {
-    this.model.removeEventListener(SDK19.CookieModel.Events.COOKIE_LIST_UPDATED, this.onCookieListUpdate, this);
+    this.model.removeEventListener(SDK20.CookieModel.Events.COOKIE_LIST_UPDATED, this.onCookieListUpdate, this);
     this.model = model;
     this.cookieDomain = domain;
     this.refreshItems();
-    this.model.addEventListener(SDK19.CookieModel.Events.COOKIE_LIST_UPDATED, this.onCookieListUpdate, this);
+    this.model.addEventListener(SDK20.CookieModel.Events.COOKIE_LIST_UPDATED, this.onCookieListUpdate, this);
   }
   performUpdate() {
     const that = this;
@@ -13497,7 +13643,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
       cookies: this.shownCookies,
       cookieToBlockedReasons: this.model.getCookieToBlockedReasonsMap()
     };
-    const parsedURL = Common12.ParsedURL.ParsedURL.fromString(this.cookieDomain);
+    const parsedURL = Common13.ParsedURL.ParsedURL.fromString(this.cookieDomain);
     const host = parsedURL ? parsedURL.host : "";
     const input = {
       cookieDomain: host,
@@ -13533,8 +13679,8 @@ var CookieItemsView = class extends UI21.Widget.VBox {
       UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
     }
-    const target = SDK19.TargetManager.TargetManager.instance().primaryPageTarget();
-    const mainPageOrigin = target?.inspectedURL() ? Common12.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
+    const target = SDK20.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin = target?.inspectedURL() ? Common13.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
     if (!mainPageOrigin) {
       UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
@@ -13585,7 +13731,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
       if (!this.onlyIssuesFilterUI.checked()) {
         return true;
       }
-      if (object instanceof SDK19.Cookie.Cookie) {
+      if (object instanceof SDK20.Cookie.Cookie) {
         return IssuesManager.RelatedIssue.hasIssues(object, IssuesManager.IssuesManager.IssuesManager.instance());
       }
       return false;
@@ -13653,7 +13799,7 @@ import "../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n45 from "../../core/i18n/i18n.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html17, nothing as nothing9, render as render17 } from "../../ui/lit/lit.js";
+import { Directives as Directives7, html as html17, nothing as nothing9, render as render17 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/deviceBoundSessionsView.css.js
@@ -14326,7 +14472,7 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
       <devtools-report-section-header role="heading" aria-level="2">${i18nString23(UIStrings23.events)}</devtools-report-section-header>
           ${events.length > 0 && onEventRowSelected ? html17`
             <div class="device-bound-session-grid-wrapper">
-                <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString23(UIStrings23.events)} ${Directives6.ref((el) => {
+                <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString23(UIStrings23.events)} ${Directives7.ref((el) => {
     if (!el || !(el instanceof HTMLElement)) {
       return;
     }
@@ -14763,9 +14909,9 @@ var DOMStorageItemsView_exports = {};
 __export(DOMStorageItemsView_exports, {
   DOMStorageItemsView: () => DOMStorageItemsView
 });
-import * as Common13 from "../../core/common/common.js";
+import * as Common14 from "../../core/common/common.js";
 import * as i18n49 from "../../core/i18n/i18n.js";
-import * as SDK20 from "../../core/sdk/sdk.js";
+import * as SDK21 from "../../core/sdk/sdk.js";
 import * as TextUtils4 from "../../core/text_utils/text_utils.js";
 import * as AiAssistanceModel2 from "../../models/ai_assistance/ai_assistance.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
@@ -14816,7 +14962,7 @@ var { ARIAUtils: ARIAUtils7 } = UI23;
 var { EmptyWidget: EmptyWidget10 } = UI23.EmptyWidget;
 var { VBox, widget: widget11 } = UI23.Widget;
 var { Size: Size3 } = Geometry3;
-var { repeat: repeat2, ifDefined } = LitDirectives;
+var { repeat: repeat3, ifDefined } = LitDirectives;
 var UIStrings24 = {
   /**
    * @description Empty state header in the storage items view of the Application panel when no value is selected.
@@ -14895,7 +15041,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
                         ${i18nString24(UIStrings24.value)}
                       </th>
                     </tr>
-                    ${repeat2(input.items, (item4) => item4.key, (item4) => html18`
+                    ${repeat3(input.items, (item4) => item4.key, (item4) => html18`
                       <tr data-key=${item4.key} data-value=${item4.value}
                           @select=${() => input.onSelect(item4)}
                           @edit=${(e) => input.onEdit(item4.key, item4.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
@@ -15205,7 +15351,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     const url = `${protocol}://${key}`;
     const provider = TextUtils4.StaticContentProvider.StaticContentProvider.fromString(
       url,
-      Common13.ResourceType.resourceTypes.XHR,
+      Common14.ResourceType.resourceTypes.XHR,
       value
     );
     return SourceFrame3.PreviewFactory.PreviewFactory.createPreview(
@@ -15214,7 +15360,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     );
   }
   setStorage(domStorage) {
-    Common13.EventTarget.removeEventListeners(this.eventListeners);
+    Common14.EventTarget.removeEventListeners(this.eventListeners);
     this.domStorage = domStorage;
     const storageKind = domStorage.isLocalStorage ? "local-storage-data" : "session-storage-data";
     this.jslog = `${VisualLogging16.pane().context(storageKind)}`;
@@ -15223,22 +15369,22 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     }
     this.eventListeners = [
       this.domStorage.addEventListener(
-        SDK20.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED,
+        SDK21.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED,
         this.domStorageItemsCleared,
         this
       ),
       this.domStorage.addEventListener(
-        SDK20.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED,
+        SDK21.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED,
         this.domStorageItemRemoved,
         this
       ),
       this.domStorage.addEventListener(
-        SDK20.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_ADDED,
+        SDK21.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_ADDED,
         this.domStorageItemAdded,
         this
       ),
       this.domStorage.addEventListener(
-        SDK20.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED,
+        SDK21.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED,
         this.domStorageItemUpdated,
         this
       )
@@ -15294,11 +15440,11 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     if (!storageKey) {
       return;
     }
-    const parsedKey = SDK20.StorageKeyManager.parseStorageKey(storageKey);
+    const parsedKey = SDK21.StorageKeyManager.parseStorageKey(storageKey);
     const origin = parsedKey.origin;
     const storageType = this.domStorage.isLocalStorage ? "localStorage" : "sessionStorage";
-    const target = SDK20.TargetManager.TargetManager.instance().primaryPageTarget();
-    const mainPageOrigin = target?.inspectedURL() ? Common13.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
+    const target = SDK21.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin = target?.inspectedURL() ? Common14.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
     if (!mainPageOrigin) {
       UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, null);
       return;
@@ -15359,7 +15505,7 @@ __export(ExtensionStorageItemsView_exports, {
   ExtensionStorageItemsDispatcher: () => ExtensionStorageItemsDispatcher,
   ExtensionStorageItemsView: () => ExtensionStorageItemsView
 });
-import * as Common14 from "../../core/common/common.js";
+import * as Common15 from "../../core/common/common.js";
 import * as i18n51 from "../../core/i18n/i18n.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as JSON5 from "../../third_party/json5/json5.js";
@@ -15399,7 +15545,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
       `${VisualLogging17.pane().context("extension-storage-data")}`,
       ["storage-view", "table"]
     );
-    this.extensionStorageItemsDispatcher = new Common14.ObjectWrapper.ObjectWrapper();
+    this.extensionStorageItemsDispatcher = new Common15.ObjectWrapper.ObjectWrapper();
     this.setStorage(extensionStorage);
   }
   get #isEditable() {
@@ -15431,7 +15577,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
     const url = "extension-storage://" + this.#extensionStorage.extensionId + "/" + this.#extensionStorage.storageArea + "/preview/" + key;
     const provider = TextUtils5.StaticContentProvider.StaticContentProvider.fromString(
       url,
-      Common14.ResourceType.resourceTypes.XHR,
+      Common15.ResourceType.resourceTypes.XHR,
       value
     );
     return SourceFrame4.PreviewFactory.PreviewFactory.createPreview(
@@ -15544,16 +15690,6 @@ var resourcesPanel_css_default = `/*
   flex: auto;
 }
 
-.storage-view .storage-table-error {
-  color: var(--sys-color-error);
-  font-size: var(--sys-typescale-headline1-size);
-  font-weight: bold;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .storage-view.query {
   padding: var(--sys-size-2) 0;
   overflow: hidden auto;
@@ -15576,19 +15712,6 @@ var resourcesPanel_css_default = `/*
 
 .database-query-prompt {
   white-space: pre-wrap;
-}
-
-.prompt-icon {
-  position: absolute;
-  display: block;
-  left: 7px;
-  top: 9px;
-  margin-top: -7px;
-  user-select: none;
-}
-
-.database-user-query .prompt-icon {
-  margin-top: -10px;
 }
 
 .database-query-prompt-container .prompt-icon {
@@ -15656,7 +15779,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     super("resources");
     this.mode = mode;
     this.registerRequiredCSS(resourcesPanel_css_default);
-    this.resourcesLastSelectedItemSetting = Common15.Settings.Settings.instance().createSetting("resources-last-selected-element-path", []);
+    this.resourcesLastSelectedItemSetting = Common16.Settings.Settings.instance().createSetting("resources-last-selected-element-path", []);
     this.visibleView = null;
     this.pendingViewPromise = null;
     this.categoryView = null;
@@ -15746,7 +15869,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     }
     this.categoryView.element.setAttribute(
       "jslog",
-      `${VisualLogging18.pane().context(Platform8.StringUtilities.toKebabCase(categoryName))}`
+      `${VisualLogging18.pane().context(Platform9.StringUtilities.toKebabCase(categoryName))}`
     );
     this.categoryView.setHeadline(categoryHeadline);
     this.categoryView.setText(categoryDescription);
@@ -15776,7 +15899,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     this.showView(this.extensionStorageView);
   }
   showCookies(cookieFrameTarget, cookieDomain) {
-    const model = cookieFrameTarget.model(SDK21.CookieModel.CookieModel);
+    const model = cookieFrameTarget.model(SDK22.CookieModel.CookieModel);
     if (!model) {
       return;
     }
@@ -15788,7 +15911,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     this.showView(this.cookieView);
   }
   clearCookies(target, cookieDomain) {
-    const model = target.model(SDK21.CookieModel.CookieModel);
+    const model = target.model(SDK22.CookieModel.CookieModel);
     if (!model) {
       return;
     }
@@ -15944,7 +16067,7 @@ devtools-report-section:has(.quota-override-error:empty) {
 /*# sourceURL=${import.meta.resolve("./storageView.css")} */`;
 
 // ../../front_end/panels/application/StorageView.ts
-var { classMap: classMap3, ifDefined: ifDefined2, live: live2, ref: ref2 } = Directives7;
+var { classMap: classMap3, ifDefined: ifDefined2, live: live2, ref: ref2 } = Directives8;
 var { bindToSetting: bindToSetting2 } = UI27.UIUtils;
 var UIStrings27 = {
   /**
@@ -16223,6 +16346,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       </div>`;
   }
   render20(html19`
+    <style>${storageView_css_default}</style>
     <devtools-report class="clear-storage-header" .data=${{ reportTitle: i18nString27(UIStrings27.storageTitle) }}>
       ${input.subtitle ? html19`<div class="report-subtitle" slot="toolbar">${input.subtitle}</div>` : nothing12}
       ${renderClearSiteData()}
@@ -16250,7 +16374,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
   quotaOverrideError = "";
   clearing = false;
   clearTimerId;
-  throttler = new Common16.Throttler.Throttler(1e3);
+  throttler = new Common17.Throttler.Throttler(1e3);
   boundOnCookiesSettingChanged = (event) => {
     this.onCookiesSettingChanged(event.data);
   };
@@ -16260,22 +16384,21 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
   constructor(element, view = DEFAULT_VIEW14) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.registerRequiredCSS(storageView_css_default);
     this.pieColors = storagePieColors;
     this.settings = /* @__PURE__ */ new Map();
     for (const type of AllStorageTypes) {
       this.settings.set(
         type,
-        Common16.Settings.Settings.instance().createSetting(
-          "clear-storage-" + Platform9.StringUtilities.toKebabCase(type),
+        Common17.Settings.Settings.instance().createSetting(
+          "clear-storage-" + Platform10.StringUtilities.toKebabCase(type),
           true
         )
       );
     }
-    this.includeThirdPartyCookiesSetting = Common16.Settings.Settings.instance().createSetting("clear-storage-include-third-party-cookies", false);
+    this.includeThirdPartyCookiesSetting = Common17.Settings.Settings.instance().createSetting("clear-storage-include-third-party-cookies", false);
     const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
     this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
-    SDK22.TargetManager.TargetManager.instance().observeTargets(this);
+    SDK23.TargetManager.TargetManager.instance().observeTargets(this);
   }
   onCookiesSettingChanged(cookiesEnabled) {
     if (!cookiesEnabled && this.includeThirdPartyCookiesSetting.get()) {
@@ -16293,24 +16416,24 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.requestUpdate();
   }
   targetAdded(target) {
-    if (target !== SDK22.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (target !== SDK23.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.target = target;
-    const securityOriginManager = target.model(SDK22.SecurityOriginManager.SecurityOriginManager);
+    const securityOriginManager = target.model(SDK23.SecurityOriginManager.SecurityOriginManager);
     this.updateOrigin(
       securityOriginManager.mainSecurityOrigin(),
       securityOriginManager.unreachableMainSecurityOrigin()
     );
     securityOriginManager.addEventListener(
-      SDK22.SecurityOriginManager.Events.MainSecurityOriginChanged,
+      SDK23.SecurityOriginManager.Events.MainSecurityOriginChanged,
       this.originChanged,
       this
     );
-    const storageKeyManager = target.model(SDK22.StorageKeyManager.StorageKeyManager);
+    const storageKeyManager = target.model(SDK23.StorageKeyManager.StorageKeyManager);
     this.updateStorageKey(storageKeyManager.mainStorageKey());
     storageKeyManager.addEventListener(
-      SDK22.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
+      SDK23.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
       this.storageKeyChanged,
       this
     );
@@ -16319,15 +16442,15 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     if (this.target !== target) {
       return;
     }
-    const securityOriginManager = target.model(SDK22.SecurityOriginManager.SecurityOriginManager);
+    const securityOriginManager = target.model(SDK23.SecurityOriginManager.SecurityOriginManager);
     securityOriginManager.removeEventListener(
-      SDK22.SecurityOriginManager.Events.MainSecurityOriginChanged,
+      SDK23.SecurityOriginManager.Events.MainSecurityOriginChanged,
       this.originChanged,
       this
     );
-    const storageKeyManager = target.model(SDK22.StorageKeyManager.StorageKeyManager);
+    const storageKeyManager = target.model(SDK23.StorageKeyManager.StorageKeyManager);
     storageKeyManager.removeEventListener(
-      SDK22.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
+      SDK23.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
       this.storageKeyChanged,
       this
     );
@@ -16493,13 +16616,13 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     const set = new Set(selectedStorageTypes);
     const hasAll = set.has(Storage.StorageType.All);
     if (set.has(Storage.StorageType.Local_storage) || hasAll) {
-      const storageModel = target.model(SDK22.DOMStorageModel.DOMStorageModel);
+      const storageModel = target.model(SDK23.DOMStorageModel.DOMStorageModel);
       if (storageModel) {
         storageModel.clearForStorageKey(storageKey);
       }
     }
     if (set.has(Storage.StorageType.Indexeddb) || hasAll) {
-      for (const target2 of SDK22.TargetManager.TargetManager.instance().targets()) {
+      for (const target2 of SDK23.TargetManager.TargetManager.instance().targets()) {
         const indexedDBModel = target2.model(IndexedDBModel);
         if (indexedDBModel) {
           indexedDBModel.clearForStorageKey(storageKey);
@@ -16510,14 +16633,14 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
       void target.storageAgent().invoke_clearDataForOrigin(
         { origin: originForCookies, storageTypes: Storage.StorageType.Cookies }
       );
-      const cookieModel = target.model(SDK22.CookieModel.CookieModel);
+      const cookieModel = target.model(SDK23.CookieModel.CookieModel);
       if (cookieModel) {
         void cookieModel.clear(void 0, includeThirdPartyCookies ? void 0 : originForCookies);
       }
     }
     if (set.has(Storage.StorageType.Cache_storage) || hasAll) {
-      const target2 = SDK22.TargetManager.TargetManager.instance().primaryPageTarget();
-      const model = target2?.model(SDK22.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
+      const target2 = SDK23.TargetManager.TargetManager.instance().primaryPageTarget();
+      const model = target2?.model(SDK23.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       if (model) {
         model.clearForStorageKey(storageKey);
       }
@@ -16673,11 +16796,11 @@ var ActionDelegate2 = class {
     return false;
   }
   handleClear(includeThirdPartyCookies) {
-    const target = SDK22.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK23.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return false;
     }
-    const resourceTreeModel = target.model(SDK22.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK23.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel) {
       return false;
     }
@@ -16921,18 +17044,18 @@ import "../../ui/components/lists/lists.js";
 import "../../ui/components/node_text/node_text.js";
 import "../../ui/legacy/components/data_grid/data_grid.js";
 import "../../ui/legacy/legacy.js";
-import * as Common17 from "../../core/common/common.js";
+import * as Common18 from "../../core/common/common.js";
 import * as Host3 from "../../core/host/host.js";
 import * as i18n59 from "../../core/i18n/i18n.js";
-import * as Platform10 from "../../core/platform/platform.js";
-import * as SDK23 from "../../core/sdk/sdk.js";
+import * as Platform11 from "../../core/platform/platform.js";
+import * as SDK24 from "../../core/sdk/sdk.js";
 import * as WebMCP2 from "../../models/web_mcp/web_mcp.js";
 import * as Buttons11 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI30 from "../../ui/legacy/legacy.js";
 import {
-  Directives as Directives8,
+  Directives as Directives9,
   html as html21,
   nothing as nothing13,
   render as render22
@@ -17526,7 +17649,7 @@ function filterToolCalls(toolCalls, filterState) {
     });
   }
   if (filterState.text) {
-    const regex = Platform10.StringUtilities.createPlainTextSearchRegex(filterState.text, "i");
+    const regex = Platform11.StringUtilities.createPlainTextSearchRegex(filterState.text, "i");
     filtered = filtered.filter((call) => {
       return regex.test(call.tool.name) || regex.test(call.input) || call.result?.output !== void 0 && regex.test(JSON.stringify(call.result.output)) || call.result?.errorText && regex.test(call.result.errorText);
     });
@@ -17622,7 +17745,7 @@ function renderFilterMenuButton(label, jslogContext, count, populateMenu) {
       jslog=${VisualLogging21.dropDown().track({ click: true }).context(jslogContext)}
       @click=${openMenu}
     ><devtools-adorner
-        class=${Directives8.classMap({ "active-filters-count": true, hidden: count === 0 })}
+        class=${Directives9.classMap({ "active-filters-count": true, hidden: count === 0 })}
         .name=${"countWrapper"}
       ><span>${count}</span></devtools-adorner><div class="toolbar-text">${label}</div><devtools-icon
         name="triangle-down"
@@ -17799,11 +17922,11 @@ var DEFAULT_VIEW16 = (input, output, target) => {
                     <th id="output" weight="30">${i18nString30(UIStrings30.output)}</th>
                             ` : nothing13}
                   </tr>
-                      ${Directives8.repeat(
+                      ${Directives9.repeat(
     input.toolCalls,
     (call) => call.invocationId + "-" + (call.result?.status ?? ""),
     (call) => html21`
-                    <tr class=${Directives8.classMap({
+                    <tr class=${Directives9.classMap({
       "status-error": call.result?.status === WebMCP.InvocationStatus.Error,
       "status-cancelled": call.result?.status === WebMCP.InvocationStatus.Canceled,
       selected: call === input.selectedCall
@@ -17886,19 +18009,19 @@ var DEFAULT_VIEW16 = (input, output, target) => {
                 ></devtools-button>
                 <devtools-widget
                   id=${"webmcp.tool-details" /* DETAILS */}
-                  ?selected=${Directives8.live(input.selectedTab === "webmcp.tool-details" /* DETAILS */)}
+                  ?selected=${Directives9.live(input.selectedTab === "webmcp.tool-details" /* DETAILS */)}
                   label=${i18nString30(UIStrings30.toolDetails)}
                   ${widget12(ToolDetailsWidget, { tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false })}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-inputs" /* INPUT */}
-                  ?selected=${Directives8.live(input.selectedTab === "webmcp.call-inputs" /* INPUT */)}
+                  ?selected=${Directives9.live(input.selectedTab === "webmcp.call-inputs" /* INPUT */)}
                   label=${i18nString30(UIStrings30.input)}
                   ${widget12(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-outputs" /* OUTPUT */}
-                  ?selected=${Directives8.live(input.selectedTab === "webmcp.call-outputs" /* OUTPUT */)}
+                  ?selected=${Directives9.live(input.selectedTab === "webmcp.call-outputs" /* OUTPUT */)}
                   label=${i18nString30(UIStrings30.output)}
                   ${widget12(PayloadWidget, {
     valueObject: input.selectedCall?.result?.output,
@@ -17951,7 +18074,7 @@ var DEFAULT_VIEW16 = (input, output, target) => {
           ` : html21`
             <devtools-list class="square-corners">
               ${tools.map((tool) => html21`
-                    <div class=${Directives8.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
+                    <div class=${Directives9.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
                          jslog=${VisualLogging21.item().track({ click: true }).context("tool")}
                          @click=${() => input.onToolSelect(tool)}
                          @contextmenu=${(e) => onToolContextMenu(e, tool)}>
@@ -18053,7 +18176,7 @@ var WebMCPView = class extends UI30.Widget.VBox {
   constructor(target, view = DEFAULT_VIEW16) {
     super(target);
     this.#view = view;
-    SDK23.TargetManager.TargetManager.instance().observeModels(WebMCP2.WebMCPModel.WebMCPModel, {
+    SDK24.TargetManager.TargetManager.instance().observeModels(WebMCP2.WebMCPModel.WebMCPModel, {
       modelAdded: (model) => this.#webMCPModelAdded(model),
       modelRemoved: (model) => this.#webMCPModelRemoved(model)
     });
@@ -18086,7 +18209,7 @@ var WebMCPView = class extends UI30.Widget.VBox {
     this.requestUpdate();
   }
   #handleClearLogClick = () => {
-    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
+    const models = SDK24.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
     for (const model of models) {
       model.clearCalls();
     }
@@ -18097,12 +18220,12 @@ var WebMCPView = class extends UI30.Widget.VBox {
     this.requestUpdate();
   };
   #getTools() {
-    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
+    const models = SDK24.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
     const tools = models.flatMap((model) => model.tools.toArray());
     return tools.sort((a, b) => a.name.localeCompare(b.name));
   }
   performUpdate() {
-    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
+    const models = SDK24.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
     const toolCalls = models.flatMap((model) => model.toolCalls);
     const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
     const tools = this.#getTools();
@@ -18143,7 +18266,7 @@ var WebMCPView = class extends UI30.Widget.VBox {
           this.#selectedTool.parameters = event.data.parameters || {};
           this.#lastDevToolsInvocationId = await this.#selectedTool.tool.invoke(this.#selectedTool.parameters) ?? null;
           if (this.#lastDevToolsInvocationId) {
-            const models2 = SDK23.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
+            const models2 = SDK24.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
             const call = models2.flatMap((model) => model.toolCalls).find((c) => c.invocationId === this.#lastDevToolsInvocationId);
             if (call) {
               this.#selectedCall = call;
@@ -18179,7 +18302,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   }
   const isParsable = input.valueObject !== void 0;
   const createPayload = (parsedInput) => {
-    const object = new SDK23.RemoteObject.LocalJSONObject(parsedInput);
+    const object = new SDK24.RemoteObject.LocalJSONObject(parsedInput);
     const objectTree = new ObjectUI2.ObjectPropertiesSection.ObjectTree(object, {
       readOnly: true,
       propertiesMode: ObjectUI2.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
@@ -18316,7 +18439,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
       <div class="label">${i18nString30(UIStrings30.frame)}</div>
       <div class="value">${Components4.Linkifier.Linkifier.linkifyRevealable(tool.frame, tool.frame.displayName())}</div>
       ` : nothing13}
-      ${origin instanceof SDK23.DOMModel.DOMNode ? html21`
+      ${origin instanceof SDK24.DOMModel.DOMNode ? html21`
       <div class="label">${i18nString30(UIStrings30.origin)}</div>
       <div class="value tool-origin-container">
         <span
@@ -18405,10 +18528,10 @@ var ToolDetailsWidget = class extends UI30.Widget.Widget {
     node.highlight();
   };
   #clearHighlight = () => {
-    SDK23.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK23.TargetManager.TargetManager.instance());
+    SDK24.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK24.TargetManager.TargetManager.instance());
   };
   #revealNode = (node) => {
-    void Common17.Revealer.reveal(node);
+    void Common18.Revealer.reveal(node);
     void node.scrollIntoView();
   };
   performUpdate() {
@@ -19047,7 +19170,7 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
         "private-verification-tokens"
       );
       privateVerificationTokensTreeElement.setLeadingIcons([createIcon10("database")]);
-      privateVerificationTokensTreeElement.itemURL = Platform11.DevToolsPath.urlString`privateVerificationTokens://`;
+      privateVerificationTokensTreeElement.itemURL = Platform12.DevToolsPath.urlString`privateVerificationTokens://`;
       let pvtView;
       privateVerificationTokensTreeElement.onselect = (selectedByUser) => {
         ApplicationPanelTreeElement.prototype.onselect.call(privateVerificationTokensTreeElement, selectedByUser);
@@ -19103,10 +19226,10 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
     this.domains = {};
     this.sidebarTree.contentElement.addEventListener("mousemove", this.onmousemove.bind(this), false);
     this.sidebarTree.contentElement.addEventListener("mouseleave", this.onmouseleave.bind(this), false);
-    SDK24.TargetManager.TargetManager.instance().observeTargets(this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(
-      SDK24.ResourceTreeModel.ResourceTreeModel,
-      SDK24.ResourceTreeModel.Events.FrameNavigated,
+    SDK25.TargetManager.TargetManager.instance().observeTargets(this, { scoped: true });
+    SDK25.TargetManager.TargetManager.instance().addModelListener(
+      SDK25.ResourceTreeModel.ResourceTreeModel,
+      SDK25.ResourceTreeModel.Events.FrameNavigated,
       this.frameNavigated,
       this,
       { scoped: true }
@@ -19115,15 +19238,15 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
     if (!selection.length) {
       manifestTreeElement.select();
     }
-    SDK24.TargetManager.TargetManager.instance().observeModels(
-      SDK24.DOMStorageModel.DOMStorageModel,
+    SDK25.TargetManager.TargetManager.instance().observeModels(
+      SDK25.DOMStorageModel.DOMStorageModel,
       {
         modelAdded: (model) => this.domStorageModelAdded(model),
         modelRemoved: (model) => this.domStorageModelRemoved(model)
       },
       { scoped: true }
     );
-    SDK24.TargetManager.TargetManager.instance().observeModels(
+    SDK25.TargetManager.TargetManager.instance().observeModels(
       ExtensionStorageModel,
       {
         modelAdded: (model) => this.extensionStorageModelAdded(model),
@@ -19131,7 +19254,7 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
       },
       { scoped: true }
     );
-    SDK24.TargetManager.TargetManager.instance().observeModels(
+    SDK25.TargetManager.TargetManager.instance().observeModels(
       IndexedDBModel,
       {
         modelAdded: (model) => this.indexedDBModelAdded(model),
@@ -19139,8 +19262,8 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
       },
       { scoped: true }
     );
-    SDK24.TargetManager.TargetManager.instance().observeModels(
-      SDK24.StorageBucketsModel.StorageBucketsModel,
+    SDK25.TargetManager.TargetManager.instance().observeModels(
+      SDK25.StorageBucketsModel.StorageBucketsModel,
       {
         modelAdded: (model) => this.storageBucketsModelAdded(model),
         modelRemoved: (model) => this.storageBucketsModelRemoved(model)
@@ -19164,16 +19287,16 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
       return;
     }
     this.target = target;
-    const resourceTreeModel = target.model(SDK24.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK25.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel) {
       return;
     }
     if (resourceTreeModel.cachedResourcesLoaded()) {
       this.initialize();
     }
-    resourceTreeModel.addEventListener(SDK24.ResourceTreeModel.Events.CachedResourcesLoaded, this.initialize, this);
+    resourceTreeModel.addEventListener(SDK25.ResourceTreeModel.Events.CachedResourcesLoaded, this.initialize, this);
     resourceTreeModel.addEventListener(
-      SDK24.ResourceTreeModel.Events.WillLoadCachedResources,
+      SDK25.ResourceTreeModel.Events.WillLoadCachedResources,
       this.resetWithFrames,
       this
     );
@@ -19183,11 +19306,11 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
       return;
     }
     delete this.target;
-    const resourceTreeModel = target.model(SDK24.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK25.ResourceTreeModel.ResourceTreeModel);
     if (resourceTreeModel) {
-      resourceTreeModel.removeEventListener(SDK24.ResourceTreeModel.Events.CachedResourcesLoaded, this.initialize, this);
+      resourceTreeModel.removeEventListener(SDK25.ResourceTreeModel.Events.CachedResourcesLoaded, this.initialize, this);
       resourceTreeModel.removeEventListener(
-        SDK24.ResourceTreeModel.Events.WillLoadCachedResources,
+        SDK25.ResourceTreeModel.Events.WillLoadCachedResources,
         this.resetWithFrames,
         this
       );
@@ -19198,7 +19321,7 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
     this.sidebarTree.focus();
   }
   initialize() {
-    for (const frame of SDK24.ResourceTreeModel.ResourceTreeModel.frames(this.target?.targetManager() ?? SDK24.TargetManager.TargetManager.instance())) {
+    for (const frame of SDK25.ResourceTreeModel.ResourceTreeModel.frames(this.target?.targetManager() ?? SDK25.TargetManager.TargetManager.instance())) {
       this.addCookieDocument(frame);
     }
     const backgroundServiceModel = this.target?.model(BackgroundServiceModel) || null;
@@ -19209,11 +19332,11 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
     this.periodicBackgroundSyncTreeElement.initialize(backgroundServiceModel);
     this.pushMessagingTreeElement.initialize(backgroundServiceModel);
     this.storageBucketsTreeElement?.initialize();
-    const preloadingModel = this.target?.model(SDK24.PreloadingModel.PreloadingModel);
+    const preloadingModel = this.target?.model(SDK25.PreloadingModel.PreloadingModel);
     if (preloadingModel) {
       this.preloadingSummaryTreeElement?.initialize(preloadingModel);
     }
-    const resourceTreeModel = this.target?.model(SDK24.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = this.target?.model(SDK25.ResourceTreeModel.ResourceTreeModel);
     if (resourceTreeModel) {
       void this.subAppsTreeElement.update(resourceTreeModel);
     }
@@ -19221,13 +19344,13 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
   domStorageModelAdded(model) {
     model.enable();
     model.storages().forEach(this.addDOMStorage.bind(this));
-    model.addEventListener(SDK24.DOMStorageModel.Events.DOM_STORAGE_ADDED, this.domStorageAdded, this);
-    model.addEventListener(SDK24.DOMStorageModel.Events.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
+    model.addEventListener(SDK25.DOMStorageModel.Events.DOM_STORAGE_ADDED, this.domStorageAdded, this);
+    model.addEventListener(SDK25.DOMStorageModel.Events.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
   }
   domStorageModelRemoved(model) {
     model.storages().forEach(this.removeDOMStorage.bind(this));
-    model.removeEventListener(SDK24.DOMStorageModel.Events.DOM_STORAGE_ADDED, this.domStorageAdded, this);
-    model.removeEventListener(SDK24.DOMStorageModel.Events.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
+    model.removeEventListener(SDK25.DOMStorageModel.Events.DOM_STORAGE_ADDED, this.domStorageAdded, this);
+    model.removeEventListener(SDK25.DOMStorageModel.Events.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
   }
   extensionStorageModelAdded(model) {
     this.extensionStorageModels.push(model);
@@ -19312,7 +19435,7 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
   }
   addCookieDocument(frame) {
     const urlToParse = frame.unreachableUrl() || frame.url;
-    const parsedURL = Common18.ParsedURL.ParsedURL.fromString(urlToParse);
+    const parsedURL = Common19.ParsedURL.ParsedURL.fromString(urlToParse);
     if (!parsedURL || parsedURL.scheme !== "http" && parsedURL.scheme !== "https" && parsedURL.scheme !== "file") {
       return;
     }
@@ -19460,8 +19583,8 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
     }
   }
   showStorageBucket(bucketInfo) {
-    const bucketsModel = SDK24.TargetManager.TargetManager.instance().primaryPageTarget()?.model(
-      SDK24.StorageBucketsModel.StorageBucketsModel
+    const bucketsModel = SDK25.TargetManager.TargetManager.instance().primaryPageTarget()?.model(
+      SDK25.StorageBucketsModel.StorageBucketsModel
     );
     if (bucketsModel) {
       this.storageBucketsTreeElement?.getBucketTreeElement(bucketsModel, bucketInfo)?.revealAndSelect(true);
@@ -19510,7 +19633,7 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
       storagePanel,
       BackgroundServiceView.getUIString(serviceName),
       false,
-      Platform11.StringUtilities.toKebabCase(serviceName)
+      Platform12.StringUtilities.toKebabCase(serviceName)
     );
     this.serviceName = serviceName;
     this.#selected = false;
@@ -19762,28 +19885,28 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.initialize();
   }
   initialize() {
-    SDK24.TargetManager.TargetManager.instance().addModelListener(
+    SDK25.TargetManager.TargetManager.instance().addModelListener(
       IndexedDBModel,
       "DatabaseAdded" /* DatabaseAdded */,
       this.indexedDBAdded,
       this,
       { scoped: true }
     );
-    SDK24.TargetManager.TargetManager.instance().addModelListener(
+    SDK25.TargetManager.TargetManager.instance().addModelListener(
       IndexedDBModel,
       "DatabaseRemoved" /* DatabaseRemoved */,
       this.indexedDBRemoved,
       this,
       { scoped: true }
     );
-    SDK24.TargetManager.TargetManager.instance().addModelListener(
+    SDK25.TargetManager.TargetManager.instance().addModelListener(
       IndexedDBModel,
       "DatabaseLoaded" /* DatabaseLoaded */,
       this.indexedDBLoaded,
       this,
       { scoped: true }
     );
-    SDK24.TargetManager.TargetManager.instance().addModelListener(
+    SDK25.TargetManager.TargetManager.instance().addModelListener(
       IndexedDBModel,
       "IndexedDBContentUpdated" /* IndexedDBContentUpdated */,
       this.indexedDBContentUpdated,
@@ -19791,7 +19914,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
       { scoped: true }
     );
     this.idbDatabaseTreeElements = [];
-    for (const indexedDBModel of SDK24.TargetManager.TargetManager.instance().models(IndexedDBModel, { scoped: true })) {
+    for (const indexedDBModel of SDK25.TargetManager.TargetManager.instance().models(IndexedDBModel, { scoped: true })) {
       const databases = indexedDBModel.databases();
       for (let j = 0; j < databases.length; ++j) {
         this.addIndexedDB(indexedDBModel, databases[j]);
@@ -19823,7 +19946,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     void contextMenu.show();
   }
   refreshIndexedDB() {
-    for (const indexedDBModel of SDK24.TargetManager.TargetManager.instance().models(IndexedDBModel, { scoped: true })) {
+    for (const indexedDBModel of SDK25.TargetManager.TargetManager.instance().models(IndexedDBModel, { scoped: true })) {
       void indexedDBModel.refreshDatabaseNames();
     }
   }
@@ -19859,7 +19982,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   removeIDBDatabaseTreeElement(idbDatabaseTreeElement) {
     idbDatabaseTreeElement.clear();
     this.removeChild(idbDatabaseTreeElement);
-    Platform11.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
+    Platform12.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
     this.setExpandable(this.childCount() > 0);
   }
   indexedDBLoaded({ data: { database, model, entriesUpdated } }) {
@@ -20186,7 +20309,7 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   constructor(storagePanel, domStorage) {
     super(
       storagePanel,
-      domStorage.storageKey ? SDK24.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin : i18nString31(UIStrings31.localFiles),
+      domStorage.storageKey ? SDK25.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin : i18nString31(UIStrings31.localFiles),
       false,
       domStorage.isLocalStorage ? "local-storage-for-domain" : "session-storage-for-domain"
     );
@@ -20210,12 +20333,12 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
    * associated with this tree element for AI assistance.
    */
   #getStorageItem() {
-    const target = SDK24.TargetManager.TargetManager.instance().primaryPageTarget();
-    const mainPageOrigin = target?.inspectedURL() ? Common18.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
+    const target = SDK25.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin = target?.inspectedURL() ? Common19.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
     if (!mainPageOrigin || !this.domStorage.storageKey) {
       return null;
     }
-    const origin = SDK24.StorageKeyManager.parseStorageKey(this.domStorage.storageKey).origin;
+    const origin = SDK25.StorageKeyManager.parseStorageKey(this.domStorage.storageKey).origin;
     const storageType = this.domStorage.isLocalStorage ? "localStorage" : "sessionStorage";
     return new AiAssistance2.StorageItem.DOMStorageItem(mainPageOrigin, origin, this.domStorage.storageKey, storageType);
   }
@@ -20325,8 +20448,8 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
    * for AI assistance.
    */
   #getStorageItem() {
-    const primaryTarget = SDK24.TargetManager.TargetManager.instance().primaryPageTarget();
-    const mainPageOrigin = primaryTarget?.inspectedURL() ? Common18.ParsedURL.ParsedURL.extractOrigin(primaryTarget.inspectedURL()) : "";
+    const primaryTarget = SDK25.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin = primaryTarget?.inspectedURL() ? Common19.ParsedURL.ParsedURL.extractOrigin(primaryTarget.inspectedURL()) : "";
     if (!mainPageOrigin || !this.#cookieDomain) {
       return null;
     }
@@ -20404,59 +20527,59 @@ var ResourcesSection = class {
     UI32.ARIAUtils.setLabel(this.treeElement.listItemNode, "Resources Section");
     this.treeElementForFrameId = /* @__PURE__ */ new Map();
     this.treeElementForTargetId = /* @__PURE__ */ new Map();
-    const frameManager = SDK24.FrameManager.FrameManager.instance();
+    const frameManager = SDK25.FrameManager.FrameManager.instance();
     frameManager.addEventListener(
-      SDK24.FrameManager.Events.FRAME_ADDED_TO_TARGET,
+      SDK25.FrameManager.Events.FRAME_ADDED_TO_TARGET,
       (event) => this.frameAdded(event.data.frame),
       this
     );
     frameManager.addEventListener(
-      SDK24.FrameManager.Events.FRAME_REMOVED,
+      SDK25.FrameManager.Events.FRAME_REMOVED,
       (event) => this.frameDetached(event.data.frameId),
       this
     );
     frameManager.addEventListener(
-      SDK24.FrameManager.Events.FRAME_NAVIGATED,
+      SDK25.FrameManager.Events.FRAME_NAVIGATED,
       (event) => this.frameNavigated(event.data.frame),
       this
     );
     frameManager.addEventListener(
-      SDK24.FrameManager.Events.RESOURCE_ADDED,
+      SDK25.FrameManager.Events.RESOURCE_ADDED,
       (event) => this.resourceAdded(event.data.resource),
       this
     );
     if (this.panel.mode !== "node") {
-      SDK24.TargetManager.TargetManager.instance().addModelListener(
-        SDK24.ChildTargetManager.ChildTargetManager,
-        SDK24.ChildTargetManager.Events.TARGET_CREATED,
+      SDK25.TargetManager.TargetManager.instance().addModelListener(
+        SDK25.ChildTargetManager.ChildTargetManager,
+        SDK25.ChildTargetManager.Events.TARGET_CREATED,
         this.windowOpened,
         this,
         { scoped: true }
       );
-      SDK24.TargetManager.TargetManager.instance().addModelListener(
-        SDK24.ChildTargetManager.ChildTargetManager,
-        SDK24.ChildTargetManager.Events.TARGET_INFO_CHANGED,
+      SDK25.TargetManager.TargetManager.instance().addModelListener(
+        SDK25.ChildTargetManager.ChildTargetManager,
+        SDK25.ChildTargetManager.Events.TARGET_INFO_CHANGED,
         this.windowChanged,
         this,
         { scoped: true }
       );
-      SDK24.TargetManager.TargetManager.instance().addModelListener(
-        SDK24.ChildTargetManager.ChildTargetManager,
-        SDK24.ChildTargetManager.Events.TARGET_DESTROYED,
+      SDK25.TargetManager.TargetManager.instance().addModelListener(
+        SDK25.ChildTargetManager.ChildTargetManager,
+        SDK25.ChildTargetManager.Events.TARGET_DESTROYED,
         this.windowDestroyed,
         this,
         { scoped: true }
       );
-      SDK24.TargetManager.TargetManager.instance().observeTargets(this, { scoped: true });
+      SDK25.TargetManager.TargetManager.instance().observeTargets(this, { scoped: true });
     }
   }
   initialize() {
-    const frameManager = SDK24.FrameManager.FrameManager.instance();
+    const frameManager = SDK25.FrameManager.FrameManager.instance();
     for (const frame of frameManager.getAllFrames()) {
       if (!this.treeElementForFrameId.get(frame.id)) {
         this.addFrameAndParents(frame);
       }
-      const childTargetManager = frame.resourceTreeModel().target().model(SDK24.ChildTargetManager.ChildTargetManager);
+      const childTargetManager = frame.resourceTreeModel().target().model(SDK25.ChildTargetManager.ChildTargetManager);
       if (childTargetManager) {
         for (const targetInfo of childTargetManager.targetInfos()) {
           this.windowOpened({ data: targetInfo });
@@ -20465,10 +20588,10 @@ var ResourcesSection = class {
     }
   }
   targetAdded(target) {
-    if (target.type() === SDK24.Target.Type.Worker || target.type() === SDK24.Target.Type.ServiceWorker) {
+    if (target.type() === SDK25.Target.Type.Worker || target.type() === SDK25.Target.Type.ServiceWorker) {
       void this.workerAdded(target);
     }
-    if (target.type() === SDK24.Target.Type.FRAME && target === target.outermostTarget()) {
+    if (target.type() === SDK25.Target.Type.FRAME && target === target.outermostTarget()) {
       this.initialize();
     }
   }
@@ -20525,7 +20648,7 @@ var ResourcesSection = class {
     frameTreeElement?.select();
   }
   frameAdded(frame) {
-    if (!SDK24.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
+    if (!SDK25.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
       return;
     }
     const parentFrame = frame.parentFrame();
@@ -20562,7 +20685,7 @@ var ResourcesSection = class {
     }
   }
   frameNavigated(frame) {
-    if (!SDK24.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
+    if (!SDK25.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
       return;
     }
     const frameTreeElement = this.treeElementForFrameId.get(frame.id);
@@ -20575,7 +20698,7 @@ var ResourcesSection = class {
     if (!frame) {
       return;
     }
-    if (!SDK24.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
+    if (!SDK25.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
       return;
     }
     const frameTreeElement = this.treeElementForFrameId.get(frame.id);
@@ -20669,9 +20792,9 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
       this.view = null;
     }
     if (frame.isOutermostFrame()) {
-      const targets = SDK24.TargetManager.TargetManager.instance().targets();
+      const targets = SDK25.TargetManager.TargetManager.instance().targets();
       for (const target of targets) {
-        if (target.type() === SDK24.Target.Type.ServiceWorker && SDK24.TargetManager.TargetManager.instance().isInScope(target)) {
+        if (target.type() === SDK25.Target.Type.ServiceWorker && SDK25.TargetManager.TargetManager.instance().isInScope(target)) {
           const targetId = target.id();
           assertNotMainTarget(targetId);
           const agent = frame.resourceTreeModel().target().targetAgent();
@@ -20696,7 +20819,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-details");
     this.showView(this.view);
     this.listItemElement.classList.remove("hovered");
-    SDK24.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK24.TargetManager.TargetManager.instance());
+    SDK25.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK25.TargetManager.TargetManager.instance());
     return false;
   }
   set hovered(hovered) {
@@ -20705,7 +20828,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
       void this.frame.highlight();
     } else {
       this.listItemElement.classList.remove("hovered");
-      SDK24.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK24.TargetManager.TargetManager.instance());
+      SDK25.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK25.TargetManager.TargetManager.instance());
     }
   }
   appendResource(resource) {
@@ -20715,7 +20838,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     }
     const resourceType = resource.resourceType();
     const categoryName = resourceType.name();
-    let categoryElement = resourceType === Common18.ResourceType.resourceTypes.Document ? this : this.categoryElements.get(categoryName);
+    let categoryElement = resourceType === Common19.ResourceType.resourceTypes.Document ? this : this.categoryElements.get(categoryName);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(
         this.section.panel,

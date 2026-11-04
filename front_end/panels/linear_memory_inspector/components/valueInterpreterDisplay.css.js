@@ -46,7 +46,7 @@ export default `/*
 
 .signed-divider {
   width: var(--sys-size-1);
-  height: 15px;
+  height: var(--sys-size-8);
   background-color: var(--sys-color-divider);
   margin: 0 var(--sys-size-3);
 }

@@ -472,7 +472,7 @@ export async function showContextMenu(domTreeWidget, domNode, event) {
     }
     ElementsPanel.instance().populateAdornerSettingsContextMenu(contextMenu);
     contextMenu.appendApplicableItems(domNode);
-    void contextMenu.show();
+    await contextMenu.show();
     return contextMenu;
 }
 //# sourceMappingURL=DOMTreeContextMenu.js.map

@@ -11,7 +11,7 @@ export default `/*
 
 .custom-headers-list {
   display: flex;
-  height: 272px;
+  height: var(--sys-size-30);
   width: var(--sys-size-29);
   margin: 0 var(--sys-size-8);
   border: var(--sys-size-1) solid var(--sys-color-divider);

@@ -4,26 +4,8 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// ../../front_end/models/ai_code_generation/debug.ts
-import * as Platform from "../../core/platform/platform.js";
-function isDebugMode() {
-  return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiCodeGenerationEnabled"));
-}
-function debugLog(...log) {
-  if (!isDebugMode()) {
-    return;
-  }
-  console.log(...log);
-}
-function setDebugAiCodeGenerationEnabled(enabled) {
-  const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
-  if (enabled) {
-    localStorage?.setItem("debugAiCodeGenerationEnabled", "true");
-  } else {
-    localStorage?.removeItem("debugAiCodeGenerationEnabled");
-  }
-}
-globalThis.setDebugAiCodeGenerationEnabled = setDebugAiCodeGenerationEnabled;
+// ../../front_end/models/ai_code_generation/ai_code_generation.ts
+import * as AiUtils2 from "../ai-utils/ai-utils.js";
 
 // ../../front_end/models/ai_code_generation/AiCodeGeneration.ts
 var AiCodeGeneration_exports = {};
@@ -34,6 +16,8 @@ __export(AiCodeGeneration_exports, {
 });
 import * as Host from "../../core/host/host.js";
 import * as Root from "../../core/root/root.js";
+import * as AiUtils from "../ai-utils/ai-utils.js";
+var { debugCodeGenCompleteLog: debugLog } = AiUtils.Debug;
 var basePreamble = `You are a highly skilled senior software engineer with deep expertise across multiple web technologies and programming languages, including JavaScript, TypeScript, HTML, and CSS.
 Your role is to act as an expert pair programmer within the Chrome DevTools environment.
 
@@ -169,9 +153,13 @@ var AiCodeGeneration = class _AiCodeGeneration {
     return Boolean(aidaAvailability.enabled && _AiCodeGeneration.isAiCodeGenerationAvailable());
   }
 };
+
+// ../../front_end/models/ai_code_generation/ai_code_generation.ts
+function debugLog2(...log) {
+  AiUtils2.Debug.debugCodeGenCompleteLog(...log);
+}
 export {
   AiCodeGeneration_exports as AiCodeGeneration,
-  debugLog,
-  isDebugMode
+  debugLog2 as debugLog
 };
 //# sourceMappingURL=ai_code_generation.js.map

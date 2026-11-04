@@ -24,7 +24,7 @@ export default `/*
 
 .network-config-title {
   margin-right: var(--sys-size-8);
-  width: 130px;
+  width: var(--sys-size-21);
 }
 
 .network-config-fields {
@@ -32,7 +32,7 @@ export default `/*
 }
 
 .network-config-fields > span:first-of-type {
-  padding: 3px 0;
+  padding: var(--sys-size-2) 0;
 }
 
 .panel-section-separator {
@@ -50,7 +50,7 @@ export default `/*
 
 .network-config-input-validation-error {
   color: var(--sys-color-error);
-  margin: 5px 0;
+  margin: var(--sys-size-3) 0;
 }
 
 .network-config-input-validation-error:empty {

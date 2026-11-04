@@ -636,6 +636,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     const customAfter = editingIndex !== null ? input.customConditions.slice(editingIndex + 1) : [];
     // clang-format off
     render(html `
+        <style>${throttlingSettingsTabStyles}</style>
         <div class="settings-card-container-wrapper">
           <div class="settings-card-container throttling-conditions-settings">
             ${widget(CPUThrottlingCard)}
@@ -715,7 +716,6 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
             useShadowDom: true,
         });
         this.#view = view;
-        this.registerRequiredCSS(throttlingSettingsTabStyles);
         this.customUserConditions = SDK.NetworkManager.customUserNetworkConditionsSetting(settings);
         this.customUserConditions.addChangeListener(this.#conditionsUpdated, this);
         const customConditions = this.customUserConditions.get();

@@ -2443,6 +2443,11 @@ export var Page;
         StartScreencastRequestFormat["Jpeg"] = "jpeg";
         StartScreencastRequestFormat["Png"] = "png";
     })(StartScreencastRequestFormat = Page.StartScreencastRequestFormat || (Page.StartScreencastRequestFormat = {}));
+    let StartScreenRecordingRequestCaptureArea;
+    (function (StartScreenRecordingRequestCaptureArea) {
+        StartScreenRecordingRequestCaptureArea["Target"] = "target";
+        StartScreenRecordingRequestCaptureArea["BrowserWindow"] = "browserWindow";
+    })(StartScreenRecordingRequestCaptureArea = Page.StartScreenRecordingRequestCaptureArea || (Page.StartScreenRecordingRequestCaptureArea = {}));
     let SetWebLifecycleStateRequestState;
     (function (SetWebLifecycleStateRequestState) {
         SetWebLifecycleStateRequestState["Frozen"] = "frozen";

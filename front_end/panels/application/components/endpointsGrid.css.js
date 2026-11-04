@@ -23,7 +23,7 @@ export default `/*
   }
 
   .endpoints-header {
-    font-size: 15px;
+    font-size: var(--sys-typescale-headline5-size);
     background-color: var(--sys-color-surface2);
     padding: var(--sys-size-1) var(--sys-size-3);
     flex-shrink: 0;

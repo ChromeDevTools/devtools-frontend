@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-import { debugLog } from './debug.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
+const { debugCodeGenCompleteLog: debugLog } = AiUtils.Debug;
 export const basePreamble = `You are a highly skilled senior software engineer with deep expertise across multiple web technologies and programming languages, including JavaScript, TypeScript, HTML, and CSS.
 Your role is to act as an expert pair programmer within the Chrome DevTools environment.
 

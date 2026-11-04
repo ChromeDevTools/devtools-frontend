@@ -175,7 +175,7 @@ var reportValue_css_default = `/*
 
 :host {
   margin: var(--sys-size-3) var(--sys-size-9) var(--sys-size-3) var(--sys-size-9);
-  min-width: 150px;
+  min-width: var(--sys-size-22);
 }
 
 .value {
@@ -184,7 +184,10 @@ var reportValue_css_default = `/*
   margin-inline-start: 0;
   padding: 0 var(--sys-size-4);
   overflow-wrap: break-word;
-  line-height: 18px;
+  /* 16px body4 line-height (--sys-typescale-body4-line-height, equal to --sys-size-8)
+   * + 2px row leading (--sys-size-2) = 18px, preserving baseline alignment with
+   * paired 18px .key cells and inline 18px-20px report icons/buttons. */
+  line-height: calc(var(--sys-typescale-body4-line-height) + var(--sys-size-2));
 }
 
 /*# sourceURL=${import.meta.resolve("./reportValue.css")} */`;

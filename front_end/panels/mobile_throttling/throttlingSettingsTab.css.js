@@ -45,7 +45,9 @@ export default `/*
   gap: var(--sys-size-3);
   padding: var(--sys-size-4);
   flex-shrink: 0;
-  width: 74px;
+  /* 80px (--sys-size-19) minus 6px (--sys-size-4) padding step so all
+   * 7 columns (518px) fit inside the 532px card slot without overflow. */
+  width: calc(var(--sys-size-19) - var(--sys-size-4));
 }
 
 .input {
@@ -70,10 +72,6 @@ export default `/*
   color: var(--sys-color-on-surface);
   text-align: center;
   position: relative;
-
-  & > input {
-    scroll-margin-left: 5px;
-  }
 }
 
 .conditions-list-text:last-child {
@@ -139,13 +137,13 @@ export default `/*
 
 .cpu-preset-calibrate .button-container {
   display: flex;
-  gap: 10px;
+  gap: var(--sys-size-5);
 }
 
 .cpu-preset-calibrate .text-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sys-size-5);
 }
 
 .text-with-icon {

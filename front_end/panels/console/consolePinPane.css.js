@@ -60,7 +60,7 @@ export default `/*
   width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
-  min-height: 13px;
+  min-height: var(--sys-size-6);
 }
 
 .console-pin-preview {

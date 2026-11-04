@@ -39,14 +39,13 @@ import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
 import computedStyleWidgetStyles from './computedStyleWidget.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { categorizePropertyName, DefaultCategoryOrder } from './PropertyNameCategories.js';
 import { Renderer, rendererBase, StringRenderer, URLRenderer } from './PropertyRenderer.js';
 import { StylePropertiesSection } from './StylePropertiesSection.js';
-const { html, render } = Lit;
 const { bindToSetting } = UI.UIUtils;
 const { widget } = UI.Widget;
 const UIStrings = {
@@ -166,19 +165,13 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
     render(match, context) {
         const color = Common.Color.parse(match.text);
         if (!color) {
-            return [document.createTextNode(match.text)];
+            return html `${match.text}`;
         }
         const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
         swatch.setReadonly(true);
         swatch.renderColor(color);
-        const valueElement = document.createElement('span');
-        valueElement.textContent = match.text;
-        swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (event) => {
-            const { data: { color } } = event;
-            valueElement.textContent = color.getAuthoredText() ?? color.asString();
-        });
         context.addControl('color', swatch);
-        return [swatch, valueElement];
+        return html `${swatch}<span>${match.text}</span>`;
     }
     matcher() {
         return new SDK.CSSPropertyParserMatchers.ColorMatcher();
@@ -225,7 +218,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           >${i18nString(UIStrings.group)}</devtools-checkbox>
         </devtools-toolbar>
       </div>
-      ` : Lit.nothing}
+      ` : nothing}
     ${input.computedStylesTree}
     ${!input.hasMatches ? html `<div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>` : ''}
   `, target);

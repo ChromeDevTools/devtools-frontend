@@ -15,7 +15,7 @@ export default `/*
 
 .root {
   align-items: flex-start; /* keep chart at top so it doesnt change position as the legend changes height */
-  gap: var(--sys-size-6) 30px;
+  gap: var(--sys-size-6) var(--sys-size-12);
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -39,7 +39,6 @@ export default `/*
 
 .pie-chart-total {
   margin: auto;
-  padding: var(--sys-size-2) 5px;
   pointer-events: auto;
 }
 
@@ -60,8 +59,8 @@ export default `/*
 }
 
 .pie-chart-legend-row {
-  margin: 5px var(--sys-size-2) 5px auto;
-  padding-right: 25px;
+  margin: var(--sys-size-3) var(--sys-size-2) var(--sys-size-3) auto;
+  padding-right: var(--sys-size-11);
 }
 
 .pie-chart-legend-row.selected {

@@ -360,6 +360,9 @@
   "front_end/entrypoints/formatter_worker/formatter_worker-entrypoint.js",
   "front_end/models/formatter/formatter.js",
   "front_end/third_party/source-map-scopes-codec/source-map-scopes-codec.js",
+  "front_end/third_party/wasmparser/wasmparser.js",
+  "front_end/entrypoints/wasmparser_worker/wasmparser_worker.js",
+  "front_end/entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js",
   "front_end/core/sdk/sdk.js",
   "front_end/models/workspace/workspace.js",
   "front_end/models/stack_trace/stack_trace.js",
@@ -858,8 +861,5 @@
   "front_end/entrypoints/node_app/app/app.js",
   "front_end/entrypoints/node_app/node_app.js",
   "front_end/entrypoints/trace_app/trace_app.js",
-  "front_end/third_party/wasmparser/wasmparser.js",
-  "front_end/entrypoints/wasmparser_worker/wasmparser_worker.js",
-  "front_end/entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js",
   "front_end/entrypoints/worker_app/worker_app.js"
 ]

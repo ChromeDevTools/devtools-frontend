@@ -12,7 +12,6 @@ export default `/*
 .progress-indicator-shadow-stop-button {
   background-color: var(--sys-color-error-bright);
   border: 0;
-  width: 10px;
   height: var(--sys-size-6);
   border-radius: var(--sys-size-2);
 }
@@ -34,7 +33,7 @@ export default `/*
 .progress-indicator-shadow-container progress {
   flex: auto;
   margin: 0 var(--sys-size-2);
-  width: 100px;
+  width: var(--sys-size-19);
 }
 
 /*# sourceURL=${import.meta.resolve('./progressIndicator.css')} */`;

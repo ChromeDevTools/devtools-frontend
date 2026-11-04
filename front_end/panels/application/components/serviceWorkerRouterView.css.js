@@ -11,7 +11,7 @@ export default `/*
 :host {
   display: block;
   white-space: normal;
-  max-width: 400px;
+  max-width: var(--sys-size-32);
 }
 
 .router-rules {
@@ -38,7 +38,7 @@ export default `/*
 .item {
   display: flex;
   flex-direction: column;
-  padding-left: 10px;
+  padding-left: var(--sys-size-5);
 }
 
 .condition,

@@ -4195,9 +4195,9 @@ export const generatedProperties = [
             "thin"
         ],
         "longhands": [
-            "outline-color",
+            "outline-width",
             "outline-style",
-            "outline-width"
+            "outline-color"
         ],
         "name": "outline"
     },

@@ -426,6 +426,7 @@ panels/application/KeyValueStorageItemsView.test.js
 panels/application/OpenedWindowDetailsView.test.js
 panels/application/OriginTrialTreeView.test.js
 panels/application/PreloadingTreeElement.test.js
+panels/application/PrivateVerificationTokensView.test.js
 panels/application/ReportingApiTreeElement.test.js
 panels/application/ReportingApiView.test.js
 panels/application/ServiceWorkerCacheTreeElement.test.js

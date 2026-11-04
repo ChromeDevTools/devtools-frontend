@@ -175,6 +175,7 @@ function renderUserAgentSection(input, output) {
 }
 export const DEFAULT_VIEW = (input, output, target) => {
     render(html `
+    <style>${networkConfigViewStyles}</style>
     ${renderCacheSection(input)}
     <div class="panel-section-separator"></div>
     ${renderNetworkThrottlingSection()}
@@ -204,7 +205,6 @@ export class NetworkConfigView extends UI.Widget.VBox {
         super({
             useShadowDom: true,
         });
-        this.registerRequiredCSS(networkConfigViewStyles);
         this.#view = view;
         this.#cacheDisabledSetting.addChangeListener(() => this.requestUpdate());
         this.#customUserAgentSetting.addChangeListener(() => {

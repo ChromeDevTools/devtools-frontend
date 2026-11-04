@@ -573,7 +573,7 @@ var cssHintDetailsView_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .hint-popup-wrapper {
-    max-width: 232px;
+    max-width: var(--sys-size-28);
   }
 
   code {
@@ -1439,7 +1439,9 @@ var cssVariableValueView_css_default = `/*
   }
 
   .divider {
-    margin: var(--sys-size-5) -7px;
+    /* Bleed across the 8px (--sys-size-5) inline padding
+     * of devtools-tooltip's .container. */
+    margin: var(--sys-size-5) calc(-1 * var(--sys-size-5));
     border: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
@@ -1833,7 +1835,7 @@ var elementsBreadcrumbs_css_default = `/*
 }
 
 .overflow {
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
   font-weight: bold;
   display: block;
   border: none;
@@ -2243,10 +2245,11 @@ var elementsTreeExpandButton_css_default = `/*
   align-items: center;
   box-sizing: border-box;
   width: var(--sys-size-7);
-  height: 10px;
+  /* 8px (--sys-size-5) interior height + 2 * 1px (--sys-size-1) top/bottom borders. */
+  height: calc(var(--sys-size-5) + 2 * var(--sys-size-1));
   margin: 0 var(--sys-size-2);
   border: var(--sys-size-1) solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
-  border-radius: 10px;
+  border-radius: var(--sys-shape-corner-full);
   background: var(--override-adorner-background-color, var(--sys-color-cdt-base-container));
   padding: 0;
   position: relative;
@@ -2558,11 +2561,11 @@ var stylePropertyEditor_css_default = `/*
 }
 
 .buttons > :first-child {
-  border-radius: 3px 0 0 3px;
+  border-radius: var(--sys-shape-corner-extra-small) 0 0 var(--sys-shape-corner-extra-small);
 }
 
 .buttons > :last-child {
-  border-radius: 0 3px 3px 0;
+  border-radius: 0 var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) 0;
 }
 
 .button {

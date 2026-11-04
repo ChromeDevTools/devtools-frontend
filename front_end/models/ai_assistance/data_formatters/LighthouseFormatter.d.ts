@@ -11,15 +11,20 @@ export type LighthouseCategoryArg = 'all' | LHModel.RunTypes.CategoryId;
 export declare class LighthouseFormatter {
     #private;
     /**
-     * Returns an overall summary and high-level overview of the Lighthouse report.
+     * Returns an overall summary and high-level overview of the Lighthouse report
+     * for the initial conversation context payload.
+     *
+     * Includes:
+     * - Report metadata (URL, fetch time, Lighthouse version, and gather mode when present).
+     * - Category scores (0-100 percentage, "n/a", or "<passed>/<total> audits passed" for
+     *   fraction-scored modes and categories).
+     * - A per-category overview of non-hidden failing audits (score < 90), errored audits
+     *   (with their error messages), and informative audits that carry details, without
+     *   full descriptions or details tables so the prompt stays compact. Each category
+     *   heading includes its category ID so the agent can request full details via
+     *   `getLighthouseAudits`.
      */
     summary(report: LHModel.ReporterTypes.ReportJSON): string;
-    /**
-     * Returns the title and score of every failing audit (score < 90), grouped by category.
-     * Descriptions and details tables are left out to keep the prompt small. Each category
-     * heading includes its category ID so the agent can request the full audit details.
-     */
-    failingAuditsSummary(report: LHModel.ReporterTypes.ReportJSON): string;
     /**
      * Formats a Lighthouse report for an AI Agent. If categoryId is 'all', returns
      * each category's audits. Otherwise, returns audits for the specified category.

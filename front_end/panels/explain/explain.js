@@ -77,11 +77,6 @@ var consoleInsight_css_default = `/*
     border-radius: var(--sys-shape-corner-medium) var(--sys-shape-corner-medium) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small);
   }
 
-  .wrapper.bottom {
-    margin-top: 5px;
-    border-radius: var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-medium) var(--sys-shape-corner-medium);
-  }
-
   header {
     display: flex;
     flex-direction: row;
@@ -210,16 +205,6 @@ var consoleInsight_css_default = `/*
     gap: var(--sys-size-5);
   }
 
-  textarea {
-    height: 84px;
-    padding: 10px;
-    border-radius: var(--sys-shape-corner-small);
-    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-    width: 100%;
-    font-family: var(--default-font-family);
-    font-size: inherit;
-  }
-
   .buttons {
     display: flex;
     gap: 5px;
@@ -292,7 +277,7 @@ var consoleInsight_css_default = `/*
 
   details {
     overflow: hidden;
-    margin-top: 10px;
+    margin-top: var(--sys-size-6);
   }
 
   ::details-content {
@@ -347,8 +332,8 @@ var consoleInsight_css_default = `/*
   .header-icon-container {
     background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
     border-radius: var(--sys-size-4);
-    height: 36px;
-    width: 36px;
+    height: var(--sys-size-13);
+    width: var(--sys-size-13);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -401,7 +386,7 @@ var consoleInsight_css_default = `/*
   }
 
   details h3 {
-    font-size: 10px;
+    font-size: var(--sys-typescale-body5-size);
     font-weight: var(--ref-typeface-weight-medium);
     text-transform: uppercase;
     color: var(--sys-color-on-surface-subtle);
@@ -426,7 +411,7 @@ var consoleInsight_css_default = `/*
       font-style: normal;
       font-weight: 400;
       line-height: 18px;
-      margin-top: var(--sys-size-5);
+      margin-top: var(--sys-size-6);
       padding-left: var(--sys-size-6);
     }
 

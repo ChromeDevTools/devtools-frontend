@@ -15,8 +15,8 @@ export default `/*
   }
 
   .url {
-    margin-left: 15px;
-    margin-right: 5px;
+    margin-left: var(--sys-size-7);
+    margin-right: var(--sys-size-3);
   }
 
   .url--host {
@@ -42,8 +42,8 @@ export default `/*
   }
 
   devtools-icon.priority {
-    height: 13px;
-    width: 13px;
+    height: var(--sys-size-7);
+    width: var(--sys-size-7);
     color: var(--sys-color-on-surface-subtle);
   }
 

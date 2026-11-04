@@ -614,32 +614,161 @@ export function rematchCommentAnchor(comment, root = document, cachedJslogElemen
 function isClippingOverflow(overflow) {
     return overflow === 'hidden' || overflow === 'auto' || overflow === 'scroll' || overflow === 'clip';
 }
+/**
+ * Attribute that marks an element as a sticky occluder: an element that sticks
+ * to its scroll container (e.g. a `position: sticky` table header or toolbar)
+ * and paints over scrolled content. Comment overlays are clipped against it.
+ * Components set it directly so they don't need to depend on this module.
+ */
+export const STICKY_OCCLUDER_ATTRIBUTE = 'data-sticky-occluder';
+/**
+ * Sticky occluders collected by the caller's DOM scan (see `setStickyOccluders()`),
+ * or null to let the resolver scan the document itself.
+ */
+let stickyOccluders = null;
+let occludersByScrollerCache = null;
 let clippingAncestorsCache = new WeakMap();
+/**
+ * Provides the sticky occluders found by a DOM scan the caller already runs, so
+ * the resolver does not walk the whole DOM again. CommentOverlayManager collects
+ * them in the same pass as `[jslog]` elements during rematching.
+ *
+ * @param elements Elements with the sticky occluder attribute, or null to make
+ * the resolver scan the document itself.
+ */
+export function setStickyOccluders(elements) {
+    stickyOccluders = elements;
+    clearClippingAncestorsCache();
+}
+function isScrollingOverflow(overflow) {
+    return overflow === 'hidden' || overflow === 'auto' || overflow === 'scroll';
+}
+function getStickyScroller(occluder, doc, win) {
+    let current = occluder.parentElementOrShadowHost();
+    while (current && current !== doc.documentElement && current !== doc.body) {
+        const currentStyle = win.getComputedStyle(current);
+        if (isScrollingOverflow(currentStyle.overflowX) || isScrollingOverflow(currentStyle.overflowY)) {
+            return current;
+        }
+        current = current.parentElementOrShadowHost();
+    }
+    return null;
+}
+function buildOccludersByScrollerMap(doc, win) {
+    if (occludersByScrollerCache) {
+        return occludersByScrollerCache;
+    }
+    const result = new Map();
+    const occluders = stickyOccluders ?? deepQuerySelectorAll(doc, `[${STICKY_OCCLUDER_ATTRIBUTE}]`);
+    for (const occ of occluders) {
+        // The provided list can be up to one rematch behind the DOM.
+        if (!occ.isConnected) {
+            continue;
+        }
+        const scroller = getStickyScroller(occ, doc, win);
+        if (!scroller) {
+            continue;
+        }
+        const existingOccluders = result.get(scroller);
+        if (existingOccluders) {
+            existingOccluders.push(occ);
+        }
+        else {
+            result.set(scroller, [occ]);
+        }
+    }
+    occludersByScrollerCache = result;
+    return result;
+}
 /**
  * Clears the cached clipping ancestor chains for elements.
  * Called when DOM mutations or comment rematches occur.
  */
 export function clearClippingAncestorsCache() {
     clippingAncestorsCache = new WeakMap();
+    occludersByScrollerCache = null;
 }
 function getClippingAncestors(element, doc, win) {
     const cached = clippingAncestorsCache.get(element);
-    if (cached && cached.every(item => item.element.isConnected)) {
+    if (cached && cached.every(item => item.element.isConnected && item.occluders.every(occ => occ.isConnected))) {
         return cached;
     }
     const ancestors = [];
+    const allAncestors = new Set();
     let current = element.parentElementOrShadowHost();
     while (current && current !== doc.documentElement && current !== doc.body) {
+        allAncestors.add(current);
         const style = win.getComputedStyle(current);
         const clipsX = isClippingOverflow(style.overflowX);
         const clipsY = isClippingOverflow(style.overflowY);
         if (clipsX || clipsY) {
-            ancestors.push({ element: current, clipsX, clipsY });
+            ancestors.push({ element: current, clipsX, clipsY, occluders: [] });
         }
         current = current.parentElementOrShadowHost();
     }
+    const occludersByScroller = buildOccludersByScrollerMap(doc, win);
+    for (const ancestor of ancestors) {
+        const occluders = occludersByScroller.get(ancestor.element);
+        if (!occluders) {
+            continue;
+        }
+        // An anchor that is the occluder or sits inside it (e.g. a header cell) is painted by it, not covered.
+        ancestor.occluders = occluders.filter(occ => occ !== element && !allAncestors.has(occ));
+    }
     clippingAncestorsCache.set(element, ancestors);
     return ancestors;
+}
+function getCachedRect(element, rectCache) {
+    let rect = rectCache?.get(element);
+    if (!rect) {
+        rect = element.getBoundingClientRect();
+        rectCache?.set(element, rect);
+    }
+    return rect;
+}
+/**
+ * Trims visible bounds by the sticky occluders of one scroll container.
+ *
+ * A sticky occluder is an element marked with STICKY_OCCLUDER_ATTRIBUTE that sticks
+ * to the edge of its scroll container (e.g. a table header or toolbar) and paints
+ * over content scrolled underneath it. That content is not visible, even though it
+ * is still inside the scroll container's bounds.
+ *
+ * - Covers the top edge: the bounds start at the occluder's bottom.
+ * - Covers the bottom edge: the bounds end at the occluder's top.
+ * - Covers the whole height: returns null.
+ * - Sits strictly inside the bounds: ignored, since a rect cannot have a hole.
+ *
+ * Occluders with no size or no horizontal overlap with the bounds are skipped.
+ *
+ * @param bounds The visible bounds after clipping against the scroll container.
+ * @param occluders The sticky occluders of that scroll container.
+ * @param rectCache Optional per-frame cache of element bounding client rects.
+ * @returns The trimmed bounds, or null if the occluders cover them completely.
+ */
+function trimByStickyOccluders(bounds, occluders, rectCache) {
+    let { top, bottom } = bounds;
+    for (const occ of occluders) {
+        const occRect = getCachedRect(occ, rectCache);
+        if (occRect.width <= 0 || occRect.height <= 0) {
+            continue;
+        }
+        if (occRect.right <= bounds.left || occRect.left >= bounds.right) {
+            continue;
+        }
+        const coversTop = occRect.top <= top && occRect.bottom > top;
+        const coversBottom = occRect.top < bottom && occRect.bottom >= bottom;
+        if (coversTop && coversBottom) {
+            return null;
+        }
+        if (coversTop) {
+            top = occRect.bottom;
+        }
+        else if (coversBottom) {
+            bottom = occRect.top;
+        }
+    }
+    return { left: bounds.left, right: bounds.right, top, bottom };
 }
 /**
  * Computes the visible viewport-relative bounding box of an element after clipping against
@@ -677,12 +806,8 @@ export function computeVisibleRect(element, targetRect, rectCache) {
         return null;
     }
     const clippingAncestors = getClippingAncestors(element, doc, win);
-    for (const { element: ancestor, clipsX, clipsY } of clippingAncestors) {
-        let parentRect = rectCache?.get(ancestor);
-        if (!parentRect) {
-            parentRect = ancestor.getBoundingClientRect();
-            rectCache?.set(ancestor, parentRect);
-        }
+    for (const { element: ancestor, clipsX, clipsY, occluders } of clippingAncestors) {
+        const parentRect = getCachedRect(ancestor, rectCache);
         if (clipsX) {
             visibleLeft = Math.max(visibleLeft, parentRect.left);
             visibleRight = Math.min(visibleRight, parentRect.right);
@@ -694,6 +819,11 @@ export function computeVisibleRect(element, targetRect, rectCache) {
         if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
             return null;
         }
+        const trimmed = trimByStickyOccluders({ left: visibleLeft, right: visibleRight, top: visibleTop, bottom: visibleBottom }, occluders, rectCache);
+        if (!trimmed) {
+            return null;
+        }
+        ({ top: visibleTop, bottom: visibleBottom } = trimmed);
     }
     const width = visibleRight - visibleLeft;
     const height = visibleBottom - visibleTop;

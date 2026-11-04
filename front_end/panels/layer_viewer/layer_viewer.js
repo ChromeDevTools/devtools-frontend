@@ -363,7 +363,9 @@ var i18nLazyString = i18n3.i18n.getLazilyComputedLocalizedString.bind(void 0, st
 var DEFAULT_VIEW = (input, _output, target) => {
   const { layer, snapshotSelection, compositingReasons, onScrollRectClick, onPaintProfilerRequested } = input;
   if (!layer) {
-    Lit.render(html`<div class="layer-details-container">
+    Lit.render(html`
+      <style>${layerDetailsView_css_default}</style>
+      <div class="layer-details-container">
       <devtools-widget class="learn-more" ${widget(UI.EmptyWidget.EmptyWidget, {
       header: i18nString2(UIStrings2.noLayerSelected),
       text: i18nString2(UIStrings2.selectALayerToSeeItsDetails)
@@ -415,6 +417,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
   const domNode = layer.nodeForSelfOrAncestor();
   Lit.render(
     html`
+    <style>${layerDetailsView_css_default}</style>
     <div class="layer-details-container"
          data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
          data-target-id=${domNode ? domNode.domModel().target().id() : nothing}
@@ -488,7 +491,6 @@ var LayerDetailsView = class extends LayerDetailsViewBase {
   constructor(layerViewHost, view = DEFAULT_VIEW) {
     super({ useShadowDom: "pure" });
     this.view = view;
-    this.registerRequiredCSS(layerDetailsView_css_default);
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
     this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
@@ -594,7 +596,7 @@ var layerTreeOutline_css_default = `/*
   .layer-summary {
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     justify-content: space-between;
-    padding: var(--sys-size-3) 10px;
+    padding: var(--sys-size-3) var(--sys-size-5);
     flex-shrink: 0;
   }
 
@@ -864,7 +866,7 @@ __export(Layers3DView_exports, {
   BorderColor: () => BorderColor,
   BorderWidth: () => BorderWidth,
   ChromeTexture: () => ChromeTexture,
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   Events: () => Events4,
   FragmentShader: () => FragmentShader,
   HoveredBorderColor: () => HoveredBorderColor,
@@ -930,6 +932,7 @@ canvas {
 // ../../front_end/panels/layer_viewer/TransformController.ts
 var TransformController_exports = {};
 __export(TransformController_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   Events: () => Events3,
   Modes: () => Modes,
   TransformController: () => TransformController
@@ -938,26 +941,77 @@ import "../../ui/legacy/legacy.js";
 import * as Common4 from "../../core/common/common.js";
 import * as i18n7 from "../../core/i18n/i18n.js";
 import * as Platform from "../../core/platform/platform.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as UI3 from "../../ui/legacy/legacy.js";
+import { html as html3, nothing as nothing3, render as render3 } from "../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings4 = {
   /**
-   * @description Tooltip text that appears when hovering over largeicon pan button in transform controller of the Layers panel.
+   * @description Tooltip text that appears when hovering over largeicon pan
+   * button in transform controller of the Layers panel.
    */
   panModeX: "Pan mode (X)",
   /**
-   * @description Tooltip text that appears when hovering over largeicon rotate button in transform controller of the Layers panel.
+   * @description Tooltip text that appears when hovering over largeicon rotate
+   * button in transform controller of the Layers panel.
    */
   rotateModeV: "Rotate mode (V)",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon center button in the transform controller of the Layers panel.
+   * @description Tooltip text that appears when hovering over the largeicon
+   * center button in the transform controller of the Layers panel.
    */
   resetTransform: "Reset transform (0)"
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/layer_viewer/TransformController.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  render3(html3`
+    ${!input.disableRotate ? html3`
+      <devtools-button
+          class="toolbar-button"
+          title=${i18nString4(UIStrings4.panModeX)}
+          jslog=${VisualLogging3.toggle().track({ click: true }).context("layers.3d-pan")}
+          .iconName=${"3d-pan"}
+          .toggledIconName=${"3d-pan"}
+          .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+          .toggleOnClick=${false}
+          .toggled=${input.mode === "Pan" /* PAN */}
+          .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+          @click=${() => input.onSetMode("Pan" /* PAN */)}>
+      </devtools-button>
+      <devtools-button
+          class="toolbar-button"
+          title=${i18nString4(UIStrings4.rotateModeV)}
+          jslog=${VisualLogging3.toggle().track({ click: true }).context("layers.3d-rotate")}
+          .iconName=${"3d-rotate"}
+          .toggledIconName=${"3d-rotate"}
+          .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+          .toggleOnClick=${false}
+          .toggled=${input.mode === "Rotate" /* ROTATE */}
+          .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+          @click=${() => input.onSetMode("Rotate" /* ROTATE */)}>
+      </devtools-button>
+    ` : nothing3}
+    <devtools-button
+        class="toolbar-button"
+        title=${i18nString4(UIStrings4.resetTransform)}
+        .iconName=${"3d-center"}
+        .jslogContext=${"layers.3d-center"}
+        .variant=${Buttons.Button.Variant.TOOLBAR}
+        @click=${(event) => {
+    event.preventDefault();
+    input.onReset();
+  }}>
+    </devtools-button>
+  `, target, {
+    container: {
+      classes: ["transform-control-panel"],
+      attributes: { jslog: `${VisualLogging3.toolbar()}` }
+    }
+  });
+};
 var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
-  mode;
+  mode = "Pan" /* PAN */;
   #scale;
   #offsetX;
   #offsetY;
@@ -970,15 +1024,21 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
   element;
   minScale;
   maxScale;
-  controlPanelToolbar;
-  modeButtons;
+  #disableRotate;
+  #controlPanelToolbar = new UI3.Toolbar.Toolbar();
+  #view;
   /**
    * @param element The HTML element to apply transformations to.
-   * @param disableRotate Optional. If true, pan and rotate will be disabled. Defaults to false.
-   * @param preventDefaultOnMousedown Optional. If true, mousedown events will be prevented from their default behavior (including focus). Defaults to true.
+   * @param disableRotate Optional. If true, pan and rotate will be disabled.
+   *     Defaults to false.
+   * @param preventDefaultOnMousedown Optional. If true, mousedown events will
+   *     be prevented from their default behavior (including focus). Defaults to
+   *     true.
    */
-  constructor(element, disableRotate, preventDefaultOnMouseDown = true) {
+  constructor(element, disableRotate, preventDefaultOnMouseDown = true, view = DEFAULT_VIEW3) {
     super();
+    this.#view = view;
+    this.#disableRotate = Boolean(disableRotate);
     this.#scale = 1;
     this.#offsetX = 0;
     this.#offsetY = 0;
@@ -1003,42 +1063,23 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
     element.addEventListener("wheel", this.onMouseWheel.bind(this), false);
     this.minScale = 0;
     this.maxScale = Infinity;
-    this.controlPanelToolbar = document.createElement("devtools-toolbar");
-    this.controlPanelToolbar.classList.add("transform-control-panel");
-    this.controlPanelToolbar.setAttribute("jslog", `${VisualLogging3.toolbar()}`);
-    this.modeButtons = {};
-    if (!disableRotate) {
-      const panModeButton = new UI3.Toolbar.ToolbarToggle(
-        i18nString4(UIStrings4.panModeX),
-        "3d-pan",
-        void 0,
-        "layers.3d-pan",
-        /* toggleOnClick */
-        false
-      );
-      panModeButton.addEventListener(UI3.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, "Pan" /* PAN */));
-      this.modeButtons["Pan" /* PAN */] = panModeButton;
-      this.controlPanelToolbar.appendToolbarItem(panModeButton);
-      const rotateModeButton = new UI3.Toolbar.ToolbarToggle(
-        i18nString4(UIStrings4.rotateModeV),
-        "3d-rotate",
-        void 0,
-        "layers.3d-rotate",
-        /* toggleOnClick */
-        false
-      );
-      rotateModeButton.addEventListener(UI3.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, "Rotate" /* ROTATE */));
-      this.modeButtons["Rotate" /* ROTATE */] = rotateModeButton;
-      this.controlPanelToolbar.appendToolbarItem(rotateModeButton);
-    }
-    this.setMode("Pan" /* PAN */);
-    const resetButton = new UI3.Toolbar.ToolbarButton(i18nString4(UIStrings4.resetTransform), "3d-center", void 0, "layers.3d-center");
-    resetButton.addEventListener(UI3.Toolbar.ToolbarButton.Events.CLICK, this.resetAndNotify.bind(this, void 0));
-    this.controlPanelToolbar.appendToolbarItem(resetButton);
+    this.#performUpdate();
     this.reset();
   }
+  #performUpdate() {
+    this.#view(
+      {
+        disableRotate: this.#disableRotate,
+        mode: this.mode,
+        onSetMode: this.setMode.bind(this),
+        onReset: this.resetAndNotify.bind(this)
+      },
+      void 0,
+      this.#controlPanelToolbar
+    );
+  }
   toolbar() {
-    return this.controlPanelToolbar;
+    return this.#controlPanelToolbar;
   }
   registerShortcuts() {
     const zoomFactor = 1.1;
@@ -1078,12 +1119,7 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
       return;
     }
     this.mode = mode;
-    this.updateModeButtons();
-  }
-  updateModeButtons() {
-    for (const mode in this.modeButtons) {
-      this.modeButtons[mode].setToggled(mode === this.mode);
-    }
+    this.#performUpdate();
   }
   resetAndNotify(event) {
     this.reset();
@@ -1201,7 +1237,7 @@ var Modes = /* @__PURE__ */ ((Modes2) => {
 })(Modes || {});
 
 // ../../front_end/panels/layer_viewer/Layers3DView.ts
-var { html: html3, render: render3, Directives: { ref: ref2 } } = Lit2;
+var { html: html4, render: render4, Directives: { ref: ref2 } } = Lit2;
 var { widget: widget2 } = UI4.Widget;
 var UIStrings5 = {
   /**
@@ -1246,17 +1282,17 @@ var textureCoordAttributes = /* @__PURE__ */ new WeakMap();
 var uniformMatrixLocations = /* @__PURE__ */ new WeakMap();
 var uniformSamplerLocations = /* @__PURE__ */ new WeakMap();
 var imageForTexture = /* @__PURE__ */ new WeakMap();
-var DEFAULT_VIEW3 = (input, output, target) => {
-  render3(
-    html3`<style>
+var DEFAULT_VIEW4 = (input, output, target) => {
+  render4(
+    html4`<style>
       ${layers3DView_css_default}
     </style>
     ${input.panelToolbar}
-    ${input.error === "missing-root" ? html3`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
+    ${input.error === "missing-root" ? html4`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
       header: i18nString5(UIStrings5.noLayerInformation),
       text: i18nString5(UIStrings5.layerExplanation)
     })}</div>` : Lit2.nothing}
-    ${input.error === "webgl-disabled" ? html3`<div><devtools-widget ${widget2(UI4.EmptyWidget.EmptyWidget, {
+    ${input.error === "webgl-disabled" ? html4`<div><devtools-widget ${widget2(UI4.EmptyWidget.EmptyWidget, {
       header: i18nString5(UIStrings5.cantDisplayLayers),
       text: i18nString5(UIStrings5.webglSupportIsDisabledInYour)
     })}>
@@ -1324,7 +1360,7 @@ var Layers3DView = class extends Layers3DViewBase {
   #view;
   #error;
   #canvasElement;
-  constructor(layerViewHost, view = DEFAULT_VIEW3) {
+  constructor(layerViewHost, view = DEFAULT_VIEW4) {
     super();
     this.#view = view;
     this.layerViewHost = layerViewHost;
@@ -2332,7 +2368,7 @@ var paintProfiler_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./paintProfiler.css")} */`;
 
 // ../../front_end/panels/layer_viewer/PaintProfilerView.ts
-var { html: html4, render: render4, nothing: nothing4 } = Lit3;
+var { html: html5, render: render5, nothing: nothing5 } = Lit3;
 var { ref: ref3 } = Lit3.Directives;
 var UIStrings6 = {
   /**
@@ -2476,8 +2512,8 @@ function calculatePieChartData(input, canvasWidth, samplesPerBar, emptyPieChartD
     slices
   };
 }
-var DEFAULT_VIEW4 = (input, output, target) => {
-  const getTemplate = (pieChartData2) => html4`
+var DEFAULT_VIEW5 = (input, output, target) => {
+  const getTemplate = (pieChartData2) => html5`
     <style>${paintProfiler_css_default}</style>
     <div class="paint-profiler-canvas-container" ${ref3(output.onCanvasContainerCreated)}>
       <canvas class="fill"></canvas>
@@ -2495,7 +2531,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     total: 0,
     slices: []
   };
-  render4(getTemplate(emptyPieChartData), target);
+  render5(getTemplate(emptyPieChartData), target);
   const canvasContainer = target.querySelector(".paint-profiler-canvas-container");
   const canvas2 = target.querySelector("canvas");
   if (!canvas2 || !canvasContainer) {
@@ -2514,7 +2550,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   const samplesPerBar = Math.ceil(input.log.length / maxBars);
   renderCanvas(canvas2, context, input, samplesPerBar);
   const pieChartData = calculatePieChartData(input, canvas2.width, samplesPerBar, emptyPieChartData);
-  render4(getTemplate(pieChartData), target);
+  render5(getTemplate(pieChartData), target);
 };
 var PaintProfilerViewBase = Common6.ObjectWrapper.eventMixin(
   UI5.Widget.Widget
@@ -2539,7 +2575,7 @@ var PaintProfilerView = class _PaintProfilerView extends PaintProfilerViewBase {
   #isResizeEnabled = false;
   #view;
   #viewOutput;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
     this.innerBarWidth = 4 * window.devicePixelRatio;
@@ -2789,12 +2825,12 @@ function paramsToString(params) {
 }
 function renderProperty(name, value) {
   const isObject = value !== null && typeof value === "object";
-  return html4`
+  return html5`
     <li role="treeitem">
-      <span>${name}: </span>${isObject ? html4`
+      <span>${name}: </span>${isObject ? html5`
           <ul role="group">
             ${Object.entries(value).map(([key, val]) => renderProperty(key, val))}
-          </ul>` : html4`
+          </ul>` : html5`
           <span>${JSON.stringify(value)}</span>`}
     </li>
   `;
@@ -2802,24 +2838,24 @@ function renderProperty(name, value) {
 function renderLogItem(logItem) {
   const hasParams = Boolean(logItem.params && Object.keys(logItem.params).length > 0);
   const titleText = logItem.method + "(" + paramsToString(logItem.params) + ")";
-  return html4`
+  return html5`
     <li role="treeitem">
       ${titleText}
-      ${hasParams ? html4`
+      ${hasParams ? html5`
         <ul role="group">
           ${Object.entries(logItem.params || {}).map(([key, val]) => renderProperty(key, val))}
-        </ul>` : nothing4}
+        </ul>` : nothing5}
     </li>
   `;
 }
 var COMMAND_LOG_DEFAULT_VIEW = (input, _output, target) => {
-  render4(
-    html4`
+  render5(
+    html5`
     <div class="overflow-auto flex-auto vbox">
       <devtools-tree
           autofocus
           aria-label=${i18nString6(UIStrings6.commandLog)}
-          .template=${html4`
+          .template=${html5`
         <ul role="tree">
           ${input.visibleLogItems.map((item) => renderLogItem(item))}
         </ul>`}>

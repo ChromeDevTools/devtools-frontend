@@ -158,9 +158,6 @@
       "path": "../crux-manager/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../formatter/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../lighthouse/bundle-tsconfig.ref.json"
     },
     {

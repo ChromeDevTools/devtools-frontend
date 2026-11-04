@@ -27,7 +27,7 @@ export default `/*
 
     .subtitle {
       color: var(--sys-color-token-subtle);
-      margin-right: 3px;
+      margin-right: var(--sys-size-3);
       overflow: hidden;
       text-overflow: ellipsis;
       flex-grow: 0;

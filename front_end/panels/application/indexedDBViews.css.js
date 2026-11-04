@@ -47,18 +47,8 @@ export default `/*
   overflow: auto;
 }
 
-.indexed-db-header {
-  min-width: 400px;
-  flex-shrink: 0;
-  flex-grow: 0;
-}
-
 .source-code.indexed-db-key-path {
   font-size: unset !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.resources-toolbar {
-  padding-right: 10px;
 }
 
 .object-store-summary-bar {

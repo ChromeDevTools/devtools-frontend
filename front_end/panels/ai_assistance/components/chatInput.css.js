@@ -215,7 +215,7 @@ export default `/*
 }
 
 .chat-inline-button {
-  padding-left: 3px;
+  padding-left: var(--sys-size-3);
 }
 
 .select-element {

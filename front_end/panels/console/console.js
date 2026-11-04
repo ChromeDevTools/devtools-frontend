@@ -43,7 +43,7 @@ var consoleContextSelector_css_default = `/*
 
     .subtitle {
       color: var(--sys-color-token-subtle);
-      margin-right: 3px;
+      margin-right: var(--sys-size-3);
       overflow: hidden;
       text-overflow: ellipsis;
       flex-grow: 0;
@@ -2503,6 +2503,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -3943,7 +3948,9 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   position: relative;
   padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) 0;
   margin-left: var(--sys-size-11);
-  min-height: 18px;
+  /* 16px (--sys-size-8) single-line content/medium-icon box
+   * + 2 * 1px (--sys-size-1) top & bottom padding */
+  min-height: calc(var(--sys-size-8) + 2 * var(--sys-size-1));
   flex: auto;
   display: flex;
   align-items: flex-end;
@@ -3957,7 +3964,7 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   color: var(--sys-color-token-subtle);
   user-select: none;
   flex: none;
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .message-level-icon,
@@ -4040,7 +4047,7 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   display: flex;
   flex-direction: column;
   margin: var(--sys-size-3);
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
 
   /* Console ANSI color */
   --console-color-black: #000;
@@ -4131,7 +4138,7 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus .command-result-icon {
-  top: 3px;
+  top: var(--sys-size-1);
 }
 
 .console-message-wrapper .nesting-level-marker {
@@ -7795,7 +7802,7 @@ var consolePinPane_css_default = `/*
   width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
-  min-height: 13px;
+  min-height: var(--sys-size-6);
 }
 
 .console-pin-preview {
@@ -11425,8 +11432,10 @@ var consolePrompt_css_default = `/*
 
 .preview-result-icon {
   position: absolute;
-  left: -13px;
-  top: calc(-1 * var(--sys-size-1));
+  /* Offset both .console-prompt-icon's 12px (--sys-size-6) gutter offset and
+   * .console-eager-preview's 4px (--sys-size-3) left margin so both icons align. */
+  left: calc(-1 * (var(--sys-size-6) + var(--sys-size-3)));
+  top: 0;
 }
 
 .console-eager-inner-preview:empty,

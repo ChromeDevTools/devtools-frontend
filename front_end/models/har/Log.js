@@ -101,6 +101,7 @@ export class Entry {
             }
         }
         const entry = {
+            _initialPriority: harEntry.request.initialPriority(),
             _initiator: exportedInitiator,
             _priority: harEntry.request.priority(),
             _resourceType: harEntry.request.resourceType().name(),

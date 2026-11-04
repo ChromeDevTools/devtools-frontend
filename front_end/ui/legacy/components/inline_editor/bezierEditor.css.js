@@ -10,8 +10,7 @@ export default `/*
  */
 
 :host {
-  width: 270px;
-  height: 350px;
+  width: var(--sys-size-30);
   user-select: none;
   padding: var(--sys-size-8);
   overflow: hidden;
@@ -35,12 +34,14 @@ export default `/*
 }
 
 .bezier-preset {
-  width: 50px;
-  height: 50px;
-  padding: 5px;
+  /* 48px (--sys-size-16) - 2 * 4px (--sys-size-3)
+     preserves the 40x40 PresetUI SVG canvas. */
+  width: var(--sys-size-16);
+  height: var(--sys-size-16);
+  padding: var(--sys-size-3);
   margin: auto;
   background-color: var(--sys-color-surface1);
-  border-radius: 3px;
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .bezier-preset line.bezier-control-line {

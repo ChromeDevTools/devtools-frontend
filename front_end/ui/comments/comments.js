@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // ../../front_end/ui/comments/CommentAnchorResolver.ts
 var CommentAnchorResolver_exports = {};
 __export(CommentAnchorResolver_exports, {
+  STICKY_OCCLUDER_ATTRIBUTE: () => STICKY_OCCLUDER_ATTRIBUTE,
   addCustomAnchorsMovedListener: () => addCustomAnchorsMovedListener,
   clearClippingAncestorsCache: () => clearClippingAncestorsCache,
   clearCustomAnchorResolversForTest: () => clearCustomAnchorResolversForTest,
@@ -31,6 +32,7 @@ __export(CommentAnchorResolver_exports, {
   removeCustomAnchorsMovedListener: () => removeCustomAnchorsMovedListener,
   resolveCommentAnchor: () => resolveCommentAnchor,
   resolveCommentAnchorElement: () => resolveCommentAnchorElement,
+  setStickyOccluders: () => setStickyOccluders,
   unregisterCustomAnchorResolver: () => unregisterCustomAnchorResolver
 });
 import * as CodeMirror from "../../third_party/codemirror.next/codemirror.next.js";
@@ -428,28 +430,115 @@ function rematchCommentAnchor(comment, root = document, cachedJslogElements) {
 function isClippingOverflow(overflow) {
   return overflow === "hidden" || overflow === "auto" || overflow === "scroll" || overflow === "clip";
 }
+var STICKY_OCCLUDER_ATTRIBUTE = "data-sticky-occluder";
+var stickyOccluders = null;
+var occludersByScrollerCache = null;
 var clippingAncestorsCache = /* @__PURE__ */ new WeakMap();
+function setStickyOccluders(elements) {
+  stickyOccluders = elements;
+  clearClippingAncestorsCache();
+}
+function isScrollingOverflow(overflow) {
+  return overflow === "hidden" || overflow === "auto" || overflow === "scroll";
+}
+function getStickyScroller(occluder, doc, win) {
+  let current = occluder.parentElementOrShadowHost();
+  while (current && current !== doc.documentElement && current !== doc.body) {
+    const currentStyle = win.getComputedStyle(current);
+    if (isScrollingOverflow(currentStyle.overflowX) || isScrollingOverflow(currentStyle.overflowY)) {
+      return current;
+    }
+    current = current.parentElementOrShadowHost();
+  }
+  return null;
+}
+function buildOccludersByScrollerMap(doc, win) {
+  if (occludersByScrollerCache) {
+    return occludersByScrollerCache;
+  }
+  const result = /* @__PURE__ */ new Map();
+  const occluders = stickyOccluders ?? deepQuerySelectorAll(doc, `[${STICKY_OCCLUDER_ATTRIBUTE}]`);
+  for (const occ of occluders) {
+    if (!occ.isConnected) {
+      continue;
+    }
+    const scroller = getStickyScroller(occ, doc, win);
+    if (!scroller) {
+      continue;
+    }
+    const existingOccluders = result.get(scroller);
+    if (existingOccluders) {
+      existingOccluders.push(occ);
+    } else {
+      result.set(scroller, [occ]);
+    }
+  }
+  occludersByScrollerCache = result;
+  return result;
+}
 function clearClippingAncestorsCache() {
   clippingAncestorsCache = /* @__PURE__ */ new WeakMap();
+  occludersByScrollerCache = null;
 }
 function getClippingAncestors(element, doc, win) {
   const cached = clippingAncestorsCache.get(element);
-  if (cached && cached.every((item) => item.element.isConnected)) {
+  if (cached && cached.every((item) => item.element.isConnected && item.occluders.every((occ) => occ.isConnected))) {
     return cached;
   }
   const ancestors = [];
+  const allAncestors = /* @__PURE__ */ new Set();
   let current = element.parentElementOrShadowHost();
   while (current && current !== doc.documentElement && current !== doc.body) {
+    allAncestors.add(current);
     const style = win.getComputedStyle(current);
     const clipsX = isClippingOverflow(style.overflowX);
     const clipsY = isClippingOverflow(style.overflowY);
     if (clipsX || clipsY) {
-      ancestors.push({ element: current, clipsX, clipsY });
+      ancestors.push({ element: current, clipsX, clipsY, occluders: [] });
     }
     current = current.parentElementOrShadowHost();
   }
+  const occludersByScroller = buildOccludersByScrollerMap(doc, win);
+  for (const ancestor of ancestors) {
+    const occluders = occludersByScroller.get(ancestor.element);
+    if (!occluders) {
+      continue;
+    }
+    ancestor.occluders = occluders.filter((occ) => occ !== element && !allAncestors.has(occ));
+  }
   clippingAncestorsCache.set(element, ancestors);
   return ancestors;
+}
+function getCachedRect(element, rectCache) {
+  let rect = rectCache?.get(element);
+  if (!rect) {
+    rect = element.getBoundingClientRect();
+    rectCache?.set(element, rect);
+  }
+  return rect;
+}
+function trimByStickyOccluders(bounds, occluders, rectCache) {
+  let { top, bottom } = bounds;
+  for (const occ of occluders) {
+    const occRect = getCachedRect(occ, rectCache);
+    if (occRect.width <= 0 || occRect.height <= 0) {
+      continue;
+    }
+    if (occRect.right <= bounds.left || occRect.left >= bounds.right) {
+      continue;
+    }
+    const coversTop = occRect.top <= top && occRect.bottom > top;
+    const coversBottom = occRect.top < bottom && occRect.bottom >= bottom;
+    if (coversTop && coversBottom) {
+      return null;
+    }
+    if (coversTop) {
+      top = occRect.bottom;
+    } else if (coversBottom) {
+      bottom = occRect.top;
+    }
+  }
+  return { left: bounds.left, right: bounds.right, top, bottom };
 }
 function computeVisibleRect(element, targetRect, rectCache) {
   if (!element.isConnected) {
@@ -478,12 +567,8 @@ function computeVisibleRect(element, targetRect, rectCache) {
     return null;
   }
   const clippingAncestors = getClippingAncestors(element, doc, win);
-  for (const { element: ancestor, clipsX, clipsY } of clippingAncestors) {
-    let parentRect = rectCache?.get(ancestor);
-    if (!parentRect) {
-      parentRect = ancestor.getBoundingClientRect();
-      rectCache?.set(ancestor, parentRect);
-    }
+  for (const { element: ancestor, clipsX, clipsY, occluders } of clippingAncestors) {
+    const parentRect = getCachedRect(ancestor, rectCache);
     if (clipsX) {
       visibleLeft = Math.max(visibleLeft, parentRect.left);
       visibleRight = Math.min(visibleRight, parentRect.right);
@@ -495,6 +580,15 @@ function computeVisibleRect(element, targetRect, rectCache) {
     if (visibleLeft >= visibleRight || visibleTop >= visibleBottom) {
       return null;
     }
+    const trimmed = trimByStickyOccluders(
+      { left: visibleLeft, right: visibleRight, top: visibleTop, bottom: visibleBottom },
+      occluders,
+      rectCache
+    );
+    if (!trimmed) {
+      return null;
+    }
+    ({ top: visibleTop, bottom: visibleBottom } = trimmed);
   }
   const width = visibleRight - visibleLeft;
   const height = visibleBottom - visibleTop;
@@ -798,7 +892,18 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
    */
   #rematchAllComments(root = document) {
     clearClippingAncestorsCache();
-    const jslogElements = deepQuerySelectorAll(root, "[jslog]");
+    const scannedElements = deepQuerySelectorAll(root, `[jslog], [${STICKY_OCCLUDER_ATTRIBUTE}]`);
+    const jslogElements = [];
+    const stickyOccluders2 = [];
+    for (const el of scannedElements) {
+      if (el.hasAttribute("jslog")) {
+        jslogElements.push(el);
+      }
+      if (el.hasAttribute(STICKY_OCCLUDER_ATTRIBUTE)) {
+        stickyOccluders2.push(el);
+      }
+    }
+    setStickyOccluders(stickyOccluders2);
     const oldElements = /* @__PURE__ */ new Set();
     const newElements = /* @__PURE__ */ new Set();
     for (const thread of this.#commentManager.getCommentThreads()) {
@@ -932,7 +1037,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
    */
   stop() {
     document.body.style.cursor = "";
-    clearClippingAncestorsCache();
+    setStickyOccluders(null);
     this.clearDraftThreads();
     this.#removeClickListener();
     this.#removeScrollListener();
@@ -1222,7 +1327,8 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
         "data-backend-node-id",
         "data-target-id",
         "aria-expanded",
-        "data-file-path"
+        "data-file-path",
+        STICKY_OCCLUDER_ATTRIBUTE
       ]
     });
   }

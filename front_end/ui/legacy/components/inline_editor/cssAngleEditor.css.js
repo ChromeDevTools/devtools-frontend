@@ -62,7 +62,7 @@ export default `/*
 .center {
   width: 0.7em;
   height: 0.7em;
-  border-radius: 10px;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 .dial {
@@ -88,7 +88,7 @@ export default `/*
   height: 1em;
   border-radius: var(--sys-shape-corner-full);
   cursor: pointer;
-  box-shadow: 0 0 5px var(--box-shadow-outline-color);
+  box-shadow: 0 0 var(--sys-size-3) var(--box-shadow-outline-color);
 }
 
 .hand::before,
@@ -98,7 +98,7 @@ export default `/*
 
 :host-context(.theme-with-dark-background) .hand::before {
   /* stylelint-disable-next-line plugin/use_theme_colors */
-  box-shadow: 0 0 5px hsl(0deg 0% 0% / 80%);
+  box-shadow: 0 0 var(--sys-size-3) hsl(0deg 0% 0% / 80%);
 }
 
 :host-context(.theme-with-dark-background) .center,

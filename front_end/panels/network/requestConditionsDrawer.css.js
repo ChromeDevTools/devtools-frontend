@@ -53,38 +53,15 @@ export default `/*
   flex: none;
 }
 
-.blocked-url-checkbox:focus {
-  outline: auto 5px -webkit-focus-ring-color;
-}
-
 .blocked-url-label {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   flex: auto;
-  padding: 0 3px;
+  padding: 0 var(--sys-size-3);
   cursor: text;
 
   --devtools-text-prompt-min-width: 6em;
-}
-
-.blocked-url-edit-row {
-  flex: none;
-  display: flex;
-  flex-direction: row;
-  margin: 7px 5px 0;
-  align-items: center;
-}
-
-.blocked-url-edit-value {
-  user-select: none;
-  flex: 1 1 0;
-}
-
-.blocked-url-edit-row input {
-  width: 100%;
-  text-align: inherit;
-  height: var(--sys-size-10);
 }
 
 .conditions-selector {

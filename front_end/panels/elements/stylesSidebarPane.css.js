@@ -10,7 +10,7 @@ export default `/**
  */
 
 .styles-section {
-  min-height: 18px;
+  min-height: var(--sys-size-8);
   white-space: nowrap;
   user-select: text;
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);

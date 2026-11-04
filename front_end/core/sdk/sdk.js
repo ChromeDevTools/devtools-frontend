@@ -2171,6 +2171,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -7098,9 +7103,9 @@ var generatedProperties = [
       "thin"
     ],
     "longhands": [
-      "outline-color",
+      "outline-width",
       "outline-style",
-      "outline-width"
+      "outline-color"
     ],
     "name": "outline"
   },
@@ -30289,12 +30294,12 @@ var DOMNode = class _DOMNode extends Common21.ObjectWrapper.ObjectWrapper {
     };
   }
   async saveNodeToTempVariable() {
-    const remoteObjectForConsole = await this.resolveToObject();
+    const runtimeModel = this.#domModel.runtimeModel();
+    const frameId = this.frameId() ?? this.ownerDocument?.frameId();
+    const executionContext = (frameId ? runtimeModel.executionContexts().find((context) => context.frameId === frameId && context.isDefault) : null) ?? runtimeModel.defaultExecutionContext();
+    const remoteObjectForConsole = await this.resolveToObject(void 0, executionContext?.id);
     const consoleModel = this.#domModel.target().model(ConsoleModel);
-    await consoleModel?.saveToTempVariable(
-      remoteObjectForConsole?.runtimeModel().defaultExecutionContext() ?? null,
-      remoteObjectForConsole
-    );
+    await consoleModel?.saveToTempVariable(executionContext, remoteObjectForConsole);
   }
   async scrollIntoView() {
     const node = this.enclosingElementOrSelf();
@@ -35867,7 +35872,7 @@ var NetworkDispatcher = class {
     return this.#requestsByURL.get(url) || null;
   }
   requestForLoaderId(loaderId) {
-    return this.#requestsByLoaderId.get(loaderId) || null;
+    return this.#requestsByLoaderId.get(loaderId) || this.#multitargetNetworkManager.inflightMainResourceRequests.get(loaderId) || null;
   }
   resourceChangedPriority({ requestId, newPriority }) {
     const networkRequest = this.#requestsById.get(requestId);

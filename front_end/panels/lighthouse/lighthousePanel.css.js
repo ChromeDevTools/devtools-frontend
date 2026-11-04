@@ -20,10 +20,6 @@ export default `/*
   position: relative;
 }
 
-button.view-trace {
-  margin: 10px;
-}
-
 /** \\'window.opener\\' is null for windows opened from DevTools. This breaks
     the LH viewer app, so disable this feature. */
 
@@ -43,9 +39,10 @@ button.view-trace {
 }
 
 select.lighthouse-report {
-  min-width: 140px;
-  /* Up to 180px wide, but if window is very small ensure dropdown arrow is visible */
-  max-width: min(180px, calc(100% - 30px));
+  min-width: var(--sys-size-22);
+  /* Up to 176px (--sys-size-24) wide; reserve 28px (--sys-size-12)
+     in narrow viewports so the dropdown arrow stays visible. */
+  max-width: min(var(--sys-size-24), calc(100% - var(--sys-size-12)));
 }
 
 .lighthouse-toolbar-container {
@@ -84,7 +81,7 @@ select.lighthouse-report {
     }
 
     &.lh-active + .lh-tools__dropdown {
-      clip: rect(calc(-1 * var(--sys-size-5)), 204px, 270px, -10px);  /* stylelint-disable-line property-no-deprecated */
+      clip: rect(calc(-1 * var(--sys-size-5)), var(--sys-size-26), var(--sys-size-30), calc(-1 * var(--sys-size-6)));  /* stylelint-disable-line property-no-deprecated */
     }
   }
 

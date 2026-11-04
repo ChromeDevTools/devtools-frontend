@@ -196,11 +196,14 @@ export declare namespace Simulation {
         };
         largestContentfulPaintEvt?: {
             args: {
+                frame?: string;
                 data?: {
                     type?: string;
                 };
             };
         };
+        lcpRequestId?: string;
+        lcpImageUrl?: string;
     }
     interface NodeTiming {
         startTime: number;

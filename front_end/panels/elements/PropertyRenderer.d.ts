@@ -7,7 +7,7 @@ export declare function precedingSpace(node: CodeMirror.SyntaxNode, ast: SDK.CSS
 export type RendererBase<MatchT extends SDK.CSSPropertyParser.Match> = abstract new () => MatchRenderer<MatchT>;
 export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
     readonly matchType: Platform.Constructor.Constructor<MatchT>;
-    render(match: MatchT, context: RenderingContext): Node[] | LitTemplate;
+    render(match: MatchT, context: RenderingContext): LitTemplate;
 }
 export declare function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(matchT: Platform.Constructor.Constructor<MatchT>): RendererBase<MatchT>;
 /**
@@ -54,16 +54,9 @@ export declare class TracingContext {
         context: RenderingContext;
     } | null): TracingContext[] | null;
     applyEvaluation(children: TracingContext[], evaluation: () => {
-        placeholder: Node[];
-        asyncEvalCallback?: () => Promise<boolean>;
-    }): Node[] | null;
-    applyEvaluation(children: TracingContext[], evaluation: () => ({
-        placeholder: LitTemplate;
-        asyncEvalCallback?: () => Promise<boolean>;
-    } | {
         template: LitTemplate;
         asyncEvalCallback?: () => Promise<LitTemplate | null>;
-    })): LitTemplate | null;
+    }): LitTemplate | null;
     substitution(root?: {
         match: SDK.CSSPropertyParser.Match;
         context: RenderingContext;
@@ -133,10 +126,6 @@ export declare class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         readonly?: boolean;
     }, tracing: TracingContext | undefined, signal: AbortSignal | undefined, edits: ValueUpdateTracking | undefined);
     static render(nodeOrNodes: CodeMirror.SyntaxNode | CodeMirror.SyntaxNode[], context: RenderingContext): {
-        nodes: LitTemplate;
-        cssControls: CSSControlMap;
-    };
-    static renderInto(nodeOrNodes: CodeMirror.SyntaxNode | CodeMirror.SyntaxNode[], context: RenderingContext, parent: HTMLElement | DocumentFragment): {
         nodes: LitTemplate;
         cssControls: CSSControlMap;
     };

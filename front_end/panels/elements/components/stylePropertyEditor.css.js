@@ -46,11 +46,11 @@ export default `/*
 }
 
 .buttons > :first-child {
-  border-radius: 3px 0 0 3px;
+  border-radius: var(--sys-shape-corner-extra-small) 0 0 var(--sys-shape-corner-extra-small);
 }
 
 .buttons > :last-child {
-  border-radius: 0 3px 3px 0;
+  border-radius: 0 var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) 0;
 }
 
 .button {

@@ -10,7 +10,7 @@ export default `/*
  */
 
 .tree-outline-disclosure li {
-  padding: 0 0 0 5px;
+  padding: 0 0 0 var(--sys-size-3);
   overflow: hidden;
   display: flex;
   min-height: var(--sys-size-8);
@@ -49,17 +49,17 @@ export default `/*
 
 .event-listener-tree-subtitle {
   float: right;
-  margin-left: 5px;
+  margin-left: var(--sys-size-3);
   flex-shrink: 0;
 }
 
 .event-listener-button {
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
   color: var(--sys-color-primary);
   background-color: var(--sys-color-cdt-base-container);
-  border-radius: 7px;
+  border-radius: var(--sys-shape-corner-full);
   border: var(--sys-size-1) solid var(--sys-color-tonal-outline);
-  margin-left: 5px;
+  margin-left: var(--sys-size-3);
   display: block;
   flex-shrink: 0;
 

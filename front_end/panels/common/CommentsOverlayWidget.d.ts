@@ -3,7 +3,19 @@ import * as CommentManager from '../../models/comment_manager/comment_manager.js
 import * as Comments from '../../ui/comments/comments.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type Title } from './CommentThreadWidget.js';
-export interface ViewInput {
+/** Actions on the comments of a single thread shown in a popup. */
+export interface ThreadActions {
+    onAddComment: (text: string) => void;
+    onDeleteQueuedComment: () => void;
+    onQueueComment: (text: string) => void;
+    onSaveEdit: (text: string) => void;
+    onStartEdit: () => void;
+}
+/**
+ * The flat `ThreadActions` act on `activeThread`; `hoveredActions` act on
+ * `hoveredThread`.
+ */
+export interface ViewInput extends ThreadActions {
     pins: Comments.CommentOverlayManager.PinPositionData[];
     /**
      * Highlight of the currently open thread. Null when no thread is open, so
@@ -13,6 +25,17 @@ export interface ViewInput {
     hoverHighlight: Comments.CommentOverlayManager.HoverHighlightData | null;
     commentMode: boolean;
     onPinClick: (threadId: string) => void;
+    onPinMouseEnter: (threadId: string) => void;
+    onPinMouseLeave: () => void;
+    onPopupMouseEnter: () => void;
+    onPopupMouseLeave: () => void;
+    /**
+     * Called when the user interacts with the hover preview popup (focus or
+     * mouse down). Makes the previewed thread the open thread, unless a draft
+     * is open.
+     */
+    onPopupInteract: () => void;
+    /** Thread opened by the user (pin click, drawer, or draft). */
     activeThread: CommentManager.CommentManager.CommentThread | null;
     activePin: Comments.CommentOverlayManager.PinPositionData | null;
     fallbackPosition?: {
@@ -20,11 +43,15 @@ export interface ViewInput {
         top: number;
     } | null;
     title: Title;
-    onAddComment: (text: string) => void;
-    onDeleteQueuedComment: () => void;
-    onQueueComment: (text: string) => void;
-    onSaveEdit: (text: string) => void;
-    onStartEdit: () => void;
+    /**
+     * Thread previewed because its pin is hovered. Shown together with
+     * `activeThread`, and never the same thread.
+     */
+    hoveredThread: CommentManager.CommentManager.CommentThread | null;
+    hoveredPin: Comments.CommentOverlayManager.PinPositionData | null;
+    hoveredHighlight: Comments.CommentOverlayManager.HighlightRectData | null;
+    hoveredTitle: Title;
+    hoveredActions: ThreadActions;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class CommentsOverlayWidget extends UI.Widget.Widget {

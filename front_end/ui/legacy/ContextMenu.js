@@ -643,6 +643,9 @@ export class ContextMenu extends SubMenu {
      * Discards (closes) the soft context menu if it's currently shown.
      */
     discard() {
+        if (ContextMenu.pendingMenu === this) {
+            ContextMenu.pendingMenu = null;
+        }
         if (this.softMenu) {
             this.softMenu.discard();
         }

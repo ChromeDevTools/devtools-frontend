@@ -165,8 +165,23 @@ var AidaInferenceLanguage = /* @__PURE__ */ ((AidaInferenceLanguage2) => {
   AidaInferenceLanguage2["UNKNOWN"] = "UNKNOWN";
   return AidaInferenceLanguage2;
 })(AidaInferenceLanguage || {});
+function isGcaDebugMode() {
+  try {
+    const raw = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("devToolsAiDebug");
+    if (!raw) {
+      return false;
+    }
+    const parsed = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null) {
+      return false;
+    }
+    return Boolean(parsed.gca);
+  } catch {
+    return false;
+  }
+}
 function debugLog(...log) {
-  if (!Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiServicesEnabled"))) {
+  if (!isGcaDebugMode()) {
     return;
   }
   console.log(...log);
@@ -739,7 +754,7 @@ function convertAidaParamToGcaSchema(param) {
 function gcaChunkResponseToAidaChunkResponse(response) {
   try {
     if (response.error) {
-      throw new Error(JSON.stringify(response.error));
+      return [{ error: response.error }];
     }
     const candidate = response.candidates?.[0];
     const parts = candidate?.content?.parts || [];
@@ -2179,10 +2194,16 @@ var Events2 = /* @__PURE__ */ ((Events3) => {
   return Events3;
 })(Events2 || {});
 function isQuotaError(...inputs) {
-  return inputs.some((input) => input?.toLowerCase().includes("quota"));
+  return inputs.some((input) => {
+    const lower = input?.toLowerCase();
+    return lower?.includes("quota") || lower?.includes("resource_exhausted") || lower?.includes("rate_limit_exceeded");
+  });
 }
 function isPayloadTooLargeError(...inputs) {
   return inputs.some((input) => input?.toLowerCase().includes("payload size exceeds the limit"));
+}
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 function mapError(err, detail) {
   if (err instanceof AidaClientError) {
@@ -2225,6 +2246,22 @@ function mapError(err, detail) {
   }
   if (err instanceof Error) {
     return new AidaUnknownError(err.message, { cause: err });
+  }
+  if (isRecord(err)) {
+    const code = typeof err.code === "number" ? err.code : void 0;
+    const status = typeof err.status === "string" ? err.status : void 0;
+    const message = typeof err.message === "string" ? err.message : void 0;
+    const details = err.details !== void 0 ? JSON.stringify(err.details) : void 0;
+    if (code === 429 || isQuotaError(status, message, details)) {
+      return new AidaQuotaError(message ?? "Server responded: quota exceeded", { cause: err });
+    }
+    if (code === 403 || status === "PERMISSION_DENIED") {
+      return new AidaPermissionDeniedError(message ?? "Server responded: permission denied", { cause: err });
+    }
+    if (isPayloadTooLargeError(message, details)) {
+      return new AidaPayloadTooLargeError(message ?? "Server responded: payload size exceeds the limit", { cause: err });
+    }
+    return new AidaUnknownError(message ?? JSON.stringify(err), { cause: err });
   }
   return new AidaUnknownError(String(err));
 }

@@ -30,7 +30,7 @@ export default `/*
 }
 
 .image-container > div {
-  min-height: 50px;
+  min-height: var(--sys-size-16);
   display: flex;
   align-items: center;
   justify-content: center;

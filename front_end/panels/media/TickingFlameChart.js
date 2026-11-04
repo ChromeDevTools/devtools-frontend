@@ -228,8 +228,9 @@ export class TickingFlameChart extends UI.Widget.VBox {
     stoppedPermanently;
     #view;
     #boundOnScroll = this.onScroll.bind(this);
-    constructor(element, view = DEFAULT_VIEW) {
-        super(element);
+    constructor(elementOrOptions, view = DEFAULT_VIEW) {
+        // @ts-expect-error
+        super(elementOrOptions);
         this.#view = view;
         // set to update once per second _while the tab is active_
         this.intervalTimer = 0;

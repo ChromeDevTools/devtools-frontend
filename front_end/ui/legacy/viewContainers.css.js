@@ -41,7 +41,7 @@ found in the LICENSE file. */
   align-items: center;
   background-color: var(--sys-color-surface2);
   height: var(--sys-size-10);
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
   white-space: nowrap;
   overflow: hidden;
   position: relative;
@@ -54,7 +54,8 @@ found in the LICENSE file. */
 }
 
 .expandable-view-title devtools-toolbar {
-  margin-top: -3px;
+  /* Center the 26px (--toolbar-height) toolbar in the 22px (--sys-size-10) header: (22px - 26px) / 2 = -2px. */
+  margin-top: calc(-1 * var(--sys-size-2));
 }
 
 .expandable-view-title > devtools-toolbar {

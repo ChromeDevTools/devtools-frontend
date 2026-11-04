@@ -21,7 +21,7 @@ export default `/*
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
-  padding: var(--sys-size-4) 10px;
+  padding: var(--sys-size-4) var(--sys-size-5);
   position: relative;
 
   .metadata {

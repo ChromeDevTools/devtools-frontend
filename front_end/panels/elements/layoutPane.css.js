@@ -20,7 +20,7 @@ export default `/*
     border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     line-height: 1.6;
     overflow: hidden;
-    padding: 0 5px;
+    padding: 0 var(--sys-size-4);
     white-space: nowrap;
   }
 

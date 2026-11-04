@@ -140,7 +140,6 @@ button {
     devtools-icon.long-click {
       position: absolute;
       top: var(--sys-size-2);
-      left: 3px;
     }
 
     devtools-icon[name='cross-circle-filled'] {

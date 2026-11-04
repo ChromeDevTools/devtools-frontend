@@ -45,7 +45,7 @@ export default `/*
 /* force non overlay scrollbars for Aura Overlay Scrollbar enabled */
 
 :host-context(.overlay-scrollbar-enabled) ::-webkit-scrollbar {
-  width: 10px;
+  width: var(--sys-size-5);
 }
 
 :host-context(.overlay-scrollbar-enabled) ::-webkit-scrollbar-thumb {

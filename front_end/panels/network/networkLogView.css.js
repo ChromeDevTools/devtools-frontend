@@ -27,9 +27,9 @@ export default `/*
 }
 
 .network-summary-bar {
-  flex: 0 0 27px;
-  line-height: 27px;
-  padding-left: 5px;
+  flex: 0 0 calc(var(--sys-size-12) - var(--sys-size-1)); /* 28px toolbar minus 1px top border */
+  align-items: center;
+  padding-left: var(--sys-size-4);
   background-color: var(--sys-color-cdt-base-container);
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
   white-space: nowrap;
@@ -80,7 +80,8 @@ export default `/*
 
 .network-waterfall-header,
 .network-log-grid.data-grid thead {
-  height: 31px;
+  /* 32px (--sys-size-13) header height minus 1px (--sys-size-1) bottom border offset. */
+  height: calc(var(--sys-size-13) - var(--sys-size-1));
   background-color: var(--sys-color-surface1);
 }
 
@@ -322,13 +323,6 @@ td.time-column {
 
 .network-log-grid.data-grid .resources-dividers {
   z-index: 0;
-}
-
-.network-log-grid.data-grid .resources-dividers-label-bar {
-  background-color: transparent;
-  border: none;
-  height: 30px;
-  pointer-events: none;
 }
 
 .network-log-grid.data-grid span.separator-in-cell {

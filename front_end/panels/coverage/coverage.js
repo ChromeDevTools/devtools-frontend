@@ -1522,10 +1522,11 @@ var coverageView_css_default = `/*
 .coverage-toolbar-summary {
   background-color: var(--sys-color-cdt-base-container);
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  padding-left: 5px;
-  flex: 0 0 19px;
+  padding-left: var(--sys-size-3);
+  /* 20px footer bar (--sys-size-9) minus 1px top border (--sys-size-1). */
+  flex: 0 0 calc(var(--sys-size-9) - var(--sys-size-1));
   display: flex;
-  padding-right: 5px;
+  padding-right: var(--sys-size-3);
 }
 
 .coverage-toolbar-summary .coverage-message {
@@ -1816,7 +1817,6 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
       useShadowDom: "pure",
       delegatesFocus: true
     });
-    this.registerRequiredCSS(coverageView_css_default);
     this.#view = view;
     this.#model = null;
     this.#decorationManager = null;

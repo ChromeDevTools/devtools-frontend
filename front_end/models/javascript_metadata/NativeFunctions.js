@@ -8293,10 +8293,6 @@ export const NativeFunctions = [
         signatures: [["input", "?options"]]
     },
     {
-        name: "queryFeatureSupport",
-        signatures: [["feature"]]
-    },
-    {
         name: "setPrivateToken",
         signatures: [["privateToken"]]
     },

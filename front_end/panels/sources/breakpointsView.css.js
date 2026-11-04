@@ -125,8 +125,8 @@ export default `/*
 
   button {
     cursor: pointer;
-    width: 13px;
-    height: 13px;
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
     border: none;
     background-color: transparent;
     display: none;
@@ -168,7 +168,6 @@ export default `/*
   .breakpoint-item {
     display: flex;
     align-items: center;
-    line-height: 13px;
     height: var(--sys-size-9);
     padding-right: var(--sys-size-5);
   }
@@ -236,7 +235,7 @@ export default `/*
   }
 
   .pause-on-uncaught-exceptions {
-    margin-top: 3px;
+    margin-top: var(--sys-size-2);
   }
 
   .pause-on-caught-exceptions {

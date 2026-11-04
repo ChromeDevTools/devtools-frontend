@@ -2361,6 +2361,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -3120,12 +3125,16 @@ function createProcessedNavigation(data, frameId, navigation) {
     return metricScore.event.ts;
   };
   const lcpScore = scores.get(Handlers2.ModelHandlers.PageLoadMetrics.MetricName.LCP);
+  const navigationId = navigation.args.data?.navigationId;
+  const lcpRequest = navigationId ? data.LargestImagePaint?.lcpRequestByNavigationId.get(navigationId) : void 0;
   return {
     timestamps: {
       firstContentfulPaint: getTimestamp(Handlers2.ModelHandlers.PageLoadMetrics.MetricName.FCP),
       largestContentfulPaint: getTimestampOrUndefined(Handlers2.ModelHandlers.PageLoadMetrics.MetricName.LCP)
     },
-    largestContentfulPaintEvt: lcpScore && Handlers2.ModelHandlers.PageLoadMetrics.metricIsLCP(lcpScore) ? lcpScore.event : void 0
+    largestContentfulPaintEvt: lcpScore && Handlers2.ModelHandlers.PageLoadMetrics.metricIsLCP(lcpScore) ? lcpScore.event : void 0,
+    lcpRequestId: lcpRequest?.args.data.requestId,
+    lcpImageUrl: lcpRequest?.args.data.url
   };
 }
 function createParsedUrl(url) {

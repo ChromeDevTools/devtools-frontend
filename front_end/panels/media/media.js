@@ -564,8 +564,8 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
   stoppedPermanently;
   #view;
   #boundOnScroll = this.onScroll.bind(this);
-  constructor(element, view = DEFAULT_VIEW2) {
-    super(element);
+  constructor(elementOrOptions, view = DEFAULT_VIEW2) {
+    super(elementOrOptions);
     this.#view = view;
     this.intervalTimer = 0;
     this.lastTimestamp = 0;
@@ -830,8 +830,7 @@ var PlayerEventsTimeline = class extends TickingFlameChart {
   audioBufferingStateEvent;
   videoBufferingStateEvent;
   constructor() {
-    super();
-    this.element.setAttribute("jslog", `${VisualLogging2.pane("timeline")}`);
+    super({ jslog: `${VisualLogging2.pane("timeline")}` });
     this.normalizedTimestamp = NO_NORMALIZED_TIMESTAMP;
     this.addGroup(i18nString3(UIStrings3.playbackStatus), 2);
     this.addGroup(i18nString3(UIStrings3.bufferingStatus), 2);
@@ -984,7 +983,7 @@ var playerMessagesView_css_default = `/*
 .media-messages-header {
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  min-height: 26px;
+  flex: none;
 }
 
 .media-messages-body {
@@ -992,8 +991,11 @@ var playerMessagesView_css_default = `/*
 }
 
 .media-messages-level-dropdown-element {
-  height: 18px;
-  line-height: 18px;
+  /* 16px (--sys-size-8) + 2px (--sys-size-2) = 18px row height matching
+   * SoftDropDown.setRowHeight(18) so all 6 items (108px) fit the 108px
+   * GlassPane without vertical scrollbar clipping. */
+  height: calc(var(--sys-size-8) + var(--sys-size-2));
+  line-height: calc(var(--sys-size-8) + var(--sys-size-2));
 }
 
 .media-messages-level-dropdown-text {
@@ -1002,7 +1004,8 @@ var playerMessagesView_css_default = `/*
 
 .media-messages-level-dropdown-checkbox {
   float: left;
-  width: 18px;
+  /* 16px checkmark slot (--sys-size-8) plus 2px left padding (--sys-size-2) under border-box sizing. */
+  width: calc(var(--sys-size-8) + var(--sys-size-2));
   height: 100%;
   padding-left: var(--sys-size-2);
 }
@@ -1010,7 +1013,7 @@ var playerMessagesView_css_default = `/*
 .media-messages-message-container {
   margin: var(--sys-size-3);
   font-size: var(--sys-typescale-body2-size);
-  line-height: 18px;
+  line-height: var(--sys-typescale-body2-line-height);
   padding: var(--sys-size-3);
   user-select: text;
 }
@@ -1025,7 +1028,7 @@ var playerMessagesView_css_default = `/*
 }
 
 .media-message-warning {
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
   background-color: var(--sys-color-surface-yellow);
   color: var(--sys-color-on-surface-yellow);
 }
@@ -1052,7 +1055,7 @@ var playerMessagesView_css_default = `/*
 }
 
 .status-error-field-label {
-  padding-right: 10px;
+  padding-right: var(--sys-size-5);
   color: var(--sys-color-token-subtle);
 }
 
@@ -2141,9 +2144,12 @@ li.storage-group-list-item::before {
 }
 
 .player-entry-row {
-  height: 26px;
-  min-height: 26px;
-  line-height: 26px;
+  /* 28px icon-column/toolbar base (--sys-size-12) minus 2px compact
+   * row offset (--sys-size-2) = 26px, matching the 26px child cells
+   * and continuous border-right column dividers below. */
+  height: calc(var(--sys-size-12) - var(--sys-size-2));
+  min-height: calc(var(--sys-size-12) - var(--sys-size-2));
+  line-height: calc(var(--sys-size-12) - var(--sys-size-2));
 
   &:nth-child(odd) {
     background: var(--sys-color-surface1);
@@ -2199,10 +2205,14 @@ li.storage-group-list-item::before {
 }
 
 .player-entry-header {
-  height: 27px;
-  line-height: 27px;
-  min-height: 27px;
-  padding-left: 10px;
+  /* 28px toolbar height (--sys-size-12) minus 1px divider border (--sys-size-1) = 27px,
+   * matching .tabbed-pane-header in the adjacent PlayerDetailView split pane. */
+  height: calc(var(--sys-size-12) - var(--sys-size-1));
+  line-height: calc(var(--sys-size-12) - var(--sys-size-1));
+  min-height: calc(var(--sys-size-12) - var(--sys-size-1));
+  /* 8px base inline padding (--sys-size-5) plus 2px optical inset (--sys-size-2) = 10px,
+   * matching the 10px cell padding of the player rows below. */
+  padding-left: calc(var(--sys-size-5) + var(--sys-size-2));
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 

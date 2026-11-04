@@ -64,7 +64,7 @@ export default `/*
       background: none;
       padding: var(--sys-size-4) var(--sys-size-5);
       width: 100%;
-      max-width: 500px;
+      max-width: var(--sys-size-34);
 
       .insight-label {
         color: var(--sys-color-orange-bright);

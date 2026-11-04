@@ -27,7 +27,8 @@ export default `/*
 }
 
 .warning-icon {
-  margin-left: -18px;
+  /* -18px: shift left by the 14px small icon (--sys-size-7) plus its 4px right margin (--sys-size-3). */
+  margin-left: calc(-1 * (var(--sys-size-7) + var(--sys-size-3)));
   margin-right: var(--sys-size-3);
 }
 
@@ -43,8 +44,8 @@ export default `/*
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
   align-items: center;
-  line-height: 18px;
-  margin-top: 3px;
+  line-height: var(--sys-typescale-body4-line-height);
+  margin-top: var(--sys-size-2);
 }
 
 .separator {

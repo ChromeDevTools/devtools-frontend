@@ -108,7 +108,9 @@ export default `/* Copyright 2021 The Chromium Authors
   position: relative;
   padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) 0;
   margin-left: var(--sys-size-11);
-  min-height: 18px;
+  /* 16px (--sys-size-8) single-line content/medium-icon box
+   * + 2 * 1px (--sys-size-1) top & bottom padding */
+  min-height: calc(var(--sys-size-8) + 2 * var(--sys-size-1));
   flex: auto;
   display: flex;
   align-items: flex-end;
@@ -122,7 +124,7 @@ export default `/* Copyright 2021 The Chromium Authors
   color: var(--sys-color-token-subtle);
   user-select: none;
   flex: none;
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .message-level-icon,
@@ -205,7 +207,7 @@ export default `/* Copyright 2021 The Chromium Authors
   display: flex;
   flex-direction: column;
   margin: var(--sys-size-3);
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
 
   /* Console ANSI color */
   --console-color-black: #000;
@@ -296,7 +298,7 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus .command-result-icon {
-  top: 3px;
+  top: var(--sys-size-1);
 }
 
 .console-message-wrapper .nesting-level-marker {

@@ -47,8 +47,8 @@ devtools-editable-content {
 
 devtools-editable-content:hover,
 devtools-editable-content:focus {
-  box-shadow: 0 0 0 1px var(--sys-color-divider);
-  border-radius: 2px;
+  box-shadow: 0 0 0 var(--sys-size-1) var(--sys-color-divider);
+  border-radius: var(--sys-size-2);
 }
 
 devtools-editable-content[placeholder]:empty::before {
@@ -74,16 +74,16 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
   background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
   min-height: 1em;
-  min-width: 150px;
+  min-width: var(--sys-size-23);
   overflow: hidden auto;
   position: relative;
   z-index: 100;
-  max-height: 350px;
+  max-height: var(--sys-size-32);
 }
 
 .suggestions > li {
-  padding: 1px;
-  border: 1px solid transparent;
+  padding: var(--sys-size-1);
+  border: var(--sys-size-1) solid transparent;
   white-space: nowrap;
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);

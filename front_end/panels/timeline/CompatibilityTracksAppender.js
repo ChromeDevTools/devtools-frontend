@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -9,6 +8,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import { html, render } from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import { AnimationsTrackAppender } from './AnimationsTrackAppender.js';
 import { getDurationString, getEventLevel } from './AppenderUtils.js';
@@ -22,6 +22,9 @@ import { InstantEventVisibleDurationMs, } from './TimelineFlameChartDataProvider
 import { TimelinePanel } from './TimelinePanel.js';
 import { TimingsTrackAppender } from './TimingsTrackAppender.js';
 import * as TimelineUtils from './utils/utils.js';
+export function renderPopoverUrl(input, _output, target) {
+    render(html `<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${input.originWithEntity})</span></div>`, target);
+}
 export function entryIsVisibleInTimeline(entry, parsedTrace) {
     if (parsedTrace?.data.Meta.traceIsGeneric) {
         return true;
@@ -111,6 +114,7 @@ export class CompatibilityTracksAppender {
     #layoutShiftsTrackAppender;
     #threadAppenders = [];
     #entityMapper;
+    #view;
     /**
      * @param flameChartData the data used by the flame chart renderer on
      * which the track data will be appended.
@@ -124,12 +128,14 @@ export class CompatibilityTracksAppender {
      * architecture and should be removed once all tracks use the new
      * system.
      * @param entityMapper 3P entity data for the trace.
+     * @param view function to render popover url content.
      */
-    constructor(flameChartData, parsedTrace, entryData, legacyEntryTypeByLevel, entityMapper) {
+    constructor(flameChartData, parsedTrace, entryData, legacyEntryTypeByLevel, entityMapper, view = renderPopoverUrl) {
         this.#flameChartData = flameChartData;
         this.#parsedTrace = parsedTrace;
         this.#entityMapper = entityMapper;
         this.#entryData = entryData;
+        this.#view = view;
         this.#colorGenerator = new Common.Color.Generator(
         /* hueSpace= */ { min: 30, max: 55 }, 
         /* satSpace= */ { min: 70, max: 100, count: 6 }, 
@@ -490,14 +496,16 @@ export class CompatibilityTracksAppender {
         if (url) {
             const MAX_PATH_LENGTH = 45;
             const path = Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_PATH_LENGTH);
-            const urlElems = document.createElement('div');
-            urlElems.createChild('span', 'popoverinfo-url-path').textContent = path;
             const entity = this.#entityMapper ? this.#entityMapper.entityForEvent(event) : null;
             // Include entity with origin if it's non made-up entity, otherwise there'd be
             // repetition with the origin.
             const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity);
-            urlElems.createChild('span', 'popoverinfo-url-origin').textContent = `(${originWithEntity})`;
-            info.additionalElements.push(urlElems);
+            const fragment = document.createDocumentFragment();
+            this.#view({ path, originWithEntity }, undefined, fragment);
+            const urlElement = fragment.firstElementChild;
+            if (urlElement instanceof HTMLElement) {
+                info.additionalElements.push(urlElement);
+            }
         }
         return info;
     }

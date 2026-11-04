@@ -245,7 +245,7 @@ export class ScopeVariableAnalysis {
                 this.#pushScope(node.id?.end ?? node.start, node.end, 2 /* ScopeKind.FUNCTION */, node.id.name, mappingLocationsForFunctionDeclaration(node, this.#sourceText));
                 this.#addVariable('this', node.start, 3 /* DefinitionKind.FIXED */);
                 this.#addVariable('arguments', node.start, 3 /* DefinitionKind.FIXED */);
-                node.params.forEach(this.#processNodeAsDefinition.bind(this, 1 /* DefinitionKind.LET */, false));
+                node.params.forEach(this.#processNodeAsDefinition.bind(this, 2 /* DefinitionKind.VAR */, false));
                 // Process the body of the block statement directly to avoid creating new scope.
                 node.body.body.forEach(this.#processNode.bind(this));
                 this.#popScope(true);
@@ -256,7 +256,7 @@ export class ScopeVariableAnalysis {
                 this.#methodName = undefined;
                 this.#addVariable('this', node.start, 3 /* DefinitionKind.FIXED */);
                 this.#addVariable('arguments', node.start, 3 /* DefinitionKind.FIXED */);
-                node.params.forEach(this.#processNodeAsDefinition.bind(this, 1 /* DefinitionKind.LET */, false));
+                node.params.forEach(this.#processNodeAsDefinition.bind(this, 2 /* DefinitionKind.VAR */, false));
                 // Process the body of the block statement directly to avoid creating new scope.
                 node.body.body.forEach(this.#processNode.bind(this));
                 this.#popScope(true);

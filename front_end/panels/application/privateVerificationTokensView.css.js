@@ -24,4 +24,16 @@ export default `/*
   overflow: hidden;
 }
 
+.table-container {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  overflow: auto;
+}
+
+devtools-data-grid {
+  width: 100%;
+  border: none;
+}
+
 /*# sourceURL=${import.meta.resolve('./privateVerificationTokensView.css')} */`;

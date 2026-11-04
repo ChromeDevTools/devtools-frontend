@@ -82,26 +82,26 @@ export default `/*
   }
 
   .service-worker-update-timing-bar.activate {
-    top: 5px;
-    height: 10px;
+    margin-block: auto;
+    height: var(--sys-size-5);
     background-color: var(--sys-color-yellow-bright);
   }
 
   .service-worker-update-timing-bar.wait {
-    top: 5px;
-    height: 10px;
+    margin-block: auto;
+    height: var(--sys-size-5);
     background-color: var(--sys-color-purple-bright);
   }
 
   .service-worker-update-timing-bar.install {
-    top: 5px;
-    height: 10px;
+    margin-block: auto;
+    height: var(--sys-size-5);
     background-color: var(--sys-color-cyan-bright);
   }
 
   .service-worker-update-timing-table > tbody > tr > td {
     padding: var(--sys-size-3) 0;
-    padding-right: 10px;
+    padding-right: var(--sys-size-5);
   }
 
   table.service-worker-update-timing-table > tbody > tr.service-worker-update-timing-table-header > td {

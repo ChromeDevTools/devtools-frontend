@@ -6,13 +6,29 @@ import { bytes, millis } from './UnitFormatters.js';
 // (defined in Lighthouse's `report/renderer/util.js`). The pre-built report bundle does
 // not export `Util`, so this threshold is defined locally.
 const PASS_THRESHOLD = 0.9;
+const AUDIT_TABLE_COLUMN_KEYS = new Map([
+    // For webmcp-registered-tools, only include the tool name and description to
+    // keep the output concise (omitting inputSchema, source, and element).
+    ['webmcp-registered-tools', new Set(['tool', 'description'])],
+]);
 /**
  * A formatter that takes a raw Lighthouse report JSON and creates a markdown
  * summary for an AI Agent.
  */
 export class LighthouseFormatter {
     /**
-     * Returns an overall summary and high-level overview of the Lighthouse report.
+     * Returns an overall summary and high-level overview of the Lighthouse report
+     * for the initial conversation context payload.
+     *
+     * Includes:
+     * - Report metadata (URL, fetch time, Lighthouse version, and gather mode when present).
+     * - Category scores (0-100 percentage, "n/a", or "<passed>/<total> audits passed" for
+     *   fraction-scored modes and categories).
+     * - A per-category overview of non-hidden failing audits (score < 90), errored audits
+     *   (with their error messages), and informative audits that carry details, without
+     *   full descriptions or details tables so the prompt stays compact. Each category
+     *   heading includes its category ID so the agent can request full details via
+     *   `getLighthouseAudits`.
      */
     summary(report) {
         const lines = [];
@@ -27,6 +43,38 @@ export class LighthouseFormatter {
         lines.push('## Category Scores');
         for (const category of Object.values(report.categories)) {
             lines.push(`- ${category.title}: ${this.#formatCategoryScore(report, category)}`);
+        }
+        lines.push('');
+        lines.push('## Failing audits');
+        lines.push('Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements.');
+        for (const [categoryId, category] of Object.entries(report.categories)) {
+            lines.push('');
+            lines.push(`### ${category.title} (categoryId: "${categoryId}")`);
+            const failingAudits = this.#findFailingAudits(report, category);
+            const erroredAudits = this.#findErroredAudits(report, category);
+            const informativeAudits = this.#findInformativeAuditsToReport(report, category);
+            if (failingAudits.length === 0 && erroredAudits.length === 0 && informativeAudits.length === 0) {
+                lines.push('- No failing audits.');
+                continue;
+            }
+            for (const audit of failingAudits) {
+                lines.push(`- ${audit.title}: ${this.#formatScore(audit.score)}`);
+            }
+            for (const audit of erroredAudits) {
+                const errorSuffix = audit.errorMessage ? ` (${this.#toSingleLine(audit.errorMessage)})` : '';
+                lines.push(`- ${audit.title}: Error${errorSuffix}`);
+            }
+            if (informativeAudits.length > 0) {
+                if (failingAudits.length === 0 && erroredAudits.length === 0) {
+                    lines.push('- No audits scored below 90, but these informative audits report findings:');
+                }
+                else {
+                    lines.push('- Informative audits:');
+                }
+                for (const audit of informativeAudits) {
+                    lines.push(`  - ${audit.title}`);
+                }
+            }
         }
         return lines.join('\n');
     }
@@ -85,33 +133,6 @@ export class LighthouseFormatter {
         }
     }
     /**
-     * Returns the title and score of every failing audit (score < 90), grouped by category.
-     * Descriptions and details tables are left out to keep the prompt small. Each category
-     * heading includes its category ID so the agent can request the full audit details.
-     */
-    failingAuditsSummary(report) {
-        const lines = [];
-        lines.push('## Failing audits');
-        for (const [categoryId, category] of Object.entries(report.categories)) {
-            lines.push('');
-            lines.push(`### ${category.title} (categoryId: "${categoryId}")`);
-            const failingAudits = this.#findFailingAudits(report, category);
-            const erroredAudits = this.#findErroredAudits(report, category);
-            if (failingAudits.length === 0 && erroredAudits.length === 0) {
-                lines.push('- No failing audits.');
-                continue;
-            }
-            for (const audit of failingAudits) {
-                lines.push(`- ${audit.title}: ${this.#formatScore(audit.score)}`);
-            }
-            for (const audit of erroredAudits) {
-                const errorSuffix = audit.errorMessage ? ` (${this.#toSingleLine(audit.errorMessage)})` : '';
-                lines.push(`- ${audit.title}: Error${errorSuffix}`);
-            }
-        }
-        return lines.join('\n');
-    }
-    /**
      * Formats a Lighthouse report for an AI Agent. If categoryId is 'all', returns
      * each category's audits. Otherwise, returns audits for the specified category.
      * The output does not include the report summary, because the conversation
@@ -140,7 +161,8 @@ export class LighthouseFormatter {
         lines.push('');
         const failingAudits = this.#findFailingAudits(report, category);
         const erroredAudits = this.#findErroredAudits(report, category);
-        if (failingAudits.length === 0 && erroredAudits.length === 0) {
+        const informativeAudits = this.#findInformativeAuditsToReport(report, category);
+        if (failingAudits.length === 0 && erroredAudits.length === 0 && informativeAudits.length === 0) {
             lines.push('All audits in this category passed (score >= 90).');
             return lines.join('\n');
         }
@@ -156,6 +178,13 @@ export class LighthouseFormatter {
             const sectionLines = ['The following audits in this category errored:'];
             for (const audit of erroredAudits) {
                 sectionLines.push(...this.#formatAudit(audit, 'Error'));
+            }
+            sections.push(sectionLines.join('\n'));
+        }
+        if (informativeAudits.length > 0) {
+            const sectionLines = ['Informative audits:'];
+            for (const audit of informativeAudits) {
+                sectionLines.push(...this.#formatAudit(audit, 'informative'));
             }
             sections.push(sectionLines.join('\n'));
         }
@@ -182,7 +211,7 @@ export class LighthouseFormatter {
             }
         }
         if (audit.details) {
-            const formattedDetails = this.#formatDetails(audit.details);
+            const formattedDetails = this.#formatDetails(audit.details, audit.id);
             if (formattedDetails) {
                 lines.push('');
                 lines.push(formattedDetails.split('\n').map(l => l ? `    ${l}` : '').join('\n'));
@@ -199,7 +228,8 @@ export class LighthouseFormatter {
         return category.auditRefs.filter(ref => ref.group !== 'hidden')
             .map(ref => report.audits[ref.id])
             .filter((audit) => Boolean(audit) &&
-            audit.scoreDisplayMode !== 'error' && audit.score !== null && audit.score < PASS_THRESHOLD);
+            audit.scoreDisplayMode !== 'error' && audit.scoreDisplayMode !== 'informative' &&
+            audit.score !== null && audit.score < PASS_THRESHOLD);
     }
     /**
      * Returns the non-hidden audits in a category that failed with an execution error
@@ -210,10 +240,21 @@ export class LighthouseFormatter {
             .map(ref => report.audits[ref.id])
             .filter((audit) => Boolean(audit) && audit.scoreDisplayMode === 'error');
     }
+    /**
+     * Returns non-hidden informative audits (`scoreDisplayMode === 'informative'`)
+     * that carry details to display. Informative audits may have `score: null` or
+     * `score: 1` (for example, `webmcp-registered-tools`), so `#findFailingAudits`
+     * also excludes `scoreDisplayMode === 'informative'`.
+     */
+    #findInformativeAuditsToReport(report, category) {
+        return category.auditRefs.filter(ref => ref.group !== 'hidden')
+            .map(ref => report.audits[ref.id])
+            .filter((audit) => Boolean(audit) && audit.scoreDisplayMode === 'informative' && Boolean(audit.details));
+    }
     #formatScore(score) {
         return Math.round(score * 100);
     }
-    #formatDetails(details) {
+    #formatDetails(details, auditId) {
         switch (details.type) {
             case 'table': {
                 const lines = [];
@@ -231,7 +272,7 @@ export class LighthouseFormatter {
                         lines.push(summaryParts.join('\n'));
                     }
                 }
-                lines.push(this.#formatTable(details.headings, details.items));
+                lines.push(this.#formatTable(details.headings, details.items, auditId));
                 return lines.join('\n');
             }
             case 'opportunity': {
@@ -246,11 +287,11 @@ export class LighthouseFormatter {
                 if (summaryParts.length > 0) {
                     lines.push(summaryParts.join(', '));
                 }
-                lines.push(this.#formatTable(details.headings, details.items));
+                lines.push(this.#formatTable(details.headings, details.items, auditId));
                 return lines.join('\n');
             }
             case 'list':
-                return this.#formatList(details);
+                return this.#formatList(details, auditId);
             case 'checklist':
                 return Object.values(details.items)
                     .map(item => `- ${this.#toSingleLine(item.label)}: ${item.value ? 'Passed' : 'Failed'}`)
@@ -281,7 +322,7 @@ export class LighthouseFormatter {
         }
         return lines;
     }
-    #formatList(details) {
+    #formatList(details, auditId) {
         const itemStrings = [];
         for (const item of details.items) {
             if (item.type === 'list-section') {
@@ -292,7 +333,7 @@ export class LighthouseFormatter {
                 if (item.description) {
                     sectionLines.push(this.#toSingleLine(item.description));
                 }
-                const formattedValue = this.#formatListValue(item.value);
+                const formattedValue = this.#formatListValue(item.value, auditId);
                 if (formattedValue) {
                     sectionLines.push(formattedValue);
                 }
@@ -301,7 +342,7 @@ export class LighthouseFormatter {
                 }
             }
             else {
-                const formattedItem = this.#formatListValue(item);
+                const formattedItem = this.#formatListValue(item, auditId);
                 if (formattedItem) {
                     itemStrings.push(formattedItem);
                 }
@@ -309,7 +350,7 @@ export class LighthouseFormatter {
         }
         return itemStrings.join('\n\n');
     }
-    #formatListValue(value) {
+    #formatListValue(value, auditId) {
         switch (value.type) {
             case 'node':
                 return this.#formatNodeFields(value)
@@ -322,7 +363,7 @@ export class LighthouseFormatter {
             case 'url':
                 return this.#toSingleLine(value.value);
             default:
-                return this.#formatDetails(value);
+                return this.#formatDetails(value, auditId);
         }
     }
     #formatNodeFields(value) {
@@ -340,11 +381,13 @@ export class LighthouseFormatter {
         }
         return results;
     }
-    #formatTable(headings, items) {
+    #formatTable(headings, items, auditId) {
         const lines = [];
+        const allowedKeys = auditId ? AUDIT_TABLE_COLUMN_KEYS.get(auditId) : undefined;
+        const filteredHeadings = allowedKeys ? headings.filter(h => allowedKeys.has(h.key)) : headings;
         for (const item of items) {
             const itemLines = [];
-            for (const heading of headings) {
+            for (const heading of filteredHeadings) {
                 const value = item[heading.key];
                 const formattedValues = this.#formatTableValues(value, heading.valueType);
                 for (const { labelSuffix, value: v } of formattedValues) {

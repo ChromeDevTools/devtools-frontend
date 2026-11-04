@@ -14,6 +14,12 @@ export interface PopoverInfo {
     warningElements: HTMLSpanElement[];
     additionalElements: HTMLElement[];
 }
+export interface PopoverUrlViewInput {
+    path: string;
+    originWithEntity: string;
+}
+export type PopoverUrlView = (input: PopoverUrlViewInput, output: undefined, target: DocumentFragment) => void;
+export declare function renderPopoverUrl(input: PopoverUrlViewInput, _output: undefined, target: DocumentFragment): void;
 export declare function entryIsVisibleInTimeline(entry: Trace.Types.Events.Event, parsedTrace?: Trace.TraceModel.ParsedTrace): boolean;
 /**
  * Track appenders add the data of each track into the timeline flame
@@ -117,8 +123,9 @@ export declare class CompatibilityTracksAppender {
      * architecture and should be removed once all tracks use the new
      * system.
      * @param entityMapper 3P entity data for the trace.
+     * @param view function to render popover url content.
      */
-    constructor(flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace, entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[], entityMapper: Trace.EntityMapper.EntityMapper | null);
+    constructor(flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.TraceModel.ParsedTrace, entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[], entityMapper: Trace.EntityMapper.EntityMapper | null, view?: PopoverUrlView);
     reset(): void;
     setFlameChartDataAndEntryData(flameChartData: PerfUI.FlameChart.FlameChartTimelineData, entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[]): void;
     getFlameChartTimelineData(): PerfUI.FlameChart.FlameChartTimelineData;

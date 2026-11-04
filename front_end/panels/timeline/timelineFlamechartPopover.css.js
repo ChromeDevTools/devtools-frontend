@@ -16,12 +16,12 @@ export default `/*
   margin: calc(-1 * var(--sys-size-3));
 }
 
-.timeline-flamechart-popover devtools-interaction-breakdown {
-  margin-top: 10px;
+.timeline-flamechart-popover devtools-widget {
+  margin-top: var(--sys-size-5);
 }
 
 .timeline-flamechart-popover span {
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .timeline-flamechart-popover span.popoverinfo-network-time {

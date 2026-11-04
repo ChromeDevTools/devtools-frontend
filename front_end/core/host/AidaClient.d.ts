@@ -64,10 +64,24 @@ export declare const enum Events {
 export interface EventTypes {
     [Events.AIDA_AVAILABILITY_CHANGED]: AidaAccessPreconditions;
 }
+/**
+ * Checks whether any of the provided error strings indicate a quota or rate-limit failure.
+ *
+ * AIDA and GCA surface quota errors across different fields (status codes, human-readable
+ * messages, and serialized `google.rpc.ErrorInfo` details), so we check three substrings:
+ * - `'quota'`: direct AIDA error messages or details (for example,
+ *   `"Quota exceeded for quota metric 'AiCodeCompleteService'"` or `"USER_QUOTA_EXCEEDED"`).
+ * - `'resource_exhausted'`: the standard `google.rpc.Code` status string (for example,
+ *   `status: "RESOURCE_EXHAUSTED"` or `"RESOURCE_EXHAUSTED: quota exceeded"`).
+ * - `'rate_limit_exceeded'`: the `reason` field inside `google.rpc.ErrorInfo` details when
+ *   the message itself does not mention `'quota'` (for example, GCA returning
+ *   `message: "You have exhausted your capacity on this model."` with
+ *   `details: [{"reason": "RATE_LIMIT_EXCEEDED", "domain": "cloudcode-pa.googleapis.com"}]`).
+ */
 export declare function isQuotaError(...inputs: Array<string | undefined>): boolean;
 export declare function isPayloadTooLargeError(...inputs: Array<string | undefined>): boolean;
 /**
- * Maps AIDA-specific errors, DispatchHttpRequestErrors, strings, and generic
- * Errors to dedicated AidaClientError subclasses.
+ * Maps AIDA-specific errors, DispatchHttpRequestErrors, strings, structured
+ * error objects, and generic Errors to dedicated AidaClientError subclasses.
  */
 export declare function mapError(err: unknown, detail?: string): AidaClientError;

@@ -27,9 +27,12 @@ li.storage-group-list-item::before {
 }
 
 .player-entry-row {
-  height: 26px;
-  min-height: 26px;
-  line-height: 26px;
+  /* 28px icon-column/toolbar base (--sys-size-12) minus 2px compact
+   * row offset (--sys-size-2) = 26px, matching the 26px child cells
+   * and continuous border-right column dividers below. */
+  height: calc(var(--sys-size-12) - var(--sys-size-2));
+  min-height: calc(var(--sys-size-12) - var(--sys-size-2));
+  line-height: calc(var(--sys-size-12) - var(--sys-size-2));
 
   &:nth-child(odd) {
     background: var(--sys-color-surface1);
@@ -85,10 +88,14 @@ li.storage-group-list-item::before {
 }
 
 .player-entry-header {
-  height: 27px;
-  line-height: 27px;
-  min-height: 27px;
-  padding-left: 10px;
+  /* 28px toolbar height (--sys-size-12) minus 1px divider border (--sys-size-1) = 27px,
+   * matching .tabbed-pane-header in the adjacent PlayerDetailView split pane. */
+  height: calc(var(--sys-size-12) - var(--sys-size-1));
+  line-height: calc(var(--sys-size-12) - var(--sys-size-1));
+  min-height: calc(var(--sys-size-12) - var(--sys-size-1));
+  /* 8px base inline padding (--sys-size-5) plus 2px optical inset (--sys-size-2) = 10px,
+   * matching the 10px cell padding of the player rows below. */
+  padding-left: calc(var(--sys-size-5) + var(--sys-size-2));
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 

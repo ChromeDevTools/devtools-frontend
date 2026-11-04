@@ -19,7 +19,7 @@ export default `/*
 
 .drop-target-message {
   flex: auto;
-  font-size: 30px;
+  font-size: var(--sys-typescale-headline1-size);
   color: var(--sys-color-token-subtle);
   display: flex;
   justify-content: center;

@@ -15398,6 +15398,10 @@ export declare namespace Page {
          */
         sendLastFrame?: boolean;
     }
+    const enum StartScreenRecordingRequestCaptureArea {
+        Target = "target",
+        BrowserWindow = "browserWindow"
+    }
     interface StartScreenRecordingRequest {
         audio?: boolean;
         /**
@@ -15412,6 +15416,10 @@ export declare namespace Page {
          * Maximum frame rate in frames per second.
          */
         frameRate?: integer;
+        /**
+         * The area to record. Defaults to `target`.
+         */
+        captureArea?: StartScreenRecordingRequestCaptureArea;
     }
     interface StartScreenRecordingResponse extends ProtocolResponseWithError {
         /**

@@ -104,7 +104,6 @@ export class JSONEditor extends JSONEditorBase {
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
-        this.registerRequiredCSS(editorWidgetStyles);
     }
     get metadataByCommand() {
         return this.#metadataByCommand;
@@ -1074,6 +1073,7 @@ function renderParameters(input, parameters, id, parentParameter, parentParamete
 export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
+    <style>${editorWidgetStyles}</style>
     <div class="wrapper" @keydown=${input.onKeydown} jslog=${VisualLogging.pane('command-editor').track({ resize: true })}>
       <div class="editor-wrapper">
         ${input.displayTargetSelector !== false ? renderTargetSelectorRow(input) : nothing}

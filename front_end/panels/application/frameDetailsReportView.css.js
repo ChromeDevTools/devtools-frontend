@@ -51,11 +51,6 @@ devtools-button.help-button {
   position: relative;
 }
 
-button.text-link {
-  padding-left: var(--sys-size-2);
-  height: 26px;
-}
-
 .inline-button {
   padding-left: 1ex;
 }
@@ -112,11 +107,6 @@ button.text-link {
 
 .bold {
   font-weight: bold;
-}
-
-.link:not(button):has(devtools-icon) {
-  vertical-align: baseline;
-  margin-inline-start: 3px;
 }
 
 .inline-icon {

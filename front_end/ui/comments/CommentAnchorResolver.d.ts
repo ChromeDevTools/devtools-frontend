@@ -278,6 +278,22 @@ export interface VisibleRect {
     height: number;
 }
 /**
+ * Attribute that marks an element as a sticky occluder: an element that sticks
+ * to its scroll container (e.g. a `position: sticky` table header or toolbar)
+ * and paints over scrolled content. Comment overlays are clipped against it.
+ * Components set it directly so they don't need to depend on this module.
+ */
+export declare const STICKY_OCCLUDER_ATTRIBUTE = "data-sticky-occluder";
+/**
+ * Provides the sticky occluders found by a DOM scan the caller already runs, so
+ * the resolver does not walk the whole DOM again. CommentOverlayManager collects
+ * them in the same pass as `[jslog]` elements during rematching.
+ *
+ * @param elements Elements with the sticky occluder attribute, or null to make
+ * the resolver scan the document itself.
+ */
+export declare function setStickyOccluders(elements: Element[] | null): void;
+/**
  * Clears the cached clipping ancestor chains for elements.
  * Called when DOM mutations or comment rematches occur.
  */

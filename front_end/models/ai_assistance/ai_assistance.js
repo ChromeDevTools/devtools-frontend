@@ -297,9 +297,25 @@ function formatAndEnsureSpace(formatter, value, separator = "\xA0") {
 
 // ../../front_end/models/ai_assistance/data_formatters/LighthouseFormatter.ts
 var PASS_THRESHOLD = 0.9;
+var AUDIT_TABLE_COLUMN_KEYS = /* @__PURE__ */ new Map([
+  // For webmcp-registered-tools, only include the tool name and description to
+  // keep the output concise (omitting inputSchema, source, and element).
+  ["webmcp-registered-tools", /* @__PURE__ */ new Set(["tool", "description"])]
+]);
 var LighthouseFormatter = class {
   /**
-   * Returns an overall summary and high-level overview of the Lighthouse report.
+   * Returns an overall summary and high-level overview of the Lighthouse report
+   * for the initial conversation context payload.
+   *
+   * Includes:
+   * - Report metadata (URL, fetch time, Lighthouse version, and gather mode when present).
+   * - Category scores (0-100 percentage, "n/a", or "<passed>/<total> audits passed" for
+   *   fraction-scored modes and categories).
+   * - A per-category overview of non-hidden failing audits (score < 90), errored audits
+   *   (with their error messages), and informative audits that carry details, without
+   *   full descriptions or details tables so the prompt stays compact. Each category
+   *   heading includes its category ID so the agent can request full details via
+   *   `getLighthouseAudits`.
    */
   summary(report) {
     const lines = [];
@@ -314,6 +330,39 @@ var LighthouseFormatter = class {
     lines.push("## Category Scores");
     for (const category of Object.values(report.categories)) {
       lines.push(`- ${category.title}: ${this.#formatCategoryScore(report, category)}`);
+    }
+    lines.push("");
+    lines.push("## Failing audits");
+    lines.push(
+      "Only audit titles and scores are listed below. Load the `lighthouse` skill and call `getLighthouseAudits` with the relevant `categoryId` to retrieve full audit descriptions, diagnostics, and failing elements."
+    );
+    for (const [categoryId, category] of Object.entries(report.categories)) {
+      lines.push("");
+      lines.push(`### ${category.title} (categoryId: "${categoryId}")`);
+      const failingAudits = this.#findFailingAudits(report, category);
+      const erroredAudits = this.#findErroredAudits(report, category);
+      const informativeAudits = this.#findInformativeAuditsToReport(report, category);
+      if (failingAudits.length === 0 && erroredAudits.length === 0 && informativeAudits.length === 0) {
+        lines.push("- No failing audits.");
+        continue;
+      }
+      for (const audit of failingAudits) {
+        lines.push(`- ${audit.title}: ${this.#formatScore(audit.score)}`);
+      }
+      for (const audit of erroredAudits) {
+        const errorSuffix = audit.errorMessage ? ` (${this.#toSingleLine(audit.errorMessage)})` : "";
+        lines.push(`- ${audit.title}: Error${errorSuffix}`);
+      }
+      if (informativeAudits.length > 0) {
+        if (failingAudits.length === 0 && erroredAudits.length === 0) {
+          lines.push("- No audits scored below 90, but these informative audits report findings:");
+        } else {
+          lines.push("- Informative audits:");
+        }
+        for (const audit of informativeAudits) {
+          lines.push(`  - ${audit.title}`);
+        }
+      }
     }
     return lines.join("\n");
   }
@@ -370,33 +419,6 @@ var LighthouseFormatter = class {
     }
   }
   /**
-   * Returns the title and score of every failing audit (score < 90), grouped by category.
-   * Descriptions and details tables are left out to keep the prompt small. Each category
-   * heading includes its category ID so the agent can request the full audit details.
-   */
-  failingAuditsSummary(report) {
-    const lines = [];
-    lines.push("## Failing audits");
-    for (const [categoryId, category] of Object.entries(report.categories)) {
-      lines.push("");
-      lines.push(`### ${category.title} (categoryId: "${categoryId}")`);
-      const failingAudits = this.#findFailingAudits(report, category);
-      const erroredAudits = this.#findErroredAudits(report, category);
-      if (failingAudits.length === 0 && erroredAudits.length === 0) {
-        lines.push("- No failing audits.");
-        continue;
-      }
-      for (const audit of failingAudits) {
-        lines.push(`- ${audit.title}: ${this.#formatScore(audit.score)}`);
-      }
-      for (const audit of erroredAudits) {
-        const errorSuffix = audit.errorMessage ? ` (${this.#toSingleLine(audit.errorMessage)})` : "";
-        lines.push(`- ${audit.title}: Error${errorSuffix}`);
-      }
-    }
-    return lines.join("\n");
-  }
-  /**
    * Formats a Lighthouse report for an AI Agent. If categoryId is 'all', returns
    * each category's audits. Otherwise, returns audits for the specified category.
    * The output does not include the report summary, because the conversation
@@ -425,7 +447,8 @@ var LighthouseFormatter = class {
     lines.push("");
     const failingAudits = this.#findFailingAudits(report, category);
     const erroredAudits = this.#findErroredAudits(report, category);
-    if (failingAudits.length === 0 && erroredAudits.length === 0) {
+    const informativeAudits = this.#findInformativeAuditsToReport(report, category);
+    if (failingAudits.length === 0 && erroredAudits.length === 0 && informativeAudits.length === 0) {
       lines.push("All audits in this category passed (score >= 90).");
       return lines.join("\n");
     }
@@ -441,6 +464,13 @@ var LighthouseFormatter = class {
       const sectionLines = ["The following audits in this category errored:"];
       for (const audit of erroredAudits) {
         sectionLines.push(...this.#formatAudit(audit, "Error"));
+      }
+      sections.push(sectionLines.join("\n"));
+    }
+    if (informativeAudits.length > 0) {
+      const sectionLines = ["Informative audits:"];
+      for (const audit of informativeAudits) {
+        sectionLines.push(...this.#formatAudit(audit, "informative"));
       }
       sections.push(sectionLines.join("\n"));
     }
@@ -467,7 +497,7 @@ var LighthouseFormatter = class {
       }
     }
     if (audit.details) {
-      const formattedDetails = this.#formatDetails(audit.details);
+      const formattedDetails = this.#formatDetails(audit.details, audit.id);
       if (formattedDetails) {
         lines.push("");
         lines.push(formattedDetails.split("\n").map((l) => l ? `    ${l}` : "").join("\n"));
@@ -481,7 +511,7 @@ var LighthouseFormatter = class {
    * are excluded.
    */
   #findFailingAudits(report, category) {
-    return category.auditRefs.filter((ref) => ref.group !== "hidden").map((ref) => report.audits[ref.id]).filter((audit) => Boolean(audit) && audit.scoreDisplayMode !== "error" && audit.score !== null && audit.score < PASS_THRESHOLD);
+    return category.auditRefs.filter((ref) => ref.group !== "hidden").map((ref) => report.audits[ref.id]).filter((audit) => Boolean(audit) && audit.scoreDisplayMode !== "error" && audit.scoreDisplayMode !== "informative" && audit.score !== null && audit.score < PASS_THRESHOLD);
   }
   /**
    * Returns the non-hidden audits in a category that failed with an execution error
@@ -490,10 +520,19 @@ var LighthouseFormatter = class {
   #findErroredAudits(report, category) {
     return category.auditRefs.filter((ref) => ref.group !== "hidden").map((ref) => report.audits[ref.id]).filter((audit) => Boolean(audit) && audit.scoreDisplayMode === "error");
   }
+  /**
+   * Returns non-hidden informative audits (`scoreDisplayMode === 'informative'`)
+   * that carry details to display. Informative audits may have `score: null` or
+   * `score: 1` (for example, `webmcp-registered-tools`), so `#findFailingAudits`
+   * also excludes `scoreDisplayMode === 'informative'`.
+   */
+  #findInformativeAuditsToReport(report, category) {
+    return category.auditRefs.filter((ref) => ref.group !== "hidden").map((ref) => report.audits[ref.id]).filter((audit) => Boolean(audit) && audit.scoreDisplayMode === "informative" && Boolean(audit.details));
+  }
   #formatScore(score) {
     return Math.round(score * 100);
   }
-  #formatDetails(details) {
+  #formatDetails(details, auditId) {
     switch (details.type) {
       case "table": {
         const lines = [];
@@ -509,7 +548,7 @@ var LighthouseFormatter = class {
             lines.push(summaryParts.join("\n"));
           }
         }
-        lines.push(this.#formatTable(details.headings, details.items));
+        lines.push(this.#formatTable(details.headings, details.items, auditId));
         return lines.join("\n");
       }
       case "opportunity": {
@@ -524,11 +563,11 @@ var LighthouseFormatter = class {
         if (summaryParts.length > 0) {
           lines.push(summaryParts.join(", "));
         }
-        lines.push(this.#formatTable(details.headings, details.items));
+        lines.push(this.#formatTable(details.headings, details.items, auditId));
         return lines.join("\n");
       }
       case "list":
-        return this.#formatList(details);
+        return this.#formatList(details, auditId);
       case "checklist":
         return Object.values(details.items).map((item) => `- ${this.#toSingleLine(item.label)}: ${item.value ? "Passed" : "Failed"}`).join("\n");
       case "network-tree":
@@ -559,7 +598,7 @@ var LighthouseFormatter = class {
     }
     return lines;
   }
-  #formatList(details) {
+  #formatList(details, auditId) {
     const itemStrings = [];
     for (const item of details.items) {
       if (item.type === "list-section") {
@@ -570,7 +609,7 @@ var LighthouseFormatter = class {
         if (item.description) {
           sectionLines.push(this.#toSingleLine(item.description));
         }
-        const formattedValue = this.#formatListValue(item.value);
+        const formattedValue = this.#formatListValue(item.value, auditId);
         if (formattedValue) {
           sectionLines.push(formattedValue);
         }
@@ -578,7 +617,7 @@ var LighthouseFormatter = class {
           itemStrings.push(sectionLines.join("\n"));
         }
       } else {
-        const formattedItem = this.#formatListValue(item);
+        const formattedItem = this.#formatListValue(item, auditId);
         if (formattedItem) {
           itemStrings.push(formattedItem);
         }
@@ -586,7 +625,7 @@ var LighthouseFormatter = class {
     }
     return itemStrings.join("\n\n");
   }
-  #formatListValue(value) {
+  #formatListValue(value, auditId) {
     switch (value.type) {
       case "node":
         return this.#formatNodeFields(value).map(({ labelSuffix, value: v }) => {
@@ -597,7 +636,7 @@ var LighthouseFormatter = class {
       case "url":
         return this.#toSingleLine(value.value);
       default:
-        return this.#formatDetails(value);
+        return this.#formatDetails(value, auditId);
     }
   }
   #formatNodeFields(value) {
@@ -615,11 +654,13 @@ var LighthouseFormatter = class {
     }
     return results;
   }
-  #formatTable(headings, items) {
+  #formatTable(headings, items, auditId) {
     const lines = [];
+    const allowedKeys = auditId ? AUDIT_TABLE_COLUMN_KEYS.get(auditId) : void 0;
+    const filteredHeadings = allowedKeys ? headings.filter((h) => allowedKeys.has(h.key)) : headings;
     for (const item of items) {
       const itemLines = [];
-      for (const heading of headings) {
+      for (const heading of filteredHeadings) {
         const value = item[heading.key];
         const formattedValues = this.#formatTableValues(value, heading.valueType);
         for (const { labelSuffix, value: v } of formattedValues) {
@@ -2829,6 +2870,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -4410,9 +4456,8 @@ import * as Host2 from "../../core/host/host.js";
 import * as i18n3 from "../../core/i18n/i18n.js";
 import * as Platform4 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
-import * as Formatter from "../formatter/formatter.js";
 var lockedString2 = i18n3.i18n.lockedString;
-var MAX_FORMATTED_LINES = 40;
+var MAX_LINES = 40;
 var MAX_LINE_LENGTH = 120;
 var MAX_TOTAL_CHARACTERS = 2500;
 var MAX_LONG_LINES_REPORTED = 3;
@@ -4420,11 +4465,11 @@ var LONG_LINE_PREVIEW_LENGTH = 60;
 var BLOCKED_NETWORK_ERROR_PATTERN = /^Error: (?:Failed to fetch$|Failed to execute 'send' on 'XMLHttpRequest': Failed to load )/;
 var BLOCKED_NETWORK_HINT = "Network access (e.g., fetch, XMLHttpRequest) is blocked for JavaScript run by this tool, so this error does not mean the page's own network requests are failing. Do not retry network requests with this tool.";
 var NETWORK_TOOLS_HINT = "To inspect the page's network requests, load the `network` skill with `learnSkills` if it is not loaded yet, then use `listNetworkRequests` and `getNetworkRequestDetails`.";
-function describeSizeLimitViolations(formattedCode) {
+function describeSizeLimitViolations(code) {
   const violations = [];
-  const lines = formattedCode.split("\n");
-  if (lines.length > MAX_FORMATTED_LINES) {
-    violations.push(`- The code is ${lines.length} lines (max ${MAX_FORMATTED_LINES}). Split the logic into smaller calls and return intermediate results in \`data\`.`);
+  const lines = code.split("\n");
+  if (lines.length > MAX_LINES) {
+    violations.push(`- The code is ${lines.length} lines (max ${MAX_LINES}). Split the logic into smaller calls and return intermediate results in \`data\`.`);
   }
   const longLines = lines.map((line, index) => ({ lineNumber: index + 1, line })).filter(({ line }) => line.length > MAX_LINE_LENGTH);
   if (longLines.length > 0) {
@@ -4438,8 +4483,8 @@ function describeSizeLimitViolations(formattedCode) {
       violations.push(`  - ${unreportedCount} more ${unreportedCount === 1 ? "line" : "lines"} not shown.`);
     }
   }
-  if (formattedCode.length > MAX_TOTAL_CHARACTERS) {
-    violations.push(`- The code is ${formattedCode.length} characters (max ${MAX_TOTAL_CHARACTERS}). Remove unneeded code or split the logic into smaller calls.`);
+  if (code.length > MAX_TOTAL_CHARACTERS) {
+    violations.push(`- The code is ${code.length} characters (max ${MAX_TOTAL_CHARACTERS}). Remove unneeded code or split the logic into smaller calls.`);
   }
   return violations;
 }
@@ -4450,27 +4495,22 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
   displayName = lockedString2("Run JavaScript on the page");
   description = "This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.";
   /**
-   * Formats the code and checks it against the size limits. This method does
-   * not check syntax: if formatting fails, the formatter returns the original
-   * code, and running it on the page reports any SyntaxError to the model.
+   * Checks the raw AI-generated code against the size limits and returns an
+   * error message if any limit is exceeded.
+   *
+   * Validation runs directly on the unformatted input string so that line-length
+   * checks match what `PermissionPrompt` displays and avoid false rejections
+   * from formatter line collapsing.
    */
-  static async validateAndFormatCode(code) {
-    const formatted = await Formatter.ScriptFormatter.formatScriptContent(
-      "text/javascript",
-      code,
-      "  "
-    );
-    const formattedCode = formatted.formattedContent;
-    const violations = describeSizeLimitViolations(formattedCode);
+  static validateCode(code) {
+    const violations = describeSizeLimitViolations(code);
     if (violations.length > 0) {
-      return {
-        error: [
-          "Error: The code was not run because it exceeds size limits after formatting (indented with 2 spaces):",
-          ...violations
-        ].join("\n")
-      };
+      return [
+        "Error: The code was not run because it exceeds size limits:",
+        ...violations
+      ].join("\n");
     }
-    return { formattedCode };
+    return void 0;
   }
   parameters = {
     type: Host2.AidaClient.ParametersTypes.OBJECT,
@@ -4488,7 +4528,11 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Variables from previous function calls are not available in subsequent calls.
-* **CRITICAL** Keep code concise (max 40 lines, 120 characters per line, and 2,500 characters). Split complex logic into multiple steps.
+* **CRITICAL** Keep code concise (max 40 lines, max 120 characters per line, and max 2,500 total characters). To stay well under 120 characters per line:
+  - Put each statement, object property, array item, and \`&&\`/\`||\` condition on its own line.
+  - Extract long CSS selectors or strings into a variable (or \`.join(', ')\` array) before calling \`querySelectorAll\`.
+  - Store intermediate DOM lookups (\`getComputedStyle\`, \`getAttribute\`) in short local variables instead of chaining them on one line.
+  - Split complex logic into multiple steps.
 * **CRITICAL** Network requests (e.g., fetch, XMLHttpRequest) are disabled and cannot be made.
 
 For example, to query DOM elements:
@@ -4531,12 +4575,9 @@ const data = {
     }
     const isV2Architecture = Root2.Runtime.hostConfig.devToolsAiV2Architecture?.enabled;
     if (isV2Architecture) {
-      const validationResult = await _ExecuteJavaScriptTool.validateAndFormatCode(params.code);
-      if (validationResult.error) {
-        return { error: validationResult.error };
-      }
-      if (validationResult.formattedCode) {
-        params.code = validationResult.formattedCode;
+      const validationError = _ExecuteJavaScriptTool.validateCode(params.code);
+      if (validationError) {
+        return { error: validationError };
       }
     }
     const executionMode = Root2.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root2.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
@@ -9525,10 +9566,11 @@ __export(AiAgent_exports, {
   sanitizeSuggestionsList: () => sanitizeSuggestionsList
 });
 import * as Host23 from "../../core/host/host.js";
+import * as Platform7 from "../../core/platform/platform.js";
 import * as Root4 from "../../core/root/root.js";
 import * as SDK19 from "../../core/sdk/sdk.js";
 import * as AiUtils4 from "../ai-utils/ai-utils.js";
-var { debugLog: debugLog2, isStructuredLogEnabled } = AiUtils4.Debug;
+var { debugLog: debugLog2, isDebugMode } = AiUtils4.Debug;
 var MAX_SUGGESTION_LENGTH = 200;
 var SUGGEST_FOLLOW_UPS_FUNCTION_NAME = "suggestFollowUps";
 var ResponseType = /* @__PURE__ */ ((ResponseType2) => {
@@ -9938,7 +9980,7 @@ var AiAgent = class {
       }
       request = this.buildRequest(outcome.functionResponses, Host23.AidaClient.Role.ROLE_UNSPECIFIED);
     }
-    if (isStructuredLogEnabled()) {
+    if (isDebugMode()) {
       dispatchAiAssistanceDoneEvent();
     }
     return;
@@ -9954,6 +9996,10 @@ var AiAgent = class {
    */
   async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId) {
     if (!textResponse) {
+      debugLog2(
+        "[AiAgent] Model returned an empty text response without tool calls:",
+        { step: stepIndex + 1, rpcId, functionCalls }
+      );
       yield this.#createErrorResponse("unknown" /* UNKNOWN */);
       return;
     }
@@ -10172,7 +10218,8 @@ var AiAgent = class {
         description: result.description,
         javascriptCode,
         permissionPrompt: call.permissionPrompt,
-        permissionTitle: call.permissionTitle
+        permissionTitle: call.permissionTitle,
+        toolName: name
       };
       let decision = "reject" /* REJECT */;
       try {
@@ -10255,13 +10302,16 @@ var AiAgent = class {
         completed: aidaResponse.completed
       };
     }
-    if (isStructuredLogEnabled() && aidaResponse) {
+    if (isDebugMode() && aidaResponse) {
       this.#structuredLog.push({
         request: structuredClone(request),
         aidaResponse
       });
       try {
-        localStorage.setItem("aiAssistanceStructuredLog", JSON.stringify(this.#structuredLog));
+        Platform7.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem(
+          "aiAssistanceStructuredLog",
+          JSON.stringify(this.#structuredLog)
+        );
       } catch (err) {
         console.warn('Failed to write to local storage "aiAssistanceStructuredLog":', err);
       }
@@ -11071,9 +11121,7 @@ var LighthouseContext = class extends ConversationContext {
     if (allFailed) {
       this.#cachedPayload = "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
     } else if (Root5.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
-      this.#cachedPayload = `${formatter.summary(this.#lh)}
-
-${formatter.failingAuditsSummary(this.#lh)}`;
+      this.#cachedPayload = formatter.summary(this.#lh);
     } else {
       this.#cachedPayload = `# Lighthouse Report:
 ${formatter.summary(this.#lh)}
@@ -11834,17 +11882,18 @@ ${await this.describe()}`;
     if (childNodes) {
       const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === SDK25.DOMModel.NodeType.TEXT_NODE);
       const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === SDK25.DOMModel.NodeType.ELEMENT_NODE);
+      const formattedChildren = elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ");
       switch (elementChildNodes.length) {
         case 0:
           output += "\n* It doesn't have any child element nodes";
           break;
         case 1:
           output += `
-* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
+* It only has 1 child element node: ${formattedChildren}`;
           break;
         default:
           output += `
-* It has ${elementChildNodes.length} child element nodes: ${elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
+* It has ${elementChildNodes.length} child element nodes: ${formattedChildren}`;
       }
       switch (textChildNodes.length) {
         case 0:
@@ -14747,7 +14796,7 @@ var skill6 = {
     "executeJavaScript",
     "getStyles"
   ],
-  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Inspect Geometry, DOM Traversal, or Modify Styles (`executeJavaScript`)**:\n   - Use `executeJavaScript` when you need to inspect computed geometry, bounding boxes, traverse related DOM nodes (`$0.parentElement`, `$0.children`), or modify styles on `$0`.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: window.getComputedStyle($0).display,\n       parentDisplay: $0.parentElement ? window.getComputedStyle($0.parentElement).display : null,\n     };\n     ```\n   - Style modification example (ALWAYS use `setElementStyles`):\n     ```javascript\n     await setElementStyles($0, {\n       display: 'flex',\n       justifyContent: 'center',\n     });\n     ```\n   - `setElementStyles` is an internal mechanism for you; do not mention `setElementStyles` directly to the user.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
+  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Inspect Geometry, DOM Traversal, or Modify Styles (`executeJavaScript`)**:\n   - Use `executeJavaScript` when you need to inspect computed geometry, bounding boxes, traverse related DOM nodes (`$0.parentElement`, `$0.children`), or modify styles on `$0`.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n   - Style modification example (ALWAYS use `setElementStyles`):\n     ```javascript\n     await setElementStyles($0, {\n       display: 'flex',\n       justifyContent: 'center',\n     });\n     ```\n   - `setElementStyles` is an internal mechanism for you; do not mention `setElementStyles` directly to the user.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
 };
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
@@ -15141,7 +15190,7 @@ __export(AiConversation_exports, {
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Host36 from "../../core/host/host.js";
-import * as Platform7 from "../../core/platform/platform.js";
+import * as Platform8 from "../../core/platform/platform.js";
 import * as Root14 from "../../core/root/root.js";
 import * as SDK30 from "../../core/sdk/sdk.js";
 import * as AiUtils9 from "../ai-utils/ai-utils.js";
@@ -15149,8 +15198,8 @@ var NOT_FOUND_IMAGE_DATA = "";
 var CONTEXT_TITLE = "Analyzing data";
 var MAX_TITLE_LENGTH = 80;
 var ALLOWED_PAGE_NAVIGATIONS = [
-  Platform7.DevToolsPath.urlString`about:blank`,
-  Platform7.DevToolsPath.urlString`chrome://terms`
+  Platform8.DevToolsPath.urlString`about:blank`,
+  Platform8.DevToolsPath.urlString`chrome://terms`
 ];
 function generateContextDetailsMarkdown(details) {
   const detailsMarkdown = [];
@@ -15479,7 +15528,7 @@ ${item.text.trim()}`);
       case AiUtils9.AiHistoryStorage.ConversationType.NONE:
         return new ContextSelectionAgent(options);
       default:
-        Platform7.assertNever(type, "Unknown conversation type");
+        Platform8.assertNever(type, "Unknown conversation type");
     }
   }
   async *run(initialQuery, options = {}) {

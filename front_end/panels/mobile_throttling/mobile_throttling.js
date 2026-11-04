@@ -1510,7 +1510,9 @@ var throttlingSettingsTab_css_default = `/*
   gap: var(--sys-size-3);
   padding: var(--sys-size-4);
   flex-shrink: 0;
-  width: 74px;
+  /* 80px (--sys-size-19) minus 6px (--sys-size-4) padding step so all
+   * 7 columns (518px) fit inside the 532px card slot without overflow. */
+  width: calc(var(--sys-size-19) - var(--sys-size-4));
 }
 
 .input {
@@ -1535,10 +1537,6 @@ var throttlingSettingsTab_css_default = `/*
   color: var(--sys-color-on-surface);
   text-align: center;
   position: relative;
-
-  & > input {
-    scroll-margin-left: 5px;
-  }
 }
 
 .conditions-list-text:last-child {
@@ -1604,13 +1602,13 @@ var throttlingSettingsTab_css_default = `/*
 
 .cpu-preset-calibrate .button-container {
   display: flex;
-  gap: 10px;
+  gap: var(--sys-size-5);
 }
 
 .cpu-preset-calibrate .text-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sys-size-5);
 }
 
 .text-with-icon {
@@ -2266,6 +2264,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   const customAfter = editingIndex !== null ? input.customConditions.slice(editingIndex + 1) : [];
   render4(
     html4`
+        <style>${throttlingSettingsTab_css_default}</style>
         <div class="settings-card-container-wrapper">
           <div class="settings-card-container throttling-conditions-settings">
             ${widget(CPUThrottlingCard)}
@@ -2347,7 +2346,6 @@ var ThrottlingSettingsTab = class extends UI5.Widget.VBox {
       useShadowDom: true
     });
     this.#view = view;
-    this.registerRequiredCSS(throttlingSettingsTab_css_default);
     this.customUserConditions = SDK7.NetworkManager.customUserNetworkConditionsSetting(settings);
     this.customUserConditions.addChangeListener(this.#conditionsUpdated, this);
     const customConditions = this.customUserConditions.get();

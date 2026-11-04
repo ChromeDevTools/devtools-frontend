@@ -32,7 +32,7 @@ export function getMatchingFlavorContext(contextOptions) {
     return null;
 }
 export async function handleExternalAIRequest(options) {
-    localStorage.setItem('aiAssistanceStructuredLogEnabled', 'true');
+    AiAssistanceModel.Debug.setDevToolsAIDebug({ assistance: true });
     localStorage.removeItem('aiAssistanceStructuredLog');
     const conversationType = resolveConversationType(options.context?.type);
     const aidaClient = new Host.AidaClient.AidaClient();

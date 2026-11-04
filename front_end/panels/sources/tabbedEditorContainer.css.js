@@ -20,7 +20,7 @@ export default `/*
     margin: 0 var(--sys-size-8);
 
     &.workspace {
-      line-height: 18px;
+      line-height: var(--sys-size-9);
       display: inline-flex;
       align-items: center;
       border: var(--sys-size-2) dashed var(--sys-color-divider);

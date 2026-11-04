@@ -1223,9 +1223,6 @@
   "generated/Deprecation.ts | FencedFrame": {
     "message": "Fenced Frame API is deprecated and scheduled for removal."
   },
-  "generated/Deprecation.ts | Fledge": {
-    "message": "The Protected Audience API is deprecated and will be removed in a future release."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ for more details."
   },
@@ -1243,9 +1240,6 @@
   },
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
-  },
-  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
-    "message": "The dailyUpdateUrl field of InterestGroups passed to joinAdInterestGroup() has been renamed to updateUrl, to more accurately reflect its behavior."
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Intl.v8BreakIterator is deprecated. Please use Intl.Segmenter instead."
@@ -5933,8 +5927,35 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Speculative loads"
   },
+  "panels/application/PrivateVerificationTokensView.ts | creationTime": {
+    "message": "Created"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | expiration": {
+    "message": "Expiration"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isIssuer": {
+    "message": "Is issuer"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isRedeemer": {
+    "message": "Is redeemer"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | issuer": {
+    "message": "Issuer"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | keyId": {
+    "message": "Key ID"
+  },
   "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
     "message": "No private verification tokens for this origin"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenId": {
+    "message": "Token ID"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenPayload": {
+    "message": "Token (Base64)"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | version": {
+    "message": "Version"
   },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "Crash report context"
@@ -12688,6 +12709,15 @@
   },
   "panels/profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "Loading samples…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeContextVars": {
+    "message": "Loading scope context vars…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopes": {
+    "message": "Loading scopes…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeUses": {
+    "message": "Loading scope uses…"
   },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "Loading snapshot info…"

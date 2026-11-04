@@ -1,7 +1,18 @@
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { NetworkNode } from './NetworkDataGridNode.js';
+export interface ViewInput {
+    onMouseMove: (offsetY: number, shiftKey: boolean) => void;
+    onMouseLeave: () => void;
+    onClick: (offsetY: number) => boolean;
+}
+export interface ViewOutput {
+    canvas?: HTMLCanvasElement;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class NetworkWaterfallColumn extends UI.Widget.VBox {
+    #private;
     private canvas;
     private canvasPosition;
     private readonly leftPadding;
@@ -26,14 +37,13 @@ export declare class NetworkWaterfallColumn extends UI.Widget.VBox {
     private readonly hoverDetailsStyle;
     private readonly pathForStyle;
     private textLayers;
-    constructor(calculator: NetworkTimeCalculator.NetworkTimeCalculator);
+    constructor(calculator: NetworkTimeCalculator.NetworkTimeCalculator, view?: View);
+    performUpdate(): void;
     static buildRequestTimeRangeStyle(): Map<NetworkTimeCalculator.RequestTimeRangeNames, LayerStyle>;
     private static buildResourceTypeStyle;
     private resetPaths;
     willHide(): void;
     wasShown(): void;
-    private onMouseMove;
-    private onClick;
     private getPopoverRequest;
     private setHoveredNode;
     private setSelectedNode;

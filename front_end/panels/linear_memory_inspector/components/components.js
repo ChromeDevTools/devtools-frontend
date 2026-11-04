@@ -63,8 +63,8 @@ var linearMemoryHighlightChipList_css_default = `/*
 
 .delete-highlight-button {
   cursor: pointer;
-  width: 13px;
-  height: 13px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
   border: none;
   background-color: transparent;
   display: flex;
@@ -89,8 +89,8 @@ var linearMemoryHighlightChipList_css_default = `/*
 }
 
 .delete-highlight-button devtools-icon {
-  width: 13px;
-  height: 13px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -786,7 +786,7 @@ var valueInterpreterDisplay_css_default = `/*
 
 .signed-divider {
   width: var(--sys-size-1);
-  height: 15px;
+  height: var(--sys-size-8);
   background-color: var(--sys-color-divider);
   margin: 0 var(--sys-size-3);
 }

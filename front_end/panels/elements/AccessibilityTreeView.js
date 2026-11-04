@@ -76,6 +76,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     };
     // clang-format off
     render(html `
+    <style>${accessibilityTreeViewStyles}</style>
     <div class="accessibility-tree-view-container" jslog=${VisualLogging.tree('full-accessibility')} @copy=${onCopy}>
       <devtools-tree-outline .data=${treeData}
                              @itemselected=${onItemSelected}
@@ -96,7 +97,6 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     constructor(view = DEFAULT_VIEW, frameManager = SDK.FrameManager.FrameManager.instance()) {
         super();
         this.#view = view;
-        this.registerRequiredCSS(accessibilityTreeViewStyles);
         this.#frameManager = frameManager;
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.AccessibilityModel.AccessibilityModel, this, { scoped: true });
     }

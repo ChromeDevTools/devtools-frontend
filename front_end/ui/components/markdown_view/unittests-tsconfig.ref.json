@@ -36,6 +36,9 @@
       "path": "../../../generated/generated-tsconfig.ref.json"
     },
     {
+      "path": "../../../generated/deprecation-tsconfig.ref.json"
+    },
+    {
       "path": "../../../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {

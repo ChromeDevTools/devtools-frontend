@@ -78,7 +78,7 @@ export declare class TickingFlameChart extends UI.Widget.VBox {
     private readonly dataProvider;
     private readonly delegate;
     private stoppedPermanently?;
-    constructor(element?: HTMLElement, view?: TickingFlameChartView);
+    constructor(elementOrOptions?: HTMLElement | UI.Widget.WidgetOptions, view?: TickingFlameChartView);
     performUpdate(): void;
     /**
      * Add a marker with |properties| at |time|.

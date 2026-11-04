@@ -27,12 +27,16 @@ function createProcessedNavigation(data, frameId, navigation) {
         return metricScore.event.ts;
     };
     const lcpScore = scores.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
+    const navigationId = navigation.args.data?.navigationId;
+    const lcpRequest = navigationId ? data.LargestImagePaint?.lcpRequestByNavigationId.get(navigationId) : undefined;
     return {
         timestamps: {
             firstContentfulPaint: getTimestamp(Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP),
             largestContentfulPaint: getTimestampOrUndefined(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP),
         },
         largestContentfulPaintEvt: lcpScore && Handlers.ModelHandlers.PageLoadMetrics.metricIsLCP(lcpScore) ? lcpScore.event : undefined,
+        lcpRequestId: lcpRequest?.args.data.requestId,
+        lcpImageUrl: lcpRequest?.args.data.url,
     };
 }
 function createParsedUrl(url) {

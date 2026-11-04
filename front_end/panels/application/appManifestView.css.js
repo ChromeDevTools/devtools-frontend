@@ -12,12 +12,6 @@ export default `/*
   flex-basis: 152px;
 }
 
-.manifest-view-header {
-  min-width: 600px;
-  flex-shrink: 0;
-  flex-grow: 0;
-}
-
 :host {
   overflow: auto;
 }

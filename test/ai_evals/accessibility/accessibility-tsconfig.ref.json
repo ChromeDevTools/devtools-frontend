@@ -16,6 +16,13 @@
     "../../../../../../test/ai_evals/accessibility/a11y-aria-hidden-focus.test.ts",
     "../../../../../../test/ai_evals/accessibility/a11y-button-name.test.ts",
     "../../../../../../test/ai_evals/accessibility/a11y-color-contrast.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-devtools-features.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-fix-all-blindness-names-labels.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-fix-all-cognitive-structure.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-fix-all-deaf-media-captions.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-fix-all-deafblind-aria-links.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-fix-all-low-vision-contrast.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-fix-all-mobility-keyboard-focus.test.ts",
     "../../../../../../test/ai_evals/accessibility/a11y-form-label.test.ts",
     "../../../../../../test/ai_evals/accessibility/a11y-heading-order.test.ts",
     "../../../../../../test/ai_evals/accessibility/a11y-image-alt.test.ts",
@@ -28,9 +35,6 @@
   "references": [
     {
       "path": "../harness_library-tsconfig.ref.json"
-    },
-    {
-      "path": "../../e2e/helpers/helpers-tsconfig.ref.json"
     },
     {
       "path": "../helpers/helpers-tsconfig.ref.json"

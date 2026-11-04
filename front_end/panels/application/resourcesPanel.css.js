@@ -60,16 +60,6 @@ export default `/*
   flex: auto;
 }
 
-.storage-view .storage-table-error {
-  color: var(--sys-color-error);
-  font-size: var(--sys-typescale-headline1-size);
-  font-weight: bold;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .storage-view.query {
   padding: var(--sys-size-2) 0;
   overflow: hidden auto;
@@ -92,19 +82,6 @@ export default `/*
 
 .database-query-prompt {
   white-space: pre-wrap;
-}
-
-.prompt-icon {
-  position: absolute;
-  display: block;
-  left: 7px;
-  top: 9px;
-  margin-top: -7px;
-  user-select: none;
-}
-
-.database-user-query .prompt-icon {
-  margin-top: -10px;
 }
 
 .database-query-prompt-container .prompt-icon {

@@ -109,7 +109,8 @@ __export(CompatibilityTracksAppender_exports, {
   CompatibilityTracksAppender: () => CompatibilityTracksAppender,
   TrackNames: () => TrackNames,
   VisualLoggingTrackName: () => VisualLoggingTrackName,
-  entryIsVisibleInTimeline: () => entryIsVisibleInTimeline
+  entryIsVisibleInTimeline: () => entryIsVisibleInTimeline,
+  renderPopoverUrl: () => renderPopoverUrl
 });
 import * as Common18 from "../../core/common/common.js";
 import * as Host3 from "../../core/host/host.js";
@@ -118,6 +119,7 @@ import * as Trace37 from "../../models/trace/trace.js";
 import * as SourceMapsResolver9 from "../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace8 from "../../models/workspace/workspace.js";
 import * as ThemeSupport25 from "../../ui/legacy/theme_support/theme_support.js";
+import { html as html13, render as render11 } from "../../ui/lit/lit.js";
 import * as SettingsUI7 from "../../ui/settings/settings.js";
 import * as TimelineComponents7 from "./components/components.js";
 
@@ -2063,12 +2065,12 @@ var timelineFlamechartPopover_css_default = `/*
   margin: calc(-1 * var(--sys-size-3));
 }
 
-.timeline-flamechart-popover devtools-interaction-breakdown {
-  margin-top: 10px;
+.timeline-flamechart-popover devtools-widget {
+  margin-top: var(--sys-size-5);
 }
 
 .timeline-flamechart-popover span {
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .timeline-flamechart-popover span.popoverinfo-network-time {
@@ -3310,7 +3312,7 @@ var imagePreview_css_default = `/*
 }
 
 .image-container > div {
-  min-height: 50px;
+  min-height: var(--sys-size-16);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5505,6 +5507,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -6474,7 +6481,7 @@ var timelineStatusDialog_css_default = `/*
   align-self: center;
   background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
-  border-radius: 10px;
+  border-radius: var(--sys-shape-corner-small);
 }
 
 .status-dialog-line {
@@ -7870,7 +7877,7 @@ var timelineHistoryManager_css_default = `/*
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
-  padding: var(--sys-size-4) 10px;
+  padding: var(--sys-size-4) var(--sys-size-5);
   position: relative;
 
   .metadata {
@@ -8709,12 +8716,13 @@ var timelineMiniMap_css_default = `/*
 
 .timeline-minimap .overview-strip .timeline-overview-strip-title {
   color: var(--sys-color-token-subtle);
-  font-size: 10px;
+  font-size: var(--sys-typescale-body5-size);
   font-weight: bold;
   z-index: 100;
   background-color: var(--sys-color-cdt-base-container);
   padding: 0 var(--sys-size-3);
   position: absolute;
+  /* 2px upward offset (--sys-size-2 = 2px) matching parent .overview-strip top margin */
   top: calc(var(--sys-size-2) * -1);
   right: 0;
 }
@@ -8751,7 +8759,7 @@ var timelineMiniMap_css_default = `/*
 }
 
 .timeline-minimap #timeline-overview-responsiveness {
-  flex-basis: 5px;
+  flex-basis: var(--sys-size-4);
   margin-top: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -17782,6 +17790,7 @@ var SelectorTimingsKey = Trace30.Types.Events.SelectorTimingsKey;
 var DEFAULT_VIEW4 = (input, _output, target) => {
   render9(
     html9`
+      <style>${timelineSelectorStatsView_css_default}</style>
       <devtools-data-grid striped name=${i18nString22(UIStrings22.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
@@ -17862,7 +17871,6 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
   #timings = [];
   constructor(parsedTrace, view = DEFAULT_VIEW4) {
     super();
-    this.registerRequiredCSS(timelineSelectorStatsView_css_default);
     this.#view = view;
     this.#selectorLocations = /* @__PURE__ */ new Map();
     this.#parsedTrace = parsedTrace;
@@ -19569,7 +19577,7 @@ var timelineFlameChartView_css_default = `/*
 
 .overlay-type-CANDY_STRIPED_TIME_RANGE {
   --red-stripe-width: var(--sys-size-2);
-  --white-stripe-width: 7px;
+  --white-stripe-width: var(--sys-size-4);
 
   background-image:
     repeating-linear-gradient(
@@ -19608,11 +19616,11 @@ var timelineFlameChartView_css_default = `/*
   bottom: 0;
 
   &.overlap-1 {
-    bottom: 55px;
+    bottom: var(--sys-size-17);
   }
 
   &.overlap-2 {
-    bottom: 105px;
+    bottom: var(--sys-size-20);
   }
 }
 
@@ -19652,7 +19660,7 @@ var timelineFlameChartView_css_default = `/*
 
 .overlay-type-TIMINGS_MARKER {
   bottom: 0;
-  width: 0.5px;
+  width: var(--sys-size-1);
   pointer-events: auto;
   background-color: var(--marker-color); /* stylelint-disable-line plugin/use_theme_colors */
 }
@@ -22680,6 +22688,12 @@ var TimingsTrackAppender = class {
 
 // ../../front_end/panels/timeline/CompatibilityTracksAppender.ts
 import * as TimelineUtils from "./utils/utils.js";
+function renderPopoverUrl(input, _output, target) {
+  render11(
+    html13`<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${input.originWithEntity})</span></div>`,
+    target
+  );
+}
 function entryIsVisibleInTimeline(entry, parsedTrace) {
   if (parsedTrace?.data.Meta.traceIsGeneric) {
     return true;
@@ -22747,6 +22761,7 @@ var CompatibilityTracksAppender = class {
   #layoutShiftsTrackAppender;
   #threadAppenders = [];
   #entityMapper;
+  #view;
   /**
    * @param flameChartData the data used by the flame chart renderer on
    * which the track data will be appended.
@@ -22760,12 +22775,14 @@ var CompatibilityTracksAppender = class {
    * architecture and should be removed once all tracks use the new
    * system.
    * @param entityMapper 3P entity data for the trace.
+   * @param view function to render popover url content.
    */
-  constructor(flameChartData, parsedTrace, entryData, legacyEntryTypeByLevel, entityMapper) {
+  constructor(flameChartData, parsedTrace, entryData, legacyEntryTypeByLevel, entityMapper, view = renderPopoverUrl) {
     this.#flameChartData = flameChartData;
     this.#parsedTrace = parsedTrace;
     this.#entityMapper = entityMapper;
     this.#entryData = entryData;
+    this.#view = view;
     this.#colorGenerator = new Common18.Color.Generator(
       /* hueSpace= */
       { min: 30, max: 55 },
@@ -23113,12 +23130,14 @@ var CompatibilityTracksAppender = class {
     if (url) {
       const MAX_PATH_LENGTH = 45;
       const path = Platform17.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_PATH_LENGTH);
-      const urlElems = document.createElement("div");
-      urlElems.createChild("span", "popoverinfo-url-path").textContent = path;
       const entity = this.#entityMapper ? this.#entityMapper.entityForEvent(event) : null;
       const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity);
-      urlElems.createChild("span", "popoverinfo-url-origin").textContent = `(${originWithEntity})`;
-      info.additionalElements.push(urlElems);
+      const fragment = document.createDocumentFragment();
+      this.#view({ path, originWithEntity }, void 0, fragment);
+      const urlElement = fragment.firstElementChild;
+      if (urlElement instanceof HTMLElement) {
+        info.additionalElements.push(urlElement);
+      }
     }
     return info;
   }

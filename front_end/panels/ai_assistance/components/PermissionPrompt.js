@@ -103,7 +103,7 @@ export function renderPermissionPrompt(step, disclaimerText) {
         html `<devtools-button
       .data=${{
             variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
-            jslogContext: 'always-allow-execute-code',
+            jslogContext: 'ai-permission-allow-always',
         }}
       @click=${() => dialog.onAnswer("allow-always" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS */)}
     >${lockedString(UIStringsNotTranslate.allowAlways)}</devtools-button>` :
@@ -114,7 +114,7 @@ export function renderPermissionPrompt(step, disclaimerText) {
     // clang-format off
     return html `${repeat([step], step => step, () => html `
   <div class="permission-prompt"
-    jslog=${VisualLogging.section('side-effect-confirmation')}>
+    jslog=${VisualLogging.section('ai-permission-prompt')}>
     <div class="permission-prompt-header">
       <devtools-icon name="lock"></devtools-icon>
       <h2 class="permission-prompt-title">${title}</h2>
@@ -125,7 +125,7 @@ export function renderPermissionPrompt(step, disclaimerText) {
       <devtools-button
         .data=${{
         variant: "text" /* Buttons.Button.Variant.TEXT */,
-        jslogContext: 'decline-execute-code',
+        jslogContext: 'ai-permission-reject',
     }}
         @click=${() => dialog.onAnswer("reject" /* AiAssistanceModel.Tool.PermissionDecision.REJECT */)}
         ${ref(focusOnFirstRender)}
@@ -134,7 +134,7 @@ export function renderPermissionPrompt(step, disclaimerText) {
       <devtools-button
         .data=${{
         variant: "primary" /* Buttons.Button.Variant.PRIMARY */,
-        jslogContext: 'accept-execute-code',
+        jslogContext: 'ai-permission-allow-once',
     }}
         @click=${() => dialog.onAnswer("allow-once" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE */)}
       >${lockedString(UIStringsNotTranslate.allowThisTime)}</devtools-button>

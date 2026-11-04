@@ -10,7 +10,8 @@ export default `/**
  */
 .metrics {
   padding: var(--sys-size-5);
-  font-size: 10px;
+  font-size: var(--sys-typescale-body5-size);
+  line-height: var(--sys-size-6);
   text-align: center;
   white-space: nowrap;
   height: var(--metrics-height);
@@ -46,7 +47,6 @@ export default `/**
 
 .metrics .label {
   position: absolute;
-  font-size: 10px;
   left: var(--sys-size-3);
 }
 
@@ -80,8 +80,8 @@ export default `/**
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px var(--sys-size-4);
-  margin: 3px;
+  padding: var(--sys-size-2) var(--sys-size-4);
+  margin: var(--sys-size-2);
   position: relative;
 }
 
@@ -104,8 +104,8 @@ export default `/**
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px;
-  margin: 3px;
+  padding: var(--sys-size-2);
+  margin: var(--sys-size-2);
   min-width: var(--sys-size-19);
   overflow: visible;
 }

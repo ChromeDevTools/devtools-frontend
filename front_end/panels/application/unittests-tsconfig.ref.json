@@ -31,6 +31,7 @@
     "../../../../../../front_end/panels/application/OpenedWindowDetailsView.test.ts",
     "../../../../../../front_end/panels/application/OriginTrialTreeView.test.ts",
     "../../../../../../front_end/panels/application/PreloadingTreeElement.test.ts",
+    "../../../../../../front_end/panels/application/PrivateVerificationTokensView.test.ts",
     "../../../../../../front_end/panels/application/ReportingApiTreeElement.test.ts",
     "../../../../../../front_end/panels/application/ReportingApiView.test.ts",
     "../../../../../../front_end/panels/application/ServiceWorkerCacheTreeElement.test.ts",

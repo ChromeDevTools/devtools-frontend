@@ -2921,6 +2921,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -4349,21 +4354,13 @@ devtools-report-value {
 }
 
 .circled-exclamation-icon {
-  margin-right: 10px;
+  margin-right: var(--sys-size-5);
   flex-shrink: 0;
 }
 
 .status {
   margin-right: 11px;
   flex-shrink: 0;
-}
-
-.report-line {
-  grid-column-start: span 2;
-  display: flex;
-  align-items: center;
-  margin: 0 30px;
-  line-height: 26px;
 }
 
 .report-key {
@@ -5333,7 +5330,7 @@ var endpointsGrid_css_default = `/*
   }
 
   .endpoints-header {
-    font-size: 15px;
+    font-size: var(--sys-typescale-headline5-size);
     background-color: var(--sys-color-surface2);
     padding: var(--sys-size-1) var(--sys-size-3);
     flex-shrink: 0;
@@ -5473,7 +5470,7 @@ var permissionsPolicySection_css_default = `/*
   }
 
   .feature-name {
-    width: 135px;
+    width: var(--sys-size-22);
   }
 
   .allowed-icon {
@@ -5980,7 +5977,7 @@ var reportsGrid_css_default = `/*
   }
 
   .reporting-header {
-    font-size: 15px;
+    font-size: var(--sys-typescale-headline5-size);
     background-color: var(--sys-color-surface2);
     padding: var(--sys-size-1) var(--sys-size-3);
     flex-shrink: 0;
@@ -6124,7 +6121,7 @@ var serviceWorkerRouterView_css_default = `/*
 :host {
   display: block;
   white-space: normal;
-  max-width: 400px;
+  max-width: var(--sys-size-32);
 }
 
 .router-rules {
@@ -6151,7 +6148,7 @@ var serviceWorkerRouterView_css_default = `/*
 .item {
   display: flex;
   flex-direction: column;
-  padding-left: 10px;
+  padding-left: var(--sys-size-5);
 }
 
 .condition,
@@ -6574,7 +6571,7 @@ var trustTokensView_css_default = `/*
 }
 
 .heading {
-  font-size: 15px;
+  font-size: var(--sys-typescale-headline5-size);
 }
 
 devtools-data-grid {

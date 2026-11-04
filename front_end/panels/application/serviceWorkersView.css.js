@@ -35,7 +35,7 @@ export default `/*
 }
 
 .service-worker-version:not(:last-child) {
-  margin-bottom: 7px;
+  margin-bottom: var(--sys-size-4);
 }
 
 .service-worker-version-string {
@@ -84,7 +84,7 @@ export default `/*
 }
 
 .link {
-  margin-left: 7px;
+  margin-left: var(--sys-size-4);
 }
 
 .service-worker-editor-with-button {
@@ -192,7 +192,8 @@ devtools-icon.error-icon {
 .service-worker-section {
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   grid-column: 1 / 3;
-  padding: 0 var(--sys-size-9) 11px var(--sys-size-9);
+  /* 12px section bottom spacing (--sys-size-6) minus 1px bottom border (--sys-size-1). */
+  padding: 0 var(--sys-size-9) calc(var(--sys-size-6) - var(--sys-size-1)) var(--sys-size-9);
 }
 
 .service-worker-section-container {

@@ -4,26 +4,8 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// ../../front_end/models/ai_code_completion/debug.ts
-import * as Platform from "../../core/platform/platform.js";
-function isDebugMode() {
-  return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiCodeCompletionEnabled"));
-}
-function debugLog(...log) {
-  if (!isDebugMode()) {
-    return;
-  }
-  console.log(...log);
-}
-function setDebugAiCodeCompletionEnabled(enabled) {
-  const localStorage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
-  if (enabled) {
-    localStorage?.setItem("debugAiCodeCompletionEnabled", "true");
-  } else {
-    localStorage?.removeItem("debugAiCodeCompletionEnabled");
-  }
-}
-globalThis.setDebugAiCodeCompletionEnabled = setDebugAiCodeCompletionEnabled;
+// ../../front_end/models/ai_code_completion/ai_code_completion.ts
+import * as AiUtils2 from "../ai-utils/ai-utils.js";
 
 // ../../front_end/models/ai_code_completion/AiCodeCompletion.ts
 var AiCodeCompletion_exports = {};
@@ -33,6 +15,8 @@ __export(AiCodeCompletion_exports, {
 });
 import * as Host from "../../core/host/host.js";
 import * as Root from "../../core/root/root.js";
+import * as AiUtils from "../ai-utils/ai-utils.js";
+var { debugCodeGenCompleteLog: debugLog } = AiUtils.Debug;
 var consoleAdditionalContextFileContent = `/**
  * This file describes the execution environment of the Chrome DevTools Console.
  * The code is JavaScript, but with special global functions and variables.
@@ -315,9 +299,13 @@ var AiCodeCompletion = class _AiCodeCompletion {
     return Boolean(aidaAvailability.enabled && _AiCodeCompletion.isAiCodeCompletionStylesAvailable());
   }
 };
+
+// ../../front_end/models/ai_code_completion/ai_code_completion.ts
+function debugLog2(...log) {
+  AiUtils2.Debug.debugCodeGenCompleteLog(...log);
+}
 export {
   AiCodeCompletion_exports as AiCodeCompletion,
-  debugLog,
-  isDebugMode
+  debugLog2 as debugLog
 };
 //# sourceMappingURL=ai_code_completion.js.map

@@ -103,7 +103,9 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
         '4K',
     ];
     // clang-format off
-    render(input.showDeviceMode
+    render(html `
+    <style>${deviceModeViewStyles}</style>
+    ${input.showDeviceMode
         ? html `${UI.Widget.widget(DeviceModeToolbar, { model: input.model })}
     <div class=${classMap({
             'device-mode-content-clip': true,
@@ -202,7 +204,7 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
       </div>
     </div>
   `
-        : widget(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry.Size(150, 150) }), target, {
+        : widget(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry.Size(150, 150) })}`, target, {
         container: {
             classes: ['device-mode-view'],
         },
@@ -238,7 +240,6 @@ export class DeviceModeView extends UI.Widget.VBox {
         super(element, { useShadowDom: true });
         this.#view = view;
         this.setMinimumSize(150, 150);
-        this.registerRequiredCSS(deviceModeViewStyles);
         this.model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
         this.model.addEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.updateUI, this);
         this.model.addEventListener("ScreenshotCopied" /* EmulationModel.DeviceModeModel.Events.SCREENSHOT_COPIED */, this.screenshotCopied, this);

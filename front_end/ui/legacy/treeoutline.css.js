@@ -37,7 +37,8 @@ export default `/*
 .tree-outline li .selection {
   display: none;
   z-index: -1;
-  margin-left: -10000px;
+  /* Extend selection background leftward across any tree nesting depth. */
+  margin-left: -100vw;
 }
 
 .tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.selected {
@@ -63,10 +64,10 @@ export default `/*
 
 .tree-outline:not(.hide-selection-when-blurred) li.hovered:not(.selected) .selection {
   display: block;
-  left: 3px;
-  right: 3px;
+  left: var(--sys-size-2);
+  right: var(--sys-size-2);
   background-color: var(--sys-color-state-hover-on-subtle);
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
@@ -173,7 +174,7 @@ ol.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.sel
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus-visible {
   width: fit-content;
-  padding-right: 3px;
+  padding-right: var(--sys-size-3);
 }
 
 /* Navigation tree variant */

@@ -36,7 +36,7 @@ var diffView_css_default = `/*
 
 .diff-line-number {
   color: var(--sys-color-token-subtle);
-  padding: 0 3px 0 9px;
+  padding: 0 var(--sys-size-3) 0 var(--sys-size-5);
   text-align: right;
   user-select: none;
 }
@@ -98,7 +98,7 @@ var diffView_css_default = `/*
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);
   margin: 0;
-  padding: var(--sys-size-5) 9px;
+  padding: var(--sys-size-5);
 }
 
 /*# sourceURL=${import.meta.resolve("./diffView.css")} */`;

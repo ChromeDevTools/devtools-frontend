@@ -13,7 +13,7 @@ export default `/*
   .layer-summary {
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     justify-content: space-between;
-    padding: var(--sys-size-3) 10px;
+    padding: var(--sys-size-3) var(--sys-size-5);
     flex-shrink: 0;
   }
 

@@ -50,7 +50,7 @@ export default `/*
 }
 
 .overflow {
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
   font-weight: bold;
   display: block;
   border: none;

@@ -67,6 +67,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
+    <style>${propertiesWidgetStyles}</style>
     <div jslog=${VisualLogging.pane('element-properties').track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
@@ -116,7 +117,6 @@ export class PropertiesWidget extends UI.Widget.VBox {
     #filterText = '';
     constructor(view = DEFAULT_VIEW) {
         super({ useShadowDom: true });
-        this.registerRequiredCSS(propertiesWidgetStyles);
         this.showAllPropertiesSetting = getShowAllPropertiesSetting();
         this.showAllPropertiesSetting.addChangeListener(this.onFilterChanged.bind(this));
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this, { scoped: true });

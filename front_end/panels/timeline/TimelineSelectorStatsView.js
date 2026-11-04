@@ -105,6 +105,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const SelectorTimingsKey = Trace.Types.Events.SelectorTimingsKey;
 const DEFAULT_VIEW = (input, _output, target) => {
     render(html `
+      <style>${timelineSelectorStatsViewStyles}</style>
       <devtools-data-grid striped name=${i18nString(UIStrings.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
@@ -185,7 +186,6 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     #timings = [];
     constructor(parsedTrace, view = DEFAULT_VIEW) {
         super();
-        this.registerRequiredCSS(timelineSelectorStatsViewStyles);
         this.#view = view;
         this.#selectorLocations = new Map();
         this.#parsedTrace = parsedTrace;

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
-import { addCustomAnchorsMovedListener, clearClippingAncestorsCache, computeVisibleRect, deepQuerySelectorAll, getCustomAnchorElement, getCustomAnchorResolverForElement, getEditorFilePath, hasDisallowedCommentAncestor, isDomTrackedAnchor, rematchCommentAnchor, removeCustomAnchorsMovedListener, resolveCommentAnchor, resolveCommentAnchorElement, } from './CommentAnchorResolver.js';
+import { addCustomAnchorsMovedListener, clearClippingAncestorsCache, computeVisibleRect, deepQuerySelectorAll, getCustomAnchorElement, getCustomAnchorResolverForElement, getEditorFilePath, hasDisallowedCommentAncestor, isDomTrackedAnchor, rematchCommentAnchor, removeCustomAnchorsMovedListener, resolveCommentAnchor, resolveCommentAnchorElement, setStickyOccluders, STICKY_OCCLUDER_ATTRIBUTE, } from './CommentAnchorResolver.js';
 export const COMMENT_MODE_CURSOR = 'var(--comment-cursor)';
 export var Events;
 (function (Events) {
@@ -277,7 +277,19 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
      */
     #rematchAllComments(root = document) {
         clearClippingAncestorsCache();
-        const jslogElements = deepQuerySelectorAll(root, '[jslog]');
+        // Single deep traversal shared by anchor rematching and sticky occluder clipping.
+        const scannedElements = deepQuerySelectorAll(root, `[jslog], [${STICKY_OCCLUDER_ATTRIBUTE}]`);
+        const jslogElements = [];
+        const stickyOccluders = [];
+        for (const el of scannedElements) {
+            if (el.hasAttribute('jslog')) {
+                jslogElements.push(el);
+            }
+            if (el.hasAttribute(STICKY_OCCLUDER_ATTRIBUTE)) {
+                stickyOccluders.push(el);
+            }
+        }
+        setStickyOccluders(stickyOccluders);
         const oldElements = new Set();
         const newElements = new Set();
         for (const thread of this.#commentManager.getCommentThreads()) {
@@ -424,7 +436,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
      */
     stop() {
         document.body.style.cursor = '';
-        clearClippingAncestorsCache();
+        setStickyOccluders(null);
         this.clearDraftThreads();
         this.#removeClickListener();
         this.#removeScrollListener();
@@ -717,6 +729,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
                 'data-target-id',
                 'aria-expanded',
                 'data-file-path',
+                STICKY_OCCLUDER_ATTRIBUTE,
             ],
         });
     }

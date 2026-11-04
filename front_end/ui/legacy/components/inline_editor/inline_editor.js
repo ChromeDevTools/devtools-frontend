@@ -647,8 +647,7 @@ var bezierEditor_css_default = `/*
  */
 
 :host {
-  width: 270px;
-  height: 350px;
+  width: var(--sys-size-30);
   user-select: none;
   padding: var(--sys-size-8);
   overflow: hidden;
@@ -672,12 +671,14 @@ var bezierEditor_css_default = `/*
 }
 
 .bezier-preset {
-  width: 50px;
-  height: 50px;
-  padding: 5px;
+  /* 48px (--sys-size-16) - 2 * 4px (--sys-size-3)
+     preserves the 40x40 PresetUI SVG canvas. */
+  width: var(--sys-size-16);
+  height: var(--sys-size-16);
+  padding: var(--sys-size-3);
   margin: auto;
   background-color: var(--sys-color-surface1);
-  border-radius: 3px;
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .bezier-preset line.bezier-control-line {
@@ -1254,13 +1255,12 @@ var colorSwatch_css_default = `/*
   display: inline-block;
   user-select: none;
   background-image: var(--image-file-checker);
-  line-height: 10px;
 }
 
 .color-swatch-inner {
   width: 100%;
   height: 100%;
-  display: inline-block;
+  display: block;
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   box-sizing: border-box;
   cursor: pointer;
@@ -1483,7 +1483,7 @@ var cssAngleEditor_css_default = `/*
 .center {
   width: 0.7em;
   height: 0.7em;
-  border-radius: 10px;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 .dial {
@@ -1509,7 +1509,7 @@ var cssAngleEditor_css_default = `/*
   height: 1em;
   border-radius: var(--sys-shape-corner-full);
   cursor: pointer;
-  box-shadow: 0 0 5px var(--box-shadow-outline-color);
+  box-shadow: 0 0 var(--sys-size-3) var(--box-shadow-outline-color);
 }
 
 .hand::before,
@@ -1519,7 +1519,7 @@ var cssAngleEditor_css_default = `/*
 
 :host-context(.theme-with-dark-background) .hand::before {
   /* stylelint-disable-next-line plugin/use_theme_colors */
-  box-shadow: 0 0 5px hsl(0deg 0% 0% / 80%);
+  box-shadow: 0 0 var(--sys-size-3) hsl(0deg 0% 0% / 80%);
 }
 
 :host-context(.theme-with-dark-background) .center,

@@ -99,6 +99,7 @@ export interface Response {
 export interface EntryDTO {
     _connectionId?: string;
     _fromCache?: string;
+    _initialPriority: Protocol.Network.ResourcePriority | null;
     _initiator: Protocol.Network.Initiator | null;
     _priority: Protocol.Network.ResourcePriority | null;
     _resourceType: string;

@@ -13,14 +13,14 @@ export declare class ExecuteJavaScriptTool implements DataTool<ExecuteJavaScript
     readonly displayName: string;
     readonly description: string;
     /**
-     * Formats the code and checks it against the size limits. This method does
-     * not check syntax: if formatting fails, the formatter returns the original
-     * code, and running it on the page reports any SyntaxError to the model.
+     * Checks the raw AI-generated code against the size limits and returns an
+     * error message if any limit is exceeded.
+     *
+     * Validation runs directly on the unformatted input string so that line-length
+     * checks match what `PermissionPrompt` displays and avoid false rejections
+     * from formatter line collapsing.
      */
-    static validateAndFormatCode(code: string): Promise<{
-        formattedCode?: string;
-        error?: string;
-    }>;
+    static validateCode(code: string): string | undefined;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ExecuteJavaScriptArgs>;
     displayInfoFromArgs(params: ExecuteJavaScriptArgs): {
         title: string;

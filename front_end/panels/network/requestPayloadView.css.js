@@ -18,7 +18,7 @@ export default `/*
 
 .raw-payload-section {
   flex: 1 1 auto;
-  min-height: 200px;
+  min-height: var(--sys-size-25);
   display: flex;
   flex-direction: column;
   border-top: var(--sys-size-1) solid var(--sys-color-divider);

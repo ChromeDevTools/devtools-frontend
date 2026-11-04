@@ -163,6 +163,7 @@ var HAREntry = class extends HARBase {
     this.comment = HARBase.optionalString(data["comment"]);
     this.custom.set("connectionId", HARBase.optionalString(data["_connectionId"]));
     this.custom.set("fromCache", HARBase.optionalString(data["_fromCache"]));
+    this.custom.set("initialPriority", HARBase.optionalString(data["_initialPriority"]));
     this.custom.set("initiator", this.#importInitiator(data["_initiator"]));
     this.custom.set("priority", HARBase.optionalString(data["_priority"]));
     this.custom.set("resourceType", HARBase.optionalString(data["_resourceType"]));
@@ -2590,6 +2591,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -3467,6 +3473,10 @@ var Importer = class _Importer {
     request.setIncludedRequestCookies(includedRequestCookies);
     const responseCookies = entry.response.cookies.map(this.fillCookieFromHARCookie.bind(this, SDK2.Cookie.Type.RESPONSE));
     request.responseCookies = responseCookies;
+    const initialPriority = entry.customAsString("initialPriority");
+    if (initialPriority && Network.ResourcePriority.hasOwnProperty(initialPriority)) {
+      request.setInitialPriority(initialPriority);
+    }
     const priority = entry.customAsString("priority");
     if (priority && Network.ResourcePriority.hasOwnProperty(priority)) {
       request.setPriority(priority);
@@ -3691,6 +3701,7 @@ var Entry = class _Entry {
       }
     }
     const entry = {
+      _initialPriority: harEntry.request.initialPriority(),
       _initiator: exportedInitiator,
       _priority: harEntry.request.priority(),
       _resourceType: harEntry.request.resourceType().name(),

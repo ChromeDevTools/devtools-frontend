@@ -45,13 +45,14 @@ export default `/*
   display: inline-block;
   flex: none;
   margin: auto var(--sys-size-2);
-  padding: 3px var(--sys-size-4);
+  /* 16px line-height (--sys-typescale-body5-medium) + 2*2px vertical padding (--sys-size-2)
+   * = 20px (--sys-size-9) pill inside 24px (--sys-size-11) .filter-bitset-filter bar. */
+  padding: var(--sys-size-2) var(--sys-size-4);
   background: transparent;
   border-radius: var(--sys-size-4);
   overflow: hidden;
   cursor: pointer;
-  font-weight: 500;
-  font-size: var(--sys-typescale-body5-size);
+  font: var(--sys-typescale-body5-medium);
 }
 
 .filter-bitset-filter span:focus-visible {

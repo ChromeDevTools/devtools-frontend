@@ -162,6 +162,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
             class="chat-inline-button"
             @click=${input.onNewConversation}
+            .reducedFocusRing=${true}
             .data=${{
             variant: "text" /* Buttons.Button.Variant.TEXT */,
             title: lockedString(UIStringsNotTranslate.startNewChat),
@@ -363,6 +364,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                         class="start-new-chat-button"
                         aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
                         @click=${input.onNewConversation}
+                        .reducedFocusRing=${true}
                         .data=${{
                             variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
                             size: "SMALL" /* Buttons.Button.Size.SMALL */,

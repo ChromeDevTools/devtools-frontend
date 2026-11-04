@@ -930,8 +930,8 @@ var breakpointsView_css_default = `/*
 
   button {
     cursor: pointer;
-    width: 13px;
-    height: 13px;
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
     border: none;
     background-color: transparent;
     display: none;
@@ -973,7 +973,6 @@ var breakpointsView_css_default = `/*
   .breakpoint-item {
     display: flex;
     align-items: center;
-    line-height: 13px;
     height: var(--sys-size-9);
     padding-right: var(--sys-size-5);
   }
@@ -1041,7 +1040,7 @@ var breakpointsView_css_default = `/*
   }
 
   .pause-on-uncaught-exceptions {
-    margin-top: 3px;
+    margin-top: var(--sys-size-2);
   }
 
   .pause-on-caught-exceptions {
@@ -4454,6 +4453,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -9373,7 +9377,7 @@ var tabbedEditorContainer_css_default = `/*
     margin: 0 var(--sys-size-8);
 
     &.workspace {
-      line-height: 18px;
+      line-height: var(--sys-size-9);
       display: inline-flex;
       align-items: center;
       border: var(--sys-size-2) dashed var(--sys-color-divider);
@@ -18808,117 +18812,6 @@ import * as StackTrace9 from "../../models/stack_trace/stack_trace.js";
 import * as Buttons10 from "../../ui/components/buttons/buttons.js";
 import * as TextEditor6 from "../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "../../ui/legacy/components/object_ui/object_ui.js";
-
-// gen/front_end/ui/legacy/components/object_ui/objectValue.css.js
-var objectValue_css_default = `/*
- * Copyright 2015 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.value.object-value-node:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
-
-.object-value-function-prefix,
-.object-value-boolean {
-  color: var(--sys-color-token-attribute-value);
-}
-
-.object-value-function {
-  font-style: italic;
-}
-
-.object-value-function.linkified:hover {
-  --override-linkified-hover-background: rgb(0 0 0 / 10%);
-
-  background-color: var(--override-linkified-hover-background);
-  cursor: pointer;
-}
-
-.theme-with-dark-background .object-value-function.linkified:hover,
-:host-context(.theme-with-dark-background) .object-value-function.linkified:hover {
-  --override-linkified-hover-background: rgb(230 230 230 / 10%);
-}
-
-.object-value-number {
-  color: var(--sys-color-token-attribute-value);
-}
-
-.object-value-bigint {
-  color: var(--sys-color-token-comment);
-}
-
-.object-value-string,
-.object-value-regexp,
-.object-value-symbol {
-  white-space: pre;
-  unicode-bidi: isolate;
-  color: var(--sys-color-token-property-special);
-}
-
-.object-value-node {
-  position: relative;
-  vertical-align: baseline;
-  color: var(--sys-color-token-variable);
-  white-space: nowrap;
-}
-
-.object-value-null,
-.object-value-undefined {
-  color: var(--sys-color-state-disabled);
-}
-
-.object-value-unavailable {
-  color: var(--sys-color-token-tag);
-}
-
-.object-value-calculate-value-button:hover {
-  text-decoration: underline;
-}
-
-.object-properties-section-custom-section {
-  display: inline-flex;
-  flex-direction: column;
-}
-
-.theme-with-dark-background .object-value-number,
-:host-context(.theme-with-dark-background) .object-value-number,
-.theme-with-dark-background .object-value-boolean,
-:host-context(.theme-with-dark-background) .object-value-boolean {
-  --override-primitive-dark-mode-color: hsl(252deg 100% 75%);
-
-  color: var(--override-primitive-dark-mode-color);
-}
-
-.object-properties-section .object-description {
-  color: var(--sys-color-token-subtle);
-}
-
-.value .object-properties-preview {
-  white-space: nowrap;
-}
-
-.name {
-  color: var(--sys-color-token-tag);
-  flex-shrink: 0;
-  unicode-bidi: isolate;
-}
-
-.object-properties-preview .name {
-  color: var(--sys-color-token-subtle);
-}
-
-@media (forced-colors: active) {
-  .object-value-calculate-value-button:hover {
-    forced-color-adjust: none;
-    color: Highlight;
-  }
-}
-
-/*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
-
-// ../../front_end/panels/sources/WatchExpressionsSidebarPane.ts
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
 import { Directives as Directives7, html as html24, nothing as nothing14, render as render16 } from "../../ui/lit/lit.js";
@@ -18976,7 +18869,7 @@ li.watch-expression-tree-item > span.tree-element-title {
 
 .watch-expression-title:hover,
 .watch-expression-title:focus-within {
-  padding-right: 26px;
+  padding-right: var(--sys-size-11);
 }
 
 .watch-expression-object-header .watch-expression-title {
@@ -19036,7 +18929,8 @@ li.watch-expression-tree-item > span.tree-element-title {
 .watch-expression-header {
   flex: auto;
   margin-left: calc(-1 * var(--sys-size-8));
-  padding-left: 15px;
+  /* 16px (--sys-size-8) negative margin offset minus 1px (--sys-size-1) object header title margin */
+  padding-left: calc(var(--sys-size-8) - var(--sys-size-1));
 }
 
 li.watch-expression-tree-item {
@@ -19377,6 +19271,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
   render16(
     // clang-format off
     html24`
+      <style>${watchExpressionsSidebarPane_css_default}</style>
       ${input.watchExpressions.length === 0 ? html24`<div class=gray-info-message tabindex=-1 >
         ${i18nString24(UIStrings25.noWatchExpressions)}
         </div>` : html24`<devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus toggle-on-click .template=${html24`
@@ -19409,7 +19304,6 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   #expansionTrackers = /* @__PURE__ */ new Map();
   constructor() {
     super({ useShadowDom: true });
-    this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.#watchExpressions = [];
     this.#watchExpressionsSetting = Common20.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
     UI23.Context.Context.instance().addFlavorChangeListener(

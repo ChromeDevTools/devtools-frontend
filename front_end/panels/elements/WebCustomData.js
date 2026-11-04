@@ -26,7 +26,7 @@ export class WebCustomData {
                 this.#data.set(property.name, property);
             }
         })
-            .catch();
+            .catch(() => { });
     }
     /**
      * Creates a fresh `WebCustomData` instance using the standard

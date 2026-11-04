@@ -57,7 +57,8 @@ export default `/*
 
 .tabbed-pane-header {
   display: flex;
-  flex: 0 0 27px;
+  /* 28px standard toolbar height (--sys-size-12) minus 1px bottom border (--sys-size-1). */
+  flex: 0 0 calc(var(--sys-size-12) - var(--sys-size-1));
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: visible;
   width: 100%;
@@ -104,7 +105,8 @@ export default `/*
   }
 
   &:has(.status-dot) {
-    width: 9px;
+    /* 6px (.status-dot width) + 2px (padding-left) + 1px (.status-dot margin-left) */
+    width: calc(var(--sys-size-4) + var(--sys-size-2) + var(--sys-size-1));
   }
 }
 
@@ -151,7 +153,7 @@ export default `/*
   color: var(--sys-color-on-surface-subtle);
   height: var(--sys-size-12);
   float: left;
-  padding: 0 10px;
+  padding: 0 var(--sys-size-5);
   white-space: nowrap;
   cursor: default;
   display: flex;
@@ -310,7 +312,8 @@ export default `/*
 }
 
 .tabbed-pane-tab-slider {
-  height: 3px;
+  /* 2px indicator above header + 1px border-bottom overlap (3px total). */
+  height: calc(var(--sys-size-2) + var(--sys-size-1));
   position: absolute;
   bottom: calc(-1 * var(--sys-size-1));
   background-color: var(--sys-color-primary);

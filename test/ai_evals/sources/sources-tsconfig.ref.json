@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/ai_evals/sources",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/ai_evals/sources/sources-add-to-cart-handler.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-blank-screen-render.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-canvas-signature-locator.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-chart-lookback-config.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-draft-response-freeze.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-firebase-carrier-search.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-input-safety-audit.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-page-reload-loop.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-popup-not-displayed.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-script-explanation-perf.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-theme-switcher-code.test.ts",
+    "../../../../../../test/ai_evals/sources/sources-third-party-consent-locator.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../harness_library-tsconfig.ref.json"
+    },
+    {
+      "path": "../../conductor/implementation-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../report/report-tsconfig.ref.json"
+    }
+  ]
+}

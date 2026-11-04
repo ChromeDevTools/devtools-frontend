@@ -55,6 +55,9 @@
   "references": [
     {
       "path": "ai_code_completion-tsconfig.ref.json"
+    },
+    {
+      "path": "../ai-utils/bundle-tsconfig.ref.json"
     }
   ]
 }

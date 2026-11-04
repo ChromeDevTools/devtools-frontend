@@ -50,7 +50,7 @@ export interface FunctionPrimitiveParams extends BaseFunctionParam {
 }
 export interface FunctionArrayParam extends BaseFunctionParam {
     type: ParametersTypes.ARRAY;
-    items: FunctionPrimitiveParams;
+    items: FunctionPrimitiveParams | FunctionObjectParam;
 }
 export interface FunctionObjectParam<T extends string | number | symbol = string> extends BaseFunctionParam {
     type: ParametersTypes.OBJECT;
@@ -349,7 +349,14 @@ export interface AidaChunkResponse {
     functionCallChunk?: {
         functionCall: AidaFunctionCall;
     };
-    error?: string;
+    /**
+     * Error information returned in the chunk.
+     * Supports direct AIDA stream chunk error strings (for example,
+     * "RESOURCE_EXHAUSTED: quota exceeded") and structured google.rpc.Status
+     * error objects translated from GCA stream chunks (for example,
+     * {"code": 429, "message": "You have exhausted your capacity on this model.", "status": "RESOURCE_EXHAUSTED", "details": [...]}).
+     */
+    error?: string | Record<string, unknown>;
 }
 export declare function debugLog(...log: unknown[]): void;
 export {};

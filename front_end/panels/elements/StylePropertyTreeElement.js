@@ -16,8 +16,7 @@ import { createIcon, Icon } from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
-import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render, } from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper, } from './ColorSwatchPopoverIcon.js';
@@ -546,7 +545,7 @@ export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBa
         if (value === null) {
             return html `${match.text}`;
         }
-        const evaluation = context.tracing?.applyEvaluation([], () => ({ placeholder: html `${value.toFixed(3)}` }));
+        const evaluation = context.tracing?.applyEvaluation([], () => ({ template: html `${value.toFixed(3)}` }));
         if (evaluation) {
             return evaluation;
         }
@@ -604,18 +603,13 @@ export class ColorRenderer extends ColorRendererBase {
         if (match.node.name === 'CallExpression' && childTracingContexts) {
             const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
                 const displayColor = color.as(((color.alpha ?? 1) !== 1) ? "hexa" /* Common.Color.Format.HEXA */ : "hex" /* Common.Color.Format.HEX */);
-                const colorText = document.createElement('span');
-                colorText.textContent = displayColor.asString();
                 const swatch = new ColorRenderer(this.#stylesContainer, null)
                     .renderColorSwatch(displayColor.isGamutClipped() ? color : (displayColor.nickname() ?? displayColor), match, context);
-                swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-                    colorText.textContent = ev.data.color.asString();
-                });
                 context.addControl('color', swatch);
-                return { placeholder: [swatch, colorText] };
+                return { template: html `${swatch}<span>${displayColor.asString()}</span>` };
             });
             if (evaluation) {
-                return html `${evaluation}`;
+                return evaluation;
             }
         }
         const swatch = this.renderColorSwatch(color, match, context);
@@ -836,28 +830,25 @@ export class ColorMixRenderer extends ColorMixRendererBase {
         if (nodeId !== undefined && childTracingContexts) {
             const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
                 const initialColor = Common.Color.parse('#000');
-                const { promise, resolve } = Promise.withResolvers();
                 const swatch = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, match, context);
-                swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-                    resolve(ev.data.color.asString());
-                });
                 context.addControl('color', swatch);
                 const asyncEvalCallback = async () => {
                     const results = await this.#stylesContainer.cssModel()?.resolveValues(undefined, nodeId, colorMixText);
                     if (context.signal?.aborted) {
-                        return false;
+                        return null;
                     }
                     if (results) {
                         const color = Common.Color.parse(results[0]);
                         if (color) {
-                            swatch.setColor(color.as("hexa" /* Common.Color.Format.HEXA */));
-                            return true;
+                            const formattedColor = color.as("hexa" /* Common.Color.Format.HEXA */);
+                            swatch.setColor(formattedColor);
+                            return html `${swatch}<span>${formattedColor.asString()}</span>`;
                         }
                     }
-                    return false;
+                    return null;
                 };
                 return {
-                    placeholder: html `${swatch}<span>${until(promise, initialColor.asString())}</span>`,
+                    template: html `${swatch}<span>${initialColor.asString()}</span>`,
                     asyncEvalCallback,
                 };
             });
@@ -890,7 +881,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
       >${ifExpanded(() => {
             const color = swatch.mixedColor();
             if (!color) {
-                return Lit.nothing;
+                return nothing;
             }
             const rgb = color.as("hex" /* Common.Color.Format.HEX */);
             return html `${rgb.isGamutClipped() ? color.asString() : rgb.asString()}`;
@@ -1065,8 +1056,8 @@ export class LinkableNameRenderer extends LinkableNameRendererBase {
                   @mouseup=${(ev) => {
                     ev.consume(true);
                     void Common.Revealer.reveal(maybeAnimationGroup);
-                }}></devtools-icon>` : Lit.nothing)) :
-                Lit.nothing;
+                }}></devtools-icon>` : nothing)) :
+                nothing;
             return html `<span>${icon}${swatch}</span>`;
         }
         // clang-format on

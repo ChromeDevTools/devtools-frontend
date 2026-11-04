@@ -352,23 +352,57 @@ import * as Root3 from "../../core/root/root.js";
 // ../../front_end/models/ai-utils/debug.ts
 var debug_exports = {};
 __export(debug_exports, {
+  DEVTOOLS_AI_DEBUG_STORAGE_KEY: () => DEVTOOLS_AI_DEBUG_STORAGE_KEY,
+  debugCodeGenCompleteLog: () => debugCodeGenCompleteLog,
   debugLog: () => debugLog,
+  getDevToolsAIDebugConfig: () => getDevToolsAIDebugConfig,
+  isCodeGenCompleteDebugMode: () => isCodeGenCompleteDebugMode,
   isDebugMode: () => isDebugMode,
-  isStructuredLogEnabled: () => isStructuredLogEnabled
+  setAiAssistanceStructuredLogEnabled: () => setAiAssistanceStructuredLogEnabled,
+  setDebugAiAssistanceEnabled: () => setDebugAiAssistanceEnabled,
+  setDebugAiCodeCompletionEnabled: () => setDebugAiCodeCompletionEnabled,
+  setDebugAiCodeGenerationEnabled: () => setDebugAiCodeGenerationEnabled,
+  setDevToolsAIDebug: () => setDevToolsAIDebug
 });
-function isDebugMode() {
+import * as Platform from "../../core/platform/platform.js";
+var DEVTOOLS_AI_DEBUG_STORAGE_KEY = "devToolsAiDebug";
+function getDevToolsAIDebugConfig() {
   try {
-    return Boolean(localStorage.getItem("debugAiAssistancePanelEnabled"));
+    const raw = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem(DEVTOOLS_AI_DEBUG_STORAGE_KEY);
+    if (!raw) {
+      return { assistance: false, gca: false, codeGenComplete: false };
+    }
+    const parsed = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null) {
+      return { assistance: false, gca: false, codeGenComplete: false };
+    }
+    const record = parsed;
+    return {
+      assistance: Boolean(record.assistance),
+      gca: Boolean(record.gca),
+      codeGenComplete: Boolean(record.codeGenComplete)
+    };
   } catch {
-    return false;
+    return { assistance: false, gca: false, codeGenComplete: false };
   }
 }
-function isStructuredLogEnabled() {
+function setDevToolsAIDebug(config = {}) {
+  const current = getDevToolsAIDebugConfig();
+  const nextConfig = {
+    assistance: config.assistance ?? current.assistance,
+    gca: config.gca ?? current.gca,
+    codeGenComplete: config.codeGenComplete ?? current.codeGenComplete
+  };
+  const storage = Platform.HostRuntime.HOST_RUNTIME.getLocalStorage();
   try {
-    return Boolean(localStorage.getItem("aiAssistanceStructuredLogEnabled"));
+    storage?.setItem(DEVTOOLS_AI_DEBUG_STORAGE_KEY, JSON.stringify(nextConfig));
   } catch {
-    return false;
   }
+  console.log("DevTools AI debug config:", nextConfig);
+  return nextConfig;
+}
+function isDebugMode() {
+  return getDevToolsAIDebugConfig().assistance;
 }
 function debugLog(...log) {
   if (!isDebugMode()) {
@@ -376,23 +410,36 @@ function debugLog(...log) {
   }
   console.log(...log);
 }
+function isCodeGenCompleteDebugMode() {
+  return getDevToolsAIDebugConfig().codeGenComplete;
+}
+function debugCodeGenCompleteLog(...log) {
+  if (!isCodeGenCompleteDebugMode()) {
+    return;
+  }
+  console.log(...log);
+}
 function setDebugAiAssistanceEnabled(enabled) {
-  if (enabled) {
-    localStorage.setItem("debugAiAssistancePanelEnabled", "true");
-  } else {
-    localStorage.removeItem("debugAiAssistancePanelEnabled");
-  }
-  setAiAssistanceStructuredLogEnabled(enabled);
+  console.warn(`setDebugAiAssistanceEnabled is deprecated and will be removed soon. Use setDevToolsAIDebug({assistance: ${Boolean(enabled)}, gca: ${Boolean(enabled)}}) instead.`);
+  setDevToolsAIDebug({ assistance: Boolean(enabled), gca: Boolean(enabled) });
 }
-globalThis.setDebugAiAssistanceEnabled = setDebugAiAssistanceEnabled;
 function setAiAssistanceStructuredLogEnabled(enabled) {
-  if (enabled) {
-    localStorage.setItem("aiAssistanceStructuredLogEnabled", "true");
-  } else {
-    localStorage.removeItem("aiAssistanceStructuredLogEnabled");
-  }
+  console.warn(`setAiAssistanceStructuredLogEnabled is deprecated and will be removed soon. Use setDevToolsAIDebug({assistance: ${Boolean(enabled)}}) instead.`);
+  setDevToolsAIDebug({ assistance: Boolean(enabled) });
 }
+function setDebugAiCodeCompletionEnabled(enabled) {
+  console.warn(`setDebugAiCodeCompletionEnabled is deprecated and will be removed soon. Use setDevToolsAIDebug({codeGenComplete: ${Boolean(enabled)}}) instead.`);
+  setDevToolsAIDebug({ codeGenComplete: Boolean(enabled) });
+}
+function setDebugAiCodeGenerationEnabled(enabled) {
+  console.warn(`setDebugAiCodeGenerationEnabled is deprecated and will be removed soon. Use setDevToolsAIDebug({codeGenComplete: ${Boolean(enabled)}}) instead.`);
+  setDevToolsAIDebug({ codeGenComplete: Boolean(enabled) });
+}
+globalThis.setDevToolsAIDebug = setDevToolsAIDebug;
+globalThis.setDebugAiAssistanceEnabled = setDebugAiAssistanceEnabled;
 globalThis.setAiAssistanceStructuredLogEnabled = setAiAssistanceStructuredLogEnabled;
+globalThis.setDebugAiCodeCompletionEnabled = setDebugAiCodeCompletionEnabled;
+globalThis.setDebugAiCodeGenerationEnabled = setDebugAiCodeGenerationEnabled;
 
 // ../../front_end/models/ai-utils/AiUtils.ts
 var REPORT_LEGAL_ISSUE_URL = "https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504";

@@ -94,7 +94,7 @@ export default `/*
 
 .overlay-type-CANDY_STRIPED_TIME_RANGE {
   --red-stripe-width: var(--sys-size-2);
-  --white-stripe-width: 7px;
+  --white-stripe-width: var(--sys-size-4);
 
   background-image:
     repeating-linear-gradient(
@@ -133,11 +133,11 @@ export default `/*
   bottom: 0;
 
   &.overlap-1 {
-    bottom: 55px;
+    bottom: var(--sys-size-17);
   }
 
   &.overlap-2 {
-    bottom: 105px;
+    bottom: var(--sys-size-20);
   }
 }
 
@@ -177,7 +177,7 @@ export default `/*
 
 .overlay-type-TIMINGS_MARKER {
   bottom: 0;
-  width: 0.5px;
+  width: var(--sys-size-1);
   pointer-events: auto;
   background-color: var(--marker-color); /* stylelint-disable-line plugin/use_theme_colors */
 }

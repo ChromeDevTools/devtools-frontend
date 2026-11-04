@@ -636,10 +636,9 @@ var chatMessage_css_default = `/*
 
     .answer-body-wrapper {
       @container(min-width: 700px) {
-        /* Purposefully not using design system variables, this is a
-         * specific size to indent the content in and align it with the
-         * walkthrough CTA. */
-        padding-left: 35px;
+        /* Indent the content to align with the walkthrough CTA
+         * (icon width + flex gap + button horizontal padding). */
+        padding-left: calc(var(--sys-size-9) + var(--sys-size-2) + var(--sys-size-6));
       }
     }
 
@@ -5712,6 +5711,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -6668,7 +6672,7 @@ var chatInput_css_default = `/*
 }
 
 .chat-inline-button {
-  padding-left: 3px;
+  padding-left: var(--sys-size-3);
 }
 
 .select-element {
@@ -7105,6 +7109,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             aria-label=${lockedString4(UIStringsNotTranslate3.startNewChat)}
             class="chat-inline-button"
             @click=${input.onNewConversation}
+            .reducedFocusRing=${true}
             .data=${{
     variant: Buttons3.Button.Variant.TEXT,
     title: lockedString4(UIStringsNotTranslate3.startNewChat),
@@ -7277,6 +7282,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                         class="start-new-chat-button"
                         aria-label=${lockedString4(UIStringsNotTranslate3.startNewChat)}
                         @click=${input.onNewConversation}
+                        .reducedFocusRing=${true}
                         .data=${{
     variant: Buttons3.Button.Variant.OUTLINED,
     size: Buttons3.Button.Size.SMALL,
@@ -8480,13 +8486,13 @@ function renderPermissionPrompt(step, disclaimerText) {
   const allowAlwaysButton = dialog3.permissionPrompt === AiAssistanceModel6.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS ? html9`<devtools-button
       .data=${{
     variant: Buttons5.Button.Variant.OUTLINED,
-    jslogContext: "always-allow-execute-code"
+    jslogContext: "ai-permission-allow-always"
   }}
       @click=${() => dialog3.onAnswer(AiAssistanceModel6.Tool.PermissionDecision.ALLOW_ALWAYS)}
     >${lockedString5(UIStringsNotTranslate4.allowAlways)}</devtools-button>` : Lit9.nothing;
   return html9`${repeat([step], (step2) => step2, () => html9`
   <div class="permission-prompt"
-    jslog=${VisualLogging6.section("side-effect-confirmation")}>
+    jslog=${VisualLogging6.section("ai-permission-prompt")}>
     <div class="permission-prompt-header">
       <devtools-icon name="lock"></devtools-icon>
       <h2 class="permission-prompt-title">${title}</h2>
@@ -8497,7 +8503,7 @@ function renderPermissionPrompt(step, disclaimerText) {
       <devtools-button
         .data=${{
     variant: Buttons5.Button.Variant.TEXT,
-    jslogContext: "decline-execute-code"
+    jslogContext: "ai-permission-reject"
   }}
         @click=${() => dialog3.onAnswer(AiAssistanceModel6.Tool.PermissionDecision.REJECT)}
         ${ref4(focusOnFirstRender)}
@@ -8506,7 +8512,7 @@ function renderPermissionPrompt(step, disclaimerText) {
       <devtools-button
         .data=${{
     variant: Buttons5.Button.Variant.PRIMARY,
-    jslogContext: "accept-execute-code"
+    jslogContext: "ai-permission-allow-once"
   }}
         @click=${() => dialog3.onAnswer(AiAssistanceModel6.Tool.PermissionDecision.ALLOW_ONCE)}
       >${lockedString5(UIStringsNotTranslate4.allowThisTime)}</devtools-button>
@@ -9021,7 +9027,7 @@ var exploreWidget_css_default = `/*
 
     .link {
       padding: 0;
-      margin: 0 3px;
+      margin: 0 var(--sys-size-3);
     }
 
     .header {
@@ -9091,8 +9097,8 @@ var exploreWidget_css_default = `/*
         border-radius: var(--sys-shape-corner-full);
 
         devtools-icon {
-          width: 18px;
-          height: 18px;
+          width: var(--sys-size-9);
+          height: var(--sys-size-9);
         }
       }
 
@@ -9953,6 +9959,7 @@ function defaultView(input, output, target) {
     }
   }
   Lit12.render(html15`
+    <style>${aiAssistancePanel_css_default}</style>
     ${toolbarView(input)}
     <div class="ai-assistance-view-container">
       <devtools-split-view
@@ -10052,7 +10059,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
   constructor(view = defaultView, { aidaClient, aidaAvailability }) {
     super(_AiAssistancePanel.panelName);
     this.view = view;
-    this.registerRequiredCSS(aiAssistancePanel_css_default);
     this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
     this.#aidaClient = aidaClient;
     this.#aidaAvailability = aidaAvailability;
@@ -11117,6 +11123,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             break;
           }
           case AiAssistanceModel8.AiAgent.ResponseType.CONTEXT: {
+            if (data.widgets?.length) {
+              const newWidgetNames = new Set(data.widgets.map((widget5) => widget5.name));
+              for (const part of systemMessage.parts) {
+                if (part.type === "step" && part.step.contextDetails && part.step.widgets) {
+                  const remainingWidgets = part.step.widgets.filter((widget5) => !newWidgetNames.has(widget5.name));
+                  part.step.widgets = remainingWidgets.length > 0 ? remainingWidgets : void 0;
+                }
+              }
+            }
             step.title = lockedString8(UIStringsNotTranslate7.analyzingData);
             step.contextDetails = data.details;
             step.widgets = data.widgets;
@@ -11155,6 +11170,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             const approvalStep = step;
             approvalStep.javascriptCode = data.javascriptCode;
             const promptShownAt = performance.now();
+            const toolNameForLogging = data.toolName !== void 0 ? Platform5.StringUtilities.toKebabCase(data.toolName) : void 0;
             approvalStep.state = {
               type: "needs_approval",
               sideEffectDialog: {
@@ -11165,6 +11181,19 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
                   if (decision !== AiAssistanceModel8.Tool.PermissionDecision.REJECT && performance.now() - promptShownAt < PERMISSION_PROMPT_INPUT_PROTECTION_MS) {
                     return;
                   }
+                  if (AiAssistanceModel8.AiUtils.isNaturalLanguageInterfaceEnabled() && !this.#conversation?.isReadOnly) {
+                    switch (decision) {
+                      case AiAssistanceModel8.Tool.PermissionDecision.REJECT:
+                        void VisualLogging9.logFunctionCall("ai-permission-rejected", toolNameForLogging);
+                        break;
+                      case AiAssistanceModel8.Tool.PermissionDecision.ALLOW_ONCE:
+                        void VisualLogging9.logFunctionCall("ai-permission-allowed-once", toolNameForLogging);
+                        break;
+                      case AiAssistanceModel8.Tool.PermissionDecision.ALLOW_ALWAYS:
+                        void VisualLogging9.logFunctionCall("ai-permission-allowed-always", toolNameForLogging);
+                        break;
+                    }
+                  }
                   data.confirm(decision);
                   approvalStep.state = { type: "completed" };
                   this.requestUpdate();
@@ -11172,6 +11201,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
               }
             };
             commitStep();
+            if (AiAssistanceModel8.AiUtils.isNaturalLanguageInterfaceEnabled() && !this.#conversation?.isReadOnly) {
+              void VisualLogging9.logFunctionCall("ai-permission-prompt-shown", toolNameForLogging);
+            }
             break;
           }
           case AiAssistanceModel8.AiAgent.ResponseType.ACTION: {
@@ -11419,7 +11451,7 @@ function getMatchingFlavorContext(contextOptions) {
   return null;
 }
 async function handleExternalAIRequest(options) {
-  localStorage.setItem("aiAssistanceStructuredLogEnabled", "true");
+  AiAssistanceModel9.Debug.setDevToolsAIDebug({ assistance: true });
   localStorage.removeItem("aiAssistanceStructuredLog");
   const conversationType = resolveConversationType(options.context?.type);
   const aidaClient = new Host6.AidaClient.AidaClient();

@@ -16,7 +16,7 @@ export default `/*
   align-self: center;
   background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
-  border-radius: 10px;
+  border-radius: var(--sys-shape-corner-small);
 }
 
 .status-dialog-line {

@@ -43,21 +43,13 @@ devtools-report-value {
 }
 
 .circled-exclamation-icon {
-  margin-right: 10px;
+  margin-right: var(--sys-size-5);
   flex-shrink: 0;
 }
 
 .status {
   margin-right: 11px;
   flex-shrink: 0;
-}
-
-.report-line {
-  grid-column-start: span 2;
-  display: flex;
-  align-items: center;
-  margin: 0 30px;
-  line-height: 26px;
 }
 
 .report-key {

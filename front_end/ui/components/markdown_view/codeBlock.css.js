@@ -48,7 +48,7 @@ export default `/*
 .codeblock .editor-wrapper .code {
   max-height: var(--code-block-max-code-height);
   overflow: auto;
-  padding-bottom: 10px;
+  padding-bottom: var(--sys-size-5);
 }
 
 .codeblock.no-toolbar .editor-wrapper {
@@ -57,8 +57,8 @@ export default `/*
 
 .codeblock.no-toolbar .copy-button-container {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: var(--sys-size-4);
+  right: var(--sys-size-4);
   z-index: 1;
 }
 

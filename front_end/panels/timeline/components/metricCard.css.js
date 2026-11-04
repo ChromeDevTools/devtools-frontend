@@ -104,7 +104,7 @@ export default `/*
 }
 
 .environment-recs {
-  margin: 9px 0;
+  margin: var(--sys-size-5) 0;
 }
 
 .environment-recs > summary {
@@ -175,7 +175,7 @@ details.environment-recs[open] > summary::before {
 }
 
 .tooltip-contents {
-  width: 350px;
+  width: var(--sys-size-32);
   max-width: max-content;
 }
 

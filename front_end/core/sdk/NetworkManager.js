@@ -765,7 +765,8 @@ export class NetworkDispatcher {
         return this.#requestsByURL.get(url) || null;
     }
     requestForLoaderId(loaderId) {
-        return this.#requestsByLoaderId.get(loaderId) || null;
+        return this.#requestsByLoaderId.get(loaderId) ||
+            this.#multitargetNetworkManager.inflightMainResourceRequests.get(loaderId) || null;
     }
     resourceChangedPriority({ requestId, newPriority }) {
         const networkRequest = this.#requestsById.get(requestId);

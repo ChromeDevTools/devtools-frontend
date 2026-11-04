@@ -11,7 +11,7 @@ export default `/*
 .media-messages-header {
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  min-height: 26px;
+  flex: none;
 }
 
 .media-messages-body {
@@ -19,8 +19,11 @@ export default `/*
 }
 
 .media-messages-level-dropdown-element {
-  height: 18px;
-  line-height: 18px;
+  /* 16px (--sys-size-8) + 2px (--sys-size-2) = 18px row height matching
+   * SoftDropDown.setRowHeight(18) so all 6 items (108px) fit the 108px
+   * GlassPane without vertical scrollbar clipping. */
+  height: calc(var(--sys-size-8) + var(--sys-size-2));
+  line-height: calc(var(--sys-size-8) + var(--sys-size-2));
 }
 
 .media-messages-level-dropdown-text {
@@ -29,7 +32,8 @@ export default `/*
 
 .media-messages-level-dropdown-checkbox {
   float: left;
-  width: 18px;
+  /* 16px checkmark slot (--sys-size-8) plus 2px left padding (--sys-size-2) under border-box sizing. */
+  width: calc(var(--sys-size-8) + var(--sys-size-2));
   height: 100%;
   padding-left: var(--sys-size-2);
 }
@@ -37,7 +41,7 @@ export default `/*
 .media-messages-message-container {
   margin: var(--sys-size-3);
   font-size: var(--sys-typescale-body2-size);
-  line-height: 18px;
+  line-height: var(--sys-typescale-body2-line-height);
   padding: var(--sys-size-3);
   user-select: text;
 }
@@ -52,7 +56,7 @@ export default `/*
 }
 
 .media-message-warning {
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
   background-color: var(--sys-color-surface-yellow);
   color: var(--sys-color-on-surface-yellow);
 }
@@ -79,7 +83,7 @@ export default `/*
 }
 
 .status-error-field-label {
-  padding-right: 10px;
+  padding-right: var(--sys-size-5);
   color: var(--sys-color-token-subtle);
 }
 

@@ -49,7 +49,7 @@ export default `/*
   }
 
   .feature-name {
-    width: 135px;
+    width: var(--sys-size-22);
   }
 
   .allowed-icon {

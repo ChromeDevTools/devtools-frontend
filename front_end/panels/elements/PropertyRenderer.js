@@ -305,6 +305,10 @@ export class TracingContext {
         }
         this.#appliedEvaluations = Math.max(this.#appliedEvaluations, value);
     }
+    // After rendering the arguments of a function call, the TracingContext produced by TracingContext#evaluation need to
+    // be passed here to determine whether the "current" function call should be evaluated or not. If so, the
+    // evaluation callback is run. The callback should return synchronously a template as placeholder to be
+    // rendered immediately and optionally a callback for asynchronous updates of the template.
     applyEvaluation(children, evaluation) {
         if (this.#evaluationCount === 0 || children.some(child => child.#appliedEvaluations >= this.#evaluationCount)) {
             this.#setHasMoreEvaluations(true);
@@ -314,10 +318,6 @@ export class TracingContext {
         this.#setAppliedEvaluations(children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) +
             1);
         const result = evaluation();
-        if ('placeholder' in result) {
-            this.#asyncEvalCallbacks.push(result.asyncEvalCallback);
-            return result.placeholder;
-        }
         if (!result.asyncEvalCallback) {
             this.#asyncEvalCallbacks.push(result.asyncEvalCallback);
             return result.template;
@@ -591,11 +591,6 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         }, []);
         return { nodes: html `${nodes}`, cssControls };
     }
-    static renderInto(nodeOrNodes, context, parent) {
-        const { nodes, cssControls } = this.render(nodeOrNodes, context);
-        render(nodes, parent);
-        return { nodes, cssControls };
-    }
     renderedMatchForTest(_nodes, _match) {
     }
     enter({ node }) {
@@ -604,7 +599,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
             this.#context.renderers.get(match.constructor);
         if (renderer || match instanceof SDK.CSSPropertyParserMatchers.TextMatch) {
             const rendered = renderer?.render(match, this.#context) ?? html `<span>${match.text}</span>`;
-            const output = highlight(this.#context.tracing?.highlighting, match, Array.isArray(rendered) ? html `${rendered}` : rendered);
+            const output = highlight(this.#context.tracing?.highlighting, match, rendered);
             this.renderedMatchForTest(output, match);
             if (this.#output.some(t => t !== nothing)) {
                 const spacing = precedingSpace(node, this.#context.ast, this.#matchedResult);

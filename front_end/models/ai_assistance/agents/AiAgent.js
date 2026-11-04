@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiUtils from '../../ai-utils/ai-utils.js';
 import { dispatchAiAssistanceDoneEvent } from '../DOMHelpers.js';
-const { debugLog, isStructuredLogEnabled } = AiUtils.Debug;
+const { debugLog, isDebugMode } = AiUtils.Debug;
 const MAX_SUGGESTION_LENGTH = 200;
 export const SUGGEST_FOLLOW_UPS_FUNCTION_NAME = 'suggestFollowUps';
 /**
@@ -537,7 +538,7 @@ export class AiAgent {
             }
             request = this.buildRequest(outcome.functionResponses, Host.AidaClient.Role.ROLE_UNSPECIFIED);
         }
-        if (isStructuredLogEnabled()) {
+        if (isDebugMode()) {
             dispatchAiAssistanceDoneEvent();
         }
         return;
@@ -553,6 +554,7 @@ export class AiAgent {
      */
     async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId) {
         if (!textResponse) {
+            debugLog('[AiAgent] Model returned an empty text response without tool calls:', { step: stepIndex + 1, rpcId, functionCalls });
             yield this.#createErrorResponse("unknown" /* ErrorType.UNKNOWN */);
             return;
         }
@@ -788,6 +790,7 @@ export class AiAgent {
                 javascriptCode,
                 permissionPrompt: call.permissionPrompt,
                 permissionTitle: call.permissionTitle,
+                toolName: name,
             };
             let decision = "reject" /* PermissionDecision.REJECT */;
             try {
@@ -877,13 +880,13 @@ export class AiAgent {
                 completed: aidaResponse.completed,
             };
         }
-        if (isStructuredLogEnabled() && aidaResponse) {
+        if (isDebugMode() && aidaResponse) {
             this.#structuredLog.push({
                 request: structuredClone(request),
                 aidaResponse,
             });
             try {
-                localStorage.setItem('aiAssistanceStructuredLog', JSON.stringify(this.#structuredLog));
+                Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem('aiAssistanceStructuredLog', JSON.stringify(this.#structuredLog));
             }
             catch (err) {
                 console.warn('Failed to write to local storage "aiAssistanceStructuredLog":', err);

@@ -16,7 +16,7 @@ export default `/*
 }
 
 .heading {
-  font-size: 15px;
+  font-size: var(--sys-typescale-headline5-size);
 }
 
 devtools-data-grid {

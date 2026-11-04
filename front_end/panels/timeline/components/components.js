@@ -2587,6 +2587,11 @@ var Page;
     StartScreencastRequestFormat2["Jpeg"] = "jpeg";
     StartScreencastRequestFormat2["Png"] = "png";
   })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let StartScreenRecordingRequestCaptureArea;
+  ((StartScreenRecordingRequestCaptureArea2) => {
+    StartScreenRecordingRequestCaptureArea2["Target"] = "target";
+    StartScreenRecordingRequestCaptureArea2["BrowserWindow"] = "browserWindow";
+  })(StartScreenRecordingRequestCaptureArea = Page2.StartScreenRecordingRequestCaptureArea || (Page2.StartScreenRecordingRequestCaptureArea = {}));
   let SetWebLifecycleStateRequestState;
   ((SetWebLifecycleStateRequestState2) => {
     SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
@@ -4522,7 +4527,7 @@ devtools-link {
 }
 
 .divider {
-  margin: 10px 0;
+  margin: var(--sys-size-5) 0;
   border: none;
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
@@ -4646,6 +4651,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     return;
   }
   Lit4.render(html5`
+    <style>${originMap_css_default}</style>
     <devtools-data-grid striped inline deletable
         @click=${(e) => {
     e.stopPropagation();
@@ -4674,7 +4680,6 @@ var OriginMap = class extends UI4.Widget.VBox {
   constructor(element, view = DEFAULT_VIEW2) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.registerRequiredCSS(originMap_css_default);
     CrUXManager3.CrUXManager.instance().getConfigSetting().addChangeListener(this.requestUpdate, this);
     this.requestUpdate();
   }
@@ -6626,7 +6631,7 @@ var metricCard_css_default = `/*
 }
 
 .environment-recs {
-  margin: 9px 0;
+  margin: var(--sys-size-5) 0;
 }
 
 .environment-recs > summary {
@@ -6697,7 +6702,7 @@ details.environment-recs[open] > summary::before {
 }
 
 .tooltip-contents {
-  width: 350px;
+  width: var(--sys-size-32);
   max-width: max-content;
 }
 
@@ -8673,7 +8678,6 @@ var networkRequestDetails_css_default = `/*
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     width: fit-content;
-    width: 450px;
     gap: 0;
   }
 
@@ -8785,8 +8789,8 @@ var networkRequestTooltip_css_default = `/*
   }
 
   .url {
-    margin-left: 15px;
-    margin-right: 5px;
+    margin-left: var(--sys-size-7);
+    margin-right: var(--sys-size-3);
   }
 
   .url--host {
@@ -8812,8 +8816,8 @@ var networkRequestTooltip_css_default = `/*
   }
 
   devtools-icon.priority {
-    height: 13px;
-    width: 13px;
+    height: var(--sys-size-7);
+    width: var(--sys-size-7);
     color: var(--sys-color-on-surface-subtle);
   }
 
@@ -9713,7 +9717,7 @@ var relatedInsightChips_css_default = `/*
       background: none;
       padding: var(--sys-size-4) var(--sys-size-5);
       width: 100%;
-      max-width: 500px;
+      max-width: var(--sys-size-34);
 
       .insight-label {
         color: var(--sys-color-orange-bright);

@@ -22,9 +22,11 @@ export default `/*
 .flame-chart-marker-highlight-element {
   position: absolute;
   top: var(--sys-size-1);
-  height: 18px;
+  /* 20px header (--sys-size-9) minus two 1px top/bottom borders (2 * --sys-size-1). */
+  height: calc(var(--sys-size-9) - 2 * var(--sys-size-1));
   width: var(--sys-size-4);
-  margin: 0 -3px;
+  /* Half of 6px width (--sys-size-4) to center horizontally on left: barX. */
+  margin: 0 calc(-1 * var(--sys-size-4) / 2);
   content: "";
   display: block;
 }
@@ -80,7 +82,7 @@ export default `/*
 }
 
 .flame-chart-entry-info table tr td:not(:empty) {
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
   white-space: nowrap;
 }
 
@@ -88,14 +90,15 @@ export default `/*
   font-weight: bold;
 }
 
-.flame-chart-entry-info table tr td span {
-  margin-right: 5px;
-}
-
 .flame-chart-edit-confirm {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
+  bottom: var(--sys-size-6);
+  right: var(--sys-size-6);
+}
+
+:has(+ .chart-viewport-v-scroll:not(.hidden)) > .flame-chart-edit-confirm {
+  /* 12px margin (--sys-size-6) + 16px scrollbar gutter (--sys-size-8) = 28px (--sys-size-12). */
+  right: var(--sys-size-12);
 }
 
 /*# sourceURL=${import.meta.resolve('./flameChart.css')} */`;

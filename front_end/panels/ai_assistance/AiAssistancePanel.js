@@ -395,6 +395,7 @@ function defaultView(input, output, target) {
         }
     }
     Lit.render(html `
+    <style>${aiAssistancePanelStyles}</style>
     ${toolbarView(input)}
     <div class="ai-assistance-view-container">
       <devtools-split-view
@@ -495,7 +496,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     constructor(view = defaultView, { aidaClient, aidaAvailability }) {
         super(AiAssistancePanel.panelName);
         this.view = view;
-        this.registerRequiredCSS(aiAssistancePanelStyles);
         this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
         this.#aidaClient = aidaClient;
         this.#aidaAvailability = aidaAvailability;
@@ -1539,6 +1539,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         break;
                     }
                     case "context" /* AiAssistanceModel.AiAgent.ResponseType.CONTEXT */: {
+                        // Supersede stale context widgets of the same type (such as an older Lighthouse report)
+                        // within the current turn. Filter by widget name rather than clearing all widgets so
+                        // cross-domain context changes (such as starting on a performance trace and running
+                        // Lighthouse) preserve the earlier context's widgets.
+                        if (data.widgets?.length) {
+                            const newWidgetNames = new Set(data.widgets.map(widget => widget.name));
+                            for (const part of systemMessage.parts) {
+                                if (part.type === 'step' && part.step.contextDetails && part.step.widgets) {
+                                    const remainingWidgets = part.step.widgets.filter(widget => !newWidgetNames.has(widget.name));
+                                    part.step.widgets = remainingWidgets.length > 0 ? remainingWidgets : undefined;
+                                }
+                            }
+                        }
                         step.title = lockedString(UIStringsNotTranslate.analyzingData);
                         step.contextDetails = data.details;
                         step.widgets = data.widgets;
@@ -1578,6 +1591,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         const approvalStep = step;
                         approvalStep.javascriptCode = data.javascriptCode;
                         const promptShownAt = performance.now();
+                        const toolNameForLogging = data.toolName !== undefined ? Platform.StringUtilities.toKebabCase(data.toolName) : undefined;
                         approvalStep.state = {
                             type: 'needs_approval',
                             sideEffectDialog: {
@@ -1589,6 +1603,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                                         performance.now() - promptShownAt < PERMISSION_PROMPT_INPUT_PROTECTION_MS) {
                                         return;
                                     }
+                                    if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() &&
+                                        !this.#conversation?.isReadOnly) {
+                                        switch (decision) {
+                                            case "reject" /* AiAssistanceModel.Tool.PermissionDecision.REJECT */:
+                                                void VisualLogging.logFunctionCall('ai-permission-rejected', toolNameForLogging);
+                                                break;
+                                            case "allow-once" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE */:
+                                                void VisualLogging.logFunctionCall('ai-permission-allowed-once', toolNameForLogging);
+                                                break;
+                                            case "allow-always" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS */:
+                                                void VisualLogging.logFunctionCall('ai-permission-allowed-always', toolNameForLogging);
+                                                break;
+                                        }
+                                    }
                                     data.confirm(decision);
                                     approvalStep.state = { type: 'completed' };
                                     this.requestUpdate();
@@ -1596,6 +1624,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                             },
                         };
                         commitStep();
+                        if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() && !this.#conversation?.isReadOnly) {
+                            void VisualLogging.logFunctionCall('ai-permission-prompt-shown', toolNameForLogging);
+                        }
                         break;
                     }
                     case "action" /* AiAssistanceModel.AiAgent.ResponseType.ACTION */: {

@@ -50,7 +50,8 @@ var JSONEditor_css_default = `/*
 }
 
 .warning-icon {
-  margin-left: -18px;
+  /* -18px: shift left by the 14px small icon (--sys-size-7) plus its 4px right margin (--sys-size-3). */
+  margin-left: calc(-1 * (var(--sys-size-7) + var(--sys-size-3)));
   margin-right: var(--sys-size-3);
 }
 
@@ -66,8 +67,8 @@ var JSONEditor_css_default = `/*
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
   align-items: center;
-  line-height: 18px;
-  margin-top: 3px;
+  line-height: var(--sys-typescale-body4-line-height);
+  margin-top: var(--sys-size-2);
 }
 
 .separator {
@@ -227,7 +228,6 @@ var JSONEditor = class extends JSONEditorBase {
   constructor(element, view = DEFAULT_VIEW) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.registerRequiredCSS(JSONEditor_css_default);
   }
   get metadataByCommand() {
     return this.#metadataByCommand;
@@ -1172,6 +1172,7 @@ function renderParameters(input, parameters, id, parentParameter, parentParamete
 }
 var DEFAULT_VIEW = (input, _output, target) => {
   render(html`
+    <style>${JSONEditor_css_default}</style>
     <div class="wrapper" @keydown=${input.onKeydown} jslog=${VisualLogging.pane("command-editor").track({ resize: true })}>
       <div class="editor-wrapper">
         ${input.displayTargetSelector !== false ? renderTargetSelectorRow(input) : nothing}
@@ -1256,7 +1257,7 @@ var protocolMonitor_css_default = `/*
   }
 
   .target-selector {
-    max-width: 120px;
+    max-width: var(--sys-size-21);
   }
 
   .protocol-monitor-main {

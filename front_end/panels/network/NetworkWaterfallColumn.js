@@ -1,19 +1,42 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import { RequestTimeRangeNameToColor } from './NetworkOverview.js';
 import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
 import { RequestTimingView } from './RequestTimingView.js';
+const { ref } = Directives;
 const BAR_SPACING = 1;
+export const DEFAULT_VIEW = (input, output, target) => {
+    // clang-format off
+    render(html `
+    <style>${networkWaterfallColumnStyles}</style>
+    <canvas
+      tabindex="-1"
+      @mousemove=${(event) => input.onMouseMove(event.offsetY, event.shiftKey)}
+      @mouseleave=${input.onMouseLeave}
+      @click=${(event) => {
+        if (input.onClick(event.offsetY)) {
+            event.consume(true);
+        }
+    }}
+      ${ref(e => {
+        output.canvas = e instanceof HTMLCanvasElement ? e : undefined;
+    })}
+    ></canvas>
+  `, target);
+    // clang-format on
+};
 export class NetworkWaterfallColumn extends UI.Widget.VBox {
+    #view;
+    #viewOutput = {};
     canvas;
     canvasPosition;
     leftPadding;
@@ -38,14 +61,11 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     hoverDetailsStyle;
     pathForStyle;
     textLayers;
-    constructor(calculator) {
-        // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
+    constructor(calculator, view = DEFAULT_VIEW) {
+        // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets
+        // moved into NetworkLogViewColumns.
         super();
-        this.registerRequiredCSS(networkWaterfallColumnStyles);
-        this.canvas = this.contentElement.createChild('canvas');
-        this.canvas.tabIndex = -1;
-        this.setDefaultFocusedElement(this.canvas);
-        this.canvasPosition = this.canvas.getBoundingClientRect();
+        this.#view = view;
         this.leftPadding = 5;
         this.fontSize = 10;
         this.rightPadding = 0;
@@ -63,27 +83,51 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         this.nodes = [];
         this.hoveredNode = null;
         this.eventDividers = new Map();
-        this.element.addEventListener('mousemove', this.onMouseMove.bind(this), true);
-        this.element.addEventListener('mouseleave', _event => this.setHoveredNode(null, false), true);
-        this.element.addEventListener('click', this.onClick.bind(this), true);
         this.styleForTimeRangeName = NetworkWaterfallColumn.buildRequestTimeRangeStyle();
         const resourceStyleTuple = NetworkWaterfallColumn.buildResourceTypeStyle();
         this.styleForWaitingResourceType = resourceStyleTuple[0];
         this.styleForDownloadingResourceType = resourceStyleTuple[1];
         const baseLineColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-disabled');
         this.wiskerStyle = { borderColor: baseLineColor, lineWidth: 1 };
-        this.hoverDetailsStyle = { fillStyle: baseLineColor, lineWidth: 1, borderColor: baseLineColor };
+        this.hoverDetailsStyle = {
+            fillStyle: baseLineColor,
+            lineWidth: 1,
+            borderColor: baseLineColor,
+        };
         this.pathForStyle = new Map();
         this.textLayers = [];
+        this.performUpdate();
+        this.canvasPosition = this.canvas?.getBoundingClientRect() ?? new DOMRect();
+    }
+    performUpdate() {
+        this.#view({
+            onMouseMove: (offsetY, shiftKey) => this.setHoveredNode(this.getNodeFromPoint(offsetY), shiftKey),
+            onMouseLeave: () => this.setHoveredNode(null, false),
+            onClick: offsetY => this.setSelectedNode(this.getNodeFromPoint(offsetY)),
+        }, this.#viewOutput, this.contentElement);
+        if (this.#viewOutput.canvas) {
+            this.canvas = this.#viewOutput.canvas;
+            this.setDefaultFocusedElement(this.canvas);
+        }
     }
     static buildRequestTimeRangeStyle() {
         const styleMap = new Map();
-        styleMap.set("connecting" /* NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING */, { fillStyle: RequestTimeRangeNameToColor["connecting" /* NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING */] });
-        styleMap.set("ssl" /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */, { fillStyle: RequestTimeRangeNameToColor["ssl" /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */] });
-        styleMap.set("dns" /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */, { fillStyle: RequestTimeRangeNameToColor["dns" /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */] });
-        styleMap.set("proxy" /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */, { fillStyle: RequestTimeRangeNameToColor["proxy" /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */] });
+        styleMap.set("connecting" /* NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING */, {
+            fillStyle: RequestTimeRangeNameToColor["connecting" /* NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING */],
+        });
+        styleMap.set("ssl" /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */, {
+            fillStyle: RequestTimeRangeNameToColor["ssl" /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */],
+        });
+        styleMap.set("dns" /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */, {
+            fillStyle: RequestTimeRangeNameToColor["dns" /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */],
+        });
+        styleMap.set("proxy" /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */, {
+            fillStyle: RequestTimeRangeNameToColor["proxy" /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */],
+        });
         styleMap.set("blocking" /* NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING */, { fillStyle: '--network-waterfall-blocking' });
-        styleMap.set("push" /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */, { fillStyle: RequestTimeRangeNameToColor["push" /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */] });
+        styleMap.set("push" /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */, {
+            fillStyle: RequestTimeRangeNameToColor["push" /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */],
+        });
         styleMap.set("queueing" /* NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING */, {
             fillStyle: RequestTimeRangeNameToColor["queueing" /* NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING */],
             lineWidth: 2,
@@ -95,9 +139,15 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
             lineWidth: 2,
             borderColor: '#03A9F4',
         });
-        styleMap.set("waiting" /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */, { fillStyle: RequestTimeRangeNameToColor["waiting" /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */] });
-        styleMap.set("receiving-push" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */, { fillStyle: RequestTimeRangeNameToColor["receiving-push" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */] });
-        styleMap.set("serviceworker" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */, { fillStyle: RequestTimeRangeNameToColor["serviceworker" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */] });
+        styleMap.set("waiting" /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */, {
+            fillStyle: RequestTimeRangeNameToColor["waiting" /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */],
+        });
+        styleMap.set("receiving-push" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */, {
+            fillStyle: RequestTimeRangeNameToColor["receiving-push" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */],
+        });
+        styleMap.set("serviceworker" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */, {
+            fillStyle: RequestTimeRangeNameToColor["serviceworker" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */],
+        });
         styleMap.set("serviceworker-preparation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */, {
             fillStyle: RequestTimeRangeNameToColor["serviceworker-preparation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */],
         });
@@ -178,15 +228,6 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     wasShown() {
         super.wasShown();
         this.update();
-    }
-    onMouseMove(event) {
-        this.setHoveredNode(this.getNodeFromPoint(event.offsetY), event.shiftKey);
-    }
-    onClick(event) {
-        const handled = this.setSelectedNode(this.getNodeFromPoint(event.offsetY));
-        if (handled) {
-            event.consume(true);
-        }
     }
     getPopoverRequest(event) {
         if (event instanceof KeyboardEvent) {
@@ -320,7 +361,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         this.offsetWidth = this.contentElement.offsetWidth - this.rightPadding;
         this.offsetHeight = this.contentElement.offsetHeight;
         this.calculator.setDisplayWidth(this.offsetWidth);
-        this.canvasPosition = this.canvas.getBoundingClientRect();
+        this.canvasPosition = this.canvas?.getBoundingClientRect() ?? new DOMRect();
     }
     timeToPosition(time) {
         const availableWidth = this.offsetWidth - this.leftPadding;

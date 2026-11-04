@@ -21,13 +21,16 @@ export default `/*
 .overview-grid-window-resizer {
   position: absolute;
   top: 0;
-  height: 19px;
-  width: 10px;
-  margin-left: -5px; /* half width (incl the border) */
+  /* 20px (--sys-size-9) timeline header height minus 1px (--sys-size-1) bottom clearance */
+  height: calc(var(--sys-size-9) - var(--sys-size-1));
+  /* 8px (--sys-size-5) inner grip box plus 2x 1px (--sys-size-1) for left and right borders */
+  width: calc(var(--sys-size-5) + 2 * var(--sys-size-1));
+  /* Negative half of the 10px outer width: 4px (--sys-size-3) inner half-width plus 1px (--sys-size-1) border */
+  margin-left: calc(-1 * (var(--sys-size-3) + var(--sys-size-1)));
   background-color: var(--sys-color-tonal-container);
   border: var(--sys-size-1) solid var(--sys-color-tonal-outline);
   z-index: 500;
-  border-radius: 3px;
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 /* Grip lines within the handle */
@@ -36,10 +39,11 @@ export default `/*
   content: "";
   width: var(--sys-size-1);
   background: var(--sys-color-primary);
-  height: 7px;
   position: absolute;
   left: var(--sys-size-2);
-  top: 5px;
+  /* 6px (--sys-size-4) outer offset minus 1px (--sys-size-1) handle border
+   * gives symmetric 5px top/bottom insets (7px grip line) in 17px box */
+  inset-block: calc(var(--sys-size-4) - var(--sys-size-1));
   border-radius: var(--sys-size-1);
 }
 
@@ -97,7 +101,7 @@ export default `/*
   transition: opacity 100ms 250ms;
   display: flex;
   position: absolute;
-  top: 15px;
+  top: var(--sys-size-8);
   justify-content: center;
   z-index: 600;
   left: 0;

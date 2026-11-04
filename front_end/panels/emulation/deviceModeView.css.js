@@ -62,7 +62,7 @@ export default `/*
 devtools-toolbar {
   overflow: hidden;
   flex: 0 100000 auto;
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
 
   &[wrappable] {
     height: var(--toolbar-height);
@@ -163,7 +163,7 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-content-clip .device-mode-screen-area {
-  --override-screen-area-box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 var(--sys-size-9);
+  --override-screen-area-box-shadow: hsl(240deg 3% 84% / 50%) 0 0 0 var(--sys-size-1), hsl(0deg 0% 80% / 40%) 0 0 var(--sys-size-9);
 
   box-shadow: var(--override-screen-area-box-shadow);
 }
@@ -227,7 +227,6 @@ devtools-toolbar.device-mode-toolbar-options {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeHorizontal);
   width: var(--sys-size-4);
-  height: 26px;
 }
 
 .device-mode-left-resizer > div {
@@ -241,16 +240,15 @@ devtools-toolbar.device-mode-toolbar-options {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeVertical);
   margin-bottom: calc(-1 * var(--sys-size-2));
-  width: 26px;
   height: var(--sys-size-4);
 }
 
 .device-mode-bottom-right-resizer > div {
   position: absolute;
-  bottom: 3px;
-  right: 3px;
-  width: 13px;
-  height: 13px;
+  bottom: var(--sys-size-3);
+  right: var(--sys-size-3);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeDiagonal);
 }
@@ -323,7 +321,8 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-left .device-mode-ruler-inner {
-  inset: 19px 0 0;
+  /* Offset by the 20px ruler track (--sys-size-9) minus the parent's 1px top border (--sys-size-1) to align with the viewport top edge. */
+  inset: calc(var(--sys-size-9) - var(--sys-size-1)) 0 0;
   border-right: var(--sys-size-1) solid var(--sys-color-token-subtle);
   background-color: var(--sys-color-cdt-base-container);
 }
@@ -341,7 +340,7 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-top .device-mode-ruler-marker.device-mode-ruler-marker-medium {
-  height: 10px;
+  height: var(--sys-size-5);
 }
 
 .device-mode-ruler-top .device-mode-ruler-marker.device-mode-ruler-marker-large {

@@ -12,7 +12,7 @@ export default `/*
 .film-strip-view {
   overflow: auto hidden;
   align-content: flex-start;
-  min-height: 81px;
+  min-height: var(--sys-size-19);
 }
 
 .film-strip-view .frame .time {

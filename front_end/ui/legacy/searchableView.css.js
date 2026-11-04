@@ -122,7 +122,7 @@ export default `/*
     grid-auto-rows: var(--sys-size-12);
     flex-grow: 1;
     align-items: center;
-    min-width: 150px;
+    min-width: var(--sys-size-23);
   }
 
   .first-row-buttons {

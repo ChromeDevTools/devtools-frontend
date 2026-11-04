@@ -2235,7 +2235,7 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
   align-items: center;
   justify-content: center;
   height: auto !important; /* stylelint-disable-line declaration-no-important */
-  width: 27px;
+  width: 100%;
   padding: 0 !important; /* stylelint-disable-line declaration-no-important */
   gap: 0;
 }
@@ -4726,7 +4726,8 @@ var tabbedPane_css_default = `/*
 
 .tabbed-pane-header {
   display: flex;
-  flex: 0 0 27px;
+  /* 28px standard toolbar height (--sys-size-12) minus 1px bottom border (--sys-size-1). */
+  flex: 0 0 calc(var(--sys-size-12) - var(--sys-size-1));
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: visible;
   width: 100%;
@@ -4773,7 +4774,8 @@ var tabbedPane_css_default = `/*
   }
 
   &:has(.status-dot) {
-    width: 9px;
+    /* 6px (.status-dot width) + 2px (padding-left) + 1px (.status-dot margin-left) */
+    width: calc(var(--sys-size-4) + var(--sys-size-2) + var(--sys-size-1));
   }
 }
 
@@ -4820,7 +4822,7 @@ var tabbedPane_css_default = `/*
   color: var(--sys-color-on-surface-subtle);
   height: var(--sys-size-12);
   float: left;
-  padding: 0 10px;
+  padding: 0 var(--sys-size-5);
   white-space: nowrap;
   cursor: default;
   display: flex;
@@ -4979,7 +4981,8 @@ var tabbedPane_css_default = `/*
 }
 
 .tabbed-pane-tab-slider {
-  height: 3px;
+  /* 2px indicator above header + 1px border-bottom overlap (3px total). */
+  height: calc(var(--sys-size-2) + var(--sys-size-1));
   position: absolute;
   bottom: calc(-1 * var(--sys-size-1));
   background-color: var(--sys-color-primary);
@@ -7251,7 +7254,7 @@ found in the LICENSE file. */
   align-items: center;
   background-color: var(--sys-color-surface2);
   height: var(--sys-size-10);
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
   white-space: nowrap;
   overflow: hidden;
   position: relative;
@@ -7264,7 +7267,8 @@ found in the LICENSE file. */
 }
 
 .expandable-view-title devtools-toolbar {
-  margin-top: -3px;
+  /* Center the 26px (--toolbar-height) toolbar in the 22px (--sys-size-10) header: (22px - 26px) / 2 = -2px. */
+  margin-top: calc(-1 * var(--sys-size-2));
 }
 
 .expandable-view-title > devtools-toolbar {
@@ -9783,6 +9787,11 @@ var SoftContextMenu = class _SoftContextMenu {
     }
     this.document = document2;
     this.glassPane = new GlassPane();
+    this.glassPane.setOnHideCallback(() => {
+      if (this.glassPane) {
+        this.discard();
+      }
+    });
     this.glassPane.setPointerEventsBehavior(
       this.parentMenu ? "PierceGlassPane" /* PIERCE_GLASS_PANE */ : "BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */
     );
@@ -9858,8 +9867,9 @@ var SoftContextMenu = class _SoftContextMenu {
       this.focusRestorer.restore();
     }
     if (this.glassPane) {
-      this.glassPane.hide();
+      const glassPane = this.glassPane;
       delete this.glassPane;
+      glassPane.hide();
       if (this.hideOnUserMouseDownUnlessInMenu) {
         if (this.document) {
           this.document.body.removeEventListener("mousedown", this.hideOnUserMouseDownUnlessInMenu, false);
@@ -10887,6 +10897,9 @@ var ContextMenu = class _ContextMenu extends SubMenu {
    * Discards (closes) the soft context menu if it's currently shown.
    */
   discard() {
+    if (_ContextMenu.pendingMenu === this) {
+      _ContextMenu.pendingMenu = null;
+    }
     if (this.softMenu) {
       this.softMenu.discard();
     }
@@ -12043,7 +12056,8 @@ var suggestBox_css_default = `/*
   flex: auto;
   text-align: right;
   color: var(--sys-color-token-subtle);
-  margin-right: 3px;
+  /* 4px total right inset (--sys-size-3) minus 1px transparent item border (--sys-size-1). */
+  margin-right: calc(var(--sys-size-3) - var(--sys-size-1));
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -13455,7 +13469,8 @@ var toolbar_css_default = `/*
   align-items: center;
   z-index: 0;
 
-  --toolbar-height: 26px;
+  /* 28px outer toolbar track (--sys-size-12) minus 2px vertical border/inset allowance (--sys-size-2). */
+  --toolbar-height: calc(var(--sys-size-12) - var(--sys-size-2));
 }
 
 :host([floating]) {
@@ -14996,9 +15011,9 @@ input {
 
     &:not(:disabled):focus-visible::before {
       content: '';
-      height: 15px;
-      width: 15px;
-      border-radius: 5px;
+      height: var(--sys-size-7);
+      width: var(--sys-size-7);
+      border-radius: var(--sys-shape-corner-extra-small);
       position: absolute;
       border: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
     }
@@ -15047,12 +15062,12 @@ input::placeholder {
 
 /* Radio inputs */
 input[type='radio'] {
-  height: 17px;
-  width: 17px;
-  min-width: 17px;
+  height: var(--sys-size-8);
+  width: var(--sys-size-8);
+  min-width: var(--sys-size-8);
   border-radius: var(--sys-shape-corner-small);
   vertical-align: sub;
-  margin: 0 5px 5px 0;
+  margin: 0 var(--sys-size-4) var(--sys-size-4) 0;
   accent-color: var(--sys-color-primary-bright);
   color: var(--sys-color-on-primary);
 
@@ -15347,13 +15362,13 @@ dt-icon-label {
   background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-on-surface);
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .undisplayable-text,
 .expandable-inline-button {
   border: none;
-  padding: var(--sys-size-1) 3px;
+  padding: var(--sys-size-1) var(--sys-size-3);
   margin: 0 var(--sys-size-2);
   font-size: var(--sys-typescale-body5-size);
   font-family: inherit;
@@ -15400,7 +15415,9 @@ button.link:focus-visible {
 .data-grid-data-grid-node button.link:focus-visible {
   border-radius: var(--sys-shape-corner-extra-small);
   padding: 0;
-  margin-top: 3px;
+  /* 4px focus ring clearance (--sys-size-3: 2px outline + 2px outline-offset)
+     minus 1px data-grid cell top padding (--sys-size-1) = 3px. */
+  margin-top: calc(var(--sys-size-3) - var(--sys-size-1));
 }
 
 @media (forced-colors: active) {
@@ -15420,23 +15437,6 @@ button.link:focus-visible {
   .harmony-input[type='text']:focus {
     border: var(--sys-size-1) solid Highlight;
   }
-}
-/* search input with customized styling */
-input.custom-search-input::-webkit-search-cancel-button {
-  appearance: none;
-  width: var(--sys-size-8);
-  height: 15px;
-  margin-right: 0;
-  opacity: 70%;
-  mask-image: var(--image-file-cross-circle-filled);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: 99%;
-  background-color: var(--icon-default);
-}
-
-input.custom-search-input::-webkit-search-cancel-button:hover {
-  opacity: 99%;
 }
 /* loading spinner */
 .spinner::before {
@@ -15473,7 +15473,7 @@ input.custom-search-input::-webkit-search-cancel-button:hover {
 }
 
 .adorner-container devtools-adorner {
-  margin-left: 3px;
+  margin-left: var(--sys-size-2);
 }
 
 :host-context(.theme-with-dark-background) devtools-adorner {
@@ -15680,19 +15680,6 @@ devtools-toolbar {
     opacity: 50%;
   }
 
-  .toolbar-button.copied-to-clipboard::after {
-    content: attr(data-content);
-    position: fixed;
-    margin-top: calc(2 * var(--toolbar-height));
-    padding: 3px 5px;
-    color: var(--sys-color-token-subtle);
-    background: var(--sys-color-cdt-base-container);
-    animation: 2s fade-out;
-    font-weight: normal;
-    border: var(--sys-size-1) solid var(--sys-color-divider);
-    border-radius: 3px;
-  }
-
   .toolbar-button.toolbar-state-on .toolbar-glyph {
     color: var(--icon-toggled);
   }
@@ -15776,12 +15763,12 @@ devtools-toolbar {
   .toolbar-input {
     box-shadow: inset 0 0 0 var(--sys-size-2) transparent;
     box-sizing: border-box;
-    width: 120px;
+    width: var(--sys-size-20);
     height: var(--sys-size-9);
     padding: 0 var(--sys-size-2) 0 var(--sys-size-5);
-    margin: var(--sys-size-1) 3px;
+    margin: var(--sys-size-1) var(--sys-size-2);
     border-radius: var(--sys-shape-corner-full);
-    min-width: 35px;
+    min-width: var(--sys-size-14);
     position: relative;
 
     &.focused {
@@ -15877,10 +15864,6 @@ devtools-toolbar {
     & > .title {
       color: var(--sys-color-on-tonal-container);
     }
-  }
-
-  devtools-icon.leading-issue-icon {
-    margin: 0 7px;
   }
 
   @media (forced-colors: active) {
@@ -18283,9 +18266,6 @@ var GlassPane = class _GlassPane {
       /* overrideHideOnDetach= */
       true
     );
-    if (this.#onHideCallback) {
-      this.#onHideCallback();
-    }
   }
   #onDetach() {
     panes.delete(this);
@@ -18299,6 +18279,9 @@ var GlassPane = class _GlassPane {
       this.onMouseDownBound,
       true
     );
+    if (this.#onHideCallback) {
+      this.#onHideCallback();
+    }
   }
   onMouseDown(event) {
     if (!this.onClickOutsideCallback) {
@@ -19152,7 +19135,7 @@ var dropTarget_css_default = `/*
 
 .drop-target-message {
   flex: auto;
-  font-size: 30px;
+  font-size: var(--sys-typescale-headline1-size);
   color: var(--sys-color-token-subtle);
   display: flex;
   justify-content: center;
@@ -19394,13 +19377,14 @@ var filter_css_default = `/*
   display: inline-block;
   flex: none;
   margin: auto var(--sys-size-2);
-  padding: 3px var(--sys-size-4);
+  /* 16px line-height (--sys-typescale-body5-medium) + 2*2px vertical padding (--sys-size-2)
+   * = 20px (--sys-size-9) pill inside 24px (--sys-size-11) .filter-bitset-filter bar. */
+  padding: var(--sys-size-2) var(--sys-size-4);
   background: transparent;
   border-radius: var(--sys-size-4);
   overflow: hidden;
   cursor: pointer;
-  font-weight: 500;
-  font-size: var(--sys-typescale-body5-size);
+  font: var(--sys-typescale-body5-medium);
 }
 
 .filter-bitset-filter span:focus-visible {
@@ -21205,7 +21189,6 @@ var progressIndicator_css_default = `/*
 .progress-indicator-shadow-stop-button {
   background-color: var(--sys-color-error-bright);
   border: 0;
-  width: 10px;
   height: var(--sys-size-6);
   border-radius: var(--sys-size-2);
 }
@@ -21227,7 +21210,7 @@ var progressIndicator_css_default = `/*
 .progress-indicator-shadow-container progress {
   flex: auto;
   margin: 0 var(--sys-size-2);
-  width: 100px;
+  width: var(--sys-size-19);
 }
 
 /*# sourceURL=${import.meta.resolve("./progressIndicator.css")} */`;
@@ -21481,7 +21464,10 @@ var reportView_css_default = `/*
 
 .report-section {
   display: flex;
-  padding: var(--sys-size-7) var(--sys-size-9) 11px var(--sys-size-9);
+  /* 12px bottom padding (--sys-size-6) minus 1px border (--sys-size-1) = 11px. */
+  padding:
+    var(--sys-size-7) var(--sys-size-9)
+    calc(var(--sys-size-6) - var(--sys-size-1)) var(--sys-size-9);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-direction: column;
 }
@@ -21956,7 +21942,7 @@ var searchableView_css_default = `/*
     grid-auto-rows: var(--sys-size-12);
     flex-grow: 1;
     align-items: center;
-    min-width: 150px;
+    min-width: var(--sys-size-23);
   }
 
   .first-row-buttons {
@@ -23394,7 +23380,8 @@ var treeoutline_css_default = `/*
 .tree-outline li .selection {
   display: none;
   z-index: -1;
-  margin-left: -10000px;
+  /* Extend selection background leftward across any tree nesting depth. */
+  margin-left: -100vw;
 }
 
 .tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.selected {
@@ -23420,10 +23407,10 @@ var treeoutline_css_default = `/*
 
 .tree-outline:not(.hide-selection-when-blurred) li.hovered:not(.selected) .selection {
   display: block;
-  left: 3px;
-  right: 3px;
+  left: var(--sys-size-2);
+  right: var(--sys-size-2);
   background-color: var(--sys-color-state-hover-on-subtle);
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
@@ -23530,7 +23517,7 @@ ol.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.sel
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus-visible {
   width: fit-content;
-  padding-right: 3px;
+  padding-right: var(--sys-size-3);
 }
 
 /* Navigation tree variant */

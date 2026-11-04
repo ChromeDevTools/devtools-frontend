@@ -1277,10 +1277,25 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         }
         if (expanded) {
             this.#expandedNodes.add(node);
+            // Children that are not collapsible (e.g. the document element) render
+            // without an expand arrow, so their children must be fetched eagerly.
+            const expandNotCollapsibleChildren = () => {
+                for (const child of node.children() ?? []) {
+                    // Check the Set directly instead of isNodeExpanded(), because
+                    // isNodeExpanded() always returns true for non-collapsible nodes.
+                    if (isNotCollapsible(child) && !this.#expandedNodes.has(child)) {
+                        this.setNodeExpanded(child, true);
+                    }
+                }
+            };
             if (!node.children() && (node.childNodeCount() || node.isIframe() || node.nodeType() === Node.DOCUMENT_NODE)) {
                 void node.getChildNodes(() => {
+                    expandNotCollapsibleChildren();
                     this.performUpdate();
                 });
+            }
+            else {
+                expandNotCollapsibleChildren();
             }
             this.onElementExpanded();
         }

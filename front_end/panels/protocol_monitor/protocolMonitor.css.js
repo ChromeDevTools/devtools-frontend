@@ -18,7 +18,7 @@ export default `/*
   }
 
   .target-selector {
-    max-width: 120px;
+    max-width: var(--sys-size-21);
   }
 
   .protocol-monitor-main {

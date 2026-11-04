@@ -249,6 +249,7 @@ function renderOriginReport(input) {
 export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
+    <style>${serviceWorkersViewStyles}</style>
     <!-- This Origin Report -->
     ${renderOriginReport(input)}
     ${renderOthersOriginView()}`, target, {
@@ -277,7 +278,6 @@ export class ServiceWorkersView extends UI.Widget.VBox {
             useShadowDom: true,
         });
         this.#view = view;
-        this.registerRequiredCSS(serviceWorkersViewStyles);
         this.sections = new Map();
         this.manager = null;
         this.securityOriginManager = null;

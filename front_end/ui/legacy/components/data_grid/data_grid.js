@@ -611,6 +611,7 @@ var DataGridImpl = class _DataGridImpl extends Common.ObjectWrapper.ObjectWrappe
     this.cellClass = null;
     this.dataTableColumnGroup = this.dataTable.createChild("colgroup");
     this.#dataTableHead = this.dataTable.createChild("thead");
+    this.#dataTableHead.setAttribute("data-sticky-occluder", "");
     this.headerRow = this.#dataTableHead.createChild("tr");
     this.dataTableBody = this.dataTable.createChild("tbody");
     this.topFillerRow = this.dataTableBody.createChild("tr", "data-grid-filler-row revealed");

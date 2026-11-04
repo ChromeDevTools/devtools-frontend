@@ -45,7 +45,7 @@ var imagePreview_css_default = `/*
 }
 
 .image-container > div {
-  min-height: 50px;
+  min-height: var(--sys-size-16);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -272,7 +272,8 @@ var jsUtils_css_default = `/*
  */
 
 .stack-preview-async-description {
-  padding: 3px 0 var(--sys-size-1);
+  /* 4px total vertical padding (--sys-size-3) split into 3px top and 1px bottom (--sys-size-1) so 16px line-height (--sys-size-8) + 4px padding = 20px row height (--sys-size-9). */
+  padding: calc(var(--sys-size-3) - var(--sys-size-1)) 0 var(--sys-size-1);
   font-weight: bold;
 }
 

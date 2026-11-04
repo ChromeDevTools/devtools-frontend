@@ -25,7 +25,6 @@ export default `/*
   }
 
   .cookie-preview-widget-header-label {
-    line-height: 18px;
     flex-shrink: 0;
   }
 

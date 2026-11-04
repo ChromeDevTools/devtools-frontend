@@ -21,6 +21,7 @@
     "../../../../../../test/ai_evals/network/network-400-invalid-parameter.test.ts",
     "../../../../../../test/ai_evals/network/network-401-authentication-error.test.ts",
     "../../../../../../test/ai_evals/network/network-500-server-error.test.ts",
+    "../../../../../../test/ai_evals/network/network-explain-request-details.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -29,9 +30,6 @@
   "references": [
     {
       "path": "../harness_library-tsconfig.ref.json"
-    },
-    {
-      "path": "../../e2e/helpers/helpers-tsconfig.ref.json"
     },
     {
       "path": "../helpers/helpers-tsconfig.ref.json"

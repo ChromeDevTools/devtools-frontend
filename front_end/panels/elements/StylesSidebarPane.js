@@ -1374,6 +1374,8 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
     }
     createStylesSidebarToolbar() {
         const container = this.contentElement.createChild('div', 'styles-sidebar-pane-toolbar-container');
+        // Sticky toolbar: comment overlays for rules scrolled under it are clipped (see CommentAnchorResolver).
+        container.setAttribute('data-sticky-occluder', '');
         container.role = 'toolbar';
         const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
         const toolbar = hbox.createChild('devtools-toolbar', 'styles-pane-toolbar');

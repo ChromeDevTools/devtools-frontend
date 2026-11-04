@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as TextUtils from '../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../generated/protocol.js';
@@ -208,6 +208,7 @@ export interface SideEffectResponse extends ToolCallEvent {
     confirm: (decision: PermissionDecision) => void;
     permissionPrompt?: PermissionPrompt;
     permissionTitle?: string;
+    toolName?: string;
 }
 /**
  * Yielded when a tool selects a new context, for example a network request.

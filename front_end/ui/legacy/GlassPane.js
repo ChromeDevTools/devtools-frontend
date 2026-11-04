@@ -96,14 +96,14 @@ export class GlassPane {
             return;
         }
         this.#widget.detach(/* overrideHideOnDetach= */ true);
-        if (this.#onHideCallback) {
-            this.#onHideCallback();
-        }
     }
     #onDetach() {
         panes.delete(this);
         this.element.ownerDocument.body.removeEventListener('mousedown', this.onMouseDownBound, true);
         this.element.ownerDocument.body.removeEventListener('pointerdown', this.onMouseDownBound, true);
+        if (this.#onHideCallback) {
+            this.#onHideCallback();
+        }
     }
     onMouseDown(event) {
         if (!this.onClickOutsideCallback) {

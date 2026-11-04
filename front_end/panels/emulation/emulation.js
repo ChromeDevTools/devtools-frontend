@@ -1108,7 +1108,7 @@ var deviceModeView_css_default = `/*
 devtools-toolbar {
   overflow: hidden;
   flex: 0 100000 auto;
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
 
   &[wrappable] {
     height: var(--toolbar-height);
@@ -1209,7 +1209,7 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-content-clip .device-mode-screen-area {
-  --override-screen-area-box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 var(--sys-size-9);
+  --override-screen-area-box-shadow: hsl(240deg 3% 84% / 50%) 0 0 0 var(--sys-size-1), hsl(0deg 0% 80% / 40%) 0 0 var(--sys-size-9);
 
   box-shadow: var(--override-screen-area-box-shadow);
 }
@@ -1273,7 +1273,6 @@ devtools-toolbar.device-mode-toolbar-options {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeHorizontal);
   width: var(--sys-size-4);
-  height: 26px;
 }
 
 .device-mode-left-resizer > div {
@@ -1287,16 +1286,15 @@ devtools-toolbar.device-mode-toolbar-options {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeVertical);
   margin-bottom: calc(-1 * var(--sys-size-2));
-  width: 26px;
   height: var(--sys-size-4);
 }
 
 .device-mode-bottom-right-resizer > div {
   position: absolute;
-  bottom: 3px;
-  right: 3px;
-  width: 13px;
-  height: 13px;
+  bottom: var(--sys-size-3);
+  right: var(--sys-size-3);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeDiagonal);
 }
@@ -1369,7 +1367,8 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-left .device-mode-ruler-inner {
-  inset: 19px 0 0;
+  /* Offset by the 20px ruler track (--sys-size-9) minus the parent's 1px top border (--sys-size-1) to align with the viewport top edge. */
+  inset: calc(var(--sys-size-9) - var(--sys-size-1)) 0 0;
   border-right: var(--sys-size-1) solid var(--sys-color-token-subtle);
   background-color: var(--sys-color-cdt-base-container);
 }
@@ -1387,7 +1386,7 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-top .device-mode-ruler-marker.device-mode-ruler-marker-medium {
-  height: 10px;
+  height: var(--sys-size-5);
 }
 
 .device-mode-ruler-top .device-mode-ruler-marker.device-mode-ruler-marker-large {
@@ -2222,7 +2221,9 @@ var DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
     "4K"
   ];
   render3(
-    input.showDeviceMode ? html3`${UI4.Widget.widget(DeviceModeToolbar, { model: input.model })}
+    html3`
+    <style>${deviceModeView_css_default}</style>
+    ${input.showDeviceMode ? html3`${UI4.Widget.widget(DeviceModeToolbar, { model: input.model })}
     <div class=${classMap2({
       "device-mode-content-clip": true,
       vbox: true,
@@ -2319,7 +2320,7 @@ var DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
         ` : nothing2}
       </div>
     </div>
-  ` : widget2(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry.Size(150, 150) }),
+  ` : widget2(() => InspectedPagePlaceholder.instance(), { minimumSize: new Geometry.Size(150, 150) })}`,
     target,
     {
       container: {
@@ -2357,7 +2358,6 @@ var DeviceModeView = class _DeviceModeView extends UI4.Widget.VBox {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.setMinimumSize(150, 150);
-    this.registerRequiredCSS(deviceModeView_css_default);
     this.model = EmulationModel2.DeviceModeModel.DeviceModeModel.instance();
     this.model.addEventListener(EmulationModel2.DeviceModeModel.Events.UPDATED, this.updateUI, this);
     this.model.addEventListener(EmulationModel2.DeviceModeModel.Events.SCREENSHOT_COPIED, this.screenshotCopied, this);

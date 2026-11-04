@@ -17,6 +17,8 @@ function defaultView(input, output, target) {
     const singleResult = evaluations.length === 0 && substitutions.length === 0;
     // clang-format off
     render(html `
+      <style>${cssValueTraceViewStyles}</style>
+      <style>${stylePropertiesTreeOutlineStyles}</style>
       <div role=dialog class="css-value-trace monospace" @keydown=${onKeyDown}>
         ${substitutions.map(line => html `
           <span class="trace-line-icon" aria-label="is equal to">\u21b3</span>
@@ -79,7 +81,6 @@ export class CSSValueTraceView extends UI.Widget.VBox {
     #pendingFocus = false;
     constructor(element, view = defaultView) {
         super(element, { useShadowDom: true });
-        this.registerRequiredCSS(cssValueTraceViewStyles, stylePropertiesTreeOutlineStyles);
         this.#view = view;
         this.requestUpdate();
     }

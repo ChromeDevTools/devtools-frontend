@@ -65,7 +65,7 @@ var codeBlock_css_default = `/*
 .codeblock .editor-wrapper .code {
   max-height: var(--code-block-max-code-height);
   overflow: auto;
-  padding-bottom: 10px;
+  padding-bottom: var(--sys-size-5);
 }
 
 .codeblock.no-toolbar .editor-wrapper {
@@ -74,8 +74,8 @@ var codeBlock_css_default = `/*
 
 .codeblock.no-toolbar .copy-button-container {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: var(--sys-size-4);
+  right: var(--sys-size-4);
   z-index: 1;
 }
 
@@ -674,7 +674,7 @@ devtools-code-block.animating {
 }
 
 .message {
-  line-height: 18px;
+  line-height: var(--sys-typescale-body4-line-height);
   font-size: var(--sys-typescale-body4-size);
   color: var(--sys-color-on-surface);
   user-select: text;
@@ -755,13 +755,13 @@ devtools-code-block {
   outline-offset: var(--sys-size-2);
   border: none;
   padding: 0;
-  font-size: 10px;
+  font-size: var(--sys-typescale-body5-size);
   font-family: var(--default-font-family);
 }
 
 h1.insight, h2.insight, h3.insight, h4.insight, h5.insight, h6.insight {
   font: var(--sys-typescale-body4-bold);
-  margin: var(--sys-size-1) 0 10px;
+  margin: var(--sys-size-1) 0 var(--sys-size-5);
 }
 
 .message table {

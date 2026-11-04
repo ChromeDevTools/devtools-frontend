@@ -261,7 +261,6 @@ export class CoverageView extends UI.Widget.VBox {
             useShadowDom: 'pure',
             delegatesFocus: true,
         });
-        this.registerRequiredCSS(coverageViewStyles);
         this.#view = view;
         this.#model = null;
         this.#decorationManager = null;

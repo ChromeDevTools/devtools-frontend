@@ -11,7 +11,7 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .hint-popup-wrapper {
-    max-width: 232px;
+    max-width: var(--sys-size-28);
   }
 
   code {

@@ -1,1 +1,1 @@
-gen/front_end/models/ai_code_generation/ai_code_generation.js: ../../front_end/models/ai_code_generation/debug.ts ../../front_end/models/ai_code_generation/AiCodeGeneration.ts ../../front_end/models/ai_code_generation/ai_code_generation.ts
+gen/front_end/models/ai_code_generation/ai_code_generation.js: ../../front_end/models/ai_code_generation/AiCodeGeneration.ts ../../front_end/models/ai_code_generation/ai_code_generation.ts

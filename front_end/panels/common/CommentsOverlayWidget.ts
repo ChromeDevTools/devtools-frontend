@@ -683,7 +683,8 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       hoveredThread: CommentManager.CommentManager.CommentThread|null,
       hoveredTitle: Title,
       ): void {
-    const pins = this.#commentOverlayManager.getPinPositions();
+    const pins = this.#commentOverlayManager.getPinPositions().map(
+        pin => !pin.visible && pin.id === activeThread?.id ? {...pin, visible: true} : pin);
     const findPin =
         (thread: CommentManager.CommentManager.CommentThread|null): Comments.CommentOverlayManager.PinPositionData|
         null => thread ? pins.find(p => p.id === thread.id) ?? null : null;

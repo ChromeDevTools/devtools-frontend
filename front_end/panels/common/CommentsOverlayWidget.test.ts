@@ -281,6 +281,30 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       el.remove();
       widget.detach();
     });
+
+    it('hides the pin of a RESOLVED thread unless the thread is open', async () => {
+      const widget = await setupWidget();
+      const el = createAnchor('pin-resolved', 10);
+      const thread = overlayManager.createComment(el, 'Comment');
+      assert.exists(thread);
+      thread.sendToAgent();
+      document.documentElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+      thread.resolve('Done');
+
+      assert.isEmpty(await getHighlights(widget));
+      assert.isEmpty(widget.contentElement.querySelectorAll('.comment-pin'));
+
+      widget.openThread(thread.id);
+      assert.lengthOf(await getHighlights(widget), 1);
+      assert.lengthOf(widget.contentElement.querySelectorAll('.comment-pin'), 1);
+
+      document.documentElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+      assert.isEmpty(await getHighlights(widget));
+      assert.isEmpty(widget.contentElement.querySelectorAll('.comment-pin'));
+
+      el.remove();
+      widget.detach();
+    });
   });
 
   it('renders a pin for each saved comment', async () => {

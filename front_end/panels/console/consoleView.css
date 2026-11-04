@@ -125,7 +125,7 @@
 .message-level-icon,
 .command-result-icon {
   position: absolute;
-  left: -17px;
+  left: calc(-1 * var(--sys-size-9));
   top: var(--sys-size-2);
   user-select: none;
 }

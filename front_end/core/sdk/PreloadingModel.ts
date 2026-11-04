@@ -482,6 +482,7 @@ function convertPreloadingStatus(status: Protocol.Preload.PreloadingStatus): Pre
 }
 
 export type PreloadingAttemptId = string;
+export type PreloadingSourceId = string;
 
 export type PreloadingAttempt = PrefetchAttempt|PrerenderAttempt|PrerenderUntilScriptAttempt;
 
@@ -552,7 +553,7 @@ export interface PrerenderUntilScriptAttemptInternal {
   mismatchedHeaders: Protocol.Preload.PrerenderMismatchedHeaders[]|null;
 }
 
-function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey): PreloadingAttemptId {
+function makePreloadingSourceId(key: Protocol.Preload.PreloadingAttemptKey): PreloadingSourceId {
   let action;
   switch (key.action) {
     case Protocol.Preload.SpeculationAction.Prefetch:
@@ -580,6 +581,15 @@ function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey): Pr
   }
 
   return `${key.loaderId}:${action}:${key.url}:${targetHint}:${key.formSubmission ? 'formSubmission' : 'undefined'}`;
+}
+
+function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey,
+                                 pipelineId?: Protocol.Preload.PreloadPipelineId|null): PreloadingAttemptId {
+  const baseId = makePreloadingSourceId(key);
+  if (pipelineId) {
+    return `${baseId}:${pipelineId}`;
+  }
+  return baseId;
 }
 
 export class PreloadPipeline {
@@ -724,7 +734,7 @@ class PreloadingAttemptRegistry {
       return null;
     }
 
-    return this.enrich(attempt, sources.getById(id));
+    return this.enrich(attempt, sources.getByKey(attempt.key));
   }
 
   // Returns representative preloading attempts that triggered by the rule set with `ruleSetId`.
@@ -739,7 +749,7 @@ class PreloadingAttemptRegistry {
     return [...this.map.entries()]
         .map(([id, value]) => ({
                id,
-               value: this.enrich(value, sources.getById(id)),
+               value: this.enrich(value, sources.getByKey(value.key)),
              }))
         .filter(({value}) => !ruleSetId || value.ruleSetIds.includes(ruleSetId))
         .filter(({value}) => this.isAttemptRepresentative(value));
@@ -769,7 +779,12 @@ class PreloadingAttemptRegistry {
   }
 
   upsert(attempt: PreloadingAttemptInternal): void {
-    const id = makePreloadingAttemptId(attempt.key);
+    const baseId = makePreloadingSourceId(attempt.key);
+    let id: PreloadingAttemptId = baseId;
+    const existing = this.map.get(baseId);
+    if (existing?.pipelineId && attempt.pipelineId && existing.pipelineId !== attempt.pipelineId) {
+      id = makePreloadingAttemptId(attempt.key, attempt.pipelineId);
+    }
 
     this.map.set(id, attempt);
 
@@ -849,10 +864,8 @@ class PreloadingAttemptRegistry {
   // Removes keys in `this.map` that are not in `sources`. This is used to
   // remove attempts that no longer have a matching speculation rule.
   cleanUpRemovedAttempts(sources: SourceRegistry): void {
-    const keysToRemove = Array.from(this.map.keys())
-                             .filter(
-                                 key => !sources.getById(key),
-                             );
+    const keysToRemove =
+        Array.from(this.map.entries()).filter(([, attempt]) => !sources.getByKey(attempt.key)).map(([id]) => id);
     for (const key of keysToRemove) {
       this.map.delete(key);
     }
@@ -872,10 +885,10 @@ class PreloadingAttemptRegistry {
 }
 
 class SourceRegistry {
-  private map: Map<PreloadingAttemptId, Protocol.Preload.PreloadingAttemptSource> =
-      new Map<PreloadingAttemptId, Protocol.Preload.PreloadingAttemptSource>();
+  private map: Map<PreloadingSourceId, Protocol.Preload.PreloadingAttemptSource> =
+      new Map<PreloadingSourceId, Protocol.Preload.PreloadingAttemptSource>();
 
-  entries(): IterableIterator<[PreloadingAttemptId, Protocol.Preload.PreloadingAttemptSource]> {
+  entries(): IterableIterator<[PreloadingSourceId, Protocol.Preload.PreloadingAttemptSource]> {
     return this.map.entries();
   }
 
@@ -883,11 +896,15 @@ class SourceRegistry {
     return this.map.size === 0;
   }
 
-  getById(id: PreloadingAttemptId): Protocol.Preload.PreloadingAttemptSource|null {
+  getById(id: PreloadingSourceId): Protocol.Preload.PreloadingAttemptSource|null {
     return this.map.get(id) || null;
   }
 
+  getByKey(key: Protocol.Preload.PreloadingAttemptKey): Protocol.Preload.PreloadingAttemptSource|null {
+    return this.getById(makePreloadingSourceId(key));
+  }
+
   update(sources: Protocol.Preload.PreloadingAttemptSource[]): void {
-    this.map = new Map(sources.map(s => [makePreloadingAttemptId(s.key), s]));
+    this.map = new Map(sources.map(s => [makePreloadingSourceId(s.key), s]));
   }
 }

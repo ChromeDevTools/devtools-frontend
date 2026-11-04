@@ -74,8 +74,8 @@ devtools-text-prompt {
 .filtered-list-widget-item devtools-icon {
   align-self: center;
   flex: none;
-  width: 18px;
-  height: 18px;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
 
   &.snippet {
     color: var(--sys-color-orange-bright);

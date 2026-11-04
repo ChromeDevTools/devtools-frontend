@@ -59,7 +59,7 @@
   .row {
     display: flex;
     align-items: center;
-    padding-right: 5px;
+    padding-right: var(--sys-size-3);
     height: var(--sys-size-12);
     border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }

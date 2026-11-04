@@ -86,7 +86,7 @@
   .authenticator-fields {
     border: none;
     flex: 0 0 auto;
-    margin-bottom: 10px;
+    margin-bottom: var(--sys-size-5);
   }
 
   .authenticator-section-header {

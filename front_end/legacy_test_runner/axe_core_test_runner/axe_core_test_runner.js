@@ -126,13 +126,12 @@ const DISABLED_RULES = {
 
 const DEFAULT_CONFIG = {
   checks: [
-    // This is a workaround for a bug in our version of axe-core
-    // which does not support aria-placeholder.
     // Any attribute included in the options array will be
     // ignored by the 'aria-valid-attr' rule.
-    // This should be removed after axe-core is updated.
-    // See: https://github.com/dequelabs/axe-core/issues/1457
-    {id: 'aria-valid-attr', options: ['aria-placeholder', 'aria-description']},
+    // axe-core supports aria-description, but the bundled version does not.
+    // Remove this exception once the bundled version supports aria-description.
+    // See: https://github.com/dequelabs/axe-core/issues/3121
+    {id: 'aria-valid-attr', options: ['aria-description']},
   ],
   runOnly: {type: 'tags', values: {include: ['wcag2a', 'best-practice'], exclude: ['experimental']}},
 };

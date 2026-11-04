@@ -91,7 +91,7 @@ li.search-match .search-match-line-number {
   vertical-align: top;
   word-break: normal;
   padding: var(--sys-size-2) var(--sys-size-3) var(--sys-size-2) var(--sys-size-4);
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .tree-outline .devtools-link {

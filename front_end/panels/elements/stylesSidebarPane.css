@@ -255,15 +255,6 @@
   overflow: hidden;
   line-height: var(--sys-size-10);
 
-  > span.monospace {
-    max-width: 180px;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    margin-left: var(--sys-size-2);
-  }
-
   &.layer-separator {
     display: flex;
     align-items: baseline;

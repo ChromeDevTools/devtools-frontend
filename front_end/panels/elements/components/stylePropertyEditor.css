@@ -5,7 +5,7 @@
  */
 
 .container {
-  min-width: 170px;
+  min-width: var(--sys-size-24);
 }
 
 .row {

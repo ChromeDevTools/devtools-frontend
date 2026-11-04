@@ -110,6 +110,15 @@ def update_readme_chromium(file, **kwargs):
         f.write(''.join(content))
 
 
+def replace_in_file(filename, old, new):
+    with open(filename, 'r') as f:
+        content = f.read()
+    if old not in content:
+        raise RuntimeError(f'Expected to find {old!r} in {filename}')
+    with open(filename, 'w') as f:
+        f.write(content.replace(old, new))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('package_name')
@@ -205,6 +214,25 @@ def main():
                 update_readme_chromium(
                     f'./front_end/third_party/puppeteer/third_party/{dep_name}/README.chromium',
                     version=version)
+
+    # @puppeteer/replay imports types from the bare `puppeteer` and
+    # `lighthouse` specifiers. Point the puppeteer import at the vendored
+    # copy so that TypeScript does not resolve it to an unrelated package in
+    # a `node_modules` folder on the host. Stub the lighthouse types with
+    # `any` because front_end does not use `LighthouseRunnerExtension`, the
+    # only API that references them.
+    if package_name == '@puppeteer/replay':
+        main_dts = f'{package_path}/{library_dir}/main.d.ts'
+        replace_in_file(
+            main_dts,
+            "import { Browser, Page } from 'puppeteer';",
+            "import type { Browser, Page } from '../../../puppeteer/puppeteer.js';",
+        )
+        replace_in_file(
+            main_dts,
+            "import * as lighthouse from 'lighthouse';",
+            'declare namespace lighthouse { type FlowResult = any; }',
+        )
 
     tar.close()
 

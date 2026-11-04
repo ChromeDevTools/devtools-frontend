@@ -17,3 +17,11 @@ To update this package, run:
 ```bash
 python3 scripts/deps/roll_front_end_third_party.py @puppeteer/replay puppeteer-replay lib
 ```
+
+Local Modifications:
+
+- `package/lib/main.d.ts`: the `puppeteer` import points at the vendored copy in
+  `front_end/third_party/puppeteer`. The `lighthouse` import is replaced with a
+  local `any` stub because `front_end` does not use `LighthouseRunnerExtension`,
+  the only API that references `lighthouse` types. The roll script applies both
+  changes.

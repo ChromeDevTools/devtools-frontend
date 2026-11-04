@@ -22,6 +22,9 @@ devtools_pre_built("puppeteer-replay") {
   sources_are_release = false
 
   sources = filter_exclude(SOURCES, EXCLUDED_SOURCES)
+
+  # `package/lib/main.d.ts` imports types from the vendored puppeteer copy.
+  ts_deps = [ "../puppeteer:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

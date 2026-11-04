@@ -1,5 +1,5 @@
-import { Browser, Page } from 'puppeteer';
-import * as lighthouse from 'lighthouse';
+import type { Browser, Page } from '../../../puppeteer/puppeteer.js';
+declare namespace lighthouse { type FlowResult = any; }
 
 type ExcludeType<T, U> = {
     [K in keyof T]-?: T[K] extends U ? K : never;

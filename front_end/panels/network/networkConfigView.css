@@ -32,7 +32,7 @@
 
 .panel-section-separator {
   height: var(--sys-size-1);
-  margin-bottom: 10px;
+  margin-bottom: var(--sys-size-6);
   background: var(--sys-color-divider);
 }
 /* Disable cache */

@@ -81,7 +81,7 @@ describeWithEnvironment('NetworkConfigView', () => {
 
   it('renders the network config view', async () => {
     const networkConfigView = Network.NetworkConfigView.NetworkConfigView.instance({forceNew: true});
-    renderElementIntoDOM(networkConfigView);
+    renderElementIntoDOM(networkConfigView, {includeCommonStyles: true});
     await UI.Widget.Widget.allUpdatesComplete;
 
     await assertScreenshot('network/network_config_view.png');

@@ -112,6 +112,32 @@ describe('AnimationModel', () => {
     });
   });
 
+  it('rehydrates a forgotten animation group from a later update', async () => {
+    const target = universe.createTarget();
+    const model = new SDK.AnimationModel.AnimationModel(target);
+    const releaseAnimations = sinon.spy(model.agent, 'invoke_releaseAnimations');
+    let groupStarted = Promise.withResolvers<SDK.AnimationModel.AnimationGroup>();
+    model.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, event => {
+      groupStarted.resolve(event.data);
+    });
+
+    await model.animationStarted(createAnimationPayload({startTime: 0}));
+    const originalGroup = await groupStarted.promise;
+    originalGroup.forget();
+
+    assert.isFalse(model.animationGroups.has(originalGroup.id()));
+    sinon.assert.notCalled(releaseAnimations);
+
+    groupStarted = Promise.withResolvers<SDK.AnimationModel.AnimationGroup>();
+    await model.animationUpdated(createAnimationPayload({startTime: 100}));
+    const restoredGroup = await groupStarted.promise;
+
+    assert.notStrictEqual(restoredGroup, originalGroup);
+    assert.strictEqual(restoredGroup.startTime(), 100);
+    assert.strictEqual(model.animationGroups.get(restoredGroup.id()), restoredGroup);
+    sinon.assert.notCalled(releaseAnimations);
+  });
+
   describe('AnimationImpl', () => {
     it('setPayload should update values returned from the relevant value functions for time based animations',
        async () => {

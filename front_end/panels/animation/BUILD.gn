@@ -74,5 +74,6 @@ devtools_ui_module("unittests") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",
+    "../../ui/legacy:bundle",
   ]
 }

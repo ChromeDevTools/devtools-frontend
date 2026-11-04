@@ -273,6 +273,7 @@ export class AnimationModel extends SDKModel<EventTypes> {
     }
 
     if (!foundAnimation || !foundAnimationGroup) {
+      await this.animationStarted(payload);
       return;
     }
 
@@ -359,6 +360,13 @@ export class AnimationModel extends SDKModel<EventTypes> {
 
   releaseAnimations(animations: string[]): void {
     void this.agent.invoke_releaseAnimations({animations});
+  }
+
+  forgetAnimationGroup(group: AnimationGroup): void {
+    this.animationGroups.delete(group.id());
+    for (const animation of group.animations()) {
+      this.#animationsById.delete(animation.id());
+    }
   }
 
   override async suspendModel(): Promise<void> {
@@ -761,9 +769,8 @@ export class AnimationGroup {
     return this.#animations;
   }
 
-  release(): void {
-    this.#animationModel.animationGroups.delete(this.id());
-    this.#animationModel.releaseAnimations(this.#animationIds());
+  forget(): void {
+    this.#animationModel.forgetAnimationGroup(this);
   }
 
   #animationIds(): string[] {

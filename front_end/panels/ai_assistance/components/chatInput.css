@@ -302,9 +302,9 @@
       height: var(--sys-size-4);
       border-radius: var(--sys-shape-corner-full);
       outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
-      left: 11px;
+      left: var(--sys-size-6);
       position: absolute;
-      top: 13px;
+      top: var(--sys-size-6);
       z-index: 1;
       background-color: var(--sys-color-purple-bright);
     }

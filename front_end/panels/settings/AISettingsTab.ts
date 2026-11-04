@@ -609,6 +609,7 @@ export class AISettingsTab extends UI.Widget.VBox {
 
   #removeAllowedTool(name: AiAssistanceModel.Tool.ToolName): void {
     this.#alwaysAllowedTools.remove(name);
+    void VisualLogging.logFunctionCall('ai-permission-revoked', Platform.StringUtilities.toKebabCase(name));
   }
 
   /**

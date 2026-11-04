@@ -422,6 +422,7 @@ export const knownContextValues: Set<string> = new Set([
   'ai-permission-prompt-shown',
   'ai-permission-reject',
   'ai-permission-rejected',
+  'ai-permission-revoked',
   'ai-remove-allowed-tool',
   'ai-show-walkthrough-sidebar',
   'ai-v2-context-agent-change',

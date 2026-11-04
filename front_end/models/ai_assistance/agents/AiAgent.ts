@@ -1403,12 +1403,40 @@ export abstract class AiAgent<T> {
 
     // Turns an error thrown by the handler into an error result, so the other
     // calls in the same model response still run and the history keeps their
-    // results.
+    // results. Races the handler against the abort signal so a hung tool call
+    // does not block the agent loop after the user aborts the run.
     const runHandler = async(handlerOptions?: FunctionHandlerOptions): Promise<ToolResult<unknown>> => {
+      const signal = handlerOptions?.signal;
+      if (signal?.aborted) {
+        return {error: 'Aborted'};
+      }
       try {
         const isAlwaysAllowed = call.permissionPrompt === PermissionPrompt.ALLOW_ONCE_OR_ALWAYS &&
             this.#alwaysAllowedTools?.isAllowed(name as ToolName);
-        return await call.handler(args, isAlwaysAllowed ? {...handlerOptions, approved: true} : handlerOptions);
+        const handlerPromise =
+            call.handler(args, isAlwaysAllowed ? {...handlerOptions, approved: true} : handlerOptions);
+        if (!signal) {
+          return await handlerPromise;
+        }
+        if (signal.aborted) {
+          return {error: 'Aborted'};
+        }
+        return await new Promise<ToolResult<unknown>>((resolve, reject) => {
+          const onAbort = (): void => {
+            resolve({error: 'Aborted'});
+          };
+          signal.addEventListener('abort', onAbort, {once: true});
+          handlerPromise.then(
+              value => {
+                signal.removeEventListener('abort', onAbort);
+                resolve(value);
+              },
+              err => {
+                signal.removeEventListener('abort', onAbort);
+                reject(err);
+              },
+          );
+        });
       } catch (err) {
         debugLog(`[AiAgent] Tool '${name}' threw:`, err);
         return {error: `Error: ${err instanceof Error ? err.message : String(err)}`};
@@ -1416,6 +1444,9 @@ export abstract class AiAgent<T> {
     };
 
     let result = await runHandler(options);
+    if (options?.signal?.aborted) {
+      return {error: 'Aborted'};
+    }
 
     // Check 1: After first handler execution.
     // Navigation could have occurred during the async handler execution.
@@ -1498,6 +1529,9 @@ export abstract class AiAgent<T> {
         ...options,
         approved: true,
       });
+      if (options?.signal?.aborted) {
+        return {error: 'Aborted'};
+      }
 
       // Check 3: After second handler execution (approved run).
       // Navigation could have occurred during the async execution of the approved action.

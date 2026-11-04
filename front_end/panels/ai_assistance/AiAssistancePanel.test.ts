@@ -1387,6 +1387,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
     let expectedPermissionAllowedAlways: number;
     let expectedPermissionRejected: number;
     let expectedPermissionAutoAllowed: number;
+    let expectedAllowedToolsCount: number;
     let expectedError: number;
     let expectedContextDomNode: number;
     let expectedContextNone: number;
@@ -1421,6 +1422,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       expectedPermissionAllowedAlways = await getVeHash('ai-permission-allowed-always');
       expectedPermissionRejected = await getVeHash('ai-permission-rejected');
       expectedPermissionAutoAllowed = await getVeHash('ai-permission-auto-allowed');
+      expectedAllowedToolsCount = await getVeHash('ai-allowed-tools-count');
       expectedError = await getVeHash('ai-v2-error');
       expectedContextDomNode = await getVeHash('ai-context-dom-node');
       expectedContextNone = await getVeHash('ai-context-none');
@@ -1788,6 +1790,38 @@ describeWithEnvironment('AI Assistance Panel', () => {
       await waitForLoadingToFinish(view);
 
       sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedPermissionAutoAllowed}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedAllowedToolsCount}));
+    });
+
+    it('logs ai-allowed-tools-count every time the panel is shown', async () => {
+      const setting = Common.Settings.Settings.instance().resolve(
+          AiAssistanceModel.AlwaysAllowedTools.alwaysAllowedToolsSettingDescriptor);
+      setting.set([AiAssistanceModel.Tool.ToolName.GET_STORAGE_VALUES]);
+
+      const {panel} = await createAiAssistancePanel();
+      await expectCalled(recordFunctionCallStub);
+      sinon.assert.calledOnceWithExactly(
+          recordFunctionCallStub.withArgs(sinon.match({name: expectedAllowedToolsCount})),
+          {
+            name: expectedAllowedToolsCount,
+            context: 1,
+          },
+      );
+
+      setting.set([
+        AiAssistanceModel.Tool.ToolName.GET_STORAGE_VALUES,
+        AiAssistanceModel.Tool.ToolName.GET_COOKIE_VALUES,
+      ]);
+      panel.willHide();
+      panel.wasShown();
+      await expectCalled(recordFunctionCallStub, {callCount: 2});
+      assert.deepEqual(
+          recordFunctionCallStub.withArgs(sinon.match({name: expectedAllowedToolsCount})).args,
+          [
+            [{name: expectedAllowedToolsCount, context: 1}],
+            [{name: expectedAllowedToolsCount, context: 2}],
+          ],
+      );
     });
 
     it('does not log tool, skill, permission, or error telemetry when replaying a read-only historic conversation',

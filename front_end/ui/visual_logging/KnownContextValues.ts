@@ -371,6 +371,7 @@ export const knownContextValues: Set<string> = new Set([
   'affected-resources',
   'affected-sources',
   'ai-allowed-tools',
+  'ai-allowed-tools-count',
   'ai-annotations-enabled',
   'ai-assistance-always-allowed-tools',
   'ai-assistance-enabled',

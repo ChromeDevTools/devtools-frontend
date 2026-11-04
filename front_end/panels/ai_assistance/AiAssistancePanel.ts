@@ -1117,6 +1117,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
+    if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled()) {
+      void VisualLogging.logFunctionCall('ai-allowed-tools-count', String(this.#alwaysAllowedTools.list().length));
+    }
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
   }

@@ -136,7 +136,14 @@ def main():
         path.join(PROTOCOL_LOCATION, 'browser_protocol.json'),
     ])
 
-    popen([GENERATE_PROTOCOL_DEFINITIONS_SCRIPT])
+    popen([
+        GENERATE_PROTOCOL_DEFINITIONS_SCRIPT,
+        '--input',
+        path.join(PROTOCOL_LOCATION, 'browser_protocol.json'),
+        '--output',
+        path.join(ROOT_DIRECTORY, 'front_end', 'generated',
+                  'InspectorBackendCommands.ts'),
+    ])
 
     generate_protocol_typescript_definitions(options)
 

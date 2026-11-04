@@ -162,7 +162,6 @@
   float: right;
   padding: var(--sys-size-2) var(--sys-size-2) 0 var(--sys-size-8);
   max-width: 100%;
-  height: 15px;
   margin-bottom: calc(-1 * var(--sys-size-1));
 }
 

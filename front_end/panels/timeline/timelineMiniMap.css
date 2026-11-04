@@ -100,7 +100,7 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  font-size: 9px;
+  font-size: var(--sys-size-5);
   color: var(--sys-color-token-subtle);
   white-space: nowrap;
   padding: 0 var(--sys-size-3);

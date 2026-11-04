@@ -3763,7 +3763,6 @@
                         "smartCard",
                         "speakerSelection",
                         "storageAccess",
-                        "topLevelStorageAccess",
                         "videoCapture",
                         "vr",
                         "wakeLockScreen",
@@ -22082,7 +22081,6 @@
                         "autofill",
                         "autoplay",
                         "bluetooth",
-                        "browsing-topics",
                         "camera",
                         "captured-surface-control",
                         "ch-dpr",
@@ -22136,7 +22134,6 @@
                         "hid",
                         "identity-credentials-get",
                         "idle-detection",
-                        "interest-cohort",
                         "keyboard-map",
                         "language-detector",
                         "language-model",
@@ -31008,10 +31005,20 @@
                     ]
                 },
                 {
+                    "id": "ToolId",
+                    "description": "Unique identifier of a registered tool. A new identifier is created every time a tool is registered, so a tool that\nis unregistered and then registered again under the same name gets a different identifier. Clients should treat it\nas an opaque string.",
+                    "type": "string"
+                },
+                {
                     "id": "Tool",
                     "description": "Definition of a tool that can be invoked.",
                     "type": "object",
                     "properties": [
+                        {
+                            "name": "toolId",
+                            "description": "Tool identifier.",
+                            "$ref": "ToolId"
+                        },
                         {
                             "name": "name",
                             "description": "Tool name.",
@@ -31025,6 +31032,12 @@
                         {
                             "name": "inputSchema",
                             "description": "Schema for the tool's input parameters.",
+                            "optional": true,
+                            "type": "object"
+                        },
+                        {
+                            "name": "outputSchema",
+                            "description": "Schema for the tool's output structure.",
                             "optional": true,
                             "type": "object"
                         },
@@ -31058,6 +31071,11 @@
                     "description": "Definition of a tool that was removed.",
                     "type": "object",
                     "properties": [
+                        {
+                            "name": "toolId",
+                            "description": "Identifier of the removed tool.",
+                            "$ref": "ToolId"
+                        },
                         {
                             "name": "name",
                             "description": "Tool name.",
@@ -31154,11 +31172,6 @@
                     "description": "Event fired when a tool invocation starts.",
                     "parameters": [
                         {
-                            "name": "toolName",
-                            "description": "Name of the tool to invoke.",
-                            "type": "string"
-                        },
-                        {
                             "name": "frameId",
                             "description": "Frame id",
                             "$ref": "Page.FrameId"
@@ -31172,6 +31185,18 @@
                             "name": "input",
                             "description": "The input parameters used for the invocation.",
                             "type": "string"
+                        },
+                        {
+                            "name": "toolName",
+                            "description": "Name of the tool to invoke. Missing if the tool was invoked by its identifier, but could not be found (e.g.,\nit was already unregistered), so its name could not be recovered.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "toolId",
+                            "description": "Identifier of the tool to invoke. Missing if the tool was invoked by name, but could not be found, so its\nidentifier could not be recovered.",
+                            "optional": true,
+                            "$ref": "ToolId"
                         }
                     ]
                 },

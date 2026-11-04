@@ -228,7 +228,7 @@ export class WebMCPModel extends SDK.SDKModel.SDKModel<EventTypes> implements Pr
   }
 
   toolInvoked(params: Protocol.WebMCP.ToolInvokedEvent): void {
-    const tool = this.#tools.get(params.frameId)?.get(params.toolName);
+    const tool = params.toolName ? this.#tools.get(params.frameId)?.get(params.toolName) : undefined;
     if (!tool) {
       return;
     }

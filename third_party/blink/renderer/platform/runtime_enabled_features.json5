@@ -641,6 +641,12 @@
       status: "stable",
     },
     {
+      // https://crbug.com/543008837: Ensure anchor-positioned elements are
+      // consistent with a full relayout once scrolling stops.
+      name: "AnchorPositionRelayoutOnScrollEnd",
+      status: "stable",
+    },
+    {
       name: "AndroidDownloadableFontsMatching",
       base_feature: "none",
       public: true,
@@ -3131,6 +3137,13 @@
       status: "stable",
     },
     {
+      // Makes fetch() fail with a network error when a redirect response has
+      // an empty Location header, in "follow" and "error" redirect modes.
+      // https://crbug.com/810288
+      name: "FetchEmptyLocationRedirectIsNetworkError",
+      status: "experimental",
+    },
+    {
       // The Blink runtime-enabled feature name for the API's IDL.
       // https://chromestatus.com/feature/4654499737632768
       name: "FetchLaterAPI",
@@ -3709,12 +3722,6 @@
       status: "stable",
     },
     {
-      // Kill switch for making <area> display:none by default according to the
-      // HTML rendering specification. https://crbug.com/1231263
-      name: "HTMLAreaElementDisplayNone",
-      status: "stable",
-    },
-    {
       name: "HTMLAreaHreflangType",
       status: "test",
     },
@@ -4140,6 +4147,13 @@
       // bugs for touch inputs.
       // https://issues.chromium.org/issues/408010435
       name: "LightDismissFromClick",
+      status: "stable",
+    },
+    {
+      // Kill switch for crbug.com/424995036 and crbug.com/577276073. When
+      // enabled, the top of a PopupWidgetHost is constrained to be at or below
+      // the line of death.
+      name: "LimitPopupWidgetHostPosition",
       status: "stable",
     },
     {
@@ -5879,6 +5893,12 @@
       base_feature: "none",
     },
     {
+      // Scopes SelectAll to the active editing host if it has focus but lacks
+      // an active text selection range. Shipped in M158, safe to remove in M162.
+      name: "SelectAllInFocusedEditingHost",
+      status: "stable",
+    },
+    {
       // Make select popup anchor stay within web contents to prevent
       // overlapping browser UI.
       // TODO(https://issues.chromium.org/issues/511869411): Remove this flag
@@ -6363,8 +6383,9 @@
       // Splits a qualified name on its first colon, per the DOM "validate and
       // extract" algorithm, so any later colons are part of the local name.
       // See https://crbug.com/490251709
+      // Enabled in M159, safe to remove in M163.
       name: "SplitQualifiedNameOnFirstColon",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "SplitTextNotCleanupDummySpans",
@@ -7738,8 +7759,8 @@
     },
     {
       name: "WebTransportCongestionControl",
-      status: "experimental",
-      base_feature: "none",
+      status: "stable",
+      base_feature: "WebTransportCongestionControlAPI",
     },
     {
       name: "WebTransportCreateStreamsBeforeReady",

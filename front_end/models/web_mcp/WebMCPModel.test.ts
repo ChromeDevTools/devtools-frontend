@@ -17,6 +17,7 @@ import * as WebMCP from './web_mcp.js';
 
 function createTool(name: string, frameId: Protocol.Page.FrameId): Protocol.WebMCP.Tool {
   return {
+    toolId: `${frameId}-${name}` as Protocol.WebMCP.ToolId,
     name,
     description: `Description for ${name}`,
     inputSchema: {type: 'object'},
@@ -156,6 +157,7 @@ describe('WebMCPModel', () => {
 
   it('extracts and sorts annotation flags correctly', () => {
     const protocolTool: Protocol.WebMCP.Tool = {
+      toolId: 'test-tool-id' as Protocol.WebMCP.ToolId,
       name: 'test-tool',
       description: 'description',
       inputSchema: {},

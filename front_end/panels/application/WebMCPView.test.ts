@@ -39,7 +39,9 @@ function createTool(name: string, description: string, frameId: Protocol.Page.Fr
                     backendNodeId?: Protocol.DOM.BackendNodeId, inputSchema: unknown = {
                       type: 'object',
                     }): WebMCP.WebMCPModel.Tool {
-  return new WebMCP.WebMCPModel.Tool({name, description, inputSchema, frameId, backendNodeId}, target);
+  return new WebMCP.WebMCPModel.Tool(
+      {toolId: `${frameId}-${name}` as Protocol.WebMCP.ToolId, name, description, inputSchema, frameId, backendNodeId},
+      target);
 }
 const createDefaultViewInput = (): Application.WebMCPView.ViewInput => {
   return {
@@ -672,12 +674,14 @@ describe('WebMCPView Presenter', () => {
     model.toolsAdded({
       tools: [
         {
+          toolId: 'b-tool-id' as Protocol.WebMCP.ToolId,
           name: 'b-tool',
           description: 'desc1',
           inputSchema: {type: 'object'},
           frameId: 'frame1' as Protocol.Page.FrameId,
         },
         {
+          toolId: 'a-tool-id' as Protocol.WebMCP.ToolId,
           name: 'a-tool',
           description: 'desc2',
           inputSchema: {type: 'object'},
@@ -695,6 +699,7 @@ describe('WebMCPView Presenter', () => {
   it('updates selected tool', async () => {
     const {model, viewStub} = await setup();
     const toolProtocol = {
+      toolId: 'tool1-id' as Protocol.WebMCP.ToolId,
       name: 'tool1',
       description: 'desc1',
       inputSchema: {type: 'object'},
@@ -712,6 +717,7 @@ describe('WebMCPView Presenter', () => {
   it('updates selected tool and parameters on reveal tool', async () => {
     const {model, viewStub} = await setup();
     const toolProtocol = {
+      toolId: 'tool1-id' as Protocol.WebMCP.ToolId,
       name: 'tool1',
       description: 'desc1',
       inputSchema: {type: 'object'},
@@ -730,6 +736,7 @@ describe('WebMCPView Presenter', () => {
   it('invokes tool via onRunTool', async () => {
     const {model, viewStub} = await setup();
     const toolProtocol = {
+      toolId: 'tool1-id' as Protocol.WebMCP.ToolId,
       name: 'tool1',
       description: 'desc1',
       inputSchema: {type: 'object'},
@@ -765,6 +772,7 @@ describe('WebMCPView Presenter', () => {
   it('updates when tools are removed', async () => {
     const {model, viewStub} = await setup();
     const tool = {
+      toolId: 'tool1-id' as Protocol.WebMCP.ToolId,
       name: 'tool1',
       description: 'desc1',
       inputSchema: {type: 'object'},
@@ -782,6 +790,7 @@ describe('WebMCPView Presenter', () => {
   it('clears selected tool when it is removed', async () => {
     const {model, viewStub} = await setup();
     const toolProtocol = {
+      toolId: 'tool1-id' as Protocol.WebMCP.ToolId,
       name: 'tool1',
       description: 'desc1',
       inputSchema: {type: 'object'},
@@ -829,6 +838,7 @@ describe('WebMCPView Presenter', () => {
     it('successfully populates a command', async () => {
       const {model, viewStub} = await setup();
       const toolProtocol = {
+        toolId: 'tool1-id' as Protocol.WebMCP.ToolId,
         name: 'tool1',
         description: 'desc1',
         inputSchema: {type: 'object', properties: {arg1: {type: 'string'}}},
@@ -852,6 +862,7 @@ describe('WebMCPView Presenter', () => {
     it('fails to populate a command because the json doesn\'t parse', async () => {
       const {model, viewStub} = await setup();
       const toolProtocol = {
+        toolId: 'tool1-id' as Protocol.WebMCP.ToolId,
         name: 'tool1',
         description: 'desc1',
         inputSchema: {type: 'object'},

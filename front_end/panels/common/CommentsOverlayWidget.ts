@@ -788,7 +788,7 @@ export class ThreadRevealer implements Common.Revealer.Revealer<CommentManager.C
   async reveal({thread, position}: CommentManager.CommentThread.RevealableThread): Promise<void> {
     const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
     if (panelId && UI.InspectorView.InspectorView.instance().hasPanel(panelId)) {
-      await UI.InspectorView.InspectorView.instance().showPanel(panelId);
+      await UI.ViewManager.ViewManager.instance().showView(panelId, true, true);
     }
 
     const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);

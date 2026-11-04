@@ -45,9 +45,6 @@ npm-debug.log
 /node_modules.filtered
 /node_modules.old
 /third_party/*
-!/third_party/emscripten-releases/
-/third_party/emscripten-releases/*
-!/third_party/emscripten-releases/.emscripten
 !/third_party/blink
 !/third_party/i18n
 !/third_party/image_diff

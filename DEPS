@@ -29,8 +29,6 @@ vars = {
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': '9f796802e5d633c96dbe97e0b6683d5e62594f9f',
 
-  'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
-
   # GN CIPD package version.
   'gn_version': 'git_revision:ed7fee04cb30b96ed40ef188acfad5417349e399',
 
@@ -79,6 +77,7 @@ allowed_hosts = [
 
   # TODO(b/337061377): Move into a separate allowed gcs bucket list.
   'chromium-nodejs',
+  'webassembly',
 ]
 
 deps = {
@@ -160,6 +159,52 @@ deps = {
     'condition': 'non_git_source',
   },
 
+  # Pre-built emscripten-releases toolchain. Provides wasm-as and llvm-readobj
+  # for building the wasm test modules, and emscripten for the C/C++ debugging
+  # extension. Only `non_git_source`: devtools-frontend is in Chromium's
+  # recursedeps, so this one entry serves standalone and Chromium checkouts
+  # alike. To roll, update the emscripten-releases revision in all object
+  # names, together with their sha256sum, size_bytes and generation.
+  # The extension also needs the `setup_emscripten` hook below.
+  'third_party/emscripten-releases': {
+    'dep_type': 'gcs',
+    'bucket': 'webassembly',
+    'condition': 'non_git_source',
+    'objects': [
+      {
+        'object_name': 'emscripten-releases-builds/linux/ade9d780ff17c88d81aa13860361743e3c1e1396/wasm-binaries.tbz2',
+        'sha256sum': 'e2c43068fb1985592db42183a13f85bbd9518b3747746e0003d70c7d770a0b2f',
+        'size_bytes': 348308473,
+        'generation': 1655696981812700,
+        'output_file': 'wasm-binaries.tbz2',
+        'condition': 'host_os == "linux" and host_cpu == "x64"',
+      },
+      {
+        'object_name': 'emscripten-releases-builds/mac/ade9d780ff17c88d81aa13860361743e3c1e1396/wasm-binaries.tbz2',
+        'sha256sum': '567e9548f3fa7c1aa717821af4aaa7849a0f7217cb55eb7f66a06c898808fd96',
+        'size_bytes': 339345467,
+        'generation': 1655699997031998,
+        'output_file': 'wasm-binaries.tbz2',
+        'condition': 'host_os == "mac" and host_cpu != "arm64"',
+      },
+      {
+        'object_name': 'emscripten-releases-builds/mac/ade9d780ff17c88d81aa13860361743e3c1e1396/wasm-binaries-arm64.tbz2',
+        'sha256sum': 'df8319aba8bc0d0c40ebec3c8f45e507c2a51a57df24826d4cab6f6cd75017ac',
+        'size_bytes': 305105474,
+        'generation': 1655703107254645,
+        'output_file': 'wasm-binaries-arm64.tbz2',
+        'condition': 'host_os == "mac" and host_cpu == "arm64"',
+      },
+      {
+        'object_name': 'emscripten-releases-builds/win/ade9d780ff17c88d81aa13860361743e3c1e1396/wasm-binaries.zip',
+        'sha256sum': '6bfec6bf6a01e483a57e91f7223340a425f6ff711cbd32a08ed78002810d7882',
+        'size_bytes': 412761468,
+        'generation': 1655697148069102,
+        'output_file': 'wasm-binaries.zip',
+        'condition': 'host_os == "win"',
+      },
+    ],
+  },
   # Always download Linux x64 package regardless of host OS for RBE workers.
   'third_party/cpython3/linux-amd64': {
       'packages': [
@@ -434,9 +479,14 @@ hooks = [
                '-o', 'build/util/LASTCHANGE'],
   },
   {
-    'name': 'emscripten',
+    # Adds the emscripten config file and the ld.lld linker name to the
+    # emscripten-releases toolchain from GCS, which the C/C++ debugging
+    # extension build needs. Both live in the GCS dependency directory,
+    # which gclient replaces as a whole on every emscripten roll.
+    'name': 'setup_emscripten',
     'pattern': '.',
-    'action': ['vpython3', 'scripts/deps/download_emscripten.py', Var('emscripten_tag'), 'third_party/emscripten-releases'],
+    'condition': 'checkout_cxx_debugging_extension_deps == True',
+    'action': ['python3', 'scripts/deps/setup_emscripten.py', 'third_party/emscripten-releases'],
   },
   {
     'name': 'VS Code settings',

@@ -387,14 +387,14 @@
       display: block;
     }
 
-    ul {
+    :scope ul {
       color: var(--sys-color-primary);
       font-size: var(--sys-typescale-body4-size);
       font-style: normal;
       font-weight: 400;
-      line-height: 18px;
+      line-height: var(--sys-typescale-body4-line-height);
       margin-top: var(--sys-size-6);
-      padding-left: var(--sys-size-6);
+      padding-inline-start: var(--sys-size-3);
     }
 
     li {

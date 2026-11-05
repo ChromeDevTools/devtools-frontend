@@ -559,4 +559,21 @@ describeWithEnvironment('ThemeSupport', () => {
       assert.notStrictEqual(documentValue, updatedDocumentValue);
     });
   });
+
+  describe('tokens', () => {
+    afterEach(() => {
+      document.documentElement.classList.remove('theme-with-dark-background');
+      ThemeSupport.ThemeSupport.clearThemeCache();
+    });
+
+    it('resolves --color-continue-to-location-async-hover to --ref-palette-green40 in dark theme', () => {
+      document.documentElement.classList.add('theme-with-dark-background');
+      const element = document.createElement('div');
+      element.style.backgroundColor = 'var(--color-continue-to-location-async-hover)';
+      renderElementIntoDOM(element);
+
+      const computedBackgroundColor = window.getComputedStyle(element).backgroundColor;
+      assert.strictEqual(computedBackgroundColor, 'rgb(20, 108, 46)');
+    });
+  });
 });

@@ -299,7 +299,7 @@
     --color-continue-to-location-hover: var(--ref-palette-yellow40);
     --color-continue-to-location-hover-border: var(--ref-palette-yellow50);
     --color-continue-to-location-async: var(--ref-palette-green30);
-    --color-continue-to-location-async-hover: var(--ref-palette-green4);
+    --color-continue-to-location-async-hover: var(--ref-palette-green40);
     --color-continue-to-location-async-hover-border: var(--ref-palette-green50);
     --color-evaluated-expression: var(--ref-palette-yellow30);
     --color-evaluated-expression-border: var(--ref-palette-yellow40);

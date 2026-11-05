@@ -32,7 +32,12 @@ import {
   uploadRunLog,
   uploadRunStarted,
 } from './report/gcs-upload.js';
-import {createTempEvalDir, type Step, TrajectoryBuilder} from './report/trajectory-builder.js';
+import {
+  createTempEvalDir,
+  type Step,
+  type ToolCallStats,
+  TrajectoryBuilder,
+} from './report/trajectory-builder.js';
 
 export type AiAssistanceContext = NonNullable<AiAssistance.ExternalHandler.ExternalAIRequestOptions['context']>;
 
@@ -136,7 +141,7 @@ export class AiEvalStateProvider extends StateProvider {
   #tempOutputDir = '';
   #logger = new EvalLogger();
   #taskStatuses: TaskStatus[] = [];
-  #taskToolCallCounts = new Map<string, number>();
+  #taskToolCallStats = new Map<string, ToolCallStats>();
   #resolvedModel: string|null = null;
   #resultStores: ResultStore[] = [];
   // Target types of all registered eval tests. Suites are registered while the test files
@@ -158,7 +163,7 @@ export class AiEvalStateProvider extends StateProvider {
     this.#tempOutputDir = createTempEvalDir();
     this.#logger = new EvalLogger();
     this.#taskStatuses = [];
-    this.#taskToolCallCounts = new Map();
+    this.#taskToolCallStats = new Map();
     this.#resolvedModel = null;
     this.#resultStores = [];
     const targets = [...this.#evalTypes];
@@ -183,7 +188,18 @@ export class AiEvalStateProvider extends StateProvider {
     const totalTasks = this.#taskStatuses.length;
     const failedTasks = this.#taskStatuses.filter(t => t.status === 'FAILED').length;
     const passedTasks = totalTasks - failedTasks;
-    const totalToolCalls = Array.from(this.#taskToolCallCounts.values()).reduce((sum, count) => sum + count, 0);
+    let totalToolCalls = 0;
+    const toolCallsByTool: Record<string, number> = {};
+    const failedToolCallsByTool: Record<string, number> = {};
+    for (const stats of this.#taskToolCallStats.values()) {
+      totalToolCalls += stats.total;
+      for (const [tool, count] of Object.entries(stats.byTool)) {
+        toolCallsByTool[tool] = (toolCallsByTool[tool] ?? 0) + count;
+      }
+      for (const [tool, count] of Object.entries(stats.failedByTool)) {
+        failedToolCallsByTool[tool] = (failedToolCallsByTool[tool] ?? 0) + count;
+      }
+    }
     const status = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
     this.#logger.append(`Total tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
     this.#logger.append(`Run completed with status: ${status}`);
@@ -201,6 +217,8 @@ export class AiEvalStateProvider extends StateProvider {
       failedTasks,
       metrics: {
         totalToolCalls,
+        toolCallsByTool,
+        failedToolCallsByTool,
       },
     });
     if (this.#tempOutputDir && fs.existsSync(this.#tempOutputDir)) {
@@ -251,6 +269,11 @@ export class AiEvalStateProvider extends StateProvider {
       durationSeconds: 0,
       logger: this.#logger,
       taskStatuses: this.#taskStatuses,
+      toolCallStats: {
+        total: 0,
+        byTool: {},
+        failedByTool: {},
+      },
       errorMessage,
     });
   }
@@ -322,6 +345,11 @@ export class AiEvalStateProvider extends StateProvider {
             durationSeconds,
             logger: this.#logger,
             taskStatuses: this.#taskStatuses,
+            toolCallStats: {
+              total: 0,
+              byTool: {},
+              failedByTool: {},
+            },
             errorMessage: evalTask.failureError,
           });
         } else {
@@ -355,7 +383,7 @@ export class AiEvalStateProvider extends StateProvider {
               durationSeconds,
               logger: this.#logger,
               taskStatuses: this.#taskStatuses,
-              taskToolCallCounts: this.#taskToolCallCounts,
+              taskToolCallStats: this.#taskToolCallStats,
               hasError: evalTask.hasFailed,
               errorMessage: evalTask.failureError,
               customScore,
@@ -372,8 +400,12 @@ export class AiEvalStateProvider extends StateProvider {
               durationSeconds,
               logger: this.#logger,
               taskStatuses: this.#taskStatuses,
+              toolCallStats: this.#taskToolCallStats.get(evalTask.taskId) ?? {
+                total: 0,
+                byTool: {},
+                failedByTool: {},
+              },
               errorMessage,
-              toolCallCount: this.#taskToolCallCounts.get(evalTask.taskId),
             });
           }
         }

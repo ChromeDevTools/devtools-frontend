@@ -16,6 +16,7 @@ group("ai_evals") {
     "elements",
     "network",
     "performance",
+    "report:unittests",
     "sources",
     "storage",
   ]

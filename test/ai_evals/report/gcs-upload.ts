@@ -59,7 +59,11 @@ export interface TaskCompletedPayload {
   durationSeconds: number;
   tags: string[];
   tokens?: Record<string, unknown>;
-  metrics?: {toolCallCount?: number};
+  metrics: {
+    toolCallCount: number,
+    toolCallsByTool: Record<string, number>,
+    failedToolCallsByTool: Record<string, number>,
+  };
 }
 
 export interface RunCompletedPayload {
@@ -73,7 +77,11 @@ export interface RunCompletedPayload {
   totalTasks: number;
   passedTasks: number;
   failedTasks: number;
-  metrics: {totalToolCalls: number};
+  metrics: {
+    totalToolCalls: number,
+    toolCallsByTool: Record<string, number>,
+    failedToolCallsByTool: Record<string, number>,
+  };
 }
 
 /** Record of a completed task's execution outcome and score. Each task corresponds to an evaluation trajectory. */
@@ -298,7 +306,9 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
     tags: payload.tags,
     tokens: payload.tokens ?? {},
     metrics: {
-      tool_calls: payload.metrics?.toolCallCount ?? 0,
+      tool_calls: payload.metrics.toolCallCount,
+      tool_calls_by_tool: payload.metrics.toolCallsByTool,
+      failed_tool_calls_by_tool: payload.metrics.failedToolCallsByTool,
     },
   };
   const jsonUploaded = uploadTemporaryContentToGCS(
@@ -341,6 +351,8 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
     failed_tasks: payload.failedTasks,
     metrics: {
       total_tool_calls: payload.metrics.totalToolCalls,
+      tool_calls_by_tool: payload.metrics.toolCallsByTool,
+      failed_tool_calls_by_tool: payload.metrics.failedToolCallsByTool,
     },
   };
   const jsonUploaded = uploadTemporaryContentToGCS(

@@ -18,3 +18,8 @@ node_ts_library("report") {
   ]
   ts_deps = [ "../../conductor:implementation" ]
 }
+
+node_ts_library("unittests") {
+  sources = [ "trajectory-builder.test.ts" ]
+  ts_deps = [ ":report" ]
+}

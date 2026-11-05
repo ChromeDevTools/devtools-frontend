@@ -198,6 +198,31 @@ function createUserTurn(turnId: string, userText: string, timestamp: number): Tu
   };
 }
 
+export interface ToolCallStats {
+  total: number;
+  byTool: Record<string, number>;
+  failedByTool: Record<string, number>;
+}
+
+/**
+ * Computes total tool call counts and per-tool frequency maps across all turns in a trajectory.
+ */
+export function calculateTrajectoryToolCalls(trajectory: Trajectory): ToolCallStats {
+  let total = 0;
+  const byTool: Record<string, number> = {};
+  const failedByTool: Record<string, number> = {};
+  for (const turn of trajectory.data) {
+    for (const tc of turn.tool_calls ?? []) {
+      total++;
+      byTool[tc.name] = (byTool[tc.name] ?? 0) + 1;
+      if (tc.status === 'error') {
+        failedByTool[tc.name] = (failedByTool[tc.name] ?? 0) + 1;
+      }
+    }
+  }
+  return {total, byTool, failedByTool};
+}
+
 function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse, timestamp: number, duration: number): Turn {
   const responseText = aidaResponse.explanation?.trim();
   const functionCalls = aidaResponse.functionCalls ?? [];

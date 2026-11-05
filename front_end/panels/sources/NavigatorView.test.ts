@@ -21,6 +21,7 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {addChildFrame, createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 
@@ -1107,15 +1108,22 @@ describeWithEnvironment('NavigatorView', () => {
   });
 
   describe('selection events', () => {
-    async function setupSourceNode() {
+    async function setupSourceNode(options: {mount?: boolean} = {}) {
+      const {mount = true} = options;
       const mainFrame = await getMainFrame(target);
       const url = urlString`http://example.com/script.js`;
       const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      if (mount) {
+        renderElementIntoDOM(navigatorView);
+      }
       await navigatorView.updateComplete;
 
       const node = navigatorView.revealUISourceCode(uiSourceCode);
+      if (mount) {
+        await UI.Widget.Widget.allUpdatesComplete;
+      }
       return {project, uiSourceCode, navigatorView, node, url};
     }
 
@@ -1197,8 +1205,9 @@ describeWithEnvironment('NavigatorView', () => {
       }
     });
 
-    function getPrompt(targetNode: Sources.NavigatorView.NavigatorUISourceCodeTreeNode):
-        UI.TextPrompt.TextPromptElement|null {
+    async function getPrompt(targetNode: Sources.NavigatorView.NavigatorUISourceCodeTreeNode):
+        Promise<UI.TextPrompt.TextPromptElement|null> {
+      await UI.Widget.Widget.allUpdatesComplete;
       return (targetNode.treeElement?.titleElement as HTMLElement | undefined)
                  ?.querySelector<UI.TextPrompt.TextPromptElement>('devtools-prompt') ??
           null;
@@ -1220,7 +1229,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       assert.isTrue(node.isEditing);
       assert.isTrue(navigatorView.isRenaming());
-      const prompt = getPrompt(node);
+      const prompt = await getPrompt(node);
       assert.exists(prompt);
       assert.isTrue(prompt.hasAttribute('editing'));
       assert.strictEqual(prompt.getAttribute('value'), 'script.js');
@@ -1228,6 +1237,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('renamed.js'));
       await renameDone;
+      await UI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.calledOnceWithExactly(renameStub, 'renamed.js' as Platform.DevToolsPath.RawPathString);
       sinon.assert.calledOnceWithExactly(callbackSpy, true);
@@ -1250,10 +1260,11 @@ describeWithEnvironment('NavigatorView', () => {
       assert.isTrue(node.isEditing);
       assert.isTrue(navigatorView.isRenaming());
       assert.isFalse(navigatorView.shouldRenameOnMouseDown(node));
-      const prompt = getPrompt(node);
+      const prompt = await getPrompt(node);
       assert.exists(prompt);
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      await UI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.notCalled(renameStub);
       sinon.assert.calledOnceWithExactly(callbackSpy, false);
@@ -1281,11 +1292,12 @@ describeWithEnvironment('NavigatorView', () => {
 
       assert.isTrue(node.isEditing);
       assert.isTrue(navigatorView.isRenaming());
-      const prompt = getPrompt(node);
+      const prompt = await getPrompt(node);
       assert.exists(prompt);
       assert.strictEqual(prompt.getAttribute('value'), 'script.js');
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      await UI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.calledOnceWithExactly(callbackSpy, false);
       assert.isFalse(node.isEditing);
@@ -1312,7 +1324,8 @@ describeWithEnvironment('NavigatorView', () => {
       assert.isNull(revealed);
       assert.isTrue(navigatorView.isNodeSelected(node));
 
-      getPrompt(node)?.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      (await getPrompt(node))?.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      await UI.Widget.Widget.allUpdatesComplete;
       assert.isFalse(navigatorView.isRenaming());
 
       const revealedAfter = navigatorView.revealUISourceCode(otherUiSourceCode, true);
@@ -1337,19 +1350,21 @@ describeWithEnvironment('NavigatorView', () => {
         resolve(committed);
       }));
 
-      let prompt = getPrompt(node);
+      let prompt = await getPrompt(node);
       assert.exists(prompt);
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('invalid.js'));
       await firstRenamePromise;
       await Promise.resolve();
+      await UI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.notCalled(callbackSpy);
-      prompt = getPrompt(node);
+      prompt = await getPrompt(node);
       assert.exists(prompt);
       assert.isTrue(node.isEditing);
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('valid.js'));
       await renameDone;
+      await UI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.calledOnceWithExactly(callbackSpy, true);
       assert.isFalse(node.isEditing);
@@ -1378,10 +1393,11 @@ describeWithEnvironment('NavigatorView', () => {
       assert.isTrue(creatingNew);
       assert.isTrue(node.isEditing);
 
-      const prompt = getPrompt(node);
+      const prompt = await getPrompt(node);
       assert.exists(prompt);
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      await UI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.calledOnce(removeSpy);
       assert.isFalse(node.isEditing);
@@ -1389,7 +1405,7 @@ describeWithEnvironment('NavigatorView', () => {
     });
 
     it('cancels rename and clears renaming state when UISourceCode is removed during rename', async () => {
-      const {project, uiSourceCode, navigatorView, node} = await setupSourceNode();
+      const {project, uiSourceCode, navigatorView, node} = await setupSourceNode({mount: false});
       assert.exists(node);
 
       const callbackSpy = sinon.spy();
@@ -1428,6 +1444,102 @@ describeWithEnvironment('NavigatorView', () => {
       sinon.assert.calledOnceWithExactly(callbackSpy, false);
 
       project.removeProject();
+    });
+
+    it('preserves editing state, renaming state, and typed text when updateTitle is called during rename', async () => {
+      const {project, navigatorView, node} = await setupSourceNode();
+      assert.exists(node);
+
+      node.rename();
+      assert.isTrue(node.isEditing);
+      assert.isTrue(navigatorView.isRenaming());
+
+      const prompt = await getPrompt(node);
+      assert.exists(prompt);
+      document.execCommand('insertText', false, 'typed-name.js');
+      assert.strictEqual(prompt.deepInnerText(), 'typed-name.js');
+
+      node.updateTitle();
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.isTrue(node.isEditing);
+      assert.isTrue(navigatorView.isRenaming());
+      assert.strictEqual(await getPrompt(node), prompt);
+      assert.strictEqual(prompt.deepInnerText(), 'typed-name.js');
+
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isFalse(node.isEditing);
+      assert.isFalse(navigatorView.isRenaming());
+      project.removeProject();
+    });
+  });
+
+  describe('NavigatorSourceTitleWidget', () => {
+    it('propagates title, editing, onCommit, and onCancel to view input', async () => {
+      const view = createViewFunctionStub(Sources.NavigatorView.NavigatorSourceTitleWidget);
+      const widget = new Sources.NavigatorView.NavigatorSourceTitleWidget(undefined, view);
+      const initialInputPromise = view.nextInput;
+      renderElementIntoDOM(widget);
+      await initialInputPromise;
+
+      const commitSpy = sinon.spy();
+      const cancelSpy = sinon.spy();
+      widget.onCommit = commitSpy;
+      widget.onCancel = cancelSpy;
+
+      const nextInputPromise = view.nextInput;
+      widget.title = 'test.js';
+      widget.editing = true;
+      const viewInput = await nextInputPromise;
+
+      assert.exists(viewInput);
+      assert.strictEqual(viewInput.title, 'test.js');
+      assert.isTrue(viewInput.editing);
+
+      viewInput.onCommit('committed.js');
+      sinon.assert.calledOnceWithExactly(commitSpy, 'committed.js');
+
+      viewInput.onCancel();
+      sinon.assert.calledOnce(cancelSpy);
+    });
+
+    it('stops mousedown, click, and dblclick propagation only while editing', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      Sources.NavigatorView.DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW(
+          {title: 'script.js', editing: false, onCommit: () => {}, onCancel: () => {}}, undefined, container);
+
+      const prompt = container.querySelector('devtools-prompt');
+      assert.exists(prompt);
+
+      const mousedownSpy = sinon.spy();
+      const clickSpy = sinon.spy();
+      const dblclickSpy = sinon.spy();
+      container.addEventListener('mousedown', mousedownSpy);
+      container.addEventListener('click', clickSpy);
+      container.addEventListener('dblclick', dblclickSpy);
+
+      prompt.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+      prompt.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+      prompt.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+
+      sinon.assert.calledOnce(mousedownSpy);
+      sinon.assert.calledOnce(clickSpy);
+      sinon.assert.calledOnce(dblclickSpy);
+
+      Sources.NavigatorView.DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW(
+          {title: 'script.js', editing: true, onCommit: () => {}, onCancel: () => {}}, undefined, container);
+
+      prompt.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+      prompt.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+      prompt.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+
+      // No new events received by container because propagation stopped
+      sinon.assert.calledOnce(mousedownSpy);
+      sinon.assert.calledOnce(clickSpy);
+      sinon.assert.calledOnce(dblclickSpy);
     });
   });
 

@@ -318,24 +318,111 @@ export function renderGroupTrailingIcons(project: Workspace.Workspace.Project|nu
   return [];
 }
 
-export interface SourceTitleViewInput {
+export interface NavigatorSourceTitleViewInput {
   title: string;
   editing: boolean;
-  onCommit: (newTitle: string) => void;
+  onCommit: (detail: string) => void;
   onCancel: () => void;
 }
 
-export const renderSourceTitle = (input: SourceTitleViewInput, _output: undefined, target: HTMLElement): void => {
+export type NavigatorSourceTitleView = (input: NavigatorSourceTitleViewInput, output: undefined, target: HTMLElement) =>
+    void;
+
+export const DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW: NavigatorSourceTitleView = (input, _output, target) => {
+  const stopPropagationIfEditing = (event: Event): void => {
+    if (input.editing) {
+      event.stopPropagation();
+    }
+  };
+
   // clang-format off
   render(html`
     <devtools-prompt
       value=${input.title}
       ?editing=${input.editing}
       @commit=${(event: UI.TextPrompt.TextPromptElement.CommitEvent) => input.onCommit(event.detail)}
-      @cancel=${input.onCancel}
-    >${input.title}</devtools-prompt>`, target);
+      @cancel=${() => input.onCancel()}
+      @mousedown=${stopPropagationIfEditing}
+      @click=${stopPropagationIfEditing}
+      @dblclick=${stopPropagationIfEditing}>${input.title}</devtools-prompt>
+  `, target);
   // clang-format on
 };
+
+export class NavigatorSourceTitleWidget extends UI.Widget.Widget {
+  #title = '';
+  #editing = false;
+  #view: NavigatorSourceTitleView;
+
+  onCommit?: (detail: string) => void;
+  onCancel?: () => void;
+
+  set title(title: string) {
+    if (this.#title === title) {
+      return;
+    }
+    this.#title = title;
+    this.requestUpdate();
+  }
+
+  get title(): string {
+    return this.#title;
+  }
+
+  set editing(editing: boolean) {
+    if (this.#editing === editing) {
+      return;
+    }
+    this.#editing = editing;
+    this.requestUpdate();
+  }
+
+  get editing(): boolean {
+    return this.#editing;
+  }
+
+  constructor(element?: HTMLElement, view: NavigatorSourceTitleView = DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const viewInput: NavigatorSourceTitleViewInput = {
+      title: this.#title,
+      editing: this.#editing,
+      onCommit: (detail: string) => this.onCommit?.(detail),
+      onCancel: () => this.onCancel?.(),
+    };
+    this.#view(viewInput, undefined, this.contentElement);
+  }
+}
+
+export const renderSourceTitleWidget =
+    (input: NavigatorSourceTitleViewInput, _output: undefined, target: HTMLElement): void => {
+      // clang-format off
+      render(html`
+        <devtools-widget style="display: contents" ${UI.Widget.widget(NavigatorSourceTitleWidget, {
+          title: input.title,
+          editing: input.editing,
+          onCommit: input.onCommit,
+          onCancel: input.onCancel,
+        })}></devtools-widget>
+      `, target);
+      // clang-format on
+      const widgetElement = target.firstElementChild as HTMLElement | null;
+      if (widgetElement) {
+        // Temporary adapter: instantiates and renders the widget synchronously
+        // for detached TreeOutlineInShadow elements. This will be removed once
+        // NavigatorView renders <devtools-tree> declaratively.
+        const widget = UI.Widget.Widget.getOrCreateWidget(widgetElement);
+        void widget.performUpdate();
+      }
+    };
 
 export const enum Events {
   UI_SOURCE_CODE_ADDED = 'ui-source-code-added',
@@ -2008,13 +2095,13 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
       return;
     }
 
-    renderSourceTitle({
+    renderSourceTitleWidget({
       title: this.title,
       editing: this.isEditing,
       onCommit: this.#handlePromptCommit.bind(this),
       onCancel: this.#handlePromptCancel.bind(this),
     },
-                      undefined, this.treeElement.titleElement as HTMLElement);
+                            undefined, this.treeElement.titleElement as HTMLElement);
     this.updateIcon();
     this.updateTrailingIcons();
 
@@ -2033,7 +2120,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         (this.#uiSourceCode.contentType().isScript() || isIgnoreListed) ? isIgnoreListed : null;
 
     let titleText = this.#uiSourceCode.displayName();
-    if (!ignoreIsDirty && this.#uiSourceCode.isDirty()) {
+    if (!ignoreIsDirty && !this.isEditing && this.#uiSourceCode.isDirty()) {
       titleText = '*' + titleText;
     }
     this.title = titleText;

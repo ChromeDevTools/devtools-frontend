@@ -17,3 +17,5 @@
 # crbug.com/1234567 [ mac ] front_end/panels/elements/ElementsPanel.test.ts [ Failure ]
 
 crbug.com/581810128 [ linux mac win32 ] test/e2e/performance/landing-page.test.ts:the_performance_panel_landing_page:ignores_metrics_from_iframes [ Failure Pass ]
+
+crbug.com/581819172 [ linux ] test/e2e/console/console-errors.test.ts:the_console's_errors:shows_errors_to_load_a_resource [ Failure Pass ]

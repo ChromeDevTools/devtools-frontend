@@ -20,6 +20,8 @@ import {DomFragment} from './no-imperative-dom-api/dom-fragment.ts';
 import {i18n} from './no-imperative-dom-api/i18n.ts';
 import {icon} from './no-imperative-dom-api/icon.ts';
 import {Link} from './no-imperative-dom-api/link.ts';
+import {listControl} from './no-imperative-dom-api/list-control.ts';
+import {listWidget} from './no-imperative-dom-api/list-widget.ts';
 import {reportView} from './no-imperative-dom-api/report-view.ts';
 import {splitWidget} from './no-imperative-dom-api/split-widget.ts';
 import {toolbar} from './no-imperative-dom-api/toolbar.ts';
@@ -63,6 +65,8 @@ export default createRule({
       domApiDevtoolsExtensions.create(context),
       icon.create(context),
       i18n.create(context),
+      listControl.create(context),
+      listWidget.create(context),
       reportView.create(context),
       splitWidget.create(context),
       toolbar.create(context),

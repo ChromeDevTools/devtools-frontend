@@ -33,6 +33,15 @@ new RuleTester().run('no-imperative-dom-api', rule, {
         el.setAttribute();
       `,
     },
+    {
+      name: 'allows ListModel and unrelated instantiations',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+        const model = new UI.ListModel.ListModel();
+        const localModel = new ListModel();
+        const editor = new Editor();
+      `,
+    },
   ],
 
   invalid: [
@@ -1691,6 +1700,46 @@ class ListItem {
         {messageId: 'preferTemplateLiterals', line: 6},
         {messageId: 'preferTemplateLiterals', line: 7},
         {messageId: 'preferTemplateLiterals', line: 12},
+      ],
+    },
+    {
+      name: 'reports ListControl instantiations',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const list1 = new UI.ListControl.ListControl(model, delegate);
+    const list2 = new ListControl.ListControl(model, delegate);
+    const list3 = new ListControl(model, delegate);
+  }
+}`,
+      errors: [
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+      ],
+    },
+    {
+      name: 'reports ListWidget and Editor instantiations',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const list1 = new UI.ListWidget.ListWidget(delegate);
+    const editor1 = new UI.ListWidget.Editor();
+    const list2 = new ListWidget.ListWidget(delegate);
+    const editor2 = new ListWidget.Editor();
+    const list3 = new ListWidget(delegate);
+  }
+}`,
+      errors: [
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
       ],
     },
   ],

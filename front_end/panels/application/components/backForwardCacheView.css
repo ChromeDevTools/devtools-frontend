@@ -77,10 +77,6 @@ devtools-report-value:has(devtools-tree-outline) {
  outline: 0;
 }
 
-.tree-outline li .selection {
-  margin-left: -5px;
-}
-
 @media (forced-colors: active) {
   .link,
   .devtools-link {

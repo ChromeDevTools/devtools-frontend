@@ -672,6 +672,8 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
       'in-clipboard': input.isNodeInClipboard(node),
       'elements-drag-over': isDragOver,
       'always-parent': !isCollapsible && !isEditingAsHTML,
+      // Draws the vertical guide line next to the shadow root children.
+      'shadow-root': node.isShadowRoot(),
     });
 
     // The opening and the closing tag are separate rows that report the

@@ -6087,6 +6087,40 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('adds the shadow-root class only to #shadow-root rows for the nesting guide line', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const shadowPayload = makeNodePayload(3, '#shadow-root', {
+          parentId: 2 as Protocol.DOM.NodeId,
+          nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+          shadowRootType: Protocol.DOM.ShadowRootType.Open,
+          children:
+              [makeNodePayload(4, 'DIV', {parentId: 3 as Protocol.DOM.NodeId, attributes: ['id', 'shadow-child']})],
+        });
+        const hostPayload =
+            makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, shadowRoots: [shadowPayload]});
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [hostPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const hostNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        const shadowRootNode = domModel.nodeForId(3 as Protocol.DOM.NodeId)!;
+        const hostTreeElement = await expandAndFind(domTree, hostNode);
+        const shadowRootTreeElement = await expandAndFind(domTree, shadowRootNode);
+
+        assert.isFalse(hostTreeElement.listItemElement.classList.contains('shadow-root'));
+        assert.isTrue(shadowRootTreeElement.listItemElement.classList.contains('shadow-root'));
+        const childrenList = shadowRootTreeElement.listItemElement.nextElementSibling;
+        assert.instanceOf(childrenList, HTMLOListElement);
+        assert.isTrue(childrenList.classList.contains('children'));
+        assert.isTrue(childrenList.matches('li.shadow-root + ol.children'));
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('renders shadow host with <slot> and distributed nodes in tree children', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target);
       try {

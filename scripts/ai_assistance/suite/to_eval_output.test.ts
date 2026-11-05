@@ -87,41 +87,87 @@ describe('to_eval_output', () => {
   });
 
   describe('convertRawOutputToEval', () => {
-    it('preserves task_id and generates a <15-char-hash>-<index> session_id', () => {
-      const trajectories = convertRawOutputToEval({
-        label: 'elements',
-        inputFromAutoRun: {
-          metadata: [{taskId: 'life-with-charlie'}],
-          trajectories: [
-            {
-              taskId: 'life-with-charlie',
-              request: {
-                current_message: {parts: [{text: 'Inspect the image'}]},
-                function_declarations: [],
-                metadata: {client_version: '155.0.0.0'},
-              },
-              aidaResponse: {
-                explanation: 'The image has width 200px.',
-                completed: true,
-                metadata: {
-                  inferenceOptionMetadata: {
-                    modelId: 'gemini-2.5-pro',
-                    modelVersion: '1',
-                  },
-                },
-              },
-            },
-          ],
-        },
-      });
+    it('preserves task_id, generates a <15-char-hash>-<index> session_id, and populates turn and metadata timestamps',
+       () => {
+         const trajectories = convertRawOutputToEval({
+           label: 'elements',
+           inputFromAutoRun: {
+             metadata: [{taskId: 'life-with-charlie'}],
+             trajectories: [
+               {
+                 taskId: 'life-with-charlie',
+                 requestTimestamp: 1700000000000000,
+                 responseTimestamp: 1700000001500000,
+                 request: {
+                   current_message: {parts: [{text: 'Inspect the image'}]},
+                   function_declarations: [],
+                   metadata: {client_version: '155.0.0.0'},
+                 },
+                 aidaResponse: {
+                   explanation: '',
+                   functionCalls: [{
+                     name: 'executeJavaScript',
+                     args: {title: 'Check styles', explanation: 'Checking computed styles'},
+                   }],
+                   completed: true,
+                   metadata: {
+                     inferenceOptionMetadata: {
+                       modelId: 'gemini-2.5-pro',
+                       modelVersion: '1',
+                     },
+                   },
+                 },
+               },
+               {
+                 taskId: 'life-with-charlie',
+                 requestTimestamp: 1700000002000000,
+                 responseTimestamp: 1700000004000000,
+                 request: {
+                   current_message: {
+                     parts: [{
+                       functionResponse: {
+                         name: 'executeJavaScript',
+                         response: {result: {width: '200px'}},
+                       },
+                     }],
+                   },
+                   function_declarations: [],
+                   metadata: {client_version: '155.0.0.0'},
+                 },
+                 aidaResponse: {
+                   explanation: 'The image has width 200px.',
+                   completed: true,
+                   metadata: {
+                     inferenceOptionMetadata: {
+                       modelId: 'gemini-2.5-pro',
+                       modelVersion: '1',
+                     },
+                   },
+                 },
+               },
+             ],
+           },
+         });
 
-      assert.lengthOf(trajectories, 1);
-      assert.strictEqual(trajectories[0].metadata.task_id, 'life-with-charlie');
-      assert.match(trajectories[0].metadata.session_id, /^[0-9a-f]{15}-0$/);
-      assert.strictEqual(trajectories[0].metadata.model, 'gemini-2.5-pro');
-      assert.strictEqual(trajectories[0].data[0].turn_id, '1');
-      assert.strictEqual(trajectories[0].data[1].turn_id, '2');
-    });
+         assert.lengthOf(trajectories, 1);
+         const trajectory = trajectories[0];
+         assert.strictEqual(trajectory.metadata.task_id, 'life-with-charlie');
+         assert.match(trajectory.metadata.session_id, /^[0-9a-f]{15}-0$/);
+         assert.strictEqual(trajectory.metadata.model, 'gemini-2.5-pro');
+         assert.strictEqual(trajectory.metadata.start_time, new Date(1700000000000).toISOString());
+         assert.strictEqual(trajectory.metadata.last_updated, new Date(1700000004000).toISOString());
+         assert.strictEqual(trajectory.data[0].turn_id, '1');
+         assert.strictEqual(trajectory.data[0].timestamp, 1700000000000000);
+         assert.strictEqual(trajectory.data[1].turn_id, '2');
+         assert.strictEqual(trajectory.data[1].timestamp, 1700000001500000);
+         assert.strictEqual(trajectory.data[1].duration, 1500000);
+         assert.strictEqual(trajectory.data[1].thoughts[0].timestamp, 1700000001500000);
+         assert.strictEqual(trajectory.data[1].tool_calls[0].timestamp, 1700000002000000);
+         assert.strictEqual(trajectory.data[1].tool_calls[0].duration, 500000);
+         assert.strictEqual(trajectory.data[2].turn_id, '3');
+         assert.strictEqual(trajectory.data[2].timestamp, 1700000004000000);
+         assert.strictEqual(trajectory.data[2].duration, 2000000);
+       });
   });
 
   describe('formatChatLog', () => {
@@ -132,6 +178,8 @@ describe('to_eval_output', () => {
           model: 'gemini-test',
           chrome_version: '155.0.0.0',
           task_id: 'example-task',
+          start_time: '2026-08-25T13:46:19.000Z',
+          last_updated: '2026-08-25T13:46:21.000Z',
         },
         data: [
           {
@@ -174,6 +222,8 @@ describe('to_eval_output', () => {
           model: 'gemini-test',
           chrome_version: '155.0.0.0',
           task_id: 'example-task',
+          start_time: '2026-08-25T13:46:19.000Z',
+          last_updated: '2026-08-25T13:46:21.000Z',
         },
         data: [
           {

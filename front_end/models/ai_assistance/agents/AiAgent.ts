@@ -790,6 +790,8 @@ export abstract class AiAgent<T> {
   readonly #structuredLog: Array<{
     request: Host.AidaClient.DoConversationRequest,
     aidaResponse: Host.AidaClient.DoConversationResponse,
+    requestTimestamp: number,
+    responseTimestamp: number,
   }> = [];
 
   /**
@@ -1598,6 +1600,7 @@ export abstract class AiAgent<T> {
     let aidaResponse: Host.AidaClient.DoConversationResponse|undefined = undefined;
     let rpcId: Host.AidaClient.RpcGlobalId|undefined;
 
+    const requestTimestamp = Math.floor(Date.now() * 1000);
     for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
       if (aidaResponse.functionCalls?.length) {
         yield {
@@ -1618,9 +1621,12 @@ export abstract class AiAgent<T> {
     }
 
     if (isDebugMode() && aidaResponse) {
+      const responseTimestamp = Math.floor(Date.now() * 1000);
       this.#structuredLog.push({
         request: structuredClone(request),
         aidaResponse,
+        requestTimestamp,
+        responseTimestamp,
       });
       try {
         Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem('aiAssistanceStructuredLog',

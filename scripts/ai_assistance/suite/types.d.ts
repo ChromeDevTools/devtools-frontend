@@ -9,6 +9,8 @@ export interface Turn {
   turn_id: string;
   role: 'user'|'gemini';
   timestamp: number;
+  /** Optional because user turns have no span and tool calls are initialized before execution completes. */
+  duration?: number;
   tokens: Record<string, never>;
   content: string[];
   thoughts: Array<{
@@ -20,6 +22,7 @@ export interface Turn {
     name: string,
     args: Record<string, unknown>,
     timestamp: number,
+    duration?: number,
     status?: 'success'|'error',
     result?: unknown,
   }>;
@@ -44,6 +47,8 @@ export interface Trajectory {
      * Matches `task_id` in `eval_task_completed.json` and the GCS `tasks/<taskId>/` directory.
      */
     task_id: TaskId,
+    start_time: string,
+    last_updated: string,
   };
   data: Turn[];
 }

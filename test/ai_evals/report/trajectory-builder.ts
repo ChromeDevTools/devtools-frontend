@@ -33,6 +33,7 @@ export interface ToolCall {
   name: string;
   args: Record<string, unknown>;
   timestamp: number;
+  duration?: number;
   status?: 'success'|'error';
   result?: unknown;
 }
@@ -42,6 +43,8 @@ export interface Turn {
   turn_id: string;
   role: 'user'|'gemini';
   timestamp: number;
+  /** Optional because user turns have no span and tool calls are initialized before execution completes. */
+  duration?: number;
   tokens: Record<string, never>;
   content: string[];
   thoughts: Thought[];
@@ -62,6 +65,8 @@ export interface TrajectoryMetadata {
    * Matches `task_id` in `eval_task_completed.json` and the GCS `tasks/<taskId>/` directory.
    */
   task_id: string;
+  start_time: string;
+  last_updated: string;
 }
 
 export interface Trajectory {
@@ -107,6 +112,8 @@ export interface Step {
   session_id?: string;
   request: RawRequest;
   aidaResponse: RawAidaResponse;
+  requestTimestamp: number;
+  responseTimestamp: number;
 }
 
 export type RawExample = Step;
@@ -132,12 +139,16 @@ function buildTrajectory(
   const modelData = firstStep?.aidaResponse?.metadata?.inferenceOptionMetadata;
   assert.isOk(modelData, 'No inferenceOptionMetadata found in step');
 
+  const lastStep = steps.findLast(s => s.aidaResponse.completed) ?? steps[steps.length - 1];
+
   return {
     metadata: {
       session_id: sessionId,
       model: modelData.modelId ?? '',
       chrome_version: chromeVersion,
       task_id: taskId,
+      start_time: new Date(firstStep.requestTimestamp / 1000).toISOString(),
+      last_updated: new Date(lastStep.responseTimestamp / 1000).toISOString(),
     },
     data: buildTurns(steps),
   };
@@ -150,7 +161,7 @@ function buildTurns(steps: Step[]): Turn[] {
   const turns: Turn[] = [];
   let turnIndex = 1;
 
-  for (const {request, aidaResponse} of steps) {
+  for (const {request, aidaResponse, requestTimestamp, responseTimestamp} of steps) {
     if (!aidaResponse.completed) {
       continue;
     }
@@ -158,26 +169,27 @@ function buildTurns(steps: Step[]): Turn[] {
     for (const requestPart of request.current_message.parts) {
       if (requestPart?.text) {
         // User prompt starts a new turn.
-        turns.push(createUserTurn(String(turnIndex++), requestPart.text));
+        turns.push(createUserTurn(String(turnIndex++), requestPart.text, requestTimestamp));
       } else if (requestPart?.functionResponse) {
         // Tool responses from DevTools are attached back to the preceding Gemini turn that invoked them.
-        attachToolResultToLastTurn(turns, requestPart.functionResponse.name, requestPart.functionResponse.response);
+        const {name, response} = requestPart.functionResponse;
+        attachToolResultToLastTurn(turns, name, response, requestTimestamp);
       }
     }
 
     // AIDA response turn (text explanation and/or tool call invocations).
-    turns.push(createGeminiTurn(String(turnIndex++), aidaResponse));
+    const duration = responseTimestamp - requestTimestamp;
+    turns.push(createGeminiTurn(String(turnIndex++), aidaResponse, responseTimestamp, duration));
   }
 
   return turns;
 }
 
-function createUserTurn(turnId: string, userText: string): Turn {
+function createUserTurn(turnId: string, userText: string, timestamp: number): Turn {
   return {
     turn_id: turnId,
     role: 'user',
-    // TODO: Look into capturing the actual execution timestamp instead of current time.
-    timestamp: Math.floor(Date.now() * 1000),
+    timestamp,
     // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
     tokens: {},
     content: [userText],
@@ -186,10 +198,8 @@ function createUserTurn(turnId: string, userText: string): Turn {
   };
 }
 
-function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse): Turn {
+function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse, timestamp: number, duration: number): Turn {
   const responseText = aidaResponse.explanation?.trim();
-  // TODO: Look into capturing the actual execution timestamp instead of current time.
-  const timestamp = Math.floor(Date.now() * 1000);
   const functionCalls = aidaResponse.functionCalls ?? [];
   const toolCalls = functionCalls.map(call => ({
                                         name: call.name,
@@ -201,6 +211,7 @@ function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse): Turn {
     turn_id: turnId,
     role: 'gemini',
     timestamp,
+    duration,
     // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
     tokens: {},
     content: responseText ? [responseText] : [],
@@ -231,12 +242,19 @@ function buildThoughts(functionCalls: RawFunctionCall[], timestamp: number): Tur
  * first call for `toolName` that doesn't have a result yet, such that earlier results
  * aren't overwritten.
  */
-function attachToolResultToLastTurn(turns: Turn[], toolName: string, response: unknown): void {
+function attachToolResultToLastTurn(
+    turns: Turn[],
+    toolName: string,
+    response: unknown,
+    resultTimestamp: number,
+    ): void {
   const prevTurn = turns.at(-1);
   if (prevTurn && prevTurn.role === 'gemini' && prevTurn.tool_calls) {
     const toolCall = prevTurn.tool_calls.find(tc => tc.name === toolName && tc.result === undefined) ??
         prevTurn.tool_calls.find(tc => tc.name === toolName);
     if (toolCall) {
+      toolCall.duration = resultTimestamp - toolCall.timestamp;
+      toolCall.timestamp = resultTimestamp;
       toolCall.result = response;
       toolCall.status = (response && typeof response === 'object' && 'error' in response) ? 'error' : 'success';
     }

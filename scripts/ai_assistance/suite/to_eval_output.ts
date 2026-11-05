@@ -59,6 +59,8 @@ export interface RawExample {
   taskId: TaskId;
   request: RawRequest;
   aidaResponse: RawAidaResponse;
+  requestTimestamp: number;
+  responseTimestamp: number;
 }
 
 export interface RawOutput {
@@ -85,12 +87,12 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
 
   return metadata
       .map((meta, index) => {
-        const sessionExamples = rawEntries.filter(e => e.taskId === meta.taskId);
-        if (!sessionExamples.length) {
+        const sessionTrajectories = rawEntries.filter(t => t.taskId === meta.taskId);
+        if (!sessionTrajectories.length) {
           return null;
         }
         const sessionId: SessionId = `${inputHash}-${index}`;
-        return buildTrajectory(sessionId, meta.taskId, sessionExamples);
+        return buildTrajectory(sessionId, meta.taskId, sessionTrajectories);
       })
       .filter((trajectory): trajectory is Trajectory => trajectory !== null);
 }
@@ -101,14 +103,16 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
 function buildTrajectory(
     sessionId: SessionId,
     taskId: TaskId,
-    examples: RawExample[],
+    trajectories: RawExample[],
     ): Trajectory {
-  const firstExample = examples[0];
-  const chromeVersion = firstExample?.request.metadata.client_version;
-  assert.ok(chromeVersion, 'No client_version found in example');
+  const firstTrajectory = trajectories[0];
+  const chromeVersion = firstTrajectory?.request.metadata.client_version;
+  assert.ok(chromeVersion, 'No client_version found in trajectory');
 
-  const modelData = firstExample?.aidaResponse.metadata.inferenceOptionMetadata;
-  assert.ok(modelData, 'No inferenceOptionMetadata found in example');
+  const modelData = firstTrajectory?.aidaResponse.metadata.inferenceOptionMetadata;
+  assert.ok(modelData, 'No inferenceOptionMetadata found in trajectory');
+
+  const lastTrajectory = trajectories.findLast(t => t.aidaResponse.completed) ?? trajectories[trajectories.length - 1];
 
   return {
     metadata: {
@@ -116,19 +120,21 @@ function buildTrajectory(
       model: modelData.modelId ?? '',
       chrome_version: chromeVersion,
       task_id: taskId,
+      start_time: new Date(firstTrajectory.requestTimestamp / 1000).toISOString(),
+      last_updated: new Date(lastTrajectory.responseTimestamp / 1000).toISOString(),
     },
-    data: buildTurns(examples),
+    data: buildTurns(trajectories),
   };
 }
 
 /**
  * Iterates through raw request/response pairs and reconstructs the chronological turn history.
  */
-function buildTurns(examples: RawExample[]): Turn[] {
+function buildTurns(trajectories: RawExample[]): Turn[] {
   const turns: Turn[] = [];
   let turnIndex = 1;
 
-  for (const {request, aidaResponse} of examples) {
+  for (const {request, aidaResponse, requestTimestamp, responseTimestamp} of trajectories) {
     if (!aidaResponse.completed) {
       continue;
     }
@@ -139,25 +145,25 @@ function buildTurns(examples: RawExample[]): Turn[] {
 
     if (userText) {
       // User prompt starts a new turn.
-      turns.push(createUserTurn(String(turnIndex++), userText));
+      turns.push(createUserTurn(String(turnIndex++), userText, requestTimestamp));
     } else if (functionResponse) {
       // Tool responses from DevTools are attached back to the preceding Gemini turn that invoked them.
-      attachToolResultToLastTurn(turns, functionResponse.name, functionResponse.response);
+      attachToolResultToLastTurn(turns, functionResponse.name, functionResponse.response, requestTimestamp);
     }
 
     // AIDA response turn (text explanation and/or tool call invocations).
-    turns.push(createGeminiTurn(String(turnIndex++), aidaResponse));
+    const duration = responseTimestamp - requestTimestamp;
+    turns.push(createGeminiTurn(String(turnIndex++), aidaResponse, responseTimestamp, duration));
   }
 
   return turns;
 }
 
-function createUserTurn(turnId: string, userText: string): Turn {
+function createUserTurn(turnId: string, userText: string, timestamp: number): Turn {
   return {
     turn_id: turnId,
     role: 'user',
-    // TODO: Look into capturing the actual execution timestamp instead of current time.
-    timestamp: Math.floor(Date.now() * 1000),
+    timestamp,
     // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
     tokens: {},
     content: [userText],
@@ -166,10 +172,8 @@ function createUserTurn(turnId: string, userText: string): Turn {
   };
 }
 
-function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse): Turn {
+function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse, timestamp: number, duration: number): Turn {
   const responseText = aidaResponse.explanation?.trim();
-  // TODO: Look into capturing the actual execution timestamp instead of current time.
-  const timestamp = Math.floor(Date.now() * 1000);
   const functionCalls = aidaResponse.functionCalls ?? [];
   const toolCalls = functionCalls.map(call => ({
                                         name: call.name,
@@ -181,6 +185,7 @@ function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse): Turn {
     turn_id: turnId,
     role: 'gemini',
     timestamp,
+    duration,
     // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
     tokens: {},
     content: responseText ? [responseText] : [],
@@ -208,11 +213,18 @@ function buildThoughts(functionCalls: RawFunctionCall[], timestamp: number): Tur
  * Finds the preceding Gemini turn and associates the tool execution result with the matching tool call.
  * Note: DevTools executes at most one tool call per turn, so matching by tool name is sufficient.
  */
-function attachToolResultToLastTurn(turns: Turn[], toolName: string, response: unknown): void {
+function attachToolResultToLastTurn(
+    turns: Turn[],
+    toolName: string,
+    response: unknown,
+    resultTimestamp: number,
+    ): void {
   const prevTurn = turns.at(-1);
   if (prevTurn && prevTurn.role === 'gemini' && prevTurn.tool_calls) {
     const toolCall = prevTurn.tool_calls.find(tc => tc.name === toolName);
     if (toolCall) {
+      toolCall.duration = resultTimestamp - toolCall.timestamp;
+      toolCall.timestamp = resultTimestamp;
       toolCall.result = response;
       toolCall.status = (response && typeof response === 'object' && 'error' in response) ? 'error' : 'success';
     }

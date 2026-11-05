@@ -99,7 +99,7 @@
   }
 
   .details-toggle {
-    margin-left: 126px;
+    margin-left: calc(var(--sys-size-21) + 1em); /* 128px label column + 1em right padding */
   }
 
   .details-table .empty-san {

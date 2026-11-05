@@ -46,6 +46,7 @@ export interface RunStartedPayload {
   agent: string;
   startTime: string;
   status: string;
+  tags: string[];
 }
 
 export interface TaskCompletedPayload {
@@ -56,6 +57,7 @@ export interface TaskCompletedPayload {
   /** Task evaluation score from 0.0 to 1.0 when graded, or null if ungraded or execution failed. */
   score: number|null;
   durationSeconds: number;
+  tags: string[];
   tokens?: Record<string, unknown>;
   metrics?: {toolCallCount?: number};
 }
@@ -67,6 +69,7 @@ export interface RunCompletedPayload {
   startTime: string;
   endTime: string;
   model: string;
+  tags: string[];
   totalTasks: number;
   passedTasks: number;
   failedTasks: number;
@@ -247,6 +250,7 @@ export function uploadRunStarted(payload: RunStartedPayload): boolean {
     agent: payload.agent,
     start_time: payload.startTime,
     status: payload.status,
+    tags: payload.tags,
   };
   const jsonUploaded = uploadTemporaryContentToGCS(
       JSON.stringify(jsonContent, null, 2),
@@ -291,6 +295,7 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
     status: payload.status,
     score: payload.score,
     duration_seconds: payload.durationSeconds,
+    tags: payload.tags,
     tokens: payload.tokens ?? {},
     metrics: {
       tool_calls: payload.metrics?.toolCallCount ?? 0,
@@ -330,6 +335,7 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
     start_time: payload.startTime,
     end_time: payload.endTime,
     model: payload.model,
+    tags: payload.tags,
     total_tasks: payload.totalTasks,
     passed_tasks: payload.passedTasks,
     failed_tasks: payload.failedTasks,

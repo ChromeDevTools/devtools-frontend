@@ -72,11 +72,32 @@ export function formatVerificationStderr(errorMessage?: string): string {
 }
 
 /**
+ * Builds the Gleam Eval Dashboard filter tags (`attempt:<N>` and
+ * `agent_type:devtools-<evalTarget>`) for a completed or failed task.
+ *
+ * @param evalTarget The DevTools panel/agent target domain (e.g. `'elements'`,
+ *     `'network'`, `'performance'`, `'console'`), used to construct the
+ *     `agent_type:devtools-<evalTarget>` tag.
+ * @param taskId The task identifier, optionally suffixed with `__attempt_<N>`
+ *     on multi-attempt runs.
+ */
+function buildTaskTags(evalTarget: string, taskId: string): string[] {
+  // Extract the 1-based attempt number when a task is run multiple times with a
+  // `<taskId>__attempt_<N>` suffix (per the Gleam Eval persistence contract),
+  // defaulting to `'1'` for single-attempt runs so the dashboard's `Attempt`
+  // filter chip is populated as `attempt:1`.
+  const attemptMatch = /__attempt_(\d+)$/.exec(taskId);
+  const attempt = attemptMatch ? attemptMatch[1] : '1';
+  return [`attempt:${attempt}`, `agent_type:devtools-${evalTarget}`];
+}
+
+/**
  * Records a task failure to GCS (`eval_task_completed.json` + `.marker`) and in-memory `taskStatuses`.
  */
 export function recordTaskFailure(
     taskId: string,
     runId: string,
+    evalTarget: string,
     durationSeconds: number,
     taskStatuses: TaskStatus[],
     toolCallCount?: number,
@@ -88,6 +109,7 @@ export function recordTaskFailure(
     // Failed tasks receive null as they encountered an error or timeout prior to completing or grading.
     score: null,
     durationSeconds,
+    tags: buildTaskTags(evalTarget, taskId),
     tokens: {},
     metrics: {toolCallCount},
   });
@@ -116,7 +138,7 @@ export function handleTaskFailure(options: HandleTaskFailureOptions): void {
   uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
   uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT, formatVerificationStdout(taskId, target, true));
   uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDERR, formatVerificationStderr(errorMessage));
-  recordTaskFailure(taskId, runId, durationSeconds, taskStatuses, toolCallCount);
+  recordTaskFailure(taskId, runId, target, durationSeconds, taskStatuses, toolCallCount);
 }
 
 /**
@@ -159,6 +181,7 @@ export function uploadTaskArtifacts(
 export function recordTaskCompletion(
     taskId: string,
     runId: string,
+    evalTarget: string,
     durationSeconds: number,
     taskStatuses: TaskStatus[],
     allUploadsSucceeded: boolean,
@@ -178,6 +201,7 @@ export function recordTaskCompletion(
     status,
     score,
     durationSeconds,
+    tags: buildTaskTags(evalTarget, taskId),
     tokens: {},
     metrics: {toolCallCount},
   });
@@ -227,7 +251,7 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     const graderLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, gradingOutput);
     allUploadsSucceeded = allUploadsSucceeded && evalResultUploaded && graderLogUploaded;
   }
-  recordTaskCompletion(taskId, runId, durationSeconds, taskStatuses, allUploadsSucceeded, hasError, customScore,
+  recordTaskCompletion(taskId, runId, target, durationSeconds, taskStatuses, allUploadsSucceeded, hasError, customScore,
                        toolCallCount);
 
   return evalOutputPath;

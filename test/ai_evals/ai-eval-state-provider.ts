@@ -171,6 +171,7 @@ export class AiEvalStateProvider extends StateProvider {
       agent,
       startTime: this.#runStartTimestamp,
       status: 'RUNNING',
+      tags: targets.map(t => `agent_type:devtools-${t}`),
     });
     this.#logger.head('Running examples sequentially...');
   }
@@ -194,6 +195,7 @@ export class AiEvalStateProvider extends StateProvider {
       startTime: this.#runStartTimestamp,
       endTime: new Date().toISOString(),
       model: this.#resolvedModel ?? 'unknown',
+      tags: [...this.#evalTypes].map(t => `agent_type:devtools-${t}`),
       totalTasks,
       passedTasks,
       failedTasks,

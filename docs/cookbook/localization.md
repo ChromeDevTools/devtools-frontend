@@ -108,7 +108,7 @@ console.log(message2);
 4.  The following commands would add the new strings to `en-US.json`:
 
     - `git cl presubmit --upload`, or
-    - `node third_party/i18n/collect-strings.js` under the DevTools src folder
+    - `./dt collect-strings` in the DevTools checkout
 
 5.  Strings containing possible plurals have a special format in ICU. This is
     because plurals work quite differently in other languages, e.g. special

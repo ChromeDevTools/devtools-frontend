@@ -10,6 +10,14 @@ import("//$devtools_root_location/config/gni/i18n.gni")
 node_action("collect_strings") {
   script = "front_end/core/i18n/collect-ui-strings.js"
 
+  # Sources that the build generates are collected from the gen dir, which
+  # mirrors the source tree. Their paths relative to front_end/ in the gen dir
+  # are their message keys, like the paths of the committed sources relative
+  # to front_end/.
+  _generated_root = get_label_info("../../..", "target_gen_dir")
+  _generated_files = [ get_label_info("../../../generated:generate_deprecation",
+                                      "target_gen_dir") + "/Deprecation.ts" ]
+
   # The script imports these files. A change to them can change the output.
   inputs = [
     devtools_location_prepend + "front_end/core/i18n/collect-ui-strings.js",
@@ -19,10 +27,22 @@ node_action("collect_strings") {
     devtools_location_prepend + "third_party/i18n/collect-strings.js",
   ]
 
+  # collect-ui-strings.js also lists the generated sources in its depfile, but
+  # remote builds ship only the declared inputs, so they are inputs as well.
+  inputs += _generated_files
+
+  deps = [ "../../../generated:generate_deprecation" ]
+
   args = [ "--input-directories" ]
   foreach(dir, devtools_collection_directories) {
     args += [ rebase_path(dir, root_build_dir) ]
   }
+  args += [
+    "--generated-root",
+    rebase_path(_generated_root, root_build_dir),
+    "--generated-files",
+  ]
+  args += rebase_path(_generated_files, _generated_root)
   args += [
     "--output-directory",
     rebase_path("$target_gen_dir/generated", root_build_dir),

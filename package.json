@@ -17,11 +17,11 @@
     "url": "git+https://github.com/ChromeDevTools/devtools-frontend.git"
   },
   "scripts": {
-    "bake-strings": "vpython3 third_party/node/node.py --output third_party/i18n/collect-strings.js front_end && vpython3 third_party/node/node.py --output third_party/i18n/bake-strings.js front_end/core/i18n/locales",
+    "bake-strings": "vpython3 scripts/tools/bake_strings.py",
     "build": "vpython3 third_party/node/node.py --output scripts/run_build.mjs",
     "check-external-links": "vpython3 third_party/node/node.py --output scripts/check_external_links.js",
     "check-gn": "vpython3 third_party/node/node.py --output scripts/gn_deps_verifier/cli.ts",
-    "collect-strings": "vpython3 third_party/node/node.py --output third_party/i18n/collect-strings.js front_end",
+    "collect-strings": "vpython3 scripts/tools/collect_strings.py",
     "debug-webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js --debug-devtools",
     "generate-protocol-resources": "vpython3 scripts/deps/generate_protocol_resources.py && git cl format --js",
     "install-deps": "vpython3 scripts/deps/manage_node_deps.py",

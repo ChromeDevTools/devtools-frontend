@@ -331,8 +331,6 @@ def CheckGeneratedFiles(input_api, output_api):
 
     generated_supported_css_path = input_api.os_path.join(
         scripts_build_path, 'generate_supported_css.py')
-    generated_deprecation_path = input_api.os_path.join(
-        scripts_build_path, 'generate_deprecations.py')
     generated_protocol_path = input_api.os_path.join(
         scripts_build_path, 'code_generator_frontend.py')
     generated_protocol_typescript_path = input_api.os_path.join(
@@ -347,7 +345,6 @@ def CheckGeneratedFiles(input_api, output_api):
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party',
                                'pyjson5'),
         generated_supported_css_path,
-        generated_deprecation_path,
         concatenate_protocols_path,
         generated_protocol_path,
         scripts_generated_output_path,

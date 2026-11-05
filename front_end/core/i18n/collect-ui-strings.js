@@ -24,6 +24,13 @@ const yargsObject = yargs(hideBin(process.argv))
                           type: 'array',
                           demandOption: true,
                         })
+                        .option('generated-root', {
+                          type: 'string',
+                        })
+                        .option('generated-files', {
+                          type: 'array',
+                          implies: 'generated-root',
+                        })
                         .option('output-directory', {
                           type: 'string',
                           demandOption: true,
@@ -99,6 +106,19 @@ for (const directory of inputDirectories) {
         ),
   };
   files.push(...directoryFiles.map(f => path.join(directory, f)));
+}
+// Sources that the build generates live in the gen dir, which mirrors the
+// source tree. The message key of a UIString is the path of its file relative
+// to front_end/, as passed to registerUIStrings(), so the generated files are
+// given relative to front_end/ in the gen dir and collected with it as root.
+const generatedRoot = yargsObject['generated-root'];
+const generatedFiles = yargsObject['generated-files'] ?? [];
+if (generatedFiles.length > 0) {
+  collectedStrings = {
+    ...collectedStrings,
+    ...collectAllStringsInDir(generatedRoot, generatedFiles, cache),
+  };
+  files.push(...generatedFiles.map(f => path.join(generatedRoot, f)));
 }
 
 const tasks = [convertCtcToLhLAndSave(outputDirectory, 'en-US', collectedStrings)];

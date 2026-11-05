@@ -40,10 +40,24 @@ ts_library("aria_properties") {
   deps = [ ":generate_aria_properties" ]
 }
 
-# Deprecation.ts stays committed in the source tree because its UIStrings are
-# collected for localization from there.
+generated_ts("generate_deprecation") {
+  script = "../../scripts/build/generate_deprecations.py"
+  _input = devtools_chromium_deps_root +
+           "third_party/blink/renderer/core/frame/deprecation/deprecation.json5"
+  inputs = [ _input ] + _pyjson5_inputs
+  outputs = [ "$target_gen_dir/Deprecation.ts" ]
+  args = [
+    "--input",
+    rebase_path(_input, root_build_dir),
+    "--output",
+    rebase_path(outputs[0], root_build_dir),
+  ]
+}
+
 ts_library("deprecation") {
-  sources = [ "Deprecation.ts" ]
+  rootdir = target_gen_dir
+  sources = [ "$target_gen_dir/Deprecation.ts" ]
+  deps = [ ":generate_deprecation" ]
 }
 
 # SupportedCSSProperties.ts stays committed until crrev.com/c/8689826 moves it

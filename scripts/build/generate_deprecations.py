@@ -1,100 +1,109 @@
 #!/usr/bin/env vpython3
-#
 # Copyright 2023 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+"""Generates Deprecation.ts from Blink's deprecation.json5.
 
-# This file generates a TypeScript-ified version of blink's "deprecation.json5".
-# We do this in order to get tyep-saftey of the JSON's content vs the
-# deprecations defined in CDP.
+Runs as a generated_ts() action (see front_end/generated/BUILD.gn) and always
+writes its output: scripts/build/run_with_restat.py keeps the mtime of an
+output that did not change. scripts/tools/collect_strings.py runs it as well,
+to collect its UIStrings for the Translation Console.
+"""
 
-import datetime
+import argparse
 import json
 import os
 import sys
-from os import path
 
-PYJSON5_DIR = path.join(os.path.dirname(__file__), '..', '..', 'third_party',
-                        'pyjson5', 'src')
+PYJSON5_DIR = os.path.join(os.path.dirname(__file__), '..', '..',
+                           'third_party', 'pyjson5', 'src')
 sys.path.append(PYJSON5_DIR)
 
-import json5  # pylint: disable=import-error
+import json5  # pylint: disable=import-error,wrong-import-position
 
-ROOT_DIRECTORY = path.join(path.dirname(__file__), '..', '..')
-GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated',
-                               'Deprecation.ts')
-READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer',
-                          'core', 'frame', 'deprecation', 'deprecation.json5')
+HEADER = '''\
+// Copyright 2023 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+'''
 
 # Deprecations in this list are exempt from code generation as they are not
 # dispatched to the DevTools.
-EXEMPTED_FROM_DEVTOOLS_GENERATION = {
-}
+EXEMPTED_FROM_DEVTOOLS_GENERATION = set()
 
 
 def deprecations_from_file(file_name):
-    with open(file_name) as json5_file:
+    with open(file_name, encoding='utf-8') as json5_file:
         doc = json5.loads(json5_file.read())
 
-    # We turn the list of deprecations into two maps, both keyed by the deprecation name.
-    # One contains the message + translation note.
-    # The other contains the metadata such as milestone and chrome feature.
+    # We turn the list of deprecations into two maps, both keyed by the
+    # deprecation name. One contains the message + translation note; the other
+    # contains the metadata such as milestone and chrome feature.
     meta = {}
     ui_strings = {}
-    for entry in doc["data"]:
-        if "obsolete_to_be_removed_after_milestone" in entry:
+    for entry in doc['data']:
+        if 'obsolete_to_be_removed_after_milestone' in entry:
             continue
 
-        name = entry["name"]
-
+        name = entry['name']
         if name in EXEMPTED_FROM_DEVTOOLS_GENERATION:
             continue
 
         meta_for_entry = {}
-        if "milestone" in entry:
-            meta_for_entry["milestone"] = entry["milestone"]
-        if "chrome_status_feature" in entry:
-            meta_for_entry["chromeStatusFeature"] = entry[
-                "chrome_status_feature"]
-        if len(meta_for_entry): meta[name] = meta_for_entry
+        if 'milestone' in entry:
+            meta_for_entry['milestone'] = entry['milestone']
+        if 'chrome_status_feature' in entry:
+            meta_for_entry['chromeStatusFeature'] = entry[
+                'chrome_status_feature']
+        if meta_for_entry:
+            meta[name] = meta_for_entry
 
         ui_strings[name] = {
-            "message": entry["message"],
-            "note": entry["translation_note"],
+            'message': entry['message'],
+            'note': entry['translation_note'],
         }
 
     return meta, ui_strings
 
 
-meta, ui_strings = deprecations_from_file(READ_LOCATION)
-now = datetime.datetime.now()
-with open(GENERATED_LOCATION, mode="w+") as f:
-    f.write("// Copyright %d The Chromium Authors\n" % now.year)
-    f.write(
-        "// Use of this source code is governed by a BSD-style license that can be\n"
-    )
-    f.write("// found in the LICENSE file.\n")
-    f.write("\n")
-    f.write("// This file is auto-generated, do not edit manually.\n")
-    f.write(
-        "// Re-generate with: scripts/tools/dt.py generate-protocol-resources\n"
-    )
-    f.write("\n")
-    f.write("export const UIStrings = {\n")
+def generate(meta, ui_strings):
+    """Returns the contents of Deprecation.ts for the parsed deprecations."""
+    lines = [HEADER, 'export const UIStrings = {\n']
     for name, ui_string in ui_strings.items():
-        message = ui_string["message"]
-        note = ui_string["note"]
-        f.write("  /**\n")
-        f.write("   * @description %s\n" % note)
-        f.write("   */\n")
-        f.write("  %s: %s,\n" % (name, json.dumps(message)))
-    f.write("} as const;\n")
-    f.write("\n")
-    f.write("export interface DeprecationDescriptor {\n")
-    f.write("  milestone?: number;\n")
-    f.write("  chromeStatusFeature?: number;\n")
-    f.write("}\n")
-    f.write("\n")
-    f.write(
-        "export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor>> = %s;\n"
+        lines.append('  /**\n')
+        lines.append('   * @description %s\n' % ui_string['note'])
+        lines.append('   */\n')
+        lines.append('  %s: %s,\n' % (name, json.dumps(ui_string['message'])))
+    lines.append('} as const;\n\n')
+    lines.append('export interface DeprecationDescriptor {\n')
+    lines.append('  milestone?: number;\n')
+    lines.append('  chromeStatusFeature?: number;\n')
+    lines.append('}\n\n')
+    lines.append(
+        'export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor>> = %s;\n'
         % json.dumps(meta, sort_keys=True, indent=2))
+    return ''.join(lines)
+
+
+def main(argv):
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument('--input',
+                        required=True,
+                        help='Path to deprecation.json5')
+    parser.add_argument('--output',
+                        required=True,
+                        help='Path of the Deprecation.ts to write')
+    options = parser.parse_args(argv)
+
+    contents = generate(*deprecations_from_file(options.input))
+    output_dir = os.path.dirname(options.output)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+    with open(options.output, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(contents)
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))

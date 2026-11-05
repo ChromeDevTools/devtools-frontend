@@ -5745,8 +5745,14 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const depth1Node = rootNode.children()![0];
         assert.isNull(findTreeElement(domTree, domModel.nodeForId(3 as Protocol.DOM.NodeId)!));
 
+        // The tree outline dispatches an `expand` event for every node rendered
+        // with the `open` attribute. These events must not trigger a re-render
+        // per node, which is quadratic in the size of the expanded subtree.
+        const performUpdateSpy = sinon.spy(domTree, 'performUpdate');
         await domTree.expandRecursively(depth1Node);
         await waitForTreeUpdates();
+        sinon.assert.callCount(performUpdateSpy, 1);
+        performUpdateSpy.restore();
 
         let currentNode = depth1Node;
         let currentTreeElement = requireTreeElement(domTree, depth1Node);

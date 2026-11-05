@@ -43,7 +43,8 @@
 }
 
 .overview-grid-window-resizer::after {
-  left: 5px;
+  /* 2px (--sys-size-2) ::before left inset + 1px (--sys-size-1) ::before width + 2px (--sys-size-2) inter-grip gap */
+  left: calc(2 * var(--sys-size-2) + var(--sys-size-1));
 }
 
 .overview-grid-window-resizer:focus-visible {

@@ -304,6 +304,56 @@ describe('CommentManager', () => {
     sinon.assert.calledOnce(changedSpy);
   });
 
+  describe('takeComments({includeTransmitted: true})', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: elements > TreeItem: rule',
+    };
+
+    it('returns threads that were already transmitted', () => {
+      const thread = manager.createCommentThread(anchor);
+      thread.sendToAgent('Comment');
+      assert.deepEqual(manager.takeComments(), [thread]);
+
+      assert.isEmpty(manager.takeComments());
+      assert.deepEqual(manager.takeComments({includeTransmitted: true}), [thread]);
+      assert.isTrue(thread.transmitted);
+    });
+
+    it('returns both new and transmitted threads and marks the new ones as transmitted', () => {
+      const transmittedThread = manager.createCommentThread(anchor);
+      transmittedThread.sendToAgent('Transmitted');
+      manager.takeComments();
+      const newThread = manager.createCommentThread(anchor);
+      newThread.sendToAgent('New');
+      assert.isFalse(newThread.transmitted);
+
+      assert.deepEqual(manager.takeComments({includeTransmitted: true}), [transmittedThread, newThread]);
+      assert.isTrue(newThread.transmitted);
+    });
+
+    it('excludes threads that are not in the SENT_TO_AGENT state', () => {
+      manager.createCommentThread(anchor, 'Draft');
+      manager.createCommentThread(anchor).save('Queued');
+      const resolvedThread = manager.createCommentThread(anchor);
+      resolvedThread.sendToAgent('Resolved');
+      manager.takeComments();
+      manager.resolveCommentThread(resolvedThread.id, 'Done');
+
+      assert.isEmpty(manager.takeComments({includeTransmitted: true}));
+    });
+
+    it('dispatches COMMENT_THREADS_CHANGED only for newly transmitted threads', () => {
+      manager.createCommentThread(anchor).sendToAgent('Comment');
+      manager.takeComments();
+      const changedSpy = sinon.spy();
+      manager.addEventListener(CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED, changedSpy);
+
+      assert.lengthOf(manager.takeComments({includeTransmitted: true}), 1);
+
+      sinon.assert.notCalled(changedSpy);
+    });
+  });
+
   it('supports timeline anchor signatures with traceId', () => {
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: timeline > FlameChart: main',
@@ -361,6 +411,31 @@ describe('CommentManager UMA', () => {
     commentSharedWithAgent.resetHistory();
 
     assert.isEmpty(manager.takeComments());
+
+    sinon.assert.notCalled(commentSharedWithAgent);
+    sinon.assert.notCalled(changeSharedWithAgent);
+  });
+
+  it('records only newly transmitted threads when includeTransmitted is set', () => {
+    manager.createCommentThread(anchor).sendToAgent('Comment 1');
+    manager.createCommentThread(anchor, 'Change 1', 'DEVELOPER', true).sendToAgent();
+    manager.takeComments();
+    commentSharedWithAgent.resetHistory();
+    changeSharedWithAgent.resetHistory();
+    manager.createCommentThread(anchor).sendToAgent('Comment 2');
+
+    assert.lengthOf(manager.takeComments({includeTransmitted: true}), 3);
+
+    sinon.assert.calledOnceWithExactly(commentSharedWithAgent, 1);
+    sinon.assert.notCalled(changeSharedWithAgent);
+  });
+
+  it('does not record shared counts when includeTransmitted only returns transmitted threads', () => {
+    manager.createCommentThread(anchor).sendToAgent('Comment');
+    manager.takeComments();
+    commentSharedWithAgent.resetHistory();
+
+    assert.lengthOf(manager.takeComments({includeTransmitted: true}), 1);
 
     sinon.assert.notCalled(commentSharedWithAgent);
     sinon.assert.notCalled(changeSharedWithAgent);

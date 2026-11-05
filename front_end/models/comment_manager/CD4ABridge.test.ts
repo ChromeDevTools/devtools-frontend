@@ -235,6 +235,31 @@ describe('CD4ABridge', () => {
     );
   });
 
+  it('returns previously transmitted threads marked as such when includeTransmitted is set', () => {
+    const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
+    const transmittedThread = commentManager.createCommentThread({vePath: 'Panel: elements'}, 'Transmitted');
+    transmittedThread.sendToAgent();
+    const [firstPayload] = bridge.getCommentThreads();
+    assert.strictEqual(firstPayload.id, transmittedThread.id);
+    assert.isUndefined(firstPayload.previouslyTransmitted);
+    const newThread = commentManager.createCommentThread({vePath: 'Panel: elements'}, 'New');
+    newThread.sendToAgent();
+
+    const threads = bridge.getCommentThreads({includeTransmitted: true});
+
+    assert.deepEqual(threads, [
+      {
+        id: transmittedThread.id,
+        text: 'Transmitted\n\n- DevTools VEPath: Panel: elements',
+        previouslyTransmitted: true,
+      },
+      {
+        id: newThread.id,
+        text: 'New\n\n- DevTools VEPath: Panel: elements',
+      },
+    ]);
+  });
+
   it('delegates resolve to CommentManager and dispatches events', () => {
     const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager);
 

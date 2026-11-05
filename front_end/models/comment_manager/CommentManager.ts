@@ -40,6 +40,14 @@ export interface EventTypes {
   [Events.AGENT_ATTACHED_CHANGED]: boolean;
 }
 
+export interface TakeCommentsOptions {
+  /**
+   * Also return threads that were sent to the agent and already transmitted
+   * by an earlier call.
+   */
+  includeTransmitted?: boolean;
+}
+
 /**
  * Headless model managing comment thread data, CRUD operations, and comment mode.
  */
@@ -114,16 +122,28 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     return Array.from(this.#commentThreads.values());
   }
 
-  takeComments(): CommentThread[] {
+  /**
+   * Returns the threads that were sent to the agent and marks them as
+   * transmitted. By default, threads that were transmitted before are
+   * skipped.
+   */
+  takeComments({includeTransmitted = false}: TakeCommentsOptions = {}): CommentThread[] {
     const threads: CommentThread[] = [];
+    const newlyTransmitted: CommentThread[] = [];
     for (const thread of this.#commentThreads.values()) {
-      if (thread.status === 'SENT_TO_AGENT' && !thread.transmitted) {
+      if (thread.status !== 'SENT_TO_AGENT') {
+        continue;
+      }
+      if (!thread.transmitted) {
         thread.markTransmitted();
+        newlyTransmitted.push(thread);
+        threads.push(thread);
+      } else if (includeTransmitted) {
         threads.push(thread);
       }
     }
-    const changeCount = threads.filter(thread => thread.isGeneratedComment).length;
-    const commentCount = threads.length - changeCount;
+    const changeCount = newlyTransmitted.filter(thread => thread.isGeneratedComment).length;
+    const commentCount = newlyTransmitted.length - changeCount;
     if (commentCount > 0) {
       Host.userMetrics.commentSharedWithAgent(commentCount);
     }

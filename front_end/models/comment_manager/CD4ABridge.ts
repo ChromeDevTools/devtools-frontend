@@ -13,6 +13,11 @@ import * as CommentManager from './CommentManager.js';
 export interface CommentThread {
   id: string;
   text: string;
+  /**
+   * True if an earlier call already transmitted this thread to the agent.
+   * Only set when `includeTransmitted` is requested.
+   */
+  previouslyTransmitted?: boolean;
   networkRequestId?: string;
   node?: CommentManager.DOMNodeAnchorSignature;
 }
@@ -124,13 +129,18 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return rawText ? `${rawText}\n\n${details.join('\n')}` : details.join('\n');
   }
 
-  getCommentThreads(): CommentThread[] {
-    const threads = this.#commentManager.takeComments();
+  getCommentThreads(options?: CommentManager.TakeCommentsOptions): CommentThread[] {
+    const previouslyTransmittedIds =
+        new Set(this.#commentManager.getCommentThreads().filter(thread => thread.transmitted).map(thread => thread.id));
+    const threads = this.#commentManager.takeComments(options);
     return threads.map(thread => {
       const threadPayload: CommentThread = {
         id: thread.id,
         text: this.#formatCommentText(thread),
       };
+      if (previouslyTransmittedIds.has(thread.id)) {
+        threadPayload.previouslyTransmitted = true;
+      }
       if (thread.anchor.networkRequestId) {
         threadPayload.networkRequestId = thread.anchor.networkRequestId;
       }

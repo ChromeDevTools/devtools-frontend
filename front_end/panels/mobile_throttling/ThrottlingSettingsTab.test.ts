@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import {dispatchClickEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -192,5 +193,30 @@ describe('ThrottlingSettingsTab', () => {
     assert.isTrue(customList.hasAttribute('deletable'));
     const customItems = customList.querySelectorAll('.conditions-list-item');
     assert.lengthOf(customItems, 1);
+  });
+
+  it('disconnects the compute pressure observer when the tab is hidden', () => {
+    const disconnectSpy = sinon.spy();
+    const observeSpy = sinon.stub().returns(Promise.resolve());
+    class FakePressureObserver {
+      observe = observeSpy;
+      disconnect = disconnectSpy;
+    }
+    const globalObject = globalThis as unknown as Record<string, unknown>;
+    const originalPressureObserver = globalObject['PressureObserver'];
+    globalObject['PressureObserver'] = FakePressureObserver;
+
+    try {
+      const universe = new TestUniverse();
+      const widget = new ThrottlingSettingsTab(universe.settings);
+      renderElementIntoDOM(widget);
+      sinon.assert.calledOnce(observeSpy);
+      sinon.assert.notCalled(disconnectSpy);
+
+      widget.detach();
+      sinon.assert.calledOnce(disconnectSpy);
+    } finally {
+      globalObject['PressureObserver'] = originalPressureObserver;
+    }
   });
 });

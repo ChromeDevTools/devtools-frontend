@@ -210,7 +210,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * Note: The returned value measures the host machine's compute pressure. When
  * debugging a remote device, this may trigger irrelevant high-pressure warnings.
  */
-function createComputePressurePromise(): Promise<{state: string}> {
+function createComputePressurePromise(signal: AbortSignal): Promise<{state: string}> {
   const result = {state: ''};
 
   // @ts-expect-error typescript/lib version needs to be updated.
@@ -226,9 +226,22 @@ function createComputePressurePromise(): Promise<{state: string}> {
       result.state = records.at(-1).state;
       resolve(result);
     });
-    observer.observe('cpu', {
-      sampleInterval: 1000,
-    });
+    const disconnect = (): void => {
+      observer.disconnect();
+      resolve(result);
+    };
+    if (signal.aborted) {
+      disconnect();
+      return;
+    }
+    signal.addEventListener('abort', disconnect, {once: true});
+    void observer
+        .observe('cpu', {
+          sampleInterval: 1000,
+        })
+        .catch(() => {
+          disconnect();
+        });
   });
 }
 
@@ -332,6 +345,7 @@ export const CPU_THROTTLING_CARD_DEFAULT_VIEW: CPUThrottlingCardView = (input, _
 export class CPUThrottlingCard extends UI.Widget.Widget {
   #setting?: Common.Settings.Setting<PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling>;
   private computePressurePromise?: ReturnType<typeof createComputePressurePromise>;
+  private computePressureAbortController?: AbortController;
   private controller?: CalibrationController;
   private state: 'cta'|'prompting'|'calibrating' = 'cta';
   private warnings: string[] = [];
@@ -346,13 +360,18 @@ export class CPUThrottlingCard extends UI.Widget.Widget {
 
   override wasShown(): void {
     super.wasShown();
-    this.computePressurePromise = createComputePressurePromise();
+    if (!this.computePressureAbortController) {
+      this.computePressureAbortController = new AbortController();
+      this.computePressurePromise = createComputePressurePromise(this.computePressureAbortController.signal);
+    }
     this.state = 'cta';
     this.performUpdate();
   }
 
   override willHide(): void {
     super.willHide();
+    this.computePressureAbortController?.abort();
+    this.computePressureAbortController = undefined;
     this.computePressurePromise = undefined;
     if (this.controller) {
       this.controller.abort();

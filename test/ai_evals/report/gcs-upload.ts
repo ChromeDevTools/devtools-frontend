@@ -40,12 +40,35 @@ export const TaskOutputFile = {
 } as const;
 export type TaskOutputFile = (typeof TaskOutputFile)[keyof typeof TaskOutputFile];
 
+export type PhaseStatus = 'SUCCEEDED'|'FAILED'|'UNSPECIFIED';
+export type TaskOutcomeStatus = 'PASSED'|'FAILED';
+export type RunOutcomeStatus = 'RUNNING'|'COMPLETED'|'FAILED';
+
+export interface TaskMetrics {
+  taskStatus: PhaseStatus;
+  verificationDurationSeconds: number;
+  verificationStatus: PhaseStatus;
+  gradingDurationSeconds: number;
+  gradingStatus: PhaseStatus;
+  toolCallCount: number;
+  toolCallsByTool: Record<string, number>;
+  failedToolCallsByTool: Record<string, number>;
+  activationsBySkill: Record<string, number>;
+}
+
+export interface RunMetrics {
+  totalToolCalls: number;
+  toolCallsByTool: Record<string, number>;
+  failedToolCallsByTool: Record<string, number>;
+  activationsBySkill: Record<string, number>;
+}
+
 export interface RunStartedPayload {
   project: string;
   runId: string;
   agent: string;
   startTime: string;
-  status: string;
+  status: RunOutcomeStatus;
   tags: string[];
 }
 
@@ -53,29 +76,19 @@ export interface TaskCompletedPayload {
   taskId: string;
   runId: string;
   /** Execution status: 'PASSED' on success, 'FAILED' on error or timeout. */
-  status: string;
+  status: TaskOutcomeStatus;
   /** Task evaluation score from 0.0 to 1.0 when graded, or null if ungraded or execution failed. */
   score: number|null;
   durationSeconds: number;
   tags: string[];
   tokens?: Record<string, unknown>;
-  metrics: {
-    taskStatus: string,
-    verificationDurationSeconds: number,
-    verificationStatus: string,
-    gradingDurationSeconds: number,
-    gradingStatus: string,
-    toolCallCount: number,
-    toolCallsByTool: Record<string, number>,
-    failedToolCallsByTool: Record<string, number>,
-    activationsBySkill: Record<string, number>,
-  };
+  metrics: TaskMetrics;
 }
 
 export interface RunCompletedPayload {
   project: string;
   runId: string;
-  status: string;
+  status: RunOutcomeStatus;
   startTime: string;
   endTime: string;
   model: string;
@@ -83,18 +96,13 @@ export interface RunCompletedPayload {
   totalTasks: number;
   passedTasks: number;
   failedTasks: number;
-  metrics: {
-    totalToolCalls: number,
-    toolCallsByTool: Record<string, number>,
-    failedToolCallsByTool: Record<string, number>,
-    activationsBySkill: Record<string, number>,
-  };
+  metrics: RunMetrics;
 }
 
 /** Record of a completed task's execution outcome and score. Each task corresponds to an evaluation trajectory. */
 export interface TaskStatus {
   taskId: string;
-  status: string;
+  status: TaskOutcomeStatus;
   score: number|null;
 }
 
@@ -304,9 +312,8 @@ export function formatProtoDuration(seconds: number): string {
   return `${seconds.toFixed(3)}s`;
 }
 
-export function formatProtoTaskStatus(status: string): string {
-  const normalized = status === 'PASSED' ? 'SUCCEEDED' : status;
-  return normalized.startsWith('TASK_STATUS_') ? normalized : `TASK_STATUS_${normalized}`;
+export function formatProtoTaskStatus(status: PhaseStatus): string {
+  return `TASK_STATUS_${status}`;
 }
 
 /**

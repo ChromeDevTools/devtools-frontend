@@ -4,6 +4,8 @@
 
 import type {EvalLogger} from './eval-logger.js';
 import {
+  type PhaseStatus,
+  type TaskOutcomeStatus,
   TaskOutputFile,
   type TaskStatus,
   uploadTaskCompleted,
@@ -257,10 +259,11 @@ export function recordTaskCompletion(options: RecordTaskCompletionOptions): void
   // Only report a numeric score if a custom/grader score was computed and execution/upload succeeded;
   // otherwise emit null so ungraded tasks or execution failures do not skew averages.
   const score = (!allUploadsSucceeded || hasError) ? null : (customScore ?? null);
-  const status =
+  const status: TaskOutcomeStatus =
       (!allUploadsSucceeded || hasError || (score !== null && score < PASS_SCORE_THRESHOLD)) ? 'FAILED' : 'PASSED';
   const wasGraded = (customScore !== undefined && customScore !== null) || gradingOutput !== undefined;
   const gradingPassed = customScore === undefined || customScore === null || customScore >= PASS_SCORE_THRESHOLD;
+  const gradingStatus: PhaseStatus = wasGraded ? (gradingPassed ? 'SUCCEEDED' : 'FAILED') : 'UNSPECIFIED';
 
   uploadTaskCompleted({
     taskId,
@@ -275,7 +278,7 @@ export function recordTaskCompletion(options: RecordTaskCompletionOptions): void
       verificationDurationSeconds,
       verificationStatus: hasError ? 'FAILED' : 'SUCCEEDED',
       gradingDurationSeconds,
-      gradingStatus: wasGraded ? (gradingPassed ? 'SUCCEEDED' : 'FAILED') : 'UNSPECIFIED',
+      gradingStatus,
       toolCallCount: toolCallStats.total,
       toolCallsByTool: toolCallStats.byTool,
       failedToolCallsByTool: toolCallStats.failedByTool,

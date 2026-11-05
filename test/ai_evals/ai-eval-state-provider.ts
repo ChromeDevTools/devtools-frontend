@@ -27,6 +27,7 @@ import {
 import {
   generateRunId,
   PROJECT_ID,
+  type RunOutcomeStatus,
   type TaskStatus,
   uploadRunCompleted,
   uploadRunLog,
@@ -207,7 +208,7 @@ export class AiEvalStateProvider extends StateProvider {
         activationsBySkill[skill] = (activationsBySkill[skill] ?? 0) + count;
       }
     }
-    const status = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
+    const status: RunOutcomeStatus = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
     this.#logger.append(`Total tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
     this.#logger.append(`Run completed with status: ${status}`);
     uploadRunLog(this.#runId, this.#logger.getRunLogContent());

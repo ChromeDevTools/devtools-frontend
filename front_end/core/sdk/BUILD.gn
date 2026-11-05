@@ -121,6 +121,7 @@ devtools_foundation_module("sdk") {
     "../../core/root:bundle",
     "../../core/text_utils:bundle",
     "../../generated",
+    "../../generated:supported_css_properties",
     "../../models/formatter:bundle",
     "../../third_party/codemirror.next:bundle",
     "../../third_party/source-map-scopes-codec:bundle",
@@ -155,7 +156,7 @@ devtools_entrypoint("bundle") {
   ts_deps = [
     ":connections",
     ":sdk",
-    "../../generated",
+    "../../generated:supported_css_properties",
   ]
 
   data_deps = [ "../../entrypoints/wasmparser_worker:worker_entrypoint" ]

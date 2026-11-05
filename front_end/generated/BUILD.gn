@@ -46,10 +46,16 @@ ts_library("deprecation") {
   sources = [ "Deprecation.ts" ]
 }
 
+# SupportedCSSProperties.ts stays committed until crrev.com/c/8689826 moves it
+# to build-time generation; it gets its own library so that :generated can
+# move to $target_gen_dir independently.
+ts_library("supported_css_properties") {
+  sources = [ "SupportedCSSProperties.ts" ]
+}
+
 ts_library("generated") {
   sources = [
     "InspectorBackendCommands.ts",
-    "SupportedCSSProperties.ts",
     "protocol-mapping.d.ts",
     "protocol-proxy-api.d.ts",
     "protocol.ts",

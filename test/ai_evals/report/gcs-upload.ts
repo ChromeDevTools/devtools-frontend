@@ -8,6 +8,8 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
+import {formatProtoDuration, formatProtoTaskStatus} from './report-helpers.js';
+
 /* eslint-disable no-console */
 
 export const BUCKET = 'gleam-eval-cd4h-nonprod';
@@ -306,14 +308,6 @@ export function uploadTaskContent(
       content,
       formatGCSTaskDestination(runId, taskId, destinationPath),
   );
-}
-
-export function formatProtoDuration(seconds: number): string {
-  return `${seconds.toFixed(3)}s`;
-}
-
-export function formatProtoTaskStatus(status: PhaseStatus): string {
-  return `TASK_STATUS_${status}`;
 }
 
 /**

@@ -33,6 +33,7 @@ import {
   uploadRunLog,
   uploadRunStarted,
 } from './report/gcs-upload.js';
+import {aggregateRunMetrics, buildRunTags} from './report/report-helpers.js';
 import {
   createTempEvalDir,
   type Step,
@@ -180,7 +181,7 @@ export class AiEvalStateProvider extends StateProvider {
       agent,
       startTime: this.#runStartTimestamp,
       status: 'RUNNING',
-      tags: targets.map(t => `agent_type:devtools-${t}`),
+      tags: buildRunTags(targets),
     });
     this.#logger.head('Running examples sequentially...');
   }
@@ -192,22 +193,6 @@ export class AiEvalStateProvider extends StateProvider {
     const totalTasks = this.#taskStatuses.length;
     const failedTasks = this.#taskStatuses.filter(t => t.status === 'FAILED').length;
     const passedTasks = totalTasks - failedTasks;
-    let totalToolCalls = 0;
-    const toolCallsByTool: Record<string, number> = {};
-    const failedToolCallsByTool: Record<string, number> = {};
-    const activationsBySkill: Record<string, number> = {};
-    for (const stats of this.#taskToolCallStats.values()) {
-      totalToolCalls += stats.total;
-      for (const [tool, count] of Object.entries(stats.byTool)) {
-        toolCallsByTool[tool] = (toolCallsByTool[tool] ?? 0) + count;
-      }
-      for (const [tool, count] of Object.entries(stats.failedByTool)) {
-        failedToolCallsByTool[tool] = (failedToolCallsByTool[tool] ?? 0) + count;
-      }
-      for (const [skill, count] of Object.entries(stats.activationsBySkill)) {
-        activationsBySkill[skill] = (activationsBySkill[skill] ?? 0) + count;
-      }
-    }
     const status: RunOutcomeStatus = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
     this.#logger.append(`Total tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
     this.#logger.append(`Run completed with status: ${status}`);
@@ -219,16 +204,11 @@ export class AiEvalStateProvider extends StateProvider {
       startTime: this.#runStartTimestamp,
       endTime: new Date().toISOString(),
       model: this.#resolvedModel ?? 'unknown',
-      tags: [...this.#evalTypes].map(t => `agent_type:devtools-${t}`),
+      tags: buildRunTags(this.#evalTypes),
       totalTasks,
       passedTasks,
       failedTasks,
-      metrics: {
-        totalToolCalls,
-        toolCallsByTool,
-        failedToolCallsByTool,
-        activationsBySkill,
-      },
+      metrics: aggregateRunMetrics(this.#taskToolCallStats.values()),
     });
     if (this.#tempOutputDir && fs.existsSync(this.#tempOutputDir)) {
       fs.rmSync(this.#tempOutputDir, {recursive: true, force: true});

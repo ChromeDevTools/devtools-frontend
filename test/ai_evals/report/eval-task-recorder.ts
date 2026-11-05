@@ -13,6 +13,11 @@ import {
   uploadTaskFile,
 } from './gcs-upload.js';
 import {
+  buildTaskTags,
+  formatVerificationStderr,
+  formatVerificationStdout,
+} from './report-helpers.js';
+import {
   calculateTrajectoryToolCalls,
   exportEvalTrajectory,
   formatChatLog,
@@ -89,48 +94,6 @@ export interface RecordTaskCompletionOptions {
   hasError?: boolean;
   customScore?: number|null;
   gradingOutput?: string;
-}
-
-/**
- * Summarises the outcome of a task's verification step for the
- * verification_stdout.log artifact.
- */
-export function formatVerificationStdout(taskId: string, target: string, hasError: boolean): string {
-  return [
-    `[Verification] Task: ${taskId}`,
-    `[Verification] Target: ${target}`,
-    `[Verification] Result: ${hasError ? 'FAILED' : 'PASSED'}`,
-    '',
-  ].join('\n');
-}
-
-/**
- * Formats the error and assertion failures of a task for the
- * verification_stderr.log artifact. Returns an empty string when the
- * task did not fail.
- */
-export function formatVerificationStderr(errorMessage?: string): string {
-  return errorMessage ? `[Error]: ${errorMessage}\n` : '';
-}
-
-/**
- * Builds the Gleam Eval Dashboard filter tags (`attempt:<N>` and
- * `agent_type:devtools-<evalTarget>`) for a completed or failed task.
- *
- * @param evalTarget The DevTools panel/agent target domain (e.g. `'elements'`,
- *     `'network'`, `'performance'`, `'console'`), used to construct the
- *     `agent_type:devtools-<evalTarget>` tag.
- * @param taskId The task identifier, optionally suffixed with `__attempt_<N>`
- *     on multi-attempt runs.
- */
-function buildTaskTags(evalTarget: string, taskId: string): string[] {
-  // Extract the 1-based attempt number when a task is run multiple times with a
-  // `<taskId>__attempt_<N>` suffix (per the Gleam Eval persistence contract),
-  // defaulting to `'1'` for single-attempt runs so the dashboard's `Attempt`
-  // filter chip is populated as `attempt:1`.
-  const attemptMatch = /__attempt_(\d+)$/.exec(taskId);
-  const attempt = attemptMatch ? attemptMatch[1] : '1';
-  return [`attempt:${attempt}`, `agent_type:devtools-${evalTarget}`];
 }
 
 /**

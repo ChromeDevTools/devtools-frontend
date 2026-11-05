@@ -257,6 +257,10 @@
     color: var(--sys-color-on-surface-subtle);
   }
 
+  .see-response-button {
+    margin-right: calc(-1 * var(--sys-size-6));
+  }
+
   .comments-empty-state {
     display: flex;
     flex-direction: column;

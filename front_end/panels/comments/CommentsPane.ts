@@ -164,6 +164,7 @@ function renderThreadStatus(
     case 'RESOLVED':
       return html`
         <devtools-button
+          class="see-response-button"
           .data=${{
             variant: Buttons.Button.Variant.TEXT,
             jslogContext: 'comments-see-response',

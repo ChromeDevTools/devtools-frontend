@@ -153,7 +153,7 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
   it('renders the button text without a count, tooltip, and visual logging attribute', () => {
     const target = renderView();
     const button = target.querySelector<HTMLButtonElement>('button.devtools-pill');
-    assert.strictEqual(button?.textContent?.trim(), 'Show comments');
+    assert.strictEqual(button?.textContent?.trim(), 'View comments');
     assert.strictEqual(button?.title, 'First comment\nSecond comment');
     assert.strictEqual(
         button?.getAttribute('jslog'),
@@ -161,10 +161,12 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
     );
   });
 
-  it('renders the number of unseen responses in the button text', () => {
+  it('renders the number of unseen responses in the badge', () => {
     const target = renderView({unseenResponseCount: 2});
     const button = target.querySelector<HTMLButtonElement>('button.devtools-pill');
-    assert.strictEqual(button?.textContent?.trim(), 'Show comments (2)');
+    const badge = target.querySelector<HTMLSpanElement>('.comments-counter-badge');
+    assert.strictEqual(badge?.textContent?.trim(), '2');
+    assert.strictEqual(button?.getAttribute('aria-label'), 'View comments (2)');
   });
 
   it('renders nothing when there are no threads', () => {
@@ -179,7 +181,7 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
   });
 
   it('renders disabled state screenshot', async () => {
-    const target = renderView({disabled: true});
+    const target = renderView({disabled: true, unseenResponseCount: 2});
     renderElementIntoDOM(target, {includeCommonStyles: true});
     await assertScreenshot('status_bar/status_bar_disabled.png');
   });

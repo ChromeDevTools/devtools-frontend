@@ -1499,6 +1499,30 @@ the user.
 `ifExpanded` is a lit directive provided on `UI.TreeOutline` and it makes its
 argument render only if the current tree node is expanded.
 
+### TreeOutline Migration Guidelines
+
+1. **Keep `Treeoutline.ts` contracts intact**: Do not widen `front_end/ui/legacy/Treeoutline.ts`
+   (`TreeViewElement` or `TreeViewTreeElement`) or add public getters (such as `get scriptsTree()`)
+   on presenters. Render leading icons, labels, tooltips, and trailing actions inline inside
+   `<li role="treeitem">` and drive selection, expansion, and default focus declaratively via
+   `?selected`, `?open`, `@select`, `@expand`, and `autofocus`. Return `nothing` rather than an
+   empty container for trailing icons when none exist, and do not duplicate `class="tree-element-title"`
+   on inner spans (which compounds opacity styling).
+2. **Persistent prompt & child widget isolation for editable rows**:
+   Always keep `<devtools-prompt value=${...} ?editing=${...}>` persistently mounted in the row
+   template and toggle `?editing` declaratively. Do not duplicate `aria-label` on inner prompts
+   when the enclosing `<li role="treeitem">` already provides the accessible name. Furthermore,
+   because `<devtools-tree>` clones light DOM into shadow DOM and re-clones an entire `<li role="treeitem">`
+   on light-DOM attribute mutations, wrap editable prompts inside a small child `UI.Widget`
+   (`${widget(WatchExpressionPromptWidget, {...})}`, as in `WatchExpressionsSidebarPane.ts`). This allows
+   toggling `?editing` to update the child widget in place without triggering a tree re-clone that
+   steals focus and blurs the active input.
+3. **Custom elements with JavaScript property state**:
+   Custom elements rendered inside `<devtools-tree>` whose state is set via JS properties (`.data`)
+   must override `cloneNode(deep)` to copy `.data` and reflect dynamic state via a DOM attribute
+   (such as `data-badge=${...}`) so `<devtools-tree>`'s `MutationObserver` detects changes and
+   refreshes shadow clones.
+
 ## Refactoring UI.Toolbar.Provider
 
 As part of the migration, sometimes classes need to be broken up into smaller pieces. Classes implementing

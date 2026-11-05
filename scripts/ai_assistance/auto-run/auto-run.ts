@@ -626,9 +626,6 @@ async function main() {
       project: PROJECT_ID,
       runId,
       agent: `devtools-${userArgs.testTarget}`,
-      // TODO: Figure out if the model ID can be determined prior to execution. Currently,
-      // the exact model ID is resolved server-side by AIDA and only available in the response metadata per task.
-      model: 'default',
       startTime: runStartTimestamp,
       status: 'RUNNING',
     });
@@ -720,20 +717,22 @@ async function main() {
   }
 
   // Write output for each group
+  let resolvedModel: string|null = null;
   for (const [label, data] of groupedResults) {
     const output = {
       metadata: data.metadata,
       trajectories: data.results,
     };
-    writeOutput({
-      output,
-      userArgs: {...userArgs, label},
-      runId,
-      taskStatuses,
-      taskDurations,
-      taskToolCallCounts,
-      logger,
-    });
+    resolvedModel = writeOutput({
+                      output,
+                      userArgs: {...userArgs, label},
+                      runId,
+                      taskStatuses,
+                      taskDurations,
+                      taskToolCallCounts,
+                      logger,
+                    }) ??
+        resolvedModel;
   }
 
   let graderFailed = false;
@@ -842,6 +841,7 @@ async function main() {
       status: runStatus,
       startTime: runStartTimestamp,
       endTime: new Date().toISOString(),
+      model: resolvedModel ?? 'unknown',
       totalTasks,
       passedTasks,
       failedTasks,
@@ -891,9 +891,10 @@ type WriteOutputOptions = Omit<EvalRunContext, 'outputDir'|'gradeTargetDir'|'tra
  *
  * Per trajectory it always writes the eval output locally, and additionally
  * uploads the per-task artifacts and records the task completion when
- * `--upload` is set.
+ * `--upload` is set. Returns the model name resolved from the exported
+ * trajectories, or `null` if none was resolved.
  */
-function writeOutput(options: WriteOutputOptions) {
+function writeOutput(options: WriteOutputOptions): string|null {
   const {output, userArgs} = options;
 
   const outputDir = path.resolve(import.meta.dirname, 'data');
@@ -901,7 +902,7 @@ function writeOutput(options: WriteOutputOptions) {
 
   if (output.metadata.length === 0 && output.trajectories.length === 0) {
     console.info('\n[Warn]: No results to export.');
-    return;
+    return null;
   }
 
   const trajectories = convertRawOutputToEval({
@@ -921,6 +922,7 @@ function writeOutput(options: WriteOutputOptions) {
 
   const trajectoriesByTaskId = Map.groupBy(output.trajectories, e => e.taskId);
   const ctx: EvalRunContext = {...options, outputDir, gradeTargetDir, trajectoriesByTaskId};
+  let resolvedModel: string|null = null;
 
   for (const trajectory of trajectories) {
     const evalOutputPath = exportEvalTrajectory(ctx, trajectory);
@@ -929,6 +931,9 @@ function writeOutput(options: WriteOutputOptions) {
         0,
     );
     ctx.taskToolCallCounts.set(trajectory.metadata.task_id, toolCallCount);
+    if (trajectory.metadata.model) {
+      resolvedModel = trajectory.metadata.model;
+    }
 
     if (!userArgs.upload) {
       continue;
@@ -939,6 +944,8 @@ function writeOutput(options: WriteOutputOptions) {
       recordTaskCompletion(ctx, trajectory.metadata.task_id, allUploadsSucceeded);
     }
   }
+
+  return resolvedModel;
 }
 
 /**

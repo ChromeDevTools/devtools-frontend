@@ -43,7 +43,6 @@ export type TaskOutputFile = (typeof TaskOutputFile)[keyof typeof TaskOutputFile
 export interface RunStartedPayload {
   project: string;
   runId: string;
-  model: string;
   agent: string;
   startTime: string;
   status: string;
@@ -67,6 +66,7 @@ export interface RunCompletedPayload {
   status: string;
   startTime: string;
   endTime: string;
+  model: string;
   totalTasks: number;
   passedTasks: number;
   failedTasks: number;
@@ -244,7 +244,6 @@ export function uploadRunStarted(payload: RunStartedPayload): boolean {
     project: payload.project,
     run_id: payload.runId,
     user: os.userInfo().username,
-    model: payload.model,
     agent: payload.agent,
     start_time: payload.startTime,
     status: payload.status,
@@ -330,6 +329,7 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
     status: payload.status,
     start_time: payload.startTime,
     end_time: payload.endTime,
+    model: payload.model,
     total_tasks: payload.totalTasks,
     passed_tasks: payload.passedTasks,
     failed_tasks: payload.failedTasks,

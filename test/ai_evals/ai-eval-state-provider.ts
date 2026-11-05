@@ -137,6 +137,7 @@ export class AiEvalStateProvider extends StateProvider {
   #logger = new EvalLogger();
   #taskStatuses: TaskStatus[] = [];
   #taskToolCallCounts = new Map<string, number>();
+  #resolvedModel: string|null = null;
   #resultStores: ResultStore[] = [];
   // Target types of all registered eval tests. Suites are registered while the test files
   // are loaded, i.e. before `startEvalRun` is called from the global setup.
@@ -158,6 +159,7 @@ export class AiEvalStateProvider extends StateProvider {
     this.#logger = new EvalLogger();
     this.#taskStatuses = [];
     this.#taskToolCallCounts = new Map();
+    this.#resolvedModel = null;
     this.#resultStores = [];
     const targets = [...this.#evalTypes];
     const agent = targets.length === 1 ? `devtools-${targets[0]}` : MIXED_TARGETS_AGENT;
@@ -167,7 +169,6 @@ export class AiEvalStateProvider extends StateProvider {
       project: PROJECT_ID,
       runId: this.#runId,
       agent,
-      model: 'default',
       startTime: this.#runStartTimestamp,
       status: 'RUNNING',
     });
@@ -192,6 +193,7 @@ export class AiEvalStateProvider extends StateProvider {
       status,
       startTime: this.#runStartTimestamp,
       endTime: new Date().toISOString(),
+      model: this.#resolvedModel ?? 'unknown',
       totalTasks,
       passedTasks,
       failedTasks,
@@ -323,6 +325,9 @@ export class AiEvalStateProvider extends StateProvider {
         } else {
           try {
             const trajectory = evalTask.trajectoryBuilder.build();
+            if (trajectory.metadata.model) {
+              this.#resolvedModel = trajectory.metadata.model;
+            }
             let customScore: number|null = null;
             let gradingOutput: string|undefined;
 

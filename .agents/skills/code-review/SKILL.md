@@ -129,6 +129,13 @@ findings):
   scenario.
 - **Fail fast:** Throw or assert when a required value is missing. Don't let
   the test time out later.
+- **Pre-migration tests for legacy widgets:** When reviewing tests added ahead of
+  replacing a legacy widget (`TreeOutline`, `DataGrid`, `ListControl`,
+  `ListWidget`), check that DOM/tree inspection is encapsulated in local test
+  helpers (`dumpTree()`, `findTreeItem()`, `activateRow()`) rather than
+  repeated across every `it()` block, and ask for `assertScreenshot(...)` golden
+  tests so visual regressions are caught independently of the legacy widget
+  implementation.
 
 ## 6. Test hygiene and cleanup
 

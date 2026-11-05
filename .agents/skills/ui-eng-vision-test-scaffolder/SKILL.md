@@ -55,6 +55,22 @@ logical regressions are introduced during modernization.
             });
             ```
 
+    *   **Implementation-Decoupled Helpers & Screenshot Baselines Before Replacing Legacy Widgets**:
+        When scaffolding unit tests ahead of replacing a legacy widget engine
+        (`TreeOutline`, `DataGrid`, `ListControl`, `ListWidget`):
+        *   **Encapsulate DOM Inspection in Local Helpers**: Route tree, row,
+            and element queries through small local helper functions (`dumpTree()`,
+            `findTreeItem()`, `activateRow()`, `openContextMenuOnRow()`) rather
+            than scattering direct internal widget queries across every `it()`
+            block. When the legacy widget is subsequently swapped for
+            `<devtools-tree>` or `<devtools-data-grid>`, only the helper
+            implementations change while dozens of tests remain untouched.
+        *   **Mandatory Visual Regression Coverage**: Always add
+            `assertScreenshot(...)` golden tests covering critical visual
+            states (grouping modes, icons/badges, dimmed/dirty states). Unit
+            tests often inspect internal state that changes during migration;
+            screenshot goldens ensure the user-visible UI remains identical.
+
 4.  **Wait for confirmation**:
 
     *   Wait for an explicit confirmation from the user (or Parent Orchestrator Agent) before proceeding to the next step.

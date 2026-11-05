@@ -38,6 +38,7 @@ import {
   createTempEvalDir,
   type Step,
   type ToolCallStats,
+  type Trajectory,
   TrajectoryBuilder,
 } from './report/trajectory-builder.js';
 
@@ -131,6 +132,12 @@ export class EvalTaskHandle {
 
 export interface AiEvalState extends E2EState {
   evalTask: EvalTaskHandle;
+}
+
+interface TaskGradingResult {
+  customScore: number|null;
+  gradingOutput?: string;
+  gradingDurationSeconds: number;
 }
 
 /**
@@ -321,93 +328,100 @@ export class AiEvalStateProvider extends StateProvider {
     return await super.onTestError(state, error);
   }
 
+  async #gradeTaskTrajectory(evalTask: EvalTaskHandle, trajectory: Trajectory): Promise<TaskGradingResult> {
+    if (evalTask.hasFailed || evalTask.evals.length === 0) {
+      return {customScore: null, gradingDurationSeconds: 0};
+    }
+    const gradingStart = performance.now();
+    const store = new ResultStore(evalTask.type, evalTask.label);
+    const dateFolder = (this.#runStartTimestamp || new Date().toISOString()).slice(0, 10);
+    const customScore = await evaluateTrajectory(trajectory, evalTask.evals, store, dateFolder);
+    const gradingDurationSeconds = Number(((performance.now() - gradingStart) / 1000).toFixed(3));
+    let gradingOutput: string|undefined;
+    if (store.results.size > 0) {
+      this.#resultStores.push(store);
+      printResults(store);
+      gradingOutput = formatStoreResults(store);
+      this.#logger.append(gradingOutput);
+    }
+    return {customScore, gradingOutput, gradingDurationSeconds};
+  }
+
+  async #finalizeConfiguredTask(evalTask: EvalTaskHandle): Promise<void> {
+    const durationSeconds = evalTask.durationSeconds;
+    if (evalTask.hasFailed && !evalTask.trajectoryBuilder.hasSteps()) {
+      handleTaskFailure({
+        runId: this.#runId,
+        taskId: evalTask.taskId,
+        target: evalTask.type,
+        phase: 'Execution',
+        durationSeconds,
+        logger: this.#logger,
+        taskStatuses: this.#taskStatuses,
+        toolCallStats: {
+          total: 0,
+          byTool: {},
+          failedByTool: {},
+          activationsBySkill: {},
+        },
+        errorMessage: evalTask.failureError,
+      });
+      return;
+    }
+
+    const verificationDurationSeconds = Number(((performance.now() - evalTask.lastPromptEndTime) / 1000).toFixed(3));
+    try {
+      const trajectory = evalTask.trajectoryBuilder.build();
+      if (trajectory.metadata.model) {
+        this.#resolvedModel = trajectory.metadata.model;
+      }
+      const {customScore, gradingOutput, gradingDurationSeconds} =
+          await this.#gradeTaskTrajectory(evalTask, trajectory);
+      finalizeEvalTask({
+        runId: this.#runId,
+        taskId: evalTask.taskId,
+        label: evalTask.label,
+        target: evalTask.type,
+        trajectory,
+        outputDir: this.#tempOutputDir,
+        durationSeconds,
+        verificationDurationSeconds,
+        logger: this.#logger,
+        taskStatuses: this.#taskStatuses,
+        taskToolCallStats: this.#taskToolCallStats,
+        hasError: evalTask.hasFailed,
+        errorMessage: evalTask.failureError,
+        customScore,
+        gradingOutput,
+        gradingDurationSeconds,
+      });
+    } catch (err) {
+      const errorMessage = this.#logger.formatError(err as Error);
+      this.#logger.taskError(evalTask.taskId, errorMessage);
+      handleTaskFailure({
+        runId: this.#runId,
+        taskId: evalTask.taskId,
+        target: evalTask.type,
+        phase: 'Finalization',
+        durationSeconds,
+        logger: this.#logger,
+        taskStatuses: this.#taskStatuses,
+        toolCallStats: this.#taskToolCallStats.get(evalTask.taskId) ?? {
+          total: 0,
+          byTool: {},
+          failedByTool: {},
+          activationsBySkill: {},
+        },
+        errorMessage,
+      });
+    }
+  }
+
   override async cleanupState(state: E2EState): Promise<void> {
     const evalTask = (state as Partial<AiEvalState>).evalTask;
     try {
       if (evalTask?.isConfigured) {
-        const durationSeconds = evalTask.durationSeconds;
-        if (evalTask.hasFailed && !evalTask.trajectoryBuilder.hasSteps()) {
-          handleTaskFailure({
-            runId: this.#runId,
-            taskId: evalTask.taskId,
-            target: evalTask.type,
-            phase: 'Execution',
-            durationSeconds,
-            logger: this.#logger,
-            taskStatuses: this.#taskStatuses,
-            toolCallStats: {
-              total: 0,
-              byTool: {},
-              failedByTool: {},
-              activationsBySkill: {},
-            },
-            errorMessage: evalTask.failureError,
-          });
-        } else {
-          const verificationDurationSeconds =
-              Number(((performance.now() - evalTask.lastPromptEndTime) / 1000).toFixed(3));
-          try {
-            const trajectory = evalTask.trajectoryBuilder.build();
-            if (trajectory.metadata.model) {
-              this.#resolvedModel = trajectory.metadata.model;
-            }
-            let customScore: number|null = null;
-            let gradingOutput: string|undefined;
-            let gradingDurationSeconds = 0;
-
-            if (!evalTask.hasFailed && evalTask.evals.length > 0) {
-              const gradingStart = performance.now();
-              const store = new ResultStore(evalTask.type, evalTask.label);
-              const dateFolder = (this.#runStartTimestamp || new Date().toISOString()).slice(0, 10);
-              customScore = await evaluateTrajectory(trajectory, evalTask.evals, store, dateFolder);
-              gradingDurationSeconds = Number(((performance.now() - gradingStart) / 1000).toFixed(3));
-              if (store.results.size > 0) {
-                this.#resultStores.push(store);
-                printResults(store);
-                gradingOutput = formatStoreResults(store);
-                this.#logger.append(gradingOutput);
-              }
-            }
-
-            finalizeEvalTask({
-              runId: this.#runId,
-              taskId: evalTask.taskId,
-              label: evalTask.label,
-              target: evalTask.type,
-              trajectory,
-              outputDir: this.#tempOutputDir,
-              durationSeconds,
-              verificationDurationSeconds,
-              logger: this.#logger,
-              taskStatuses: this.#taskStatuses,
-              taskToolCallStats: this.#taskToolCallStats,
-              hasError: evalTask.hasFailed,
-              errorMessage: evalTask.failureError,
-              customScore,
-              gradingOutput,
-              gradingDurationSeconds,
-            });
-          } catch (err) {
-            const errorMessage = this.#logger.formatError(err as Error);
-            this.#logger.taskError(evalTask.taskId, errorMessage);
-            handleTaskFailure({
-              runId: this.#runId,
-              taskId: evalTask.taskId,
-              target: evalTask.type,
-              phase: 'Finalization',
-              durationSeconds,
-              logger: this.#logger,
-              taskStatuses: this.#taskStatuses,
-              toolCallStats: this.#taskToolCallStats.get(evalTask.taskId) ?? {
-                total: 0,
-                byTool: {},
-                failedByTool: {},
-                activationsBySkill: {},
-              },
-              errorMessage,
-            });
-          }
-        }
+        await this.#finalizeConfiguredTask(evalTask);
       }
     } finally {
       try {

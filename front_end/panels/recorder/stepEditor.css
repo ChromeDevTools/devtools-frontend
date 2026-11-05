@@ -22,8 +22,8 @@
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
   align-items: center;
-  line-height: 18px;
-  margin-top: 3px;
+  line-height: var(--sys-typescale-body4-line-height);
+  margin-top: var(--sys-size-3);
 }
 
 .row devtools-button {

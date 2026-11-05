@@ -12,11 +12,12 @@ import type * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
 const {urlString} = Platform.DevToolsPath;
-const {PrivateVerificationTokensView} = Application.PrivateVerificationTokensView;
+const {DEFAULT_VIEW, PrivateVerificationTokensView} = Application.PrivateVerificationTokensView;
 
 function makeToken(
     overrides: Partial<Protocol.Storage.PrivateVerificationToken>&
@@ -37,6 +38,20 @@ function stubStorage(target: SDK.Target.Target, tokens: Protocol.Storage.Private
       .resolves({tokens, getError: () => undefined});
   sinon.stub(target.storageAgent(), 'invoke_getPrivateVerificationTokensIssuerConfigs')
       .resolves({configs, getError: () => undefined});
+}
+
+/**
+ * Returns the header passed to the EmptyWidget rendered in `container`, or null
+ * if no EmptyWidget is rendered.
+ */
+function getEmptyStateHeader(container: HTMLElement): string|null {
+  for (const element of container.querySelectorAll<HTMLElement>('devtools-widget')) {
+    const config = UI.Widget.widgetConfigs.get(element);
+    if (config?.widgetClass === UI.EmptyWidget.EmptyWidget) {
+      return config.widgetParams?.header ?? null;
+    }
+  }
+  return null;
 }
 
 async function createWidget() {
@@ -187,6 +202,77 @@ describeWithEnvironment('PrivateVerificationTokensView', () => {
       await raf();
 
       sinon.assert.callCount(viewStub, callCount);
+    });
+  });
+
+  describe('view', () => {
+    it('renders empty state when there are no tokens', () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      DEFAULT_VIEW({tokens: []}, undefined, container);
+
+      assert.isNull(container.querySelector('devtools-data-grid'));
+      assert.strictEqual(getEmptyStateHeader(container), 'No private verification tokens for this origin');
+    });
+
+    it('renders a row for each token with its display values', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      DEFAULT_VIEW({
+        tokens: [
+          {
+            id: '1',
+            issuerOrigin: urlString`https://issuer.org`,
+            isIssuer: false,
+            isRedeemer: true,
+            keyId: 10,
+            expiration: '2023-11-14T22:13:20.000Z',
+            creationTime: '2023-07-22T04:26:40.000Z',
+            version: 1,
+            token: 'AQIDBA==',
+          },
+          {
+            id: '2',
+            issuerOrigin: urlString`http://example.com`,
+            isIssuer: true,
+            isRedeemer: false,
+            keyId: 20,
+            expiration: '—',
+            creationTime: '—',
+            version: 1,
+            token: 'BQYHCA==',
+          },
+        ],
+      },
+                   undefined, container);
+      await raf();
+
+      assert.isNull(getEmptyStateHeader(container));
+      const rows = container.querySelectorAll('devtools-data-grid table tr');
+      assert.lengthOf(rows, 3);
+      assert.deepEqual(Array.from(rows[1].querySelectorAll('td')).map(td => td.textContent), [
+        'https://issuer.org',
+        'false',
+        'true',
+        '1',
+        '10',
+        '2023-11-14T22:13:20.000Z',
+        '2023-07-22T04:26:40.000Z',
+        '1',
+        'AQIDBA==',
+      ]);
+      assert.deepEqual(Array.from(rows[2].querySelectorAll('td')).map(td => td.textContent), [
+        'http://example.com',
+        'true',
+        'false',
+        '2',
+        '20',
+        '—',
+        '—',
+        '1',
+        'BQYHCA==',
+      ]);
     });
   });
 });

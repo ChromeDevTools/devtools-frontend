@@ -1435,6 +1435,26 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       assert.strictEqual(threads[1].comments.at(-1)?.text, 'Edited hovered');
       assert.notStrictEqual(threads[0].comments.at(-1)?.text, 'Edited hovered');
     });
+
+    it('clears the hover preview when the hovered thread is resolved', async () => {
+      let input = await setupWithSavedThreads(['hover-resolved']);
+      threads[0].sendToAgent();
+      input = await view.nextInput;
+
+      input.onPinMouseEnter(threads[0].id);
+      input = await view.nextInput;
+      assert.strictEqual(input.hoveredThread?.id, threads[0].id);
+      assert.strictEqual(input.hoveredPin?.id, threads[0].id);
+      assert.isTrue(input.hoveredPin?.visible);
+      assert.isNotNull(input.hoveredHighlight);
+
+      threads[0].resolve('Done');
+      input = await view.nextInput;
+      assert.isEmpty(input.pins.filter(p => p.visible));
+      assert.isNull(input.hoveredThread);
+      assert.isNull(input.hoveredPin);
+      assert.isNull(input.hoveredHighlight);
+    });
   });
 
   it('closes and removes the draft thread when clicking its own pin in comment mode', async () => {

@@ -223,6 +223,23 @@ export class ExtensionScope {
     return node.localName() || node.nodeName().toLowerCase();
   }
 
+  /**
+   * Derives a CSS selector for `node`, preferring the selector from the
+   * element's primary matched CSS rule in `matchedStyles` and falling back to
+   * the node's tag/id/class attributes when no matched rule selector applies.
+   */
+  static getSelectorForElement(
+      node: SDK.DOMModel.DOMNode,
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null,
+      ): string {
+    if (!matchedStyles) {
+      return ExtensionScope.getSelectorForNode(node);
+    }
+    const styleRule = ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
+    const selector = styleRule ? ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles) : null;
+    return selector || ExtensionScope.getSelectorForNode(node);
+  }
+
   async #computeContextFromElement(remoteObject: SDK.RemoteObject.RemoteObject): Promise<ElementContext> {
     if (!remoteObject.objectId) {
       throw new Error('DOMModel is not found');
@@ -243,35 +260,16 @@ export class ExtensionScope {
       throw new Error('Node is not found');
     }
 
+    let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null = null;
     try {
-      const matchedStyles = await cssModel.getMatchedStyles(node.id);
-
-      if (!matchedStyles) {
-        throw new Error('No matching styles');
-      }
-
-      const styleRule = ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
-
-      if (!styleRule) {
-        throw new Error('No style rule found');
-      }
-
-      const selector = ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles);
-
-      if (!selector) {
-        throw new Error('No selector found');
-      }
-
-      return {
-        selector,
-      };
+      matchedStyles = await cssModel.getMatchedStyles(node.id);
     } catch {
-      // no-op to allow the fallback below to run.
+      // Leave matchedStyles as null so getSelectorForElement falls back to a
+      // simple tag/id/class selector (`getSelectorForNode`).
     }
 
-    // Fallback
     return {
-      selector: ExtensionScope.getSelectorForNode(node),
+      selector: ExtensionScope.getSelectorForElement(node, matchedStyles),
     };
   }
 

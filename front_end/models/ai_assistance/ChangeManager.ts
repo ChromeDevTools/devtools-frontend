@@ -8,7 +8,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 export interface Change {
-  groupId: string;
+  // Optional identifier (such as an agent or conversation ID) to group changes;
+  // omitted by callers that do not scope style changes to a specific group.
+  groupId?: string;
   // Selector used by the page or a simple selector as the fallback.
   selector: string;
   className: string;

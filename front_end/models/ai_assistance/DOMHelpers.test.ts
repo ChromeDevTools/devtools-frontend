@@ -72,4 +72,120 @@ describe('DOMHelpers', () => {
       assert.isUndefined(parsedResult[0]);
     });
   });
+
+  describe('sanitizeStyleChanges', () => {
+    it('converts camelCase keys to kebab-case and retains valid CSS declarations', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        backgroundColor: 'red',
+        fontSize: '14px',
+      });
+      assert.deepEqual(sanitized, {
+        'background-color': 'red',
+        'font-size': '14px',
+      });
+    });
+
+    it('drops invalid CSS property names and values', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        color: 'not-a-valid-color-value',
+        unknownProperty: '123',
+      });
+      assert.deepEqual(sanitized, {});
+    });
+
+    it('rejects CSS values containing url(), image-set(), src(), or CSS-escaped url() functions', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        color: 'red',
+        backgroundImage: 'url("https://attacker.example/leak")',
+        borderImageSource: 'image-set("https://attacker.example/leak.png" 1x)',
+        maskImage: '-webkit-image-set(url("https://attacker.example/leak.png") 1x)',
+        cursor: 'src("https://attacker.example/cursor.png"), pointer',
+        listStyleImage: '\\75\\72\\6c("https://attacker.example/escaped")',
+      });
+      assert.deepEqual(sanitized, {
+        color: 'red',
+      });
+    });
+  });
+
+  describe('removeInlineStyleProperties', () => {
+    it('removes matching kebab-case and camelCase properties while preserving others', () => {
+      const updated = AiAssistance.DOMHelpers.removeInlineStyleProperties(
+          'color: blue; background-color: yellow; font-size: 16px;',
+          {color: 'red', backgroundColor: 'green'},
+      );
+      assert.strictEqual(updated, 'font-size: 16px;');
+    });
+
+    it('returns empty string when all inline properties are removed', () => {
+      const updated = AiAssistance.DOMHelpers.removeInlineStyleProperties(
+          'color: blue;',
+          {color: 'red'},
+      );
+      assert.strictEqual(updated, '');
+    });
+  });
+
+  describe('adoptStyleSheetInShadowRoot', () => {
+    it('appends a new adopted stylesheet to a shadow root alongside existing stylesheets', () => {
+      const host = document.createElement('div');
+      const shadowRoot = host.attachShadow({mode: 'open'});
+      const child = document.createElement('button');
+      shadowRoot.appendChild(child);
+
+      const preExistingSheet = new CSSStyleSheet();
+      preExistingSheet.replaceSync('button { padding: 4px; }');
+      // eslint-disable-next-line @devtools/no-adopted-style-sheets
+      shadowRoot.adoptedStyleSheets = [preExistingSheet];
+
+      AiAssistance.DOMHelpers.adoptStyleSheetInShadowRoot.call(
+          child,
+          'ai-style-change',
+          '.ai-style-change-1 { button& { color: red; } }',
+      );
+
+      // eslint-disable-next-line @devtools/no-adopted-style-sheets
+      assert.lengthOf(shadowRoot.adoptedStyleSheets, 2);
+      // eslint-disable-next-line @devtools/no-adopted-style-sheets
+      assert.include(shadowRoot.adoptedStyleSheets[1].cssRules[0].cssText, 'color: red');
+    });
+
+    it('updates an existing AI stylesheet in place when surrounded by non-AI stylesheets', () => {
+      const host = document.createElement('div');
+      const shadowRoot = host.attachShadow({mode: 'open'});
+      const child = document.createElement('button');
+      shadowRoot.appendChild(child);
+
+      const preExistingSheet = new CSSStyleSheet();
+      preExistingSheet.replaceSync('button { padding: 4px; }');
+      const existingAiSheet = new CSSStyleSheet();
+      existingAiSheet.replaceSync('.ai-style-change-1 { button& { color: red; } }');
+      const trailingSheet = new CSSStyleSheet();
+      trailingSheet.replaceSync('button { margin: 2px; }');
+      // eslint-disable-next-line @devtools/no-adopted-style-sheets
+      shadowRoot.adoptedStyleSheets = [preExistingSheet, existingAiSheet, trailingSheet];
+
+      AiAssistance.DOMHelpers.adoptStyleSheetInShadowRoot.call(
+          child,
+          'ai-style-change',
+          '.ai-style-change-1 { button& { color: blue; } }',
+      );
+
+      // eslint-disable-next-line @devtools/no-adopted-style-sheets
+      assert.lengthOf(shadowRoot.adoptedStyleSheets, 3);
+      // eslint-disable-next-line @devtools/no-adopted-style-sheets
+      assert.include(shadowRoot.adoptedStyleSheets[1].cssRules[0].cssText, 'color: blue');
+    });
+
+    it('no-ops when element is not inside a ShadowRoot', () => {
+      const el = document.createElement('div');
+      assert.doesNotThrow(() => {
+        AiAssistance.DOMHelpers.adoptStyleSheetInShadowRoot.call(
+            el,
+            'ai-style-change',
+            '.ai-style-change-1 { div& { color: red; } }',
+        );
+      });
+    });
+  });
 });

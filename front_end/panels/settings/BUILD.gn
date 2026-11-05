@@ -113,6 +113,7 @@ devtools_ui_module("unittests") {
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",
     "../../testing",
+    "../../ui/components/render_coordinator:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/legacy:bundle",
     "../network/forward:bundle",

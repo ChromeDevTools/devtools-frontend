@@ -11,10 +11,11 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Settings from './settings.js';
 
-const {EditFileSystemView, ExcludedFolderStatus, DEFAULT_VIEW} = Settings.EditFileSystemView;
+const {EditFileSystemView, DEFAULT_VIEW} = Settings.EditFileSystemView;
 const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('EditFileSystemView view', () => {
@@ -24,15 +25,20 @@ describeWithEnvironment('EditFileSystemView view', () => {
 
     DEFAULT_VIEW({
       fileSystemPath: urlString`file:///home/user/project`,
-      excludedFolderPaths: [
-        {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-        {path: '/bar/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
+      excludedFolders: [
+        '/foo/' as Platform.DevToolsPath.EncodedPathString,
+        '/bar/' as Platform.DevToolsPath.EncodedPathString,
       ],
-      onCreate: () => {},
+      editingIndex: null,
+      onAdd: () => {},
       onEdit: () => {},
       onDelete: () => {},
+      onCommit: () => {},
+      onCancel: () => {},
+      validateFolder: () => null,
     },
                  undefined, target);
+    await RenderCoordinator.done();
 
     await assertScreenshot('persistence/edit_file_system_basic.png');
   });
@@ -43,19 +49,54 @@ describeWithEnvironment('EditFileSystemView view', () => {
 
     DEFAULT_VIEW({
       fileSystemPath: urlString`file:///home/user/project`,
-      excludedFolderPaths: [
-        {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-        {path: '' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_A_PATH},
-        {path: '/bar/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-        {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_UNIQUE},
+      excludedFolders: [
+        '/foo/' as Platform.DevToolsPath.EncodedPathString,
+        '/bar/' as Platform.DevToolsPath.EncodedPathString,
       ],
-      onCreate: () => {},
+      editingIndex: 1,
+      onAdd: () => {},
       onEdit: () => {},
       onDelete: () => {},
+      onCommit: () => {},
+      onCancel: () => {},
+      validateFolder: () => 'Enter a unique path' as Platform.UIString.LocalizedString,
     },
                  undefined, target);
+    await RenderCoordinator.done();
+
+    const addButton = target.querySelector<HTMLElement>('.add-subfolder-button');
+    assert.exists(addButton);
+    addButton.focus();
+    addButton.blur();
+    await RenderCoordinator.done();
 
     await assertScreenshot('persistence/edit_file_system_error.png');
+  });
+
+  it('focuses the prompt when editing a sub-directory', async () => {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    DEFAULT_VIEW({
+      fileSystemPath: urlString`file:///home/user/project`,
+      excludedFolders: [
+        '/foo/' as Platform.DevToolsPath.EncodedPathString,
+        '/bar/' as Platform.DevToolsPath.EncodedPathString,
+      ],
+      editingIndex: 1,
+      onAdd: () => {},
+      onEdit: () => {},
+      onDelete: () => {},
+      onCommit: () => {},
+      onCancel: () => {},
+      validateFolder: () => null,
+    },
+                 undefined, target);
+    await RenderCoordinator.done();
+
+    const prompts = target.querySelectorAll('devtools-prompt');
+    assert.lengthOf(prompts, 2);
+    assert.strictEqual(document.activeElement, prompts[1]);
   });
 });
 
@@ -68,10 +109,7 @@ describeWithEnvironment('EditFileSystemView widget', () => {
     fileSystem.excludedFolders.returns(initialExcludedFolders as Set<Platform.DevToolsPath.EncodedPathString>);
     widget.fileSystem = fileSystem;
 
-    const container = document.createElement('div');
-    renderElementIntoDOM(container);
-    widget.markAsRoot();
-    widget.show(container);
+    renderElementIntoDOM(widget);
     await view.nextInput;
 
     return {view, fileSystem};
@@ -81,16 +119,19 @@ describeWithEnvironment('EditFileSystemView widget', () => {
     const {view} = await setup(new Set(['foo/', 'bar/']));
 
     assert.strictEqual(view.input.fileSystemPath, urlString`file:///home/user`);
-    assert.deepEqual(view.input.excludedFolderPaths, [
-      {path: 'foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-      {path: 'bar/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
+    assert.deepEqual(view.input.excludedFolders, [
+      'foo/' as Platform.DevToolsPath.EncodedPathString,
+      'bar/' as Platform.DevToolsPath.EncodedPathString,
     ]);
   });
 
   it('adds new valid sub-directories to the file system', async () => {
     const {view, fileSystem} = await setup(new Set());
 
-    view.input.onCreate(new CustomEvent('create', {detail: {url: 'foo'}}));
+    view.input.onAdd();
+    await view.nextInput;
+    view.input.onCommit(0, 'foo');
+    await view.nextInput;
 
     sinon.assert.calledOnceWithExactly(fileSystem.addExcludedFolder, 'foo/' as Platform.DevToolsPath.EncodedPathString);
   });
@@ -98,53 +139,35 @@ describeWithEnvironment('EditFileSystemView widget', () => {
   it('shows empty sub-directory strings with an error and does not exclude it', async () => {
     const {view, fileSystem} = await setup(new Set());
 
-    view.input.onCreate(new CustomEvent('create', {detail: {url: ''}}));
-
+    view.input.onAdd();
     await view.nextInput;
-    assert.deepEqual(view.input.excludedFolderPaths, [
-      {path: '' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_A_PATH},
-    ]);
+    assert.strictEqual(view.input.validateFolder(0, ''), 'Enter a path');
     sinon.assert.notCalled(fileSystem.addExcludedFolder);
   });
 
   it('shows duplicate sub-directory strings with an error and does not re-exclude it', async () => {
     const {view, fileSystem} = await setup(new Set(['foo/']));
 
-    view.input.onCreate(new CustomEvent('create', {detail: {url: 'foo'}}));
-
+    view.input.onAdd();
     await view.nextInput;
-    assert.deepEqual(view.input.excludedFolderPaths, [
-      {path: 'foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-      {path: 'foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_UNIQUE},
-    ]);
+    assert.strictEqual(view.input.validateFolder(1, 'foo'), 'Enter a unique path');
     sinon.assert.notCalled(fileSystem.addExcludedFolder);
   });
 
-  function makeCustomEvent<T>(type: string, currentTarget: HTMLElement, detail: T = {} as T) {
-    const event = new CustomEvent(type, {detail});
-    sinon.stub(event, 'currentTarget').value(currentTarget);
-    return event;
-  }
-
   it('renders the new status when editing a sub-directory', async () => {
     const {view} = await setup(new Set(['foo/']));
-    const node = document.createElement('tr');
-    node.setAttribute('data-index', '0');
 
-    view.input.onEdit(makeCustomEvent('edit', node, {columnId: 'url', valueBeforeEditing: 'foo/', newText: ''}));
-
+    view.input.onEdit(0);
     await view.nextInput;
-    assert.deepEqual(view.input.excludedFolderPaths, [
-      {path: '' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_A_PATH},
-    ]);
+    assert.strictEqual(view.input.validateFolder(0, ''), 'Enter a path');
   });
 
   it('removes the old exclude when editing a valid sub-directory', async () => {
     const {view, fileSystem} = await setup(new Set(['foo/']));
-    const node = document.createElement('tr');
-    node.setAttribute('data-index', '0');
 
-    view.input.onEdit(makeCustomEvent('edit', node, {columnId: 'url', valueBeforeEditing: 'foo/', newText: 'bar/'}));
+    view.input.onEdit(0);
+    await view.nextInput;
+    view.input.onCommit(0, 'bar/');
 
     await view.nextInput;
     sinon.assert.calledOnceWithExactly(
@@ -153,10 +176,10 @@ describeWithEnvironment('EditFileSystemView widget', () => {
 
   it('adds the new exclude when editing a sub-directory to a valid exclude', async () => {
     const {view, fileSystem} = await setup(new Set(['foo/']));
-    const node = document.createElement('tr');
-    node.setAttribute('data-index', '0');
 
-    view.input.onEdit(makeCustomEvent('edit', node, {columnId: 'url', valueBeforeEditing: 'foo/', newText: 'bar/'}));
+    view.input.onEdit(0);
+    await view.nextInput;
+    view.input.onCommit(0, 'bar/');
 
     await view.nextInput;
     sinon.assert.calledOnceWithExactly(fileSystem.addExcludedFolder, 'bar/' as Platform.DevToolsPath.EncodedPathString);
@@ -164,21 +187,17 @@ describeWithEnvironment('EditFileSystemView widget', () => {
 
   it('removes the sub-directory from the list when deleting it', async () => {
     const {view} = await setup(new Set(['foo/']));
-    const node = document.createElement('tr');
-    node.setAttribute('data-index', '0');
 
-    view.input.onDelete(makeCustomEvent('delete', node));
+    view.input.onDelete(0);
 
     await view.nextInput;
-    assert.isEmpty(view.input.excludedFolderPaths);
+    assert.isEmpty(view.input.excludedFolders);
   });
 
   it('removes the exclude when deleting a valid sub-directory', async () => {
     const {view, fileSystem} = await setup(new Set(['foo/']));
-    const node = document.createElement('tr');
-    node.setAttribute('data-index', '0');
 
-    view.input.onDelete(makeCustomEvent('delete', node));
+    view.input.onDelete(0);
 
     await view.nextInput;
     sinon.assert.calledOnceWithExactly(

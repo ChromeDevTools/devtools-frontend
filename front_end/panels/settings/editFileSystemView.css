@@ -18,11 +18,37 @@
     }
   }
 
-  .exclude-subfolders-table {
-    padding: var(--sys-size-4) 0;
+  .excluded-folder-row {
+    display: flex;
+    align-items: center;
+    flex: auto;
+    min-width: 0;
+    padding: var(--sys-size-2) var(--sys-size-4);
+
+    &:has(devtools-prompt[editing]) {
+      align-self: stretch;
+      background-color: var(--app-color-card-background, var(--sys-color-cdt-base-container));
+    }
   }
 
-  .excluded-folder-error {
-    color: var(--sys-color-error);
+  .excluded-folder-path {
+    flex: auto;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    --devtools-text-prompt-min-width: 6em;
+  }
+
+  devtools-prompt.excluded-folder-path {
+    cursor: text;
+  }
+
+  devtools-prompt.excluded-folder-path[editing] {
+    overflow: visible;
+  }
+
+  .add-subfolder-button {
+    align-self: flex-start;
   }
 }

@@ -60,7 +60,8 @@ agentic_review: {
       ".agents/rules/ui-and-widgets/ui-weak-dom-references-and-observer-cleanup.md",
       ".agents/rules/ui-and-widgets/ui-security-and-output-sanitization.md",
       ".agents/rules/ui-and-widgets/ui-declarative-child-widget-composition.md",
-      ".agents/rules/ui-and-widgets/ui-await-update-complete-post-render.md"
+      ".agents/rules/ui-and-widgets/ui-await-update-complete-post-render.md",
+      ".agents/rules/ui-and-widgets/ui-declarative-tree-and-prompt-patterns.md"
     ]
   }
   capability_groups: {

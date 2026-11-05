@@ -114,6 +114,23 @@ existing element containers.
     *   **Accessibility Preservation**: Convert custom accessibility
         instrumentation (like `ARIAUtils.markAsAlert()`) to native ARIA
         attributes in the template (e.g., `role="alert"`, `aria-live="polite"`).
+    *   **`<devtools-tree>` & Persistent `<devtools-prompt ?editing>` Patterns**:
+        When rendering `<devtools-tree .template=${html`<ul role="tree">...</ul>`}>`:
+        - Preserve `front_end/ui/legacy/Treeoutline.ts` contracts without
+          widening internal classes or exposing `TreeOutline` getters on the
+          presenter.
+        - Drive selection and expansion declaratively via `?selected`, `?open`,
+          `@select`, and `@expand`.
+        - Do not duplicate `aria-label` on inner prompts when the enclosing
+          `<li role="treeitem">` already labels the row, do not duplicate
+          `class="tree-element-title"` on inner spans (which compounds opacity
+          rules), and return `nothing` for trailing icons when none exist.
+        - Host editable `<devtools-prompt ?editing>` rows in a child `UI.Widget`
+          (`${widget(RowPromptWidget, {...})}`) so `<devtools-tree>`'s
+          `MutationObserver` does not re-clone the row and blur the active input.
+        - Ensure custom elements with state passed via JS properties (`.data`)
+          override `cloneNode(deep)` and reflect dynamic state via DOM
+          attributes so shadow clones stay updated.
 
 11. **Render Templates Syntax & Code Movement**:
 
@@ -238,4 +255,3 @@ existing element containers.
 5.  ❓ **Split Views**: Does `<devtools-split-view>` have `flex: auto; height: 100%;` CSS and reuse existing split settings?
 6.  ❓ **String Audit**: Did I verify that any removed `UIStrings` weren't from accidentally dropped UI branches?
 7.  ❓ **Build**: Does the code compile and do visual tests pass with 0% diff?
-

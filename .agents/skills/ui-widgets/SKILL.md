@@ -119,6 +119,12 @@ render(html`
 *   **Raw Elements:** Use `Directives.ref` (from `ui/lit/lit.js`) to obtain a reference to a raw `HTMLElement` if needed for imperative APIs (e.g., `splitWidget.installResizer(element)`).
 *   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget inside the view function if you need to call imperative methods on it. **Do NOT store child widget instances on `ViewOutput` as a final result** (doing so is only acceptable temporarily in intermediate migration CLs). Instead, either supply all needed configuration declaratively through setters/inputs on the child widget, or if imperative calls are strictly necessary, expose narrow action functions on `ViewOutput` (e.g., `output.doLayout = () => splitWidget.doLayout()`, `output.revealPosition = pos => childWidget.revealPosition(pos)`). Do not keep `get*ForTest()` methods that return child widget instances via `ViewOutput`; tests should query rendered `<devtools-widget>` elements via `.getWidget()` or assert on `ViewInput` via `createViewFunctionStub`.
 
+### `<devtools-tree>` & Editable `<devtools-prompt ?editing>` Rows
+*   Keep `<devtools-tree>` (`ui/kit/kit.js`) contracts intact without widening `front_end/ui/legacy/Treeoutline.ts` (`TreeViewElement`/`TreeViewTreeElement`). Drive selection and expansion purely via `?selected`, `?open`, `@select`, and `@expand`.
+*   Keep `<devtools-prompt ?editing>` persistently mounted in the DOM and toggle `?editing` declaratively; do not duplicate `aria-label` on inner prompts when the `<li role="treeitem">` already labels the row.
+*   **Child widget isolation for editable tree rows:** Because `<devtools-tree>` clones light DOM into shadow DOM and re-clones an `<li role="treeitem">` whenever any descendant attribute mutates, place editable prompts inside a small child `UI.Widget` (`${widget(RowPromptWidget, {...})}`) so toggling `?editing` updates the child widget in place without triggering a tree re-clone and blurring the active input.
+*   Custom elements inside `<devtools-tree>` templates whose state is passed via JS properties (`.data`) must override `cloneNode(deep)` to copy `.data` and reflect dynamic state via DOM attributes so shadow clones update reliably.
+
 ### Dependencies
 
 * **View Dependencies:** The `DEFAULT_VIEW` is typically a module-level function. Ensure all dependencies (enums, constants, other components) are imported at the top of the file so they are available in the function scope.

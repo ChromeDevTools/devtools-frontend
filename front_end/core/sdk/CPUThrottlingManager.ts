@@ -237,6 +237,9 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   setHardwareConcurrency(concurrency: number): void {
+    if (concurrency < 1 || Number.isNaN(concurrency)) {
+      return;
+    }
     this.#hardwareConcurrency = concurrency;
     for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setHardwareConcurrency(concurrency);

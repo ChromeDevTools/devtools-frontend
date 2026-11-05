@@ -118,7 +118,7 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
         this,
     );
     const target = this.#targetManager.primaryPageTarget();
-    if (target !== null) {
+    if (target) {
       this.#inspectedURLChanged({data: target});
     }
   }

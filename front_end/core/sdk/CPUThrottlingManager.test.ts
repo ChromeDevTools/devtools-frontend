@@ -47,7 +47,7 @@ describe('CPUThrottlingManager', () => {
     sinon.assert.calledWithExactly(cdpStub, {hardwareConcurrency: 5});
   });
 
-  it('does not set concurrency to 0 or negative numbers', async () => {
+  it('does not set concurrency to 0, negative numbers, or NaN', async () => {
     const universe = new TestUniverse();
     const cdpStub =
         sinon.stub(universe.createTarget().emulationAgent(), 'invoke_setHardwareConcurrencyOverride').resolves();
@@ -57,6 +57,9 @@ describe('CPUThrottlingManager', () => {
     sinon.assert.notCalled(cdpStub);
 
     manager.setHardwareConcurrency(-1);
+    sinon.assert.notCalled(cdpStub);
+
+    manager.setHardwareConcurrency(NaN);
     sinon.assert.notCalled(cdpStub);
   });
 

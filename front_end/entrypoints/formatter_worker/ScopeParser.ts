@@ -114,8 +114,10 @@ export class Scope {
     }
     variable.uses.push(...defUses.uses);
     if (defUses.definitionKind === DefinitionKind.VAR) {
-      console.assert(variable.definitionKind !== DefinitionKind.LET);
-      if (variable.definitionKind === DefinitionKind.NONE) {
+      // A `var` declaration inside a `catch` block can redeclare the catch
+      // parameter; promote it to `VAR` so it hoists to the enclosing function or
+      // global scope.
+      if (variable.definitionKind === DefinitionKind.NONE || variable.definitionKind === DefinitionKind.LET) {
         variable.definitionKind = defUses.definitionKind;
       }
     } else {

@@ -215,7 +215,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       widget.detach();
     });
 
-    it('uses a solid border for DRAFT threads', async () => {
+    it('uses a solid highlight border and outlined pin for DRAFT threads', async () => {
       const widget = await setupWidget();
       const el = createAnchor('hl-status-draft', 10);
       const thread = overlayManager.createComment(el, 'Comment');
@@ -226,12 +226,14 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       const highlights = await getHighlights(widget);
       assert.lengthOf(highlights, 1);
       assert.isFalse(highlights[0].classList.contains('resolved'));
+      const pinCursor = widget.contentElement.querySelector<HTMLElement>('.comment-pin .comment-cursor');
+      assert.isFalse(pinCursor?.classList.contains('resolved'));
 
       el.remove();
       widget.detach();
     });
 
-    it('uses a solid border for ACTIVE threads', async () => {
+    it('uses a solid highlight border and outlined pin for ACTIVE threads', async () => {
       const widget = await setupWidget();
       const el = createAnchor('hl-status-active', 10);
       const thread = overlayManager.createComment(el, 'Comment');
@@ -243,12 +245,14 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       const highlights = await getHighlights(widget);
       assert.lengthOf(highlights, 1);
       assert.isFalse(highlights[0].classList.contains('resolved'));
+      const pinCursor = widget.contentElement.querySelector<HTMLElement>('.comment-pin .comment-cursor');
+      assert.isFalse(pinCursor?.classList.contains('resolved'));
 
       el.remove();
       widget.detach();
     });
 
-    it('uses a solid border for SENT_TO_AGENT threads', async () => {
+    it('uses a solid highlight border and outlined pin for SENT_TO_AGENT threads', async () => {
       const widget = await setupWidget();
       const el = createAnchor('hl-status-sent-to-agent', 10);
       const thread = overlayManager.createComment(el, 'Comment');
@@ -260,12 +264,14 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       const highlights = await getHighlights(widget);
       assert.lengthOf(highlights, 1);
       assert.isFalse(highlights[0].classList.contains('resolved'));
+      const pinCursor = widget.contentElement.querySelector<HTMLElement>('.comment-pin .comment-cursor');
+      assert.isFalse(pinCursor?.classList.contains('resolved'));
 
       el.remove();
       widget.detach();
     });
 
-    it('uses a dashed border for RESOLVED threads', async () => {
+    it('uses a dashed highlight border and solid pin for RESOLVED threads', async () => {
       const widget = await setupWidget();
       const el = createAnchor('hl-status-resolved', 10);
       const thread = overlayManager.createComment(el, 'Comment');
@@ -277,6 +283,8 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       const highlights = await getHighlights(widget);
       assert.lengthOf(highlights, 1);
       assert.isTrue(highlights[0].classList.contains('resolved'));
+      const pinCursor = widget.contentElement.querySelector<HTMLElement>('.comment-pin .comment-cursor');
+      assert.isTrue(pinCursor?.classList.contains('resolved'));
 
       el.remove();
       widget.detach();
@@ -1494,7 +1502,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     // while preserving the exact same DOM elements via keyed repeat().
     currentTop = 160;
     overlayManager.dispatchEventToListeners(Comments.CommentOverlayManager.Events.POSITIONS_UPDATED, {
-      pins: [{id: thread.id, top: 148, left: 158, visible: true}],
+      pins: [{id: thread.id, top: 148, left: 158, visible: true, resolved: false}],
       highlights: [{id: thread.id, top: 160, left: 50, width: 120, height: 30, visible: true}],
       isRealtimeSync: true,
     });

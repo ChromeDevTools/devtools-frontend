@@ -164,17 +164,27 @@
   }
 
   .comment-pin-badge {
+    box-sizing: border-box;
     width: var(--sys-size-9);
     height: var(--sys-size-9);
     margin-right: var(--sys-size-2);
     border-radius: var(--sys-shape-corner-full) var(--sys-shape-corner-full) var(--sys-shape-corner-full) var(--sys-shape-corner-extra-small);
-    background-color: var(--sys-color-primary);
+    border: var(--sys-size-2) solid var(--sys-color-primary);
+    background-color: var(--sys-color-cdt-base-container);
     flex-shrink: 0;
   }
 
+  .comment-pin-badge.resolved {
+    border: none;
+    background-color: var(--sys-color-primary);
+  }
+
   .comment-thread-item.orphaned .comment-pin-badge {
+    border-color: var(--sys-color-surface-variant);
+  }
+
+  .comment-thread-item.orphaned .comment-pin-badge.resolved {
     background-color: var(--sys-color-surface-variant);
-    color: var(--sys-color-on-surface-subtle);
   }
 
   .anchor-chip {

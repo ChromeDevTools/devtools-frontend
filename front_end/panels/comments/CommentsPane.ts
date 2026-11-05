@@ -16,7 +16,7 @@ import * as CommonPanels from '../common/common.js';
 
 import commentsPaneStyles from './commentsPane.css.js';
 
-const {html, render, i18nTemplate, Directives: {ref, repeat}} = Lit;
+const {html, render, i18nTemplate, Directives: {classMap, ref, repeat}} = Lit;
 const {widget} = UI.Widget;
 const {computeCommentTitle, inputDisclaimer} = CommonPanels.CommentThreadWidget;
 type Title = CommonPanels.CommentThreadWidget.Title;
@@ -248,7 +248,13 @@ export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target:
               }
             }}
             jslog=${VisualLogging.item('comment-thread').track({click: true})}>
-            <div class="comment-pin-badge" aria-hidden="true"></div>
+            <div
+              class=${classMap({
+                'comment-pin-badge': true,
+                resolved: item.thread.status === 'RESOLVED',
+              })}
+              aria-hidden="true">
+            </div>
             <span class="anchor-chip ${item.thread.isOrphaned ? 'orphaned' : ''}">
               ${'node' in item.title ?
                 widget(CommonPanels.DOMLinkifier.DOMNodeLink, {

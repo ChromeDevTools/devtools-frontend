@@ -35,11 +35,12 @@ export interface StartOptions {
   resizeTarget?: Element;
 }
 
-export interface PinPositionData {
+export interface PinData {
   id: string;
   top: number;
   left: number;
   visible: boolean;
+  resolved: boolean;
 }
 
 export interface HighlightRectData {
@@ -72,7 +73,7 @@ export const enum Events {
 
 export interface EventTypes {
   [Events.POSITIONS_UPDATED]: {
-    pins: PinPositionData[],
+    pins: PinData[],
     highlights: HighlightRectData[],
     isRealtimeSync?: boolean,
   };
@@ -91,7 +92,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   #intersectionObserver?: IntersectionObserver;
 
   #hoverData: HoverHighlightData|null = null;
-  #pinPositions: PinPositionData[] = [];
+  #pinPositions: PinData[] = [];
   #highlightRects: HighlightRectData[] = [];
 
   #clickListener?: (event: Event) => void;
@@ -236,7 +237,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     return this.#hoverData;
   }
 
-  getPinPositions(): PinPositionData[] {
+  getPinPositions(): PinData[] {
     return this.#pinPositions;
   }
 
@@ -450,20 +451,21 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
 
-    const newPins: PinPositionData[] = [];
+    const newPins: PinData[] = [];
     const newHighlights: HighlightRectData[] = [];
     const elementPinCounts = new Map<Element, number>();
     const rectCache = new Map<Element, DOMRect>();
     const activeScrollRoots = new Set<ShadowRoot>();
     const resolvedPins: Array<{id: string, el: Element, visibleRect: VisibleRect}> = [];
-    const createPin = (id: string, visibleRect: VisibleRect, offsetIndex: number,
-                       visible: boolean): PinPositionData => ({
+    const createPin = (id: string, visibleRect: VisibleRect, offsetIndex: number, visible: boolean,
+                       resolved: boolean): PinData => ({
       id,
       // Offset by 26px vertically (24px pin icon height + 2px spacing) so multiple comment pins on the same element stack vertically without overlapping.
       // Offset by -12px (half of the 24px pin diameter) so the pin icon is centered on the top-right corner of the visible clipped area.
       top: scrollY + visibleRect.top - 12 + offsetIndex * 26,
       left: scrollX + visibleRect.right - 12,
       visible,
+      resolved,
     });
 
     for (const thread of this.#commentManager.getCommentThreads()) {
@@ -519,14 +521,14 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
 
       const offsetIndex = elementPinCounts.get(el) || 0;
       elementPinCounts.set(el, offsetIndex + 1);
-      newPins.push(createPin(thread.id, visibleRect, offsetIndex, true));
+      newPins.push(createPin(thread.id, visibleRect, offsetIndex, true, false));
     }
 
     // Pins of RESOLVED threads are hidden; the UI shows the pin of the open
     // thread. They all share the slot below the other pins of their element,
     // so they never shift the other pins, and only one is open at a time.
     for (const {id, el, visibleRect} of resolvedPins) {
-      newPins.push(createPin(id, visibleRect, elementPinCounts.get(el) || 0, false));
+      newPins.push(createPin(id, visibleRect, elementPinCounts.get(el) || 0, false, true));
     }
 
     if (this.#scrollListener) {

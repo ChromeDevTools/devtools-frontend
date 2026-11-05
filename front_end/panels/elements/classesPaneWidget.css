@@ -11,13 +11,9 @@
 }
 
 .styles-element-classes-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
-
-.styles-element-classes-pane devtools-checkbox {
-  margin-right: 15px;
+  display: grid;
+  column-gap: var(--sys-size-6);
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .styles-element-classes-pane .title-container {

@@ -108,6 +108,8 @@ const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 const MIN_TIMELINE_CONTROLS_WIDTH = 120;
 const DEFAULT_TIMELINE_CONTROLS_WIDTH = 144;
 const MAX_TIMELINE_CONTROLS_WIDTH = 720;
+const GRID_OFFSET_LEFT = 12;
+const GRID_LABEL_OFFSET_LEFT = GRID_OFFSET_LEFT + 2;
 
 const ANIMATION_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/css/animations' as Platform.DevToolsPath.UrlString;
@@ -1008,7 +1010,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     let lastDraw: number|undefined = undefined;
     for (let time = 0; time < this.duration(); time += gridSize) {
       const line = UI.UIUtils.createSVGChild(this.#grid, 'rect', 'animation-timeline-grid-line');
-      line.setAttribute('x', (time * this.pixelTimeRatio() + 8).toString());
+      line.setAttribute('x', (time * this.pixelTimeRatio() + GRID_OFFSET_LEFT).toString());
       line.setAttribute('y', '23');
       line.setAttribute('height', '100%');
       line.setAttribute('width', '1');
@@ -1019,7 +1021,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         lastDraw = gridWidth;
         const label = UI.UIUtils.createSVGChild(this.#grid, 'text', 'animation-timeline-grid-label');
         label.textContent = isScrollDriven ? `${time.toFixed(0)}px` : i18n.TimeUtilities.millisToString(time);
-        label.setAttribute('x', (gridWidth + 10).toString());
+        label.setAttribute('x', (gridWidth + GRID_LABEL_OFFSET_LEFT).toString());
         label.setAttribute('y', '16');
       }
     }
@@ -1119,7 +1121,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
 
     // Seek to current mouse position.
     if (!this.#gridOffsetLeft) {
-      this.#gridOffsetLeft = this.#grid.getBoundingClientRect().left + 8;
+      this.#gridOffsetLeft = this.#grid.getBoundingClientRect().left + GRID_OFFSET_LEFT;
     }
 
     const {x} = event;

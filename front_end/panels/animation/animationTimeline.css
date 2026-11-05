@@ -190,7 +190,7 @@ circle.animation-keyframe-point:active {
 .animation-scrubber {
   opacity: 100%;
   position: absolute;
-  left: var(--sys-size-5);
+  left: var(--sys-size-6);
   height: 100%;
   width: 100%;
   top: var(--sys-size-12);
@@ -232,8 +232,9 @@ circle.animation-keyframe-point:active {
 
 .grid-overflow-wrapper {
   position: absolute;
-  /* Offset left by the 8px scrubber origin inset (--sys-size-5) so t=0 aligns with --timeline-controls-width without clipping the scrubber head. */
-  left: calc(var(--timeline-controls-width) - var(--sys-size-5));
+  /* Offset left by the 12px scrubber/grid origin (--sys-size-6)
+   * so t=0 aligns with --timeline-controls-width without clipping. */
+  left: calc(var(--timeline-controls-width) - var(--sys-size-6));
   /* Position below the 28px top toolbar (--sys-size-12) + 48px animation group preview buffer (--sys-size-16) = 76px. */
   top: calc(var(--sys-size-12) + var(--sys-size-16));
   z-index: 1;

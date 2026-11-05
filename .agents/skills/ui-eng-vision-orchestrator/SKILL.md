@@ -207,3 +207,103 @@ The plan you generate **MUST** follow this structure:
     1.  Promote view classes to modern `UI.Widget` classes, hook up
         `performUpdate()` delegates, export the default view layout, and clean
         up legacy wrappers.
+
+--------------------------------------------------------------------------------
+
+## 3. Incremental Multi-CL Playbook for Complex Tree & List Widgets (`UI.TreeOutline` → `<devtools-tree>`)
+
+For complex widgets with deeply nested item hierarchies, custom tree element
+subclasses, or inline editing (such as `NavigatorView` or `SearchResultsPane`),
+monolithic migrations introduce high review friction and regression risk.
+Decompose the work into a 4-phase sequence of small, self-contained CLs
+(~50–250 lines of diff each):
+
+### Phase 0: Safety Net, Cleanup & Latent Bug Fixes (Independent CLs)
+1.  **Dead-Code Removal**: Remove dead helper methods, unused getters, and
+    obsolete container references in an initial standalone CL.
+2.  **Implementation-Decoupled Tests**: Add structural and interaction unit
+    tests whose DOM assertions route through small local test helpers
+    (`dumpTree()`, `findTreeItem()`, `activateRow()`, `openContextMenuOnRow()`)
+    rather than scattering direct tree-outline element queries across tests.
+3.  **Screenshot Baselines**: Add `assertScreenshot(...)` golden tests covering
+    critical visual states (grouping modes, icons/badges, selection, dimmed
+    items) to establish baselines that catch visual regressions independently of
+    the underlying widget engine.
+4.  **Targeted Bug Fixes**: If test scaffolding uncovers latent bugs in existing
+    logic, fix them in dedicated bugfix CLs before refactoring.
+
+### Phase 1: Decouple Custom Item Subclasses One Concern per CL (`Bug: <id>`)
+1.  **Sorting & Comparators**: Move sorting functions from item elements to
+    presenter data nodes.
+2.  **Row Event Handlers**: Move row event handlers (hover, context menu, drag,
+    rename triggers) to presenter methods.
+3.  **Icon & Action Templates**: Convert imperative leading/trailing icons,
+    badges, and action buttons into module-level Lit template helpers, removing
+    view-layer refresh methods (`updateTrailingIcons()`, `updateIcon()`) from
+    presenter nodes once state moves to `DEFAULT_VIEW`.
+4.  **State Tracking in Presenter**: Track selection, expansion (`WeakSet`), and
+    lazy population in the presenter via tree events rather than overriding
+    `TreeElement.onpopulate()` or `onselect()`.
+5.  **Remove Custom Subclasses**: Delete custom `TreeElement` subclasses one
+    class per CL, using plain `UI.TreeOutline.TreeElement` instances paired with
+    a `WeakMap<TreeElement, Node>` bridge and computing presenter node state
+    (`title`, `tooltip`, badges) independently of `TreeElement` creation.
+
+### Phase 2: Persistent `<devtools-prompt>` & `<devtools-tree>` Swap (`Bug: <id>`)
+1.  **Persistent `<devtools-prompt ?editing>`**: Migrate inline renaming or
+    editing (`UI.InplaceEditor`) to a persistent `<devtools-prompt ?editing>` in
+    its own CL, updating E2E tests waiting on `.being-edited` to wait on
+    `devtools-prompt[editing]`.
+2.  **Test-Helper Prep CL**: If `front_end/legacy_test_runner/**` or
+    `blink_web_tests` walk internal tree elements, update test helpers to flush
+    `innerView.performUpdate()` and `flushPendingUpdatesForTesting()` after
+    expanding nodes.
+3.  **`<devtools-tree>` Swap**: Replace `TreeOutlineInShadow` with
+    `<devtools-tree autofocus>` in `DEFAULT_VIEW` without widening
+    `front_end/ui/legacy/Treeoutline.ts` contracts. Host editable
+    `<devtools-prompt ?editing>` rows in a child `UI.Widget` (`${widget(...)}`)
+    so `<devtools-tree>`'s light-DOM `MutationObserver` does not re-clone the
+    row and blur the active input. Use asynchronous `this.requestUpdate()` across
+    all presenter methods and remove
+    `/* eslint-disable @devtools/no-imperative-dom-api */`.
+
+### Phase 3: Pure Lifecycle, `INJECT` DI & Final Polish (`Fixed: <id>` on Final CL Only)
+1.  **Non-Destructive Lifecycle**: Move model, workspace, and setting
+    subscriptions from `constructor()` into `wasShown()` / `willHide()`,
+    reconciling incremental changes that occurred while hidden rather than
+    calling `reset()` and wiping open folders or selection on every re-show.
+2.  **Universe Dependency Injection**: Add `static override readonly INJECT` and
+    the standard MVP constructor `(element?: HTMLElement, [...]: WidgetDependencies, view: View = DEFAULT_VIEW)`.
+3.  **Private Fields & Completeness**: Convert remaining TypeScript `private`
+    members to `#private` (after verifying they are not reflectively accessed in
+    `legacy_test_runner` or `blink/web_tests`), and mark `Fixed: <id>` on this
+    final CL.
+
+--------------------------------------------------------------------------------
+
+## 4. Definition of Done & `Bug:` vs `Fixed:` Completeness Gate
+
+> [!WARNING]
+> A clean `@devtools/no-imperative-dom-api` ESLint run does **NOT** prove a UI
+> Eng Vision migration is complete. The linter does not flag `extends UI.TreeOutline.TreeElement` subclasses or `UI.ListControl`.
+
+Before closing a UI Eng Vision migration issue with `Fixed: <id>`, verify every
+requirement below. If any item remains incomplete, use `Bug: <id>` and address
+it in a follow-up CL:
+
+1.  **No Legacy Widgets**: Zero references to `UI.TreeOutline`, `TreeElement`
+    subclasses, `UI.ListControl`, `UI.ListWidget`, or `UI.InplaceEditor`.
+2.  **Standard MVP Constructor**: Constructor accepts `element?: HTMLElement` as
+    its first parameter, resolves dependencies via `static override readonly INJECT`,
+    and accepts an injectable `view: View = DEFAULT_VIEW`.
+3.  **Widget Update Lifecycle**: Renders exclusively via `override performUpdate(): void`
+    and `this.requestUpdate()` (no custom `#renderView()` bypasses or synchronous
+    `performUpdate()` calls in presenter methods).
+4.  **Non-Destructive Listener Lifecycle**: External model and setting
+    listeners are attached in `wasShown()` and detached symmetrically in
+    `willHide()`, preserving populated UI state across hide/show cycles.
+5.  **Declarative Primitives**: Uses `<devtools-tree>`, `<devtools-list>`,
+    persistent `<devtools-prompt ?editing>`, `?hidden=${...}` exclusively
+    (without `.hidden` classes), and declarative `autofocus` for default focus.
+6.  **ES Private Fields**: Uses ECMAScript `#private` fields and methods for all
+    internal members not accessed by `legacy_test_runner` or `blink/web_tests`.

@@ -78,6 +78,15 @@ clean `UI.Widget` classes that use native update rendering delegates.
     *   Inspect instantiator files (e.g., `ApplicationPanelSidebar.ts`) and
         decouple any direct accesses to `.element`.
 
+4.  **Verify Full MVP Architecture Completeness**:
+    *   Ensure the constructor accepts `element?: HTMLElement` as its first parameter and `view: View = DEFAULT_VIEW` as its last parameter.
+    *   If `Universe` dependencies are used, declare `static override readonly INJECT = [...] as const;` and receive them as constructor parameter #2.
+    *   If shadow DOM is needed, use `super(element, {useShadowDom: 'pure'})` (never legacy `useShadowDom: true`).
+    *   Trigger initial renders and external subscriptions in `wasShown()`, detaching them symmetrically in `willHide()`. Reconcile state incrementally rather than wiping populated presenter state via `reset()` on every re-show.
+    *   Use `this.requestUpdate()` across all presenter methods and setters; avoid synchronous `this.performUpdate()` calls or custom `#renderView()` methods.
+    *   Use declarative `autofocus` for default focus targets rather than imperative `focus()` overrides or `ViewOutput` focus closures.
+    *   Verify that no legacy `UI.TreeOutline`, `extends UI.TreeOutline.TreeElement` subclasses, `UI.ListControl`, `UI.ListWidget`, or `UI.InplaceEditor` remain before marking `Fixed: <id>`. If any remain, use `Bug: <id>`.
+
 --------------------------------------------------------------------------------
 
 ## 2. Safety & Verification Rules
@@ -92,5 +101,7 @@ clean `UI.Widget` classes that use native update rendering delegates.
 *Before reporting back or committing, re-read the instructions and verify:*
 1.  ❓ **Decoupling**: Did I remove all direct `.element` or `.contentElement` couplings from instantiator files?
 2.  ❓ **Inheritance**: Does the class now cleanly inherit from `UI.Widget` or its variants?
-3.  ❓ **Injectability**: Is the view injectable in the constructor?
-4.  ❓ **Build**: Does the code compile and do tests pass?
+3.  ❓ **Injectability & Dependencies**: Is the constructor signature `(element?: HTMLElement, [...]: WidgetDependencies, view: View = DEFAULT_VIEW)` with `static override readonly INJECT`?
+4.  ❓ **Lifecycle & Reactivity**: Does presenter code call `this.requestUpdate()` asynchronously (no synchronous `performUpdate()`), with non-destructive `wasShown()`/`willHide()` subscriptions?
+5.  ❓ **No Legacy Controls**: Are all `TreeOutline`/`TreeElement` subclasses, `ListControl`, and `InplaceEditor` instances eliminated before using `Fixed: <id>`?
+6.  ❓ **Build**: Does the code compile and do tests pass?

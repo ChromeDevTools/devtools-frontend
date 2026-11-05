@@ -172,6 +172,25 @@ findings):
   characters.
 - For migrations and stacked series, list the legacy tests or files covered,
   and number the series (for example, `(13/16)`).
+- **UI Eng Vision migration completeness & `Fixed:` vs `Bug:`**: Flag
+  `Fixed: <id>` on UI Eng Vision migration CLs when core violations remain in
+  the target file: legacy `UI.TreeOutline` or `extends UI.TreeOutline.TreeElement`
+  subclasses, `UI.ListControl`, `UI.ListWidget`, `UI.InplaceEditor`, non-MVP
+  constructors (missing `element?: HTMLElement` or injectable `view = DEFAULT_VIEW`),
+  missing `static override readonly INJECT` for Universe dependencies, custom
+  `#renderView()` helpers bypassing `override performUpdate()` +
+  `this.requestUpdate()`, constructor-bound model/setting listeners instead of
+  non-destructive `wasShown()`/`willHide()` subscriptions, synchronous
+  `this.performUpdate()` calls in presenter methods, or TypeScript `private`
+  fields not required by `legacy_test_runner`/`blink/web_tests`. Note
+  explicitly that a clean `@devtools/no-imperative-dom-api` lint pass does
+  **not** prove completeness because ESLint misses `TreeElement` subclasses and
+  `UI.ListControl`. Intermediate CLs in a multi-CL migration must use
+  `Bug: <id>`, reserving `Fixed: <id>` for the final CL.
+- **Component contract preservation**: Flag feature or panel migrations that
+  widen `front_end/ui/legacy/` component contracts (such as exporting internal
+  classes or turning `*ForTest()` or `*ForTesting()` methods on `Treeoutline.ts`
+  into public APIs).
 - Disabled tests reference a bug.
 - Presubmit, lint, and format pass. See `devtools-verification`.
 

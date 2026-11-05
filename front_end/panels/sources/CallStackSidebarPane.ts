@@ -108,21 +108,19 @@ export interface ViewInput {
   onIgnoreListCheckboxChange: (checked: boolean) => void;
   notPaused: boolean;
   warnings?: string;
-  list?: LitTemplate;
+  items: Item[];
+  selectedItem: Item|null;
+  focusedItem: Item|null;
+  showIgnoreListed: boolean;
+  onItemClick: (item: Item) => void;
+  onItemActivate: (item: Item) => void;
+  onItemContextMenu: (item: Item, contextMenu: UI.ContextMenu.ContextMenu) => void;
+  onItemKeyDown: (item: Item, direction: 'ArrowUp'|'ArrowDown'|'Home'|'End') => void;
   showMore: boolean;
   onShowMore: () => void;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
-
-export interface ItemViewInput {
-  item: Item;
-  isSelected: boolean;
-  isFocused: boolean;
-  showIgnoreListed: boolean;
-}
-
-export type ItemView = (input: ItemViewInput, output: undefined, target: DocumentFragment|HTMLElement) => void;
 
 function getMissingDebugInfoTooltip(missingDebugInfo: StackTrace.StackTrace.MissingDebugInfo,
                                     functionName: string|undefined): string {
@@ -134,6 +132,74 @@ function getMissingDebugInfoTooltip(missingDebugInfo: StackTrace.StackTrace.Miss
 
 // clang-format off
 export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement|DocumentFragment): void => {
+  const renderItem = (item: Item, index: number): LitTemplate => {
+    const isHidden = !input.showIgnoreListed && item.isIgnoreListed;
+    const isAsyncHeader = item.isAsyncHeader;
+    const isIgnoreListed = !isAsyncHeader && item.isIgnoreListed;
+    const hasFrame = Boolean(item.frame);
+    const isSelected = item === input.selectedItem;
+    const isFocused = item === input.focusedItem;
+    const missingDebugInfoTooltip = item.frame?.missingDebugInfo ?
+        getMissingDebugInfoTooltip(item.frame.missingDebugInfo, item.frame.sdkFrame.functionName) :
+        undefined;
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if ((event.key === 'Enter' && !event.isComposing) || event.key === ' ') {
+        input.onItemActivate(item);
+        event.consume(true);
+      } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Home' || event.key === 'End') {
+        input.onItemKeyDown(item, event.key);
+        event.consume(true);
+      }
+    };
+
+    const onContextMenu = (event: Event): void => {
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      input.onItemContextMenu(item, contextMenu);
+      void contextMenu.show();
+    };
+
+    return html`
+      <div class=${classMap({
+        'call-frame-item': true,
+        'async-header': isAsyncHeader,
+        'ignore-listed-call-frame': isIgnoreListed,
+        selected: isSelected,
+      })}
+          role="option"
+          aria-setsize=${input.items.length}
+          aria-posinset=${index + 1}
+          aria-selected=${isSelected ? 'true' : 'false'}
+          aria-description=${ifDefined(isIgnoreListed ? i18nString(UIStrings.onIgnoreList) : undefined)}
+          aria-disabled=${ifDefined(!isAsyncHeader && !hasFrame ? 'true' : undefined)}
+          ?hidden=${isHidden}
+          tabindex=${isFocused ? 0 : -1}
+          ?autofocus=${isFocused && !isHidden}
+          jslog=${VisualLogging.item().track({
+            click: true,
+            resize: true,
+            keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End|Enter|Space',
+          })}
+          @click=${() => input.onItemClick(item)}
+          @contextmenu=${onContextMenu}
+          @keydown=${onKeyDown}>
+        <div class="call-frame-item-title">
+          <div class="call-frame-title-text"
+              title=${ifDefined(!isAsyncHeader ? item.title : undefined)}>${item.title}</div>
+        </div>
+        ${!isAsyncHeader ? html`
+          <div class="call-frame-location"
+              title=${item.linkText}>${Platform.StringUtilities.trimMiddle(item.linkText, 30)}</div>
+        ` : nothing}
+        <devtools-icon .name=${'large-arrow-right-filled'} class="selected-call-frame-icon small"></devtools-icon>
+        ${missingDebugInfoTooltip ? html`
+          <devtools-icon .name=${'warning-filled'} class="call-frame-warning-icon small"
+              title=${missingDebugInfoTooltip}></devtools-icon>
+        ` : nothing}
+      </div>
+    `;
+  };
+
   render(html`
     <style>${Input.checkboxStyles}</style>
     <style>${callStackSidebarPaneStyles}</style>
@@ -166,7 +232,13 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
       <devtools-icon .name=${'warning-filled'} class="call-frame-warning-icon small"></devtools-icon>
       ${i18nString(UIStrings.callFrameWarnings)}
     </div>
-    ${input.list}
+    <div class="call-frame-list"
+        role="listbox"
+        aria-label=${i18nString(UIStrings.callStack)}
+        tabindex="-1"
+        ?hidden=${input.items.length === 0}>
+      ${input.items.map((item, index) => renderItem(item, index))}
+    </div>
     <div
       class="show-more-message"
       ?hidden=${!input.showMore}>
@@ -178,66 +250,20 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
 };
 // clang-format on
 
-// clang-format off
-export const DEFAULT_ITEM_VIEW =
-    (input: ItemViewInput, _output: undefined, target: DocumentFragment | HTMLElement): void => {
-  const isHidden = !input.showIgnoreListed && input.item.isIgnoreListed;
-  const isAsyncHeader = input.item.isAsyncHeader;
-  const isIgnoreListed = !isAsyncHeader && input.item.isIgnoreListed;
-  const hasFrame = Boolean(input.item.frame);
-  const missingDebugInfoTooltip = input.item.frame?.missingDebugInfo ?
-      getMissingDebugInfoTooltip(input.item.frame.missingDebugInfo, input.item.frame.sdkFrame.functionName) :
-      undefined;
-
-  render(html`
-    <div class=${classMap({
-      'call-frame-item': true,
-      'async-header': isAsyncHeader,
-      'ignore-listed-call-frame': isIgnoreListed,
-      selected: input.isSelected,
-    })}
-        ?hidden=${isHidden}
-        tabindex=${input.isFocused ? 0 : -1}
-        aria-selected=${input.isSelected ? 'true' : 'false'}
-        aria-description=${ifDefined(isIgnoreListed ? i18nString(UIStrings.onIgnoreList) : undefined)}
-        aria-disabled=${ifDefined(!isAsyncHeader && !hasFrame ? 'true' : undefined)}>
-      <div class="call-frame-item-title">
-        <div class="call-frame-title-text"
-            title=${ifDefined(!isAsyncHeader ? input.item.title : undefined)}>${input.item.title}</div>
-      </div>
-      ${!isAsyncHeader ? html`
-        <div class="call-frame-location"
-            title=${input.item.linkText}>${Platform.StringUtilities.trimMiddle(input.item.linkText, 30)}</div>
-      ` : nothing}
-      <devtools-icon .name=${'large-arrow-right-filled'} class="selected-call-frame-icon small"></devtools-icon>
-      ${missingDebugInfoTooltip ? html`
-        <devtools-icon .name=${'warning-filled'} class="call-frame-warning-icon small"
-            title=${missingDebugInfoTooltip}></devtools-icon>
-      ` : nothing}
-    </div>
-  `, target);
-};
-// clang-format on
-
 let callstackSidebarPaneInstance: CallStackSidebarPane;
 
 export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> implements
-    UI.ContextFlavorListener.ContextFlavorListener, UI.ListControl.ListDelegate<Item> {
+    UI.ContextFlavorListener.ContextFlavorListener {
   readonly #view: View;
-  readonly #itemView: ItemView;
 
-  private readonly items: UI.ListModel.ListModel<Item>;
-  private list: UI.ListControl.ListControl<Item>;
-
+  #items: Item[] = [];
+  #focusedItem: Item|null = null;
   #showIgnoreListed = false;
   #showIgnoreListMessage = false;
   #ignoreListCheckboxChecked = false;
   #warnings?: string;
   #hasMore = false;
   private maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
-  private readonly updateItemThrottler = new Common.Throttler.Throttler(100);
-  private readonly scheduledForUpdateItems = new Set<Item>();
-  private muteActivateItem?: boolean;
 
   #stackTrace: StackTrace.StackTrace.DebuggableStackTrace|null = null;
   #flavorChangeId = 0;
@@ -245,7 +271,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
   constructor(
       element?: HTMLElement,
       view: View = DEFAULT_VIEW,
-      itemView: ItemView = DEFAULT_ITEM_VIEW,
   ) {
     super(element, {
       title: i18nString(UIStrings.callStack),
@@ -253,18 +278,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
       useShadowDom: 'pure',
     });
     this.#view = view;
-    this.#itemView = itemView;
-
-    this.items = new UI.ListModel.ListModel();
-    this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
-    this.list.element.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-    self.onInvokeElement(this.list.element, event => {
-      const item = event.target instanceof Node ? this.list.itemForNode(event.target) : null;
-      if (item) {
-        this.activateItem(item);
-        event.consume(true);
-      }
-    });
 
     this.requestUpdate();
   }
@@ -287,15 +300,22 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
 
   #onIgnoreListCheckboxChanged(checked: boolean): void {
     this.#ignoreListCheckboxChecked = checked;
-    this.#showIgnoreListed = checked;
-    for (const item of this.items) {
-      this.refreshItem(item);
+    this.#updateIgnoreListState();
+    if (!this.#isItemVisible(this.#focusedItem)) {
+      const activeItem = this.activeCallFrameItem();
+      this.#focusedItem = this.#isItemVisible(activeItem) ? activeItem : this.#firstVisibleItem();
     }
     this.requestUpdate();
   }
 
   #onShowMoreClicked(): void {
     this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
+    this.#rebuildItems();
+    this.requestUpdate();
+  }
+
+  #onStackTraceUpdated(): void {
+    this.#rebuildItems();
     this.requestUpdate();
   }
 
@@ -307,8 +327,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
 
     if (this.#stackTrace) {
-      this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
+      this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.#onStackTraceUpdated, this);
       this.#stackTrace = null;
+      this.#rebuildItems();
       this.requestUpdate();  // In case creating the stack trace takes a while, we render an empty view first.
     }
 
@@ -319,30 +340,21 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
         return;
       }
       this.#stackTrace = stackTrace;
-      this.#stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
+      this.#stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.#onStackTraceUpdated, this);
+      this.#rebuildItems();
     }
 
     this.requestUpdate();
   }
 
-  override performUpdate(): void {
+  #rebuildItems(): void {
     if (!this.#stackTrace) {
       this.#warnings = undefined;
       this.#hasMore = false;
       this.#showIgnoreListMessage = false;
-      this.items.replaceAll([]);
+      this.#items = [];
+      this.#focusedItem = null;
       UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, null);
-      const viewInput: ViewInput = {
-        showIgnoreListMessage: this.#showIgnoreListMessage,
-        showIgnoreListedChecked: this.#ignoreListCheckboxChecked,
-        onIgnoreListCheckboxChange: this.#onIgnoreListCheckboxChanged.bind(this),
-        notPaused: true,
-        warnings: undefined,
-        list: html`${this.list.element}`,
-        showMore: false,
-        onShowMore: this.#onShowMoreClicked.bind(this),
-      };
-      this.#view(viewInput, undefined, this.contentElement);
       return;
     }
 
@@ -372,9 +384,37 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
     }
 
     this.#hasMore = hasMore;
+    this.#items = items;
+    this.#updateIgnoreListState();
 
-    const hasIgnoreListed = items.some(item => item.isIgnoreListed);
-    const allIgnoreListed = items.length > 0 && items.every(item => item.isIgnoreListed);
+    if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
+      this.#focusedItem = this.#firstVisibleItem() ?? (this.#items[0] ?? null);
+      if (this.#focusedItem &&
+          (UI.Context.Context.instance().flavor(QuickSourceView) ||
+           UI.Context.Context.instance().flavor(SourcesPanel))) {
+        this.activateItem(this.#focusedItem);
+      }
+    } else {
+      const activeItem = this.activeCallFrameItem();
+      this.#focusedItem =
+          this.#isItemVisible(activeItem) ? activeItem : (this.#firstVisibleItem() ?? (this.#items[0] ?? null));
+    }
+  }
+
+  #isItemVisible(item: Item|null): boolean {
+    if (!item || !this.#items.includes(item)) {
+      return false;
+    }
+    return this.#showIgnoreListed || !item.isIgnoreListed;
+  }
+
+  #firstVisibleItem(): Item|null {
+    return this.#items.find(item => this.#showIgnoreListed || !item.isIgnoreListed) ?? null;
+  }
+
+  #updateIgnoreListState(): void {
+    const hasIgnoreListed = this.#items.some(item => item.isIgnoreListed);
+    const allIgnoreListed = this.#items.length > 0 && this.#items.every(item => item.isIgnoreListed);
 
     if (allIgnoreListed) {
       this.#showIgnoreListed = true;
@@ -383,145 +423,62 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
       this.#showIgnoreListed = this.#ignoreListCheckboxChecked;
       this.#showIgnoreListMessage = hasIgnoreListed;
     }
+  }
 
-    this.items.replaceAll(items);
-
-    for (const item of this.items) {
-      this.refreshItem(item);
-    }
-
-    if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
-      this.list.selectNextItem(true /* canWrap */, false /* center */);
-      const selectedItem = this.list.selectedItem();
-      if (selectedItem &&
-          (UI.Context.Context.instance().flavor(QuickSourceView) ||
-           UI.Context.Context.instance().flavor(SourcesPanel))) {
-        this.activateItem(selectedItem);
-      }
-    }
-
+  override performUpdate(): void {
     const viewInput: ViewInput = {
       showIgnoreListMessage: this.#showIgnoreListMessage,
       showIgnoreListedChecked: this.#ignoreListCheckboxChecked,
       onIgnoreListCheckboxChange: this.#onIgnoreListCheckboxChanged.bind(this),
-      notPaused: false,
+      notPaused: !this.#stackTrace,
       warnings: this.#warnings,
-      list: html`${this.list.element}`,
+      items: this.#items,
+      selectedItem: this.activeCallFrameItem(),
+      focusedItem: this.#focusedItem,
+      showIgnoreListed: this.#showIgnoreListed,
+      onItemClick: this.#onItemClick.bind(this),
+      onItemActivate: this.#onItemActivate.bind(this),
+      onItemContextMenu: this.#onItemContextMenu.bind(this),
+      onItemKeyDown: this.#onItemKeyDown.bind(this),
       showMore: this.#hasMore,
       onShowMore: this.#onShowMoreClicked.bind(this),
     };
+
     this.#view(viewInput, undefined, this.contentElement);
-    this.updatedForTest();
+
+    if (this.#stackTrace) {
+      this.updatedForTest();
+    }
   }
 
   private updatedForTest(): void {
   }
 
-  private refreshItem(item: Item): void {
-    this.scheduledForUpdateItems.add(item);
-    void this.updateItemThrottler.schedule(async () => {
-      const items = Array.from(this.scheduledForUpdateItems);
-      this.scheduledForUpdateItems.clear();
-
-      this.muteActivateItem = true;
-      let shouldUpdateView = false;
-      const allIgnoreListed = this.items.length > 0 && this.items.every(item => item.isIgnoreListed);
-      if (allIgnoreListed) {
-        if (!this.#showIgnoreListed) {
-          this.#showIgnoreListed = true;
-          for (let i = 0; i < this.items.length; ++i) {
-            this.list.refreshItemByIndex(i);
-          }
-        } else {
-          const itemsSet = new Set<Item>(items);
-          for (let i = 0; i < this.items.length; ++i) {
-            if (itemsSet.has(this.items.at(i))) {
-              this.list.refreshItemByIndex(i);
-            }
-          }
-        }
-        if (this.#showIgnoreListMessage) {
-          this.#showIgnoreListMessage = false;
-          shouldUpdateView = true;
-        }
-      } else {
-        this.#showIgnoreListed = this.#ignoreListCheckboxChecked;
-        const itemsSet = new Set<Item>(items);
-        let hasIgnoreListed = false;
-        for (let i = 0; i < this.items.length; ++i) {
-          const item = this.items.at(i);
-          if (itemsSet.has(item)) {
-            this.list.refreshItemByIndex(i);
-          }
-          hasIgnoreListed = hasIgnoreListed || item.isIgnoreListed;
-        }
-        if (this.#showIgnoreListMessage !== hasIgnoreListed) {
-          this.#showIgnoreListMessage = hasIgnoreListed;
-          shouldUpdateView = true;
-        }
-      }
-      if (shouldUpdateView) {
-        this.requestUpdate();
-      }
-      delete this.muteActivateItem;
-    });
-  }
-
-  createElementForItem(item: Item): Element {
-    const isSelected =
-        item.frame === UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor)?.frame;
-    const isFocused = item === this.list.selectedItem();
-    const fragment = document.createDocumentFragment();
-    this.#itemView(
-        {
-          item,
-          isSelected,
-          isFocused,
-          showIgnoreListed: this.#showIgnoreListed,
-        },
-        undefined,
-        fragment,
-    );
-    const element = fragment.firstElementChild;
-    if (!element) {
-      throw new Error('Expected item element to be rendered');
+  #onItemClick(item: Item): void {
+    if (this.#items.includes(item)) {
+      this.#focusedItem = item;
     }
-    return element;
-  }
-
-  heightForItem(_item: Item): number {
-    console.assert(false);  // Should not be called.
-    return 0;
-  }
-
-  isItemSelectable(_item: Item): boolean {
-    return true;
-  }
-
-  selectedItemChanged(_from: Item|null, _to: Item|null, fromElement: HTMLElement|null, toElement: HTMLElement|null):
-      void {
-    if (fromElement) {
-      fromElement.tabIndex = -1;
+    if (item.uiLocation) {
+      this.activateItem(item);
     }
-    if (toElement) {
-      this.setDefaultFocusedElement(toElement);
-      toElement.tabIndex = 0;
-      if (this.hasFocus()) {
-        toElement.focus();
-      }
-    }
+    this.requestUpdate();
   }
 
-  updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {
-    return true;
+  #onItemActivate(item: Item): void {
+    if (this.#items.includes(item)) {
+      this.#focusedItem = item;
+    }
+    if (item.uiLocation) {
+      this.activateItem(item);
+    }
+    this.requestUpdate();
   }
 
-  private onContextMenu(event: Event): void {
-    const item = event.target instanceof Node ? this.list.itemForNode(event.target) : null;
-    if (!item) {
-      return;
+  #onItemContextMenu(item: Item, contextMenu: UI.ContextMenu.ContextMenu): void {
+    if (this.#items.includes(item)) {
+      this.#focusedItem = item;
+      this.requestUpdate();
     }
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const debuggerCallFrame = item.frame?.sdkFrame;
     if (debuggerCallFrame) {
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.restartFrame), () => {
@@ -534,17 +491,63 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
     }
-    void contextMenu.show();
+  }
+
+  #onItemKeyDown(item: Item, direction: 'ArrowUp'|'ArrowDown'|'Home'|'End'): void {
+    const visibleItems = this.#items.filter(candidate => this.#showIgnoreListed || !candidate.isIgnoreListed);
+    if (visibleItems.length === 0) {
+      return;
+    }
+
+    let newItem: Item;
+    switch (direction) {
+      case 'Home':
+        newItem = visibleItems[0];
+        break;
+      case 'End':
+        newItem = visibleItems[visibleItems.length - 1];
+        break;
+      case 'ArrowDown': {
+        const currPos = visibleItems.indexOf(item);
+        const nextPos = currPos === -1 ? 0 : (currPos + 1) % visibleItems.length;
+        newItem = visibleItems[nextPos];
+        break;
+      }
+      case 'ArrowUp': {
+        const currPos = visibleItems.indexOf(item);
+        const prevPos =
+            currPos === -1 ? visibleItems.length - 1 : (currPos - 1 + visibleItems.length) % visibleItems.length;
+        newItem = visibleItems[prevPos];
+        break;
+      }
+    }
+
+    const targetItem = newItem;
+    this.#focusedItem = targetItem;
+    this.requestUpdate();
+    void this.updateComplete.then(() => {
+      const newIndex = this.#items.indexOf(targetItem);
+      if (newIndex === -1) {
+        return;
+      }
+      const elements = this.contentElement.querySelectorAll<HTMLElement>('.call-frame-item');
+      const targetEl = elements[newIndex];
+      if (targetEl) {
+        targetEl.focus();
+        targetEl.scrollIntoView({block: 'nearest'});
+      }
+    });
   }
 
   private activateItem(item: Item): void {
     const uiLocation = item.uiLocation;
-    if (this.muteActivateItem || !uiLocation) {
+    if (!uiLocation) {
       return;
     }
-    this.list.selectItem(item);
+    if (this.#items.includes(item)) {
+      this.#focusedItem = item;
+    }
     const debuggerCallFrame = item.frame;
-    const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame) {
       debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
       UI.Context.Context.instance().setFlavor(
@@ -553,18 +556,13 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
     } else {
       void Common.Revealer.reveal(uiLocation);
     }
-    if (oldItem !== item) {
-      if (oldItem) {
-        this.refreshItem(oldItem);
-      }
-      this.refreshItem(item);
-    }
+    this.requestUpdate();
   }
 
   activeCallFrameItem(): Item|null {
     const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
     if (frameFlavor) {
-      return this.items.find(callFrameItem => callFrameItem.frame === frameFlavor.frame) || null;
+      return this.#items.find(callFrameItem => callFrameItem.frame === frameFlavor.frame) || null;
     }
     return null;
   }
@@ -590,9 +588,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
 
   selectNextCallFrameOnStack(): void {
     const oldItem = this.activeCallFrameItem();
-    const startIndex = oldItem ? this.items.indexOf(oldItem) + 1 : 0;
-    for (let i = startIndex; i < this.items.length; i++) {
-      const newItem = this.items.at(i);
+    const startIndex = oldItem ? this.#items.indexOf(oldItem) + 1 : 0;
+    for (let i = startIndex; i < this.#items.length; i++) {
+      const newItem = this.#items[i];
       if (newItem.frame) {
         this.activateItem(newItem);
         break;
@@ -602,9 +600,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
 
   selectPreviousCallFrameOnStack(): void {
     const oldItem = this.activeCallFrameItem();
-    const startIndex = oldItem ? this.items.indexOf(oldItem) - 1 : this.items.length - 1;
+    const startIndex = oldItem ? this.#items.indexOf(oldItem) - 1 : this.#items.length - 1;
     for (let i = startIndex; i >= 0; i--) {
-      const newItem = this.items.at(i);
+      const newItem = this.#items[i];
       if (newItem.frame) {
         this.activateItem(newItem);
         break;
@@ -614,7 +612,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
 
   private copyStackTrace(): void {
     const text = [];
-    for (const item of this.items) {
+    for (const item of this.#items) {
       let itemText = item.title;
       if (item.uiLocation) {
         itemText += ' (' + item.uiLocation.linkText(true /* skipTrim */) + ')';
@@ -625,7 +623,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
   }
 }
 
-export const elementSymbol: unique symbol = Symbol('element');
 export const defaultMaxAsyncStackChainDepth = 32;
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

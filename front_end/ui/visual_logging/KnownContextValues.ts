@@ -3987,6 +3987,7 @@ export const knownContextValues: Set<string> = new Set([
   'show-grid-track-sizes-true',
   'show-html-comments',
   'show-html-comments-false',
+  'show-ignore-listed-frames',
   'show-inactive-css-rules',
   'show-inherited-computed-style-properties',
   'show-issue-associated-with-this',

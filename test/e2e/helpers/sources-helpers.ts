@@ -279,7 +279,7 @@ export async function executionLineHighlighted(devToolsPage: DevToolsPage): Prom
 }
 
 export async function getCallFrameNames(devToolsPage: DevToolsPage): Promise<string[]> {
-  const selector = '.call-frame-item:not(.hidden) .call-frame-item-title';
+  const selector = '.call-frame-item:not([hidden]):not(.hidden) .call-frame-item-title';
   await devToolsPage.waitFor(selector);
   const items = await devToolsPage.$$(selector);
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));

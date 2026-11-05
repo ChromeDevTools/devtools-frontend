@@ -30,17 +30,17 @@ describe('Ignore list', function() {
 
     const scriptEvaluation = inspectedPage.evaluate('f();');
     await devToolsPage.waitFor(RESUME_BUTTON);
-    await devToolsPage.waitFor('.ignore-listed-call-frame.hidden');
+    await devToolsPage.waitFor('.ignore-listed-call-frame[hidden]');
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['inner', 'outer', '(anonymous)']);
 
     // Toggle to show ignore-listed frames
     await devToolsPage.click('.ignore-listed-message-label');
-    await devToolsPage.waitFor('.ignore-listed-call-frame:not(.hidden)');
+    await devToolsPage.waitFor('.ignore-listed-call-frame:not([hidden])');
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['inner', 'innercall', 'callfunc', 'outer', '(anonymous)']);
 
     // Toggle back off
     await devToolsPage.click('.ignore-listed-message-label');
-    await devToolsPage.waitFor('.ignore-listed-call-frame.hidden');
+    await devToolsPage.waitFor('.ignore-listed-call-frame[hidden]');
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['inner', 'outer', '(anonymous)']);
 
     await devToolsPage.click(RESUME_BUTTON);
@@ -57,9 +57,9 @@ describe('Ignore list', function() {
     await devToolsPage.waitFor(RESUME_BUTTON);
 
     // Toggle is not shown
-    await devToolsPage.waitFor('.ignore-listed-message.hidden');
+    await devToolsPage.waitFor('.ignore-listed-message[hidden]');
     // There are visible ignore-listed frames
-    await devToolsPage.waitFor('.ignore-listed-call-frame:not(.hidden)');
+    await devToolsPage.waitFor('.ignore-listed-call-frame:not([hidden])');
     // All frames are shown
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['inner', 'innercall', 'callfunc', 'outer', '(anonymous)']);
 
@@ -82,7 +82,7 @@ describe('Ignore list', function() {
 
     await stepIn(devToolsPage);
     await devToolsPage.waitFor('.call-frame-title-text[title="inner"]');
-    await devToolsPage.waitFor('.ignore-listed-call-frame.hidden');
+    await devToolsPage.waitFor('.ignore-listed-call-frame[hidden]');
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['inner', 'outer', '(anonymous)']);
 
     await stepOut(devToolsPage);

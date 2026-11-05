@@ -24,7 +24,7 @@ export interface FinalizeTaskOptions {
   runId: string;
   taskId: string;
   label: string;
-  // Eval target type (e.g. `network`), reported as `target` in verification_stdout.log and eval_result.json.
+  /** Eval target domain (e.g. 'elements', 'network'), used for logs and agent_type tags. */
   target: string;
   trajectory: Trajectory;
   outputDir: string;
@@ -43,7 +43,7 @@ export interface FinalizeTaskOptions {
 export interface HandleTaskFailureOptions {
   runId: string;
   taskId: string;
-  // Eval target type (e.g. `network`), reported as `target` in verification_stdout.log.
+  /** Eval target domain (e.g. 'elements', 'network'), used for logs and agent_type tags. */
   target: string;
   phase: 'Preparation'|'Execution'|'Finalization';
   durationSeconds: number;
@@ -51,6 +51,42 @@ export interface HandleTaskFailureOptions {
   taskStatuses: TaskStatus[];
   toolCallStats: ToolCallStats;
   errorMessage?: string;
+}
+
+export interface RecordTaskFailureOptions {
+  taskId: string;
+  runId: string;
+  target: string;
+  phase: 'Preparation'|'Execution'|'Finalization';
+  durationSeconds: number;
+  taskStatuses: TaskStatus[];
+  toolCallStats: ToolCallStats;
+}
+
+export interface UploadTaskArtifactsOptions {
+  runId: string;
+  taskId: string;
+  target: string;
+  logger: EvalLogger;
+  trajectory: Trajectory;
+  evalOutputPath: string;
+  hasError?: boolean;
+  errorMessage?: string;
+}
+
+export interface RecordTaskCompletionOptions {
+  taskId: string;
+  runId: string;
+  target: string;
+  durationSeconds: number;
+  verificationDurationSeconds: number;
+  gradingDurationSeconds: number;
+  taskStatuses: TaskStatus[];
+  allUploadsSucceeded: boolean;
+  toolCallStats: ToolCallStats;
+  hasError?: boolean;
+  customScore?: number|null;
+  gradingOutput?: string;
 }
 
 /**
@@ -98,15 +134,16 @@ function buildTaskTags(evalTarget: string, taskId: string): string[] {
 /**
  * Records a task failure to GCS (`eval_task_completed.json` + `.marker`) and in-memory `taskStatuses`.
  */
-export function recordTaskFailure(
-    taskId: string,
-    runId: string,
-    evalTarget: string,
-    phase: 'Preparation'|'Execution'|'Finalization',
-    durationSeconds: number,
-    taskStatuses: TaskStatus[],
-    toolCallStats: ToolCallStats,
-    ): void {
+export function recordTaskFailure(options: RecordTaskFailureOptions): void {
+  const {
+    taskId,
+    runId,
+    target,
+    phase,
+    durationSeconds,
+    taskStatuses,
+    toolCallStats,
+  } = options;
   uploadTaskCompleted({
     taskId,
     runId,
@@ -114,7 +151,7 @@ export function recordTaskFailure(
     // Failed tasks receive null as they encountered an error or timeout prior to completing or grading.
     score: null,
     durationSeconds,
-    tags: buildTaskTags(evalTarget, taskId),
+    tags: buildTaskTags(target, taskId),
     tokens: {},
     metrics: {
       taskStatus: 'FAILED',
@@ -153,23 +190,32 @@ export function handleTaskFailure(options: HandleTaskFailureOptions): void {
   uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
   uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT, formatVerificationStdout(taskId, target, true));
   uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDERR, formatVerificationStderr(errorMessage));
-  recordTaskFailure(taskId, runId, target, phase, durationSeconds, taskStatuses, toolCallStats);
+  recordTaskFailure({
+    taskId,
+    runId,
+    target,
+    phase,
+    durationSeconds,
+    taskStatuses,
+    toolCallStats,
+  });
 }
 
 /**
  * Uploads every per-task artifact to GCS. Returns true only if all of them
  * were uploaded successfully.
  */
-export function uploadTaskArtifacts(
-    runId: string,
-    taskId: string,
-    target: string,
-    logger: EvalLogger,
-    trajectory: Trajectory,
-    evalOutputPath: string,
+export function uploadTaskArtifacts(options: UploadTaskArtifactsOptions): boolean {
+  const {
+    runId,
+    taskId,
+    target,
+    logger,
+    trajectory,
+    evalOutputPath,
     hasError = false,
-    errorMessage?: string,
-    ): boolean {
+    errorMessage,
+  } = options;
   const trajectoryUploaded = uploadTaskFile(
       runId,
       taskId,
@@ -193,20 +239,21 @@ export function uploadTaskArtifacts(
  * Derives the task score and status and reports the completion both to GCS and
  * to the in-memory run summary (`taskStatuses`).
  */
-export function recordTaskCompletion(
-    taskId: string,
-    runId: string,
-    evalTarget: string,
-    durationSeconds: number,
-    verificationDurationSeconds: number,
-    gradingDurationSeconds: number,
-    taskStatuses: TaskStatus[],
-    allUploadsSucceeded: boolean,
-    toolCallStats: ToolCallStats,
+export function recordTaskCompletion(options: RecordTaskCompletionOptions): void {
+  const {
+    taskId,
+    runId,
+    target,
+    durationSeconds,
+    verificationDurationSeconds,
+    gradingDurationSeconds,
+    taskStatuses,
+    allUploadsSucceeded,
+    toolCallStats,
     hasError = false,
-    customScore?: number|null,
-    gradingOutput?: string,
-    ): void {
+    customScore,
+    gradingOutput,
+  } = options;
   // Only report a numeric score if a custom/grader score was computed and execution/upload succeeded;
   // otherwise emit null so ungraded tasks or execution failures do not skew averages.
   const score = (!allUploadsSucceeded || hasError) ? null : (customScore ?? null);
@@ -221,7 +268,7 @@ export function recordTaskCompletion(
     status,
     score,
     durationSeconds,
-    tags: buildTaskTags(evalTarget, taskId),
+    tags: buildTaskTags(target, taskId),
     tokens: {},
     metrics: {
       taskStatus: 'SUCCEEDED',
@@ -267,8 +314,16 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
   const evalOutputPath = exportEvalTrajectory(trajectory, label, outputDir);
   const toolCallStats = calculateTrajectoryToolCalls(trajectory);
   taskToolCallStats.set(taskId, toolCallStats);
-  let allUploadsSucceeded =
-      uploadTaskArtifacts(runId, taskId, target, logger, trajectory, evalOutputPath, hasError, errorMessage);
+  let allUploadsSucceeded = uploadTaskArtifacts({
+    runId,
+    taskId,
+    target,
+    logger,
+    trajectory,
+    evalOutputPath,
+    hasError,
+    errorMessage,
+  });
   if (gradingOutput) {
     const evalResultJson = JSON.stringify({
       runId,
@@ -280,20 +335,20 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     const graderLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, gradingOutput);
     allUploadsSucceeded = allUploadsSucceeded && evalResultUploaded && graderLogUploaded;
   }
-  recordTaskCompletion(
-      taskId,
-      runId,
-      target,
-      durationSeconds,
-      verificationDurationSeconds,
-      gradingDurationSeconds,
-      taskStatuses,
-      allUploadsSucceeded,
-      toolCallStats,
-      hasError,
-      customScore,
-      gradingOutput,
-  );
+  recordTaskCompletion({
+    taskId,
+    runId,
+    target,
+    durationSeconds,
+    verificationDurationSeconds,
+    gradingDurationSeconds,
+    taskStatuses,
+    allUploadsSucceeded,
+    toolCallStats,
+    hasError,
+    customScore,
+    gradingOutput,
+  });
 
   return evalOutputPath;
 }

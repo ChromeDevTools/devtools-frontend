@@ -114,6 +114,16 @@ existing element containers.
     *   **Accessibility Preservation**: Convert custom accessibility
         instrumentation (like `ARIAUtils.markAsAlert()`) to native ARIA
         attributes in the template (e.g., `role="alert"`, `aria-live="polite"`).
+    *   **Visibility (`?hidden` Attribute Only)**: Use `?hidden=${...}`
+        exclusively to toggle visibility in templates. Never combine a `.hidden`
+        CSS class (`classMap({hidden: ...})` or `classList.toggle('hidden', ...)`)
+        with `?hidden` (`inspectorCommon.css` already defines
+        `[hidden] { display: none !important; }`).
+    *   **Declarative Default Focus (`autofocus` / `?autofocus`)**: Prefer
+        marking the default focused element with `autofocus` or `?autofocus=${...}`
+        in the template instead of collecting elements via `ref(...)` and plumbing
+        focus callbacks through `ViewOutput`. `UI.Widget.prototype.focus()`
+        queries `[autofocus]` automatically via `getDefaultFocusedElement()`.
     *   **`<devtools-tree>` & Persistent `<devtools-prompt ?editing>` Patterns**:
         When rendering `<devtools-tree .template=${html`<ul role="tree">...</ul>`}>`:
         - Preserve `front_end/ui/legacy/Treeoutline.ts` contracts without

@@ -119,6 +119,16 @@ render(html`
 *   **Raw Elements:** Use `Directives.ref` (from `ui/lit/lit.js`) to obtain a reference to a raw `HTMLElement` if needed for imperative APIs (e.g., `splitWidget.installResizer(element)`).
 *   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget inside the view function if you need to call imperative methods on it. **Do NOT store child widget instances on `ViewOutput` as a final result** (doing so is only acceptable temporarily in intermediate migration CLs). Instead, either supply all needed configuration declaratively through setters/inputs on the child widget, or if imperative calls are strictly necessary, expose narrow action functions on `ViewOutput` (e.g., `output.doLayout = () => splitWidget.doLayout()`, `output.revealPosition = pos => childWidget.revealPosition(pos)`). Do not keep `get*ForTest()` methods that return child widget instances via `ViewOutput`; tests should query rendered `<devtools-widget>` elements via `.getWidget()` or assert on `ViewInput` via `createViewFunctionStub`.
 
+### Visibility (`?hidden` Attribute Only)
+Toggle element visibility declaratively using the HTML `?hidden` attribute:
+```ts
+html`<div ?hidden=${!input.isVisible}>...</div>`
+```
+Never combine a `.hidden` CSS class (`classMap({hidden: ...})` or `classList.toggle('hidden', ...)`) with `?hidden` (`inspectorCommon.css` already defines `[hidden] { display: none !important; }`).
+
+### Declarative Default Focus (`autofocus` / `?autofocus`)
+`UI.Widget.prototype.focus()` natively queries `[autofocus]` via `getDefaultFocusedElement()` across both plain HTML elements (e.g. `<devtools-tree autofocus>`) and child widgets. Mark the default focus target with `autofocus` or `?autofocus=${...}` (ensuring at most one element has `autofocus` in any render state) instead of overriding `focus()`, calling `this.setDefaultFocusedElement(...)`, or plumbing focus closures through `ViewOutput`.
+
 ### `<devtools-tree>` & Editable `<devtools-prompt ?editing>` Rows
 *   Keep `<devtools-tree>` (`ui/kit/kit.js`) contracts intact without widening `front_end/ui/legacy/Treeoutline.ts` (`TreeViewElement`/`TreeViewTreeElement`). Drive selection and expansion purely via `?selected`, `?open`, `@select`, and `@expand`.
 *   Keep `<devtools-prompt ?editing>` persistently mounted in the DOM and toggle `?editing` declaratively; do not duplicate `aria-label` on inner prompts when the `<li role="treeitem">` already labels the row.
@@ -169,12 +179,10 @@ Example: `front_end/panels/my_example/MyExampleWidget.ts`.
 ```ts
 // front_end/panels/my_example/MyExampleWidget.ts
 
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import myExampleWidgetStyles from './myExampleWidget.css.js';
-
-const {ref} = Directives;
 
 // 1. Define Input data shape. (Assuming Child Widget configuration for completeness)
 export interface ViewInput {
@@ -183,33 +191,24 @@ export interface ViewInput {
   onButtonClick: () => void;
 }
 
-// 2. Define Output imperative API shape.
-export interface ViewOutput {
-  focusButton?: () => void;
-}
-
-// 3. Define the View function.
+// 2. Define the View function (output is undefined when no imperative actions exist).
 // clang-format off
-const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   render(html`
     <style>${myExampleWidgetStyles}</style>
     <div class="child-widget">
       <h3>${input.title}</h3>
       <p>Counter: ${input.counter}</p>
-      <button @click=${input.onButtonClick} ${ref(el => {
-        if (el) {
-          output.focusButton = () => el.focus();
-        }
-      })}>Increment</button>
+      <button autofocus @click=${input.onButtonClick}>Increment</button>
     </div>
   `, target);
 };
 // clang-format on
 
-// 4. Type alias for the view.
+// 3. Type alias for the view.
 type View = typeof DEFAULT_VIEW;
 
-// 5. Define the Presenter.
+// 4. Define the Presenter.
 export class MyExampleWidget extends UI.Widget.Widget {
   #counter: number = 0;
 
@@ -217,7 +216,6 @@ export class MyExampleWidget extends UI.Widget.Widget {
   title: string = 'Default Title';
 
   #view: View;
-  #viewOutput: ViewOutput = {};
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
@@ -228,10 +226,6 @@ export class MyExampleWidget extends UI.Widget.Widget {
     super.wasShown();
     // Initial render trigger.
     this.requestUpdate();
-  }
-
-  focus(): void {
-    this.#viewOutput.focusButton?.();
   }
 
   #handleButtonClick = (): void => {
@@ -245,7 +239,7 @@ export class MyExampleWidget extends UI.Widget.Widget {
       counter: this.#counter,
       onButtonClick: this.#handleButtonClick,
     };
-    this.#view(viewInput, this.#viewOutput, this.contentElement);
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }
 ```

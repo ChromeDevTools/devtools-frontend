@@ -552,7 +552,7 @@
   border-radius: var(--sys-shape-corner-full);
   border: none;
   /* todo: extract to global styles and make it work with dark mode. */
-  box-shadow: 0 1px 3px 1px rgb(0 0 0 / 15%), 0 1px 2px 0 rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  box-shadow: var(--sys-elevation-level1);
   box-sizing: border-box;
   background-color: var(--sys-color-tonal-container);
   color: var(--sys-color-on-tonal-container);

@@ -60,6 +60,11 @@ export interface TaskCompletedPayload {
   tags: string[];
   tokens?: Record<string, unknown>;
   metrics: {
+    taskStatus: string,
+    verificationDurationSeconds: number,
+    verificationStatus: string,
+    gradingDurationSeconds: number,
+    gradingStatus: string,
     toolCallCount: number,
     toolCallsByTool: Record<string, number>,
     failedToolCallsByTool: Record<string, number>,
@@ -295,6 +300,15 @@ export function uploadTaskContent(
   );
 }
 
+export function formatProtoDuration(seconds: number): string {
+  return `${seconds.toFixed(3)}s`;
+}
+
+export function formatProtoTaskStatus(status: string): string {
+  const normalized = status === 'PASSED' ? 'SUCCEEDED' : status;
+  return normalized.startsWith('TASK_STATUS_') ? normalized : `TASK_STATUS_${normalized}`;
+}
+
 /**
  * Emits eval_task_completed.json and immediately uploads eval_task_completed.marker.
  */
@@ -308,6 +322,12 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
     tags: payload.tags,
     tokens: payload.tokens ?? {},
     metrics: {
+      duration: formatProtoDuration(payload.durationSeconds),
+      task_status: formatProtoTaskStatus(payload.metrics.taskStatus),
+      verification_duration: formatProtoDuration(payload.metrics.verificationDurationSeconds),
+      verification_status: formatProtoTaskStatus(payload.metrics.verificationStatus),
+      grading_duration: formatProtoDuration(payload.metrics.gradingDurationSeconds),
+      grading_status: formatProtoTaskStatus(payload.metrics.gradingStatus),
       tool_calls: payload.metrics.toolCallCount,
       tool_calls_by_tool: payload.metrics.toolCallsByTool,
       failed_tool_calls_by_tool: payload.metrics.failedToolCallsByTool,

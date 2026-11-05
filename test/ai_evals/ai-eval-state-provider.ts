@@ -69,6 +69,7 @@ export class EvalTaskHandle {
   readonly #logger: EvalLogger;
   // Total time spent executing prompts, reported as the task duration.
   #executionSeconds = 0;
+  lastPromptEndTime = 0;
   hasFailed = false;
   failureError?: string;
 
@@ -117,8 +118,10 @@ export class EvalTaskHandle {
       this.trajectoryBuilder.addSteps(steps);
       return steps;
     } finally {
-      const executionSeconds = (performance.now() - executionStartTime) / 1000;
+      const endTime = performance.now();
+      const executionSeconds = (endTime - executionStartTime) / 1000;
       this.#executionSeconds += executionSeconds;
+      this.lastPromptEndTime = endTime;
       this.log(`Finished (${executionSeconds.toFixed(2)}s)`);
     }
   }
@@ -360,6 +363,8 @@ export class AiEvalStateProvider extends StateProvider {
             errorMessage: evalTask.failureError,
           });
         } else {
+          const verificationDurationSeconds =
+              Number(((performance.now() - evalTask.lastPromptEndTime) / 1000).toFixed(3));
           try {
             const trajectory = evalTask.trajectoryBuilder.build();
             if (trajectory.metadata.model) {
@@ -367,11 +372,14 @@ export class AiEvalStateProvider extends StateProvider {
             }
             let customScore: number|null = null;
             let gradingOutput: string|undefined;
+            let gradingDurationSeconds = 0;
 
             if (!evalTask.hasFailed && evalTask.evals.length > 0) {
+              const gradingStart = performance.now();
               const store = new ResultStore(evalTask.type, evalTask.label);
               const dateFolder = (this.#runStartTimestamp || new Date().toISOString()).slice(0, 10);
               customScore = await evaluateTrajectory(trajectory, evalTask.evals, store, dateFolder);
+              gradingDurationSeconds = Number(((performance.now() - gradingStart) / 1000).toFixed(3));
               if (store.results.size > 0) {
                 this.#resultStores.push(store);
                 printResults(store);
@@ -388,6 +396,7 @@ export class AiEvalStateProvider extends StateProvider {
               trajectory,
               outputDir: this.#tempOutputDir,
               durationSeconds,
+              verificationDurationSeconds,
               logger: this.#logger,
               taskStatuses: this.#taskStatuses,
               taskToolCallStats: this.#taskToolCallStats,
@@ -395,6 +404,7 @@ export class AiEvalStateProvider extends StateProvider {
               errorMessage: evalTask.failureError,
               customScore,
               gradingOutput,
+              gradingDurationSeconds,
             });
           } catch (err) {
             const errorMessage = this.#logger.formatError(err as Error);

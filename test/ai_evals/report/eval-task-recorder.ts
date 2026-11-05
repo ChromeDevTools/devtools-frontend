@@ -29,6 +29,8 @@ export interface FinalizeTaskOptions {
   trajectory: Trajectory;
   outputDir: string;
   durationSeconds: number;
+  verificationDurationSeconds: number;
+  gradingDurationSeconds: number;
   logger: EvalLogger;
   taskStatuses: TaskStatus[];
   taskToolCallStats: Map<string, ToolCallStats>;
@@ -100,6 +102,7 @@ export function recordTaskFailure(
     taskId: string,
     runId: string,
     evalTarget: string,
+    phase: 'Preparation'|'Execution'|'Finalization',
     durationSeconds: number,
     taskStatuses: TaskStatus[],
     toolCallStats: ToolCallStats,
@@ -114,6 +117,11 @@ export function recordTaskFailure(
     tags: buildTaskTags(evalTarget, taskId),
     tokens: {},
     metrics: {
+      taskStatus: 'FAILED',
+      verificationDurationSeconds: 0,
+      verificationStatus: phase === 'Finalization' ? 'FAILED' : 'UNSPECIFIED',
+      gradingDurationSeconds: 0,
+      gradingStatus: 'UNSPECIFIED',
       toolCallCount: toolCallStats.total,
       toolCallsByTool: toolCallStats.byTool,
       failedToolCallsByTool: toolCallStats.failedByTool,
@@ -145,7 +153,7 @@ export function handleTaskFailure(options: HandleTaskFailureOptions): void {
   uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
   uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT, formatVerificationStdout(taskId, target, true));
   uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDERR, formatVerificationStderr(errorMessage));
-  recordTaskFailure(taskId, runId, target, durationSeconds, taskStatuses, toolCallStats);
+  recordTaskFailure(taskId, runId, target, phase, durationSeconds, taskStatuses, toolCallStats);
 }
 
 /**
@@ -190,17 +198,22 @@ export function recordTaskCompletion(
     runId: string,
     evalTarget: string,
     durationSeconds: number,
+    verificationDurationSeconds: number,
+    gradingDurationSeconds: number,
     taskStatuses: TaskStatus[],
     allUploadsSucceeded: boolean,
     toolCallStats: ToolCallStats,
     hasError = false,
     customScore?: number|null,
+    gradingOutput?: string,
     ): void {
   // Only report a numeric score if a custom/grader score was computed and execution/upload succeeded;
   // otherwise emit null so ungraded tasks or execution failures do not skew averages.
   const score = (!allUploadsSucceeded || hasError) ? null : (customScore ?? null);
   const status =
       (!allUploadsSucceeded || hasError || (score !== null && score < PASS_SCORE_THRESHOLD)) ? 'FAILED' : 'PASSED';
+  const wasGraded = (customScore !== undefined && customScore !== null) || gradingOutput !== undefined;
+  const gradingPassed = customScore === undefined || customScore === null || customScore >= PASS_SCORE_THRESHOLD;
 
   uploadTaskCompleted({
     taskId,
@@ -211,6 +224,11 @@ export function recordTaskCompletion(
     tags: buildTaskTags(evalTarget, taskId),
     tokens: {},
     metrics: {
+      taskStatus: 'SUCCEEDED',
+      verificationDurationSeconds,
+      verificationStatus: hasError ? 'FAILED' : 'SUCCEEDED',
+      gradingDurationSeconds,
+      gradingStatus: wasGraded ? (gradingPassed ? 'SUCCEEDED' : 'FAILED') : 'UNSPECIFIED',
       toolCallCount: toolCallStats.total,
       toolCallsByTool: toolCallStats.byTool,
       failedToolCallsByTool: toolCallStats.failedByTool,
@@ -234,6 +252,8 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     trajectory,
     outputDir,
     durationSeconds,
+    verificationDurationSeconds,
+    gradingDurationSeconds,
     logger,
     taskStatuses,
     taskToolCallStats,
@@ -260,8 +280,20 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     const graderLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, gradingOutput);
     allUploadsSucceeded = allUploadsSucceeded && evalResultUploaded && graderLogUploaded;
   }
-  recordTaskCompletion(taskId, runId, target, durationSeconds, taskStatuses, allUploadsSucceeded, toolCallStats,
-                       hasError, customScore);
+  recordTaskCompletion(
+      taskId,
+      runId,
+      target,
+      durationSeconds,
+      verificationDurationSeconds,
+      gradingDurationSeconds,
+      taskStatuses,
+      allUploadsSucceeded,
+      toolCallStats,
+      hasError,
+      customScore,
+      gradingOutput,
+  );
 
   return evalOutputPath;
 }

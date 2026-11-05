@@ -301,6 +301,13 @@ export interface AidaAvailability {
 
 type Channel = 'stable'|'beta'|'dev'|'canary';
 
+/**
+ * The source of the user's Chrome color theme. `baseline-default` and
+ * `baseline-grayscale` are Chrome's built-in baseline themes; all other color
+ * themes are `dynamic`.
+ */
+export type UserColorSource = 'baseline-default'|'baseline-grayscale'|'dynamic';
+
 export interface HostConfigConsoleInsights {
   modelId: string;
   temperature: number;
@@ -552,6 +559,11 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
    * or guest mode, rather than a "normal" profile.
    */
   isOffTheRecord: boolean,
+  /**
+   * The source of the user's Chrome color theme at startup. Live updates are
+   * delivered via the `ColorThemeChanged` host event.
+   */
+  userColorSource: UserColorSource,
   devToolsEnableOriginBoundCookies: HostConfigEnableOriginBoundCookies,
   devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab,
   devToolsJpegXlImageFormat: HostConfigJpegXlImageFormat,

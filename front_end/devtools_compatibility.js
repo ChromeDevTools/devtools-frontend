@@ -28,6 +28,29 @@
   // eslint-disable-next-line no-unused-vars
   const majorVersion = getRemoteMajorVersion();
 
+  /**
+   * Mirrors host-provided `userColorSource` to `--user-color-source` on the
+   * root element when inspecting remote targets whose bundled `ThemeSupport.ts`
+   * may still read `--user-color-source` from computed CSS.
+   *
+   * @param {string=} colorSource
+   */
+  function syncLegacyUserColorSource(colorSource) {
+    const remoteMajorVersion = getRemoteMajorVersion();
+    if (remoteMajorVersion === null || Number.isNaN(remoteMajorVersion) || !colorSource) {
+      return;
+    }
+    const rootStyle = window.document?.documentElement?.style;
+    if (!rootStyle) {
+      return;
+    }
+    if (colorSource === 'baseline-default' || colorSource === 'baseline-grayscale') {
+      rootStyle.setProperty('--user-color-source', colorSource);
+    } else {
+      rootStyle.removeProperty('--user-color-source');
+    }
+  }
+
   // DevToolsAPI ----------------------------------------------------------------
   /**
    * @typedef {{runtimeAllowedHosts: string[], runtimeBlockedHosts: string[]}} ExtensionHostsPolicy
@@ -337,8 +360,12 @@
       this._dispatchOnInspectorFrontendAPI('searchCompleted', [requestId, fileSystemPath, files]);
     }
 
-    colorThemeChanged() {
-      this._dispatchOnInspectorFrontendAPI('colorThemeChanged', []);
+    /**
+     * @param {string=} colorSource
+     */
+    colorThemeChanged(colorSource) {
+      syncLegacyUserColorSource(colorSource);
+      this._dispatchOnInspectorFrontendAPI('colorThemeChanged', colorSource !== undefined ? [colorSource] : []);
     }
 
     /**
@@ -1500,6 +1527,7 @@
      */
     getHostConfig(callback) {
       DevToolsAPI.sendMessageToEmbedder('getHostConfig', [], hostConfig => {
+        syncLegacyUserColorSource(hostConfig?.userColorSource);
         const majorVersion = getRemoteMajorVersion();
         if (majorVersion && majorVersion < 129 && hostConfig?.aidaAvailability) {
           return callback(this.hostConfigNewToOld(hostConfig));

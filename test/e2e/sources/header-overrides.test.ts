@@ -69,18 +69,16 @@ async function editorTabHasPurpleDot(devToolsPage: DevToolsPage): Promise<boolea
 }
 
 async function fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage: DevToolsPage): Promise<boolean> {
-  await devToolsPage.waitForFunction(async () => {
-    const activeElement = await devToolsPage.activeElement();
-    const title = await activeElement.evaluate(el => el.getAttribute('title')) || '';
-    return /\/test\/e2e\/resources\/network\/\.headers$/.test(title);
+  const activeElement = await devToolsPage.activeElement();
+  return await activeElement.evaluate(el => {
+    const title = el.getAttribute('title') || el.querySelector('[title]')?.getAttribute('title') || '';
+    if (!/\/test\/e2e\/resources\/network\/\.headers$/.test(title)) {
+      return false;
+    }
+    const icon =
+        el.querySelector('.leading-icons devtools-file-source-icon')?.shadowRoot?.querySelector('devtools-icon');
+    return Boolean(icon?.classList.contains('dot') && icon?.classList.contains('purple'));
   });
-  const element = await devToolsPage.activeElement();
-  const fileTreeIcon = await element.waitForSelector(
-      '.navigator-file-tree-item .leading-icons devtools-file-source-icon >>> devtools-icon');
-  if (!fileTreeIcon) {
-    return false;
-  }
-  return await fileTreeIcon.evaluate(node => node.classList.contains('dot') && node.classList.contains('purple'));
 }
 
 async function editHeaderItem(devToolsPage: DevToolsPage, newValue: string, previousValue: string): Promise<void> {
@@ -152,7 +150,7 @@ describe('The Overrides Panel', function() {
     await devToolsPage.waitFor('[title="Refresh the page/request for these changes to take effect"]');
     await devToolsPage.click('[title="Reveal header override definitions"]');
     assert.isTrue(await editorTabHasPurpleDot(devToolsPage));
-    assert.isTrue(await fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage));
+    await devToolsPage.waitForFunction(async () => await fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage));
 
     await navigateToNetworkTab(devToolsPage, inspectedPage, 'hello.html');
     await waitForSomeRequestsToAppear(devToolsPage, 1);
@@ -165,7 +163,7 @@ describe('The Overrides Panel', function() {
     assert.deepEqual(await getTextFromHeadersRow(devToolsPage, row), ['foo', 'bar']);
     await devToolsPage.click('[title="Reveal header override definitions"]');
     assert.isTrue(await editorTabHasPurpleDot(devToolsPage));
-    assert.isTrue(await fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage));
+    await devToolsPage.waitForFunction(async () => await fileTreeEntryIsSelectedAndHasPurpleDot(devToolsPage));
 
     await inspectedPage.goToResource('pages/hello-world.html');
     await devToolsPage.waitForFunction(async () => {

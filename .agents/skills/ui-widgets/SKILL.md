@@ -23,7 +23,7 @@ Adhere strictly to the Model-View-Presenter (MVP) architecture.
 * Styling MUST be handled within the View. `this.registerCSSFiles()` is forbidden.
 * Initial render MUST be triggered in `override wasShown(): void` by calling `this.requestUpdate()`.
 * MUST hold all UI state as private class fields (e.g., `#counter`).
-* To schedule a UI update, MUST call `this.requestUpdate()`. `performUpdate()` MUST NOT be called directly.
+* To schedule a UI update, MUST call `this.requestUpdate()` asynchronously across all presenter methods, property setters, and event handlers. `performUpdate()` MUST NOT be called directly (except in `UI.Panel`/`UI.Dialog` subclasses where `requestUpdate()` is unavailable or when synchronous layout measurement is documented as strictly required). Presenter and presenter-node classes MUST NOT expose imperative view-refresh methods (e.g., `updateTrailingIcons()`, `updateIcon()`); all visual output should be derived declaratively in the view function.
 
 ### View (`function`) Rules
 

@@ -373,6 +373,7 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
     passed_tasks: payload.passedTasks,
     failed_tasks: payload.failedTasks,
     metrics: {
+      duration: formatProtoDuration((Date.parse(payload.endTime) - Date.parse(payload.startTime)) / 1000),
       total_tool_calls: payload.metrics.totalToolCalls,
       tool_calls_by_tool: payload.metrics.toolCallsByTool,
       failed_tool_calls_by_tool: payload.metrics.failedToolCallsByTool,

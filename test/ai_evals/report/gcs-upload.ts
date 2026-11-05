@@ -63,6 +63,7 @@ export interface TaskCompletedPayload {
     toolCallCount: number,
     toolCallsByTool: Record<string, number>,
     failedToolCallsByTool: Record<string, number>,
+    activationsBySkill: Record<string, number>,
   };
 }
 
@@ -81,6 +82,7 @@ export interface RunCompletedPayload {
     totalToolCalls: number,
     toolCallsByTool: Record<string, number>,
     failedToolCallsByTool: Record<string, number>,
+    activationsBySkill: Record<string, number>,
   };
 }
 
@@ -309,6 +311,7 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
       tool_calls: payload.metrics.toolCallCount,
       tool_calls_by_tool: payload.metrics.toolCallsByTool,
       failed_tool_calls_by_tool: payload.metrics.failedToolCallsByTool,
+      activations_by_skill: payload.metrics.activationsBySkill,
     },
   };
   const jsonUploaded = uploadTemporaryContentToGCS(
@@ -353,6 +356,7 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
       total_tool_calls: payload.metrics.totalToolCalls,
       tool_calls_by_tool: payload.metrics.toolCallsByTool,
       failed_tool_calls_by_tool: payload.metrics.failedToolCallsByTool,
+      activations_by_skill: payload.metrics.activationsBySkill,
     },
   };
   const jsonUploaded = uploadTemporaryContentToGCS(

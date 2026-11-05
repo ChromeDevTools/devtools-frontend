@@ -191,6 +191,7 @@ export class AiEvalStateProvider extends StateProvider {
     let totalToolCalls = 0;
     const toolCallsByTool: Record<string, number> = {};
     const failedToolCallsByTool: Record<string, number> = {};
+    const activationsBySkill: Record<string, number> = {};
     for (const stats of this.#taskToolCallStats.values()) {
       totalToolCalls += stats.total;
       for (const [tool, count] of Object.entries(stats.byTool)) {
@@ -198,6 +199,9 @@ export class AiEvalStateProvider extends StateProvider {
       }
       for (const [tool, count] of Object.entries(stats.failedByTool)) {
         failedToolCallsByTool[tool] = (failedToolCallsByTool[tool] ?? 0) + count;
+      }
+      for (const [skill, count] of Object.entries(stats.activationsBySkill)) {
+        activationsBySkill[skill] = (activationsBySkill[skill] ?? 0) + count;
       }
     }
     const status = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
@@ -219,6 +223,7 @@ export class AiEvalStateProvider extends StateProvider {
         totalToolCalls,
         toolCallsByTool,
         failedToolCallsByTool,
+        activationsBySkill,
       },
     });
     if (this.#tempOutputDir && fs.existsSync(this.#tempOutputDir)) {
@@ -273,6 +278,7 @@ export class AiEvalStateProvider extends StateProvider {
         total: 0,
         byTool: {},
         failedByTool: {},
+        activationsBySkill: {},
       },
       errorMessage,
     });
@@ -349,6 +355,7 @@ export class AiEvalStateProvider extends StateProvider {
               total: 0,
               byTool: {},
               failedByTool: {},
+              activationsBySkill: {},
             },
             errorMessage: evalTask.failureError,
           });
@@ -404,6 +411,7 @@ export class AiEvalStateProvider extends StateProvider {
                 total: 0,
                 byTool: {},
                 failedByTool: {},
+                activationsBySkill: {},
               },
               errorMessage,
             });

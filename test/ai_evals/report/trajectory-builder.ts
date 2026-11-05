@@ -202,25 +202,37 @@ export interface ToolCallStats {
   total: number;
   byTool: Record<string, number>;
   failedByTool: Record<string, number>;
+  activationsBySkill: Record<string, number>;
 }
 
 /**
- * Computes total tool call counts and per-tool frequency maps across all turns in a trajectory.
+ * Computes total tool call counts, per-tool frequency maps, and skill
+ * activation counts across all turns in a trajectory.
  */
 export function calculateTrajectoryToolCalls(trajectory: Trajectory): ToolCallStats {
   let total = 0;
   const byTool: Record<string, number> = {};
   const failedByTool: Record<string, number> = {};
+  const activationsBySkill: Record<string, number> = {};
   for (const turn of trajectory.data) {
     for (const tc of turn.tool_calls ?? []) {
       total++;
       byTool[tc.name] = (byTool[tc.name] ?? 0) + 1;
       if (tc.status === 'error') {
         failedByTool[tc.name] = (failedByTool[tc.name] ?? 0) + 1;
+      } else if (tc.name === 'learnSkills') {
+        const skills = tc.args?.['skills'];
+        if (Array.isArray(skills)) {
+          for (const skill of skills) {
+            if (typeof skill === 'string' && skill.trim()) {
+              activationsBySkill[skill] = (activationsBySkill[skill] ?? 0) + 1;
+            }
+          }
+        }
       }
     }
   }
-  return {total, byTool, failedByTool};
+  return {total, byTool, failedByTool, activationsBySkill};
 }
 
 function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse, timestamp: number, duration: number): Turn {

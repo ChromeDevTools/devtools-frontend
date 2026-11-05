@@ -117,6 +117,7 @@ export function recordTaskFailure(
       toolCallCount: toolCallStats.total,
       toolCallsByTool: toolCallStats.byTool,
       failedToolCallsByTool: toolCallStats.failedByTool,
+      activationsBySkill: toolCallStats.activationsBySkill,
     },
   });
   taskStatuses.push({taskId, status: 'FAILED', score: null});
@@ -213,6 +214,7 @@ export function recordTaskCompletion(
       toolCallCount: toolCallStats.total,
       toolCallsByTool: toolCallStats.byTool,
       failedToolCallsByTool: toolCallStats.failedByTool,
+      activationsBySkill: toolCallStats.activationsBySkill,
     },
   });
   taskStatuses.push({taskId, status, score});

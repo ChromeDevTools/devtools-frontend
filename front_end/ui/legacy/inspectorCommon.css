@@ -883,19 +883,6 @@ devtools-toolbar {
     color: var(--icon-toggled);
   }
 
-  .toolbar-state-on.toolbar-toggle-with-dot .toolbar-text::after {
-    content: '';
-    position: absolute;
-    bottom: var(--sys-size-2);
-    background-color: var(--sys-color-primary-bright);
-    width: 4.5px;
-    height: 4.5px;
-    border: var(--sys-size-2) solid
-      var(--override-toolbar-background-color, --sys-color-cdt-base-container);
-    border-radius: var(--sys-shape-corner-full);
-    right: 0;
-  }
-
   .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
   .toolbar-button.toolbar-state-off.toolbar-default-with-red-color
     .toolbar-glyph {

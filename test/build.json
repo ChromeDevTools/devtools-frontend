@@ -2,6 +2,5 @@
   "BUILD_ROOT": "does-not-exist",
   "BUILD_WITH_CHROMIUM": false,
   "CHECKOUT_ROOT": "..",
-  "DEVTOOLS_BUNDLED_CHROMIUM_DEPS": true,
   "SOURCE_ROOT": ".."
 }

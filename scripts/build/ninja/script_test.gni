@@ -4,7 +4,7 @@
 
 import("./vars.gni")
 
-if (!devtools_build_with_bundled_chromium_deps) {
+if (build_with_chromium) {
   import("//testing/test.gni")
 } else {
   import("//build/util/generate_wrapper.gni")

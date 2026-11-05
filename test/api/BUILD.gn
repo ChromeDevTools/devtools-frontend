@@ -6,7 +6,7 @@ import("../../scripts/build/ninja/script_test.gni")
 import("../../scripts/build/ninja/vars.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
-if (!devtools_build_with_bundled_chromium_deps) {
+if (build_with_chromium) {
   import("//build/config/cast.gni")
   import("//build/config/chromeos/args.gni")
 }
@@ -50,12 +50,12 @@ node_script_test("devtools_api_tests") {
     "../e2e/resources",
   ]
 
-  if (!devtools_build_with_bundled_chromium_deps) {
+  if (build_with_chromium) {
     if (!is_ios && !is_android && !is_castos && !is_fuchsia &&
         !is_chromeos_device) {
       data_deps += [ "//chrome" ]
     }
-  } else if (!build_with_chromium) {
+  } else {
     data = [ devtools_location_prepend + "third_party/chrome/" ]
   }
 }

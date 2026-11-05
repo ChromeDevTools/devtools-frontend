@@ -11,10 +11,9 @@ declare_args() {
   # need to read it, as it affects the "grd_files" metadata field.
   devtools_bundle = !enable_kythe_annotations
 
-  # TODO(crbug.com/563174810): Whether to use DevTools' bundled Chromium build
-  # templates/deps and copied PDL/JSON files instead of the ToT files from the
-  # downstream Chromium tree (e.g. //testing/test.gni, //chrome, and Chromium's
-  # source PDL/JSON files when generating CDP TypeScript types at build time).
+  # TODO(crbug.com/563174810): Whether to use DevTools' bundled PDL/JSON files
+  # instead of the ToT files from the downstream Chromium tree when generating
+  # CDP TypeScript types and metadata at build time.
   devtools_build_with_bundled_chromium_deps = true
 }
 

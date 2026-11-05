@@ -71,6 +71,5 @@ generated_file("build_config") {
     CHECKOUT_ROOT = rebase_path("//", target_gen_dir)
     BUILD_ROOT = rebase_path(root_build_dir, target_gen_dir)
     BUILD_WITH_CHROMIUM = build_with_chromium
-    DEVTOOLS_BUNDLED_CHROMIUM_DEPS = devtools_build_with_bundled_chromium_deps
   }
 }

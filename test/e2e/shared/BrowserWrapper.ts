@@ -9,7 +9,7 @@ import * as url from 'node:url';
 import * as puppeteer from 'puppeteer-core';
 
 import {setupBrowserProcessIO} from '../../conductor/events.js';
-import {DEVTOOLS_BUNDLED_CHROMIUM_DEPS, GEN_DIR} from '../../conductor/paths.js';
+import {BUILD_WITH_CHROMIUM, GEN_DIR} from '../../conductor/paths.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
 import {chromeLogin, configureDevToolsPreferences} from './auth-helper.js';
@@ -201,10 +201,9 @@ export class Launcher {
       launchArgs.push(`--enable-features=${enabledFeatures.join(',')}`);
     }
 
-    // In a chromium checkout with devtools_bundled_chromium_deps False, DevTools is bundled
-    // into the //chrome binary.
+    // In a chromium checkout, DevTools is bundled into the //chrome binary.
     // Otherwise we use a pre-built CfT with --custom-devtools-frontend.
-    if (DEVTOOLS_BUNDLED_CHROMIUM_DEPS) {
+    if (!BUILD_WITH_CHROMIUM) {
       const frontEndDirectory = url.pathToFileURL(
           path.join(GEN_DIR, 'front_end'),
       );

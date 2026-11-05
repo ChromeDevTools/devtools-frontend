@@ -3586,6 +3586,55 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    // Regression test for crbug.com/581467760.
+    it('selects and focuses a target DOM node when adopted style sheets are present', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      domTree.omitRootDOMNode = true;
+      domTree.selectEnabled = true;
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          adoptedStyleSheets: ['sheet-id' as Protocol.DOM.StyleSheetId],
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'HTML',
+              children: [
+                {
+                  nodeId: 3,
+                  nodeName: 'BODY',
+                  children: [{nodeId: 4, nodeName: 'DIV'}],
+                },
+              ],
+            },
+          ],
+        });
+        const divNode = rootNode.children()![0].children()![0].children()![0];
+        assert.exists(divNode);
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        domTree.selectDOMNode(divNode, /* focus= */ true);
+        await waitForTreeUpdates();
+
+        assert.strictEqual(domTree.selectedDOMNode(), divNode);
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const selectedTreeElement = tree.getInternalTreeOutlineForTest().selectedTreeElement;
+        assert.exists(selectedTreeElement);
+        const selectedWidget =
+            UI.Widget.Widget.get(selectedTreeElement.listItemElement.querySelector('devtools-widget')!);
+        assert.instanceOf(selectedWidget, Elements.DOMTreeElementWidget.DOMTreeElementWidget);
+        assert.strictEqual(selectedWidget.node, divNode);
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('selects DOM node without expanding ancestors in selectDOMNodeWithoutReveal', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target);
 

@@ -377,8 +377,10 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
     const onShortcutExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
       input.onToggleTopLayerShortcutExpanded(shortcut, event.detail.expanded);
     };
-    const onShortcutSelect = (): void => {
-      input.onSelectTopLayerShortcut(shortcut);
+    const onShortcutSelect = (event: UI.TreeOutline.TreeViewElement.SelectEvent): void => {
+      if (event.detail?.selectedByUser) {
+        input.onSelectTopLayerShortcut(shortcut);
+      }
     };
     const onReveal = (event: Event): void => {
       event.stopPropagation();
@@ -442,8 +444,10 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
         const onTopLayerExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
           input.onToggleTopLayerExpanded(doc, event.detail.expanded);
         };
-        const onTopLayerSelect = (): void => {
-          input.onSelectTopLayerContainer(doc);
+        const onTopLayerSelect = (event: UI.TreeOutline.TreeViewElement.SelectEvent): void => {
+          if (event.detail?.selectedByUser) {
+            input.onSelectTopLayerContainer(doc);
+          }
         };
 
         // clang-format off
@@ -472,8 +476,10 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
     const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
       input.onToggleAdoptedStyleSheetExpanded(sheet, event.detail.expanded);
     };
-    const onSelect = (): void => {
-      input.onSelectAdoptedStyleSheet(sheet);
+    const onSelect = (event: UI.TreeOutline.TreeViewElement.SelectEvent): void => {
+      if (event.detail?.selectedByUser) {
+        input.onSelectAdoptedStyleSheet(sheet);
+      }
     };
 
     // clang-format off
@@ -517,8 +523,10 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
     const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
       input.onToggleAdoptedStyleSheetsExpanded(node, event.detail.expanded);
     };
-    const onSelect = (): void => {
-      input.onSelectAdoptedStyleSheets(node);
+    const onSelect = (event: UI.TreeOutline.TreeViewElement.SelectEvent): void => {
+      if (event.detail?.selectedByUser) {
+        input.onSelectAdoptedStyleSheets(node);
+      }
     };
 
     // clang-format off
@@ -1500,10 +1508,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     if (!isSameNode) {
       this.#notifySelectedNodeChanged(node, Boolean(focus));
     }
-    this.performUpdate();
     if (focus) {
       this.focus();
     }
+    this.performUpdate();
   }
 
   /** Raises the children limit of `ancestor` if `child` is paginated away. */

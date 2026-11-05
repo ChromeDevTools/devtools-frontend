@@ -1995,7 +1995,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     if (node === treeNode) {
       treeElement.updateAttributes();
       if (attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
-        treeElement.revealAndSelect(true);
+        treeElement.revealAndSelect(!this.hasFocus());
       }
       return;
     }
@@ -2053,7 +2053,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
           parent.treeElement.updateExpansionFromAttribute();
         }
         if (hasBooleanAttribute(node, 'selected')) {
-          treeElement.revealAndSelect(true);
+          treeElement.revealAndSelect(!this.hasFocus());
         }
         if (parent.expanded) {
           parent.treeElement.expand();

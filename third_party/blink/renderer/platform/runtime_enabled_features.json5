@@ -345,7 +345,18 @@
     },
     {
       name: "AIEmbeddingsAPI",
-      status: "test",
+      status: {
+        "Win": "experimental",
+        "Mac": "experimental",
+        "Linux": "experimental",
+        "ChromeOS": "experimental",
+        "default": "",
+      },
+      origin_trial_feature_name: "AISemanticEmbedderAPI",
+      origin_trial_os: ["win", "mac", "linux", "chromeos"],
+      origin_trial_allows_third_party: true,
+      base_feature_status: "enabled",
+      copied_from_base_feature_if: "overridden",
     },
     {
       name: "AIEmbeddingsAPIForWorkers",
@@ -2703,6 +2714,13 @@
         "default": "stable",
       },
     },
+    // Kill switch for letting Blink look up a document's picture-in-picture
+    // window and owner on Android, which lets the window focus its opener
+    // (crbug.com/581052751). Only checked on Android.
+    {
+      name: "DocumentPictureInPictureWindowLookupAndroid",
+      status: "stable",
+    },
     // Enables the ability to use Document Policy header to control feature
     // DocumentDomain.
     {
@@ -3835,6 +3853,11 @@
       status: "stable",
     },
     {
+      // crbug.com/580881866
+      name: "IcuSearchLengthLimit",
+      status: "stable",
+    },
+    {
       name: "IgnoreLetterSpacingInCursiveScripts",
       status: "stable",
     },
@@ -3967,8 +3990,10 @@
       // Enables InputMultipleFieldsUI on all platforms by tweaking the inner
       // fields to be non-focusable and making the whole input element
       // focusable for coarse input devices. When this flag is removed, the
-      // InputMultipleFieldsUI flag can also be removed.
+      // InputMultipleFieldsUI flag can also be removed. Enabled in M159, safe
+      // to remove in M163.
       name: "InputMultipleFieldsUIWithPointerChecks",
+      status: "stable",
     },
     // Enables the `alpha` and `colorspace` content/IDL attributes on
     // <input type=color>, allowing alpha and Display P3 color values.
@@ -6650,6 +6675,13 @@
       status: "stable",
     },
     {
+      // Instance SMIL animation elements (animate, animateTransform,
+      // animateMotion, set) into the 'use' element shadow tree, instead of
+      // dropping them. crbug.com/40853412
+      name: "SvgUseInstanceAnimations",
+      status: "stable",
+    },
+    {
       name: "SvgUseNestedResourceDocuments",
       status: "stable",
     },
@@ -7797,8 +7829,7 @@
     },
     {
       name: "WebTransportReceiveStream",
-      status: "experimental",
-      base_feature: "none",
+      status: "stable",
     },
     {
       name: "WebTransportReliability",

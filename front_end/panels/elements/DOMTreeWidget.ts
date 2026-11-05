@@ -292,6 +292,11 @@ function isAncestorOf(ancestor: SDK.DOMModel.DOMNode, descendant: SDK.DOMModel.D
   return false;
 }
 
+function isNotCollapsible(node: SDK.DOMModel.DOMNode): boolean {
+  return node.nodeType() === Node.ELEMENT_NODE && node.parentNode?.nodeType() === Node.DOCUMENT_NODE &&
+      !node.parentNode.parentNode;
+}
+
 function computeLeftIndent(depth: number, isExpandable: boolean): number {
   return 12 * (depth - 1) + (isExpandable ? 1 : 12);
 }
@@ -1556,10 +1561,24 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     if (expanded) {
       this.#expandedNodes.add(node);
+      // Children that are not collapsible (e.g. the document element) render
+      // without an expand arrow, so their children must be fetched eagerly.
+      const expandNotCollapsibleChildren = (): void => {
+        for (const child of node.children() ?? []) {
+          // Check the Set directly instead of isNodeExpanded(), because
+          // isNodeExpanded() always returns true for non-collapsible nodes.
+          if (isNotCollapsible(child) && !this.#expandedNodes.has(child)) {
+            this.setNodeExpanded(child, true);
+          }
+        }
+      };
       if (!node.children() && (node.childNodeCount() || node.isIframe() || node.nodeType() === Node.DOCUMENT_NODE)) {
         void node.getChildNodes(() => {
+          expandNotCollapsibleChildren();
           this.performUpdate();
         });
+      } else {
+        expandNotCollapsibleChildren();
       }
       this.onElementExpanded();
     } else {

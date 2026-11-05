@@ -4769,7 +4769,7 @@ var tabbedPane_css_default = `/*
   align-content: center;
 
   &:has(.badge) {
-    width: 17px;
+    width: fit-content;
     margin-left: var(--sys-size-2);
   }
 
@@ -6286,7 +6286,7 @@ var TabbedPaneTab = class {
     const suffixElementContainer = document.createElement("span");
     suffixElementContainer.classList.add("tabbed-pane-header-tab-suffix-element");
     if (this.suffixElement instanceof HTMLElement) {
-      const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
+      const suffixElement = measuring ? this.suffixElement.cloneNode(true) : this.suffixElement;
       suffixElementContainer.appendChild(suffixElement);
     } else {
       render(this.suffixElement, suffixElementContainer);
@@ -12023,7 +12023,8 @@ var suggestBox_css_default = `/*
   flex: auto;
   background-color: var(--sys-color-cdt-base-container);
   pointer-events: auto;
-  margin-left: -3px;
+  /* Compensate for .suggest-box-content-item border and left padding so suggestion text aligns with the anchor word. */
+  margin-left: calc(-2 * var(--sys-size-1));
   box-shadow: var(--drop-shadow);
   overflow-x: hidden;
 }
@@ -15107,7 +15108,8 @@ input[type='range']::-webkit-slider-thumb,
   border: 0;
   width: var(--sys-size-6);
   height: var(--sys-size-6);
-  margin-top: -5px;
+  /* Center 12px (--sys-size-6) thumb over 2px (--sys-size-2) track: (2px - 12px) / 2 = -5px. */
+  margin-top: calc((var(--sys-size-2) - var(--sys-size-6)) / 2);
   border-radius: var(--sys-shape-corner-full);
   background-color: var(--sys-color-primary);
 }
@@ -15349,7 +15351,7 @@ dt-icon-label {
   background-color: var(--sys-color-tonal-container);
   color: var(--sys-color-on-tonal-container);
   font-weight: var(--ref-typeface-weight-bold);
-  font-size: 9px;
+  font-size: var(--sys-typescale-label-size);
   text-align: center;
 }
 
@@ -20267,7 +20269,7 @@ var listWidget_css_default = `/*
 
 .list-item {
   flex: none;
-  min-height: 30px;
+  min-height: var(--sys-size-12);
   display: flex;
   align-items: center;
   position: relative;
@@ -21445,7 +21447,7 @@ var reportView_css_default = `/*
 
 .report-header devtools-toolbar {
   margin-bottom: calc(-1 * var(--sys-size-5));
-  margin-top: 5px;
+  margin-top: var(--sys-size-3);
   margin-left: calc(-1 * var(--sys-size-5));
 }
 
@@ -21830,7 +21832,8 @@ var searchableView_css_default = `/*
  */
 
 .search-bar {
-  flex: 0 0 33px;
+  /* 32px search toolbar (28px row + 2x2px margin) plus 1px top border. */
+  flex: 0 0 calc(var(--sys-size-13) + var(--sys-size-1));
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
 
   devtools-icon[name="search"] {

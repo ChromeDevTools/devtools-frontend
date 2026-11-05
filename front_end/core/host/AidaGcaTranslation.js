@@ -15,6 +15,30 @@ function createBaseGcaRequest(request, contents, experience) {
     }
     return gcaRequest;
 }
+// Maps to experiences defined in g3; search for chrome_devtools/mapping_rules.gcl to find it.
+const CLIENT_FEATURE_TO_EXPERIENCE = {
+    [AIDA.ClientFeature.CHROME_CONSOLE_INSIGHTS]: 'chat_console_insights',
+    [AIDA.ClientFeature.CHROME_STYLING_AGENT]: 'chat_freestyler',
+    [AIDA.ClientFeature.CHROME_NETWORK_AGENT]: 'chat_drjones_network_agent',
+    [AIDA.ClientFeature.CHROME_FILE_AGENT]: 'chat_drjones_file_agent',
+    [AIDA.ClientFeature.CHROME_PATCH_AGENT]: 'chat_patch_agent',
+    [AIDA.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT]: 'chat_performance_annotations_agent',
+    [AIDA.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT]: 'chat_performance_full_agent',
+    [AIDA.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT]: 'chat_context_selection_agent',
+    [AIDA.ClientFeature.CHROME_ACCESSIBILITY_AGENT]: 'chat_accessibility_agent',
+    [AIDA.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT]: 'chat_conversation_summary_agent',
+    [AIDA.ClientFeature.CHROME_STORAGE_AGENT]: 'chat_storage_agent',
+    [AIDA.ClientFeature.CHROME_DEVTOOLS_V2_AGENT]: 'chat_devtools_v2_agent',
+};
+function getConversationExperience(clientFeature) {
+    // A specific client feature is required to resolve the corresponding server-side
+    // GCA experience configuration for the conversation request.
+    if (clientFeature === AIDA.ClientFeature.CLIENT_FEATURE_UNSPECIFIED ||
+        !Object.hasOwn(CLIENT_FEATURE_TO_EXPERIENCE, clientFeature)) {
+        throw new Error(`Unsupported client feature for GCA conversation: ${clientFeature}`);
+    }
+    return CLIENT_FEATURE_TO_EXPERIENCE[clientFeature];
+}
 export function aidaDoConversationRequestToGcaRequest(request) {
     try {
         const contents = [];
@@ -25,7 +49,8 @@ export function aidaDoConversationRequestToGcaRequest(request) {
             contents.push(...(request.historical_contexts).map(convertAidaContentToGcaContent));
         }
         contents.push(convertAidaContentToGcaContent(request.current_message));
-        const gcaRequest = createBaseGcaRequest(request, contents, 'chat_console_insights');
+        const experience = getConversationExperience(request.client_feature);
+        const gcaRequest = createBaseGcaRequest(request, contents, experience);
         if (request.function_declarations) {
             gcaRequest.tools = [{
                     functionDeclarations: (request.function_declarations).map(fd => ({

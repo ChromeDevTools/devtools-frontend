@@ -176,7 +176,7 @@ export class WebMCPModel extends SDK.SDKModel.SDKModel {
         this.dispatchEventToListeners("ToolsAdded" /* Events.TOOLS_ADDED */, addedTools);
     }
     toolInvoked(params) {
-        const tool = this.#tools.get(params.frameId)?.get(params.toolName);
+        const tool = params.toolName ? this.#tools.get(params.frameId)?.get(params.toolName) : undefined;
         if (!tool) {
             return;
         }

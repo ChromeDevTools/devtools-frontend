@@ -1217,7 +1217,7 @@ export class TabbedPaneTab {
         const suffixElementContainer = document.createElement('span');
         suffixElementContainer.classList.add('tabbed-pane-header-tab-suffix-element');
         if (this.suffixElement instanceof HTMLElement) {
-            const suffixElement = measuring ? this.suffixElement.cloneNode() : this.suffixElement;
+            const suffixElement = measuring ? this.suffixElement.cloneNode(true) : this.suffixElement;
             suffixElementContainer.appendChild(suffixElement);
         }
         else {

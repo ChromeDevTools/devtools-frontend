@@ -646,6 +646,7 @@ export class AiAgent {
                         context: result.context,
                         widgets: result.widgets,
                         toolName: functionCall.name,
+                        autoApproved: result.autoApproved,
                     };
                     return { type: 'contextChanged' };
                 }
@@ -741,14 +742,38 @@ export class AiAgent {
             const allowedOriginResult = this.#allowedOrigin?.();
             return Boolean(allowedOriginResult && 'blocked' in allowedOriginResult);
         };
+        const isAlwaysAllowed = call.permissionPrompt === "allow-once-or-always" /* PermissionPrompt.ALLOW_ONCE_OR_ALWAYS */ &&
+            Boolean(this.#alwaysAllowedTools?.isAllowed(name));
         // Turns an error thrown by the handler into an error result, so the other
         // calls in the same model response still run and the history keeps their
-        // results.
+        // results. Races the handler against the abort signal so a hung tool call
+        // does not block the agent loop after the user aborts the run.
         const runHandler = async (handlerOptions) => {
+            const signal = handlerOptions?.signal;
+            if (signal?.aborted) {
+                return { error: 'Aborted' };
+            }
             try {
-                const isAlwaysAllowed = call.permissionPrompt === "allow-once-or-always" /* PermissionPrompt.ALLOW_ONCE_OR_ALWAYS */ &&
-                    this.#alwaysAllowedTools?.isAllowed(name);
-                return await call.handler(args, isAlwaysAllowed ? { ...handlerOptions, approved: true } : handlerOptions);
+                const handlerPromise = call.handler(args, isAlwaysAllowed ? { ...handlerOptions, approved: true } : handlerOptions);
+                if (!signal) {
+                    return await handlerPromise;
+                }
+                if (signal.aborted) {
+                    return { error: 'Aborted' };
+                }
+                return await new Promise((resolve, reject) => {
+                    const onAbort = () => {
+                        resolve({ error: 'Aborted' });
+                    };
+                    signal.addEventListener('abort', onAbort, { once: true });
+                    handlerPromise.then(value => {
+                        signal.removeEventListener('abort', onAbort);
+                        resolve(value);
+                    }, err => {
+                        signal.removeEventListener('abort', onAbort);
+                        reject(err);
+                    });
+                });
             }
             catch (err) {
                 debugLog(`[AiAgent] Tool '${name}' threw:`, err);
@@ -756,6 +781,9 @@ export class AiAgent {
             }
         };
         let result = await runHandler(options);
+        if (options?.signal?.aborted) {
+            return { error: 'Aborted' };
+        }
         // Check 1: After first handler execution.
         // Navigation could have occurred during the async handler execution.
         if (isOriginBlocked()) {
@@ -826,6 +854,9 @@ export class AiAgent {
                 ...options,
                 approved: true,
             });
+            if (options?.signal?.aborted) {
+                return { error: 'Aborted' };
+            }
             // Check 3: After second handler execution (approved run).
             // Navigation could have occurred during the async execution of the approved action.
             if (isOriginBlocked()) {
@@ -841,6 +872,7 @@ export class AiAgent {
                 widgets: result.widgets,
                 canceled: false,
                 toolName: name,
+                autoApproved: isAlwaysAllowed,
                 ...(result.loadedSkills ? { loadedSkills: result.loadedSkills } : {}),
             };
         }
@@ -856,7 +888,10 @@ export class AiAgent {
         }
         debugLog(`[AiAgent] Tool '${name}' result:`, result);
         if ('context' in result) {
-            return result;
+            return {
+                ...result,
+                autoApproved: isAlwaysAllowed,
+            };
         }
         return result;
     }

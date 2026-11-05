@@ -708,6 +708,9 @@
   --sys-typescale-body5-bold: var(--ref-typeface-weight-bold)
     var(--sys-typescale-body5-size) / var(--sys-typescale-body5-line-height)
     var(--default-font-family);
+  --sys-typescale-label: var(--ref-typeface-weight-bold)
+    var(--sys-typescale-label-size) / var(--sys-typescale-label-line-height)
+    var(--default-font-family);
   --sys-typescale-monospace-regular: var(--ref-typeface-weight-regular)
     var(--sys-typescale-monospace-size) /
     var(--sys-typescale-monospace-line-height) var(--monospace-font-family);
@@ -724,6 +727,7 @@
   --sys-typescale-body3-size: 13px;
   --sys-typescale-body4-size: 12px;
   --sys-typescale-body5-size: 11px;
+  --sys-typescale-label-size: 9px;
   --sys-typescale-monospace-size: 11px;
   --sys-typescale-headline1-line-height: 32px;
   --sys-typescale-headline2-line-height: 24px;
@@ -735,6 +739,7 @@
   --sys-typescale-body3-line-height: 20px;
   --sys-typescale-body4-line-height: 16px;
   --sys-typescale-body5-line-height: 16px;
+  --sys-typescale-label-line-height: 9px;
   --sys-typescale-monospace-line-height: 1.2;
 
   /* Typography end */

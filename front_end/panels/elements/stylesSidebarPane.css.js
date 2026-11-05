@@ -183,9 +183,10 @@ export default `/**
   color: var(--sys-color-on-surface);
 }
 
+/* 64px (--sys-size-18) matches a 2-row .cls toolbar pane height for full retraction into overflow: hidden. */
 @keyframes styles-element-state-pane-slidein {
   from {
-    margin-top: -60px;
+    margin-top: calc(-1 * var(--sys-size-18));
   }
 
   to {
@@ -199,7 +200,7 @@ export default `/**
   }
 
   to {
-    margin-top: -60px;
+    margin-top: calc(-1 * var(--sys-size-18));
   }
 }
 

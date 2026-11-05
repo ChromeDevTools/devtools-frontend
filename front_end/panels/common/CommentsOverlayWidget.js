@@ -237,13 +237,14 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     willHide() {
         this.#clearCloseTimeout();
         this.#clearHover();
-        this.#removeDocumentListeners();
-        this.#commentOverlayManager.stop();
         this.#commentOverlayManager.removeEventListener("PositionsUpdated" /* Comments.CommentOverlayManager.Events.POSITIONS_UPDATED */, this.#onPositionsUpdated, this);
         this.#commentOverlayManager.removeEventListener("HoverHighlightChanged" /* Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED */, this.#onHoverHighlightChanged, this);
         this.#commentManager.removeEventListener("CommentThreadsChanged" /* CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED */, this.#onStateChanged, this);
         this.#commentManager.removeEventListener("CommentModeChanged" /* CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED */, this.#onCommentModeChanged, this);
         this.#commentManager.removeEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, this.#onAgentAttachedChanged, this);
+        this.#commentOverlayManager.stop();
+        this.#syncActiveThreadFromManager();
+        this.#removeDocumentListeners();
         super.willHide();
     }
     #clearCloseTimeout() {

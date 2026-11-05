@@ -4923,8 +4923,6 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
   willHide() {
     this.#clearCloseTimeout();
     this.#clearHover();
-    this.#removeDocumentListeners();
-    this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
       Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
       this.#onPositionsUpdated,
@@ -4950,6 +4948,9 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       this.#onAgentAttachedChanged,
       this
     );
+    this.#commentOverlayManager.stop();
+    this.#syncActiveThreadFromManager();
+    this.#removeDocumentListeners();
     super.willHide();
   }
   #clearCloseTimeout() {

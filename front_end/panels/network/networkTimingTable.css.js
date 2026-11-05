@@ -18,10 +18,6 @@ export default `/*
   table-layout: fixed;
 }
 
-.network-timing-start {
-  border-top: 5px solid transparent;
-}
-
 .network-timing-start th span.network-timing-hidden-header {
   height: var(--sys-size-1);
   width: var(--sys-size-1);

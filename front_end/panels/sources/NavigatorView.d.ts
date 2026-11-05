@@ -31,6 +31,13 @@ export declare function contextForNodeType(type: string): string;
 export declare function renderFolderLeadingIcon(type: string): Lit.TemplateResult;
 export declare function renderSourceTrailingIcons(uiSourceCode: Workspace.UISourceCode.UISourceCode, onSelectSource: (uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean) => void): Lit.TemplateResult[];
 export declare function renderGroupTrailingIcons(project: Workspace.Workspace.Project | null): Lit.TemplateResult[];
+export interface SourceTitleViewInput {
+    title: string;
+    editing: boolean;
+    onCommit: (newTitle: string) => void;
+    onCancel: () => void;
+}
+export declare const renderSourceTitle: (input: SourceTitleViewInput, _output: undefined, target: HTMLElement) => void;
 export declare const enum Events {
     UI_SOURCE_CODE_ADDED = "ui-source-code-added",
     SOURCE_SELECTED = "source-selected"
@@ -131,6 +138,9 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     private handleContextMenuDelete;
     fileDragStarted(node: NavigatorUISourceCodeTreeNode, event: DragEvent): void;
     shouldRenameOnMouseDown(node: NavigatorUISourceCodeTreeNode): boolean;
+    startRenamingNode(node: NavigatorUISourceCodeTreeNode): void;
+    stopRenamingNode(node: NavigatorUISourceCodeTreeNode): void;
+    isRenaming(): boolean;
     handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void;
     private handleSaveAs;
     private addJSExtension;
@@ -204,6 +214,7 @@ export declare class NavigatorRootTreeNode extends NavigatorTreeNode {
 export declare class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     #private;
     treeElement: UI.TreeOutline.TreeElement | null;
+    isEditing: boolean;
     private eventListeners;
     constructor(navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode, frame: SDK.ResourceTreeModel.ResourceTreeFrame | null);
     frame(): SDK.ResourceTreeModel.ResourceTreeFrame | null;

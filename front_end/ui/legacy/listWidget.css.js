@@ -28,7 +28,7 @@ export default `/*
 
 .list-item {
   flex: none;
-  min-height: 30px;
+  min-height: var(--sys-size-12);
   display: flex;
   align-items: center;
   position: relative;

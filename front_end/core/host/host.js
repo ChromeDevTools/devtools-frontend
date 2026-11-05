@@ -358,6 +358,26 @@ function createBaseGcaRequest(request, contents, experience) {
   }
   return gcaRequest;
 }
+var CLIENT_FEATURE_TO_EXPERIENCE = {
+  [1 /* CHROME_CONSOLE_INSIGHTS */]: "chat_console_insights",
+  [2 /* CHROME_STYLING_AGENT */]: "chat_freestyler",
+  [7 /* CHROME_NETWORK_AGENT */]: "chat_drjones_network_agent",
+  [9 /* CHROME_FILE_AGENT */]: "chat_drjones_file_agent",
+  [12 /* CHROME_PATCH_AGENT */]: "chat_patch_agent",
+  [20 /* CHROME_PERFORMANCE_ANNOTATIONS_AGENT */]: "chat_performance_annotations_agent",
+  [24 /* CHROME_PERFORMANCE_FULL_AGENT */]: "chat_performance_full_agent",
+  [25 /* CHROME_CONTEXT_SELECTION_AGENT */]: "chat_context_selection_agent",
+  [26 /* CHROME_ACCESSIBILITY_AGENT */]: "chat_accessibility_agent",
+  [27 /* CHROME_CONVERSATION_SUMMARY_AGENT */]: "chat_conversation_summary_agent",
+  [28 /* CHROME_STORAGE_AGENT */]: "chat_storage_agent",
+  [29 /* CHROME_DEVTOOLS_V2_AGENT */]: "chat_devtools_v2_agent"
+};
+function getConversationExperience(clientFeature) {
+  if (clientFeature === 0 /* CLIENT_FEATURE_UNSPECIFIED */ || !Object.hasOwn(CLIENT_FEATURE_TO_EXPERIENCE, clientFeature)) {
+    throw new Error(`Unsupported client feature for GCA conversation: ${clientFeature}`);
+  }
+  return CLIENT_FEATURE_TO_EXPERIENCE[clientFeature];
+}
 function aidaDoConversationRequestToGcaRequest(request) {
   try {
     const contents = [];
@@ -368,7 +388,8 @@ function aidaDoConversationRequestToGcaRequest(request) {
       contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
     }
     contents.push(convertAidaContentToGcaContent(request.current_message));
-    const gcaRequest = createBaseGcaRequest(request, contents, "chat_console_insights");
+    const experience = getConversationExperience(request.client_feature);
+    const gcaRequest = createBaseGcaRequest(request, contents, experience);
     if (request.function_declarations) {
       gcaRequest.tools = [{
         functionDeclarations: request.function_declarations.map((fd) => ({

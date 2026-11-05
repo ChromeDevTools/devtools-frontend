@@ -114,7 +114,7 @@ export default `/*
 
         p {
           font: var(--sys-typescale-body4-regular);
-          line-height: 18px;
+          line-height: var(--sys-typescale-body4-line-height);
         }
       }
     }

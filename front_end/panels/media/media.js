@@ -2189,11 +2189,10 @@ li.storage-group-list-item::before {
 }
 
 .player-entry-frame-title {
-  height: 26px;
-  width: 125px;
-  min-width: 125px;
+  width: var(--sys-size-21);
+  min-width: var(--sys-size-21);
   text-overflow: ellipsis;
-  padding: 0 10px;
+  padding: 0 var(--sys-size-5);
   border-right: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
 }

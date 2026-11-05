@@ -1430,7 +1430,6 @@ var Browser;
     PermissionType2["SmartCard"] = "smartCard";
     PermissionType2["SpeakerSelection"] = "speakerSelection";
     PermissionType2["StorageAccess"] = "storageAccess";
-    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
     PermissionType2["VideoCapture"] = "videoCapture";
     PermissionType2["Vr"] = "vr";
     PermissionType2["WakeLockScreen"] = "wakeLockScreen";
@@ -2488,7 +2487,6 @@ var Page;
     PermissionsPolicyFeature2["Autofill"] = "autofill";
     PermissionsPolicyFeature2["Autoplay"] = "autoplay";
     PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
-    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
     PermissionsPolicyFeature2["Camera"] = "camera";
     PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
     PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
@@ -2542,7 +2540,6 @@ var Page;
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
-    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
     PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
     PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
     PermissionsPolicyFeature2["LanguageModel"] = "language-model";
@@ -10083,7 +10080,8 @@ var AiAgent = class {
             description: result.description,
             context: result.context,
             widgets: result.widgets,
-            toolName: functionCall.name
+            toolName: functionCall.name,
+            autoApproved: result.autoApproved
           };
           return { type: "contextChanged" };
         }
@@ -10176,16 +10174,45 @@ var AiAgent = class {
       const allowedOriginResult = this.#allowedOrigin?.();
       return Boolean(allowedOriginResult && "blocked" in allowedOriginResult);
     };
+    const isAlwaysAllowed = call.permissionPrompt === "allow-once-or-always" /* ALLOW_ONCE_OR_ALWAYS */ && Boolean(this.#alwaysAllowedTools?.isAllowed(name));
     const runHandler = async (handlerOptions) => {
+      const signal = handlerOptions?.signal;
+      if (signal?.aborted) {
+        return { error: "Aborted" };
+      }
       try {
-        const isAlwaysAllowed = call.permissionPrompt === "allow-once-or-always" /* ALLOW_ONCE_OR_ALWAYS */ && this.#alwaysAllowedTools?.isAllowed(name);
-        return await call.handler(args, isAlwaysAllowed ? { ...handlerOptions, approved: true } : handlerOptions);
+        const handlerPromise = call.handler(args, isAlwaysAllowed ? { ...handlerOptions, approved: true } : handlerOptions);
+        if (!signal) {
+          return await handlerPromise;
+        }
+        if (signal.aborted) {
+          return { error: "Aborted" };
+        }
+        return await new Promise((resolve, reject) => {
+          const onAbort = () => {
+            resolve({ error: "Aborted" });
+          };
+          signal.addEventListener("abort", onAbort, { once: true });
+          handlerPromise.then(
+            (value) => {
+              signal.removeEventListener("abort", onAbort);
+              resolve(value);
+            },
+            (err) => {
+              signal.removeEventListener("abort", onAbort);
+              reject(err);
+            }
+          );
+        });
       } catch (err) {
         debugLog2(`[AiAgent] Tool '${name}' threw:`, err);
         return { error: `Error: ${err instanceof Error ? err.message : String(err)}` };
       }
     };
     let result = await runHandler(options);
+    if (options?.signal?.aborted) {
+      return { error: "Aborted" };
+    }
     if (isOriginBlocked()) {
       throw new CrossOriginError();
     }
@@ -10250,6 +10277,9 @@ var AiAgent = class {
         ...options,
         approved: true
       });
+      if (options?.signal?.aborted) {
+        return { error: "Aborted" };
+      }
       if (isOriginBlocked()) {
         throw new CrossOriginError();
       }
@@ -10263,6 +10293,7 @@ var AiAgent = class {
         widgets: result.widgets,
         canceled: false,
         toolName: name,
+        autoApproved: isAlwaysAllowed,
         ...result.loadedSkills ? { loadedSkills: result.loadedSkills } : {}
       };
     }
@@ -10278,7 +10309,10 @@ var AiAgent = class {
     }
     debugLog2(`[AiAgent] Tool '${name}' result:`, result);
     if ("context" in result) {
-      return result;
+      return {
+        ...result,
+        autoApproved: isAlwaysAllowed
+      };
     }
     return result;
   }
@@ -15461,7 +15495,8 @@ ${item.text.trim()}`);
               ...item,
               output: shouldRedact ? "<redacted>" : item.output,
               widgets: void 0,
-              loadedSkills: void 0
+              loadedSkills: void 0,
+              autoApproved: void 0
             };
           }
           default:

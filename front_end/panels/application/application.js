@@ -698,7 +698,6 @@ var Browser;
     PermissionType2["SmartCard"] = "smartCard";
     PermissionType2["SpeakerSelection"] = "speakerSelection";
     PermissionType2["StorageAccess"] = "storageAccess";
-    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
     PermissionType2["VideoCapture"] = "videoCapture";
     PermissionType2["Vr"] = "vr";
     PermissionType2["WakeLockScreen"] = "wakeLockScreen";
@@ -1756,7 +1755,6 @@ var Page;
     PermissionsPolicyFeature2["Autofill"] = "autofill";
     PermissionsPolicyFeature2["Autoplay"] = "autoplay";
     PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
-    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
     PermissionsPolicyFeature2["Camera"] = "camera";
     PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
     PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
@@ -1810,7 +1808,6 @@ var Page;
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
-    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
     PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
     PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
     PermissionsPolicyFeature2["LanguageModel"] = "language-model";
@@ -4735,8 +4732,8 @@ var backgroundServiceView_css_default = `/*
 }
 
 .background-service-metadata-entry {
-  padding-left: 10px;
-  padding-bottom: 5px;
+  padding-left: var(--sys-size-5);
+  padding-bottom: var(--sys-size-3);
 }
 
 .background-service-metadata-name {
@@ -6085,10 +6082,6 @@ button.link {
   font-family: inherit;
   font-size: inherit;
   height: var(--sys-size-8);
-}
-
-button.link:has(devtools-icon) {
-  margin-top: 5px;
 }
 
 devtools-button.help-button {
@@ -13809,7 +13802,7 @@ var deviceBoundSessionsView_css_default = `/*
  * found in the LICENSE file.
  */
 .device-bound-session-grid-wrapper {
-  margin: 0 var(--sys-size-9) 5px;
+  margin: 0 var(--sys-size-9) var(--sys-size-3);
 }
 
 .device-bound-session-grid-wrapper devtools-data-grid {
@@ -15746,10 +15739,6 @@ var resourcesPanel_css_default = `/*
 .database-query-result.error {
   color: var(--sys-color-token-property-special);
   user-select: text;
-}
-
-.database-query-result.error .prompt-icon {
-  margin-top: -9px;
 }
 
 .resources-sidebar {

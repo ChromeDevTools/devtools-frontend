@@ -17756,6 +17756,9 @@
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "State"
   },
+  "panels/web_audio/WebAudioView.ts | webAudioInspectionPaused": {
+    "message": "Web Audio inspection paused"
+  },
   "panels/webauthn/webauthn-meta.ts | showWebauthn": {
     "message": "Show WebAuthn"
   },

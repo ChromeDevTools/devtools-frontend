@@ -3013,7 +3013,6 @@ var Browser;
     PermissionType2["SmartCard"] = "smartCard";
     PermissionType2["SpeakerSelection"] = "speakerSelection";
     PermissionType2["StorageAccess"] = "storageAccess";
-    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
     PermissionType2["VideoCapture"] = "videoCapture";
     PermissionType2["Vr"] = "vr";
     PermissionType2["WakeLockScreen"] = "wakeLockScreen";
@@ -4071,7 +4070,6 @@ var Page;
     PermissionsPolicyFeature2["Autofill"] = "autofill";
     PermissionsPolicyFeature2["Autoplay"] = "autoplay";
     PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
-    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
     PermissionsPolicyFeature2["Camera"] = "camera";
     PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
     PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
@@ -4125,7 +4123,6 @@ var Page;
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
-    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
     PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
     PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
     PermissionsPolicyFeature2["LanguageModel"] = "language-model";
@@ -5741,6 +5738,7 @@ __export(NavigatorView_exports, {
   iconTypeForNodeType: () => iconTypeForNodeType,
   renderFolderLeadingIcon: () => renderFolderLeadingIcon,
   renderGroupTrailingIcons: () => renderGroupTrailingIcons,
+  renderSourceTitle: () => renderSourceTitle,
   renderSourceTrailingIcons: () => renderSourceTrailingIcons
 });
 import "../../ui/components/spinners/spinners.js";
@@ -6538,6 +6536,15 @@ function renderGroupTrailingIcons(project) {
   }
   return [];
 }
+var renderSourceTitle = (input, _output, target) => {
+  render5(html6`
+    <devtools-prompt
+      value=${input.title}
+      ?editing=${input.editing}
+      @commit=${(event) => input.onCommit(event.detail)}
+      @cancel=${input.onCancel}
+    >${input.title}</devtools-prompt>`, target);
+};
 var Events2 = /* @__PURE__ */ ((Events6) => {
   Events6["UI_SOURCE_CODE_ADDED"] = "ui-source-code-added";
   Events6["SOURCE_SELECTED"] = "source-selected";
@@ -6568,6 +6575,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
   selectedNode = null;
   expandedNodes = /* @__PURE__ */ new WeakSet();
   treeElementNodes = /* @__PURE__ */ new WeakMap();
+  #renamingNode = null;
   #view;
   constructor(element, [networkProjectManager] = [Bindings3.NetworkProject.NetworkProjectManager.instance()], view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
@@ -7242,7 +7250,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       return null;
     }
     if (this.selectedNode) {
-      if (UI7.UIUtils.isBeingEdited(this.scriptsTree.element)) {
+      if (this.isRenaming()) {
         return null;
       }
       this.selectedNode.treeNode().deselect();
@@ -7342,6 +7350,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     this.scriptsTree.removeChildren();
     this.scriptsTree.setFocusable(false);
     this.selectedNode = null;
+    this.#renamingNode = null;
     this.expandedNodes = /* @__PURE__ */ new WeakSet();
     this.uiSourceCodeNodes.clear();
     this.subfolderNodes.clear();
@@ -7408,7 +7417,18 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (!node.uiSourceCode().canRename() || !node.treeElement) {
       return false;
     }
-    return this.selectedNode === node && this.scriptsTree.element.hasFocus() && !UI7.UIUtils.isBeingEdited(this.scriptsTree.element);
+    return this.selectedNode === node && this.scriptsTree.element.hasFocus() && !this.isRenaming();
+  }
+  startRenamingNode(node) {
+    this.#renamingNode = node;
+  }
+  stopRenamingNode(node) {
+    if (this.#renamingNode === node) {
+      this.#renamingNode = null;
+    }
+  }
+  isRenaming() {
+    return this.#renamingNode !== null;
   }
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
@@ -7904,6 +7924,9 @@ var NavigatorRootTreeNode = class extends NavigatorTreeNode {
 var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
   #uiSourceCode;
   treeElement;
+  isEditing = false;
+  #renameCallback;
+  #disposed = false;
   eventListeners;
   #frame;
   constructor(navigatorView, uiSourceCode, frame) {
@@ -7956,6 +7979,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
       return this.treeElement;
     }
     this.treeElement = new UI7.TreeOutline.TreeElement("", false, this.#uiSourceCode.contentType().name());
+    this.treeElement.title = this.treeElement.titleElement;
     this.treeElement.listItemElement.classList.add(
       "navigator-" + this.#uiSourceCode.contentType().name() + "-tree-item",
       "navigator-file-tree-item"
@@ -8021,7 +8045,16 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     if (!this.treeElement) {
       return;
     }
-    this.treeElement.title = this.title;
+    renderSourceTitle(
+      {
+        title: this.title,
+        editing: this.isEditing,
+        onCommit: this.#handlePromptCommit.bind(this),
+        onCancel: this.#handlePromptCancel.bind(this)
+      },
+      void 0,
+      this.treeElement.titleElement
+    );
     this.updateIcon();
     this.updateTrailingIcons();
     this.treeElement.listItemElement.classList.toggle(
@@ -8057,6 +8090,16 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
   }
   dispose() {
     Common7.EventTarget.removeEventListeners(this.eventListeners);
+    if (this.isEditing) {
+      this.isEditing = false;
+      this.navigatorView.stopRenamingNode(this);
+    }
+    const callback = this.#renameCallback;
+    this.#renameCallback = void 0;
+    if (callback) {
+      callback(false);
+    }
+    this.#disposed = true;
   }
   reveal(select) {
     if (this.parent) {
@@ -8071,53 +8114,69 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     }
   }
   rename(callback) {
-    if (!this.treeElement) {
+    if (this.#disposed || !this.treeElement) {
       return;
     }
     this.treeElement.listItemElement.focus();
     if (!this.treeElement.treeOutline) {
       return;
     }
-    const treeOutlineElement = this.treeElement.treeOutline.element;
-    UI7.UIUtils.markBeingEdited(treeOutlineElement, true);
-    const commitHandler = (_element, newTitle, oldTitle) => {
-      if (newTitle !== oldTitle) {
-        if (this.treeElement) {
-          this.treeElement.title = newTitle;
-        }
-        void this.#uiSourceCode.rename(newTitle).then(renameCallback);
-        return;
-      }
-      afterEditing(true);
-    };
-    const renameCallback = (success) => {
-      if (!success) {
-        UI7.UIUtils.markBeingEdited(treeOutlineElement, false);
-        this.updateTitle();
-        this.rename(callback);
-        return;
-      }
-      if (this.treeElement) {
-        const { parent } = this.treeElement;
-        if (parent) {
-          parent.removeChild(this.treeElement);
-          parent.appendChild(this.treeElement);
-          this.navigatorView.selectNode(this);
-        }
-      }
-      afterEditing(true);
-    };
-    const afterEditing = (committed) => {
-      UI7.UIUtils.markBeingEdited(treeOutlineElement, false);
-      this.updateTitle();
-      if (callback) {
-        callback(committed);
-      }
-    };
+    this.#renameCallback = callback;
+    this.navigatorView.startRenamingNode(this);
+    this.isEditing = true;
     this.updateTitle(true);
-    this.treeElement.startEditingTitle(
-      new UI7.InplaceEditor.Config(commitHandler, () => afterEditing(false), void 0)
-    );
+  }
+  #handlePromptCommit(newTitle) {
+    if (this.#disposed || !this.treeElement?.treeOutline) {
+      return;
+    }
+    const oldTitle = this.title;
+    if (newTitle !== oldTitle) {
+      this.isEditing = false;
+      this.title = newTitle;
+      this.navigatorView.stopRenamingNode(this);
+      this.updateTreeElement();
+      void this.#uiSourceCode.rename(newTitle).then(this.#handleRenameCallback.bind(this));
+      return;
+    }
+    this.#afterEditing(true);
+  }
+  #handleRenameCallback(success) {
+    if (this.#disposed) {
+      return;
+    }
+    if (!success) {
+      this.isEditing = false;
+      this.navigatorView.stopRenamingNode(this);
+      this.updateTitle();
+      this.rename(this.#renameCallback);
+      return;
+    }
+    if (this.treeElement) {
+      const { parent } = this.treeElement;
+      if (parent) {
+        parent.removeChild(this.treeElement);
+        parent.appendChild(this.treeElement);
+        this.navigatorView.selectNode(this);
+      }
+    }
+    this.#afterEditing(true);
+  }
+  #handlePromptCancel() {
+    if (this.#disposed) {
+      return;
+    }
+    this.#afterEditing(false);
+  }
+  #afterEditing(committed) {
+    this.isEditing = false;
+    this.navigatorView.stopRenamingNode(this);
+    this.updateTitle();
+    const callback = this.#renameCallback;
+    this.#renameCallback = void 0;
+    if (callback) {
+      callback(committed);
+    }
   }
 };
 var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTreeNode {

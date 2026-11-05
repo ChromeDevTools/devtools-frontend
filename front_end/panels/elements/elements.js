@@ -679,7 +679,6 @@ var Browser;
     PermissionType2["SmartCard"] = "smartCard";
     PermissionType2["SpeakerSelection"] = "speakerSelection";
     PermissionType2["StorageAccess"] = "storageAccess";
-    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
     PermissionType2["VideoCapture"] = "videoCapture";
     PermissionType2["Vr"] = "vr";
     PermissionType2["WakeLockScreen"] = "wakeLockScreen";
@@ -1737,7 +1736,6 @@ var Page;
     PermissionsPolicyFeature2["Autofill"] = "autofill";
     PermissionsPolicyFeature2["Autoplay"] = "autoplay";
     PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
-    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
     PermissionsPolicyFeature2["Camera"] = "camera";
     PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
     PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
@@ -1791,7 +1789,6 @@ var Page;
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
-    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
     PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
     PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
     PermissionsPolicyFeature2["LanguageModel"] = "language-model";
@@ -11350,9 +11347,10 @@ var stylesSidebarPane_css_default = `/**
   color: var(--sys-color-on-surface);
 }
 
+/* 64px (--sys-size-18) matches a 2-row .cls toolbar pane height for full retraction into overflow: hidden. */
 @keyframes styles-element-state-pane-slidein {
   from {
-    margin-top: -60px;
+    margin-top: calc(-1 * var(--sys-size-18));
   }
 
   to {
@@ -11366,7 +11364,7 @@ var stylesSidebarPane_css_default = `/**
   }
 
   to {
-    margin-top: -60px;
+    margin-top: calc(-1 * var(--sys-size-18));
   }
 }
 
@@ -23212,7 +23210,7 @@ var layoutPane_css_default = `/*
     margin-top: var(--sys-size-6);
     color: var(--sys-color-token-tag);
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--sys-size-29), 100%), 1fr));
     gap: var(--sys-size-5);
   }
 

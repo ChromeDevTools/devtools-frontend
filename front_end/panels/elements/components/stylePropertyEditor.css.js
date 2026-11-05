@@ -10,7 +10,7 @@ export default `/*
  */
 
 .container {
-  min-width: 170px;
+  min-width: var(--sys-size-24);
 }
 
 .row {
@@ -66,10 +66,6 @@ export default `/*
   justify-content: center;
   align-items: center;
   cursor: pointer;
-}
-
-.button:focus-visible {
-  outline: auto 5px -webkit-focus-ring-color;
 }
 
 .button devtools-icon {

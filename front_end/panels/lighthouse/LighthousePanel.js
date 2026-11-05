@@ -324,10 +324,25 @@ export class LighthousePanel extends UI.Panel.Panel {
     selectReport(report) {
         this.reportSelector.selectReport(report);
     }
-    static async executeLighthouseRecording(overrides) {
+    static async executeLighthouseRecording(overrides, options) {
+        if (options?.signal?.aborted) {
+            return { status: 'cancelled' };
+        }
         const panel = LighthousePanel.instance();
         await UI.ViewManager.ViewManager.instance().showView('lighthouse');
-        return await panel.handleCompleteRun(overrides);
+        if (options?.signal?.aborted) {
+            return { status: 'cancelled' };
+        }
+        const onAbort = () => {
+            void panel.handleRunCancel();
+        };
+        options?.signal?.addEventListener('abort', onAbort, { once: true });
+        try {
+            return await panel.handleCompleteRun(overrides);
+        }
+        finally {
+            options?.signal?.removeEventListener('abort', onAbort);
+        }
     }
 }
 export class ReportRevealer {

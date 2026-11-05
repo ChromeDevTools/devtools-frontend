@@ -46,6 +46,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/panels/web_audio/WebAudioModel.test.ts",
     "../../../../../../front_end/panels/web_audio/WebAudioView.test.ts",
     "../../../../../../front_end/panels/web_audio/web_audio.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
@@ -59,6 +60,9 @@
     },
     {
       "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../generated/generated-tsconfig.ref.json"

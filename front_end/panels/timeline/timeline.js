@@ -4067,7 +4067,6 @@ var Browser;
     PermissionType2["SmartCard"] = "smartCard";
     PermissionType2["SpeakerSelection"] = "speakerSelection";
     PermissionType2["StorageAccess"] = "storageAccess";
-    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
     PermissionType2["VideoCapture"] = "videoCapture";
     PermissionType2["Vr"] = "vr";
     PermissionType2["WakeLockScreen"] = "wakeLockScreen";
@@ -5125,7 +5124,6 @@ var Page;
     PermissionsPolicyFeature2["Autofill"] = "autofill";
     PermissionsPolicyFeature2["Autoplay"] = "autoplay";
     PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
-    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
     PermissionsPolicyFeature2["Camera"] = "camera";
     PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
     PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
@@ -5179,7 +5177,6 @@ var Page;
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
-    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
     PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
     PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
     PermissionsPolicyFeature2["LanguageModel"] = "language-model";
@@ -8796,7 +8793,7 @@ var timelineMiniMap_css_default = `/*
   position: absolute;
   right: 0;
   bottom: 0;
-  font-size: 9px;
+  font-size: var(--sys-size-5);
   color: var(--sys-color-token-subtle);
   white-space: nowrap;
   padding: 0 var(--sys-size-3);
@@ -12308,16 +12305,34 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       this.#setActiveInsight(null);
     }
   }
-  static async executeRecordAndReload() {
+  static async executeRecordAndReload(options) {
+    if (options?.signal?.aborted) {
+      throw new Error("Recording was aborted");
+    }
     await UI8.ViewManager.ViewManager.instance().showView("timeline");
     await SDK7.TargetManager.TargetManager.instance().primaryPageTarget()?.pageAgent().invoke_bringToFront();
+    if (options?.signal?.aborted) {
+      throw new Error("Recording was aborted");
+    }
     const panelInstance = _TimelinePanel.instance();
-    const result = await new Promise((resolve) => {
-      function listener(e) {
-        resolve(e.data);
+    const result = await new Promise((resolve, reject) => {
+      function cleanup() {
         panelInstance.removeEventListener("RecordingCompleted" /* RECORDING_COMPLETED */, listener);
+        options?.signal?.removeEventListener("abort", onAbort);
+      }
+      function listener(e) {
+        cleanup();
+        resolve(e.data);
+      }
+      function onAbort() {
+        cleanup();
+        if (panelInstance.state === "Recording" /* RECORDING */) {
+          void panelInstance.stopRecording();
+        }
+        reject(new Error("Recording was aborted"));
       }
       panelInstance.addEventListener("RecordingCompleted" /* RECORDING_COMPLETED */, listener);
+      options?.signal?.addEventListener("abort", onAbort, { once: true });
       panelInstance.recordReload();
     });
     if ("errorText" in result) {

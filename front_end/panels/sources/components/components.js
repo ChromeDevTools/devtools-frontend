@@ -67,8 +67,8 @@ var HeadersView_css_default = `/*
   cursor: text;
   color: var(--sys-color-on-surface);
   overflow-wrap: break-word;
-  min-height: 18px;
-  line-height: 18px;
+  min-height: var(--sys-size-8);
+  line-height: var(--sys-size-8);
   min-width: 0.5em;
   background: transparent;
   border: none;

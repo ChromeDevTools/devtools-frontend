@@ -891,7 +891,7 @@ var chatMessage_css_default = `/*
 
   .styling-preview-widget {
     width: 100%;
-    min-height: 100px;
+    min-height: var(--sys-size-19);
   }
 
   .main-widgets-wrapper {
@@ -4271,7 +4271,6 @@ var Browser;
     PermissionType2["SmartCard"] = "smartCard";
     PermissionType2["SpeakerSelection"] = "speakerSelection";
     PermissionType2["StorageAccess"] = "storageAccess";
-    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
     PermissionType2["VideoCapture"] = "videoCapture";
     PermissionType2["Vr"] = "vr";
     PermissionType2["WakeLockScreen"] = "wakeLockScreen";
@@ -5329,7 +5328,6 @@ var Page;
     PermissionsPolicyFeature2["Autofill"] = "autofill";
     PermissionsPolicyFeature2["Autoplay"] = "autoplay";
     PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
-    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
     PermissionsPolicyFeature2["Camera"] = "camera";
     PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
     PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
@@ -5383,7 +5381,6 @@ var Page;
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
-    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
     PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
     PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
     PermissionsPolicyFeature2["LanguageModel"] = "language-model";
@@ -9109,7 +9106,7 @@ var exploreWidget_css_default = `/*
 
         p {
           font: var(--sys-typescale-body4-regular);
-          line-height: 18px;
+          line-height: var(--sys-typescale-body4-line-height);
         }
       }
     }
@@ -10290,13 +10287,20 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
   }
   async #handlePerformanceRecordAndReload() {
-    return await TimelinePanel2.TimelinePanel.TimelinePanel.executeRecordAndReload();
+    return await TimelinePanel2.TimelinePanel.TimelinePanel.executeRecordAndReload({
+      signal: this.#runAbortController.signal
+    });
   }
   async #handleLighthouseRun(overrides) {
-    return await LighthousePanel2.LighthousePanel.LighthousePanel.executeLighthouseRecording({
-      isAIControlled: true,
-      ...overrides
-    });
+    return await LighthousePanel2.LighthousePanel.LighthousePanel.executeLighthouseRecording(
+      {
+        isAIControlled: true,
+        ...overrides
+      },
+      {
+        signal: this.#runAbortController.signal
+      }
+    );
   }
   #getDefaultConversationType() {
     const { hostConfig } = Root4.Runtime;
@@ -10478,6 +10482,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     );
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
+    if (AiAssistanceModel8.AiUtils.isNaturalLanguageInterfaceEnabled()) {
+      void VisualLogging9.logFunctionCall("ai-allowed-tools-count", String(this.#alwaysAllowedTools.list().length));
+    }
     Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistancePanelOpened);
   }
   willHide() {
@@ -11095,6 +11102,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       let announcedAnswerLoading = false;
       let announcedAnswerReady = false;
       for await (const data of items) {
+        const toolNameForLogging = "toolName" in data && data.toolName !== void 0 ? Platform5.StringUtilities.toKebabCase(data.toolName) : void 0;
         switch (data.type) {
           case AiAssistanceModel8.AiAgent.ResponseType.USER_QUERY: {
             this.#messages.push({
@@ -11170,7 +11178,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             const approvalStep = step;
             approvalStep.javascriptCode = data.javascriptCode;
             const promptShownAt = performance.now();
-            const toolNameForLogging = data.toolName !== void 0 ? Platform5.StringUtilities.toKebabCase(data.toolName) : void 0;
             approvalStep.state = {
               type: "needs_approval",
               sideEffectDialog: {
@@ -11213,16 +11220,18 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             step.output ??= data.output;
             step.widgets ??= data.widgets;
             commitStep();
-            if (AiAssistanceModel8.AiUtils.isAiV2Enabled() && !this.#conversation?.isReadOnly) {
-              if (data.toolName === "learnSkills") {
-                for (const skill of data.loadedSkills ?? []) {
-                  void VisualLogging9.logFunctionCall("ai-v2-learn-skill", skill);
+            if (!this.#conversation?.isReadOnly) {
+              if (AiAssistanceModel8.AiUtils.isAiV2Enabled()) {
+                if (data.toolName === "learnSkills") {
+                  for (const skill of data.loadedSkills ?? []) {
+                    void VisualLogging9.logFunctionCall("ai-v2-learn-skill", skill);
+                  }
+                } else if (toolNameForLogging) {
+                  void VisualLogging9.logFunctionCall("ai-v2-tool-call", toolNameForLogging);
                 }
-              } else if (data.toolName) {
-                void VisualLogging9.logFunctionCall(
-                  "ai-v2-tool-call",
-                  Platform5.StringUtilities.toKebabCase(data.toolName)
-                );
+              }
+              if (AiAssistanceModel8.AiUtils.isNaturalLanguageInterfaceEnabled() && data.autoApproved) {
+                void VisualLogging9.logFunctionCall("ai-permission-auto-allowed", toolNameForLogging);
               }
             }
             break;
@@ -11283,11 +11292,13 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             break;
           }
           case AiAssistanceModel8.AiAgent.ResponseType.CONTEXT_CHANGE: {
-            if (AiAssistanceModel8.AiUtils.isAiV2Enabled() && !this.#conversation?.isReadOnly && data.toolName) {
-              void VisualLogging9.logFunctionCall(
-                "ai-v2-tool-call",
-                Platform5.StringUtilities.toKebabCase(data.toolName)
-              );
+            if (!this.#conversation?.isReadOnly) {
+              if (AiAssistanceModel8.AiUtils.isAiV2Enabled() && toolNameForLogging) {
+                void VisualLogging9.logFunctionCall("ai-v2-tool-call", toolNameForLogging);
+              }
+              if (AiAssistanceModel8.AiUtils.isNaturalLanguageInterfaceEnabled() && data.autoApproved) {
+                void VisualLogging9.logFunctionCall("ai-permission-auto-allowed", toolNameForLogging);
+              }
             }
             this.#handleConversationContextChange(data.context);
             step.state = { type: "completed" };

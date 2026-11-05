@@ -11,6 +11,7 @@ __export(LinearMemoryHighlightChipList_exports, {
 });
 import "../../../ui/kit/kit.js";
 import * as i18n from "../../../core/i18n/i18n.js";
+import * as Buttons from "../../../ui/components/buttons/buttons.js";
 import * as UI from "../../../ui/legacy/legacy.js";
 import { Directives, html, render } from "../../../ui/lit/lit.js";
 import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
@@ -58,23 +59,7 @@ var linearMemoryHighlightChipList_css_default = `/*
   border-radius: var(--sys-shape-corner-extra-small);
   width: var(--sys-size-11);
   align-items: center;
-  justify-content: center;
-}
-
-.delete-highlight-button {
-  cursor: pointer;
-  width: var(--sys-size-7);
-  height: var(--sys-size-7);
-  border: none;
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.delete-highlight-button:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-  border-radius: var(--sys-shape-corner-full);
+  justify-content: flex-end;
 }
 
 .jump-to-highlight-button {
@@ -86,15 +71,6 @@ var linearMemoryHighlightChipList_css_default = `/*
   align-items: center;
   max-width: 100%;
   overflow: hidden;
-}
-
-.delete-highlight-button devtools-icon {
-  width: var(--sys-size-7);
-  height: var(--sys-size-7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--sys-shape-corner-full);
 }
 
 .source-code {
@@ -192,12 +168,16 @@ function renderChip(highlightInfo, input) {
         </span>
       </button>
       <div class="delete-highlight-container">
-        <button class="delete-highlight-button" title=${i18nString(UIStrings.deleteHighlight)}
-            jslog=${VisualLogging.action("linear-memory-inspector.delete-highlight").track({ click: true })}
+        <devtools-button class="delete-highlight-button"
+            .data=${{
+    variant: Buttons.Button.Variant.ICON,
+    iconName: "cross",
+    size: Buttons.Button.Size.MICRO,
+    title: i18nString(UIStrings.deleteHighlight),
+    jslogContext: "linear-memory-inspector.delete-highlight"
+  }}
             @click=${() => input.onDeleteHighlight(highlightInfo)}>
-          <devtools-icon name="cross" class="medium">
-          </devtools-icon>
-        </button>
+        </devtools-button>
       </div>
     </div>`;
 }
@@ -350,7 +330,7 @@ __export(LinearMemoryNavigator_exports, {
 });
 import "../../../ui/kit/kit.js";
 import * as i18n3 from "../../../core/i18n/i18n.js";
-import * as Buttons from "../../../ui/components/buttons/buttons.js";
+import * as Buttons2 from "../../../ui/components/buttons/buttons.js";
 import * as UI2 from "../../../ui/legacy/legacy.js";
 import * as Lit from "../../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
@@ -543,7 +523,7 @@ function createButton(data) {
   return html2`
     <devtools-button class="navigator-button"
       .data=${{
-    variant: Buttons.Button.Variant.ICON,
+    variant: Buttons2.Button.Variant.ICON,
     iconName: data.icon,
     disabled: !data.enabled
   }}
@@ -671,7 +651,7 @@ __export(LinearMemoryValueInterpreter_exports, {
 import "../../../ui/kit/kit.js";
 import * as i18n11 from "../../../core/i18n/i18n.js";
 import * as Platform3 from "../../../core/platform/platform.js";
-import * as Buttons3 from "../../../ui/components/buttons/buttons.js";
+import * as Buttons4 from "../../../ui/components/buttons/buttons.js";
 import * as UI5 from "../../../ui/legacy/legacy.js";
 import * as Lit4 from "../../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
@@ -737,7 +717,7 @@ __export(ValueInterpreterDisplay_exports, {
 });
 import "../../../ui/kit/kit.js";
 import * as i18n7 from "../../../core/i18n/i18n.js";
-import * as Buttons2 from "../../../ui/components/buttons/buttons.js";
+import * as Buttons3 from "../../../ui/components/buttons/buttons.js";
 import * as UI3 from "../../../ui/legacy/legacy.js";
 import * as Lit2 from "../../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
@@ -1067,9 +1047,9 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                   .disabled=${jumpDisabled}
                   jslog=${VisualLogging3.action("linear-memory-inspector.jump-to-address").track({ click: true })}
                   @click=${() => input.onJumpToAddressClicked(Number(address))}
-                  .variant=${Buttons2.Button.Variant.ICON_TOGGLE}
+                  .variant=${Buttons3.Button.Variant.ICON_TOGGLE}
                   .iconName=${"open-externally"}
-                  .size=${Buttons2.Button.Size.SMALL}>
+                  .size=${Buttons3.Button.Size.SMALL}>
                 </devtools-button>
               </div>
             </div>` : nothing;
@@ -1361,8 +1341,8 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             jslog=${VisualLogging5.toggleSubpane("linear-memory-inspector.toggle-value-settings").track({ click: true })}
             .iconName=${"gear"}
             .toggledIconName=${"gear-filled"}
-            .toggleType=${Buttons3.Button.ToggleType.PRIMARY}
-            .variant=${Buttons3.Button.Variant.ICON_TOGGLE}
+            .toggleType=${Buttons4.Button.ToggleType.PRIMARY}
+            .variant=${Buttons4.Button.Variant.ICON_TOGGLE}
         ></devtools-button>
       </div>
       <span class="divider"></span>

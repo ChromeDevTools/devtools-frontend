@@ -424,7 +424,7 @@ export default `/*
 
   .styling-preview-widget {
     width: 100%;
-    min-height: 100px;
+    min-height: var(--sys-size-19);
   }
 
   .main-widgets-wrapper {

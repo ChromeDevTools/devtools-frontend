@@ -13,6 +13,7 @@ accessibility/a11y-form-label.test.js
 accessibility/a11y-heading-order.test.js
 accessibility/a11y-image-alt.test.js
 accessibility/a11y-link-in-text-block.test.js
+console/console-indexeddb-missing-object-store.test.js
 elements/extraction-background-image-url.test.js
 elements/extraction-border-radius-padding.test.js
 elements/extraction-font-and-color.test.js
@@ -59,6 +60,17 @@ performance/lcp-load-delay-low-priority.test.js
 performance/lcp-load-delay-request-chain.test.js
 performance/lcp-load-duration-large-font.test.js
 performance/lcp-load-duration-large-image.test.js
+performance/lcp-render-delay-forced-reflow.test.js
+performance/lcp-render-delay-layout-paint.test.js
+performance/lcp-render-delay-long-scripting.test.js
+performance/lcp-render-delay-thousand-cuts.test.js
+performance/perf-problems-backend-latency.test.js
+performance/perf-problems-bad-cls.test.js
+performance/perf-problems-bad-inp.test.js
+performance/perf-problems-bad-lcp.test.js
+performance/perf-problems-low-lighthouse-score.test.js
+performance/perf-problems-memory-leak.test.js
+performance/perf-problems-smoothness-fps.test.js
 sources/sources-add-to-cart-handler.test.js
 sources/sources-blank-screen-render.test.js
 sources/sources-canvas-signature-locator.test.js

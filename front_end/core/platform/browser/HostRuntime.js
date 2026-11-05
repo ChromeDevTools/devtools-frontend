@@ -128,7 +128,12 @@ export const HOST_RUNTIME = {
         return navigator.userAgent;
     },
     getLocalStorage() {
-        return 'localStorage' in globalThis ? globalThis.localStorage : undefined;
+        try {
+            return 'localStorage' in globalThis ? globalThis.localStorage : undefined;
+        }
+        catch {
+            return undefined;
+        }
     },
     getCacheStorage() {
         return 'caches' in globalThis ? globalThis.caches : undefined;

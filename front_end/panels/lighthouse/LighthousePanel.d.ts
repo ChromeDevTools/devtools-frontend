@@ -54,7 +54,9 @@ export declare class LighthousePanel extends UI.Panel.Panel {
     elementsToRestoreScrollPositionsFor(): Element[];
     private onKeyDown;
     selectReport(report: LighthouseModel.ReporterTypes.ReportJSON): void;
-    static executeLighthouseRecording(overrides?: LighthouseModel.RunTypes.RunOverrides): Promise<LighthouseModel.RunTypes.RunResult>;
+    static executeLighthouseRecording(overrides?: LighthouseModel.RunTypes.RunOverrides, options?: {
+        signal?: AbortSignal;
+    }): Promise<LighthouseModel.RunTypes.RunResult>;
 }
 export declare class ReportRevealer implements Common.Revealer.Revealer<ActiveLighthouseReport> {
     reveal(report: ActiveLighthouseReport): Promise<void>;

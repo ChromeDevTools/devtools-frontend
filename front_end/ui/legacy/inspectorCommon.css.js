@@ -310,7 +310,8 @@ input[type='range']::-webkit-slider-thumb,
   border: 0;
   width: var(--sys-size-6);
   height: var(--sys-size-6);
-  margin-top: -5px;
+  /* Center 12px (--sys-size-6) thumb over 2px (--sys-size-2) track: (2px - 12px) / 2 = -5px. */
+  margin-top: calc((var(--sys-size-2) - var(--sys-size-6)) / 2);
   border-radius: var(--sys-shape-corner-full);
   background-color: var(--sys-color-primary);
 }
@@ -552,7 +553,7 @@ dt-icon-label {
   background-color: var(--sys-color-tonal-container);
   color: var(--sys-color-on-tonal-container);
   font-weight: var(--ref-typeface-weight-bold);
-  font-size: 9px;
+  font-size: var(--sys-typescale-label-size);
   text-align: center;
 }
 

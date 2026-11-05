@@ -118,10 +118,6 @@ export default `/*
   user-select: text;
 }
 
-.database-query-result.error .prompt-icon {
-  margin-top: -9px;
-}
-
 .resources-sidebar {
   padding: 0;
   overflow-x: auto;

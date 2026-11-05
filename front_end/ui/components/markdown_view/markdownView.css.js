@@ -62,10 +62,6 @@ devtools-code-block.animating {
   padding-inline-start: var(--sys-size-8);
 }
 
-.message ul ul {
-  padding-inline-start: 19px;
-}
-
 .message li {
   margin-top: var(--sys-size-5);
   display: list-item;
@@ -105,7 +101,7 @@ devtools-code-block.animating {
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background-color: var(--code-background-color, var(--sys-color-surface4));
   border-radius: var(--sys-size-2);
-  padding: var(--sys-size-1) 3px;
+  padding: var(--sys-size-1) var(--sys-size-3);
 }
 
 devtools-code-block {

@@ -42,10 +42,6 @@ button.link {
   height: var(--sys-size-8);
 }
 
-button.link:has(devtools-icon) {
-  margin-top: 5px;
-}
-
 devtools-button.help-button {
   top: var(--sys-size-3);
   position: relative;

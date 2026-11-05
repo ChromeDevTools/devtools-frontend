@@ -137,7 +137,11 @@ var HOST_RUNTIME = {
     return navigator.userAgent;
   },
   getLocalStorage() {
-    return "localStorage" in globalThis ? globalThis.localStorage : void 0;
+    try {
+      return "localStorage" in globalThis ? globalThis.localStorage : void 0;
+    } catch {
+      return void 0;
+    }
   },
   getCacheStorage() {
     return "caches" in globalThis ? globalThis.caches : void 0;

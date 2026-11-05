@@ -230,6 +230,10 @@ export interface ContextChangeResponse {
      * to emit UI telemetry.
      */
     toolName?: string;
+    /**
+     * True when the call skipped a permission prompt via `AlwaysAllowedTools`.
+     */
+    autoApproved?: boolean;
 }
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {
 }
@@ -270,6 +274,10 @@ export interface ActionResponse extends ToolCallEvent {
      * `ai-v2-learn-skill` visual logging events.
      */
     loadedSkills?: string[];
+    /**
+     * True when the call skipped a permission prompt via `AlwaysAllowedTools`.
+     */
+    autoApproved?: boolean;
 }
 /**
  * Yielded before each model request. The panel starts a new step for it.

@@ -187,7 +187,9 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
      */
     revealInsight(insightModel: Trace.Insights.Types.InsightModel): void;
     revealCoreVitals(revealable: Utils.Helpers.RevealableCoreVitals): void;
-    static executeRecordAndReload(): Promise<Trace.TraceModel.ParsedTrace>;
+    static executeRecordAndReload(options?: {
+        signal?: AbortSignal;
+    }): Promise<Trace.TraceModel.ParsedTrace>;
 }
 export declare const enum State {
     IDLE = "Idle",

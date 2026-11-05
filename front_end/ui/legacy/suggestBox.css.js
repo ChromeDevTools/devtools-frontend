@@ -18,7 +18,8 @@ export default `/*
   flex: auto;
   background-color: var(--sys-color-cdt-base-container);
   pointer-events: auto;
-  margin-left: -3px;
+  /* Compensate for .suggest-box-content-item border and left padding so suggestion text aligns with the anchor word. */
+  margin-left: calc(-2 * var(--sys-size-1));
   box-shadow: var(--drop-shadow);
   overflow-x: hidden;
 }

@@ -684,7 +684,7 @@ var cssPropertyDocsView_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .docs-popup-wrapper {
-    max-width: 420px;
+    max-width: var(--sys-size-32);
     font-size: var(--sys-typescale-body4-size);
     line-height: 1.4;
   }
@@ -2525,7 +2525,7 @@ var stylePropertyEditor_css_default = `/*
  */
 
 .container {
-  min-width: 170px;
+  min-width: var(--sys-size-24);
 }
 
 .row {
@@ -2581,10 +2581,6 @@ var stylePropertyEditor_css_default = `/*
   justify-content: center;
   align-items: center;
   cursor: pointer;
-}
-
-.button:focus-visible {
-  outline: auto 5px -webkit-focus-ring-color;
 }
 
 .button devtools-icon {

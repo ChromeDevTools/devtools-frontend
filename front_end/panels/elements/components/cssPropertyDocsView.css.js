@@ -11,7 +11,7 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .docs-popup-wrapper {
-    max-width: 420px;
+    max-width: var(--sys-size-32);
     font-size: var(--sys-typescale-body4-size);
     line-height: 1.4;
   }

@@ -900,7 +900,6 @@ var Browser;
     PermissionType2["SmartCard"] = "smartCard";
     PermissionType2["SpeakerSelection"] = "speakerSelection";
     PermissionType2["StorageAccess"] = "storageAccess";
-    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
     PermissionType2["VideoCapture"] = "videoCapture";
     PermissionType2["Vr"] = "vr";
     PermissionType2["WakeLockScreen"] = "wakeLockScreen";
@@ -1958,7 +1957,6 @@ var Page;
     PermissionsPolicyFeature2["Autofill"] = "autofill";
     PermissionsPolicyFeature2["Autoplay"] = "autoplay";
     PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
-    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
     PermissionsPolicyFeature2["Camera"] = "camera";
     PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
     PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
@@ -2012,7 +2010,6 @@ var Page;
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
-    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
     PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
     PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
     PermissionsPolicyFeature2["LanguageModel"] = "language-model";
@@ -6175,10 +6172,24 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
   selectReport(report) {
     this.reportSelector.selectReport(report);
   }
-  static async executeLighthouseRecording(overrides) {
+  static async executeLighthouseRecording(overrides, options) {
+    if (options?.signal?.aborted) {
+      return { status: "cancelled" };
+    }
     const panel = _LighthousePanel.instance();
     await UI8.ViewManager.ViewManager.instance().showView("lighthouse");
-    return await panel.handleCompleteRun(overrides);
+    if (options?.signal?.aborted) {
+      return { status: "cancelled" };
+    }
+    const onAbort = () => {
+      void panel.handleRunCancel();
+    };
+    options?.signal?.addEventListener("abort", onAbort, { once: true });
+    try {
+      return await panel.handleCompleteRun(overrides);
+    } finally {
+      options?.signal?.removeEventListener("abort", onAbort);
+    }
   }
 };
 var ReportRevealer = class {

@@ -2279,7 +2279,6 @@ export declare namespace Browser {
         SmartCard = "smartCard",
         SpeakerSelection = "speakerSelection",
         StorageAccess = "storageAccess",
-        TopLevelStorageAccess = "topLevelStorageAccess",
         VideoCapture = "videoCapture",
         Vr = "vr",
         WakeLockScreen = "wakeLockScreen",
@@ -13707,7 +13706,6 @@ export declare namespace Page {
         Autofill = "autofill",
         Autoplay = "autoplay",
         Bluetooth = "bluetooth",
-        BrowsingTopics = "browsing-topics",
         Camera = "camera",
         CapturedSurfaceControl = "captured-surface-control",
         ChDpr = "ch-dpr",
@@ -13761,7 +13759,6 @@ export declare namespace Page {
         Hid = "hid",
         IdentityCredentialsGet = "identity-credentials-get",
         IdleDetection = "idle-detection",
-        InterestCohort = "interest-cohort",
         KeyboardMap = "keyboard-map",
         LanguageDetector = "language-detector",
         LanguageModel = "language-model",
@@ -19006,9 +19003,19 @@ export declare namespace WebMCP {
         Error = "Error"
     }
     /**
+     * Unique identifier of a registered tool. A new identifier is created every time a tool is registered, so a tool that
+     * is unregistered and then registered again under the same name gets a different identifier. Clients should treat it
+     * as an opaque string.
+     */
+    type ToolId = OpaqueIdentifier<string, 'Protocol.WebMCP.ToolId'>;
+    /**
      * Definition of a tool that can be invoked.
      */
     interface Tool {
+        /**
+         * Tool identifier.
+         */
+        toolId: ToolId;
         /**
          * Tool name.
          */
@@ -19021,6 +19028,10 @@ export declare namespace WebMCP {
          * Schema for the tool's input parameters.
          */
         inputSchema?: any;
+        /**
+         * Schema for the tool's output structure.
+         */
+        outputSchema?: any;
         /**
          * Optional annotations for the tool.
          */
@@ -19042,6 +19053,10 @@ export declare namespace WebMCP {
      * Definition of a tool that was removed.
      */
     interface RemovedTool {
+        /**
+         * Identifier of the removed tool.
+         */
+        toolId: ToolId;
         /**
          * Tool name.
          */
@@ -19100,10 +19115,6 @@ export declare namespace WebMCP {
      */
     interface ToolInvokedEvent {
         /**
-         * Name of the tool to invoke.
-         */
-        toolName: string;
-        /**
          * Frame id
          */
         frameId: Page.FrameId;
@@ -19115,6 +19126,16 @@ export declare namespace WebMCP {
          * The input parameters used for the invocation.
          */
         input: string;
+        /**
+         * Name of the tool to invoke. Missing if the tool was invoked by its identifier, but could not be found (e.g.,
+         * it was already unregistered), so its name could not be recovered.
+         */
+        toolName?: string;
+        /**
+         * Identifier of the tool to invoke. Missing if the tool was invoked by name, but could not be found, so its
+         * identifier could not be recovered.
+         */
+        toolId?: ToolId;
     }
     /**
      * Event fired when a tool invocation completes or fails.

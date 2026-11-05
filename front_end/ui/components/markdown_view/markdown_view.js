@@ -49,7 +49,7 @@ var codeBlock_css_default = `/*
 .codeblock .editor-wrapper {
   color: var(--sys-color-on-surface);
   background: var(--code-block-background-color, var(--sys-color-surface2)); /* stylelint-disable-line plugin/use_theme_colors */
-  padding: 10px 5px 0;
+  padding: var(--sys-size-5) var(--sys-size-4) 0;
   border-bottom-left-radius: var(--sys-shape-corner-extra-small);
   border-bottom-right-radius: var(--sys-shape-corner-extra-small);
 }
@@ -697,10 +697,6 @@ devtools-code-block.animating {
   padding-inline-start: var(--sys-size-8);
 }
 
-.message ul ul {
-  padding-inline-start: 19px;
-}
-
 .message li {
   margin-top: var(--sys-size-5);
   display: list-item;
@@ -740,7 +736,7 @@ devtools-code-block.animating {
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background-color: var(--code-background-color, var(--sys-color-surface4));
   border-radius: var(--sys-size-2);
-  padding: var(--sys-size-1) 3px;
+  padding: var(--sys-size-1) var(--sys-size-3);
 }
 
 devtools-code-block {

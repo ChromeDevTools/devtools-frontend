@@ -29,7 +29,7 @@ export default `/*
 
 .report-header devtools-toolbar {
   margin-bottom: calc(-1 * var(--sys-size-5));
-  margin-top: 5px;
+  margin-top: var(--sys-size-3);
   margin-left: calc(-1 * var(--sys-size-5));
 }
 

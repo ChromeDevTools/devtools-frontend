@@ -100,7 +100,7 @@ export default `/*
   align-content: center;
 
   &:has(.badge) {
-    width: 17px;
+    width: fit-content;
     margin-left: var(--sys-size-2);
   }
 

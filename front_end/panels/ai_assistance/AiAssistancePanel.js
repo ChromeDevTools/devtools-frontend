@@ -734,12 +734,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
     }
     async #handlePerformanceRecordAndReload() {
-        return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
+        return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload({
+            signal: this.#runAbortController.signal,
+        });
     }
     async #handleLighthouseRun(overrides) {
         return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({
             isAIControlled: true,
             ...overrides,
+        }, {
+            signal: this.#runAbortController.signal,
         });
     }
     #getDefaultConversationType() {
@@ -901,6 +905,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         UI.Context.Context.instance().addFlavorChangeListener(TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
         this.#bindTimelineTraceListener();
         this.#selectDefaultAgentIfNeeded();
+        if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled()) {
+            void VisualLogging.logFunctionCall('ai-allowed-tools-count', String(this.#alwaysAllowedTools.list().length));
+        }
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
     }
     willHide() {
@@ -1507,6 +1514,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             let announcedAnswerLoading = false;
             let announcedAnswerReady = false;
             for await (const data of items) {
+                const toolNameForLogging = 'toolName' in data && data.toolName !== undefined ?
+                    Platform.StringUtilities.toKebabCase(data.toolName) :
+                    undefined;
                 switch (data.type) {
                     case "user-query" /* AiAssistanceModel.AiAgent.ResponseType.USER_QUERY */: {
                         this.#messages.push({
@@ -1591,7 +1601,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         const approvalStep = step;
                         approvalStep.javascriptCode = data.javascriptCode;
                         const promptShownAt = performance.now();
-                        const toolNameForLogging = data.toolName !== undefined ? Platform.StringUtilities.toKebabCase(data.toolName) : undefined;
                         approvalStep.state = {
                             type: 'needs_approval',
                             sideEffectDialog: {
@@ -1636,14 +1645,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         step.output ??= data.output;
                         step.widgets ??= data.widgets;
                         commitStep();
-                        if (AiAssistanceModel.AiUtils.isAiV2Enabled() && !this.#conversation?.isReadOnly) {
-                            if (data.toolName === 'learnSkills') {
-                                for (const skill of data.loadedSkills ?? []) {
-                                    void VisualLogging.logFunctionCall('ai-v2-learn-skill', skill);
+                        if (!this.#conversation?.isReadOnly) {
+                            if (AiAssistanceModel.AiUtils.isAiV2Enabled()) {
+                                if (data.toolName === 'learnSkills') {
+                                    for (const skill of data.loadedSkills ?? []) {
+                                        void VisualLogging.logFunctionCall('ai-v2-learn-skill', skill);
+                                    }
+                                }
+                                else if (toolNameForLogging) {
+                                    void VisualLogging.logFunctionCall('ai-v2-tool-call', toolNameForLogging);
                                 }
                             }
-                            else if (data.toolName) {
-                                void VisualLogging.logFunctionCall('ai-v2-tool-call', Platform.StringUtilities.toKebabCase(data.toolName));
+                            if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() && data.autoApproved) {
+                                void VisualLogging.logFunctionCall('ai-permission-auto-allowed', toolNameForLogging);
                             }
                         }
                         break;
@@ -1712,8 +1726,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         break;
                     }
                     case "context-change" /* AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE */: {
-                        if (AiAssistanceModel.AiUtils.isAiV2Enabled() && !this.#conversation?.isReadOnly && data.toolName) {
-                            void VisualLogging.logFunctionCall('ai-v2-tool-call', Platform.StringUtilities.toKebabCase(data.toolName));
+                        if (!this.#conversation?.isReadOnly) {
+                            if (AiAssistanceModel.AiUtils.isAiV2Enabled() && toolNameForLogging) {
+                                void VisualLogging.logFunctionCall('ai-v2-tool-call', toolNameForLogging);
+                            }
+                            if (AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled() && data.autoApproved) {
+                                void VisualLogging.logFunctionCall('ai-permission-auto-allowed', toolNameForLogging);
+                            }
                         }
                         this.#handleConversationContextChange(data.context);
                         step.state = { type: 'completed' };

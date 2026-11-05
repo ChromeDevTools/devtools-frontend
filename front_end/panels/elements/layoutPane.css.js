@@ -84,7 +84,7 @@ export default `/*
     margin-top: var(--sys-size-6);
     color: var(--sys-color-token-tag);
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--sys-size-29), 100%), 1fr));
     gap: var(--sys-size-5);
   }
 

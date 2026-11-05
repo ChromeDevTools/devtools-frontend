@@ -603,6 +603,7 @@ panels/profiler/HeapProfileView.test.js
 panels/profiler/HeapSnapshotDataGrids.test.js
 panels/profiler/HeapSnapshotView.test.js
 panels/profiler/HeapTimelineOverview.test.js
+panels/profiler/ProfileFlameChartDataProvider.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js
 panels/recorder/CreateRecordingView.test.js
@@ -745,6 +746,7 @@ panels/timeline/utils/IgnoreList.test.js
 panels/timeline/utils/ImageCache.test.js
 panels/timeline/utils/Treemap.test.js
 panels/utils/utils.test.js
+panels/web_audio/WebAudioModel.test.js
 panels/web_audio/WebAudioView.test.js
 panels/web_audio/web_audio.test.js
 panels/webauthn/WebauthnPane.test.js

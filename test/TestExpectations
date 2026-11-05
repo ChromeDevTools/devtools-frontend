@@ -17,5 +17,11 @@
 # crbug.com/1234567 [ mac ] front_end/panels/elements/ElementsPanel.test.ts [ Failure ]
 
 crbug.com/581810128 [ linux mac win32 ] test/e2e/performance/landing-page.test.ts:the_performance_panel_landing_page:ignores_metrics_from_iframes [ Failure Pass ]
-
 crbug.com/581819172 [ linux ] test/e2e/console/console-errors.test.ts:the_console's_errors:shows_errors_to_load_a_resource [ Failure Pass ]
+crbug.com/581852730 [ mac ] test/e2e/network/network-search.test.ts:the_network_tab_search:can_search_request_bodies_with_case-insensitive_text [ Failure Pass ]
+crbug.com/581845866 [ linux ] test/e2e/ai_assistance/ai_assistance.test.ts:ai_assistance:gets_data_about_elements [ Failure Pass ]
+crbug.com/581839387 [ mac ] test/e2e/elements/classes-pane.test.ts:the_classes_pane:can_add_a_class_to_the_element [ Failure Pass ]
+crbug.com/581834564 [ linux mac win32 ] test/e2e/coverage/coverage.test.ts:the_coverage_panel:shows_completely_uncovered_css_files [ Failure Pass ]
+crbug.com/581828366 [ mac ] test/e2e/lighthouse/devtools-settings.test.ts:devtools:device_emulation:is_restored_after_a_lighthouse_run [ Failure Pass ]
+crbug.com/581823781 [ mac ] test/e2e/recorder/ui.test.ts:recorder:ui:shortcuts:should_toggle_code_view_with_shortcut [ Failure Pass ]
+crbug.com/581815669 [ mac ] test/e2e/elements/classes-pane.test.ts:the_classes_pane:removes_the_previewed_classes_on_esc [ Failure Pass ]

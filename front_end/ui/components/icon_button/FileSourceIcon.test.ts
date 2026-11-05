@@ -32,4 +32,27 @@ describe('FileSourceIcon', () => {
     assert.exists(icon);
     assert.strictEqual(icon.getAttribute('name'), 'document');
   });
+
+  it('preserves data and renders correctly when cloned', async () => {
+    const component = new IconButton.FileSourceIcon.FileSourceIcon();
+    component.data = {
+      iconType: 'document',
+      contentType: 'js',
+      hasDotBadge: true,
+      isDotPurple: true,
+    };
+
+    const clone = component.cloneNode(true) as IconButton.FileSourceIcon.FileSourceIcon;
+    assert.deepEqual(clone.data, component.data);
+
+    renderElementIntoDOM(clone);
+    assert.isNotNull(clone.shadowRoot);
+
+    const icon = clone.shadowRoot.querySelector('devtools-icon');
+    assert.exists(icon);
+    assert.strictEqual(icon.getAttribute('name'), 'document');
+    assert.isTrue(icon.classList.contains('dot'));
+    assert.isTrue(icon.classList.contains('purple'));
+    assert.isTrue(icon.classList.contains('js'));
+  });
 });

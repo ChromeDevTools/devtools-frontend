@@ -43,6 +43,12 @@ export class FileSourceIcon extends HTMLElement {
     };
   }
 
+  override cloneNode(deep?: boolean): Node {
+    const node = document.importNode(this, deep);
+    node.data = this.data;
+    return node;
+  }
+
   connectedCallback(): void {
     this.#render();
   }

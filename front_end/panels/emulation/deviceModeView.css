@@ -338,7 +338,7 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-top .device-mode-ruler-marker.device-mode-ruler-marker-large {
-  height: 15px;
+  height: var(--sys-size-7);
 }
 
 .device-mode-ruler-left .device-mode-ruler-marker {

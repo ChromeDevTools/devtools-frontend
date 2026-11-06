@@ -15,7 +15,6 @@ generate_css("css_files") {
     "accessibilityNode.css",
     "accessibilityProperties.css",
     "accessibilitySidebarView.css",
-    "axBreadcrumbs.css",
   ]
 }
 

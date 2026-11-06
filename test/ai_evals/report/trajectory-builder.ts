@@ -29,13 +29,19 @@ export interface Thought {
   timestamp: number;
 }
 
+export interface ToolCallResult {
+  result?: unknown;
+  error?: string;
+  [key: string]: unknown;
+}
+
 export interface ToolCall {
   name: string;
   args: Record<string, unknown>;
   timestamp: number;
   duration?: number;
   status?: 'success'|'error';
-  result?: unknown;
+  result?: ToolCallResult;
 }
 
 export interface TurnTokens {
@@ -89,7 +95,7 @@ export interface RawRequest {
       text?: string,
       functionResponse?: {
         name: string,
-        response: Record<string, unknown>,
+        response: ToolCallResult,
       },
     }>,
   };
@@ -339,7 +345,7 @@ function buildThoughts(functionCalls: RawFunctionCall[], timestamp: number): Tur
 function attachToolResultToLastTurn(
     turns: Turn[],
     toolName: string,
-    response: unknown,
+    response: ToolCallResult,
     resultTimestamp: number,
     ): void {
   const prevTurn = turns.at(-1);
@@ -350,7 +356,7 @@ function attachToolResultToLastTurn(
       toolCall.duration = resultTimestamp - toolCall.timestamp;
       toolCall.timestamp = resultTimestamp;
       toolCall.result = response;
-      toolCall.status = (response && typeof response === 'object' && 'error' in response) ? 'error' : 'success';
+      toolCall.status = 'error' in response ? 'error' : 'success';
     }
   }
 }
@@ -458,12 +464,40 @@ export function getMarkdownConversation(example: Trajectory): string {
   return markdown;
 }
 
+function formatToolResult(result: ToolCallResult): string {
+  const keys = Object.keys(result);
+  const value = (keys.length === 1 && keys[0] === 'result') ? result.result : result;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+      try {
+        return JSON.stringify(JSON.parse(trimmed), null, 2);
+      } catch (err) {
+        console.warn(`Failed to parse JSON-like tool result in formatChatLog: ${err}`);
+      }
+    }
+    return value;
+  }
+  return JSON.stringify(value);
+}
+
 /**
  * Formats a trajectory into a clean, human-readable plaintext chat log.
- * Shows user queries, agent explanations, and any tool calls/results.
+ * Shows user queries, agent explanations, turn metadata, and readable tool calls/results.
  */
 export function formatChatLog(trajectory: Trajectory): string {
   const parts: string[] = [];
+  const headerItems: string[] = [];
+  if (trajectory.metadata?.task_id) {
+    headerItems.push(`Task: ${trajectory.metadata.task_id}`);
+  }
+  if (trajectory.metadata?.model) {
+    headerItems.push(`Model: ${trajectory.metadata.model}`);
+  }
+  if (headerItems.length > 0 && trajectory.data.length > 0) {
+    parts.push(headerItems.join(' | '));
+    parts.push('');
+  }
   for (const turn of trajectory.data) {
     if (turn.role === 'user') {
       parts.push('User:');
@@ -471,7 +505,15 @@ export function formatChatLog(trajectory: Trajectory): string {
         parts.push(turn.content.join('\n'));
       }
     } else {
-      parts.push('Agent:');
+      const turnMeta: string[] = [];
+      if (turn.duration !== undefined && turn.duration > 0) {
+        const durationSec = turn.duration / 1_000_000;
+        turnMeta.push(`duration=${durationSec.toFixed(2)}s`);
+      }
+      if (turn.tokens?.total !== undefined) {
+        turnMeta.push(`tokens=${turn.tokens.total}`);
+      }
+      parts.push(turnMeta.length > 0 ? `Agent (${turnMeta.join(', ')}):` : 'Agent:');
       if (turn.thoughts?.length) {
         for (const thought of turn.thoughts) {
           if (thought.description) {
@@ -487,8 +529,12 @@ export function formatChatLog(trajectory: Trajectory): string {
           const argsStr = tc.args ? JSON.stringify(tc.args) : '';
           parts.push(`[Tool Call: ${tc.name}(${argsStr})]`);
           if (tc.result !== undefined) {
-            const resultStr = typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result);
-            parts.push(`[Tool Result: ${resultStr}]`);
+            const resultStr = formatToolResult(tc.result);
+            if (resultStr.includes('\n')) {
+              parts.push(`[Tool Result]\n${resultStr}`);
+            } else {
+              parts.push(`[Tool Result: ${resultStr}]`);
+            }
           }
         }
       }

@@ -8,6 +8,7 @@ import {describe, it} from 'mocha';
 import {
   calculateTrajectoryTokens,
   calculateTrajectoryToolCalls,
+  formatChatLog,
   TrajectoryBuilder,
 } from './trajectory-builder.js';
 
@@ -218,6 +219,94 @@ describe('trajectory-builder', () => {
         cached: 120,
         total: 420,
       });
+    });
+  });
+
+  describe('formatChatLog', () => {
+    it('formats turn metadata and unwraps multi-line and JSON tool results', () => {
+      const builder = new TrajectoryBuilder({taskId: 'network-401-authentication-error'});
+      builder.addSteps([
+        {
+          request: {
+            current_message: {parts: [{text: 'Why is the ad not loading?'}]},
+            metadata: {client_version: '155.0.0.0'},
+          },
+          aidaResponse: {
+            explanation: '',
+            functionCalls: [
+              {name: 'listNetworkRequests', args: {}},
+              {name: 'getNetworkRequestDetails', args: {id: 'req-1'}},
+            ],
+            completed: true,
+            metadata: {
+              inferenceOptionMetadata: {modelId: 'gemini-2.5-pro'},
+              usageMetadata: {totalTokenCount: 2020},
+            },
+          },
+          requestTimestamp: 1700000001000000,
+          responseTimestamp: 1700000002880000,
+        },
+        {
+          request: {
+            current_message: {
+              parts: [
+                {
+                  functionResponse: {
+                    name: 'listNetworkRequests',
+                    response: {result: '[{"id":"req-1","statusCode":401}]'},
+                  },
+                },
+                {
+                  functionResponse: {
+                    name: 'getNetworkRequestDetails',
+                    response: {result: 'Request: http://localhost:3000/api\nResponse status: 401 Unauthorized'},
+                  },
+                },
+              ],
+            },
+            metadata: {client_version: '155.0.0.0'},
+          },
+          aidaResponse: {
+            explanation: 'The request returned 401 Unauthorized.',
+            completed: true,
+            metadata: {
+              inferenceOptionMetadata: {modelId: 'gemini-2.5-pro'},
+              usageMetadata: {totalTokenCount: 3500},
+            },
+          },
+          requestTimestamp: 1700000003000000,
+          responseTimestamp: 1700000005500000,
+        },
+      ]);
+
+      const trajectory = builder.build();
+      assert.strictEqual(
+          formatChatLog(trajectory),
+          [
+            'Task: network-401-authentication-error | Model: gemini-2.5-pro',
+            '',
+            'User:',
+            'Why is the ad not loading?',
+            '',
+            'Agent (duration=1.88s, tokens=2020):',
+            '[Tool Call: listNetworkRequests({})]',
+            '[Tool Result]',
+            '[',
+            '  {',
+            '    "id": "req-1",',
+            '    "statusCode": 401',
+            '  }',
+            ']',
+            '[Tool Call: getNetworkRequestDetails({"id":"req-1"})]',
+            '[Tool Result]',
+            'Request: http://localhost:3000/api',
+            'Response status: 401 Unauthorized',
+            '',
+            'Agent (duration=2.50s, tokens=3500):',
+            'The request returned 401 Unauthorized.',
+            '',
+          ].join('\n'),
+      );
     });
   });
 });

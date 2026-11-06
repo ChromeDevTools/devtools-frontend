@@ -588,8 +588,6 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
 
     this.update();
 
-    this.sidebar.setMinimumSize(100, 25);
-
     this.mainView = new SecurityMainView();
     this.sidebar.onShowOrigin = (origin: Platform.DevToolsPath.UrlString|null) => {
       if (origin) {

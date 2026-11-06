@@ -280,12 +280,130 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
     });
   });
 
+  describe('declarative setters', () => {
+    it('updates mainOrigin and triggers requestUpdate only when value changes', () => {
+      const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+      const requestUpdateSpy = sinon.spy(sidebar, 'requestUpdate');
+      sidebar.mainOrigin = 'https://example.com';
+      assert.strictEqual(sidebar.mainOrigin, 'https://example.com');
+      sinon.assert.calledOnce(requestUpdateSpy);
+
+      sidebar.mainOrigin = 'https://example.com';
+      sinon.assert.calledOnce(requestUpdateSpy);
+
+      sidebar.mainOrigin = 'https://other.com';
+      assert.strictEqual(sidebar.mainOrigin, 'https://other.com');
+      sinon.assert.callCount(requestUpdateSpy, 2);
+    });
+
+    it('updates origins and triggers requestUpdate only when reference changes', () => {
+      const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+      const requestUpdateSpy = sinon.spy(sidebar, 'requestUpdate');
+      const originsMap = new Map([[urlString`https://example.com`, Protocol.Security.SecurityState.Secure]]);
+      sidebar.origins = originsMap;
+      assert.strictEqual(sidebar.origins, originsMap);
+      sinon.assert.calledOnce(requestUpdateSpy);
+
+      sidebar.origins = originsMap;
+      sinon.assert.calledOnce(requestUpdateSpy);
+
+      sidebar.origins = new Map();
+      sinon.assert.callCount(requestUpdateSpy, 2);
+    });
+
+    it('updates originsHidden and triggers requestUpdate only when value changes', () => {
+      const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+      const requestUpdateSpy = sinon.spy(sidebar, 'requestUpdate');
+      assert.isFalse(sidebar.originsHidden);
+
+      sidebar.originsHidden = false;
+      sinon.assert.notCalled(requestUpdateSpy);
+
+      sidebar.originsHidden = true;
+      assert.isTrue(sidebar.originsHidden);
+      sinon.assert.calledOnce(requestUpdateSpy);
+
+      sidebar.originsHidden = true;
+      sinon.assert.calledOnce(requestUpdateSpy);
+    });
+
+    it('updates showOriginsUnconditionally and triggers requestUpdate only when value changes', () => {
+      const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+      const requestUpdateSpy = sinon.spy(sidebar, 'requestUpdate');
+      assert.isFalse(sidebar.showOriginsUnconditionally);
+
+      sidebar.showOriginsUnconditionally = false;
+      sinon.assert.notCalled(requestUpdateSpy);
+
+      sidebar.showOriginsUnconditionally = true;
+      assert.isTrue(sidebar.showOriginsUnconditionally);
+      sinon.assert.calledOnce(requestUpdateSpy);
+
+      sidebar.showOriginsUnconditionally = true;
+      sinon.assert.calledOnce(requestUpdateSpy);
+    });
+
+    it('updates overviewSecurityState and triggers requestUpdate only when value changes', () => {
+      const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+      const requestUpdateSpy = sinon.spy(sidebar, 'requestUpdate');
+      assert.strictEqual(sidebar.overviewSecurityState, Protocol.Security.SecurityState.Unknown);
+
+      sidebar.overviewSecurityState = Protocol.Security.SecurityState.Unknown;
+      sinon.assert.notCalled(requestUpdateSpy);
+
+      sidebar.overviewSecurityState = Protocol.Security.SecurityState.Secure;
+      assert.strictEqual(sidebar.overviewSecurityState, Protocol.Security.SecurityState.Secure);
+      sinon.assert.calledOnce(requestUpdateSpy);
+
+      sidebar.overviewSecurityState = Protocol.Security.SecurityState.Secure;
+      sinon.assert.calledOnce(requestUpdateSpy);
+    });
+
+    it('updates activeOrigin and selection without invoking onShowOrigin', () => {
+      const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+      const onShowOriginSpy = sinon.spy();
+      sidebar.onShowOrigin = onShowOriginSpy;
+      const requestUpdateSpy = sinon.spy(sidebar, 'requestUpdate');
+
+      const origin = urlString`https://example.com`;
+      sidebar.activeOrigin = origin;
+      assert.strictEqual(sidebar.activeOrigin, origin);
+      assert.strictEqual(sidebar.selectedOrigin, origin);
+      sinon.assert.calledOnce(requestUpdateSpy);
+      sinon.assert.notCalled(onShowOriginSpy);
+
+      sidebar.activeOrigin = origin;
+      sinon.assert.calledOnce(requestUpdateSpy);
+      sinon.assert.notCalled(onShowOriginSpy);
+
+      sidebar.activeOrigin = null;
+      assert.isNull(sidebar.activeOrigin);
+      assert.strictEqual(sidebar.selectedOrigin, 'overview');
+      sinon.assert.callCount(requestUpdateSpy, 2);
+      sinon.assert.notCalled(onShowOriginSpy);
+    });
+
+    it('guards selectedOrigin equality against redundant updates and callbacks', () => {
+      const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+      const onShowOriginSpy = sinon.spy();
+      sidebar.onShowOrigin = onShowOriginSpy;
+      const requestUpdateSpy = sinon.spy(sidebar, 'requestUpdate');
+
+      const origin = urlString`https://example.com`;
+      sidebar.selectedOrigin = origin;
+      assert.strictEqual(sidebar.selectedOrigin, origin);
+      sinon.assert.calledOnce(requestUpdateSpy);
+      assert.isTrue(onShowOriginSpy.calledOnceWith(origin));
+
+      sidebar.selectedOrigin = origin;
+      sinon.assert.calledOnce(requestUpdateSpy);
+      sinon.assert.calledOnce(onShowOriginSpy);
+    });
+  });
+
   describe('DEFAULT_VIEW', () => {
-    function renderView(input: Partial<Security.SecurityPanelSidebar.ViewInput> = {},
-                        output: Security.SecurityPanelSidebar.ViewOutput = {
-                          onElementSelected: sinon.stub(),
-                          onShowOrigin: sinon.stub(),
-                        }): {container: HTMLElement, output: Security.SecurityPanelSidebar.ViewOutput} {
+    function renderView(input: Partial<Security.SecurityPanelSidebar.ViewInput> = {}):
+        {container: HTMLElement, input: Security.SecurityPanelSidebar.ViewInput} {
       const container = document.createElement('div');
       renderElementIntoDOM(container);
       const fullInput: Security.SecurityPanelSidebar.ViewInput = {
@@ -295,10 +413,12 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
         showOriginsUnconditionally: false,
         overviewSecurityState: Protocol.Security.SecurityState.Unknown,
         selectedElementId: 'overview',
+        onElementSelected: sinon.stub(),
+        onShowOrigin: sinon.stub(),
         ...input,
       };
-      Security.SecurityPanelSidebar.DEFAULT_VIEW(fullInput, output, container);
-      return {container, output};
+      Security.SecurityPanelSidebar.DEFAULT_VIEW(fullInput, undefined, container);
+      return {container, input: fullInput};
     }
 
     it('renders overview element and origin groups with defaults', async () => {
@@ -386,7 +506,7 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
       const groups =
           container.querySelector('devtools-tree')!.shadowRoot!.querySelectorAll('.security-sidebar-origins');
       for (const group of groups) {
-        assert.isTrue(group.hasAttribute('hidden') || group.classList.contains('hidden'));
+        assert.isTrue(group.classList.contains('hidden'));
       }
     });
 
@@ -396,7 +516,7 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
       const onElementSelected = sinon.stub();
       const onShowOrigin = sinon.stub();
 
-      const {container} = renderView({mainOrigin, origins}, {onElementSelected, onShowOrigin});
+      const {container} = renderView({mainOrigin, origins, onElementSelected, onShowOrigin});
       await doubleRaf();
 
       const shadow = container.querySelector('devtools-tree')!.shadowRoot!;

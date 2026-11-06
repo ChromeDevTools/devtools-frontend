@@ -115,7 +115,7 @@ export class TimelineLoader {
 
   static async loadFromURL(url: Platform.DevToolsPath.UrlString, client: Client): Promise<TimelineLoader> {
     const loader = new TimelineLoader(client);
-    const stream = new Common.StringOutputStream.StringOutputStream();
+    let stream: Common.StringOutputStream.StringOutputStream|null = new Common.StringOutputStream.StringOutputStream();
     client.loadingStarted();
 
     const allowRemoteFilePaths =
@@ -124,15 +124,19 @@ export class TimelineLoader {
 
     async function finishedCallback(success: boolean, _headers: Record<string, string>,
                                     errorDescription: Host.ResourceLoader.LoadErrorDescription): Promise<void> {
-      if (!success) {
+      if (!success || !stream) {
+        stream = null;
         return loader.reportErrorAndCancelLoading(errorDescription.message);
       }
       try {
-        const txt = stream.data();
-        const trace = JSON.parse(txt);
-        loader.#processParsedFile(trace);
+        // Inline `stream.data()` and clear `stream` before `await loader.complete()`
+        // so the raw JSON text and chunked StringOutputStream are not retained in
+        // this async frame for the duration of trace processing.
+        loader.#processParsedFile(JSON.parse(stream.data()));
+        stream = null;
         await loader.complete();
       } catch (e: unknown) {
+        stream = null;
         const message = e instanceof Error ? e.message : '';
         return loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: message}));
       }
@@ -201,6 +205,7 @@ export class TimelineLoader {
   }
 
   async #cleanup(): Promise<void> {
+    this.#collectedEvents = [];
     if (this.client) {
       await this.client.loadingComplete(
           /* collectedEvents */[], /* exclusiveFilter= */ null, /* metadata= */ null);
@@ -241,7 +246,12 @@ export class TimelineLoader {
       this.#metadata = RecordingMetadata.forCPUProfile();
     }
 
-    await (this.client as Client).loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
+    // Dispatch `loadingComplete` and clear the instance reference before awaiting
+    // so the loader does not retain the events array during trace processing.
+    const loadingCompletePromise =
+        (this.client as Client).loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
+    this.#collectedEvents = [];
+    await loadingCompletePromise;
     this.#traceLoadedCallback?.(LoadingState.SUCCESS);
   }
 

@@ -1080,6 +1080,100 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       assert.strictEqual(rematched, el2);
     });
 
+    describe('when the backendNodeId is stale', () => {
+      function createNodeThread(textSignature: string): CommentManager.CommentThread.CommentThread {
+        return new CommentManager.CommentThread.CommentThread({
+          anchor: {
+            vePath: 'Panel: elements > TreeItem',
+            textSignature,
+            node: {
+              backendNodeId: 99,
+              targetId: 'target-1',
+            },
+          },
+          comments: [],
+        });
+      }
+
+      function appendTreeItem(panel: Element, backendNodeId: string, text: string): HTMLElement {
+        const item = document.createElement('li');
+        item.setAttribute('jslog', 'TreeItem');
+        item.setAttribute('data-backend-node-id', backendNodeId);
+        item.setAttribute('data-target-id', 'target-1');
+        item.textContent = text;
+        panel.appendChild(item);
+        return item;
+      }
+
+      let panel: HTMLElement;
+
+      beforeEach(() => {
+        panel = document.createElement('div');
+        panel.setAttribute('jslog', 'Panel; context: elements');
+        container.appendChild(panel);
+      });
+
+      it('falls back to text matching', () => {
+        appendTreeItem(panel, '200', '<div>Other</div>');
+        const item = appendTreeItem(panel, '201', '<button>Submit</button>');
+
+        const rematched =
+            Comments.CommentAnchorResolver.rematchCommentAnchor(createNodeThread('<button>Submit</button>'), container);
+        assert.strictEqual(rematched, item);
+      });
+
+      it('returns null when the only element with the same VE path has different text', () => {
+        appendTreeItem(panel, '200', '<div>Other</div>');
+
+        const rematched =
+            Comments.CommentAnchorResolver.rematchCommentAnchor(createNodeThread('<button>Submit</button>'), container);
+        assert.isNull(rematched);
+      });
+
+      it('returns null when no element with the same VE path matches the text', () => {
+        appendTreeItem(panel, '200', '<div>Other</div>');
+        appendTreeItem(panel, '201', '<span>Another</span>');
+
+        const rematched =
+            Comments.CommentAnchorResolver.rematchCommentAnchor(createNodeThread('<button>Submit</button>'), container);
+        assert.isNull(rematched);
+      });
+
+      it('disambiguates text matches by parent text and returns null if no parent matches', () => {
+        const parentA = document.createElement('div');
+        const parentB = document.createElement('div');
+        panel.append(parentA, parentB);
+        appendTreeItem(parentA, '200', '<button>Submit</button>');
+        const itemB = appendTreeItem(parentB, '201', '<button>Submit</button>');
+        appendTreeItem(parentB, '202', '<span>Sibling</span>');
+
+        const createThread = (parentTextSignature: string): CommentManager.CommentThread.CommentThread =>
+            new CommentManager.CommentThread.CommentThread({
+              anchor: {
+                vePath: 'Panel: elements > TreeItem',
+                textSignature: '<button>Submit</button>',
+                parentTextSignature,
+                node: {backendNodeId: 99, targetId: 'target-1'},
+              },
+              comments: [],
+            });
+
+        assert.strictEqual(Comments.CommentAnchorResolver.rematchCommentAnchor(
+                               createThread('<button>Submit</button><span>Sibling</span>'), container),
+                           itemB);
+        assert.isNull(Comments.CommentAnchorResolver.rematchCommentAnchor(createThread('<div>Gone</div>'), container));
+      });
+
+      it('prefers the backendNodeId match over a text match', () => {
+        appendTreeItem(panel, '200', '<button>Submit</button>');
+        const item = appendTreeItem(panel, '99', '<button>Changed</button>');
+
+        const rematched =
+            Comments.CommentAnchorResolver.rematchCommentAnchor(createNodeThread('<button>Submit</button>'), container);
+        assert.strictEqual(rematched, item);
+      });
+    });
+
     it('finds element using VE path and textSignature fallback', () => {
       const item = document.createElement('div');
       item.setAttribute('jslog', 'TreeItem; context: my-rule');

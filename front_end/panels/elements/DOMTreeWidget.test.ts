@@ -426,6 +426,13 @@ describeWithEnvironment('DOMTreeWidget', () => {
     await UI.Widget.Widget.allUpdatesComplete;
   }
 
+  /** Runs throttled processes at once so that tests do not wait on wall-clock time. */
+  function runThrottledProcessesImmediately(): void {
+    sinon.stub(Common.Throttler.Throttler.prototype, 'schedule').callsFake(async process => {
+      await process();
+    });
+  }
+
   function findElementsTreeWidget(domTree: Elements.DOMTreeWidget.DOMTreeWidget,
                                   node: SDK.DOMModel.DOMNode): Elements.DOMTreeElementWidget.DOMTreeElementWidget|null {
     const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
@@ -1064,6 +1071,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
 
     it('highlights and reveals node when highlighted in overlay', async () => {
+      runThrottledProcessesImmediately();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
       sinon.stub(domModel, 'requestDocument').resolves(null);
@@ -1099,11 +1107,11 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const spanNode = pNode.children()![0];
         assert.strictEqual(spanNode.parentNode, pNode);
         assert.strictEqual(pNode.parentNode, rootNode);
+        const scrollIntoViewSpy = sinon.spy(Element.prototype, 'scrollIntoViewIfNeeded');
 
         // Trigger overlay highlight on spanNode.
         overlayModel.dispatchEventToListeners(SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, spanNode);
-        await new Promise(resolve => setTimeout(resolve, 150));
-        await UI.Widget.Widget.allUpdatesComplete;
+        await waitForTreeUpdates();
 
         assert.isNull(domTree.selectedDOMNode());
 
@@ -1121,6 +1129,9 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const spanTreeElement = pTreeElement.children()[0];
         assert.exists(spanTreeElement);
         assert.isTrue(spanTreeElement.listItemElement.classList.contains('hovered'));
+        // The highlighted node scrolls into view.
+        sinon.assert.calledOnceWithExactly(scrollIntoViewSpy, true);
+        sinon.assert.calledOn(scrollIntoViewSpy, spanTreeElement.listItemElement);
 
         const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
         const spanWidget =
@@ -1129,10 +1140,136 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         // Clear overlay highlight.
         overlayModel.dispatchEventToListeners(SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED, overlayModel);
-        await new Promise(resolve => setTimeout(resolve, 150));
-        await UI.Widget.Widget.allUpdatesComplete;
+        await waitForTreeUpdates();
 
-        assert.isFalse(spanWidget.hovered);
+        // The ancestors that were expanded for the highlight collapse again,
+        // which removes the highlighted row from the tree.
+        assert.isFalse(domTree.isNodeExpanded(rootNode));
+        assert.isFalse(domTree.isNodeExpanded(pNode));
+        assert.isFalse(rootTreeElement.expanded);
+        assert.lengthOf(rootTreeElement.children(), 0);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('keeps the new highlight when the ancestors of the previous highlight collapse', async () => {
+      runThrottledProcessesImmediately();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P', children: [{nodeId: 3, nodeName: 'SPAN'}]},
+            {nodeId: 4, nodeName: 'UL', children: [{nodeId: 5, nodeName: 'LI'}]},
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const overlayModel = target.model(SDK.OverlayModel.OverlayModel);
+        assert.exists(overlayModel);
+        const [pNode, ulNode] = rootNode.children()!;
+        const spanNode = pNode.children()![0];
+        const liNode = ulNode.children()![0];
+
+        overlayModel.dispatchEventToListeners(SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, spanNode);
+        await waitForTreeUpdates();
+        const scrollIntoViewSpy = sinon.spy(Element.prototype, 'scrollIntoViewIfNeeded');
+        overlayModel.dispatchEventToListeners(SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, liNode);
+        await waitForTreeUpdates();
+
+        const [pTreeElement, ulTreeElement] = internalTree.rootElement().children()[0].children();
+        assert.isFalse(pTreeElement.expanded, 'P collapsed');
+        assert.isTrue(ulTreeElement.expanded, 'UL expanded');
+        const liTreeElement = ulTreeElement.children()[0];
+        assert.isTrue(liTreeElement.listItemElement.classList.contains('hovered'), 'LI hovered');
+        sinon.assert.calledOnceWithExactly(scrollIntoViewSpy, true);
+        sinon.assert.calledOn(scrollIntoViewSpy, liTreeElement.listItemElement);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('raises the children limit to reveal a paginated node highlighted in overlay', async () => {
+      runThrottledProcessesImmediately();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target);
+      try {
+        const childNodes = Array.from({length: 10}, (_, i) => ({nodeId: i + 2, nodeName: 'SPAN'}));
+        const rootNode = createTestDOMTree(domModel, {nodeId: 1, nodeName: 'DIV', children: childNodes});
+        domTree.setExpandedChildrenLimit(rootNode, 5);
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const scrollIntoViewSpy = sinon.spy(Element.prototype, 'scrollIntoViewIfNeeded');
+
+        const overlayModel = target.model(SDK.OverlayModel.OverlayModel);
+        assert.exists(overlayModel);
+        const eighthChild = rootNode.children()![7];
+        overlayModel.dispatchEventToListeners(SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, eighthChild);
+        await waitForTreeUpdates();
+
+        assert.strictEqual(domTree.expandedChildrenLimit(rootNode), 8);
+        const childTreeElements = internalTree.rootElement().children()[0].children();
+        // 8 children plus 1 expand-all item plus 1 closing tag tree element = 10
+        assert.lengthOf(childTreeElements, 10);
+        const highlightedTreeElement = childTreeElements[7];
+        assert.isTrue(highlightedTreeElement.listItemElement.classList.contains('hovered'));
+        sinon.assert.calledOnceWithExactly(scrollIntoViewSpy, true);
+        sinon.assert.calledOn(scrollIntoViewSpy, highlightedTreeElement.listItemElement);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('highlights the parent row when an inlined text node is highlighted in overlay', async () => {
+      runThrottledProcessesImmediately();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [{nodeId: 2, nodeName: 'P', children: [{nodeId: 3, nodeName: '#text', nodeValue: 'Hello'}]}],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const scrollIntoViewSpy = sinon.spy(Element.prototype, 'scrollIntoViewIfNeeded');
+
+        const overlayModel = target.model(SDK.OverlayModel.OverlayModel);
+        assert.exists(overlayModel);
+        const pNode = rootNode.children()![0];
+        const textNode = pNode.children()![0];
+        overlayModel.dispatchEventToListeners(SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, textNode);
+        await waitForTreeUpdates();
+
+        const pTreeElement = internalTree.rootElement().children()[0].children()[0];
+        assert.isTrue(pTreeElement.listItemElement.classList.contains('hovered'));
+        sinon.assert.calledOnceWithExactly(scrollIntoViewSpy, true);
+        sinon.assert.calledOn(scrollIntoViewSpy, pTreeElement.listItemElement);
       } finally {
         domTree.detach();
       }

@@ -270,6 +270,43 @@ describe('TreeViewElement', () => {
     assert.isTrue(nodes[1].selected);
   });
 
+  it('resolves `clonedRef` on a config element to the rendered list item', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    const callback = sinon.spy();
+    const template = (withRef: boolean) => html`<devtools-tree .template=${html`
+      <ul role="tree">
+        <li role="treeitem">first node</li>
+        <li role="treeitem" ${withRef ? UI.UIUtils.clonedRef(callback) : Lit.nothing}>second node</li>
+      </ul>`}></devtools-tree>`;
+
+    // The ref is set before the tree element exists: it resolves on insertion.
+    render(template(true), container);
+    const component = container.querySelector('devtools-tree');
+    assert.isNotNull(component);
+    sinon.assert.notCalled(callback);
+    component.flushPendingUpdatesForTesting();
+    const nodes = component.getInternalTreeOutlineForTest().rootElement().children();
+    assert.lengthOf(nodes, 2);
+    sinon.assert.calledOnceWithExactly(callback, nodes[1].listItemElement);
+
+    // The ref stays: no further calls.
+    render(template(true), container);
+    component.flushPendingUpdatesForTesting();
+    sinon.assert.calledOnce(callback);
+
+    // The ref disappears: it resets.
+    render(template(false), container);
+    component.flushPendingUpdatesForTesting();
+    sinon.assert.calledTwice(callback);
+    sinon.assert.calledWithExactly(callback.secondCall, undefined);
+
+    // The ref appears again on an existing tree element: it resolves at once.
+    render(template(true), container);
+    sinon.assert.calledThrice(callback);
+    sinon.assert.calledWithExactly(callback.thirdCall, nodes[1].listItemElement);
+  });
+
   it('expands subtrees based on the `open` attribute', async () => {
     const component = await makeTree(html`<devtools-tree .template=${html`
       <ul role="tree">

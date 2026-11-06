@@ -66,6 +66,15 @@ import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 
 const {html, nothing, render, Directives: {classMap, ifDefined, repeat, styleMap}} = Lit;
+const {clonedRef} = UI.UIUtils;
+
+/**
+ * Scrolls the rendered row of the highlighted node into view. The function has a
+ * stable identity, so that `clonedRef` calls it once per row that it is attached to.
+ */
+const scrollHighlightedRowIntoView = (element: Element|undefined): void => {
+  element?.scrollIntoViewIfNeeded(/* center= */ true);
+};
 
 const UIStrings = {
   /**
@@ -747,6 +756,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
           data-target-id=${ifDefined(node.domModel().target().id())}
           selectable=${input.selectEnabled ? 'true' : 'false'}
           ?selected=${isSelected && !input.selectedClosingTag}
+          ${input.currentHighlightedNode === node ? clonedRef(scrollHighlightedRowIntoView) : nothing}
           class=${classes}
           style=${styleMap({'--indent': `${computeLeftIndent(depth, isExpandable)}px`})}
           ?open=${hasChildren && isExpanded && !isEditingAsHTML}
@@ -1451,9 +1461,26 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   #highlightNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     void this.#highlightThrottler.schedule(() => {
-      this.#currentHighlightedNode = event.data;
+      const node = this.#resolveInlinedTextNode(event.data);
+      // The view expands the ancestors of the highlighted node. Raise the
+      // children limits so that the node is not paginated away.
+      if (node) {
+        for (let child = node, ancestor = node.parentNode; ancestor; child = ancestor, ancestor = ancestor.parentNode) {
+          this.#ensureChildVisible(ancestor, child);
+        }
+      }
+      this.#currentHighlightedNode = node;
       this.requestUpdate();
     });
+  }
+
+  /** Short text nodes render inline in the row of their parent node. */
+  #resolveInlinedTextNode(node: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
+    if (node?.nodeType() === Node.TEXT_NODE && node.parentNode &&
+        (!nodeHasVisibleChildren(node.parentNode, this) || !getVisibleChildren(node.parentNode, this).includes(node))) {
+      return node.parentNode;
+    }
+    return node;
   }
 
   #onInspectModeWillBeToggled(): void {
@@ -1466,6 +1493,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#currentHighlightedNode = null;
   }
 
+  /** True if the view expands `node` only because it is an ancestor of the highlighted node. */
+  #isExpandedOnlyForHighlight(node: SDK.DOMModel.DOMNode): boolean {
+    const highlightedNode = this.#currentHighlightedNode;
+    return highlightedNode !== null && !this.#expandedNodes.has(node) && isAncestorOf(node, highlightedNode);
+  }
+
   selectDOMNode(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet|null, focus?: boolean,
                 isClosingTag?: boolean): void {
     this.#imagePreviewPopover?.hide();
@@ -1475,10 +1508,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       return;
     }
     this.#selectedAdoptedStyleSheet = null;
-    if (node?.nodeType() === Node.TEXT_NODE && node.parentNode &&
-        (!nodeHasVisibleChildren(node.parentNode, this) || !getVisibleChildren(node.parentNode, this).includes(node))) {
-      node = node.parentNode;
-    }
+    node = this.#resolveInlinedTextNode(node);
     if (node) {
       const ancestors: SDK.DOMModel.DOMNode[] = [];
       for (let current: (SDK.DOMModel.DOMNode|null) = node.parentNode; current; current = current.parentNode) {
@@ -1827,6 +1857,18 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean, recursively = false) => {
         if (expanded && recursively) {
           void this.expandRecursively(node);
+          return;
+        }
+        if (expanded && this.#isExpandedOnlyForHighlight(node)) {
+          // The tree reports the expansion that the view requested for the
+          // highlighted node. Do not persist it, so that the node collapses
+          // again when the highlight clears.
+          return;
+        }
+        if (!expanded && !this.#expandedNodes.has(node)) {
+          // The tree reports a collapse that the view requested itself, e.g.
+          // for the ancestors of a previous highlight. The collapse must not
+          // clear the current highlight.
           return;
         }
         this.setNodeExpanded(node, expanded);

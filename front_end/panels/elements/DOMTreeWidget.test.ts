@@ -5745,8 +5745,14 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const depth1Node = rootNode.children()![0];
         assert.isNull(findTreeElement(domTree, domModel.nodeForId(3 as Protocol.DOM.NodeId)!));
 
+        // The tree outline dispatches an `expand` event for every node rendered
+        // with the `open` attribute. These events must not trigger a re-render
+        // per node, which is quadratic in the size of the expanded subtree.
+        const performUpdateSpy = sinon.spy(domTree, 'performUpdate');
         await domTree.expandRecursively(depth1Node);
         await waitForTreeUpdates();
+        sinon.assert.callCount(performUpdateSpy, 1);
+        performUpdateSpy.restore();
 
         let currentNode = depth1Node;
         let currentTreeElement = requireTreeElement(domTree, depth1Node);
@@ -6956,6 +6962,36 @@ describeWithEnvironment('DOMTreeWidget', () => {
       assert.isTrue(domTree.isNodeExpanded(rootNode));
       assert.isTrue(domTree.isNodeExpanded(sectionNode));
       assert.isTrue(domTree.isNodeExpanded(spanNode));
+    } finally {
+      domTree.detach();
+    }
+  });
+
+  it('fires onElementExpanded when expanding nodes recursively', async () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target);
+    try {
+      const rootNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        nodeName: 'DIV',
+        children: [
+          {
+            nodeId: 2,
+            nodeName: 'SECTION',
+            children: [
+              {nodeId: 3, nodeName: 'SPAN'},
+            ],
+          },
+        ],
+      });
+      domTree.rootDOMNode = rootNode;
+      domTree.performUpdate();
+      await waitForTreeUpdates();
+
+      const onElementExpanded = sinon.spy(domTree, 'onElementExpanded');
+      await domTree.expandRecursively(rootNode);
+      await waitForTreeUpdates();
+
+      sinon.assert.called(onElementExpanded);
     } finally {
       domTree.detach();
     }

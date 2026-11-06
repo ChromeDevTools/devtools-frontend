@@ -106,7 +106,7 @@ const {render, html, Directives: {classMap}} = Lit;
 const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 
 const MIN_TIMELINE_CONTROLS_WIDTH = 120;
-const DEFAULT_TIMELINE_CONTROLS_WIDTH = 150;
+const DEFAULT_TIMELINE_CONTROLS_WIDTH = 144;
 const MAX_TIMELINE_CONTROLS_WIDTH = 720;
 
 const ANIMATION_EXPLANATION_URL =

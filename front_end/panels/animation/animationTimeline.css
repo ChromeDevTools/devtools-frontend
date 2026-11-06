@@ -7,7 +7,7 @@
 :host {
   overflow: hidden;
 
-  --timeline-controls-width: 150px;
+  --timeline-controls-width: var(--sys-size-22);
 }
 
 :host(.suspended) :is(

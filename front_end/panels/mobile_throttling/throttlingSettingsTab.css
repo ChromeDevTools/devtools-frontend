@@ -95,11 +95,6 @@
   margin: 0 var(--sys-size-3);
 }
 
-.conditions-list-separator-invisible {
-  visibility: hidden;
-  height: 100% !important; /* stylelint-disable-line declaration-no-important */
-}
-
 .settings-card-container-wrapper {
   scrollbar-gutter: stable;
   padding: var(--sys-size-8) 0;

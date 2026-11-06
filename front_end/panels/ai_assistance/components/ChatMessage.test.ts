@@ -1985,8 +1985,8 @@ describeWithEnvironment('ChatMessage', () => {
       const container = querySelectorErrorOnMissing(devtoolsWidget, 'devtools-widget.container');
       const canvas = container.shadowRoot?.querySelector('canvas');
       assert.exists(canvas);
-      assert.isAtLeast(container.getBoundingClientRect().height, 150);
-      assert.isAtLeast(canvas.clientHeight, 148);
+      assert.isAtLeast(container.getBoundingClientRect().height, 160);
+      assert.isAtLeast(canvas.clientHeight, 158);
       assert.isAbove(canvas.clientWidth, 0);
     });
 

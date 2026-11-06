@@ -193,6 +193,118 @@ describeWithEnvironment('CallStackSidebarPane', () => {
     assert.isFalse(stackTrace2.hasEventListeners(StackTrace.StackTrace.Events.UPDATED));
   });
 
+  describe('Ignore listing auto-activation and visibility', () => {
+    it('auto-activates sync frame when sync frames are ignore-listed and async fragment has non-ignore-listed frames',
+       async () => {
+         const target = createTarget();
+         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+         assert.exists(debuggerModel);
+
+         const vendorUrl = Platform.DevToolsPath.urlString`http://example.com/vendor.js`;
+         const appUrl = Platform.DevToolsPath.urlString`http://example.com/app.js`;
+         const vendorScriptId = 'vendorScriptId' as Protocol.Runtime.ScriptId;
+         const appScriptId = 'appScriptId' as Protocol.Runtime.ScriptId;
+
+         debuggerModel.parsedScriptSource(vendorScriptId, vendorUrl, 0, 0, 0, 0, 0, '', undefined, undefined, false,
+                                          false, 0, null, null, null, null, null, null, null);
+         debuggerModel.parsedScriptSource(appScriptId, appUrl, 0, 0, 0, 0, 0, '', undefined, undefined, false, false, 0,
+                                          null, null, null, null, null, null, null);
+
+         Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(vendorUrl);
+
+         const syncCallFrame = debuggerCallFrame(`${vendorUrl}:${vendorScriptId}:vendorFunc:0:0`);
+         const asyncCallFrame = protocolCallFrame(`${appUrl}:${appScriptId}:appFunc:5:2`);
+         const details = new SDK.DebuggerModel.DebuggerPausedDetails(
+             debuggerModel, [syncCallFrame], Protocol.Debugger.PausedEventReason.Other, {}, [],
+             {description: 'setTimeout', callFrames: [asyncCallFrame]});
+
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel,
+                                                 sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.QuickSourceView, null);
+
+         const setSelectedCallFrameSpy = sinon.spy(debuggerModel, 'setSelectedCallFrame');
+
+         const callStackSidebarPane = Sources.CallStackSidebarPane.CallStackSidebarPane.instance({forceNew: true});
+         renderElementIntoDOM(callStackSidebarPane);
+
+         await callStackSidebarPane.flavorChanged(details);
+         await callStackSidebarPane.updateComplete;
+
+         sinon.assert.calledOnceWithExactly(setSelectedCallFrameSpy, details.callFrames[0]);
+         assert.strictEqual(
+             UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor)?.frame.sdkFrame,
+             details.callFrames[0]);
+         assert.strictEqual(callStackSidebarPane.activeCallFrameItem()?.frame?.sdkFrame, details.callFrames[0]);
+
+         const items = callStackSidebarPane.contentElement.querySelectorAll<HTMLElement>('.call-frame-item');
+         assert.lengthOf(items, 3);
+         assert.isTrue(items[0].hasAttribute('hidden'));
+         assert.isFalse(items[1].hasAttribute('hidden'));
+         assert.strictEqual(items[1].tabIndex, 0);
+
+         const message = callStackSidebarPane.contentElement.querySelector('.ignore-listed-message');
+         assert.exists(message);
+         assert.isFalse(message.hasAttribute('hidden'));
+
+         callStackSidebarPane.detach();
+       });
+
+    it('treats all frames as ignore-listed and auto-activates frame when sync and async frames are ignore-listed',
+       async () => {
+         const {details, debuggerModel, script} = getPausedDetails();
+         Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(script.sourceURL);
+
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel,
+                                                 sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.QuickSourceView, null);
+
+         const setSelectedCallFrameSpy = sinon.spy(debuggerModel, 'setSelectedCallFrame');
+
+         const callStackSidebarPane = Sources.CallStackSidebarPane.CallStackSidebarPane.instance({forceNew: true});
+         renderElementIntoDOM(callStackSidebarPane);
+
+         await callStackSidebarPane.flavorChanged(details);
+         await callStackSidebarPane.updateComplete;
+
+         sinon.assert.calledOnceWithExactly(setSelectedCallFrameSpy, details.callFrames[0]);
+
+         const message = callStackSidebarPane.contentElement.querySelector('.ignore-listed-message');
+         assert.exists(message);
+         assert.isTrue(message.hasAttribute('hidden'));
+
+         const items = callStackSidebarPane.contentElement.querySelectorAll<HTMLElement>('.call-frame-item');
+         assert.lengthOf(items, 3);
+         for (const item of items) {
+           assert.isFalse(item.hasAttribute('hidden'));
+         }
+
+         callStackSidebarPane.detach();
+       });
+
+    it('marks async header as ignore-listed only when all of its frames are ignore-listed', async () => {
+      const {details, script} = getPausedDetails();
+      const binding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+      const stackTrace = await binding.createStackTraceFromDebuggerPaused(details, details.debuggerModel.target());
+      assert.exists(stackTrace);
+
+      const emptyFragment: StackTrace.StackTrace.AsyncFragment = {
+        description: 'setTimeout',
+        frames: [],
+      };
+      const emptyHeaderItem = Sources.CallStackSidebarPane.Item.createForAsyncHeader(stackTrace, emptyFragment);
+      assert.isFalse(emptyHeaderItem.isIgnoreListed);
+
+      const fragmentWithFrame = stackTrace.asyncFragments[0];
+      assert.isFalse(
+          Sources.CallStackSidebarPane.Item.createForAsyncHeader(stackTrace, fragmentWithFrame).isIgnoreListed);
+
+      Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(script.sourceURL);
+      const ignoreListedHeaderItem =
+          Sources.CallStackSidebarPane.Item.createForAsyncHeader(stackTrace, fragmentWithFrame);
+      assert.isTrue(ignoreListedHeaderItem.isIgnoreListed);
+    });
+  });
+
   describe('DEFAULT_VIEW', () => {
     async function createTestItem(opts: {
       isIgnoreListed?: boolean,

@@ -389,10 +389,12 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
 
     if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
       this.#focusedItem = this.#firstVisibleItem() ?? (this.#items[0] ?? null);
-      if (this.#focusedItem &&
+      const itemToActivate = this.#items.find(item => Boolean(item.frame) && this.#isItemVisible(item)) ??
+          this.#items.find(item => Boolean(item.frame)) ?? null;
+      if (itemToActivate &&
           (UI.Context.Context.instance().flavor(QuickSourceView) ||
            UI.Context.Context.instance().flavor(SourcesPanel))) {
-        this.activateItem(this.#focusedItem);
+        this.activateItem(itemToActivate);
       }
     } else {
       const activeItem = this.activeCallFrameItem();
@@ -413,8 +415,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
   }
 
   #updateIgnoreListState(): void {
-    const hasIgnoreListed = this.#items.some(item => item.isIgnoreListed);
-    const allIgnoreListed = this.#items.length > 0 && this.#items.every(item => item.isIgnoreListed);
+    const nonHeaderItems = this.#items.filter(item => !item.isAsyncHeader);
+    const hasIgnoreListed = nonHeaderItems.some(item => item.isIgnoreListed);
+    const allIgnoreListed = nonHeaderItems.length > 0 && nonHeaderItems.every(item => item.isIgnoreListed);
 
     if (allIgnoreListed) {
       this.#showIgnoreListed = true;
@@ -544,7 +547,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
     if (!uiLocation) {
       return;
     }
-    if (this.#items.includes(item)) {
+    if (this.#isItemVisible(item)) {
       this.#focusedItem = item;
     }
     const debuggerCallFrame = item.frame;
@@ -671,6 +674,8 @@ export class Item {
     const description = UI.UIUtils.asyncFragmentLabel(stackTrace, fragment);
     const item = new Item(description);
     item.isAsyncHeader = true;
+    item.isIgnoreListed =
+        fragment.frames.length > 0 && fragment.frames.every(frame => Boolean(frame.uiSourceCode?.isIgnoreListed()));
     return item;
   }
 

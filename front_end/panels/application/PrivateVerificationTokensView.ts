@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Common from '../../core/common/common.js';
@@ -9,6 +10,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -34,6 +36,14 @@ const UIStrings = {
    * @description Empty state message when no private verification tokens match the current origin.
    */
   noPrivateVerificationTokens: 'No private verification tokens for this origin',
+  /**
+   * @description Text to clear everything.
+   */
+  clearAll: 'Clear all',
+  /**
+   * @description Tooltip text that appears when hovering over the delete button in the toolbar.
+   */
+  deleteSelected: 'Delete selected',
   /**
    * @description Column header for Token ID.
    */
@@ -80,6 +90,11 @@ export interface TokenRow {
 
 export interface ViewInput {
   tokens: TokenRow[];
+  selectedTokenId: string|null;
+  onSelect: (tokenId: string) => void;
+  onDeselect: () => void;
+  onDeleteAll: () => void;
+  onDeleteToken: (tokenId: string) => void;
 }
 
 function renderView(input: ViewInput): TemplateResult {
@@ -87,9 +102,27 @@ function renderView(input: ViewInput): TemplateResult {
   // clang-format off
   return html`
     <div class="pvt-view" jslog=${VisualLogging.pane('private-verification-tokens')}>
+      <devtools-toolbar class="pvt-toolbar" jslog=${VisualLogging.toolbar()}>
+        <devtools-button class="clear-all-button"
+                         .disabled=${!hasTokens}
+                         .iconName=${'clear'}
+                         .jslogContext=${'clear-all'}
+                         .title=${i18nString(UIStrings.clearAll)}
+                         .variant=${Buttons.Button.Variant.TOOLBAR}
+                         @click=${input.onDeleteAll}></devtools-button>
+        <devtools-button class="delete-selected-button"
+                         .disabled=${!input.selectedTokenId}
+                         .iconName=${'bin'}
+                         .jslogContext=${'delete-selected'}
+                         .title=${i18nString(UIStrings.deleteSelected)}
+                         .variant=${Buttons.Button.Variant.TOOLBAR}
+                         @click=${() => input.selectedTokenId && input.onDeleteToken(input.selectedTokenId)}>
+        </devtools-button>
+      </devtools-toolbar>
       <div class="table-container">
         ${hasTokens ? html`
-          <devtools-data-grid striped inline>
+          <devtools-data-grid striped inline deletable
+                              @deselect=${input.onDeselect}>
             <table>
               <tr>
                 <th id="issuer" weight="6" sortable>${i18nString(UIStrings.issuer)}</th>
@@ -103,7 +136,9 @@ function renderView(input: ViewInput): TemplateResult {
                 <th id="token" weight="2">${i18nString(UIStrings.tokenPayload)}</th>
               </tr>
               ${repeat(input.tokens, token => token.id, token => html`
-                <tr>
+                <tr ?selected=${input.selectedTokenId === token.id}
+                    @select=${() => input.onSelect(token.id)}
+                    @delete=${() => input.onDeleteToken(token.id)}>
                   <td>${token.issuerOrigin}</td>
                   <td>${token.isIssuer}</td>
                   <td>${token.isRedeemer}</td>
@@ -141,6 +176,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 export class PrivateVerificationTokensView extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.PrivateVerificationTokensModel.PrivateVerificationTokensModel> {
   #model: SDK.PrivateVerificationTokensModel.PrivateVerificationTokensModel|null = null;
+  #tokens: TokenRow[] = [];
+  #fetchGeneration = 0;
+  #selectedTokenId: string|null = null;
   #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
@@ -153,20 +191,23 @@ export class PrivateVerificationTokensView extends UI.Widget.VBox implements
     const targetManager = SDK.TargetManager.TargetManager.instance();
     targetManager.observeModels(SDK.PrivateVerificationTokensModel.PrivateVerificationTokensModel, this,
                                 {scoped: true});
-    targetManager.addEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.requestUpdate, this);
+    targetManager.addEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.#onTokensChanged, this);
     targetManager.addModelListener(SDK.SecurityOriginManager.SecurityOriginManager,
-                                   SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.requestUpdate, this,
-                                   {scoped: true});
-    this.requestUpdate();
+                                   SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.#onTokensChanged,
+                                   this, {scoped: true});
+    // modelAdded() already triggers a refresh when a model is available.
+    if (!this.#model) {
+      this.#onTokensChanged();
+    }
   }
 
   override willHide(): void {
     super.willHide();
     const targetManager = SDK.TargetManager.TargetManager.instance();
     targetManager.unobserveModels(SDK.PrivateVerificationTokensModel.PrivateVerificationTokensModel, this);
-    targetManager.removeEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.requestUpdate, this);
+    targetManager.removeEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.#onTokensChanged, this);
     targetManager.removeModelListener(SDK.SecurityOriginManager.SecurityOriginManager,
-                                      SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.requestUpdate,
+                                      SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.#onTokensChanged,
                                       this);
     if (this.#model) {
       this.modelRemoved(this.#model);
@@ -182,8 +223,8 @@ export class PrivateVerificationTokensView extends UI.Widget.VBox implements
     }
     this.#model = model;
     model.setTracking(true);
-    model.addEventListener(SDK.PrivateVerificationTokensModel.Events.TOKENS_UPDATED, this.requestUpdate, this);
-    this.requestUpdate();
+    model.addEventListener(SDK.PrivateVerificationTokensModel.Events.TOKENS_UPDATED, this.#onTokensChanged, this);
+    this.#onTokensChanged();
   }
 
   modelRemoved(model: SDK.PrivateVerificationTokensModel.PrivateVerificationTokensModel): void {
@@ -191,30 +232,77 @@ export class PrivateVerificationTokensView extends UI.Widget.VBox implements
       return;
     }
     model.setTracking(false);
-    model.removeEventListener(SDK.PrivateVerificationTokensModel.Events.TOKENS_UPDATED, this.requestUpdate, this);
+    model.removeEventListener(SDK.PrivateVerificationTokensModel.Events.TOKENS_UPDATED, this.#onTokensChanged, this);
     this.#model = null;
+    this.#onTokensChanged();
   }
 
-  override async performUpdate(signal?: AbortSignal): Promise<void> {
-    const model = this.#model;
-    let tokens: TokenRow[] = [];
-    if (model) {
-      const currentOrigin = getInspectedOrigin(model.target());
-      if (currentOrigin) {
-        const [rawTokens, configs] = await Promise.all([model.getTokens(), model.getIssuerConfigs()]);
-        // The widget may have been hidden, the model swapped, or a newer update
-        // requested while the CDP calls were in flight.
-        if (signal?.aborted || this.#model !== model) {
-          return;
-        }
-        tokens = toTokenRows(rawTokens, configs, currentOrigin);
-      }
-    }
+  #onTokensChanged(): void {
+    void this.#refreshTokens();
+  }
 
-    if (signal?.aborted) {
+  /**
+   * Fetches tokens from the backend and caches them, so that local view state
+   * changes (such as selection) re-render without additional CDP round-trips.
+   * Responses from superseded fetches are discarded.
+   */
+  async #refreshTokens(): Promise<void> {
+    const generation = ++this.#fetchGeneration;
+    const tokens = await this.#fetchTokens();
+    if (generation !== this.#fetchGeneration) {
       return;
     }
-    this.#view({tokens}, undefined, this.contentElement);
+    this.#tokens = tokens;
+    if (this.#selectedTokenId && !tokens.some(token => token.id === this.#selectedTokenId)) {
+      this.#selectedTokenId = null;
+    }
+    this.requestUpdate();
+  }
+
+  async #fetchTokens(): Promise<TokenRow[]> {
+    const model = this.#model;
+    if (!model) {
+      return [];
+    }
+    const currentOrigin = getInspectedOrigin(model.target());
+    if (!currentOrigin) {
+      return [];
+    }
+    const [rawTokens, configs] = await Promise.all([model.getTokens(), model.getIssuerConfigs()]);
+    return toTokenRows(rawTokens, configs, currentOrigin);
+  }
+
+  override performUpdate(): void {
+    this.#view({
+      tokens: this.#tokens,
+      selectedTokenId: this.#selectedTokenId,
+      onSelect: tokenId => {
+        this.#selectedTokenId = tokenId;
+        this.requestUpdate();
+      },
+      onDeselect: () => {
+        this.#selectedTokenId = null;
+        this.requestUpdate();
+      },
+      onDeleteAll: () => void this.#clearAllTokensHandler(),
+      onDeleteToken: tokenId => void this.#deleteTokenHandler(tokenId),
+    },
+               undefined, this.contentElement);
+  }
+
+  async #clearAllTokensHandler(): Promise<void> {
+    const model = this.#model;
+    if (!model) {
+      return;
+    }
+    const issuers = new Set(this.#tokens.map(token => token.issuerOrigin));
+    await Promise.all([...issuers].map(issuerOrigin => model.clearTokens(issuerOrigin)));
+    await this.#refreshTokens();
+  }
+
+  async #deleteTokenHandler(tokenId: string): Promise<void> {
+    await this.#model?.deleteToken(tokenId);
+    await this.#refreshTokens();
   }
 }
 

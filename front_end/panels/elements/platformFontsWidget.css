@@ -18,7 +18,7 @@
   }
 
   .title {
-    padding: 0 5px;
+    padding: 0 var(--sys-size-3);
     border-top: var(--sys-size-1) solid;
     border-bottom: var(--sys-size-1) solid;
     border-color: var(--sys-color-divider);

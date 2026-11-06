@@ -58,6 +58,7 @@
     "../../../../../../../front_end/panels/timeline/components/MetricCard.test.ts",
     "../../../../../../../front_end/panels/timeline/components/NetworkRequestDetails.test.ts",
     "../../../../../../../front_end/panels/timeline/components/NetworkRequestTooltip.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/NetworkTrackWidget.test.ts",
     "../../../../../../../front_end/panels/timeline/components/OriginMap.test.ts",
     "../../../../../../../front_end/panels/timeline/components/RelatedInsightChips.test.ts",
     "../../../../../../../front_end/panels/timeline/components/Sidebar.test.ts",
@@ -116,7 +117,13 @@
       "path": "../../../ui/legacy/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../ui/legacy/components/perf_ui/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../ui/legacy/components/utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/legacy/theme_support/bundle-tsconfig.ref.json"
     },
     {
       "path": "insights/bundle-tsconfig.ref.json"

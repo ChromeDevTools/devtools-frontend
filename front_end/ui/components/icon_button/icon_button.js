@@ -94,6 +94,11 @@ var FileSourceIcon = class extends HTMLElement {
       isDotPurple: this.#isDotPurple
     };
   }
+  cloneNode(deep) {
+    const node = document.importNode(this, deep);
+    node.data = this.data;
+    return node;
+  }
   connectedCallback() {
     this.#render();
   }

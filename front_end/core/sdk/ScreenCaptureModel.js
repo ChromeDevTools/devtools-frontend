@@ -122,62 +122,6 @@ export class ScreenCaptureModel extends SDKModel {
             currentRequest.callbacks.onScreencastVisibilityChanged.call(null, visible);
         }
     }
-    backForwardCacheNotUsed(_params) {
-    }
-    domContentEventFired(_params) {
-    }
-    loadEventFired(_params) {
-    }
-    lifecycleEvent(_params) {
-    }
-    navigatedWithinDocument(_params) {
-    }
-    frameAttached(_params) {
-    }
-    frameNavigated(_params) {
-    }
-    documentOpened(_params) {
-    }
-    frameDetached(_params) {
-    }
-    frameStartedLoading(_params) {
-    }
-    frameStoppedLoading(_params) {
-    }
-    frameRequestedNavigation(_params) {
-    }
-    frameStartedNavigating(_params) {
-    }
-    frameSubtreeWillBeDetached(_params) {
-    }
-    frameScheduledNavigation(_params) {
-    }
-    frameClearedScheduledNavigation(_params) {
-    }
-    frameResized() {
-    }
-    javascriptDialogOpening(_params) {
-    }
-    javascriptDialogClosed(_params) {
-    }
-    interstitialShown() {
-    }
-    interstitialHidden() {
-    }
-    windowOpen(_params) {
-    }
-    fileChooserOpened(_params) {
-    }
-    compilationCacheProduced(_params) {
-    }
-    downloadWillBegin(_params) {
-    }
-    downloadProgress() {
-    }
-    prefetchStatusUpdated(_params) {
-    }
-    prerenderStatusUpdated(_params) {
-    }
 }
 SDKModel.register(ScreenCaptureModel, { capabilities: 64 /* Capability.SCREEN_CAPTURE */, autostart: false });
 //# sourceMappingURL=ScreenCaptureModel.js.map

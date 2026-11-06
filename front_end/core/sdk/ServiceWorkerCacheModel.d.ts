@@ -32,11 +32,6 @@ export declare class ServiceWorkerCacheModel extends SDKModel<EventTypes> implem
     private requestAllEntries;
     cacheStorageListUpdated({ bucketId }: Protocol.Storage.CacheStorageListUpdatedEvent): void;
     cacheStorageContentUpdated({ bucketId, cacheName }: Protocol.Storage.CacheStorageContentUpdatedEvent): void;
-    indexedDBListUpdated(_event: Protocol.Storage.IndexedDBListUpdatedEvent): void;
-    indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void;
-    storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
-    storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void;
-    privateVerificationTokensUpdated(): void;
     setThrottlerSchedulesAsSoonAsPossibleForTest(): void;
 }
 export declare const enum Events {

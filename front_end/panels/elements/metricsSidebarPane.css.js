@@ -42,7 +42,7 @@ export default `/**
  * the height of the metrics sidebar pane accordingly.
  */
 :host-context(.platform-windows) {
-  --metrics-height: 214px;
+  --metrics-height: var(--sys-size-26);
 }
 
 .metrics .label {

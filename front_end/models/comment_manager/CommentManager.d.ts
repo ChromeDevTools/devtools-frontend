@@ -11,6 +11,13 @@ export interface EventTypes {
     [Events.COMMENT_MODE_CHANGED]: boolean;
     [Events.AGENT_ATTACHED_CHANGED]: boolean;
 }
+export interface TakeCommentsOptions {
+    /**
+     * Also return threads that were sent to the agent and already transmitted
+     * by an earlier call.
+     */
+    includeTransmitted?: boolean;
+}
 /**
  * Headless model managing comment thread data, CRUD operations, and comment mode.
  */
@@ -23,7 +30,12 @@ export declare class CommentManager extends Common.ObjectWrapper.ObjectWrapper<E
     createCommentThread(anchor: CommentAnchorSignature, text?: string, author?: 'DEVELOPER' | 'AGENT', isGeneratedComment?: boolean): CommentThread;
     getCommentThread(id: string): CommentThread | undefined;
     getCommentThreads(): CommentThread[];
-    takeComments(): CommentThread[];
+    /**
+     * Returns the threads that were sent to the agent and marks them as
+     * transmitted. By default, threads that were transmitted before are
+     * skipped.
+     */
+    takeComments({ includeTransmitted }?: TakeCommentsOptions): CommentThread[];
     sendQueuedThreads(): void;
     resolveCommentThread(threadId: string, replyText?: string): boolean;
     removeCommentThread(id: string): void;

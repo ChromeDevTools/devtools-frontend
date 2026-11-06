@@ -40,7 +40,7 @@ export var Events;
 export const EventDescriptors = [
     [Events.AppendedToURL, ['url']],
     [Events.CanceledSaveURL, ['url']],
-    [Events.ColorThemeChanged, []],
+    [Events.ColorThemeChanged, ['colorSource']],
     [Events.ContextMenuCleared, []],
     [Events.ContextMenuItemSelected, ['id']],
     [Events.DeviceCountUpdated, ['count']],

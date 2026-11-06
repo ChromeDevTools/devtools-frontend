@@ -330,6 +330,16 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
         const elementPinCounts = new Map();
         const rectCache = new Map();
         const activeScrollRoots = new Set();
+        const resolvedPins = [];
+        const createPin = (id, visibleRect, offsetIndex, visible, resolved) => ({
+            id,
+            // Offset by 26px vertically (24px pin icon height + 2px spacing) so multiple comment pins on the same element stack vertically without overlapping.
+            // Offset by -12px (half of the 24px pin diameter) so the pin icon is centered on the top-right corner of the visible clipped area.
+            top: scrollY + visibleRect.top - 12 + offsetIndex * 26,
+            left: scrollX + visibleRect.right - 12,
+            visible,
+            resolved,
+        });
         for (const thread of this.#commentManager.getCommentThreads()) {
             // Generated comments do not render overlay pins.
             if (thread.isGeneratedComment) {
@@ -363,17 +373,6 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
             if (!visibleRect) {
                 continue;
             }
-            const offsetIndex = elementPinCounts.get(el) || 0;
-            elementPinCounts.set(el, offsetIndex + 1);
-            // Offset by 26px vertically (24px pin icon height + 2px spacing) so multiple comment pins on the same element stack vertically without overlapping.
-            const offsetY = offsetIndex * 26;
-            // Offset by -12px (half of the 24px pin diameter) so the pin icon is centered on the top-right corner of the visible clipped area.
-            newPins.push({
-                id: thread.id,
-                top: scrollY + visibleRect.top - 12 + offsetY,
-                left: scrollX + visibleRect.right - 12,
-                visible: true,
-            });
             newHighlights.push({
                 id: thread.id,
                 top: scrollY + visibleRect.top,
@@ -382,6 +381,19 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
                 height: visibleRect.height,
                 visible: true,
             });
+            if (thread.status === 'RESOLVED') {
+                resolvedPins.push({ id: thread.id, el, visibleRect });
+                continue;
+            }
+            const offsetIndex = elementPinCounts.get(el) || 0;
+            elementPinCounts.set(el, offsetIndex + 1);
+            newPins.push(createPin(thread.id, visibleRect, offsetIndex, true, false));
+        }
+        // Pins of RESOLVED threads are hidden; the UI shows the pin of the open
+        // thread. They all share the slot below the other pins of their element,
+        // so they never shift the other pins, and only one is open at a time.
+        for (const { id, el, visibleRect } of resolvedPins) {
+            newPins.push(createPin(id, visibleRect, elementPinCounts.get(el) || 0, false, true));
         }
         if (this.#scrollListener) {
             for (const root of this.#observedScrollRoots) {

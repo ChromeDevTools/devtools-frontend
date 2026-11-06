@@ -54,7 +54,12 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
     }
     wasShown() {
         super.wasShown();
+        SDK.TargetManager.TargetManager.instance().addEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, this.#targetNameChanged);
         this.requestUpdate();
+    }
+    willHide() {
+        super.willHide();
+        SDK.TargetManager.TargetManager.instance().removeEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, this.#targetNameChanged);
     }
     #getThreadName(debuggerModel) {
         const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
@@ -87,7 +92,6 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
         debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerPaused, this.#updatePausedState);
         debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
         debuggerModel.runtimeModel().addEventListener(SDK.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
-        SDK.TargetManager.TargetManager.instance().addEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, this.#targetNameChanged);
         this.requestUpdate();
     }
     modelRemoved(debuggerModel) {
@@ -95,7 +99,6 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
         debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerPaused, this.#updatePausedState);
         debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
         debuggerModel.runtimeModel().removeEventListener(SDK.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
-        SDK.TargetManager.TargetManager.instance().removeEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, this.#targetNameChanged);
         this.requestUpdate();
     }
     #targetFlavorChanged({ data: target }) {

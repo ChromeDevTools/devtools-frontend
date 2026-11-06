@@ -13782,6 +13782,7 @@ export declare namespace Page {
         PublickeyCredentialsRemoteClientDataJson = "publickey-credentials-remote-client-data-json",
         Rewriter = "rewriter",
         ScreenWakeLock = "screen-wake-lock",
+        SemanticEmbedder = "semantic-embedder",
         Serial = "serial",
         SmartCard = "smart-card",
         SpeakerSelection = "speaker-selection",

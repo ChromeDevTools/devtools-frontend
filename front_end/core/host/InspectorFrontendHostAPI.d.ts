@@ -175,7 +175,7 @@ export interface DevicesDiscoveryConfig {
 export interface EventTypes {
     [Events.AppendedToURL]: Platform.DevToolsPath.RawPathString | Platform.DevToolsPath.UrlString;
     [Events.CanceledSaveURL]: Platform.DevToolsPath.UrlString;
-    [Events.ColorThemeChanged]: void;
+    [Events.ColorThemeChanged]: Root.Runtime.UserColorSource | void;
     [Events.ContextMenuCleared]: void;
     [Events.ContextMenuItemSelected]: number;
     [Events.DeviceCountUpdated]: number;

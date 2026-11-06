@@ -138,6 +138,9 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
+      "path": "../../generated/supported_css_properties-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/formatter/bundle-tsconfig.ref.json"
     },
     {

@@ -1,7 +1,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 export interface Change {
-    groupId: string;
+    groupId?: string;
     selector: string;
     className: string;
     styles: Record<string, string>;

@@ -69,7 +69,7 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
       this
     );
     const target = this.#targetManager.primaryPageTarget();
-    if (target !== null) {
+    if (target) {
       this.#inspectedURLChanged({ data: target });
     }
   }

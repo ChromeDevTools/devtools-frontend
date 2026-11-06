@@ -6,6 +6,11 @@ import * as CommentManager from './CommentManager.js';
 export interface CommentThread {
     id: string;
     text: string;
+    /**
+     * True if an earlier call already transmitted this thread to the agent.
+     * Only set when `includeTransmitted` is requested.
+     */
+    previouslyTransmitted?: boolean;
     networkRequestId?: string;
     node?: CommentManager.DOMNodeAnchorSignature;
 }
@@ -27,7 +32,7 @@ export declare class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper<Event
     #private;
     constructor(commentManager: CommentManager.CommentManager, targetManager?: SDK.TargetManager.TargetManager, networkLog?: Logs.NetworkLog.NetworkLog, inspectorFrontendHost?: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI);
     dispose(): void;
-    getCommentThreads(): CommentThread[];
+    getCommentThreads(options?: CommentManager.TakeCommentsOptions): CommentThread[];
     setAgentAttached(value: boolean): void;
     resolveCommentThread(threadId: string, replyText?: string): boolean;
     reveal(panelName: string, target?: RevealTarget): Promise<void>;

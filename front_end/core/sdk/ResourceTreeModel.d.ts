@@ -243,26 +243,12 @@ export declare class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
     frameNavigated({ frame, type }: Protocol.Page.FrameNavigatedEvent): void;
     documentOpened({ frame }: Protocol.Page.DocumentOpenedEvent): void;
     frameDetached({ frameId, reason }: Protocol.Page.FrameDetachedEvent): void;
-    frameSubtreeWillBeDetached(_params: Protocol.Page.FrameSubtreeWillBeDetachedEvent): void;
-    frameStartedLoading({}: Protocol.Page.FrameStartedLoadingEvent): void;
     frameStoppedLoading({ frameId }: Protocol.Page.FrameStoppedLoadingEvent): void;
-    frameRequestedNavigation({}: Protocol.Page.FrameRequestedNavigationEvent): void;
-    frameScheduledNavigation({}: Protocol.Page.FrameScheduledNavigationEvent): void;
-    frameClearedScheduledNavigation({}: Protocol.Page.FrameClearedScheduledNavigationEvent): void;
-    frameStartedNavigating({}: Protocol.Page.FrameStartedNavigatingEvent): void;
     navigatedWithinDocument({ frameId, url }: Protocol.Page.NavigatedWithinDocumentEvent): void;
     frameResized(): void;
     javascriptDialogOpening(event: Protocol.Page.JavascriptDialogOpeningEvent): void;
-    javascriptDialogClosed({}: Protocol.Page.JavascriptDialogClosedEvent): void;
-    screencastFrame({}: Protocol.Page.ScreencastFrameEvent): void;
-    screencastVisibilityChanged({}: Protocol.Page.ScreencastVisibilityChangedEvent): void;
     interstitialShown(): void;
     interstitialHidden(): void;
-    windowOpen({}: Protocol.Page.WindowOpenEvent): void;
-    compilationCacheProduced({}: Protocol.Page.CompilationCacheProducedEvent): void;
-    fileChooserOpened({}: Protocol.Page.FileChooserOpenedEvent): void;
-    downloadWillBegin({}: Protocol.Page.DownloadWillBeginEvent): void;
-    downloadProgress(): void;
 }
 /**
  * Aggregated security origin data for frames belonging to a resource tree model.

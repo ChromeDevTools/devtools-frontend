@@ -1044,7 +1044,7 @@ var breakpointsView_css_default = `/*
   }
 
   .pause-on-caught-exceptions {
-    margin-bottom: 3px;
+    margin-bottom: var(--sys-size-2);
   }
 
   /* TODO(crbug.com/1382762): Remove special casing with dependent toggles as soon as Node LTS caught up on independent pause of exception toggles. */
@@ -1575,7 +1575,7 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
       const expanded = !this.#collapsedFiles.has(sourceURL);
       const status = this.#getBreakpointState(fstLocation.breakpoint);
       const { type, hoverText } = this.#getBreakpointTypeAndDetails(fstLocation.breakpoint);
-      const item = {
+      const item2 = {
         id: fstLocation.breakpoint.breakpointStorageId(),
         location: locationText,
         codeSnippet,
@@ -1584,10 +1584,10 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
         type,
         hoverText
       };
-      this.#breakpointItemToLocationMap.set(item, locations);
+      this.#breakpointItemToLocationMap.set(item2, locations);
       let group = scriptIdToGroup.get(scriptId);
       if (group) {
-        group.breakpointItems.push(item);
+        group.breakpointItems.push(item2);
         group.expanded ||= expanded;
       } else {
         const editable = this.#breakpointManager.supportsConditionalBreakpoints(uiLocation.uiSourceCode);
@@ -1596,7 +1596,7 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
           name: uiLocation.uiSourceCode.displayName(),
           editable,
           expanded,
-          breakpointItems: [item]
+          breakpointItems: [item2]
         };
         scriptIdToGroup.set(scriptId, group);
       }
@@ -1750,7 +1750,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                     <devtools-icon name="file-script"></devtools-icon>
                     <input class='group-checkbox small' type='checkbox'
                           aria-label=''
-                          .checked=${group.breakpointItems.some((item) => item.status === "ENABLED" /* ENABLED */)}
+                          .checked=${group.breakpointItems.some((item2) => item2.status === "ENABLED" /* ENABLED */)}
                           @change=${input.groupCheckboxToggled.bind(void 0, group)}
                           tabindex=-1
                           jslog=${VisualLogging3.toggle("breakpoint-group").track({ change: true })}>
@@ -1774,51 +1774,51 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
               </summary>
             ${repeat(
       group.breakpointItems,
-      (item) => item.id,
-      (item, itemIndex) => html4`
+      (item2) => item2.id,
+      (item2, itemIndex) => html4`
                 <div class=${classMap({
         "breakpoint-item": true,
-        hit: item.isHit,
-        "conditional-breakpoint": item.type === SDK2.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
-        logpoint: item.type === SDK2.DebuggerModel.BreakpointType.LOGPOINT
+        hit: item2.isHit,
+        "conditional-breakpoint": item2.type === SDK2.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
+        logpoint: item2.type === SDK2.DebuggerModel.BreakpointType.LOGPOINT
       })}
                     ?data-first-breakpoint=${itemIndex === 0}
                     ?data-last-breakpoint=${itemIndex === group.breakpointItems.length - 1}
-                    aria-label=${ifDefined(input.itemDetails.get(item.id)?.itemDescription)}
+                    aria-label=${ifDefined(input.itemDetails.get(item2.id)?.itemDescription)}
                     role=treeitem
                     tabindex='-1'
-                    @contextmenu=${input.itemContextMenuHandler.bind(void 0, item, group.editable)}
+                    @contextmenu=${input.itemContextMenuHandler.bind(void 0, item2, group.editable)}
                     @click=${input.itemClickHandler}
                     @keydown=${input.keyDownHandler}>
                   <label class='checkbox-label'>
                     <span class='type-indicator'></span>
                     <input type='checkbox'
-                          aria-label=${item.location}
+                          aria-label=${item2.location}
                           class='small'
-                          ?indeterminate=${item.status === "INDETERMINATE" /* INDETERMINATE */}
-                          .checked=${item.status === "ENABLED" /* ENABLED */}
-                          @change=${input.itemCheckboxToggled.bind(void 0, item)}
+                          ?indeterminate=${item2.status === "INDETERMINATE" /* INDETERMINATE */}
+                          .checked=${item2.status === "ENABLED" /* ENABLED */}
+                          @change=${input.itemCheckboxToggled.bind(void 0, item2)}
                           tabindex=-1
                           jslog=${VisualLogging3.toggle("breakpoint").track({ change: true })}>
                   </label>
-                  <span class='code-snippet' @click=${input.itemSnippetClickHandler.bind(void 0, item)}
-                          title=${ifDefined(input.itemDetails.get(item.id)?.codeSnippetTooltip)}
-                          jslog=${VisualLogging3.action("sources.jump-to-breakpoint").track({ click: true })}>${input.itemDetails.get(item.id)?.codeSnippet}</span>
+                  <span class='code-snippet' @click=${input.itemSnippetClickHandler.bind(void 0, item2)}
+                          title=${ifDefined(input.itemDetails.get(item2.id)?.codeSnippetTooltip)}
+                          jslog=${VisualLogging3.action("sources.jump-to-breakpoint").track({ click: true })}>${input.itemDetails.get(item2.id)?.codeSnippet}</span>
                   <span class='breakpoint-item-location-or-actions'>
                     ${group.editable ? html4`
-                          <button data-edit-breakpoint @click=${input.itemEditClickHandler.bind(void 0, item)}
-                                  title=${item.type === SDK2.DebuggerModel.BreakpointType.LOGPOINT ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition)}
+                          <button data-edit-breakpoint @click=${input.itemEditClickHandler.bind(void 0, item2)}
+                                  title=${item2.type === SDK2.DebuggerModel.BreakpointType.LOGPOINT ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition)}
                                   jslog=${VisualLogging3.action("edit-breakpoint").track({ click: true })}>
                             <devtools-icon name="edit"></devtools-icon>
                           </button>` : Lit.nothing}
                     <button data-remove-breakpoint
-                            @click=${input.itemRemoveClickHandler.bind(void 0, item)}
+                            @click=${input.itemRemoveClickHandler.bind(void 0, item2)}
                             title=${i18nString3(UIStrings3.removeBreakpoint)}
                             aria-label=${i18nString3(UIStrings3.removeBreakpoint)}
                             jslog=${VisualLogging3.action("remove-breakpoint").track({ click: true })}>
                       <devtools-icon name="bin"></devtools-icon>
                     </button>
-                    <span class='location'>${item.location}</span>
+                    <span class='location'>${item2.location}</span>
                   </span>
                 </div>`
     )}
@@ -1857,11 +1857,11 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
     const titleInfos = [];
     for (const group of data.groups) {
       titleInfos.push({ name: group.name, url: group.url });
-      for (const item of group.breakpointItems) {
-        this.#breakpointItemDetails.set(item.id, {
-          itemDescription: this.#getBreakpointItemDescription(item),
-          codeSnippet: Platform2.StringUtilities.trimEndWithMaxLength(item.codeSnippet, MAX_SNIPPET_LENGTH),
-          codeSnippetTooltip: this.#getCodeSnippetTooltip(item.type, item.hoverText)
+      for (const item2 of group.breakpointItems) {
+        this.#breakpointItemDetails.set(item2.id, {
+          itemDescription: this.#getBreakpointItemDescription(item2),
+          codeSnippet: Platform2.StringUtilities.trimEndWithMaxLength(item2.codeSnippet, MAX_SNIPPET_LENGTH),
+          codeSnippetTooltip: this.#getCodeSnippetTooltip(item2.type, item2.hoverText)
         });
       }
     }
@@ -1926,9 +1926,9 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointsInFileCheckboxToggled);
     const element = event.target;
     const updatedStatus = element.checked ? "ENABLED" /* ENABLED */ : "DISABLED" /* DISABLED */;
-    const itemsToUpdate = group.breakpointItems.filter((item) => item.status !== updatedStatus);
-    itemsToUpdate.forEach((item) => {
-      this.#controller.breakpointStateChanged(item, element.checked);
+    const itemsToUpdate = group.breakpointItems.filter((item2) => item2.status !== updatedStatus);
+    itemsToUpdate.forEach((item2) => {
+      this.#controller.breakpointStateChanged(item2, element.checked);
     });
     event.consume();
   }
@@ -1937,8 +1937,8 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
     void this.#controller.breakpointsRemoved(items);
     event.consume();
   }
-  #itemContextMenuHandler(item, editable, event) {
-    this.#onBreakpointEntryContextMenu(event, item, editable);
+  #itemContextMenuHandler(item2, editable, event) {
+    this.#onBreakpointEntryContextMenu(event, item2, editable);
     event.consume();
   }
   async #itemClickHandler(event) {
@@ -1946,21 +1946,21 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
     await this.#setSelected(target);
     event.consume();
   }
-  #itemSnippetClickHandler(item, event) {
-    void this.#controller.jumpToSource(item);
+  #itemSnippetClickHandler(item2, event) {
+    void this.#controller.jumpToSource(item2);
     event.consume();
   }
-  #itemEditClickHandler(item, event) {
+  #itemEditClickHandler(item2, event) {
     void this.#controller.breakpointEdited(
-      item,
+      item2,
       true
       /* editButtonClicked */
     );
     event.consume();
   }
-  #itemRemoveClickHandler(item, event) {
+  #itemRemoveClickHandler(item2, event) {
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointRemovedFromRemoveButton);
-    void this.#controller.breakpointsRemoved([item]);
+    void this.#controller.breakpointsRemoved([item2]);
     event.consume();
   }
   async #keyDownHandler(event) {
@@ -2075,7 +2075,7 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
   }
   #onBreakpointEntryContextMenu(event, breakpointItem, editable) {
     const items = this.#breakpointGroups.map(({ breakpointItems }) => breakpointItems).flat();
-    const otherItems = items.filter((item) => item !== breakpointItem);
+    const otherItems = items.filter((item2) => item2 !== breakpointItem);
     const menu = new UI4.ContextMenu.ContextMenu(event);
     const editBreakpointText = breakpointItem.type === SDK2.DebuggerModel.BreakpointType.LOGPOINT ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition);
     menu.revealSection().appendItem(i18nString3(UIStrings3.revealLocation), () => {
@@ -2090,17 +2090,17 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
     }, { disabled: !editable, jslogContext: "edit-breakpoint" });
     menu.defaultSection().appendItem(
       i18nString3(UIStrings3.enableAllBreakpoints),
-      items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, true)),
+      items.forEach.bind(items, (item2) => this.#controller.breakpointStateChanged(item2, true)),
       {
-        disabled: items.every((item) => item.status === "ENABLED" /* ENABLED */),
+        disabled: items.every((item2) => item2.status === "ENABLED" /* ENABLED */),
         jslogContext: "enable-all-breakpoints"
       }
     );
     menu.defaultSection().appendItem(
       i18nString3(UIStrings3.disableAllBreakpoints),
-      items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, false)),
+      items.forEach.bind(items, (item2) => this.#controller.breakpointStateChanged(item2, false)),
       {
-        disabled: items.every((item) => item.status === "DISABLED" /* DISABLED */),
+        disabled: items.every((item2) => item2.status === "DISABLED" /* DISABLED */),
         jslogContext: "disable-all-breakpoints"
       }
     );
@@ -2147,9 +2147,9 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
     }
     return i18nString3(UIStrings3.breakpointHit, { PH1: checkboxDescription });
   }
-  #onCheckboxToggled(item, event) {
+  #onCheckboxToggled(item2, event) {
     const element = event.target;
-    this.#controller.breakpointStateChanged(item, element.checked);
+    this.#controller.breakpointStateChanged(item2, element.checked);
   }
   #onPauseOnCaughtExceptionsStateChanged(e) {
     const { checked } = e.target;
@@ -2166,11 +2166,12 @@ var CallStackSidebarPane_exports = {};
 __export(CallStackSidebarPane_exports, {
   ActionDelegate: () => ActionDelegate5,
   CallStackSidebarPane: () => CallStackSidebarPane,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   Item: () => Item,
   convertMissingDebugInfo: () => convertMissingDebugInfo,
-  defaultMaxAsyncStackChainDepth: () => defaultMaxAsyncStackChainDepth,
-  elementSymbol: () => elementSymbol
+  defaultMaxAsyncStackChainDepth: () => defaultMaxAsyncStackChainDepth
 });
+import "../../ui/kit/kit.js";
 import * as Common16 from "../../core/common/common.js";
 import * as Host10 from "../../core/host/host.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
@@ -2179,9 +2180,9 @@ import * as Bindings10 from "../../models/bindings/bindings.js";
 import * as Persistence11 from "../../models/persistence/persistence.js";
 import * as StackTrace5 from "../../models/stack_trace/stack_trace.js";
 import * as Workspace25 from "../../models/workspace/workspace.js";
-import { Icon } from "../../ui/kit/kit.js";
+import * as Input3 from "../../ui/components/input/input.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html18, render as render14 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html18, nothing as nothing11, render as render14 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
@@ -2218,6 +2219,10 @@ var callStackSidebarPane_css_default = `/*
   font-style: italic;
   padding: var(--sys-size-3);
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.call-frame-list {
+  overflow-y: auto;
 }
 
 .call-frame-item {
@@ -3395,13 +3400,13 @@ var IndexedDB;
   })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
 })(IndexedDB || (IndexedDB = {}));
 var Input2;
-((Input3) => {
+((Input4) => {
   let GestureSourceType;
   ((GestureSourceType2) => {
     GestureSourceType2["Default"] = "default";
     GestureSourceType2["Touch"] = "touch";
     GestureSourceType2["Mouse"] = "mouse";
-  })(GestureSourceType = Input3.GestureSourceType || (Input3.GestureSourceType = {}));
+  })(GestureSourceType = Input4.GestureSourceType || (Input4.GestureSourceType = {}));
   let MouseButton;
   ((MouseButton2) => {
     MouseButton2["None"] = "none";
@@ -3410,47 +3415,47 @@ var Input2;
     MouseButton2["Right"] = "right";
     MouseButton2["Back"] = "back";
     MouseButton2["Forward"] = "forward";
-  })(MouseButton = Input3.MouseButton || (Input3.MouseButton = {}));
+  })(MouseButton = Input4.MouseButton || (Input4.MouseButton = {}));
   let DispatchDragEventRequestType;
   ((DispatchDragEventRequestType2) => {
     DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
     DispatchDragEventRequestType2["DragOver"] = "dragOver";
     DispatchDragEventRequestType2["Drop"] = "drop";
     DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
-  })(DispatchDragEventRequestType = Input3.DispatchDragEventRequestType || (Input3.DispatchDragEventRequestType = {}));
+  })(DispatchDragEventRequestType = Input4.DispatchDragEventRequestType || (Input4.DispatchDragEventRequestType = {}));
   let DispatchKeyEventRequestType;
   ((DispatchKeyEventRequestType2) => {
     DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
     DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
     DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
     DispatchKeyEventRequestType2["Char"] = "char";
-  })(DispatchKeyEventRequestType = Input3.DispatchKeyEventRequestType || (Input3.DispatchKeyEventRequestType = {}));
+  })(DispatchKeyEventRequestType = Input4.DispatchKeyEventRequestType || (Input4.DispatchKeyEventRequestType = {}));
   let DispatchMouseEventRequestType;
   ((DispatchMouseEventRequestType2) => {
     DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
     DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(DispatchMouseEventRequestType = Input3.DispatchMouseEventRequestType || (Input3.DispatchMouseEventRequestType = {}));
+  })(DispatchMouseEventRequestType = Input4.DispatchMouseEventRequestType || (Input4.DispatchMouseEventRequestType = {}));
   let DispatchMouseEventRequestPointerType;
   ((DispatchMouseEventRequestPointerType2) => {
     DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
     DispatchMouseEventRequestPointerType2["Pen"] = "pen";
-  })(DispatchMouseEventRequestPointerType = Input3.DispatchMouseEventRequestPointerType || (Input3.DispatchMouseEventRequestPointerType = {}));
+  })(DispatchMouseEventRequestPointerType = Input4.DispatchMouseEventRequestPointerType || (Input4.DispatchMouseEventRequestPointerType = {}));
   let DispatchTouchEventRequestType;
   ((DispatchTouchEventRequestType2) => {
     DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
     DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
     DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
     DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
-  })(DispatchTouchEventRequestType = Input3.DispatchTouchEventRequestType || (Input3.DispatchTouchEventRequestType = {}));
+  })(DispatchTouchEventRequestType = Input4.DispatchTouchEventRequestType || (Input4.DispatchTouchEventRequestType = {}));
   let EmulateTouchFromMouseEventRequestType;
   ((EmulateTouchFromMouseEventRequestType2) => {
     EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
     EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(EmulateTouchFromMouseEventRequestType = Input3.EmulateTouchFromMouseEventRequestType || (Input3.EmulateTouchFromMouseEventRequestType = {}));
+  })(EmulateTouchFromMouseEventRequestType = Input4.EmulateTouchFromMouseEventRequestType || (Input4.EmulateTouchFromMouseEventRequestType = {}));
 })(Input2 || (Input2 = {}));
 var LayerTree;
 ((LayerTree2) => {
@@ -4146,6 +4151,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
@@ -5725,11 +5731,13 @@ import * as Snippets2 from "../snippets/snippets.js";
 // ../../front_end/panels/sources/NavigatorView.ts
 var NavigatorView_exports = {};
 __export(NavigatorView_exports, {
+  DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW: () => DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW,
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
   Events: () => Events2,
   NavigatorFolderTreeNode: () => NavigatorFolderTreeNode,
   NavigatorGroupTreeNode: () => NavigatorGroupTreeNode,
   NavigatorRootTreeNode: () => NavigatorRootTreeNode,
+  NavigatorSourceTitleWidget: () => NavigatorSourceTitleWidget,
   NavigatorTreeNode: () => NavigatorTreeNode,
   NavigatorUISourceCodeTreeNode: () => NavigatorUISourceCodeTreeNode,
   NavigatorView: () => NavigatorView,
@@ -5738,7 +5746,7 @@ __export(NavigatorView_exports, {
   iconTypeForNodeType: () => iconTypeForNodeType,
   renderFolderLeadingIcon: () => renderFolderLeadingIcon,
   renderGroupTrailingIcons: () => renderGroupTrailingIcons,
-  renderSourceTitle: () => renderSourceTitle,
+  renderSourceTitleWidget: () => renderSourceTitleWidget,
   renderSourceTrailingIcons: () => renderSourceTrailingIcons
 });
 import "../../ui/components/spinners/spinners.js";
@@ -6483,18 +6491,18 @@ function renderSourceTrailingIcons(uiSourceCode, onSelectSource) {
   if (!uiSourceCode.contentType().isTextType() || Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
     return [];
   }
-  const action3 = UI7.ActionRegistry.ActionRegistry.instance().getAction("drjones.sources-floating-button");
+  const action4 = UI7.ActionRegistry.ActionRegistry.instance().getAction("drjones.sources-floating-button");
   const icon = AiAssistance.AiUtils.getIconName();
   return [html6`<span class="ai-button-container">
     <devtools-floating-button
       .iconName=${icon}
-      .title=${action3.title()}
+      .title=${action4.title()}
       .jslogContext=${"ask-ai"}
       @click=${{
     handleEvent: (ev) => {
       ev.stopPropagation();
       onSelectSource(uiSourceCode, false);
-      void action3.execute();
+      void action4.execute();
     },
     capture: true
   }}
@@ -6536,14 +6544,81 @@ function renderGroupTrailingIcons(project) {
   }
   return [];
 }
-var renderSourceTitle = (input, _output, target) => {
+var DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW = (input, _output, target) => {
+  const stopPropagationIfEditing = (event) => {
+    if (input.editing) {
+      event.stopPropagation();
+    }
+  };
   render5(html6`
     <devtools-prompt
       value=${input.title}
       ?editing=${input.editing}
       @commit=${(event) => input.onCommit(event.detail)}
-      @cancel=${input.onCancel}
-    >${input.title}</devtools-prompt>`, target);
+      @cancel=${() => input.onCancel()}
+      @mousedown=${stopPropagationIfEditing}
+      @click=${stopPropagationIfEditing}
+      @dblclick=${stopPropagationIfEditing}>${input.title}</devtools-prompt>
+  `, target);
+};
+var NavigatorSourceTitleWidget = class extends UI7.Widget.Widget {
+  #title = "";
+  #editing = false;
+  #view;
+  onCommit;
+  onCancel;
+  set title(title) {
+    if (this.#title === title) {
+      return;
+    }
+    this.#title = title;
+    this.requestUpdate();
+  }
+  get title() {
+    return this.#title;
+  }
+  set editing(editing) {
+    if (this.#editing === editing) {
+      return;
+    }
+    this.#editing = editing;
+    this.requestUpdate();
+  }
+  get editing() {
+    return this.#editing;
+  }
+  constructor(element, view = DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const viewInput = {
+      title: this.#title,
+      editing: this.#editing,
+      onCommit: (detail) => this.onCommit?.(detail),
+      onCancel: () => this.onCancel?.()
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+};
+var renderSourceTitleWidget = (input, _output, target) => {
+  render5(html6`
+        <devtools-widget style="display: contents" ${UI7.Widget.widget(NavigatorSourceTitleWidget, {
+    title: input.title,
+    editing: input.editing,
+    onCommit: input.onCommit,
+    onCancel: input.onCancel
+  })}></devtools-widget>
+      `, target);
+  const widgetElement = target.firstElementChild;
+  if (widgetElement) {
+    const widget7 = UI7.Widget.Widget.getOrCreateWidget(widgetElement);
+    void widget7.performUpdate();
+  }
 };
 var Events2 = /* @__PURE__ */ ((Events6) => {
   Events6["UI_SOURCE_CODE_ADDED"] = "ui-source-code-added";
@@ -8045,7 +8120,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     if (!this.treeElement) {
       return;
     }
-    renderSourceTitle(
+    renderSourceTitleWidget(
       {
         title: this.title,
         editing: this.isEditing,
@@ -8070,7 +8145,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     );
     this.recursiveProperties.exclusivelyIgnored = this.#uiSourceCode.contentType().isScript() || isIgnoreListed ? isIgnoreListed : null;
     let titleText = this.#uiSourceCode.displayName();
-    if (!ignoreIsDirty && this.#uiSourceCode.isDirty()) {
+    if (!ignoreIsDirty && !this.isEditing && this.#uiSourceCode.isDirty()) {
       titleText = "*" + titleText;
     }
     this.title = titleText;
@@ -9347,7 +9422,7 @@ var History = class _History {
     return new _History(items);
   }
   index({ url, resourceType }) {
-    return this.#items.findIndex((item) => item.url === url && item.resourceType === resourceType);
+    return this.#items.findIndex((item2) => item2.url === url && item2.resourceType === resourceType);
   }
   selectionRange(key) {
     const index = this.index(key);
@@ -9383,14 +9458,14 @@ var History = class _History {
   update(keys) {
     for (let i = keys.length - 1; i >= 0; --i) {
       const index = this.index(keys[i]);
-      let item;
+      let item2;
       if (index !== -1) {
-        item = this.#items[index];
+        item2 = this.#items[index];
         this.#items.splice(index, 1);
       } else {
-        item = new HistoryItem(keys[i].url, keys[i].resourceType);
+        item2 = new HistoryItem(keys[i].url, keys[i].resourceType);
       }
-      this.#items.unshift(item);
+      this.#items.unshift(item2);
     }
   }
   remove(key) {
@@ -9402,8 +9477,8 @@ var History = class _History {
   }
   toObject() {
     const serializedHistoryItems = [];
-    for (const item of this.#items) {
-      const serializedItem = item.toObject();
+    for (const item2 of this.#items) {
+      const serializedItem = item2.toObject();
       if (serializedItem) {
         serializedHistoryItems.push(serializedItem);
       }
@@ -12807,12 +12882,12 @@ var SnippetsPlugin = class extends Plugin {
     return Snippets3.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode);
   }
   rightToolbarItems() {
-    const action3 = UI12.ActionRegistry.ActionRegistry.instance().getAction("debugger.run-snippet");
+    const action4 = UI12.ActionRegistry.ActionRegistry.instance().getAction("debugger.run-snippet");
     const text = Host6.Platform.isMac() ? i18nString12(UIStrings13.enter) : i18nString12(UIStrings13.ctrlenter);
     return [html12`<devtools-button
       class="toolbar-button"
-      title=${action3.title()}
-      aria-label=${action3.title()}
+      title=${action4.title()}
+      aria-label=${action4.title()}
       .iconName=${"play"}
       .variant=${Buttons6.Button.Variant.TEXT}
       .reducedFocusRing=${true}
@@ -13797,12 +13872,12 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
           keys: []
         };
       }
-      const action3 = UI14.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
+      const action4 = UI14.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
       const keys = shortcutKeys[0].descriptors.flatMap((descriptor) => descriptor.name.split(separator));
       return {
         description: shortcut.description,
         onClick: () => {
-          void action3.execute();
+          void action4.execute();
         },
         keys
       };
@@ -15366,7 +15441,18 @@ var ThreadsSidebarPane = class extends UI16.Widget.VBox {
   }
   wasShown() {
     super.wasShown();
+    SDK12.TargetManager.TargetManager.instance().addEventListener(
+      SDK12.TargetManager.Events.NAME_CHANGED,
+      this.#targetNameChanged
+    );
     this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    SDK12.TargetManager.TargetManager.instance().removeEventListener(
+      SDK12.TargetManager.Events.NAME_CHANGED,
+      this.#targetNameChanged
+    );
   }
   #getThreadName(debuggerModel) {
     const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
@@ -15403,10 +15489,6 @@ var ThreadsSidebarPane = class extends UI16.Widget.VBox {
       this.requestUpdate,
       this
     );
-    SDK12.TargetManager.TargetManager.instance().addEventListener(
-      SDK12.TargetManager.Events.NAME_CHANGED,
-      this.#targetNameChanged
-    );
     this.requestUpdate();
   }
   modelRemoved(debuggerModel) {
@@ -15417,10 +15499,6 @@ var ThreadsSidebarPane = class extends UI16.Widget.VBox {
       SDK12.RuntimeModel.Events.ExecutionContextChanged,
       this.requestUpdate,
       this
-    );
-    SDK12.TargetManager.TargetManager.instance().removeEventListener(
-      SDK12.TargetManager.Events.NAME_CHANGED,
-      this.#targetNameChanged
     );
     this.requestUpdate();
   }
@@ -16357,26 +16435,26 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       const editorElement = this.element.querySelector("devtools-text-editor");
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
         UI17.Context.Context.instance().setFlavor(Workspace23.UISourceCode.UISourceCode, uiSourceCode);
-        const action3 = UI17.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId);
+        const action4 = UI17.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action4.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString17(UIStrings18.startAChat));
         appendSubmenuPromptAction(
           submenu,
-          action3,
+          action4,
           i18nString17(UIStrings18.assessPerformance),
           "Is this script optimized for performance?",
           openAiAssistanceId + ".performance"
         );
         appendSubmenuPromptAction(
           submenu,
-          action3,
+          action4,
           i18nString17(UIStrings18.explainThisScript),
           "What does this script do?",
           openAiAssistanceId + ".script"
         );
         appendSubmenuPromptAction(
           submenu,
-          action3,
+          action4,
           i18nString17(UIStrings18.explainInputHandling),
           "Does the script handle user input safely",
           openAiAssistanceId + ".input"
@@ -16386,11 +16464,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     if (uiSourceCode.contentType().hasScripts() && Bindings9.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(uiSourceCode).every((script) => script.isJavaScript())) {
       this.#callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
     }
-    function appendSubmenuPromptAction(submenu, action3, label, prompt, jslogContext) {
+    function appendSubmenuPromptAction(submenu, action4, label, prompt, jslogContext) {
       submenu.defaultSection().appendItem(
         label,
-        () => action3.execute({ prompt }),
-        { disabled: !action3.enabled(), jslogContext }
+        () => action4.execute({ prompt }),
+        { disabled: !action4.enabled(), jslogContext }
       );
     }
   }
@@ -16821,6 +16899,7 @@ var QuickSourceView = class _QuickSourceView extends UI17.Widget.VBox {
 };
 
 // ../../front_end/panels/sources/CallStackSidebarPane.ts
+var { classMap: classMap2, ifDefined: ifDefined3 } = Directives4;
 var UIStrings19 = {
   /**
    * @description Text in the call stack sidebar of the Sources panel
@@ -16874,83 +16953,144 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var { createRef, ref: ref3 } = Directives4;
-var callstackSidebarPaneInstance;
-var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleView {
-  ignoreListMessageElement;
-  ignoreListCheckboxElement;
-  notPausedMessageElement;
-  callFrameWarningsElement;
-  items;
-  list;
-  showMoreMessageElement;
-  showIgnoreListed = false;
-  maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
-  updateItemThrottler = new Common16.Throttler.Throttler(100);
-  scheduledForUpdateItems = /* @__PURE__ */ new Set();
-  muteActivateItem;
-  #stackTrace = null;
-  #flavorChangeId = 0;
-  constructor() {
-    super({
-      jslog: `${VisualLogging13.section("sources.callstack")}`,
-      title: i18nString18(UIStrings19.callStack),
-      viewId: "sources.callstack",
-      useShadowDom: true
-    });
-    const [ignoreListMessageRef, ignoreListCheckboxRef, notPausedRef, warningRef, showMoreRef] = [
-      createRef(),
-      createRef(),
-      createRef(),
-      createRef(),
-      createRef()
-    ];
-    const ignoreListCheckboxChanged = () => {
-      this.showIgnoreListed = Boolean(ignoreListCheckboxRef.value?.checked);
-      for (const item of this.items) {
-        this.refreshItem(item);
-      }
-    };
-    this.items = new UI18.ListModel.ListModel();
-    this.list = new UI18.ListControl.ListControl(this.items, this, UI18.ListControl.ListMode.NonViewport);
-    this.list.element.addEventListener("contextmenu", this.onContextMenu.bind(this), false);
-    self.onInvokeElement(this.list.element, (event) => {
-      const item = this.list.itemForNode(event.target);
-      if (item) {
-        this.activateItem(item);
+function getMissingDebugInfoTooltip(missingDebugInfo, functionName) {
+  const { resources, details } = convertMissingDebugInfo(missingDebugInfo, functionName);
+  const messages = resources.map(
+    (r) => i18nString18(UIStrings19.debugFileNotFound, { PH1: Common16.ParsedURL.ParsedURL.extractName(r.resourceUrl) })
+  );
+  return [details, ...messages].join("\n");
+}
+var DEFAULT_VIEW10 = (input, _output, target) => {
+  const renderItem = (item2, index) => {
+    const isHidden = !input.showIgnoreListed && item2.isIgnoreListed;
+    const isAsyncHeader = item2.isAsyncHeader;
+    const isIgnoreListed = !isAsyncHeader && item2.isIgnoreListed;
+    const hasFrame = Boolean(item2.frame);
+    const isSelected = item2 === input.selectedItem;
+    const isFocused = item2 === input.focusedItem;
+    const missingDebugInfoTooltip = item2.frame?.missingDebugInfo ? getMissingDebugInfoTooltip(item2.frame.missingDebugInfo, item2.frame.sdkFrame.functionName) : void 0;
+    const onKeyDown = (event) => {
+      if (event.key === "Enter" && !event.isComposing || event.key === " ") {
+        input.onItemActivate(item2);
+        event.consume(true);
+      } else if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "Home" || event.key === "End") {
+        input.onItemKeyDown(item2, event.key);
         event.consume(true);
       }
-    });
-    const onShowMoreClicked = () => {
-      this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
-      this.requestUpdate();
     };
-    render14(html18`
-      <style>${callStackSidebarPane_css_default}</style>
-      <div class='ignore-listed-message' ${ref3(ignoreListMessageRef)}>
-        <label class='ignore-listed-message-label'>
-          <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
-              @change=${ignoreListCheckboxChanged} ${ref3(ignoreListCheckboxRef)} />
-          ${i18nString18(UIStrings19.showIgnorelistedFrames)}
-        </label>
+    const onContextMenu = (event) => {
+      const contextMenu = new UI18.ContextMenu.ContextMenu(event);
+      input.onItemContextMenu(item2, contextMenu);
+      void contextMenu.show();
+    };
+    return html18`
+      <div class=${classMap2({
+      "call-frame-item": true,
+      "async-header": isAsyncHeader,
+      "ignore-listed-call-frame": isIgnoreListed,
+      selected: isSelected
+    })}
+          role="option"
+          aria-setsize=${input.items.length}
+          aria-posinset=${index + 1}
+          aria-selected=${isSelected ? "true" : "false"}
+          aria-description=${ifDefined3(isIgnoreListed ? i18nString18(UIStrings19.onIgnoreList) : void 0)}
+          aria-disabled=${ifDefined3(!isAsyncHeader && !hasFrame ? "true" : void 0)}
+          ?hidden=${isHidden}
+          tabindex=${isFocused ? 0 : -1}
+          ?autofocus=${isFocused && !isHidden}
+          jslog=${VisualLogging13.item().track({
+      click: true,
+      resize: true,
+      keydown: "ArrowUp|ArrowDown|PageUp|PageDown|Home|End|Enter|Space"
+    })}
+          @click=${() => input.onItemClick(item2)}
+          @contextmenu=${onContextMenu}
+          @keydown=${onKeyDown}>
+        <div class="call-frame-item-title">
+          <div class="call-frame-title-text"
+              title=${ifDefined3(!isAsyncHeader ? item2.title : void 0)}>${item2.title}</div>
+        </div>
+        ${!isAsyncHeader ? html18`
+          <div class="call-frame-location"
+              title=${item2.linkText}>${Platform14.StringUtilities.trimMiddle(item2.linkText, 30)}</div>
+        ` : nothing11}
+        <devtools-icon .name=${"large-arrow-right-filled"} class="selected-call-frame-icon small"></devtools-icon>
+        ${missingDebugInfoTooltip ? html18`
+          <devtools-icon .name=${"warning-filled"} class="call-frame-warning-icon small"
+              title=${missingDebugInfoTooltip}></devtools-icon>
+        ` : nothing11}
       </div>
-      <div class='gray-info-message' tabindex=-1 ${ref3(notPausedRef)}>
-        ${i18nString18(UIStrings19.notPaused)}
-      </div>
-      <div class='call-frame-warnings-message' tabindex=-1 ${ref3(warningRef)}>
-        <devtools-icon .name=${"warning-filled"} class='call-frame-warning-icon small'></devtools-icon>
-        ${i18nString18(UIStrings19.callFrameWarnings)}
-      </div>
-      ${this.list.element}
-      <div class='show-more-message hidden' ${ref3(showMoreRef)}>
-        <button class='link' @click=${onShowMoreClicked}>${i18nString18(UIStrings19.showMore)}</button>
-      </div>
-    `, this.contentElement);
-    this.ignoreListMessageElement = ignoreListMessageRef.value;
-    this.ignoreListCheckboxElement = ignoreListCheckboxRef.value;
-    this.notPausedMessageElement = notPausedRef.value;
-    this.callFrameWarningsElement = warningRef.value;
-    this.showMoreMessageElement = showMoreRef.value;
+    `;
+  };
+  render14(html18`
+    <style>${Input3.checkboxStyles}</style>
+    <style>${callStackSidebarPane_css_default}</style>
+    <div
+      class="ignore-listed-message"
+      ?hidden=${!input.showIgnoreListMessage}>
+      <label class="ignore-listed-message-label">
+        <input type="checkbox" tabindex="0" class="ignore-listed-checkbox"
+            .checked=${input.showIgnoreListedChecked}
+            jslog=${VisualLogging13.toggle("show-ignore-listed-frames").track({ change: true })}
+            @change=${(e) => {
+    if (e.target instanceof HTMLInputElement) {
+      input.onIgnoreListCheckboxChange(e.target.checked);
+    }
+  }} />
+        ${i18nString18(UIStrings19.showIgnorelistedFrames)}
+      </label>
+    </div>
+    <div
+      class="gray-info-message"
+      ?hidden=${!input.notPaused}
+      tabindex="-1">
+      ${i18nString18(UIStrings19.notPaused)}
+    </div>
+    <div
+      class="call-frame-warnings-message"
+      ?hidden=${!input.warnings}
+      tabindex="-1"
+      title=${ifDefined3(input.warnings)}>
+      <devtools-icon .name=${"warning-filled"} class="call-frame-warning-icon small"></devtools-icon>
+      ${i18nString18(UIStrings19.callFrameWarnings)}
+    </div>
+    <div class="call-frame-list"
+        role="listbox"
+        aria-label=${i18nString18(UIStrings19.callStack)}
+        tabindex="-1"
+        ?hidden=${input.items.length === 0}>
+      ${input.items.map((item2, index) => renderItem(item2, index))}
+    </div>
+    <div
+      class="show-more-message"
+      ?hidden=${!input.showMore}>
+      <button class="link"
+          jslog=${VisualLogging13.action("show-more").track({ click: true })}
+          @click=${input.onShowMore}>${i18nString18(UIStrings19.showMore)}</button>
+    </div>
+  `, target, { container: { attributes: { jslog: `${VisualLogging13.section("sources.callstack")}` } } });
+};
+var callstackSidebarPaneInstance;
+var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleView {
+  #view;
+  #items = [];
+  #focusedItem = null;
+  #showIgnoreListed = false;
+  #showIgnoreListMessage = false;
+  #ignoreListCheckboxChecked = false;
+  #warnings;
+  #hasMore = false;
+  maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+  #stackTrace = null;
+  #flavorChangeId = 0;
+  constructor(element, view = DEFAULT_VIEW10) {
+    super(element, {
+      title: i18nString18(UIStrings19.callStack),
+      viewId: "sources.callstack",
+      useShadowDom: "pure"
+    });
+    this.#view = view;
     this.requestUpdate();
   }
   static instance(opts = { forceNew: null }) {
@@ -16960,14 +17100,38 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     }
     return callstackSidebarPaneInstance;
   }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  #onIgnoreListCheckboxChanged(checked) {
+    this.#ignoreListCheckboxChecked = checked;
+    this.#updateIgnoreListState();
+    if (!this.#isItemVisible(this.#focusedItem)) {
+      const activeItem = this.activeCallFrameItem();
+      this.#focusedItem = this.#isItemVisible(activeItem) ? activeItem : this.#firstVisibleItem();
+    }
+    this.requestUpdate();
+  }
+  #onShowMoreClicked() {
+    this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
+    this.#rebuildItems();
+    this.requestUpdate();
+  }
+  #onStackTraceUpdated() {
+    this.#rebuildItems();
+    this.requestUpdate();
+  }
   async flavorChanged(details) {
     const flavorChangeId = ++this.#flavorChangeId;
-    this.showIgnoreListed = false;
-    this.ignoreListCheckboxElement.checked = false;
+    this.#showIgnoreListed = false;
+    this.#ignoreListCheckboxChecked = false;
+    this.#showIgnoreListMessage = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
     if (this.#stackTrace) {
-      this.#stackTrace.removeEventListener(StackTrace5.StackTrace.Events.UPDATED, this.requestUpdate, this);
+      this.#stackTrace.removeEventListener(StackTrace5.StackTrace.Events.UPDATED, this.#onStackTraceUpdated, this);
       this.#stackTrace = null;
+      this.#rebuildItems();
       this.requestUpdate();
     }
     if (details) {
@@ -16976,21 +17140,21 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
         return;
       }
       this.#stackTrace = stackTrace;
-      this.#stackTrace.addEventListener(StackTrace5.StackTrace.Events.UPDATED, this.requestUpdate, this);
+      this.#stackTrace.addEventListener(StackTrace5.StackTrace.Events.UPDATED, this.#onStackTraceUpdated, this);
+      this.#rebuildItems();
     }
     this.requestUpdate();
   }
-  performUpdate() {
-    this.callFrameWarningsElement.classList.add("hidden");
+  #rebuildItems() {
     if (!this.#stackTrace) {
-      this.notPausedMessageElement.classList.remove("hidden");
-      this.ignoreListMessageElement.classList.add("hidden");
-      this.showMoreMessageElement.classList.add("hidden");
-      this.items.replaceAll([]);
+      this.#warnings = void 0;
+      this.#hasMore = false;
+      this.#showIgnoreListMessage = false;
+      this.#items = [];
+      this.#focusedItem = null;
       UI18.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, null);
       return;
     }
-    this.notPausedMessageElement.classList.add("hidden");
     const items = [];
     const uniqueWarnings = /* @__PURE__ */ new Set();
     for (const frame of this.#stackTrace.syncFragment.frames) {
@@ -16999,10 +17163,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
         uniqueWarnings.add(convertMissingDebugInfo(frame.missingDebugInfo, frame.sdkFrame.functionName).details);
       }
     }
-    if (uniqueWarnings.size) {
-      this.callFrameWarningsElement.classList.remove("hidden");
-      UI18.Tooltip.Tooltip.install(this.callFrameWarningsElement, Array.from(uniqueWarnings).join("\n"));
-    }
+    this.#warnings = uniqueWarnings.size ? Array.from(uniqueWarnings).join("\n") : void 0;
     let { maxAsyncStackChainDepth } = this;
     let hasMore = false;
     for (const asyncFragment of this.#stackTrace.asyncFragments) {
@@ -17015,126 +17176,88 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
         break;
       }
     }
-    this.showMoreMessageElement.classList.toggle("hidden", !hasMore);
-    this.items.replaceAll(items);
-    for (const item of this.items) {
-      this.refreshItem(item);
-    }
+    this.#hasMore = hasMore;
+    this.#items = items;
+    this.#updateIgnoreListState();
     if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
-      this.list.selectNextItem(
-        true,
-        false
-        /* center */
-      );
-      const selectedItem = this.list.selectedItem();
-      if (selectedItem && (UI18.Context.Context.instance().flavor(QuickSourceView) || UI18.Context.Context.instance().flavor(SourcesPanel))) {
-        this.activateItem(selectedItem);
+      this.#focusedItem = this.#firstVisibleItem() ?? (this.#items[0] ?? null);
+      if (this.#focusedItem && (UI18.Context.Context.instance().flavor(QuickSourceView) || UI18.Context.Context.instance().flavor(SourcesPanel))) {
+        this.activateItem(this.#focusedItem);
       }
+    } else {
+      const activeItem = this.activeCallFrameItem();
+      this.#focusedItem = this.#isItemVisible(activeItem) ? activeItem : this.#firstVisibleItem() ?? (this.#items[0] ?? null);
     }
-    this.updatedForTest();
+  }
+  #isItemVisible(item2) {
+    if (!item2 || !this.#items.includes(item2)) {
+      return false;
+    }
+    return this.#showIgnoreListed || !item2.isIgnoreListed;
+  }
+  #firstVisibleItem() {
+    return this.#items.find((item2) => this.#showIgnoreListed || !item2.isIgnoreListed) ?? null;
+  }
+  #updateIgnoreListState() {
+    const hasIgnoreListed = this.#items.some((item2) => item2.isIgnoreListed);
+    const allIgnoreListed = this.#items.length > 0 && this.#items.every((item2) => item2.isIgnoreListed);
+    if (allIgnoreListed) {
+      this.#showIgnoreListed = true;
+      this.#showIgnoreListMessage = false;
+    } else {
+      this.#showIgnoreListed = this.#ignoreListCheckboxChecked;
+      this.#showIgnoreListMessage = hasIgnoreListed;
+    }
+  }
+  performUpdate() {
+    const viewInput = {
+      showIgnoreListMessage: this.#showIgnoreListMessage,
+      showIgnoreListedChecked: this.#ignoreListCheckboxChecked,
+      onIgnoreListCheckboxChange: this.#onIgnoreListCheckboxChanged.bind(this),
+      notPaused: !this.#stackTrace,
+      warnings: this.#warnings,
+      items: this.#items,
+      selectedItem: this.activeCallFrameItem(),
+      focusedItem: this.#focusedItem,
+      showIgnoreListed: this.#showIgnoreListed,
+      onItemClick: this.#onItemClick.bind(this),
+      onItemActivate: this.#onItemActivate.bind(this),
+      onItemContextMenu: this.#onItemContextMenu.bind(this),
+      onItemKeyDown: this.#onItemKeyDown.bind(this),
+      showMore: this.#hasMore,
+      onShowMore: this.#onShowMoreClicked.bind(this)
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+    if (this.#stackTrace) {
+      this.updatedForTest();
+    }
   }
   updatedForTest() {
   }
-  refreshItem(item) {
-    this.scheduledForUpdateItems.add(item);
-    void this.updateItemThrottler.schedule(async () => {
-      const items = Array.from(this.scheduledForUpdateItems);
-      this.scheduledForUpdateItems.clear();
-      this.muteActivateItem = true;
-      if (!this.showIgnoreListed && this.items.every((item2) => item2.isIgnoreListed)) {
-        this.showIgnoreListed = true;
-        for (let i = 0; i < this.items.length; ++i) {
-          this.list.refreshItemByIndex(i);
-        }
-        this.ignoreListMessageElement.classList.toggle("hidden", true);
-      } else {
-        this.showIgnoreListed = this.ignoreListCheckboxElement.checked;
-        const itemsSet = new Set(items);
-        let hasIgnoreListed = false;
-        for (let i = 0; i < this.items.length; ++i) {
-          const item2 = this.items.at(i);
-          if (itemsSet.has(item2)) {
-            this.list.refreshItemByIndex(i);
-          }
-          hasIgnoreListed = hasIgnoreListed || item2.isIgnoreListed;
-        }
-        this.ignoreListMessageElement.classList.toggle("hidden", !hasIgnoreListed);
-      }
-      delete this.muteActivateItem;
-    });
-  }
-  createElementForItem(item) {
-    const element = document.createElement("div");
-    element.classList.add("call-frame-item");
-    const title = element.createChild("div", "call-frame-item-title");
-    const titleElement = title.createChild("div", "call-frame-title-text");
-    titleElement.textContent = item.title;
-    if (item.isAsyncHeader) {
-      element.classList.add("async-header");
-    } else {
-      UI18.Tooltip.Tooltip.install(titleElement, item.title);
-      const linkElement = element.createChild("div", "call-frame-location");
-      linkElement.textContent = Platform14.StringUtilities.trimMiddle(item.linkText, 30);
-      UI18.Tooltip.Tooltip.install(linkElement, item.linkText);
-      element.classList.toggle("ignore-listed-call-frame", item.isIgnoreListed);
-      if (item.isIgnoreListed) {
-        UI18.ARIAUtils.setDescription(element, i18nString18(UIStrings19.onIgnoreList));
-      }
-      if (!item.frame) {
-        UI18.ARIAUtils.setDisabled(element, true);
-      }
+  #onItemClick(item2) {
+    if (this.#items.includes(item2)) {
+      this.#focusedItem = item2;
     }
-    const isSelected = item.frame === UI18.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor)?.frame;
-    element.classList.toggle("selected", isSelected);
-    UI18.ARIAUtils.setSelected(element, isSelected);
-    element.classList.toggle("hidden", !this.showIgnoreListed && item.isIgnoreListed);
-    const icon = new Icon();
-    icon.name = "large-arrow-right-filled";
-    icon.classList.add("selected-call-frame-icon", "small");
-    element.appendChild(icon);
-    element.tabIndex = item === this.list.selectedItem() ? 0 : -1;
-    if (item.frame?.missingDebugInfo) {
-      const icon2 = new Icon();
-      icon2.name = "warning-filled";
-      icon2.classList.add("call-frame-warning-icon", "small");
-      const { resources, details } = convertMissingDebugInfo(item.frame.missingDebugInfo, item.frame.sdkFrame.functionName);
-      const messages = resources.map(
-        (r) => i18nString18(UIStrings19.debugFileNotFound, { PH1: Common16.ParsedURL.ParsedURL.extractName(r.resourceUrl) })
-      );
-      UI18.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
-      element.appendChild(icon2);
+    if (item2.uiLocation) {
+      this.activateItem(item2);
     }
-    return element;
+    this.requestUpdate();
   }
-  heightForItem(_item) {
-    console.assert(false);
-    return 0;
-  }
-  isItemSelectable(_item) {
-    return true;
-  }
-  selectedItemChanged(_from, _to, fromElement, toElement) {
-    if (fromElement) {
-      fromElement.tabIndex = -1;
+  #onItemActivate(item2) {
+    if (this.#items.includes(item2)) {
+      this.#focusedItem = item2;
     }
-    if (toElement) {
-      this.setDefaultFocusedElement(toElement);
-      toElement.tabIndex = 0;
-      if (this.hasFocus()) {
-        toElement.focus();
-      }
+    if (item2.uiLocation) {
+      this.activateItem(item2);
     }
+    this.requestUpdate();
   }
-  updateSelectedItemARIA(_fromElement, _toElement) {
-    return true;
-  }
-  onContextMenu(event) {
-    const item = this.list.itemForNode(event.target);
-    if (!item) {
-      return;
+  #onItemContextMenu(item2, contextMenu) {
+    if (this.#items.includes(item2)) {
+      this.#focusedItem = item2;
+      this.requestUpdate();
     }
-    const contextMenu = new UI18.ContextMenu.ContextMenu(event);
-    const debuggerCallFrame = item.frame?.sdkFrame;
+    const debuggerCallFrame = item2.frame?.sdkFrame;
     if (debuggerCallFrame) {
       contextMenu.defaultSection().appendItem(i18nString18(UIStrings19.restartFrame), () => {
         Host10.userMetrics.actionTaken(Host10.UserMetrics.Action.StackFrameRestarted);
@@ -17146,19 +17269,61 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       this.copyStackTrace.bind(this),
       { jslogContext: "copy-stack-trace" }
     );
-    if (item.uiLocation) {
-      this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
+    if (item2.uiLocation) {
+      this.appendIgnoreListURLContextMenuItems(contextMenu, item2.uiLocation.uiSourceCode);
     }
-    void contextMenu.show();
   }
-  activateItem(item) {
-    const uiLocation = item.uiLocation;
-    if (this.muteActivateItem || !uiLocation) {
+  #onItemKeyDown(item2, direction) {
+    const visibleItems = this.#items.filter((candidate) => this.#showIgnoreListed || !candidate.isIgnoreListed);
+    if (visibleItems.length === 0) {
       return;
     }
-    this.list.selectItem(item);
-    const debuggerCallFrame = item.frame;
-    const oldItem = this.activeCallFrameItem();
+    let newItem;
+    switch (direction) {
+      case "Home":
+        newItem = visibleItems[0];
+        break;
+      case "End":
+        newItem = visibleItems[visibleItems.length - 1];
+        break;
+      case "ArrowDown": {
+        const currPos = visibleItems.indexOf(item2);
+        const nextPos = currPos === -1 ? 0 : (currPos + 1) % visibleItems.length;
+        newItem = visibleItems[nextPos];
+        break;
+      }
+      case "ArrowUp": {
+        const currPos = visibleItems.indexOf(item2);
+        const prevPos = currPos === -1 ? visibleItems.length - 1 : (currPos - 1 + visibleItems.length) % visibleItems.length;
+        newItem = visibleItems[prevPos];
+        break;
+      }
+    }
+    const targetItem = newItem;
+    this.#focusedItem = targetItem;
+    this.requestUpdate();
+    void this.updateComplete.then(() => {
+      const newIndex = this.#items.indexOf(targetItem);
+      if (newIndex === -1) {
+        return;
+      }
+      const elements = this.contentElement.querySelectorAll(".call-frame-item");
+      const targetEl = elements[newIndex];
+      if (targetEl) {
+        targetEl.focus();
+        targetEl.scrollIntoView({ block: "nearest" });
+      }
+    });
+  }
+  activateItem(item2) {
+    const uiLocation = item2.uiLocation;
+    if (!uiLocation) {
+      return;
+    }
+    if (this.#items.includes(item2)) {
+      this.#focusedItem = item2;
+    }
+    const debuggerCallFrame = item2.frame;
     if (debuggerCallFrame) {
       debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
       UI18.Context.Context.instance().setFlavor(
@@ -17168,17 +17333,12 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     } else {
       void Common16.Revealer.reveal(uiLocation);
     }
-    if (oldItem !== item) {
-      if (oldItem) {
-        this.refreshItem(oldItem);
-      }
-      this.refreshItem(item);
-    }
+    this.requestUpdate();
   }
   activeCallFrameItem() {
     const frameFlavor = UI18.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor);
     if (frameFlavor) {
-      return this.items.find((callFrameItem) => callFrameItem.frame === frameFlavor.frame) || null;
+      return this.#items.find((callFrameItem) => callFrameItem.frame === frameFlavor.frame) || null;
     }
     return null;
   }
@@ -17197,9 +17357,9 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
   }
   selectNextCallFrameOnStack() {
     const oldItem = this.activeCallFrameItem();
-    const startIndex = oldItem ? this.items.indexOf(oldItem) + 1 : 0;
-    for (let i = startIndex; i < this.items.length; i++) {
-      const newItem = this.items.at(i);
+    const startIndex = oldItem ? this.#items.indexOf(oldItem) + 1 : 0;
+    for (let i = startIndex; i < this.#items.length; i++) {
+      const newItem = this.#items[i];
       if (newItem.frame) {
         this.activateItem(newItem);
         break;
@@ -17208,9 +17368,9 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
   }
   selectPreviousCallFrameOnStack() {
     const oldItem = this.activeCallFrameItem();
-    const startIndex = oldItem ? this.items.indexOf(oldItem) - 1 : this.items.length - 1;
+    const startIndex = oldItem ? this.#items.indexOf(oldItem) - 1 : this.#items.length - 1;
     for (let i = startIndex; i >= 0; i--) {
-      const newItem = this.items.at(i);
+      const newItem = this.#items[i];
       if (newItem.frame) {
         this.activateItem(newItem);
         break;
@@ -17219,10 +17379,10 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
   }
   copyStackTrace() {
     const text = [];
-    for (const item of this.items) {
-      let itemText = item.title;
-      if (item.uiLocation) {
-        itemText += " (" + item.uiLocation.linkText(
+    for (const item2 of this.#items) {
+      let itemText = item2.title;
+      if (item2.uiLocation) {
+        itemText += " (" + item2.uiLocation.linkText(
           true
           /* skipTrim */
         ) + ")";
@@ -17232,7 +17392,6 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     Host10.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text.join("\n"));
   }
 };
-var elementSymbol = /* @__PURE__ */ Symbol("element");
 var defaultMaxAsyncStackChainDepth = 32;
 var ActionDelegate5 = class {
   handleAction(_context, actionId) {
@@ -17256,25 +17415,25 @@ var Item = class _Item {
   /** Only set for synchronous frames */
   frame;
   static createForDebuggableFrame(frame) {
-    const item = _Item.createForFrame(frame);
-    item.frame = frame;
-    return item;
+    const item2 = _Item.createForFrame(frame);
+    item2.frame = frame;
+    return item2;
   }
   static createForFrame(frame) {
-    const item = new _Item(UI18.UIUtils.beautifyFunctionName(frame.name ?? ""));
+    const item2 = new _Item(UI18.UIUtils.beautifyFunctionName(frame.name ?? ""));
     const uiSourceCode = frame.uiSourceCode;
     if (uiSourceCode) {
-      item.isIgnoreListed = uiSourceCode.isIgnoreListed() ?? false;
-      item.uiLocation = uiSourceCode.uiLocation(frame.line, frame.column);
-      item.linkText = item.uiLocation.linkText();
+      item2.isIgnoreListed = uiSourceCode.isIgnoreListed() ?? false;
+      item2.uiLocation = uiSourceCode.uiLocation(frame.line, frame.column);
+      item2.linkText = item2.uiLocation.linkText();
     }
-    return item;
+    return item2;
   }
   static createForAsyncHeader(stackTrace, fragment) {
     const description = UI18.UIUtils.asyncFragmentLabel(stackTrace, fragment);
-    const item = new _Item(description);
-    item.isAsyncHeader = true;
-    return item;
+    const item2 = new _Item(description);
+    item2.isAsyncHeader = true;
+    return item2;
   }
   constructor(title) {
     this.title = title;
@@ -17454,7 +17613,7 @@ import * as i18n39 from "../../core/i18n/i18n.js";
 import * as Persistence13 from "../../models/persistence/persistence.js";
 import * as Workspace26 from "../../models/workspace/workspace.js";
 import * as QuickOpen3 from "../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives as Directives5, html as html19, nothing as nothing11 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html19, nothing as nothing12 } from "../../ui/lit/lit.js";
 import * as SettingsUI4 from "../../ui/settings/settings.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
@@ -17531,7 +17690,7 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/sources/FilteredUISourceCodeListProvider.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var { classMap: classMap2 } = Directives5;
+var { classMap: classMap3 } = Directives5;
 var FILE_SYSTEM_SCORE_BONUS = 1e6;
 var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidget.Provider {
   queryLineNumberAndColumnNumber;
@@ -17669,11 +17828,11 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     return html19`
       <style>${filteredUISourceCodeListProvider_css_default}</style>
       <div class="filtered-ui-source-code-list-item
-                  ${classMap2({ "is-ignore-listed": isIgnoreListed })}">
+                  ${classMap3({ "is-ignore-listed": isIgnoreListed })}">
         <devtools-highlight
             type="markup"
             ranges=${titleRanges.map((r) => `${r.offset},${r.length}`).join(" ")}
-            class="filtered-ui-source-code-title ${classMap2({ "search-mode": Boolean(query) })}">
+            class="filtered-ui-source-code-title ${classMap3({ "search-mode": Boolean(query) })}">
           ${uiSourceCode.displayName() + (this.queryLineNumberAndColumnNumber || "")}
         </devtools-highlight>
         <devtools-highlight
@@ -17682,7 +17841,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
             class="filtered-ui-source-code-subtitle" title=${tooltipText}>
           ${this.renderSubtitleElement(fullDisplayName.substring(0, fileNameIndex + 1))}
         </devtools-highlight>
-        ${isFileSystem ? html19`<span class="tag">${i18nString19(UIStrings20.workspace)}</span>` : nothing11}
+        ${isFileSystem ? html19`<span class="tag">${i18nString19(UIStrings20.workspace)}</span>` : nothing12}
       </div>`;
   }
   renderSubtitleElement(text) {
@@ -17963,7 +18122,7 @@ import * as i18n43 from "../../core/i18n/i18n.js";
 import * as CodeMirror7 from "../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import { html as html22, nothing as nothing12 } from "../../ui/lit/lit.js";
+import { html as html22, nothing as nothing13 } from "../../ui/lit/lit.js";
 var UIStrings22 = {
   /**
    * @description Text in Go to line Quick Open of the Sources panel.
@@ -18253,19 +18412,19 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     return this.items.length;
   }
   itemKeyAt(itemIndex) {
-    const item = this.items[itemIndex];
-    return item.title + (item.subtitle ? item.subtitle : "");
+    const item2 = this.items[itemIndex];
+    return item2.title + (item2.subtitle ? item2.subtitle : "");
   }
   itemScoreAt(itemIndex, query) {
-    const item = this.items[itemIndex];
+    const item2 = this.items[itemIndex];
     const methodName = query.split("(")[0];
-    if (methodName.toLowerCase() === item.title.toLowerCase()) {
-      return 1 / (1 + item.lineNumber);
+    if (methodName.toLowerCase() === item2.title.toLowerCase()) {
+      return 1 / (1 + item2.lineNumber);
     }
-    return -item.lineNumber - 1;
+    return -item2.lineNumber - 1;
   }
   renderItem(itemIndex, query) {
-    const item = this.items[itemIndex];
+    const item2 = this.items[itemIndex];
     let location;
     const sourceFrame = this.currentSourceFrame();
     if (sourceFrame) {
@@ -18273,17 +18432,17 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
       if (disassembly) {
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
-        location = `:0x${item.columnNumber.toString(16).padStart(bytecodeOffsetDigits, "0")}`;
+        location = `:0x${item2.columnNumber.toString(16).padStart(bytecodeOffsetDigits, "0")}`;
       } else {
-        location = `:${item.lineNumber + 1}`;
+        location = `:${item2.lineNumber + 1}`;
       }
     }
-    const title = item.title + (item.subtitle ? item.subtitle : "");
+    const title = item2.title + (item2.subtitle ? item2.subtitle : "");
     const highlightRanges = QuickOpen5.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
     return html22`
       <devtools-icon name="deployed"></devtools-icon>
       <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
-      ${location ? html22`<span class="tag">${location}</span>` : nothing12}`;
+      ${location ? html22`<span class="tag">${location}</span>` : nothing13}`;
   }
   selectItem(itemIndex, _promptValue) {
     if (itemIndex === null) {
@@ -18293,8 +18452,8 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     if (!sourceFrame) {
       return;
     }
-    const item = this.items[itemIndex];
-    sourceFrame.revealPosition({ lineNumber: item.lineNumber, columnNumber: item.columnNumber }, true);
+    const item2 = this.items[itemIndex];
+    sourceFrame.revealPosition({ lineNumber: item2.lineNumber, columnNumber: item2.columnNumber }, true);
   }
   currentSourceFrame() {
     const sourcesView = UI20.Context.Context.instance().flavor(SourcesView);
@@ -18556,7 +18715,7 @@ function getScript(contentProvider) {
 // ../../front_end/panels/sources/ScopeChainSidebarPane.ts
 var ScopeChainSidebarPane_exports = {};
 __export(ScopeChainSidebarPane_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   ScopeChainSidebarPane: () => ScopeChainSidebarPane
 });
 import * as i18n47 from "../../core/i18n/i18n.js";
@@ -18565,7 +18724,7 @@ import * as StackTrace7 from "../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
-import { html as html23, nothing as nothing13, render as render15 } from "../../ui/lit/lit.js";
+import { html as html23, nothing as nothing14, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
@@ -18640,7 +18799,7 @@ var UIStrings24 = {
 var str_24 = i18n47.i18n.registerUIStrings("panels/sources/ScopeChainSidebarPane.ts", UIStrings24);
 var i18nString23 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var scopeChainSidebarPaneInstance;
-var DEFAULT_VIEW10 = (input, output, target) => {
+var DEFAULT_VIEW11 = (input, output, target) => {
   const createScopeSection = ({ scope, objectTree }) => {
     let emptyPlaceholder;
     if (scope.type() === Debugger.ScopeType.Local || scope.type() === Debugger.ScopeType.Closure) {
@@ -18665,7 +18824,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
                  @click=${() => {
       input.onToggle(objectTree, !objectTree.expanded);
     }}>
-              ${icon ? html23`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing13}
+              ${icon ? html23`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing14}
               <div class="scope-chain-sidebar-pane-section-title">${title}</div>
               <div class="scope-chain-sidebar-pane-section-subtitle">${subtitle}</div>
             </div>
@@ -18682,7 +18841,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
           <style>${ObjectUI3.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI3.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${scopeChainSidebarPane_css_default}</style>
-          ${input.scopeChain?.map((item) => createScopeSection(item)) ?? nothing13}
+          ${input.scopeChain?.map((item2) => createScopeSection(item2)) ?? nothing14}
         </ul>`}>
       </devtools-tree>` : html23`
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString23(UIStrings24.loading) : i18nString23(UIStrings24.notPaused)}</div>`}
@@ -18730,7 +18889,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
   #scopeChainModel = null;
   #scopeChain = null;
   #view;
-  constructor(target, view = DEFAULT_VIEW10) {
+  constructor(target, view = DEFAULT_VIEW11) {
     super(target, {
       useShadowDom: true
     });
@@ -18854,7 +19013,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
 var WatchExpressionsSidebarPane_exports = {};
 __export(WatchExpressionsSidebarPane_exports, {
   DEFAULT_PROMPT_VIEW: () => DEFAULT_PROMPT_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW11,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12,
   WatchExpression: () => WatchExpression,
   WatchExpressionPromptWidget: () => WatchExpressionPromptWidget,
   WatchExpressionsSidebarPane: () => WatchExpressionsSidebarPane
@@ -18873,7 +19032,7 @@ import * as TextEditor6 from "../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
-import { Directives as Directives7, html as html24, nothing as nothing14, render as render16 } from "../../ui/lit/lit.js";
+import { Directives as Directives7, html as html24, nothing as nothing15, render as render16 } from "../../ui/lit/lit.js";
 import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -19087,12 +19246,12 @@ var UIStrings25 = {
 var str_25 = i18n49.i18n.registerUIStrings("panels/sources/WatchExpressionsSidebarPane.ts", UIStrings25);
 var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var watchExpressionsSidebarPaneInstance;
-var { classMap: classMap3, ifDefined: ifDefined3 } = Directives7;
+var { classMap: classMap4, ifDefined: ifDefined4 } = Directives7;
 var { widget: widget6 } = UI23.Widget;
 var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
   const e = input.expression;
   if (!e) {
-    render16(nothing14, target);
+    render16(nothing15, target);
     return;
   }
   const stopPropagationIfEditing = (event) => {
@@ -19109,7 +19268,7 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
   render16(
     html24`
         <devtools-prompt
-            class=${classMap3({
+            class=${classMap4({
       monospace: true,
       "watch-expression": true,
       "watch-expression-text-prompt-proxy": Boolean(e.editing)
@@ -19123,13 +19282,13 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
             @mousedown=${stopPropagationIfEditing}
             @click=${stopPropagationIfEditing}
             @dblclick=${stopPropagationIfEditing}>
-          <div class=${classMap3({
+          <div class=${classMap4({
       "watch-expression-header": true,
       "watch-expression-object-header": !e.exceptionDetails && e.result !== void 0 && e.result.hasChildren && !e.result.object.customPreview()
     })}
                @contextmenu=${input.onContextMenu}
                @dblclick=${input.onStartEditing}>
-            <div class=${classMap3({
+            <div class=${classMap4({
       "watch-expression-title": true,
       "tree-element-title": true,
       dimmed: Boolean(e.exceptionDetails) && !e.result
@@ -19148,7 +19307,7 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
               <span class=watch-expressions-separator>: </span>
               ${e.exceptionDetails || !e.result ? html24`<span
                     class="watch-expression-error value"
-                    title=${ifDefined3(e.exceptionDetails?.exception?.description)}
+                    title=${ifDefined4(e.exceptionDetails?.exception?.description)}
                     >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.renderPropertyValue(
       e.result.object,
       Boolean(e.exceptionDetails),
@@ -19166,7 +19325,7 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
             <datalist id=${input.completionsId}>
               ${input.completions.map((c) => html24`<option>${c}</option>`)}
             </datalist>
-          ` : nothing14}
+          ` : nothing15}
         </devtools-prompt>
       `,
     target
@@ -19259,7 +19418,7 @@ var WatchExpressionPromptWidget = class extends UI23.Widget.Widget {
     this.#view(viewInput, void 0, this.contentElement);
   }
 };
-var DEFAULT_VIEW11 = (input, output, target) => {
+var DEFAULT_VIEW12 = (input, output, target) => {
   const onContextMenu = (watchExpression, event) => {
     const contextMenu = new UI23.ContextMenu.ContextMenu(event);
     const isEditing = input.watchExpressions.some((e) => e.editing);
@@ -19309,7 +19468,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
   const renderTreeElement = (e) => {
     const completionsId = `watch-expression-completions-${input.watchExpressions.indexOf(e)}`;
     return html24`<li
-          class=${classMap3({ "watch-expression-tree-item": true, "watch-expression-editing": e.editing })}
+          class=${classMap4({ "watch-expression-tree-item": true, "watch-expression-editing": e.editing })}
           ?open=${Boolean(e.result?.expanded)}
           @keydown=${onExpressionKeydown.bind(void 0, e)}
           @expand=${(event) => input.onExpand(e, event.detail.expanded, event.detail.recursively)}
@@ -19324,7 +19483,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
       onDelete: () => input.onDelete(e),
       onContextMenu: (event) => onContextMenu(e, event)
     })}></devtools-widget>
-        ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing14 : ObjectUI4.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
+        ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing15 : ObjectUI4.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
       </li>`;
   };
   render16(
@@ -19376,7 +19535,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
       this
     );
     this.linkifier = new Components4.Linkifier.Linkifier();
-    this.#view = DEFAULT_VIEW11;
+    this.#view = DEFAULT_VIEW12;
     void this.#refreshExpressions();
   }
   static instance() {

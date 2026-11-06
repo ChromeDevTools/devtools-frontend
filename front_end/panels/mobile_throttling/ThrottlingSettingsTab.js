@@ -199,7 +199,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * Note: The returned value measures the host machine's compute pressure. When
  * debugging a remote device, this may trigger irrelevant high-pressure warnings.
  */
-function createComputePressurePromise() {
+function createComputePressurePromise(signal) {
     const result = { state: '' };
     // @ts-expect-error typescript/lib version needs to be updated.
     if (typeof PressureObserver === 'undefined') {
@@ -213,8 +213,21 @@ function createComputePressurePromise() {
             result.state = records.at(-1).state;
             resolve(result);
         });
-        observer.observe('cpu', {
+        const disconnect = () => {
+            observer.disconnect();
+            resolve(result);
+        };
+        if (signal.aborted) {
+            disconnect();
+            return;
+        }
+        signal.addEventListener('abort', disconnect, { once: true });
+        void observer
+            .observe('cpu', {
             sampleInterval: 1000,
+        })
+            .catch(() => {
+            disconnect();
         });
     });
 }
@@ -298,6 +311,7 @@ export const CPU_THROTTLING_CARD_DEFAULT_VIEW = (input, _output, target) => {
 export class CPUThrottlingCard extends UI.Widget.Widget {
     #setting;
     computePressurePromise;
+    computePressureAbortController;
     controller;
     state = 'cta';
     warnings = [];
@@ -310,12 +324,17 @@ export class CPUThrottlingCard extends UI.Widget.Widget {
     }
     wasShown() {
         super.wasShown();
-        this.computePressurePromise = createComputePressurePromise();
+        if (!this.computePressureAbortController) {
+            this.computePressureAbortController = new AbortController();
+            this.computePressurePromise = createComputePressurePromise(this.computePressureAbortController.signal);
+        }
         this.state = 'cta';
         this.performUpdate();
     }
     willHide() {
         super.willHide();
+        this.computePressureAbortController?.abort();
+        this.computePressureAbortController = undefined;
         this.computePressurePromise = undefined;
         if (this.controller) {
             this.controller.abort();

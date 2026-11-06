@@ -2280,6 +2280,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
@@ -3977,7 +3978,7 @@ function generateInvalidationsList(invalidations) {
   const backendNodeIds = /* @__PURE__ */ new Set();
   for (const invalidation of invalidations) {
     backendNodeIds.add(invalidation.args.data.nodeId);
-    let reason = invalidation.args.data.reason || "unknown";
+    let reason = "reason" in invalidation.args.data && invalidation.args.data.reason ? invalidation.args.data.reason : "unknown";
     if (reason === "unknown" && Trace3.Types.Events.isScheduleStyleInvalidationTracking(invalidation) && invalidation.args.data.invalidatedSelectorId) {
       switch (invalidation.args.data.invalidatedSelectorId) {
         case "attribute":
@@ -6669,7 +6670,7 @@ details.environment-recs[open] > summary::before {
 
 .bucket-summaries.histogram {
   display: grid;
-  grid-template-columns: minmax(min-content, auto) minmax(var(--sys-size-14), 60px) max-content;
+  grid-template-columns: minmax(min-content, auto) minmax(var(--sys-size-14), var(--sys-size-18)) max-content;
   grid-auto-rows: 1fr;
   column-gap: var(--sys-size-5);
   place-items: center flex-end;

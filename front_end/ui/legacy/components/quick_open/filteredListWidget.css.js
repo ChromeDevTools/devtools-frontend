@@ -79,8 +79,8 @@ devtools-text-prompt {
 .filtered-list-widget-item devtools-icon {
   align-self: center;
   flex: none;
-  width: 18px;
-  height: 18px;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
 
   &.snippet {
     color: var(--sys-color-orange-bright);
@@ -125,8 +125,9 @@ devtools-text-prompt {
 }
 
 .not-found-text {
-  height: 34px;
-  line-height: 34px;
+  display: flex;
+  align-items: center;
+  height: var(--sys-size-13);
   padding-left: var(--sys-size-5);
   font-style: italic;
   color: var(--sys-color-state-disabled);

@@ -981,20 +981,8 @@ export class PageDispatcher {
     frameDetached({ frameId, reason }) {
         this.#resourceTreeModel.frameDetached(frameId, reason === "swap" /* Protocol.Page.FrameDetachedEventReason.Swap */);
     }
-    frameSubtreeWillBeDetached(_params) {
-    }
-    frameStartedLoading({}) {
-    }
     frameStoppedLoading({ frameId }) {
         this.#resourceTreeModel.frameStoppedLoading(frameId);
-    }
-    frameRequestedNavigation({}) {
-    }
-    frameScheduledNavigation({}) {
-    }
-    frameClearedScheduledNavigation({}) {
-    }
-    frameStartedNavigating({}) {
     }
     navigatedWithinDocument({ frameId, url }) {
         this.#resourceTreeModel.navigatedWithinDocument(frameId, url);
@@ -1008,12 +996,6 @@ export class PageDispatcher {
             void this.#resourceTreeModel.agent.invoke_handleJavaScriptDialog({ accept: false });
         }
     }
-    javascriptDialogClosed({}) {
-    }
-    screencastFrame({}) {
-    }
-    screencastVisibilityChanged({}) {
-    }
     interstitialShown() {
         this.#resourceTreeModel.isInterstitialShowing = true;
         this.#resourceTreeModel.dispatchEventToListeners(Events.InterstitialShown);
@@ -1021,16 +1003,6 @@ export class PageDispatcher {
     interstitialHidden() {
         this.#resourceTreeModel.isInterstitialShowing = false;
         this.#resourceTreeModel.dispatchEventToListeners(Events.InterstitialHidden);
-    }
-    windowOpen({}) {
-    }
-    compilationCacheProduced({}) {
-    }
-    fileChooserOpened({}) {
-    }
-    downloadWillBegin({}) {
-    }
-    downloadProgress() {
     }
 }
 SDKModel.register(ResourceTreeModel, { capabilities: 2 /* Capability.DOM */, autostart: true, early: true });

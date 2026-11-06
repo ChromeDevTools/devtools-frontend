@@ -306,6 +306,14 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
             disclaimerTextVariant: this.#disclaimerTextVariant,
         }, this.#viewOutput, this.contentElement);
     }
+    wasShown() {
+        super.wasShown();
+        if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
+            void this.updateComplete.then(() => {
+                this.#startLoadingAnimation();
+            });
+        }
+    }
     willHide() {
         super.willHide();
         this.#stopLoadingAnimation();
@@ -328,14 +336,17 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
         if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
             // wait update to complete so that setTimerText has been set properly
             void this.updateComplete.then(() => {
-                void this.#startLoadingAnimation();
+                this.#startLoadingAnimation();
             });
         }
-        else if (this.#loadStartTime) {
+        else {
             this.#stopLoadingAnimation();
         }
     }
     #startLoadingAnimation() {
+        if (this.#displayState !== AiCodeGenerationTeaserDisplayState.LOADING || !this.isShowing()) {
+            return;
+        }
         this.#stopLoadingAnimation();
         this.#loadStartTime = performance.now();
         this.#viewOutput.setTimerText?.('(0s)');

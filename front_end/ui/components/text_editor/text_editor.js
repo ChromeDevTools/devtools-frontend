@@ -1251,6 +1251,14 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
       this.contentElement
     );
   }
+  wasShown() {
+    super.wasShown();
+    if (this.#displayState === "loading" /* LOADING */) {
+      void this.updateComplete.then(() => {
+        this.#startLoadingAnimation();
+      });
+    }
+  }
   willHide() {
     super.willHide();
     this.#stopLoadingAnimation();
@@ -1272,13 +1280,16 @@ var AiCodeGenerationTeaser = class _AiCodeGenerationTeaser extends UI3.Widget.Wi
     this.requestUpdate();
     if (this.#displayState === "loading" /* LOADING */) {
       void this.updateComplete.then(() => {
-        void this.#startLoadingAnimation();
+        this.#startLoadingAnimation();
       });
-    } else if (this.#loadStartTime) {
+    } else {
       this.#stopLoadingAnimation();
     }
   }
   #startLoadingAnimation() {
+    if (this.#displayState !== "loading" /* LOADING */ || !this.isShowing()) {
+      return;
+    }
     this.#stopLoadingAnimation();
     this.#loadStartTime = performance.now();
     this.#viewOutput.setTimerText?.("(0s)");

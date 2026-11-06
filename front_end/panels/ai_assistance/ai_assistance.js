@@ -3514,9 +3514,14 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     jslogContext: "timeline-range-summary"
   };
 }
+var networkTrackDataProviders = /* @__PURE__ */ new WeakMap();
 async function makeNetworkTrackWidget(widgetData) {
   const { parsedTrace, bounds } = widgetData.data;
-  const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+  let dataProvider = networkTrackDataProviders.get(widgetData);
+  if (!dataProvider) {
+    dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    networkTrackDataProviders.set(widgetData, dataProvider);
+  }
   const template = html5`
     <devtools-widget
       class="network-track-widget"
@@ -5404,6 +5409,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";

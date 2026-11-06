@@ -113,16 +113,6 @@ export class StorageBucketsModel extends SDKModel {
             throw new Error(`Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`);
         }
     }
-    indexedDBListUpdated(_event) {
-    }
-    indexedDBContentUpdated(_event) {
-    }
-    cacheStorageListUpdated(_event) {
-    }
-    cacheStorageContentUpdated(_event) {
-    }
-    privateVerificationTokensUpdated() {
-    }
 }
 SDKModel.register(StorageBucketsModel, { capabilities: 8192 /* Capability.STORAGE */, autostart: false });
 export var Events;

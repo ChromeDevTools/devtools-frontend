@@ -1379,7 +1379,7 @@ devtools-toolbar.device-mode-toolbar-options {
 
 .device-mode-ruler-top .device-mode-ruler-marker {
   width: 0;
-  height: 5px;
+  height: var(--sys-size-3);
   bottom: 0;
   border-right: var(--sys-size-1) solid var(--sys-color-token-subtle);
   margin-right: calc(-1 * var(--sys-size-1));

@@ -167,7 +167,7 @@ export default `/*
   /* This overlay by default is shown at the bottom of the UI, not the top */
   top: unset;
   bottom: 0;
-  height: 100px;
+  height: var(--sys-size-19);
 
   &.positioned-by-event {
     top: 0;

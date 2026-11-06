@@ -350,16 +350,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
             this.dispatchEventToListeners(Events.IndexedDBContentUpdated, { databaseId, objectStoreName, model: this });
         }
     }
-    cacheStorageListUpdated(_event) {
-    }
-    cacheStorageContentUpdated(_event) {
-    }
-    storageBucketCreatedOrUpdated(_event) {
-    }
-    storageBucketDeleted(_event) {
-    }
-    privateVerificationTokensUpdated() {
-    }
 }
 SDK.SDKModel.SDKModel.register(IndexedDBModel, { capabilities: 8192 /* SDK.Target.Capability.STORAGE */, autostart: false });
 export var Events;

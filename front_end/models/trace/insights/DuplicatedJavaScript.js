@@ -84,8 +84,7 @@ export function generateInsight(data, context) {
             mainDocumentUrl = context.navigation.args.context.URL;
         }
         else {
-            mainDocumentUrl =
-                context.navigation.args.data?.documentLoaderURL ?? context.navigation.args.data?.url ?? mainDocumentUrl;
+            mainDocumentUrl = context.navigation.args.data?.documentLoaderURL ?? mainDocumentUrl;
         }
     }
     return finalize({

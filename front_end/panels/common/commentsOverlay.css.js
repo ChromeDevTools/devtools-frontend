@@ -45,9 +45,15 @@ export default `/*
     flex-shrink: 0;
     box-shadow: var(--sys-elevation-level2);
     border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
-    background: var(--sys-color-primary);
+    border: var(--sys-size-2) solid var(--sys-color-primary);
+    background: var(--sys-color-cdt-base-container);
     transition: transform 0.1s ease;
     transform-origin: center center;
+  }
+
+  .comment-cursor.resolved {
+    border: none;
+    background: var(--sys-color-primary);
   }
 
   .comment-anchor-highlight {

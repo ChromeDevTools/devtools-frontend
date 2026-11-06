@@ -209,16 +209,6 @@ export class ServiceWorkerCacheModel extends SDKModel {
             this.dispatchEventToListeners("CacheStorageContentUpdated" /* Events.CACHE_STORAGE_CONTENT_UPDATED */, { storageBucket, cacheName });
         }
     }
-    indexedDBListUpdated(_event) {
-    }
-    indexedDBContentUpdated(_event) {
-    }
-    storageBucketCreatedOrUpdated(_event) {
-    }
-    storageBucketDeleted(_event) {
-    }
-    privateVerificationTokensUpdated() {
-    }
     setThrottlerSchedulesAsSoonAsPossibleForTest() {
         this.#scheduleAsSoonAsPossible = true;
     }

@@ -626,8 +626,6 @@ export class FetchDispatcher {
         }
         void this.#multitargetNetworkManager.requestIntercepted(new InterceptedRequest(this.#multitargetNetworkManager, this.#fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders));
     }
-    authRequired({}) {
-    }
 }
 function multicastMembership(event) {
     return event.sourceAddress ? `${event.IPAddress}@${event.sourceAddress}` : event.IPAddress;
@@ -1472,8 +1470,6 @@ export class NetworkDispatcher {
     }
     deviceBoundSessionEventOccurred(_params) {
         this.#manager.dispatchEventToListeners(Events.DeviceBoundSessionEventOccurred, _params);
-    }
-    policyUpdated() {
     }
     /**
      * @deprecated

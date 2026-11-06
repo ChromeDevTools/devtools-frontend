@@ -74,6 +74,7 @@ export declare const enum PreloadingStatus {
     NOT_SUPPORTED = "NotSupported"
 }
 export type PreloadingAttemptId = string;
+export type PreloadingSourceId = string;
 export type PreloadingAttempt = PrefetchAttempt | PrerenderAttempt | PrerenderUntilScriptAttempt;
 export interface PrefetchAttempt {
     action: Protocol.Preload.SpeculationAction.Prefetch;

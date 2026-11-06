@@ -953,7 +953,7 @@ export class TimelineUIUtils {
             return contentHelper.fragment;
         }
         if (Trace.Types.Events.isNavigationStart(event)) {
-            url = (event.args.data?.documentLoaderURL ?? event.args.data?.url);
+            url = event.args.data?.documentLoaderURL;
             if (url) {
                 contentHelper.appendElementRow(i18nString(UIStrings.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
             }

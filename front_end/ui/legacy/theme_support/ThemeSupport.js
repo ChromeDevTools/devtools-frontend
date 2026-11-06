@@ -43,10 +43,15 @@ export class ThemeSupport extends EventTarget {
     #themeName = 'default';
     computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
     #documentsToTheme = new Set([document]);
+    #pendingUserColorSource;
+    #documentColorSource = new WeakMap();
+    #latestColorsCssLink = new WeakMap();
     #darkThemeMediaQuery;
     #highContrastMediaQuery;
     #onThemeChangeListener = () => this.#applyTheme();
-    #onHostThemeChangeListener = () => this.fetchColorsAndApplyHostTheme();
+    #onHostThemeChangeListener = (event) => {
+        this.fetchColorsAndApplyHostTheme(typeof event.data === 'string' ? event.data : undefined);
+    };
     constructor(setting) {
         super();
         this.setting = setting;
@@ -59,6 +64,16 @@ export class ThemeSupport extends EventTarget {
         this.#highContrastMediaQuery.addEventListener('change', this.#onThemeChangeListener);
         setting.addChangeListener(this.#onThemeChangeListener);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
+        // `Root.Runtime.hostConfig` is fetched during startup before this listener
+        // is registered, so a Chrome theme change in between would be missed.
+        // Re-query the host's current color source now that the listener is in
+        // place, and apply it if it has changed.
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.getHostConfig(config => {
+            const colorSource = config.userColorSource;
+            if (colorSource && colorSource !== (this.#pendingUserColorSource ?? Root.Runtime.hostConfig.userColorSource)) {
+                this.fetchColorsAndApplyHostTheme(colorSource);
+            }
+        });
     }
     #dispose() {
         this.#darkThemeMediaQuery.removeEventListener('change', this.#onThemeChangeListener);
@@ -88,7 +103,7 @@ export class ThemeSupport extends EventTarget {
      */
     addDocumentToTheme(document) {
         this.#documentsToTheme.add(document);
-        this.#fetchColorsAndApplyHostTheme(document);
+        this.#fetchColorsAndApplyHostTheme(document, this.#pendingUserColorSource);
     }
     getComputedValue(propertyName, target = null) {
         // Since we might query the same property name from various targets we need to support
@@ -141,14 +156,17 @@ export class ThemeSupport extends EventTarget {
         // In the baseline themes Chrome uses custom values for surface colors, whereas for dynamic themes these are color-mixed.
         // To match Chrome we need to know if any of the baseline themes is currently active and assign specific values to surface colors.
         if (isIncognito) {
+            document.documentElement.classList.toggle('baseline-default', false);
             document.documentElement.classList.toggle('baseline-grayscale', true);
         }
         else if (useChromeTheme) {
-            const selectedTheme = getComputedStyle(document.body).getPropertyValue('--user-color-source');
+            const selectedTheme = this.#documentColorSource.get(document) ?? Root.Runtime.hostConfig.userColorSource ??
+                getComputedStyle(document.body).getPropertyValue('--user-color-source');
             document.documentElement.classList.toggle('baseline-default', selectedTheme === 'baseline-default');
             document.documentElement.classList.toggle('baseline-grayscale', selectedTheme === 'baseline-grayscale');
         }
         else {
+            document.documentElement.classList.toggle('baseline-default', false);
             document.documentElement.classList.toggle('baseline-grayscale', true);
         }
         // In the event the theme changes we need to clear caches and notify subscribers.
@@ -158,25 +176,40 @@ export class ThemeSupport extends EventTarget {
     static clearThemeCache() {
         themeValueByTargetByName = new WeakMap();
     }
-    fetchColorsAndApplyHostTheme() {
+    fetchColorsAndApplyHostTheme(colorSource) {
+        if (colorSource !== undefined) {
+            this.#pendingUserColorSource = colorSource;
+        }
         for (const document of this.#documentsToTheme) {
-            this.#fetchColorsAndApplyHostTheme(document);
+            this.#fetchColorsAndApplyHostTheme(document, this.#pendingUserColorSource);
         }
     }
-    #fetchColorsAndApplyHostTheme(document) {
+    #fetchColorsAndApplyHostTheme(document, pendingColorSource) {
         const useChromeTheme = Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.chromeThemeColorsSettingDescriptor).get();
         if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode() || !useChromeTheme) {
+            if (pendingColorSource !== undefined) {
+                this.#documentColorSource.set(document, pendingColorSource);
+            }
             this.#applyThemeToDocument(document);
             return;
         }
-        const oldColorsCssLink = document.querySelector('link[href*=\'//theme/colors.css\']');
         const newColorsCssLink = document.createElement('link');
         newColorsCssLink.setAttribute('href', `devtools://theme/colors.css?sets=ui,chrome&version=${(new Date()).getTime().toString()}`);
         newColorsCssLink.setAttribute('rel', 'stylesheet');
         newColorsCssLink.setAttribute('type', 'text/css');
+        this.#latestColorsCssLink.set(document, newColorsCssLink);
         newColorsCssLink.onload = () => {
-            if (oldColorsCssLink) {
-                oldColorsCssLink.remove();
+            if (this.#latestColorsCssLink.get(document) !== newColorsCssLink) {
+                newColorsCssLink.remove();
+                return;
+            }
+            for (const existingLink of document.querySelectorAll('link[href*=\'//theme/colors.css\']')) {
+                if (existingLink !== newColorsCssLink) {
+                    existingLink.remove();
+                }
+            }
+            if (pendingColorSource !== undefined) {
+                this.#documentColorSource.set(document, pendingColorSource);
             }
             this.#applyThemeToDocument(document);
         };

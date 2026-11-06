@@ -1954,9 +1954,14 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         jslogContext: 'timeline-range-summary',
     };
 }
+const networkTrackDataProviders = new WeakMap();
 async function makeNetworkTrackWidget(widgetData) {
     const { parsedTrace, bounds } = widgetData.data;
-    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    let dataProvider = networkTrackDataProviders.get(widgetData);
+    if (!dataProvider) {
+        dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+        networkTrackDataProviders.set(widgetData, dataProvider);
+    }
     // clang-format off
     const template = html `
     <devtools-widget

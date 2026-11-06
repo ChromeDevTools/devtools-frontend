@@ -32,6 +32,11 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
     currentDockStateSetting;
     lastDockStateSetting;
     #dockSide = undefined;
+    /**
+     * Incremented for every dock side change, so that responses from the embedder
+     * for superseded changes can be told apart from the response to the latest one.
+     */
+    #dockSideChangeId = 0;
     constructor(canDock) {
         super();
         this.#canDock = canDock;
@@ -47,13 +52,13 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
             this.closeButton.setVisible(false);
             return;
         }
-        this.currentDockStateSetting.addChangeListener(this.dockSideChanged, this);
         if (states.indexOf(this.currentDockStateSetting.get()) === -1) {
             this.currentDockStateSetting.set("right" /* DockState.RIGHT */);
         }
         if (states.indexOf(this.lastDockStateSetting.get()) === -1) {
             this.currentDockStateSetting.set("bottom" /* DockState.BOTTOM */);
         }
+        this.currentDockStateSetting.addChangeListener(this.dockSideChanged, this);
     }
     static instance(opts = { forceNew: null, canDock: false }) {
         const { forceNew, canDock } = opts;
@@ -106,11 +111,17 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
         console.timeStamp('DockController.setIsDocked');
         this.#dockSide = dockSide;
         this.currentDockStateSetting.set(dockSide);
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(dockSide !== "undocked" /* DockState.UNDOCKED */, this.setIsDockedResponse.bind(this, eventData));
+        const dockSideChangeId = ++this.#dockSideChangeId;
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(dockSide !== "undocked" /* DockState.UNDOCKED */, this.setIsDockedResponse.bind(this, eventData, dockSideChangeId));
         this.closeButton.setVisible(this.#dockSide !== "undocked" /* DockState.UNDOCKED */);
         this.dispatchEventToListeners("DockSideChanged" /* Events.DOCK_SIDE_CHANGED */, eventData);
     }
-    setIsDockedResponse(eventData) {
+    setIsDockedResponse(eventData, dockSideChangeId) {
+        if (dockSideChangeId !== this.#dockSideChangeId) {
+            // The dock side was changed again before the embedder acknowledged this change. Only report the
+            // latest change, otherwise listeners would finish a transition that is no longer current.
+            return;
+        }
         this.dispatchEventToListeners("AfterDockSideChanged" /* Events.AFTER_DOCK_SIDE_CHANGED */, eventData);
         this.announceDockLocation();
     }
@@ -141,6 +152,8 @@ const states = ["right" /* DockState.RIGHT */, "bottom" /* DockState.BOTTOM */, 
 // Use BeforeDockSideChanged to do something before all the UI bits are updated,
 // DockSideChanged to update UI, and AfterDockSideChanged to perform actions
 // after frontend is docked/undocked in the browser.
+// If the dock side changes again before the browser acknowledges a change,
+// AfterDockSideChanged is only dispatched for the latest change.
 export var Events;
 (function (Events) {
     Events["BEFORE_DOCK_SIDE_CHANGED"] = "BeforeDockSideChanged";

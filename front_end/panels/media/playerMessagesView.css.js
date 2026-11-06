@@ -78,7 +78,7 @@ export default `/*
 .status-error-box {
   font-family: var(--monospace-font-family);
   border: var(--sys-size-1) solid var(--sys-color-error-outline);
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
   padding: var(--sys-size-3);
 }
 

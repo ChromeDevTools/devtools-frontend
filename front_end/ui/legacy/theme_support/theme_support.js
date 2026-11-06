@@ -18,15 +18,26 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
       Host.InspectorFrontendHostAPI.Events.ColorThemeChanged,
       this.#onHostThemeChangeListener
     );
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.getHostConfig((config) => {
+      const colorSource = config.userColorSource;
+      if (colorSource && colorSource !== (this.#pendingUserColorSource ?? Root.Runtime.hostConfig.userColorSource)) {
+        this.fetchColorsAndApplyHostTheme(colorSource);
+      }
+    });
   }
   setting;
   #themeName = "default";
   computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
   #documentsToTheme = /* @__PURE__ */ new Set([document]);
+  #pendingUserColorSource;
+  #documentColorSource = /* @__PURE__ */ new WeakMap();
+  #latestColorsCssLink = /* @__PURE__ */ new WeakMap();
   #darkThemeMediaQuery;
   #highContrastMediaQuery;
   #onThemeChangeListener = () => this.#applyTheme();
-  #onHostThemeChangeListener = () => this.fetchColorsAndApplyHostTheme();
+  #onHostThemeChangeListener = (event) => {
+    this.fetchColorsAndApplyHostTheme(typeof event.data === "string" ? event.data : void 0);
+  };
   #dispose() {
     this.#darkThemeMediaQuery.removeEventListener("change", this.#onThemeChangeListener);
     this.#highContrastMediaQuery.removeEventListener("change", this.#onThemeChangeListener);
@@ -58,7 +69,7 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
    */
   addDocumentToTheme(document2) {
     this.#documentsToTheme.add(document2);
-    this.#fetchColorsAndApplyHostTheme(document2);
+    this.#fetchColorsAndApplyHostTheme(document2, this.#pendingUserColorSource);
   }
   getComputedValue(propertyName, target = null) {
     const targetElement = target ?? document.documentElement;
@@ -97,12 +108,14 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     const useChromeTheme = Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.chromeThemeColorsSettingDescriptor).get();
     const isIncognito = Root.Runtime.hostConfig.isOffTheRecord === true;
     if (isIncognito) {
+      document2.documentElement.classList.toggle("baseline-default", false);
       document2.documentElement.classList.toggle("baseline-grayscale", true);
     } else if (useChromeTheme) {
-      const selectedTheme = getComputedStyle(document2.body).getPropertyValue("--user-color-source");
+      const selectedTheme = this.#documentColorSource.get(document2) ?? Root.Runtime.hostConfig.userColorSource ?? getComputedStyle(document2.body).getPropertyValue("--user-color-source");
       document2.documentElement.classList.toggle("baseline-default", selectedTheme === "baseline-default");
       document2.documentElement.classList.toggle("baseline-grayscale", selectedTheme === "baseline-grayscale");
     } else {
+      document2.documentElement.classList.toggle("baseline-default", false);
       document2.documentElement.classList.toggle("baseline-grayscale", true);
     }
     themeValueByTargetByName = /* @__PURE__ */ new WeakMap();
@@ -111,18 +124,23 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
   static clearThemeCache() {
     themeValueByTargetByName = /* @__PURE__ */ new WeakMap();
   }
-  fetchColorsAndApplyHostTheme() {
+  fetchColorsAndApplyHostTheme(colorSource) {
+    if (colorSource !== void 0) {
+      this.#pendingUserColorSource = colorSource;
+    }
     for (const document2 of this.#documentsToTheme) {
-      this.#fetchColorsAndApplyHostTheme(document2);
+      this.#fetchColorsAndApplyHostTheme(document2, this.#pendingUserColorSource);
     }
   }
-  #fetchColorsAndApplyHostTheme(document2) {
+  #fetchColorsAndApplyHostTheme(document2, pendingColorSource) {
     const useChromeTheme = Common.Settings.Settings.instance().resolve(SettingsUI.MainSettings.chromeThemeColorsSettingDescriptor).get();
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode() || !useChromeTheme) {
+      if (pendingColorSource !== void 0) {
+        this.#documentColorSource.set(document2, pendingColorSource);
+      }
       this.#applyThemeToDocument(document2);
       return;
     }
-    const oldColorsCssLink = document2.querySelector("link[href*='//theme/colors.css']");
     const newColorsCssLink = document2.createElement("link");
     newColorsCssLink.setAttribute(
       "href",
@@ -130,9 +148,19 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     );
     newColorsCssLink.setAttribute("rel", "stylesheet");
     newColorsCssLink.setAttribute("type", "text/css");
+    this.#latestColorsCssLink.set(document2, newColorsCssLink);
     newColorsCssLink.onload = () => {
-      if (oldColorsCssLink) {
-        oldColorsCssLink.remove();
+      if (this.#latestColorsCssLink.get(document2) !== newColorsCssLink) {
+        newColorsCssLink.remove();
+        return;
+      }
+      for (const existingLink of document2.querySelectorAll("link[href*='//theme/colors.css']")) {
+        if (existingLink !== newColorsCssLink) {
+          existingLink.remove();
+        }
+      }
+      if (pendingColorSource !== void 0) {
+        this.#documentColorSource.set(document2, pendingColorSource);
       }
       this.#applyThemeToDocument(document2);
     };

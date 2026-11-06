@@ -898,6 +898,7 @@ export class AiAgent {
     async *#aidaFetch(request, options) {
         let aidaResponse = undefined;
         let rpcId;
+        const requestTimestamp = Math.floor(Date.now() * 1000);
         for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
             if (aidaResponse.functionCalls?.length) {
                 yield {
@@ -916,9 +917,12 @@ export class AiAgent {
             };
         }
         if (isDebugMode() && aidaResponse) {
+            const responseTimestamp = Math.floor(Date.now() * 1000);
             this.#structuredLog.push({
                 request: structuredClone(request),
                 aidaResponse,
+                requestTimestamp,
+                responseTimestamp,
             });
             try {
                 Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem('aiAssistanceStructuredLog', JSON.stringify(this.#structuredLog));

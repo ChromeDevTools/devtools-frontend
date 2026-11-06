@@ -16,6 +16,7 @@ export declare class ThreadsSidebarPane extends UI.Widget.VBox implements SDK.Ta
     constructor(element?: HTMLElement, view?: View);
     static shouldBeShown(): boolean;
     wasShown(): void;
+    willHide(): void;
     performUpdate(): void;
     modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
     modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;

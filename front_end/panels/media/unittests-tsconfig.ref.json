@@ -52,6 +52,9 @@
     },
     {
       "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/theme_support/bundle-tsconfig.ref.json"
     }
   ]
 }

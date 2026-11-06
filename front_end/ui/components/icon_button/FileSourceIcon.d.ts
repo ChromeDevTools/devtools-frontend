@@ -9,6 +9,7 @@ export declare class FileSourceIcon extends HTMLElement {
     #private;
     set data(data: FileSourceIconData);
     get data(): FileSourceIconData;
+    cloneNode(deep?: boolean): Node;
     connectedCallback(): void;
 }
 declare global {

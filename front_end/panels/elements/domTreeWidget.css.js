@@ -186,6 +186,7 @@ select {
 /** Guide line */
 
 li.hovered:not(.always-parent) + ol.children,
+li.shadow-root + ol.children,
 li.selected:not(.always-parent) + ol.children {
   background: linear-gradient(to right, var(--override-indentation-level-border-color), var(--override-indentation-level-border-color) 0.5px, transparent 0);
   background-position-x: 5px;
@@ -197,8 +198,12 @@ li.selected:not(.always-parent) + ol.children {
   --override-indentation-level-border-color: var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
 }
 
-li.hovered:not(.always-parent) + ol.children {
+li.hovered:not(.always-parent, .shadow-root) + ol.children {
   --override-indentation-level-border-color: color-mix(in srgb, var(--ref-palette-neutral0) 10%, transparent);
+}
+
+li.shadow-root + ol.children {
+  --override-indentation-level-border-color: var(--ref-palette-orange95);
 }
 
 @media (forced-colors: active) {

@@ -778,7 +778,7 @@ var bezierEditor_css_default = `/*
 
 svg.bezier-preset-modify {
   background-color: var(--sys-color-cdt-base-container);
-  border-radius: 35px;
+  border-radius: var(--sys-shape-corner-full);
   display: inline-block;
   visibility: hidden;
   transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -833,7 +833,8 @@ svg.bezier-curve {
 }
 
 svg.bezier-curve.linear {
-  margin-top: 42px;
+  /* 50px curve overshoot headroom (--sys-size-16 + --sys-size-2) minus 8px svg.bezier-curve upward offset (--sys-size-5) = 42px. */
+  margin-top: calc(var(--sys-size-16) + var(--sys-size-2) - var(--sys-size-5));
   overflow: visible;
 }
 

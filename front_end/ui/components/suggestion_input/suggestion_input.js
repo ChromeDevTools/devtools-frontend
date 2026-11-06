@@ -38,8 +38,8 @@ devtools-editable-content {
   color: var(--override-color-recorder-input, var(--sys-color-on-surface));
   cursor: text;
   display: inline-block;
-  line-height: 18px;
-  min-height: 18px;
+  line-height: var(--sys-size-8);
+  min-height: var(--sys-size-8);
   min-width: 0.5em;
   outline: none;
   overflow-wrap: anywhere;

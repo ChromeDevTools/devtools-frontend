@@ -704,10 +704,6 @@ export class OverlayModel extends SDKModel {
     async hasStyleSheetText(url) {
         return await this.#windowControls.initializeStyleSheetText(url);
     }
-    inspectPanelShowRequested(_event) {
-    }
-    inspectedElementWindowRestored(_event) {
-    }
 }
 export class WindowControls {
     #cssModel;

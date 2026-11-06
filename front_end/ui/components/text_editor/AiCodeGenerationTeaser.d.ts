@@ -28,6 +28,7 @@ export declare class AiCodeGenerationTeaser extends UI.Widget.Widget {
     #private;
     constructor(view?: View);
     performUpdate(): void;
+    wasShown(): void;
     willHide(): void;
     get displayState(): AiCodeGenerationTeaserDisplayState;
     set displayState(displayState: AiCodeGenerationTeaserDisplayState);

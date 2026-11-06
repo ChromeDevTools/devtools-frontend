@@ -2108,6 +2108,7 @@ export var Page;
         PermissionsPolicyFeature["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
         PermissionsPolicyFeature["Rewriter"] = "rewriter";
         PermissionsPolicyFeature["ScreenWakeLock"] = "screen-wake-lock";
+        PermissionsPolicyFeature["SemanticEmbedder"] = "semantic-embedder";
         PermissionsPolicyFeature["Serial"] = "serial";
         PermissionsPolicyFeature["SmartCard"] = "smart-card";
         PermissionsPolicyFeature["SpeakerSelection"] = "speaker-selection";

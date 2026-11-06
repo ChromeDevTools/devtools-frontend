@@ -1812,6 +1812,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
@@ -11331,7 +11332,6 @@ var stylesSidebarPane_css_default = `/**
   float: right;
   padding: var(--sys-size-2) var(--sys-size-2) 0 var(--sys-size-8);
   max-width: 100%;
-  height: 15px;
   margin-bottom: calc(-1 * var(--sys-size-1));
 }
 
@@ -11423,15 +11423,6 @@ var stylesSidebarPane_css_default = `/**
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: var(--sys-size-10);
-
-  > span.monospace {
-    max-width: 180px;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    margin-left: var(--sys-size-2);
-  }
 
   &.layer-separator {
     display: flex;
@@ -20367,6 +20358,7 @@ select {
 /** Guide line */
 
 li.hovered:not(.always-parent) + ol.children,
+li.shadow-root + ol.children,
 li.selected:not(.always-parent) + ol.children {
   background: linear-gradient(to right, var(--override-indentation-level-border-color), var(--override-indentation-level-border-color) 0.5px, transparent 0);
   background-position-x: 5px;
@@ -20378,8 +20370,12 @@ li.selected:not(.always-parent) + ol.children {
   --override-indentation-level-border-color: var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
 }
 
-li.hovered:not(.always-parent) + ol.children {
+li.hovered:not(.always-parent, .shadow-root) + ol.children {
   --override-indentation-level-border-color: color-mix(in srgb, var(--ref-palette-neutral0) 10%, transparent);
+}
+
+li.shadow-root + ol.children {
+  --override-indentation-level-border-color: var(--ref-palette-orange95);
 }
 
 @media (forced-colors: active) {
@@ -20825,8 +20821,10 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const onShortcutExpand = (event) => {
       input.onToggleTopLayerShortcutExpanded(shortcut, event.detail.expanded);
     };
-    const onShortcutSelect = () => {
-      input.onSelectTopLayerShortcut(shortcut);
+    const onShortcutSelect = (event) => {
+      if (event.detail?.selectedByUser) {
+        input.onSelectTopLayerShortcut(shortcut);
+      }
     };
     const onReveal = (event) => {
       event.stopPropagation();
@@ -20885,8 +20883,10 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const onTopLayerExpand = (event) => {
       input.onToggleTopLayerExpanded(doc, event.detail.expanded);
     };
-    const onTopLayerSelect = () => {
-      input.onSelectTopLayerContainer(doc);
+    const onTopLayerSelect = (event) => {
+      if (event.detail?.selectedByUser) {
+        input.onSelectTopLayerContainer(doc);
+      }
     };
     return html16`
           <li role="treeitem"
@@ -20911,8 +20911,10 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const onExpand2 = (event) => {
       input.onToggleAdoptedStyleSheetExpanded(sheet, event.detail.expanded);
     };
-    const onSelect = () => {
-      input.onSelectAdoptedStyleSheet(sheet);
+    const onSelect = (event) => {
+      if (event.detail?.selectedByUser) {
+        input.onSelectAdoptedStyleSheet(sheet);
+      }
     };
     return html16`
       <li role="treeitem"
@@ -20952,8 +20954,10 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const onExpand2 = (event) => {
       input.onToggleAdoptedStyleSheetsExpanded(node, event.detail.expanded);
     };
-    const onSelect = () => {
-      input.onSelectAdoptedStyleSheets(node);
+    const onSelect = (event) => {
+      if (event.detail?.selectedByUser) {
+        input.onSelectAdoptedStyleSheets(node);
+      }
     };
     return html16`
       <li role="treeitem"
@@ -21090,7 +21094,9 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       hovered: isOpeningHovered,
       "in-clipboard": input.isNodeInClipboard(node),
       "elements-drag-over": isDragOver,
-      "always-parent": !isCollapsible && !isEditingAsHTML
+      "always-parent": !isCollapsible && !isEditingAsHTML,
+      // Draws the vertical guide line next to the shadow root children.
+      "shadow-root": node.isShadowRoot()
     });
     const onMouseMove = (isClosingTag) => (event) => {
       const currentTarget = event.currentTarget;
@@ -21845,10 +21851,10 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
     if (!isSameNode) {
       this.#notifySelectedNodeChanged(node, Boolean(focus));
     }
-    this.performUpdate();
     if (focus) {
       this.focus();
     }
+    this.performUpdate();
   }
   /** Raises the children limit of `ancestor` if `child` is paginated away. */
   #ensureChildVisible(ancestor, child) {
@@ -21884,6 +21890,9 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
       return;
     }
     if (expanded) {
+      if (this.#expandedNodes.has(node) && node.children()) {
+        return;
+      }
       this.#expandedNodes.add(node);
       const expandNotCollapsibleChildren = () => {
         for (const child of node.children() ?? []) {
@@ -23227,7 +23236,7 @@ var layoutPane_css_default = `/*
 
   select {
     min-width: 0;
-    max-width: 150px;
+    max-width: var(--sys-size-23);
   }
 
   .color-picker {
@@ -23800,7 +23809,7 @@ var metricsSidebarPane_css_default = `/**
  * the height of the metrics sidebar pane accordingly.
  */
 :host-context(.platform-windows) {
-  --metrics-height: 214px;
+  --metrics-height: var(--sys-size-26);
 }
 
 .metrics .label {
@@ -24397,7 +24406,7 @@ var platformFontsWidget_css_default = `/**
 
   .font-usage {
     color: var(--sys-color-token-subtle);
-    padding-left: 3px;
+    padding-left: var(--sys-size-3);
   }
 
   .title {

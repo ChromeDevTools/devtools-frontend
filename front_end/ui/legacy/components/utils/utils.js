@@ -1784,8 +1784,6 @@ var TargetDetachedDialog = class _TargetDetachedDialog extends SDK4.SDKModel.SDK
       _TargetDetachedDialog.hideCrashedDialog = null;
     }
   }
-  workerScriptLoaded() {
-  }
   detached({ reason }) {
     UI4.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(reason);
   }

@@ -171,6 +171,19 @@ export class ExtensionScope {
         // Fallback to the HTML tag
         return node.localName() || node.nodeName().toLowerCase();
     }
+    /**
+     * Derives a CSS selector for `node`, preferring the selector from the
+     * element's primary matched CSS rule in `matchedStyles` and falling back to
+     * the node's tag/id/class attributes when no matched rule selector applies.
+     */
+    static getSelectorForElement(node, matchedStyles) {
+        if (!matchedStyles) {
+            return _a.getSelectorForNode(node);
+        }
+        const styleRule = _a.getStyleRuleFromMatchesStyles(matchedStyles);
+        const selector = styleRule ? _a.getSelectorsFromStyleRule(styleRule, matchedStyles) : null;
+        return selector || _a.getSelectorForNode(node);
+    }
     async #computeContextFromElement(remoteObject) {
         if (!remoteObject.objectId) {
             throw new Error('DOMModel is not found');
@@ -187,29 +200,16 @@ export class ExtensionScope {
         if (!node) {
             throw new Error('Node is not found');
         }
+        let matchedStyles = null;
         try {
-            const matchedStyles = await cssModel.getMatchedStyles(node.id);
-            if (!matchedStyles) {
-                throw new Error('No matching styles');
-            }
-            const styleRule = _a.getStyleRuleFromMatchesStyles(matchedStyles);
-            if (!styleRule) {
-                throw new Error('No style rule found');
-            }
-            const selector = _a.getSelectorsFromStyleRule(styleRule, matchedStyles);
-            if (!selector) {
-                throw new Error('No selector found');
-            }
-            return {
-                selector,
-            };
+            matchedStyles = await cssModel.getMatchedStyles(node.id);
         }
         catch {
-            // no-op to allow the fallback below to run.
+            // Leave matchedStyles as null so getSelectorForElement falls back to a
+            // simple tag/id/class selector (`getSelectorForNode`).
         }
-        // Fallback
         return {
-            selector: _a.getSelectorForNode(node),
+            selector: _a.getSelectorForElement(node, matchedStyles),
         };
     }
     async #bindingCalled(executionContext, event) {

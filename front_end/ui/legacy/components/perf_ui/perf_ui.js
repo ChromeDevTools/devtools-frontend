@@ -39,8 +39,8 @@ var chartViewport_css_default = `/*
 
 :host-context(.platform-mac) .chart-viewport-v-scroll {
   right: var(--sys-size-2);
-  top: 3px;
-  bottom: 3px;
+  top: var(--sys-size-2);
+  bottom: var(--sys-size-2);
 }
 
 :host-context(.platform-mac) ::-webkit-scrollbar {
@@ -4622,9 +4622,9 @@ var filmStripView_css_default = `/*
   height: auto;
   width: auto;
   max-width: var(--sys-size-19);
-  max-height: 50px;
+  max-height: var(--sys-size-16);
   pointer-events: none;
-  box-shadow: 0 0 3px var(--box-shadow-outline-color);
+  box-shadow: 0 0 var(--sys-size-3) var(--box-shadow-outline-color);
   flex: 0 0 auto;
 }
 
@@ -6925,6 +6925,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";

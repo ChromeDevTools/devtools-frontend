@@ -16,6 +16,10 @@ const UIStrings = {
      */
     PrefetchFailedInvalidRedirect: 'The prefetch was redirected, but there was a problem with the redirect',
     /**
+     * @description Description text for prerender status PrefetchFailedCrossOriginSubframe.
+     */
+    PrefetchFailedCrossOriginSubframe: 'Cross-origin subframe navigation was deferred during prerendering because the parent frame was deferred or its response didn’t include the appropriate Supports-Loading-Mode header',
+    /**
      * @description Description text for prefetch status PrefetchFailedMIMENotSupported.
      */
     PrefetchFailedMIMENotSupported: 'The prefetch failed because the response’s Content-Type header wasn’t supported',
@@ -656,6 +660,8 @@ export function prerenderFailureReason(attempt, statusCode) {
             return i18nString(UIStrings.prerenderFinalStatusWindowClosed);
         case "BrowsingDataRemoved" /* Protocol.Preload.PrerenderFinalStatus.BrowsingDataRemoved */:
             return i18nString(UIStrings.prerenderFinalStatusBrowsingDataRemoved);
+        case "PrefetchFailedCrossOriginSubframe" /* Protocol.Preload.PrerenderFinalStatus.PrefetchFailedCrossOriginSubframe */:
+            return i18nString(UIStrings.PrefetchFailedCrossOriginSubframe);
         case "SlowNetwork" /* Protocol.Preload.PrerenderFinalStatus.SlowNetwork */:
         case "OtherPrerenderedPageActivated" /* Protocol.Preload.PrerenderFinalStatus.OtherPrerenderedPageActivated */:
         case "V8OptimizerDisabled" /* Protocol.Preload.PrerenderFinalStatus.V8OptimizerDisabled */:

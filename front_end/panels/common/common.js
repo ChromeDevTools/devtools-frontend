@@ -4629,9 +4629,15 @@ var commentsOverlay_css_default = `/*
     flex-shrink: 0;
     box-shadow: var(--sys-elevation-level2);
     border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
-    background: var(--sys-color-primary);
+    border: var(--sys-size-2) solid var(--sys-color-primary);
+    background: var(--sys-color-cdt-base-container);
     transition: transform 0.1s ease;
     transform-origin: center center;
+  }
+
+  .comment-cursor.resolved {
+    border: none;
+    background: var(--sys-color-primary);
   }
 
   .comment-anchor-highlight {
@@ -4766,7 +4772,12 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
             @click=${() => input.onPinClick(p.id)}
             @mouseenter=${() => input.onPinMouseEnter(p.id)}
             @mouseleave=${input.onPinMouseLeave}>
-            <div class="comment-cursor"></div>
+            <div
+              class=${classMap3({
+      "comment-cursor": true,
+      resolved: p.resolved
+    })}>
+            </div>
           </div>
         `
   )}
@@ -5198,7 +5209,9 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     };
   }
   #renderView(activeThread, title, hoveredThread, hoveredTitle) {
-    const pins = this.#commentOverlayManager.getPinPositions();
+    const pins = this.#commentOverlayManager.getPinPositions().map(
+      (pin) => !pin.visible && pin.id === activeThread?.id ? { ...pin, visible: true } : pin
+    );
     const findPin = (thread) => thread ? pins.find((p) => p.id === thread.id) ?? null : null;
     const findHighlight = (thread) => thread ? this.#commentOverlayManager.getHighlight(thread.id) ?? null : null;
     const viewInput = {
@@ -5285,7 +5298,7 @@ var ThreadRevealer = class {
   async reveal({ thread, position }) {
     const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
     if (panelId && UI10.InspectorView.InspectorView.instance().hasPanel(panelId)) {
-      await UI10.InspectorView.InspectorView.instance().showPanel(panelId);
+      await UI10.ViewManager.ViewManager.instance().showView(panelId, true, true);
     }
     const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);
     thread.setOrphaned(!element);
@@ -5408,17 +5421,53 @@ import * as CommentManager3 from "../../models/comment_manager/comment_manager.j
 import * as UI11 from "../../ui/legacy/legacy.js";
 import * as Lit5 from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/common/commentsStatusBarPill.css.js
+var commentsStatusBarPill_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  .comments-counter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: var(--sys-size-7);
+    min-width: var(--sys-size-8);
+    width: fit-content;
+    padding: 0 var(--sys-size-3);
+    border-radius: var(--sys-shape-corner-full);
+    background-color: var(--sys-color-primary);
+    color: var(--sys-color-on-primary);
+    font-size: var(--sys-typescale-body5-size);
+    font-weight: var(--ref-typeface-weight-bold);
+    line-height: var(--sys-size-7);
+  }
+
+  .devtools-pill:disabled .comments-counter-badge,
+  .devtools-pill[aria-disabled="true"] .comments-counter-badge {
+    background-color: var(--sys-color-state-disabled-container);
+    color: var(--sys-color-state-disabled);
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./commentsStatusBarPill.css")} */`;
+
+// ../../front_end/panels/common/CommentsStatusBarPill.ts
 var UIStrings9 = {
   /**
    * @description Button text for the comments status bar pill. Clicking it opens the Comments panel.
    */
-  showComments: "Show comments",
+  viewComments: "View comments",
   /**
    * @description Button text for the comments status bar pill when the AI agent has responded to some
    * comments and the user has not seen these responses yet. Clicking it opens the Comments panel.
    * @example {2} PH1
    */
-  showCommentsWithCount: "Show comments ({PH1})"
+  viewCommentsWithCount: "View comments ({PH1})"
 };
 var str_9 = i18n21.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings9);
 var i18nString9 = i18n21.i18n.getLocalizedString.bind(void 0, str_9);
@@ -5426,14 +5475,19 @@ var { html: html10, render: render9 } = Lit5;
 var DEFAULT_VIEW8 = (input, _output, target) => {
   const tooltip = input.threads.flatMap((thread) => thread.comments.map((comment) => comment.text)).join("\n");
   render9(html10`
+    <style>${commentsStatusBarPill_css_default}</style>
     ${input.threads.length <= 0 ? Lit5.nothing : html10`
       <button
         class="devtools-pill"
         title=${tooltip}
+        aria-label=${input.unseenResponseCount > 0 ? i18nString9(UIStrings9.viewCommentsWithCount, { PH1: input.unseenResponseCount }) : i18nString9(UIStrings9.viewComments)}
         ?disabled=${input.disabled}
         @click=${input.onPillClick}
         jslog=${VisualLogging5.action("comments-status-bar-pill").track({ click: true })}>
-        ${input.unseenResponseCount > 0 ? i18nString9(UIStrings9.showCommentsWithCount, { PH1: input.unseenResponseCount }) : i18nString9(UIStrings9.showComments)}
+        <span>${i18nString9(UIStrings9.viewComments)}</span>
+        ${input.unseenResponseCount > 0 ? html10`
+          <span class="comments-counter-badge">${input.unseenResponseCount}</span>
+        ` : Lit5.nothing}
       </button>
     `}
   `, target);

@@ -1864,6 +1864,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
@@ -27576,10 +27577,6 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   async hasStyleSheetText(url) {
     return await this.#windowControls.initializeStyleSheetText(url);
   }
-  inspectPanelShowRequested(_event) {
-  }
-  inspectedElementWindowRestored(_event) {
-  }
 };
 var WindowControls = class _WindowControls {
   #cssModel;
@@ -32673,20 +32670,8 @@ var PageDispatcher = class {
   frameDetached({ frameId, reason }) {
     this.#resourceTreeModel.frameDetached(frameId, reason === Page.FrameDetachedEventReason.Swap);
   }
-  frameSubtreeWillBeDetached(_params) {
-  }
-  frameStartedLoading({}) {
-  }
   frameStoppedLoading({ frameId }) {
     this.#resourceTreeModel.frameStoppedLoading(frameId);
-  }
-  frameRequestedNavigation({}) {
-  }
-  frameScheduledNavigation({}) {
-  }
-  frameClearedScheduledNavigation({}) {
-  }
-  frameStartedNavigating({}) {
   }
   navigatedWithinDocument({ frameId, url }) {
     this.#resourceTreeModel.navigatedWithinDocument(frameId, url);
@@ -32700,12 +32685,6 @@ var PageDispatcher = class {
       void this.#resourceTreeModel.agent.invoke_handleJavaScriptDialog({ accept: false });
     }
   }
-  javascriptDialogClosed({}) {
-  }
-  screencastFrame({}) {
-  }
-  screencastVisibilityChanged({}) {
-  }
   interstitialShown() {
     this.#resourceTreeModel.isInterstitialShowing = true;
     this.#resourceTreeModel.dispatchEventToListeners("InterstitialShown" /* InterstitialShown */);
@@ -32713,16 +32692,6 @@ var PageDispatcher = class {
   interstitialHidden() {
     this.#resourceTreeModel.isInterstitialShowing = false;
     this.#resourceTreeModel.dispatchEventToListeners("InterstitialHidden" /* InterstitialHidden */);
-  }
-  windowOpen({}) {
-  }
-  compilationCacheProduced({}) {
-  }
-  fileChooserOpened({}) {
-  }
-  downloadWillBegin({}) {
-  }
-  downloadProgress() {
   }
 };
 SDKModel.register(ResourceTreeModel, { capabilities: 2 /* DOM */, autostart: true, early: true });
@@ -35742,8 +35711,6 @@ var FetchDispatcher = class {
       )
     );
   }
-  authRequired({}) {
-  }
 };
 function multicastMembership(event) {
   return event.sourceAddress ? `${event.IPAddress}@${event.sourceAddress}` : event.IPAddress;
@@ -36636,8 +36603,6 @@ var NetworkDispatcher = class {
   }
   deviceBoundSessionEventOccurred(_params) {
     this.#manager.dispatchEventToListeners("DeviceBoundSessionEventOccurred" /* DeviceBoundSessionEventOccurred */, _params);
-  }
-  policyUpdated() {
   }
   /**
    * @deprecated
@@ -43018,6 +42983,9 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common38.ObjectWr
     }
   }
   setHardwareConcurrency(concurrency) {
+    if (concurrency < 1 || Number.isNaN(concurrency)) {
+      return;
+    }
     this.#hardwareConcurrency = concurrency;
     for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setHardwareConcurrency(concurrency);
@@ -45183,7 +45151,7 @@ function convertPreloadingStatus(status) {
   }
   throw new Error("unreachable");
 }
-function makePreloadingAttemptId(key) {
+function makePreloadingSourceId(key) {
   let action;
   switch (key.action) {
     case Preload.SpeculationAction.Prefetch:
@@ -45209,6 +45177,13 @@ function makePreloadingAttemptId(key) {
       break;
   }
   return `${key.loaderId}:${action}:${key.url}:${targetHint}:${key.formSubmission ? "formSubmission" : "undefined"}`;
+}
+function makePreloadingAttemptId(key, pipelineId) {
+  const baseId = makePreloadingSourceId(key);
+  if (pipelineId) {
+    return `${baseId}:${pipelineId}`;
+  }
+  return baseId;
 }
 var PreloadPipeline = class _PreloadPipeline {
   inner;
@@ -45317,7 +45292,7 @@ var PreloadingAttemptRegistry = class {
     if (attempt === null) {
       return null;
     }
-    return this.enrich(attempt, sources.getById(id));
+    return this.enrich(attempt, sources.getByKey(attempt.key));
   }
   // Returns representative preloading attempts that triggered by the rule set with `ruleSetId`.
   // `ruleSetId === null` means "do not filter".
@@ -45327,7 +45302,7 @@ var PreloadingAttemptRegistry = class {
   getAllRepresentative(ruleSetId, sources) {
     return [...this.map.entries()].map(([id, value]) => ({
       id,
-      value: this.enrich(value, sources.getById(id))
+      value: this.enrich(value, sources.getByKey(value.key))
     })).filter(({ value }) => !ruleSetId || value.ruleSetIds.includes(ruleSetId)).filter(({ value }) => this.isAttemptRepresentative(value));
   }
   getPipeline(pipelineId, sources) {
@@ -45348,7 +45323,12 @@ var PreloadingAttemptRegistry = class {
     );
   }
   upsert(attempt) {
-    const id = makePreloadingAttemptId(attempt.key);
+    const baseId = makePreloadingSourceId(attempt.key);
+    let id = baseId;
+    const existing = this.map.get(baseId);
+    if (existing?.pipelineId && attempt.pipelineId && existing.pipelineId !== attempt.pipelineId) {
+      id = makePreloadingAttemptId(attempt.key, attempt.pipelineId);
+    }
     this.map.set(id, attempt);
     if (attempt.pipelineId !== null) {
       this.pipelines.getOrInsertComputed(attempt.pipelineId, () => /* @__PURE__ */ new Map()).set(attempt.action, id);
@@ -45420,9 +45400,7 @@ var PreloadingAttemptRegistry = class {
   // Removes keys in `this.map` that are not in `sources`. This is used to
   // remove attempts that no longer have a matching speculation rule.
   cleanUpRemovedAttempts(sources) {
-    const keysToRemove = Array.from(this.map.keys()).filter(
-      (key) => !sources.getById(key)
-    );
+    const keysToRemove = Array.from(this.map.entries()).filter(([, attempt]) => !sources.getByKey(attempt.key)).map(([id]) => id);
     for (const key of keysToRemove) {
       this.map.delete(key);
     }
@@ -45447,8 +45425,11 @@ var SourceRegistry = class {
   getById(id) {
     return this.map.get(id) || null;
   }
+  getByKey(key) {
+    return this.getById(makePreloadingSourceId(key));
+  }
   update(sources) {
-    this.map = new Map(sources.map((s) => [makePreloadingAttemptId(s.key), s]));
+    this.map = new Map(sources.map((s) => [makePreloadingSourceId(s.key), s]));
   }
 };
 
@@ -45490,18 +45471,6 @@ var PrivateVerificationTokensModel = class extends SDKModel {
   }
   privateVerificationTokensUpdated() {
     this.dispatchEventToListeners("TokensUpdated" /* TOKENS_UPDATED */);
-  }
-  cacheStorageContentUpdated(_event) {
-  }
-  cacheStorageListUpdated(_event) {
-  }
-  indexedDBContentUpdated(_event) {
-  }
-  indexedDBListUpdated(_event) {
-  }
-  storageBucketCreatedOrUpdated(_event) {
-  }
-  storageBucketDeleted(_event) {
   }
 };
 SDKModel.register(PrivateVerificationTokensModel, { capabilities: 8192 /* STORAGE */, autostart: false });
@@ -45614,62 +45583,6 @@ var ScreenCaptureModel = class extends SDKModel {
     if (currentRequest) {
       currentRequest.callbacks.onScreencastVisibilityChanged.call(null, visible);
     }
-  }
-  backForwardCacheNotUsed(_params) {
-  }
-  domContentEventFired(_params) {
-  }
-  loadEventFired(_params) {
-  }
-  lifecycleEvent(_params) {
-  }
-  navigatedWithinDocument(_params) {
-  }
-  frameAttached(_params) {
-  }
-  frameNavigated(_params) {
-  }
-  documentOpened(_params) {
-  }
-  frameDetached(_params) {
-  }
-  frameStartedLoading(_params) {
-  }
-  frameStoppedLoading(_params) {
-  }
-  frameRequestedNavigation(_params) {
-  }
-  frameStartedNavigating(_params) {
-  }
-  frameSubtreeWillBeDetached(_params) {
-  }
-  frameScheduledNavigation(_params) {
-  }
-  frameClearedScheduledNavigation(_params) {
-  }
-  frameResized() {
-  }
-  javascriptDialogOpening(_params) {
-  }
-  javascriptDialogClosed(_params) {
-  }
-  interstitialShown() {
-  }
-  interstitialHidden() {
-  }
-  windowOpen(_params) {
-  }
-  fileChooserOpened(_params) {
-  }
-  compilationCacheProduced(_params) {
-  }
-  downloadWillBegin(_params) {
-  }
-  downloadProgress() {
-  }
-  prefetchStatusUpdated(_params) {
-  }
-  prerenderStatusUpdated(_params) {
   }
 };
 SDKModel.register(ScreenCaptureModel, { capabilities: 64 /* SCREEN_CAPTURE */, autostart: false });
@@ -45800,16 +45713,6 @@ var StorageBucketsModel = class extends SDKModel {
         `Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`
       );
     }
-  }
-  indexedDBListUpdated(_event) {
-  }
-  indexedDBContentUpdated(_event) {
-  }
-  cacheStorageListUpdated(_event) {
-  }
-  cacheStorageContentUpdated(_event) {
-  }
-  privateVerificationTokensUpdated() {
   }
 };
 SDKModel.register(StorageBucketsModel, { capabilities: 8192 /* STORAGE */, autostart: false });
@@ -46041,16 +45944,6 @@ var ServiceWorkerCacheModel = class extends SDKModel {
     if (storageBucket) {
       this.dispatchEventToListeners("CacheStorageContentUpdated" /* CACHE_STORAGE_CONTENT_UPDATED */, { storageBucket, cacheName });
     }
-  }
-  indexedDBListUpdated(_event) {
-  }
-  indexedDBContentUpdated(_event) {
-  }
-  storageBucketCreatedOrUpdated(_event) {
-  }
-  storageBucketDeleted(_event) {
-  }
-  privateVerificationTokensUpdated() {
   }
   setThrottlerSchedulesAsSoonAsPossibleForTest() {
     this.#scheduleAsSoonAsPossible = true;

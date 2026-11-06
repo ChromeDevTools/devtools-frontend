@@ -7,11 +7,12 @@ export interface StartOptions {
     scrollTarget?: EventTarget;
     resizeTarget?: Element;
 }
-export interface PinPositionData {
+export interface PinData {
     id: string;
     top: number;
     left: number;
     visible: boolean;
+    resolved: boolean;
 }
 export interface HighlightRectData {
     id: string;
@@ -42,7 +43,7 @@ export declare const enum Events {
 }
 export interface EventTypes {
     [Events.POSITIONS_UPDATED]: {
-        pins: PinPositionData[];
+        pins: PinData[];
         highlights: HighlightRectData[];
         isRealtimeSync?: boolean;
     };
@@ -59,7 +60,7 @@ export declare class CommentOverlayManager extends Common.ObjectWrapper.ObjectWr
     setCommentMode(active: boolean): void;
     isCommentMode(): boolean;
     getHoverHighlight(): HoverHighlightData | null;
-    getPinPositions(): PinPositionData[];
+    getPinPositions(): PinData[];
     getHighlight(threadId: string): HighlightRectData | undefined;
     getAnchorElement(thread: CommentThread): Element | undefined;
     clearDraftThreads(): void;

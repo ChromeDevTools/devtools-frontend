@@ -20,6 +20,7 @@ export declare const CPU_THROTTLING_CARD_DEFAULT_VIEW: CPUThrottlingCardView;
 export declare class CPUThrottlingCard extends UI.Widget.Widget {
     #private;
     private computePressurePromise?;
+    private computePressureAbortController?;
     private controller?;
     private state;
     private warnings;

@@ -712,6 +712,7 @@ panels/timeline/components/LiveMetricsView.test.js
 panels/timeline/components/MetricCard.test.js
 panels/timeline/components/NetworkRequestDetails.test.js
 panels/timeline/components/NetworkRequestTooltip.test.js
+panels/timeline/components/NetworkTrackWidget.test.js
 panels/timeline/components/OriginMap.test.js
 panels/timeline/components/RelatedInsightChips.test.js
 panels/timeline/components/Sidebar.test.js

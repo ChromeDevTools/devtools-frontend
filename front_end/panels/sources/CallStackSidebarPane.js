@@ -1,8 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 /*
  * Copyright (C) 2008 Apple Inc. All Rights Reserved.
  *
@@ -27,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -35,12 +34,13 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import { Icon } from '../../ui/kit/kit.js';
+import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { Directives, html, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
 import { QuickSourceView, SourcesPanel } from './SourcesPanel.js';
+const { classMap, ifDefined } = Directives;
 const UIStrings = {
     /**
      * @description Text in the call stack sidebar of the Sources panel
@@ -94,85 +94,147 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CallStackSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const { createRef, ref } = Directives;
-let callstackSidebarPaneInstance;
-export class CallStackSidebarPane extends UI.View.SimpleView {
-    ignoreListMessageElement;
-    ignoreListCheckboxElement;
-    notPausedMessageElement;
-    callFrameWarningsElement;
-    items;
-    list;
-    showMoreMessageElement;
-    showIgnoreListed = false;
-    maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
-    updateItemThrottler = new Common.Throttler.Throttler(100);
-    scheduledForUpdateItems = new Set();
-    muteActivateItem;
-    #stackTrace = null;
-    #flavorChangeId = 0;
-    constructor() {
-        super({
-            jslog: `${VisualLogging.section('sources.callstack')}`,
-            title: i18nString(UIStrings.callStack),
-            viewId: 'sources.callstack',
-            useShadowDom: true,
-        });
-        const [ignoreListMessageRef, ignoreListCheckboxRef, notPausedRef, warningRef, showMoreRef] = [
-            createRef(),
-            createRef(),
-            createRef(),
-            createRef(),
-            createRef(),
-        ];
-        const ignoreListCheckboxChanged = () => {
-            this.showIgnoreListed = Boolean(ignoreListCheckboxRef.value?.checked);
-            for (const item of this.items) {
-                this.refreshItem(item);
-            }
-        };
-        this.items = new UI.ListModel.ListModel();
-        this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
-        this.list.element.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-        self.onInvokeElement(this.list.element, event => {
-            const item = this.list.itemForNode(event.target);
-            if (item) {
-                this.activateItem(item);
+function getMissingDebugInfoTooltip(missingDebugInfo, functionName) {
+    const { resources, details } = convertMissingDebugInfo(missingDebugInfo, functionName);
+    const messages = resources.map(r => i18nString(UIStrings.debugFileNotFound, { PH1: Common.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
+    return [details, ...messages].join('\n');
+}
+// clang-format off
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const renderItem = (item, index) => {
+        const isHidden = !input.showIgnoreListed && item.isIgnoreListed;
+        const isAsyncHeader = item.isAsyncHeader;
+        const isIgnoreListed = !isAsyncHeader && item.isIgnoreListed;
+        const hasFrame = Boolean(item.frame);
+        const isSelected = item === input.selectedItem;
+        const isFocused = item === input.focusedItem;
+        const missingDebugInfoTooltip = item.frame?.missingDebugInfo ?
+            getMissingDebugInfoTooltip(item.frame.missingDebugInfo, item.frame.sdkFrame.functionName) :
+            undefined;
+        const onKeyDown = (event) => {
+            if ((event.key === 'Enter' && !event.isComposing) || event.key === ' ') {
+                input.onItemActivate(item);
                 event.consume(true);
             }
-        });
-        const onShowMoreClicked = () => {
-            this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
-            this.requestUpdate();
+            else if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Home' || event.key === 'End') {
+                input.onItemKeyDown(item, event.key);
+                event.consume(true);
+            }
         };
-        // clang-format off
-        render(html `
-      <style>${callStackSidebarPaneStyles}</style>
-      <div class='ignore-listed-message' ${ref(ignoreListMessageRef)}>
-        <label class='ignore-listed-message-label'>
-          <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
-              @change=${ignoreListCheckboxChanged} ${ref(ignoreListCheckboxRef)} />
-          ${i18nString(UIStrings.showIgnorelistedFrames)}
-        </label>
+        const onContextMenu = (event) => {
+            const contextMenu = new UI.ContextMenu.ContextMenu(event);
+            input.onItemContextMenu(item, contextMenu);
+            void contextMenu.show();
+        };
+        return html `
+      <div class=${classMap({
+            'call-frame-item': true,
+            'async-header': isAsyncHeader,
+            'ignore-listed-call-frame': isIgnoreListed,
+            selected: isSelected,
+        })}
+          role="option"
+          aria-setsize=${input.items.length}
+          aria-posinset=${index + 1}
+          aria-selected=${isSelected ? 'true' : 'false'}
+          aria-description=${ifDefined(isIgnoreListed ? i18nString(UIStrings.onIgnoreList) : undefined)}
+          aria-disabled=${ifDefined(!isAsyncHeader && !hasFrame ? 'true' : undefined)}
+          ?hidden=${isHidden}
+          tabindex=${isFocused ? 0 : -1}
+          ?autofocus=${isFocused && !isHidden}
+          jslog=${VisualLogging.item().track({
+            click: true,
+            resize: true,
+            keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End|Enter|Space',
+        })}
+          @click=${() => input.onItemClick(item)}
+          @contextmenu=${onContextMenu}
+          @keydown=${onKeyDown}>
+        <div class="call-frame-item-title">
+          <div class="call-frame-title-text"
+              title=${ifDefined(!isAsyncHeader ? item.title : undefined)}>${item.title}</div>
+        </div>
+        ${!isAsyncHeader ? html `
+          <div class="call-frame-location"
+              title=${item.linkText}>${Platform.StringUtilities.trimMiddle(item.linkText, 30)}</div>
+        ` : nothing}
+        <devtools-icon .name=${'large-arrow-right-filled'} class="selected-call-frame-icon small"></devtools-icon>
+        ${missingDebugInfoTooltip ? html `
+          <devtools-icon .name=${'warning-filled'} class="call-frame-warning-icon small"
+              title=${missingDebugInfoTooltip}></devtools-icon>
+        ` : nothing}
       </div>
-      <div class='gray-info-message' tabindex=-1 ${ref(notPausedRef)}>
-        ${i18nString(UIStrings.notPaused)}
-      </div>
-      <div class='call-frame-warnings-message' tabindex=-1 ${ref(warningRef)}>
-        <devtools-icon .name=${'warning-filled'} class='call-frame-warning-icon small'></devtools-icon>
-        ${i18nString(UIStrings.callFrameWarnings)}
-      </div>
-      ${this.list.element}
-      <div class='show-more-message hidden' ${ref(showMoreRef)}>
-        <button class='link' @click=${onShowMoreClicked}>${i18nString(UIStrings.showMore)}</button>
-      </div>
-    `, this.contentElement);
-        // clang-format on
-        this.ignoreListMessageElement = ignoreListMessageRef.value;
-        this.ignoreListCheckboxElement = ignoreListCheckboxRef.value;
-        this.notPausedMessageElement = notPausedRef.value;
-        this.callFrameWarningsElement = warningRef.value;
-        this.showMoreMessageElement = showMoreRef.value;
+    `;
+    };
+    render(html `
+    <style>${Input.checkboxStyles}</style>
+    <style>${callStackSidebarPaneStyles}</style>
+    <div
+      class="ignore-listed-message"
+      ?hidden=${!input.showIgnoreListMessage}>
+      <label class="ignore-listed-message-label">
+        <input type="checkbox" tabindex="0" class="ignore-listed-checkbox"
+            .checked=${input.showIgnoreListedChecked}
+            jslog=${VisualLogging.toggle('show-ignore-listed-frames').track({ change: true })}
+            @change=${(e) => {
+        if (e.target instanceof HTMLInputElement) {
+            input.onIgnoreListCheckboxChange(e.target.checked);
+        }
+    }} />
+        ${i18nString(UIStrings.showIgnorelistedFrames)}
+      </label>
+    </div>
+    <div
+      class="gray-info-message"
+      ?hidden=${!input.notPaused}
+      tabindex="-1">
+      ${i18nString(UIStrings.notPaused)}
+    </div>
+    <div
+      class="call-frame-warnings-message"
+      ?hidden=${!input.warnings}
+      tabindex="-1"
+      title=${ifDefined(input.warnings)}>
+      <devtools-icon .name=${'warning-filled'} class="call-frame-warning-icon small"></devtools-icon>
+      ${i18nString(UIStrings.callFrameWarnings)}
+    </div>
+    <div class="call-frame-list"
+        role="listbox"
+        aria-label=${i18nString(UIStrings.callStack)}
+        tabindex="-1"
+        ?hidden=${input.items.length === 0}>
+      ${input.items.map((item, index) => renderItem(item, index))}
+    </div>
+    <div
+      class="show-more-message"
+      ?hidden=${!input.showMore}>
+      <button class="link"
+          jslog=${VisualLogging.action('show-more').track({ click: true })}
+          @click=${input.onShowMore}>${i18nString(UIStrings.showMore)}</button>
+    </div>
+  `, target, { container: { attributes: { jslog: `${VisualLogging.section('sources.callstack')}` } } });
+};
+// clang-format on
+let callstackSidebarPaneInstance;
+export class CallStackSidebarPane extends UI.View.SimpleView {
+    #view;
+    #items = [];
+    #focusedItem = null;
+    #showIgnoreListed = false;
+    #showIgnoreListMessage = false;
+    #ignoreListCheckboxChecked = false;
+    #warnings;
+    #hasMore = false;
+    maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+    #stackTrace = null;
+    #flavorChangeId = 0;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, {
+            title: i18nString(UIStrings.callStack),
+            viewId: 'sources.callstack',
+            useShadowDom: 'pure',
+        });
+        this.#view = view;
         this.requestUpdate();
     }
     static instance(opts = { forceNew: null }) {
@@ -182,14 +244,38 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         }
         return callstackSidebarPaneInstance;
     }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    #onIgnoreListCheckboxChanged(checked) {
+        this.#ignoreListCheckboxChecked = checked;
+        this.#updateIgnoreListState();
+        if (!this.#isItemVisible(this.#focusedItem)) {
+            const activeItem = this.activeCallFrameItem();
+            this.#focusedItem = this.#isItemVisible(activeItem) ? activeItem : this.#firstVisibleItem();
+        }
+        this.requestUpdate();
+    }
+    #onShowMoreClicked() {
+        this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
+        this.#rebuildItems();
+        this.requestUpdate();
+    }
+    #onStackTraceUpdated() {
+        this.#rebuildItems();
+        this.requestUpdate();
+    }
     async flavorChanged(details) {
         const flavorChangeId = ++this.#flavorChangeId;
-        this.showIgnoreListed = false;
-        this.ignoreListCheckboxElement.checked = false;
+        this.#showIgnoreListed = false;
+        this.#ignoreListCheckboxChecked = false;
+        this.#showIgnoreListMessage = false;
         this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
         if (this.#stackTrace) {
-            this.#stackTrace.removeEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
+            this.#stackTrace.removeEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.#onStackTraceUpdated, this);
             this.#stackTrace = null;
+            this.#rebuildItems();
             this.requestUpdate(); // In case creating the stack trace takes a while, we render an empty view first.
         }
         if (details) {
@@ -199,21 +285,21 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
                 return;
             }
             this.#stackTrace = stackTrace;
-            this.#stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
+            this.#stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.#onStackTraceUpdated, this);
+            this.#rebuildItems();
         }
         this.requestUpdate();
     }
-    performUpdate() {
-        this.callFrameWarningsElement.classList.add('hidden');
+    #rebuildItems() {
         if (!this.#stackTrace) {
-            this.notPausedMessageElement.classList.remove('hidden');
-            this.ignoreListMessageElement.classList.add('hidden');
-            this.showMoreMessageElement.classList.add('hidden');
-            this.items.replaceAll([]);
+            this.#warnings = undefined;
+            this.#hasMore = false;
+            this.#showIgnoreListMessage = false;
+            this.#items = [];
+            this.#focusedItem = null;
             UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, null);
             return;
         }
-        this.notPausedMessageElement.classList.add('hidden');
         const items = [];
         const uniqueWarnings = new Set();
         for (const frame of this.#stackTrace.syncFragment.frames) {
@@ -222,10 +308,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
                 uniqueWarnings.add(convertMissingDebugInfo(frame.missingDebugInfo, frame.sdkFrame.functionName).details);
             }
         }
-        if (uniqueWarnings.size) {
-            this.callFrameWarningsElement.classList.remove('hidden');
-            UI.Tooltip.Tooltip.install(this.callFrameWarningsElement, Array.from(uniqueWarnings).join('\n'));
-        }
+        this.#warnings = uniqueWarnings.size ? Array.from(uniqueWarnings).join('\n') : undefined;
         let { maxAsyncStackChainDepth } = this;
         let hasMore = false;
         for (const asyncFragment of this.#stackTrace.asyncFragments) {
@@ -238,123 +321,92 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
                 break;
             }
         }
-        this.showMoreMessageElement.classList.toggle('hidden', !hasMore);
-        this.items.replaceAll(items);
-        for (const item of this.items) {
-            this.refreshItem(item);
-        }
+        this.#hasMore = hasMore;
+        this.#items = items;
+        this.#updateIgnoreListState();
         if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
-            this.list.selectNextItem(true /* canWrap */, false /* center */);
-            const selectedItem = this.list.selectedItem();
-            if (selectedItem &&
+            this.#focusedItem = this.#firstVisibleItem() ?? (this.#items[0] ?? null);
+            if (this.#focusedItem &&
                 (UI.Context.Context.instance().flavor(QuickSourceView) ||
                     UI.Context.Context.instance().flavor(SourcesPanel))) {
-                this.activateItem(selectedItem);
+                this.activateItem(this.#focusedItem);
             }
         }
-        this.updatedForTest();
+        else {
+            const activeItem = this.activeCallFrameItem();
+            this.#focusedItem =
+                this.#isItemVisible(activeItem) ? activeItem : (this.#firstVisibleItem() ?? (this.#items[0] ?? null));
+        }
+    }
+    #isItemVisible(item) {
+        if (!item || !this.#items.includes(item)) {
+            return false;
+        }
+        return this.#showIgnoreListed || !item.isIgnoreListed;
+    }
+    #firstVisibleItem() {
+        return this.#items.find(item => this.#showIgnoreListed || !item.isIgnoreListed) ?? null;
+    }
+    #updateIgnoreListState() {
+        const hasIgnoreListed = this.#items.some(item => item.isIgnoreListed);
+        const allIgnoreListed = this.#items.length > 0 && this.#items.every(item => item.isIgnoreListed);
+        if (allIgnoreListed) {
+            this.#showIgnoreListed = true;
+            this.#showIgnoreListMessage = false;
+        }
+        else {
+            this.#showIgnoreListed = this.#ignoreListCheckboxChecked;
+            this.#showIgnoreListMessage = hasIgnoreListed;
+        }
+    }
+    performUpdate() {
+        const viewInput = {
+            showIgnoreListMessage: this.#showIgnoreListMessage,
+            showIgnoreListedChecked: this.#ignoreListCheckboxChecked,
+            onIgnoreListCheckboxChange: this.#onIgnoreListCheckboxChanged.bind(this),
+            notPaused: !this.#stackTrace,
+            warnings: this.#warnings,
+            items: this.#items,
+            selectedItem: this.activeCallFrameItem(),
+            focusedItem: this.#focusedItem,
+            showIgnoreListed: this.#showIgnoreListed,
+            onItemClick: this.#onItemClick.bind(this),
+            onItemActivate: this.#onItemActivate.bind(this),
+            onItemContextMenu: this.#onItemContextMenu.bind(this),
+            onItemKeyDown: this.#onItemKeyDown.bind(this),
+            showMore: this.#hasMore,
+            onShowMore: this.#onShowMoreClicked.bind(this),
+        };
+        this.#view(viewInput, undefined, this.contentElement);
+        if (this.#stackTrace) {
+            this.updatedForTest();
+        }
     }
     updatedForTest() {
     }
-    refreshItem(item) {
-        this.scheduledForUpdateItems.add(item);
-        void this.updateItemThrottler.schedule(async () => {
-            const items = Array.from(this.scheduledForUpdateItems);
-            this.scheduledForUpdateItems.clear();
-            this.muteActivateItem = true;
-            if (!this.showIgnoreListed && this.items.every(item => item.isIgnoreListed)) {
-                this.showIgnoreListed = true;
-                for (let i = 0; i < this.items.length; ++i) {
-                    this.list.refreshItemByIndex(i);
-                }
-                this.ignoreListMessageElement.classList.toggle('hidden', true);
-            }
-            else {
-                this.showIgnoreListed = this.ignoreListCheckboxElement.checked;
-                const itemsSet = new Set(items);
-                let hasIgnoreListed = false;
-                for (let i = 0; i < this.items.length; ++i) {
-                    const item = this.items.at(i);
-                    if (itemsSet.has(item)) {
-                        this.list.refreshItemByIndex(i);
-                    }
-                    hasIgnoreListed = hasIgnoreListed || item.isIgnoreListed;
-                }
-                this.ignoreListMessageElement.classList.toggle('hidden', !hasIgnoreListed);
-            }
-            delete this.muteActivateItem;
-        });
-    }
-    createElementForItem(item) {
-        const element = document.createElement('div');
-        element.classList.add('call-frame-item');
-        const title = element.createChild('div', 'call-frame-item-title');
-        const titleElement = title.createChild('div', 'call-frame-title-text');
-        titleElement.textContent = item.title;
-        if (item.isAsyncHeader) {
-            element.classList.add('async-header');
+    #onItemClick(item) {
+        if (this.#items.includes(item)) {
+            this.#focusedItem = item;
         }
-        else {
-            UI.Tooltip.Tooltip.install(titleElement, item.title);
-            const linkElement = element.createChild('div', 'call-frame-location');
-            linkElement.textContent = Platform.StringUtilities.trimMiddle(item.linkText, 30);
-            UI.Tooltip.Tooltip.install(linkElement, item.linkText);
-            element.classList.toggle('ignore-listed-call-frame', item.isIgnoreListed);
-            if (item.isIgnoreListed) {
-                UI.ARIAUtils.setDescription(element, i18nString(UIStrings.onIgnoreList));
-            }
-            if (!item.frame) {
-                UI.ARIAUtils.setDisabled(element, true);
-            }
+        if (item.uiLocation) {
+            this.activateItem(item);
         }
-        const isSelected = item.frame === UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor)?.frame;
-        element.classList.toggle('selected', isSelected);
-        UI.ARIAUtils.setSelected(element, isSelected);
-        element.classList.toggle('hidden', !this.showIgnoreListed && item.isIgnoreListed);
-        const icon = new Icon();
-        icon.name = 'large-arrow-right-filled';
-        icon.classList.add('selected-call-frame-icon', 'small');
-        element.appendChild(icon);
-        element.tabIndex = item === this.list.selectedItem() ? 0 : -1;
-        if (item.frame?.missingDebugInfo) {
-            const icon = new Icon();
-            icon.name = 'warning-filled';
-            icon.classList.add('call-frame-warning-icon', 'small');
-            const { resources, details } = convertMissingDebugInfo(item.frame.missingDebugInfo, item.frame.sdkFrame.functionName);
-            const messages = resources.map(r => i18nString(UIStrings.debugFileNotFound, { PH1: Common.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
-            UI.Tooltip.Tooltip.install(icon, [details, ...messages].join('\n'));
-            element.appendChild(icon);
+        this.requestUpdate();
+    }
+    #onItemActivate(item) {
+        if (this.#items.includes(item)) {
+            this.#focusedItem = item;
         }
-        return element;
-    }
-    heightForItem(_item) {
-        console.assert(false); // Should not be called.
-        return 0;
-    }
-    isItemSelectable(_item) {
-        return true;
-    }
-    selectedItemChanged(_from, _to, fromElement, toElement) {
-        if (fromElement) {
-            fromElement.tabIndex = -1;
+        if (item.uiLocation) {
+            this.activateItem(item);
         }
-        if (toElement) {
-            this.setDefaultFocusedElement(toElement);
-            toElement.tabIndex = 0;
-            if (this.hasFocus()) {
-                toElement.focus();
-            }
-        }
+        this.requestUpdate();
     }
-    updateSelectedItemARIA(_fromElement, _toElement) {
-        return true;
-    }
-    onContextMenu(event) {
-        const item = this.list.itemForNode(event.target);
-        if (!item) {
-            return;
+    #onItemContextMenu(item, contextMenu) {
+        if (this.#items.includes(item)) {
+            this.#focusedItem = item;
+            this.requestUpdate();
         }
-        const contextMenu = new UI.ContextMenu.ContextMenu(event);
         const debuggerCallFrame = item.frame?.sdkFrame;
         if (debuggerCallFrame) {
             contextMenu.defaultSection().appendItem(i18nString(UIStrings.restartFrame), () => {
@@ -366,16 +418,58 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         if (item.uiLocation) {
             this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
         }
-        void contextMenu.show();
+    }
+    #onItemKeyDown(item, direction) {
+        const visibleItems = this.#items.filter(candidate => this.#showIgnoreListed || !candidate.isIgnoreListed);
+        if (visibleItems.length === 0) {
+            return;
+        }
+        let newItem;
+        switch (direction) {
+            case 'Home':
+                newItem = visibleItems[0];
+                break;
+            case 'End':
+                newItem = visibleItems[visibleItems.length - 1];
+                break;
+            case 'ArrowDown': {
+                const currPos = visibleItems.indexOf(item);
+                const nextPos = currPos === -1 ? 0 : (currPos + 1) % visibleItems.length;
+                newItem = visibleItems[nextPos];
+                break;
+            }
+            case 'ArrowUp': {
+                const currPos = visibleItems.indexOf(item);
+                const prevPos = currPos === -1 ? visibleItems.length - 1 : (currPos - 1 + visibleItems.length) % visibleItems.length;
+                newItem = visibleItems[prevPos];
+                break;
+            }
+        }
+        const targetItem = newItem;
+        this.#focusedItem = targetItem;
+        this.requestUpdate();
+        void this.updateComplete.then(() => {
+            const newIndex = this.#items.indexOf(targetItem);
+            if (newIndex === -1) {
+                return;
+            }
+            const elements = this.contentElement.querySelectorAll('.call-frame-item');
+            const targetEl = elements[newIndex];
+            if (targetEl) {
+                targetEl.focus();
+                targetEl.scrollIntoView({ block: 'nearest' });
+            }
+        });
     }
     activateItem(item) {
         const uiLocation = item.uiLocation;
-        if (this.muteActivateItem || !uiLocation) {
+        if (!uiLocation) {
             return;
         }
-        this.list.selectItem(item);
+        if (this.#items.includes(item)) {
+            this.#focusedItem = item;
+        }
         const debuggerCallFrame = item.frame;
-        const oldItem = this.activeCallFrameItem();
         if (debuggerCallFrame) {
             debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
             UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, StackTrace.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
@@ -383,17 +477,12 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         else {
             void Common.Revealer.reveal(uiLocation);
         }
-        if (oldItem !== item) {
-            if (oldItem) {
-                this.refreshItem(oldItem);
-            }
-            this.refreshItem(item);
-        }
+        this.requestUpdate();
     }
     activeCallFrameItem() {
         const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
         if (frameFlavor) {
-            return this.items.find(callFrameItem => callFrameItem.frame === frameFlavor.frame) || null;
+            return this.#items.find(callFrameItem => callFrameItem.frame === frameFlavor.frame) || null;
         }
         return null;
     }
@@ -414,9 +503,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     }
     selectNextCallFrameOnStack() {
         const oldItem = this.activeCallFrameItem();
-        const startIndex = oldItem ? this.items.indexOf(oldItem) + 1 : 0;
-        for (let i = startIndex; i < this.items.length; i++) {
-            const newItem = this.items.at(i);
+        const startIndex = oldItem ? this.#items.indexOf(oldItem) + 1 : 0;
+        for (let i = startIndex; i < this.#items.length; i++) {
+            const newItem = this.#items[i];
             if (newItem.frame) {
                 this.activateItem(newItem);
                 break;
@@ -425,9 +514,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     }
     selectPreviousCallFrameOnStack() {
         const oldItem = this.activeCallFrameItem();
-        const startIndex = oldItem ? this.items.indexOf(oldItem) - 1 : this.items.length - 1;
+        const startIndex = oldItem ? this.#items.indexOf(oldItem) - 1 : this.#items.length - 1;
         for (let i = startIndex; i >= 0; i--) {
-            const newItem = this.items.at(i);
+            const newItem = this.#items[i];
             if (newItem.frame) {
                 this.activateItem(newItem);
                 break;
@@ -436,7 +525,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     }
     copyStackTrace() {
         const text = [];
-        for (const item of this.items) {
+        for (const item of this.#items) {
             let itemText = item.title;
             if (item.uiLocation) {
                 itemText += ' (' + item.uiLocation.linkText(true /* skipTrim */) + ')';
@@ -446,7 +535,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text.join('\n'));
     }
 }
-export const elementSymbol = Symbol('element');
 export const defaultMaxAsyncStackChainDepth = 32;
 export class ActionDelegate {
     handleAction(_context, actionId) {

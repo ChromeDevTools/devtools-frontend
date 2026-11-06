@@ -239,7 +239,7 @@ export default `/*
   }
 
   .pause-on-caught-exceptions {
-    margin-bottom: 3px;
+    margin-bottom: var(--sys-size-2);
   }
 
   /* TODO(crbug.com/1382762): Remove special casing with dependent toggles as soon as Node LTS caught up on independent pause of exception toggles. */

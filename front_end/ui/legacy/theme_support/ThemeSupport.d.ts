@@ -1,4 +1,5 @@
 import * as Common from '../../../core/common/common.js';
+import * as Root from '../../../core/root/root.js';
 export declare class ThemeSupport extends EventTarget {
     #private;
     private setting;
@@ -17,7 +18,7 @@ export declare class ThemeSupport extends EventTarget {
     getComputedValue(propertyName: string, target?: Element | null): string;
     themeName(): string;
     static clearThemeCache(): void;
-    fetchColorsAndApplyHostTheme(): void;
+    fetchColorsAndApplyHostTheme(colorSource?: Root.Runtime.UserColorSource): void;
 }
 export declare class ThemeChangeEvent extends Event {
     static readonly eventName = "themechange";

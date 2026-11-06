@@ -16,7 +16,7 @@ export interface ThreadActions {
  * `hoveredThread`.
  */
 export interface ViewInput extends ThreadActions {
-    pins: Comments.CommentOverlayManager.PinPositionData[];
+    pins: Comments.CommentOverlayManager.PinData[];
     /**
      * Highlight of the currently open thread. Null when no thread is open, so
      * only pins are rendered.
@@ -37,7 +37,7 @@ export interface ViewInput extends ThreadActions {
     onPopupInteract: () => void;
     /** Thread opened by the user (pin click, drawer, or draft). */
     activeThread: CommentManager.CommentManager.CommentThread | null;
-    activePin: Comments.CommentOverlayManager.PinPositionData | null;
+    activePin: Comments.CommentOverlayManager.PinData | null;
     fallbackPosition?: {
         left: number;
         top: number;
@@ -48,7 +48,7 @@ export interface ViewInput extends ThreadActions {
      * `activeThread`, and never the same thread.
      */
     hoveredThread: CommentManager.CommentManager.CommentThread | null;
-    hoveredPin: Comments.CommentOverlayManager.PinPositionData | null;
+    hoveredPin: Comments.CommentOverlayManager.PinData | null;
     hoveredHighlight: Comments.CommentOverlayManager.HighlightRectData | null;
     hoveredTitle: Title;
     hoveredActions: ThreadActions;

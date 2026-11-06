@@ -293,16 +293,88 @@ export function renderGroupTrailingIcons(project) {
     }
     return [];
 }
-export const renderSourceTitle = (input, _output, target) => {
+export const DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW = (input, _output, target) => {
+    const stopPropagationIfEditing = (event) => {
+        if (input.editing) {
+            event.stopPropagation();
+        }
+    };
     // clang-format off
     render(html `
     <devtools-prompt
       value=${input.title}
       ?editing=${input.editing}
       @commit=${(event) => input.onCommit(event.detail)}
-      @cancel=${input.onCancel}
-    >${input.title}</devtools-prompt>`, target);
+      @cancel=${() => input.onCancel()}
+      @mousedown=${stopPropagationIfEditing}
+      @click=${stopPropagationIfEditing}
+      @dblclick=${stopPropagationIfEditing}>${input.title}</devtools-prompt>
+  `, target);
     // clang-format on
+};
+export class NavigatorSourceTitleWidget extends UI.Widget.Widget {
+    #title = '';
+    #editing = false;
+    #view;
+    onCommit;
+    onCancel;
+    set title(title) {
+        if (this.#title === title) {
+            return;
+        }
+        this.#title = title;
+        this.requestUpdate();
+    }
+    get title() {
+        return this.#title;
+    }
+    set editing(editing) {
+        if (this.#editing === editing) {
+            return;
+        }
+        this.#editing = editing;
+        this.requestUpdate();
+    }
+    get editing() {
+        return this.#editing;
+    }
+    constructor(element, view = DEFAULT_NAVIGATOR_SOURCE_TITLE_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const viewInput = {
+            title: this.#title,
+            editing: this.#editing,
+            onCommit: (detail) => this.onCommit?.(detail),
+            onCancel: () => this.onCancel?.(),
+        };
+        this.#view(viewInput, undefined, this.contentElement);
+    }
+}
+export const renderSourceTitleWidget = (input, _output, target) => {
+    // clang-format off
+    render(html `
+        <devtools-widget style="display: contents" ${UI.Widget.widget(NavigatorSourceTitleWidget, {
+        title: input.title,
+        editing: input.editing,
+        onCommit: input.onCommit,
+        onCancel: input.onCancel,
+    })}></devtools-widget>
+      `, target);
+    // clang-format on
+    const widgetElement = target.firstElementChild;
+    if (widgetElement) {
+        // Temporary adapter: instantiates and renders the widget synchronously
+        // for detached TreeOutlineInShadow elements. This will be removed once
+        // NavigatorView renders <devtools-tree> declaratively.
+        const widget = UI.Widget.Widget.getOrCreateWidget(widgetElement);
+        void widget.performUpdate();
+    }
 };
 export var Events;
 (function (Events) {
@@ -1664,7 +1736,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         if (!this.treeElement) {
             return;
         }
-        renderSourceTitle({
+        renderSourceTitleWidget({
             title: this.title,
             editing: this.isEditing,
             onCommit: this.#handlePromptCommit.bind(this),
@@ -1681,7 +1753,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         this.recursiveProperties.exclusivelyIgnored =
             (this.#uiSourceCode.contentType().isScript() || isIgnoreListed) ? isIgnoreListed : null;
         let titleText = this.#uiSourceCode.displayName();
-        if (!ignoreIsDirty && this.#uiSourceCode.isDirty()) {
+        if (!ignoreIsDirty && !this.isEditing && this.#uiSourceCode.isDirty()) {
             titleText = '*' + titleText;
         }
         this.title = titleText;

@@ -118,7 +118,6 @@ export declare class FetchDispatcher implements ProtocolProxyApi.FetchDispatcher
     #private;
     constructor(agent: ProtocolProxyApi.FetchApi, manager: NetworkManager);
     requestPaused({ requestId, request, resourceType, responseStatusCode, responseHeaders, networkId }: Protocol.Fetch.RequestPausedEvent): void;
-    authRequired({}: Protocol.Fetch.AuthRequiredEvent): void;
 }
 export declare class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     #private;
@@ -178,7 +177,6 @@ export declare class NetworkDispatcher implements ProtocolProxyApi.NetworkDispat
     reportingApiEndpointsChangedForOrigin(data: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void;
     deviceBoundSessionsAdded(_params: Protocol.Network.DeviceBoundSessionsAddedEvent): void;
     deviceBoundSessionEventOccurred(_params: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void;
-    policyUpdated(): void;
     /**
      * @deprecated
      * This method is only kept for usage in a web test.

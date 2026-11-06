@@ -14,5 +14,11 @@ export declare class ExtensionScope {
     static getStyleRuleFromMatchesStyles(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): SDK.CSSRule.CSSStyleRule | undefined;
     static getSelectorsFromStyleRule(styleRule: SDK.CSSRule.CSSStyleRule, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): string;
     static getSelectorForNode(node: SDK.DOMModel.DOMNode): string;
+    /**
+     * Derives a CSS selector for `node`, preferring the selector from the
+     * element's primary matched CSS rule in `matchedStyles` and falling back to
+     * the node's tag/id/class attributes when no matched rule selector applies.
+     */
+    static getSelectorForElement(node: SDK.DOMModel.DOMNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles | null): string;
     sanitizedStyleChanges(selector: string, styles: Record<string, string>): Promise<Record<string, string>>;
 }

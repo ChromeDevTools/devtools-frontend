@@ -38,6 +38,10 @@ export default `/*
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
+.call-frame-list {
+  overflow-y: auto;
+}
+
 .call-frame-item {
   padding: 3px var(--sys-size-5) 3px var(--sys-size-9);
   position: relative;

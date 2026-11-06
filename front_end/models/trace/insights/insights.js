@@ -1818,6 +1818,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
@@ -4587,7 +4588,7 @@ function generateInsight6(data, context) {
     if (Types5.Events.isSoftNavigationStart(context.navigation)) {
       mainDocumentUrl = context.navigation.args.context.URL;
     } else {
-      mainDocumentUrl = context.navigation.args.data?.documentLoaderURL ?? context.navigation.args.data?.url ?? mainDocumentUrl;
+      mainDocumentUrl = context.navigation.args.data?.documentLoaderURL ?? mainDocumentUrl;
     }
   }
   return finalize6({

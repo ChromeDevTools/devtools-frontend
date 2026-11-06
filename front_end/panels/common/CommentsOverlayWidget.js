@@ -101,7 +101,12 @@ const DEFAULT_VIEW = (input, _output, target) => {
             @click=${() => input.onPinClick(p.id)}
             @mouseenter=${() => input.onPinMouseEnter(p.id)}
             @mouseleave=${input.onPinMouseLeave}>
-            <div class="comment-cursor"></div>
+            <div
+              class=${classMap({
+        'comment-cursor': true,
+        resolved: p.resolved,
+    })}>
+            </div>
           </div>
         `)}
       ${repeat(getPopupItems(input), 
@@ -486,7 +491,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         };
     }
     #renderView(activeThread, title, hoveredThread, hoveredTitle) {
-        const pins = this.#commentOverlayManager.getPinPositions();
+        const pins = this.#commentOverlayManager.getPinPositions().map(pin => !pin.visible && pin.id === activeThread?.id ? { ...pin, visible: true } : pin);
         const findPin = (thread) => thread ? pins.find(p => p.id === thread.id) ?? null : null;
         const findHighlight = (thread) => thread ? this.#commentOverlayManager.getHighlight(thread.id) ?? null : null;
         const viewInput = {
@@ -572,7 +577,7 @@ export class ThreadRevealer {
     async reveal({ thread, position }) {
         const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
         if (panelId && UI.InspectorView.InspectorView.instance().hasPanel(panelId)) {
-            await UI.InspectorView.InspectorView.instance().showPanel(panelId);
+            await UI.ViewManager.ViewManager.instance().showView(panelId, true, true);
         }
         const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);
         thread.setOrphaned(!element);

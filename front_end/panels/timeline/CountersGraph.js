@@ -149,9 +149,6 @@ export class CountersGraph extends UI.Widget.VBox {
                     counter.appendSample(startTime, value);
                 }
             }
-            if (typeof counters.gpuMemoryLimitKB !== 'undefined') {
-                this.gpuMemoryCounter.setLimit(counters.gpuMemoryLimitKB);
-            }
         }
         this.#showNoEventsMessage = counterEventsFound === 0;
         this.requestUpdate();

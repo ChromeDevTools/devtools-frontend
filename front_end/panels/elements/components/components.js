@@ -1829,8 +1829,8 @@ var elementsBreadcrumbs_css_default = `/*
 
 .crumb {
   display: block;
-  padding: 0 7px;
-  line-height: 23px;
+  padding: 0 var(--sys-size-4);
+  line-height: var(--sys-size-10);
   white-space: nowrap;
 }
 

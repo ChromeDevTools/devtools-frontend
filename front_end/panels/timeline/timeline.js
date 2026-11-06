@@ -2347,9 +2347,6 @@ var CountersGraph = class extends UI.Widget.VBox {
           counter.appendSample(startTime, value);
         }
       }
-      if (typeof counters.gpuMemoryLimitKB !== "undefined") {
-        this.gpuMemoryCounter.setLimit(counters.gpuMemoryLimitKB);
-      }
     }
     this.#showNoEventsMessage = counterEventsFound === 0;
     this.requestUpdate();
@@ -5200,6 +5197,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
@@ -10126,6 +10124,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     "Classic - scroll to zoom",
     "timeline.select-classic-navigation"
   );
+  #navigationSettingInitialized = false;
   #onMainEntryHovered;
   #hiddenTracksInfoBarByParsedTrace = /* @__PURE__ */ new WeakMap();
   #resourceLoader;
@@ -11176,7 +11175,6 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     this.createFileSelector();
   }
   #launchRehydratedSession(traceJson) {
-    let rehydratingWindow = null;
     let pathToLaunch = null;
     const url = new URL(window.location.href);
     const pathToEntrypoint = url.pathname.slice(0, url.pathname.lastIndexOf("/"));
@@ -11184,28 +11182,28 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     url.search = "";
     pathToLaunch = url.toString();
     const hostWindow = window;
+    const rehydratingWindow = this.isDocked() ? hostWindow.open(
+      pathToLaunch,
+      /* target: */
+      "_blank",
+      "noopener=false,popup=false"
+    ) : hostWindow.open(
+      pathToLaunch,
+      /* target: */
+      void 0,
+      "noopener=false,popup=true"
+    );
+    if (!rehydratingWindow) {
+      return;
+    }
     function onMessageHandler(ev) {
-      if (url && ev.data?.type === "REHYDRATING_WINDOW_READY") {
-        rehydratingWindow?.postMessage({ type: "REHYDRATING_TRACE_FILE", traceJson }, url.origin);
+      if (ev.source !== rehydratingWindow || ev.data?.type !== "REHYDRATING_WINDOW_READY") {
+        return;
       }
+      rehydratingWindow?.postMessage({ type: "REHYDRATING_TRACE_FILE", traceJson }, url.origin);
       hostWindow.removeEventListener("message", onMessageHandler);
     }
     hostWindow.addEventListener("message", onMessageHandler);
-    if (this.isDocked()) {
-      rehydratingWindow = hostWindow.open(
-        pathToLaunch,
-        /* target: */
-        "_blank",
-        "noopener=false,popup=false"
-      );
-    } else {
-      rehydratingWindow = hostWindow.open(
-        pathToLaunch,
-        /* target: */
-        void 0,
-        "noopener=false,popup=true"
-      );
-    }
   }
   async loadFromURL(url) {
     if (this.state !== "Idle" /* IDLE */) {
@@ -11615,7 +11613,8 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
         }
       }
     }
-    if (this.#traceEngineModel.size() === 1) {
+    if (!this.#navigationSettingInitialized && this.#traceEngineModel.size() === 1) {
+      this.#navigationSettingInitialized = true;
       this.#setupNavigationSetting();
       if (Common10.Settings.Settings.instance().resolve(SettingUIRegistration2.TimelineSettings.flamechartSelectedNavigationSettingDescriptor).get() === "classic") {
         Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
@@ -13367,7 +13366,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       return contentHelper.fragment;
     }
     if (Trace24.Types.Events.isNavigationStart(event)) {
-      url = event.args.data?.documentLoaderURL ?? event.args.data?.url;
+      url = event.args.data?.documentLoaderURL;
       if (url) {
         contentHelper.appendElementRow(i18nString18(UIStrings18.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
       }
@@ -19665,7 +19664,7 @@ var timelineFlameChartView_css_default = `/*
   /* This overlay by default is shown at the bottom of the UI, not the top */
   top: unset;
   bottom: 0;
-  height: 100px;
+  height: var(--sys-size-19);
 
   &.positioned-by-event {
     top: 0;

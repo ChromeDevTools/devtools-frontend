@@ -1845,7 +1845,7 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/mobile_throttling/ThrottlingSettingsTab.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-function createComputePressurePromise() {
+function createComputePressurePromise(signal) {
   const result = { state: "" };
   if (typeof PressureObserver === "undefined") {
     return Promise.resolve(result);
@@ -1855,8 +1855,19 @@ function createComputePressurePromise() {
       result.state = records.at(-1).state;
       resolve(result);
     });
-    observer.observe("cpu", {
+    const disconnect = () => {
+      observer.disconnect();
+      resolve(result);
+    };
+    if (signal.aborted) {
+      disconnect();
+      return;
+    }
+    signal.addEventListener("abort", disconnect, { once: true });
+    void observer.observe("cpu", {
       sampleInterval: 1e3
+    }).catch(() => {
+      disconnect();
     });
   });
 }
@@ -1937,6 +1948,7 @@ var CPU_THROTTLING_CARD_DEFAULT_VIEW = (input, _output, target) => {
 var CPUThrottlingCard = class extends UI5.Widget.Widget {
   #setting;
   computePressurePromise;
+  computePressureAbortController;
   controller;
   state = "cta";
   warnings = [];
@@ -1949,12 +1961,17 @@ var CPUThrottlingCard = class extends UI5.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    this.computePressurePromise = createComputePressurePromise();
+    if (!this.computePressureAbortController) {
+      this.computePressureAbortController = new AbortController();
+      this.computePressurePromise = createComputePressurePromise(this.computePressureAbortController.signal);
+    }
     this.state = "cta";
     this.performUpdate();
   }
   willHide() {
     super.willHide();
+    this.computePressureAbortController?.abort();
+    this.computePressureAbortController = void 0;
     this.computePressurePromise = void 0;
     if (this.controller) {
       this.controller.abort();

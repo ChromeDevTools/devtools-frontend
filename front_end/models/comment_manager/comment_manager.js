@@ -249,16 +249,28 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
   getCommentThreads() {
     return Array.from(this.#commentThreads.values());
   }
-  takeComments() {
+  /**
+   * Returns the threads that were sent to the agent and marks them as
+   * transmitted. By default, threads that were transmitted before are
+   * skipped.
+   */
+  takeComments({ includeTransmitted = false } = {}) {
     const threads = [];
+    const newlyTransmitted = [];
     for (const thread of this.#commentThreads.values()) {
-      if (thread.status === "SENT_TO_AGENT" && !thread.transmitted) {
+      if (thread.status !== "SENT_TO_AGENT") {
+        continue;
+      }
+      if (!thread.transmitted) {
         thread.markTransmitted();
+        newlyTransmitted.push(thread);
+        threads.push(thread);
+      } else if (includeTransmitted) {
         threads.push(thread);
       }
     }
-    const changeCount = threads.filter((thread) => thread.isGeneratedComment).length;
-    const commentCount = threads.length - changeCount;
+    const changeCount = newlyTransmitted.filter((thread) => thread.isGeneratedComment).length;
+    const commentCount = newlyTransmitted.length - changeCount;
     if (commentCount > 0) {
       Host2.userMetrics.commentSharedWithAgent(commentCount);
     }
@@ -379,13 +391,17 @@ var CD4ABridge = class extends Common3.ObjectWrapper.ObjectWrapper {
 
 ${details.join("\n")}` : details.join("\n");
   }
-  getCommentThreads() {
-    const threads = this.#commentManager.takeComments();
+  getCommentThreads(options) {
+    const previouslyTransmittedIds = new Set(this.#commentManager.getCommentThreads().filter((thread) => thread.transmitted).map((thread) => thread.id));
+    const threads = this.#commentManager.takeComments(options);
     return threads.map((thread) => {
       const threadPayload = {
         id: thread.id,
         text: this.#formatCommentText(thread)
       };
+      if (previouslyTransmittedIds.has(thread.id)) {
+        threadPayload.previouslyTransmitted = true;
+      }
       if (thread.anchor.networkRequestId) {
         threadPayload.networkRequestId = thread.anchor.networkRequestId;
       }

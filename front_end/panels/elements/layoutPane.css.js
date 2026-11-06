@@ -101,7 +101,7 @@ export default `/*
 
   select {
     min-width: 0;
-    max-width: 150px;
+    max-width: var(--sys-size-23);
   }
 
   .color-picker {

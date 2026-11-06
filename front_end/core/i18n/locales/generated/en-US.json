@@ -5510,6 +5510,9 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
     "message": "The prefetch was discarded because the initiating page has too many prefetches ongoing, and this was one of the oldest"
   },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedCrossOriginSubframe": {
+    "message": "Cross-origin subframe navigation was deferred during prerendering because the parent frame was deferred or its response didn’t include the appropriate Supports-Loading-Mode header"
+  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "The prefetch was redirected, but the redirect URL isn’t eligible for prefetch"
   },
@@ -6782,11 +6785,11 @@
   "panels/common/CommentsOverlayWidget.ts | addComment": {
     "message": "Add comment"
   },
-  "panels/common/CommentsStatusBarPill.ts | showComments": {
-    "message": "Show comments"
+  "panels/common/CommentsStatusBarPill.ts | viewComments": {
+    "message": "View comments"
   },
-  "panels/common/CommentsStatusBarPill.ts | showCommentsWithCount": {
-    "message": "Show comments ({PH1})"
+  "panels/common/CommentsStatusBarPill.ts | viewCommentsWithCount": {
+    "message": "View comments ({PH1})"
   },
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Comment input"
@@ -14258,6 +14261,9 @@
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "View profile"
   },
+  "panels/settings/EditFileSystemView.ts | addSubfolder": {
+    "message": "Add sub-folder"
+  },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "Enter a path"
   },
@@ -14266,6 +14272,9 @@
   },
   "panels/settings/EditFileSystemView.ts | excludedFolders": {
     "message": "Excluded sub-folders"
+  },
+  "panels/settings/EditFileSystemView.ts | folderPath": {
+    "message": "Folder path"
   },
   "panels/settings/EditFileSystemView.ts | url": {
     "message": "URL"

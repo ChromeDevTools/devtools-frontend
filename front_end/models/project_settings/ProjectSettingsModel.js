@@ -81,7 +81,7 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#targetManager = targetManager;
         this.#targetManager.addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.#inspectedURLChanged, this);
         const target = this.#targetManager.primaryPageTarget();
-        if (target !== null) {
+        if (target) {
             this.#inspectedURLChanged({ data: target });
         }
     }

@@ -167,7 +167,6 @@ export default `/**
   float: right;
   padding: var(--sys-size-2) var(--sys-size-2) 0 var(--sys-size-8);
   max-width: 100%;
-  height: 15px;
   margin-bottom: calc(-1 * var(--sys-size-1));
 }
 
@@ -259,15 +258,6 @@ export default `/**
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: var(--sys-size-10);
-
-  > span.monospace {
-    max-width: 180px;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    margin-left: var(--sys-size-2);
-  }
 
   &.layer-separator {
     display: flex;

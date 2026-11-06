@@ -79,13 +79,17 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper {
         }
         return rawText ? `${rawText}\n\n${details.join('\n')}` : details.join('\n');
     }
-    getCommentThreads() {
-        const threads = this.#commentManager.takeComments();
+    getCommentThreads(options) {
+        const previouslyTransmittedIds = new Set(this.#commentManager.getCommentThreads().filter(thread => thread.transmitted).map(thread => thread.id));
+        const threads = this.#commentManager.takeComments(options);
         return threads.map(thread => {
             const threadPayload = {
                 id: thread.id,
                 text: this.#formatCommentText(thread),
             };
+            if (previouslyTransmittedIds.has(thread.id)) {
+                threadPayload.previouslyTransmitted = true;
+            }
             if (thread.anchor.networkRequestId) {
                 threadPayload.networkRequestId = thread.anchor.networkRequestId;
             }

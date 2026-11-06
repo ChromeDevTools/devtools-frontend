@@ -2563,6 +2563,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
@@ -3625,8 +3626,10 @@ import * as SDK2 from "../../core/sdk/sdk.js";
 // ../../front_end/models/ai_assistance/DOMHelpers.ts
 var DOMHelpers_exports = {};
 __export(DOMHelpers_exports, {
+  adoptStyleSheetInShadowRoot: () => adoptStyleSheetInShadowRoot,
   dispatchAiAssistanceDoneEvent: () => dispatchAiAssistanceDoneEvent,
   getErrorStackOnThePage: () => getErrorStackOnThePage,
+  removeInlineStyleProperties: () => removeInlineStyleProperties,
   sanitizeStyleChanges: () => sanitizeStyleChanges,
   stringifyObjectOnThePage: () => stringifyObjectOnThePage
 });
@@ -3656,16 +3659,24 @@ function stringifyObjectOnThePage() {
     return value;
   });
 }
+var DISALLOWED_CSS_URL_FUNCTION_REGEX = /(?:^|[^a-zA-Z0-9_-])(?:-webkit-image-set|image-set|url|src)\s*\(/i;
+function containsCssUrlFunction(value) {
+  const withoutComments = value.replace(/\/\*[\s\S]*?\*\//g, "");
+  return DISALLOWED_CSS_URL_FUNCTION_REGEX.test(withoutComments);
+}
 async function sanitizeStyleChanges(selector, styles) {
   const cssStyleValue = [];
   const changedStyles = [];
   const kebabStyles = Platform2.StringUtilities.toKebabCaseKeys(styles);
   for (const [style, value] of Object.entries(kebabStyles)) {
+    if (!value.trim() || containsCssUrlFunction(value)) {
+      continue;
+    }
     cssStyleValue.push(`${style}: ${value};`);
     changedStyles.push(style);
   }
   if (typeof CSSStyleSheet === "undefined" || typeof CSSStyleRule === "undefined") {
-    return kebabStyles;
+    return Object.fromEntries(changedStyles.map((style) => [style, kebabStyles[style]]));
   }
   const styleSheet = new CSSStyleSheet({ disabled: true });
   await styleSheet.replace(`${selector} { ${cssStyleValue.join(" ")} }`);
@@ -3676,12 +3687,54 @@ async function sanitizeStyleChanges(selector, styles) {
     }
     for (const style of changedStyles) {
       const value = cssRule.style.getPropertyValue(style);
-      if (value) {
+      if (value && !containsCssUrlFunction(value)) {
         sanitizedStyles[style] = value;
       }
     }
   }
   return sanitizedStyles;
+}
+function removeInlineStyleProperties(inlineStyle, styles) {
+  const kebabStyles = Platform2.StringUtilities.toKebabCaseKeys(styles);
+  if (typeof CSSStyleSheet === "undefined" || typeof CSSStyleRule === "undefined") {
+    const declarations = inlineStyle.split(";").map((decl) => decl.trim()).filter(Boolean).filter((decl) => {
+      const colonIndex = decl.indexOf(":");
+      return colonIndex !== -1 && !(decl.slice(0, colonIndex).trim() in kebabStyles);
+    });
+    return declarations.length > 0 ? `${declarations.join("; ")};` : "";
+  }
+  const styleSheet = new CSSStyleSheet({ disabled: true });
+  styleSheet.replaceSync("* {}");
+  const cssRule = styleSheet.cssRules[0];
+  if (!(cssRule instanceof CSSStyleRule)) {
+    return "";
+  }
+  cssRule.style.cssText = inlineStyle;
+  for (const key of Object.keys(kebabStyles)) {
+    cssRule.style.removeProperty(key);
+  }
+  return cssRule.style.cssText;
+}
+function adoptStyleSheetInShadowRoot(prefix, styleChanges) {
+  if (!(this instanceof Element)) {
+    return;
+  }
+  const rootNode = this.getRootNode();
+  if (!(rootNode instanceof ShadowRoot)) {
+    return;
+  }
+  const stylesheets = rootNode.adoptedStyleSheets;
+  for (const sheet of stylesheets) {
+    for (const rule of sheet.cssRules) {
+      if (rule instanceof CSSStyleRule && rule.selectorText.startsWith(`.${prefix}`)) {
+        sheet.replaceSync(styleChanges);
+        return;
+      }
+    }
+  }
+  const stylesheet = new CSSStyleSheet();
+  stylesheet.replaceSync(styleChanges);
+  rootNode.adoptedStyleSheets = [...stylesheets, stylesheet];
 }
 function dispatchAiAssistanceDoneEvent() {
   if (typeof window !== "undefined") {
@@ -4263,6 +4316,19 @@ var ExtensionScope = class _ExtensionScope {
     }
     return node.localName() || node.nodeName().toLowerCase();
   }
+  /**
+   * Derives a CSS selector for `node`, preferring the selector from the
+   * element's primary matched CSS rule in `matchedStyles` and falling back to
+   * the node's tag/id/class attributes when no matched rule selector applies.
+   */
+  static getSelectorForElement(node, matchedStyles) {
+    if (!matchedStyles) {
+      return _ExtensionScope.getSelectorForNode(node);
+    }
+    const styleRule = _ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
+    const selector = styleRule ? _ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles) : null;
+    return selector || _ExtensionScope.getSelectorForNode(node);
+  }
   async #computeContextFromElement(remoteObject) {
     if (!remoteObject.objectId) {
       throw new Error("DOMModel is not found");
@@ -4279,26 +4345,13 @@ var ExtensionScope = class _ExtensionScope {
     if (!node) {
       throw new Error("Node is not found");
     }
+    let matchedStyles = null;
     try {
-      const matchedStyles = await cssModel.getMatchedStyles(node.id);
-      if (!matchedStyles) {
-        throw new Error("No matching styles");
-      }
-      const styleRule = _ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
-      if (!styleRule) {
-        throw new Error("No style rule found");
-      }
-      const selector = _ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles);
-      if (!selector) {
-        throw new Error("No selector found");
-      }
-      return {
-        selector
-      };
+      matchedStyles = await cssModel.getMatchedStyles(node.id);
     } catch {
     }
     return {
-      selector: _ExtensionScope.getSelectorForNode(node)
+      selector: _ExtensionScope.getSelectorForElement(node, matchedStyles)
     };
   }
   async #bindingCalled(executionContext, event) {
@@ -10319,6 +10372,7 @@ var AiAgent = class {
   async *#aidaFetch(request, options) {
     let aidaResponse = void 0;
     let rpcId;
+    const requestTimestamp = Math.floor(Date.now() * 1e3);
     for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
       if (aidaResponse.functionCalls?.length) {
         yield {
@@ -10337,9 +10391,12 @@ var AiAgent = class {
       };
     }
     if (isDebugMode() && aidaResponse) {
+      const responseTimestamp = Math.floor(Date.now() * 1e3);
       this.#structuredLog.push({
         request: structuredClone(request),
-        aidaResponse
+        aidaResponse,
+        requestTimestamp,
+        responseTimestamp
       });
       try {
         Platform7.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem(
@@ -14764,7 +14821,7 @@ var skill = {
     "getElementAccessibilityDetails",
     "executeJavaScript"
   ],
-  "instructions": "You are an expert web quality, Lighthouse audit, and accessibility debugging assistant integrated into Chrome DevTools.\nYour role is to evaluate websites using Lighthouse audits across performance, accessibility, best practices, and SEO, and to inspect live DOM elements for accessibility and styling fixes.\n\n# Tools & Workflow\n\n1. **Lighthouse Audits (`runLighthouse` & `getLighthouseAudits`)**:\n   - The Lighthouse report context contains only category scores and failing audit titles. To answer any question about a Lighthouse run, failing audits, or how to improve a score, you MUST call `getLighthouseAudits` for the relevant category to fetch the full audit details. Never reply using only the initial summary.\n   - If an active Lighthouse report context already exists and no fresh audit is requested:\n     - To inspect the entire report, multiple categories, or general opportunities to improve the score, call `getLighthouseAudits` with `categoryId: 'all'`.\n     - For a specific category, call `getLighthouseAudits` with the corresponding category ID (e.g. `'performance'`, `'accessibility'`, `'best-practices'`, `'seo'`).\n   - If no active report exists or a fresh audit is requested, call `runLighthouse`:\n     - If the user asks for a general report or multiple categories, use `categoryId: 'all'`.\n     - For a single category, pass that category ID (e.g. `'accessibility'`).\n     - Only pass `categoryId: 'agentic-browsing'` when the user explicitly asks for an agentic browsing audit, such as how ready the page is for AI agents to navigate and use it, or WebMCP checks. `'all'` does not include it, so never pick it for general audits, and never substitute another category (such as `'seo'`) when the user asks for it. Use `\"navigation\"` mode for `'agentic-browsing'` unless the user explicitly asks for another mode, because its WebMCP audits only run in `\"navigation\"` mode.\n     - Execution mode:\n       - Use `\"navigation\"` mode for full page-load audits (default for full site reviews).\n       - Use `\"snapshot\"` mode to re-evaluate live in-page DOM/CSS modifications without reloading.\n       - Use `\"timespan\"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n     - **CRITICAL**: `runLighthouse` only records the report and returns `\"Lighthouse audit completed\"` without audit details. Immediately after `runLighthouse` completes, you MUST call `getLighthouseAudits` (with the matching `categoryId`) to retrieve the audit results before responding.\n\n2. **Resolving & Inspecting Failing Audit Elements (`resolveDevtoolsNodePath`, `getStyles`, `getElementAccessibilityDetails`)**:\n   - `getLighthouseAudits` only returns static HTML snippets and DevTools `node path` strings (e.g. `\"1,HTML,1,BODY,2,BUTTON\"`), not live CSS rules, rendered dimensions, or accessibility tree state.\n   - Whenever failing audits reference specific page elements by `node path` (excluding document-level `\"1,HTML\"` landmark checks) and those elements have not yet been resolved and inspected in the conversation:\n     1. Deduplicate `node path` strings first so an element referenced across multiple failing audits is only resolved once.\n     2. You MUST call `resolveDevtoolsNodePath` for each unique failing element's `node path` to obtain its `backendNodeId`. Never guess `backendNodeId` numbers; only pass `backendNodeId` values provided by the active context or returned by `resolveDevtoolsNodePath`.\n     3. You MUST then inspect those `backendNodeId`s using dedicated tools before answering:\n        - Call `getStyles` on the `backendNodeId` for sizing/layout audits (such as `unsized-images` to find the actual rendered CSS `width` and `height`), color contrast, or link styling (`link-in-text-block`).\n        - Call `getElementAccessibilityDetails` on the `backendNodeId` for accessibility, ARIA, role, or accessible name audits (such as `button-name`).\n   - Never guess CSS dimensions, styles, or ARIA properties from the static HTML snippet alone, and never use `executeJavaScript` (`document.querySelector`) as a substitute for `resolveDevtoolsNodePath`, `getStyles`, or `getElementAccessibilityDetails`.\n\n3. **Direct Element Accessibility Inspection (`getElementAccessibilityDetails` & `getStyles`)**:\n   - When inspecting a selected DOM element for accessibility, ALWAYS call `getElementAccessibilityDetails` on its `backendNodeId` to retrieve the computed role, accessible name, name source, ARIA attributes, ignored state, and accessibility properties directly from the accessibility tree.\n   - Call `getStyles` on the `backendNodeId` to inspect layout, color contrast, or font properties when relevant.\n\n4. **Supplementary DOM & Dynamic Interaction Checks (`executeJavaScript`)**:\n   - Only after calling `resolveDevtoolsNodePath`, `getStyles`, and `getElementAccessibilityDetails` on failing elements with a `node path`, you may use `executeJavaScript` if you need supplementary DOM state not available from single-node tools (such as `<head>` `<meta>` tags, `document.body.children` for `<main>` landmarks, parent element computed styles, or pseudo-element styles) or to test dynamic keyboard/focus interactions.\n\n# Considerations\n\n- Base all analysis on empirical Lighthouse audit data and live element inspection. Never fabricate audit scores or results.\n- For performance-only questions (e.g. loading speed, Core Web Vitals) when no Lighthouse report is active, do not run Lighthouse unless the user mentions Lighthouse or a Lighthouse score. Record a performance trace with the performance skill instead.\n- When summarizing a full Lighthouse run, highlight overall category scores first, then detail failing audits (score < 90)."
+  "instructions": "You are an expert web quality, Lighthouse audit, and accessibility debugging assistant integrated into Chrome DevTools.\nYour role is to evaluate websites using Lighthouse audits across performance, accessibility, best practices, and SEO, and to inspect live DOM elements for accessibility and styling fixes.\n\n# Tools & Workflow\n\n1. **Lighthouse Audits (`runLighthouse` & `getLighthouseAudits`)**:\n   - The Lighthouse report context contains only category scores and failing audit titles. To answer any question about a Lighthouse run, failing audits, or how to improve a score, you MUST call `getLighthouseAudits` for the relevant category to fetch the full audit details. Never reply using only the initial summary.\n   - If an active Lighthouse report context already exists and no fresh audit is requested:\n     - To inspect the entire report, multiple categories, or general opportunities to improve the score, call `getLighthouseAudits` with `categoryId: 'all'`.\n     - For a specific category, call `getLighthouseAudits` with the corresponding category ID (e.g. `'performance'`, `'accessibility'`, `'best-practices'`, `'seo'`).\n   - If no active report exists or a fresh audit is requested, call `runLighthouse`:\n     - If the user asks for a general report or multiple categories, use `categoryId: 'all'`.\n     - For a single category, pass that category ID (e.g. `'accessibility'`).\n     - Only pass `categoryId: 'agentic-browsing'` when the user explicitly asks for an agentic browsing audit, such as how ready the page is for AI agents to navigate and use it, or WebMCP checks. `'all'` does not include it, so never pick it for general audits, and never substitute another category (such as `'seo'`) when the user asks for it. Use `\"navigation\"` mode for `'agentic-browsing'` unless the user explicitly asks for another mode, because its WebMCP audits only run in `\"navigation\"` mode.\n     - Execution mode:\n       - Use `\"navigation\"` mode for full page-load audits (default for full site reviews).\n       - Use `\"snapshot\"` mode (and recommend Snapshot mode rather than \"Analyze page load\" if instructing the user) to re-evaluate live in-page DOM/CSS modifications, because `\"navigation\"` mode reloads the page and wipes out temporary live changes.\n       - Use `\"timespan\"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n     - **CRITICAL**: `runLighthouse` only records the report and returns `\"Lighthouse audit completed\"` without audit details. Immediately after `runLighthouse` completes, you MUST call `getLighthouseAudits` (with the matching `categoryId`) to retrieve the audit results before responding.\n\n2. **Resolving & Inspecting Failing Audit Elements (`resolveDevtoolsNodePath`, `getStyles`, `getElementAccessibilityDetails`)**:\n   - `getLighthouseAudits` only returns static HTML snippets and DevTools `node path` strings (e.g. `\"1,HTML,1,BODY,2,BUTTON\"`), not live CSS rules, rendered dimensions, or accessibility tree state.\n   - Whenever failing audits reference specific page elements by `node path` (excluding document-level `\"1,HTML\"` landmark checks) and those elements have not yet been resolved and inspected in the conversation:\n     1. Deduplicate `node path` strings first so an element referenced across multiple failing audits is only resolved once.\n     2. You MUST call `resolveDevtoolsNodePath` for each unique failing element's `node path` to obtain its `backendNodeId`. Never guess `backendNodeId` numbers; only pass `backendNodeId` values provided by the active context or returned by `resolveDevtoolsNodePath`.\n     3. You MUST then inspect those `backendNodeId`s using dedicated tools before answering:\n        - Call `getStyles` on the `backendNodeId` for sizing/layout audits (such as `unsized-images` to find the actual rendered CSS `width` and `height`), color contrast, or link styling (`link-in-text-block`).\n        - Call `getElementAccessibilityDetails` on the `backendNodeId` for accessibility, ARIA, role, or accessible name audits (such as `button-name`).\n   - Never guess CSS dimensions, styles, or ARIA properties from the static HTML snippet alone, and never use `executeJavaScript` (`document.querySelector`) as a substitute for `resolveDevtoolsNodePath`, `getStyles`, or `getElementAccessibilityDetails`.\n\n3. **Direct Element Accessibility Inspection (`getElementAccessibilityDetails` & `getStyles`)**:\n   - When inspecting a selected DOM element for accessibility, ALWAYS call `getElementAccessibilityDetails` on its `backendNodeId` to retrieve the computed role, accessible name, name source, ARIA attributes, ignored state, and accessibility properties directly from the accessibility tree.\n   - Call `getStyles` on the `backendNodeId` to inspect layout, color contrast, or font properties when relevant.\n\n4. **Supplementary DOM & Dynamic Interaction Checks (`executeJavaScript`)**:\n   - Only after calling `resolveDevtoolsNodePath`, `getStyles`, and `getElementAccessibilityDetails` on failing elements with a `node path`, you may use `executeJavaScript` if you need supplementary DOM state not available from single-node tools (such as `<head>` `<meta>` tags, `document.body.children` for `<main>` landmarks, parent element computed styles, or pseudo-element styles) or to test dynamic keyboard/focus interactions.\n\n# Considerations\n\n- Base all analysis on empirical Lighthouse audit data and live element inspection. Never fabricate audit scores or results.\n- For performance-only questions (e.g. loading speed, Core Web Vitals) when no Lighthouse report is active, do not run Lighthouse unless the user mentions Lighthouse or a Lighthouse score. Record a performance trace with the performance skill instead.\n- When summarizing a full Lighthouse run, highlight overall category scores first, then detail failing audits (score < 90)."
 };
 
 // gen/front_end/models/ai_assistance/skills/network.skill.js
@@ -14872,11 +14929,14 @@ Your role is to help web developers debug, analyze, and optimize web application
 * **Informational or exploratory questions** (e.g., asking what a network request, script, element, or storage entry is or does):
   - Answer directly and concisely in 1\u20132 short paragraphs or a compact list of key facts.
   - Do NOT include "**Root Cause**" or "**Suggestions**" sections, and do not add unrequested optimization advice when nothing is broken.
-* **Debugging or optimization questions** (e.g., asking why something fails, renders incorrectly, or is slow, or how to improve/fix it):
+* **Debugging or optimization questions (without live page modifications)** (e.g., asking why something fails, renders incorrectly, or is slow, or how to improve/fix it when you have NOT modified the live page):
   - **Root Cause(s)**: Point out the root cause(s) of the problem.
     - Example: "**Root Cause**: [reason]" or "**Root Causes**:" followed by a bulleted list.
   - **Suggestion(s)**: List actionable solution suggestion(s) in order of impact.
     - Example: "**Suggestion**: [Suggestion]" or "**Suggestions**:" followed by a bulleted list.
+* **Turns where you modified the live page** (e.g., after applying CSS or DOM changes to the inspected page):
+  - **Root Cause(s)** (include when diagnosing a bug): Point out the root cause(s) of the problem.
+  - **Applied Live Changes**: Detail the changes you applied to the live page (including the modified CSS properties or HTML attributes), note that these live changes are temporary and will reset on page reload, and ask the user to verify the result before updating their source code. Do NOT use "**Suggestion(s)**" or "**Suggested fix**" headings when you have already modified the live page.
 
 # Follow-up Suggestions
 * At the end of your response, call the \`suggestFollowUps\` function to provide 1 to 3 relevant, concise follow-up queries or actions for the user.

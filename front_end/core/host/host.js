@@ -888,7 +888,7 @@ var Events = /* @__PURE__ */ ((Events3) => {
 var EventDescriptors = [
   ["appendedToURL" /* AppendedToURL */, ["url"]],
   ["canceledSaveURL" /* CanceledSaveURL */, ["url"]],
-  ["colorThemeChanged" /* ColorThemeChanged */, []],
+  ["colorThemeChanged" /* ColorThemeChanged */, ["colorSource"]],
   ["contextMenuCleared" /* ContextMenuCleared */, []],
   ["contextMenuItemSelected" /* ContextMenuItemSelected */, ["id"]],
   ["deviceCountUpdated" /* DeviceCountUpdated */, ["count"]],

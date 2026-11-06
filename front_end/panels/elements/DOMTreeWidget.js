@@ -238,8 +238,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const onShortcutExpand = (event) => {
             input.onToggleTopLayerShortcutExpanded(shortcut, event.detail.expanded);
         };
-        const onShortcutSelect = () => {
-            input.onSelectTopLayerShortcut(shortcut);
+        const onShortcutSelect = (event) => {
+            if (event.detail?.selectedByUser) {
+                input.onSelectTopLayerShortcut(shortcut);
+            }
         };
         const onReveal = (event) => {
             event.stopPropagation();
@@ -300,8 +302,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const onTopLayerExpand = (event) => {
             input.onToggleTopLayerExpanded(doc, event.detail.expanded);
         };
-        const onTopLayerSelect = () => {
-            input.onSelectTopLayerContainer(doc);
+        const onTopLayerSelect = (event) => {
+            if (event.detail?.selectedByUser) {
+                input.onSelectTopLayerContainer(doc);
+            }
         };
         // clang-format off
         return html `
@@ -328,8 +332,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const onExpand = (event) => {
             input.onToggleAdoptedStyleSheetExpanded(sheet, event.detail.expanded);
         };
-        const onSelect = () => {
-            input.onSelectAdoptedStyleSheet(sheet);
+        const onSelect = (event) => {
+            if (event.detail?.selectedByUser) {
+                input.onSelectAdoptedStyleSheet(sheet);
+            }
         };
         // clang-format off
         return html `
@@ -371,8 +377,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const onExpand = (event) => {
             input.onToggleAdoptedStyleSheetsExpanded(node, event.detail.expanded);
         };
-        const onSelect = () => {
-            input.onSelectAdoptedStyleSheets(node);
+        const onSelect = (event) => {
+            if (event.detail?.selectedByUser) {
+                input.onSelectAdoptedStyleSheets(node);
+            }
         };
         // clang-format off
         return html `
@@ -514,6 +522,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             'in-clipboard': input.isNodeInClipboard(node),
             'elements-drag-over': isDragOver,
             'always-parent': !isCollapsible && !isEditingAsHTML,
+            // Draws the vertical guide line next to the shadow root children.
+            'shadow-root': node.isShadowRoot(),
         });
         // The opening and the closing tag are separate rows that report the
         // same node with a different `isClosingTag`.
@@ -1239,10 +1249,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         if (!isSameNode) {
             this.#notifySelectedNodeChanged(node, Boolean(focus));
         }
-        this.performUpdate();
         if (focus) {
             this.focus();
         }
+        this.performUpdate();
     }
     /** Raises the children limit of `ancestor` if `child` is paginated away. */
     #ensureChildVisible(ancestor, child) {
@@ -1276,6 +1286,15 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             return;
         }
         if (expanded) {
+            // The tree outline dispatches an `expand` event for every node that is
+            // rendered with the `open` attribute. After `expandRecursively()`, this
+            // happens once per node in the subtree. Each event would otherwise
+            // trigger a synchronous re-render of the whole tree, which is quadratic
+            // in the number of expanded nodes. Skip the work when the node is
+            // already expanded and its children are loaded.
+            if (this.#expandedNodes.has(node) && node.children()) {
+                return;
+            }
             this.#expandedNodes.add(node);
             // Children that are not collapsible (e.g. the document element) render
             // without an expand arrow, so their children must be fetched eagerly.

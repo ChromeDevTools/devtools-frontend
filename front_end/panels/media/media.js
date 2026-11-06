@@ -627,9 +627,17 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
     }
     this.updateRender();
   }
+  #onThemeChanged = () => {
+    this.dataProvider.updateGroupColors();
+    this.requestUpdate();
+  };
   willHide() {
     super.willHide();
     this.isShown = false;
+    ThemeSupport.ThemeSupport.instance().removeEventListener(
+      ThemeSupport.ThemeChangeEvent.eventName,
+      this.#onThemeChanged
+    );
     if (this.ticking) {
       this.stop();
     }
@@ -637,6 +645,11 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
   wasShown() {
     super.wasShown();
     this.isShown = true;
+    ThemeSupport.ThemeSupport.instance().addEventListener(
+      ThemeSupport.ThemeChangeEvent.eventName,
+      this.#onThemeChanged
+    );
+    this.#onThemeChanged();
     if (this.#canTick && !this.ticking) {
       this.start();
     }
@@ -719,11 +732,17 @@ var TickingFlameChartDataProvider = class {
         track: null
       };
       this.#timelineData.groups.push(newGroup);
-      ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
-        newGroup.style.color = getGroupDefaultTextColor();
-      });
     }
     this.maxLevel += depth;
+  }
+  updateGroupColors() {
+    if (!this.#timelineData.groups) {
+      return;
+    }
+    const color = getGroupDefaultTextColor();
+    for (const group of this.#timelineData.groups) {
+      group.style.color = color;
+    }
   }
   /**
    * Create an event which will be set to live by default.
@@ -1050,7 +1069,7 @@ var playerMessagesView_css_default = `/*
 .status-error-box {
   font-family: var(--monospace-font-family);
   border: var(--sys-size-1) solid var(--sys-color-error-outline);
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
   padding: var(--sys-size-3);
 }
 

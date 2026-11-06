@@ -122,24 +122,6 @@ export default `/*
   background-color: var(--sys-color-cdt-base-container);
 }
 
-.text-prompt-container {
-  padding: 3px var(--sys-size-4);
-  height: var(--sys-size-11);
-  border: none;
-  box-shadow: var(--legacy-focus-ring-inactive-shadow);
-  border-radius: var(--sys-size-2);
-  width: 100%;
-  background-color: var(--sys-color-cdt-base-container);
-
-  &:focus {
-    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
-  }
-
-  & .text-prompt {
-    width: 100%;
-  }
-}
-
 @media (forced-colors: active) {
   .list-item:focus-within .controls-buttons,
   .list-item:hover .controls-buttons {

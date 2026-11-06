@@ -1834,6 +1834,7 @@ var Page;
     PermissionsPolicyFeature2["PublickeyCredentialsRemoteClientDataJson"] = "publickey-credentials-remote-client-data-json";
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["SemanticEmbedder"] = "semantic-embedder";
     PermissionsPolicyFeature2["Serial"] = "serial";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
@@ -2887,6 +2888,10 @@ var UIStrings = {
    */
   PrefetchFailedInvalidRedirect: "The prefetch was redirected, but there was a problem with the redirect",
   /**
+   * @description Description text for prerender status PrefetchFailedCrossOriginSubframe.
+   */
+  PrefetchFailedCrossOriginSubframe: "Cross-origin subframe navigation was deferred during prerendering because the parent frame was deferred or its response didn\u2019t include the appropriate Supports-Loading-Mode header",
+  /**
    * @description Description text for prefetch status PrefetchFailedMIMENotSupported.
    */
   PrefetchFailedMIMENotSupported: "The prefetch failed because the response\u2019s Content-Type header wasn\u2019t supported",
@@ -3500,6 +3505,8 @@ function prerenderFailureReason(attempt, statusCode) {
       return i18nString(UIStrings.prerenderFinalStatusWindowClosed);
     case Preload.PrerenderFinalStatus.BrowsingDataRemoved:
       return i18nString(UIStrings.prerenderFinalStatusBrowsingDataRemoved);
+    case Preload.PrerenderFinalStatus.PrefetchFailedCrossOriginSubframe:
+      return i18nString(UIStrings.PrefetchFailedCrossOriginSubframe);
     case Preload.PrerenderFinalStatus.SlowNetwork:
     case Preload.PrerenderFinalStatus.OtherPrerenderedPageActivated:
     case Preload.PrerenderFinalStatus.V8OptimizerDisabled:

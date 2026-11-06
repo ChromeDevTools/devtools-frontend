@@ -17,7 +17,7 @@ export default `/*
   :scope > .image {
     flex: 1;
     overflow: auto;
-    padding: var(--sys-size-9) var(--sys-size-9) 10px;
+    padding: var(--sys-size-9) var(--sys-size-9) var(--sys-size-5);
     text-align: center;
   }
 

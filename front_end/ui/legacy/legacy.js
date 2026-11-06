@@ -1693,6 +1693,11 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
   currentDockStateSetting;
   lastDockStateSetting;
   #dockSide = void 0;
+  /**
+   * Incremented for every dock side change, so that responses from the embedder
+   * for superseded changes can be told apart from the response to the latest one.
+   */
+  #dockSideChangeId = 0;
   constructor(canDock) {
     super();
     this.#canDock = canDock;
@@ -1712,13 +1717,13 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
       this.closeButton.setVisible(false);
       return;
     }
-    this.currentDockStateSetting.addChangeListener(this.dockSideChanged, this);
     if (states.indexOf(this.currentDockStateSetting.get()) === -1) {
       this.currentDockStateSetting.set("right" /* RIGHT */);
     }
     if (states.indexOf(this.lastDockStateSetting.get()) === -1) {
       this.currentDockStateSetting.set("bottom" /* BOTTOM */);
     }
+    this.currentDockStateSetting.addChangeListener(this.dockSideChanged, this);
   }
   static instance(opts = { forceNew: null, canDock: false }) {
     const { forceNew, canDock } = opts;
@@ -1770,14 +1775,18 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
     console.timeStamp("DockController.setIsDocked");
     this.#dockSide = dockSide;
     this.currentDockStateSetting.set(dockSide);
+    const dockSideChangeId = ++this.#dockSideChangeId;
     Host3.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(
       dockSide !== "undocked" /* UNDOCKED */,
-      this.setIsDockedResponse.bind(this, eventData)
+      this.setIsDockedResponse.bind(this, eventData, dockSideChangeId)
     );
     this.closeButton.setVisible(this.#dockSide !== "undocked" /* UNDOCKED */);
     this.dispatchEventToListeners("DockSideChanged" /* DOCK_SIDE_CHANGED */, eventData);
   }
-  setIsDockedResponse(eventData) {
+  setIsDockedResponse(eventData, dockSideChangeId) {
+    if (dockSideChangeId !== this.#dockSideChangeId) {
+      return;
+    }
     this.dispatchEventToListeners("AfterDockSideChanged" /* AFTER_DOCK_SIDE_CHANGED */, eventData);
     this.announceDockLocation();
   }
@@ -20363,24 +20372,6 @@ var listWidget_css_default = `/*
   background-color: var(--sys-color-cdt-base-container);
 }
 
-.text-prompt-container {
-  padding: 3px var(--sys-size-4);
-  height: var(--sys-size-11);
-  border: none;
-  box-shadow: var(--legacy-focus-ring-inactive-shadow);
-  border-radius: var(--sys-size-2);
-  width: 100%;
-  background-color: var(--sys-color-cdt-base-container);
-
-  &:focus {
-    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
-  }
-
-  & .text-prompt {
-    width: 100%;
-  }
-}
-
 @media (forced-colors: active) {
   .list-item:focus-within .controls-buttons,
   .list-item:hover .controls-buttons {
@@ -25249,7 +25240,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     if (node === treeNode) {
       treeElement.updateAttributes();
       if (attributeName === "selected" && hasBooleanAttribute(treeNode, "selected")) {
-        treeElement.revealAndSelect(true);
+        treeElement.revealAndSelect(!this.hasFocus());
       }
       return;
     }
@@ -25306,7 +25297,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
           parent.treeElement.updateExpansionFromAttribute();
         }
         if (hasBooleanAttribute(node, "selected")) {
-          treeElement.revealAndSelect(true);
+          treeElement.revealAndSelect(!this.hasFocus());
         }
         if (parent.expanded) {
           parent.treeElement.expand();

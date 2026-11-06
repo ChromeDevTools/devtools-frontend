@@ -122,6 +122,17 @@ export class EvalTaskHandle {
                     }, options)) as Step[];
       assert.isNotEmpty(steps, 'Expected non-empty interaction steps from handleExternalAIRequest.');
       this.trajectoryBuilder.addSteps(steps);
+      for (const [index, step] of steps.entries()) {
+        const stepDuration = (step.requestTimestamp && step.responseTimestamp) ?
+            `${((step.responseTimestamp - step.requestTimestamp) / 1_000_000).toFixed(2)}s` :
+            '';
+        const callsSummary = step.aidaResponse?.functionCalls?.length ?
+            step.aidaResponse.functionCalls.map(fc => fc.name).join(', ') :
+            'final response';
+        const totalTokens = step.aidaResponse?.metadata?.usageMetadata?.totalTokenCount;
+        this.log(`[Step ${index + 1}/${steps.length}] ${callsSummary}${stepDuration ? ` (${stepDuration})` : ''}${
+            totalTokens !== undefined ? `, tokens=${totalTokens}` : ''}`);
+      }
       return steps;
     } finally {
       const endTime = performance.now();
@@ -206,7 +217,11 @@ export class AiEvalStateProvider extends StateProvider {
     const failedTasks = this.#taskStatuses.filter(t => t.status === 'FAILED').length;
     const passedTasks = totalTasks - failedTasks;
     const status: RunOutcomeStatus = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
+    const metrics = aggregateRunMetrics(this.#taskToolCallStats.values(), this.#taskTokens.values());
     this.#logger.append(`Total tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
+    this.#logger.append(`Model: ${this.#resolvedModel ?? 'unknown'}, Tool calls: ${
+        metrics.totalToolCalls ??
+        0}, Total tokens: ${metrics.totalTokens ?? 0}, Elapsed: ${this.#logger.formatElapsedTime()}`);
     this.#logger.append(`Run completed with status: ${status}`);
     uploadRunLog(this.#runId, this.#logger.getRunLogContent());
     uploadRunCompleted({
@@ -220,7 +235,7 @@ export class AiEvalStateProvider extends StateProvider {
       totalTasks,
       passedTasks,
       failedTasks,
-      metrics: aggregateRunMetrics(this.#taskToolCallStats.values(), this.#taskTokens.values()),
+      metrics,
     });
     if (this.#tempOutputDir && fs.existsSync(this.#tempOutputDir)) {
       fs.rmSync(this.#tempOutputDir, {recursive: true, force: true});
@@ -316,10 +331,14 @@ export class AiEvalStateProvider extends StateProvider {
         Boolean(evalConfig),
     );
     if (evalTask.isConfigured) {
+      this.#logger.append(`[Task ${evalTask.taskId}] Starting task (target: ${evalTask.type})`);
       evalTask.log(`Prepared task ${evalTask.taskId}`);
+      let lastNavigatedUrl = '';
       const onFrameNavigated = (frame: puppeteer.Frame): void => {
-        if (frame === baseState.inspectedPage.page.mainFrame() && frame.url() !== 'about:blank') {
-          evalTask.log(`Navigated to ${frame.url()}`);
+        const url = frame.url();
+        if (frame === baseState.inspectedPage.page.mainFrame() && url !== 'about:blank' && url !== lastNavigatedUrl) {
+          lastNavigatedUrl = url;
+          evalTask.log(`Navigated to ${url}`);
         }
       };
       this.#navigationListeners.set(baseState.inspectedPage.page, onFrameNavigated);
@@ -352,7 +371,9 @@ export class AiEvalStateProvider extends StateProvider {
       this.#resultStores.push(store);
       printResults(store);
       gradingOutput = formatStoreResults(store);
-      this.#logger.append(gradingOutput);
+      evalTask.log(`Graded: score=${customScore ?? 'N/A'} (${gradingDurationSeconds}s)`);
+      this.#logger.append(
+          `[Task ${evalTask.taskId}] Graded: score=${customScore ?? 'N/A'} (${gradingDurationSeconds}s)`);
     }
     return {customScore, gradingOutput, gradingDurationSeconds};
   }

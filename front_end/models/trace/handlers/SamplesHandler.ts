@@ -86,7 +86,6 @@ function parseCPUProfileData(parseOptions: Types.Configuration.ParseOptions): vo
 
       const selectedProfileId = chosen.id;
       const finalizedData: ProfileData = {
-        rawProfile: chosenData.rawProfile,
         parsedProfile: profileModel,
         profileCalls: [],
         profileTree,
@@ -250,6 +249,9 @@ export function handleEvent(event: Types.Events.Event): void {
 
 export async function finalize(parseOptions: Types.Configuration.ParseOptions = {}): Promise<void> {
   parseCPUProfileData(parseOptions);
+  // The raw profiles are only needed to build each CPUProfileDataModel.
+  // Release them now instead of at the next reset().
+  preprocessedData = new Map();
 }
 
 function assignProfileSourceIfKnown(profileData: PreprocessedData, source: unknown): void {
@@ -290,7 +292,6 @@ export interface SamplesHandlerData {
 
 export interface ProfileData {
   profileId: Types.Events.ProfileID;
-  rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile;
   parsedProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel;
   /**
    * Contains the calls built from the CPU profile samples.

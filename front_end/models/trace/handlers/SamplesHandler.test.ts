@@ -283,15 +283,12 @@ describe('SamplesHandler', function() {
       const profileById = data.profilesInProcess.values().next().value!;
       assert.strictEqual(profileById.size, 1);
       const cpuProfileData = profileById.values().next().value as Trace.Handlers.ModelHandlers.Samples.ProfileData;
-      const cpuProfile = cpuProfileData.rawProfile;
-      assert.deepEqual(
-          Object.keys(cpuProfile), ['startTime', 'endTime', 'nodes', 'samples', 'timeDeltas', 'lines', 'columns']);
-      assert.lengthOf(cpuProfile.nodes, 153);
-      assert.strictEqual(cpuProfile.startTime, 287510826176);
-      assert.strictEqual(cpuProfile.endTime, 287510847633);
-      assert.strictEqual(cpuProfile.samples?.length, 39471);
-      assert.strictEqual(cpuProfile.samples?.length, cpuProfile.timeDeltas?.length);
-      assert.strictEqual(cpuProfile.samples?.length, cpuProfile.lines?.length);
+      const parsedProfile = cpuProfileData.parsedProfile;
+      // Every ProfileChunk adds samples and line/column positions, so the
+      // merged arrays must all have one entry per sample.
+      assert.lengthOf(parsedProfile.samples ?? [], 39471);
+      assert.lengthOf(parsedProfile.lines ?? [], 39471);
+      assert.lengthOf(parsedProfile.columns ?? [], 39471);
     });
   });
   describe('CPU Profile parsing', () => {

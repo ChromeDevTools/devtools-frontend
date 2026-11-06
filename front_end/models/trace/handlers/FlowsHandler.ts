@@ -55,6 +55,15 @@ let flows: Types.Events.Event[][] = [];
 const ID_COMPONENT_SEPARATOR = '-$-';
 export function reset(): void {
   flows = [];
+  resetIntermediateState();
+}
+
+/**
+ * Resets the state that is only used while the flows are computed. data()
+ * exposes only `flows`, so finalize() calls this to release the rest
+ * (on traces with many flows, `boundFlowData` alone can be tens of MB).
+ */
+function resetIntermediateState(): void {
   flowEvents = [];
   nonFlowEvents = [];
   flowDataByGroupToken = new Map();
@@ -174,6 +183,7 @@ export async function finalize(): Promise<void> {
               .map(flowMapping => [...flowMapping.values()])
               .map(flow => flow.filter(event => event !== undefined))
               .filter(flow => flow.length > 1);
+  resetIntermediateState();
 }
 
 export function data(): {flows: Types.Events.Event[][]} {

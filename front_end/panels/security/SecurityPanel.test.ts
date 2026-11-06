@@ -21,6 +21,7 @@ import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHe
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
@@ -783,6 +784,25 @@ describeWithEnvironment('SecurityMainView', () => {
     return new Security.SecurityPanel.SecurityMainView();
   }
 
+  it('updates SecurityMainViewInput via view function stub', async () => {
+    const viewStub = createViewFunctionStub(Security.SecurityPanel.SecurityMainView);
+    const view = new Security.SecurityPanel.SecurityMainView(undefined, viewStub);
+    renderView(view);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    sinon.assert.callCount(viewStub, 1);
+    assert.isNull(viewStub.input.securityState);
+    assert.strictEqual(viewStub.input.summaryText, '');
+
+    view.updateVisibleSecurityState(
+        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Secure, null, null, []));
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    sinon.assert.callCount(viewStub, 2);
+    assert.strictEqual(viewStub.input.securityState, Protocol.Security.SecurityState.Secure);
+    assert.strictEqual(viewStub.input.summaryText, 'This page is secure (valid HTTPS)');
+  });
+
   it('renders lock spectrum classes and tooltips across security states', async () => {
     const view = createMainView();
     renderView(view);
@@ -1143,6 +1163,7 @@ describeWithEnvironment('SecurityPanel', () => {
 
   it('updates when security state changes', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);
     const visibleSecurityState = {
@@ -1152,6 +1173,7 @@ describeWithEnvironment('SecurityPanel', () => {
     } as unknown as Security.SecurityModel.PageVisibleSecurityState;
     securityModel.dispatchEventToListeners(
         Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
@@ -1159,6 +1181,7 @@ describeWithEnvironment('SecurityPanel', () => {
     visibleSecurityState.securityState = Protocol.Security.SecurityState.Secure;
     securityModel.dispatchEventToListeners(
         Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.isFalse(securityPanel.mainView.contentElement.querySelector('.security-summary')
                        ?.classList.contains('security-summary-insecure'));
@@ -1170,6 +1193,7 @@ describeWithEnvironment('SecurityPanel', () => {
     const mainSecurityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(mainSecurityModel);
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
 
     // Add the main target to the security panel.
     securityPanel.modelAdded(mainSecurityModel);
@@ -1180,6 +1204,7 @@ describeWithEnvironment('SecurityPanel', () => {
     } as unknown as Security.SecurityModel.PageVisibleSecurityState;
     mainSecurityModel.dispatchEventToListeners(
         Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    await UI.Widget.Widget.allUpdatesComplete;
     assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
 
@@ -1193,12 +1218,14 @@ describeWithEnvironment('SecurityPanel', () => {
     visibleSecurityState.securityState = Protocol.Security.SecurityState.Secure;
     mainSecurityModel.dispatchEventToListeners(
         Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    await UI.Widget.Widget.allUpdatesComplete;
     assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
 
     // Check that the security panel listens to events from the current target.
     prerenderSecurityModel.dispatchEventToListeners(
         Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    await UI.Widget.Widget.allUpdatesComplete;
     assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-secure'));
 
@@ -1363,7 +1390,7 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(unknownOriginElement.textContent, 'https://does-not-resolve.test');
   });
 
-  it('shows informational explanations after regular explanations', () => {
+  it('shows informational explanations after regular explanations', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
@@ -1373,6 +1400,7 @@ describeWithEnvironment('SecurityPanel', () => {
         Protocol.Security.SecurityState.Secure, null, null, ['pkp-bypassed']);
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
                                            pageVisibleSecurityState);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const titles = securityPanel.mainView.contentElement.querySelectorAll('.security-explanation-title');
     assert.deepEqual(Array.from(titles, title => title.textContent), [
@@ -1381,7 +1409,7 @@ describeWithEnvironment('SecurityPanel', () => {
     ]);
   });
 
-  it('shows an explanation for blocked mixed content and clears it on navigation', () => {
+  it('shows an explanation for blocked mixed content and clears it on navigation', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
@@ -1390,12 +1418,14 @@ describeWithEnvironment('SecurityPanel', () => {
         Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']);
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
                                            pageVisibleSecurityState);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const request = createNetworkRequest({url: 'http://foo.test'});
     request.setBlockedReason(Protocol.Network.BlockedReason.MixedContent);
     request.mixedContentType = Protocol.Security.MixedContentType.Blockable;
     const networkManager = securityModel.networkManager();
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const explanations = securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
     assert.lengthOf(explanations, 1);
@@ -1414,11 +1444,12 @@ describeWithEnvironment('SecurityPanel', () => {
 
     // Test that the explanations are cleared on navigation. Regression test for https://crbug.com/601944.
     navigate(getMainFrame(target));
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.isEmpty(securityPanel.mainView.contentElement.querySelectorAll('.security-explanation'));
   });
 
-  it('replaces the mixed content reload prompt with a request link when a request is recorded', () => {
+  it('replaces the mixed content reload prompt with a request link when a request is recorded', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
@@ -1427,6 +1458,7 @@ describeWithEnvironment('SecurityPanel', () => {
         Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']);
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
                                            pageVisibleSecurityState);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     function assertMixedContentExplanation() {
       const explanations = securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
@@ -1453,6 +1485,7 @@ describeWithEnvironment('SecurityPanel', () => {
     request.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
     const networkManager = securityModel.networkManager();
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const explanationAfterReload = assertMixedContentExplanation();
     const requestsLink = querySelectorErrorOnMissing(explanationAfterReload, '.security-mixed-content');
@@ -1460,68 +1493,73 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(requestsLink.getAttribute('role'), 'link');
   });
 
-  it('replaces active and passive mixed content reload prompts with request links when requests are recorded', () => {
-    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
-    renderElementIntoDOM(securityPanel);
-    const securityModel = target.model(Security.SecurityModel.SecurityModel);
-    assert.exists(securityModel);
+  it('replaces active and passive mixed content reload prompts with request links when requests are recorded',
+     async () => {
+       const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+       renderElementIntoDOM(securityPanel);
+       const securityModel = target.model(Security.SecurityModel.SecurityModel);
+       assert.exists(securityModel);
 
-    const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
-        Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content', 'ran-mixed-content']);
-    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
-                                           pageVisibleSecurityState);
+       const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+           Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content', 'ran-mixed-content']);
+       securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                              pageVisibleSecurityState);
+       await UI.Widget.Widget.allUpdatesComplete;
 
-    function assertMixedContentExplanations() {
-      const explanations = securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
-      assert.lengthOf(explanations, 2);
-      const [activeExplanation, passiveExplanation] = explanations;
+       function assertMixedContentExplanations() {
+         const explanations =
+             securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
+         assert.lengthOf(explanations, 2);
+         const [activeExplanation, passiveExplanation] = explanations;
 
-      assert.isTrue(activeExplanation.classList.contains('security-explanation-insecure'));
+         assert.isTrue(activeExplanation.classList.contains('security-explanation-insecure'));
 
-      const activeExplanationTitle = querySelectorErrorOnMissing(activeExplanation, '.security-explanation-title');
-      assert.strictEqual(activeExplanationTitle.textContent, 'Resources - active mixed content');
+         const activeExplanationTitle = querySelectorErrorOnMissing(activeExplanation, '.security-explanation-title');
+         assert.strictEqual(activeExplanationTitle.textContent, 'Resources - active mixed content');
 
-      const activeExplanationText = querySelectorErrorOnMissing(activeExplanation, '.security-explanation-text');
-      assert.include(activeExplanationText.textContent,
-                     'You have recently allowed non-secure content (such as scripts or iframes) to run on this site');
+         const activeExplanationText = querySelectorErrorOnMissing(activeExplanation, '.security-explanation-text');
+         assert.include(
+             activeExplanationText.textContent,
+             'You have recently allowed non-secure content (such as scripts or iframes) to run on this site');
 
-      assert.isTrue(passiveExplanation.classList.contains('security-explanation-neutral'));
+         assert.isTrue(passiveExplanation.classList.contains('security-explanation-neutral'));
 
-      const passiveExplanationTitle = querySelectorErrorOnMissing(passiveExplanation, '.security-explanation-title');
-      assert.strictEqual(passiveExplanationTitle.textContent, 'Resources - mixed content');
+         const passiveExplanationTitle = querySelectorErrorOnMissing(passiveExplanation, '.security-explanation-title');
+         assert.strictEqual(passiveExplanationTitle.textContent, 'Resources - mixed content');
 
-      const passiveExplanationText = querySelectorErrorOnMissing(passiveExplanation, '.security-explanation-text');
-      assert.include(passiveExplanationText.textContent, 'This page includes HTTP resources');
-      return [activeExplanation, passiveExplanation];
-    }
+         const passiveExplanationText = querySelectorErrorOnMissing(passiveExplanation, '.security-explanation-text');
+         assert.include(passiveExplanationText.textContent, 'This page includes HTTP resources');
+         return [activeExplanation, passiveExplanation];
+       }
 
-    // At this point, the page has mixed content but no mixed requests have been recorded,
-    // so the user should be prompted to refresh.
-    const explanationsBeforeReload = assertMixedContentExplanations();
-    for (const explanation of explanationsBeforeReload) {
-      const reloadPrompt = querySelectorErrorOnMissing(explanation, '.security-mixed-content');
-      assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources');
-    }
+       // At this point, the page has mixed content but no mixed requests have been recorded,
+       // so the user should be prompted to refresh.
+       const explanationsBeforeReload = assertMixedContentExplanations();
+       for (const explanation of explanationsBeforeReload) {
+         const reloadPrompt = querySelectorErrorOnMissing(explanation, '.security-mixed-content');
+         assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources');
+       }
 
-    // Now simulate a refresh.
-    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
-                                           pageVisibleSecurityState);
-    const networkManager = securityModel.networkManager();
-    const passiveRequest = createNetworkRequest({url: 'http://foo.test'});
-    passiveRequest.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
-    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, passiveRequest);
+       // Now simulate a refresh.
+       securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                              pageVisibleSecurityState);
+       const networkManager = securityModel.networkManager();
+       const passiveRequest = createNetworkRequest({url: 'http://foo.test'});
+       passiveRequest.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
+       networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, passiveRequest);
 
-    const activeRequest = createNetworkRequest({url: 'http://foo.test'});
-    activeRequest.mixedContentType = Protocol.Security.MixedContentType.Blockable;
-    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, activeRequest);
+       const activeRequest = createNetworkRequest({url: 'http://foo.test'});
+       activeRequest.mixedContentType = Protocol.Security.MixedContentType.Blockable;
+       networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, activeRequest);
+       await UI.Widget.Widget.allUpdatesComplete;
 
-    const explanationsAfterReload = assertMixedContentExplanations();
-    for (const explanation of explanationsAfterReload) {
-      const requestsLink = querySelectorErrorOnMissing(explanation, '.security-mixed-content');
-      assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
-      assert.strictEqual(requestsLink.getAttribute('role'), 'link');
-    }
-  });
+       const explanationsAfterReload = assertMixedContentExplanations();
+       for (const explanation of explanationsAfterReload) {
+         const requestsLink = querySelectorErrorOnMissing(explanation, '.security-mixed-content');
+         assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
+         assert.strictEqual(requestsLink.getAttribute('role'), 'link');
+       }
+     });
 
   it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});

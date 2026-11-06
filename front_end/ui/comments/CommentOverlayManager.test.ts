@@ -637,8 +637,8 @@ describeWithEnvironment('CommentOverlayManager', () => {
 
       const pins = manager.getPinPositions();
       assert.lengthOf(pins, 1);
-      assert.strictEqual(pins[0].top, editorRect.top - 12);
-      assert.strictEqual(pins[0].left, editorRect.right - 12);
+      assert.strictEqual(pins[0].top, Math.max(0, editorRect.top - 10));
+      assert.strictEqual(pins[0].left, Math.min(Math.max(0, editorRect.right - 10), window.innerWidth - 20));
     });
 
     it('clips hover highlight to visible editor area when hovering over wide line in CodeMirror', () => {
@@ -743,8 +743,8 @@ describeWithEnvironment('CommentOverlayManager', () => {
 
       const pins = manager.getPinPositions();
       assert.lengthOf(pins, 1);
-      assert.strictEqual(pins[0].top, 100 - 12);
-      assert.strictEqual(pins[0].left, 10 + 200 - 12);
+      assert.strictEqual(pins[0].top, 100 - 10);
+      assert.strictEqual(pins[0].left, 10 + 200 - 10);
     });
 
     it('hides highlight box and pin when element is completely scrolled out of scroll container', () => {
@@ -839,6 +839,53 @@ describeWithEnvironment('CommentOverlayManager', () => {
       assert.strictEqual(hover?.top, 50);
       assert.strictEqual(hover?.height, 50);  // Clipped to 100 - 50 = 50
       assert.strictEqual(hover?.width, 300);
+    });
+
+    it('clamps pin positions to stay within viewport boundaries when element is close to borders', () => {
+      const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+      const topRightItem = document.createElement('div');
+      topRightItem.setAttribute('jslog', 'TreeItem; context: border-top-right');
+      topRightItem.textContent = 'top-right border item';
+      // Element touches top (top: 0) and right (right: viewportWidth) borders of the viewport
+      topRightItem.getBoundingClientRect = () => new DOMRect(viewportWidth - 200, 0, 200, 40);
+      container.appendChild(topRightItem);
+
+      const bottomLeftItem = document.createElement('div');
+      bottomLeftItem.setAttribute('jslog', 'TreeItem; context: border-bottom-left');
+      bottomLeftItem.textContent = 'bottom-left border item';
+      // Element's right edge is near the left border (right: 5) and top is near the bottom border (top: viewportHeight - 5)
+      bottomLeftItem.getBoundingClientRect = () => new DOMRect(-95, viewportHeight - 5, 100, 40);
+      container.appendChild(bottomLeftItem);
+
+      manager.start(container);
+      manager.setCommentMode(true);
+      const thread1 = manager.createComment(topRightItem, 'First top-right comment');
+      const thread2 = manager.createComment(topRightItem, 'Second top-right comment');
+      const thread3 = manager.createComment(bottomLeftItem, 'First bottom-left comment');
+      const thread4 = manager.createComment(bottomLeftItem, 'Second bottom-left comment');
+      assert.isNotNull(thread1);
+      assert.isNotNull(thread2);
+      assert.isNotNull(thread3);
+      assert.isNotNull(thread4);
+
+      const pins = manager.getPinPositions();
+      assert.lengthOf(pins, 4);
+
+      // Pin 1 on top-right element is clamped to top: 0 and left: viewportWidth - 20
+      assert.strictEqual(pins[0].top, 0);
+      assert.strictEqual(pins[0].left, viewportWidth - 20);
+
+      // Pin 2 on the same top-right element maintains the 26px vertical stagger offset from the clamped base top
+      assert.strictEqual(pins[1].top, 26);
+      assert.strictEqual(pins[1].left, viewportWidth - 20);
+
+      // Pin 3 and Pin 4 on bottom-left element shift upward near the bottom edge so they stay separated and within [0, viewportHeight - 20]
+      assert.strictEqual(pins[2].top, viewportHeight - 20 - 26);
+      assert.strictEqual(pins[2].left, 0);
+      assert.strictEqual(pins[3].top, viewportHeight - 20);
+      assert.strictEqual(pins[3].left, 0);
     });
   });
 
@@ -1067,8 +1114,8 @@ describeWithEnvironment('CommentOverlayManager', () => {
       // The pin is centred on the top-right corner of the anchor element.
       assert.deepEqual(manager.getPinPositions(), [{
                          id: thread.id,
-                         top: 48,
-                         left: 128,
+                         top: 50,
+                         left: 130,
                          visible: true,
                          resolved: false,
                        }]);
@@ -1088,8 +1135,8 @@ describeWithEnvironment('CommentOverlayManager', () => {
       Comments.CommentAnchorResolver.notifyCustomAnchorsMoved();
       assert.strictEqual(manager.getHighlight(thread.id)?.left, 200);
       assert.strictEqual(manager.getHighlight(thread.id)?.top, 90);
-      assert.strictEqual(manager.getPinPositions()[0]?.left, 288);
-      assert.strictEqual(manager.getPinPositions()[0]?.top, 78);
+      assert.strictEqual(manager.getPinPositions()[0]?.left, 290);
+      assert.strictEqual(manager.getPinPositions()[0]?.top, 80);
     });
 
     it('does not render a pin when the anchor element is disconnected', () => {

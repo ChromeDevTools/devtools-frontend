@@ -35,11 +35,14 @@ import {
 } from './report/gcs-upload.js';
 import {aggregateRunMetrics, buildRunTags} from './report/report-helpers.js';
 import {
+  calculateTrajectoryTokens,
+  calculateTrajectoryToolCalls,
   createTempEvalDir,
   type Step,
   type ToolCallStats,
   type Trajectory,
   TrajectoryBuilder,
+  type TurnTokens,
 } from './report/trajectory-builder.js';
 
 export type AiAssistanceContext = NonNullable<AiAssistance.ExternalHandler.ExternalAIRequestOptions['context']>;
@@ -154,6 +157,7 @@ export class AiEvalStateProvider extends StateProvider {
   #logger = new EvalLogger();
   #taskStatuses: TaskStatus[] = [];
   #taskToolCallStats = new Map<string, ToolCallStats>();
+  #taskTokens = new Map<string, TurnTokens>();
   #resolvedModel: string|null = null;
   #resultStores: ResultStore[] = [];
   // Target types of all registered eval tests. Suites are registered while the test files
@@ -176,6 +180,7 @@ export class AiEvalStateProvider extends StateProvider {
     this.#logger = new EvalLogger();
     this.#taskStatuses = [];
     this.#taskToolCallStats = new Map();
+    this.#taskTokens = new Map();
     this.#resolvedModel = null;
     this.#resultStores = [];
     const targets = [...this.#evalTypes];
@@ -215,7 +220,7 @@ export class AiEvalStateProvider extends StateProvider {
       totalTasks,
       passedTasks,
       failedTasks,
-      metrics: aggregateRunMetrics(this.#taskToolCallStats.values()),
+      metrics: aggregateRunMetrics(this.#taskToolCallStats.values(), this.#taskTokens.values()),
     });
     if (this.#tempOutputDir && fs.existsSync(this.#tempOutputDir)) {
       fs.rmSync(this.#tempOutputDir, {recursive: true, force: true});
@@ -375,6 +380,8 @@ export class AiEvalStateProvider extends StateProvider {
       if (trajectory.metadata.model) {
         this.#resolvedModel = trajectory.metadata.model;
       }
+      this.#taskToolCallStats.set(evalTask.taskId, calculateTrajectoryToolCalls(trajectory));
+      this.#taskTokens.set(evalTask.taskId, calculateTrajectoryTokens(trajectory));
       const {customScore, gradingOutput, gradingDurationSeconds} =
           await this.#gradeTaskTrajectory(evalTask, trajectory);
       finalizeEvalTask({
@@ -389,6 +396,7 @@ export class AiEvalStateProvider extends StateProvider {
         logger: this.#logger,
         taskStatuses: this.#taskStatuses,
         taskToolCallStats: this.#taskToolCallStats,
+        taskTokens: this.#taskTokens,
         hasError: evalTask.hasFailed,
         errorMessage: evalTask.failureError,
         customScore,
@@ -412,6 +420,7 @@ export class AiEvalStateProvider extends StateProvider {
           failedByTool: {},
           activationsBySkill: {},
         },
+        tokens: this.#taskTokens.get(evalTask.taskId),
         errorMessage,
       });
     }

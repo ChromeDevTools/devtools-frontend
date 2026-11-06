@@ -9,6 +9,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 
 import {formatProtoDuration, formatProtoTaskStatus} from './report-helpers.js';
+import type {TurnTokens} from './trajectory-builder.js';
 
 /* eslint-disable no-console */
 
@@ -52,6 +53,10 @@ export interface TaskMetrics {
   verificationStatus: PhaseStatus;
   gradingDurationSeconds: number;
   gradingStatus: PhaseStatus;
+  inputTokens?: number;
+  outputTokens?: number;
+  cachedTokens?: number;
+  totalTokens?: number;
   toolCallCount: number;
   toolCallsByTool: Record<string, number>;
   failedToolCallsByTool: Record<string, number>;
@@ -59,6 +64,10 @@ export interface TaskMetrics {
 }
 
 export interface RunMetrics {
+  inputTokens?: number;
+  outputTokens?: number;
+  cachedTokens?: number;
+  totalTokens?: number;
   totalToolCalls: number;
   toolCallsByTool: Record<string, number>;
   failedToolCallsByTool: Record<string, number>;
@@ -83,7 +92,7 @@ export interface TaskCompletedPayload {
   score: number|null;
   durationSeconds: number;
   tags: string[];
-  tokens?: Record<string, unknown>;
+  tokens: TurnTokens;
   metrics: TaskMetrics;
 }
 
@@ -321,7 +330,7 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
     score: payload.score,
     duration_seconds: payload.durationSeconds,
     tags: payload.tags,
-    tokens: payload.tokens ?? {},
+    tokens: payload.tokens,
     metrics: {
       duration: formatProtoDuration(payload.durationSeconds),
       task_status: formatProtoTaskStatus(payload.metrics.taskStatus),
@@ -329,6 +338,10 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
       verification_status: formatProtoTaskStatus(payload.metrics.verificationStatus),
       grading_duration: formatProtoDuration(payload.metrics.gradingDurationSeconds),
       grading_status: formatProtoTaskStatus(payload.metrics.gradingStatus),
+      input_tokens: payload.metrics.inputTokens,
+      output_tokens: payload.metrics.outputTokens,
+      cached_tokens: payload.metrics.cachedTokens,
+      total_tokens: payload.metrics.totalTokens,
       tool_calls: payload.metrics.toolCallCount,
       tool_calls_by_tool: payload.metrics.toolCallsByTool,
       failed_tool_calls_by_tool: payload.metrics.failedToolCallsByTool,
@@ -375,6 +388,10 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
     failed_tasks: payload.failedTasks,
     metrics: {
       duration: formatProtoDuration((Date.parse(payload.endTime) - Date.parse(payload.startTime)) / 1000),
+      input_tokens: payload.metrics.inputTokens,
+      output_tokens: payload.metrics.outputTokens,
+      cached_tokens: payload.metrics.cachedTokens,
+      total_tokens: payload.metrics.totalTokens,
       total_tool_calls: payload.metrics.totalToolCalls,
       tool_calls_by_tool: payload.metrics.toolCallsByTool,
       failed_tool_calls_by_tool: payload.metrics.failedToolCallsByTool,

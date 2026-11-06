@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type {PhaseStatus, RunMetrics} from './gcs-upload.js';
-import type {ToolCallStats} from './trajectory-builder.js';
+import type {ToolCallStats, TurnTokens} from './trajectory-builder.js';
 
 /**
  * Formats a duration in seconds as a protobuf Duration string (e.g. `12.345s`).
@@ -70,9 +70,31 @@ export function buildTaskTags(evalTarget: string, taskId: string): string[] {
 }
 
 /**
- * Aggregates per-task tool call and skill activation counts into run-level metrics.
+ * Aggregates per-task token, tool call, and skill activation counts into
+ * run-level metrics.
  */
-export function aggregateRunMetrics(taskStats: Iterable<ToolCallStats>): RunMetrics {
+export function aggregateRunMetrics(
+    taskStats: Iterable<ToolCallStats>,
+    taskTokens: Iterable<TurnTokens>,
+    ): RunMetrics {
+  let inputTokens: number|undefined;
+  let outputTokens: number|undefined;
+  let cachedTokens: number|undefined;
+  let totalTokens: number|undefined;
+  for (const tokens of taskTokens) {
+    if (tokens.input !== undefined) {
+      inputTokens = (inputTokens ?? 0) + tokens.input;
+    }
+    if (tokens.output !== undefined) {
+      outputTokens = (outputTokens ?? 0) + tokens.output;
+    }
+    if (tokens.cached !== undefined) {
+      cachedTokens = (cachedTokens ?? 0) + tokens.cached;
+    }
+    if (tokens.total !== undefined) {
+      totalTokens = (totalTokens ?? 0) + tokens.total;
+    }
+  }
   let totalToolCalls = 0;
   const toolCallsByTool: Record<string, number> = {};
   const failedToolCallsByTool: Record<string, number> = {};
@@ -90,6 +112,10 @@ export function aggregateRunMetrics(taskStats: Iterable<ToolCallStats>): RunMetr
     }
   }
   return {
+    inputTokens,
+    outputTokens,
+    cachedTokens,
+    totalTokens,
     totalToolCalls,
     toolCallsByTool,
     failedToolCallsByTool,

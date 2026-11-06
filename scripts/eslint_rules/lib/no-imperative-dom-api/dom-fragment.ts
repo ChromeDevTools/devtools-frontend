@@ -47,6 +47,7 @@ export class DomFragment {
   nextSiblings: DomFragment[] = [];
   expression?: string|((indent: number) => string);
   widgetClass?: Node;
+  classDeclaration?: Node;
   replacer?: (fixer: TSESLint.RuleFixer, template: string) => TSESLint.RuleFix;
   initializer?: Node;
   references: Array<{node: Node, processed?: boolean}> = [];
@@ -66,6 +67,7 @@ export class DomFragment {
         result.expression = sourceCode.getText(node);
         result.references.push({node});
       } else if (key instanceof ClassMember) {
+        result.classDeclaration = key.classDeclaration;
         result.expression = sourceCode.getText(node);
         const references: Array<{node: Node, processed?: boolean}> = [];
         Object.defineProperty(result, 'references', {
@@ -288,6 +290,18 @@ export class DomFragment {
     this.nextSiblings.push(sibling);
     sibling.parent = this.parent;
     return sibling;
+  }
+
+  prependStylesheet(stylesheet: Node, call: Node): DomFragment {
+    const child = new DomFragment();
+    child.tagName = 'style';
+    child.textContent = stylesheet;
+    child.parent = this;
+    child.references.push({node: call, processed: true});
+    const firstNonStyleIndex = this.children.findIndex(c => c.tagName !== 'style');
+    const insertIndex = firstNonStyleIndex === -1 ? this.children.length : firstNonStyleIndex;
+    this.children.splice(insertIndex, 0, child);
+    return child;
   }
 }
 

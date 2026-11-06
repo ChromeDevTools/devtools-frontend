@@ -1742,5 +1742,157 @@ class SomeWidget extends UI.Widget.Widget {
         {messageId: 'preferTemplateLiterals'},
       ],
     },
+    {
+      name: 'migrates registerRequiredCSS alongside imperative contentElement calls',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.registerRequiredCSS(style1, style2);
+    this.contentElement.appendChild(document.createElement('div'));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <style>\${style1}</style>
+      <style>\${style2}</style>
+      <div></div>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      name: 'migrates registerRequiredCSS in an already-migrated widget with an existing DEFAULT_VIEW',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`<div></div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {view});
+    this.registerRequiredCSS(style1, style2);
+  }
+}`,
+      output: `
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`<style>\${style1}</style><style>\${style2}</style><div></div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {view});
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      name: 'preserves stylesheet ordering across existing <style> tags and multiple registerRequiredCSS calls',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <style>\${existingStyle}</style>
+    <div></div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {view});
+    this.registerRequiredCSS(style1);
+    this.registerRequiredCSS(style2);
+  }
+}`,
+      output: [
+        `
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <style>\${existingStyle}</style>
+    <style>\${style1}</style>
+    <div></div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {view});
+    this.registerRequiredCSS(style2);
+  }
+}`,
+        `
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <style>\${existingStyle}</style>
+    <style>\${style1}</style>
+    <style>\${style2}</style>
+    <div></div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {view});
+  }
+}`,
+      ],
+      errors: [
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+      ],
+    },
+    {
+      name: 'does not autofix registerRequiredCSS from an unrelated helper class into another widget DEFAULT_VIEW',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`<div></div>\`,
+    target, {host: input});
+};
+
+class HelperWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.registerRequiredCSS(helperStyle);
+  }
+}
+
+export class MainWidget extends UI.Widget.Widget {
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element, {view});
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      name: 'reports registerRequiredCSS without autofix when no DEFAULT_VIEW exists',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.registerRequiredCSS(style1);
+    otherWidget.registerRequiredCSS(style2);
+  }
+}`,
+      errors: [
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+      ],
+    },
   ],
 });

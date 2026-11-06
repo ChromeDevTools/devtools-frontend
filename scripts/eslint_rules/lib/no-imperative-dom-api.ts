@@ -166,7 +166,7 @@ export default createRule({
       const initializerRange = domFragment.initializer ? getEnclosingExpression(domFragment.initializer)?.range : null;
 
       if (initializerRange && domFragment.references.every(r => r.processed) && !keepInitializer) {
-        ranges.push(initializerRange);
+        ranges.push([...initializerRange]);
       }
 
       for (const reference of domFragment.references) {
@@ -177,7 +177,7 @@ export default createRule({
         if (!range) {
           continue;
         }
-        ranges.push(range);
+        ranges.push([...range]);
       }
       for (const child of domFragment.children) {
         ranges.push(...getRangesToRemove(child));
@@ -261,6 +261,27 @@ export default createRule({
     }
 
     return {
+      ArrowFunctionExpression(node) {
+        for (const rule of subrules) {
+          if ('ArrowFunctionExpression' in rule) {
+            rule.ArrowFunctionExpression?.(node);
+          }
+        }
+      },
+      FunctionDeclaration(node) {
+        for (const rule of subrules) {
+          if ('FunctionDeclaration' in rule) {
+            rule.FunctionDeclaration?.(node);
+          }
+        }
+      },
+      FunctionExpression(node) {
+        for (const rule of subrules) {
+          if ('FunctionExpression' in rule) {
+            rule.FunctionExpression?.(node);
+          }
+        }
+      },
       MemberExpression(node: MemberExpression) {
         if (node.object.type === 'ThisExpression') {
           ClassMember.getOrCreate(node, sourceCode);
@@ -304,6 +325,12 @@ export default createRule({
             }
           }
         } while (processedSome);
+
+        for (const rule of subrules) {
+          if ('onProgramExit' in rule) {
+            rule.onProgramExit?.(isRenderOrViewTarget);
+          }
+        }
 
         for (const domFragment of DomFragment.values()) {
           maybeReportDomFragment(domFragment);

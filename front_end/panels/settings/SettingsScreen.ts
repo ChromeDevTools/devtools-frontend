@@ -99,6 +99,7 @@ export const SETTINGS_SCREEN_DEFAULT_VIEW: SettingsScreenView = (
   // clang-format off
   render(
       html`
+        <style>${settingsScreenStyles}</style>
         <devtools-tabbed-pane
           vertical
           ?focus-header=${input.focusTabHeader}
@@ -142,7 +143,6 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
   constructor(view: SettingsScreenView = SETTINGS_SCREEN_DEFAULT_VIEW) {
     super({useShadowDom: true});
     this.#view = view;
-    this.registerRequiredCSS(settingsScreenStyles);
 
     this.appendApplicableItems(UI.ViewManager.ViewLocationValues.SETTINGS_VIEW);
     const keyBindsView = this.#views.find(v => v.viewId() === 'keybinds');

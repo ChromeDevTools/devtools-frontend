@@ -21,11 +21,14 @@ type Subrule = Partial<{
   methodCall(property: Identifier, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: CallExpression):
       boolean,
   propertyMethodCall(property: Identifier, method: Node, firstArg: Node, domFragment: DomFragment): boolean,
-  subpropertyAssignment(
-      property: Identifier, subproperty: Identifier, subpropertyValue: Node, domFragment: DomFragment): boolean,
+  subpropertyAssignment(property: Identifier, subproperty: Identifier, subpropertyValue: Node,
+                        domFragment: DomFragment): boolean,
   functionCall(call: CallExpression, firstArg: Node, secondArg: Node, domFragment: DomFragment): boolean,
+  onProgramExit(isRenderOrViewTarget: (domFragment: DomFragment) => boolean): void,
 
-}>&Pick<RuleListener, 'MemberExpression'|'NewExpression'|'CallExpression'>;
+}>&Pick<RuleListener,
+        'ArrowFunctionExpression'|'CallExpression'|'FunctionDeclaration'|'FunctionExpression'|'MemberExpression'|
+        'NewExpression'>;
 
 export interface RuleCreator {
   create(context: Context): Subrule;

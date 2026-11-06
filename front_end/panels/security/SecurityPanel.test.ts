@@ -747,10 +747,7 @@ describeWithEnvironment('SecurityMainView', () => {
   }
 
   function createMainView(): Security.SecurityPanel.SecurityMainView {
-    const panel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
-    const view = new Security.SecurityPanel.SecurityMainView();
-    view.panel = panel;
-    return view;
+    return new Security.SecurityPanel.SecurityMainView();
   }
 
   it('renders lock spectrum classes and tooltips across security states', async () => {
@@ -991,10 +988,7 @@ describeWithEnvironment('SecurityMainView', () => {
           Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']));
       await UI.Widget.Widget.allUpdatesComplete;
 
-      sinon.stub(view.panel, 'filterRequestCount').callsFake((key: string) => {
-        return key === NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED ? 2 : 0;
-      });
-      view.refreshExplanations();
+      view.setFilterRequestCounts(new Map([[NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED, 2]]));
       await UI.Widget.Widget.allUpdatesComplete;
 
       const linkBtn = querySelectorErrorOnMissing(
@@ -1010,9 +1004,7 @@ describeWithEnvironment('SecurityMainView', () => {
       const view = createMainView();
       renderView(view);
 
-      sinon.stub(view.panel, 'filterRequestCount').callsFake((key: string) => {
-        return key === NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED ? 3 : 0;
-      });
+      view.setFilterRequestCounts(new Map([[NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED, 3]]));
       view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
           Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']));
       await UI.Widget.Widget.allUpdatesComplete;
@@ -1023,6 +1015,24 @@ describeWithEnvironment('SecurityMainView', () => {
                          'Blocked mixed content');
       const linkBtn = querySelectorErrorOnMissing(blockedExplanation, 'button.security-mixed-content[role="link"]');
       assert.strictEqual(linkBtn.textContent, 'View 3 requests in Network panel');
+    });
+
+    it('works standalone without SecurityPanel back-reference for mixed-content requests', async () => {
+      const standaloneView = new Security.SecurityPanel.SecurityMainView();
+      renderView(standaloneView);
+
+      standaloneView.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']));
+      standaloneView.setFilterRequestCounts(new Map([
+        [NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED, 4],
+        [NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED, 1],
+      ]));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const links = standaloneView.contentElement.querySelectorAll('button.security-mixed-content[role="link"]');
+      assert.lengthOf(links, 2);
+      assert.strictEqual(links[0].textContent, 'View 4 requests in Network panel');
+      assert.strictEqual(links[1].textContent, 'View 1 request in Network panel');
     });
   });
 

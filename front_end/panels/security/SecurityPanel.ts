@@ -576,7 +576,6 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     this.sidebar.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
 
     this.mainView = new SecurityMainView();
-    this.mainView.panel = this;
     this.sidebar.onShowOrigin = (origin: Platform.DevToolsPath.UrlString|null) => {
       if (origin) {
         this.showOrigin(origin);
@@ -752,11 +751,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
       this.filterRequestCounts.set(filterKey, currentCount + 1);
     }
 
-    this.mainView.refreshExplanations();
-  }
-
-  filterRequestCount(filterKey: string): number {
-    return this.filterRequestCounts.get(filterKey) || 0;
+    this.mainView.setFilterRequestCounts(new Map(this.filterRequestCounts));
   }
 
   modelAdded(securityModel: SecurityModel): void {
@@ -807,7 +802,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     this.filterRequestCounts.clear();
     // After clearing the filtered request counts, refresh the
     // explanations to reflect the new counts.
-    this.mainView.refreshExplanations();
+    this.mainView.setFilterRequestCounts(new Map(this.filterRequestCounts));
 
     // If we could not find a matching request (as in the case of clicking
     // through an interstitial, see https://crbug.com/669309), set the origin
@@ -843,14 +838,15 @@ export enum OriginGroup {
 }
 
 export class SecurityMainView extends UI.Widget.VBox {
-  panel!: SecurityPanel;
-  private readonly summarySection: HTMLElement;
-  private readonly securityExplanationsMain: HTMLElement;
-  private readonly securityExplanationsExtra: HTMLElement;
-  private readonly lockSpectrum: Map<Protocol.Security.SecurityState, HTMLElement>;
-  private summaryText: HTMLElement;
-  private explanations: Array<Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation>|null;
-  private securityState: Protocol.Security.SecurityState|null;
+  readonly #summarySection: HTMLElement;
+  readonly #securityExplanationsMain: HTMLElement;
+  readonly #securityExplanationsExtra: HTMLElement;
+  readonly #lockSpectrum: Map<Protocol.Security.SecurityState, HTMLElement>;
+  #summaryText: HTMLElement;
+  #explanations: Array<Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation>|null;
+  #securityState: Protocol.Security.SecurityState|null;
+  #filterRequestCounts: ReadonlyMap<string, number> = new Map();
+
   constructor(element?: HTMLElement) {
     super(element, {jslog: `${VisualLogging.pane('security.main-view')}`});
     this.registerRequiredCSS(lockIconStyles, mainViewStyles);
@@ -859,21 +855,21 @@ export class SecurityMainView extends UI.Widget.VBox {
 
     this.contentElement.classList.add('security-main-view');
 
-    this.summarySection = this.contentElement.createChild('div', 'security-summary');
+    this.#summarySection = this.contentElement.createChild('div', 'security-summary');
 
     // Info explanations should appear after all others.
-    this.securityExplanationsMain =
+    this.#securityExplanationsMain =
         this.contentElement.createChild('div', 'security-explanation-list security-explanations-main');
-    this.securityExplanationsExtra =
+    this.#securityExplanationsExtra =
         this.contentElement.createChild('div', 'security-explanation-list security-explanations-extra');
 
     // Fill the security summary section.
-    const summaryDiv = this.summarySection.createChild('div', 'security-summary-section-title');
+    const summaryDiv = this.#summarySection.createChild('div', 'security-summary-section-title');
     summaryDiv.textContent = i18nString(UIStrings.securityOverview);
     UI.ARIAUtils.markAsHeading(summaryDiv, 1);
 
-    const lockSpectrum = this.summarySection.createChild('div', 'lock-spectrum');
-    this.lockSpectrum = new Map([
+    const lockSpectrum = this.#summarySection.createChild('div', 'lock-spectrum');
+    this.#lockSpectrum = new Map([
       [
         Protocol.Security.SecurityState.Secure,
         lockSpectrum.appendChild(
@@ -890,34 +886,39 @@ export class SecurityMainView extends UI.Widget.VBox {
             getSecurityStateIconForOverview(Protocol.Security.SecurityState.Insecure, 'lock-icon lock-icon-insecure')),
       ],
     ]);
-    UI.Tooltip.Tooltip.install(
-        this.getLockSpectrumDiv(Protocol.Security.SecurityState.Secure), i18nString(UIStrings.secure));
-    UI.Tooltip.Tooltip.install(
-        this.getLockSpectrumDiv(Protocol.Security.SecurityState.Neutral), i18nString(UIStrings.info));
-    UI.Tooltip.Tooltip.install(
-        this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecure));
+    UI.Tooltip.Tooltip.install(this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Secure),
+                               i18nString(UIStrings.secure));
+    UI.Tooltip.Tooltip.install(this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Neutral),
+                               i18nString(UIStrings.info));
+    UI.Tooltip.Tooltip.install(this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure),
+                               i18nString(UIStrings.notSecure));
 
-    this.summarySection.createChild('div', 'triangle-pointer-container')
+    this.#summarySection.createChild('div', 'triangle-pointer-container')
         .createChild('div', 'triangle-pointer-wrapper')
         .createChild('div', 'triangle-pointer');
 
-    this.summaryText = this.summarySection.createChild('div', 'security-summary-text');
-    UI.ARIAUtils.markAsHeading(this.summaryText, 2);
+    this.#summaryText = this.#summarySection.createChild('div', 'security-summary-text');
+    UI.ARIAUtils.markAsHeading(this.#summaryText, 2);
 
-    this.explanations = null;
-    this.securityState = null;
+    this.#explanations = null;
+    this.#securityState = null;
   }
 
-  getLockSpectrumDiv(securityState: Protocol.Security.SecurityState): HTMLElement {
-    const element = this.lockSpectrum.get(securityState);
+  setFilterRequestCounts(filterRequestCounts: ReadonlyMap<string, number>): void {
+    this.#filterRequestCounts = filterRequestCounts;
+    this.#refreshExplanations();
+  }
+
+  #getLockSpectrumDiv(securityState: Protocol.Security.SecurityState): HTMLElement {
+    const element = this.#lockSpectrum.get(securityState);
     if (!element) {
       throw new Error(`Invalid argument: ${securityState}`);
     }
     return element;
   }
 
-  private addExplanation(
-      parent: Element, explanation: Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation): Element {
+  #addExplanation(parent: Element,
+                  explanation: Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation): Element {
     const explanationSection = parent.createChild('div', 'security-explanation');
     explanationSection.classList.add('security-explanation-' + explanation.securityState);
 
@@ -954,42 +955,42 @@ export class SecurityMainView extends UI.Widget.VBox {
 
   updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
     // Remove old state.
-    // It's safe to call this even when this.securityState is undefined.
-    this.summarySection.classList.remove('security-summary-' + this.securityState);
+    // It's safe to call this even when this.#securityState is undefined.
+    this.#summarySection.classList.remove('security-summary-' + this.#securityState);
 
     // Add new state.
-    this.securityState = visibleSecurityState.securityState;
-    this.summarySection.classList.add('security-summary-' + this.securityState);
+    this.#securityState = visibleSecurityState.securityState;
+    this.#summarySection.classList.add('security-summary-' + this.#securityState);
 
     // Update the color and title of the triangle icon in the lock spectrum to
     // match the security state.
-    if (this.securityState === Protocol.Security.SecurityState.Insecure) {
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure');
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure-broken');
-      UI.Tooltip.Tooltip.install(
-          this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecure));
-    } else if (this.securityState === Protocol.Security.SecurityState.InsecureBroken) {
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure-broken');
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure');
-      UI.Tooltip.Tooltip.install(
-          this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecureBroken));
+    if (this.#securityState === Protocol.Security.SecurityState.Insecure) {
+      this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure');
+      this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure-broken');
+      UI.Tooltip.Tooltip.install(this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure),
+                                 i18nString(UIStrings.notSecure));
+    } else if (this.#securityState === Protocol.Security.SecurityState.InsecureBroken) {
+      this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure-broken');
+      this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure');
+      UI.Tooltip.Tooltip.install(this.#getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure),
+                                 i18nString(UIStrings.notSecureBroken));
     }
 
-    const {summary, explanations} = this.getSecuritySummaryAndExplanations(visibleSecurityState);
+    const {summary, explanations} = this.#getSecuritySummaryAndExplanations(visibleSecurityState);
     // Use override summary if present, otherwise use base explanation
-    this.summaryText.textContent = summary || SummaryMessages[this.securityState]();
+    this.#summaryText.textContent = summary || SummaryMessages[this.#securityState]();
 
-    this.explanations = this.orderExplanations(explanations);
+    this.#explanations = this.#orderExplanations(explanations);
 
-    this.refreshExplanations();
+    this.#refreshExplanations();
   }
 
-  private getSecuritySummaryAndExplanations(visibleSecurityState: PageVisibleSecurityState):
+  #getSecuritySummaryAndExplanations(visibleSecurityState: PageVisibleSecurityState):
       {summary: (string|undefined), explanations: SecurityStyleExplanation[]} {
     const {securityState, securityStateIssueIds} = visibleSecurityState;
     let summary;
     const explanations: SecurityStyleExplanation[] = [];
-    summary = this.explainSafetyTipSecurity(visibleSecurityState, summary, explanations);
+    summary = this.#explainSafetyTipSecurity(visibleSecurityState, summary, explanations);
     if (securityStateIssueIds.includes('malicious-content')) {
       summary = i18nString(UIStrings.thisPageIsDangerousFlaggedBy);
       // Always insert SafeBrowsing explanation at the front.
@@ -1018,15 +1019,14 @@ export class SecurityMainView extends UI.Widget.VBox {
       return {summary, explanations};
     }
 
-    this.explainCertificateSecurity(visibleSecurityState, explanations);
-    this.explainConnectionSecurity(visibleSecurityState, explanations);
-    this.explainContentSecurity(visibleSecurityState, explanations);
+    this.#explainCertificateSecurity(visibleSecurityState, explanations);
+    this.#explainConnectionSecurity(visibleSecurityState, explanations);
+    this.#explainContentSecurity(visibleSecurityState, explanations);
     return {summary, explanations};
   }
 
-  private explainSafetyTipSecurity(
-      visibleSecurityState: PageVisibleSecurityState, summary: string|undefined,
-      explanations: SecurityStyleExplanation[]): string|undefined {
+  #explainSafetyTipSecurity(visibleSecurityState: PageVisibleSecurityState, summary: string|undefined,
+                            explanations: SecurityStyleExplanation[]): string|undefined {
     const {securityStateIssueIds, safetyTipInfo} = visibleSecurityState;
     const currentExplanations = [];
 
@@ -1059,8 +1059,8 @@ export class SecurityMainView extends UI.Widget.VBox {
     return summary;
   }
 
-  private explainCertificateSecurity(
-      visibleSecurityState: PageVisibleSecurityState, explanations: SecurityStyleExplanation[]): void {
+  #explainCertificateSecurity(visibleSecurityState: PageVisibleSecurityState,
+                              explanations: SecurityStyleExplanation[]): void {
     const {certificateSecurityState, securityStateIssueIds} = visibleSecurityState;
     const title = i18nString(UIStrings.certificate);
     if (certificateSecurityState?.certificateHasSha1Signature) {
@@ -1109,8 +1109,8 @@ export class SecurityMainView extends UI.Widget.VBox {
     }
   }
 
-  private explainConnectionSecurity(
-      visibleSecurityState: PageVisibleSecurityState, explanations: SecurityStyleExplanation[]): void {
+  #explainConnectionSecurity(visibleSecurityState: PageVisibleSecurityState,
+                             explanations: SecurityStyleExplanation[]): void {
     const certificateSecurityState = visibleSecurityState.certificateSecurityState;
     if (!certificateSecurityState) {
       return;
@@ -1153,8 +1153,8 @@ export class SecurityMainView extends UI.Widget.VBox {
         undefined, undefined, recommendations));
   }
 
-  private explainContentSecurity(
-      visibleSecurityState: PageVisibleSecurityState, explanations: SecurityStyleExplanation[]): void {
+  #explainContentSecurity(visibleSecurityState: PageVisibleSecurityState,
+                          explanations: SecurityStyleExplanation[]): void {
     // Add the secure explanation unless there is an issue.
     let addSecureExplanation = true;
     const title = i18nString(UIStrings.resources);
@@ -1207,7 +1207,7 @@ export class SecurityMainView extends UI.Widget.VBox {
     }
   }
 
-  private orderExplanations(explanations: SecurityStyleExplanation[]): SecurityStyleExplanation[] {
+  #orderExplanations(explanations: SecurityStyleExplanation[]): SecurityStyleExplanation[] {
     if (explanations.length === 0) {
       return explanations;
     }
@@ -1225,33 +1225,36 @@ export class SecurityMainView extends UI.Widget.VBox {
   }
 
   refreshExplanations(): void {
-    this.securityExplanationsMain.removeChildren();
-    this.securityExplanationsExtra.removeChildren();
-    if (!this.explanations) {
+    this.#refreshExplanations();
+  }
+
+  #refreshExplanations(): void {
+    this.#securityExplanationsMain.removeChildren();
+    this.#securityExplanationsExtra.removeChildren();
+    if (!this.#explanations) {
       return;
     }
-    for (const explanation of this.explanations) {
+    for (const explanation of this.#explanations) {
       if (explanation.securityState === Protocol.Security.SecurityState.Info) {
-        this.addExplanation(this.securityExplanationsExtra, explanation);
+        this.#addExplanation(this.#securityExplanationsExtra, explanation);
       } else {
         switch (explanation.mixedContentType) {
           case Protocol.Security.MixedContentType.Blockable:
-            this.addMixedContentExplanation(
-                this.securityExplanationsMain, explanation,
-                NetworkForward.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN);
+            this.#addMixedContentExplanation(this.#securityExplanationsMain, explanation,
+                                             NetworkForward.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN);
             break;
           case Protocol.Security.MixedContentType.OptionallyBlockable:
-            this.addMixedContentExplanation(
-                this.securityExplanationsMain, explanation, NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED);
+            this.#addMixedContentExplanation(this.#securityExplanationsMain, explanation,
+                                             NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED);
             break;
           default:
-            this.addExplanation(this.securityExplanationsMain, explanation);
+            this.#addExplanation(this.#securityExplanationsMain, explanation);
             break;
         }
       }
     }
 
-    if (this.panel.filterRequestCount(NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED) > 0) {
+    if ((this.#filterRequestCounts.get(NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED) ?? 0) > 0) {
       const explanation = {
         securityState: Protocol.Security.SecurityState.Info,
         summary: i18nString(UIStrings.blockedMixedContent),
@@ -1260,17 +1263,17 @@ export class SecurityMainView extends UI.Widget.VBox {
         certificate: [],
         title: '',
       } as Protocol.Security.SecurityStateExplanation;
-      this.addMixedContentExplanation(
-          this.securityExplanationsMain, explanation, NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED);
+      this.#addMixedContentExplanation(this.#securityExplanationsMain, explanation,
+                                       NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED);
     }
   }
 
-  private addMixedContentExplanation(
-      parent: Element, explanation: Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation,
-      filterKey: string): void {
-    const element = this.addExplanation(parent, explanation);
+  #addMixedContentExplanation(parent: Element,
+                              explanation: Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation,
+                              filterKey: string): void {
+    const element = this.#addExplanation(parent, explanation);
 
-    const filterRequestCount = this.panel.filterRequestCount(filterKey);
+    const filterRequestCount = this.#filterRequestCounts.get(filterKey) ?? 0;
     if (!filterRequestCount) {
       // Network instrumentation might not have been enabled for the page
       // load, so the security panel does not necessarily know a count of
@@ -1287,10 +1290,10 @@ export class SecurityMainView extends UI.Widget.VBox {
     requestsAnchor.tabIndex = 0;
     requestsAnchor.textContent = i18nString(UIStrings.viewDRequestsInNetworkPanel, {n: filterRequestCount});
 
-    requestsAnchor.addEventListener('click', this.showNetworkFilter.bind(this, filterKey));
+    requestsAnchor.addEventListener('click', this.#showNetworkFilter.bind(this, filterKey));
   }
 
-  showNetworkFilter(filterKey: string, e: Event): void {
+  #showNetworkFilter(filterKey: string, e: Event): void {
     e.consume();
     void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters(
         [{filterType: NetworkForward.UIFilter.FilterType.MixedContent, filterValue: filterKey}]));

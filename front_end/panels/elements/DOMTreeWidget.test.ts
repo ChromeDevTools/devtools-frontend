@@ -6311,6 +6311,76 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('renders one nested guide line per shadow root level inside an iframe', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, {includeCommonStyles: true});
+      try {
+        domTree.omitRootDOMNode = true;
+        const levels = 5;
+        // Node ids: host N uses 10*N, shadow root N uses 10*N+1.
+        const buildHost = (level: number, parentId: number): Protocol.DOM.Node => {
+          const hostId = 10 * level;
+          const shadowRootId = hostId + 1;
+          const shadowChildren = level < levels ?
+              [buildHost(level + 1, shadowRootId)] :
+              [makeNodePayload(shadowRootId + 5, 'SPAN', {parentId: shadowRootId as Protocol.DOM.NodeId})];
+          return makeNodePayload(hostId, 'DIV', {
+            parentId: parentId as Protocol.DOM.NodeId,
+            attributes: ['id', `host-${level}`],
+            shadowRoots: [makeNodePayload(shadowRootId, '#shadow-root', {
+              parentId: hostId as Protocol.DOM.NodeId,
+              nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+              shadowRootType: Protocol.DOM.ShadowRootType.Open,
+              children: shadowChildren,
+            })],
+          });
+        };
+        const iframeDocumentPayload = makeDocumentPayload(3, [buildHost(1, 3)]);
+        const iframePayload = makeNodePayload(2, 'IFRAME', {
+          parentId: 1 as Protocol.DOM.NodeId,
+          frameId: 'child-frame' as Protocol.Page.FrameId,
+          contentDocument: iframeDocumentPayload,
+        });
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [iframePayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const iframeNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        assert.isTrue(iframeNode.isIframe());
+        await expandAndFind(domTree, iframeNode);
+        await expandAndFind(domTree, iframeNode.contentDocument()!);
+
+        const guideLineLists: HTMLOListElement[] = [];
+        for (let level = 1; level <= levels; level++) {
+          const hostNode = domModel.nodeForId(10 * level as Protocol.DOM.NodeId)!;
+          const shadowRootNode = domModel.nodeForId((10 * level + 1) as Protocol.DOM.NodeId)!;
+          assert.isTrue(shadowRootNode.isShadowRoot());
+          const hostTreeElement = await expandAndFind(domTree, hostNode);
+          const shadowRootTreeElement = await expandAndFind(domTree, shadowRootNode);
+          assert.isFalse(hostTreeElement.listItemElement.classList.contains('shadow-root'));
+          assert.isTrue(shadowRootTreeElement.listItemElement.classList.contains('shadow-root'));
+          const childrenList = shadowRootTreeElement.listItemElement.nextElementSibling;
+          assert.instanceOf(childrenList, HTMLOListElement);
+          assert.isTrue(childrenList.matches('li.shadow-root + ol.children.expanded'));
+          guideLineLists.push(childrenList);
+        }
+        assert.lengthOf(guideLineLists, levels);
+
+        // Each level nests inside the previous one and starts further to the
+        // right, so the five guide lines render side by side.
+        for (let i = 1; i < guideLineLists.length; i++) {
+          assert.isTrue(guideLineLists[i - 1].contains(guideLineLists[i]));
+          assert.isAbove(guideLineLists[i].getBoundingClientRect().left,
+                         guideLineLists[i - 1].getBoundingClientRect().left);
+        }
+        for (const list of guideLineLists) {
+          assert.notStrictEqual(getComputedStyle(list).backgroundImage, 'none');
+        }
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('renders shadow host with <slot> and distributed nodes in tree children', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target);
       try {

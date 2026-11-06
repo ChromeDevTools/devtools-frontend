@@ -93,7 +93,7 @@
     position: absolute;
     top: 100%;
     left: var(--sys-size-7);
-    border: 7px solid transparent;
+    border: var(--sys-size-5) solid transparent;
     border-top-color: var(--sys-color-yellow-container);
   }
 

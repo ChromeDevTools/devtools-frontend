@@ -14,6 +14,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {getMatchedStyles} from '../../testing/StyleHelpers.js';
+import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 
@@ -38,7 +39,8 @@ describe('ColorSwatchPopoverIcon', () => {
       const treeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesContainer:
             new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel()),
-        section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+        section: Object.assign(sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+                               {sectionTooltipIdFactory: new Tooltips.Tooltip.IdFactory()}),
         matchedStyles: await getMatchedStyles({connection}),
         property,
         isShorthand: false,

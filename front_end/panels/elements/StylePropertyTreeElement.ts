@@ -421,9 +421,9 @@ export class VariableRenderer extends VariableRendererBase {
 
     const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
 
-    const varCall = this.#treeElement?.getTracingTooltip(
-        'var', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context);
-    const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
+    const varCall = this.#treeElement?.getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles,
+                                                         this.#computedStyleExtraFields, context);
+    const tooltipId = getTooltipId(this.#treeElement, 'custom-property-var');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
     const varSwatch = html`<span
@@ -494,7 +494,7 @@ export class VariableNameRenderer extends VariableNameRendererBase {
     const onLinkActivate = (name: string): void =>
         handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
 
-    const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
+    const tooltipId = getTooltipId(this.#treeElement, 'custom-property-var');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
     return html`<devtools-link-swatch class=css-var-link .data=${{
@@ -580,9 +580,9 @@ export class AttributeRenderer extends AttributeRendererBase {
 
     const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
 
-    const attrCall = this.#treeElement?.getTracingTooltip(
-        'attr', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context);
-    const tooltipId = attributeMissing ? undefined : this.#treeElement?.getTooltipId('custom-attribute');
+    const attrCall = this.#treeElement?.getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles,
+                                                          this.#computedStyleExtraFields, context);
+    const tooltipId = attributeMissing ? undefined : getTooltipId(this.#treeElement, 'custom-attribute');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
     const varSwatch = html`<span
@@ -690,7 +690,7 @@ export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBa
       return evaluation;
     }
 
-    const tooltipId = this.#treeElement?.getTooltipId('relative-color-channel');
+    const tooltipId = getTooltipId(this.#treeElement, 'relative-color-channel');
     if (!tooltipId) {
       return html`<span>${match.text}</span>`;
     }
@@ -1087,7 +1087,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
       return html`${swatch}${contentChild}`;
     }
 
-    const tooltipId = this.#treeElement?.getTooltipId('color-mix');
+    const tooltipId = getTooltipId(this.#treeElement, 'color-mix');
     if (!tooltipId) {
       return html`${swatch}${contentChild}`;
     }
@@ -1865,7 +1865,7 @@ export class LengthRenderer extends LengthRendererBase {
                                                template,
                                                asyncEvalCallback: () => this.getTooltipValue(match, context),
                                              }));
-    const tooltipId = this.#treeElement?.getTooltipId('length');
+    const tooltipId = getTooltipId(this.#treeElement, 'length');
     if (evaluation || !tooltipId) {
       return html`<span tabindex=-1>${evaluation ?? template}</span>`;
     }
@@ -2396,6 +2396,35 @@ export class PositionTryRenderer extends PositionTryRendererBase {
   }
 }
 
+// Returns an id for <devtools-tooltips> that's stable across re-rendering of property values but unique across
+// sections and across switches between different nodes.
+function getTooltipId(treeElement: StylePropertyTreeElement|null, key: string): string|undefined;
+function getTooltipId(tooltipIdFactory: Tooltips.Tooltip.IdFactory, key: string, property: SDK.CSSProperty.CSSProperty,
+                      shorthandName?: string): string;
+function getTooltipId(tooltipIdFactoryOrTreeElement: Tooltips.Tooltip.IdFactory|StylePropertyTreeElement|null,
+                      key: string, property?: SDK.CSSProperty.CSSProperty, shorthandName?: string): string|undefined {
+  if (!tooltipIdFactoryOrTreeElement) {
+    return undefined;
+  }
+  if (tooltipIdFactoryOrTreeElement instanceof StylePropertyTreeElement) {
+    const treeElement = tooltipIdFactoryOrTreeElement;
+    return getTooltipId(treeElement.tooltipIdFactory, key, treeElement.property, treeElement.getLonghand()?.name);
+  }
+
+  if (!property) {
+    return undefined;
+  }
+
+  // Longhands expanded from a shorthand also count preceding occurrences of the shorthand.
+  const propertyNameForCounting = shorthandName ?? property.name;
+  const ownIndex = property.ownerStyle.allProperties().indexOf(property);
+  const propertyCount = property.ownerStyle.allProperties().reduce<number>(
+      (value, other, index) =>
+          index < ownIndex && (other.name === property.name || other.name === propertyNameForCounting) ? value + 1 :
+                                                                                                         value,
+      0);
+  return tooltipIdFactoryOrTreeElement.keyed(key, propertyCount);
+}
 export function getPropertyRenderers(
     propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesContainer: StylesContainer,
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement|null,
@@ -2459,7 +2488,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null = null;
   private contextForTest!: Context|undefined;
   #gridNames: Set<string>|undefined = undefined;
-  #tooltipKeyCounts = new Map<string, number>();
+  readonly tooltipIdFactory: Tooltips.Tooltip.IdFactory;
   // The changes that renderers made to the text of the value since it was rendered. Only available if the value was
   // parsed.
   #edits: ValueUpdateTracking|undefined;
@@ -2484,6 +2513,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.selectable = false;
     this.#stylesContainer = stylesContainer;
     this.#parentSection = section;
+    this.tooltipIdFactory = section.sectionTooltipIdFactory.subfactory('swatch-tooltip', this.name);
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
     this.#lastCommittedProperty = {
@@ -2894,7 +2924,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   #updateTitle(): void {
-    this.#tooltipKeyCounts.clear();
+    this.tooltipIdFactory.clearKeys();
     this.updateState();
     if (this.isExpandable()) {
       this.expandElement = createIcon('triangle-right', 'expand-icon');
@@ -2937,7 +2967,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       contents.variableName = this.property.name;
       contents.value = this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value;
       contents.details = this.#stylesContainer.getRegisteredPropertyDetails(this.matchedStyles(), this.property.name);
-      const tooltipId = this.getTooltipId('custom-property-decl');
+      const tooltipId =
+          getTooltipId(this.tooltipIdFactory, 'custom-property-decl', this.property, this.getLonghand()?.name);
       this.nameElement.setAttribute('aria-details', tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip(
           {anchor: this.nameElement, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-var'});
@@ -2951,7 +2982,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     } else if (Common.Settings.Settings.instance()
                    .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
                    .get()) {
-      const tooltipId = this.getTooltipId('property-doc');
+      const tooltipId = getTooltipId(this.tooltipIdFactory, 'property-doc', this.property, this.getLonghand()?.name);
       this.nameElement.setAttribute('aria-details', tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip({
         anchor: this.nameElement,
@@ -3079,7 +3110,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (title === null) {
       UI.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
     } else {
-      const tooltipId = this.getTooltipId('property-warning');
+      const tooltipId =
+          getTooltipId(this.tooltipIdFactory, 'property-warning', this.property, this.getLonghand()?.name);
       exclamationElement.setAttribute('aria-describedby', tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip({
         anchor: exclamationElement,
@@ -3136,7 +3168,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const shorthandPositionOffset = context.matchedResult.getComputedLonghandName(node);
     const {property} = context;
     const stylesContainer = this.stylesContainer();
-    const tooltipId = this.getTooltipId(`${functionName}-trace`);
+    const tooltipId =
+        getTooltipId(this.tooltipIdFactory, `${functionName}-trace`, this.property, this.getLonghand()?.name);
     // clang-format off
     return html`
         <span tabIndex=-1 class=tracing-anchor aria-details=${tooltipId}>${functionName.startsWith('--') ? this.#getLinkableFunction(functionName, matchedStyles, context.property) : functionName}</span>
@@ -3181,22 +3214,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     // clang-format on
   }
 
-  // Returns an id for <devtools-tooltips> that's stable across re-rendering of property values but unique across
-  // sections and across switches between different nodes.
-  getTooltipId(key: string): string {
-    const sectionId = this.section().sectionTooltipIdPrefix;
-    const tooltipKeyCount = this.#tooltipKeyCounts.get(key) ?? 0;
-    this.#tooltipKeyCounts.set(key, tooltipKeyCount + 1);
-    const propertyNameForCounting = this.getLonghand()?.name ?? this.name;
-    const ownIndex = this.style.allProperties().indexOf(this.property);
-    const propertyCount = this.style.allProperties().reduce<number>(
-        (value, property, index) =>
-            index < ownIndex && (property.name === this.name || property.name === propertyNameForCounting) ? value + 1 :
-                                                                                                             value,
-        0);
-    return `swatch-tooltip-${sectionId}-${this.name}-${propertyCount}-${key}-${tooltipKeyCount}`;
-  }
-
   updateAuthoringHint(): void {
     this.listItemElement.classList.remove('inactive-property');
     const existingElement = this.listItemElement.querySelector('.hint');
@@ -3232,7 +3249,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         wrapper.append(hintIcon);
         this.listItemElement.append(wrapper);
         this.listItemElement.classList.add('inactive-property');
-        const tooltipId = this.getTooltipId('css-hint');
+        const tooltipId = getTooltipId(this.tooltipIdFactory, 'css-hint', this.property, this.getLonghand()?.name);
         hintIcon.setAttribute('aria-details', tooltipId);
         const tooltip = new Tooltips.Tooltip.Tooltip(
             {anchor: hintIcon, variant: 'rich', padding: 'large', id: tooltipId, jslogContext: 'elements.css-hint'});
@@ -3269,7 +3286,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     wrapper.append(hintIcon);
     this.listItemElement.append(wrapper);
 
-    const tooltipId = this.getTooltipId('animation-override-hint');
+    const tooltipId =
+        getTooltipId(this.tooltipIdFactory, 'animation-override-hint', this.property, this.getLonghand()?.name);
     hintIcon.setAttribute('aria-details', tooltipId);
 
     const tooltip = new Tooltips.Tooltip.Tooltip({

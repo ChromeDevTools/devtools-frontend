@@ -17,6 +17,7 @@ devtools_ui_module("tooltip") {
   sources = [ "Tooltip.ts" ]
 
   ts_deps = [
+    "../../../core/platform:bundle",
     "../../legacy:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",

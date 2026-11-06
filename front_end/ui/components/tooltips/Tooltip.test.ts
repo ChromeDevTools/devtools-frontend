@@ -613,3 +613,41 @@ describe('Tooltip', () => {
     });
   });
 });
+
+describe('IdFactory', () => {
+  it('joins the factory id and suffixes with dashes', () => {
+    const factory = new Tooltips.Tooltip.IdFactory('root');
+    assert.strictEqual(factory.get('a'), 'root-a');
+    assert.strictEqual(factory.get('a', 1, 'b'), 'root-a-1-b');
+  });
+
+  it('assigns unique ids to factories without an explicit id', () => {
+    const first = new Tooltips.Tooltip.IdFactory();
+    const second = new Tooltips.Tooltip.IdFactory();
+    assert.notStrictEqual(first.get('a'), second.get('a'));
+  });
+
+  it('increments a counter per key', () => {
+    const factory = new Tooltips.Tooltip.IdFactory('root');
+    assert.strictEqual(factory.keyed('a'), 'root-a-0');
+    assert.strictEqual(factory.keyed('a'), 'root-a-1');
+    assert.strictEqual(factory.keyed('b'), 'root-b-0');
+    assert.strictEqual(factory.keyed('a', 'x'), 'root-a-x-2');
+  });
+
+  it('resets counters with clearKeys', () => {
+    const factory = new Tooltips.Tooltip.IdFactory('root');
+    assert.strictEqual(factory.keyed('a'), 'root-a-0');
+    assert.strictEqual(factory.keyed('a'), 'root-a-1');
+    factory.clearKeys();
+    assert.strictEqual(factory.keyed('a'), 'root-a-0');
+  });
+
+  it('creates subfactories scoped by name and suffix', () => {
+    const factory = new Tooltips.Tooltip.IdFactory('root');
+    const sub = factory.subfactory('child', 2);
+    assert.strictEqual(sub.get('a'), 'child-root-2-a');
+    assert.strictEqual(sub.keyed('a'), 'child-root-2-a-0');
+    assert.strictEqual(sub.subfactory('grandchild', 'x').get('a'), 'grandchild-child-root-2-x-a');
+  });
+});

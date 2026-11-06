@@ -6,6 +6,7 @@ import '../../../ui/components/tooltips/tooltips.js';
 import '../../../ui/legacy/components/inline_editor/inline_editor.js';
 
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Tooltips from '../../../ui/components/tooltips/tooltips.js';
 import type * as InlineEditor from '../../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -43,7 +44,7 @@ export interface ViewInput {
   matchedStyles?: SDK.CSSMatchedStyles.CSSMatchedStyles;
   style?: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   containerNode?: SDK.DOMModel.DOMNode;
-  tooltipPrefix: string;
+  tooltipPrefix?: Tooltips.Tooltip.IdFactory;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
@@ -67,7 +68,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               input.onLinkActivate(variable ? variable.declaration : variableName);
             }
           };
-          const tooltipId = `${input.tooltipPrefix || 'css-query'}-${index}-${variableName}`;
+          const tooltipId =
+              input.tooltipPrefix ? input.tooltipPrefix.get(index, variableName) : `css-query-${index}-${variableName}`;
           const tooltip = {tooltipId};
           return html`
             <devtools-link-swatch class="css-var-link" .data=${{
@@ -121,13 +123,12 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
   #matchedStyles?: SDK.CSSMatchedStyles.CSSMatchedStyles;
   #style?: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   #containerNode?: SDK.DOMModel.DOMNode;
-  #tooltipPrefix = '';
+  #tooltipPrefix?: Tooltips.Tooltip.IdFactory;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
     this.#view = view;
   }
-
   set data(data: CSSQueryData) {
     this.#queryPrefix = data.queryPrefix;
     this.#queryName = data.queryName;
@@ -148,7 +149,7 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       style: SDK.CSSStyleDeclaration.CSSStyleDeclaration,
       containerNode: SDK.DOMModel.DOMNode,
-      tooltipPrefix: string,
+      tooltipPrefix: Tooltips.Tooltip.IdFactory,
       ): void {
     this.#matchedStyles = matchedStyles;
     this.#style = style;

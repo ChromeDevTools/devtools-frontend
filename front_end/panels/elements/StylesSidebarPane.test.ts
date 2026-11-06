@@ -25,6 +25,7 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createStubbedDomNodeWithModels, getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import type {Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -4953,7 +4954,8 @@ describeWithEnvironment('StylesSidebarPane updates, completions, and media/keyfr
       const style = matchedStyles.nodeStyles()[0];
       const property = new SDK.CSSProperty.CSSProperty(style, style.pastLastSourcePropertyIndex(), name, value, true,
                                                        false, true, false, '', undefined, []);
-      const section = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
+      const section = Object.assign(sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+                                    {sectionTooltipIdFactory: new Tooltips.Tooltip.IdFactory()});
       return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
         stylesContainer: stylesSidebarPane,
         section,

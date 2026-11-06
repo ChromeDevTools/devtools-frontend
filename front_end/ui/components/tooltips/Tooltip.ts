@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 
+import * as Platform from '../../../core/platform/platform.js';
 import * as UI from '../../legacy/legacy.js';
 import {AsyncDirective, Directives, html, type LitTemplate, nothing, render} from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
@@ -654,6 +655,34 @@ export class Tooltip extends HTMLElement {
       }
     });
     this.#anchorObserver.observe(anchor.parentElement, {childList: true});
+  }
+}
+
+export class IdFactory {
+  static #nextId = 0;
+  #keys = new Map<string|number, number>();
+  #id: number|string;
+
+  constructor(id?: number|string) {
+    this.#id = id ?? IdFactory.#nextId++;
+  }
+
+  keyed(key: string|number, ...additionalSuffixes: Array<number|string>): string {
+    const keyedId = Platform.MapUtilities.getWithDefault(this.#keys, key, () => 0);
+    this.#keys.set(key, keyedId + 1);
+    return this.get(key, ...additionalSuffixes, keyedId);
+  }
+
+  get(suffix: string|number, ...additionalSuffixes: Array<number|string>): string {
+    return `${this.#id}-${[suffix, ...additionalSuffixes].join('-')}`;
+  }
+
+  clearKeys(): void {
+    this.#keys.clear();
+  }
+
+  subfactory(name: string, suffix: string|number): IdFactory {
+    return new IdFactory(`${name}-${this.#id}-${suffix}`);
   }
 }
 

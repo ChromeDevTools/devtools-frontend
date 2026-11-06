@@ -135,7 +135,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     matchedStyles.functionRules()[0].style.allProperties().push(property);
     return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
       stylesContainer: new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel),
-      section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+      section: new Elements.StylePropertiesSection.StylePropertiesSection(
+          new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles, property.ownerStyle, 0,
+          null, null, null),
       matchedStyles,
       property,
       isShorthand: false,
@@ -2429,7 +2431,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         for (const property of matchedStyles.nodeStyles()[0].allProperties()) {
           const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
             stylesContainer: stylesSidebarPane,
-            section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+            section: new Elements.StylePropertiesSection.StylePropertiesSection(
+                new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
+                property.ownerStyle, 0, null, null, null),
             matchedStyles,
             property,
             isShorthand: false,

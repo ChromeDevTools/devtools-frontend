@@ -191,9 +191,7 @@ export class StylePropertiesSection {
 
   #customHeaderText: string|undefined;
   readonly #specificityTooltips: HTMLSpanElement;
-  static #nextSpecificityTooltipId = 0;
-  static #nextSectionTooltipIdPrefix = 0;
-  readonly sectionTooltipIdPrefix: number = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
+  readonly sectionTooltipIdFactory: Tooltips.Tooltip.IdFactory = new Tooltips.Tooltip.IdFactory();
 
   private ghostStyleTreeElements: GhostStylePropertyTreeElement[] = [];
   #activeAiSuggestion?: ActiveAiSuggestion;
@@ -1113,7 +1111,7 @@ export class StylePropertiesSection {
       jslogContext: 'container-query',
     };
     if (style) {
-      const tooltipPrefix = `container-${this.sectionTooltipIdPrefix}-${this.nestingLevel}`;
+      const tooltipPrefix = this.sectionTooltipIdFactory.subfactory('container', this.nestingLevel);
       void containerQuery.getContainerForNode(this.matchedStyles.node().id).then(container => {
         if (container) {
           containerQueryElement.parseStyleQueries(this.matchedStyles, style, container.containerNode, tooltipPrefix);
@@ -1547,10 +1545,6 @@ export class StylePropertiesSection {
     this.markSelectorHighlights();
   }
 
-  static getNextSpecificityTooltipId(): string {
-    return `specificity-tooltip-${this.#nextSpecificityTooltipId++}`;
-  }
-
   renderSelectors(
       selectors: Array<{text: string, specificity?: Protocol.CSS.Specificity}>, matchingSelectors: boolean[],
       elementToSelectorIndex: WeakMap<Element, number>): void {
@@ -1567,7 +1561,8 @@ export class StylePropertiesSection {
       if (i > 0) {
         targetElement.append(', ');
       }
-      const specificityTooltipId = selector.specificity ? StylePropertiesSection.getNextSpecificityTooltipId() : null;
+      const specificityTooltipId =
+          selector.specificity ? this.sectionTooltipIdFactory.keyed('specificity-tooltip') : null;
       const span = targetElement.createChild('span', 'simple-selector');
       span.classList.toggle('selector-matches', matchingSelectors[i]);
       elementToSelectorIndex.set(span, i);

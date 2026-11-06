@@ -908,7 +908,7 @@ devtools-toolbar {
   /* Checkbox */
 
   & > devtools-checkbox {
-    padding: 0 5px 0 0;
+    padding: 0 var(--sys-size-3) 0 0;
     white-space: unset;
   }
 

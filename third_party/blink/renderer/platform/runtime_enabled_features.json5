@@ -3405,6 +3405,11 @@
       // a Chromium level feature (kFontDataServiceForCSSLocalFonts).
     },
     {
+      // Kill switch for https://crbug.com/579721442.
+      name: "FontFallbackMultiplePriorityFonts",
+      status: "stable",
+    },
+    {
       name: "FontFamilyPostscriptMatchingCTMigration",
     },
     {
@@ -5585,6 +5590,11 @@
       status: "stable",
     },
     {
+      // Kill switch for https://crbug.com/579210216.
+      name: "ResponsiveIframesAsyncResize",
+      status: "stable",
+    },
+    {
       // Kill switch for https://crbug.com/570579609.
       name: "ResponsiveIframesShrink",
       status: "stable",
@@ -7289,6 +7299,10 @@
       status: "stable",
     },
     {
+      name: "ViewTransitionScopedChildRestrictedElements",
+      status: "test",
+    },
+    {
       // Kill switch. Doesn't generate the ::view-transition pseudo-element
       // tree when capturing the outgoing document of a cross-document view
       // transition, since the animation runs on the new document. This avoids
@@ -7810,12 +7824,15 @@
     },
     {
       name: "WebTransportDatagramsWritable",
-      status: "experimental",
-      base_feature: "none",
+      status: "stable",
       depends_on: ["WebTransportSendGroup"],
     },
     {
       name: "WebTransportDraining",
+      status: "stable",
+    },
+    {
+      name: "WebTransportErrorSerialization",
       status: "stable",
     },
     {
@@ -7838,8 +7855,7 @@
     },
     {
       name: "WebTransportSendGroup",
-      status: "experimental",
-      base_feature: "none",
+      status: "stable",
     },
     {
       // Note: enabling this without setting WebTransportCongestionControl to

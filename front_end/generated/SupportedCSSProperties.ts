@@ -2333,9 +2333,6 @@ export const generatedProperties: CSSProperty[] = [
   "runtime_flag_status": "test"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-top-left-radius",
    "corner-top-left-shape",
@@ -2351,9 +2348,6 @@ export const generatedProperties: CSSProperty[] = [
   "runtime_flag_status": "experimental"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-end-start-radius",
    "corner-end-start-shape",
@@ -2372,9 +2366,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-block-end-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-start-start-radius",
    "corner-start-start-shape",
@@ -2393,9 +2384,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-block-start-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-bottom-left-radius",
    "corner-bottom-left-shape",
@@ -2407,9 +2395,6 @@ export const generatedProperties: CSSProperty[] = [
   "runtime_flag_status": "experimental"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-bottom-left-radius",
    "corner-bottom-left-shape"
@@ -2430,9 +2415,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-bottom-left-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-bottom-right-radius",
    "corner-bottom-right-shape"
@@ -2460,9 +2442,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-bottom-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-end-end-radius",
    "corner-end-end-shape"
@@ -2475,9 +2454,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-end-end-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-end-start-radius",
    "corner-end-start-shape"
@@ -2490,9 +2466,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-end-start-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-start-end-radius",
    "corner-start-end-shape",
@@ -2511,9 +2484,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-inline-end-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-start-start-radius",
    "corner-start-start-shape",
@@ -2532,9 +2502,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-inline-start-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-top-left-radius",
    "corner-top-left-shape",
@@ -2553,9 +2520,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-left-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-top-right-radius",
    "corner-top-right-shape",
@@ -2583,9 +2547,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-start-end-radius",
    "corner-start-end-shape"
@@ -2598,9 +2559,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-start-end-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-start-start-radius",
    "corner-start-start-shape"
@@ -2613,9 +2571,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-start-start-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-top-left-radius",
    "corner-top-left-shape",
@@ -2627,9 +2582,6 @@ export const generatedProperties: CSSProperty[] = [
   "runtime_flag_status": "experimental"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-top-left-radius",
    "corner-top-left-shape"
@@ -2650,9 +2602,6 @@ export const generatedProperties: CSSProperty[] = [
   "name": "corner-top-left-shape"
  },
  {
-  "keywords": [
-   "normal"
-  ],
   "longhands": [
    "border-top-right-radius",
    "corner-top-right-shape"
@@ -7244,31 +7193,6 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "-webkit-legacy"
   ]
  },
- "corner": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-block-end": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-block-start": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-bottom": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-bottom-left": {
-  "values": [
-   "normal"
-  ]
- },
  "corner-bottom-left-shape": {
   "values": [
    "notch",
@@ -7277,11 +7201,6 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "round",
    "squircle",
    "square"
-  ]
- },
- "corner-bottom-right": {
-  "values": [
-   "normal"
   ]
  },
  "corner-bottom-right-shape": {
@@ -7294,56 +7213,6 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "square"
   ]
  },
- "corner-end-end": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-end-start": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-inline-end": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-inline-start": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-left": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-right": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-start-end": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-start-start": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-top": {
-  "values": [
-   "normal"
-  ]
- },
- "corner-top-left": {
-  "values": [
-   "normal"
-  ]
- },
  "corner-top-left-shape": {
   "values": [
    "notch",
@@ -7352,11 +7221,6 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "round",
    "squircle",
    "square"
-  ]
- },
- "corner-top-right": {
-  "values": [
-   "normal"
   ]
  },
  "corner-top-right-shape": {

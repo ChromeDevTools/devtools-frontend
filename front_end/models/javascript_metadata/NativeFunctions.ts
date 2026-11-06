@@ -6675,7 +6675,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "WebTransportError",
-    signatures: [["?init"]]
+    signatures: [["?message","?options"],["init","?legacyIgnored"]]
   },
   {
     name: "CloseEvent",

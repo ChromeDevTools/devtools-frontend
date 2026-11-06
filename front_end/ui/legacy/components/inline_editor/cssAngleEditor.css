@@ -25,7 +25,9 @@
   background-color: var(--sys-color-cdt-base-container);
   border: 0.5em solid var(--sys-color-neutral-outline);
   border-radius: 9em;
-  box-shadow: var(--drop-shadow), inset 0 0 15px var(--box-shadow-outline-color);
+  box-shadow:
+    var(--drop-shadow),
+    inset 0 0 var(--sys-size-7) var(--box-shadow-outline-color);
   transform: translateX(-3em);
 }
 

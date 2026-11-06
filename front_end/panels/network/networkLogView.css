@@ -111,10 +111,6 @@
   color: var(--sys-color-token-subtle);
 }
 
-.network-badge {
-  margin-right: var(--sys-size-3);
-}
-
 .status-column .devtools-link {
   color: inherit;
 }
@@ -321,12 +317,6 @@ td.time-column {
   z-index: 0;
 }
 
-.network-log-grid.data-grid span.separator-in-cell {
-  user-select: none;
-  min-width: 1ex;
-  display: inline-block;
-}
-
 .network-status-pane {
   position: absolute;
   inset: 0;
@@ -387,10 +377,6 @@ td.time-column {
   display: inline-block;
   margin: -7px var(--sys-size-1);
   vertical-align: baseline;
-}
-
-.network-frame-group-badge {
-  margin-right: var(--sys-size-3);
 }
 
 .network-override-marker {

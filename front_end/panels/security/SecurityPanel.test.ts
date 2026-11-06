@@ -793,14 +793,46 @@ describeWithEnvironment('SecurityMainView', () => {
     sinon.assert.callCount(viewStub, 1);
     assert.isNull(viewStub.input.securityState);
     assert.strictEqual(viewStub.input.summaryText, '');
+    assert.isEmpty(viewStub.input.mainExplanations);
+    assert.isEmpty(viewStub.input.extraExplanations);
 
-    view.updateVisibleSecurityState(
-        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Secure, null, null, []));
+    const showCertSpy = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showCertificateViewer');
+    viewStub.input.onShowCertificateViewer(['MII...']);
+    sinon.assert.calledOnceWithExactly(showCertSpy, ['MII...']);
+
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
+    viewStub.input.onShowNetworkFilter(NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED);
+    sinon.assert.calledOnce(revealStub);
+
+    const certState: Protocol.Security.CertificateSecurityState = {
+      protocol: 'TLS 1.3',
+      keyExchange: '',
+      keyExchangeGroup: 'X25519',
+      cipher: 'AES_128_GCM',
+      mac: undefined,
+      certificate: ['MII...'],
+      subjectName: 'example.com',
+      issuer: 'Let\'s Encrypt',
+      validFrom: 0,
+      validTo: 1,
+      certificateNetworkError: undefined,
+      certificateHasWeakSignature: false,
+      certificateHasSha1Signature: false,
+      modernSSL: true,
+      obsoleteSslProtocol: false,
+      obsoleteSslKeyExchange: false,
+      obsoleteSslCipher: false,
+      obsoleteSslSignature: false,
+    };
+
+    view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Secure, certState, null, ['pkp-bypassed']));
     await UI.Widget.Widget.allUpdatesComplete;
 
     sinon.assert.callCount(viewStub, 2);
     assert.strictEqual(viewStub.input.securityState, Protocol.Security.SecurityState.Secure);
-    assert.strictEqual(viewStub.input.summaryText, 'This page is secure (valid HTTPS)');
+    assert.lengthOf(viewStub.input.mainExplanations, 3);
+    assert.lengthOf(viewStub.input.extraExplanations, 1);
   });
 
   it('renders lock spectrum classes and tooltips across security states', async () => {
@@ -1044,8 +1076,8 @@ describeWithEnvironment('SecurityMainView', () => {
       view.setFilterRequestCounts(new Map([[NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED, 2]]));
       await UI.Widget.Widget.allUpdatesComplete;
 
-      const linkBtn = querySelectorErrorOnMissing(
-          view.contentElement, '.security-explanations-main button.security-mixed-content[role="link"]');
+      const linkBtn = querySelectorErrorOnMissing(view.contentElement,
+                                                  '.security-explanations-main devtools-button.security-mixed-content');
       assert.strictEqual(linkBtn.textContent, 'View 2 requests in Network panel');
 
       const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
@@ -1066,7 +1098,7 @@ describeWithEnvironment('SecurityMainView', () => {
           querySelectorErrorOnMissing(view.contentElement, '.security-explanations-main .security-explanation-info');
       assert.strictEqual(querySelectorErrorOnMissing(blockedExplanation, '.security-explanation-title').textContent,
                          'Blocked mixed content');
-      const linkBtn = querySelectorErrorOnMissing(blockedExplanation, 'button.security-mixed-content[role="link"]');
+      const linkBtn = querySelectorErrorOnMissing(blockedExplanation, 'devtools-button.security-mixed-content');
       assert.strictEqual(linkBtn.textContent, 'View 3 requests in Network panel');
     });
 
@@ -1082,7 +1114,7 @@ describeWithEnvironment('SecurityMainView', () => {
       ]));
       await UI.Widget.Widget.allUpdatesComplete;
 
-      const links = standaloneView.contentElement.querySelectorAll('button.security-mixed-content[role="link"]');
+      const links = standaloneView.contentElement.querySelectorAll('devtools-button.security-mixed-content');
       assert.lengthOf(links, 2);
       assert.strictEqual(links[0].textContent, 'View 4 requests in Network panel');
       assert.strictEqual(links[1].textContent, 'View 1 request in Network panel');
@@ -1438,9 +1470,9 @@ describeWithEnvironment('SecurityPanel', () => {
     const explanationText = querySelectorErrorOnMissing(explanation, '.security-explanation-text');
     assert.include(explanationText.textContent, 'Your page requested non-secure resources that were blocked');
 
-    const requestsLink = querySelectorErrorOnMissing(explanation, 'button.security-mixed-content');
+    const requestsLink = querySelectorErrorOnMissing(explanation, 'devtools-button.security-mixed-content');
     assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
-    assert.strictEqual(requestsLink.getAttribute('role'), 'link');
+    assert.instanceOf(requestsLink, Buttons.Button.Button);
 
     // Test that the explanations are cleared on navigation. Regression test for https://crbug.com/601944.
     navigate(getMainFrame(target));
@@ -1488,9 +1520,9 @@ describeWithEnvironment('SecurityPanel', () => {
     await UI.Widget.Widget.allUpdatesComplete;
 
     const explanationAfterReload = assertMixedContentExplanation();
-    const requestsLink = querySelectorErrorOnMissing(explanationAfterReload, '.security-mixed-content');
+    const requestsLink = querySelectorErrorOnMissing(explanationAfterReload, 'devtools-button.security-mixed-content');
     assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
-    assert.strictEqual(requestsLink.getAttribute('role'), 'link');
+    assert.instanceOf(requestsLink, Buttons.Button.Button);
   });
 
   it('replaces active and passive mixed content reload prompts with request links when requests are recorded',
@@ -1555,9 +1587,9 @@ describeWithEnvironment('SecurityPanel', () => {
 
        const explanationsAfterReload = assertMixedContentExplanations();
        for (const explanation of explanationsAfterReload) {
-         const requestsLink = querySelectorErrorOnMissing(explanation, '.security-mixed-content');
+         const requestsLink = querySelectorErrorOnMissing(explanation, 'devtools-button.security-mixed-content');
          assert.strictEqual(requestsLink.textContent, 'View 1 request in Network panel');
-         assert.strictEqual(requestsLink.getAttribute('role'), 'link');
+         assert.instanceOf(requestsLink, Buttons.Button.Button);
        }
      });
 

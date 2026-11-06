@@ -11,6 +11,7 @@ ts_library("testing") {
 
   sources = [
     "AiAssistanceHelpers.ts",
+    "AxeHelpers.ts",
     "ConsoleHelpers.ts",
     "ConsoleInsightHelpers.ts",
     "ContextMenuHelpers.ts",
@@ -65,6 +66,7 @@ ts_library("testing") {
   data_deps = [
     "../core/i18n/locales",
     "../panels/timeline/fixtures/traces",
+    "../third_party/axe-core",
   ]
 
   ts_deps = [

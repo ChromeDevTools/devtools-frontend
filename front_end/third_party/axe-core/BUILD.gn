@@ -2,14 +2,13 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../scripts/build/ninja/copy.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
-group("axe-core") {
-  public_deps = [ ":gen" ]
+devtools_pre_built("axe-core") {
+  sources_are_release = false
 
-  data_deps = [ ":gen" ]
-}
-
-copy_to_gen("gen") {
-  sources = [ "axe.js" ]
+  sources = [
+    "axe.d.ts",
+    "axe.js",
+  ]
 }

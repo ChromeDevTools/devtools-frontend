@@ -249,10 +249,10 @@ devtools-toolbar.device-mode-toolbar-options {
 
 .device-mode-bottom-left-resizer > div {
   position: absolute;
-  bottom: 3px;
-  left: 3px;
-  width: 13px;
-  height: 13px;
+  bottom: var(--sys-size-3);
+  left: var(--sys-size-3);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeDiagonal);
   transform: rotate(90deg);

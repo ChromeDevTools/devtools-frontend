@@ -14,7 +14,7 @@
     border: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: var(--sys-color-cdt-base-container);
     overflow: hidden;
-    width: 400px;
+    width: var(--sys-size-31);
   }
 
   .settings-toolbar {

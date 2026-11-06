@@ -298,7 +298,7 @@ svg.animation-ui path:focus-visible {
 }
 
 text.animation-timeline-grid-label {
-  font-size: 10px;
+  font-size: var(--sys-typescale-body5-size);
   fill: var(--sys-color-token-subtle);
   text-anchor: middle;
 }

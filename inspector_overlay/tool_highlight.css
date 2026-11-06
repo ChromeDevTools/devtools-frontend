@@ -7,9 +7,6 @@
 body {
   --arrow-width: 15px;
   --arrow-height: 8px;
-  --shadow-up: 5px;
-  --shadow-down: -5px;
-  --shadow-direction: var(--shadow-up);
   --arrow-down: polygon(0 0, 100% 0, 50% 100%);
   --arrow-up: polygon(50% 0, 0 100%, 100% 100%);
 }
@@ -18,10 +15,6 @@ body {
   color: rgb(128 128 128);
 }
 
-#element-title {
-  position: absolute;
-  z-index: 10;
-}
 /* Material */
 
 .tooltip-content {

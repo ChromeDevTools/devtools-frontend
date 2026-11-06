@@ -699,10 +699,17 @@ describe('AidaGcaTranslation', () => {
   });
 
   describe('GCA GenerateContentResponse to AIDA ChunkResponse', () => {
-    it('translates a basic chunk response and includes modelVersion', () => {
+    it('translates a basic chunk response and includes modelVersion and usageMetadata', () => {
       const gcaResponse = createGcaResponse({
         modelVersion: 'gen-model',
         responseId: 'response-789',
+        usageMetadata: {
+          promptTokenCount: 120,
+          candidatesTokenCount: 30,
+          totalTokenCount: 165,
+          thoughtsTokenCount: 15,
+          cachedContentTokenCount: 40,
+        },
         candidates: [{
           index: 0,
           content: {role: 'model', parts: [{text: 'const add = (a, b) => a + b;'}]},
@@ -725,6 +732,13 @@ describe('AidaGcaTranslation', () => {
                              citations: [],
                            },
                            inferenceOptionMetadata: {modelId: 'gen-model'},
+                           usageMetadata: {
+                             promptTokenCount: 120,
+                             candidatesTokenCount: 30,
+                             totalTokenCount: 165,
+                             thoughtsTokenCount: 15,
+                             cachedContentTokenCount: 40,
+                           },
                          },
                        }]);
     });
@@ -769,6 +783,13 @@ describe('AidaGcaTranslation', () => {
           rpcGlobalId: 'response-789',
           inferenceOptionMetadata: {modelId: 'gen-model'},
           attributionMetadata: {attributionAction: AidaClient.RecitationAction.CITE, citations: []},
+          usageMetadata: {
+            promptTokenCount: 0,
+            candidatesTokenCount: 0,
+            totalTokenCount: 0,
+            thoughtsTokenCount: 0,
+            cachedContentTokenCount: 0,
+          },
         },
       },
     ]);

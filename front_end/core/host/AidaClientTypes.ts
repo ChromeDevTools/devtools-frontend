@@ -398,11 +398,20 @@ export interface InferenceOptionMetadata {
   modelId: string;
 }
 
+export interface UsageMetadata {
+  promptTokenCount?: number;
+  candidatesTokenCount?: number;
+  totalTokenCount?: number;
+  thoughtsTokenCount?: number;
+  cachedContentTokenCount?: number;
+}
+
 export interface ResponseMetadata {
   rpcGlobalId?: RpcGlobalId;
   attributionMetadata?: AttributionMetadata;
   factualityMetadata?: FactualityMetadata;
   inferenceOptionMetadata?: InferenceOptionMetadata;
+  usageMetadata?: UsageMetadata;
 }
 
 export interface DoConversationResponse {

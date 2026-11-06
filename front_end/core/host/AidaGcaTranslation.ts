@@ -512,6 +512,16 @@ export function gcaChunkResponseToAidaChunkResponse(response: GCA.GenerateConten
       inferenceOptionMetadata: {modelId: response.modelVersion},
     };
 
+    if (response.usageMetadata) {
+      metadata.usageMetadata = {
+        promptTokenCount: response.usageMetadata.promptTokenCount,
+        candidatesTokenCount: response.usageMetadata.candidatesTokenCount,
+        totalTokenCount: response.usageMetadata.totalTokenCount,
+        thoughtsTokenCount: response.usageMetadata.thoughtsTokenCount,
+        cachedContentTokenCount: response.usageMetadata.cachedContentTokenCount,
+      };
+    }
+
     if (candidate?.citationMetadata?.citations) {
       metadata.attributionMetadata = {
         attributionAction: AIDA.RecitationAction.CITE,
@@ -522,6 +532,7 @@ export function gcaChunkResponseToAidaChunkResponse(response: GCA.GenerateConten
                                                             })),
       };
     }
+
     const chunks: AIDA.AidaChunkResponse[] = parts.map(part => {
       const aidaChunkResponse: AIDA.AidaChunkResponse = {metadata};
       if (part.text !== undefined) {

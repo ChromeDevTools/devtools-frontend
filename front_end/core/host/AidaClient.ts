@@ -246,7 +246,10 @@ export class AidaClient {
 
       for (const result of results) {
         if (result.metadata) {
-          metadata = result.metadata;
+          metadata = {
+            ...metadata,
+            ...result.metadata,
+          };
           if (metadata?.attributionMetadata?.attributionAction === RecitationAction.BLOCK) {
             throw new AidaBlockError();
           }

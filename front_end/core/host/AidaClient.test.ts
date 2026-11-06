@@ -480,6 +480,11 @@ describe('AidaClient', () => {
                     {startIndex: 0, endIndex: 1, uri: 'https://example.com'},
                   ],
                 },
+                usageMetadata: {
+                  promptTokenCount: 150,
+                  candidatesTokenCount: 25,
+                  totalTokenCount: 175,
+                },
               },
             },
           ]);
@@ -504,6 +509,11 @@ describe('AidaClient', () => {
               {startIndex: 0, endIndex: 1, uri: 'https://example.com'},
             ],
           },
+          usageMetadata: {
+            promptTokenCount: 150,
+            candidatesTokenCount: 25,
+            totalTokenCount: 175,
+          },
         },
         completed: false,
       },
@@ -517,6 +527,11 @@ describe('AidaClient', () => {
             citations: [
               {startIndex: 0, endIndex: 1, uri: 'https://example.com'},
             ],
+          },
+          usageMetadata: {
+            promptTokenCount: 150,
+            candidatesTokenCount: 25,
+            totalTokenCount: 175,
           },
         },
         functionCalls: undefined,

@@ -32,20 +32,6 @@
   padding: var(--sys-size-5) var(--sys-size-6);
 }
 
-.devices-settings-tab .devices-button-row {
-  flex: none;
-  display: flex;
-
-  devtools-button {
-    margin: var(--sys-size-3) 0 0 5px;
-  }
-}
-
-.devices-settings-tab .devices-list {
-  width: min(350px, 100%);
-  margin-top: 10px;
-}
-
 .devices-list-item {
   padding: var(--sys-size-3) var(--sys-size-6);
   height: var(--sys-size-13);
@@ -92,45 +78,7 @@
   margin-bottom: 0;
 }
 
-.devices-edit-client-hints-heading {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 5px;
-}
-/* Don't want the bottom margin in the specific case of the folding one;
- * it messes with alignment with the arrow (which is a ::before) and  it's
- * spaced reasonably without it anyway
- */
-li .devices-edit-client-hints-heading {
-  margin-bottom: 0;
-}
-
-.devices-edit-client-hints-heading b {
-  margin-inline-end: var(--sys-size-2);
-}
-
-.devices-edit-client-hints-heading .help-icon {
-  margin-left: var(--sys-size-2);
-  margin-right: var(--sys-size-2);
-  vertical-align: middle;
-}
-
-.devices-edit-client-hints-heading a:focus {
-  box-shadow: var(--sys-color-state-focus-ring);
-}
-
 .devices-edit-fields input {
-  flex: auto;
-  margin: var(--sys-size-5) 5px 0;
-}
-
-li.devices-edit-client-hints-field {
-  /* Cancel out padding from treeview's .tree-outline ol */
-  left: calc(-1 * var(--sys-size-6));
-}
-
-.devices-edit-client-hints-field input {
   flex: auto;
   margin: var(--sys-size-5) 5px 0;
 }

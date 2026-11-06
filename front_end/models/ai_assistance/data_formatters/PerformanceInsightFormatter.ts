@@ -72,7 +72,7 @@ export class PerformanceInsightFormatter {
   }
 
   #formatRequestUrl(request: Trace.Types.Events.SyntheticNetworkRequest): string {
-    return `${this.#traceFormatter.formatRequestUrl(request)} ${this.#traceFormatter.serializeEvent(request)}`;
+    return `${request.args.data.url} ${this.#traceFormatter.serializeEvent(request)}`;
   }
 
   #formatScriptUrl(script: Trace.Handlers.ModelHandlers.Scripts.Script): string {
@@ -466,7 +466,7 @@ Duplication grouped by Node modules: ${filesFormatted}`;
     for (const font of insight.fonts) {
       let fontName = font.name;
       if (!fontName) {
-        const url = new Common.ParsedURL.ParsedURL(this.#traceFormatter.formatRequestUrl(font.request));
+        const url = new Common.ParsedURL.ParsedURL(font.request.args.data.url);
         fontName = url.isValid ? url.lastPathComponent : '(not available)';
       }
       output += `\n - Font name: ${fontName}, URL: ${

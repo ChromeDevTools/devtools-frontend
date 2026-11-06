@@ -818,7 +818,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         }
 
         // TODO(b/425270067): Format in the same way that "Summary" detail tab does.
-        const details = formatEventForAI(event, parsedTrace);
+        const details = formatEventForAI(event);
 
         const key = `getEventByKey('${params.eventKey}')`;
         this.#cacheFunctionResult(focus, key, details);

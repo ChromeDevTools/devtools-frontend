@@ -71,7 +71,7 @@ export class GetTraceEventByKeyTool implements
       return {error: `Could not find event with key "${params.eventKey}".`};
     }
 
-    const details = formatEventForAI(event, focus.parsedTrace);
+    const details = formatEventForAI(event);
     return {
       result: details,
       widgets: [{

@@ -1,7 +1,8 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -11,7 +12,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import {createIcon, type Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -30,6 +30,7 @@ import {
 import {SecurityPanelSidebar} from './SecurityPanelSidebar.js';
 
 const {widget, widgetRef} = UI.Widget;
+const {ifDefined} = Directives;
 
 const UIStrings = {
   /**
@@ -480,12 +481,13 @@ function getSecurityStateIconNameForDetailedView(securityState: Protocol.Securit
 }
 
 export function getSecurityStateIconForDetailedView(securityState: Protocol.Security.SecurityState,
-                                                    className: string): Icon {
-  return createIcon(getSecurityStateIconNameForDetailedView(securityState), className);
+                                                    className: string): TemplateResult {
+  return html`<devtools-icon name=${getSecurityStateIconNameForDetailedView(securityState)} class=${
+      className}></devtools-icon>`;
 }
 
-export function getSecurityStateIconForOverview(
-    securityState: Protocol.Security.SecurityState, className: string): Icon {
+export function getSecurityStateIconForOverview(securityState: Protocol.Security.SecurityState, className: string,
+                                                title?: string): TemplateResult {
   let iconName: string;
   switch (securityState) {
     case Protocol.Security.SecurityState.Unknown:  // fallthrough
@@ -502,7 +504,7 @@ export function getSecurityStateIconForOverview(
     case Protocol.Security.SecurityState.Info:
       throw new Error(`Unexpected security state ${securityState}`);
   }
-  return createIcon(iconName, className);
+  return html`<devtools-icon name=${iconName} class=${className} title=${ifDefined(title)}></devtools-icon>`;
 }
 
 export function renderHighlightedUrl(url: Platform.DevToolsPath.UrlString, securityState: string): TemplateResult {
@@ -558,6 +560,8 @@ const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target: HTMLEl
       ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
       <devtools-widget
         slot="sidebar"
+        class="panel-sidebar"
+        jslog=${VisualLogging.pane('sidebar').track({resize: true})}
         ${widget(SecurityPanelSidebar)}
         ${widgetRef(SecurityPanelSidebar, e => {output.sidebar = e;})}>
       </devtools-widget>
@@ -585,8 +589,6 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     this.update();
 
     this.sidebar.setMinimumSize(100, 25);
-    this.sidebar.element.classList.add('panel-sidebar');
-    this.sidebar.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
 
     this.mainView = new SecurityMainView();
     this.sidebar.onShowOrigin = (origin: Platform.DevToolsPath.UrlString|null) => {
@@ -924,18 +926,13 @@ export const DEFAULT_SECURITY_MAIN_VIEW: SecurityMainViewFunction = (input, _out
           ${i18nString(UIStrings.securityOverview)}
         </div>
         <div class="lock-spectrum">
-          <devtools-icon
-              name=${LOCK_ICON_NAME}
-              class="lock-icon lock-icon-secure"
-              title=${i18nString(UIStrings.secure)}></devtools-icon>
-          <devtools-icon
-              name=${UNKNOWN_ICON_NAME}
-              class="lock-icon lock-icon-neutral"
-              title=${i18nString(UIStrings.info)}></devtools-icon>
-          <devtools-icon
-              name=${WARNING_ICON_NAME}
-              class=${insecureIconClass}
-              title=${insecureTooltip}></devtools-icon>
+          ${getSecurityStateIconForOverview(
+              Protocol.Security.SecurityState.Secure, 'lock-icon lock-icon-secure', i18nString(UIStrings.secure))}
+          ${getSecurityStateIconForOverview(
+              Protocol.Security.SecurityState.Neutral, 'lock-icon lock-icon-neutral', i18nString(UIStrings.info))}
+          ${getSecurityStateIconForOverview(
+              isInsecureBroken ? Protocol.Security.SecurityState.InsecureBroken : Protocol.Security.SecurityState.Insecure,
+              insecureIconClass, insecureTooltip)}
         </div>
         <div class="triangle-pointer-container">
           <div class="triangle-pointer-wrapper">

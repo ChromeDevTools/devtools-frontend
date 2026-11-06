@@ -135,6 +135,31 @@ describe('renderCertificateViewerButton', () => {
   });
 });
 
+describe('getSecurityStateIconForDetailedView', () => {
+  it('returns template result with expected icon name and class', () => {
+    const template = Security.SecurityPanel.getSecurityStateIconForDetailedView(Protocol.Security.SecurityState.Secure,
+                                                                                'test-class');
+    const container = document.createElement('div');
+    render(template, container);
+    const icon = querySelectorErrorOnMissing(container, 'devtools-icon');
+    assert.strictEqual(icon.getAttribute('name'), 'lock');
+    assert.strictEqual(icon.getAttribute('class'), 'test-class');
+  });
+});
+
+describe('getSecurityStateIconForOverview', () => {
+  it('returns template result with expected icon name, class, and title', () => {
+    const template = Security.SecurityPanel.getSecurityStateIconForOverview(Protocol.Security.SecurityState.Secure,
+                                                                            'test-class', 'Secure tooltip');
+    const container = document.createElement('div');
+    render(template, container);
+    const icon = querySelectorErrorOnMissing(container, 'devtools-icon');
+    assert.strictEqual(icon.getAttribute('name'), 'lock');
+    assert.strictEqual(icon.getAttribute('class'), 'test-class');
+    assert.strictEqual(icon.getAttribute('title'), 'Secure tooltip');
+  });
+});
+
 describeWithEnvironment('SecurityOriginView', () => {
   function createOriginState(securityDetails: Partial<Protocol.Network.SecurityDetails> = {}):
       Security.SecurityPanel.OriginState {

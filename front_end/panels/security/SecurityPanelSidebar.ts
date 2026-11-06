@@ -5,7 +5,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
-import type {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 
@@ -69,8 +68,6 @@ export interface ViewOutput {
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
-  const renderIcon = (icon: Icon): TemplateResult => html`${icon}`;
-
   const renderOrigin =
       (origin: Platform.DevToolsPath.UrlString, state: Protocol.Security.SecurityState): TemplateResult => {
         const icon = getSecurityStateIconForDetailedView(state, `security-property security-property-${state}`);
@@ -85,7 +82,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 output.onElementSelected(origin);
                 output.onShowOrigin(origin);
               }}>
-            ${renderIcon(icon)}
+            ${icon}
             ${renderHighlightedUrl(origin, state)}
           </li>
         `;
@@ -105,7 +102,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     }
   };
 
-  const getGroupIcon = (group: OriginGroup, mainOriginState: Protocol.Security.SecurityState|null): Icon|null => {
+  const getGroupIcon = (group: OriginGroup,
+                        mainOriginState: Protocol.Security.SecurityState|null): TemplateResult|null => {
     switch (group) {
       case OriginGroup.MainOrigin:
         return mainOriginState ?
@@ -162,7 +160,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     // clang-format off
     return html`
       <li role="treeitem" class="security-sidebar-origins" open ?hidden=${isHidden}>
-        ${icon ? renderIcon(icon) : nothing}
+        ${icon ?? nothing}
         <span class="security-sidebar-origins-title">${title}</span>
         <ul role="group" aria-label=${title}>
           ${showReloadMessage ? html`
@@ -194,7 +192,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                   output.onElementSelected('overview');
                   output.onShowOrigin(null);
                 }}>
-              ${renderIcon(overviewIcon)}
+              ${overviewIcon}
               <span title=${i18nString(UIStrings.overview)}>${i18nString(UIStrings.overview)}</span>
             </li>
             ${Object.values(OriginGroup).map(group => renderGroup(group))}

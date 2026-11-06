@@ -579,5 +579,12 @@ export const enum EnumeratedHistogram {
   BuiltInAiAvailability = 'DevTools.BuiltInAiAvailability',
   ResendRequest = 'DevTools.ResendRequest',
   EditResendRequest = 'DevTools.EditResendRequest',
+  AiClientRequestResult = 'DevTools.AiClient.RequestResult',
+  AiClientRequestResultAiAssistance = 'DevTools.AiClient.RequestResult.AiAssistance',
+  AiClientRequestResultCodeComplete = 'DevTools.AiClient.RequestResult.CodeComplete',
+  AiClientRequestResultCodeGenerate = 'DevTools.AiClient.RequestResult.CodeGenerate',
+  AiClientRequestResultConsoleInsights = 'DevTools.AiClient.RequestResult.ConsoleInsights',
+  AiClientRequestResultConversationSummary = 'DevTools.AiClient.RequestResult.ConversationSummary',
+  AiClientRequestResultPerformanceAnnotations = 'DevTools.AiClient.RequestResult.PerformanceAnnotations',
   // LINT.ThenChange(/front_end/devtools_compatibility.js:EnumeratedHistogram)
 }

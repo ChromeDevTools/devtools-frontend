@@ -294,6 +294,18 @@ export class UserMetrics {
   commentSize(characters: number): void {
     InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.CommentSize', characters, 1, 100_000, 50);
   }
+
+  /**
+   * Records the outcome of an AI request to the aggregate histogram and optionally to a surface-specific slice.
+   */
+  aiClientRequestResult(result: AiClientRequestResult, surfaceHistogram?: AiClientSurfaceHistogram): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.AiClientRequestResult, result,
+                                                            AiClientRequestResult.MAX_VALUE);
+    if (surfaceHistogram !== undefined) {
+      InspectorFrontendHostInstance.recordEnumeratedHistogram(surfaceHistogram, result,
+                                                              AiClientRequestResult.MAX_VALUE);
+    }
+  }
 }
 
 /**
@@ -499,6 +511,19 @@ export const BuiltInAiAvailability: typeof Enums.BuiltInAiAvailability =
 export type ResendRequestType = Enums.ResendRequestType;
 export const ResendRequestType: typeof Enums.ResendRequestType =
     createDynamicEnumProxy<typeof Enums.ResendRequestType>('ResendRequestType', Enums.ResendRequestType);
+
+export type AiClientRequestResult = Enums.AiClientRequestResult;
+export const AiClientRequestResult: typeof Enums.AiClientRequestResult =
+    createDynamicEnumProxy<typeof Enums.AiClientRequestResult>('AiClientRequestResult', Enums.AiClientRequestResult);
+
+export type AiClientSurfaceHistogram = EnumeratedHistogram.AiClientRequestResultAiAssistance|
+                                       EnumeratedHistogram.AiClientRequestResultCodeComplete|
+                                       EnumeratedHistogram.AiClientRequestResultCodeGenerate|
+                                       EnumeratedHistogram.AiClientRequestResultConsoleInsights|
+                                       EnumeratedHistogram.AiClientRequestResultConversationSummary|
+                                       EnumeratedHistogram.AiClientRequestResultPerformanceAnnotations;
+
+export const userMetrics: UserMetrics = new UserMetrics();
 
 const resendRequestTypeMap = new Map<Common.ResourceType.ResourceType, keyof typeof Enums.ResendRequestType>([
   [Common.ResourceType.resourceTypes.XHR, 'XHR'],

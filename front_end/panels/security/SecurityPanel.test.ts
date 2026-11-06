@@ -11,11 +11,17 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {doubleRaf, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {
+  assertScreenshot,
+  doubleRaf,
+  querySelectorErrorOnMissing,
+  renderElementIntoDOM,
+} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
 import * as NetworkForward from '../network/forward/forward.js';
 
@@ -38,6 +44,28 @@ function createSecurityDetails(overrides: Partial<Protocol.Network.SecurityDetai
     signedCertificateTimestampList: [],
     certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
     encryptedClientHello: false,
+    ...overrides,
+  };
+}
+
+function createCertificateSecurityState(overrides: Partial<Protocol.Security.CertificateSecurityState> = {}):
+    Protocol.Security.CertificateSecurityState {
+  return {
+    protocol: 'TLS 1.3',
+    keyExchange: '',
+    cipher: 'AES_128_GCM',
+    certificate: [],
+    subjectName: 'example.com',
+    issuer: 'Test CA',
+    validFrom: 0,
+    validTo: 1,
+    certificateHasWeakSignature: false,
+    certificateHasSha1Signature: false,
+    modernSSL: true,
+    obsoleteSslProtocol: false,
+    obsoleteSslKeyExchange: false,
+    obsoleteSslCipher: false,
+    obsoleteSslSignature: false,
     ...overrides,
   };
 }
@@ -708,6 +736,332 @@ describeWithEnvironment('SecurityPanelSidebarTree', () => {
           '.highlighted-url > .url-scheme-secure'));
       assert.notExists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
           '.highlighted-url > .url-scheme-unknown'));
+    });
+  });
+});
+
+describeWithEnvironment('SecurityMainView', () => {
+  function renderView(view: Security.SecurityPanel.SecurityMainView, width = 600,
+                      height = 500): Security.SecurityPanel.SecurityMainView {
+    return renderElementIntoDOM(view, {includeCommonStyles: true, width, height});
+  }
+
+  function createMainView(): Security.SecurityPanel.SecurityMainView {
+    const panel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    const view = new Security.SecurityPanel.SecurityMainView();
+    view.panel = panel;
+    return view;
+  }
+
+  it('renders lock spectrum classes and tooltips across security states', async () => {
+    const view = createMainView();
+    renderView(view);
+
+    const states = [
+      {
+        state: Protocol.Security.SecurityState.Secure,
+        selector: '.lock-spectrum .lock-icon:nth-child(1)',
+        activeClass: 'lock-icon-secure',
+        tooltip: 'Secure',
+      },
+      {
+        state: Protocol.Security.SecurityState.Neutral,
+        selector: '.lock-spectrum .lock-icon:nth-child(2)',
+        activeClass: 'lock-icon-neutral',
+        tooltip: 'Info',
+      },
+      {
+        state: Protocol.Security.SecurityState.Insecure,
+        selector: '.lock-spectrum .lock-icon:nth-child(3)',
+        activeClass: 'lock-icon-insecure',
+        tooltip: 'Not secure',
+      },
+      {
+        state: Protocol.Security.SecurityState.InsecureBroken,
+        selector: '.lock-spectrum .lock-icon:nth-child(3)',
+        activeClass: 'lock-icon-insecure-broken',
+        tooltip: 'Not secure (broken)',
+      },
+    ];
+
+    for (const {state, selector, activeClass, tooltip} of states) {
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(state, null, null, []));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const summary = querySelectorErrorOnMissing(view.contentElement, '.security-summary');
+      assert.isTrue(summary.classList.contains(`security-summary-${state}`));
+
+      const icon = querySelectorErrorOnMissing(view.contentElement, selector);
+      assert.isTrue(icon.classList.contains(activeClass));
+      assert.strictEqual(icon.getAttribute('title'), tooltip);
+    }
+
+    // Verify transitioning InsecureBroken -> Insecure restores .lock-icon-insecure and 'Not secure'
+    view.updateVisibleSecurityState(
+        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Insecure, null, null, []));
+    await UI.Widget.Widget.allUpdatesComplete;
+    const insecureIcon = querySelectorErrorOnMissing(view.contentElement, '.lock-spectrum .lock-icon:nth-child(3)');
+    assert.isTrue(insecureIcon.classList.contains('lock-icon-insecure'));
+    assert.isFalse(insecureIcon.classList.contains('lock-icon-insecure-broken'));
+    assert.strictEqual(insecureIcon.getAttribute('title'), 'Not secure');
+  });
+
+  describe('summary overrides and safety tips', () => {
+    it('handles malicious-content SafeBrowsing summary and front-inserted explanation', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Insecure, null, null, ['malicious-content']));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
+      assert.strictEqual(summaryText.textContent, 'This page is dangerous (flagged by Google Safe Browsing)');
+
+      const explanations = view.contentElement.querySelectorAll('.security-explanations-main .security-explanation');
+      assert.isAbove(explanations.length, 0);
+      assert.strictEqual(
+          querySelectorErrorOnMissing(explanations[0] as HTMLElement, '.security-explanation-title').textContent,
+          'Flagged by Google Safe Browsing');
+      assert.include(
+          querySelectorErrorOnMissing(explanations[0] as HTMLElement, '.security-explanation-text').textContent ?? '',
+          'To check this page’s status, visit g.co/safebrowsingstatus');
+    });
+
+    it('early returns on is-error-page non-cert error leaving explanation lists empty', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      const certState = createCertificateSecurityState({
+        protocol: '',
+        keyExchange: '',
+        cipher: '',
+        validTo: 0,
+        modernSSL: false,
+      });
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Insecure, certState, null, ['is-error-page']));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
+      assert.strictEqual(summaryText.textContent, 'This is an error page');
+
+      const emptyLists = view.contentElement.querySelectorAll('.security-explanation-list:empty');
+      assert.lengthOf(emptyLists, 2);
+    });
+
+    it('renders unencrypted HTTP summary for scheme-is-not-cryptographic when insecure broken', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.InsecureBroken, null, null, ['scheme-is-not-cryptographic']));
+      await UI.Widget.Widget.allUpdatesComplete;
+      const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
+      assert.strictEqual(summaryText.textContent, 'This page is insecure (unencrypted HTTP)');
+    });
+
+    it('renders non-HTTPS secure origin summary for scheme-is-not-cryptographic when neutral', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']));
+      await UI.Widget.Widget.allUpdatesComplete;
+      const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
+      assert.strictEqual(summaryText.textContent, 'This page has a non-HTTPS secure origin');
+    });
+
+    it('renders suspicious page summary and explanation for bad_reputation safety tip', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Insecure, null, null, ['bad_reputation']));
+      await UI.Widget.Widget.allUpdatesComplete;
+      const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
+      assert.strictEqual(summaryText.textContent, 'This page is suspicious (flagged by Chrome)');
+      const firstExplanation =
+          querySelectorErrorOnMissing(view.contentElement, '.security-explanations-main .security-explanation');
+      assert.strictEqual(querySelectorErrorOnMissing(firstExplanation, '.security-explanation-title').textContent,
+                         'This page is suspicious');
+      assert.include(firstExplanation.textContent ?? '',
+                     'Chrome has determined that this site could be fake or fraudulent');
+    });
+
+    it('renders possible spoofing URL explanation for lookalike safety tip', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      const safetyTipInfo: Protocol.Security.SafetyTipInfo = {
+        safetyTipStatus: Protocol.Security.SafetyTipStatus.Lookalike,
+        safeUrl: 'https://example.com',
+      };
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Insecure, null, safetyTipInfo, ['lookalike']));
+      await UI.Widget.Widget.allUpdatesComplete;
+      const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
+      assert.strictEqual(summaryText.textContent, 'This page is suspicious (flagged by Chrome)');
+      const firstExplanation =
+          querySelectorErrorOnMissing(view.contentElement, '.security-explanations-main .security-explanation');
+      assert.strictEqual(querySelectorErrorOnMissing(firstExplanation, '.security-explanation-title').textContent,
+                         'Possible spoofing URL');
+      assert.include(firstExplanation.textContent ?? '', 'This site’s hostname looks similar to example.com');
+    });
+  });
+
+  it('invokes showCertificateViewer when origin-button is clicked inside explanation', async () => {
+    const view = createMainView();
+    renderView(view);
+
+    const showCertStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showCertificateViewer');
+
+    const certState = createCertificateSecurityState({
+      certificate: ['MII...dummyCertContent'],
+    });
+
+    view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Secure, certState, null, []));
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const certBtn = querySelectorErrorOnMissing(view.contentElement, '.security-explanations-main .origin-button');
+    assert.strictEqual(certBtn.textContent, 'View certificate');
+    (certBtn as HTMLElement).click();
+
+    sinon.assert.calledOnceWithExactly(showCertStub, ['MII...dummyCertContent']);
+  });
+
+  it('renders obsolete connection recommendations and routes Info explanations to extra section', async () => {
+    const view = createMainView();
+    renderView(view);
+
+    const certState = createCertificateSecurityState({
+      protocol: 'TLS 1.0',
+      keyExchange: 'RSA',
+      cipher: '3DES_EDE_CBC',
+      certificate: ['MII...'],
+      modernSSL: false,
+      obsoleteSslProtocol: true,
+      obsoleteSslKeyExchange: true,
+      obsoleteSslCipher: true,
+      obsoleteSslSignature: true,
+    });
+
+    view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Secure, certState, null, ['pkp-bypassed']));
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    // Info explanations routed to .security-explanations-extra
+    const extraExplanations =
+        view.contentElement.querySelectorAll('.security-explanations-extra .security-explanation');
+    assert.isAbove(extraExplanations.length, 0);
+
+    const recommendationItems = view.contentElement.querySelectorAll('ul.security-explanation-recommendations > li');
+    assert.lengthOf(recommendationItems, 4);
+    const recTexts = Array.from(recommendationItems).map(item => item.textContent);
+    assert.deepEqual(recTexts, [
+      'TLS 1.0 is obsolete. Enable TLS 1.2 or later.',
+      'RSA key exchange is obsolete. Enable an ECDHE-based cipher suite.',
+      '3DES_EDE_CBC is obsolete. Enable an AES-GCM-based cipher suite.',
+      'The server signature uses SHA-1, which is obsolete. Enable a SHA-2 signature algorithm instead. (Note this is different from the signature in the certificate.)',
+    ]);
+  });
+
+  describe('mixed-content explanations', () => {
+    it('renders reload prompt for mixed content when filter request count is 0', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const reloadPrompt =
+          querySelectorErrorOnMissing(view.contentElement, '.security-explanations-main .security-mixed-content');
+      assert.strictEqual(reloadPrompt.tagName, 'DIV');
+      assert.strictEqual(reloadPrompt.textContent, 'Reload the page to record requests for HTTP resources');
+    });
+
+    it('renders network filter link button and reveals requests when filter request count is positive', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      sinon.stub(view.panel, 'filterRequestCount').callsFake((key: string) => {
+        return key === NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED ? 2 : 0;
+      });
+      view.refreshExplanations();
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const linkBtn = querySelectorErrorOnMissing(
+          view.contentElement, '.security-explanations-main button.security-mixed-content[role="link"]');
+      assert.strictEqual(linkBtn.textContent, 'View 2 requests in Network panel');
+
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
+      linkBtn.click();
+      sinon.assert.calledOnce(revealStub);
+    });
+
+    it('renders BLOCKED synthetic mixed-content explanation in main section when count > 0', async () => {
+      const view = createMainView();
+      renderView(view);
+
+      sinon.stub(view.panel, 'filterRequestCount').callsFake((key: string) => {
+        return key === NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED ? 3 : 0;
+      });
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const blockedExplanation =
+          querySelectorErrorOnMissing(view.contentElement, '.security-explanations-main .security-explanation-info');
+      assert.strictEqual(querySelectorErrorOnMissing(blockedExplanation, '.security-explanation-title').textContent,
+                         'Blocked mixed content');
+      const linkBtn = querySelectorErrorOnMissing(blockedExplanation, 'button.security-mixed-content[role="link"]');
+      assert.strictEqual(linkBtn.textContent, 'View 3 requests in Network panel');
+    });
+  });
+
+  describe('visual screenshots', () => {
+    it('renders secure state', async () => {
+      const view = createMainView();
+      renderView(view, 600, 400);
+
+      const certState = createCertificateSecurityState({
+        keyExchangeGroup: 'X25519',
+        certificate: ['MII...'],
+        issuer: 'Let\'s Encrypt Authority X3',
+      });
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Secure, certState, null, []));
+      await UI.Widget.Widget.allUpdatesComplete;
+      await doubleRaf();
+      await assertScreenshot('security/security_main_view_secure.png');
+    });
+
+    it('renders insecure broken state', async () => {
+      const view = createMainView();
+      renderView(view, 600, 400);
+
+      const certState = createCertificateSecurityState({
+        protocol: 'TLS 1.2',
+        keyExchange: 'ECDHE_RSA',
+        keyExchangeGroup: 'X25519',
+        certificate: ['MII...'],
+        issuer: 'Self-Signed CA',
+        certificateNetworkError: 'net::ERR_CERT_AUTHORITY_INVALID',
+      });
+
+      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.InsecureBroken, certState, null, ['ran-mixed-content']));
+      await UI.Widget.Widget.allUpdatesComplete;
+      await doubleRaf();
+      await assertScreenshot('security/security_main_view_insecure_broken.png');
     });
   });
 });

@@ -163,6 +163,22 @@ describe('ResourceScriptMapping', () => {
       assert.isFalse(Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(networkUISourceCode));
     });
 
+    it('evicts an earlier synthetic UISourceCode when the genuine network script arrives later', async () => {
+      getMainFrame(target);
+      const networkURL = urlString`${`${SECURITY_ORIGIN}/example.js`}`;
+      const spoofingScript = await backend.addScript(target, {content, url: networkURL, hasSourceURL: true}, null);
+      assert.exists(resourceScriptMapping.uiSourceCodeForScript(spoofingScript));
+
+      const networkScript = await backend.addScript(
+          target, {content: contentWithoutSourceUrl, url: networkURL, hasSourceURL: false}, null);
+
+      const networkUISourceCode = resourceScriptMapping.uiSourceCodeForScript(networkScript);
+      assert.exists(networkUISourceCode);
+      assert.isNull(resourceScriptMapping.uiSourceCodeForScript(spoofingScript));
+      assert.isFalse(Bindings.NetworkProject.NetworkProject.isSourceURLSynthesized(networkUISourceCode));
+      assert.strictEqual(backend.universe.workspace.uiSourceCodeForURL(networkURL), networkUISourceCode);
+    });
+
     it('falls back to the inspected origin when the frame is unknown', async () => {
       target.setInspectedURL(urlString`${`${SECURITY_ORIGIN}/index.html`}`);
 
@@ -223,6 +239,85 @@ describe('ResourceScriptMapping', () => {
 
       assert.strictEqual(resourceScriptMapping.uiSourceCodeForScript(absoluteScript), absoluteUISourceCode);
       assert.strictEqual(resourceScriptMapping.uiSourceCodeForScript(relativeScript), relativeUISourceCode);
+    });
+  });
+
+  describe('project securityOrigin', () => {
+    it('assigns the script network origin to the project and isolates cross-origin sourceURL scripts', async () => {
+      const frame = getMainFrame(target);
+      const script = await backend.addScript(target, {
+        content: contentWithSourceUrl,
+        url: `${SECURITY_ORIGIN}/spoofed.js`,
+        embedderName: 'https://attacker.com/lib.js',
+        hasSourceURL: true,
+      },
+                                             null);
+
+      const uiSourceCode = resourceScriptMapping.uiSourceCodeForScript(script);
+      assert.exists(uiSourceCode);
+      assert.strictEqual(uiSourceCode.project().id(), `js::${target.id()}:${frame.id}:https://attacker.com`);
+      assert.strictEqual(uiSourceCode.project().securityOrigin()?.siteId(), 'https://attacker.com');
+      assert.strictEqual(uiSourceCode.securityOrigin().siteId(), 'https://attacker.com');
+    });
+
+    it('assigns an opaque security origin when a sourceURL script has no network provenance', async () => {
+      const frame = getMainFrame(target);
+      const script = await backend.addScript(target, {
+        content: contentWithSourceUrl,
+        url: `${SECURITY_ORIGIN}/spoofed.js`,
+        embedderName: '',
+        hasSourceURL: true,
+      },
+                                             null);
+
+      const uiSourceCode = resourceScriptMapping.uiSourceCodeForScript(script);
+      assert.exists(uiSourceCode);
+      assert.strictEqual(uiSourceCode.project().id(), `js::${target.id()}:${frame.id}`);
+      assert.isTrue(uiSourceCode.project().securityOrigin()?.isOpaque());
+      assert.isTrue(uiSourceCode.securityOrigin().isOpaque());
+      assert.isFalse(uiSourceCode.securityOrigin().isSameOriginWith(frame.securityOrigin()));
+    });
+
+    it('partitions network scripts from different origins into separate projects', async () => {
+      getMainFrame(target);
+      const firstPartyScript = await backend.addScript(
+          target, {content: contentWithoutSourceUrl, url: `${SECURITY_ORIGIN}/app.js`, hasSourceURL: false}, null);
+      const thirdPartyScript = await backend.addScript(
+          target, {content: contentWithoutSourceUrl, url: 'https://cdn.example/lib.js', hasSourceURL: false}, null);
+
+      const firstPartyUISourceCode = resourceScriptMapping.uiSourceCodeForScript(firstPartyScript);
+      const thirdPartyUISourceCode = resourceScriptMapping.uiSourceCodeForScript(thirdPartyScript);
+      assert.exists(firstPartyUISourceCode);
+      assert.exists(thirdPartyUISourceCode);
+      assert.notStrictEqual(firstPartyUISourceCode.project(), thirdPartyUISourceCode.project());
+      assert.strictEqual(firstPartyUISourceCode.securityOrigin().siteId(), SECURITY_ORIGIN);
+      assert.strictEqual(thirdPartyUISourceCode.securityOrigin().siteId(), 'https://cdn.example');
+    });
+
+    it('does not let a synthetic script evict a synthetic UISourceCode from another origin', async () => {
+      getMainFrame(target);
+      const sourceURL = urlString`${`${SECURITY_ORIGIN}/virtual.js`}`;
+      const firstPartyInlineScript = await backend.addScript(target, {
+        content: contentWithSourceUrl,
+        url: sourceURL,
+        embedderName: `${SECURITY_ORIGIN}/index.html`,
+        hasSourceURL: true,
+      },
+                                                             null);
+      const firstPartyUISourceCode = resourceScriptMapping.uiSourceCodeForScript(firstPartyInlineScript);
+      assert.exists(firstPartyUISourceCode);
+
+      const thirdPartyEvalScript = await backend.addScript(target, {
+        content: contentWithSourceUrl,
+        url: sourceURL,
+        embedderName: '',
+        hasSourceURL: true,
+      },
+                                                           null);
+
+      assert.strictEqual(resourceScriptMapping.uiSourceCodeForScript(firstPartyInlineScript), firstPartyUISourceCode);
+      assert.strictEqual(firstPartyUISourceCode.securityOrigin().siteId(), SECURITY_ORIGIN);
+      assert.isTrue(resourceScriptMapping.uiSourceCodeForScript(thirdPartyEvalScript)?.securityOrigin().isOpaque());
     });
   });
 });

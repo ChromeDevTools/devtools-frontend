@@ -60,15 +60,23 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     ];
   }
 
-  #project(script: SDK.Script.Script): ContentProviderBasedProject {
+  #projectId(script: SDK.Script.Script): string {
     const prefix = script.isContentScript() ? 'js:extensions:' : 'js::';
-    const projectId = prefix + this.debuggerModel.target().id() + ':' + script.frameId;
+    const securityOrigin = script.securityOrigin();
+    // Put opaque scripts from the same frame into one project so each eval()
+    // does not make a new project and re-running a script replaces the old file.
+    const originPart = securityOrigin.isOpaque() ? '' : `:${securityOrigin.siteId()}`;
+    return `${prefix}${this.debuggerModel.target().id()}:${script.frameId}${originPart}`;
+  }
+
+  #project(script: SDK.Script.Script): ContentProviderBasedProject {
+    const projectId = this.#projectId(script);
     let project = this.#projects.get(projectId);
     if (!project) {
       const projectType = script.isContentScript() ? Workspace.Workspace.projectTypes.ContentScripts :
                                                      Workspace.Workspace.projectTypes.Network;
       project = new ContentProviderBasedProject(this.#workspace, projectId, projectType, '' /* displayName */,
-                                                false /* isServiceProject */);
+                                                false /* isServiceProject */, script.securityOrigin());
       NetworkProject.setTargetForProject(project, this.debuggerModel.target());
       this.#projects.set(projectId, project);
     }
@@ -237,10 +245,9 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
         return;
       }
 
-      // Don't let a synthetic source evict the `UISourceCode` of a script that was
-      // actually fetched from the network under the same URL.
-      const previousUISourceCode = this.#project(script).uiSourceCodeForURL(url);
-      if (previousUISourceCode && !NetworkProject.isSourceURLSynthesized(previousUISourceCode)) {
+      // Don't let a synthetic source evict or shadow the `UISourceCode` of a script
+      // that was actually fetched from the network under the same URL.
+      if (this.#hasNetworkUISourceCode(url, script.isContentScript())) {
         return;
       }
     } else {
@@ -258,17 +265,10 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
       }
     }
 
-    // Remove previous UISourceCode, if any
-    const project = this.#project(script);
-    const oldUISourceCode = project.uiSourceCodeForURL(url);
-    if (oldUISourceCode) {
-      const oldScriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
-      if (oldScriptFile?.script) {
-        this.#removeScripts([oldScriptFile.script]);
-      }
-    }
+    this.#removePreviousUISourceCodes(script, url);
 
     // Create UISourceCode.
+    const project = this.#project(script);
     const originalContentProvider = script.originalContentProvider();
     const uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
     if (script.hasSourceURL) {
@@ -285,6 +285,27 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     const mimeType = script.isWasm() ? 'application/wasm' : 'text/javascript';
     project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, mimeType);
     void this.debuggerWorkspaceBinding.updateLocations(script);
+  }
+
+  #uiSourceCodesForURL(url: Platform.DevToolsPath.UrlString,
+                       isContentScript: boolean): Workspace.UISourceCode.UISourceCode[] {
+    const projectType =
+        isContentScript ? Workspace.Workspace.projectTypes.ContentScripts : Workspace.Workspace.projectTypes.Network;
+    const result: Workspace.UISourceCode.UISourceCode[] = [];
+    for (const project of this.#projects.values()) {
+      if (project.type() === projectType) {
+        const uiSourceCode = project.uiSourceCodeForURL(url);
+        if (uiSourceCode) {
+          result.push(uiSourceCode);
+        }
+      }
+    }
+    return result;
+  }
+
+  #hasNetworkUISourceCode(url: Platform.DevToolsPath.UrlString, isContentScript: boolean): boolean {
+    return this.#uiSourceCodesForURL(url, isContentScript)
+        .some(uiSourceCode => !NetworkProject.isSourceURLSynthesized(uiSourceCode));
   }
 
   /**
@@ -322,6 +343,33 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
 
   scriptFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): ResourceScriptFile|null {
     return this.#uiSourceCodeToScriptFile.get(uiSourceCode) || null;
+  }
+
+  #removePreviousUISourceCodes(script: SDK.Script.Script, url: Platform.DevToolsPath.UrlString): void {
+    const scriptsToRemove = new Set<SDK.Script.Script>();
+
+    // A genuine network script also evicts any synthetic `//# sourceURL=` entries that
+    // claimed `url` in other origin partitions before the network script arrived.
+    if (!script.hasSourceURL) {
+      for (const existing of this.#uiSourceCodesForURL(url, script.isContentScript())) {
+        if (NetworkProject.isSourceURLSynthesized(existing)) {
+          const oldScript = this.#uiSourceCodeToScriptFile.get(existing)?.script;
+          if (oldScript) {
+            scriptsToRemove.add(oldScript);
+          }
+        }
+      }
+    }
+
+    const oldUISourceCode = this.#projects.get(this.#projectId(script))?.uiSourceCodeForURL(url);
+    const oldScript = oldUISourceCode ? this.#uiSourceCodeToScriptFile.get(oldUISourceCode)?.script : null;
+    if (oldScript) {
+      scriptsToRemove.add(oldScript);
+    }
+
+    if (scriptsToRemove.size > 0) {
+      this.#removeScripts([...scriptsToRemove]);
+    }
   }
 
   #removeScripts(scripts: SDK.Script.Script[]): void {

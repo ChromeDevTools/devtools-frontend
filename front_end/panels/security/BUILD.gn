@@ -84,6 +84,7 @@ devtools_ui_module("unittests") {
     "../../generated",
     "../../panels/network/forward:bundle",
     "../../testing",
+    "../../ui/components/buttons:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
   ]

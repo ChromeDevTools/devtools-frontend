@@ -525,6 +525,19 @@ export function renderHighlightedUrl(url: Platform.DevToolsPath.UrlString, secur
     </span>`;
 }
 
+export function renderCertificateViewerButton(text: string, jslogContext: string, onClick: () => void): TemplateResult {
+  return html`
+    <devtools-button
+        class="origin-button"
+        title=${text}
+        .variant=${Buttons.Button.Variant.OUTLINED}
+        .jslogContext=${jslogContext}
+        @click=${(e: Event) => {
+    e.consume();
+    onClick();
+  }}>${text}</devtools-button>`;
+}
+
 export interface ViewInput {
   panel: SecurityPanel;
 }
@@ -1418,7 +1431,7 @@ function renderConnectionSection(securityDetails: Protocol.Network.SecurityDetai
 }
 
 function renderTitleSection(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState,
-                            onRevealInNetwork: (event: Event) => void): TemplateResult {
+                            onRevealInNetwork: () => void): TemplateResult {
   // clang-format off
   return html`
     <div class="title-section-header" role="heading" aria-level="1">${i18nString(UIStrings.origin)}</div>
@@ -1433,7 +1446,10 @@ function renderTitleSection(origin: Platform.DevToolsPath.UrlString, securitySta
       <devtools-button
           .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${'reveal-in-network'}
-          @click=${onRevealInNetwork}>${i18nString(UIStrings.viewRequestsInNetworkPanel)}</devtools-button>
+          @click=${(e: Event) => {
+            e.consume();
+            onRevealInNetwork();
+          }}>${i18nString(UIStrings.viewRequestsInNetworkPanel)}</devtools-button>
     </div>`;
   // clang-format on
 }
@@ -1442,7 +1458,7 @@ interface CertificateSectionInput {
   securityDetails: Protocol.Network.SecurityDetails;
   isSanListTruncated: boolean;
   onToggleSanTruncation: () => void;
-  onViewCertificate: (event: Event) => void;
+  onViewCertificate: () => void;
 }
 
 function buildCertificateDetailsRows(input: CertificateSectionInput): DetailsTableRow[] {
@@ -1465,13 +1481,8 @@ function buildCertificateDetailsRows(input: CertificateSectionInput): DetailsTab
     {key: i18nString(UIStrings.validUntil), value: new Date(1000 * securityDetails.validTo).toUTCString()},
     {key: i18nString(UIStrings.issuer), value: securityDetails.issuer},
     {
-      value: html`
-        <devtools-button
-            class="origin-button"
-            title=${certificateButtonText}
-            .variant=${Buttons.Button.Variant.OUTLINED}
-            .jslogContext=${'security.view-certificate-for-origin'}
-            @click=${onViewCertificate}>${certificateButtonText}</devtools-button>`,
+      value: renderCertificateViewerButton(
+          certificateButtonText, 'security.view-certificate-for-origin', onViewCertificate),
     },
   ];
   // clang-format on
@@ -1594,10 +1605,10 @@ export interface SecurityOriginViewInput {
   loadedFromCache: boolean;
   isSanListTruncated: boolean;
   isCertificateTransparencyDetailsShown: boolean;
-  onRevealInNetwork: (event: Event) => void;
+  onRevealInNetwork: () => void;
   onToggleSanTruncation: () => void;
   onToggleCertificateTransparencyDetails: () => void;
-  onViewCertificate: (event: Event) => void;
+  onViewCertificate: () => void;
 }
 
 export type SecurityOriginViewFunction = (input: SecurityOriginViewInput, output: undefined, target: HTMLElement) =>
@@ -1611,7 +1622,7 @@ interface SecurityDetailsInput {
   isCertificateTransparencyDetailsShown: boolean;
   onToggleSanTruncation: () => void;
   onToggleCertificateTransparencyDetails: () => void;
-  onViewCertificate: (event: Event) => void;
+  onViewCertificate: () => void;
 }
 
 function renderSecurityDetails(input: SecurityDetailsInput): TemplateResult {
@@ -1708,8 +1719,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
     this.#renderView();
   };
 
-  #showCertificateViewer = async(event: Event): Promise<void> => {
-    event.consume();
+  #showCertificateViewer = async(): Promise<void> => {
     const names = await SDK.NetworkManager.MultitargetNetworkManager.instance().getCertificate(this.#origin);
     if (names.length > 0) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(names);
@@ -1742,8 +1752,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
                undefined, this.contentElement);
   }
 
-  #revealInNetwork = (event: Event): void => {
-    event.consume();
+  #revealInNetwork = (): void => {
     const parsedURL = new Common.ParsedURL.ParsedURL(this.#origin);
     void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
       {filterType: NetworkForward.UIFilter.FilterType.Domain, filterValue: parsedURL.host},

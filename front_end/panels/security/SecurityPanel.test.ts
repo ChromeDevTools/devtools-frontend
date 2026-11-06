@@ -21,6 +21,7 @@ import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHe
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
 import * as NetworkForward from '../network/forward/forward.js';
@@ -98,6 +99,38 @@ describe('renderHighlightedUrl', () => {
     const schemeSeparator = highlightedUrl.querySelector('.url-scheme-separator');
     assert.isNotNull(schemeSeparator);
     assert.strictEqual(schemeSeparator.textContent, '://');
+  });
+});
+
+describe('renderCertificateViewerButton', () => {
+  function renderButton(text: string, jslogContext: string, onClick: () => void): Buttons.Button.Button {
+    const container = document.createElement('div');
+    render(Security.SecurityPanel.renderCertificateViewerButton(text, jslogContext, onClick), container);
+    renderElementIntoDOM(container);
+    return querySelectorErrorOnMissing<Buttons.Button.Button>(container, 'devtools-button.origin-button');
+  }
+
+  it('renders button with expected attributes and properties', () => {
+    const onClick = sinon.spy();
+    const button = renderButton('View certificate', 'security.test-context', onClick);
+
+    assert.instanceOf(button, Buttons.Button.Button);
+    assert.strictEqual(button.textContent?.trim(), 'View certificate');
+    assert.strictEqual(button.title, 'View certificate');
+    assert.strictEqual(button.jslogContext, 'security.test-context');
+  });
+
+  it('consumes event and invokes callback on click', () => {
+    const onClick = sinon.spy();
+    const button = renderButton('View certificate', 'security.test-context', onClick);
+
+    const clickEvent = new CustomEvent('click', {bubbles: true, cancelable: true});
+    const consumeSpy = sinon.spy(clickEvent, 'consume');
+
+    button.dispatchEvent(clickEvent);
+
+    sinon.assert.calledOnce(consumeSpy);
+    sinon.assert.calledOnce(onClick);
   });
 });
 

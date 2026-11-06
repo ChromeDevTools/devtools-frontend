@@ -4,54 +4,56 @@
  * found in the LICENSE file.
  */
 
-.lock-icon,
-.security-property {
-  height: var(--sys-size-9);
-  width: var(--sys-size-9);
-}
+@scope to (devtools-widget > *) {
+  .lock-icon,
+  .security-property {
+    height: var(--sys-size-9);
+    width: var(--sys-size-9);
+  }
 
-.lock-icon-secure {
-  color: var(--sys-color-green);
-}
+  .lock-icon-secure {
+    color: var(--sys-color-green);
+  }
 
-.lock-icon-insecure {
-  color: var(--sys-color-error);
-}
+  .lock-icon-insecure {
+    color: var(--sys-color-error);
+  }
 
-.lock-icon-insecure-broken {
-  color: var(--sys-color-error);
-}
+  .lock-icon-insecure-broken {
+    color: var(--sys-color-error);
+  }
 
-.security-property-secure {
-  color: var(--sys-color-green);
-}
+  .security-property-secure {
+    color: var(--sys-color-green);
+  }
 
-.security-property-neutral {
-  color: var(--sys-color-error);
-}
+  .security-property-neutral {
+    color: var(--sys-color-error);
+  }
 
-.security-property-insecure {
-  color: var(--sys-color-error);
-}
+  .security-property-insecure {
+    color: var(--sys-color-error);
+  }
 
-.security-property-insecure-broken {
-  color: var(--sys-color-error);
-}
+  .security-property-insecure-broken {
+    color: var(--sys-color-error);
+  }
 
-.security-property-info {
-  color: var(--sys-color-on-surface-subtle);
-}
+  .security-property-info {
+    color: var(--sys-color-on-surface-subtle);
+  }
 
-.security-property-unknown {
-  color: var(--sys-color-on-surface-subtle);
-}
+  .security-property-unknown {
+    color: var(--sys-color-on-surface-subtle);
+  }
 
-.url-scheme-secure {
-  color: var(--sys-color-green);
-}
+  .url-scheme-secure {
+    color: var(--sys-color-green);
+  }
 
-.url-scheme-neutral,
-.url-scheme-insecure,
-.url-scheme-insecure-broken {
-  color: var(--sys-color-error);
+  .url-scheme-neutral,
+  .url-scheme-insecure,
+  .url-scheme-insecure-broken {
+    color: var(--sys-color-error);
+  }
 }

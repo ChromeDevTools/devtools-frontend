@@ -18,7 +18,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSHintDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-interface Hint {
+export interface Hint {
   getMessage(): LitTemplate|string;
   getPossibleFixMessage(): LitTemplate|string|null;
   getLearnMoreLink(): string|undefined;
@@ -63,14 +63,21 @@ export class CSSHintDetailsView extends UI.Widget.Widget {
   #authoringHint?: Hint;
   readonly #view: View;
 
-  constructor(authoringHint?: Hint, element?: HTMLElement, view: View = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
-    this.#authoringHint = authoringHint;
     this.#view = view;
-    this.performUpdate();
   }
 
-  set authoringHint(authoringHint: Hint) {
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  get authoringHint(): Hint|undefined {
+    return this.#authoringHint;
+  }
+
+  set authoringHint(authoringHint: Hint|undefined) {
     if (this.#authoringHint === authoringHint) {
       return;
     }

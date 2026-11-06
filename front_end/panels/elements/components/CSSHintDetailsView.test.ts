@@ -19,7 +19,8 @@ describeWithEnvironment('CSSHintDetailsView', () => {
         'align-content',
     );
 
-    const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hintMessage);
+    const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView();
+    popupComponent.authoringHint = hintMessage;
     renderElementIntoDOM(popupComponent);
     await popupComponent.updateComplete;
 
@@ -34,7 +35,8 @@ describeWithEnvironment('CSSHintDetailsView', () => {
         'For this property to work, please remove or change the value of <code class="unbreakable-text"><span class="property">flex-wrap</span></code> rule.',
     );
 
-    const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint);
+    const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView();
+    popupComponent.authoringHint = hint;
     renderElementIntoDOM(popupComponent);
     await popupComponent.updateComplete;
 

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type {JSONSchema7} from 'json-schema';
 import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
@@ -171,5 +172,43 @@ describe('WebMCPModel', () => {
     webMCPModel.toolsAdded({tools: [protocolTool]});
     const tool = [...webMCPModel.tools][0];
     assert.deepEqual(tool.flags, ['readOnly', 'untrustedContent']);
+  });
+
+  it('exposes the output schema when provided', () => {
+    const outputSchema: JSONSchema7 = {type: 'object', properties: {result: {type: 'string'}}, required: ['result']};
+    webMCPModel.toolsAdded({
+      tools: [{
+        toolId: 'test-tool-id' as Protocol.WebMCP.ToolId,
+        name: 'test-tool',
+        description: 'description',
+        outputSchema,
+        frameId: 'frame-1' as Protocol.Page.FrameId,
+      }],
+    });
+    const tool = [...webMCPModel.tools][0];
+    assert.deepEqual(tool.outputSchema, outputSchema);
+    assert.deepEqual(tool.inputSchema, {});
+  });
+
+  it('returns undefined output schema when omitted', () => {
+    webMCPModel.toolsAdded({tools: [createTool('test-tool', 'frame-1' as Protocol.Page.FrameId)]});
+    const tool = [...webMCPModel.tools][0];
+    assert.isUndefined(tool.outputSchema);
+  });
+
+  it('returns a stable output schema reference when provided as a JSON string', () => {
+    const outputSchema: JSONSchema7 = {type: 'object', properties: {result: {type: 'string'}}};
+    webMCPModel.toolsAdded({
+      tools: [{
+        toolId: 'test-tool-id' as Protocol.WebMCP.ToolId,
+        name: 'test-tool',
+        description: 'description',
+        outputSchema: JSON.stringify(outputSchema),
+        frameId: 'frame-1' as Protocol.Page.FrameId,
+      }],
+    });
+    const tool = [...webMCPModel.tools][0];
+    assert.deepEqual(tool.outputSchema, outputSchema);
+    assert.strictEqual(tool.outputSchema, tool.outputSchema);
   });
 });

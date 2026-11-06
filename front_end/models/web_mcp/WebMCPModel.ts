@@ -58,14 +58,28 @@ export interface Call {
   cancel: () => void;
 }
 
+function parseSchema(rawSchema: unknown): JSONSchema7|undefined {
+  if (typeof rawSchema === 'string') {
+    try {
+      rawSchema = JSON.parse(rawSchema);
+    } catch {
+      return undefined;
+    }
+  }
+  return (typeof rawSchema === 'object' && rawSchema !== null) ? rawSchema as JSONSchema7 : undefined;
+}
+
 export class Tool {
   #protocolTool: Readonly<Protocol.WebMCP.Tool>;
   #stackTrace?: Promise<StackTrace.StackTrace.StackTrace>;
   #target: WeakRef<SDK.Target.Target>;
+  #outputSchema?: JSONSchema7;
 
   constructor(tool: Protocol.WebMCP.Tool, target: SDK.Target.Target) {
     this.#target = new WeakRef(target);
     this.#protocolTool = tool;
+    // Parse once so that the getter returns a stable object reference.
+    this.#outputSchema = parseSchema(tool.outputSchema);
     if (tool.stackTrace) {
       const debuggerWorkspaceBinding =
           target.targetManager().context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
@@ -86,15 +100,11 @@ export class Tool {
   }
 
   get inputSchema(): JSONSchema7 {
-    let rawSchema = this.#protocolTool.inputSchema;
-    if (typeof rawSchema === 'string') {
-      try {
-        rawSchema = JSON.parse(rawSchema);
-      } catch {
-        rawSchema = {};
-      }
-    }
-    return (typeof rawSchema === 'object' && rawSchema !== null) ? rawSchema as JSONSchema7 : {};
+    return parseSchema(this.#protocolTool.inputSchema) ?? {};
+  }
+
+  get outputSchema(): JSONSchema7|undefined {
+    return this.#outputSchema;
   }
 
   get flags(): Array<keyof Protocol.WebMCP.Annotation> {

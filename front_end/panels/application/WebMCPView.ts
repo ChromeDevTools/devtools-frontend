@@ -210,6 +210,10 @@ const UIStrings = {
    * @description Label for the tool origin in the tool details section of the WebMCP view in the Application panel.
    */
   origin: 'Origin',
+  /**
+   * @description Label for the tool output schema, which describes the structure of the tool's return value, in the tool details section of the WebMCP view in the Application panel.
+   */
+  outputSchema: 'Output schema',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -967,6 +971,21 @@ export interface PayloadViewInput {
   symbolizedError?: Bindings.SymbolizedError.SymbolizedError|null;
 }
 
+const schemaObjectTreeCache = new WeakMap<object, ObjectUI.ObjectPropertiesSection.ObjectTree>();
+
+function getSchemaObjectTree(schema: object): ObjectUI.ObjectPropertiesSection.ObjectTree {
+  let objectTree = schemaObjectTreeCache.get(schema);
+  if (!objectTree) {
+    objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(new SDK.RemoteObject.LocalJSONObject(schema), {
+      readOnly: true,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+    objectTree.expanded = true;
+    schemaObjectTreeCache.set(schema, objectTree);
+  }
+  return objectTree;
+}
+
 export const PAYLOAD_DEFAULT_VIEW = (input: PayloadViewInput, output: undefined, target: HTMLElement): void => {
   if (input.valueObject === undefined && input.valueString === undefined && !input.errorText &&
       !input.symbolizedError) {
@@ -1128,6 +1147,7 @@ const TOOL_DETAILS_VIEW = (input: ToolDetailsViewInput, output: undefined, targe
   const tool = input.tool;
   const origin = input.origin;
   const flags = tool.flags;
+  const outputSchema = tool.outputSchema;
   const formatter = new Intl.ListFormat(i18n.DevToolsLocale.DevToolsLocale.instance().locale, {
     style: 'short',
     type: 'unit',
@@ -1143,6 +1163,16 @@ const TOOL_DETAILS_VIEW = (input: ToolDetailsViewInput, output: undefined, targe
       ${flags.length > 0 ? html`
       <div class="label">${i18nString(UIStrings.flags)}</div>
       <div class="value">${formattedFlags}</div>
+      ` : nothing}
+      ${outputSchema ? html`
+      <div class="label">${i18nString(UIStrings.outputSchema)}</div>
+      <div class="value schema">
+        ${widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+            objectTree: getSchemaObjectTree(outputSchema),
+            skipProto: true,
+            showOverflow: false,
+        })}
+      </div>
       ` : nothing}
       ${tool.frame ? html`
       <div class="label">${i18nString(UIStrings.frame)}</div>

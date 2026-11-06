@@ -21,6 +21,10 @@ export const makeEmptyTraceEntryNode = (entry: Types.Events.Event, id: TraceEntr
   parent: null,
   children: [],
   depth: 0,
+  // selfTime is set on every node after creation. Declaring it here keeps it
+  // inside the object; adding it later makes V8 allocate a separate property
+  // store for every node.
+  selfTime: undefined,
 });
 
 export interface TraceEntryTree {

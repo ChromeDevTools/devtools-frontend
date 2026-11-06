@@ -1892,7 +1892,6 @@ grd_files_unbundled_sources = [
   "front_end/panels/network/requestCookiesView.css.js",
   "front_end/panels/network/requestDeviceBoundSessionsView.css.js",
   "front_end/panels/network/requestHTMLView.css.js",
-  "front_end/panels/network/requestHeadersTree.css.js",
   "front_end/panels/network/requestInitiatorView.css.js",
   "front_end/panels/network/requestInitiatorViewTree.css.js",
   "front_end/panels/network/requestPayloadTree.css.js",

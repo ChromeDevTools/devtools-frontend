@@ -22,7 +22,6 @@ generate_css("css_files") {
     "requestCookiesView.css",
     "requestDeviceBoundSessionsView.css",
     "requestHTMLView.css",
-    "requestHeadersTree.css",
     "requestInitiatorView.css",
     "requestInitiatorViewTree.css",
     "requestPayloadTree.css",

@@ -1227,4 +1227,512 @@ describe('AidaClient', () => {
     });
   });
 
+  describe('RequestResult UMA histograms', () => {
+    const {EnumeratedHistogram} = Host.InspectorFrontendHostAPI;
+    const {AiClientRequestResult} = Host.UserMetrics;
+
+    function buildConversationRequest(clientFeature: Host.AidaClient.ClientFeature):
+        Host.AidaClient.DoConversationRequest {
+      return {
+        current_message: {parts: [{text: 'hello'}], role: Host.AidaClient.Role.USER},
+        client: Host.AidaClient.CLIENT_NAME,
+        functionality_type: Host.AidaClient.FunctionalityType.CHAT,
+        client_feature: clientFeature,
+        metadata: {
+          disable_user_content_logging: true,
+          client_version: 'unit_test',
+        },
+      };
+    }
+
+    function buildCompletionRequest(): Host.AidaClient.CompletionRequest {
+      return {
+        client: Host.AidaClient.CLIENT_NAME,
+        prefix: 'const x = ',
+        metadata: {disable_user_content_logging: true, client_version: 'unit_test'},
+      };
+    }
+
+    function buildGenerateCodeRequest(): Host.AidaClient.GenerateCodeRequest {
+      return {
+        client: Host.AidaClient.CLIENT_NAME,
+        preamble: 'preamble',
+        current_message: {parts: [{text: 'generate'}], role: Host.AidaClient.Role.USER},
+        use_case: Host.AidaClient.UseCase.CODE_GENERATION,
+        metadata: {disable_user_content_logging: true, client_version: 'unit_test'},
+      };
+    }
+
+    function stubSingleChunkConversation(chunkPayload: string): void {
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+          .callsFake((request, callback) => {
+            const streamId = request.streamId;
+            assert.isDefined(streamId);
+            queueMicrotask(() => {
+              Host.ResourceLoader.streamWrite(streamId, chunkPayload);
+              callback({statusCode: 200, response: ''});
+            });
+          });
+    }
+
+    function recordedCalls(
+        spy: sinon.SinonSpy<[Host.InspectorFrontendHostAPI.EnumeratedHistogram, number, number], void>):
+        Array<[Host.InspectorFrontendHostAPI.EnumeratedHistogram, number, number]> {
+      return spy.getCalls().map(call => call.args);
+    }
+
+    it('records aggregate and AiAssistance histograms once on multi-chunk doConversation success', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      let capturedStreamId: number|undefined;
+      let capturedCallback: ((result: Host.InspectorFrontendHostAPI.DispatchHttpRequestResult) => void)|undefined;
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+          .callsFake((request, callback) => {
+            capturedStreamId = request.streamId;
+            capturedCallback = callback;
+          });
+
+      const provider = new Host.AidaClient.AidaClient();
+      const conversation =
+          provider.doConversation(buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT));
+
+      const firstNext = conversation.next();
+      assert.isDefined(capturedStreamId);
+      assert.isDefined(capturedCallback);
+      Host.ResourceLoader.streamWrite(capturedStreamId, JSON.stringify([{textChunk: {text: 'part 1 '}}]));
+      const firstResult = await firstNext;
+
+      const secondNext = conversation.next();
+      Host.ResourceLoader.streamWrite(capturedStreamId, JSON.stringify([{textChunk: {text: 'part 2'}}]));
+      const secondResult = await secondNext;
+
+      const finalNext = conversation.next();
+      capturedCallback({statusCode: 200, response: ''});
+      const finalResult = await finalNext;
+
+      const doneResult = await conversation.next();
+
+      assert.strictEqual(firstResult.value?.explanation, 'part 1 ');
+      assert.strictEqual(secondResult.value?.explanation, 'part 1 part 2');
+      assert.strictEqual(finalResult.value?.explanation, 'part 1 part 2');
+      assert.isTrue(finalResult.value?.completed);
+      assert.isTrue(doneResult.done);
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultAiAssistance,
+          AiClientRequestResult.SUCCESS,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('routes ConsoleInsights conversations to the ConsoleInsights surface slice', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      stubSingleChunkConversation(JSON.stringify([{textChunk: {text: 'ok'}}]));
+
+      const provider = new Host.AidaClient.AidaClient();
+      for await (const chunk of provider.doConversation(
+          buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_CONSOLE_INSIGHTS))) {
+        void chunk;
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultConsoleInsights,
+          AiClientRequestResult.SUCCESS,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('routes ConversationSummary conversations to the ConversationSummary surface slice', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      stubSingleChunkConversation(JSON.stringify([{textChunk: {text: 'ok'}}]));
+
+      const provider = new Host.AidaClient.AidaClient();
+      for await (const chunk of provider.doConversation(
+          buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT))) {
+        void chunk;
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultConversationSummary,
+          AiClientRequestResult.SUCCESS,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('routes PerformanceAnnotations conversations to the PerformanceAnnotations surface slice', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      stubSingleChunkConversation(JSON.stringify([{textChunk: {text: 'ok'}}]));
+
+      const provider = new Host.AidaClient.AidaClient();
+      for await (const chunk of provider.doConversation(
+          buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT))) {
+        void chunk;
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultPerformanceAnnotations,
+          AiClientRequestResult.SUCCESS,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records only the aggregate histogram for legacy V1 conversation features', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      stubSingleChunkConversation(JSON.stringify([{textChunk: {text: 'ok'}}]));
+
+      const provider = new Host.AidaClient.AidaClient();
+      for await (const chunk of provider.doConversation(
+          buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT))) {
+        void chunk;
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+      ]);
+    });
+
+    it('records ABORTED once when doConversation receives an already-aborted signal', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      const provider = new Host.AidaClient.AidaClient();
+      const preAborted = new AbortController();
+      preAborted.abort();
+
+      try {
+        await provider
+            .doConversation(buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT),
+                            {signal: preAborted.signal})
+            .next();
+        assert.fail('expected AidaAbortError');
+      } catch (err) {
+        assert.instanceOf(err, Host.AidaClient.AidaAbortError);
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.ABORTED, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultAiAssistance,
+          AiClientRequestResult.ABORTED,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records ABORTED once when doConversation is aborted mid-stream', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsFake(() => {});
+      const provider = new Host.AidaClient.AidaClient();
+      const midStreamAbort = new AbortController();
+
+      const pendingStream =
+          provider.doConversation(buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT),
+                                  {signal: midStreamAbort.signal});
+      const nextChunk = pendingStream.next();
+      midStreamAbort.abort();
+      try {
+        await nextChunk;
+        assert.fail('expected AidaAbortError');
+      } catch (err) {
+        assert.instanceOf(err, Host.AidaClient.AidaAbortError);
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.ABORTED, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultAiAssistance,
+          AiClientRequestResult.ABORTED,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records ABORTED once when a caller exits the doConversation generator early', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsFake(httpReq => {
+        const streamId = httpReq.streamId;
+        assert.isDefined(streamId);
+        queueMicrotask(() => {
+          Host.ResourceLoader.streamWrite(streamId, JSON.stringify([{textChunk: {text: 'chunk 1'}}]));
+        });
+      });
+
+      const provider = new Host.AidaClient.AidaClient();
+      const earlyStream =
+          provider.doConversation(buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT));
+      const {value: firstChunk, done} = await earlyStream.next();
+      assert.isFalse(done);
+      assert.exists(firstChunk);
+      assert.isFalse(firstChunk.completed);
+      await earlyStream.return();
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.ABORTED, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultAiAssistance,
+          AiClientRequestResult.ABORTED,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records STREAM_CHUNK_PARSE_ERROR when doConversation receives malformed chunk JSON', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      stubSingleChunkConversation('{not valid json');
+
+      const provider = new Host.AidaClient.AidaClient();
+      try {
+        for await (const chunk of provider.doConversation(
+            buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT))) {
+          void chunk;
+        }
+        assert.fail('expected chunk parse error');
+      } catch (err) {
+        assert.instanceOf(err, Host.AidaErrors.StreamChunkParseError);
+        assert.match(err.message, /^Cannot parse chunk:/);
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [
+          EnumeratedHistogram.AiClientRequestResult,
+          AiClientRequestResult.STREAM_CHUNK_PARSE_ERROR,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+        [
+          EnumeratedHistogram.AiClientRequestResultAiAssistance,
+          AiClientRequestResult.STREAM_CHUNK_PARSE_ERROR,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records BLOCKED_BY_SAFETY_OR_RECITATION when doConversation receives a recitation block', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      stubSingleChunkConversation(JSON.stringify([{
+        textChunk: {text: 'blocked'},
+        metadata: {rpcGlobalId: 1, attributionMetadata: {attributionAction: 'BLOCK', citations: []}},
+      }]));
+
+      const provider = new Host.AidaClient.AidaClient();
+      try {
+        for await (const chunk of provider.doConversation(
+            buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT))) {
+          void chunk;
+        }
+        assert.fail('expected AidaBlockError');
+      } catch (err) {
+        assert.instanceOf(err, Host.AidaClient.AidaBlockError);
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [
+          EnumeratedHistogram.AiClientRequestResult,
+          AiClientRequestResult.BLOCKED_BY_SAFETY_OR_RECITATION,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+        [
+          EnumeratedHistogram.AiClientRequestResultAiAssistance,
+          AiClientRequestResult.BLOCKED_BY_SAFETY_OR_RECITATION,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records HTTP_5XX_SERVER_ERROR when doConversation fails with HTTP 500', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+          .callsArgWith(1, {statusCode: 500, error: 'Request failed'});
+
+      const provider = new Host.AidaClient.AidaClient();
+      try {
+        for await (const chunk of provider.doConversation(
+            buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT))) {
+          void chunk;
+        }
+        assert.fail('expected HTTP 500 error');
+      } catch (err) {
+        assert.instanceOf(err, Host.AidaClient.AidaUnknownError);
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [
+          EnumeratedHistogram.AiClientRequestResult,
+          AiClientRequestResult.HTTP_5XX_SERVER_ERROR,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+        [
+          EnumeratedHistogram.AiClientRequestResultAiAssistance,
+          AiClientRequestResult.HTTP_5XX_SERVER_ERROR,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records CodeComplete SUCCESS when completeCode returns generated samples', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'aidaCodeComplete').callsArgWith(1, {
+        response: JSON.stringify({generatedSamples: [{generationString: '1;', score: 1, sampleId: 0}]}),
+      });
+
+      const provider = new Host.AidaClient.AidaClient();
+      await provider.completeCode(buildCompletionRequest());
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultCodeComplete,
+          AiClientRequestResult.SUCCESS,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records CodeComplete SUCCESS when completeCode omits generatedSamples', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'aidaCodeComplete').callsArgWith(1, {
+        response: JSON.stringify({metadata: {rpcGlobalId: 9}}),
+      });
+
+      const provider = new Host.AidaClient.AidaClient();
+      assert.isNull(await provider.completeCode(buildCompletionRequest()));
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultCodeComplete,
+          AiClientRequestResult.SUCCESS,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records CodeComplete OAUTH_TOKEN_ERROR when completeCode fails credential lookup', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'aidaCodeComplete').callsArgWith(1, {
+        error: 'Cannot get OAuth credentials',
+      });
+
+      const provider = new Host.AidaClient.AidaClient();
+      try {
+        await provider.completeCode(buildCompletionRequest());
+        assert.fail('expected OAuth error');
+      } catch (err) {
+        assert.instanceOf(err, Host.AidaClient.AidaUnknownError);
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [
+          EnumeratedHistogram.AiClientRequestResult,
+          AiClientRequestResult.OAUTH_TOKEN_ERROR,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+        [
+          EnumeratedHistogram.AiClientRequestResultCodeComplete,
+          AiClientRequestResult.OAUTH_TOKEN_ERROR,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records CodeComplete INVALID_JSON_RESPONSE when completeCode returns malformed JSON', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'aidaCodeComplete').callsArgWith(1, {
+        response: '{bad json',
+      });
+
+      const provider = new Host.AidaClient.AidaClient();
+      try {
+        await provider.completeCode(buildCompletionRequest());
+        assert.fail('expected invalid JSON error');
+      } catch (err) {
+        assert.instanceOf(err, Error);
+        assert.match(err.message, /^Cannot parse response:/);
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [
+          EnumeratedHistogram.AiClientRequestResult,
+          AiClientRequestResult.INVALID_JSON_RESPONSE,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+        [
+          EnumeratedHistogram.AiClientRequestResultCodeComplete,
+          AiClientRequestResult.INVALID_JSON_RESPONSE,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records CodeGenerate SUCCESS when generateCode succeeds', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+          .callsArgWith(1, {statusCode: 200, response: JSON.stringify({samples: [], metadata: {}})});
+
+      const provider = new Host.AidaClient.AidaClient();
+      await provider.generateCode(buildGenerateCodeRequest());
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultCodeGenerate,
+          AiClientRequestResult.SUCCESS,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
+    it('records CodeGenerate HTTP_401_UNAUTHORIZED when generateCode fails with HTTP 401', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+          .callsArgWith(1, {statusCode: 401, error: 'Request failed'});
+
+      const provider = new Host.AidaClient.AidaClient();
+      try {
+        await provider.generateCode(buildGenerateCodeRequest());
+        assert.fail('expected HTTP 401 error');
+      } catch (err) {
+        assert.instanceOf(err, Host.AidaClient.AidaUnknownError);
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [
+          EnumeratedHistogram.AiClientRequestResult,
+          AiClientRequestResult.HTTP_401_UNAUTHORIZED,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+        [
+          EnumeratedHistogram.AiClientRequestResultCodeGenerate,
+          AiClientRequestResult.HTTP_401_UNAUTHORIZED,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+  });
+
 });

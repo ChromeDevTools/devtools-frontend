@@ -30,15 +30,23 @@ import {
 import {
   AidaAbortError,
   AidaBlockError,
+  classifyRequestError,
   mapError,
+  StreamChunkParseError,
 } from './AidaErrors.js';
 import {gcaChunkResponseToAidaChunkResponse} from './AidaGcaTranslation.js';
 import * as DispatchHttpRequestClient from './DispatchHttpRequestClient.js';
 import * as GcaClient from './GcaClient.js';
 import type {GenerateContentResponse} from './GcaTypes.js';
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
-import type {AidaClientResult, AidaCodeCompleteResult, SyncInformation} from './InspectorFrontendHostAPI.js';
+import {
+  type AidaClientResult,
+  type AidaCodeCompleteResult,
+  EnumeratedHistogram,
+  type SyncInformation,
+} from './InspectorFrontendHostAPI.js';
 import {bindOutputStream, discardOutputStream} from './ResourceLoader.js';
+import * as UserMetrics from './UserMetrics.js';
 
 export * from './AidaClientTypes.js';
 export {
@@ -79,6 +87,38 @@ const AidaLanguageToMarkdown: Record<AidaInferenceLanguage, string> = {
   [AidaInferenceLanguage.XML]: 'xml',
   [AidaInferenceLanguage.UNKNOWN]: 'unknown',
 };
+
+function conversationSurfaceHistogram(feature: ClientFeature): UserMetrics.AiClientSurfaceHistogram|undefined {
+  switch (feature) {
+    case ClientFeature.CHROME_DEVTOOLS_V2_AGENT:
+      return EnumeratedHistogram.AiClientRequestResultAiAssistance;
+    case ClientFeature.CHROME_CONSOLE_INSIGHTS:
+      return EnumeratedHistogram.AiClientRequestResultConsoleInsights;
+    case ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT:
+      return EnumeratedHistogram.AiClientRequestResultConversationSummary;
+    case ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT:
+      return EnumeratedHistogram.AiClientRequestResultPerformanceAnnotations;
+    default:
+      // Legacy V1 per-panel agents intentionally omit surface slices and record only to the aggregate histogram.
+      return undefined;
+  }
+}
+
+/**
+ * Returns a closure that records the request outcome histogram once per call.
+ * One-shot recording prevents early generator returns or nested catch/finally blocks from double-counting outcomes.
+ */
+function createOutcomeRecorder(surfaceHistogram?: UserMetrics.AiClientSurfaceHistogram):
+    (result: UserMetrics.AiClientRequestResult) => void {
+  let recorded = false;
+  return (result: UserMetrics.AiClientRequestResult): void => {
+    if (recorded) {
+      return;
+    }
+    recorded = true;
+    UserMetrics.userMetrics.aiClientRequestResult(result, surfaceHistogram);
+  };
+}
 
 interface AiStream {
   write: (data: string) => Promise<void>;
@@ -150,20 +190,21 @@ export class AidaClient {
       throw new Error('dispatchHttpRequest is not available');
     }
 
-    if (options?.signal?.aborted) {
-      throw new AidaAbortError();
-    }
-
-    // Disable logging for now.
-    // For context, see b/454563259#comment35.
-    // We should be able to remove this ~end of April.
-    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      request.metadata.disable_user_content_logging = true;
-    }
-
+    const recordOutcome = createOutcomeRecorder(conversationSurfaceHistogram(request.client_feature));
     let abortListener: (() => void)|undefined;
     let streamId: number|undefined;
     try {
+      if (options?.signal?.aborted) {
+        throw new AidaAbortError();
+      }
+
+      // Disable logging for now.
+      // For context, see b/454563259#comment35.
+      // We should be able to remove this ~end of April.
+      if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+        request.metadata.disable_user_content_logging = true;
+      }
+
       const stream = (() => {
         let {promise, resolve, reject} = Promise.withResolvers<string|null>();
         // Prevent unhandled promise rejections if stream.fail() is called after
@@ -214,7 +255,13 @@ export class AidaClient {
             stream.fail(mapError(err));
           });
       yield* this.#handleResponseStream(stream);
+      recordOutcome(UserMetrics.AiClientRequestResult.SUCCESS);
+    } catch (err) {
+      recordOutcome(classifyRequestError(err));
+      throw err;
     } finally {
+      // Fallback when a caller exits the generator early (such as breaking out of a for-await loop) before stream completion.
+      recordOutcome(UserMetrics.AiClientRequestResult.ABORTED);
       if (options?.signal && abortListener) {
         options.signal.removeEventListener('abort', abortListener);
       }
@@ -320,7 +367,7 @@ export class AidaClient {
     try {
       return JSON.parse(chunk);
     } catch (error) {
-      throw new Error('Cannot parse chunk: ' + chunk, {cause: error});
+      throw new StreamChunkParseError('Cannot parse chunk: ' + chunk, {cause: error});
     }
   }
 
@@ -361,54 +408,68 @@ export class AidaClient {
       request.metadata.disable_user_content_logging = true;
     }
 
-    if (this.#gcaClient.enabled()) {
-      try {
-        return await this.#gcaClient.completeCode(request);
-      } catch (err) {
-        throw mapError(err);
-      }
-    }
-    const {promise, resolve} = Promise.withResolvers<AidaCodeCompleteResult>();
-    InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
-    const completeCodeResult = await promise;
-
-    if (completeCodeResult.error) {
-      throw mapError(completeCodeResult.error, completeCodeResult.detail);
-    }
-    const response = completeCodeResult.response;
-    if (!response?.length) {
-      throw new Error('Empty response');
-    }
-    let parsedResponse;
+    const recordOutcome = createOutcomeRecorder(EnumeratedHistogram.AiClientRequestResultCodeComplete);
     try {
-      parsedResponse = JSON.parse(response);
-    } catch (error) {
-      throw new Error('Cannot parse response: ' + response, {cause: error});
-    }
-
-    const generatedSamples: GenerationSample[] = [];
-    let metadata: ResponseMetadata = {rpcGlobalId: 0};
-    if ('metadata' in parsedResponse) {
-      metadata = parsedResponse.metadata;
-    }
-
-    if ('generatedSamples' in parsedResponse) {
-      for (const generatedSample of parsedResponse.generatedSamples) {
-        const sample: GenerationSample = {
-          generationString: generatedSample.generationString,
-          score: generatedSample.score,
-          sampleId: generatedSample.sampleId,
-        };
-        if ('metadata' in generatedSample && 'attributionMetadata' in generatedSample.metadata) {
-          sample.attributionMetadata = generatedSample.metadata.attributionMetadata;
+      if (this.#gcaClient.enabled()) {
+        try {
+          const result = await this.#gcaClient.completeCode(request);
+          recordOutcome(UserMetrics.AiClientRequestResult.SUCCESS);
+          return result;
+        } catch (err) {
+          recordOutcome(classifyRequestError(err));
+          throw mapError(err);
         }
-        generatedSamples.push(sample);
       }
-    } else {
-      return null;
-    }
+      const {promise, resolve} = Promise.withResolvers<AidaCodeCompleteResult>();
+      InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
+      const completeCodeResult = await promise;
 
-    return {generatedSamples, metadata};
+      if (completeCodeResult.error) {
+        recordOutcome(classifyRequestError(completeCodeResult.error, completeCodeResult.detail));
+        throw mapError(completeCodeResult.error, completeCodeResult.detail);
+      }
+      const response = completeCodeResult.response;
+      if (!response?.length) {
+        recordOutcome(UserMetrics.AiClientRequestResult.INVALID_JSON_RESPONSE);
+        throw new Error('Empty response');
+      }
+      let parsedResponse;
+      try {
+        parsedResponse = JSON.parse(response);
+      } catch (error) {
+        recordOutcome(UserMetrics.AiClientRequestResult.INVALID_JSON_RESPONSE);
+        throw new Error('Cannot parse response: ' + response, {cause: error});
+      }
+
+      const generatedSamples: GenerationSample[] = [];
+      let metadata: ResponseMetadata = {rpcGlobalId: 0};
+      if ('metadata' in parsedResponse) {
+        metadata = parsedResponse.metadata;
+      }
+
+      if ('generatedSamples' in parsedResponse) {
+        for (const generatedSample of parsedResponse.generatedSamples) {
+          const sample: GenerationSample = {
+            generationString: generatedSample.generationString,
+            score: generatedSample.score,
+            sampleId: generatedSample.sampleId,
+          };
+          if ('metadata' in generatedSample && 'attributionMetadata' in generatedSample.metadata) {
+            sample.attributionMetadata = generatedSample.metadata.attributionMetadata;
+          }
+          generatedSamples.push(sample);
+        }
+      } else {
+        recordOutcome(UserMetrics.AiClientRequestResult.SUCCESS);
+        return null;
+      }
+
+      recordOutcome(UserMetrics.AiClientRequestResult.SUCCESS);
+      return {generatedSamples, metadata};
+    } catch (err) {
+      recordOutcome(classifyRequestError(err));
+      throw err;
+    }
   }
 
   async generateCode(request: GenerateCodeRequest, options?: {signal?: AbortSignal}): Promise<GenerateCodeResponse> {
@@ -419,25 +480,21 @@ export class AidaClient {
       request.metadata.disable_user_content_logging = true;
     }
 
-    if (this.#gcaClient.enabled()) {
-      // Inline and remove the else clause after migration
-      try {
-        return await this.#gcaClient.generateCode(request, options);
-      } catch (err) {
-        throw mapError(err);
-      }
-    }
+    const surfaceHistogram = EnumeratedHistogram.AiClientRequestResultCodeGenerate;
     try {
-      const response = await DispatchHttpRequestClient.makeHttpRequest<GenerateCodeResponse>({
-        service: SERVICE_NAME,
-        path: '/v1/aida:generateCode',
-        method: 'POST',
-        body: JSON.stringify(request),
-      },
-                                                                                             options);
-
+      const response = this.#gcaClient.enabled() ?
+          await this.#gcaClient.generateCode(request, options) :
+          await DispatchHttpRequestClient.makeHttpRequest<GenerateCodeResponse>({
+            service: SERVICE_NAME,
+            path: '/v1/aida:generateCode',
+            method: 'POST',
+            body: JSON.stringify(request),
+          },
+                                                                                options);
+      UserMetrics.userMetrics.aiClientRequestResult(UserMetrics.AiClientRequestResult.SUCCESS, surfaceHistogram);
       return response;
     } catch (err) {
+      UserMetrics.userMetrics.aiClientRequestResult(classifyRequestError(err), surfaceHistogram);
       throw mapError(err);
     }
   }

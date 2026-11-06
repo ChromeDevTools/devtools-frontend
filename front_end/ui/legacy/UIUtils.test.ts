@@ -18,7 +18,7 @@ import * as Lit from '../lit/lit.js';
 
 import * as UI from './legacy.js';
 
-const {html, nothing} = Lit;
+const {html, nothing, render} = Lit;
 
 describe('UIUtils', () => {
   describe('isEditing', () => {
@@ -725,6 +725,234 @@ describe('UIUtils', () => {
       // clone1 is removed from fragment (now also detached)
       fragment.removeChild(clone1);
       assert.deepEqual(UI.UIUtils.HTMLElementWithLightDOMTemplate.getClones(original), []);
+    });
+
+    it('resolves clonedRef on cloned nodes and preserves callback identity across template patches', () => {
+      const el = new TestLightDOMTemplate();
+      const callback = sinon.spy();
+      const itemCallback = sinon.spy();
+      const spanRef = Lit.Directives.createRef<HTMLSpanElement>();
+
+      const renderTemplate = (label: string): void => {
+        el.template = html`<div>
+          <span ${UI.UIUtils.clonedRef(callback)} ${UI.UIUtils.clonedRef(spanRef)}>${label}</span>
+          ${
+            Lit.Directives.repeat(['item'], item => item,
+                                  item => html`<p ${UI.UIUtils.clonedRef(itemCallback)}>${item}:${label}</p>`)}
+        </div>`;
+      };
+
+      renderTemplate('first');
+
+      const template = el.querySelector('template');
+      assert.exists(template);
+      const templateSpan = template.content.querySelector('span');
+      assert.exists(templateSpan);
+      const templateParagraph = template.content.querySelector('p');
+      assert.exists(templateParagraph);
+
+      sinon.assert.notCalled(callback);
+      sinon.assert.notCalled(itemCallback);
+      assert.isUndefined(spanRef.value);
+
+      const clonedSpan = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(templateSpan);
+      assert.instanceOf(clonedSpan, HTMLSpanElement);
+      const clonedParagraph = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(templateParagraph);
+      assert.instanceOf(clonedParagraph, HTMLParagraphElement);
+
+      assert.strictEqual(spanRef.value, clonedSpan);
+      assert.deepEqual(callback.args, [[clonedSpan]]);
+      assert.deepEqual(itemCallback.args, [[clonedParagraph]]);
+
+      renderTemplate('second');
+
+      assert.strictEqual(spanRef.value, clonedSpan);
+      assert.deepEqual(callback.args, [[clonedSpan]]);
+      assert.deepEqual(itemCallback.args, [[clonedParagraph]]);
+    });
+
+    it('resolves clonedRef at once when bound after the clone was made', () => {
+      const el = new TestLightDOMTemplate();
+      const callback = sinon.spy();
+      const renderTemplate = (withRef: boolean): void => {
+        el.template = html`<span ${withRef ? UI.UIUtils.clonedRef(callback) : Lit.nothing}>label</span>`;
+      };
+
+      renderTemplate(false);
+      const templateSpan = el.querySelector('template')?.content.querySelector('span');
+      assert.exists(templateSpan);
+      const clonedSpan = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(templateSpan);
+      // Only live clones resolve.
+      document.createDocumentFragment().appendChild(clonedSpan);
+      sinon.assert.notCalled(callback);
+
+      renderTemplate(true);
+      assert.deepEqual(callback.args, [[clonedSpan]]);
+
+      renderTemplate(false);
+      assert.deepEqual(callback.args, [[clonedSpan], [undefined]]);
+    });
+
+    it('resolves clonedRef for clones that a host registers by other means', () => {
+      const el = new TestLightDOMTemplate();
+      const spanRef = Lit.Directives.createRef<HTMLSpanElement>();
+      el.template = html`<span ${UI.UIUtils.clonedRef(spanRef)}>label</span>`;
+      const templateSpan = el.querySelector('template')?.content.querySelector('span');
+      assert.exists(templateSpan);
+
+      const rendered = document.createElement('span');
+      document.createDocumentFragment().appendChild(rendered);
+      UI.UIUtils.HTMLElementWithLightDOMTemplate.registerClone(templateSpan, rendered);
+      assert.strictEqual(spanRef.value, rendered);
+      assert.deepEqual(UI.UIUtils.HTMLElementWithLightDOMTemplate.getClones(templateSpan), [rendered]);
+    });
+  });
+
+  describe('clonedRef', () => {
+    const {clonedRef, HTMLElementWithLightDOMTemplate} = UI.UIUtils;
+
+    it('resolves Ref objects to cloned elements and updates on re-clone', () => {
+      const container = document.createElement('div');
+      const buttonRef = Lit.Directives.createRef<HTMLButtonElement>();
+      render(html`<button ${clonedRef(buttonRef)}></button>`, container);
+      const templateButton = container.querySelector('button');
+      assert.exists(templateButton);
+      assert.isUndefined(buttonRef.value);
+
+      const clone1 = HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      assert.instanceOf(clone1, HTMLButtonElement);
+      assert.strictEqual(buttonRef.value, clone1);
+
+      const clone2 = HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      assert.instanceOf(clone2, HTMLButtonElement);
+      assert.strictEqual(buttonRef.value, clone2);
+    });
+
+    it('calls ref callbacks with undefined before a new clone', () => {
+      const container = document.createElement('div');
+      const callback = sinon.spy();
+      render(html`<button ${clonedRef(callback)}></button>`, container);
+      const templateButton = container.querySelector('button');
+      assert.exists(templateButton);
+      sinon.assert.notCalled(callback);
+
+      const clone1 = HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      assert.instanceOf(clone1, HTMLButtonElement);
+      assert.deepEqual(callback.args, [[clone1]]);
+
+      const clone2 = HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      assert.instanceOf(clone2, HTMLButtonElement);
+      assert.deepEqual(callback.args, [[clone1], [undefined], [clone2]]);
+    });
+
+    it('switches callbacks and Ref objects across renders using the active clone', () => {
+      const container = document.createElement('div');
+      const callback1 = sinon.spy();
+      const callback2 = sinon.spy();
+      const buttonRef = Lit.Directives.createRef<HTMLButtonElement>();
+      const renderButton = (refValue: Lit.Directives.RefOrCallback): void => {
+        render(html`<button ${clonedRef(refValue)}></button>`, container);
+      };
+
+      renderButton(callback1);
+      const templateButton = container.querySelector('button');
+      assert.exists(templateButton);
+      const clone = HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      assert.instanceOf(clone, HTMLButtonElement);
+      // The lazy lookup for a new ref only returns live clones.
+      document.createDocumentFragment().appendChild(clone);
+      assert.deepEqual(callback1.args, [[clone]]);
+
+      renderButton(callback2);
+      assert.deepEqual(callback1.args, [[clone], [undefined]]);
+      assert.deepEqual(callback2.args, [[clone]]);
+
+      renderButton(buttonRef);
+      assert.deepEqual(callback2.args, [[clone], [undefined]]);
+      assert.strictEqual(buttonRef.value, clone);
+    });
+
+    it('clears stale Ref values when bound to an uncloned element', () => {
+      const container1 = document.createElement('div');
+      const container2 = document.createElement('div');
+      const buttonRef = Lit.Directives.createRef<HTMLButtonElement>();
+
+      render(html`<button ${clonedRef(buttonRef)}></button>`, container1);
+      const templateButton1 = container1.querySelector('button');
+      assert.exists(templateButton1);
+      const clone1 = HTMLElementWithLightDOMTemplate.cloneNode(templateButton1);
+      assert.instanceOf(clone1, HTMLButtonElement);
+      assert.strictEqual(buttonRef.value, clone1);
+
+      render(html`<button ${clonedRef(buttonRef)}></button>`, container2);
+      assert.isUndefined(buttonRef.value);
+    });
+
+    it('clears references when an element or directive disconnects', () => {
+      const spanContainer = document.createElement('div');
+      const callback = sinon.spy();
+      const renderSpan = (selected: boolean): void => {
+        render(html`<span ${selected ? clonedRef(callback) : Lit.nothing}></span>`, spanContainer);
+      };
+
+      renderSpan(true);
+      const templateSpan = spanContainer.querySelector('span');
+      assert.exists(templateSpan);
+      const clonedSpan = HTMLElementWithLightDOMTemplate.cloneNode(templateSpan);
+      assert.instanceOf(clonedSpan, HTMLSpanElement);
+      assert.deepEqual(callback.args, [[clonedSpan]]);
+
+      renderSpan(false);
+      assert.deepEqual(callback.args, [[clonedSpan], [undefined]]);
+
+      // A clone of an element without a connected directive does not call the callback.
+      HTMLElementWithLightDOMTemplate.cloneNode(templateSpan);
+      assert.deepEqual(callback.args, [[clonedSpan], [undefined]]);
+
+      const buttonContainer = document.createElement('div');
+      const buttonRef = Lit.Directives.createRef<HTMLButtonElement>();
+      const renderButton = (active: boolean): void => {
+        render(html`${active ? html`<button ${clonedRef(buttonRef)}></button>` : Lit.nothing}`, buttonContainer);
+      };
+
+      renderButton(true);
+      const templateButton = buttonContainer.querySelector('button');
+      assert.exists(templateButton);
+      const clonedButton = HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      assert.instanceOf(clonedButton, HTMLButtonElement);
+      assert.strictEqual(buttonRef.value, clonedButton);
+
+      renderButton(false);
+      assert.isUndefined(buttonRef.value);
+    });
+
+    it('throws when used outside an element position', () => {
+      const container = document.createElement('div');
+      assert.throws(() => render(html`<div title=${clonedRef()}></div>`, container), /must be bound to an element/);
+      assert.throws(() => render(html`<div>${clonedRef()}</div>`, container), /must be bound to an element/);
+    });
+
+    it('restores the ref and receives new clones after the directive reconnects', () => {
+      const container = document.createElement('div');
+      const callback = sinon.spy();
+      const part = render(html`<button ${clonedRef(callback)}></button>`, container);
+      const templateButton = container.querySelector('button');
+      assert.exists(templateButton);
+      const clone1 = HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      document.createDocumentFragment().appendChild(clone1);
+      assert.deepEqual(callback.args, [[clone1]]);
+
+      // Disconnecting the part disconnects the directive and keeps the template DOM.
+      part.setConnected(false);
+      assert.deepEqual(callback.args, [[clone1], [undefined]]);
+      HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      assert.deepEqual(callback.args, [[clone1], [undefined]]);
+
+      // On reconnect the directive resolves the live clone again and receives new clones.
+      part.setConnected(true);
+      assert.deepEqual(callback.args, [[clone1], [undefined], [clone1]]);
+      const clone2 = HTMLElementWithLightDOMTemplate.cloneNode(templateButton);
+      assert.deepEqual(callback.args, [[clone1], [undefined], [clone1], [undefined], [clone2]]);
     });
   });
 

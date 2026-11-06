@@ -95,7 +95,12 @@ export const freestylerBinding: string = `(${String(freestylerBindingFunc)})('${
 export const PAGE_EXPOSED_FUNCTIONS: string[] = ['setElementStyles'];
 
 /**
- * Please see fileoverview
+ * Please see fileoverview.
+ *
+ * `SetElementStylesTool` (`tools/SetElementStyles.ts`) is the V2 SDK-based
+ * equivalent of this page-injected `setElementStyles` function and is designed
+ * to be behaviorally identical. Any functional changes here must stay in sync
+ * with `SetElementStylesTool` until V1 is removed (b/581814240).
  */
 const setupSetElementStyles = `function setupSetElementStyles(prefix) {
   const global = globalThis;

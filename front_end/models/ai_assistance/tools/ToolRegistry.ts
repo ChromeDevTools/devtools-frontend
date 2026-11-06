@@ -27,6 +27,7 @@ import {RecordPerformanceTraceTool} from './RecordPerformanceTrace.js';
 import {ResolveDevtoolsNodePathTool} from './ResolveDevtoolsNodePath.js';
 import {RunLighthouseTool} from './RunLighthouse.js';
 import {SelectTraceEventByKeyTool} from './SelectTraceEventByKey.js';
+import {SetElementStylesTool} from './SetElementStyles.js';
 import {type AllToolsCapabilities, type Tool, type ToolArgs, ToolName} from './Tool.js';
 
 export interface BaseToolsRegistryMap {
@@ -55,6 +56,7 @@ export interface BaseToolsRegistryMap {
   [ToolName.GET_TRACE_RESOURCE_CONTENT]: GetTraceResourceContentTool;
   [ToolName.GET_INSIGHT_DETAILS]: GetInsightDetailsTool;
   [ToolName.GET_STORAGE_BREAKDOWN]: GetStorageBreakdownTool;
+  [ToolName.SET_ELEMENT_STYLES]: SetElementStylesTool;
 }
 
 export type ToolsRegistryMap = BaseToolsRegistryMap&{
@@ -90,6 +92,7 @@ export const TOOLS: BaseToolsRegistryMap = {
   [ToolName.GET_TRACE_RESOURCE_CONTENT]: new GetTraceResourceContentTool(),
   [ToolName.GET_INSIGHT_DETAILS]: new GetInsightDetailsTool(),
   [ToolName.GET_STORAGE_BREAKDOWN]: new GetStorageBreakdownTool(),
+  [ToolName.SET_ELEMENT_STYLES]: new SetElementStylesTool(),
 };
 
 /**

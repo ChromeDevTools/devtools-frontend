@@ -88,6 +88,7 @@ devtools_foundation_module("ai_assistance") {
     "tools/ResolveDevtoolsNodePath.ts",
     "tools/RunLighthouse.ts",
     "tools/SelectTraceEventByKey.ts",
+    "tools/SetElementStyles.ts",
     "tools/Tool.ts",
     "tools/ToolRegistry.ts",
   ]
@@ -227,6 +228,7 @@ devtools_foundation_module("foundation_unittests") {
     "tools/ResolveDevtoolsNodePath.test.ts",
     "tools/RunLighthouse.test.ts",
     "tools/SelectTraceEventByKey.test.ts",
+    "tools/SetElementStyles.test.ts",
     "tools/Tool.test.ts",
     "tools/ToolRegistry.test.ts",
   ]

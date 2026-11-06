@@ -64,6 +64,7 @@ import * as RecordPerformanceTrace from './tools/RecordPerformanceTrace.js';
 import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as RunLighthouse from './tools/RunLighthouse.js';
 import * as SelectTraceEventByKey from './tools/SelectTraceEventByKey.js';
+import * as SetElementStyles from './tools/SetElementStyles.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
 
@@ -131,6 +132,7 @@ export {
   ResolveDevtoolsNodePath,
   RunLighthouse,
   SelectTraceEventByKey,
+  SetElementStyles,
   Skill,
   SkillRegistry,
   StorageAgent,

@@ -266,6 +266,7 @@ export const enum ToolName {
   GET_TRACE_RESOURCE_CONTENT = 'getTraceResourceContent',
   GET_INSIGHT_DETAILS = 'getInsightDetails',
   GET_STORAGE_BREAKDOWN = 'getStorageBreakdown',
+  SET_ELEMENT_STYLES = 'setElementStyles',
 }
 
 /**

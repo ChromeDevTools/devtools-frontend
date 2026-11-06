@@ -24,6 +24,13 @@ describe('ToolRegistry', () => {
     assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.GET_STYLES);
   });
 
+  it('can retrieve setElementStyles tool by name', () => {
+    const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.SET_ELEMENT_STYLES);
+    assert.exists(tool);
+    assert.instanceOf(tool, AiAssistance.SetElementStyles.SetElementStylesTool);
+    assert.strictEqual(tool?.name, AiAssistance.Tool.ToolName.SET_ELEMENT_STYLES);
+  });
+
   it('can retrieve getDetailedCallTree tool by name', () => {
     const tool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.GET_DETAILED_CALL_TREE);
     assert.exists(tool);
@@ -116,6 +123,7 @@ describe('ToolRegistry', () => {
         AiAssistance.Tool.ToolName.RESOLVE_DEVTOOLS_NODE_PATH,
         AiAssistance.Tool.ToolName.RUN_LIGHTHOUSE,
         AiAssistance.Tool.ToolName.SELECT_TRACE_EVENT_BY_KEY,
+        AiAssistance.Tool.ToolName.SET_ELEMENT_STYLES,
       ].sort();
 
       const permissionPrompt = AiAssistance.Tool.PermissionPrompt.NEVER;

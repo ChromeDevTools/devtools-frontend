@@ -253,7 +253,8 @@ const FlameChartBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widg
 export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.Calculator, ChartViewportDelegate {
   private flameChartDelegate: FlameChartDelegate;
   private chartViewport: ChartViewport;
-  private dataProvider: FlameChartDataProvider;
+  #dataProvider: FlameChartDataProvider;
+  #windowTimes?: {min: number, max: number, animate?: boolean};
   private candyStripePattern: CanvasPattern|null;
   private candyStripePatternGray: CanvasPattern|null;
   private contextMenu?: UI.ContextMenu.ContextMenu;
@@ -389,7 +390,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     });
     this.chartViewport.show(this.contentElement);
 
-    this.dataProvider = dataProvider;
+    this.#dataProvider = dataProvider;
 
     this.viewportElement = this.chartViewport.viewportElement;
     this.canvas = this.viewportElement.createChild('canvas', 'fill');
@@ -543,15 +544,35 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     this.chartViewport.disableRangeSelection();
   }
 
+  get dataProvider(): FlameChartDataProvider {
+    return this.#dataProvider;
+  }
+
+  set dataProvider(dataProvider: FlameChartDataProvider) {
+    this.setDataProvider(dataProvider);
+  }
+
   setDataProvider(dataProvider: FlameChartDataProvider): void {
-    if (this.dataProvider === dataProvider) {
+    if (this.#dataProvider === dataProvider) {
       return;
     }
-    this.dataProvider = dataProvider;
+    this.#dataProvider = dataProvider;
     this.reset();
-    this.chartViewport.setWindowTimes(dataProvider.minimumBoundary(),
-                                      dataProvider.minimumBoundary() + dataProvider.totalTime());
+    if (this.#windowTimes) {
+      this.chartViewport.setWindowTimes(this.#windowTimes.min, this.#windowTimes.max, this.#windowTimes.animate);
+    } else {
+      this.chartViewport.setWindowTimes(dataProvider.minimumBoundary(),
+                                        dataProvider.minimumBoundary() + dataProvider.totalTime());
+    }
     this.scheduleUpdate();
+  }
+
+  get delegate(): FlameChartDelegate {
+    return this.flameChartDelegate;
+  }
+
+  set delegate(flameChartDelegate: FlameChartDelegate) {
+    this.setDelegate(flameChartDelegate);
   }
 
   setDelegate(flameChartDelegate: FlameChartDelegate): void {
@@ -831,6 +852,7 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
   }
 
   set windowTimes(windowTimes: {min: number, max: number, animate?: boolean}) {
+    this.#windowTimes = windowTimes;
     this.setWindowTimes(windowTimes.min, windowTimes.max, windowTimes.animate);
   }
 

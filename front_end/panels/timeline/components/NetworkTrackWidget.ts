@@ -49,7 +49,11 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         ${widget(
           (element: HTMLElement): PerfUI.FlameChart.FlameChart =>
               new PerfUI.FlameChart.FlameChart(input.dataProvider, input.delegate, undefined, element),
-          {windowTimes: input.windowTimes},
+          {
+            dataProvider: input.dataProvider,
+            delegate: input.delegate,
+            windowTimes: input.windowTimes,
+          },
         )}
       ></devtools-widget>
     `,

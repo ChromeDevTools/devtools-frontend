@@ -39,6 +39,7 @@ devtools_foundation_module("host") {
   sources = [
     "AidaClient.ts",
     "AidaClientTypes.ts",
+    "AidaErrors.ts",
     "AidaGcaTranslation.ts",
     "DispatchHttpRequestClient.ts",
     "GcaClient.ts",
@@ -75,6 +76,7 @@ devtools_foundation_module("foundation_unittests") {
 
   sources = [
     "AidaClient.test.ts",
+    "AidaErrors.test.ts",
     "AidaGcaTranslation.test.ts",
     "DispatchHttpRequestClient.test.ts",
     "GcaClient.test.ts",

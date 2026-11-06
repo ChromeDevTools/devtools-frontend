@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as AidaClient from './AidaClient.js';
+import * as AidaErrors from './AidaErrors.js';
 import * as AidaGcaTranslation from './AidaGcaTranslation.js';
 import * as DispatchHttpRequestClient from './DispatchHttpRequestClient.js';
 import * as GcaClient from './GcaClient.js';
@@ -16,6 +17,7 @@ import * as UserMetrics from './UserMetrics.js';
 
 export {
   AidaClient,
+  AidaErrors,
   AidaGcaTranslation,
   DispatchHttpRequestClient,
   GcaClient,

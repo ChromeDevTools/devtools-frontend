@@ -909,6 +909,7 @@ grd_files_unbundled_sources = [
   "front_end/core/common/VersionController.js",
   "front_end/core/host/AidaClient.js",
   "front_end/core/host/AidaClientTypes.js",
+  "front_end/core/host/AidaErrors.js",
   "front_end/core/host/AidaGcaTranslation.js",
   "front_end/core/host/DispatchHttpRequestClient.js",
   "front_end/core/host/GcaClient.js",

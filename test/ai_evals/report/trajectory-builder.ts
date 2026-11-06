@@ -38,6 +38,15 @@ export interface ToolCall {
   result?: unknown;
 }
 
+export interface TurnTokens {
+  input?: number;
+  output?: number;
+  thoughts?: number;
+  tool?: number;
+  cached?: number;
+  total?: number;
+}
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export interface Turn {
   turn_id: string;
@@ -45,7 +54,7 @@ export interface Turn {
   timestamp: number;
   /** Optional because user turns have no span and tool calls are initialized before execution completes. */
   duration?: number;
-  tokens: Record<string, never>;
+  tokens: TurnTokens;
   content: string[];
   thoughts: Thought[];
   tool_calls: ToolCall[];
@@ -101,6 +110,13 @@ export interface RawAidaResponse {
     inferenceOptionMetadata?: {
       modelId?: string,
       modelVersion?: string,
+    },
+    usageMetadata?: {
+      promptTokenCount?: number,
+      candidatesTokenCount?: number,
+      totalTokenCount?: number,
+      thoughtsTokenCount?: number,
+      cachedContentTokenCount?: number,
     },
   };
   explanation?: string;
@@ -190,12 +206,54 @@ function createUserTurn(turnId: string, userText: string, timestamp: number): Tu
     turn_id: turnId,
     role: 'user',
     timestamp,
-    // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
     tokens: {},
     content: [userText],
     thoughts: [],
     tool_calls: [],
   };
+}
+
+const TOKEN_KEYS: Array<keyof TurnTokens> = ['input', 'output', 'thoughts', 'tool', 'cached', 'total'];
+
+function extractTurnTokens(aidaResponse: RawAidaResponse): TurnTokens {
+  const usage = aidaResponse.metadata?.usageMetadata;
+  if (!usage) {
+    return {};
+  }
+  const tokens: TurnTokens = {};
+  if (usage.promptTokenCount !== undefined) {
+    tokens.input = usage.promptTokenCount;
+  }
+  if (usage.candidatesTokenCount !== undefined) {
+    tokens.output = usage.candidatesTokenCount;
+  }
+  if (usage.thoughtsTokenCount !== undefined) {
+    tokens.thoughts = usage.thoughtsTokenCount;
+  }
+  if (usage.cachedContentTokenCount !== undefined) {
+    tokens.cached = usage.cachedContentTokenCount;
+  }
+  if (usage.totalTokenCount !== undefined) {
+    tokens.total = usage.totalTokenCount;
+  }
+  return tokens;
+}
+
+/**
+ * Aggregates token counts across all turns in a trajectory.
+ * Returns an empty object if no turn reported token usage.
+ */
+export function calculateTrajectoryTokens(trajectory: Trajectory): TurnTokens {
+  const totals: TurnTokens = {};
+  for (const {tokens} of trajectory.data) {
+    for (const key of TOKEN_KEYS) {
+      const value = tokens?.[key];
+      if (value !== undefined) {
+        totals[key] = (totals[key] ?? 0) + value;
+      }
+    }
+  }
+  return totals;
 }
 
 export interface ToolCallStats {
@@ -249,8 +307,7 @@ function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse, timesta
     role: 'gemini',
     timestamp,
     duration,
-    // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
-    tokens: {},
+    tokens: extractTurnTokens(aidaResponse),
     content: responseText ? [responseText] : [],
     thoughts: buildThoughts(functionCalls, timestamp),
     tool_calls: toolCalls,

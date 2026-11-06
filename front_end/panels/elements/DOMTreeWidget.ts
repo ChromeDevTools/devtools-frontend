@@ -1555,15 +1555,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       return;
     }
     if (expanded) {
-      // The tree outline dispatches an `expand` event for every node that is
-      // rendered with the `open` attribute. After `expandRecursively()`, this
-      // happens once per node in the subtree. Each event would otherwise
-      // trigger a synchronous re-render of the whole tree, which is quadratic
-      // in the number of expanded nodes. Skip the work when the node is
-      // already expanded and its children are loaded.
-      if (this.#expandedNodes.has(node) && node.children()) {
-        return;
-      }
       this.#expandedNodes.add(node);
       // Children that are not collapsible (e.g. the document element) render
       // without an expand arrow, so their children must be fetched eagerly.

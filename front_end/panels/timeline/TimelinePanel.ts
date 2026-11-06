@@ -1554,7 +1554,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     let fileName =
         (isCpuProfile ? `CPU-${isoDate}.cpuprofile` : `Trace-${isoDate}.json`) as Platform.DevToolsPath.RawPathString;
 
-    let blobParts: string[] = [];
+    let blobParts: BlobPart[] = [];
     if (isCpuProfile) {
       const profile = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.extractCpuProfileFromFakeTrace(traceEvents);
       blobParts = [JSON.stringify(profile)];
@@ -1567,7 +1567,12 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
         sourceMaps: filteredMetadataSourceMaps,
         resources: filteredResources,
       });
-      blobParts = Array.from(formattedTraceIter);
+      // Wrap each chunk in a Blob as soon as it is generated, so that each
+      // chunk string can be garbage collected straight away. Collecting all
+      // the strings first would hold the whole serialized trace in the JS heap.
+      for (const chunk of formattedTraceIter) {
+        blobParts.push(new Blob([chunk]));
+      }
     }
 
     if (!blobParts.length) {

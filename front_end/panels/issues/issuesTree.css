@@ -390,7 +390,7 @@ ul > li.plain-enum::before {
 
 .affected-resources > .parent {
   margin-top: 0;
-  padding: var(--sys-size-2) 5px 0;
+  padding: var(--sys-size-2) var(--sys-size-3) 0;
 }
 
 .affected-resources > .parent.expanded {

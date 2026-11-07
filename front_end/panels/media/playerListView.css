@@ -58,8 +58,7 @@
 }
 
 .player-entry-player-title {
-  height: 26px;
-  padding-left: 10px;
+  padding-left: var(--sys-size-5);
   overflow: hidden;
 }
 

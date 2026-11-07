@@ -65,7 +65,6 @@
 .context-detail-row {
   grid-template-columns: min-content 1fr;
   display: grid;
-  line-height: 18px;
   margin: var(--sys-size-3) var(--sys-size-9) var(--sys-size-3) var(--sys-size-9);
   gap:  var(--sys-size-6);
 }

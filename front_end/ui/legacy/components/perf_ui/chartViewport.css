@@ -31,7 +31,7 @@
 
 :host-context(.platform-mac) ::-webkit-scrollbar-thumb {
   background-color: var(--color-scrollbar-mac); /* stylelint-disable-line plugin/use_theme_colors */
-  border-radius: 50px;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 :host-context(.platform-mac) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {

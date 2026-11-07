@@ -19,10 +19,10 @@
 .highlight-chip {
   background: var(--sys-color-cdt-base-container);
   border: var(--sys-size-1) solid var(--sys-color-divider);
-  height: 18px;
+  height: calc(var(--sys-size-8) + 2 * var(--sys-size-1)); /* --sys-size-8 micro button height + top/bottom --sys-size-1 borders */
   border-radius: var(--sys-shape-corner-extra-small);
   flex: 0 0 auto;
-  max-width: 250px;
+  max-width: var(--sys-size-29);
   position: relative;
   padding: 0 var(--sys-size-4);
 }

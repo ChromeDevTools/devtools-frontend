@@ -70,7 +70,7 @@
 }
 
 .conditions-list-text:last-child {
-  flex-basis: 100px;
+  flex-basis: var(--sys-size-19);
   text-align: left;
 }
 

@@ -66,6 +66,7 @@ export var ToolName;
     ToolName["GET_TRACE_RESOURCE_CONTENT"] = "getTraceResourceContent";
     ToolName["GET_INSIGHT_DETAILS"] = "getInsightDetails";
     ToolName["GET_STORAGE_BREAKDOWN"] = "getStorageBreakdown";
+    ToolName["SET_ELEMENT_STYLES"] = "setElementStyles";
 })(ToolName || (ToolName = {}));
 /**
  * Choices the permission prompt offers when a tool asks for approval.

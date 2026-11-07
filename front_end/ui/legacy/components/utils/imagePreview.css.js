@@ -18,7 +18,7 @@ export default `/*
 .image-preview-container img {
   margin: var(--sys-size-4) 0;
   width: auto;
-  max-height: 100px;
+  max-height: var(--sys-size-20);
   background-image: var(--image-file-checker);
   user-select: text;
   vertical-align: top;

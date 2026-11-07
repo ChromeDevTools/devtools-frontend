@@ -1565,11 +1565,6 @@ var throttlingSettingsTab_css_default = `/*
   margin: 0 var(--sys-size-3);
 }
 
-.conditions-list-separator-invisible {
-  visibility: hidden;
-  height: 100% !important; /* stylelint-disable-line declaration-no-important */
-}
-
 .settings-card-container-wrapper {
   scrollbar-gutter: stable;
   padding: var(--sys-size-8) 0;
@@ -1614,7 +1609,7 @@ var throttlingSettingsTab_css_default = `/*
 .text-with-icon {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--sys-size-3);
 }
 
 .conditions-list-header {

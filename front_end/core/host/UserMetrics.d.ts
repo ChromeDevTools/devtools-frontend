@@ -1,4 +1,5 @@
 import * as Common from '../common/common.js';
+import { EnumeratedHistogram } from './InspectorFrontendHostAPI.js';
 import * as Enums from './UserMetricsEnums.js';
 export declare class UserMetrics {
     sourcesPanelFileDebugged(mediaType?: string): void;
@@ -48,6 +49,10 @@ export declare class UserMetrics {
     commentQueued(count: number): void;
     commentSharedWithAgent(count: number): void;
     commentSize(characters: number): void;
+    /**
+     * Records the outcome of an AI request to the aggregate histogram and optionally to a surface-specific slice.
+     */
+    aiClientRequestResult(result: AiClientRequestResult, surfaceHistogram?: AiClientSurfaceHistogram): void;
 }
 export type Action = Enums.Action;
 export declare const Action: typeof Enums.Action;
@@ -113,5 +118,9 @@ export type BuiltInAiAvailability = Enums.BuiltInAiAvailability;
 export declare const BuiltInAiAvailability: typeof Enums.BuiltInAiAvailability;
 export type ResendRequestType = Enums.ResendRequestType;
 export declare const ResendRequestType: typeof Enums.ResendRequestType;
+export type AiClientRequestResult = Enums.AiClientRequestResult;
+export declare const AiClientRequestResult: typeof Enums.AiClientRequestResult;
+export type AiClientSurfaceHistogram = EnumeratedHistogram.AiClientRequestResultAiAssistance | EnumeratedHistogram.AiClientRequestResultCodeComplete | EnumeratedHistogram.AiClientRequestResultCodeGenerate | EnumeratedHistogram.AiClientRequestResultConsoleInsights | EnumeratedHistogram.AiClientRequestResultConversationSummary | EnumeratedHistogram.AiClientRequestResultPerformanceAnnotations;
+export declare const userMetrics: UserMetrics;
 export declare function resendRequestType(resourceType: Common.ResourceType.ResourceType): ResendRequestType;
 export type CommentResolver = 'Agent' | 'User';

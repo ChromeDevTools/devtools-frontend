@@ -261,8 +261,6 @@ export default `/*
 
   .pause-on-uncaught-exceptions,
   .pause-on-caught-exceptions {
-    line-height: 13px;
-    height: 18px;
     padding-right: var(--sys-size-5);
 
     & > label {

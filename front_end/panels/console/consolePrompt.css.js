@@ -9,18 +9,6 @@ export default `/*
  * found in the LICENSE file.
  */
 
-#console-prompt .CodeMirror {
-  padding: 3px 0 1px;
-}
-
-#console-prompt .CodeMirror-line {
-  padding-top: 0;
-}
-
-#console-prompt .CodeMirror-lines {
-  padding-top: 0;
-}
-
 #console-prompt .console-prompt-icon {
   position: absolute;
   left: calc(-1 * var(--sys-size-6));

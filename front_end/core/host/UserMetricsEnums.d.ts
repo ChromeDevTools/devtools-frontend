@@ -887,3 +887,27 @@ export declare enum ResendRequestType {
     OTHER = 15,
     MAX_VALUE = 16
 }
+/**
+ * Maps to the `DevTools.AiClient.RequestResult` UMA histogram.
+ * Values are persisted to logs and must remain append-only in sync with `enums.xml`.
+ */
+export declare enum AiClientRequestResult {
+    SUCCESS = 0,
+    ABORTED = 1,
+    VALIDATION_FAILED = 2,
+    OAUTH_TOKEN_ERROR = 3,
+    NETWORK_TIMEOUT = 4,
+    NETWORK_ERROR = 5,
+    HTTP_400_PAYLOAD_TOO_LARGE = 6,
+    HTTP_400_INVALID_ARGUMENT = 7,
+    HTTP_401_UNAUTHORIZED = 8,
+    HTTP_403_PERMISSION_DENIED = 9,
+    HTTP_404_NOT_FOUND = 10,
+    HTTP_429_QUOTA_EXCEEDED = 11,
+    HTTP_5XX_SERVER_ERROR = 12,
+    STREAM_CHUNK_PARSE_ERROR = 13,
+    INVALID_JSON_RESPONSE = 14,
+    BLOCKED_BY_SAFETY_OR_RECITATION = 15,
+    UNKNOWN_ERROR = 16,
+    MAX_VALUE = 17
+}

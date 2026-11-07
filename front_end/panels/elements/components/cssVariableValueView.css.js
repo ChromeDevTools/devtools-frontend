@@ -11,7 +11,7 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .registered-property-popup-wrapper {
-    max-width: 232px;
+    max-width: var(--sys-size-28);
     font-size: var(--sys-typescale-body4-size);
     line-height: 1.4;
     word-break: break-all;

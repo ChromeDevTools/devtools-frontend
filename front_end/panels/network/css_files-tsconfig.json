@@ -16,7 +16,6 @@
     "requestCookiesView.css.js",
     "requestDeviceBoundSessionsView.css.js",
     "requestHTMLView.css.js",
-    "requestHeadersTree.css.js",
     "requestInitiatorView.css.js",
     "requestInitiatorViewTree.css.js",
     "requestPayloadTree.css.js",

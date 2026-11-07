@@ -157,11 +157,11 @@ export default `/*
   field-sizing: content;
   resize: none;
   width: 100%;
-  max-height: 84px; /* 4 rows */
+  max-height: var(--sys-size-19);
   border: 0;
   border-radius: var(--sys-shape-corner-small);
   font: var(--sys-typescale-body4-regular);
-  line-height: 18px;
+  line-height: var(--sys-typescale-body4-line-height);
   min-height: var(--sys-size-11);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
@@ -307,9 +307,9 @@ export default `/*
       height: var(--sys-size-4);
       border-radius: var(--sys-shape-corner-full);
       outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
-      left: 11px;
+      left: var(--sys-size-6);
       position: absolute;
-      top: 13px;
+      top: var(--sys-size-6);
       z-index: 1;
       background-color: var(--sys-color-purple-bright);
     }

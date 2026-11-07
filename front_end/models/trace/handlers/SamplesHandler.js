@@ -72,7 +72,6 @@ function parseCPUProfileData(parseOptions) {
             profileTree.maxDepth = profileModel.maxDepth;
             const selectedProfileId = chosen.id;
             const finalizedData = {
-                rawProfile: chosenData.rawProfile,
                 parsedProfile: profileModel,
                 profileCalls: [],
                 profileTree,
@@ -218,6 +217,9 @@ export function handleEvent(event) {
 }
 export async function finalize(parseOptions = {}) {
     parseCPUProfileData(parseOptions);
+    // The raw profiles are only needed to build each CPUProfileDataModel.
+    // Release them now instead of at the next reset().
+    preprocessedData = new Map();
 }
 function assignProfileSourceIfKnown(profileData, source) {
     if (Types.Events.VALID_PROFILE_SOURCES.includes(source)) {

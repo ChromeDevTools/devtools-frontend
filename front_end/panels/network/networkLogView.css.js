@@ -102,7 +102,7 @@ export default `/*
 }
 
 .network-log-grid.data-grid .waterfall-column .sort-order-icon-container {
-  right: 15px;
+  right: var(--sys-size-7);
   pointer-events: none;
 }
 
@@ -227,7 +227,7 @@ export default `/*
   width: var(--sys-size-13);
   height: var(--sys-size-13);
   margin-top: var(--sys-size-1);
-  margin-right: 3px;
+  margin-right: var(--sys-size-3);
 }
 
 .network-log-grid.data-grid:focus-within .network-error-row.selected div.icon:not(.image) {

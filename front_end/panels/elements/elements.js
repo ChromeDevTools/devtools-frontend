@@ -7726,7 +7726,8 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         const tooltip = new Tooltips.Tooltip.Tooltip(
           { anchor: hintIcon, variant: "rich", padding: "large", id: tooltipId, jslogContext: "elements.css-hint" }
         );
-        const hintDetailsView = new ElementsComponents2.CSSHintDetailsView.CSSHintDetailsView(hint);
+        const hintDetailsView = new ElementsComponents2.CSSHintDetailsView.CSSHintDetailsView();
+        hintDetailsView.authoringHint = hint;
         hintDetailsView.markAsRoot();
         hintDetailsView.show(tooltip);
         this.listItemElement.appendChild(tooltip);
@@ -21961,6 +21962,7 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
     };
     await expand2(node, 0);
     this.performUpdate();
+    this.onElementExpanded();
   }
   collapseChildren(node) {
     const collapse = (n) => {
@@ -23103,12 +23105,6 @@ var elementsPanel_css_default = `/* Copyright 2026 The Chromium Authors
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
   width: 100%;
-}
-
-devtools-adorner-settings-pane {
-  margin-bottom: 10px;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  overflow: auto;
 }
 
 devtools-tree-outline {

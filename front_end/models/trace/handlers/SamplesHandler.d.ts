@@ -13,7 +13,6 @@ export interface SamplesHandlerData {
 }
 export interface ProfileData {
     profileId: Types.Events.ProfileID;
-    rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile;
     parsedProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel;
     /**
      * Contains the calls built from the CPU profile samples.

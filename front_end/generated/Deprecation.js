@@ -1,8 +1,6 @@
-// Copyright 2026 The Chromium Authors
+// Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// This file is auto-generated, do not edit manually.
-// Re-generate with: scripts/tools/dt.py generate-protocol-resources
 export const UIStrings = {
     /**
      * @description This warning occurs when the website uses Attribution Reporting.

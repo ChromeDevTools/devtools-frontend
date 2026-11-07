@@ -23,7 +23,6 @@ export declare class PerformanceTraceFormatter {
     formatNetworkTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string;
     formatExtensionTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string;
     formatCallTree(tree: AICallTree, headerLevel?: number): Promise<string>;
-    formatRequestUrl(request: Trace.Types.Events.SyntheticNetworkRequest): string;
     formatNetworkRequests(requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], options?: NetworkRequestFormatOptions): string;
     static callFrameDataFormatDescription: string;
     /**
@@ -38,4 +37,4 @@ export declare class PerformanceTraceFormatter {
  * ensuring sensitive data (like headers and raw script source code)
  * is sanitized or redacted.
  */
-export declare function formatEventForAI(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): string;
+export declare function formatEventForAI(event: Trace.Types.Events.Event): string;

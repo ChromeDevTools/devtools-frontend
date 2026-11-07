@@ -3297,7 +3297,7 @@ var imagePreview_css_default = `/*
 .image-preview-container img {
   margin: var(--sys-size-4) 0;
   width: auto;
-  max-height: 100px;
+  max-height: var(--sys-size-20);
   background-image: var(--image-file-checker);
   user-select: text;
   vertical-align: top;
@@ -8550,20 +8550,21 @@ var TimelineLoader = class _TimelineLoader {
   }
   static async loadFromURL(url, client) {
     const loader = new _TimelineLoader(client);
-    const stream = new Common8.StringOutputStream.StringOutputStream();
+    let stream = new Common8.StringOutputStream.StringOutputStream();
     client.loadingStarted();
     const allowRemoteFilePaths = Common8.Settings.Settings.instance().resolve(SDK6.SDKSettings.enableRemoteFileLoadingSettingDescriptor).get();
     Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowRemoteFilePaths);
     async function finishedCallback(success, _headers, errorDescription) {
-      if (!success) {
+      if (!success || !stream) {
+        stream = null;
         return loader.reportErrorAndCancelLoading(errorDescription.message);
       }
       try {
-        const txt = stream.data();
-        const trace = JSON.parse(txt);
-        loader.#processParsedFile(trace);
+        loader.#processParsedFile(JSON.parse(stream.data()));
+        stream = null;
         await loader.complete();
       } catch (e) {
+        stream = null;
         const message = e instanceof Error ? e.message : "";
         return loader.reportErrorAndCancelLoading(i18nString14(UIStrings14.malformedTimelineDataS, { PH1: message }));
       }
@@ -8609,6 +8610,7 @@ var TimelineLoader = class _TimelineLoader {
     }
   }
   async #cleanup() {
+    this.#collectedEvents = [];
     if (this.client) {
       await this.client.loadingComplete(
         /* collectedEvents */
@@ -8650,7 +8652,9 @@ var TimelineLoader = class _TimelineLoader {
     if (!this.#metadata && this.#traceIsCPUProfile) {
       this.#metadata = forCPUProfile();
     }
-    await this.client.loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
+    const loadingCompletePromise = this.client.loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
+    this.#collectedEvents = [];
+    await loadingCompletePromise;
     this.#traceLoadedCallback?.("SUCCESS" /* SUCCESS */);
   }
   traceLoaded() {
@@ -11006,7 +11010,9 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
         sourceMaps: filteredMetadataSourceMaps,
         resources: filteredResources
       });
-      blobParts = Array.from(formattedTraceIter);
+      for (const chunk of formattedTraceIter) {
+        blobParts.push(new Blob([chunk]));
+      }
     }
     if (!blobParts.length) {
       throw new Error("Trace content empty");

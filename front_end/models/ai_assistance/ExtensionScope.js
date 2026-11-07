@@ -212,6 +212,15 @@ export class ExtensionScope {
             selector: _a.getSelectorForElement(node, matchedStyles),
         };
     }
+    /**
+     * Handles the runtime binding callback from the V1 page-injected
+     * `setElementStyles` function (`injected.ts`).
+     *
+     * `SetElementStylesTool` (`tools/SetElementStyles.ts`) is the V2 SDK-based
+     * equivalent of this flow and is designed to be behaviorally identical. Any
+     * functional changes here must stay in sync with `SetElementStylesTool` until
+     * V1 is removed (b/581814240).
+     */
     async #bindingCalled(executionContext, event) {
         const { data } = event;
         if (data.name !== FREESTYLER_BINDING_NAME) {

@@ -1066,8 +1066,6 @@ var breakpointsView_css_default = `/*
 
   .pause-on-uncaught-exceptions,
   .pause-on-caught-exceptions {
-    line-height: 13px;
-    height: 18px;
     padding-right: var(--sys-size-5);
 
     & > label {
@@ -19141,7 +19139,6 @@ li.watch-expression-tree-item > span.tree-element-title {
 
 .watch-expression-text-prompt-proxy {
   margin: var(--sys-size-2) var(--sys-size-6) var(--sys-size-2) calc(-1 * var(--sys-size-3));
-  padding-bottom: 3px;
 }
 
 .watch-expression-header {

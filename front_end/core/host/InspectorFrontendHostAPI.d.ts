@@ -428,6 +428,13 @@ export declare const enum EnumeratedHistogram {
     SwatchActivated = "DevTools.SwatchActivated",
     BuiltInAiAvailability = "DevTools.BuiltInAiAvailability",
     ResendRequest = "DevTools.ResendRequest",
-    EditResendRequest = "DevTools.EditResendRequest"
+    EditResendRequest = "DevTools.EditResendRequest",
+    AiClientRequestResult = "DevTools.AiClient.RequestResult",
+    AiClientRequestResultAiAssistance = "DevTools.AiClient.RequestResult.AiAssistance",
+    AiClientRequestResultCodeComplete = "DevTools.AiClient.RequestResult.CodeComplete",
+    AiClientRequestResultCodeGenerate = "DevTools.AiClient.RequestResult.CodeGenerate",
+    AiClientRequestResultConsoleInsights = "DevTools.AiClient.RequestResult.ConsoleInsights",
+    AiClientRequestResultConversationSummary = "DevTools.AiClient.RequestResult.ConversationSummary",
+    AiClientRequestResultPerformanceAnnotations = "DevTools.AiClient.RequestResult.PerformanceAnnotations"
 }
 export {};

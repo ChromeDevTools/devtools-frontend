@@ -458,6 +458,15 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
             rpcGlobalId: response.responseId,
             inferenceOptionMetadata: { modelId: response.modelVersion },
         };
+        if (response.usageMetadata) {
+            metadata.usageMetadata = {
+                promptTokenCount: response.usageMetadata.promptTokenCount,
+                candidatesTokenCount: response.usageMetadata.candidatesTokenCount,
+                totalTokenCount: response.usageMetadata.totalTokenCount,
+                thoughtsTokenCount: response.usageMetadata.thoughtsTokenCount,
+                cachedContentTokenCount: response.usageMetadata.cachedContentTokenCount,
+            };
+        }
         if (candidate?.citationMetadata?.citations) {
             metadata.attributionMetadata = {
                 attributionAction: AIDA.RecitationAction.CITE,

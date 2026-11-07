@@ -205,7 +205,8 @@ export declare const enum ToolName {
     GET_TRACE_FUNCTION_CODE = "getTraceFunctionCode",
     GET_TRACE_RESOURCE_CONTENT = "getTraceResourceContent",
     GET_INSIGHT_DETAILS = "getInsightDetails",
-    GET_STORAGE_BREAKDOWN = "getStorageBreakdown"
+    GET_STORAGE_BREAKDOWN = "getStorageBreakdown",
+    SET_ELEMENT_STYLES = "setElementStyles"
 }
 /**
  * Choices the permission prompt offers when a tool asks for approval.

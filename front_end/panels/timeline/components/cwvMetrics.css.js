@@ -63,7 +63,7 @@ export default `/*
   color: var(--app-color-performance-good);
 }
 
-.metric-score-unclassified {
+.metric-value-unclassified {
   color: var(--sys-color-token-subtle);
 }
 

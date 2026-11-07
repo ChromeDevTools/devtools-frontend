@@ -9,7 +9,7 @@ var AccessibilityAgent_exports = {};
 __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent
 });
-import * as Host28 from "../../core/host/host.js";
+import * as Host29 from "../../core/host/host.js";
 import * as i18n47 from "../../core/i18n/i18n.js";
 import * as Root6 from "../../core/root/root.js";
 import * as SDK24 from "../../core/sdk/sdk.js";
@@ -3660,16 +3660,15 @@ function stringifyObjectOnThePage() {
   });
 }
 var DISALLOWED_CSS_URL_FUNCTION_REGEX = /(?:^|[^a-zA-Z0-9_-])(?:-webkit-image-set|image-set|url|src)\s*\(/i;
-function containsCssUrlFunction(value) {
-  const withoutComments = value.replace(/\/\*[\s\S]*?\*\//g, "");
-  return DISALLOWED_CSS_URL_FUNCTION_REGEX.test(withoutComments);
+function isDisallowedCssValue(value) {
+  return value.includes("\\") || value.includes("/*") || DISALLOWED_CSS_URL_FUNCTION_REGEX.test(value);
 }
 async function sanitizeStyleChanges(selector, styles) {
   const cssStyleValue = [];
   const changedStyles = [];
   const kebabStyles = Platform2.StringUtilities.toKebabCaseKeys(styles);
   for (const [style, value] of Object.entries(kebabStyles)) {
-    if (!value.trim() || containsCssUrlFunction(value)) {
+    if (!value.trim() || isDisallowedCssValue(value)) {
       continue;
     }
     cssStyleValue.push(`${style}: ${value};`);
@@ -3687,7 +3686,7 @@ async function sanitizeStyleChanges(selector, styles) {
     }
     for (const style of changedStyles) {
       const value = cssRule.style.getPropertyValue(style);
-      if (value && !containsCssUrlFunction(value)) {
+      if (value && !DISALLOWED_CSS_URL_FUNCTION_REGEX.test(value)) {
         sanitizedStyles[style] = value;
       }
     }
@@ -4354,6 +4353,15 @@ var ExtensionScope = class _ExtensionScope {
       selector: _ExtensionScope.getSelectorForElement(node, matchedStyles)
     };
   }
+  /**
+   * Handles the runtime binding callback from the V1 page-injected
+   * `setElementStyles` function (`injected.ts`).
+   *
+   * `SetElementStylesTool` (`tools/SetElementStyles.ts`) is the V2 SDK-based
+   * equivalent of this flow and is designed to be behaviorally identical. Any
+   * functional changes here must stay in sync with `SetElementStylesTool` until
+   * V1 is removed (b/581814240).
+   */
   async #bindingCalled(executionContext, event) {
     const { data } = event;
     if (data.name !== FREESTYLER_BINDING_NAME) {
@@ -4471,6 +4479,7 @@ var ToolName = /* @__PURE__ */ ((ToolName2) => {
   ToolName2["GET_TRACE_RESOURCE_CONTENT"] = "getTraceResourceContent";
   ToolName2["GET_INSIGHT_DETAILS"] = "getInsightDetails";
   ToolName2["GET_STORAGE_BREAKDOWN"] = "getStorageBreakdown";
+  ToolName2["SET_ELEMENT_STYLES"] = "setElementStyles";
   return ToolName2;
 })(ToolName || {});
 var PermissionPrompt = /* @__PURE__ */ ((PermissionPrompt2) => {
@@ -5397,7 +5406,7 @@ __export(GetInsightDetails_exports, {
 });
 import * as Host6 from "../../core/host/host.js";
 import * as i18n11 from "../../core/i18n/i18n.js";
-import * as SDK11 from "../../core/sdk/sdk.js";
+import * as SDK10 from "../../core/sdk/sdk.js";
 import * as TextUtils2 from "../../core/text_utils/text_utils.js";
 import * as AiUtils3 from "../ai-utils/ai-utils.js";
 import * as Logs2 from "../logs/logs.js";
@@ -5417,7 +5426,6 @@ __export(PerformanceTraceFormatter_exports, {
   PerformanceTraceFormatter: () => PerformanceTraceFormatter,
   formatEventForAI: () => formatEventForAI
 });
-import * as SDK10 from "../../core/sdk/sdk.js";
 import * as CrUXManager from "../crux-manager/crux-manager.js";
 import * as Trace4 from "../trace/trace.js";
 
@@ -5954,52 +5962,6 @@ function formatLines(title, lines, maxLength) {
 }
 
 // ../../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.ts
-function filterToCorsSafelistedHeaders(headers) {
-  return headers.filter(
-    (header) => SDK10.NetworkRequestAccess.CORS_SAFELISTED_RESPONSE_HEADERS.has(header.name.toLowerCase().trim())
-  );
-}
-function isSameOriginTraceRequest(request, parsedTrace) {
-  const traceUrl = parsedTrace.data?.Meta?.mainFrameURL;
-  const targetUrl = request.args.data.url;
-  if (!traceUrl || !targetUrl) {
-    return false;
-  }
-  const traceOrigin = SDK10.SecurityOrigin.SecurityOrigin.create(traceUrl);
-  if (traceOrigin.isOpaque()) {
-    return false;
-  }
-  const redirects = request.args.data.redirects ?? [];
-  for (const redirect of redirects) {
-    if (!redirect.url || !traceOrigin.isSameOriginWith(SDK10.SecurityOrigin.SecurityOrigin.create(redirect.url))) {
-      return false;
-    }
-  }
-  return traceOrigin.isSameOriginWith(SDK10.SecurityOrigin.SecurityOrigin.create(targetUrl));
-}
-function filteredResponseHeaders(request, parsedTrace) {
-  const headers = request.args.data.responseHeaders;
-  if (!headers) {
-    return headers;
-  }
-  if (isSameOriginTraceRequest(request, parsedTrace)) {
-    return headers;
-  }
-  return filterToCorsSafelistedHeaders(headers);
-}
-function filteredRedirects(request, parsedTrace) {
-  if (isSameOriginTraceRequest(request, parsedTrace)) {
-    return request.args.data.redirects ?? [];
-  }
-  return [];
-}
-function filteredUrl(request, parsedTrace) {
-  const redirects = request.args.data.redirects ?? [];
-  if (redirects.length === 0 || isSameOriginTraceRequest(request, parsedTrace)) {
-    return request.args.data.url;
-  }
-  return redirects[0].url || "<redacted cross-origin redirect destination>";
-}
 var PerformanceTraceFormatter = class {
   #focus;
   #parsedTrace;
@@ -6370,34 +6332,10 @@ var PerformanceTraceFormatter = class {
     }
     const results = [];
     for (const [insightKey, events2] of insightNameToRelatedEvents) {
-      const eventsString = events2.slice(0, 5).map((e) => this.#safeNameForEntry(e) + " " + this.serializeEvent(e)).join(", ");
+      const eventsString = events2.slice(0, 5).map((e) => Trace4.Name.forEntry(e) + " " + this.serializeEvent(e)).join(", ");
       results.push(`- ${insightKey}: ${eventsString}`);
     }
     return results.join("\n");
-  }
-  /**
-   * Returns the display name for a trace event, replacing the final
-   * post-redirect URL on cross-origin network requests with the initial
-   * pre-redirect URL (`filteredUrl`) before delegating to `Trace.Name.forEntry`.
-   */
-  #safeNameForEntry(event) {
-    if (Trace4.Types.Events.isSyntheticNetworkRequest(event)) {
-      const safeUrl = filteredUrl(event, this.#parsedTrace);
-      if (safeUrl !== event.args.data.url) {
-        const syntheticEvent = {
-          ...event,
-          args: {
-            ...event.args,
-            data: {
-              ...event.args.data,
-              url: safeUrl
-            }
-          }
-        };
-        return Trace4.Name.forEntry(syntheticEvent);
-      }
-    }
-    return Trace4.Name.forEntry(event);
   }
   async formatMainThreadTrackSummary(bounds) {
     if (!this.#parsedTrace.insights) {
@@ -6528,9 +6466,6 @@ IMPORTANT: Never show eventKey to the user.
     result += await this.#serializeRelevantFunctions(relevantCallFrames);
     return result;
   }
-  formatRequestUrl(request) {
-    return filteredUrl(request, this.#parsedTrace);
-  }
   formatNetworkRequests(requests, options) {
     if (requests.length === 0) {
       return "";
@@ -6580,17 +6515,17 @@ IMPORTANT: Never show eventKey to the user.
    */
   #networkRequestVerbosely(request, options) {
     const {
+      url,
       statusCode,
       initialPriority,
       priority,
       fromServiceWorker,
       mimeType,
+      responseHeaders,
       syntheticData,
       protocol
     } = request.args.data;
     const parsedTrace = this.#parsedTrace;
-    const url = filteredUrl(request, parsedTrace);
-    const responseHeaders = filteredResponseHeaders(request, parsedTrace);
     const titlePrefix = `## ${options?.customTitle ?? "Network request"}`;
     const navigationForEvent = Trace4.Helpers.Trace.getNavigationForTraceEvent(
       request,
@@ -6615,14 +6550,14 @@ IMPORTANT: Never show eventKey to the user.
       priorityLines.push(`Initial priority: ${initialPriority}`);
       priorityLines.push(`Final priority: ${priority}`);
     }
-    const redirects = filteredRedirects(request, parsedTrace).map((redirect, index) => {
+    const redirects = request.args.data.redirects.map((redirect, index) => {
       const startTime = redirect.ts - baseTime;
       return `#### Redirect ${index + 1}: ${redirect.url}
 - Start time: ${micros(startTime)}
 - Duration: ${micros(redirect.dur)}`;
     });
     const initiators = this.#getInitiatorChain(parsedTrace, request);
-    const initiatorUrls = initiators.map((initiator2) => filteredUrl(initiator2, parsedTrace));
+    const initiatorUrls = initiators.map((initiator2) => initiator2.args.data.url);
     const eventKey = this.#eventsSerializer.keyForEvent(request);
     const eventKeyLine = eventKey ? `eventKey: ${eventKey}
 ` : "";
@@ -6636,7 +6571,7 @@ Durations:
 - Download time: ${micros(downloadTime)}
 - Main thread processing time: ${micros(mainThreadProcessingDuration)}
 - Total duration: ${micros(request.dur)}${initiator ? `
-Initiator: ${filteredUrl(initiator, parsedTrace)}` : ""}
+Initiator: ${initiator.args.data.url}` : ""}
 Redirects:${redirects.length ? "\n" + redirects.join("\n") : " no redirects"}
 Status code: ${statusCode}
 MIME Type: ${mimeType}
@@ -6661,7 +6596,7 @@ Network requests data:
 `;
     const urlIdToIndex = /* @__PURE__ */ new Map();
     const allRequestsText = requests.map((request) => {
-      const urlIndex = this.#getOrAssignUrlIndex(urlIdToIndex, filteredUrl(request, this.#parsedTrace));
+      const urlIndex = this.#getOrAssignUrlIndex(urlIdToIndex, request.args.data.url);
       return this.#networkRequestCompressedFormat(urlIndex, request, urlIdToIndex);
     }).join("\n");
     const urlsMapString = `allUrls = [${Array.from(urlIdToIndex.entries()).map(([url, index]) => {
@@ -6740,11 +6675,11 @@ The order of headers corresponds to an internal fixed list. If a header is not p
       priority,
       fromServiceWorker,
       mimeType,
+      responseHeaders,
       syntheticData,
       protocol
     } = request.args.data;
     const parsedTrace = this.#parsedTrace;
-    const responseHeaders = filteredResponseHeaders(request, parsedTrace);
     const navigationForEvent = Trace4.Helpers.Trace.getNavigationForTraceEvent(
       request,
       request.args.data.frame,
@@ -6764,14 +6699,14 @@ The order of headers corresponds to an internal fixed list. If a header is not p
       const value = NetworkRequestFormatter.allowHeader(header.name) ? header.value : "<redacted>";
       return `${header.name}: ${value}`;
     }).join("|");
-    const redirects = filteredRedirects(request, parsedTrace).map((redirect) => {
+    const redirects = request.args.data.redirects.map((redirect) => {
       const urlIndex2 = this.#getOrAssignUrlIndex(urlIdToIndex, redirect.url);
       const redirectStartTime = micros(redirect.ts - baseTime);
       const redirectDuration = micros(redirect.dur);
       return `[${urlIndex2}|${redirectStartTime}|${redirectDuration}]`;
     }).join(",");
     const initiators = this.#getInitiatorChain(parsedTrace, request);
-    const initiatorUrlIndices = initiators.map((initiator) => this.#getOrAssignUrlIndex(urlIdToIndex, filteredUrl(initiator, parsedTrace)));
+    const initiatorUrlIndices = initiators.map((initiator) => this.#getOrAssignUrlIndex(urlIdToIndex, initiator.args.data.url));
     const parts = [
       urlIndex,
       this.#eventsSerializer.keyForEvent(request) ?? "",
@@ -6878,73 +6813,27 @@ The order of headers corresponds to an internal fixed list. If a header is not p
     ].join("\n\n");
   }
 };
-function sanitizeSyntheticNetworkRequestEvent(event, parsedTrace) {
-  const safeUrl = filteredUrl(event, parsedTrace);
-  const headers = filteredResponseHeaders(event, parsedTrace);
-  const sanitizedEvent = {
-    ...event,
-    args: {
-      ...event.args,
-      data: {
-        ...event.args.data,
-        url: safeUrl,
-        redirects: filteredRedirects(event, parsedTrace),
-        responseHeaders: headers ? sanitizeHeaders(headers) : null
-      }
-    }
-  };
-  if (event.rawSourceEvent?.args?.data) {
-    sanitizedEvent.rawSourceEvent = {
-      ...event.rawSourceEvent,
-      args: {
-        ...event.rawSourceEvent.args,
-        data: {
-          ...event.rawSourceEvent.args.data,
-          url: safeUrl
-        }
-      }
-    };
-  }
-  return sanitizedEvent;
-}
-function formatEventForAI(event, parsedTrace) {
+function formatEventForAI(event) {
   if (Trace4.Types.Events.isSyntheticNetworkRequest(event)) {
-    return JSON.stringify(sanitizeSyntheticNetworkRequestEvent(event, parsedTrace));
-  }
-  if (Trace4.Types.Events.isResourceSendRequest(event)) {
-    const syntheticRequest = parsedTrace.data?.NetworkRequests?.byTime?.find((r) => r.args.data.requestId === event.args.data.requestId);
-    let safeUrl = "<redacted cross-origin redirect destination>";
-    if (syntheticRequest) {
-      safeUrl = isSameOriginTraceRequest(syntheticRequest, parsedTrace) ? event.args.data.url : filteredUrl(syntheticRequest, parsedTrace);
-    } else {
-      const traceUrl = parsedTrace.data?.Meta?.mainFrameURL;
-      const traceOrigin = traceUrl ? SDK10.SecurityOrigin.SecurityOrigin.create(traceUrl) : null;
-      if (traceOrigin && !traceOrigin.isOpaque() && traceOrigin.isSameOriginWith(SDK10.SecurityOrigin.SecurityOrigin.create(event.args.data.url))) {
-        safeUrl = event.args.data.url;
-      }
-    }
     return JSON.stringify({
       ...event,
       args: {
         ...event.args,
         data: {
           ...event.args.data,
-          url: safeUrl
+          responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null
         }
       }
     });
   }
   if (Trace4.Types.Events.isResourceReceiveResponse(event)) {
-    const syntheticRequest = parsedTrace.data?.NetworkRequests?.byTime?.find((r) => r.args.data.requestId === event.args.data.requestId);
-    const isSameOrigin = Boolean(syntheticRequest && isSameOriginTraceRequest(syntheticRequest, parsedTrace));
-    const filteredHeaders = event.args.data.headers ? isSameOrigin ? event.args.data.headers : filterToCorsSafelistedHeaders(event.args.data.headers) : void 0;
     return JSON.stringify({
       ...event,
       args: {
         ...event.args,
         data: {
           ...event.args.data,
-          headers: filteredHeaders ? sanitizeHeaders(filteredHeaders) : void 0
+          headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : void 0
         }
       }
     });
@@ -7042,7 +6931,7 @@ var PerformanceInsightFormatter = class {
     return this.#formatMilli(Trace5.Helpers.Timing.microToMilli(x));
   }
   #formatRequestUrl(request) {
-    return `${this.#traceFormatter.formatRequestUrl(request)} ${this.#traceFormatter.serializeEvent(request)}`;
+    return `${request.args.data.url} ${this.#traceFormatter.serializeEvent(request)}`;
   }
   #formatScriptUrl(script) {
     if (script.request) {
@@ -7386,7 +7275,7 @@ Duplication grouped by Node modules: ${filesFormatted}`;
     for (const font of insight.fonts) {
       let fontName = font.name;
       if (!fontName) {
-        const url = new Common3.ParsedURL.ParsedURL(this.#traceFormatter.formatRequestUrl(font.request));
+        const url = new Common3.ParsedURL.ParsedURL(font.request.args.data.url);
         fontName = url.isValid ? url.lastPathComponent : "(not available)";
       }
       output += `
@@ -8032,7 +7921,7 @@ Polyfills and transforms enable older browsers to use new JavaScript features. H
 var { debugLog } = AiUtils3.Debug;
 var lockedString5 = i18n11.i18n.lockedString;
 async function getNetworkRequestImageData(target, lcpRequest, networkLog = Logs2.NetworkLog.NetworkLog.instance()) {
-  const networkManager = target?.model(SDK11.NetworkManager.NetworkManager);
+  const networkManager = target?.model(SDK10.NetworkManager.NetworkManager);
   if (!target || !networkManager) {
     return void 0;
   }
@@ -8088,7 +7977,7 @@ var GetInsightDetailsTool = class {
       if (!nodeId) {
         return null;
       }
-      const domModel = target?.model(SDK11.DOMModel.DOMModel);
+      const domModel = target?.model(SDK10.DOMModel.DOMModel);
       if (!domModel) {
         return null;
       }
@@ -8582,7 +8471,7 @@ __export(GetStorageBreakdown_exports, {
 });
 import * as Host11 from "../../core/host/host.js";
 import * as i18n19 from "../../core/i18n/i18n.js";
-import * as SDK12 from "../../core/sdk/sdk.js";
+import * as SDK11 from "../../core/sdk/sdk.js";
 var lockedString9 = i18n19.i18n.lockedString;
 var GetStorageBreakdownTool = class {
   name = "getStorageBreakdown" /* GET_STORAGE_BREAKDOWN */;
@@ -8602,14 +8491,14 @@ var GetStorageBreakdownTool = class {
     };
   }
   async handler(_args, context) {
-    const targetManager = SDK12.TargetManager.TargetManager.instance();
+    const targetManager = SDK11.TargetManager.TargetManager.instance();
     const targetResolution = resolveAllowedTargetOrigins(void 0, context, targetManager);
     if ("error" in targetResolution) {
       return { error: targetResolution.error };
     }
     const { targetOrigins, primaryPageTarget } = targetResolution;
     const pageOrigin = targetOrigins[0];
-    const mainStorageKey = primaryPageTarget.model(SDK12.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
+    const mainStorageKey = primaryPageTarget.model(SDK11.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
     const localStorages = resolveDOMStorages(pageOrigin, "localStorage", targetManager, primaryPageTarget, mainStorageKey);
     const sessionStorages = resolveDOMStorages(pageOrigin, "sessionStorage", targetManager, primaryPageTarget, mainStorageKey);
     const [response, localStorageBytes, sessionStorageBytes, cookieResult] = await Promise.all([
@@ -8671,7 +8560,7 @@ __export(GetStorageValues_exports, {
 import * as Host12 from "../../core/host/host.js";
 import * as i18n21 from "../../core/i18n/i18n.js";
 import * as Platform5 from "../../core/platform/platform.js";
-import * as SDK13 from "../../core/sdk/sdk.js";
+import * as SDK12 from "../../core/sdk/sdk.js";
 var lockedString10 = i18n21.i18n.lockedString;
 var MAX_NUM_CHAR_LENGTH2 = 1e4;
 var GetStorageValuesTool = class {
@@ -8730,7 +8619,7 @@ var GetStorageValuesTool = class {
   }
   async handler(args, context, options) {
     context.disableLogging();
-    const targetManager = SDK13.TargetManager.TargetManager.instance();
+    const targetManager = SDK12.TargetManager.TargetManager.instance();
     const targetOriginsResult = resolveAllowedTargetOrigins(args.origins, context, targetManager);
     if ("error" in targetOriginsResult) {
       return { error: targetOriginsResult.error };
@@ -8796,7 +8685,7 @@ __export(GetStyles_exports, {
   GetStylesTool: () => GetStylesTool
 });
 import * as Host13 from "../../core/host/host.js";
-import * as SDK14 from "../../core/sdk/sdk.js";
+import * as SDK13 from "../../core/sdk/sdk.js";
 var GetStylesTool = class {
   name = "getStyles" /* GET_STYLES */;
   permissionPrompt = "never" /* NEVER */;
@@ -8856,7 +8745,7 @@ var GetStylesTool = class {
     }
     for (const uid of params.elements) {
       result[uid] = { computed: {}, authored: {} };
-      const node = new SDK14.DOMModel.DeferredDOMNode(target, uid);
+      const node = new SDK13.DOMModel.DeferredDOMNode(target, uid);
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
@@ -8890,7 +8779,7 @@ var GetStylesTool = class {
             continue;
           }
           const state = matchedStyles.propertyState(property);
-          if (state === SDK14.CSSMatchedStyles.PropertyState.ACTIVE) {
+          if (state === SDK13.CSSMatchedStyles.PropertyState.ACTIVE) {
             result[uid].authored[property.name] = property.value;
           }
         }
@@ -8947,7 +8836,7 @@ var GetTraceEventByKeyTool = class {
     if (!event) {
       return { error: `Could not find event with key "${params.eventKey}".` };
     }
-    const details = formatEventForAI(event, focus.parsedTrace);
+    const details = formatEventForAI(event);
     return {
       result: details,
       widgets: [{
@@ -9205,7 +9094,7 @@ __export(GetTraceResourceContent_exports, {
 import * as Host18 from "../../core/host/host.js";
 import * as i18n31 from "../../core/i18n/i18n.js";
 import * as Root3 from "../../core/root/root.js";
-import * as SDK15 from "../../core/sdk/sdk.js";
+import * as SDK14 from "../../core/sdk/sdk.js";
 import * as TextUtils4 from "../../core/text_utils/text_utils.js";
 var UIStringsNotTranslate9 = {
   lookingAtResourceContent: "Looking at resource content"
@@ -9260,8 +9149,8 @@ var GetTraceResourceContentTool = class {
       const isTraceApp = Root3.Runtime.Runtime.isTraceApp();
       if (target || isTraceApp) {
         const targetManager = target?.targetManager() ?? // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        SDK15.TargetManager.TargetManager.instance();
-        const resource = SDK15.ResourceTreeModel.ResourceTreeModel.resourceForURL(targetManager, url);
+        SDK14.TargetManager.TargetManager.instance();
+        const resource = SDK14.ResourceTreeModel.ResourceTreeModel.resourceForURL(targetManager, url);
         if (!resource) {
           return { error: "Resource not found" };
         }
@@ -9297,7 +9186,7 @@ __export(ListCookies_exports, {
 });
 import * as Host19 from "../../core/host/host.js";
 import * as i18n33 from "../../core/i18n/i18n.js";
-import * as SDK16 from "../../core/sdk/sdk.js";
+import * as SDK15 from "../../core/sdk/sdk.js";
 var lockedString16 = i18n33.i18n.lockedString;
 var ListCookiesTool = class {
   name = "listCookies" /* LIST_COOKIES */;
@@ -9326,7 +9215,7 @@ var ListCookiesTool = class {
   }
   async handler(args, context) {
     context.disableLogging();
-    const targetManager = SDK16.TargetManager.TargetManager.instance();
+    const targetManager = SDK15.TargetManager.TargetManager.instance();
     const targetOriginsResult = resolveAllowedTargetOrigins(args?.origins, context, targetManager);
     if ("error" in targetOriginsResult) {
       return { error: targetOriginsResult.error };
@@ -9437,7 +9326,7 @@ __export(ListPageOrigins_exports, {
 });
 import * as Host21 from "../../core/host/host.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
-import * as SDK17 from "../../core/sdk/sdk.js";
+import * as SDK16 from "../../core/sdk/sdk.js";
 var lockedString18 = i18n37.i18n.lockedString;
 var ListPageOriginsTool = class {
   name = "listPageOrigins" /* LIST_PAGE_ORIGINS */;
@@ -9466,19 +9355,19 @@ var ListPageOriginsTool = class {
    *    so we check `frame.securityOrigin` directly instead of the frame's target origin.
    */
   async handler(_args, context) {
-    const targetManager = SDK17.TargetManager.TargetManager.instance();
+    const targetManager = SDK16.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
     const originLock = context.getOriginLock();
     const originResult = resolveOriginFromLock(originLock);
     if ("error" in originResult) {
       return originResult;
     }
-    const pageOrigin = primaryPageTarget ? SDK17.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
+    const pageOrigin = primaryPageTarget ? SDK16.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
     if (!pageOrigin || !isOriginAllowedByLock(originLock, pageOrigin)) {
       return { error: "No origin available or not allowed." };
     }
     const origins = [];
-    for (const frame of SDK17.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
+    for (const frame of SDK16.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
       if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
         continue;
       }
@@ -9502,7 +9391,7 @@ __export(ListStorageKeys_exports, {
 import * as Host22 from "../../core/host/host.js";
 import * as i18n39 from "../../core/i18n/i18n.js";
 import * as Platform6 from "../../core/platform/platform.js";
-import * as SDK18 from "../../core/sdk/sdk.js";
+import * as SDK17 from "../../core/sdk/sdk.js";
 var lockedString19 = i18n39.i18n.lockedString;
 var ListStorageKeysTool = class {
   name = "listStorageKeys" /* LIST_STORAGE_KEYS */;
@@ -9552,7 +9441,7 @@ var ListStorageKeysTool = class {
   }
   async handler(args, context) {
     context.disableLogging();
-    const targetManager = SDK18.TargetManager.TargetManager.instance();
+    const targetManager = SDK17.TargetManager.TargetManager.instance();
     const targetOriginsResult = resolveAllowedTargetOrigins(args.origins, context, targetManager);
     if ("error" in targetOriginsResult) {
       return { error: targetOriginsResult.error };
@@ -9595,7 +9484,7 @@ var PerformanceTraceContext_exports = {};
 __export(PerformanceTraceContext_exports, {
   PerformanceTraceContext: () => PerformanceTraceContext
 });
-import * as SDK20 from "../../core/sdk/sdk.js";
+import * as SDK19 from "../../core/sdk/sdk.js";
 import * as Tracing2 from "../../services/tracing/tracing.js";
 import * as Bindings2 from "../bindings/bindings.js";
 import * as SourceMapScopes from "../source_map_scopes/source_map_scopes.js";
@@ -9618,7 +9507,7 @@ __export(AiAgent_exports, {
 import * as Host23 from "../../core/host/host.js";
 import * as Platform7 from "../../core/platform/platform.js";
 import * as Root4 from "../../core/root/root.js";
-import * as SDK19 from "../../core/sdk/sdk.js";
+import * as SDK18 from "../../core/sdk/sdk.js";
 import * as AiUtils4 from "../ai-utils/ai-utils.js";
 var { debugLog: debugLog2, isDebugMode } = AiUtils4.Debug;
 var MAX_SUGGESTION_LENGTH = 200;
@@ -9760,7 +9649,7 @@ var AiAgent = class {
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
     this.#allowedOrigin = opts.allowedOrigin;
-    this.#targetManager = opts.targetManager ?? SDK19.TargetManager.TargetManager.instance();
+    this.#targetManager = opts.targetManager ?? SDK18.TargetManager.TargetManager.instance();
     this.#alwaysAllowedTools = opts.alwaysAllowedTools;
   }
   async enhanceQuery(query) {
@@ -10595,7 +10484,7 @@ function getPerformanceAgentFocusFromModel(model) {
 
 // ../../front_end/models/ai_assistance/contexts/PerformanceTraceContext.ts
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
-  static fromParsedTrace(parsedTrace, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromParsedTrace(parsedTrace, targetManager = SDK19.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10606,7 +10495,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       debuggerWorkspaceBinding
     );
   }
-  static fromInsight(parsedTrace, insight, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromInsight(parsedTrace, insight, targetManager = SDK19.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10617,7 +10506,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       debuggerWorkspaceBinding
     );
   }
-  static fromCallTree(callTree, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromCallTree(callTree, targetManager = SDK19.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10634,7 +10523,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   #freshRecordingTracker;
   #debuggerWorkspaceBinding;
   #origin;
-  constructor(focus, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  constructor(focus, targetManager = SDK19.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10689,7 +10578,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
    */
   canAccessResource(url) {
     const traceOrigin = this.getOrigin();
-    const targetOrigin = SDK20.SecurityOrigin.SecurityOrigin.create(url);
+    const targetOrigin = SDK19.SecurityOrigin.SecurityOrigin.create(url);
     if (traceOrigin.isFile() || targetOrigin.isFile()) {
       return false;
     }
@@ -10713,11 +10602,11 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   getOrigin() {
     if (!this.#origin) {
       if (this.isImported()) {
-        this.#origin = SDK20.SecurityOrigin.SecurityOrigin.createForImportedTrace(
+        this.#origin = SDK19.SecurityOrigin.SecurityOrigin.createForImportedTrace(
           this.#focus.parsedTrace.data.Meta.mainFrameURL
         );
       } else {
-        this.#origin = SDK20.SecurityOrigin.SecurityOrigin.create(
+        this.#origin = SDK19.SecurityOrigin.SecurityOrigin.create(
           this.#focus.parsedTrace.data.Meta.mainFrameURL
         );
       }
@@ -11079,7 +10968,7 @@ __export(ResolveDevtoolsNodePath_exports, {
 });
 import * as Host25 from "../../core/host/host.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
-import * as SDK21 from "../../core/sdk/sdk.js";
+import * as SDK20 from "../../core/sdk/sdk.js";
 var ResolveDevtoolsNodePathTool = class {
   name = "resolveDevtoolsNodePath" /* RESOLVE_DEVTOOLS_NODE_PATH */;
   permissionPrompt = "never" /* NEVER */;
@@ -11124,7 +11013,7 @@ var ResolveDevtoolsNodePathTool = class {
    */
   async handler(params, context) {
     const target = context.getTarget();
-    const domModel = target?.model(SDK21.DOMModel.DOMModel);
+    const domModel = target?.model(SDK20.DOMModel.DOMModel);
     if (!domModel) {
       return { error: "Error: Inspected target not found." };
     }
@@ -11172,7 +11061,7 @@ __export(LighthouseContext_exports, {
   LighthouseContext: () => LighthouseContext
 });
 import * as Root5 from "../../core/root/root.js";
-import * as SDK22 from "../../core/sdk/sdk.js";
+import * as SDK21 from "../../core/sdk/sdk.js";
 var LighthouseContext = class extends ConversationContext {
   // This context was previously named AccessibilityContext. The VE context
   // keeps its original value so that logged metrics stay comparable.
@@ -11195,7 +11084,7 @@ var LighthouseContext = class extends ConversationContext {
    * @returns The security origin of the audited page.
    */
   getOrigin() {
-    return SDK22.SecurityOrigin.SecurityOrigin.create(this.#url());
+    return SDK21.SecurityOrigin.SecurityOrigin.create(this.#url());
   }
   getItem() {
     return this.#lh;
@@ -11335,7 +11224,7 @@ __export(SelectTraceEventByKey_exports, {
 import * as Common4 from "../../core/common/common.js";
 import * as Host27 from "../../core/host/host.js";
 import * as i18n45 from "../../core/i18n/i18n.js";
-import * as SDK23 from "../../core/sdk/sdk.js";
+import * as SDK22 from "../../core/sdk/sdk.js";
 var UIStringsNotTranslate12 = {
   selectingTraceEvent: "Selecting trace event"
 };
@@ -11373,7 +11262,7 @@ var SelectTraceEventByKeyTool = class {
     if (!event) {
       return { error: `Could not find event with key "${params.eventKey}".` };
     }
-    const revealable = new SDK23.TraceObject.RevealableEvent(event);
+    const revealable = new SDK22.TraceObject.RevealableEvent(event);
     try {
       await Common4.Revealer.reveal(revealable);
     } catch {
@@ -11388,6 +11277,196 @@ var SelectTraceEventByKeyTool = class {
         }
       }]
     };
+  }
+};
+
+// ../../front_end/models/ai_assistance/tools/SetElementStyles.ts
+var SetElementStyles_exports = {};
+__export(SetElementStyles_exports, {
+  SetElementStylesTool: () => SetElementStylesTool
+});
+import * as Host28 from "../../core/host/host.js";
+import * as Platform8 from "../../core/platform/platform.js";
+import * as SDK23 from "../../core/sdk/sdk.js";
+var SetElementStylesTool = class {
+  name = "setElementStyles" /* SET_ELEMENT_STYLES */;
+  permissionPrompt = "never" /* NEVER */;
+  description = "Applies CSS style declarations to one or more elements on the inspected page identified by their backend node IDs (uids). Prefer this tool over executeJavaScript whenever modifying or testing CSS styles on elements.";
+  parameters = {
+    type: Host28.AidaClient.ParametersTypes.OBJECT,
+    description: "",
+    nullable: false,
+    properties: {
+      explanation: {
+        type: Host28.AidaClient.ParametersTypes.STRING,
+        description: "Explain why you want to apply these style changes to the elements.",
+        nullable: false
+      },
+      elements: {
+        type: Host28.AidaClient.ParametersTypes.ARRAY,
+        description: "A list of element uids (backend node IDs) to apply the styles to. These are numbers, not CSS selectors.",
+        nullable: false,
+        items: {
+          type: Host28.AidaClient.ParametersTypes.INTEGER,
+          description: "An element uid."
+        }
+      },
+      styleProperties: {
+        type: Host28.AidaClient.ParametersTypes.ARRAY,
+        description: "One or more CSS style declarations (property name and value pairs) to apply to the specified elements.",
+        nullable: false,
+        items: {
+          type: Host28.AidaClient.ParametersTypes.OBJECT,
+          description: "A CSS property name and value pair.",
+          properties: {
+            name: {
+              type: Host28.AidaClient.ParametersTypes.STRING,
+              description: "The CSS property name in kebab-case (for example, 'background-color' or 'justify-content').",
+              nullable: false
+            },
+            value: {
+              type: Host28.AidaClient.ParametersTypes.STRING,
+              description: "The CSS property value to set (for example, 'flex' or '16px').",
+              nullable: false
+            }
+          },
+          required: ["name", "value"]
+        }
+      }
+    },
+    required: ["explanation", "elements", "styleProperties"]
+  };
+  displayInfoFromArgs(params) {
+    const styles = Object.fromEntries(params.styleProperties?.map((p) => [p.name, p.value]) ?? []);
+    return {
+      title: "Applying style changes",
+      thought: params.explanation,
+      action: `setElementStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(styles)})`
+    };
+  }
+  /**
+   * Handles applying CSS style declarations to specified elements.
+   *
+   * Resolves element backend node IDs using the primary page target, verifies
+   * security origin locks, sanitizes CSS declarations, and registers style
+   * rules via ChangeManager and DOM/CSS SDK models.
+   */
+  async handler(params, context, _options) {
+    const target = context.getTarget();
+    if (!target) {
+      return { error: "Error: Could not find the inspected page." };
+    }
+    if (!params.elements?.length) {
+      return { error: "Error: No elements provided." };
+    }
+    if (!params.styleProperties?.length) {
+      return { error: "Error: No style properties provided." };
+    }
+    const styles = Platform8.StringUtilities.toKebabCaseKeys(
+      Object.fromEntries(params.styleProperties.map((p) => [p.name, p.value]))
+    );
+    const maybeResolvedNodes = await Promise.all(
+      params.elements.map(
+        (uid) => new SDK23.DOMModel.DeferredDOMNode(target, uid).resolvePromise()
+      )
+    );
+    const resolvedNodes = [];
+    for (let i = 0; i < params.elements.length; i++) {
+      const resolved = maybeResolvedNodes[i];
+      if (!resolved) {
+        return { error: "Error: Could not find the element with uid=" + params.elements[i] };
+      }
+      if (!isOriginAllowedByLock(context.getOriginLock(), resolved.securityOrigin())) {
+        return { error: "Error: Node does not belong to the current origin." };
+      }
+      resolvedNodes.push(resolved);
+    }
+    const appliedProperties = /* @__PURE__ */ new Set();
+    const ignoredProperties = /* @__PURE__ */ new Set();
+    try {
+      for (const resolvedNode of resolvedNodes) {
+        const nodeResult = await this.#applyStyleChangesToNode(resolvedNode, styles, context.changeManager);
+        if ("error" in nodeResult) {
+          return nodeResult;
+        }
+        for (const prop of nodeResult.applied) {
+          appliedProperties.add(prop);
+        }
+        for (const prop of nodeResult.ignored) {
+          ignoredProperties.add(prop);
+        }
+      }
+    } catch (error) {
+      return {
+        error: error instanceof Error ? `Error: ${error.message}` : "Error: Failed to apply element styles."
+      };
+    }
+    if (ignoredProperties.size > 0) {
+      return {
+        result: `Successfully updated styles (${[...appliedProperties].join(
+          ", "
+        )}). The following properties were ignored because they are invalid CSS or contain disallowed URL functions (url(), image-set(), src()): ${[...ignoredProperties].join(", ")}.`
+      };
+    }
+    return { result: "Successfully updated styles." };
+  }
+  /**
+   * Applies style changes to a single resolved DOMNode using the same steps as
+   * `setElementStyles` (`injected.ts`) and `ExtensionScope#bindingCalled`.
+   */
+  async #applyStyleChangesToNode(resolvedNode, styles, changeManager) {
+    const domModel = resolvedNode.domModel();
+    const cssModel = domModel.cssModel();
+    const frameId = resolvedNode.frameId() ?? domModel.target().model(SDK23.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.id;
+    if (!frameId) {
+      return { error: "Error: Main frame is not found for applying styles." };
+    }
+    let matchedStyles = null;
+    try {
+      matchedStyles = await cssModel.getMatchedStyles(resolvedNode.id);
+    } catch {
+    }
+    const selector = ExtensionScope.getSelectorForElement(resolvedNode, matchedStyles);
+    const sanitizedStyles = await sanitizeStyleChanges(selector, styles);
+    const applied = Object.keys(sanitizedStyles);
+    if (applied.length === 0) {
+      return {
+        error: "Error: None of the suggested CSS properties or their values for selector were considered valid or permitted (URL functions such as url(), image-set(), and src() are not allowed). Please ensure property names are correct and values match the expected format for those properties."
+      };
+    }
+    const ignored = Object.keys(styles).filter((key) => !(key in sanitizedStyles));
+    const existingClasses = (resolvedNode.getAttribute("class") ?? "").split(/\s+/).filter(Boolean);
+    let className = existingClasses.find((cls) => cls.startsWith(`${AI_ASSISTANCE_CSS_CLASS_NAME}-`));
+    if (!className) {
+      className = `${AI_ASSISTANCE_CSS_CLASS_NAME}-${resolvedNode.backendNodeId()}`;
+      await resolvedNode.setAttributeValuePromise("class", [...existingClasses, className].join(" "));
+    }
+    const inlineStyle = resolvedNode.getAttribute("style");
+    if (inlineStyle) {
+      const updatedInlineStyle = removeInlineStyleProperties(inlineStyle, sanitizedStyles);
+      if (updatedInlineStyle !== inlineStyle) {
+        await resolvedNode.setAttributeValuePromise("style", updatedInlineStyle);
+      }
+    }
+    const styleChanges = await changeManager.addChange(cssModel, frameId, {
+      selector,
+      className,
+      styles: sanitizedStyles
+    });
+    if (resolvedNode.isInShadowTree()) {
+      const remoteObject = await resolvedNode.resolveToObject("");
+      if (remoteObject) {
+        try {
+          await remoteObject.callFunction(adoptStyleSheetInShadowRoot, [
+            { value: AI_ASSISTANCE_CSS_CLASS_NAME },
+            { value: styleChanges }
+          ]);
+        } finally {
+          remoteObject.release();
+        }
+      }
+    }
+    return { applied, ignored };
   }
 };
 
@@ -11417,7 +11496,8 @@ var TOOLS = {
   ["getTraceFunctionCode" /* GET_TRACE_FUNCTION_CODE */]: new GetTraceFunctionCodeTool(),
   ["getTraceResourceContent" /* GET_TRACE_RESOURCE_CONTENT */]: new GetTraceResourceContentTool(),
   ["getInsightDetails" /* GET_INSIGHT_DETAILS */]: new GetInsightDetailsTool(),
-  ["getStorageBreakdown" /* GET_STORAGE_BREAKDOWN */]: new GetStorageBreakdownTool()
+  ["getStorageBreakdown" /* GET_STORAGE_BREAKDOWN */]: new GetStorageBreakdownTool(),
+  ["setElementStyles" /* SET_ELEMENT_STYLES */]: new SetElementStylesTool()
 };
 var ToolRegistry = class {
   static get(name) {
@@ -11473,7 +11553,7 @@ If the user asks a question that requires an investigation of a problem, use thi
 `;
 var AccessibilityAgent = class extends AiAgent {
   preamble = preamble;
-  clientFeature = Host28.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  clientFeature = Host29.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
   #lighthouseRecording;
   #execJs;
   #changes;
@@ -11565,12 +11645,12 @@ var AccessibilityAgent = class extends AiAgent {
     this.declareFunction("getLighthouseAudits", {
       description: "Returns the audits for a specific Lighthouse category. Use this to get more information about the performance, accessibility, best-practices, or seo audits.",
       parameters: {
-        type: Host28.AidaClient.ParametersTypes.OBJECT,
+        type: Host29.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           categoryId: {
-            type: Host28.AidaClient.ParametersTypes.STRING,
+            type: Host29.AidaClient.ParametersTypes.STRING,
             description: 'The category of audits to retrieve. Valid values are "performance", "accessibility", "best-practices", "seo".',
             nullable: false
           }
@@ -11629,12 +11709,12 @@ var AccessibilityAgent = class extends AiAgent {
     this.declareFunction("runAccessibilityAudits", {
       description: "Triggers new Lighthouse accessibility audits in snapshot mode. Use this if the user has made changes to the page and you want to re-evaluate the accessibility audits.",
       parameters: {
-        type: Host28.AidaClient.ParametersTypes.OBJECT,
+        type: Host29.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           explanation: {
-            type: Host28.AidaClient.ParametersTypes.STRING,
+            type: Host29.AidaClient.ParametersTypes.STRING,
             description: "Explain why you want to run new audits.",
             nullable: false
           }
@@ -11682,26 +11762,26 @@ var AccessibilityAgent = class extends AiAgent {
     this.declareFunction("getStyles", {
       description: 'Get computed styles for an element on the inspected page by its Lighthouse path. **CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".',
       parameters: {
-        type: Host28.AidaClient.ParametersTypes.OBJECT,
+        type: Host29.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           explanation: {
-            type: Host28.AidaClient.ParametersTypes.STRING,
+            type: Host29.AidaClient.ParametersTypes.STRING,
             description: "Explain why you want to get styles.",
             nullable: false
           },
           path: {
-            type: Host28.AidaClient.ParametersTypes.STRING,
+            type: Host29.AidaClient.ParametersTypes.STRING,
             description: 'The Lighthouse path of the element (e.g., "1,HTML,1,BODY,2,DIV"). Find this in the report data.',
             nullable: false
           },
           styleProperties: {
-            type: Host28.AidaClient.ParametersTypes.ARRAY,
+            type: Host29.AidaClient.ParametersTypes.ARRAY,
             description: 'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
             nullable: false,
             items: {
-              type: Host28.AidaClient.ParametersTypes.STRING,
+              type: Host29.AidaClient.ParametersTypes.STRING,
               description: "A CSS style property name to retrieve. For example, 'background-color'."
             }
           }
@@ -11757,17 +11837,17 @@ var AccessibilityAgent = class extends AiAgent {
     this.declareFunction("getElementAccessibilityDetails", {
       description: "Get detailed accessibility information for an element on the inspected page by its Lighthouse path.",
       parameters: {
-        type: Host28.AidaClient.ParametersTypes.OBJECT,
+        type: Host29.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           explanation: {
-            type: Host28.AidaClient.ParametersTypes.STRING,
+            type: Host29.AidaClient.ParametersTypes.STRING,
             description: "Explain why you want to get accessibility details.",
             nullable: false
           },
           path: {
-            type: Host28.AidaClient.ParametersTypes.STRING,
+            type: Host29.AidaClient.ParametersTypes.STRING,
             description: 'The Lighthouse path of the element (e.g., "1,HTML,1,BODY,2,DIV"). Find this in the report data.',
             nullable: false
           }
@@ -11856,7 +11936,7 @@ var ContextSelectionAgent_exports = {};
 __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
-import * as Host29 from "../../core/host/host.js";
+import * as Host30 from "../../core/host/host.js";
 import * as i18n53 from "../../core/i18n/i18n.js";
 import * as Root7 from "../../core/root/root.js";
 import * as AiUtils6 from "../ai-utils/ai-utils.js";
@@ -12371,7 +12451,7 @@ Your role is to understand the user's query, identify the appropriate specialize
 `;
 var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   preamble = preamble2;
-  clientFeature = Host29.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
+  clientFeature = Host30.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier() {
     return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -12402,7 +12482,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
     this.declareFunction("listNetworkRequests", {
       description: `Gives a list of network requests including URL, status code, and duration.`,
       parameters: {
-        type: Host29.AidaClient.ParametersTypes.OBJECT,
+        type: Host30.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: true,
         required: [],
@@ -12463,13 +12543,13 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
     this.declareFunction("selectNetworkRequest", {
       description: `Selects a specific network request to further provide information about. Use this when asked about network requests issues.`,
       parameters: {
-        type: Host29.AidaClient.ParametersTypes.OBJECT,
+        type: Host30.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: true,
         required: ["id"],
         properties: {
           id: {
-            type: Host29.AidaClient.ParametersTypes.STRING,
+            type: Host30.AidaClient.ParametersTypes.STRING,
             description: "The id of the network request",
             nullable: false
           }
@@ -12521,7 +12601,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
     this.declareFunction("listSourceFiles", {
       description: `Returns a list of all files in the project.`,
       parameters: {
-        type: Host29.AidaClient.ParametersTypes.OBJECT,
+        type: Host30.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: true,
         required: [],
@@ -12572,13 +12652,13 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
     this.declareFunction("selectSourceFile", {
       description: `Selects a source file. Use this when asked about files on the page. Use listSourceFiles to find the file ID.`,
       parameters: {
-        type: Host29.AidaClient.ParametersTypes.OBJECT,
+        type: Host30.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: true,
         required: ["id"],
         properties: {
           id: {
-            type: Host29.AidaClient.ParametersTypes.INTEGER,
+            type: Host30.AidaClient.ParametersTypes.INTEGER,
             description: "The id (URL) of the file you want to select.",
             nullable: false
           }
@@ -12619,7 +12699,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
     this.declareFunction("performanceRecordAndReload", {
       description: "Records a new performance trace. Use this to measure, analyze, and debug page performance, general performance issues, performance metrics, and Core Web Vitals like Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).",
       parameters: {
-        type: Host29.AidaClient.ParametersTypes.OBJECT,
+        type: Host30.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: true,
         required: [],
@@ -12651,13 +12731,13 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
     this.declareFunction("runLighthouseAudits", {
       description: "Records a Lighthouse audit on the current page. Use this to debug accessibility, SEO, and best practices. (For any performance-related questions or performance issues, do NOT use this; use performanceRecordAndReload instead).",
       parameters: {
-        type: Host29.AidaClient.ParametersTypes.OBJECT,
+        type: Host30.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: true,
         required: ["mode"],
         properties: {
           mode: {
-            type: Host29.AidaClient.ParametersTypes.STRING,
+            type: Host30.AidaClient.ParametersTypes.STRING,
             description: `The mode to run Lighthouse in. Your ONLY options are "navigation" or "snapshot". You should determine this based on the user's question. If the user is asking specifically about accessibility, you can run in "snapshot" mode which avoids reloading the page. If the user asks for a full Lighthouse report, you should run in "navigation" mode which is the default. These are the only options you can pass.`,
             nullable: false
           }
@@ -12697,7 +12777,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
     this.declareFunction("inspectDom", {
       description: `Prompts user to select a DOM element from the page. Use this when you don't know which element is selected.`,
       parameters: {
-        type: Host29.AidaClient.ParametersTypes.OBJECT,
+        type: Host30.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: true,
         required: [],
@@ -12736,7 +12816,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       this.declareFunction("analyzeStorage", {
         description: "Selects the page storage. Use this when asked about browser storage (localStorage, sessionStorage, cookies) and issues related to these.",
         parameters: {
-          type: Host29.AidaClient.ParametersTypes.OBJECT,
+          type: Host30.AidaClient.ParametersTypes.OBJECT,
           description: "",
           nullable: true,
           required: [],
@@ -12835,7 +12915,7 @@ var FileAgent_exports = {};
 __export(FileAgent_exports, {
   FileAgent: () => FileAgent
 });
-import * as Host30 from "../../core/host/host.js";
+import * as Host31 from "../../core/host/host.js";
 import * as Root8 from "../../core/root/root.js";
 var preamble3 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
 You are provided with the content of a file from the Chrome DevTools Sources panel. To aid your analysis, you've been given the below links to understand the context of the code and its relationship to other files. When answering questions, prioritize providing these links directly.
@@ -12891,7 +12971,7 @@ MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web
 `;
 var FileAgent = class extends AiAgent {
   preamble = preamble3;
-  clientFeature = Host30.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  clientFeature = Host31.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
     return Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }
@@ -12932,7 +13012,7 @@ var NetworkAgent_exports = {};
 __export(NetworkAgent_exports, {
   NetworkAgent: () => NetworkAgent
 });
-import * as Host31 from "../../core/host/host.js";
+import * as Host32 from "../../core/host/host.js";
 import * as Root9 from "../../core/root/root.js";
 var preamble4 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
@@ -12980,7 +13060,7 @@ This request aims to retrieve a list of products matching the search query "lapt
 `;
 var NetworkAgent = class extends AiAgent {
   preamble = preamble4;
-  clientFeature = Host31.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+  clientFeature = Host32.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier() {
     return Root9.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
@@ -13028,7 +13108,7 @@ __export(PerformanceAgent_exports, {
   PerformanceAgent: () => PerformanceAgent
 });
 import * as Common5 from "../../core/common/common.js";
-import * as Host32 from "../../core/host/host.js";
+import * as Host33 from "../../core/host/host.js";
 import * as i18n55 from "../../core/i18n/i18n.js";
 import * as Root10 from "../../core/root/root.js";
 import * as SDK27 from "../../core/sdk/sdk.js";
@@ -13229,7 +13309,7 @@ var PerformanceAgent = class extends AiAgent {
    */
   #additionalSelectionsForDisclosure = [];
   get clientFeature() {
-    return Host32.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
+    return Host33.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
     return Root10.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
@@ -13551,17 +13631,17 @@ ${result}`,
     this.declareFunction("getInsightDetails", {
       description: "Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.",
       parameters: {
-        type: Host32.AidaClient.ParametersTypes.OBJECT,
+        type: Host33.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           insightSetId: {
-            type: Host32.AidaClient.ParametersTypes.STRING,
+            type: Host33.AidaClient.ParametersTypes.STRING,
             description: 'The id for the specific insight set. Only use the ids given in the "Available insight sets" list.',
             nullable: false
           },
           insightName: {
-            type: Host32.AidaClient.ParametersTypes.STRING,
+            type: Host33.AidaClient.ParametersTypes.STRING,
             description: 'The name of the insight. Only use the insight names given in the "Available insights" list.',
             nullable: false
           }
@@ -13647,12 +13727,12 @@ ${result}`,
     this.declareFunction("getEventByKey", {
       description: "Returns detailed information about a specific event. Use the detail returned to validate performance issues, but do not tell the user about irrelevant raw data from a trace event.",
       parameters: {
-        type: Host32.AidaClient.ParametersTypes.OBJECT,
+        type: Host33.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           eventKey: {
-            type: Host32.AidaClient.ParametersTypes.STRING,
+            type: Host33.AidaClient.ParametersTypes.STRING,
             description: "The key for the event.",
             nullable: false
           }
@@ -13668,7 +13748,7 @@ ${result}`,
         if (!event) {
           return { error: "Invalid eventKey" };
         }
-        const details = formatEventForAI(event, parsedTrace);
+        const details = formatEventForAI(event);
         const key = `getEventByKey('${params.eventKey}')`;
         this.#cacheFunctionResult(focus, key, details);
         return {
@@ -13686,12 +13766,12 @@ ${result}`,
     this.declareFunction("getMainThreadTrackSummaryByLabel", {
       description: "Returns a focused, detailed summary of the main thread for a predefined labeled period. Use this to get more relevant detail than the initial trace summary before diagnosing issues.",
       parameters: {
-        type: Host32.AidaClient.ParametersTypes.OBJECT,
+        type: Host33.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           label: {
-            type: Host32.AidaClient.ParametersTypes.STRING,
+            type: Host33.AidaClient.ParametersTypes.STRING,
             description: "The label of the period to investigate (e.g., 'LCPBreakdown', 'CLSCulprits', 'nav-to-lcp').",
             nullable: false
           }
@@ -13718,17 +13798,17 @@ ${result}`,
     this.declareFunction("getNetworkTrackSummary", {
       description: "Returns a summary of the network for the given bounds.",
       parameters: {
-        type: Host32.AidaClient.ParametersTypes.OBJECT,
+        type: Host33.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           min: {
-            type: Host32.AidaClient.ParametersTypes.INTEGER,
+            type: Host33.AidaClient.ParametersTypes.INTEGER,
             description: `The minimum time of the bounds, in microseconds (the current trace starts at ${parsedTrace.data.Meta.traceBounds.min})`,
             nullable: true
           },
           max: {
-            type: Host32.AidaClient.ParametersTypes.INTEGER,
+            type: Host33.AidaClient.ParametersTypes.INTEGER,
             description: `The maximum time of the bounds, in microseconds (the current trace ends at ${parsedTrace.data.Meta.traceBounds.max})`,
             nullable: true
           }
@@ -13775,12 +13855,12 @@ ${result}`,
     this.declareFunction("getDetailedCallTree", {
       description: "Returns a detailed call tree for the given main thread event.",
       parameters: {
-        type: Host32.AidaClient.ParametersTypes.OBJECT,
+        type: Host33.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           eventKey: {
-            type: Host32.AidaClient.ParametersTypes.STRING,
+            type: Host33.AidaClient.ParametersTypes.STRING,
             description: "The key for the event.",
             nullable: false
           }
@@ -13832,22 +13912,22 @@ ${result}`,
     this.declareFunction("getFunctionCode", {
       description: "Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.",
       parameters: {
-        type: Host32.AidaClient.ParametersTypes.OBJECT,
+        type: Host33.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           scriptUrl: {
-            type: Host32.AidaClient.ParametersTypes.STRING,
+            type: Host33.AidaClient.ParametersTypes.STRING,
             description: "The url of the function.",
             nullable: false
           },
           line: {
-            type: Host32.AidaClient.ParametersTypes.INTEGER,
+            type: Host33.AidaClient.ParametersTypes.INTEGER,
             description: "The line number where the function is defined.",
             nullable: false
           },
           column: {
-            type: Host32.AidaClient.ParametersTypes.INTEGER,
+            type: Host33.AidaClient.ParametersTypes.INTEGER,
             description: "The column number where the function is defined.",
             nullable: false
           }
@@ -13909,12 +13989,12 @@ ${result}`,
     this.declareFunction("getResourceContent", {
       description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
       parameters: {
-        type: Host32.AidaClient.ParametersTypes.OBJECT,
+        type: Host33.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           url: {
-            type: Host32.AidaClient.ParametersTypes.STRING,
+            type: Host33.AidaClient.ParametersTypes.STRING,
             description: "The url for the resource.",
             nullable: false
           }
@@ -13970,12 +14050,12 @@ ${result}`,
     this.declareFunction("selectEventByKey", {
       description: "Selects the event in the flamechart for the user. If the user asks to show them something, it's likely a good idea to call this function.",
       parameters: {
-        type: Host32.AidaClient.ParametersTypes.OBJECT,
+        type: Host33.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           eventKey: {
-            type: Host32.AidaClient.ParametersTypes.STRING,
+            type: Host33.AidaClient.ParametersTypes.STRING,
             description: "The key for the event.",
             nullable: false
           }
@@ -14035,7 +14115,7 @@ __export(StorageAgent_exports, {
   resolveDOMStorages: () => resolveDOMStorages2
 });
 import * as Common6 from "../../core/common/common.js";
-import * as Host33 from "../../core/host/host.js";
+import * as Host34 from "../../core/host/host.js";
 import * as i18n57 from "../../core/i18n/i18n.js";
 import * as Root11 from "../../core/root/root.js";
 import * as SDK28 from "../../core/sdk/sdk.js";
@@ -14104,7 +14184,7 @@ function resolveTargetOrigins(context, origins) {
 var MAX_NUM_CHAR_LENGTH3 = 1e4;
 var StorageAgent = class _StorageAgent extends AiAgent {
   preamble = preamble6;
-  clientFeature = Host33.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
+  clientFeature = Host34.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
   get userTier() {
     return Root11.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -14121,7 +14201,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
     this.declareFunction("listPageOrigins", {
       description: "Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user's explicit request hints at focusing only on the primary page.",
       parameters: {
-        type: Host33.AidaClient.ParametersTypes.OBJECT,
+        type: Host34.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {},
@@ -14156,23 +14236,23 @@ var StorageAgent = class _StorageAgent extends AiAgent {
     this.declareFunction("listStorageKeys", {
       description: "Lists all keys for a given storage type for requested origins. Returns keys grouped by storage partition under their origin.",
       parameters: {
-        type: Host33.AidaClient.ParametersTypes.OBJECT,
+        type: Host34.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           type: {
-            type: Host33.AidaClient.ParametersTypes.STRING,
+            type: Host34.AidaClient.ParametersTypes.STRING,
             description: "Storage type: localStorage or sessionStorage",
             nullable: false
           },
           origins: {
-            type: Host33.AidaClient.ParametersTypes.ARRAY,
+            type: Host34.AidaClient.ParametersTypes.ARRAY,
             description: "List of origins to list keys for.",
-            items: { type: Host33.AidaClient.ParametersTypes.STRING, description: "An origin URL." },
+            items: { type: Host34.AidaClient.ParametersTypes.STRING, description: "An origin URL." },
             nullable: false
           },
           storageKey: {
-            type: Host33.AidaClient.ParametersTypes.STRING,
+            type: Host34.AidaClient.ParametersTypes.STRING,
             description: "Optional. Specific storageKey to list keys for. Only applies if single origin is provided.",
             nullable: true
           }
@@ -14217,29 +14297,29 @@ var StorageAgent = class _StorageAgent extends AiAgent {
     this.declareFunction("getStorageValues", {
       description: "Retrieve specific string values from storage partitions for requested keys across origins.",
       parameters: {
-        type: Host33.AidaClient.ParametersTypes.OBJECT,
+        type: Host34.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           type: {
-            type: Host33.AidaClient.ParametersTypes.STRING,
+            type: Host34.AidaClient.ParametersTypes.STRING,
             description: "Storage type: localStorage or sessionStorage",
             nullable: false
           },
           keys: {
-            type: Host33.AidaClient.ParametersTypes.ARRAY,
+            type: Host34.AidaClient.ParametersTypes.ARRAY,
             description: "A list of keys to retrieve values for.",
-            items: { type: Host33.AidaClient.ParametersTypes.STRING, description: "A storage key." },
+            items: { type: Host34.AidaClient.ParametersTypes.STRING, description: "A storage key." },
             nullable: false
           },
           origins: {
-            type: Host33.AidaClient.ParametersTypes.ARRAY,
+            type: Host34.AidaClient.ParametersTypes.ARRAY,
             description: "List of origins to get values for.",
-            items: { type: Host33.AidaClient.ParametersTypes.STRING, description: "An origin URL." },
+            items: { type: Host34.AidaClient.ParametersTypes.STRING, description: "An origin URL." },
             nullable: false
           },
           storageKey: {
-            type: Host33.AidaClient.ParametersTypes.STRING,
+            type: Host34.AidaClient.ParametersTypes.STRING,
             description: "Optional. Specific storageKey partition to get values for. Only applies if single origin is provided.",
             nullable: true
           }
@@ -14313,14 +14393,14 @@ var StorageAgent = class _StorageAgent extends AiAgent {
     this.declareFunction("listCookies", {
       description: "Lists all cookies for requested origins, strictly excluding their values.",
       parameters: {
-        type: Host33.AidaClient.ParametersTypes.OBJECT,
+        type: Host34.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           origins: {
-            type: Host33.AidaClient.ParametersTypes.ARRAY,
+            type: Host34.AidaClient.ParametersTypes.ARRAY,
             description: "List of origins to list cookies for.",
-            items: { type: Host33.AidaClient.ParametersTypes.STRING, description: "An origin URL." },
+            items: { type: Host34.AidaClient.ParametersTypes.STRING, description: "An origin URL." },
             nullable: false
           }
         },
@@ -14356,20 +14436,20 @@ var StorageAgent = class _StorageAgent extends AiAgent {
     this.declareFunction("getCookieValues", {
       description: "Retrieve the values and detailed metadata of specific cookies by their names across origins.",
       parameters: {
-        type: Host33.AidaClient.ParametersTypes.OBJECT,
+        type: Host34.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {
           cookieNames: {
-            type: Host33.AidaClient.ParametersTypes.ARRAY,
+            type: Host34.AidaClient.ParametersTypes.ARRAY,
             description: "A list of cookie names to retrieve values and metadata for.",
-            items: { type: Host33.AidaClient.ParametersTypes.STRING, description: "A cookie name." },
+            items: { type: Host34.AidaClient.ParametersTypes.STRING, description: "A cookie name." },
             nullable: false
           },
           origins: {
-            type: Host33.AidaClient.ParametersTypes.ARRAY,
+            type: Host34.AidaClient.ParametersTypes.ARRAY,
             description: "List of origins the cookies belong to.",
-            items: { type: Host33.AidaClient.ParametersTypes.STRING, description: "An origin URL." },
+            items: { type: Host34.AidaClient.ParametersTypes.STRING, description: "An origin URL." },
             nullable: false
           }
         },
@@ -14432,7 +14512,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
     this.declareFunction("getStorageBreakdown", {
       description: "Retrieves a breakdown of active storage usage per storage type for the top-level page.",
       parameters: {
-        type: Host33.AidaClient.ParametersTypes.OBJECT,
+        type: Host34.AidaClient.ParametersTypes.OBJECT,
         description: "",
         nullable: false,
         properties: {},
@@ -14628,7 +14708,7 @@ __export(StylingAgent_exports, {
   AI_ASSISTANCE_FILTER_REGEX: () => AI_ASSISTANCE_FILTER_REGEX,
   StylingAgent: () => StylingAgent
 });
-import * as Host34 from "../../core/host/host.js";
+import * as Host35 from "../../core/host/host.js";
 import * as Root12 from "../../core/root/root.js";
 var preamble7 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
@@ -14693,7 +14773,7 @@ var MULTIMODAL_ENHANCEMENT_PROMPTS = {
 var AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 var StylingAgent = class extends AiAgent {
   preamble = preamble7;
-  clientFeature = Host34.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  clientFeature = Host35.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
     return Root12.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -14798,7 +14878,7 @@ var AiAgent2_exports = {};
 __export(AiAgent2_exports, {
   AiAgent2: () => AiAgent2
 });
-import * as Host35 from "../../core/host/host.js";
+import * as Host36 from "../../core/host/host.js";
 import * as Root13 from "../../core/root/root.js";
 import * as SDK29 from "../../core/sdk/sdk.js";
 import * as AiUtils8 from "../ai-utils/ai-utils.js";
@@ -14885,9 +14965,10 @@ var skill6 = {
   "description": "CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.",
   "allowedTools": [
     "executeJavaScript",
-    "getStyles"
+    "getStyles",
+    "setElementStyles"
   ],
-  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Inspect Geometry, DOM Traversal, or Modify Styles (`executeJavaScript`)**:\n   - Use `executeJavaScript` when you need to inspect computed geometry, bounding boxes, traverse related DOM nodes (`$0.parentElement`, `$0.children`), or modify styles on `$0`.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n   - Style modification example (ALWAYS use `setElementStyles`):\n     ```javascript\n     await setElementStyles($0, {\n       display: 'flex',\n       justifyContent: 'center',\n     });\n     ```\n   - `setElementStyles` is an internal mechanism for you; do not mention `setElementStyles` directly to the user.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
+  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element's `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: 'display', value: 'flex'}, {name: 'justify-content', value: 'center'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading page state that `getStyles` cannot provide.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
 };
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
@@ -14985,7 +15066,7 @@ function hideStreamingSuggestions(text) {
 var AiAgent2 = class extends AiAgent {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   preamble = preamble8;
-  clientFeature = Host35.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
+  clientFeature = Host36.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
   get userTier() {
     return Root13.Runtime.hostConfig.devToolsAiV2Architecture?.userTier;
   }
@@ -15050,13 +15131,13 @@ var AiAgent2 = class extends AiAgent {
         return `Loads the specified skills to gain access to their specialized tools. Call this ONLY for skills listed under Available skills that are not yet loaded. Do not call this for skills that are already loaded. Available skills that are not yet loaded: ${unloadedSkills.join(", ")}.`;
       },
       parameters: {
-        type: Host35.AidaClient.ParametersTypes.OBJECT,
+        type: Host36.AidaClient.ParametersTypes.OBJECT,
         description: "Parameters for learning skills",
         properties: {
           skills: {
-            type: Host35.AidaClient.ParametersTypes.ARRAY,
+            type: Host36.AidaClient.ParametersTypes.ARRAY,
             items: {
-              type: Host35.AidaClient.ParametersTypes.STRING,
+              type: Host36.AidaClient.ParametersTypes.STRING,
               description: "Skill name"
             },
             description: "List of unloaded skill names to load"
@@ -15087,13 +15168,13 @@ var AiAgent2 = class extends AiAgent {
     this.declareFunction(SUGGEST_FOLLOW_UPS_FUNCTION_NAME, {
       description: "Provides suggested follow-up queries or actions for the user at the end of the response.",
       parameters: {
-        type: Host35.AidaClient.ParametersTypes.OBJECT,
+        type: Host36.AidaClient.ParametersTypes.OBJECT,
         description: "Parameters for follow-up suggestions",
         properties: {
           suggestions: {
-            type: Host35.AidaClient.ParametersTypes.ARRAY,
+            type: Host36.AidaClient.ParametersTypes.ARRAY,
             items: {
-              type: Host35.AidaClient.ParametersTypes.STRING,
+              type: Host36.AidaClient.ParametersTypes.STRING,
               description: "A concise follow-up query or action (under 60 characters)."
             },
             description: "1 to 3 concise follow-up queries or actions relevant to the response."
@@ -15283,8 +15364,8 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Host36 from "../../core/host/host.js";
-import * as Platform8 from "../../core/platform/platform.js";
+import * as Host37 from "../../core/host/host.js";
+import * as Platform9 from "../../core/platform/platform.js";
 import * as Root14 from "../../core/root/root.js";
 import * as SDK30 from "../../core/sdk/sdk.js";
 import * as AiUtils9 from "../ai-utils/ai-utils.js";
@@ -15292,8 +15373,8 @@ var NOT_FOUND_IMAGE_DATA = "";
 var CONTEXT_TITLE = "Analyzing data";
 var MAX_TITLE_LENGTH = 80;
 var ALLOWED_PAGE_NAVIGATIONS = [
-  Platform8.DevToolsPath.urlString`about:blank`,
-  Platform8.DevToolsPath.urlString`chrome://terms`
+  Platform9.DevToolsPath.urlString`about:blank`,
+  Platform9.DevToolsPath.urlString`chrome://terms`
 ];
 function generateContextDetailsMarkdown(details) {
   const detailsMarkdown = [];
@@ -15351,7 +15432,7 @@ var AiConversation = class _AiConversation {
       data = [],
       id = crypto.randomUUID(),
       isReadOnly = true,
-      aidaClient = new Host36.AidaClient.AidaClient(),
+      aidaClient = new Host37.AidaClient.AidaClient(),
       changeManager,
       performanceRecordAndReload,
       onInspectElement,
@@ -15623,7 +15704,7 @@ ${item.text.trim()}`);
       case AiUtils9.AiHistoryStorage.ConversationType.NONE:
         return new ContextSelectionAgent(options);
       default:
-        Platform8.assertNever(type, "Unknown conversation type");
+        Platform9.assertNever(type, "Unknown conversation type");
     }
   }
   async *run(initialQuery, options = {}) {
@@ -15856,7 +15937,7 @@ var ConversationSummary_exports = {};
 __export(ConversationSummary_exports, {
   ConversationSummary: () => ConversationSummary
 });
-import * as Host37 from "../../core/host/host.js";
+import * as Host38 from "../../core/host/host.js";
 import * as Root15 from "../../core/root/root.js";
 import * as AiUtils13 from "../ai-utils/ai-utils.js";
 var { runOneShotPrompt } = AiUtils13.AiUtils;
@@ -15968,7 +16049,7 @@ ${conversation}`;
       aidaClient: this.#aidaClient,
       preamble: preamble9,
       query: enhancedQuery,
-      clientFeature: Host37.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
+      clientFeature: Host38.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
       temperature,
       modelId,
       userTier,
@@ -15989,7 +16070,7 @@ var PerformanceAnnotations_exports = {};
 __export(PerformanceAnnotations_exports, {
   PerformanceAnnotations: () => PerformanceAnnotations
 });
-import * as Host38 from "../../core/host/host.js";
+import * as Host39 from "../../core/host/host.js";
 import * as Root16 from "../../core/root/root.js";
 import * as AiUtils15 from "../ai-utils/ai-utils.js";
 var { runOneShotPrompt: runOneShotPrompt2 } = AiUtils15.AiUtils;
@@ -16090,7 +16171,7 @@ ${AI_LABEL_GENERATION_PROMPT}`;
       aidaClient: this.#aidaClient,
       preamble: callTreePreamble,
       query,
-      clientFeature: Host38.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
+      clientFeature: Host39.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
       temperature,
       modelId,
       userTier,
@@ -16176,6 +16257,7 @@ export {
   ResolveDevtoolsNodePath_exports as ResolveDevtoolsNodePath,
   RunLighthouse_exports as RunLighthouse,
   SelectTraceEventByKey_exports as SelectTraceEventByKey,
+  SetElementStyles_exports as SetElementStyles,
   Skill_exports as Skill,
   SkillRegistry_exports as SkillRegistry,
   StorageAgent_exports as StorageAgent,

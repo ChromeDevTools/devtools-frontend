@@ -23,7 +23,7 @@ devtools-report-value {
 
 .gray-text {
   color: var(--sys-color-token-subtle);
-  margin: 0 0 5px var(--sys-size-17);
+  margin: 0 0 var(--sys-size-3) var(--sys-size-17);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -80,10 +80,6 @@ devtools-report-value:has(devtools-tree-outline) {
 
 .cache-status-section:focus-visible {
  outline: 0;
-}
-
-.tree-outline li .selection {
-  margin-left: -5px;
 }
 
 @media (forced-colors: active) {

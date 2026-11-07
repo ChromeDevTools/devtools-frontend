@@ -239,7 +239,7 @@ input::placeholder {
 .harmony-input:not([type]),
 .harmony-input[type='number'],
 .harmony-input[type='text'] {
-  padding: 3px var(--sys-size-4);
+  padding: var(--sys-size-2) var(--sys-size-4);
   height: var(--sys-size-11);
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-extra-small);
@@ -881,19 +881,6 @@ devtools-toolbar {
 
   .toolbar-button.toolbar-state-on .toolbar-glyph {
     color: var(--icon-toggled);
-  }
-
-  .toolbar-state-on.toolbar-toggle-with-dot .toolbar-text::after {
-    content: '';
-    position: absolute;
-    bottom: var(--sys-size-2);
-    background-color: var(--sys-color-primary-bright);
-    width: 4.5px;
-    height: 4.5px;
-    border: var(--sys-size-2) solid
-      var(--override-toolbar-background-color, --sys-color-cdt-base-container);
-    border-radius: var(--sys-shape-corner-full);
-    right: 0;
   }
 
   .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,

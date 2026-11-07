@@ -81,12 +81,6 @@ export default `/* Copyright 2026 The Chromium Authors
   width: 100%;
 }
 
-devtools-adorner-settings-pane {
-  margin-bottom: 10px;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  overflow: auto;
-}
-
 devtools-tree-outline {
   overflow: auto;
 }

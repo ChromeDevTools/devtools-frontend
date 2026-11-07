@@ -4061,7 +4061,7 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   --console-color-lightgreen: #5f5;
   --console-color-lightyellow: #ff5;
   --console-color-lightblue: #55f;
-  --console-color-ightmagenta: #f5f;
+  --console-color-lightmagenta: #f5f;
   --console-color-lightcyan: #5ff;
   --console-color-white: #fff;
 
@@ -4104,7 +4104,7 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
 .console-message-wrapper:not(.console-error-level, .console-warning-level) {
   & .console-message::before,
   & .console-user-command::before {
-    width: calc(100% - 25px);
+    width: calc(100% - var(--sys-size-11));
     content: "";
     display: block;
     position: absolute;
@@ -11393,18 +11393,6 @@ var consolePrompt_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-#console-prompt .CodeMirror {
-  padding: 3px 0 1px;
-}
-
-#console-prompt .CodeMirror-line {
-  padding-top: 0;
-}
-
-#console-prompt .CodeMirror-lines {
-  padding-top: 0;
-}
 
 #console-prompt .console-prompt-icon {
   position: absolute;

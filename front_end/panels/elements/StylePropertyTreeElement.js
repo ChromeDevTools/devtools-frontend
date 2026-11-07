@@ -2695,7 +2695,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 const tooltipId = this.getTooltipId('css-hint');
                 hintIcon.setAttribute('aria-details', tooltipId);
                 const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: hintIcon, variant: 'rich', padding: 'large', id: tooltipId, jslogContext: 'elements.css-hint' });
-                const hintDetailsView = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint);
+                const hintDetailsView = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView();
+                hintDetailsView.authoringHint = hint;
                 hintDetailsView.markAsRoot();
                 hintDetailsView.show(tooltip);
                 this.listItemElement.appendChild(tooltip);

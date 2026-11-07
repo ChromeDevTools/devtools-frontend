@@ -8,7 +8,6 @@
     "accessibilityAnnouncementRecordingView.css.js",
     "accessibilityNode.css.js",
     "accessibilityProperties.css.js",
-    "accessibilitySidebarView.css.js",
-    "axBreadcrumbs.css.js"
+    "accessibilitySidebarView.css.js"
   ]
 }

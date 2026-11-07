@@ -108,6 +108,7 @@
     "../../../../../../front_end/models/ai_assistance/tools/ResolveDevtoolsNodePath.ts",
     "../../../../../../front_end/models/ai_assistance/tools/RunLighthouse.ts",
     "../../../../../../front_end/models/ai_assistance/tools/SelectTraceEventByKey.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/SetElementStyles.ts",
     "../../../../../../front_end/models/ai_assistance/tools/Tool.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ToolRegistry.ts"
   ],

@@ -12,6 +12,8 @@ export declare const HEADERS_VIEW_DEFAULT_VIEW: WrapperView;
 export declare class HeadersView extends UI.View.SimpleView {
     #private;
     constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, view?: WrapperView);
+    wasShown(): void;
+    willHide(): void;
     performUpdate(): void;
     getComponent(): HeadersViewComponent;
     dispose(): void;

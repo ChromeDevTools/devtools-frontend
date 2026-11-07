@@ -47,6 +47,7 @@
   },
   "files": [
     "../../../../../../front_end/core/host/AidaClient.test.ts",
+    "../../../../../../front_end/core/host/AidaErrors.test.ts",
     "../../../../../../front_end/core/host/AidaGcaTranslation.test.ts",
     "../../../../../../front_end/core/host/DispatchHttpRequestClient.test.ts",
     "../../../../../../front_end/core/host/GcaClient.test.ts",

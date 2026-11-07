@@ -333,7 +333,8 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         else if (this.#activeThreadId && !this.#commentManager.getCommentThread(this.#activeThreadId)) {
             this.#setActiveThreadId(null);
         }
-        if (this.#hoveredThreadId && !this.#commentManager.getCommentThread(this.#hoveredThreadId)) {
+        const hoveredThread = this.#getThread(this.#hoveredThreadId);
+        if (this.#hoveredThreadId && (!hoveredThread || hoveredThread.status === 'RESOLVED')) {
             this.#clearHover();
         }
     }

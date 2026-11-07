@@ -100,21 +100,25 @@ export class TimelineLoader {
     }
     static async loadFromURL(url, client) {
         const loader = new TimelineLoader(client);
-        const stream = new Common.StringOutputStream.StringOutputStream();
+        let stream = new Common.StringOutputStream.StringOutputStream();
         client.loadingStarted();
         const allowRemoteFilePaths = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.enableRemoteFileLoadingSettingDescriptor).get();
         Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowRemoteFilePaths);
         async function finishedCallback(success, _headers, errorDescription) {
-            if (!success) {
+            if (!success || !stream) {
+                stream = null;
                 return loader.reportErrorAndCancelLoading(errorDescription.message);
             }
             try {
-                const txt = stream.data();
-                const trace = JSON.parse(txt);
-                loader.#processParsedFile(trace);
+                // Inline `stream.data()` and clear `stream` before `await loader.complete()`
+                // so the raw JSON text and chunked StringOutputStream are not retained in
+                // this async frame for the duration of trace processing.
+                loader.#processParsedFile(JSON.parse(stream.data()));
+                stream = null;
                 await loader.complete();
             }
             catch (e) {
+                stream = null;
                 const message = e instanceof Error ? e.message : '';
                 return loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, { PH1: message }));
             }
@@ -179,6 +183,7 @@ export class TimelineLoader {
         }
     }
     async #cleanup() {
+        this.#collectedEvents = [];
         if (this.client) {
             await this.client.loadingComplete(
             /* collectedEvents */ [], /* exclusiveFilter= */ null, /* metadata= */ null);
@@ -215,7 +220,11 @@ export class TimelineLoader {
         if (!this.#metadata && this.#traceIsCPUProfile) {
             this.#metadata = RecordingMetadata.forCPUProfile();
         }
-        await this.client.loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
+        // Dispatch `loadingComplete` and clear the instance reference before awaiting
+        // so the loader does not retain the events array during trace processing.
+        const loadingCompletePromise = this.client.loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
+        this.#collectedEvents = [];
+        await loadingCompletePromise;
         this.#traceLoadedCallback?.("SUCCESS" /* LoadingState.SUCCESS */);
     }
     traceLoaded() {

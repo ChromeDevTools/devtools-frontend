@@ -60,7 +60,7 @@ export default `/*
 
   .annotation-identifier {
     padding: var(--sys-size-3) var(--sys-size-5);
-    border-radius: 10px;
+    border-radius: var(--sys-shape-corner-small);
     font-weight: bold;
 
     &.time-range {
@@ -81,14 +81,14 @@ export default `/*
   }
 
   .annotation-tutorial-container {
-    padding: 10px;
+    padding: var(--sys-size-5);
   }
 
   .tutorial-card {
     display: block;
     position: relative;
-    margin: 10px 0;
-    padding: 10px;
+    margin: var(--sys-size-5) 0;
+    padding: var(--sys-size-5);
     border-radius: var(--sys-shape-corner-extra-small);
     overflow: hidden;
     border: var(--sys-size-1) solid var(--sys-color-divider);

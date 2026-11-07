@@ -1284,7 +1284,12 @@ export class TimelinePanel extends TimelinePanelBase {
                 sourceMaps: filteredMetadataSourceMaps,
                 resources: filteredResources,
             });
-            blobParts = Array.from(formattedTraceIter);
+            // Wrap each chunk in a Blob as soon as it is generated, so that each
+            // chunk string can be garbage collected straight away. Collecting all
+            // the strings first would hold the whole serialized trace in the JS heap.
+            for (const chunk of formattedTraceIter) {
+                blobParts.push(new Blob([chunk]));
+            }
         }
         if (!blobParts.length) {
             throw new Error('Trace content empty');

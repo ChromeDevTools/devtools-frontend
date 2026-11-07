@@ -1053,7 +1053,7 @@ var playerMessagesView_css_default = `/*
 }
 
 .media-message-error {
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
   background-color: var(--sys-color-surface-error);
   color: var(--sys-color-on-surface-error);
 }

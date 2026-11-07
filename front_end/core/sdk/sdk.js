@@ -5220,9 +5220,6 @@ var generatedProperties = [
     "runtime_flag_status": "test"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-top-left-radius",
       "corner-top-left-shape",
@@ -5238,9 +5235,6 @@ var generatedProperties = [
     "runtime_flag_status": "experimental"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-end-start-radius",
       "corner-end-start-shape",
@@ -5259,9 +5253,6 @@ var generatedProperties = [
     "name": "corner-block-end-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-start-start-radius",
       "corner-start-start-shape",
@@ -5280,9 +5271,6 @@ var generatedProperties = [
     "name": "corner-block-start-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-bottom-left-radius",
       "corner-bottom-left-shape",
@@ -5294,9 +5282,6 @@ var generatedProperties = [
     "runtime_flag_status": "experimental"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-bottom-left-radius",
       "corner-bottom-left-shape"
@@ -5317,9 +5302,6 @@ var generatedProperties = [
     "name": "corner-bottom-left-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-bottom-right-radius",
       "corner-bottom-right-shape"
@@ -5347,9 +5329,6 @@ var generatedProperties = [
     "name": "corner-bottom-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-end-end-radius",
       "corner-end-end-shape"
@@ -5362,9 +5341,6 @@ var generatedProperties = [
     "name": "corner-end-end-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-end-start-radius",
       "corner-end-start-shape"
@@ -5377,9 +5353,6 @@ var generatedProperties = [
     "name": "corner-end-start-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-start-end-radius",
       "corner-start-end-shape",
@@ -5398,9 +5371,6 @@ var generatedProperties = [
     "name": "corner-inline-end-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-start-start-radius",
       "corner-start-start-shape",
@@ -5419,9 +5389,6 @@ var generatedProperties = [
     "name": "corner-inline-start-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-top-left-radius",
       "corner-top-left-shape",
@@ -5440,9 +5407,6 @@ var generatedProperties = [
     "name": "corner-left-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-top-right-radius",
       "corner-top-right-shape",
@@ -5470,9 +5434,6 @@ var generatedProperties = [
     "name": "corner-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-start-end-radius",
       "corner-start-end-shape"
@@ -5485,9 +5446,6 @@ var generatedProperties = [
     "name": "corner-start-end-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-start-start-radius",
       "corner-start-start-shape"
@@ -5500,9 +5458,6 @@ var generatedProperties = [
     "name": "corner-start-start-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-top-left-radius",
       "corner-top-left-shape",
@@ -5514,9 +5469,6 @@ var generatedProperties = [
     "runtime_flag_status": "experimental"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-top-left-radius",
       "corner-top-left-shape"
@@ -5537,9 +5489,6 @@ var generatedProperties = [
     "name": "corner-top-left-shape"
   },
   {
-    "keywords": [
-      "normal"
-    ],
     "longhands": [
       "border-top-right-radius",
       "corner-top-right-shape"
@@ -10131,31 +10080,6 @@ var generatedPropertyValues = {
       "-webkit-legacy"
     ]
   },
-  "corner": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-block-end": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-block-start": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-bottom": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-bottom-left": {
-    "values": [
-      "normal"
-    ]
-  },
   "corner-bottom-left-shape": {
     "values": [
       "notch",
@@ -10164,11 +10088,6 @@ var generatedPropertyValues = {
       "round",
       "squircle",
       "square"
-    ]
-  },
-  "corner-bottom-right": {
-    "values": [
-      "normal"
     ]
   },
   "corner-bottom-right-shape": {
@@ -10181,56 +10100,6 @@ var generatedPropertyValues = {
       "square"
     ]
   },
-  "corner-end-end": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-end-start": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-inline-end": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-inline-start": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-left": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-right": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-start-end": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-start-start": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-top": {
-    "values": [
-      "normal"
-    ]
-  },
-  "corner-top-left": {
-    "values": [
-      "normal"
-    ]
-  },
   "corner-top-left-shape": {
     "values": [
       "notch",
@@ -10239,11 +10108,6 @@ var generatedPropertyValues = {
       "round",
       "squircle",
       "square"
-    ]
-  },
-  "corner-top-right": {
-    "values": [
-      "normal"
     ]
   },
   "corner-top-right-shape": {
@@ -42311,8 +42175,10 @@ var RehydratingConnectionTransport = class {
     if (!this.trace) {
       return;
     }
+    const trace = this.trace;
+    this.trace = null;
     this.rehydratingConnectionState = 3 /* REHYDRATED */;
-    await Common36.Revealer.reveal(this.trace);
+    await Common36.Revealer.reveal(trace);
   }
   setOnMessage(onMessage) {
     this.onMessage = onMessage;

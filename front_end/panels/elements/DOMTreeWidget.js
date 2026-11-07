@@ -1370,6 +1370,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         };
         await expand(node, 0);
         this.performUpdate();
+        this.onElementExpanded();
     }
     collapseChildren(node) {
         const collapse = (n) => {

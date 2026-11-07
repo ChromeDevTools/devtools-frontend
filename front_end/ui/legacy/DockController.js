@@ -56,7 +56,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
             this.currentDockStateSetting.set("right" /* DockState.RIGHT */);
         }
         if (states.indexOf(this.lastDockStateSetting.get()) === -1) {
-            this.currentDockStateSetting.set("bottom" /* DockState.BOTTOM */);
+            this.lastDockStateSetting.set("bottom" /* DockState.BOTTOM */);
         }
         this.currentDockStateSetting.addChangeListener(this.dockSideChanged, this);
     }

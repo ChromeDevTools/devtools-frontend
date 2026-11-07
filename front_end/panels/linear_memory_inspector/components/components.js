@@ -267,7 +267,7 @@ var linearMemoryInspector_css_default = `/*
     flex-direction: column;
     font-family: var(--monospace-font-family);
     font-size: var(--monospace-font-size);
-    padding: 9px var(--sys-size-6) 9px 7px;
+    padding: var(--sys-size-5);
   }
 
   .viewer-widget {

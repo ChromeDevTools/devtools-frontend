@@ -4613,8 +4613,8 @@ var lighthouseStartView_css_default = `/*
 }
 
 .lighthouse-start-view .lighthouse-logo {
-  width: 45px;
-  height: 45px;
+  width: var(--sys-size-15);
+  height: var(--sys-size-15);
 }
 
 .lighthouse-form-section {

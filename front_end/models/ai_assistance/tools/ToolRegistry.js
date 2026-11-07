@@ -26,6 +26,7 @@ import { RecordPerformanceTraceTool } from './RecordPerformanceTrace.js';
 import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
 import { RunLighthouseTool } from './RunLighthouse.js';
 import { SelectTraceEventByKeyTool } from './SelectTraceEventByKey.js';
+import { SetElementStylesTool } from './SetElementStyles.js';
 /**
  * Plain object registry containing concrete instantiated tools.
  */
@@ -55,6 +56,7 @@ export const TOOLS = {
     ["getTraceResourceContent" /* ToolName.GET_TRACE_RESOURCE_CONTENT */]: new GetTraceResourceContentTool(),
     ["getInsightDetails" /* ToolName.GET_INSIGHT_DETAILS */]: new GetInsightDetailsTool(),
     ["getStorageBreakdown" /* ToolName.GET_STORAGE_BREAKDOWN */]: new GetStorageBreakdownTool(),
+    ["setElementStyles" /* ToolName.SET_ELEMENT_STYLES */]: new SetElementStylesTool(),
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

@@ -973,7 +973,11 @@ var makeEmptyTraceEntryNode = (entry, id) => ({
   id,
   parent: null,
   children: [],
-  depth: 0
+  depth: 0,
+  // selfTime is set on every node after creation. Declaring it here keeps it
+  // inside the object; adding it later makes V8 allocate a separate property
+  // store for every node.
+  selfTime: void 0
 });
 function treify(entries, options) {
   const entryToNode = /* @__PURE__ */ new Map();

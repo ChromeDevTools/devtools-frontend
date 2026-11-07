@@ -757,6 +757,7 @@ __export(UIUtils_exports, {
   bindToAction: () => bindToAction,
   bindToSetting: () => bindToSetting,
   cloneCustomElement: () => cloneCustomElement,
+  clonedRef: () => clonedRef,
   copyFileNameLabel: () => copyFileNameLabel,
   copyLinkAddressLabel: () => copyLinkAddressLabel,
   copyTextToClipboard: () => copyTextToClipboard,
@@ -1721,7 +1722,7 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
       this.currentDockStateSetting.set("right" /* RIGHT */);
     }
     if (states.indexOf(this.lastDockStateSetting.get()) === -1) {
-      this.currentDockStateSetting.set("bottom" /* BOTTOM */);
+      this.lastDockStateSetting.set("bottom" /* BOTTOM */);
     }
     this.currentDockStateSetting.addChangeListener(this.dockSideChanged, this);
   }
@@ -2211,8 +2212,9 @@ var inspectorDrawerTabbedPane_css_default = `/*
  */
 
 .drawer-tabbed-pane.drawer-minimized-vertical {
-  min-width: 27px;
-  width: 27px;
+  /* 28px toolbar width minus 1px SplitWidget splitter border. */
+  min-width: calc(var(--sys-size-12) - var(--sys-size-1));
+  width: calc(var(--sys-size-12) - var(--sys-size-1));
 }
 
 .hide-element {
@@ -15051,7 +15053,7 @@ input::placeholder {
 .harmony-input:not([type]),
 .harmony-input[type='number'],
 .harmony-input[type='text'] {
-  padding: 3px var(--sys-size-4);
+  padding: var(--sys-size-2) var(--sys-size-4);
   height: var(--sys-size-11);
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-extra-small);
@@ -15693,19 +15695,6 @@ devtools-toolbar {
 
   .toolbar-button.toolbar-state-on .toolbar-glyph {
     color: var(--icon-toggled);
-  }
-
-  .toolbar-state-on.toolbar-toggle-with-dot .toolbar-text::after {
-    content: '';
-    position: absolute;
-    bottom: var(--sys-size-2);
-    background-color: var(--sys-color-primary-bright);
-    width: 4.5px;
-    height: 4.5px;
-    border: var(--sys-size-2) solid
-      var(--override-toolbar-background-color, --sys-color-cdt-base-container);
-    border-radius: var(--sys-shape-corner-full);
-    right: 0;
   }
 
   .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
@@ -17885,12 +17874,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
   }
   static cloneNode(node) {
     const clone = node.cloneNode(false);
-    let cloneSet = _HTMLElementWithLightDOMTemplate.#originalToClones.get(node);
-    if (!cloneSet) {
-      cloneSet = /* @__PURE__ */ new Set();
-      _HTMLElementWithLightDOMTemplate.#originalToClones.set(node, cloneSet);
-    }
-    cloneSet.add(new WeakRef(clone));
+    _HTMLElementWithLightDOMTemplate.registerClone(node, clone);
     for (const child of node.childNodes) {
       clone.appendChild(_HTMLElementWithLightDOMTemplate.cloneNode(child));
     }
@@ -17902,6 +17886,23 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       }
     }
     return clone;
+  }
+  /**
+   * Declares `clone` as a rendered counterpart of `original`. `cloneNode` calls this for each
+   * node it clones. Hosts call it for elements they render by other means, e.g. the tree calls
+   * it for the list item that it creates for a `<li>` config element. Resolves `clonedRef`
+   * directives bound to `original`.
+   */
+  static registerClone(original, clone) {
+    let cloneSet = _HTMLElementWithLightDOMTemplate.#originalToClones.get(original);
+    if (!cloneSet) {
+      cloneSet = /* @__PURE__ */ new Set();
+      _HTMLElementWithLightDOMTemplate.#originalToClones.set(original, cloneSet);
+    }
+    cloneSet.add(new WeakRef(clone));
+    if (original instanceof Element && clone instanceof Element) {
+      ClonedRefDirective.notifyCloned(original, clone);
+    }
   }
   static patchLitTemplate(template) {
     const interceptingWrapper = Lit4.Directive.directive(Lit4.CustomDirectives.InterceptBindingDirective);
@@ -17934,9 +17935,11 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
         return value;
       }
       if (Lit4.isLitDirective(value)) {
-        const directiveValue = value;
-        if (directiveValue["_$litDirective$"] === WidgetDirective) {
-          directiveValue["_$litDirective$"] = UIUtilsWidgetDirective;
+        if (value["_$litDirective$"] === ClonedRefDirective) {
+          return value;
+        }
+        if (value["_$litDirective$"] === WidgetDirective) {
+          value["_$litDirective$"] = UIUtilsWidgetDirective;
         }
         for (let i = 0; i < value.values.length; i++) {
           const subvalue = value.values[i];
@@ -18032,6 +18035,104 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     return targetElement;
   }
 };
+var ClonedRefDirective = class _ClonedRefDirective extends Lit4.AsyncDirective.AsyncDirective {
+  // The template elements that have a connected directive. `registerClone` notifies only those.
+  static #directivesByElement = /* @__PURE__ */ new WeakMap();
+  #templateElement;
+  #ref;
+  #lastElement;
+  constructor(partInfo) {
+    super(partInfo);
+    if (partInfo.type !== Lit4.AsyncDirective.PartType.ELEMENT) {
+      throw new Error("The `clonedRef` directive must be bound to an element.");
+    }
+  }
+  /** Called by `HTMLElementWithLightDOMTemplate.registerClone`. Returns at once if no directive is bound. */
+  static notifyCloned(templateElement, clone) {
+    const directives = _ClonedRefDirective.#directivesByElement.get(templateElement);
+    if (!directives) {
+      return;
+    }
+    for (const directive of directives) {
+      directive.#setElement(clone);
+    }
+  }
+  render(_ref) {
+    return Lit4.nothing;
+  }
+  update(part, [ref]) {
+    if (this.#templateElement !== part.element) {
+      this.#untrackTemplateElement();
+      this.#templateElement = part.element;
+      this.#trackTemplateElement();
+    }
+    if (ref !== this.#ref) {
+      this.#setElement(void 0);
+      this.#ref = ref;
+    }
+    if (this.#lastElement?.deref() === void 0) {
+      this.#setElement(this.#currentClone());
+    }
+    return Lit4.nothing;
+  }
+  /** The newest live clone of the template element, for a directive bound after the clone was made. */
+  #currentClone() {
+    if (!this.#templateElement) {
+      return void 0;
+    }
+    const clones = HTMLElementWithLightDOMTemplate.getClones(this.#templateElement);
+    for (let i = clones.length - 1; i >= 0; --i) {
+      const clone = clones[i];
+      if (clone instanceof Element) {
+        return clone;
+      }
+    }
+    return void 0;
+  }
+  #setElement(element) {
+    const ref = this.#ref;
+    if (!ref) {
+      return;
+    }
+    const previous = this.#lastElement?.deref();
+    this.#lastElement = element ? new WeakRef(element) : void 0;
+    if (typeof ref === "function") {
+      if (previous === element) {
+        return;
+      }
+      if (previous !== void 0) {
+        ref(void 0);
+      }
+      if (element !== void 0) {
+        ref(element);
+      }
+    } else if (ref.value !== element) {
+      const mutableRef = ref;
+      mutableRef.value = element;
+    }
+  }
+  #trackTemplateElement() {
+    if (!this.#templateElement) {
+      return;
+    }
+    const directives = _ClonedRefDirective.#directivesByElement;
+    Platform15.MapUtilities.getWithDefault(directives, this.#templateElement, () => /* @__PURE__ */ new Set()).add(this);
+  }
+  #untrackTemplateElement() {
+    if (this.#templateElement) {
+      _ClonedRefDirective.#directivesByElement.get(this.#templateElement)?.delete(this);
+    }
+  }
+  disconnected() {
+    this.#untrackTemplateElement();
+    this.#setElement(void 0);
+  }
+  reconnected() {
+    this.#trackTemplateElement();
+    this.#setElement(this.#currentClone());
+  }
+};
+var clonedRef = Lit4.AsyncDirective.directive(ClonedRefDirective);
 function copyTextToClipboard(text, alert) {
   Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
   if (alert) {

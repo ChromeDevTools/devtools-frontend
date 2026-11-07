@@ -207,7 +207,7 @@ var consoleInsight_css_default = `/*
 
   .buttons {
     display: flex;
-    gap: 5px;
+    gap: var(--sys-size-3);
   }
 
   @media (width <= 500px) {

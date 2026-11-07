@@ -949,5 +949,30 @@ export var ResendRequestType;
     ResendRequestType[ResendRequestType["OTHER"] = 15] = "OTHER";
     ResendRequestType[ResendRequestType["MAX_VALUE"] = 16] = "MAX_VALUE";
 })(ResendRequestType || (ResendRequestType = {}));
+/**
+ * Maps to the `DevTools.AiClient.RequestResult` UMA histogram.
+ * Values are persisted to logs and must remain append-only in sync with `enums.xml`.
+ */
+export var AiClientRequestResult;
+(function (AiClientRequestResult) {
+    AiClientRequestResult[AiClientRequestResult["SUCCESS"] = 0] = "SUCCESS";
+    AiClientRequestResult[AiClientRequestResult["ABORTED"] = 1] = "ABORTED";
+    AiClientRequestResult[AiClientRequestResult["VALIDATION_FAILED"] = 2] = "VALIDATION_FAILED";
+    AiClientRequestResult[AiClientRequestResult["OAUTH_TOKEN_ERROR"] = 3] = "OAUTH_TOKEN_ERROR";
+    AiClientRequestResult[AiClientRequestResult["NETWORK_TIMEOUT"] = 4] = "NETWORK_TIMEOUT";
+    AiClientRequestResult[AiClientRequestResult["NETWORK_ERROR"] = 5] = "NETWORK_ERROR";
+    AiClientRequestResult[AiClientRequestResult["HTTP_400_PAYLOAD_TOO_LARGE"] = 6] = "HTTP_400_PAYLOAD_TOO_LARGE";
+    AiClientRequestResult[AiClientRequestResult["HTTP_400_INVALID_ARGUMENT"] = 7] = "HTTP_400_INVALID_ARGUMENT";
+    AiClientRequestResult[AiClientRequestResult["HTTP_401_UNAUTHORIZED"] = 8] = "HTTP_401_UNAUTHORIZED";
+    AiClientRequestResult[AiClientRequestResult["HTTP_403_PERMISSION_DENIED"] = 9] = "HTTP_403_PERMISSION_DENIED";
+    AiClientRequestResult[AiClientRequestResult["HTTP_404_NOT_FOUND"] = 10] = "HTTP_404_NOT_FOUND";
+    AiClientRequestResult[AiClientRequestResult["HTTP_429_QUOTA_EXCEEDED"] = 11] = "HTTP_429_QUOTA_EXCEEDED";
+    AiClientRequestResult[AiClientRequestResult["HTTP_5XX_SERVER_ERROR"] = 12] = "HTTP_5XX_SERVER_ERROR";
+    AiClientRequestResult[AiClientRequestResult["STREAM_CHUNK_PARSE_ERROR"] = 13] = "STREAM_CHUNK_PARSE_ERROR";
+    AiClientRequestResult[AiClientRequestResult["INVALID_JSON_RESPONSE"] = 14] = "INVALID_JSON_RESPONSE";
+    AiClientRequestResult[AiClientRequestResult["BLOCKED_BY_SAFETY_OR_RECITATION"] = 15] = "BLOCKED_BY_SAFETY_OR_RECITATION";
+    AiClientRequestResult[AiClientRequestResult["UNKNOWN_ERROR"] = 16] = "UNKNOWN_ERROR";
+    AiClientRequestResult[AiClientRequestResult["MAX_VALUE"] = 17] = "MAX_VALUE";
+})(AiClientRequestResult || (AiClientRequestResult = {}));
 // LINT.ThenChange(/front_end/devtools_compatibility.js)
 //# sourceMappingURL=UserMetricsEnums.js.map

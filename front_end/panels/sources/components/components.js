@@ -211,6 +211,10 @@ var HeadersView = class extends UI.View.SimpleView {
       uiSourceCode: this.#uiSourceCode,
       parsingError: false
     };
+    this.performUpdate();
+  }
+  wasShown() {
+    super.wasShown();
     this.#uiSourceCode.addEventListener(
       Workspace.UISourceCode.Events.WorkingCopyChanged,
       this.#onWorkingCopyChanged,
@@ -221,8 +225,15 @@ var HeadersView = class extends UI.View.SimpleView {
       this.#onWorkingCopyCommitted,
       this
     );
-    this.performUpdate();
-    void this.#setInitialData();
+    if (this.#uiSourceCode.isDirty()) {
+      this.#setComponentData(this.#uiSourceCode.workingCopy());
+    } else {
+      void this.#setInitialData();
+    }
+  }
+  willHide() {
+    super.willHide();
+    this.dispose();
   }
   performUpdate() {
     const that = this;

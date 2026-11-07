@@ -642,11 +642,16 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
 var CSSHintDetailsView = class extends UI4.Widget.Widget {
   #authoringHint;
   #view;
-  constructor(authoringHint, element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element);
-    this.#authoringHint = authoringHint;
     this.#view = view;
-    this.performUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  get authoringHint() {
+    return this.#authoringHint;
   }
   set authoringHint(authoringHint) {
     if (this.#authoringHint === authoringHint) {
@@ -1427,7 +1432,7 @@ var cssVariableValueView_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .registered-property-popup-wrapper {
-    max-width: 232px;
+    max-width: var(--sys-size-28);
     font-size: var(--sys-typescale-body4-size);
     line-height: 1.4;
     word-break: break-all;

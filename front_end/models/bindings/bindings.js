@@ -5826,9 +5826,14 @@ var ResourceScriptMapping = class {
       )
     ];
   }
-  #project(script) {
+  #projectId(script) {
     const prefix = script.isContentScript() ? "js:extensions:" : "js::";
-    const projectId = prefix + this.debuggerModel.target().id() + ":" + script.frameId;
+    const securityOrigin = script.securityOrigin();
+    const originPart = securityOrigin.isOpaque() ? "" : `:${securityOrigin.siteId()}`;
+    return `${prefix}${this.debuggerModel.target().id()}:${script.frameId}${originPart}`;
+  }
+  #project(script) {
+    const projectId = this.#projectId(script);
     let project = this.#projects.get(projectId);
     if (!project) {
       const projectType = script.isContentScript() ? Workspace15.Workspace.projectTypes.ContentScripts : Workspace15.Workspace.projectTypes.Network;
@@ -5837,8 +5842,8 @@ var ResourceScriptMapping = class {
         projectId,
         projectType,
         "",
-        false
-        /* isServiceProject */
+        false,
+        script.securityOrigin()
       );
       NetworkProject.setTargetForProject(project, this.debuggerModel.target());
       this.#projects.set(projectId, project);
@@ -5969,8 +5974,7 @@ var ResourceScriptMapping = class {
       if (!this.#isTrustworthySourceURL(script, url)) {
         return;
       }
-      const previousUISourceCode = this.#project(script).uiSourceCodeForURL(url);
-      if (previousUISourceCode && !NetworkProject.isSourceURLSynthesized(previousUISourceCode)) {
+      if (this.#hasNetworkUISourceCode(url, script.isContentScript())) {
         return;
       }
     } else {
@@ -5984,14 +5988,8 @@ var ResourceScriptMapping = class {
         }
       }
     }
+    this.#removePreviousUISourceCodes(script, url);
     const project = this.#project(script);
-    const oldUISourceCode = project.uiSourceCodeForURL(url);
-    if (oldUISourceCode) {
-      const oldScriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
-      if (oldScriptFile?.script) {
-        this.#removeScripts([oldScriptFile.script]);
-      }
-    }
     const originalContentProvider = script.originalContentProvider();
     const uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
     if (script.hasSourceURL) {
@@ -6005,6 +6003,22 @@ var ResourceScriptMapping = class {
     const mimeType = script.isWasm() ? "application/wasm" : "text/javascript";
     project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, mimeType);
     void this.debuggerWorkspaceBinding.updateLocations(script);
+  }
+  #uiSourceCodesForURL(url, isContentScript) {
+    const projectType = isContentScript ? Workspace15.Workspace.projectTypes.ContentScripts : Workspace15.Workspace.projectTypes.Network;
+    const result = [];
+    for (const project of this.#projects.values()) {
+      if (project.type() === projectType) {
+        const uiSourceCode = project.uiSourceCodeForURL(url);
+        if (uiSourceCode) {
+          result.push(uiSourceCode);
+        }
+      }
+    }
+    return result;
+  }
+  #hasNetworkUISourceCode(url, isContentScript) {
+    return this.#uiSourceCodesForURL(url, isContentScript).some((uiSourceCode) => !NetworkProject.isSourceURLSynthesized(uiSourceCode));
   }
   /**
    * Whether the (already resolved) `//# sourceURL=` annotation `url` of `script` may
@@ -6038,6 +6052,27 @@ var ResourceScriptMapping = class {
   }
   scriptFile(uiSourceCode) {
     return this.#uiSourceCodeToScriptFile.get(uiSourceCode) || null;
+  }
+  #removePreviousUISourceCodes(script, url) {
+    const scriptsToRemove = /* @__PURE__ */ new Set();
+    if (!script.hasSourceURL) {
+      for (const existing of this.#uiSourceCodesForURL(url, script.isContentScript())) {
+        if (NetworkProject.isSourceURLSynthesized(existing)) {
+          const oldScript2 = this.#uiSourceCodeToScriptFile.get(existing)?.script;
+          if (oldScript2) {
+            scriptsToRemove.add(oldScript2);
+          }
+        }
+      }
+    }
+    const oldUISourceCode = this.#projects.get(this.#projectId(script))?.uiSourceCodeForURL(url);
+    const oldScript = oldUISourceCode ? this.#uiSourceCodeToScriptFile.get(oldUISourceCode)?.script : null;
+    if (oldScript) {
+      scriptsToRemove.add(oldScript);
+    }
+    if (scriptsToRemove.size > 0) {
+      this.#removeScripts([...scriptsToRemove]);
+    }
   }
   #removeScripts(scripts) {
     const uiSourceCodesByProject = new Platform5.MapUtilities.Multimap();

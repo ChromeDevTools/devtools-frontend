@@ -275,6 +275,13 @@ export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {
     constructor();
     static getClones(node: Node): Node[];
     static cloneNode(node: Node): Node;
+    /**
+     * Declares `clone` as a rendered counterpart of `original`. `cloneNode` calls this for each
+     * node it clones. Hosts call it for elements they render by other means, e.g. the tree calls
+     * it for the list item that it creates for a `<li>` config element. Resolves `clonedRef`
+     * directives bound to `original`.
+     */
+    static registerClone(original: Node, clone: Node): void;
     static patchLitTemplate(template: Lit.LitTemplate): void;
     get templateRoot(): DocumentFragment | HTMLElement;
     set template(template: Lit.LitTemplate);
@@ -285,6 +292,24 @@ export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {
     protected removeNodes(_nodes: NodeList | Node[]): void;
     static findCorrespondingElement(sourceElement: Element, sourceRootElement: Element, targetRootElement: Element): Element | null;
 }
+declare class ClonedRefDirective extends Lit.AsyncDirective.AsyncDirective {
+    #private;
+    constructor(partInfo: Lit.AsyncDirective.PartInfo);
+    /** Called by `HTMLElementWithLightDOMTemplate.registerClone`. Returns at once if no directive is bound. */
+    static notifyCloned(templateElement: Element, clone: Element): void;
+    render(_ref?: Lit.Directives.RefOrCallback): typeof Lit.nothing;
+    update(part: Lit.AsyncDirective.ElementPart, [ref]: Parameters<this['render']>): typeof Lit.nothing;
+    protected disconnected(): void;
+    protected reconnected(): void;
+}
+/**
+ * Sets a `Ref` object or calls a ref callback with the live element that a light DOM template host
+ * rendered for the bound template element (see `HTMLElementWithLightDOMTemplate.registerClone`).
+ * Resolves when the host registers the clone, or at once if the clone already exists. Calls a
+ * callback with `undefined` before a new element and when the directive disconnects. Does not
+ * resolve in standard `render()` calls that do not clone template elements.
+ */
+export declare const clonedRef: (_ref?: Lit.Directives.RefOrCallback) => Lit.AsyncDirective.DirectiveResult<typeof ClonedRefDirective>;
 /**
  * @param text Text to copy to clipboard
  * @param alert Message to send for a11y only required if there

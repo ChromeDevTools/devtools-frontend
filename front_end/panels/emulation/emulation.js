@@ -1279,7 +1279,6 @@ devtools-toolbar.device-mode-toolbar-options {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeHorizontal);
   width: var(--sys-size-4);
-  height: 26px;
 }
 
 .device-mode-bottom-resizer > div {
@@ -1301,10 +1300,10 @@ devtools-toolbar.device-mode-toolbar-options {
 
 .device-mode-bottom-left-resizer > div {
   position: absolute;
-  bottom: 3px;
-  left: 3px;
-  width: 13px;
-  height: 13px;
+  bottom: var(--sys-size-3);
+  left: var(--sys-size-3);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeDiagonal);
   transform: rotate(90deg);
@@ -1390,7 +1389,7 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-top .device-mode-ruler-marker.device-mode-ruler-marker-large {
-  height: 15px;
+  height: var(--sys-size-7);
 }
 
 .device-mode-ruler-left .device-mode-ruler-marker {

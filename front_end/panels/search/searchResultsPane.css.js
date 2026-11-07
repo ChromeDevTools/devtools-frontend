@@ -116,7 +116,7 @@ ol.children.expanded {
 li.search-match .link-style.search-match-link {
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-left: 9px;
+  margin-left: var(--sys-size-5);
   text-align: left;
 }
 

@@ -299,7 +299,6 @@ export function makeMockSamplesHandlerData(profileCalls) {
         profile.timeDeltas?.push(timeDelta);
     }
     const profileData = {
-        rawProfile: profile,
         parsedProfile: new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profile),
         profileCalls,
         profileTree: tree,

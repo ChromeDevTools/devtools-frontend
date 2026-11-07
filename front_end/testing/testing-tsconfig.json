@@ -47,6 +47,7 @@
   },
   "files": [
     "../../../../../front_end/testing/AiAssistanceHelpers.ts",
+    "../../../../../front_end/testing/AxeHelpers.ts",
     "../../../../../front_end/testing/ConsoleHelpers.ts",
     "../../../../../front_end/testing/ConsoleInsightHelpers.ts",
     "../../../../../front_end/testing/ContextMenuHelpers.ts",

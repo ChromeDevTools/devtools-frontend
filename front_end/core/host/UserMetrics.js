@@ -200,6 +200,15 @@ export class UserMetrics {
     commentSize(characters) {
         InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.CommentSize', characters, 1, 100_000, 50);
     }
+    /**
+     * Records the outcome of an AI request to the aggregate histogram and optionally to a surface-specific slice.
+     */
+    aiClientRequestResult(result, surfaceHistogram) {
+        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.AiClient.RequestResult" /* EnumeratedHistogram.AiClientRequestResult */, result, AiClientRequestResult.MAX_VALUE);
+        if (surfaceHistogram !== undefined) {
+            InspectorFrontendHostInstance.recordEnumeratedHistogram(surfaceHistogram, result, AiClientRequestResult.MAX_VALUE);
+        }
+    }
 }
 /**
  * Creates a proxy that delays the resolution of UMA enum values until runtime.
@@ -297,6 +306,8 @@ export const AnimationsPlaybackRate = createDynamicEnumProxy('AnimationsPlayback
 export const TimelineNavigationSetting = createDynamicEnumProxy('TimelineNavigationSetting', Enums.TimelineNavigationSetting);
 export const BuiltInAiAvailability = createDynamicEnumProxy('BuiltInAiAvailability', Enums.BuiltInAiAvailability);
 export const ResendRequestType = createDynamicEnumProxy('ResendRequestType', Enums.ResendRequestType);
+export const AiClientRequestResult = createDynamicEnumProxy('AiClientRequestResult', Enums.AiClientRequestResult);
+export const userMetrics = new UserMetrics();
 const resendRequestTypeMap = new Map([
     [Common.ResourceType.resourceTypes.XHR, 'XHR'],
     [Common.ResourceType.resourceTypes.Fetch, 'FETCH'],

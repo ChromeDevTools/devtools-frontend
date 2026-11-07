@@ -8910,7 +8910,7 @@ var pieChart_css_default = `/*
 .pie-chart-size {
   display: inline-block;
   text-align: right;
-  width: 70px;
+  width: var(--sys-size-19);
 }
 
 @media (forced-colors: active) {

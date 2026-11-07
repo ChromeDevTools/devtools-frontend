@@ -6666,7 +6666,7 @@ export const NativeFunctions = [
     },
     {
         name: "WebTransportError",
-        signatures: [["?init"]]
+        signatures: [["?message", "?options"], ["init", "?legacyIgnored"]]
     },
     {
         name: "CloseEvent",

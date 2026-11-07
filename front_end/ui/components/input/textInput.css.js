@@ -12,7 +12,7 @@ export default `/*
 .devtools-text-input {
   height: var(--sys-size-13);
   width: 100%;
-  padding: var(--sys-size-5) 11px;
+  padding: var(--sys-size-5) var(--sys-size-6);
   line-height: 1.16;
   letter-spacing: 0.015em;
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);

@@ -15,6 +15,10 @@ export const makeEmptyTraceEntryNode = (entry, id) => ({
     parent: null,
     children: [],
     depth: 0,
+    // selfTime is set on every node after creation. Declaring it here keeps it
+    // inside the object; adding it later makes V8 allocate a separate property
+    // store for every node.
+    selfTime: undefined,
 });
 /**
  * Builds a hierarchy of the entries (trace events and profile calls) in

@@ -80,10 +80,22 @@ export class HeadersView extends UI.View.SimpleView {
             uiSourceCode: this.#uiSourceCode,
             parsingError: false,
         };
+        this.performUpdate();
+    }
+    wasShown() {
+        super.wasShown();
         this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
         this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#onWorkingCopyCommitted, this);
-        this.performUpdate();
-        void this.#setInitialData();
+        if (this.#uiSourceCode.isDirty()) {
+            this.#setComponentData(this.#uiSourceCode.workingCopy());
+        }
+        else {
+            void this.#setInitialData();
+        }
+    }
+    willHide() {
+        super.willHide();
+        this.dispose();
     }
     performUpdate() {
         const that = this;

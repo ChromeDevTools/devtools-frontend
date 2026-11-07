@@ -4130,7 +4130,7 @@ __export(DeprecationIssue_exports, {
 });
 import * as i18n17 from "../../core/i18n/i18n.js";
 
-// ../../front_end/generated/Deprecation.ts
+// gen/front_end/generated/Deprecation.ts
 var UIStrings9 = {
   /**
    * @description This warning occurs when the website uses Attribution Reporting.

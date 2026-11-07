@@ -189,9 +189,12 @@ export class RehydratingConnectionTransport {
         if (!this.trace) {
             return;
         }
+        const trace = this.trace;
+        // Clear the instance reference so the raw TraceObject is not retained on
+        // the long-lived transport once it is revealed to the Performance panel.
+        this.trace = null;
         this.rehydratingConnectionState = 3 /* RehydratingConnectionState.REHYDRATED */;
-        // Use revealer to load trace into performance panel
-        await Common.Revealer.reveal(this.trace);
+        await Common.Revealer.reveal(trace);
     }
     setOnMessage(onMessage) {
         this.onMessage = onMessage;

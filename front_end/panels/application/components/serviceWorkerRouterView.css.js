@@ -17,8 +17,8 @@ export default `/*
 .router-rules {
   border: var(--sys-size-1) solid var(--sys-color-divider);
   border-spacing: 0;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: var(--sys-size-6);
+  padding-right: var(--sys-size-6);
   line-height: initial;
   margin-top: 0;
   padding-bottom: var(--sys-size-6);

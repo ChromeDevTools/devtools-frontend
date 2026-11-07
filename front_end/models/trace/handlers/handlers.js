@@ -355,6 +355,9 @@ var flows = [];
 var ID_COMPONENT_SEPARATOR = "-$-";
 function reset3() {
   flows = [];
+  resetIntermediateState();
+}
+function resetIntermediateState() {
   flowEvents = [];
   nonFlowEvents = [];
   flowDataByGroupToken = /* @__PURE__ */ new Map();
@@ -436,6 +439,7 @@ async function finalize3() {
   flowEvents.forEach(processFlowEvent);
   nonFlowEvents.forEach(processNonFlowEvent);
   flows = [...flowsById.values()].map((flowMapping) => [...flowMapping.values()]).map((flow) => flow.filter((event) => event !== void 0)).filter((flow) => flow.length > 1);
+  resetIntermediateState();
 }
 function data3() {
   return {
@@ -4154,7 +4158,6 @@ function parseCPUProfileData(parseOptions) {
       profileTree.maxDepth = profileModel.maxDepth;
       const selectedProfileId = chosen.id;
       const finalizedData = {
-        rawProfile: chosenData.rawProfile,
         parsedProfile: profileModel,
         profileCalls: [],
         profileTree,
@@ -4237,6 +4240,7 @@ function handleEvent6(event) {
 }
 async function finalize6(parseOptions = {}) {
   parseCPUProfileData(parseOptions);
+  preprocessedData = /* @__PURE__ */ new Map();
 }
 function assignProfileSourceIfKnown(profileData, source) {
   if (Types7.Events.VALID_PROFILE_SOURCES.includes(source)) {
@@ -7052,18 +7056,6 @@ function findNetworkRequest(networkRequests, script) {
   }
   return networkRequests.find((request) => request.args.data.url === script.url) ?? null;
 }
-function computeMappingEndColumns(map) {
-  const result = /* @__PURE__ */ new Map();
-  const mappings = map.mappings();
-  for (let i = 0; i < mappings.length - 1; i++) {
-    const mapping = mappings[i];
-    const nextMapping = mappings[i + 1];
-    if (mapping.lineNumber === nextMapping.lineNumber) {
-      result.set(mapping, nextMapping.columnNumber);
-    }
-  }
-  return result;
-}
 function computeGeneratedFileSizes(script) {
   if (!script.sourceMap) {
     throw new Error("expected source map");
@@ -7071,37 +7063,48 @@ function computeGeneratedFileSizes(script) {
   const map = script.sourceMap;
   const content = script.content ?? "";
   const contentLength = content.length;
-  const lines = content.split("\n");
+  const lineLengths = [];
+  for (let start = 0; ; ) {
+    const newlineIndex = content.indexOf("\n", start);
+    if (newlineIndex === -1) {
+      lineLengths.push(contentLength - start);
+      break;
+    }
+    lineLengths.push(newlineIndex - start);
+    start = newlineIndex + 1;
+  }
   const files = {};
   const totalBytes = contentLength;
   let unmappedBytes = totalBytes;
-  const mappingEndCols = computeMappingEndColumns(script.sourceMap);
-  for (const mapping of map.mappings()) {
+  const mappings = map.mappings();
+  for (let i = 0; i < mappings.length; i++) {
+    const mapping = mappings[i];
     const source = mapping.sourceURL;
     const lineNum = mapping.lineNumber;
     const colNum = mapping.columnNumber;
-    const lastColNum = mappingEndCols.get(mapping);
+    const nextMapping = mappings[i + 1];
+    const lastColNum = nextMapping !== void 0 && nextMapping.lineNumber === lineNum ? nextMapping.columnNumber : void 0;
     if (!source) {
       continue;
     }
-    const line = lines[lineNum];
-    if (line === null || line === void 0) {
+    const lineLength = lineLengths[lineNum];
+    if (lineLength === void 0) {
       const errorMessage = `${map.url()} mapping for line out of bounds: ${lineNum + 1}`;
       return { errorMessage };
     }
-    if (colNum > line.length) {
+    if (colNum > lineLength) {
       const errorMessage = `${map.url()} mapping for column out of bounds: ${lineNum + 1}:${colNum}`;
       return { errorMessage };
     }
     let mappingLength = 0;
     if (lastColNum !== void 0) {
-      if (lastColNum > line.length) {
+      if (lastColNum > lineLength) {
         const errorMessage = `${map.url()} mapping for last column out of bounds: ${lineNum + 1}:${lastColNum}`;
         return { errorMessage };
       }
       mappingLength = lastColNum - colNum;
     } else {
-      mappingLength = line.length - colNum + 1;
+      mappingLength = lineLength - colNum + 1;
     }
     files[source] = (files[source] || 0) + mappingLength;
     unmappedBytes -= mappingLength;
@@ -7145,6 +7148,7 @@ function findCachedRawSourceMap(script, options) {
   return;
 }
 async function finalize25(options) {
+  frameIdByIsolate = /* @__PURE__ */ new Map();
   const meta = data4();
   const networkRequests = [...data5().byId.values()];
   const documentUrls = /* @__PURE__ */ new Set();

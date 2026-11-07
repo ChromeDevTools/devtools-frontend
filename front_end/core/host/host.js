@@ -41,7 +41,7 @@ __export(AidaClient_exports, {
   isQuotaError: () => isQuotaError,
   mapError: () => mapError
 });
-import * as Common4 from "../common/common.js";
+import * as Common5 from "../common/common.js";
 import * as Platform4 from "../platform/platform.js";
 import * as Root3 from "../root/root.js";
 
@@ -187,645 +187,24 @@ function debugLog(...log) {
   console.log(...log);
 }
 
-// ../../front_end/core/host/AidaGcaTranslation.ts
-var AidaGcaTranslation_exports = {};
-__export(AidaGcaTranslation_exports, {
-  aidaCompletionRequestToGcaRequest: () => aidaCompletionRequestToGcaRequest,
-  aidaDoConversationRequestToGcaRequest: () => aidaDoConversationRequestToGcaRequest,
-  aidaEventToGcaTelemetryRequest: () => aidaEventToGcaTelemetryRequest,
-  aidaGenerateCodeRequestToGcaRequest: () => aidaGenerateCodeRequestToGcaRequest,
-  gcaChunkResponseToAidaChunkResponse: () => gcaChunkResponseToAidaChunkResponse,
-  gcaResponseToAidaCompletionResponse: () => gcaResponseToAidaCompletionResponse,
-  gcaResponseToAidaDoConversationResponse: () => gcaResponseToAidaDoConversationResponse,
-  gcaResponseToAidaGenerateCodeResponse: () => gcaResponseToAidaGenerateCodeResponse
+// ../../front_end/core/host/AidaErrors.ts
+var AidaErrors_exports = {};
+__export(AidaErrors_exports, {
+  AidaAbortError: () => AidaAbortError,
+  AidaBlockError: () => AidaBlockError,
+  AidaClientError: () => AidaClientError,
+  AidaInvalidJsonResponseError: () => AidaInvalidJsonResponseError,
+  AidaPayloadTooLargeError: () => AidaPayloadTooLargeError,
+  AidaPermissionDeniedError: () => AidaPermissionDeniedError,
+  AidaQuotaError: () => AidaQuotaError,
+  AidaTimeoutError: () => AidaTimeoutError,
+  AidaUnknownError: () => AidaUnknownError,
+  StreamChunkParseError: () => StreamChunkParseError,
+  classifyRequestError: () => classifyRequestError,
+  isPayloadTooLargeError: () => isPayloadTooLargeError,
+  isQuotaError: () => isQuotaError,
+  mapError: () => mapError
 });
-
-// ../../front_end/core/host/GcaTypes.ts
-var GcaTypes_exports = {};
-__export(GcaTypes_exports, {
-  BlockReason: () => BlockReason,
-  FinishReason: () => FinishReason,
-  HarmBlockMethod: () => HarmBlockMethod,
-  HarmBlockThreshold: () => HarmBlockThreshold,
-  HarmCategory: () => HarmCategory,
-  HarmProbability: () => HarmProbability,
-  InclusionReason: () => InclusionReason,
-  InteractionType: () => InteractionType,
-  Language: () => Language,
-  Method: () => Method,
-  Mode: () => Mode,
-  Outcome: () => Outcome,
-  SuggestionStatus: () => SuggestionStatus,
-  Type: () => Type
-});
-var Type = /* @__PURE__ */ ((Type2) => {
-  Type2[Type2["TYPE_UNSPECIFIED"] = 0] = "TYPE_UNSPECIFIED";
-  Type2[Type2["STRING"] = 1] = "STRING";
-  Type2[Type2["NUMBER"] = 2] = "NUMBER";
-  Type2[Type2["INTEGER"] = 3] = "INTEGER";
-  Type2[Type2["BOOLEAN"] = 4] = "BOOLEAN";
-  Type2[Type2["ARRAY"] = 5] = "ARRAY";
-  Type2[Type2["OBJECT"] = 6] = "OBJECT";
-  Type2[Type2["NULL"] = 7] = "NULL";
-  return Type2;
-})(Type || {});
-var HarmCategory = /* @__PURE__ */ ((HarmCategory2) => {
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_UNSPECIFIED"] = 0] = "HARM_CATEGORY_UNSPECIFIED";
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_HARASSMENT"] = 7] = "HARM_CATEGORY_HARASSMENT";
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_HATE_SPEECH"] = 8] = "HARM_CATEGORY_HATE_SPEECH";
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_SEXUALLY_EXPLICIT"] = 9] = "HARM_CATEGORY_SEXUALLY_EXPLICIT";
-  HarmCategory2[HarmCategory2["HARM_CATEGORY_DANGEROUS_CONTENT"] = 10] = "HARM_CATEGORY_DANGEROUS_CONTENT";
-  return HarmCategory2;
-})(HarmCategory || {});
-var HarmProbability = /* @__PURE__ */ ((HarmProbability2) => {
-  HarmProbability2[HarmProbability2["HARM_PROBABILITY_UNSPECIFIED"] = 0] = "HARM_PROBABILITY_UNSPECIFIED";
-  HarmProbability2[HarmProbability2["NEGLIGIBLE"] = 1] = "NEGLIGIBLE";
-  HarmProbability2[HarmProbability2["LOW"] = 2] = "LOW";
-  HarmProbability2[HarmProbability2["MEDIUM"] = 3] = "MEDIUM";
-  HarmProbability2[HarmProbability2["HIGH"] = 4] = "HIGH";
-  return HarmProbability2;
-})(HarmProbability || {});
-var HarmBlockThreshold = /* @__PURE__ */ ((HarmBlockThreshold2) => {
-  HarmBlockThreshold2[HarmBlockThreshold2["HARM_BLOCK_THRESHOLD_UNSPECIFIED"] = 0] = "HARM_BLOCK_THRESHOLD_UNSPECIFIED";
-  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_LOW_AND_ABOVE"] = 1] = "BLOCK_LOW_AND_ABOVE";
-  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_MEDIUM_AND_ABOVE"] = 2] = "BLOCK_MEDIUM_AND_ABOVE";
-  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_ONLY_HIGH"] = 3] = "BLOCK_ONLY_HIGH";
-  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_NONE"] = 4] = "BLOCK_NONE";
-  HarmBlockThreshold2[HarmBlockThreshold2["OFF"] = 5] = "OFF";
-  return HarmBlockThreshold2;
-})(HarmBlockThreshold || {});
-var HarmBlockMethod = /* @__PURE__ */ ((HarmBlockMethod2) => {
-  HarmBlockMethod2[HarmBlockMethod2["HARM_BLOCK_METHOD_UNSPECIFIED"] = 0] = "HARM_BLOCK_METHOD_UNSPECIFIED";
-  HarmBlockMethod2[HarmBlockMethod2["SEVERITY"] = 1] = "SEVERITY";
-  HarmBlockMethod2[HarmBlockMethod2["PROBABILITY"] = 2] = "PROBABILITY";
-  return HarmBlockMethod2;
-})(HarmBlockMethod || {});
-var FinishReason = /* @__PURE__ */ ((FinishReason2) => {
-  FinishReason2[FinishReason2["FINISH_REASON_UNSPECIFIED"] = 0] = "FINISH_REASON_UNSPECIFIED";
-  FinishReason2[FinishReason2["STOP"] = 1] = "STOP";
-  FinishReason2[FinishReason2["MAX_TOKENS"] = 2] = "MAX_TOKENS";
-  FinishReason2[FinishReason2["SAFETY"] = 3] = "SAFETY";
-  FinishReason2[FinishReason2["RECITATION"] = 4] = "RECITATION";
-  FinishReason2[FinishReason2["OTHER"] = 5] = "OTHER";
-  FinishReason2[FinishReason2["BLOCKLIST"] = 6] = "BLOCKLIST";
-  FinishReason2[FinishReason2["PROHIBITED_CONTENT"] = 7] = "PROHIBITED_CONTENT";
-  FinishReason2[FinishReason2["SPII"] = 8] = "SPII";
-  FinishReason2[FinishReason2["MALFORMED_FUNCTION_CALL"] = 9] = "MALFORMED_FUNCTION_CALL";
-  FinishReason2[FinishReason2["IMAGE_SAFETY"] = 10] = "IMAGE_SAFETY";
-  FinishReason2[FinishReason2["IMAGE_PROHIBITED_CONTENT"] = 11] = "IMAGE_PROHIBITED_CONTENT";
-  FinishReason2[FinishReason2["IMAGE_RECITATION"] = 12] = "IMAGE_RECITATION";
-  FinishReason2[FinishReason2["IMAGE_OTHER"] = 13] = "IMAGE_OTHER";
-  FinishReason2[FinishReason2["UNEXPECTED_TOOL_CALL"] = 14] = "UNEXPECTED_TOOL_CALL";
-  FinishReason2[FinishReason2["NO_IMAGE"] = 15] = "NO_IMAGE";
-  return FinishReason2;
-})(FinishReason || {});
-var Method = /* @__PURE__ */ ((Method2) => {
-  Method2[Method2["METHOD_UNSPECIFIED"] = 0] = "METHOD_UNSPECIFIED";
-  Method2[Method2["GENERATE_CODE"] = 1] = "GENERATE_CODE";
-  Method2[Method2["COMPLETE_CODE"] = 2] = "COMPLETE_CODE";
-  Method2[Method2["TRANSFORM_CODE"] = 3] = "TRANSFORM_CODE";
-  Method2[Method2["CHAT"] = 4] = "CHAT";
-  return Method2;
-})(Method || {});
-var SuggestionStatus = /* @__PURE__ */ ((SuggestionStatus2) => {
-  SuggestionStatus2[SuggestionStatus2["STATUS_UNSPECIFIED"] = 0] = "STATUS_UNSPECIFIED";
-  SuggestionStatus2[SuggestionStatus2["NO_ERROR"] = 1] = "NO_ERROR";
-  SuggestionStatus2[SuggestionStatus2["ERROR"] = 2] = "ERROR";
-  SuggestionStatus2[SuggestionStatus2["CANCELLED"] = 3] = "CANCELLED";
-  SuggestionStatus2[SuggestionStatus2["EMPTY"] = 4] = "EMPTY";
-  return SuggestionStatus2;
-})(SuggestionStatus || {});
-var InteractionType = /* @__PURE__ */ ((InteractionType2) => {
-  InteractionType2[InteractionType2["INTERACTION_TYPE_UNSPECIFIED"] = 0] = "INTERACTION_TYPE_UNSPECIFIED";
-  InteractionType2[InteractionType2["THUMBS_UP"] = 1] = "THUMBS_UP";
-  InteractionType2[InteractionType2["THUMBS_DOWN"] = 2] = "THUMBS_DOWN";
-  InteractionType2[InteractionType2["ACCEPT"] = 3] = "ACCEPT";
-  InteractionType2[InteractionType2["ACCEPT_PARTIALLY"] = 4] = "ACCEPT_PARTIALLY";
-  InteractionType2[InteractionType2["REJECT"] = 5] = "REJECT";
-  InteractionType2[InteractionType2["COPY"] = 6] = "COPY";
-  return InteractionType2;
-})(InteractionType || {});
-var InclusionReason = /* @__PURE__ */ ((InclusionReason2) => {
-  InclusionReason2[InclusionReason2["INCLUSION_REASON_UNSPECIFIED"] = 0] = "INCLUSION_REASON_UNSPECIFIED";
-  InclusionReason2[InclusionReason2["ACTIVE"] = 1] = "ACTIVE";
-  InclusionReason2[InclusionReason2["OPEN"] = 2] = "OPEN";
-  InclusionReason2[InclusionReason2["RECENTLY_CLOSED"] = 3] = "RECENTLY_CLOSED";
-  InclusionReason2[InclusionReason2["RECENTLY_EDITED"] = 4] = "RECENTLY_EDITED";
-  InclusionReason2[InclusionReason2["COLOCATED"] = 5] = "COLOCATED";
-  InclusionReason2[InclusionReason2["RELATED"] = 6] = "RELATED";
-  InclusionReason2[InclusionReason2["USER_SELECTED"] = 7] = "USER_SELECTED";
-  return InclusionReason2;
-})(InclusionReason || {});
-var BlockReason = /* @__PURE__ */ ((BlockReason2) => {
-  BlockReason2[BlockReason2["BLOCKED_REASON_UNSPECIFIED"] = 0] = "BLOCKED_REASON_UNSPECIFIED";
-  BlockReason2[BlockReason2["SAFETY"] = 1] = "SAFETY";
-  BlockReason2[BlockReason2["OTHER"] = 2] = "OTHER";
-  BlockReason2[BlockReason2["BLOCKLIST"] = 3] = "BLOCKLIST";
-  BlockReason2[BlockReason2["PROHIBITED_CONTENT"] = 4] = "PROHIBITED_CONTENT";
-  BlockReason2[BlockReason2["IMAGE_SAFETY"] = 5] = "IMAGE_SAFETY";
-  return BlockReason2;
-})(BlockReason || {});
-var Language = /* @__PURE__ */ ((Language4) => {
-  Language4[Language4["LANGUAGE_UNSPECIFIED"] = 0] = "LANGUAGE_UNSPECIFIED";
-  Language4[Language4["PYTHON"] = 1] = "PYTHON";
-  return Language4;
-})(Language || {});
-var Outcome = /* @__PURE__ */ ((Outcome2) => {
-  Outcome2[Outcome2["OUTCOME_UNSPECIFIED"] = 0] = "OUTCOME_UNSPECIFIED";
-  Outcome2[Outcome2["OUTCOME_OK"] = 1] = "OUTCOME_OK";
-  Outcome2[Outcome2["OUTCOME_FAILED"] = 2] = "OUTCOME_FAILED";
-  Outcome2[Outcome2["OUTCOME_DEADLINE_EXCEEDED"] = 3] = "OUTCOME_DEADLINE_EXCEEDED";
-  return Outcome2;
-})(Outcome || {});
-var Mode = /* @__PURE__ */ ((Mode2) => {
-  Mode2[Mode2["MODE_UNSPECIFIED"] = 0] = "MODE_UNSPECIFIED";
-  Mode2[Mode2["AUTO"] = 1] = "AUTO";
-  Mode2[Mode2["ANY"] = 2] = "ANY";
-  Mode2[Mode2["NONE"] = 3] = "NONE";
-  return Mode2;
-})(Mode || {});
-
-// ../../front_end/core/host/AidaGcaTranslation.ts
-function createBaseGcaRequest(request, contents, experience) {
-  const gcaRequest = { contents, aicode: { experience } };
-  mapCommonAidaRequestFields(request, gcaRequest);
-  buildLabels(request, gcaRequest);
-  if ("preamble" in request && request.preamble) {
-    gcaRequest.systemInstruction = {
-      role: "user",
-      parts: [{ text: request.preamble }]
-    };
-  }
-  return gcaRequest;
-}
-var CLIENT_FEATURE_TO_EXPERIENCE = {
-  [1 /* CHROME_CONSOLE_INSIGHTS */]: "chat_console_insights",
-  [2 /* CHROME_STYLING_AGENT */]: "chat_freestyler",
-  [7 /* CHROME_NETWORK_AGENT */]: "chat_drjones_network_agent",
-  [9 /* CHROME_FILE_AGENT */]: "chat_drjones_file_agent",
-  [12 /* CHROME_PATCH_AGENT */]: "chat_patch_agent",
-  [20 /* CHROME_PERFORMANCE_ANNOTATIONS_AGENT */]: "chat_performance_annotations_agent",
-  [24 /* CHROME_PERFORMANCE_FULL_AGENT */]: "chat_performance_full_agent",
-  [25 /* CHROME_CONTEXT_SELECTION_AGENT */]: "chat_context_selection_agent",
-  [26 /* CHROME_ACCESSIBILITY_AGENT */]: "chat_accessibility_agent",
-  [27 /* CHROME_CONVERSATION_SUMMARY_AGENT */]: "chat_conversation_summary_agent",
-  [28 /* CHROME_STORAGE_AGENT */]: "chat_storage_agent",
-  [29 /* CHROME_DEVTOOLS_V2_AGENT */]: "chat_devtools_v2_agent"
-};
-function getConversationExperience(clientFeature) {
-  if (clientFeature === 0 /* CLIENT_FEATURE_UNSPECIFIED */ || !Object.hasOwn(CLIENT_FEATURE_TO_EXPERIENCE, clientFeature)) {
-    throw new Error(`Unsupported client feature for GCA conversation: ${clientFeature}`);
-  }
-  return CLIENT_FEATURE_TO_EXPERIENCE[clientFeature];
-}
-function aidaDoConversationRequestToGcaRequest(request) {
-  try {
-    const contents = [];
-    if (request.facts) {
-      contents.push(convertAidaFactsToGcaContent(request.facts));
-    }
-    if (request.historical_contexts) {
-      contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
-    }
-    contents.push(convertAidaContentToGcaContent(request.current_message));
-    const experience = getConversationExperience(request.client_feature);
-    const gcaRequest = createBaseGcaRequest(request, contents, experience);
-    if (request.function_declarations) {
-      gcaRequest.tools = [{
-        functionDeclarations: request.function_declarations.map((fd) => ({
-          name: fd.name,
-          description: fd.description,
-          parameters: convertAidaParamToGcaSchema(fd.parameters)
-        }))
-      }];
-    }
-    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
-    return gcaRequest;
-  } catch (e) {
-    debugLog("Translation error:", JSON.stringify(request), e);
-    throw e;
-  }
-}
-function mapCommonAidaRequestFields(aidaRequest, gcaRequest) {
-  if (aidaRequest.options?.model_id) {
-    gcaRequest.model = aidaRequest.options.model_id;
-  }
-  if (aidaRequest.options?.temperature !== void 0) {
-    gcaRequest.generationConfig = {
-      ...gcaRequest.generationConfig,
-      temperature: aidaRequest.options.temperature
-    };
-  }
-}
-function gcaResponseToAidaDoConversationResponse(response) {
-  const functionCalls = [];
-  if (response.candidates?.[0].content?.parts) {
-    for (const part of response.candidates[0].content.parts) {
-      if (part.functionCall) {
-        const functionCall = {
-          name: part.functionCall.name,
-          args: part.functionCall.args || {}
-        };
-        if (part.thoughtSignature) {
-          functionCall.thoughtSignature = part.thoughtSignature;
-        }
-        functionCalls.push(functionCall);
-      }
-    }
-  }
-  return {
-    explanation: extractTextFromGcaParts(response.candidates[0].content?.parts),
-    metadata: {
-      rpcGlobalId: response.responseId
-    },
-    functionCalls: functionCalls.length > 0 ? functionCalls : void 0,
-    completed: true
-  };
-}
-function extractTextFromGcaParts(parts) {
-  if (!parts) {
-    return "";
-  }
-  return parts.map((p) => p.text || "").join("");
-}
-function aidaEventToGcaTelemetryRequest(clientEvent) {
-  try {
-    const feedbackMetrics = [];
-    const responseId = String(clientEvent.corresponding_aida_rpc_global_id);
-    const eventTime = (/* @__PURE__ */ new Date()).toISOString();
-    if (clientEvent.do_conversation_client_event) {
-      const feedback = clientEvent.do_conversation_client_event.user_feedback;
-      if (feedback.sentiment) {
-        let interaction = 0 /* INTERACTION_TYPE_UNSPECIFIED */;
-        if (feedback.sentiment === "POSITIVE" /* POSITIVE */) {
-          interaction = 1 /* THUMBS_UP */;
-        } else if (feedback.sentiment === "NEGATIVE" /* NEGATIVE */) {
-          interaction = 2 /* THUMBS_DOWN */;
-        }
-        feedbackMetrics.push({
-          eventTime,
-          responseId,
-          suggestionInteraction: { interaction }
-        });
-      }
-    }
-    feedbackMetrics.push(...convertCodeTelemetry(
-      clientEvent.complete_code_client_event,
-      2 /* COMPLETE_CODE */,
-      responseId,
-      eventTime
-    ));
-    feedbackMetrics.push(...convertCodeTelemetry(
-      clientEvent.generate_code_client_event,
-      1 /* GENERATE_CODE */,
-      responseId,
-      eventTime
-    ));
-    const gcaTelemetryRequest = {
-      feedbackMetrics
-    };
-    debugLog("Translation succeeded:", JSON.stringify(clientEvent), JSON.stringify(gcaTelemetryRequest));
-    return gcaTelemetryRequest;
-  } catch (e) {
-    debugLog("Translation error:", JSON.stringify(clientEvent), e);
-    throw e;
-  }
-}
-function convertCodeTelemetry(event, method, responseId, eventTime) {
-  if (!event) {
-    return [];
-  }
-  if ("user_impression" in event && event.user_impression) {
-    const impression = event.user_impression;
-    return [{
-      eventTime,
-      responseId,
-      suggestionOffered: {
-        method,
-        status: 1 /* NO_ERROR */,
-        responseLatency: `${impression.latency.duration.seconds + impression.latency.duration.nanos / 1e9}s`
-      }
-    }];
-  }
-  if ("user_acceptance" in event && event.user_acceptance) {
-    const acceptance = event.user_acceptance;
-    return [{
-      eventTime,
-      responseId,
-      suggestionInteraction: {
-        interaction: 3 /* ACCEPT */,
-        candidateIndex: acceptance.sample.sample_id
-      }
-    }];
-  }
-  return [];
-}
-function aidaCompletionRequestToGcaRequest(request) {
-  try {
-    let additionalFiles = (request.additional_files ?? []).map((f) => ({
-      fileUri: f.path,
-      inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]],
-      segments: [{ content: f.content, isSelected: false }]
-    }));
-    const inEditorFile = inFileEditRequestToSourceFile(request);
-    if (inEditorFile) {
-      additionalFiles = [inEditorFile, ...additionalFiles];
-    }
-    const gcaRequest = createBaseGcaRequest(request, [], "complete_code");
-    gcaRequest.aicode.files = additionalFiles;
-    if (request.options?.stop_sequences) {
-      gcaRequest.generationConfig = {
-        ...gcaRequest.generationConfig,
-        stopSequences: request.options.stop_sequences
-      };
-    }
-    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
-    return gcaRequest;
-  } catch (e) {
-    debugLog("Translation error:", JSON.stringify(request), e);
-    throw e;
-  }
-}
-function inFileEditRequestToSourceFile(request) {
-  const sourceFile = {
-    inclusionReason: [1 /* ACTIVE */],
-    fileUri: "devtools-code-completion",
-    segments: [
-      {
-        content: request.prefix,
-        isSelected: false
-      },
-      {
-        content: "",
-        isSelected: true
-        // Cursor position
-      }
-    ]
-  };
-  if (request.suffix) {
-    sourceFile.segments?.push({
-      content: request.suffix,
-      isSelected: false
-    });
-  }
-  return sourceFile;
-}
-function sanitizeLabelValue(value) {
-  return value.toLowerCase().replace(/[^\p{Ll}\p{Lo}\p{N}_-]/gu, "_").substring(0, 63);
-}
-function buildLabels(request, gcaRequest) {
-  const labels = {};
-  if (request.client) {
-    labels["client"] = request.client;
-  }
-  if ("functionality_type" in request && request.functionality_type !== void 0) {
-    labels["functionality_type"] = FunctionalityType[request.functionality_type];
-  }
-  if ("client_feature" in request && request.client_feature !== void 0) {
-    labels["client_feature"] = ClientFeature[request.client_feature];
-  }
-  if ("last_user_action" in request && request.last_user_action !== void 0) {
-    labels["last_user_action"] = EditType[request.last_user_action];
-  }
-  if ("use_case" in request && request.use_case !== void 0) {
-    labels["use_case"] = UseCase[request.use_case];
-  }
-  if (request.metadata.string_session_id) {
-    labels["session_id"] = request.metadata.string_session_id;
-  }
-  const options = request.options;
-  if (options?.inference_language) {
-    labels["inference_language"] = options.inference_language;
-  }
-  if (options?.expect_code_output !== void 0) {
-    labels["expect_code_output"] = String(options.expect_code_output);
-  }
-  if (request.metadata.disable_user_content_logging !== void 0) {
-    labels["disable_user_content_logging"] = String(request.metadata.disable_user_content_logging);
-  }
-  if (request.metadata.client_version) {
-    labels["client_version"] = request.metadata.client_version;
-  }
-  if (Object.keys(labels).length > 0) {
-    const sanitizedLabels = {};
-    for (const [key, value] of Object.entries(labels)) {
-      sanitizedLabels[key] = sanitizeLabelValue(value);
-    }
-    gcaRequest.labels = sanitizedLabels;
-  }
-}
-var AidaReasonToGcaInclusionReason = {
-  [0 /* UNKNOWN */]: 0 /* INCLUSION_REASON_UNSPECIFIED */,
-  [1 /* CURRENTLY_OPEN */]: 2 /* OPEN */,
-  // Intentional mapping due to type mismatch
-  // TODO(liviurau): find a way to validate this mapping
-  [2 /* RECENTLY_OPENED */]: 3 /* RECENTLY_CLOSED */,
-  [3 /* RECENTLY_EDITED */]: 4 /* RECENTLY_EDITED */,
-  [4 /* COLOCATED */]: 5 /* COLOCATED */,
-  [5 /* RELATED_FILE */]: 6 /* RELATED */
-};
-function gcaResponseToAidaCompletionResponse(response) {
-  try {
-    const { samples, metadata } = gcaResponseToAidaSamplesAndMetadata(response);
-    const aidaResponse = {
-      generatedSamples: samples,
-      metadata
-    };
-    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
-    return aidaResponse;
-  } catch (e) {
-    debugLog("Translation error", JSON.stringify(response), e);
-    throw e;
-  }
-}
-function gcaResponseToAidaSamplesAndMetadata(response) {
-  return {
-    samples: (response.candidates ?? []).map(gcaCandidateToAidaGenerationSample),
-    metadata: {
-      rpcGlobalId: response.responseId
-    }
-  };
-}
-function aidaGenerateCodeRequestToGcaRequest(request) {
-  try {
-    const gcaRequest = createBaseGcaRequest(request, [convertAidaContentToGcaContent(request.current_message)], "generate_code");
-    if (request.context_files) {
-      gcaRequest.aicode.files = request.context_files.map((f) => ({
-        fileUri: f.path,
-        programmingLanguage: f.programming_language
-      }));
-    }
-    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
-    return gcaRequest;
-  } catch (e) {
-    debugLog("Translation error", JSON.stringify(request), e);
-    throw e;
-  }
-}
-function gcaResponseToAidaGenerateCodeResponse(response) {
-  try {
-    const aidaResponse = gcaResponseToAidaSamplesAndMetadata(response);
-    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
-    return aidaResponse;
-  } catch (e) {
-    debugLog("translation error", JSON.stringify(response), e);
-    throw e;
-  }
-}
-function gcaCandidateToAidaGenerationSample(candidate) {
-  const generationSample = {
-    generationString: extractTextFromGcaParts(candidate.content?.parts),
-    score: 0,
-    sampleId: candidate.index
-  };
-  if (candidate.citationMetadata) {
-    generationSample.attributionMetadata = {
-      attributionAction: "CITE" /* CITE */,
-      citations: (candidate.citationMetadata.citations ?? []).map((c) => ({
-        startIndex: c.startIndex,
-        endIndex: c.endIndex,
-        uri: c.uri
-      }))
-    };
-  }
-  return generationSample;
-}
-function convertAidaFactsToGcaContent(facts) {
-  return {
-    role: "user",
-    parts: facts.map((fact) => {
-      return { text: `[source: ${fact.metadata.source}] ${fact.text}` };
-    })
-  };
-}
-function convertAidaContentToGcaContent(content) {
-  let role = "user";
-  if (content.role === 2 /* MODEL */) {
-    role = "model";
-  }
-  return {
-    role,
-    parts: (content.parts ?? []).map(convertAidaPartToGcaPart)
-  };
-}
-function convertAidaPartToGcaPart(part) {
-  if ("text" in part) {
-    return { text: part.text };
-  }
-  if ("functionCall" in part) {
-    const gcaPart = {
-      functionCall: {
-        name: part.functionCall.name,
-        args: part.functionCall.args
-      }
-    };
-    if (part.functionCall.thoughtSignature) {
-      gcaPart.thoughtSignature = part.functionCall.thoughtSignature;
-    }
-    return gcaPart;
-  }
-  if ("functionResponse" in part) {
-    const fResponse = {};
-    if ("result" in part.functionResponse.response) {
-      fResponse.output = part.functionResponse.response["result"];
-    } else if ("output" in part.functionResponse.response) {
-      fResponse.output = part.functionResponse.response["output"];
-    } else if (!("error" in part.functionResponse.response)) {
-      fResponse.output = part.functionResponse.response;
-    }
-    if ("error" in part.functionResponse.response) {
-      fResponse.error = part.functionResponse.response["error"];
-    }
-    return {
-      functionResponse: {
-        name: part.functionResponse.name,
-        response: fResponse
-      }
-    };
-  }
-  if ("inlineData" in part) {
-    return {
-      inlineData: {
-        mimeType: part.inlineData.mimeType,
-        data: part.inlineData.data
-      }
-    };
-  }
-  return {};
-}
-function convertAidaParamToGcaSchema(param) {
-  const schema = {
-    type: param.type,
-    description: param.description
-  };
-  if (param.nullable) {
-    schema.nullable = param.nullable;
-  }
-  if (param.type === 5 /* ARRAY */ && param.items) {
-    schema.items = convertAidaParamToGcaSchema(param.items);
-  } else if (param.type === 6 /* OBJECT */ && param.properties) {
-    schema.properties = {};
-    for (const [key, value] of Object.entries(param.properties)) {
-      schema.properties[key] = convertAidaParamToGcaSchema(value);
-    }
-    schema.required = (param.required ?? []).map((r) => r.toString());
-  }
-  return schema;
-}
-function gcaChunkResponseToAidaChunkResponse(response) {
-  try {
-    if (response.error) {
-      return [{ error: response.error }];
-    }
-    const candidate = response.candidates?.[0];
-    const parts = candidate?.content?.parts || [];
-    const metadata = {
-      rpcGlobalId: response.responseId,
-      inferenceOptionMetadata: { modelId: response.modelVersion }
-    };
-    if (candidate?.citationMetadata?.citations) {
-      metadata.attributionMetadata = {
-        attributionAction: "CITE" /* CITE */,
-        citations: candidate.citationMetadata.citations.map((c) => ({
-          startIndex: c.startIndex,
-          endIndex: c.endIndex,
-          uri: c.uri
-        }))
-      };
-    }
-    const chunks = parts.map((part) => {
-      const aidaChunkResponse = { metadata };
-      if (part.text !== void 0) {
-        aidaChunkResponse.textChunk = {
-          text: extractTextFromGcaParts(parts)
-        };
-      }
-      if (part.functionCall) {
-        aidaChunkResponse.functionCallChunk = {
-          functionCall: {
-            name: part.functionCall.name,
-            args: part.functionCall.args || {}
-          }
-        };
-        if (part.thoughtSignature) {
-          aidaChunkResponse.functionCallChunk.functionCall.thoughtSignature = part.thoughtSignature;
-        }
-      }
-      if (part.executableCode) {
-        aidaChunkResponse.codeChunk = {
-          code: part.executableCode.code,
-          inferenceLanguage: part.executableCode.language ? "PYTHON" /* PYTHON */ : "UNKNOWN" /* UNKNOWN */
-        };
-      }
-      return aidaChunkResponse;
-    });
-    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(chunks));
-    return chunks;
-  } catch (e) {
-    debugLog("Translation error", JSON.stringify(response), e);
-    throw e;
-  }
-}
 
 // ../../front_end/core/host/DispatchHttpRequestClient.ts
 var DispatchHttpRequestClient_exports = {};
@@ -945,6 +324,13 @@ var EnumeratedHistogram = /* @__PURE__ */ ((EnumeratedHistogram2) => {
   EnumeratedHistogram2["BuiltInAiAvailability"] = "DevTools.BuiltInAiAvailability";
   EnumeratedHistogram2["ResendRequest"] = "DevTools.ResendRequest";
   EnumeratedHistogram2["EditResendRequest"] = "DevTools.EditResendRequest";
+  EnumeratedHistogram2["AiClientRequestResult"] = "DevTools.AiClient.RequestResult";
+  EnumeratedHistogram2["AiClientRequestResultAiAssistance"] = "DevTools.AiClient.RequestResult.AiAssistance";
+  EnumeratedHistogram2["AiClientRequestResultCodeComplete"] = "DevTools.AiClient.RequestResult.CodeComplete";
+  EnumeratedHistogram2["AiClientRequestResultCodeGenerate"] = "DevTools.AiClient.RequestResult.CodeGenerate";
+  EnumeratedHistogram2["AiClientRequestResultConsoleInsights"] = "DevTools.AiClient.RequestResult.ConsoleInsights";
+  EnumeratedHistogram2["AiClientRequestResultConversationSummary"] = "DevTools.AiClient.RequestResult.ConversationSummary";
+  EnumeratedHistogram2["AiClientRequestResultPerformanceAnnotations"] = "DevTools.AiClient.RequestResult.PerformanceAnnotations";
   return EnumeratedHistogram2;
 })(EnumeratedHistogram || {});
 
@@ -1701,892 +1087,11 @@ function setDebugDispatchHttpRequestEnabled(enabled) {
 }
 globalThis.setDebugDispatchHttpRequestEnabled = setDebugDispatchHttpRequestEnabled;
 
-// ../../front_end/core/host/GcaClient.ts
-var GcaClient_exports = {};
-__export(GcaClient_exports, {
-  GcaClient: () => GcaClient
-});
-import * as Root2 from "../root/root.js";
-var SERVICE_NAME = "gcaService";
-var ENDPOINTS = {
-  CONTENT: "/v1beta:generateContent",
-  SEND_TELEMETRY: "/v1beta:sendTelemetry",
-  STREAM_CONTENT: "/v1beta:streamGenerateContent"
-};
-var GcaClient = class {
-  enabled() {
-    return Root2.Runtime.hostConfig.devToolsUseGcaApi?.enabled;
-  }
-  async conversationRequest(request, streamId, options) {
-    try {
-      const gcaRequest = aidaDoConversationRequestToGcaRequest(request);
-      const response = await makeHttpRequest(
-        {
-          service: SERVICE_NAME,
-          path: ENDPOINTS.STREAM_CONTENT,
-          method: "POST",
-          body: JSON.stringify(gcaRequest),
-          streamId
-        },
-        options
-      );
-      debugLog("GCA conversation request succeeded:", JSON.stringify(request), JSON.stringify(response));
-    } catch (err) {
-      debugLog("GCA request failed:", JSON.stringify(request), err);
-      throw err;
-    }
-  }
-  registerClientEvent(clientEvent) {
-    const gcaEvent = aidaEventToGcaTelemetryRequest(clientEvent);
-    const response = makeHttpRequest({
-      service: SERVICE_NAME,
-      path: ENDPOINTS.SEND_TELEMETRY,
-      method: "POST",
-      body: JSON.stringify(gcaEvent)
-    });
-    return response.then(
-      (result) => {
-        debugLog("GCA register event succeeded:", JSON.stringify(gcaEvent), JSON.stringify(result));
-        return {};
-      },
-      (err) => {
-        debugLog("GCA register event failed:", JSON.stringify(gcaEvent), err);
-        return { error: JSON.stringify(err) };
-      }
-    );
-  }
-  async completeCode(request) {
-    const gcaRequest = aidaCompletionRequestToGcaRequest(request);
-    const result = await this.#requestContent(gcaRequest);
-    return gcaResponseToAidaCompletionResponse(result);
-  }
-  async generateCode(request, options) {
-    const gcaRequest = aidaGenerateCodeRequestToGcaRequest(request);
-    const result = await this.#requestContent(gcaRequest, options);
-    return gcaResponseToAidaGenerateCodeResponse(result);
-  }
-  async #requestContent(request, options) {
-    try {
-      const response = await makeHttpRequest(
-        {
-          service: SERVICE_NAME,
-          path: ENDPOINTS.CONTENT,
-          method: "POST",
-          body: JSON.stringify(request)
-        },
-        options
-      );
-      debugLog("GCA request succeeded:", JSON.stringify(request), JSON.stringify(response));
-      return response;
-    } catch (err) {
-      debugLog("GCA request failed:", JSON.stringify(request), err);
-      throw err;
-    }
-  }
-};
-
-// ../../front_end/core/host/AidaClient.ts
-var CLIENT_NAME = "CHROME_DEVTOOLS";
-var SERVICE_NAME2 = "aidaService";
-var CODE_CHUNK_SEPARATOR = (lang = "") => "\n`````" + lang + "\n";
-var AidaLanguageToMarkdown = {
-  ["CPP" /* CPP */]: "cpp",
-  ["PYTHON" /* PYTHON */]: "py",
-  ["KOTLIN" /* KOTLIN */]: "kt",
-  ["JAVA" /* JAVA */]: "java",
-  ["JAVASCRIPT" /* JAVASCRIPT */]: "js",
-  ["GO" /* GO */]: "go",
-  ["TYPESCRIPT" /* TYPESCRIPT */]: "ts",
-  ["HTML" /* HTML */]: "html",
-  ["BASH" /* BASH */]: "sh",
-  ["CSS" /* CSS */]: "css",
-  ["DART" /* DART */]: "dart",
-  ["JSON" /* JSON */]: "json",
-  ["MARKDOWN" /* MARKDOWN */]: "md",
-  ["VUE" /* VUE */]: "vue",
-  ["XML" /* XML */]: "xml",
-  ["UNKNOWN" /* UNKNOWN */]: "unknown"
-};
-var AidaClientError = class extends Error {
-  name = "AidaClientError";
-};
-var AidaUnknownError = class extends AidaClientError {
-  name = "AidaUnknownError";
-};
-var AidaAbortError = class extends AidaClientError {
-  name = "AidaAbortError";
-};
-var AidaBlockError = class extends AidaClientError {
-  name = "AidaBlockError";
-};
-var AidaQuotaError = class extends AidaClientError {
-  name = "AidaQuotaError";
-};
-var AidaPayloadTooLargeError = class extends AidaClientError {
-  name = "AidaPayloadTooLargeError";
-};
-var AidaPermissionDeniedError = class extends AidaClientError {
-  name = "AidaPermissionDeniedError";
-};
-var AidaTimeoutError = class extends AidaClientError {
-  name = "AidaTimeoutError";
-};
-var AidaInvalidJsonResponseError = class extends AidaClientError {
-  name = "AidaInvalidJsonResponseError";
-};
-var AidaClient = class {
-  // Delegate client
-  #gcaClient = new GcaClient();
-  static buildConsoleInsightsRequest(input) {
-    const disallowLogging = Root3.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true;
-    const chromeVersion = Root3.Runtime.getChromeVersion();
-    if (!chromeVersion) {
-      throw new Error("Cannot determine Chrome version");
-    }
-    const request = {
-      current_message: { parts: [{ text: input }], role: 1 /* USER */ },
-      client: CLIENT_NAME,
-      functionality_type: 2 /* EXPLAIN_ERROR */,
-      client_feature: 1 /* CHROME_CONSOLE_INSIGHTS */,
-      metadata: {
-        disable_user_content_logging: disallowLogging,
-        client_version: chromeVersion
-      }
-    };
-    let temperature = -1;
-    let modelId;
-    if (Root3.Runtime.hostConfig.devToolsConsoleInsights?.enabled) {
-      temperature = Root3.Runtime.hostConfig.devToolsConsoleInsights.temperature ?? -1;
-      modelId = Root3.Runtime.hostConfig.devToolsConsoleInsights.modelId;
-    }
-    if (temperature >= 0) {
-      request.options ??= {};
-      request.options.temperature = temperature;
-    }
-    if (modelId) {
-      request.options ??= {};
-      request.options.model_id = modelId;
-    }
-    return request;
-  }
-  static async checkAccessPreconditions() {
-    if (!Platform4.HostRuntime.HOST_RUNTIME.getOnLine()) {
-      return "no-internet" /* NO_INTERNET */;
-    }
-    const syncInfo = await new Promise(
-      (resolve) => InspectorFrontendHostInstance.getSyncInformation((syncInfo2) => resolve(syncInfo2))
-    );
-    if (!syncInfo.accountEmail) {
-      return "no-account-email" /* NO_ACCOUNT_EMAIL */;
-    }
-    if (syncInfo.isSyncPaused) {
-      return "sync-is-paused" /* SYNC_IS_PAUSED */;
-    }
-    return "available" /* AVAILABLE */;
-  }
-  async *doConversation(request, options) {
-    if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
-      throw new Error("dispatchHttpRequest is not available");
-    }
-    if (options?.signal?.aborted) {
-      throw new AidaAbortError();
-    }
-    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      request.metadata.disable_user_content_logging = true;
-    }
-    let abortListener;
-    let streamId;
-    try {
-      const stream = (() => {
-        let { promise, resolve, reject } = Promise.withResolvers();
-        promise.catch(() => {
-        });
-        abortListener = () => {
-          reject(new AidaAbortError());
-        };
-        options?.signal?.addEventListener("abort", abortListener, { once: true });
-        return {
-          write: async (data) => {
-            resolve(data);
-            ({ promise, resolve, reject } = Promise.withResolvers());
-            promise.catch(() => {
-            });
-          },
-          close: async () => {
-            resolve(null);
-          },
-          read: () => {
-            return promise;
-          },
-          fail: (e) => reject(e)
-        };
-      })();
-      streamId = bindOutputStream(stream);
-      let response;
-      if (this.#gcaClient.enabled()) {
-        response = this.#gcaClient.conversationRequest(request, streamId, options);
-      } else {
-        response = makeHttpRequest(
-          {
-            service: SERVICE_NAME2,
-            path: "/v1/aida:doConversation",
-            method: "POST",
-            body: JSON.stringify(request),
-            streamId
-          },
-          options
-        );
-      }
-      response.then(
-        () => {
-          void stream.close();
-        },
-        (err) => {
-          debugLog("doConversation failed with error:", JSON.stringify(err));
-          stream.fail(mapError(err));
-        }
-      );
-      yield* this.#handleResponseStream(stream);
-    } finally {
-      if (options?.signal && abortListener) {
-        options.signal.removeEventListener("abort", abortListener);
-      }
-      if (streamId !== void 0) {
-        discardOutputStream(streamId);
-      }
-    }
-  }
-  async *#handleResponseStream(stream) {
-    let chunk;
-    const text = [];
-    let inCodeChunk = false;
-    const functionCalls = [];
-    let metadata = { rpcGlobalId: 0 };
-    while (chunk = await stream.read()) {
-      debugLog("doConversation stream chunk:", chunk);
-      let textUpdated = false;
-      const results = this.#parseAndTranslate(chunk);
-      for (const result of results) {
-        if (result.metadata) {
-          metadata = result.metadata;
-          if (metadata?.attributionMetadata?.attributionAction === "BLOCK" /* BLOCK */) {
-            throw new AidaBlockError();
-          }
-        }
-        if (result.textChunk) {
-          if (inCodeChunk) {
-            text.push(CODE_CHUNK_SEPARATOR());
-            inCodeChunk = false;
-          }
-          text.push(result.textChunk.text);
-          textUpdated = true;
-        } else if (result.codeChunk) {
-          if (!inCodeChunk) {
-            const language = AidaLanguageToMarkdown[result.codeChunk.inferenceLanguage] ?? "";
-            text.push(CODE_CHUNK_SEPARATOR(language));
-            inCodeChunk = true;
-          }
-          text.push(result.codeChunk.code);
-          textUpdated = true;
-        } else if (result.functionCallChunk) {
-          functionCalls.push({
-            name: result.functionCallChunk.functionCall.name,
-            args: result.functionCallChunk.functionCall.args,
-            thoughtSignature: result.functionCallChunk.functionCall.thoughtSignature
-          });
-        } else if ("error" in result) {
-          throw mapError(result.error);
-        } else {
-          throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
-        }
-      }
-      if (textUpdated) {
-        yield {
-          explanation: text.join("") + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ""),
-          metadata,
-          completed: false
-        };
-      }
-    }
-    yield {
-      explanation: text.join("") + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ""),
-      metadata,
-      functionCalls: functionCalls.length ? functionCalls : void 0,
-      completed: true
-    };
-  }
-  #parseAndTranslate(chunk) {
-    const results = this.#parseStreamChunk(chunk);
-    if (this.#gcaClient.enabled()) {
-      return results.flatMap(gcaChunkResponseToAidaChunkResponse);
-    }
-    return results;
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #parseStreamChunk(chunk) {
-    if (!chunk.length) {
-      return [];
-    }
-    if (chunk.startsWith(",")) {
-      chunk = chunk.slice(1);
-    }
-    if (!chunk.startsWith("[")) {
-      chunk = "[" + chunk;
-    }
-    if (!chunk.endsWith("]")) {
-      chunk = chunk + "]";
-    }
-    try {
-      return JSON.parse(chunk);
-    } catch (error) {
-      throw new Error("Cannot parse chunk: " + chunk, { cause: error });
-    }
-  }
-  registerClientEvent(clientEvent) {
-    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      clientEvent.disable_user_content_logging = true;
-    }
-    if (this.#gcaClient.enabled()) {
-      return this.#gcaClient.registerClientEvent(clientEvent);
-    }
-    const { promise, resolve } = Promise.withResolvers();
-    InspectorFrontendHostInstance.registerAidaClientEvent(
-      JSON.stringify({
-        client: CLIENT_NAME,
-        event_time: (/* @__PURE__ */ new Date()).toISOString(),
-        ...clientEvent
-      }),
-      resolve
-    );
-    return promise;
-  }
-  async completeCode(request) {
-    if (!InspectorFrontendHostInstance.aidaCodeComplete) {
-      throw new Error("aidaCodeComplete is not available");
-    }
-    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      request.metadata.disable_user_content_logging = true;
-    }
-    if (this.#gcaClient.enabled()) {
-      try {
-        return await this.#gcaClient.completeCode(request);
-      } catch (err) {
-        throw mapError(err);
-      }
-    }
-    const { promise, resolve } = Promise.withResolvers();
-    InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
-    const completeCodeResult = await promise;
-    if (completeCodeResult.error) {
-      throw mapError(completeCodeResult.error, completeCodeResult.detail);
-    }
-    const response = completeCodeResult.response;
-    if (!response?.length) {
-      throw new Error("Empty response");
-    }
-    let parsedResponse;
-    try {
-      parsedResponse = JSON.parse(response);
-    } catch (error) {
-      throw new Error("Cannot parse response: " + response, { cause: error });
-    }
-    const generatedSamples = [];
-    let metadata = { rpcGlobalId: 0 };
-    if ("metadata" in parsedResponse) {
-      metadata = parsedResponse.metadata;
-    }
-    if ("generatedSamples" in parsedResponse) {
-      for (const generatedSample of parsedResponse.generatedSamples) {
-        const sample = {
-          generationString: generatedSample.generationString,
-          score: generatedSample.score,
-          sampleId: generatedSample.sampleId
-        };
-        if ("metadata" in generatedSample && "attributionMetadata" in generatedSample.metadata) {
-          sample.attributionMetadata = generatedSample.metadata.attributionMetadata;
-        }
-        generatedSamples.push(sample);
-      }
-    } else {
-      return null;
-    }
-    return { generatedSamples, metadata };
-  }
-  async generateCode(request, options) {
-    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      request.metadata.disable_user_content_logging = true;
-    }
-    if (this.#gcaClient.enabled()) {
-      try {
-        return await this.#gcaClient.generateCode(request, options);
-      } catch (err) {
-        throw mapError(err);
-      }
-    }
-    try {
-      const response = await makeHttpRequest(
-        {
-          service: SERVICE_NAME2,
-          path: "/v1/aida:generateCode",
-          method: "POST",
-          body: JSON.stringify(request)
-        },
-        options
-      );
-      return response;
-    } catch (err) {
-      throw mapError(err);
-    }
-  }
-};
-function convertToUserTierEnum(userTier) {
-  if (userTier) {
-    switch (userTier) {
-      case "TESTERS":
-        return 1 /* TESTERS */;
-      case "BETA":
-        return 2 /* BETA */;
-      case "PUBLIC":
-        return 3 /* PUBLIC */;
-    }
-  }
-  return 3 /* PUBLIC */;
-}
-function getClientFeatureName(feature) {
-  const name = ClientFeature[feature];
-  if (typeof name !== "string") {
-    throw new Error(`Invalid ClientFeature: ${feature}`);
-  }
-  return name;
-}
-var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.ObjectWrapper {
-  #pollTimer;
-  #aidaAvailability;
-  get aidaAvailability() {
-    return this.#aidaAvailability;
-  }
-  static instance({ forceNew } = { forceNew: false }) {
-    if (!Root3.DevToolsContext.globalInstance().has(_HostConfigTracker) || forceNew) {
-      Root3.DevToolsContext.globalInstance().set(
-        _HostConfigTracker,
-        new _HostConfigTracker()
-      );
-    }
-    return Root3.DevToolsContext.globalInstance().get(_HostConfigTracker);
-  }
-  dispose() {
-    clearTimeout(this.#pollTimer);
-    this.listeners = void 0;
-  }
-  static removeInstance() {
-    if (Root3.DevToolsContext.globalInstance().has(_HostConfigTracker)) {
-      Root3.DevToolsContext.globalInstance().get(_HostConfigTracker).dispose();
-      Root3.DevToolsContext.globalInstance().delete(_HostConfigTracker);
-    }
-  }
-  addEventListener(eventType, listener) {
-    const isFirst = !this.hasEventListeners(eventType);
-    const eventDescriptor = super.addEventListener(eventType, listener);
-    if (isFirst) {
-      clearTimeout(this.#pollTimer);
-      void this.pollAidaAvailability();
-    }
-    return eventDescriptor;
-  }
-  removeEventListener(eventType, listener) {
-    super.removeEventListener(eventType, listener);
-    if (!this.hasEventListeners(eventType)) {
-      clearTimeout(this.#pollTimer);
-    }
-  }
-  async pollAidaAvailability() {
-    this.#pollTimer = setTimeout(() => this.pollAidaAvailability(), 2e3);
-    const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = currentAidaAvailability;
-      const config = await new Promise((resolve) => InspectorFrontendHostInstance.getHostConfig(resolve));
-      Object.assign(Root3.Runtime.hostConfig, config);
-      this.dispatchEventToListeners("aidaAvailabilityChanged" /* AIDA_AVAILABILITY_CHANGED */, currentAidaAvailability);
-    }
-  }
-};
-var Events2 = /* @__PURE__ */ ((Events3) => {
-  Events3["AIDA_AVAILABILITY_CHANGED"] = "aidaAvailabilityChanged";
-  return Events3;
-})(Events2 || {});
-function isQuotaError(...inputs) {
-  return inputs.some((input) => {
-    const lower = input?.toLowerCase();
-    return lower?.includes("quota") || lower?.includes("resource_exhausted") || lower?.includes("rate_limit_exceeded");
-  });
-}
-function isPayloadTooLargeError(...inputs) {
-  return inputs.some((input) => input?.toLowerCase().includes("payload size exceeds the limit"));
-}
-function isRecord(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-function mapError(err, detail) {
-  if (err instanceof AidaClientError) {
-    return err;
-  }
-  if (err instanceof DispatchHttpRequestError) {
-    if (err.type === "ABORT" /* ABORT */) {
-      return new AidaAbortError();
-    }
-    const response = err.response;
-    if (response) {
-      if (response.statusCode === 429) {
-        return new AidaQuotaError("Server responded: quota exceeded");
-      }
-      if (response.statusCode === 403) {
-        return new AidaPermissionDeniedError("Server responded: permission denied");
-      }
-      if ("netErrorName" in response && response.netErrorName === "net::ERR_TIMED_OUT") {
-        return new AidaTimeoutError("AIDA request timed out");
-      }
-      if ("error" in response && response.error) {
-        return mapError(response.error, response.detail);
-      }
-      if (response.statusCode === 200 && err.type === "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */) {
-        return new AidaInvalidJsonResponseError("Server responded with invalid JSON", { cause: err });
-      }
-      if (response.statusCode !== 200) {
-        return new AidaUnknownError(`Request failed: ${JSON.stringify(response)}`);
-      }
-    }
-  }
-  if (typeof err === "string") {
-    if (isQuotaError(err, detail)) {
-      return new AidaQuotaError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
-    }
-    if (isPayloadTooLargeError(err, detail)) {
-      return new AidaPayloadTooLargeError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
-    }
-    return new AidaUnknownError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
-  }
-  if (err instanceof Error) {
-    return new AidaUnknownError(err.message, { cause: err });
-  }
-  if (isRecord(err)) {
-    const code = typeof err.code === "number" ? err.code : void 0;
-    const status = typeof err.status === "string" ? err.status : void 0;
-    const message = typeof err.message === "string" ? err.message : void 0;
-    const details = err.details !== void 0 ? JSON.stringify(err.details) : void 0;
-    if (code === 429 || isQuotaError(status, message, details)) {
-      return new AidaQuotaError(message ?? "Server responded: quota exceeded", { cause: err });
-    }
-    if (code === 403 || status === "PERMISSION_DENIED") {
-      return new AidaPermissionDeniedError(message ?? "Server responded: permission denied", { cause: err });
-    }
-    if (isPayloadTooLargeError(message, details)) {
-      return new AidaPayloadTooLargeError(message ?? "Server responded: payload size exceeds the limit", { cause: err });
-    }
-    return new AidaUnknownError(message ?? JSON.stringify(err), { cause: err });
-  }
-  return new AidaUnknownError(String(err));
-}
-
-// ../../front_end/core/host/GdpClient.ts
-var GdpClient_exports = {};
-__export(GdpClient_exports, {
-  EligibilityStatus: () => EligibilityStatus,
-  EmailPreference: () => EmailPreference,
-  GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK: () => GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK,
-  GdpClient: () => GdpClient,
-  SubscriptionStatus: () => SubscriptionStatus,
-  SubscriptionTier: () => SubscriptionTier,
-  getGdpProfilesEnterprisePolicy: () => getGdpProfilesEnterprisePolicy,
-  isBadgesEnabled: () => isBadgesEnabled,
-  isGdpProfilesAvailable: () => isGdpProfilesAvailable,
-  isStarterBadgeEnabled: () => isStarterBadgeEnabled
-});
-import * as Root4 from "../root/root.js";
-var SubscriptionStatus = /* @__PURE__ */ ((SubscriptionStatus2) => {
-  SubscriptionStatus2["ENABLED"] = "SUBSCRIPTION_STATE_ENABLED";
-  SubscriptionStatus2["PENDING"] = "SUBSCRIPTION_STATE_PENDING";
-  SubscriptionStatus2["CANCELED"] = "SUBSCRIPTION_STATE_CANCELED";
-  SubscriptionStatus2["REFUNDED"] = "SUBSCRIPTION_STATE_REFUNDED";
-  SubscriptionStatus2["AWAITING_FIX"] = "SUBSCRIPTION_STATE_AWAITING_FIX";
-  SubscriptionStatus2["ON_HOLD"] = "SUBSCRIPTION_STATE_ACCOUNT_ON_HOLD";
-  return SubscriptionStatus2;
-})(SubscriptionStatus || {});
-var SubscriptionTier = /* @__PURE__ */ ((SubscriptionTier2) => {
-  SubscriptionTier2["PREMIUM_ANNUAL"] = "SUBSCRIPTION_TIER_PREMIUM_ANNUAL";
-  SubscriptionTier2["PREMIUM_MONTHLY"] = "SUBSCRIPTION_TIER_PREMIUM_MONTHLY";
-  SubscriptionTier2["PRO_ANNUAL"] = "SUBSCRIPTION_TIER_PRO_ANNUAL";
-  SubscriptionTier2["PRO_MONTHLY"] = "SUBSCRIPTION_TIER_PRO_MONTHLY";
-  return SubscriptionTier2;
-})(SubscriptionTier || {});
-var EligibilityStatus = /* @__PURE__ */ ((EligibilityStatus2) => {
-  EligibilityStatus2["ELIGIBLE"] = "ELIGIBLE";
-  EligibilityStatus2["NOT_ELIGIBLE"] = "NOT_ELIGIBLE";
-  return EligibilityStatus2;
-})(EligibilityStatus || {});
-var EmailPreference = /* @__PURE__ */ ((EmailPreference2) => {
-  EmailPreference2["ENABLED"] = "ENABLED";
-  EmailPreference2["DISABLED"] = "DISABLED";
-  return EmailPreference2;
-})(EmailPreference || {});
-function normalizeBadgeName(name) {
-  return name.replace(/profiles\/[^/]+\/awards\//, "profiles/me/awards/");
-}
-var GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = "https://developers.google.com/profile/u/me";
-var ORIGIN_APPLICATION_NAME = "APPLICATION_CHROME_DEVTOOLS";
-async function makeHttpRequest2(request) {
-  if (!isGdpProfilesAvailable()) {
-    throw new DispatchHttpRequestError(
-      "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */
-    );
-  }
-  const response = await makeHttpRequest(request);
-  return response;
-}
-var SERVICE_NAME3 = "gdpService";
-var GdpClient = class _GdpClient {
-  #cachedProfilePromise;
-  #cachedEligibilityPromise;
-  static instance({ forceNew } = { forceNew: false }) {
-    if (!Root4.DevToolsContext.globalInstance().has(_GdpClient) || forceNew) {
-      Root4.DevToolsContext.globalInstance().set(
-        _GdpClient,
-        new _GdpClient()
-      );
-    }
-    return Root4.DevToolsContext.globalInstance().get(_GdpClient);
-  }
-  static removeInstance() {
-    Root4.DevToolsContext.globalInstance().delete(_GdpClient);
-  }
-  /**
-   * Fetches the user's GDP profile and eligibility status.
-   *
-   * It first attempts to fetch the profile. If the profile is not found
-   * (a `NOT_FOUND` error), this is handled gracefully by treating the profile
-   * as `null` and then proceeding to check for eligibility.
-   *
-   * @returns A promise that resolves with an object containing the `profile`
-   * and `isEligible` status, or `null` if an unexpected error occurs.
-   */
-  async getProfile() {
-    try {
-      const profile = await this.#getProfile();
-      return {
-        profile,
-        isEligible: true
-      };
-    } catch (err) {
-      if (err instanceof DispatchHttpRequestError && err.type === "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */) {
-        return null;
-      }
-    }
-    try {
-      const checkEligibilityResponse = await this.#checkEligibility();
-      return {
-        profile: null,
-        isEligible: checkEligibilityResponse.createProfile === "ELIGIBLE" /* ELIGIBLE */
-      };
-    } catch {
-      return null;
-    }
-  }
-  async #getProfile() {
-    if (this.#cachedProfilePromise) {
-      return await this.#cachedProfilePromise;
-    }
-    this.#cachedProfilePromise = makeHttpRequest2({
-      service: SERVICE_NAME3,
-      path: "/v1beta1/profile:get",
-      method: "GET"
-    }).then((profile) => {
-      this.#cachedEligibilityPromise = Promise.resolve({ createProfile: "ELIGIBLE" /* ELIGIBLE */ });
-      return profile;
-    });
-    return await this.#cachedProfilePromise;
-  }
-  async #checkEligibility() {
-    if (this.#cachedEligibilityPromise) {
-      return await this.#cachedEligibilityPromise;
-    }
-    this.#cachedEligibilityPromise = makeHttpRequest2({ service: SERVICE_NAME3, path: "/v1beta1/eligibility:check", method: "GET" });
-    return await this.#cachedEligibilityPromise;
-  }
-  /**
-   * @returns null if the request fails, the awarded badge names otherwise.
-   */
-  async getAwardedBadgeNames({ names }) {
-    try {
-      const response = await makeHttpRequest2({
-        service: SERVICE_NAME3,
-        path: "/v1beta1/profiles/me/awards:batchGet",
-        method: "GET",
-        queryParams: {
-          allowMissing: "true",
-          names
-        }
-      });
-      return new Set(response.awards?.map((award) => normalizeBadgeName(award.name)) ?? []);
-    } catch {
-      return null;
-    }
-  }
-  async createProfile({ user, emailPreference }) {
-    try {
-      const response = await makeHttpRequest2({
-        service: SERVICE_NAME3,
-        path: "/v1beta1/profiles",
-        method: "POST",
-        body: JSON.stringify({
-          user,
-          newsletter_email: emailPreference,
-          creation_origin: {
-            origin_application: ORIGIN_APPLICATION_NAME
-          }
-        })
-      });
-      this.#clearCache();
-      return response;
-    } catch {
-      return null;
-    }
-  }
-  #clearCache() {
-    this.#cachedProfilePromise = void 0;
-    this.#cachedEligibilityPromise = void 0;
-  }
-  async createAward({ name }) {
-    try {
-      const response = await makeHttpRequest2({
-        service: SERVICE_NAME3,
-        path: "/v1beta1/profiles/me/awards",
-        method: "POST",
-        body: JSON.stringify({
-          awardingUri: "devtools://devtools",
-          name
-        })
-      });
-      return response;
-    } catch {
-      return null;
-    }
-  }
-};
-function isGdpProfilesAvailable() {
-  const isBaseFeatureEnabled = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.enabled);
-  const isBrandedBuild = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enabled);
-  const isOffTheRecordProfile = Root4.Runtime.hostConfig.isOffTheRecord;
-  const isDisabledByEnterprisePolicy = getGdpProfilesEnterprisePolicy() === Root4.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
-  return isBaseFeatureEnabled && isBrandedBuild && !isOffTheRecordProfile && !isDisabledByEnterprisePolicy;
-}
-function getGdpProfilesEnterprisePolicy() {
-  return Root4.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enterprisePolicyValue ?? Root4.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
-}
-function isBadgesEnabled() {
-  const isBadgesEnabledByEnterprisePolicy = getGdpProfilesEnterprisePolicy() === Root4.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED;
-  const isBadgesEnabledByFeatureFlag = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.badgesEnabled);
-  return isBadgesEnabledByEnterprisePolicy && isBadgesEnabledByFeatureFlag;
-}
-function isStarterBadgeEnabled() {
-  return Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
-}
-
-// ../../front_end/core/host/Platform.ts
-var Platform_exports = {};
-__export(Platform_exports, {
-  fontFamily: () => fontFamily,
-  isCustomDevtoolsFrontend: () => isCustomDevtoolsFrontend,
-  isMac: () => isMac,
-  isRemoteDevtoolsFrontend: () => isRemoteDevtoolsFrontend,
-  isWin: () => isWin,
-  platform: () => platform,
-  setFontFamilyForTests: () => setFontFamilyForTests,
-  setIsCustomDevtoolsFrontendForTest: () => setIsCustomDevtoolsFrontendForTest,
-  setIsRemoteDevtoolsFrontendForTest: () => setIsRemoteDevtoolsFrontendForTest,
-  setLocationForTest: () => setLocationForTest,
-  setPlatformForTests: () => setPlatformForTests
-});
-var _platform;
-function platform() {
-  if (!_platform) {
-    _platform = InspectorFrontendHostInstance.platform();
-  }
-  return _platform;
-}
-var _isMac;
-function isMac() {
-  if (typeof _isMac === "undefined") {
-    _isMac = platform() === "mac";
-  }
-  return _isMac;
-}
-var _isWin;
-function isWin() {
-  if (typeof _isWin === "undefined") {
-    _isWin = platform() === "windows";
-  }
-  return _isWin;
-}
-function setPlatformForTests(platform2) {
-  _platform = platform2;
-  _isMac = void 0;
-  _isWin = void 0;
-}
-var _fontFamily;
-function fontFamily() {
-  if (_fontFamily) {
-    return _fontFamily;
-  }
-  switch (platform()) {
-    case "linux":
-      _fontFamily = "Roboto, Ubuntu, Arial, sans-serif";
-      break;
-    case "mac":
-      _fontFamily = "'Lucida Grande', sans-serif";
-      break;
-    case "windows":
-      _fontFamily = "'Segoe UI', Tahoma, sans-serif";
-      break;
-  }
-  return _fontFamily;
-}
-function setFontFamilyForTests(family) {
-  _fontFamily = family;
-}
-var _isRemoteDevtoolsFrontend;
-var _locationForTest;
-function setLocationForTest(url) {
-  _locationForTest = url;
-  _isRemoteDevtoolsFrontend = void 0;
-  _isCustomDevtoolsFrontend = void 0;
-}
-function isRemoteDevtoolsFrontend() {
-  if (typeof _isRemoteDevtoolsFrontend === "undefined") {
-    const location = globalThis.location;
-    const url = _locationForTest ?? (location ? location.toString() : "");
-    _isRemoteDevtoolsFrontend = url.startsWith("devtools://devtools-remote/");
-  }
-  return _isRemoteDevtoolsFrontend ?? false;
-}
-var _isCustomDevtoolsFrontend;
-function isCustomDevtoolsFrontend() {
-  if (typeof _isCustomDevtoolsFrontend === "undefined") {
-    const location = globalThis.location;
-    const url = _locationForTest ?? (location ? location.toString() : "");
-    _isCustomDevtoolsFrontend = url.startsWith("devtools://devtools/custom/");
-  }
-  return _isCustomDevtoolsFrontend ?? false;
-}
-function setIsRemoteDevtoolsFrontendForTest(isRemote) {
-  _isRemoteDevtoolsFrontend = isRemote;
-}
-function setIsCustomDevtoolsFrontendForTest(isCustom) {
-  _isCustomDevtoolsFrontend = isCustom;
-}
-
 // ../../front_end/core/host/UserMetrics.ts
 var UserMetrics_exports = {};
 __export(UserMetrics_exports, {
   Action: () => Action2,
+  AiClientRequestResult: () => AiClientRequestResult2,
   AnimationsPlaybackRate: () => AnimationsPlaybackRate2,
   BadgeType: () => BadgeType2,
   BuiltInAiAvailability: () => BuiltInAiAvailability2,
@@ -2599,7 +1104,7 @@ __export(UserMetrics_exports, {
   IssueResourceOpened: () => IssueResourceOpened2,
   KeybindSetSettings: () => KeybindSetSettings2,
   KeyboardShortcutAction: () => KeyboardShortcutAction2,
-  Language: () => Language3,
+  Language: () => Language2,
   LighthouseCategoryUsed: () => LighthouseCategoryUsed2,
   LighthouseModeRun: () => LighthouseModeRun2,
   ManifestSectionCodes: () => ManifestSectionCodes2,
@@ -2619,9 +1124,10 @@ __export(UserMetrics_exports, {
   SyncSetting: () => SyncSetting2,
   TimelineNavigationSetting: () => TimelineNavigationSetting2,
   UserMetrics: () => UserMetrics,
-  resendRequestType: () => resendRequestType
+  resendRequestType: () => resendRequestType,
+  userMetrics: () => userMetrics
 });
-import * as Common5 from "../common/common.js";
+import * as Common4 from "../common/common.js";
 
 // ../../front_end/core/host/UserMetricsEnums.ts
 var Action = /* @__PURE__ */ ((Action3) => {
@@ -3241,7 +1747,7 @@ var DeveloperResourceScheme = /* @__PURE__ */ ((DeveloperResourceScheme3) => {
   DeveloperResourceScheme3[DeveloperResourceScheme3["MAX_VALUE"] = 9] = "MAX_VALUE";
   return DeveloperResourceScheme3;
 })(DeveloperResourceScheme || {});
-var Language2 = /* @__PURE__ */ ((Language4) => {
+var Language = /* @__PURE__ */ ((Language4) => {
   Language4[Language4["af"] = 1] = "af";
   Language4[Language4["am"] = 2] = "am";
   Language4[Language4["ar"] = 3] = "ar";
@@ -3326,7 +1832,7 @@ var Language2 = /* @__PURE__ */ ((Language4) => {
   Language4[Language4["zu"] = 82] = "zu";
   Language4[Language4["MAX_VALUE"] = 83] = "MAX_VALUE";
   return Language4;
-})(Language2 || {});
+})(Language || {});
 var SyncSetting = /* @__PURE__ */ ((SyncSetting3) => {
   SyncSetting3[SyncSetting3["CHROME_SYNC_DISABLED"] = 1] = "CHROME_SYNC_DISABLED";
   SyncSetting3[SyncSetting3["CHROME_SYNC_SETTINGS_DISABLED"] = 2] = "CHROME_SYNC_SETTINGS_DISABLED";
@@ -3520,6 +2026,27 @@ var ResendRequestType = /* @__PURE__ */ ((ResendRequestType3) => {
   ResendRequestType3[ResendRequestType3["MAX_VALUE"] = 16] = "MAX_VALUE";
   return ResendRequestType3;
 })(ResendRequestType || {});
+var AiClientRequestResult = /* @__PURE__ */ ((AiClientRequestResult3) => {
+  AiClientRequestResult3[AiClientRequestResult3["SUCCESS"] = 0] = "SUCCESS";
+  AiClientRequestResult3[AiClientRequestResult3["ABORTED"] = 1] = "ABORTED";
+  AiClientRequestResult3[AiClientRequestResult3["VALIDATION_FAILED"] = 2] = "VALIDATION_FAILED";
+  AiClientRequestResult3[AiClientRequestResult3["OAUTH_TOKEN_ERROR"] = 3] = "OAUTH_TOKEN_ERROR";
+  AiClientRequestResult3[AiClientRequestResult3["NETWORK_TIMEOUT"] = 4] = "NETWORK_TIMEOUT";
+  AiClientRequestResult3[AiClientRequestResult3["NETWORK_ERROR"] = 5] = "NETWORK_ERROR";
+  AiClientRequestResult3[AiClientRequestResult3["HTTP_400_PAYLOAD_TOO_LARGE"] = 6] = "HTTP_400_PAYLOAD_TOO_LARGE";
+  AiClientRequestResult3[AiClientRequestResult3["HTTP_400_INVALID_ARGUMENT"] = 7] = "HTTP_400_INVALID_ARGUMENT";
+  AiClientRequestResult3[AiClientRequestResult3["HTTP_401_UNAUTHORIZED"] = 8] = "HTTP_401_UNAUTHORIZED";
+  AiClientRequestResult3[AiClientRequestResult3["HTTP_403_PERMISSION_DENIED"] = 9] = "HTTP_403_PERMISSION_DENIED";
+  AiClientRequestResult3[AiClientRequestResult3["HTTP_404_NOT_FOUND"] = 10] = "HTTP_404_NOT_FOUND";
+  AiClientRequestResult3[AiClientRequestResult3["HTTP_429_QUOTA_EXCEEDED"] = 11] = "HTTP_429_QUOTA_EXCEEDED";
+  AiClientRequestResult3[AiClientRequestResult3["HTTP_5XX_SERVER_ERROR"] = 12] = "HTTP_5XX_SERVER_ERROR";
+  AiClientRequestResult3[AiClientRequestResult3["STREAM_CHUNK_PARSE_ERROR"] = 13] = "STREAM_CHUNK_PARSE_ERROR";
+  AiClientRequestResult3[AiClientRequestResult3["INVALID_JSON_RESPONSE"] = 14] = "INVALID_JSON_RESPONSE";
+  AiClientRequestResult3[AiClientRequestResult3["BLOCKED_BY_SAFETY_OR_RECITATION"] = 15] = "BLOCKED_BY_SAFETY_OR_RECITATION";
+  AiClientRequestResult3[AiClientRequestResult3["UNKNOWN_ERROR"] = 16] = "UNKNOWN_ERROR";
+  AiClientRequestResult3[AiClientRequestResult3["MAX_VALUE"] = 17] = "MAX_VALUE";
+  return AiClientRequestResult3;
+})(AiClientRequestResult || {});
 
 // ../../front_end/core/host/UserMetrics.ts
 var UserMetrics = class {
@@ -3682,14 +2209,14 @@ var UserMetrics = class {
     );
   }
   language(language) {
-    const languageCode = Language3[language];
+    const languageCode = Language2[language];
     if (languageCode === void 0) {
       return;
     }
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
       "DevTools.Language" /* Language */,
       languageCode,
-      Language3.MAX_VALUE
+      Language2.MAX_VALUE
     );
   }
   syncSetting(devtoolsSyncSettingEnabled) {
@@ -3861,6 +2388,23 @@ var UserMetrics = class {
   commentSize(characters) {
     InspectorFrontendHostInstance.recordCountHistogram("DevTools.Comments.CommentSize", characters, 1, 1e5, 50);
   }
+  /**
+   * Records the outcome of an AI request to the aggregate histogram and optionally to a surface-specific slice.
+   */
+  aiClientRequestResult(result, surfaceHistogram) {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.AiClient.RequestResult" /* AiClientRequestResult */,
+      result,
+      AiClientRequestResult2.MAX_VALUE
+    );
+    if (surfaceHistogram !== void 0) {
+      InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        surfaceHistogram,
+        result,
+        AiClientRequestResult2.MAX_VALUE
+      );
+    }
+  }
 };
 function createDynamicEnumProxy(enumName, fallbackEnum) {
   return new Proxy(fallbackEnum, {
@@ -3939,7 +2483,7 @@ var DeveloperResourceScheme2 = createDynamicEnumProxy(
   "DeveloperResourceScheme",
   DeveloperResourceScheme
 );
-var Language3 = createDynamicEnumProxy("Language", Language2);
+var Language2 = createDynamicEnumProxy("Language", Language);
 var SyncSetting2 = createDynamicEnumProxy("SyncSetting", SyncSetting);
 var RecordingToggled2 = createDynamicEnumProxy("RecordingToggled", RecordingToggled);
 var RecordingAssertion2 = createDynamicEnumProxy("RecordingAssertion", RecordingAssertion);
@@ -3968,32 +2512,1802 @@ var TimelineNavigationSetting2 = createDynamicEnumProxy(
 );
 var BuiltInAiAvailability2 = createDynamicEnumProxy("BuiltInAiAvailability", BuiltInAiAvailability);
 var ResendRequestType2 = createDynamicEnumProxy("ResendRequestType", ResendRequestType);
+var AiClientRequestResult2 = createDynamicEnumProxy("AiClientRequestResult", AiClientRequestResult);
+var userMetrics = new UserMetrics();
 var resendRequestTypeMap = /* @__PURE__ */ new Map([
-  [Common5.ResourceType.resourceTypes.XHR, "XHR"],
-  [Common5.ResourceType.resourceTypes.Fetch, "FETCH"],
-  [Common5.ResourceType.resourceTypes.Script, "SCRIPT"],
-  [Common5.ResourceType.resourceTypes.Stylesheet, "STYLESHEET"],
-  [Common5.ResourceType.resourceTypes.Image, "IMAGE"],
-  [Common5.ResourceType.resourceTypes.Media, "MEDIA"],
-  [Common5.ResourceType.resourceTypes.Font, "FONT"],
-  [Common5.ResourceType.resourceTypes.Wasm, "WASM"],
-  [Common5.ResourceType.resourceTypes.Manifest, "MANIFEST"],
-  [Common5.ResourceType.resourceTypes.TextTrack, "TEXT_TRACK"],
-  [Common5.ResourceType.resourceTypes.SourceMapScript, "SOURCE_MAP_SCRIPT"],
-  [Common5.ResourceType.resourceTypes.SourceMapStyleSheet, "SOURCE_MAP_STYLE_SHEET"],
-  [Common5.ResourceType.resourceTypes.Document, "DOCUMENT"],
-  [Common5.ResourceType.resourceTypes.Prefetch, "PREFETCH"],
-  [Common5.ResourceType.resourceTypes.Ping, "PING"]
+  [Common4.ResourceType.resourceTypes.XHR, "XHR"],
+  [Common4.ResourceType.resourceTypes.Fetch, "FETCH"],
+  [Common4.ResourceType.resourceTypes.Script, "SCRIPT"],
+  [Common4.ResourceType.resourceTypes.Stylesheet, "STYLESHEET"],
+  [Common4.ResourceType.resourceTypes.Image, "IMAGE"],
+  [Common4.ResourceType.resourceTypes.Media, "MEDIA"],
+  [Common4.ResourceType.resourceTypes.Font, "FONT"],
+  [Common4.ResourceType.resourceTypes.Wasm, "WASM"],
+  [Common4.ResourceType.resourceTypes.Manifest, "MANIFEST"],
+  [Common4.ResourceType.resourceTypes.TextTrack, "TEXT_TRACK"],
+  [Common4.ResourceType.resourceTypes.SourceMapScript, "SOURCE_MAP_SCRIPT"],
+  [Common4.ResourceType.resourceTypes.SourceMapStyleSheet, "SOURCE_MAP_STYLE_SHEET"],
+  [Common4.ResourceType.resourceTypes.Document, "DOCUMENT"],
+  [Common4.ResourceType.resourceTypes.Prefetch, "PREFETCH"],
+  [Common4.ResourceType.resourceTypes.Ping, "PING"]
 ]);
 function resendRequestType(resourceType) {
   const key = resendRequestTypeMap.get(resourceType);
   return (key ? ResendRequestType2[key] : void 0) ?? ResendRequestType2.OTHER;
 }
 
+// ../../front_end/core/host/AidaErrors.ts
+var AidaClientError = class extends Error {
+  name = "AidaClientError";
+};
+var AidaUnknownError = class extends AidaClientError {
+  name = "AidaUnknownError";
+};
+var AidaAbortError = class extends AidaClientError {
+  name = "AidaAbortError";
+};
+var AidaBlockError = class extends AidaClientError {
+  name = "AidaBlockError";
+};
+var AidaQuotaError = class extends AidaClientError {
+  name = "AidaQuotaError";
+};
+var AidaPayloadTooLargeError = class extends AidaClientError {
+  name = "AidaPayloadTooLargeError";
+};
+var AidaPermissionDeniedError = class extends AidaClientError {
+  name = "AidaPermissionDeniedError";
+};
+var AidaTimeoutError = class extends AidaClientError {
+  name = "AidaTimeoutError";
+};
+var AidaInvalidJsonResponseError = class extends AidaClientError {
+  name = "AidaInvalidJsonResponseError";
+};
+var StreamChunkParseError = class extends Error {
+  name = "StreamChunkParseError";
+};
+function isQuotaError(...inputs) {
+  return inputs.some((input) => {
+    const lower = input?.toLowerCase();
+    return lower?.includes("quota") || lower?.includes("resource_exhausted") || lower?.includes("rate_limit_exceeded");
+  });
+}
+function isPayloadTooLargeError(...inputs) {
+  return inputs.some((input) => input?.toLowerCase().includes("payload size exceeds the limit"));
+}
+function isRecord(value) {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+}
+function mapError(err, detail) {
+  if (err instanceof AidaClientError) {
+    return err;
+  }
+  if (err instanceof DispatchHttpRequestError) {
+    if (err.type === "ABORT" /* ABORT */) {
+      return new AidaAbortError();
+    }
+    const response = err.response;
+    if (response) {
+      if (response.statusCode === 429) {
+        return new AidaQuotaError("Server responded: quota exceeded");
+      }
+      if (response.statusCode === 403) {
+        return new AidaPermissionDeniedError("Server responded: permission denied");
+      }
+      if ("netErrorName" in response && response.netErrorName === "net::ERR_TIMED_OUT") {
+        return new AidaTimeoutError("AIDA request timed out");
+      }
+      if ("error" in response && response.error) {
+        const mapped = mapError(response.error, response.detail);
+        if (mapped instanceof AidaUnknownError && mapped.cause === void 0) {
+          return new AidaUnknownError(mapped.message, { cause: err });
+        }
+        return mapped;
+      }
+      if (response.statusCode === 200 && err.type === "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */) {
+        return new AidaInvalidJsonResponseError("Server responded with invalid JSON", { cause: err });
+      }
+      if (response.statusCode !== 200) {
+        return new AidaUnknownError(`Request failed: ${JSON.stringify(response)}`, { cause: err });
+      }
+    }
+  }
+  if (typeof err === "string") {
+    if (isQuotaError(err, detail)) {
+      return new AidaQuotaError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
+    }
+    if (isPayloadTooLargeError(err, detail)) {
+      return new AidaPayloadTooLargeError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
+    }
+    return new AidaUnknownError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
+  }
+  if (err instanceof Error) {
+    return new AidaUnknownError(err.message, { cause: err });
+  }
+  if (isRecord(err)) {
+    const code = typeof err.code === "number" ? err.code : void 0;
+    const status = typeof err.status === "string" ? err.status : void 0;
+    const message = typeof err.message === "string" ? err.message : void 0;
+    const details = err.details !== void 0 ? JSON.stringify(err.details) : void 0;
+    if (code === 429 || isQuotaError(status, message, details)) {
+      return new AidaQuotaError(message ?? "Server responded: quota exceeded", { cause: err });
+    }
+    if (code === 403 || status === "PERMISSION_DENIED") {
+      return new AidaPermissionDeniedError(message ?? "Server responded: permission denied", { cause: err });
+    }
+    if (isPayloadTooLargeError(message, details)) {
+      return new AidaPayloadTooLargeError(message ?? "Server responded: payload size exceeds the limit", { cause: err });
+    }
+    return new AidaUnknownError(message ?? JSON.stringify(err), { cause: err });
+  }
+  return new AidaUnknownError(String(err));
+}
+var VALIDATION_ERROR_MESSAGES = /* @__PURE__ */ new Set([
+  "AIDA request was blocked",
+  "Disallowed path or method",
+  "Request validation failed",
+  "Service not found"
+]);
+var OAUTH_TOKEN_ERROR_MESSAGES = /* @__PURE__ */ new Set([
+  "Cannot get OAuth credentials",
+  "IdentityManager is not available",
+  "Token fetch error"
+]);
+function extractStructuredError(jsonText) {
+  try {
+    const parsed = JSON.parse(jsonText);
+    const candidate = Array.isArray(parsed) && parsed.length > 0 ? parsed[0] : parsed;
+    if (isRecord(candidate)) {
+      if (isRecord(candidate.error)) {
+        return candidate.error;
+      }
+      if (typeof candidate.code === "number" || typeof candidate.status === "string") {
+        return candidate;
+      }
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+function safeJsonStringify(value) {
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return void 0;
+  }
+}
+function classifyStructuredError(err) {
+  const code = typeof err.code === "number" ? err.code : void 0;
+  const status = typeof err.status === "string" ? err.status : void 0;
+  const message = typeof err.message === "string" ? err.message : void 0;
+  const details = err.details !== void 0 ? safeJsonStringify(err.details) : void 0;
+  if (code === 429 || isQuotaError(status, message, details)) {
+    return AiClientRequestResult2.HTTP_429_QUOTA_EXCEEDED;
+  }
+  if (isPayloadTooLargeError(message, details)) {
+    return AiClientRequestResult2.HTTP_400_PAYLOAD_TOO_LARGE;
+  }
+  if (code === 400 || status === "INVALID_ARGUMENT") {
+    return AiClientRequestResult2.HTTP_400_INVALID_ARGUMENT;
+  }
+  if (code === 401 || status === "UNAUTHENTICATED") {
+    return AiClientRequestResult2.HTTP_401_UNAUTHORIZED;
+  }
+  if (code === 403 || status === "PERMISSION_DENIED") {
+    return AiClientRequestResult2.HTTP_403_PERMISSION_DENIED;
+  }
+  if (code === 404 || status === "NOT_FOUND") {
+    return AiClientRequestResult2.HTTP_404_NOT_FOUND;
+  }
+  if (typeof code === "number" && code >= 500 && code < 600 || status === "INTERNAL" || status === "UNAVAILABLE" || status === "DEADLINE_EXCEEDED") {
+    return AiClientRequestResult2.HTTP_5XX_SERVER_ERROR;
+  }
+  return AiClientRequestResult2.UNKNOWN_ERROR;
+}
+function classifyRequestError(err, detail) {
+  return classifyRequestErrorInternal(err, detail, /* @__PURE__ */ new Set());
+}
+function classifyRequestErrorInternal(err, detail, seen) {
+  if (typeof err === "object" && err !== null) {
+    if (seen.has(err)) {
+      return AiClientRequestResult2.UNKNOWN_ERROR;
+    }
+    seen.add(err);
+  }
+  if (err instanceof AidaAbortError) {
+    return AiClientRequestResult2.ABORTED;
+  }
+  if (err instanceof AidaBlockError) {
+    return AiClientRequestResult2.BLOCKED_BY_SAFETY_OR_RECITATION;
+  }
+  if (err instanceof AidaInvalidJsonResponseError) {
+    return AiClientRequestResult2.INVALID_JSON_RESPONSE;
+  }
+  if (err instanceof AidaQuotaError) {
+    return AiClientRequestResult2.HTTP_429_QUOTA_EXCEEDED;
+  }
+  if (err instanceof AidaPermissionDeniedError) {
+    return AiClientRequestResult2.HTTP_403_PERMISSION_DENIED;
+  }
+  if (err instanceof AidaPayloadTooLargeError) {
+    return AiClientRequestResult2.HTTP_400_PAYLOAD_TOO_LARGE;
+  }
+  if (err instanceof AidaTimeoutError) {
+    return AiClientRequestResult2.NETWORK_TIMEOUT;
+  }
+  if (err instanceof AidaUnknownError && err.cause !== void 0) {
+    return classifyRequestErrorInternal(err.cause, void 0, seen);
+  }
+  if (err instanceof StreamChunkParseError) {
+    return AiClientRequestResult2.STREAM_CHUNK_PARSE_ERROR;
+  }
+  if (err instanceof DispatchHttpRequestError) {
+    if (err.type === "ABORT" /* ABORT */) {
+      return AiClientRequestResult2.ABORTED;
+    }
+    if (err.type === "NOT_FOUND" /* NOT_FOUND */) {
+      return AiClientRequestResult2.HTTP_404_NOT_FOUND;
+    }
+    const response = err.response;
+    if (response) {
+      if ("netErrorName" in response && response.netErrorName === "net::ERR_TIMED_OUT") {
+        return AiClientRequestResult2.NETWORK_TIMEOUT;
+      }
+      if ("netError" in response && typeof response.netError === "number" && response.netError !== 0 || "netErrorName" in response && Boolean(response.netErrorName) && response.netErrorName !== "net::OK") {
+        return AiClientRequestResult2.NETWORK_ERROR;
+      }
+      if (response.statusCode === 200 && err.type === "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */) {
+        return AiClientRequestResult2.INVALID_JSON_RESPONSE;
+      }
+      if ("error" in response && response.error) {
+        const structuredOrStringResult = classifyRequestErrorInternal(response.error, response.detail, seen);
+        if (structuredOrStringResult !== AiClientRequestResult2.UNKNOWN_ERROR) {
+          return structuredOrStringResult;
+        }
+      }
+      if (response.statusCode === -1) {
+        return AiClientRequestResult2.NETWORK_ERROR;
+      }
+      if (response.statusCode === 400) {
+        return AiClientRequestResult2.HTTP_400_INVALID_ARGUMENT;
+      }
+      if (response.statusCode === 401) {
+        return AiClientRequestResult2.HTTP_401_UNAUTHORIZED;
+      }
+      if (response.statusCode === 403) {
+        return AiClientRequestResult2.HTTP_403_PERMISSION_DENIED;
+      }
+      if (response.statusCode === 404) {
+        return AiClientRequestResult2.HTTP_404_NOT_FOUND;
+      }
+      if (response.statusCode === 429) {
+        return AiClientRequestResult2.HTTP_429_QUOTA_EXCEEDED;
+      }
+      if (typeof response.statusCode === "number" && response.statusCode >= 500 && response.statusCode < 600) {
+        return AiClientRequestResult2.HTTP_5XX_SERVER_ERROR;
+      }
+    }
+    return AiClientRequestResult2.UNKNOWN_ERROR;
+  }
+  if (typeof err === "string") {
+    if (VALIDATION_ERROR_MESSAGES.has(err)) {
+      return AiClientRequestResult2.VALIDATION_FAILED;
+    }
+    if (OAUTH_TOKEN_ERROR_MESSAGES.has(err)) {
+      return AiClientRequestResult2.OAUTH_TOKEN_ERROR;
+    }
+    if (isQuotaError(err, detail)) {
+      return AiClientRequestResult2.HTTP_429_QUOTA_EXCEEDED;
+    }
+    if (isPayloadTooLargeError(err, detail)) {
+      return AiClientRequestResult2.HTTP_400_PAYLOAD_TOO_LARGE;
+    }
+    if (detail) {
+      const structuredError = extractStructuredError(detail);
+      if (structuredError) {
+        return classifyStructuredError(structuredError);
+      }
+    }
+    return AiClientRequestResult2.UNKNOWN_ERROR;
+  }
+  if (err instanceof Error) {
+    if (err.message.startsWith("Unsupported client feature for GCA conversation:")) {
+      return AiClientRequestResult2.VALIDATION_FAILED;
+    }
+    return AiClientRequestResult2.UNKNOWN_ERROR;
+  }
+  if (isRecord(err)) {
+    return classifyStructuredError(err);
+  }
+  return AiClientRequestResult2.UNKNOWN_ERROR;
+}
+
+// ../../front_end/core/host/AidaGcaTranslation.ts
+var AidaGcaTranslation_exports = {};
+__export(AidaGcaTranslation_exports, {
+  aidaCompletionRequestToGcaRequest: () => aidaCompletionRequestToGcaRequest,
+  aidaDoConversationRequestToGcaRequest: () => aidaDoConversationRequestToGcaRequest,
+  aidaEventToGcaTelemetryRequest: () => aidaEventToGcaTelemetryRequest,
+  aidaGenerateCodeRequestToGcaRequest: () => aidaGenerateCodeRequestToGcaRequest,
+  gcaChunkResponseToAidaChunkResponse: () => gcaChunkResponseToAidaChunkResponse,
+  gcaResponseToAidaCompletionResponse: () => gcaResponseToAidaCompletionResponse,
+  gcaResponseToAidaDoConversationResponse: () => gcaResponseToAidaDoConversationResponse,
+  gcaResponseToAidaGenerateCodeResponse: () => gcaResponseToAidaGenerateCodeResponse
+});
+
+// ../../front_end/core/host/GcaTypes.ts
+var GcaTypes_exports = {};
+__export(GcaTypes_exports, {
+  BlockReason: () => BlockReason,
+  FinishReason: () => FinishReason,
+  HarmBlockMethod: () => HarmBlockMethod,
+  HarmBlockThreshold: () => HarmBlockThreshold,
+  HarmCategory: () => HarmCategory,
+  HarmProbability: () => HarmProbability,
+  InclusionReason: () => InclusionReason,
+  InteractionType: () => InteractionType,
+  Language: () => Language3,
+  Method: () => Method,
+  Mode: () => Mode,
+  Outcome: () => Outcome,
+  SuggestionStatus: () => SuggestionStatus,
+  Type: () => Type
+});
+var Type = /* @__PURE__ */ ((Type2) => {
+  Type2[Type2["TYPE_UNSPECIFIED"] = 0] = "TYPE_UNSPECIFIED";
+  Type2[Type2["STRING"] = 1] = "STRING";
+  Type2[Type2["NUMBER"] = 2] = "NUMBER";
+  Type2[Type2["INTEGER"] = 3] = "INTEGER";
+  Type2[Type2["BOOLEAN"] = 4] = "BOOLEAN";
+  Type2[Type2["ARRAY"] = 5] = "ARRAY";
+  Type2[Type2["OBJECT"] = 6] = "OBJECT";
+  Type2[Type2["NULL"] = 7] = "NULL";
+  return Type2;
+})(Type || {});
+var HarmCategory = /* @__PURE__ */ ((HarmCategory2) => {
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_UNSPECIFIED"] = 0] = "HARM_CATEGORY_UNSPECIFIED";
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_HARASSMENT"] = 7] = "HARM_CATEGORY_HARASSMENT";
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_HATE_SPEECH"] = 8] = "HARM_CATEGORY_HATE_SPEECH";
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_SEXUALLY_EXPLICIT"] = 9] = "HARM_CATEGORY_SEXUALLY_EXPLICIT";
+  HarmCategory2[HarmCategory2["HARM_CATEGORY_DANGEROUS_CONTENT"] = 10] = "HARM_CATEGORY_DANGEROUS_CONTENT";
+  return HarmCategory2;
+})(HarmCategory || {});
+var HarmProbability = /* @__PURE__ */ ((HarmProbability2) => {
+  HarmProbability2[HarmProbability2["HARM_PROBABILITY_UNSPECIFIED"] = 0] = "HARM_PROBABILITY_UNSPECIFIED";
+  HarmProbability2[HarmProbability2["NEGLIGIBLE"] = 1] = "NEGLIGIBLE";
+  HarmProbability2[HarmProbability2["LOW"] = 2] = "LOW";
+  HarmProbability2[HarmProbability2["MEDIUM"] = 3] = "MEDIUM";
+  HarmProbability2[HarmProbability2["HIGH"] = 4] = "HIGH";
+  return HarmProbability2;
+})(HarmProbability || {});
+var HarmBlockThreshold = /* @__PURE__ */ ((HarmBlockThreshold2) => {
+  HarmBlockThreshold2[HarmBlockThreshold2["HARM_BLOCK_THRESHOLD_UNSPECIFIED"] = 0] = "HARM_BLOCK_THRESHOLD_UNSPECIFIED";
+  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_LOW_AND_ABOVE"] = 1] = "BLOCK_LOW_AND_ABOVE";
+  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_MEDIUM_AND_ABOVE"] = 2] = "BLOCK_MEDIUM_AND_ABOVE";
+  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_ONLY_HIGH"] = 3] = "BLOCK_ONLY_HIGH";
+  HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_NONE"] = 4] = "BLOCK_NONE";
+  HarmBlockThreshold2[HarmBlockThreshold2["OFF"] = 5] = "OFF";
+  return HarmBlockThreshold2;
+})(HarmBlockThreshold || {});
+var HarmBlockMethod = /* @__PURE__ */ ((HarmBlockMethod2) => {
+  HarmBlockMethod2[HarmBlockMethod2["HARM_BLOCK_METHOD_UNSPECIFIED"] = 0] = "HARM_BLOCK_METHOD_UNSPECIFIED";
+  HarmBlockMethod2[HarmBlockMethod2["SEVERITY"] = 1] = "SEVERITY";
+  HarmBlockMethod2[HarmBlockMethod2["PROBABILITY"] = 2] = "PROBABILITY";
+  return HarmBlockMethod2;
+})(HarmBlockMethod || {});
+var FinishReason = /* @__PURE__ */ ((FinishReason2) => {
+  FinishReason2[FinishReason2["FINISH_REASON_UNSPECIFIED"] = 0] = "FINISH_REASON_UNSPECIFIED";
+  FinishReason2[FinishReason2["STOP"] = 1] = "STOP";
+  FinishReason2[FinishReason2["MAX_TOKENS"] = 2] = "MAX_TOKENS";
+  FinishReason2[FinishReason2["SAFETY"] = 3] = "SAFETY";
+  FinishReason2[FinishReason2["RECITATION"] = 4] = "RECITATION";
+  FinishReason2[FinishReason2["OTHER"] = 5] = "OTHER";
+  FinishReason2[FinishReason2["BLOCKLIST"] = 6] = "BLOCKLIST";
+  FinishReason2[FinishReason2["PROHIBITED_CONTENT"] = 7] = "PROHIBITED_CONTENT";
+  FinishReason2[FinishReason2["SPII"] = 8] = "SPII";
+  FinishReason2[FinishReason2["MALFORMED_FUNCTION_CALL"] = 9] = "MALFORMED_FUNCTION_CALL";
+  FinishReason2[FinishReason2["IMAGE_SAFETY"] = 10] = "IMAGE_SAFETY";
+  FinishReason2[FinishReason2["IMAGE_PROHIBITED_CONTENT"] = 11] = "IMAGE_PROHIBITED_CONTENT";
+  FinishReason2[FinishReason2["IMAGE_RECITATION"] = 12] = "IMAGE_RECITATION";
+  FinishReason2[FinishReason2["IMAGE_OTHER"] = 13] = "IMAGE_OTHER";
+  FinishReason2[FinishReason2["UNEXPECTED_TOOL_CALL"] = 14] = "UNEXPECTED_TOOL_CALL";
+  FinishReason2[FinishReason2["NO_IMAGE"] = 15] = "NO_IMAGE";
+  return FinishReason2;
+})(FinishReason || {});
+var Method = /* @__PURE__ */ ((Method2) => {
+  Method2[Method2["METHOD_UNSPECIFIED"] = 0] = "METHOD_UNSPECIFIED";
+  Method2[Method2["GENERATE_CODE"] = 1] = "GENERATE_CODE";
+  Method2[Method2["COMPLETE_CODE"] = 2] = "COMPLETE_CODE";
+  Method2[Method2["TRANSFORM_CODE"] = 3] = "TRANSFORM_CODE";
+  Method2[Method2["CHAT"] = 4] = "CHAT";
+  return Method2;
+})(Method || {});
+var SuggestionStatus = /* @__PURE__ */ ((SuggestionStatus2) => {
+  SuggestionStatus2[SuggestionStatus2["STATUS_UNSPECIFIED"] = 0] = "STATUS_UNSPECIFIED";
+  SuggestionStatus2[SuggestionStatus2["NO_ERROR"] = 1] = "NO_ERROR";
+  SuggestionStatus2[SuggestionStatus2["ERROR"] = 2] = "ERROR";
+  SuggestionStatus2[SuggestionStatus2["CANCELLED"] = 3] = "CANCELLED";
+  SuggestionStatus2[SuggestionStatus2["EMPTY"] = 4] = "EMPTY";
+  return SuggestionStatus2;
+})(SuggestionStatus || {});
+var InteractionType = /* @__PURE__ */ ((InteractionType2) => {
+  InteractionType2[InteractionType2["INTERACTION_TYPE_UNSPECIFIED"] = 0] = "INTERACTION_TYPE_UNSPECIFIED";
+  InteractionType2[InteractionType2["THUMBS_UP"] = 1] = "THUMBS_UP";
+  InteractionType2[InteractionType2["THUMBS_DOWN"] = 2] = "THUMBS_DOWN";
+  InteractionType2[InteractionType2["ACCEPT"] = 3] = "ACCEPT";
+  InteractionType2[InteractionType2["ACCEPT_PARTIALLY"] = 4] = "ACCEPT_PARTIALLY";
+  InteractionType2[InteractionType2["REJECT"] = 5] = "REJECT";
+  InteractionType2[InteractionType2["COPY"] = 6] = "COPY";
+  return InteractionType2;
+})(InteractionType || {});
+var InclusionReason = /* @__PURE__ */ ((InclusionReason2) => {
+  InclusionReason2[InclusionReason2["INCLUSION_REASON_UNSPECIFIED"] = 0] = "INCLUSION_REASON_UNSPECIFIED";
+  InclusionReason2[InclusionReason2["ACTIVE"] = 1] = "ACTIVE";
+  InclusionReason2[InclusionReason2["OPEN"] = 2] = "OPEN";
+  InclusionReason2[InclusionReason2["RECENTLY_CLOSED"] = 3] = "RECENTLY_CLOSED";
+  InclusionReason2[InclusionReason2["RECENTLY_EDITED"] = 4] = "RECENTLY_EDITED";
+  InclusionReason2[InclusionReason2["COLOCATED"] = 5] = "COLOCATED";
+  InclusionReason2[InclusionReason2["RELATED"] = 6] = "RELATED";
+  InclusionReason2[InclusionReason2["USER_SELECTED"] = 7] = "USER_SELECTED";
+  return InclusionReason2;
+})(InclusionReason || {});
+var BlockReason = /* @__PURE__ */ ((BlockReason2) => {
+  BlockReason2[BlockReason2["BLOCKED_REASON_UNSPECIFIED"] = 0] = "BLOCKED_REASON_UNSPECIFIED";
+  BlockReason2[BlockReason2["SAFETY"] = 1] = "SAFETY";
+  BlockReason2[BlockReason2["OTHER"] = 2] = "OTHER";
+  BlockReason2[BlockReason2["BLOCKLIST"] = 3] = "BLOCKLIST";
+  BlockReason2[BlockReason2["PROHIBITED_CONTENT"] = 4] = "PROHIBITED_CONTENT";
+  BlockReason2[BlockReason2["IMAGE_SAFETY"] = 5] = "IMAGE_SAFETY";
+  return BlockReason2;
+})(BlockReason || {});
+var Language3 = /* @__PURE__ */ ((Language4) => {
+  Language4[Language4["LANGUAGE_UNSPECIFIED"] = 0] = "LANGUAGE_UNSPECIFIED";
+  Language4[Language4["PYTHON"] = 1] = "PYTHON";
+  return Language4;
+})(Language3 || {});
+var Outcome = /* @__PURE__ */ ((Outcome2) => {
+  Outcome2[Outcome2["OUTCOME_UNSPECIFIED"] = 0] = "OUTCOME_UNSPECIFIED";
+  Outcome2[Outcome2["OUTCOME_OK"] = 1] = "OUTCOME_OK";
+  Outcome2[Outcome2["OUTCOME_FAILED"] = 2] = "OUTCOME_FAILED";
+  Outcome2[Outcome2["OUTCOME_DEADLINE_EXCEEDED"] = 3] = "OUTCOME_DEADLINE_EXCEEDED";
+  return Outcome2;
+})(Outcome || {});
+var Mode = /* @__PURE__ */ ((Mode2) => {
+  Mode2[Mode2["MODE_UNSPECIFIED"] = 0] = "MODE_UNSPECIFIED";
+  Mode2[Mode2["AUTO"] = 1] = "AUTO";
+  Mode2[Mode2["ANY"] = 2] = "ANY";
+  Mode2[Mode2["NONE"] = 3] = "NONE";
+  return Mode2;
+})(Mode || {});
+
+// ../../front_end/core/host/AidaGcaTranslation.ts
+function createBaseGcaRequest(request, contents, experience) {
+  const gcaRequest = { contents, aicode: { experience } };
+  mapCommonAidaRequestFields(request, gcaRequest);
+  buildLabels(request, gcaRequest);
+  if ("preamble" in request && request.preamble) {
+    gcaRequest.systemInstruction = {
+      role: "user",
+      parts: [{ text: request.preamble }]
+    };
+  }
+  return gcaRequest;
+}
+var CLIENT_FEATURE_TO_EXPERIENCE = {
+  [1 /* CHROME_CONSOLE_INSIGHTS */]: "chat_console_insights",
+  [2 /* CHROME_STYLING_AGENT */]: "chat_freestyler",
+  [7 /* CHROME_NETWORK_AGENT */]: "chat_drjones_network_agent",
+  [9 /* CHROME_FILE_AGENT */]: "chat_drjones_file_agent",
+  [12 /* CHROME_PATCH_AGENT */]: "chat_patch_agent",
+  [20 /* CHROME_PERFORMANCE_ANNOTATIONS_AGENT */]: "chat_performance_annotations_agent",
+  [24 /* CHROME_PERFORMANCE_FULL_AGENT */]: "chat_performance_full_agent",
+  [25 /* CHROME_CONTEXT_SELECTION_AGENT */]: "chat_context_selection_agent",
+  [26 /* CHROME_ACCESSIBILITY_AGENT */]: "chat_accessibility_agent",
+  [27 /* CHROME_CONVERSATION_SUMMARY_AGENT */]: "chat_conversation_summary_agent",
+  [28 /* CHROME_STORAGE_AGENT */]: "chat_storage_agent",
+  [29 /* CHROME_DEVTOOLS_V2_AGENT */]: "chat_devtools_v2_agent"
+};
+function getConversationExperience(clientFeature) {
+  if (clientFeature === 0 /* CLIENT_FEATURE_UNSPECIFIED */ || !Object.hasOwn(CLIENT_FEATURE_TO_EXPERIENCE, clientFeature)) {
+    throw new Error(`Unsupported client feature for GCA conversation: ${clientFeature}`);
+  }
+  return CLIENT_FEATURE_TO_EXPERIENCE[clientFeature];
+}
+function aidaDoConversationRequestToGcaRequest(request) {
+  try {
+    const contents = [];
+    if (request.facts) {
+      contents.push(convertAidaFactsToGcaContent(request.facts));
+    }
+    if (request.historical_contexts) {
+      contents.push(...request.historical_contexts.map(convertAidaContentToGcaContent));
+    }
+    contents.push(convertAidaContentToGcaContent(request.current_message));
+    const experience = getConversationExperience(request.client_feature);
+    const gcaRequest = createBaseGcaRequest(request, contents, experience);
+    if (request.function_declarations) {
+      gcaRequest.tools = [{
+        functionDeclarations: request.function_declarations.map((fd) => ({
+          name: fd.name,
+          description: fd.description,
+          parameters: convertAidaParamToGcaSchema(fd.parameters)
+        }))
+      }];
+    }
+    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(request), e);
+    throw e;
+  }
+}
+function mapCommonAidaRequestFields(aidaRequest, gcaRequest) {
+  if (aidaRequest.options?.model_id) {
+    gcaRequest.model = aidaRequest.options.model_id;
+  }
+  if (aidaRequest.options?.temperature !== void 0) {
+    gcaRequest.generationConfig = {
+      ...gcaRequest.generationConfig,
+      temperature: aidaRequest.options.temperature
+    };
+  }
+}
+function gcaResponseToAidaDoConversationResponse(response) {
+  const functionCalls = [];
+  if (response.candidates?.[0].content?.parts) {
+    for (const part of response.candidates[0].content.parts) {
+      if (part.functionCall) {
+        const functionCall = {
+          name: part.functionCall.name,
+          args: part.functionCall.args || {}
+        };
+        if (part.thoughtSignature) {
+          functionCall.thoughtSignature = part.thoughtSignature;
+        }
+        functionCalls.push(functionCall);
+      }
+    }
+  }
+  return {
+    explanation: extractTextFromGcaParts(response.candidates[0].content?.parts),
+    metadata: {
+      rpcGlobalId: response.responseId
+    },
+    functionCalls: functionCalls.length > 0 ? functionCalls : void 0,
+    completed: true
+  };
+}
+function extractTextFromGcaParts(parts) {
+  if (!parts) {
+    return "";
+  }
+  return parts.map((p) => p.text || "").join("");
+}
+function aidaEventToGcaTelemetryRequest(clientEvent) {
+  try {
+    const feedbackMetrics = [];
+    const responseId = String(clientEvent.corresponding_aida_rpc_global_id);
+    const eventTime = (/* @__PURE__ */ new Date()).toISOString();
+    if (clientEvent.do_conversation_client_event) {
+      const feedback = clientEvent.do_conversation_client_event.user_feedback;
+      if (feedback.sentiment) {
+        let interaction = 0 /* INTERACTION_TYPE_UNSPECIFIED */;
+        if (feedback.sentiment === "POSITIVE" /* POSITIVE */) {
+          interaction = 1 /* THUMBS_UP */;
+        } else if (feedback.sentiment === "NEGATIVE" /* NEGATIVE */) {
+          interaction = 2 /* THUMBS_DOWN */;
+        }
+        feedbackMetrics.push({
+          eventTime,
+          responseId,
+          suggestionInteraction: { interaction }
+        });
+      }
+    }
+    feedbackMetrics.push(...convertCodeTelemetry(
+      clientEvent.complete_code_client_event,
+      2 /* COMPLETE_CODE */,
+      responseId,
+      eventTime
+    ));
+    feedbackMetrics.push(...convertCodeTelemetry(
+      clientEvent.generate_code_client_event,
+      1 /* GENERATE_CODE */,
+      responseId,
+      eventTime
+    ));
+    const gcaTelemetryRequest = {
+      feedbackMetrics
+    };
+    debugLog("Translation succeeded:", JSON.stringify(clientEvent), JSON.stringify(gcaTelemetryRequest));
+    return gcaTelemetryRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(clientEvent), e);
+    throw e;
+  }
+}
+function convertCodeTelemetry(event, method, responseId, eventTime) {
+  if (!event) {
+    return [];
+  }
+  if ("user_impression" in event && event.user_impression) {
+    const impression = event.user_impression;
+    return [{
+      eventTime,
+      responseId,
+      suggestionOffered: {
+        method,
+        status: 1 /* NO_ERROR */,
+        responseLatency: `${impression.latency.duration.seconds + impression.latency.duration.nanos / 1e9}s`
+      }
+    }];
+  }
+  if ("user_acceptance" in event && event.user_acceptance) {
+    const acceptance = event.user_acceptance;
+    return [{
+      eventTime,
+      responseId,
+      suggestionInteraction: {
+        interaction: 3 /* ACCEPT */,
+        candidateIndex: acceptance.sample.sample_id
+      }
+    }];
+  }
+  return [];
+}
+function aidaCompletionRequestToGcaRequest(request) {
+  try {
+    let additionalFiles = (request.additional_files ?? []).map((f) => ({
+      fileUri: f.path,
+      inclusionReason: [AidaReasonToGcaInclusionReason[f.included_reason]],
+      segments: [{ content: f.content, isSelected: false }]
+    }));
+    const inEditorFile = inFileEditRequestToSourceFile(request);
+    if (inEditorFile) {
+      additionalFiles = [inEditorFile, ...additionalFiles];
+    }
+    const gcaRequest = createBaseGcaRequest(request, [], "complete_code");
+    gcaRequest.aicode.files = additionalFiles;
+    if (request.options?.stop_sequences) {
+      gcaRequest.generationConfig = {
+        ...gcaRequest.generationConfig,
+        stopSequences: request.options.stop_sequences
+      };
+    }
+    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error:", JSON.stringify(request), e);
+    throw e;
+  }
+}
+function inFileEditRequestToSourceFile(request) {
+  const sourceFile = {
+    inclusionReason: [1 /* ACTIVE */],
+    fileUri: "devtools-code-completion",
+    segments: [
+      {
+        content: request.prefix,
+        isSelected: false
+      },
+      {
+        content: "",
+        isSelected: true
+        // Cursor position
+      }
+    ]
+  };
+  if (request.suffix) {
+    sourceFile.segments?.push({
+      content: request.suffix,
+      isSelected: false
+    });
+  }
+  return sourceFile;
+}
+function sanitizeLabelValue(value) {
+  return value.toLowerCase().replace(/[^\p{Ll}\p{Lo}\p{N}_-]/gu, "_").substring(0, 63);
+}
+function buildLabels(request, gcaRequest) {
+  const labels = {};
+  if (request.client) {
+    labels["client"] = request.client;
+  }
+  if ("functionality_type" in request && request.functionality_type !== void 0) {
+    labels["functionality_type"] = FunctionalityType[request.functionality_type];
+  }
+  if ("client_feature" in request && request.client_feature !== void 0) {
+    labels["client_feature"] = ClientFeature[request.client_feature];
+  }
+  if ("last_user_action" in request && request.last_user_action !== void 0) {
+    labels["last_user_action"] = EditType[request.last_user_action];
+  }
+  if ("use_case" in request && request.use_case !== void 0) {
+    labels["use_case"] = UseCase[request.use_case];
+  }
+  if (request.metadata.string_session_id) {
+    labels["session_id"] = request.metadata.string_session_id;
+  }
+  const options = request.options;
+  if (options?.inference_language) {
+    labels["inference_language"] = options.inference_language;
+  }
+  if (options?.expect_code_output !== void 0) {
+    labels["expect_code_output"] = String(options.expect_code_output);
+  }
+  if (request.metadata.disable_user_content_logging !== void 0) {
+    labels["disable_user_content_logging"] = String(request.metadata.disable_user_content_logging);
+  }
+  if (request.metadata.client_version) {
+    labels["client_version"] = request.metadata.client_version;
+  }
+  if (Object.keys(labels).length > 0) {
+    const sanitizedLabels = {};
+    for (const [key, value] of Object.entries(labels)) {
+      sanitizedLabels[key] = sanitizeLabelValue(value);
+    }
+    gcaRequest.labels = sanitizedLabels;
+  }
+}
+var AidaReasonToGcaInclusionReason = {
+  [0 /* UNKNOWN */]: 0 /* INCLUSION_REASON_UNSPECIFIED */,
+  [1 /* CURRENTLY_OPEN */]: 2 /* OPEN */,
+  // Intentional mapping due to type mismatch
+  // TODO(liviurau): find a way to validate this mapping
+  [2 /* RECENTLY_OPENED */]: 3 /* RECENTLY_CLOSED */,
+  [3 /* RECENTLY_EDITED */]: 4 /* RECENTLY_EDITED */,
+  [4 /* COLOCATED */]: 5 /* COLOCATED */,
+  [5 /* RELATED_FILE */]: 6 /* RELATED */
+};
+function gcaResponseToAidaCompletionResponse(response) {
+  try {
+    const { samples, metadata } = gcaResponseToAidaSamplesAndMetadata(response);
+    const aidaResponse = {
+      generatedSamples: samples,
+      metadata
+    };
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
+    return aidaResponse;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(response), e);
+    throw e;
+  }
+}
+function gcaResponseToAidaSamplesAndMetadata(response) {
+  return {
+    samples: (response.candidates ?? []).map(gcaCandidateToAidaGenerationSample),
+    metadata: {
+      rpcGlobalId: response.responseId
+    }
+  };
+}
+function aidaGenerateCodeRequestToGcaRequest(request) {
+  try {
+    const gcaRequest = createBaseGcaRequest(request, [convertAidaContentToGcaContent(request.current_message)], "generate_code");
+    if (request.context_files) {
+      gcaRequest.aicode.files = request.context_files.map((f) => ({
+        fileUri: f.path,
+        programmingLanguage: f.programming_language
+      }));
+    }
+    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    return gcaRequest;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(request), e);
+    throw e;
+  }
+}
+function gcaResponseToAidaGenerateCodeResponse(response) {
+  try {
+    const aidaResponse = gcaResponseToAidaSamplesAndMetadata(response);
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(aidaResponse));
+    return aidaResponse;
+  } catch (e) {
+    debugLog("translation error", JSON.stringify(response), e);
+    throw e;
+  }
+}
+function gcaCandidateToAidaGenerationSample(candidate) {
+  const generationSample = {
+    generationString: extractTextFromGcaParts(candidate.content?.parts),
+    score: 0,
+    sampleId: candidate.index
+  };
+  if (candidate.citationMetadata) {
+    generationSample.attributionMetadata = {
+      attributionAction: "CITE" /* CITE */,
+      citations: (candidate.citationMetadata.citations ?? []).map((c) => ({
+        startIndex: c.startIndex,
+        endIndex: c.endIndex,
+        uri: c.uri
+      }))
+    };
+  }
+  return generationSample;
+}
+function convertAidaFactsToGcaContent(facts) {
+  return {
+    role: "user",
+    parts: facts.map((fact) => {
+      return { text: `[source: ${fact.metadata.source}] ${fact.text}` };
+    })
+  };
+}
+function convertAidaContentToGcaContent(content) {
+  let role = "user";
+  if (content.role === 2 /* MODEL */) {
+    role = "model";
+  }
+  return {
+    role,
+    parts: (content.parts ?? []).map(convertAidaPartToGcaPart)
+  };
+}
+function convertAidaPartToGcaPart(part) {
+  if ("text" in part) {
+    return { text: part.text };
+  }
+  if ("functionCall" in part) {
+    const gcaPart = {
+      functionCall: {
+        name: part.functionCall.name,
+        args: part.functionCall.args
+      }
+    };
+    if (part.functionCall.thoughtSignature) {
+      gcaPart.thoughtSignature = part.functionCall.thoughtSignature;
+    }
+    return gcaPart;
+  }
+  if ("functionResponse" in part) {
+    const fResponse = {};
+    if ("result" in part.functionResponse.response) {
+      fResponse.output = part.functionResponse.response["result"];
+    } else if ("output" in part.functionResponse.response) {
+      fResponse.output = part.functionResponse.response["output"];
+    } else if (!("error" in part.functionResponse.response)) {
+      fResponse.output = part.functionResponse.response;
+    }
+    if ("error" in part.functionResponse.response) {
+      fResponse.error = part.functionResponse.response["error"];
+    }
+    return {
+      functionResponse: {
+        name: part.functionResponse.name,
+        response: fResponse
+      }
+    };
+  }
+  if ("inlineData" in part) {
+    return {
+      inlineData: {
+        mimeType: part.inlineData.mimeType,
+        data: part.inlineData.data
+      }
+    };
+  }
+  return {};
+}
+function convertAidaParamToGcaSchema(param) {
+  const schema = {
+    type: param.type,
+    description: param.description
+  };
+  if (param.nullable) {
+    schema.nullable = param.nullable;
+  }
+  if (param.type === 5 /* ARRAY */ && param.items) {
+    schema.items = convertAidaParamToGcaSchema(param.items);
+  } else if (param.type === 6 /* OBJECT */ && param.properties) {
+    schema.properties = {};
+    for (const [key, value] of Object.entries(param.properties)) {
+      schema.properties[key] = convertAidaParamToGcaSchema(value);
+    }
+    schema.required = (param.required ?? []).map((r) => r.toString());
+  }
+  return schema;
+}
+function gcaChunkResponseToAidaChunkResponse(response) {
+  try {
+    if (response.error) {
+      return [{ error: response.error }];
+    }
+    const candidate = response.candidates?.[0];
+    const parts = candidate?.content?.parts || [];
+    const metadata = {
+      rpcGlobalId: response.responseId,
+      inferenceOptionMetadata: { modelId: response.modelVersion }
+    };
+    if (response.usageMetadata) {
+      metadata.usageMetadata = {
+        promptTokenCount: response.usageMetadata.promptTokenCount,
+        candidatesTokenCount: response.usageMetadata.candidatesTokenCount,
+        totalTokenCount: response.usageMetadata.totalTokenCount,
+        thoughtsTokenCount: response.usageMetadata.thoughtsTokenCount,
+        cachedContentTokenCount: response.usageMetadata.cachedContentTokenCount
+      };
+    }
+    if (candidate?.citationMetadata?.citations) {
+      metadata.attributionMetadata = {
+        attributionAction: "CITE" /* CITE */,
+        citations: candidate.citationMetadata.citations.map((c) => ({
+          startIndex: c.startIndex,
+          endIndex: c.endIndex,
+          uri: c.uri
+        }))
+      };
+    }
+    const chunks = parts.map((part) => {
+      const aidaChunkResponse = { metadata };
+      if (part.text !== void 0) {
+        aidaChunkResponse.textChunk = {
+          text: extractTextFromGcaParts(parts)
+        };
+      }
+      if (part.functionCall) {
+        aidaChunkResponse.functionCallChunk = {
+          functionCall: {
+            name: part.functionCall.name,
+            args: part.functionCall.args || {}
+          }
+        };
+        if (part.thoughtSignature) {
+          aidaChunkResponse.functionCallChunk.functionCall.thoughtSignature = part.thoughtSignature;
+        }
+      }
+      if (part.executableCode) {
+        aidaChunkResponse.codeChunk = {
+          code: part.executableCode.code,
+          inferenceLanguage: part.executableCode.language ? "PYTHON" /* PYTHON */ : "UNKNOWN" /* UNKNOWN */
+        };
+      }
+      return aidaChunkResponse;
+    });
+    debugLog("Translation succeeded:", JSON.stringify(response), JSON.stringify(chunks));
+    return chunks;
+  } catch (e) {
+    debugLog("Translation error", JSON.stringify(response), e);
+    throw e;
+  }
+}
+
+// ../../front_end/core/host/GcaClient.ts
+var GcaClient_exports = {};
+__export(GcaClient_exports, {
+  GcaClient: () => GcaClient
+});
+import * as Root2 from "../root/root.js";
+var SERVICE_NAME = "gcaService";
+var ENDPOINTS = {
+  CONTENT: "/v1beta:generateContent",
+  SEND_TELEMETRY: "/v1beta:sendTelemetry",
+  STREAM_CONTENT: "/v1beta:streamGenerateContent"
+};
+var GcaClient = class {
+  enabled() {
+    return Root2.Runtime.hostConfig.devToolsUseGcaApi?.enabled;
+  }
+  async conversationRequest(request, streamId, options) {
+    try {
+      const gcaRequest = aidaDoConversationRequestToGcaRequest(request);
+      const response = await makeHttpRequest(
+        {
+          service: SERVICE_NAME,
+          path: ENDPOINTS.STREAM_CONTENT,
+          method: "POST",
+          body: JSON.stringify(gcaRequest),
+          streamId
+        },
+        options
+      );
+      debugLog("GCA conversation request succeeded:", JSON.stringify(request), JSON.stringify(response));
+    } catch (err) {
+      debugLog("GCA request failed:", JSON.stringify(request), err);
+      throw err;
+    }
+  }
+  registerClientEvent(clientEvent) {
+    const gcaEvent = aidaEventToGcaTelemetryRequest(clientEvent);
+    const response = makeHttpRequest({
+      service: SERVICE_NAME,
+      path: ENDPOINTS.SEND_TELEMETRY,
+      method: "POST",
+      body: JSON.stringify(gcaEvent)
+    });
+    return response.then(
+      (result) => {
+        debugLog("GCA register event succeeded:", JSON.stringify(gcaEvent), JSON.stringify(result));
+        return {};
+      },
+      (err) => {
+        debugLog("GCA register event failed:", JSON.stringify(gcaEvent), err);
+        return { error: JSON.stringify(err) };
+      }
+    );
+  }
+  async completeCode(request) {
+    const gcaRequest = aidaCompletionRequestToGcaRequest(request);
+    const result = await this.#requestContent(gcaRequest);
+    return gcaResponseToAidaCompletionResponse(result);
+  }
+  async generateCode(request, options) {
+    const gcaRequest = aidaGenerateCodeRequestToGcaRequest(request);
+    const result = await this.#requestContent(gcaRequest, options);
+    return gcaResponseToAidaGenerateCodeResponse(result);
+  }
+  async #requestContent(request, options) {
+    try {
+      const response = await makeHttpRequest(
+        {
+          service: SERVICE_NAME,
+          path: ENDPOINTS.CONTENT,
+          method: "POST",
+          body: JSON.stringify(request)
+        },
+        options
+      );
+      debugLog("GCA request succeeded:", JSON.stringify(request), JSON.stringify(response));
+      return response;
+    } catch (err) {
+      debugLog("GCA request failed:", JSON.stringify(request), err);
+      throw err;
+    }
+  }
+};
+
+// ../../front_end/core/host/AidaClient.ts
+var CLIENT_NAME = "CHROME_DEVTOOLS";
+var SERVICE_NAME2 = "aidaService";
+var CODE_CHUNK_SEPARATOR = (lang = "") => "\n`````" + lang + "\n";
+var AidaLanguageToMarkdown = {
+  ["CPP" /* CPP */]: "cpp",
+  ["PYTHON" /* PYTHON */]: "py",
+  ["KOTLIN" /* KOTLIN */]: "kt",
+  ["JAVA" /* JAVA */]: "java",
+  ["JAVASCRIPT" /* JAVASCRIPT */]: "js",
+  ["GO" /* GO */]: "go",
+  ["TYPESCRIPT" /* TYPESCRIPT */]: "ts",
+  ["HTML" /* HTML */]: "html",
+  ["BASH" /* BASH */]: "sh",
+  ["CSS" /* CSS */]: "css",
+  ["DART" /* DART */]: "dart",
+  ["JSON" /* JSON */]: "json",
+  ["MARKDOWN" /* MARKDOWN */]: "md",
+  ["VUE" /* VUE */]: "vue",
+  ["XML" /* XML */]: "xml",
+  ["UNKNOWN" /* UNKNOWN */]: "unknown"
+};
+function conversationSurfaceHistogram(feature) {
+  switch (feature) {
+    case 29 /* CHROME_DEVTOOLS_V2_AGENT */:
+      return "DevTools.AiClient.RequestResult.AiAssistance" /* AiClientRequestResultAiAssistance */;
+    case 1 /* CHROME_CONSOLE_INSIGHTS */:
+      return "DevTools.AiClient.RequestResult.ConsoleInsights" /* AiClientRequestResultConsoleInsights */;
+    case 27 /* CHROME_CONVERSATION_SUMMARY_AGENT */:
+      return "DevTools.AiClient.RequestResult.ConversationSummary" /* AiClientRequestResultConversationSummary */;
+    case 20 /* CHROME_PERFORMANCE_ANNOTATIONS_AGENT */:
+      return "DevTools.AiClient.RequestResult.PerformanceAnnotations" /* AiClientRequestResultPerformanceAnnotations */;
+    default:
+      return void 0;
+  }
+}
+function createOutcomeRecorder(surfaceHistogram) {
+  let recorded = false;
+  return (result) => {
+    if (recorded) {
+      return;
+    }
+    recorded = true;
+    userMetrics.aiClientRequestResult(result, surfaceHistogram);
+  };
+}
+var AidaClient = class {
+  // Delegate client
+  #gcaClient = new GcaClient();
+  static buildConsoleInsightsRequest(input) {
+    const disallowLogging = Root3.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true;
+    const chromeVersion = Root3.Runtime.getChromeVersion();
+    if (!chromeVersion) {
+      throw new Error("Cannot determine Chrome version");
+    }
+    const request = {
+      current_message: { parts: [{ text: input }], role: 1 /* USER */ },
+      client: CLIENT_NAME,
+      functionality_type: 2 /* EXPLAIN_ERROR */,
+      client_feature: 1 /* CHROME_CONSOLE_INSIGHTS */,
+      metadata: {
+        disable_user_content_logging: disallowLogging,
+        client_version: chromeVersion
+      }
+    };
+    let temperature = -1;
+    let modelId;
+    if (Root3.Runtime.hostConfig.devToolsConsoleInsights?.enabled) {
+      temperature = Root3.Runtime.hostConfig.devToolsConsoleInsights.temperature ?? -1;
+      modelId = Root3.Runtime.hostConfig.devToolsConsoleInsights.modelId;
+    }
+    if (temperature >= 0) {
+      request.options ??= {};
+      request.options.temperature = temperature;
+    }
+    if (modelId) {
+      request.options ??= {};
+      request.options.model_id = modelId;
+    }
+    return request;
+  }
+  static async checkAccessPreconditions() {
+    if (!Platform4.HostRuntime.HOST_RUNTIME.getOnLine()) {
+      return "no-internet" /* NO_INTERNET */;
+    }
+    const syncInfo = await new Promise(
+      (resolve) => InspectorFrontendHostInstance.getSyncInformation((syncInfo2) => resolve(syncInfo2))
+    );
+    if (!syncInfo.accountEmail) {
+      return "no-account-email" /* NO_ACCOUNT_EMAIL */;
+    }
+    if (syncInfo.isSyncPaused) {
+      return "sync-is-paused" /* SYNC_IS_PAUSED */;
+    }
+    return "available" /* AVAILABLE */;
+  }
+  async *doConversation(request, options) {
+    if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
+      throw new Error("dispatchHttpRequest is not available");
+    }
+    const recordOutcome = createOutcomeRecorder(conversationSurfaceHistogram(request.client_feature));
+    let abortListener;
+    let streamId;
+    try {
+      if (options?.signal?.aborted) {
+        throw new AidaAbortError();
+      }
+      if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+        request.metadata.disable_user_content_logging = true;
+      }
+      const stream = (() => {
+        let { promise, resolve, reject } = Promise.withResolvers();
+        promise.catch(() => {
+        });
+        abortListener = () => {
+          reject(new AidaAbortError());
+        };
+        options?.signal?.addEventListener("abort", abortListener, { once: true });
+        return {
+          write: async (data) => {
+            resolve(data);
+            ({ promise, resolve, reject } = Promise.withResolvers());
+            promise.catch(() => {
+            });
+          },
+          close: async () => {
+            resolve(null);
+          },
+          read: () => {
+            return promise;
+          },
+          fail: (e) => reject(e)
+        };
+      })();
+      streamId = bindOutputStream(stream);
+      let response;
+      if (this.#gcaClient.enabled()) {
+        response = this.#gcaClient.conversationRequest(request, streamId, options);
+      } else {
+        response = makeHttpRequest(
+          {
+            service: SERVICE_NAME2,
+            path: "/v1/aida:doConversation",
+            method: "POST",
+            body: JSON.stringify(request),
+            streamId
+          },
+          options
+        );
+      }
+      response.then(
+        () => {
+          void stream.close();
+        },
+        (err) => {
+          debugLog("doConversation failed with error:", JSON.stringify(err));
+          stream.fail(mapError(err));
+        }
+      );
+      yield* this.#handleResponseStream(stream);
+      recordOutcome(AiClientRequestResult2.SUCCESS);
+    } catch (err) {
+      recordOutcome(classifyRequestError(err));
+      throw err;
+    } finally {
+      recordOutcome(AiClientRequestResult2.ABORTED);
+      if (options?.signal && abortListener) {
+        options.signal.removeEventListener("abort", abortListener);
+      }
+      if (streamId !== void 0) {
+        discardOutputStream(streamId);
+      }
+    }
+  }
+  async *#handleResponseStream(stream) {
+    let chunk;
+    const text = [];
+    let inCodeChunk = false;
+    const functionCalls = [];
+    let metadata = { rpcGlobalId: 0 };
+    while (chunk = await stream.read()) {
+      debugLog("doConversation stream chunk:", chunk);
+      let textUpdated = false;
+      const results = this.#parseAndTranslate(chunk);
+      for (const result of results) {
+        if (result.metadata) {
+          metadata = {
+            ...metadata,
+            ...result.metadata
+          };
+          if (metadata?.attributionMetadata?.attributionAction === "BLOCK" /* BLOCK */) {
+            throw new AidaBlockError();
+          }
+        }
+        if (result.textChunk) {
+          if (inCodeChunk) {
+            text.push(CODE_CHUNK_SEPARATOR());
+            inCodeChunk = false;
+          }
+          text.push(result.textChunk.text);
+          textUpdated = true;
+        } else if (result.codeChunk) {
+          if (!inCodeChunk) {
+            const language = AidaLanguageToMarkdown[result.codeChunk.inferenceLanguage] ?? "";
+            text.push(CODE_CHUNK_SEPARATOR(language));
+            inCodeChunk = true;
+          }
+          text.push(result.codeChunk.code);
+          textUpdated = true;
+        } else if (result.functionCallChunk) {
+          functionCalls.push({
+            name: result.functionCallChunk.functionCall.name,
+            args: result.functionCallChunk.functionCall.args,
+            thoughtSignature: result.functionCallChunk.functionCall.thoughtSignature
+          });
+        } else if ("error" in result) {
+          throw mapError(result.error);
+        } else {
+          throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
+        }
+      }
+      if (textUpdated) {
+        yield {
+          explanation: text.join("") + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ""),
+          metadata,
+          completed: false
+        };
+      }
+    }
+    yield {
+      explanation: text.join("") + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ""),
+      metadata,
+      functionCalls: functionCalls.length ? functionCalls : void 0,
+      completed: true
+    };
+  }
+  #parseAndTranslate(chunk) {
+    const results = this.#parseStreamChunk(chunk);
+    if (this.#gcaClient.enabled()) {
+      return results.flatMap(gcaChunkResponseToAidaChunkResponse);
+    }
+    return results;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  #parseStreamChunk(chunk) {
+    if (!chunk.length) {
+      return [];
+    }
+    if (chunk.startsWith(",")) {
+      chunk = chunk.slice(1);
+    }
+    if (!chunk.startsWith("[")) {
+      chunk = "[" + chunk;
+    }
+    if (!chunk.endsWith("]")) {
+      chunk = chunk + "]";
+    }
+    try {
+      return JSON.parse(chunk);
+    } catch (error) {
+      throw new StreamChunkParseError("Cannot parse chunk: " + chunk, { cause: error });
+    }
+  }
+  registerClientEvent(clientEvent) {
+    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      clientEvent.disable_user_content_logging = true;
+    }
+    if (this.#gcaClient.enabled()) {
+      return this.#gcaClient.registerClientEvent(clientEvent);
+    }
+    const { promise, resolve } = Promise.withResolvers();
+    InspectorFrontendHostInstance.registerAidaClientEvent(
+      JSON.stringify({
+        client: CLIENT_NAME,
+        event_time: (/* @__PURE__ */ new Date()).toISOString(),
+        ...clientEvent
+      }),
+      resolve
+    );
+    return promise;
+  }
+  async completeCode(request) {
+    if (!InspectorFrontendHostInstance.aidaCodeComplete) {
+      throw new Error("aidaCodeComplete is not available");
+    }
+    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      request.metadata.disable_user_content_logging = true;
+    }
+    const recordOutcome = createOutcomeRecorder("DevTools.AiClient.RequestResult.CodeComplete" /* AiClientRequestResultCodeComplete */);
+    try {
+      if (this.#gcaClient.enabled()) {
+        try {
+          const result = await this.#gcaClient.completeCode(request);
+          recordOutcome(AiClientRequestResult2.SUCCESS);
+          return result;
+        } catch (err) {
+          recordOutcome(classifyRequestError(err));
+          throw mapError(err);
+        }
+      }
+      const { promise, resolve } = Promise.withResolvers();
+      InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
+      const completeCodeResult = await promise;
+      if (completeCodeResult.error) {
+        recordOutcome(classifyRequestError(completeCodeResult.error, completeCodeResult.detail));
+        throw mapError(completeCodeResult.error, completeCodeResult.detail);
+      }
+      const response = completeCodeResult.response;
+      if (!response?.length) {
+        recordOutcome(AiClientRequestResult2.INVALID_JSON_RESPONSE);
+        throw new Error("Empty response");
+      }
+      let parsedResponse;
+      try {
+        parsedResponse = JSON.parse(response);
+      } catch (error) {
+        recordOutcome(AiClientRequestResult2.INVALID_JSON_RESPONSE);
+        throw new Error("Cannot parse response: " + response, { cause: error });
+      }
+      const generatedSamples = [];
+      let metadata = { rpcGlobalId: 0 };
+      if ("metadata" in parsedResponse) {
+        metadata = parsedResponse.metadata;
+      }
+      if ("generatedSamples" in parsedResponse) {
+        for (const generatedSample of parsedResponse.generatedSamples) {
+          const sample = {
+            generationString: generatedSample.generationString,
+            score: generatedSample.score,
+            sampleId: generatedSample.sampleId
+          };
+          if ("metadata" in generatedSample && "attributionMetadata" in generatedSample.metadata) {
+            sample.attributionMetadata = generatedSample.metadata.attributionMetadata;
+          }
+          generatedSamples.push(sample);
+        }
+      } else {
+        recordOutcome(AiClientRequestResult2.SUCCESS);
+        return null;
+      }
+      recordOutcome(AiClientRequestResult2.SUCCESS);
+      return { generatedSamples, metadata };
+    } catch (err) {
+      recordOutcome(classifyRequestError(err));
+      throw err;
+    }
+  }
+  async generateCode(request, options) {
+    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
+      request.metadata.disable_user_content_logging = true;
+    }
+    const surfaceHistogram = "DevTools.AiClient.RequestResult.CodeGenerate" /* AiClientRequestResultCodeGenerate */;
+    try {
+      const response = this.#gcaClient.enabled() ? await this.#gcaClient.generateCode(request, options) : await makeHttpRequest(
+        {
+          service: SERVICE_NAME2,
+          path: "/v1/aida:generateCode",
+          method: "POST",
+          body: JSON.stringify(request)
+        },
+        options
+      );
+      userMetrics.aiClientRequestResult(AiClientRequestResult2.SUCCESS, surfaceHistogram);
+      return response;
+    } catch (err) {
+      userMetrics.aiClientRequestResult(classifyRequestError(err), surfaceHistogram);
+      throw mapError(err);
+    }
+  }
+};
+function convertToUserTierEnum(userTier) {
+  if (userTier) {
+    switch (userTier) {
+      case "TESTERS":
+        return 1 /* TESTERS */;
+      case "BETA":
+        return 2 /* BETA */;
+      case "PUBLIC":
+        return 3 /* PUBLIC */;
+    }
+  }
+  return 3 /* PUBLIC */;
+}
+function getClientFeatureName(feature) {
+  const name = ClientFeature[feature];
+  if (typeof name !== "string") {
+    throw new Error(`Invalid ClientFeature: ${feature}`);
+  }
+  return name;
+}
+var HostConfigTracker = class _HostConfigTracker extends Common5.ObjectWrapper.ObjectWrapper {
+  #pollTimer;
+  #aidaAvailability;
+  get aidaAvailability() {
+    return this.#aidaAvailability;
+  }
+  static instance({ forceNew } = { forceNew: false }) {
+    if (!Root3.DevToolsContext.globalInstance().has(_HostConfigTracker) || forceNew) {
+      Root3.DevToolsContext.globalInstance().set(
+        _HostConfigTracker,
+        new _HostConfigTracker()
+      );
+    }
+    return Root3.DevToolsContext.globalInstance().get(_HostConfigTracker);
+  }
+  dispose() {
+    clearTimeout(this.#pollTimer);
+    this.listeners = void 0;
+  }
+  static removeInstance() {
+    if (Root3.DevToolsContext.globalInstance().has(_HostConfigTracker)) {
+      Root3.DevToolsContext.globalInstance().get(_HostConfigTracker).dispose();
+      Root3.DevToolsContext.globalInstance().delete(_HostConfigTracker);
+    }
+  }
+  addEventListener(eventType, listener) {
+    const isFirst = !this.hasEventListeners(eventType);
+    const eventDescriptor = super.addEventListener(eventType, listener);
+    if (isFirst) {
+      clearTimeout(this.#pollTimer);
+      void this.pollAidaAvailability();
+    }
+    return eventDescriptor;
+  }
+  removeEventListener(eventType, listener) {
+    super.removeEventListener(eventType, listener);
+    if (!this.hasEventListeners(eventType)) {
+      clearTimeout(this.#pollTimer);
+    }
+  }
+  async pollAidaAvailability() {
+    this.#pollTimer = setTimeout(() => this.pollAidaAvailability(), 2e3);
+    const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = currentAidaAvailability;
+      const config = await new Promise((resolve) => InspectorFrontendHostInstance.getHostConfig(resolve));
+      Object.assign(Root3.Runtime.hostConfig, config);
+      this.dispatchEventToListeners("aidaAvailabilityChanged" /* AIDA_AVAILABILITY_CHANGED */, currentAidaAvailability);
+    }
+  }
+};
+var Events2 = /* @__PURE__ */ ((Events3) => {
+  Events3["AIDA_AVAILABILITY_CHANGED"] = "aidaAvailabilityChanged";
+  return Events3;
+})(Events2 || {});
+
+// ../../front_end/core/host/GdpClient.ts
+var GdpClient_exports = {};
+__export(GdpClient_exports, {
+  EligibilityStatus: () => EligibilityStatus,
+  EmailPreference: () => EmailPreference,
+  GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK: () => GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK,
+  GdpClient: () => GdpClient,
+  SubscriptionStatus: () => SubscriptionStatus,
+  SubscriptionTier: () => SubscriptionTier,
+  getGdpProfilesEnterprisePolicy: () => getGdpProfilesEnterprisePolicy,
+  isBadgesEnabled: () => isBadgesEnabled,
+  isGdpProfilesAvailable: () => isGdpProfilesAvailable,
+  isStarterBadgeEnabled: () => isStarterBadgeEnabled
+});
+import * as Root4 from "../root/root.js";
+var SubscriptionStatus = /* @__PURE__ */ ((SubscriptionStatus2) => {
+  SubscriptionStatus2["ENABLED"] = "SUBSCRIPTION_STATE_ENABLED";
+  SubscriptionStatus2["PENDING"] = "SUBSCRIPTION_STATE_PENDING";
+  SubscriptionStatus2["CANCELED"] = "SUBSCRIPTION_STATE_CANCELED";
+  SubscriptionStatus2["REFUNDED"] = "SUBSCRIPTION_STATE_REFUNDED";
+  SubscriptionStatus2["AWAITING_FIX"] = "SUBSCRIPTION_STATE_AWAITING_FIX";
+  SubscriptionStatus2["ON_HOLD"] = "SUBSCRIPTION_STATE_ACCOUNT_ON_HOLD";
+  return SubscriptionStatus2;
+})(SubscriptionStatus || {});
+var SubscriptionTier = /* @__PURE__ */ ((SubscriptionTier2) => {
+  SubscriptionTier2["PREMIUM_ANNUAL"] = "SUBSCRIPTION_TIER_PREMIUM_ANNUAL";
+  SubscriptionTier2["PREMIUM_MONTHLY"] = "SUBSCRIPTION_TIER_PREMIUM_MONTHLY";
+  SubscriptionTier2["PRO_ANNUAL"] = "SUBSCRIPTION_TIER_PRO_ANNUAL";
+  SubscriptionTier2["PRO_MONTHLY"] = "SUBSCRIPTION_TIER_PRO_MONTHLY";
+  return SubscriptionTier2;
+})(SubscriptionTier || {});
+var EligibilityStatus = /* @__PURE__ */ ((EligibilityStatus2) => {
+  EligibilityStatus2["ELIGIBLE"] = "ELIGIBLE";
+  EligibilityStatus2["NOT_ELIGIBLE"] = "NOT_ELIGIBLE";
+  return EligibilityStatus2;
+})(EligibilityStatus || {});
+var EmailPreference = /* @__PURE__ */ ((EmailPreference2) => {
+  EmailPreference2["ENABLED"] = "ENABLED";
+  EmailPreference2["DISABLED"] = "DISABLED";
+  return EmailPreference2;
+})(EmailPreference || {});
+function normalizeBadgeName(name) {
+  return name.replace(/profiles\/[^/]+\/awards\//, "profiles/me/awards/");
+}
+var GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = "https://developers.google.com/profile/u/me";
+var ORIGIN_APPLICATION_NAME = "APPLICATION_CHROME_DEVTOOLS";
+async function makeHttpRequest2(request) {
+  if (!isGdpProfilesAvailable()) {
+    throw new DispatchHttpRequestError(
+      "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */
+    );
+  }
+  const response = await makeHttpRequest(request);
+  return response;
+}
+var SERVICE_NAME3 = "gdpService";
+var GdpClient = class _GdpClient {
+  #cachedProfilePromise;
+  #cachedEligibilityPromise;
+  static instance({ forceNew } = { forceNew: false }) {
+    if (!Root4.DevToolsContext.globalInstance().has(_GdpClient) || forceNew) {
+      Root4.DevToolsContext.globalInstance().set(
+        _GdpClient,
+        new _GdpClient()
+      );
+    }
+    return Root4.DevToolsContext.globalInstance().get(_GdpClient);
+  }
+  static removeInstance() {
+    Root4.DevToolsContext.globalInstance().delete(_GdpClient);
+  }
+  /**
+   * Fetches the user's GDP profile and eligibility status.
+   *
+   * It first attempts to fetch the profile. If the profile is not found
+   * (a `NOT_FOUND` error), this is handled gracefully by treating the profile
+   * as `null` and then proceeding to check for eligibility.
+   *
+   * @returns A promise that resolves with an object containing the `profile`
+   * and `isEligible` status, or `null` if an unexpected error occurs.
+   */
+  async getProfile() {
+    try {
+      const profile = await this.#getProfile();
+      return {
+        profile,
+        isEligible: true
+      };
+    } catch (err) {
+      if (err instanceof DispatchHttpRequestError && err.type === "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */) {
+        return null;
+      }
+    }
+    try {
+      const checkEligibilityResponse = await this.#checkEligibility();
+      return {
+        profile: null,
+        isEligible: checkEligibilityResponse.createProfile === "ELIGIBLE" /* ELIGIBLE */
+      };
+    } catch {
+      return null;
+    }
+  }
+  async #getProfile() {
+    if (this.#cachedProfilePromise) {
+      return await this.#cachedProfilePromise;
+    }
+    this.#cachedProfilePromise = makeHttpRequest2({
+      service: SERVICE_NAME3,
+      path: "/v1beta1/profile:get",
+      method: "GET"
+    }).then((profile) => {
+      this.#cachedEligibilityPromise = Promise.resolve({ createProfile: "ELIGIBLE" /* ELIGIBLE */ });
+      return profile;
+    });
+    return await this.#cachedProfilePromise;
+  }
+  async #checkEligibility() {
+    if (this.#cachedEligibilityPromise) {
+      return await this.#cachedEligibilityPromise;
+    }
+    this.#cachedEligibilityPromise = makeHttpRequest2({ service: SERVICE_NAME3, path: "/v1beta1/eligibility:check", method: "GET" });
+    return await this.#cachedEligibilityPromise;
+  }
+  /**
+   * @returns null if the request fails, the awarded badge names otherwise.
+   */
+  async getAwardedBadgeNames({ names }) {
+    try {
+      const response = await makeHttpRequest2({
+        service: SERVICE_NAME3,
+        path: "/v1beta1/profiles/me/awards:batchGet",
+        method: "GET",
+        queryParams: {
+          allowMissing: "true",
+          names
+        }
+      });
+      return new Set(response.awards?.map((award) => normalizeBadgeName(award.name)) ?? []);
+    } catch {
+      return null;
+    }
+  }
+  async createProfile({ user, emailPreference }) {
+    try {
+      const response = await makeHttpRequest2({
+        service: SERVICE_NAME3,
+        path: "/v1beta1/profiles",
+        method: "POST",
+        body: JSON.stringify({
+          user,
+          newsletter_email: emailPreference,
+          creation_origin: {
+            origin_application: ORIGIN_APPLICATION_NAME
+          }
+        })
+      });
+      this.#clearCache();
+      return response;
+    } catch {
+      return null;
+    }
+  }
+  #clearCache() {
+    this.#cachedProfilePromise = void 0;
+    this.#cachedEligibilityPromise = void 0;
+  }
+  async createAward({ name }) {
+    try {
+      const response = await makeHttpRequest2({
+        service: SERVICE_NAME3,
+        path: "/v1beta1/profiles/me/awards",
+        method: "POST",
+        body: JSON.stringify({
+          awardingUri: "devtools://devtools",
+          name
+        })
+      });
+      return response;
+    } catch {
+      return null;
+    }
+  }
+};
+function isGdpProfilesAvailable() {
+  const isBaseFeatureEnabled = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.enabled);
+  const isBrandedBuild = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enabled);
+  const isOffTheRecordProfile = Root4.Runtime.hostConfig.isOffTheRecord;
+  const isDisabledByEnterprisePolicy = getGdpProfilesEnterprisePolicy() === Root4.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
+  return isBaseFeatureEnabled && isBrandedBuild && !isOffTheRecordProfile && !isDisabledByEnterprisePolicy;
+}
+function getGdpProfilesEnterprisePolicy() {
+  return Root4.Runtime.hostConfig.devToolsGdpProfilesAvailability?.enterprisePolicyValue ?? Root4.Runtime.GdpProfilesEnterprisePolicyValue.DISABLED;
+}
+function isBadgesEnabled() {
+  const isBadgesEnabledByEnterprisePolicy = getGdpProfilesEnterprisePolicy() === Root4.Runtime.GdpProfilesEnterprisePolicyValue.ENABLED;
+  const isBadgesEnabledByFeatureFlag = Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.badgesEnabled);
+  return isBadgesEnabledByEnterprisePolicy && isBadgesEnabledByFeatureFlag;
+}
+function isStarterBadgeEnabled() {
+  return Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
+}
+
+// ../../front_end/core/host/Platform.ts
+var Platform_exports = {};
+__export(Platform_exports, {
+  fontFamily: () => fontFamily,
+  isCustomDevtoolsFrontend: () => isCustomDevtoolsFrontend,
+  isMac: () => isMac,
+  isRemoteDevtoolsFrontend: () => isRemoteDevtoolsFrontend,
+  isWin: () => isWin,
+  platform: () => platform,
+  setFontFamilyForTests: () => setFontFamilyForTests,
+  setIsCustomDevtoolsFrontendForTest: () => setIsCustomDevtoolsFrontendForTest,
+  setIsRemoteDevtoolsFrontendForTest: () => setIsRemoteDevtoolsFrontendForTest,
+  setLocationForTest: () => setLocationForTest,
+  setPlatformForTests: () => setPlatformForTests
+});
+var _platform;
+function platform() {
+  if (!_platform) {
+    _platform = InspectorFrontendHostInstance.platform();
+  }
+  return _platform;
+}
+var _isMac;
+function isMac() {
+  if (typeof _isMac === "undefined") {
+    _isMac = platform() === "mac";
+  }
+  return _isMac;
+}
+var _isWin;
+function isWin() {
+  if (typeof _isWin === "undefined") {
+    _isWin = platform() === "windows";
+  }
+  return _isWin;
+}
+function setPlatformForTests(platform2) {
+  _platform = platform2;
+  _isMac = void 0;
+  _isWin = void 0;
+}
+var _fontFamily;
+function fontFamily() {
+  if (_fontFamily) {
+    return _fontFamily;
+  }
+  switch (platform()) {
+    case "linux":
+      _fontFamily = "Roboto, Ubuntu, Arial, sans-serif";
+      break;
+    case "mac":
+      _fontFamily = "'Lucida Grande', sans-serif";
+      break;
+    case "windows":
+      _fontFamily = "'Segoe UI', Tahoma, sans-serif";
+      break;
+  }
+  return _fontFamily;
+}
+function setFontFamilyForTests(family) {
+  _fontFamily = family;
+}
+var _isRemoteDevtoolsFrontend;
+var _locationForTest;
+function setLocationForTest(url) {
+  _locationForTest = url;
+  _isRemoteDevtoolsFrontend = void 0;
+  _isCustomDevtoolsFrontend = void 0;
+}
+function isRemoteDevtoolsFrontend() {
+  if (typeof _isRemoteDevtoolsFrontend === "undefined") {
+    const location = globalThis.location;
+    const url = _locationForTest ?? (location ? location.toString() : "");
+    _isRemoteDevtoolsFrontend = url.startsWith("devtools://devtools-remote/");
+  }
+  return _isRemoteDevtoolsFrontend ?? false;
+}
+var _isCustomDevtoolsFrontend;
+function isCustomDevtoolsFrontend() {
+  if (typeof _isCustomDevtoolsFrontend === "undefined") {
+    const location = globalThis.location;
+    const url = _locationForTest ?? (location ? location.toString() : "");
+    _isCustomDevtoolsFrontend = url.startsWith("devtools://devtools/custom/");
+  }
+  return _isCustomDevtoolsFrontend ?? false;
+}
+function setIsRemoteDevtoolsFrontendForTest(isRemote) {
+  _isRemoteDevtoolsFrontend = isRemote;
+}
+function setIsCustomDevtoolsFrontendForTest(isCustom) {
+  _isCustomDevtoolsFrontend = isCustom;
+}
+
 // ../../front_end/core/host/host.ts
-var userMetrics = new UserMetrics();
+var userMetrics2 = userMetrics;
 export {
   AidaClient_exports as AidaClient,
+  AidaErrors_exports as AidaErrors,
   AidaGcaTranslation_exports as AidaGcaTranslation,
   DispatchHttpRequestClient_exports as DispatchHttpRequestClient,
   GcaClient_exports as GcaClient,
@@ -4004,6 +4318,6 @@ export {
   Platform_exports as Platform,
   ResourceLoader_exports as ResourceLoader,
   UserMetrics_exports as UserMetrics,
-  userMetrics
+  userMetrics2 as userMetrics
 };
 //# sourceMappingURL=host.js.map

@@ -45,11 +45,16 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 export class CSSHintDetailsView extends UI.Widget.Widget {
     #authoringHint;
     #view;
-    constructor(authoringHint, element, view = DEFAULT_VIEW) {
+    constructor(element, view = DEFAULT_VIEW) {
         super(element);
-        this.#authoringHint = authoringHint;
         this.#view = view;
-        this.performUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    get authoringHint() {
+        return this.#authoringHint;
     }
     set authoringHint(authoringHint) {
         if (this.#authoringHint === authoringHint) {

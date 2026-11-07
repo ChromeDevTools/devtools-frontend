@@ -106,6 +106,13 @@ export var EnumeratedHistogram;
     EnumeratedHistogram["BuiltInAiAvailability"] = "DevTools.BuiltInAiAvailability";
     EnumeratedHistogram["ResendRequest"] = "DevTools.ResendRequest";
     EnumeratedHistogram["EditResendRequest"] = "DevTools.EditResendRequest";
+    EnumeratedHistogram["AiClientRequestResult"] = "DevTools.AiClient.RequestResult";
+    EnumeratedHistogram["AiClientRequestResultAiAssistance"] = "DevTools.AiClient.RequestResult.AiAssistance";
+    EnumeratedHistogram["AiClientRequestResultCodeComplete"] = "DevTools.AiClient.RequestResult.CodeComplete";
+    EnumeratedHistogram["AiClientRequestResultCodeGenerate"] = "DevTools.AiClient.RequestResult.CodeGenerate";
+    EnumeratedHistogram["AiClientRequestResultConsoleInsights"] = "DevTools.AiClient.RequestResult.ConsoleInsights";
+    EnumeratedHistogram["AiClientRequestResultConversationSummary"] = "DevTools.AiClient.RequestResult.ConversationSummary";
+    EnumeratedHistogram["AiClientRequestResultPerformanceAnnotations"] = "DevTools.AiClient.RequestResult.PerformanceAnnotations";
     // LINT.ThenChange(/front_end/devtools_compatibility.js:EnumeratedHistogram)
 })(EnumeratedHistogram || (EnumeratedHistogram = {}));
 //# sourceMappingURL=InspectorFrontendHostAPI.js.map

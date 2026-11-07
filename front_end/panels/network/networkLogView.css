@@ -406,7 +406,8 @@ td.time-column {
   outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
   left: var(--sys-size-5);
   position: absolute;
-  top: 10px;
+  /* 16px (.network-log-grid.data-grid.small .icon height) minus 6px (dot height). */
+  top: calc(var(--sys-size-8) - var(--sys-size-4));
   z-index: 1;
 }
 

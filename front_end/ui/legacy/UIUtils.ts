@@ -1690,11 +1690,14 @@ export const deepElementFromPoint = (document: Document|ShadowRoot|null|undefine
 
 export const deepElementFromEvent = (ev: Event): Node|null => {
   const event = (ev as MouseEvent);
-  // Some synthetic events have zero coordinates which lead to a wrong element.
-  // Better return nothing in this case.
-  if (!event.which && !event.pageX && !event.pageY && !event.clientX && !event.clientY && !event.movementX &&
-      !event.movementY) {
-    return null;
+  // Synthetic and keyboard-triggered MouseEvents still report `which === 1`
+  // (`button === 0`) alongside zero coordinates, where `elementFromPoint(0, 0)`
+  // would hit an unrelated element at the viewport origin.
+  if (!event.pageX && !event.pageY && !event.clientX && !event.clientY && !event.movementX && !event.movementY) {
+    if (typeof ev.composedPath !== 'function') {
+      return null;
+    }
+    return ev.composedPath().find((node): node is Element => node instanceof Element) ?? null;
   }
   const root = event.target && (event.target as Element).getComponentRoot();
   return root ? deepElementFromPoint((root as Document | ShadowRoot), event.pageX, event.pageY) : null;

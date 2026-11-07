@@ -219,8 +219,9 @@ circle.animation-keyframe-point:active {
 }
 
 .animation-scrubber-head {
-  width: 7px;
-  height: 7px;
+  /* 7px square: 11px .animation-scrubber-line width (2 * --sys-size-4 - --sys-size-1) minus 2 * 2px left/right inset (--sys-size-2) so the 45deg diamond stays centered on the 1px scrubber stem. */
+  width: calc(2 * var(--sys-size-4) - var(--sys-size-1) - 2 * var(--sys-size-2));
+  height: calc(2 * var(--sys-size-4) - var(--sys-size-1) - 2 * var(--sys-size-2));
   transform: rotate(45deg);
   background: var(--sys-color-error);
   position: absolute;

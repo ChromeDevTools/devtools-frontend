@@ -509,8 +509,8 @@ text.animation-timeline-grid-label {
 
 .animation-remove-button {
   position: absolute;
-  top: -3px;
-  right: -3px;
+  top: calc(-1 * var(--sys-size-2));
+  right: calc(-1 * var(--sys-size-2));
   background: var(--sys-color-token-subtle);
   border-radius: var(--sys-shape-corner-medium-small);
   border: 0;

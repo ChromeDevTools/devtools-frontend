@@ -72,7 +72,7 @@
 .context-detail-row-entry:not(:empty) {
   color: var(--sys-color-on-surface-subtle);
   overflow: hidden;
-  min-width: 130px;
+  min-width: var(--sys-size-21);
   font: var(--sys-typescale-body5-medium);
 }
 

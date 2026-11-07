@@ -203,7 +203,7 @@ devtools-icon.leading-issue-icon {
 }
 
 .link-wrapper {
-  margin-top: 15px;
+  margin-top: var(--sys-size-8);
   user-select: text;
 }
 

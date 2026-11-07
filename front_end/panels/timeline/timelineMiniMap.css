@@ -40,7 +40,7 @@
 }
 
 .timeline-minimap #timeline-overview-filmstrip {
-  flex-basis: 30px;
+  flex-basis: var(--sys-size-12);
 }
 
 .timeline-minimap #timeline-overview-memory {

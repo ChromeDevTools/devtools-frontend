@@ -81,7 +81,7 @@
     .feature-card {
       display: flex;
       padding: var(--sys-size-4) var(--sys-size-6);
-      gap: 10px;
+      gap: var(--sys-size-6);
       background-color: var(--sys-color-surface2);
       border-radius: var(--sys-shape-corner-medium-small);
       width: 100%;

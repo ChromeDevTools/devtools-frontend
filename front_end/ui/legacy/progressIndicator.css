@@ -20,7 +20,7 @@
 .progress-indicator-shadow-container .title {
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 150px;
+  max-width: var(--sys-size-22);
   margin-right: var(--sys-size-2);
   color: var(--sys-color-token-subtle);
 }

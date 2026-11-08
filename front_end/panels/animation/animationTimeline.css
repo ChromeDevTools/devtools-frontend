@@ -419,7 +419,7 @@ text.animation-timeline-grid-label {
 .animation-paused::after {
   content: '';
   background: var(--sys-color-cdt-base-container);
-  width: 7px;
+  width: var(--sys-size-4);
   height: var(--sys-size-9);
   border-radius: var(--sys-size-2);
   margin: var(--sys-size-2);

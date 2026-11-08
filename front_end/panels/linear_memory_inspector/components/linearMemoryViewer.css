@@ -48,7 +48,7 @@
   }
 
   .byte-cell {
-    min-width: 21px;
+    min-width: var(--sys-size-9);
     color: var(--sys-color-on-surface);
   }
 

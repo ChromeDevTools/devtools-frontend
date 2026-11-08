@@ -13,7 +13,8 @@
   .sources-toolbar {
     display: flex;
     flex: 0 0 auto;
-    min-height: 27px;
+    /* 28px toolbar height (--sys-size-12) minus 1px top border (--sys-size-1), matching the 26px devtools-toolbar height plus 1px border-top when empty. */
+    min-height: calc(var(--sys-size-12) - var(--sys-size-1));
     background-color: var(--sys-color-cdt-base-container);
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     overflow: hidden;

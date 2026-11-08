@@ -80,7 +80,7 @@
 
   .divider {
     border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-    margin: 10px calc(var(--sys-size-9) * -1) 0;
+    margin: var(--sys-size-6) calc(var(--sys-size-9) * -1) 0;
   }
 
   .authenticator-fields {

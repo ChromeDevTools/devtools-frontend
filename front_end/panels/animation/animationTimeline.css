@@ -360,7 +360,7 @@ text.animation-timeline-grid-label {
   border-radius: var(--sys-size-2);
   flex: 1 1;
   padding: var(--sys-size-3);
-  max-width: 100px;
+  max-width: var(--sys-size-20);
   animation: newGroupAnim 200ms;
   position: relative;
 }

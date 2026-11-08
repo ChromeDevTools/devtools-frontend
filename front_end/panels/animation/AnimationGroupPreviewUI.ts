@@ -11,6 +11,7 @@ import {AnimationUI} from './AnimationUI.js';
 
 const {render, html, svg, Directives: {classMap, ref}} = Lit;
 
+const VIEW_BOX_WIDTH = 112;
 const VIEW_BOX_HEIGHT = 32;
 const MAX_ANIMATION_LINES_TO_SHOW = 10;
 const MIN_ANIMATION_GROUP_DURATION = 750;
@@ -63,8 +64,8 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   };
 
   const renderAnimationLines = (): Lit.LitTemplate => {
-    const timeToPixelRatio = 100 / Math.max(input.animationGroupDuration, MIN_ANIMATION_GROUP_DURATION);
-    const viewBox = `0 0 100 ${VIEW_BOX_HEIGHT}`;
+    const timeToPixelRatio = VIEW_BOX_WIDTH / Math.max(input.animationGroupDuration, MIN_ANIMATION_GROUP_DURATION);
+    const viewBox = `0 0 ${VIEW_BOX_WIDTH} ${VIEW_BOX_HEIGHT}`;
     const lines = input.animations.map((animation, index) => {
       const xStartPoint = animation.delayOrStartTime();
       const xEndPoint = xStartPoint + animation.iterationDuration();

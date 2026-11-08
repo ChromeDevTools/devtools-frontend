@@ -11,10 +11,10 @@
 
 .network-config-group {
   display: flex;
-  padding-bottom: 10px;
+  padding-bottom: var(--sys-size-5);
   flex-wrap: wrap;
   flex: 0 0 auto;
-  min-height: 30px;
+  min-height: var(--sys-size-12);
 }
 
 .network-config-title {

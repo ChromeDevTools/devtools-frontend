@@ -51,7 +51,7 @@
 .resources-divider-label {
   position: absolute;
   top: var(--sys-size-3);
-  right: 3px;
+  right: var(--sys-size-2);
   font-size: 80%;
   white-space: nowrap;
   pointer-events: none;

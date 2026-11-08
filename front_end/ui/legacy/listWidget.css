@@ -104,13 +104,8 @@
   gap: var(--sys-size-6);
 }
 
-.editor-buttons > button {
-  flex: none;
-  margin-right: 10px;
-}
-
 .editor-content input {
-  margin-right: 10px;
+  margin-right: var(--sys-size-5);
 }
 
 .editor-content input.error-input {

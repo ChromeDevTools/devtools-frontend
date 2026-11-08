@@ -10,7 +10,7 @@ button.soft-dropdown {
   position: relative;
   border: none;
   background: none;
-  max-width: 120px;
+  max-width: var(--sys-size-21);
 
   &[disabled] {
     background: var(--sys-color-state-disabled-container);

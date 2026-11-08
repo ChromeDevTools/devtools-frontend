@@ -71,25 +71,6 @@ li.is-top-level:last-child {
   border-bottom: var(--override-top-node-border);
 }
 
-:host([animated]) li:not(.is-top-level) {
-  animation-name: slideIn;
-  animation-duration: 150ms;
-  animation-timing-function: cubic-bezier(0, 0, 0.3, 1);
-  animation-fill-mode: forwards;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-5px);
-    opacity: 0%;
-  }
-
-  to {
-    transform: none;
-    opacity: 100%;
-  }
-}
-
 .arrow-and-key-wrapper {
   display: flex;
   align-content: center;

@@ -112,7 +112,7 @@
 
   .screencast-glasspane {
     background-color: color-mix(in srgb, var(--sys-color-cdt-base-container) 80%, transparent);
-    font-size: 30px;
+    font-size: var(--sys-typescale-headline1-size);
     z-index: 100;
     display: flex;
     justify-content: center;

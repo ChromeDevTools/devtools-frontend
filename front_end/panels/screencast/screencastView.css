@@ -34,7 +34,7 @@
 
   .screencast-navigation .progress {
     background-color: var(--sys-color-primary-bright);
-    height: 3px;
+    height: var(--sys-size-2);
     left: 0;
     position: absolute;
     top: 100%;  /* Align with the bottom edge of the parent. */

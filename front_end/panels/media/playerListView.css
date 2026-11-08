@@ -44,7 +44,6 @@
 .player-entry-status-icon {
   width: var(--sys-size-12);
   min-width: var(--sys-size-12);
-  height: 26px;
   border-right: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
 }

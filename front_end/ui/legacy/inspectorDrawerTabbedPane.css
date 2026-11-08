@@ -31,7 +31,7 @@
   flex-direction: column;
   align-items: center;
   height: auto;
-  width: 27px;
+  width: 100%;
 }
 
 devtools-toolbar.collapsed-vertical-drawer-toolbar-content {

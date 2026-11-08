@@ -14,7 +14,7 @@ table {
 
 table td {
   font: var(--sys-typescale-body4-regular);
-  line-height: 18px;
+  line-height: var(--sys-typescale-body4-line-height);
   padding: var(--sys-size-3) var(--sys-size-5);
   vertical-align: top;
 }

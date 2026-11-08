@@ -30,7 +30,7 @@ devtools-list.locations-list,
 .locations-list-text {
   white-space: nowrap;
   text-overflow: ellipsis;
-  flex-basis: 170px;
+  flex-basis: var(--sys-size-24);
   user-select: none;
   color: var(--sys-color-on-surface);
   position: relative;

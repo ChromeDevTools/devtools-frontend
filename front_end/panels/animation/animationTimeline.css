@@ -542,7 +542,9 @@ text.animation-timeline-grid-label {
   width: var(--sys-size-4);
   height: 100%;
   left: var(--timeline-controls-width);
-  top: 104px;
+  /* Position below the 28px top toolbar (--sys-size-12), 48px preview
+  buffer (--sys-size-16), and 28px timeline header (--sys-size-12). */
+  top: calc(2 * var(--sys-size-12) + var(--sys-size-16));
   z-index: 3;
   /* We put this a bit to the left of the line to allow dragging
   the delay point of the keyframes */

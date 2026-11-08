@@ -45,8 +45,8 @@
 }
 
 .inline-button {
-  width: 18px;
-  height: 18px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   opacity: 0%;
   visibility: hidden;
   transition: opacity 200ms;

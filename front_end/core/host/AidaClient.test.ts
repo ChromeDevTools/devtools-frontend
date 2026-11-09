@@ -1208,6 +1208,73 @@ describe('AidaClient', () => {
         assert.instanceOf(err, Host.AidaClient.AidaQuotaError);
       }
     });
+
+    it('doConversation handles streamed GCA response with thought parts, multiple text parts, and trailing metadata-only chunk',
+       async () => {
+         sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+             .callsFake(async (request, callback) => {
+               assert.isDefined(request.streamId);
+               const streamId = request.streamId;
+               await new Promise(resolve => setTimeout(resolve, 0));
+               Host.ResourceLoader.streamWrite(
+                   streamId,
+                   JSON.stringify([{
+                     responseId: 'chunk-1',
+                     modelVersion: 'test-model',
+                     candidates: [{
+                       index: 0,
+                       content: {
+                         role: 'model',
+                         parts: [
+                           {text: 'Thinking step 1', thought: true},
+                           {text: 'Hello '},
+                           {text: 'world!'},
+                         ],
+                       },
+                     }],
+                   }]),
+               );
+               await new Promise(resolve => setTimeout(resolve, 0));
+               Host.ResourceLoader.streamWrite(
+                   streamId,
+                   JSON.stringify([{
+                     responseId: 'chunk-final',
+                     modelVersion: 'test-model-final',
+                     candidates: [{
+                       index: 0,
+                       content: {
+                         role: 'model',
+                         parts: [
+                           {thoughtSignature: 'sig-123'},
+                         ],
+                       },
+                     }],
+                   }]),
+               );
+               callback({statusCode: 200, response: ''});
+             });
+
+         const results = await getAllResults(provider);
+         assert.deepEqual(results, [
+           {
+             explanation: 'Hello world!',
+             metadata: {
+               rpcGlobalId: 'chunk-1',
+               inferenceOptionMetadata: {modelId: 'test-model'},
+             },
+             completed: false,
+           },
+           {
+             explanation: 'Hello world!',
+             metadata: {
+               rpcGlobalId: 'chunk-final',
+               inferenceOptionMetadata: {modelId: 'test-model-final'},
+             },
+             functionCalls: undefined,
+             completed: true,
+           },
+         ]);
+       });
   });
 
   describe('debugLog', () => {

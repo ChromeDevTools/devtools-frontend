@@ -317,7 +317,9 @@ export class AidaClient {
           });
         } else if ('error' in result) {
           throw mapError(result.error);
-        } else {
+        } else if (!result.metadata) {
+          // Chunks from thought-only parts or trailing metadata-only chunks lack text or function calls
+          // and carry only metadata.
           throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
         }
       }

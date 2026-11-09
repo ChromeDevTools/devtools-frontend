@@ -806,6 +806,40 @@ describe('UIUtils', () => {
       assert.strictEqual(spanRef.value, rendered);
       assert.deepEqual(UI.UIUtils.HTMLElementWithLightDOMTemplate.getClones(templateSpan), [rendered]);
     });
+
+    it('populates children, event listeners, and widget config before invoking clonedRef callbacks', () => {
+      class MockWidget extends UI.Widget.Widget {
+        payload = '';
+      }
+      const el = new TestLightDOMTemplate();
+      const clickHandler = sinon.spy();
+      let callbackTextContent: string|null|undefined;
+      let callbackWidgetConfig: unknown;
+      const callback = sinon.spy((cloned?: Element) => {
+        if (cloned instanceof HTMLElement) {
+          callbackTextContent = cloned.textContent;
+          callbackWidgetConfig = UI.Widget.widgetConfigs.get(cloned);
+          cloned.click();
+        }
+      });
+
+      el.template = html`<devtools-widget
+        ${UI.Widget.widget(MockWidget, {
+        payload: 'initial',
+      })}
+        ${UI.UIUtils.clonedRef(callback)}
+        @click=${clickHandler}>label</devtools-widget>`;
+
+      const templateWidget = el.querySelector('template')?.content.querySelector('devtools-widget');
+      assert.exists(templateWidget);
+
+      UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(templateWidget);
+
+      sinon.assert.calledOnce(callback);
+      assert.strictEqual(callbackTextContent, 'label');
+      sinon.assert.calledOnce(clickHandler);
+      assert.isDefined(callbackWidgetConfig);
+    });
   });
 
   describe('clonedRef', () => {

@@ -82,7 +82,7 @@ h1 {
 .checkbox-container {
   display: flex;
   flex-flow: row wrap;
-  gap: 10px;
+  gap: var(--sys-size-5);
 }
 
 input[type="checkbox"]:focus-visible {

@@ -196,6 +196,7 @@ devtools_ui_module("unittests") {
     "ResourceDirectSocketChunkView.test.ts",
     "ResourceWebSocketFrameView.test.ts",
     "ShowMoreDetailsWidget.test.ts",
+    "SignedExchangeInfoView.test.ts",
   ]
 
   ts_deps = [

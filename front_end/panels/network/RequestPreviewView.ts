@@ -57,7 +57,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   let previewTemplate: LitTemplate;
   if (input.hasSignedExchange) {
-    previewTemplate = html`${widget(element => new SignedExchangeInfoView(input.request, element))}`;
+    previewTemplate = html`${widget(SignedExchangeInfoView, {request: input.request})}`;
   } else if (input.error !== null) {
     previewTemplate = html`${widget(UI.EmptyWidget.EmptyWidget, {
       header: i18nString(UIStrings.failedToLoadResponseData),

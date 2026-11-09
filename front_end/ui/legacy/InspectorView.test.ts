@@ -3,10 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, before, beforeEach, describe, it} from 'mocha';
+import {after, afterEach, before, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -100,6 +102,48 @@ describe('InspectorView', () => {
       inspectorView.displayChromeRestartRequiredWarning('Chrome restart required');
       inspectorView.displayReloadRequiredWarning('Reload required');
       assertShowsOnlyChromeRestartWarning(inspectorView);
+    });
+  });
+
+  describe('language mismatch infobar', () => {
+    function createDevToolsLocale(navigatorLanguage: string): void {
+      i18n.DevToolsLocale.DevToolsLocale.instance({
+        create: true,
+        data: {
+          navigatorLanguage,
+          settingLanguage: 'en-US',
+          lookupClosestDevToolsLocale: locale => locale.startsWith('de') ? 'de' : 'en-US',
+        },
+      });
+    }
+
+    function findLanguageMismatchInfobar(inspectorView: LegacyUI.InspectorView.InspectorView): Element|undefined {
+      const infoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
+      return [...infoBarDiv?.children ?? []].find(
+          infobar => infobar.shadowRoot?.querySelector('.infobar-info-text')?.textContent ===
+              'DevTools is now available in German');
+    }
+
+    beforeEach(() => {
+      sinon.stub(navigator, 'language').get(() => 'de-DE');
+      createDevToolsLocale('de-DE');
+    });
+
+    afterEach(() => {
+      createDevToolsLocale('en-US');
+    });
+
+    it('is not shown again after the user closes it', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      const infobar = findLanguageMismatchInfobar(inspectorView);
+      assert.exists(infobar);
+
+      const closeButton = infobar.shadowRoot?.querySelector<HTMLElement>('dt-close-button');
+      assert.exists(closeButton);
+      closeButton.click();
+
+      assert.isTrue(Common.Settings.Settings.instance().createSetting('disable-locale-info-bar', false).get());
+      assert.notExists(findLanguageMismatchInfobar(InspectorView.instance({forceNew: true})));
     });
   });
 

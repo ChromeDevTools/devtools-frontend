@@ -7,8 +7,6 @@ import type {ParsedTrace} from './ModelImpl.js';
 import * as Types from './types/types.js';
 
 export class EventsSerializer {
-  #modifiedProfileCallByKey = new Map<Types.File.ProfileCallKeyValues, Types.Events.SyntheticProfileCall>();
-
   keyForEvent(event: Types.Events.Event): Types.File.SerializableKey|null {
     if (Types.Events.isProfileCall(event)) {
       return `${Types.File.EventKeyType.PROFILE_CALL}-${event.pid}-${event.tid}-${
@@ -116,10 +114,6 @@ export class EventsSerializer {
 
   #getModifiedProfileCallByKeyValues(key: Types.File.ProfileCallKeyValues,
                                      parsedTrace: ParsedTrace): Types.Events.SyntheticProfileCall {
-    const cacheResult = this.#modifiedProfileCallByKey.get(key);
-    if (cacheResult) {
-      return cacheResult;
-    }
     const profileCallsInThread =
         parsedTrace.data.Renderer.processes.get(key.processID)?.threads.get(key.threadID)?.profileCalls;
     if (!profileCallsInThread) {
@@ -132,8 +126,6 @@ export class EventsSerializer {
     if (!match) {
       throw new Error(`Unknown profile call serializable key: ${(JSON.stringify(key))}`);
     }
-    // Cache to avoid looking up in subsequent calls.
-    this.#modifiedProfileCallByKey.set(key, match);
     return match;
   }
 }

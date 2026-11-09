@@ -172,17 +172,19 @@ const createTraceElement =
         selector = 'transitions style';
       }
 
+      // The view adds the `computed-style-trace` class to the host when it
+      // renders, so selectors only match traces whose shadow DOM is ready.
       // clang-format off
-      return html`<devtools-computed-style-trace
-        .data=${{
+      return html`<devtools-widget
+        ${widget(ElementsComponents.ComputedStyleTrace.ComputedStyleTrace, {
           selector,
           active: !isPropertyOverloaded,
-          onNavigateToSource: navigateToSource.bind(null, property),
-          ruleOriginNode,
-        } as ElementsComponents.ComputedStyleTrace.ComputedStyleTraceData}
+          onNavigateToSource: getBoundNavigateToSource(navigateToSource, property),
+        })}
         @contextmenu=${onContextMenu}>
           ${valueElement}
-      </devtools-computed-style-trace>`;
+          <span slot="trace-link">${ruleOriginNode}</span>
+      </devtools-widget>`;
       // clang-format on
     };
 
@@ -208,10 +210,32 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
   }
 }
 
-const navigateToSource = (cssProperty: SDK.CSSProperty.CSSProperty, event?: Event): void => {
+type NavigateToSourceFn = (cssProperty: SDK.CSSProperty.CSSProperty, event?: Event) => void;
+
+const navigateToSource: NavigateToSourceFn = (cssProperty, event) => {
   void Common.Revealer.reveal(cssProperty);
   event?.consume(true);
 };
+
+const boundNavigateCallbacks =
+    new WeakMap<NavigateToSourceFn, WeakMap<SDK.CSSProperty.CSSProperty, (event?: Event) => void>>();
+
+function getBoundNavigateToSource(
+    fn: NavigateToSourceFn,
+    property: SDK.CSSProperty.CSSProperty,
+    ): (event?: Event) => void {
+  let byProperty = boundNavigateCallbacks.get(fn);
+  if (!byProperty) {
+    byProperty = new WeakMap();
+    boundNavigateCallbacks.set(fn, byProperty);
+  }
+  let callback = byProperty.get(property);
+  if (!callback) {
+    callback = fn.bind(null, property);
+    byProperty.set(property, callback);
+  }
+  return callback;
+}
 
 export type ComputedStyleData = {
   tag: 'property',

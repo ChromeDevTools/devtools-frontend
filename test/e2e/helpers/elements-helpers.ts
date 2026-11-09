@@ -659,11 +659,13 @@ export const getComputedStyleProperties = async(devToolsPage: DevToolsPage): Pro
   for (const prop of allProperties) {
     const name = await prop.$eval('pierce/' + CSS_PROPERTY_NAME_SELECTOR, element => element.textContent);
     const value = await prop.$eval('pierce/' + CSS_PROPERTY_VALUE_SELECTOR, element => element.textContent);
-    const traceElements = await prop.$$('pierce/devtools-computed-style-trace');
+    const traceElements = await prop.$$('pierce/devtools-widget.computed-style-trace');
     const trace = await Promise.all(traceElements.map(async element => {
       const value = await element.$eval('pierce/.value', element => element.textContent);
       const selector = await element.$eval('pierce/.trace-selector', element => element.textContent);
-      const link = await element.$eval('pierce/.trace-link', element => element.textContent);
+      const link =
+          await element.$eval('pierce/.trace-link slot',
+                              slot => (slot as HTMLSlotElement).assignedNodes().map(node => node.textContent).join(''));
       return {value, selector, link};
     }));
     properties.push({name, value, trace});

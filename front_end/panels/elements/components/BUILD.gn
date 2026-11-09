@@ -46,7 +46,6 @@ devtools_ui_module("components") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
-    "../../../ui/components/buttons:bundle",
     "../../../ui/components/node_text:bundle",
     "../../../ui/components/tooltips:bundle",
     "../../../ui/kit:bundle",

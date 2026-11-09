@@ -21,8 +21,9 @@ import {html} from '../../ui/lit/lit.js';
 import * as Elements from './elements.js';
 
 async function waitForTraceElement(treeOutline: TreeOutline.TreeOutline.TreeOutline<unknown>): Promise<HTMLElement> {
-  const element = treeOutline.shadowRoot?.querySelector('devtools-computed-style-trace');
+  const element = treeOutline.shadowRoot?.querySelector<HTMLElement>('devtools-widget.computed-style-trace');
   if (element) {
+    await UI.Widget.Widget.get(element)?.updateComplete;
     return element;
   }
 

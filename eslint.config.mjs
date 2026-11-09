@@ -735,6 +735,7 @@ export default defineConfig([
       'front_end/**/*.docs.ts',
       'test/**/*.ts',
       '**/testing/*.ts',
+      'scripts/build/tests/**/*.ts',
       'scripts/eslint_rules/tests/**/*',
       'scripts/gn_deps_verifier/tests/**/*',
       'extensions/cxx_debugging/e2e/**/*.ts',
@@ -808,6 +809,19 @@ export default defineConfig([
           interfaces: ['BDD', 'TDD'],
         },
       ],
+    },
+  },
+  {
+    name: 'JavaScript script test files',
+    // The 'TypeScript test files' rules need type information, so JS tests
+    // only get the mocha rules. Missing mocha imports fail at runtime (see
+    // test/scripts/run_mocha.ts).
+    files: ['scripts/build/tests/**/*.js'],
+    rules: {
+      'mocha/no-exclusive-tests': 'error',
+      'mocha/no-async-describe': 'error',
+      'mocha/no-global-tests': 'error',
+      'mocha/no-nested-tests': 'error',
     },
   },
   {

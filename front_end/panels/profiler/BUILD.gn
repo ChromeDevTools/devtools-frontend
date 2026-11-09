@@ -108,6 +108,7 @@ devtools_ui_module("unittests") {
     "HeapSnapshotDataGrids.test.ts",
     "HeapSnapshotView.test.ts",
     "HeapTimelineOverview.test.ts",
+    "IsolateSelector.test.ts",
     "ProfileFlameChartDataProvider.test.ts",
   ]
 

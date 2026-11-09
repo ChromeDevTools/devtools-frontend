@@ -6,10 +6,10 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-const {classMap, ifDefined, repeat} = Directives;
+const {classMap, ifDefined, ref, repeat} = Directives;
 
 const UIStrings = {
   /**
@@ -69,6 +69,7 @@ export interface TrendInfo {
 
 export interface IsolateItemInfo {
   id: string;
+  optionId: string;
   heapText: string;
   trend: TrendInfo;
   titles: string[];
@@ -80,12 +81,17 @@ export interface ViewInput {
   trendIntervalMinutes: number;
   totalText: string;
   trend: TrendInfo;
-  onSelect: (index: number) => void;
+  onSelect: (index: number, scrollIntoView?: boolean) => void;
 }
 
-export type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
+export interface ViewOutput {
+  scrollSelectedIntoView?: () => void;
+}
 
-export const DEFAULT_VIEW: View = (input, _output, target) => {
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  output.scrollSelectedIntoView = undefined;
   const onKeyDown = (event: KeyboardEvent): void => {
     if (!input.items.length) {
       return;
@@ -112,7 +118,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     }
     event.consume(true);
     if (nextIndex !== -1 && nextIndex !== selectedIndex) {
-      input.onSelect(nextIndex);
+      input.onSelect(nextIndex, true);
     }
   };
 
@@ -122,12 +128,14 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       <div class="javascript-vm-instances-list"
            role="listbox"
            aria-label=${i18nString(UIStrings.javascriptVmInstances)}
+           aria-activedescendant=${ifDefined(input.items[input.selectedIndex]?.optionId)}
            tabindex=${input.items.length ? 0 : -1}
            @keydown=${onKeyDown}>
         ${repeat(input.items, item => item.id, (item, index) => {
           const isSelected = index === input.selectedIndex;
           return html`
-            <div class=${classMap({
+            <div id=${item.optionId}
+                 class=${classMap({
                    'profile-memory-usage-item': true,
                    hbox: true,
                    selected: isSelected,
@@ -141,7 +149,12 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                    resize: true,
                    keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End',
                  })}
-                 @click=${() => input.onSelect(index)}>
+                 @click=${() => input.onSelect(index)}
+                 ${isSelected ? ref(el => {
+                   if (el instanceof HTMLElement) {
+                     output.scrollSelectedIntoView = () => el.scrollIntoViewIfNeeded(false);
+                   }
+                 }) : nothing}>
               <div class="profile-memory-usage-item-size"
                    title=${i18nString(UIStrings.heapSizeInUseByLiveJsObjects)}>
                 ${item.heapText}
@@ -227,9 +240,11 @@ function getIsolateTitles(isolate: SDK.IsolateManager.Isolate): string[] {
 
 export class IsolateSelector extends UI.Widget.VBox implements SDK.IsolateManager.Observer {
   readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
   readonly #isolates: SDK.IsolateManager.Isolate[] = [];
   readonly #itemStates = new Map<SDK.IsolateManager.Isolate, IsolateItemInfo>();
   #selectedIsolate: SDK.IsolateManager.Isolate|null = null;
+  #pendingScrollToSelected = false;
   #totalText = '';
   #totalTrend: TrendInfo = {text: '', increasing: false};
 
@@ -252,14 +267,19 @@ export class IsolateSelector extends UI.Widget.VBox implements SDK.IsolateManage
       trendIntervalMinutes,
       totalText: this.#totalText,
       trend: this.#totalTrend,
-      onSelect: index => {
+      onSelect: (index, scrollIntoView = false) => {
         const isolate = this.#isolates[index];
         if (isolate) {
+          this.#pendingScrollToSelected = scrollIntoView;
           this.#selectIsolate(isolate);
         }
       },
     },
-               undefined, this.contentElement);
+               this.#viewOutput, this.contentElement);
+    if (this.#pendingScrollToSelected) {
+      this.#pendingScrollToSelected = false;
+      this.#viewOutput.scrollSelectedIntoView?.();
+    }
   }
 
   override wasShown(): void {
@@ -289,6 +309,7 @@ export class IsolateSelector extends UI.Widget.VBox implements SDK.IsolateManage
   isolateAdded(isolate: SDK.IsolateManager.Isolate): void {
     const item: IsolateItemInfo = {
       id: isolate.id(),
+      optionId: UI.ARIAUtils.nextId('isolate-option-'),
       heapText: '',
       trend: {text: '', increasing: false},
       titles: getIsolateTitles(isolate),

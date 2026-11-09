@@ -52,28 +52,6 @@
     font-weight: bold;
   }
 
-  .unused-rules-grid .header-container,
-  .unused-rules-grid .data-container,
-  .unused-rules-grid table.data {
-    position: relative;
-  }
-
-  .unused-rules-grid .data-container {
-    top: 0;
-    max-height: 350px;
-  }
-
-  .unused-rules-grid {
-    border-left: none;
-    border-right: none;
-  }
-  /** Ensure links are rendered at the correct height */
-
-  .unused-rules-grid .monospace {
-    display: block;
-    height: 18px;
-  }
-
   .element-grid {
     flex: 1;
     border-left: none;

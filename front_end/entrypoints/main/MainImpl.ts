@@ -498,10 +498,6 @@ export class MainImpl {
       });
     }
 
-    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      await PanelCommon.GeminiRebrandPromoDialog.maybeShow();
-    }
-
     MainImpl.timeEnd('Main._createAppUI');
 
     const appProvider = UI.AppProvider.getRegisteredAppProviders()[0];

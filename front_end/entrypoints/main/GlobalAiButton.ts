@@ -23,10 +23,6 @@ const UIStrings = {
    * @description Tooltip for the AI assistance button in the main DevTools toolbar.
    */
   openAiAssistance: 'Open AI assistance panel',
-  /**
-   * @description Tooltip for the Gemini button in the main DevTools toolbar.
-   */
-  openGemini: 'Open `Gemini` panel',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/GlobalAiButton.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -60,18 +56,15 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
     expanded: inPromotionState,
   });
 
-  const strings = AIAssistance.AiUtils.isGeminiBranding() ?
-      {title: i18nString(UIStrings.openGemini), label: i18n.i18n.lockedString('Gemini')} :
-      {title: i18nString(UIStrings.openAiAssistance), label: i18nString(UIStrings.aiAssistance)};
   const icon = AIAssistance.AiUtils.getIconName();
 
   // clang-format off
   render(html`
     <style>${globalAiButtonStyles}</style>
     <div class="global-ai-button-container">
-      <button class=${classes} @click=${input.onClick} title=${strings.title} jslog=${VisualLogging.action().track({click: true}).context('global-ai-button')}>
+      <button class=${classes} @click=${input.onClick} title=${i18nString(UIStrings.openAiAssistance)} jslog=${VisualLogging.action().track({click: true}).context('global-ai-button')}>
         <devtools-icon name=${icon}></devtools-icon>
-        <span class="button-text">${` ${strings.label}`}</span>
+        <span class="button-text">${` ${i18nString(UIStrings.aiAssistance)}`}</span>
       </button>
     </div>
   `, target);

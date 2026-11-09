@@ -3722,22 +3722,6 @@ describeWithEnvironment('AI Assistance Panel', () => {
         assert.strictEqual(nextInput.props.inputPlaceholder, 'Ask AI Assistance');
       });
 
-      it('shows the Gemini placeholder when devToolsAiV2Architecture and Gemini rebranding are enabled', async () => {
-        updateHostConfig({
-          devToolsAiV2Architecture: {
-            enabled: true,
-          },
-          devToolsGeminiRebranding: {
-            enabled: true,
-          },
-        });
-        const {panel, view} = await createAiAssistancePanel();
-        void panel.handleAction('freestyler.elements-floating-button');
-
-        const nextInput = await view.nextInput;
-        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-        assert.strictEqual(nextInput.props.inputPlaceholder, 'Ask Gemini');
-      });
       it('uses the contextless placeholder even when an element context is attached', async () => {
         updateHostConfig({
           devToolsAiV2Architecture: {

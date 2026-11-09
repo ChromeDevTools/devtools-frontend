@@ -807,14 +807,7 @@ export abstract class AiAgent<T> {
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
-    let serverSideLoggingAllowed = opts.serverSideLoggingAllowed ?? false;
-    // Disable logging for now.
-    // For context, see b/454563259#comment35.
-    // We should be able to remove this ~end of April.
-    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      serverSideLoggingAllowed = false;
-    }
-    this.#serverSideLoggingActive = serverSideLoggingAllowed;
+    this.#serverSideLoggingActive = opts.serverSideLoggingAllowed ?? false;
     this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];

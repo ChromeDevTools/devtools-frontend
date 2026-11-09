@@ -199,13 +199,6 @@ export class AidaClient {
         throw new AidaAbortError();
       }
 
-      // Disable logging for now.
-      // For context, see b/454563259#comment35.
-      // We should be able to remove this ~end of April.
-      if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-        request.metadata.disable_user_content_logging = true;
-      }
-
       const stream = (() => {
         let {promise, resolve, reject} = Promise.withResolvers<string|null>();
         // Prevent unhandled promise rejections if stream.fail() is called after
@@ -378,13 +371,6 @@ export class AidaClient {
   }
 
   registerClientEvent(clientEvent: AidaRegisterClientEvent): Promise<AidaClientResult> {
-    // Disable logging for now.
-    // For context, see b/454563259#comment35.
-    // We should be able to remove this ~end of April.
-    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      clientEvent.disable_user_content_logging = true;
-    }
-
     if (this.#gcaClient.enabled()) {
       return this.#gcaClient.registerClientEvent(clientEvent);
     }
@@ -405,13 +391,6 @@ export class AidaClient {
   async completeCode(request: CompletionRequest): Promise<CompletionResponse|null> {
     if (!InspectorFrontendHostInstance.aidaCodeComplete) {
       throw new Error('aidaCodeComplete is not available');
-    }
-
-    // Disable logging for now.
-    // For context, see b/454563259#comment35.
-    // We should be able to remove this ~end of April.
-    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      request.metadata.disable_user_content_logging = true;
     }
 
     const recordOutcome = createOutcomeRecorder(EnumeratedHistogram.AiClientRequestResultCodeComplete);
@@ -479,13 +458,6 @@ export class AidaClient {
   }
 
   async generateCode(request: GenerateCodeRequest, options?: {signal?: AbortSignal}): Promise<GenerateCodeResponse> {
-    // Disable logging for now.
-    // For context, see b/454563259#comment35.
-    // We should be able to remove this ~end of April.
-    if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      request.metadata.disable_user_content_logging = true;
-    }
-
     const surfaceHistogram = EnumeratedHistogram.AiClientRequestResultCodeGenerate;
     try {
       const response = this.#gcaClient.enabled() ?

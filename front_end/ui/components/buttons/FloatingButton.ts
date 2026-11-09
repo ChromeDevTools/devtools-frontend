@@ -9,7 +9,7 @@ import * as Lit from '../../lit/lit.js';
 
 import floatingButtonStyles from './floatingButton.css.js';
 
-const {html, Directives: {classMap}} = Lit;
+const {html} = Lit;
 
 /**
  * A simple floating button component, primarily used to display the 'Ask AI!'
@@ -111,14 +111,10 @@ export class FloatingButton extends HTMLElement {
   }
 
   #render(): void {
-    const classes = classMap({
-      gemini: this.iconName === 'spark',
-    });
-
     // clang-format off
     Lit.render(html`
         <style>${floatingButtonStyles}</style>
-        <button class=${classes} ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
+        <button ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
         this.#shadow, {host: this});
     // clang-format on
   }

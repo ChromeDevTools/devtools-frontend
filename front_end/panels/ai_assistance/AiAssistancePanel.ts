@@ -183,10 +183,6 @@ const UIStringsNotTranslate = {
    */
   inputPlaceholderForNoContext: 'Ask AI Assistance',
   /**
-   * @description Placeholder text for the chat UI input with branding Gemini (do not translate)
-   */
-  inputPlaceholderForNoContextBranded: 'Ask Gemini',
-  /**
    * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForAccessibility: 'Ask a question about the selected Lighthouse report',
@@ -1322,9 +1318,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #getContextlessPlaceholder(): Platform.UIString.LocalizedString {
-    return AiAssistanceModel.AiUtils.isGeminiBranding() ?
-        lockedString(UIStringsNotTranslate.inputPlaceholderForNoContextBranded) :
-        lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
+    return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
   }
 
   #getChatInputPlaceholder(): Platform.UIString.LocalizedString {

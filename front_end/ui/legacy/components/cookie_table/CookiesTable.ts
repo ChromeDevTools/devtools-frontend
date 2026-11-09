@@ -302,7 +302,7 @@ export class CookiesTable extends UI.Widget.VBox {
                   <td>${input.showAiButton ? html`
                       <span class="ai-button-container">
                         <devtools-floating-button
-                          icon-name=${Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled ? 'spark' : 'smart-assistant'}
+                          icon-name="smart-assistant"
                           title=${ifDefined(isHttpOnly ? i18nString(UIStrings.httpOnlyCookiesCannotBeAdded) : input.aiButtonTitle)}
                           ?disabled=${isHttpOnly}
                           @click=${(e: Event) => !isHttpOnly && input.onAiButtonClick?.(cookie, e)}

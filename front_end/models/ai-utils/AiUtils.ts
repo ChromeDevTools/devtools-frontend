@@ -127,10 +127,6 @@ export const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor: Common.Settin
   defaultValue: false,
 };
 
-export function isGeminiBranding(): boolean {
-  return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
-}
-
 export function isNaturalLanguageInterfaceEnabled(): boolean {
   return Boolean(Root.Runtime.hostConfig.devToolsAiNaturalLanguageInterface?.enabled);
 }
@@ -199,7 +195,7 @@ export function getDisabledReasons(aidaAvailability: Host.AidaClient.AidaAccessP
 }
 
 export function getIconName(): string {
-  return isGeminiBranding() ? 'spark' : 'smart-assistant';
+  return 'smart-assistant';
 }
 
 export interface OneShotPromptRequest {

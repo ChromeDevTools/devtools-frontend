@@ -116,7 +116,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
       return Lit.nothing;
     }
 
-    const aiLabel = AIAssistance.AiUtils.isGeminiBranding() ? 'Ask Gemini' : 'Ask AI';
+    const aiLabel = 'Ask AI';
     const ariaLabel = `${aiLabel} about ${model.title} insight`;
     const content = renderContent();
     const iconName = AIAssistance.AiUtils.getIconName();

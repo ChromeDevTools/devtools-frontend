@@ -12,8 +12,6 @@ devtools_image_files = [
   "chromeRight.avif",
   "cssoverview_icons_2x.avif",
   "touchCursor_2x.png",
-  "geminiInDevTools.png",
-  "geminiInDevTools_2x.png",
   "touchCursor.png",
   "gdp-logo-light.png",
   "gdp-logo-dark.png",

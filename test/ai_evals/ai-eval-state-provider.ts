@@ -174,6 +174,7 @@ export class AiEvalStateProvider extends StateProvider {
   // Target types of all registered eval tests. Suites are registered while the test files
   // are loaded, i.e. before `startEvalRun` is called from the global setup.
   #evalTypes = new Set<string>();
+  #visitedOrigins = new Set<string>();
   #navigationListeners = new WeakMap<puppeteer.Page, (frame: puppeteer.Frame) => void>();
 
   override registerSuiteSettings(suite: Mocha.Suite, suiteSettings: AiEvalSuiteSettings): void {
@@ -194,6 +195,7 @@ export class AiEvalStateProvider extends StateProvider {
     this.#taskTokens = new Map();
     this.#resolvedModel = null;
     this.#resultStores = [];
+    this.#visitedOrigins = new Set();
     const targets = [...this.#evalTypes];
     const agent = targets.length === 1 ? `devtools-${targets[0]}` : MIXED_TARGETS_AGENT;
     this.#logger.append(`Evaluation run started for ${this.#runId} at ${this.#runStartTimestamp}`);
@@ -258,8 +260,32 @@ export class AiEvalStateProvider extends StateProvider {
 
   override async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number): Promise<InspectedPage> {
     const page = await context.newPage();
+    await this.#resetEvalAppState(page);
     await page.bringToFront();
     return new InspectedPage(page, serverPort);
+  }
+
+  /**
+   * Evals share the signed-in default browser context, so site data and HTTP cache
+   * persist between tests. Clear them before each test for test isolation.
+   */
+  async #resetEvalAppState(page: puppeteer.Page): Promise<void> {
+    if (this.#visitedOrigins.size === 0) {
+      return;
+    }
+    const session = await page.createCDPSession();
+    try {
+      for (const origin of this.#visitedOrigins) {
+        await session.send('Storage.clearDataForOrigin', {
+          origin,
+          storageTypes: 'all',
+        });
+      }
+      await session.send('Network.clearBrowserCache');
+      this.#visitedOrigins.clear();
+    } finally {
+      await session.detach();
+    }
   }
 
   #resolveEvalConfig(suite: Mocha.Suite): AiEvalConfig|undefined {
@@ -328,17 +354,26 @@ export class AiEvalStateProvider extends StateProvider {
     if (evalTask.isConfigured) {
       this.#logger.append(`[Task ${evalTask.taskId}] Starting task (target: ${evalTask.type})`);
       evalTask.log(`Prepared task ${evalTask.taskId}`);
-      let lastNavigatedUrl = '';
-      const onFrameNavigated = (frame: puppeteer.Frame): void => {
-        const url = frame.url();
-        if (frame === baseState.inspectedPage.page.mainFrame() && url !== 'about:blank' && url !== lastNavigatedUrl) {
-          lastNavigatedUrl = url;
+    }
+    let lastNavigatedUrl = '';
+    const onFrameNavigated = (frame: puppeteer.Frame): void => {
+      const url = frame.url();
+      if (frame === baseState.inspectedPage.page.mainFrame() && url !== 'about:blank' && url !== lastNavigatedUrl) {
+        lastNavigatedUrl = url;
+        // Base apps run on localhost (e.g. http://localhost:3000). Keep track of
+        // visited localhost origins only, so that clearing state before the next
+        // test does not remove the Google sign-in cookies that AIDA depends on.
+        const parsedUrl = URL.parse(url);
+        if (parsedUrl?.hostname === 'localhost') {
+          this.#visitedOrigins.add(parsedUrl.origin);
+        }
+        if (evalTask.isConfigured) {
           evalTask.log(`Navigated to ${url}`);
         }
-      };
-      this.#navigationListeners.set(baseState.inspectedPage.page, onFrameNavigated);
-      baseState.inspectedPage.page.on('framenavigated', onFrameNavigated);
-    }
+      }
+    };
+    this.#navigationListeners.set(baseState.inspectedPage.page, onFrameNavigated);
+    baseState.inspectedPage.page.on('framenavigated', onFrameNavigated);
     return {...baseState, evalTask};
   }
 

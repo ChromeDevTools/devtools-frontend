@@ -1602,20 +1602,11 @@ export abstract class AiAgent<T> {
 
     const requestTimestamp = Math.floor(Date.now() * 1000);
     for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
-      if (aidaResponse.functionCalls?.length) {
-        yield {
-          rpcId,
-          functionCalls: aidaResponse.functionCalls,
-          completed: true,
-          text: aidaResponse.explanation,
-        };
-        break;
-      }
-
       rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
       yield {
         rpcId,
         text: aidaResponse.explanation,
+        functionCalls: aidaResponse.functionCalls,
         completed: aidaResponse.completed,
       };
     }

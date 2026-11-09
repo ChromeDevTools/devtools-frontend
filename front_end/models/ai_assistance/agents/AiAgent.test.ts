@@ -1152,6 +1152,43 @@ describe('AiAgent', () => {
         ]);
       });
 
+      it('preserves rpcId on answers from single-chunk functionCalls and suggestFollowUps responses', async () => {
+        const aidaClient = mockAidaClient([
+          [{
+            explanation: 'Checking state',
+            metadata: {rpcGlobalId: 101},
+            functionCalls: [{name: 'fnA', args: {}}],
+          }],
+          [{
+            explanation: 'Done',
+            metadata: {rpcGlobalId: 202},
+            functionCalls: [{name: 'suggestFollowUps', args: {suggestions: ['Next step']}}],
+          }],
+        ]);
+        const agent = new AiAgentMock({aidaClient});
+        declareFn(agent, 'fnA', async () => ({result: 'a'}));
+
+        const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+        const answers = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ANSWER);
+
+        assert.deepEqual(answers, [
+          {
+            type: AiAssistance.AiAgent.ResponseType.ANSWER,
+            text: 'Checking state',
+            complete: true,
+            rpcId: 101,
+            suggestions: undefined,
+          },
+          {
+            type: AiAssistance.AiAgent.ResponseType.ANSWER,
+            text: 'Done',
+            complete: true,
+            rpcId: 202,
+            suggestions: ['Next step'],
+          },
+        ]);
+      });
+
       it('asks for approval for each call in turn', async () => {
         const aidaClient = mockAidaClient([
           [{

@@ -51,6 +51,11 @@ describeWithEnvironment('SplitWidget', () => {
     assert.isFalse(widget.isVertical());
   });
 
+  it('sets jslog attribute with drag tracking on the resizer element', () => {
+    const widget = new SplitWidget(true, false);
+    assert.strictEqual(widget.resizerElement().getAttribute('jslog'), 'Resizer; track: drag');
+  });
+
   it('stacks the widgets when an auto-oriented split widget is narrow', () => {
     const container = document.createElement('div');
     container.style.display = 'flex';

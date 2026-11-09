@@ -632,6 +632,30 @@ describe('TimelinePanel', function() {
         assert.isDefined(castedEvent.args.data.sourceText);
       });
 
+      it('uses the scripts of the saved trace, not the last parsed trace', async function() {
+        const {traceEvents, metadata} =
+            await TraceLoader.traceFile(this, 'chrome-ext-sourcemap-script-content.json.gz');
+        await timeline.loadingComplete([...traceEvents], null, metadata);
+        // Clear the trace engine's global handler state, as parsing another trace does.
+        timeline.model.resetProcessor();
+
+        await timeline.saveToFile({
+          includeResourceContent: true,
+          includeSourceMaps: false,
+          addModifications: false,
+          shouldCompress: false,
+        });
+
+        const [, contentData] = saveSpy.getCall(0).args;
+        const file = await contentDataToFile(contentData);
+        // 7192505913775043000.8 is a chrome-extension script in the trace.
+        const extensionScriptEvent = file.traceEvents.find(event => {
+          return Trace.Types.Events.isAnyScriptSourceEvent(event) && event.args.data.isolate === 7192505913775043000 &&
+              event.args.data.scriptId === 8;
+        });
+        assert.strictEqual(extensionScriptEvent?.name, 'StubScriptCatchup');
+      });
+
       it('from trace sourcemaps when saving a trace with "Include source map" on', async function() {
         const {traceEvents, metadata} =
             await TraceLoader.traceFile(this, 'chrome-ext-sourcemap-script-content.json.gz');

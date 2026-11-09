@@ -79,8 +79,8 @@ button {
   &.toolbar,
   &.icon,
   &.only-icon {
-    --button-height: 26px;
-    --button-width: 26px;
+    --button-height: var(--sys-size-11);
+    --button-width: var(--sys-size-11);
     --icon-size: var(--sys-size-9);
 
     padding: 0;

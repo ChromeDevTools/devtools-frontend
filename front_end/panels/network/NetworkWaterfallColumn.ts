@@ -17,11 +17,17 @@ import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
 import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
 import {RequestTimingView} from './RequestTimingView.js';
 
-const {ref} = Directives;
+const {ref, styleMap} = Directives;
 
 const BAR_SPACING = 1;
 
 export interface ViewInput {
+  /** Canvas width in CSS pixels. */
+  width: number;
+  /** Canvas height in CSS pixels. */
+  height: number;
+  /** Ratio between the canvas backing store size and its CSS size. */
+  pixelRatio: number;
   onMouseMove: (offsetY: number, shiftKey: boolean) => void;
   onMouseLeave: () => void;
   onClick: (offsetY: number) => boolean;
@@ -34,11 +40,17 @@ export interface ViewOutput {
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
+  const width = Math.max(0, input.width);
+  const height = Math.max(0, input.height);
+  const pixelRatio = Math.max(0, input.pixelRatio);
   // clang-format off
   render(html`
     <style>${networkWaterfallColumnStyles}</style>
     <canvas
       tabindex="-1"
+      width=${Math.round(width * pixelRatio)}
+      height=${Math.round(height * pixelRatio)}
+      style=${styleMap({width: `${width}px`, height: `${height}px`})}
       @mousemove=${(event: MouseEvent) => input.onMouseMove(event.offsetY, event.shiftKey)}
       @mouseleave=${input.onMouseLeave}
       @click=${(event: MouseEvent) => {
@@ -137,6 +149,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
   override performUpdate(): void {
     this.#view({
+      width: this.offsetWidth,
+      height: this.offsetHeight,
+      pixelRatio: window.devicePixelRatio,
       onMouseMove: (offsetY, shiftKey) => this.setHoveredNode(this.getNodeFromPoint(offsetY), shiftKey),
       onMouseLeave: () => this.setHoveredNode(null, false),
       onClick: offsetY => this.setSelectedNode(this.getNodeFromPoint(offsetY)),
@@ -403,18 +418,12 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
     this.startTime = this.calculator.minimumBoundary();
     this.endTime = this.calculator.maximumBoundary();
-    this.resetCanvas();
+    // Render synchronously, because the canvas must have its new size before
+    // we draw on it.
+    this.performUpdate();
     this.resetPaths();
     this.textLayers = [];
     this.draw();
-  }
-
-  private resetCanvas(): void {
-    const ratio = window.devicePixelRatio;
-    this.canvas.width = this.offsetWidth * ratio;
-    this.canvas.height = this.offsetHeight * ratio;
-    this.canvas.style.width = this.offsetWidth + 'px';
-    this.canvas.style.height = this.offsetHeight + 'px';
   }
 
   override onResize(): void {
@@ -449,6 +458,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     if (!context) {
       return;
     }
+    // The view only resizes the canvas (which implicitly clears it) when its
+    // dimensions change, so explicitly clear the bitmap and the drawing state.
+    context.reset();
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.translate(0, this.headerHeight);

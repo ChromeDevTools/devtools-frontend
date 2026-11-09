@@ -6,8 +6,18 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("storage") {
   sources = [
+    "storage-analytics-cookie-query-tracking.test.ts",
+    "storage-analytics-network-request.test.ts",
+    "storage-bfcache-eligibility.test.ts",
     "storage-cookie-missing-max-age.test.ts",
+    "storage-explain-cookie-entry.test.ts",
+    "storage-find-setting-mechanism.test.ts",
+    "storage-find-setting-source-file.test.ts",
+    "storage-origin-usage-breakdown.test.ts",
     "storage-session-vs-local-cart.test.ts",
+    "storage-speculation-rules-status.test.ts",
+    "storage-sw-intercepted-requests.test.ts",
+    "storage-sw-source-status.test.ts",
   ]
 
   ts_deps = [

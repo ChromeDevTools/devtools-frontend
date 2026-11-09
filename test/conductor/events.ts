@@ -42,6 +42,7 @@ const ALLOWED_ASSERTION_FAILURES = [
   // neterror.js started serving sourcemaps and we're requesting it unnecessarily.
   'Request Network.loadNetworkResource failed. {"code":-32602,"message":"Unsupported URL scheme"}',
   'Fetch API cannot load chrome-error://chromewebdata/neterror.rollup.js.map. URL scheme "chrome-error" is not supported.',
+  'Couldn’t load content for webpack://',
   'Request Storage.getAffectedUrlsForThirdPartyCookieMetadata failed.',
   'Hash of blocked script',
   // CXX debugging extension dummy icon error.

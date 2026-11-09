@@ -172,10 +172,6 @@
   display: block;
 }
 
-.step-details {
-  overflow: auto;
-}
-
 .summary {
   display: flex;
   flex-flow: row nowrap;
@@ -202,10 +198,6 @@
   border-radius: 0;
   flex-shrink: 0;
   height: var(--sys-size-11);
-
-  --override-select-menu-show-button-border-radius: 0;
-  --override-select-menu-show-button-outline: none;
-  --override-select-menu-show-button-padding: 0;
 }
 
 .step.has-breakpoint .circle-icon {

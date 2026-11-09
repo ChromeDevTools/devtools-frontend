@@ -2119,6 +2119,24 @@ export class PositionAnchorRenderer extends PositionAnchorRendererBase {
   }
 }
 
+function findSiblingProperty(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement,
+                             propertyName: string): StylePropertyTreeElement|undefined {
+  const resolvedProperty = treeElement.matchedStyles().resolveProperty(propertyName, treeElement.property.ownerStyle);
+  const activeSection = treeElement.section();
+  if (resolvedProperty) {
+    const allSections = stylesContainer.allSections();
+    const sections = !allSections.includes(activeSection) ? [activeSection, ...allSections] : allSections;
+    for (const section of sections) {
+      const found = section.findProperty(resolvedProperty);
+      if (found) {
+        return found;
+      }
+    }
+  }
+
+  return activeSection.findProperty(propertyName);
+}
+
 const PositionAreaRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionAreaMatch> =
     rendererBase(SDK.CSSPropertyParserMatchers.PositionAreaMatch);
 // clang-format off
@@ -2139,36 +2157,6 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  #findTreeElementForProperty(propertyName: string): StylePropertyTreeElement|undefined {
-    const activeTreeElement = PositionAreaRenderer.#active?.treeElement;
-    if (!activeTreeElement) {
-      return undefined;
-    }
-    const matchedStyles = activeTreeElement.matchedStyles();
-    const resolvedProperty = matchedStyles.resolveProperty(propertyName, activeTreeElement.property.ownerStyle);
-    const activeSection = activeTreeElement.section();
-    if (resolvedProperty) {
-      const allSections = this.#stylesContainer.allSections();
-      const sections =
-          activeSection && !allSections.includes(activeSection) ? [activeSection, ...allSections] : allSections;
-      for (const section of sections) {
-        for (const child of section.propertiesTreeOutline?.rootElement().children() ?? []) {
-          if (child instanceof StylePropertyTreeElement && child.property === resolvedProperty) {
-            return child;
-          }
-        }
-      }
-    }
-
-    return this.#findPropertyInSection(activeSection, propertyName);
-  }
-
-  #findPropertyInSection(section: StylePropertiesSection|undefined, propertyName: string): StylePropertyTreeElement
-      |undefined {
-    return section?.propertiesTreeOutline?.rootElement().children().find(
-        (child): child is StylePropertyTreeElement =>
-            child instanceof StylePropertyTreeElement && child.property.name === propertyName);
-  }
   override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     // The text of the match is the value as authored, which may contain comments or var()s that resolve to the area.
@@ -2209,7 +2197,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
 
       const initialProperties = new Map<string, {value: string, section: StylePropertiesSection}>();
       for (const propertyName of PositionAreaRenderer.#EDITABLE_PROPERTIES) {
-        const target = this.#findTreeElementForProperty(propertyName);
+        const target = findSiblingProperty(this.#stylesContainer, active.treeElement, propertyName);
         if (target) {
           initialProperties.set(propertyName, {
             value: target.property.value,
@@ -2243,26 +2231,9 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       const onPropertyChanged =
           async(changeEvent: Common.EventTarget.EventTargetEvent<InlineEditor.PositionAreaEditor.PropertyChangeEvent>):
               Promise<void> => {
-                const activeSection = active.treeElement.section();
-                if (!activeSection) {
-                  return;
-                }
                 const {propertyName, value} = changeEvent.data;
-                let target = this.#findTreeElementForProperty(propertyName);
-                if (value) {
-                  if (!target) {
-                    target = activeSection.addNewBlankProperty();
-                    target.property.name = propertyName;
-                  }
-                  target.property.value = value;
-                  target.updateTitle();
-                  await target.applyStyleText(target.renderedPropertyText(), false);
-                  this.#stylesContainer.refreshUpdate(activeSection, target, true);
-                } else if (target) {
-                  await target.applyStyleText('', false);
-                  this.#stylesContainer.refreshUpdate(activeSection, target, true);
-                }
-                void updateEditorProperties();
+                await active.treeElement.setSiblingProperty(propertyName, value);
+                await updateEditorProperties();
               };
       editor.addEventListener(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, onPositionAreaChanged);
       editor.addEventListener(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED, onPropertyChanged);
@@ -2291,7 +2262,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         for (const propertyName of PositionAreaRenderer.#EDITABLE_PROPERTIES) {
           const originalTarget = initialProperties.get(propertyName);
           const targetSection = originalTarget?.section ?? active.treeElement.section();
-          const target = this.#findPropertyInSection(targetSection, propertyName);
+          const target = targetSection.findProperty(propertyName);
           const oldValue = originalTarget?.value ?? '';
           const newValue = target?.property.value ?? '';
           const ruleHeader = targetSection.headerText();
@@ -2638,6 +2609,24 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   carryOverCommittedProperty(previous: StylePropertyTreeElement): void {
     this.#lastCommittedProperty = previous.#lastCommittedProperty;
   }
+
+  async setSiblingProperty(propertyName: string, value?: string): Promise<void> {
+    let target = findSiblingProperty(this.#stylesContainer, this, propertyName);
+    if (value) {
+      if (!target) {
+        target = this.#parentSection.addNewBlankProperty();
+        target.property.name = propertyName;
+      }
+      target.property.value = value;
+      target.updateTitle();
+      await target.applyStyleText(target.renderedPropertyText(), false);
+      this.#stylesContainer.refreshUpdate(target.section(), target, true);
+    } else if (target) {
+      await target.applyStyleText('', false);
+      this.#stylesContainer.refreshUpdate(target.section(), target, true);
+    }
+  }
+
   async gridNames(): Promise<Set<string>> {
     if (!SDK.CSSMetadata.cssMetadata().isGridNameAwareProperty(this.name)) {
       return new Set();

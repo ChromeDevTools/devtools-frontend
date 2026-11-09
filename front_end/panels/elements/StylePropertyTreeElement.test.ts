@@ -4317,7 +4317,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
   describe('Keyboard navigation and undo against a live CSSModel', () => {
     const liveStyleSheetId = 'live-sheet' as Protocol.DOM.StyleSheetId;
+    const matchedStyleSheetId = 'matched-sheet' as Protocol.DOM.StyleSheetId;
     let sheetText: string;
+    let matchedSheetText: string;
     let setStyleTextsStub: sinon.SinonStub;
     let markUndoableStateStub: sinon.SinonStub;
     let undoStub: sinon.SinonStub;
@@ -4357,11 +4359,11 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       };
     }
 
-    // The declarations in the current style sheet text, in order, independent of whitespace formatting.
-    function declarations(): string[] {
-      return stylePayload(sheetText).cssProperties.map(property => property.disabled ?
-                                                           `/* ${property.name}: ${property.value}; */` :
-                                                           `${property.name}: ${property.value}`);
+    // The declarations in the given style sheet text, in order, independent of whitespace formatting.
+    function declarations(text = sheetText): string[] {
+      return stylePayload(text).cssProperties.map(property => property.disabled ?
+                                                      `/* ${property.name}: ${property.value}; */` :
+                                                      `${property.name}: ${property.value}`);
     }
 
     async function createLiveSection(cssText: string, {inline = false}: {inline?: boolean} = {}) {
@@ -4371,8 +4373,13 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       connection.setHandler('CSS.getStyleSheetText', null);
       connection.setSuccessHandler('CSS.getStyleSheetText', () => ({text: sheetText}));
       setStyleTextsStub = sinon.stub().callsFake((params: Protocol.CSS.SetStyleTextsRequest) => {
-        sheetText = params.edits[0].text;
-        return {styles: [stylePayload(sheetText, params.edits[0].styleSheetId)]};
+        const {styleSheetId, text} = params.edits[0];
+        if (styleSheetId === matchedStyleSheetId) {
+          matchedSheetText = text;
+        } else {
+          sheetText = text;
+        }
+        return {styles: [stylePayload(text, styleSheetId)]};
       });
       connection.setHandler('CSS.setStyleTexts', null);
       connection.setSuccessHandler('CSS.setStyleTexts', setStyleTextsStub);
@@ -4432,14 +4439,15 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       return section;
     }
 
-    function addMatchedSection(section: Elements.StylePropertiesSection.StylePropertiesSection, cssText: string): void {
+    function addMatchedSection(section: Elements.StylePropertiesSection.StylePropertiesSection,
+                               cssText: string): Elements.StylePropertiesSection.StylePropertiesSection {
       const matchedStyles = section.matchedStyles;
-      const styleSheetId = 'matched-sheet' as Protocol.DOM.StyleSheetId;
+      matchedSheetText = cssText;
       const rule = new SDK.CSSRule.CSSStyleRule(matchedStyles.cssModel(), {
         selectorList: {selectors: [{text: 'div'}], text: 'div'},
         origin: Protocol.CSS.StyleSheetOrigin.Regular,
-        styleSheetId,
-        style: stylePayload(cssText, styleSheetId),
+        styleSheetId: matchedStyleSheetId,
+        style: stylePayload(cssText, matchedStyleSheetId),
       });
       const matchedSection = new Elements.StylePropertiesSection.StylePropertiesSection(
           stylesSidebarPane, matchedStyles, rule.style, 1, null, null, null);
@@ -4454,6 +4462,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       sinon.stub(matchedStyles, 'resolveProperty')
           .callsFake((name, ownerStyle) => resolveProperty(name, ownerStyle) ??
                          rule.style.allProperties().findLast(prop => prop.name === name) ?? null);
+      return matchedSection;
     }
 
     function treeElementAt(section: Elements.StylePropertiesSection.StylePropertiesSection,
@@ -4950,6 +4959,38 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         sinon.assert.calledWithExactly(
             changeTracker.trackChange,
             'Removed style property "justify-self: end" from rule "element.style"',
+            sinon.match.object,
+        );
+      });
+
+      it('edits and tracks a sibling property that PositionAreaRenderer resolves in another section', async () => {
+        const section = await createLiveSection('position-area: top left;', {inline: true});
+        const matchedSection = addMatchedSection(section, 'justify-self: start;');
+        const button = treeElementAt(section, 0).valueElement?.querySelector<HTMLElement>('.position-area-swatch-icon');
+        assert.exists(button);
+
+        const showSpy = sinon.spy(stylesSidebarPane.swatchPopoverHelper(), 'show');
+        button.click();
+        sinon.assert.calledOnce(showSpy);
+        const editor = showSpy.firstCall.args[0];
+        assert.instanceOf(editor, InlineEditor.PositionAreaEditor.PositionAreaEditor);
+
+        editor.dispatchEventToListeners(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED,
+                                        {propertyName: 'justify-self', value: 'center'});
+        await waitFor(() => declarations(matchedSheetText).includes('justify-self: center'));
+
+        // The sibling property is edited in the section that declares it, not in the active section.
+        assert.deepEqual(declarations(), ['position-area: top left']);
+        assert.strictEqual(treeElementAt(matchedSection, 0).property.value, 'center');
+        sinon.assert.notCalled(changeTracker.trackChange);
+
+        const trackChangePromise = expectCalled(changeTracker.trackChange);
+        stylesSidebarPane.swatchPopoverHelper().hide(true);
+        await trackChangePromise;
+
+        sinon.assert.calledOnceWithExactly(
+            changeTracker.trackChange,
+            'Changed style property "justify-self" from "start" to "center" in rule "div"',
             sinon.match.object,
         );
       });

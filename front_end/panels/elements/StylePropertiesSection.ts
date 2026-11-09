@@ -1312,6 +1312,13 @@ export class StylePropertiesSection {
     return (curSection?.editable) ? curSection : null;
   }
 
+  findProperty(propertyOrName: SDK.CSSProperty.CSSProperty|string): StylePropertyTreeElement|undefined {
+    return this.propertiesTreeOutline.rootElement().children().findLast(
+        (child): child is StylePropertyTreeElement => child instanceof StylePropertyTreeElement &&
+            (typeof propertyOrName === 'string' ? child.property.name === propertyOrName :
+                                                  child.property === propertyOrName));
+  }
+
   refreshUpdate(editedTreeElement: StylePropertyTreeElement): void {
     this.stylesContainer.refreshUpdate(this, editedTreeElement);
   }

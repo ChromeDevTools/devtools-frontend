@@ -49,8 +49,6 @@ _EXCLUDED_PATHS = [
     r'^node_modules[\\/].*',  # 3rd party code
     r'^scripts[\\/]build[\\/]code_generator_frontend\.py$',
     r'^scripts[\\/]deps[\\/]manage_node_deps\.py$',  # Lines too long
-    # Auto-generated files
-    r'front_end[\\/]generated[\\/]InspectorBackendCommands\.ts$'
 ]
 
 
@@ -331,13 +329,6 @@ def CheckGeneratedFiles(input_api, output_api):
 
     generated_supported_css_path = input_api.os_path.join(
         scripts_build_path, 'generate_supported_css.py')
-    generated_protocol_path = input_api.os_path.join(
-        scripts_build_path, 'code_generator_frontend.py')
-    generated_protocol_typescript_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'scripts', 'protocol_typescript')
-    concatenate_protocols_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'third_party', 'inspector_protocol',
-        'concatenate_protocols.py')
 
     affected_files = _GetAffectedFiles(input_api, [
         v8_directory_path,
@@ -345,10 +336,7 @@ def CheckGeneratedFiles(input_api, output_api):
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party',
                                'pyjson5'),
         generated_supported_css_path,
-        concatenate_protocols_path,
-        generated_protocol_path,
         scripts_generated_output_path,
-        generated_protocol_typescript_path,
     ], [], ['.pdl', '.json5', '.py', '.js', '.ts'])
 
     if len(affected_files) == 0:

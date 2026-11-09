@@ -33,7 +33,9 @@ handlers spanning several layers and processes, e.g. have instances in
 ### browser_protocol.pdl
 
 The `browser_protocol.pdl` file is the source of truth that is used to generate
-the `browser_protocol.json` file and the `.ts`, `.h` and `.cc` files.
+the `.ts`, `.h` and `.cc` files. DevTools generates its TypeScript types from
+it at build time (see `front_end/generated/BUILD.gn`); they end up under
+`out/Default/gen/front_end/generated/`.
 
 However, there are multiple `browser_protocol.pdl` files across the codebase.
 The main one is located at (in your chromium repo):

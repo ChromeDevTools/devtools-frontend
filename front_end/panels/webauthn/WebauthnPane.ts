@@ -317,7 +317,7 @@ function renderNewAuthenticatorSection(
           <select id="protocol" jslog=${VisualLogging.dropDown('protocol').track({change: true})}
               value=${options.protocol}
               @change=${(e:Event) => onUpdate({protocol: (e.target as HTMLSelectElement).value as Protocol.WebAuthn.AuthenticatorProtocol})}>
-            ${Object.values(PROTOCOL_AUTHENTICATOR_VALUES).sort().map(option => html`
+            ${Object.values<Protocol.WebAuthn.AuthenticatorProtocol>(PROTOCOL_AUTHENTICATOR_VALUES).sort().map(option => html`
               <option value=${option} jslog=${VisualLogging.item(option).track({click: true})}>
                 ${option}
               </option>`)}

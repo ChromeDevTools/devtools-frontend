@@ -28,11 +28,6 @@ export default defineConfig([
 
     'front_end/diff/diff_match_patch.js',
     'front_end/models/javascript_metadata/NativeFunctions.ts',
-    // All of these scripts are auto-generated so don't lint them.
-    'front_end/generated/InspectorBackendCommands.ts',
-    'front_end/generated/protocol-mapping.d.ts',
-    'front_end/generated/protocol-proxy-api.d.ts',
-    'front_end/generated/protocol.ts',
     // Any third_party addition has its source code checked out into
     // third_party/X/package, so we ignore that code as it's not code we author or
     // own.

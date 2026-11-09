@@ -168,15 +168,30 @@ describe('esbuild_plugin can compute paths with', () => {
   });
 
   it('importing generated files', () => {
-    assert.deepEqual(
-        plugin({
-          path: '../../generated/protocol.js',
-          importer: path.join(devtoolsRoot, 'front_end/core/sdk/FirstFile.js'),
-        }),
-        {
-          path: path.join(devtoolsRoot, 'front_end/generated/protocol.ts'),
-        },
-    );
+    // protocol.ts is generated into the gen directory (see
+    // front_end/generated/BUILD.gn); the source tree has neither it nor the
+    // JS that tsc emits for it.
+    const jsFile = path.join(devtoolsRoot, 'front_end/generated/protocol.js');
+    const tsFile = path.join(devtoolsRoot, 'front_end/generated/protocol.ts');
+    const genTsFile = path.join(genRoot, 'front_end/generated/protocol.ts');
+    const stub = sinon.stub(fs, 'existsSync');
+    stub.callThrough();
+    stub.withArgs(jsFile).returns(false);
+    stub.withArgs(tsFile).returns(false);
+    stub.withArgs(genTsFile).returns(true);
+    try {
+      assert.deepEqual(
+          plugin({
+            path: '../../generated/protocol.js',
+            importer: path.join(devtoolsRoot, 'front_end/core/sdk/FirstFile.js'),
+          }),
+          {
+            path: genTsFile,
+          },
+      );
+    } finally {
+      stub.restore();
+    }
   });
 
   it('resolves TypeScript source files when importing JS', () => {

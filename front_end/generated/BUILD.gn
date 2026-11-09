@@ -31,9 +31,8 @@ generated_ts("generate_aria_properties") {
   ]
 }
 
-# Generated sources live in $target_gen_dir and a ts_library() has a single
-# root directory, so they get their own library until the remaining sources of
-# :generated are generated at build time too.
+# Each generated source gets its own ts_library(), so that a change to one of
+# them recompiles only its consumers.
 ts_library("aria_properties") {
   rootdir = target_gen_dir
   sources = [ "$target_gen_dir/ARIAProperties.ts" ]
@@ -67,11 +66,116 @@ ts_library("supported_css_properties") {
   sources = [ "SupportedCSSProperties.ts" ]
 }
 
+# The protocol definitions: the PDL files are concatenated into one JSON, from
+# which the two generators below derive the TypeScript sources.
+_devtools_protocol_dir =
+    devtools_chromium_deps_root + "third_party/blink/public/devtools_protocol/"
+_browser_protocol = _devtools_protocol_dir + "browser_protocol.pdl"
+_js_protocol = devtools_chromium_deps_root + "v8/include/js_protocol.pdl"
+
+# browser_protocol.pdl includes one file per domain. The list is taken from
+# its `include` lines, so a new domain needs no change here; the PDL is an
+# input of the action, so the build picks up changes to it, and GN re-runs
+# when a file it read changes.
+_protocol_domains = []
+foreach(line,
+        filter_include(read_file(_browser_protocol, "list lines"),
+                       [ "include *" ])) {
+  _protocol_domains +=
+      [ _devtools_protocol_dir + string_replace(line, "include ", "", 1) ]
+}
+
+_protocol_json = "$target_gen_dir/browser_protocol.json"
+
+# Like generated_ts(), but the output is the JSON that the generators read.
+action("concatenate_protocols") {
+  script = "../../scripts/build/run_with_restat.py"
+
+  # The concatenation script is a tool rather than one of the rolled Chromium
+  # files, so it is not under devtools_chromium_deps_root: like
+  # //third_party/node in node.gni, it resolves to the DEPS checkout in a
+  # standalone build and to Chromium's own copy in a Chromium build, where
+  # the DEPS checkout does not exist.
+  _inspector_protocol_dir = "//third_party/inspector_protocol/"
+  _concatenate = _inspector_protocol_dir + "concatenate_protocols.py"
+  inputs = [
+             _concatenate,
+             _inspector_protocol_dir + "pdl.py",
+             "../../scripts/build/response_file.py",
+             _browser_protocol,
+             _js_protocol,
+           ] + _protocol_domains
+  outputs = [ _protocol_json ]
+  args = rebase_path(outputs, root_build_dir) + [
+           "--",
+           rebase_path(_concatenate, root_build_dir),
+           rebase_path(_browser_protocol, root_build_dir),
+           rebase_path(_js_protocol, root_build_dir),
+           rebase_path(_protocol_json, root_build_dir),
+         ]
+}
+
+generated_ts("generate_inspector_backend_commands") {
+  script = "../../scripts/build/code_generator_frontend.py"
+  inputs = [ _protocol_json ]
+  outputs = [ "$target_gen_dir/InspectorBackendCommands.ts" ]
+  args = [
+    "--input",
+    rebase_path(_protocol_json, root_build_dir),
+    "--output",
+    rebase_path(outputs[0], root_build_dir),
+  ]
+  deps = [ ":concatenate_protocols" ]
+}
+
+generated_ts("generate_protocol_typescript") {
+  script = "../../scripts/build/generate_protocol_typescript.py"
+  inputs = [
+    "../../scripts/node_modules_hook.mjs",
+    "../../scripts/package.json",
+    "../../scripts/protocol_typescript/protocol_dts_generator.ts",
+    "../../scripts/protocol_typescript/protocol_schema.d.ts",
+    "../../third_party/node/node.py",
+    "../../third_party/node/node_path.py",
+    _protocol_json,
+  ]
+  if (host_os == "linux") {
+    inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
+  } else if (host_os == "win") {
+    inputs += [ "//third_party/node/win/node.exe" ]
+  } else if (host_os == "mac") {
+    if (host_cpu == "arm64") {
+      inputs += [ "//third_party/node/mac_arm64/node-darwin-arm64/bin/node" ]
+    } else {
+      inputs += [ "//third_party/node/mac/node-darwin-x64/bin/node" ]
+    }
+  }
+  outputs = [
+    "$target_gen_dir/protocol.ts",
+    "$target_gen_dir/protocol-mapping.d.ts",
+    "$target_gen_dir/protocol-proxy-api.d.ts",
+  ]
+  args = [
+    "--output-dir",
+    rebase_path(target_gen_dir, root_build_dir),
+    rebase_path(_protocol_json, root_build_dir),
+  ]
+  deps = [ ":concatenate_protocols" ]
+}
+
+# The protocol sources keep the :generated name, which most of the front_end
+# depends on. The `const enum`s of protocol.ts are inlined into the consumers,
+# so protocol.js is empty at runtime, but it stays a module.
 ts_library("generated") {
+  rootdir = target_gen_dir
   sources = [
-    "InspectorBackendCommands.ts",
-    "protocol-mapping.d.ts",
-    "protocol-proxy-api.d.ts",
-    "protocol.ts",
+    "$target_gen_dir/InspectorBackendCommands.ts",
+    "$target_gen_dir/protocol-mapping.d.ts",
+    "$target_gen_dir/protocol-proxy-api.d.ts",
+    "$target_gen_dir/protocol.ts",
+  ]
+  deps = [
+    ":generate_inspector_backend_commands",
+    ":generate_protocol_typescript",
   ]
 }

@@ -15,11 +15,34 @@ export const makeEmptyTraceEntryTree = (): TraceEntryTree => ({
   maxDepth: 0,
 });
 
+// Most nodes in a trace tree are leaves, and most parent nodes have a single
+// child. Sharing an empty array for leaves and creating a 1-element literal on
+// the first append avoids allocating an empty JSArray per leaf and a 17-slot
+// backing store for single-child parents. This array is kept unfrozen so V8
+// uses the same PACKED_ELEMENTS map across leaf and parent children arrays.
+const EMPTY_CHILDREN: TraceEntryNode[] = [];
+
+/**
+ * Appends a child to a `TraceEntryNode`.
+ *
+ * Call this helper instead of `parent.children.push(child)`. Nodes created by
+ * `makeEmptyTraceEntryNode` share a single empty array for their children to
+ * save memory; mutating `parent.children` directly on a leaf node corrupts all
+ * leaf nodes.
+ */
+export function appendChild(parent: TraceEntryNode, child: TraceEntryNode): void {
+  if (parent.children === EMPTY_CHILDREN) {
+    parent.children = [child];
+  } else {
+    parent.children.push(child);
+  }
+}
+
 export const makeEmptyTraceEntryNode = (entry: Types.Events.Event, id: TraceEntryNodeId): TraceEntryNode => ({
   entry,
   id,
   parent: null,
-  children: [],
+  children: EMPTY_CHILDREN,
   depth: 0,
   // selfTime is set on every node after creation. Declaring it here keeps it
   // inside the object; adding it later makes V8 allocate a separate property
@@ -148,7 +171,7 @@ export function treify(entries: readonly Types.Events.Event[], options?: {
     //    next event.
     node.depth = stack.length;
     node.parent = parentNode;
-    parentNode.children.push(node);
+    appendChild(parentNode, node);
     node.selfTime = Types.Timing.Micro(duration);
     if (parentNode.selfTime !== undefined) {
       parentNode.selfTime = Types.Timing.Micro(parentNode.selfTime - (event.dur || 0));

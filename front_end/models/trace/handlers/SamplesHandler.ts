@@ -152,7 +152,7 @@ function parseCPUProfileData(parseOptions: Types.Configuration.ParseOptions): vo
             return;
           }
           traceEntryNode.parent = parentNode;
-          parentNode.children.push(traceEntryNode);
+          Helpers.TreeHelpers.appendChild(parentNode, traceEntryNode);
         }
       }
     }

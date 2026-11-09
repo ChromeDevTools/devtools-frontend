@@ -79,6 +79,8 @@ describe('TreeHelpers', () => {
 
       const childrenOfC = getEventsIn(nodeC.children.values());
       assert.deepEqual(childrenOfC, []);
+      assert.strictEqual(nodeC.children, nodeD.children);
+      assert.strictEqual(nodeD.children, nodeE.children);
     });
 
     it('can build a hierarchy of events with filters', async () => {

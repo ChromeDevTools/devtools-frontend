@@ -91,9 +91,20 @@ describeWithEnvironment('FlameChart', () => {
     const delegate = new MockFlameChartDelegate();
     chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate, {canvasVELogContext: 'testing-flamechart'});
     renderChart(chartInstance);
-    const expected = VisualLogging.canvas('testing-flamechart').track({hover: true}).toString();
+    const expected =
+        VisualLogging.canvas('testing-flamechart').track({click: true, drag: true, hover: true}).toString();
     const canvas = chartInstance.contentElement.querySelector('canvas');
     assert.strictEqual(canvas?.getAttribute('jslog'), expected);
+    assert.strictEqual(canvas?.getAttribute('jslog'), 'Canvas; context: testing-flamechart; track: click, drag, hover');
+  });
+
+  it('does not add JSLog attribute to the canvas element when canvasVELogContext is omitted', () => {
+    const provider = new FakeProvider();
+    const delegate = new MockFlameChartDelegate();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+    renderChart(chartInstance);
+    const canvas = chartInstance.contentElement.querySelector('canvas');
+    assert.isNull(canvas?.getAttribute('jslog'));
   });
 
   it('notifies the delegate when the window has changed', async () => {

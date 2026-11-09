@@ -395,6 +395,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     this.canvas = this.viewportElement.createChild('canvas', 'fill');
     if (optionalConfig.canvasVELogContext) {
       const context = VisualLogging.canvas(optionalConfig.canvasVELogContext).track({
+        click: true,
+        drag: true,
         hover: true,
       });
       this.canvas.setAttribute('jslog', `${context}`);

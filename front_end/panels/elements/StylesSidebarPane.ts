@@ -722,11 +722,8 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   }
 
   getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-                         variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError|null {
-    const registrationDetails = this.getRegisteredPropertyDetails(matchedStyles, variableName);
-    return registrationDetails ?
-        new ElementsComponents.CSSVariableValueView.CSSVariableParserError(registrationDetails) :
-        null;
+                         variableName: string): ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails|null {
+    return this.getRegisteredPropertyDetails(matchedStyles, variableName) ?? null;
   }
 
   private async fetchComputedStylesFor(nodeId: Protocol.DOM.NodeId|undefined): Promise<Map<string, string>|null> {

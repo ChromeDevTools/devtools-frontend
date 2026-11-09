@@ -296,7 +296,7 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase imp
   }
 
   getVariableParserError(_matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, _variableName: string):
-      ElementsComponents.CSSVariableValueView.CSSVariableParserError|null {
+      ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails|null {
     return null;
   }
 

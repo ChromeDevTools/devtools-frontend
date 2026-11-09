@@ -65,13 +65,23 @@ export const DEFAULT_PARSER_ERROR_VIEW: ParserErrorView = (input, _output, targe
 
 export class CSSVariableParserError extends UI.Widget.Widget {
   #view: ParserErrorView;
-  readonly #details: RegisteredPropertyDetails;
+  #details?: RegisteredPropertyDetails;
 
-  constructor(details: RegisteredPropertyDetails, view: ParserErrorView = DEFAULT_PARSER_ERROR_VIEW) {
-    super();
+  constructor(element?: HTMLElement, view: ParserErrorView = DEFAULT_PARSER_ERROR_VIEW) {
+    super(element);
     this.#view = view;
+  }
+
+  get details(): RegisteredPropertyDetails|undefined {
+    return this.#details;
+  }
+
+  set details(details: RegisteredPropertyDetails|undefined) {
+    if (this.#details === details) {
+      return;
+    }
     this.#details = details;
-    this.performUpdate();
+    this.requestUpdate();
   }
 
   override wasShown(): void {
@@ -80,6 +90,9 @@ export class CSSVariableParserError extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
+    if (!this.#details) {
+      return;
+    }
     this.#view({details: this.#details}, undefined, this.contentElement);
   }
 }

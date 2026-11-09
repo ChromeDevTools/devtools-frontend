@@ -728,18 +728,27 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   }
 
   static renderNameElement(name: string): HTMLElement {
-    const nameElement = document.createElement('span');
-    nameElement.setAttribute(
-        'jslog', `${VisualLogging.key().track({
-          change: true,
-          keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
-        })}`);
-    UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: name}));
-    nameElement.className = 'webkit-css-property';
-    nameElement.textContent = name;
+    const fragment = document.createDocumentFragment();
+    render(this.nameTemplate(name), fragment);
+    const nameElement = fragment.firstElementChild as HTMLElement;
+    // Detach from the render fragment so callers get a standalone element.
+    nameElement.remove();
     nameElement.normalize();
-    nameElement.tabIndex = -1;
     return nameElement;
+  }
+
+  static nameTemplate(name: string): LitTemplate {
+    // clang-format off
+    return html`<span
+      jslog=${VisualLogging.key().track({
+        change: true,
+        keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
+      })}
+      aria-label=${i18nString(UIStrings.cssPropertyName, {PH1: name})}
+      class="webkit-css-property"
+      tabindex="-1"
+    >${name}</span>`;
+    // clang-format on
   }
 
   // This function renders a property value as HTML, customizing the presentation with a set of given AST matchers. This
@@ -758,19 +767,34 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
                             renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext,
                             signal?: AbortSignal,
                             edits?: ValueUpdateTracking): {valueElement: HTMLElement, cssControls: CSSControlMap} {
-    const valueElement = document.createElement('span');
-    valueElement.setAttribute(
-        'jslog', `${VisualLogging.value().track({
-          change: true,
-          keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
-        })}`);
-    UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: property.value}));
-    valueElement.className = 'value';
-    valueElement.tabIndex = -1;
-    const {nodes, cssControls} = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
-    render(nodes, valueElement);
+    const {template, cssControls} = this.valueTemplate(property, matchedResult, renderers, tracing, signal, edits);
+    const fragment = document.createDocumentFragment();
+    render(template, fragment);
+    const valueElement = fragment.firstElementChild as HTMLElement;
+    // Detach from the render fragment so callers get a standalone element.
+    valueElement.remove();
     valueElement.normalize();
     return {valueElement, cssControls};
+  }
+
+  static valueTemplate(property: SDK.CSSProperty.CSSProperty|{name: string, value: string},
+                       matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
+                       renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext,
+                       signal?: AbortSignal,
+                       edits?: ValueUpdateTracking): {template: LitTemplate, cssControls: CSSControlMap} {
+    const {nodes, cssControls} = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
+    // clang-format off
+    const template = html`<span
+      jslog=${VisualLogging.value().track({
+        change: true,
+        keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
+      })}
+      aria-label=${i18nString(UIStrings.cssPropertyValue, {PH1: property.value})}
+      class="value"
+      tabindex="-1"
+    >${nodes}</span>`;
+    // clang-format on
+    return {template, cssControls};
   }
 
   static renderValueNodes(property: SDK.CSSProperty.CSSProperty|{name: string, value: string},

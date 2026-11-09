@@ -38,8 +38,8 @@ export interface StylesContainer {
 
   getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
       ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails|undefined;
-  getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
-      ElementsComponents.CSSVariableValueView.CSSVariableParserError|null;
+  getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+                         variableName: string): ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails|null;
   jumpToFunctionDefinition(functionName: string, treeScopeDistance: number): void;
   continueEditingElement(sectionIndex: number, propertyIndex: number): void;
   revealProperty(cssProperty: SDK.CSSProperty.CSSProperty): void;

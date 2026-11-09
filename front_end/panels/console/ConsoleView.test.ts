@@ -224,7 +224,7 @@ describeWithEnvironment('ConsoleView', () => {
     assert.isTrue(fileManager.append.calledOnceWith(FILENAME, sinon.match('message 1\nmessage 2\n')));
   });
 
-  it('can copy to clipboard', async () => {
+  it('can copy all messages to clipboard', async () => {
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     const target = createTarget({parentTarget: tabTarget});
@@ -237,7 +237,7 @@ describeWithEnvironment('ConsoleView', () => {
     assert.exists(messagesElement);
 
     const contextMenu = getContextMenuForElement(messagesElement);
-    const copy = findMenuItemWithLabel(contextMenu.saveSection(), 'Copy console');
+    const copy = findMenuItemWithLabel(contextMenu.saveSection(), 'Copy all messages');
     assert.exists(copy);
 
     const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText').resolves();

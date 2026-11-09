@@ -190,7 +190,7 @@ const UIStrings = {
   /**
    * @description Text to copy console log to clipboard.
    */
-  copyConsole: 'Copy console',
+  copyConsole: 'Copy all messages',
   /**
    * @description A context menu item in the Console view of the Console panel.
    */

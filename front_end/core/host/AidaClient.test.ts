@@ -1530,6 +1530,36 @@ describe('AidaClient', () => {
       ]);
     });
 
+    it('records SUCCESS once when a caller breaks on the final completed functionCalls chunk', async () => {
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      stubSingleChunkConversation(JSON.stringify([{
+        functionCallChunk: {
+          functionCall: {
+            name: 'executeJavaScript',
+            args: {code: '1 + 1'},
+          },
+        },
+      }]));
+
+      const provider = new Host.AidaClient.AidaClient();
+      for await (const chunk of provider.doConversation(
+          buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT))) {
+        if (chunk.functionCalls?.length) {
+          break;
+        }
+      }
+
+      assert.deepEqual(recordedCalls(histogramSpy), [
+        [EnumeratedHistogram.AiClientRequestResult, AiClientRequestResult.SUCCESS, AiClientRequestResult.MAX_VALUE],
+        [
+          EnumeratedHistogram.AiClientRequestResultAiAssistance,
+          AiClientRequestResult.SUCCESS,
+          AiClientRequestResult.MAX_VALUE,
+        ],
+      ]);
+    });
+
     it('records ABORTED once when a caller exits the doConversation generator early', async () => {
       const histogramSpy =
           sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');

@@ -106,7 +106,7 @@ function conversationSurfaceHistogram(feature: ClientFeature): UserMetrics.AiCli
 
 /**
  * Returns a closure that records the request outcome histogram once per call.
- * One-shot recording prevents early generator returns or nested catch/finally blocks from double-counting outcomes.
+ * One-shot recording prevents inner validation branches and outer catch blocks from double-counting outcomes.
  */
 function createOutcomeRecorder(surfaceHistogram?: UserMetrics.AiClientSurfaceHistogram):
     (result: UserMetrics.AiClientRequestResult) => void {
@@ -190,7 +190,8 @@ export class AidaClient {
       throw new Error('dispatchHttpRequest is not available');
     }
 
-    const recordOutcome = createOutcomeRecorder(conversationSurfaceHistogram(request.client_feature));
+    // Defaults to ABORTED so early caller exits (`break` / `return`) before `completed: true` record as aborted.
+    let outcome = UserMetrics.AiClientRequestResult.ABORTED;
     let abortListener: (() => void)|undefined;
     let streamId: number|undefined;
     try {
@@ -254,14 +255,17 @@ export class AidaClient {
             debugLog('doConversation failed with error:', JSON.stringify(err));
             stream.fail(mapError(err));
           });
-      yield* this.#handleResponseStream(stream);
-      recordOutcome(UserMetrics.AiClientRequestResult.SUCCESS);
+      for await (const chunk of this.#handleResponseStream(stream)) {
+        if (chunk.completed) {
+          outcome = UserMetrics.AiClientRequestResult.SUCCESS;
+        }
+        yield chunk;
+      }
     } catch (err) {
-      recordOutcome(classifyRequestError(err));
+      outcome = classifyRequestError(err);
       throw err;
     } finally {
-      // Fallback when a caller exits the generator early (such as breaking out of a for-await loop) before stream completion.
-      recordOutcome(UserMetrics.AiClientRequestResult.ABORTED);
+      UserMetrics.userMetrics.aiClientRequestResult(outcome, conversationSurfaceHistogram(request.client_feature));
       if (options?.signal && abortListener) {
         options.signal.removeEventListener('abort', abortListener);
       }

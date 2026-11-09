@@ -116,52 +116,48 @@ export async function navigateToCookiesForTopDomain(devToolsPage: DevToolsPage,
   // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
   const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
   const DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="${inspectedPage.domain()}"]`;
-  await doubleClickTreeItem(devToolsPage, COOKIES_SELECTOR);
-  await doubleClickTreeItem(devToolsPage, DOMAIN_SELECTOR);
+  await clickTreeItem(devToolsPage, COOKIES_SELECTOR);
+  await devToolsPage.waitFor(`${DOMAIN_SELECTOR}.selected`);
 
-  await expectVeEvents(devToolsPage,
-                       [
-                         veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies'),
-                         veImpressionsUnder(
-                             'Panel: resources',
-                             [
-                               veImpression('Pane', 'cookies', [veImpression('Section', 'empty-view',
-                                                                             [veImpression('Link', 'learn-more')])]),
-                               veImpressionsUnder('Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies',
-                                                  [veImpression('TreeItem', 'cookies-for-frame')]),
-                             ]),
-                         veClick(
-                             'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies > TreeItem: cookies-for-frame'),
-                         veImpressionsUnder('Panel: resources', [veImpressionForCookieTable()]),
-                       ],
-                       undefined);
+  await expectVeEvents(
+      devToolsPage,
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies'),
+        veImpressionsUnder('Panel: resources',
+                           [
+                             veImpressionsUnder('Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies',
+                                                [veImpression('TreeItem', 'cookies-for-frame')]),
+                             veImpressionForCookieTable(),
+                           ]),
+      ],
+      undefined);
 }
 
 export async function navigateToSessionStorageForTopDomain(devToolsPage: DevToolsPage,
                                                            inspectedPage: InspectedPage): Promise<void> {
   const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
   const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="${inspectedPage.domain()}"]`;
-  await doubleClickTreeItem(devToolsPage, SESSION_STORAGE_SELECTOR);
-  await doubleClickTreeItem(devToolsPage, DOMAIN_SELECTOR);
+  await clickTreeItem(devToolsPage, SESSION_STORAGE_SELECTOR);
+  await devToolsPage.waitFor(`${DOMAIN_SELECTOR}.selected`);
 
-  await expectVeEvents(devToolsPage,
-                       [
-                         veClick(
-                             'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage'),
-                         veImpressionsUnder('Panel: resources',
-                                            [
-                                              veImpression('Pane', 'session-storage',
-                                                           [veImpression('Section', 'empty-view',
-                                                                         [veImpression('Link', 'learn-more')])]),
-                                              veImpressionsUnder('Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage',
-                                                                 [veImpression('TreeItem',
-                                                                               'session-storage-for-domain')]),
-                                            ]),
-                         veClick(
-                             'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage > TreeItem: session-storage-for-domain'),
-                         veImpressionsUnder('Panel: resources', [veImpressionForSessionStorageView()]),
-                       ],
-                       undefined);
+  await expectVeEvents(
+      devToolsPage,
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage'),
+        veImpressionsUnder('Panel: resources',
+                           [
+                             veImpressionsUnder('Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage',
+                                                [veImpression('TreeItem', 'session-storage-for-domain')]),
+                             veImpressionForSessionStorageView(),
+                           ]),
+      ],
+      undefined);
+}
+
+async function clickTreeItem(devToolsPage: DevToolsPage, selector: string) {
+  const element = await devToolsPage.waitFor(selector);
+  await element.evaluate(el => el.scrollIntoView(true));
+  await devToolsPage.click(selector);
 }
 
 async function doubleClickTreeItem(devToolsPage: DevToolsPage, selector: string) {

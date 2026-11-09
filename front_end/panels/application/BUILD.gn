@@ -178,6 +178,7 @@ devtools_ui_module("unittests") {
   sources = [
     "AppManifestView.test.ts",
     "ApplicationPanelSidebar.test.ts",
+    "ApplicationPanelTreeElement.test.ts",
     "BackgroundServiceView.test.ts",
     "CookieItemsView.test.ts",
     "CrashReportContextView.test.ts",

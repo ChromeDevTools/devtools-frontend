@@ -12,6 +12,7 @@ import {ZoomManager} from './ZoomManager.js';
 
 export class RootView extends VBox {
   private window?: (Window&typeof globalThis)|null;
+  readonly #onWindowResize = (): void => this.doResize();
   constructor(universe: Foundation.Universe.Universe) {
     super();
     this.markAsRoot();
@@ -25,12 +26,17 @@ export class RootView extends VBox {
   }
 
   attachToDocument(document: Document): void {
-    if (document.defaultView) {
-      document.defaultView.addEventListener('resize', this.doResize.bind(this), false);
-    }
+    this.window?.removeEventListener('resize', this.#onWindowResize, false);
     this.window = document.defaultView;
+    this.window?.addEventListener('resize', this.#onWindowResize, false);
     this.doResize();
     this.show(document.body);
+  }
+
+  override onDetach(): void {
+    this.window?.removeEventListener('resize', this.#onWindowResize, false);
+    this.window = null;
+    super.onDetach();
   }
 
   override doResize(): void {

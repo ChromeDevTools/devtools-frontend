@@ -151,7 +151,8 @@ describeWithEnvironment('AdvancedApp docking', () => {
   });
 
   afterEach(() => {
-    for (const rootView of document.body.querySelectorAll(':scope > .root-view')) {
+    const bodies = [document.body, toolboxFrame.contentDocument?.body].filter(body => body !== undefined);
+    for (const rootView of bodies.flatMap(body => [...body.querySelectorAll(':scope > .root-view')])) {
       UI.Widget.Widget.get(rootView)?.detach();
     }
     UI.InspectorView.InspectorView.removeInstance();

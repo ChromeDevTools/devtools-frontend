@@ -1,8 +1,6 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2009 Apple Inc.  All rights reserved.
@@ -35,6 +33,7 @@
  */
 import '../data_grid/data_grid.js';
 import '../../../components/buttons/buttons.js';
+import '../../../kit/kit.js';
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -43,8 +42,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as IssuesManager from '../../../../models/issues_manager/issues_manager.js';
 import * as NetworkForward from '../../../../panels/network/forward/forward.js';
-import {Icon} from '../../../kit/kit.js';
-import {Directives, html, nothing, render} from '../../../lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import dataGridAiButtonStyles from '../data_grid/dataGridAiButton.css.js';
 
@@ -68,7 +66,7 @@ export interface ViewInput {
   aiButtonTitle?: string;
   onAiButtonClick?: (cookie: CookieData, event: Event) => void;
 }
-type ViewFunction = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME|SDK.Cookie.Attribute.VALUE|SDK.Cookie.Attribute.DOMAIN|
                          SDK.Cookie.Attribute.PATH|SDK.Cookie.Attribute.SECURE|SDK.Cookie.Attribute.SAME_SITE;
 
@@ -81,7 +79,7 @@ type CookieData = Partial<Record<Exclude<SDK.Cookie.Attribute, BooleanAttributes
     }&{
       key?: string,
       flagged?: boolean,
-      icons?: Partial<Record<AttributeWithIcon, Icon>>,
+      iconTitles?: Partial<Record<AttributeWithIcon, string>>,
       priorityValue?: number,
       expiresTooltip?: string,
       dirty?: boolean,
@@ -192,6 +190,120 @@ function isFlagAttribute(attribute: SDK.Cookie.Attribute): attribute is BooleanA
   return attribute === SDK.Cookie.Attribute.HTTP_ONLY || attribute === SDK.Cookie.Attribute.SECURE;
 }
 
+function renderIcon(title: string|undefined): LitTemplate {
+  if (title === undefined) {
+    return nothing;
+  }
+  return html`<devtools-icon name="info" class="small" title=${title}></devtools-icon>`;
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${cookiesTableStyles}</style>
+    <devtools-data-grid
+         name=${input.editable ? i18nString(UIStrings.editableCookies) : i18nString(UIStrings.cookies)}
+         id="cookies-table"
+         striped
+         ?inline=${input.renderInline}
+         ?deletable=${input.deletable}
+         @create=${(e: CustomEvent<CookieData>) => input.onCreate(e.detail)}
+         @refresh=${input.onRefresh}
+         @deselect=${() => input.onSelect(undefined)}
+    >
+      <table>
+        ${input.showAiButton ? html`<style>${dataGridAiButtonStyles}</style>` : nothing}
+         <tr>
+           <th id=${SDK.Cookie.Attribute.NAME} sortable ?disclosure=${input.editable} ?editable=${input.editable} long weight="24">
+             ${i18nString(UIStrings.name)}
+           </th>
+           <th id=${SDK.Cookie.Attribute.VALUE} sortable ?editable=${input.editable} long weight="34">
+             ${i18nString(UIStrings.value)}
+           </th>
+           <th id=${SDK.Cookie.Attribute.DOMAIN} sortable weight="7" ?editable=${input.editable}>
+             ${i18nString(UIStrings.domain)}
+           </th>
+           <th id=${SDK.Cookie.Attribute.PATH} sortable weight="7" ?editable=${input.editable}>
+             ${i18nString(UIStrings.path)}
+           </th>
+           <th id=${SDK.Cookie.Attribute.EXPIRES} sortable weight="7" ?editable=${input.editable}>
+             Expires / Max-Age
+           </th>
+           <th id=${SDK.Cookie.Attribute.SIZE} sortable align="right" weight="7">
+             ${i18nString(UIStrings.size)}
+           </th>
+           <th id=${SDK.Cookie.Attribute.HTTP_ONLY} sortable align="center" weight="7" ?editable=${input.editable} type="boolean">
+             HttpOnly
+           </th>
+           <th id=${SDK.Cookie.Attribute.SECURE} sortable align="center" weight="7" ?editable=${input.editable} type="boolean">
+             ${i18nString(UIStrings.secure)}
+           </th>
+           <th id=${SDK.Cookie.Attribute.SAME_SITE} sortable weight="7" ?editable=${input.editable}>
+             SameSite
+           </th>
+           <th id=${SDK.Cookie.Attribute.PARTITION_KEY_SITE} sortable weight="7" ?editable=${input.editable}>
+             ${i18nString(UIStrings.partitionKeySite)}
+           </th>
+           <th id=${SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR} sortable align="center" weight="7" ?editable=${input.editable} type="boolean">
+             Cross Site
+           </th>
+           <th id=${SDK.Cookie.Attribute.PRIORITY} sortable weight="7" ?editable=${input.editable}>
+             ${i18nString(UIStrings.priority)}
+           </th>
+           ${input.schemeBindingEnabled ?  html`
+           <th id=${SDK.Cookie.Attribute.SOURCE_SCHEME} sortable align="center" weight="7" ?editable=${input.editable} type="string">
+             SourceScheme
+           </th>` : nothing}
+           ${input.portBindingEnabled ? html`
+          <th id=${SDK.Cookie.Attribute.SOURCE_PORT} sortable align="center" weight="7" ?editable=${input.editable} type="number">
+             SourcePort
+          </th>` : nothing}
+        </tr>
+        ${repeat(input.data, cookie => cookie.key, cookie => {
+          const isHttpOnly = Boolean(cookie['http-only']);
+          return html`
+          <tr ?selected=${cookie.key === input.selectedKey}
+              ?inactive=${cookie.inactive}
+              ?dirty=${cookie.dirty}
+              ?highlighted=${cookie.flagged}
+              @edit=${(e: CustomEvent<{columnId: string, valueBeforeEditing: string|boolean, newText: string|boolean}>) =>
+                 input.onEdit(cookie, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
+              @delete=${()=> input.onDelete(cookie)}
+              @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.onContextMenu(cookie, e.detail)}
+              @select=${() => input.onSelect(cookie.key)}>
+            <td>${input.showAiButton ? html`
+                <span class="ai-button-container">
+                  <devtools-floating-button
+                    icon-name="smart-assistant"
+                    title=${ifDefined(isHttpOnly ? i18nString(UIStrings.httpOnlyCookiesCannotBeAdded) : input.aiButtonTitle)}
+                    ?disabled=${isHttpOnly}
+                    @click=${(e: Event) => !isHttpOnly && input.onAiButtonClick?.(cookie, e)}
+                  ></devtools-floating-button>
+                </span>
+              ` : nothing}${renderIcon(cookie.iconTitles?.name)}${cookie.name}</td>
+            <td>${cookie.value}</td>
+            <td>${renderIcon(cookie.iconTitles?.domain)}${cookie.domain}</td>
+            <td>${renderIcon(cookie.iconTitles?.path)}${cookie.path}</td>
+            <td title=${ifDefined(cookie.expiresTooltip)}>${cookie.expires}</td>
+            <td>${cookie.size}</td>
+            <td data-value=${isHttpOnly}></td>
+            <td data-value=${Boolean(cookie.secure)}>${renderIcon(cookie.iconTitles?.secure)}</td>
+            <td>${renderIcon(cookie.iconTitles?.['same-site'])}${cookie['same-site']}</td>
+            <td>${cookie['partition-key-site']}</td>
+            <td data-value=${Boolean(cookie['has-cross-site-ancestor'])}></td>
+            <td data-value=${ifDefined(cookie.priorityValue)}>${cookie.priority}</td>
+            ${input.schemeBindingEnabled ? html`
+              <td title=${i18nString(UIStrings.sourceSchemeTooltip)}>${cookie['source-scheme']}</td>` : nothing}
+            ${input.portBindingEnabled ? html`
+              <td title=${i18nString(UIStrings.sourcePortTooltip)}>${cookie['source-port']}</td>` : nothing}
+          </tr>`;
+        })}
+          ${input.editable ? html`<tr placeholder></tr>` : nothing}
+        </table>
+      </devtools-data-grid>`, target, {container: {classes: ['cookies-table']}});
+  // clang-format on
+};
+
 export interface CookiesTableData {
   cookies: SDK.Cookie.Cookie[];
   cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>;
@@ -213,128 +325,17 @@ export class CookiesTable extends UI.Widget.VBox {
   #cookieDomain: string;
   private cookieToBlockedReasons: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>|null;
   private cookieToExemptionReason: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>|null;
-  private readonly view: ViewFunction;
+  private readonly view: View;
   private selectedKey?: string;
   #editable: boolean;
   private renderInline: boolean;
   private readonly schemeBindingEnabled: boolean;
   private readonly portBindingEnabled: boolean;
-  constructor(
-      element?: HTMLElement, renderInline?: boolean,
-      saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>),
-      refreshCallback?: (() => void), selectedCallback?: ((arg0: SDK.Cookie.Cookie|null) => void),
-      deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction) {
+  constructor(element?: HTMLElement, renderInline?: boolean,
+              saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>),
+              refreshCallback?: (() => void), selectedCallback?: ((arg0: SDK.Cookie.Cookie|null) => void),
+              deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view: View = DEFAULT_VIEW) {
     super(element);
-    if (!view) {
-      view = (input, _, target) => {
-        // clang-format off
-        render(html`
-          <devtools-data-grid
-               name=${input.editable ? i18nString(UIStrings.editableCookies) : i18nString(UIStrings.cookies)}
-               id="cookies-table"
-               striped
-               ?inline=${input.renderInline}
-               ?deletable=${input.deletable}
-               @create=${(e: CustomEvent<CookieData>) => input.onCreate(e.detail)}
-               @refresh=${input.onRefresh}
-               @deselect=${() => input.onSelect(undefined)}
-          >
-            <table>
-              ${input.showAiButton ? html`<style>${dataGridAiButtonStyles}</style>` : nothing}
-               <tr>
-                 <th id=${SDK.Cookie.Attribute.NAME} sortable ?disclosure=${input.editable} ?editable=${input.editable} long weight="24">
-                   ${i18nString(UIStrings.name)}
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.VALUE} sortable ?editable=${input.editable} long weight="34">
-                   ${i18nString(UIStrings.value)}
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.DOMAIN} sortable weight="7" ?editable=${input.editable}>
-                   ${i18nString(UIStrings.domain)}
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.PATH} sortable weight="7" ?editable=${input.editable}>
-                   ${i18nString(UIStrings.path)}
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.EXPIRES} sortable weight="7" ?editable=${input.editable}>
-                   Expires / Max-Age
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.SIZE} sortable align="right" weight="7">
-                   ${i18nString(UIStrings.size)}
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.HTTP_ONLY} sortable align="center" weight="7" ?editable=${input.editable} type="boolean">
-                   HttpOnly
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.SECURE} sortable align="center" weight="7" ?editable=${input.editable} type="boolean">
-                   ${i18nString(UIStrings.secure)}
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.SAME_SITE} sortable weight="7" ?editable=${input.editable}>
-                   SameSite
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.PARTITION_KEY_SITE} sortable weight="7" ?editable=${input.editable}>
-                   ${i18nString(UIStrings.partitionKeySite)}
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR} sortable align="center" weight="7" ?editable=${input.editable} type="boolean">
-                   Cross Site
-                 </th>
-                 <th id=${SDK.Cookie.Attribute.PRIORITY} sortable weight="7" ?editable=${input.editable}>
-                   ${i18nString(UIStrings.priority)}
-                 </th>
-                 ${input.schemeBindingEnabled ?  html`
-                 <th id=${SDK.Cookie.Attribute.SOURCE_SCHEME} sortable align="center" weight="7" ?editable=${input.editable} type="string">
-                   SourceScheme
-                 </th>` : ''}
-                 ${input.portBindingEnabled ? html`
-                <th id=${SDK.Cookie.Attribute.SOURCE_PORT} sortable align="center" weight="7" ?editable=${input.editable} type="number">
-                   SourcePort
-                </th>` : ''}
-              </tr>
-              ${repeat(this.data, cookie => cookie.key, cookie => {
-                const isHttpOnly = Boolean(cookie['http-only']);
-                return html`
-                <tr ?selected=${cookie.key === input.selectedKey}
-                    ?inactive=${cookie.inactive}
-                    ?dirty=${cookie.dirty}
-                    ?highlighted=${cookie.flagged}
-                    @edit=${(e: CustomEvent<{columnId: string, valueBeforeEditing: string|boolean, newText: string|boolean}>) =>
-                       input.onEdit(cookie, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
-                    @delete=${()=> input.onDelete(cookie)}
-                    @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.onContextMenu(cookie, e.detail)}
-                    @select=${() => input.onSelect(cookie.key)}>
-                  <td>${input.showAiButton ? html`
-                      <span class="ai-button-container">
-                        <devtools-floating-button
-                          icon-name="smart-assistant"
-                          title=${ifDefined(isHttpOnly ? i18nString(UIStrings.httpOnlyCookiesCannotBeAdded) : input.aiButtonTitle)}
-                          ?disabled=${isHttpOnly}
-                          @click=${(e: Event) => !isHttpOnly && input.onAiButtonClick?.(cookie, e)}
-                        ></devtools-floating-button>
-                      </span>
-                    ` : nothing}${cookie.icons?.name}${cookie.name}</td>
-                  <td>${cookie.value}</td>
-                  <td>${cookie.icons?.domain}${cookie.domain}</td>
-                  <td>${cookie.icons?.path}${cookie.path}</td>
-                  <td title=${ifDefined(cookie.expiresTooltip)}>${cookie.expires}</td>
-                  <td>${cookie.size}</td>
-                  <td data-value=${isHttpOnly}></td>
-                  <td data-value=${Boolean(cookie.secure)}>${cookie.icons?.secure}</td>
-                  <td>${cookie.icons?.['same-site']}${cookie['same-site']}</td>
-                  <td>${cookie['partition-key-site']}</td>
-                  <td data-value=${Boolean(cookie['has-cross-site-ancestor'])}></td>
-                  <td data-value=${ifDefined(cookie.priorityValue)}>${cookie.priority}</td>
-                  ${input.schemeBindingEnabled ? html`
-                    <td title=${i18nString(UIStrings.sourceSchemeTooltip)}>${cookie['source-scheme']}</td>` : ''}
-                  ${input.portBindingEnabled ? html`
-                    <td title=${i18nString(UIStrings.sourcePortTooltip)}>${cookie['source-port']}</td>` : ''}
-                </tr>`;
-              })}
-                ${input.editable ? html`<tr placeholder><tr>` : ''}
-              </table>
-            </devtools-data-grid>`, target, {host: target});
-        // clang-format on
-      };
-    }
-    this.registerRequiredCSS(cookiesTableStyles);
-
-    this.element.classList.add('cookies-table');
 
     this.#saveCallback = saveCallback;
     this.#refreshCallback = refreshCallback;
@@ -472,7 +473,7 @@ export class CookiesTable extends UI.Widget.VBox {
           } :
           undefined,
     };
-    this.view(input, undefined, this.element);
+    this.view(input, undefined, this.contentElement);
   }
 
   private onSelect(key: string|undefined): void {
@@ -621,24 +622,16 @@ export class CookiesTable extends UI.Widget.VBox {
     for (const blockedReason of blockedReasons) {
       data.flagged = true;
       const attribute = (blockedReason.attribute || SDK.Cookie.Attribute.NAME) as AttributeWithIcon;
-      data.icons = data.icons || {};
-      if (!(attribute in data.icons)) {
-        data.icons[attribute] = new Icon();
-        data.icons[attribute].name = 'info';
-        data.icons[attribute].classList.add('small');
-        data.icons[attribute].title = blockedReason.uiString;
-      } else if (data.icons[attribute]) {
-        data.icons[attribute].title += '\n' + blockedReason.uiString;
-      }
+      data.iconTitles = data.iconTitles || {};
+      const existingTitle = data.iconTitles[attribute];
+      data.iconTitles[attribute] =
+          existingTitle === undefined ? blockedReason.uiString : existingTitle + '\n' + blockedReason.uiString;
     }
     const exemptionReason = this.cookieToExemptionReason?.get(cookie)?.uiString;
     if (exemptionReason) {
-      data.icons = data.icons || {};
+      data.iconTitles = data.iconTitles || {};
       data.flagged = true;
-      data.icons.name = new Icon();
-      data.icons.name.name = 'info';
-      data.icons.name.classList.add('small');
-      data.icons.name.title = exemptionReason;
+      data.iconTitles.name = exemptionReason;
     }
     data.key = cookie.key();
     return data;

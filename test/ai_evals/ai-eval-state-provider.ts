@@ -244,13 +244,8 @@ export class AiEvalStateProvider extends StateProvider {
   }
 
   override async launchBrowser(settings: BrowserSettings): Promise<BrowserWrapper> {
-    const enabledFeatures = [...(settings.enabledFeatures ?? [])];
-    if (!enabledFeatures.includes('DevToolsUseGcaApi') && !settings.disabledFeatures?.includes('DevToolsUseGcaApi')) {
-      enabledFeatures.push('DevToolsUseGcaApi');
-    }
     return await Launcher.browserSetup({
       ...settings,
-      enabledFeatures,
       chromeUsername: TestConfig.otaUsername ?? getDefaultOtaAccount(),
       chromePassword: TestConfig.otaPassword,
     },

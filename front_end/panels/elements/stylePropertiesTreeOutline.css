@@ -65,12 +65,6 @@
     text-overflow: clip;
   }
 
-  &.editing-sub-part {
-    padding: 3px var(--sys-size-4) var(--sys-size-5) 18px;
-    margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
-    text-overflow: clip;
-  }
-
   &.child-editing {
     overflow-wrap: break-word !important; /* stylelint-disable-line declaration-no-important */
     white-space: normal !important; /* stylelint-disable-line declaration-no-important */

@@ -6,12 +6,14 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import {setupMockedUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 
 import * as Workspace from './workspace.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('UISourceCode', () => {
   it('can return name', async () => {
@@ -385,6 +387,13 @@ describe('UISourceCode', () => {
   });
 
   describe('securityOrigin', () => {
+    const fetchableUrls = [
+      'https://victim.example/api/account',
+      'file:///etc/passwd',
+      'blob:https://victim.example/550e8400-e29b-41d4-a716-446655440000',
+      'imported-har://victim.example/api/account',
+    ];
+
     it('derives and caches security origin from file url when project origin is null', () => {
       const sutObject = setupMockedUISourceCode('https://example.com/app.js');
       sutObject.projectStub.securityOrigin.returns(null);
@@ -396,12 +405,59 @@ describe('UISourceCode', () => {
       assert.strictEqual(originFirst, originSecond);
     });
 
-    it('prefers project security origin when provided', () => {
-      const sutObject = setupMockedUISourceCode('https://example.com/app.js');
-      const projectOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://project-origin.com');
+    it('returns project security origin when fetchable file url is same-origin with project', () => {
+      const sutObject = setupMockedUISourceCode('https://example.com/src/app.ts');
+      const projectOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
       sutObject.projectStub.securityOrigin.returns(projectOrigin);
 
       assert.strictEqual(sutObject.sut.securityOrigin(), projectOrigin);
+    });
+
+    it('returns project security origin for non-fetchable or inline source-map urls', () => {
+      const projectOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      for (const url of ['webpack:///./src/app.ts', 'src/app.ts', 'data:text/javascript,export const x = 1;']) {
+        const sutObject = setupMockedUISourceCode(url);
+        sutObject.projectStub.securityOrigin.returns(projectOrigin);
+
+        assert.strictEqual(sutObject.sut.securityOrigin(), projectOrigin, `expected project origin for ${url}`);
+      }
+    });
+
+    it('returns cached opaque origin when fetchable file url is cross-origin to project', () => {
+      const projectOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      for (const url of [...fetchableUrls, 'blob:null/550e8400-e29b-41d4-a716-446655440000']) {
+        const sutObject = setupMockedUISourceCode(url);
+        sutObject.projectStub.securityOrigin.returns(projectOrigin);
+
+        const originFirst = sutObject.sut.securityOrigin();
+        const originSecond = sutObject.sut.securityOrigin();
+
+        assert.isTrue(originFirst.isOpaque(), `expected opaque origin for ${url}`);
+        assert.isFalse(originFirst.isSameOriginWith(projectOrigin));
+        assert.isFalse(originFirst.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create(url)));
+        assert.strictEqual(originFirst, originSecond);
+      }
+    });
+
+    it('returns non-opaque URL origin for fetchable file urls when project has no security origin', () => {
+      for (const url of fetchableUrls) {
+        const sutObject = setupMockedUISourceCode(url);
+        sutObject.projectStub.securityOrigin.returns(null);
+
+        const origin = sutObject.sut.securityOrigin();
+
+        assert.isFalse(origin.isOpaque(), `expected non-opaque origin for ${url}`);
+        assert.isTrue(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create(url)));
+      }
+    });
+
+    it('returns project security origin when project origin is already opaque', () => {
+      const sutObject = setupMockedUISourceCode('https://trusted-site.com/spoofed.js');
+      const projectOrigin = SDK.SecurityOrigin.SecurityOrigin.create('data:text/javascript,1');
+      sutObject.projectStub.securityOrigin.returns(projectOrigin);
+
+      assert.strictEqual(sutObject.sut.securityOrigin(), projectOrigin);
+      assert.isTrue(sutObject.sut.securityOrigin().isOpaque());
     });
 
     it('clears cached security origin when renamed', async () => {
@@ -422,6 +478,25 @@ describe('UISourceCode', () => {
       const originAfter = sutObject.sut.securityOrigin();
       assert.strictEqual(originAfter.siteId(), 'https://example.com');
       assert.notStrictEqual(originBefore, originAfter);
+    });
+
+    it('clears cached opaque security origin when cross-origin file in project is renamed', async () => {
+      const sutObject = setupMockedUISourceCode('https://victim.example/api/account');
+      const projectOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      sutObject.projectStub.securityOrigin.returns(projectOrigin);
+      sutObject.projectStub.workspace.returns(sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl));
+
+      const originBefore = sutObject.sut.securityOrigin();
+      assert.isTrue(originBefore.isOpaque());
+
+      const newName = 'other.json' as Platform.DevToolsPath.RawPathString;
+      sutObject.projectStub.rename.callsFake((_uiSourceCode, name, innerCallback) => {
+        innerCallback(true, name, urlString`https://attacker.com/other.json`);
+      });
+
+      await sutObject.sut.rename(newName);
+
+      assert.strictEqual(sutObject.sut.securityOrigin(), projectOrigin);
     });
   });
 });

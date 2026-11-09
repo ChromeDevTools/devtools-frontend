@@ -397,5 +397,47 @@ describe('ListSourcesTool', () => {
       assert.notInclude(filtered, uiSourceCodes[0]);
       assert.isFalse(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[0]));
     });
+
+    it('excludes cross-origin fetchable source-mapped files inside a same-origin project while keeping non-fetchable ones',
+       async () => {
+         const attackerOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const {project, uiSourceCodes} = createContentProviderUISourceCodes({
+           items: [
+             {
+               url: urlString`https://victim.example/api/account`,
+               mimeType: 'application/javascript',
+               resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+             },
+             {
+               url: urlString`webpack:///./src/index.ts`,
+               mimeType: 'text/typescript',
+               resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+             },
+             {
+               url: urlString`https://attacker.com/src/helper.ts`,
+               mimeType: 'text/typescript',
+               resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+             },
+           ],
+           projectId: 'jsSourceMaps::target:https://attacker.com',
+           projectType: Workspace.Workspace.projectTypes.Network,
+           universe,
+         });
+         sinon.stub(project, 'securityOrigin').returns(attackerOrigin);
+
+         const originLock: AiAssistance.Tool.OriginLockState = {
+           status: 'ESTABLISHED_ORIGIN',
+           origin: attackerOrigin,
+         };
+         const response = await tool.handler({}, {getOriginLock: () => originLock});
+         assertIsResult(response);
+         assert.deepEqual(
+             response.result.files.map(f => f.name),
+             ['webpack:///./src/index.ts', 'attacker.com/src/helper.ts'],
+         );
+         assert.isFalse(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[0]));
+         assert.isTrue(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[1]));
+         assert.isTrue(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[2]));
+       });
   });
 });

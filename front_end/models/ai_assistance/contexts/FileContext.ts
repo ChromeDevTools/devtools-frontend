@@ -21,8 +21,7 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
   }
 
   /**
-   * Returns the security origin of the project containing the file, falling
-   * back to the origin derived from the file URL.
+   * Returns the security origin of the workspace file.
    */
   override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
     return this.#file.securityOrigin();

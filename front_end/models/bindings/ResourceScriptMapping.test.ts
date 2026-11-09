@@ -257,7 +257,8 @@ describe('ResourceScriptMapping', () => {
       assert.exists(uiSourceCode);
       assert.strictEqual(uiSourceCode.project().id(), `js::${target.id()}:${frame.id}:https://attacker.com`);
       assert.strictEqual(uiSourceCode.project().securityOrigin()?.siteId(), 'https://attacker.com');
-      assert.strictEqual(uiSourceCode.securityOrigin().siteId(), 'https://attacker.com');
+      assert.isTrue(uiSourceCode.securityOrigin().isOpaque());
+      assert.isFalse(uiSourceCode.securityOrigin().isSameOriginWith(frame.securityOrigin()));
     });
 
     it('assigns an opaque security origin when a sourceURL script has no network provenance', async () => {

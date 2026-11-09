@@ -118,6 +118,40 @@ describe('GetSourceContentTool', () => {
     assertIsError(response, 'Unable to find file.');
   });
 
+  it('refuses to read cross-origin fetchable source-mapped file in a same-origin project without fetching content',
+     async () => {
+       const attackerOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+       const {project, uiSourceCodes} = createContentProviderUISourceCodes({
+         items: [
+           {
+             url: urlString`https://victim.example/api/account`,
+             mimeType: 'application/json',
+             resourceType: Common.ResourceType.resourceTypes.SourceMapScript,
+             content: '{"secret":"token"}',
+           },
+         ],
+         projectId: 'jsSourceMaps::target:https://attacker.com',
+         projectType: Workspace.Workspace.projectTypes.Network,
+         universe,
+       });
+       sinon.stub(project, 'securityOrigin').returns(attackerOrigin);
+       const requestContentDataSpy = sinon.spy(uiSourceCodes[0], 'requestContentData');
+
+       // Seed an ID directly since getUISourceCodes filters cross-origin files out.
+       AiAssistance.ListSources.ListSourcesTool.idToUiSourceCode.set(1, uiSourceCodes[0]);
+
+       const context = {
+         getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+           status: 'ESTABLISHED_ORIGIN',
+           origin: attackerOrigin,
+         }),
+       };
+
+       const response = await tool.handler({id: 1}, context);
+       assertIsError(response, 'Unable to find file.');
+       sinon.assert.notCalled(requestContentDataSpy);
+     });
+
   it('returns error when file content request fails', async () => {
     const {uiSourceCodes} = createContentProviderUISourceCodes({
       items: [

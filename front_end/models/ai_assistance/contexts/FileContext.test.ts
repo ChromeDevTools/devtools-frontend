@@ -92,19 +92,34 @@ console.log("hello");
     sinon.assert.calledOnce(requestContentDataSpy);
   });
 
-  it('should prioritize project securityOrigin over spoofable URL origin if available', async () => {
+  it('should return opaque origin when fetchable URL origin mismatches project securityOrigin', async () => {
     const uiSourceCode = await createUISourceCode({
-      url: urlString`https://trusted-site.com/spoofed.js`,
-      content: 'console.log("spoof");',
+      url: urlString`https://victim.example/api/account`,
+      content: '{"secret":"token"}',
+    });
+    sinon.stub(uiSourceCode.project(), 'securityOrigin')
+        .returns(SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com'));
+
+    const context = new AiAssistance.FileContext.FileContext(uiSourceCode, universe.debuggerWorkspaceBinding);
+    const origin = context.getOrigin();
+    assert.isTrue(origin.isOpaque());
+    assert.isFalse(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com')));
+    assert.isFalse(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://victim.example')));
+  });
+
+  it('should use project securityOrigin for non-fetchable source-map URLs', async () => {
+    const uiSourceCode = await createUISourceCode({
+      url: urlString`webpack:///./src/app.ts`,
+      content: 'export const x = 1;',
     });
 
     sinon.stub(uiSourceCode.project(), 'securityOrigin')
-        .returns(SDK.SecurityOrigin.SecurityOrigin.create('http://attacker.com'));
+        .returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
 
     const context = new AiAssistance.FileContext.FileContext(uiSourceCode, universe.debuggerWorkspaceBinding);
 
     const origin = context.getOrigin();
-    assert.isTrue(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('http://attacker.com')));
+    assert.isTrue(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
   });
 
   it('should fall back to URL origin if project securityOrigin is absent', async () => {

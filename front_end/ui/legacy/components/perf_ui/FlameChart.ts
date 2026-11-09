@@ -3038,25 +3038,30 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     this.customDrawnPositions.clear();
     context.save();
 
-    // TODO: Don't draw if it's not in the viewport.
+    const top = this.chartViewport.scrollOffset();
     const posArray = [];
     for (const [entryIndex, drawOverride] of this.#indexToDrawOverride.entries()) {
-      const entryStartTime = entryStartTimes[entryIndex];
-      const entryTotalTime = entryTotalTimes[entryIndex];
       const level = entryLevels[entryIndex];
-
-      // Skip if the group for this event has been hidden.
-      const group = this.dataProvider.groupForEvent?.(entryIndex);
-      if (group?.hidden) {
+      if (!this.visibleLevels?.[level]) {
         continue;
       }
 
-      const unclippedXStart = this.chartViewport.timeToPosition(entryStartTime);
-      const unclippedXEnd = this.chartViewport.timeToPosition(entryStartTime + entryTotalTime);
-
-      const x = unclippedXStart;
       const y = this.levelToOffset(level);
       const height = this.levelHeight(level);
+      if (this.offsetHeight > 0 && (y + height < top || y > top + this.offsetHeight)) {
+        continue;
+      }
+
+      const entryStartTime = entryStartTimes[entryIndex];
+      const entryTotalTime = entryTotalTimes[entryIndex];
+      const unclippedXStart = this.chartViewport.timeToPosition(entryStartTime);
+      const unclippedXEnd = this.chartViewport.timeToPosition(entryStartTime + entryTotalTime);
+      // Include a `height` margin so zero-width custom symbols (e.g. layout shift diamonds) near viewport edges are not clipped.
+      if (this.offsetWidth > 0 && (unclippedXEnd + height < 0 || unclippedXStart - height > this.offsetWidth)) {
+        continue;
+      }
+
+      const x = unclippedXStart;
       const width = unclippedXEnd - unclippedXStart;
       const pos = drawOverride(context, x, y, width, height, time => this.chartViewport.timeToPosition(time),
                                color => this.#transformColor(entryIndex, color));

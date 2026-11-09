@@ -2254,4 +2254,77 @@ describeWithEnvironment('FlameChart', () => {
     assert.isTrue(assignedColors.includes('#ff0000'));
     assert.isFalse(assignedColors.includes(''));
   });
+
+  it('only invokes drawOverride for entries inside the visible viewport', () => {
+    const drawOverrideSpies = [
+      sinon.spy((_ctx, x, _y, width) => ({x, width})),  // 0: off-screen left
+      sinon.spy((_ctx, x, _y, width) => ({x, width})),  // 1: visible
+      sinon.spy((_ctx, x, _y, width) => ({x, width})),  // 2: off-screen right
+      sinon.spy((_ctx, x, _y, width) => ({x, width})),  // 3: off-screen below vertically
+      sinon.spy((_ctx, x, _y, width) => ({x, width})),  // 4: inside collapsed group
+      sinon.spy((_ctx, x, _y, width) => ({x, width})),  // 5: inside hidden group
+    ] as Array<sinon.SinonSpy&PerfUI.FlameChart.DrawOverride>;
+
+    class DrawOverrideViewportProvider extends FakeFlameChartProvider {
+      #timelineData = PerfUI.FlameChart.FlameChartTimelineData.create({
+        // 30 levels in group 0 (each 17px -> level 29 is > 400px tall), 1 in collapsed group 1, 1 in hidden group 2.
+        entryLevels: [0, 0, 0, 29, 30, 31],
+        entryStartTimes: [0, 120, 300, 120, 120, 120],
+        entryTotalTimes: [20, 40, 20, 40, 40, 40],
+        groups:
+            [
+              {
+                name: 'Expanded Group' as Platform.UIString.LocalizedString,
+                startLevel: 0,
+                style: {...defaultGroupStyle, collapsible: PerfUI.FlameChart.GroupCollapsibleState.ALWAYS},
+                expanded: true,
+              },
+              {
+                name: 'Collapsed Group' as Platform.UIString.LocalizedString,
+                startLevel: 30,
+                style: {...defaultGroupStyle, collapsible: PerfUI.FlameChart.GroupCollapsibleState.ALWAYS},
+                expanded: false,
+              },
+              {
+                name: 'Hidden Group' as Platform.UIString.LocalizedString,
+                startLevel: 31,
+                style: {...defaultGroupStyle, collapsible: PerfUI.FlameChart.GroupCollapsibleState.ALWAYS},
+                expanded: true,
+                hidden: true,
+              },
+            ],
+      });
+
+      override maxStackDepth(): number {
+        return 32;
+      }
+
+      getDrawOverride(entryIndex: number): PerfUI.FlameChart.DrawOverride|undefined {
+        return drawOverrideSpies[entryIndex];
+      }
+
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return this.#timelineData;
+      }
+    }
+
+    const provider = new DrawOverrideViewportProvider();
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, new MockFlameChartDelegate());
+    renderWidgetInVbox(chartInstance, {width: 1000, height: 150});
+    chartInstance.setWindowTimes(100, 200);
+    chartInstance.update();
+
+    sinon.assert.callCount(drawOverrideSpies[0], 0);
+    sinon.assert.callCount(drawOverrideSpies[1], 1);
+    sinon.assert.callCount(drawOverrideSpies[2], 0);
+    sinon.assert.callCount(drawOverrideSpies[3], 0);
+    sinon.assert.callCount(drawOverrideSpies[4], 0);
+    sinon.assert.callCount(drawOverrideSpies[5], 0);
+
+    // Panning to include entry 0 invokes its drawOverride and skips entry 1.
+    chartInstance.setWindowTimes(0, 100);
+    chartInstance.update();
+    sinon.assert.callCount(drawOverrideSpies[0], 1);
+    sinon.assert.callCount(drawOverrideSpies[1], 1);
+  });
 });

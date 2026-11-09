@@ -142,6 +142,24 @@ describe('LoggingEvents', () => {
     assert.deepEqual(recordKeyDown.firstCall.firstArg, {veid: getVeId(element), context: -1098575095});
   });
 
+  it('normalizes Space keydown context to space', async () => {
+    const recordKeyDown = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordKeyDown',
+    );
+    VisualLogging.LoggingState.getLoggingState(element)!.config.track = {keydown: 'Space'};
+    void VisualLogging.LoggingEvents.logKeyDown(throttler)(element,
+                                                           new KeyboardEvent('keydown', {code: 'Space', key: ' '}));
+    await assertThrottled(recordKeyDown);
+    assert.deepEqual(recordKeyDown.firstCall.firstArg, {veid, context: 1340015368});
+
+    recordKeyDown.resetHistory();
+    void VisualLogging.LoggingEvents.logKeyDown(throttler)(
+        element, new KeyboardEvent('keydown', {code: 'Space', key: ' ', shiftKey: true}));
+    await assertThrottled(recordKeyDown);
+    assert.deepEqual(recordKeyDown.firstCall.firstArg, {veid, context: 1355838744});
+  });
+
   it('calls UI binding to log a keydown with an provided context', async () => {
     const recordKeyDown = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,

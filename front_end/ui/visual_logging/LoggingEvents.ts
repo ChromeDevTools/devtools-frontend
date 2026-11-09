@@ -137,7 +137,7 @@ function contextFromKeyCodes(event: Event): string|undefined {
     return undefined;
   }
   const key = event.key;
-  const lowerCaseKey = key.toLowerCase();
+  const lowerCaseKey = key === ' ' ? 'space' : key.toLowerCase();
   const components = [];
   if (event.shiftKey && key !== lowerCaseKey) {
     components.push('shift');

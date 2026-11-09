@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import {dispatchMouseUpEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {dispatchMouseUpEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import * as Lit from '../lit/lit.js';
@@ -161,6 +161,44 @@ describeWithEnvironment('ContextMenu', () => {
 
     await expectCall(recordClick);
     await VisualLogging.stopLogging();
+  });
+
+  it('does not log menu impression or resize for empty hosted menu', async () => {
+    const throttler = new Common.Throttler.Throttler(1000000000);
+    await VisualLogging.startLogging({processingThrottler: throttler});
+    try {
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+      const showContextMenuAtPoint =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+      const recordImpression = sinon.stub(
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+          'recordImpression',
+      );
+      const recordResize = sinon.stub(
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+          'recordResize',
+      );
+
+      const event = new Event('contextmenu');
+      sinon.stub(event, 'target').value(document);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      await contextMenu.show();
+      await raf();
+      await throttler.process?.();
+
+      sinon.assert.calledOnce(showContextMenuAtPoint);
+      assert.lengthOf(showContextMenuAtPoint.firstCall.args[2], 0);
+      assert.isTrue(contextMenu.isHostedMenuOpen());
+      sinon.assert.notCalled(recordImpression);
+
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
+          Host.InspectorFrontendHostAPI.Events.ContextMenuCleared);
+
+      assert.isFalse(contextMenu.isHostedMenuOpen());
+      sinon.assert.notCalled(recordResize);
+    } finally {
+      await VisualLogging.stopLogging();
+    }
   });
 
   it('can register an action menu item with a new badge', async () => {

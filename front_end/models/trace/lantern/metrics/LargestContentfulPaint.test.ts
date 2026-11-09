@@ -65,6 +65,47 @@ describe('Metrics: Lantern LCP', function() {
     assert.strictEqual(Math.round(lcpResult.timing), 1109);
   });
 
+  it('should compute LCP equal to FCP when FCP trace timestamp is truncated by 1 µs for same-frame text LCP',
+     async function() {
+       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-text-fcp-same-frame.json.gz');
+       const data = await getComputationDataFromFixture(this, {parsedTrace});
+       assert.isDefined(data.processedNavigation.timestamps.largestContentfulPaint);
+       data.processedNavigation.timestamps.firstContentfulPaint =
+           data.processedNavigation.timestamps.largestContentfulPaint - 1;
+
+       const fcpResult = FirstContentfulPaint.compute(data);
+       const lcpResult = LargestContentfulPaint.compute(data, {fcpResult});
+
+       assert.deepEqual({
+         timing: Math.round(lcpResult.timing),
+         optimistic: Math.round(lcpResult.optimisticEstimate.timeInMs),
+         pessimistic: Math.round(lcpResult.pessimisticEstimate.timeInMs),
+         optimisticNodeTimings: lcpResult.optimisticEstimate.nodeTimings.size,
+         pessimisticNodeTimings: lcpResult.pessimisticEstimate.nodeTimings.size,
+       },
+                        {
+                          timing: Math.round(fcpResult.timing),
+                          optimistic: Math.round(fcpResult.optimisticEstimate.timeInMs),
+                          pessimistic: Math.round(fcpResult.pessimisticEstimate.timeInMs),
+                          optimisticNodeTimings: fcpResult.optimisticEstimate.nodeTimings.size,
+                          pessimisticNodeTimings: fcpResult.pessimisticEstimate.nodeTimings.size,
+                        });
+       assert.strictEqual(Math.round(lcpResult.timing), 1109);
+     });
+
+  it('should not use FCP graphs when text LCP occurs in a later frame than FCP', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-text-fcp-same-frame.json.gz');
+    const data = await getComputationDataFromFixture(this, {parsedTrace});
+    assert.isDefined(data.processedNavigation.timestamps.largestContentfulPaint);
+    data.processedNavigation.timestamps.firstContentfulPaint =
+        data.processedNavigation.timestamps.largestContentfulPaint - 16_000;
+
+    const fcpResult = FirstContentfulPaint.compute(data);
+    const lcpResult = LargestContentfulPaint.compute(data, {fcpResult});
+
+    assert.isAbove(lcpResult.timing, fcpResult.timing);
+  });
+
   it('should include image resource when image LCP occurs at the same timestamp as FCP', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/render-blocking/trace.json.gz');
     const data = await getComputationDataFromFixture(this, {parsedTrace});

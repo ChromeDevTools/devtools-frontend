@@ -16,6 +16,12 @@ import {
   type MetricResult,
 } from './Metric.js';
 
+// Prior to https://crbug.com/583885865, Blink wrote largestContentfulPaint::Candidate
+// with the exact base::TimeTicks presentation timestamp while firstContentfulPaint
+// round-tripped through double seconds (InSecondsF -> base::Seconds), which could
+// truncate the FCP trace timestamp by 1 µs for the exact same frame presentation.
+const SAME_FRAME_TIMESTAMP_TOLERANCE_US = 10;
+
 function stripUrlHash(urlStr: string): string {
   if (!urlStr.includes('#')) {
     return urlStr;
@@ -125,13 +131,22 @@ class LargestContentfulPaint extends Metric {
     return urlMatches[0];
   }
 
+  static isSameFrameTextLcp(processedNavigation: Types.Simulation.ProcessedNavigation): boolean {
+    const {firstContentfulPaint: fcp, largestContentfulPaint: lcp} = processedNavigation.timestamps;
+    if (!lcp) {
+      return false;
+    }
+    return Math.abs(lcp - fcp) <= SAME_FRAME_TIMESTAMP_TOLERANCE_US &&
+        processedNavigation.largestContentfulPaintEvt?.args?.data?.type === 'text';
+  }
+
   static override getOptimisticGraph(
       dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node {
-    const {firstContentfulPaint: fcp, largestContentfulPaint: lcp} = processedNavigation.timestamps;
+    const lcp = processedNavigation.timestamps.largestContentfulPaint;
     if (!lcp) {
       throw new Core.LanternError('NO_LCP');
     }
-    if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === 'text') {
+    if (LargestContentfulPaint.isSameFrameTextLcp(processedNavigation)) {
       return FirstContentfulPaint.getOptimisticGraph(dependencyGraph, processedNavigation);
     }
 
@@ -177,11 +192,11 @@ class LargestContentfulPaint extends Metric {
 
   static override getPessimisticGraph(
       dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node {
-    const {firstContentfulPaint: fcp, largestContentfulPaint: lcp} = processedNavigation.timestamps;
+    const lcp = processedNavigation.timestamps.largestContentfulPaint;
     if (!lcp) {
       throw new Core.LanternError('NO_LCP');
     }
-    if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === 'text') {
+    if (LargestContentfulPaint.isSameFrameTextLcp(processedNavigation)) {
       return FirstContentfulPaint.getPessimisticGraph(dependencyGraph, processedNavigation);
     }
 

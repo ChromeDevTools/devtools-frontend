@@ -210,15 +210,36 @@ interface StylePropertyTreeElementParams {
   newProperty: boolean;
 }
 
+export interface StylePropertyData {
+  property: SDK.CSSProperty.CSSProperty;
+  readonly name: string;
+  readonly value: string;
+  readonly tooltipIdFactory: Tooltips.Tooltip.IdFactory;
+  readonly lastCommittedProperty: {readonly name: string, readonly value: string};
+  editable(): boolean;
+  inherited(): boolean;
+  overloaded(): boolean;
+  parentShorthand(): StylePropertyData|null;
+  matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles;
+  stylesContainer(): StylesContainer;
+  section(): StylePropertiesSection;
+  getComputedStyles(): Map<string, string>|null;
+  getComputedStyleExtraFields(): Protocol.CSS.ComputedStyleExtraFields|null;
+  renderedPropertyText(): string;
+  updateTitle(): void;
+  applyStyleText(styleText: string, majorChange: boolean): Promise<void>;
+  carryOverCommittedProperty(previous: StylePropertyData): void;
+  setSiblingProperty(propertyName: string, value?: string): Promise<void>;
+}
 const EnvFunctionRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.EnvFunctionMatch> =
     rendererBase(SDK.CSSPropertyParserMatchers.EnvFunctionMatch);
 // clang-format off
 export class EnvFunctionRenderer extends EnvFunctionRendererBase {
   // clang-format on
-  constructor(
-      readonly treeElement: StylePropertyTreeElement|null,
-      readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, readonly computedStyles: Map<string, string>,
-      readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
+  constructor(readonly propertyData: StylePropertyData|null,
+              readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+              readonly computedStyles: Map<string, string>,
+              readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
     super();
   }
   override render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): LitTemplate {
@@ -233,10 +254,10 @@ export class EnvFunctionRenderer extends EnvFunctionRendererBase {
       }
     }
 
-    const func = this.treeElement ?
+    const func = this.propertyData ?
         getTracingTooltip('env', match.node, this.matchedStyles, this.computedStyles, this.computedStyleExtraFields,
-                          context, this.treeElement.stylesContainer(), this.treeElement.tooltipIdFactory,
-                          this.treeElement.property, this.treeElement.getLonghand()?.name) :
+                          context, this.propertyData.stylesContainer(), this.propertyData.tooltipIdFactory,
+                          this.propertyData.property, this.propertyData.parentShorthand()?.name) :
         'env';
     const valueClass = classMap({'inactive-value': !match.varNameIsValid});
     const fallbackClass = classMap({'inactive-value': match.varNameIsValid});
@@ -255,21 +276,21 @@ const FlexGridRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.FlexGridG
 // clang-format off
 export class FlexGridRenderer extends FlexGridRendererBase {
   // clang-format on
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #stylesContainer: StylesContainer;
-  constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
-    if (!this.#treeElement?.editable()) {
+    if (!this.#propertyData?.editable()) {
       return children;
     }
     const key =
-        `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx++}`;
+        `${this.#propertyData.section().getSectionIdx()}_${this.#propertyData.section().nextEditorTriggerButtonIdx++}`;
 
     function getEditorClass(layoutType: SDK.CSSPropertyParserMatchers.LayoutType): typeof FlexboxEditor|
         typeof GridEditor|typeof GridLanesEditor {
@@ -306,7 +327,7 @@ export class FlexGridRenderer extends FlexGridRendererBase {
     }
 
     const button = StyleEditorWidget.createTriggerButton(
-        this.#stylesContainer, this.#treeElement.section(), getEditorClass(match.layoutType),
+        this.#stylesContainer, this.#propertyData.section(), getEditorClass(match.layoutType),
         getButtonTitle(match.layoutType), key, match.layoutType, () => {
           Host.userMetrics.swatchActivated(getSwatchType(match.layoutType));
         });
@@ -319,11 +340,11 @@ const CSSWideKeywordRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.CSS
 // clang-format off
 export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
   // clang-format on
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #stylesContainer: StylesContainer;
-  constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
   }
 
@@ -347,8 +368,8 @@ export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
       const color = Common.Color.parse(context.matchedResult.getComputedText(match.node));
       if (color) {
         const colorSwatch =
-            new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
-        return this.#treeElement?.editable() ?
+            new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
+        return this.#propertyData?.editable() ?
             html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${swatch}</devtools-widget>` :
             html`${colorSwatch}${swatch}`;
       }
@@ -379,16 +400,15 @@ const VariableRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.VariableM
 export class VariableRenderer extends VariableRendererBase {
   // clang-format on
   readonly #stylesContainer: StylesContainer;
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   readonly #computedStyles: Map<string, string>;
   readonly #computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null;
-  constructor(
-      stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null,
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>,
-      computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
+  constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData|null,
+              matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>,
+              computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
     this.#matchedStyles = matchedStyles;
     this.#computedStyles = computedStyles;
@@ -396,7 +416,7 @@ export class VariableRenderer extends VariableRendererBase {
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): LitTemplate {
-    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
+    if (this.#propertyData?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
 
@@ -426,12 +446,12 @@ export class VariableRenderer extends VariableRendererBase {
 
     const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
 
-    const varCall = this.#treeElement ?
+    const varCall = this.#propertyData ?
         getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields,
-                          context, this.#stylesContainer, this.#treeElement.tooltipIdFactory,
-                          this.#treeElement.property, this.#treeElement.getLonghand()?.name) :
+                          context, this.#stylesContainer, this.#propertyData.tooltipIdFactory,
+                          this.#propertyData.property, this.#propertyData.parentShorthand()?.name) :
         undefined;
-    const tooltipId = getTooltipId(this.#treeElement, 'custom-property-var');
+    const tooltipId = getTooltipId(this.#propertyData, 'custom-property-var');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
     const varSwatch = html`<span
@@ -459,20 +479,21 @@ export class VariableRenderer extends VariableRendererBase {
             return varSwatch;
           }
 
-    const colorSwatch =
-        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
-    context.addControl('color', colorSwatch);
+          const colorSwatch =
+              new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
+          context.addControl('color', colorSwatch);
 
-    if (fromFallback) {
-      renderedFallback?.cssControls.get('color')?.forEach(
-          innerSwatch => innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-            colorSwatch.setColor(ev.data.color);
-          }));
-    }
+          if (fromFallback) {
+            renderedFallback?.cssControls.get('color')?.forEach(
+                innerSwatch =>
+                    innerSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
+                      colorSwatch.setColor(ev.data.color);
+                    }));
+          }
 
-    return this.#treeElement?.editable() ?
-        html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
-        html`${colorSwatch}${varSwatch}`;
+          return this.#propertyData?.editable() ?
+              html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
+              html`${colorSwatch}${varSwatch}`;
   }
 }
 
@@ -482,18 +503,18 @@ const VariableNameRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Varia
 export class VariableNameRenderer extends VariableNameRendererBase {
   // clang-format on
   readonly #stylesContainer: StylesContainer;
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
-  constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null,
+  constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData|null,
               matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
     this.#matchedStyles = matchedStyles;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): LitTemplate {
-    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
+    if (this.#propertyData?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return html`${match.text}`;
     }
 
@@ -502,7 +523,7 @@ export class VariableNameRenderer extends VariableNameRendererBase {
     const onLinkActivate = (name: string): void =>
         handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
 
-    const tooltipId = getTooltipId(this.#treeElement, 'custom-property-var');
+    const tooltipId = getTooltipId(this.#propertyData, 'custom-property-var');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
     return html`<devtools-link-swatch class=css-var-link .data=${{
@@ -528,16 +549,15 @@ const AttributeRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Attribut
 export class AttributeRenderer extends AttributeRendererBase {
   // clang-format on
   readonly #stylesContainer: StylesContainer;
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   readonly #computedStyles: Map<string, string>;
   readonly #computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null;
-  constructor(
-      stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null,
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>,
-      computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
+  constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData|null,
+              matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>,
+              computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
     this.#matchedStyles = matchedStyles;
     this.#computedStyles = computedStyles;
@@ -545,7 +565,7 @@ export class AttributeRenderer extends AttributeRendererBase {
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): LitTemplate {
-    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
+    if (this.#propertyData?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
 
@@ -588,12 +608,12 @@ export class AttributeRenderer extends AttributeRendererBase {
 
     const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
 
-    const attrCall = this.#treeElement ?
+    const attrCall = this.#propertyData ?
         getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields,
-                          context, this.#stylesContainer, this.#treeElement.tooltipIdFactory,
-                          this.#treeElement.property, this.#treeElement.getLonghand()?.name) :
+                          context, this.#stylesContainer, this.#propertyData.tooltipIdFactory,
+                          this.#propertyData.property, this.#propertyData.parentShorthand()?.name) :
         undefined;
-    const tooltipId = attributeMissing ? undefined : getTooltipId(this.#treeElement, 'custom-attribute');
+    const tooltipId = attributeMissing ? undefined : getTooltipId(this.#propertyData, 'custom-attribute');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
     const varSwatch = html`<span
@@ -620,7 +640,7 @@ export class AttributeRenderer extends AttributeRendererBase {
     }
 
     const colorSwatch =
-        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
+        new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
     context.addControl('color', colorSwatch);
 
     if (fromFallback) {
@@ -630,7 +650,7 @@ export class AttributeRenderer extends AttributeRendererBase {
           }));
     }
 
-    return this.#treeElement?.editable() ?
+    return this.#propertyData?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
         html`${colorSwatch}${varSwatch}`;
   }
@@ -678,10 +698,10 @@ const RelativeColorChannelRendererBase: RendererBase<SDK.CSSPropertyParserMatche
 // clang-format off
 export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBase {
   // clang-format on
-  readonly #treeElement: StylePropertyTreeElement|null;
-  constructor(treeElement: StylePropertyTreeElement|null) {
+  readonly #propertyData: StylePropertyData|null;
+  constructor(propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
   }
   override render(match: SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch,
                   context: RenderingContext): LitTemplate {
@@ -701,7 +721,7 @@ export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBa
       return evaluation;
     }
 
-    const tooltipId = getTooltipId(this.#treeElement, 'relative-color-channel');
+    const tooltipId = getTooltipId(this.#propertyData, 'relative-color-channel');
     if (!tooltipId) {
       return html`<span>${match.text}</span>`;
     }
@@ -717,11 +737,11 @@ const ColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMatch> 
 // clang-format off
 export class ColorRenderer extends ColorRendererBase {
   // clang-format on
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #stylesContainer: StylesContainer;
-  constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
   }
 
@@ -741,11 +761,12 @@ export class ColorRenderer extends ColorRendererBase {
     const renderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
     const {nodes, cssControls} = Renderer.render(args, renderingContext);
     const valueChild = html`<span>${
-        this.#treeElement ?
-            getTracingTooltip(
-                func, match.node, this.#treeElement.matchedStyles(), this.#treeElement.getComputedStyles() ?? new Map(),
-                this.#treeElement.getComputedStyleExtraFields(), renderingContext, this.#stylesContainer,
-                this.#treeElement.tooltipIdFactory, this.#treeElement.property, this.#treeElement.getLonghand()?.name) :
+        this.#propertyData ?
+            getTracingTooltip(func, match.node, this.#propertyData.matchedStyles(),
+                              this.#propertyData.getComputedStyles() ?? new Map(),
+                              this.#propertyData.getComputedStyleExtraFields(), renderingContext, this.#stylesContainer,
+                              this.#propertyData.tooltipIdFactory, this.#propertyData.property,
+                              this.#propertyData.parentShorthand()?.name) :
             func}${nodes}</span>`;
 
     return {valueChild, cssControls, childTracingContexts};
@@ -810,7 +831,7 @@ export class ColorRenderer extends ColorRendererBase {
         });
       }
     }
-    return this.#treeElement?.editable() ?
+    return this.#propertyData?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${swatch}${valueChild}</devtools-widget>` :
         html`${swatch}${valueChild}`;
   }
@@ -819,7 +840,7 @@ export class ColorRenderer extends ColorRendererBase {
   // to update the enclosing `EditableContent`, and the new text is recorded as the edit of `match`.
   renderColorSwatch(color: Common.Color.Color|undefined, match: SDK.CSSPropertyParser.Match,
                     context: RenderingContext): InlineEditor.ColorSwatch.ColorSwatch {
-    const editable = this.#treeElement?.editable();
+    const editable = this.#propertyData?.editable();
     const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
     const tooltip = editable ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : '';
 
@@ -829,18 +850,18 @@ export class ColorRenderer extends ColorRendererBase {
       swatch.renderColor(color);
     }
 
-    if (this.#treeElement?.editable()) {
+    if (this.#propertyData?.editable()) {
       swatch.slot = 'icon';
-      const treeElement = this.#treeElement;
+      const propertyData = this.#propertyData;
       const onColorChanged = (): void => {
-        void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+        void propertyData.applyStyleText(propertyData.renderedPropertyText(), false);
       };
 
       const onColorFormatChanged = (e: InlineEditor.ColorSwatch.ColorFormatChangedEvent): void => {
         const text = e.data.color.getAuthoredText() ?? e.data.color.asString();
         swatch.dispatchEvent(new ValueEditEvent(text));
         context.recordEdit(match, text);
-        void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+        void propertyData.applyStyleText(propertyData.renderedPropertyText(), false);
       };
 
       swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => {
@@ -850,14 +871,14 @@ export class ColorRenderer extends ColorRendererBase {
       swatch.addEventListener(InlineEditor.ColorSwatch.ColorFormatChangedEvent.eventName, onColorFormatChanged);
 
       const swatchIcon =
-          new ColorSwatchPopoverIcon(treeElement, treeElement.stylesContainer().swatchPopoverHelper(), swatch);
+          new ColorSwatchPopoverIcon(propertyData, propertyData.stylesContainer().swatchPopoverHelper(), swatch);
       swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.COLOR_CHANGED, ev => {
         const text = ev.data.getAuthoredText() ?? ev.data.asString();
         swatch.dispatchEvent(new ValueEditEvent(text));
         context.recordEdit(match, text);
         swatch.setColor(ev.data);
       });
-      if (treeElement.property.name === 'color') {
+      if (propertyData.property.name === 'color') {
         void this.#addColorContrastInfo(swatchIcon);
       }
     }
@@ -881,14 +902,13 @@ const LightDarkColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Lig
 // clang-format off
 export class LightDarkColorRenderer extends LightDarkColorRendererBase {
   // clang-format on
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #stylesContainer: StylesContainer;
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
-  constructor(
-      stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+              propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
     this.#matchedStyles = matchedStyles;
   }
@@ -919,12 +939,12 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
     // Pass an undefined color here to insert a placeholder swatch that will be filled in from the async
     // applyColorScheme below.
     const colorSwatch =
-        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(undefined, match, context);
+        new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(undefined, match, context);
     context.addControl('color', colorSwatch);
     const styledContent =
         until(this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls), content);
 
-    return this.#treeElement?.editable() ?
+    return this.#propertyData?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${styledContent}</devtools-widget>` :
         html`${colorSwatch}${styledContent}`;
   }
@@ -992,18 +1012,17 @@ export class ColorMixRenderer extends ColorMixRendererBase {
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   readonly #computedStyles: Map<string, string>;
   readonly #computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null;
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
 
-  constructor(
-      stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null,
-      treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+              computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null,
+              propertyData: StylePropertyData|null) {
     super();
     this.#stylesContainer = stylesContainer;
     this.#matchedStyles = matchedStyles;
     this.#computedStyles = computedStyles;
     this.#computedStyleExtraFields = computedStyleExtraFields;
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): LitTemplate {
@@ -1037,11 +1056,11 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     const color1 = Renderer.render(match.color1, color1RenderingContext);
     const color2 = Renderer.render(match.color2, color2RenderingContext);
     const contentChild = html`<span>${
-        this.#treeElement ? getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles,
-                                              this.#computedStyleExtraFields, context, this.#stylesContainer,
-                                              this.#treeElement.tooltipIdFactory, this.#treeElement.property,
-                                              this.#treeElement.getLonghand()?.name) :
-                            'color-mix'}(${
+        this.#propertyData ? getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles,
+                                               this.#computedStyleExtraFields, context, this.#stylesContainer,
+                                               this.#propertyData.tooltipIdFactory, this.#propertyData.property,
+                                               this.#propertyData.parentShorthand()?.name) :
+                             'color-mix'}(${
         match.space.length ? html`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` :
                              ''}${color1.nodes}, ${color2.nodes})</span>`;
 
@@ -1103,7 +1122,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
       return html`${swatch}${contentChild}`;
     }
 
-    const tooltipId = getTooltipId(this.#treeElement, 'color-mix');
+    const tooltipId = getTooltipId(this.#propertyData, 'color-mix');
     if (!tooltipId) {
       return html`${swatch}${contentChild}`;
     }
@@ -1130,11 +1149,11 @@ const ContrastColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Cont
 // clang-format off
 export class ContrastColorRenderer extends ContrastColorRendererBase {
   // clang-format on
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #stylesContainer: StylesContainer;
-  constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
   }
 
@@ -1157,10 +1176,10 @@ export class ContrastColorRenderer extends ContrastColorRendererBase {
     }
 
     const colorSwatch =
-        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
+        new ColorRenderer(this.#stylesContainer, this.#propertyData).renderColorSwatch(color, match, context);
     context.addControl('color', colorSwatch);
 
-    return this.#treeElement?.editable() ?
+    return this.#propertyData?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` :
         html`${colorSwatch}${content}`;
   }
@@ -1171,15 +1190,15 @@ const AngleRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AngleMatch> 
 // clang-format off
 export class AngleRenderer extends AngleRendererBase {
   // clang-format on
-  readonly #treeElement: StylePropertyTreeElement|null;
-  constructor(treeElement: StylePropertyTreeElement|null) {
+  readonly #propertyData: StylePropertyData|null;
+  constructor(propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.AngleMatch, context: RenderingContext): LitTemplate {
     const angleText = match.text;
-    if (!this.#treeElement?.editable()) {
+    if (!this.#propertyData?.editable()) {
       return html`${angleText}`;
     }
     // TODO(crbug.com/407750607): Render <devtools-css-angle> as a Lit template once cssControls is replaced.
@@ -1188,36 +1207,35 @@ export class AngleRenderer extends AngleRendererBase {
     cssAngle.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context('css-angle')}`);
     cssAngle.data = {
       angleText,
-      containingPane:
-          (this.#treeElement.stylesContainer().element.enclosingNodeOrSelfWithClass('style-panes-wrapper') as
-           HTMLElement),
+      containingPane: (this.#propertyData.stylesContainer().element.enclosingNodeOrSelfWithClass(
+                           'style-panes-wrapper') as HTMLElement),
     };
 
-    const treeElement = this.#treeElement;
+    const propertyData = this.#propertyData;
     cssAngle.addEventListener('popovertoggled', ({data}) => {
-      const section = treeElement.section();
+      const section = propertyData.section();
       if (!section) {
         return;
       }
 
       if (data.open) {
-        treeElement.stylesContainer().hideAllPopovers();
-        treeElement.stylesContainer().activeCSSAngle = cssAngle;
+        propertyData.stylesContainer().hideAllPopovers();
+        propertyData.stylesContainer().activeCSSAngle = cssAngle;
         Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANGLE);
       }
 
       section.element.classList.toggle('has-open-popover', data.open);
-      treeElement.stylesContainer().setEditingStyle(data.open);
+      propertyData.stylesContainer().setEditingStyle(data.open);
 
       // Commit the value as a major change after the angle popover is closed.
       if (!data.open) {
-        void treeElement.applyStyleText(treeElement.renderedPropertyText(), true);
+        void propertyData.applyStyleText(propertyData.renderedPropertyText(), true);
       }
     });
     cssAngle.addEventListener('valuechanged', async ({data}) => {
       cssAngle.dispatchEvent(new ValueEditEvent(data.value));
       context.recordEdit(match, data.value);
-      await treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+      await propertyData.applyStyleText(propertyData.renderedPropertyText(), false);
     });
     cssAngle.addEventListener('unitchanged', ({data}) => {
       cssAngle.dispatchEvent(new ValueEditEvent(data.value));
@@ -1333,20 +1351,20 @@ const BezierRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.BezierMatch
 // clang-format off
 export class BezierRenderer extends BezierRendererBase {
   // clang-format on
-  readonly #treeElement: StylePropertyTreeElement|null;
-  constructor(treeElement: StylePropertyTreeElement|null) {
+  readonly #propertyData: StylePropertyData|null;
+  constructor(propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
   }
   override render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): LitTemplate {
     const nodes = match.node.name === 'CallExpression' ? Renderer.render(ASTUtils.children(match.node), context).nodes :
                                                          match.text;
-    if (!this.#treeElement?.editable() ||
+    if (!this.#propertyData?.editable() ||
         !InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(
             context.matchedResult.getComputedText(match.node))) {
       return html`${nodes}`;
     }
-    const swatchPopoverHelper = this.#treeElement.stylesContainer().swatchPopoverHelper();
+    const swatchPopoverHelper = this.#propertyData.stylesContainer().swatchPopoverHelper();
     const icon = createIcon('bezier-curve-filled', 'bezier-swatch-icon');
     icon.slot = 'icon';
     icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
@@ -1354,7 +1372,7 @@ export class BezierRenderer extends BezierRendererBase {
     icon.addEventListener('click', () => {
       Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
     });
-    new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, match, context});
+    new BezierPopoverIcon({propertyData: this.#propertyData, swatchPopoverHelper, swatch: icon, match, context});
     return html`<devtools-widget class="bezier-icon-and-text" ${widget(EditableContent)}>${icon}${
         nodes}</devtools-widget>`;
   }
@@ -1613,7 +1631,7 @@ const SHADOW_WIDGET_DEFAULT_VIEW: ShadowWidgetView = (input, _output, target) =>
 class ShadowWidget extends UI.Widget.Widget {
   readonly #view: ShadowWidgetView;
   #model?: ShadowModel;
-  #treeElement?: StylePropertyTreeElement;
+  #propertyData?: StylePropertyData;
   #popoverHelper?: ShadowSwatchPopoverHelper;
 
   constructor(element?: HTMLElement, view: ShadowWidgetView = SHADOW_WIDGET_DEFAULT_VIEW) {
@@ -1630,16 +1648,16 @@ class ShadowWidget extends UI.Widget.Widget {
     this.performUpdate();
   }
 
-  set treeElement(treeElement: StylePropertyTreeElement) {
-    if (this.#treeElement === treeElement) {
+  set propertyData(propertyData: StylePropertyData) {
+    if (this.#propertyData === propertyData) {
       return;
     }
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#popoverHelper =
-        new ShadowSwatchPopoverHelper(treeElement, treeElement.stylesContainer().swatchPopoverHelper());
+        new ShadowSwatchPopoverHelper(propertyData, propertyData.stylesContainer().swatchPopoverHelper());
     this.#popoverHelper.addEventListener(ShadowEvents.SHADOW_CHANGED, () => {
       this.performUpdate();
-      void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+      void propertyData.applyStyleText(propertyData.renderedPropertyText(), false);
     });
     this.performUpdate();
   }
@@ -1664,11 +1682,11 @@ const ShadowRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ShadowMatch
     rendererBase(SDK.CSSPropertyParserMatchers.ShadowMatch);
 // clang-format off
 export class ShadowRenderer extends ShadowRendererBase {
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   // clang-format on
-  constructor(treeElement: StylePropertyTreeElement|null) {
+  constructor(propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
   }
 
   shadowModel(
@@ -1783,7 +1801,7 @@ export class ShadowRenderer extends ShadowRendererBase {
         result.push(document.createTextNode(', '));
       }
 
-      if (!model || !this.#treeElement?.editable()) {
+      if (!model || !this.#propertyData?.editable()) {
         const {nodes} = Renderer.render(shadow, nestedContext);
         result.push(nodes);
         texts.push(() => nestedEdits.textRange(...ASTUtils.range(shadow)));
@@ -1791,7 +1809,7 @@ export class ShadowRenderer extends ShadowRendererBase {
       }
 
       result.push(
-          html`<devtools-widget ${widget(ShadowWidget, {model, treeElement: this.#treeElement})}></devtools-widget>`);
+          html`<devtools-widget ${widget(ShadowWidget, {model, propertyData: this.#propertyData})}></devtools-widget>`);
       texts.push(() =>
                      isImportant ? `${model.text()} ${nestedEdits.textRange(isImportant, isImportant)}` : model.text());
 
@@ -1865,12 +1883,12 @@ const LengthRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LengthMatch
 export class LengthRenderer extends LengthRendererBase {
   // clang-format on
   readonly #stylesContainer: StylesContainer;
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #propertyName: string;
-  constructor(stylesContainer: StylesContainer, propertyName: string, treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, propertyName: string, propertyData: StylePropertyData|null) {
     super();
     this.#stylesContainer = stylesContainer;
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#propertyName = propertyName;
   }
 
@@ -1881,7 +1899,7 @@ export class LengthRenderer extends LengthRendererBase {
                                                template,
                                                asyncEvalCallback: () => this.getTooltipValue(match, context),
                                              }));
-    const tooltipId = getTooltipId(this.#treeElement, 'length');
+    const tooltipId = getTooltipId(this.#propertyData, 'length');
     if (evaluation || !tooltipId) {
       return html`<span tabindex=-1>${evaluation ?? template}</span>`;
     }
@@ -1913,18 +1931,17 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   readonly #computedStyles: Map<string, string>;
   readonly #computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null;
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #propertyName: string;
-  constructor(
-      stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null,
-      propertyName: string, treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+              computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null,
+              propertyName: string, propertyData: StylePropertyData|null) {
     super();
     this.#matchedStyles = matchedStyles;
     this.#computedStyles = computedStyles;
     this.#computedStyleExtraFields = computedStyleExtraFields;
     this.#stylesContainer = stylesContainer;
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#propertyName = propertyName;
   }
 
@@ -1942,11 +1959,11 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
         (arg, idx) =>
             Renderer.render(arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context)
                 .nodes);
-    const func = this.#treeElement ?
+    const func = this.#propertyData ?
         getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles,
                           this.#computedStyleExtraFields, context, this.#stylesContainer,
-                          this.#treeElement.tooltipIdFactory, this.#treeElement.property,
-                          this.#treeElement.getLonghand()?.name) :
+                          this.#propertyData.tooltipIdFactory, this.#propertyData.property,
+                          this.#propertyData.parentShorthand()?.name) :
         match.func;
     const args = this.#renderArgs(renderedArgs);
 
@@ -2119,10 +2136,10 @@ export class PositionAnchorRenderer extends PositionAnchorRendererBase {
   }
 }
 
-function findSiblingProperty(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement,
-                             propertyName: string): StylePropertyTreeElement|undefined {
-  const resolvedProperty = treeElement.matchedStyles().resolveProperty(propertyName, treeElement.property.ownerStyle);
-  const activeSection = treeElement.section();
+function findSiblingProperty(stylesContainer: StylesContainer, propertyData: StylePropertyData,
+                             propertyName: string): StylePropertyData|undefined {
+  const resolvedProperty = propertyData.matchedStyles().resolveProperty(propertyName, propertyData.property.ownerStyle);
+  const activeSection = propertyData.section();
   if (resolvedProperty) {
     const allSections = stylesContainer.allSections();
     const sections = !allSections.includes(activeSection) ? [activeSection, ...allSections] : allSections;
@@ -2144,28 +2161,28 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
   // clang-format on
   static #active?: {
     editor: InlineEditor.PositionAreaEditor.PositionAreaEditor,
-    treeElement: StylePropertyTreeElement,
+    propertyData: StylePropertyData,
     edit: (value: string) => void,
     key?: string,
   };
   static readonly #EDITABLE_PROPERTIES: readonly string[] = ['align-self', 'justify-self'];
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   readonly #stylesContainer: StylesContainer;
-  constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
+  constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData|null) {
     super();
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
     this.#stylesContainer = stylesContainer;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     // The text of the match is the value as authored, which may contain comments or var()s that resolve to the area.
-    if (!this.#treeElement?.editable() ||
+    if (!this.#propertyData?.editable() ||
         !InlineEditor.PositionAreaEditor.parsePositionArea(context.matchedResult.getComputedPropertyValueText())) {
       return html`${children}`;
     }
 
-    const section = this.#treeElement.section();
+    const section = this.#propertyData.section();
     const key = section ? `${section.getSectionIdx()}_${section.nextEditorTriggerButtonIdx++}` : undefined;
 
     let button: Element|undefined;
@@ -2173,14 +2190,14 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       button?.dispatchEvent(new ValueEditEvent(value));
       context.recordEdit(match, value);
     };
-    const treeElement = this.#treeElement;
+    const propertyData = this.#propertyData;
     const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
     const isActive =
         Boolean(PositionAreaRenderer.#active && popoverHelper.isShowing(PositionAreaRenderer.#active.editor) &&
                 key !== undefined && PositionAreaRenderer.#active.key === key);
     if (isActive && PositionAreaRenderer.#active) {
-      treeElement.carryOverCommittedProperty(PositionAreaRenderer.#active.treeElement);
-      PositionAreaRenderer.#active.treeElement = treeElement;
+      propertyData.carryOverCommittedProperty(PositionAreaRenderer.#active.propertyData);
+      PositionAreaRenderer.#active.propertyData = propertyData;
       PositionAreaRenderer.#active.edit = edit;
     }
     const onClick = (event: Event): void => {
@@ -2190,14 +2207,14 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         return;
       }
       const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor();
-      const active = {editor, key, treeElement, edit};
+      const active = {editor, key, propertyData, edit};
       PositionAreaRenderer.#active = active;
       const valueText = context.edits?.getEdit(match) ?? context.matchedResult.getComputedPropertyValueText();
       editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueText) ?? undefined;
 
       const initialProperties = new Map<string, {value: string, section: StylePropertiesSection}>();
       for (const propertyName of PositionAreaRenderer.#EDITABLE_PROPERTIES) {
-        const target = findSiblingProperty(this.#stylesContainer, active.treeElement, propertyName);
+        const target = findSiblingProperty(this.#stylesContainer, active.propertyData, propertyName);
         if (target) {
           initialProperties.set(propertyName, {
             value: target.property.value,
@@ -2206,17 +2223,17 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         }
       }
       const updateProperty = (propertyName: string, computedStyle: Map<string, string>|null): void => {
-        const matchedStyles = active.treeElement.matchedStyles();
-        const resolved = matchedStyles.resolveProperty(propertyName, active.treeElement.property.ownerStyle);
+        const matchedStyles = active.propertyData.matchedStyles();
+        const resolved = matchedStyles.resolveProperty(propertyName, active.propertyData.property.ownerStyle);
         const authored = resolved && !resolved.ownerStyle.parentRule?.isUserAgent() ? resolved.value : undefined;
         const computed = computedStyle?.get(propertyName);
         editor.setProperty(propertyName, authored, computed);
       };
 
       const updateEditorProperties = async(): Promise<void> => {
-        active.treeElement.matchedStyles().resetActiveProperties();
-        updateProperty('align-self', active.treeElement.getComputedStyles());
-        updateProperty('justify-self', active.treeElement.getComputedStyles());
+        active.propertyData.matchedStyles().resetActiveProperties();
+        updateProperty('align-self', active.propertyData.getComputedStyles());
+        updateProperty('justify-self', active.propertyData.getComputedStyles());
         const computedStyle = await this.#stylesContainer.computedStyleModel().fetchComputedStyle();
         updateProperty('align-self', computedStyle?.computedStyle ?? null);
         updateProperty('justify-self', computedStyle?.computedStyle ?? null);
@@ -2226,13 +2243,13 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
           (changeEvent: Common.EventTarget.EventTargetEvent<InlineEditor.PositionAreaEditor.Area>): void => {
             const area = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
             active.edit(area);
-            void active.treeElement.applyStyleText(active.treeElement.renderedPropertyText(), false);
+            void active.propertyData.applyStyleText(active.propertyData.renderedPropertyText(), false);
           };
       const onPropertyChanged =
           async(changeEvent: Common.EventTarget.EventTargetEvent<InlineEditor.PositionAreaEditor.PropertyChangeEvent>):
               Promise<void> => {
                 const {propertyName, value} = changeEvent.data;
-                await active.treeElement.setSiblingProperty(propertyName, value);
+                await active.propertyData.setSiblingProperty(propertyName, value);
                 await updateEditorProperties();
               };
       editor.addEventListener(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, onPositionAreaChanged);
@@ -2246,8 +2263,8 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         scrollerElement.addEventListener('scroll', onScroll, false);
       }
 
-      const originalPropertyText = treeElement.property.propertyText;
-      this.#stylesContainer.setActiveProperty(treeElement);
+      const originalPropertyText = propertyData.property.propertyText;
+      this.#stylesContainer.setActiveProperty(propertyData);
       this.#stylesContainer.setEditingStyle(true);
 
       popoverHelper.show(editor, button, commitEdit => {
@@ -2256,12 +2273,12 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         }
         editor.removeEventListener(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, onPositionAreaChanged);
         editor.removeEventListener(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED, onPropertyChanged);
-        const propertyText = commitEdit ? active.treeElement.renderedPropertyText() : originalPropertyText || '';
-        void active.treeElement.applyStyleText(propertyText, true);
-        const node = this.#stylesContainer.node() ?? active.treeElement.matchedStyles().node();
+        const propertyText = commitEdit ? active.propertyData.renderedPropertyText() : originalPropertyText || '';
+        void active.propertyData.applyStyleText(propertyText, true);
+        const node = this.#stylesContainer.node() ?? active.propertyData.matchedStyles().node();
         for (const propertyName of PositionAreaRenderer.#EDITABLE_PROPERTIES) {
           const originalTarget = initialProperties.get(propertyName);
-          const targetSection = originalTarget?.section ?? active.treeElement.section();
+          const targetSection = originalTarget?.section ?? active.propertyData.section();
           const target = targetSection.findProperty(propertyName);
           const oldValue = originalTarget?.value ?? '';
           const newValue = target?.property.value ?? '';
@@ -2309,13 +2326,13 @@ const PositionTryRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Positi
 // clang-format off
 export class PositionTryRenderer extends PositionTryRendererBase {
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
-  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyData: StylePropertyData|null;
   // clang-format on
 
-  constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement|null) {
+  constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, propertyData: StylePropertyData|null) {
     super();
     this.#matchedStyles = matchedStyles;
-    this.#treeElement = treeElement;
+    this.#propertyData = propertyData;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): LitTemplate {
@@ -2324,13 +2341,13 @@ export class PositionTryRenderer extends PositionTryRendererBase {
       const {nodes} = Renderer.render(match.preamble, context);
       content.push(nodes);
     }
-    const node = this.#treeElement ? this.#matchedStyles.nodeForStyle(this.#treeElement.property.ownerStyle) :
-                                     this.#matchedStyles.node();
+    const node = this.#propertyData ? this.#matchedStyles.nodeForStyle(this.#propertyData.property.ownerStyle) :
+                                      this.#matchedStyles.node();
     const fallbackLabels: string[] = [];
     for (const [i, fallback] of match.fallbacks.entries()) {
       const important = fallback.find(node => node.name === 'Important');
       const classes = classMap({
-        'inactive-value': !this.#treeElement?.inherited() && node === this.#matchedStyles.node() &&
+        'inactive-value': !this.#propertyData?.inherited() && node === this.#matchedStyles.node() &&
             i !== this.#matchedStyles.activePositionFallbackIndex(),
       });
       content.push(html`<span class=${classes}>${i > 0 ? ', ' : nothing}${
@@ -2341,8 +2358,8 @@ export class PositionTryRenderer extends PositionTryRendererBase {
       fallbackLabels.push(
           context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim());
     }
-    if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() ||
-        !this.#treeElement.property.activeInStyle() || !node) {
+    if (!this.#propertyData || this.#propertyData.overloaded() || this.#propertyData.inherited() ||
+        !this.#propertyData.property.activeInStyle() || !node) {
       return html`${content}`;
     }
     const cssModel = this.#matchedStyles.cssModel();
@@ -2388,17 +2405,18 @@ export class PositionTryRenderer extends PositionTryRendererBase {
 
 // Returns an id for <devtools-tooltips> that's stable across re-rendering of property values but unique across
 // sections and across switches between different nodes.
-function getTooltipId(treeElement: StylePropertyTreeElement|null, key: string): string|undefined;
+function getTooltipId(propertyData: StylePropertyData|null, key: string): string|undefined;
 function getTooltipId(tooltipIdFactory: Tooltips.Tooltip.IdFactory, key: string, property: SDK.CSSProperty.CSSProperty,
                       shorthandName?: string): string;
-function getTooltipId(tooltipIdFactoryOrTreeElement: Tooltips.Tooltip.IdFactory|StylePropertyTreeElement|null,
-                      key: string, property?: SDK.CSSProperty.CSSProperty, shorthandName?: string): string|undefined {
-  if (!tooltipIdFactoryOrTreeElement) {
+function getTooltipId(tooltipIdFactoryOrPropertyData: Tooltips.Tooltip.IdFactory|StylePropertyData|null, key: string,
+                      property?: SDK.CSSProperty.CSSProperty, shorthandName?: string): string|undefined {
+  if (!tooltipIdFactoryOrPropertyData) {
     return undefined;
   }
-  if (tooltipIdFactoryOrTreeElement instanceof StylePropertyTreeElement) {
-    const treeElement = tooltipIdFactoryOrTreeElement;
-    return getTooltipId(treeElement.tooltipIdFactory, key, treeElement.property, treeElement.getLonghand()?.name);
+  if (!(tooltipIdFactoryOrPropertyData instanceof Tooltips.Tooltip.IdFactory)) {
+    const propertyData = tooltipIdFactoryOrPropertyData;
+    return getTooltipId(propertyData.tooltipIdFactory, key, propertyData.property,
+                        propertyData.parentShorthand()?.name);
   }
 
   if (!property) {
@@ -2413,7 +2431,7 @@ function getTooltipId(tooltipIdFactoryOrTreeElement: Tooltips.Tooltip.IdFactory|
           index < ownIndex && (other.name === property.name || other.name === propertyNameForCounting) ? value + 1 :
                                                                                                          value,
       0);
-  return tooltipIdFactoryOrTreeElement.keyed(key, propertyCount);
+  return tooltipIdFactoryOrPropertyData.keyed(key, propertyCount);
 }
 
 function getInvalidPropertyMessage(property: SDK.CSSProperty.CSSProperty): Platform.UIString.LocalizedString {
@@ -2498,44 +2516,44 @@ function getTracingTooltip(
 }
 export function getPropertyRenderers(
     propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesContainer: StylesContainer,
-    matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement|null,
+    matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, propertyData: StylePropertyData|null,
     computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null):
     Array<MatchRenderer<SDK.CSSPropertyParser.Match>> {
   return [
-    new VariableRenderer(stylesContainer, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
-    new VariableNameRenderer(stylesContainer, treeElement, matchedStyles),
-    new ColorRenderer(stylesContainer, treeElement),
-    new ColorMixRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, treeElement),
-    new ContrastColorRenderer(stylesContainer, treeElement),
+    new VariableRenderer(stylesContainer, propertyData, matchedStyles, computedStyles, computedStyleExtraFields),
+    new VariableNameRenderer(stylesContainer, propertyData, matchedStyles),
+    new ColorRenderer(stylesContainer, propertyData),
+    new ColorMixRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyData),
+    new ContrastColorRenderer(stylesContainer, propertyData),
     new URLRenderer(style.parentRule, stylesContainer.node()),
-    new AngleRenderer(treeElement),
+    new AngleRenderer(propertyData),
     new LinkableNameRenderer(matchedStyles, stylesContainer),
-    new BezierRenderer(treeElement),
+    new BezierRenderer(propertyData),
     new StringRenderer(),
-    new ShadowRenderer(treeElement),
-    new CSSWideKeywordRenderer(stylesContainer, treeElement),
-    new LightDarkColorRenderer(stylesContainer, matchedStyles, treeElement),
+    new ShadowRenderer(propertyData),
+    new CSSWideKeywordRenderer(stylesContainer, propertyData),
+    new LightDarkColorRenderer(stylesContainer, matchedStyles, propertyData),
     new GridTemplateRenderer(),
     new LinearGradientRenderer(),
     new AnchorFunctionRenderer(stylesContainer),
     new PositionAnchorRenderer(stylesContainer),
-    new FlexGridRenderer(stylesContainer, treeElement),
-    new PositionAreaRenderer(stylesContainer, treeElement),
-    new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
-    new PositionTryRenderer(matchedStyles, treeElement),
-    new LengthRenderer(stylesContainer, propertyName, treeElement),
+    new FlexGridRenderer(stylesContainer, propertyData),
+    new PositionAreaRenderer(stylesContainer, propertyData),
+    new EnvFunctionRenderer(propertyData, matchedStyles, computedStyles, computedStyleExtraFields),
+    new PositionTryRenderer(matchedStyles, propertyData),
+    new LengthRenderer(stylesContainer, propertyName, propertyData),
     new MathFunctionRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName,
-                             treeElement),
+                             propertyData),
     new CustomFunctionRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName,
-                               treeElement),
+                               propertyData),
     new AutoBaseRenderer(computedStyles, computedStyleExtraFields),
     new BinOpRenderer(),
-    new RelativeColorChannelRenderer(treeElement),
-    new AttributeRenderer(stylesContainer, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
+    new RelativeColorChannelRenderer(propertyData),
+    new AttributeRenderer(stylesContainer, propertyData, matchedStyles, computedStyles, computedStyleExtraFields),
   ];
 }
 
-export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
+export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement implements StylePropertyData {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   property: SDK.CSSProperty.CSSProperty;
@@ -2565,7 +2583,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   #edits: ValueUpdateTracking|undefined;
   // Stores the last committed property so incremental live previews and
   // in-place mutations of `this.property` don't overwrite the baseline for change tracking.
-  #lastCommittedProperty: {name: string, value: string};
+  #lastCommittedProperty: {readonly name: string, readonly value: string};
 
   #lazyRender?: boolean;
 
@@ -2606,8 +2624,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     super.onunbind();
   }
 
-  carryOverCommittedProperty(previous: StylePropertyTreeElement): void {
-    this.#lastCommittedProperty = previous.#lastCommittedProperty;
+  get lastCommittedProperty(): {readonly name: string, readonly value: string} {
+    return this.#lastCommittedProperty;
+  }
+
+  carryOverCommittedProperty(previous: StylePropertyData): void {
+    this.#lastCommittedProperty = previous.lastCommittedProperty;
   }
 
   async setSiblingProperty(propertyName: string, value?: string): Promise<void> {
@@ -2670,6 +2692,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   getLonghand(): StylePropertyTreeElement|null {
     return this.parent instanceof StylePropertyTreeElement && this.parent.isShorthand ? this.parent : null;
+  }
+
+  parentShorthand(): StylePropertyData|null {
+    return this.getLonghand();
   }
 
   editable(): boolean {

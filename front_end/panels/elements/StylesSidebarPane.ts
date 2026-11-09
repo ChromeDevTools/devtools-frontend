@@ -77,7 +77,7 @@ import {
   StylePropertiesSection,
 } from './StylePropertiesSection.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
-import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import type {StylePropertyData, StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import * as StylesAiCodeCompletionProvider from './StylesAiCodeCompletionProvider.js';
 import type {StylesContainer} from './StylesContainer.js';
 import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
@@ -612,14 +612,13 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     }, FILTER_IDLE_PERIOD);
   }
 
-  refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement,
-                force = false): void {
-    if (editedTreeElement) {
+  refreshUpdate(editedSection: StylePropertiesSection, editedProperty?: StylePropertyData, force = false): void {
+    if (editedProperty) {
       for (const section of this.allSections()) {
         if (section instanceof BlankStylePropertiesSection && section.isBlank) {
           continue;
         }
-        section.updateVarFunctions(editedTreeElement);
+        section.updateVarFunctions(editedProperty);
       }
     }
 
@@ -793,7 +792,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     }
   }
 
-  setActiveProperty(treeElement: StylePropertyTreeElement|null): void {
+  setActiveProperty(propertyData: StylePropertyData|null): void {
     if (this.isEditingStyle) {
       return;
     }
@@ -807,14 +806,14 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
       return;
     }
 
-    if (!treeElement || treeElement.overloaded() || treeElement.inherited()) {
+    if (!propertyData || propertyData.overloaded() || propertyData.inherited()) {
       return;
     }
 
-    const rule = treeElement.property.ownerStyle.parentRule;
+    const rule = propertyData.property.ownerStyle.parentRule;
     const selectorList = (rule instanceof SDK.CSSRule.CSSStyleRule) ? rule.selectorText() : undefined;
     for (const {properties, mode} of HIGHLIGHTABLE_PROPERTIES) {
-      if (!properties.includes(treeElement.name)) {
+      if (!properties.includes(propertyData.name)) {
         continue;
       }
       node.domModel().overlayModel().highlightInOverlay({node, selectorList}, mode);
@@ -822,7 +821,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
       return;
     }
 
-    if (treeElement.value.includes('anchor(') || treeElement.value.includes('anchor-size(')) {
+    if (propertyData.value.includes('anchor(') || propertyData.value.includes('anchor-size(')) {
       node.domModel().overlayModel().highlightInOverlay({node, selectorList}, 'anchor-positioning');
       this.isActivePropertyHighlighted = true;
     }

@@ -63,6 +63,7 @@ import {
   type Context,
   GhostStylePropertyTreeElement,
   handleVarDefinitionActivate,
+  type StylePropertyData,
   StylePropertyTreeElement,
 } from './StylePropertyTreeElement.js';
 import type {StylesContainer} from './StylesContainer.js';
@@ -1312,24 +1313,24 @@ export class StylePropertiesSection {
     return (curSection?.editable) ? curSection : null;
   }
 
-  findProperty(propertyOrName: SDK.CSSProperty.CSSProperty|string): StylePropertyTreeElement|undefined {
+  findProperty(propertyOrName: SDK.CSSProperty.CSSProperty|string): StylePropertyData|undefined {
     return this.propertiesTreeOutline.rootElement().children().findLast(
         (child): child is StylePropertyTreeElement => child instanceof StylePropertyTreeElement &&
             (typeof propertyOrName === 'string' ? child.property.name === propertyOrName :
                                                   child.property === propertyOrName));
   }
 
-  refreshUpdate(editedTreeElement: StylePropertyTreeElement): void {
-    this.stylesContainer.refreshUpdate(this, editedTreeElement);
+  refreshUpdate(editedProperty: StylePropertyData): void {
+    this.stylesContainer.refreshUpdate(this, editedProperty);
   }
 
-  updateVarFunctions(editedTreeElement: StylePropertyTreeElement): void {
-    if (!editedTreeElement.property.name.startsWith('--')) {
+  updateVarFunctions(editedProperty: StylePropertyData): void {
+    if (!editedProperty.property.name.startsWith('--')) {
       return;
     }
     let child = this.propertiesTreeOutline.firstChild();
     while (child) {
-      if (child !== editedTreeElement && child instanceof StylePropertyTreeElement) {
+      if (child instanceof StylePropertyTreeElement && child !== editedProperty) {
         child.refreshIfComputedValueChanged();
       }
       child = child.traverseNextTreeElement(false /* skipUnrevealed */, null /* stayWithin */, true /* dontPopulate */);

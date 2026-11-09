@@ -15,7 +15,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type * as ElementsComponents from './components/components.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
-import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import type {StylePropertyData} from './StylePropertyTreeElement.js';
 import type {StylesContainer} from './StylesContainer.js';
 import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 import {WebCustomData} from './WebCustomData.js';
@@ -233,14 +233,13 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase imp
     return this.#computedStyleModelInternal;
   }
 
-  setActiveProperty(_treeElement: StylePropertyTreeElement|null): void {
+  setActiveProperty(_propertyData: StylePropertyData|null): void {
   }
 
-  refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement,
-                force = false): void {
-    if (editedTreeElement) {
+  refreshUpdate(editedSection: StylePropertiesSection, editedProperty?: StylePropertyData, force = false): void {
+    if (editedProperty) {
       for (const section of this.#sections) {
-        section.updateVarFunctions(editedTreeElement);
+        section.updateVarFunctions(editedProperty);
       }
     }
 

@@ -258,6 +258,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
 
   #items: Item[] = [];
   #focusedItem: Item|null = null;
+  #pendingAutoActivation = false;
   #showIgnoreListed = false;
   #showIgnoreListMessage = false;
   #ignoreListCheckboxChecked = false;
@@ -354,6 +355,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
       this.#showIgnoreListMessage = false;
       this.#items = [];
       this.#focusedItem = null;
+      this.#pendingAutoActivation = false;
       UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, null);
       return;
     }
@@ -389,18 +391,24 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
 
     if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
       this.#focusedItem = this.#firstVisibleItem() ?? (this.#items[0] ?? null);
-      const itemToActivate = this.#items.find(item => Boolean(item.frame) && this.#isItemVisible(item)) ??
-          this.#items.find(item => Boolean(item.frame)) ?? null;
+      const itemToActivate = this.#itemToAutoActivate();
       if (itemToActivate &&
           (UI.Context.Context.instance().flavor(QuickSourceView) ||
            UI.Context.Context.instance().flavor(SourcesPanel))) {
         this.activateItem(itemToActivate);
+      } else {
+        this.#pendingAutoActivation = Boolean(itemToActivate);
       }
     } else {
       const activeItem = this.activeCallFrameItem();
       this.#focusedItem =
           this.#isItemVisible(activeItem) ? activeItem : (this.#firstVisibleItem() ?? (this.#items[0] ?? null));
     }
+  }
+
+  #itemToAutoActivate(): Item|null {
+    return this.#items.find(item => Boolean(item.frame) && this.#isItemVisible(item)) ??
+        this.#items.find(item => Boolean(item.frame)) ?? null;
   }
 
   #isItemVisible(item: Item|null): boolean {
@@ -429,6 +437,16 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
   }
 
   override performUpdate(): void {
+    if (this.#pendingAutoActivation &&
+        (UI.Context.Context.instance().flavor(QuickSourceView) || UI.Context.Context.instance().flavor(SourcesPanel))) {
+      const itemToActivate = this.#itemToAutoActivate();
+      if (itemToActivate) {
+        this.activateItem(itemToActivate);
+      } else {
+        this.#pendingAutoActivation = false;
+      }
+    }
+
     const viewInput: ViewInput = {
       showIgnoreListMessage: this.#showIgnoreListMessage,
       showIgnoreListedChecked: this.#ignoreListCheckboxChecked,
@@ -543,6 +561,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
   }
 
   private activateItem(item: Item): void {
+    this.#pendingAutoActivation = false;
     const uiLocation = item.uiLocation;
     if (!uiLocation) {
       return;
@@ -559,7 +578,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
     } else {
       void Common.Revealer.reveal(uiLocation);
     }
-    this.requestUpdate();
   }
 
   activeCallFrameItem(): Item|null {
@@ -596,6 +614,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
       const newItem = this.#items[i];
       if (newItem.frame) {
         this.activateItem(newItem);
+        this.requestUpdate();
         break;
       }
     }
@@ -608,6 +627,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
       const newItem = this.#items[i];
       if (newItem.frame) {
         this.activateItem(newItem);
+        this.requestUpdate();
         break;
       }
     }

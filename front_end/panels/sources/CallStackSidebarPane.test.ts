@@ -303,6 +303,132 @@ describeWithEnvironment('CallStackSidebarPane', () => {
           Sources.CallStackSidebarPane.Item.createForAsyncHeader(stackTrace, fragmentWithFrame);
       assert.isTrue(ignoreListedHeaderItem.isIgnoreListed);
     });
+
+    it('activates pending call frame when SourcesPanel flavor is set after flavorChanged', async () => {
+      const {details, debuggerModel} = getPausedDetails();
+      const view = createViewFunctionStub(Sources.CallStackSidebarPane.CallStackSidebarPane);
+      const callStackSidebarPane = new Sources.CallStackSidebarPane.CallStackSidebarPane(undefined, view);
+
+      UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel, null);
+      UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.QuickSourceView, null);
+
+      const setSelectedCallFrameSpy = sinon.spy(debuggerModel, 'setSelectedCallFrame');
+
+      await callStackSidebarPane.flavorChanged(details);
+      await callStackSidebarPane.updateComplete;
+
+      sinon.assert.notCalled(setSelectedCallFrameSpy);
+      assert.isNull(UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor));
+
+      const callCountBefore = view.callCount;
+
+      UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel,
+                                              sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
+      callStackSidebarPane.requestUpdate();
+      await callStackSidebarPane.updateComplete;
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.strictEqual(view.callCount - callCountBefore, 1);
+      sinon.assert.calledOnceWithExactly(setSelectedCallFrameSpy, details.callFrames[0]);
+      assert.strictEqual(
+          UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor)?.frame.sdkFrame,
+          details.callFrames[0]);
+      assert.strictEqual(view.input.selectedItem?.frame?.sdkFrame, details.callFrames[0]);
+    });
+
+    it('activates pending call frame when Show more is clicked while hidden before SourcesPanel becomes active',
+       async () => {
+         const {details, debuggerModel} = getPausedDetails();
+         const view = createViewFunctionStub(Sources.CallStackSidebarPane.CallStackSidebarPane);
+         const callStackSidebarPane = new Sources.CallStackSidebarPane.CallStackSidebarPane(undefined, view);
+
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel, null);
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.QuickSourceView, null);
+
+         const setSelectedCallFrameSpy = sinon.spy(debuggerModel, 'setSelectedCallFrame');
+
+         await callStackSidebarPane.flavorChanged(details);
+         await callStackSidebarPane.updateComplete;
+
+         sinon.assert.notCalled(setSelectedCallFrameSpy);
+
+         // Click "Show more" while hidden to rebuild items with maxAsyncStackChainDepth > defaultMaxAsyncStackChainDepth
+         view.input.onShowMore();
+         await callStackSidebarPane.updateComplete;
+
+         sinon.assert.notCalled(setSelectedCallFrameSpy);
+
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel,
+                                                 sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
+         callStackSidebarPane.requestUpdate();
+         await callStackSidebarPane.updateComplete;
+
+         sinon.assert.calledOnceWithExactly(setSelectedCallFrameSpy, details.callFrames[0]);
+         assert.strictEqual(
+             UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor)?.frame.sdkFrame,
+             details.callFrames[0]);
+         assert.strictEqual(view.input.selectedItem?.frame?.sdkFrame, details.callFrames[0]);
+       });
+
+    it('activates pending call frame on requestUpdate after SourceMapAttached when view becomes active with ignore-listed frames',
+       async () => {
+         const target = createTarget();
+         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+         assert.exists(debuggerModel);
+
+         const vendorUrl = Platform.DevToolsPath.urlString`http://example.com/vendor.js`;
+         const appUrl = Platform.DevToolsPath.urlString`http://example.com/app.js`;
+         const vendorScriptId = 'vendorScriptId' as Protocol.Runtime.ScriptId;
+         const appScriptId = 'appScriptId' as Protocol.Runtime.ScriptId;
+
+         const vendorScript =
+             debuggerModel.parsedScriptSource(vendorScriptId, vendorUrl, 0, 0, 0, 0, 0, '', undefined, undefined, false,
+                                              false, 0, null, null, null, null, null, null, null);
+         debuggerModel.parsedScriptSource(appScriptId, appUrl, 0, 0, 0, 0, 0, '', undefined, undefined, false, false, 0,
+                                          null, null, null, null, null, null, null);
+
+         Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(vendorUrl);
+
+         const syncCallFrame = debuggerCallFrame(`${vendorUrl}:${vendorScriptId}:vendorFunc:0:0`);
+         const asyncCallFrame = protocolCallFrame(`${appUrl}:${appScriptId}:appFunc:5:2`);
+         const details = new SDK.DebuggerModel.DebuggerPausedDetails(
+             debuggerModel, [syncCallFrame], Protocol.Debugger.PausedEventReason.Other, {}, [],
+             {description: 'setTimeout', callFrames: [asyncCallFrame]});
+
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel, null);
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.QuickSourceView, null);
+
+         const setSelectedCallFrameSpy = sinon.spy(debuggerModel, 'setSelectedCallFrame');
+
+         const view = createViewFunctionStub(Sources.CallStackSidebarPane.CallStackSidebarPane);
+         const callStackSidebarPane = new Sources.CallStackSidebarPane.CallStackSidebarPane(undefined, view);
+
+         await callStackSidebarPane.flavorChanged(details);
+         await callStackSidebarPane.updateComplete;
+
+         sinon.assert.notCalled(setSelectedCallFrameSpy);
+
+         const mockSourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+         mockSourceMap.sourceURLs.returns([]);
+         debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapAttached, {
+           client: vendorScript,
+           sourceMap: mockSourceMap,
+         });
+         await callStackSidebarPane.updateComplete;
+
+         sinon.assert.notCalled(setSelectedCallFrameSpy);
+
+         UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.QuickSourceView,
+                                                 sinon.createStubInstance(Sources.SourcesPanel.QuickSourceView));
+         callStackSidebarPane.requestUpdate();
+         await callStackSidebarPane.updateComplete;
+
+         sinon.assert.calledOnceWithExactly(setSelectedCallFrameSpy, details.callFrames[0]);
+         assert.strictEqual(
+             UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor)?.frame.sdkFrame,
+             details.callFrames[0]);
+         assert.strictEqual(view.input.selectedItem?.frame?.sdkFrame, details.callFrames[0]);
+       });
   });
 
   describe('DEFAULT_VIEW', () => {

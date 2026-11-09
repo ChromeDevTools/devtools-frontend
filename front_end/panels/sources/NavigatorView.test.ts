@@ -2158,4 +2158,173 @@ describeWithEnvironment('NavigatorView', () => {
          workspace.removeProject(project);
        });
   });
+
+  describe('NavigatorTreeNode helpers and child sorting', () => {
+    it('computes mergedTitle, mergedLeafNode, effectiveChildren, and tooltip on merged folder chains', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/src/components/widgets/button.js`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const srcTreeElement = findTreeElement(navigatorView, el => el.title === 'src/components/widgets');
+      assert.exists(srcTreeElement);
+      const widgetsFolder =
+          navigatorView.nodeForTreeElement(srcTreeElement) as Sources.NavigatorView.NavigatorFolderTreeNode;
+      assert.exists(widgetsFolder);
+      const componentsFolder = widgetsFolder.parent as Sources.NavigatorView.NavigatorFolderTreeNode;
+      assert.exists(componentsFolder);
+      const srcFolder = componentsFolder.parent as Sources.NavigatorView.NavigatorFolderTreeNode;
+      assert.exists(srcFolder);
+
+      // Before populate() / revealUISourceCode(), unexpanded folders must have empty effectiveChildren.
+      assert.isFalse(srcFolder.isPopulated());
+      assert.isFalse(widgetsFolder.isPopulated());
+      assert.deepEqual(srcFolder.effectiveChildren(), []);
+      assert.deepEqual(widgetsFolder.effectiveChildren(), []);
+
+      const fileNode = navigatorView.revealUISourceCode(uiSourceCode);
+      assert.exists(fileNode);
+
+      // In the merged folder chain src -> components -> widgets:
+      assert.isTrue(widgetsFolder.isPopulated());
+      assert.strictEqual(srcFolder.mergedTitle(), 'src/components/widgets');
+      assert.strictEqual(srcFolder.mergedLeafNode(), widgetsFolder);
+      assert.deepEqual(srcFolder.effectiveChildren(), [fileNode]);
+      assert.strictEqual(srcFolder.computedTooltip(), 'src/components/widgets');
+      assert.strictEqual(widgetsFolder.computedTooltip(), 'src/components/widgets');
+
+      // Intermediate isMerged: true node returns its own tooltip rather than delegating:
+      assert.isTrue(componentsFolder.isMerged);
+      assert.strictEqual(componentsFolder.computedTooltip(), 'src/components');
+
+      // On unmerged leaf folder:
+      assert.strictEqual(widgetsFolder.mergedTitle(), 'widgets');
+      assert.strictEqual(widgetsFolder.mergedLeafNode(), widgetsFolder);
+      assert.deepEqual(widgetsFolder.effectiveChildren(), [fileNode]);
+
+      project.removeProject();
+    });
+
+    it('keeps children sorted via compareNodes and re-sorts via resortChild on rename', async () => {
+      const mainFrame = await getMainFrame(target);
+      const urlB = urlString`http://example.com/b.js`;
+      const urlA = urlString`http://example.com/a.js`;
+      const urlC = urlString`http://example.com/c.js`;
+      const {project, uiSourceCode: uiSourceCodeB} = addResourceAndUISourceCode(urlB, mainFrame, '', 'text/javascript');
+      const {uiSourceCode: uiSourceCodeA} = addResourceAndUISourceCode(urlA, mainFrame, '', 'text/javascript', project);
+      const {uiSourceCode: uiSourceCodeC} = addResourceAndUISourceCode(urlC, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const nodeB = navigatorView.revealUISourceCode(uiSourceCodeB);
+      const nodeA = navigatorView.revealUISourceCode(uiSourceCodeA);
+      const nodeC = navigatorView.revealUISourceCode(uiSourceCodeC);
+      assert.exists(nodeA);
+      assert.exists(nodeB);
+      assert.exists(nodeC);
+
+      const parentFolder = nodeA.parent as Sources.NavigatorView.NavigatorTreeNode;
+      assert.exists(parentFolder);
+
+      // Verify initial sort order: a.js, b.js, c.js
+      assert.deepEqual(
+          parentFolder.children().map(c => c.title),
+          ['a.js', 'b.js', 'c.js'],
+      );
+
+      // Rename b.js to z.js via commit event
+      sinon.stub(uiSourceCodeB, 'rename').callsFake(async newTitle => {
+        sinon.stub(uiSourceCodeB, 'displayName').returns(newTitle);
+        return true;
+      });
+
+      const renameDone = new Promise<boolean>(resolve => nodeB.rename(resolve));
+      const prompt = (nodeB.treeElement?.titleElement as HTMLElement | undefined)
+                         ?.querySelector<UI.TextPrompt.TextPromptElement>('devtools-prompt');
+      assert.exists(prompt);
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('z.js'));
+      await renameDone;
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      // Children should now be re-sorted: a.js, c.js, z.js
+      assert.deepEqual(
+          parentFolder.children().map(c => c.title),
+          ['a.js', 'c.js', 'z.js'],
+      );
+      assert.isTrue(navigatorView.isNodeSelected(nodeB));
+
+      // Calling resortChild with a detached node that is not a child of parentFolder is a no-op:
+      const detachedNode =
+          new Sources.NavigatorView.NavigatorTreeNode(navigatorView, 'detached', Sources.NavigatorView.Types.File);
+      parentFolder.resortChild(detachedNode);
+      assert.deepEqual(
+          parentFolder.children().map(c => c.title),
+          ['a.js', 'c.js', 'z.js'],
+      );
+
+      project.removeProject();
+    });
+
+    it('clears selection via deselectIfDescendant when an ancestor folder is removed', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/src/script.js`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const node = navigatorView.revealUISourceCode(uiSourceCode, /* select= */ true);
+      assert.exists(node);
+      assert.isTrue(navigatorView.isNodeSelected(node));
+
+      const srcFolder = node.parent as Sources.NavigatorView.NavigatorTreeNode;
+      assert.exists(srcFolder);
+      const domainFolder = srcFolder.parent as Sources.NavigatorView.NavigatorTreeNode;
+      assert.exists(domainFolder);
+
+      domainFolder.removeChild(srcFolder);
+      assert.isFalse(navigatorView.isNodeSelected(node));
+      assert.isTrue(srcFolder.isDisposed());
+
+      project.removeProject();
+    });
+
+    it('uses merged leaf URL when building folder context menu on a merged chain', async () => {
+      const getContextMenuItemsStub =
+          sinon.stub(Workspace.IgnoreListManager.IgnoreListManager.instance(), 'getIgnoreListFolderContextMenuItems')
+              .returns([]);
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/src/components/widgets/button.js`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const srcTreeElement = findTreeElement(navigatorView, el => el.title === 'src/components/widgets');
+      assert.exists(srcTreeElement);
+      const widgetsFolder =
+          navigatorView.nodeForTreeElement(srcTreeElement) as Sources.NavigatorView.NavigatorFolderTreeNode;
+      assert.exists(widgetsFolder);
+      const componentsFolder = widgetsFolder.parent as Sources.NavigatorView.NavigatorFolderTreeNode;
+      assert.exists(componentsFolder);
+      const srcFolder = componentsFolder.parent as Sources.NavigatorView.NavigatorFolderTreeNode;
+      assert.exists(srcFolder);
+
+      navigatorView.revealUISourceCode(uiSourceCode);
+
+      const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('contextmenu'));
+      navigatorView.handleFolderContextMenu(contextMenu, srcFolder);
+
+      sinon.assert.calledOnce(getContextMenuItemsStub);
+      assert.strictEqual(
+          getContextMenuItemsStub.firstCall.args[0],
+          urlString`http://example.com/src/components/widgets`,
+      );
+
+      project.removeProject();
+    });
+  });
 });

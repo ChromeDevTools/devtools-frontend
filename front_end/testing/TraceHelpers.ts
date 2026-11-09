@@ -140,6 +140,8 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   flameChart.show(target);
   flameChart.update();
   await raf();
+  // Blur the canvas after mounting to deflake screenshot assertions from intermittent :focus-visible rings.
+  flameChart.blurCanvasForTesting();
 
   return {flameChart, dataProvider, target, parsedTrace};
 }

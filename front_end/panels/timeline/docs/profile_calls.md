@@ -19,19 +19,17 @@ We parse the CPU profile received from the backend containing the samples to rec
 
 With this data we can deduce with certainty how the full JS stack looked at the time of each sample, **but** we can only guess/estimate how it looked at any point in between samples.
 
-### 2. Initial creation of `ProfileCall`s
+### 2. Streaming samples and trace events with two cursors
 
-We create fake trace events to represent samples. We take all samples from the profile and create a `ProfileCall` (a fake trace event representing a JS call) for each sample. We only do this for the function on top of the stack on each sample. ProfileCalls have a node `id`, pointing to the `node` of the cpu profile it corresponds to. At initialization, every ProfileCall is set a duration of 0.
+`SamplesIntegrator#buildProfileCalls()` streams the sorted trace events and the sorted CPU profile samples in chronological order using two cursors rather than allocating a `ProfileCall` for every sample or building a merged input array up front.
 
-### 3. Consolidating
+Before the merge loop starts, `#prepareSamples()` indexes the preceding non-GC node for each garbage-collection sample by `sampleIndex` (and populates `jsSampleEvents` when `debugMode` is enabled). During the merge loop, `advanceSample()` reuses a single mutable scratch `SyntheticProfileCall` carrying the current sample's top-of-stack `nodeId`, `callFrame`, `sampleIndex`, and `ts` (`dur` is `0`).
 
-We merge the trace data with the ProfileCalls created in the previous step, the resultant data is sorted by timestamp. Let’s call this data the “complete data”, since it contains the browser trace events and the fake profile calls we just created.
+### 3. Estimate JS call durations
 
-### 4. Estimate JS call durations
+To estimate the duration of JS calls, `SamplesIntegrator` maintains an active JS stack (`#currentJSStack`), where each entry is a `SyntheticProfileCall`. As the two cursors advance through trace events and CPU samples, the integrator updates `#currentJSStack`:
 
-We estimate the duration of JS calls. For this, we create an array that represents the JS stack, each item in it being a call frame (AKA `JSFrame` / `ProfileCall`).  Then, we go through each event in the “complete data” and for each event we update the items in the JS stack.
-
-For example, if we find a sample (represented as an empty profile call) for the first time, we push the call frames in the sample (which we create using the call tree we built on the first step) to the stack. If we then find a second sample, we compare the call frames in it with the current JS stack, position by position, and update the frames in the stack accordingly: repeated call frames are “merged” together by extending one’s duration to cover the other’s timestamp, obsolete call frames are removed from the stack and new call frames are pushed to it.
+For example, when the first sample arrives, `SamplesIntegrator` walks the CPU profile call tree from step 1 to reconstruct the sample's stack frames and allocates `SyntheticProfileCall` objects for the frames pushed onto `#currentJSStack`. When a subsequent sample arrives, its stack frames are compared with `#currentJSStack` position by position: matching frames are extended to cover the new sample's timestamp, frames that ended are truncated from `#currentJSStack`, and only newly opened frames allocate new `SyntheticProfileCall` objects.
 
 Graphically,
 
@@ -53,7 +51,7 @@ Becomes this:
                       [E]  dur = 0
     ^ t1              ^ t3
 
-_Note: When call frames are "merged" only one of them is kept in the output data, meaning that we **drop many of the ProfileCalls we created** in steps 2 and 4. GC cleans them up._
+_Note: Because `advanceSample()` reuses one scratch `SyntheticProfileCall` and `#extractStackTrace()` only allocates `SyntheticProfileCall` entries for frames newly pushed onto `#currentJSStack` (`[E]` above), repeated samples of already-open frames (`[A]`, `[B]`, `[C]`) extend durations in place without transient allocations._
 
 Every time we add a call frame to the JS stack array, we also add them to another array, called `constructedProfileCalls` to hold a reference. At the end of the loop, `constructedProfileCalls` contains all estimated JS calls with their estimated duration.
 

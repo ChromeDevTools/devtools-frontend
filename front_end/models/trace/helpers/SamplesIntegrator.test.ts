@@ -48,40 +48,20 @@ describe('SamplesIntegrator', function() {
   const parsedBasicProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(basicCDPProfile);
   const PROFILE_ID = Trace.Types.Events.ProfileID('fake-profile-id');
 
-  describe('callsFromProfileSamples', () => {
-    it('generates empty profile calls from a profile with samples', () => {
-      const integrator =
-          new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, PROFILE_ID, pid, tid);
-      const calls = integrator.callsFromProfileSamples();
-      assert.strictEqual(calls.length, basicCDPProfile.samples?.length);
-      let currentTimestamp = 0;
-      assert.deepEqual(calls.map(c => c.callFrame.functionName), ['a', 'a', 'b', 'b']);
-      for (let i = 0; i < calls.length; i++) {
-        const call = calls[i];
-        currentTimestamp += basicCDPProfile.timeDeltas?.[i] || 0;
-        assert.strictEqual(call.dur, 0);
-        assert.strictEqual(call.dur, 0);
-        assert.strictEqual(call.ts, currentTimestamp);
-
-        // Ensure each ProfileCall has been "linked" to the Profile and the
-        // sample.
-        assert.strictEqual(call.profileId, PROFILE_ID);
-        assert.strictEqual(call.sampleIndex, i);
-        assert.isDefined(call.nodeId);
-      }
-    });
+  describe('buildProfileCalls', () => {
     it('generates JSSamples from samples under debug mode', () => {
       const config = {
         ...Trace.Types.Configuration.defaults(),
+        debugMode: true,
       };
-      config.debugMode = true;
       assert.isFalse(Trace.Types.Configuration.defaults().debugMode, 'Default config should not be mutable');
 
       const integrator =
           new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, PROFILE_ID, pid, tid, config);
-      integrator.callsFromProfileSamples();
+      integrator.buildProfileCalls([]);
       const jsSampleEvents = integrator.jsSampleEvents;
 
+      assert.lengthOf(jsSampleEvents, 4);
       assert.strictEqual(jsSampleEvents[0].ts, 100);
       assert.strictEqual(jsSampleEvents[1].ts, 200);
       assert.strictEqual(jsSampleEvents[2].ts, 300);
@@ -97,9 +77,6 @@ describe('SamplesIntegrator', function() {
       assert.deepEqual(jsSampleEvents[2].args.data.stackTrace.map(f => f.functionName), ['a', 'b']);
       assert.deepEqual(jsSampleEvents[3].args.data.stackTrace.map(f => f.functionName), ['a', 'b']);
     });
-  });
-
-  describe('buildProfileCalls', () => {
     it('generates profile calls using trace events and JS samples from a trace file', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
       const samplesData = parsedTrace.data.Samples;
@@ -540,6 +517,79 @@ describe('SamplesIntegrator', function() {
       assert.strictEqual(constructedCalls[1].callFrame.functionName, 'b');
       assert.strictEqual(constructedCalls[1].ts, 100);
       assert.strictEqual(constructedCalls[1].dur, 400);
+    });
+
+    it('orders non-zero-duration trace events before samples at identical timestamps and preserves samples across parent unwinds',
+       () => {
+         // Sample 0 is at ts=100 (same timestamp as the first FunctionCall) and
+         // Sample 1 is at ts=300 (after the first FunctionCall ends at ts=250, at
+         // the start of the second FunctionCall).
+         const cdpProfile: Protocol.Profiler.Profile = {
+           startTime: 0,
+           endTime: 500,
+           nodes: [
+             {
+               id: 1,
+               hitCount: 0,
+               callFrame: {functionName: '(root)', scriptId, url, lineNumber, columnNumber},
+               children: [2, 3],
+             },
+             {id: 2, callFrame: {functionName: 'a', scriptId, url, lineNumber, columnNumber}},
+             {id: 3, callFrame: {functionName: 'b', scriptId, url, lineNumber, columnNumber}},
+           ],
+           samples: [2, 3],
+           timeDeltas: [100, 200],
+         };
+         const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
+         const integrator = new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
+         const firstCall = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 100, 150);
+         const secondCall = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 300, 150);
+         const constructedCalls = integrator.buildProfileCalls([firstCall, secondCall]);
+
+         assert.lengthOf(constructedCalls, 2);
+         assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
+         assert.strictEqual(constructedCalls[0].ts, 100);
+         assert.strictEqual(constructedCalls[0].dur, 150);
+         assert.strictEqual(constructedCalls[1].callFrame.functionName, 'b');
+         assert.strictEqual(constructedCalls[1].ts, 300);
+         assert.strictEqual(constructedCalls[1].dur, 150);
+       });
+
+    it('orders samples before zero-duration trace events at identical timestamps', () => {
+      // Sample 0 (`a`) and the instant `TimeStamp` (`a -> stamp`) both occur at
+      // ts=100. Evaluating Sample 0 first opens `a`, and `TimeStamp` then opens
+      // `stamp` until Sample 1 (`a` at ts=200) closes `stamp` with dur=100.
+      const traceId = 99;
+      const cdpProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile = {
+        startTime: 0,
+        endTime: 300,
+        nodes: [
+          {
+            id: 1,
+            hitCount: 0,
+            callFrame: {functionName: '(root)', scriptId, url, lineNumber, columnNumber},
+            children: [2],
+          },
+          {id: 2, callFrame: {functionName: 'a', scriptId, url, lineNumber, columnNumber}, children: [3]},
+          {id: 3, callFrame: {functionName: 'stamp', scriptId, url, lineNumber, columnNumber}},
+        ],
+        samples: [2, 2],
+        timeDeltas: [100, 100],
+        traceIds: {[traceId]: 3},
+      };
+      const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
+      const integrator = new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
+      const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 300);
+      const consoleTimeStamp = makeConsoleTimeStamp('A timestamp', 100, {sampleTraceId: traceId});
+      const constructedCalls = integrator.buildProfileCalls([evaluateScript, consoleTimeStamp]);
+
+      assert.lengthOf(constructedCalls, 2);
+      assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
+      assert.strictEqual(constructedCalls[0].ts, 100);
+      assert.strictEqual(constructedCalls[0].dur, 200);
+      assert.strictEqual(constructedCalls[1].callFrame.functionName, 'stamp');
+      assert.strictEqual(constructedCalls[1].ts, 100);
+      assert.strictEqual(constructedCalls[1].dur, 100);
     });
   });
 });

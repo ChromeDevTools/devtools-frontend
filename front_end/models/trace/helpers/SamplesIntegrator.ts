@@ -7,7 +7,12 @@ import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
 
 import {milliToMicro} from './Timing.js';
-import {extractSampleTraceId, makeProfileCall, mergeEventsInOrder, sortTraceEventsInPlace} from './Trace.js';
+import {
+  eventTimeComparator,
+  extractSampleTraceId,
+  makeProfileCall,
+  sortTraceEventsInPlace,
+} from './Trace.js';
 
 /**
  * This is a helper that integrates CPU profiling data coming in the
@@ -22,14 +27,16 @@ import {extractSampleTraceId, makeProfileCall, mergeEventsInOrder, sortTraceEven
  * the shape of a complete trace events and can be treated as flame
  * chart entries in the timeline.
  *
- * The approach to build the profile calls consists in tracking the
- * current stack as the following events happen (in order):
- * 1. A sample was done.
- * 2. A trace event started.
- * 3. A trace event ended.
- * Depending on the event and on the data that's coming with it the
- * stack is updated by adding or removing JS calls to it and updating
- * the duration of the calls in the tracking stack.
+ * `buildProfileCalls()` streams the two chronologically ordered inputs
+ * (sorted `traceEvents` and sorted `#profileModel.samples`) with two
+ * cursors and a single reusable scratch `SyntheticProfileCall`, avoiding
+ * per-sample event and merged-array allocations. As the cursors advance,
+ * the integrator tracks the active JS call stack across three transitions:
+ * 1. A trace event ended (its `ts + dur` precedes or equals the next item).
+ * 2. A CPU sample was taken.
+ * 3. A trace event started.
+ * Depending on the transition, the integrator opens, extends, or truncates
+ * JS calls on `#currentJSStack`.
  *
  * note: Although this approach has been implemented since long ago, and
  * is relatively efficient (adds a complexity over the trace parsing of
@@ -87,15 +94,16 @@ export class SamplesIntegrator {
    */
   #profileModel: CPUProfile.CPUProfileDataModel.CPUProfileDataModel;
   /**
-   * Because GC nodes don't have a stack, we artificially add a stack to
-   * them which corresponds to that of the previous sample. This map
-   * tracks which node is used for the stack of a GC call.
+   * Because GC nodes don't have a stack, the integrator attaches the stack
+   * of the preceding sample to them. This map records which node provides
+   * the stack for each GC sample, keyed by `sampleIndex` (all GC samples
+   * share one `gcNode` ID with different preceding stacks, and samples do
+   * not have distinct `ProfileCall` object identities during the merge).
    * Note that GC samples are not shown in the flamechart, however they
-   * are used during the construction of for profile calls, as we can
-   * infer information about the duration of the executed code when a
-   * GC node is sampled.
+   * are used during the construction of profile calls to infer the
+   * duration of the executed code when a GC node is sampled.
    */
-  #nodeForGC = new Map<Types.Events.SyntheticProfileCall, CPUProfile.ProfileTreeModel.ProfileNode>();
+  #nodeForGC = new Map<number, CPUProfile.ProfileTreeModel.ProfileNode>();
 
   #engineConfig: Types.Configuration.Configuration;
   #profileId: Types.Events.ProfileID;
@@ -116,49 +124,109 @@ export class SamplesIntegrator {
     this.#profileId = profileId;
   }
 
+  /**
+   * Approximates JS call durations by streaming sorted `traceEvents` and
+   * `#profileModel.samples` in chronological order with two cursors.
+   *
+   * `traceEvents` must already be sorted with `sortTraceEventsInPlace()`
+   * (`#profileModel.samples` and `timestamps` are sorted during
+   * `CPUProfileDataModel` construction).
+   */
   buildProfileCalls(traceEvents: Types.Events.Event[]): Types.Events.SyntheticProfileCall[] {
-    const mergedEvents = mergeEventsInOrder(traceEvents, this.callsFromProfileSamples());
-    const stack = [];
-    for (let i = 0; i < mergedEvents.length; i++) {
-      const event = mergedEvents[i];
-      // Because instant trace events have no duration, they don't provide
-      // useful information for possible changes in the duration of calls
-      // in the JS stack.
-      if (event.ph === Types.Events.Phase.INSTANT && !extractSampleTraceId(event)) {
-        continue;
-      }
-      if (stack.length === 0) {
-        if (Types.Events.isProfileCall(event)) {
-          this.#onProfileCall(event);
+    // Pre-index GC substitute stacks (and debug-mode JSSample events) before streaming.
+    this.#prepareSamples();
+    const samples = this.#profileModel.samples;
+    const timestamps = this.#profileModel.timestamps;
+    const numSamples = samples ? samples.length : 0;
+    // Reused mutable scratch event representing the current CPU sample at
+    // `sampleCursor - 1`. Only `nodeId`, `callFrame`, `sampleIndex`, and `ts`
+    // vary per sample (`profileId`, `pid`, `tid`, `ph`, and `dur: 0` remain
+    // constant for this integrator instance).
+    //
+    // Invariant: `sampleEvent` must NEVER be pushed onto `stack`,
+    // `#currentJSStack`, `#constructedProfileCalls`, or retained by reference.
+    // `#onProfileCall()` -> `#extractStackTrace()` reads its scalar fields and
+    // allocates fresh `SyntheticProfileCall` objects for opened stack frames.
+    let sampleEvent: Types.Events.SyntheticProfileCall|null = null;
+    let sampleCursor = 0;
+    const advanceSample = (): Types.Events.SyntheticProfileCall|null => {
+      while (sampleCursor < numSamples) {
+        const index = sampleCursor++;
+        const node = this.#profileModel.nodeByIndex(index);
+        if (!node) {
           continue;
         }
-        stack.push(event);
-        this.#onTraceEventStart(event);
-        continue;
+        const ts = milliToMicro(Types.Timing.Milli(timestamps[index]));
+        if (sampleEvent === null) {
+          sampleEvent = makeProfileCall(node, this.#profileId, index, ts, this.#processId, this.#threadId);
+        } else {
+          sampleEvent.nodeId = node.id;
+          sampleEvent.callFrame = node.callFrame;
+          sampleEvent.sampleIndex = index;
+          sampleEvent.ts = ts;
+        }
+        return sampleEvent;
       }
+      return null;
+    };
 
-      const parentEvent = stack.at(-1);
-      if (parentEvent === undefined) {
-        continue;
+    let traceCursor = 0;
+    const numTraceEvents = traceEvents.length;
+    const advanceTrace = (): Types.Events.Event|null => {
+      while (traceCursor < numTraceEvents) {
+        const traceEvent = traceEvents[traceCursor++];
+        // Instant events have zero duration and cannot change JS call durations
+        // unless they carry a `sampleTraceId` stack snapshot.
+        if (traceEvent.ph === Types.Events.Phase.INSTANT && !extractSampleTraceId(traceEvent)) {
+          continue;
+        }
+        return traceEvent;
       }
-      const begin = event.ts;
-      const parentBegin = parentEvent.ts;
-      const parentDuration = parentEvent.dur || 0;
-      const parentEnd = parentBegin + parentDuration;
+      return null;
+    };
 
-      const startsAfterParent = begin >= parentEnd;
-      if (startsAfterParent) {
+    const stack: Types.Events.Event[] = [];
+    const unwindExpiredTraceEvents = (ts: Types.Timing.Micro): Types.Events.Event|undefined => {
+      let parentEvent = stack.at(-1);
+      while (parentEvent !== undefined && ts >= parentEvent.ts + (parentEvent.dur || 0)) {
         this.#onTraceEventEnd(parentEvent);
         stack.pop();
-        i--;
-        continue;
+        parentEvent = stack.at(-1);
       }
+      return parentEvent;
+    };
+
+    let nextSample = advanceSample();
+    let nextTraceEvent = advanceTrace();
+    while (nextTraceEvent !== null || nextSample !== null) {
+      // Match `mergeEventsInOrder` tie-breaking at identical timestamps (`ts`):
+      // - Trace events with `dur > 0` end after a 0-duration sample, so
+      //   `eventTimeComparator` returns `-1` and the trace event is pushed onto
+      //   `stack` first as the sample's parent execution context.
+      // - Zero-duration trace events (`(dur ?? 0) === 0`, such as instant
+      //   events with a `sampleTraceId`) tie on both start and end time, so
+      //   `eventTimeComparator` prioritizes the `ProfileCall` (returns `1`) and
+      //   the sample updates `#currentJSStack` first to parent the trace event.
+      const useSample =
+          nextSample !== null && (nextTraceEvent === null || eventTimeComparator(nextTraceEvent, nextSample) > 0);
+      const event = useSample ? nextSample : nextTraceEvent;
+      if (event === null) {
+        break;
+      }
+
+      const parentEvent = unwindExpiredTraceEvents(event.ts);
       if (Types.Events.isProfileCall(event)) {
         this.#onProfileCall(event, parentEvent);
-        continue;
+      } else {
+        this.#onTraceEventStart(event, parentEvent);
+        stack.push(event);
       }
-      this.#onTraceEventStart(event, parentEvent);
-      stack.push(event);
+
+      if (useSample) {
+        nextSample = advanceSample();
+      } else {
+        nextTraceEvent = advanceTrace();
+      }
     }
     while (stack.length) {
       const last = stack.pop();
@@ -168,6 +236,40 @@ export class SamplesIntegrator {
     }
     sortTraceEventsInPlace(this.jsSampleEvents);
     return this.#constructedProfileCalls;
+  }
+
+  /**
+   * Pre-indexes the preceding non-GC node for each GC sample in `#nodeForGC`
+   * (keyed by `sampleIndex`) so `#stackNodesForProfileCall()` can resolve GC
+   * stacks during the streaming merge without per-sample `ProfileCall` objects.
+   *
+   * When `debugMode` is enabled, this pass also populates `jsSampleEvents`
+   * before `buildProfileCalls()` appends any `sampleTraceId` sample events.
+   */
+  #prepareSamples(): void {
+    const samples = this.#profileModel.samples;
+    const timestamps = this.#profileModel.timestamps;
+    if (!samples) {
+      return;
+    }
+    let prevNode: CPUProfile.ProfileTreeModel.ProfileNode|undefined;
+    for (let i = 0; i < samples.length; i++) {
+      const node = this.#profileModel.nodeByIndex(i);
+      if (!node) {
+        continue;
+      }
+      if (this.#engineConfig.debugMode) {
+        const timestamp = milliToMicro(Types.Timing.Milli(timestamps[i]));
+        const call = makeProfileCall(node, this.#profileId, i, timestamp, this.#processId, this.#threadId);
+        const traceId = this.#profileModel.traceIds?.[i];
+        this.jsSampleEvents.push(this.#makeJSSampleEvent(call, timestamp, traceId));
+      }
+      if (node.id === this.#profileModel.gcNode?.id && prevNode) {
+        this.#nodeForGC.set(i, prevNode);
+        continue;
+      }
+      prevNode = node;
+    }
   }
 
   #onTraceEventStart(event: Types.Events.Event, parent?: Types.Events.Event): void {
@@ -216,10 +318,15 @@ export class SamplesIntegrator {
     this.#lockedJsStackDepth.push(this.#currentJSStack.length);
   }
 
+  /**
+   * Integrates a CPU sample into `#currentJSStack`. During `buildProfileCalls()`,
+   * `event` is typically the mutable scratch `sampleEvent` and must never be
+   * retained by reference.
+   */
   #onProfileCall(event: Types.Events.SyntheticProfileCall, parent?: Types.Events.Event): void {
     if ((parent && Types.Events.isJSInvocationEvent(parent)) || this.#fakeJSInvocation) {
       this.#extractStackTrace(event);
-    } else if (Types.Events.isProfileCall(event) && this.#currentJSStack.length === 0) {
+    } else if (this.#currentJSStack.length === 0) {
       // Force JS Samples to show up even if we are not inside a JS
       // invocation event, because we can be missing the start of JS
       // invocation events if we start tracing half-way through. Pretend
@@ -240,45 +347,6 @@ export class SamplesIntegrator {
   }
 
   /**
-   * Builds the initial calls with no duration from samples. Their
-   * purpose is to be merged with the trace event array being parsed so
-   * that they can be traversed in order with them and their duration
-   * can be updated as the SampleIntegrator callbacks are invoked.
-   */
-  callsFromProfileSamples(): Types.Events.SyntheticProfileCall[] {
-    const samples = this.#profileModel.samples;
-    const timestamps = this.#profileModel.timestamps;
-    if (!samples) {
-      return [];
-    }
-    const calls: Types.Events.SyntheticProfileCall[] = [];
-    let prevNode;
-    for (let i = 0; i < samples.length; i++) {
-      const node = this.#profileModel.nodeByIndex(i);
-      const timestamp = milliToMicro(Types.Timing.Milli(timestamps[i]));
-      if (!node) {
-        continue;
-      }
-      const call = makeProfileCall(node, this.#profileId, i, timestamp, this.#processId, this.#threadId);
-      calls.push(call);
-
-      if (this.#engineConfig.debugMode) {
-        const traceId = this.#profileModel.traceIds?.[i];
-        this.jsSampleEvents.push(this.#makeJSSampleEvent(call, timestamp, traceId));
-      }
-      if (node.id === this.#profileModel.gcNode?.id && prevNode) {
-        // GC samples have no stack, so we just put GC node on top of the
-        // last recorded sample. Cache the previous sample for future
-        // reference.
-        this.#nodeForGC.set(call, prevNode);
-        continue;
-      }
-      prevNode = node;
-    }
-    return calls;
-  }
-
-  /**
    * Given a synthetic profile call, returns the profile nodes of the
    * stack trace that profile call belongs to based on its nodeId,
    * ordered from the bottom of the stack to the top. The root node is
@@ -293,7 +361,7 @@ export class SamplesIntegrator {
     if (isGarbageCollection) {
       // Because GC don't have a stack, we use the stack of the previous
       // sample.
-      node = this.#nodeForGC.get(profileCall) || null;
+      node = this.#nodeForGC.get(profileCall.sampleIndex) || null;
     }
     if (!sampledNode || !node) {
       return [];

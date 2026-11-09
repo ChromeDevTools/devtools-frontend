@@ -55,7 +55,7 @@ const UIStrings = {
   /**
    * @description Button text for sending comments to the agent.
    */
-  sendToAgent: 'Send to Agent',
+  sendToAgent: 'Send to agent',
   /**
    * @description Status text shown next to a spinner when a comment thread is being processed by the agent.
    */

@@ -444,7 +444,7 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
       await assertViewScreenshot(renderView(), 'comments/comments_pane_empty.png');
     });
 
-    it('renders queued comments with the Send to Agent footer right after them', async () => {
+    it('renders queued comments with the Send to agent footer right after them', async () => {
       await assertViewScreenshot(renderView({queuedThreads: createQueuedThreads(3)}),
                                  'comments/comments_pane_list.png');
     });
@@ -459,7 +459,7 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
                                  'comments/comments_pane_queued_and_sent.png');
     });
 
-    it('renders the Send to Agent footer stuck to the bottom when the queued comments overflow', async () => {
+    it('renders the Send to agent footer stuck to the bottom when the queued comments overflow', async () => {
       await assertViewScreenshot(renderView({queuedThreads: createQueuedThreads(15), sentThreads: createSentThreads()}),
                                  'comments/comments_pane_queued_overflow.png');
     });

@@ -4681,9 +4681,6 @@ export const generatedProperties: CSSProperty[] = [
    "grid-rows",
    "grid-columns",
    "grid-order",
-   "grid-lanes-flow",
-   "grid-lanes-track",
-   "grid-lanes-order",
    "source-order"
   ],
   "name": "reading-flow"
@@ -4865,9 +4862,7 @@ export const generatedProperties: CSSProperty[] = [
    "none",
    "spaces"
   ],
-  "name": "ruby-overhang",
-  "runtime_flag": "CSSRubyOverhang",
-  "runtime_flag_status": "stable"
+  "name": "ruby-overhang"
  },
  {
   "inherited": true,
@@ -5163,8 +5158,7 @@ export const generatedProperties: CSSProperty[] = [
  {
   "keywords": [
    "normal",
-   "always",
-   "before"
+   "always"
   ],
   "name": "scroll-snap-stop"
  },
@@ -5411,8 +5405,7 @@ export const generatedProperties: CSSProperty[] = [
    "-webkit-right",
    "-webkit-center",
    "start",
-   "end",
-   "match-parent"
+   "end"
   ],
   "name": "text-align"
  },
@@ -5434,8 +5427,7 @@ export const generatedProperties: CSSProperty[] = [
    "left",
    "right",
    "center",
-   "justify",
-   "match-parent"
+   "justify"
   ],
   "name": "text-align-last"
  },
@@ -5530,8 +5522,7 @@ export const generatedProperties: CSSProperty[] = [
   "inherited": true,
   "keywords": [
    "none",
-   "auto",
-   "all"
+   "auto"
   ],
   "name": "text-decoration-skip-ink"
  },
@@ -5965,8 +5956,7 @@ export const generatedProperties: CSSProperty[] = [
    "auto",
    "none",
    "text",
-   "all",
-   "contain"
+   "all"
   ],
   "name": "user-select"
  },
@@ -8454,9 +8444,6 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "grid-rows",
    "grid-columns",
    "grid-order",
-   "grid-lanes-flow",
-   "grid-lanes-track",
-   "grid-lanes-order",
    "source-order"
   ]
  },
@@ -8664,8 +8651,7 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
  "scroll-snap-stop": {
   "values": [
    "normal",
-   "always",
-   "before"
+   "always"
   ]
  },
  "scroll-snap-type": {
@@ -8860,8 +8846,7 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
  "text-decoration-skip-ink": {
   "values": [
    "none",
-   "auto",
-   "all"
+   "auto"
   ]
  },
  "text-decoration-skip-spaces": {

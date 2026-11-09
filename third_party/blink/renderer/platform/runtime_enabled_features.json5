@@ -1032,6 +1032,11 @@
       status: "test",
     },
     {
+      // crbug.com/41485013
+      name: "BreakIteratorRightSingleQuotationMark",
+      status: "stable",
+    },
+    {
       name: "BrowserInitiatedAutomaticPictureInPicture",
       public: true,
       status: "experimental",
@@ -1865,6 +1870,11 @@
       status: "stable",
     },
     {
+      // https://chromestatus.com/feature/5123480866783232
+      name: "CSSImportRuleStyleSheetNullable",
+      status: "stable",
+    },
+    {
       // The inherit() function works like var(), except that it grabs
       // the computed value of the specified property from the parent style
       // instead of the current style.
@@ -1878,11 +1888,6 @@
       // <input type=time> elements with a reversed range.
       // https://html.spec.whatwg.org/multipage/input.html#has-a-reversed-range
       name: "CSSInRangeOutOfRangeReversedRanges",
-      status: "stable",
-    },
-    {
-      // https://chromestatus.com/feature/6289894144212992
-      name: "CSSKeyframesRuleLength",
       status: "stable",
     },
     {
@@ -2100,12 +2105,6 @@
     },
     {
       name: "CSSRevertRule",
-      status: "stable",
-    },
-    {
-      // https://drafts.csswg.org/css-ruby/#ruby-overhang
-      // ChromeStatus: https://chromestatus.com/feature/6560118298771456
-      name: "CSSRubyOverhang",
       status: "stable",
     },
     {
@@ -2409,7 +2408,6 @@
     {
       name: "DeclarativeFragment",
       status: "experimental",
-      depends_on: ["DocumentPatching"],
     },
     {
       name: "DeclarativePerformanceObserver",
@@ -2682,12 +2680,6 @@
       name: "DocumentOpenSandboxInheritanceRemoval",
       status: "stable",
       copied_from_base_feature_if: "overridden",
-    },
-    // https://chromestatus.com/feature/5111042975465472
-    // <template patchfor> etc.
-    {
-      name: "DocumentPatching",
-      status: "stable",
     },
     {
       name: "DocumentPictureInPictureAPI",
@@ -3019,6 +3011,10 @@
         // EyeDropper UI is available on Android, ChromeOS, Linux (x11), Mac, and Win.
         // This list should match the supported operating systems for the
         // kEyeDropper base::Feature.
+        // There is an override in SetCustomizedRuntimeFeaturesFromCombinedArgs
+        // to disable this on Android versions below CinnamonBun (API 37), where
+        // the system EyeDropper intent is not supported, so that the EyeDropper
+        // WebIDL interface is omitted on older Android versions.
         "Android": "stable",
         "ChromeOS": "stable",
         "Linux": "stable",
@@ -3036,6 +3032,10 @@
       status: "experimental",
     },
     {
+      name: "FastCommonGraphemeClusterPrefixLength",
+      status: "stable",
+    },
+    {
       name: "FastCompositionCharacterBounds",
       status: "stable",
     },
@@ -3046,6 +3046,10 @@
     {
       name: "FastPositionIterator",
       // Not enabled due to a RTL issue. crbug.com/1421016.
+    },
+    {
+      name: "FastTypingCommandCreateSelection",
+      status: "stable",
     },
     {
       name: "FedCm",
@@ -3410,6 +3414,11 @@
       status: "stable",
     },
     {
+      // Kill switch for https://crbug.com/582409909.
+      name: "FontFallbackPreferContentLocale",
+      status: "stable",
+    },
+    {
       name: "FontFamilyPostscriptMatchingCTMigration",
     },
     {
@@ -3455,6 +3464,10 @@
     {
       // crbug.com/40398871
       name: "FontVariationSettingsDescriptor",
+      status: "stable",
+    },
+    {
+      name: "ForceDarkRespectsColorSchemeOnly",
       status: "stable",
     },
     {
@@ -3836,11 +3849,6 @@
       status: "stable",
     },
     {
-      // Parse processing instructions in HTML.
-      name: "HTMLProcessingInstruction",
-      status: "stable",
-    },
-    {
       // Enables the switch attribute on <input type="checkbox">.
       // https://open-ui.org/components/switch.attribute.explainer/
       name: "HTMLSwitchAttribute",
@@ -4069,6 +4077,15 @@
     },
     {
       name: "InvisibleSVGAnimationThrottling",
+      status: "stable",
+    },
+    {
+      // When enabled, cross-context access from an isolated world (e.g. an
+      // extension content script) to another context in the same world is
+      // subject to the same frame-origin access check as the main world.
+      // Previously such access was unconditionally allowed. Kill switch.
+      // TODO(crbug.com/577455288): remove by m164 if no regressions are reported.
+      name: "IsolatedWorldCrossContextAccessCheck",
       status: "stable",
     },
     {
@@ -4552,6 +4569,11 @@
       status: "test",
       base_feature: "none",
       custom_enable_check: "CanEnableMojoJSTest",
+    },
+    // Web Monetization. https://webmonetization.org/specification/
+    {
+      name: "Monetization",
+      status: "test",
     },
     // Optimization for monospace text.
     {
@@ -5260,6 +5282,7 @@
       // https://crbug.com/440387014
       name: "Prerender2CrossOriginIframes",
       origin_trial_feature_name: "Prerender2CrossOriginIframes",
+      status: "stable",
     },
     {
       // Used to allow prerender activation by form submission.
@@ -5422,6 +5445,12 @@
       status: "stable",
     },
     {
+      // Defense-in-depth mitigation that strips read-back disallowed (e.g.,
+      // cross-origin) content when drawing elements with html-in-canvas.
+      name: "ReadBackDisallowedMitigation",
+      status: "stable",
+    },
+    {
       // getType() on a ClipboardItem triggers the
       // clipboard read operation, implementing lazy loading for clipboard data.
       // Chrome status entry - https://chromestatus.com/feature/5203433409871872
@@ -5439,6 +5468,8 @@
       // Enables caret visibility and keyboard selection/navigation for
       // readonly text controls (input and textarea).
       // https://issues.chromium.org/issues/40801366
+      // Behavior changed to exclude disabled text controls, which should not
+      // show a caret: https://issues.chromium.org/issues/581932200
       name: "ReadOnlyTextControlSelection",
       status: "stable",
     },
@@ -5762,6 +5793,12 @@
       // Spec: https://wicg.github.io/sanitizer-api/
       // Tracking bug: crbug.com/356601280
       name: "SanitizerAPI",
+      status: "stable",
+    },
+    {
+      // Spec: https://github.com/whatwg/html/pull/12898
+      // Tracking bug: crbug.com/567285527
+      name: "SanitizerJavascriptURLs",
       status: "stable",
     },
     {
@@ -6161,6 +6198,12 @@
     },
     {
       name: "ServiceWorkerStaticRouterTimingInfo",
+      status: "stable",
+    },
+    {
+      // Killswitch for crbug.com/479637572.
+      name: "ServiceWorkerStaticRouterTimingRouterSourceFields",
+      depends_on: ["ServiceWorkerStaticRouterTimingInfo"],
       status: "stable",
     },
     {
@@ -6911,12 +6954,6 @@
       // crbug.com/440947112
       name: "TextSpacingTrimFallbackChws",
       depends_on: ["TextSpacingTrimFallback"],
-      status: "stable",
-    },
-
-    {
-      // crbug.com/514448226
-      name: "TextStreamMethod",
       status: "stable",
     },
     {
@@ -7687,13 +7724,16 @@
       implied_by: [
         "WebMCPContinuations",
         "WebMCPDeclarativeFileInput",
-        "WebMCPFormAssociatedCustomElements"
+        "WebMCPFormAssociatedCustomElements",
+        "WebMCPWaitForToolsUntil"
       ],
       status: "experimental",
     },
     {
       name: "WebMCPContinuations",
       public: true,
+      base_feature_status: "enabled",
+      copied_from_base_feature_if: "overridden",
       status: "experimental",
     },
     {
@@ -7704,6 +7744,12 @@
       // Support for form-associated custom elements in declarative
       // WebMCP tools.
       name: "WebMCPFormAssociatedCustomElements",
+      status: "experimental",
+    },
+    {
+      // `document.modelContext.waitForToolsUntil()`, which lets a document
+      // signal that it is still registering tools.
+      name: "WebMCPWaitForToolsUntil",
       status: "experimental",
     },
     {
@@ -7820,7 +7866,7 @@
     },
     {
       name: "WebTransportDatagramsReadableType",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "WebTransportDatagramsWritable",

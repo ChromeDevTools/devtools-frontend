@@ -227,7 +227,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","DecisionModel","SemanticEmbedder"]
+    receivers: ["CredentialsContainer","DecisionModel"]
   },
   {
     name: "defineProperty",
@@ -8318,10 +8318,6 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
     signatures: [["init"]]
   },
   {
-    name: "embed",
-    signatures: [["input","?options"]]
-  },
-  {
     name: "setPrivateToken",
     signatures: [["privateToken"]]
   },
@@ -8502,6 +8498,10 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
     signatures: [["token","callback"]]
   },
   {
+    name: "waitForToolsUntil",
+    signatures: [["promise"]]
+  },
+  {
     name: "TaskController",
     signatures: [["?init"]]
   },
@@ -8520,6 +8520,10 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "removeProcessingInstruction",
     signatures: [["pi"]]
+  },
+  {
+    name: "setJavascriptURLs",
+    signatures: [["allow"]]
   },
   {
     name: "ResizeObserver",

@@ -899,21 +899,22 @@ describeWithEnvironment('SecurityPanelSidebarTree', () => {
   describe('updateOrigin', () => {
     it('correctly updates the URL scheme highlighting', async () => {
       const origin = urlString`https://foo.bar`;
-      const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+      const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+      renderElementIntoDOM(sidebar);
 
-      securityPanel.sidebar.addOrigin(origin, Protocol.Security.SecurityState.Unknown);
+      sidebar.origins = new Map([[origin, Protocol.Security.SecurityState.Unknown]]);
       await doubleRaf();
-      assert.notExists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+      assert.notExists(sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
           '.highlighted-url > .url-scheme-secure'));
-      assert.exists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+      assert.exists(sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
           '.highlighted-url > .url-scheme-unknown'));
 
-      securityPanel.sidebar.updateOrigin(origin, Protocol.Security.SecurityState.Secure);
+      sidebar.origins = new Map([[origin, Protocol.Security.SecurityState.Secure]]);
       await doubleRaf();
 
-      assert.exists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+      assert.exists(sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
           '.highlighted-url > .url-scheme-secure'));
-      assert.notExists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+      assert.notExists(sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
           '.highlighted-url > .url-scheme-unknown'));
     });
   });
@@ -970,8 +971,8 @@ describeWithEnvironment('SecurityMainView', () => {
       obsoleteSslSignature: false,
     };
 
-    view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-        Protocol.Security.SecurityState.Secure, certState, null, ['pkp-bypassed']));
+    view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Secure, certState, null, ['pkp-bypassed']);
     await UI.Widget.Widget.allUpdatesComplete;
 
     sinon.assert.callCount(viewStub, 2);
@@ -1012,7 +1013,7 @@ describeWithEnvironment('SecurityMainView', () => {
     ];
 
     for (const {state, selector, activeClass, tooltip} of states) {
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(state, null, null, []));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(state, null, null, []);
       await UI.Widget.Widget.allUpdatesComplete;
 
       const summary = querySelectorErrorOnMissing(view.contentElement, '.security-summary');
@@ -1024,8 +1025,8 @@ describeWithEnvironment('SecurityMainView', () => {
     }
 
     // Verify transitioning InsecureBroken -> Insecure restores .lock-icon-insecure and 'Not secure'
-    view.updateVisibleSecurityState(
-        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Insecure, null, null, []));
+    view.visibleSecurityState =
+        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Insecure, null, null, []);
     await UI.Widget.Widget.allUpdatesComplete;
     const insecureIcon = querySelectorErrorOnMissing(view.contentElement, '.lock-spectrum .lock-icon:nth-child(3)');
     assert.isTrue(insecureIcon.classList.contains('lock-icon-insecure'));
@@ -1038,8 +1039,8 @@ describeWithEnvironment('SecurityMainView', () => {
       const view = createMainView();
       renderView(view);
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Insecure, null, null, ['malicious-content']));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Insecure, null, null, ['malicious-content']);
       await UI.Widget.Widget.allUpdatesComplete;
 
       const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
@@ -1067,8 +1068,8 @@ describeWithEnvironment('SecurityMainView', () => {
         modernSSL: false,
       });
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Insecure, certState, null, ['is-error-page']));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Insecure, certState, null, ['is-error-page']);
       await UI.Widget.Widget.allUpdatesComplete;
 
       const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
@@ -1082,8 +1083,8 @@ describeWithEnvironment('SecurityMainView', () => {
       const view = createMainView();
       renderView(view);
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.InsecureBroken, null, null, ['scheme-is-not-cryptographic']));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.InsecureBroken, null, null, ['scheme-is-not-cryptographic']);
       await UI.Widget.Widget.allUpdatesComplete;
       const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
       assert.strictEqual(summaryText.textContent, 'This page is insecure (unencrypted HTTP)');
@@ -1093,8 +1094,8 @@ describeWithEnvironment('SecurityMainView', () => {
       const view = createMainView();
       renderView(view);
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']);
       await UI.Widget.Widget.allUpdatesComplete;
       const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
       assert.strictEqual(summaryText.textContent, 'This page has a non-HTTPS secure origin');
@@ -1104,8 +1105,8 @@ describeWithEnvironment('SecurityMainView', () => {
       const view = createMainView();
       renderView(view);
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Insecure, null, null, ['bad_reputation']));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Insecure, null, null, ['bad_reputation']);
       await UI.Widget.Widget.allUpdatesComplete;
       const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
       assert.strictEqual(summaryText.textContent, 'This page is suspicious (flagged by Chrome)');
@@ -1125,8 +1126,8 @@ describeWithEnvironment('SecurityMainView', () => {
         safetyTipStatus: Protocol.Security.SafetyTipStatus.Lookalike,
         safeUrl: 'https://example.com',
       };
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Insecure, null, safetyTipInfo, ['lookalike']));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Insecure, null, safetyTipInfo, ['lookalike']);
       await UI.Widget.Widget.allUpdatesComplete;
       const summaryText = querySelectorErrorOnMissing(view.contentElement, '.security-summary-text');
       assert.strictEqual(summaryText.textContent, 'This page is suspicious (flagged by Chrome)');
@@ -1148,8 +1149,8 @@ describeWithEnvironment('SecurityMainView', () => {
       certificate: ['MII...dummyCertContent'],
     });
 
-    view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-        Protocol.Security.SecurityState.Secure, certState, null, []));
+    view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Secure, certState, null, []);
     await UI.Widget.Widget.allUpdatesComplete;
 
     const certBtn = querySelectorErrorOnMissing(view.contentElement, '.security-explanations-main .origin-button');
@@ -1175,8 +1176,8 @@ describeWithEnvironment('SecurityMainView', () => {
       obsoleteSslSignature: true,
     });
 
-    view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-        Protocol.Security.SecurityState.Secure, certState, null, ['pkp-bypassed']));
+    view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Secure, certState, null, ['pkp-bypassed']);
     await UI.Widget.Widget.allUpdatesComplete;
 
     // Info explanations routed to .security-explanations-extra
@@ -1200,8 +1201,8 @@ describeWithEnvironment('SecurityMainView', () => {
       const view = createMainView();
       renderView(view);
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']);
       await UI.Widget.Widget.allUpdatesComplete;
 
       const reloadPrompt =
@@ -1214,11 +1215,9 @@ describeWithEnvironment('SecurityMainView', () => {
       const view = createMainView();
       renderView(view);
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']));
-      await UI.Widget.Widget.allUpdatesComplete;
-
-      view.setFilterRequestCounts(new Map([[NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED, 2]]));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']);
+      view.filterRequestCounts = new Map([[NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED, 2]]);
       await UI.Widget.Widget.allUpdatesComplete;
 
       const linkBtn = querySelectorErrorOnMissing(view.contentElement,
@@ -1234,9 +1233,9 @@ describeWithEnvironment('SecurityMainView', () => {
       const view = createMainView();
       renderView(view);
 
-      view.setFilterRequestCounts(new Map([[NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED, 3]]));
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']));
+      view.filterRequestCounts = new Map([[NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED, 3]]);
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['scheme-is-not-cryptographic']);
       await UI.Widget.Widget.allUpdatesComplete;
 
       const blockedExplanation =
@@ -1251,12 +1250,12 @@ describeWithEnvironment('SecurityMainView', () => {
       const standaloneView = new Security.SecurityPanel.SecurityMainView();
       renderView(standaloneView);
 
-      standaloneView.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']));
-      standaloneView.setFilterRequestCounts(new Map([
+      standaloneView.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content']);
+      standaloneView.filterRequestCounts = new Map([
         [NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED, 4],
         [NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED, 1],
-      ]));
+      ]);
       await UI.Widget.Widget.allUpdatesComplete;
 
       const links = standaloneView.contentElement.querySelectorAll('devtools-button.security-mixed-content');
@@ -1309,8 +1308,8 @@ describeWithEnvironment('SecurityMainView', () => {
         issuer: 'Let\'s Encrypt Authority X3',
       });
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.Secure, certState, null, []));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.Secure, certState, null, []);
       await UI.Widget.Widget.allUpdatesComplete;
       await doubleRaf();
       await assertScreenshot('security/security_main_view_secure.png');
@@ -1329,8 +1328,8 @@ describeWithEnvironment('SecurityMainView', () => {
         certificateNetworkError: 'net::ERR_CERT_AUTHORITY_INVALID',
       });
 
-      view.updateVisibleSecurityState(new Security.SecurityModel.PageVisibleSecurityState(
-          Protocol.Security.SecurityState.InsecureBroken, certState, null, ['ran-mixed-content']));
+      view.visibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+          Protocol.Security.SecurityState.InsecureBroken, certState, null, ['ran-mixed-content']);
       await UI.Widget.Widget.allUpdatesComplete;
       await doubleRaf();
       await assertScreenshot('security/security_main_view_insecure_broken.png');
@@ -1358,16 +1357,13 @@ describeWithEnvironment('SecurityPanel', () => {
     const request = createNetworkRequest({url: origin});
     request.setSecurityState(Protocol.Security.SecurityState.Secure);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
-    securityPanel.sidebar.selectedOrigin = origin;
+    securityPanel.showOrigin(origin);
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const originView = securityPanel.visibleView;
-    assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
-
-    const originDisplay = querySelectorErrorOnMissing(originView.element, '.origin-display');
+    const originDisplay = querySelectorErrorOnMissing(securityPanel.contentElement, '.origin-display');
     assert.strictEqual(originDisplay.textContent, origin);
 
-    const section = querySelectorErrorOnMissing(originView.element, '.security-state-section');
+    const section = querySelectorErrorOnMissing(securityPanel.contentElement, '.security-state-section');
     assert.include(section.textContent, 'This origin is a non-HTTPS secure origin');
   });
 
@@ -1376,25 +1372,25 @@ describeWithEnvironment('SecurityPanel', () => {
     renderElementIntoDOM(securityPanel);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);
-    const insecureVisibleSecurityState =
+    const visibleSecurityState =
         new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Insecure, null, null, []);
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
-                                           insecureVisibleSecurityState);
+                                           visibleSecurityState);
     await UI.Widget.Widget.allUpdatesComplete;
 
-    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
+    assert.isTrue(securityPanel.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
 
-    const secureVisibleSecurityState =
+    const updatedVisibleSecurityState =
         new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Secure, null, null, []);
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
-                                           secureVisibleSecurityState);
+                                           updatedVisibleSecurityState);
     await UI.Widget.Widget.allUpdatesComplete;
 
-    assert.isFalse(securityPanel.mainView.contentElement.querySelector('.security-summary')
+    assert.isFalse(securityPanel.contentElement.querySelector('.security-summary')
                        ?.classList.contains('security-summary-insecure'));
-    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
-                      ?.classList.contains('security-summary-secure'));
+    assert.isTrue(
+        securityPanel.contentElement.querySelector('.security-summary')?.classList.contains('security-summary-secure'));
   });
 
   it('can switch to a different SecurityModel', async () => {
@@ -1405,12 +1401,12 @@ describeWithEnvironment('SecurityPanel', () => {
 
     // Add the main target to the security panel.
     securityPanel.modelAdded(mainSecurityModel);
-    const insecureVisibleSecurityState =
+    const insecureState =
         new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Insecure, null, null, []);
     mainSecurityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
-                                               insecureVisibleSecurityState);
+                                               insecureState);
     await UI.Widget.Widget.allUpdatesComplete;
-    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
+    assert.isTrue(securityPanel.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
 
     // Switch to the prerender target.
@@ -1420,25 +1416,27 @@ describeWithEnvironment('SecurityPanel', () => {
     securityPanel.modelRemoved(mainSecurityModel);
 
     // Check that the security panel does not listen to events from the previous target.
-    const secureVisibleSecurityState =
+    const secureState =
         new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Secure, null, null, []);
-    mainSecurityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
-                                               secureVisibleSecurityState);
+    mainSecurityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged, secureState);
     await UI.Widget.Widget.allUpdatesComplete;
-    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
+    assert.isTrue(securityPanel.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
 
     // Check that the security panel listens to events from the current target.
     prerenderSecurityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
-                                                    secureVisibleSecurityState);
+                                                    secureState);
     await UI.Widget.Widget.allUpdatesComplete;
-    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
-                      ?.classList.contains('security-summary-secure'));
+    assert.isTrue(
+        securityPanel.contentElement.querySelector('.security-summary')?.classList.contains('security-summary-secure'));
 
     // Check that the SecurityPanel listens to any PrimaryPageChanged event
-    const sidebarTreeClearSpy = sinon.spy(securityPanel.sidebar, 'clearOrigins');
     navigate(getMainFrame(target));
-    sinon.assert.calledOnce(sidebarTreeClearSpy);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
+    const reloadMessage = securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+        '.security-main-view-reload-message');
+    assert.exists(reloadMessage);
   });
 
   it('shows Certificate Transparency compliance when an origin is selected', async () => {
@@ -1455,18 +1453,17 @@ describeWithEnvironment('SecurityPanel', () => {
     }));
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
 
-    securityPanel.sidebar.selectedOrigin = urlString`https://foo.test`;
+    securityPanel.showOrigin(urlString`https://foo.test`);
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const originView = securityPanel.visibleView;
-    assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
-    const section = querySelectorErrorOnMissing(originView.contentElement, '.certificate-transparency-section');
+    const section = querySelectorErrorOnMissing(securityPanel.contentElement, '.certificate-transparency-section');
     const note = querySelectorErrorOnMissing(section, '.origin-view-section-notes');
     assert.strictEqual(note.textContent, 'This request complies with Chrome’s Certificate Transparency policy');
   });
 
   it('preserves the selected origin when the panel is hidden and shown again', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);
     const networkManager = securityModel.networkManager();
@@ -1476,32 +1473,33 @@ describeWithEnvironment('SecurityPanel', () => {
 
     // Select the origin
     securityPanel.showOrigin(urlString`https://foo.test`);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     // The active view should be the origin view, not the main view.
-    assert.instanceOf(securityPanel.visibleView, Security.SecurityPanel.SecurityOriginView);
+    assert.exists(securityPanel.contentElement.querySelector('.security-origin-view'));
 
     // Hide and show the panel
-    securityPanel.willHide();
-    securityPanel.sidebar.willHide();
+    securityPanel.wasHidden();
     securityPanel.wasShown();
-    securityPanel.sidebar.wasShown();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     // The active view should still be the origin view.
-    assert.instanceOf(securityPanel.visibleView, Security.SecurityPanel.SecurityOriginView);
+    assert.exists(securityPanel.contentElement.querySelector('.security-origin-view'));
   });
 
   it('shows \'reload page\' message when no data is available', async () => {
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    await UI.Widget.Widget.allUpdatesComplete;
     await doubleRaf();
 
     // Check that reload message is visible initially.
-    const reloadMessage =
-        securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
-            '.security-main-view-reload-message');
+    const reloadMessage = securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+        '.security-main-view-reload-message');
     assert.instanceOf(reloadMessage, HTMLLIElement);
-    assert.exists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+    assert.exists(securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
         '.security-main-view-reload-message'));
 
     // Check that reload message is hidden when there is data to display.
@@ -1514,14 +1512,16 @@ describeWithEnvironment('SecurityPanel', () => {
       cached: () => false,
     } as SDK.NetworkRequest.NetworkRequest;
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+    await UI.Widget.Widget.allUpdatesComplete;
     await doubleRaf();
-    assert.notExists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+    assert.notExists(securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
         '.security-main-view-reload-message'));
 
-    // Check that reload message is hidden after clearing data.
+    // Check that reload message is restored after clearing data.
     navigate(getMainFrame(target));
+    await UI.Widget.Widget.allUpdatesComplete;
     await doubleRaf();
-    assert.exists(securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
+    assert.exists(securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!.querySelector(
         '.security-main-view-reload-message'));
   });
 
@@ -1539,9 +1539,10 @@ describeWithEnvironment('SecurityPanel', () => {
           'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAKCAYAAABmBXS+AAAAPElEQVR42mNgQAMZGRn/GfABkIIdO3b8x6kQpgAEsCpEVgADKAqxKcBQCCLwARRFIBodYygiyiSCighhAO4e2jskhrm3AAAAAElFTkSuQmCC',
     });
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
+    await UI.Widget.Widget.allUpdatesComplete;
     await doubleRaf();
 
-    const sidebarRoot = securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!;
+    const sidebarRoot = securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!;
     const groupTitles = Array.from(sidebarRoot.querySelectorAll('.security-sidebar-origins-title'))
                             .filter(element => element.checkVisibility())
                             .map(element => element.textContent);
@@ -1571,9 +1572,10 @@ describeWithEnvironment('SecurityPanel', () => {
     const request2 = createNetworkRequest({url: 'https://does-not-resolve.test'});
     // Leave the security state unknown.
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
+    await UI.Widget.Widget.allUpdatesComplete;
     await doubleRaf();
 
-    const sidebarRoot = securityPanel.sidebar.contentElement.querySelector('devtools-tree')!.shadowRoot!;
+    const sidebarRoot = securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!;
     const groupTitles = Array.from(sidebarRoot.querySelectorAll('.security-sidebar-origins-title'))
                             .filter(element => element.checkVisibility())
                             .map(element => element.textContent);
@@ -1609,7 +1611,7 @@ describeWithEnvironment('SecurityPanel', () => {
                                            pageVisibleSecurityState);
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const titles = securityPanel.mainView.contentElement.querySelectorAll('.security-explanation-title');
+    const titles = securityPanel.contentElement.querySelectorAll('.security-explanation-title');
     assert.deepEqual(Array.from(titles, title => title.textContent), [
       'Resources - all served securely',
       'Certificate - Public-Key-Pinning bypassed',
@@ -1634,7 +1636,7 @@ describeWithEnvironment('SecurityPanel', () => {
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const explanations = securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
+    const explanations = securityPanel.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
     assert.lengthOf(explanations, 1);
     const explanation = explanations[0];
     assert.isTrue(explanation.classList.contains('security-explanation-info'));
@@ -1653,7 +1655,7 @@ describeWithEnvironment('SecurityPanel', () => {
     navigate(getMainFrame(target));
     await UI.Widget.Widget.allUpdatesComplete;
 
-    assert.isEmpty(securityPanel.mainView.contentElement.querySelectorAll('.security-explanation'));
+    assert.isEmpty(securityPanel.contentElement.querySelectorAll('.security-explanation'));
   });
 
   it('replaces the mixed content reload prompt with a request link when a request is recorded', async () => {
@@ -1668,7 +1670,7 @@ describeWithEnvironment('SecurityPanel', () => {
     await UI.Widget.Widget.allUpdatesComplete;
 
     function assertMixedContentExplanation() {
-      const explanations = securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
+      const explanations = securityPanel.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
       assert.lengthOf(explanations, 1);
       const explanation = explanations[0];
       assert.isTrue(explanation.classList.contains('security-explanation-neutral'));
@@ -1714,8 +1716,7 @@ describeWithEnvironment('SecurityPanel', () => {
        await UI.Widget.Widget.allUpdatesComplete;
 
        function assertMixedContentExplanations() {
-         const explanations =
-             securityPanel.mainView.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
+         const explanations = securityPanel.contentElement.querySelectorAll<HTMLElement>('.security-explanation');
          assert.lengthOf(explanations, 2);
          const [activeExplanation, passiveExplanation] = explanations;
 
@@ -1770,8 +1771,8 @@ describeWithEnvironment('SecurityPanel', () => {
 
   it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
 
-    const sidebarTreeClearSpy = sinon.spy(securityPanel.sidebar, 'addOrigin');
     const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
         Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content', 'ran-mixed-content']);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
@@ -1783,17 +1784,21 @@ describeWithEnvironment('SecurityPanel', () => {
     passive.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
     const networkManager = securityModel.networkManager();
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, passive);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
 
-    assert.isTrue(
-        sidebarTreeClearSpy.calledOnceWith(urlString`http://foo.test`, Protocol.Security.SecurityState.Insecure));
-    sidebarTreeClearSpy.resetHistory();
+    const sidebarRoot = securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!;
+    let items = Array.from(sidebarRoot.querySelectorAll('.security-sidebar-tree-item'), el => el.textContent?.trim());
+    assert.include(items, 'http://foo.test');
 
     const active = createNetworkRequest({url: 'http://bar.test'});
     active.mixedContentType = Protocol.Security.MixedContentType.Blockable;
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, active);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
 
-    assert.isTrue(
-        sidebarTreeClearSpy.calledOnceWith(urlString`http://bar.test`, Protocol.Security.SecurityState.Insecure));
+    items = Array.from(sidebarRoot.querySelectorAll('.security-sidebar-tree-item'), el => el.textContent?.trim());
+    assert.include(items, 'http://bar.test');
   });
 
   it('shows the overview when an interstitial is shown', async () => {
@@ -1807,24 +1812,24 @@ describeWithEnvironment('SecurityPanel', () => {
     const request = createNetworkRequest({url: 'http://foo.test/'});
     request.setSecurityState(Protocol.Security.SecurityState.Insecure);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
-    assert.isTrue(securityPanel.mainView.isShowing());
-
-    securityPanel.sidebar.selectedOrigin = urlString`http://foo.test`;
     await UI.Widget.Widget.allUpdatesComplete;
-    const originView = securityPanel.visibleView;
-    assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
-    assert.isFalse(securityPanel.mainView.isShowing());
-    assert.isTrue(originView.isShowing());
+    assert.exists(securityPanel.contentElement.querySelector('.security-main-view'));
+
+    securityPanel.showOrigin(urlString`http://foo.test`);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.exists(securityPanel.contentElement.querySelector('.security-origin-view'));
+    assert.notExists(securityPanel.contentElement.querySelector('.security-main-view'));
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialShown);
-    assert.isTrue(securityPanel.mainView.isShowing());
-    assert.isFalse(originView.isShowing());
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.exists(securityPanel.contentElement.querySelector('.security-main-view'));
+    assert.notExists(securityPanel.contentElement.querySelector('.security-origin-view'));
   });
 
   it('hides and shows the sidebar origin list when an interstitial is shown or hidden', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
 
-    const toggleSidebarSpy = sinon.spy(securityPanel.sidebar, 'toggleOriginsList');
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
@@ -1836,18 +1841,79 @@ describeWithEnvironment('SecurityPanel', () => {
     const request2 = createNetworkRequest({url: 'https://bar.test/foo.jpg'});
     request2.setSecurityState(Protocol.Security.SecurityState.Secure);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialShown);
     // Simulate a request finishing after the interstitial is shown, to make sure that doesn't show up in the sidebar.
     const request3 = createNetworkRequest({url: 'https://bar.test/foo.jpg'});
     request3.setSecurityState(Protocol.Security.SecurityState.Unknown);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request3);
-    assert.isTrue(toggleSidebarSpy.calledOnceWith(true));
-    toggleSidebarSpy.resetHistory();
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
+
+    const sidebarRoot = securityPanel.contentElement.querySelector('devtools-tree')!.shadowRoot!;
+    const originsGroup = sidebarRoot.querySelector('.security-sidebar-origins');
+    assert.isTrue(originsGroup?.classList.contains('hidden'));
 
     // Test that the sidebar is shown again when the interstitial is hidden. https://crbug.com/559150
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialHidden);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
 
-    assert.isTrue(toggleSidebarSpy.calledOnceWith(false));
+    assert.isFalse(originsGroup?.classList.contains('hidden'));
+  });
+
+  describe('presenter and view function stub', () => {
+    it('passes initial state to view function and updates on showOrigin', async () => {
+      const viewStub = createViewFunctionStub(Security.SecurityPanel.SecurityPanel);
+      const securityPanel = new Security.SecurityPanel.SecurityPanel(viewStub);
+      renderElementIntoDOM(securityPanel);
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      sinon.assert.calledOnce(viewStub);
+      assert.isNull(viewStub.input.mainOrigin);
+      assert.strictEqual(viewStub.input.sidebarOrigins.size, 0);
+      assert.isFalse(viewStub.input.originsHidden);
+      assert.isFalse(viewStub.input.showOriginsUnconditionally);
+      assert.strictEqual(viewStub.input.overviewSecurityState, Protocol.Security.SecurityState.Unknown);
+      assert.isNull(viewStub.input.activeOrigin);
+      assert.isNull(viewStub.input.activeOriginState);
+      assert.isNull(viewStub.input.visibleSecurityState);
+      assert.strictEqual(viewStub.input.filterRequestCounts.size, 0);
+
+      const requestUpdateSpy = sinon.spy(securityPanel, 'requestUpdate');
+
+      // Calling showOrigin with an unknown origin is ignored by the guard.
+      securityPanel.showOrigin(urlString`https://unknown.example`);
+      sinon.assert.notCalled(requestUpdateSpy);
+      assert.isNull(viewStub.input.activeOrigin);
+
+      // Seed origin via a finished request
+      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      assert.exists(networkManager);
+      const request = createNetworkRequest({url: 'https://foo.bar/index.html'});
+      request.setSecurityState(Protocol.Security.SecurityState.Secure);
+      networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.strictEqual(viewStub.input.sidebarOrigins.size, 1);
+
+      securityPanel.showOrigin(urlString`https://foo.bar`);
+      sinon.assert.called(requestUpdateSpy);
+      const updateCallCount = requestUpdateSpy.callCount;
+
+      // Redundant call is guarded
+      securityPanel.showOrigin(urlString`https://foo.bar`);
+      sinon.assert.callCount(requestUpdateSpy, updateCallCount);
+
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.strictEqual(viewStub.input.activeOrigin, urlString`https://foo.bar`);
+
+      // onShowOrigin callback switches origin
+      viewStub.input.onShowOrigin(null);
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isNull(viewStub.input.activeOrigin);
+    });
   });
 });

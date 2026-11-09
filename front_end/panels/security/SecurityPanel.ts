@@ -29,7 +29,7 @@ import {
 } from './SecurityModel.js';
 import {SecurityPanelSidebar} from './SecurityPanelSidebar.js';
 
-const {widget, widgetRef} = UI.Widget;
+const {widget} = UI.Widget;
 const {ifDefined} = Directives;
 
 const UIStrings = {
@@ -541,78 +541,89 @@ export function renderCertificateViewerButton(text: string, jslogContext: string
 }
 
 export interface ViewInput {
-  panel: SecurityPanel;
-}
-export interface ViewOutput {
-  setVisibleView: (view: UI.Widget.VBox) => void;
-  splitWidget: UI.SplitWidget.SplitWidget;
-  mainView: SecurityMainView;
-  visibleView: UI.Widget.VBox|null;
-  sidebar: SecurityPanelSidebar;
+  mainOrigin: string|null;
+  sidebarOrigins: ReadonlyMap<Platform.DevToolsPath.UrlString, Protocol.Security.SecurityState>;
+  originsHidden: boolean;
+  showOriginsUnconditionally: boolean;
+  overviewSecurityState: Protocol.Security.SecurityState;
+  activeOrigin: Platform.DevToolsPath.UrlString|null;
+  activeOriginState: OriginState|null;
+  visibleSecurityState: PageVisibleSecurityState|null;
+  filterRequestCounts: ReadonlyMap<string, number>;
+  onShowOrigin: (origin: Platform.DevToolsPath.UrlString|null) => void;
 }
 
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  const {activeOrigin, activeOriginState} = input;
   // clang-format off
   render(html`
-    <devtools-split-view direction="column" name="security"
-      ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
+    <devtools-split-view direction="column" name="security">
       <devtools-widget
         slot="sidebar"
+        autofocus
         class="panel-sidebar"
         jslog=${VisualLogging.pane('sidebar').track({resize: true})}
-        ${widget(SecurityPanelSidebar)}
-        ${widgetRef(SecurityPanelSidebar, e => {output.sidebar = e;})}>
+        ${widget(SecurityPanelSidebar, {
+          mainOrigin: input.mainOrigin,
+          origins: input.sidebarOrigins,
+          originsHidden: input.originsHidden,
+          showOriginsUnconditionally: input.showOriginsUnconditionally,
+          overviewSecurityState: input.overviewSecurityState,
+          activeOrigin: input.activeOrigin,
+          onShowOrigin: input.onShowOrigin,
+        })}>
       </devtools-widget>
-  </devtools-split-view>`,
-    target);
+      ${activeOrigin !== null && activeOriginState !== null ? html`
+        <devtools-widget
+          slot="main"
+          ${widget(SecurityOriginView, {
+            origin: activeOrigin,
+            securityState: activeOriginState.securityState,
+            securityDetails: activeOriginState.securityDetails,
+            loadedFromCache: activeOriginState.loadedFromCache,
+          })}>
+        </devtools-widget>` : html`
+        <devtools-widget
+          slot="main"
+          ${widget(SecurityMainView, {
+            visibleSecurityState: input.visibleSecurityState,
+            filterRequestCounts: input.filterRequestCounts,
+          })}>
+        </devtools-widget>`}
+    </devtools-split-view>
+  `, target);
   // clang-format on
 };
 
 export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.SDKModelObserver<SecurityModel> {
-  readonly mainView: SecurityMainView;
-  readonly sidebar!: SecurityPanelSidebar;
-  private readonly lastResponseReceivedForLoaderId: Map<string, SDK.NetworkRequest.NetworkRequest>;
-  private readonly origins: Map<string, OriginState>;
-  private readonly filterRequestCounts: Map<string, number>;
-  visibleView: UI.Widget.VBox|null;
-  private eventListeners: Common.EventTarget.EventDescriptor[];
-  private securityModel: SecurityModel|null;
-  readonly splitWidget!: UI.SplitWidget.SplitWidget;
-  private view: View;
+  readonly #view: View;
+  readonly #lastResponseReceivedForLoaderId = new Map<string, SDK.NetworkRequest.NetworkRequest>();
+  readonly #origins = new Map<Platform.DevToolsPath.UrlString, OriginState>();
+  #sidebarOrigins: ReadonlyMap<Platform.DevToolsPath.UrlString, Protocol.Security.SecurityState> = new Map();
+  #filterRequestCounts: ReadonlyMap<string, number> = new Map();
+  #visibleSecurityState: PageVisibleSecurityState|null = null;
+  #activeOrigin: Platform.DevToolsPath.UrlString|null = null;
+  #mainOrigin: string|null = null;
+  #originsHidden = false;
+  #showOriginsUnconditionally = false;
+  #overviewSecurityState: Protocol.Security.SecurityState = Protocol.Security.SecurityState.Unknown;
+  #eventListeners: Common.EventTarget.EventDescriptor[] = [];
+  #securityModel: SecurityModel|null = null;
 
-  constructor(view: View|undefined = DEFAULT_VIEW) {
+  readonly #onShowOrigin = (origin: Platform.DevToolsPath.UrlString|null): void => {
+    this.showOrigin(origin);
+  };
+
+  constructor(view: View = DEFAULT_VIEW) {
     super('security');
-    this.view = view;
-
-    this.update();
-
-    this.mainView = new SecurityMainView();
-    this.sidebar.onShowOrigin = (origin: Platform.DevToolsPath.UrlString|null) => {
-      if (origin) {
-        this.showOrigin(origin);
-      } else {
-        this.setVisibleView(this.mainView);
-      }
-    };
-
-    this.lastResponseReceivedForLoaderId = new Map();
-
-    this.origins = new Map();
-
-    this.filterRequestCounts = new Map();
-
-    this.visibleView = null;
-    this.eventListeners = [];
-    this.securityModel = null;
+    this.#view = view;
 
     SDK.TargetManager.TargetManager.instance().observeModels(SecurityModel, this, {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-        this.onPrimaryPageChanged, this);
-
-    this.sidebar.showOverview();
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
+                                                                SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+                                                                this.#onPrimaryPageChanged, this);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SecurityPanel {
@@ -623,73 +634,57 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
 
     return securityPanelInstance;
   }
-
-  update(): void {
-    this.view({panel: this}, this, this.contentElement);
-  }
-
-  private updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
-    this.sidebar.updateOverviewSecurityState(visibleSecurityState.securityState);
-    this.mainView.visibleSecurityState = visibleSecurityState;
-  }
-
-  private onVisibleSecurityStateChanged({data}: Common.EventTarget.EventTargetEvent<PageVisibleSecurityState>): void {
-    this.updateVisibleSecurityState(data);
-  }
-
-  showOrigin(origin: Platform.DevToolsPath.UrlString): void {
-    const originState = this.origins.get(origin);
-    if (!originState) {
-      return;
-    }
-    if (!originState.originView) {
-      const originView = new SecurityOriginView();
-      originView.origin = origin;
-      originView.securityState = originState.securityState;
-      originView.securityDetails = originState.securityDetails;
-      originView.loadedFromCache = originState.loadedFromCache;
-      originState.originView = originView;
-    }
-
-    this.setVisibleView(originState.originView);
-  }
-
   override wasShown(): void {
     super.wasShown();
-    if (!this.visibleView) {
-      this.sidebar.showOverview();
-    }
+    this.requestUpdate();
   }
 
-  override focus(): void {
-    this.sidebar.focus();
+  override performUpdate(): void {
+    const activeOriginState = this.#activeOrigin ? this.#origins.get(this.#activeOrigin) ?? null : null;
+    const input: ViewInput = {
+      mainOrigin: this.#mainOrigin,
+      sidebarOrigins: this.#sidebarOrigins,
+      originsHidden: this.#originsHidden,
+      showOriginsUnconditionally: this.#showOriginsUnconditionally,
+      overviewSecurityState: this.#overviewSecurityState,
+      activeOrigin: this.#activeOrigin,
+      activeOriginState,
+      visibleSecurityState: this.#visibleSecurityState,
+      filterRequestCounts: this.#filterRequestCounts,
+      onShowOrigin: this.#onShowOrigin,
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 
-  setVisibleView(view: UI.Widget.VBox): void {
-    if (this.visibleView === view) {
+  showOrigin(origin: Platform.DevToolsPath.UrlString|null): void {
+    if (origin !== null && !this.#origins.has(origin)) {
       return;
     }
-
-    if (this.visibleView) {
-      this.visibleView.detach();
+    if (this.#activeOrigin === origin) {
+      return;
     }
-
-    this.visibleView = view;
-
-    if (view) {
-      this.splitWidget.setMainWidget(view);
-    }
+    this.#activeOrigin = origin;
+    this.requestUpdate();
   }
 
-  private onResponseReceived(event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.ResponseReceivedEvent>):
-      void {
+  #updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
+    this.#overviewSecurityState = visibleSecurityState.securityState;
+    this.#visibleSecurityState = visibleSecurityState;
+    this.requestUpdate();
+  }
+
+  #onVisibleSecurityStateChanged({data}: Common.EventTarget.EventTargetEvent<PageVisibleSecurityState>): void {
+    this.#updateVisibleSecurityState(data);
+  }
+
+  #onResponseReceived(event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.ResponseReceivedEvent>): void {
     const request = event.data.request;
     if (request.resourceType() === Common.ResourceType.resourceTypes.Document && request.loaderId) {
-      this.lastResponseReceivedForLoaderId.set(request.loaderId, request);
+      this.#lastResponseReceivedForLoaderId.set(request.loaderId, request);
     }
   }
 
-  private processRequest(request: SDK.NetworkRequest.NetworkRequest): void {
+  #processRequest(request: SDK.NetworkRequest.NetworkRequest): void {
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(request.url());
 
     if (!origin) {
@@ -703,7 +698,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
       securityState = Protocol.Security.SecurityState.Insecure;
     }
 
-    const originState = this.origins.get(origin);
+    const originState = this.#origins.get(origin);
     if (originState) {
       if (securityStateCompare(securityState, originState.securityState) < 0) {
         originState.securityState = securityState;
@@ -711,11 +706,10 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
         if (securityDetails) {
           originState.securityDetails = securityDetails;
         }
-        this.sidebar.updateOrigin(origin, securityState);
-        if (originState.originView) {
-          originState.originView.securityState = securityState;
-          originState.originView.securityDetails = originState.securityDetails;
-        }
+        const newSidebarOrigins = new Map(this.#sidebarOrigins);
+        newSidebarOrigins.set(origin, securityState);
+        this.#sidebarOrigins = newSidebarOrigins;
+        this.requestUpdate();
       }
     } else {
       // This stores the first security details we see for an origin, but we should
@@ -726,21 +720,21 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
         securityDetails: request.securityDetails(),
         loadedFromCache: request.cached(),
       };
-      this.origins.set(origin, newOriginState);
-
-      this.sidebar.addOrigin(origin, securityState);
-
-      // Don't construct the origin view yet (let it happen lazily).
+      this.#origins.set(origin, newOriginState);
+      const newSidebarOrigins = new Map(this.#sidebarOrigins);
+      newSidebarOrigins.set(origin, securityState);
+      this.#sidebarOrigins = newSidebarOrigins;
+      this.requestUpdate();
     }
   }
 
-  private onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+  #onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
     const request = event.data;
-    this.updateFilterRequestCounts(request);
-    this.processRequest(request);
+    this.#updateFilterRequestCounts(request);
+    this.#processRequest(request);
   }
 
-  private updateFilterRequestCounts(request: SDK.NetworkRequest.NetworkRequest): void {
+  #updateFilterRequestCounts(request: SDK.NetworkRequest.NetworkRequest): void {
     if (request.mixedContentType === Protocol.Security.MixedContentType.None) {
       return;
     }
@@ -754,14 +748,11 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
       filterKey = NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED;
     }
 
-    const currentCount = this.filterRequestCounts.get(filterKey);
-    if (!currentCount) {
-      this.filterRequestCounts.set(filterKey, 1);
-    } else {
-      this.filterRequestCounts.set(filterKey, currentCount + 1);
-    }
-
-    this.mainView.filterRequestCounts = new Map(this.filterRequestCounts);
+    const currentCount = this.#filterRequestCounts.get(filterKey) ?? 0;
+    const newCounts = new Map(this.#filterRequestCounts);
+    newCounts.set(filterKey, currentCount + 1);
+    this.#filterRequestCounts = newCounts;
+    this.requestUpdate();
   }
 
   modelAdded(securityModel: SecurityModel): void {
@@ -769,72 +760,74 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
       return;
     }
 
-    this.securityModel = securityModel;
+    this.#securityModel = securityModel;
     const resourceTreeModel = securityModel.resourceTreeModel();
     const networkManager = securityModel.networkManager();
-    if (this.eventListeners.length) {
-      Common.EventTarget.removeEventListeners(this.eventListeners);
+    if (this.#eventListeners.length) {
+      Common.EventTarget.removeEventListeners(this.#eventListeners);
     }
-    this.eventListeners = [
-      securityModel.addEventListener(Events.VisibleSecurityStateChanged, this.onVisibleSecurityStateChanged, this),
-      resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.InterstitialShown, this.onInterstitialShown, this),
-      resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.InterstitialHidden, this.onInterstitialHidden, this),
-      networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this.onResponseReceived, this),
-      networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this.onRequestFinished, this),
+    this.#eventListeners = [
+      securityModel.addEventListener(Events.VisibleSecurityStateChanged, this.#onVisibleSecurityStateChanged, this),
+      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.InterstitialShown, this.#onInterstitialShown,
+                                         this),
+      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.InterstitialHidden, this.#onInterstitialHidden,
+                                         this),
+      networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this.#onResponseReceived, this),
+      networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this.#onRequestFinished, this),
     ];
 
     if (resourceTreeModel.isInterstitialShowing) {
-      this.onInterstitialShown();
+      this.#onInterstitialShown();
     }
   }
 
   modelRemoved(securityModel: SecurityModel): void {
-    if (this.securityModel !== securityModel) {
+    if (this.#securityModel !== securityModel) {
       return;
     }
 
-    this.securityModel = null;
-    Common.EventTarget.removeEventListeners(this.eventListeners);
+    this.#securityModel = null;
+    Common.EventTarget.removeEventListeners(this.#eventListeners);
   }
 
-  private onPrimaryPageChanged(
+  #onPrimaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<
           {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}>): void {
     const {frame} = event.data;
-    const request = this.lastResponseReceivedForLoaderId.get(frame.loaderId);
+    const request = this.#lastResponseReceivedForLoaderId.get(frame.loaderId);
 
-    this.sidebar.showOverview();
-    this.sidebar.clearOrigins();
-    this.origins.clear();
-    this.lastResponseReceivedForLoaderId.clear();
-    this.filterRequestCounts.clear();
-    // After clearing the filtered request counts, refresh the
-    // explanations to reflect the new counts.
-    this.mainView.setFilterRequestCounts(new Map(this.filterRequestCounts));
+    this.#activeOrigin = null;
+    this.#origins.clear();
+    this.#sidebarOrigins = new Map();
+    this.#lastResponseReceivedForLoaderId.clear();
+    this.#filterRequestCounts = new Map();
 
     // If we could not find a matching request (as in the case of clicking
     // through an interstitial, see https://crbug.com/669309), set the origin
     // based upon the url data from the PrimaryPageChanged event itself.
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(request ? request.url() : frame.url);
-    this.sidebar.setMainOrigin(origin);
+    this.#mainOrigin = origin;
+    this.requestUpdate();
 
     if (request) {
-      this.processRequest(request);
+      this.#processRequest(request);
     }
   }
 
-  private onInterstitialShown(): void {
+  #onInterstitialShown(): void {
     // The panel might have been displaying the origin view on the
     // previously loaded page. When showing an interstitial, switch
     // back to the overview view.
-    this.sidebar.showOverview();
-    this.sidebar.toggleOriginsList(true /* hidden */);
+    this.#activeOrigin = null;
+    this.#originsHidden = true;
+    this.#showOriginsUnconditionally = false;
+    this.requestUpdate();
   }
 
-  private onInterstitialHidden(): void {
-    this.sidebar.toggleOriginsList(false /* hidden */);
+  #onInterstitialHidden(): void {
+    this.#originsHidden = false;
+    this.#showOriginsUnconditionally = true;
+    this.requestUpdate();
   }
 }
 
@@ -1073,10 +1066,6 @@ export class SecurityMainView extends UI.Widget.VBox {
     return this.#filterRequestCounts;
   }
 
-  setFilterRequestCounts(filterRequestCounts: ReadonlyMap<string, number>): void {
-    this.filterRequestCounts = filterRequestCounts;
-  }
-
   set visibleSecurityState(visibleSecurityState: PageVisibleSecurityState|null) {
     if (this.#visibleSecurityState === visibleSecurityState) {
       return;
@@ -1097,10 +1086,6 @@ export class SecurityMainView extends UI.Widget.VBox {
 
   get visibleSecurityState(): PageVisibleSecurityState|null {
     return this.#visibleSecurityState;
-  }
-
-  updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
-    this.visibleSecurityState = visibleSecurityState;
   }
 
   #getSecuritySummaryAndExplanations(visibleSecurityState: PageVisibleSecurityState):
@@ -1837,7 +1822,6 @@ export interface OriginState {
   securityState: Protocol.Security.SecurityState;
   securityDetails: Protocol.Network.SecurityDetails|null;
   loadedFromCache: boolean;
-  originView?: SecurityOriginView|null;
 }
 
 export type Origin = Platform.DevToolsPath.UrlString;

@@ -174,7 +174,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
   // clang-format off
   render(html`
-    <devtools-tree class="security-sidebar" navigation-variant .template=${html`
+    <devtools-tree class="security-sidebar" autofocus navigation-variant .template=${html`
       <style>${sidebarStyles}</style>
       <style>${lockIconStyles}</style>
       <ul role="tree">
@@ -301,57 +301,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
 
   get activeOrigin(): Platform.DevToolsPath.UrlString|null {
     return this.#selectedElementId === 'overview' ? null : this.#selectedElementId as Platform.DevToolsPath.UrlString;
-  }
-
-  set selectedOrigin(origin: Platform.DevToolsPath.UrlString|null) {
-    const elementId = origin ?? 'overview';
-    if (this.#selectedElementId === elementId) {
-      return;
-    }
-    this.#selectedElementId = elementId;
-    this.requestUpdate();
-    this.#onShowOrigin?.(origin);
-  }
-
-  get selectedOrigin(): string {
-    return this.#selectedElementId;
-  }
-
-  showOverview(): void {
-    if (this.#selectedElementId !== 'overview') {
-      this.#selectedElementId = 'overview';
-      this.requestUpdate();
-    }
-    this.#onShowOrigin?.(null);
-  }
-
-  toggleOriginsList(hidden: boolean): void {
-    this.originsHidden = hidden;
-    this.showOriginsUnconditionally = !hidden;
-  }
-
-  addOrigin(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState): void {
-    const newOrigins = new Map(this.#origins);
-    newOrigins.set(origin, securityState);
-    this.origins = newOrigins;
-  }
-
-  setMainOrigin(origin: string): void {
-    this.mainOrigin = origin;
-  }
-
-  updateOrigin(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState): void {
-    const newOrigins = new Map(this.#origins);
-    newOrigins.set(origin, securityState);
-    this.origins = newOrigins;
-  }
-
-  updateOverviewSecurityState(securityState: Protocol.Security.SecurityState): void {
-    this.overviewSecurityState = securityState;
-  }
-
-  clearOrigins(): void {
-    this.origins = new Map();
   }
 
   override performUpdate(): void {

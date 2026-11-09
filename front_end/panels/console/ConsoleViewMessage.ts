@@ -1861,9 +1861,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return this.message.messageText;
   }
 
+  toString(): string {
+    return Components.Linkifier.Linkifier.untruncatedTextContent(this.contentElement());
+  }
+
   toExportString(): string {
     const lines = [];
-    const messageContent = Components.Linkifier.Linkifier.untruncatedTextContent(this.contentElement());
+    const messageContent = this.toString();
     for (let i = 0; i < this.repeatCount(); ++i) {
       lines.push(messageContent);
     }

@@ -248,6 +248,50 @@ describeWithEnvironment('ConsoleView', () => {
     copyText.resetHistory();
   });
 
+  it('can copy the right-clicked message to clipboard', async () => {
+    // Identical consecutive messages are only collapsed with "Group similar messages" on.
+    Common.Settings.Settings.instance()
+        .resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor)
+        .set(true);
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    const target = createTarget({parentTarget: tabTarget});
+
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assert.exists(consoleModel);
+    consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
+    consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
+    consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
+    await consoleView.getScheduledRefreshPromiseForTest();
+    const messagesElement = consoleView.element.querySelector('#console-messages');
+    assert.exists(messagesElement);
+    const secondMessage = consoleView.itemElement(1) as Console.ConsoleViewMessage.ConsoleViewMessage | null;
+    assert.exists(secondMessage);
+    assert.strictEqual(secondMessage.repeatCount(), 2);
+    const secondMessageElement = secondMessage.element();
+    assert.exists(secondMessageElement);
+
+    const contextMenu = getContextMenuForElement(messagesElement, secondMessageElement);
+    const copy = findMenuItemWithLabel(contextMenu.clipboardSection(), 'Copy message');
+    assert.exists(copy);
+
+    const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+    contextMenu.invokeHandler(copy.id());
+    sinon.assert.calledOnceWithExactly(copyText, 'message 2');
+  });
+
+  it('does not offer to copy a message when no message was right-clicked', () => {
+    const target = createTarget();
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assert.exists(consoleModel);
+    consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
+    const messagesElement = consoleView.element.querySelector('#console-messages');
+    assert.exists(messagesElement);
+
+    const contextMenu = getContextMenuForElement(messagesElement);
+    assert.notExists(findMenuItemWithLabel(contextMenu.clipboardSection(), 'Copy message'));
+  });
+
   it('creates console history', () => {
     const target = createTarget();
     const id = 1;

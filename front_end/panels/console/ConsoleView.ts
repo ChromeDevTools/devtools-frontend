@@ -188,6 +188,11 @@ const UIStrings = {
    */
   saveAs: 'Save as…',
   /**
+   * @description A context menu item in the Console view of the Console panel. Copies the message
+   * the user right-clicked to the clipboard.
+   */
+  copyMessage: 'Copy message',
+  /**
    * @description Text to copy console log to clipboard.
    */
   copyConsole: 'Copy all messages',
@@ -1350,6 +1355,11 @@ export class ConsoleView extends UI.Widget.VBox implements
       contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyVisibleStyledSelection),
                                                 this.viewport.copyWithStyles.bind(this.viewport),
                                                 {jslogContext: 'copy-visible-styled-selection'});
+    }
+    if (consoleViewMessage) {
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyMessage), () => {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(consoleViewMessage.toString());
+      }, {jslogContext: 'copy-message'});
     }
 
     if (consoleMessage) {

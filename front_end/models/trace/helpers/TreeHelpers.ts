@@ -81,15 +81,22 @@ export type TraceEntryNodeId = Platform.Brand.Brand<number, 'traceEntryNodeIdTag
  * The nodes are also assumed to be created empty, with no known parent
  * or children.
  *
+ * If `targetEntryToNode` is provided, it is populated in-place with each
+ * event's `TraceEntryNode` and returned as `entryToNode`.
+ *
  * Complexity: O(n), where n = number of events
  */
-export function treify(entries: readonly Types.Events.Event[], options?: {
-  filter: {has: (name: Types.Events.Name) => boolean},
-}): {tree: TraceEntryTree, entryToNode: Map<Types.Events.Event, TraceEntryNode>} {
+export function treify(
+    entries: readonly Types.Events.Event[],
+    options?: {
+      filter: {has: (name: Types.Events.Name) => boolean},
+    },
+    targetEntryToNode?: Map<Types.Events.Event, TraceEntryNode>,
+    ): {tree: TraceEntryTree, entryToNode: Map<Types.Events.Event, TraceEntryNode>} {
   // As we construct the tree, store a map of each entry to its node. This
   // means if you are iterating over a list of RendererEntry events you can
   // easily look up that node in the tree.
-  const entryToNode = new Map<Types.Events.Event, TraceEntryNode>();
+  const entryToNode = targetEntryToNode ?? new Map<Types.Events.Event, TraceEntryNode>();
 
   const stack = [];
   // Reset the node id counter for every new renderer.
@@ -105,12 +112,11 @@ export function treify(entries: readonly Types.Events.Event[], options?: {
     }
 
     const duration = event.dur || 0;
-    const nodeId = makeTraceEntryNodeId();
-    const node = makeEmptyTraceEntryNode(event, nodeId);
 
     // If the parent stack is empty, then the current event is a root. Create a
     // node for it, mark it as a root, then proceed with the next event.
     if (stack.length === 0) {
+      const node = makeEmptyTraceEntryNode(event, makeTraceEntryNodeId());
       tree.roots.add(node);
       node.selfTime = Types.Timing.Micro(duration);
       stack.push(node);
@@ -152,8 +158,6 @@ export function treify(entries: readonly Types.Events.Event[], options?: {
     if (startsAfterParent) {
       stack.pop();
       i--;
-      // The last created node has been discarded, so discard this id.
-      nodeIdCount--;
       continue;
     }
     // 3. If the current event starts during the parent event, but ends
@@ -169,6 +173,7 @@ export function treify(entries: readonly Types.Events.Event[], options?: {
     //    contained within the parent event. Create a node for the current
     //    event, establish the parent/child relationship, then proceed with the
     //    next event.
+    const node = makeEmptyTraceEntryNode(event, makeTraceEntryNodeId());
     node.depth = stack.length;
     node.parent = parentNode;
     appendChild(parentNode, node);

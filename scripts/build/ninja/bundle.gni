@@ -101,6 +101,39 @@ template("bundle") {
       ]
     }
 
+    if (defined(invoker.platform)) {
+      assert(invoker.platform == "browser" || invoker.platform == "node",
+             "platform must be \"browser\" or \"node\"")
+
+      # Without bundle_all, every bare specifier is external, so npm packages
+      # would silently stay unbundled.
+      assert(_bundle_all || invoker.platform != "node",
+             "platform = \"node\" requires bundle_all = true")
+      args += [
+        "--platform",
+        invoker.platform,
+      ]
+    }
+
+    if (defined(invoker.external)) {
+      # Without bundle_all, every bare specifier is already external.
+      assert(_bundle_all, "external requires bundle_all = true")
+      foreach(_external, invoker.external) {
+        args += [ "--external=$_external" ]
+      }
+    }
+
+    # Defines `require` for platform = "node" ESM bundles that contain
+    # CommonJS dependencies. Opt-in because it clashes with bundled modules
+    # that declare their own top-level `require`.
+    if (defined(invoker.node_require_shim) && invoker.node_require_shim) {
+      assert(defined(invoker.platform) && invoker.platform == "node",
+             "node_require_shim requires platform = \"node\"")
+      assert(!defined(invoker.format) || invoker.format == "esm",
+             "node_require_shim requires format = \"esm\"")
+      args += [ "--node-require-shim" ]
+    }
+
     if (defined(invoker.global_name)) {
       args += [
         "--global-name",

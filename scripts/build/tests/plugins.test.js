@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sinon from 'sinon';
 
-import {devtoolsPlugin, esbuildPlugin} from '../devtools_plugin.js';
+import {createNodeModulesCheck, devtoolsPlugin, esbuildPlugin} from '../devtools_plugin.js';
 
 describe('devtools_plugin can compute paths with', () => {
   const devtoolsRoot = path.resolve(import.meta.dirname, '../../..');
@@ -356,6 +356,78 @@ describe('esbuild_plugin can compute paths with', () => {
             path: pkgFile,
           },
       );
+    } finally {
+      stub.restore();
+    }
+  });
+});
+
+describe('createNodeModulesCheck', () => {
+  const root = path.resolve('/workspace/devtools');
+  const genRoot = path.join(root, 'out/Default/gen');
+
+  it('throws when genRoot or rootDir is not provided', () => {
+    // @ts-expect-error
+    assert.throws(() => createNodeModulesCheck(undefined, root), /requires a genRoot path/);
+    // @ts-expect-error
+    assert.throws(() => createNodeModulesCheck(genRoot, undefined), /requires a rootDir path/);
+  });
+
+  it('detects importers inside node_modules below the source root', () => {
+    const isInNodeModules = createNodeModulesCheck(genRoot, root);
+    assert.isTrue(isInNodeModules(path.join(root, 'node_modules/pkg/index.js')));
+    assert.isTrue(isInNodeModules(path.join(root, 'front_end/third_party/foo/node_modules/pkg/lib/a.js')));
+  });
+
+  it('detects importers inside node_modules below the gen root', () => {
+    const isInNodeModules = createNodeModulesCheck(genRoot, root);
+    assert.isTrue(isInNodeModules(path.join(genRoot, 'node_modules/pkg/index.js')));
+  });
+
+  it('does not treat DevTools sources as node_modules', () => {
+    const isInNodeModules = createNodeModulesCheck(genRoot, root);
+    assert.isFalse(isInNodeModules(path.join(root, 'front_end/core/sdk/sdk.ts')));
+    assert.isFalse(isInNodeModules(path.join(genRoot, 'front_end/core/sdk/sdk.js')));
+    assert.isFalse(isInNodeModules(path.join(root, 'front_end/node_modules_like/a.js')));
+  });
+
+  it('ignores node_modules above the roots', () => {
+    const packageRoot = path.resolve('/project/node_modules/chrome-devtools-frontend');
+    const isInNodeModules = createNodeModulesCheck(path.join(packageRoot, 'out/Default/gen'), packageRoot);
+    assert.isFalse(isInNodeModules(path.join(packageRoot, 'front_end/core/sdk/sdk.ts')));
+    assert.isFalse(isInNodeModules(path.join(packageRoot, 'out/Default/gen/front_end/core/sdk/sdk.js')));
+    assert.isTrue(isInNodeModules(path.join(packageRoot, 'node_modules/pkg/index.js')));
+  });
+
+  it('falls back to the full path for importers outside the roots', () => {
+    const isInNodeModules = createNodeModulesCheck(genRoot, root);
+    assert.isTrue(isInNodeModules(path.resolve('/elsewhere/node_modules/pkg/index.js')));
+    assert.isFalse(isInNodeModules(path.resolve('/elsewhere/src/index.js')));
+  });
+
+  it('normalizes importer paths', () => {
+    const isInNodeModules = createNodeModulesCheck(genRoot, root);
+    assert.isTrue(isInNodeModules(`${root}/front_end/../node_modules/pkg/index.js`));
+    assert.isFalse(isInNodeModules(`${root}/node_modules/../front_end/core/sdk/sdk.ts`));
+  });
+
+  it('compares against roots with symlinks resolved', () => {
+    const packageRoot = path.resolve('/project/node_modules/chrome-devtools-frontend');
+    const packageGenRoot = path.join(packageRoot, 'out/Default/gen');
+    const realRoot = path.resolve('/private/project/node_modules/chrome-devtools-frontend');
+    const realGenRoot = path.join(realRoot, 'out/Default/gen');
+    const stub = sinon.stub(fs, 'realpathSync');
+    stub.callThrough();
+    stub.withArgs(packageRoot).returns(realRoot);
+    stub.withArgs(packageGenRoot).returns(realGenRoot);
+    try {
+      const isInNodeModules = createNodeModulesCheck(packageGenRoot, packageRoot);
+      // esbuild passes importers with symlinks resolved.
+      assert.isFalse(isInNodeModules(path.join(realRoot, 'front_end/core/sdk/sdk.ts')));
+      assert.isFalse(isInNodeModules(path.join(realGenRoot, 'front_end/core/sdk/sdk.js')));
+      assert.isTrue(isInNodeModules(path.join(realRoot, 'node_modules/pkg/index.js')));
+      // Importers that keep the symlinked path still work.
+      assert.isFalse(isInNodeModules(path.join(packageRoot, 'front_end/core/sdk/sdk.ts')));
     } finally {
       stub.restore();
     }

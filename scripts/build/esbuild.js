@@ -11,7 +11,7 @@ import {parseArgs} from 'node:util';
 
 import {devtoolsRootPath} from '../devtools_paths.js';
 
-import {esbuildPlugin} from './devtools_plugin.js';
+import {createNodeModulesCheck, esbuildPlugin} from './devtools_plugin.js';
 
 // Disable goroutine preemption to avoid random hangs
 // See crbug.com/478754070
@@ -75,6 +75,19 @@ const {values} = parseArgs({
     'entrypoints-file': {
       type: 'string',
     },
+    platform: {
+      type: 'string',
+      default: 'browser',
+    },
+    external: {
+      type: 'string',
+      multiple: true,
+      default: [],
+    },
+    'node-require-shim': {
+      type: 'boolean',
+      default: false,
+    },
   },
   strict: true,
 });
@@ -91,9 +104,24 @@ const {
   'root-gen-dir': rootGenDir,
   depfile,
   'entrypoints-file': entrypointsFile,
+  external,
+  'node-require-shim': nodeRequireShim,
 } = values;
 
+const platform = /** @type {import('esbuild').Platform} */ (values.platform);
+
 const format = /** @type {import('esbuild').Format} */ (values.format);
+
+// CommonJS dependencies call require(), which ES modules on Node lack. Opt-in
+// only: esbuild does not see banner bindings, so a bundled module that declares
+// its own top-level `require` would clash with this one.
+const nodeRequireShimBanner = {
+  js: [
+    'import {createRequire as __devtoolsCreateRequire} from \'node:module\';',
+    'const require = __devtoolsCreateRequire(import.meta.url);',
+  ].join('\n'),
+};
+
 const maxSize = values['max-size'] !== undefined ? Number(values['max-size']) : undefined;
 
 if (!entrypoint || !outfile || !rootDir || !rootGenDir) {
@@ -101,6 +129,38 @@ if (!entrypoint || !outfile || !rootDir || !rootGenDir) {
       'Missing required arguments: --entrypoint, --outfile, --root-dir, and --root-gen-dir must be provided');
 }
 const entryPoints = [entrypoint];
+
+// Relative or absolute paths would be emitted verbatim and resolve against the
+// output file rather than the importer, and `*` would turn on esbuild's
+// wildcard matching, so only bare package specifiers are allowed.
+for (const name of external) {
+  if (!name || name.startsWith('.') || name.startsWith('/') || name.endsWith('/') || name.includes('*') ||
+      path.isAbsolute(name)) {
+    throw new Error(`--external only supports bare package specifiers, got: '${name}'`);
+  }
+}
+
+// esbuild also supports `neutral`, but npm packages are only resolved for
+// `node` (see createNodeModulesCheck), so anything else is rejected.
+if (platform !== 'browser' && platform !== 'node') {
+  throw new Error(`--platform must be 'browser' or 'node', got: '${platform}'`);
+}
+
+// Without --bundle-all, the DevTools resolver keeps every bare specifier
+// external, so --external would silently do nothing and Node bundles would
+// silently leave all npm packages unbundled.
+if (!bundleAll) {
+  if (external.length) {
+    throw new Error('--external requires --bundle-all');
+  }
+  if (platform === 'node') {
+    throw new Error('--platform=node requires --bundle-all');
+  }
+}
+
+if (nodeRequireShim && (platform !== 'node' || format !== 'esm')) {
+  throw new Error('--node-require-shim requires --platform=node and --format=esm');
+}
 
 if (!bundleAll) {
   if (!entrypointsFile) {
@@ -140,7 +200,16 @@ const plugin = {
     }
 
     // https://esbuild.github.io/plugins/#on-resolve
-    build.onResolve({filter: /.*/}, esbuildPlugin(outdir, genRoot, root, externalFiles, bundleAll));
+    const devtoolsResolve = esbuildPlugin(outdir, genRoot, root, externalFiles, bundleAll);
+    // Node bundles also contain npm packages, whose relative imports need
+    // esbuild's own resolution (extensions, index files, package.json).
+    // This is intentionally limited to platform=node: browser bundles keep the
+    // pre-existing behavior of resolving everything through devtoolsResolve, so
+    // browser bundles that pull in npm packages from node_modules are not
+    // supported.
+    const isInNodeModules = createNodeModulesCheck(genRoot, root);
+    build.onResolve({filter: /.*/},
+                    args => platform === 'node' && isInNodeModules(args.importer) ? null : devtoolsResolve(args));
   },
 };
 
@@ -151,7 +220,11 @@ try {
     bundle: true,
     format,
     globalName,
-    platform: 'browser',
+    platform,
+    // Bare package specifiers listed with --external stay as written in the
+    // output. esbuild also applies this to subpaths (e.g. `pkg/sub.js`).
+    external,
+    banner: nodeRequireShim ? nodeRequireShimBanner : undefined,
     plugins: [plugin],
     sourcemap,
     minify,

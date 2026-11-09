@@ -92,6 +92,63 @@ export function devtoolsPlugin(source, importer, externalFiles, root, genRoot, b
   };
 }
 
+/**
+ * Resolves `dir` to an absolute path, following symlinks if it exists.
+ * @param {string} dir
+ */
+function realpathIfExists(dir) {
+  const resolved = path.resolve(dir);
+  try {
+    return fs.realpathSync(resolved);
+  } catch {
+    return resolved;
+  }
+}
+
+/**
+ * Creates a check for whether an importer is inside a `node_modules`
+ * directory. Only the part of the path below the gen or source root is
+ * checked, so a checkout that itself lives in a `node_modules` directory (e.g.
+ * the chrome-devtools-frontend npm package) is not treated as an npm package.
+ *
+ * esbuild passes importers with symlinks resolved, so the roots are compared
+ * both as given and with symlinks resolved (e.g. `/var` -> `/private/var` on
+ * macOS, or a symlinked checkout).
+ *
+ * @param {string} genRoot
+ * @param {string} rootDir
+ * @returns {(importer: string) => boolean}
+ */
+export function createNodeModulesCheck(genRoot, rootDir) {
+  if (!genRoot || typeof genRoot !== 'string') {
+    throw new Error('createNodeModulesCheck requires a genRoot path');
+  }
+  if (!rootDir || typeof rootDir !== 'string') {
+    throw new Error('createNodeModulesCheck requires a rootDir path');
+  }
+  // The gen root usually lives below the source root, so check it first.
+  const bases = [
+    ...new Set([
+      realpathIfExists(genRoot),
+      path.resolve(genRoot),
+      realpathIfExists(rootDir),
+      path.resolve(rootDir),
+    ]),
+  ];
+
+  return importer => {
+    // The bases use native separators (path.resolve), so normalize `importer`
+    // too, e.g. forward slashes on Windows.
+    const importerPath = path.normalize(importer);
+    for (const base of bases) {
+      if (importerPath.startsWith(base + path.sep)) {
+        return path.relative(base, importerPath).split(path.sep).includes('node_modules');
+      }
+    }
+    return importerPath.split(path.sep).includes('node_modules');
+  };
+}
+
 export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles, bundleAll = false) {
   if (!bundleAll && (!externalFiles || !(externalFiles instanceof Set))) {
     throw new Error('esbuildPlugin requires an externalFiles Set');

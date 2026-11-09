@@ -175,8 +175,27 @@ describeWithEnvironment('SecurityOriginView', () => {
         row => [...row.cells].map(cell => cell.textContent ?? ''));
   }
 
-  it('updates security details when the security state changes', () => {
-    const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, {
+  async function createOriginView(
+      origin: Platform.DevToolsPath.UrlString = urlString`https://foo.bar`,
+      opts: Partial<{
+        securityState: Protocol.Security.SecurityState,
+        securityDetails: Protocol.Network.SecurityDetails | null,
+        loadedFromCache: boolean,
+        includeCommonStyles: boolean,
+      }> = {},
+      ): Promise<Security.SecurityPanel.SecurityOriginView> {
+    const view = new Security.SecurityPanel.SecurityOriginView();
+    view.origin = origin;
+    view.securityState = opts.securityState ?? Protocol.Security.SecurityState.Secure;
+    view.securityDetails = opts.securityDetails !== undefined ? opts.securityDetails : createSecurityDetails();
+    view.loadedFromCache = opts.loadedFromCache ?? false;
+    renderElementIntoDOM(view, {includeCommonStyles: opts.includeCommonStyles});
+    await UI.Widget.Widget.allUpdatesComplete;
+    return view;
+  }
+
+  it('updates security details when the security state changes', async () => {
+    const view = await createOriginView(urlString`https://foo.bar`, {
       securityState: Protocol.Security.SecurityState.Unknown,
       securityDetails: null,
       loadedFromCache: false,
@@ -188,7 +207,9 @@ describeWithEnvironment('SecurityOriginView', () => {
       protocol: 'TLS 1.3',
       subjectName: 'foo.bar',
     });
-    view.setSecurityState(Protocol.Security.SecurityState.Secure, securityDetails);
+    view.securityState = Protocol.Security.SecurityState.Secure;
+    view.securityDetails = securityDetails;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.notExists(view.element.querySelector('.security-state-section'));
     const connectionSection = querySelectorErrorOnMissing(view.element, '.connection-section');
@@ -216,8 +237,8 @@ describeWithEnvironment('SecurityOriginView', () => {
       },
     ];
     for (const {securityState, title, description} of cases) {
-      it(`renders when securityState is ${securityState} without security details`, () => {
-        const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, {
+      it(`renders when securityState is ${securityState} without security details`, async () => {
+        const view = await createOriginView(urlString`https://foo.bar`, {
           securityState,
           securityDetails: null,
           loadedFromCache: false,
@@ -233,15 +254,16 @@ describeWithEnvironment('SecurityOriginView', () => {
   });
 
   describe('connection section', () => {
-    function getConnectionDetailsRows(securityDetails: Partial<Protocol.Network.SecurityDetails> = {}): string[][] {
+    async function getConnectionDetailsRows(securityDetails: Partial<Protocol.Network.SecurityDetails> = {}):
+        Promise<string[][]> {
       const view =
-          new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState(securityDetails));
+          await createOriginView(urlString`https://foo.bar`, {securityDetails: createSecurityDetails(securityDetails)});
       const connectionSection = querySelectorErrorOnMissing(view.element, '.connection-section');
       return getDetailsTableRows(connectionSection);
     }
 
-    it('renders the heading', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+    it('renders the heading', async () => {
+      const view = await createOriginView();
 
       const connectionSection = querySelectorErrorOnMissing(view.element, '.connection-section');
 
@@ -251,8 +273,8 @@ describeWithEnvironment('SecurityOriginView', () => {
       assert.strictEqual(heading.getAttribute('aria-level'), '2');
     });
 
-    it('does not render without security details', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, {
+    it('does not render without security details', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {
         securityState: Protocol.Security.SecurityState.Secure,
         securityDetails: null,
         loadedFromCache: false,
@@ -261,8 +283,8 @@ describeWithEnvironment('SecurityOriginView', () => {
       assert.notExists(view.element.querySelector('.connection-section'));
     });
 
-    it('renders all connection details in order', () => {
-      assert.deepEqual(getConnectionDetailsRows({
+    it('renders all connection details in order', async () => {
+      assert.deepEqual(await getConnectionDetailsRows({
                          protocol: 'TLS 1.3',
                          keyExchange: 'ECDHE_RSA',
                          keyExchangeGroup: 'X25519',
@@ -280,81 +302,81 @@ describeWithEnvironment('SecurityOriginView', () => {
                        ]);
     });
 
-    it('renders the protocol', () => {
-      assert.deepInclude(getConnectionDetailsRows({protocol: 'TLS 1.2'}), ['Protocol', 'TLS 1.2']);
+    it('renders the protocol', async () => {
+      assert.deepInclude(await getConnectionDetailsRows({protocol: 'TLS 1.2'}), ['Protocol', 'TLS 1.2']);
     });
 
     describe('key exchange', () => {
-      it('renders the algorithm and group', () => {
-        assert.deepInclude(getConnectionDetailsRows({keyExchange: 'ECDHE_RSA', keyExchangeGroup: 'X25519'}),
+      it('renders the algorithm and group', async () => {
+        assert.deepInclude(await getConnectionDetailsRows({keyExchange: 'ECDHE_RSA', keyExchangeGroup: 'X25519'}),
                            ['Key exchange', 'ECDHE_RSA with X25519']);
       });
 
-      it('renders only the algorithm', () => {
-        assert.deepInclude(getConnectionDetailsRows({keyExchange: 'ECDHE_RSA', keyExchangeGroup: undefined}),
+      it('renders only the algorithm', async () => {
+        assert.deepInclude(await getConnectionDetailsRows({keyExchange: 'ECDHE_RSA', keyExchangeGroup: undefined}),
                            ['Key exchange', 'ECDHE_RSA']);
       });
 
-      it('renders only the group', () => {
-        assert.deepInclude(getConnectionDetailsRows({keyExchange: '', keyExchangeGroup: 'X25519'}),
+      it('renders only the group', async () => {
+        assert.deepInclude(await getConnectionDetailsRows({keyExchange: '', keyExchangeGroup: 'X25519'}),
                            ['Key exchange', 'X25519']);
       });
 
-      it('does not render when both are unavailable', () => {
-        const rowNames = getConnectionDetailsRows({
+      it('does not render when both are unavailable', async () => {
+        const rowNames = (await getConnectionDetailsRows({
                            keyExchange: '',
                            keyExchangeGroup: undefined,
-                         }).map(([key]) => key);
+                         })).map(([key]) => key);
         assert.notInclude(rowNames, 'Key exchange');
       });
     });
 
     describe('server signature', () => {
-      it('renders a known algorithm', () => {
-        assert.deepInclude(getConnectionDetailsRows({serverSignatureAlgorithm: 0x0804}),
+      it('renders a known algorithm', async () => {
+        assert.deepInclude(await getConnectionDetailsRows({serverSignatureAlgorithm: 0x0804}),
                            ['Server signature', 'RSA-PSS with SHA-256']);
       });
 
-      it('renders an unknown algorithm', () => {
-        assert.deepInclude(getConnectionDetailsRows({serverSignatureAlgorithm: 0xffff}),
+      it('renders an unknown algorithm', async () => {
+        assert.deepInclude(await getConnectionDetailsRows({serverSignatureAlgorithm: 0xffff}),
                            ['Server signature', 'unknown (65535)']);
       });
 
-      it('does not render when unavailable', () => {
-        const rowNames = getConnectionDetailsRows({serverSignatureAlgorithm: undefined}).map(([key]) => key);
+      it('does not render when unavailable', async () => {
+        const rowNames = (await getConnectionDetailsRows({serverSignatureAlgorithm: undefined})).map(([key]) => key);
         assert.notInclude(rowNames, 'Server signature');
       });
     });
 
     describe('cipher', () => {
-      it('renders with a MAC', () => {
-        assert.deepInclude(getConnectionDetailsRows({cipher: 'AES_128_GCM', mac: 'HMAC-SHA256'}),
+      it('renders with a MAC', async () => {
+        assert.deepInclude(await getConnectionDetailsRows({cipher: 'AES_128_GCM', mac: 'HMAC-SHA256'}),
                            ['Cipher', 'AES_128_GCM with HMAC-SHA256']);
       });
 
-      it('renders without a MAC', () => {
-        assert.deepInclude(getConnectionDetailsRows({cipher: 'AES_128_GCM', mac: undefined}),
+      it('renders without a MAC', async () => {
+        assert.deepInclude(await getConnectionDetailsRows({cipher: 'AES_128_GCM', mac: undefined}),
                            ['Cipher', 'AES_128_GCM']);
       });
     });
 
     describe('Encrypted ClientHello', () => {
-      it('renders when enabled', () => {
-        assert.deepInclude(getConnectionDetailsRows({encryptedClientHello: true}),
+      it('renders when enabled', async () => {
+        assert.deepInclude(await getConnectionDetailsRows({encryptedClientHello: true}),
                            ['Encrypted ClientHello', 'enabled']);
       });
 
-      it('does not render when disabled', () => {
-        const rowNames = getConnectionDetailsRows({encryptedClientHello: false}).map(([key]) => key);
+      it('does not render when disabled', async () => {
+        const rowNames = (await getConnectionDetailsRows({encryptedClientHello: false})).map(([key]) => key);
         assert.notInclude(rowNames, 'Encrypted ClientHello');
       });
     });
   });
 
   describe('title section', () => {
-    it('renders the title, origin, and Network panel button', () => {
+    it('renders the title, origin, and Network panel button', async () => {
       const origin = urlString`https://foo.bar`;
-      const view = new Security.SecurityPanel.SecurityOriginView(origin, createOriginState());
+      const view = await createOriginView(origin);
 
       assert.isTrue(view.element.classList.contains('security-origin-view'));
 
@@ -376,9 +398,9 @@ describeWithEnvironment('SecurityOriginView', () => {
       assert.strictEqual(networkButton.textContent, 'View requests in Network panel');
     });
 
-    it('updates the origin display when the security state changes', () => {
+    it('updates the origin display when the security state changes', async () => {
       const originState = createOriginState();
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+      const view = await createOriginView(urlString`https://foo.bar`, originState);
 
       const initialOriginDisplay = view.element.querySelector('.origin-display');
       assert.instanceOf(initialOriginDisplay, HTMLElement);
@@ -390,7 +412,9 @@ describeWithEnvironment('SecurityOriginView', () => {
 
       assert.exists(initialOriginDisplay.querySelector('.url-scheme-secure'));
 
-      view.setSecurityState(Protocol.Security.SecurityState.Insecure, originState.securityDetails);
+      view.securityState = Protocol.Security.SecurityState.Insecure;
+      view.securityDetails = originState.securityDetails;
+      await UI.Widget.Widget.allUpdatesComplete;
 
       const updatedOriginDisplay = view.element.querySelector('.origin-display');
       assert.instanceOf(updatedOriginDisplay, HTMLElement);
@@ -405,11 +429,11 @@ describeWithEnvironment('SecurityOriginView', () => {
       assert.notExists(updatedOriginDisplay.querySelector('.url-scheme-secure'));
     });
 
-    it('reveals requests in the Network panel', () => {
+    it('reveals requests in the Network panel', async () => {
       const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+      const view = await createOriginView(urlString`https://foo.bar`);
 
-      const networkButton = view.element.querySelector('.view-network-button devtools-button');
+      const networkButton = view.element.querySelector('.view-network-button devtools-button') as HTMLElement;
       assert.instanceOf(networkButton, HTMLElement);
       networkButton.click();
 
@@ -424,8 +448,16 @@ describeWithEnvironment('SecurityOriginView', () => {
   });
 
   describe('certificate section', () => {
-    it('renders the heading', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+    async function getCertificateDetailsRows(securityDetails: Partial<Protocol.Network.SecurityDetails> = {}):
+        Promise<string[][]> {
+      const view =
+          await createOriginView(urlString`https://foo.bar`, {securityDetails: createSecurityDetails(securityDetails)});
+      const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
+      return getDetailsTableRows(certificateSection);
+    }
+
+    it('renders the heading', async () => {
+      const view = await createOriginView();
 
       const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
       const heading = querySelectorErrorOnMissing(certificateSection, '.origin-view-section-title');
@@ -434,8 +466,8 @@ describeWithEnvironment('SecurityOriginView', () => {
       assert.strictEqual(heading.getAttribute('aria-level'), '2');
     });
 
-    it('does not render without security details', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, {
+    it('does not render without security details', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {
         securityState: Protocol.Security.SecurityState.Secure,
         securityDetails: null,
         loadedFromCache: false,
@@ -444,24 +476,22 @@ describeWithEnvironment('SecurityOriginView', () => {
       assert.notExists(view.element.querySelector('.certificate-section'));
     });
 
-    it('renders all certificate details in order', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState({
-                                                                   subjectName: 'example.com',
-                                                                   sanList: ['san.example.com'],
-                                                                   validFrom: 0,
-                                                                   validTo: 86400,
-                                                                   issuer: 'Test CA',
-                                                                 }));
-      const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
-
-      assert.deepEqual(getDetailsTableRows(certificateSection), [
-        ['Subject', 'example.com'],
-        ['SAN', 'san.example.com'],
-        ['Valid from', 'Thu, 01 Jan 1970 00:00:00 GMT'],
-        ['Valid until', 'Fri, 02 Jan 1970 00:00:00 GMT'],
-        ['Issuer', 'Test CA'],
-        ['', 'Open full certificate details'],
-      ]);
+    it('renders all certificate details in order', async () => {
+      assert.deepEqual(await getCertificateDetailsRows({
+                         subjectName: 'example.com',
+                         sanList: ['san.example.com'],
+                         validFrom: 0,
+                         validTo: 86400,
+                         issuer: 'Test CA',
+                       }),
+                       [
+                         ['Subject', 'example.com'],
+                         ['SAN', 'san.example.com'],
+                         ['Valid from', 'Thu, 01 Jan 1970 00:00:00 GMT'],
+                         ['Valid until', 'Fri, 02 Jan 1970 00:00:00 GMT'],
+                         ['Issuer', 'Test CA'],
+                         ['', 'Open full certificate details'],
+                       ]);
     });
 
     it('opens the certificate viewer', async () => {
@@ -470,10 +500,11 @@ describeWithEnvironment('SecurityOriginView', () => {
       const showCertificateViewer =
           sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showCertificateViewer');
       const showCertificateViewerCall = expectCall(showCertificateViewer);
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+      const view = await createOriginView();
 
       const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
-      const certificateButton = querySelectorErrorOnMissing(certificateSection, 'devtools-button.origin-button');
+      const certificateButton =
+          querySelectorErrorOnMissing(certificateSection, 'devtools-button.origin-button') as HTMLElement;
       certificateButton.click();
       await showCertificateViewerCall;
 
@@ -486,10 +517,11 @@ describeWithEnvironment('SecurityOriginView', () => {
           sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance(), 'getCertificate').resolves([]);
       const showCertificateViewer =
           sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showCertificateViewer');
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+      const view = await createOriginView();
 
       const certificateSection = querySelectorErrorOnMissing(view.element, '.certificate-section');
-      const certificateButton = querySelectorErrorOnMissing(certificateSection, 'devtools-button.origin-button');
+      const certificateButton =
+          querySelectorErrorOnMissing(certificateSection, 'devtools-button.origin-button') as HTMLElement;
       certificateButton.click();
       await getCertificate.firstCall.returnValue;
 
@@ -499,21 +531,22 @@ describeWithEnvironment('SecurityOriginView', () => {
   });
 
   describe('certificate transparency section', () => {
-    it('renders the heading, SCT summary, and details', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(
-          urlString`https://foo.bar`, createOriginState({
-            signedCertificateTimestampList: [{
-              logDescription: 'Test log',
-              logId: 'AABB',
-              status: 'Verified',
-              origin: 'Embedded in certificate',
-              timestamp: 1_000,
-              hashAlgorithm: 'SHA-256',
-              signatureAlgorithm: 'ECDSA',
-              signatureData: 'CCDD',
-            }],
-            certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
-          }));
+    it('renders the heading, SCT summary, and details', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {
+        securityDetails: createSecurityDetails({
+          signedCertificateTimestampList: [{
+            logDescription: 'Test log',
+            logId: 'AABB',
+            status: 'Verified',
+            origin: 'Embedded in certificate',
+            timestamp: 1_000,
+            hashAlgorithm: 'SHA-256',
+            signatureAlgorithm: 'ECDSA',
+            signatureData: 'CCDD',
+          }],
+          certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
+        }),
+      });
 
       const section = querySelectorErrorOnMissing(view.element, '.certificate-transparency-section');
       const heading = querySelectorErrorOnMissing(section, '.origin-view-section-title');
@@ -537,31 +570,33 @@ describeWithEnvironment('SecurityOriginView', () => {
       ]);
     });
 
-    it('does not render when the SCT list is empty and compliance is unknown', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(
-          urlString`https://foo.bar`, createOriginState({
-            signedCertificateTimestampList: [],
-            certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
-          }));
+    it('does not render when the SCT list is empty and compliance is unknown', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {
+        securityDetails: createSecurityDetails({
+          signedCertificateTimestampList: [],
+          certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
+        }),
+      });
 
       assert.notExists(view.element.querySelector('.certificate-transparency-section'));
     });
 
-    it('renders without a note when the SCT list is not empty and compliance is unknown', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(
-          urlString`https://foo.bar`, createOriginState({
-            signedCertificateTimestampList: [{
-              logDescription: 'Test log',
-              logId: '00',
-              status: 'Verified',
-              origin: 'Embedded in certificate',
-              timestamp: 0,
-              hashAlgorithm: 'SHA-256',
-              signatureAlgorithm: 'ECDSA',
-              signatureData: '00',
-            }],
-            certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
-          }));
+    it('renders without a note when the SCT list is not empty and compliance is unknown', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {
+        securityDetails: createSecurityDetails({
+          signedCertificateTimestampList: [{
+            logDescription: 'Test log',
+            logId: '00',
+            status: 'Verified',
+            origin: 'Embedded in certificate',
+            timestamp: 0,
+            hashAlgorithm: 'SHA-256',
+            signatureAlgorithm: 'ECDSA',
+            signatureData: '00',
+          }],
+          certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
+        }),
+      });
 
       const section = querySelectorErrorOnMissing(view.element, '.certificate-transparency-section');
       assert.notExists(section.querySelector('.origin-view-section-notes'));
@@ -578,12 +613,13 @@ describeWithEnvironment('SecurityOriginView', () => {
       },
     ];
     for (const {compliance, expectedNote} of cases) {
-      it(`renders with a note when compliance is ${compliance}`, () => {
-        const originState = createOriginState({
-          signedCertificateTimestampList: [],
-          certificateTransparencyCompliance: compliance,
+      it(`renders with a note when compliance is ${compliance}`, async () => {
+        const view = await createOriginView(urlString`https://foo.bar`, {
+          securityDetails: createSecurityDetails({
+            signedCertificateTimestampList: [],
+            certificateTransparencyCompliance: compliance,
+          }),
         });
-        const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
 
         const section = querySelectorErrorOnMissing(view.element, '.certificate-transparency-section');
         const note = querySelectorErrorOnMissing(section, '.origin-view-section-notes');
@@ -591,26 +627,27 @@ describeWithEnvironment('SecurityOriginView', () => {
       });
     }
 
-    it('toggles SCT details', () => {
-      const view = new Security.SecurityPanel.SecurityOriginView(
-          urlString`https://foo.bar`, createOriginState({
-            signedCertificateTimestampList: [{
-              logDescription: 'Test log',
-              logId: '00',
-              status: 'Verified',
-              origin: 'Embedded in certificate',
-              timestamp: 0,
-              hashAlgorithm: 'SHA-256',
-              signatureAlgorithm: 'ECDSA',
-              signatureData: '00',
-            }],
-            certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
-          }));
-      renderElementIntoDOM(view, {includeCommonStyles: true});
+    it('toggles SCT details', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {
+        securityDetails: createSecurityDetails({
+          signedCertificateTimestampList: [{
+            logDescription: 'Test log',
+            logId: '00',
+            status: 'Verified',
+            origin: 'Embedded in certificate',
+            timestamp: 0,
+            hashAlgorithm: 'SHA-256',
+            signatureAlgorithm: 'ECDSA',
+            signatureData: '00',
+          }],
+          certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
+        }),
+        includeCommonStyles: true,
+      });
       const section = querySelectorErrorOnMissing(view.element, '.certificate-transparency-section');
       const summary = querySelectorErrorOnMissing(section, '.sct-summary');
       const details = querySelectorErrorOnMissing(section, '.sct-details');
-      const toggle = section.querySelector('devtools-button');
+      const toggle = section.querySelector('devtools-button') as Buttons.Button.Button;
 
       assert.isTrue(summary.checkVisibility());
       assert.isFalse(details.checkVisibility());
@@ -620,6 +657,7 @@ describeWithEnvironment('SecurityOriginView', () => {
       assert.isFalse(toggle.accessibleExpanded);
 
       toggle.click();
+      await UI.Widget.Widget.allUpdatesComplete;
 
       assert.isFalse(summary.checkVisibility());
       assert.isTrue(details.checkVisibility());
@@ -635,25 +673,20 @@ describeWithEnvironment('SecurityOriginView', () => {
       return Array.from(notes.children, note => note.textContent ?? '');
     }
 
-    it('renders when security details are available', () => {
-      const originState = createOriginState();
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+    it('renders when security details are available', async () => {
+      const view = await createOriginView();
 
       assert.deepEqual(getNoteTexts(view), ['The security details above are from the first inspected response']);
     });
 
-    it('does not render when security details are null', () => {
-      const originState = createOriginState();
-      originState.securityDetails = null;
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+    it('does not render when security details are null', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {securityDetails: null});
 
       assert.notExists(view.element.querySelector('.origin-view-notes'));
     });
 
-    it('renders with the cache note when loadedFromCache is true', () => {
-      const originState = createOriginState();
-      originState.loadedFromCache = true;
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+    it('renders with the cache note when loadedFromCache is true', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {loadedFromCache: true});
 
       assert.deepEqual(getNoteTexts(view), [
         'This response was loaded from cache. Some security details might be missing.',
@@ -661,20 +694,21 @@ describeWithEnvironment('SecurityOriginView', () => {
       ]);
     });
 
-    it('renders when the SCT list is not empty', () => {
-      const originState = createOriginState({
-        signedCertificateTimestampList: [{
-          logDescription: 'Test log',
-          logId: '00',
-          status: 'Verified',
-          origin: 'Embedded in certificate',
-          timestamp: 0,
-          hashAlgorithm: 'SHA-256',
-          signatureAlgorithm: 'ECDSA',
-          signatureData: '00',
-        }],
+    it('renders when the SCT list is not empty', async () => {
+      const view = await createOriginView(urlString`https://foo.bar`, {
+        securityDetails: createSecurityDetails({
+          signedCertificateTimestampList: [{
+            logDescription: 'Test log',
+            logId: '00',
+            status: 'Verified',
+            origin: 'Embedded in certificate',
+            timestamp: 0,
+            hashAlgorithm: 'SHA-256',
+            signatureAlgorithm: 'ECDSA',
+            signatureData: '00',
+          }],
+        }),
       });
-      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
 
       assert.exists(view.element.querySelector('.origin-view-notes'));
     });
@@ -685,28 +719,29 @@ describeWithEnvironment('SecurityOriginView', () => {
       Protocol.Network.CertificateTransparencyCompliance.NotCompliant,
     ];
     for (const compliance of compliances) {
-      it(`renders when certificate transparency compliance is ${compliance}`, () => {
-        const originState = createOriginState({certificateTransparencyCompliance: compliance});
-        const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
+      it(`renders when certificate transparency compliance is ${compliance}`, async () => {
+        const view = await createOriginView(urlString`https://foo.bar`, {
+          securityDetails: createSecurityDetails({certificateTransparencyCompliance: compliance}),
+        });
 
         assert.exists(view.element.querySelector('.origin-view-notes'));
       });
     }
   });
 
-  it('renders an empty SAN', () => {
+  it('renders an empty SAN', async () => {
     const view =
-        new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState({sanList: []}));
+        await createOriginView(urlString`https://foo.bar`, {securityDetails: createSecurityDetails({sanList: []})});
 
     const sanElement = view.element.querySelector('.san');
     assert.instanceOf(sanElement, HTMLElement);
     assert.strictEqual(sanElement.textContent, '(n/a)');
   });
 
-  it('renders a SAN without truncation button', () => {
-    const view = new Security.SecurityPanel.SecurityOriginView(
-        urlString`https://foo.bar`, createOriginState({sanList: ['a.test', 'b.test', 'c.test']}));
-    renderElementIntoDOM(view);
+  it('renders a SAN without truncation button', async () => {
+    const view =
+        await createOriginView(urlString`https://foo.bar`,
+                               {securityDetails: createSecurityDetails({sanList: ['a.test', 'b.test', 'c.test']})});
 
     const sanElement = view.element.querySelector('.san');
     assert.instanceOf(sanElement, HTMLElement);
@@ -723,55 +758,140 @@ describeWithEnvironment('SecurityOriginView', () => {
                                                          .filter(entry => entry.checkVisibility())
                                                          .map(entry => entry.textContent);
 
-  it('renders a SAN with truncation button and updates on truncation toggle', () => {
-    const view = new Security.SecurityPanel.SecurityOriginView(
-        urlString`https://foo.bar`, createOriginState({sanList: ['a.test', 'b.test', 'c.test', 'd.test']}));
-    renderElementIntoDOM(view);
+  it('renders a SAN with truncation button and updates on truncation toggle', async () => {
+    const view = await createOriginView(
+        urlString`https://foo.bar`,
+        {securityDetails: createSecurityDetails({sanList: ['a.test', 'b.test', 'c.test', 'd.test']})});
 
     const sanElement = view.element.querySelector('.san');
     assert.instanceOf(sanElement, HTMLElement);
 
     assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test']);
 
-    const toggleButton = sanElement.querySelector('devtools-button');
+    const toggleButton = sanElement.querySelector('devtools-button') as Buttons.Button.Button;
     assert.instanceOf(toggleButton, HTMLElement);
     assert.strictEqual(toggleButton.textContent, 'Show more (4 total)');
     assert.isFalse(toggleButton.accessibleExpanded);
 
     toggleButton.click();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test', 'c.test', 'd.test']);
     assert.strictEqual(toggleButton.textContent, 'Show less');
     assert.isTrue(toggleButton.accessibleExpanded);
 
     toggleButton.click();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test']);
     assert.strictEqual(toggleButton.textContent, 'Show more (4 total)');
     assert.isFalse(toggleButton.accessibleExpanded);
   });
 
-  it('updates SAN truncation when security details change', () => {
-    const view = new Security.SecurityPanel.SecurityOriginView(
-        urlString`https://foo.bar`, createOriginState({sanList: ['a.test', 'b.test', 'c.test', 'd.test']}));
-    renderElementIntoDOM(view);
+  it('updates SAN truncation when security details change', async () => {
+    const view = await createOriginView(
+        urlString`https://foo.bar`,
+        {securityDetails: createSecurityDetails({sanList: ['a.test', 'b.test', 'c.test', 'd.test']})});
 
     const sanElement = view.element.querySelector('.san');
     assert.instanceOf(sanElement, HTMLElement);
 
     assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test']);
 
-    const toggleButton = sanElement.querySelector('devtools-button');
+    const toggleButton = sanElement.querySelector('devtools-button') as HTMLElement;
     assert.instanceOf(toggleButton, HTMLElement);
     toggleButton.click();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.deepEqual(visibleSanEntries(sanElement), ['a.test', 'b.test', 'c.test', 'd.test']);
 
-    const updatedSecurityDetails =
-        createOriginState({sanList: ['e.test', 'f.test', 'g.test', 'h.test']}).securityDetails;
-    view.setSecurityState(Protocol.Security.SecurityState.Neutral, updatedSecurityDetails);
+    const updatedSecurityDetails = createSecurityDetails({sanList: ['e.test', 'f.test', 'g.test', 'h.test']});
+    view.securityState = Protocol.Security.SecurityState.Neutral;
+    view.securityDetails = updatedSecurityDetails;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.deepEqual(visibleSanEntries(sanElement), ['e.test', 'f.test']);
+  });
+
+  describe('reactive properties and view function stub', () => {
+    it('passes reactive properties to view function and guards equality', async () => {
+      const viewStub = createViewFunctionStub(Security.SecurityPanel.SecurityOriginView);
+      const view = new Security.SecurityPanel.SecurityOriginView(undefined, viewStub);
+      renderElementIntoDOM(view);
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      sinon.assert.callCount(viewStub, 1);
+      assert.strictEqual(viewStub.input.origin, Platform.DevToolsPath.EmptyUrlString);
+      assert.strictEqual(viewStub.input.securityState, Protocol.Security.SecurityState.Unknown);
+      assert.isNull(viewStub.input.securityDetails);
+      assert.isFalse(viewStub.input.loadedFromCache);
+
+      const requestUpdateSpy = sinon.spy(view, 'requestUpdate');
+
+      view.origin = urlString`https://example.com`;
+      sinon.assert.calledOnce(requestUpdateSpy);
+      view.origin = urlString`https://example.com`;
+      sinon.assert.calledOnce(requestUpdateSpy);
+
+      view.securityState = Protocol.Security.SecurityState.Secure;
+      sinon.assert.callCount(requestUpdateSpy, 2);
+      view.securityState = Protocol.Security.SecurityState.Secure;
+      sinon.assert.callCount(requestUpdateSpy, 2);
+
+      const details = createSecurityDetails({sanList: ['a.com', 'b.com', 'c.com', 'd.com']});
+      view.securityDetails = details;
+      sinon.assert.callCount(requestUpdateSpy, 3);
+      view.securityDetails = details;
+      sinon.assert.callCount(requestUpdateSpy, 3);
+
+      view.loadedFromCache = true;
+      sinon.assert.callCount(requestUpdateSpy, 4);
+      view.loadedFromCache = true;
+      sinon.assert.callCount(requestUpdateSpy, 4);
+
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.strictEqual(viewStub.input.origin, urlString`https://example.com`);
+      assert.strictEqual(viewStub.input.securityState, Protocol.Security.SecurityState.Secure);
+      assert.strictEqual(viewStub.input.securityDetails, details);
+      assert.isTrue(viewStub.input.loadedFromCache);
+      assert.isTrue(viewStub.input.isSanListTruncated);
+    });
+
+    it('resets SAN truncation when securityDetails changes', async () => {
+      const viewStub = createViewFunctionStub(Security.SecurityPanel.SecurityOriginView);
+      const view = new Security.SecurityPanel.SecurityOriginView(undefined, viewStub);
+      renderElementIntoDOM(view);
+
+      view.securityDetails = createSecurityDetails({sanList: ['a.com', 'b.com', 'c.com', 'd.com']});
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isTrue(viewStub.input.isSanListTruncated);
+
+      viewStub.input.onToggleSanTruncation();
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isFalse(viewStub.input.isSanListTruncated);
+
+      view.securityDetails = createSecurityDetails({sanList: ['x.com', 'y.com', 'z.com', 'w.com']});
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isTrue(viewStub.input.isSanListTruncated);
+    });
+
+    it('resets CT details when origin changes', async () => {
+      const viewStub = createViewFunctionStub(Security.SecurityPanel.SecurityOriginView);
+      const view = new Security.SecurityPanel.SecurityOriginView(undefined, viewStub);
+      renderElementIntoDOM(view);
+
+      view.origin = urlString`https://example.com`;
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isFalse(viewStub.input.isCertificateTransparencyDetailsShown);
+
+      viewStub.input.onToggleCertificateTransparencyDetails();
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isTrue(viewStub.input.isCertificateTransparencyDetailsShown);
+
+      view.origin = urlString`https://other.com`;
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isFalse(viewStub.input.isCertificateTransparencyDetailsShown);
+    });
   });
 });
 
@@ -1144,6 +1264,38 @@ describeWithEnvironment('SecurityMainView', () => {
       assert.strictEqual(links[0].textContent, 'View 4 requests in Network panel');
       assert.strictEqual(links[1].textContent, 'View 1 request in Network panel');
     });
+
+    it('updates reactively via declarative visibleSecurityState and filterRequestCounts setters', async () => {
+      const standaloneView = new Security.SecurityPanel.SecurityMainView();
+      renderView(standaloneView);
+
+      const requestStub = sinon.stub(standaloneView, 'requestUpdate');
+
+      // Set identical initial visibleSecurityState (null) -> no update
+      standaloneView.visibleSecurityState = null;
+      sinon.assert.notCalled(requestStub);
+
+      // Set new visibleSecurityState -> triggers requestUpdate
+      const state =
+          new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Secure, null, null, []);
+      standaloneView.visibleSecurityState = state;
+      sinon.assert.calledOnce(requestStub);
+      assert.strictEqual(standaloneView.visibleSecurityState, state);
+
+      // Set same visibleSecurityState reference -> equality guard prevents update
+      standaloneView.visibleSecurityState = state;
+      sinon.assert.calledOnce(requestStub);
+
+      // Set filterRequestCounts -> triggers requestUpdate
+      const counts = new Map([[NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED, 2]]);
+      standaloneView.filterRequestCounts = counts;
+      sinon.assert.calledTwice(requestStub);
+      assert.strictEqual(standaloneView.filterRequestCounts, counts);
+
+      // Set same filterRequestCounts reference -> equality guard prevents update
+      standaloneView.filterRequestCounts = counts;
+      sinon.assert.calledTwice(requestStub);
+    });
   });
 
   describe('visual screenshots', () => {
@@ -1196,7 +1348,7 @@ describeWithEnvironment('SecurityPanel', () => {
     target = createTarget({parentTarget: tabTarget});
   });
 
-  it('shows security information for a non-cryptographic secure origin', () => {
+  it('shows security information for a non-cryptographic secure origin', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
@@ -1207,6 +1359,7 @@ describeWithEnvironment('SecurityPanel', () => {
     request.setSecurityState(Protocol.Security.SecurityState.Secure);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
     securityPanel.sidebar.selectedOrigin = origin;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const originView = securityPanel.visibleView;
     assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
@@ -1223,21 +1376,19 @@ describeWithEnvironment('SecurityPanel', () => {
     renderElementIntoDOM(securityPanel);
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);
-    const visibleSecurityState = {
-      securityState: Protocol.Security.SecurityState.Insecure,
-      securityStateIssueIds: [],
-      certificateSecurityState: null,
-    } as unknown as Security.SecurityModel.PageVisibleSecurityState;
-    securityModel.dispatchEventToListeners(
-        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    const insecureVisibleSecurityState =
+        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Insecure, null, null, []);
+    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                           insecureVisibleSecurityState);
     await UI.Widget.Widget.allUpdatesComplete;
 
     assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
 
-    visibleSecurityState.securityState = Protocol.Security.SecurityState.Secure;
-    securityModel.dispatchEventToListeners(
-        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    const secureVisibleSecurityState =
+        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Secure, null, null, []);
+    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                           secureVisibleSecurityState);
     await UI.Widget.Widget.allUpdatesComplete;
 
     assert.isFalse(securityPanel.mainView.contentElement.querySelector('.security-summary')
@@ -1254,13 +1405,10 @@ describeWithEnvironment('SecurityPanel', () => {
 
     // Add the main target to the security panel.
     securityPanel.modelAdded(mainSecurityModel);
-    const visibleSecurityState = {
-      securityState: Protocol.Security.SecurityState.Insecure,
-      securityStateIssueIds: [],
-      certificateSecurityState: null,
-    } as unknown as Security.SecurityModel.PageVisibleSecurityState;
-    mainSecurityModel.dispatchEventToListeners(
-        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    const insecureVisibleSecurityState =
+        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Insecure, null, null, []);
+    mainSecurityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                               insecureVisibleSecurityState);
     await UI.Widget.Widget.allUpdatesComplete;
     assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
@@ -1272,16 +1420,17 @@ describeWithEnvironment('SecurityPanel', () => {
     securityPanel.modelRemoved(mainSecurityModel);
 
     // Check that the security panel does not listen to events from the previous target.
-    visibleSecurityState.securityState = Protocol.Security.SecurityState.Secure;
-    mainSecurityModel.dispatchEventToListeners(
-        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    const secureVisibleSecurityState =
+        new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Secure, null, null, []);
+    mainSecurityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                               secureVisibleSecurityState);
     await UI.Widget.Widget.allUpdatesComplete;
     assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-insecure'));
 
     // Check that the security panel listens to events from the current target.
-    prerenderSecurityModel.dispatchEventToListeners(
-        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    prerenderSecurityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                                    secureVisibleSecurityState);
     await UI.Widget.Widget.allUpdatesComplete;
     assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
                       ?.classList.contains('security-summary-secure'));
@@ -1292,7 +1441,7 @@ describeWithEnvironment('SecurityPanel', () => {
     sinon.assert.calledOnce(sidebarTreeClearSpy);
   });
 
-  it('shows Certificate Transparency compliance when an origin is selected', () => {
+  it('shows Certificate Transparency compliance when an origin is selected', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
@@ -1307,6 +1456,7 @@ describeWithEnvironment('SecurityPanel', () => {
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
 
     securityPanel.sidebar.selectedOrigin = urlString`https://foo.test`;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const originView = securityPanel.visibleView;
     assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
@@ -1646,7 +1796,7 @@ describeWithEnvironment('SecurityPanel', () => {
         sidebarTreeClearSpy.calledOnceWith(urlString`http://bar.test`, Protocol.Security.SecurityState.Insecure));
   });
 
-  it('shows the overview when an interstitial is shown', () => {
+  it('shows the overview when an interstitial is shown', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
@@ -1660,6 +1810,7 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.isTrue(securityPanel.mainView.isShowing());
 
     securityPanel.sidebar.selectedOrigin = urlString`http://foo.test`;
+    await UI.Widget.Widget.allUpdatesComplete;
     const originView = securityPanel.visibleView;
     assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
     assert.isFalse(securityPanel.mainView.isShowing());

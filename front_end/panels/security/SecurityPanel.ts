@@ -7,7 +7,7 @@ import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -630,7 +630,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
 
   private updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
     this.sidebar.updateOverviewSecurityState(visibleSecurityState.securityState);
-    this.mainView.updateVisibleSecurityState(visibleSecurityState);
+    this.mainView.visibleSecurityState = visibleSecurityState;
   }
 
   private onVisibleSecurityStateChanged({data}: Common.EventTarget.EventTargetEvent<PageVisibleSecurityState>): void {
@@ -643,7 +643,12 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
       return;
     }
     if (!originState.originView) {
-      originState.originView = new SecurityOriginView(origin, originState);
+      const originView = new SecurityOriginView();
+      originView.origin = origin;
+      originView.securityState = originState.securityState;
+      originView.securityDetails = originState.securityDetails;
+      originView.loadedFromCache = originState.loadedFromCache;
+      originState.originView = originView;
     }
 
     this.setVisibleView(originState.originView);
@@ -708,7 +713,8 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
         }
         this.sidebar.updateOrigin(origin, securityState);
         if (originState.originView) {
-          originState.originView.setSecurityState(securityState, originState.securityDetails);
+          originState.originView.securityState = securityState;
+          originState.originView.securityDetails = originState.securityDetails;
         }
       }
     } else {
@@ -755,7 +761,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
       this.filterRequestCounts.set(filterKey, currentCount + 1);
     }
 
-    this.mainView.setFilterRequestCounts(new Map(this.filterRequestCounts));
+    this.mainView.filterRequestCounts = new Map(this.filterRequestCounts);
   }
 
   modelAdded(securityModel: SecurityModel): void {
@@ -956,11 +962,21 @@ export const DEFAULT_SECURITY_MAIN_VIEW: SecurityMainViewFunction = (input, _out
 };
 
 export class SecurityMainView extends UI.Widget.VBox {
-  #view: SecurityMainViewFunction;
+  readonly #view: SecurityMainViewFunction;
+  #visibleSecurityState: PageVisibleSecurityState|null = null;
   #summaryText = '';
   #explanations: Array<Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation>|null = null;
   #securityState: Protocol.Security.SecurityState|null = null;
   #filterRequestCounts: ReadonlyMap<string, number> = new Map();
+
+  readonly #showCertificateViewer = (certificate: string[]): void => {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(certificate);
+  };
+
+  readonly #showNetworkFilter = (filterKey: string): void => {
+    void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters(
+        [{filterType: NetworkForward.UIFilter.FilterType.MixedContent, filterValue: filterKey}]));
+  };
 
   constructor(element?: HTMLElement, view: SecurityMainViewFunction = DEFAULT_SECURITY_MAIN_VIEW) {
     super(element);
@@ -1037,34 +1053,54 @@ export class SecurityMainView extends UI.Widget.VBox {
           summaryText: this.#summaryText,
           mainExplanations,
           extraExplanations,
-          onShowCertificateViewer: (certificate: string[]) => {
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(certificate);
-          },
-          onShowNetworkFilter: (filterKey: string) => {
-            void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters(
-                [{filterType: NetworkForward.UIFilter.FilterType.MixedContent, filterValue: filterKey}]));
-          },
+          onShowCertificateViewer: this.#showCertificateViewer,
+          onShowNetworkFilter: this.#showNetworkFilter,
         },
         undefined,
         this.contentElement,
     );
   }
 
-  setFilterRequestCounts(filterRequestCounts: ReadonlyMap<string, number>): void {
+  set filterRequestCounts(filterRequestCounts: ReadonlyMap<string, number>) {
+    if (this.#filterRequestCounts === filterRequestCounts) {
+      return;
+    }
     this.#filterRequestCounts = filterRequestCounts;
     this.requestUpdate();
   }
 
-  updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
-    this.#securityState = visibleSecurityState.securityState;
+  get filterRequestCounts(): ReadonlyMap<string, number> {
+    return this.#filterRequestCounts;
+  }
 
-    const {summary, explanations} = this.#getSecuritySummaryAndExplanations(visibleSecurityState);
-    // Use override summary if present, otherwise use base explanation
-    this.#summaryText = summary || SummaryMessages[this.#securityState]();
+  setFilterRequestCounts(filterRequestCounts: ReadonlyMap<string, number>): void {
+    this.filterRequestCounts = filterRequestCounts;
+  }
 
-    this.#explanations = this.#orderExplanations(explanations);
-
+  set visibleSecurityState(visibleSecurityState: PageVisibleSecurityState|null) {
+    if (this.#visibleSecurityState === visibleSecurityState) {
+      return;
+    }
+    this.#visibleSecurityState = visibleSecurityState;
+    if (visibleSecurityState) {
+      this.#securityState = visibleSecurityState.securityState;
+      const {summary, explanations} = this.#getSecuritySummaryAndExplanations(visibleSecurityState);
+      this.#summaryText = summary || SummaryMessages[this.#securityState]();
+      this.#explanations = this.#orderExplanations(explanations);
+    } else {
+      this.#securityState = null;
+      this.#summaryText = '';
+      this.#explanations = null;
+    }
     this.requestUpdate();
+  }
+
+  get visibleSecurityState(): PageVisibleSecurityState|null {
+    return this.#visibleSecurityState;
+  }
+
+  updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
+    this.visibleSecurityState = visibleSecurityState;
   }
 
   #getSecuritySummaryAndExplanations(visibleSecurityState: PageVisibleSecurityState):
@@ -1671,46 +1707,95 @@ export const DEFAULT_SECURITY_ORIGIN_VIEW: SecurityOriginViewFunction = (input, 
     <div class="title-section">
       ${renderTitleSection(input.origin, input.securityState, input.onRevealInNetwork)}
     </div>
-    ${renderSecurityDetails(input)}`,  // clang-format on
+    ${renderSecurityDetails(input)}`,
          target, {
            container: {
              classes: ['security-origin-view'],
              attributes: {jslog: `${VisualLogging.pane('security.origin-view')}`},
            },
          });
+  // clang-format on
 };
 
 export class SecurityOriginView extends UI.Widget.VBox {
   readonly #view: SecurityOriginViewFunction;
-  readonly #origin: Platform.DevToolsPath.UrlString;
-  readonly #loadedFromCache: boolean;
-  #securityState: Protocol.Security.SecurityState;
-  #securityDetails: Protocol.Network.SecurityDetails|null;
-  #isSanListTruncated: boolean;
+  #origin: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
+  #loadedFromCache = false;
+  #securityState = Protocol.Security.SecurityState.Unknown;
+  #securityDetails: Protocol.Network.SecurityDetails|null = null;
+  #isSanListTruncated = false;
   #isCertificateTransparencyDetailsShown = false;
 
-  constructor(origin: Platform.DevToolsPath.UrlString, originState: OriginState,
-              view: SecurityOriginViewFunction = DEFAULT_SECURITY_ORIGIN_VIEW) {
-    super();
+  constructor(element?: HTMLElement, view: SecurityOriginViewFunction = DEFAULT_SECURITY_ORIGIN_VIEW) {
+    super(element);
     this.#view = view;
     this.setMinimumSize(200, 100);
-    this.#origin = origin;
-    this.#securityState = originState.securityState;
-    this.#securityDetails = originState.securityDetails;
-    this.#loadedFromCache = originState.loadedFromCache;
-    this.#isSanListTruncated = isSanListTruncatable(this.#securityDetails?.sanList ?? []);
+  }
 
-    this.#renderView();
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  set origin(origin: Platform.DevToolsPath.UrlString) {
+    if (this.#origin === origin) {
+      return;
+    }
+    this.#origin = origin;
+    this.#isSanListTruncated = isSanListTruncatable(this.#securityDetails?.sanList ?? []);
+    this.#isCertificateTransparencyDetailsShown = false;
+    this.requestUpdate();
+  }
+
+  get origin(): Platform.DevToolsPath.UrlString {
+    return this.#origin;
+  }
+
+  set securityState(securityState: Protocol.Security.SecurityState) {
+    if (this.#securityState === securityState) {
+      return;
+    }
+    this.#securityState = securityState;
+    this.requestUpdate();
+  }
+
+  get securityState(): Protocol.Security.SecurityState {
+    return this.#securityState;
+  }
+
+  set securityDetails(securityDetails: Protocol.Network.SecurityDetails|null) {
+    if (this.#securityDetails === securityDetails) {
+      return;
+    }
+    this.#securityDetails = securityDetails;
+    this.#isSanListTruncated = isSanListTruncatable(securityDetails?.sanList ?? []);
+    this.requestUpdate();
+  }
+
+  get securityDetails(): Protocol.Network.SecurityDetails|null {
+    return this.#securityDetails;
+  }
+
+  set loadedFromCache(loadedFromCache: boolean) {
+    if (this.#loadedFromCache === loadedFromCache) {
+      return;
+    }
+    this.#loadedFromCache = loadedFromCache;
+    this.requestUpdate();
+  }
+
+  get loadedFromCache(): boolean {
+    return this.#loadedFromCache;
   }
 
   #toggleSanTruncation = (): void => {
     this.#isSanListTruncated = !this.#isSanListTruncated;
-    this.#renderView();
+    this.requestUpdate();
   };
 
   #toggleCertificateTransparencyDetails = (): void => {
     this.#isCertificateTransparencyDetailsShown = !this.#isCertificateTransparencyDetailsShown;
-    this.#renderView();
+    this.requestUpdate();
   };
 
   #showCertificateViewer = async(): Promise<void> => {
@@ -1720,32 +1805,6 @@ export class SecurityOriginView extends UI.Widget.VBox {
     }
   };
 
-  setSecurityState(newSecurityState: Protocol.Security.SecurityState,
-                   securityDetails: Protocol.Network.SecurityDetails|null): void {
-    if (this.#securityDetails !== securityDetails) {
-      this.#isSanListTruncated = isSanListTruncatable(securityDetails?.sanList ?? []);
-    }
-    this.#securityState = newSecurityState;
-    this.#securityDetails = securityDetails;
-    this.#renderView();
-  }
-
-  #renderView(): void {
-    this.#view({
-      origin: this.#origin,
-      securityState: this.#securityState,
-      securityDetails: this.#securityDetails,
-      loadedFromCache: this.#loadedFromCache,
-      isSanListTruncated: this.#isSanListTruncated,
-      isCertificateTransparencyDetailsShown: this.#isCertificateTransparencyDetailsShown,
-      onRevealInNetwork: this.#revealInNetwork,
-      onToggleSanTruncation: this.#toggleSanTruncation,
-      onToggleCertificateTransparencyDetails: this.#toggleCertificateTransparencyDetails,
-      onViewCertificate: this.#showCertificateViewer,
-    },
-               undefined, this.contentElement);
-  }
-
   #revealInNetwork = (): void => {
     const parsedURL = new Common.ParsedURL.ParsedURL(this.#origin);
     void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
@@ -1753,6 +1812,25 @@ export class SecurityOriginView extends UI.Widget.VBox {
       {filterType: NetworkForward.UIFilter.FilterType.Scheme, filterValue: parsedURL.scheme},
     ]));
   };
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          origin: this.#origin,
+          securityState: this.#securityState,
+          securityDetails: this.#securityDetails,
+          loadedFromCache: this.#loadedFromCache,
+          isSanListTruncated: this.#isSanListTruncated,
+          isCertificateTransparencyDetailsShown: this.#isCertificateTransparencyDetailsShown,
+          onRevealInNetwork: this.#revealInNetwork,
+          onToggleSanTruncation: this.#toggleSanTruncation,
+          onToggleCertificateTransparencyDetails: this.#toggleCertificateTransparencyDetails,
+          onViewCertificate: this.#showCertificateViewer,
+        },
+        undefined,
+        this.contentElement,
+    );
+  }
 }
 
 export interface OriginState {

@@ -43,7 +43,7 @@
   }
 
   .table {
-    margin-top: 35px;
+    margin-top: var(--sys-size-13);
   }
 
   .title {

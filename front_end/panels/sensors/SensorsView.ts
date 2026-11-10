@@ -1092,25 +1092,10 @@ export const enum DeviceOrientationModificationSource {
   SELECT_PRESET = 'selectPreset',
 }
 
-export const PressureOptions = {
-  NoOverride: 'no-override',
-  Nominal: 'nominal',
-  Fair: 'fair',
-  Serious: 'serious',
-  Critical: 'critical',
-};
-
 export const NonPresetOptions = {
   NoOverride: 'noOverride',
   Custom: 'custom',
   Unavailable: 'unavailable',
 };
-
-export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    void UI.ViewManager.ViewManager.instance().showView('sensors');
-    return true;
-  }
-}
 
 export const ShiftDragOrientationSpeed = 16;

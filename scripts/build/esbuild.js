@@ -11,7 +11,7 @@ import {parseArgs} from 'node:util';
 
 import {devtoolsRootPath} from '../devtools_paths.js';
 
-import {createNodeModulesCheck, esbuildPlugin} from './devtools_plugin.js';
+import {createNodeModulesCheck, createRelativeExternalsResolver, esbuildPlugin} from './devtools_plugin.js';
 
 // Disable goroutine preemption to avoid random hangs
 // See crbug.com/478754070
@@ -130,15 +130,25 @@ if (!entrypoint || !outfile || !rootDir || !rootGenDir) {
 }
 const entryPoints = [entrypoint];
 
-// Relative or absolute paths would be emitted verbatim and resolve against the
-// output file rather than the importer, and `*` would turn on esbuild's
-// wildcard matching, so only bare package specifiers are allowed.
+// --external takes bare package specifiers, which esbuild keeps as written,
+// and relative paths (`./` or `../`) to single files, which are resolved
+// against the directory of the entrypoint (see
+// createRelativeExternalsResolver). They have to name the file with its
+// extension, as imports do: no extensions or index files are tried. Absolute
+// paths would be emitted verbatim and `*` would turn on esbuild's wildcard
+// matching, so both are rejected.
+const isRelativeExternal = name => /^\.\.?\//.test(name);
 for (const name of external) {
-  if (!name || name.startsWith('.') || name.startsWith('/') || name.endsWith('/') || name.includes('*') ||
-      path.isAbsolute(name)) {
-    throw new Error(`--external only supports bare package specifiers, got: '${name}'`);
+  if (!name || name.startsWith('/') || name.endsWith('/') || name.endsWith('/.') || name.endsWith('/..') ||
+      name.includes('*') || path.isAbsolute(name) || (name.startsWith('.') && !isRelativeExternal(name)) ||
+      (isRelativeExternal(name) && !path.posix.extname(name))) {
+    throw new Error(
+        `--external only supports bare package specifiers and relative paths to files ('./file.js' or '../file.js'), got: '${
+            name}'`);
   }
 }
+const packageExternals = external.filter(name => !isRelativeExternal(name));
+const relativeExternals = external.filter(isRelativeExternal);
 
 // esbuild also supports `neutral`, but npm packages are only resolved for
 // `node` (see createNodeModulesCheck), so anything else is rejected.
@@ -208,6 +218,30 @@ const plugin = {
     // browser bundles that pull in npm packages from node_modules are not
     // supported.
     const isInNodeModules = createNodeModulesCheck(genRoot, root);
+    // Registered first, so that it also applies to imports inside npm
+    // packages: a relative external names one file, wherever it is imported
+    // from.
+    if (relativeExternals.length) {
+      const relativeExternalsResolve = createRelativeExternalsResolver(
+          relativeExternals, path.dirname(path.resolve(entrypoint)), outdir, genRoot, root);
+      build.onResolve({filter: /^\.\.?[\/\\]/}, relativeExternalsResolve);
+      // An entry that matches nothing is a typo or a stale entry, and the file
+      // it was meant for is in the bundle. A build that already failed may not
+      // have reached the import, so it is not checked.
+      build.onEnd(result => {
+        const unmatched = relativeExternalsResolve.unmatched();
+        if (result.errors.length || !unmatched.length) {
+          return {};
+        }
+        return {
+          errors: unmatched.map(name => ({
+                                  pluginName: 'devtools-plugin',
+                                  text: `--external=${name} does not match any import. It is resolved against the ` +
+                                      'directory of the entrypoint.',
+                                })),
+        };
+      });
+    }
     build.onResolve({filter: /.*/},
                     args => platform === 'node' && isInNodeModules(args.importer) ? null : devtoolsResolve(args));
   },
@@ -223,7 +257,8 @@ try {
     platform,
     // Bare package specifiers listed with --external stay as written in the
     // output. esbuild also applies this to subpaths (e.g. `pkg/sub.js`).
-    external,
+    // Relative externals are handled by the plugin.
+    external: packageExternals,
     banner: nodeRequireShim ? nodeRequireShimBanner : undefined,
     plugins: [plugin],
     sourcemap,

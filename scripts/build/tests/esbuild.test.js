@@ -43,10 +43,21 @@ describe('esbuild.js argument validation', () => {
     assert.include(stderr, '--platform must be \'browser\' or \'node\'');
   });
 
-  for (const external of ['', './foo.js', '../foo.js', '/abs/foo.js', 'pkg/', 'pkg/*']) {
+  for (const external of ['', '.', '..', './', '../', './foo/..', '.foo', '.foo/bar.js', '/abs/foo.js', 'pkg/', 'pkg/*',
+                          './*.js', './dir', './cli', '../dir/cli']) {
     it(`rejects --external=${JSON.stringify(external)}`, async () => {
       const stderr = await expectEsbuildFailure(['--platform=node', `--external=${external}`]);
-      assert.include(stderr, '--external only supports bare package specifiers');
+      assert.include(stderr, '--external only supports bare package specifiers and relative paths to files');
+    });
+  }
+
+  // Bundling cannot run here, so check that these get past the validation of
+  // the values and fail on the next check.
+  for (const external of ['pkg', '@scope/pkg', './foo.js', '../dir/foo.js']) {
+    it(`accepts --external=${JSON.stringify(external)}`, async () => {
+      const stderr = await expectEsbuildFailure([`--external=${external}`], {bundleAll: false});
+      assert.notInclude(stderr, '--external only supports');
+      assert.include(stderr, '--external requires --bundle-all');
     });
   }
 

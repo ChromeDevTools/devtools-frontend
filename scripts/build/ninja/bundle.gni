@@ -115,6 +115,23 @@ template("bundle") {
       ]
     }
 
+    # Imports to leave out of the bundle. Each entry is one of:
+    # - A bare package specifier (e.g. "yargs"), which is emitted as written.
+    # - A path to a single file that starts with "./" or "../" and is relative
+    #   to the directory of `entrypoint` (e.g. "./cli.js"). Every import that
+    #   resolves to that file is external, including imports inside npm
+    #   packages. Name the file as the imports do, extension included. An
+    #   entry that no import resolves to fails the build. Each entry must be
+    #   imported by code that is in the bundle: esbuild does not follow the
+    #   imports of an external file, so a file that only another external
+    #   imports matches nothing.
+    #   The import is emitted as the path from the output file to the file's
+    #   location in the gen directory. Add the `deps` or `data` that put the
+    #   file there. Nothing puts node_modules there, so only list a file of an
+    #   npm package if it is loaded through a dynamic `import()` that is never
+    #   called or a `require()` in a dead branch. A static `import` is
+    #   resolved when Node loads the bundle, and fails with
+    #   ERR_MODULE_NOT_FOUND at startup even if nothing uses the module.
     if (defined(invoker.external)) {
       # Without bundle_all, every bare specifier is already external.
       assert(_bundle_all, "external requires bundle_all = true")

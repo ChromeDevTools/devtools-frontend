@@ -54,18 +54,21 @@ export function devtoolsPlugin(source, importer, externalFiles, root, genRoot, b
     throw new Error('devtoolsPlugin requires a genRoot path');
   }
 
-  if (!bundleAll) {
-    if (source === '../../lib/codemirror' || !source.startsWith('.')) {
-      // These are imported via require(...), but we don't use
-      // @rollup/plugin-commonjs. So this check is not necessary for rollup. But
-      // need to have this for esbuild as it doesn't ignore require(...).
-      return {
-        id: source,
-        external: true,
-      };
-    }
-  } else if (!source.startsWith('.')) {
-    return null;
+  if (source === '../../lib/codemirror') {
+    // CodeMirror's runmode-standalone.mjs has a require() for this path in a
+    // CommonJS (UMD) branch that never runs in an ES module, and the path does
+    // not name a file. esbuild does not ignore require(...), so it is kept
+    // external in every mode, bundleAll included: otherwise the build fails
+    // with "Cannot read file".
+    return {
+      id: source,
+      external: true,
+    };
+  }
+  if (!source.startsWith('.')) {
+    // Without bundleAll every bare specifier stays external. With it, esbuild
+    // resolves them.
+    return bundleAll ? null : {id: source, external: true};
   }
 
   const importedFilelocation = path.normalize(
@@ -106,6 +109,24 @@ function realpathIfExists(dir) {
 }
 
 /**
+ * Returns the gen and source roots as absolute paths, both as given and with
+ * symlinks resolved.
+ * @param {string} genRoot
+ * @param {string} rootDir
+ */
+function treeBases(genRoot, rootDir) {
+  // The gen root usually lives below the source root, so check it first.
+  return [
+    ...new Set([
+      realpathIfExists(genRoot),
+      path.resolve(genRoot),
+      realpathIfExists(rootDir),
+      path.resolve(rootDir),
+    ]),
+  ];
+}
+
+/**
  * Creates a check for whether an importer is inside a `node_modules`
  * directory. Only the part of the path below the gen or source root is
  * checked, so a checkout that itself lives in a `node_modules` directory (e.g.
@@ -126,15 +147,7 @@ export function createNodeModulesCheck(genRoot, rootDir) {
   if (!rootDir || typeof rootDir !== 'string') {
     throw new Error('createNodeModulesCheck requires a rootDir path');
   }
-  // The gen root usually lives below the source root, so check it first.
-  const bases = [
-    ...new Set([
-      realpathIfExists(genRoot),
-      path.resolve(genRoot),
-      realpathIfExists(rootDir),
-      path.resolve(rootDir),
-    ]),
-  ];
+  const bases = treeBases(genRoot, rootDir);
 
   return importer => {
     // The bases use native separators (path.resolve), so normalize `importer`
@@ -147,6 +160,137 @@ export function createNodeModulesCheck(genRoot, rootDir) {
     }
     return importerPath.split(path.sep).includes('node_modules');
   };
+}
+
+/**
+ * Returns the specifier to emit for an import of the external `file`: the path
+ * from `outdir` to the location of `file` in the gen directory. All arguments
+ * are absolute paths.
+ *
+ * @param {string} file
+ * @param {string} outdir
+ * @param {string} genRoot
+ * @param {string} root
+ */
+function externalImportPath(file, outdir, genRoot, root) {
+  const isUnderGenRoot = file === genRoot || file.startsWith(genRoot + path.sep);
+  const targetInGen = isUnderGenRoot ? file : path.join(genRoot, path.relative(root, file));
+  let rel = path.relative(outdir, targetInGen);
+  if (!/^\.\.?($|\/|\\)/.test(rel)) {
+    rel = './' + rel;
+  }
+  return rel.replaceAll('\\', '/');
+}
+
+/**
+ * Creates an esbuild `onResolve` callback that keeps the files listed in
+ * `externals` out of the bundle.
+ *
+ * Each entry is a relative path (`./` or `../`) to a file, resolved against
+ * `entryDir`, the directory of the bundle entrypoint. An import is external
+ * when it resolves to that same file, however the importer spells it and
+ * wherever the importer is, npm packages included. An identical specifier that
+ * resolves to another file is not affected. The entry has to name the file
+ * exactly as the import does (e.g. with its `.js` extension); no extensions or
+ * index files are tried.
+ *
+ * The source and gen directories are treated as one tree, as `esbuildPlugin`
+ * does: an entry also matches the import of the file at the same path in the
+ * other directory.
+ *
+ * The import is emitted as the path from `outdir` to the file's location in
+ * the gen directory, like the externals of `esbuildPlugin`. It only loads at
+ * runtime if the file exists there relative to the bundle; providing it (e.g.
+ * through `deps` or `data`) is up to the caller. Nothing puts `node_modules`
+ * there, so an external inside an npm package is only suitable for a dynamic
+ * `import()` that is never called or a `require()` in a dead branch. A static
+ * `import` is resolved when Node loads the bundle, and fails with
+ * `ERR_MODULE_NOT_FOUND` at startup even if nothing uses the module.
+ *
+ * The returned callback has an `unmatched()` method that lists the entries no
+ * import has resolved to so far.
+ *
+ * @param {string[]} externals
+ * @param {string} entryDir
+ * @param {string} outdir
+ * @param {string} genRoot
+ * @param {string} rootDir
+ * @returns {((args: {path: string, resolveDir?: string, kind?: string}) => {path: string, external: true}|null) &
+ *     {unmatched: () => string[]}}
+ */
+export function createRelativeExternalsResolver(externals, entryDir, outdir, genRoot, rootDir) {
+  if (!entryDir || typeof entryDir !== 'string') {
+    throw new Error('createRelativeExternalsResolver requires an entryDir path');
+  }
+  if (!outdir || typeof outdir !== 'string') {
+    throw new Error('createRelativeExternalsResolver requires an outdir path');
+  }
+  if (!genRoot || typeof genRoot !== 'string') {
+    throw new Error('createRelativeExternalsResolver requires a genRoot path');
+  }
+  if (!rootDir || typeof rootDir !== 'string') {
+    throw new Error('createRelativeExternalsResolver requires a rootDir path');
+  }
+
+  const normGenRoot = path.resolve(genRoot);
+  const root = path.resolve(rootDir);
+  const normOutdir = path.resolve(outdir);
+
+  const bases = treeBases(genRoot, rootDir);
+  /**
+   * Returns the path of `file` below the gen or source root, so that both
+   * directories give the same key, or `file` itself if it is outside of them.
+   * @param {string} file
+   */
+  const treeKey = file => {
+    for (const base of bases) {
+      if (file.startsWith(base + path.sep)) {
+        return path.relative(base, file);
+      }
+    }
+    return file;
+  };
+
+  // Maps the key of each external file to its entry and the specifier to emit.
+  /** @type {Map<string, {external: string, importPath: string}>} */
+  const externalFiles = new Map();
+  const unmatched = new Set(externals);
+  for (const external of externals) {
+    if (!/^\.\.?\//.test(external)) {
+      throw new Error(`Relative externals must start with './' or '../', got: '${external}'`);
+    }
+    const file = path.resolve(entryDir, external);
+    const entry = {external, importPath: externalImportPath(file, normOutdir, normGenRoot, root)};
+    // esbuild passes directories with symlinks resolved. The file itself may
+    // not exist (e.g. a `.js` import of a `.ts` source), so only its directory
+    // is resolved.
+    const realFile = path.join(realpathIfExists(path.dirname(file)), path.basename(file));
+    for (const key of [treeKey(file), treeKey(realFile)]) {
+      const existing = externalFiles.get(key);
+      if (existing && existing.external !== external) {
+        // Only one of the two would ever be reported as matched.
+        throw new Error(`Relative externals '${existing.external}' and '${external}' name the same file`);
+      }
+      externalFiles.set(key, entry);
+    }
+  }
+
+  /** @param {{path: string, resolveDir?: string, kind?: string}} args */
+  const resolve = args => {
+    // The specifier check repeats the `onResolve` filter in esbuild.js. It is
+    // kept for callers that invoke the resolver directly (e.g. the tests).
+    if (args.kind === 'entry-point' || !args.resolveDir || !/^\.\.?[\/\\]/.test(args.path)) {
+      return null;
+    }
+    const entry = externalFiles.get(treeKey(path.resolve(args.resolveDir, args.path)));
+    if (!entry) {
+      return null;
+    }
+    unmatched.delete(entry.external);
+    return {path: entry.importPath, external: /** @type {const} */ (true)};
+  };
+  resolve.unmatched = () => [...unmatched];
+  return resolve;
 }
 
 export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles, bundleAll = false) {
@@ -182,12 +326,7 @@ export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles, bundleAll
       // builtin module (e.g. 'fs', 'path'), and only relativize the path in
       // former case.
       if (path.isAbsolute(res.id)) {
-        const targetInGen = isUnderGenRoot ? res.id : path.join(normGenRoot, path.relative(root, res.id));
-        let rel = path.relative(normOutdir, targetInGen);
-        if (!/^\.\.?($|\/|\\)/.test(rel)) {
-          rel = './' + rel;
-        }
-        res.id = rel.replaceAll('\\', '/');
+        res.id = externalImportPath(res.id, normOutdir, normGenRoot, root);
       }
 
       return {

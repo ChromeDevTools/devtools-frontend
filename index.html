@@ -9,6 +9,7 @@
           {
             "imports": {
               "chai": "data:text/javascript,export const assert = new Proxy({}, {get: () => () => {}});",
+              "mocha": "data:text/javascript,const noop = new Proxy(() => {}, {get: () => () => {}}); export {noop as default, noop as after, noop as afterEach, noop as before, noop as beforeEach, noop as describe, noop as it, noop as run, noop as setup, noop as suite, noop as suiteSetup, noop as suiteTeardown, noop as teardown, noop as test, noop as xdescribe, noop as xit};",
               "sinon": "data:text/javascript,export default new Proxy({}, {get: () => () => new Proxy({}, {get: () => () => {}})});"
             }
           }

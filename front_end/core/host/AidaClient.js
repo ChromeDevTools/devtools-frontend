@@ -52,7 +52,7 @@ function conversationSurfaceHistogram(feature) {
 }
 /**
  * Returns a closure that records the request outcome histogram once per call.
- * One-shot recording prevents early generator returns or nested catch/finally blocks from double-counting outcomes.
+ * One-shot recording prevents inner validation branches and outer catch blocks from double-counting outcomes.
  */
 function createOutcomeRecorder(surfaceHistogram) {
     let recorded = false;
@@ -116,18 +116,13 @@ export class AidaClient {
         if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
             throw new Error('dispatchHttpRequest is not available');
         }
-        const recordOutcome = createOutcomeRecorder(conversationSurfaceHistogram(request.client_feature));
+        // Defaults to ABORTED so early caller exits (`break` / `return`) before `completed: true` record as aborted.
+        let outcome = UserMetrics.AiClientRequestResult.ABORTED;
         let abortListener;
         let streamId;
         try {
             if (options?.signal?.aborted) {
                 throw new AidaAbortError();
-            }
-            // Disable logging for now.
-            // For context, see b/454563259#comment35.
-            // We should be able to remove this ~end of April.
-            if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-                request.metadata.disable_user_content_logging = true;
             }
             const stream = (() => {
                 let { promise, resolve, reject } = Promise.withResolvers();
@@ -175,16 +170,19 @@ export class AidaClient {
                 debugLog('doConversation failed with error:', JSON.stringify(err));
                 stream.fail(mapError(err));
             });
-            yield* this.#handleResponseStream(stream);
-            recordOutcome(UserMetrics.AiClientRequestResult.SUCCESS);
+            for await (const chunk of this.#handleResponseStream(stream)) {
+                if (chunk.completed) {
+                    outcome = UserMetrics.AiClientRequestResult.SUCCESS;
+                }
+                yield chunk;
+            }
         }
         catch (err) {
-            recordOutcome(classifyRequestError(err));
+            outcome = classifyRequestError(err);
             throw err;
         }
         finally {
-            // Fallback when a caller exits the generator early (such as breaking out of a for-await loop) before stream completion.
-            recordOutcome(UserMetrics.AiClientRequestResult.ABORTED);
+            UserMetrics.userMetrics.aiClientRequestResult(outcome, conversationSurfaceHistogram(request.client_feature));
             if (options?.signal && abortListener) {
                 options.signal.removeEventListener('abort', abortListener);
             }
@@ -240,7 +238,9 @@ export class AidaClient {
                 else if ('error' in result) {
                     throw mapError(result.error);
                 }
-                else {
+                else if (!result.metadata) {
+                    // Chunks from thought-only parts or trailing metadata-only chunks lack text or function calls
+                    // and carry only metadata.
                     throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
                 }
             }
@@ -293,12 +293,6 @@ export class AidaClient {
         }
     }
     registerClientEvent(clientEvent) {
-        // Disable logging for now.
-        // For context, see b/454563259#comment35.
-        // We should be able to remove this ~end of April.
-        if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-            clientEvent.disable_user_content_logging = true;
-        }
         if (this.#gcaClient.enabled()) {
             return this.#gcaClient.registerClientEvent(clientEvent);
         }
@@ -313,12 +307,6 @@ export class AidaClient {
     async completeCode(request) {
         if (!InspectorFrontendHostInstance.aidaCodeComplete) {
             throw new Error('aidaCodeComplete is not available');
-        }
-        // Disable logging for now.
-        // For context, see b/454563259#comment35.
-        // We should be able to remove this ~end of April.
-        if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-            request.metadata.disable_user_content_logging = true;
         }
         const recordOutcome = createOutcomeRecorder("DevTools.AiClient.RequestResult.CodeComplete" /* EnumeratedHistogram.AiClientRequestResultCodeComplete */);
         try {
@@ -384,12 +372,6 @@ export class AidaClient {
         }
     }
     async generateCode(request, options) {
-        // Disable logging for now.
-        // For context, see b/454563259#comment35.
-        // We should be able to remove this ~end of April.
-        if (Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-            request.metadata.disable_user_content_logging = true;
-        }
         const surfaceHistogram = "DevTools.AiClient.RequestResult.CodeGenerate" /* EnumeratedHistogram.AiClientRequestResultCodeGenerate */;
         try {
             const response = this.#gcaClient.enabled() ?

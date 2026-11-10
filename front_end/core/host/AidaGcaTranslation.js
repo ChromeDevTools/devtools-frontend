@@ -109,7 +109,8 @@ function extractTextFromGcaParts(parts) {
     if (!parts) {
         return '';
     }
-    return parts.map(p => p.text || '').join('');
+    // Exclude internal chain-of-thought parts from the visible explanation text.
+    return parts.map(p => (p.thought ? '' : p.text || '')).join('');
 }
 export function aidaEventToGcaTelemetryRequest(clientEvent) {
     try {
@@ -477,11 +478,14 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
                 })),
             };
         }
-        const chunks = parts.map(part => {
+        // Trailing chunks without parts still yield metadata so the client receives the final
+        // rpcGlobalId, modelVersion, usageMetadata, and citationMetadata.
+        const chunks = parts.length === 0 ? [{ metadata }] : parts.map(part => {
             const aidaChunkResponse = { metadata };
-            if (part.text !== undefined) {
+            // Exclude empty text parts and internal model chain-of-thought from rendering in the UI.
+            if (part.text && !part.thought) {
                 aidaChunkResponse.textChunk = {
-                    text: extractTextFromGcaParts(parts),
+                    text: part.text,
                 };
             }
             if (part.functionCall) {

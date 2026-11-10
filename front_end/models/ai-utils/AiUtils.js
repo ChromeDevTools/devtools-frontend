@@ -111,9 +111,6 @@ export const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor = {
     type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
     defaultValue: false,
 };
-export function isGeminiBranding() {
-    return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
-}
 export function isNaturalLanguageInterfaceEnabled() {
     return Boolean(Root.Runtime.hostConfig.devToolsAiNaturalLanguageInterface?.enabled);
 }
@@ -166,7 +163,7 @@ export function getDisabledReasons(aidaAvailability) {
     return reasons;
 }
 export function getIconName() {
-    return isGeminiBranding() ? 'spark' : 'smart-assistant';
+    return 'smart-assistant';
 }
 export async function runOneShotPrompt({ aidaClient, preamble, query, clientFeature, temperature, modelId, userTier, serverSideLoggingEnabled, signal, }) {
     const chromeVersion = Root.Runtime.getChromeVersion();

@@ -225,7 +225,7 @@ var NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer", "DecisionModel", "SemanticEmbedder"]
+    receivers: ["CredentialsContainer", "DecisionModel"]
   },
   {
     name: "defineProperty",
@@ -8316,10 +8316,6 @@ var NativeFunctions = [
     signatures: [["init"]]
   },
   {
-    name: "embed",
-    signatures: [["input", "?options"]]
-  },
-  {
     name: "setPrivateToken",
     signatures: [["privateToken"]]
   },
@@ -8500,6 +8496,10 @@ var NativeFunctions = [
     signatures: [["token", "callback"]]
   },
   {
+    name: "waitForToolsUntil",
+    signatures: [["promise"]]
+  },
+  {
     name: "TaskController",
     signatures: [["?init"]]
   },
@@ -8518,6 +8518,10 @@ var NativeFunctions = [
   {
     name: "removeProcessingInstruction",
     signatures: [["pi"]]
+  },
+  {
+    name: "setJavascriptURLs",
+    signatures: [["allow"]]
   },
   {
     name: "ResizeObserver",

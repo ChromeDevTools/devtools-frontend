@@ -78,11 +78,6 @@ export default `/*
   background: var(--sys-color-cdt-base-container);
 }
 
-.network-item-preview-toolbar {
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  background-color: var(--sys-color-surface1);
-}
-
 .resource-timing-view {
   display: block;
   margin: var(--sys-size-4);

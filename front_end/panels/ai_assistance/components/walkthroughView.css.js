@@ -25,7 +25,7 @@ export default `/*
     justify-content: space-between;
     align-items: center;
     padding: 0 var(--sys-size-5);
-    height: 35px;
+    height: var(--sys-size-13);
     border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     flex-shrink: 0;
   }

@@ -88,7 +88,7 @@ export default `/*
 
 .filter-checkbox-filter {
   padding-left: var(--sys-size-1);
-  padding-right: 7px;
+  padding-right: var(--sys-size-4);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

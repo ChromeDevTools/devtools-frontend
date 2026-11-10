@@ -192,8 +192,9 @@ ol.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.sel
   &::before {
     flex-shrink: 0;
     overflow: hidden;
-    margin-right: 3px;
-    margin-left: -3px;
+    /* Shift 20px mask left by 2px to center its glyph in the 16px slot. */
+    margin-right: var(--sys-size-2);
+    margin-left: calc(-1 * var(--sys-size-2));
   }
 
   & .selection {

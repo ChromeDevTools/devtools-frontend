@@ -66,7 +66,7 @@ __export(CSSMetadata_exports, {
   cssMetadata: () => cssMetadata
 });
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -7568,9 +7568,6 @@ var generatedProperties = [
       "grid-rows",
       "grid-columns",
       "grid-order",
-      "grid-lanes-flow",
-      "grid-lanes-track",
-      "grid-lanes-order",
       "source-order"
     ],
     "name": "reading-flow"
@@ -7752,9 +7749,7 @@ var generatedProperties = [
       "none",
       "spaces"
     ],
-    "name": "ruby-overhang",
-    "runtime_flag": "CSSRubyOverhang",
-    "runtime_flag_status": "stable"
+    "name": "ruby-overhang"
   },
   {
     "inherited": true,
@@ -8050,8 +8045,7 @@ var generatedProperties = [
   {
     "keywords": [
       "normal",
-      "always",
-      "before"
+      "always"
     ],
     "name": "scroll-snap-stop"
   },
@@ -8298,8 +8292,7 @@ var generatedProperties = [
       "-webkit-right",
       "-webkit-center",
       "start",
-      "end",
-      "match-parent"
+      "end"
     ],
     "name": "text-align"
   },
@@ -8321,8 +8314,7 @@ var generatedProperties = [
       "left",
       "right",
       "center",
-      "justify",
-      "match-parent"
+      "justify"
     ],
     "name": "text-align-last"
   },
@@ -8417,8 +8409,7 @@ var generatedProperties = [
     "inherited": true,
     "keywords": [
       "none",
-      "auto",
-      "all"
+      "auto"
     ],
     "name": "text-decoration-skip-ink"
   },
@@ -8852,8 +8843,7 @@ var generatedProperties = [
       "auto",
       "none",
       "text",
-      "all",
-      "contain"
+      "all"
     ],
     "name": "user-select"
   },
@@ -11341,9 +11331,6 @@ var generatedPropertyValues = {
       "grid-rows",
       "grid-columns",
       "grid-order",
-      "grid-lanes-flow",
-      "grid-lanes-track",
-      "grid-lanes-order",
       "source-order"
     ]
   },
@@ -11551,8 +11538,7 @@ var generatedPropertyValues = {
   "scroll-snap-stop": {
     "values": [
       "normal",
-      "always",
-      "before"
+      "always"
     ]
   },
   "scroll-snap-type": {
@@ -11747,8 +11733,7 @@ var generatedPropertyValues = {
   "text-decoration-skip-ink": {
     "values": [
       "none",
-      "auto",
-      "all"
+      "auto"
     ]
   },
   "text-decoration-skip-spaces": {

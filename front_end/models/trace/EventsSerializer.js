@@ -4,7 +4,6 @@
 import * as Helpers from './helpers/helpers.js';
 import * as Types from './types/types.js';
 export class EventsSerializer {
-    #modifiedProfileCallByKey = new Map();
     keyForEvent(event) {
         if (Types.Events.isProfileCall(event)) {
             return `${Types.File.EventKeyType.PROFILE_CALL}-${event.pid}-${event.tid}-${Types.Events.SampleIndex(event.sampleIndex)}-${event.nodeId}`;
@@ -91,10 +90,6 @@ export class EventsSerializer {
         return key.type === Types.File.EventKeyType.SYNTHETIC_EVENT;
     }
     #getModifiedProfileCallByKeyValues(key, parsedTrace) {
-        const cacheResult = this.#modifiedProfileCallByKey.get(key);
-        if (cacheResult) {
-            return cacheResult;
-        }
         const profileCallsInThread = parsedTrace.data.Renderer.processes.get(key.processID)?.threads.get(key.threadID)?.profileCalls;
         if (!profileCallsInThread) {
             throw new Error(`Unknown profile call serializable key: ${(key)}`);
@@ -105,8 +100,6 @@ export class EventsSerializer {
         if (!match) {
             throw new Error(`Unknown profile call serializable key: ${(JSON.stringify(key))}`);
         }
-        // Cache to avoid looking up in subsequent calls.
-        this.#modifiedProfileCallByKey.set(key, match);
         return match;
     }
 }

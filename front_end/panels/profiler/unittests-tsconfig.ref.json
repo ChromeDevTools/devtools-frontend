@@ -18,6 +18,7 @@
     "../../../../../../front_end/panels/profiler/HeapSnapshotDataGrids.test.ts",
     "../../../../../../front_end/panels/profiler/HeapSnapshotView.test.ts",
     "../../../../../../front_end/panels/profiler/HeapTimelineOverview.test.ts",
+    "../../../../../../front_end/panels/profiler/IsolateSelector.test.ts",
     "../../../../../../front_end/panels/profiler/ProfileFlameChartDataProvider.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

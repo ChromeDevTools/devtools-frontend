@@ -924,6 +924,7 @@ var breakpointsView_css_default = `/*
     min-width: var(--sys-size-9);
     flex: 0 0 auto;
     display: flex;
+    align-items: center;
     padding-left: var(--sys-size-5);
     justify-content: right;
   }
@@ -1030,7 +1031,7 @@ var breakpointsView_css_default = `/*
   }
 
   .location {
-    line-height: 14px;
+    line-height: var(--sys-typescale-body4-line-height);
     text-overflow: ellipsis;
     overflow: hidden;
   }
@@ -2351,7 +2352,7 @@ import * as Platform13 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
 import * as SDK13 from "../../core/sdk/sdk.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -6796,7 +6797,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (order1 < order2) {
       return -1;
     }
-    return 0;
+    return Platform5.StringUtilities.naturalOrderComparator(node1.mergedTitle(), node2.mergedTitle());
   }
   static appendSearchItem(contextMenu, path) {
     const searchLabel = path ? i18nString5(UIStrings6.searchInFolder) : i18nString5(UIStrings6.searchInAllFiles);
@@ -6811,9 +6812,10 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     const node1 = this.nodeForTreeElement(treeElement1);
     const node2 = this.nodeForTreeElement(treeElement2);
     if (node1 && node2) {
-      const order = _NavigatorView.compareNodes(node1, node2);
-      if (order !== 0) {
-        return order;
+      const order1 = _NavigatorView.nodeOrder(node1);
+      const order2 = _NavigatorView.nodeOrder(node2);
+      if (order1 !== order2) {
+        return order1 > order2 ? 1 : -1;
       }
     }
     return Platform5.StringUtilities.naturalOrderComparator(treeElement1.titleAsText(), treeElement2.titleAsText());
@@ -7503,34 +7505,32 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
   isRenaming() {
     return this.#renamingNode !== null;
   }
-  handleFileContextMenu(event, node) {
+  handleFileContextMenu(contextMenu, node) {
     const uiSourceCode = node.uiSourceCode();
     if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
-      const contextMenu2 = new UI7.ContextMenu.ContextMenu(event);
-      contextMenu2.headerSection().appendItem(
+      contextMenu.headerSection().appendItem(
         i18nString5(UIStrings6.run),
         () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode),
         { jslogContext: "run" }
       );
-      contextMenu2.editSection().appendItem(
+      contextMenu.editSection().appendItem(
         i18nString5(UIStrings6.rename),
         () => this.rename(node, false),
         { jslogContext: "rename" }
       );
-      contextMenu2.editSection().appendItem(
+      contextMenu.editSection().appendItem(
         i18nString5(UIStrings6.remove),
         () => uiSourceCode.project().deleteFile(uiSourceCode),
         { jslogContext: "remove" }
       );
-      contextMenu2.saveSection().appendItem(
+      contextMenu.saveSection().appendItem(
         i18nString5(UIStrings6.saveAs),
         this.handleSaveAs.bind(this, uiSourceCode),
         { jslogContext: "save-as" }
       );
-      void contextMenu2.show();
+      void contextMenu.show();
       return;
     }
-    const contextMenu = new UI7.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(uiSourceCode);
     const project = uiSourceCode.project();
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
@@ -7624,10 +7624,10 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       }
     }
   }
-  handleFolderContextMenu(event, node) {
-    const path = node instanceof NavigatorFolderTreeNode ? node.folderPath : Platform5.DevToolsPath.EmptyEncodedPathString;
-    const project = node.project || null;
-    const contextMenu = new UI7.ContextMenu.ContextMenu(event);
+  handleFolderContextMenu(contextMenu, node) {
+    const activeNode = node instanceof NavigatorFolderTreeNode ? node.mergedLeafNode() : node;
+    const path = activeNode instanceof NavigatorFolderTreeNode ? activeNode.folderPath : Platform5.DevToolsPath.EmptyEncodedPathString;
+    const project = activeNode.project || null;
     if (project?.type() !== Workspace5.Workspace.projectTypes.ConnectableFileSystem) {
       _NavigatorView.appendSearchItem(contextMenu, path);
     }
@@ -7649,12 +7649,12 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
           this.handleContextMenuCreate(project, path, void 0);
         }, { jslogContext: "new-file" });
       }
-    } else if (node instanceof NavigatorFolderTreeNode && node.origin && node.folderPath) {
-      const url = Common7.ParsedURL.ParsedURL.concatenate(node.origin, "/", node.folderPath);
+    } else if (activeNode instanceof NavigatorFolderTreeNode && activeNode.origin && activeNode.folderPath) {
+      const url = Common7.ParsedURL.ParsedURL.concatenate(activeNode.origin, "/", activeNode.folderPath);
       const options = {
-        isContentScript: node.recursiveProperties.exclusivelyContentScripts || false,
-        isKnownThirdParty: node.recursiveProperties.exclusivelyThirdParty || false,
-        isCurrentlyIgnoreListed: node.recursiveProperties.exclusivelyIgnored || false
+        isContentScript: activeNode.recursiveProperties.exclusivelyContentScripts || false,
+        isKnownThirdParty: activeNode.recursiveProperties.exclusivelyThirdParty || false,
+        isCurrentlyIgnoreListed: activeNode.recursiveProperties.exclusivelyIgnored || false
       };
       for (const { text, callback, jslogContext } of Workspace5.IgnoreListManager.IgnoreListManager.instance().getIgnoreListFolderContextMenuItems(url, options)) {
         contextMenu.defaultSection().appendItem(text, callback, { jslogContext });
@@ -7681,9 +7681,9 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       if (Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== Persistence3.PlatformFileSystem.PlatformFileSystemType.OVERRIDES) {
-        if (node instanceof NavigatorGroupTreeNode) {
+        if (activeNode instanceof NavigatorGroupTreeNode) {
           contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.removeFolderFromWorkspace), async () => {
-            const header = i18nString5(UIStrings6.areYouSureYouWantToRemoveThis, { PH1: node.title });
+            const header = i18nString5(UIStrings6.areYouSureYouWantToRemoveThis, { PH1: activeNode.title });
             const shouldRemove = await UI7.UIUtils.ConfirmDialog.show(i18nString5(UIStrings6.workspaceStopSyncing), header, void 0, {
               okButtonLabel: i18nString5(UIStrings6.remove),
               jslogContext: "remove-folder-from-workspace-confirmation"
@@ -7693,10 +7693,10 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
             }
           }, { jslogContext: "remove-folder-from-workspace" });
         }
-      } else if (!(node instanceof NavigatorGroupTreeNode)) {
+      } else if (!(activeNode instanceof NavigatorGroupTreeNode)) {
         contextMenu.defaultSection().appendItem(
           i18nString5(UIStrings6.delete),
-          this.handleDeleteFolder.bind(this, node),
+          this.handleDeleteFolder.bind(this, activeNode),
           { jslogContext: "delete" }
         );
       }
@@ -7761,6 +7761,16 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     this.reset();
     this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }
+  deselectIfDescendant(node) {
+    let current = this.selectedNode;
+    while (current) {
+      if (current === node) {
+        this.selectedNode = null;
+        return;
+      }
+      current = current.parent;
+    }
+  }
   discardFrame(frame, isAuthored) {
     if (isAuthored) {
       return;
@@ -7808,6 +7818,7 @@ var NavigatorTreeNode = class {
   recursiveProperties;
   #children = [];
   #childById = /* @__PURE__ */ new Map();
+  #disposed = false;
   constructor(navigatorView, id, type, tooltip) {
     this.id = id;
     this.navigatorView = navigatorView;
@@ -7821,6 +7832,15 @@ var NavigatorTreeNode = class {
       exclusivelyContentScripts: null,
       exclusivelyThirdParty: null
     };
+  }
+  mergedTitle() {
+    return this.title;
+  }
+  effectiveChildren() {
+    return this.#children.filter((node) => !node.isMerged);
+  }
+  isDisposed() {
+    return this.#disposed;
   }
   computedTooltip() {
     if (this.tooltip) {
@@ -7867,7 +7887,7 @@ var NavigatorTreeNode = class {
         return;
       }
       this.navigatorView.selectNode(activeNode);
-      this.navigatorView.handleFolderContextMenu(event, activeNode);
+      this.navigatorView.handleFolderContextMenu(new UI7.ContextMenu.ContextMenu(event), activeNode);
     }, false);
     treeElement.listItemElement.addEventListener("mousemove", (_event) => {
       const activeNode = this.navigatorView.nodeForTreeElement(treeElement);
@@ -7891,6 +7911,7 @@ var NavigatorTreeNode = class {
     throw new Error("Not implemented");
   }
   dispose() {
+    this.#disposed = true;
   }
   updateTitle() {
   }
@@ -7956,12 +7977,22 @@ var NavigatorTreeNode = class {
     return this.#childById.get(id) ?? null;
   }
   appendChild(node) {
-    this.#children.push(node);
+    Platform5.ArrayUtilities.insertWithComparator(this.#children, node, NavigatorView.compareNodes);
     this.#childById.set(node.id, node);
     node.parent = this;
     this.didAddChild(node);
   }
+  resortChild(node) {
+    const idx = this.#children.indexOf(node);
+    if (idx < 0) {
+      return;
+    }
+    this.#children.splice(idx, 1);
+    Platform5.ArrayUtilities.insertWithComparator(this.#children, node, NavigatorView.compareNodes);
+    this.navigatorView.requestUpdate();
+  }
   removeChild(node) {
+    this.navigatorView.deselectIfDescendant(node);
     this.willRemoveChild(node);
     const idx = this.#children.findIndex((n) => n.id === node.id);
     if (idx >= 0) {
@@ -7999,7 +8030,6 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
   treeElement;
   isEditing = false;
   #renameCallback;
-  #disposed = false;
   eventListeners;
   #frame;
   constructor(navigatorView, uiSourceCode, frame) {
@@ -8096,7 +8126,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     }, false);
     treeElement.listItemElement.addEventListener("contextmenu", (event) => {
       this.navigatorView.selectNode(this);
-      this.navigatorView.handleFileContextMenu(event, this);
+      this.navigatorView.handleFileContextMenu(new UI7.ContextMenu.ContextMenu(event), this);
     }, false);
     treeElement.listItemElement.addEventListener("dragstart", (event) => {
       this.navigatorView.fileDragStarted(this, event);
@@ -8172,7 +8202,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     if (callback) {
       callback(false);
     }
-    this.#disposed = true;
+    super.dispose();
   }
   reveal(select) {
     if (this.parent) {
@@ -8187,7 +8217,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     }
   }
   rename(callback) {
-    if (this.#disposed || !this.treeElement) {
+    if (this.isDisposed() || !this.treeElement) {
       return;
     }
     this.treeElement.listItemElement.focus();
@@ -8200,7 +8230,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     this.updateTitle(true);
   }
   #handlePromptCommit(newTitle) {
-    if (this.#disposed || !this.treeElement?.treeOutline) {
+    if (this.isDisposed() || !this.treeElement?.treeOutline) {
       return;
     }
     const oldTitle = this.title;
@@ -8215,7 +8245,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     this.#afterEditing(true);
   }
   #handleRenameCallback(success) {
-    if (this.#disposed) {
+    if (this.isDisposed()) {
       return;
     }
     if (!success) {
@@ -8233,10 +8263,11 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
         this.navigatorView.selectNode(this);
       }
     }
+    this.parent?.resortChild(this);
     this.#afterEditing(true);
   }
   #handlePromptCancel() {
-    if (this.#disposed) {
+    if (this.isDisposed()) {
       return;
     }
     this.#afterEditing(false);
@@ -8264,6 +8295,41 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
     this.folderPath = folderPath;
     this.title = title;
     this.origin = origin;
+  }
+  mergedTitle() {
+    const titles = [this.title];
+    let child = this.children()[0];
+    while (child instanceof _NavigatorFolderTreeNode && child.isMerged) {
+      titles.push(child.title);
+      child = child.children()[0];
+    }
+    return titles.join("/");
+  }
+  mergedLeafNode() {
+    let current = this;
+    let child = current.children()[0];
+    while (child instanceof _NavigatorFolderTreeNode && child.isMerged) {
+      current = child;
+      child = current.children()[0];
+    }
+    return current;
+  }
+  effectiveChildren() {
+    const leaf = this.mergedLeafNode();
+    if (!leaf.isPopulated()) {
+      return [];
+    }
+    return leaf.children().filter((node) => !node.isMerged);
+  }
+  computedTooltip() {
+    if (this.isMerged) {
+      return super.computedTooltip();
+    }
+    const leafNode = this.mergedLeafNode();
+    if (leafNode !== this) {
+      return leafNode.computedTooltip();
+    }
+    return super.computedTooltip();
   }
   treeNode() {
     if (this.treeElement) {
@@ -17074,6 +17140,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
   #view;
   #items = [];
   #focusedItem = null;
+  #pendingAutoActivation = false;
   #showIgnoreListed = false;
   #showIgnoreListMessage = false;
   #ignoreListCheckboxChecked = false;
@@ -17150,6 +17217,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       this.#showIgnoreListMessage = false;
       this.#items = [];
       this.#focusedItem = null;
+      this.#pendingAutoActivation = false;
       UI18.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, null);
       return;
     }
@@ -17179,13 +17247,19 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     this.#updateIgnoreListState();
     if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
       this.#focusedItem = this.#firstVisibleItem() ?? (this.#items[0] ?? null);
-      if (this.#focusedItem && (UI18.Context.Context.instance().flavor(QuickSourceView) || UI18.Context.Context.instance().flavor(SourcesPanel))) {
-        this.activateItem(this.#focusedItem);
+      const itemToActivate = this.#itemToAutoActivate();
+      if (itemToActivate && (UI18.Context.Context.instance().flavor(QuickSourceView) || UI18.Context.Context.instance().flavor(SourcesPanel))) {
+        this.activateItem(itemToActivate);
+      } else {
+        this.#pendingAutoActivation = Boolean(itemToActivate);
       }
     } else {
       const activeItem = this.activeCallFrameItem();
       this.#focusedItem = this.#isItemVisible(activeItem) ? activeItem : this.#firstVisibleItem() ?? (this.#items[0] ?? null);
     }
+  }
+  #itemToAutoActivate() {
+    return this.#items.find((item2) => Boolean(item2.frame) && this.#isItemVisible(item2)) ?? this.#items.find((item2) => Boolean(item2.frame)) ?? null;
   }
   #isItemVisible(item2) {
     if (!item2 || !this.#items.includes(item2)) {
@@ -17197,8 +17271,9 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     return this.#items.find((item2) => this.#showIgnoreListed || !item2.isIgnoreListed) ?? null;
   }
   #updateIgnoreListState() {
-    const hasIgnoreListed = this.#items.some((item2) => item2.isIgnoreListed);
-    const allIgnoreListed = this.#items.length > 0 && this.#items.every((item2) => item2.isIgnoreListed);
+    const nonHeaderItems = this.#items.filter((item2) => !item2.isAsyncHeader);
+    const hasIgnoreListed = nonHeaderItems.some((item2) => item2.isIgnoreListed);
+    const allIgnoreListed = nonHeaderItems.length > 0 && nonHeaderItems.every((item2) => item2.isIgnoreListed);
     if (allIgnoreListed) {
       this.#showIgnoreListed = true;
       this.#showIgnoreListMessage = false;
@@ -17208,6 +17283,14 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     }
   }
   performUpdate() {
+    if (this.#pendingAutoActivation && (UI18.Context.Context.instance().flavor(QuickSourceView) || UI18.Context.Context.instance().flavor(SourcesPanel))) {
+      const itemToActivate = this.#itemToAutoActivate();
+      if (itemToActivate) {
+        this.activateItem(itemToActivate);
+      } else {
+        this.#pendingAutoActivation = false;
+      }
+    }
     const viewInput = {
       showIgnoreListMessage: this.#showIgnoreListMessage,
       showIgnoreListedChecked: this.#ignoreListCheckboxChecked,
@@ -17314,11 +17397,12 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     });
   }
   activateItem(item2) {
+    this.#pendingAutoActivation = false;
     const uiLocation = item2.uiLocation;
     if (!uiLocation) {
       return;
     }
-    if (this.#items.includes(item2)) {
+    if (this.#isItemVisible(item2)) {
       this.#focusedItem = item2;
     }
     const debuggerCallFrame = item2.frame;
@@ -17331,7 +17415,6 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     } else {
       void Common16.Revealer.reveal(uiLocation);
     }
-    this.requestUpdate();
   }
   activeCallFrameItem() {
     const frameFlavor = UI18.Context.Context.instance().flavor(StackTrace5.StackTrace.DebuggableFrameFlavor);
@@ -17360,6 +17443,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       const newItem = this.#items[i];
       if (newItem.frame) {
         this.activateItem(newItem);
+        this.requestUpdate();
         break;
       }
     }
@@ -17371,6 +17455,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       const newItem = this.#items[i];
       if (newItem.frame) {
         this.activateItem(newItem);
+        this.requestUpdate();
         break;
       }
     }
@@ -17431,6 +17516,7 @@ var Item = class _Item {
     const description = UI18.UIUtils.asyncFragmentLabel(stackTrace, fragment);
     const item2 = new _Item(description);
     item2.isAsyncHeader = true;
+    item2.isIgnoreListed = fragment.frames.length > 0 && fragment.frames.every((frame) => Boolean(frame.uiSourceCode?.isIgnoreListed()));
     return item2;
   }
   constructor(title) {
@@ -18744,7 +18830,7 @@ var scopeChainSidebarPane_css_default = `/*
 
 .scope-chain-sidebar-pane-section-icon {
   flex: none;
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .scope-chain-sidebar-pane-section-subtitle {

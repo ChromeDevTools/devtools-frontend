@@ -1183,7 +1183,7 @@ var walkthroughView_css_default = `/*
     justify-content: space-between;
     align-items: center;
     padding: 0 var(--sys-size-5);
-    height: 35px;
+    height: var(--sys-size-13);
     border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     flex-shrink: 0;
   }
@@ -3611,7 +3611,7 @@ __export(ChatInput_exports, {
 import * as i18n7 from "../../core/i18n/i18n.js";
 import * as SDK4 from "../../core/sdk/sdk.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -7779,38 +7779,6 @@ main {
   }
 }
 
-.gemini {
-  .empty-state-container {
-    padding: var(--sys-size-8);
-  }
-
-  .empty-state-container .icon {
-    display: none;
-  }
-
-  .empty-state-container .header {
-    align-items: flex-start;
-    line-height: var(--sys-size-4);
-  }
-
-  .empty-state-content {
-    align-items: flex-start
-  }
-
-  .empty-state-container .greeting {
-    font-size: var(--sys-size-10);
-    color: var(--sys-color-primary);
-  }
-
-  .empty-state-container .cta {
-    font-size: var(--sys-size-10);
-  }
-
-  main {
-    align-items: flex-start;
-  }
-}
-
 .change-summary {
   background-color: var(--sys-color-surface3);
   border-radius: var(--sys-shape-corner-medium-small);
@@ -8538,11 +8506,7 @@ var UIStringsNotTranslate5 = {
   /**
    * @description Text for the empty state of the AI assistance panel.
    */
-  emptyStateText: "How can I help you?",
-  /**
-   * @description Text for the empty state of the Gemini panel.
-   */
-  emptyStateTextGemini: "Where should we start?"
+  emptyStateText: "How can I help you?"
 };
 var lockedString6 = i18n13.i18n.lockedString;
 var SCROLL_ROUNDING_OFFSET2 = 1;
@@ -8554,10 +8518,6 @@ function findStepAwaitingApproval(messages) {
   return lastMessage.parts.findLast((p) => p.type === "step" && p.step.state.type === "needs_approval")?.step;
 }
 var DEFAULT_VIEW5 = (input, output, target) => {
-  const chatUiClasses = classMap({
-    "chat-ui": true,
-    gemini: AiAssistanceModel7.AiUtils.isGeminiBranding()
-  });
   const awaitingApprovalStep = findStepAwaitingApproval(input.messages);
   const inputWidgetClasses = classMap({
     "chat-input-widget": true,
@@ -8567,7 +8527,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
   render5(html10`
       <style>${chatView_css_default}</style>
       <style>${permissionPrompt_css_default}</style>
-      <div class=${chatUiClasses}>
+      <div class="chat-ui">
         <main @scroll=${input.handleScroll} ${ref5((element) => {
     output.mainElement = element;
   })}>
@@ -8603,10 +8563,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                     name="smart-assistant"
                   ></devtools-icon>
                 </div>
-                ${AiAssistanceModel7.AiUtils.isGeminiBranding() ? html10`
-                    <h1 class='greeting'>Hello</h1>
-                    <p class='cta'>${lockedString6(UIStringsNotTranslate5.emptyStateTextGemini)}</p>
-                  ` : html10`<h1>${lockedString6(UIStringsNotTranslate5.emptyStateText)}</h1>`}
+                <h1>${lockedString6(UIStringsNotTranslate5.emptyStateText)}</h1>
               </div>
               <div class="empty-state-content">
                 ${input.emptyStateSuggestions.map(({ title, jslogContext }) => {
@@ -9738,10 +9695,6 @@ var UIStringsNotTranslate7 = {
    */
   inputPlaceholderForNoContext: "Ask AI Assistance",
   /**
-   * @description Placeholder text for the chat UI input with branding Gemini (do not translate)
-   */
-  inputPlaceholderForNoContextBranded: "Ask Gemini",
-  /**
    * @description Placeholder text for the chat UI input.
    */
   inputPlaceholderForAccessibility: "Ask a question about the selected Lighthouse report",
@@ -10678,7 +10631,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     return true;
   }
   #getContextlessPlaceholder() {
-    return AiAssistanceModel8.AiUtils.isGeminiBranding() ? lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContextBranded) : lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContext);
+    return lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContext);
   }
   #getChatInputPlaceholder() {
     if (!this.#conversation) {

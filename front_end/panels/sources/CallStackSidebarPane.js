@@ -220,6 +220,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     #view;
     #items = [];
     #focusedItem = null;
+    #pendingAutoActivation = false;
     #showIgnoreListed = false;
     #showIgnoreListMessage = false;
     #ignoreListCheckboxChecked = false;
@@ -297,6 +298,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
             this.#showIgnoreListMessage = false;
             this.#items = [];
             this.#focusedItem = null;
+            this.#pendingAutoActivation = false;
             UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, null);
             return;
         }
@@ -326,10 +328,14 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         this.#updateIgnoreListState();
         if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
             this.#focusedItem = this.#firstVisibleItem() ?? (this.#items[0] ?? null);
-            if (this.#focusedItem &&
+            const itemToActivate = this.#itemToAutoActivate();
+            if (itemToActivate &&
                 (UI.Context.Context.instance().flavor(QuickSourceView) ||
                     UI.Context.Context.instance().flavor(SourcesPanel))) {
-                this.activateItem(this.#focusedItem);
+                this.activateItem(itemToActivate);
+            }
+            else {
+                this.#pendingAutoActivation = Boolean(itemToActivate);
             }
         }
         else {
@@ -337,6 +343,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
             this.#focusedItem =
                 this.#isItemVisible(activeItem) ? activeItem : (this.#firstVisibleItem() ?? (this.#items[0] ?? null));
         }
+    }
+    #itemToAutoActivate() {
+        return this.#items.find(item => Boolean(item.frame) && this.#isItemVisible(item)) ??
+            this.#items.find(item => Boolean(item.frame)) ?? null;
     }
     #isItemVisible(item) {
         if (!item || !this.#items.includes(item)) {
@@ -348,8 +358,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         return this.#items.find(item => this.#showIgnoreListed || !item.isIgnoreListed) ?? null;
     }
     #updateIgnoreListState() {
-        const hasIgnoreListed = this.#items.some(item => item.isIgnoreListed);
-        const allIgnoreListed = this.#items.length > 0 && this.#items.every(item => item.isIgnoreListed);
+        const nonHeaderItems = this.#items.filter(item => !item.isAsyncHeader);
+        const hasIgnoreListed = nonHeaderItems.some(item => item.isIgnoreListed);
+        const allIgnoreListed = nonHeaderItems.length > 0 && nonHeaderItems.every(item => item.isIgnoreListed);
         if (allIgnoreListed) {
             this.#showIgnoreListed = true;
             this.#showIgnoreListMessage = false;
@@ -360,6 +371,16 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         }
     }
     performUpdate() {
+        if (this.#pendingAutoActivation &&
+            (UI.Context.Context.instance().flavor(QuickSourceView) || UI.Context.Context.instance().flavor(SourcesPanel))) {
+            const itemToActivate = this.#itemToAutoActivate();
+            if (itemToActivate) {
+                this.activateItem(itemToActivate);
+            }
+            else {
+                this.#pendingAutoActivation = false;
+            }
+        }
         const viewInput = {
             showIgnoreListMessage: this.#showIgnoreListMessage,
             showIgnoreListedChecked: this.#ignoreListCheckboxChecked,
@@ -462,11 +483,12 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         });
     }
     activateItem(item) {
+        this.#pendingAutoActivation = false;
         const uiLocation = item.uiLocation;
         if (!uiLocation) {
             return;
         }
-        if (this.#items.includes(item)) {
+        if (this.#isItemVisible(item)) {
             this.#focusedItem = item;
         }
         const debuggerCallFrame = item.frame;
@@ -477,7 +499,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         else {
             void Common.Revealer.reveal(uiLocation);
         }
-        this.requestUpdate();
     }
     activeCallFrameItem() {
         const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
@@ -508,6 +529,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
             const newItem = this.#items[i];
             if (newItem.frame) {
                 this.activateItem(newItem);
+                this.requestUpdate();
                 break;
             }
         }
@@ -519,6 +541,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
             const newItem = this.#items[i];
             if (newItem.frame) {
                 this.activateItem(newItem);
+                this.requestUpdate();
                 break;
             }
         }
@@ -576,6 +599,8 @@ export class Item {
         const description = UI.UIUtils.asyncFragmentLabel(stackTrace, fragment);
         const item = new Item(description);
         item.isAsyncHeader = true;
+        item.isIgnoreListed =
+            fragment.frames.length > 0 && fragment.frames.every(frame => Boolean(frame.uiSourceCode?.isIgnoreListed()));
         return item;
     }
     constructor(title) {

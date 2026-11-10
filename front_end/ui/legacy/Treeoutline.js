@@ -1586,6 +1586,11 @@ function removeNode(node, preserveParentExpandable = false) {
  * - `aria-*`: All aria attributes defined on the config element are cloned over.
  * - `open`: On the <li>, declares whether the subtree should be rendererd as expanded or collapsed.
  *
+ * ## Refs ##
+ *
+ * `UIUtils.clonedRef` on a `<li role="treeitem">` resolves to the rendered list item element in the tree's shadow DOM,
+ * e.g. to scroll it into view: `<li role="treeitem" ${isHighlighted ? clonedRef(onRendered) : nothing}>`.
+ *
  * ## Event Handling ##
  *
  * This section is only relevant if NOT using the `template`.
@@ -1786,6 +1791,10 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
                 }
                 if (hasBooleanAttribute(node, 'selected')) {
                     treeElement.revealAndSelect(!this.hasFocus());
+                }
+                if (node instanceof HTMLLIElement) {
+                    // Resolve `clonedRef` on the config element to the rendered list item once it is in the tree.
+                    HTMLElementWithLightDOMTemplate.registerClone(node, treeElement.listItemElement);
                 }
                 if (parent.expanded) {
                     parent.treeElement.expand();

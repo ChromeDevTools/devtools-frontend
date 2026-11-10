@@ -8,6 +8,7 @@ import { VBox } from './Widget.js';
 import { ZoomManager } from './ZoomManager.js';
 export class RootView extends VBox {
     window;
+    #onWindowResize = () => this.doResize();
     constructor(universe) {
         super();
         this.markAsRoot();
@@ -20,12 +21,16 @@ export class RootView extends VBox {
         });
     }
     attachToDocument(document) {
-        if (document.defaultView) {
-            document.defaultView.addEventListener('resize', this.doResize.bind(this), false);
-        }
+        this.window?.removeEventListener('resize', this.#onWindowResize, false);
         this.window = document.defaultView;
+        this.window?.addEventListener('resize', this.#onWindowResize, false);
         this.doResize();
         this.show(document.body);
+    }
+    onDetach() {
+        this.window?.removeEventListener('resize', this.#onWindowResize, false);
+        this.window = null;
+        super.onDetach();
     }
     doResize() {
         if (this.window) {

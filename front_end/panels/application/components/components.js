@@ -816,7 +816,7 @@ import * as Common2 from "../../../core/common/common.js";
 import * as i18n5 from "../../../core/i18n/i18n.js";
 import * as SDK2 from "../../../core/sdk/sdk.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -5448,10 +5448,6 @@ var permissionsPolicySection_css_default = `/*
     background: none;
     font-family: inherit;
     font-size: inherit;
-  }
-
-  .policies-list {
-    padding-top: 3px;
   }
 
   .permissions-row {

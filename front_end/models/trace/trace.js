@@ -135,7 +135,6 @@ __export(EventsSerializer_exports, {
 import * as Helpers3 from "./helpers/helpers.js";
 import * as Types from "./types/types.js";
 var EventsSerializer = class _EventsSerializer {
-  #modifiedProfileCallByKey = /* @__PURE__ */ new Map();
   keyForEvent(event) {
     if (Types.Events.isProfileCall(event)) {
       return `${Types.File.EventKeyType.PROFILE_CALL}-${event.pid}-${event.tid}-${Types.Events.SampleIndex(event.sampleIndex)}-${event.nodeId}`;
@@ -222,10 +221,6 @@ var EventsSerializer = class _EventsSerializer {
     return key.type === Types.File.EventKeyType.SYNTHETIC_EVENT;
   }
   #getModifiedProfileCallByKeyValues(key, parsedTrace) {
-    const cacheResult = this.#modifiedProfileCallByKey.get(key);
-    if (cacheResult) {
-      return cacheResult;
-    }
     const profileCallsInThread = parsedTrace.data.Renderer.processes.get(key.processID)?.threads.get(key.threadID)?.profileCalls;
     if (!profileCallsInThread) {
       throw new Error(`Unknown profile call serializable key: ${key}`);
@@ -236,7 +231,6 @@ var EventsSerializer = class _EventsSerializer {
     if (!match) {
       throw new Error(`Unknown profile call serializable key: ${JSON.stringify(key)}`);
     }
-    this.#modifiedProfileCallByKey.set(key, match);
     return match;
   }
 };
@@ -256,7 +250,7 @@ __export(LanternComputationData_exports, {
   createProcessedNavigation: () => createProcessedNavigation
 });
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;

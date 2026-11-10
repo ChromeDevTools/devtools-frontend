@@ -893,9 +893,6 @@
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "Open AI assistance panel"
   },
-  "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "Open Gemini panel"
-  },
   "entrypoints/main/main-meta.ts | auto": {
     "message": "auto"
   },
@@ -3041,20 +3038,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "Debug with AI"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
-    "message": "Debug with Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "Enable AI assistance"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "Enable Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Show AI assistance"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "Show Gemini"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | chatDeleted": {
     "message": "Chat deleted"
@@ -5930,8 +5918,14 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Speculative loads"
   },
+  "panels/application/PrivateVerificationTokensView.ts | clearAll": {
+    "message": "Clear all"
+  },
   "panels/application/PrivateVerificationTokensView.ts | creationTime": {
     "message": "Created"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | deleteSelected": {
+    "message": "Delete selected"
   },
   "panels/application/PrivateVerificationTokensView.ts | expiration": {
     "message": "Expiration"
@@ -6738,7 +6732,7 @@
     "message": "See response"
   },
   "panels/comments/CommentsPane.ts | sendToAgent": {
-    "message": "Send to Agent"
+    "message": "Send to agent"
   },
   "panels/comments/CommentsPane.ts | sent": {
     "message": "Sent"
@@ -6898,27 +6892,6 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Terms of Service"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
-    "message": "Meet your AI-powered companion for web dev"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
-    "message": "Get instant, accurate answers for console errors"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
-    "message": "Generate CSS and JS snippets on the fly"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
-    "message": "Automatically find issues in performance traces"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "Gemini 3 Flash in DevTools"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
-    "message": "Dismiss"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
-    "message": "Get started"
   },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "Linked to {PH1}"
@@ -7146,7 +7119,10 @@
     "message": "Console sidebar shown"
   },
   "panels/console/ConsoleView.ts | copyConsole": {
-    "message": "Copy console"
+    "message": "Copy all messages"
+  },
+  "panels/console/ConsoleView.ts | copyMessage": {
+    "message": "Copy message"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copy visible styled selection"
@@ -11848,6 +11824,9 @@
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Failed to load response data"
+  },
+  "panels/network/RequestPreviewView.ts | nothingToPreview": {
+    "message": "Nothing to preview"
   },
   "panels/network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "Preview not available"

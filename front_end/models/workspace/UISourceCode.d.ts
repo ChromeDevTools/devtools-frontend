@@ -15,10 +15,7 @@ export declare class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<Eve
     parentURL(): Platform.DevToolsPath.UrlString;
     origin(): Platform.DevToolsPath.UrlString;
     /**
-     * Returns the security origin for this source code.
-     * Prefers the project security origin if available. If the project does not
-     * define a security origin, derives it from the source code's URL and caches
-     * the result until the source code is renamed.
+     * Returns the security origin for this file, cached until it is renamed.
      */
     securityOrigin(): SDK.SecurityOrigin.SecurityOrigin;
     fullDisplayName(): string;

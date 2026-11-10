@@ -105,7 +105,7 @@ export default `/*
   }
 
   table.service-worker-update-timing-table > tbody > tr.service-worker-update-timing-table-header > td {
-    border-top: 5px solid transparent;
+    border-top: var(--sys-size-3) solid transparent;
     color: var(--sys-color-token-subtle);
   }
 

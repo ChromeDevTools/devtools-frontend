@@ -54,7 +54,7 @@ devtools-code-block.animating {
 }
 
 .message p:not(:last-child) {
-  margin-bottom: 10px;
+  margin-bottom: var(--sys-size-5);
 }
 
 .message ul {

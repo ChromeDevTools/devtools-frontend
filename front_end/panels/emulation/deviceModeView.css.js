@@ -38,7 +38,6 @@ export default `/*
    * step-buttons.
    */
   width: calc(4ch + 2ch + var(--sys-size-2));
-  max-height: 18px;
   border: var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-extra-small);
   margin: 0 var(--sys-size-2);

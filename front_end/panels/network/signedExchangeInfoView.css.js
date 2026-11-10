@@ -9,15 +9,19 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.signed-exchange-info-view {
-  user-select: text;
-  overflow: auto;
-}
+@scope to (devtools-widget > *) {
+  :scope,
+  .signed-exchange-info-view {
+    user-select: text;
+    overflow: auto;
+  }
 
-.signed-exchange-info-tree {
-  flex-grow: 1;
-  overflow-y: auto;
-  margin: 0;
+  .signed-exchange-info-tree {
+    display: block;
+    flex-grow: 1;
+    overflow-y: auto;
+    margin: 0;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./signedExchangeInfoView.css')} */`;

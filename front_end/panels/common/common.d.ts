@@ -1,5 +1,4 @@
 export { GdpSignUpDialog } from './GdpSignUpDialog.js';
-export { GeminiRebrandPromoDialog } from './GeminiRebrandPromoDialog.js';
 export * as AiCodeCompletionSummaryToolbar from './AiCodeCompletionSummaryToolbar.js';
 export * from './BadgeNotification.js';
 export * as CPUThrottlingOption from './CPUThrottlingOption.js';

@@ -1763,7 +1763,7 @@ import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;

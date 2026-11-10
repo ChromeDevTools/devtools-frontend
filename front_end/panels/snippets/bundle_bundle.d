@@ -1,1 +1,1 @@
-gen/front_end/panels/snippets/snippets.js: ../../front_end/generated/protocol.ts ../../front_end/panels/snippets/ScriptSnippetFileSystem.ts ../../front_end/panels/snippets/SnippetsQuickOpen.ts ../../front_end/panels/snippets/snippets.ts
+gen/front_end/panels/snippets/snippets.js: gen/front_end/generated/protocol.ts ../../front_end/panels/snippets/ScriptSnippetFileSystem.ts ../../front_end/panels/snippets/SnippetsQuickOpen.ts ../../front_end/panels/snippets/snippets.ts

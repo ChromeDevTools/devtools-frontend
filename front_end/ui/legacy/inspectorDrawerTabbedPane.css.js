@@ -36,7 +36,7 @@ export default `/*
   flex-direction: column;
   align-items: center;
   height: auto;
-  width: 27px;
+  width: 100%;
 }
 
 devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
@@ -53,8 +53,8 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
   margin: 0 auto;
   padding: 0;
   padding-right: var(--sys-size-1);
-  width: 27px;
-  height: 26px;
+  width: 100%;
+  height: var(--toolbar-height);
   display: flex;
   align-items: center;
   justify-content: center;

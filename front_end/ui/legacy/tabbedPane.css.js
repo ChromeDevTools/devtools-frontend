@@ -142,7 +142,8 @@ export default `/*
   margin-left: var(--sys-size-1);
   justify-self: center;
   position: relative;
-  top: 0.75px;
+  /* Nudge the dot 1px down to optically align it with the tab title. */
+  top: var(--sys-size-1);
 }
 
 .tabbed-pane-header-tab {

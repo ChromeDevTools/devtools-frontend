@@ -87,7 +87,7 @@ export default `/*
 .infobar-details-row {
   display: flex;
   flex-direction: column;
-  line-height: 18px;
+  line-height: var(--sys-typescale-body3-5-line-height);
 
   + .infobar-details-row {
     padding-top: var(--sys-size-3);

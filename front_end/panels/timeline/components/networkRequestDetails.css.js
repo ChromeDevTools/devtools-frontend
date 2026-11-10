@@ -41,7 +41,7 @@ export default `/*
   }
 
   .network-request-details-col {
-    max-width: 300px;
+    max-width: var(--sys-size-30);
   }
 
   .column-divider {

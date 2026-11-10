@@ -105,13 +105,6 @@ devtools-button.help-button {
   font-weight: bold;
 }
 
-.inline-icon {
-  margin-bottom: -5px;
-  width: 18px;
-  height: 18px;
-  vertical-align: baseline;
-}
-
 @media (forced-colors: active) {
   .link,
   .devtools-link {

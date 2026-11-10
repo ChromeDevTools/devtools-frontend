@@ -91,6 +91,7 @@ export class SplitWidget extends SplitWidgetBase {
             }
         });
         this.#resizerElement = this.contentElement.createChild('div', 'shadow-split-widget-resizer');
+        this.#resizerElement.setAttribute('jslog', `${VisualLogging.resizer().track({ drag: true })}`);
         this.#resizerWidget = new SimpleResizerWidget();
         this.#resizerWidget.setEnabled(true);
         this.#resizerWidget.addEventListener("ResizeStart" /* ResizerWidgetEvents.RESIZE_START */, this.#onResizeStart, this);

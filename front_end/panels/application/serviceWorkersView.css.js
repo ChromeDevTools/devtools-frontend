@@ -97,13 +97,13 @@ export default `/*
   display: flex;
   flex: auto;
   margin-right: var(--sys-size-3);
-  max-width: 400px;
+  max-width: var(--sys-size-32);
   min-width: var(--sys-size-19);
 }
 
 .report-field-value-filename,
 .service-worker-client-string {
-  max-width: 400px;
+  max-width: var(--sys-size-32);
   overflow: hidden;
   text-overflow: ellipsis;
 }

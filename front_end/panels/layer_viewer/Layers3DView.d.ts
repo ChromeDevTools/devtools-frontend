@@ -20,7 +20,6 @@ export declare const DEFAULT_VIEW: View;
 declare const Layers3DViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class Layers3DView extends Layers3DViewBase implements LayerView {
     #private;
-    private readonly layerViewHost;
     private transformController;
     private lastSelection;
     private layerTree;
@@ -45,7 +44,9 @@ export declare class Layers3DView extends Layers3DViewBase implements LayerView 
     private readonly showPaintsSetting;
     private mouseDownX?;
     private mouseDownY?;
-    constructor(layerViewHost: LayerViewHost, view?: View);
+    constructor(layerViewHost?: LayerViewHost | HTMLElement, view?: View);
+    get layerViewHost(): LayerViewHost | undefined;
+    set layerViewHost(layerViewHost: LayerViewHost | undefined);
     performUpdate(): void;
     setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase | null): void;
     showImageForLayer(layer: SDK.LayerTreeBase.Layer, imageURL?: string): void;

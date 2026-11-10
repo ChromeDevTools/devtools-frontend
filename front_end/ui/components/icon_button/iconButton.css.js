@@ -32,7 +32,7 @@ export default `/*
 .icon-button.with-click-handler {
   padding: 0;
   margin: 0;
-  height: 18px;
+  height: var(--sys-size-9);
   border-radius: var(--sys-shape-corner-extra-small);
 }
 

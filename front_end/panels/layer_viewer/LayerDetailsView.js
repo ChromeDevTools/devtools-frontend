@@ -244,18 +244,34 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 };
 const LayerDetailsViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
 export class LayerDetailsView extends LayerDetailsViewBase {
-    layerViewHost;
-    layerSnapshotMap;
+    #layerViewHost;
+    layerSnapshotMap = new Map();
     selection;
     compositingReasons = [];
     view;
     constructor(layerViewHost, view = DEFAULT_VIEW) {
-        super({ useShadowDom: 'pure' });
+        super(layerViewHost instanceof HTMLElement ? layerViewHost : undefined, { useShadowDom: 'pure' });
         this.view = view;
-        this.layerViewHost = layerViewHost;
-        this.layerViewHost.registerView(this);
-        this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
         this.selection = null;
+        if (layerViewHost && !(layerViewHost instanceof HTMLElement)) {
+            this.layerViewHost = layerViewHost;
+        }
+    }
+    get layerViewHost() {
+        return this.#layerViewHost;
+    }
+    set layerViewHost(layerViewHost) {
+        if (this.#layerViewHost === layerViewHost) {
+            return;
+        }
+        this.#layerViewHost = layerViewHost;
+        if (this.#layerViewHost) {
+            this.#layerViewHost.registerView(this);
+            this.layerSnapshotMap = this.#layerViewHost.getLayerSnapshotMap();
+            if (this.isShowing()) {
+                this.update();
+            }
+        }
     }
     hoverObject(_selection) {
     }
@@ -278,7 +294,7 @@ export class LayerDetailsView extends LayerDetailsViewBase {
         if (!this.selection) {
             return;
         }
-        this.layerViewHost.selectObject(new ScrollRectSelection(this.selection.layer(), index));
+        this.#layerViewHost?.selectObject(new ScrollRectSelection(this.selection.layer(), index));
     }
     invokeProfilerLink() {
         if (!this.selection) {

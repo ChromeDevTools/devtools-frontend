@@ -113,7 +113,7 @@ export default `/*
 .user-agent-client-hints-form {
   display: block;
   margin-top: var(--sys-size-7);
-  width: min(100%, 400px);
+  width: min(100%, var(--sys-size-32));
 }
 
 .status-text {

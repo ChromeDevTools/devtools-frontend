@@ -10,7 +10,6 @@
     "commentsOverlay.css.js",
     "commentsStatusBarPill.css.js",
     "domLinkifier.css.js",
-    "gdpSignUpDialog.css.js",
-    "geminiRebrandPromoDialog.css.js"
+    "gdpSignUpDialog.css.js"
   ]
 }

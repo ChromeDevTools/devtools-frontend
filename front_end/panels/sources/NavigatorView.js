@@ -530,7 +530,7 @@ export class NavigatorView extends NavigatorViewBase {
         if (order1 < order2) {
             return -1;
         }
-        return 0;
+        return Platform.StringUtilities.naturalOrderComparator(node1.mergedTitle(), node2.mergedTitle());
     }
     static appendSearchItem(contextMenu, path) {
         const searchLabel = path ? i18nString(UIStrings.searchInFolder) : i18nString(UIStrings.searchInAllFiles);
@@ -541,9 +541,10 @@ export class NavigatorView extends NavigatorViewBase {
         const node1 = this.nodeForTreeElement(treeElement1);
         const node2 = this.nodeForTreeElement(treeElement2);
         if (node1 && node2) {
-            const order = NavigatorView.compareNodes(node1, node2);
-            if (order !== 0) {
-                return order;
+            const order1 = NavigatorView.nodeOrder(node1);
+            const order2 = NavigatorView.nodeOrder(node2);
+            if (order1 !== order2) {
+                return order1 > order2 ? 1 : -1;
             }
         }
         return Platform.StringUtilities.naturalOrderComparator(treeElement1.titleAsText(), treeElement2.titleAsText());
@@ -1170,10 +1171,9 @@ export class NavigatorView extends NavigatorViewBase {
     isRenaming() {
         return this.#renamingNode !== null;
     }
-    handleFileContextMenu(event, node) {
+    handleFileContextMenu(contextMenu, node) {
         const uiSourceCode = node.uiSourceCode();
         if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
-            const contextMenu = new UI.ContextMenu.ContextMenu(event);
             contextMenu.headerSection().appendItem(i18nString(UIStrings.run), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode), { jslogContext: 'run' });
             contextMenu.editSection().appendItem(i18nString(UIStrings.rename), () => this.rename(node, false), { jslogContext: 'rename' });
             contextMenu.editSection().appendItem(i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode), { jslogContext: 'remove' });
@@ -1181,7 +1181,6 @@ export class NavigatorView extends NavigatorViewBase {
             void contextMenu.show();
             return;
         }
-        const contextMenu = new UI.ContextMenu.ContextMenu(event);
         contextMenu.appendApplicableItems(uiSourceCode);
         const project = uiSourceCode.project();
         if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
@@ -1256,10 +1255,11 @@ export class NavigatorView extends NavigatorViewBase {
             }
         }
     }
-    handleFolderContextMenu(event, node) {
-        const path = node instanceof NavigatorFolderTreeNode ? node.folderPath : Platform.DevToolsPath.EmptyEncodedPathString;
-        const project = node.project || null;
-        const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    handleFolderContextMenu(contextMenu, node) {
+        const activeNode = node instanceof NavigatorFolderTreeNode ? node.mergedLeafNode() : node;
+        const path = activeNode instanceof NavigatorFolderTreeNode ? activeNode.folderPath :
+            Platform.DevToolsPath.EmptyEncodedPathString;
+        const project = activeNode.project || null;
         if (project?.type() !== Workspace.Workspace.projectTypes.ConnectableFileSystem) {
             NavigatorView.appendSearchItem(contextMenu, path);
         }
@@ -1275,12 +1275,12 @@ export class NavigatorView extends NavigatorViewBase {
                 }, { jslogContext: 'new-file' });
             }
         }
-        else if (node instanceof NavigatorFolderTreeNode && node.origin && node.folderPath) {
-            const url = Common.ParsedURL.ParsedURL.concatenate(node.origin, '/', node.folderPath);
+        else if (activeNode instanceof NavigatorFolderTreeNode && activeNode.origin && activeNode.folderPath) {
+            const url = Common.ParsedURL.ParsedURL.concatenate(activeNode.origin, '/', activeNode.folderPath);
             const options = {
-                isContentScript: node.recursiveProperties.exclusivelyContentScripts || false,
-                isKnownThirdParty: node.recursiveProperties.exclusivelyThirdParty || false,
-                isCurrentlyIgnoreListed: node.recursiveProperties.exclusivelyIgnored || false,
+                isContentScript: activeNode.recursiveProperties.exclusivelyContentScripts || false,
+                isKnownThirdParty: activeNode.recursiveProperties.exclusivelyThirdParty || false,
+                isCurrentlyIgnoreListed: activeNode.recursiveProperties.exclusivelyIgnored || false,
             };
             for (const { text, callback, jslogContext } of Workspace.IgnoreListManager.IgnoreListManager.instance()
                 .getIgnoreListFolderContextMenuItems(url, options)) {
@@ -1303,9 +1303,9 @@ export class NavigatorView extends NavigatorViewBase {
         if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
             if (Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !==
                 Persistence.PlatformFileSystem.PlatformFileSystemType.OVERRIDES) {
-                if (node instanceof NavigatorGroupTreeNode) {
+                if (activeNode instanceof NavigatorGroupTreeNode) {
                     contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), async () => {
-                        const header = i18nString(UIStrings.areYouSureYouWantToRemoveThis, { PH1: node.title });
+                        const header = i18nString(UIStrings.areYouSureYouWantToRemoveThis, { PH1: activeNode.title });
                         const shouldRemove = await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.workspaceStopSyncing), header, undefined, {
                             okButtonLabel: i18nString(UIStrings.remove),
                             jslogContext: 'remove-folder-from-workspace-confirmation',
@@ -1316,8 +1316,8 @@ export class NavigatorView extends NavigatorViewBase {
                     }, { jslogContext: 'remove-folder-from-workspace' });
                 }
             }
-            else if (!(node instanceof NavigatorGroupTreeNode)) {
-                contextMenu.defaultSection().appendItem(i18nString(UIStrings.delete), this.handleDeleteFolder.bind(this, node), { jslogContext: 'delete' });
+            else if (!(activeNode instanceof NavigatorGroupTreeNode)) {
+                contextMenu.defaultSection().appendItem(i18nString(UIStrings.delete), this.handleDeleteFolder.bind(this, activeNode), { jslogContext: 'delete' });
             }
         }
         void contextMenu.show();
@@ -1384,6 +1384,16 @@ export class NavigatorView extends NavigatorViewBase {
         this.reset();
         this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
     }
+    deselectIfDescendant(node) {
+        let current = this.selectedNode;
+        while (current) {
+            if (current === node) {
+                this.selectedNode = null;
+                return;
+            }
+            current = current.parent;
+        }
+    }
     discardFrame(frame, isAuthored) {
         if (isAuthored) {
             return;
@@ -1431,6 +1441,7 @@ export class NavigatorTreeNode {
     recursiveProperties;
     #children = [];
     #childById = new Map();
+    #disposed = false;
     constructor(navigatorView, id, type, tooltip) {
         this.id = id;
         this.navigatorView = navigatorView;
@@ -1444,6 +1455,15 @@ export class NavigatorTreeNode {
             exclusivelyContentScripts: null,
             exclusivelyThirdParty: null,
         };
+    }
+    mergedTitle() {
+        return this.title;
+    }
+    effectiveChildren() {
+        return this.#children.filter(node => !node.isMerged);
+    }
+    isDisposed() {
+        return this.#disposed;
     }
     computedTooltip() {
         if (this.tooltip) {
@@ -1492,7 +1512,7 @@ export class NavigatorTreeNode {
                 return;
             }
             this.navigatorView.selectNode(activeNode);
-            this.navigatorView.handleFolderContextMenu(event, activeNode);
+            this.navigatorView.handleFolderContextMenu(new UI.ContextMenu.ContextMenu(event), activeNode);
         }, false);
         treeElement.listItemElement.addEventListener('mousemove', (_event) => {
             const activeNode = this.navigatorView.nodeForTreeElement(treeElement);
@@ -1516,6 +1536,7 @@ export class NavigatorTreeNode {
         throw new Error('Not implemented');
     }
     dispose() {
+        this.#disposed = true;
     }
     updateTitle() {
     }
@@ -1581,12 +1602,22 @@ export class NavigatorTreeNode {
         return this.#childById.get(id) ?? null;
     }
     appendChild(node) {
-        this.#children.push(node);
+        Platform.ArrayUtilities.insertWithComparator(this.#children, node, NavigatorView.compareNodes);
         this.#childById.set(node.id, node);
         node.parent = this;
         this.didAddChild(node);
     }
+    resortChild(node) {
+        const idx = this.#children.indexOf(node);
+        if (idx < 0) {
+            return;
+        }
+        this.#children.splice(idx, 1);
+        Platform.ArrayUtilities.insertWithComparator(this.#children, node, NavigatorView.compareNodes);
+        this.navigatorView.requestUpdate();
+    }
     removeChild(node) {
+        this.navigatorView.deselectIfDescendant(node);
         this.willRemoveChild(node);
         const idx = this.#children.findIndex(n => n.id === node.id);
         if (idx >= 0) {
@@ -1624,7 +1655,6 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     treeElement;
     isEditing = false;
     #renameCallback;
-    #disposed = false;
     eventListeners;
     #frame;
     constructor(navigatorView, uiSourceCode, frame) {
@@ -1717,7 +1747,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         }, false);
         treeElement.listItemElement.addEventListener('contextmenu', (event) => {
             this.navigatorView.selectNode(this);
-            this.navigatorView.handleFileContextMenu(event, this);
+            this.navigatorView.handleFileContextMenu(new UI.ContextMenu.ContextMenu(event), this);
         }, false);
         treeElement.listItemElement.addEventListener('dragstart', (event) => {
             this.navigatorView.fileDragStarted(this, event);
@@ -1782,7 +1812,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         if (callback) {
             callback(false);
         }
-        this.#disposed = true;
+        super.dispose();
     }
     reveal(select) {
         if (this.parent) {
@@ -1797,7 +1827,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         }
     }
     rename(callback) {
-        if (this.#disposed || !this.treeElement) {
+        if (this.isDisposed() || !this.treeElement) {
             return;
         }
         this.treeElement.listItemElement.focus();
@@ -1810,7 +1840,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         this.updateTitle(true);
     }
     #handlePromptCommit(newTitle) {
-        if (this.#disposed || !this.treeElement?.treeOutline) {
+        if (this.isDisposed() || !this.treeElement?.treeOutline) {
             return;
         }
         const oldTitle = this.title;
@@ -1827,7 +1857,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         this.#afterEditing(true);
     }
     #handleRenameCallback(success) {
-        if (this.#disposed) {
+        if (this.isDisposed()) {
             return;
         }
         if (!success) {
@@ -1845,10 +1875,11 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
                 this.navigatorView.selectNode(this);
             }
         }
+        this.parent?.resortChild(this);
         this.#afterEditing(true);
     }
     #handlePromptCancel() {
-        if (this.#disposed) {
+        if (this.isDisposed()) {
             return;
         }
         this.#afterEditing(false);
@@ -1876,6 +1907,41 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
         this.folderPath = folderPath;
         this.title = title;
         this.origin = origin;
+    }
+    mergedTitle() {
+        const titles = [this.title];
+        let child = this.children()[0];
+        while (child instanceof NavigatorFolderTreeNode && child.isMerged) {
+            titles.push(child.title);
+            child = child.children()[0];
+        }
+        return titles.join('/');
+    }
+    mergedLeafNode() {
+        let current = this;
+        let child = current.children()[0];
+        while (child instanceof NavigatorFolderTreeNode && child.isMerged) {
+            current = child;
+            child = current.children()[0];
+        }
+        return current;
+    }
+    effectiveChildren() {
+        const leaf = this.mergedLeafNode();
+        if (!leaf.isPopulated()) {
+            return [];
+        }
+        return leaf.children().filter(node => !node.isMerged);
+    }
+    computedTooltip() {
+        if (this.isMerged) {
+            return super.computedTooltip();
+        }
+        const leafNode = this.mergedLeafNode();
+        if (leafNode !== this) {
+            return leafNode.computedTooltip();
+        }
+        return super.computedTooltip();
     }
     treeNode() {
         if (this.treeElement) {

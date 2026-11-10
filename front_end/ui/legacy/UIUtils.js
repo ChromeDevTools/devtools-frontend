@@ -1875,7 +1875,6 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     }
     static cloneNode(node) {
         const clone = node.cloneNode(false);
-        HTMLElementWithLightDOMTemplate.registerClone(node, clone);
         for (const child of node.childNodes) {
             clone.appendChild(HTMLElementWithLightDOMTemplate.cloneNode(child));
         }
@@ -1886,6 +1885,7 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
                 WidgetUtils.registerWidgetConfig(clone, currentConfig);
             }
         }
+        HTMLElementWithLightDOMTemplate.registerClone(node, clone);
         return clone;
     }
     /**

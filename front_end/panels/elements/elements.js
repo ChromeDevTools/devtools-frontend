@@ -14,7 +14,7 @@ import * as Common15 from "../../core/common/common.js";
 import * as Root6 from "../../core/root/root.js";
 import * as SDK19 from "../../core/sdk/sdk.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -20650,6 +20650,13 @@ li.shadow-root + ol.children {
 
 // ../../front_end/panels/elements/DOMTreeWidget.ts
 var { html: html16, nothing: nothing6, render: render13, Directives: { classMap: classMap4, ifDefined: ifDefined3, repeat: repeat2, styleMap: styleMap2 } } = Lit7;
+var { clonedRef } = UI18.UIUtils;
+var scrollHighlightedRowIntoView = (element) => {
+  element?.scrollIntoViewIfNeeded(
+    /* center= */
+    true
+  );
+};
 var UIStrings16 = {
   /**
    * @description ARIA accessible name in the DOM tree outline of the Elements panel.
@@ -21145,6 +21152,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           data-target-id=${ifDefined3(node.domModel().target().id())}
           selectable=${input.selectEnabled ? "true" : "false"}
           ?selected=${isSelected && !input.selectedClosingTag}
+          ${input.currentHighlightedNode === node ? clonedRef(scrollHighlightedRowIntoView) : nothing6}
           class=${classes}
           style=${styleMap2({ "--indent": `${computeLeftIndent(depth, isExpandable)}px` })}
           ?open=${hasChildren && isExpanded && !isEditingAsHTML}
@@ -21800,9 +21808,22 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
   }
   #highlightNode(event) {
     void this.#highlightThrottler.schedule(() => {
-      this.#currentHighlightedNode = event.data;
+      const node = this.#resolveInlinedTextNode(event.data);
+      if (node) {
+        for (let child = node, ancestor = node.parentNode; ancestor; child = ancestor, ancestor = ancestor.parentNode) {
+          this.#ensureChildVisible(ancestor, child);
+        }
+      }
+      this.#currentHighlightedNode = node;
       this.requestUpdate();
     });
+  }
+  /** Short text nodes render inline in the row of their parent node. */
+  #resolveInlinedTextNode(node) {
+    if (node?.nodeType() === Node.TEXT_NODE && node.parentNode && (!nodeHasVisibleChildren(node.parentNode, this) || !getVisibleChildren(node.parentNode, this).includes(node))) {
+      return node.parentNode;
+    }
+    return node;
   }
   #onInspectModeWillBeToggled() {
     this.#clearHighlightedNode();
@@ -21812,6 +21833,11 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
   #clearHighlightedNode() {
     this.#currentHighlightedNode = null;
   }
+  /** True if the view expands `node` only because it is an ancestor of the highlighted node. */
+  #isExpandedOnlyForHighlight(node) {
+    const highlightedNode = this.#currentHighlightedNode;
+    return highlightedNode !== null && !this.#expandedNodes.has(node) && isAncestorOf(node, highlightedNode);
+  }
   selectDOMNode(node, focus, isClosingTag) {
     this.#imagePreviewPopover?.hide();
     this.#issuePopoverHelper?.hidePopover();
@@ -21820,9 +21846,7 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
       return;
     }
     this.#selectedAdoptedStyleSheet = null;
-    if (node?.nodeType() === Node.TEXT_NODE && node.parentNode && (!nodeHasVisibleChildren(node.parentNode, this) || !getVisibleChildren(node.parentNode, this).includes(node))) {
-      node = node.parentNode;
-    }
+    node = this.#resolveInlinedTextNode(node);
     if (node) {
       const ancestors = [];
       for (let current = node.parentNode; current; current = current.parentNode) {
@@ -22127,6 +22151,12 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
         onExpand: (node, expanded, recursively = false) => {
           if (expanded && recursively) {
             void this.expandRecursively(node);
+            return;
+          }
+          if (expanded && this.#isExpandedOnlyForHighlight(node)) {
+            return;
+          }
+          if (!expanded && !this.#expandedNodes.has(node)) {
             return;
           }
           this.setNodeExpanded(node, expanded);
@@ -23271,7 +23301,6 @@ var layoutPane_css_default = `/*
   .node-text-container {
     line-height: var(--sys-typescale-body4-line-height);
     padding: 0 0.5ex;
-    border-radius: 5px;
   }
 
 }

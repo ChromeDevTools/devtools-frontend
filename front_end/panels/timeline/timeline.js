@@ -119,7 +119,7 @@ import * as Trace37 from "../../models/trace/trace.js";
 import * as SourceMapsResolver9 from "../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
 import * as Workspace8 from "../../models/workspace/workspace.js";
 import * as ThemeSupport25 from "../../ui/legacy/theme_support/theme_support.js";
-import { html as html13, render as render11 } from "../../ui/lit/lit.js";
+import { html as html14, render as render12 } from "../../ui/lit/lit.js";
 import * as SettingsUI7 from "../../ui/settings/settings.js";
 import * as TimelineComponents7 from "./components/components.js";
 
@@ -1973,7 +1973,7 @@ import * as Workspace6 from "../../models/workspace/workspace.js";
 import * as PerfUI16 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "../../ui/legacy/theme_support/theme_support.js";
-import { html as html12 } from "../../ui/lit/lit.js";
+import { html as html13 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/timeline/Initiators.ts
 var Initiators_exports = {};
@@ -3225,7 +3225,7 @@ import * as TraceBounds13 from "../../services/trace_bounds/trace_bounds.js";
 import * as Tracing6 from "../../services/tracing/tracing.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html10, nothing as nothing5, render as render10 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html11, nothing as nothing5, render as render11 } from "../../ui/lit/lit.js";
 import * as SettingsUI6 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as TimelineComponents5 from "./components/components.js";
@@ -3399,7 +3399,7 @@ import * as Root2 from "../../core/root/root.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
 import * as TextUtils2 from "../../core/text_utils/text_utils.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -10929,7 +10929,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     if (!parsedTrace) {
       return;
     }
-    const mappedScriptsWithData = Trace23.Handlers.ModelHandlers.Scripts.data().scripts;
+    const mappedScriptsWithData = parsedTrace.data.Scripts.scripts;
     const scriptByIdMap = /* @__PURE__ */ new Map();
     for (const mapScript of mappedScriptsWithData) {
       scriptByIdMap.set(`${mapScript.isolate}.${mapScript.scriptId}`, mapScript);
@@ -16959,69 +16959,108 @@ var timelineDetailsView_css_default = `/*
 // ../../front_end/panels/timeline/TimelineLayersView.ts
 var TimelineLayersView_exports = {};
 __export(TimelineLayersView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   TimelineLayersView: () => TimelineLayersView
 });
 import * as UI12 from "../../ui/legacy/legacy.js";
+import { html as html8, render as render8 } from "../../ui/lit/lit.js";
 import * as LayerViewer from "../layer_viewer/layer_viewer.js";
-var TimelineLayersView = class extends UI12.SplitWidget.SplitWidget {
-  showPaintProfilerCallback;
-  rightSplitWidget;
-  layerViewHost;
-  layers3DView;
-  frameLayerTree;
-  updateWhenVisible;
-  constructor(showPaintProfilerCallback) {
-    super(true, false, "timeline-layers-view");
-    this.showPaintProfilerCallback = showPaintProfilerCallback;
-    this.element.classList.add("timeline-layers-view");
-    this.rightSplitWidget = new UI12.SplitWidget.SplitWidget(true, true, "timeline-layers-view-details");
-    this.rightSplitWidget.element.classList.add("timeline-layers-view-properties");
-    this.setMainWidget(this.rightSplitWidget);
-    const vbox = new UI12.Widget.VBox();
-    this.setSidebarWidget(vbox);
-    this.layerViewHost = new LayerViewer.LayerViewHost.LayerViewHost();
-    const layerTreeOutline = new LayerViewer.LayerTreeOutline.LayerTreeOutline(this.layerViewHost);
-    vbox.element.appendChild(layerTreeOutline.element);
-    this.layers3DView = new LayerViewer.Layers3DView.Layers3DView(this.layerViewHost);
-    this.layers3DView.addEventListener(
-      LayerViewer.Layers3DView.Events.PAINT_PROFILER_REQUESTED,
-      this.onPaintProfilerRequested,
-      this
-    );
-    this.rightSplitWidget.setMainWidget(this.layers3DView);
-    const layerDetailsView = new LayerViewer.LayerDetailsView.LayerDetailsView(this.layerViewHost);
-    this.rightSplitWidget.setSidebarWidget(layerDetailsView);
-    layerDetailsView.addEventListener(
-      LayerViewer.LayerDetailsView.Events.PAINT_PROFILER_REQUESTED,
-      this.onPaintProfilerRequested,
-      this
+var { widget: widget2, widgetRef: widgetRef2 } = UI12.Widget;
+var DEFAULT_VIEW3 = (input, output, target) => {
+  render8(html8`
+    <devtools-split-view
+        class="timeline-layers-view"
+        direction="column"
+        sidebar-position="first"
+        name="timeline-layers-view">
+      <devtools-split-view
+          slot="main"
+          class="timeline-layers-view-properties"
+          direction="column"
+          sidebar-position="second"
+          name="timeline-layers-view-details">
+        <devtools-widget
+            slot="main"
+            ${widget2(LayerViewer.Layers3DView.Layers3DView, { layerViewHost: input.layerViewHost })}
+            ${widgetRef2(LayerViewer.Layers3DView.Layers3DView, (view) => {
+    output.snapshotForSelection = (selection) => view.snapshotForSelection(selection);
+  })}
+            @PaintProfilerRequested=${(event) => {
+    input.onPaintProfilerRequested(event.detail);
+  }}>
+        </devtools-widget>
+        <devtools-widget
+            slot="sidebar"
+            ${widget2(LayerViewer.LayerDetailsView.LayerDetailsView, { layerViewHost: input.layerViewHost })}
+            @PaintProfilerRequested=${(event) => {
+    input.onPaintProfilerRequested(event.detail);
+  }}>
+        </devtools-widget>
+      </devtools-split-view>
+      <devtools-widget
+          slot="sidebar"
+          ${widget2(LayerViewer.LayerTreeOutline.LayerTreeOutline, { layerViewHost: input.layerViewHost })}>
+      </devtools-widget>
+    </devtools-split-view>
+  `, target);
+};
+var TimelineLayersView = class extends UI12.Widget.VBox {
+  #showPaintProfilerCallback;
+  #layerViewHost;
+  #view;
+  #viewOutput = {};
+  #onPaintProfilerRequestedBound = this.#onPaintProfilerRequested.bind(this);
+  #frameLayerTree;
+  #updateWhenVisible;
+  constructor(showPaintProfilerCallback, view = DEFAULT_VIEW3) {
+    super(showPaintProfilerCallback instanceof HTMLElement ? showPaintProfilerCallback : void 0);
+    this.#view = view;
+    if (typeof showPaintProfilerCallback === "function") {
+      this.#showPaintProfilerCallback = showPaintProfilerCallback;
+    }
+    this.#layerViewHost = new LayerViewer.LayerViewHost.LayerViewHost();
+  }
+  get showPaintProfilerCallback() {
+    return this.#showPaintProfilerCallback;
+  }
+  set showPaintProfilerCallback(callback) {
+    this.#showPaintProfilerCallback = callback;
+  }
+  performUpdate() {
+    this.#view(
+      {
+        layerViewHost: this.#layerViewHost,
+        onPaintProfilerRequested: this.#onPaintProfilerRequestedBound
+      },
+      this.#viewOutput,
+      this.contentElement
     );
   }
   showLayerTree(frameLayerTree) {
-    this.frameLayerTree = frameLayerTree;
+    this.#frameLayerTree = frameLayerTree;
     if (this.isShowing()) {
       this.update();
     } else {
-      this.updateWhenVisible = true;
+      this.#updateWhenVisible = true;
     }
   }
   wasShown() {
     super.wasShown();
-    if (this.updateWhenVisible) {
-      this.updateWhenVisible = false;
+    this.requestUpdate();
+    if (this.#updateWhenVisible) {
+      this.#updateWhenVisible = false;
       this.update();
     }
   }
-  async onPaintProfilerRequested(event) {
-    const selection = event.data;
-    const snapshotWithRect = await this.layers3DView.snapshotForSelection(selection);
+  async #onPaintProfilerRequested(selection) {
+    const snapshotWithRect = await this.#viewOutput.snapshotForSelection?.(selection);
     if (snapshotWithRect) {
-      this.showPaintProfilerCallback(snapshotWithRect.snapshot);
+      this.#showPaintProfilerCallback?.(snapshotWithRect.snapshot);
     }
   }
   update() {
-    if (this.frameLayerTree) {
-      void this.frameLayerTree.layerTreePromise().then((layerTree) => this.layerViewHost.setLayerTree(layerTree));
+    if (this.#frameLayerTree) {
+      void Promise.all([this.#frameLayerTree.layerTreePromise(), this.updateComplete]).then(([layerTree]) => this.#layerViewHost.setLayerTree(layerTree));
     }
   }
 };
@@ -17029,7 +17068,7 @@ var TimelineLayersView = class extends UI12.SplitWidget.SplitWidget {
 // ../../front_end/panels/timeline/TimelinePaintProfilerView.ts
 var TimelinePaintProfilerView_exports = {};
 __export(TimelinePaintProfilerView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   TimelinePaintImageView: () => TimelinePaintImageView,
   TimelinePaintProfilerView: () => TimelinePaintProfilerView
 });
@@ -17420,7 +17459,7 @@ async function getPaintProfilerSnapshot(paintProfilerModel, paint) {
 }
 
 // ../../front_end/panels/timeline/TimelinePaintProfilerView.ts
-var { html: html8, render: render8 } = Lit;
+var { html: html9, render: render9 } = Lit;
 var { createRef, ref: ref2 } = Lit.Directives;
 var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
   logAndImageSplitWidget;
@@ -17576,10 +17615,10 @@ var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
     this.logTreeView.selectionWindow = this.paintProfilerView.selectionWindow();
   }
 };
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const imageElementRef = createRef();
-  render8(
-    html8`
+  render9(
+    html9`
   <div class="paint-profiler-image-view fill">
     <div class="paint-profiler-image-container" style="-webkit-transform: ${input.imageContainerWebKitTransform}">
       <img src=${input.imageURL} display=${input.imageContainerHidden ? "none" : "block"} ${ref2(imageElementRef)}>
@@ -17611,7 +17650,7 @@ var TimelinePaintImageView = class extends UI13.Widget.Widget {
   };
   #view;
   #imageElementDimensions;
-  constructor(view = DEFAULT_VIEW3) {
+  constructor(view = DEFAULT_VIEW4) {
     super();
     this.registerRequiredCSS(timelinePaintProfiler_css_default);
     this.#view = view;
@@ -17697,7 +17736,7 @@ import * as i18n43 from "../../core/i18n/i18n.js";
 import * as SDK11 from "../../core/sdk/sdk.js";
 import * as Trace30 from "../../models/trace/trace.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
-import { html as html9, render as render9 } from "../../ui/lit/lit.js";
+import { html as html10, render as render10 } from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/timelineSelectorStatsView.css.js
@@ -17807,9 +17846,9 @@ var UIStrings22 = {
 var str_22 = i18n43.i18n.registerUIStrings("panels/timeline/TimelineSelectorStatsView.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var SelectorTimingsKey = Trace30.Types.Events.SelectorTimingsKey;
-var DEFAULT_VIEW4 = (input, _output, target) => {
-  render9(
-    html9`
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render10(
+    html10`
       <style>${timelineSelectorStatsView_css_default}</style>
       <devtools-data-grid striped name=${i18nString22(UIStrings22.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
@@ -17848,7 +17887,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
       const locations = timing.locations;
       const locationMessage = locations ? null : locations === null ? "" : i18nString22(UIStrings22.unableToLinkViaStyleSheetId, { PH1: styleSheetId });
-      return html9`<tr>
+      return html10`<tr>
             <td data-value=${timing[SelectorTimingsKey.Elapsed]}>
               ${(timing[SelectorTimingsKey.Elapsed] / 1e3).toFixed(3)}
             </td>
@@ -17863,7 +17902,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
             <td title=${timing[SelectorTimingsKey.Selector]}>
              ${timing[SelectorTimingsKey.Selector]}
             </td>
-            <td data-value=${styleSheetId}>${locations ? html9`${locations.map((location, itemIndex) => html9`
+            <td data-value=${styleSheetId}>${locations ? html10`${locations.map((location, itemIndex) => html10`
                 <devtools-linkifier .data=${location}></devtools-linkifier
                 >${itemIndex !== locations.length - 1 ? "," : ""}`)}` : locationMessage}
             </td>
@@ -17889,7 +17928,7 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
   #lastStatsSourceEventOrEvents = null;
   #view;
   #timings = [];
-  constructor(parsedTrace, view = DEFAULT_VIEW4) {
+  constructor(parsedTrace, view = DEFAULT_VIEW5) {
     super();
     this.#view = view;
     this.#selectorLocations = /* @__PURE__ */ new Map();
@@ -18174,7 +18213,7 @@ var UIStrings23 = {
 };
 var str_23 = i18n45.i18n.registerUIStrings("panels/timeline/TimelineDetailsView.ts", UIStrings23);
 var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
-var { widget: widget2 } = UI15.Widget;
+var { widget: widget3 } = UI15.Widget;
 var TimelineDetailsPaneBase = Common15.ObjectWrapper.eventMixin(
   UI15.Widget.VBox
 );
@@ -18649,12 +18688,12 @@ var Tab = /* @__PURE__ */ ((Tab2) => {
   return Tab2;
 })(Tab || {});
 var SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
-  render10(
-    html10`
+  render11(
+    html11`
         <style>${timelineDetailsView_css_default}</style>
         ${Directives3.until(renderSelectedEventDetails(input))}
         ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing5}
-        <devtools-widget data-related-insight-chips ${widget2(
+        <devtools-widget data-related-insight-chips ${widget3(
       TimelineComponents5.RelatedInsightChips.RelatedInsightChips,
       {
         activeEvent: input.selectedEvent,
@@ -18706,13 +18745,13 @@ var SummaryView = class extends UI15.Widget.Widget {
   }
 };
 function generateRangeSummaryDetails(input) {
-  return html10`${widget2(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+  return html11`${widget3(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
     data: {
       parsedTrace: input.parsedTrace,
       events: input.selectedRange?.events,
       startTime: input.selectedRange?.startTime,
       endTime: input.selectedRange?.endTime,
-      thirdPartyTreeTemplate: input.selectedRange ? html10`${widget2(ThirdPartyTreeViewWidget, {
+      thirdPartyTreeTemplate: input.selectedRange ? html11`${widget3(ThirdPartyTreeViewWidget, {
         model: {
           parsedTrace: input.parsedTrace,
           entityMapper: input.entityMapper,
@@ -18733,8 +18772,8 @@ async function renderSelectedEventDetails(input) {
   }
   const traceRecordingIsFresh = parsedTrace ? Tracing6.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
   if (Trace31.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace31.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
-    return html10`
-      <devtools-widget data-layout-shift-details ${widget2(
+    return html11`
+      <devtools-widget data-layout-shift-details ${widget3(
       TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails,
       {
         event: selectedEvent,
@@ -18745,8 +18784,8 @@ async function renderSelectedEventDetails(input) {
       ></devtools-widget>`;
   }
   if (Trace31.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
-    return html10`
-      <devtools-widget data-network-request-details ${widget2(
+    return html11`
+      <devtools-widget data-network-request-details ${widget3(
       TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails,
       {
         request: selectedEvent,
@@ -18762,10 +18801,10 @@ async function renderSelectedEventDetails(input) {
   if (Trace31.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
     const matchedFilmStripFrame = getFilmStripFrame(input.filmStrip, selectedEvent);
     const content = TimelineUIUtils.generateDetailsContentForFrame(selectedEvent, input.filmStrip, matchedFilmStripFrame);
-    return html10`${content}`;
+    return html11`${content}`;
   }
   const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(parsedTrace, selectedEvent, linkifier, true, input.entityMapper);
-  return html10`${traceEventDetails}`;
+  return html11`${traceEventDetails}`;
 }
 var filmStripFrameCache = /* @__PURE__ */ new WeakMap();
 function getFilmStripFrame(filmStrip, frame) {
@@ -19031,7 +19070,7 @@ function keyForTraceConfig(trace) {
 }
 
 // ../../front_end/panels/timeline/TimelineFlameChartNetworkDataProvider.ts
-var { html: html11 } = Lit2;
+var { html: html12 } = Lit2;
 var TimelineFlameChartNetworkDataProvider = class {
   #minimumBoundary = 0;
   #timeSpan = 0;
@@ -19358,7 +19397,7 @@ var TimelineFlameChartNetworkDataProvider = class {
     if (!event || !Trace33.Types.Events.isSyntheticNetworkRequest(event)) {
       return null;
     }
-    return html11`
+    return html12`
       <div class="timeline-flamechart-popover">
         ${TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(
       event,
@@ -22055,15 +22094,15 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     for (const warningElement of warningElements) {
       warningElement.classList.add("popoverinfo-warning");
     }
-    return html12`
+    return html13`
       <style>${timelineFlamechartPopover_css_default}</style>
       <div class="timeline-flamechart-popover">
         <span class=${timeElementClassName}>${time}</span>
         <span class="popoverinfo-title">${title}</span>
         ${warningElements}
         ${additionalContent.map((elem) => {
-      const widget3 = UI18.Widget.Widget.get(elem);
-      return widget3 ? UI18.Widget.widget(UI18.Widget.WrapperWidget, { widget: widget3 }) : elem;
+      const widget4 = UI18.Widget.Widget.get(elem);
+      return widget4 ? UI18.Widget.widget(UI18.Widget.WrapperWidget, { widget: widget4 }) : elem;
     })}
       </div>`;
   }
@@ -22073,7 +22112,7 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     if (!hiddenEntriesAmount) {
       return null;
     }
-    return html12`
+    return html13`
       <style>${timelineFlamechartPopover_css_default}</style>
       <div class="timeline-flamechart-popover">
         <span class="popoverinfo-title">${hiddenEntriesAmount} hidden</span>
@@ -22709,8 +22748,8 @@ var TimingsTrackAppender = class {
 // ../../front_end/panels/timeline/CompatibilityTracksAppender.ts
 import * as TimelineUtils from "./utils/utils.js";
 function renderPopoverUrl(input, _output, target) {
-  render11(
-    html13`<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${input.originWithEntity})</span></div>`,
+  render12(
+    html14`<div><span class="popoverinfo-url-path">${input.path}</span><span class="popoverinfo-url-origin">(${input.originWithEntity})</span></div>`,
     target
   );
 }

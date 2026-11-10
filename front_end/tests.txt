@@ -594,6 +594,7 @@ panels/network/RequestTimingView.test.js
 panels/network/ResourceDirectSocketChunkView.test.js
 panels/network/ResourceWebSocketFrameView.test.js
 panels/network/ShowMoreDetailsWidget.test.js
+panels/network/SignedExchangeInfoView.test.js
 panels/network/components/DirectSocketConnectionView.test.js
 panels/network/components/EditableSpan.test.js
 panels/network/components/HeaderSectionRow.test.js
@@ -606,6 +607,7 @@ panels/profiler/HeapProfileView.test.js
 panels/profiler/HeapSnapshotDataGrids.test.js
 panels/profiler/HeapSnapshotView.test.js
 panels/profiler/HeapTimelineOverview.test.js
+panels/profiler/IsolateSelector.test.js
 panels/profiler/ProfileFlameChartDataProvider.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js

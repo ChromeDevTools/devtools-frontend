@@ -197,6 +197,9 @@
       "path": "../services/trace_bounds/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../third_party/axe-core/axe-core-tsconfig.ref.json"
+    },
+    {
       "path": "../third_party/chromium/ahem/ahem-tsconfig.ref.json"
     },
     {

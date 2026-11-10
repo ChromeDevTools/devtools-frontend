@@ -119,6 +119,7 @@ export default `/*
     min-width: var(--sys-size-9);
     flex: 0 0 auto;
     display: flex;
+    align-items: center;
     padding-left: var(--sys-size-5);
     justify-content: right;
   }
@@ -225,7 +226,7 @@ export default `/*
   }
 
   .location {
-    line-height: 14px;
+    line-height: var(--sys-typescale-body4-line-height);
     text-overflow: ellipsis;
     overflow: hidden;
   }

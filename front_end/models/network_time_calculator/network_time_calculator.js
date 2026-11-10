@@ -224,7 +224,7 @@ var NetworkTransferDurationCalculator = class extends NetworkTimeCalculator {
   }
 };
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;

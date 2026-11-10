@@ -44,7 +44,7 @@ __export(TracingManager_exports, {
 });
 import * as SDK from "../../core/sdk/sdk.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;

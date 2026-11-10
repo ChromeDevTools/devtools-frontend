@@ -155,7 +155,7 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     startRenamingNode(node: NavigatorUISourceCodeTreeNode): void;
     stopRenamingNode(node: NavigatorUISourceCodeTreeNode): void;
     isRenaming(): boolean;
-    handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void;
+    handleFileContextMenu(contextMenu: UI.ContextMenu.ContextMenu, node: NavigatorUISourceCodeTreeNode): void;
     private handleSaveAs;
     private addJSExtension;
     private handleDeleteFolder;
@@ -163,13 +163,14 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     private deleteDirectoryRecursively;
     private findTopNonMergedNode;
     folderHovered(node: NavigatorTreeNode, hovered: boolean): void;
-    handleFolderContextMenu(event: Event, node: NavigatorFolderTreeNode | NavigatorGroupTreeNode): void;
+    handleFolderContextMenu(contextMenu: UI.ContextMenu.ContextMenu, node: NavigatorFolderTreeNode | NavigatorGroupTreeNode): void;
     rename(node: NavigatorUISourceCodeTreeNode, creatingNewUISourceCode: boolean): void;
     create(project: Workspace.Workspace.Project, path: Platform.DevToolsPath.EncodedPathString, uiSourceCodeToCopy?: Workspace.UISourceCode.UISourceCode): Promise<void>;
     private groupingChanged;
     private ignoreListChanged;
     private initGrouping;
     protected resetForTest(): void;
+    deselectIfDescendant(node: NavigatorTreeNode): void;
     private discardFrame;
     targetAdded(_target: SDK.Target.Target): void;
     targetRemoved(target: SDK.Target.Target): void;
@@ -195,6 +196,9 @@ export declare class NavigatorTreeNode {
     tooltip?: string;
     recursiveProperties: NavigatorRecursiveTreeNodeProperties;
     constructor(navigatorView: NavigatorView, id: string, type: string, tooltip?: string);
+    mergedTitle(): string;
+    effectiveChildren(): NavigatorTreeNode[];
+    isDisposed(): boolean;
     computedTooltip(): string;
     updateTooltip(treeElement?: UI.TreeOutline.TreeElement): void;
     protected createFolderTreeElement(title: string, node: NavigatorTreeNode, expandable?: boolean): UI.TreeOutline.TreeElement;
@@ -216,6 +220,7 @@ export declare class NavigatorTreeNode {
     children(): readonly NavigatorTreeNode[];
     child(id: string): NavigatorTreeNode | null;
     appendChild(node: NavigatorTreeNode): void;
+    resortChild(node: NavigatorTreeNode): void;
     removeChild(node: NavigatorTreeNode): void;
     reset(): void;
     updateId(newId: string): void;
@@ -252,6 +257,10 @@ export declare class NavigatorFolderTreeNode extends NavigatorTreeNode {
     title: string;
     treeElement: UI.TreeOutline.TreeElement | null;
     constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project | null, id: string, type: string, folderPath: Platform.DevToolsPath.EncodedPathString, title: string, origin: Platform.DevToolsPath.UrlString);
+    mergedTitle(): string;
+    mergedLeafNode(): NavigatorFolderTreeNode;
+    effectiveChildren(): NavigatorTreeNode[];
+    computedTooltip(): string;
     treeNode(): UI.TreeOutline.TreeElement;
     private computeHasMappedFiles;
     private updateTreeElement;

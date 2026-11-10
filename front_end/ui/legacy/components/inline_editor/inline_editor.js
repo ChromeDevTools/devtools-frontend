@@ -812,7 +812,7 @@ svg.bezier-preset-modify:hover,
 }
 
 .bezier-preset-category {
-  width: 50px;
+  width: var(--sys-size-16);
   cursor: pointer;
   transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1459,7 +1459,9 @@ var cssAngleEditor_css_default = `/*
   background-color: var(--sys-color-cdt-base-container);
   border: 0.5em solid var(--sys-color-neutral-outline);
   border-radius: 9em;
-  box-shadow: var(--drop-shadow), inset 0 0 15px var(--box-shadow-outline-color);
+  box-shadow:
+    var(--drop-shadow),
+    inset 0 0 var(--sys-size-7) var(--box-shadow-outline-color);
   transform: translateX(-3em);
 }
 
@@ -2149,20 +2151,20 @@ var cssShadowEditor_css_default = `/*
 }
 
 .shadow-editor-field.shadow-editor-blur-field {
-  margin-top: var(--sys-size-14);
+  margin-top: var(--sys-size-13);
 }
 
 .shadow-editor-2D-slider {
   position: absolute;
-  height: 88px;
-  width: 88px;
+  height: var(--sys-size-19);
+  width: var(--sys-size-19);
   border: var(--sys-size-1) solid var(--divider-line);
   border-radius: var(--sys-size-2);
 }
 
 .shadow-editor-label {
   display: inline-block;
-  width: 52px;
+  width: var(--sys-size-17);
   height: var(--sys-size-11);
   line-height: var(--sys-size-11);
   margin-right: var(--sys-size-5);
@@ -2171,7 +2173,8 @@ var cssShadowEditor_css_default = `/*
 
 .shadow-editor-button-left,
 .shadow-editor-button-right {
-  width: 74px;
+  /* Match half of the combined width of the text input (--sys-size-17), gap (--sys-size-5), and 2D/range slider (--sys-size-19) below. */
+  width: calc((var(--sys-size-17) + var(--sys-size-5) + var(--sys-size-19)) / 2);
   height: var(--sys-size-11);
   padding: 3px 7px;
   line-height: var(--sys-size-8);
@@ -2213,7 +2216,7 @@ var cssShadowEditor_css_default = `/*
 }
 
 .shadow-editor-text-input {
-  width: 52px;
+  width: var(--sys-size-17);
   margin-right: var(--sys-size-5);
   text-align: right;
   box-shadow: var(--legacy-focus-ring-inactive-shadow);
@@ -2261,7 +2264,7 @@ var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var maxRange = 20;
 var defaultUnit = "px";
 var sliderThumbRadius = 6;
-var canvasSize = 88;
+var canvasSize = 80;
 var CSS_LENGTH_REGEX = (function() {
   const number = "([+-]?(?:[0-9]*[.])?[0-9]+(?:[eE][+-]?[0-9]+)?)";
   const unit = "(ch|cm|em|ex|in|mm|pc|pt|px|rem|vh|vmax|vmin|vw)";

@@ -41,7 +41,9 @@ export class ListSourcesTool {
                 if (uiSourceCode.isIgnoreListed()) {
                     continue;
                 }
-                if (!projectOrigin && !isOriginAllowedByLock(originLock, uiSourceCode.securityOrigin())) {
+                // A source map on an allowed page can still point to cross-origin URLs,
+                // so a file's origin may differ from its project's origin.
+                if (!isOriginAllowedByLock(originLock, uiSourceCode.securityOrigin())) {
                     continue;
                 }
                 const url = uiSourceCode.url();

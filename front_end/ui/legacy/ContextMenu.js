@@ -698,8 +698,10 @@ export class ContextMenu extends SubMenu {
                 Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
                 Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
             }
-            VisualLogging.registerLoggable(menuObject, `${VisualLogging.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
-            this.registerLoggablesWithin(menuObject);
+            if (menuObject.length > 0) {
+                VisualLogging.registerLoggable(menuObject, `${VisualLogging.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
+                this.registerLoggablesWithin(menuObject);
+            }
             this.openHostedMenu = menuObject;
             // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),
             // so we skip it before subscribing to the clear event.
@@ -784,7 +786,7 @@ export class ContextMenu extends SubMenu {
     menuCleared() {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
-        if (this.openHostedMenu) {
+        if (this.openHostedMenu && this.openHostedMenu.length > 0) {
             void VisualLogging.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
         }
         this.openHostedMenu = null;

@@ -27,7 +27,7 @@ export default `/*
 
 .network-timing-table-header td,
 .network-timing-footer td {
-  border-top: 10px solid transparent;
+  border-top: var(--sys-size-5) solid transparent;
 }
 
 .network-timing-table-header td {

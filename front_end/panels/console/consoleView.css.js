@@ -130,7 +130,7 @@ export default `/* Copyright 2021 The Chromium Authors
 .message-level-icon,
 .command-result-icon {
   position: absolute;
-  left: -17px;
+  left: calc(-1 * var(--sys-size-9));
   top: var(--sys-size-2);
   user-select: none;
 }
@@ -312,14 +312,15 @@ export default `/* Copyright 2021 The Chromium Authors
 
 .console-message-wrapper .nesting-level-marker + .console-message::after {
   position: absolute;
-  left: -30px;
+  /* 24px (--sys-size-11) .console-message left margin + 6px (--sys-size-4) pseudo-element width */
+  left: calc(-1 * (var(--sys-size-11) + var(--sys-size-4)));
   top: 0;
   width: var(--sys-size-4);
   height: 100%;
   box-sizing: border-box;
   background-color: var(--sys-color-surface-yellow);
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-top-left-radius: var(--sys-shape-corner-extra-small);
+  border-bottom-left-radius: var(--sys-shape-corner-extra-small);
   content: "";
 }
 

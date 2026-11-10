@@ -6,7 +6,7 @@ import '../../kit/kit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Lit from '../../lit/lit.js';
 import floatingButtonStyles from './floatingButton.css.js';
-const { html, Directives: { classMap } } = Lit;
+const { html } = Lit;
 /**
  * A simple floating button component, primarily used to display the 'Ask AI!'
  * teaser when hovering over specific UI elements.
@@ -100,13 +100,10 @@ export class FloatingButton extends HTMLElement {
         }
     }
     #render() {
-        const classes = classMap({
-            gemini: this.iconName === 'spark',
-        });
         // clang-format off
         Lit.render(html `
         <style>${floatingButtonStyles}</style>
-        <button class=${classes} ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`, this.#shadow, { host: this });
+        <button ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`, this.#shadow, { host: this });
         // clang-format on
     }
     #updateJslog() {

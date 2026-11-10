@@ -398,7 +398,7 @@ __export(ConsoleFilter_exports, {
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -3968,7 +3968,7 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
 .message-level-icon,
 .command-result-icon {
   position: absolute;
-  left: -17px;
+  left: calc(-1 * var(--sys-size-9));
   top: var(--sys-size-2);
   user-select: none;
 }
@@ -4150,14 +4150,15 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
 
 .console-message-wrapper .nesting-level-marker + .console-message::after {
   position: absolute;
-  left: -30px;
+  /* 24px (--sys-size-11) .console-message left margin + 6px (--sys-size-4) pseudo-element width */
+  left: calc(-1 * (var(--sys-size-11) + var(--sys-size-4)));
   top: 0;
   width: var(--sys-size-4);
   height: 100%;
   box-sizing: border-box;
   background-color: var(--sys-color-surface-yellow);
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-top-left-radius: var(--sys-shape-corner-extra-small);
+  border-bottom-left-radius: var(--sys-shape-corner-extra-small);
   content: "";
 }
 
@@ -6330,9 +6331,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   get text() {
     return this.message.messageText;
   }
+  toString() {
+    return Components2.Linkifier.Linkifier.untruncatedTextContent(this.contentElement());
+  }
   toExportString() {
     const lines = [];
-    const messageContent = Components2.Linkifier.Linkifier.untruncatedTextContent(this.contentElement());
+    const messageContent = this.toString();
     for (let i = 0; i < this.repeatCount(); ++i) {
       lines.push(messageContent);
     }
@@ -7756,7 +7760,7 @@ var consolePinPane_css_default = `/*
 }
 
 .console-pins {
-  max-height: 200px;
+  max-height: var(--sys-size-25);
   overflow-y: auto;
   background: var(--sys-color-cdt-base-container);
 
@@ -9509,9 +9513,14 @@ var UIStrings5 = {
    */
   saveAs: "Save as\u2026",
   /**
+   * @description A context menu item in the Console view of the Console panel. Copies the message
+   * the user right-clicked to the clipboard.
+   */
+  copyMessage: "Copy message",
+  /**
    * @description Text to copy console log to clipboard.
    */
-  copyConsole: "Copy console",
+  copyConsole: "Copy all messages",
   /**
    * @description A context menu item in the Console view of the Console panel.
    */
@@ -10627,6 +10636,11 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
         this.viewport.copyWithStyles.bind(this.viewport),
         { jslogContext: "copy-visible-styled-selection" }
       );
+    }
+    if (consoleViewMessage) {
+      contextMenu.clipboardSection().appendItem(i18nString5(UIStrings5.copyMessage), () => {
+        Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(consoleViewMessage.toString());
+      }, { jslogContext: "copy-message" });
     }
     if (consoleMessage) {
       const request = Logs3.NetworkLog.NetworkLog.requestForConsoleMessage(consoleMessage);

@@ -2,6 +2,12 @@ import * as NetworkTimeCalculator from '../../models/network_time_calculator/net
 import * as UI from '../../ui/legacy/legacy.js';
 import type { NetworkNode } from './NetworkDataGridNode.js';
 export interface ViewInput {
+    /** Canvas width in CSS pixels. */
+    width: number;
+    /** Canvas height in CSS pixels. */
+    height: number;
+    /** Ratio between the canvas backing store size and its CSS size. */
+    pixelRatio: number;
     onMouseMove: (offsetY: number, shiftKey: boolean) => void;
     onMouseLeave: () => void;
     onClick: (offsetY: number) => boolean;
@@ -54,7 +60,6 @@ export declare class NetworkWaterfallColumn extends UI.Widget.VBox {
     getNodeFromPoint(y: number): NetworkNode | null;
     scheduleDraw(): void;
     update(scrollTop?: number, eventDividers?: Map<string, number[]>, nodes?: NetworkNode[]): void;
-    private resetCanvas;
     onResize(): void;
     private calculateCanvasSize;
     private timeToPosition;

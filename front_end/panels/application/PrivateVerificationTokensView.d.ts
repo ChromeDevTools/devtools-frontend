@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -19,6 +20,11 @@ export interface TokenRow {
 }
 export interface ViewInput {
     tokens: TokenRow[];
+    selectedTokenId: string | null;
+    onSelect: (tokenId: string) => void;
+    onDeselect: () => void;
+    onDeleteAll: () => void;
+    onDeleteToken: (tokenId: string) => void;
 }
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
@@ -29,6 +35,6 @@ export declare class PrivateVerificationTokensView extends UI.Widget.VBox implem
     willHide(): void;
     modelAdded(model: SDK.PrivateVerificationTokensModel.PrivateVerificationTokensModel): void;
     modelRemoved(model: SDK.PrivateVerificationTokensModel.PrivateVerificationTokensModel): void;
-    performUpdate(signal?: AbortSignal): Promise<void>;
+    performUpdate(): void;
 }
 export {};

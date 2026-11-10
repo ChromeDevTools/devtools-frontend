@@ -105,17 +105,12 @@ export default `/*
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  padding: 5px;
+  padding: var(--sys-size-3);
   gap: var(--sys-size-6);
 }
 
-.editor-buttons > button {
-  flex: none;
-  margin-right: 10px;
-}
-
 .editor-content input {
-  margin-right: 10px;
+  margin-right: var(--sys-size-5);
 }
 
 .editor-content input.error-input {

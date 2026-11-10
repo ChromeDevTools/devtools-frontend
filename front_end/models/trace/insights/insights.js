@@ -20,7 +20,7 @@ __export(Cache_exports, {
 });
 import * as i18n from "../../../core/i18n/i18n.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;

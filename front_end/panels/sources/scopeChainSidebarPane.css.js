@@ -21,7 +21,7 @@ export default `/*
 
 .scope-chain-sidebar-pane-section-icon {
   flex: none;
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .scope-chain-sidebar-pane-section-subtitle {

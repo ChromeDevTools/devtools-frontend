@@ -36,7 +36,7 @@ table {
 
 table td {
   font: var(--sys-typescale-body4-regular);
-  line-height: 18px;
+  line-height: var(--sys-typescale-body4-line-height);
   padding: var(--sys-size-3) var(--sys-size-5);
   vertical-align: top;
 }
@@ -483,18 +483,34 @@ var LayerDetailsViewBase = Common2.ObjectWrapper.eventMixin(
   UI.Widget.Widget
 );
 var LayerDetailsView = class extends LayerDetailsViewBase {
-  layerViewHost;
-  layerSnapshotMap;
+  #layerViewHost;
+  layerSnapshotMap = /* @__PURE__ */ new Map();
   selection;
   compositingReasons = [];
   view;
   constructor(layerViewHost, view = DEFAULT_VIEW) {
-    super({ useShadowDom: "pure" });
+    super(layerViewHost instanceof HTMLElement ? layerViewHost : void 0, { useShadowDom: "pure" });
     this.view = view;
-    this.layerViewHost = layerViewHost;
-    this.layerViewHost.registerView(this);
-    this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
     this.selection = null;
+    if (layerViewHost && !(layerViewHost instanceof HTMLElement)) {
+      this.layerViewHost = layerViewHost;
+    }
+  }
+  get layerViewHost() {
+    return this.#layerViewHost;
+  }
+  set layerViewHost(layerViewHost) {
+    if (this.#layerViewHost === layerViewHost) {
+      return;
+    }
+    this.#layerViewHost = layerViewHost;
+    if (this.#layerViewHost) {
+      this.#layerViewHost.registerView(this);
+      this.layerSnapshotMap = this.#layerViewHost.getLayerSnapshotMap();
+      if (this.isShowing()) {
+        this.update();
+      }
+    }
   }
   hoverObject(_selection) {
   }
@@ -517,7 +533,7 @@ var LayerDetailsView = class extends LayerDetailsViewBase {
     if (!this.selection) {
       return;
     }
-    this.layerViewHost.selectObject(new ScrollRectSelection(this.selection.layer(), index));
+    this.#layerViewHost?.selectObject(new ScrollRectSelection(this.selection.layer(), index));
   }
   invokeProfilerLink() {
     if (!this.selection) {
@@ -712,7 +728,7 @@ var LayerTreeOutlineBase = Common3.ObjectWrapper.eventMixin(
   UI2.Widget.Widget
 );
 var LayerTreeOutline = class extends LayerTreeOutlineBase {
-  layerViewHost;
+  #layerViewHost;
   layerTree;
   layerSnapshotMap;
   #layerCount = 0;
@@ -722,25 +738,45 @@ var LayerTreeOutline = class extends LayerTreeOutlineBase {
   #view;
   #hoveredLayer = null;
   constructor(layerViewHost, view = DEFAULT_VIEW2) {
-    super();
+    super(layerViewHost instanceof HTMLElement ? layerViewHost : void 0);
     this.#view = view;
-    this.layerViewHost = layerViewHost;
-    this.layerViewHost.registerView(this);
+    if (layerViewHost && !(layerViewHost instanceof HTMLElement)) {
+      this.layerViewHost = layerViewHost;
+    }
+  }
+  get layerViewHost() {
+    return this.#layerViewHost;
+  }
+  set layerViewHost(layerViewHost) {
+    if (this.#layerViewHost === layerViewHost) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.update, this);
+    }
+    this.#layerViewHost = layerViewHost;
+    if (this.#layerViewHost) {
+      this.#layerViewHost.registerView(this);
+      if (this.isShowing()) {
+        this.#layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+        this.update();
+      }
+    }
   }
   wasShown() {
     super.wasShown();
-    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+    this.#layerViewHost?.showInternalLayersSetting().addChangeListener(this.update, this);
     this.update();
   }
   willHide() {
-    this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.update, this);
+    this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.update, this);
     super.willHide();
   }
   performUpdate() {
     this.#view(
       {
         treeData: this.#treeData,
-        selectedLayer: this.layerViewHost.selection()?.layer() || null,
+        selectedLayer: this.#layerViewHost?.selection()?.layer() || null,
         hoveredLayer: this.#hoveredLayer,
         layerCount: this.#layerCount,
         totalLayerMemory: this.#totalLayerMemory,
@@ -775,7 +811,7 @@ var LayerTreeOutline = class extends LayerTreeOutlineBase {
   update() {
     let layerCount = 0;
     let totalLayerMemory = 0;
-    const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
+    const showInternalLayers = this.#layerViewHost?.showInternalLayersSetting().get() ?? false;
     let root = null;
     if (this.layerTree) {
       if (!showInternalLayers) {
@@ -825,34 +861,34 @@ var LayerTreeOutline = class extends LayerTreeOutlineBase {
     this.#layerCount = layerCount;
     this.#totalLayerMemory = totalLayerMemory;
     this.requestUpdate();
-    if (!this.layerViewHost.selection() && this.layerTree && this.#treeData.length > 0) {
+    if (!this.#layerViewHost?.selection() && this.layerTree && this.#treeData.length > 0) {
       const elementToSelect = this.layerTree.contentRoot() || this.layerTree.root();
       if (elementToSelect) {
-        this.layerViewHost.selectObject(new LayerSelection(elementToSelect));
+        this.#layerViewHost?.selectObject(new LayerSelection(elementToSelect));
       }
     }
   }
   onHover(layer) {
-    this.layerViewHost.hoverObject(layer ? new LayerSelection(layer) : null);
+    this.#layerViewHost?.hoverObject(layer ? new LayerSelection(layer) : null);
   }
   onSelect(layer) {
-    if (this.layerViewHost.selection()?.layer() === layer) {
+    if (this.#layerViewHost?.selection()?.layer() === layer) {
       return;
     }
-    this.layerViewHost.selectObject(new LayerSelection(layer));
+    this.#layerViewHost?.selectObject(new LayerSelection(layer));
   }
   onContextMenu(event, layer) {
     const selection = layer ? new LayerSelection(layer) : null;
     const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
-    if (layer && this.layerSnapshotMap.has(layer) && selection) {
+    this.layerSnapshotMap = this.#layerViewHost?.getLayerSnapshotMap();
+    if (layer && this.layerSnapshotMap?.has(layer) && selection) {
       contextMenu.defaultSection().appendItem(
         i18nString3(UIStrings3.showPaintProfiler),
         () => this.dispatchEventToListeners("PaintProfilerRequested" /* PAINT_PROFILER_REQUESTED */, selection),
         { jslogContext: "layers.paint-profiler" }
       );
     }
-    this.layerViewHost.showContextMenu(contextMenu, selection);
+    this.#layerViewHost?.showContextMenu(contextMenu, selection);
   }
 };
 var Events2 = /* @__PURE__ */ ((Events6) => {
@@ -921,10 +957,6 @@ devtools-toolbar {
 
 canvas {
   flex: 1 1;
-}
-
-.layers-3d-view > canvas:focus-visible {
-  outline: auto 5px -webkit-focus-ring-color;
 }
 
 /*# sourceURL=${import.meta.resolve("./layers3DView.css")} */`;
@@ -1331,7 +1363,7 @@ var Layers3DViewBase = Common5.ObjectWrapper.eventMixin(
   UI4.Widget.VBox
 );
 var Layers3DView = class extends Layers3DViewBase {
-  layerViewHost;
+  #layerViewHost;
   transformController;
   lastSelection;
   layerTree;
@@ -1361,10 +1393,8 @@ var Layers3DView = class extends Layers3DViewBase {
   #error;
   #canvasElement;
   constructor(layerViewHost, view = DEFAULT_VIEW4) {
-    super();
+    super(layerViewHost instanceof HTMLElement ? layerViewHost : void 0);
     this.#view = view;
-    this.layerViewHost = layerViewHost;
-    this.layerViewHost.registerView(this);
     this.transformController = new TransformController(
       this.contentElement,
       false,
@@ -1390,7 +1420,29 @@ var Layers3DView = class extends Layers3DViewBase {
     this.chromeTextures = [];
     this.rects = [];
     this.snapshotLayers = /* @__PURE__ */ new Map();
-    this.layerViewHost.setLayerSnapshotMap(this.snapshotLayers);
+    if (layerViewHost && !(layerViewHost instanceof HTMLElement)) {
+      this.layerViewHost = layerViewHost;
+    }
+  }
+  get layerViewHost() {
+    return this.#layerViewHost;
+  }
+  set layerViewHost(layerViewHost) {
+    if (this.#layerViewHost === layerViewHost) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.updateData, this);
+    }
+    this.#layerViewHost = layerViewHost;
+    if (this.#layerViewHost) {
+      this.#layerViewHost.registerView(this);
+      this.#layerViewHost.setLayerSnapshotMap(this.snapshotLayers);
+      if (this.isShowing()) {
+        this.#layerViewHost.showInternalLayersSetting().addChangeListener(this.updateData, this);
+        this.updateData();
+      }
+    }
   }
   performUpdate() {
     const output = {};
@@ -1441,7 +1493,7 @@ var Layers3DView = class extends Layers3DViewBase {
     this.showPaintsSetting.removeChangeListener(this.updatePaints, this);
     this.showSlowScrollRectsSetting.removeChangeListener(this.updateData, this);
     this.#chromeWindowSetting.removeChangeListener(this.updateData, this);
-    this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.updateData, this);
+    this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.updateData, this);
     this.textureManager.suspend();
     super.willHide();
   }
@@ -1450,7 +1502,7 @@ var Layers3DView = class extends Layers3DViewBase {
     this.showPaintsSetting.addChangeListener(this.updatePaints, this);
     this.showSlowScrollRectsSetting.addChangeListener(this.updateData, this);
     this.#chromeWindowSetting.addChangeListener(this.updateData, this);
-    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.updateData, this);
+    this.#layerViewHost?.showInternalLayersSetting().addChangeListener(this.updateData, this);
     this.textureManager.resume();
     this.performUpdate();
     this.resizeCanvas();
@@ -1644,7 +1696,7 @@ var Layers3DView = class extends Layers3DViewBase {
   calculateDepthsAndVisibility() {
     this.depthByLayerId = /* @__PURE__ */ new Map();
     let depth = 0;
-    const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
+    const showInternalLayers = this.#layerViewHost?.showInternalLayersSetting().get() ?? false;
     if (!this.layerTree) {
       return;
     }
@@ -1977,14 +2029,14 @@ var Layers3DView = class extends Layers3DViewBase {
         }
       );
     }
-    this.layerViewHost.showContextMenu(contextMenu, selection);
+    this.#layerViewHost?.showContextMenu(contextMenu, selection);
   }
   onMouseMove(event) {
     const mouseEvent = event;
     if (mouseEvent.which) {
       return;
     }
-    this.layerViewHost.hoverObject(this.selectionFromEventPoint(event));
+    this.#layerViewHost?.hoverObject(this.selectionFromEventPoint(event));
   }
   onMouseDown(event) {
     const mouseEvent = event;
@@ -1996,7 +2048,7 @@ var Layers3DView = class extends Layers3DViewBase {
     const maxDistanceInPixels = 6;
     if (this.mouseDownX && Math.abs(mouseEvent.clientX - this.mouseDownX) < maxDistanceInPixels && Math.abs(mouseEvent.clientY - (this.mouseDownY || 0)) < maxDistanceInPixels) {
       this.#canvasElement.focus();
-      this.layerViewHost.selectObject(this.selectionFromEventPoint(event));
+      this.#layerViewHost?.selectObject(this.selectionFromEventPoint(event));
     }
     delete this.mouseDownX;
     delete this.mouseDownY;

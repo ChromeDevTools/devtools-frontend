@@ -296,8 +296,8 @@ input[type='range'] {
   appearance: none;
   margin: 0;
   padding: 0;
-  height: 10px;
-  width: 88px;
+  height: var(--sys-size-5);
+  width: var(--sys-size-19);
   outline: none;
   background: none;
 }

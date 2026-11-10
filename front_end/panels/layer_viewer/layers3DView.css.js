@@ -29,8 +29,4 @@ canvas {
   flex: 1 1;
 }
 
-.layers-3d-view > canvas:focus-visible {
-  outline: auto 5px -webkit-focus-ring-color;
-}
-
 /*# sourceURL=${import.meta.resolve('./layers3DView.css')} */`;

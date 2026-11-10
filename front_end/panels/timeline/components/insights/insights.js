@@ -369,7 +369,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
     if (!selected && !minimal) {
       return Lit2.nothing;
     }
-    const aiLabel = AIAssistance.AiUtils.isGeminiBranding() ? "Ask Gemini" : "Ask AI";
+    const aiLabel = "Ask AI";
     const ariaLabel2 = `${aiLabel} about ${model.title} insight`;
     const content = renderContent();
     const iconName = AIAssistance.AiUtils.getIconName();

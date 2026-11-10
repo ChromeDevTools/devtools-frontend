@@ -1144,7 +1144,7 @@ __export(Network_exports, {
   parseCacheControl: () => parseCacheControl
 });
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;

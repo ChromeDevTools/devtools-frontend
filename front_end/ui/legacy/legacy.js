@@ -1936,7 +1936,7 @@ var infobar_css_default = `/*
 .infobar-details-row {
   display: flex;
   flex-direction: column;
-  line-height: 18px;
+  line-height: var(--sys-typescale-body3-5-line-height);
 
   + .infobar-details-row {
     padding-top: var(--sys-size-3);
@@ -2238,7 +2238,7 @@ var inspectorDrawerTabbedPane_css_default = `/*
   flex-direction: column;
   align-items: center;
   height: auto;
-  width: 27px;
+  width: 100%;
 }
 
 devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
@@ -2255,8 +2255,8 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
   margin: 0 auto;
   padding: 0;
   padding-right: var(--sys-size-1);
-  width: 27px;
-  height: 26px;
+  width: 100%;
+  height: var(--toolbar-height);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3945,6 +3945,7 @@ var SplitWidget = class extends SplitWidgetBase {
       }
     });
     this.#resizerElement = this.contentElement.createChild("div", "shadow-split-widget-resizer");
+    this.#resizerElement.setAttribute("jslog", `${VisualLogging4.resizer().track({ drag: true })}`);
     this.#resizerWidget = new SimpleResizerWidget();
     this.#resizerWidget.setEnabled(true);
     this.#resizerWidget.addEventListener("ResizeStart" /* RESIZE_START */, this.#onResizeStart, this);
@@ -4467,11 +4468,11 @@ var SplitWidget = class extends SplitWidgetBase {
   uninstallResizer(resizerElement) {
     this.#resizerWidget.removeElement(resizerElement);
   }
-  toggleResizer(resizer, on) {
+  toggleResizer(resizer2, on) {
     if (on) {
-      this.installResizer(resizer);
+      this.installResizer(resizer2);
     } else {
-      this.uninstallResizer(resizer);
+      this.uninstallResizer(resizer2);
     }
   }
   #settingForOrientation() {
@@ -4822,7 +4823,8 @@ var tabbedPane_css_default = `/*
   margin-left: var(--sys-size-1);
   justify-self: center;
   position: relative;
-  top: 0.75px;
+  /* Nudge the dot 1px down to optically align it with the tab title. */
+  top: var(--sys-size-1);
 }
 
 .tabbed-pane-header-tab {
@@ -9475,7 +9477,7 @@ function createLocaleInfobar() {
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: "language" }).of(locale.language || "en") || "English";
   const languageSetting = Common11.Settings.Settings.instance().moduleSetting("language");
-  return new Infobar(
+  const infobar = new Infobar(
     "info" /* INFO */,
     i18nString9(UIStrings9.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }),
     [
@@ -9503,6 +9505,8 @@ function createLocaleInfobar() {
     getDisableLocaleInfoBarSetting(),
     "language-mismatch"
   );
+  infobar.setCloseCallback(() => getDisableLocaleInfoBarSetting().set(true));
+  return infobar;
 }
 function reloadDevTools() {
   if (DockController.instance().canDock() && DockController.instance().dockSide() === "undocked" /* UNDOCKED */) {
@@ -10990,13 +10994,15 @@ var ContextMenu = class _ContextMenu extends SubMenu {
         menuObject,
         ownerDocument
       );
-      VisualLogging11.registerLoggable(
-        menuObject,
-        `${VisualLogging11.menu()}`,
-        this.loggableParent,
-        new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length)
-      );
-      this.registerLoggablesWithin(menuObject);
+      if (menuObject.length > 0) {
+        VisualLogging11.registerLoggable(
+          menuObject,
+          `${VisualLogging11.menu()}`,
+          this.loggableParent,
+          new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length)
+        );
+        this.registerLoggablesWithin(menuObject);
+      }
       this.openHostedMenu = menuObject;
       queueMicrotask(listenToEvents.bind(this));
     }
@@ -11086,7 +11092,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
       this.onItemSelected,
       this
     );
-    if (this.openHostedMenu) {
+    if (this.openHostedMenu && this.openHostedMenu.length > 0) {
       void VisualLogging11.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
     }
     this.openHostedMenu = null;
@@ -15105,8 +15111,8 @@ input[type='range'] {
   appearance: none;
   margin: 0;
   padding: 0;
-  height: 10px;
-  width: 88px;
+  height: var(--sys-size-5);
+  width: var(--sys-size-19);
   outline: none;
   background: none;
 }
@@ -17874,7 +17880,6 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
   }
   static cloneNode(node) {
     const clone = node.cloneNode(false);
-    _HTMLElementWithLightDOMTemplate.registerClone(node, clone);
     for (const child of node.childNodes) {
       clone.appendChild(_HTMLElementWithLightDOMTemplate.cloneNode(child));
     }
@@ -17885,6 +17890,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
         registerWidgetConfig(clone, currentConfig);
       }
     }
+    _HTMLElementWithLightDOMTemplate.registerClone(node, clone);
     return clone;
   }
   /**
@@ -19532,7 +19538,7 @@ var filter_css_default = `/*
 
 .filter-checkbox-filter {
   padding-left: var(--sys-size-1);
-  padding-right: 7px;
+  padding-right: var(--sys-size-4);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -20456,17 +20462,12 @@ var listWidget_css_default = `/*
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  padding: 5px;
+  padding: var(--sys-size-3);
   gap: var(--sys-size-6);
 }
 
-.editor-buttons > button {
-  flex: none;
-  margin-right: 10px;
-}
-
 .editor-content input {
-  margin-right: 10px;
+  margin-right: var(--sys-size-5);
 }
 
 .editor-content input.error-input {
@@ -21869,6 +21870,7 @@ var rootView_css_default = `/*
 // ../../front_end/ui/legacy/RootView.ts
 var RootView = class extends VBox {
   window;
+  #onWindowResize = () => this.doResize();
   constructor(universe) {
     super();
     this.markAsRoot();
@@ -21881,12 +21883,16 @@ var RootView = class extends VBox {
     });
   }
   attachToDocument(document2) {
-    if (document2.defaultView) {
-      document2.defaultView.addEventListener("resize", this.doResize.bind(this), false);
-    }
+    this.window?.removeEventListener("resize", this.#onWindowResize, false);
     this.window = document2.defaultView;
+    this.window?.addEventListener("resize", this.#onWindowResize, false);
     this.doResize();
     this.show(document2.body);
+  }
+  onDetach() {
+    this.window?.removeEventListener("resize", this.#onWindowResize, false);
+    this.window = null;
+    super.onDetach();
   }
   doResize() {
     if (this.window) {
@@ -22878,7 +22884,7 @@ button.soft-dropdown {
   position: relative;
   border: none;
   background: none;
-  max-width: 120px;
+  max-width: var(--sys-size-21);
 
   &[disabled] {
     background: var(--sys-color-state-disabled-container);
@@ -23630,8 +23636,9 @@ ol.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.sel
   &::before {
     flex-shrink: 0;
     overflow: hidden;
-    margin-right: 3px;
-    margin-left: -3px;
+    /* Shift 20px mask left by 2px to center its glyph in the 16px slot. */
+    margin-right: var(--sys-size-2);
+    margin-left: calc(-1 * var(--sys-size-2));
   }
 
   & .selection {
@@ -25399,6 +25406,9 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
         }
         if (hasBooleanAttribute(node, "selected")) {
           treeElement.revealAndSelect(!this.hasFocus());
+        }
+        if (node instanceof HTMLLIElement) {
+          HTMLElementWithLightDOMTemplate.registerClone(node, treeElement.listItemElement);
         }
         if (parent.expanded) {
           parent.treeElement.expand();

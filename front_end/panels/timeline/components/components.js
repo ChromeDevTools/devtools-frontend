@@ -482,7 +482,7 @@ __export(Utils_exports, {
 import * as i18n3 from "../../../core/i18n/i18n.js";
 import * as Platform from "../../../core/platform/platform.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -8665,7 +8665,7 @@ var networkRequestDetails_css_default = `/*
   }
 
   .network-request-details-col {
-    max-width: 300px;
+    max-width: var(--sys-size-30);
   }
 
   .column-divider {

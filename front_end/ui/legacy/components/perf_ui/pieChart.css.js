@@ -73,8 +73,8 @@ export default `/*
 
 .pie-chart-swatch {
   display: inline-block;
-  width: 11px;
-  height: 11px;
+  width: var(--sys-size-5);
+  height: var(--sys-size-5);
   margin: 0 var(--sys-size-4);
   top: var(--sys-size-1);
   position: relative;

@@ -9,23 +9,6 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.tree-outline {
-  padding-left: 0;
-  color: var(--sys-color-token-subtle);
-}
-
-li.storage-group-list-item {
-  padding: 10px var(--sys-size-5) var(--sys-size-4);
-}
-
-li.storage-group-list-item:not(:first-child) {
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-li.storage-group-list-item::before {
-  display: none;
-}
-
 .player-entry-row {
   /* 28px icon-column/toolbar base (--sys-size-12) minus 2px compact
    * row offset (--sys-size-2) = 26px, matching the 26px child cells
@@ -66,7 +49,6 @@ li.storage-group-list-item::before {
 .player-entry-status-icon {
   width: var(--sys-size-12);
   min-width: var(--sys-size-12);
-  height: 26px;
   border-right: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
 }

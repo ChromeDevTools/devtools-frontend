@@ -25,10 +25,6 @@ const UIStringsNotTranslate = {
      * @description Text for the empty state of the AI assistance panel.
      */
     emptyStateText: 'How can I help you?',
-    /**
-     * @description Text for the empty state of the Gemini panel.
-     */
-    emptyStateTextGemini: 'Where should we start?',
 };
 const lockedString = i18n.i18n.lockedString;
 const SCROLL_ROUNDING_OFFSET = 1;
@@ -42,10 +38,6 @@ function findStepAwaitingApproval(messages) {
         ?.step;
 }
 const DEFAULT_VIEW = (input, output, target) => {
-    const chatUiClasses = classMap({
-        'chat-ui': true,
-        gemini: AiAssistanceModel.AiUtils.isGeminiBranding(),
-    });
     const awaitingApprovalStep = findStepAwaitingApproval(input.messages);
     const inputWidgetClasses = classMap({
         'chat-input-widget': true,
@@ -56,7 +48,7 @@ const DEFAULT_VIEW = (input, output, target) => {
     render(html `
       <style>${chatViewStyles}</style>
       <style>${permissionPromptStyles}</style>
-      <div class=${chatUiClasses}>
+      <div class="chat-ui">
         <main @scroll=${input.handleScroll} ${ref(element => { output.mainElement = element; })}>
           ${input.messages.length > 0 ? html `
             <div class="messages-container" ${ref(input.handleMessageContainerRef)}>
@@ -92,11 +84,7 @@ const DEFAULT_VIEW = (input, output, target) => {
                     name="smart-assistant"
                   ></devtools-icon>
                 </div>
-                ${AiAssistanceModel.AiUtils.isGeminiBranding() ?
-        html `
-                    <h1 class='greeting'>Hello</h1>
-                    <p class='cta'>${lockedString(UIStringsNotTranslate.emptyStateTextGemini)}</p>
-                  ` : html `<h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>`}
+                <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
               </div>
               <div class="empty-state-content">
                 ${input.emptyStateSuggestions.map(({ title, jslogContext }) => {

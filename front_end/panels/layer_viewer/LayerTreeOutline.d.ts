@@ -26,10 +26,11 @@ export declare const DEFAULT_VIEW: View;
 declare const LayerTreeOutlineBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
 export declare class LayerTreeOutline extends LayerTreeOutlineBase implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
     #private;
-    private layerViewHost;
     private layerTree?;
     private layerSnapshotMap?;
-    constructor(layerViewHost: LayerViewHost, view?: View);
+    constructor(layerViewHost?: LayerViewHost | HTMLElement, view?: View);
+    get layerViewHost(): LayerViewHost | undefined;
+    set layerViewHost(layerViewHost: LayerViewHost | undefined);
     wasShown(): void;
     willHide(): void;
     performUpdate(): void;

@@ -13,8 +13,18 @@
     "skipLibCheck": true
   },
   "files": [
+    "../../../../../../test/ai_evals/storage/storage-analytics-cookie-query-tracking.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-analytics-network-request.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-bfcache-eligibility.test.ts",
     "../../../../../../test/ai_evals/storage/storage-cookie-missing-max-age.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-explain-cookie-entry.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-find-setting-mechanism.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-find-setting-source-file.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-origin-usage-breakdown.test.ts",
     "../../../../../../test/ai_evals/storage/storage-session-vs-local-cart.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-speculation-rules-status.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-sw-intercepted-requests.test.ts",
+    "../../../../../../test/ai_evals/storage/storage-sw-source-status.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",

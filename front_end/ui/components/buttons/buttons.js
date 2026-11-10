@@ -98,8 +98,8 @@ button {
   &.toolbar,
   &.icon,
   &.only-icon {
-    --button-height: 26px;
-    --button-width: 26px;
+    --button-height: var(--sys-size-11);
+    --button-width: var(--sys-size-11);
     --icon-size: var(--sys-size-9);
 
     padding: 0;
@@ -839,50 +839,6 @@ button {
   }
 }
 
-.gemini {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: var(--sys-size-9);
-  height: var(--sys-size-9);
-  border-radius: var(--sys-shape-corner-full);
-  background-image: var(--app-gradient-google-ai);
-  font: var(--sys-typescale-body4-medium);
-  color: var(--ref-palette-neutral100);
-  transition: width 1s, padding 1s;
-  margin-left: auto;
-  overflow: hidden;
-  position: relative;
-  border: 0;
-
-  &:focus-visible {
-    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-  }
-
-  &:hover::after,
-  &:active::after {
-    content: "";
-    height: 100%;
-    width: 100%;
-    border-radius: inherit;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  &:hover::after {
-    background-color: var(--sys-color-state-hover-on-prominent);
-  }
-
-  &:active::after {
-    background-color: var(--sys-color-state-ripple-primary);
-  }
-
-  devtools-icon {
-    color: var(--ref-palette-neutral100) !important; /* stylelint-disable-line declaration-no-important */
-  }
-}
-
 @media (forced-colors: active) {
   button {
     forced-color-adjust: none;
@@ -911,7 +867,7 @@ button {
 /*# sourceURL=${import.meta.resolve("./floatingButton.css")} */`;
 
 // ../../front_end/ui/components/buttons/FloatingButton.ts
-var { html: html2, Directives: { classMap: classMap2 } } = Lit2;
+var { html: html2 } = Lit2;
 var FloatingButton = class extends HTMLElement {
   static observedAttributes = ["icon-name", "jslogcontext", "disabled"];
   #shadow = this.attachShadow({ mode: "open" });
@@ -976,13 +932,10 @@ var FloatingButton = class extends HTMLElement {
     }
   }
   #render() {
-    const classes = classMap2({
-      gemini: this.iconName === "spark"
-    });
     Lit2.render(
       html2`
         <style>${floatingButton_css_default}</style>
-        <button class=${classes} ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
+        <button ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
       this.#shadow,
       { host: this }
     );

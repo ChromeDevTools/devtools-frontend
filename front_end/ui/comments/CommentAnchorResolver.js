@@ -527,10 +527,42 @@ export function deepQuerySelector(root, selector) {
     return deepQuerySelectorAll(root, selector, 1)[0] ?? null;
 }
 /**
+ * Rematches a DOM node anchor whose backend node ID is no longer rendered.
+ *
+ * In the Elements tree every row at the same depth shares the same VE path, so
+ * the VE path alone does not identify a node. Only candidates whose text equals
+ * the anchor's `textSignature` are accepted; if none match, the node is
+ * considered removed and null is returned so the thread shows as orphaned.
+ *
+ * @param anchor The DOM node anchor signature to rematch.
+ * @param root The root Document or Element to search within.
+ * @param cachedJslogElements Optional pre-collected list of `[jslog]` elements for performance.
+ * @returns The rematched live Element, or null if no element matches the text.
+ */
+function rematchDOMNodeByVePathAndText(anchor, root, cachedJslogElements) {
+    if (anchor.textSignature === undefined) {
+        return null;
+    }
+    const targetVeName = extractVeName(anchor.vePath);
+    const allJslog = cachedJslogElements || deepQuerySelectorAll(root, '[jslog]');
+    const candidates = allJslog.filter(el => matchesVePath(el, anchor.vePath, targetVeName));
+    const matches = candidates.filter(el => el.deepTextContent() === anchor.textSignature);
+    if (matches.length <= 1) {
+        return matches[0] ?? null;
+    }
+    // Several rows have the same text: disambiguate by the parent's text.
+    if (anchor.parentTextSignature === undefined) {
+        return matches[0];
+    }
+    const parentMatch = matches.find(el => el.parentElementOrShadowHost()?.deepTextContent() === anchor.parentTextSignature);
+    return parentMatch ?? null;
+}
+/**
  * Rematches a stored comment thread to its live corresponding DOM element.
  *
  * Matching pipeline:
  * 1. Primary fast-path: Query by domain IDs (`networkRequestId` or `backendNodeId`) across shadow roots.
+ *    DOM node anchors whose `backendNodeId` is not found are rematched by VE path and exact text only.
  * 2. CodeMirror editor line match: Match editor and line number/text, scoped by `filePath` if present.
  * 3. Visual logging path fallback: Find all candidate elements matching `vePath`.
  * 4. Text content refinement: Filter candidates by `textSignature` and `parentTextSignature`.
@@ -548,7 +580,12 @@ export function rematchCommentAnchor(comment, root = document, cachedJslogElemen
         return deepQuerySelector(root, `[data-network-request-id="${CSS.escape(anchor.networkRequestId)}"]`);
     }
     if (anchor.node) {
-        return deepQuerySelector(root, `[data-backend-node-id="${CSS.escape(String(anchor.node.backendNodeId))}"][data-target-id="${CSS.escape(anchor.node.targetId)}"]`);
+        const nodeElement = deepQuerySelector(root, `[data-backend-node-id="${CSS.escape(String(anchor.node.backendNodeId))}"][data-target-id="${CSS.escape(anchor.node.targetId)}"]`);
+        if (nodeElement) {
+            return nodeElement;
+        }
+        // Backend node IDs are not stable across reloads, so rematch by VE path and text.
+        return rematchDOMNodeByVePathAndText(anchor, root, cachedJslogElements);
     }
     if (anchor.editor) {
         const { lineNumber, filePath } = anchor.editor;

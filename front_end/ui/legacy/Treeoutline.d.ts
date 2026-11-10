@@ -267,6 +267,11 @@ export declare namespace TreeSearch {
  * - `aria-*`: All aria attributes defined on the config element are cloned over.
  * - `open`: On the <li>, declares whether the subtree should be rendererd as expanded or collapsed.
  *
+ * ## Refs ##
+ *
+ * `UIUtils.clonedRef` on a `<li role="treeitem">` resolves to the rendered list item element in the tree's shadow DOM,
+ * e.g. to scroll it into view: `<li role="treeitem" ${isHighlighted ? clonedRef(onRendered) : nothing}>`.
+ *
  * ## Event Handling ##
  *
  * This section is only relevant if NOT using the `template`.

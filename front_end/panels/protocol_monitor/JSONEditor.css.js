@@ -85,7 +85,7 @@ ul {
 .editor-wrapper::after {
   content: "";
   display: block;
-  height: 50px;
+  height: var(--sys-size-16);
 }
 
 .clear-button,

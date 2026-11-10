@@ -800,7 +800,7 @@ __export(NetworkRequestsHandler_exports, {
 });
 import * as Platform3 from "../../../core/platform/platform.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;

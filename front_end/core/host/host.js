@@ -3087,7 +3087,7 @@ function extractTextFromGcaParts(parts) {
   if (!parts) {
     return "";
   }
-  return parts.map((p) => p.text || "").join("");
+  return parts.map((p) => p.thought ? "" : p.text || "").join("");
 }
 function aidaEventToGcaTelemetryRequest(clientEvent) {
   try {
@@ -3443,11 +3443,11 @@ function gcaChunkResponseToAidaChunkResponse(response) {
         }))
       };
     }
-    const chunks = parts.map((part) => {
+    const chunks = parts.length === 0 ? [{ metadata }] : parts.map((part) => {
       const aidaChunkResponse = { metadata };
-      if (part.text !== void 0) {
+      if (part.text && !part.thought) {
         aidaChunkResponse.textChunk = {
-          text: extractTextFromGcaParts(parts)
+          text: part.text
         };
       }
       if (part.functionCall) {
@@ -3661,15 +3661,12 @@ var AidaClient = class {
     if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
       throw new Error("dispatchHttpRequest is not available");
     }
-    const recordOutcome = createOutcomeRecorder(conversationSurfaceHistogram(request.client_feature));
+    let outcome = AiClientRequestResult2.ABORTED;
     let abortListener;
     let streamId;
     try {
       if (options?.signal?.aborted) {
         throw new AidaAbortError();
-      }
-      if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-        request.metadata.disable_user_content_logging = true;
       }
       const stream = (() => {
         let { promise, resolve, reject } = Promise.withResolvers();
@@ -3720,13 +3717,17 @@ var AidaClient = class {
           stream.fail(mapError(err));
         }
       );
-      yield* this.#handleResponseStream(stream);
-      recordOutcome(AiClientRequestResult2.SUCCESS);
+      for await (const chunk of this.#handleResponseStream(stream)) {
+        if (chunk.completed) {
+          outcome = AiClientRequestResult2.SUCCESS;
+        }
+        yield chunk;
+      }
     } catch (err) {
-      recordOutcome(classifyRequestError(err));
+      outcome = classifyRequestError(err);
       throw err;
     } finally {
-      recordOutcome(AiClientRequestResult2.ABORTED);
+      userMetrics.aiClientRequestResult(outcome, conversationSurfaceHistogram(request.client_feature));
       if (options?.signal && abortListener) {
         options.signal.removeEventListener("abort", abortListener);
       }
@@ -3778,7 +3779,7 @@ var AidaClient = class {
           });
         } else if ("error" in result) {
           throw mapError(result.error);
-        } else {
+        } else if (!result.metadata) {
           throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
         }
       }
@@ -3825,9 +3826,6 @@ var AidaClient = class {
     }
   }
   registerClientEvent(clientEvent) {
-    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      clientEvent.disable_user_content_logging = true;
-    }
     if (this.#gcaClient.enabled()) {
       return this.#gcaClient.registerClientEvent(clientEvent);
     }
@@ -3845,9 +3843,6 @@ var AidaClient = class {
   async completeCode(request) {
     if (!InspectorFrontendHostInstance.aidaCodeComplete) {
       throw new Error("aidaCodeComplete is not available");
-    }
-    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      request.metadata.disable_user_content_logging = true;
     }
     const recordOutcome = createOutcomeRecorder("DevTools.AiClient.RequestResult.CodeComplete" /* AiClientRequestResultCodeComplete */);
     try {
@@ -3909,9 +3904,6 @@ var AidaClient = class {
     }
   }
   async generateCode(request, options) {
-    if (Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      request.metadata.disable_user_content_logging = true;
-    }
     const surfaceHistogram = "DevTools.AiClient.RequestResult.CodeGenerate" /* AiClientRequestResultCodeGenerate */;
     try {
       const response = this.#gcaClient.enabled() ? await this.#gcaClient.generateCode(request, options) : await makeHttpRequest(

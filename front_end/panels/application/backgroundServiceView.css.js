@@ -40,8 +40,8 @@ export default `/*
 }
 
 .background-service-metadata {
-  padding-left: 5px;
-  padding-top: 10px;
+  padding-left: var(--sys-size-3);
+  padding-top: var(--sys-size-5);
 }
 
 .background-service-metadata-entry {

@@ -140,7 +140,6 @@ export default `/*
   .node-text-container {
     line-height: var(--sys-typescale-body4-line-height);
     padding: 0 0.5ex;
-    border-radius: 5px;
   }
 
 }

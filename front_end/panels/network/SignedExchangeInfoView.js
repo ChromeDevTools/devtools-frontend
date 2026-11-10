@@ -1,14 +1,15 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/kit/kit.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import { Icon, Link } from '../../ui/kit/kit.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.js';
 import signedExchangeInfoViewStyles from './signedExchangeInfoView.css.js';
+const { classMap } = Directives;
 const UIStrings = {
     /**
      * @description Text for errors
@@ -97,143 +98,175 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/SignedExchangeInfoView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const DEFAULT_VIEW = (input, _output, target) => {
+    if (!input) {
+        render(nothing, target);
+        return;
+    }
+    const { formatHeader, formatHeaderForHexData } = SignedExchangeInfoView;
+    const renderLeaf = (content) => html `<li role="treeitem" selectable="false">${content}</li>`;
+    const renderCategory = (title, children) => html `
+    <li role="treeitem" toggle-on-click open selectable="false">
+      ${title}
+      <ul role="group">${children}</ul>
+    </li>`;
+    // clang-format off
+    render(html `
+        <style>${signedExchangeInfoViewStyles}</style>
+        <devtools-tree dense class="signed-exchange-info-tree" .template=${html `
+          <style>${signedExchangeInfoTreeStyles}</style>
+          <ul role="tree">
+            ${input.errors.length ? renderCategory(i18nString(UIStrings.errors), input.errors.map(errorMessage => renderLeaf(html `
+                  <devtools-icon name="cross-circle-filled" class="prompt-icon small"></devtools-icon><div
+                      class="error-log">${errorMessage}</div>`))) : nothing}
+            ${renderCategory(html `<div class="header-name">${i18nString(UIStrings.signedHttpExchange)}</div><devtools-link
+                    href="https://github.com/WICG/webpackage"
+                    class="header-toggle devtools-link"
+                    jslogcontext="learn-more">${i18nString(UIStrings.learnmore)}</devtools-link>`, input.header ? html `
+                  ${renderLeaf(html `${formatHeader(i18nString(UIStrings.requestUrl), input.header.requestUrl)}${input.header.hasRedirectDestination ? html `<devtools-link
+                          class="header-toggle devtools-link"
+                          jslogcontext="redirect-destination-request"
+                          @click=${input.onViewRequest}>${i18n.i18n.lockedString('View request')}</devtools-link>` : nothing}`)}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.responseCode), input.header.responseCode))}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.headerIntegrityHash), input.header.headerIntegrity))}
+                  <li role="treeitem" open selectable="false">
+                    ${formatHeader(i18nString(UIStrings.responseHeaders), '')}
+                    ${input.header.responseHeaders.length ? html `
+                      <ul role="group">
+                        ${input.header.responseHeaders.map(header => renderLeaf(formatHeader(header.name, header.value)))}
+                      </ul>
+                    ` : nothing}
+                  </li>
+                ` : nothing)}
+            ${(input.header?.signatures ?? []).map(signature => renderCategory(i18nString(UIStrings.signature), html `
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.label), signature.label))}
+                  ${renderLeaf(formatHeaderForHexData(i18nString(UIStrings.signature), signature.signature, signature.hasSignatureError))}
+                  ${signature.certUrl ? renderLeaf(html `
+                    ${formatHeader(i18nString(UIStrings.certificateUrl), signature.certUrl, signature.hasCertUrlError)}${signature.certificates ? html `<devtools-link
+                          class="devtools-link header-toggle"
+                          jslogcontext="view-certificate"
+                          @click=${() => input.onViewCertificate(signature.certificates ?? [])}>${i18nString(UIStrings.viewCertificate)}</devtools-link>` : nothing}`) : nothing}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.integrity), signature.integrity, signature.hasIntegrityError))}
+                  ${signature.certSha256 ? renderLeaf(formatHeaderForHexData(i18nString(UIStrings.certificateSha), signature.certSha256, signature.hasCertSha256Error)) : nothing}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.validityUrl), signature.validityUrl, signature.hasValidityUrlError))}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.date), signature.date, signature.hasTimestampsError))}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.expires), signature.expires, signature.hasTimestampsError))}
+                `))}
+            ${input.securityDetails ? renderCategory(i18nString(UIStrings.certificate), html `
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.subject), input.securityDetails.subjectName))}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.validFrom), input.securityDetails.validFrom))}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.validUntil), input.securityDetails.validUntil))}
+                  ${renderLeaf(formatHeader(i18nString(UIStrings.issuer), input.securityDetails.issuer))}
+                `) : nothing}
+          </ul>
+        `}></devtools-tree>
+      `, target, { container: { classes: ['signed-exchange-info-view'] } });
+    // clang-format on
+};
 export class SignedExchangeInfoView extends UI.Widget.VBox {
-    responseHeadersItem;
-    constructor(request, element) {
-        super(element);
-        this.registerRequiredCSS(signedExchangeInfoViewStyles);
-        console.assert(request.signedExchangeInfo() !== null);
-        const signedExchangeInfo = request.signedExchangeInfo();
-        this.element.classList.add('signed-exchange-info-view');
-        const root = new UI.TreeOutline.TreeOutlineInShadow();
-        root.registerRequiredCSS(signedExchangeInfoTreeStyles);
-        root.element.classList.add('signed-exchange-info-tree');
-        root.setFocusable(false);
-        root.setDense(true);
-        root.expandTreeElementsWhenArrowing = true;
-        this.element.appendChild(root.element);
+    #request;
+    #view;
+    constructor(requestOrElement, elementOrView, view = DEFAULT_VIEW) {
+        super(requestOrElement instanceof HTMLElement ? requestOrElement :
+            elementOrView instanceof HTMLElement ? elementOrView :
+                undefined);
+        this.#view = typeof elementOrView === 'function' ? elementOrView : view;
+        if (requestOrElement && !(requestOrElement instanceof HTMLElement)) {
+            this.#request = requestOrElement;
+        }
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        this.#request = request;
+        this.requestUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const signedExchangeInfo = this.#request?.signedExchangeInfo();
+        if (!this.#request || !signedExchangeInfo) {
+            this.#view(null, undefined, this.contentElement);
+            return;
+        }
+        const request = this.#request;
         const errorFieldSetMap = new Map();
-        if (signedExchangeInfo.errors?.length) {
-            const errorMessagesCategory = new Category(root, i18nString(UIStrings.errors));
-            for (const error of signedExchangeInfo.errors) {
-                const fragment = document.createDocumentFragment();
-                const icon = new Icon();
-                icon.name = 'cross-circle-filled';
-                icon.classList.add('prompt-icon', 'small');
-                fragment.appendChild(icon);
-                fragment.createChild('div', 'error-log').textContent = error.message;
-                errorMessagesCategory.createLeaf(fragment);
-                if (error.errorField) {
-                    let errorFieldSet = errorFieldSetMap.get(error.signatureIndex);
-                    if (!errorFieldSet) {
-                        errorFieldSet = new Set();
-                        errorFieldSetMap.set(error.signatureIndex, errorFieldSet);
-                    }
-                    errorFieldSet.add(error.errorField);
+        const errors = [];
+        for (const error of signedExchangeInfo.errors ?? []) {
+            errors.push(error.message);
+            if (error.errorField) {
+                const errorFieldSet = errorFieldSetMap.get(error.signatureIndex) ?? new Set();
+                errorFieldSet.add(error.errorField);
+                errorFieldSetMap.set(error.signatureIndex, errorFieldSet);
+            }
+        }
+        const headerInfo = signedExchangeInfo.header ? {
+            requestUrl: signedExchangeInfo.header.requestUrl,
+            hasRedirectDestination: Boolean(request.redirectDestination()),
+            responseCode: String(signedExchangeInfo.header.responseCode),
+            headerIntegrity: signedExchangeInfo.header.headerIntegrity,
+            responseHeaders: Object.entries(signedExchangeInfo.header.responseHeaders).map(([name, value]) => ({ name, value })),
+            signatures: signedExchangeInfo.header.signatures.map((signature, i) => {
+                const errorFieldSet = errorFieldSetMap.get(i) ?? new Set();
+                return {
+                    label: signature.label,
+                    signature: signature.signature,
+                    hasSignatureError: errorFieldSet.has("signatureSig" /* Protocol.Network.SignedExchangeErrorField.SignatureSig */),
+                    certUrl: signature.certUrl,
+                    hasCertUrlError: errorFieldSet.has("signatureCertUrl" /* Protocol.Network.SignedExchangeErrorField.SignatureCertUrl */),
+                    certificates: signature.certificates,
+                    integrity: signature.integrity,
+                    hasIntegrityError: errorFieldSet.has("signatureIntegrity" /* Protocol.Network.SignedExchangeErrorField.SignatureIntegrity */),
+                    certSha256: signature.certSha256,
+                    hasCertSha256Error: errorFieldSet.has("signatureCertSha256" /* Protocol.Network.SignedExchangeErrorField.SignatureCertSha256 */),
+                    validityUrl: signature.validityUrl,
+                    hasValidityUrlError: errorFieldSet.has("signatureValidityUrl" /* Protocol.Network.SignedExchangeErrorField.SignatureValidityUrl */),
+                    date: new Date(1000 * signature.date).toUTCString(),
+                    expires: new Date(1000 * signature.expires).toUTCString(),
+                    hasTimestampsError: errorFieldSet.has("signatureTimestamps" /* Protocol.Network.SignedExchangeErrorField.SignatureTimestamps */),
+                };
+            }),
+        } :
+            null;
+        const securityDetails = signedExchangeInfo.securityDetails ? {
+            subjectName: signedExchangeInfo.securityDetails.subjectName,
+            validFrom: new Date(1000 * signedExchangeInfo.securityDetails.validFrom).toUTCString(),
+            validUntil: new Date(1000 * signedExchangeInfo.securityDetails.validTo).toUTCString(),
+            issuer: signedExchangeInfo.securityDetails.issuer,
+        } :
+            null;
+        this.#view({
+            errors,
+            header: headerInfo,
+            securityDetails,
+            onViewRequest: () => {
+                const redirectDestination = request.redirectDestination();
+                if (redirectDestination) {
+                    void Common.Revealer.reveal(redirectDestination);
                 }
-            }
-        }
-        const titleElement = document.createDocumentFragment();
-        titleElement.createChild('div', 'header-name').textContent = i18nString(UIStrings.signedHttpExchange);
-        const learnMoreNode = Link.create('https://github.com/WICG/webpackage', i18nString(UIStrings.learnmore), 'header-toggle', 'learn-more');
-        titleElement.appendChild(learnMoreNode);
-        const headerCategory = new Category(root, titleElement);
-        if (signedExchangeInfo.header) {
-            const header = signedExchangeInfo.header;
-            const redirectDestination = request.redirectDestination();
-            const requestURLElement = this.formatHeader(i18nString(UIStrings.requestUrl), header.requestUrl);
-            if (redirectDestination) {
-                const viewRequestLink = Components.Linkifier.Linkifier.linkifyRevealable(redirectDestination, 'View request', undefined, undefined, undefined, 'redirect-destination-request');
-                viewRequestLink.classList.add('header-toggle');
-                requestURLElement.appendChild(viewRequestLink);
-            }
-            headerCategory.createLeaf(requestURLElement);
-            headerCategory.createLeaf(this.formatHeader(i18nString(UIStrings.responseCode), String(header.responseCode)));
-            headerCategory.createLeaf(this.formatHeader(i18nString(UIStrings.headerIntegrityHash), header.headerIntegrity));
-            this.responseHeadersItem =
-                headerCategory.createLeaf(this.formatHeader(i18nString(UIStrings.responseHeaders), ''));
-            const responseHeaders = header.responseHeaders;
-            for (const name in responseHeaders) {
-                const headerTreeElement = new UI.TreeOutline.TreeElement(this.formatHeader(name, responseHeaders[name]));
-                headerTreeElement.selectable = false;
-                this.responseHeadersItem.appendChild(headerTreeElement);
-            }
-            this.responseHeadersItem.expand();
-            for (let i = 0; i < header.signatures.length; ++i) {
-                const errorFieldSet = errorFieldSetMap.get(i) || new Set();
-                const signature = header.signatures[i];
-                const signatureCategory = new Category(root, i18nString(UIStrings.signature));
-                signatureCategory.createLeaf(this.formatHeader(i18nString(UIStrings.label), signature.label));
-                signatureCategory.createLeaf(this.formatHeaderForHexData(i18nString(UIStrings.signature), signature.signature, errorFieldSet.has("signatureSig" /* Protocol.Network.SignedExchangeErrorField.SignatureSig */)));
-                if (signature.certUrl) {
-                    const certURLElement = this.formatHeader(i18nString(UIStrings.certificateUrl), signature.certUrl, errorFieldSet.has("signatureCertUrl" /* Protocol.Network.SignedExchangeErrorField.SignatureCertUrl */));
-                    if (signature.certificates) {
-                        const viewCertLink = certURLElement.createChild('span', 'devtools-link header-toggle');
-                        viewCertLink.textContent = i18nString(UIStrings.viewCertificate);
-                        viewCertLink.addEventListener('click', Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer.bind(null, signature.certificates), false);
-                    }
-                    signatureCategory.createLeaf(certURLElement);
-                }
-                signatureCategory.createLeaf(this.formatHeader(i18nString(UIStrings.integrity), signature.integrity, errorFieldSet.has("signatureIntegrity" /* Protocol.Network.SignedExchangeErrorField.SignatureIntegrity */)));
-                if (signature.certSha256) {
-                    signatureCategory.createLeaf(this.formatHeaderForHexData(i18nString(UIStrings.certificateSha), signature.certSha256, errorFieldSet.has("signatureCertSha256" /* Protocol.Network.SignedExchangeErrorField.SignatureCertSha256 */)));
-                }
-                signatureCategory.createLeaf(this.formatHeader(i18nString(UIStrings.validityUrl), signature.validityUrl, errorFieldSet.has("signatureValidityUrl" /* Protocol.Network.SignedExchangeErrorField.SignatureValidityUrl */)));
-                signatureCategory.createLeaf().title = this.formatHeader(i18nString(UIStrings.date), new Date(1000 * signature.date).toUTCString(), errorFieldSet.has("signatureTimestamps" /* Protocol.Network.SignedExchangeErrorField.SignatureTimestamps */));
-                signatureCategory.createLeaf().title = this.formatHeader(i18nString(UIStrings.expires), new Date(1000 * signature.expires).toUTCString(), errorFieldSet.has("signatureTimestamps" /* Protocol.Network.SignedExchangeErrorField.SignatureTimestamps */));
-            }
-        }
-        if (signedExchangeInfo.securityDetails) {
-            const securityDetails = signedExchangeInfo.securityDetails;
-            const securityCategory = new Category(root, i18nString(UIStrings.certificate));
-            securityCategory.createLeaf(this.formatHeader(i18nString(UIStrings.subject), securityDetails.subjectName));
-            securityCategory.createLeaf(this.formatHeader(i18nString(UIStrings.validFrom), new Date(1000 * securityDetails.validFrom).toUTCString()));
-            securityCategory.createLeaf(this.formatHeader(i18nString(UIStrings.validUntil), new Date(1000 * securityDetails.validTo).toUTCString()));
-            securityCategory.createLeaf(this.formatHeader(i18nString(UIStrings.issuer), securityDetails.issuer));
-        }
+            },
+            onViewCertificate: (certificates) => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(certificates),
+        }, undefined, this.contentElement);
     }
-    formatHeader(name, value, highlighted) {
-        const fragment = document.createDocumentFragment();
-        const nameElement = fragment.createChild('div', 'header-name');
-        nameElement.textContent = name + ': ';
-        fragment.createChild('span', 'header-separator');
-        const valueElement = fragment.createChild('div', 'header-value source-code');
-        valueElement.textContent = value;
-        if (highlighted) {
-            nameElement.classList.add('error-field');
-            valueElement.classList.add('error-field');
-        }
-        return fragment;
+    static formatHeader(name, value, highlighted) {
+        // clang-format off
+        return html `<div class=${classMap({ 'header-name': true, 'error-field': Boolean(highlighted) })}>${name}: </div><span
+        class="header-separator"></span><div
+        class=${classMap({ 'header-value': true, 'source-code': true, 'error-field': Boolean(highlighted) })}>${value}</div>`;
+        // clang-format on
     }
-    formatHeaderForHexData(name, value, highlighted) {
-        const fragment = document.createDocumentFragment();
-        const nameElement = fragment.createChild('div', 'header-name');
-        nameElement.textContent = name + ': ';
-        fragment.createChild('span', 'header-separator');
-        const valueElement = fragment.createChild('div', 'header-value source-code hex-data');
-        valueElement.textContent = value.replace(/(.{2})/g, '$1 ');
-        if (highlighted) {
-            nameElement.classList.add('error-field');
-            valueElement.classList.add('error-field');
-        }
-        return fragment;
-    }
-}
-export class Category extends UI.TreeOutline.TreeElement {
-    toggleOnClick;
-    expanded;
-    constructor(root, title) {
-        super(title, true);
-        this.selectable = false;
-        this.toggleOnClick = true;
-        this.expanded = true;
-        root.appendChild(this);
-    }
-    createLeaf(title) {
-        const leaf = new UI.TreeOutline.TreeElement(title);
-        leaf.selectable = false;
-        this.appendChild(leaf);
-        return leaf;
+    static formatHeaderForHexData(name, value, highlighted) {
+        // clang-format off
+        return html `<div class=${classMap({ 'header-name': true, 'error-field': Boolean(highlighted) })}>${name}: </div><span
+        class="header-separator"></span><div
+        class=${classMap({ 'header-value': true, 'source-code': true, 'hex-data': true, 'error-field': Boolean(highlighted) })}>${value.replace(/(.{2})/g, '$1 ')}</div>`;
+        // clang-format on
     }
 }
 //# sourceMappingURL=SignedExchangeInfoView.js.map

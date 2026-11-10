@@ -997,7 +997,7 @@ import "../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n5 from "../../core/i18n/i18n.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -2170,28 +2170,28 @@ var Memory;
 })(Memory || (Memory = {}));
 var Network;
 ((Network2) => {
-  let ResourceType10;
-  ((ResourceType11) => {
-    ResourceType11["Document"] = "Document";
-    ResourceType11["Stylesheet"] = "Stylesheet";
-    ResourceType11["Image"] = "Image";
-    ResourceType11["Media"] = "Media";
-    ResourceType11["Font"] = "Font";
-    ResourceType11["Script"] = "Script";
-    ResourceType11["TextTrack"] = "TextTrack";
-    ResourceType11["XHR"] = "XHR";
-    ResourceType11["Fetch"] = "Fetch";
-    ResourceType11["Prefetch"] = "Prefetch";
-    ResourceType11["EventSource"] = "EventSource";
-    ResourceType11["WebSocket"] = "WebSocket";
-    ResourceType11["Manifest"] = "Manifest";
-    ResourceType11["SignedExchange"] = "SignedExchange";
-    ResourceType11["Ping"] = "Ping";
-    ResourceType11["CSPViolationReport"] = "CSPViolationReport";
-    ResourceType11["Preflight"] = "Preflight";
-    ResourceType11["FedCM"] = "FedCM";
-    ResourceType11["Other"] = "Other";
-  })(ResourceType10 = Network2.ResourceType || (Network2.ResourceType = {}));
+  let ResourceType11;
+  ((ResourceType12) => {
+    ResourceType12["Document"] = "Document";
+    ResourceType12["Stylesheet"] = "Stylesheet";
+    ResourceType12["Image"] = "Image";
+    ResourceType12["Media"] = "Media";
+    ResourceType12["Font"] = "Font";
+    ResourceType12["Script"] = "Script";
+    ResourceType12["TextTrack"] = "TextTrack";
+    ResourceType12["XHR"] = "XHR";
+    ResourceType12["Fetch"] = "Fetch";
+    ResourceType12["Prefetch"] = "Prefetch";
+    ResourceType12["EventSource"] = "EventSource";
+    ResourceType12["WebSocket"] = "WebSocket";
+    ResourceType12["Manifest"] = "Manifest";
+    ResourceType12["SignedExchange"] = "SignedExchange";
+    ResourceType12["Ping"] = "Ping";
+    ResourceType12["CSPViolationReport"] = "CSPViolationReport";
+    ResourceType12["Preflight"] = "Preflight";
+    ResourceType12["FedCM"] = "FedCM";
+    ResourceType12["Other"] = "Other";
+  })(ResourceType11 = Network2.ResourceType || (Network2.ResourceType = {}));
   let ErrorReason;
   ((ErrorReason2) => {
     ErrorReason2["Failed"] = "Failed";
@@ -4330,7 +4330,7 @@ var networkConfigView_css_default = `/*
 .user-agent-client-hints-form {
   display: block;
   margin-top: var(--sys-size-7);
-  width: min(100%, 400px);
+  width: min(100%, var(--sys-size-32));
 }
 
 .status-text {
@@ -6760,12 +6760,12 @@ var NetworkItemView_exports = {};
 __export(NetworkItemView_exports, {
   NetworkItemView: () => NetworkItemView
 });
-import * as Common20 from "../../core/common/common.js";
+import * as Common22 from "../../core/common/common.js";
 import * as i18n49 from "../../core/i18n/i18n.js";
 import * as Platform14 from "../../core/platform/platform.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as NetworkForward6 from "./forward/forward.js";
-import { Icon as Icon3 } from "../../ui/kit/kit.js";
+import { Icon as Icon2 } from "../../ui/kit/kit.js";
 import * as UI24 from "../../ui/legacy/legacy.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents2 from "./components/components.js";
@@ -7948,7 +7948,8 @@ td.time-column {
   outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
   left: var(--sys-size-5);
   position: absolute;
-  top: 10px;
+  /* 16px (.network-log-grid.data-grid.small .icon height) minus 6px (dot height). */
+  top: calc(var(--sys-size-8) - var(--sys-size-4));
   z-index: 1;
 }
 
@@ -8727,7 +8728,7 @@ var networkTimingTable_css_default = `/*
 
 .network-timing-table-header td,
 .network-timing-footer td {
-  border-top: 10px solid transparent;
+  border-top: var(--sys-size-5) solid transparent;
 }
 
 .network-timing-table-header td {
@@ -9581,13 +9582,19 @@ var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
 };
 
 // ../../front_end/panels/network/NetworkWaterfallColumn.ts
-var { ref: ref3 } = Directives7;
+var { ref: ref3, styleMap } = Directives7;
 var BAR_SPACING = 1;
 var DEFAULT_VIEW9 = (input, output, target) => {
+  const width = Math.max(0, input.width);
+  const height = Math.max(0, input.height);
+  const pixelRatio = Math.max(0, input.pixelRatio);
   render10(html9`
     <style>${networkWaterfallColumn_css_default}</style>
     <canvas
       tabindex="-1"
+      width=${Math.round(width * pixelRatio)}
+      height=${Math.round(height * pixelRatio)}
+      style=${styleMap({ width: `${width}px`, height: `${height}px` })}
       @mousemove=${(event) => input.onMouseMove(event.offsetY, event.shiftKey)}
       @mouseleave=${input.onMouseLeave}
       @click=${(event) => {
@@ -9666,6 +9673,9 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI11.Widget.V
   performUpdate() {
     this.#view(
       {
+        width: this.offsetWidth,
+        height: this.offsetHeight,
+        pixelRatio: window.devicePixelRatio,
         onMouseMove: (offsetY, shiftKey) => this.setHoveredNode(this.getNodeFromPoint(offsetY), shiftKey),
         onMouseLeave: () => this.setHoveredNode(null, false),
         onClick: (offsetY) => this.setSelectedNode(this.getNodeFromPoint(offsetY))
@@ -9679,55 +9689,55 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI11.Widget.V
     }
   }
   static buildRequestTimeRangeStyle() {
-    const styleMap = /* @__PURE__ */ new Map();
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.CONNECTING, {
+    const styleMap2 = /* @__PURE__ */ new Map();
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.CONNECTING, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.CONNECTING]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SSL, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.SSL, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SSL]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.DNS, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.DNS, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.DNS]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.PROXY, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.PROXY, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.PROXY]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.BLOCKING, { fillStyle: "--network-waterfall-blocking" });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.PUSH, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.BLOCKING, { fillStyle: "--network-waterfall-blocking" });
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.PUSH, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.PUSH]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.QUEUEING, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.QUEUEING, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.QUEUEING],
       lineWidth: 2,
       borderColor: "lightgrey"
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING],
       lineWidth: 2,
       borderColor: "#03A9F4"
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.WAITING, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.WAITING, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.WAITING]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING_PUSH, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING_PUSH, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING_PUSH]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION]
     });
-    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP, {
+    styleMap2.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP]
     });
-    return styleMap;
+    return styleMap2;
   }
   static buildResourceTypeStyle() {
     const baseResourceTypeColors = /* @__PURE__ */ new Map([
@@ -9902,17 +9912,10 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI11.Widget.V
     }
     this.startTime = this.calculator.minimumBoundary();
     this.endTime = this.calculator.maximumBoundary();
-    this.resetCanvas();
+    this.performUpdate();
     this.resetPaths();
     this.textLayers = [];
     this.draw();
-  }
-  resetCanvas() {
-    const ratio = window.devicePixelRatio;
-    this.canvas.width = this.offsetWidth * ratio;
-    this.canvas.height = this.offsetHeight * ratio;
-    this.canvas.style.width = this.offsetWidth + "px";
-    this.canvas.style.height = this.offsetHeight + "px";
   }
   onResize() {
     super.onResize();
@@ -9939,6 +9942,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI11.Widget.V
     if (!context) {
       return;
     }
+    context.reset();
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.translate(0, this.headerHeight);
@@ -10694,9 +10698,9 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.activeWaterfallSortId = "startTime" /* StartTime */;
     this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid2.DataGrid.Order.Ascending);
     this.splitWidget = new UI13.SplitWidget.SplitWidget(true, true, "network-panel-split-view-waterfall", 200);
-    const widget8 = this.#dataGrid.asWidget();
-    widget8.setMinimumSize(150, 0);
-    this.splitWidget.setMainWidget(widget8);
+    const widget9 = this.#dataGrid.asWidget();
+    widget9.setMinimumSize(150, 0);
+    this.splitWidget.setMainWidget(widget9);
   }
   setupWaterfall() {
     this.waterfallColumn = new NetworkWaterfallColumn(this.networkLogView.calculator());
@@ -13446,8 +13450,8 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     if (!consoleViewWrapper) {
       return;
     }
-    const widget8 = await consoleViewWrapper.widget();
-    const consoleView = widget8;
+    const widget9 = await consoleViewWrapper.widget();
+    const consoleView = widget9;
     if (typeof consoleView.insertIntoPrompt !== "function") {
       return;
     }
@@ -14210,11 +14214,6 @@ var networkPanel_css_default = `/*
 .network-item-view {
   display: flex;
   background: var(--sys-color-cdt-base-container);
-}
-
-.network-item-preview-toolbar {
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  background-color: var(--sys-color-surface1);
 }
 
 .resource-timing-view {
@@ -16929,14 +16928,16 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
 // ../../front_end/panels/network/RequestPreviewView.ts
 var RequestPreviewView_exports = {};
 __export(RequestPreviewView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW16,
   RequestPreviewView: () => RequestPreviewView
 });
 import "../../ui/legacy/legacy.js";
+import * as Common17 from "../../core/common/common.js";
 import * as i18n39 from "../../core/i18n/i18n.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
-import { render as render16 } from "../../ui/lit/lit.js";
+import { Directives as Directives11, html as html16, render as render17 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/network/RequestHTMLView.ts
@@ -17025,14 +17026,15 @@ var RequestHTMLView = class _RequestHTMLView extends UI19.Widget.VBox {
 // ../../front_end/panels/network/SignedExchangeInfoView.ts
 var SignedExchangeInfoView_exports = {};
 __export(SignedExchangeInfoView_exports, {
-  Category: () => Category,
+  DEFAULT_VIEW: () => DEFAULT_VIEW15,
   SignedExchangeInfoView: () => SignedExchangeInfoView
 });
+import "../../ui/kit/kit.js";
+import * as Common16 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
-import { Icon as Icon2, Link } from "../../ui/kit/kit.js";
-import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
+import { Directives as Directives10, html as html15, nothing as nothing11, render as render16 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/signedExchangeInfoTree.css.js
 var signedExchangeInfoTree_css_default = `/*
@@ -17140,20 +17142,25 @@ var signedExchangeInfoView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.signed-exchange-info-view {
-  user-select: text;
-  overflow: auto;
-}
+@scope to (devtools-widget > *) {
+  :scope,
+  .signed-exchange-info-view {
+    user-select: text;
+    overflow: auto;
+  }
 
-.signed-exchange-info-tree {
-  flex-grow: 1;
-  overflow-y: auto;
-  margin: 0;
+  .signed-exchange-info-tree {
+    display: block;
+    flex-grow: 1;
+    overflow-y: auto;
+    margin: 0;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./signedExchangeInfoView.css")} */`;
 
 // ../../front_end/panels/network/SignedExchangeInfoView.ts
+var { classMap: classMap4 } = Directives10;
 var UIStrings19 = {
   /**
    * @description Text for errors
@@ -17242,197 +17249,197 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/network/SignedExchangeInfoView.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var SignedExchangeInfoView = class extends UI20.Widget.VBox {
-  responseHeadersItem;
-  constructor(request, element) {
-    super(element);
-    this.registerRequiredCSS(signedExchangeInfoView_css_default);
-    console.assert(request.signedExchangeInfo() !== null);
-    const signedExchangeInfo = request.signedExchangeInfo();
-    this.element.classList.add("signed-exchange-info-view");
-    const root = new UI20.TreeOutline.TreeOutlineInShadow();
-    root.registerRequiredCSS(signedExchangeInfoTree_css_default);
-    root.element.classList.add("signed-exchange-info-tree");
-    root.setFocusable(false);
-    root.setDense(true);
-    root.expandTreeElementsWhenArrowing = true;
-    this.element.appendChild(root.element);
-    const errorFieldSetMap = /* @__PURE__ */ new Map();
-    if (signedExchangeInfo.errors?.length) {
-      const errorMessagesCategory = new Category(root, i18nString18(UIStrings19.errors));
-      for (const error of signedExchangeInfo.errors) {
-        const fragment = document.createDocumentFragment();
-        const icon = new Icon2();
-        icon.name = "cross-circle-filled";
-        icon.classList.add("prompt-icon", "small");
-        fragment.appendChild(icon);
-        fragment.createChild("div", "error-log").textContent = error.message;
-        errorMessagesCategory.createLeaf(fragment);
-        if (error.errorField) {
-          let errorFieldSet = errorFieldSetMap.get(error.signatureIndex);
-          if (!errorFieldSet) {
-            errorFieldSet = /* @__PURE__ */ new Set();
-            errorFieldSetMap.set(error.signatureIndex, errorFieldSet);
-          }
-          errorFieldSet.add(error.errorField);
-        }
-      }
-    }
-    const titleElement = document.createDocumentFragment();
-    titleElement.createChild("div", "header-name").textContent = i18nString18(UIStrings19.signedHttpExchange);
-    const learnMoreNode = Link.create(
-      "https://github.com/WICG/webpackage",
-      i18nString18(UIStrings19.learnmore),
-      "header-toggle",
-      "learn-more"
-    );
-    titleElement.appendChild(learnMoreNode);
-    const headerCategory = new Category(root, titleElement);
-    if (signedExchangeInfo.header) {
-      const header = signedExchangeInfo.header;
-      const redirectDestination = request.redirectDestination();
-      const requestURLElement = this.formatHeader(i18nString18(UIStrings19.requestUrl), header.requestUrl);
-      if (redirectDestination) {
-        const viewRequestLink = Components5.Linkifier.Linkifier.linkifyRevealable(
-          redirectDestination,
-          "View request",
-          void 0,
-          void 0,
-          void 0,
-          "redirect-destination-request"
-        );
-        viewRequestLink.classList.add("header-toggle");
-        requestURLElement.appendChild(viewRequestLink);
-      }
-      headerCategory.createLeaf(requestURLElement);
-      headerCategory.createLeaf(this.formatHeader(i18nString18(UIStrings19.responseCode), String(header.responseCode)));
-      headerCategory.createLeaf(this.formatHeader(i18nString18(UIStrings19.headerIntegrityHash), header.headerIntegrity));
-      this.responseHeadersItem = headerCategory.createLeaf(this.formatHeader(i18nString18(UIStrings19.responseHeaders), ""));
-      const responseHeaders = header.responseHeaders;
-      for (const name in responseHeaders) {
-        const headerTreeElement = new UI20.TreeOutline.TreeElement(this.formatHeader(name, responseHeaders[name]));
-        headerTreeElement.selectable = false;
-        this.responseHeadersItem.appendChild(headerTreeElement);
-      }
-      this.responseHeadersItem.expand();
-      for (let i = 0; i < header.signatures.length; ++i) {
-        const errorFieldSet = errorFieldSetMap.get(i) || /* @__PURE__ */ new Set();
-        const signature = header.signatures[i];
-        const signatureCategory = new Category(root, i18nString18(UIStrings19.signature));
-        signatureCategory.createLeaf(this.formatHeader(i18nString18(UIStrings19.label), signature.label));
-        signatureCategory.createLeaf(this.formatHeaderForHexData(
-          i18nString18(UIStrings19.signature),
-          signature.signature,
-          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureSig)
-        ));
-        if (signature.certUrl) {
-          const certURLElement = this.formatHeader(
-            i18nString18(UIStrings19.certificateUrl),
-            signature.certUrl,
-            errorFieldSet.has(Network.SignedExchangeErrorField.SignatureCertUrl)
-          );
-          if (signature.certificates) {
-            const viewCertLink = certURLElement.createChild("span", "devtools-link header-toggle");
-            viewCertLink.textContent = i18nString18(UIStrings19.viewCertificate);
-            viewCertLink.addEventListener(
-              "click",
-              Host9.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer.bind(
-                null,
-                signature.certificates
-              ),
-              false
-            );
-          }
-          signatureCategory.createLeaf(certURLElement);
-        }
-        signatureCategory.createLeaf(this.formatHeader(
-          i18nString18(UIStrings19.integrity),
-          signature.integrity,
-          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureIntegrity)
-        ));
-        if (signature.certSha256) {
-          signatureCategory.createLeaf(this.formatHeaderForHexData(
-            i18nString18(UIStrings19.certificateSha),
-            signature.certSha256,
-            errorFieldSet.has(Network.SignedExchangeErrorField.SignatureCertSha256)
-          ));
-        }
-        signatureCategory.createLeaf(this.formatHeader(
-          i18nString18(UIStrings19.validityUrl),
-          signature.validityUrl,
-          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureValidityUrl)
-        ));
-        signatureCategory.createLeaf().title = this.formatHeader(
-          i18nString18(UIStrings19.date),
-          new Date(1e3 * signature.date).toUTCString(),
-          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureTimestamps)
-        );
-        signatureCategory.createLeaf().title = this.formatHeader(
-          i18nString18(UIStrings19.expires),
-          new Date(1e3 * signature.expires).toUTCString(),
-          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureTimestamps)
-        );
-      }
-    }
-    if (signedExchangeInfo.securityDetails) {
-      const securityDetails = signedExchangeInfo.securityDetails;
-      const securityCategory = new Category(root, i18nString18(UIStrings19.certificate));
-      securityCategory.createLeaf(this.formatHeader(i18nString18(UIStrings19.subject), securityDetails.subjectName));
-      securityCategory.createLeaf(
-        this.formatHeader(i18nString18(UIStrings19.validFrom), new Date(1e3 * securityDetails.validFrom).toUTCString())
-      );
-      securityCategory.createLeaf(
-        this.formatHeader(i18nString18(UIStrings19.validUntil), new Date(1e3 * securityDetails.validTo).toUTCString())
-      );
-      securityCategory.createLeaf(this.formatHeader(i18nString18(UIStrings19.issuer), securityDetails.issuer));
-    }
+var DEFAULT_VIEW15 = (input, _output, target) => {
+  if (!input) {
+    render16(nothing11, target);
+    return;
   }
-  formatHeader(name, value, highlighted) {
-    const fragment = document.createDocumentFragment();
-    const nameElement = fragment.createChild("div", "header-name");
-    nameElement.textContent = name + ": ";
-    fragment.createChild("span", "header-separator");
-    const valueElement = fragment.createChild("div", "header-value source-code");
-    valueElement.textContent = value;
-    if (highlighted) {
-      nameElement.classList.add("error-field");
-      valueElement.classList.add("error-field");
-    }
-    return fragment;
-  }
-  formatHeaderForHexData(name, value, highlighted) {
-    const fragment = document.createDocumentFragment();
-    const nameElement = fragment.createChild("div", "header-name");
-    nameElement.textContent = name + ": ";
-    fragment.createChild("span", "header-separator");
-    const valueElement = fragment.createChild("div", "header-value source-code hex-data");
-    valueElement.textContent = value.replace(/(.{2})/g, "$1 ");
-    if (highlighted) {
-      nameElement.classList.add("error-field");
-      valueElement.classList.add("error-field");
-    }
-    return fragment;
-  }
+  const { formatHeader, formatHeaderForHexData } = SignedExchangeInfoView;
+  const renderLeaf = (content) => html15`<li role="treeitem" selectable="false">${content}</li>`;
+  const renderCategory2 = (title, children) => html15`
+    <li role="treeitem" toggle-on-click open selectable="false">
+      ${title}
+      <ul role="group">${children}</ul>
+    </li>`;
+  render16(
+    html15`
+        <style>${signedExchangeInfoView_css_default}</style>
+        <devtools-tree dense class="signed-exchange-info-tree" .template=${html15`
+          <style>${signedExchangeInfoTree_css_default}</style>
+          <ul role="tree">
+            ${input.errors.length ? renderCategory2(
+      i18nString18(UIStrings19.errors),
+      input.errors.map((errorMessage) => renderLeaf(html15`
+                  <devtools-icon name="cross-circle-filled" class="prompt-icon small"></devtools-icon><div
+                      class="error-log">${errorMessage}</div>`))
+    ) : nothing11}
+            ${renderCategory2(
+      html15`<div class="header-name">${i18nString18(UIStrings19.signedHttpExchange)}</div><devtools-link
+                    href="https://github.com/WICG/webpackage"
+                    class="header-toggle devtools-link"
+                    jslogcontext="learn-more">${i18nString18(UIStrings19.learnmore)}</devtools-link>`,
+      input.header ? html15`
+                  ${renderLeaf(html15`${formatHeader(i18nString18(UIStrings19.requestUrl), input.header.requestUrl)}${input.header.hasRedirectDestination ? html15`<devtools-link
+                          class="header-toggle devtools-link"
+                          jslogcontext="redirect-destination-request"
+                          @click=${input.onViewRequest}>${i18n37.i18n.lockedString("View request")}</devtools-link>` : nothing11}`)}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.responseCode), input.header.responseCode))}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.headerIntegrityHash), input.header.headerIntegrity))}
+                  <li role="treeitem" open selectable="false">
+                    ${formatHeader(i18nString18(UIStrings19.responseHeaders), "")}
+                    ${input.header.responseHeaders.length ? html15`
+                      <ul role="group">
+                        ${input.header.responseHeaders.map((header) => renderLeaf(formatHeader(header.name, header.value)))}
+                      </ul>
+                    ` : nothing11}
+                  </li>
+                ` : nothing11
+    )}
+            ${(input.header?.signatures ?? []).map((signature) => renderCategory2(
+      i18nString18(UIStrings19.signature),
+      html15`
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.label), signature.label))}
+                  ${renderLeaf(formatHeaderForHexData(i18nString18(UIStrings19.signature), signature.signature, signature.hasSignatureError))}
+                  ${signature.certUrl ? renderLeaf(html15`
+                    ${formatHeader(i18nString18(UIStrings19.certificateUrl), signature.certUrl, signature.hasCertUrlError)}${signature.certificates ? html15`<devtools-link
+                          class="devtools-link header-toggle"
+                          jslogcontext="view-certificate"
+                          @click=${() => input.onViewCertificate(signature.certificates ?? [])}>${i18nString18(UIStrings19.viewCertificate)}</devtools-link>` : nothing11}`) : nothing11}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.integrity), signature.integrity, signature.hasIntegrityError))}
+                  ${signature.certSha256 ? renderLeaf(formatHeaderForHexData(
+        i18nString18(UIStrings19.certificateSha),
+        signature.certSha256,
+        signature.hasCertSha256Error
+      )) : nothing11}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.validityUrl), signature.validityUrl, signature.hasValidityUrlError))}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.date), signature.date, signature.hasTimestampsError))}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.expires), signature.expires, signature.hasTimestampsError))}
+                `
+    ))}
+            ${input.securityDetails ? renderCategory2(
+      i18nString18(UIStrings19.certificate),
+      html15`
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.subject), input.securityDetails.subjectName))}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.validFrom), input.securityDetails.validFrom))}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.validUntil), input.securityDetails.validUntil))}
+                  ${renderLeaf(formatHeader(i18nString18(UIStrings19.issuer), input.securityDetails.issuer))}
+                `
+    ) : nothing11}
+          </ul>
+        `}></devtools-tree>
+      `,
+    target,
+    { container: { classes: ["signed-exchange-info-view"] } }
+  );
 };
-var Category = class extends UI20.TreeOutline.TreeElement {
-  toggleOnClick;
-  expanded;
-  constructor(root, title) {
-    super(title, true);
-    this.selectable = false;
-    this.toggleOnClick = true;
-    this.expanded = true;
-    root.appendChild(this);
+var SignedExchangeInfoView = class extends UI20.Widget.VBox {
+  #request;
+  #view;
+  constructor(requestOrElement, elementOrView, view = DEFAULT_VIEW15) {
+    super(
+      requestOrElement instanceof HTMLElement ? requestOrElement : elementOrView instanceof HTMLElement ? elementOrView : void 0
+    );
+    this.#view = typeof elementOrView === "function" ? elementOrView : view;
+    if (requestOrElement && !(requestOrElement instanceof HTMLElement)) {
+      this.#request = requestOrElement;
+    }
   }
-  createLeaf(title) {
-    const leaf = new UI20.TreeOutline.TreeElement(title);
-    leaf.selectable = false;
-    this.appendChild(leaf);
-    return leaf;
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#request = request;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const signedExchangeInfo = this.#request?.signedExchangeInfo();
+    if (!this.#request || !signedExchangeInfo) {
+      this.#view(null, void 0, this.contentElement);
+      return;
+    }
+    const request = this.#request;
+    const errorFieldSetMap = /* @__PURE__ */ new Map();
+    const errors = [];
+    for (const error of signedExchangeInfo.errors ?? []) {
+      errors.push(error.message);
+      if (error.errorField) {
+        const errorFieldSet = errorFieldSetMap.get(error.signatureIndex) ?? /* @__PURE__ */ new Set();
+        errorFieldSet.add(error.errorField);
+        errorFieldSetMap.set(error.signatureIndex, errorFieldSet);
+      }
+    }
+    const headerInfo = signedExchangeInfo.header ? {
+      requestUrl: signedExchangeInfo.header.requestUrl,
+      hasRedirectDestination: Boolean(request.redirectDestination()),
+      responseCode: String(signedExchangeInfo.header.responseCode),
+      headerIntegrity: signedExchangeInfo.header.headerIntegrity,
+      responseHeaders: Object.entries(signedExchangeInfo.header.responseHeaders).map(([name, value]) => ({ name, value })),
+      signatures: signedExchangeInfo.header.signatures.map((signature, i) => {
+        const errorFieldSet = errorFieldSetMap.get(i) ?? /* @__PURE__ */ new Set();
+        return {
+          label: signature.label,
+          signature: signature.signature,
+          hasSignatureError: errorFieldSet.has(Network.SignedExchangeErrorField.SignatureSig),
+          certUrl: signature.certUrl,
+          hasCertUrlError: errorFieldSet.has(Network.SignedExchangeErrorField.SignatureCertUrl),
+          certificates: signature.certificates,
+          integrity: signature.integrity,
+          hasIntegrityError: errorFieldSet.has(Network.SignedExchangeErrorField.SignatureIntegrity),
+          certSha256: signature.certSha256,
+          hasCertSha256Error: errorFieldSet.has(Network.SignedExchangeErrorField.SignatureCertSha256),
+          validityUrl: signature.validityUrl,
+          hasValidityUrlError: errorFieldSet.has(Network.SignedExchangeErrorField.SignatureValidityUrl),
+          date: new Date(1e3 * signature.date).toUTCString(),
+          expires: new Date(1e3 * signature.expires).toUTCString(),
+          hasTimestampsError: errorFieldSet.has(Network.SignedExchangeErrorField.SignatureTimestamps)
+        };
+      })
+    } : null;
+    const securityDetails = signedExchangeInfo.securityDetails ? {
+      subjectName: signedExchangeInfo.securityDetails.subjectName,
+      validFrom: new Date(1e3 * signedExchangeInfo.securityDetails.validFrom).toUTCString(),
+      validUntil: new Date(1e3 * signedExchangeInfo.securityDetails.validTo).toUTCString(),
+      issuer: signedExchangeInfo.securityDetails.issuer
+    } : null;
+    this.#view(
+      {
+        errors,
+        header: headerInfo,
+        securityDetails,
+        onViewRequest: () => {
+          const redirectDestination = request.redirectDestination();
+          if (redirectDestination) {
+            void Common16.Revealer.reveal(redirectDestination);
+          }
+        },
+        onViewCertificate: (certificates) => Host9.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer(certificates)
+      },
+      void 0,
+      this.contentElement
+    );
+  }
+  static formatHeader(name, value, highlighted) {
+    return html15`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
+        class="header-separator"></span><div
+        class=${classMap4({ "header-value": true, "source-code": true, "error-field": Boolean(highlighted) })}>${value}</div>`;
+  }
+  static formatHeaderForHexData(name, value, highlighted) {
+    return html15`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
+        class="header-separator"></span><div
+        class=${classMap4({ "header-value": true, "source-code": true, "hex-data": true, "error-field": Boolean(highlighted) })}>${value.replace(/(.{2})/g, "$1 ")}</div>`;
   }
 };
 
 // ../../front_end/panels/network/RequestPreviewView.ts
+var { widget: widget7 } = UI21.Widget;
+var { repeat: repeat4 } = Directives11;
 var UIStrings20 = {
   /**
    * @description Text in Request Preview View of the Network panel
@@ -17441,19 +17448,84 @@ var UIStrings20 = {
   /**
    * @description Text in Request Preview View of the Network panel
    */
-  previewNotAvailable: "Preview not available"
+  previewNotAvailable: "Preview not available",
+  /**
+   * @description Text shown in the empty widget when there is no content to
+   * preview in the Request Preview View of the Network panel.
+   */
+  nothingToPreview: "Nothing to preview"
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/network/RequestPreviewView.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
+var DEFAULT_VIEW16 = (input, _output, target) => {
+  let previewTemplate;
+  if (input.hasSignedExchange) {
+    previewTemplate = html16`${widget7(SignedExchangeInfoView, { request: input.request })}`;
+  } else if (input.error !== null) {
+    previewTemplate = html16`${widget7(UI21.EmptyWidget.EmptyWidget, {
+      header: i18nString19(UIStrings20.failedToLoadResponseData),
+      text: input.error
+    })}`;
+  } else if (input.parsedJSON) {
+    previewTemplate = html16`${widget7(SourceFrame2.JSONView.SearchableJsonView, { parsedJSON: input.parsedJSON })}`;
+  } else if (input.htmlDataURL) {
+    previewTemplate = html16`${widget7(RequestHTMLView, { dataURL: input.htmlDataURL })}`;
+  } else if (input.resourceType === Common17.ResourceType.resourceTypes.Image) {
+    previewTemplate = html16`${widget7(
+      (element) => new SourceFrame2.ImageView.ImageView(input.mimeType, input.request, element),
+      { showToolbar: true }
+    )}`;
+  } else if (input.resourceType === Common17.ResourceType.resourceTypes.Font) {
+    previewTemplate = html16`${widget7(
+      (element) => new SourceFrame2.FontView.FontView(input.mimeType, input.request, element),
+      { showToolbar: true }
+    )}`;
+  } else if (!input.isTextContent) {
+    previewTemplate = html16`${widget7(UI21.EmptyWidget.EmptyWidget, {
+      header: i18nString19(UIStrings20.previewNotAvailable),
+      text: ""
+    })}`;
+  } else if (!input.hasTextContent) {
+    previewTemplate = html16`${widget7(UI21.EmptyWidget.EmptyWidget, {
+      header: i18nString19(UIStrings20.nothingToPreview),
+      text: ""
+    })}`;
+  } else if (input.parsedXML) {
+    const parsedXML = input.parsedXML;
+    previewTemplate = html16`${widget7((element) => SourceFrame2.XMLView.XMLView.createSearchableView(parsedXML, element))}`;
+  } else {
+    previewTemplate = html16`${widget7(
+      (element) => new SourceFrame2.ResourceSourceFrame.SearchableContainer(
+        input.request,
+        input.highlighterType,
+        element
+      )
+    )}`;
+  }
+  render17(
+    html16`${repeat4([input.request], (request) => request, () => previewTemplate)}`,
+    target,
+    {
+      container: {
+        attributes: {
+          jslog: `${VisualLogging14.pane("preview").track({ resize: true })}`
+        }
+      }
+    }
+  );
+};
 var RequestPreviewView = class extends UI21.Widget.VBox {
   #request;
-  contentViewPromise = null;
-  constructor(request, element) {
-    super(
-      request instanceof HTMLElement ? request : element,
-      { jslog: `${VisualLogging14.pane("preview").track({ resize: true })}` }
-    );
-    this.element.classList.add("request-view");
+  #view;
+  #error = null;
+  #htmlDataURL = null;
+  #parsedJSON = null;
+  #parsedXML = null;
+  #isTextContent = false;
+  #hasTextContent = false;
+  constructor(request, view = DEFAULT_VIEW16) {
+    super(request instanceof HTMLElement ? request : void 0);
+    this.#view = view;
     if (request && !(request instanceof HTMLElement)) {
       this.#request = request;
     }
@@ -17466,85 +17538,118 @@ var RequestPreviewView = class extends UI21.Widget.VBox {
       return;
     }
     this.#request = request;
-    this.contentViewPromise = null;
-    this.detachChildWidgets();
-    this.element.removeChildren();
-    if (this.isShowing()) {
-      void this.doShowPreview();
-    }
+    this.#resetState();
+    this.requestUpdate();
   }
-  async showPreview() {
-    const request = this.#request;
-    const view = await this.createPreview();
-    if (this.#request !== request) {
-      return view;
-    }
-    view.show(this.element);
-    await view.updateComplete;
-    if (!(view instanceof UI21.View.SimpleView)) {
-      return view;
-    }
-    const toolbar5 = this.element.createChild("devtools-toolbar", "network-item-preview-toolbar");
-    void view.toolbarItems().then((items) => {
-      render16(items, toolbar5);
-    });
-    return view;
+  // Used by layout test
+  // http/tests/devtools/network/network-choose-preview-view.js
+  get contentViewPromise() {
+    return this.updateComplete.then(() => this.children().at(-1) ?? null);
   }
   wasShown() {
     super.wasShown();
-    void this.doShowPreview();
+    this.requestUpdate();
   }
-  doShowPreview() {
-    if (!this.contentViewPromise) {
-      this.contentViewPromise = this.showPreview();
+  async performUpdate() {
+    if (!this.#request) {
+      return;
     }
-    return this.contentViewPromise;
+    const request = this.#request;
+    await this.#loadPreviewData(request);
+    if (this.#request !== request) {
+      return;
+    }
+    let resourceType = Common17.ResourceType.ResourceType.fromMimeType(request.mimeType);
+    if (resourceType === Common17.ResourceType.resourceTypes.Other) {
+      resourceType = request.contentType();
+    }
+    const highlighterType = request.mimeType.replace(/;.*/, "") || request.contentType().canonicalMimeType();
+    this.#view(
+      {
+        request,
+        resourceType,
+        mimeType: request.mimeType,
+        highlighterType,
+        hasSignedExchange: Boolean(request.signedExchangeInfo()),
+        error: this.#error,
+        htmlDataURL: this.#htmlDataURL,
+        parsedJSON: this.#parsedJSON,
+        parsedXML: this.#parsedXML,
+        isTextContent: this.#isTextContent,
+        hasTextContent: this.#hasTextContent
+      },
+      void 0,
+      this.contentElement
+    );
   }
-  async htmlPreview() {
-    const contentData = await this.request.requestContentData();
+  #resetState() {
+    this.#error = null;
+    this.#htmlDataURL = null;
+    this.#parsedJSON = null;
+    this.#parsedXML = null;
+    this.#isTextContent = false;
+    this.#hasTextContent = false;
+  }
+  async #loadPreviewData(request) {
+    this.#resetState();
+    if (request.signedExchangeInfo()) {
+      return;
+    }
+    const contentData = await request.requestContentData();
+    if (this.#request !== request) {
+      return;
+    }
     if (TextUtils5.ContentData.ContentData.isError(contentData)) {
-      return new UI21.EmptyWidget.EmptyWidget(i18nString19(UIStrings20.failedToLoadResponseData), contentData.error);
+      this.#error = contentData.error;
+      return;
     }
     const allowlist = /* @__PURE__ */ new Set(["text/html", "text/plain", "application/xhtml+xml"]);
-    if (!allowlist.has(this.request.mimeType)) {
-      return null;
+    if (allowlist.has(request.mimeType)) {
+      const parsedJSON = await SourceFrame2.JSONView.JSONView.parseJSON(contentData.text);
+      if (this.#request !== request) {
+        return;
+      }
+      if (parsedJSON && typeof parsedJSON.data === "object") {
+        this.#parsedJSON = parsedJSON;
+        return;
+      }
+      const dataURL = contentData.asDataUrl();
+      if (dataURL) {
+        this.#htmlDataURL = dataURL;
+        return;
+      }
     }
-    const jsonView = await SourceFrame2.JSONView.JSONView.createView(contentData.text);
-    if (jsonView) {
-      return jsonView;
+    this.#isTextContent = contentData.isTextContent;
+    this.#hasTextContent = Boolean(contentData.isTextContent && contentData.text);
+    if (this.#hasTextContent) {
+      this.#parsedXML = SourceFrame2.XMLView.XMLView.parseXML(contentData.text, contentData.mimeType);
+      if (!this.#parsedXML) {
+        const parsedJSON = await SourceFrame2.JSONView.JSONView.parseJSON(contentData.text);
+        if (this.#request !== request) {
+          return;
+        }
+        if (parsedJSON && typeof parsedJSON.data === "object") {
+          this.#parsedJSON = parsedJSON;
+        }
+      }
     }
-    return RequestHTMLView.create(contentData);
-  }
-  async createPreview() {
-    if (this.request.signedExchangeInfo()) {
-      return new SignedExchangeInfoView(this.request);
-    }
-    const htmlErrorPreview = await this.htmlPreview();
-    if (htmlErrorPreview) {
-      return htmlErrorPreview;
-    }
-    const provided = await SourceFrame2.PreviewFactory.PreviewFactory.createPreview(this.request, this.request.mimeType);
-    if (provided) {
-      return provided;
-    }
-    return new UI21.EmptyWidget.EmptyWidget(i18nString19(UIStrings20.previewNotAvailable), "");
   }
 };
 
 // ../../front_end/panels/network/RequestResponseView.ts
 var RequestResponseView_exports = {};
 __export(RequestResponseView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW15,
+  DEFAULT_VIEW: () => DEFAULT_VIEW17,
   RequestResponseView: () => RequestResponseView
 });
-import * as Common16 from "../../core/common/common.js";
+import * as Common18 from "../../core/common/common.js";
 import * as Host10 from "../../core/host/host.js";
 import * as i18n41 from "../../core/i18n/i18n.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
 import * as Lit4 from "../../ui/lit/lit.js";
-var { html: html15, render: render17 } = Lit4;
+var { html: html17, render: render18 } = Lit4;
 var UIStrings21 = {
   /**
    * @description Text in Request Response View of the Network panel if no preview can be shown
@@ -17561,45 +17666,45 @@ var UIStrings21 = {
 };
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/RequestResponseView.ts", UIStrings21);
 var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
-var { widgetRef, widget: widget7 } = UI22.Widget;
-var DEFAULT_VIEW15 = (input, output, target) => {
+var { widgetRef, widget: widget8 } = UI22.Widget;
+var DEFAULT_VIEW17 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils6.StreamingContentData.isError(input.contentData)) {
-    widgetTemplate = html15`${widget7((element) => new UI22.EmptyWidget.EmptyWidget(
+    widgetTemplate = html17`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.failedToLoadResponseData),
       input.contentData.error,
       element
     ))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widgetTemplate = html15`${widget7((element) => new UI22.EmptyWidget.EmptyWidget(
+    widgetTemplate = html17`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.noPreview),
       i18nString20(UIStrings21.thisRequestHasNoResponseData),
       element
     ))}`;
   } else if (input.renderAsText) {
-    widgetTemplate = html15`<devtools-widget ${widget7((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
+    widgetTemplate = html17`<devtools-widget ${widget8((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
       input.request,
       input.mimeType,
       element
     ))}
-                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget8) => {
-      output.revealPosition = widget8.revealPosition.bind(widget8);
+                    ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget9) => {
+      output.revealPosition = widget9.revealPosition.bind(widget9);
     })}></devtools-widget>`;
   } else {
-    widgetTemplate = html15`${widget7((element) => new BinaryResourceView(
+    widgetTemplate = html17`${widget8((element) => new BinaryResourceView(
       input.contentData,
       input.request.url(),
       input.request.resourceType(),
       element
     ))}`;
   }
-  render17(widgetTemplate, target);
+  render18(widgetTemplate, target);
 };
 var RequestResponseView = class extends UI22.Widget.VBox {
   request;
   #view;
   #revealPosition;
-  constructor(request, view = DEFAULT_VIEW15) {
+  constructor(request, view = DEFAULT_VIEW17) {
     super();
     this.request = request;
     this.#view = view;
@@ -17616,7 +17721,7 @@ var RequestResponseView = class extends UI22.Widget.VBox {
       const isWasm = contentData.mimeType === "application/wasm";
       renderAsText = contentData.isTextContent || isWasm;
       const isMinified = isWasm || !contentData.isTextContent ? false : TextUtils6.TextUtils.isMinified(contentData.content().text);
-      const mediaType = Common16.ResourceType.ResourceType.mediaTypeForMetrics(
+      const mediaType = Common18.ResourceType.ResourceType.mediaTypeForMetrics(
         mimeType,
         this.request.resourceType().isFromSourceMap(),
         isMinified,
@@ -17635,7 +17740,7 @@ var RequestResponseView = class extends UI22.Widget.VBox {
     this.#view(viewInput, viewOutput, this.contentElement);
   }
   getMimeTypeForDisplay() {
-    if (Common16.ResourceType.ResourceType.simplifyContentType(this.request.mimeType) === "application/json") {
+    if (Common18.ResourceType.ResourceType.simplifyContentType(this.request.mimeType) === "application/json") {
       return this.request.mimeType;
     }
     return this.request.resourceType().canonicalMimeType() || this.request.mimeType;
@@ -17652,7 +17757,7 @@ var ResourceDirectSocketChunkView_exports = {};
 __export(ResourceDirectSocketChunkView_exports, {
   ResourceDirectSocketChunkView: () => ResourceDirectSocketChunkView
 });
-import * as Common18 from "../../core/common/common.js";
+import * as Common20 from "../../core/common/common.js";
 import * as i18n45 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
 import * as SDK15 from "../../core/sdk/sdk.js";
@@ -17662,7 +17767,7 @@ import * as Lit6 from "../../ui/lit/lit.js";
 import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/network/ResourceChunkView.ts
-import * as Common17 from "../../core/common/common.js";
+import * as Common19 from "../../core/common/common.js";
 import * as Host11 from "../../core/host/host.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
@@ -17733,7 +17838,7 @@ var resourceChunkView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./resourceChunkView.css")} */`;
 
 // ../../front_end/panels/network/ResourceChunkView.ts
-var { html: html16, render: render18, Directives: { ifDefined: ifDefined4 } } = Lit5;
+var { html: html18, render: render19, Directives: { ifDefined: ifDefined4 } } = Lit5;
 var UIStrings22 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -17788,16 +17893,16 @@ var str_22 = i18n43.i18n.registerUIStrings("panels/network/ResourceChunkView.ts"
 var i18nString21 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var i18nLazyString3 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
 function defaultHeaderTemplate() {
-  return html16`
+  return html18`
     <tr>
       <th id="data" weight="88">${i18nString21(UIStrings22.data)}</th>
       <th id="length" align="right" weight="5">${i18nString21(UIStrings22.length)}</th>
       <th id="time" sortable sort="ascending" weight="7">${i18nString21(UIStrings22.time)}</th>
     </tr>`;
 }
-var DEFAULT_VIEW16 = (input, _output, target) => {
-  render18(
-    html16`
+var DEFAULT_VIEW18 = (input, _output, target) => {
+  render19(
+    html18`
       <style>${resourceChunkView_css_default}</style>
       <div class="resource-chunk-view vbox">
         <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging15.toolbar()}>
@@ -17815,7 +17920,7 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
               class="chrome-select"
               aria-label=${i18nString21(UIStrings22.filter)}
               @change=${input.onFilterTypeChange}>
-            ${FILTER_TYPES.map((item4) => html16`
+            ${FILTER_TYPES.map((item4) => html18`
               <option
                   value=${item4.name}
                   .selected=${input.selectedFilterType === item4.name}
@@ -17838,11 +17943,11 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
             <devtools-data-grid autoscroll name=${input.dataGridDisplayName} striped autofocus
                 resize="last"
                 @deselect=${input.onDeselect}
-                .template=${html16`
+                .template=${html18`
                   <style>${resourceChunkView_css_default}</style>
                   <table>
                     ${input.headerTemplate}
-                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html16`
+                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html18`
                       <tr class=${ifDefined4(row.cssClass)}
                           ?selected=${row.selected}
                           data-index=${row.index}
@@ -17855,7 +17960,7 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
                         ${input.columns.map((col) => {
       const value = col.id === "time" ? row.timeText : row.item.data[col.id] ?? "";
       const title = col.id === "time" ? row.timeTooltip : void 0;
-      return html16`
+      return html18`
                               <td class="resource-chunk-view-td" title=${ifDefined4(title)}
                                   data-value=${ifDefined4(typeof value === "string" ? value : void 0)}>
                                 ${value}
@@ -17868,10 +17973,10 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
             </devtools-data-grid>
           </div>
           <div slot="sidebar" class="vbox flex-auto" jslog=${VisualLogging15.pane("preview").track({ resize: true })}>
-            ${input.sidebarWidget ? html16`
+            ${input.sidebarWidget ? html18`
               <devtools-widget class="vbox flex-auto">
                 ${input.sidebarWidget.element}
-              </devtools-widget>` : html16`
+              </devtools-widget>` : html18`
               <devtools-widget
                   ${UI23.Widget.widget(UI23.EmptyWidget.EmptyWidget, {
       header: i18nString21(UIStrings22.noMessageSelected),
@@ -17901,10 +18006,10 @@ var ResourceChunkView = class extends UI23.Widget.VBox {
   get headerTemplate() {
     return defaultHeaderTemplate();
   }
-  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW16) {
+  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW18) {
     super(opts);
     this.#view = view;
-    this.messageFilterSetting = Common17.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");
+    this.messageFilterSetting = Common19.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");
     this.splitWidgetSettingKey = splitWidgetSettingKey;
     this.dataGridDisplayName = dataGridDisplayName;
     this.filterUsingRegexHint = filterUsingRegexHint;
@@ -18092,7 +18197,7 @@ var clearChunkOffsets = /* @__PURE__ */ new WeakMap();
 
 // ../../front_end/panels/network/ResourceDirectSocketChunkView.ts
 var {
-  html: html17
+  html: html19
 } = Lit6;
 var UIStrings23 = {
   /**
@@ -18128,7 +18233,7 @@ var str_23 = i18n45.i18n.registerUIStrings("panels/network/ResourceDirectSocketC
 var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var i18nLazyString4 = i18n45.i18n.getLazilyComputedLocalizedString.bind(void 0, str_23);
 function udpBoundHeaderTemplate() {
-  return html17`
+  return html19`
     <tr>
       <th id="data" weight="63">${i18nLazyString4(UIStrings23.data)}</th>
           <th id="address" align="right" weight="15">${i18nLazyString4(UIStrings23.address)}</th>
@@ -18279,7 +18384,7 @@ var ResourceChunkNode = class extends DataGridItem {
             new TextUtils9.ContentData.ContentData(this.dataText(), true, "application/octet-stream")
           ),
           Platform12.DevToolsPath.EmptyUrlString,
-          Common18.ResourceType.resourceTypes.DirectSocket
+          Common20.ResourceType.resourceTypes.DirectSocket
         );
       }
     }
@@ -18295,7 +18400,7 @@ var ResourceWebSocketFrameView_exports = {};
 __export(ResourceWebSocketFrameView_exports, {
   ResourceWebSocketFrameView: () => ResourceWebSocketFrameView
 });
-import * as Common19 from "../../core/common/common.js";
+import * as Common21 from "../../core/common/common.js";
 import * as i18n47 from "../../core/i18n/i18n.js";
 import * as Platform13 from "../../core/platform/platform.js";
 import * as SDK16 from "../../core/sdk/sdk.js";
@@ -18470,7 +18575,7 @@ var ResourceFrameNode = class extends DataGridItem {
             new TextUtils10.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")
           ),
           Platform13.DevToolsPath.EmptyUrlString,
-          Common19.ResourceType.resourceTypes.WebSocket
+          Common21.ResourceType.resourceTypes.WebSocket
         );
       }
     }
@@ -18611,7 +18716,7 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
     this.headerElement().setAttribute("jslog", `${VisualLogging18.toolbar("request-details").track({
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
-    if (request.resourceType() === Common20.ResourceType.resourceTypes.DirectSocket) {
+    if (request.resourceType() === Common22.ResourceType.resourceTypes.DirectSocket) {
       this.#firstTab = NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION;
       this.appendTab(
         NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION,
@@ -18630,7 +18735,7 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
         i18nString24(UIStrings25.headers)
       );
     }
-    this.#resourceViewTabSetting = Common20.Settings.Settings.instance().createSetting("resource-view-tab", this.#firstTab);
+    this.#resourceViewTabSetting = Common22.Settings.Settings.instance().createSetting("resource-view-tab", this.#firstTab);
     if (this.#request.hasOverriddenHeaders()) {
       const statusDot = document.createElement("div");
       statusDot.className = "status-dot";
@@ -18639,7 +18744,7 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
     }
     void this.#maybeAppendPayloadPanel();
     this.addEventListener(UI24.TabbedPane.Events.TabSelected, this.#tabSelected, this);
-    if (request.resourceType() === Common20.ResourceType.resourceTypes.WebSocket) {
+    if (request.resourceType() === Common22.ResourceType.resourceTypes.WebSocket) {
       const frameView = new ResourceWebSocketFrameView(request);
       this.appendTab(
         NetworkForward6.UIRequestLocation.UIRequestTabs.WS_FRAMES,
@@ -18647,7 +18752,7 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
         frameView,
         i18nString24(UIStrings25.websocketMessages)
       );
-    } else if (request.resourceType() === Common20.ResourceType.resourceTypes.DirectSocket) {
+    } else if (request.resourceType() === Common22.ResourceType.resourceTypes.DirectSocket) {
       this.appendTab(
         NetworkForward6.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS,
         i18nString24(UIStrings25.messages),
@@ -18681,7 +18786,7 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
       );
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo?.errors?.length) {
-        const icon = new Icon3();
+        const icon = new Icon2();
         icon.name = "cross-circle-filled";
         icon.classList.add("small");
         UI24.Tooltip.Tooltip.install(icon, i18nString24(UIStrings25.signedexchangeError));
@@ -18788,7 +18893,7 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
       );
     }
     if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
-      const icon = new Icon3();
+      const icon = new Icon2();
       icon.name = "warning-filled";
       icon.classList.add("small");
       icon.title = i18nString24(UIStrings25.thirdPartyPhaseout);
@@ -18833,7 +18938,7 @@ var NetworkItemView = class extends UI24.TabbedPane.TabbedPane {
   #maybeShowErrorIconInTrustTokenTabHeader() {
     const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
     if (trustTokenResult && !NetworkComponents2.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
-      const icon = new Icon3();
+      const icon = new Icon2();
       icon.name = "cross-circle-filled";
       icon.classList.add("small");
       this.setTabIcon(NetworkForward6.UIRequestLocation.UIRequestTabs.TRUST_TOKENS, icon);

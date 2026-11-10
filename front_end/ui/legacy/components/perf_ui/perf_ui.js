@@ -742,6 +742,8 @@ var FlameChart = class extends FlameChartBase {
     this.canvas = this.viewportElement.createChild("canvas", "fill");
     if (optionalConfig.canvasVELogContext) {
       const context = VisualLogging.canvas(optionalConfig.canvasVELogContext).track({
+        click: true,
+        drag: true,
         hover: true
       });
       this.canvas.setAttribute("jslog", `${context}`);
@@ -5127,7 +5129,7 @@ __export(NetworkPriorities_exports, {
 });
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -8895,8 +8897,8 @@ var pieChart_css_default = `/*
 
 .pie-chart-swatch {
   display: inline-block;
-  width: 11px;
-  height: 11px;
+  width: var(--sys-size-5);
+  height: var(--sys-size-5);
   margin: 0 var(--sys-size-4);
   top: var(--sys-size-1);
   position: relative;

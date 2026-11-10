@@ -7,8 +7,7 @@ export declare class FileContext extends ConversationContext<Workspace.UISourceC
     readonly jslogContext: 'ai-context-file';
     constructor(file: Workspace.UISourceCode.UISourceCode, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     /**
-     * Returns the security origin of the project containing the file, falling
-     * back to the origin derived from the file URL.
+     * Returns the security origin of the workspace file.
      */
     getOrigin(): SDK.SecurityOrigin.SecurityOrigin;
     getItem(): Workspace.UISourceCode.UISourceCode;

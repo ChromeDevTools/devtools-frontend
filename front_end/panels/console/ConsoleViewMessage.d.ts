@@ -123,6 +123,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     setRepeatCount(repeatCount: number): void;
     showRepeatCountElement(): void;
     get text(): string;
+    toString(): string;
     toExportString(): string;
     toMessageTextString(): string;
     setSearchRegex(regex: RegExp | null): void;

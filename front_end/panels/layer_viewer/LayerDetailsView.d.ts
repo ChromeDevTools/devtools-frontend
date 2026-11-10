@@ -13,12 +13,14 @@ export type ViewOutput = undefined;
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: ViewOutput, target: DocumentFragment) => void;
 declare const LayerDetailsViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget<ShadowRoot>>;
 export declare class LayerDetailsView extends LayerDetailsViewBase implements LayerView {
-    private readonly layerViewHost;
+    #private;
     private layerSnapshotMap;
     private selection;
     private compositingReasons;
     private readonly view;
-    constructor(layerViewHost: LayerViewHost, view?: typeof DEFAULT_VIEW);
+    constructor(layerViewHost?: LayerViewHost | HTMLElement, view?: typeof DEFAULT_VIEW);
+    get layerViewHost(): LayerViewHost | undefined;
+    set layerViewHost(layerViewHost: LayerViewHost | undefined);
     hoverObject(_selection: Selection | null): void;
     selectObject(selection: Selection | null): void;
     setLayerTree(_layerTree: SDK.LayerTreeBase.LayerTreeBase | null): void;

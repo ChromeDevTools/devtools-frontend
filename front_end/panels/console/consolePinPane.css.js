@@ -16,7 +16,7 @@ export default `/*
 }
 
 .console-pins {
-  max-height: 200px;
+  max-height: var(--sys-size-25);
   overflow-y: auto;
   background: var(--sys-color-cdt-base-container);
 

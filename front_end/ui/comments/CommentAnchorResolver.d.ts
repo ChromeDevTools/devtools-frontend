@@ -258,6 +258,7 @@ export declare function deepQuerySelector(root: Document | Element, selector: st
  *
  * Matching pipeline:
  * 1. Primary fast-path: Query by domain IDs (`networkRequestId` or `backendNodeId`) across shadow roots.
+ *    DOM node anchors whose `backendNodeId` is not found are rematched by VE path and exact text only.
  * 2. CodeMirror editor line match: Match editor and line number/text, scoped by `filePath` if present.
  * 3. Visual logging path fallback: Find all candidate elements matching `vePath`.
  * 4. Text content refinement: Filter candidates by `textSignature` and `parentTextSignature`.

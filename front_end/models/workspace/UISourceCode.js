@@ -99,20 +99,40 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
         return this.#origin;
     }
     /**
-     * Returns the security origin for this source code.
-     * Prefers the project security origin if available. If the project does not
-     * define a security origin, derives it from the source code's URL and caches
-     * the result until the source code is renamed.
+     * Returns the security origin for this file, cached until it is renamed.
      */
     securityOrigin() {
+        this.#securityOrigin ??= this.#computeSecurityOrigin();
+        return this.#securityOrigin;
+    }
+    /**
+     * Source-map projects use the script's origin, so paths like `webpack://`
+     * get that origin too. If a fetchable URL has a different origin, we return
+     * an opaque origin. Using the project's origin would let maps without
+     * `sourcesContent` fetch cross-origin URLs. Using the URL's origin would let
+     * a third-party script match the page's origin and bypass origin locks.
+     */
+    #computeSecurityOrigin() {
         const projectOrigin = this.#project.securityOrigin?.();
-        if (projectOrigin) {
+        if (!projectOrigin) {
+            return SDK.SecurityOrigin.SecurityOrigin.create(this.#url);
+        }
+        if (projectOrigin.isOpaque() || !this.#canFetchExternalResource()) {
             return projectOrigin;
         }
-        if (!this.#securityOrigin) {
-            this.#securityOrigin = SDK.SecurityOrigin.SecurityOrigin.create(this.#url);
+        const urlOrigin = SDK.SecurityOrigin.SecurityOrigin.create(this.#url);
+        return urlOrigin.isSameOriginWith(projectOrigin) ? projectOrigin :
+            SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+    }
+    #canFetchExternalResource() {
+        const parsed = URL.parse(this.#url);
+        // Inline data: URLs cannot fetch external content.
+        if (!parsed || parsed.protocol === 'data:') {
+            return false;
         }
-        return this.#securityOrigin;
+        return parsed.protocol === 'blob:' || parsed.protocol === 'filesystem:' ||
+            SDK.SecurityOrigin.IMPORTED_ORIGIN_PREFIXES.has(parsed.protocol) || Common.ParsedURL.hasWebSafeScheme(parsed) ||
+            Common.ParsedURL.isPrivilegedScheme(parsed);
     }
     fullDisplayName() {
         return this.#project.fullDisplayName(this);

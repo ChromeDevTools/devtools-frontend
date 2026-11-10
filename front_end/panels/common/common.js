@@ -337,218 +337,6 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI.Widget.VBox {
   }
 };
 
-// ../../front_end/panels/common/GeminiRebrandPromoDialog.ts
-import "../../ui/components/switch/switch.js";
-import "../../ui/kit/kit.js";
-import * as Common2 from "../../core/common/common.js";
-import * as Host2 from "../../core/host/host.js";
-import * as i18n3 from "../../core/i18n/i18n.js";
-import * as Root from "../../core/root/root.js";
-import * as Buttons2 from "../../ui/components/buttons/buttons.js";
-import * as Geometry2 from "../../ui/geometry/geometry.js";
-import * as UI2 from "../../ui/legacy/legacy.js";
-import { html as html2, render as render2 } from "../../ui/lit/lit.js";
-import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
-
-// gen/front_end/panels/common/geminiRebrandPromoDialog.css.js
-var geminiRebrandPromoDialog_css_default = `/*
- * Copyright 2026 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-@scope to (devtools-widget > *) {
-    :scope {
-        width: 100%;
-        box-shadow: none;
-        padding: var(--sys-size-8);
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .title {
-        font-size: var(--sys-typescale-headline2-size);
-    }
-
-    .banner-image {
-        margin: 10px 0;
-    }
-
-    .main-content {
-        display: flex;
-        flex-direction: column;
-        margin: var(--sys-size-6) 0;
-        gap: var(--sys-size-3);
-    }
-
-    .detail-row {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin: 5px;
-    }
-
-    .buttons {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 10px;
-    }
-}
-
-/*# sourceURL=${import.meta.resolve("./geminiRebrandPromoDialog.css")} */`;
-
-// ../../front_end/panels/common/GeminiRebrandPromoDialog.ts
-var UIStrings2 = {
-  /**
-   * @description ARIA label for the dialog.
-   */
-  dialogAriaLabel: "`Gemini 3 Flash` in `DevTools`",
-  /**
-   * @description Button text for dismissing the dialog.
-   */
-  dismiss: "Dismiss",
-  /**
-   * @description Button text for getting started.
-   */
-  getStarted: "Get started",
-  /**
-   * @description Feature item describing Gemini as an AI companion for web development.
-   */
-  detailAiCompanion: "Meet your AI-powered companion for web dev",
-  /**
-   * @description Feature item describing instant answers for console errors.
-   */
-  detailConsoleErrors: "Get instant, accurate answers for console errors",
-  /**
-   * @description Feature item describing CSS and JS snippet generation.
-   */
-  detailGenerateCode: "Generate CSS and JS snippets on the fly",
-  /**
-   * @description Feature item describing automatic issue detection in performance traces.
-   */
-  detailPerformance: "Automatically find issues in performance traces"
-};
-var str_2 = i18n3.i18n.registerUIStrings("panels/common/GeminiRebrandPromoDialog.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var PROMO_IMAGE_1X = new URL("../../Images/geminiInDevTools.png", import.meta.url).toString();
-var PROMO_IMAGE_2X = new URL("../../Images/geminiInDevTools_2x.png", import.meta.url).toString();
-var DEFAULT_VIEW2 = (input, _output, target) => {
-  render2(
-    html2`
-      <style>${geminiRebrandPromoDialog_css_default}</style>
-
-      <div class="header">
-        <div class="title">Gemini 3 Flash in DevTools</div>
-        <div class="close-button">
-          <devtools-button
-            aria-hidden="true"
-            tabindex="-1"
-            .iconName=${"cross"}
-            .variant=${Buttons2.Button.Variant.ICON}
-            .size=${Buttons2.Button.Size.REGULAR}
-            .title=${i18nString2(UIStrings2.dismiss)}
-            jslog=${VisualLogging.close().track({ click: true }).context("gemini-promo-dismiss")}
-            @click=${() => input.onCancelClick()}
-          ></devtools-button>
-        </div>
-      </div>
-
-      <img class="banner-image" srcset=${`${PROMO_IMAGE_1X} 1x, ${PROMO_IMAGE_2X} 2x`}>
-
-      <div class="main-content">
-        <div class="detail-row">
-          <devtools-icon name="performance"></devtools-icon>
-          <div>${i18nString2(UIStrings2.detailAiCompanion)}</div>
-        </div>
-        <div class="detail-row">
-          <devtools-icon name="lightbulb-spark"></devtools-icon>
-          <div>${i18nString2(UIStrings2.detailConsoleErrors)}</div>
-        </div>
-        <div class="detail-row">
-          <devtools-icon name="text-analysis"></devtools-icon>
-          <div>${i18nString2(UIStrings2.detailGenerateCode)}</div>
-        </div>
-        <div class="detail-row">
-          <devtools-icon name="smart-assistant"></devtools-icon>
-          <div>${i18nString2(UIStrings2.detailPerformance)}</div>
-        </div>
-      </div>
-
-      <div class="buttons">
-        <devtools-button
-          .variant=${Buttons2.Button.Variant.OUTLINED}
-          jslog=${VisualLogging.close().track({ click: true }).context("gemini-promo-dismiss")}
-          @click=${input.onCancelClick}>${i18nString2(UIStrings2.dismiss)}</devtools-button>
-        <devtools-button
-          .variant=${Buttons2.Button.Variant.PRIMARY}
-          .jslogContext=${"gemini-promo-get-started"}
-          @click=${input.onGetStartedClick}>${i18nString2(UIStrings2.getStarted)}</devtools-button>
-      </div>
-    `,
-    target
-  );
-};
-var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI2.Widget.VBox {
-  #view;
-  #dialog;
-  constructor(options, view) {
-    super();
-    this.#dialog = options.dialog;
-    this.#view = view ?? DEFAULT_VIEW2;
-    this.requestUpdate();
-  }
-  async #onGetStartedClick() {
-    this.#dialog.hide();
-    await UI2.ViewManager.ViewManager.instance().showView("freestyler");
-  }
-  #onCancelClick() {
-    this.#dialog.hide();
-  }
-  performUpdate() {
-    const viewInput = {
-      onGetStartedClick: this.#onGetStartedClick.bind(this),
-      onCancelClick: this.#onCancelClick.bind(this)
-    };
-    this.#view(viewInput, void 0, this.contentElement);
-  }
-  static show() {
-    const dialog2 = new UI2.Dialog.Dialog("gemini-promo-dialog");
-    dialog2.setAriaLabel(i18nString2(UIStrings2.dialogAriaLabel));
-    dialog2.setMaxContentSize(new Geometry2.Size(384, 500));
-    dialog2.setSizeBehavior(UI2.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
-    dialog2.setDimmed(true);
-    new _GeminiRebrandPromoDialog({ dialog: dialog2 }).show(dialog2.contentElement);
-    dialog2.show(
-      void 0,
-      /* stack */
-      true
-    );
-  }
-  static async maybeShow() {
-    if (!Root.Runtime.hostConfig.aidaAvailability?.enabled) {
-      return;
-    }
-    const currentAidaAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
-    if (currentAidaAvailability !== Host2.AidaClient.AidaAccessPreconditions.AVAILABLE) {
-      return;
-    }
-    const setting = Common2.Settings.Settings.instance().createSetting(
-      "gemini-promo-dialog-shown",
-      false,
-      Common2.Settings.SettingStorageType.SYNCED
-    );
-    if (setting.get()) {
-      return;
-    }
-    setting.set(true);
-    _GeminiRebrandPromoDialog.show();
-  }
-};
-
 // ../../front_end/panels/common/AiCodeCompletionSummaryToolbar.ts
 var AiCodeCompletionSummaryToolbar_exports = {};
 __export(AiCodeCompletionSummaryToolbar_exports, {
@@ -558,11 +346,11 @@ __export(AiCodeCompletionSummaryToolbar_exports, {
 import "../../ui/components/spinners/spinners.js";
 import "../../ui/components/tooltips/tooltips.js";
 import "../../ui/kit/kit.js";
-import * as Host3 from "../../core/host/host.js";
-import * as i18n5 from "../../core/i18n/i18n.js";
+import * as Host2 from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
 import * as TextEditor from "../../ui/components/text_editor/text_editor.js";
-import * as UI3 from "../../ui/legacy/legacy.js";
-import { Directives, html as html3, nothing, render as render3 } from "../../ui/lit/lit.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import { Directives, html as html2, nothing, render as render2 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/aiCodeCompletionSummaryToolbar.css.js
 var aiCodeCompletionSummaryToolbar_css_default = `/*
@@ -680,11 +468,11 @@ var UIStringsNotTranslate = {
    */
   viewSources: "View Sources"
 };
-var lockedString = i18n5.i18n.lockedString;
-var { widget } = UI3.Widget;
+var lockedString = i18n3.i18n.lockedString;
+var { widget } = UI2.Widget;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
-  if (input.aidaAvailability !== Host3.AidaClient.AidaAccessPreconditions.AVAILABLE) {
-    render3(nothing, target);
+  if (input.aidaAvailability !== Host2.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+    render2(nothing, target);
     return;
   }
   const toolbarClasses = Directives.classMap({
@@ -693,14 +481,14 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
     "has-recitation-notice": Boolean(input.citations && input.citations.size > 0),
     "has-top-border": input.hasTopBorder
   });
-  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html3`<devtools-widget
+  const disclaimer = input.disclaimerTooltipId && input.spinnerTooltipId ? html2`<devtools-widget
             ${widget(TextEditor.AiCodeCompletionDisclaimer.AiCodeCompletionDisclaimer, {
     disclaimerTooltipId: input.disclaimerTooltipId,
     spinnerTooltipId: input.spinnerTooltipId,
     loading: input.loading,
     disclaimerTextVariant: input.disclaimerTextVariant
   })} class="disclaimer-widget"></devtools-widget>` : nothing;
-  const recitationNotice = input.citations && input.citations.size > 0 ? html3`<div class="ai-code-completion-recitation-notice">
+  const recitationNotice = input.citations && input.citations.size > 0 ? html2`<div class="ai-code-completion-recitation-notice">
                 ${lockedString(UIStringsNotTranslate.generatedCodeMayBeSubjectToALicense)}
                 <span class="link"
                     role="link"
@@ -714,13 +502,13 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
                     variant="rich"
                     jslogContext="ai-code-completion-citations"
                 ><div class="citations-tooltip-container">
-                    ${Directives.repeat(input.citations, (citation) => html3`<devtools-link
+                    ${Directives.repeat(input.citations, (citation) => html2`<devtools-link
                         tabIndex="0"
                         href=${citation}
                         jslogcontext="ai-code-completion-citations.citation-link">${citation}</devtools-link>`)}</div></devtools-tooltip>
             </div>` : nothing;
-  render3(
-    html3`
+  render2(
+    html2`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
         <div class=${toolbarClasses}>
           ${disclaimer}
@@ -730,7 +518,7 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
     target
   );
 };
-var AiCodeCompletionSummaryToolbar = class extends UI3.Widget.Widget {
+var AiCodeCompletionSummaryToolbar = class extends UI2.Widget.Widget {
   #view;
   #disclaimerTooltipId;
   #spinnerTooltipId;
@@ -791,19 +579,19 @@ var AiCodeCompletionSummaryToolbar = class extends UI3.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    Host3.AidaClient.HostConfigTracker.instance().addEventListener(
-      Host3.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+    Host2.AidaClient.HostConfigTracker.instance().addEventListener(
+      Host2.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
       this.#boundOnAidaAvailabilityChange
     );
-    const initialAvailability = Host3.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    const initialAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== void 0) {
       this.#updateAidaAvailability(initialAvailability);
     }
   }
   willHide() {
     super.willHide();
-    Host3.AidaClient.HostConfigTracker.instance().removeEventListener(
-      Host3.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+    Host2.AidaClient.HostConfigTracker.instance().removeEventListener(
+      Host2.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
       this.#boundOnAidaAvailabilityChange
     );
   }
@@ -811,17 +599,17 @@ var AiCodeCompletionSummaryToolbar = class extends UI3.Widget.Widget {
 
 // ../../front_end/panels/common/BadgeNotification.ts
 import "../../ui/kit/kit.js";
-import * as Common3 from "../../core/common/common.js";
-import * as Host4 from "../../core/host/host.js";
-import * as i18n7 from "../../core/i18n/i18n.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Host3 from "../../core/host/host.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
 import * as Badges2 from "../../models/badges/badges.js";
-import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as Buttons2 from "../../ui/components/buttons/buttons.js";
 import * as UIHelpers2 from "../../ui/helpers/helpers.js";
 import * as uiI18n2 from "../../ui/i18n/i18n.js";
-import * as UI4 from "../../ui/legacy/legacy.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
 import * as Lit from "../../ui/lit/lit.js";
 import { nothing as nothing2 } from "../../ui/lit/lit.js";
-import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/badgeNotification.css.js
 var badgeNotification_css_default = `/*
@@ -921,8 +709,8 @@ var badgeNotification_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./badgeNotification.css")} */`;
 
 // ../../front_end/panels/common/BadgeNotification.ts
-var { html: html4, render: render4 } = Lit;
-var UIStrings3 = {
+var { html: html3, render: render3 } = Lit;
+var UIStrings2 = {
   /**
    * @description Title for close button.
    */
@@ -965,38 +753,38 @@ var UIStrings3 = {
    */
   createProfile: "Create profile"
 };
-var str_3 = i18n7.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings3);
-var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
-var i18nFormatStringTemplate = uiI18n2.getFormatLocalizedStringTemplate.bind(void 0, str_3);
-var lockedString2 = i18n7.i18n.lockedString;
+var str_2 = i18n5.i18n.registerUIStrings("panels/common/BadgeNotification.ts", UIStrings2);
+var i18nString2 = i18n5.i18n.getLocalizedString.bind(void 0, str_2);
+var i18nFormatStringTemplate = uiI18n2.getFormatLocalizedStringTemplate.bind(void 0, str_2);
+var lockedString2 = i18n5.i18n.lockedString;
 var LEFT_OFFSET = 5;
 var BOTTOM_OFFSET = 5;
 var AUTO_CLOSE_TIME_IN_MS = 3e4;
-var DEFAULT_VIEW3 = (input, _output, target) => {
+var DEFAULT_VIEW2 = (input, _output, target) => {
   const actionButtons = input.actions.map((property) => {
-    return html4`<devtools-button
+    return html3`<devtools-button
         class="notification-button"
         @click=${() => property.onClick()}
-        jslog=${VisualLogging2.action(property.jslogContext).track({ click: true })}
-        .variant=${Buttons3.Button.Variant.TEXT}
+        jslog=${VisualLogging.action(property.jslogContext).track({ click: true })}
+        .variant=${Buttons2.Button.Variant.TEXT}
         .title=${property.title ?? ""}
         .inverseColorTheme=${true}
     >${property.label}</devtools-button>`;
   });
-  const crossButton = html4`<devtools-button
+  const crossButton = html3`<devtools-button
         class="dismiss notification-button"
         @click=${input.onDismissClick}
-        jslog=${VisualLogging2.action("badge-notification.dismiss").track({ click: true })}
-        aria-label=${i18nString3(UIStrings3.close)}
+        jslog=${VisualLogging.action("badge-notification.dismiss").track({ click: true })}
+        aria-label=${i18nString2(UIStrings2.close)}
         .iconName=${"cross"}
-        .variant=${Buttons3.Button.Variant.ICON}
-        .title=${i18nString3(UIStrings3.close)}
+        .variant=${Buttons2.Button.Variant.ICON}
+        .title=${i18nString2(UIStrings2.close)}
         .inverseColorTheme=${true}
     ></devtools-button>`;
-  render4(html4`
+  render3(html3`
     <style>${badgeNotification_css_default}</style>
-    <div class="container" jslog=${VisualLogging2.dialog("badge-notification")}>
-      <div class="badge-container" jslog=${VisualLogging2.item(input.jslogContext)}>
+    <div class="container" jslog=${VisualLogging.dialog("badge-notification")}>
+      <div class="badge-container" jslog=${VisualLogging.item(input.jslogContext)}>
         <img class="badge-image" role="presentation" src=${input.imageUri}>
       </div>
       <div class="action-and-text-container">
@@ -1010,9 +798,9 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   `, target);
 };
 function revealBadgeSettings() {
-  void Common3.Revealer.reveal(Common3.Settings.Settings.instance().resolve(Badges2.receiveGdpBadgesSettingDescriptor));
+  void Common2.Revealer.reveal(Common2.Settings.Settings.instance().resolve(Badges2.receiveGdpBadgesSettingDescriptor));
 }
-var BadgeNotification = class extends UI4.Widget.Widget {
+var BadgeNotification = class extends UI3.Widget.Widget {
   jslogContext = "";
   message = nothing2;
   imageUri = "";
@@ -1020,7 +808,7 @@ var BadgeNotification = class extends UI4.Widget.Widget {
   isStarterBadge = false;
   #autoCloseTimeout;
   #view;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW2) {
     super(element);
     this.#view = view;
     this.contentElement.role = "alert";
@@ -1041,7 +829,7 @@ var BadgeNotification = class extends UI4.Widget.Widget {
   }
   #positionNotification() {
     const boundingRect = this.contentElement.getBoundingClientRect();
-    const container = UI4.UIUtils.getDevToolsBoundingElement();
+    const container = UI3.UIUtils.getDevToolsBoundingElement();
     this.contentElement.positionAt(
       LEFT_OFFSET,
       container.clientHeight - boundingRect.height - BOTTOM_OFFSET,
@@ -1066,21 +854,21 @@ var BadgeNotification = class extends UI4.Widget.Widget {
   }
   #presentStarterBadgeSettingsNudge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings3.starterBadgeAwardMessageSettingDisabled, {
+      message: i18nFormatStringTemplate(UIStrings2.starterBadgeAwardMessageSettingDisabled, {
         PH1: badge.title,
-        PH2: html4`<devtools-link class="badge-link" href="https://developers.google.com/program" jslogcontext="program-link">${lockedString2("Google Developer Program")}</devtools-link>`
+        PH2: html3`<devtools-link class="badge-link" href="https://developers.google.com/program" jslogcontext="program-link">${lockedString2("Google Developer Program")}</devtools-link>`
       }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString3(UIStrings3.noThanks),
+          label: i18nString2(UIStrings2.noThanks),
           jslogContext: "no-thanks",
           onClick: () => {
             this.#onDismissClick();
           }
         },
         {
-          label: i18nString3(UIStrings3.receiveBadges),
+          label: i18nString2(UIStrings2.receiveBadges),
           jslogContext: "receive-badges",
           onClick: () => {
             this.detach();
@@ -1094,21 +882,21 @@ var BadgeNotification = class extends UI4.Widget.Widget {
   }
   #presentStarterBadgeProfileNudge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings3.starterBadgeAwardMessageNoGdpProfile, {
+      message: i18nFormatStringTemplate(UIStrings2.starterBadgeAwardMessageNoGdpProfile, {
         PH1: badge.title,
-        PH2: html4`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString2("Google Developer Program")}</devtools-link>`
+        PH2: html3`<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${"program-link"}>${lockedString2("Google Developer Program")}</devtools-link>`
       }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString3(UIStrings3.noThanks),
+          label: i18nString2(UIStrings2.noThanks),
           jslogContext: "no-thanks",
           onClick: () => {
             this.#onDismissClick();
           }
         },
         {
-          label: i18nString3(UIStrings3.createProfile),
+          label: i18nString2(UIStrings2.createProfile),
           jslogContext: "create-profile",
           onClick: () => {
             this.detach();
@@ -1125,11 +913,11 @@ var BadgeNotification = class extends UI4.Widget.Widget {
   }
   #presentActivityBasedBadge(badge) {
     this.#show({
-      message: i18nFormatStringTemplate(UIStrings3.activityBasedBadgeAwardMessage, { PH1: badge.title }),
+      message: i18nFormatStringTemplate(UIStrings2.activityBasedBadgeAwardMessage, { PH1: badge.title }),
       jslogContext: badge.jslogContext,
       actions: [
         {
-          label: i18nString3(UIStrings3.manageSettings),
+          label: i18nString2(UIStrings2.manageSettings),
           jslogContext: "manage-settings",
           onClick: () => {
             this.detach();
@@ -1137,10 +925,10 @@ var BadgeNotification = class extends UI4.Widget.Widget {
           }
         },
         {
-          label: i18nString3(UIStrings3.viewProfile),
+          label: i18nString2(UIStrings2.viewProfile),
           jslogContext: "view-profile",
           onClick: () => {
-            UIHelpers2.openInNewTab(Host4.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
+            UIHelpers2.openInNewTab(Host3.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
           }
         }
       ],
@@ -1195,11 +983,11 @@ __export(CPUThrottlingOption_exports, {
   cpuThrottlingPresets: () => cpuThrottlingPresets,
   determineOptionFromRate: () => determineOptionFromRate
 });
-import * as Common4 from "../../core/common/common.js";
-import * as i18n9 from "../../core/i18n/i18n.js";
+import * as Common3 from "../../core/common/common.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
 import * as SDK from "../../core/sdk/sdk.js";
 var CalibrationError = SDK.CPUThrottlingManager.CalibrationError;
-var UIStrings4 = {
+var UIStrings3 = {
   /**
    * @description Text label for a menu item indicating that no throttling is applied.
    */
@@ -1222,9 +1010,9 @@ var UIStrings4 = {
    */
   calibrationErrorDeviceTooWeak: "Device isn\u2019t powerful enough"
 };
-var str_4 = i18n9.i18n.registerUIStrings("panels/common/CPUThrottlingOption.ts", UIStrings4);
-var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
-var i18nLazyString = i18n9.i18n.getLazilyComputedLocalizedString.bind(void 0, str_4);
+var str_3 = i18n7.i18n.registerUIStrings("panels/common/CPUThrottlingOption.ts", UIStrings3);
+var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
+var i18nLazyString = i18n7.i18n.getLazilyComputedLocalizedString.bind(void 0, str_3);
 var CPUThrottlingRates = /* @__PURE__ */ ((CPUThrottlingRates2) => {
   CPUThrottlingRates2[CPUThrottlingRates2["NO_THROTTLING"] = 1] = "NO_THROTTLING";
   CPUThrottlingRates2[CPUThrottlingRates2["MID_TIER_MOBILE"] = 4] = "MID_TIER_MOBILE";
@@ -1236,7 +1024,7 @@ var CPUThrottlingRates = /* @__PURE__ */ ((CPUThrottlingRates2) => {
 })(CPUThrottlingRates || {});
 function makeFixedPresetThrottlingOption(rate) {
   return {
-    title: rate === 1 ? i18nLazyString(UIStrings4.noThrottling) : i18nLazyString(UIStrings4.dSlowdown, { PH1: rate }),
+    title: rate === 1 ? i18nLazyString(UIStrings3.noThrottling) : i18nLazyString(UIStrings3.dSlowdown, { PH1: rate }),
     rate: () => rate,
     jslogContext: rate === 1 ? "cpu-no-throttling" : `cpu-throttled-${rate}`
   };
@@ -1247,10 +1035,10 @@ var LowTierThrottlingOption = makeFixedPresetThrottlingOption(6 /* LOW_TIER_MOBI
 var ExtraSlowThrottlingOption = makeFixedPresetThrottlingOption(20 /* EXTRA_SLOW */);
 function makeCalibratedThrottlingOption(calibratedDeviceType) {
   const getSettingValue = () => {
-    const setting = Common4.Settings.Settings.instance().createSetting(
+    const setting = Common3.Settings.Settings.instance().createSetting(
       "calibrated-cpu-throttling",
       {},
-      Common4.Settings.SettingStorageType.GLOBAL
+      Common3.Settings.SettingStorageType.GLOBAL
     );
     const value = setting.get();
     if (calibratedDeviceType === "low-tier-mobile") {
@@ -1263,7 +1051,7 @@ function makeCalibratedThrottlingOption(calibratedDeviceType) {
   };
   return {
     title() {
-      const typeString = calibratedDeviceType === "low-tier-mobile" ? i18nString4(UIStrings4.calibratedLowTierMobile) : i18nString4(UIStrings4.calibratedMidTierMobile);
+      const typeString = calibratedDeviceType === "low-tier-mobile" ? i18nString3(UIStrings3.calibratedLowTierMobile) : i18nString3(UIStrings3.calibratedMidTierMobile);
       const value = getSettingValue();
       if (typeof value === "number") {
         return `${typeString} \u2013 ${value.toFixed(1)}\xD7`;
@@ -1285,7 +1073,7 @@ var CalibratedLowTierMobileThrottlingOption = makeCalibratedThrottlingOption("lo
 var CalibratedMidTierMobileThrottlingOption = makeCalibratedThrottlingOption("mid-tier-mobile");
 function calibrationErrorToString(error) {
   if (error === CalibrationError.DEVICE_TOO_WEAK) {
-    return i18nString4(UIStrings4.calibrationErrorDeviceTooWeak);
+    return i18nString3(UIStrings3.calibrationErrorDeviceTooWeak);
   }
   return error;
 }
@@ -1315,7 +1103,7 @@ import * as Platform from "../../core/platform/platform.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as Extensions from "../../models/extensions/extensions.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI6 from "../../ui/legacy/legacy.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
 
 // ../../front_end/panels/common/ExtensionView.ts
 var ExtensionView_exports = {};
@@ -1324,11 +1112,11 @@ __export(ExtensionView_exports, {
   ExtensionNotifierView: () => ExtensionNotifierView,
   ExtensionView: () => ExtensionView
 });
-import * as UI5 from "../../ui/legacy/legacy.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
-var { render: render5, html: html5, Directives: { ref } } = Lit2;
-var DEFAULT_VIEW4 = (input, output, target) => {
-  render5(html5`<iframe
+var { render: render4, html: html4, Directives: { ref } } = Lit2;
+var DEFAULT_VIEW3 = (input, output, target) => {
+  render4(html4`<iframe
     ${ref((element) => {
     output.iframe = element;
   })}
@@ -1337,7 +1125,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     class=${input.className}
     @load=${input.onLoad}></iframe>`, target);
 };
-var ExtensionView = class extends UI5.Widget.Widget {
+var ExtensionView = class extends UI4.Widget.Widget {
   #server;
   #id;
   #src;
@@ -1345,7 +1133,7 @@ var ExtensionView = class extends UI5.Widget.Widget {
   #iframe;
   #frameIndex;
   #view;
-  constructor(server, id, src, className, view = DEFAULT_VIEW4) {
+  constructor(server, id, src, className, view = DEFAULT_VIEW3) {
     super();
     this.#view = view;
     this.#server = server;
@@ -1393,7 +1181,7 @@ var ExtensionView = class extends UI5.Widget.Widget {
     }
   }
 };
-var ExtensionNotifierView = class extends UI5.Widget.VBox {
+var ExtensionNotifierView = class extends UI4.Widget.VBox {
   server;
   id;
   constructor(server, id) {
@@ -1450,7 +1238,7 @@ var ExtensionIframe = class {
 };
 
 // ../../front_end/panels/common/ExtensionPanel.ts
-var ExtensionPanel = class extends UI6.Panel.Panel {
+var ExtensionPanel = class extends UI5.Panel.Panel {
   server;
   id;
   panelToolbar;
@@ -1461,7 +1249,7 @@ var ExtensionPanel = class extends UI6.Panel.Panel {
     this.id = id;
     this.setHideOnDetach();
     this.panelToolbar = this.element.createChild("devtools-toolbar", "hidden");
-    this.#searchableView = new UI6.SearchableView.SearchableView(this, null);
+    this.#searchableView = new UI5.SearchableView.SearchableView(this, null);
     this.#searchableView.show(this.element);
     const extensionView = new ExtensionView(server, this.id, pageURL, "extension");
     extensionView.show(this.#searchableView.element);
@@ -1512,9 +1300,9 @@ var ExtensionButton = class {
   #toolbarButton;
   constructor(server, id, iconURL, tooltip, disabled) {
     this.id = id;
-    this.#toolbarButton = new UI6.Toolbar.ToolbarButton("", "");
+    this.#toolbarButton = new UI5.Toolbar.ToolbarButton("", "");
     this.#toolbarButton.addEventListener(
-      UI6.Toolbar.ToolbarButton.Events.CLICK,
+      UI5.Toolbar.ToolbarButton.Events.CLICK,
       server.notifyButtonClicked.bind(server, this.id)
     );
     this.update(iconURL, tooltip, disabled);
@@ -1536,7 +1324,7 @@ var ExtensionButton = class {
 };
 var hashIdentifier = (id) => Platform.StringUtilities.hashCode(id).toString(36);
 var cleanIdentifier = (id) => Platform.StringUtilities.sanitizeIdentifier(id) || hashIdentifier(id);
-var ExtensionSidebarPane = class extends UI6.View.SimpleView {
+var ExtensionSidebarPane = class extends UI5.View.SimpleView {
   #panelName;
   server;
   #id;
@@ -1640,11 +1428,11 @@ __export(ExtensionServer_exports, {
   HostsPolicy: () => HostsPolicy,
   RevealableNetworkRequestFilter: () => RevealableNetworkRequestFilter
 });
-import * as Common5 from "../../core/common/common.js";
-import * as Host5 from "../../core/host/host.js";
-import * as i18n11 from "../../core/i18n/i18n.js";
+import * as Common4 from "../../core/common/common.js";
+import * as Host4 from "../../core/host/host.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
 import * as Platform2 from "../../core/platform/platform.js";
-import * as Root2 from "../../core/root/root.js";
+import * as Root from "../../core/root/root.js";
 import * as SDK3 from "../../core/sdk/sdk.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as Bindings from "../../models/bindings/bindings.js";
@@ -1653,7 +1441,7 @@ import * as HAR from "../../models/har/har.js";
 import * as Logs from "../../models/logs/logs.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as Components from "../../ui/legacy/components/utils/utils.js";
-import * as UI7 from "../../ui/legacy/legacy.js";
+import * as UI6 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
 var extensionOrigins = /* @__PURE__ */ new WeakMap();
 var extensionServerInstance;
@@ -1731,7 +1519,7 @@ var RegisteredExtension = class {
     inspectedURL = parsedURL.href;
     if (parsedURL.protocol === "chrome-extension:") {
       if (parsedURL.origin !== this.origin) {
-        if (!Root2.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
+        if (!Root.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
           return false;
         }
       }
@@ -1754,7 +1542,7 @@ var RevealableNetworkRequestFilter = class {
   }
   filter;
 };
-var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.ObjectWrapper {
+var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.ObjectWrapper {
   clientObjects;
   handlers;
   subscribers;
@@ -1897,8 +1685,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (existingTabId) {
       this.setInspectedTabId({ data: existingTabId });
     }
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-      Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId,
+    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+      Host4.InspectorFrontendHostAPI.Events.SetInspectedTabId,
       this.setInspectedTabId,
       this
     );
@@ -1923,8 +1711,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       this.#onUserAgentChanged,
       this
     );
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-      Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId,
+    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+      Host4.InspectorFrontendHostAPI.Events.SetInspectedTabId,
       this.setInspectedTabId,
       this
     );
@@ -1949,7 +1737,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   }
   initializeExtensions() {
     if (this.inspectedTabId !== null) {
-      Host5.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this.addExtension.bind(this));
+      Host4.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this.addExtension.bind(this));
     }
   }
   hasExtensions() {
@@ -2185,7 +1973,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
         `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowNetworkPanel}`
       );
     }
-    void Common5.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
+    void Common4.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
     return this.status.OK();
   }
   onCreateRecorderView(message, port) {
@@ -2331,7 +2119,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return origin;
   }
   static extensionIdFromOrigin(extensionOrigin) {
-    const url = Common5.ParsedURL.ParsedURL.fromString(extensionOrigin);
+    const url = Common4.ParsedURL.ParsedURL.fromString(extensionOrigin);
     if (url?.scheme === "chrome-extension" && url.host) {
       return url.host;
     }
@@ -2346,7 +2134,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.CreatePanel}`);
     }
     const id = message.id;
-    if (this.clientObjects.has(id) || UI7.InspectorView.InspectorView.instance().hasPanel(id)) {
+    if (this.clientObjects.has(id) || UI6.InspectorView.InspectorView.instance().hasPanel(id)) {
       return this.status.E_EXISTS(id);
     }
     const page = _ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.page);
@@ -2357,11 +2145,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     persistentId = persistentId.replace(/\s|:\d+/g, "");
     const panelView = new ExtensionServerPanelView(
       persistentId,
-      i18n11.i18n.lockedString(message.title),
+      i18n9.i18n.lockedString(message.title),
       new ExtensionPanel(this, persistentId, id, page)
     );
     this.clientObjects.set(id, panelView);
-    UI7.InspectorView.InspectorView.instance().addPanel(panelView);
+    UI6.InspectorView.InspectorView.instance().addPanel(panelView);
     return this.status.OK();
   }
   onShowPanel(message) {
@@ -2373,7 +2161,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (panelView && panelView instanceof ExtensionServerPanelView) {
       panelViewId = panelView.viewId();
     }
-    void UI7.InspectorView.InspectorView.instance().showPanel(panelViewId);
+    void UI6.InspectorView.InspectorView.instance().showPanel(panelViewId);
     return void 0;
   }
   onCreateToolbarButton(message, port) {
@@ -2425,7 +2213,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     const sidebar = new ExtensionSidebarPane(
       this,
       message.panel,
-      i18n11.i18n.lockedString(message.title),
+      i18n9.i18n.lockedString(message.title),
       id,
       this.getExtensionId(port)
     );
@@ -2498,7 +2286,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       if (!this.extensionAllowedOnContentProvider(uiSourceCode, port)) {
         return this.status.E_FAILED("Permission denied");
       }
-      void Common5.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
+      void Common4.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
       return this.status.OK();
     }
     if (!this.extensionAllowedOnURL(message.url, port)) {
@@ -2506,12 +2294,12 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     const resource = Bindings.ResourceUtils.resourceForURL(message.url);
     if (resource) {
-      void Common5.Revealer.reveal(resource);
+      void Common4.Revealer.reveal(resource);
       return this.status.OK();
     }
     const request = Logs.NetworkLog.NetworkLog.instance().requestForURL(message.url);
     if (request) {
-      void Common5.Revealer.reveal(request);
+      void Common4.Revealer.reveal(request);
       return this.status.OK();
     }
     return this.status.E_NOTFOUND(message.url);
@@ -2536,7 +2324,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       } catch {
         return this.status.E_BADARG("urlScheme", "Invalid scheme");
       }
-      if (Common5.ParsedURL.isPrivilegedScheme(urlToParse)) {
+      if (Common4.ParsedURL.isPrivilegedScheme(urlToParse)) {
         return this.status.E_BADARG("urlScheme", "Scheme is forbidden");
       }
     }
@@ -2583,7 +2371,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       isAllowed = this.extensionAllowedOnContentProvider(contentProviderOrUrl, port);
     } else {
       const url = contentProviderOrUrl;
-      resource = { url, type: Common5.ResourceType.resourceTypes.Other.name() };
+      resource = { url, type: Common4.ResourceType.resourceTypes.Other.name() };
       isAllowed = this.extensionAllowedOnURL(url, port);
     }
     if (isAllowed) {
@@ -2637,7 +2425,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
         if (!scripts.every((script) => this.extensionAllowedOnScript(script, portOrExtension))) {
           return false;
         }
-        if (contentProvider.contentType() === Common5.ResourceType.resourceTypes.Script) {
+        if (contentProvider.contentType() === Common4.ResourceType.resourceTypes.Script) {
           const uiSourceCodeTarget = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? void 0;
           return !uiSourceCodeTarget || this.extensionAllowedOnTarget(uiSourceCodeTarget, portOrExtension);
         }
@@ -2968,7 +2756,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (!Array.isArray(message.entries)) {
       return this.status.E_BADARG("entries", "expected array");
     }
-    const globalShortcutKeys = new Set(UI7.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys());
+    const globalShortcutKeys = new Set(UI6.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys());
     const validEvents = [];
     for (const entry of message.entries) {
       if (!entry || typeof entry !== "object") {
@@ -3010,16 +2798,16 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       }
       let modifiers = 0;
       if (entry.shiftKey) {
-        modifiers |= UI7.KeyboardShortcut.Modifiers.Shift.value;
+        modifiers |= UI6.KeyboardShortcut.Modifiers.Shift.value;
       }
       if (entry.ctrlKey) {
-        modifiers |= UI7.KeyboardShortcut.Modifiers.Ctrl.value;
+        modifiers |= UI6.KeyboardShortcut.Modifiers.Ctrl.value;
       }
       if (entry.altKey) {
-        modifiers |= UI7.KeyboardShortcut.Modifiers.Alt.value;
+        modifiers |= UI6.KeyboardShortcut.Modifiers.Alt.value;
       }
       if (entry.metaKey) {
-        modifiers |= UI7.KeyboardShortcut.Modifiers.Meta.value;
+        modifiers |= UI6.KeyboardShortcut.Modifiers.Meta.value;
       }
       const keyCombination = keyCode & 255 | modifiers << 8;
       if (!globalShortcutKeys.has(keyCombination)) {
@@ -3065,14 +2853,14 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       this.notifyRequestFinished
     );
     function onElementsSubscriptionStarted() {
-      UI7.Context.Context.instance().addFlavorChangeListener(
+      UI6.Context.Context.instance().addFlavorChangeListener(
         SDK3.DOMModel.DOMNode,
         this.notifyElementsSelectionChanged,
         this
       );
     }
     function onElementsSubscriptionStopped() {
-      UI7.Context.Context.instance().removeFlavorChangeListener(
+      UI6.Context.Context.instance().removeFlavorChangeListener(
         SDK3.DOMModel.DOMNode,
         this.notifyElementsSelectionChanged,
         this
@@ -3191,10 +2979,10 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
           extensionInfo,
           this.inspectedTabId,
           ThemeSupport.ThemeSupport.instance().themeName(),
-          UI7.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(),
+          UI6.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(),
           _ExtensionServer.instance().extensionAPITestHook
         );
-        Host5.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
+        Host4.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
           extensionOrigin,
           injectedAPI
         );
@@ -3315,7 +3103,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   }
   static expandResourcePath(extensionOrigin, resourcePath) {
     const strippedOrigin = new URL(extensionOrigin).origin;
-    const resourceURL = new URL(Common5.ParsedURL.normalizePath(resourcePath), strippedOrigin);
+    const resourceURL = new URL(Common4.ParsedURL.normalizePath(resourcePath), strippedOrigin);
     if (resourceURL.origin !== strippedOrigin) {
       return void 0;
     }
@@ -3414,7 +3202,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (!parsedURL) {
       return false;
     }
-    if (!Common5.ParsedURL.schemeIs(parsedURL, "chrome-extension:") && !Common5.ParsedURL.schemeIs(parsedURL, "file:") && Common5.ParsedURL.isPrivilegedScheme(parsedURL)) {
+    if (!Common4.ParsedURL.schemeIs(parsedURL, "chrome-extension:") && !Common4.ParsedURL.schemeIs(parsedURL, "file:") && Common4.ParsedURL.isPrivilegedScheme(parsedURL)) {
       return false;
     }
     if ((window.DevToolsAPI?.getOriginsForbiddenForExtensions?.() || []).includes(parsedURL.origin)) {
@@ -3515,7 +3303,7 @@ var Events = /* @__PURE__ */ ((Events2) => {
   Events2["SidebarPaneAdded"] = "SidebarPaneAdded";
   return Events2;
 })(Events || {});
-var ExtensionServerPanelView = class extends UI7.View.SimpleView {
+var ExtensionServerPanelView = class extends UI6.View.SimpleView {
   name;
   panel;
   constructor(name, title, panel) {
@@ -3568,14 +3356,14 @@ __export(PersistenceUtils_exports, {
   PersistenceUtils: () => PersistenceUtils
 });
 import "../../ui/kit/kit.js";
-import * as Common6 from "../../core/common/common.js";
-import * as i18n13 from "../../core/i18n/i18n.js";
+import * as Common5 from "../../core/common/common.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
 import * as Platform3 from "../../core/platform/platform.js";
 import * as Persistence from "../../models/persistence/persistence.js";
 import * as Workspace3 from "../../models/workspace/workspace.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
-import { html as html6 } from "../../ui/lit/lit.js";
-var UIStrings5 = {
+import { html as html5 } from "../../ui/lit/lit.js";
+var UIStrings4 = {
   /**
    * @description Tooltip text indicating that a file is linked to a source map.
    * @example {example.url} PH1
@@ -3587,8 +3375,8 @@ var UIStrings5 = {
    */
   linkedToS: "Linked to {PH1}"
 };
-var str_5 = i18n13.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", UIStrings5);
-var i18nString5 = i18n13.i18n.getLocalizedString.bind(void 0, str_5);
+var str_4 = i18n11.i18n.registerUIStrings("panels/common/PersistenceUtils.ts", UIStrings4);
+var i18nString4 = i18n11.i18n.getLocalizedString.bind(void 0, str_4);
 var PersistenceUtils = class _PersistenceUtils {
   static tooltipForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -3601,38 +3389,38 @@ var PersistenceUtils = class _PersistenceUtils {
       );
     }
     if (binding.network.contentType().isFromSourceMap()) {
-      return i18nString5(
-        UIStrings5.linkedToSourceMapS,
+      return i18nString4(
+        UIStrings4.linkedToSourceMapS,
         { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) }
       );
     }
-    return i18nString5(UIStrings5.linkedToS, { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) });
+    return i18nString4(UIStrings4.linkedToS, { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) });
   }
   static iconForUISourceCode(uiSourceCode) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
-      if (!Common6.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
+      if (!Common5.ParsedURL.schemeIs(binding.fileSystem.url(), "file:")) {
         return null;
       }
       const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
-      return html6`<devtools-icon class="small dot ${dotClass}" name="document"
+      return html5`<devtools-icon class="small dot ${dotClass}" name="document"
                                  title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
                   </devtools-icon>`;
     }
-    if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common6.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
+    if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common5.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
       return null;
     }
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
       uiSourceCode
     )) {
-      return html6`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
+      return html5`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
     }
-    return html6`<devtools-icon class="small" name="document"
+    return html5`<devtools-icon class="small" name="document"
                                title=${_PersistenceUtils.tooltipForUISourceCode(uiSourceCode)}>
                 </devtools-icon>`;
   }
 };
-var LinkDecorator = class extends Common6.ObjectWrapper.ObjectWrapper {
+var LinkDecorator = class extends Common5.ObjectWrapper.ObjectWrapper {
   constructor(persistence) {
     super();
     persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.#bindingChanged, this);
@@ -3654,12 +3442,12 @@ __export(DOMLinkifier_exports, {
   DeferredDOMNodeLink: () => DeferredDOMNodeLink,
   Linkifier: () => Linkifier3
 });
-import * as Common7 from "../../core/common/common.js";
-import * as i18n15 from "../../core/i18n/i18n.js";
+import * as Common6 from "../../core/common/common.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
 import * as SDK4 from "../../core/sdk/sdk.js";
-import * as UI8 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, nothing as nothing3, render as render6 } from "../../ui/lit/lit.js";
-import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
+import * as UI7 from "../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html6, nothing as nothing3, render as render5 } from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
 var domLinkifier_css_default = `/*
@@ -3721,8 +3509,8 @@ var domLinkifier_css_default = `/*
 
 // ../../front_end/panels/common/DOMLinkifier.ts
 var { classMap, ifDefined } = Directives2;
-var { widget: widget2 } = UI8.Widget;
-var UIStrings6 = {
+var { widget: widget2 } = UI7.Widget;
+var UIStrings5 = {
   /**
    * @description Text displayed when trying to create a link to a node in the UI, but the node
    * location could not be found so we display this placeholder instead. Node refers to a DOM node.
@@ -3730,10 +3518,10 @@ var UIStrings6 = {
    */
   node: "<node>"
 };
-var str_6 = i18n15.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings6);
-var i18nString6 = i18n15.i18n.getLocalizedString.bind(void 0, str_6);
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  render6(html7`${input.tagName || input.pseudo ? html7`
+var str_5 = i18n13.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings5);
+var i18nString5 = i18n13.i18n.getLocalizedString.bind(void 0, str_5);
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render5(html6`${input.tagName || input.pseudo ? html6`
     <style>${domLinkifier_css_default}</style>
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
@@ -3741,7 +3529,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     disabled: Boolean(input.disabled)
   })}"
           aria-description=${ifDefined(input.ariaDescription)}
-          jslog=${VisualLogging3.link("node").track({ click: true, keydown: "Enter" })}
+          jslog=${VisualLogging2.link("node").track({ click: true, keydown: "Enter" })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mouseover=${input.onMouseOver}
@@ -3752,18 +3540,18 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html7`<span class="node-label-name">${input.tagName}</span>` : nothing3,
-    input.id ? html7`<span class="node-label-id">#${input.id}</span>` : nothing3,
-    ...input.classes.map((className) => html7`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html7`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing3
+    input.tagName ? html6`<span class="node-label-name">${input.tagName}</span>` : nothing3,
+    input.id ? html6`<span class="node-label-id">#${input.id}</span>` : nothing3,
+    ...input.classes.map((className) => html6`<span class="extra node-label-class">.${className}</span>`),
+    input.pseudo ? html6`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing3
   ]}</button>
-    </span>` : i18nString6(UIStrings6.node)}`, target);
+    </span>` : i18nString5(UIStrings5.node)}`, target);
 };
-var DOMNodeLink = class extends UI8.Widget.Widget {
+var DOMNodeLink = class extends UI7.Widget.Widget {
   #node = void 0;
   #options = void 0;
   #view;
-  constructor(element, node, options, view = DEFAULT_VIEW5) {
+  constructor(element, node, options, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
     this.element.classList.remove("vbox");
     this.#node = node;
@@ -3794,7 +3582,7 @@ var DOMNodeLink = class extends UI8.Widget.Widget {
       preventKeyboardFocus: options.preventKeyboardFocus,
       classes: [],
       onClick: () => {
-        void Common7.Revealer.reveal(this.#node);
+        void Common6.Revealer.reveal(this.#node);
         void this.#node?.scrollIntoView();
         options.onClick?.();
         return false;
@@ -3857,17 +3645,17 @@ var DOMNodeLink = class extends UI8.Widget.Widget {
   }
 };
 var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
-  render6(html7`
+  render5(html6`
       <style>${domLinkifier_css_default}</style>
       <button class="node-link text-button link-style"
-          jslog=${VisualLogging3.link("node").track({ click: true })}
+          jslog=${VisualLogging2.link("node").track({ click: true })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mousedown=${(e) => e.consume()}>
         <slot>${input.textContent ?? nothing3}</slot>
       </button>`, target);
 };
-var DeferredDOMNodeLink = class extends UI8.Widget.Widget {
+var DeferredDOMNodeLink = class extends UI7.Widget.Widget {
   #deferredNode = void 0;
   #options = void 0;
   #styleSheetId = void 0;
@@ -3911,12 +3699,12 @@ var DeferredDOMNodeLink = class extends UI8.Widget.Widget {
           if (node && this.#styleSheetId) {
             for (const adoptedStyle of node.adoptedStyleSheetsForNode) {
               if (adoptedStyle.id === this.#styleSheetId) {
-                void Common7.Revealer.reveal(adoptedStyle);
+                void Common6.Revealer.reveal(adoptedStyle);
                 return;
               }
             }
           }
-          void Common7.Revealer.reveal(node);
+          void Common6.Revealer.reveal(node);
           void node?.scrollIntoView();
           this.#options?.onClick?.();
         });
@@ -3936,10 +3724,10 @@ var Linkifier3 = class _Linkifier {
   }
   linkify(node, options) {
     if (node instanceof SDK4.DOMModel.DOMNode) {
-      return html7`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
+      return html6`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html6`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     if (node instanceof SDK4.DOMModel.DeferredDOMNode) {
-      return html7`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
+      return html6`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html6`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     throw new Error("Can't linkify non-node");
   }
@@ -3949,21 +3737,21 @@ var Linkifier3 = class _Linkifier {
 var CommentThreadWidget_exports = {};
 __export(CommentThreadWidget_exports, {
   CommentThreadWidget: () => CommentThreadWidget,
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   computeCommentTitle: () => computeCommentTitle,
   inputDisclaimer: () => inputDisclaimer
 });
 import "../../ui/components/spinners/spinners.js";
 import "../../ui/components/tooltips/tooltips.js";
-import * as Host6 from "../../core/host/host.js";
-import * as i18n17 from "../../core/i18n/i18n.js";
+import * as Host5 from "../../core/host/host.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
 import * as SDK5 from "../../core/sdk/sdk.js";
-import * as Buttons4 from "../../ui/components/buttons/buttons.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as Input from "../../ui/components/input/input.js";
 import * as MarkdownView from "../../ui/components/markdown_view/markdown_view.js";
-import * as UI9 from "../../ui/legacy/legacy.js";
+import * as UI8 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
-import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/commentThreadWidget.css.js
 var commentThreadWidget_css_default = `/*
@@ -4197,9 +3985,9 @@ var commentThreadWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./commentThreadWidget.css")} */`;
 
 // ../../front_end/panels/common/CommentThreadWidget.ts
-var { html: html8, render: render7, Directives: { classMap: classMap2, createRef, ref: ref2 } } = Lit3;
-var { widget: widget3 } = UI9.Widget;
-var UIStrings7 = {
+var { html: html7, render: render6, Directives: { classMap: classMap2, createRef, ref: ref2 } } = Lit3;
+var { widget: widget3 } = UI8.Widget;
+var UIStrings6 = {
   /**
    * @description Text next to the checkmark in the comment thread header indicating that comments have been sent to
    * the agent.
@@ -4259,20 +4047,20 @@ var UIStringsNotTranslate2 = {
    */
   inputDisclaimer: "Comments and content attached to comments, and DOM/CSS changes recorded in the comment mode are sent to the connected third-party agent to assist with debugging and code updates"
 };
-var str_7 = i18n17.i18n.registerUIStrings("panels/common/CommentThreadWidget.ts", UIStrings7);
-var i18nString7 = i18n17.i18n.getLocalizedString.bind(void 0, str_7);
-var lockedString3 = i18n17.i18n.lockedString;
+var str_6 = i18n15.i18n.registerUIStrings("panels/common/CommentThreadWidget.ts", UIStrings6);
+var i18nString6 = i18n15.i18n.getLocalizedString.bind(void 0, str_6);
+var lockedString3 = i18n15.i18n.lockedString;
 function inputDisclaimer() {
   return lockedString3(UIStringsNotTranslate2.inputDisclaimer);
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   const hasComment = input.comments.length > 0;
   const showCommentInput = !hasComment || input.isEditing;
   let buttonText;
   if (input.isEditing) {
-    buttonText = i18nString7(UIStrings7.save);
+    buttonText = i18nString6(UIStrings6.save);
   } else {
-    buttonText = input.isQueueModifierPressed ? i18nString7(UIStrings7.queueComment) : i18nString7(UIStrings7.sendToAgent);
+    buttonText = input.isQueueModifierPressed ? i18nString6(UIStrings6.queueComment) : i18nString6(UIStrings6.sendToAgent);
   }
   const submit = (queue) => {
     if (input.isEditing) {
@@ -4292,33 +4080,33 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     switch (input.status) {
       case "SENT_TO_AGENT":
         if (input.transmitted) {
-          return html8`
+          return html7`
             <div class="working-status">
               <devtools-spinner></devtools-spinner>
-              <span>${i18nString7(UIStrings7.working)}</span>
+              <span>${i18nString6(UIStrings6.working)}</span>
             </div>
           `;
         }
-        return html8`
+        return html7`
           <div class="sent-status">
             <devtools-icon
               class="check-icon"
               name="checkmark"
-              aria-label=${i18nString7(UIStrings7.sentCheckmark)}>
+              aria-label=${i18nString6(UIStrings6.sentCheckmark)}>
             </devtools-icon>
-            <span>${i18nString7(UIStrings7.sent)}</span>
+            <span>${i18nString6(UIStrings6.sent)}</span>
           </div>
         `;
       // clang-format on
       case "ACTIVE":
-        return html8`
+        return html7`
           <devtools-button
             class="delete-button"
-            aria-label=${i18nString7(UIStrings7.deleteQueuedComment)}
+            aria-label=${i18nString6(UIStrings6.deleteQueuedComment)}
             .iconName=${"bin"}
-            .variant=${Buttons4.Button.Variant.ICON}
-            .size=${Buttons4.Button.Size.SMALL}
-            .title=${i18nString7(UIStrings7.deleteQueuedComment)}
+            .variant=${Buttons3.Button.Variant.ICON}
+            .size=${Buttons3.Button.Size.SMALL}
+            .title=${i18nString6(UIStrings6.deleteQueuedComment)}
             @click=${input.onDeleteQueuedComment}
           ></devtools-button>
         `;
@@ -4327,39 +4115,39 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         return Lit3.nothing;
     }
   };
-  render7(html8`
+  render6(html7`
     <style>${Input.textInputStyles}${commentThreadWidget_css_default}</style>
     <div
       class="comment-thread-widget ${classMap2({ submitted: !showCommentInput })}"
-      jslog=${VisualLogging4.popover("comment-thread")}>
+      jslog=${VisualLogging3.popover("comment-thread")}>
       <div class="header">
         <span class="selected-item">
-          ${"node" in input.title ? widget3(DOMNodeLink, { node: input.title.node }) : html8`<span class="selected-item-text">${input.title.text}</span>`}
+          ${"node" in input.title ? widget3(DOMNodeLink, { node: input.title.node }) : html7`<span class="selected-item-text">${input.title.text}</span>`}
         </span>
         <div class="header-actions">
           ${renderHeaderStatus()}
         </div>
       </div>
 
-      ${showCommentInput ? html8`
+      ${showCommentInput ? html7`
         <textarea
           ${ref2(input.textAreaRef)}
           class="devtools-text-input input"
           rows="1"
-          aria-label=${i18nString7(UIStrings7.commentInputAriaLabel)}
+          aria-label=${i18nString6(UIStrings6.commentInputAriaLabel)}
           .value=${input.commentText}
           @input=${input.onCommentTextChange}
           @keydown=${(event) => {
-    const queueModifier = UI9.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event);
+    const queueModifier = UI8.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event);
     input.onQueueModifierChange(queueModifier);
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
       event.preventDefault();
       submit(queueModifier);
     }
   }}
-          @keyup=${(event) => input.onQueueModifierChange(UI9.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event))}
+          @keyup=${(event) => input.onQueueModifierChange(UI8.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event))}
           @blur=${() => input.onQueueModifierChange(false)}
-          jslog=${VisualLogging4.textField("comments-input").track({ keydown: "Enter" })}
+          jslog=${VisualLogging3.textField("comments-input").track({ keydown: "Enter" })}
           placeholder=${input.placeholder}
         ></textarea>
         <div class="footer">
@@ -4385,13 +4173,13 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     event.preventDefault();
   }}
             @click=${(event) => submit(
-    input.isQueueModifierPressed || UI9.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)
+    input.isQueueModifierPressed || UI8.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)
   )}
-            jslog=${VisualLogging4.action("comments-send-to-agent").track({ click: true })}>
+            jslog=${VisualLogging3.action("comments-send-to-agent").track({ click: true })}>
             ${buttonText}
           </devtools-button>
         </div>
-      ` : html8`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? html8`
+      ` : html7`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? html7`
           <div class="comment-text"
             @click=${() => {
     input.onSetEditMode(true);
@@ -4399,11 +4187,11 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           >
             ${comment.text}
           </div>
-        ` : html8`
+        ` : html7`
           <div class="agent-response">
             <div class="elbow"></div>
             <div class="response-content">
-              <div class="response-header">${i18nString7(UIStrings7.response)}</div>
+              <div class="response-header">${i18nString6(UIStrings6.response)}</div>
               ${MarkdownView.MarkdownView.renderTextAsMarkdown(
     comment.text,
     new MarkdownView.MarkdownView.MarkdownInsightRenderer()
@@ -4413,15 +4201,15 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         `)}</div>
       `}
 
-      ${input.elementRemoved ? html8`
+      ${input.elementRemoved ? html7`
         <div class="element-removed-banner" role="status">
-          <span>${i18nString7(UIStrings7.elementNoLongerAvailable)}</span>
+          <span>${i18nString6(UIStrings6.elementNoLongerAvailable)}</span>
         </div>
       ` : Lit3.nothing}
     </div>
   `, target);
 };
-var CommentThreadWidget = class extends UI9.Widget.Widget {
+var CommentThreadWidget = class extends UI8.Widget.Widget {
   title = { text: "" };
   #comments = [];
   #commentText = "";
@@ -4437,7 +4225,7 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
   onDeleteQueuedComment;
   onSaveEdit;
   onStartEdit;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
   }
@@ -4528,7 +4316,7 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
       title: this.title,
       comments: this.#comments,
       commentText: this.#commentText,
-      placeholder: i18nString7(UIStrings7.queueCommentsPlaceholder, { PH1: Host6.Platform.isMac() ? "\u2318" : "Ctrl" }),
+      placeholder: i18nString6(UIStrings6.queueCommentsPlaceholder, { PH1: Host5.Platform.isMac() ? "\u2318" : "Ctrl" }),
       isQueueModifierPressed: this.#isQueueModifierPressed,
       elementRemoved: this.#elementRemoved,
       textAreaRef: this.#textAreaRef,
@@ -4579,11 +4367,11 @@ __export(CommentsOverlayWidget_exports, {
   ContextMenuProvider: () => ContextMenuProvider,
   ThreadRevealer: () => ThreadRevealer
 });
-import * as i18n19 from "../../core/i18n/i18n.js";
-import * as Root3 from "../../core/root/root.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
+import * as Root2 from "../../core/root/root.js";
 import * as CommentManager from "../../models/comment_manager/comment_manager.js";
 import * as Comments from "../../ui/comments/comments.js";
-import * as UI10 from "../../ui/legacy/legacy.js";
+import * as UI9 from "../../ui/legacy/legacy.js";
 import * as Lit4 from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/commentsOverlay.css.js
@@ -4679,17 +4467,17 @@ var commentsOverlay_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./commentsOverlay.css")} */`;
 
 // ../../front_end/panels/common/CommentsOverlayWidget.ts
-var UIStrings8 = {
+var UIStrings7 = {
   /**
    * @description Context menu item that creates a comment anchored to the right-clicked part of the DevTools UI.
    */
   addComment: "Add comment"
 };
-var str_8 = i18n19.i18n.registerUIStrings("panels/common/CommentsOverlayWidget.ts", UIStrings8);
-var i18nString8 = i18n19.i18n.getLocalizedString.bind(void 0, str_8);
+var str_7 = i18n17.i18n.registerUIStrings("panels/common/CommentsOverlayWidget.ts", UIStrings7);
+var i18nString7 = i18n17.i18n.getLocalizedString.bind(void 0, str_7);
 var {
-  html: html9,
-  render: render8,
+  html: html8,
+  render: render7,
   nothing: nothing5,
   Directives: { classMap: classMap3, repeat, styleMap }
 } = Lit4;
@@ -4729,7 +4517,7 @@ function renderAnchorHighlight(thread, highlight) {
   if (!thread || !highlight?.visible) {
     return nothing5;
   }
-  return html9`
+  return html8`
     <div
       class=${classMap3({
     "comment-anchor-highlight": true,
@@ -4743,11 +4531,11 @@ function renderAnchorHighlight(thread, highlight) {
     </div>
   `;
 }
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  render8(html9`
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render7(html8`
     <style>${commentsOverlay_css_default}</style>
     <div class="comments-overlay-container">
-      ${input.hoverHighlight && input.hoverHighlight.visible ? html9`
+      ${input.hoverHighlight && input.hoverHighlight.visible ? html8`
         <div
           class="comment-hover-highlight"
           style=${styleMap({
@@ -4762,7 +4550,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       ${repeat(
     input.pins.filter((p) => p.visible),
     (p) => p.id,
-    (p) => html9`
+    (p) => html8`
           <div
             class="comment-pin"
             aria-hidden="true"
@@ -4794,7 +4582,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       const topOffset = item2.anchoredToPin ? item2.position.top + PIN_HEIGHT : item2.position.top - POPUP_MARGIN;
       const maxTop = target.clientHeight - (item2.anchoredToPin ? POPUP_HEIGHT : POPUP_MARGIN);
       const popupTop = Math.min(Math.max(POPUP_MARGIN, topOffset), Math.max(POPUP_MARGIN, maxTop));
-      return html9`
+      return html8`
             <div
               class="comment-popup-widget"
               style=${styleMap({
@@ -4804,7 +4592,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
               @mouseleave=${item2.isHoverPreview ? input.onPopupMouseLeave : nothing5}
               @mousedown=${item2.isHoverPreview ? input.onPopupInteract : nothing5}
               @focusin=${item2.isHoverPreview ? input.onPopupInteract : nothing5}>
-              ${UI10.Widget.widget(CommentThreadWidget, {
+              ${UI9.Widget.widget(CommentThreadWidget, {
         title: item2.title,
         comments: [...item2.thread.comments],
         status: item2.thread.status,
@@ -4828,7 +4616,7 @@ function isEventInsidePopupOrPin(event) {
   const target = composedTarget instanceof Element ? composedTarget : event.target;
   return target instanceof Element && Boolean(Comments.CommentAnchorResolver.closestAcrossShadow(target, ".comment-popup-widget, .comment-pin"));
 }
-var CommentsOverlayWidget = class extends UI10.Widget.Widget {
+var CommentsOverlayWidget = class extends UI9.Widget.Widget {
   static INJECT = [CommentManager.CommentManager.CommentManager];
   #view;
   #commentManager;
@@ -4889,7 +4677,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     }
     this.#commentManager.getCommentThread(this.#activeThreadId)?.markResponseSeen();
   }
-  constructor(element, [commentManager], view = DEFAULT_VIEW7) {
+  constructor(element, [commentManager], view = DEFAULT_VIEW6) {
     super(element, { useShadowDom: false });
     this.#view = view;
     this.#commentManager = commentManager;
@@ -5031,7 +4819,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       this.#setActiveThreadId(null);
     }
     this.#updateDocumentListeners();
-    const action4 = UI10.ActionRegistry.ActionRegistry.instance().getAction(
+    const action4 = UI9.ActionRegistry.ActionRegistry.instance().getAction(
       "comments.toggle-comment-mode"
     );
     action4?.setToggled(isModeActive);
@@ -5120,7 +4908,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
    * Escape exits comment mode. Open dialogs keep handling their own Escape.
    */
   #onKeyDown = (event) => {
-    if (event.key !== "Escape" || event.isComposing || !UI10.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(event) || UI10.Dialog.Dialog.hasInstance()) {
+    if (event.key !== "Escape" || event.isComposing || !UI9.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(event) || UI9.Dialog.Dialog.hasInstance()) {
       return;
     }
     if (this.#activeThreadId) {
@@ -5286,7 +5074,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
 var widgetInstance = null;
 function getOrCreateOverlayWidget(commentManager) {
   if (!widgetInstance) {
-    const cm = commentManager ?? Root3.DevToolsContext.globalInstance().get(
+    const cm = commentManager ?? Root2.DevToolsContext.globalInstance().get(
       CommentManager.CommentManager.CommentManager
     );
     widgetInstance = new CommentsOverlayWidget(void 0, [cm]);
@@ -5298,8 +5086,8 @@ function getOrCreateOverlayWidget(commentManager) {
 var ThreadRevealer = class {
   async reveal({ thread, position }) {
     const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
-    if (panelId && UI10.InspectorView.InspectorView.instance().hasPanel(panelId)) {
-      await UI10.ViewManager.ViewManager.instance().showView(panelId, true, true);
+    if (panelId && UI9.InspectorView.InspectorView.instance().hasPanel(panelId)) {
+      await UI9.ViewManager.ViewManager.instance().showView(panelId, true, true);
     }
     const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);
     thread.setOrphaned(!element);
@@ -5311,12 +5099,12 @@ var ThreadRevealer = class {
   }
 };
 function revealCommentsDrawerView(enteringCommentMode) {
-  const viewManager = UI10.ViewManager.ViewManager.instance();
+  const viewManager = UI9.ViewManager.ViewManager.instance();
   if (!viewManager.hasView(COMMENTS_VIEW_ID)) {
     return;
   }
   if (enteringCommentMode) {
-    if (!UI10.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
+    if (!UI9.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
       return;
     }
     void viewManager.resolveLocation(viewManager.locationNameForViewId(COMMENTS_VIEW_ID)).then((location) => {
@@ -5348,7 +5136,7 @@ function setCommentModeByUser(commentManager, active) {
 var ActionDelegate = class {
   #commentManager;
   constructor(commentManager) {
-    this.#commentManager = commentManager ?? Root3.DevToolsContext.globalInstance().get(
+    this.#commentManager = commentManager ?? Root2.DevToolsContext.globalInstance().get(
       CommentManager.CommentManager.CommentManager
     );
   }
@@ -5372,16 +5160,16 @@ var ActionDelegate = class {
 var menusWithAddComment = /* @__PURE__ */ new WeakSet();
 var ContextMenuProvider = class {
   appendApplicableItems(event, contextMenu, target) {
-    if (menusWithAddComment.has(contextMenu) || !Root3.Runtime.hostConfig.devToolsComments?.enabled || !(target instanceof HTMLElement) || !(event instanceof MouseEvent)) {
+    if (menusWithAddComment.has(contextMenu) || !Root2.Runtime.hostConfig.devToolsComments?.enabled || !(target instanceof HTMLElement) || !(event instanceof MouseEvent)) {
       return;
     }
-    const commentManager = UI10.Widget.lookupUniverseForElement(target)?.commentManager;
+    const commentManager = UI9.Widget.lookupUniverseForElement(target)?.commentManager;
     const coordinates = { clientX: event.clientX, clientY: event.clientY };
     if (!commentManager?.isAgentAttached() || !Comments.CommentAnchorResolver.resolveCommentAnchorElement(target, coordinates)) {
       return;
     }
     menusWithAddComment.add(contextMenu);
-    contextMenu.annotationSection().appendItem(i18nString8(UIStrings8.addComment), () => {
+    contextMenu.annotationSection().appendItem(i18nString7(UIStrings7.addComment), () => {
       setCommentModeByUser(commentManager, true);
       getOrCreateOverlayWidget(commentManager).addCommentAt(target, coordinates);
     }, { jslogContext: "add-comment" });
@@ -5391,12 +5179,12 @@ var ButtonProvider = class {
   #button;
   #commentManager;
   constructor(commentManager) {
-    this.#commentManager = commentManager ?? Root3.DevToolsContext.globalInstance().get(
+    this.#commentManager = commentManager ?? Root2.DevToolsContext.globalInstance().get(
       CommentManager.CommentManager.CommentManager
     );
-    const action4 = UI10.ActionRegistry.ActionRegistry.instance().getAction("comments.toggle-comment-mode");
+    const action4 = UI9.ActionRegistry.ActionRegistry.instance().getAction("comments.toggle-comment-mode");
     action4.setEnabled(this.#commentManager.isAgentAttached());
-    this.#button = UI10.Toolbar.Toolbar.createActionButton(action4);
+    this.#button = UI9.Toolbar.Toolbar.createActionButton(action4);
     this.#button.setVisible(this.#commentManager.isAgentAttached());
     this.#commentManager.addEventListener(
       CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
@@ -5415,13 +5203,13 @@ var ButtonProvider = class {
 var CommentsStatusBarPill_exports = {};
 __export(CommentsStatusBarPill_exports, {
   CommentsStatusBarPill: () => CommentsStatusBarPill,
-  DEFAULT_VIEW: () => DEFAULT_VIEW8
+  DEFAULT_VIEW: () => DEFAULT_VIEW7
 });
-import * as i18n21 from "../../core/i18n/i18n.js";
+import * as i18n19 from "../../core/i18n/i18n.js";
 import * as CommentManager3 from "../../models/comment_manager/comment_manager.js";
-import * as UI11 from "../../ui/legacy/legacy.js";
+import * as UI10 from "../../ui/legacy/legacy.js";
 import * as Lit5 from "../../ui/lit/lit.js";
-import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/commentsStatusBarPill.css.js
 var commentsStatusBarPill_css_default = `/*
@@ -5458,7 +5246,7 @@ var commentsStatusBarPill_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./commentsStatusBarPill.css")} */`;
 
 // ../../front_end/panels/common/CommentsStatusBarPill.ts
-var UIStrings9 = {
+var UIStrings8 = {
   /**
    * @description Button text for the comments status bar pill. Clicking it opens the Comments panel.
    */
@@ -5470,34 +5258,34 @@ var UIStrings9 = {
    */
   viewCommentsWithCount: "View comments ({PH1})"
 };
-var str_9 = i18n21.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings9);
-var i18nString9 = i18n21.i18n.getLocalizedString.bind(void 0, str_9);
-var { html: html10, render: render9 } = Lit5;
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var str_8 = i18n19.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings8);
+var i18nString8 = i18n19.i18n.getLocalizedString.bind(void 0, str_8);
+var { html: html9, render: render8 } = Lit5;
+var DEFAULT_VIEW7 = (input, _output, target) => {
   const tooltip = input.threads.flatMap((thread) => thread.comments.map((comment) => comment.text)).join("\n");
-  render9(html10`
+  render8(html9`
     <style>${commentsStatusBarPill_css_default}</style>
-    ${input.threads.length <= 0 ? Lit5.nothing : html10`
+    ${input.threads.length <= 0 ? Lit5.nothing : html9`
       <button
         class="devtools-pill"
         title=${tooltip}
-        aria-label=${input.unseenResponseCount > 0 ? i18nString9(UIStrings9.viewCommentsWithCount, { PH1: input.unseenResponseCount }) : i18nString9(UIStrings9.viewComments)}
+        aria-label=${input.unseenResponseCount > 0 ? i18nString8(UIStrings8.viewCommentsWithCount, { PH1: input.unseenResponseCount }) : i18nString8(UIStrings8.viewComments)}
         ?disabled=${input.disabled}
         @click=${input.onPillClick}
-        jslog=${VisualLogging5.action("comments-status-bar-pill").track({ click: true })}>
-        <span>${i18nString9(UIStrings9.viewComments)}</span>
-        ${input.unseenResponseCount > 0 ? html10`
+        jslog=${VisualLogging4.action("comments-status-bar-pill").track({ click: true })}>
+        <span>${i18nString8(UIStrings8.viewComments)}</span>
+        ${input.unseenResponseCount > 0 ? html9`
           <span class="comments-counter-badge">${input.unseenResponseCount}</span>
         ` : Lit5.nothing}
       </button>
     `}
   `, target);
 };
-var CommentsStatusBarPill = class extends UI11.Widget.Widget {
+var CommentsStatusBarPill = class extends UI10.Widget.Widget {
   static INJECT = [CommentManager3.CommentManager.CommentManager];
   #view;
   #commentManager;
-  constructor(element, [commentManager], view = DEFAULT_VIEW8) {
+  constructor(element, [commentManager], view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
     this.#commentManager = commentManager;
@@ -5542,7 +5330,7 @@ var CommentsStatusBarPill = class extends UI11.Widget.Widget {
     this.#view(viewInput, void 0, this.contentElement);
   }
   #handlePillClick = () => {
-    void UI11.ViewManager.ViewManager.instance().showView("comments");
+    void UI10.ViewManager.ViewManager.instance().showView("comments");
   };
 };
 export {
@@ -5558,7 +5346,6 @@ export {
   ExtensionServer_exports as ExtensionServer,
   ExtensionView_exports as ExtensionView,
   GdpSignUpDialog,
-  GeminiRebrandPromoDialog,
   PersistenceUtils_exports as PersistenceUtils
 };
 //# sourceMappingURL=common.js.map

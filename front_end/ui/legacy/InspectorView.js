@@ -765,7 +765,7 @@ function createLocaleInfobar() {
     const locale = new Intl.Locale(closestSupportedLocale);
     const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: 'language' }).of(locale.language || 'en') || 'English';
     const languageSetting = Common.Settings.Settings.instance().moduleSetting('language');
-    return new Infobar("info" /* InfobarType.INFO */, i18nString(UIStrings.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
+    const infobar = new Infobar("info" /* InfobarType.INFO */, i18nString(UIStrings.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
         {
             text: i18nString(UIStrings.setToBrowserLanguage),
             delegate: () => {
@@ -787,6 +787,10 @@ function createLocaleInfobar() {
             jslogContext: 'set-to-specific-language',
         },
     ], getDisableLocaleInfoBarSetting(), 'language-mismatch');
+    // Closing the infobar with the close button or Esc also answers it, so that
+    // we notify users only once.
+    infobar.setCloseCallback(() => getDisableLocaleInfoBarSetting().set(true));
+    return infobar;
 }
 function reloadDevTools() {
     if (DockController.instance().canDock() && DockController.instance().dockSide() === "undocked" /* DockState.UNDOCKED */) {

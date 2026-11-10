@@ -24,6 +24,12 @@ export default `/*
   overflow: hidden;
 }
 
+.pvt-toolbar {
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  background-color: var(--sys-color-cdt-base-container);
+  flex: none;
+}
+
 .table-container {
   display: flex;
   flex-direction: column;

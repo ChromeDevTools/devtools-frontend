@@ -1,6 +1,7 @@
 // Copyright 2009 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/* eslint-disable @devtools/no-imperative-dom-api */
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import { GlassPane } from './GlassPane.js';
 import popoverStyles from './popover.css.js';

@@ -100,7 +100,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
 };
 const Layers3DViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class Layers3DView extends Layers3DViewBase {
-    layerViewHost;
+    #layerViewHost;
     transformController;
     lastSelection;
     layerTree;
@@ -130,10 +130,8 @@ export class Layers3DView extends Layers3DViewBase {
     #error;
     #canvasElement;
     constructor(layerViewHost, view = DEFAULT_VIEW) {
-        super();
+        super(layerViewHost instanceof HTMLElement ? layerViewHost : undefined);
         this.#view = view;
-        this.layerViewHost = layerViewHost;
-        this.layerViewHost.registerView(this);
         // Install transform controller, but still allow drag events to set focus on the element, which is needed
         // to correctly listen for keyboard shortcuts.
         this.transformController =
@@ -152,7 +150,29 @@ export class Layers3DView extends Layers3DViewBase {
         this.chromeTextures = [];
         this.rects = [];
         this.snapshotLayers = new Map();
-        this.layerViewHost.setLayerSnapshotMap(this.snapshotLayers);
+        if (layerViewHost && !(layerViewHost instanceof HTMLElement)) {
+            this.layerViewHost = layerViewHost;
+        }
+    }
+    get layerViewHost() {
+        return this.#layerViewHost;
+    }
+    set layerViewHost(layerViewHost) {
+        if (this.#layerViewHost === layerViewHost) {
+            return;
+        }
+        if (this.isShowing()) {
+            this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.updateData, this);
+        }
+        this.#layerViewHost = layerViewHost;
+        if (this.#layerViewHost) {
+            this.#layerViewHost.registerView(this);
+            this.#layerViewHost.setLayerSnapshotMap(this.snapshotLayers);
+            if (this.isShowing()) {
+                this.#layerViewHost.showInternalLayersSetting().addChangeListener(this.updateData, this);
+                this.updateData();
+            }
+        }
     }
     performUpdate() {
         const output = {};
@@ -199,7 +219,7 @@ export class Layers3DView extends Layers3DViewBase {
         this.showPaintsSetting.removeChangeListener(this.updatePaints, this);
         this.showSlowScrollRectsSetting.removeChangeListener(this.updateData, this);
         this.#chromeWindowSetting.removeChangeListener(this.updateData, this);
-        this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.updateData, this);
+        this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.updateData, this);
         this.textureManager.suspend();
         super.willHide();
     }
@@ -208,7 +228,7 @@ export class Layers3DView extends Layers3DViewBase {
         this.showPaintsSetting.addChangeListener(this.updatePaints, this);
         this.showSlowScrollRectsSetting.addChangeListener(this.updateData, this);
         this.#chromeWindowSetting.addChangeListener(this.updateData, this);
-        this.layerViewHost.showInternalLayersSetting().addChangeListener(this.updateData, this);
+        this.#layerViewHost?.showInternalLayersSetting().addChangeListener(this.updateData, this);
         this.textureManager.resume();
         this.performUpdate();
         this.resizeCanvas();
@@ -405,7 +425,7 @@ export class Layers3DView extends Layers3DViewBase {
     calculateDepthsAndVisibility() {
         this.depthByLayerId = new Map();
         let depth = 0;
-        const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
+        const showInternalLayers = this.#layerViewHost?.showInternalLayersSetting().get() ?? false;
         if (!this.layerTree) {
             return;
         }
@@ -744,14 +764,14 @@ export class Layers3DView extends Layers3DViewBase {
                 jslogContext: 'layers.paint-profiler',
             });
         }
-        this.layerViewHost.showContextMenu(contextMenu, selection);
+        this.#layerViewHost?.showContextMenu(contextMenu, selection);
     }
     onMouseMove(event) {
         const mouseEvent = event;
         if (mouseEvent.which) {
             return;
         }
-        this.layerViewHost.hoverObject(this.selectionFromEventPoint(event));
+        this.#layerViewHost?.hoverObject(this.selectionFromEventPoint(event));
     }
     onMouseDown(event) {
         const mouseEvent = event;
@@ -764,7 +784,7 @@ export class Layers3DView extends Layers3DViewBase {
         if (this.mouseDownX && Math.abs(mouseEvent.clientX - this.mouseDownX) < maxDistanceInPixels &&
             Math.abs(mouseEvent.clientY - (this.mouseDownY || 0)) < maxDistanceInPixels) {
             this.#canvasElement.focus();
-            this.layerViewHost.selectObject(this.selectionFromEventPoint(event));
+            this.#layerViewHost?.selectObject(this.selectionFromEventPoint(event));
         }
         delete this.mouseDownX;
         delete this.mouseDownY;

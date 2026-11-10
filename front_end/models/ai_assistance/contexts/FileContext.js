@@ -13,8 +13,7 @@ export class FileContext extends ConversationContext {
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     }
     /**
-     * Returns the security origin of the project containing the file, falling
-     * back to the origin derived from the file URL.
+     * Returns the security origin of the workspace file.
      */
     getOrigin() {
         return this.#file.securityOrigin();

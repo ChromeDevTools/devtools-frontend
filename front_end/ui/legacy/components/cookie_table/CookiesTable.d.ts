@@ -1,7 +1,7 @@
 import '../data_grid/data_grid.js';
 import '../../../components/buttons/buttons.js';
+import '../../../kit/kit.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import { Icon } from '../../../kit/kit.js';
 import * as UI from '../../legacy.js';
 export interface ViewInput {
     data: CookieData[];
@@ -21,7 +21,7 @@ export interface ViewInput {
     aiButtonTitle?: string;
     onAiButtonClick?: (cookie: CookieData, event: Event) => void;
 }
-type ViewFunction = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME | SDK.Cookie.Attribute.VALUE | SDK.Cookie.Attribute.DOMAIN | SDK.Cookie.Attribute.PATH | SDK.Cookie.Attribute.SECURE | SDK.Cookie.Attribute.SAME_SITE;
 type BooleanAttributes = SDK.Cookie.Attribute.HTTP_ONLY | SDK.Cookie.Attribute.SECURE | SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR;
 type CookieData = Partial<Record<Exclude<SDK.Cookie.Attribute, BooleanAttributes>, string>> & Partial<Record<BooleanAttributes, string | boolean>> & {
@@ -30,12 +30,13 @@ type CookieData = Partial<Record<Exclude<SDK.Cookie.Attribute, BooleanAttributes
 } & {
     key?: string;
     flagged?: boolean;
-    icons?: Partial<Record<AttributeWithIcon, Icon>>;
+    iconTitles?: Partial<Record<AttributeWithIcon, string>>;
     priorityValue?: number;
     expiresTooltip?: string;
     dirty?: boolean;
     inactive?: boolean;
 };
+export declare const DEFAULT_VIEW: View;
 export interface CookiesTableData {
     cookies: SDK.Cookie.Cookie[];
     cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>;
@@ -53,7 +54,7 @@ export declare class CookiesTable extends UI.Widget.VBox {
     private renderInline;
     private readonly schemeBindingEnabled;
     private readonly portBindingEnabled;
-    constructor(element?: HTMLElement, renderInline?: boolean, saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>), refreshCallback?: (() => void), selectedCallback?: ((arg0: SDK.Cookie.Cookie | null) => void), deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction);
+    constructor(element?: HTMLElement, renderInline?: boolean, saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>), refreshCallback?: (() => void), selectedCallback?: ((arg0: SDK.Cookie.Cookie | null) => void), deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: View);
     set cookiesData(data: CookiesTableData);
     set saveCallback(callback: (arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>);
     set refreshCallback(callback: () => void);

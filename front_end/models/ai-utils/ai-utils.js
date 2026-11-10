@@ -340,7 +340,6 @@ __export(AiUtils_exports, {
   getIconName: () => getIconName,
   isAiV2Enabled: () => isAiV2Enabled,
   isContextSelectionEnabled: () => isContextSelectionEnabled,
-  isGeminiBranding: () => isGeminiBranding,
   isNaturalLanguageInterfaceEnabled: () => isNaturalLanguageInterfaceEnabled,
   runOneShotPrompt: () => runOneShotPrompt
 });
@@ -539,9 +538,6 @@ var aiAssistanceV2OptInChangeDialogSeenSettingDescriptor = {
   type: Common3.Settings.SettingType.BOOLEAN,
   defaultValue: false
 };
-function isGeminiBranding() {
-  return !!Root3.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
-}
 function isNaturalLanguageInterfaceEnabled() {
   return Boolean(Root3.Runtime.hostConfig.devToolsAiNaturalLanguageInterface?.enabled);
 }
@@ -570,7 +566,7 @@ function getDisabledReasons(aidaAvailability) {
   return reasons;
 }
 function getIconName() {
-  return isGeminiBranding() ? "spark" : "smart-assistant";
+  return "smart-assistant";
 }
 async function runOneShotPrompt({
   aidaClient,

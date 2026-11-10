@@ -104,7 +104,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
 };
 const LayerTreeOutlineBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
 export class LayerTreeOutline extends LayerTreeOutlineBase {
-    layerViewHost;
+    #layerViewHost;
     layerTree;
     layerSnapshotMap;
     #layerCount = 0;
@@ -114,24 +114,44 @@ export class LayerTreeOutline extends LayerTreeOutlineBase {
     #view;
     #hoveredLayer = null;
     constructor(layerViewHost, view = DEFAULT_VIEW) {
-        super();
+        super(layerViewHost instanceof HTMLElement ? layerViewHost : undefined);
         this.#view = view;
-        this.layerViewHost = layerViewHost;
-        this.layerViewHost.registerView(this);
+        if (layerViewHost && !(layerViewHost instanceof HTMLElement)) {
+            this.layerViewHost = layerViewHost;
+        }
+    }
+    get layerViewHost() {
+        return this.#layerViewHost;
+    }
+    set layerViewHost(layerViewHost) {
+        if (this.#layerViewHost === layerViewHost) {
+            return;
+        }
+        if (this.isShowing()) {
+            this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.update, this);
+        }
+        this.#layerViewHost = layerViewHost;
+        if (this.#layerViewHost) {
+            this.#layerViewHost.registerView(this);
+            if (this.isShowing()) {
+                this.#layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+                this.update();
+            }
+        }
     }
     wasShown() {
         super.wasShown();
-        this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+        this.#layerViewHost?.showInternalLayersSetting().addChangeListener(this.update, this);
         this.update();
     }
     willHide() {
-        this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.update, this);
+        this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.update, this);
         super.willHide();
     }
     performUpdate() {
         this.#view({
             treeData: this.#treeData,
-            selectedLayer: this.layerViewHost.selection()?.layer() || null,
+            selectedLayer: this.#layerViewHost?.selection()?.layer() || null,
             hoveredLayer: this.#hoveredLayer,
             layerCount: this.#layerCount,
             totalLayerMemory: this.#totalLayerMemory,
@@ -164,7 +184,7 @@ export class LayerTreeOutline extends LayerTreeOutlineBase {
     update() {
         let layerCount = 0;
         let totalLayerMemory = 0;
-        const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
+        const showInternalLayers = this.#layerViewHost?.showInternalLayersSetting().get() ?? false;
         let root = null;
         if (this.layerTree) {
             if (!showInternalLayers) {
@@ -216,30 +236,30 @@ export class LayerTreeOutline extends LayerTreeOutlineBase {
         this.#layerCount = layerCount;
         this.#totalLayerMemory = totalLayerMemory;
         this.requestUpdate();
-        if (!this.layerViewHost.selection() && this.layerTree && this.#treeData.length > 0) {
+        if (!this.#layerViewHost?.selection() && this.layerTree && this.#treeData.length > 0) {
             const elementToSelect = this.layerTree.contentRoot() || this.layerTree.root();
             if (elementToSelect) {
-                this.layerViewHost.selectObject(new LayerSelection(elementToSelect));
+                this.#layerViewHost?.selectObject(new LayerSelection(elementToSelect));
             }
         }
     }
     onHover(layer) {
-        this.layerViewHost.hoverObject(layer ? new LayerSelection(layer) : null);
+        this.#layerViewHost?.hoverObject(layer ? new LayerSelection(layer) : null);
     }
     onSelect(layer) {
-        if (this.layerViewHost.selection()?.layer() === layer) {
+        if (this.#layerViewHost?.selection()?.layer() === layer) {
             return;
         }
-        this.layerViewHost.selectObject(new LayerSelection(layer));
+        this.#layerViewHost?.selectObject(new LayerSelection(layer));
     }
     onContextMenu(event, layer) {
         const selection = layer ? new LayerSelection(layer) : null;
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
-        this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
-        if (layer && this.layerSnapshotMap.has(layer) && selection) {
+        this.layerSnapshotMap = this.#layerViewHost?.getLayerSnapshotMap();
+        if (layer && this.layerSnapshotMap?.has(layer) && selection) {
             contextMenu.defaultSection().appendItem(i18nString(UIStrings.showPaintProfiler), () => this.dispatchEventToListeners("PaintProfilerRequested" /* Events.PAINT_PROFILER_REQUESTED */, selection), { jslogContext: 'layers.paint-profiler' });
         }
-        this.layerViewHost.showContextMenu(contextMenu, selection);
+        this.#layerViewHost?.showContextMenu(contextMenu, selection);
     }
 }
 export var Events;

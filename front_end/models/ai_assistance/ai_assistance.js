@@ -765,7 +765,7 @@ __export(ExtensionScope_exports, {
 import * as Common2 from "../../core/common/common.js";
 import * as SDK4 from "../../core/sdk/sdk.js";
 
-// ../../front_end/generated/protocol.ts
+// gen/front_end/generated/protocol.ts
 var Accessibility;
 ((Accessibility2) => {
   let AXValueType;
@@ -8332,7 +8332,7 @@ var ListSourcesTool = class _ListSourcesTool {
         if (uiSourceCode.isIgnoreListed()) {
           continue;
         }
-        if (!projectOrigin && !isOriginAllowedByLock(originLock, uiSourceCode.securityOrigin())) {
+        if (!isOriginAllowedByLock(originLock, uiSourceCode.securityOrigin())) {
           continue;
         }
         const url = uiSourceCode.url();
@@ -9640,11 +9640,7 @@ var AiAgent = class {
   #facts = /* @__PURE__ */ new Set();
   constructor(opts) {
     this.#aidaClient = opts.aidaClient;
-    let serverSideLoggingAllowed = opts.serverSideLoggingAllowed ?? false;
-    if (Root4.Runtime.hostConfig.devToolsGeminiRebranding?.enabled) {
-      serverSideLoggingAllowed = false;
-    }
-    this.#serverSideLoggingActive = serverSideLoggingAllowed;
+    this.#serverSideLoggingActive = opts.serverSideLoggingAllowed ?? false;
     this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
@@ -10263,19 +10259,11 @@ var AiAgent = class {
     let rpcId;
     const requestTimestamp = Math.floor(Date.now() * 1e3);
     for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
-      if (aidaResponse.functionCalls?.length) {
-        yield {
-          rpcId,
-          functionCalls: aidaResponse.functionCalls,
-          completed: true,
-          text: aidaResponse.explanation
-        };
-        break;
-      }
       rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
       yield {
         rpcId,
         text: aidaResponse.explanation,
+        functionCalls: aidaResponse.functionCalls,
         completed: aidaResponse.completed
       };
     }
@@ -12148,8 +12136,7 @@ var FileContext = class extends ConversationContext {
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
   }
   /**
-   * Returns the security origin of the project containing the file, falling
-   * back to the origin derived from the file URL.
+   * Returns the security origin of the workspace file.
    */
   getOrigin() {
     return this.#file.securityOrigin();

@@ -52,9 +52,9 @@ export default `/*
 }
 
 .object-store-summary-bar {
-  flex: 0 0 27px;
-  line-height: 27px;
-  padding-left: 5px;
+  flex: 0 0 var(--sys-size-11);
+  line-height: var(--sys-size-11);
+  padding-left: var(--sys-size-3);
   background-color: var(--sys-color-cdt-base-container);
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
   white-space: nowrap;

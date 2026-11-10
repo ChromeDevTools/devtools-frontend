@@ -83,5 +83,15 @@ sources/sources-popup-not-displayed.test.js
 sources/sources-script-explanation-perf.test.js
 sources/sources-theme-switcher-code.test.js
 sources/sources-third-party-consent-locator.test.js
+storage/storage-analytics-cookie-query-tracking.test.js
+storage/storage-analytics-network-request.test.js
+storage/storage-bfcache-eligibility.test.js
 storage/storage-cookie-missing-max-age.test.js
+storage/storage-explain-cookie-entry.test.js
+storage/storage-find-setting-mechanism.test.js
+storage/storage-find-setting-source-file.test.js
+storage/storage-origin-usage-breakdown.test.js
 storage/storage-session-vs-local-cart.test.js
+storage/storage-speculation-rules-status.test.js
+storage/storage-sw-intercepted-requests.test.js
+storage/storage-sw-source-status.test.js

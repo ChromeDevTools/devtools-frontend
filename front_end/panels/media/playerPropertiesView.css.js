@@ -16,7 +16,7 @@ export default `/*
 .media-property-renderer {
   line-height: var(--sys-size-9);
   min-height: var(--sys-size-12);
-  padding: var(--sys-size-3) 10px;
+  padding: var(--sys-size-3) var(--sys-size-5);
   display: block;
   overflow: hidden;
 

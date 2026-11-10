@@ -35,10 +35,6 @@ export default `/*
     font-size: inherit;
   }
 
-  .policies-list {
-    padding-top: 3px;
-  }
-
   .permissions-row {
     display: flex;
     line-height: 22px;

@@ -361,16 +361,37 @@ function deepQuerySelectorAll(root, selector, limit = Infinity) {
 function deepQuerySelector(root, selector) {
   return deepQuerySelectorAll(root, selector, 1)[0] ?? null;
 }
+function rematchDOMNodeByVePathAndText(anchor, root, cachedJslogElements) {
+  if (anchor.textSignature === void 0) {
+    return null;
+  }
+  const targetVeName = extractVeName(anchor.vePath);
+  const allJslog = cachedJslogElements || deepQuerySelectorAll(root, "[jslog]");
+  const candidates = allJslog.filter((el) => matchesVePath(el, anchor.vePath, targetVeName));
+  const matches = candidates.filter((el) => el.deepTextContent() === anchor.textSignature);
+  if (matches.length <= 1) {
+    return matches[0] ?? null;
+  }
+  if (anchor.parentTextSignature === void 0) {
+    return matches[0];
+  }
+  const parentMatch = matches.find((el) => el.parentElementOrShadowHost()?.deepTextContent() === anchor.parentTextSignature);
+  return parentMatch ?? null;
+}
 function rematchCommentAnchor(comment, root = document, cachedJslogElements) {
   const { anchor } = comment;
   if (anchor.networkRequestId) {
     return deepQuerySelector(root, `[data-network-request-id="${CSS.escape(anchor.networkRequestId)}"]`);
   }
   if (anchor.node) {
-    return deepQuerySelector(
+    const nodeElement = deepQuerySelector(
       root,
       `[data-backend-node-id="${CSS.escape(String(anchor.node.backendNodeId))}"][data-target-id="${CSS.escape(anchor.node.targetId)}"]`
     );
+    if (nodeElement) {
+      return nodeElement;
+    }
+    return rematchDOMNodeByVePathAndText(anchor, root, cachedJslogElements);
   }
   if (anchor.editor) {
     const { lineNumber, filePath } = anchor.editor;
@@ -625,6 +646,9 @@ __export(CommentOverlayManager_exports, {
 import * as Common from "../../core/common/common.js";
 import * as CommentManager from "../../models/comment_manager/comment_manager.js";
 var COMMENT_MODE_CURSOR = "var(--comment-cursor)";
+var PIN_SIZE = 20;
+var PIN_RADIUS = PIN_SIZE / 2;
+var PIN_STACK_OFFSET = 26;
 var Events = /* @__PURE__ */ ((Events2) => {
   Events2["POSITIONS_UPDATED"] = "PositionsUpdated";
   Events2["HOVER_HIGHLIGHT_CHANGED"] = "HoverHighlightChanged";
@@ -937,19 +961,31 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
     const scrollY = window.scrollY;
     const newPins = [];
     const newHighlights = [];
+    const elementTotalPinCounts = /* @__PURE__ */ new Map();
     const elementPinCounts = /* @__PURE__ */ new Map();
     const rectCache = /* @__PURE__ */ new Map();
     const activeScrollRoots = /* @__PURE__ */ new Set();
+    const activeThreads = [];
     const resolvedPins = [];
-    const createPin = (id, visibleRect, offsetIndex, visible, resolved) => ({
-      id,
-      // Offset by 26px vertically (24px pin icon height + 2px spacing) so multiple comment pins on the same element stack vertically without overlapping.
-      // Offset by -12px (half of the 24px pin diameter) so the pin icon is centered on the top-right corner of the visible clipped area.
-      top: scrollY + visibleRect.top - 12 + offsetIndex * 26,
-      left: scrollX + visibleRect.right - 12,
-      visible,
-      resolved
-    });
+    const createPin = (id, el, visibleRect, offsetIndex, totalPinsOnElement, visible, resolved) => {
+      const doc = el.ownerDocument || document;
+      const win = doc.defaultView || window;
+      const viewportWidth = win.innerWidth || doc.documentElement.clientWidth;
+      const viewportHeight = win.innerHeight || doc.documentElement.clientHeight;
+      const offsetY = offsetIndex * PIN_STACK_OFFSET;
+      const minTop = 0;
+      const maxTop = Math.max(minTop, viewportHeight - PIN_SIZE);
+      const maxLeft = Math.max(0, viewportWidth - PIN_SIZE);
+      const maxBaseTop = Math.max(minTop, maxTop - (totalPinsOnElement - 1) * PIN_STACK_OFFSET);
+      const baseTop = Math.min(Math.max(minTop, visibleRect.top - PIN_RADIUS), maxBaseTop);
+      return {
+        id,
+        top: scrollY + Math.min(baseTop + offsetY, maxTop),
+        left: scrollX + Math.min(Math.max(0, visibleRect.right - PIN_RADIUS), maxLeft),
+        visible,
+        resolved
+      };
+    };
     for (const thread of this.#commentManager.getCommentThreads()) {
       if (thread.isGeneratedComment) {
         continue;
@@ -989,12 +1025,18 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
         resolvedPins.push({ id: thread.id, el, visibleRect });
         continue;
       }
+      elementTotalPinCounts.set(el, (elementTotalPinCounts.get(el) || 0) + 1);
+      activeThreads.push({ id: thread.id, el, visibleRect });
+    }
+    for (const { id, el, visibleRect } of activeThreads) {
+      const totalPinsOnElement = elementTotalPinCounts.get(el) || 1;
       const offsetIndex = elementPinCounts.get(el) || 0;
       elementPinCounts.set(el, offsetIndex + 1);
-      newPins.push(createPin(thread.id, visibleRect, offsetIndex, true, false));
+      newPins.push(createPin(id, el, visibleRect, offsetIndex, totalPinsOnElement, true, false));
     }
     for (const { id, el, visibleRect } of resolvedPins) {
-      newPins.push(createPin(id, visibleRect, elementPinCounts.get(el) || 0, false, true));
+      const activeCount = elementPinCounts.get(el) || 0;
+      newPins.push(createPin(id, el, visibleRect, activeCount, activeCount + 1, false, true));
     }
     if (this.#scrollListener) {
       for (const root of this.#observedScrollRoots) {

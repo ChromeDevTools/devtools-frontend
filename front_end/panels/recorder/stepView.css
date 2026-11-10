@@ -16,15 +16,15 @@
 }
 
 .title-container {
-  /* Vertically center items with min-width: 0; */
   min-width: 0;
   font-size: var(--sys-size-7);
+  line-height: var(--sys-size-8);
   display: flex;
   flex-direction: row;
   gap: var(--sys-size-2);
   outline-offset: var(--sys-size-2);
   flex-grow: 1;
-  align-items: center;
+  align-items: flex-start;
   /* Keeps the title aligned with the title of expandable steps. */
   padding-inline-start: var(--chevron-column-width);
 }
@@ -39,7 +39,7 @@
 
 .action {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .title {
@@ -68,7 +68,7 @@
   fill: var(--sys-color-primary);
   stroke: var(--sys-color-cdt-base-container);
   stroke-width: var(--sys-size-3);
-  r: 5px;
+  r: var(--sys-size-4);
   cx: var(--sys-size-5);
   cy: var(--sys-size-5);
 }
@@ -148,9 +148,9 @@
 
 .chevron {
   flex-shrink: 0;
-  /* Aligns the chevron with the first line of the title. */
+  /* Aligns the 14px (--sys-size-7) chevron with the 16px (--sys-size-8) first line and 8px (--sys-size-5) .circle-icon center. */
   align-self: flex-start;
-  margin-block-start: var(--sys-size-4);
+  margin-block-start: var(--sys-size-1);
   width: var(--sys-size-7);
   height: var(--sys-size-7);
   transition: 200ms;
@@ -193,11 +193,18 @@
   text-overflow: ellipsis;
 }
 
+.icon {
+  /* The 16px (--sys-size-8) circle icon is drawn in the top 16px of the 24x24 SVG. */
+  margin-block-end: calc(-1 * var(--sys-size-5));
+}
+
 .step-actions {
   border: none;
   border-radius: 0;
   flex-shrink: 0;
   height: var(--sys-size-11);
+  /* Centers the 24px (--sys-size-11) button on the 16px (--sys-size-8) first line. */
+  margin-block: calc(-1 * var(--sys-size-3));
 }
 
 .step.has-breakpoint .circle-icon {

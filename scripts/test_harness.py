@@ -159,7 +159,7 @@ class DevToolsTestHarness(unittest.TestCase):
             'test/harness/unit/unit.test.ts:unit:should_run_a_basic_unit_test_successfully'
         )
         self.assertEqual(results[0].get('status'), 'PASS')
-        self.assertTrue(results[0].get('expected'))
+        self.assertIs(results[0].get('expected'), True)
 
     def test_unit_artifacts(self):
         results, exit_code = self.run_unit_test(
@@ -217,6 +217,7 @@ class DevToolsTestHarness(unittest.TestCase):
                 test_ids)
             for r in results:
                 self.assertEqual(r.get('status'), 'PASS')
+                self.assertIs(r.get('expected'), True)
         finally:
             os.unlink(rsp_file)
 
@@ -231,7 +232,7 @@ class DevToolsTestHarness(unittest.TestCase):
             'test/harness/e2e/e2e.test.ts:test_harness_e2e_fixture:should_run_a_basic_e2e_test_successfully'
         )
         self.assertEqual(results[0].get('status'), 'PASS')
-        self.assertTrue(results[0].get('expected'))
+        self.assertIs(results[0].get('expected'), True)
 
     def test_e2e_duplicate(self):
         results, exit_code = self.run_e2e_test(
@@ -257,9 +258,9 @@ class DevToolsTestHarness(unittest.TestCase):
                          'test/harness/unit/hooks.test.ts:block_1:run_1')
         for r in results:
             if r.get('status') == 'FAIL':
-                self.assertFalse(r.get('expected'))
+                self.assertIs(r.get('expected', False), False)
             else:
-                self.assertTrue(r.get('expected'))
+                self.assertIs(r.get('expected'), True)
         self.assertEqual(results[0].get('status'), 'FAIL')
         self.assertEqual(results[1].get('testId'),
                          'test/harness/unit/hooks.test.ts:block_2:run_3')
@@ -297,6 +298,7 @@ class DevToolsTestHarness(unittest.TestCase):
             results[0].get('testId'),
             'test/harness/unit/global_after_hook_fail.test.ts:block:run')
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
 
     def test_unit_after_each_hook(self):
         results, exit_code = self.run_unit_test(
@@ -310,10 +312,12 @@ class DevToolsTestHarness(unittest.TestCase):
             results[0].get('testId'),
             'test/harness/unit/after_each_hook_fail.test.ts:block:run')
         self.assertEqual(results[0].get('status'), 'FAIL')
+        self.assertIs(results[0].get('expected', False), False)
         self.assertEqual(
             results[1].get('testId'),
             'test/harness/unit/after_each_hook_fail.test.ts:block:run')
         self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertIs(results[1].get('expected'), True)
 
     def test_unit_before_each_hook(self):
         results, exit_code = self.run_unit_test(
@@ -326,6 +330,7 @@ class DevToolsTestHarness(unittest.TestCase):
             results[0].get('testId'),
             'test/harness/unit/before_each_hook_fail.test.ts:block:run')
         self.assertEqual(results[0].get('status'), 'FAIL')
+        self.assertIs(results[0].get('expected', False), False)
 
     def test_node_unit_errors(self):
         results, exit_code = self.run_node_unit_test(
@@ -337,15 +342,19 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[0].get('testId'),
                          'test/harness/unit/errors.test.ts:block_1:run_1')
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
         self.assertEqual(results[1].get('testId'),
                          'test/harness/unit/errors.test.ts:block_1:run_2')
         self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertIs(results[1].get('expected'), True)
         self.assertEqual(results[2].get('testId'),
                          'test/harness/unit/errors.test.ts:block_2:run_3')
         self.assertEqual(results[2].get('status'), 'FAIL')
+        self.assertIs(results[2].get('expected', False), False)
         self.assertEqual(results[3].get('testId'),
                          'test/harness/unit/errors.test.ts:block_2:run_4')
         self.assertEqual(results[3].get('status'), 'PASS')
+        self.assertIs(results[3].get('expected'), True)
 
     def test_unit_bail(self):
         abs_test_file = self._resolve_test_file(
@@ -362,12 +371,15 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[0].get('testId'),
                          'test/harness/unit/errors.test.ts:block_1:run_1')
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
         self.assertEqual(results[1].get('testId'),
                          'test/harness/unit/errors.test.ts:block_1:run_2')
         self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertIs(results[1].get('expected'), True)
         self.assertEqual(results[2].get('testId'),
                          'test/harness/unit/errors.test.ts:block_2:run_3')
         self.assertEqual(results[2].get('status'), 'FAIL')
+        self.assertIs(results[2].get('expected', False), False)
 
     def test_unit_ids(self):
         results, exit_code = self.run_unit_test(
@@ -379,6 +391,7 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[0].get('testId'),
                          'test/harness/unit/hooks.test.ts:block_2:run_3')
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
 
     def test_unit_expectations(self):
         with self._expectations_file(
@@ -394,7 +407,7 @@ class DevToolsTestHarness(unittest.TestCase):
             self.assertEqual(exit_code, 1)
             self.assertEqual(len(results), 3)
             for r in results:
-                self.assertTrue(r.get('expected', False))
+                self.assertIs(r.get('expected'), True)
 
     def test_unit_expectations_unexpected_pass(self):
         with self._expectations_file(
@@ -411,7 +424,7 @@ class DevToolsTestHarness(unittest.TestCase):
             self.assertEqual(len(results), 1)
             for r in results:
                 self.assertEqual(r['status'], 'PASS')
-                self.assertFalse(r.get('expected', False))
+                self.assertIs(r.get('expected', False), False)
 
     def test_unit_expectations_exact_id(self):
         with self._expectations_file(
@@ -429,10 +442,10 @@ class DevToolsTestHarness(unittest.TestCase):
             for r in results:
                 if r.get('testId'
                          ) == 'test/harness/unit/hooks.test.ts:block_1:run_1':
-                    self.assertTrue(r.get('expected', False))
+                    self.assertIs(r.get('expected'), True)
                     self.assertEqual(r.get('status'), 'FAIL')
                 else:
-                    self.assertTrue(r.get('expected', False))
+                    self.assertIs(r.get('expected'), True)
                     self.assertEqual(r.get('status'), 'PASS')
 
     def test_unit_expectations_skip_file(self):
@@ -453,7 +466,9 @@ class DevToolsTestHarness(unittest.TestCase):
             self.assertEqual(len(results), 2)
             results.sort(key=lambda r: r.get('testId'))
             self.assertEqual(results[0].get('status'), 'SKIP')
+            self.assertIs(results[0].get('expected'), True)
             self.assertEqual(results[1].get('status'), 'PASS')
+            self.assertIs(results[1].get('expected'), True)
 
     def test_unit_expectations_skip_exact_id(self):
         with self._expectations_file(
@@ -473,7 +488,9 @@ class DevToolsTestHarness(unittest.TestCase):
             self.assertEqual(len(results), 2)
             results.sort(key=lambda r: r.get('testId'))
             self.assertEqual(results[0].get('status'), 'SKIP')
+            self.assertIs(results[0].get('expected'), True)
             self.assertEqual(results[1].get('status'), 'PASS')
+            self.assertIs(results[1].get('expected'), True)
 
     def test_e2e_ids(self):
         results, exit_code = self.run_e2e_test(
@@ -485,6 +502,7 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[0].get('testId'),
                          'test/harness/e2e/multiple.test.ts:multiple:run2')
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
 
     def test_e2e_errors(self):
         results, exit_code = self.run_e2e_test(
@@ -496,22 +514,26 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[0].get('testId'),
                          'test/harness/e2e/errors.test.ts:block_1:run_1')
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
         self.assertEqual(results[1].get('testId'),
                          'test/harness/e2e/errors.test.ts:block_1:run_2')
         self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertIs(results[1].get('expected'), True)
         self.assertEqual(results[2].get('testId'),
                          'test/harness/e2e/errors.test.ts:block_2:run_3')
         self.assertEqual(results[2].get('status'), 'FAIL')
+        self.assertIs(results[2].get('expected', False), False)
         self.assertEqual(results[3].get('testId'),
                          'test/harness/e2e/errors.test.ts:block_2:run_4')
         self.assertEqual(results[3].get('status'), 'PASS')
+        self.assertIs(results[3].get('expected'), True)
 
     def test_e2e_bail(self):
         abs_test_file = self._resolve_test_file(
             "test/harness/e2e/errors.test.ts")
         results, exit_code = self.run_test_with_rdb([
-            os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
-            abs_test_file, "--", "--bail"
+            os.path.join(self.gen_dir, "test/harness/run-mocha.js"), "--",
+            abs_test_file, "--bail"
         ])
         self.assertEqual(exit_code, 1)
         self.assertEqual(
@@ -520,18 +542,21 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[0].get('testId'),
                          'test/harness/e2e/errors.test.ts:block_1:run_1')
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
         self.assertEqual(results[1].get('testId'),
                          'test/harness/e2e/errors.test.ts:block_1:run_2')
         self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertIs(results[1].get('expected'), True)
         self.assertEqual(results[2].get('testId'),
                          'test/harness/e2e/errors.test.ts:block_2:run_3')
         self.assertEqual(results[2].get('status'), 'FAIL')
+        self.assertIs(results[2].get('expected', False), False)
 
     def test_e2e_repeat(self):
         abs_test_file = self._resolve_test_file("test/harness/e2e/e2e.test.ts")
         results, exit_code = self.run_test_with_rdb([
-            os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
-            abs_test_file, "--", "--repeat=2"
+            os.path.join(self.gen_dir, "test/harness/run-mocha.js"), "--",
+            abs_test_file, "--repeat=2"
         ])
         self.assertEqual(exit_code, 0)
         self.assertEqual(
@@ -544,12 +569,14 @@ class DevToolsTestHarness(unittest.TestCase):
             'test/harness/e2e/e2e.test.ts:test_harness_e2e_fixture:should_run_a_basic_e2e_test_successfully'
         )
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
         # Repeated run
         self.assertEqual(
             results[1].get('testId'),
             'test/harness/e2e/e2e.test.ts:test_harness_e2e_fixture:should_run_a_basic_e2e_test_successfully'
         )
         self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertIs(results[1].get('expected'), True)
 
     def test_e2e_expectations(self):
         with self._expectations_file(
@@ -558,13 +585,19 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
-                abs_test_file, "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"), "--",
+                abs_test_file, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 0)
             self.assertEqual(len(results), 4)
             for r in results:
-                self.assertTrue(r.get('expected', False))
+                if r.get('testId'
+                         ) == 'test/harness/e2e/errors.test.ts:block_2:run_3':
+                    self.assertEqual(r.get('status'), 'FAIL')
+                    self.assertIs(r.get('expected'), True)
+                else:
+                    self.assertEqual(r.get('status'), 'PASS')
+                    self.assertIs(r.get('expected'), True)
 
     def test_e2e_expectations_unexpected_pass(self):
         with self._expectations_file(
@@ -573,16 +606,19 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
-                abs_test_file, "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"), "--",
+                abs_test_file, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)
             self.assertEqual(len(results), 4)
             for r in results:
-                if r.get('status') == 'PASS':
-                    self.assertFalse(r.get('expected', False))
+                if r.get('testId'
+                         ) == 'test/harness/e2e/errors.test.ts:block_2:run_3':
+                    self.assertEqual(r.get('status'), 'FAIL')
+                    self.assertIs(r.get('expected'), True)
                 else:
-                    self.assertTrue(r.get('expected', False))
+                    self.assertEqual(r.get('status'), 'PASS')
+                    self.assertIs(r.get('expected', False), False)
 
     def test_e2e_expectations_exact_id(self):
         with self._expectations_file(
@@ -591,21 +627,24 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
-                abs_test_file, "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"), "--",
+                abs_test_file, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)
             self.assertEqual(len(results), 4)
             for r in results:
                 if r.get('testId'
                          ) == 'test/harness/e2e/errors.test.ts:block_1:run_1':
-                    self.assertFalse(r.get('expected', False))
+                    self.assertEqual(r.get('status'), 'PASS')
+                    self.assertIs(r.get('expected', False), False)
                 elif r.get(
                         'testId'
                 ) == 'test/harness/e2e/errors.test.ts:block_2:run_3':
-                    self.assertFalse(r.get('expected', False))
+                    self.assertEqual(r.get('status'), 'FAIL')
+                    self.assertIs(r.get('expected', False), False)
                 else:
-                    self.assertTrue(r.get('expected', False))
+                    self.assertEqual(r.get('status'), 'PASS')
+                    self.assertIs(r.get('expected'), True)
 
     def test_e2e_expectations_skip_file(self):
         with self._expectations_file(
@@ -614,13 +653,14 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
-                abs_test_file, "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"), "--",
+                abs_test_file, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 0)
             self.assertEqual(len(results), 4)
             for r in results:
                 self.assertEqual(r.get('status'), 'SKIP')
+                self.assertIs(r.get('expected'), True)
 
     def test_e2e_expectations_skip_exact_id(self):
         with self._expectations_file(
@@ -629,8 +669,8 @@ class DevToolsTestHarness(unittest.TestCase):
             abs_test_file = self._resolve_test_file(
                 "test/harness/e2e/errors.test.ts")
             results, exit_code = self.run_test_with_rdb([
-                os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
-                abs_test_file, "--", f"--expectations-file={expectations_file}"
+                os.path.join(self.gen_dir, "test/harness/run-mocha.js"), "--",
+                abs_test_file, f"--expectations-file={expectations_file}"
             ])
             self.assertEqual(exit_code, 1)
             self.assertEqual(len(results), 4)
@@ -638,12 +678,15 @@ class DevToolsTestHarness(unittest.TestCase):
                 if r.get('testId'
                          ) == 'test/harness/e2e/errors.test.ts:block_1:run_1':
                     self.assertEqual(r.get('status'), 'SKIP')
+                    self.assertIs(r.get('expected'), True)
                 elif r.get(
                         'testId'
                 ) == 'test/harness/e2e/errors.test.ts:block_2:run_3':
                     self.assertEqual(r.get('status'), 'FAIL')
+                    self.assertIs(r.get('expected', False), False)
                 else:
                     self.assertEqual(r.get('status'), 'PASS')
+                    self.assertIs(r.get('expected'), True)
 
     def test_unit_screenshot_retry(self):
         import sys
@@ -668,11 +711,13 @@ class DevToolsTestHarness(unittest.TestCase):
             'test/harness/unit/screenshot_retry.test.ts:screenshot_test_with_retries:should_fail_with_another_screenshot_error'
         )
         self.assertEqual(results[0].get('status'), 'FAIL')
+        self.assertIs(results[0].get('expected', False), False)
         self.assertEqual(
             results[1].get('testId'),
             'test/harness/unit/screenshot_retry.test.ts:screenshot_test_with_retries:should_fail_with_screenshot_error'
         )
         self.assertEqual(results[1].get('status'), 'FAIL')
+        self.assertIs(results[1].get('expected', False), False)
 
     def test_unit_screenshot_diff(self):
         import sys
@@ -695,6 +740,7 @@ class DevToolsTestHarness(unittest.TestCase):
             'test/harness/unit/screenshot_diff.test.ts:screenshot_test_with_diff:should_fail_with_screenshot_diff'
         )
         self.assertEqual(results[0].get('status'), 'FAIL')
+        self.assertIs(results[0].get('expected', False), False)
 
         # Verify artifacts
         list_artifacts_cmd = [
@@ -763,11 +809,13 @@ class DevToolsTestHarness(unittest.TestCase):
             'test/harness/unit/unit.test.ts:unit:should_run_a_basic_unit_test_successfully'
         )
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
         self.assertEqual(
             results[1].get('testId'),
             'test/harness/unit/unit.test.ts:unit:should_run_a_basic_unit_test_successfully'
         )
         self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertIs(results[1].get('expected'), True)
 
     def test_unit_snapshot_repeat(self):
         abs_test_file = self._resolve_test_file(
@@ -787,17 +835,19 @@ class DevToolsTestHarness(unittest.TestCase):
             'test/harness/unit/snapshot.test.ts:snapshot_test_harness:supports_snapshot_assertion_in_test_harness'
         )
         self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertIs(results[0].get('expected'), True)
         self.assertEqual(
             results[1].get('testId'),
             'test/harness/unit/snapshot.test.ts:snapshot_test_harness:supports_snapshot_assertion_in_test_harness'
         )
         self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertIs(results[1].get('expected'), True)
 
     def test_get_test_id(self):
         cmd = [
             "vpython3", "third_party/node/node.py", "--output",
             "scripts/get_test_id.ts", "test/harness/unit/get_test_id.test.ts",
-            "8", "10"
+            "11", "10"
         ]
         process = subprocess.run(cmd, capture_output=True, text=True)
         self.assertEqual(process.returncode, 0,

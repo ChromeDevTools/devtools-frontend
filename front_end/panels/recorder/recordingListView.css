@@ -30,7 +30,7 @@
 
   h1 {
     font-size: var(--sys-typescale-body1-size);
-    line-height: 19px;
+    line-height: var(--sys-typescale-body1-line-height);
     color: var(--sys-color-on-surface);
     font-weight: normal;
   }

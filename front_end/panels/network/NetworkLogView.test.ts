@@ -200,7 +200,27 @@ describeWithEnvironment('NetworkLogView', () => {
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl --url ^"http://localhost^" -b ^"eva=^\\^"Sg4=^\\^"^"',
+        'curl --url ^"http://localhost^" -b ^"eva=^"^"Sg4=^"^"^"',
+    );
+  });
+
+  it('generates a valid curl command when header values contain quotes followed by command separators', async () => {
+    // A quote in the value must not be able to end the quoted argument when
+    // the cmd.exe command is pasted into PowerShell, where neither ^ nor \
+    // is an escape character. crbug.com/581185930
+    const request = createNetworkRequest(urlString`http://localhost`, {
+      requestHeaders: [
+        {name: 'x-header', value: 'alpha"; Write-Output pwned; "omega'},
+        {name: 'x-backslash', value: 'a\\"b | Write-Output pwned & c'},
+      ],
+    });
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+        'curl --url \'http://localhost\' \\\n  -H \'x-header: alpha"; Write-Output pwned; "omega\' \\\n  -H \'x-backslash: a\\"b | Write-Output pwned & c\'',
+    );
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+        'curl --url ^"http://localhost^" ^\n  -H ^"x-header: alpha^"^"; Write-Output pwned; ^"^"omega^" ^\n  -H ^"x-backslash: a^\\^\\^"^"b ^| Write-Output pwned ^& c^"',
     );
   });
 
@@ -369,7 +389,7 @@ describeWithEnvironment('NetworkLogView', () => {
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/json^" ^\n  --data-raw ^"^{^\\^"a^\\^":1^}^"');
+        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/json^" ^\n  --data-raw ^"^{^"^"a^"^":1^}^"');
   });
 
   it('generates a valid curl command for a POST request with binary data', async () => {
@@ -384,7 +404,7 @@ describeWithEnvironment('NetworkLogView', () => {
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/binary^" ^\n  --data-raw ^"1234^\n\n00^ ^ ^ ^ \'^\\^"^!^"');
+        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/binary^" ^\n  --data-raw ^"1234^\n\n00^ ^ ^ ^ \'^"^"^!^"');
   });
 
   it('generates a valid curl command for a POST request with binary data containing %', async () => {
@@ -398,7 +418,7 @@ describeWithEnvironment('NetworkLogView', () => {
         'curl --url \'http://localhost\' \\\n  -H \'Content-Type: application/binary\' \\\n  --data-raw $\'%OS%\\\\r\\\\n%%OS%%\\\\r\\\\n"\\\\\\\\"\\\'$&\\u0021\'');
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/binary^" ^\n  --data-raw ^"^%^OS^%^\\^\\r^\\^\\n^%^%^OS^%^%^\\^\\r^\\^\\n^\\^"^\\^\\^\\^\\^\\^"\'^$^&^!^"');
+        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/binary^" ^\n  --data-raw ^"^%^OS^%^\\^\\r^\\^\\n^%^%^OS^%^%^\\^\\r^\\^\\n^"^"^\\^\\^\\^\\^"^"\'^$^&^!^"');
   });
 
   it('generates a valid curl command for a URL with special characters', async () => {

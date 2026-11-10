@@ -134,7 +134,8 @@ export class ResultsDbReporter extends Mocha.reporters.Base {
 
     const testResult = this.buildDefaultTestResultFrom(targetTest);
     testResult.status = 'FAIL';
-    testResult.expected = isExpected;
+    // Always report expected=false to resultsdb to avoid LUCI considering this test failure a pass.
+    testResult.expected = false;
     if (error instanceof ScreenshotError) {
       testResult.artifacts = error.screenshots;
       testResult.summaryHtml = error.toMiloSummary();

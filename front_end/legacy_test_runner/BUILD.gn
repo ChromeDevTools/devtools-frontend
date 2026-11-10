@@ -43,7 +43,6 @@ group("legacy_test_runner-resources") {
     "network_test_runner:bundle",
     "performance_test_runner:bundle",
     "sdk_test_runner:bundle",
-    "security_test_runner:bundle",
     "sources_test_runner:bundle",
     "test_runner:bundle",
   ]

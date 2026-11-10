@@ -153,35 +153,39 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
   }
 
   async #navigateToAboutBlank(): Promise<void> {
-    const aboutBlankNavigationComplete = new Promise<void>(async (resolve, reject) => {
-      const target = this.primaryPageTarget;
-      const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      if (!resourceModel) {
-        reject('Could not load resourceModel');
-        return;
-      }
+    const resourceModel = this.primaryPageTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceModel) {
+      throw new Error('Could not load resourceModel');
+    }
 
-      /**
-       * To clear out the page and any state from prior test runs, we
-       * navigate to about:blank before initiating the trace recording.
-       * Once we have navigated to about:blank, we start recording and
-       * then navigate to the original page URL, to ensure we profile the
-       * page load.
-       **/
-      function waitForAboutBlank(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
-          void {
-        if (event.data.url === 'about:blank') {
-          resolve();
-        } else {
-          reject(`Unexpected navigation to ${event.data.url}`);
-        }
-        resourceModel?.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+    /**
+     * To clear out the page and any state from prior test runs, we
+     * navigate to about:blank before initiating the trace recording.
+     * Once we have navigated to about:blank, we start recording and
+     * then navigate to the original page URL, to ensure we profile the
+     * page load.
+     **/
+    const {promise, resolve, reject} = Promise.withResolvers<void>();
+    function waitForAboutBlank(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+        void {
+      if (event.data.url === 'about:blank') {
+        resolve();
+      } else {
+        reject(new Error(`Unexpected navigation to ${event.data.url}`));
       }
-      resourceModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
-      await resourceModel.navigate('about:blank' as Platform.DevToolsPath.UrlString);
-    });
+    }
 
-    await aboutBlankNavigationComplete;
+    resourceModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+    try {
+      await Promise.all([
+        promise,
+        resourceModel.navigate('about:blank' as Platform.DevToolsPath.UrlString),
+      ]);
+    } finally {
+      resourceModel.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+      // Settle `promise` so a rejected `navigate()` doesn't leave it pending forever.
+      resolve();
+    }
   }
 
   async #navigateWithSDK(url: Platform.DevToolsPath.UrlString): Promise<void> {

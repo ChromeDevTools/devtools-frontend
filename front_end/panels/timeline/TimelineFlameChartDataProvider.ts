@@ -14,6 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {html, type TemplateResult} from '../../ui/lit/lit.js';
 
+import {buildGroupStyle} from './AppenderUtils.js';
 import {CompatibilityTracksAppender, type DrawOverride, type TrackAppenderName} from './CompatibilityTracksAppender.js';
 import {initiatorsDataToDraw} from './Initiators.js';
 import {ModificationsManager} from './ModificationsManager.js';
@@ -151,8 +152,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     [this.droppedFramePattern, this.partialFramePattern] = this.preparePatternCanvas();
 
-    this.framesGroupStyle = this.buildGroupStyle({useFirstLineForOverview: true});
-    this.screenshotsGroupStyle = this.buildGroupStyle({
+    this.framesGroupStyle = buildGroupStyle({useFirstLineForOverview: true});
+    this.screenshotsGroupStyle = buildGroupStyle({
       useFirstLineForOverview: true,
       nestingLevel: 1,
       collapsible: PerfUI.FlameChart.GroupCollapsibleState.NEVER,
@@ -410,19 +411,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
   }
 
-  private buildGroupStyle(extra: Object): PerfUI.FlameChart.GroupStyle {
-    const defaultGroupStyle = {
-      padding: 4,
-      height: 17,
-      collapsible: PerfUI.FlameChart.GroupCollapsibleState.ALWAYS,
-      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface'),
-      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container'),
-      nestingLevel: 0,
-      shareHeaderLine: true,
-    };
-    return Object.assign(defaultGroupStyle, extra);
-  }
-
   setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Trace.EntityMapper.EntityMapper): void {
     this.reset();
     this.parsedTrace = parsedTrace;
@@ -643,7 +631,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const appendersByProcess = this.compatibilityTracksAppender.allThreadAppendersByProcess();
 
     for (const [pid, threadAppenders] of appendersByProcess) {
-      const processGroupStyle = this.buildGroupStyle({shareHeaderLine: false});
+      const processGroupStyle = buildGroupStyle({shareHeaderLine: false});
       const processName = this.parsedTrace?.data.Meta.processNames.get(pid)?.args.name || 'Process';
       this.appendHeader(`${processName} (${pid})`, processGroupStyle, true, false);
       for (const appender of threadAppenders) {

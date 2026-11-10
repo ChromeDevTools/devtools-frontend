@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import {it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
@@ -100,5 +101,44 @@ describeWithEnvironment('TimelineController', () => {
     // Ensure we collected events during tracing.
     assert.lengthOf(collectedEvents, 1);
     primaryPage?.dispose('test');
+  });
+
+  it('cleans up its FrameNavigated listener if navigating to about:blank fails', async () => {
+    LiveMetrics.LiveMetrics.instance({forceNew: true});
+
+    const primaryPage = createTarget({connection: new MockCDPConnection()});
+    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+    assert.exists(rootTarget);
+
+    const resourceModel = primaryPage.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceModel);
+    sinon.stub(resourceModel, 'navigate').rejects(new Error('navigation failed'));
+    const addListenerSpy = sinon.spy(resourceModel, 'addEventListener');
+    const removeListenerSpy = sinon.spy(resourceModel, 'removeEventListener');
+
+    const client: Timeline.TimelineController.Client = {
+      recordingProgress() {},
+      recordingStatus() {},
+      loadingStarted() {},
+      processingStarted() {},
+      loadingProgress() {},
+      async loadingComplete() {},
+      loadingCompleteForTest() {},
+    };
+    const controller = new Timeline.TimelineController.TimelineController(rootTarget, primaryPage, client);
+
+    let caughtError: Error|null = null;
+    try {
+      await controller.startRecording({navigateToUrl: Platform.DevToolsPath.urlString`https://example.com`});
+    } catch (error) {
+      caughtError = error as Error;
+    }
+
+    assert.strictEqual(caughtError?.message, 'navigation failed');
+    const addedCall =
+        addListenerSpy.getCalls().find(call => call.args[0] === SDK.ResourceTreeModel.Events.FrameNavigated);
+    assert.exists(addedCall);
+    sinon.assert.calledWith(removeListenerSpy, SDK.ResourceTreeModel.Events.FrameNavigated, addedCall.args[1]);
+    primaryPage.dispose('test');
   });
 });

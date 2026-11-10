@@ -75,7 +75,7 @@ export type SlowCSSSelectorInsightModel = InsightModel<typeof UIStrings, {
 
 function aggregateSelectorStats(data: Handlers.ModelHandlers.SelectorStats.SelectorStatsData,
                                 context: InsightSetContext): Types.Events.SelectorTiming[] {
-  const selectorMap = new Map<String, Types.Events.SelectorTiming>();
+  const selectorMap = new Map<string, Types.Events.SelectorTiming>();
 
   for (const [event, value] of data.dataForRecalcStyleEvent) {
     if (event.args.beginData?.frame !== context.frameId) {
@@ -135,11 +135,11 @@ export function generateInsight(
   let totalMatchAttempts = 0;
   let totalMatchCount = 0;
 
-  selectorTimings.map(timing => {
+  for (const timing of selectorTimings) {
     totalElapsedUs += timing[Types.Events.SelectorTimingsKey.Elapsed];
     totalMatchAttempts += timing[Types.Events.SelectorTimingsKey.MatchAttempts];
     totalMatchCount += timing[Types.Events.SelectorTimingsKey.MatchCount];
-  });
+  }
 
   let topSelectorElapsedMs: Types.Events.SelectorTiming|null = null;
   let topSelectorMatchAttempts: Types.Events.SelectorTiming|null = null;

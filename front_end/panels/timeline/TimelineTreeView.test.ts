@@ -122,6 +122,90 @@ describe('TimelineTreeView', function() {
       });
       assert.deepEqual(newTopLevelChildren, []);
     });
+
+    it('selects events from activeSelection and preserves selection across filter changes', async function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+
+      renderWidgetInVbox(eventTreeView, {flexAuto: true});
+      eventTreeView.setRange(startTime, endTime);
+      eventTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+      await RenderCoordinator.done();
+
+      const thirdEvent = consoleTimings.find(event => event.name === 'third console time');
+      assert.isOk(thirdEvent);
+      const thirdGridNode = eventTreeView.dataGrid.rootNode().children[1];
+      assert.strictEqual((thirdGridNode as Timeline.TimelineTreeView.GridNode).profileNode.event, thirdEvent);
+      thirdGridNode.select();
+      assert.strictEqual(eventTreeView.lastSelectedNode()?.event, thirdEvent);
+
+      const durationSelect = eventTreeView.element.querySelector<HTMLSelectElement>('select');
+      assert.isNotNull(durationSelect);
+      durationSelect.value = '0';
+      durationSelect.dispatchEvent(new Event('change'));
+      await RenderCoordinator.done();
+
+      assert.strictEqual(eventTreeView.lastSelectedNode()?.event, thirdEvent);
+
+      const firstEvent = consoleTimings.find(event => event.name === 'first console time');
+      assert.isOk(firstEvent);
+      eventTreeView.activeSelection = Timeline.TimelineSelection.selectionFromEvent(firstEvent);
+      await RenderCoordinator.done();
+      const selectedNode = eventTreeView.dataGrid.selectedNode;
+      assert.instanceOf(selectedNode, Timeline.TimelineTreeView.GridNode);
+      assert.strictEqual(selectedNode.profileNode.event, firstEvent);
+      assert.isTrue(selectedNode.expanded);
+      eventTreeView.detach();
+    });
+
+    it('looks up and selects events without walking grid nodes', async function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+
+      renderWidgetInVbox(eventTreeView, {flexAuto: true});
+      eventTreeView.setRange(startTime, endTime);
+      eventTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+      await RenderCoordinator.done();
+
+      const gridNodeForEventSpy = sinon.spy(eventTreeView, 'gridNodeForEvent');
+      const firstEvent = consoleTimings.find(event => event.name === 'first console time');
+      const secondEvent = consoleTimings.find(event => event.name === 'second console time');
+      const thirdEvent = consoleTimings.find(event => event.name === 'third console time');
+      assert.isOk(firstEvent);
+      assert.isOk(secondEvent);
+      assert.isOk(thirdEvent);
+
+      assert.isNotNull(eventTreeView.dataGridElementForEvent(firstEvent));
+      assert.isNull(eventTreeView.dataGridElementForEvent(secondEvent));
+
+      eventTreeView.activeSelection = Timeline.TimelineSelection.selectionFromEvent(firstEvent);
+      await RenderCoordinator.done();
+      let selectedNode = eventTreeView.dataGrid.selectedNode;
+      assert.instanceOf(selectedNode, Timeline.TimelineTreeView.GridNode);
+      assert.strictEqual(selectedNode.profileNode.event, firstEvent);
+      assert.isTrue(selectedNode.expanded);
+
+      // Expanding the parent populates its child GridNode and indexes secondEvent.
+      const secondRow = eventTreeView.dataGridElementForEvent(secondEvent);
+      assert.isNotNull(secondRow);
+      eventTreeView.highlightEventInTree(secondEvent);
+      assert.strictEqual(secondRow.style.backgroundColor, 'var(--sys-color-yellow-container)');
+
+      // Selecting another top-level event narrows/refreshes without grid walks.
+      eventTreeView.activeSelection = Timeline.TimelineSelection.selectionFromEvent(thirdEvent);
+      await RenderCoordinator.done();
+      selectedNode = eventTreeView.dataGrid.selectedNode;
+      assert.instanceOf(selectedNode, Timeline.TimelineTreeView.GridNode);
+      assert.strictEqual(selectedNode.profileNode.event, thirdEvent);
+      sinon.assert.notCalled(gridNodeForEventSpy);
+      eventTreeView.detach();
+    });
   });
 
   describe('BottomUpTimelineTreeView', function() {
@@ -340,6 +424,47 @@ describe('TimelineTreeView', function() {
       assert.isNull(callTreeView.detailsView.element.querySelector('.empty-state'));
       assert.isTrue(callTreeView.detailsView.element.contains(callTreeView.stackView.element));
       assert.isNotNull(callTreeView.detailsView.element.querySelector('.timeline-stack-view-header'));
+      callTreeView.detach();
+    });
+
+    it('resolves and highlights top-level and expanded descendant rows for events', async function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+
+      renderWidgetInVbox(callTreeView, {flexAuto: true});
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+      await RenderCoordinator.done();
+
+      const firstEvent = consoleTimings.find(event => event.name === 'first console time');
+      const secondEvent = consoleTimings.find(event => event.name === 'second console time');
+      assert.isOk(firstEvent);
+      assert.isOk(secondEvent);
+
+      const firstRow = callTreeView.dataGridElementForEvent(firstEvent);
+      assert.isNotNull(firstRow);
+      assert.isNull(callTreeView.dataGridElementForEvent(secondEvent));
+
+      callTreeView.highlightEventInTree(firstEvent);
+      assert.strictEqual(firstRow.style.backgroundColor, 'var(--sys-color-yellow-container)');
+
+      const firstGridNode = callTreeView.dataGrid.rootNode().children[0];
+      assert.strictEqual((firstGridNode as Timeline.TimelineTreeView.GridNode).profileNode.event, firstEvent);
+      firstGridNode.expand();
+
+      const secondRow = callTreeView.dataGridElementForEvent(secondEvent);
+      assert.isNotNull(secondRow);
+      assert.notStrictEqual(secondRow, firstRow);
+
+      callTreeView.highlightEventInTree(secondEvent);
+      assert.strictEqual(firstRow.style.backgroundColor, '');
+      assert.strictEqual(secondRow.style.backgroundColor, 'var(--sys-color-yellow-container)');
+
+      callTreeView.highlightEventInTree(null);
+      assert.strictEqual(secondRow.style.backgroundColor, '');
       callTreeView.detach();
     });
   });

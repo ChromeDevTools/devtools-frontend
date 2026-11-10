@@ -224,7 +224,6 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   #lastHighlightedEvent: HTMLElement|null = null;
-  eventToTreeNode: WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node> = new WeakMap();
   // Compact mode is used to render the tree view in a more compact UI,
   // suitable for AI assistance widgets. It removes sidebars and toolbars.
   #compactMode = false;
@@ -600,9 +599,6 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
     const gridNodes: GridNode[] = [];
     for (const child of children.values()) {
       const gridNode = new TreeGridNode(child, totalUsedTime, maxSelfTime, maxTotalTime, this);
-      for (const e of child.events) {
-        this.eventToTreeNode.set(e, child);
-      }
       gridNodes.push(gridNode);
     }
 
@@ -874,16 +870,38 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
     }
   }
 
+  gridNodeForEvent(
+      event: Trace.Types.Events.Event,
+      parentNode: DataGrid.DataGrid.DataGridNode<GridNode> = this.dataGrid.rootNode(),
+      ): GridNode|null {
+    for (const child of parentNode.children) {
+      // Search populated descendants first so expanded child rows win over parents.
+      if (child.children.length) {
+        const descendant = this.gridNodeForEvent(event, child);
+        if (descendant) {
+          return descendant;
+        }
+      }
+      if (child instanceof GridNode && child.profileNode.events.includes(event)) {
+        return child;
+      }
+    }
+    return null;
+  }
+
   dataGridElementForEvent(event: Trace.Types.Events.Event|null): HTMLElement|null {
     if (!event) {
       return null;
     }
-    const treeNode = this.eventToTreeNode.get(event);
-    return (treeNode && this.dataGridNodeForTreeNode(treeNode)?.element()) ?? null;
+    return this.gridNodeForEvent(event)?.element() ?? null;
   }
 
   dataGridNodeForTreeNode(treeNode: Trace.Extras.TraceTree.Node): GridNode|null {
     return treeNodeToGridNode.get(treeNode) || null;
+  }
+
+  /** Hook for unaggregated views to index grid nodes by their event. */
+  indexTreeNode(_node: Trace.Extras.TraceTree.Node): void {
   }
 
   // UI.SearchableView.Searchable implementation
@@ -1150,6 +1168,7 @@ export class TreeGridNode extends GridNode {
     super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
     this.setHasChildren(this.profileNode.hasChildren());
     treeNodeToGridNode.set(profileNode, this);
+    treeView.indexTreeNode(profileNode);
   }
 
   override populate(): void {
@@ -1162,9 +1181,6 @@ export class TreeGridNode extends GridNode {
     }
     for (const node of this.profileNode.children().values()) {
       const gridNode = new TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView);
-      for (const e of node.events) {
-        this.treeView.eventToTreeNode.set(e, node);
-      }
       this.insertChildOrdered(gridNode);
     }
   }

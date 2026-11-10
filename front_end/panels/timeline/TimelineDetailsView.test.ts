@@ -311,4 +311,53 @@ describe('TimelineDetailsView', function() {
     sinon.assert.calledOnce(requestUpdateSpy);
     detailsView.detach();
   });
+
+  it('switches to Bottom-up grouped by third parties and expands matching entity from selectTab', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    const selectedEvents = allThreadEntriesInTrace(parsedTrace);
+    renderElementIntoDOM(detailsView);
+
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents,
+      eventToRelatedInsightsMap: null,
+      entityMapper: mapper,
+    });
+    const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds);
+    await detailsView.setSelection(Timeline.TimelineSelection.selectionFromRangeMilliSeconds(bounds.min, bounds.max));
+    await raf();
+
+    const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+    thirdPartyTree.setRange(bounds.min, bounds.max);
+    thirdPartyTree.model = {selectedEvents, parsedTrace, entityMapper: mapper};
+    const thirdPartyNode = thirdPartyTree.buildTree().children().get('Google Tag Manager');
+    assert.isOk(thirdPartyNode);
+
+    const gridNodeForEventSpy =
+        sinon.spy(Timeline.TimelineTreeView.BottomUpTimelineTreeView.prototype, 'gridNodeForEvent');
+    try {
+      detailsView.selectTab(
+          Timeline.TimelineDetailsView.Tab.BottomUp,
+          thirdPartyNode,
+          Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.ThirdParties,
+      );
+      await raf();
+
+      const bottomUpElement = detailsView.element.querySelector('.timeline-tree-view');
+      assert.isNotNull(bottomUpElement);
+      const bottomUpView = UI.Widget.Widget.get(bottomUpElement);
+      assert.instanceOf(bottomUpView, Timeline.TimelineTreeView.BottomUpTimelineTreeView);
+      const selectedNode = bottomUpView.dataGrid.selectedNode;
+      assert.instanceOf(selectedNode, Timeline.TimelineTreeView.GridNode);
+      assert.strictEqual(selectedNode.profileNode.id, 'Google Tag Manager');
+      assert.isTrue(selectedNode.profileNode.events.includes(thirdPartyNode.event));
+      assert.isTrue(selectedNode.expanded);
+      sinon.assert.notCalled(gridNodeForEventSpy);
+    } finally {
+      gridNodeForEventSpy.restore();
+      detailsView.detach();
+    }
+  });
 });

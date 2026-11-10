@@ -10,6 +10,11 @@
   font-size: inherit;
 }
 
+:host {
+  /* Space reserved in front of the title for the expand/collapse chevron. */
+  --chevron-column-width: calc(var(--sys-size-7) + var(--sys-size-2));
+}
+
 .title-container {
   /* Vertically center items with min-width: 0; */
   min-width: 0;
@@ -20,6 +25,12 @@
   outline-offset: var(--sys-size-2);
   flex-grow: 1;
   align-items: center;
+  /* Keeps the title aligned with the title of expandable steps. */
+  padding-inline-start: var(--chevron-column-width);
+}
+
+.title-container.action {
+  padding-inline-start: 0;
 }
 
 .title-container:focus-visible {
@@ -76,11 +87,11 @@
 }
 
 .error {
-  margin: var(--sys-size-8) 0 0;
+  margin-block-start: var(--sys-size-8);
+  margin-inline-start: var(--chevron-column-width);
   padding: var(--sys-size-5);
   background: var(--sys-color-error-container);
   color: var(--sys-color-error);
-  position: relative;
 }
 
 @keyframes rotate {
@@ -136,12 +147,13 @@
 }
 
 .chevron {
+  flex-shrink: 0;
+  /* Aligns the chevron with the first line of the title. */
+  align-self: flex-start;
+  margin-block-start: var(--sys-size-4);
   width: var(--sys-size-7);
   height: var(--sys-size-7);
   transition: 200ms;
-  position: absolute;
-  top: var(--sys-size-7);
-  left: var(--sys-size-11);
   transform: rotate(-90deg);
   color: var(--sys-color-on-surface);
 }
@@ -153,7 +165,7 @@
 .details {
   display: none;
   margin-top: var(--sys-size-5);
-  position: relative;
+  margin-inline-start: var(--chevron-column-width);
 }
 
 .expanded .details {

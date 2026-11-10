@@ -176,6 +176,11 @@ export interface ViewInput {
   sectionIndex: number;
   isFirstSection: boolean;
   isLastSection: boolean;
+  /**
+   * Whether the step or section rendered right before this one is in the
+   * error state.
+   */
+  isAfterError: boolean;
   isRecording: boolean;
   isPlaying: boolean;
   isVisible: boolean;
@@ -342,6 +347,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
           isStartOfGroup: input.isStartOfGroup,
           isEndOfGroup: input.isEndOfGroup,
           isSelected: input.isSelected,
+          isAfterError: input.isAfterError,
         })}
         @contextmenu=${
           (e: Event) => {
@@ -434,7 +440,6 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
               onAttributeRequested: input.onAttributeRequested,
             })}></devtools-widget>`
           }
-          }
         </div>
         ${
           input.error &&
@@ -472,6 +477,7 @@ export class StepView extends UI.Widget.Widget<ShadowRoot> {
     sectionIndex: 0,
     isFirstSection: false,
     isLastSection: false,
+    isAfterError: false,
     isRecording: false,
     isPlaying: false,
     isVisible: false,
@@ -523,6 +529,14 @@ export class StepView extends UI.Widget.Widget<ShadowRoot> {
     this.requestUpdate();
   }
 
+  set showDetails(showDetails: boolean) {
+    if (this.#viewInput.showDetails === showDetails) {
+      return;
+    }
+    this.#viewInput.showDetails = showDetails;
+    this.requestUpdate();
+  }
+
   set isEndOfGroup(isEndOfGroup: boolean) {
     this.#viewInput.isEndOfGroup = isEndOfGroup;
     this.requestUpdate();
@@ -549,7 +563,18 @@ export class StepView extends UI.Widget.Widget<ShadowRoot> {
   }
 
   set isLastSection(isLastSection: boolean) {
+    if (this.#viewInput.isLastSection === isLastSection) {
+      return;
+    }
     this.#viewInput.isLastSection = isLastSection;
+    this.requestUpdate();
+  }
+
+  set isAfterError(isAfterError: boolean) {
+    if (this.#viewInput.isAfterError === isAfterError) {
+      return;
+    }
+    this.#viewInput.isAfterError = isAfterError;
     this.requestUpdate();
   }
 

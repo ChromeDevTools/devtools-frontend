@@ -31,16 +31,14 @@
 }
 
 .icon {
-  display: flex;
+  display: grid;
+  place-items: center;
   width: var(--sys-size-14);
   height: var(--sys-size-14);
   border-radius: var(--sys-shape-corner-full);
   background: var(--sys-color-error-bright);
   margin-bottom: var(--sys-size-5);
-  position: relative;
   transition: background 200ms;
-  place-content: center center;
-  align-items: center;
 }
 
 .icon::before {
@@ -48,14 +46,9 @@
 
   box-sizing: border-box;
   content: "";
-  display: block;
   width: var(--sys-size-7);
   height: var(--sys-size-7);
   border: var(--sys-size-1) solid var(--override-white);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background-color: var(--override-white);
 }
 

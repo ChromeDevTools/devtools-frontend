@@ -61,7 +61,6 @@ select {
   max-width: var(--sys-size-22);
   min-width: var(--sys-size-22);
   padding: 0 var(--sys-size-6) 0 var(--sys-size-5);
-  position: relative;
   color: var(--sys-color-on-surface);
   background-color: transparent;
   text-overflow: ellipsis;

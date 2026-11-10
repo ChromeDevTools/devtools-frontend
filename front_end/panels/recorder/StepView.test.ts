@@ -58,6 +58,7 @@ describeWithEnvironment('StepView', () => {
       sectionIndex: 0,
       isFirstSection: false,
       isLastSection: false,
+      isAfterError: false,
       isRecording: false,
       isPlaying: false,
       isVisible: true,

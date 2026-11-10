@@ -11,129 +11,105 @@
   font-size: inherit;
 }
 
+/*
+ * A row of the timeline. The row, and with it the hover and selection
+ * highlight, spans the full width of its container. Embedders can inset the
+ * content of the row with the following custom properties:
+ *   --timeline-section-inset-inline-start
+ *   --timeline-section-inset-inline-end
+ */
 .timeline-section {
-  position: relative;
-  padding: var(--sys-size-5) 0 var(--sys-size-5) var(--sys-size-14);
-  margin-left: var(--sys-size-5);
-
   --override-color-recording-successful-text: #36a854;
-  --override-color-recording-successful-background: #e6f4ea;
+  --timeline-section-padding-block-start: var(--sys-size-5);
+  --timeline-section-padding-block-end: var(--sys-size-5);
+  /*
+   * Offset from the top of the row to the center of the icon. The icon is
+   * drawn centered 8px below the top edge of the slotted icon element.
+   */
+  --timeline-section-icon-center: calc(var(--timeline-section-padding-block-start) + var(--sys-size-5));
+
+  display: grid;
+  grid-template-columns: [timeline] var(--sys-size-8) [content] minmax(0, 1fr);
+  column-gap: var(--sys-size-8);
+  padding-inline: var(--timeline-section-inset-inline-start, 0) var(--timeline-section-inset-inline-end, 0);
 }
 
-.overlay {
-  position: absolute;
-  width: 100vw;
-  height: 100%;
-  /* Offset of 32px for spacing and 80px for screenshot */
-  left: calc(-1 * var(--sys-size-13) - var(--sys-size-19));
-  top: 0;
-  z-index: -1;
-  pointer-events: none;
+.timeline-section.is-end-of-group {
+  --timeline-section-padding-block-end: var(--sys-size-8);
 }
 
-@container (max-width: 400px) {
-  .overlay {
-    /* Offset of 32px for spacing */
-    left: calc(-1 * var(--sys-size-13));
-  }
+.timeline-section:hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
-:hover .overlay {
-  background: var(--sys-color-state-hover-on-subtle);
+.timeline-section.is-selected {
+  background-color: var(--sys-color-tonal-container);
 }
 
-.is-selected .overlay {
-  background: var(--sys-color-tonal-container);
-}
-
-:host-context(.is-stopped) .overlay {
-  background: var(--sys-color-state-ripple-primary);
+:host-context(.is-stopped) .timeline-section {
+  background-color: var(--sys-color-state-ripple-primary);
   outline: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
-  z-index: 4;
 }
 
-.is-start-of-group:not(:first-of-type) {
-  padding-top: var(--sys-size-8);
+.timeline {
+  grid-column: timeline;
+  display: grid;
+  /* All parts of the timeline are stacked on top of each other. */
+  grid-template-areas: 'timeline';
 }
 
-.is-end-of-group {
-  padding-bottom: var(--sys-size-8);
+.timeline > * {
+  grid-area: timeline;
+}
+
+.line {
+  justify-self: center;
+  width: var(--sys-size-2);
+  background-color: var(--sys-color-primary);
+}
+
+/* Connects the icon to the icon of the previous row. */
+.line-before {
+  align-self: start;
+  height: var(--timeline-section-icon-center);
+}
+
+/* Connects the icon to the icon of the next row. */
+.line-after {
+  margin-block-start: var(--timeline-section-icon-center);
+}
+
+.is-first-section .line-before,
+.is-last-section .line-after {
+  visibility: hidden;
 }
 
 .icon {
-  position: absolute;
-  left: var(--sys-size-3);
-  transform: translateX(-50%);
-  z-index: 2;
+  display: flex;
+  place-self: start start;
+  margin-block-start: var(--timeline-section-padding-block-start);
 }
 
-.bar {
-  position: absolute;
-  left: var(--sys-size-3);
-  display: block;
-  transform: translateX(-50%);
-  top: var(--sys-size-8);
-  height: 100%;
-  z-index: 1; /* We want this to be below of `.overlay` for stopped case */
+.content {
+  grid-column: content;
+  padding-block: var(--timeline-section-padding-block-start) var(--timeline-section-padding-block-end);
 }
 
-.bar .background {
-  fill: var(--sys-color-state-hover-on-subtle);
+:host-context(.is-error) .line-after,
+.is-after-error .line-before {
+  background-color: var(--sys-color-error);
 }
 
-.bar .line {
-  fill: var(--sys-color-primary);
-}
-
-.is-first-section .bar {
-  height: 100%;
-  display: none;
-}
-
-.is-first-section:not(.is-last-section) .bar {
-  display: block;
-}
-
-.is-last-section .bar .line {
-  display: none;
-}
-
-.is-last-section .bar .background {
-  display: none;
-}
-
-:host-context(.is-error) .bar .line {
-  fill: var(--sys-color-error);
-}
-
-:host-context(.is-error) .bar .background {
-  fill: var(--sys-color-error-container);
-}
-
-:host-context(.was-successful) .bar .background {
-  animation: flash-background 2s;
-}
-
-:host-context(.was-successful) .bar .line {
+:host-context(.was-successful) .line {
   animation: flash-line 2s;
-}
-
-@keyframes flash-background {
-  25% {
-    fill: var(--override-color-recording-successful-background);
-  }
-
-  75% {
-    fill: var(--override-color-recording-successful-background);
-  }
 }
 
 @keyframes flash-line {
   25% {
-    fill: var(--override-color-recording-successful-text);
+    background-color: var(--override-color-recording-successful-text);
   }
 
   75% {
-    fill: var(--override-color-recording-successful-text);
+    background-color: var(--override-color-recording-successful-text);
   }
 }

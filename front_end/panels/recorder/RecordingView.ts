@@ -524,6 +524,25 @@ function renderReplayOrAbortButton(input: ViewInput): Lit.LitTemplate {
 
 function renderSections(input: ViewInput): Lit.LitTemplate {
   const codeToggleTitle = input.showCodeView ? i18nString(UIStrings.hideCode) : i18nString(UIStrings.showCode);
+  /**
+   * Returns the state of the step or section that is rendered right before the
+   * given section (`stepIndex` is -1) or the given step of the section.
+   */
+  const getPreviousState = (sectionIndex: number, stepIndex: number): State|undefined => {
+    const section = input.sections[sectionIndex];
+    if (stepIndex > 0) {
+      return input.getStepState(section.steps[stepIndex - 1]);
+    }
+    if (stepIndex === 0) {
+      return input.getSectionState(section);
+    }
+    const previousSection = input.sections[sectionIndex - 1];
+    if (!previousSection) {
+      return undefined;
+    }
+    const lastStep = previousSection.steps.at(-1);
+    return lastStep ? input.getStepState(lastStep) : input.getSectionState(previousSection);
+  };
   // clang-format off
     return html`
       <div class="sections">
@@ -564,6 +583,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                     isLastSection:
                       i === input.sections.length - 1 &&
                       section.steps.length === 0,
+                    isAfterError: getPreviousState(i, -1) === State.ERROR,
                     isSelected:
                       input.selectedStep === (section.causingStep || null),
                     sectionIndex: i,
@@ -585,7 +605,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                     onAttributeRequested: input.onAttributeRequested,
                     onCopyStep: input.onCopyStep,
                   })}
-                  ${section.steps.map(step => {
+                  ${section.steps.map((step, j) => {
                     const stepIndex = input.recording.steps.indexOf(step);
                     return html`
                       <devtools-widget
@@ -596,6 +616,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                         isFirstSection: false,
                         isLastSection:
                           i === input.sections.length - 1 && input.recording.steps[input.recording.steps.length - 1] === step,
+                        isAfterError: getPreviousState(i, j) === State.ERROR,
                         isStartOfGroup: false,
                         isEndOfGroup: section.steps[section.steps.length - 1] === step,
                         stepIndex,

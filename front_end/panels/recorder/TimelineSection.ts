@@ -15,6 +15,11 @@ export interface TimelineSectionData {
   isStartOfGroup: boolean;
   isEndOfGroup: boolean;
   isSelected: boolean;
+  /**
+   * Whether the section right before this one is in the error state. The part
+   * of the timeline that connects the two sections is then drawn as an error.
+   */
+  isAfterError: boolean;
 }
 
 export type ViewInput = TimelineSectionData;
@@ -28,6 +33,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
     'is-first-section': input.isFirstSection,
     'is-last-section': input.isLastSection,
     'is-selected': input.isSelected,
+    'is-after-error': input.isAfterError,
   };
 
   // clang-format off
@@ -35,12 +41,12 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
     html`
     <style>${timelineSectionStyles}</style>
     <div class=${Lit.Directives.classMap(classes)}>
-      <div class="overlay"></div>
-      <div class="icon"><slot name="icon"></slot></div>
-      <svg width="24" height="100%" class="bar" aria-hidden="true">
-        <rect class="line" x="7" y="0" width="2" height="100%" />
-      </svg>
-      <slot></slot>
+      <div class="timeline">
+        <div class="line line-before"></div>
+        <div class="line line-after"></div>
+        <div class="icon"><slot name="icon"></slot></div>
+      </div>
+      <div class="content"><slot></slot></div>
     </div>
   `,
     target,
@@ -54,6 +60,7 @@ export class TimelineSection extends UI.Widget.Widget {
   #isFirstSection = false;
   #isLastSection = false;
   #isSelected = false;
+  #isAfterError = false;
   #view: typeof DEFAULT_VIEW;
 
   constructor(element?: HTMLElement,
@@ -87,6 +94,14 @@ export class TimelineSection extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  set isAfterError(value: boolean) {
+    if (this.#isAfterError === value) {
+      return;
+    }
+    this.#isAfterError = value;
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
     this.#view(
         {
@@ -95,6 +110,7 @@ export class TimelineSection extends UI.Widget.Widget {
           isFirstSection: this.#isFirstSection,
           isLastSection: this.#isLastSection,
           isSelected: this.#isSelected,
+          isAfterError: this.#isAfterError,
         },
         undefined,
         this.contentElement,

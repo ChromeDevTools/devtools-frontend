@@ -2075,7 +2075,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
   }
 
   protected override removeNodes(nodes: NodeList|Node[]): void {
-    for (const node of getTreeNodes(nodes)) {
+    const removeSingleNode = (node: HTMLLIElement|TreeElementWrapper): void => {
       if (node instanceof HTMLLIElement) {
         TreeViewTreeElement.get(node)?.removeFromTree();
       } else if (node.treeElement) {
@@ -2084,6 +2084,22 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
                            (node.treeElement.parent as TreeViewTreeElement)
                                .configElement?.querySelector(':scope > ul[role="group"]')));
       }
+    };
+    // Remove unselected nodes first so TreeElement.removeChildAtIndex does not
+    // transiently select a sibling or parent scheduled for removal (crbug.com/1409025).
+    // When a subtree containing the selected item is removed, getTreeNodes flattens
+    // both the ancestor <li role="treeitem">s and the selected item itself in pre-order.
+    const nodesWithSelection: Array<HTMLLIElement|TreeElementWrapper> = [];
+    for (const node of getTreeNodes(nodes)) {
+      const treeElement = node instanceof HTMLLIElement ? TreeViewTreeElement.get(node) : node.treeElement;
+      if (treeElement && this.#treeOutline.selectedTreeElement?.hasAncestorOrSelf(treeElement)) {
+        nodesWithSelection.push(node);
+      } else {
+        removeSingleNode(node);
+      }
+    }
+    for (const node of nodesWithSelection) {
+      removeSingleNode(node);
     }
   }
 

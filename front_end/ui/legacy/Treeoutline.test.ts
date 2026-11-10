@@ -868,6 +868,88 @@ describe('TreeViewElement', () => {
     assert.strictEqual(children[4].titleElement.textContent?.trim(), 'extra node');
   });
 
+  it('avoids selecting removed siblings when batch-removing multiple tree elements', async () => {
+    const {repeat} = Lit.Directives;
+    const makeTemplate = (items: string[]): Lit.TemplateResult => {
+      return html`
+        <ul role="tree">
+          ${repeat(items, item => item, item => html`<li role="treeitem">${item}</li>`)}
+        </ul>
+      `;
+    };
+
+    const component =
+        await makeTree(html`<devtools-tree .template=${makeTemplate(['first', 'second', 'third'])}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const [firstNode, secondNode, thirdNode] = treeOutline.rootElement().children();
+    assert.exists(firstNode);
+    assert.exists(secondNode);
+    assert.exists(thirdNode);
+
+    firstNode.select();
+    assert.strictEqual(treeOutline.selectedTreeElement, firstNode);
+
+    const secondSelectSpy = sinon.spy(secondNode, 'select');
+    const thirdSelectSpy = sinon.spy(thirdNode, 'select');
+
+    component.template = makeTemplate(['third']);
+    component.flushPendingUpdatesForTesting();
+
+    sinon.assert.notCalled(secondSelectSpy);
+    sinon.assert.called(thirdSelectSpy);
+    assert.strictEqual(treeOutline.selectedTreeElement, thirdNode);
+  });
+
+  it('avoids selecting removed siblings when batch-removing nested tree elements', async () => {
+    const makeTemplate = (hasFolders: boolean): Lit.TemplateResult => {
+      return html`
+        <ul role="tree">
+          ${
+          hasFolders ? html`
+            <li role="treeitem" open>d
+              <ul role="group">
+                <li role="treeitem">a</li>
+              </ul>
+            </li>
+            <li role="treeitem" open>e
+              <ul role="group">
+                <li role="treeitem">b</li>
+              </ul>
+            </li>
+          ` :
+                       Lit.nothing}
+          <li role="treeitem">c</li>
+        </ul>
+      `;
+    };
+
+    const component = await makeTree(html`<devtools-tree .template=${makeTemplate(true)}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const [nodeD, nodeE, nodeC] = treeOutline.rootElement().children();
+    assert.exists(nodeD);
+    assert.exists(nodeE);
+    assert.exists(nodeC);
+    const nodeA = nodeD.children()[0];
+    const nodeB = nodeE.children()[0];
+    assert.exists(nodeA);
+    assert.exists(nodeB);
+
+    nodeA.select();
+    assert.strictEqual(treeOutline.selectedTreeElement, nodeA);
+
+    const nodeESelectSpy = sinon.spy(nodeE, 'select');
+    const nodeBSelectSpy = sinon.spy(nodeB, 'select');
+    const nodeCSelectSpy = sinon.spy(nodeC, 'select');
+
+    component.template = makeTemplate(false);
+    component.flushPendingUpdatesForTesting();
+
+    sinon.assert.notCalled(nodeESelectSpy);
+    sinon.assert.notCalled(nodeBSelectSpy);
+    sinon.assert.called(nodeCSelectSpy);
+    assert.strictEqual(treeOutline.selectedTreeElement, nodeC);
+  });
+
   it('marks a node as expandable even if it has empty subtree', async () => {
     const component = await makeTree(html`<devtools-tree .template=${html`
       <ul role="tree">

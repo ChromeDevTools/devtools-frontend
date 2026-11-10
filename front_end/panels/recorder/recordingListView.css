@@ -49,7 +49,7 @@
   .title {
     font-size: var(--sys-typescale-body3-size);
     color: var(--sys-color-on-surface);
-    margin-left: 10px;
+    margin-left: var(--sys-size-5);
     flex: 1;
     overflow-x: hidden;
     white-space: nowrap;

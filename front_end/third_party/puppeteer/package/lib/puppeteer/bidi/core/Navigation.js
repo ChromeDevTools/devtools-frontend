@@ -64,6 +64,7 @@ let Navigation = (() => {
         #browsingContext;
         #disposables = new DisposableStack();
         #id;
+        #committedNavigations = new Set();
         constructor(context) {
             super();
             this.#browsingContext = context;
@@ -99,14 +100,30 @@ let Navigation = (() => {
                 }
                 this.#navigation = Navigation.from(this.#browsingContext);
             });
+            sessionEmitter.on('browsingContext.navigationCommitted', info => {
+                if (info.context !== this.#browsingContext.id ||
+                    info.navigation === null) {
+                    return;
+                }
+                // Record the commit even if it does not match this navigation. A
+                // nested navigation can commit and then finish this navigation.
+                this.#committedNavigations.add(info.navigation);
+                if (!this.#matches(info.navigation)) {
+                    return;
+                }
+                this.dispose();
+            });
             for (const eventName of [
                 'browsingContext.domContentLoaded',
                 'browsingContext.load',
-                'browsingContext.navigationCommitted',
             ]) {
                 sessionEmitter.on(eventName, info => {
                     if (info.context !== this.#browsingContext.id ||
                         info.navigation === null ||
+                        // Lifecycle events that come before the commit are from the
+                        // previous document. Browsers can report them with the ID of the
+                        // new navigation (e.g. the error page of a failed navigation).
+                        !this.#committedNavigations.has(info.navigation) ||
                         !this.#matches(info.navigation)) {
                         return;
                     }

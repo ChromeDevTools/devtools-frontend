@@ -8,10 +8,12 @@ import type * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { ContinueRequestOverridesInternal, InterceptResolutionState, ResponseForRequestInternal } from '../api/HTTPRequest.js';
 import { HTTPRequest, type ResourceType } from '../api/HTTPRequest.js';
+import type { WebWorker } from '../api/WebWorker.js';
 import { type Logger } from '../common/Debug.js';
 import type { Request } from './core/Request.js';
 import type { BidiFrame } from './Frame.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';
+import type { BidiPage } from './Page.js';
 export declare const requests: WeakMap<Request, BidiHTTPRequest>;
 /**
  * @internal
@@ -39,6 +41,8 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     isNavigationRequest(): boolean;
     initiator(): Protocol.Network.Initiator | undefined;
     redirectChain(): BidiHTTPRequest[];
+    worker(): WebWorker | null;
+    page(): BidiPage;
     frame(): BidiFrame;
     _continue(overrides?: ContinueRequestOverridesInternal): Promise<void>;
     _abort(): Promise<void>;

@@ -3,6 +3,7 @@ import type { Browser, BrowserCloseCallback } from '../api/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import type { WsOptions } from '../common/ConnectOptions.js';
 import { type Logger } from '../common/Debug.js';
+import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import type { SupportedBrowser } from '../common/SupportedBrowser.js';
 import type { Viewport } from '../common/Viewport.js';
 import { type GetIdFn } from '../util/incremental-id-generator.js';
@@ -92,6 +93,7 @@ export declare abstract class BrowserLauncher {
      */
     protected createBiDiOverCdpBrowser(browserProcess: ReturnType<typeof launch>, cdpConnection: Connection, closeCallback: BrowserCloseCallback, opts: {
         defaultViewport: Viewport | null;
+        downloadBehavior?: DownloadBehavior;
         acceptInsecureCerts?: boolean;
         networkEnabled: boolean;
         issuesEnabled: boolean;
@@ -106,6 +108,7 @@ export declare abstract class BrowserLauncher {
         slowMo: number;
         idGenerator: GetIdFn;
         defaultViewport: Viewport | null;
+        downloadBehavior?: DownloadBehavior;
         acceptInsecureCerts?: boolean;
         networkEnabled?: boolean;
         issuesEnabled?: boolean;

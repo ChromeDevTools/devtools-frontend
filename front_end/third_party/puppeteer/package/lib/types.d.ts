@@ -890,6 +890,116 @@ export declare const enum BrowserContextEvent {
    * when a page is closed. Contains a {@link Target} instance.
    */
   TargetDestroyed = 'targetdestroyed',
+  /**
+   * Emitted when JavaScript within any page or worker in the browser context
+   * calls one of the console API methods, e.g. `console.log` or
+   * `console.dir`. Contains a {@link ConsoleMessage} instance.
+   *
+   * @remarks
+   * Use {@link ConsoleMessage.page}, {@link ConsoleMessage.frame} or
+   * {@link ConsoleMessage.worker} to identify the originating context.
+   * Messages from workers have no page or frame: use
+   * {@link ConsoleMessage.worker} for them. Messages logged by the browser
+   * itself (e.g. network errors or violations) can have no page, frame or
+   * worker.
+   *
+   * Events are only delivered for pages and workers that Puppeteer has
+   * attached to, e.g. via {@link BrowserContext.pages} or
+   * {@link Target.page}. Registering the listener before attaching
+   * guarantees that console messages replayed by the browser on attachment
+   * are not lost.
+   *
+   * With WebDriver BiDi, console messages that the browser replays while
+   * connecting are delivered once, right after {@link Puppeteer.connect}
+   * resolves: register the listener before awaiting anything else, or they
+   * are missed. Replayed messages can be delivered after messages logged
+   * later.
+   *
+   * Service workers and shared workers are not attached automatically:
+   * their console messages are only delivered after {@link Target.worker}
+   * has been called for their target. With WebDriver BiDi, their console
+   * messages are not reported.
+   *
+   * The {@link ConsoleMessage.args | arguments} are shared with listeners
+   * registered on {@link Page}, {@link WebWorker} and {@link Browser}.
+   * Disposing them in one listener invalidates them for all other listeners.
+   *
+   * @experimental
+   */
+  Console = 'console',
+  /**
+   * Emitted when any page in the browser context issues a request. Contains
+   * a {@link HTTPRequest} instance.
+   *
+   * @remarks
+   * Use {@link HTTPRequest.page} or {@link HTTPRequest.frame} to identify
+   * the originating context. Requests from dedicated workers have no page
+   * or frame: use {@link HTTPRequest.worker} for them. Dedicated worker
+   * requests and {@link HTTPRequest.worker} are not supported with
+   * WebDriver BiDi.
+   *
+   * With CDP, events are only delivered for pages that have a {@link Page}
+   * instance, e.g. created via {@link BrowserContext.pages} or {@link Target.page}.
+   * Requests issued before the instance exists, such as the initial
+   * navigation of a popup, are not reported. With WebDriver BiDi, requests
+   * from all pages are reported. Requests from service workers and shared
+   * workers are not reported.
+   *
+   * These listeners only observe requests. Do not call
+   * `request.continue()`, `abort()` or `respond()` from them: they are not
+   * coordinated with page-level handlers (see
+   * {@link https://pptr.dev/guides/network-interception#cooperative-intercept-mode | cooperative intercept mode}).
+   * To intercept requests, use {@link Page.setRequestInterception} with a
+   * {@link PageEvent.Request} listener.
+   *
+   * @experimental
+   */
+  Request = 'request',
+  /**
+   * Emitted when a request issued by any page in the browser context is
+   * served from the memory cache. Contains a {@link HTTPRequest} instance.
+   *
+   * @remarks
+   * The same delivery rules as for {@link BrowserContextEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestServedFromCache = 'requestservedfromcache',
+  /**
+   * Emitted when a response is received for a request issued by any page in
+   * the browser context. Contains a {@link HTTPResponse} instance.
+   *
+   * @remarks
+   * Use {@link HTTPResponse.request} to access the originating request. The
+   * same delivery rules as for {@link BrowserContextEvent.Request} apply.
+   *
+   * @experimental
+   */
+  Response = 'response',
+  /**
+   * Emitted when a request issued by any page in the browser context fails,
+   * for example by timing out. Contains a {@link HTTPRequest} instance.
+   *
+   * @remarks
+   * HTTP error responses, such as 404 or 503, are still successful responses
+   * from HTTP standpoint, so the request completes with
+   * {@link BrowserContextEvent.RequestFinished} and not with
+   * {@link BrowserContextEvent.RequestFailed}. The same delivery rules as
+   * for {@link BrowserContextEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestFailed = 'requestfailed',
+  /**
+   * Emitted when a request issued by any page in the browser context
+   * finishes successfully. Contains a {@link HTTPRequest} instance.
+   *
+   * @remarks
+   * The same delivery rules as for {@link BrowserContextEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestFinished = 'requestfinished',
 }
 
 /**
@@ -902,6 +1012,12 @@ export declare interface BrowserContextEvents extends Record<
   [BrowserContextEvent.TargetChanged]: Target;
   [BrowserContextEvent.TargetCreated]: Target;
   [BrowserContextEvent.TargetDestroyed]: Target;
+  [BrowserContextEvent.Console]: ConsoleMessage;
+  [BrowserContextEvent.Request]: HTTPRequest;
+  [BrowserContextEvent.RequestServedFromCache]: HTTPRequest;
+  [BrowserContextEvent.Response]: HTTPResponse;
+  [BrowserContextEvent.RequestFailed]: HTTPRequest;
+  [BrowserContextEvent.RequestFinished]: HTTPRequest;
 }
 
 /**
@@ -967,6 +1083,115 @@ export declare const enum BrowserEvent {
    * contexts.
    */
   TargetDestroyed = 'targetdestroyed',
+  /**
+   * Emitted when JavaScript within any page or worker in the browser calls
+   * one of the console API methods, e.g. `console.log` or `console.dir`.
+   * Contains a {@link ConsoleMessage} instance.
+   *
+   * @remarks
+   * Use {@link ConsoleMessage.page}, {@link ConsoleMessage.frame} or
+   * {@link ConsoleMessage.worker} to identify the originating context.
+   * Messages from workers have no page or frame: use
+   * {@link ConsoleMessage.worker} for them. Messages logged by the browser
+   * itself (e.g. network errors or violations) can have no page, frame or
+   * worker.
+   *
+   * Events are only delivered for pages and workers that Puppeteer has
+   * attached to, e.g. via {@link Browser.pages} or {@link Target.page}.
+   * Registering the listener before attaching guarantees that console
+   * messages replayed by the browser on attachment are not lost.
+   *
+   * With WebDriver BiDi, console messages that the browser replays while
+   * connecting are delivered once, right after {@link Puppeteer.connect}
+   * resolves: register the listener before awaiting anything else, or they
+   * are missed. Replayed messages can be delivered after messages logged
+   * later.
+   *
+   * Service workers and shared workers are not attached automatically:
+   * their console messages are only delivered after {@link Target.worker}
+   * has been called for their target. With WebDriver BiDi, their console
+   * messages are not reported.
+   *
+   * The {@link ConsoleMessage.args | arguments} are shared with listeners
+   * registered on {@link Page}, {@link WebWorker} and {@link BrowserContext}.
+   * Disposing them in one listener invalidates them for all other listeners.
+   *
+   * @experimental
+   */
+  Console = 'console',
+  /**
+   * Emitted when any page in the browser issues a request. Contains a
+   * {@link HTTPRequest} instance.
+   *
+   * @remarks
+   * Use {@link HTTPRequest.page} or {@link HTTPRequest.frame} to identify
+   * the originating context. Requests from dedicated workers have no page
+   * or frame: use {@link HTTPRequest.worker} for them. Dedicated worker
+   * requests and {@link HTTPRequest.worker} are not supported with
+   * WebDriver BiDi.
+   *
+   * With CDP, events are only delivered for pages that have a {@link Page}
+   * instance, e.g. created via {@link Browser.pages} or {@link Target.page}.
+   * Requests issued before the instance exists, such as the initial
+   * navigation of a popup, are not reported. With WebDriver BiDi, requests
+   * from all pages are reported. Requests from service workers and shared
+   * workers are not reported.
+   *
+   * These listeners only observe requests. Do not call
+   * `request.continue()`, `abort()` or `respond()` from them: they are not
+   * coordinated with page-level handlers (see
+   * {@link https://pptr.dev/guides/network-interception#cooperative-intercept-mode | cooperative intercept mode}).
+   * To intercept requests, use {@link Page.setRequestInterception} with a
+   * {@link PageEvent.Request} listener.
+   *
+   * @experimental
+   */
+  Request = 'request',
+  /**
+   * Emitted when a request issued by any page in the browser is served from
+   * the memory cache. Contains a {@link HTTPRequest} instance.
+   *
+   * @remarks
+   * The same delivery rules as for {@link BrowserEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestServedFromCache = 'requestservedfromcache',
+  /**
+   * Emitted when a response is received for a request issued by any page in
+   * the browser. Contains a {@link HTTPResponse} instance.
+   *
+   * @remarks
+   * Use {@link HTTPResponse.request} to access the originating request. The
+   * same delivery rules as for {@link BrowserEvent.Request} apply.
+   *
+   * @experimental
+   */
+  Response = 'response',
+  /**
+   * Emitted when a request issued by any page in the browser fails, for
+   * example by timing out. Contains a {@link HTTPRequest} instance.
+   *
+   * @remarks
+   * HTTP error responses, such as 404 or 503, are still successful responses
+   * from HTTP standpoint, so the request completes with
+   * {@link BrowserEvent.RequestFinished} and not with
+   * {@link BrowserEvent.RequestFailed}. The same delivery rules as for
+   * {@link BrowserEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestFailed = 'requestfailed',
+  /**
+   * Emitted when a request issued by any page in the browser finishes
+   * successfully. Contains a {@link HTTPRequest} instance.
+   *
+   * @remarks
+   * The same delivery rules as for {@link BrowserEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestFinished = 'requestfinished',
 }
 
 /**
@@ -977,6 +1202,12 @@ export declare interface BrowserEvents extends Record<EventType, unknown> {
   [BrowserEvent.TargetCreated]: Target;
   [BrowserEvent.TargetDestroyed]: Target;
   [BrowserEvent.TargetChanged]: Target;
+  [BrowserEvent.Console]: ConsoleMessage;
+  [BrowserEvent.Request]: HTTPRequest;
+  [BrowserEvent.RequestServedFromCache]: HTTPRequest;
+  [BrowserEvent.Response]: HTTPResponse;
+  [BrowserEvent.RequestFailed]: HTTPRequest;
+  [BrowserEvent.RequestFinished]: HTTPRequest;
 }
 
 /**
@@ -1617,6 +1848,10 @@ export declare interface ConsoleMessageLocation {
    * 0-based column number in the resource if known or `undefined` otherwise.
    */
   columnNumber?: number;
+  /**
+   * Script identifier if known or `undefined` otherwise.
+   */
+  scriptId?: string;
 }
 
 /**
@@ -2912,7 +3147,10 @@ export declare class EventEmitter<
    */
   on<Key extends keyof EventsWithWildcard<Events>>(
     type: Key,
-    handler: Handler<EventsWithWildcard<Events>[Key]>,
+    handler: (
+      event: EventsWithWildcard<Events>[Key],
+      eventData: Key extends '*' ? Events[keyof Events] : never,
+    ) => void,
   ): this;
   /**
    * Remove an event listener from firing.
@@ -2922,7 +3160,10 @@ export declare class EventEmitter<
    */
   off<Key extends keyof EventsWithWildcard<Events>>(
     type: Key,
-    handler?: Handler<EventsWithWildcard<Events>[Key]>,
+    handler?: (
+      event: EventsWithWildcard<Events>[Key],
+      eventData: Key extends '*' ? Events[keyof Events] : never,
+    ) => void,
   ): this;
   /**
    * Emit an event and call any associated listeners.
@@ -2943,7 +3184,10 @@ export declare class EventEmitter<
    */
   once<Key extends keyof EventsWithWildcard<Events>>(
     type: Key,
-    handler: Handler<EventsWithWildcard<Events>[Key]>,
+    handler: (
+      event: EventsWithWildcard<Events>[Key],
+      eventData: Key extends '*' ? Events[keyof Events] : never,
+    ) => void,
   ): this;
   /**
    * Gets the number of listeners for a given event.
@@ -2970,7 +3214,7 @@ export declare class EventEmitter<
 export declare type EventsWithWildcard<
   Events extends Record<EventType, unknown>,
 > = Events & {
-  '*': Events[keyof Events];
+  '*': keyof Events;
 };
 
 /**
@@ -4119,8 +4363,21 @@ export declare abstract class HTTPRequest {
    */
   abstract response(): HTTPResponse | null;
   /**
+   * The page that initiated the request, or null if navigating to
+   * error pages or the request is coming from a worker.
+   */
+  abstract page(): Page | null;
+  /**
+   * The worker that initiated the request, or null if the request
+   * was not initiated by a worker.
+   *
+   * @remarks
+   * Not supported with WebDriver BiDi.
+   */
+  abstract worker(): WebWorker | null;
+  /**
    * The frame that initiated the request, or null if navigating to
-   * error pages.
+   * error pages or the request is coming from a worker.
    */
   abstract frame(): Frame | null;
   /**
@@ -4312,6 +4569,19 @@ export declare abstract class HTTPResponse {
    */
   abstract timing(): Protocol.Network.ResourceTiming | null;
   /**
+   * Total number of bytes received for this request over the network.
+   *
+   * @remarks
+   * The value is updated when the response finishes loading. During the
+   * `response` event, it only covers the bytes received up to the response
+   * headers. To get the total encoded transfer size (headers + compressed
+   * body), read it in a `requestfinished` handler or after awaiting
+   * {@link HTTPResponse.content}. If the request fails after the response is
+   * received, the value is not updated. If the browser does not report a
+   * size, e.g. for `data:` or `file:` URLs, the value is `0`.
+   */
+  abstract encodedDataLength(): number;
+  /**
    * Promise which resolves to a buffer with response body.
    *
    * @remarks
@@ -4323,6 +4593,19 @@ export declare abstract class HTTPResponse {
    * https://github.com/puppeteer/puppeteer/issues/6478.
    */
   abstract content(): Promise<Uint8Array>;
+  /**
+   * Returns the response body as a stream of chunks as they arrive from the
+   * network.
+   *
+   * @remarks
+   *
+   * Call this from the {@link PageEvent.Response | response} event to
+   * receive the body while it is still loading. If the body has already
+   * finished loading, the stream contains the whole body as a single chunk.
+   *
+   * @experimental
+   */
+  abstract stream(): Promise<ReadableStream<Uint8Array>>;
   /**
    * {@inheritDoc HTTPResponse.content}
    */
@@ -5518,7 +5801,10 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
    *
    * @public
    */
-  map<To>(mapper: Mapper<T, To>): Locator<To>;
+  map<To, Args extends unknown[] = []>(
+    mapper: Mapper<T, To, Args>,
+    ...args: Args
+  ): Locator<To>;
   /**
    * Creates an expectation that is evaluated against located values.
    *
@@ -5526,7 +5812,10 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
    *
    * @public
    */
-  filter<S extends T>(predicate: Predicate<T, S>): Locator<S>;
+  filter<S extends T, Args extends unknown[] = []>(
+    predicate: Predicate<T, S, Args>,
+    ...args: Args
+  ): Locator<S>;
   /**
    * Clicks the located element.
    */
@@ -5664,7 +5953,10 @@ export declare type LowerCasePaperFormat =
 /**
  * @public
  */
-export declare type Mapper<From, To> = (value: From) => Awaitable<To>;
+export declare type Mapper<From, To, Args extends unknown[] = []> = (
+  value: From,
+  ...args: InnerParams<Args>
+) => Awaitable<To>;
 
 /**
  * A media feature to emulate.
@@ -5739,6 +6031,16 @@ export declare interface Metrics {
    * Total JavaScript heap size, in bytes.
    */
   JSHeapTotalSize?: number;
+  /**
+   * The timestamp when the DOMContentLoaded event was fired, in monotonic
+   * time (seconds since an arbitrary point in the past).
+   */
+  DomContentLoaded?: number;
+  /**
+   * The timestamp when the navigation started, in monotonic time (seconds
+   * since an arbitrary point in the past).
+   */
+  NavigationStart?: number;
 }
 
 /**
@@ -6959,6 +7261,12 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    *
    * - `JSHeapTotalSize` : Total JavaScript heap size, in bytes.
    *
+   * - `DomContentLoaded` : The timestamp when the DOMContentLoaded event was
+   *   fired, in monotonic time (seconds).
+   *
+   * - `NavigationStart` : The timestamp when the navigation started, in
+   *   monotonic time (seconds).
+   *
    * @remarks
    * All timestamps are in monotonic time: monotonically increasing time
    * in seconds since an arbitrary point in the past.
@@ -7631,7 +7939,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    *
    * To generate a PDF with the `screen` media type, call
    * {@link Page.emulateMediaType | `page.emulateMediaType('screen')`} before
-   * calling `page.pdf()`.
+   * calling `page.pdf()`. Note that this disables `@media print` stylesheets,
+   * which may cause layout issues on pages that rely on print styles for
+   * pagination. Call
+   * {@link Page.emulateMediaType | `page.emulateMediaType(null)`} to restore
+   * the default `print` media type.
    *
    * By default, `page.pdf()` generates a pdf with modified colors for printing.
    * Use the
@@ -8558,8 +8870,13 @@ export declare const PredefinedNetworkConditions: Readonly<{
 /**
  * @public
  */
-export declare type Predicate<From, To extends From = From> =
-  ((value: From) => value is To) | ((value: From) => Awaitable<boolean>);
+export declare type Predicate<
+  From,
+  To extends From = From,
+  Args extends unknown[] = [],
+> =
+  | ((value: From, ...args: InnerParams<Args>) => value is To)
+  | ((value: From, ...args: InnerParams<Args>) => Awaitable<boolean>);
 
 declare interface ProcessExitEmitter {
   once(event: 'exit', listener: () => void): void;

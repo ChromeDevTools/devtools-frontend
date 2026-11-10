@@ -59,6 +59,7 @@ import { JSHandle } from '../api/JSHandle.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { DisposableStack } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
+import { CDP_BINDING_PREFIX } from './utils.js';
 /**
  * @internal
  */
@@ -88,6 +89,7 @@ export class Binding {
      */
     async run(context, id, args, isTrivial) {
         const stack = new DisposableStack();
+        const cdpName = CDP_BINDING_PREFIX + this.#name;
         try {
             if (!isTrivial) {
                 const env_1 = { stack: [], error: void 0, hasError: false };
@@ -96,7 +98,7 @@ export class Binding {
                     const handles = __addDisposableResource(env_1, await context.evaluateHandle((name, seq) => {
                         // @ts-expect-error Code is evaluated in a different context.
                         return globalThis[name].args.get(seq);
-                    }, this.#name, id), false);
+                    }, cdpName, id), false);
                     const properties = await handles.getProperties();
                     for (const [index, handle] of properties) {
                         // This is not straight-forward since some arguments can stringify, but
@@ -128,7 +130,7 @@ export class Binding {
                 const callbacks = globalThis[name].callbacks;
                 callbacks.get(seq).resolve(result);
                 callbacks.delete(seq);
-            }, this.#name, id, await this.#fn(...args));
+            }, cdpName, id, await this.#fn(...args));
             for (const arg of args) {
                 if (arg instanceof JSHandle) {
                     stack.use(arg);
@@ -145,7 +147,7 @@ export class Binding {
                     const callbacks = globalThis[name].callbacks;
                     callbacks.get(seq).reject(error);
                     callbacks.delete(seq);
-                }, this.#name, id, error.message, error.stack)
+                }, cdpName, id, error.message, error.stack)
                     .catch(error => {
                     this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 });
@@ -157,7 +159,7 @@ export class Binding {
                     const callbacks = globalThis[name].callbacks;
                     callbacks.get(seq).reject(error);
                     callbacks.delete(seq);
-                }, this.#name, id, error)
+                }, cdpName, id, error)
                     .catch(error => {
                     this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 });

@@ -14,6 +14,7 @@ import type { CdpHTTPRequest } from './HTTPRequest.js';
 export declare class CdpHTTPResponse extends HTTPResponse {
     #private;
     constructor(request: CdpHTTPRequest, responsePayload: Protocol.Network.Response, extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null);
+    _setEncodedDataLength(encodedDataLength: number): void;
     _resolveBody(err?: Error): void;
     remoteAddress(): RemoteAddress;
     url(): string;
@@ -22,7 +23,9 @@ export declare class CdpHTTPResponse extends HTTPResponse {
     headers(): Record<string, string>;
     securityDetails(): SecurityDetails | null;
     timing(): Protocol.Network.ResourceTiming | null;
+    encodedDataLength(): number;
     content(): Promise<Uint8Array>;
+    stream(): Promise<ReadableStream<Uint8Array>>;
     request(): CdpHTTPRequest;
     fromCache(): boolean;
     fromServiceWorker(): boolean;

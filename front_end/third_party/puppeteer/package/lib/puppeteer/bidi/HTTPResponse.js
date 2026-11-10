@@ -37,6 +37,7 @@ import { UnsupportedOperation } from '../common/Errors.js';
 import { SecurityDetails } from '../common/SecurityDetails.js';
 import { invokeAtMostOnceForArguments } from '../util/decorators.js';
 import { normalizeHeaderValue } from '../util/httpUtils.js';
+import { emitRequestServedFromCache, emitResponse } from './NetworkEvents.js';
 /**
  * @internal
  */
@@ -83,12 +84,16 @@ let BidiHTTPResponse = (() => {
         #initialize() {
             if (this.#data.fromCache) {
                 this.#request._fromMemoryCache = true;
-                this.#request
-                    .frame()
-                    ?.page()
-                    .trustedEmitter.emit("requestservedfromcache" /* PageEvent.RequestServedFromCache */, this.#request);
             }
-            this.#request.frame()?.page().trustedEmitter.emit("response" /* PageEvent.Response */, this);
+            // Requests from dedicated workers have no frame and are not reported.
+            const page = this.#request.frame()?.page();
+            if (!page) {
+                return;
+            }
+            if (this.#data.fromCache) {
+                emitRequestServedFromCache(page, this.#request);
+            }
+            emitResponse(page, this);
         }
         remoteAddress() {
             return {
@@ -152,6 +157,10 @@ let BidiHTTPResponse = (() => {
                 receiveHeadersEnd: bidiTiming.responseEnd,
             };
         }
+        encodedDataLength() {
+            // Chromium reports -1 when the size is unknown, e.g. for data: URLs.
+            return Math.max(this.#data.bytesReceived, 0);
+        }
         frame() {
             return this.#request.frame();
         }
@@ -166,6 +175,9 @@ let BidiHTTPResponse = (() => {
         }
         async content() {
             return await this.#request.getResponseContent();
+        }
+        stream() {
+            throw new UnsupportedOperation();
         }
     };
 })();

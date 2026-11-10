@@ -89,7 +89,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { concat, distinctUntilChanged, EMPTY, filter, first, firstValueFrom, from, map, merge, mergeMap, mergeScan, of, raceWith, ReplaySubject, startWith, switchMap, take, takeUntil, timer, } from '../../third_party/rxjs/rxjs.js';
+import { distinctUntilChanged, EMPTY, filter, first, firstValueFrom, from, map, merge, raceWith, ReplaySubject, startWith, switchMap, takeUntil, timer, } from '../../third_party/rxjs/rxjs.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
@@ -197,18 +197,23 @@ let Page = (() => {
         constructor(logger) {
             super(undefined, logger);
             this.logger = logger;
-            fromEmitterEvent(this, "request" /* PageEvent.Request */)
-                .pipe(mergeMap(originalRequest => {
-                return concat(of(1), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
-                    return response.request();
-                }))).pipe(filter(request => {
-                    return request.id === originalRequest.id;
-                }), take(1), map(() => {
-                    return -1;
-                })));
-            }), mergeScan((acc, addend) => {
-                return of(acc + addend);
-            }, 0), takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), startWith(0))
+            // Pending requests by id, so that each event is handled in O(1) instead of
+            // being checked against every request that is still in flight.
+            const pending = new Map();
+            let inflight = 0;
+            merge(fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(map(request => {
+                pending.set(request.id, (pending.get(request.id) ?? 0) + 1);
+                return ++inflight;
+            })), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
+                return response.request();
+            }))).pipe(filter(request => {
+                return pending.has(request.id);
+            }), map(request => {
+                inflight -= pending.get(request.id) ?? 0;
+                pending.delete(request.id);
+                return inflight;
+            })))
+                .pipe(takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), startWith(0))
                 .subscribe(this.#inflight$);
         }
         /**
@@ -229,7 +234,7 @@ let Page = (() => {
             if (wrapper === undefined) {
                 wrapper = (event) => {
                     event.enqueueInterceptAction(() => {
-                        return handler(event);
+                        return handler(event, undefined);
                     });
                 };
                 this.#requestHandlers.set(handler, wrapper);
@@ -1572,6 +1577,8 @@ export const supportedMetrics = new Set([
     'TaskDuration',
     'JSHeapUsedSize',
     'JSHeapTotalSize',
+    'DomContentLoaded',
+    'NavigationStart',
 ]);
 /** @see https://w3c.github.io/webdriver-bidi/#normalize-rect */
 function normalizeRectangle(clip) {

@@ -9,6 +9,8 @@ import type { ProtocolError } from '../common/Errors.js';
 import type { CDPSession } from './CDPSession.js';
 import type { Frame } from './Frame.js';
 import type { HTTPResponse } from './HTTPResponse.js';
+import type { Page } from './Page.js';
+import type { WebWorker } from './WebWorker.js';
 /**
  * @public
  */
@@ -307,8 +309,21 @@ export declare abstract class HTTPRequest {
      */
     abstract response(): HTTPResponse | null;
     /**
+     * The page that initiated the request, or null if navigating to
+     * error pages or the request is coming from a worker.
+     */
+    abstract page(): Page | null;
+    /**
+     * The worker that initiated the request, or null if the request
+     * was not initiated by a worker.
+     *
+     * @remarks
+     * Not supported with WebDriver BiDi.
+     */
+    abstract worker(): WebWorker | null;
+    /**
      * The frame that initiated the request, or null if navigating to
-     * error pages.
+     * error pages or the request is coming from a worker.
      */
     abstract frame(): Frame | null;
     /**

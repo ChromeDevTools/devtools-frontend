@@ -335,14 +335,23 @@ export class BidiWorkerRealm extends BidiRealm {
     initialize() {
         super.initialize();
         this.realm.on('log', entry => {
-            if (isConsoleLogEntry(entry) &&
-                this.#worker.listenerCount(WebWorkerEvent.Console)) {
-                const args = entry.args.map(arg => {
-                    return this.createHandle(arg);
-                });
-                const message = getConsoleMessage(entry, args, undefined, this.realm.id, this.#worker);
-                this.#worker.emit(WebWorkerEvent.Console, message);
+            if (!isConsoleLogEntry(entry)) {
+                return;
             }
+            const page = this.#worker.frame.page();
+            const context = page.browserContext();
+            if (!this.#worker.listenerCount(WebWorkerEvent.Console) &&
+                !page.listenerCount("console" /* PageEvent.Console */) &&
+                !context.listenerCount("console" /* BrowserContextEvent.Console */) &&
+                !context.browser().listenerCount("console" /* BrowserEvent.Console */)) {
+                return;
+            }
+            const args = entry.args.map(arg => {
+                return this.createHandle(arg);
+            });
+            const message = getConsoleMessage(entry, args, undefined, this.realm.id, this.#worker);
+            this.#worker.emit(WebWorkerEvent.Console, message);
+            page.emitConsoleMessage(message);
         });
     }
     get environment() {

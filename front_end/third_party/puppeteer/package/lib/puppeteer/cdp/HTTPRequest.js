@@ -21,6 +21,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     #initiator;
     #logger;
     #resolution = null;
+    #worker;
     get client() {
         return this.#client;
     }
@@ -36,7 +37,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     set _fetchClient(fetchClient) {
         this.#fetchClient = fetchClient;
     }
-    constructor(client, frame, interceptionId, allowInterception, data, redirectChain, logger, fetchClient = client) {
+    constructor(client, frame, worker, interceptionId, allowInterception, data, redirectChain, logger, fetchClient = client) {
         super();
         this.#logger = logger;
         this.#client = client;
@@ -67,6 +68,7 @@ export class CdpHTTPRequest extends HTTPRequest {
         }
         this.#hasPostData = data.request.hasPostData ?? false;
         this.#frame = frame;
+        this.#worker = worker;
         this._redirectChain = redirectChain;
         this.#initiator = data.initiator;
         this.interception.enabled = allowInterception;
@@ -125,6 +127,12 @@ export class CdpHTTPRequest extends HTTPRequest {
     response() {
         return this._response;
     }
+    page() {
+        return this.#frame?.page() ?? null;
+    }
+    worker() {
+        return this.#worker;
+    }
     frame() {
         return this.#frame;
     }
@@ -146,7 +154,9 @@ export class CdpHTTPRequest extends HTTPRequest {
         };
     }
     canBeIntercepted() {
-        return !this.url().startsWith('data:') && !this._fromMemoryCache;
+        return (!this.url().startsWith('data:') &&
+            !this._fromMemoryCache &&
+            Boolean(this._interceptionId));
     }
     /**
      * @internal

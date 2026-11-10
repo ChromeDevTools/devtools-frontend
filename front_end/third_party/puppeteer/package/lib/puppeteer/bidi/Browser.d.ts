@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { ChildProcess } from 'node:child_process';
-import type { CreatePageOptions } from '../api/Browser.js';
+import type { BrowserEvents, CreatePageOptions } from '../api/Browser.js';
 import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type DebugInfo, type PWAState } from '../api/Browser.js';
 import type { Extension } from '../api/Extension.js';
 import type { Page } from '../api/Page.js';
@@ -12,6 +12,8 @@ import type { Target } from '../api/Target.js';
 import type { Connection as CdpConnection } from '../cdp/Connection.js';
 import type { SupportedWebDriverCapabilities } from '../common/ConnectOptions.js';
 import { type Logger } from '../common/Debug.js';
+import type { DownloadBehavior } from '../common/DownloadBehavior.js';
+import { EventEmitter } from '../common/EventEmitter.js';
 import type { Viewport } from '../common/Viewport.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import type { BidiConnection, CdpEvent } from './Connection.js';
@@ -25,6 +27,7 @@ export interface BidiBrowserOptions {
     connection: BidiConnection;
     cdpConnection?: CdpConnection;
     defaultViewport: Viewport | null;
+    downloadBehavior?: DownloadBehavior;
     acceptInsecureCerts?: boolean;
     capabilities?: SupportedWebDriverCapabilities;
     networkEnabled: boolean;
@@ -40,6 +43,8 @@ export declare class BidiBrowser extends Browser {
     static readonly subscribeModules: [string, ...string[]];
     static readonly subscribeCdpEvents: Array<CdpEvent['method']>;
     static create(opts: BidiBrowserOptions): Promise<BidiBrowser>;
+    /** @internal */
+    accessor trustedEmitter: EventEmitter<BrowserEvents>;
     private constructor();
     get cdpSupported(): boolean;
     get cdpConnection(): CdpConnection | undefined;

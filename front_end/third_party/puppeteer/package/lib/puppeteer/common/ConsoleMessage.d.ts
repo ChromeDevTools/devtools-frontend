@@ -24,6 +24,10 @@ export interface ConsoleMessageLocation {
      * 0-based column number in the resource if known or `undefined` otherwise.
      */
     columnNumber?: number;
+    /**
+     * Script identifier if known or `undefined` otherwise.
+     */
+    scriptId?: string;
 }
 /**
  * The supported types for console messages.

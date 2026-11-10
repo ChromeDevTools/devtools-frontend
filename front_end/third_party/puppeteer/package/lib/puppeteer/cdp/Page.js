@@ -57,7 +57,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
-import { Page, } from '../api/Page.js';
+import { Page, supportedMetrics, } from '../api/Page.js';
 import { WebWorker, WebWorkerEvent } from '../api/WebWorker.js';
 import { ConsoleMessage } from '../common/ConsoleMessage.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
@@ -188,18 +188,28 @@ export class CdpPage extends Page {
         const networkManagerEmitter = new EventEmitter(this.#frameManager.networkManager);
         networkManagerEmitter.on(NetworkManagerEvent.Request, request => {
             this.emit("request" /* PageEvent.Request */, request);
+            this.browserContext().emit("request" /* BrowserContextEvent.Request */, request);
+            this.browser().emit("request" /* BrowserEvent.Request */, request);
         });
         networkManagerEmitter.on(NetworkManagerEvent.RequestServedFromCache, request => {
             this.emit("requestservedfromcache" /* PageEvent.RequestServedFromCache */, request);
+            this.browserContext().emit("requestservedfromcache" /* BrowserContextEvent.RequestServedFromCache */, request);
+            this.browser().emit("requestservedfromcache" /* BrowserEvent.RequestServedFromCache */, request);
         });
         networkManagerEmitter.on(NetworkManagerEvent.Response, response => {
             this.emit("response" /* PageEvent.Response */, response);
+            this.browserContext().emit("response" /* BrowserContextEvent.Response */, response);
+            this.browser().emit("response" /* BrowserEvent.Response */, response);
         });
         networkManagerEmitter.on(NetworkManagerEvent.RequestFailed, request => {
             this.emit("requestfailed" /* PageEvent.RequestFailed */, request);
+            this.browserContext().emit("requestfailed" /* BrowserContextEvent.RequestFailed */, request);
+            this.browser().emit("requestfailed" /* BrowserEvent.RequestFailed */, request);
         });
         networkManagerEmitter.on(NetworkManagerEvent.RequestFinished, request => {
             this.emit("requestfinished" /* PageEvent.RequestFinished */, request);
+            this.browserContext().emit("requestfinished" /* BrowserContextEvent.RequestFinished */, request);
+            this.browser().emit("requestfinished" /* BrowserEvent.RequestFinished */, request);
         });
         this.#tabTargetClient.on(CDPSessionEvent.Swapped, this.#onActivation.bind(this));
         this.#tabTargetClient.on(CDPSessionEvent.Ready, this.#onSecondaryTarget.bind(this));
@@ -306,7 +316,9 @@ export class CdpPage extends Page {
             worker.internalEmitter.on(WebWorkerEvent.Console, message => {
                 const noListenersForConsoleOnPage = this.listenerCount("console" /* PageEvent.Console */) === 0;
                 const noListenersForConsoleOnWorker = worker.listenerCount(WebWorkerEvent.Console) === 0;
-                if (noListenersForConsoleOnPage && noListenersForConsoleOnWorker) {
+                if (noListenersForConsoleOnPage &&
+                    noListenersForConsoleOnWorker &&
+                    !this.#hasBrowserConsoleListeners()) {
                     // eslint-disable-next-line max-len -- The comment is long.
                     // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
                     for (const arg of message.args()) {
@@ -316,9 +328,7 @@ export class CdpPage extends Page {
                     }
                     return;
                 }
-                if (!noListenersForConsoleOnPage) {
-                    this.emit("console" /* PageEvent.Console */, message);
-                }
+                this.#emitConsoleMessage(message);
             });
             this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
@@ -481,7 +491,7 @@ export class CdpPage extends Page {
             });
         }
         if (source !== 'worker') {
-            this.emit("console" /* PageEvent.Console */, new ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{ url, lineNumber }], undefined, stackTrace, this.#primaryTarget._targetId, undefined));
+            this.#emitConsoleMessage(new ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{ url, lineNumber }], undefined, stackTrace, this.#primaryTarget._targetId, undefined));
         }
     }
     mainFrame() {
@@ -507,6 +517,9 @@ export class CdpPage extends Page {
     }
     workers() {
         return Array.from(this.#workers.values());
+    }
+    worker(client) {
+        return this.#workers.get(client.id()) ?? null;
     }
     async setRequestInterception(value) {
         return await this.#frameManager.networkManager.setRequestInterception(value);
@@ -740,7 +753,7 @@ export class CdpPage extends Page {
         const hasPageConsoleListeners = this.listenerCount("console" /* PageEvent.Console */) > 0;
         const hasWorkerConsoleListeners = world.environment instanceof WebWorker &&
             world.environment.listenerCount(WebWorkerEvent.Console) > 0;
-        if (!hasPageConsoleListeners) {
+        if (!hasPageConsoleListeners && !this.#hasBrowserConsoleListeners()) {
             if (!hasWorkerConsoleListeners) {
                 // eslint-disable-next-line max-len -- The comment is long.
                 // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
@@ -760,7 +773,20 @@ export class CdpPage extends Page {
         if (world.environment instanceof CdpFrame) {
             frame = world.environment;
         }
-        this.emit("console" /* PageEvent.Console */, createConsoleMessage(event, values, targetId, frame));
+        this.#emitConsoleMessage(createConsoleMessage(event, values, targetId, frame));
+    }
+    #hasBrowserConsoleListeners() {
+        return (this.browserContext().listenerCount("console" /* BrowserContextEvent.Console */) > 0 ||
+            this.browser().listenerCount("console" /* BrowserEvent.Console */) > 0);
+    }
+    /**
+     * Emits the message on the page and bubbles it up to the browser context
+     * and the browser.
+     */
+    #emitConsoleMessage(message) {
+        this.emit("console" /* PageEvent.Console */, message);
+        this.browserContext().emit("console" /* BrowserContextEvent.Console */, message);
+        this.browser().emit("console" /* BrowserEvent.Console */, message);
     }
     async #onBindingCalled(world, event) {
         let payload;
@@ -1038,21 +1064,6 @@ export class CdpPage extends Page {
         return new CdpScreenRecording(this, options, this.logger);
     }
 }
-const supportedMetrics = new Set([
-    'Timestamp',
-    'Documents',
-    'Frames',
-    'JSEventListeners',
-    'Nodes',
-    'LayoutCount',
-    'RecalcStyleCount',
-    'LayoutDuration',
-    'RecalcStyleDuration',
-    'ScriptDuration',
-    'TaskDuration',
-    'JSHeapUsedSize',
-    'JSHeapTotalSize',
-]);
 /** @see https://w3c.github.io/webdriver-bidi/#rectangle-intersection */
 function getIntersectionRect(clip, viewport) {
     // Note these will already be normalized.

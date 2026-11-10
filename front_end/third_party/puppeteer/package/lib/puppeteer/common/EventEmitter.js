@@ -87,8 +87,8 @@ export class EventEmitter {
      * @returns `this` to enable you to chain method calls.
      */
     once(type, handler) {
-        const onceHandler = eventData => {
-            handler(eventData);
+        const onceHandler = (...args) => {
+            handler(...args);
             this.off(type, onceHandler);
         };
         return this.on(type, onceHandler);

@@ -569,10 +569,10 @@ export class Locator extends EventEmitter {
      *
      * @public
      */
-    map(mapper) {
+    map(mapper, ...args) {
         return new MappedLocator(this._clone(), handle => {
             // SAFETY: TypeScript cannot deduce the type.
-            return handle.evaluateHandle(mapper);
+            return handle.evaluateHandle(mapper, ...args);
         });
     }
     /**
@@ -582,9 +582,9 @@ export class Locator extends EventEmitter {
      *
      * @public
      */
-    filter(predicate) {
+    filter(predicate, ...args) {
         return new FilteredLocator(this._clone(), async (handle, signal) => {
-            await handle.frame.waitForFunction(predicate, { signal, timeout: this._timeout }, handle);
+            await handle.frame.waitForFunction(predicate, { signal, timeout: this._timeout }, handle, ...args);
             return true;
         });
     }

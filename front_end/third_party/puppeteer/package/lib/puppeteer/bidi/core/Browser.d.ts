@@ -5,6 +5,7 @@
  */
 import type * as Bidi from 'webdriver-bidi-protocol';
 import type { BrowserContextOptions } from '../../api/Browser.js';
+import type { DownloadBehavior } from '../../common/DownloadBehavior.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { disposeSymbol } from '../../util/disposable.js';
 import type { BrowsingContext } from './BrowsingContext.js';
@@ -43,6 +44,11 @@ export declare class Browser extends EventEmitter<{
     removeIntercept(intercept: Bidi.Network.Intercept): Promise<void>;
     removePreloadScript(script: string): Promise<void>;
     createUserContext(options: BrowserContextOptions): Promise<UserContext>;
+    /**
+     * Sets the download behavior for the given user contexts. If no user
+     * contexts are provided, the behavior is applied globally.
+     */
+    setDownloadBehavior(downloadBehavior: DownloadBehavior, userContexts?: [string, ...string[]]): Promise<void>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
     setClientWindowState(params: Bidi.Browser.SetClientWindowStateParameters): Promise<void>;

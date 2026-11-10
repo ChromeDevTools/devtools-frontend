@@ -39,6 +39,16 @@ export interface SessionEvent<T> {
     client: CDPSession;
 }
 /**
+ * A stored `Network.requestWillBeSent` event. With request interception
+ * enabled, it can also hold a `Network.loadingFailed` event that arrived
+ * before the `Fetch.requestPaused` event that creates the request.
+ *
+ * @internal
+ */
+export interface StoredRequestWillBeSent extends SessionEvent<Protocol.Network.RequestWillBeSentEvent> {
+    loadingFailed?: SessionEvent<Protocol.Network.LoadingFailedEvent>;
+}
+/**
  * @internal
  */
 export type NetworkRequestId = string;
@@ -50,6 +60,11 @@ export type NetworkRequestId = string;
 export declare class NetworkEventManager {
     #private;
     forget(networkRequestId: NetworkRequestId): void;
+    /**
+     * Ids of the requests whose Network events come from `client`, both the
+     * ones already emitted and the ones still waiting for more events.
+     */
+    requestIdsForClient(client: CDPSession): Set<NetworkRequestId>;
     requestExtraInfo(networkRequestId: NetworkRequestId): Protocol.Network.RequestWillBeSentExtraInfoEvent[];
     responseExtraInfo(networkRequestId: NetworkRequestId): Protocol.Network.ResponseReceivedExtraInfoEvent[];
     private queuedRedirectInfo;
@@ -57,7 +72,7 @@ export declare class NetworkEventManager {
     takeQueuedRedirectInfo(fetchRequestId: FetchRequestId): RedirectInfo | undefined;
     inFlightRequestsCount(): number;
     storeRequestWillBeSent(networkRequestId: NetworkRequestId, event: Protocol.Network.RequestWillBeSentEvent, client: CDPSession): void;
-    getRequestWillBeSent(networkRequestId: NetworkRequestId): SessionEvent<Protocol.Network.RequestWillBeSentEvent> | undefined;
+    getRequestWillBeSent(networkRequestId: NetworkRequestId): StoredRequestWillBeSent | undefined;
     forgetRequestWillBeSent(networkRequestId: NetworkRequestId): void;
     getRequestPaused(networkRequestId: NetworkRequestId): SessionEvent<Protocol.Fetch.RequestPausedEvent> | undefined;
     forgetRequestPaused(networkRequestId: NetworkRequestId): void;
@@ -65,6 +80,13 @@ export declare class NetworkEventManager {
     getRequest(networkRequestId: NetworkRequestId): CdpHTTPRequest | undefined;
     storeRequest(networkRequestId: NetworkRequestId, request: CdpHTTPRequest): void;
     forgetRequest(networkRequestId: NetworkRequestId): void;
+    /**
+     * With request interception enabled, Network.loadingFailed can arrive before
+     * the Fetch.requestPaused event that creates the request. The failure is
+     * kept with the stored requestWillBeSent event until then, so that
+     * `requestfailed` is not lost.
+     */
+    storeLoadingFailedBeforeRequest(networkRequestId: NetworkRequestId, event: Protocol.Network.LoadingFailedEvent, client: CDPSession): void;
     getQueuedEventGroup(networkRequestId: NetworkRequestId): QueuedEventGroup | undefined;
     queueEventGroup(networkRequestId: NetworkRequestId, event: QueuedEventGroup): void;
     forgetQueuedEventGroup(networkRequestId: NetworkRequestId): void;

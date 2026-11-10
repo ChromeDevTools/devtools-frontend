@@ -1,15 +1,15 @@
-var cache;
-function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = {  default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
+var e;
+function _interopRequireWildcard(t, r) { if (!r && t && t.__esModule) return t; var n, a, o = Object.defineProperty, f = {  default: t }; if (Object(t) !== t) return f; if (e || "function" != typeof WeakMap || (e = new WeakMap()), e) { if (e.has(t)) return e.get(t); e.set(t, f); } for (a in t) "default" !== a && {}.hasOwnProperty.call(t, a) && ((n = o && Object.getOwnPropertyDescriptor(t, a)) && (n.get || n.set) ? o(f, a, n) : f[a] = t[a]); return f; }
 function _checkInRHS(e) { if (Object(e) !== e) throw TypeError("right-hand side of 'in' should be an object, got " + (null !== e ? typeof e : "null")); return e; }
-function _classPrivateGetter(s, r, a) { return a(_assertClassBrand(s, r)); }
-function _classPrivateMethodInitSpec(e, a) { _checkPrivateRedeclaration(e, a), a.add(e); }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
+function _classPrivateGetter(t, e, a) { return a(_assertClassBrand(t, e)); }
+function _classPrivateMethodInitSpec(t, a) { _checkPrivateRedeclaration(t, a), a.add(t); }
+function _defineProperty(r, t, o) { return (t = _toPropertyKey(t)) in r ? Object.defineProperty(r, t, { value: o, enumerable: !0, configurable: !0, writable: !0 }) : r[t] = o, r; }
+function _toPropertyKey(r) { var o = _toPrimitive(r, "string"); return "symbol" == typeof o ? o : o + ""; }
 function _toPrimitive(t, e) { if ("object" != typeof t || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); }
-function _classPrivateFieldInitSpec(e, t, a) { _checkPrivateRedeclaration(e, t), t.set(e, a); }
+function _classPrivateFieldInitSpec(t, i, a) { _checkPrivateRedeclaration(t, i), i.set(t, a); }
 function _checkPrivateRedeclaration(e, t) { if (t.has(e)) throw new TypeError("Cannot initialize the same private elements twice on an object"); }
-function _classPrivateFieldGet(s, a) { return s.get(_assertClassBrand(s, a)); }
-function _classPrivateFieldSet(s, a, r) { return s.set(_assertClassBrand(s, a), r), r; }
+function _classPrivateFieldGet(e, r) { return e.get(_assertClassBrand(e, r)); }
+function _classPrivateFieldSet(e, r, s) { return e.set(_assertClassBrand(e, r), s), s; }
 function _assertClassBrand(e, t, n) { if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n; throw new TypeError("Private element is not present on this object"); }
 var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Class2_brand, _i3, _n2, _t3, _e2, _s2, _l2, _PuppeteerURL, _LazyArg, _ARIAQueryHandler) {
   'use strict';
@@ -1896,14 +1896,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return active < concurrent ? doInnerSub(value) : buffer.push(value);
     };
     var doInnerSub = function (value) {
-      expand && subscriber.next(value);
       active++;
       var innerComplete = false;
       innerFrom(project(value, index++)).subscribe(createOperatorSubscriber(subscriber, function (innerValue) {
-        onBeforeNext === null || onBeforeNext === void 0 ? void 0 : onBeforeNext(innerValue);
-        if (expand) {
-          outerNext(innerValue);
-        } else {
+        {
           subscriber.next(innerValue);
         }
       }, function () {
@@ -1932,9 +1928,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       isComplete = true;
       checkComplete();
     }));
-    return function () {
-      additionalFinalizer === null || additionalFinalizer === void 0 ? void 0 : additionalFinalizer();
-    };
+    return function () {};
   }
 
   // node_modules/rxjs/dist/esm5/internal/operators/mergeMap.js
@@ -2246,23 +2240,6 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         return new EmptyError();
       }));
     };
-  }
-
-  // node_modules/rxjs/dist/esm5/internal/operators/mergeScan.js
-  function mergeScan(accumulator, seed, concurrent) {
-    if (concurrent === void 0) {
-      concurrent = Infinity;
-    }
-    return operate(function (source, subscriber) {
-      var state = seed;
-      return mergeInternals(source, subscriber, function (value, index) {
-        return accumulator(state, value, index);
-      }, concurrent, function (value) {
-        state = value;
-      }, false, void 0, function () {
-        return state = null;
-      });
-    });
   }
 
   // node_modules/rxjs/dist/esm5/internal/operators/raceWith.js
@@ -3117,8 +3094,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      * @returns `this` to enable you to chain method calls.
      */
     once(type, handler) {
-      const onceHandler = eventData => {
-        handler(eventData);
+      const onceHandler = (...args) => {
+        handler(...args);
         this.off(type, onceHandler);
       };
       return this.on(type, onceHandler);
@@ -4187,7 +4164,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.16.0';
+  const packageVersion = '25.17.0';
   // x-release-please-end
 
   /**
@@ -4386,6 +4363,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     };
     const site = new Error().stack;
     Error.prepareStackTrace = original;
+    if (!site) {
+      return object;
+    }
     return Object.assign(object, {
       [SOURCE_URL]: PuppeteerURL.fromCallSite(functionName, site)
     });
@@ -4453,9 +4433,25 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   async function getReadableAsTypedArray(readable, path, logger) {
     const buffers = [];
     const reader = readable.getReader();
-    if (path) {
-      const fileHandle = await environment.value.openFileForWriting(path);
-      try {
+    try {
+      if (path) {
+        const fileHandle = await environment.value.openFileForWriting(path);
+        try {
+          while (true) {
+            const {
+              done,
+              value
+            } = await reader.read();
+            if (done) {
+              break;
+            }
+            buffers.push(value);
+            await fileHandle.writeFile(value);
+          }
+        } finally {
+          await fileHandle.close();
+        }
+      } else {
         while (true) {
           const {
             done,
@@ -4465,22 +4461,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             break;
           }
           buffers.push(value);
-          await fileHandle.writeFile(value);
         }
-      } finally {
-        await fileHandle.close();
       }
-    } else {
-      while (true) {
-        const {
-          done,
-          value
-        } = await reader.read();
-        if (done) {
-          break;
-        }
-        buffers.push(value);
-      }
+    } catch (error) {
+      // Release the underlying stream (e.g. the protocol stream handle) if
+      // the stream was not read to the end.
+      await reader.cancel().catch(() => {});
+      throw error;
     }
     try {
       const concat = mergeUint8Arrays(buffers);
@@ -4512,6 +4499,15 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             handle
           });
           controller.close();
+        }
+      },
+      async cancel() {
+        try {
+          await client.send('IO.close', {
+            handle
+          });
+        } catch {
+          // The stream or the session can be closed already.
         }
       }
     });
@@ -7531,10 +7527,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      *
      * @public
      */
-    map(mapper) {
+    map(mapper, ...args) {
       return new MappedLocator(this._clone(), handle => {
         // SAFETY: TypeScript cannot deduce the type.
-        return handle.evaluateHandle(mapper);
+        return handle.evaluateHandle(mapper, ...args);
       });
     }
     /**
@@ -7544,12 +7540,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      *
      * @public
      */
-    filter(predicate) {
+    filter(predicate, ...args) {
       return new FilteredLocator(this._clone(), async (handle, signal) => {
         await handle.frame.waitForFunction(predicate, {
           signal,
           timeout: this._timeout
-        }, handle);
+        }, handle, ...args);
         return true;
       });
     }
@@ -11116,7 +11112,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    */
   function headersInputToRecord(headers) {
     return Object.fromEntries(Object.entries(normalizeHeadersInput(headers)).map(([key, value]) => {
-      return [key, Array.isArray(value) ? value.join(', ') : value];
+      const normalizedValue = Array.isArray(value) ? value.join(', ') : value;
+      if (/[\r\n]/.test(key) || /[\r\n]/.test(normalizedValue)) {
+        throw new Error(`Invalid header: CRLF characters are not allowed in header names or values (header: "${key}").`);
+      }
+      return [key, normalizedValue];
     }));
   }
   /**
@@ -12201,17 +12201,22 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         _classPrivateFieldInitSpec(this, _screencastSessionCount, 0);
         _classPrivateFieldInitSpec(this, _startScreencastPromise, void 0);
         this.logger = logger;
-        fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(mergeMap(originalRequest => {
-          return concat(of(1), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
-            return response.request();
-          }))).pipe(filter(request => {
-            return request.id === originalRequest.id;
-          }), take(1), map(() => {
-            return -1;
-          })));
-        }), mergeScan((acc, addend) => {
-          return of(acc + addend);
-        }, 0), takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), startWith(0)).subscribe(_classPrivateFieldGet(_inflight$, this));
+        // Pending requests by id, so that each event is handled in O(1) instead of
+        // being checked against every request that is still in flight.
+        const pending = new Map();
+        let inflight = 0;
+        merge(fromEmitterEvent(this, "request" /* PageEvent.Request */).pipe(map(request => {
+          pending.set(request.id, (pending.get(request.id) ?? 0) + 1);
+          return ++inflight;
+        })), merge(fromEmitterEvent(this, "requestfailed" /* PageEvent.RequestFailed */), fromEmitterEvent(this, "requestfinished" /* PageEvent.RequestFinished */), fromEmitterEvent(this, "response" /* PageEvent.Response */).pipe(map(response => {
+          return response.request();
+        }))).pipe(filter(request => {
+          return pending.has(request.id);
+        }), map(request => {
+          inflight -= pending.get(request.id) ?? 0;
+          pending.delete(request.id);
+          return inflight;
+        }))).pipe(takeUntil(fromEmitterEvent(this, "close" /* PageEvent.Close */)), startWith(0)).subscribe(_classPrivateFieldGet(_inflight$, this));
       }
       /**
        * Listen to page events.
@@ -12231,7 +12236,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         if (wrapper === undefined) {
           wrapper = event => {
             event.enqueueInterceptAction(() => {
-              return handler(event);
+              return handler(event, undefined);
             });
           };
           _classPrivateFieldGet(_requestHandlers, this).set(handler, wrapper);
@@ -13576,7 +13581,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  const supportedMetrics$1 = new Set(['Timestamp', 'Documents', 'Frames', 'JSEventListeners', 'Nodes', 'LayoutCount', 'RecalcStyleCount', 'LayoutDuration', 'RecalcStyleDuration', 'ScriptDuration', 'TaskDuration', 'JSHeapUsedSize', 'JSHeapTotalSize']);
+  const supportedMetrics = new Set(['Timestamp', 'Documents', 'Frames', 'JSEventListeners', 'Nodes', 'LayoutCount', 'RecalcStyleCount', 'LayoutDuration', 'RecalcStyleDuration', 'ScriptDuration', 'TaskDuration', 'JSHeapUsedSize', 'JSHeapTotalSize', 'DomContentLoaded', 'NavigationStart']);
   /** @see https://w3c.github.io/webdriver-bidi/#normalize-rect */
   function normalizeRectangle(clip) {
     return {
@@ -14768,6 +14773,16 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return nodeById.values().next().value ?? null;
     }
   }
+
+  /**
+   * @license
+   * Copyright 2020 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * ConsoleMessage objects are dispatched by page via the 'console' event.
+   * @public
+   */
   function _isPlainTextField() {
     if (_classPrivateFieldGet(_richlyEditable, this)) {
       return false;
@@ -14793,213 +14808,6 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return _classPrivateFieldGet(_cachedHasFocusableChild, this);
   }
-  var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
-    if (value !== null && value !== void 0) {
-      if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose, inner;
-      if (async) {
-        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
-        dispose = value[Symbol.asyncDispose];
-      }
-      if (dispose === void 0) {
-        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
-        dispose = value[Symbol.dispose];
-        if (async) inner = dispose;
-      }
-      if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
-      if (inner) dispose = function () {
-        try {
-          inner.call(this);
-        } catch (e) {
-          return Promise.reject(e);
-        }
-      };
-      env.stack.push({
-        value: value,
-        dispose: dispose,
-        async: async
-      });
-    } else if (async) {
-      env.stack.push({
-        async: true
-      });
-    }
-    return value;
-  };
-  var __disposeResources$4 = undefined && undefined.__disposeResources || function (SuppressedError) {
-    return function (env) {
-      function fail(e) {
-        env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
-        env.hasError = true;
-      }
-      var r,
-        s = 0;
-      function next() {
-        while (r = env.stack.pop()) {
-          try {
-            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
-            if (r.dispose) {
-              var result = r.dispose.call(r.value);
-              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
-                fail(e);
-                return next();
-              });
-            } else s |= 1;
-          } catch (e) {
-            fail(e);
-          }
-        }
-        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
-        if (env.hasError) throw env.error;
-      }
-      return next();
-    };
-  }(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-    var e = new Error(message);
-    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-  });
-  /**
-   * @internal
-   */
-  var _name3 = /*#__PURE__*/new WeakMap();
-  var _fn2 = /*#__PURE__*/new WeakMap();
-  var _initSource = /*#__PURE__*/new WeakMap();
-  var _logger7 = /*#__PURE__*/new WeakMap();
-  class Binding {
-    constructor(name, fn, initSource, logger) {
-      _classPrivateFieldInitSpec(this, _name3, void 0);
-      _classPrivateFieldInitSpec(this, _fn2, void 0);
-      _classPrivateFieldInitSpec(this, _initSource, void 0);
-      _classPrivateFieldInitSpec(this, _logger7, void 0);
-      _classPrivateFieldSet(_name3, this, name);
-      _classPrivateFieldSet(_fn2, this, fn);
-      _classPrivateFieldSet(_initSource, this, initSource);
-      _classPrivateFieldSet(_logger7, this, logger);
-    }
-    get name() {
-      return _classPrivateFieldGet(_name3, this);
-    }
-    get initSource() {
-      return _classPrivateFieldGet(_initSource, this);
-    }
-    /**
-     * @param context - Context to run the binding in; the context should have
-     * the binding added to it beforehand.
-     * @param id - ID of the call. This should come from the CDP
-     * `onBindingCalled` response.
-     * @param args - Plain arguments from CDP.
-     */
-    async run(context, id, args, isTrivial) {
-      const stack = new DisposableStack();
-      try {
-        if (!isTrivial) {
-          const env_1 = {
-            stack: [],
-            error: void 0,
-            hasError: false
-          };
-          try {
-            // Getting non-trivial arguments.
-            const handles = __addDisposableResource$4(env_1, await context.evaluateHandle((name, seq) => {
-              // @ts-expect-error Code is evaluated in a different context.
-              return globalThis[name].args.get(seq);
-            }, _classPrivateFieldGet(_name3, this), id), false);
-            const properties = await handles.getProperties();
-            for (const [index, handle] of properties) {
-              // This is not straight-forward since some arguments can stringify, but
-              // aren't plain objects so add subtypes when the use-case arises.
-              if (index in args) {
-                switch (handle.remoteObject().subtype) {
-                  case 'node':
-                    args[+index] = handle;
-                    break;
-                  default:
-                    stack.use(handle);
-                }
-              } else {
-                stack.use(handle);
-              }
-            }
-          } catch (e_1) {
-            env_1.error = e_1;
-            env_1.hasError = true;
-          } finally {
-            __disposeResources$4(env_1);
-          }
-        }
-        await context.evaluate((name, seq, result) => {
-          // @ts-expect-error Code is evaluated in a different context.
-          const callbacks = globalThis[name].callbacks;
-          callbacks.get(seq).resolve(result);
-          callbacks.delete(seq);
-        }, _classPrivateFieldGet(_name3, this), id, await _classPrivateFieldGet(_fn2, this).call(this, ...args));
-        for (const arg of args) {
-          if (arg instanceof JSHandle) {
-            stack.use(arg);
-          }
-        }
-      } catch (error) {
-        if (isErrorLike(error)) {
-          await context.evaluate((name, seq, message, stack) => {
-            const error = new Error(message);
-            error.stack = stack;
-            // @ts-expect-error Code is evaluated in a different context.
-            const callbacks = globalThis[name].callbacks;
-            callbacks.get(seq).reject(error);
-            callbacks.delete(seq);
-          }, _classPrivateFieldGet(_name3, this), id, error.message, error.stack).catch(error => {
-            _classPrivateFieldGet(_logger7, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
-          });
-        } else {
-          await context.evaluate((name, seq, error) => {
-            // @ts-expect-error Code is evaluated in a different context.
-            const callbacks = globalThis[name].callbacks;
-            callbacks.get(seq).reject(error);
-            callbacks.delete(seq);
-          }, _classPrivateFieldGet(_name3, this), id, error).catch(error => {
-            _classPrivateFieldGet(_logger7, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
-          });
-        }
-      }
-    }
-  }
-
-  /**
-   * @internal
-   */
-  var _connection = /*#__PURE__*/new WeakMap();
-  class CdpBluetoothEmulation {
-    constructor(connection) {
-      _classPrivateFieldInitSpec(this, _connection, void 0);
-      _classPrivateFieldSet(_connection, this, connection);
-    }
-    async emulateAdapter(state, leSupported = true) {
-      // Bluetooth spec requires overriding the existing adapter (step 6). From the CDP
-      // perspective, it means disabling the emulation first.
-      // https://webbluetoothcg.github.io/web-bluetooth/#bluetooth-simulateAdapter-command
-      await _classPrivateFieldGet(_connection, this).send('BluetoothEmulation.disable');
-      await _classPrivateFieldGet(_connection, this).send('BluetoothEmulation.enable', {
-        state,
-        leSupported
-      });
-    }
-    async disableEmulation() {
-      await _classPrivateFieldGet(_connection, this).send('BluetoothEmulation.disable');
-    }
-    async simulatePreconnectedPeripheral(preconnectedPeripheral) {
-      await _classPrivateFieldGet(_connection, this).send('BluetoothEmulation.simulatePreconnectedPeripheral', preconnectedPeripheral);
-    }
-  }
-
-  /**
-   * @license
-   * Copyright 2020 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * ConsoleMessage objects are dispatched by page via the 'console' event.
-   * @public
-   */
   var _type2 = /*#__PURE__*/new WeakMap();
   var _text = /*#__PURE__*/new WeakMap();
   var _args2 = /*#__PURE__*/new WeakMap();
@@ -15104,6 +14912,443 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      */
     _targetId() {
       return _classPrivateFieldGet(_targetId, this);
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2017 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * @internal
+   */
+  function createConsoleMessage(event, values, targetId, frame, worker) {
+    const textTokens = [];
+    // eslint-disable-next-line max-len -- The comment is long.
+    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+    for (const arg of values) {
+      // `join()` would turn `null` and `undefined` into empty strings.
+      textTokens.push(String(valueFromJSHandle(arg)));
+    }
+    const stackTraceLocations = [];
+    if (event.stackTrace) {
+      for (const callFrame of event.stackTrace.callFrames) {
+        stackTraceLocations.push({
+          url: callFrame.url,
+          lineNumber: callFrame.lineNumber,
+          columnNumber: callFrame.columnNumber,
+          scriptId: callFrame.scriptId
+        });
+      }
+    }
+    return new ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, frame, event.stackTrace, targetId, worker);
+  }
+  /**
+   * @internal
+   */
+  function createEvaluationError(details) {
+    let name;
+    let message;
+    if (!details.exception) {
+      name = 'Error';
+      message = details.text;
+    } else if ((details.exception.type !== 'object' || details.exception.subtype !== 'error') && !details.exception.objectId) {
+      return valueFromPrimitiveRemoteObject(details.exception);
+    } else {
+      const detail = getErrorDetails(details);
+      name = detail.name;
+      message = detail.message;
+    }
+    const messageHeight = message.split('\n').length;
+    const error = new Error(message);
+    error.name = name;
+    const stackLines = error.stack.split('\n');
+    const messageLines = stackLines.splice(0, messageHeight);
+    // The first line is this function which we ignore.
+    stackLines.shift();
+    if (details.stackTrace && stackLines.length < Error.stackTraceLimit) {
+      for (const frame of details.stackTrace.callFrames.reverse()) {
+        if (PuppeteerURL.isPuppeteerURL(frame.url) && frame.url !== PuppeteerURL.INTERNAL_URL) {
+          const url = PuppeteerURL.parse(frame.url);
+          stackLines.unshift(`    at ${frame.functionName || url.functionName} (${url.functionName} at ${url.siteString}, <anonymous>:${frame.lineNumber}:${frame.columnNumber})`);
+        } else {
+          stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber}:${frame.columnNumber})`);
+        }
+        if (stackLines.length >= Error.stackTraceLimit) {
+          break;
+        }
+      }
+    }
+    error.stack = [...messageLines, ...stackLines].join('\n');
+    return error;
+  }
+  const getErrorDetails = details => {
+    let name = '';
+    let message;
+    const lines = details.exception?.description?.split('\n    at ') ?? [];
+    const size = Math.min(details.stackTrace?.callFrames.length ?? 0, lines.length - 1);
+    lines.splice(-size, size);
+    if (details.exception?.className) {
+      name = details.exception.className;
+    }
+    message = lines.join('\n');
+    if (name && message.startsWith(`${name}: `)) {
+      message = message.slice(name.length + 2);
+    }
+    return {
+      message,
+      name
+    };
+  };
+  /**
+   * @internal
+   */
+  function createClientError(details) {
+    let name;
+    let message;
+    if (!details.exception) {
+      name = 'Error';
+      message = details.text;
+    } else if ((details.exception.type !== 'object' || details.exception.subtype !== 'error') && !details.exception.objectId) {
+      return valueFromPrimitiveRemoteObject(details.exception);
+    } else {
+      const detail = getErrorDetails(details);
+      name = detail.name;
+      message = detail.message;
+    }
+    const error = new Error(message);
+    error.name = name;
+    const messageHeight = error.message.split('\n').length;
+    const messageLines = error.stack.split('\n').splice(0, messageHeight);
+    const stackLines = [];
+    if (details.stackTrace) {
+      for (const frame of details.stackTrace.callFrames) {
+        // Note we need to add `1` because the values are 0-indexed.
+        stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber + 1}:${frame.columnNumber + 1})`);
+        if (stackLines.length >= Error.stackTraceLimit) {
+          break;
+        }
+      }
+    }
+    error.stack = [...messageLines, ...stackLines].join('\n');
+    return error;
+  }
+  /**
+   * @internal
+   */
+  function valueFromJSHandle(handle) {
+    const remoteObject = handle.remoteObject();
+    if (remoteObject.objectId) {
+      return valueFromRemoteObjectReference(handle);
+    } else {
+      return valueFromPrimitiveRemoteObject(remoteObject);
+    }
+  }
+  /**
+   * @internal
+   */
+  function valueFromRemoteObjectReference(handle) {
+    const remoteObject = handle.remoteObject();
+    assert(remoteObject.objectId, 'Cannot extract value when no objectId is given');
+    const description = remoteObject.description ?? '';
+    if (remoteObject.subtype === 'error' && description) {
+      const newlineIdx = description.indexOf('\n');
+      if (newlineIdx === -1) {
+        return description;
+      }
+      return description.slice(0, newlineIdx);
+    }
+    return `[${remoteObject.subtype || remoteObject.type} ${remoteObject.className}]`;
+  }
+  /**
+   * @internal
+   */
+  function valueFromPrimitiveRemoteObject(remoteObject) {
+    assert(!remoteObject.objectId, 'Cannot extract value when objectId is given');
+    if (remoteObject.unserializableValue) {
+      if (remoteObject.type === 'bigint') {
+        return BigInt(remoteObject.unserializableValue.replace('n', ''));
+      }
+      switch (remoteObject.unserializableValue) {
+        case '-0':
+          return -0;
+        case 'NaN':
+          return NaN;
+        case 'Infinity':
+          return Infinity;
+        case '-Infinity':
+          return -Infinity;
+        default:
+          throw new Error('Unsupported unserializable value: ' + remoteObject.unserializableValue);
+      }
+    }
+    return remoteObject.value;
+  }
+  /**
+   * @internal
+   */
+  function addPageBinding(type, name, prefix) {
+    // Depending on the frame loading state either Runtime.evaluate or
+    // Page.addScriptToEvaluateOnNewDocument might succeed. Let's check that we
+    // don't re-wrap Puppeteer's binding.
+    // @ts-expect-error: In a different context.
+    if (globalThis[name]) {
+      return;
+    }
+    // We replace the CDP binding with a Puppeteer binding.
+    Object.assign(globalThis, {
+      [name](...args) {
+        // This is the Puppeteer binding.
+        // @ts-expect-error: In a different context.
+        // Needs to be the same as CDP_BINDING_PREFIX.
+        const callPuppeteer = globalThis[prefix + name];
+        callPuppeteer.args ??= new Map();
+        callPuppeteer.callbacks ??= new Map();
+        const seq = (callPuppeteer.lastSeq ?? 0) + 1;
+        callPuppeteer.lastSeq = seq;
+        callPuppeteer.args.set(seq, args);
+        callPuppeteer(JSON.stringify({
+          type,
+          name,
+          seq,
+          args,
+          isTrivial: !args.some(value => {
+            return value instanceof Node;
+          })
+        }));
+        return new Promise((resolve, reject) => {
+          callPuppeteer.callbacks.set(seq, {
+            resolve(value) {
+              callPuppeteer.args.delete(seq);
+              resolve(value);
+            },
+            reject(value) {
+              callPuppeteer.args.delete(seq);
+              reject(value);
+            }
+          });
+        });
+      }
+    });
+  }
+  /**
+   * @internal
+   */
+  const CDP_BINDING_PREFIX = 'puppeteer_';
+  /**
+   * @internal
+   */
+  function pageBindingInitString(type, name) {
+    return evaluationString(addPageBinding, type, name, CDP_BINDING_PREFIX);
+  }
+  /**
+   * @internal
+   */
+  function convertConsoleMessageLevel(method) {
+    switch (method) {
+      case 'warning':
+        return 'warn';
+      default:
+        return method;
+    }
+  }
+  var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+      if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+      var dispose, inner;
+      if (async) {
+        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+        dispose = value[Symbol.asyncDispose];
+      }
+      if (dispose === void 0) {
+        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+        dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
+      }
+      if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
+      env.stack.push({
+        value: value,
+        dispose: dispose,
+        async: async
+      });
+    } else if (async) {
+      env.stack.push({
+        async: true
+      });
+    }
+    return value;
+  };
+  var __disposeResources$4 = undefined && undefined.__disposeResources || function (SuppressedError) {
+    return function (env) {
+      function fail(e) {
+        env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+        env.hasError = true;
+      }
+      var r,
+        s = 0;
+      function next() {
+        while (r = env.stack.pop()) {
+          try {
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
+          } catch (e) {
+            fail(e);
+          }
+        }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
+        if (env.hasError) throw env.error;
+      }
+      return next();
+    };
+  }(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+  });
+  /**
+   * @internal
+   */
+  var _name3 = /*#__PURE__*/new WeakMap();
+  var _fn2 = /*#__PURE__*/new WeakMap();
+  var _initSource = /*#__PURE__*/new WeakMap();
+  var _logger7 = /*#__PURE__*/new WeakMap();
+  class Binding {
+    constructor(name, fn, initSource, logger) {
+      _classPrivateFieldInitSpec(this, _name3, void 0);
+      _classPrivateFieldInitSpec(this, _fn2, void 0);
+      _classPrivateFieldInitSpec(this, _initSource, void 0);
+      _classPrivateFieldInitSpec(this, _logger7, void 0);
+      _classPrivateFieldSet(_name3, this, name);
+      _classPrivateFieldSet(_fn2, this, fn);
+      _classPrivateFieldSet(_initSource, this, initSource);
+      _classPrivateFieldSet(_logger7, this, logger);
+    }
+    get name() {
+      return _classPrivateFieldGet(_name3, this);
+    }
+    get initSource() {
+      return _classPrivateFieldGet(_initSource, this);
+    }
+    /**
+     * @param context - Context to run the binding in; the context should have
+     * the binding added to it beforehand.
+     * @param id - ID of the call. This should come from the CDP
+     * `onBindingCalled` response.
+     * @param args - Plain arguments from CDP.
+     */
+    async run(context, id, args, isTrivial) {
+      const stack = new DisposableStack();
+      const cdpName = CDP_BINDING_PREFIX + _classPrivateFieldGet(_name3, this);
+      try {
+        if (!isTrivial) {
+          const env_1 = {
+            stack: [],
+            error: void 0,
+            hasError: false
+          };
+          try {
+            // Getting non-trivial arguments.
+            const handles = __addDisposableResource$4(env_1, await context.evaluateHandle((name, seq) => {
+              // @ts-expect-error Code is evaluated in a different context.
+              return globalThis[name].args.get(seq);
+            }, cdpName, id), false);
+            const properties = await handles.getProperties();
+            for (const [index, handle] of properties) {
+              // This is not straight-forward since some arguments can stringify, but
+              // aren't plain objects so add subtypes when the use-case arises.
+              if (index in args) {
+                switch (handle.remoteObject().subtype) {
+                  case 'node':
+                    args[+index] = handle;
+                    break;
+                  default:
+                    stack.use(handle);
+                }
+              } else {
+                stack.use(handle);
+              }
+            }
+          } catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+          } finally {
+            __disposeResources$4(env_1);
+          }
+        }
+        await context.evaluate((name, seq, result) => {
+          // @ts-expect-error Code is evaluated in a different context.
+          const callbacks = globalThis[name].callbacks;
+          callbacks.get(seq).resolve(result);
+          callbacks.delete(seq);
+        }, cdpName, id, await _classPrivateFieldGet(_fn2, this).call(this, ...args));
+        for (const arg of args) {
+          if (arg instanceof JSHandle) {
+            stack.use(arg);
+          }
+        }
+      } catch (error) {
+        if (isErrorLike(error)) {
+          await context.evaluate((name, seq, message, stack) => {
+            const error = new Error(message);
+            error.stack = stack;
+            // @ts-expect-error Code is evaluated in a different context.
+            const callbacks = globalThis[name].callbacks;
+            callbacks.get(seq).reject(error);
+            callbacks.delete(seq);
+          }, cdpName, id, error.message, error.stack).catch(error => {
+            _classPrivateFieldGet(_logger7, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+          });
+        } else {
+          await context.evaluate((name, seq, error) => {
+            // @ts-expect-error Code is evaluated in a different context.
+            const callbacks = globalThis[name].callbacks;
+            callbacks.get(seq).reject(error);
+            callbacks.delete(seq);
+          }, cdpName, id, error).catch(error => {
+            _classPrivateFieldGet(_logger7, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * @internal
+   */
+  var _connection = /*#__PURE__*/new WeakMap();
+  class CdpBluetoothEmulation {
+    constructor(connection) {
+      _classPrivateFieldInitSpec(this, _connection, void 0);
+      _classPrivateFieldSet(_connection, this, connection);
+    }
+    async emulateAdapter(state, leSupported = true) {
+      // Bluetooth spec requires overriding the existing adapter (step 6). From the CDP
+      // perspective, it means disabling the emulation first.
+      // https://webbluetoothcg.github.io/web-bluetooth/#bluetooth-simulateAdapter-command
+      await _classPrivateFieldGet(_connection, this).send('BluetoothEmulation.disable');
+      await _classPrivateFieldGet(_connection, this).send('BluetoothEmulation.enable', {
+        state,
+        leSupported
+      });
+    }
+    async disableEmulation() {
+      await _classPrivateFieldGet(_connection, this).send('BluetoothEmulation.disable');
+    }
+    async simulatePreconnectedPeripheral(preconnectedPeripheral) {
+      await _classPrivateFieldGet(_connection, this).send('BluetoothEmulation.simulatePreconnectedPeripheral', preconnectedPeripheral);
     }
   }
 
@@ -16892,244 +17137,6 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     FrameManagerEvent.ConsoleApiCalled = Symbol('FrameManager.ConsoleApiCalled');
     FrameManagerEvent.BindingCalled = Symbol('FrameManager.BindingCalled');
   })(exports.FrameManagerEvent || (exports.FrameManagerEvent = {}));
-
-  /**
-   * @license
-   * Copyright 2017 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * @internal
-   */
-  function createConsoleMessage(event, values, targetId, frame, worker) {
-    const textTokens = [];
-    // eslint-disable-next-line max-len -- The comment is long.
-    // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
-    for (const arg of values) {
-      textTokens.push(valueFromJSHandle(arg));
-    }
-    const stackTraceLocations = [];
-    if (event.stackTrace) {
-      for (const callFrame of event.stackTrace.callFrames) {
-        stackTraceLocations.push({
-          url: callFrame.url,
-          lineNumber: callFrame.lineNumber,
-          columnNumber: callFrame.columnNumber
-        });
-      }
-    }
-    return new ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, frame, event.stackTrace, targetId, worker);
-  }
-  /**
-   * @internal
-   */
-  function createEvaluationError(details) {
-    let name;
-    let message;
-    if (!details.exception) {
-      name = 'Error';
-      message = details.text;
-    } else if ((details.exception.type !== 'object' || details.exception.subtype !== 'error') && !details.exception.objectId) {
-      return valueFromPrimitiveRemoteObject(details.exception);
-    } else {
-      const detail = getErrorDetails(details);
-      name = detail.name;
-      message = detail.message;
-    }
-    const messageHeight = message.split('\n').length;
-    const error = new Error(message);
-    error.name = name;
-    const stackLines = error.stack.split('\n');
-    const messageLines = stackLines.splice(0, messageHeight);
-    // The first line is this function which we ignore.
-    stackLines.shift();
-    if (details.stackTrace && stackLines.length < Error.stackTraceLimit) {
-      for (const frame of details.stackTrace.callFrames.reverse()) {
-        if (PuppeteerURL.isPuppeteerURL(frame.url) && frame.url !== PuppeteerURL.INTERNAL_URL) {
-          const url = PuppeteerURL.parse(frame.url);
-          stackLines.unshift(`    at ${frame.functionName || url.functionName} (${url.functionName} at ${url.siteString}, <anonymous>:${frame.lineNumber}:${frame.columnNumber})`);
-        } else {
-          stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber}:${frame.columnNumber})`);
-        }
-        if (stackLines.length >= Error.stackTraceLimit) {
-          break;
-        }
-      }
-    }
-    error.stack = [...messageLines, ...stackLines].join('\n');
-    return error;
-  }
-  const getErrorDetails = details => {
-    let name = '';
-    let message;
-    const lines = details.exception?.description?.split('\n    at ') ?? [];
-    const size = Math.min(details.stackTrace?.callFrames.length ?? 0, lines.length - 1);
-    lines.splice(-size, size);
-    if (details.exception?.className) {
-      name = details.exception.className;
-    }
-    message = lines.join('\n');
-    if (name && message.startsWith(`${name}: `)) {
-      message = message.slice(name.length + 2);
-    }
-    return {
-      message,
-      name
-    };
-  };
-  /**
-   * @internal
-   */
-  function createClientError(details) {
-    let name;
-    let message;
-    if (!details.exception) {
-      name = 'Error';
-      message = details.text;
-    } else if ((details.exception.type !== 'object' || details.exception.subtype !== 'error') && !details.exception.objectId) {
-      return valueFromPrimitiveRemoteObject(details.exception);
-    } else {
-      const detail = getErrorDetails(details);
-      name = detail.name;
-      message = detail.message;
-    }
-    const error = new Error(message);
-    error.name = name;
-    const messageHeight = error.message.split('\n').length;
-    const messageLines = error.stack.split('\n').splice(0, messageHeight);
-    const stackLines = [];
-    if (details.stackTrace) {
-      for (const frame of details.stackTrace.callFrames) {
-        // Note we need to add `1` because the values are 0-indexed.
-        stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber + 1}:${frame.columnNumber + 1})`);
-        if (stackLines.length >= Error.stackTraceLimit) {
-          break;
-        }
-      }
-    }
-    error.stack = [...messageLines, ...stackLines].join('\n');
-    return error;
-  }
-  /**
-   * @internal
-   */
-  function valueFromJSHandle(handle) {
-    const remoteObject = handle.remoteObject();
-    if (remoteObject.objectId) {
-      return valueFromRemoteObjectReference(handle);
-    } else {
-      return valueFromPrimitiveRemoteObject(remoteObject);
-    }
-  }
-  /**
-   * @internal
-   */
-  function valueFromRemoteObjectReference(handle) {
-    const remoteObject = handle.remoteObject();
-    assert(remoteObject.objectId, 'Cannot extract value when no objectId is given');
-    const description = remoteObject.description ?? '';
-    if (remoteObject.subtype === 'error' && description) {
-      const newlineIdx = description.indexOf('\n');
-      if (newlineIdx === -1) {
-        return description;
-      }
-      return description.slice(0, newlineIdx);
-    }
-    return `[${remoteObject.subtype || remoteObject.type} ${remoteObject.className}]`;
-  }
-  /**
-   * @internal
-   */
-  function valueFromPrimitiveRemoteObject(remoteObject) {
-    assert(!remoteObject.objectId, 'Cannot extract value when objectId is given');
-    if (remoteObject.unserializableValue) {
-      if (remoteObject.type === 'bigint') {
-        return BigInt(remoteObject.unserializableValue.replace('n', ''));
-      }
-      switch (remoteObject.unserializableValue) {
-        case '-0':
-          return -0;
-        case 'NaN':
-          return NaN;
-        case 'Infinity':
-          return Infinity;
-        case '-Infinity':
-          return -Infinity;
-        default:
-          throw new Error('Unsupported unserializable value: ' + remoteObject.unserializableValue);
-      }
-    }
-    return remoteObject.value;
-  }
-  /**
-   * @internal
-   */
-  function addPageBinding(type, name, prefix) {
-    // Depending on the frame loading state either Runtime.evaluate or
-    // Page.addScriptToEvaluateOnNewDocument might succeed. Let's check that we
-    // don't re-wrap Puppeteer's binding.
-    // @ts-expect-error: In a different context.
-    if (globalThis[name]) {
-      return;
-    }
-    // We replace the CDP binding with a Puppeteer binding.
-    Object.assign(globalThis, {
-      [name](...args) {
-        // This is the Puppeteer binding.
-        // @ts-expect-error: In a different context.
-        const callPuppeteer = globalThis[name];
-        callPuppeteer.args ??= new Map();
-        callPuppeteer.callbacks ??= new Map();
-        const seq = (callPuppeteer.lastSeq ?? 0) + 1;
-        callPuppeteer.lastSeq = seq;
-        callPuppeteer.args.set(seq, args);
-        // @ts-expect-error: In a different context.
-        // Needs to be the same as CDP_BINDING_PREFIX.
-        globalThis[prefix + name](JSON.stringify({
-          type,
-          name,
-          seq,
-          args,
-          isTrivial: !args.some(value => {
-            return value instanceof Node;
-          })
-        }));
-        return new Promise((resolve, reject) => {
-          callPuppeteer.callbacks.set(seq, {
-            resolve(value) {
-              callPuppeteer.args.delete(seq);
-              resolve(value);
-            },
-            reject(value) {
-              callPuppeteer.args.delete(seq);
-              reject(value);
-            }
-          });
-        });
-      }
-    });
-  }
-  /**
-   * @internal
-   */
-  const CDP_BINDING_PREFIX = 'puppeteer_';
-  /**
-   * @internal
-   */
-  function pageBindingInitString(type, name) {
-    return evaluationString(addPageBinding, type, name, CDP_BINDING_PREFIX);
-  }
-  /**
-   * @internal
-   */
-  function convertConsoleMessageLevel(method) {
-    switch (method) {
-      case 'warning':
-        return 'warn';
-      default:
-        return method;
-    }
-  }
 
   /**
    * @license
@@ -19305,6 +19312,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _initiator = /*#__PURE__*/new WeakMap();
   var _logger17 = /*#__PURE__*/new WeakMap();
   var _resolution = /*#__PURE__*/new WeakMap();
+  var _worker2 = /*#__PURE__*/new WeakMap();
   class CdpHTTPRequest extends HTTPRequest {
     get client() {
       return _classPrivateFieldGet(_client1, this);
@@ -19321,7 +19329,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     set _fetchClient(fetchClient) {
       _classPrivateFieldSet(_fetchClient, this, fetchClient);
     }
-    constructor(client, frame, interceptionId, allowInterception, data, redirectChain, logger, fetchClient = client) {
+    constructor(client, frame, worker, interceptionId, allowInterception, data, redirectChain, logger, fetchClient = client) {
       super();
       _defineProperty(this, "id", void 0);
       _classPrivateFieldInitSpec(this, _client1, void 0);
@@ -19339,6 +19347,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _initiator, void 0);
       _classPrivateFieldInitSpec(this, _logger17, void 0);
       _classPrivateFieldInitSpec(this, _resolution, null);
+      _classPrivateFieldInitSpec(this, _worker2, void 0);
       _classPrivateFieldSet(_logger17, this, logger);
       _classPrivateFieldSet(_client1, this, client);
       _classPrivateFieldSet(_fetchClient, this, fetchClient);
@@ -19363,6 +19372,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       _classPrivateFieldSet(_hasPostData, this, data.request.hasPostData ?? false);
       _classPrivateFieldSet(_frame4, this, frame);
+      _classPrivateFieldSet(_worker2, this, worker);
       this._redirectChain = redirectChain;
       _classPrivateFieldSet(_initiator, this, data.initiator);
       this.interception.enabled = allowInterception;
@@ -19417,6 +19427,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     response() {
       return this._response;
     }
+    page() {
+      return _classPrivateFieldGet(_frame4, this)?.page() ?? null;
+    }
+    worker() {
+      return _classPrivateFieldGet(_worker2, this);
+    }
     frame() {
       return _classPrivateFieldGet(_frame4, this);
     }
@@ -19438,7 +19454,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       };
     }
     canBeIntercepted() {
-      return !this.url().startsWith('data:') && !this._fromMemoryCache;
+      return !this.url().startsWith('data:') && !this._fromMemoryCache && Boolean(this._interceptionId);
     }
     /**
      * @internal
@@ -19652,6 +19668,97 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   }
 
   /**
+   * Streams the body of a response that is still loading, using
+   * `Network.streamResourceContent` for the data received so far and
+   * `Network.dataReceived` events for the rest.
+   *
+   * @internal
+   */
+  async function createResponseBodyStream(client, requestId) {
+    let controller;
+    // Events received before the buffered data is enqueued.
+    let pending = [];
+    const run = action => {
+      if (pending) {
+        pending.push(action);
+      } else {
+        action();
+      }
+    };
+    const onDataReceived = event => {
+      if (event.requestId !== requestId || !event.data) {
+        return;
+      }
+      const chunk = stringToTypedArray(event.data, true);
+      run(() => {
+        controller.enqueue(chunk);
+      });
+    };
+    const onLoadingFinished = event => {
+      if (event.requestId !== requestId) {
+        return;
+      }
+      cleanup();
+      run(() => {
+        controller.close();
+      });
+    };
+    const onLoadingFailed = event => {
+      if (event.requestId !== requestId) {
+        return;
+      }
+      cleanup();
+      run(() => {
+        controller.error(new Error(`Loading failed: ${event.errorText}`));
+      });
+    };
+    const onDisconnected = () => {
+      cleanup();
+      run(() => {
+        controller.error(new TargetCloseError('Session closed.'));
+      });
+    };
+    const cleanup = () => {
+      client.off('Network.dataReceived', onDataReceived);
+      client.off('Network.loadingFinished', onLoadingFinished);
+      client.off('Network.loadingFailed', onLoadingFailed);
+      client.off(exports.CDPSessionEvent.Disconnected, onDisconnected);
+    };
+    const stream = new ReadableStream({
+      start(streamController) {
+        controller = streamController;
+      },
+      cancel() {
+        cleanup();
+      }
+    });
+    client.on('Network.dataReceived', onDataReceived);
+    client.on('Network.loadingFinished', onLoadingFinished);
+    client.on('Network.loadingFailed', onLoadingFailed);
+    client.on(exports.CDPSessionEvent.Disconnected, onDisconnected);
+    let bufferedData;
+    try {
+      ({
+        bufferedData
+      } = await client.send('Network.streamResourceContent', {
+        requestId
+      }));
+    } catch (error) {
+      cleanup();
+      throw error;
+    }
+    if (bufferedData) {
+      controller.enqueue(stringToTypedArray(bufferedData, true));
+    }
+    const actions = pending;
+    pending = null;
+    for (const action of actions) {
+      action();
+    }
+    return stream;
+  }
+
+  /**
    * @internal
    */
   var _request = /*#__PURE__*/new WeakMap();
@@ -19665,6 +19772,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _headers3 = /*#__PURE__*/new WeakMap();
   var _securityDetails = /*#__PURE__*/new WeakMap();
   var _timing = /*#__PURE__*/new WeakMap();
+  var _encodedDataLength = /*#__PURE__*/new WeakMap();
   var _CdpHTTPResponse_brand = /*#__PURE__*/new WeakSet();
   class CdpHTTPResponse extends HTTPResponse {
     constructor(request, responsePayload, _extraInfo) {
@@ -19681,6 +19789,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _headers3, {});
       _classPrivateFieldInitSpec(this, _securityDetails, void 0);
       _classPrivateFieldInitSpec(this, _timing, void 0);
+      _classPrivateFieldInitSpec(this, _encodedDataLength, 0);
       _classPrivateFieldSet(_request, this, request);
       _classPrivateFieldSet(_remoteAddress, this, {
         ip: responsePayload.remoteIPAddress,
@@ -19699,6 +19808,15 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       _classPrivateFieldSet(_securityDetails, this, responsePayload.securityDetails ? new SecurityDetails(responsePayload.securityDetails) : null);
       _classPrivateFieldSet(_timing, this, responsePayload.timing || null);
+      this._setEncodedDataLength(responsePayload.encodedDataLength);
+    }
+    _setEncodedDataLength(encodedDataLength) {
+      // Chromium reports -1 when no data was transferred over the network (e.g.
+      // data: or file: URLs) or when the size is unknown (e.g. synchronous XHRs
+      // to data: URLs). Keep the last known value in that case, defaulting to 0.
+      if (encodedDataLength >= 0) {
+        _classPrivateFieldSet(_encodedDataLength, this, encodedDataLength);
+      }
     }
     _resolveBody(err) {
       if (err) {
@@ -19727,6 +19845,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     timing() {
       return _classPrivateFieldGet(_timing, this);
     }
+    encodedDataLength() {
+      return _classPrivateFieldGet(_encodedDataLength, this);
+    }
     content() {
       if (!_classPrivateFieldGet(_contentPromise, this)) {
         _classPrivateFieldSet(_contentPromise, this, _classPrivateFieldGet(_bodyLoadedDeferred, this).valueOrThrow().then(async () => {
@@ -19746,6 +19867,21 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         }));
       }
       return _classPrivateFieldGet(_contentPromise, this);
+    }
+    async stream() {
+      if (_classPrivateFieldGet(_bodyLoadedDeferred, this).finished()) {
+        return await _assertClassBrand(_CdpHTTPResponse_brand, this, _contentStream).call(this);
+      }
+      try {
+        // Use the request's client, as it might have been updated for an adopted
+        // OOPIF.
+        return await createResponseBodyStream(_classPrivateFieldGet(_request, this).client, _classPrivateFieldGet(_request, this).id);
+      } catch (error) {
+        if (error instanceof ProtocolError && error.originalMessage.includes('already finished loading')) {
+          return await _assertClassBrand(_CdpHTTPResponse_brand, this, _contentStream).call(this);
+        }
+        throw error;
+      }
     }
     request() {
       return _classPrivateFieldGet(_request, this);
@@ -19788,6 +19924,15 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return;
     }
     return statusText;
+  }
+  async function _contentStream() {
+    const content = await this.content();
+    return new ReadableStream({
+      start(controller) {
+        controller.enqueue(content);
+        controller.close();
+      }
+    });
   }
   var _requestWillBeSentMap = /*#__PURE__*/new WeakMap();
   var _requestPausedMap = /*#__PURE__*/new WeakMap();
@@ -19855,6 +20000,31 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldGet(_queuedRedirectInfoMap, this).delete(networkRequestId);
       _classPrivateFieldGet(_responseReceivedExtraInfoMap, this).delete(networkRequestId);
     }
+    /**
+     * Ids of the requests whose Network events come from `client`, both the
+     * ones already emitted and the ones still waiting for more events.
+     */
+    requestIdsForClient(client) {
+      const ids = new Set();
+      for (const [id, request] of _classPrivateFieldGet(_httpRequestsMap, this)) {
+        if (request.client === client) {
+          ids.add(id);
+        }
+      }
+      for (const [id, stored] of _classPrivateFieldGet(_requestWillBeSentMap, this)) {
+        if (stored.client === client) {
+          ids.add(id);
+        }
+      }
+      for (const [id, infos] of _classPrivateFieldGet(_queuedRedirectInfoMap, this)) {
+        if (infos.some(info => {
+          return info.client === client;
+        })) {
+          ids.add(id);
+        }
+      }
+      return ids;
+    }
     requestExtraInfo(networkRequestId) {
       if (!_classPrivateFieldGet(_requestWillBeSentExtraInfoMap, this).has(networkRequestId)) {
         _classPrivateFieldGet(_requestWillBeSentExtraInfoMap, this).set(networkRequestId, []);
@@ -19920,6 +20090,21 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     forgetRequest(networkRequestId) {
       _classPrivateFieldGet(_httpRequestsMap, this).delete(networkRequestId);
+    }
+    /**
+     * With request interception enabled, Network.loadingFailed can arrive before
+     * the Fetch.requestPaused event that creates the request. The failure is
+     * kept with the stored requestWillBeSent event until then, so that
+     * `requestfailed` is not lost.
+     */
+    storeLoadingFailedBeforeRequest(networkRequestId, event, client) {
+      const requestWillBeSent = _classPrivateFieldGet(_requestWillBeSentMap, this).get(networkRequestId);
+      if (requestWillBeSent) {
+        requestWillBeSent.loadingFailed = {
+          event,
+          client
+        };
+      }
     }
     getQueuedEventGroup(networkRequestId) {
       return _classPrivateFieldGet(_queuedEventGroupMap, this).get(networkRequestId);
@@ -20117,6 +20302,38 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   async function _removeClient(client) {
     _classPrivateFieldGet(_clients, this).get(client)?.dispose();
     _classPrivateFieldGet(_clients, this).delete(client);
+    // Only dedicated workers leave requests pending when their session goes
+    // away. The worker is still known here: the session is closed before the
+    // page handles the target detaching.
+    if (!_classPrivateFieldGet(_frameManager, this).worker(client)) {
+      return;
+    }
+    for (const requestId of _classPrivateFieldGet(_networkEventManager, this).requestIdsForClient(client)) {
+      if (client.connection()?._closed) {
+        _classPrivateFieldGet(_networkEventManager, this).forgetRequest(requestId);
+        _classPrivateFieldGet(_networkEventManager, this).forget(requestId);
+      } else {
+        _assertClassBrand(_NetworkManager_brand, this, _abortPendingWorkerRequest).call(this, requestId);
+      }
+    }
+  }
+  /**
+   * Chrome does not send `Network.loadingFailed` or `Network.loadingFinished`
+   * for requests that are still pending when a dedicated worker is
+   * terminated. Fail them so that listeners observe the end of the request
+   * and they no longer count as in flight (e.g. for `waitForNetworkIdle`).
+   */
+  function _abortPendingWorkerRequest(requestId) {
+    const request = _classPrivateFieldGet(_networkEventManager, this).getRequest(requestId);
+    if (!request) {
+      // The request was never surfaced (e.g. still waiting for
+      // `Fetch.requestPaused`), so only drop the buffered events.
+      _classPrivateFieldGet(_networkEventManager, this).forget(requestId);
+      return;
+    }
+    request._failureText = 'net::ERR_ABORTED';
+    _assertClassBrand(_NetworkManager_brand, this, _forgetRequest).call(this, request, true);
+    this.emit(exports.NetworkManagerEvent.RequestFailed, request);
   }
   async function _applyExtraHTTPHeaders(client) {
     if (_classPrivateFieldGet(_extraHTTPHeaders, this) === undefined) {
@@ -20244,6 +20461,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const {
         requestId: networkRequestId
       } = event;
+      const previousRequestWillBeSent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(networkRequestId);
+      if (previousRequestWillBeSent && event.redirectResponse) {
+        _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, previousRequestWillBeSent.client, previousRequestWillBeSent.event, undefined);
+      }
       _classPrivateFieldGet(_networkEventManager, this).storeRequestWillBeSent(networkRequestId, event, client);
       /**
        * CDP may have sent a Fetch.requestPaused event already. Check for it.
@@ -20332,7 +20553,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     // Redirect requests have the same `requestId`. Wait for the redirect's
     // own Network.requestWillBeSent.
     if (requestWillBeSentEvent.request.url !== event.request.url || requestWillBeSentEvent.request.method !== event.request.method) {
-      _classPrivateFieldGet(_networkEventManager, this).forgetRequestWillBeSent(networkRequestId);
+      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, networkClient, requestWillBeSentEvent, undefined);
       _classPrivateFieldGet(_networkEventManager, this).storeRequestPaused(networkRequestId, event, client);
       return;
     }
@@ -20376,11 +20597,19 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     // If an event has no networkId it should not have any network events. We
     // still want to dispatch it for the interception by the user.
     const frame = event.frameId ? _classPrivateFieldGet(_frameManager, this).frame(event.frameId) : null;
-    const request = new CdpHTTPRequest(client, frame, event.requestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, [], _classPrivateFieldGet(_logger18, this));
+    const worker = _classPrivateFieldGet(_frameManager, this).worker(client);
+    const request = new CdpHTTPRequest(client, frame, worker, event.requestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, [], _classPrivateFieldGet(_logger18, this));
     this.emit(exports.NetworkManagerEvent.Request, request);
     void request.finalizeInterceptions();
   }
   function _onRequest2(client, event, fetchRequestId, fetchClient = client, fromMemoryCache = false) {
+    // With request interception enabled, Network.loadingFailed may have
+    // arrived before the Fetch.requestPaused that created this request.
+    const storedRequestWillBeSent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(event.requestId);
+    const loadingFailed = storedRequestWillBeSent?.event === event ? storedRequestWillBeSent.loadingFailed : undefined;
+    if (storedRequestWillBeSent?.event === event) {
+      _classPrivateFieldGet(_networkEventManager, this).forgetRequestWillBeSent(event.requestId);
+    }
     let redirectChain = [];
     if (event.redirectResponse) {
       // We want to emit a response and requestfinished for the
@@ -20416,16 +20645,23 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
     }
     const frame = event.frameId ? _classPrivateFieldGet(_frameManager, this).frame(event.frameId) : null;
-    const request = new CdpHTTPRequest(client, frame, fetchRequestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, redirectChain, _classPrivateFieldGet(_logger18, this), fetchClient);
+    const worker = _classPrivateFieldGet(_frameManager, this).worker(client);
+    const request = new CdpHTTPRequest(client, frame, worker, fetchRequestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, redirectChain, _classPrivateFieldGet(_logger18, this), fetchClient);
     const extraInfo = _classPrivateFieldGet(_networkEventManager, this).requestExtraInfo(event.requestId).shift();
     if (extraInfo) {
       request.updateHeaders(extraInfo.headers);
     }
     request._fromMemoryCache = fromMemoryCache;
     _classPrivateFieldGet(_networkEventManager, this).storeRequest(event.requestId, request);
-    _classPrivateFieldGet(_networkEventManager, this).forgetRequestWillBeSent(event.requestId);
     this.emit(exports.NetworkManagerEvent.Request, request);
-    void request.finalizeInterceptions();
+    const interceptionsFinalized = request.finalizeInterceptions();
+    if (loadingFailed) {
+      // Emit the failure once the request's interception handlers have run,
+      // using the session that reported it.
+      void interceptionsFinalized.finally(() => {
+        _assertClassBrand(_NetworkManager_brand, this, _emitLoadingFailed).call(this, loadingFailed.client, loadingFailed.event);
+      });
+    }
   }
   function _onRequestWillBeSentExtraInfo(_client, event) {
     const request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
@@ -20526,6 +20762,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     _classPrivateFieldGet(_networkEventManager, this).responseExtraInfo(event.requestId).push(event);
   }
   function _forgetRequest(request, events) {
+    // Settle the body so `response.content()` does not wait forever. Under
+    // certain conditions we never get the Network.responseReceived event from
+    // protocol (@see https://crbug.com/883475), so the response can be
+    // missing. A body that was already settled (e.g. rejected for a redirect)
+    // keeps its value.
+    request.response()?._resolveBody();
     const requestId = request.id;
     const interceptionId = request._interceptionId;
     _classPrivateFieldGet(_networkEventManager, this).forgetRequest(requestId);
@@ -20554,11 +20796,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return;
     }
     _assertClassBrand(_NetworkManager_brand, this, _adoptCdpSessionIfNeeded).call(this, client, request);
-    // Under certain conditions we never get the Network.responseReceived
-    // event from protocol. @see https://crbug.com/883475
-    if (request.response()) {
-      request.response()?._resolveBody();
-    }
+    request.response()?._setEncodedDataLength(event.encodedDataLength);
     _assertClassBrand(_NetworkManager_brand, this, _forgetRequest).call(this, request, true);
     this.emit(exports.NetworkManagerEvent.RequestFinished, request);
   }
@@ -20574,17 +20812,19 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   }
   function _emitLoadingFailed(client, event) {
     const request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
-    // For certain requestIds we never receive requestWillBeSent event.
-    // @see https://crbug.com/750469
     if (!request) {
+      // With request interception enabled, the request is only created on
+      // Fetch.requestPaused, which can arrive after Network.loadingFailed.
+      // Keep the failure until then so that `requestfailed` is still emitted.
+      if (_classPrivateFieldGet(_userRequestInterceptionEnabled, this)) {
+        _classPrivateFieldGet(_networkEventManager, this).storeLoadingFailedBeforeRequest(event.requestId, event, client);
+      }
+      // For certain requestIds we never receive requestWillBeSent event.
+      // @see https://crbug.com/750469
       return;
     }
     _assertClassBrand(_NetworkManager_brand, this, _adoptCdpSessionIfNeeded).call(this, client, request);
     request._failureText = event.errorText || event.blockedReason || null;
-    const response = request.response();
-    if (response) {
-      response._resolveBody();
-    }
     _assertClassBrand(_NetworkManager_brand, this, _forgetRequest).call(this, request, true);
     this.emit(exports.NetworkManagerEvent.RequestFailed, request);
   }
@@ -20830,6 +21070,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     page() {
       return _classPrivateFieldGet(_page, this);
+    }
+    worker(client) {
+      return _classPrivateFieldGet(_page, this).worker(client);
     }
     mainFrame() {
       const mainFrame = this._frameTree.getMainFrame();
@@ -23878,7 +24121,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           worker.internalEmitter.on(exports.WebWorkerEvent.Console, message => {
             const noListenersForConsoleOnPage = this.listenerCount("console" /* PageEvent.Console */) === 0;
             const noListenersForConsoleOnWorker = worker.listenerCount(exports.WebWorkerEvent.Console) === 0;
-            if (noListenersForConsoleOnPage && noListenersForConsoleOnWorker) {
+            if (noListenersForConsoleOnPage && noListenersForConsoleOnWorker && !_assertClassBrand(_CdpPage_brand, this, _hasBrowserConsoleListeners).call(this)) {
               // eslint-disable-next-line max-len -- The comment is long.
               // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
               for (const arg of message.args()) {
@@ -23888,9 +24131,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
               }
               return;
             }
-            if (!noListenersForConsoleOnPage) {
-              this.emit("console" /* PageEvent.Console */, message);
-            }
+            _assertClassBrand(_CdpPage_brand, this, _emitConsoleMessage).call(this, message);
           });
           this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
@@ -23935,18 +24176,28 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const networkManagerEmitter = new EventEmitter(_classPrivateFieldGet(_frameManager3, this).networkManager);
       networkManagerEmitter.on(exports.NetworkManagerEvent.Request, request => {
         this.emit("request" /* PageEvent.Request */, request);
+        this.browserContext().emit("request" /* BrowserContextEvent.Request */, request);
+        this.browser().emit("request" /* BrowserEvent.Request */, request);
       });
       networkManagerEmitter.on(exports.NetworkManagerEvent.RequestServedFromCache, request => {
         this.emit("requestservedfromcache" /* PageEvent.RequestServedFromCache */, request);
+        this.browserContext().emit("requestservedfromcache" /* BrowserContextEvent.RequestServedFromCache */, request);
+        this.browser().emit("requestservedfromcache" /* BrowserEvent.RequestServedFromCache */, request);
       });
       networkManagerEmitter.on(exports.NetworkManagerEvent.Response, response => {
         this.emit("response" /* PageEvent.Response */, response);
+        this.browserContext().emit("response" /* BrowserContextEvent.Response */, response);
+        this.browser().emit("response" /* BrowserEvent.Response */, response);
       });
       networkManagerEmitter.on(exports.NetworkManagerEvent.RequestFailed, request => {
         this.emit("requestfailed" /* PageEvent.RequestFailed */, request);
+        this.browserContext().emit("requestfailed" /* BrowserContextEvent.RequestFailed */, request);
+        this.browser().emit("requestfailed" /* BrowserEvent.RequestFailed */, request);
       });
       networkManagerEmitter.on(exports.NetworkManagerEvent.RequestFinished, request => {
         this.emit("requestfinished" /* PageEvent.RequestFinished */, request);
+        this.browserContext().emit("requestfinished" /* BrowserContextEvent.RequestFinished */, request);
+        this.browser().emit("requestfinished" /* BrowserEvent.RequestFinished */, request);
       });
       _classPrivateFieldGet(_tabTargetClient, this).on(exports.CDPSessionEvent.Swapped, _assertClassBrand(_CdpPage_brand, this, _onActivation).bind(this));
       _classPrivateFieldGet(_tabTargetClient, this).on(exports.CDPSessionEvent.Ready, _assertClassBrand(_CdpPage_brand, this, _onSecondaryTarget).bind(this));
@@ -24089,6 +24340,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     workers() {
       return Array.from(_classPrivateFieldGet(_workers, this).values());
+    }
+    worker(client) {
+      return _classPrivateFieldGet(_workers, this).get(client.id()) ?? null;
     }
     async setRequestInterception(value) {
       return await _classPrivateFieldGet(_frameManager3, this).networkManager.setRequestInterception(value);
@@ -24569,6 +24823,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return new CdpScreenRecording(this, options, this.logger);
     }
   }
+  /** @see https://w3c.github.io/webdriver-bidi/#rectangle-intersection */
   function _attachExistingTargets() {
     const queue = [];
     for (const childTarget of _classPrivateFieldGet(_targetManager, this).getChildTargets(_classPrivateFieldGet(_primaryTarget, this))) {
@@ -24697,7 +24952,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
     }
     if (source !== 'worker') {
-      this.emit("console" /* PageEvent.Console */, new ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{
+      _assertClassBrand(_CdpPage_brand, this, _emitConsoleMessage).call(this, new ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{
         url,
         lineNumber
       }], undefined, stackTrace, _classPrivateFieldGet(_primaryTarget, this)._targetId, undefined));
@@ -24729,7 +24984,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     const hasPageConsoleListeners = this.listenerCount("console" /* PageEvent.Console */) > 0;
     const hasWorkerConsoleListeners = world.environment instanceof WebWorker && world.environment.listenerCount(exports.WebWorkerEvent.Console) > 0;
-    if (!hasPageConsoleListeners) {
+    if (!hasPageConsoleListeners && !_assertClassBrand(_CdpPage_brand, this, _hasBrowserConsoleListeners).call(this)) {
       if (!hasWorkerConsoleListeners) {
         // eslint-disable-next-line max-len -- The comment is long.
         // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
@@ -24749,7 +25004,19 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (world.environment instanceof CdpFrame) {
       frame = world.environment;
     }
-    this.emit("console" /* PageEvent.Console */, createConsoleMessage(event, values, targetId, frame));
+    _assertClassBrand(_CdpPage_brand, this, _emitConsoleMessage).call(this, createConsoleMessage(event, values, targetId, frame));
+  }
+  function _hasBrowserConsoleListeners() {
+    return this.browserContext().listenerCount("console" /* BrowserContextEvent.Console */) > 0 || this.browser().listenerCount("console" /* BrowserEvent.Console */) > 0;
+  }
+  /**
+   * Emits the message on the page and bubbles it up to the browser context
+   * and the browser.
+   */
+  function _emitConsoleMessage(message) {
+    this.emit("console" /* PageEvent.Console */, message);
+    this.browserContext().emit("console" /* BrowserContextEvent.Console */, message);
+    this.browser().emit("console" /* BrowserEvent.Console */, message);
   }
   async function _onBindingCalled2(world, event) {
     let payload;
@@ -24793,8 +25060,6 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     })]);
     return result[0];
   }
-  const supportedMetrics = new Set(['Timestamp', 'Documents', 'Frames', 'JSEventListeners', 'Nodes', 'LayoutCount', 'RecalcStyleCount', 'LayoutDuration', 'RecalcStyleDuration', 'ScriptDuration', 'TaskDuration', 'JSHeapUsedSize', 'JSHeapTotalSize']);
-  /** @see https://w3c.github.io/webdriver-bidi/#rectangle-intersection */
   function getIntersectionRect(clip, viewport) {
     // Note these will already be normalized.
     const x = Math.max(clip.x, viewport.x);
@@ -25329,16 +25594,24 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   var _workerPromise = /*#__PURE__*/new WeakMap();
+  var _WorkerTarget_brand = /*#__PURE__*/new WeakSet();
   class WorkerTarget extends CdpTarget {
     constructor(...args) {
       super(...args);
+      /**
+       * Service and shared workers are not owned by a page, so their console
+       * messages are bubbled up to the browser context and the browser here.
+       */
+      _classPrivateMethodInitSpec(this, _WorkerTarget_brand);
       _classPrivateFieldInitSpec(this, _workerPromise, void 0);
     }
     async worker() {
       if (!_classPrivateFieldGet(_workerPromise, this)) {
         const session = this._session();
         _classPrivateFieldSet(_workerPromise, this, (session ? Promise.resolve(session) : this._sessionFactory()(/* isAutoAttachEmulated=*/false)).then(client => {
-          return new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => {} /* exceptionThrown */, undefined /* networkManager */, this.logger);
+          const worker = new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => {} /* exceptionThrown */, undefined /* networkManager */, this.logger);
+          _assertClassBrand(_WorkerTarget_brand, this, _bubbleConsoleMessages).call(this, worker);
+          return worker;
         }));
       }
       return await _classPrivateFieldGet(_workerPromise, this);
@@ -25347,6 +25620,25 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
+  function _bubbleConsoleMessages(worker) {
+    worker.internalEmitter.on(exports.WebWorkerEvent.Console, message => {
+      const context = this.browserContext();
+      const browser = this.browser();
+      const hasListeners = worker.listenerCount(exports.WebWorkerEvent.Console) > 0 || context.listenerCount("console" /* BrowserContextEvent.Console */) > 0 || browser.listenerCount("console" /* BrowserEvent.Console */) > 0;
+      if (!hasListeners) {
+        // eslint-disable-next-line max-len -- The comment is long.
+        // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+        for (const arg of message.args()) {
+          void arg.dispose().catch(error => {
+            this.logger?.(DEBUG_PREFIXES.error)?.(error);
+          });
+        }
+        return;
+      }
+      context.emit("console" /* BrowserContextEvent.Console */, message);
+      browser.emit("console" /* BrowserEvent.Console */, message);
+    });
+  }
   class OtherTarget extends CdpTarget {}
 
   /**
@@ -26613,25 +26905,50 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
               });
               return;
             }
+            break;
+          }
+        case 'Target.attachToTarget':
+          {
+            switch (parsed.params?.targetId) {
+              case pageTargetInfo.targetId:
+                _assertClassBrand(_ExtensionTransport_brand, this, _dispatchResponse).call(this, {
+                  id: parsed.id,
+                  sessionId: parsed.sessionId,
+                  method: parsed.method,
+                  result: {
+                    sessionId: 'pageTargetSessionId'
+                  }
+                });
+                return;
+              case tabTargetInfo.targetId:
+                _assertClassBrand(_ExtensionTransport_brand, this, _dispatchResponse).call(this, {
+                  id: parsed.id,
+                  sessionId: parsed.sessionId,
+                  method: parsed.method,
+                  result: {
+                    sessionId: 'tabTargetSessionId'
+                  }
+                });
+                return;
+            }
+            break;
           }
       }
-      if (parsed.sessionId === 'pageTargetSessionId') {
-        delete parsed.sessionId;
-      }
+      const sessionId = parsed.sessionId === 'pageTargetSessionId' ? undefined : parsed.sessionId;
       chrome.debugger.sendCommand({
         tabId: _classPrivateFieldGet(_tabId, this),
-        sessionId: parsed.sessionId
+        sessionId
       }, parsed.method, parsed.params).then(response => {
         _assertClassBrand(_ExtensionTransport_brand, this, _dispatchResponse).call(this, {
           id: parsed.id,
-          sessionId: parsed.sessionId ?? 'pageTargetSessionId',
+          sessionId: parsed.sessionId,
           method: parsed.method,
           result: response
         });
       }).catch(err => {
         _assertClassBrand(_ExtensionTransport_brand, this, _dispatchResponse).call(this, {
           id: parsed.id,
-          sessionId: parsed.sessionId ?? 'pageTargetSessionId',
+          sessionId: parsed.sessionId,
           method: parsed.method,
           error: {
             code: err?.code,
@@ -28524,6 +28841,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       closeCallback,
       process: undefined,
       defaultViewport: defaultViewport,
+      downloadBehavior: options.downloadBehavior,
       acceptInsecureCerts: acceptInsecureCerts,
       networkEnabled,
       issuesEnabled,
@@ -28867,9 +29185,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '156.0.8078.47',
-    'chrome-headless-shell': '156.0.8078.47',
-    firefox: 'stable_158.0.1'
+    chrome: '157.0.8103.50',
+    'chrome-headless-shell': '157.0.8103.50',
+    firefox: 'stable_159.0.1'
   });
 
   /**
@@ -29030,6 +29348,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   exports.createEvaluationError = createEvaluationError;
   exports.createIncrementalIdGenerator = createIncrementalIdGenerator;
   exports.createProtocolErrorMessage = createProtocolErrorMessage;
+  exports.createResponseBodyStream = createResponseBodyStream;
   exports.customQueryHandlers = customQueryHandlers;
   exports.debug = debug;
   exports.default = puppeteer;
@@ -29065,7 +29384,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   exports.rewriteError = rewriteError$1;
   exports.scriptInjector = scriptInjector;
   exports.setDefaultScreenshotOptions = setDefaultScreenshotOptions;
-  exports.supportedMetrics = supportedMetrics$1;
+  exports.supportedMetrics = supportedMetrics;
   exports.throwIfDetached = throwIfDetached;
   exports.timeout = timeout;
   exports.transposeIterableHandle = transposeIterableHandle;

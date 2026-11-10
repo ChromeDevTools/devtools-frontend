@@ -37,10 +37,58 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
     }
     return useValue ? value : void 0;
 };
-var __setFunctionName = (this && this.__setFunctionName) || function (f, name, prefix) {
-    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
-    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose, inner;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
 };
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        var r, s = 0;
+        function next() {
+            while (r = env.stack.pop()) {
+                try {
+                    if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                    if (r.dispose) {
+                        var result = r.dispose.call(r.value);
+                        if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    }
+                    else s |= 1;
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 import * as Bidi from 'webdriver-bidi-protocol';
 import { Browser, } from '../api/Browser.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
@@ -49,21 +97,21 @@ import { EventEmitter } from '../common/EventEmitter.js';
 import { bubble } from '../util/decorators.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import { Session } from './core/Session.js';
+import { UserContext } from './core/UserContext.js';
 import { BidiBrowserTarget } from './Target.js';
 /**
  * @internal
  */
 let BidiBrowser = (() => {
     let _classSuper = Browser;
-    let _private_trustedEmitter_decorators;
-    let _private_trustedEmitter_initializers = [];
-    let _private_trustedEmitter_extraInitializers = [];
-    let _private_trustedEmitter_descriptor;
+    let _trustedEmitter_decorators;
+    let _trustedEmitter_initializers = [];
+    let _trustedEmitter_extraInitializers = [];
     return class BidiBrowser extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-            _private_trustedEmitter_decorators = [bubble()];
-            __esDecorate(this, _private_trustedEmitter_descriptor = { get: __setFunctionName(function () { return this.#trustedEmitter_accessor_storage; }, "#trustedEmitter", "get"), set: __setFunctionName(function (value) { this.#trustedEmitter_accessor_storage = value; }, "#trustedEmitter", "set") }, _private_trustedEmitter_decorators, { kind: "accessor", name: "#trustedEmitter", static: false, private: true, access: { has: obj => #trustedEmitter in obj, get: obj => obj.#trustedEmitter, set: (obj, value) => { obj.#trustedEmitter = value; } }, metadata: _metadata }, _private_trustedEmitter_initializers, _private_trustedEmitter_extraInitializers);
+            _trustedEmitter_decorators = [bubble()];
+            __esDecorate(this, null, _trustedEmitter_decorators, { kind: "accessor", name: "trustedEmitter", static: false, private: false, access: { has: obj => "trustedEmitter" in obj, get: obj => obj.trustedEmitter, set: (obj, value) => { obj.trustedEmitter = value; } }, metadata: _metadata }, _trustedEmitter_initializers, _trustedEmitter_extraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         protocol = 'webDriverBiDi';
@@ -87,63 +135,106 @@ let BidiBrowser = (() => {
             'goog:cdp.Page.screencastFrame',
         ];
         static async create(opts) {
-            const session = await Session.from(opts.connection, {
-                firstMatch: opts.capabilities?.firstMatch,
-                alwaysMatch: {
-                    ...opts.capabilities?.alwaysMatch,
-                    // Capabilities that come from Puppeteer's API take precedence.
-                    acceptInsecureCerts: opts.acceptInsecureCerts,
-                    unhandledPromptBehavior: {
-                        default: Bidi.Session.UserPromptHandlerType.Ignore,
+            const env_1 = { stack: [], error: void 0, hasError: false };
+            try {
+                const session = await Session.from(opts.connection, {
+                    firstMatch: opts.capabilities?.firstMatch,
+                    alwaysMatch: {
+                        ...opts.capabilities?.alwaysMatch,
+                        // Capabilities that come from Puppeteer's API take precedence.
+                        acceptInsecureCerts: opts.acceptInsecureCerts,
+                        unhandledPromptBehavior: {
+                            default: Bidi.Session.UserPromptHandlerType.Ignore,
+                        },
+                        webSocketUrl: true,
+                        // Puppeteer with WebDriver BiDi does not support prerendering
+                        // yet because WebDriver BiDi behavior is not specified. See
+                        // https://github.com/w3c/webdriver-bidi/issues/321.
+                        'goog:prerenderingDisabled': true,
+                        // TODO: remove after Puppeteer rolled Chrome to 142 after Oct 28, 2025.
+                        'goog:disableNetworkDurableMessages': true,
                     },
-                    webSocketUrl: true,
-                    // Puppeteer with WebDriver BiDi does not support prerendering
-                    // yet because WebDriver BiDi behavior is not specified. See
-                    // https://github.com/w3c/webdriver-bidi/issues/321.
-                    'goog:prerenderingDisabled': true,
-                    // TODO: remove after Puppeteer rolled Chrome to 142 after Oct 28, 2025.
-                    'goog:disableNetworkDurableMessages': true,
-                },
-            });
-            // Subscribe to all WebDriver BiDi events. Also subscribe to CDP events if CDP
-            // connection is available.
-            await session.subscribe((opts.cdpConnection
-                ? [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]
-                : BidiBrowser.subscribeModules).filter(module => {
-                if (!opts.networkEnabled) {
-                    return (module !== 'network' &&
-                        module !== 'goog:cdp.Network.requestWillBeSent');
-                }
-                return true;
-            }));
-            await Promise.all([Bidi.Network.DataType.Request, Bidi.Network.DataType.Response].map(
-            // Data collectors might be not implemented for specific data type, so create them
-            // separately and ignore protocol errors.
-            async (dataType) => {
-                try {
-                    await session.send('network.addDataCollector', {
-                        dataTypes: [dataType],
-                        // Buffer size of 20 MB is equivalent to the CDP:
-                        maxEncodedDataSize: 20_000_000,
-                    });
-                }
-                catch (err) {
-                    if (err instanceof ProtocolError) {
-                        opts.logger?.(DEBUG_PREFIXES.error)?.(err);
+                });
+                // Console entries replayed from the WebDriver BiDi log event buffer on
+                // `session.subscribe`, arrive before any frame can listen to them.
+                // Collect them until the browser is initialized, so they can be re-emitted
+                // once the caller had a chance to add listeners.
+                const pendingConsoleEntries = [];
+                const sessionEmitter = __addDisposableResource(env_1, new EventEmitter(session), false);
+                sessionEmitter.on('log.entryAdded', entry => {
+                    if (entry.type === 'console') {
+                        pendingConsoleEntries.push(entry);
                     }
-                    else {
-                        throw err;
+                });
+                // Subscribe to all WebDriver BiDi events. Also subscribe to CDP events if CDP
+                // connection is available.
+                await session.subscribe((opts.cdpConnection
+                    ? [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]
+                    : BidiBrowser.subscribeModules).filter(module => {
+                    if (!opts.networkEnabled) {
+                        return (module !== 'network' &&
+                            module !== 'goog:cdp.Network.requestWillBeSent');
                     }
+                    return true;
+                }));
+                await Promise.all([Bidi.Network.DataType.Request, Bidi.Network.DataType.Response].map(
+                // Data collectors might be not implemented for specific data type, so create them
+                // separately and ignore protocol errors.
+                async (dataType) => {
+                    try {
+                        await session.send('network.addDataCollector', {
+                            dataTypes: [dataType],
+                            // Buffer size of 20 MB is equivalent to the CDP:
+                            maxEncodedDataSize: 20_000_000,
+                        });
+                    }
+                    catch (err) {
+                        if (err instanceof ProtocolError) {
+                            opts.logger?.(DEBUG_PREFIXES.error)?.(err);
+                        }
+                        else {
+                            throw err;
+                        }
+                    }
+                }));
+                const browser = new BidiBrowser(session.browser, opts, opts.logger);
+                browser.#initialize();
+                // From here on frames receive console entries directly, so stop
+                // collecting them to avoid delivering them twice.
+                sessionEmitter.removeAllListeners();
+                if (opts.downloadBehavior) {
+                    await session.browser.setDownloadBehavior(opts.downloadBehavior, [
+                        UserContext.DEFAULT,
+                    ]);
                 }
-            }));
-            const browser = new BidiBrowser(session.browser, opts, opts.logger);
-            browser.#initialize();
-            return browser;
+                if (pendingConsoleEntries.length) {
+                    // The caller's continuation after `await puppeteer.connect()` runs in
+                    // microtasks, so listeners it adds synchronously are in place when this
+                    // macrotask runs. The logs will be replayed at the first async task.
+                    setTimeout(() => {
+                        if (!browser.connected) {
+                            return;
+                        }
+                        for (const entry of pendingConsoleEntries) {
+                            session.emit('log.entryAdded', entry);
+                        }
+                    }, 0);
+                }
+                return browser;
+            }
+            catch (e_1) {
+                env_1.error = e_1;
+                env_1.hasError = true;
+            }
+            finally {
+                __disposeResources(env_1);
+            }
         }
-        #trustedEmitter_accessor_storage = __runInitializers(this, _private_trustedEmitter_initializers, new EventEmitter());
-        get #trustedEmitter() { return _private_trustedEmitter_descriptor.get.call(this); }
-        set #trustedEmitter(value) { return _private_trustedEmitter_descriptor.set.call(this, value); }
-        #process = __runInitializers(this, _private_trustedEmitter_extraInitializers);
+        #trustedEmitter_accessor_storage = __runInitializers(this, _trustedEmitter_initializers, new EventEmitter());
+        /** @internal */
+        get trustedEmitter() { return this.#trustedEmitter_accessor_storage; }
+        set trustedEmitter(value) { this.#trustedEmitter_accessor_storage = value; }
+        #process = __runInitializers(this, _trustedEmitter_extraInitializers);
         #closeCallback;
         #browserCore;
         #defaultViewport;
@@ -171,8 +262,8 @@ let BidiBrowser = (() => {
                 this.#createBrowserContext(userContext);
             }
             this.#browserCore.once('disconnected', () => {
-                this.#trustedEmitter.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
-                this.#trustedEmitter.removeAllListeners();
+                this.trustedEmitter.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
+                this.trustedEmitter.removeAllListeners();
             });
             this.#process?.once('close', () => {
                 this.#browserCore.dispose('Browser process exited.', true);
@@ -200,13 +291,13 @@ let BidiBrowser = (() => {
             }, this.#logger);
             this.#browserContexts.set(userContext, browserContext);
             browserContext.trustedEmitter.on("targetcreated" /* BrowserContextEvent.TargetCreated */, target => {
-                this.#trustedEmitter.emit("targetcreated" /* BrowserEvent.TargetCreated */, target);
+                this.trustedEmitter.emit("targetcreated" /* BrowserEvent.TargetCreated */, target);
             });
             browserContext.trustedEmitter.on("targetchanged" /* BrowserContextEvent.TargetChanged */, target => {
-                this.#trustedEmitter.emit("targetchanged" /* BrowserEvent.TargetChanged */, target);
+                this.trustedEmitter.emit("targetchanged" /* BrowserEvent.TargetChanged */, target);
             });
             browserContext.trustedEmitter.on("targetdestroyed" /* BrowserContextEvent.TargetDestroyed */, target => {
-                this.#trustedEmitter.emit("targetdestroyed" /* BrowserEvent.TargetDestroyed */, target);
+                this.trustedEmitter.emit("targetdestroyed" /* BrowserEvent.TargetDestroyed */, target);
             });
             return browserContext;
         }

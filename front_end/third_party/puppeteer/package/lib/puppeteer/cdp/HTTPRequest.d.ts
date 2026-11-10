@@ -7,6 +7,8 @@ import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Frame } from '../api/Frame.js';
 import { type ContinueRequestOverridesInternal, HTTPRequest, type ResourceType, type ResponseForRequestInternal } from '../api/HTTPRequest.js';
+import type { Page } from '../api/Page.js';
+import type { WebWorker } from '../api/WebWorker.js';
 import { type Logger } from '../common/Debug.js';
 import type { CdpHTTPResponse } from './HTTPResponse.js';
 /**
@@ -24,7 +26,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
      */
     get _fetchClient(): CDPSession;
     set _fetchClient(fetchClient: CDPSession);
-    constructor(client: CDPSession, frame: Frame | null, interceptionId: string | undefined, allowInterception: boolean, data: {
+    constructor(client: CDPSession, frame: Frame | null, worker: WebWorker | null, interceptionId: string | undefined, allowInterception: boolean, data: {
         /**
          * Request identifier.
          */
@@ -60,6 +62,8 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     content(): Promise<Uint8Array | undefined>;
     headers(): Record<string, string>;
     response(): CdpHTTPResponse | null;
+    page(): Page | null;
+    worker(): WebWorker | null;
     frame(): Frame | null;
     isNavigationRequest(): boolean;
     initiator(): Protocol.Network.Initiator | undefined;

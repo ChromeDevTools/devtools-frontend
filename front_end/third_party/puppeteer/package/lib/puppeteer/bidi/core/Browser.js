@@ -107,6 +107,7 @@ let Browser = (() => {
     let _removeIntercept_decorators;
     let _removePreloadScript_decorators;
     let _createUserContext_decorators;
+    let _setDownloadBehavior_decorators;
     let _installExtension_decorators;
     let _uninstallExtension_decorators;
     let _setClientWindowState_decorators;
@@ -120,6 +121,7 @@ let Browser = (() => {
             __esDecorate(this, null, _removeIntercept_decorators, { kind: "method", name: "removeIntercept", static: false, private: false, access: { has: obj => "removeIntercept" in obj, get: obj => obj.removeIntercept }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _createUserContext_decorators, { kind: "method", name: "createUserContext", static: false, private: false, access: { has: obj => "createUserContext" in obj, get: obj => obj.createUserContext }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setDownloadBehavior_decorators, { kind: "method", name: "setDownloadBehavior", static: false, private: false, access: { has: obj => "setDownloadBehavior" in obj, get: obj => obj.setDownloadBehavior }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _installExtension_decorators, { kind: "method", name: "installExtension", static: false, private: false, access: { has: obj => "installExtension" in obj, get: obj => obj.installExtension }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _uninstallExtension_decorators, { kind: "method", name: "uninstallExtension", static: false, private: false, access: { has: obj => "uninstallExtension" in obj, get: obj => obj.uninstallExtension }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setClientWindowState_decorators, { kind: "method", name: "setClientWindowState", static: false, private: false, access: { has: obj => "setClientWindowState" in obj, get: obj => obj.setClientWindowState }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -265,28 +267,40 @@ let Browser = (() => {
             const { result: { userContext }, } = await this.session.send('browser.createUserContext', {
                 proxy: proxyConfig,
             });
-            if (options.downloadBehavior?.policy === 'allowAndName') {
-                throw new UnsupportedOperation('`allowAndName` is not supported in WebDriver BiDi');
-            }
-            if (options.downloadBehavior?.policy === 'allow') {
-                if (options.downloadBehavior.downloadPath === undefined) {
-                    throw new UnsupportedOperation('`downloadPath` is required in `allow` download behavior');
-                }
-                await this.session.send('browser.setDownloadBehavior', {
-                    downloadBehavior: {
-                        type: 'allowed',
-                        destinationFolder: options.downloadBehavior.downloadPath,
-                    },
-                    userContexts: [userContext],
-                });
-            }
-            if (options.downloadBehavior?.policy === 'deny') {
-                await this.session.send('browser.setDownloadBehavior', {
-                    downloadBehavior: { type: 'denied' },
-                    userContexts: [userContext],
-                });
+            if (options.downloadBehavior) {
+                await this.setDownloadBehavior(options.downloadBehavior, [userContext]);
             }
             return this.#createUserContext(userContext);
+        }
+        /**
+         * Sets the download behavior for the given user contexts. If no user
+         * contexts are provided, the behavior is applied globally.
+         */
+        async setDownloadBehavior(downloadBehavior, userContexts) {
+            switch (downloadBehavior.policy) {
+                case 'allowAndName':
+                    throw new UnsupportedOperation('`allowAndName` is not supported in WebDriver BiDi');
+                case 'allow':
+                    if (downloadBehavior.downloadPath === undefined) {
+                        throw new UnsupportedOperation('`downloadPath` is required in `allow` download behavior');
+                    }
+                    await this.session.send('browser.setDownloadBehavior', {
+                        downloadBehavior: {
+                            type: 'allowed',
+                            destinationFolder: downloadBehavior.downloadPath,
+                        },
+                        userContexts,
+                    });
+                    return;
+                case 'deny':
+                    await this.session.send('browser.setDownloadBehavior', {
+                        downloadBehavior: { type: 'denied' },
+                        userContexts,
+                    });
+                    return;
+                case 'default':
+                    return;
+            }
         }
         async installExtension(path) {
             const { result: { extension }, } = await this.session.send('webExtension.install', {
@@ -323,6 +337,9 @@ let Browser = (() => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
             })], _createUserContext_decorators = [throwIfDisposed(browser => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return browser.#reason;
+            })], _setDownloadBehavior_decorators = [throwIfDisposed(browser => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
             })], _installExtension_decorators = [throwIfDisposed(browser => {

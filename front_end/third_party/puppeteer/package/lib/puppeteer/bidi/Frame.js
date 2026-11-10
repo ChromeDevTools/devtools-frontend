@@ -54,6 +54,7 @@ import { BidiDialog } from './Dialog.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { ExposableFunction } from './ExposedFunction.js';
 import { BidiHTTPRequest, requests } from './HTTPRequest.js';
+import { emitRequestFailed, emitRequestFinished } from './NetworkEvents.js';
 import { BidiFrameRealm } from './Realm.js';
 import { getConsoleMessage, isConsoleLogEntry, isJavaScriptLogEntry, rewriteNavigationError, } from './util.js';
 import { BidiWebWorker } from './WebWorker.js';
@@ -189,10 +190,10 @@ let BidiFrame = (() => {
             this.browsingContext.on('request', request => {
                 const httpRequest = BidiHTTPRequest.from(request, this, this.page().isNetworkInterceptionEnabled, undefined, this.logger);
                 request.once('success', () => {
-                    this.page().trustedEmitter.emit("requestfinished" /* PageEvent.RequestFinished */, httpRequest);
+                    emitRequestFinished(this.page(), httpRequest);
                 });
                 request.once('error', () => {
-                    this.page().trustedEmitter.emit("requestfailed" /* PageEvent.RequestFailed */, httpRequest);
+                    emitRequestFailed(this.page(), httpRequest);
                 });
                 void httpRequest.finalizeInterceptions();
             });
@@ -217,13 +218,23 @@ let BidiFrame = (() => {
                     return;
                 }
                 if (isConsoleLogEntry(entry)) {
-                    if (!this.page().listenerCount("console" /* PageEvent.Console */)) {
+                    // Chromium sets `source.context` of dedicated worker logs to the frame
+                    // that created the worker, so they pass the context check above. Since
+                    // BidiWorkerRealm emits them with the correct worker and realm we can
+                    // skip them here.
+                    if (this.#isWorkerRealm(entry.source.realm)) {
+                        return;
+                    }
+                    const page = this.page();
+                    if (!page.listenerCount("console" /* PageEvent.Console */) &&
+                        !page.browserContext().listenerCount("console" /* BrowserContextEvent.Console */) &&
+                        !page.browser().listenerCount("console" /* BrowserEvent.Console */)) {
                         return;
                     }
                     const args = entry.args.map(arg => {
                         return this.mainRealm().createHandle(arg);
                     });
-                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, getConsoleMessage(entry, args, this));
+                    page.emitConsoleMessage(getConsoleMessage(entry, args, this));
                 }
                 else if (isJavaScriptLogEntry(entry)) {
                     const error = new Error(entry.text ?? '');
@@ -252,6 +263,13 @@ let BidiFrame = (() => {
                     this.page().trustedEmitter.emit("workerdestroyed" /* PageEvent.WorkerDestroyed */, worker);
                 });
                 this.page().trustedEmitter.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
+            });
+        }
+        #isWorkerRealm(realmId) {
+            return this.page()
+                .workers()
+                .some(worker => {
+                return worker.mainRealm().realm.id === realmId;
             });
         }
         #createFrameTarget(browsingContext) {
@@ -359,7 +377,12 @@ let BidiFrame = (() => {
                     if (navigation === null) {
                         return of(null);
                     }
-                    return this.#waitForLoad$(options).pipe(delayWhen(() => {
+                    // Wait for the commit before the lifecycle events. Lifecycle
+                    // events of the previous document (e.g. the error page of a
+                    // failed navigation) can come after this navigation starts.
+                    return fromEmitterEvent(this.browsingContext, 'navigationCommitted').pipe(first(), switchMap(() => {
+                        return this.#waitForLoad$(options);
+                    }), delayWhen(() => {
                         if (frames.length === 0) {
                             return of(undefined);
                         }

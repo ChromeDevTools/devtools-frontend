@@ -48,6 +48,17 @@ export interface SessionEvent<T> {
 }
 
 /**
+ * A stored `Network.requestWillBeSent` event. With request interception
+ * enabled, it can also hold a `Network.loadingFailed` event that arrived
+ * before the `Fetch.requestPaused` event that creates the request.
+ *
+ * @internal
+ */
+export interface StoredRequestWillBeSent extends SessionEvent<Protocol.Network.RequestWillBeSentEvent> {
+  loadingFailed?: SessionEvent<Protocol.Network.LoadingFailedEvent>;
+}
+
+/**
  * @internal
  */
 export type NetworkRequestId = string;
@@ -90,10 +101,7 @@ export class NetworkEventManager {
    * `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`, ...
    * (see crbug.com/1196004)
    */
-  #requestWillBeSentMap = new Map<
-    NetworkRequestId,
-    SessionEvent<Protocol.Network.RequestWillBeSentEvent>
-  >();
+  #requestWillBeSentMap = new Map<NetworkRequestId, StoredRequestWillBeSent>();
   #requestPausedMap = new Map<
     NetworkRequestId,
     SessionEvent<Protocol.Fetch.RequestPausedEvent>
@@ -126,6 +134,34 @@ export class NetworkEventManager {
     this.#queuedEventGroupMap.delete(networkRequestId);
     this.#queuedRedirectInfoMap.delete(networkRequestId);
     this.#responseReceivedExtraInfoMap.delete(networkRequestId);
+  }
+
+  /**
+   * Ids of the requests whose Network events come from `client`, both the
+   * ones already emitted and the ones still waiting for more events.
+   */
+  requestIdsForClient(client: CDPSession): Set<NetworkRequestId> {
+    const ids = new Set<NetworkRequestId>();
+    for (const [id, request] of this.#httpRequestsMap) {
+      if (request.client === client) {
+        ids.add(id);
+      }
+    }
+    for (const [id, stored] of this.#requestWillBeSentMap) {
+      if (stored.client === client) {
+        ids.add(id);
+      }
+    }
+    for (const [id, infos] of this.#queuedRedirectInfoMap) {
+      if (
+        infos.some(info => {
+          return info.client === client;
+        })
+      ) {
+        ids.add(id);
+      }
+    }
+    return ids;
   }
 
   requestExtraInfo(
@@ -190,7 +226,7 @@ export class NetworkEventManager {
 
   getRequestWillBeSent(
     networkRequestId: NetworkRequestId,
-  ): SessionEvent<Protocol.Network.RequestWillBeSentEvent> | undefined {
+  ): StoredRequestWillBeSent | undefined {
     return this.#requestWillBeSentMap.get(networkRequestId);
   }
 
@@ -229,6 +265,23 @@ export class NetworkEventManager {
 
   forgetRequest(networkRequestId: NetworkRequestId): void {
     this.#httpRequestsMap.delete(networkRequestId);
+  }
+
+  /**
+   * With request interception enabled, Network.loadingFailed can arrive before
+   * the Fetch.requestPaused event that creates the request. The failure is
+   * kept with the stored requestWillBeSent event until then, so that
+   * `requestfailed` is not lost.
+   */
+  storeLoadingFailedBeforeRequest(
+    networkRequestId: NetworkRequestId,
+    event: Protocol.Network.LoadingFailedEvent,
+    client: CDPSession,
+  ): void {
+    const requestWillBeSent = this.#requestWillBeSentMap.get(networkRequestId);
+    if (requestWillBeSent) {
+      requestWillBeSent.loadingFailed = {event, client};
+    }
   }
 
   getQueuedEventGroup(

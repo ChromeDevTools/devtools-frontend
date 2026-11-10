@@ -71,6 +71,8 @@ export declare class BrowsingContext extends EventEmitter<{
     userprompt: UserPrompt;
     /** Emitted whenever the frame history is updated. */
     historyUpdated: void;
+    /** Emitted whenever a cross-document navigation commits. */
+    navigationCommitted: void;
     /** Emitted whenever the frame emits `DOMContentLoaded` */
     DOMContentLoaded: void;
     /** Emitted whenever the frame emits `load` */

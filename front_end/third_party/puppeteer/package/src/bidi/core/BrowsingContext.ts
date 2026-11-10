@@ -114,6 +114,8 @@ export class BrowsingContext extends EventEmitter<{
   userprompt: UserPrompt;
   /** Emitted whenever the frame history is updated. */
   historyUpdated: void;
+  /** Emitted whenever a cross-document navigation commits. */
+  navigationCommitted: void;
   /** Emitted whenever the frame emits `DOMContentLoaded` */
   DOMContentLoaded: void;
   /** Emitted whenever the frame emits `load` */
@@ -245,6 +247,13 @@ export class BrowsingContext extends EventEmitter<{
       }
       this.#url = info.url;
       this.emit('historyUpdated', undefined);
+    });
+
+    sessionEmitter.on('browsingContext.navigationCommitted', info => {
+      if (info.context !== this.id) {
+        return;
+      }
+      this.emit('navigationCommitted', undefined);
     });
 
     sessionEmitter.on('browsingContext.domContentLoaded', info => {
@@ -633,11 +642,10 @@ export class BrowsingContext extends EventEmitter<{
     return context.#reason!;
   })
   async setTimezoneOverride(timezoneId?: string): Promise<void> {
-    if (timezoneId?.startsWith('GMT')) {
-      // CDP requires `GMT` prefix before timezone offset, while BiDi does not. Remove the
-      // `GMT` for interop between CDP and BiDi.
-      timezoneId = timezoneId?.replace('GMT', '');
-    }
+    // CDP requires `GMT` prefix before timezone offset, while BiDi does not. Remove the
+    // `GMT` for interop between CDP and BiDi. Keep plain `GMT`, which is a valid
+    // timezone ID on its own.
+    timezoneId = timezoneId?.replace(/^GMT(?=[+-])/, '');
     await this.userContext.browser.session.send(
       'emulation.setTimezoneOverride',
       {

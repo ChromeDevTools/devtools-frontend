@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Target, TargetType } from '../api/Target.js';
+import { WebWorkerEvent } from '../api/WebWorker.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { Deferred } from '../util/Deferred.js';
 import { CdpPage } from './Page.js';
@@ -246,10 +247,37 @@ export class WorkerTarget extends CdpTarget {
             this.#workerPromise = (session
                 ? Promise.resolve(session)
                 : this._sessionFactory()(/* isAutoAttachEmulated=*/ false)).then(client => {
-                return new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => { } /* exceptionThrown */, undefined /* networkManager */, this.logger);
+                const worker = new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => { } /* exceptionThrown */, undefined /* networkManager */, this.logger);
+                this.#bubbleConsoleMessages(worker);
+                return worker;
             });
         }
         return await this.#workerPromise;
+    }
+    /**
+     * Service and shared workers are not owned by a page, so their console
+     * messages are bubbled up to the browser context and the browser here.
+     */
+    #bubbleConsoleMessages(worker) {
+        worker.internalEmitter.on(WebWorkerEvent.Console, message => {
+            const context = this.browserContext();
+            const browser = this.browser();
+            const hasListeners = worker.listenerCount(WebWorkerEvent.Console) > 0 ||
+                context.listenerCount("console" /* BrowserContextEvent.Console */) > 0 ||
+                browser.listenerCount("console" /* BrowserEvent.Console */) > 0;
+            if (!hasListeners) {
+                // eslint-disable-next-line max-len -- The comment is long.
+                // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+                for (const arg of message.args()) {
+                    void arg.dispose().catch(error => {
+                        this.logger?.(DEBUG_PREFIXES.error)?.(error);
+                    });
+                }
+                return;
+            }
+            context.emit("console" /* BrowserContextEvent.Console */, message);
+            browser.emit("console" /* BrowserEvent.Console */, message);
+        });
     }
 }
 /**

@@ -67,6 +67,31 @@ export class NetworkEventManager {
         this.#queuedRedirectInfoMap.delete(networkRequestId);
         this.#responseReceivedExtraInfoMap.delete(networkRequestId);
     }
+    /**
+     * Ids of the requests whose Network events come from `client`, both the
+     * ones already emitted and the ones still waiting for more events.
+     */
+    requestIdsForClient(client) {
+        const ids = new Set();
+        for (const [id, request] of this.#httpRequestsMap) {
+            if (request.client === client) {
+                ids.add(id);
+            }
+        }
+        for (const [id, stored] of this.#requestWillBeSentMap) {
+            if (stored.client === client) {
+                ids.add(id);
+            }
+        }
+        for (const [id, infos] of this.#queuedRedirectInfoMap) {
+            if (infos.some(info => {
+                return info.client === client;
+            })) {
+                ids.add(id);
+            }
+        }
+        return ids;
+    }
     requestExtraInfo(networkRequestId) {
         if (!this.#requestWillBeSentExtraInfoMap.has(networkRequestId)) {
             this.#requestWillBeSentExtraInfoMap.set(networkRequestId, []);
@@ -126,6 +151,18 @@ export class NetworkEventManager {
     }
     forgetRequest(networkRequestId) {
         this.#httpRequestsMap.delete(networkRequestId);
+    }
+    /**
+     * With request interception enabled, Network.loadingFailed can arrive before
+     * the Fetch.requestPaused event that creates the request. The failure is
+     * kept with the stored requestWillBeSent event until then, so that
+     * `requestfailed` is not lost.
+     */
+    storeLoadingFailedBeforeRequest(networkRequestId, event, client) {
+        const requestWillBeSent = this.#requestWillBeSentMap.get(networkRequestId);
+        if (requestWillBeSent) {
+            requestWillBeSent.loadingFailed = { event, client };
+        }
     }
     getQueuedEventGroup(networkRequestId) {
         return this.#queuedEventGroupMap.get(networkRequestId);

@@ -93,6 +93,39 @@ export class NetworkManager extends EventEmitter {
     async #removeClient(client) {
         this.#clients.get(client)?.dispose();
         this.#clients.delete(client);
+        // Only dedicated workers leave requests pending when their session goes
+        // away. The worker is still known here: the session is closed before the
+        // page handles the target detaching.
+        if (!this.#frameManager.worker(client)) {
+            return;
+        }
+        for (const requestId of this.#networkEventManager.requestIdsForClient(client)) {
+            if (client.connection()?._closed) {
+                this.#networkEventManager.forgetRequest(requestId);
+                this.#networkEventManager.forget(requestId);
+            }
+            else {
+                this.#abortPendingWorkerRequest(requestId);
+            }
+        }
+    }
+    /**
+     * Chrome does not send `Network.loadingFailed` or `Network.loadingFinished`
+     * for requests that are still pending when a dedicated worker is
+     * terminated. Fail them so that listeners observe the end of the request
+     * and they no longer count as in flight (e.g. for `waitForNetworkIdle`).
+     */
+    #abortPendingWorkerRequest(requestId) {
+        const request = this.#networkEventManager.getRequest(requestId);
+        if (!request) {
+            // The request was never surfaced (e.g. still waiting for
+            // `Fetch.requestPaused`), so only drop the buffered events.
+            this.#networkEventManager.forget(requestId);
+            return;
+        }
+        request._failureText = 'net::ERR_ABORTED';
+        this.#forgetRequest(request, true);
+        this.emit(NetworkManagerEvent.RequestFailed, request);
     }
     async authenticate(credentials) {
         this.#credentials = credentials;
@@ -311,6 +344,10 @@ export class NetworkManager extends EventEmitter {
         if (this.#userRequestInterceptionEnabled &&
             !event.request.url.startsWith('data:')) {
             const { requestId: networkRequestId } = event;
+            const previousRequestWillBeSent = this.#networkEventManager.getRequestWillBeSent(networkRequestId);
+            if (previousRequestWillBeSent && event.redirectResponse) {
+                this.#onRequest(previousRequestWillBeSent.client, previousRequestWillBeSent.event, undefined);
+            }
             this.#networkEventManager.storeRequestWillBeSent(networkRequestId, event, client);
             /**
              * CDP may have sent a Fetch.requestPaused event already. Check for it.
@@ -390,7 +427,7 @@ export class NetworkManager extends EventEmitter {
         // own Network.requestWillBeSent.
         if (requestWillBeSentEvent.request.url !== event.request.url ||
             requestWillBeSentEvent.request.method !== event.request.method) {
-            this.#networkEventManager.forgetRequestWillBeSent(networkRequestId);
+            this.#onRequest(networkClient, requestWillBeSentEvent, undefined);
             this.#networkEventManager.storeRequestPaused(networkRequestId, event, client);
             return;
         }
@@ -439,11 +476,21 @@ export class NetworkManager extends EventEmitter {
         const frame = event.frameId
             ? this.#frameManager.frame(event.frameId)
             : null;
-        const request = new CdpHTTPRequest(client, frame, event.requestId, this.#userRequestInterceptionEnabled, event, [], this.#logger);
+        const worker = this.#frameManager.worker(client);
+        const request = new CdpHTTPRequest(client, frame, worker, event.requestId, this.#userRequestInterceptionEnabled, event, [], this.#logger);
         this.emit(NetworkManagerEvent.Request, request);
         void request.finalizeInterceptions();
     }
     #onRequest(client, event, fetchRequestId, fetchClient = client, fromMemoryCache = false) {
+        // With request interception enabled, Network.loadingFailed may have
+        // arrived before the Fetch.requestPaused that created this request.
+        const storedRequestWillBeSent = this.#networkEventManager.getRequestWillBeSent(event.requestId);
+        const loadingFailed = storedRequestWillBeSent?.event === event
+            ? storedRequestWillBeSent.loadingFailed
+            : undefined;
+        if (storedRequestWillBeSent?.event === event) {
+            this.#networkEventManager.forgetRequestWillBeSent(event.requestId);
+        }
         let redirectChain = [];
         if (event.redirectResponse) {
             // We want to emit a response and requestfinished for the
@@ -485,7 +532,8 @@ export class NetworkManager extends EventEmitter {
         const frame = event.frameId
             ? this.#frameManager.frame(event.frameId)
             : null;
-        const request = new CdpHTTPRequest(client, frame, fetchRequestId, this.#userRequestInterceptionEnabled, event, redirectChain, this.#logger, fetchClient);
+        const worker = this.#frameManager.worker(client);
+        const request = new CdpHTTPRequest(client, frame, worker, fetchRequestId, this.#userRequestInterceptionEnabled, event, redirectChain, this.#logger, fetchClient);
         const extraInfo = this.#networkEventManager
             .requestExtraInfo(event.requestId)
             .shift();
@@ -494,9 +542,15 @@ export class NetworkManager extends EventEmitter {
         }
         request._fromMemoryCache = fromMemoryCache;
         this.#networkEventManager.storeRequest(event.requestId, request);
-        this.#networkEventManager.forgetRequestWillBeSent(event.requestId);
         this.emit(NetworkManagerEvent.Request, request);
-        void request.finalizeInterceptions();
+        const interceptionsFinalized = request.finalizeInterceptions();
+        if (loadingFailed) {
+            // Emit the failure once the request's interception handlers have run,
+            // using the session that reported it.
+            void interceptionsFinalized.finally(() => {
+                this.#emitLoadingFailed(loadingFailed.client, loadingFailed.event);
+            });
+        }
     }
     #onRequestWillBeSentExtraInfo(_client, event) {
         const request = this.#networkEventManager.getRequest(event.requestId);
@@ -601,6 +655,12 @@ export class NetworkManager extends EventEmitter {
         this.#networkEventManager.responseExtraInfo(event.requestId).push(event);
     }
     #forgetRequest(request, events) {
+        // Settle the body so `response.content()` does not wait forever. Under
+        // certain conditions we never get the Network.responseReceived event from
+        // protocol (@see https://crbug.com/883475), so the response can be
+        // missing. A body that was already settled (e.g. rejected for a redirect)
+        // keeps its value.
+        request.response()?._resolveBody();
         const requestId = request.id;
         const interceptionId = request._interceptionId;
         this.#networkEventManager.forgetRequest(requestId);
@@ -630,11 +690,7 @@ export class NetworkManager extends EventEmitter {
             return;
         }
         this.#adoptCdpSessionIfNeeded(client, request);
-        // Under certain conditions we never get the Network.responseReceived
-        // event from protocol. @see https://crbug.com/883475
-        if (request.response()) {
-            request.response()?._resolveBody();
-        }
+        request.response()?._setEncodedDataLength(event.encodedDataLength);
         this.#forgetRequest(request, true);
         this.emit(NetworkManagerEvent.RequestFinished, request);
     }
@@ -651,17 +707,19 @@ export class NetworkManager extends EventEmitter {
     }
     #emitLoadingFailed(client, event) {
         const request = this.#networkEventManager.getRequest(event.requestId);
-        // For certain requestIds we never receive requestWillBeSent event.
-        // @see https://crbug.com/750469
         if (!request) {
+            // With request interception enabled, the request is only created on
+            // Fetch.requestPaused, which can arrive after Network.loadingFailed.
+            // Keep the failure until then so that `requestfailed` is still emitted.
+            if (this.#userRequestInterceptionEnabled) {
+                this.#networkEventManager.storeLoadingFailedBeforeRequest(event.requestId, event, client);
+            }
+            // For certain requestIds we never receive requestWillBeSent event.
+            // @see https://crbug.com/750469
             return;
         }
         this.#adoptCdpSessionIfNeeded(client, request);
         request._failureText = event.errorText || event.blockedReason || null;
-        const response = request.response();
-        if (response) {
-            response._resolveBody();
-        }
         this.#forgetRequest(request, true);
         this.emit(NetworkManagerEvent.RequestFailed, request);
     }

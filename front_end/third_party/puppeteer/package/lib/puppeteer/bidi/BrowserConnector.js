@@ -26,6 +26,7 @@ export async function _connectToBiDiBrowser(connectionTransport, url, options, l
         closeCallback,
         process: undefined,
         defaultViewport: defaultViewport,
+        downloadBehavior: options.downloadBehavior,
         acceptInsecureCerts: acceptInsecureCerts,
         networkEnabled,
         issuesEnabled,

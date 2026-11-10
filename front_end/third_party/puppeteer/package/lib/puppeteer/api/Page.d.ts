@@ -98,6 +98,16 @@ export interface Metrics {
      * Total JavaScript heap size, in bytes.
      */
     JSHeapTotalSize?: number;
+    /**
+     * The timestamp when the DOMContentLoaded event was fired, in monotonic
+     * time (seconds since an arbitrary point in the past).
+     */
+    DomContentLoaded?: number;
+    /**
+     * The timestamp when the navigation started, in monotonic time (seconds
+     * since an arbitrary point in the past).
+     */
+    NavigationStart?: number;
 }
 /**
  * @public
@@ -768,11 +778,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * @internal
      */
-    on<K extends keyof EventsWithWildcard<PageEvents>>(type: K, handler: (event: EventsWithWildcard<PageEvents>[K]) => void): this;
+    on<K extends keyof EventsWithWildcard<PageEvents>>(type: K, handler: (event: EventsWithWildcard<PageEvents>[K], eventData: K extends '*' ? PageEvents[keyof PageEvents] : never) => void): this;
     /**
      * @internal
      */
-    off<K extends keyof EventsWithWildcard<PageEvents>>(type: K, handler: (event: EventsWithWildcard<PageEvents>[K]) => void): this;
+    off<K extends keyof EventsWithWildcard<PageEvents>>(type: K, handler?: (event: EventsWithWildcard<PageEvents>[K], eventData: K extends '*' ? PageEvents[keyof PageEvents] : never) => void): this;
     /**
      * This method is typically coupled with an action that triggers file
      * choosing.
@@ -1543,6 +1553,12 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * - `JSHeapTotalSize` : Total JavaScript heap size, in bytes.
      *
+     * - `DomContentLoaded` : The timestamp when the DOMContentLoaded event was
+     *   fired, in monotonic time (seconds).
+     *
+     * - `NavigationStart` : The timestamp when the navigation started, in
+     *   monotonic time (seconds).
+     *
      * @remarks
      * All timestamps are in monotonic time: monotonically increasing time
      * in seconds since an arbitrary point in the past.
@@ -2212,7 +2228,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * To generate a PDF with the `screen` media type, call
      * {@link Page.emulateMediaType | `page.emulateMediaType('screen')`} before
-     * calling `page.pdf()`.
+     * calling `page.pdf()`. Note that this disables `@media print` stylesheets,
+     * which may cause layout issues on pages that rely on print styles for
+     * pagination. Call
+     * {@link Page.emulateMediaType | `page.emulateMediaType(null)`} to restore
+     * the default `print` media type.
      *
      * By default, `page.pdf()` generates a pdf with modified colors for printing.
      * Use the

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
-import type { Browser } from '../api/Browser.js';
-import type { BrowserContext } from '../api/BrowserContext.js';
+import { type Browser } from '../api/Browser.js';
+import { type BrowserContext } from '../api/BrowserContext.js';
 import { type Page } from '../api/Page.js';
 import { Target, TargetType } from '../api/Target.js';
 import { type Logger } from '../common/Debug.js';

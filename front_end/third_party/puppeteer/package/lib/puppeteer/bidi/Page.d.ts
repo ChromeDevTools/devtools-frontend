@@ -6,7 +6,7 @@
 import type Protocol from 'devtools-protocol';
 import * as Bidi from 'webdriver-bidi-protocol';
 import type { BluetoothEmulation } from '../api/BluetoothEmulation.js';
-import type { WindowId } from '../api/Browser.js';
+import { type WindowId } from '../api/Browser.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import type { Extension } from '../api/Extension.js';
@@ -20,6 +20,7 @@ import { Coverage } from '../cdp/Coverage.js';
 import type { NetworkConditions } from '../cdp/NetworkManager.js';
 import { Tracing } from '../cdp/Tracing.js';
 import type { WebMCP } from '../cdp/WebMCP.js';
+import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { CookiePartitionKey, Cookie, CookieParam, CookieSameSite, DeleteCookiesRequest } from '../common/Cookie.js';
 import type { Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
@@ -67,6 +68,13 @@ export declare class BidiPage extends Page {
     queryObjects<Prototype>(prototypeHandle: BidiJSHandle<Prototype>): Promise<BidiJSHandle<Prototype[]>>;
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
+    /**
+     * Emits the message on the page, then on the browser context and the
+     * browser, matching the CDP order.
+     *
+     * @internal
+     */
+    emitConsoleMessage(message: ConsoleMessage): void;
     mainFrame(): BidiFrame;
     triggerExtensionAction(_extension: Extension): Promise<void>;
     emulateFocusedPage(enabled: boolean): Promise<void>;

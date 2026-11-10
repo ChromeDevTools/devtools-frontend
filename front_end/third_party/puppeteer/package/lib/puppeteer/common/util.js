@@ -74,6 +74,9 @@ export const withSourcePuppeteerURLIfNone = (functionName, object) => {
     };
     const site = new Error().stack;
     Error.prepareStackTrace = original;
+    if (!site) {
+        return object;
+    }
     return Object.assign(object, {
         [SOURCE_URL]: PuppeteerURL.fromCallSite(functionName, site),
     });
@@ -141,30 +144,38 @@ fun, ...args) {
 export async function getReadableAsTypedArray(readable, path, logger) {
     const buffers = [];
     const reader = readable.getReader();
-    if (path) {
-        const fileHandle = await environment.value.openFileForWriting(path);
-        try {
+    try {
+        if (path) {
+            const fileHandle = await environment.value.openFileForWriting(path);
+            try {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        break;
+                    }
+                    buffers.push(value);
+                    await fileHandle.writeFile(value);
+                }
+            }
+            finally {
+                await fileHandle.close();
+            }
+        }
+        else {
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) {
                     break;
                 }
                 buffers.push(value);
-                await fileHandle.writeFile(value);
             }
-        }
-        finally {
-            await fileHandle.close();
         }
     }
-    else {
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-                break;
-            }
-            buffers.push(value);
-        }
+    catch (error) {
+        // Release the underlying stream (e.g. the protocol stream handle) if
+        // the stream was not read to the end.
+        await reader.cancel().catch(() => { });
+        throw error;
     }
     try {
         const concat = mergeUint8Arrays(buffers);
@@ -191,6 +202,14 @@ export async function getReadableFromProtocolStream(client, handle) {
             if (eof) {
                 await client.send('IO.close', { handle });
                 controller.close();
+            }
+        },
+        async cancel() {
+            try {
+                await client.send('IO.close', { handle });
+            }
+            catch {
+                // The stream or the session can be closed already.
             }
         },
     });

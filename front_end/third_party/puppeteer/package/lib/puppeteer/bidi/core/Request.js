@@ -44,6 +44,12 @@ import { inertIfDisposed } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
 import { stringToTypedArray } from '../../util/encoding.js';
 /**
+ * Redirect statuses as defined by the Fetch standard.
+ *
+ * @see https://fetch.spec.whatwg.org/#redirect-status
+ */
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+/**
  * @internal
  */
 let Request = (() => {
@@ -107,9 +113,12 @@ let Request = (() => {
             });
             sessionEmitter.on('network.authRequired', event => {
                 if (event.context !== this.#browsingContext.id ||
-                    event.request.request !== this.id ||
-                    // Don't try to authenticate for events that are not blocked
-                    !event.isBlocked) {
+                    event.request.request !== this.id) {
+                    return;
+                }
+                this.#event.isBlocked = event.isBlocked;
+                // Don't try to authenticate for events that are not blocked
+                if (!event.isBlocked) {
                     return;
                 }
                 this.emit('authenticate', undefined);
@@ -121,6 +130,7 @@ let Request = (() => {
                     return;
                 }
                 this.#error = event.errorText;
+                this.#event.isBlocked = event.isBlocked;
                 this.#event.request.headers = event.request.headers;
                 this.#event.request.timings = event.request.timings;
                 this.emit('error', this.#error);
@@ -133,6 +143,7 @@ let Request = (() => {
                     return;
                 }
                 this.#response = event.response;
+                this.#event.isBlocked = event.isBlocked;
                 this.#event.request.headers = event.request.headers;
                 this.#event.request.timings = event.request.timings;
                 this.emit('response', this.#response);
@@ -144,11 +155,19 @@ let Request = (() => {
                     return;
                 }
                 this.#response = event.response;
+                this.#event.isBlocked = event.isBlocked;
                 this.#event.request.headers = event.request.headers;
                 this.#event.request.timings = event.request.timings;
                 this.emit('success', this.#response);
-                // In case this is a redirect.
-                if (this.#response.status >= 300 && this.#response.status < 400) {
+                // A redirect continues as a new `network.beforeRequestSent` event with
+                // the next redirect count, so the request is kept until then. A
+                // redirect status without a `Location` header is a final response
+                // (https://fetch.spec.whatwg.org/#http-redirect-fetch), and any other
+                // status, including 304 Not Modified, completes the request.
+                if (REDIRECT_STATUSES.has(this.#response.status) &&
+                    this.#response.headers.some(header => {
+                        return header.name.toLowerCase() === 'location';
+                    })) {
                     return;
                 }
                 this.dispose();

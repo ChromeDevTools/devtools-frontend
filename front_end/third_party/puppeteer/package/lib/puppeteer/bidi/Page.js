@@ -229,6 +229,17 @@ let BidiPage = (() => {
         browserContext() {
             return this.#browserContext;
         }
+        /**
+         * Emits the message on the page, then on the browser context and the
+         * browser, matching the CDP order.
+         *
+         * @internal
+         */
+        emitConsoleMessage(message) {
+            this.trustedEmitter.emit("console" /* PageEvent.Console */, message);
+            this.#browserContext.trustedEmitter.emit("console" /* BrowserContextEvent.Console */, message);
+            this.browser().trustedEmitter.emit("console" /* BrowserEvent.Console */, message);
+        }
         mainFrame() {
             return this.#frame;
         }
@@ -358,7 +369,7 @@ let BidiPage = (() => {
                 coordinates: {
                     latitude: options.latitude,
                     longitude: options.longitude,
-                    accuracy: options.accuracy,
+                    accuracy,
                 },
             });
         }
@@ -452,17 +463,19 @@ let BidiPage = (() => {
         }
         async pdf(options = {}) {
             const { timeout: ms = this._timeoutSettings.timeout(), path = undefined } = options;
-            const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, } = parsePDFOptions(options, 'cm');
+            const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, waitForFonts, } = parsePDFOptions(options, 'cm');
             const pageRanges = ranges
                 ? ranges.split(',').map(range => {
                     return range.trim();
                 })
                 : [];
-            await firstValueFrom(from(this.mainFrame()
-                .isolatedRealm()
-                .evaluate(() => {
-                return document.fonts.ready;
-            })).pipe(raceWith(timeout(ms))));
+            if (waitForFonts) {
+                await firstValueFrom(from(this.mainFrame()
+                    .isolatedRealm()
+                    .evaluate(() => {
+                    return document.fonts.ready;
+                })).pipe(raceWith(timeout(ms))));
+            }
             const data = await firstValueFrom(from(this.#frame.browsingContext.print({
                 background,
                 margin,
@@ -557,7 +570,7 @@ let BidiPage = (() => {
         isDragInterceptionEnabled() {
             return false;
         }
-        async setCacheEnabled(enabled) {
+        async setCacheEnabled(enabled = true) {
             if (!this.#browserContext.browser().cdpSupported) {
                 await this.#frame.browsingContext.setCacheBehavior(enabled ? 'default' : 'bypass');
                 return;
@@ -866,7 +879,9 @@ function testUrlMatchCookieHostname(cookie, normalizedUrl) {
     // addresses which is fine as it is for representation and does not
     // mean that cookies actually apply that way in the browser.
     // https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.3
-    return cookieDomain.startsWith('.') && urlHostname.endsWith(cookieDomain);
+    // A leading dot marks a domain cookie, which also applies to the domain
+    // itself, so `.example.com` matches both `example.com` and `a.example.com`.
+    return (cookieDomain.startsWith('.') && `.${urlHostname}`.endsWith(cookieDomain));
 }
 /**
  * Check paths match.

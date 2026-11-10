@@ -283,6 +283,9 @@ export class FrameManager extends EventEmitter {
     page() {
         return this.#page;
     }
+    worker(client) {
+        return this.#page.worker(client);
+    }
     mainFrame() {
         const mainFrame = this._frameTree.getMainFrame();
         assert(mainFrame, 'Requesting main frame too early!');

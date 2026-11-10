@@ -56,7 +56,9 @@ export class BidiConnection extends EventEmitter {
         }
     }
     emit(type, event) {
-        if (process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true') {
+        if (process.env['PUPPETEER_WEBDRIVER_BIDI_ONLY'] === 'true' &&
+            typeof event === 'object' &&
+            event !== null) {
             // Required for WebDriver-only testing.
             this.#toWebDriverOnlyEvent(event);
         }

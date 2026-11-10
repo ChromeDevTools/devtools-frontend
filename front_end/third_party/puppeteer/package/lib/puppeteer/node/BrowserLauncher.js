@@ -169,6 +169,7 @@ export class BrowserLauncher {
                     protocolTimeout,
                     slowMo,
                     defaultViewport,
+                    downloadBehavior,
                     acceptInsecureCerts,
                     networkEnabled,
                     idGenerator,
@@ -199,6 +200,7 @@ export class BrowserLauncher {
                 if (protocol === 'webDriverBiDi') {
                     browser = await this.createBiDiOverCdpBrowser(browserProcess, cdpConnection, browserCloseCallback, {
                         defaultViewport,
+                        downloadBehavior,
                         acceptInsecureCerts,
                         networkEnabled,
                         issuesEnabled,
@@ -256,19 +258,19 @@ export class BrowserLauncher {
             // Attempt to close the browser gracefully
             try {
                 await cdpConnection.closeBrowser();
-                await browserProcess.hasClosed();
             }
             catch (error) {
                 this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 await browserProcess.close();
+                return;
             }
         }
-        else {
-            // Wait for a possible graceful shutdown.
-            await firstValueFrom(race(from(browserProcess.hasClosed()), timer(5000).pipe(mergeMap(() => {
-                return from(browserProcess.close());
-            }))));
-        }
+        // Wait for a possible graceful shutdown. The browser can accept the
+        // close command and then not exit (e.g. on Windows). Kill the browser
+        // process after a timeout so that the close does not wait forever.
+        await firstValueFrom(race(from(browserProcess.hasClosed()), timer(5000).pipe(mergeMap(() => {
+            return from(browserProcess.close());
+        }))));
     }
     /**
      * @internal
@@ -319,6 +321,7 @@ export class BrowserLauncher {
             closeCallback,
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,
+            downloadBehavior: opts.downloadBehavior,
             acceptInsecureCerts: opts.acceptInsecureCerts,
             networkEnabled: opts.networkEnabled,
             issuesEnabled: opts.issuesEnabled,
@@ -338,6 +341,7 @@ export class BrowserLauncher {
             closeCallback,
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,
+            downloadBehavior: opts.downloadBehavior,
             acceptInsecureCerts: opts.acceptInsecureCerts,
             networkEnabled: opts.networkEnabled ?? true,
             issuesEnabled: opts.issuesEnabled ?? true,

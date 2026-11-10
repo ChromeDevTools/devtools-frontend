@@ -5,8 +5,8 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { BluetoothEmulation } from '../api/BluetoothEmulation.js';
-import type { Browser, WindowId } from '../api/Browser.js';
-import type { BrowserContext } from '../api/BrowserContext.js';
+import { type Browser, type WindowId } from '../api/Browser.js';
+import { type BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import type { Extension } from '../api/Extension.js';
@@ -69,6 +69,7 @@ export declare class CdpPage extends Page {
     get webmcp(): WebMCP;
     frames(): Frame[];
     workers(): CdpWebWorker[];
+    worker(client: CDPSession): CdpWebWorker | null;
     setRequestInterception(value: boolean): Promise<void>;
     setBypassServiceWorker(bypass: boolean): Promise<void>;
     setDragInterception(enabled: boolean): Promise<void>;

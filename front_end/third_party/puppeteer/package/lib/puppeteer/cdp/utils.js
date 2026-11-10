@@ -14,7 +14,8 @@ export function createConsoleMessage(event, values, targetId, frame, worker) {
     // eslint-disable-next-line max-len -- The comment is long.
     // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
     for (const arg of values) {
-        textTokens.push(valueFromJSHandle(arg));
+        // `join()` would turn `null` and `undefined` into empty strings.
+        textTokens.push(String(valueFromJSHandle(arg)));
     }
     const stackTraceLocations = [];
     if (event.stackTrace) {
@@ -23,6 +24,7 @@ export function createConsoleMessage(event, values, targetId, frame, worker) {
                 url: callFrame.url,
                 lineNumber: callFrame.lineNumber,
                 columnNumber: callFrame.columnNumber,
+                scriptId: callFrame.scriptId,
             });
         }
     }
@@ -194,15 +196,14 @@ export function addPageBinding(type, name, prefix) {
         [name](...args) {
             // This is the Puppeteer binding.
             // @ts-expect-error: In a different context.
-            const callPuppeteer = globalThis[name];
+            // Needs to be the same as CDP_BINDING_PREFIX.
+            const callPuppeteer = globalThis[prefix + name];
             callPuppeteer.args ??= new Map();
             callPuppeteer.callbacks ??= new Map();
             const seq = (callPuppeteer.lastSeq ?? 0) + 1;
             callPuppeteer.lastSeq = seq;
             callPuppeteer.args.set(seq, args);
-            // @ts-expect-error: In a different context.
-            // Needs to be the same as CDP_BINDING_PREFIX.
-            globalThis[prefix + name](JSON.stringify({
+            callPuppeteer(JSON.stringify({
                 type,
                 name,
                 seq,

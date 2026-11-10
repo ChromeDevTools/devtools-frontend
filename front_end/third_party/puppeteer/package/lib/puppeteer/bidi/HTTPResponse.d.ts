@@ -27,9 +27,11 @@ export declare class BidiHTTPResponse extends HTTPResponse {
     request(): BidiHTTPRequest;
     fromCache(): boolean;
     timing(): Protocol.Network.ResourceTiming | null;
+    encodedDataLength(): number;
     frame(): Frame | null;
     fromServiceWorker(): boolean;
     securityDetails(): SecurityDetails | null;
     content(): Promise<Uint8Array>;
+    stream(): never;
 }
 //# sourceMappingURL=HTTPResponse.d.ts.map

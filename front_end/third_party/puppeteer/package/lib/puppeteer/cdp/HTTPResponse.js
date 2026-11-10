@@ -4,6 +4,7 @@ import { SecurityDetails } from '../common/SecurityDetails.js';
 import { Deferred } from '../util/Deferred.js';
 import { stringToTypedArray } from '../util/encoding.js';
 import { normalizeHeaderValue } from '../util/httpUtils.js';
+import { createResponseBodyStream } from './ResponseBodyStream.js';
 /**
  * @internal
  */
@@ -19,6 +20,7 @@ export class CdpHTTPResponse extends HTTPResponse {
     #headers = {};
     #securityDetails;
     #timing;
+    #encodedDataLength = 0;
     constructor(request, responsePayload, extraInfo) {
         super();
         this.#request = request;
@@ -43,6 +45,7 @@ export class CdpHTTPResponse extends HTTPResponse {
             ? new SecurityDetails(responsePayload.securityDetails)
             : null;
         this.#timing = responsePayload.timing || null;
+        this._setEncodedDataLength(responsePayload.encodedDataLength);
     }
     #parseStatusTextFromExtraInfo(extraInfo) {
         if (!extraInfo || !extraInfo.headersText) {
@@ -61,6 +64,14 @@ export class CdpHTTPResponse extends HTTPResponse {
             return;
         }
         return statusText;
+    }
+    _setEncodedDataLength(encodedDataLength) {
+        // Chromium reports -1 when no data was transferred over the network (e.g.
+        // data: or file: URLs) or when the size is unknown (e.g. synchronous XHRs
+        // to data: URLs). Keep the last known value in that case, defaulting to 0.
+        if (encodedDataLength >= 0) {
+            this.#encodedDataLength = encodedDataLength;
+        }
     }
     _resolveBody(err) {
         if (err) {
@@ -89,6 +100,9 @@ export class CdpHTTPResponse extends HTTPResponse {
     timing() {
         return this.#timing;
     }
+    encodedDataLength() {
+        return this.#encodedDataLength;
+    }
     content() {
         if (!this.#contentPromise) {
             this.#contentPromise = this.#bodyLoadedDeferred
@@ -113,6 +127,32 @@ export class CdpHTTPResponse extends HTTPResponse {
             });
         }
         return this.#contentPromise;
+    }
+    async stream() {
+        if (this.#bodyLoadedDeferred.finished()) {
+            return await this.#contentStream();
+        }
+        try {
+            // Use the request's client, as it might have been updated for an adopted
+            // OOPIF.
+            return await createResponseBodyStream(this.#request.client, this.#request.id);
+        }
+        catch (error) {
+            if (error instanceof ProtocolError &&
+                error.originalMessage.includes('already finished loading')) {
+                return await this.#contentStream();
+            }
+            throw error;
+        }
+    }
+    async #contentStream() {
+        const content = await this.content();
+        return new ReadableStream({
+            start(controller) {
+                controller.enqueue(content);
+                controller.close();
+            },
+        });
     }
     request() {
         return this.#request;

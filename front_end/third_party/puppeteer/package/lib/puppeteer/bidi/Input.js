@@ -24,6 +24,10 @@ var ActionType;
     ActionType["PointerMove"] = "pointerMove";
     ActionType["Scroll"] = "scroll";
 })(ActionType || (ActionType = {}));
+const isSingleCharKey = (key) => {
+    // Measures the number of code points rather than UTF-16 code units.
+    return [...key].length === 1;
+};
 const getBidiKeyValue = (key) => {
     switch (key) {
         case '\r':
@@ -31,12 +35,12 @@ const getBidiKeyValue = (key) => {
             key = 'Enter';
             break;
     }
-    // Measures the number of code points rather than UTF-16 code units.
-    if ([...key].length === 1) {
+    if (isSingleCharKey(key)) {
         return key;
     }
     switch (key) {
         case 'Cancel':
+        case 'Abort':
             return '\uE001';
         case 'Help':
             return '\uE002';
@@ -47,6 +51,8 @@ const getBidiKeyValue = (key) => {
         case 'Clear':
             return '\uE005';
         case 'Enter':
+            return '\uE006';
+        case 'NumpadEnter':
             return '\uE007';
         case 'Shift':
         case 'ShiftLeft':
@@ -242,9 +248,61 @@ const getBidiKeyValue = (key) => {
             return ']';
         case 'Quote':
             return "'";
-        default:
-            throw new Error(`Unknown key: "${key}"`);
+        case 'Space':
+            return ' ';
+        // Keys not supported by WebDriver BiDi:
+        case 'Power':
+        case 'Eject':
+        case 'CapsLock':
+        case 'Convert':
+        case 'NonConvert':
+        case 'Select':
+        case 'Open':
+        case 'PrintScreen':
+        case 'ContextMenu':
+        case 'F13':
+        case 'F14':
+        case 'F15':
+        case 'F16':
+        case 'F17':
+        case 'F18':
+        case 'F19':
+        case 'F20':
+        case 'F21':
+        case 'F22':
+        case 'F23':
+        case 'F24':
+        case 'NumLock':
+        case 'ScrollLock':
+        case 'AudioVolumeMute':
+        case 'AudioVolumeDown':
+        case 'AudioVolumeUp':
+        case 'MediaTrackNext':
+        case 'MediaTrackPrevious':
+        case 'MediaStop':
+        case 'MediaPlayPause':
+        case 'AltGraph':
+        case 'Props':
+        case 'Accept':
+        case 'ModeChange':
+        case 'Print':
+        case 'Execute':
+        case 'Attn':
+        case 'CrSel':
+        case 'ExSel':
+        case 'EraseEof':
+        case 'Play':
+        case 'ZoomOut':
+        case 'SoftLeft':
+        case 'SoftRight':
+        case 'Camera':
+        case 'Call':
+        case 'EndCall':
+        case 'VolumeDown':
+        case 'VolumeUp':
+            throw new UnsupportedOperation(`Key "${key}" is not supported by WebDriver BiDi.`);
     }
+    throw new Error(`Unknown key: "${key}"`);
 };
 /**
  * @internal

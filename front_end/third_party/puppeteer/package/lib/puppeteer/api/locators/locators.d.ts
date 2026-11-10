@@ -7,7 +7,7 @@ import type { Observable, OperatorFunction } from '../../../third_party/rxjs/rxj
 import { type Logger } from '../../common/Debug.js';
 import type { EventType } from '../../common/EventEmitter.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
-import type { Awaitable, HandleFor, NodeFor } from '../../common/types.js';
+import type { Awaitable, HandleFor, InnerParams, NodeFor } from '../../common/types.js';
 import type { ClickOptions, ElementHandle } from '../ElementHandle.js';
 import type { Frame } from '../Frame.js';
 import type { Page } from '../Page.js';
@@ -189,7 +189,7 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
      *
      * @public
      */
-    map<To>(mapper: Mapper<T, To>): Locator<To>;
+    map<To, Args extends unknown[] = []>(mapper: Mapper<T, To, Args>, ...args: Args): Locator<To>;
     /**
      * Creates an expectation that is evaluated against located values.
      *
@@ -197,7 +197,7 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
      *
      * @public
      */
-    filter<S extends T>(predicate: Predicate<T, S>): Locator<S>;
+    filter<S extends T, Args extends unknown[] = []>(predicate: Predicate<T, S, Args>, ...args: Args): Locator<S>;
     /**
      * Creates an expectation that is evaluated against located handles.
      *
@@ -248,7 +248,7 @@ export declare class FunctionLocator<T> extends Locator<T> {
 /**
  * @public
  */
-export type Predicate<From, To extends From = From> = ((value: From) => value is To) | ((value: From) => Awaitable<boolean>);
+export type Predicate<From, To extends From = From, Args extends unknown[] = []> = ((value: From, ...args: InnerParams<Args>) => value is To) | ((value: From, ...args: InnerParams<Args>) => Awaitable<boolean>);
 /**
  * @internal
  */
@@ -280,7 +280,7 @@ export declare class FilteredLocator<From, To extends From> extends DelegatedLoc
 /**
  * @public
  */
-export type Mapper<From, To> = (value: From) => Awaitable<To>;
+export type Mapper<From, To, Args extends unknown[] = []> = (value: From, ...args: InnerParams<Args>) => Awaitable<To>;
 /**
  * @internal
  */

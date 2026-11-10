@@ -5,6 +5,7 @@
  */
 import { type CDPSession } from '../api/CDPSession.js';
 import { type NewDocumentScriptEvaluation } from '../api/Page.js';
+import type { WebWorker } from '../api/WebWorker.js';
 import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
@@ -39,6 +40,7 @@ export declare class FrameManager extends EventEmitter<FrameManagerEvents> {
     private setupEventListeners;
     initialize(client: CDPSession, frame?: CdpFrame | null): Promise<void>;
     page(): CdpPage;
+    worker(client: CDPSession): WebWorker | null;
     mainFrame(): CdpFrame;
     frames(): CdpFrame[];
     frame(frameId: string): CdpFrame | null;

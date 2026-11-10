@@ -4,6 +4,7 @@ import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { UnsupportedOperation } from '../common/Errors.js';
 import { stringToBase64 } from '../util/encoding.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';
+import { emitRequest, emitRequestFailed, emitRequestFinished, } from './NetworkEvents.js';
 export const requests = new WeakMap();
 /**
  * @internal
@@ -38,14 +39,10 @@ export class BidiHTTPRequest extends HTTPRequest {
             const httpRequest = _a.from(request, this.#frame, this.interception.enabled, this, this.#logger);
             this.#redirectChain.push(this);
             request.once('success', () => {
-                this.#frame
-                    .page()
-                    .trustedEmitter.emit("requestfinished" /* PageEvent.RequestFinished */, httpRequest);
+                emitRequestFinished(this.#frame.page(), httpRequest);
             });
             request.once('error', () => {
-                this.#frame
-                    .page()
-                    .trustedEmitter.emit("requestfailed" /* PageEvent.RequestFailed */, httpRequest);
+                emitRequestFailed(this.#frame.page(), httpRequest);
             });
             void httpRequest.finalizeInterceptions();
         });
@@ -62,13 +59,13 @@ export class BidiHTTPRequest extends HTTPRequest {
             this.#response = BidiHTTPResponse.from(data, this, this.#frame.page().browser().cdpSupported);
         });
         this.#request.on('authenticate', this.#handleAuthentication);
-        this.#frame.page().trustedEmitter.emit("request" /* PageEvent.Request */, this);
+        emitRequest(this.#frame.page(), this);
     }
     canBeIntercepted() {
         return this.#request.isBlocked;
     }
     interceptResolutionState() {
-        if (!this.#request.isBlocked) {
+        if (!this.#request.isBlocked && !this.interception.handled) {
             return { action: InterceptResolutionAction.Disabled };
         }
         return super.interceptResolutionState();
@@ -137,6 +134,12 @@ export class BidiHTTPRequest extends HTTPRequest {
     redirectChain() {
         return this.#redirectChain.slice();
     }
+    worker() {
+        throw new UnsupportedOperation('Not available in WebDriver BiDi');
+    }
+    page() {
+        return this.#frame.page();
+    }
     frame() {
         return this.#frame;
     }
@@ -164,7 +167,7 @@ export class BidiHTTPRequest extends HTTPRequest {
         this.interception.handled = true;
         return await this.#request.failRequest().catch(error => {
             this.interception.handled = false;
-            throw error;
+            return handleError(error, this.#logger);
         });
     }
     async _respond(response, _priority) {
@@ -173,11 +176,16 @@ export class BidiHTTPRequest extends HTTPRequest {
         if (response.body) {
             parsedBody = HTTPRequest.getResponse(response.body);
         }
-        const headers = getBidiHeaders(response.headers);
+        let headers = getBidiHeaders(response.headers);
         const hasContentLength = headers.some(header => {
             return header.name === 'content-length';
         });
         if (response.contentType) {
+            // Like the CDP implementation, `contentType` replaces a `content-type`
+            // passed in `headers` instead of sending both.
+            headers = headers.filter(header => {
+                return header.name !== 'content-type';
+            });
             headers.push({
                 name: 'content-type',
                 value: {
@@ -210,7 +218,7 @@ export class BidiHTTPRequest extends HTTPRequest {
         })
             .catch(error => {
             this.interception.handled = false;
-            throw error;
+            return handleError(error, this.#logger);
         });
     }
     #authenticationHandled = false;

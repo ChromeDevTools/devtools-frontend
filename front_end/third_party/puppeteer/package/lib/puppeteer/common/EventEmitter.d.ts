@@ -29,7 +29,7 @@ export interface CommonEventEmitter<Events extends Record<EventType, unknown>> {
  * @public
  */
 export type EventsWithWildcard<Events extends Record<EventType, unknown>> = Events & {
-    '*': Events[keyof Events];
+    '*': keyof Events;
 };
 /**
  * The EventEmitter class that many Puppeteer classes extend.
@@ -57,14 +57,14 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @param handler - the function to be called when the event occurs.
      * @returns `this` to enable you to chain method calls.
      */
-    on<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
+    on<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: (event: EventsWithWildcard<Events>[Key], eventData: Key extends '*' ? Events[keyof Events] : never) => void): this;
     /**
      * Remove an event listener from firing.
      * @param type - the event type you'd like to stop listening to.
      * @param handler - the function that should be removed.
      * @returns `this` to enable you to chain method calls.
      */
-    off<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler?: Handler<EventsWithWildcard<Events>[Key]>): this;
+    off<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler?: (event: EventsWithWildcard<Events>[Key], eventData: Key extends '*' ? Events[keyof Events] : never) => void): this;
     /**
      * Emit an event and call any associated listeners.
      *
@@ -79,7 +79,7 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @param handler - the handler function to run when the event occurs
      * @returns `this` to enable you to chain method calls.
      */
-    once<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
+    once<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: (event: EventsWithWildcard<Events>[Key], eventData: Key extends '*' ? Events[keyof Events] : never) => void): this;
     /**
      * Gets the number of listeners for a given event.
      *

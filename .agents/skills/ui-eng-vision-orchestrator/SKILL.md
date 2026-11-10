@@ -95,6 +95,13 @@ principles.
         `WrapperWidget`) in separate, preceding CLs. Always verify with
         `cog_api.py diff` before uploading that no changes from later commits
         leaked into earlier infrastructure CLs.
+    *   **Standalone CSS `@scope` CLs**: Migrating a Light DOM widget includes
+        ensuring its stylesheet is wrapped in `@scope to (devtools-widget > *)`
+        (removing the file from the `@devtools/no-unscoped-light-dom-styles`
+        `burndown` list in `eslint.config.mjs` once scoped). Always land this
+        in a small, standalone CSS CL separate from logic, template, or
+        widget-promotion CLs for bisectability, with screenshot baselines
+        established beforehand.
 
 
 
@@ -151,6 +158,8 @@ The plan you generate **MUST** follow this structure:
   - Assigned to: `ui-eng-vision-test-scaffolder`
 - [ ] **Pass 0.5: Privatize & Dead-Code Cleanup**
   - Mechanical prefactor: convert TypeScript `private` to ES `#private` and remove dead code
+- [ ] **Pass 0.75: Light DOM CSS @scope Wrapping (Standalone CL)**
+  - Ensure stylesheet is wrapped in `@scope to (devtools-widget > *)` and remove entry from the `@devtools/no-unscoped-light-dom-styles` burndown list in `eslint.config.mjs`
 - [ ] **Pass 1: Logic Consolidation**
   - Assigned to: `ui-eng-vision-logic-consolidator`
 - [ ] **Pass 2: Lit-HTML Rendering**
@@ -179,6 +188,14 @@ The plan you generate **MUST** follow this structure:
     2.  Convert internal TypeScript `private` fields/methods to ES `#private` (except those reflectively accessed by web tests).
     3.  Identify and remove unused dead code, redundant containers, or obsolete split widgets in a dedicated prefactor CL so mechanical renames don't clutter logic and view CLs.
     4.  Verify that all tests and lints pass and stage this prefactor CL before proceeding to logic consolidation.
+
+### Light DOM CSS @scope Wrapping (Pass 0.75 / Standalone CSS CL)
+
+*   **Trigger Condition**: Baseline tests green (screenshot baselines established).
+*   **Actions**:
+    1.  Wrap the Light DOM widget's stylesheet in `@scope to (devtools-widget > *)`.
+    2.  Remove the file from the `@devtools/no-unscoped-light-dom-styles` `burndown` list in `eslint.config.mjs`.
+    3.  Verify zero visual regressions against screenshot goldens and land this in a small, standalone CL separate from logic, template, and widget-promotion CLs for bisectability.
 
 ### Logic Consolidation
 

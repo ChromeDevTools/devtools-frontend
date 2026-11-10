@@ -86,6 +86,7 @@ clean `UI.Widget` classes that use native update rendering delegates.
     *   Use `this.requestUpdate()` across all presenter methods and setters; avoid synchronous `this.performUpdate()` calls or custom `#renderView()` methods.
     *   Use declarative `autofocus` for default focus targets rather than imperative `focus()` overrides or `ViewOutput` focus closures.
     *   Verify that no legacy `UI.TreeOutline`, `extends UI.TreeOutline.TreeElement` subclasses, `UI.ListControl`, `UI.ListWidget`, or `UI.InplaceEditor` remain before marking `Fixed: <id>`. If any remain, use `Bug: <id>`.
+    *   Verify that Light DOM stylesheets satisfy `@devtools/no-unscoped-light-dom-styles` (removed from the `eslint.config.mjs` `burndown` list) and pass `plugin/check_scope_selectors` (`:scope` instead of `:host`, theme-aware tokens instead of ancestor theme/platform classes) before marking `Fixed: <id>`.
 
 --------------------------------------------------------------------------------
 
@@ -105,3 +106,4 @@ clean `UI.Widget` classes that use native update rendering delegates.
 4.  ❓ **Lifecycle & Reactivity**: Does presenter code call `this.requestUpdate()` asynchronously (no synchronous `performUpdate()`), with non-destructive `wasShown()`/`willHide()` subscriptions?
 5.  ❓ **No Legacy Controls**: Are all `TreeOutline`/`TreeElement` subclasses, `ListControl`, and `InplaceEditor` instances eliminated before using `Fixed: <id>`?
 6.  ❓ **Build**: Does the code compile and do tests pass?
+7.  ❓ **CSS @scope Completeness**: Does the Light DOM widget satisfy `@devtools/no-unscoped-light-dom-styles` (removed from the `eslint.config.mjs` burndown list) and `plugin/check_scope_selectors` (`:scope` instead of `:host`, theme-aware tokens) before marking `Fixed: <id>`?

@@ -141,6 +141,11 @@ existing element containers.
         - Ensure custom elements with state passed via JS properties (`.data`)
           override `cloneNode(deep)` and reflect dynamic state via DOM
           attributes so shadow clones stay updated.
+    *   **Light DOM CSS Encapsulation (`@scope`)**:
+        - Verify stylesheets satisfy `@devtools/no-unscoped-light-dom-styles`. Never add files to the `burndown` list in `eslint.config.mjs`; remove the entry from `burndown` once scoped.
+        - Obey `plugin/check_scope_selectors`: never use `:host` inside `@scope` (it is unconditionally forbidden, even with `:scope` or `&`), use `:scope` to style the root container, and use theme-aware design tokens (`--sys-color-*` / `--app-color-*`) instead of ancestor classes like `.theme-with-dark-background` or `:host-context(...)` (which receive an implicit `:scope ` prefix and never match without `:scope` or `&`).
+        - Remove redundant `inspectorCommonStyles` or `textButtonStyles` imports from Light DOM views (`installComponentRootStyles()` already provides them). For other shared stylesheets, wrap inline as `<style>@scope to (devtools-widget > *) { ${styles} }</style>`.
+        - Beware that the `(devtools-widget > *)` lower boundary stops cascading into declarative `<devtools-widget>` children (`${widget(...)}`), but does **not** stop at imperatively attached `childWidget.show(container)` legacy children.
 
 11. **Render Templates Syntax & Code Movement**:
 
@@ -265,3 +270,4 @@ existing element containers.
 5.  ❓ **Split Views**: Does `<devtools-split-view>` have `flex: auto; height: 100%;` CSS and reuse existing split settings?
 6.  ❓ **String Audit**: Did I verify that any removed `UIStrings` weren't from accidentally dropped UI branches?
 7.  ❓ **Build**: Does the code compile and do visual tests pass with 0% diff?
+8.  ❓ **CSS @scope Encapsulation**: Are Light DOM styles wrapped in `@scope to (devtools-widget > *)` with `:scope` instead of `:host`, theme-aware `--sys-color-*` tokens instead of theme classes, redundant common styles removed, and no entries added to the ESLint burndown list?

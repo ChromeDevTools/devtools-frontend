@@ -83,7 +83,7 @@ When migrating imperative components (extending `UI.VBox`, `UI.Panel`, or `HTMLE
     *   **Special Case:** If the component *must* extend `UI.Panel.Panel` or `UI.Dialog.Dialog` (to retain specific functionality), you cannot use `requestUpdate()`. Instead, call `this.performUpdate()` directly on state changes.
 3.  **State Migration:** Move DOM-stored state to private class fields.
 4.  **Update Usage:** Replace `new MyComponent()` instantiations with declarative `widget(MyComponent, {params})` in parent templates.
-5.  **Scoping Styles:** Ensure your CSS file uses the `@scope` block to prevent style leaks:
+5.  **Scoping Styles:** Ensure your CSS file uses an `@scope to (devtools-widget > *)` block to prevent style leaks. Land `@scope` CSS wrapping in its own small, standalone CL separate from widget migration CLs so visual regressions are easy to bisect:
     ```css
     @scope to (devtools-widget > *) {
       ...
@@ -98,6 +98,9 @@ DevTools widgets typically render into Light DOM (the default for `UI.Widget`). 
 ```css
 /* myWidget.css */
 @scope to (devtools-widget > *) {
+  :scope {
+    display: flex;
+  }
   .my-class { ... }
 }
 ```
@@ -112,6 +115,17 @@ render(html`
   <div class="my-widget">...</div>
 `, target);
 ```
+
+**Automated Lint Enforcement:**
+- `@devtools/no-unscoped-light-dom-styles` (ESLint): checks stylesheets injected by Light DOM widgets (`<style>${styles}</style>`, `this.registerRequiredCSS()`, `appendStyle()`) and requires all rules to sit inside a top-level `@scope` block. Never add new files to the self-cleaning `burndown` list in `eslint.config.mjs`; remove migrated files from the list once scoped.
+- `plugin/check_scope_selectors` (stylelint): unconditionally forbids `:host` inside `@scope` (even with `:scope` or `&`), and flags ancestor selectors that receive an implicit `:scope ` descendant combinator and cannot match without `:scope` or `&` (`:host-context()`, `:root`, `html`, `body`, `.theme-with-dark-background`, `.platform-*`, `.overlay-scrollbar-enabled`).
+
+**Key `@scope` Gotchas & Rules:**
+*   **`:scope` instead of `:host`**: `:host` is Shadow DOM-only and never matches inside `@scope`. Style the widget's root container element with `:scope`.
+*   **Theme-aware tokens instead of theme or platform classes**: Because un-anchored selectors inside `@scope` receive an implicit `:scope ` prefix, selectors like `.theme-with-dark-background .foo` or `:host-context(...)` look inside the widget for the ancestor class and never match. Use theme-aware design tokens (`--sys-color-*` / `--app-color-*`) instead.
+*   **Shared stylesheets**: Do not inject `inspectorCommonStyles` or `textButtonStyles` into Light DOM views (`installComponentRootStyles()` already injects them globally into the document and shadow roots). Wrap other shared stylesheets inline as `<style>@scope to (devtools-widget > *) { ${styles} }</style>` so Shadow DOM consumers stay unaffected.
+*   **Lower boundary and imperative child widgets**: The `(devtools-widget > *)` lower boundary stops cascading into declarative `<devtools-widget>` children (`${widget(...)}`), but it does **not** stop at legacy imperatively attached `<div class="widget">` children (`childWidget.show(container)`).
+*   **Small, Standalone CLs**: Always land `@scope` CSS wrapping in a dedicated, standalone CL separate from logic, template, or widget-promotion CLs so visual regressions are easy to bisect.
 
 **Note:** The `{host: input}` option in `render()` is generally **not required** unless you are using specific Shadow DOM patterns that necessitate it. The `@scope` strategy is the preferred method for style isolation in DevTools widgets.
 

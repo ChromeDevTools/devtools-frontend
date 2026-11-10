@@ -3,16 +3,18 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
+import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
@@ -44,75 +46,153 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedSelectivePermiss
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {widget} = UI.Widget;
 
-export class AffectedSelectivePermissionsInterventionView extends AffectedResourcesView {
-  readonly #linkifier = new Components.Linkifier.Linkifier();
+const STACK_TRACE_OPTIONS: Components.JSPresentationUtils.Options = {
+  expandable: true,
+};
 
-  protected getResourceNameWithCount(count: number): string {
-    return i18nString(UIStrings.nViolations, {n: count});
-  }
+export interface AdAncestryScript {
+  target: SDK.Target.Target|null;
+  scriptId: Protocol.Runtime.ScriptId;
+}
 
-  #render(): void {
-    const issues = Array.from(this.issue.getSelectivePermissionsInterventionIssues());
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(
-        html`
-      <tr>
-        <td class="affected-resource-header">${i18nString(UIStrings.api)}</td>
-        <td class="affected-resource-header">${i18nString(UIStrings.script)}</td>
-        <td class="affected-resource-header">${i18nString(UIStrings.adAncestry)}</td>
-      </tr>
-      ${issues.map(issue => this.#renderDetail(issue))}
-    `,
-        this.affectedResources, {host: this});
-    this.updateAffectedResourceCount(issues.length);
-  }
+export type ScriptCellState = {
+  status: 'unknown',
+}|{
+  status: 'loading',
+}|{
+  status: 'ready',
+  stackTrace: StackTrace.StackTrace.StackTrace,
+};
 
-  #renderDetail(issue: IssuesManager.SelectivePermissionsInterventionIssue.SelectivePermissionsInterventionIssue):
-      LitTemplate {
-    const details = issue.details();
-    const issuesModel = issue.model();
+export interface InterventionRow {
+  apiName: string;
+  script: ScriptCellState;
+  adAncestryScripts: AdAncestryScript[];
+  rootScriptFilterlistRule?: string;
+}
 
-    const stackTracePromise = (details.stackTrace && issuesModel) ?
-        this.#resolveStackTrace(details.stackTrace, issuesModel) :
-        Promise.resolve(html`<span>${i18nString(UIStrings.unknown)}</span>`);
+export interface ViewInput {
+  rows: InterventionRow[];
+}
 
-    const target = issuesModel ? issuesModel.target() : null;
+export type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 
-    return html`
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const renderScriptCell = (script: ScriptCellState): LitTemplate => {
+    switch (script.status) {
+      case 'unknown':
+        return html`<span>${i18nString(UIStrings.unknown)}</span>`;
+      case 'loading':
+        return html`<span>${i18nString(UIStrings.loading)}</span>`;
+      case 'ready':
+        return html`${widget(Components.JSPresentationUtils.StackTracePreviewContent, {
+          stackTrace: script.stackTrace,
+          options: STACK_TRACE_OPTIONS,
+        })}`;
+      default:
+        Platform.assertNever(script, `Unhandled script cell state: ${JSON.stringify(script)}`);
+    }
+  };
+
+  // clang-format off
+  render(html`
+    <tr>
+      <td class="affected-resource-header">${i18nString(UIStrings.api)}</td>
+      <td class="affected-resource-header">${i18nString(UIStrings.script)}</td>
+      <td class="affected-resource-header">${i18nString(UIStrings.adAncestry)}</td>
+    </tr>
+    ${input.rows.map(row => html`
       <tr class="affected-resource-directive">
-        <td>${details.apiName}</td>
-        <td>${Directives.until(stackTracePromise, html`<span>${i18nString(UIStrings.loading)}</span>`)}</td>
+        <td>${row.apiName}</td>
+        <td>${renderScriptCell(row.script)}</td>
         <td class="affected-resource-cell">
           <div class="ad-ancestry-list">
-            ${(details.adAncestry?.ancestryChain || []).map(script => {
-      const link =
-          this.#linkifier.linkifyScriptLocation(target, script.scriptId, '' as Platform.DevToolsPath.UrlString, 0);
-      return html`<div>${link}</div>`;
-    })}
-            ${
-        details.adAncestry?.rootScriptFilterlistRule ?
-            html`<div>Rule: ${details.adAncestry.rootScriptFilterlistRule}</div>` :
-            nothing}
+            ${row.adAncestryScripts.map(script => html`
+              <div>${widget(Components.Linkifier.ScriptLocationLink, {
+                target: script.target ?? undefined,
+                scriptId: script.scriptId,
+                sourceURL: Platform.DevToolsPath.EmptyUrlString,
+                lineNumber: 0,
+              })}</div>
+            `)}
+            ${row.rootScriptFilterlistRule ? html`<div>Rule: ${row.rootScriptFilterlistRule}</div>` : nothing}
           </div>
         </td>
       </tr>
-    `;
+    `)}
+  `, target);
+  // clang-format on
+};
+
+export class AffectedSelectivePermissionsInterventionView extends AffectedResourcesView {
+  readonly #view: View;
+  #updateId = 0;
+
+  constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string,
+              view: View = DEFAULT_VIEW) {
+    super(parent, issue, jslogContext);
+    this.#view = view;
   }
 
-  async #resolveStackTrace(stackTrace: Protocol.Runtime.StackTrace, issuesModel: SDK.IssuesModel.IssuesModel):
-      Promise<LitTemplate> {
+  protected override getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
+    return i18nString(UIStrings.nViolations, {n: count});
+  }
+
+  #appendDetails(
+      issues: Iterable<IssuesManager.SelectivePermissionsInterventionIssue.SelectivePermissionsInterventionIssue>):
+      void {
+    const updateId = ++this.#updateId;
+    const rows: InterventionRow[] = [];
+    const pendingResolutions: Array<Promise<void>> = [];
+
+    for (const issue of issues) {
+      const details = issue.details();
+      const issuesModel = issue.model();
+      const target = issuesModel && !issuesModel.target().isDisposed() ? issuesModel.target() : null;
+      const rowIndex = rows.length;
+      rows.push({
+        apiName: details.apiName,
+        script: (details.stackTrace && target) ? {status: 'loading'} : {status: 'unknown'},
+        adAncestryScripts: (details.adAncestry?.ancestryChain ?? []).map(script => ({
+                                                                           target,
+                                                                           scriptId: script.scriptId,
+                                                                         })),
+        rootScriptFilterlistRule: details.adAncestry?.rootScriptFilterlistRule,
+      });
+
+      if (details.stackTrace && target) {
+        pendingResolutions.push(this.#resolveStackTrace(details.stackTrace, target).then(stackTrace => {
+          if (updateId !== this.#updateId) {
+            return;
+          }
+          rows[rowIndex] = {
+            ...rows[rowIndex],
+            script: {status: 'ready', stackTrace},
+          };
+          this.#view({rows: [...rows]}, undefined, this.affectedResources);
+        }));
+      }
+    }
+
+    this.#view({rows: [...rows]}, undefined, this.affectedResources);
+    this.updateAffectedResourceCount(rows.length);
+    void Promise.all(pendingResolutions);
+  }
+
+  async #resolveStackTrace(stackTrace: Protocol.Runtime.StackTrace,
+                           target: SDK.Target.Target): Promise<StackTrace.StackTrace.StackTrace> {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-    const stackTraceTranslated =
-        await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(stackTrace, issuesModel.target());
-    return html`${widget(Components.JSPresentationUtils.StackTracePreviewContent, {
-      stackTrace: stackTraceTranslated,
-      options: {expandable: true},
-    })}`;
+    return await debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(stackTrace, target);
   }
 
-  update(): void {
+  override clear(): void {
+    ++this.#updateId;
     this.requestResolver.clear();
-    this.#linkifier.reset();
-    this.#render();
+    this.#view({rows: []}, undefined, this.affectedResources);
+  }
+
+  override update(): void {
+    this.requestResolver.clear();
+    this.#appendDetails(this.issue.getSelectivePermissionsInterventionIssues());
   }
 }

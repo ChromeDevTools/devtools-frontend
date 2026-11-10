@@ -52,6 +52,7 @@ devtools_ui_module("issues") {
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
+    "../../models/stack_trace:bundle",
     "../../panels/network/forward:bundle",
     "../../ui/components/adorners:bundle",
     "../../ui/components/buttons:bundle",
@@ -125,6 +126,7 @@ devtools_ui_module("unittests") {
     "../../panels/network/forward:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
     "./components:bundle",
   ]

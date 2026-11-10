@@ -11,11 +11,13 @@ group("test") {
     ":api_tests",
     ":e2e_tests",
     ":run",
+    ":script_tests",
     ":unittests",
     "ai_evals",
     "api",
     "e2e",
     "perf",
+    "scripts",
     "shared",
   ]
 }
@@ -35,6 +37,14 @@ group("e2e_tests") {
   deps = [
     "e2e",
     "e2e:devtools_e2e_tests",
+  ]
+}
+
+group("script_tests") {
+  testonly = true
+  deps = [
+    "scripts",
+    "scripts:devtools_script_tests",
   ]
 }
 

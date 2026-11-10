@@ -334,6 +334,11 @@ group("e2e_tests") {
   public_deps = [ "test:e2e_tests" ]
 }
 
+group("script_tests") {
+  testonly = true
+  public_deps = [ "test:script_tests" ]
+}
+
 group("unittests") {
   testonly = true
   public_deps = [ "test:unittests" ]

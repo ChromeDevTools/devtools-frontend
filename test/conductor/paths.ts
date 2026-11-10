@@ -109,6 +109,10 @@ export function resolveBuildTestId(spec: string): string {
     file = match[1];
     caseName = match[2];
   }
+  if (file.startsWith('scripts/') || file.startsWith('scripts\\')) {
+    const absoluteFile = path.join(SOURCE_ROOT, file);
+    return caseName !== undefined ? `${absoluteFile}:${caseName}` : absoluteFile;
+  }
   const jsFile = file.replace(/\.ts$/, '.js');
   const absoluteJsFile = path.isAbsolute(jsFile) ? jsFile : path.join(GEN_DIR, jsFile);
   return caseName !== undefined ? `${absoluteJsFile}:${caseName}` : absoluteJsFile;

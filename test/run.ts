@@ -358,9 +358,25 @@ class ScriptTestId extends TestId {
 class ScriptTests extends Tests {
   override readonly cwd = SOURCE_ROOT;
 
+  #getWrapper(): string|undefined {
+    if (options['debug'] || options['debug-driver']) {
+      return undefined;
+    }
+    const wrapper = path.join(BUILD_ROOT, 'bin', 'run_devtools_script_tests');
+    return fs.existsSync(wrapper) ? wrapper : undefined;
+  }
+
+  override get executable() {
+    return this.#getWrapper() ?? super.executable;
+  }
+
   override run(tests: TestId[]) {
+    const scriptTests = tests.map(test => ScriptTestId.getFromTestId(test));
+    if (this.#getWrapper()) {
+      return super.run(scriptTests, []);
+    }
     return super.run(
-        tests.map(test => ScriptTestId.getFromTestId(test)),
+        scriptTests,
         [
           path.join(SOURCE_ROOT, 'test', 'scripts', 'run_mocha.ts'),
         ],
@@ -433,6 +449,7 @@ function main() {
           'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
           'third_party/devtools-frontend/src/test/api:devtools_api_tests',
           'third_party/devtools-frontend/src/test/e2e:devtools_e2e_tests',
+          'third_party/devtools-frontend/src/test/scripts:devtools_script_tests',
           'third_party/devtools-frontend/src/test/unit:devtools_node_unit_tests',
           'third_party/devtools-frontend/src/test/unit:devtools_unit_tests',
         ] :

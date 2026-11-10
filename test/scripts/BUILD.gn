@@ -1,0 +1,42 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../scripts/build/ninja/script_test.gni")
+import("../../scripts/build/ninja/vars.gni")
+
+group("scripts") {
+  testonly = true
+  deps = [ ":devtools_script_tests" ]
+}
+
+node_script_test("devtools_script_tests") {
+  script = devtools_location_prepend + "test/scripts/run_mocha.ts"
+
+  data = [
+    devtools_location_prepend + "config/typescript/",
+    devtools_location_prepend + "front_end/application_tokens.css",
+    devtools_location_prepend + "front_end/core/platform/BUILD.gn",
+    devtools_location_prepend + "front_end/core/platform/api/BUILD.gn",
+    devtools_location_prepend + "front_end/design_system_tokens.css",
+    devtools_location_prepend + "front_end/panels/explain/",
+    devtools_location_prepend + "front_end/testing/MochaHelpers.ts",
+    devtools_location_prepend + "front_end/testing/TestIdGeneration.ts",
+    devtools_location_prepend + "front_end/ui/legacy/inspectorCommon.css",
+    devtools_location_prepend +
+        "front_end/ui/visual_logging/KnownContextValues.ts",
+    devtools_location_prepend + "scripts/",
+    devtools_location_prepend + "test/build.json",
+    devtools_location_prepend + "test/conductor/",
+    devtools_location_prepend + "test/scripts/",
+    devtools_location_prepend + "test/shared/",
+  ]
+
+  if (host_os == "linux") {
+    data += [ "//buildtools/linux64/" ]
+  } else if (host_os == "mac") {
+    data += [ "//buildtools/mac/" ]
+  } else if (host_os == "win") {
+    data += [ "//buildtools/win/" ]
+  }
+}

@@ -226,12 +226,13 @@ export const TestConfig: Config = {
   isAiEvalTest: false,
   isLuci: process.env['LUCI_CONTEXT'] !== undefined,
   isPerfTest: false,
-  expectationsFile: options['expectations-file'],
+  expectationsFile: options['expectations-file'] ? path.resolve(options['expectations-file']) : undefined,
   bail: options['bail'],
   forceScreenshots: Boolean(options['force-screenshots']),
   otaUsername: options['ota-username'],
   otaPassword: options['ota-password'],
-  isolatedScriptTestOutput: options['isolated-script-test-output'],
+  isolatedScriptTestOutput:
+      options['isolated-script-test-output'] ? path.resolve(options['isolated-script-test-output']) : undefined,
 };
 
 export function shuffleTests(tests: string[]): string[] {

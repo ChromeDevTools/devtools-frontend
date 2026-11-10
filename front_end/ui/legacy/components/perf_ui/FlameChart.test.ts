@@ -12,7 +12,7 @@ import type * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Extensions from '../../../../panels/timeline/extensions/extensions.js';
 import {findMenuItemWithLabel} from '../../../../testing/ContextMenuHelpers.js';
-import {assertScreenshot, raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM, setColorScheme} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
   allThreadEntriesInTrace,
@@ -30,6 +30,11 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
 import * as PerfUI from './perf_ui.js';
 
 describeWithEnvironment('FlameChart', () => {
+  afterEach(() => {
+    setColorScheme('light');
+    ThemeSupport.ThemeSupport.clearThemeCache();
+  });
+
   it('sorts decorations, putting candy striping before warning triangles', async () => {
     const decorations: PerfUI.FlameChart.FlameChartDecoration[] = [
       {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
@@ -1485,6 +1490,35 @@ describeWithEnvironment('FlameChart', () => {
     await assertScreenshot('timeline/interactions_track.png');
   });
 
+  it('renders the interactions track in dark mode when selected', async function() {
+    setColorScheme('dark');
+    ThemeSupport.ThemeSupport.clearThemeCache();
+    const {flameChart} = await renderFlameChartIntoDOM(this, {
+      dataProvider: 'MAIN',
+      fileNameOrParsedTrace: 'slow-interaction-button-click.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('Interactions');
+      },
+      expandTracks() {
+        return true;
+      },
+      customStartTime: 337944700 as Trace.Types.Timing.Milli,
+      customEndTime: 337945100 as Trace.Types.Timing.Milli,
+    });
+    // Select the Interactions track via a click inside the track row.
+    const canvas = flameChart.getCanvas();
+    const rect = canvas.getBoundingClientRect();
+    canvas.dispatchEvent(new MouseEvent('click', {
+      clientX: rect.left + 100,
+      clientY: rect.top + 35,
+      bubbles: true,
+    }));
+    await raf();
+    // Clicking the canvas focuses it, so blur before taking the screenshot.
+    flameChart.blurCanvasForTesting();
+    await assertScreenshot('timeline/interactions_track_dark_selected.png');
+  });
+
   it('candy stripes long interactions', async function() {
     await renderFlameChartIntoDOM(this, {
       dataProvider: 'MAIN',
@@ -1594,6 +1628,30 @@ describeWithEnvironment('FlameChart', () => {
     flameChart.toggleGroupExpand(0);
     await raf();
     await assertScreenshot('timeline/network_track.png');
+  });
+
+  it('renders the network track in dark mode when selected', async function() {
+    setColorScheme('dark');
+    ThemeSupport.ThemeSupport.clearThemeCache();
+    const {flameChart} = await renderFlameChartIntoDOM(this, {
+      dataProvider: 'NETWORK',
+      fileNameOrParsedTrace: 'web-dev.json.gz',
+      customHeight: 350,
+      customEndTime: 1020035221.509 as Trace.Types.Timing.Milli,
+    });
+    flameChart.toggleGroupExpand(0);
+    await raf();
+    const canvas = flameChart.getCanvas();
+    const rect = canvas.getBoundingClientRect();
+    canvas.dispatchEvent(new MouseEvent('click', {
+      clientX: rect.left + 100,
+      clientY: rect.top + 35,
+      bubbles: true,
+    }));
+    await raf();
+    // Clicking the canvas focuses it, so blur before taking the screenshot.
+    flameChart.blurCanvasForTesting();
+    await assertScreenshot('timeline/network_track_dark_selected.png');
   });
 
   it('renders the user timing track', async function() {

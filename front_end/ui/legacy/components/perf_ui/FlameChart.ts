@@ -2857,10 +2857,6 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
         return;
       }
       if (!this.isGroupCollapsible(index) || group.expanded) {
-        if (!group.style.shareHeaderLine && this.isGroupFocused(index)) {
-          context.fillStyle = group.style.backgroundColor;
-          context.fillRect(0, offset, width, group.style.height);
-        }
         return;
       }
       let nextGroup = index + 1;

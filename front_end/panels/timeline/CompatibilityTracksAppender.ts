@@ -274,6 +274,9 @@ export class CompatibilityTracksAppender {
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData, entryData: Trace.Types.Events.Event[],
       legacyEntryTypeByLevel: EntryType[]): void {
     this.#trackForGroup.clear();
+    this.#trackForLevel.clear();
+    this.#eventsForTrack.clear();
+    this.#trackEventsForTreeview.clear();
     this.#flameChartData = flameChartData;
     this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;

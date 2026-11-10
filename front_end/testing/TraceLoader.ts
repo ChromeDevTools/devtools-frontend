@@ -248,12 +248,17 @@ export class TraceLoader {
         .resetWithNewBounds(parsedTrace.data.Meta.traceBounds);
   }
 
-  static async executeTraceEngineOnFileContents(
-      contents: Trace.Types.File.Contents, emulateFreshRecording = false,
-      traceEngineConfig?: Trace.Types.Configuration.Configuration): Promise<ParsedTraceAndModel> {
+  static async executeTraceEngineOnFileContents(contents: Trace.Types.File.Contents|Protocol.Profiler.Profile,
+                                                emulateFreshRecording = false,
+                                                traceEngineConfig?: Trace.Types.Configuration.Configuration):
+      Promise<ParsedTraceAndModel> {
     i18n.DevToolsLocale.DevToolsLocale.instance();
-    const events = 'traceEvents' in contents ? contents.traceEvents : contents;
-    const metadata = 'metadata' in contents ? contents.metadata : {};
+    const normalizedContents = 'nodes' in contents ?
+        Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
+            contents, Trace.Types.Events.ThreadID(1)) :
+        contents;
+    const events = 'traceEvents' in normalizedContents ? normalizedContents.traceEvents : normalizedContents;
+    const metadata = 'metadata' in normalizedContents ? normalizedContents.metadata : {};
     return await new Promise((resolve, reject) => {
       const model = Trace.TraceModel.Model.createWithAllHandlers(traceEngineConfig);
       model.addEventListener(Trace.TraceModel.ModelUpdateEvent.eventName, (event: Event) => {
@@ -297,7 +302,10 @@ export class TraceLoader {
               return null;
             },
           })
-          .catch(e => console.error(e));
+          .catch(e => {
+            console.error(e);
+            reject(e);
+          });
     });
   }
 

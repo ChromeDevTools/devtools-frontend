@@ -530,6 +530,30 @@ describe('MetaHandler', function() {
     assert.strictEqual(data.mainFrameURL, 'https://web.dev/');
   });
 
+  it('does not leak the main frame or device pixel ratio into the next trace', async function() {
+    for (const event of await TraceLoader.rawEvents(this, 'web-dev-with-timings.json.gz')) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    const first = Trace.Handlers.ModelHandlers.Meta.data();
+    assert.notStrictEqual(first.mainFrameId, '');
+    assert.isDefined(first.devicePixelRatio);
+
+    // A CPU profile has no frames or viewport.
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    const profile = await TraceLoader.rawCPUProfile(this, 'basic.cpuprofile.gz');
+    const contents = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
+        profile, Trace.Types.Events.ThreadID(1));
+    for (const event of contents.traceEvents) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    const second = Trace.Handlers.ModelHandlers.Meta.data();
+    assert.strictEqual(second.mainFrameId, '');
+    assert.strictEqual(second.mainFrameURL, '');
+    assert.isUndefined(second.devicePixelRatio);
+  });
+
   it('will alter the main frame URL based on the first main frame navigation', async function() {
     // This trace has the wrong URL in TracingStartedInBrowser - but it will be
     // corrected by looking at the first main frame navigation.

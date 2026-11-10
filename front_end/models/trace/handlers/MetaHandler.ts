@@ -103,12 +103,15 @@ export function reset(): void {
   processNames = new Map();
   mainFrameNavigations = [];
   sameDocumentNavigations = [];
+  mainFrameId = '';
+  mainFrameURL = '';
 
   browserProcessId = Types.Events.ProcessID(-1);
   browserThreadId = Types.Events.ThreadID(-1);
   gpuProcessId = Types.Events.ProcessID(-1);
   gpuThreadId = Types.Events.ThreadID(-1);
   viewportRect = null;
+  devicePixelRatio = null;
   topLevelRendererIds = new Set();
   threadsInProcess = new Map();
   rendererProcessesByFrameId = new Map();

@@ -3,15 +3,18 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {it} from 'mocha';
+import {afterEach, it} from 'mocha';
 
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM, setColorScheme} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as Components from './components.js';
 
 describeWithEnvironment('SidebarInsightsTab', () => {
+  afterEach(() => {
+    setColorScheme('light');
+  });
   it('renders a list of insights per navigation in the sidebar', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
 
@@ -42,5 +45,37 @@ describeWithEnvironment('SidebarInsightsTab', () => {
 
     const sets = component.element.shadowRoot.querySelectorAll('[data-insight-set-key]');
     assert.lengthOf(sets, 4);  // same number of sets as there are navigations
+  });
+
+  it('applies flex layout to the content element via :scope', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
+
+    const component = new Components.SidebarInsightsTab.SidebarInsightsTab();
+    renderElementIntoDOM(component);
+    component.parsedTrace = parsedTrace;
+    await component.updateComplete;
+
+    const computedStyle = getComputedStyle(component.contentElement);
+    assert.strictEqual(computedStyle.display, 'flex');
+    assert.strictEqual(computedStyle.flexDirection, 'column');
+    assert.strictEqual(computedStyle.flexWrap, 'nowrap');
+    assert.strictEqual(computedStyle.flexGrow, '1');
+  });
+
+  it('renders correctly in light and dark theme', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
+
+    const component = new Components.SidebarInsightsTab.SidebarInsightsTab();
+    component.element.style.width = '300px';
+    component.element.style.height = '400px';
+    renderElementIntoDOM(component);
+    component.parsedTrace = parsedTrace;
+    await component.updateComplete;
+
+    setColorScheme('light');
+    await assertScreenshot('timeline/sidebar_insights_tab_light.png');
+
+    setColorScheme('dark');
+    await assertScreenshot('timeline/sidebar_insights_tab_dark.png');
   });
 });

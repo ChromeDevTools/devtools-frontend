@@ -10,9 +10,24 @@ export type FinalizeOptions = Types.Configuration.ParseOptions&{
 };
 
 export interface Handler {
+  /**
+   * The processor calls this before and after every parse. It must assign new
+   * containers and never empty exported ones in place, because the parsed
+   * trace keeps references to them.
+   */
   reset(): void;
   handleEvent(data: object): void;
+  /**
+   * Handlers may release intermediate state that `data()` does not return, but not
+   * state that they export or that dependent handlers read in their own
+   * `finalize()`.
+   */
   finalize(options?: FinalizeOptions): Promise<void>;
+  /**
+   * The processor reads this once after every `finalize()` has run. Consumers
+   * must use `processor.data` or `Model#parsedTrace()`, because handler state
+   * is reset after the parse.
+   */
   data(): unknown;
   deps?(): HandlerName[];
   handleUserConfig?(config: Types.Configuration.Configuration): void;

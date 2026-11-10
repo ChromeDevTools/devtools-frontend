@@ -1452,8 +1452,8 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     }
 
     // Map scripts by ID so extension script content can be removed. Read them
-    // from the saved trace, not from the global `Scripts.data()` handler state,
-    // which always holds the last parsed trace.
+    // from the saved trace's `parsedTrace.data`, because the global `Scripts`
+    // handler state is reset after every parse.
     const mappedScriptsWithData = parsedTrace.data.Scripts.scripts;
     const scriptByIdMap = new Map<string, Trace.Handlers.ModelHandlers.Scripts.Script>();
 

@@ -141,6 +141,49 @@ describe('TraceProcessor', function() {
     });
   });
 
+  describe('handler state', () => {
+    it('Successful parse releases handler state', async function() {
+      const processor = new Trace.Processor.TraceProcessor({
+        Renderer: Trace.Handlers.ModelHandlers.Renderer,
+        Samples: Trace.Handlers.ModelHandlers.Samples,
+        NetworkRequests: Trace.Handlers.ModelHandlers.NetworkRequests,
+      },
+                                                           Trace.Types.Configuration.defaults());
+      const events = await TraceLoader.rawEvents(this, 'web-dev-outermost-frames.json.gz');
+      await processor.parse(events, {isFreshRecording: true, isCPUProfile: false, yieldToMain: false});
+      assert.isOk(processor.data);
+      assert.isTrue(processor.data.Renderer.processes.size > 0);
+      assert.strictEqual(Trace.Handlers.ModelHandlers.Renderer.data().processes.size, 0);
+    });
+
+    it('Failed parse releases handler state and keeps the error', async function() {
+      const processor = new Trace.Processor.TraceProcessor({
+        Renderer: Trace.Handlers.ModelHandlers.Renderer,
+        Samples: Trace.Handlers.ModelHandlers.Samples,
+        NetworkRequests: {
+          ...Trace.Handlers.ModelHandlers.NetworkRequests,
+          finalize: async () => {
+            throw new Error('finalize failed');
+          },
+        },
+      },
+                                                           Trace.Types.Configuration.defaults());
+      const events = await TraceLoader.rawEvents(this, 'web-dev-outermost-frames.json.gz');
+
+      let thrown: Error|undefined;
+      try {
+        await processor.parse(events, {isFreshRecording: true, isCPUProfile: false, yieldToMain: false});
+      } catch (e) {
+        if (e instanceof Error) {
+          thrown = e;
+        }
+      }
+      assert.strictEqual(thrown?.message, 'finalize failed');
+      assert.isNull(processor.data);
+      assert.strictEqual(Trace.Handlers.ModelHandlers.Renderer.data().processes.size, 0);
+    });
+  });
+
   describe('handler sorting', () => {
     const baseHandler = {
       data() {},

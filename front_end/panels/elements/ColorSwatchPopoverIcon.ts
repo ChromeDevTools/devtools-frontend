@@ -39,7 +39,7 @@ export class BezierPopoverIcon {
   private readonly swatch: Icon;
   private readonly match: SDK.CSSPropertyParser.Match;
   private readonly context: RenderingContext;
-  private readonly boundBezierChanged: (event: Common.EventTarget.EventTargetEvent<string>) => void;
+  private readonly boundBezierChanged: (event: InlineEditor.BezierEditor.BezierChangedEvent) => void;
   private readonly boundOnScroll: (event: Event) => void;
   private bezierEditor?: InlineEditor.BezierEditor.BezierEditor;
   private scrollerElement?: Element;
@@ -81,7 +81,8 @@ export class BezierPopoverIcon {
     const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(text) ||
         InlineEditor.AnimationTimingModel.LINEAR_BEZIER;
     this.bezierEditor = new InlineEditor.BezierEditor.BezierEditor(model);
-    this.bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BEZIER_CHANGED, this.boundBezierChanged);
+    this.bezierEditor.element.addEventListener(InlineEditor.BezierEditor.BezierChangedEvent.eventName,
+                                               this.boundBezierChanged);
     this.swatchPopoverHelper.show(this.bezierEditor, this.swatch, this.onPopoverHidden.bind(this));
     this.scrollerElement = this.swatch.enclosingNodeOrSelfWithClass('style-panes-wrapper');
     if (this.scrollerElement) {
@@ -97,7 +98,7 @@ export class BezierPopoverIcon {
     }
   }
 
-  private bezierChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+  private bezierChanged(event: InlineEditor.BezierEditor.BezierChangedEvent): void {
     this.swatch.dispatchEvent(new ValueEditEvent(event.data));
     this.context.recordEdit(this.match, event.data);
     void this.propertyData.applyStyleText(this.propertyData.renderedPropertyText(), false);
@@ -113,7 +114,8 @@ export class BezierPopoverIcon {
     }
 
     if (this.bezierEditor) {
-      this.bezierEditor.removeEventListener(InlineEditor.BezierEditor.Events.BEZIER_CHANGED, this.boundBezierChanged);
+      this.bezierEditor.element.removeEventListener(InlineEditor.BezierEditor.BezierChangedEvent.eventName,
+                                                    this.boundBezierChanged);
     }
     this.bezierEditor = undefined;
 
@@ -137,7 +139,8 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
   private readonly swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
   private swatch: InlineEditor.ColorSwatch.ColorSwatch;
   private contrastInfo: ColorPicker.ContrastInfo.ContrastInfo|null;
-  private readonly boundSpectrumChanged: (event: Common.EventTarget.EventTargetEvent<string>) => void;
+  private readonly boundSpectrumChanged: (event: ColorPicker.Spectrum.ColorChangedEvent) => void;
+  private readonly boundSpectrumResized: () => void;
   private readonly boundOnScroll: (event: Event) => void;
   private spectrum?: ColorPicker.Spectrum.Spectrum;
   private scrollerElement?: Element;
@@ -155,6 +158,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
     this.contrastInfo = null;
 
     this.boundSpectrumChanged = this.spectrumChanged.bind(this);
+    this.boundSpectrumResized = this.spectrumResized.bind(this);
     this.boundOnScroll = this.onScroll.bind(this);
   }
 
@@ -207,11 +211,11 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
     }
 
     this.spectrum = new ColorPicker.Spectrum.Spectrum(this.contrastInfo);
-    this.spectrum.setColor(color);
+    this.spectrum.color = color;
     this.spectrum.addPalette(this.generateCSSVariablesPalette());
 
-    this.spectrum.addEventListener(ColorPicker.Spectrum.Events.SIZE_CHANGED, this.spectrumResized, this);
-    this.spectrum.addEventListener(ColorPicker.Spectrum.Events.COLOR_CHANGED, this.boundSpectrumChanged);
+    this.spectrum.element.addEventListener(ColorPicker.Spectrum.SizeChangedEvent.eventName, this.boundSpectrumResized);
+    this.spectrum.element.addEventListener(ColorPicker.Spectrum.ColorChangedEvent.eventName, this.boundSpectrumChanged);
     this.swatchPopoverHelper.show(this.spectrum, this.swatch, this.onPopoverHidden.bind(this));
     this.scrollerElement = this.swatch.enclosingNodeOrSelfWithClass('style-panes-wrapper');
     if (this.scrollerElement) {
@@ -233,7 +237,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
     this.swatchPopoverHelper.reposition();
   }
 
-  private async spectrumChanged(event: Common.EventTarget.EventTargetEvent<string>): Promise<void> {
+  private async spectrumChanged(event: ColorPicker.Spectrum.ColorChangedEvent): Promise<void> {
     const getColor = (colorText: string): Common.Color.Color|null => {
       const color = Common.Color.parse(colorText);
       const customProperty = this.spectrum?.colorName()?.startsWith('--') && `var(${this.spectrum.colorName()})`;
@@ -292,7 +296,10 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
     }
 
     if (this.spectrum) {
-      this.spectrum.removeEventListener(ColorPicker.Spectrum.Events.COLOR_CHANGED, this.boundSpectrumChanged);
+      this.spectrum.element.removeEventListener(ColorPicker.Spectrum.SizeChangedEvent.eventName,
+                                                this.boundSpectrumResized);
+      this.spectrum.element.removeEventListener(ColorPicker.Spectrum.ColorChangedEvent.eventName,
+                                                this.boundSpectrumChanged);
     }
     this.spectrum = undefined;
 

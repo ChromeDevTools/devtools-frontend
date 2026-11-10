@@ -606,7 +606,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     }
 
     function pickColor(swatch: InlineEditor.ColorSwatch.ColorSwatch, color: string): void {
-      openColorPicker(swatch).dispatchEventToListeners(ColorPicker.Spectrum.Events.COLOR_CHANGED, color);
+      openColorPicker(swatch).element.dispatchEvent(new ColorPicker.Spectrum.ColorChangedEvent(color));
     }
 
     it('applies the edits of all color swatches and the bezier editor of a custom property', async () => {
@@ -669,8 +669,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       assert.instanceOf(bezierEditor, InlineEditor.BezierEditor.BezierEditor);
       parts[5] = 'cubic-bezier(0.1, 0.7, 1, 0.1)';
       edit('changing the bezier curve', text(),
-           () => bezierEditor.dispatchEventToListeners(InlineEditor.BezierEditor.Events.BEZIER_CHANGED,
-                                                       'cubic-bezier(0.1, 0.7, 1, 0.1)'));
+           () => bezierEditor.element.dispatchEvent(
+               new InlineEditor.BezierEditor.BezierChangedEvent('cubic-bezier(0.1, 0.7, 1, 0.1)')));
       commit(text());
     });
 

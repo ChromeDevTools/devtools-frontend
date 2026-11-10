@@ -28,7 +28,7 @@ describeWithEnvironment('ColorPicker aka Spectrum', () => {
     it('should show sRGB overlay when the format supports display-p3 colors', () => {
       const spectrum = new ColorPicker.Spectrum.Spectrum();
 
-      spectrum.setColor(displayP3Color);
+      spectrum.color = displayP3Color;
 
       assert.isNotNull(spectrum.contentElement.querySelector('devtools-spectrum-srgb-overlay'));
     });
@@ -36,7 +36,7 @@ describeWithEnvironment('ColorPicker aka Spectrum', () => {
     it('should not show sRGB overlay when the format doesn\'t support display-p3 colors', () => {
       const spectrum = new ColorPicker.Spectrum.Spectrum();
 
-      spectrum.setColor(rgbColor);
+      spectrum.color = rgbColor;
 
       assert.isNull(spectrum.contentElement.querySelector('devtools-spectrum-srgb-overlay'));
     });
@@ -51,21 +51,21 @@ describeWithEnvironment('ColorPicker aka Spectrum', () => {
     const increment = (element: Element) => element.dispatchEvent(new WheelEvent('wheel', {deltaX: -1}));
     const decrement = (element: Element) => element.dispatchEvent(new WheelEvent('wheel', {deltaX: 1}));
 
-    spectrum.setColor(new Common.Color.ColorFunction(Common.Color.Format.XYZ, 0.5, 1, 0, 0.3));
+    spectrum.color = new Common.Color.ColorFunction(Common.Color.Format.XYZ, 0.5, 1, 0, 0.3);
     textInputs.forEach(increment);
     assert.strictEqual(spectrum.color.asString(), 'color(xyz 0.51 1 0.01 / 0.31)');
     textInputs.forEach(decrement);
     textInputs.forEach(decrement);
     assert.strictEqual(spectrum.color.asString(), 'color(xyz 0.49 0.98 0 / 0.29)');
 
-    spectrum.setColor(new Common.Color.ColorFunction(Common.Color.Format.SRGB, 0.5, 1, 0, 0.3));
+    spectrum.color = new Common.Color.ColorFunction(Common.Color.Format.SRGB, 0.5, 1, 0, 0.3);
     textInputs.forEach(increment);
     assert.strictEqual(spectrum.color.asString(), 'color(srgb 0.51 1 0.01 / 0.31)');
     textInputs.forEach(decrement);
     textInputs.forEach(decrement);
     assert.strictEqual(spectrum.color.asString(), 'color(srgb 0.49 0.98 0 / 0.29)');
 
-    spectrum.setColor(new Common.Color.Legacy([0.5, 1, 0, 0.3], Common.Color.Format.RGBA));
+    spectrum.color = new Common.Color.Legacy([0.5, 1, 0, 0.3], Common.Color.Format.RGBA);
     assert.strictEqual(spectrum.color.asString(), 'rgb(128 255 0 / 30%)');
     textInputs.forEach(increment);
     assert.strictEqual(spectrum.color.asString(), 'rgb(129 255 1 / 31%)');
@@ -80,20 +80,20 @@ describeWithEnvironment('ColorPicker aka Spectrum', () => {
     assert.exists(colorElement);
 
     // Scenario 1: Input #3c3d3d only
-    spectrum.setColor(Common.Color.parse('#3c3d3d') as Common.Color.Color);
+    spectrum.color = Common.Color.parse('#3c3d3d') as Common.Color.Color;
     // Hue should be 0.5 (Cyan). getColorFromHsva returns rgb(0, 255, 255) for h=0.5, s=1, v=1.
     assert.strictEqual(colorElement.style.backgroundColor, 'rgb(0, 255, 255)');
 
     // Scenario 2: Input #3d3d3d only
-    spectrum.setColor(Common.Color.parse('#3d3d3d') as Common.Color.Color);
+    spectrum.color = Common.Color.parse('#3d3d3d') as Common.Color.Color;
     // #3d3d3d should not be powerless, so it updates to its own calculated hue (0).
     // Hue 0 corresponds to Red.
     assert.strictEqual(colorElement.style.backgroundColor, 'rgb(255, 0, 0)');
 
     // Scenario 3: First #3c3d3d and then #3d3d3d
-    spectrum.setColor(Common.Color.parse('#3c3d3d') as Common.Color.Color);
+    spectrum.color = Common.Color.parse('#3c3d3d') as Common.Color.Color;
     assert.strictEqual(colorElement.style.backgroundColor, 'rgb(0, 255, 255)');
-    spectrum.setColor(Common.Color.parse('#3d3d3d') as Common.Color.Color);
+    spectrum.color = Common.Color.parse('#3d3d3d') as Common.Color.Color;
     // Since it is not powerless, it should update and be Red.
     assert.strictEqual(colorElement.style.backgroundColor, 'rgb(255, 0, 0)');
   });

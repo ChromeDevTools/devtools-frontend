@@ -63,7 +63,7 @@ describe('ColorSwatchPopoverIcon', () => {
       const spectrum = showPopoverStub.args[0][0];
       assert.instanceOf(spectrum, ColorPicker.Spectrum.Spectrum);
       sinon.stub(spectrum, 'colorName').returns('--yellow');
-      spectrum.dispatchEventToListeners(ColorPicker.Spectrum.Events.COLOR_CHANGED, 'yellow');
+      spectrum.element.dispatchEvent(new ColorPicker.Spectrum.ColorChangedEvent('yellow'));
       sinon.assert.calledOnce(iconColorChanged);
       assert.strictEqual(iconColorChanged.args[0][0].data.asString(), '#ffff00');
       assert.strictEqual(iconColorChanged.args[0][0].data.getAuthoredText(), 'var(--yellow)');

@@ -1,7 +1,8 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -13,15 +14,18 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Geometry from '../../ui/geometry/geometry.js';
-import {createIcon, type Icon} from '../../ui/kit/kit.js';
+import type {Icon} from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
 import {Plugin} from './Plugin.js';
+
+const {widget} = UI.Widget;
 
 // Plugin to add CSS completion, shortcuts, and color/curve swatches
 // to editors with CSS content.
@@ -145,6 +149,28 @@ function findColorsAndCurves(
   });
 }
 
+interface ColorSwatchViewInput {
+  color: Common.Color.Color;
+  text: string;
+  onColorChanged: (event: InlineEditor.ColorSwatch.ColorChangedEvent) => void;
+  onColorFormatChanged: (event: InlineEditor.ColorSwatch.ColorFormatChangedEvent) => void;
+  onClick: (event: Event) => void;
+}
+
+function renderColorSwatch(input: ColorSwatchViewInput, _output: undefined, target: DocumentFragment): void {
+  // clang-format off
+  render(
+    html`<devtools-color-swatch
+      .color=${input.color}
+      title=${i18nString(UIStrings.openColorPicker)}
+      @colorchanged=${input.onColorChanged}
+      @colorformatchanged=${input.onColorFormatChanged}
+      @swatchclick=${input.onClick}><span ?hidden=${true}>${input.text}</span></devtools-color-swatch>`,
+    target,
+  );
+  // clang-format on
+}
+
 class ColorSwatchWidget extends CodeMirror.WidgetType {
   #text: string;
   #color: Common.Color.Color;
@@ -162,41 +188,61 @@ class ColorSwatchWidget extends CodeMirror.WidgetType {
   }
 
   toDOM(view: CodeMirror.EditorView): HTMLElement {
-    const swatch = new InlineEditor.ColorSwatch.ColorSwatch(i18nString(UIStrings.openColorPicker));
-    swatch.renderColor(this.#color);
-    const value = swatch.createChild('span');
-    value.textContent = this.#text;
-    value.setAttribute('hidden', 'true');
-    swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, event => {
-      const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
-      view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
-      this.#text = insert;
-      this.#color = swatch.color as Common.Color.Color;
-    });
-    swatch.addEventListener(InlineEditor.ColorSwatch.ColorFormatChangedEvent.eventName, event => {
-      const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
-      view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
-      this.#text = insert;
-      this.#color = swatch.color as Common.Color.Color;
-    });
-    swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, event => {
-      event.consume(true);
-      view.dispatch({
-        effects: setTooltip.of({
-          type: TooltipType.COLOR,
-          pos: view.posAtDOM(swatch),
-          text: this.#text,
-          swatch,
-          color: this.#color,
-        }),
-      });
-    });
-    return swatch;
+    const fragment = document.createDocumentFragment();
+    renderColorSwatch({
+      color: this.#color,
+      text: this.#text,
+      onColorChanged: (event: InlineEditor.ColorSwatch.ColorChangedEvent) => {
+        const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
+        view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
+        this.#text = insert;
+        this.#color = (event.currentTarget as InlineEditor.ColorSwatch.ColorSwatch).color as Common.Color.Color;
+      },
+      onColorFormatChanged: (event: InlineEditor.ColorSwatch.ColorFormatChangedEvent) => {
+        const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
+        view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
+        this.#text = insert;
+        this.#color = (event.currentTarget as InlineEditor.ColorSwatch.ColorSwatch).color as Common.Color.Color;
+      },
+      onClick: (event: Event) => {
+        event.consume(true);
+        const swatch = event.currentTarget as InlineEditor.ColorSwatch.ColorSwatch;
+        view.dispatch({
+          effects: setTooltip.of({
+            type: TooltipType.COLOR,
+            pos: view.posAtDOM(swatch),
+            text: this.#text,
+            swatch,
+            color: this.#color,
+          }),
+        });
+      },
+    },
+                      undefined, fragment);
+    return fragment.firstElementChild as HTMLElement;
   }
 
   override ignoreEvent(): boolean {
     return true;
   }
+}
+
+interface CurveSwatchViewInput {
+  onClick: (event: MouseEvent) => void;
+}
+
+function renderCurveSwatch(input: CurveSwatchViewInput, _output: undefined, target: DocumentFragment): void {
+  // clang-format off
+  render(
+    html`<devtools-icon
+      class="bezier-swatch-icon"
+      name="bezier-curve-filled"
+      title=${i18nString(UIStrings.openCubicBezierEditor)}
+      jslog=${VisualLogging.showStyleEditor('bezier')}
+      @click=${input.onClick}></devtools-icon>`,
+    target,
+  );
+  // clang-format on
 }
 
 class CurveSwatchWidget extends CodeMirror.WidgetType {
@@ -209,25 +255,24 @@ class CurveSwatchWidget extends CodeMirror.WidgetType {
   }
 
   toDOM(view: CodeMirror.EditorView): HTMLElement {
-    const container = document.createElement('span');
-    const bezierText = container.createChild('span');
-    const icon = createIcon('bezier-curve-filled', 'bezier-swatch-icon');
-    icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
-    bezierText.append(this.text);
-    UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.openCubicBezierEditor));
-    icon.addEventListener('click', (event: MouseEvent) => {
-      event.consume(true);
-      view.dispatch({
-        effects: setTooltip.of({
-          type: TooltipType.CURVE,
-          pos: view.posAtDOM(icon),
-          text: this.text,
-          swatch: icon,
-          curve: this.curve,
-        }),
-      });
-    }, false);
-    return icon;
+    const fragment = document.createDocumentFragment();
+    renderCurveSwatch({
+      onClick: (event: MouseEvent) => {
+        event.consume(true);
+        const icon = event.currentTarget as Icon;
+        view.dispatch({
+          effects: setTooltip.of({
+            type: TooltipType.CURVE,
+            pos: view.posAtDOM(icon),
+            text: this.text,
+            swatch: icon,
+            curve: this.curve,
+          }),
+        });
+      },
+    },
+                      undefined, fragment);
+    return fragment.firstElementChild as HTMLElement;
   }
 
   override ignoreEvent(): boolean {
@@ -254,66 +299,100 @@ type ActiveTooltip = {
   swatch: Icon,
 };
 
+function renderSpectrum(
+    color: Common.Color.Color,
+    onColorChanged: (event: ColorPicker.Spectrum.ColorChangedEvent) => void,
+    onSizeChanged: () => void,
+    ): LitTemplate {
+  // clang-format off
+  return html`<devtools-widget
+    ${widget(ColorPicker.Spectrum.Spectrum, {color})}
+    @spectrumcolorchanged=${onColorChanged}
+    @sizechanged=${onSizeChanged}></devtools-widget>`;
+  // clang-format on
+}
+
+function renderBezierEditor(
+    curve: Geometry.CubicBezier,
+    onBezierChanged: (event: InlineEditor.BezierEditor.BezierChangedEvent) => void,
+    ): LitTemplate {
+  // clang-format off
+  return html`<devtools-widget
+    ${widget(InlineEditor.BezierEditor.BezierEditor, {model: curve})}
+    @bezierchanged=${onBezierChanged}></devtools-widget>`;
+  // clang-format on
+}
+
+interface CSSTooltipViewInput {
+  active: ActiveTooltip;
+  onChange: (event: {data: string}) => void;
+  onSizeChanged: () => void;
+  onKeyDown: (event: KeyboardEvent) => void;
+  onFocusOut: (event: FocusEvent) => void;
+  onMouseDown: (event: MouseEvent) => void;
+}
+
+function renderCSSTooltip(input: CSSTooltipViewInput, _output: undefined, target: DocumentFragment): void {
+  // clang-format off
+  render(
+    html`<div
+      class="cm-tooltip-swatchEdit"
+      @keydown=${input.onKeyDown}
+      @focusout=${input.onFocusOut}
+      @mousedown=${input.onMouseDown}>${
+        input.active.type === TooltipType.COLOR
+          ? renderSpectrum(input.active.color, input.onChange, input.onSizeChanged)
+          : renderBezierEditor(input.active.curve, input.onChange)
+      }</div>`,
+    target,
+  );
+  // clang-format on
+}
+
 function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
   return {
     pos: active.pos,
     arrow: false,
     create(view): CodeMirror.TooltipView {
       let text = active.text;
-      let widget: UI.Widget.VBox, addListener: (handler: (event: {data: string}) => void) => void;
-      if (active.type === TooltipType.COLOR) {
-        const spectrum = new ColorPicker.Spectrum.Spectrum();
-        addListener = handler => {
-          spectrum.addEventListener(ColorPicker.Spectrum.Events.COLOR_CHANGED, handler);
-        };
-        spectrum.addEventListener(ColorPicker.Spectrum.Events.SIZE_CHANGED, () => view.requestMeasure());
-        spectrum.setColor(active.color);
-        widget = spectrum;
-      } else {
-        const spectrum = new InlineEditor.BezierEditor.BezierEditor(active.curve);
-        widget = spectrum;
-        addListener = handler => {
-          spectrum.addEventListener(InlineEditor.BezierEditor.Events.BEZIER_CHANGED, handler);
-        };
-      }
-      const dom = document.createElement('div');
-      dom.className = 'cm-tooltip-swatchEdit';
-      widget.markAsRoot();
-      widget.show(dom);
-      widget.showWidget();
-      widget.element.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
-          event.consume();
+      const fragment = document.createDocumentFragment();
+      renderCSSTooltip({
+        active,
+        onChange: (event: {data: string}) => {
           view.dispatch({
-            effects: setTooltip.of(null),
-            changes: text === active.text ? undefined :
-                                            {from: active.pos, to: active.pos + text.length, insert: active.text},
+            changes: {from: active.pos, to: active.pos + text.length, insert: event.data},
+            annotations: isSwatchEdit.of(true),
           });
-          widget.hideWidget();
-          view.focus();
-        }
-      });
-      widget.element.addEventListener('focusout', event => {
-        if (event.relatedTarget && !widget.element.contains(event.relatedTarget as Node)) {
-          view.dispatch({effects: setTooltip.of(null)});
-          widget.hideWidget();
-        }
-      }, false);
-      widget.element.addEventListener('mousedown', event => event.consume());
+          text = event.data;
+        },
+        onSizeChanged: () => view.requestMeasure(),
+        onKeyDown: (event: KeyboardEvent) => {
+          if (event.key === 'Escape') {
+            event.consume();
+            view.dispatch({
+              effects: setTooltip.of(null),
+              changes: text === active.text ? undefined :
+                                              {from: active.pos, to: active.pos + text.length, insert: active.text},
+            });
+            view.focus();
+          }
+        },
+        onFocusOut: (event: FocusEvent) => {
+          const dom = event.currentTarget as HTMLElement;
+          if (event.relatedTarget && !dom.contains(event.relatedTarget as Node)) {
+            view.dispatch({effects: setTooltip.of(null)});
+          }
+        },
+        onMouseDown: (event: MouseEvent) => event.consume(),
+      },
+                       undefined, fragment);
+      const dom = fragment.firstElementChild as HTMLElement;
       return {
         dom,
         resize: false,
         offset: {x: -8, y: 0},
         mount: () => {
-          widget.focus();
-          widget.wasShown();
-          addListener((event: {data: string}) => {
-            view.dispatch({
-              changes: {from: active.pos, to: active.pos + text.length, insert: event.data},
-              annotations: isSwatchEdit.of(true),
-            });
-            text = event.data;
-          });
+          (dom.firstElementChild as HTMLElement)?.focus();
         },
       };
     },

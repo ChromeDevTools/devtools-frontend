@@ -208,12 +208,7 @@ function getColorFromHsva(gamut: SpectrumGamut, hsva: Common.ColorUtils.Color4D)
   }
 }
 
-const SpectrumBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
-    Common.ObjectWrapper.eventMixin(
-        UI.Widget.VBox,
-    );
-
-export class Spectrum extends SpectrumBase {
+export class Spectrum extends UI.Widget.VBox {
   #color?: Common.Color.Color;
   private gamut: SpectrumGamut = SpectrumGamut.SRGB;
   private colorElement: HTMLElement;
@@ -276,8 +271,9 @@ export class Spectrum extends SpectrumBase {
   // want to return the value of the variable but the
   // actual variable string.
   #colorString?: string;
-  constructor(contrastInfo?: ContrastInfo|null) {
-    super({useShadowDom: true});
+  constructor(contrastInfoOrElement?: ContrastInfo|null|HTMLElement, element?: HTMLElement) {
+    super(contrastInfoOrElement instanceof HTMLElement ? contrastInfoOrElement : element, {useShadowDom: true});
+    const contrastInfo = contrastInfoOrElement instanceof HTMLElement ? undefined : contrastInfoOrElement;
     this.registerRequiredCSS(spectrumStyles);
 
     this.contentElement.tabIndex = 0;
@@ -960,7 +956,7 @@ export class Spectrum extends SpectrumBase {
       }
     }
     this.element.style.height = (paletteTop + paletteMargin + (paletteColorHeight + paletteMargin) * rowsNeeded) + 'px';
-    this.dispatchEventToListeners(Events.SIZE_CHANGED);
+    this.element.dispatchEvent(new SizeChangedEvent());
   }
 
   private onPaletteColorKeydown(palette: Palette, colorIndex: number, event: KeyboardEvent|MouseEvent): void {
@@ -1072,13 +1068,6 @@ export class Spectrum extends SpectrumBase {
     this.showPalette(palette, false);
   }
 
-  setColor(color: Common.Color.Color): void {
-    this.#setColor(color, '', undefined /* colorName */, color.format(), ChangeSource.Model);
-    const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
-    UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
-    UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
-  }
-
   private colorSelected(color: Common.Color.Legacy): void {
     this.#setColor(color, '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
   }
@@ -1089,6 +1078,13 @@ export class Spectrum extends SpectrumBase {
     }
 
     return getColorFromHsva(this.gamut, this.hsv);
+  }
+
+  set color(color: Common.Color.Color) {
+    this.#setColor(color, '', undefined /* colorName */, color.format(), ChangeSource.Model);
+    const colorValues = color.as(Common.Color.Format.HSL).canonicalHSLA();
+    UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
+    UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
   }
 
   #setColor(
@@ -1157,7 +1153,7 @@ export class Spectrum extends SpectrumBase {
       this.updateInput();
     }
     if (changeSource !== ChangeSource.Model) {
-      this.dispatchEventToListeners(Events.COLOR_CHANGED, this.colorString());
+      this.element.dispatchEvent(new ColorChangedEvent(this.colorString()));
     }
   }
 
@@ -1468,16 +1464,6 @@ export const ChangeSource = {
   Other: 'Other',
 };
 
-export const enum Events {
-  COLOR_CHANGED = 'ColorChanged',
-  SIZE_CHANGED = 'SizeChanged',
-}
-
-export interface EventTypes {
-  [Events.COLOR_CHANGED]: string;
-  [Events.SIZE_CHANGED]: void;
-}
-
 const COLOR_CHIP_SIZE = 24;
 const ITEMS_PER_PALETTE_ROW = 8;
 const GeneratedPaletteTitle = 'Page colors';
@@ -1712,4 +1698,30 @@ export interface Palette {
   colorNames: string[];
   mutable: boolean;
   matchUserFormat?: boolean;
+}
+
+export class ColorChangedEvent extends Event {
+  static readonly eventName = 'spectrumcolorchanged';
+
+  data: string;
+
+  constructor(color: string) {
+    super(ColorChangedEvent.eventName, {});
+    this.data = color;
+  }
+}
+
+export class SizeChangedEvent extends Event {
+  static readonly eventName = 'sizechanged';
+
+  constructor() {
+    super(SizeChangedEvent.eventName, {});
+  }
+}
+
+declare global {
+  interface HTMLElementEventMap {
+    [ColorChangedEvent.eventName]: ColorChangedEvent;
+    [SizeChangedEvent.eventName]: SizeChangedEvent;
+  }
 }

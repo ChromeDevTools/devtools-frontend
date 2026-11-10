@@ -374,6 +374,7 @@
   }
 
   @scope (.insight-sources) {
+    /* stylelint-disable-next-line plugin/check_scope_selectors */
     :root {
       padding: 0;
       margin: 0;

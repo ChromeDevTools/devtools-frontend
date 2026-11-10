@@ -75,6 +75,29 @@ function demo() {
 `);
   });
 
+  it('formats do-while loops without semicolons correctly', () => {
+    assert.strictEqual(
+        formatJavaScript('do {} while (condition) statement'),
+        'do {} while (condition)\nstatement\n',
+    );
+    assert.strictEqual(
+        formatJavaScript('function demo() {do {} while (false) if (true) {}}'),
+        'function demo() {\n  do {} while (false)\n  if (true) {}\n}\n',
+    );
+    assert.strictEqual(
+        formatJavaScript('do a(); while (condition) statement'),
+        'do\n  a();\nwhile (condition)\nstatement\n',
+    );
+    assert.strictEqual(
+        formatJavaScript('do {} while (condition) (foo)()'),
+        'do {} while (condition)\n(foo)()\n',
+    );
+    assert.strictEqual(
+        formatJavaScript('if (a) do {} while (b) c();'),
+        'if (a)\n  do {} while (b)\nc();\n',
+    );
+  });
+
   it('formats while loops correctly', () => {
     const formattedCode = formatJavaScript('while(true){print(\'infinity\');}');
     assert.strictEqual(formattedCode, `while (true) {

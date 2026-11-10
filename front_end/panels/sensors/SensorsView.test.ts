@@ -223,6 +223,16 @@ describeWithEnvironment('SensorsView', () => {
       assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
     });
 
+    it('keeps the selected location when a custom location is inserted before it', async () => {
+      await selectLocation('Berlin');
+
+      customLocationsSetting.set([{...BERLIN, title: 'Paris', lat: 48.8566, long: 2.3522}, BERLIN]);
+      await settled();
+
+      assert.strictEqual(selectedLocationTitle(), 'Berlin');
+      assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
+    });
+
     it('shows an error when the timezone cannot be emulated', async () => {
       timezoneErrorMessage = 'Invalid timezone';
       await selectLocation('Berlin');

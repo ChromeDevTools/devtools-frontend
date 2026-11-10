@@ -187,6 +187,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {live} = Directives;
 
 export class SensorsView extends UI.Widget.VBox {
   readonly #locationSetting: Common.Settings.Setting<string>;
@@ -313,19 +314,18 @@ export class SensorsView extends UI.Widget.VBox {
               this.locationSelectElement = el as HTMLSelectElement;
             }
           })}
-          .selectedIndex=${selectedIndex}
           @change=${this.#locationSelectChanged.bind(this)}
           jslog=${VisualLogging.dropDown().track({change: true})}
         >
-          <option value=${NonPresetOptions.NoOverride} jslog=${VisualLogging.item('no-override')}>${i18nString(UIStrings.noOverride)}</option>
+          <option value=${NonPresetOptions.NoOverride} .selected=${live(selectedIndex === 0)} jslog=${VisualLogging.item('no-override')}>${i18nString(UIStrings.noOverride)}</option>
           <optgroup label=${i18nString(UIStrings.overrides)}>
-            ${customLocations.map(customLocation => html`
-              <option value=${JSON.stringify(customLocation)} jslog=${VisualLogging.item('custom')}>${customLocation.title}</option>
+            ${customLocations.map((customLocation, i) => html`
+              <option value=${JSON.stringify(customLocation)} .selected=${live(selectedIndex === i + 1)} jslog=${VisualLogging.item('custom')}>${customLocation.title}</option>
             `)}
           </optgroup>
-          <option value=${NonPresetOptions.Custom} jslog=${VisualLogging.item('other')}>${i18nString(UIStrings.other)}</option>
+          <option value=${NonPresetOptions.Custom} .selected=${live(selectedIndex === customLocations.length + 1)} jslog=${VisualLogging.item('other')}>${i18nString(UIStrings.other)}</option>
           <optgroup label=${i18nString(UIStrings.error)}>
-            <option value=${NonPresetOptions.Unavailable} jslog=${VisualLogging.item('unavailable')}>${i18nString(UIStrings.locationUnavailable)}</option>
+            <option value=${NonPresetOptions.Unavailable} .selected=${live(selectedIndex === customLocations.length + 2)} jslog=${VisualLogging.item('unavailable')}>${i18nString(UIStrings.locationUnavailable)}</option>
           </optgroup>
         </select>
         <devtools-button

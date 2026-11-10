@@ -341,6 +341,177 @@ describeWithEnvironment('SensorsView', () => {
     });
   });
 
+  describe('Device Orientation select', () => {
+    const LANDSCAPE_LEFT = {alpha: 90, beta: 0, gamma: -90};
+
+    let orientationSetting: Common.Settings.Setting<string>;
+    let orientationOverrides: Array<Protocol.DeviceOrientation.SetDeviceOrientationOverrideRequest|null>;
+
+    beforeEach(() => {
+      orientationOverrides = [];
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('DeviceOrientation.setDeviceOrientationOverride', params => {
+        orientationOverrides.push(params);
+        return {};
+      });
+      connection.setSuccessHandler('DeviceOrientation.clearDeviceOrientationOverride', () => {
+        orientationOverrides.push(null);
+        return {};
+      });
+      const target = createTarget({connection});
+      assert.exists(target.model(SDK.EmulationModel.EmulationModel));
+
+      orientationSetting =
+          Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
+    });
+
+    /** Waits for pending emulation requests and view updates. */
+    async function settled(): Promise<void> {
+      await raf();
+      await UI.Widget.Widget.allUpdatesComplete;
+    }
+
+    function query<T extends HTMLElement>(selector: string): T {
+      const element = view.contentElement.querySelector<T>(selector);
+      assert.exists(element);
+      return element;
+    }
+
+    async function selectOrientation(title: string): Promise<void> {
+      const select = query<HTMLSelectElement>('.orientation-fields select');
+      const option = Array.from(select.options).find(option => option.text === title);
+      assert.exists(option);
+      select.selectedIndex = option.index;
+      select.dispatchEvent(new Event('change'));
+      await settled();
+    }
+
+    function selectedOrientationTitle(): string {
+      const select = query<HTMLSelectElement>('.orientation-fields select');
+      return select.options[select.selectedIndex].text;
+    }
+
+    function orientationInputValues(): string[] {
+      const inputs = view.contentElement.querySelectorAll<HTMLInputElement>('.orientation-axis-input-container input');
+      return Array.from(inputs, input => input.value);
+    }
+
+    function orientationInputsDisabled(): boolean {
+      return query<HTMLFieldSetElement>('.device-orientation-override-section').disabled;
+    }
+
+    function stage(): HTMLElement {
+      return query('.orientation-stage');
+    }
+
+    function boxTransform(): string {
+      return query('.orientation-layer').style.transform;
+    }
+
+    async function dragStage(from: {x: number, y: number}, to: {x: number, y: number}): Promise<void> {
+      const rect = stage().getBoundingClientRect();
+      const eventInit = (position: {x: number, y: number}): PointerEventInit => ({
+        clientX: rect.left + position.x * rect.width,
+        clientY: rect.top + position.y * rect.height,
+        buttons: 1,
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+      });
+      stage().dispatchEvent(new PointerEvent('pointerdown', eventInit(from)));
+      stage().dispatchEvent(new PointerEvent('pointermove', eventInit(to)));
+      stage().dispatchEvent(new PointerEvent('pointerup', eventInit(to)));
+      await settled();
+    }
+
+    it('is off by default with disabled inputs and stage', () => {
+      assert.strictEqual(selectedOrientationTitle(), 'Off');
+      assert.isTrue(orientationInputsDisabled());
+      assert.deepEqual(orientationInputValues(), ['0', '0', '0']);
+      assert.isTrue(stage().classList.contains('disabled'));
+      assert.strictEqual(stage().title, 'Enable orientation to rotate');
+      assert.strictEqual(boxTransform(), 'rotateY(0deg) rotateX(0deg) rotateZ(0deg)');
+    });
+
+    it('applies a preset', async () => {
+      await selectOrientation('Landscape left');
+
+      assert.isFalse(orientationInputsDisabled());
+      assert.deepEqual(orientationInputValues(), ['90', '0', '-90']);
+      assert.isFalse(stage().classList.contains('disabled'));
+      assert.isTrue(stage().classList.contains('is-animating'));
+      assert.strictEqual(stage().title, 'Shift+drag horizontally to rotate around the y-axis');
+      assert.strictEqual(boxTransform(), 'rotateY(90deg) rotateX(0deg) rotateZ(-90deg)');
+      assert.deepEqual(JSON.parse(orientationSetting.get()), LANDSCAPE_LEFT);
+      assert.deepEqual(orientationOverrides, [LANDSCAPE_LEFT]);
+    });
+
+    it('resets to portrait when "Custom orientation" is selected', async () => {
+      await selectOrientation('Custom orientation');
+
+      assert.strictEqual(selectedOrientationTitle(), 'Portrait');
+      assert.isFalse(orientationInputsDisabled());
+      assert.deepEqual(orientationInputValues(), ['0', '90', '0']);
+      assert.deepEqual(orientationOverrides, [{alpha: 0, beta: 90, gamma: 0}]);
+    });
+
+    it('switches to "Custom orientation" when the inputs of a preset are edited', async () => {
+      await selectOrientation('Landscape left');
+
+      const betaInput = query<HTMLInputElement>('#beta-input');
+      betaInput.value = '45';
+      betaInput.dispatchEvent(new Event('change'));
+      await settled();
+
+      assert.strictEqual(selectedOrientationTitle(), 'Custom orientation');
+      assert.strictEqual(boxTransform(), 'rotateY(90deg) rotateX(-45deg) rotateZ(-90deg)');
+      assert.deepEqual(orientationOverrides.at(-1), {alpha: 90, beta: 45, gamma: -90});
+    });
+
+    it('resets to portrait when the reset button is clicked', async () => {
+      await selectOrientation('Landscape left');
+
+      query('.orientation-reset-button').click();
+      await settled();
+
+      assert.strictEqual(selectedOrientationTitle(), 'Portrait');
+      assert.deepEqual(orientationInputValues(), ['0', '90', '0']);
+      assert.strictEqual(boxTransform(), 'rotateY(0deg) rotateX(-90deg) rotateZ(0deg)');
+      assert.deepEqual(orientationOverrides.at(-1), {alpha: 0, beta: 90, gamma: 0});
+    });
+
+    it('clears the override but keeps the values when "Off" is selected', async () => {
+      await selectOrientation('Landscape left');
+      await selectOrientation('Off');
+
+      assert.isTrue(orientationInputsDisabled());
+      assert.isTrue(stage().classList.contains('disabled'));
+      assert.strictEqual(stage().title, 'Enable orientation to rotate');
+      assert.deepEqual(orientationInputValues(), ['90', '0', '-90']);
+      assert.deepEqual(JSON.parse(orientationSetting.get()), LANDSCAPE_LEFT);
+      assert.isNull(orientationOverrides.at(-1));
+    });
+
+    it('rotates the device when the stage is dragged', async () => {
+      await selectOrientation('Landscape left');
+
+      await dragStage({x: 0.5, y: 0.5}, {x: 0.6, y: 0.5});
+
+      assert.strictEqual(selectedOrientationTitle(), 'Custom orientation');
+      assert.isFalse(stage().classList.contains('is-animating'));
+      assert.notDeepEqual(orientationInputValues(), ['90', '0', '-90']);
+      assert.notDeepEqual(orientationOverrides.at(-1), LANDSCAPE_LEFT);
+    });
+
+    it('ignores drags on the stage while the override is off', async () => {
+      await dragStage({x: 0.5, y: 0.5}, {x: 0.6, y: 0.5});
+
+      assert.strictEqual(selectedOrientationTitle(), 'Off');
+      assert.deepEqual(orientationInputValues(), ['0', '0', '0']);
+      assert.isEmpty(orientationOverrides);
+    });
+  });
+
   describe('Device Orientation input events', () => {
     let alphaInput: HTMLInputElement;
 

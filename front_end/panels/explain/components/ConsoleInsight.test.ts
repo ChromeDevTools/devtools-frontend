@@ -13,6 +13,7 @@ import {createConsoleInsightWidget} from '../../../testing/ConsoleInsightHelpers
 import {
   assertScreenshot,
   renderElementIntoDOM,
+  setColorScheme,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {setupUserMetricHooks} from '../../../testing/UserMetricsHelpers.js';
@@ -40,6 +41,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     component?.detach();
     Common.Settings.Settings.instance().settingForTest('console-insights-enabled').set(true);
     Common.Settings.Settings.instance().settingForTest('console-insights-onboarding-finished').set(true);
+    setColorScheme('light');
   });
 
   it('shows opt-in teaser when setting is turned off', async () => {
@@ -790,5 +792,68 @@ after
       document.activeElement.blur();
     }
     await assertScreenshot('explain/console_insight_references.png');
+  });
+
+  it('applies box-sizing: border-box to .insight-sources via :scope', async () => {
+    const target = createTarget('574px', '200px');
+    Explain.DEFAULT_VIEW({
+      ...DEFAULT_INPUT,
+      state: {
+        type: Explain.State.INSIGHT,
+        tokens: [],
+        validMarkdown: true,
+        explanation: '',
+        sources: [
+          {type: Console.PromptBuilder.SourceType.MESSAGE, value: 'Error message'},
+        ],
+        metadata: {},
+        isPageReloadRecommended: false,
+        completed: true,
+        directCitationUrls: [],
+        relatedUrls: [],
+      },
+    },
+                         createViewOutput(), target);
+
+    const sourcesEl = target.querySelector<HTMLElement>('.insight-sources');
+    assert.isNotNull(sourcesEl);
+    assert.strictEqual(getComputedStyle(sourcesEl).boxSizing, 'border-box');
+  });
+
+  it('renders input data sources when expanded in light and dark theme', async () => {
+    const target = createTarget('574px', '250px');
+    Explain.DEFAULT_VIEW({
+      ...DEFAULT_INPUT,
+      state: {
+        type: Explain.State.INSIGHT,
+        tokens: [],
+        validMarkdown: true,
+        explanation: '',
+        sources: [
+          {type: Console.PromptBuilder.SourceType.MESSAGE, value: 'Error: Connection failed\n  at fetch (app.js:42)'},
+          {type: Console.PromptBuilder.SourceType.NETWORK_REQUEST, value: 'https://example.com/api (404 Not Found)'},
+        ],
+        metadata: {},
+        isPageReloadRecommended: false,
+        completed: true,
+        directCitationUrls: [],
+        relatedUrls: [],
+      },
+    },
+                         createViewOutput(), target);
+
+    const sourcesDetails = target.querySelector<HTMLDetailsElement>('details');
+    assert.isNotNull(sourcesDetails);
+    sourcesDetails.open = true;
+
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    setColorScheme('light');
+    await assertScreenshot('explain/console_insight_sources_open_light.png');
+
+    setColorScheme('dark');
+    await assertScreenshot('explain/console_insight_sources_open_dark.png');
   });
 });

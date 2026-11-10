@@ -440,6 +440,7 @@ export const generatedProperties: CSSProperty[] = [
    "animation-fill-mode",
    "animation-iteration-count",
    "animation-name",
+   "animation-navigation-behavior",
    "animation-play-state",
    "animation-range-end",
    "animation-range-start",
@@ -994,6 +995,15 @@ export const generatedProperties: CSSProperty[] = [
    "none"
   ],
   "name": "animation-name"
+ },
+ {
+  "keywords": [
+   "abrupt",
+   "continuous"
+  ],
+  "name": "animation-navigation-behavior",
+  "runtime_flag": "CSSAnimationNavigationBehavior",
+  "runtime_flag_status": "experimental"
  },
  {
   "keywords": [
@@ -6392,6 +6402,12 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
  "animation-name": {
   "values": [
    "none"
+  ]
+ },
+ "animation-navigation-behavior": {
+  "values": [
+   "abrupt",
+   "continuous"
   ]
  },
  "animation-play-state": {

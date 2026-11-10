@@ -527,6 +527,7 @@ export const knownContextValues: Set<string> = new Set([
   'animation-fill-mode',
   'animation-iteration-count',
   'animation-name',
+  'animation-navigation-behavior',
   'animation-node-row',
   'animation-play-state',
   'animation-range',

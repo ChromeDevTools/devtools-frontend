@@ -40,22 +40,22 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 156,
-  header: 'New in DevTools (November 2026)',
+  version: 158,
+  header: 'New in DevTools (December 2026)',
   markdownLinks: [
     {
       key: 'mcp',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-november-2026/#mcp',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-december-2026/#mcp',
     },
     {
       key: 'sources',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-november-2026/#sources',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-december-2026/#sources',
     },
     {
-      key: 'web-install-manifest-diagnosti',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-november-2026/#web-install-manifest-diagnosti',
+      key: 'performance',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-december-2026/#performance',
     },
   ],
   videoLinks: [],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-november-2026/',
+  link: 'https://developer.chrome.com/blog/new-in-devtools-december-2026/',
 };

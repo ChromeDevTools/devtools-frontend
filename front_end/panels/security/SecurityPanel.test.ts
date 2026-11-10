@@ -11,6 +11,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {
   assertScreenshot,
   doubleRaf,
@@ -1345,6 +1346,59 @@ describeWithEnvironment('SecurityPanel', () => {
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
+  });
+
+  describe('accessibility', () => {
+    it('has no aXe violations when showing the overview with blocked mixed content', async () => {
+      const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+      renderElementIntoDOM(securityPanel);
+      const securityModel = target.model(Security.SecurityModel.SecurityModel);
+      assert.exists(securityModel);
+      securityModel.dispatchEventToListeners(
+          Security.SecurityModel.Events.VisibleSecurityStateChanged,
+          new Security.SecurityModel.PageVisibleSecurityState(Protocol.Security.SecurityState.Secure, null, null, []));
+
+      const request = createNetworkRequest({url: 'http://foo.test'});
+      request.setBlockedReason(Protocol.Network.BlockedReason.MixedContent);
+      request.mixedContentType = Protocol.Security.MixedContentType.Blockable;
+      securityModel.networkManager().dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.exists(securityPanel.contentElement.querySelector('.security-mixed-content'));
+      assert.isEmpty(await getAxeViolations(securityPanel.contentElement));
+    });
+
+    it('has no aXe violations when showing a secure origin with certificate details', async () => {
+      const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+      renderElementIntoDOM(securityPanel);
+      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      assert.exists(networkManager);
+
+      const origin = urlString`https://foo.test`;
+      const request = createNetworkRequest({url: 'https://foo.test'});
+      request.setSecurityState(Protocol.Security.SecurityState.Secure);
+      request.setSecurityDetails(createSecurityDetails({
+        protocol: 'TLS 1.2',
+        keyExchange: 'Key_Exchange',
+        cipher: 'Cypher',
+        mac: 'Mac',
+        subjectName: 'foo.test',
+        sanList: ['foo.test', '*.test'],
+        issuer: 'Super CA',
+        validFrom: 1490000000,
+        validTo: 2000000000,
+        certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
+      }));
+      networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+      securityPanel.showOrigin(origin);
+
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.exists(securityPanel.contentElement.querySelector('.connection-section'));
+      assert.exists(securityPanel.contentElement.querySelector('.certificate-section'));
+      assert.exists(securityPanel.contentElement.querySelector('.certificate-transparency-section'));
+
+      assert.isEmpty(await getAxeViolations(securityPanel.contentElement));
+    });
   });
 
   it('shows security information for a non-cryptographic secure origin', async () => {

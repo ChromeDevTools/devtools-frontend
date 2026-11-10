@@ -8,7 +8,7 @@ import {beforeEach, describe, it} from 'mocha';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -318,5 +318,63 @@ describeWithEnvironment('SensorsView', () => {
       select.dispatchEvent(new Event('change'));
       assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
     });
+  });
+});
+
+describeWithEnvironment('SensorsView screenshots', () => {
+  let view: Sensors.SensorsView.SensorsView;
+
+  beforeEach(async () => {
+    Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor).set([{
+      title: 'Berlin',
+      lat: 52.52,
+      long: 13.405,
+      timezoneId: 'Europe/Berlin',
+      locale: 'de-DE',
+      accuracy: 50,
+    }]);
+    // The view is taller than the screenshot viewport. Render it at a fixed
+    // size and let it scroll, like the drawer does.
+    view = renderElementIntoDOM(new Sensors.SensorsView.SensorsView(),
+                                {includeCommonStyles: true, width: 600, height: 480});
+    view.element.style.overflowY = 'auto';
+    await UI.Widget.Widget.allUpdatesComplete;
+  });
+
+  function select(selector: string, value: string): void {
+    const element = view.contentElement.querySelector<HTMLSelectElement>(selector);
+    assert.exists(element);
+    const option = Array.from(element.options).find(option => option.value === value || option.text === value);
+    assert.exists(option);
+    element.selectedIndex = option.index;
+    element.dispatchEvent(new Event('change'));
+  }
+
+  function finishAnimations(): void {
+    for (const animation of view.contentElement.getAnimations({subtree: true})) {
+      animation.finish();
+    }
+  }
+
+  it('renders the default state', async () => {
+    await assertScreenshot('sensors/SensorsView/default.png');
+  });
+
+  it('renders the settings sections', async () => {
+    view.element.scrollTop = view.element.scrollHeight;
+    await assertScreenshot('sensors/SensorsView/settings-sections.png');
+  });
+
+  it('renders a location override', async () => {
+    select('.geo-fields select', 'Berlin');
+    await UI.Widget.Widget.allUpdatesComplete;
+    await assertScreenshot('sensors/SensorsView/location-override.png');
+  });
+
+  it('renders an orientation override', async () => {
+    select('.orientation-fields select', '[90, 0, -90]');
+    await UI.Widget.Widget.allUpdatesComplete;
+    finishAnimations();
+    await assertScreenshot('sensors/SensorsView/orientation-override.png');
   });
 });

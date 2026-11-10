@@ -12,6 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as Lit from '../../ui/lit/lit.js';
 
+import {drawWhiskers, WHISKER_STROKE_COLOR} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
 import {initiatorsDataToDrawForNetwork} from './Initiators.js';
 import {NetworkTrackAppender, type NetworkTrackEvent} from './NetworkTrackAppender.js';
@@ -223,135 +224,77 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return this.#networkTrackAppender?.font() || null;
   }
 
-  /**
-   * Returns the pixels needed to decorate the event.
-   * The pixels compare to the start of the earliest event of the request.
-   *
-   * Request.beginTime(), which is used in FlameChart to calculate the unclippedBarX
-   * v
-   *    |----------------[ (URL text)    waiting time   |   request  ]--------|
-   *    ^start           ^sendStart                     ^headersEnd  ^Finish  ^end
-   * @param request
-   * @param unclippedBarX The start pixel of the request. It is calculated with request.beginTime() in FlameChart.
-   * @param timeToPixelRatio
-   * @returns the pixels to draw waiting time and left and right whiskers and url text
-   */
-  getDecorationPixels(
-      event: Trace.Types.Events.SyntheticNetworkRequest, unclippedBarX: number,
-      timeToPixelRatio: number): {sendStart: number, headersEnd: number, finish: number, start: number, end: number} {
-    const beginTime = Trace.Helpers.Timing.microToMilli(event.ts);
-    const timeToPixel = (time: number): number => unclippedBarX + (time - beginTime) * timeToPixelRatio;
-    const startTime = Trace.Helpers.Timing.microToMilli(event.ts);
-    const endTime = Trace.Helpers.Timing.microToMilli((event.ts + event.dur) as Trace.Types.Timing.Micro);
-    const sendStartTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.sendStartTime);
-    const headersEndTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.downloadStart);
-    const sendStart = Math.max(timeToPixel(sendStartTime), unclippedBarX);
-    const headersEnd = Math.max(timeToPixel(headersEndTime), sendStart);
-    const finish =
-        Math.max(timeToPixel(Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.finishTime)), headersEnd);
-    const start = timeToPixel(startTime);
-    const end = Math.max(timeToPixel(endTime), finish);
+  getDrawOverride(index: number): PerfUI.FlameChart.DrawOverride|undefined {
+    const event = this.#events[index];
+    if (!event || !Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+      return undefined;
+    }
 
-    return {sendStart, headersEnd, finish, start, end};
+    return (context, x, y, width, height, timeToPosition, transformColor): PerfUI.FlameChart.PositionOverride => {
+      /**
+       *    |----------------[ (URL text)    waiting time   |   request  ]--------|
+       *    ^start           ^sendStart                     ^headersEnd  ^Finish  ^end
+       */
+      const sendStartTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.sendStartTime);
+      const headersEndTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.downloadStart);
+      const finishTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.finishTime);
+
+      const sendStart = Math.max(timeToPosition(sendStartTime), x);
+      const headersEnd = Math.max(timeToPosition(headersEndTime), sendStart);
+      const finish = Math.max(timeToPosition(finishTime), headersEnd);
+      const end = Math.max(x + width, finish);
+
+      context.save();
+
+      // Draw whiskers before the request box so the box covers zero-length whisker overlaps.
+      drawWhiskers(context, x, sendStart, finish, end, y, height, transformColor(WHISKER_STROKE_COLOR));
+
+      const boxWidth = Math.max(finish - sendStart, 1);
+      context.fillStyle = transformColor(this.entryColor(index));
+      context.fillRect(sendStart, y, boxWidth, height - 1);
+
+      // Draw waiting time between |sendStart| and |headersEnd| using a translucent white overlay.
+      if (headersEnd - sendStart > 0.5) {
+        context.fillStyle = transformColor('hsla(0, 100%, 100%, 0.8)');
+        context.fillRect(sendStart + 0.5, y + 0.5, headersEnd - sendStart - 0.5, height - 2);
+      }
+
+      // Draw request URL as text.
+      const textStart = Math.max(sendStart, 0);
+      const textWidth = finish - textStart;
+      const /** @constant */ minTextWidthPx = 20;
+      if (textWidth >= minTextWidthPx) {
+        let title = this.entryTitle(index) || '';
+        if (event.args.data.fromServiceWorker) {
+          title = '⚙ ' + title;
+        }
+        if (title) {
+          const /** @constant */ textPadding = 4;
+          const /** @constant */ textBaseline = 5;
+          const textBaseHeight = height - textBaseline;
+          const trimmedText = UI.UIUtils.trimTextEnd(context, title, textWidth - 2 * textPadding);
+          context.fillStyle = transformColor(this.textColor(index));
+          context.fillText(trimmedText, textStart + textPadding, y + textBaseHeight);
+        }
+      }
+
+      context.restore();
+
+      return {x, width: Math.max(width, 1)};
+    };
   }
 
   /**
-   * Decorates the entry depends on the type of the event:
-   * @param index
-   * @param context
-   * @param barX The x pixel of the visible part request
-   * @param barY The y pixel of the visible part request
-   * @param barWidth The width of the visible part request
-   * @param barHeight The height of the visible part request
-   * @param unclippedBarX The start pixel of the request compare to the visible area. It is calculated with request.beginTime() in FlameChart.
-   * @param timeToPixelRatio
-   * @returns if the entry needs to be decorate, which is alway true if the request has "timing" field
+   * Decorates the entry depends on the type of the event.
    */
-  decorateEntry(
-      index: number, context: CanvasRenderingContext2D, _text: string|null, barX: number, barY: number,
-      barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
+  decorateEntry(index: number, context: CanvasRenderingContext2D, _text: string|null, _barX: number, barY: number,
+                _barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
     const event = this.#events[index];
     if (Trace.Types.Events.isSyntheticWebSocketConnection(event)) {
       return this.#decorateSyntheticWebSocketConnection(
           index, context, barY, barHeight, unclippedBarX, timeToPixelRatio);
     }
-    if (!Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-      return false;
-    }
-    return this.#decorateNetworkRequest(
-        index, context, _text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio);
-  }
-
-  /**
-   * Decorates the Network Request entry with the following steps:
-   *   Draw a waiting time between |sendStart| and |headersEnd|
-   *     By adding a extra transparent white layer
-   *   Draw a whisk between |start| and |sendStart|
-   *   Draw a whisk between |finish| and |end|
-   *     By draw another layer of background color to "clear" the area
-   *     Then draw the whisk
-   *   Draw the URL after the |sendStart|
-   *
-   *   |----------------[ (URL text)    waiting time   |   request  ]--------|
-   *   ^start           ^sendStart                     ^headersEnd  ^Finish  ^end
-   * */
-  #decorateNetworkRequest(
-      index: number, context: CanvasRenderingContext2D, _text: string|null, barX: number, barY: number,
-      barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
-    const event = this.#events[index];
-    if (!Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-      return false;
-    }
-    const {sendStart, headersEnd, finish, start, end} =
-        this.getDecorationPixels(event, unclippedBarX, timeToPixelRatio);
-
-    // Draw waiting time.
-    context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
-    context.fillRect(sendStart + 0.5, barY + 0.5, headersEnd - sendStart - 0.5, barHeight - 2);
-    // Clear portions of initial rect to prepare for the ticks.
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
-    context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
-    context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
-
-    /** Draws left and right whiskers **/
-    function drawTick(begin: number, end: number, y: number): void {
-      const /** @constant */ tickHeightPx = 6;
-      context.moveTo(begin, y - tickHeightPx / 2);
-      context.lineTo(begin, y + tickHeightPx / 2);
-      context.moveTo(begin, y);
-      context.lineTo(end, y);
-    }
-
-    context.beginPath();
-    context.lineWidth = 1;
-    context.strokeStyle = '#ccc';
-    const lineY = Math.floor(barY + barHeight / 2) + 0.5;
-    const leftTick = start + 0.5;
-    const rightTick = end - 0.5;
-    drawTick(leftTick, sendStart, lineY);
-    drawTick(rightTick, finish, lineY);
-    context.stroke();
-
-    // Draw request URL as text
-    const textStart = Math.max(sendStart, 0);
-    const textWidth = finish - textStart;
-    const /** @constant */ minTextWidthPx = 20;
-    if (textWidth >= minTextWidthPx) {
-      let title = this.entryTitle(index) || '';
-      if (event.args.data.fromServiceWorker) {
-        title = '⚙ ' + title;
-      }
-      if (title) {
-        const /** @constant */ textPadding = 4;
-        const /** @constant */ textBaseline = 5;
-        const textBaseHeight = barHeight - textBaseline;
-        const trimmedText = UI.UIUtils.trimTextEnd(context, title, textWidth - 2 * textPadding);
-        context.fillStyle = '#333';
-        context.fillText(trimmedText, textStart + textPadding, barY + textBaseHeight);
-      }
-    }
-
-    return true;
+    return false;
   }
 
   /**
@@ -382,8 +325,9 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return true;
   }
 
-  forceDecoration(_index: number): boolean {
-    return true;
+  forceDecoration(index: number): boolean {
+    const event = this.#events[index];
+    return Boolean(event && Trace.Types.Events.isSyntheticWebSocketConnection(event));
   }
 
   /**

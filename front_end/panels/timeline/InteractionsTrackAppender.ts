@@ -6,10 +6,12 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
-import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, drawWhiskers, WHISKER_STROKE_COLOR} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
+  type DrawOverride,
   type PopoverInfo,
   type TrackAppender,
   type TrackAppenderName,
@@ -150,6 +152,63 @@ export class InteractionsTrackAppender implements TrackAppender {
       idForColorGeneration += event.interactionId;
     }
     return this.#colorGenerator.colorForID(idForColorGeneration);
+  }
+
+  getDrawOverride(event: Trace.Types.Events.Event): DrawOverride|undefined {
+    if (!Trace.Types.Events.isSyntheticInteraction(event)) {
+      return undefined;
+    }
+
+    return (context, x, y, width, height, timeToPosition, transformColor): PerfUI.FlameChart.PositionOverride => {
+      /**
+       * An interaction is drawn with whiskers as so:
+       * |----------[=======]-------------|
+       * => The left whisker is the event's start time (event.ts)
+       * => The box start is the event's processingStart time
+       * => The box end is the event's processingEnd time
+       * => The right whisker is the event's end time (event.ts + event.dur)
+       */
+      let boxStartX = timeToPosition(Trace.Helpers.Timing.microToMilli(event.processingStart));
+      const boxEndX = timeToPosition(Trace.Helpers.Timing.microToMilli(event.processingEnd));
+
+      // If the entry has no processing duration, ensure the box is 1px wide so at least it is visible.
+      if (event.processingEnd - event.processingStart === 0) {
+        boxStartX -= 1;
+      }
+      const boxWidth = Math.max(boxEndX - boxStartX, 1);
+
+      context.save();
+
+      // Draw whiskers before the box so the box covers any overlap when input or presentation delay is 0.
+      drawWhiskers(context, x, boxStartX, boxEndX, x + width, y, height, transformColor(WHISKER_STROKE_COLOR));
+
+      context.fillStyle = transformColor(this.colorForEvent(event));
+      context.fillRect(boxStartX, y, boxWidth, height - 1);
+
+      const entryTitle = Trace.Name.forEntry(event, this.#parsedTrace);
+      if (entryTitle) {
+        // Fallback to x=0 if the box starts off-screen to the left so the user can still see the event's title.
+        const textStartX = boxStartX > 0 ? boxStartX : 0;
+        // These numbers are duplicated from FlameChart.ts.
+        const textPadding = 5;
+        const textBaseline = 5;
+        const visibleBoxWidth = boxEndX - textStartX;
+        const maxTextWidth = visibleBoxWidth - 2 * textPadding;
+        const trimmedTitle =
+            maxTextWidth > 10 ? UI.UIUtils.trimTextMiddle(context, entryTitle, maxTextWidth) : entryTitle;
+        const textWidth = UI.UIUtils.measureTextWidth(context, trimmedTitle);
+
+        // Only draw the text if it can fit in the amount of box that is visible.
+        if (textWidth <= visibleBoxWidth - 2 * textPadding) {
+          context.fillStyle = transformColor('#333');
+          context.fillText(trimmedTitle, textStartX + textPadding, y + height - textBaseline);
+        }
+      }
+
+      context.restore();
+
+      return {x, width: Math.max(width, 1)};
+    };
   }
 
   setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {

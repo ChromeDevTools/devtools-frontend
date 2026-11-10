@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {it} from 'mocha';
+import * as sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -47,8 +48,9 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
     assert.deepEqual(dataProvider.maxStackDepth(), 3);
 
-    // The decorateEntry() will be handled in the TimelineFlameChartNetworkDataProvider, so this function always returns true.
-    assert.isTrue(dataProvider.forceDecoration(0));
+    // Network requests use getDrawOverride, so forceDecoration is false unless it is a WebSocket connection.
+    assert.isFalse(dataProvider.forceDecoration(0));
+    assert.exists(dataProvider.getDrawOverride(0));
 
     assert.isFalse(dataProvider.isEmpty());
 
@@ -201,8 +203,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
     assert.deepEqual(dataProvider.maxStackDepth(), 0);
 
-    // The decorateEntry() will be handled in the TimelineFlameChartNetworkDataProvider, so this function always returns true.
-    assert.isTrue(dataProvider.forceDecoration(0));
+    // Network requests use getDrawOverride, so forceDecoration is false unless it is a WebSocket connection.
+    assert.isFalse(dataProvider.forceDecoration(0));
 
     // The network track won't show if it is empty.
     assert.isTrue(dataProvider.isEmpty());
@@ -210,54 +212,51 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.strictEqual(dataProvider.preferredHeight(), 0);
   });
 
-  it('decorates an event correctly', async function() {
+  it('draws a network request with whiskers and waiting time via getDrawOverride', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const parsedTrace = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz');
-    // The field that is important of this test:
-    // {
-    // "ts": 183752441.977,
-    // "dur": 183752670.454,
-    // "finishTime": 183752669.23299998,
-    // ...
-    // "timing": {
-    //     "pushStart": 0,
-    //     "receiveHeadersEnd": 218.084,
-    //     "requestTime": 183752.449687,
-    //     "sendEnd": 13.01,
-    //     "sendStart": 12.792,
-    //     ...
-    //   },
-    //   "priority": "VeryHigh",
-    //   "responseTime": 1634222299.776
-    // ...
-    // }
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    const boundsMs = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds);
+    dataProvider.setWindowTimes(boundsMs.min, boundsMs.max);
+    dataProvider.timelineData();
+
     const event = parsedTrace.data.NetworkRequests.byTime[1];
-    // So for this request:
-    // The earliest event belonging to this request starts at 183752441.977.
-    // This is used in flamechart to calculate unclippedBarX.
-    // Start time is 183752441.977
-    // End time is 183752670.454
-    // Finish time is 183752669.233
-    // request time is 183752.449687, but it is in second, so 183752449.687
-    // in milliseconds.
-    // sendStartTime is requestTime + sendStart = 183752462.479
-    // headersEndTime is requestTime + receiveHeadersEnd = 183752667.771
-    //
-    // To calculate the pixel of a timestamp, we subtract the begin time from
-    // it, then multiply the timeToPixelRatio and then add the unclippedBarX.
-    // Then get the floor of the pixel.
-    // So the pixel of sendStart is (183752462.479 - 183752441.977) + 10, in ts it will be 30.502000004053116.
-    // So the pixel of headersEnd is (183752667.771 - 183752441.977) + 10, in ts it will be 235.79399999976158.
-    // So the pixel of finish is (183752669.233 - 183752441.977) + 10, in ts it will be 237.25600001215935.
-    // So the pixel of start is (183752441.977 - 183752441.977) + 10 = 10.
-    // So the pixel of end is (183752670.454 - 183752441.977) + 10, in ts it will be 238.47699999809265.
-    assert.deepEqual(dataProvider.getDecorationPixels(event, /* unclippedBarX= */ 10, /* timeToPixelRatio= */ 1), {
-      sendStart: (183752462.479 - 183752441.977) + 10,
-      headersEnd: (183752667.771 - 183752441.977) + 10,
-      finish: (183752669.233 - 183752441.977) + 10,
-      start: 10,
-      end: (183752670.454 - 183752441.977) + 10,
-    });
+    const index = dataProvider.indexForEvent(event);
+    assert.isNotNull(index);
+    assert.isFalse(dataProvider.forceDecoration(index));
+
+    const drawOverride = dataProvider.getDrawOverride(index);
+    assert.exists(drawOverride);
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    assert.exists(context);
+    const fillRectSpy = sinon.spy(context, 'fillRect');
+    const moveToSpy = sinon.spy(context, 'moveTo');
+    const lineToSpy = sinon.spy(context, 'lineTo');
+
+    const beginTime = Trace.Helpers.Timing.microToMilli(event.ts);
+    const timeToPosition = (time: number): number => Math.floor((time - beginTime) + 10);
+    const startX = timeToPosition(beginTime);
+    const endX = timeToPosition(Trace.Helpers.Timing.microToMilli((event.ts + event.dur) as Trace.Types.Timing.Micro));
+
+    const pos = drawOverride(context, startX, 20, endX - startX, 17, timeToPosition, color => color);
+    assert.deepEqual(pos, {x: startX, width: Math.max(endX - startX, 1)});
+
+    const sendStart = timeToPosition(Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.sendStartTime));
+    const headersEnd = timeToPosition(Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.downloadStart));
+    const finish = timeToPosition(Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.finishTime));
+
+    // Request box [sendStart, finish] and waiting overlay [sendStart + 0.5, headersEnd], with no container clearRect.
+    sinon.assert.calledWithExactly(fillRectSpy.firstCall, sendStart, 20, finish - sendStart, 16);
+    sinon.assert.calledWithExactly(fillRectSpy.secondCall, sendStart + 0.5, 20.5, headersEnd - sendStart - 0.5, 15);
+    sinon.assert.callCount(fillRectSpy, 2);
+
+    // Left whisker from start to sendStart and right whisker from end to finish.
+    sinon.assert.calledWithExactly(lineToSpy, sendStart, 28.5);
+    sinon.assert.calledWithExactly(lineToSpy, finish, 28.5);
+    assert.isAtLeast(moveToSpy.callCount, 4);
   });
 
   it('can search for entries within a given time-range', async function() {

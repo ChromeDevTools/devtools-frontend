@@ -142,3 +142,30 @@ export function addDecorationToEvent(
   decorationsForEvent.push(decoration);
   timelineData.entryDecorations[eventIndex] = decorationsForEvent;
 }
+
+export const WHISKER_STROKE_COLOR = '#ccc';
+
+/**
+ * Draws left and right duration whiskers with 6px vertical end-ticks flanking an event's core box.
+ */
+export function drawWhiskers(context: CanvasRenderingContext2D, whiskerStartX: number, boxStartX: number,
+                             boxEndX: number, whiskerEndX: number, y: number, height: number,
+                             strokeColor: string): void {
+  const tickHeightPx = 6;
+  const lineY = Math.floor(y + height / 2) + 0.5;
+  const leftTick = whiskerStartX + 0.5;
+  const rightTick = whiskerEndX - 0.5;
+
+  context.beginPath();
+  context.lineWidth = 1;
+  context.strokeStyle = strokeColor;
+  context.moveTo(leftTick, lineY - tickHeightPx / 2);
+  context.lineTo(leftTick, lineY + tickHeightPx / 2);
+  context.moveTo(leftTick, lineY);
+  context.lineTo(boxStartX, lineY);
+  context.moveTo(rightTick, lineY - tickHeightPx / 2);
+  context.lineTo(rightTick, lineY + tickHeightPx / 2);
+  context.moveTo(rightTick, lineY);
+  context.lineTo(boxEndX, lineY);
+  context.stroke();
+}

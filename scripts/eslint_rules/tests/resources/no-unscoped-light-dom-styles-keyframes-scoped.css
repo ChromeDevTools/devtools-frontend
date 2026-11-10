@@ -1,0 +1,20 @@
+/* Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0%;
+  }
+
+  to {
+    opacity: 100%;
+  }
+}
+
+@scope to (devtools-widget > *) {
+  .item {
+    animation: fadeIn 1s;
+  }
+}

@@ -132,10 +132,6 @@ export class EvalLogger {
     return this.#runLogEntries.join('\n') + '\n';
   }
 
-  getLogContent(): string {
-    return this.getRunLogContent();
-  }
-
   /**
    * Returns the formatted log content for a specific task, uploaded per trajectory to GCS
    * as `agent_logs/agent.log`.

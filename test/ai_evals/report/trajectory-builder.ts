@@ -137,8 +137,6 @@ export interface Step {
   requestTimestamp: number;
   responseTimestamp: number;
 }
-
-export type RawExample = Step;
 /* eslint-enable @typescript-eslint/naming-convention */
 
 export interface TrajectoryBuilderOptions {
@@ -411,28 +409,6 @@ export class TrajectoryBuilder {
     const sessionId = this.#options.sessionId ?? createDefaultSessionId(this.#steps);
     const taskId = this.#options.taskId ?? '';
     return buildTrajectory(sessionId, taskId, this.#steps);
-  }
-
-  /**
-   * Builds the trajectory and writes it to disk as formatted JSON.
-   */
-  writeToFile(filePath: string): Trajectory {
-    const trajectory = this.build();
-    const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, {recursive: true});
-    }
-    fs.writeFileSync(filePath, JSON.stringify(trajectory, null, 2), 'utf-8');
-    return trajectory;
-  }
-
-  /**
-   * Builds and exports the trajectory to the specified evaluation output directory.
-   */
-  exportToFile(label: string, outputDir: string): {trajectory: Trajectory, outputPath: string} {
-    const trajectory = this.build();
-    const outputPath = exportEvalTrajectory(trajectory, label, outputDir);
-    return {trajectory, outputPath};
   }
 }
 

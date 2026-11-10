@@ -21,7 +21,6 @@ export const Markers = {
   RUN_COMPLETED: 'run_completed.marker',
 } as const;
 export type Markers = (typeof Markers)[keyof typeof Markers];
-export type MarkerType = Markers;
 
 /**
  * Note on omitted protocol artifacts:
@@ -240,7 +239,7 @@ export function uploadTemporaryContentToGCS(content: string, destination: string
  * taskId is optional because run-level markers (e.g. RUN_STARTED, RUN_COMPLETED)
  * reside directly under the run root, whereas task-level markers require a taskId.
  */
-export function uploadMarker(runId: string, marker: MarkerType, taskId?: string): boolean {
+export function uploadMarker(runId: string, marker: Markers, taskId?: string): boolean {
   const destination = taskId ? formatGCSTaskDestination(runId, taskId, marker) : formatGCSRunDestination(runId, marker);
   return uploadTemporaryContentToGCS('', destination);
 }

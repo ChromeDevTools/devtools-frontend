@@ -653,6 +653,13 @@ export class RequestTimingView extends UI.Widget.VBox {
   }
 
   set request(request: SDK.NetworkRequest.NetworkRequest) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+      this.#request?.removeEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.requestUpdate, this);
+    }
     this.#request = request;
     if (this.isShowing()) {
       this.#request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
@@ -662,6 +669,13 @@ export class RequestTimingView extends UI.Widget.VBox {
   }
 
   set calculator(calculator: NetworkTimeCalculator.NetworkTimeCalculator) {
+    if (this.#calculator === calculator) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#calculator?.removeEventListener(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED, this.#boundaryChanged,
+                                            this);
+    }
     this.#calculator = calculator;
     if (this.isShowing()) {
       this.#calculator.addEventListener(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED, this.#boundaryChanged, this);
@@ -685,8 +699,8 @@ export class RequestTimingView extends UI.Widget.VBox {
   }
 
   #boundaryChanged(): void {
-    const minimumBoundary = this.calculator.minimumBoundary();
-    if (minimumBoundary !== this.#lastMinimumBoundary) {
+    const minimumBoundary = this.#calculator?.minimumBoundary();
+    if (minimumBoundary !== undefined && minimumBoundary !== this.#lastMinimumBoundary) {
       this.#lastMinimumBoundary = minimumBoundary;
       this.requestUpdate();
     }

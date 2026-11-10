@@ -241,6 +241,42 @@ describe('ResourceTimingView', () => {
     assert.isTrue(inputFinished.request.finished, 'request.finished should be true when request is finished');
   });
 
+  it('unregisters old listeners and registers new ones when request or calculator is replaced while shown',
+     async () => {
+       const request = createNetworkRequest(Protocol.Network.ServiceWorkerRouterSource.Network,
+                                            Protocol.Network.ServiceWorkerRouterSource.Network);
+       const calculator = new NetworkTimeCalculator.NetworkTimeCalculator(true);
+
+       const viewStub = createViewFunctionStub(Network.RequestTimingView.RequestTimingView);
+       const component = new Network.RequestTimingView.RequestTimingView(undefined, viewStub);
+       renderElementIntoDOM(component);
+
+       component.request = request;
+       component.calculator = calculator;
+       await viewStub.nextInput;
+
+       assert.isTrue(request.hasEventListeners(SDK.NetworkRequest.Events.TIMING_CHANGED));
+       assert.isTrue(request.hasEventListeners(SDK.NetworkRequest.Events.FINISHED_LOADING));
+       assert.isTrue(calculator.hasEventListeners(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED));
+
+       const newRequest = createNetworkRequest(Protocol.Network.ServiceWorkerRouterSource.Network,
+                                               Protocol.Network.ServiceWorkerRouterSource.Network);
+       component.request = newRequest;
+       await viewStub.nextInput;
+
+       assert.isFalse(request.hasEventListeners(SDK.NetworkRequest.Events.TIMING_CHANGED));
+       assert.isFalse(request.hasEventListeners(SDK.NetworkRequest.Events.FINISHED_LOADING));
+       assert.isTrue(newRequest.hasEventListeners(SDK.NetworkRequest.Events.TIMING_CHANGED));
+       assert.isTrue(newRequest.hasEventListeners(SDK.NetworkRequest.Events.FINISHED_LOADING));
+
+       const newCalculator = new NetworkTimeCalculator.NetworkTimeCalculator(true);
+       component.calculator = newCalculator;
+       await viewStub.nextInput;
+
+       assert.isFalse(calculator.hasEventListeners(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED));
+       assert.isTrue(newCalculator.hasEventListeners(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED));
+     });
+
   it('shows caution message in DEFAULT_VIEW if and only if request is not finished yet', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);

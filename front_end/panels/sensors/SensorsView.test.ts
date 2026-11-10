@@ -8,7 +8,7 @@ import {beforeEach, describe, it} from 'mocha';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -44,6 +44,209 @@ describeWithEnvironment('SensorsView', () => {
 
     const options = Array.from(select.options).map(option => option.textContent);
     assert.include(options, 'Test Location');
+  });
+
+  describe('Location select', () => {
+    const BERLIN = {
+      title: 'Berlin',
+      lat: 52.52,
+      long: 13.405,
+      timezoneId: 'Europe/Berlin',
+      locale: 'de-DE',
+      accuracy: 50,
+    };
+    const BERLIN_INPUT_VALUES = ['52.52', '13.405', 'Europe/Berlin', 'de-DE', '50'];
+
+    let customLocationsSetting: Common.Settings.Setting<Sensors.LocationsSettingsTab.LocationDescription[]>;
+    let locationSetting: Common.Settings.Setting<string>;
+    let geolocationOverrides: Array<Protocol.Emulation.SetGeolocationOverrideRequest|null>;
+    let timezoneOverrides: string[];
+    let timezoneErrorMessage: string|undefined;
+    let localeErrorMessage: string|undefined;
+
+    beforeEach(async () => {
+      geolocationOverrides = [];
+      timezoneOverrides = [];
+      timezoneErrorMessage = undefined;
+      localeErrorMessage = undefined;
+
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('Emulation.setGeolocationOverride', params => {
+        geolocationOverrides.push(params ?? {});
+        return {};
+      });
+      connection.setSuccessHandler('Emulation.clearGeolocationOverride', () => {
+        geolocationOverrides.push(null);
+        return {};
+      });
+      connection.setHandler('Emulation.setTimezoneOverride', params => {
+        timezoneOverrides.push(params.timezoneId);
+        return timezoneErrorMessage ? {error: {message: timezoneErrorMessage, code: -32000}} : {result: {}};
+      });
+      connection.setHandler('Emulation.setLocaleOverride', () => {
+        return localeErrorMessage ? {error: {message: localeErrorMessage, code: -32000}} : {result: {}};
+      });
+      connection.setSuccessHandler('Emulation.setUserAgentOverride', () => ({}));
+      const target = createTarget({connection});
+      assert.exists(target.model(SDK.EmulationModel.EmulationModel));
+
+      locationSetting = Common.Settings.Settings.instance().createSetting('emulation.location-override', '');
+      customLocationsSetting =
+          Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor);
+      customLocationsSetting.set([BERLIN]);
+      await settled();
+    });
+
+    /** Waits for pending emulation requests and view updates. */
+    async function settled(): Promise<void> {
+      await raf();
+      await UI.Widget.Widget.allUpdatesComplete;
+    }
+
+    function locationSelect(): HTMLSelectElement {
+      const select = view.contentElement.querySelector<HTMLSelectElement>('.geo-fields select');
+      assert.exists(select);
+      return select;
+    }
+
+    async function selectLocation(valueOrTitle: string): Promise<void> {
+      const select = locationSelect();
+      const option =
+          Array.from(select.options).find(option => option.value === valueOrTitle || option.text === valueOrTitle);
+      assert.exists(option);
+      select.selectedIndex = option.index;
+      select.dispatchEvent(new Event('change'));
+      await settled();
+    }
+
+    function selectedLocationTitle(): string {
+      const select = locationSelect();
+      return select.options[select.selectedIndex].text;
+    }
+
+    function locationInput(name: string): HTMLInputElement {
+      const input = view.contentElement.querySelector<HTMLInputElement>(`#${name}-input`);
+      assert.exists(input);
+      return input;
+    }
+
+    function locationInputValues(): string[] {
+      return ['latitude', 'longitude', 'timezone', 'locale', 'accuracy'].map(name => locationInput(name).value);
+    }
+
+    function locationInputsDisabled(): boolean {
+      const fieldset = view.contentElement.querySelector<HTMLFieldSetElement>('#location-override-section');
+      assert.exists(fieldset);
+      return fieldset.disabled;
+    }
+
+    function errorMessage(name: string): string {
+      const error = view.contentElement.querySelector(`.${name}-error`);
+      assert.exists(error);
+      return error.textContent.trim();
+    }
+
+    it('has no override and disabled inputs by default', () => {
+      assert.strictEqual(selectedLocationTitle(), 'No override');
+      assert.isTrue(locationInputsDisabled());
+      assert.deepEqual(Array.from(locationSelect().options).map(option => option.text), [
+        'No override',
+        'Berlin',
+        'Other…',
+        'Location unavailable',
+      ]);
+    });
+
+    it('applies a custom location from the list', async () => {
+      await selectLocation('Berlin');
+
+      assert.isFalse(locationInputsDisabled());
+      assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
+      assert.strictEqual(locationSetting.get(), '52.52@13.405:Europe/Berlin:de-DE::50');
+      assert.deepEqual(geolocationOverrides, [{latitude: 52.52, longitude: 13.405, accuracy: 50}]);
+      assert.deepEqual(timezoneOverrides, ['Europe/Berlin']);
+    });
+
+    it('switches to "Other…" when the inputs of a custom location are edited', async () => {
+      await selectLocation('Berlin');
+
+      const latitudeInput = locationInput('latitude');
+      latitudeInput.value = '10';
+      latitudeInput.dispatchEvent(new Event('change'));
+      await settled();
+
+      assert.strictEqual(selectedLocationTitle(), 'Other…');
+      assert.strictEqual(locationSetting.get(), '10@13.405:Europe/Berlin:de-DE::50');
+      assert.deepEqual(geolocationOverrides.at(-1), {latitude: 10, longitude: 13.405, accuracy: 50});
+    });
+
+    it('applies the current input values when "Other…" is selected', async () => {
+      await selectLocation('Berlin');
+      await selectLocation('Location unavailable');
+      await selectLocation('Other…');
+
+      assert.isFalse(locationInputsDisabled());
+      assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
+      assert.strictEqual(locationSetting.get(), '52.52@13.405:Europe/Berlin:de-DE::50');
+    });
+
+    it('emulates an unavailable location', async () => {
+      await selectLocation('Berlin');
+      await selectLocation('Location unavailable');
+
+      assert.isFalse(locationInputsDisabled());
+      assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
+      assert.strictEqual(locationSetting.get(), '0@0:::true:150');
+      assert.deepEqual(geolocationOverrides.at(-1), {});
+      assert.strictEqual(timezoneOverrides.at(-1), '');
+    });
+
+    it('clears the override and resets the inputs when "No override" is selected', async () => {
+      await selectLocation('Berlin');
+      await selectLocation('No override');
+
+      assert.isTrue(locationInputsDisabled());
+      assert.deepEqual(locationInputValues(), ['0', '0', '', '', '150']);
+      assert.strictEqual(locationSetting.get(), '');
+      assert.isNull(geolocationOverrides.at(-1));
+    });
+
+    it('keeps the selected location when the list of custom locations changes', async () => {
+      await selectLocation('Berlin');
+
+      customLocationsSetting.set([BERLIN, {...BERLIN, title: 'Paris', lat: 48.8566, long: 2.3522}]);
+      await settled();
+
+      assert.strictEqual(selectedLocationTitle(), 'Berlin');
+      assert.isFalse(locationInputsDisabled());
+      assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
+    });
+
+    it('shows an error when the timezone cannot be emulated', async () => {
+      timezoneErrorMessage = 'Invalid timezone';
+      await selectLocation('Berlin');
+
+      assert.strictEqual(errorMessage('timezone'), 'Invalid timezone');
+      assert.strictEqual(errorMessage('locale'), '');
+    });
+
+    it('shows an error when the locale cannot be emulated', async () => {
+      localeErrorMessage = 'Invalid locale';
+      await selectLocation('Berlin');
+
+      assert.strictEqual(errorMessage('locale'), 'Invalid locale');
+      assert.strictEqual(errorMessage('timezone'), '');
+    });
+
+    it('clears the timezone error when the selection changes', async () => {
+      timezoneErrorMessage = 'Invalid timezone';
+      await selectLocation('Berlin');
+      timezoneErrorMessage = undefined;
+
+      await selectLocation('No override');
+
+      assert.strictEqual(errorMessage('timezone'), '');
+    });
   });
 
   describe('Location input events', () => {

@@ -928,6 +928,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         });
   }
 
+  /**
+   * Returns true when `defaultType` is NONE only because AI Assistance is in the
+   * main tab bar. The main tab bar shows one tab at a time, so while AI
+   * Assistance is selected there, no domain panel (Elements, Network, ...) can be
+   * visible. In that case NONE does not mean that the user moved away, and
+   * callers must keep the current conversation and its context.
+   */
+  #isDomainPanelHiddenByMainTabBar(defaultType?: AiAssistanceModel.AiHistoryStorage.ConversationType): boolean {
+    return AiAssistanceModel.AiUtils.isContextSelectionEnabled() &&
+        defaultType === AiAssistanceModel.AiHistoryStorage.ConversationType.NONE &&
+        UI.ViewManager.ViewManager.instance().locationNameForViewId(AiAssistancePanel.panelName) === 'panel';
+  }
+
   #getDefaultConversationType(): AiAssistanceModel.AiHistoryStorage.ConversationType|undefined {
     const {hostConfig} = Root.Runtime;
     const viewManager = UI.ViewManager.ViewManager.instance();
@@ -978,6 +991,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     const targetConversationType = this.#getDefaultConversationType();
+    if (this.#conversation && this.#isDomainPanelHiddenByMainTabBar(targetConversationType)) {
+      // Keep the existing empty conversation instead of replacing it with a NONE conversation.
+      this.requestUpdate();
+      return;
+    }
     if (this.#conversation?.type === targetConversationType) {
       this.requestUpdate();
       // The above if makes sure even if we have an active agent it's empty
@@ -1035,8 +1053,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     if (this.#conversation) {
       if (this.#conversation.isEmpty && AiAssistanceModel.AiUtils.isContextSelectionEnabled()) {
-        const context = this.#getConversationContext(this.#getDefaultConversationType());
-        this.#conversation.setContext(context);
+        const defaultType = this.#getDefaultConversationType();
+        const lookupType = this.#isDomainPanelHiddenByMainTabBar(defaultType) ? this.#conversation.type : defaultType;
+        this.#conversation.setContext(this.#getConversationContext(lookupType));
       } else {
         const previousContext = this.#conversation.selectedContext;
         const previousItem = previousContext?.getItem();

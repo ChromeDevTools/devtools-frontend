@@ -196,6 +196,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
   setupSettingsHooks();
 
   let viewManagerIsViewVisibleStub: sinon.SinonStub<[viewId: string], boolean>;
+  let viewManagerLocationNameStub: sinon.SinonStub<[viewId: string], string>;
 
   async function enableAllFeatureAndSetting() {
     viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
@@ -239,6 +240,12 @@ describeWithEnvironment('AI Assistance Panel', () => {
         UI.ViewManager.ViewManager.instance(),
         'isViewVisible',
     );
+    viewManagerLocationNameStub = sinon
+                                      .stub(
+                                          UI.ViewManager.ViewManager.instance(),
+                                          'locationNameForViewId',
+                                          )
+                                      .returns('drawer-view');
     registerNoopActions([
       'elements.toggle-element-search',
       'timeline.record-reload',
@@ -3910,6 +3917,91 @@ describeWithEnvironment('AI Assistance Panel', () => {
         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
         assert.isTrue(nextInput.props.isContextSelected);
         assert.strictEqual(nextInput.props.context?.getItem(), node);
+      });
+
+      it('keeps the DOM context of an empty chat when moved to the main tab bar', async () => {
+        updateHostConfig({
+          devToolsAiV2Architecture: {
+            enabled: true,
+          },
+        });
+        const node = createStubbedElementNodeInDocument('https://example.com');
+        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+        const {panel, view} = await createAiAssistancePanel({
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+        });
+
+        await panel.handleAction('freestyler.element-panel-context');
+        let nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isTrue(nextInput.props.isContextSelected);
+        assert.strictEqual(nextInput.props.context?.getItem(), node);
+
+        panel.willHide();
+        viewManagerIsViewVisibleStub.returns(false);
+        viewManagerLocationNameStub.returns('panel');
+        panel.wasShown();
+
+        nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isTrue(nextInput.props.isContextSelected);
+        assert.strictEqual(nextInput.props.context?.getItem(), node);
+      });
+
+      it('attaches the DOM node on "Start a chat" while already in the main tab bar', async () => {
+        updateHostConfig({
+          devToolsAiV2Architecture: {
+            enabled: true,
+          },
+        });
+        const node = createStubbedElementNodeInDocument('https://example.com');
+        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+        viewManagerIsViewVisibleStub.returns(false);
+        viewManagerLocationNameStub.returns('panel');
+
+        const {panel, view} = await createAiAssistancePanel({
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+        });
+
+        await panel.handleAction('freestyler.element-panel-context');
+        const nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isTrue(nextInput.props.isContextSelected);
+        assert.strictEqual(nextInput.props.context?.getItem(), node);
+      });
+
+      it('still applies explicit context removal in the main tab bar', async () => {
+        updateHostConfig({
+          devToolsAiV2Architecture: {
+            enabled: true,
+          },
+        });
+        const node = createStubbedElementNodeInDocument('https://example.com');
+        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+
+        const {panel, view} = await createAiAssistancePanel({
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+        });
+
+        await panel.handleAction('freestyler.element-panel-context');
+        let nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isTrue(nextInput.props.isContextSelected);
+        assert.strictEqual(nextInput.props.context?.getItem(), node);
+
+        assert.isNotNull(nextInput.props.onContextRemoved);
+        nextInput.props.onContextRemoved();
+
+        panel.willHide();
+        viewManagerIsViewVisibleStub.returns(false);
+        viewManagerLocationNameStub.returns('panel');
+        panel.wasShown();
+
+        nextInput = await view.nextInput;
+        assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+        assert.isFalse(nextInput.props.isContextSelected);
+        assert.isNull(nextInput.props.context);
       });
     });
   });

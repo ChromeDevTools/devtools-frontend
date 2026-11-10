@@ -91,6 +91,7 @@ export interface CommandLineOptions {
   'isolated-script-test-perf-output'?: string;
   'isolated-script-test-filter'?: string|string[];
   'isolated-script-test-filter-file'?: string|string[];
+  'dry-run': boolean;
 }
 
 export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T>): Yargs.Argv<T&CommandLineOptions> {
@@ -237,5 +238,10 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
       .option('isolated-script-test-filter-file', {
         type: 'string',
         desc: 'Path to a file containing test filters (used by Chromium Swarming).',
+      })
+      .option('dry-run', {
+        type: 'boolean',
+        default: false,
+        desc: 'Check test IDs and print matched tests without running them',
       });
 }

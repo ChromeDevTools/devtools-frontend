@@ -64,6 +64,14 @@ export class ResultsDbReporter extends Mocha.reporters.Base {
 
   constructor(runner: Mocha.Runner, options?: Mocha.MochaOptions) {
     super(runner, options);
+    if (TestConfig.dryRun) {
+      // A dry run only lists the matching tests. It does not use expectations or ResultDB.
+      runner.on(EVENT_TEST_PASS, (test: Mocha.Test) => {
+        const {exactTestId} = generateExactTestId(GEN_DIR, test.file!, test.titlePath(), SOURCE_ROOT);
+        process.stdout.write(`[PASS] ${exactTestId} ${test.duration ?? 0}ms\n`);
+      });
+      return;
+    }
     // `reportOptions` doesn't work with .mocharc.js (configuring via exports).
     // BUT, every module.exports is forwarded onto the options object.
     this.suitePrefix = (options as {suiteName: string} | undefined)?.suiteName;

@@ -38,6 +38,10 @@ const tests = [
 ];
 
 function* reporters() {
+  if (TestConfig.dryRun) {
+    yield 'exact-test-id';
+    return;
+  }
   yield 'test-expectations';
   yield 'browser-artifact';
   if (ResultsDb.available()) {
@@ -542,7 +546,7 @@ export default function(config: any): void {
     basePath: CHECKOUT_ROOT,
     logLevel,
     autoWatchBatchDelay: 1000,
-    failOnEmptyTestSuite: false,
+    failOnEmptyTestSuite: TestConfig.dryRun,
 
     customContextFile: path.join(GEN_DIR, 'test/unit/context.html'),
     customDebugFile: path.join(GEN_DIR, 'test/unit/debug.html'),
@@ -701,6 +705,7 @@ export default function(config: any): void {
       captureConsole: true,
       mocha: {
         ...TestConfig.mochaGrep,
+        dryRun: TestConfig.dryRun,
         bail: TestConfig.bail,
         retries: TestConfig.retries,
         timeout: TestConfig.debug ? 0 : 5_000,
@@ -710,7 +715,7 @@ export default function(config: any): void {
       pathSeparator: path.sep,
       testIds: TestConfig.tests.filter(t => TEST_ID_REGEX.test(t)),
       repetitions: TestConfig.repetitions,
-      skippedTests: getSkippedTests(),
+      skippedTests: TestConfig.dryRun ? [] : getSkippedTests(),
     },
 
     browserConsoleLogOptions: {

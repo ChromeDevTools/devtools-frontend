@@ -66,6 +66,7 @@ interface Config {
   otaUsername?: string;
   otaPassword?: string;
   isolatedScriptTestOutput?: string;
+  dryRun: boolean;
 }
 
 const diffBehaviors = asArray(options['on-diff']);
@@ -233,6 +234,7 @@ export const TestConfig: Config = {
   otaPassword: options['ota-password'],
   isolatedScriptTestOutput:
       options['isolated-script-test-output'] ? path.resolve(options['isolated-script-test-output']) : undefined,
+  dryRun: Boolean(options['dry-run']),
 };
 
 export function shuffleTests(tests: string[]): string[] {

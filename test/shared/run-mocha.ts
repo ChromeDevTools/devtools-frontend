@@ -29,7 +29,8 @@ function optionsWithDefalts(options: Options): Options {
     retries: TestConfig.retries,
     reporter: ResultsDbReporter,
     slow: 1000,
-    failZero: false,
+    failZero: TestConfig.dryRun,
+    dryRun: TestConfig.dryRun,
     bail: TestConfig.bail,
     ...options,
     ...TestConfig.mochaGrep,
@@ -123,15 +124,15 @@ export async function run(options: Omit<Options, OmitOptions>): Promise<void> {
   const testIds = new Set(
       TestConfig.tests.filter(testId => TEST_ID_REGEX.test(testId)),
   );
-  const skippedTests = getSkippedTests();
+  const skippedTests = TestConfig.dryRun ? [] : getSkippedTests();
 
   const testIdMap = createTestIdMap(mocha.suite);
   checkForDuplicateTests(testIdMap);
   pruneSuite(mocha.suite, testIdMap, {testIds, skippedTests});
   duplicateTests(mocha.suite, TestConfig.repetitions);
 
-  mocha.enableGlobalSetup(true);
-  mocha.enableGlobalTeardown(true);
+  mocha.enableGlobalSetup(!TestConfig.dryRun);
+  mocha.enableGlobalTeardown(!TestConfig.dryRun);
 
   const failures = await new Promise<number>(resolve => {
     mocha.run(resolve);

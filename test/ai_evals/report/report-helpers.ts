@@ -2,8 +2,60 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as crypto from 'node:crypto';
+
 import type {PhaseStatus, RunMetrics} from './gcs-upload.js';
 import type {ToolCallStats, TurnTokens} from './trajectory-builder.js';
+
+/**
+ * Generates a run ID formatted as YYYY-MM-DD-HHmmss-xxxx-xxxxxxx
+ * (e.g., 2026-08-25-134619-c0c1-8f25f69) for a suite execution.
+ */
+export function generateRunId(): string {
+  const now = new Date();
+  const dateStr = now.toISOString().replace(/T/, '-').replace(/:/g, '').slice(0, 17);
+  const hex = crypto.randomBytes(6).toString('hex');
+  return `${dateStr}-${hex.slice(0, 4)}-${hex.slice(4, 11)}`;
+}
+
+/**
+ * Resolves the appropriate Content-Type header with UTF-8 charset based on the file extension.
+ */
+export function getContentType(filePath: string): string {
+  if (filePath.endsWith('.json')) {
+    return 'application/json; charset=utf-8';
+  }
+  if (filePath.endsWith('.html')) {
+    return 'text/html; charset=utf-8';
+  }
+  if (filePath.endsWith('.marker')) {
+    return 'text/plain';
+  }
+  return 'text/plain; charset=utf-8';
+}
+
+function formatErrorValue(value: unknown): string {
+  if (value instanceof Error) {
+    return value.stack || String(value);
+  }
+  if (typeof value === 'object' && value !== null && 'stack' in value && typeof value.stack === 'string' &&
+      value.stack) {
+    return value.stack;
+  }
+  return String(value);
+}
+
+/**
+ * Formats an Error (or thrown value) and its optional cause stack trace for logs.
+ */
+export function formatError(err: unknown): string {
+  const primary = formatErrorValue(err);
+  if (err instanceof Error && err.cause !== undefined && err.cause !== null) {
+    const cause = formatErrorValue(err.cause);
+    return cause ? `${primary}\n${cause}` : primary;
+  }
+  return primary;
+}
 
 /**
  * Formats a duration in seconds as a protobuf Duration string (e.g. `12.345s`).

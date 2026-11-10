@@ -21,6 +21,9 @@ node_ts_library("report") {
 }
 
 node_ts_library("unittests") {
-  sources = [ "trajectory-builder.test.ts" ]
+  sources = [
+    "report-helpers.test.ts",
+    "trajectory-builder.test.ts",
+  ]
   ts_deps = [ ":report" ]
 }

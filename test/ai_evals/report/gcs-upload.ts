@@ -3,12 +3,11 @@
 // found in the LICENSE file.
 
 import {execSync} from 'node:child_process';
-import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-import {formatProtoDuration, formatProtoTaskStatus} from './report-helpers.js';
+import {formatProtoDuration, formatProtoTaskStatus, getContentType} from './report-helpers.js';
 import type {TurnTokens} from './trajectory-builder.js';
 
 /* eslint-disable no-console */
@@ -118,17 +117,6 @@ export interface TaskStatus {
 }
 
 /**
- * Generates a run ID formatted as YYYY-MM-DD-HHmmss-xxxx-xxxxxxx
- * (e.g., 2026-08-25-134619-c0c1-8f25f69) for a suite execution.
- */
-export function generateRunId(): string {
-  const now = new Date();
-  const dateStr = now.toISOString().replace(/T/, '-').replace(/:/g, '').slice(0, 17);
-  const hex = crypto.randomBytes(6).toString('hex');
-  return `${dateStr}-${hex.slice(0, 4)}-${hex.slice(4, 11)}`;
-}
-
-/**
  * Formats a run-level GCS destination URI (e.g., gs://bucket/ai_evals/runs/<runId>/<fileName>).
  */
 export function formatGCSRunDestination(runId: string, destinationFileName: string): string {
@@ -140,22 +128,6 @@ export function formatGCSRunDestination(runId: string, destinationFileName: stri
  */
 export function formatGCSTaskDestination(runId: string, taskId: string, destinationFileName: string): string {
   return `gs://${BUCKET}/${PROJECT_ID}/runs/${runId}/tasks/${taskId}/output/${destinationFileName}`;
-}
-
-/**
- * Resolves the appropriate Content-Type header with UTF-8 charset based on the file extension.
- */
-export function getContentType(filePath: string): string {
-  if (filePath.endsWith('.json')) {
-    return 'application/json; charset=utf-8';
-  }
-  if (filePath.endsWith('.html')) {
-    return 'text/html; charset=utf-8';
-  }
-  if (filePath.endsWith('.marker')) {
-    return 'text/plain';
-  }
-  return 'text/plain; charset=utf-8';
 }
 
 const MAX_UPLOAD_ATTEMPTS = 3;

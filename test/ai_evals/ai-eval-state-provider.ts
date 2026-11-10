@@ -25,7 +25,6 @@ import {
   ResultStore,
 } from './report/evaluators.js';
 import {
-  generateRunId,
   PROJECT_ID,
   type RunOutcomeStatus,
   type TaskStatus,
@@ -33,7 +32,7 @@ import {
   uploadRunLog,
   uploadRunStarted,
 } from './report/gcs-upload.js';
-import {aggregateRunMetrics, buildRunTags} from './report/report-helpers.js';
+import {aggregateRunMetrics, buildRunTags, formatError, generateRunId} from './report/report-helpers.js';
 import {
   calculateTrajectoryTokens,
   calculateTrajectoryToolCalls,
@@ -304,8 +303,7 @@ export class AiEvalStateProvider extends StateProvider {
   }
 
   #recordPreparationFailure(evalConfig: AiEvalConfig, error: unknown): void {
-    const normalizedError = error instanceof Error ? error : new Error(String(error));
-    const errorMessage = this.#logger.formatError(normalizedError);
+    const errorMessage = formatError(error);
     this.#logger.taskError(evalConfig.taskId, `Preparation failed.\n${errorMessage}`);
     handleTaskFailure({
       runId: this.#runId,
@@ -386,7 +384,7 @@ export class AiEvalStateProvider extends StateProvider {
     const evalTask = (state as AiEvalState | undefined)?.evalTask;
     if (evalTask?.isConfigured) {
       evalTask.hasFailed = true;
-      evalTask.failureError = this.#logger.formatError(error);
+      evalTask.failureError = formatError(error);
       this.#logger.taskError(evalTask.taskId, `There is an error, skipping it.\n${evalTask.failureError}`);
     }
     return await super.onTestError(state, error);
@@ -465,7 +463,7 @@ export class AiEvalStateProvider extends StateProvider {
         gradingDurationSeconds,
       });
     } catch (err) {
-      const errorMessage = this.#logger.formatError(err as Error);
+      const errorMessage = formatError(err);
       this.#logger.taskError(evalTask.taskId, errorMessage);
       handleTaskFailure({
         runId: this.#runId,

@@ -79,11 +79,6 @@ export class EvalLogger {
     }
   }
 
-  formatError(err: Error): string {
-    const stack = typeof err.cause === 'object' && err.cause && 'stack' in err.cause ? err.cause.stack : '';
-    return `${err.stack}${err.cause ? `\n${stack}` : ''}`;
-  }
-
   /**
    * Time elapsed since the logger (i.e. the run) was created (e.g. `12.34s`).
    */

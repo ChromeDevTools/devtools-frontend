@@ -89,5 +89,6 @@ ts_library("unittests") {
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
     "../../ui/settings:bundle",
+    "../mobile_throttling:bundle",
   ]
 }

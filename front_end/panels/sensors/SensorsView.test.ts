@@ -13,6 +13,7 @@ import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHe
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import * as Sensors from './sensors.js';
 
@@ -570,6 +571,180 @@ describeWithEnvironment('SensorsView', () => {
 
       // Shift increases/decreases by 10
       assert.strictEqual(alphaInput.value, '35');
+    });
+  });
+
+  describe('Setting selects', () => {
+    function settingSelect(section: string): HTMLSelectElement {
+      const select = view.contentElement.querySelector<HTMLSelectElement>(`.${section}-section select`);
+      assert.exists(select);
+      return select;
+    }
+
+    function optionTitles(section: string): string[] {
+      return Array.from(settingSelect(section).options, option => option.text.trim());
+    }
+
+    function selectedTitle(section: string): string {
+      const select = settingSelect(section);
+      return select.options[select.selectedIndex].text.trim();
+    }
+
+    async function selectSetting(section: string, title: string): Promise<void> {
+      const select = settingSelect(section);
+      const option = Array.from(select.options).find(option => option.text.trim() === title);
+      assert.exists(option);
+      select.selectedIndex = option.index;
+      select.dispatchEvent(new Event('change'));
+      await UI.Widget.Widget.allUpdatesComplete;
+    }
+
+    it('renders the touch select and updates the setting', async () => {
+      const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor);
+      assert.deepEqual(optionTitles('touch'), ['Device-based', 'Force enabled']);
+      assert.strictEqual(selectedTitle('touch'), 'Device-based');
+
+      await selectSetting('touch', 'Force enabled');
+
+      assert.strictEqual(setting.get(), 'force');
+    });
+
+    it('renders the idle detection select and updates the setting', async () => {
+      const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor);
+      assert.deepEqual(optionTitles('idle'), [
+        'No idle emulation',
+        'User active, screen unlocked',
+        'User active, screen locked',
+        'User idle, screen unlocked',
+        'User idle, screen locked',
+      ]);
+      assert.strictEqual(selectedTitle('idle'), 'No idle emulation');
+
+      await selectSetting('idle', 'User idle, screen locked');
+
+      assert.strictEqual(setting.get(), '{"isUserActive":false,"isScreenUnlocked":false}');
+    });
+
+    it('renders the CPU pressure select and updates the setting', async () => {
+      const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPressureSettingDescriptor);
+      assert.deepEqual(optionTitles('pressure'), ['No override', 'Nominal', 'Fair', 'Serious', 'Critical']);
+      assert.strictEqual(selectedTitle('pressure'), 'No override');
+
+      await selectSetting('pressure', 'Critical');
+
+      assert.strictEqual(setting.get(), 'critical');
+    });
+  });
+
+  describe('Hardware concurrency section', () => {
+    const DEFAULT_CONCURRENCY = 8;
+
+    let concurrencyOverrides: number[];
+
+    beforeEach(async () => {
+      concurrencyOverrides = [];
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('Runtime.evaluate', ({expression}) => {
+        assert.strictEqual(expression, 'navigator.hardwareConcurrency');
+        return {result: {value: DEFAULT_CONCURRENCY, type: Protocol.Runtime.RemoteObjectType.Number}};
+      });
+      connection.setSuccessHandler('Emulation.setHardwareConcurrencyOverride', params => {
+        concurrencyOverrides.push(params.hardwareConcurrency);
+        return {};
+      });
+      const target = createTarget({connection});
+      assert.exists(target.model(SDK.EmulationModel.EmulationModel));
+
+      // The throttling manager singleton outlives the per-test SDK singletons,
+      // so the view needs a fresh one to observe the target created above.
+      MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
+      view.detach();
+      view = new Sensors.SensorsView.SensorsView();
+      renderElementIntoDOM(view);
+      await settled();
+    });
+
+    /** Waits for pending requests to the target and view updates. */
+    async function settled(): Promise<void> {
+      await raf();
+      await UI.Widget.Widget.allUpdatesComplete;
+    }
+
+    function query<T extends HTMLElement>(selector: string): T {
+      const element = view.contentElement.querySelector<T>(`.concurrency-section ${selector}`);
+      assert.exists(element);
+      return element;
+    }
+
+    const checkbox = (): UI.UIUtils.CheckboxLabel => query('devtools-checkbox');
+    const numericInput = (): HTMLInputElement => query('.concurrency-details input');
+    const resetButton = (): HTMLElement => query('[aria-label="Reset to the default value"]');
+    const warning = (): HTMLElement =>
+        query('[aria-label="Exceeding the default value may degrade system performance"]');
+    const isVisible = (element: HTMLElement): boolean => getComputedStyle(element).visibility === 'visible';
+
+    async function toggleOverride(checked: boolean): Promise<void> {
+      checkbox().checked = checked;
+      checkbox().dispatchEvent(new Event('change'));
+      await settled();
+    }
+
+    async function setConcurrency(value: number): Promise<void> {
+      numericInput().value = String(value);
+      numericInput().dispatchEvent(new Event('input'));
+      await settled();
+    }
+
+    it('shows the default hardware concurrency in a disabled input', () => {
+      assert.isFalse(checkbox().disabled);
+      assert.isFalse(checkbox().checked);
+      assert.isTrue(numericInput().disabled);
+      assert.strictEqual(numericInput().value, String(DEFAULT_CONCURRENCY));
+      assert.isFalse(isVisible(resetButton()));
+      assert.isFalse(isVisible(warning()));
+    });
+
+    it('overrides the hardware concurrency', async () => {
+      await toggleOverride(true);
+      assert.isFalse(numericInput().disabled);
+
+      await setConcurrency(4);
+
+      assert.strictEqual(concurrencyOverrides.at(-1), 4);
+      assert.isTrue(isVisible(resetButton()));
+      assert.isFalse(isVisible(warning()));
+    });
+
+    it('warns when the override exceeds the default', async () => {
+      await toggleOverride(true);
+      await setConcurrency(16);
+
+      assert.strictEqual(concurrencyOverrides.at(-1), 16);
+      assert.isTrue(isVisible(resetButton()));
+      assert.isTrue(isVisible(warning()));
+    });
+
+    it('restores the default when the reset button is clicked', async () => {
+      await toggleOverride(true);
+      await setConcurrency(16);
+
+      resetButton().click();
+      await settled();
+
+      assert.strictEqual(numericInput().value, String(DEFAULT_CONCURRENCY));
+      assert.strictEqual(concurrencyOverrides.at(-1), DEFAULT_CONCURRENCY);
+      assert.isFalse(isVisible(resetButton()));
+      assert.isFalse(isVisible(warning()));
+    });
+
+    it('restores the default when the override is disabled', async () => {
+      await toggleOverride(true);
+      await setConcurrency(4);
+
+      await toggleOverride(false);
+
+      assert.isTrue(numericInput().disabled);
+      assert.strictEqual(concurrencyOverrides.at(-1), DEFAULT_CONCURRENCY);
     });
   });
 

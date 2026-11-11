@@ -268,7 +268,7 @@ td.time-column {
 }
 
 .data-grid-data-grid-node devtools-icon.network-console-icon {
-  margin-right: 3px;
+  margin-right: var(--sys-size-3);
 }
 
 .image-network-icon-preview {

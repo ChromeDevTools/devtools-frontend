@@ -119,4 +119,44 @@ describe('Menu', () => {
     const selectedItems = [...menu.querySelectorAll('devtools-menu-item')].filter(item => item.selected);
     assert.deepEqual(selectedItems.map(item => item.innerText), ['Option 1', 'Option 2']);
   });
+
+  it('resolves the origin element by ID from the origin attribute', async () => {
+    const container = document.createElement('div');
+    const anchor = document.createElement('button');
+    anchor.id = 'menu-anchor';
+    const menu = new Menus.Menu.Menu();
+    menu.setAttribute('origin', 'menu-anchor');
+    container.append(anchor, menu);
+    renderElementIntoDOM(container);
+    await RenderCoordinator.done();
+
+    assert.isFunction(menu.origin);
+    assert.strictEqual((menu.origin as () => unknown)(), anchor);
+  });
+
+  it('caches the origin callback for the same origin attribute', () => {
+    const menu = new Menus.Menu.Menu();
+    menu.setAttribute('origin', 'menu-anchor');
+    const firstOrigin = menu.origin;
+    menu.setAttribute('origin', 'menu-anchor');
+
+    assert.strictEqual(menu.origin, firstOrigin);
+  });
+
+  it('resolves a replaced element with the same origin ID', async () => {
+    const container = document.createElement('div');
+    const firstAnchor = document.createElement('button');
+    firstAnchor.id = 'menu-anchor';
+    const menu = new Menus.Menu.Menu();
+    menu.setAttribute('origin', 'menu-anchor');
+    container.append(firstAnchor, menu);
+    renderElementIntoDOM(container);
+
+    const secondAnchor = document.createElement('button');
+    secondAnchor.id = 'menu-anchor';
+    firstAnchor.replaceWith(secondAnchor);
+    await RenderCoordinator.done();
+
+    assert.strictEqual((menu.origin as () => unknown)(), secondAnchor);
+  });
 });

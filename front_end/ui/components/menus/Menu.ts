@@ -59,6 +59,7 @@ export interface MenuData {
 const selectedItemCheckmark = new URL('../../../Images/checkmark.svg', import.meta.url).toString();
 
 export class Menu extends HTMLElement {
+  static readonly observedAttributes: string[] = ['origin'];
   readonly #shadow = this.attachShadow({mode: 'open'});
   #dialog: Dialogs.Dialog.Dialog|null = null;
   #itemIsFocused = false;
@@ -78,6 +79,19 @@ export class Menu extends HTMLElement {
 
   set origin(origin: Dialogs.Dialog.DialogOrigin) {
     this.#props.origin = origin;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  attributeChangedCallback(_name: string, oldValue: string|null, newValue: string|null): void {
+    if (oldValue === newValue) {
+      return;
+    }
+    this.#props.origin = newValue ? () => {
+      const root = this.getRootNode() as Document | ShadowRoot | Element;
+      const element =
+          'getElementById' in root ? root.getElementById(newValue) : root.querySelector(`#${CSS.escape(newValue)}`);
+      return element instanceof HTMLElement ? element : new DOMPoint(0, 0);
+    } : null;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 

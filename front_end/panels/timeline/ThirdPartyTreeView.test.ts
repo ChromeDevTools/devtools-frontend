@@ -70,7 +70,7 @@ describe('Third party tree', function() {
     // Node with first party
     let node = topNodesIterator[0];
     assert.strictEqual(node.id.toString(), 'localhost');
-    assert.strictEqual(node.selfTime, 1008.4510016441345);
+    assert.strictEqual(node.selfTime, 1008451);
     let gridNode =
         new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
     let entity = gridNode?.createCell('site');
@@ -80,7 +80,7 @@ describe('Third party tree', function() {
     // Node with ext
     node = topNodesIterator[1];
     assert.strictEqual(node.id.toString(), 'ienfalfjdbdpebioblfackkekamfmbnh');
-    assert.strictEqual(node.selfTime, 2.5320003032684326);
+    assert.strictEqual(node.selfTime, 2532);
     gridNode =
         new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
     entity = gridNode?.createCell('site');

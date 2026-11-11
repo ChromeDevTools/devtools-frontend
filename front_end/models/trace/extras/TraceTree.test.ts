@@ -32,8 +32,8 @@ describe('TraceTree', () => {
       ];
       const root = new Trace.Extras.TraceTree.TopDownRootNode(events, {
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(300_000),
       });
 
       const children = root.children();
@@ -63,8 +63,8 @@ describe('TraceTree', () => {
       ];
       const root = new Trace.Extras.TraceTree.TopDownRootNode(events, {
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(300_000),
       });
 
       const rootChildren = root.children();
@@ -101,8 +101,8 @@ describe('TraceTree', () => {
       ];
       const root = new Trace.Extras.TraceTree.TopDownRootNode(events, {
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(300_000),
       });
 
       const rootChildren = root.children();
@@ -142,37 +142,108 @@ describe('TraceTree', () => {
       ];
       const root = new Trace.Extras.TraceTree.TopDownRootNode(events, {
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(300_000),
       });
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
 
       const rootChildIterator = rootChildren.values();
-      assert.strictEqual(rootChildIterator.next().value!.selfTime, Trace.Helpers.Timing.microToMilli(eventA.dur));
+      assert.strictEqual(rootChildIterator.next().value!.selfTime, eventA.dur);
 
       const nodeB = rootChildIterator.next().value as Trace.Extras.TraceTree.TopDownNode;
       const nodeBSelfTime = Trace.Types.Timing.Micro(eventB.dur - eventC.dur - eventD.dur);
-      assert.strictEqual(nodeB.selfTime, Trace.Helpers.Timing.microToMilli(nodeBSelfTime));
+      assert.strictEqual(nodeB.selfTime, nodeBSelfTime);
 
       const nodeBChildren = nodeB.children();
       assert.strictEqual(nodeBChildren.size, 2);
 
       const nodeBChildIterator = nodeBChildren.values();
-      assert.strictEqual(nodeBChildIterator.next().value!.selfTime, Trace.Helpers.Timing.microToMilli(eventC.dur));
+      assert.strictEqual(nodeBChildIterator.next().value!.selfTime, eventC.dur);
 
       const nodeD = nodeBChildIterator.next().value!;
       const nodeDSelfTime = Trace.Types.Timing.Micro(eventD.dur - eventE.dur);
-      assert.strictEqual(nodeD.selfTime, Trace.Helpers.Timing.microToMilli(nodeDSelfTime));
+      assert.strictEqual(nodeD.selfTime, nodeDSelfTime);
 
       const nodeDChildren = nodeD.children();
       assert.strictEqual(nodeDChildren.size, 1);
 
       const nodeDChildIterator = nodeDChildren.values();
       const nodeE = nodeDChildIterator.next().value!;
-      assert.strictEqual(nodeE.selfTime, Trace.Helpers.Timing.microToMilli(eventE.dur));
+      assert.strictEqual(nodeE.selfTime, eventE.dur);
     });
+
+    it('maintains exact microsecond accounting without float reassociation drift across child events', () => {
+      // Durations such as 1µs or 7µs have no exact IEEE-754 binary millisecond float representation
+      // (0.1 - sum([1,2,3,5,7,11,13,17,19,22] / 1000) !== 0 in float arithmetic).
+      const childDurationsMicro = [1, 2, 3, 5, 7, 11, 13, 17, 19, 22];  // sum = 100µs per cycle
+      let currentTs = 0;
+      const childEvents: Trace.Types.Events.Event[] = [];
+      for (let i = 0; i < 20; i++) {
+        const dur = childDurationsMicro[i % childDurationsMicro.length];
+        childEvents.push(makeCompleteEvent(`Child ${i % childDurationsMicro.length}`, currentTs, dur));
+        currentTs += dur;
+      }
+      const totalDuration = currentTs;
+      const parentEvent = makeCompleteEvent('ParentTask', 0, totalDuration);
+      const events = [parentEvent, ...childEvents];
+
+      const root = new Trace.Extras.TraceTree.TopDownRootNode(events, {
+        filters: [],
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(totalDuration),
+      });
+
+      const parentNode = root.children().values().next().value as Trace.Extras.TraceTree.TopDownNode;
+      assert.strictEqual(parentNode.totalTime, totalDuration);
+      assert.strictEqual(parentNode.selfTime, 0);
+      const sumChildTotalTime =
+          Array.from(parentNode.children().values()).reduce((acc, child) => acc + child.totalTime, 0);
+      assert.strictEqual(sumChildTotalTime, totalDuration);
+
+      const bottomUpRoot = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(totalDuration),
+      });
+      const sumBottomUpSelf =
+          Array.from(bottomUpRoot.children().values()).reduce((acc, child) => acc + child.selfTime, 0);
+      assert.strictEqual(sumBottomUpSelf, totalDuration);
+    });
+
+    it('does not leak an immediately adjacent event into the tree when window ends at non-terminating microsecond bounds',
+       () => {
+         // 8002 µs has a non-terminating binary float representation when divided by 1000:
+         // (8002 / 1000) * 1000 === 8002.000000000001.
+         const eventInside = makeCompleteEvent('Inside', 0, 8_002);
+         const eventAdjacentOuter = makeCompleteEvent('Outer', 8_002, 5_000);
+         const eventAdjacentSameName = makeCompleteEvent('Inside', 8_002, 5_000);
+         const events = [eventInside, eventAdjacentOuter, eventAdjacentSameName];
+         const root = new Trace.Extras.TraceTree.TopDownRootNode(events, {
+           filters: [],
+           startTime: Trace.Types.Timing.Micro(0),
+           endTime: Trace.Types.Timing.Micro(8_002),
+         });
+
+         const children = root.children();
+         assert.strictEqual(children.size, 1);
+         assert.strictEqual(children.values().next().value!.event, eventInside);
+
+         const bottomUpRoot = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
+           textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+           filters: [],
+           startTime: Trace.Types.Timing.Micro(0),
+           endTime: Trace.Types.Timing.Micro(8_002),
+         });
+         const buChildren = bottomUpRoot.children();
+         assert.strictEqual(buChildren.size, 1);
+         const insideNode = buChildren.get('Inside')!;
+         assert.lengthOf(insideNode.events, 1);
+         assert.isFalse(insideNode.hasChildren());
+         assert.strictEqual(insideNode.children().size, 0);
+       });
   });
 
   describe('BottomUpRootNode', () => {
@@ -190,8 +261,8 @@ describe('TraceTree', () => {
       ];
       const root = new Trace.Extras.TraceTree.TopDownRootNode(events, {
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(300_000),
       });
 
       const children = root.children();
@@ -222,8 +293,8 @@ describe('TraceTree', () => {
       const root = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(200_000),
       });
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
@@ -279,8 +350,8 @@ describe('TraceTree', () => {
       const root = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(200_000),
       });
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
@@ -339,29 +410,29 @@ describe('TraceTree', () => {
       const root = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(200_000),
       });
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 5);
 
       const rootChildIterator = rootChildren.values();
-      assert.strictEqual(rootChildIterator.next().value!.selfTime, Trace.Helpers.Timing.microToMilli(eventA.dur));
+      assert.strictEqual(rootChildIterator.next().value!.selfTime, eventA.dur);
 
       const nodeC = rootChildIterator.next().value as Trace.Extras.TraceTree.TopDownNode;
-      assert.strictEqual(nodeC.selfTime, Trace.Helpers.Timing.microToMilli(eventC.dur));
+      assert.strictEqual(nodeC.selfTime, eventC.dur);
 
       const nodeE = rootChildIterator.next().value as Trace.Extras.TraceTree.TopDownNode;
-      assert.strictEqual(nodeE.selfTime, Trace.Helpers.Timing.microToMilli(eventE.dur));
+      assert.strictEqual(nodeE.selfTime, eventE.dur);
 
       const nodeD = rootChildIterator.next().value as Trace.Extras.TraceTree.TopDownNode;
       const nodeDSelfTime = Trace.Types.Timing.Micro(eventD.dur - eventE.dur);
-      assert.strictEqual(nodeD.selfTime, Trace.Helpers.Timing.microToMilli(nodeDSelfTime));
+      assert.strictEqual(nodeD.selfTime, nodeDSelfTime);
 
       const nodeB = rootChildIterator.next().value as Trace.Extras.TraceTree.TopDownNode;
       const nodeBSelfTime = Trace.Types.Timing.Micro(eventB.dur - eventC.dur - eventD.dur);
-      assert.strictEqual(nodeB.selfTime, Trace.Helpers.Timing.microToMilli(nodeBSelfTime));
+      assert.strictEqual(nodeB.selfTime, nodeBSelfTime);
     });
 
     it('creates a node for an event with an empty name and attributes self time correctly', () => {
@@ -374,8 +445,8 @@ describe('TraceTree', () => {
       const root = new Trace.Extras.TraceTree.BottomUpRootNode([eventP, eventEmpty], {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(200_000),
       });
 
       const rootChildren = root.children();
@@ -383,12 +454,12 @@ describe('TraceTree', () => {
       const nodeEmpty = rootChildren.get('');
       assert.exists(nodeP);
       assert.exists(nodeEmpty);
-      assert.strictEqual(nodeP.selfTime, 70);
-      assert.strictEqual(nodeP.totalTime, 100);
-      assert.strictEqual(nodeEmpty.selfTime, 30);
-      assert.strictEqual(nodeEmpty.totalTime, 30);
+      assert.strictEqual(nodeP.selfTime, 70_000);
+      assert.strictEqual(nodeP.totalTime, 100_000);
+      assert.strictEqual(nodeEmpty.selfTime, 30_000);
+      assert.strictEqual(nodeEmpty.totalTime, 30_000);
       assert.isTrue(nodeEmpty.hasChildren());
-      assert.strictEqual(root.selfTime, 100);
+      assert.strictEqual(root.selfTime, 100_000);
     });
 
     it('does not double count total time of nested same-name events around an event with an empty name', () => {
@@ -404,8 +475,8 @@ describe('TraceTree', () => {
       const root = new Trace.Extras.TraceTree.BottomUpRootNode([outerX, innerX, eventEmpty, laterX], {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(200_000),
       });
 
       const rootChildren = root.children();
@@ -414,17 +485,17 @@ describe('TraceTree', () => {
       assert.exists(nodeX);
       assert.exists(nodeEmpty);
       // The outermost X spans 0-100 ms, which contains every other X.
-      assert.strictEqual(nodeX.totalTime, 100);
-      assert.strictEqual(nodeX.selfTime, 90);
-      assert.strictEqual(nodeEmpty.totalTime, 10);
-      assert.strictEqual(nodeEmpty.selfTime, 10);
-      assert.strictEqual(root.selfTime, 100);
+      assert.strictEqual(nodeX.totalTime, 100_000);
+      assert.strictEqual(nodeX.selfTime, 90_000);
+      assert.strictEqual(nodeEmpty.totalTime, 10_000);
+      assert.strictEqual(nodeEmpty.selfTime, 10_000);
+      assert.strictEqual(root.selfTime, 100_000);
     });
 
     it('correctly keeps ProfileCall nodes and uses them to build up the tree', async function() {
       const {data} = await TraceLoader.traceEngine(this, 'mainWasm_profile.json.gz');
       const mainThread = getMainThread(data.Renderer);
-      const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(data.Meta.traceBounds);
+      const bounds = data.Meta.traceBounds;
 
       // Replicate the filters as they would be when rendering in the actual panel.
       class AcceptAllFilter extends Trace.Extras.TraceFilter.TraceFilter {
@@ -652,8 +723,8 @@ describe('TraceTree', () => {
       const root = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(50),
-        endTime: Trace.Types.Timing.Milli(100),
+        startTime: Trace.Types.Timing.Micro(50_000),
+        endTime: Trace.Types.Timing.Micro(100_000),
         calculateTransferSize: true,
       });
 
@@ -674,8 +745,8 @@ describe('TraceTree', () => {
       const root1 = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(50),
-        endTime: Trace.Types.Timing.Milli(100),
+        startTime: Trace.Types.Timing.Micro(50_000),
+        endTime: Trace.Types.Timing.Micro(100_000),
         calculateTransferSize: true,
       });
       const root1Children = root1.children();
@@ -686,8 +757,8 @@ describe('TraceTree', () => {
       const root2 = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(72),
-        endTime: Trace.Types.Timing.Milli(85),
+        startTime: Trace.Types.Timing.Micro(72_000),
+        endTime: Trace.Types.Timing.Micro(85_000),
         calculateTransferSize: true,
       });
       const root2Children = root2.children();
@@ -698,8 +769,8 @@ describe('TraceTree', () => {
       const root3 = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(200_000),
         calculateTransferSize: true,
       });
       const root3Children = root3.children();
@@ -769,8 +840,8 @@ describe('TraceTree', () => {
       const root = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(200_000),
         eventGroupIdCallback: event => {
           if (event === eventC || event === eventD) {
             return 'thirdParty1';
@@ -806,8 +877,8 @@ describe('TraceTree', () => {
       const root = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
         textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
         filters: [],
-        startTime: Trace.Types.Timing.Milli(0),
-        endTime: Trace.Types.Timing.Milli(200_000),
+        startTime: Trace.Types.Timing.Micro(0),
+        endTime: Trace.Types.Timing.Micro(200_000),
       });
 
       const rootChildren = root.children();

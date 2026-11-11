@@ -14,7 +14,7 @@ interface BottomUpIdState {
   id: string;
   node: BottomUpNode|null;
   onStack: boolean;
-  pendingTotalTime: number;
+  pendingTotalTime: Types.Timing.Micro;
 }
 
 function buildEventFilter(filters: readonly TraceFilter[]): (e: Types.Events.Event) => boolean {
@@ -50,10 +50,8 @@ function createEventIdCache(): (event: Types.Events.Event) => string {
 }
 
 export class Node {
-  /** ms */
-  totalTime: number;
-  /** ms */
-  selfTime: number;
+  totalTime: Types.Timing.Micro;
+  selfTime: Types.Timing.Micro;
   transferSize: number;
   id: string|symbol;
   /** The first trace event encountered that necessitated the creation of this tree node. */
@@ -69,8 +67,8 @@ export class Node {
   depth: number;
 
   constructor(id: string|symbol, event: Types.Events.Event) {
-    this.totalTime = 0;
-    this.selfTime = 0;
+    this.totalTime = Types.Timing.Micro(0);
+    this.selfTime = Types.Timing.Micro(0);
     this.transferSize = 0;
     this.id = id;
     this.event = event;
@@ -170,8 +168,8 @@ export class TopDownNode extends Node {
           onStartEvent,
           onEndEvent,
           onInstantEvent: instantEventCallback,
-          startTime: Helpers.Timing.milliToMicro(startTime),
-          endTime: Helpers.Timing.milliToMicro(endTime),
+          startTime,
+          endTime,
           eventFilter: root.filter,
           ignoreAsyncEvents: false,
         },
@@ -185,10 +183,10 @@ export class TopDownNode extends Node {
       if (!matchPath(e)) {
         return;
       }
-      const currentStartTime = Helpers.Timing.microToMilli(e.ts);
-      const currentEndTime = Helpers.Timing.microToMilli(Types.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const currentStartTime = e.ts;
+      const currentEndTime = e.ts + (e.dur ?? 0);
       const actualEndTime = Math.min(currentEndTime, endTime);
-      const duration = actualEndTime - Math.max(startTime, currentStartTime);
+      const duration = Types.Timing.Micro(actualEndTime - Math.max(startTime, currentStartTime));
       if (duration < 0) {
         console.error('Negative event duration');
       }
@@ -198,7 +196,7 @@ export class TopDownNode extends Node {
     function onInstantEvent(e: Types.Events.Event): void {
       ++depth;
       if (matchedDepth === path.length && depth <= path.length + 2) {
-        processEvent(e, 0);
+        processEvent(e, Types.Timing.Micro(0));
       }
       --depth;
     }
@@ -206,13 +204,13 @@ export class TopDownNode extends Node {
     /**
      * Creates a child node.
      */
-    function processEvent(e: Types.Events.Event, duration: number): void {
+    function processEvent(e: Types.Events.Event, duration: Types.Timing.Micro): void {
       if (depth === path.length + 2) {
         if (!currentDirectChild) {
           return;
         }
         currentDirectChild.setHasChildren(true);
-        currentDirectChild.selfTime -= duration;
+        currentDirectChild.selfTime = Types.Timing.Micro(currentDirectChild.selfTime - duration);
         return;
       }
       let id;
@@ -234,8 +232,8 @@ export class TopDownNode extends Node {
       } else {
         node.events.push(e);
       }
-      node.selfTime += duration;
-      node.totalTime += duration;
+      node.selfTime = Types.Timing.Micro(node.selfTime + duration);
+      node.totalTime = Types.Timing.Micro(node.totalTime + duration);
       if (Types.Events.isReceivedDataEvent(e)) {
         node.transferSize += e.args.data.encodedDataLength;
       }
@@ -255,7 +253,7 @@ export class TopDownNode extends Node {
       if (matchedDepth !== depth - 1) {
         return false;
       }
-      const eventEndTime = Helpers.Timing.microToMilli(Types.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const eventEndTime = e.ts + (e.dur ?? 0);
       if (!eventEndTime) {
         return false;
       }
@@ -281,6 +279,9 @@ export class TopDownNode extends Node {
       if (matchedDepth > depth) {
         matchedDepth = depth;
       }
+      if (depth === path.length) {
+        currentDirectChild = null;
+      }
     }
 
     this.childrenInternal = children;
@@ -290,26 +291,23 @@ export class TopDownNode extends Node {
 
 export class TopDownRootNode extends TopDownNode {
   readonly filter: (e: Types.Events.Event) => boolean;
-  readonly startTime: Types.Timing.Milli;
-  readonly endTime: Types.Timing.Milli;
+  readonly startTime: Types.Timing.Micro;
+  readonly endTime: Types.Timing.Micro;
   eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null|undefined;
   /** Default behavior is to aggregate similar trace events into one Node based on generateEventID(), eventGroupIdCallback(), etc. Set true to keep nodes 1:1 with events. */
   readonly doNotAggregate: boolean|undefined;
   readonly includeInstantEvents?: boolean;
   readonly eventId: (event: Types.Events.Event) => string = createEventIdCache();
-  override totalTime: number;
-  override selfTime: number;
 
-  constructor(
-      events: Types.Events.Event[],
-      {filters, startTime, endTime, doNotAggregate, eventGroupIdCallback, includeInstantEvents}: {
-        filters: TraceFilter[],
-        startTime: Types.Timing.Milli,
-        endTime: Types.Timing.Milli,
-        doNotAggregate?: boolean,
-        eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
-        includeInstantEvents?: boolean,
-      }) {
+  constructor(events: Types.Events.Event[],
+              {filters, startTime, endTime, doNotAggregate, eventGroupIdCallback, includeInstantEvents}: {
+                filters: TraceFilter[],
+                startTime: Types.Timing.Micro,
+                endTime: Types.Timing.Micro,
+                doNotAggregate?: boolean,
+                eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
+                includeInstantEvents?: boolean,
+              }) {
     super('', events[0], null);
     this.event = events[0];
     this.root = this;
@@ -321,7 +319,7 @@ export class TopDownRootNode extends TopDownNode {
     this.doNotAggregate = doNotAggregate;
     this.includeInstantEvents = includeInstantEvents;
 
-    this.totalTime = endTime - startTime;
+    this.totalTime = Types.Timing.Micro(endTime - startTime);
     this.selfTime = this.totalTime;
   }
   override children(): ChildrenCache {
@@ -332,7 +330,7 @@ export class TopDownRootNode extends TopDownNode {
   private grouppedTopNodes(): ChildrenCache {
     const flatNodes = super.children();
     for (const node of flatNodes.values()) {
-      this.selfTime -= node.totalTime;
+      this.selfTime = Types.Timing.Micro(this.selfTime - node.totalTime);
     }
     if (!this.eventGroupIdCallback) {
       return flatNodes;
@@ -347,7 +345,7 @@ export class TopDownRootNode extends TopDownNode {
       } else {
         groupNode.events.push(...node.events);
       }
-      groupNode.addChild(node as BottomUpNode, node.selfTime, node.totalTime, node.transferSize);
+      groupNode.addChild(node, node.selfTime, node.totalTime, node.transferSize);
     }
     this.childrenInternal = groupNodes;
     return groupNodes;
@@ -388,9 +386,8 @@ export class BottomUpRootNode extends Node {
   private childrenInternal: ChildrenCache|null;
   private textFilter: TraceFilter;
   readonly filter: (e: Types.Events.Event) => boolean;
-  readonly startTime: Types.Timing.Milli;
-  readonly endTime: Types.Timing.Milli;
-  override totalTime: number;
+  readonly startTime: Types.Timing.Micro;
+  readonly endTime: Types.Timing.Micro;
   eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null|undefined;
   private calculateTransferSize?: boolean;
   private forceGroupIdCallback?: boolean;
@@ -407,8 +404,8 @@ export class BottomUpRootNode extends Node {
   }: {
     textFilter: TraceFilter,
     filters: readonly TraceFilter[],
-    startTime: Types.Timing.Milli,
-    endTime: Types.Timing.Milli,
+    startTime: Types.Timing.Micro,
+    endTime: Types.Timing.Micro,
     eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
     calculateTransferSize?: boolean,
     /**
@@ -431,7 +428,7 @@ export class BottomUpRootNode extends Node {
     this.startTime = startTime;
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
-    this.totalTime = endTime - startTime;
+    this.totalTime = Types.Timing.Micro(endTime - startTime);
     this.calculateTransferSize = calculateTransferSize;
     this.forceGroupIdCallback = forceGroupIdCallback;
   }
@@ -467,7 +464,7 @@ export class BottomUpRootNode extends Node {
     const endTime = this.endTime;
     const stateStack: BottomUpIdState[] = [];
     const nodeById = new Map<string, Node>();
-    const selfTimeStack: number[] = [endTime - startTime];
+    const selfTimeStack: Types.Timing.Micro[] = [Types.Timing.Micro(endTime - startTime)];
     const firstNodeStack: boolean[] = [];
     // TODO(paulirish): rename to getGroupNodeId
     const eventGroupIdCallback = this.eventGroupIdCallback;
@@ -484,7 +481,7 @@ export class BottomUpRootNode extends Node {
       if (!forceGroupIdCallback || !eventGroupIdCallback) {
         let state = stateById.get(id);
         if (!state) {
-          state = {id, node: null, onStack: false, pendingTotalTime: 0};
+          state = {id, node: null, onStack: false, pendingTotalTime: Types.Timing.Micro(0)};
           stateById.set(id, state);
         }
         return state;
@@ -497,7 +494,7 @@ export class BottomUpRootNode extends Node {
       }
       let state = groupedStates.get(groupId);
       if (!state) {
-        state = {id: `${id}-${groupId}`, node: null, onStack: false, pendingTotalTime: 0};
+        state = {id: `${id}-${groupId}`, node: null, onStack: false, pendingTotalTime: Types.Timing.Micro(0)};
         groupedStates.set(groupId, state);
       }
       return state;
@@ -554,20 +551,20 @@ export class BottomUpRootNode extends Node {
           onStartEvent,
           onEndEvent,
           onInstantEvent: this.calculateTransferSize ? sumTransferSizeOfInstantEvent : undefined,
-          startTime: Helpers.Timing.milliToMicro(this.startTime),
-          endTime: Helpers.Timing.milliToMicro(this.endTime),
+          startTime: this.startTime,
+          endTime: this.endTime,
           eventFilter: this.filter,
           ignoreAsyncEvents: false,
         },
     );
 
     function onStartEvent(e: Types.Events.Event): void {
-      const currentStartTime = Helpers.Timing.microToMilli(e.ts);
-      const currentEndTime = Helpers.Timing.microToMilli(Types.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const currentStartTime = e.ts;
+      const currentEndTime = e.ts + (e.dur ?? 0);
 
       const actualEndTime = Math.min(currentEndTime, endTime);
-      const duration = actualEndTime - Math.max(currentStartTime, startTime);
-      selfTimeStack[selfTimeStack.length - 1] -= duration;
+      const duration = Types.Timing.Micro(actualEndTime - Math.max(currentStartTime, startTime));
+      selfTimeStack[selfTimeStack.length - 1] = Types.Timing.Micro(selfTimeStack[selfTimeStack.length - 1] - duration);
       selfTimeStack.push(duration);
       const state = stateForEvent(e);
 
@@ -599,9 +596,9 @@ export class BottomUpRootNode extends Node {
       } else {
         node.events.push(event);
       }
-      node.selfTime += selfTimeStack.pop() || 0;
+      node.selfTime = Types.Timing.Micro(node.selfTime + (selfTimeStack.pop() || 0));
       if (firstNodeStack.pop()) {
-        node.totalTime += state.pendingTotalTime;
+        node.totalTime = Types.Timing.Micro(node.totalTime + state.pendingTotalTime);
         state.onStack = false;
       }
 
@@ -612,7 +609,7 @@ export class BottomUpRootNode extends Node {
       }
     }
 
-    this.selfTime = selfTimeStack.pop() || 0;
+    this.selfTime = Types.Timing.Micro(selfTimeStack.pop() || 0);
     // Delete any nodes that have no selfTime (or transferSize, if it's being calculated)
     for (const pair of nodeById) {
       if (pair[1].selfTime <= 0 && (!this.calculateTransferSize || pair[1].transferSize <= 0)) {
@@ -639,7 +636,7 @@ export class BottomUpRootNode extends Node {
           groupNode.events.push(e);
         }
       }
-      groupNode.addChild(node as BottomUpNode, node.selfTime, node.selfTime, node.transferSize);
+      groupNode.addChild(node, node.selfTime, node.selfTime, node.transferSize);
     }
     return groupNodes;
   }
@@ -658,10 +655,10 @@ export class GroupNode extends Node {
     this.isGroupNodeInternal = true;
   }
 
-  addChild(child: BottomUpNode, selfTime: number, totalTime: number, transferSize: number): void {
+  addChild(child: Node, selfTime: Types.Timing.Micro, totalTime: Types.Timing.Micro, transferSize: number): void {
     this.childrenInternal.set(child.id, child);
-    this.selfTime += selfTime;
-    this.totalTime += totalTime;
+    this.selfTime = Types.Timing.Micro(this.selfTime + selfTime);
+    this.totalTime = Types.Timing.Micro(this.totalTime + totalTime);
     this.transferSize += transferSize;
     child.parent = this;
   }
@@ -703,35 +700,35 @@ export class BottomUpNode extends Node {
     if (this.cachedChildren) {
       return this.cachedChildren;
     }
-    const selfTimeStack: number[] = [0];
+    const selfTimeStack: Types.Timing.Micro[] = [Types.Timing.Micro(0)];
     const eventIdStack: string[] = [];
     const eventStack: Types.Events.Event[] = [];
     const nodeById = new Map<string, BottomUpNode>();
     const startTime = this.root.startTime;
     const endTime = this.root.endTime;
     const eventId = this.root.eventId;
-    let lastTimeMarker: number = startTime;
+    let lastTimeMarker: Types.Timing.Micro = startTime;
     const self = this;
     Helpers.Trace.forEachEvent(
         this.root.events,
         {
           onStartEvent,
           onEndEvent,
-          startTime: Helpers.Timing.milliToMicro(startTime),
-          endTime: Helpers.Timing.milliToMicro(endTime),
+          startTime,
+          endTime,
           eventFilter: this.root.filter,
           ignoreAsyncEvents: false,
         },
     );
     function onStartEvent(e: Types.Events.Event): void {
-      const currentStartTime = Helpers.Timing.microToMilli(e.ts);
-      const currentEndTime = Helpers.Timing.microToMilli(Types.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const currentStartTime = e.ts;
+      const currentEndTime = e.ts + (e.dur ?? 0);
       const actualEndTime = Math.min(currentEndTime, endTime);
-      const duration = actualEndTime - Math.max(currentStartTime, startTime);
+      const duration = Types.Timing.Micro(actualEndTime - Math.max(currentStartTime, startTime));
       if (duration < 0) {
         console.assert(false, 'Negative duration of an event');
       }
-      selfTimeStack[selfTimeStack.length - 1] -= duration;
+      selfTimeStack[selfTimeStack.length - 1] = Types.Timing.Micro(selfTimeStack[selfTimeStack.length - 1] - duration);
       selfTimeStack.push(duration);
       const id = eventId(e);
       eventIdStack.push(id);
@@ -761,12 +758,12 @@ export class BottomUpNode extends Node {
       } else {
         node.events.push(e);
       }
-      const currentStartTime = Helpers.Timing.microToMilli(e.ts);
-      const currentEndTime = Helpers.Timing.microToMilli(Types.Timing.Micro(e.ts + (e.dur ?? 0)));
-      const actualEndTime = Math.min(currentEndTime, endTime);
-      const totalTime = actualEndTime - Math.max(currentStartTime, lastTimeMarker);
-      node.selfTime += selfTime || 0;
-      node.totalTime += totalTime;
+      const currentStartTime = e.ts;
+      const currentEndTime = e.ts + (e.dur ?? 0);
+      const actualEndTime = Types.Timing.Micro(Math.min(currentEndTime, endTime));
+      const totalTime = Types.Timing.Micro(actualEndTime - Math.max(currentStartTime, lastTimeMarker));
+      node.selfTime = Types.Timing.Micro(node.selfTime + (selfTime || 0));
+      node.totalTime = Types.Timing.Micro(node.totalTime + totalTime);
       lastTimeMarker = actualEndTime;
     }
 

@@ -98,7 +98,7 @@ function summarizeBottomUpByEntity(
     // the bottom up tree. The mapper will give us all related events.
     const summary: EntitySummary = {
       transferSize: node.transferSize,
-      mainThreadTime: Types.Timing.Milli(node.selfTime),
+      mainThreadTime: Helpers.Timing.microToMilli(node.selfTime),
       entity,
       relatedEvents: data.Renderer.entityMappings.eventsByEntity.get(entity) ?? [],
     };
@@ -132,7 +132,7 @@ function summarizeBottomUpByURL(root: TraceTree.BottomUpRootNode, data: Handlers
       url,
       entity,
       transferSize: node.transferSize,
-      mainThreadTime: Types.Timing.Milli(node.selfTime),
+      mainThreadTime: Helpers.Timing.microToMilli(node.selfTime),
     };
     summaries.push(summary);
   }
@@ -149,13 +149,11 @@ function getBottomUpTree(
     mainThreadEvents: Types.Events.Event[], tracebounds: Types.Timing.TraceWindowMicro,
     groupingFunction: ((arg0: Types.Events.Event) => string)|null): TraceTree.BottomUpRootNode {
   // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
-  const startTime = Helpers.Timing.microToMilli(tracebounds.min);
-  const endTime = Helpers.Timing.microToMilli(tracebounds.max);
   return new TraceTree.BottomUpRootNode(mainThreadEvents, {
     textFilter: exclusiveNameFilter,
     filters: [visibleEventsFilter],
-    startTime,
-    endTime,
+    startTime: tracebounds.min,
+    endTime: tracebounds.max,
     eventGroupIdCallback: groupingFunction,
     calculateTransferSize: true,
     // Ensure we group by 3P alongside eventID for correct 3P grouping.

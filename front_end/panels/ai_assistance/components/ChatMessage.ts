@@ -1332,16 +1332,14 @@ async function makeBottomUpTimelineTreeWidget(widgetData: AiAssistanceModel.AiAg
     return null;
   }
   const events = bottomUpRootNode.events;
-  const startTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.min);
-  const endTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.max);
 
   const renderedWidget = html`<devtools-widget
       class="bottom-up-timeline-tree-widget"
       ${widget(Timeline.TimelineTreeView.BottomUpTimelineTreeView, {
     selectedEvents: events,
     parsedTrace: widgetData.data.parsedTrace,
-    startTime,
-    endTime,
+    startTime: widgetData.data.bounds.min,
+    endTime: widgetData.data.bounds.max,
     compactMode: true,
     maxLinkLength: 15,
     maxRows: 10,

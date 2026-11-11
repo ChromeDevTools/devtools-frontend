@@ -31,7 +31,7 @@ describe('ThirdParties', function() {
 
       const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, [
-        ['localhost', 24.947999954223633, 1435],
+        ['localhost', 24.948, 1435],
       ]);
       const urls = extractUrlsFromSummaries(summaries);
       assert.deepEqual(urls, [
@@ -119,10 +119,10 @@ describe('ThirdParties', function() {
       const results = summaries.map(
           s => [s.url, s.request?.args.data.url === s.url, s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, [
-        ['http://localhost:8080/', true, 'localhost', 21.22599959373474, 751],
+        ['http://localhost:8080/', true, 'localhost', 21.226, 751],
         ['http://localhost:8080/styles.css', true, 'localhost', 0, 346],
-        ['http://localhost:8080/blocking.js', true, 'localhost', 2.451000213623047, 338],
-        ['http://localhost:8080/module.js', true, 'localhost', 1.2710001468658447, 0],
+        ['http://localhost:8080/blocking.js', true, 'localhost', 2.451, 338],
+        ['http://localhost:8080/module.js', true, 'localhost', 1.271, 0],
       ]);
 
       // Assert that these totals match the totals as aggregated by
@@ -131,7 +131,7 @@ describe('ThirdParties', function() {
           summaries.filter(s => s.entity.name === 'localhost').reduce((acc, cur) => acc + cur.transferSize, 0), 1435);
       assert.strictEqual(
           summaries.filter(s => s.entity.name === 'localhost').reduce((acc, cur) => acc + cur.mainThreadTime, 0),
-          24.947999954223633);
+          24.948);
     });
   });
 });

@@ -11,6 +11,7 @@ import * as Trace from '../../models/trace/trace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace, renderWidgetInVbox} from '../../testing/TraceHelpers.js';
+import {makeCompleteEvent} from '../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -749,5 +750,39 @@ describe('TimelineTreeView', function() {
       sinon.assert.callCount(refreshSpy, 1);
       sinon.assert.callCount(buildSpy, 1);
     });
+
+    it('does not leak an immediately adjacent event into the tree when selection ends at non-terminating microsecond bounds',
+       () => {
+         // 8002 µs has a non-terminating binary expansion when divided by 1000:
+         // (8002 / 1000) * 1000 === 8002.000000000001 in float arithmetic.
+         // An activeSelection ending at 8002 µs must not round-trip through milliseconds
+         // and cause an adjacent event starting at 8002 µs to be included with a tiny epsilon duration.
+         const parsedTrace = syncLikeTimingsParsedTrace;
+         const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+         renderWidgetInVbox(bottomUpTreeView, {flexAuto: true});
+
+         const eventInWindow = makeCompleteEvent('InsideEvent', 0, 8_002);
+         const eventAdjacent = makeCompleteEvent('AdjacentEvent', 8_002, 5_000);
+         bottomUpTreeView.model = {
+           selectedEvents: [eventInWindow, eventAdjacent],
+           parsedTrace,
+           entityMapper: null,
+         };
+
+         const sel: Timeline.TimelineSelection.TimeRangeSelection = {
+           bounds: {
+             min: Trace.Types.Timing.Micro(0),
+             max: Trace.Types.Timing.Micro(8_002),
+             range: Trace.Types.Timing.Micro(8_002),
+           },
+         };
+         bottomUpTreeView.activeSelection = sel;
+
+         const tree = bottomUpTreeView.buildTree();
+         const nodeNames = Array.from(tree.children().values()).map(node => node.event?.name);
+         assert.include(nodeNames, 'InsideEvent');
+         assert.notInclude(nodeNames, 'AdjacentEvent');
+         bottomUpTreeView.detach();
+       });
   });
 });

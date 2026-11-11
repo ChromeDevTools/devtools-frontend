@@ -81,7 +81,7 @@
 
 .centered {
   margin: 1em;
-  max-width: 300px;
+  max-width: var(--sys-size-31);
   text-align: center;
 }
 

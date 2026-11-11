@@ -190,6 +190,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {live} = Directives;
 
 interface ViewInput {
+  touchSetting: Common.Settings.Setting<unknown>;
   idleDetectionSetting: Common.Settings.Setting<unknown>;
   hardwareConcurrencyCheckbox: HTMLElement;
   hardwareConcurrencyDetails: HTMLElement[];
@@ -201,6 +202,11 @@ interface ViewInput {
 // clang-format off
 const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   render(html`
+    <div class="touch-section">
+      ${SettingsUI.SettingsUI.renderControlForSetting(
+          input.touchSetting, i18nString(UIStrings.forcesTouchInsteadOfClick))}
+    </div>
+    <div class="panel-section-separator"></div>
     <div class="idle-section">
       ${SettingsUI.SettingsUI.renderControlForSetting(
           input.idleDetectionSetting, i18nString(UIStrings.forcesSelectedIdleStateEmulation))}
@@ -291,10 +297,6 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.createPanelSeparator();
 
-    this.appendTouchControl();
-
-    this.createPanelSeparator();
-
     const {checkbox, numericInput, reset, warning} =
         MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
     this.#hardwareConcurrencyCheckbox = checkbox;
@@ -305,6 +307,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   override performUpdate(): void {
     const input: ViewInput = {
+      touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
       hardwareConcurrencyCheckbox: this.#hardwareConcurrencyCheckbox,
       hardwareConcurrencyDetails: this.#hardwareConcurrencyDetails,
@@ -1058,17 +1061,6 @@ export class SensorsView extends UI.Widget.VBox {
     }
 
     return new Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
-  }
-
-  private appendTouchControl(): void {
-    const container = this.contentElement.createChild('div', 'touch-section');
-    const control = SettingsUI.SettingsUI.createControlForSetting(
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
-        i18nString(UIStrings.forcesTouchInsteadOfClick));
-
-    if (control) {
-      container.appendChild(control);
-    }
   }
 }
 

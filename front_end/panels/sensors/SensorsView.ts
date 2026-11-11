@@ -804,9 +804,12 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   #updateCPUPerformanceNoOverrideLabel(): void {
-    if (!this.#cpuPerformanceNoOverrideOptionElement) {
-      return;
+    if (this.#cpuPerformanceNoOverrideOptionElement) {
+      this.#cpuPerformanceNoOverrideOptionElement.text = this.#cpuPerformanceNoOverrideLabel();
     }
+  }
+
+  #cpuPerformanceNoOverrideLabel(): string {
     // Helper function to retrieve the tier labels (i18n) from the settings.
     const options =
         SettingUIRegistration.SettingUIRegistration.resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor).options;
@@ -821,15 +824,13 @@ export class SensorsView extends UI.Widget.VBox {
     const getFallbackTitle = (tier: SDK.CPUThrottlingManager.CPUPerformanceTier): string => {
       return `Tier ${SDK.CPUThrottlingManager.tierToNumber(tier)}: ${tier.toUpperCase()}`;
     };
-    // Update the text of the "no-override" element using the calculated tier.
+    // Compute the text of the "no-override" option using the calculated tier.
     const calculatedTier = this.#cpuThrottlingManager.calculatedCPUPerformanceTier();
     if (calculatedTier !== undefined) {
       const tierTitle = getOptionTitle(calculatedTier) || getFallbackTitle(calculatedTier);
-      this.#cpuPerformanceNoOverrideOptionElement.text =
-          i18nString(UIStrings.cpuPerformanceNoOverrideWithDefault, {PH1: tierTitle});
-    } else {
-      this.#cpuPerformanceNoOverrideOptionElement.text = getOptionTitle('no-override') || 'No override';
+      return i18nString(UIStrings.cpuPerformanceNoOverrideWithDefault, {PH1: tierTitle});
     }
+    return getOptionTitle('no-override') || 'No override';
   }
 
   private enableOrientationFields(disable: boolean|null): void {

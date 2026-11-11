@@ -10,6 +10,9 @@ export abstract class TraceFilter {
 }
 
 export class VisibleEventsFilter extends TraceFilter {
+  // Real traces contain ~15 distinct category strings; memoizing the substring
+  // checks avoids scanning event.cat on every event in hot tree-build loops.
+  static #categoryToEventName = new Map<string, Types.Events.Name|null>();
   private readonly visibleTypes: Set<string>;
   constructor(visibleTypes: string[]) {
     super();
@@ -24,15 +27,20 @@ export class VisibleEventsFilter extends TraceFilter {
   }
 
   static eventType(event: Types.Events.Event): Types.Events.Name {
-    // Any blink.console category events are treated as ConsoleTime events
-    if (event.cat.includes('blink.console')) {
-      return Types.Events.Name.CONSOLE_TIME;
+    let type = VisibleEventsFilter.#categoryToEventName.get(event.cat);
+    if (type === undefined) {
+      if (event.cat.includes('blink.console')) {
+        type = Types.Events.Name.CONSOLE_TIME;
+      } else if (event.cat.includes('blink.user_timing')) {
+        type = Types.Events.Name.USER_TIMING;
+      } else {
+        type = null;
+      }
+      if (VisibleEventsFilter.#categoryToEventName.size < 256) {
+        VisibleEventsFilter.#categoryToEventName.set(event.cat, type);
+      }
     }
-    // Any blink.user_timing egory events are treated as UserTiming events
-    if (event.cat.includes('blink.user_timing')) {
-      return Types.Events.Name.USER_TIMING;
-    }
-    return event.name as Types.Events.Name;
+    return type ?? (event.name as Types.Events.Name);
   }
 }
 

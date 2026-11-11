@@ -190,6 +190,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {live} = Directives;
 
 interface ViewInput {
+  idleDetectionSetting: Common.Settings.Setting<unknown>;
   hardwareConcurrencyCheckbox: HTMLElement;
   hardwareConcurrencyDetails: HTMLElement[];
   cpuPressureSetting: Common.Settings.Setting<unknown>;
@@ -200,6 +201,11 @@ interface ViewInput {
 // clang-format off
 const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   render(html`
+    <div class="idle-section">
+      ${SettingsUI.SettingsUI.renderControlForSetting(
+          input.idleDetectionSetting, i18nString(UIStrings.forcesSelectedIdleStateEmulation))}
+    </div>
+    <div class="panel-section-separator"></div>
     <div class="concurrency-section">
       ${input.hardwareConcurrencyCheckbox}
       <div class="concurrency-details">${input.hardwareConcurrencyDetails}</div>
@@ -289,10 +295,6 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.createPanelSeparator();
 
-    this.appendIdleEmulator();
-
-    this.createPanelSeparator();
-
     const {checkbox, numericInput, reset, warning} =
         MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
     this.#hardwareConcurrencyCheckbox = checkbox;
@@ -303,6 +305,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   override performUpdate(): void {
     const input: ViewInput = {
+      idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
       hardwareConcurrencyCheckbox: this.#hardwareConcurrencyCheckbox,
       hardwareConcurrencyDetails: this.#hardwareConcurrencyDetails,
       cpuPressureSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
@@ -1062,17 +1065,6 @@ export class SensorsView extends UI.Widget.VBox {
     const control = SettingsUI.SettingsUI.createControlForSetting(
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
         i18nString(UIStrings.forcesTouchInsteadOfClick));
-
-    if (control) {
-      container.appendChild(control);
-    }
-  }
-
-  private appendIdleEmulator(): void {
-    const container = this.contentElement.createChild('div', 'idle-section');
-    const control = SettingsUI.SettingsUI.createControlForSetting(
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
-        i18nString(UIStrings.forcesSelectedIdleStateEmulation));
 
     if (control) {
       container.appendChild(control);

@@ -8,7 +8,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("breakpoints") {
-  sources = [ "BreakpointManager.ts" ]
+  sources = [
+    "BreakpointManager.ts",
+    "RecurringPauseDetector.ts",
+  ]
 
   ts_deps = [
     "../../core/common:bundle",
@@ -50,7 +53,10 @@ devtools_entrypoint("bundle") {
 devtools_foundation_module("foundation_unittests") {
   testonly = true
 
-  sources = [ "BreakpointManager.test.ts" ]
+  sources = [
+    "BreakpointManager.test.ts",
+    "RecurringPauseDetector.test.ts",
+  ]
 
   ts_deps = [
     ":bundle",

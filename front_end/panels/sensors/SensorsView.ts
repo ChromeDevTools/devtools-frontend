@@ -189,7 +189,16 @@ const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStri
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {live} = Directives;
 
+const DEFAULT_VIEW = (_input: undefined, _output: undefined, target: HTMLElement): void => {
+  render(html`<div class="panel-section-separator"></div>`, target, {
+    container: {attributes: {jslog: `${VisualLogging.panel('sensors').track({resize: true})}`}},
+  });
+};
+
+type View = typeof DEFAULT_VIEW;
+
 export class SensorsView extends UI.Widget.VBox {
+  readonly #view: View;
   readonly #locationSetting: Common.Settings.Setting<string>;
   #location: SDK.EmulationModel.Location;
   #locationOverrideEnabled: boolean;
@@ -220,11 +229,9 @@ export class SensorsView extends UI.Widget.VBox {
   readonly #cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
   #cpuPerformanceNoOverrideOptionElement?: HTMLOptionElement;
 
-  constructor() {
-    super({
-      jslog: `${VisualLogging.panel('sensors').track({resize: true})}`,
-      useShadowDom: true,
-    });
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
     this.registerRequiredCSS(sensorsStyles);
     this.contentElement.classList.add('sensors-view');
 
@@ -269,7 +276,11 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.createCPUPerformanceSection();
 
-    this.createPanelSeparator();
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(undefined, undefined, this.contentElement);
   }
 
   private createPanelSeparator(): void {

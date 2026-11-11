@@ -25,7 +25,12 @@ import {
 const lockedString = i18n.i18n.lockedString;
 
 const MAX_LINES = 40;
-const MAX_LINE_LENGTH = 120;
+// Deliberately higher than the 120-character soft target in
+// `parameters.properties.code.description`: the prompt keeps the model aiming
+// for <= 120 characters/line for readability, while this 160-character hard stop
+// absorbs minor counting overshoots (`describeSizeLimitViolations()` reports 160
+// when exceeded).
+const MAX_LINE_LENGTH = 160;
 const MAX_TOTAL_CHARACTERS = 2500;
 const MAX_LONG_LINES_REPORTED = 3;
 const LONG_LINE_PREVIEW_LENGTH = 60;
@@ -127,6 +132,8 @@ export class ExecuteJavaScriptTool implements
     description: '',
     nullable: false,
     properties: {
+      // The `description` below purposefully states `max 120 characters per line`
+      // as a soft target, while `MAX_LINE_LENGTH` enforces 160 as the hard stop.
       code: {
         type: Host.AidaClient.ParametersTypes.STRING,
         description:

@@ -25,7 +25,7 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--sys-size-6);
   }
 
   h1 {

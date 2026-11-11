@@ -601,6 +601,32 @@ describeWithEnvironment('NetworkLogView', () => {
         assert.lengthOf(textElements, 0);
       }
     });
+
+    it('shows summary toolbar with filtered counts when filter is active', () => {
+      target.setInspectedURL(urlString`http://example.com/`);
+      const request1 = createNetworkRequest('http://example.com/index.html', {finished: true});
+      request1.setTransferSize(1024);
+      request1.resourceSize = 2048;
+      const request2 = createNetworkRequest('http://example.com/script.js', {finished: true});
+      request2.setTransferSize(3072);
+      request2.resourceSize = 4096;
+
+      networkLogView.setTextFilterValue('script.js');
+      renderElementIntoDOM(networkLogView);
+
+      const toolbar = networkLogView.summaryToolbar();
+      const textElements = toolbar.querySelectorAll('.toolbar-text');
+      const textContents = [...textElements].map(item => item.textContent);
+      if (inScope) {
+        assert.deepEqual(textContents, [
+          '1 / 2 requests',
+          '3.1\u00a0kB / 4.1\u00a0kB transferred',
+          '4.1\u00a0kB / 6.1\u00a0kB resources',
+        ]);
+      } else {
+        assert.lengthOf(textElements, 0);
+      }
+    });
   };
   describe('in scope', tests(true));
   describe('out of scope', tests(false));
@@ -1793,6 +1819,28 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
                         'Perform a request or reload the page by using the \"Reload page\" button or by pressing Ctrl');
     testPlaceholderButton(networkLogView, 'Reload page', RELOAD_ID);
   });
+
+  it('hides placeholder when requests are recorded and shows it again on reset', async () => {
+    const networkLogView = createNetworkLogView();
+    renderElementIntoDOM(networkLogView);
+
+    assert.isNotNull(networkLogView.element.querySelector('.network-status-pane'));
+
+    const request = createNetworkRequest({requestId: 'req1', url: 'https://example.com/'});
+    const requestsStub = sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requests').returns([request]);
+    Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(Logs.NetworkLog.Events.RequestAdded, {request});
+    await RenderCoordinator.done({waitForWork: true});
+
+    assert.isNull(networkLogView.element.querySelector('.network-status-pane'));
+
+    requestsStub.returns([]);
+    Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(Logs.NetworkLog.Events.Reset,
+                                                                   {clearIfPreserved: true});
+    await RenderCoordinator.done({waitForWork: true});
+
+    assert.isNotNull(networkLogView.element.querySelector('.network-status-pane'));
+    networkLogView.detach();
+  });
 });
 
 describeWithEnvironment('NetworkLogView', () => {
@@ -1858,6 +1906,34 @@ describeWithEnvironment('NetworkLogView', () => {
         dispatchEventSpy.getCalls().find(c => c.args[0] === Network.NetworkDataGridNode.Events.RequestSelected);
     assert.exists(call);
     assert.isNull(call.args[1]);
+  });
+
+  it('toggles no-node-selected class on container when updateNodeSelectedClass is called', () => {
+    const networkLogView = createNetworkLogView();
+    assert.isTrue(networkLogView.element.classList.contains('no-node-selected'));
+
+    networkLogView.updateNodeSelectedClass(true);
+    assert.isFalse(networkLogView.element.classList.contains('no-node-selected'));
+
+    networkLogView.updateNodeSelectedClass(false);
+    assert.isTrue(networkLogView.element.classList.contains('no-node-selected'));
+  });
+});
+
+describeWithEnvironment('MoreFiltersDropDownUI', () => {
+  it('tracks active state and selected filter labels across settings', () => {
+    const moreFilters = new Network.NetworkLogView.MoreFiltersDropDownUI();
+    assert.isFalse(moreFilters.isActive());
+    assert.deepEqual(moreFilters.selectedFilters(), []);
+
+    Common.Settings.Settings.instance().createSetting('network-hide-data-url', false).set(true);
+    Common.Settings.Settings.instance().createSetting('network-only-blocked-requests', false).set(true);
+    Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false).set(true);
+    moreFilters.updateActiveFiltersCount();
+    moreFilters.updateTooltip();
+
+    assert.isTrue(moreFilters.isActive());
+    assert.deepEqual(moreFilters.selectedFilters(), ['Hide data URLs', 'Blocked requests', '3rd-party requests']);
   });
 });
 

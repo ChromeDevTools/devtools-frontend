@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -112,25 +113,40 @@ const UIStrings = {
    * @example {"script-src 'self'"} PH1
    */
   scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
+  /**
+   * @description Button label in the Debugger paused banner of the Sources panel when execution repeatedly pauses at the same breakpoint. Clicking disables that breakpoint and resumes script execution.
+   */
+  disableBreakpoint: 'Disable breakpoint',
+  /**
+   * @description Button label in the Debugger paused banner of the Sources panel when execution repeatedly pauses at the same location. Clicking adds a never-pause-here rule at the current line and resumes script execution.
+   */
+  neverPauseHere: 'Never pause here',
+  /**
+   * @description Button label in the Debugger paused banner of the Sources panel when execution repeatedly pauses at the same location. Clicking deactivates all breakpoints and resumes script execution.
+   */
+  deactivateAll: 'Deactivate all',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPausedMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const i18nTemplate = Lit.i18nTemplate.bind(undefined, str_);
 
-interface DOMBreakpointData {
+export interface DOMBreakpointData {
   type: Protocol.DOMDebugger.DOMBreakpointType;
   node: SDK.DOMModel.DOMNode;
   targetNode: SDK.DOMModel.DOMNode|null;
   insertion: boolean;
 }
 
-interface ViewInput {
+export interface ViewInput {
   errorLike: boolean;
   mainText: string;
   subText?: string;
   title?: string;
   domBreakpointData?: DOMBreakpointData;
+  onDisableBreakpoint?: () => void;
+  onNeverPauseHere?: () => void;
+  onDeactivateBreakpointsAndResume?: () => void;
 }
 
 function domBreakpointSubtext(data: DOMBreakpointData): Lit.LitTemplate {
@@ -153,7 +169,7 @@ function domBreakpointSubtext(data: DOMBreakpointData): Lit.LitTemplate {
   `;
 }
 
-const DEFAULT_VIEW = (input: ViewInput|null, _output: undefined, target: DocumentFragment): void => {
+export const DEFAULT_VIEW = (input: ViewInput|null, _output: undefined, target: DocumentFragment): void => {
   // clang-format off
   render(html`
     <style>${debuggerPausedMessageStyles}</style>
@@ -169,6 +185,32 @@ const DEFAULT_VIEW = (input: ViewInput|null, _output: undefined, target: Documen
               ${input.domBreakpointData ? domBreakpointSubtext(input.domBreakpointData) : input.subText}
             </div>` : nothing}
         </span>
+        ${input.onDisableBreakpoint || input.onNeverPauseHere || input.onDeactivateBreakpointsAndResume ? html`
+          <div class="status-actions">
+            ${input.onDisableBreakpoint ? html`
+              <devtools-button
+                  .variant=${Buttons.Button.Variant.OUTLINED}
+                  .size=${Buttons.Button.Size.MICRO}
+                  .jslogContext=${'disable-breakpoint'}
+                  @click=${() => input.onDisableBreakpoint?.()}>
+                ${i18nString(UIStrings.disableBreakpoint)}
+              </devtools-button>` : input.onNeverPauseHere ? html`
+              <devtools-button
+                  .variant=${Buttons.Button.Variant.OUTLINED}
+                  .size=${Buttons.Button.Size.MICRO}
+                  .jslogContext=${'never-pause-here'}
+                  @click=${() => input.onNeverPauseHere?.()}>
+                ${i18nString(UIStrings.neverPauseHere)}
+              </devtools-button>` : nothing}
+            ${input.onDeactivateBreakpointsAndResume ? html`
+              <devtools-button
+                  .variant=${Buttons.Button.Variant.TEXT}
+                  .size=${Buttons.Button.Size.MICRO}
+                  .jslogContext=${'debugger.toggle-breakpoints-active'}
+                  @click=${() => input.onDeactivateBreakpointsAndResume?.()}>
+                ${i18nString(UIStrings.deactivateAll)}
+              </devtools-button>` : nothing}
+          </div>` : nothing}
       </div>` : nothing}
     </div>`, target, {
         container: {
@@ -179,7 +221,7 @@ const DEFAULT_VIEW = (input: ViewInput|null, _output: undefined, target: Documen
   // clang-format on
 };
 
-type View = typeof DEFAULT_VIEW;
+export type View = typeof DEFAULT_VIEW;
 
 export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
   static override readonly INJECT: readonly[typeof SDK.EventBreakpointsModel.EventBreakpointsManager] =

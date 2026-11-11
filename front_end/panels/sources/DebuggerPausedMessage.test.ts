@@ -10,8 +10,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
 
@@ -133,5 +136,130 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
         assert.strictEqual(sub, expectedSub);
       });
     }
+  });
+});
+
+describe('DebuggerPausedMessage.DEFAULT_VIEW', () => {
+  setupLocaleHooks();
+
+  function renderPausedMessageView(input: Sources.DebuggerPausedMessage.ViewInput): ShadowRoot {
+    const host = document.createElement('div');
+    renderElementIntoDOM(host, {includeCommonStyles: true});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(host);
+    Sources.DebuggerPausedMessage.DEFAULT_VIEW(input, undefined, shadowRoot);
+    return shadowRoot;
+  }
+
+  it('renders no status-actions container when escape callbacks are absent', () => {
+    const shadowRoot = renderPausedMessageView({mainText: 'Debugger paused', errorLike: false});
+
+    assert.strictEqual(shadowRoot.querySelector('.status-main')?.textContent?.trim(), 'Debugger paused');
+    assert.isNull(shadowRoot.querySelector('.status-actions'));
+  });
+
+  it('renders disable-breakpoint and deactivate-all buttons with visual logging contexts', () => {
+    const shadowRoot = renderPausedMessageView({
+      mainText: 'Paused on breakpoint',
+      errorLike: false,
+      onDisableBreakpoint: () => {},
+      onDeactivateBreakpointsAndResume: () => {},
+    });
+
+    assert.strictEqual(shadowRoot.querySelector('.status-main')?.textContent?.trim(), 'Paused on breakpoint');
+    const buttons = shadowRoot.querySelectorAll('devtools-button');
+    assert.lengthOf(buttons, 2);
+    assert.strictEqual(buttons[0].textContent?.trim(), 'Disable breakpoint');
+    assert.strictEqual(buttons[0].jslogContext, 'disable-breakpoint');
+    assert.strictEqual(buttons[1].textContent?.trim(), 'Deactivate all');
+    assert.strictEqual(buttons[1].jslogContext, 'debugger.toggle-breakpoints-active');
+  });
+
+  it('renders never-pause-here as the primary button when onNeverPauseHere is provided', () => {
+    const shadowRoot = renderPausedMessageView({
+      mainText: 'Paused on exception',
+      subText: 'Error: loop failure',
+      errorLike: true,
+      onNeverPauseHere: () => {},
+      onDeactivateBreakpointsAndResume: () => {},
+    });
+
+    assert.strictEqual(shadowRoot.querySelector('.status-main')?.textContent?.trim(), 'Paused on exception');
+    assert.strictEqual(shadowRoot.querySelector('.status-sub')?.textContent?.trim(), 'Error: loop failure');
+    const buttons = shadowRoot.querySelectorAll('devtools-button');
+    assert.lengthOf(buttons, 2);
+    assert.strictEqual(buttons[0].textContent?.trim(), 'Never pause here');
+    assert.strictEqual(buttons[0].jslogContext, 'never-pause-here');
+    assert.strictEqual(buttons[1].textContent?.trim(), 'Deactivate all');
+  });
+
+  it('invokes onDisableBreakpoint when clicking "Disable breakpoint"', () => {
+    const onDisableBreakpoint = sinon.spy();
+    const shadowRoot = renderPausedMessageView({
+      mainText: 'Paused on breakpoint',
+      errorLike: false,
+      onDisableBreakpoint,
+    });
+
+    shadowRoot.querySelector('devtools-button')?.click();
+
+    sinon.assert.calledOnce(onDisableBreakpoint);
+  });
+
+  it('invokes onNeverPauseHere when clicking "Never pause here"', () => {
+    const onNeverPauseHere = sinon.spy();
+    const shadowRoot = renderPausedMessageView({
+      mainText: 'Debugger paused',
+      errorLike: false,
+      onNeverPauseHere,
+    });
+
+    shadowRoot.querySelector('devtools-button')?.click();
+
+    sinon.assert.calledOnce(onNeverPauseHere);
+  });
+
+  it('invokes onDeactivateBreakpointsAndResume when clicking "Deactivate all"', () => {
+    const onDeactivateBreakpointsAndResume = sinon.spy();
+    const shadowRoot = renderPausedMessageView({
+      mainText: 'Paused on breakpoint',
+      errorLike: false,
+      onDeactivateBreakpointsAndResume,
+    });
+
+    shadowRoot.querySelector('devtools-button')?.click();
+
+    sinon.assert.calledOnce(onDeactivateBreakpointsAndResume);
+  });
+
+  it('renders single pause banner screenshot', async () => {
+    renderPausedMessageView({
+      mainText: 'Paused on breakpoint',
+      errorLike: false,
+    });
+
+    await assertScreenshot('sources/debugger-paused-message.png');
+  });
+
+  it('renders recurring pause banner with escape actions screenshot', async () => {
+    renderPausedMessageView({
+      mainText: 'Paused on breakpoint',
+      errorLike: false,
+      onDisableBreakpoint: () => {},
+      onDeactivateBreakpointsAndResume: () => {},
+    });
+
+    await assertScreenshot('sources/debugger-paused-message-recurring.png');
+  });
+
+  it('renders recurring error pause banner with escape actions screenshot', async () => {
+    renderPausedMessageView({
+      mainText: 'Paused on exception',
+      subText: 'Error: loop failure',
+      errorLike: true,
+      onNeverPauseHere: () => {},
+      onDeactivateBreakpointsAndResume: () => {},
+    });
+
+    await assertScreenshot('sources/debugger-paused-message-recurring-error.png');
   });
 });

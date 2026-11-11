@@ -603,7 +603,16 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   #enableAuthoredGrouping = false;
   #projectFilter?: (project: Workspace.Workspace.Project) => boolean;
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
-  #initialized = false;
+  #subscribed = false;
+  #needsRegroup = false;
+  #prevJustMyCode?: boolean;
+  readonly #groupingChangedListener = this.groupingChanged.bind(this);
+  readonly #ignoreListChangedListener = this.ignoreListChanged.bind(this);
+  #networkProjectManager: Bindings.NetworkProject.NetworkProjectManager;
+  #ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
+  #persistence?: Persistence.Persistence.PersistenceImpl;
+  #networkPersistenceManager?: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
+  #targetManager?: SDK.TargetManager.TargetManager;
   private groupByFrame?: boolean;
   private groupByAuthored?: boolean;
   private groupByDomain?: boolean;
@@ -621,6 +630,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   ) {
     super(element, {useShadowDom: true});
     this.#view = view;
+    this.#networkProjectManager = networkProjectManager;
 
     this.uiSourceCodeNodes = new Platform.MapUtilities.Multimap();
     this.subfolderNodes = new Map();
@@ -634,36 +644,181 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 
     this.navigatorGroupByFolderSetting =
         Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
-    this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
     this.navigatorJustMyCodeSetting =
         Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
-    this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
-
-    Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
 
     this.initGrouping();
-
-    Persistence.Persistence.PersistenceImpl.instance().addEventListener(
-        Persistence.Persistence.Events.BindingCreated, this.onBindingChanged, this);
-    Persistence.Persistence.PersistenceImpl.instance().addEventListener(
-        Persistence.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
-        Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
-        this.#onRequestsForHeaderOverridesFileChanged, this);
-    SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NAME_CHANGED, this.targetNameChanged, this);
-
-    SDK.TargetManager.TargetManager.instance().observeTargets(this);
-    networkProjectManager.addEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED,
-                                           this.frameAttributionAdded, this);
-    networkProjectManager.addEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
-                                           this.frameAttributionRemoved, this);
     this.requestUpdate();
   }
 
   override wasShown(): void {
     super.wasShown();
+    this.#subscribe();
     this.requestUpdate();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.#unsubscribe();
+  }
+
+  #subscribe(): void {
+    if (this.#subscribed) {
+      return;
+    }
+    this.#subscribed = true;
+
+    this.navigatorGroupByFolderSetting.addChangeListener(this.#groupingChangedListener);
+    this.navigatorJustMyCodeSetting.addChangeListener(this.#groupingChangedListener);
+    if (this.navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
+      this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+    }
+
+    this.#ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
+    this.#ignoreListManager.addChangeListener(this.#ignoreListChangedListener);
+
+    this.#persistence = Persistence.Persistence.PersistenceImpl.instance();
+    this.#persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.onBindingChanged, this);
+    this.#persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
+
+    this.#networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
+    this.#networkPersistenceManager.addEventListener(
+        Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
+        this.#onRequestsForHeaderOverridesFileChanged, this);
+
+    this.#targetManager = SDK.TargetManager.TargetManager.instance();
+    this.#targetManager.addEventListener(SDK.TargetManager.Events.NAME_CHANGED, this.targetNameChanged, this);
+    this.#targetManager.observeTargets(this);
+
+    this.#networkProjectManager.addEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED,
+                                                 this.frameAttributionAdded, this);
+    this.#networkProjectManager.addEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
+                                                 this.frameAttributionRemoved, this);
+
+    const prevGroupByFolder = this.groupByFolder;
+    const prevGroupByDomain = this.groupByDomain;
+    const prevGroupByAuthored = this.groupByAuthored;
+    const prevJustMyCode = this.#prevJustMyCode;
+    this.initGrouping();
+    const groupingChanged = prevGroupByFolder !== this.groupByFolder || prevGroupByDomain !== this.groupByDomain ||
+        prevGroupByAuthored !== this.groupByAuthored || prevJustMyCode !== this.#prevJustMyCode;
+    if (groupingChanged || this.#needsRegroup) {
+      this.#needsRegroup = false;
+      this.groupingChanged();
+      return;
+    }
+
+    this.resetWorkspace(this.#workspace);
+
+    const current = new Set(this.#workspace.uiSourceCodes());
+    const workspaceProjects = new Set(this.#workspace.projects());
+    const toRemove: Workspace.UISourceCode.UISourceCode[] = [];
+    for (const uiSourceCode of this.uiSourceCodeNodes.keys()) {
+      if (!current.has(uiSourceCode) || !workspaceProjects.has(uiSourceCode.project()) ||
+          !this.acceptsUISourceCode(uiSourceCode) ||
+          (this.navigatorJustMyCodeSetting.get() &&
+           this.#ignoreListManager?.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
+        toRemove.push(uiSourceCode);
+      }
+    }
+    if (toRemove.length > 0) {
+      this.removeUISourceCodes(toRemove);
+    }
+
+    const rootOrDeployed = this.rootOrDeployedNode();
+    for (const child of [...rootOrDeployed.children()]) {
+      if (child instanceof NavigatorGroupTreeNode && child.project && !workspaceProjects.has(child.project)) {
+        this.removeProject(child.project);
+      }
+    }
+
+    for (const uiSourceCode of current) {
+      if (!this.uiSourceCodeNodes.has(uiSourceCode)) {
+        this.addUISourceCode(uiSourceCode);
+      } else {
+        const frames = Bindings.NetworkProject.NetworkProject.framesForUISourceCode(uiSourceCode);
+        const desiredFrames =
+            new Set<SDK.ResourceTreeModel.ResourceTreeFrame|null>(frames.length > 0 ? frames : [null]);
+        for (const node of [...this.uiSourceCodeNodes.get(uiSourceCode)]) {
+          if (!desiredFrames.has(node.frame())) {
+            this.removeUISourceCodeNode(node);
+          }
+        }
+        const existingFrames = new Set(Array.from(this.uiSourceCodeNodes.get(uiSourceCode), node => node.frame()));
+        for (const frame of desiredFrames) {
+          if (!existingFrames.has(frame)) {
+            this.addUISourceCodeNode(uiSourceCode, frame);
+          }
+        }
+      }
+    }
+
+    if (this.#targetManager) {
+      const liveTargets = new Set(this.#targetManager.targets());
+      const scopeTarget = this.#targetManager.scopeTarget();
+      for (const child of [...rootOrDeployed.children()]) {
+        if (child.id.startsWith('target:')) {
+          const targetId = child.id.slice('target:'.length);
+          const target = this.#targetManager.targetById(targetId);
+          if (!target || !liveTargets.has(target) || target === scopeTarget) {
+            rootOrDeployed.removeChild(child);
+          } else {
+            child.setTitle(target.name());
+          }
+        }
+      }
+    }
+
+    this.rootNode.updateTitleRecursive();
+  }
+
+  #unsubscribe(): void {
+    if (!this.#subscribed) {
+      return;
+    }
+    this.#subscribed = false;
+
+    this.navigatorGroupByFolderSetting.removeChangeListener(this.#groupingChangedListener);
+    this.navigatorJustMyCodeSetting.removeChangeListener(this.#groupingChangedListener);
+    if (this.navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
+      this.navigatorGroupByAuthoredSetting.removeChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+    }
+
+    this.#ignoreListManager?.removeChangeListener(this.#ignoreListChangedListener);
+    this.#ignoreListManager = undefined;
+
+    if (this.#persistence) {
+      this.#persistence.removeEventListener(Persistence.Persistence.Events.BindingCreated, this.onBindingChanged, this);
+      this.#persistence.removeEventListener(Persistence.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
+      this.#persistence = undefined;
+    }
+
+    if (this.#networkPersistenceManager) {
+      this.#networkPersistenceManager.removeEventListener(
+          Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
+          this.#onRequestsForHeaderOverridesFileChanged, this);
+      this.#networkPersistenceManager = undefined;
+    }
+
+    if (this.#targetManager) {
+      this.#targetManager.removeEventListener(SDK.TargetManager.Events.NAME_CHANGED, this.targetNameChanged, this);
+      this.#targetManager.unobserveTargets(this);
+      this.#targetManager = undefined;
+    }
+
+    this.#networkProjectManager.removeEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED,
+                                                    this.frameAttributionAdded, this);
+    this.#networkProjectManager.removeEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
+                                                    this.frameAttributionRemoved, this);
+
+    if (this.#workspace) {
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback,
+                                          this);
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved,
+                                          this.uiSourceCodeRemovedCallback, this);
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
+    }
   }
 
   get enableAuthoredGrouping(): boolean {
@@ -684,10 +839,17 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       this.navigatorGroupByAuthoredSetting = Common.Settings.Settings.instance().resolve(
           SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
       this.#navigatorGroupByAuthoredChangeListener = this.groupingChanged.bind(this);
-      this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+      if (this.#subscribed) {
+        this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+      }
     }
-    if (this.#initialized && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
-      this.groupingChanged();
+    if (Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
+      if (this.#subscribed) {
+        this.initGrouping();
+        this.groupingChanged();
+      } else {
+        this.#needsRegroup = true;
+      }
     }
     this.requestUpdate();
   }
@@ -701,8 +863,10 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       return;
     }
     this.#projectFilter = projectFilter;
-    if (this.#initialized) {
+    if (this.#subscribed) {
       this.groupingChanged();
+    } else {
+      this.#needsRegroup = true;
     }
     this.requestUpdate();
   }
@@ -751,12 +915,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   }
 
   override performUpdate(): void {
-    if (!this.#initialized) {
-      this.#initialized = true;
-      this.initGrouping();
-      this.resetWorkspace(this.#workspace);
-      this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
-    }
     const nodes = this.rootNode.effectiveChildren();
     this.#view({
       nodes,
@@ -948,7 +1106,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 
   private resetWorkspace(workspace: Workspace.Workspace.WorkspaceImpl): void {
     // Clear old event listeners first.
-    if (this.#workspace) {
+    if (this.#subscribed && this.#workspace) {
       this.#workspace.removeEventListener(
           Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback, this);
       this.#workspace.removeEventListener(
@@ -958,12 +1116,14 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     }
 
     this.#workspace = workspace;
-    this.#workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback, this);
-    this.#workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemovedCallback, this);
-    this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
-    this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
+    if (this.#subscribed) {
+      this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback,
+                                       this);
+      this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemovedCallback,
+                                       this);
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
+    }
     this.#workspace.projects().forEach(this.projectAdded.bind(this));
     this.computeUniqueFileSystemProjectNames();
   }
@@ -1159,11 +1319,8 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
         project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
-    const fileSystemNode = this.rootNode.child(project.id());
-    if (!fileSystemNode) {
-      return;
-    }
-    this.rootNode.removeChild(fileSystemNode);
+    const fileSystemNode = this.rootOrDeployedNode().child(project.id()) ?? this.rootNode.child(project.id());
+    fileSystemNode?.parent?.removeChild(fileSystemNode);
   }
 
   private folderNodeId(
@@ -1820,6 +1977,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     } else {
       this.groupByAuthored = false;
     }
+    this.#prevJustMyCode = this.navigatorJustMyCodeSetting.get();
   }
 
   protected resetForTest(): void {

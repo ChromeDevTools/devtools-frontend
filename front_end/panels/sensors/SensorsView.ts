@@ -189,11 +189,24 @@ const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStri
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {live} = Directives;
 
-const DEFAULT_VIEW = (_input: undefined, _output: undefined, target: HTMLElement): void => {
-  render(html`<div class="panel-section-separator"></div>`, target, {
+interface ViewInput {
+  cpuPerformanceSetting: Common.Settings.Setting<unknown>;
+  cpuPerformanceNoOverrideLabel: string;
+}
+
+// clang-format off
+const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  render(html`
+    <div class="cpu-performance-section">
+      ${SettingsUI.SettingsUI.renderSettingSelect(
+          input.cpuPerformanceSetting, i18nString(UIStrings.forcesSelectedCpuPerformanceTierEmulation), false,
+          new Map([['no-override', input.cpuPerformanceNoOverrideLabel]]))}
+    </div>
+    <div class="panel-section-separator"></div>`, target, {
     container: {attributes: {jslog: `${VisualLogging.panel('sensors').track({resize: true})}`}},
   });
 };
+// clang-format on
 
 type View = typeof DEFAULT_VIEW;
 
@@ -227,7 +240,6 @@ export class SensorsView extends UI.Widget.VBox {
   private mouseDownVector?: Geometry.Vector|null;
   private originalBoxMatrix?: DOMMatrix;
   readonly #cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
-  #cpuPerformanceNoOverrideOptionElement?: HTMLOptionElement;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
@@ -274,13 +286,16 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.createPanelSeparator();
 
-    this.createCPUPerformanceSection();
-
     this.performUpdate();
   }
 
   override performUpdate(): void {
-    this.#view(undefined, undefined, this.contentElement);
+    const input: ViewInput = {
+      cpuPerformanceSetting:
+          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),
+      cpuPerformanceNoOverrideLabel: this.#cpuPerformanceNoOverrideLabel(),
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 
   private createPanelSeparator(): void {
@@ -763,25 +778,6 @@ export class SensorsView extends UI.Widget.VBox {
     }
   }
 
-  private createCPUPerformanceSection(): void {
-    const container = this.contentElement.createChild('div', 'cpu-performance-section');
-    const control = SettingsUI.SettingsUI.createControlForSetting(
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),
-        i18nString(UIStrings.forcesSelectedCpuPerformanceTierEmulation));
-
-    if (control) {
-      container.appendChild(control);
-      // The text of the "no override" option element needs to be updated dynamically.
-      const noOverrideOption = control.querySelector<HTMLOptionElement>('select option[value="no-override"]');
-      if (noOverrideOption) {
-        this.#cpuPerformanceNoOverrideOptionElement = noOverrideOption;
-        this.#updateCPUPerformanceNoOverrideLabel();
-      } else {
-        this.#cpuPerformanceNoOverrideOptionElement = undefined;
-      }
-    }
-  }
-
   override wasShown(): void {
     super.wasShown();
     this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
@@ -800,9 +796,7 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   #updateCPUPerformanceNoOverrideLabel(): void {
-    if (this.#cpuPerformanceNoOverrideOptionElement) {
-      this.#cpuPerformanceNoOverrideOptionElement.text = this.#cpuPerformanceNoOverrideLabel();
-    }
+    this.performUpdate();
   }
 
   #cpuPerformanceNoOverrideLabel(): string {

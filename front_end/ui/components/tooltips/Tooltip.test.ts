@@ -650,4 +650,10 @@ describe('IdFactory', () => {
     assert.strictEqual(sub.keyed('a'), 'child-root-2-a-0');
     assert.strictEqual(sub.subfactory('grandchild', 'x').get('a'), 'grandchild-child-root-2-x-a');
   });
+
+  it('by default assigns ids that don\'t require escaping in CSS', () => {
+    const factory = new Tooltips.Tooltip.IdFactory();
+    const id = factory.get(1);
+    assert.strictEqual(id, CSS.escape(id));
+  });
 });

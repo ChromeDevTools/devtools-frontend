@@ -661,10 +661,10 @@ export class Tooltip extends HTMLElement {
 export class IdFactory {
   static #nextId = 0;
   #keys = new Map<string|number, number>();
-  #id: number|string;
+  #id: string;
 
-  constructor(id?: number|string) {
-    this.#id = id ?? IdFactory.#nextId++;
+  constructor(id?: string) {
+    this.#id = id ?? `id${IdFactory.#nextId++}`;
   }
 
   keyed(key: string|number, ...additionalSuffixes: Array<number|string>): string {

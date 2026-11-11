@@ -33,6 +33,8 @@ devtools_module("inspector_main") {
     "../../generated",
     "../../models/bindings:bundle",
     "../../panels/mobile_throttling:bundle",
+    "../../ui/components/menus:bundle",
+    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
@@ -94,6 +96,7 @@ ts_library("unittests") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",
+    "../../ui/components/menus:bundle",
     "../../ui/legacy:bundle",
   ]
 }

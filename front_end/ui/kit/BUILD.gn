@@ -43,6 +43,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../*",
+    "../../entrypoints/inspector_main/*",
     "../../entrypoints/main/*",
     "../../entrypoints/node_app/*",
     "../../panels/*",

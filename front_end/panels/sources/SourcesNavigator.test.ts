@@ -35,7 +35,40 @@ import * as Sources from './sources.js';
 const {urlString} = Platform.DevToolsPath;
 
 function getTreeOutline(navigatorView: Sources.NavigatorView.NavigatorView): UI.TreeOutline.TreeOutline {
-  return navigatorView.scriptsTree;
+  navigatorView.performUpdate();
+  const treeViewElement = navigatorView.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+  treeViewElement?.flushPendingUpdatesForTesting();
+  const treeOutline = treeViewElement?.getInternalTreeOutlineForTest();
+  if (!treeOutline) {
+    throw new Error('treeOutline not found');
+  }
+  return treeOutline;
+}
+
+function getTreeElementTitle(element: UI.TreeOutline.TreeElement|null|undefined): string {
+  if (!element) {
+    return '';
+  }
+  if (typeof element.title === 'string' && element.title.length > 0) {
+    return element.title;
+  }
+  const titleElement = element.titleElement as Element | undefined;
+  const treeElementTitle = titleElement?.querySelector?.('.tree-element-title');
+  const dataTitle = treeElementTitle?.getAttribute('data-title') || element.listItemElement?.getAttribute('data-title');
+  if (dataTitle) {
+    return dataTitle;
+  }
+  if (treeElementTitle?.textContent) {
+    return treeElementTitle.textContent;
+  }
+  return element.titleElement?.textContent ?? '';
+}
+
+function getTreeElementTooltip(element: UI.TreeOutline.TreeElement|null|undefined): string {
+  if (!element) {
+    return '';
+  }
+  return element.tooltip || element.listItemElement.querySelector('[title]')?.getAttribute('title') || '';
 }
 
 describe('NetworkNavigatorView', () => {
@@ -126,8 +159,8 @@ describe('NetworkNavigatorView', () => {
       const folder = rootElement.firstChild();
       const file = folder?.firstChild();
 
-      assert.strictEqual(folder?.title, 'example.com');
-      assert.strictEqual(file?.titleAsText(), 'script.js');
+      assert.strictEqual(getTreeElementTitle(folder), 'example.com');
+      assert.strictEqual(getTreeElementTitle(file), 'script.js');
 
       project.removeProject();
     });
@@ -232,7 +265,7 @@ describe('NetworkNavigatorView', () => {
          const exampleComNode = rootElement.firstChild();
          assert.exists(exampleComNode);
 
-         const childTitles = exampleComNode.children().map(child => child.titleAsText());
+         const childTitles = exampleComNode.children().map(child => getTreeElementTitle(child));
          assert.include(childTitles, 'external.css');
          assert.lengthOf(childTitles.filter(title => title === '(index)'), 1);
          assert.deepEqual(childTitles, ['(index)', 'gtm.js', 'external.css', 'favicon.ico']);
@@ -268,7 +301,7 @@ describe('NetworkNavigatorView', () => {
     let rootElement = getTreeOutline(navigatorView).rootElement();
     assert.strictEqual(rootElement.childCount(), 1);
     assert.strictEqual(rootElement.firstChild()?.childCount(), 3);
-    assert.deepEqual(rootElement.firstChild()?.children().map(i => i.titleAsText()),
+    assert.deepEqual(rootElement.firstChild()?.children().map(i => getTreeElementTitle(i)),
                      ['(index)', 'gtm.js', 'favicon.ico']);
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
@@ -276,7 +309,8 @@ describe('NetworkNavigatorView', () => {
     rootElement = getTreeOutline(navigatorView).rootElement();
     assert.strictEqual(rootElement.childCount(), 1);
     assert.strictEqual(rootElement.firstChild()?.childCount(), 2);
-    assert.deepEqual(rootElement.firstChild()?.children().map(i => i.titleAsText()), ['(index)', 'background.bmp']);
+    assert.deepEqual(rootElement.firstChild()?.children().map(i => getTreeElementTitle(i)),
+                     ['(index)', 'background.bmp']);
 
     project.removeProject();
     anotherProject.removeProject();
@@ -328,6 +362,8 @@ describe('NetworkNavigatorView', () => {
       const nodeCSelectSpy = sinon.spy(nodeC, 'select');
 
       project.removeProject();
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
 
       sinon.assert.notCalled(nodeBSelectSpy);
       sinon.assert.called(nodeCSelectSpy);
@@ -335,7 +371,7 @@ describe('NetworkNavigatorView', () => {
       otherProject.removeProject();
     });
 
-    it('selects parent after removing all children', async () => {
+    it('does not select siblings or removed parent when removing all children', async () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
           {url: urlString`http://example.com/a.js`, mimeType: 'application/javascript'},
@@ -347,7 +383,7 @@ describe('NetworkNavigatorView', () => {
       });
 
       const navigatorView = await createNetworkNavigatorView();
-      const rootElement = getTreeOutline(navigatorView).rootElement();
+      let rootElement = getTreeOutline(navigatorView).rootElement();
       const nodeExampleCom = rootElement.firstChild();
       assert.exists(nodeExampleCom);
       const nodeA = nodeExampleCom.childAt(0);
@@ -357,9 +393,8 @@ describe('NetworkNavigatorView', () => {
       assert.exists(nodeB);
       assert.exists(nodeC);
 
-      // Select the 'http://example.com/a.js' node. Remove all the source codenodes and check the selection
-      // is not propagated forward to the siblings as we remove them. Instead, the selection will be moved
-      // directly to the parent.
+      // Select the 'http://example.com/a.js' node. Remove all the source code nodes and check that selection
+      // is not propagated forward to the siblings as we remove them.
       nodeA.select();
 
       const nodeBSelectSpy = sinon.spy(nodeB, 'select');
@@ -367,13 +402,16 @@ describe('NetworkNavigatorView', () => {
       const nodeExampleComSelectSpy = sinon.spy(nodeExampleCom, 'select');
 
       project.removeProject();
+      await navigatorView.updateComplete;
+      rootElement = getTreeOutline(navigatorView).rootElement();
 
       sinon.assert.notCalled(nodeBSelectSpy);
       sinon.assert.notCalled(nodeCSelectSpy);
-      sinon.assert.called(nodeExampleComSelectSpy);
+      sinon.assert.notCalled(nodeExampleComSelectSpy);
 
-      // Note that the last asserion is slightly misleading since the empty example.com node is removed.
-      // Let us make that clear here.
+      // Note that when all children and their empty example.com parent are removed together in a single
+      // declarative <devtools-tree> update, neither the removed siblings nor the removed example.com parent
+      // are transiently selected.
       assert.strictEqual(rootElement.childCount(), 0);
     });
 
@@ -402,6 +440,8 @@ describe('NetworkNavigatorView', () => {
       const nodeD = exampleComNode.childAt(0);
       assert.exists(nodeD);
       await nodeD.expand();
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
       const nodeA = nodeD.childAt(0);
       const nodeB = nodeD.childAt(1);
       const nodeC = exampleComNode.childAt(1);
@@ -417,6 +457,8 @@ describe('NetworkNavigatorView', () => {
 
       // Remove the project with the a.js and b.js nodes.
       project.removeProject();
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
 
       // Let us check that we do not push the selection forward over node 'b.js'.
       // Instead, the selection will be pushed to 'c.js' (with an intermediate step at 'd').
@@ -461,6 +503,8 @@ describe('NetworkNavigatorView', () => {
       assert.exists(nodeE);
       await nodeD.expand();
       await nodeE.expand();
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
       const nodeA = nodeD.childAt(0);
       const nodeB = nodeE.childAt(0);
       assert.exists(nodeA);
@@ -478,6 +522,8 @@ describe('NetworkNavigatorView', () => {
       // The selection will be moved from 'a.js' to its parent (folder 'd') and when that gets removed,
       // it should move to 'c' rather being pushed forward to 'e'.
       project.removeProject();
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
 
       sinon.assert.notCalled(nodeESelectSpy);
       sinon.assert.notCalled(nodeBSelectSpy);
@@ -529,6 +575,8 @@ describe('NetworkNavigatorView', () => {
 
       dispatchEvent(target, 'Runtime.executionContextDestroyed',
                     {executionContextId: 2 as Protocol.Runtime.ExecutionContextId, executionContextUniqueId: 'c2'});
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
 
       sinon.assert.notCalled(nodeBSelectSpy);
       sinon.assert.called(nodeCSelectSpy);
@@ -598,8 +646,8 @@ describe('NetworkNavigatorView', () => {
       const ignoredFolder = nodeExampleCom!.childAt(0);
       const mixedFolder = nodeExampleCom!.childAt(1);
 
-      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(getTreeElementTooltip(mixedFolder), 'mixed');
+      assert.strictEqual(getTreeElementTooltip(ignoredFolder), 'ignored (ignore listed)');
 
       await disableIgnoreListing();
       project.removeProject();
@@ -635,18 +683,22 @@ describe('NetworkNavigatorView', () => {
       const ignoredFolder = nodeExampleCom!.childAt(0);
       const mixedFolder = nodeExampleCom!.childAt(1);
 
-      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder!.tooltip, 'ignored');
+      assert.strictEqual(getTreeElementTooltip(mixedFolder), 'mixed');
+      assert.strictEqual(getTreeElementTooltip(ignoredFolder), 'ignored');
 
       await enableIgnoreListing();
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
 
-      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(getTreeElementTooltip(mixedFolder), 'mixed');
+      assert.strictEqual(getTreeElementTooltip(ignoredFolder), 'ignored (ignore listed)');
 
       await disableIgnoreListing();
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
 
-      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder!.tooltip, 'ignored');
+      assert.strictEqual(getTreeElementTooltip(mixedFolder), 'mixed');
+      assert.strictEqual(getTreeElementTooltip(ignoredFolder), 'ignored');
 
       project.removeProject();
     });
@@ -678,8 +730,8 @@ describe('NetworkNavigatorView', () => {
       const ignoredFolder = nodeExampleCom!.childAt(0);
       const mixedFolder = nodeExampleCom!.childAt(1);
 
-      assert.strictEqual(mixedFolder!.tooltip, 'mixed/a (ignore listed)');
-      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(getTreeElementTooltip(mixedFolder), 'mixed/a (ignore listed)');
+      assert.strictEqual(getTreeElementTooltip(ignoredFolder), 'ignored (ignore listed)');
 
       const {project: otherProject} = createContentProviderUISourceCodes({
         items: [
@@ -691,14 +743,18 @@ describe('NetworkNavigatorView', () => {
         projectType: Workspace.Workspace.projectTypes.Network,
         target,
       });
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
 
-      assert.strictEqual(mixedFolder!.tooltip, 'mixed');
-      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(getTreeElementTooltip(mixedFolder), 'mixed');
+      assert.strictEqual(getTreeElementTooltip(ignoredFolder), 'ignored (ignore listed)');
 
       otherProject.removeProject();
+      await navigatorView.updateComplete;
+      getTreeOutline(navigatorView);
 
-      assert.strictEqual(mixedFolder!.tooltip, 'mixed (ignore listed)');
-      assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
+      assert.strictEqual(getTreeElementTooltip(mixedFolder), 'mixed (ignore listed)');
+      assert.strictEqual(getTreeElementTooltip(ignoredFolder), 'ignored (ignore listed)');
 
       await disableIgnoreListing();
       project.removeProject();
@@ -815,19 +871,19 @@ describe('FilesNavigatorView', () => {
     const children = rootElement.children();
     assert.lengthOf(children, 3);
     const expectedTitles = ['bad/foo/bar', 'good/foo/bar', 'ugly/bar'];
-    assert.deepEqual(children.map((c: UI.TreeOutline.TreeElement) => c.title).sort(), expectedTitles);
+    assert.deepEqual(children.map((c: UI.TreeOutline.TreeElement) => getTreeElementTitle(c)).sort(), expectedTitles);
 
-    const badProjectNode = children.find((c: UI.TreeOutline.TreeElement) => c.title === 'bad/foo/bar');
+    const badProjectNode = children.find((c: UI.TreeOutline.TreeElement) => getTreeElementTitle(c) === 'bad/foo/bar');
     assert.strictEqual(badProjectNode?.childCount(), 1);
-    assert.strictEqual(badProjectNode?.childAt(0)?.titleAsText(), '2.js');
+    assert.strictEqual(getTreeElementTitle(badProjectNode?.childAt(0)), '2.js');
 
-    const goodProjectNode = children.find((c: UI.TreeOutline.TreeElement) => c.title === 'good/foo/bar');
+    const goodProjectNode = children.find((c: UI.TreeOutline.TreeElement) => getTreeElementTitle(c) === 'good/foo/bar');
     assert.strictEqual(goodProjectNode?.childCount(), 1);
-    assert.strictEqual(goodProjectNode?.childAt(0)?.titleAsText(), '1.js');
+    assert.strictEqual(getTreeElementTitle(goodProjectNode?.childAt(0)), '1.js');
 
-    const uglyProjectNode = children.find((c: UI.TreeOutline.TreeElement) => c.title === 'ugly/bar');
+    const uglyProjectNode = children.find((c: UI.TreeOutline.TreeElement) => getTreeElementTitle(c) === 'ugly/bar');
     assert.strictEqual(uglyProjectNode?.childCount(), 1);
-    assert.strictEqual(uglyProjectNode?.childAt(0)?.titleAsText(), '3.js');
+    assert.strictEqual(getTreeElementTitle(uglyProjectNode?.childAt(0)), '3.js');
 
     project1.removeProject();
     project2.removeProject();
@@ -886,10 +942,14 @@ describe('OverridesNavigatorView', () => {
     workspace = backend.universe.workspace;
     const targetManager = backend.universe.targetManager;
 
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+
     sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(workspace);
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(targetManager);
     sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
     sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
+
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
 
     const debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
@@ -913,6 +973,8 @@ describe('OverridesNavigatorView', () => {
         overridesNavigatorView.children().find(child => child instanceof Sources.NavigatorView.NavigatorView);
     assert.exists(navigatorView);
     await navigatorView.updateComplete;
+    navigatorView.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree')
+        ?.flushPendingUpdatesForTesting();
     await raf();
     return navigatorView;
   }
@@ -959,8 +1021,9 @@ describe('OverridesNavigatorView', () => {
         .set(false);
     // Waiting for the event to be fired
     await updatePromise;
+    await navigatorView.updateComplete;
 
-    const disabledOverridesNode = rootElement.children()[0];
+    const disabledOverridesNode = getTreeOutline(navigatorView).rootElement().children()[0];
     assert.isFalse(disabledOverridesNode.listItemElement.classList.contains('has-mapped-files'));
 
     project.removeProject();

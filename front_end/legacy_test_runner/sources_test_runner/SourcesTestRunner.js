@@ -14,7 +14,14 @@ import {TestRunner} from '../test_runner/test_runner.js';
  * @returns {!UI.TreeOutline.TreeOutline}
  */
 function getNavigatorTreeOutline(navigatorView) {
-  return navigatorView.scriptsTree;
+  navigatorView.performUpdate();
+  const treeViewElement = navigatorView.contentElement.querySelector('devtools-tree');
+  treeViewElement?.flushPendingUpdatesForTesting();
+  const treeOutline = treeViewElement?.getInternalTreeOutlineForTest();
+  if (!treeOutline) {
+    throw new Error('treeOutline not found');
+  }
+  return treeOutline;
 }
 
 /**
@@ -23,7 +30,14 @@ function getNavigatorTreeOutline(navigatorView) {
  * @returns {string|undefined}
  */
 function getNavigatorNodeType(navigatorView, treeElement) {
-  return navigatorView.nodeForTreeElement(treeElement)?.type;
+  const classList = treeElement.listItemElement.classList;
+  for (const className of classList) {
+    const match = /^navigator-(.*)-tree-item$/.exec(className);
+    if (match && match[1] !== 'folder' && match[1] !== 'file') {
+      return match[1];
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -52,7 +66,7 @@ export const dumpNavigatorView = function(navigatorView, dumpIcons) {
         titleText = titleText + '[' + iconTypes.join(', ') + '] ';
       }
     }
-    titleText += treeElement.titleAsText();
+    titleText += treeElement.titleAsText() || treeElement.titleElement.textContent || '';
     const nodeType = getNavigatorNodeType(innerNavigatorView, treeElement);
     if (nodeType === Sources.NavigatorView.Types.FileSystem ||
         nodeType === Sources.NavigatorView.Types.FileSystemFolder) {
@@ -63,6 +77,9 @@ export const dumpNavigatorView = function(navigatorView, dumpIcons) {
     }
     TestRunner.addResult(prefix + titleText);
     treeElement.expand();
+    innerNavigatorView.performUpdate();
+    const treeViewElement = innerNavigatorView.contentElement.querySelector('devtools-tree');
+    treeViewElement?.flushPendingUpdatesForTesting();
     const children = treeElement.children();
     for (let i = 0; i < children.length; ++i) {
       dumpNavigatorTreeElement(prefix + '  ', children[i]);

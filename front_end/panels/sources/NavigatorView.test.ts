@@ -15,7 +15,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
@@ -89,7 +89,7 @@ describeWithEnvironment('NavigatorView', () => {
       ): DumpedTreeNode[] {
     const {includeClasses = false, includeStatus = false} = options;
     function dumpElement(element: UI.TreeOutline.TreeElement): DumpedTreeNode {
-      const title = typeof element.title === 'string' ? element.title : element.title.textContent ?? '';
+      const title = getTreeElementTitle(element);
       const node: DumpedTreeNode = {title};
       if (includeClasses) {
         const relevantClasses =
@@ -118,7 +118,14 @@ describeWithEnvironment('NavigatorView', () => {
   }
 
   function getTreeOutline(navigatorView: Sources.NavigatorView.NavigatorView): UI.TreeOutline.TreeOutline {
-    return navigatorView.scriptsTree;
+    navigatorView.performUpdate();
+    const treeViewElement = navigatorView.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+    treeViewElement?.flushPendingUpdatesForTesting();
+    const treeOutline = treeViewElement?.getInternalTreeOutlineForTest();
+    if (!treeOutline) {
+      throw new Error('treeOutline not found');
+    }
+    return treeOutline;
   }
 
   function isTreeHidden(navigatorView: Sources.NavigatorView.NavigatorView): boolean {
@@ -165,13 +172,75 @@ describeWithEnvironment('NavigatorView', () => {
     return null;
   }
 
+  function findTreeNode(
+      root: Sources.NavigatorView.NavigatorTreeNode,
+      predicate: (node: Sources.NavigatorView.NavigatorTreeNode) => boolean,
+      ): Sources.NavigatorView.NavigatorTreeNode|null {
+    if (predicate(root)) {
+      return root;
+    }
+    for (const child of root.children()) {
+      const found = findTreeNode(child, predicate);
+      if (found) {
+        return found;
+      }
+    }
+    return null;
+  }
+
+  function getPrompt(targetNode: Sources.NavigatorView.NavigatorUISourceCodeTreeNode): UI.TextPrompt.TextPromptElement|
+      null {
+    const navView = (targetNode as unknown as {navigatorView: Sources.NavigatorView.NavigatorView}).navigatorView;
+    const devtoolsTree = navView.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+    devtoolsTree?.flushPendingUpdatesForTesting();
+    const searchRoots: ParentNode[] = [];
+    if (devtoolsTree?.shadowRoot) {
+      searchRoots.push(devtoolsTree.shadowRoot);
+    }
+    if (devtoolsTree?.templateRoot) {
+      searchRoots.push(devtoolsTree.templateRoot);
+    }
+    searchRoots.push(navView.contentElement);
+    const widgets = searchRoots.flatMap(r => Array.from(r.querySelectorAll('devtools-widget')));
+    for (const w of widgets) {
+      if (w.shadowRoot) {
+        searchRoots.push(w.shadowRoot);
+      }
+    }
+    const prompts =
+        searchRoots.flatMap(r => Array.from(r.querySelectorAll<UI.TextPrompt.TextPromptElement>('devtools-prompt')));
+    return prompts.find(p => p.getAttribute('value') === targetNode.title ||
+                            p.getAttribute('value') === targetNode.uiSourceCode().displayName()) ??
+        null;
+  }
+
+  function getTreeElementTitle(element: UI.TreeOutline.TreeElement): string {
+    if (typeof element.title === 'string' && element.title.length > 0) {
+      return element.title;
+    }
+    const titleElement = element.titleElement as Element | undefined;
+    const treeElementTitle = titleElement?.querySelector?.('.tree-element-title');
+    const dataTitle =
+        treeElementTitle?.getAttribute('data-title') || element.listItemElement?.getAttribute('data-title');
+    if (dataTitle) {
+      return dataTitle;
+    }
+    if (treeElementTitle?.textContent) {
+      return treeElementTitle.textContent;
+    }
+    return element.titleElement?.textContent ?? '';
+  }
+
+  function getTreeElementTooltip(element: UI.TreeOutline.TreeElement): string {
+    return element.tooltip || element.listItemElement.querySelector('[title]')?.getAttribute('title') || '';
+  }
+
   function getTreeElement(
       navigatorView: Sources.NavigatorView.NavigatorView,
       title: string,
       ): UI.TreeOutline.TreeElement {
     const treeElement = findTreeElement(navigatorView, el => {
-      const elTitle = typeof el.title === 'string' ? el.title : el.title.textContent ?? '';
-      return elTitle === title;
+      return getTreeElementTitle(el) === title;
     });
     if (!treeElement) {
       throw new Error(`Tree element with title "${title}" not found`);
@@ -194,8 +263,8 @@ describeWithEnvironment('NavigatorView', () => {
           .contentElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
     } else if (action === 'space') {
       treeElement.select(true);
-      getTreeOutline(navigatorView)
-          .contentElement.dispatchEvent(new KeyboardEvent('keydown', {key: ' ', keyCode: 32, bubbles: true}));
+      treeElement.listItemElement.dispatchEvent(
+          new KeyboardEvent('keydown', {key: ' ', keyCode: 32, bubbles: true, composed: true}));
     } else if (action === 'dblclick') {
       treeElement.listItemElement.dispatchEvent(
           new MouseEvent('dblclick', {bubbles: true, cancelable: true, button: options.button ?? 0}));
@@ -280,7 +349,7 @@ describeWithEnvironment('NavigatorView', () => {
     await navigatorView.updateComplete;
     const children = getTreeOutline(navigatorView).rootElement().children();
     assert.lengthOf(children, 1, 'The NavigatorView root node should have 1 child before node removal');
-    assert.strictEqual(children[0].title, 'top');
+    assert.strictEqual(getTreeElementTitle(children[0]), 'top');
 
     // Remove leaf node and assert that node removal propagates up to the root node.
     project.removeUISourceCode(url);
@@ -326,11 +395,11 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
       const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
-      assert.strictEqual(topChildren[0].title, 'top');
+      assert.strictEqual(getTreeElementTitle(topChildren[0]), 'top');
 
       const children = topChildren[0].children();
       assert.lengthOf(children, 1);
-      assert.strictEqual(children[0].title, 'example.com');
+      assert.strictEqual(getTreeElementTitle(children[0]), 'example.com');
     });
 
     it('should use a matching context name if the url does not match the default context', async () => {
@@ -370,11 +439,11 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
       const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
-      assert.strictEqual(topChildren[0].title, 'top');
+      assert.strictEqual(getTreeElementTitle(topChildren[0]), 'top');
 
       const children = topChildren[0].children();
       assert.lengthOf(children, 1);
-      assert.strictEqual(children[0].title, 'Extension Context');
+      assert.strictEqual(getTreeElementTitle(children[0]), 'Extension Context');
     });
 
     it('should prioritize the default context', async () => {
@@ -417,11 +486,11 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
       const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
-      assert.strictEqual(topChildren[0].title, 'top');
+      assert.strictEqual(getTreeElementTitle(topChildren[0]), 'top');
 
       const children = topChildren[0].children();
       assert.lengthOf(children, 1);
-      assert.strictEqual(children[0].title, 'example.com');
+      assert.strictEqual(getTreeElementTitle(children[0]), 'example.com');
     });
 
     it('should ignore contexts with no name', async () => {
@@ -448,11 +517,11 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
       const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
-      assert.strictEqual(topChildren[0].title, 'top');
+      assert.strictEqual(getTreeElementTitle(topChildren[0]), 'top');
 
       const children = topChildren[0].children();
       assert.lengthOf(children, 1);
-      assert.strictEqual(children[0].title, 'example.com');
+      assert.strictEqual(getTreeElementTitle(children[0]), 'example.com');
     });
 
     it('should indicate if a display name cannot be found', async () => {
@@ -465,11 +534,11 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
       const topChildren = getTreeOutline(navigatorView).rootElement().children();
       assert.lengthOf(topChildren, 1);
-      assert.strictEqual(topChildren[0].title, 'top');
+      assert.strictEqual(getTreeElementTitle(topChildren[0]), 'top');
 
       const children = topChildren[0].children();
       assert.lengthOf(children, 1);
-      assert.strictEqual(children[0].title, '(no domain)');
+      assert.strictEqual(getTreeElementTitle(children[0]), '(no domain)');
     });
   });
 
@@ -507,7 +576,8 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
           navigatorView, null, 'domain:example.com', Sources.NavigatorView.Types.Domain, 'example.com');
-      const treeElement = groupNode.treeNode();
+      navigatorView.rootNode.appendChild(groupNode);
+      const treeElement = getTreeElement(navigatorView, 'example.com');
       const icon = treeElement.listItemElement.querySelector('.leading-icons devtools-icon');
       assert.exists(icon);
       assert.strictEqual(icon.getAttribute('name'), 'cloud');
@@ -522,7 +592,7 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       const folderTreeElement = getTreeElement(navigatorView, 'src/components');
-      assert.strictEqual(folderTreeElement.tooltip, 'src/components');
+      assert.strictEqual(getTreeElementTooltip(folderTreeElement), 'src/components');
 
       project.removeProject();
     });
@@ -538,7 +608,7 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       const folderTreeElement = getTreeElement(navigatorView, 'src');
-      assert.strictEqual(folderTreeElement.tooltip, 'src (ignore listed)');
+      assert.strictEqual(getTreeElementTooltip(folderTreeElement), 'src (ignore listed)');
 
       project.removeProject();
     });
@@ -556,7 +626,8 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
           navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
-      const treeElement = groupNode.treeNode();
+      navigatorView.rootNode.appendChild(groupNode);
+      const treeElement = getTreeElement(navigatorView, 'bar');
 
       const spinner = treeElement.listItemElement.querySelector('.trailing-icons devtools-spinner');
       assert.exists(spinner);
@@ -570,7 +641,8 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
           navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
-      const treeElement = groupNode.treeNode();
+      navigatorView.rootNode.appendChild(groupNode);
+      const treeElement = getTreeElement(navigatorView, 'bar');
 
       const button = treeElement.listItemElement.querySelector<HTMLElement>('.trailing-icons devtools-button');
       assert.exists(button);
@@ -580,7 +652,7 @@ describeWithEnvironment('NavigatorView', () => {
       sinon.assert.calledOnceWithExactly(automaticFileSystemManager.connectAutomaticFileSystem, true);
     });
 
-    it('updates trailing icons when automatic file system state changes', () => {
+    it('updates trailing icons when automatic file system state changes', async () => {
       const automaticFileSystemManager =
           sinon.createStubInstance(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
       const fsData = {
@@ -593,15 +665,22 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
           navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
-      const treeElement = groupNode.treeNode();
+      navigatorView.rootNode.appendChild(groupNode);
+      const treeElement = getTreeElement(navigatorView, 'bar');
 
+      assert.isFalse(treeElement.isExpandable());
+      assert.isNull(treeElement.listItemElement.querySelector('ul[role="group"]'));
       assert.exists(treeElement.listItemElement.querySelector('.trailing-icons devtools-spinner'));
 
       fsData.state = 'disconnected';
-      groupNode.updateTrailingIcons();
+      navigatorView.requestUpdate();
+      await navigatorView.updateComplete;
 
-      assert.isNull(treeElement.listItemElement.querySelector('.trailing-icons devtools-spinner'));
-      assert.exists(treeElement.listItemElement.querySelector('.trailing-icons devtools-button'));
+      const updatedTreeElement = getTreeElement(navigatorView, 'bar');
+
+      assert.isFalse(updatedTreeElement.isExpandable());
+      assert.isNull(updatedTreeElement.listItemElement.querySelector('.trailing-icons devtools-spinner'));
+      assert.exists(updatedTreeElement.listItemElement.querySelector('.trailing-icons devtools-button'));
     });
   });
 
@@ -626,7 +705,8 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const sourceSelectedSpy = sinon.spy(navigatorView, 'sourceSelected');
       const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
-      const treeElement = node.treeNode();
+      navigatorView.rootNode.appendChild(node);
+      const treeElement = getTreeElement(navigatorView, 'app.js');
 
       const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
       assert.exists(floatingButton);
@@ -650,7 +730,8 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
-      const treeElement = node.treeNode();
+      navigatorView.rootNode.appendChild(node);
+      const treeElement = getTreeElement(navigatorView, 'image.png');
 
       const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
       assert.isNull(floatingButton);
@@ -665,42 +746,13 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
-      const treeElement = node.treeNode();
+      navigatorView.rootNode.appendChild(node);
+      const treeElement = getTreeElement(navigatorView, 'app.js');
 
       const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
       assert.isNull(floatingButton);
 
       project.removeProject();
-    });
-  });
-
-  describe('treeElement <-> NavigatorTreeNode association', () => {
-    it('associates treeElement with NavigatorUISourceCodeTreeNode on treeNode()', async () => {
-      const mainFrame = await getMainFrame(target);
-      const url = urlString`http://example.com/script.js`;
-      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
-
-      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
-      const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
-      const treeElement = node.treeNode();
-
-      assert.strictEqual(navigatorView.nodeForTreeElement(treeElement), node);
-
-      project.removeProject();
-    });
-
-    it('updates treeElement <-> NavigatorTreeNode association on NavigatorView.setNodeForTreeElement()', () => {
-      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
-      const node1 = new Sources.NavigatorView.NavigatorGroupTreeNode(navigatorView, null, 'group1',
-                                                                     Sources.NavigatorView.Types.Frame, 'Group 1');
-      const node2 = new Sources.NavigatorView.NavigatorGroupTreeNode(navigatorView, null, 'group2',
-                                                                     Sources.NavigatorView.Types.Frame, 'Group 2');
-      const folderTreeElement = node1.treeNode();
-
-      assert.strictEqual(navigatorView.nodeForTreeElement(folderTreeElement), node1);
-
-      navigatorView.setNodeForTreeElement(folderTreeElement, node2);
-      assert.strictEqual(navigatorView.nodeForTreeElement(folderTreeElement), node2);
     });
   });
 
@@ -711,8 +763,7 @@ describeWithEnvironment('NavigatorView', () => {
       });
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager], viewSpy);
       await navigatorView.updateComplete;
-      sinon.assert.calledOnce(viewSpy);
-      assert.strictEqual(viewSpy.firstCall.args[0].treeElement, getTreeOutline(navigatorView).element);
+      assert.deepEqual(viewSpy.firstCall.args[0].nodes, []);
       assert.isFalse(viewSpy.firstCall.args[0].showTree);
     });
   });
@@ -842,9 +893,9 @@ describeWithEnvironment('NavigatorView', () => {
       // 3. scripts: 'a.js', 'b.js', 'item2.js', 'item10.js'
       // 4. stylesheet: 'style.css'
       // 5. other: 'data.json'
-      const exampleComNode = findTreeElement(navigatorView, el => el.title === 'example.com');
+      const exampleComNode = findTreeElement(navigatorView, el => getTreeElementTitle(el) === 'example.com');
       assert.exists(exampleComNode);
-      const childTitles = exampleComNode.children().map(c => c.titleAsText());
+      const childTitles = exampleComNode.children().map(c => getTreeElementTitle(c));
       assert.deepEqual(childTitles, [
         'folder',
         'index.html',
@@ -923,10 +974,11 @@ describeWithEnvironment('NavigatorView', () => {
   });
 
   describe('authored and deployed grouping', () => {
-    afterEach(() => {
+    afterEach(async () => {
       Common.Settings.Settings.instance()
           .resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor)
           .set(false);
+      await new Promise(resolve => setTimeout(resolve, 0));
     });
 
     it('groups source-mapped files under Authored and network files under Deployed', async () => {
@@ -1007,7 +1059,7 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       navigatorView.revealUISourceCode(uiSourceCode1);
-      const folderTreeElement = findTreeElement(navigatorView, el => el.title === 'src');
+      const folderTreeElement = getTreeElement(navigatorView, 'src');
       assert.exists(folderTreeElement);
       folderTreeElement.select();
       assert.isTrue(folderTreeElement.selected);
@@ -1042,7 +1094,7 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       navigatorView.revealUISourceCode(uiSourceCode1);
-      const domainTreeElement = findTreeElement(navigatorView, el => el.title === 'example.com');
+      const domainTreeElement = getTreeElement(navigatorView, 'example.com');
       assert.exists(domainTreeElement);
       domainTreeElement.select();
       assert.isTrue(domainTreeElement.selected);
@@ -1075,8 +1127,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       const node = navigatorView.revealUISourceCode(uiSourceCode, true);
       assert.exists(node);
-      assert.exists(node.treeElement);
-      assert.isTrue(node.treeElement.selected);
+      assert.isTrue(navigatorView.isNodeSelected(node));
 
       // Verify ancestors are expanded and target is selected in dumpTree.
       const dumped = dumpTree(navigatorView, {includeStatus: true});
@@ -1105,6 +1156,32 @@ describeWithEnvironment('NavigatorView', () => {
         },
       ]);
     });
+
+    it('preserves revealed selection when synchronously focused before rendering', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      renderElementIntoDOM(navigatorView);
+      await navigatorView.updateComplete;
+      const treeViewElement =
+          navigatorView.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+      treeViewElement?.flushPendingUpdatesForTesting();
+
+      const revealedNode = navigatorView.revealUISourceCode(uiSourceCode, true);
+      assert.exists(revealedNode);
+      navigatorView.focus();
+
+      await navigatorView.updateComplete;
+      treeViewElement?.flushPendingUpdatesForTesting();
+
+      assert.isTrue(navigatorView.isNodeSelected(revealedNode));
+      const selectedTreeElement = getTreeOutline(navigatorView).selectedTreeElement;
+      assert.exists(selectedTreeElement);
+      assert.strictEqual(getTreeElementTitle(selectedTreeElement), 'script.js');
+      assert.notStrictEqual(getTreeElementTitle(selectedTreeElement), 'top');
+    });
   });
 
   describe('selection events', () => {
@@ -1121,9 +1198,7 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       const node = navigatorView.revealUISourceCode(uiSourceCode);
-      if (mount) {
-        await UI.Widget.Widget.allUpdatesComplete;
-      }
+      await navigatorView.updateComplete;
       return {project, uiSourceCode, navigatorView, node, url};
     }
 
@@ -1188,10 +1263,8 @@ describeWithEnvironment('NavigatorView', () => {
         assert.exists(node);
         sinon.stub(uiSourceCode, 'canRename').returns(true);
 
-        const treeElement = node.treeElement;
-        assert.exists(treeElement);
-        treeElement.select();
-        sinon.stub(getTreeOutline(navigatorView).element, 'hasFocus').returns(true);
+        navigatorView.selectNode(node);
+        sinon.stub(navigatorView.contentElement, 'hasFocus').returns(true);
 
         const renameSpy = sinon.spy(navigatorView, 'rename');
         mouseDownRow(navigatorView, 'script.js');
@@ -1204,14 +1277,6 @@ describeWithEnvironment('NavigatorView', () => {
         clock.restore();
       }
     });
-
-    async function getPrompt(targetNode: Sources.NavigatorView.NavigatorUISourceCodeTreeNode):
-        Promise<UI.TextPrompt.TextPromptElement|null> {
-      await UI.Widget.Widget.allUpdatesComplete;
-      return (targetNode.treeElement?.titleElement as HTMLElement | undefined)
-                 ?.querySelector<UI.TextPrompt.TextPromptElement>('devtools-prompt') ??
-          null;
-    }
 
     it('renames file via <devtools-prompt> on commit', async () => {
       const {project, uiSourceCode, navigatorView, node} = await setupSourceNode();
@@ -1229,7 +1294,9 @@ describeWithEnvironment('NavigatorView', () => {
 
       assert.isTrue(node.isEditing);
       assert.isTrue(navigatorView.isRenaming());
-      const prompt = await getPrompt(node);
+      await navigatorView.updateComplete;
+      await UI.Widget.Widget.allUpdatesComplete;
+      const prompt = getPrompt(node);
       assert.exists(prompt);
       assert.isTrue(prompt.hasAttribute('editing'));
       assert.strictEqual(prompt.getAttribute('value'), 'script.js');
@@ -1237,15 +1304,60 @@ describeWithEnvironment('NavigatorView', () => {
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('renamed.js'));
       await renameDone;
+      await navigatorView.updateComplete;
       await UI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.calledOnceWithExactly(renameStub, 'renamed.js' as Platform.DevToolsPath.RawPathString);
       sinon.assert.calledOnceWithExactly(callbackSpy, true);
       assert.isFalse(node.isEditing);
       assert.isFalse(navigatorView.isRenaming());
-      assert.isFalse(prompt.hasAttribute('editing'));
-      assert.isFalse(prompt.hasAttribute('aria-label'));
-      assert.strictEqual(node.treeElement?.titleElement.textContent, 'renamed.js');
+      assert.isFalse(getPrompt(node)?.hasAttribute('editing'));
+      assert.isFalse(getPrompt(node)?.hasAttribute('aria-label'));
+      project.removeProject();
+    });
+
+    it('re-sorts file among siblings and preserves selection on successful rename', async () => {
+      const mainFrame = await getMainFrame(target);
+      const urlA = urlString`http://example.com/src/a.js`;
+      const urlB = urlString`http://example.com/src/b.js`;
+      const urlC = urlString`http://example.com/src/c.js`;
+      const {project} = addResourceAndUISourceCode(urlA, mainFrame, '', 'text/javascript');
+      const {uiSourceCode: uiSourceCodeB} = addResourceAndUISourceCode(urlB, mainFrame, '', 'text/javascript', project);
+      addResourceAndUISourceCode(urlC, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      renderElementIntoDOM(navigatorView);
+      await navigatorView.updateComplete;
+
+      const nodeB = navigatorView.revealUISourceCode(uiSourceCodeB, true);
+      assert.exists(nodeB);
+      await navigatorView.updateComplete;
+      assert.isTrue(navigatorView.isNodeSelected(nodeB));
+
+      const renameStub = sinon.stub(uiSourceCodeB, 'rename').callsFake(async newTitle => {
+        sinon.stub(uiSourceCodeB, 'displayName').returns(newTitle);
+        return true;
+      });
+
+      const renameDone = new Promise<boolean>(resolve => nodeB.rename(resolve));
+      const prompt = getPrompt(nodeB);
+      assert.exists(prompt);
+      prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('z.js'));
+      await renameDone;
+      await navigatorView.updateComplete;
+
+      sinon.assert.calledOnceWithExactly(renameStub, 'z.js' as Platform.DevToolsPath.RawPathString);
+
+      const dumped = dumpTree(navigatorView, {includeStatus: true});
+      const srcNode = findDumpedNode(dumped, 'src');
+      assert.exists(srcNode?.children);
+      assert.deepEqual(srcNode.children.map(c => ({title: c.title, selected: Boolean(c.selected)})), [
+        {title: 'a.js', selected: false},
+        {title: 'c.js', selected: false},
+        {title: 'z.js', selected: true},
+      ]);
+      assert.isTrue(navigatorView.isNodeSelected(nodeB));
+
       project.removeProject();
     });
 
@@ -1260,20 +1372,56 @@ describeWithEnvironment('NavigatorView', () => {
       assert.isTrue(node.isEditing);
       assert.isTrue(navigatorView.isRenaming());
       assert.isFalse(navigatorView.shouldRenameOnMouseDown(node));
-      const prompt = await getPrompt(node);
+      const prompt = getPrompt(node);
       assert.exists(prompt);
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
-      await UI.Widget.Widget.allUpdatesComplete;
+      await navigatorView.updateComplete;
 
       sinon.assert.notCalled(renameStub);
       sinon.assert.calledOnceWithExactly(callbackSpy, false);
       assert.isFalse(node.isEditing);
       assert.isFalse(navigatorView.isRenaming());
-      assert.isFalse(prompt.hasAttribute('editing'));
+      assert.isFalse(getPrompt(node)?.hasAttribute('editing'));
       assert.strictEqual(node.title, 'script.js');
-      assert.strictEqual(node.treeElement?.titleElement.textContent, 'script.js');
-      assert.strictEqual(node.treeElement?.titleAsText(), 'script.js');
+      const devtoolsTree = navigatorView.contentElement.querySelector('devtools-tree');
+      assert.isTrue(navigatorView.contentElement.hasFocus() || Boolean(devtoolsTree?.contains(document.activeElement)));
+      project.removeProject();
+    });
+
+    it('preserves editing state and typed text when updateTitle is called while editing', async () => {
+      const {project, navigatorView, node} = await setupSourceNode();
+      assert.exists(node);
+
+      node.rename();
+      await navigatorView.updateComplete;
+
+      assert.isTrue(node.isEditing);
+      assert.isTrue(navigatorView.isRenaming());
+      const prompt = getPrompt(node);
+      assert.exists(prompt);
+      assert.isTrue(prompt.hasAttribute('editing'));
+
+      // Simulate typing text into the active prompt proxy.
+      const proxy = prompt.shadowRoot?.querySelector<HTMLElement>('span.text-prompt');
+      if (proxy) {
+        proxy.textContent = 'typed-name.js';
+        proxy.dispatchEvent(new InputEvent('input', {bubbles: true}));
+      }
+
+      // Calling updateTitle while editing should not cancel edit or revert prompt.
+      node.updateTitle();
+      await navigatorView.updateComplete;
+
+      assert.isTrue(node.isEditing);
+      assert.isTrue(navigatorView.isRenaming());
+      assert.isTrue(prompt.hasAttribute('editing'));
+      if (proxy) {
+        assert.strictEqual(proxy.textContent, 'typed-name.js');
+      }
+
+      node.cancelRename();
+      await navigatorView.updateComplete;
       project.removeProject();
     });
 
@@ -1284,28 +1432,24 @@ describeWithEnvironment('NavigatorView', () => {
       uiSourceCode.setWorkingCopy('modified content');
       assert.isTrue(uiSourceCode.isDirty());
       assert.strictEqual(node.title, '*script.js');
-      assert.strictEqual(node.treeElement?.titleElement.textContent, '*script.js');
-      assert.strictEqual(node.treeElement?.titleAsText(), '*script.js');
 
       const callbackSpy = sinon.spy();
       node.rename(callbackSpy);
 
       assert.isTrue(node.isEditing);
       assert.isTrue(navigatorView.isRenaming());
-      const prompt = await getPrompt(node);
+      const prompt = getPrompt(node);
       assert.exists(prompt);
       assert.strictEqual(prompt.getAttribute('value'), 'script.js');
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
-      await UI.Widget.Widget.allUpdatesComplete;
+      await navigatorView.updateComplete;
 
       sinon.assert.calledOnceWithExactly(callbackSpy, false);
       assert.isFalse(node.isEditing);
       assert.isFalse(navigatorView.isRenaming());
-      assert.isFalse(prompt.hasAttribute('editing'));
+      assert.isFalse(getPrompt(node)?.hasAttribute('editing'));
       assert.strictEqual(node.title, '*script.js');
-      assert.strictEqual(node.treeElement?.titleElement.textContent, '*script.js');
-      assert.strictEqual(node.treeElement?.titleAsText(), '*script.js');
       project.removeProject();
     });
 
@@ -1318,14 +1462,15 @@ describeWithEnvironment('NavigatorView', () => {
 
       navigatorView.selectNode(node);
       node.rename();
+      await navigatorView.updateComplete;
       assert.isTrue(navigatorView.isRenaming());
 
       const revealed = navigatorView.revealUISourceCode(otherUiSourceCode, true);
       assert.isNull(revealed);
       assert.isTrue(navigatorView.isNodeSelected(node));
 
-      (await getPrompt(node))?.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
-      await UI.Widget.Widget.allUpdatesComplete;
+      getPrompt(node)?.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      await navigatorView.updateComplete;
       assert.isFalse(navigatorView.isRenaming());
 
       const revealedAfter = navigatorView.revealUISourceCode(otherUiSourceCode, true);
@@ -1336,7 +1481,7 @@ describeWithEnvironment('NavigatorView', () => {
     });
 
     it('retries rename when UISourceCode.rename fails', async () => {
-      const {project, uiSourceCode, node} = await setupSourceNode();
+      const {project, uiSourceCode, node, navigatorView} = await setupSourceNode();
       assert.exists(node);
 
       const renameStub = sinon.stub(uiSourceCode, 'rename');
@@ -1350,21 +1495,21 @@ describeWithEnvironment('NavigatorView', () => {
         resolve(committed);
       }));
 
-      let prompt = await getPrompt(node);
+      let prompt = getPrompt(node);
       assert.exists(prompt);
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('invalid.js'));
       await firstRenamePromise;
       await Promise.resolve();
-      await UI.Widget.Widget.allUpdatesComplete;
+      await navigatorView.updateComplete;
 
       sinon.assert.notCalled(callbackSpy);
-      prompt = await getPrompt(node);
+      prompt = getPrompt(node);
       assert.exists(prompt);
       assert.isTrue(node.isEditing);
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('valid.js'));
       await renameDone;
-      await UI.Widget.Widget.allUpdatesComplete;
+      await navigatorView.updateComplete;
 
       sinon.assert.calledOnceWithExactly(callbackSpy, true);
       assert.isFalse(node.isEditing);
@@ -1393,11 +1538,11 @@ describeWithEnvironment('NavigatorView', () => {
       assert.isTrue(creatingNew);
       assert.isTrue(node.isEditing);
 
-      const prompt = await getPrompt(node);
+      const prompt = getPrompt(node);
       assert.exists(prompt);
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
-      await UI.Widget.Widget.allUpdatesComplete;
+      await navigatorView.updateComplete;
 
       sinon.assert.calledOnce(removeSpy);
       assert.isFalse(node.isEditing);
@@ -1453,21 +1598,25 @@ describeWithEnvironment('NavigatorView', () => {
       node.rename();
       assert.isTrue(node.isEditing);
       assert.isTrue(navigatorView.isRenaming());
+      await navigatorView.updateComplete;
+      await UI.Widget.Widget.allUpdatesComplete;
 
-      const prompt = await getPrompt(node);
+      const prompt = getPrompt(node);
       assert.exists(prompt);
       document.execCommand('insertText', false, 'typed-name.js');
       assert.strictEqual(prompt.deepInnerText(), 'typed-name.js');
 
       node.updateTitle();
+      await navigatorView.updateComplete;
       await UI.Widget.Widget.allUpdatesComplete;
 
       assert.isTrue(node.isEditing);
       assert.isTrue(navigatorView.isRenaming());
-      assert.strictEqual(await getPrompt(node), prompt);
+      assert.strictEqual(getPrompt(node), prompt);
       assert.strictEqual(prompt.deepInnerText(), 'typed-name.js');
 
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CancelEvent());
+      await navigatorView.updateComplete;
       await UI.Widget.Widget.allUpdatesComplete;
       assert.isFalse(node.isEditing);
       assert.isFalse(navigatorView.isRenaming());
@@ -1559,6 +1708,20 @@ describeWithEnvironment('NavigatorView', () => {
       sinon.assert.calledOnce(showStub);
     });
 
+    it('sets jslog-context to content type name on file row', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(uiSourceCode);
+
+      const treeElement = getTreeElement(navigatorView, 'script.js');
+      assert.include(treeElement.listItemElement.getAttribute('jslog'), 'script');
+    });
+
     it('shows context menu on folder row', async () => {
       const showStub = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
       const mainFrame = await getMainFrame(target);
@@ -1605,19 +1768,21 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       const folderTreeElement = getTreeElement(navigatorView, 'src');
-      const folderNode = navigatorView.nodeForTreeElement(folderTreeElement);
+      const folderNode = findTreeNode(navigatorView.rootNode, node => node.title === 'src');
       assert.exists(folderNode);
       assert.isFalse(navigatorView.isNodeExpanded(folderNode));
       assert.isFalse(folderNode.isPopulated());
       assert.lengthOf(folderTreeElement.children(), 0);
 
       navigatorView.expandNode(folderNode);
+      await navigatorView.updateComplete;
 
       assert.isTrue(navigatorView.isNodeExpanded(folderNode));
       assert.isTrue(folderNode.isPopulated());
-      assert.lengthOf(folderTreeElement.children(), 2);
-      assert.strictEqual(folderTreeElement.children()[0].titleAsText(), 'a.js');
-      assert.strictEqual(folderTreeElement.children()[1].titleAsText(), 'b.js');
+      const updatedFolderTreeElement = getTreeElement(navigatorView, 'src');
+      assert.lengthOf(updatedFolderTreeElement.children(), 2);
+      assert.strictEqual(getTreeElementTitle(updatedFolderTreeElement.children()[0]), 'a.js');
+      assert.strictEqual(getTreeElementTitle(updatedFolderTreeElement.children()[1]), 'b.js');
 
       project.removeProject();
     });
@@ -1632,17 +1797,18 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const folderTreeElement = getTreeElement(navigatorView, 'src');
-      const folderNode = navigatorView.nodeForTreeElement(folderTreeElement);
+      const folderNode = findTreeNode(navigatorView.rootNode, node => node.title === 'src');
       assert.exists(folderNode);
       navigatorView.expandNode(folderNode);
+      await navigatorView.updateComplete;
       assert.isTrue(navigatorView.isNodeExpanded(folderNode));
-      assert.isTrue(folderTreeElement.expanded);
+      assert.isTrue(getTreeElement(navigatorView, 'src').expanded);
 
       navigatorView.collapseNode(folderNode);
+      await navigatorView.updateComplete;
 
       assert.isFalse(navigatorView.isNodeExpanded(folderNode));
-      assert.isFalse(folderTreeElement.expanded);
+      assert.isFalse(getTreeElement(navigatorView, 'src').expanded);
 
       project.removeProject();
     });
@@ -1662,7 +1828,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       assert.isTrue(navigatorView.isNodeSelected(node));
       sinon.stub(uiSourceCode, 'canRename').returns(true);
-      sinon.stub(getTreeOutline(navigatorView).element, 'hasFocus').returns(true);
+      sinon.stub(navigatorView.contentElement, 'hasFocus').returns(true);
       assert.isTrue(navigatorView.shouldRenameOnMouseDown(node));
 
       project.removeProject();
@@ -1697,8 +1863,7 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const folderTreeElement = getTreeElement(navigatorView, 'src');
-      const folderNode = navigatorView.nodeForTreeElement(folderTreeElement);
+      const folderNode = findTreeNode(navigatorView.rootNode, node => node.title === 'src');
       assert.exists(folderNode);
       assert.isFalse(navigatorView.isNodeSelected(folderNode));
 
@@ -1718,8 +1883,7 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
       navigatorView.revealUISourceCode(uiSourceCode1);
 
-      const mergedTreeElement = getTreeElement(navigatorView, 'src/components');
-      const mergedNode = navigatorView.nodeForTreeElement(mergedTreeElement);
+      const mergedNode = findTreeNode(navigatorView.rootNode, node => node.mergedTitle() === 'src/components');
       assert.exists(mergedNode);
       navigatorView.expandNode(mergedNode);
       assert.isTrue(navigatorView.isNodeExpanded(mergedNode));
@@ -1731,7 +1895,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       // "src" should now be its own unmerged row and remain expanded.
       const srcTreeElement = getTreeElement(navigatorView, 'src');
-      const srcNode = navigatorView.nodeForTreeElement(srcTreeElement);
+      const srcNode = findTreeNode(navigatorView.rootNode, node => node.title === 'src');
       assert.exists(srcNode);
       assert.isTrue(navigatorView.isNodeExpanded(srcNode));
       assert.isTrue(srcTreeElement.expanded);
@@ -1747,8 +1911,7 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const mergedTreeElement = getTreeElement(navigatorView, 'src/components');
-      const mergedNode = navigatorView.nodeForTreeElement(mergedTreeElement);
+      const mergedNode = findTreeNode(navigatorView.rootNode, node => node.mergedTitle() === 'src/components');
       assert.exists(mergedNode);
       navigatorView.selectNode(mergedNode);
       assert.isTrue(navigatorView.isNodeSelected(mergedNode));
@@ -1760,65 +1923,10 @@ describeWithEnvironment('NavigatorView', () => {
 
       // The unmerged "src" folder now takes over the tree element and receives the selection.
       const srcTreeElement = getTreeElement(navigatorView, 'src');
-      const srcNode = navigatorView.nodeForTreeElement(srcTreeElement);
+      const srcNode = findTreeNode(navigatorView.rootNode, node => node.title === 'src');
       assert.exists(srcNode);
       assert.isTrue(srcTreeElement.selected);
       assert.isTrue(navigatorView.isNodeSelected(srcNode));
-
-      project.removeProject();
-    });
-
-    it('updates tracked selection when setNode is called on a selected folder element', async () => {
-      const mainFrame = await getMainFrame(target);
-      const url1 = urlString`http://example.com/src/script.js`;
-      const url2 = urlString`http://example.com/other/script.js`;
-      const {project} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
-      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
-
-      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
-      await navigatorView.updateComplete;
-
-      const srcTreeElement = getTreeElement(navigatorView, 'src');
-      const otherTreeElement = getTreeElement(navigatorView, 'other');
-      const srcNode = navigatorView.nodeForTreeElement(srcTreeElement);
-      const otherNode = navigatorView.nodeForTreeElement(otherTreeElement);
-      assert.exists(srcNode);
-      assert.exists(otherNode);
-
-      srcTreeElement.select();
-      assert.isTrue(navigatorView.isNodeSelected(srcNode));
-
-      navigatorView.setNodeForTreeElement(srcTreeElement, otherNode);
-
-      assert.isTrue(navigatorView.isNodeSelected(otherNode));
-
-      project.removeProject();
-    });
-
-    it('updates tracked expansion when setNode is called on an expanded folder element', async () => {
-      const mainFrame = await getMainFrame(target);
-      const url1 = urlString`http://example.com/src/script.js`;
-      const url2 = urlString`http://example.com/other/script.js`;
-      const {project} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
-      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
-
-      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
-      await navigatorView.updateComplete;
-
-      const srcTreeElement = getTreeElement(navigatorView, 'src');
-      const otherTreeElement = getTreeElement(navigatorView, 'other');
-      const srcNode = navigatorView.nodeForTreeElement(srcTreeElement);
-      const otherNode = navigatorView.nodeForTreeElement(otherTreeElement);
-      assert.exists(srcNode);
-      assert.exists(otherNode);
-
-      navigatorView.expandNode(srcNode);
-      assert.isTrue(navigatorView.isNodeExpanded(srcNode));
-      assert.isFalse(navigatorView.isNodeExpanded(otherNode));
-
-      navigatorView.setNodeForTreeElement(srcTreeElement, otherNode);
-
-      assert.isTrue(navigatorView.isNodeExpanded(otherNode));
 
       project.removeProject();
     });
@@ -1916,12 +2024,19 @@ describeWithEnvironment('NavigatorView', () => {
       return uiSourceCode;
     }
 
-    afterEach(() => {
+    afterEach(async () => {
       Common.Settings.Settings.instance()
           .resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor)
           .set(false);
       Workspace.IgnoreListManager.IgnoreListManager.instance().enableIgnoreListing = false;
+      await new Promise(resolve => setTimeout(resolve, 0));
     });
+
+    async function flushTreeUpdates(navigatorView: Sources.NavigatorView.NavigatorView): Promise<void> {
+      (navigatorView.contentElement.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement | null)
+          ?.flushPendingUpdatesForTesting();
+      await raf();
+    }
 
     it('renders network tree with merged folders and files', async () => {
       const mainFrame = await getMainFrame(target);
@@ -1940,6 +2055,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       navigatorView.revealUISourceCode(buttonUiSourceCode, /* select= */ true);
       await navigatorView.updateComplete;
+      await flushTreeUpdates(navigatorView);
 
       await assertScreenshot('sources/navigator-view-network.png');
     });
@@ -1977,6 +2093,7 @@ describeWithEnvironment('NavigatorView', () => {
       navigatorView.revealUISourceCode(dirtyUiSourceCode);
       navigatorView.revealUISourceCode(ignoredUiSourceCode);
       await navigatorView.updateComplete;
+      await flushTreeUpdates(navigatorView);
 
       await assertScreenshot('sources/navigator-view-ignore-listed-and-dirty.png');
     });
@@ -2012,6 +2129,7 @@ describeWithEnvironment('NavigatorView', () => {
       navigatorView.revealUISourceCode(authoredUiSourceCode);
       navigatorView.revealUISourceCode(deployedUiSourceCode);
       await navigatorView.updateComplete;
+      await flushTreeUpdates(navigatorView);
 
       await assertScreenshot('sources/navigator-view-authored-deployed.png');
     });
@@ -2026,20 +2144,17 @@ describeWithEnvironment('NavigatorView', () => {
 
          const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
          const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, null);
-         assert.isNull(node.treeElement);
          assert.strictEqual(node.title, 'script.js');
          assert.strictEqual(node.tooltip, 'http://example.com/script.js');
 
          uiSourceCode.setWorkingCopy('modified');
          node.updateTitle();
          assert.strictEqual(node.title, '*script.js');
-         assert.isNull(node.treeElement);
 
          Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
          node.updateTitle();
          assert.isTrue(node.recursiveProperties.exclusivelyIgnored);
          assert.strictEqual(node.tooltip, 'http://example.com/script.js (ignore listed)');
-         assert.isNull(node.treeElement);
 
          project.removeProject();
        });
@@ -2056,7 +2171,6 @@ describeWithEnvironment('NavigatorView', () => {
          srcFolder.appendChild(componentsFolder);
          componentsFolder.recursiveProperties.exclusivelyIgnored = true;
 
-         assert.isNull(componentsFolder.treeElement);
          assert.strictEqual(componentsFolder.computedTooltip(), 'src/components (ignore listed)');
        });
 
@@ -2105,17 +2219,20 @@ describeWithEnvironment('NavigatorView', () => {
          await patternChangePromise;
 
          const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
-         const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, null);
-         const treeElement = node.treeNode();
+         await navigatorView.updateComplete;
+         const node = navigatorView.revealUISourceCode(uiSourceCode);
+         assert.exists(node);
+         const treeElement = getTreeElement(navigatorView, 'multi-files.html');
          assert.isTrue(node.recursiveProperties.exclusivelyIgnored);
          assert.isTrue(treeElement.listItemElement.classList.contains('is-ignore-listed'));
 
          try {
            ignoreListManager.enableIgnoreListing = false;
            node.updateTitle();
+           const updatedTreeElement = getTreeElement(navigatorView, 'multi-files.html');
 
            assert.isNull(node.recursiveProperties.exclusivelyIgnored);
-           assert.isFalse(treeElement.listItemElement.classList.contains('is-ignore-listed'));
+           assert.isFalse(updatedTreeElement.listItemElement.classList.contains('is-ignore-listed'));
          } finally {
            ignoreListManager.enableIgnoreListing = true;
            ignoreListManager.unIgnoreListURL(url);
@@ -2131,6 +2248,8 @@ describeWithEnvironment('NavigatorView', () => {
            fileSystemPath: 'file:///path/to/project',
          });
          const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+         await navigatorView.updateComplete;
+         navigatorView.reset(true);
          const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
              navigatorView, project, 'file:///path/to/project', Sources.NavigatorView.Types.FileSystem, 'Project',
              urlString``);
@@ -2142,14 +2261,11 @@ describeWithEnvironment('NavigatorView', () => {
          // Call updateTitle before treeNode() / attach.
          groupNode.updateTitle();
          assert.isTrue(groupNode.hasMappedFiles);
-         assert.isUndefined(groupNode.treeElement);
 
-         const treeElement = groupNode.treeNode();
+         navigatorView.rootNode.appendChild(groupNode);
+         navigatorView.performUpdate();
+         const treeElement = getTreeElement(navigatorView, 'Project');
          assert.exists(treeElement);
-         assert.isFalse(treeElement.listItemElement.classList.contains('has-mapped-files'));
-
-         // Appending to scriptsTree root attaches treeElement and triggers onattach.
-         navigatorView.appendChild(getTreeOutline(navigatorView).rootElement(), treeElement);
 
          assert.isTrue(treeElement.listItemElement.classList.contains('has-mapped-files'));
          assert.isTrue(treeElement.expanded);
@@ -2168,10 +2284,8 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const srcTreeElement = findTreeElement(navigatorView, el => el.title === 'src/components/widgets');
-      assert.exists(srcTreeElement);
-      const widgetsFolder =
-          navigatorView.nodeForTreeElement(srcTreeElement) as Sources.NavigatorView.NavigatorFolderTreeNode;
+      const widgetsFolder = findTreeNode(navigatorView.rootNode, node => node.title === 'widgets') as
+          Sources.NavigatorView.NavigatorFolderTreeNode;
       assert.exists(widgetsFolder);
       const componentsFolder = widgetsFolder.parent as Sources.NavigatorView.NavigatorFolderTreeNode;
       assert.exists(componentsFolder);
@@ -2217,6 +2331,7 @@ describeWithEnvironment('NavigatorView', () => {
       const {uiSourceCode: uiSourceCodeC} = addResourceAndUISourceCode(urlC, mainFrame, '', 'text/javascript', project);
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      renderElementIntoDOM(navigatorView);
       await navigatorView.updateComplete;
 
       const nodeB = navigatorView.revealUISourceCode(uiSourceCodeB);
@@ -2242,8 +2357,7 @@ describeWithEnvironment('NavigatorView', () => {
       });
 
       const renameDone = new Promise<boolean>(resolve => nodeB.rename(resolve));
-      const prompt = (nodeB.treeElement?.titleElement as HTMLElement | undefined)
-                         ?.querySelector<UI.TextPrompt.TextPromptElement>('devtools-prompt');
+      const prompt = getPrompt(nodeB);
       assert.exists(prompt);
       prompt.dispatchEvent(new UI.TextPrompt.TextPromptElement.CommitEvent('z.js'));
       await renameDone;
@@ -2303,14 +2417,8 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const srcTreeElement = findTreeElement(navigatorView, el => el.title === 'src/components/widgets');
-      assert.exists(srcTreeElement);
-      const widgetsFolder =
-          navigatorView.nodeForTreeElement(srcTreeElement) as Sources.NavigatorView.NavigatorFolderTreeNode;
-      assert.exists(widgetsFolder);
-      const componentsFolder = widgetsFolder.parent as Sources.NavigatorView.NavigatorFolderTreeNode;
-      assert.exists(componentsFolder);
-      const srcFolder = componentsFolder.parent as Sources.NavigatorView.NavigatorFolderTreeNode;
+      const srcFolder = findTreeNode(navigatorView.rootNode, node => node.title === 'src') as
+          Sources.NavigatorView.NavigatorFolderTreeNode;
       assert.exists(srcFolder);
 
       navigatorView.revealUISourceCode(uiSourceCode);

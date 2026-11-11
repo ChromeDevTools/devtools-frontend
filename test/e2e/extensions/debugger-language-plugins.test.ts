@@ -8,10 +8,11 @@ import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {expectError} from '../../conductor/events.js';
 import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
-  CONSOLE_TAB_SELECTOR,
-  focusConsolePrompt,
+  CONSOLE_SELECTOR,
   getCurrentConsoleMessages,
   getStructuredConsoleMessages,
+  navigateToConsoleTab,
+  typeIntoConsoleAndWaitForResult,
 } from '../helpers/console-helpers.js';
 import {checkIfTabExistsInDrawer} from '../helpers/cross-tool-helper.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
@@ -984,16 +985,11 @@ describe('The Debugger Language Plugins', () => {
     });
     assert.strictEqual(tooltipText, 'No typeinfo for bar');
 
-    await devToolsPage.click(CONSOLE_TAB_SELECTOR);
-    await focusConsolePrompt(devToolsPage);
+    await navigateToConsoleTab(devToolsPage);
 
-    await devToolsPage.pasteText('bar');
-    await devToolsPage.page.keyboard.press('Enter');
-
-    // Wait for the console to be usable again.
-    await devToolsPage.page.waitForFunction(() => {
-      return document.querySelectorAll('.console-user-command-result').length === 1;
-    });
+    // Wait for the evaluation result itself rather than for any new console
+    // message.
+    await typeIntoConsoleAndWaitForResult(devToolsPage, 'bar', 1, CONSOLE_SELECTOR);
 
     const messages = await getCurrentConsoleMessages(devToolsPage, undefined, undefined, undefined);
     assert.deepEqual(messages.filter(m => !m.startsWith('[Formatter Errors]')), ['Uncaught No typeinfo for bar']);

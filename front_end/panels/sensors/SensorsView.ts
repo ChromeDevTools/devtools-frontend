@@ -190,6 +190,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {live} = Directives;
 
 interface ViewInput {
+  hardwareConcurrencyCheckbox: HTMLElement;
+  hardwareConcurrencyDetails: HTMLElement[];
   cpuPressureSetting: Common.Settings.Setting<unknown>;
   cpuPerformanceSetting: Common.Settings.Setting<unknown>;
   cpuPerformanceNoOverrideLabel: string;
@@ -198,6 +200,11 @@ interface ViewInput {
 // clang-format off
 const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   render(html`
+    <div class="concurrency-section">
+      ${input.hardwareConcurrencyCheckbox}
+      <div class="concurrency-details">${input.hardwareConcurrencyDetails}</div>
+    </div>
+    <div class="panel-section-separator"></div>
     <div class="pressure-section">
       ${SettingsUI.SettingsUI.renderControlForSetting(
           input.cpuPressureSetting, i18nString(UIStrings.forcesSelectedPressureStateEmulation))}
@@ -246,6 +253,8 @@ export class SensorsView extends UI.Widget.VBox {
   private mouseDownVector?: Geometry.Vector|null;
   private originalBoxMatrix?: DOMMatrix;
   readonly #cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
+  readonly #hardwareConcurrencyCheckbox: HTMLElement;
+  readonly #hardwareConcurrencyDetails: HTMLElement[];
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
@@ -284,15 +293,18 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.createPanelSeparator();
 
-    this.createHardwareConcurrencySection();
-
-    this.createPanelSeparator();
+    const {checkbox, numericInput, reset, warning} =
+        MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
+    this.#hardwareConcurrencyCheckbox = checkbox;
+    this.#hardwareConcurrencyDetails = [numericInput.element, reset.element, warning.element];
 
     this.performUpdate();
   }
 
   override performUpdate(): void {
     const input: ViewInput = {
+      hardwareConcurrencyCheckbox: this.#hardwareConcurrencyCheckbox,
+      hardwareConcurrencyDetails: this.#hardwareConcurrencyDetails,
       cpuPressureSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
       cpuPerformanceSetting:
           Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),
@@ -1065,17 +1077,6 @@ export class SensorsView extends UI.Widget.VBox {
     if (control) {
       container.appendChild(control);
     }
-  }
-
-  private createHardwareConcurrencySection(): void {
-    const container = this.contentElement.createChild('div', 'concurrency-section');
-
-    const {checkbox, numericInput, reset, warning} =
-        MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
-    const div = document.createElement('div');
-    div.classList.add('concurrency-details');
-    div.append(numericInput.element, reset.element, warning.element);
-    container.append(checkbox, div);
   }
 }
 

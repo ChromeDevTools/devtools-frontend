@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
 
@@ -25,24 +27,82 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
-interface NetworkRequestSummary {
-  id: string;
-  url: string;
-  statusCode: number;
-  duration: string;
-  transferSize: string;
+/**
+ * Imported HAR sessions lock to a synthetic imported-har:// origin, so the real
+ * web origin must be extracted from the first request's documentURL.
+ */
+function resolveBaseOrigin(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin,
+                           requestsToShow: SDK.NetworkRequest.NetworkRequest[]): string {
+  if (establishedOrigin.isFile()) {
+    return '';
+  }
+  for (const prefix of SDK.SecurityOrigin.IMPORTED_ORIGIN_PREFIXES) {
+    if (establishedOrigin.siteId().startsWith(prefix)) {
+      return Common.ParsedURL.ParsedURL.extractOrigin(requestsToShow[0].documentURL).toLowerCase();
+    }
+  }
+  return establishedOrigin.siteId();
+}
+
+/**
+ * Formats and shortens a request URL for a single row in the compact network table:
+ * 1. Strips newlines (`\r`, `\n`) so the URL stays on a single table line.
+ * 2. Truncates `data:` URLs over 80 chars, keeping the `<mediatype>,` header if under 60 chars.
+ * 3. Strips `baseOrigin` from same-origin URLs (when followed by `/`, `?`, `#`, or end-of-string).
+ * 4. Caps paths over 300 chars (dropping the query/hash) and `?query`/`#hash` suffixes over 100 chars.
+ */
+function formatRequestUrl(rawUrl: string, baseOrigin: string): string {
+  // Semicolons remain unescaped because the trailing status;duration;size fields have fixed shapes.
+  let cleanUrl = rawUrl.replace(/[\r\n]+/g, '');
+  if (/^data:/i.test(cleanUrl)) {
+    if (cleanUrl.length <= 80) {
+      return cleanUrl;
+    }
+    const commaIndex = cleanUrl.indexOf(',');
+    let truncated: string;
+    if (commaIndex !== -1 && commaIndex < 60) {
+      truncated = cleanUrl.slice(0, commaIndex + 1);
+    } else {
+      truncated = Platform.StringUtilities.truncateToCodeUnitLength(cleanUrl, 60);
+    }
+    return truncated + '...<truncated>';
+  }
+
+  if (baseOrigin !== '' && cleanUrl.slice(0, baseOrigin.length).toLowerCase() === baseOrigin) {
+    const nextChar = cleanUrl[baseOrigin.length];
+    // Verifying a path/query/hash boundary prevents stripping the base origin
+    // from cross-origin hosts like https://example.com.evil.com/x or https://example.com:8443/x.
+    if (nextChar === undefined) {
+      cleanUrl = '/';
+    } else if (nextChar === '/') {
+      cleanUrl = cleanUrl.slice(baseOrigin.length);
+    } else if (nextChar === '?' || nextChar === '#') {
+      cleanUrl = '/' + cleanUrl.slice(baseOrigin.length);
+    }
+  }
+
+  const queryOrFragmentIndex = cleanUrl.search(/[?#]/);
+  const pathPart = queryOrFragmentIndex === -1 ? cleanUrl : cleanUrl.slice(0, queryOrFragmentIndex);
+  const suffixPart = queryOrFragmentIndex === -1 ? '' : cleanUrl.slice(queryOrFragmentIndex);
+  if (pathPart.length > 300) {
+    return Platform.StringUtilities.truncateToCodeUnitLength(pathPart, 300) + '...<truncated>';
+  }
+  if (suffixPart.length > 100) {
+    return pathPart + Platform.StringUtilities.truncateToCodeUnitLength(suffixPart, 100) + '...<truncated>';
+  }
+  return cleanUrl;
 }
 
 /**
  * A tool that lists all network requests recorded by DevTools.
- * Filters the list by the conversation's established origin to prevent cross-origin data exposure.
+ * Returns a compact semicolon-delimited table of requests initiated by the conversation's established origin.
  */
 export class ListNetworkRequestsTool implements
-    DataTool<Record<string, never>, unknown, BaseToolCapability&OriginLockCapability> {
+    DataTool<Record<string, never>, string, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_NETWORK_REQUESTS;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
-      'Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.';
+      'Returns a compact semicolon-delimited table of requests initiated by the conversation\'s established origin, including request ID, URL, HTTP status code, duration, and transfer size.';
 
   readonly #networkLog?: Logs.NetworkLog.NetworkLog;
 
@@ -70,13 +130,12 @@ export class ListNetworkRequestsTool implements
 
   /**
    * Handles the request to list network requests.
-   * Returns requests matching the conversation's established origin, if set.
+   * Returns a compact semicolon-delimited table of requests initiated by the conversation's established origin.
    */
   async handler(
       _params: Record<string, never>,
       context: BaseToolCapability&OriginLockCapability,
-      ): Promise<DataHandlerResult<unknown>> {
-    const requests: NetworkRequestSummary[] = [];
+      ): Promise<DataHandlerResult<string>> {
     // A conversation is locked to an origin once the first query is made.
     // We only allow inspecting requests matching the conversation's established origin.
     const originLock = context.getOriginLock();
@@ -96,18 +155,10 @@ export class ListNetworkRequestsTool implements
         hasCrossOriginRequest = true;
         continue;
       }
-
-      requests.push({
-        id: request.requestId(),
-        url: request.url(),
-        statusCode: request.statusCode,
-        duration: seconds(request.duration),
-        transferSize: formatBytesToKb(request.transferSize),
-      });
       requestsToShow.push(request);
     }
 
-    if (requests.length === 0) {
+    if (requestsToShow.length === 0) {
       if (hasCrossOriginRequest) {
         return {
           error: `No requests showing with origin ${establishedOrigin.siteId()}. Tell the user to start a new chat`,
@@ -119,8 +170,18 @@ export class ListNetworkRequestsTool implements
       };
     }
 
+    const baseOrigin = resolveBaseOrigin(establishedOrigin, requestsToShow);
+    const HEADER = 'id;url;status;duration;size';
+    const lines = baseOrigin ? [`origin: ${baseOrigin} (omitted from same-origin /... URLs)`, HEADER] : [HEADER];
+    for (const request of requestsToShow) {
+      const id = request.requestId().replace(/[\r\n]+/g, '');
+      const url = formatRequestUrl(request.url(), baseOrigin);
+      lines.push(
+          `${id};${url};${request.statusCode};${seconds(request.duration)};${formatBytesToKb(request.transferSize)}`);
+    }
+
     return {
-      result: JSON.stringify(requests),
+      result: lines.join('\n'),
       widgets: [{
         name: 'NETWORK_REQUESTS_LIST',
         data: {

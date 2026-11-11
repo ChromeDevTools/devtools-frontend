@@ -101,7 +101,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     console.assert(!binding.fileSystem.isDirty() || !binding.network.isDirty());
     if (binding.fileSystem.isDirty()) {
       this.syncWorkingCopy(binding.fileSystem);
-    } else if (binding.network.isDirty()) {
+    } else if (binding.network.isDirty() && !binding.network.workingCopyIsPageDriven()) {
       this.syncWorkingCopy(binding.network);
     } else if (binding.network.hasCommits() && binding.network.content() !== binding.fileSystem.content()) {
       binding.network.setWorkingCopy(binding.network.content());
@@ -163,6 +163,9 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
+    if (uiSourceCode === binding.network && uiSourceCode.workingCopyIsPageDriven()) {
+      return;
+    }
     if (!uiSourceCode.isDirty()) {
       mutedWorkingCopies.add(binding);
       other.resetWorkingCopy();

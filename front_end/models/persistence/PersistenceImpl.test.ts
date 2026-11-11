@@ -372,4 +372,40 @@ describe('PersistenceImpl', () => {
     assert.strictEqual(networkUISourceCode.workingCopy(), nodeContent.replace('//TODO', 'workingCopy2();\n//TODO'));
     assert.strictEqual(fileSystemUISourceCode.workingCopy(), newContent);
   });
+
+  it('blocks page-driven network working copies from syncing to bound filesystem files', async () => {
+    const origContent = 'window.foo = 1;\n';
+    const {uiSourceCode: networkUISourceCode} = createContentProviderUISourceCode({
+      url: urlString`https://example.com/script.js`,
+      content: origContent,
+      mimeType: 'text/javascript',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe: backend.universe,
+    });
+    const {uiSourceCode: fileSystemUISourceCode, project} = createFileSystemUISourceCode({
+      url: urlString`file:///var/www/script.js`,
+      mimeType: 'text/javascript',
+      content: origContent,
+      universe: backend.universe,
+    });
+    await fileSystemUISourceCode.requestContentData();
+    const persistence = backend.universe.persistence;
+    const binding = new Persistence.Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
+
+    // A pre-existing page-driven working copy is ignored on bind without masking a prior user revision.
+    networkUISourceCode.addRevision('window.foo = "user-committed";\n');
+    networkUISourceCode.setWorkingCopy('window.foo = "page-dirty";\n', {isPageDriven: true});
+    await persistence.addBindingForTest(binding);
+    assert.strictEqual(fileSystemUISourceCode.workingCopy(), 'window.foo = "user-committed";\n');
+    fileSystemUISourceCode.resetWorkingCopy();
+
+    // Post-binding page-driven working copies are ignored, while user edits still sync.
+    networkUISourceCode.setWorkingCopy('window.foo = "page-driven";\n', {isPageDriven: true});
+    assert.isFalse(fileSystemUISourceCode.isDirty());
+
+    networkUISourceCode.setWorkingCopy('window.foo = "user-edit";\n');
+    assert.strictEqual(fileSystemUISourceCode.workingCopy(), 'window.foo = "user-edit";\n');
+
+    project.dispose();
+  });
 });

@@ -538,6 +538,24 @@ describe('UISourceCode', () => {
       assert.strictEqual(sutObject.sut.securityOrigin(), projectOrigin);
     });
   });
+
+  it('tracks page-driven working copy provenance', () => {
+    const sutObject = setupMockedUISourceCode();
+    sutObject.projectStub.workspace.returns(sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl));
+
+    sutObject.sut.setWorkingCopy('page-driven', {isPageDriven: true});
+    assert.isTrue(sutObject.sut.workingCopyIsPageDriven());
+    sutObject.sut.setWorkingCopy('user');
+    assert.isFalse(sutObject.sut.workingCopyIsPageDriven());
+
+    sutObject.sut.setWorkingCopy('page-driven', {isPageDriven: true});
+    sutObject.sut.setWorkingCopyGetter(() => 'editor');
+    assert.isFalse(sutObject.sut.workingCopyIsPageDriven());
+
+    sutObject.sut.setWorkingCopy('page-driven', {isPageDriven: true});
+    sutObject.sut.resetWorkingCopy();
+    assert.isFalse(sutObject.sut.workingCopyIsPageDriven());
+  });
 });
 
 describe('UILocation', () => {

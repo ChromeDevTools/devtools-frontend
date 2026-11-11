@@ -136,7 +136,7 @@ export class StylesSourceMapping implements SourceMapping {
     }
     const styleFile = this.#styleFiles.get(header.resourceURL());
     if (styleFile) {
-      styleFile.styleSheetChanged(header);
+      styleFile.styleSheetChanged(header, event.data.edit);
     }
   }
 
@@ -157,6 +157,9 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
   uiSourceCode: Workspace.UISourceCode.UISourceCode;
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
   readonly #throttler = new Common.Throttler.Throttler(200);
+  // True once a stylesheet in this StyleFile changes without a DevTools edit;
+  // cleared when a user edit or commit from uiSourceCode updates Blink.
+  #hasPageDrivenChanges = false;
   #terminated = false;
   #isAddingRevision?: boolean;
   #isUpdatingHeaders?: boolean;
@@ -202,10 +205,13 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     NetworkProject.removeFrameAttribution(this.uiSourceCode, header.frameId);
   }
 
-  styleSheetChanged(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): void {
+  styleSheetChanged(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, edit?: SDK.CSSModel.Edit): void {
     console.assert(this.headers.has(header));
     if (this.#isUpdatingHeaders || !this.headers.has(header)) {
       return;
+    }
+    if (!edit) {
+      this.#hasPageDrivenChanges = true;
     }
     const mirrorContentBound = this.mirrorContent.bind(this, header, true /* majorChange */);
     void this.#throttler.schedule(mirrorContentBound, Common.Throttler.Scheduling.DEFAULT);
@@ -220,7 +226,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
   }
 
   private workingCopyChanged(): void {
-    if (this.#isAddingRevision) {
+    if (this.#isAddingRevision || this.uiSourceCode.workingCopyIsPageDriven()) {
       return;
     }
     const mirrorContentBound = this.mirrorContent.bind(this, this.uiSourceCode, false /* majorChange */);
@@ -247,9 +253,14 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     }
 
     if (fromProvider !== this.uiSourceCode) {
+      const isPageDriven = this.#hasPageDrivenChanges || NetworkProject.isSourceURLSynthesized(this.uiSourceCode);
       this.#isAddingRevision = true;
-      this.uiSourceCode.setWorkingCopy(newContent);
+      this.uiSourceCode.setWorkingCopy(newContent, {isPageDriven});
       this.#isAddingRevision = false;
+      if (isPageDriven) {
+        this.styleFileSyncedForTest();
+        return;
+      }
     }
 
     this.#isUpdatingHeaders = true;
@@ -263,6 +274,9 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     // ------ ASYNC ------
     await Promise.all(promises);
     this.#isUpdatingHeaders = false;
+    if (fromProvider === this.uiSourceCode && (majorChange || this.uiSourceCode.isDirty())) {
+      this.#hasPageDrivenChanges = false;
+    }
     this.styleFileSyncedForTest();
   }
 

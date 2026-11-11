@@ -415,6 +415,7 @@ describe('StylesSourceMapping', () => {
     assert.strictEqual(workingCopy, '#inspected {\n    color: green;\n}');
     assert.notInclude(workingCopy, 'sourceURL');
     assert.isTrue(uiSourceCode.isDirty());
+    assert.isTrue(uiSourceCode.workingCopyIsPageDriven());
     // The origin link is rendered as dirty ('*foo.css:1').
     assert.strictEqual(uiSourceCode.uiLocation(0).linkText(), '*foo.css:1');
     // The edit came from the only header, so it is not pushed back to the backend.
@@ -470,5 +471,142 @@ describe('StylesSourceMapping', () => {
     assert.isTrue(uiSourceCode.isDirty());
     // The change originates from the backend, so it is not echoed back via setStyleSheetText.
     sinon.assert.notCalled(setStyleSheetTextStub);
+  });
+
+  function createStyleSheetTestRig(fileName: string) {
+    const sourceURL = urlString`${`http://example.com/${fileName}`}`;
+    const sheetTexts = new Map<Protocol.DOM.StyleSheetId, string>();
+    const setStyleSheetTextCalls: Array<{styleSheetId: Protocol.DOM.StyleSheetId, text: string}> = [];
+
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('DOM.enable', () => ({}));
+    connection.setSuccessHandler('CSS.enable', () => ({}));
+    connection.setSuccessHandler('DOM.markUndoableState', () => ({}));
+    connection.setSuccessHandler('CSS.getStyleSheetText', ({styleSheetId}) => ({
+                                                            text: sheetTexts.get(styleSheetId) ?? '',
+                                                          }));
+    connection.setSuccessHandler('CSS.setStyleTexts', ({edits}) => {
+      for (const edit of edits) {
+        const current = new TextUtils.Text.Text(sheetTexts.get(edit.styleSheetId) ?? '');
+        sheetTexts.set(edit.styleSheetId,
+                       current.replaceRange(TextUtils.TextRange.TextRange.fromObject(edit.range), edit.text));
+      }
+      return {styles: edits.map(() => ({cssProperties: [], shorthandEntries: []}))};
+    });
+    connection.setSuccessHandler('CSS.setStyleSheetText', ({styleSheetId, text}) => {
+      setStyleSheetTextCalls.push({styleSheetId, text});
+      sheetTexts.set(styleSheetId, text);
+      return {sourceMapURL: ''};
+    });
+
+    const target = universe.createTarget({connection});
+    const cssModel = target.model(SDK.CSSModel.CSSModel)!;
+    void universe.cssWorkspaceBinding;
+
+    function addSheet(styleSheetId: Protocol.DOM.StyleSheetId, text: string, hasSourceURL = false): void {
+      sheetTexts.set(styleSheetId, text);
+      cssModel.styleSheetAdded({
+        styleSheetId,
+        frameId: 'frame' as Protocol.Page.FrameId,
+        sourceURL,
+        hasSourceURL,
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        title: hasSourceURL ? '' : fileName,
+        disabled: false,
+        isInline: hasSourceURL,
+        isMutable: false,
+        isConstructed: false,
+        loadingFailed: false,
+        startLine: 0,
+        startColumn: 0,
+        length: text.length,
+        endLine: 0,
+        endColumn: 0,
+      });
+    }
+
+    async function syncStyleFile(action: () => unknown): Promise<void> {
+      const {promise, stub} = stubStyleFileSynced();
+      await action();
+      await promise;
+      stub.restore();
+    }
+
+    return {sourceURL, connection, cssModel, sheetTexts, setStyleSheetTextCalls, addSheet, syncStyleFile};
+  }
+
+  it('tracks page-driven CSS.styleSheetChanged taint until a user edit or commit updates Blink', async () => {
+    const origContent = 'body {\n    color: red;\n}\n';
+    const styleSheetId = 'page-sheet' as Protocol.DOM.StyleSheetId;
+    const rig = createStyleSheetTestRig('app.css');
+    const uiSourceCodePromise = waitForNetworkUISourceCode(uiSourceCode => uiSourceCode.url() === rig.sourceURL);
+    rig.addSheet(styleSheetId, origContent);
+    const networkUISourceCode = await uiSourceCodePromise;
+    await networkUISourceCode.requestContentData();
+
+    const fileSystemPath = urlString`file://path/to/filesystem`;
+    const {uiSourceCode: fileSystemUiSourceCode, project} = createFileSystemUISourceCode({
+      url: urlString`${`${fileSystemPath}/app.css`}`,
+      mimeType: 'text/css',
+      content: origContent,
+      fileSystemPath,
+      autoMapping: true,
+      type: Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT,
+      universe,
+    });
+    await universe.persistence.addBindingForTest(
+        new Persistence.Persistence.PersistenceBinding(networkUISourceCode, fileSystemUiSourceCode));
+    await fileSystemUiSourceCode.requestContentData();
+
+    // A page-driven CSS.styleSheetChanged taints the StyleFile without dirtying disk.
+    rig.sheetTexts.set(styleSheetId, 'body {\n    color: purple;\n}\n.injected {}\n');
+    await rig.syncStyleFile(() => rig.connection.dispatchEvent('CSS.styleSheetChanged', {styleSheetId}, undefined));
+    assert.isTrue(networkUISourceCode.workingCopyIsPageDriven());
+    assert.isFalse(fileSystemUiSourceCode.isDirty());
+
+    // Neither resetWorkingCopy() nor a Styles-pane edit flushes the tainted sheet to disk.
+    await rig.syncStyleFile(() => fileSystemUiSourceCode.resetWorkingCopy());
+    await rig.syncStyleFile(() => rig.cssModel.setStyleText(
+                                styleSheetId, new TextUtils.TextRange.TextRange(1, 4, 1, 18), 'color: green;', true));
+    assert.isTrue(networkUISourceCode.workingCopyIsPageDriven());
+    assert.isFalse(fileSystemUiSourceCode.isDirty());
+
+    // Editing and saving the workspace file updates Blink and clears the taint.
+    const savedContent = 'body {\n    color: navy;\n}\n';
+    rig.setStyleSheetTextCalls.length = 0;
+    await rig.syncStyleFile(() => {
+      fileSystemUiSourceCode.setWorkingCopy(savedContent);
+      fileSystemUiSourceCode.commitWorkingCopy();
+    });
+    assert.deepEqual(rig.setStyleSheetTextCalls, [{styleSheetId, text: savedContent}]);
+
+    await rig.syncStyleFile(() => rig.cssModel.setStyleText(
+                                styleSheetId, new TextUtils.TextRange.TextRange(1, 4, 1, 16), 'color: teal;', true));
+    assert.isFalse(networkUISourceCode.workingCopyIsPageDriven());
+    assert.strictEqual(fileSystemUiSourceCode.workingCopy(), 'body {\n    color: teal;\n}\n');
+
+    project.dispose();
+  });
+
+  it('keeps multi-header StyleFiles with a sourceURL sheet page-driven and skips cross-header sync', async () => {
+    const origContent = 'body {\n    color: red;\n}\n';
+    const regularId = 'regular-sheet' as Protocol.DOM.StyleSheetId;
+    const inlineId = 'inline-sourceurl-sheet' as Protocol.DOM.StyleSheetId;
+    const rig = createStyleSheetTestRig('shared.css');
+    const uiSourceCodePromise = waitForNetworkUISourceCode(uiSourceCode => uiSourceCode.url() === rig.sourceURL);
+    rig.addSheet(regularId, origContent);
+    const networkUISourceCode = await uiSourceCodePromise;
+    rig.addSheet(inlineId, `#injected {\n    color: orange;\n}\n/*# sourceURL=${rig.sourceURL} */`, true);
+
+    await rig.syncStyleFile(() => rig.cssModel.setStyleText(inlineId, new TextUtils.TextRange.TextRange(1, 4, 1, 18),
+                                                            'color: blue;', true));
+    assert.isTrue(networkUISourceCode.workingCopyIsPageDriven());
+    assert.isEmpty(rig.setStyleSheetTextCalls);
+    assert.strictEqual(rig.sheetTexts.get(regularId), origContent);
+
+    await rig.syncStyleFile(() => rig.cssModel.setStyleText(regularId, new TextUtils.TextRange.TextRange(1, 4, 1, 15),
+                                                            'color: teal;', true));
+    assert.isTrue(networkUISourceCode.workingCopyIsPageDriven());
+    assert.isEmpty(rig.setStyleSheetTextCalls);
   });
 });

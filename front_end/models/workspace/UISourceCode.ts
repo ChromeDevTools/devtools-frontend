@@ -45,6 +45,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   #lastAcceptedContent: string|null = null;
   #workingCopy: string|null = null;
   #workingCopyGetter: (() => string)|null = null;
+  #workingCopyIsPageDriven = false;
   #disableEdit = false;
   #contentEncoded: boolean|undefined;
   #isKnownThirdParty = false;
@@ -355,6 +356,10 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.#hasCommits;
   }
 
+  workingCopyIsPageDriven(): boolean {
+    return this.#workingCopyIsPageDriven;
+  }
+
   workingCopy(): string {
     return this.workingCopyContent().content || '';
   }
@@ -384,11 +389,13 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   #resetWorkingCopy(): void {
     this.#workingCopy = null;
     this.#workingCopyGetter = null;
+    this.#workingCopyIsPageDriven = false;
   }
 
-  setWorkingCopy(newWorkingCopy: string): void {
+  setWorkingCopy(newWorkingCopy: string, options?: {isPageDriven?: boolean}): void {
     this.#workingCopy = newWorkingCopy;
     this.#workingCopyGetter = null;
+    this.#workingCopyIsPageDriven = Boolean(options?.isPageDriven);
     this.#workingCopyChanged();
   }
 
@@ -402,6 +409,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   setWorkingCopyGetter(workingCopyGetter: () => string): void {
     this.#workingCopyGetter = workingCopyGetter;
+    this.#workingCopyIsPageDriven = false;
     this.#workingCopyChanged();
   }
 

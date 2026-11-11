@@ -190,6 +190,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {live} = Directives;
 
 interface ViewInput {
+  locationSection: TemplateResult;
   orientationSection: TemplateResult;
   touchSetting: Common.Settings.Setting<unknown>;
   idleDetectionSetting: Common.Settings.Setting<unknown>;
@@ -203,6 +204,10 @@ interface ViewInput {
 // clang-format off
 const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   render(html`
+    <section class="sensors-group" jslog=${VisualLogging.section('location')}>
+      ${input.locationSection}
+    </section>
+    <div class="panel-section-separator"></div>
     <section class="sensors-group" jslog=${VisualLogging.section('device-orientation')}>
       ${input.orientationSection}
     </section>
@@ -245,7 +250,8 @@ export class SensorsView extends UI.Widget.VBox {
   readonly #locationSetting: Common.Settings.Setting<string>;
   #location: SDK.EmulationModel.Location;
   #locationOverrideEnabled: boolean;
-  readonly #locationSectionElement: HTMLElement;
+  // Only re-created when the custom locations change. The inputs are still updated imperatively.
+  #locationSection: TemplateResult;
   private fieldsetElement!: HTMLFieldSetElement;
   private timezoneError!: HTMLElement;
   private locationSelectElement!: HTMLSelectElement;
@@ -285,13 +291,13 @@ export class SensorsView extends UI.Widget.VBox {
     this.#location = SDK.EmulationModel.Location.parseSetting(this.#locationSetting.get());
     this.#locationOverrideEnabled = false;
 
-    this.#locationSectionElement = this.contentElement.createChild('section', 'sensors-group');
     const customLocationsSetting = Common.Settings.Settings.instance().resolve(
         SettingUIRegistration.EmulationSettings.emulationLocationsSettingDescriptor);
-    this.renderLocationSection(this.#location, customLocationsSetting);
-    customLocationsSetting.addChangeListener(() => this.renderLocationSection(this.#location, customLocationsSetting));
-
-    this.createPanelSeparator();
+    this.#locationSection = this.#renderLocationSection(this.#location, customLocationsSetting);
+    customLocationsSetting.addChangeListener(() => {
+      this.#locationSection = this.#renderLocationSection(this.#location, customLocationsSetting);
+      this.performUpdate();
+    });
 
     this.deviceOrientationSetting =
         Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
@@ -315,6 +321,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   override performUpdate(): void {
     const input: ViewInput = {
+      locationSection: this.#locationSection,
       orientationSection: this.#renderDeviceOrientationSection(),
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
@@ -328,13 +335,8 @@ export class SensorsView extends UI.Widget.VBox {
     this.#view(input, undefined, this.contentElement);
   }
 
-  private createPanelSeparator(): void {
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
-  }
-
-  private renderLocationSection(
-      location: SDK.EmulationModel.Location,
-      customLocationsSetting: Common.Settings.Setting<LocationDescription[]>): void {
+  #renderLocationSection(location: SDK.EmulationModel.Location,
+                         customLocationsSetting: Common.Settings.Setting<LocationDescription[]>): TemplateResult {
     const customLocations = customLocationsSetting.get();
     let selectedIndex = 0;
     if (this.#locationOverrideEnabled) {
@@ -355,12 +357,8 @@ export class SensorsView extends UI.Widget.VBox {
     const cmdOrCtrl = Host.Platform.isMac() ? '\u2318' : 'Ctrl';
     const modifierKeyMessage = i18nString(UIStrings.adjustWithMousewheelOrUpdownKeys, {PH1: cmdOrCtrl});
 
-    this.#locationSectionElement.setAttribute('jslog', `${VisualLogging.section('location')}`);
-
     // clang-format off
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(
-        html`
+    return html`
       <label class="sensors-group-title" id="location-select-label" for="location-select">${i18nString(UIStrings.location)}</label>
       <div class="geo-fields">
         <select
@@ -494,7 +492,7 @@ export class SensorsView extends UI.Widget.VBox {
           </div>
         </fieldset>
       </div>
-    `, this.#locationSectionElement);
+    `;
     // clang-format on
   }
 

@@ -17,9 +17,11 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {findMenuItemWithLabel, getContextMenuForElement} from '../../testing/ContextMenuHelpers.js';
 import {
   assertElements,
+  assertScreenshot,
   dispatchClickEvent,
   dispatchKeyDownEvent,
   renderElementIntoDOM,
+  setColorScheme,
 } from '../../testing/DOMHelpers.js';
 import {
   deinitializeGlobalVars,
@@ -160,12 +162,13 @@ class MockRevealer<T> implements Common.Revealer.Revealer<T> {
   }
 }
 
-async function createAndInitializeBreakpointsView(): Promise<Sources.BreakpointsView.BreakpointsView> {
+async function createAndInitializeBreakpointsView(options?: Parameters<typeof renderElementIntoDOM>[1]):
+    Promise<Sources.BreakpointsView.BreakpointsView> {
   // Force creation of a new BreakpointsView singleton so that it gets correctly re-wired with
   // the current controller singleton (to pick up the latest breakpoint state).
   const component = Sources.BreakpointsView.BreakpointsView.instance({forceNew: true});
   await RenderCoordinator.done();  // Wait until the initial rendering finishes.
-  renderElementIntoDOM(component);
+  renderElementIntoDOM(component, options);
   await component.updateComplete;
   return component;
 }
@@ -1967,6 +1970,94 @@ describe('BreakpointsView', () => {
 
         assert.strictEqual(selected, lastBreakpointItem);
       });
+    });
+  });
+
+  describe('theme-aware styling', () => {
+    afterEach(() => {
+      setColorScheme('light');
+    });
+
+    async function createPopulatedBreakpointsView(): Promise<Sources.BreakpointsView.BreakpointsView> {
+      const component = await createAndInitializeBreakpointsView({includeCommonStyles: true});
+      const data: Sources.BreakpointsView.BreakpointsViewData = {
+        breakpointsActive: true,
+        pauseOnUncaughtExceptions: false,
+        pauseOnCaughtExceptions: false,
+        groups: [
+          {
+            name: 'test.js',
+            url: urlString`https://google.com/test.js`,
+            editable: true,
+            expanded: true,
+            breakpointItems: [
+              {
+                id: '1',
+                type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
+                location: '1',
+                codeSnippet: 'const a = 1;',
+                isHit: false,
+                status: Sources.BreakpointsView.BreakpointStatus.ENABLED,
+              },
+              {
+                id: '2',
+                type: SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
+                location: '2',
+                codeSnippet: 'if (x > 0)',
+                isHit: false,
+                status: Sources.BreakpointsView.BreakpointStatus.ENABLED,
+                hoverText: 'x > 0',
+              },
+              {
+                id: '3',
+                type: SDK.DebuggerModel.BreakpointType.LOGPOINT,
+                location: '3',
+                codeSnippet: 'console.log(x);',
+                isHit: false,
+                status: Sources.BreakpointsView.BreakpointStatus.ENABLED,
+                hoverText: 'x',
+              },
+            ],
+          },
+        ],
+      };
+
+      component.data = data;
+      await RenderCoordinator.done();
+      await component.updateComplete;
+      return component;
+    }
+
+    it('renders type-indicator colors in light theme', async () => {
+      const component = await createPopulatedBreakpointsView();
+
+      const conditionalIndicator =
+          component.contentElement.querySelector('.breakpoint-item.conditional-breakpoint > label > .type-indicator');
+      const logpointIndicator =
+          component.contentElement.querySelector('.breakpoint-item.logpoint > label > .type-indicator');
+      assert.exists(conditionalIndicator);
+      assert.exists(logpointIndicator);
+
+      setColorScheme('light');
+      assert.strictEqual(getComputedStyle(conditionalIndicator).borderRightColor, 'rgb(233, 103, 37)');
+      assert.strictEqual(getComputedStyle(logpointIndicator).borderRightColor, 'rgb(255, 72, 150)');
+      await assertScreenshot('sources/breakpoints_view_light.png');
+    });
+
+    it('renders type-indicator colors in dark theme', async () => {
+      const component = await createPopulatedBreakpointsView();
+
+      const conditionalIndicator =
+          component.contentElement.querySelector('.breakpoint-item.conditional-breakpoint > label > .type-indicator');
+      const logpointIndicator =
+          component.contentElement.querySelector('.breakpoint-item.logpoint > label > .type-indicator');
+      assert.exists(conditionalIndicator);
+      assert.exists(logpointIndicator);
+
+      setColorScheme('dark');
+      assert.strictEqual(getComputedStyle(conditionalIndicator).borderRightColor, 'rgb(254, 141, 89)');
+      assert.strictEqual(getComputedStyle(logpointIndicator).borderRightColor, 'rgb(255, 132, 175)');
+      await assertScreenshot('sources/breakpoints_view_dark.png');
     });
   });
 });

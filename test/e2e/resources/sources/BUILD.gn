@@ -78,6 +78,7 @@ copy_to_gen("sources") {
     "popover-typescript.js",
     "popover.html",
     "popover.js",
+    "recurring-pause.html",
     "redundant-worker-sourcemap.html",
     "reload-breakpoints-with-source-maps-source1.js",
     "reload-breakpoints-with-source-maps-source2.js",

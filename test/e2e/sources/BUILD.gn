@@ -37,6 +37,7 @@ node_ts_library("sources") {
     "overrides.test.ts",
     "pause-button.test.ts",
     "popover.test.ts",
+    "recurring-pause-actions.test.ts",
     "restart-frame.test.ts",
     "script-in-multiple-workers.test.ts",
     "scroll-into-view.test.ts",

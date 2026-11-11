@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import type * as Bindings from '../../models/bindings/bindings.js';
-import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -224,18 +225,32 @@ export const DEFAULT_VIEW = (input: ViewInput|null, _output: undefined, target: 
 export type View = typeof DEFAULT_VIEW;
 
 export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
-  static override readonly INJECT: readonly[typeof SDK.EventBreakpointsModel.EventBreakpointsManager] =
-      [SDK.EventBreakpointsModel.EventBreakpointsManager] as const;
+  static override readonly INJECT: readonly[typeof SDK.EventBreakpointsModel.EventBreakpointsManager,
+                                            typeof Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+                                            typeof Breakpoints.BreakpointManager.BreakpointManager,
+                                            typeof Common.Settings.Settings,
+  ] =
+      [
+        SDK.EventBreakpointsModel.EventBreakpointsManager,
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+        Breakpoints.BreakpointManager.BreakpointManager,
+        Common.Settings.Settings,
+      ] as const;
 
   #viewInput: ViewInput|null = null;
+  #renderGeneration = 0;
   readonly #eventBreakpointsManager: SDK.EventBreakpointsModel.EventBreakpointsManager;
+  readonly #recurringPauseDetector: Breakpoints.RecurringPauseDetector.RecurringPauseDetector;
   constructor(element: HTMLElement|undefined,
-              [eventBreakpointsManager]: UI.Widget.WidgetDependencies<typeof DebuggerPausedMessage>,
+              [eventBreakpointsManager, debuggerWorkspaceBinding, breakpointManager,
+               settings]: UI.Widget.WidgetDependencies<typeof DebuggerPausedMessage>,
               private readonly view: View = DEFAULT_VIEW) {
     super(element, {
       useShadowDom: 'pure',
     });
     this.#eventBreakpointsManager = eventBreakpointsManager;
+    this.#recurringPauseDetector = new Breakpoints.RecurringPauseDetector.RecurringPauseDetector(
+        debuggerWorkspaceBinding, breakpointManager, settings);
   }
 
   private static descriptionWithoutStack(description: string): string {
@@ -300,11 +315,16 @@ export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
     return breakpoint?.name ?? '';
   }
 
-  async render(
-      details: SDK.DebuggerModel.DebuggerPausedDetails|null,
-      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
-      breakpointManager: BreakpointManager.BreakpointManager.BreakpointManager): Promise<void> {
+  async render(details: SDK.DebuggerModel.DebuggerPausedDetails|null,
+               debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+               breakpointManager: Breakpoints.BreakpointManager.BreakpointManager): Promise<void> {
+    const generation = ++this.#renderGeneration;
+    const escapeActionsPromise = this.#recurringPauseDetector.onPaused(details);
     if (!details) {
+      await escapeActionsPromise;
+      if (generation !== this.#renderGeneration) {
+        return;
+      }
       this.#viewInput = null;
       this.requestUpdate();
       return;
@@ -315,20 +335,21 @@ export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
         details.reason === Protocol.Debugger.PausedEventReason.Assert ||
         details.reason === Protocol.Debugger.PausedEventReason.OOM;
 
+    let viewInput: ViewInput|null = null;
     if (details.reason === Protocol.Debugger.PausedEventReason.DOM) {
-      this.#viewInput = await DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
+      viewInput = await DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.EventListener) {
       const eventNameForUI =
           this.#findEventNameForUi(details.auxData as SDK.DebuggerModel.EventListenerPausedDetailsAuxData);
-      this.#viewInput = {mainText: i18nString(UIStrings.pausedOnEventListener), subText: eventNameForUI, errorLike};
+      viewInput = {mainText: i18nString(UIStrings.pausedOnEventListener), subText: eventNameForUI, errorLike};
     } else if (details.reason === Protocol.Debugger.PausedEventReason.XHR) {
       const auxData = (details.auxData as PausedDetailsAuxData);
-      this.#viewInput = {mainText: i18nString(UIStrings.pausedOnXhrOrFetch), subText: auxData.url || '', errorLike};
+      viewInput = {mainText: i18nString(UIStrings.pausedOnXhrOrFetch), subText: auxData.url || '', errorLike};
     } else if (details.reason === Protocol.Debugger.PausedEventReason.Exception) {
       const auxData = (details.auxData as PausedDetailsAuxData);
       const description = auxData.description || auxData.value || '';
       const descriptionWithoutStack = DebuggerPausedMessage.descriptionWithoutStack(description);
-      this.#viewInput = {
+      viewInput = {
         mainText: i18nString(UIStrings.pausedOnException),
         subText: descriptionWithoutStack,
         title: description,
@@ -338,29 +359,29 @@ export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
       const auxData = (details.auxData as PausedDetailsAuxData);
       const description = auxData.description || auxData.value || '';
       const descriptionWithoutStack = DebuggerPausedMessage.descriptionWithoutStack(description);
-      this.#viewInput = {
+      viewInput = {
         mainText: i18nString(UIStrings.pausedOnPromiseRejection),
         subText: descriptionWithoutStack,
         title: description,
         errorLike,
       };
     } else if (details.reason === Protocol.Debugger.PausedEventReason.Assert) {
-      this.#viewInput = {mainText: i18nString(UIStrings.pausedOnAssertion), errorLike};
+      viewInput = {mainText: i18nString(UIStrings.pausedOnAssertion), errorLike};
     } else if (details.reason === Protocol.Debugger.PausedEventReason.DebugCommand) {
-      this.#viewInput = {mainText: i18nString(UIStrings.pausedOnDebuggedFunction), errorLike};
+      viewInput = {mainText: i18nString(UIStrings.pausedOnDebuggedFunction), errorLike};
     } else if (details.reason === Protocol.Debugger.PausedEventReason.OOM) {
-      this.#viewInput = {mainText: i18nString(UIStrings.pausedBeforePotentialOutofmemory), errorLike};
-    } else if (
-        details.reason === Protocol.Debugger.PausedEventReason.CSPViolation && details.auxData?.['violationType']) {
+      viewInput = {mainText: i18nString(UIStrings.pausedBeforePotentialOutofmemory), errorLike};
+    } else if (details.reason === Protocol.Debugger.PausedEventReason.CSPViolation &&
+               details.auxData?.['violationType']) {
       const text = (details.auxData['violationType'] as string);
       if (text === Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation) {
-        this.#viewInput = {
+        viewInput = {
           mainText: i18nString(UIStrings.pausedOnCspViolation),
           subText: i18nString(UIStrings.trustedTypeSinkViolation),
           errorLike,
         };
       } else if (text === Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation) {
-        this.#viewInput = {
+        viewInput = {
           mainText: i18nString(UIStrings.pausedOnCspViolation),
           subText: i18nString(UIStrings.trustedTypePolicyViolation),
           errorLike,
@@ -370,13 +391,23 @@ export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
       const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
       const breakpoint = uiLocation ? breakpointManager.findBreakpoint(uiLocation) : null;
       const defaultText = breakpoint ? i18nString(UIStrings.pausedOnBreakpoint) : i18nString(UIStrings.debuggerPaused);
-      this.#viewInput = {mainText: defaultText, errorLike};
+      viewInput = {mainText: defaultText, errorLike};
     } else {
-      this.#viewInput = null;
       console.warn(
           'ScriptsPanel paused, but callFrames.length is zero.');  // TODO remove this once we understand this case better
     }
 
+    const escapeActions = await escapeActionsPromise;
+    if (generation !== this.#renderGeneration) {
+      return;
+    }
+    this.#viewInput = viewInput ? {
+      ...viewInput,
+      onDisableBreakpoint: escapeActions.disableBreakpoint,
+      onNeverPauseHere: escapeActions.neverPauseHere,
+      onDeactivateBreakpointsAndResume: escapeActions.deactivateBreakpointsAndResume,
+    } :
+                                  null;
     this.requestUpdate();
   }
 

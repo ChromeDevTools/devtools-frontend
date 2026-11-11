@@ -3,20 +3,28 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('DebuggerPausedMessage', () => {
   let universe: TestUniverse;
@@ -34,8 +42,8 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
       debuggerWorkspaceBinding,
       settings: universe.settings,
     });
-    pausedMessage =
-        new Sources.DebuggerPausedMessage.DebuggerPausedMessage(undefined, [universe.eventBreakpointsManager]);
+    pausedMessage = new Sources.DebuggerPausedMessage.DebuggerPausedMessage(
+        undefined, [universe.eventBreakpointsManager, debuggerWorkspaceBinding, breakpointManager, universe.settings]);
   });
 
   function getPausedMessageFromDOM(): {main: string, sub?: string} {
@@ -136,6 +144,104 @@ describeWithEnvironment('DebuggerPausedMessage', () => {
         assert.strictEqual(sub, expectedSub);
       });
     }
+  });
+});
+
+describe('DebuggerPausedMessage recurring pause actions', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
+
+  afterEach(() => {
+    universe.dispose();
+  });
+
+  function createPausedDetails(debuggerModel: SDK.DebuggerModel.DebuggerModel):
+      SDK.DebuggerModel.DebuggerPausedDetails {
+    return new SDK.DebuggerModel.DebuggerPausedDetails(
+        debuggerModel, [{
+          callFrameId: 'frame-1' as Protocol.Debugger.CallFrameId,
+          functionName: 'tick',
+          location: {scriptId: '1' as Protocol.Runtime.ScriptId, lineNumber: 4, columnNumber: 2},
+          url: 'https://example.com/app.js',
+          scopeChain: [],
+          this: {type: Protocol.Runtime.RemoteObjectType.Object},
+        }],
+        Protocol.Debugger.PausedEventReason.Other, undefined, []);
+  }
+
+  it('forwards recurring pause actions from RecurringPauseDetector to ViewInput', async () => {
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    target.id.returns('main' as Protocol.Target.TargetID);
+    const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+    debuggerModel.target.returns(target);
+    debuggerModel.runtimeModel.returns(sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel));
+    debuggerModel.scriptForId.returns(sinon.createStubInstance(SDK.Script.Script));
+
+    const {uiSourceCode} = createContentProviderUISourceCode({
+      url: urlString`https://example.com/app.js`,
+      mimeType: 'text/javascript',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe,
+    });
+    sinon.stub(universe.debuggerWorkspaceBinding, 'rawLocationToUILocation')
+        .callsFake(async loc => uiSourceCode.uiLocation(loc.lineNumber, loc.columnNumber));
+
+    const view = createViewFunctionStub(Sources.DebuggerPausedMessage.DebuggerPausedMessage);
+    const pausedMessage = new Sources.DebuggerPausedMessage.DebuggerPausedMessage(undefined,
+                                                                                  [
+                                                                                    universe.eventBreakpointsManager,
+                                                                                    universe.debuggerWorkspaceBinding,
+                                                                                    universe.breakpointManager,
+                                                                                    universe.settings,
+                                                                                  ],
+                                                                                  view);
+
+    await pausedMessage.render(createPausedDetails(debuggerModel), universe.debuggerWorkspaceBinding,
+                               universe.breakpointManager);
+    await pausedMessage.updateComplete;
+    assert.isUndefined(view.input?.onNeverPauseHere);
+    assert.isUndefined(view.input?.onDeactivateBreakpointsAndResume);
+
+    await pausedMessage.render(null, universe.debuggerWorkspaceBinding, universe.breakpointManager);
+    await pausedMessage.render(createPausedDetails(debuggerModel), universe.debuggerWorkspaceBinding,
+                               universe.breakpointManager);
+    await pausedMessage.updateComplete;
+    assert.isFunction(view.input?.onNeverPauseHere);
+    assert.isFunction(view.input?.onDeactivateBreakpointsAndResume);
+  });
+
+  it('ignores stale async renders superseded by a newer render call', async () => {
+    const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+    debuggerModel.runtimeModel.returns(sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel));
+    debuggerModel.scriptForId.returns(sinon.createStubInstance(SDK.Script.Script));
+    const {promise, resolve} = Promise.withResolvers<Workspace.UISourceCode.UILocation|null>();
+    sinon.stub(universe.debuggerWorkspaceBinding, 'rawLocationToUILocation').returns(promise);
+
+    const view = createViewFunctionStub(Sources.DebuggerPausedMessage.DebuggerPausedMessage);
+    const pausedMessage = new Sources.DebuggerPausedMessage.DebuggerPausedMessage(undefined,
+                                                                                  [
+                                                                                    universe.eventBreakpointsManager,
+                                                                                    universe.debuggerWorkspaceBinding,
+                                                                                    universe.breakpointManager,
+                                                                                    universe.settings,
+                                                                                  ],
+                                                                                  view);
+
+    const pendingRender = pausedMessage.render(createPausedDetails(debuggerModel), universe.debuggerWorkspaceBinding,
+                                               universe.breakpointManager);
+    await pausedMessage.render(null, universe.debuggerWorkspaceBinding, universe.breakpointManager);
+    resolve(null);
+    await pendingRender;
+    await pausedMessage.updateComplete;
+
+    assert.isNull(view.input);
   });
 });
 

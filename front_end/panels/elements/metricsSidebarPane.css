@@ -26,7 +26,7 @@
 }
 
 :host {
-  --metrics-height: 190px;
+  --metrics-height: var(--sys-size-25);
 }
 
 .metrics.collapsed {

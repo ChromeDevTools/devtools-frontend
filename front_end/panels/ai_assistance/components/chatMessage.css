@@ -268,7 +268,7 @@
 
   .js-code-output {
     devtools-code-block {
-      --code-block-max-code-height: 50px;
+      --code-block-max-code-height: var(--sys-size-17);
     }
   }
 

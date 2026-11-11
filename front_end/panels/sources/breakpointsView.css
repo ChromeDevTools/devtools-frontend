@@ -136,7 +136,7 @@
   }
 
   button + button {
-    padding-left: 11px;
+    padding-left: var(--sys-size-6);
   }
 
   summary:hover button {

@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../ui/components/menus/menus.js';
 import '../../ui/kit/kit.js';
@@ -33,15 +32,91 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/OutermostTargetSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.Toolbar.Provider {
+export interface TargetItem {
+  title: string;
+  subtitle: string;
+}
+
+export interface ViewInput {
+  items: TargetItem[];
+  selectedIndex: number;
+  open: boolean;
+  onToggleMenu: () => void;
+  onCloseMenu: () => void;
+  onSelect: (index: number) => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const selectedItem = input.selectedIndex >= 0 && input.selectedIndex < input.items.length ?
+      input.items[input.selectedIndex] :
+      undefined;
+  const buttonTitle =
+      selectedItem ? i18nString(UIStrings.targetS, {PH1: selectedItem.title}) : i18nString(UIStrings.targetNotSelected);
+  // clang-format off
+  render(html`
+    <style>${outermostTargetSelectorStyles}</style>
+    <button
+      id="outermost-target-selector-button"
+      class="soft-dropdown toolbar-has-dropdown"
+      type="button"
+      jslog=${VisualLogging.dropDown('outermost-target-selector').track({click: true})}
+      title=${buttonTitle}
+      aria-label=${buttonTitle}
+      aria-haspopup="true"
+      aria-expanded=${input.open}
+      ?disabled=${input.items.length === 0}
+      @click=${input.onToggleMenu}
+      @keydown=${(event: KeyboardEvent) => {
+        if (!input.open && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
+          event.consume(true);
+          input.onToggleMenu();
+        }
+      }}
+    >
+      <span class="title">${selectedItem?.title ?? ''}</span>
+      <devtools-icon name="triangle-down"></devtools-icon>
+    </button>
+    <devtools-menu
+      origin="outermost-target-selector-button"
+      .showDivider=${false}
+      .showSelectedItem=${true}
+      .open=${input.open}
+      @menucloserequest=${input.onCloseMenu}
+      @menuitemselected=${(event: Menus.Menu.MenuItemSelectedEvent) => {
+        input.onSelect(Number(event.itemValue));
+      }}
+    >
+      ${input.items.map((item, index) => html`
+        <devtools-menu-item
+          .value=${index}
+          .selected=${index === input.selectedIndex}
+          jslog=${VisualLogging.item().track({click: true, resize: true})}
+        >
+          <div class="outermost-target-selector-item">
+            <div class="title">${Platform.StringUtilities.trimEndWithMaxLength(item.title, 100)}</div>
+            <div class="subtitle">${item.subtitle}</div>
+          </div>
+        </devtools-menu-item>
+      `)}
+    </devtools-menu>`,
+    target);
+  // clang-format on
+};
+
+export class OutermostTargetSelector extends UI.Widget.Widget implements SDK.TargetManager.Observer,
+                                                                         UI.Toolbar.Provider {
   readonly #targets: SDK.Target.Target[] = [];
-  readonly #container = document.createElement('div');
   readonly #toolbarItem: UI.Toolbar.ToolbarItem;
+  readonly #view: View;
   #selectedTarget: SDK.Target.Target|null = null;
   #open = false;
 
-  constructor() {
-    this.#toolbarItem = new UI.Toolbar.ToolbarItem(this.#container);
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+    this.#toolbarItem = new UI.Toolbar.ToolbarItem(this.element);
     this.#toolbarItem.setEnabled(false);
 
     const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -52,73 +127,45 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.T
     targetManager.observeTargets(this);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.#targetChanged, this);
-    this.#render();
+    this.requestUpdate();
   }
 
-  #render(): void {
-    const buttonTitle = this.#selectedTarget ? i18nString(UIStrings.targetS, {PH1: this.#selectedTarget.name()}) :
-                                               i18nString(UIStrings.targetNotSelected);
-    // clang-format off
-    render(html`
-      <style>${outermostTargetSelectorStyles}</style>
-      <button
-        id="outermost-target-selector-button"
-        class="soft-dropdown toolbar-has-dropdown"
-        type="button"
-        jslog=${VisualLogging.dropDown('outermost-target-selector').track({click: true})}
-        title=${buttonTitle}
-        aria-label=${buttonTitle}
-        aria-haspopup="true"
-        aria-expanded=${this.#open}
-        ?disabled=${this.#targets.length === 0}
-        @click=${() => {
-          if (this.#targets.length > 0) {
-            this.#open = !this.#open;
-            this.#render();
-          }
-        }}
-        @keydown=${(event: KeyboardEvent) => {
-          if (!this.#open && this.#targets.length > 0 && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
-            event.consume(true);
-            this.#open = true;
-            this.#render();
-          }
-        }}
-      >
-        <span class="title">${this.#selectedTarget?.name() ?? ''}</span>
-        <devtools-icon name="triangle-down"></devtools-icon>
-      </button>
-      <devtools-menu
-        origin="outermost-target-selector-button"
-        .showDivider=${false}
-        .showSelectedItem=${true}
-        .open=${this.#open}
-        @menucloserequest=${() => {
-          if (this.#open) {
-            this.#open = false;
-            this.#render();
-          }
-        }}
-        @menuitemselected=${(event: Menus.Menu.MenuItemSelectedEvent) => {
-          this.#open = false;
-          this.#selectTarget(this.#targets[Number(event.itemValue)] ?? null);
-        }}
-      >
-        ${this.#targets.map((target, index) => html`
-          <devtools-menu-item
-            .value=${index}
-            .selected=${target === this.#selectedTarget}
-            jslog=${VisualLogging.item().track({click: true, resize: true})}
-          >
-            <div class="outermost-target-selector-item">
-              <div class="title">${Platform.StringUtilities.trimEndWithMaxLength(target.name(), 100)}</div>
-              <div class="subtitle">${this.#subtitleFor(target)}</div>
-            </div>
-          </devtools-menu-item>
-        `)}
-      </devtools-menu>`,
-      this.#container);
-    // clang-format on
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const items: TargetItem[] = this.#targets.map(target => ({
+                                                    title: target.name(),
+                                                    subtitle: this.#subtitleFor(target),
+                                                  }));
+    const selectedIndex = this.#selectedTarget ? this.#targets.indexOf(this.#selectedTarget) : -1;
+    this.#view({
+      items,
+      selectedIndex,
+      open: this.#open,
+      onToggleMenu: () => {
+        if (this.#targets.length === 0) {
+          return;
+        }
+        this.#open = !this.#open;
+        this.requestUpdate();
+      },
+      onCloseMenu: () => {
+        if (!this.#open) {
+          return;
+        }
+        this.#open = false;
+        this.requestUpdate();
+      },
+      onSelect: (index: number) => {
+        this.#open = false;
+        const target = this.#targets[index] ?? null;
+        this.#selectTarget(target);
+      },
+    },
+               undefined, this.contentElement);
   }
 
   item(): UI.Toolbar.ToolbarItem {
@@ -139,7 +186,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.T
     if (target === primaryTarget || target === UI.Context.Context.instance().flavor(SDK.Target.Target)) {
       this.#selectTarget(target);
     } else {
-      this.#render();
+      this.requestUpdate();
     }
   }
 
@@ -157,7 +204,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.T
     if (this.#selectedTarget === target) {
       this.#selectTarget(null);
     } else {
-      this.#render();
+      this.requestUpdate();
     }
   }
 
@@ -217,6 +264,6 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.T
     if (item && item !== UI.Context.Context.instance().flavor(SDK.Target.Target)?.outermostTarget()) {
       UI.Context.Context.instance().setFlavor(SDK.Target.Target, item);
     }
-    this.#render();
+    this.requestUpdate();
   }
 }

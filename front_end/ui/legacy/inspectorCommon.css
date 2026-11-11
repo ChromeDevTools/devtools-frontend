@@ -602,7 +602,7 @@ dt-icon-label {
 button.link {
   border: none;
   background: none;
-  padding: 3px;
+  padding: var(--sys-size-2);
 }
 
 button.link:focus-visible {

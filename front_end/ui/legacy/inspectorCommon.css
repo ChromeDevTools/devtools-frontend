@@ -791,16 +791,8 @@ devtools-toolbar {
     }
   }
 
-  .toolbar-item-search {
-    min-width: 5.2em;
-    max-width: 300px;
-    flex: 1 1 auto;
-    justify-content: start;
-    overflow: revert;
-  }
-
   .toolbar-text {
-    margin: 0 5px;
+    margin: 0 var(--sys-size-3);
     flex: none;
     color: var(--ui-text);
   }

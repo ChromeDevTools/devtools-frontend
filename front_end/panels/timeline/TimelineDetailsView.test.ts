@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, before, describe, it} from 'mocha';
+import {after, afterEach, before, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
-import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, doubleRaf, raf, renderElementIntoDOM, setColorScheme} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -359,5 +359,45 @@ describe('TimelineDetailsView', function() {
       gridNodeForEventSpy.restore();
       detailsView.detach();
     }
+  });
+
+  describe('warning row', () => {
+    afterEach(() => {
+      setColorScheme('light');
+    });
+
+    it('renders with theme-aware surface-error background in light and dark themes', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+      detailsView.element.style.width = '600px';
+      detailsView.element.style.height = '400px';
+      renderElementIntoDOM(detailsView, {includeCommonStyles: true});
+
+      const longTask = allThreadEntriesInTrace(parsedTrace).find(e => (e.dur || 0) > 1_000_000);
+      assert.isOk(longTask);
+      await detailsView.setModel({
+        parsedTrace,
+        selectedEvents: null,
+        eventToRelatedInsightsMap: null,
+        entityMapper: null,
+      });
+      const selection = Timeline.TimelineSelection.selectionFromEvent(longTask);
+      await detailsView.setSelection(selection);
+      await raf();
+
+      const detailsContentElement = detailsView.getDetailsContentElementForTest();
+      const warningRow = detailsContentElement.querySelector<HTMLElement>('.timeline-details-warning');
+      assert.isNotNull(warningRow);
+
+      setColorScheme('light');
+      assert.strictEqual(getComputedStyle(warningRow).backgroundColor, 'rgb(252, 235, 235)');
+      await assertScreenshot('timeline/timeline_details_warning_light.png');
+
+      setColorScheme('dark');
+      assert.strictEqual(getComputedStyle(warningRow).backgroundColor, 'rgb(78, 53, 52)');
+      await assertScreenshot('timeline/timeline_details_warning_dark.png');
+
+      detailsView.detach();
+    });
   });
 });

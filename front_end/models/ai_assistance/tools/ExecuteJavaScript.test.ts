@@ -384,7 +384,7 @@ describe('ExecuteJavaScriptTool', () => {
     const {validateCode} = AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool;
 
     const SIZE_ERROR_HEADER = 'Error: The code was not run because it exceeds size limits:';
-    const LONG_LINES_ADVICE = '- Lines longer than 120 characters. Break them into shorter lines, ' +
+    const LONG_LINES_ADVICE = '- Lines longer than 160 characters. Break them into shorter lines, ' +
         'for example by splitting long strings or selectors with concatenation, ' +
         'or by putting arguments on separate lines:';
 
@@ -458,7 +458,7 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
       );
     });
 
-    it('returns an error when multiple statements or conditions are crammed onto a single line over 120 characters', () => {
+    it('returns an error when multiple statements or conditions are crammed onto a single line over 160 characters', () => {
       const crammedOneLiner =
           'const banner = Array.from(document.querySelectorAll(\'*\')).find(el => el.id?.toLowerCase().includes(\'banner\') || el.className?.toLowerCase().includes(\'banner\') || el.getAttribute(\'role\') === \'banner\');';
       assert.strictEqual(
@@ -468,23 +468,23 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
       );
     });
 
-    it('returns an error with the line number, length, and preview when a line exceeds 120 characters', () => {
-      const longLineCode = `if (true) {\n  const longVar = "${'a'.repeat(130)}";\n}`;
+    it('returns an error with the line number, length, and preview when a line exceeds 160 characters', () => {
+      const longLineCode = `if (true) {\n  const longVar = "${'a'.repeat(140)}";\n}`;
       assert.strictEqual(
           validateCode(longLineCode),
           `${SIZE_ERROR_HEADER}\n${LONG_LINES_ADVICE}\n` +
-              `  - Line 2 is 151 characters: \`const longVar = "${'a'.repeat(42)}…\``,
+              `  - Line 2 is 161 characters: \`const longVar = "${'a'.repeat(42)}…\``,
       );
     });
 
     it('reports at most 3 long lines and counts the rest', () => {
-      const longLinesCode = Array.from({length: 5}, (_, i) => `const v${i} = "${'b'.repeat(120)}";`).join('\n');
+      const longLinesCode = Array.from({length: 5}, (_, i) => `const v${i} = "${'b'.repeat(160)}";`).join('\n');
       assert.strictEqual(
           validateCode(longLinesCode),
           `${SIZE_ERROR_HEADER}\n${LONG_LINES_ADVICE}\n` +
-              `  - Line 1 is 134 characters: \`const v0 = "${'b'.repeat(47)}…\`\n` +
-              `  - Line 2 is 134 characters: \`const v1 = "${'b'.repeat(47)}…\`\n` +
-              `  - Line 3 is 134 characters: \`const v2 = "${'b'.repeat(47)}…\`\n` +
+              `  - Line 1 is 174 characters: \`const v0 = "${'b'.repeat(47)}…\`\n` +
+              `  - Line 2 is 174 characters: \`const v1 = "${'b'.repeat(47)}…\`\n` +
+              `  - Line 3 is 174 characters: \`const v2 = "${'b'.repeat(47)}…\`\n` +
               '  - 2 more lines not shown.',
       );
     });
@@ -500,7 +500,7 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
 
     it('reports every exceeded limit in one error', () => {
       const code = [
-        `const longVar = "${'a'.repeat(130)}";`,
+        `const longVar = "${'a'.repeat(160)}";`,
         ...Array.from({length: 40}, (_, i) => `const var${i} = "${'x'.repeat(50)}";`),
       ].join('\n');
       assert.strictEqual(
@@ -508,8 +508,8 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
           `${SIZE_ERROR_HEADER}\n` +
               '- The code is 41 lines (max 40). Split the logic into smaller calls and return intermediate results in `data`.\n' +
               `${LONG_LINES_ADVICE}\n` +
-              `  - Line 1 is 149 characters: \`const longVar = "${'a'.repeat(42)}…\`\n` +
-              '- The code is 2859 characters (max 2500). Remove unneeded code or split the logic into smaller calls.',
+              `  - Line 1 is 179 characters: \`const longVar = "${'a'.repeat(42)}…\`\n` +
+              '- The code is 2889 characters (max 2500). Remove unneeded code or split the logic into smaller calls.',
       );
     });
 
@@ -518,12 +518,17 @@ const data = ads.map(el => ({tag: el.tagName, id: el.id, class: el.className}));
       assert.isUndefined(validateCode(code));
     });
 
-    it('accepts lines of exactly 120 characters and exactly 2500 characters in total', () => {
+    it('accepts lines of exactly 160 characters and exactly 2500 characters in total', () => {
       const code = [
-        ...Array.from({length: 20}, () => `// ${'x'.repeat(117)}`),
-        `// ${'x'.repeat(77)}`,
+        ...Array.from({length: 15}, () => `// ${'x'.repeat(157)}`),
+        `// ${'x'.repeat(82)}`,
       ].join('\n');
       assert.isUndefined(validateCode(code));
+    });
+
+    it('keeps the 120-character soft target in the prompt description to encourage readability', () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      assert.include(tool.parameters.properties.code.description, 'max 120 characters per line');
     });
   });
 

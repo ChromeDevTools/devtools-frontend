@@ -2,27 +2,47 @@
 # Copyright 2014 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+"""Generates SupportedCSSProperties.ts from Blink's css_properties.json5.
 
-import datetime
+Runs as a generated_ts() action (see front_end/generated/BUILD.gn) and always
+writes its output: scripts/build/run_with_restat.py keeps the mtime of an
+output that did not change.
+"""
+
+import argparse
 import json
 import os
 import sys
-from os import path
 
 PYJSON5_DIR = os.path.join(os.path.dirname(__file__), '..', '..',
                            'third_party', 'pyjson5', 'src')
 sys.path.append(PYJSON5_DIR)
 
-import json5  # pylint: disable=import-error
+import json5  # pylint: disable=import-error,wrong-import-position
 
-ROOT_DIRECTORY = path.join(path.dirname(__file__), '..', '..')
-GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated',
-                               'SupportedCSSProperties.ts')
-READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer',
-                          'core', 'css', 'css_properties.json5')
-RUNTIME_FLAGS_READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink',
-                                        'renderer', 'platform',
-                                        'runtime_enabled_features.json5')
+HEADER = '''\
+// Copyright 2014 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+export interface CSSProperty {
+  name: string;
+  longhands?: string[];
+  inherited?: boolean;
+  svg?: boolean;
+  keywords?: string[];
+  devtools_keywords?: string[];
+  is_property?: boolean;
+  is_descriptor?: boolean;
+  runtime_flag?: string;
+  runtime_flag_status?: string | null;
+}
+
+export interface CSSPropertyValue {
+  values: string[];
+}
+
+'''
 
 
 def _keep_only_required_keys(entry):
@@ -34,11 +54,22 @@ def _keep_only_required_keys(entry):
     return entry
 
 
-def properties_from_file(file_name):
-    with open(file_name) as json5_file:
-        doc = json5.loads(json5_file.read())
-    with open(RUNTIME_FLAGS_READ_LOCATION, 'r') as json5_file:
-        runtime_features_data = json5.loads(json5_file.read())
+def _load_json5(file_name):
+    with open(file_name, encoding='utf-8') as json5_file:
+        return json5.loads(json5_file.read())
+
+
+def properties_from_file(css_properties_file, runtime_enabled_features_file):
+    """Returns (properties, property_values, aliases_for) for the JSON5 files.
+
+    properties: the non-internal CSS properties, sorted by name, with their
+        longhands filtered down to supported ones and `inherited` set on
+        shorthands whose longhands are all inherited.
+    property_values: the keyword values per property name.
+    aliases_for: [alias, property] pairs, sorted by alias.
+    """
+    doc = _load_json5(css_properties_file)
+    runtime_features_data = _load_json5(runtime_enabled_features_file)
 
     # Create a map for easy lookup of feature status
     runtime_features_map = {
@@ -117,39 +148,38 @@ def properties_from_file(file_name):
     return properties, property_values, aliases_for
 
 
-properties, property_values, aliases_for = properties_from_file(READ_LOCATION)
-now = datetime.datetime.now()
-with open(GENERATED_LOCATION, "w+", newline='\n') as f:
-    f.write('// Copyright %d The Chromium Authors\n' % now.year)
-    f.write(
-        '// Use of this source code is governed by a BSD-style license that can be\n'
-    )
-    f.write('// found in the LICENSE file.\n')
-    f.write('\n')
-    f.write(
-        '/* eslint-disable @stylistic/quotes, @stylistic/quote-props, @stylistic/comma-dangle, @typescript-eslint/naming-convention */\n'
-    )
-    f.write('export interface CSSProperty {\n')
-    f.write('  name: string;\n')
-    f.write('  longhands?: string[];\n')
-    f.write('  inherited?: boolean;\n')
-    f.write('  svg?: boolean;\n')
-    f.write('  keywords?: string[];\n')
-    f.write('  devtools_keywords?: string[];\n')
-    f.write('  is_property?: boolean;\n')
-    f.write('  is_descriptor?: boolean;\n')
-    f.write('  runtime_flag?: string;\n')
-    f.write('  runtime_flag_status?: string | null;\n')
-    f.write('}\n\n')
-    f.write('export interface CSSPropertyValue {\n')
-    f.write('  values: string[];\n')
-    f.write('}\n\n')
-    f.write("export const generatedProperties: CSSProperty[] = %s;\n" %
-            json.dumps(properties, sort_keys=True, indent=1))
-    # sort keys to ensure entries are generated in a deterministic way to avoid inconsistencies across different OS
-    f.write(
-        "export const generatedPropertyValues: Record<string, CSSPropertyValue> = %s;\n"
-        % json.dumps(property_values, sort_keys=True, indent=1))
-    f.write(
-        "export const generatedAliasesFor: Map<string, string> = new Map(%s);\n"
+def generate(properties, property_values, aliases_for):
+    """Returns the contents of SupportedCSSProperties.ts."""
+    # sort keys to ensure entries are generated in a deterministic way to
+    # avoid inconsistencies across different OS
+    return HEADER + (
+        'export const generatedProperties: CSSProperty[] = %s;\n' %
+        json.dumps(properties, sort_keys=True, indent=1) +
+        'export const generatedPropertyValues: Record<string, CSSPropertyValue> = %s;\n'
+        % json.dumps(property_values, sort_keys=True, indent=1) +
+        'export const generatedAliasesFor: Map<string, string> = new Map(%s);\n'
         % json.dumps(aliases_for, sort_keys=True, indent=1))
+
+
+def main(argv):
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument('--css-properties',
+                        required=True,
+                        help='Path to css_properties.json5')
+    parser.add_argument('--runtime-enabled-features',
+                        required=True,
+                        help='Path to runtime_enabled_features.json5')
+    parser.add_argument('--output',
+                        required=True,
+                        help='Path of the SupportedCSSProperties.ts to write')
+    options = parser.parse_args(argv)
+
+    contents = generate(*properties_from_file(
+        options.css_properties, options.runtime_enabled_features))
+    with open(options.output, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(contents)
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))

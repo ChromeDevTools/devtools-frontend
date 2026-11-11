@@ -155,30 +155,6 @@ export default createRule({
       ObjectExpression(node) {
         checkPropertyValue('jslogContext', node);
       },
-      VariableDeclarator(node) {
-        if (node.id.type === 'Identifier' && node.id.name === 'generatedProperties' &&
-            node.init?.type === 'ArrayExpression') {
-          for (const element of node.init.elements) {
-            if (element) {
-              checkPropertyValue('name', element);
-            }
-          }
-        }
-        if (node.id.type === 'Identifier' && node.id.name === 'generatedAliasesFor' &&
-            node.init?.type === 'NewExpression') {
-          const firstArg = node.init?.arguments?.[0];
-          const elements = firstArg.type === 'ArrayExpression' ? firstArg.elements : [];
-
-          for (const outerElement of elements) {
-            const innerElements = outerElement?.type === 'ArrayExpression' ? outerElement.elements : [];
-            for (const innerElement of innerElements) {
-              if (innerElement && 'value' in innerElement) {
-                checkValue(innerElement.value, innerElement);
-              }
-            }
-          }
-        }
-      },
       'Program:exit'() {
         // Don't write to file if fail is enabled
         if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE) {

@@ -59,11 +59,32 @@ ts_library("deprecation") {
   deps = [ ":generate_deprecation" ]
 }
 
-# SupportedCSSProperties.ts stays committed until crrev.com/c/8689826 moves it
-# to build-time generation; it gets its own library so that :generated can
-# move to $target_gen_dir independently.
+generated_ts("generate_supported_css_properties") {
+  script = "../../scripts/build/generate_supported_css.py"
+  _css_properties = devtools_chromium_deps_root +
+                    "third_party/blink/renderer/core/css/css_properties.json5"
+  _runtime_enabled_features =
+      devtools_chromium_deps_root +
+      "third_party/blink/renderer/platform/runtime_enabled_features.json5"
+  inputs = [
+             _css_properties,
+             _runtime_enabled_features,
+           ] + _pyjson5_inputs
+  outputs = [ "$target_gen_dir/SupportedCSSProperties.ts" ]
+  args = [
+    "--css-properties",
+    rebase_path(_css_properties, root_build_dir),
+    "--runtime-enabled-features",
+    rebase_path(_runtime_enabled_features, root_build_dir),
+    "--output",
+    rebase_path(outputs[0], root_build_dir),
+  ]
+}
+
 ts_library("supported_css_properties") {
-  sources = [ "SupportedCSSProperties.ts" ]
+  rootdir = target_gen_dir
+  sources = [ "$target_gen_dir/SupportedCSSProperties.ts" ]
+  deps = [ ":generate_supported_css_properties" ]
 }
 
 # The protocol definitions: the PDL files are concatenated into one JSON, from

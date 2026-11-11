@@ -1274,13 +1274,6 @@ export default defineConfig([
     },
   },
   {
-    name: 'Supported CSS properties rules',
-    files: ['front_end/generated/SupportedCSSProperties.ts'],
-    rules: {
-      '@devtools/jslog-context-list': 'error',
-    },
-  },
-  {
     name: 'EsLint rules test',
     files: ['scripts/eslint_rules/tests/**/*'],
     rules: {

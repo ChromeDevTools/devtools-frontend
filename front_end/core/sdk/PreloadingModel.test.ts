@@ -8,7 +8,7 @@ import {beforeEach, describe, it} from 'mocha';
 import * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
@@ -1176,5 +1176,83 @@ describe('PreloadingModel', () => {
     });
 
     assert.deepEqual(model.getRepresentativePreloadingAttempts(null), []);
+  });
+
+  it('merges previous page attempts across activation when multiple pipelines share a URL', async () => {
+    const tabTarget = universe.createTarget({type: SDK.Target.Type.TAB, connection});
+    const primaryTarget = universe.createTarget({parentTarget: tabTarget});
+    const primaryModel = primaryTarget.model(SDK.PreloadingModel.PreloadingModel);
+    assert.exists(primaryModel);
+
+    const loaderId = getMainFrame(primaryTarget).loaderId;
+    dispatchEvent(primaryTarget, 'Preload.ruleSetUpdated', {
+      ruleSet: {
+        id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
+        loaderId,
+        sourceText: '{"prerender":[{"source":"list","urls":["/page.html"]}]}',
+      },
+    });
+    const prerenderKey = {
+      loaderId,
+      action: Protocol.Preload.SpeculationAction.Prerender,
+      url: 'https://example.com/page.html',
+    };
+    dispatchEvent(primaryTarget, 'Preload.prerenderStatusUpdated', {
+      key: prerenderKey,
+      pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
+      status: Protocol.Preload.PreloadingStatus.Failure,
+      prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
+    });
+    dispatchEvent(primaryTarget, 'Preload.prerenderStatusUpdated', {
+      key: prerenderKey,
+      pipelineId: 'pipelineId:2' as Protocol.Preload.PreloadPipelineId,
+      status: Protocol.Preload.PreloadingStatus.Ready,
+    });
+
+    const prerenderTarget = universe.createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    const prerenderModel = prerenderTarget.model(SDK.PreloadingModel.PreloadingModel);
+    assert.exists(prerenderModel);
+    navigate(getMainFrame(prerenderTarget), {loaderId: 'loaderId:prerender' as Protocol.Network.LoaderId});
+
+    dispatchEvent(prerenderTarget, 'Preload.prerenderStatusUpdated', {
+      key: prerenderKey,
+      pipelineId: 'pipelineId:2' as Protocol.Preload.PreloadPipelineId,
+      status: Protocol.Preload.PreloadingStatus.Success,
+    });
+    activate(prerenderTarget);
+
+    const baseAttemptValue = {
+      action: Protocol.Preload.SpeculationAction.Prerender as const,
+      key: {
+        loaderId,
+        action: Protocol.Preload.SpeculationAction.Prerender,
+        url: urlString`https://example.com/page.html`,
+      },
+      disallowedMojoInterface: null,
+      mismatchedHeaders: null,
+      ruleSetIds: [] as Protocol.Preload.RuleSetId[],
+      nodeIds: [] as Protocol.DOM.BackendNodeId[],
+    };
+
+    assert.deepEqual(prerenderModel.getRepresentativePreloadingAttemptsOfPreviousPage(), [
+      {
+        id: `${loaderId}:Prerender:https://example.com/page.html:undefined:undefined`,
+        value: {
+          ...baseAttemptValue,
+          pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
+          status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
+          prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
+        },
+      },
+      {
+        id: `${loaderId}:Prerender:https://example.com/page.html:undefined:undefined:pipelineId:2`,
+        value: {
+          ...baseAttemptValue,
+          pipelineId: 'pipelineId:2' as Protocol.Preload.PreloadPipelineId,
+          status: SDK.PreloadingModel.PreloadingStatus.SUCCESS,
+          prerenderStatus: null,
+        },
+      },
+    ]);
   });
 });

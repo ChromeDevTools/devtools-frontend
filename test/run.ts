@@ -420,6 +420,16 @@ class KarmaTests extends Tests {
   }
 }
 
+class MochaAiEvalsTests extends MochaTests {
+  override match(pathToMatch: TestId): boolean {
+    return super.match(pathToMatch) &&
+        !isContainedInDirectory(
+               pathToMatch.pathPair.buildPath,
+               path.join(GEN_DIR, 'test', 'ai_evals', 'report'),
+        );
+  }
+}
+
 /**
  * TODO(333423685)
  * - watch
@@ -431,12 +441,13 @@ function main() {
     new (options['node-unit-tests'] ? MochaFrontendTests : KarmaTests)(
         path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay'), path.join(GEN_DIR, 'mcp')),
     new MochaTests(path.join(GEN_DIR, 'test/e2e'), 'run_devtools_e2e_tests'),
-    new MochaTests(path.join(GEN_DIR, 'test/ai_evals')),
+    new MochaAiEvalsTests(path.join(GEN_DIR, 'test/ai_evals')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/build/tests')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/gn_deps_verifier/tests')),
+    new ScriptTests(path.join(SOURCE_ROOT, 'test/ai_evals/report')),
   ];
 
   if (!options['skip-ninja']) {

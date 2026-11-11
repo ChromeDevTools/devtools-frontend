@@ -109,7 +109,12 @@ export function resolveBuildTestId(spec: string): string {
     file = match[1];
     caseName = match[2];
   }
-  if (file.startsWith('scripts/') || file.startsWith('scripts\\')) {
+  const normalizedFile = file.replaceAll('\\', '/');
+  const isScriptTest = [
+    'scripts/',
+    'test/ai_evals/report/',
+  ].some(dir => normalizedFile.startsWith(dir));
+  if (isScriptTest) {
     const absoluteFile = path.join(SOURCE_ROOT, file);
     return caseName !== undefined ? `${absoluteFile}:${caseName}` : absoluteFile;
   }

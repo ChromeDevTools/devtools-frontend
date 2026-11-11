@@ -26,6 +26,7 @@ node_script_test("devtools_script_tests") {
     devtools_location_prepend +
         "front_end/ui/visual_logging/KnownContextValues.ts",
     devtools_location_prepend + "scripts/",
+    devtools_location_prepend + "test/ai_evals/report/",
     devtools_location_prepend + "test/build.json",
     devtools_location_prepend + "test/conductor/",
     devtools_location_prepend + "test/scripts/",

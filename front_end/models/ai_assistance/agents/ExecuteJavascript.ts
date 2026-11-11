@@ -95,7 +95,7 @@ export async function executeJsCode(
                                       {throwOnSideEffect: !!throwOnSideEffect});
 }
 
-const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
+export const MAX_OBSERVATION_BYTE_LENGTH = 8_000;
 const OBSERVATION_TIMEOUT = 5_000;
 
 export interface JavascriptExecutorOptions {
@@ -226,7 +226,8 @@ export class JavascriptExecutor {
       const byteCount = Platform.StringUtilities.countWtf8Bytes(result);
       Host.userMetrics.freestylerEvalResponseSize(byteCount);
       if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
-        throw new Error('Output exceeded the maximum allowed length.');
+        throw new Error(
+            `Output of ${byteCount} bytes exceeded the maximum allowed (${MAX_OBSERVATION_BYTE_LENGTH} bytes).`);
       }
       return {
         observation: result,

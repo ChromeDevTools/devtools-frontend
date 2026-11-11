@@ -80,6 +80,50 @@ describe('ExecuteJavaScriptTool', () => {
 }`);
   });
 
+  describe('observation byte length limit', () => {
+    const defaultArgs = {
+      explanation: 'Test output size limits',
+      title: 'Title',
+      code: 'console.log("test")',
+    };
+
+    function createContext(execJsOutput: string) {
+      return {
+        getExecutionContextNode: () => element,
+        execJs: sinon.stub().resolves(execJsOutput),
+        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+        createExtensionScope: sinon.stub().returns({
+          install: sinon.stub().resolves(),
+          uninstall: sinon.stub().resolves(),
+        }),
+        getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+          status: 'ESTABLISHED_ORIGIN',
+          origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+        }),
+      };
+    }
+
+    it('returns successful result when output is exactly 8000 bytes', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const context = createContext('a'.repeat(8_000));
+
+      const response = await tool.handler(defaultArgs, context);
+
+      assertIsResult(response);
+      assert.strictEqual(response.result, 'a'.repeat(8_000));
+    });
+
+    it('returns error when output exceeds 8000 WTF-8 bytes', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const context = createContext('é'.repeat(4_001));
+
+      const response = await tool.handler(defaultArgs, context);
+
+      assertIsResult(response);
+      assert.strictEqual(response.result, 'Error: Output of 8002 bytes exceeded the maximum allowed (8000 bytes).');
+    });
+  });
+
   it('returns error when execution context node is missing', async () => {
     const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
     const context = {

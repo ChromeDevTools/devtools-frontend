@@ -7,7 +7,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
-import {JavascriptExecutor} from '../agents/ExecuteJavascript.js';
+import {JavascriptExecutor, MAX_OBSERVATION_BYTE_LENGTH} from '../agents/ExecuteJavascript.js';
 
 import {
   type BaseToolCapability,
@@ -134,7 +134,8 @@ export class ExecuteJavaScriptTool implements
 
 # Instructions
 
-* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
+* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`, and serialized output must not exceed ${
+                MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
 * $0 refers to the currently selected DOM node (or document body if none selected).
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.

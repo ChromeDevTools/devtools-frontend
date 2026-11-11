@@ -3,14 +3,17 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, before, beforeEach, describe, it} from 'mocha';
+import {after, afterEach, before, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {SnapshotTester} from '../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
@@ -285,6 +288,8 @@ describeWithEnvironment('RehydratingConnection emittance', function() {
         type: 'REHYDRATING_TRACE_FILE',
         traceJson: JSON.stringify(contents),
       },
+      origin: window.location.origin,
+      source: window.opener,
     } as MessageEvent);
 
     // Poll for rehydration complete
@@ -323,6 +328,201 @@ describeWithEnvironment('RehydratingConnection emittance', function() {
   });
 });
 
+// A minimal "enhanced trace" whose single primary frame's url is fully controlled.
+function makeTrace(frameUrl: string): object {
+  return {
+    traceEvents: [
+      {
+        cat: 'disabled-by-default-devtools.timeline',
+        name: 'TracingStartedInBrowser',
+        ph: 'I',
+        pid: 1,
+        tid: 1,
+        ts: 0,
+        args: {
+          data: {
+            frames: [
+              {
+                frame: 'FRAME',
+                isInPrimaryMainFrame: true,
+                isOutermostMainFrame: true,
+                parent: '',
+                processId: 1,
+                url: frameUrl,
+                pid: 1,
+              },
+            ],
+          },
+        },
+      },
+    ],
+  };
+}
+
+describe('RehydratingConnection postMessage loading', () => {
+  setupLocaleHooks();
+
+  let connections: SDK.RehydratingConnection.RehydratingConnectionTransport[] = [];
+
+  function createFrameWindow(): Window {
+    const frame = document.createElement('iframe');
+    renderElementIntoDOM(frame, {allowMultipleChildren: true});
+    assert.isNotNull(frame.contentWindow);
+    sinon.stub(frame.contentWindow, 'postMessage');
+    return frame.contentWindow;
+  }
+
+  function createTransport(
+      onConnectionLost: (message: Platform.UIString.LocalizedString) => void = sinon.stub(),
+      ): SDK.RehydratingConnection.RehydratingConnectionTransport {
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    connections.push(conn);
+    return conn;
+  }
+
+  beforeEach(() => {
+    connections = [];
+    sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
+    if (window !== window.top) {
+      sinon.stub(window.parent, 'postMessage');
+    }
+  });
+
+  afterEach(() => {
+    for (const conn of connections) {
+      void conn.disconnect().catch(() => {});
+    }
+    delete window.opener;
+  });
+
+  it('ignores a trace posted from another origin to a popup window', () => {
+    const popupOpener = createFrameWindow();
+    window.opener = popupOpener;
+    const onConnectionLost = sinon.stub();
+    const conn = createTransport(onConnectionLost);
+    const messages: ServerMessage[] = [];
+    conn.setOnMessage(message => messages.push(message as ServerMessage));
+    const removeListener = sinon.spy(window, 'removeEventListener');
+
+    window.dispatchEvent(new MessageEvent('message', {
+      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(makeTrace('https://evil.example/'))},
+      origin: 'https://evil.example',
+      source: popupOpener,
+    }));
+
+    assert.lengthOf(messages, 0);
+    assert.strictEqual(conn.rehydratingConnectionState,
+                       SDK.RehydratingConnection.RehydratingConnectionState.INITIALIZED);
+    sinon.assert.notCalled(onConnectionLost);
+    sinon.assert.neverCalledWith(removeListener, 'message', sinon.match.func);
+  });
+
+  it('accepts a same-origin trace posted from the popup opener', () => {
+    const popupOpener = createFrameWindow();
+    window.opener = popupOpener;
+    const onConnectionLost = sinon.stub();
+    const conn = createTransport(onConnectionLost);
+    const messages: ServerMessage[] = [];
+    conn.setOnMessage(message => messages.push(message as ServerMessage));
+
+    sinon.assert.calledOnceWithExactly(popupOpener.postMessage as sinon.SinonStub, {type: 'REHYDRATING_WINDOW_READY'});
+
+    window.dispatchEvent(new MessageEvent('message', {
+      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(makeTrace('https://example.com/legit'))},
+      origin: window.location.origin,
+      source: popupOpener,
+    }));
+
+    sinon.assert.notCalled(onConnectionLost);
+    const targetCreated = messages.find(m => m.method === 'Target.targetCreated');
+    assert.isOk(targetCreated);
+    assert.strictEqual((targetCreated.params as Protocol.Target.TargetCreatedEvent).targetInfo.url,
+                       'https://example.com/legit');
+  });
+
+  it('ignores a trace whose source is not the host window', () => {
+    const siblingWindow = createFrameWindow();
+    const onConnectionLost = sinon.stub();
+    const conn = createTransport(onConnectionLost);
+    const messages: ServerMessage[] = [];
+    conn.setOnMessage(message => messages.push(message as ServerMessage));
+
+    window.dispatchEvent(new MessageEvent('message', {
+      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(makeTrace('https://evil.example/'))},
+      origin: window.location.origin,
+      source: siblingWindow,
+    }));
+
+    assert.lengthOf(messages, 0);
+    assert.strictEqual(conn.rehydratingConnectionState,
+                       SDK.RehydratingConnection.RehydratingConnectionState.INITIALIZED);
+    sinon.assert.notCalled(onConnectionLost);
+  });
+
+  it('accepts a cross-origin trace from the parent window when embedded in an iframe', () => {
+    const onConnectionLost = sinon.stub();
+    const conn = createTransport(onConnectionLost);
+    const messages: ServerMessage[] = [];
+    conn.setOnMessage(message => messages.push(message as ServerMessage));
+
+    sinon.assert.calledOnceWithExactly(window.parent.postMessage as sinon.SinonStub, {type: 'REHYDRATING_IFRAME_READY'},
+                                       '*');
+
+    window.dispatchEvent(new MessageEvent('message', {
+      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(makeTrace('https://example.com/embedded'))},
+      origin: 'https://embedder.example',
+      source: window.parent,
+    }));
+
+    sinon.assert.notCalled(onConnectionLost);
+    const targetCreated = messages.find(m => m.method === 'Target.targetCreated');
+    assert.isOk(targetCreated);
+    assert.strictEqual((targetCreated.params as Protocol.Target.TargetCreatedEvent).targetInfo.url,
+                       'https://example.com/embedded');
+  });
+
+  it('does not drop the listener on an untrusted or unrelated message', () => {
+    const popupOpener = createFrameWindow();
+    const siblingWindow = createFrameWindow();
+    window.opener = popupOpener;
+    const conn = createTransport();
+    const messages: ServerMessage[] = [];
+    conn.setOnMessage(message => messages.push(message as ServerMessage));
+
+    window.dispatchEvent(new MessageEvent('message', {
+      data: 'junk',
+      origin: 'https://evil.example',
+      source: null,
+    }));
+    window.dispatchEvent(new MessageEvent('message', {
+      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(makeTrace('https://evil.example/'))},
+      origin: 'https://evil.example',
+      source: popupOpener,
+    }));
+    window.dispatchEvent(new MessageEvent('message', {
+      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(makeTrace('https://evil.example/'))},
+      origin: window.location.origin,
+      source: siblingWindow,
+    }));
+    window.dispatchEvent(new MessageEvent('message', {
+      data: {type: 'OTHER_MESSAGE'},
+      origin: window.location.origin,
+      source: popupOpener,
+    }));
+
+    window.dispatchEvent(new MessageEvent('message', {
+      data: {type: 'REHYDRATING_TRACE_FILE', traceJson: JSON.stringify(makeTrace('https://example.com/legit'))},
+      origin: window.location.origin,
+      source: popupOpener,
+    }));
+
+    const targetCreated = messages.find(m => m.method === 'Target.targetCreated');
+    assert.isOk(targetCreated);
+    assert.strictEqual((targetCreated.params as Protocol.Target.TargetCreatedEvent).targetInfo.url,
+                       'https://example.com/legit');
+  });
+});
+
 // `trace_app` reads the `?traceURL` query parameter and fetches it. Because the response is replayed
 // into the trusted front-end as synthetic CDP events, only trusted origins may be fetched, and fetch
 // failures must be handled rather than left as unhandled rejections.
@@ -331,37 +531,6 @@ describeWithEnvironment('RehydratingConnection ?traceURL loading', () => {
   const DISALLOWED_URL = 'https://evil.example.com/trace.json';
   // A fully controlled string that would otherwise end up as a synthetic target's url/title.
   const INJECTED_MARKER = 'javascript:INJECTED_MARKER-<img src=x onerror=alert(document.domain)>';
-
-  // A minimal "enhanced trace" whose single primary frame's url is fully controlled.
-  function makeTrace(frameUrl: string): object {
-    return {
-      traceEvents: [
-        {
-          cat: 'disabled-by-default-devtools.timeline',
-          name: 'TracingStartedInBrowser',
-          ph: 'I',
-          pid: 1,
-          tid: 1,
-          ts: 0,
-          args: {
-            data: {
-              frames: [
-                {
-                  frame: 'FRAME',
-                  isInPrimaryMainFrame: true,
-                  isOutermostMainFrame: true,
-                  parent: '',
-                  processId: 1,
-                  url: frameUrl,
-                  pid: 1,
-                },
-              ],
-            },
-          },
-        },
-      ],
-    };
-  }
 
   let queryParamStub: sinon.SinonStub;
   let fetchStub: sinon.SinonStub;

@@ -106,6 +106,11 @@ export class RehydratingConnectionTransport implements ProtocolClient.Connection
   fetchPromiseForTest?: Promise<void>;
   #onConnectionLost: (message: Platform.UIString.LocalizedString) => void;
   #rehydratingWindow = window;
+  // The window we announced ourselves to; the only one allowed to send the trace.
+  #hostWindow: Window|null = null;
+  // Popup openers (`TimelinePanel.#launchRehydratedSession`) are always same-origin, whereas
+  // external tools may embed `trace_app.html` in a cross-origin iframe (crbug.com/453705035).
+  #requireSameOriginHost = false;
   #onReceiveHostWindowPayloadBound = this.onReceiveHostWindowPayload.bind(this);
 
   constructor(onConnectionLost: (message: Platform.UIString.LocalizedString) => void) {
@@ -153,10 +158,15 @@ export class RehydratingConnectionTransport implements ProtocolClient.Connection
   }
 
   #setupMessagePassing(): void {
-    this.#rehydratingWindow.addEventListener('message', this.#onReceiveHostWindowPayloadBound);
     if (this.#rehydratingWindow.opener) {
+      this.#hostWindow = this.#rehydratingWindow.opener;
+      this.#requireSameOriginHost = true;
+      this.#rehydratingWindow.addEventListener('message', this.#onReceiveHostWindowPayloadBound);
       this.#rehydratingWindow.opener.postMessage({type: 'REHYDRATING_WINDOW_READY'});
     } else if (this.#rehydratingWindow !== window.top) {
+      this.#hostWindow = this.#rehydratingWindow.parent;
+      this.#requireSameOriginHost = false;
+      this.#rehydratingWindow.addEventListener('message', this.#onReceiveHostWindowPayloadBound);
       this.#rehydratingWindow.parent.postMessage({type: 'REHYDRATING_IFRAME_READY'}, '*');
     } else {
       this.#onConnectionLost(i18nString(UIStrings.noHostWindow));
@@ -164,22 +174,41 @@ export class RehydratingConnectionTransport implements ProtocolClient.Connection
   }
 
   /**
+   * The trace payload is replayed into the front-end as synthetic CDP events, so only accept it
+   * from the window we announced ourselves to. For popups, also require same-origin (matching
+   * `TimelinePanel.#launchRehydratedSession`); iframe embedders may be cross-origin
+   * (crbug.com/453705035), so `event.source` is checked there.
+   */
+  #isFromHostWindow(event: MessageEvent): boolean {
+    if (this.#hostWindow === null || event.source !== this.#hostWindow) {
+      return false;
+    }
+    if (this.#requireSameOriginHost && event.origin !== this.#rehydratingWindow.location.origin) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * This is a callback for rehydrated session to receive payload from host window. Payload includes but not limited to
    * the trace event and all necessary data to power a rehydrated session.
    */
   onReceiveHostWindowPayload(event: MessageEvent): void {
-    if (event.data.type === 'REHYDRATING_TRACE_FILE') {
-      const traceJson = event.data.traceJson as string;
-      let trace;
-      try {
-        trace = new TraceObject(JSON.parse(traceJson));
-      } catch {
-        this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
-        return;
-      }
-      void this.startHydration(trace);
+    // Ignore (and keep listening after) anything that is not the trace from the host window,
+    // so a stray or hostile message cannot take the one-shot channel away from the host.
+    if (!this.#isFromHostWindow(event) || event.data?.type !== 'REHYDRATING_TRACE_FILE') {
+      return;
     }
     this.#rehydratingWindow.removeEventListener('message', this.#onReceiveHostWindowPayloadBound);
+    const traceJson = event.data.traceJson as string;
+    let trace;
+    try {
+      trace = new TraceObject(JSON.parse(traceJson));
+    } catch {
+      this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
+      return;
+    }
+    void this.startHydration(trace);
   }
 
   async startHydration(trace: TraceObject): Promise<boolean> {
@@ -285,6 +314,7 @@ export class RehydratingConnectionTransport implements ProtocolClient.Connection
   }
 
   disconnect(): Promise<void> {
+    this.#rehydratingWindow.removeEventListener('message', this.#onReceiveHostWindowPayloadBound);
     return Promise.reject();
   }
 }
@@ -321,9 +351,9 @@ export class RehydratingSession extends RehydratingSessionBase {
   scripts: RehydratingScript[] = [];
   resources: RehydratingResource[] = [];
 
-  constructor(
-      sessionId: number, target: RehydratingTarget, executionContexts: RehydratingExecutionContext[],
-      scripts: RehydratingScript[], resources: RehydratingResource[], connection: RehydratingConnectionInterface) {
+  constructor(sessionId: number, target: RehydratingTarget, executionContexts: RehydratingExecutionContext[],
+              scripts: RehydratingScript[], resources: RehydratingResource[],
+              connection: RehydratingConnectionInterface) {
     super(connection);
     this.sessionId = sessionId;
     this.target = target;
@@ -386,23 +416,22 @@ export class RehydratingSession extends RehydratingSessionBase {
   }
 
   declareSessionAttachedToTarget(): void {
-    this.sendMessageToFrontend(
-        {
-          method: 'Target.attachedToTarget',
-          params: {
-            sessionId: this.sessionId,
-            waitingForDebugger: false,
-            targetInfo: {
-              targetId: this.target.targetId,
-              type: this.target.type,
-              title: this.target.url,
-              url: this.target.url,
-              attached: true,
-              canAccessOpener: false,
-            },
-          },
+    this.sendMessageToFrontend({
+      method: 'Target.attachedToTarget',
+      params: {
+        sessionId: this.sessionId,
+        waitingForDebugger: false,
+        targetInfo: {
+          targetId: this.target.targetId,
+          type: this.target.type,
+          title: this.target.url,
+          url: this.target.url,
+          attached: true,
+          canAccessOpener: false,
         },
-        /* attachSessionId */ false);
+      },
+    },
+                               /* attachSessionId */ false);
   }
 
   // Runtime.Enable indicates that Runtime domain is flushing the event to communicate

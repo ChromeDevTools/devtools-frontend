@@ -23,6 +23,7 @@ import * as AiAssistance from './ai_assistance.js';
 type Skill = AiAssistance.Skill.Skill;
 type SkillName = AiAssistance.Skill.SkillName;
 const SKILLS = AiAssistance.SkillRegistry.SKILLS;
+const PerformanceTraceFormatter = AiAssistance.PerformanceTraceFormatter.PerformanceTraceFormatter;
 
 function assertIsFunctionResponse(part: Host.AidaClient.Part): asserts part is Host.AidaClient.FunctionResponsePart {
   assert.isTrue('functionResponse' in part);
@@ -156,6 +157,35 @@ describe('AiAgent2', () => {
     assert.isTrue(result.includes(SKILLS.styling.instructions));
     assert.isTrue(agent.activeSkills.has('styling'));
   });
+
+  it('appends compressed data formats to performance skill instructions when learned, but not in the unloaded manifest',
+     async () => {
+       const aidaClient = mockAidaClient();
+       const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+       mockSkills(agent, {
+         performance: SKILLS.performance,
+       });
+
+       const enhancedQuery = await agent.enhanceQuery('question');
+       assert.include(enhancedQuery, SKILLS.performance.description);
+       assert.notInclude(enhancedQuery, '# Data Formats');
+       assert.notInclude(enhancedQuery, PerformanceTraceFormatter.networkDataFormatDescription.trim());
+       assert.notInclude(enhancedQuery, PerformanceTraceFormatter.callFrameDataFormatDescription.trim());
+
+       const learnResult = await agent.learnSkill(['performance']);
+       assert.include(learnResult, '# Investigation Workflow');
+       assert.include(learnResult, '# Data Formats');
+       assert.include(learnResult, PerformanceTraceFormatter.networkDataFormatDescription.trim());
+       assert.include(learnResult, PerformanceTraceFormatter.callFrameDataFormatDescription.trim());
+
+       const secondLearnResult = await agent.learnSkill(['performance']);
+       assert.strictEqual(
+           secondLearnResult,
+           'Error: Skill \'performance\' is already loaded. Call its tools directly instead of invoking learnSkills for \'performance\' again.');
+       assert.notInclude(secondLearnResult, '# Data Formats');
+       assert.notInclude(secondLearnResult, PerformanceTraceFormatter.networkDataFormatDescription.trim());
+       assert.notInclude(secondLearnResult, PerformanceTraceFormatter.callFrameDataFormatDescription.trim());
+     });
 
   it('prevents duplicate loading', async () => {
     const aidaClient = mockAidaClient();
@@ -360,8 +390,8 @@ describe('AiAgent2', () => {
     assert.deepEqual(args, {elements: [1], styleProperties: ['color'], explanation: 'testing'});
 
     // Verify AIDA response included tool output
-    const hasTitle = responses.some(
-        r => r.type === AiAssistance.AiAgent.ResponseType.TITLE && r.title === 'Reading computed and source styles');
+    const hasTitle = responses.some(r => r.type === AiAssistance.AiAgent.ResponseType.TITLE &&
+                                        r.title === 'Reading computed and source styles');
     assert.isTrue(hasTitle);
   });
 

@@ -16,7 +16,6 @@ for more details about the presubmit API built into gcl.
 import json
 import re
 import sys
-import six
 import time
 
 from pathlib import Path
@@ -57,7 +56,7 @@ def _ExecuteSubProcess(input_api,
                        script_path,
                        script_arguments=None,
                        message=None):
-    if isinstance(script_path, six.string_types):
+    if isinstance(script_path, str):
         script_path = [input_api.python3_executable, script_path]
 
     start_time = time.time()
@@ -179,6 +178,52 @@ def CheckBugAssociationOnCommit(input_api, output_api):
         results.append(output_api.PresubmitError(message))
 
     return results
+
+
+_PIPER_TAG_RE = re.compile(
+    r'^(TAG|CONV|MARKDOWN|BUG|FIXED|R_FUTURE|ORIGINAL_AUTHOR|WANT_LGTM|AUTOSUBMIT_BEHAVIOR)='
+)
+
+
+def CheckNoPiperTagsInDescription(input_api, output_api):
+    results = []
+    description = input_api.change.FullDescriptionText()
+    offending_lines = [
+        line for line in description.splitlines() if _PIPER_TAG_RE.match(line)
+    ]
+    if offending_lines:
+        lines_formatted = '\n'.join(f'  {line}' for line in offending_lines)
+        message = (
+            f'Commit description contains Piper-style KEY=VALUE tags:\n'
+            f'{lines_formatted}\n\n'
+            'Please remove these lines from the commit description:\n'
+            '- Use Git trailers (such as "Bug:" or "Fixed:") in the commit footer\n'
+            '  instead of "BUG=" or "FIXED=".\n'
+            '- Do not include internal metadata tags like "TAG=" or "CONV=" in\n'
+            '  public Git commit messages; they break Git trailer parsing and\n'
+            '  Gerrit Change-Id generation.\n'
+            '- To link agent conversations out of band on upload without adding\n'
+            '  "CONV=" to the commit description, run:\n'
+            '    git config --global cl.upload-conversation-id true\n')
+        results.append(output_api.PresubmitError(message))
+    return results
+
+
+def CheckPresubmitUnitTests(input_api, output_api):
+    affected = [
+        input_api.os_path.basename(f.LocalPath())
+        for f in input_api.AffectedFiles()
+    ]
+    if 'PRESUBMIT.py' not in affected and 'PRESUBMIT_test.py' not in affected:
+        return []
+    return input_api.canned_checks.RunUnitTestsInDirectory(
+        input_api,
+        output_api,
+        input_api.PresubmitLocalPath(),
+        [r'^PRESUBMIT_test\.py$'],
+        run_on_python2=False,
+        skip_shebang_check=True,
+    )
 
 
 def CheckExperimentTelemetry(input_api, output_api):

@@ -25,6 +25,12 @@ git new-branch <branch-name>
 1. Make your changes.
 2. Stage them: `git add <files>`.
 3. Create the commit: `git commit -m "Your message"`.
+   * Follow public commit message conventions: a concise summary line, a blank line, an explanatory body wrapping at 72 characters, and Git trailers (`Bug:`, `Fixed:`) in the footer.
+   * **Never add Piper `KEY=VALUE` tags** (such as `TAG=agy`, `CONV=...`, `BUG=...`, `FIXED=...`, or `MARKDOWN=true`). Commit messages must use Git trailers only; `PRESUBMIT.py` rejects Piper tags because they break Git trailer parsing and can cause duplicate `Change-Id:` footers.
+   * To associate agent conversations out of band without polluting commit descriptions with `CONV=`, configure:
+     ```bash
+     git config --global cl.upload-conversation-id true
+     ```
 
 ### Updating a CL (Amending)
 To update your CL after feedback or more work:
@@ -79,6 +85,7 @@ Or, if the WIP patchset is already uploaded, vote `Commit-Queue+1` via `/google/
 * Use the same writing style as the current committer.
 * Keep line length below 72.
 * Add a `Bug: <issue number>` (or `Fixed: <issue number>` / `Bug: None`) trailer on a separate line.
+* Use Git trailers only; never add Piper `KEY=VALUE` tags (`TAG=`, `CONV=`, etc.), which are rejected by `PRESUBMIT.py`. Ensure `cl.upload-conversation-id` is enabled (`git config --global cl.upload-conversation-id true`) to link conversation metadata out of band.
 * Amend formatter/linter changes and fix linter issues before uploading.
 * For a brand new stack of CLs, perform the initial WIP upload on each branch individually in parent-to-child order so each CL receives its own commit description.
 
@@ -154,6 +161,7 @@ To check whether a DevTools commit (`devtools/devtools-frontend`) has rolled int
 | Check release & roll status | Query `https://chromiumdash.appspot.com/fetch_commit?commit=<sha>` |
 
 ## Common Mistakes
+- **Adding Piper `KEY=VALUE` tags to commit messages:** Never add `TAG=agy`, `CONV=...`, `BUG=...`, `FIXED=...`, or other Piper metadata tags to commit descriptions. DevTools is a public Git repository; internal Piper tags break Git trailer parsing and Gerrit `Change-Id` handling, and are rejected by `PRESUBMIT.py`. Use Git trailers (`Bug:`, `Fixed:`) instead, and enable `git config --global cl.upload-conversation-id true` so `git cl upload` attaches conversation IDs out of band.
 - **Starting human review before resolving `ChromiumCodeReviewAgent` findings:** Never pass `--send-mail` (`-s`) or `-c` (`--use-commit-queue`) on the initial upload, or add human reviewers to the attention set before AI review finishes. Upload in WIP with `--cq-dry-run`, wait for `ChromiumCodeReviewAgent` to complete, and address all `ERROR` and `WARNING` findings first.
 - **Multiple commits on one branch:** Gerrit expects one commit per CL. Always `commit --amend`.
 - **Using `git checkout -b`:** Does not set up tracking information correctly for `depot_tools`. Use `git new-branch`.

@@ -171,6 +171,12 @@ findings):
   example, "V8 will stop emitting X; this must land first").
 - Include a `Bug:` or `Fixed:` trailer, or `Bug: None`. Keep lines under 72
   characters.
+- **Never add Piper `KEY=VALUE` tags:** Flag any column-0 lines matching
+  `TAG=`, `CONV=`, `BUG=`, `FIXED=`, or `MARKDOWN=true`. DevTools commit
+  descriptions must use standard Git trailers (`Bug:`, `Fixed:`) only; Piper
+  tags break Git trailer parsing and are rejected by `PRESUBMIT.py`. Agent
+  conversations should be linked out of band via
+  `git config --global cl.upload-conversation-id true`.
 - For migrations and stacked series, list the legacy tests or files covered,
   and number the series (for example, `(13/16)`).
 - **UI Eng Vision migration completeness & `Fixed:` vs `Bug:`**: Flag

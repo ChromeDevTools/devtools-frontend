@@ -54,6 +54,7 @@ Follow the following format and constraints:
    - **Body appendix:** `https://crsrc.org/c/third_party/blink/web_tests/<long test name>;drc=4d51e9cab50efd0f8029c45a486e199a1d519fd1`
    - **Bug line:** `Fixed: <issue number>`
    - **Line Length Constraint:** Wrap all lines in the commit message to a maximum of 72 characters per line.
+   - **No Piper tags:** Never add Piper `KEY=VALUE` tags (such as `TAG=agy` or `CONV=...`); use Git trailers only (`PRESUBMIT.py` rejects Piper tags).
 
 Example commit message:
 

@@ -2756,4 +2756,27 @@ describeWithEnvironment('NavigatorView', () => {
       project.removeProject();
     });
   });
+
+  describe('dependency injection', () => {
+    it('uses injected dependencies', () => {
+      const mockTargetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [
+        networkProjectManager,
+        workspace,
+        Workspace.IgnoreListManager.IgnoreListManager.instance(),
+        Persistence.Persistence.PersistenceImpl.instance(),
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(),
+        mockTargetManager,
+        Common.Settings.Settings.instance(),
+      ]);
+
+      navigatorView.wasShown();
+      try {
+        sinon.assert.calledOnceWithExactly(mockTargetManager.observeTargets, navigatorView);
+      } finally {
+        navigatorView.willHide();
+      }
+      sinon.assert.calledOnceWithExactly(mockTargetManager.unobserveTargets, navigatorView);
+    });
+  });
 });

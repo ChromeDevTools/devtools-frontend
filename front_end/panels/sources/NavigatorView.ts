@@ -586,8 +586,23 @@ const NavigatorViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.W
     Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 
 export class NavigatorView extends NavigatorViewBase implements SDK.TargetManager.Observer {
-  static override readonly INJECT: readonly[typeof Bindings.NetworkProject.NetworkProjectManager] =
-      [Bindings.NetworkProject.NetworkProjectManager] as const;
+  static override readonly INJECT: readonly[typeof Bindings.NetworkProject.NetworkProjectManager,
+                                            typeof Workspace.Workspace.WorkspaceImpl,
+                                            typeof Workspace.IgnoreListManager.IgnoreListManager,
+                                            typeof Persistence.Persistence.PersistenceImpl,
+                                            typeof Persistence.NetworkPersistenceManager.NetworkPersistenceManager,
+                                            typeof SDK.TargetManager.TargetManager,
+                                            typeof Common.Settings.Settings,
+  ] =
+      [
+        Bindings.NetworkProject.NetworkProjectManager,
+        Workspace.Workspace.WorkspaceImpl,
+        Workspace.IgnoreListManager.IgnoreListManager,
+        Persistence.Persistence.PersistenceImpl,
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager,
+        SDK.TargetManager.TargetManager,
+        Common.Settings.Settings,
+      ] as const;
 
   private readonly uiSourceCodeNodes:
       Platform.MapUtilities.Multimap<Workspace.UISourceCode.UISourceCode, NavigatorUISourceCodeTreeNode>;
@@ -602,17 +617,18 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   #navigatorGroupByAuthoredChangeListener?: () => void;
   #enableAuthoredGrouping = false;
   #projectFilter?: (project: Workspace.Workspace.Project) => boolean;
-  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
+  #workspace: Workspace.Workspace.WorkspaceImpl;
   #subscribed = false;
   #needsRegroup = false;
   #prevJustMyCode?: boolean;
   readonly #groupingChangedListener = this.groupingChanged.bind(this);
   readonly #ignoreListChangedListener = this.ignoreListChanged.bind(this);
-  #networkProjectManager: Bindings.NetworkProject.NetworkProjectManager;
-  #ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
-  #persistence?: Persistence.Persistence.PersistenceImpl;
-  #networkPersistenceManager?: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
-  #targetManager?: SDK.TargetManager.TargetManager;
+  readonly #networkProjectManager: Bindings.NetworkProject.NetworkProjectManager;
+  readonly #ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
+  readonly #persistence: Persistence.Persistence.PersistenceImpl;
+  readonly #networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
+  readonly #targetManager: SDK.TargetManager.TargetManager;
+  readonly #settings: Common.Settings.Settings;
   private groupByFrame?: boolean;
   private groupByAuthored?: boolean;
   private groupByDomain?: boolean;
@@ -624,13 +640,26 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 
   constructor(
       element?: HTMLElement,
-      [networkProjectManager]: UI.Widget.WidgetDependencies<typeof NavigatorView> =
-          [Bindings.NetworkProject.NetworkProjectManager.instance()],
+      [
+        networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance(),
+        workspace = Workspace.Workspace.WorkspaceImpl.instance(),
+        ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance(),
+        persistence = Persistence.Persistence.PersistenceImpl.instance(),
+        networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(),
+        targetManager = SDK.TargetManager.TargetManager.instance(),
+        settings = Common.Settings.Settings.instance(),
+      ]: Partial<UI.Widget.WidgetDependencies<typeof NavigatorView>> = [],
       view: View = DEFAULT_VIEW,
   ) {
     super(element, {useShadowDom: true});
     this.#view = view;
     this.#networkProjectManager = networkProjectManager;
+    this.#workspace = workspace;
+    this.#ignoreListManager = ignoreListManager;
+    this.#persistence = persistence;
+    this.#networkPersistenceManager = networkPersistenceManager;
+    this.#targetManager = targetManager;
+    this.#settings = settings;
 
     this.uiSourceCodeNodes = new Platform.MapUtilities.Multimap();
     this.subfolderNodes = new Map();
@@ -643,12 +672,24 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
         this.contentElement, {'sources.rename': this.renameShortcut.bind(this)});
 
     this.navigatorGroupByFolderSetting =
-        Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
+        this.#settings.resolve(SettingsUI.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
     this.navigatorJustMyCodeSetting =
-        Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
+        this.#settings.resolve(SettingsUI.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
 
     this.initGrouping();
     this.requestUpdate();
+  }
+
+  get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager {
+    return this.#ignoreListManager;
+  }
+
+  get persistence(): Persistence.Persistence.PersistenceImpl {
+    return this.#persistence;
+  }
+
+  get settings(): Common.Settings.Settings {
+    return this.#settings;
   }
 
   override wasShown(): void {
@@ -674,19 +715,15 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
     }
 
-    this.#ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
     this.#ignoreListManager.addChangeListener(this.#ignoreListChangedListener);
 
-    this.#persistence = Persistence.Persistence.PersistenceImpl.instance();
     this.#persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.onBindingChanged, this);
     this.#persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
 
-    this.#networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     this.#networkPersistenceManager.addEventListener(
         Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
         this.#onRequestsForHeaderOverridesFileChanged, this);
 
-    this.#targetManager = SDK.TargetManager.TargetManager.instance();
     this.#targetManager.addEventListener(SDK.TargetManager.Events.NAME_CHANGED, this.targetNameChanged, this);
     this.#targetManager.observeTargets(this);
 
@@ -784,41 +821,29 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       this.navigatorGroupByAuthoredSetting.removeChangeListener(this.#navigatorGroupByAuthoredChangeListener);
     }
 
-    this.#ignoreListManager?.removeChangeListener(this.#ignoreListChangedListener);
-    this.#ignoreListManager = undefined;
+    this.#ignoreListManager.removeChangeListener(this.#ignoreListChangedListener);
 
-    if (this.#persistence) {
-      this.#persistence.removeEventListener(Persistence.Persistence.Events.BindingCreated, this.onBindingChanged, this);
-      this.#persistence.removeEventListener(Persistence.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
-      this.#persistence = undefined;
-    }
+    this.#persistence.removeEventListener(Persistence.Persistence.Events.BindingCreated, this.onBindingChanged, this);
+    this.#persistence.removeEventListener(Persistence.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
 
-    if (this.#networkPersistenceManager) {
-      this.#networkPersistenceManager.removeEventListener(
-          Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
-          this.#onRequestsForHeaderOverridesFileChanged, this);
-      this.#networkPersistenceManager = undefined;
-    }
+    this.#networkPersistenceManager.removeEventListener(
+        Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
+        this.#onRequestsForHeaderOverridesFileChanged, this);
 
-    if (this.#targetManager) {
-      this.#targetManager.removeEventListener(SDK.TargetManager.Events.NAME_CHANGED, this.targetNameChanged, this);
-      this.#targetManager.unobserveTargets(this);
-      this.#targetManager = undefined;
-    }
+    this.#targetManager.removeEventListener(SDK.TargetManager.Events.NAME_CHANGED, this.targetNameChanged, this);
+    this.#targetManager.unobserveTargets(this);
 
     this.#networkProjectManager.removeEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED,
                                                     this.frameAttributionAdded, this);
     this.#networkProjectManager.removeEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
                                                     this.frameAttributionRemoved, this);
 
-    if (this.#workspace) {
-      this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback,
-                                          this);
-      this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved,
-                                          this.uiSourceCodeRemovedCallback, this);
-      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
-      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
-    }
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback,
+                                        this);
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved,
+                                        this.uiSourceCodeRemovedCallback, this);
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
   }
 
   get enableAuthoredGrouping(): boolean {
@@ -836,8 +861,8 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       this.#navigatorGroupByAuthoredChangeListener = undefined;
     }
     if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredSetting = Common.Settings.Settings.instance().resolve(
-          SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
+      this.navigatorGroupByAuthoredSetting =
+          this.#settings.resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
       this.#navigatorGroupByAuthoredChangeListener = this.groupingChanged.bind(this);
       if (this.#subscribed) {
         this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
@@ -1183,8 +1208,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 
   private addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     if (this.navigatorJustMyCodeSetting.get() &&
-        Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
-            uiSourceCode)) {
+        this.#ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       return;
     }
 
@@ -1450,7 +1474,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     }
 
     const rootOrDeployed = this.rootOrDeployedNode();
-    if (target === SDK.TargetManager.TargetManager.instance().scopeTarget()) {
+    if (target === this.#targetManager.scopeTarget()) {
       return rootOrDeployed;
     }
 
@@ -1648,7 +1672,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.deployedNode = undefined;
     if (!tearDownOnly) {
       // Reset the workspace to repopulate filesystem folders.
-      this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
+      this.resetWorkspace(this.#workspace);
     }
     this.requestUpdate();
   }
@@ -1799,9 +1823,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       return;
     }
 
-    await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance()
-        .project()
-        ?.deleteDirectoryRecursively(node.folderPath);
+    await this.#networkPersistenceManager.project()?.deleteDirectoryRecursively(node.folderPath);
   }
 
   private findTopNonMergedNode(node: NavigatorTreeNode): NavigatorTreeNode {
@@ -1828,7 +1850,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
           overlayModel.highlightFrame(node.frame.id);
         }
       } else {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(this.#targetManager);
       }
     }
   }
@@ -1868,8 +1890,8 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
         isKnownThirdParty: activeNode.recursiveProperties.exclusivelyThirdParty || false,
         isCurrentlyIgnoreListed: activeNode.recursiveProperties.exclusivelyIgnored || false,
       };
-      for (const {text, callback, jslogContext} of Workspace.IgnoreListManager.IgnoreListManager.instance()
-               .getIgnoreListFolderContextMenuItems(url, options)) {
+      for (const {text, callback, jslogContext} of this.#ignoreListManager.getIgnoreListFolderContextMenuItems(
+               url, options)) {
         contextMenu.defaultSection().appendItem(text, callback, {jslogContext});
       }
     }
@@ -1956,7 +1978,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.reset(true);
     this.initGrouping();
     // Reset the workspace to repopulate filesystem folders.
-    this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
+    this.resetWorkspace(this.#workspace);
     this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }
 
@@ -2271,8 +2293,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
 
   override updateTitle(ignoreIsDirty?: boolean): void {
     const isIgnoreListed =
-        Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
-            this.#uiSourceCode);
+        this.navigatorView.ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(this.#uiSourceCode);
     this.recursiveProperties.exclusivelyIgnored =
         (this.#uiSourceCode.contentType().isScript() || isIgnoreListed) ? isIgnoreListed : null;
 
@@ -2423,10 +2444,10 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     const isOverrides =
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
     return isOverrides ?
-        Common.Settings.Settings.instance()
+        this.navigatorView.settings
             .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
             .get() :
-        Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
+        this.navigatorView.persistence.filePathHasBindings(absoluteFileSystemPath);
   }
 
   override updateTitle(): void {
@@ -2523,10 +2544,10 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     const isOverrides =
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
     return isOverrides ?
-        Common.Settings.Settings.instance()
+        this.navigatorView.settings
             .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
             .get() :
-        Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
+        this.navigatorView.persistence.filePathHasBindings(fileSystemPath);
   }
 
   override updateTitle(): void {

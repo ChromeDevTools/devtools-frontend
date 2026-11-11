@@ -149,4 +149,31 @@ describeWithEnvironment('SoftContextMenu', () => {
 
     menu.discard();
   });
+
+  it('renders a new-badge template with the new-feature accessible label', () => {
+    const promotionId = 'test-menu-promotion';
+    localStorage.removeItem(promotionId);
+    const menu = new UI.SoftContextMenu.SoftContextMenu([{
+                                                          type: 'item',
+                                                          id: 0,
+                                                          label: 'Action',
+                                                          enabled: true,
+                                                          element: UI.UIUtils.maybeCreateNewBadge(promotionId),
+                                                        }],
+                                                        () => {}, true);
+    try {
+      menu.show(document, new AnchorBox(50, 50, 0, 0));
+      const [menuElement] = getOpenMenus();
+      assert.isOk(menuElement);
+      const itemElement = menuElement.querySelector('.soft-context-menu-item');
+      assert.instanceOf(itemElement, HTMLElement);
+      const badge = itemElement.querySelector('.new-badge');
+      assert.instanceOf(badge, HTMLElement);
+      assert.strictEqual(badge.textContent, 'NEW');
+      assert.strictEqual(itemElement.getAttribute('aria-label'), 'Action, This is a new feature');
+    } finally {
+      menu.discard();
+      localStorage.removeItem(promotionId);
+    }
+  });
 });

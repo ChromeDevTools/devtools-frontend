@@ -1496,6 +1496,36 @@ describe('bindCheckbox', () => {
                             'await in asyncFunction');
        });
   });
+
+  describe('maybeCreateNewBadge', () => {
+    const promotionId = 'test-promotion-new-badge';
+    setupLocaleHooks();
+
+    beforeEach(() => {
+      localStorage.removeItem(promotionId);
+    });
+
+    afterEach(() => {
+      localStorage.removeItem(promotionId);
+    });
+
+    it('returns a new-badge template when the promotion should be shown', () => {
+      const badgeTemplate = UI.UIUtils.maybeCreateNewBadge(promotionId);
+      assert.isOk(badgeTemplate);
+
+      const container = document.createElement('div');
+      render(badgeTemplate, container);
+      const badge = querySelectorErrorOnMissing(container, '.new-badge');
+      assert.strictEqual(badge.textContent, 'NEW');
+      assert.strictEqual(badge.getAttribute('jslog'), 'Badge; context: new-badge');
+    });
+
+    it('returns undefined when the promotion should not be shown', () => {
+      sinon.stub(UI.UIUtils.PromotionManager.prototype, 'maybeShowPromotion').withArgs(promotionId).returns(false);
+
+      assert.isUndefined(UI.UIUtils.maybeCreateNewBadge(promotionId));
+    });
+  });
 });
 
 describe('element value modifications', () => {

@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import {render, type TemplateResult} from '../lit/lit.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
@@ -247,13 +248,21 @@ export class SoftContextMenu {
     }
     if (item.element && !item.label) {
       const wrapper = menuItemElement.createChild('div', 'soft-context-menu-custom-item');
-      wrapper.appendChild(item.element);
-      if (item.element?.classList.contains('location-menu')) {
-        const label = item.element.ariaLabel || '';
-        item.element.ariaLabel = '';
+      if (item.element instanceof Element) {
+        wrapper.appendChild(item.element);
+      } else {
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(item.element, wrapper);
+      }
+      const customElement = item.element instanceof Element ? item.element : wrapper.firstElementChild;
+      if (customElement instanceof HTMLElement && customElement.classList.contains('location-menu')) {
+        const label = customElement.ariaLabel || '';
+        customElement.ariaLabel = '';
         ARIAUtils.setLabel(menuItemElement, label);
       }
-      detailsForElement.customElement = (item.element as HTMLElement);
+      if (customElement instanceof HTMLElement) {
+        detailsForElement.customElement = customElement;
+      }
       this.detailsForElementMap.set(menuItemElement, detailsForElement);
       return menuItemElement;
     }
@@ -263,7 +272,14 @@ export class SoftContextMenu {
     }
     createTextChild(menuItemElement, item.label || '');
     if (item.element) {
-      menuItemElement.appendChild(item.element);
+      if (item.element instanceof Element) {
+        menuItemElement.appendChild(item.element);
+      } else {
+        const fragment = document.createDocumentFragment();
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(item.element, fragment);
+        menuItemElement.appendChild(fragment);
+      }
     }
     menuItemElement.createChild('span', 'soft-context-menu-shortcut').textContent = item.shortcut || '';
 
@@ -289,7 +305,7 @@ export class SoftContextMenu {
     } else if (item.shortcut) {
       accessibleName = i18nString(UIStrings.sS, {PH1: String(item.label), PH2: item.shortcut});
     }
-    if (item.element?.className === 'new-badge') {
+    if (menuItemElement.querySelector('.new-badge')) {
       accessibleName = i18nString(UIStrings.sS, {PH1: String(item.label), PH2: i18nString(UIStrings.newFeature)});
     }
     ARIAUtils.setLabel(menuItemElement, accessibleName);
@@ -632,7 +648,7 @@ export interface SoftContextMenuDescriptor {
   checked?: boolean;
   isDevToolsPerformanceMenuItem?: boolean;
   subItems?: SoftContextMenuDescriptor[];
-  element?: Element;
+  element?: Element|TemplateResult;
   shortcut?: string;
   tooltip?: Platform.UIString.LocalizedString;
   jslogContext?: string;

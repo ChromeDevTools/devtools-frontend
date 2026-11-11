@@ -205,6 +205,7 @@ devtools_ui_module("unittests") {
     "StorageBucketsTreeElement.test.ts",
     "StorageView.test.ts",
     "SubAppsView.test.ts",
+    "WebMCPTreeElement.test.ts",
     "WebMCPView.test.ts",
     "preloading/PreloadingView.test.ts",
   ]

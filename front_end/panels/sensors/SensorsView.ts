@@ -784,23 +784,19 @@ export class SensorsView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-    if (this.#cpuPerformanceNoOverrideOptionElement) {
-      this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
-                                                  this.#updateCPUPerformanceNoOverrideLabel, this);
-      this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
-                                                  this.#updateCPUPerformanceNoOverrideLabel, this);
-      this.#updateCPUPerformanceNoOverrideLabel();
-    }
+    this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
+                                                this.#updateCPUPerformanceNoOverrideLabel, this);
+    this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
+                                                this.#updateCPUPerformanceNoOverrideLabel, this);
+    this.#updateCPUPerformanceNoOverrideLabel();
   }
 
   override willHide(): void {
     super.willHide();
-    if (this.#cpuPerformanceNoOverrideOptionElement) {
-      this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
-                                                     this.#updateCPUPerformanceNoOverrideLabel, this);
-      this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
-                                                     this.#updateCPUPerformanceNoOverrideLabel, this);
-    }
+    this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
+                                                   this.#updateCPUPerformanceNoOverrideLabel, this);
+    this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
+                                                   this.#updateCPUPerformanceNoOverrideLabel, this);
   }
 
   #updateCPUPerformanceNoOverrideLabel(): void {

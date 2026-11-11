@@ -50,7 +50,8 @@
 }
 
 .network-log-grid.data-grid td {
-  height: 41px;
+  /* 2 * 20px (--sys-size-9) two-line base row + 1px (--sys-size-1) .icon top margin. */
+  height: calc(2 * var(--sys-size-9) + var(--sys-size-1));
   border-left: var(--sys-size-1) solid var(--sys-color-divider);
   vertical-align: middle;
 }

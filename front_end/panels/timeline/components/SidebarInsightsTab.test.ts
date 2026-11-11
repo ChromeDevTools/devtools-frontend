@@ -62,8 +62,8 @@ describeWithEnvironment('SidebarInsightsTab', () => {
     assert.strictEqual(computedStyle.flexGrow, '1');
   });
 
-  it('renders correctly in light and dark theme', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
+  async function renderForScreenshot(context: Mocha.Context): Promise<void> {
+    const parsedTrace = await TraceLoader.traceEngine(context, 'multiple-navigations.json.gz');
 
     const component = new Components.SidebarInsightsTab.SidebarInsightsTab();
     component.element.style.width = '300px';
@@ -71,9 +71,17 @@ describeWithEnvironment('SidebarInsightsTab', () => {
     renderElementIntoDOM(component);
     component.parsedTrace = parsedTrace;
     await component.updateComplete;
+  }
+
+  it('renders correctly in light theme', async function() {
+    await renderForScreenshot(this);
 
     setColorScheme('light');
     await assertScreenshot('timeline/sidebar_insights_tab_light.png');
+  });
+
+  it('renders correctly in dark theme', async function() {
+    await renderForScreenshot(this);
 
     setColorScheme('dark');
     await assertScreenshot('timeline/sidebar_insights_tab_dark.png');

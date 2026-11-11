@@ -450,7 +450,7 @@ var searchView_css_default = `/*
   flex-shrink: 0;
   overflow: hidden;
   display: inline-flex;
-  min-width: 150px;
+  min-width: var(--sys-size-23);
 
   .search-container {
     border-bottom: var(--sys-size-1) solid var(--sys-color-divider);

@@ -5113,20 +5113,12 @@ var tabbedPane_css_default = `/*
   }
 
   .close-button {
-    --tabbed-pane-close-icon-color: ButtonText;
-
     forced-color-adjust: none;
   }
 
   .close-button:hover,
   .close-button:active {
-    --tabbed-pane-close-icon-color: HighlightText;
-
     background-color: Highlight;
-  }
-
-  .selected .close-button {
-    --tabbed-pane-close-icon-color: HighlightText;
   }
 }
 
@@ -15690,31 +15682,14 @@ devtools-toolbar {
     z-index: -1;
   }
 
-  .toolbar-glyph {
-    flex: none;
-  }
   /* Button */
 
   .toolbar-button:disabled {
     opacity: 50%;
   }
 
-  .toolbar-button.toolbar-state-on .toolbar-glyph {
-    color: var(--icon-toggled);
-  }
-
-  .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
-  .toolbar-button.toolbar-state-off.toolbar-default-with-red-color
-    .toolbar-glyph {
-    color: var(
-      --icon-error
-    ) !important; /* stylelint-disable-line declaration-no-important */
-  }
-
   .toolbar-button:not(
-      .toolbar-has-glyph,
       .toolbar-has-dropdown,
-      .largeicon-menu,
       .toolbar-button-secondary
     ) {
     font-weight: bold;
@@ -15734,16 +15709,8 @@ devtools-toolbar {
     color: var(--sys-color-primary-bright);
   }
 
-  .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
-    color: var(--sys-color-on-surface);
-  }
-
   .toolbar-button:enabled:hover:not(:active) .toolbar-text {
     color: var(--sys-color-on-surface);
-  }
-
-  .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph {
-    color: var(--sys-color-primary);
   }
 
   .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text {
@@ -15753,7 +15720,7 @@ devtools-toolbar {
   /* Checkbox */
 
   & > devtools-checkbox {
-    padding: 0 5px 0 0;
+    padding: 0 var(--sys-size-3) 0 0;
     white-space: unset;
   }
 
@@ -15892,11 +15859,6 @@ devtools-toolbar {
       color: Graytext;
     }
 
-    .toolbar-button.toolbar-state-on .toolbar-glyph {
-      forced-color-adjust: none;
-      color: Highlight;
-    }
-
     .toolbar-button.toolbar-state-on .toolbar-text {
       forced-color-adjust: none;
       color: Highlight;
@@ -15911,18 +15873,6 @@ devtools-toolbar {
       color: GrayText;
     }
 
-    .toolbar-button:disabled .toolbar-glyph {
-      color: GrayText;
-    }
-
-    .toolbar-button:enabled.hover:not(:active) .toolbar-glyph {
-      forced-color-adjust: none;
-      color: Highlight;
-    }
-
-    .toolbar-button:enabled:hover .toolbar-glyph,
-    .toolbar-button:enabled:focus .toolbar-glyph,
-    .toolbar-button:enabled:hover:not(:active) .toolbar-glyph,
     .toolbar-button:enabled:hover devtools-icon,
     .toolbar-button:enabled:focus devtools-icon {
       color: HighlightText;
@@ -15954,16 +15904,6 @@ devtools-toolbar {
       background: ButtonFace;
       color: ButtonText;
     }
-  }
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 100%;
-  }
-
-  to {
-    opacity: 0%;
   }
 }
 
@@ -19573,14 +19513,18 @@ var filter_css_default = `/*
 }
 
 .toolbar-button .active-filters-count {
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 
   --override-adorner-background-color: var(--sys-color-tonal-container);
   --override-adorner-border-color: var(--sys-color-tonal-container);
   --override-adorner-text-color: var(--sys-color-primary);
-  --override-adorner-font-size: 10px;
+  --override-adorner-font-size: var(--sys-typescale-body5-size);
 
   font-weight: 700;
+
+  span {
+    line-height: 1;
+  }
 }
 
 .toolbar-text {
@@ -20410,7 +20354,7 @@ var listWidget_css_default = `/*
 }
 
 .controls-gradient {
-  flex: 0 1 50px;
+  flex: 0 1 var(--sys-size-16);
 
   .list-item:hover & {
     background-image: linear-gradient(90deg, transparent, var(--sys-color-cdt-base-container));

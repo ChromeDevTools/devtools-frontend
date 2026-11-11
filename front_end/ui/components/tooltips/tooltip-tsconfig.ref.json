@@ -21,6 +21,9 @@
   ],
   "references": [
     {
+      "path": "../../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../legacy/bundle-tsconfig.ref.json"
     },
     {

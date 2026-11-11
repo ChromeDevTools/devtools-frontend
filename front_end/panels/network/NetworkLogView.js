@@ -2172,7 +2172,14 @@ export class NetworkLogView extends NetworkLogViewBase {
                Replace \ with \\ first because it is an escape character for certain
                conditions in both parsers.
       
-               Replace all " with \" to ensure the first parser does not remove it.
+               Replace all " with "" so that a quote in the value cannot end the
+               quoted argument in either shell. After caret escaping it becomes
+               ^"^". cmd.exe strips the carets, and inside a quoted argument the
+               MS Crt parser reads "" as a literal " and stays in quoted mode.
+               PowerShell treats neither ^ nor \ as an escape: it sees the string
+               close and immediately reopen around a bare ^, so the value stays a
+               single argument and its text stays quoted. With \" PowerShell would
+               end the string at the quote and run whatever follows a ; or |.
       
                Then escape all characters we are not sure about with ^ to ensure it
                gets to MS Crt parser safely.
@@ -2196,7 +2203,7 @@ export class NetworkLogView extends NetworkLogViewBase {
             const encapsChars = '^"';
             return encapsChars +
                 str.replace(/\\/g, '\\\\')
-                    .replace(/"/g, '\\"')
+                    .replace(/"/g, '""')
                     .replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;*]/g, '^$&')
                     .replace(/%(?=[a-zA-Z0-9_])/g, '%^')
                     .replace(/[^ -~\r\n]/g, ' ')

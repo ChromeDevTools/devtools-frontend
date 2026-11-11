@@ -73,10 +73,6 @@ var consoleInsight_css_default = `/*
     padding: var(--sys-size-6) var(--sys-size-8);
   }
 
-  .wrapper.top {
-    border-radius: var(--sys-shape-corner-medium) var(--sys-shape-corner-medium) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small);
-  }
-
   header {
     display: flex;
     flex-direction: row;
@@ -122,8 +118,6 @@ var consoleInsight_css_default = `/*
   }
 
   main {
-    --override-markdown-view-message-color: var(--sys-color-on-surface);
-
     color: var(--sys-color-on-surface);
     font-size: var(--sys-typescale-body4-size);
     font-style: normal;
@@ -398,6 +392,7 @@ var consoleInsight_css_default = `/*
   }
 
   @scope (.insight-sources) {
+    /* stylelint-disable-next-line plugin/check_scope_selectors */
     :root {
       padding: 0;
       margin: 0;

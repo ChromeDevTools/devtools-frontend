@@ -53,7 +53,7 @@ export default `/*
 }
 
 .controls-gradient {
-  flex: 0 1 50px;
+  flex: 0 1 var(--sys-size-16);
 
   .list-item:hover & {
     background-image: linear-gradient(90deg, transparent, var(--sys-color-cdt-base-container));

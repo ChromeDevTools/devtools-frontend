@@ -98,6 +98,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     emptyCategoryHeadline;
     categoryDescription;
     settingsKey;
+    wasDescendantSelected = false;
     constructor(resourcesPanel, categoryName, emptyCategoryHeadline, categoryDescription, settingsKey, settingsDefault = false) {
         super(resourcesPanel, categoryName, false, settingsKey);
         this.settingsKey = settingsKey;
@@ -134,12 +135,70 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     setLink(link) {
         this.categoryLink = link;
     }
+    select(omitFocus, selectedByUser) {
+        if (this.selected && selectedByUser && !this.expanded && this.childCount() > 0) {
+            this.expand();
+            const childToSelect = this.findChildToAutoSelect();
+            if (childToSelect) {
+                childToSelect.select(omitFocus, true);
+            }
+            return false;
+        }
+        const previousSelected = this.treeOutline?.selectedTreeElement ?? null;
+        this.wasDescendantSelected = Boolean(previousSelected?.hasAncestor(this));
+        try {
+            return super.select(omitFocus, selectedByUser);
+        }
+        finally {
+            this.wasDescendantSelected = false;
+        }
+    }
     onselect(selectedByUser) {
         super.onselect(selectedByUser);
+        if (selectedByUser && !this.wasDescendantSelected && this.childCount() > 0) {
+            if (!this.expanded) {
+                this.expand();
+            }
+            const childToSelect = this.findChildToAutoSelect();
+            if (childToSelect) {
+                childToSelect.select(/* omitFocus= */ false, /* selectedByUser= */ true);
+                return false;
+            }
+        }
         this.updateCategoryView();
         const item = this.createGenericStorageAiContext();
         UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item);
         return false;
+    }
+    isOriginStorageCategory() {
+        return this.settingsKey === 'cookies' || this.settingsKey === 'local-storage' ||
+            this.settingsKey === 'session-storage';
+    }
+    getMainPageOrigin() {
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        if (!target) {
+            return '';
+        }
+        const mainFrame = target.model(SDK.ResourceTreeModel.ResourceTreeModel)?.mainFrame;
+        const url = mainFrame?.unreachableUrl() || mainFrame?.url || target.inspectedURL();
+        return url ? Common.ParsedURL.ParsedURL.extractOrigin(url) : '';
+    }
+    findChildToAutoSelect() {
+        if (!this.isOriginStorageCategory()) {
+            return null;
+        }
+        const selectableChildren = this.children().filter(child => child.selectable && !child.isExpandable());
+        if (selectableChildren.length === 0) {
+            return null;
+        }
+        const mainPageOrigin = this.getMainPageOrigin();
+        if (mainPageOrigin) {
+            const matchingChild = selectableChildren.find(child => child.titleAsText() === mainPageOrigin);
+            if (matchingChild) {
+                return matchingChild;
+            }
+        }
+        return selectableChildren.length === 1 ? selectableChildren[0] : null;
     }
     updateCategoryView() {
         const headline = this.childCount() === 0 ? this.emptyCategoryHeadline : this.categoryName;

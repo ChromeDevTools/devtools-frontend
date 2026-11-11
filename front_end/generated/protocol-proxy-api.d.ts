@@ -4900,7 +4900,8 @@ declare namespace ProtocolProxyApi {
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Invokes a registered tool.
+     * Invokes a registered tool. Exactly one of `toolId` and `toolName` must be specified; the command fails if both or
+     * neither are.
      */
     invoke_invokeTool(params: Protocol.WebMCP.InvokeToolRequest): Promise<Protocol.WebMCP.InvokeToolResponse>;
 

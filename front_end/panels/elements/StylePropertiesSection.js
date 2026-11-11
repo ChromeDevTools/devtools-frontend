@@ -160,9 +160,7 @@ export class StylePropertiesSection {
     sectionIdx = 0;
     #customHeaderText;
     #specificityTooltips;
-    static #nextSpecificityTooltipId = 0;
-    static #nextSectionTooltipIdPrefix = 0;
-    sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
+    sectionTooltipIdFactory = new Tooltips.Tooltip.IdFactory();
     ghostStyleTreeElements = [];
     #activeAiSuggestion;
     #isInactive = false;
@@ -949,7 +947,7 @@ export class StylePropertiesSection {
             jslogContext: 'container-query',
         };
         if (style) {
-            const tooltipPrefix = `container-${this.sectionTooltipIdPrefix}-${this.nestingLevel}`;
+            const tooltipPrefix = this.sectionTooltipIdFactory.subfactory('container', this.nestingLevel);
             void containerQuery.getContainerForNode(this.matchedStyles.node().id).then(container => {
                 if (container) {
                     containerQueryElement.parseStyleQueries(this.matchedStyles, style, container.containerNode, tooltipPrefix);
@@ -1322,9 +1320,6 @@ export class StylePropertiesSection {
         this.renderSelectors(rule.selectors, matchingSelectors, this.elementToSelectorIndex);
         this.markSelectorHighlights();
     }
-    static getNextSpecificityTooltipId() {
-        return `specificity-tooltip-${this.#nextSpecificityTooltipId++}`;
-    }
     renderSelectors(selectors, matchingSelectors, elementToSelectorIndex) {
         this.selectorElement.removeChildren();
         this.#specificityTooltips.removeChildren();
@@ -1335,7 +1330,7 @@ export class StylePropertiesSection {
             if (i > 0) {
                 targetElement.append(', ');
             }
-            const specificityTooltipId = selector.specificity ? StylePropertiesSection.getNextSpecificityTooltipId() : null;
+            const specificityTooltipId = selector.specificity ? this.sectionTooltipIdFactory.keyed('specificity-tooltip') : null;
             const span = targetElement.createChild('span', 'simple-selector');
             span.classList.toggle('selector-matches', matchingSelectors[i]);
             elementToSelectorIndex.set(span, i);

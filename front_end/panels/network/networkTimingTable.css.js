@@ -93,18 +93,15 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
   border: var(--sys-size-1) solid var(--sys-color-token-subtle);
 }
 
-.network-timing-bar.blocking,
-.-theme-preserve {
+.network-timing-bar.blocking {
   background-color: var(--network-waterfall-blocking); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.network-timing-bar.proxy,
-.-theme-preserve {
+.network-timing-bar.proxy {
   background-color: var(--override-network-overview-proxy);
 }
 
-.network-timing-bar.dns,
-.-theme-preserve {
+.network-timing-bar.dns {
   background-color: var(--sys-color-cyan);
 }
 
@@ -112,18 +109,15 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 .network-timing-bar.serviceworker,
 .network-timing-bar.serviceworker-preparation,
 .network-timing-bar.serviceworker-routerevaluation,
-.network-timing-bar.serviceworker-cachelookup,
-.-theme-preserve {
+.network-timing-bar.serviceworker-cachelookup {
   background-color: var(--network-overview-service-worker); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.network-timing-bar.ssl,
-.-theme-preserve {
+.network-timing-bar.ssl {
   background-color: var(--network-overview-ssl); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.network-timing-bar.serviceworker-respondwith,
-.-theme-preserve {
+.network-timing-bar.serviceworker-respondwith {
   background-color: var(--network-overview-service-worker-respond-with); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -167,10 +161,6 @@ tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fet
   display: none;
 }
 
-.network-fetch-timing-bar-details-expanded {
-  display: block;
-}
-
 .network-fetch-timing-bar-details,
 .router-evaluation-timing-bar-details {
   padding-left: var(--sys-size-5);
@@ -181,13 +171,11 @@ tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fet
   width: max-content;
 }
 
-.network-timing-bar.sending,
-.-theme-preserve {
+.network-timing-bar.sending {
   background-color: var(--override-network-overview-sending);
 }
 
-.network-timing-bar.waiting,
-.-theme-preserve {
+.network-timing-bar.waiting {
   background-color: var(--network-overview-waiting); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -204,13 +192,11 @@ td.throttled {
 }
 
 .network-timing-bar.receiving,
-.network-timing-bar.receiving-push,
-.-theme-preserve {
+.network-timing-bar.receiving-push {
   background-color: var(--network-overview-receiving); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.network-timing-bar.push,
-.-theme-preserve {
+.network-timing-bar.push {
   background-color: var(--network-overview-push); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -255,8 +241,7 @@ tr.synthetic {
   .network-timing-bar.receiving,
   .network-timing-bar.receiving-push,
   .network-timing-bar.push,
-  .network-timing-bar.server-timing,
-  .-theme-preserve {
+  .network-timing-bar.server-timing {
     forced-color-adjust: none;
   }
 

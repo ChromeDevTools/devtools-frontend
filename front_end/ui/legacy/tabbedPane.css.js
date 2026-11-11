@@ -432,20 +432,12 @@ export default `/*
   }
 
   .close-button {
-    --tabbed-pane-close-icon-color: ButtonText;
-
     forced-color-adjust: none;
   }
 
   .close-button:hover,
   .close-button:active {
-    --tabbed-pane-close-icon-color: HighlightText;
-
     background-color: Highlight;
-  }
-
-  .selected .close-button {
-    --tabbed-pane-close-icon-color: HighlightText;
   }
 }
 

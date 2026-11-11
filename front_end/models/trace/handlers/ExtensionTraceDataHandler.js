@@ -49,11 +49,6 @@ function createExtensionFlameChartEntries() {
  * created and added to the `extensionTrackEntries` array. These entries
  * are used to visualize custom tracks in the Performance panel.
  *
- * If a `console.timeStamp` event includes data for a custom track
- * (specified by the `track` argument), an extension track entry is
- * created and added to the `extensionTrackEntries` array. These entries
- * are used to visualize custom tracks in the Performance panel.
- *
  * If a `console.timeStamp` event does not specify a custom track but
  * includes a start and/or end time (referencing other
  * `console.timeStamp` names), a synthetic console time stamp entry is

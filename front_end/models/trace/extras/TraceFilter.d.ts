@@ -4,6 +4,7 @@ export declare abstract class TraceFilter {
     abstract accept(_event: Types.Events.Event, handlerData?: Handlers.Types.HandlerData): boolean;
 }
 export declare class VisibleEventsFilter extends TraceFilter {
+    #private;
     private readonly visibleTypes;
     constructor(visibleTypes: string[]);
     accept(event: Types.Events.Event): boolean;

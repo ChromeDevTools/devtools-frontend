@@ -4850,7 +4850,7 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
     super(element);
     this.#view = view;
   }
-  async #populateChildrenIfNeeded(node) {
+  async #populateChildrenIfNeeded(node, activeNodes) {
     const isFirstPopulation = !node.children;
     const children = await node.populateChildrenIfNeeded();
     if (isFirstPopulation) {
@@ -4868,28 +4868,19 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
       }
     }
     for (const child of node.treeNodeChildren()) {
-      child.removeEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
-      child.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
-      child.removeEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
-      child.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
-      child.addEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
-      child.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
-      child.addEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
-      child.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
-      this.#observedNodes.add(child);
+      this.#observeNode(child);
+      activeNodes.add(child);
       if (child.expanded) {
-        await this.#populateChildrenIfNeeded(child);
+        await this.#populateChildrenIfNeeded(child, activeNodes);
       }
     }
     if (!children.arrayRanges) {
       return;
     }
     if (children.arrayRanges.length === 1) {
-      await this.#populateChildrenIfNeeded(children.arrayRanges[0]);
+      await this.#populateChildrenIfNeeded(children.arrayRanges[0], activeNodes);
     } else {
-      await Promise.all(
-        children.arrayRanges.filter((child) => child.singular).map((child) => this.#populateChildrenIfNeeded(child))
-      );
+      await Promise.all(children.arrayRanges.filter((child) => child.singular).map((child) => this.#populateChildrenIfNeeded(child, activeNodes)));
     }
   }
   onExpand = (node, expanded, recursively = false) => {
@@ -4951,16 +4942,29 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
     this.#objectTree?.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
     this.requestUpdate();
   }
+  #observeNode(node) {
+    if (this.#observedNodes.has(node)) {
+      return;
+    }
+    node.addEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
+    node.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+    node.addEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
+    node.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+    this.#observedNodes.add(node);
+  }
+  #unobserveNode(node) {
+    node.removeEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
+    node.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+    node.removeEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
+    node.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+    this.#observedNodes.delete(node);
+  }
   #unobserveAll() {
     this.#objectTree?.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
     this.#objectTree?.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
     for (const child of this.#observedNodes) {
-      child.removeEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
-      child.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
-      child.removeEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
-      child.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+      this.#unobserveNode(child);
     }
-    this.#observedNodes.clear();
   }
   get linkifier() {
     return this.#linkifier;
@@ -5000,8 +5004,14 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
       this.#unobserveAll();
       return;
     }
+    const activeNodes = /* @__PURE__ */ new Set();
     if (this.#objectTree?.expanded) {
-      await this.#populateChildrenIfNeeded(this.#objectTree);
+      await this.#populateChildrenIfNeeded(this.#objectTree, activeNodes);
+    }
+    for (const child of this.#observedNodes) {
+      if (!activeNodes.has(child)) {
+        this.#unobserveNode(child);
+      }
     }
     this.#view(this, void 0, this.contentElement);
   }

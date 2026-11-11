@@ -31101,7 +31101,7 @@
                 },
                 {
                     "name": "invokeTool",
-                    "description": "Invokes a registered tool.",
+                    "description": "Invokes a registered tool. Exactly one of `toolId` and `toolName` must be specified; the command fails if both or\nneither are.",
                     "parameters": [
                         {
                             "name": "frameId",
@@ -31109,8 +31109,16 @@
                             "$ref": "Page.FrameId"
                         },
                         {
+                            "name": "toolId",
+                            "description": "Identifier of the tool to invoke, as reported in `Tool.toolId`. Invokes exactly that tool, and fails if it is no\nlonger registered, even if a different tool has since been registered under the same name.",
+                            "optional": true,
+                            "$ref": "ToolId"
+                        },
+                        {
                             "name": "toolName",
-                            "description": "Name of the tool to invoke.",
+                            "description": "Name of the tool to invoke. Deprecated: invokes whichever tool is registered under this name when the command\nis handled, which may not be the tool the client observed if the page has since replaced it. Use `toolId`\ninstead.",
+                            "deprecated": true,
+                            "optional": true,
                             "type": "string"
                         },
                         {

@@ -431,6 +431,9 @@ import * as Types3 from "../types/types.js";
 var TraceFilter = class {
 };
 var VisibleEventsFilter = class _VisibleEventsFilter extends TraceFilter {
+  // Real traces contain ~15 distinct category strings; memoizing the substring
+  // checks avoids scanning event.cat on every event in hot tree-build loops.
+  static #categoryToEventName = /* @__PURE__ */ new Map();
   visibleTypes;
   constructor(visibleTypes) {
     super();
@@ -443,13 +446,20 @@ var VisibleEventsFilter = class _VisibleEventsFilter extends TraceFilter {
     return this.visibleTypes.has(_VisibleEventsFilter.eventType(event));
   }
   static eventType(event) {
-    if (event.cat.includes("blink.console")) {
-      return Types3.Events.Name.CONSOLE_TIME;
+    let type = _VisibleEventsFilter.#categoryToEventName.get(event.cat);
+    if (type === void 0) {
+      if (event.cat.includes("blink.console")) {
+        type = Types3.Events.Name.CONSOLE_TIME;
+      } else if (event.cat.includes("blink.user_timing")) {
+        type = Types3.Events.Name.USER_TIMING;
+      } else {
+        type = null;
+      }
+      if (_VisibleEventsFilter.#categoryToEventName.size < 256) {
+        _VisibleEventsFilter.#categoryToEventName.set(event.cat, type);
+      }
     }
-    if (event.cat.includes("blink.user_timing")) {
-      return Types3.Events.Name.USER_TIMING;
-    }
-    return event.name;
+    return type ?? event.name;
   }
 };
 var InvisibleEventsFilter = class extends TraceFilter {
@@ -488,6 +498,33 @@ __export(TraceTree_exports, {
 import * as Helpers3 from "../helpers/helpers.js";
 import * as Types4 from "../types/types.js";
 var SamplesIntegrator2 = Helpers3.SamplesIntegrator.SamplesIntegrator;
+function buildEventFilter(filters) {
+  if (filters.length === 0) {
+    return () => true;
+  }
+  return (e) => {
+    for (let i = 0; i < filters.length; i++) {
+      if (!filters[i].accept(e)) {
+        return false;
+      }
+    }
+    return true;
+  };
+}
+function createEventIdCache() {
+  const profileCallIdByCallFrame = /* @__PURE__ */ new Map();
+  return (event) => {
+    if (Types4.Events.isProfileCall(event)) {
+      let id = profileCallIdByCallFrame.get(event.callFrame);
+      if (id === void 0) {
+        id = generateEventID(event);
+        profileCallIdByCallFrame.set(event.callFrame, id);
+      }
+      return id;
+    }
+    return generateEventID(event);
+  };
+}
 var Node = class {
   /** ms */
   totalTime;
@@ -581,7 +618,7 @@ var TopDownNode = class _TopDownNode extends Node {
     const startTime = root.startTime;
     const endTime = root.endTime;
     const instantEventCallback = root.doNotAggregate || root.includeInstantEvents ? onInstantEvent : void 0;
-    const eventIdCallback = root.doNotAggregate ? void 0 : generateEventID;
+    const eventIdCallback = root.doNotAggregate ? void 0 : root.eventId;
     const eventGroupIdCallback = root.getEventGroupIdCallback();
     let depth = 0;
     let matchedDepth = 0;
@@ -599,7 +636,6 @@ var TopDownNode = class _TopDownNode extends Node {
       }
     );
     function onStartEvent(e) {
-      const { startTime: currentStartTime, endTime: currentEndTime } = Helpers3.Timing.eventTimingsMilliSeconds(e);
       ++depth;
       if (depth > path.length + 2) {
         return;
@@ -607,7 +643,9 @@ var TopDownNode = class _TopDownNode extends Node {
       if (!matchPath(e)) {
         return;
       }
-      const actualEndTime = currentEndTime !== void 0 ? Math.min(currentEndTime, endTime) : endTime;
+      const currentStartTime = Helpers3.Timing.microToMilli(e.ts);
+      const currentEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const actualEndTime = Math.min(currentEndTime, endTime);
       const duration = actualEndTime - Math.max(startTime, currentStartTime);
       if (duration < 0) {
         console.error("Negative event duration");
@@ -657,14 +695,14 @@ var TopDownNode = class _TopDownNode extends Node {
       currentDirectChild = node;
     }
     function matchPath(e) {
-      const { endTime: endTime2 } = Helpers3.Timing.eventTimingsMilliSeconds(e);
       if (matchedDepth === path.length) {
         return true;
       }
       if (matchedDepth !== depth - 1) {
         return false;
       }
-      if (!endTime2) {
+      const eventEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      if (!eventEndTime) {
         return false;
       }
       if (!eventIdCallback) {
@@ -701,6 +739,7 @@ var TopDownRootNode = class extends TopDownNode {
   /** Default behavior is to aggregate similar trace events into one Node based on generateEventID(), eventGroupIdCallback(), etc. Set true to keep nodes 1:1 with events. */
   doNotAggregate;
   includeInstantEvents;
+  eventId = createEventIdCache();
   totalTime;
   selfTime;
   constructor(events, { filters, startTime, endTime, doNotAggregate, eventGroupIdCallback, includeInstantEvents }) {
@@ -708,7 +747,7 @@ var TopDownRootNode = class extends TopDownNode {
     this.event = events[0];
     this.root = this;
     this.events = events;
-    this.filter = (e) => filters.every((f) => f.accept(e));
+    this.filter = buildEventFilter(filters);
     this.startTime = startTime;
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
@@ -776,6 +815,7 @@ var BottomUpRootNode = class extends Node {
   eventGroupIdCallback;
   calculateTransferSize;
   forceGroupIdCallback;
+  eventId = createEventIdCache();
   constructor(events, {
     textFilter,
     filters,
@@ -789,7 +829,7 @@ var BottomUpRootNode = class extends Node {
     this.childrenInternal = null;
     this.events = events;
     this.textFilter = textFilter;
-    this.filter = (e) => filters.every((f) => f.accept(e));
+    this.filter = buildEventFilter(filters);
     this.startTime = startTime;
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
@@ -821,52 +861,47 @@ var BottomUpRootNode = class extends Node {
     const root = this;
     const startTime = this.startTime;
     const endTime = this.endTime;
-    const idStack = [];
+    const stateStack = [];
     const nodeById = /* @__PURE__ */ new Map();
     const selfTimeStack = [endTime - startTime];
     const firstNodeStack = [];
-    const totalTimeById = /* @__PURE__ */ new Map();
     const eventGroupIdCallback = this.eventGroupIdCallback;
     const forceGroupIdCallback = this.forceGroupIdCallback;
-    const profileCallIdByCallFrame = /* @__PURE__ */ new Map();
-    const groupedIdsByEventId = /* @__PURE__ */ new Map();
-    const nodeIdForEvent = (e) => {
-      let id;
-      if (Types4.Events.isProfileCall(e)) {
-        const cachedId = profileCallIdByCallFrame.get(e.callFrame);
-        if (cachedId === void 0) {
-          id = generateEventID(e);
-          profileCallIdByCallFrame.set(e.callFrame, id);
-        } else {
-          id = cachedId;
-        }
-      } else {
-        id = generateEventID(e);
-      }
+    const eventId = this.eventId;
+    const stateById = /* @__PURE__ */ new Map();
+    const groupedStatesByEventId = /* @__PURE__ */ new Map();
+    const stateForEvent = (e) => {
+      const id = eventId(e);
       if (!forceGroupIdCallback || !eventGroupIdCallback) {
-        return id;
+        let state2 = stateById.get(id);
+        if (!state2) {
+          state2 = { id, node: null, onStack: false, pendingTotalTime: 0 };
+          stateById.set(id, state2);
+        }
+        return state2;
       }
       const groupId = eventGroupIdCallback(e);
-      let groupedIds = groupedIdsByEventId.get(id);
-      if (!groupedIds) {
-        groupedIds = /* @__PURE__ */ new Map();
-        groupedIdsByEventId.set(id, groupedIds);
+      let groupedStates = groupedStatesByEventId.get(id);
+      if (!groupedStates) {
+        groupedStates = /* @__PURE__ */ new Map();
+        groupedStatesByEventId.set(id, groupedStates);
       }
-      let groupedId = groupedIds.get(groupId);
-      if (groupedId === void 0) {
-        groupedId = `${id}-${groupId}`;
-        groupedIds.set(groupId, groupedId);
+      let state = groupedStates.get(groupId);
+      if (!state) {
+        state = { id: `${id}-${groupId}`, node: null, onStack: false, pendingTotalTime: 0 };
+        groupedStates.set(groupId, state);
       }
-      return groupedId;
+      return state;
     };
     let cacheHitRequestIds = null;
     const sumTransferSizeOfInstantEvent = (e) => {
       if (Types4.Events.isReceivedDataEvent(e)) {
-        const id = nodeIdForEvent(e);
-        let node = nodeById.get(id);
+        const state = stateForEvent(e);
+        let node = state.node;
         if (!node) {
-          node = new BottomUpNode(root, id, e, false, root);
-          nodeById.set(id, node);
+          node = new BottomUpNode(root, state.id, e, false, root);
+          state.node = node;
+          nodeById.set(state.id, node);
         } else {
           node.events.push(e);
         }
@@ -900,37 +935,40 @@ var BottomUpRootNode = class extends Node {
       }
     );
     function onStartEvent(e) {
-      const { startTime: currentStartTime, endTime: currentEndTime } = Helpers3.Timing.eventTimingsMilliSeconds(e);
-      const actualEndTime = currentEndTime !== void 0 ? Math.min(currentEndTime, endTime) : endTime;
+      const currentStartTime = Helpers3.Timing.microToMilli(e.ts);
+      const currentEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const actualEndTime = Math.min(currentEndTime, endTime);
       const duration = actualEndTime - Math.max(currentStartTime, startTime);
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
-      const id = nodeIdForEvent(e);
-      idStack.push(id);
-      const noNodeOnStack = !totalTimeById.has(id);
+      const state = stateForEvent(e);
+      stateStack.push(state);
+      const noNodeOnStack = !state.onStack;
       if (noNodeOnStack) {
-        totalTimeById.set(id, duration);
+        state.onStack = true;
+        state.pendingTotalTime = duration;
       }
       firstNodeStack.push(noNodeOnStack);
     }
     function onEndEvent(event) {
-      const id = idStack.pop();
-      if (id === void 0) {
+      const state = stateStack.pop();
+      if (!state) {
         return;
       }
-      let node = nodeById.get(id);
+      let node = state.node;
       if (!node) {
-        node = new BottomUpNode(root, id, event, false, root);
-        nodeById.set(id, node);
+        node = new BottomUpNode(root, state.id, event, false, root);
+        state.node = node;
+        nodeById.set(state.id, node);
       } else {
         node.events.push(event);
       }
       node.selfTime += selfTimeStack.pop() || 0;
       if (firstNodeStack.pop()) {
-        node.totalTime += totalTimeById.get(id) || 0;
-        totalTimeById.delete(id);
+        node.totalTime += state.pendingTotalTime;
+        state.onStack = false;
       }
-      if (idStack.length > 0) {
+      if (stateStack.length > 0) {
         node.setHasChildren(true);
       }
     }
@@ -1019,6 +1057,7 @@ var BottomUpNode = class _BottomUpNode extends Node {
     const nodeById = /* @__PURE__ */ new Map();
     const startTime = this.root.startTime;
     const endTime = this.root.endTime;
+    const eventId = this.root.eventId;
     let lastTimeMarker = startTime;
     const self = this;
     Helpers3.Trace.forEachEvent(
@@ -1033,20 +1072,20 @@ var BottomUpNode = class _BottomUpNode extends Node {
       }
     );
     function onStartEvent(e) {
-      const { startTime: currentStartTime, endTime: currentEndTime } = Helpers3.Timing.eventTimingsMilliSeconds(e);
-      const actualEndTime = currentEndTime !== void 0 ? Math.min(currentEndTime, endTime) : endTime;
+      const currentStartTime = Helpers3.Timing.microToMilli(e.ts);
+      const currentEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const actualEndTime = Math.min(currentEndTime, endTime);
       const duration = actualEndTime - Math.max(currentStartTime, startTime);
       if (duration < 0) {
         console.assert(false, "Negative duration of an event");
       }
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
-      const id = generateEventID(e);
+      const id = eventId(e);
       eventIdStack.push(id);
       eventStack.push(e);
     }
     function onEndEvent(e) {
-      const { startTime: currentStartTime, endTime: currentEndTime } = Helpers3.Timing.eventTimingsMilliSeconds(e);
       const selfTime = selfTimeStack.pop();
       const id = eventIdStack.pop();
       eventStack.pop();
@@ -1069,7 +1108,9 @@ var BottomUpNode = class _BottomUpNode extends Node {
       } else {
         node.events.push(e);
       }
-      const actualEndTime = currentEndTime !== void 0 ? Math.min(currentEndTime, endTime) : endTime;
+      const currentStartTime = Helpers3.Timing.microToMilli(e.ts);
+      const currentEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const actualEndTime = Math.min(currentEndTime, endTime);
       const totalTime = actualEndTime - Math.max(currentStartTime, lastTimeMarker);
       node.selfTime += selfTime || 0;
       node.totalTime += totalTime;

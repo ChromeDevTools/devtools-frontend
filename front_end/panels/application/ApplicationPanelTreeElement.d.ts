@@ -30,12 +30,17 @@ export declare class ExpandableApplicationPanelTreeElement extends ApplicationPa
     protected emptyCategoryHeadline: string;
     protected categoryDescription: string;
     protected readonly settingsKey: string;
+    private wasDescendantSelected;
     constructor(resourcesPanel: ResourcesPanel, categoryName: string, emptyCategoryHeadline: string, categoryDescription: string, settingsKey: string, settingsDefault?: boolean);
     createGenericStorageAiContext(): AiAssistance.StorageItem.StorageItem | null;
     get itemURL(): Platform.DevToolsPath.UrlString;
     set itemURL(value: Platform.DevToolsPath.UrlString);
     setLink(link: Platform.DevToolsPath.UrlString): void;
+    select(omitFocus?: boolean, selectedByUser?: boolean): boolean;
     onselect(selectedByUser: boolean | undefined): boolean;
+    private isOriginStorageCategory;
+    private getMainPageOrigin;
+    private findChildToAutoSelect;
     private updateCategoryView;
     appendChild(child: UI.TreeOutline.TreeElement, comparator?: ((arg0: UI.TreeOutline.TreeElement, arg1: UI.TreeOutline.TreeElement) => number) | undefined): void;
     removeChild(child: UI.TreeOutline.TreeElement): void;

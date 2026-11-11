@@ -7675,12 +7675,6 @@ var chatView_css_default = `/*
   container-name: --chat-ui-container;
 }
 
-.chat-cancel-context-button {
-  padding-bottom: 3px;
-  padding-right: var(--sys-size-3);
-}
-
-
 .messages-container {
   flex-grow: 1;
   width: 100%;
@@ -7694,10 +7688,6 @@ var chatView_css_default = `/*
     margin-left: var(--half-scrollbar-width);
     margin-right: calc(-1 * var(--half-scrollbar-width));
   }
-}
-
-.select-an-element-text {
-  margin-left: var(--sys-size-2);
 }
 
 main {
@@ -7776,176 +7766,6 @@ main {
     align-items: center;
     justify-content: center;
     align-self: start;
-  }
-}
-
-.change-summary {
-  background-color: var(--sys-color-surface3);
-  border-radius: var(--sys-shape-corner-medium-small);
-  position: relative;
-  margin: 0 var(--sys-size-5) var(--sys-size-7) var(--sys-size-5);
-  padding: 0 var(--sys-size-5);
-
-  &.saved-to-disk {
-    pointer-events: none;
-  }
-
-  & .header-container {
-    display: flex;
-    align-items: center;
-    gap: var(--sys-size-3);
-    height: var(--sys-size-14);
-    padding-left: var(--sys-size-3);
-
-    devtools-spinner {
-      width: var(--sys-size-6);
-      height: var(--sys-size-6);
-      margin-left: var(--sys-size-3);
-      margin-right: var(--sys-size-3);
-    }
-
-    & devtools-icon.summary-badge {
-      width: var(--sys-size-8);
-      height: var(--sys-size-8);
-    }
-
-    & .green-bright-icon {
-      color: var(--sys-color-green-bright);
-    }
-
-    & .on-tonal-icon {
-      color: var(--sys-color-on-tonal-container);
-    }
-
-    & .header-text {
-      font: var(--sys-typescale-body4);
-      color: var(--sys-color-on-surface);
-      white-space: nowrap;
-      overflow-x: hidden;
-      text-overflow: ellipsis;
-    }
-
-    & .arrow {
-      margin-left: auto;
-    }
-
-    &::marker {
-      content: '';
-    }
-  }
-
-  &:not(.saved-to-disk, &[open]):hover::after {
-    content: '';
-    height: 100%;
-    width: 100%;
-    border-radius: inherit;
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    background-color: var(--sys-color-state-hover-on-subtle);
-  }
-
-  &[open]:not(.saved-to-disk) {
-    &::details-content {
-      height: fit-content;
-      padding: var(--sys-size-2) 0;
-      border-radius: inherit;
-    }
-
-    summary .arrow {
-      transform: rotate(180deg);
-    }
-  }
-
-  devtools-code-block {
-    margin-bottom: var(--sys-size-5);
-
-    --code-block-background-color: var(--sys-color-surface1);
-  }
-
-  .error-container {
-    display: flex;
-    align-items: center;
-    gap: var(--sys-size-3);
-    color: var(--sys-color-error);
-  }
-
-  .footer {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    margin: var(--sys-size-5) 0 var(--sys-size-5) var(--sys-size-2);
-    gap: var(--sys-size-6) var(--sys-size-5);
-
-    .disclaimer-link {
-      align-self: center;
-    }
-
-    .left-side {
-      flex-grow: 1;
-      display: flex;
-      align-self: center;
-      gap: var(--sys-size-3);
-    }
-
-    .save-or-discard-buttons {
-      flex-grow: 1;
-      display: flex;
-      justify-content: flex-end;
-      gap: var(--sys-size-3);
-    }
-
-    .change-workspace {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: var(--sys-size-3);
-      min-width: var(--sys-size-22);
-      flex: 1 1 40%;
-
-      .folder-name {
-        white-space: nowrap;
-        overflow-x: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-
-    .loading-text-container {
-      margin-right: var(--sys-size-3);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--sys-size-3);
-    }
-
-    .apply-to-workspace-container {
-      display: flex;
-      align-items: center;
-      gap: var(--sys-size-3);
-      min-width: fit-content;
-      justify-content: flex-end;
-      flex-grow: 1;
-      flex-shrink: 1;
-
-      devtools-icon {
-        /* var(--sys-size-8) is too small and var(--sys-size-9) is too big. */
-        width: 18px;
-        height: 18px;
-        margin-left: var(--sys-size-2);
-      }
-    }
-  }
-}
-
-@keyframes reveal {
-  0%,
-  99% {
-    opacity: 100%;
-  }
-
-  100% {
-    opacity: 0%;
   }
 }
 

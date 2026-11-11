@@ -1779,9 +1779,9 @@ var imageView_css_default = `/*
 
   img.resource-image-view {
     max-width: 100%;
-    max-height: 1000px;
+    max-height: var(--sys-size-39);
     background-image: var(--image-file-checker);
-    box-shadow: 0 5px 10px var(--sys-color-outline);
+    box-shadow: 0 var(--sys-size-3) var(--sys-size-5) var(--sys-color-outline);
     user-select: text;
     -webkit-user-drag: auto;
   }

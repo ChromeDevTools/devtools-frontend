@@ -673,11 +673,11 @@ var linearMemoryValueInterpreter_css_default = `/*
     border: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: var(--sys-color-cdt-base-container);
     overflow: hidden;
-    width: 400px;
+    width: var(--sys-size-31);
   }
 
   .settings-toolbar {
-    min-height: 26px;
+    min-height: var(--sys-size-11);
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;

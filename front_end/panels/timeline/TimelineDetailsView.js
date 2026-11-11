@@ -23,7 +23,7 @@ import { TimelineLayersView } from './TimelineLayersView.js';
 import { TimelinePaintProfilerView } from './TimelinePaintProfilerView.js';
 import { selectionFromRangeMilliSeconds, selectionIsEvent, selectionIsRange, } from './TimelineSelection.js';
 import { TimelineSelectorStatsView } from './TimelineSelectorStatsView.js';
-import { AggregatedTimelineTreeView, BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView, } from './TimelineTreeView.js';
+import { AggregatedTimelineTreeView, BottomUpTimelineTreeView, CallTreeTimelineTreeView, GridNode, TimelineTreeView, } from './TimelineTreeView.js';
 import { TimelineUIUtils } from './TimelineUIUtils.js';
 import { TracingFrameLayerTree } from './TracingLayerTree.js';
 const UIStrings = {
@@ -218,18 +218,18 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
                 if (!node) {
                     return;
                 }
-                // Look for the equivalent GroupNode in the bottomUp tree using the node's reference `event`.
-                // Conceivably, we could match using the group ID instead.
-                const treeNode = bottomUp.eventToTreeNode.get(node.event);
-                if (!treeNode) {
+                // Match GroupNodes by group ID instead of scanning each group's events array.
+                const gridNode = node.isGroupNode() ?
+                    bottomUp.dataGrid.rootNode().children.find((child) => child instanceof GridNode &&
+                        child.profileNode.id === node.id) ??
+                        null :
+                    bottomUp.gridNodeForEvent(node.event);
+                if (!gridNode) {
                     return;
                 }
-                bottomUp.selectProfileNode(treeNode, true);
+                bottomUp.selectProfileNode(gridNode.profileNode, true);
                 // Reveal/expand the bottom up tree grid node.
-                const gridNode = bottomUp.dataGridNodeForTreeNode(treeNode);
-                if (gridNode) {
-                    gridNode.expand();
-                }
+                gridNode.expand();
                 break;
             }
             default: {

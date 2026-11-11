@@ -244,6 +244,7 @@ var Interactive = class _Interactive extends Metric {
 
 // ../../front_end/models/trace/lantern/metrics/LargestContentfulPaint.ts
 import * as Core3 from "../core/core.js";
+var SAME_FRAME_TIMESTAMP_TOLERANCE_US = 10;
 function stripUrlHash(urlStr) {
   if (!urlStr.includes("#")) {
     return urlStr;
@@ -341,12 +342,19 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
     urlMatches.sort((a, b) => a.endTime - b.endTime);
     return urlMatches[0];
   }
-  static getOptimisticGraph(dependencyGraph, processedNavigation) {
+  static isSameFrameTextLcp(processedNavigation) {
     const { firstContentfulPaint: fcp, largestContentfulPaint: lcp } = processedNavigation.timestamps;
+    if (!lcp) {
+      return false;
+    }
+    return Math.abs(lcp - fcp) <= SAME_FRAME_TIMESTAMP_TOLERANCE_US && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === "text";
+  }
+  static getOptimisticGraph(dependencyGraph, processedNavigation) {
+    const lcp = processedNavigation.timestamps.largestContentfulPaint;
     if (!lcp) {
       throw new Core3.LanternError("NO_LCP");
     }
-    if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === "text") {
+    if (_LargestContentfulPaint.isSameFrameTextLcp(processedNavigation)) {
       return FirstContentfulPaint.getOptimisticGraph(dependencyGraph, processedNavigation);
     }
     const lcpNode = _LargestContentfulPaint.findLcpNode(dependencyGraph, processedNavigation);
@@ -382,11 +390,11 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
     });
   }
   static getPessimisticGraph(dependencyGraph, processedNavigation) {
-    const { firstContentfulPaint: fcp, largestContentfulPaint: lcp } = processedNavigation.timestamps;
+    const lcp = processedNavigation.timestamps.largestContentfulPaint;
     if (!lcp) {
       throw new Core3.LanternError("NO_LCP");
     }
-    if (fcp === lcp && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === "text") {
+    if (_LargestContentfulPaint.isSameFrameTextLcp(processedNavigation)) {
       return FirstContentfulPaint.getPessimisticGraph(dependencyGraph, processedNavigation);
     }
     return FirstContentfulPaint.getFirstPaintBasedGraph(dependencyGraph, {

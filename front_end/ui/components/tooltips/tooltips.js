@@ -7,12 +7,14 @@ var __export = (target, all) => {
 // ../../front_end/ui/components/tooltips/Tooltip.ts
 var Tooltip_exports = {};
 __export(Tooltip_exports, {
+  IdFactory: () => IdFactory,
   PositionOption: () => PositionOption,
   Tooltip: () => Tooltip,
   ifExpanded: () => ifExpanded,
   proposedRectForRichTooltip: () => proposedRectForRichTooltip,
   proposedRectForSimpleTooltip: () => proposedRectForSimpleTooltip
 });
+import * as Platform from "../../../core/platform/platform.js";
 import * as UI from "../../legacy/legacy.js";
 import { AsyncDirective, Directives, html, nothing, render } from "../../lit/lit.js";
 import * as VisualLogging from "../../visual_logging/visual_logging.js";
@@ -549,6 +551,28 @@ var Tooltip = class _Tooltip extends HTMLElement {
       }
     });
     this.#anchorObserver.observe(anchor.parentElement, { childList: true });
+  }
+};
+var IdFactory = class _IdFactory {
+  static #nextId = 0;
+  #keys = /* @__PURE__ */ new Map();
+  #id;
+  constructor(id) {
+    this.#id = id ?? _IdFactory.#nextId++;
+  }
+  keyed(key, ...additionalSuffixes) {
+    const keyedId = Platform.MapUtilities.getWithDefault(this.#keys, key, () => 0);
+    this.#keys.set(key, keyedId + 1);
+    return this.get(key, ...additionalSuffixes, keyedId);
+  }
+  get(suffix, ...additionalSuffixes) {
+    return `${this.#id}-${[suffix, ...additionalSuffixes].join("-")}`;
+  }
+  clearKeys() {
+    this.#keys.clear();
+  }
+  subfactory(name, suffix) {
+    return new _IdFactory(`${name}-${this.#id}-${suffix}`);
   }
 };
 var IfExpandedDirective = class extends AsyncDirective.AsyncDirective {

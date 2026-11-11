@@ -413,6 +413,7 @@ panels/ai_assistance/components/WalkthroughView.test.js
 panels/animation/AnimationTimeline.test.js
 panels/application/AppManifestView.test.js
 panels/application/ApplicationPanelSidebar.test.js
+panels/application/ApplicationPanelTreeElement.test.js
 panels/application/BackgroundServiceView.test.js
 panels/application/CookieItemsView.test.js
 panels/application/CrashReportContextView.test.js
@@ -537,6 +538,7 @@ panels/issues/AffectedDescendantsWithinSelectElementView.test.js
 panels/issues/AffectedLazyLoadImagesView.test.js
 panels/issues/AffectedMetadataAllowedSitesView.test.js
 panels/issues/AffectedSelectivePermissionsInterventionView.test.js
+panels/issues/GenericIssueDetailsView.test.js
 panels/issues/IssueView.test.js
 panels/issues/IssuesPane.test.js
 panels/layer_viewer/LayerTreeOutline.test.js

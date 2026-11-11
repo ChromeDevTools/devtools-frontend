@@ -9,6 +9,7 @@ export default `/*
  * found in the LICENSE file.
  */
 @scope to (devtools-widget > *) {
+  /* stylelint-disable-next-line plugin/check_scope_selectors */
   :host {
     flex: auto;
     display: flex;
@@ -182,8 +183,8 @@ export default `/*
     background-color: var(--sys-color-tonal-container);
   }
 
-  .theme-with-dark-background .type-indicator,
-  :host-context(.theme-with-dark-background) .type-indicator {
+  .theme-with-dark-background .type-indicator, /* stylelint-disable-line plugin/check_scope_selectors */
+  :host-context(.theme-with-dark-background) .type-indicator { /* stylelint-disable-line plugin/check_scope_selectors */
     --override-color-conditional-breakpoint: var(--ref-palette-yellow60);
     --override-color-logpoint: var(--ref-palette-pink70);
   }

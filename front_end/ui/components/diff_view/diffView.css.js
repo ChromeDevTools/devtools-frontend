@@ -37,12 +37,10 @@ export default `/*
   padding: 0 var(--sys-size-3);
 }
 
-.diff-line-marker-addition,
 .diff-line-addition {
   background-color: var(--sys-color-surface-green);
 }
 
-.diff-line-marker-deletion,
 .diff-line-deletion {
   background-color: var(--sys-color-surface-error);
 }

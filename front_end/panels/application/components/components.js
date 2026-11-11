@@ -4357,7 +4357,7 @@ devtools-report-value {
 }
 
 .status {
-  margin-right: 11px;
+  margin-right: var(--sys-size-5);
   flex-shrink: 0;
 }
 

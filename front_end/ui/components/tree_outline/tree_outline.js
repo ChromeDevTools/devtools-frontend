@@ -62,7 +62,7 @@ li {
   mask-image: var(--image-file-arrow-collapse);
   background-color: var(--icon-default);
   margin-top: calc(-1 * var(--sys-size-2));
-  margin-right: 3px;
+  margin-right: var(--sys-size-3);
   content: "";
   text-shadow: none;
   height: var(--sys-size-7);

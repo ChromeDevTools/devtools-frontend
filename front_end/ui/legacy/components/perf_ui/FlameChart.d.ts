@@ -91,7 +91,6 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
     #private;
     private flameChartDelegate;
     private chartViewport;
-    private dataProvider;
     private candyStripePattern;
     private candyStripePatternGray;
     private contextMenu?;
@@ -165,7 +164,11 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
     enableRuler(enable: boolean): void;
     alwaysShowVerticalScroll(): void;
     disableRangeSelection(): void;
+    get dataProvider(): FlameChartDataProvider;
+    set dataProvider(dataProvider: FlameChartDataProvider);
     setDataProvider(dataProvider: FlameChartDataProvider): void;
+    get delegate(): FlameChartDelegate;
+    set delegate(flameChartDelegate: FlameChartDelegate);
     setDelegate(flameChartDelegate: FlameChartDelegate): void;
     enableDimming(entryIndices: number[], inclusive: boolean, outline: boolean | number[]): void;
     disableDimming(): void;

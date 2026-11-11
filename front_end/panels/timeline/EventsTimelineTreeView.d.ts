@@ -6,6 +6,7 @@ import type { TimelineModeViewDelegate } from './TimelinePanel.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 import { TimelineTreeView } from './TimelineTreeView.js';
 export declare class EventsTimelineTreeView extends TimelineTreeView {
+    #private;
     private readonly filtersControl;
     private readonly delegate;
     private currentTree;
@@ -13,6 +14,8 @@ export declare class EventsTimelineTreeView extends TimelineTreeView {
     filters(): Trace.Extras.TraceFilter.TraceFilter[];
     set activeSelection(selection: TimelineSelection);
     buildTree(): Trace.Extras.TraceTree.Node;
+    indexTreeNode(node: Trace.Extras.TraceTree.Node): void;
+    dataGridElementForEvent(event: Trace.Types.Events.Event | null): HTMLElement | null;
     private onFilterChanged;
     private selectEvent;
     populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void;

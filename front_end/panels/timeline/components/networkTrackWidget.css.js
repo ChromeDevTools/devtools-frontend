@@ -15,7 +15,7 @@ export default `/* Copyright 2026 The Chromium Authors
   .container {
     display: flex;
     width: 100%;
-    height: 150px;
+    height: var(--sys-size-23);
     background-color: var(--sys-color-cdt-base-container);
     border-radius: var(--sys-shape-corner-small);
     border: var(--sys-size-1) solid var(--sys-color-divider);

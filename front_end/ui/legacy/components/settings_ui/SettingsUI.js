@@ -32,7 +32,10 @@ export function createSettingCheckbox(name, setting, tooltip) {
     }
     return label;
 }
-export function renderSettingSelect(setting, subtitle, disabled) {
+/**
+ * @param optionTextOverrides maps option values to the text that is shown instead of the registered option text.
+ */
+export function renderSettingSelect(setting, subtitle, disabled, optionTextOverrides) {
     const uiDescriptor = SettingUIRegistration.SettingUIRegistration.resolve(setting.descriptor());
     const name = uiDescriptor.title;
     const options = uiDescriptor.options;
@@ -72,7 +75,7 @@ export function renderSettingSelect(setting, subtitle, disabled) {
                   .selected=${setting.get() === option.value}
                   jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(option.value)).track({ click: true })}
                 >
-                  ${option.text}
+                  ${optionTextOverrides?.get(option.value) ?? option.text}
                 </option>
               `;
         }

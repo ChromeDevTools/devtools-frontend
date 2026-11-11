@@ -114,7 +114,10 @@ export declare class SourceMap {
     hasEncodedScopeInfo(): boolean;
     waitForScopeInfo(): Promise<void>;
     findEntry(lineNumber: number, columnNumber: number): SourceMapEntry | null;
-    /** Returns the entry at the given position but only if an entry exists for that exact position */
+    /**
+     * Returns the entry at the given position but only if an entry exists for that exact position.
+     * A range mapping maps every position it covers exactly, so those positions count as exact too.
+     */
     findEntryExact(lineNumber: number, columnNumber: number): SourceMapEntry | null;
     findEntryRanges(lineNumber: number, columnNumber: number): {
         range: TextUtils.TextRange.TextRange;

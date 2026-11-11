@@ -101,11 +101,11 @@ export function generateInsight(data, context) {
     let totalElapsedUs = 0;
     let totalMatchAttempts = 0;
     let totalMatchCount = 0;
-    selectorTimings.map(timing => {
+    for (const timing of selectorTimings) {
         totalElapsedUs += timing[Types.Events.SelectorTimingsKey.Elapsed];
         totalMatchAttempts += timing[Types.Events.SelectorTimingsKey.MatchAttempts];
         totalMatchCount += timing[Types.Events.SelectorTimingsKey.MatchCount];
-    });
+    }
     let topSelectorElapsedMs = null;
     let topSelectorMatchAttempts = null;
     if (selectorTimings.length > 0) {

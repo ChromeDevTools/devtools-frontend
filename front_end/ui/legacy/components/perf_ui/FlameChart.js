@@ -159,7 +159,8 @@ const FlameChartBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class FlameChart extends FlameChartBase {
     flameChartDelegate;
     chartViewport;
-    dataProvider;
+    #dataProvider;
+    #windowTimes;
     candyStripePattern;
     candyStripePatternGray;
     contextMenu;
@@ -279,7 +280,7 @@ export class FlameChart extends FlameChartBase {
             enableCursorElement,
         });
         this.chartViewport.show(this.contentElement);
-        this.dataProvider = dataProvider;
+        this.#dataProvider = dataProvider;
         this.viewportElement = this.chartViewport.viewportElement;
         this.canvas = this.viewportElement.createChild('canvas', 'fill');
         if (optionalConfig.canvasVELogContext) {
@@ -405,14 +406,31 @@ export class FlameChart extends FlameChartBase {
     disableRangeSelection() {
         this.chartViewport.disableRangeSelection();
     }
+    get dataProvider() {
+        return this.#dataProvider;
+    }
+    set dataProvider(dataProvider) {
+        this.setDataProvider(dataProvider);
+    }
     setDataProvider(dataProvider) {
-        if (this.dataProvider === dataProvider) {
+        if (this.#dataProvider === dataProvider) {
             return;
         }
-        this.dataProvider = dataProvider;
+        this.#dataProvider = dataProvider;
         this.reset();
-        this.chartViewport.setWindowTimes(dataProvider.minimumBoundary(), dataProvider.minimumBoundary() + dataProvider.totalTime());
+        if (this.#windowTimes) {
+            this.chartViewport.setWindowTimes(this.#windowTimes.min, this.#windowTimes.max, this.#windowTimes.animate);
+        }
+        else {
+            this.chartViewport.setWindowTimes(dataProvider.minimumBoundary(), dataProvider.minimumBoundary() + dataProvider.totalTime());
+        }
         this.scheduleUpdate();
+    }
+    get delegate() {
+        return this.flameChartDelegate;
+    }
+    set delegate(flameChartDelegate) {
+        this.setDelegate(flameChartDelegate);
     }
     setDelegate(flameChartDelegate) {
         this.flameChartDelegate = flameChartDelegate;
@@ -653,6 +671,7 @@ export class FlameChart extends FlameChartBase {
         };
     }
     set windowTimes(windowTimes) {
+        this.#windowTimes = windowTimes;
         this.setWindowTimes(windowTimes.min, windowTimes.max, windowTimes.animate);
     }
     performUpdate() {
@@ -2568,22 +2587,27 @@ export class FlameChart extends FlameChartBase {
         const { entryStartTimes, entryTotalTimes, entryLevels } = timelineData;
         this.customDrawnPositions.clear();
         context.save();
-        // TODO: Don't draw if it's not in the viewport.
+        const top = this.chartViewport.scrollOffset();
         const posArray = [];
         for (const [entryIndex, drawOverride] of this.#indexToDrawOverride.entries()) {
-            const entryStartTime = entryStartTimes[entryIndex];
-            const entryTotalTime = entryTotalTimes[entryIndex];
             const level = entryLevels[entryIndex];
-            // Skip if the group for this event has been hidden.
-            const group = this.dataProvider.groupForEvent?.(entryIndex);
-            if (group?.hidden) {
+            if (!this.visibleLevels?.[level]) {
                 continue;
             }
-            const unclippedXStart = this.chartViewport.timeToPosition(entryStartTime);
-            const unclippedXEnd = this.chartViewport.timeToPosition(entryStartTime + entryTotalTime);
-            const x = unclippedXStart;
             const y = this.levelToOffset(level);
             const height = this.levelHeight(level);
+            if (this.offsetHeight > 0 && (y + height < top || y > top + this.offsetHeight)) {
+                continue;
+            }
+            const entryStartTime = entryStartTimes[entryIndex];
+            const entryTotalTime = entryTotalTimes[entryIndex];
+            const unclippedXStart = this.chartViewport.timeToPosition(entryStartTime);
+            const unclippedXEnd = this.chartViewport.timeToPosition(entryStartTime + entryTotalTime);
+            // Include a `height` margin so zero-width custom symbols (e.g. layout shift diamonds) near viewport edges are not clipped.
+            if (this.offsetWidth > 0 && (unclippedXEnd + height < 0 || unclippedXStart - height > this.offsetWidth)) {
+                continue;
+            }
+            const x = unclippedXStart;
             const width = unclippedXEnd - unclippedXStart;
             const pos = drawOverride(context, x, y, width, height, time => this.chartViewport.timeToPosition(time), color => this.#transformColor(entryIndex, color));
             posArray.push({ entryIndex, pos });

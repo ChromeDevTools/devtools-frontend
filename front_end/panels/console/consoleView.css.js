@@ -40,7 +40,6 @@ export default `/* Copyright 2021 The Chromium Authors
   overflow: hidden;
 
   --override-error-text-color: var(--sys-color-on-error-container);
-  --message-corner-rounder-background: var(--sys-color-cdt-base-container);
 }
 
 .console-toolbar-container {
@@ -326,14 +325,10 @@ export default `/* Copyright 2021 The Chromium Authors
 
 .console-error-level {
   background-color: var(--sys-color-surface-error);
-
-  --message-corner-rounder-background: var(--sys-color-surface-error);
 }
 
 .console-warning-level {
   background-color: var(--sys-color-surface-yellow);
-
-  --message-corner-rounder-background: var(--sys-color-surface-yellow);
 }
 
 .console-view-object-properties-section {
@@ -343,7 +338,7 @@ export default `/* Copyright 2021 The Chromium Authors
   display: inline-block;
   overflow-wrap: break-word;
   max-width: 100%;
-  margin-top: -1.5px;
+  margin-top: calc(-1 * var(--sys-size-1));
 }
 
 /* Console content is rendered in "Noto Sans Mono" on Linux, which has a

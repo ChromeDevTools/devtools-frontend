@@ -1,6 +1,7 @@
 import '../../../ui/components/tooltips/tooltips.js';
 import '../../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Tooltips from '../../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { type RegisteredPropertyDetails } from './CSSVariableValueView.js';
 export interface CSSQueryData {
@@ -27,7 +28,7 @@ export interface ViewInput {
     matchedStyles?: SDK.CSSMatchedStyles.CSSMatchedStyles;
     style?: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
     containerNode?: SDK.DOMModel.DOMNode;
-    tooltipPrefix: string;
+    tooltipPrefix?: Tooltips.Tooltip.IdFactory;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
@@ -36,6 +37,6 @@ export declare class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
     constructor(element?: HTMLElement, view?: View);
     set data(data: CSSQueryData);
     wasShown(): void;
-    parseStyleQueries(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, containerNode: SDK.DOMModel.DOMNode, tooltipPrefix: string): void;
+    parseStyleQueries(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, containerNode: SDK.DOMModel.DOMNode, tooltipPrefix: Tooltips.Tooltip.IdFactory): void;
     performUpdate(): void;
 }

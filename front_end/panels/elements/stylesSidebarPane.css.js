@@ -73,7 +73,6 @@ export default `/**
   }
 
   .selector,
-  .try-rule-selector-element,
   .ancestor-rule-list,
   .ancestor-closing-braces {
     color: var(--app-color-element-sidebar-subtitle);

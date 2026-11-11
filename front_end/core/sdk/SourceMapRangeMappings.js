@@ -36,4 +36,40 @@ export function decodeRangeMappings(encodedRangeMappings) {
     rangeMappings.push(indices);
     return rangeMappings;
 }
+/**
+ * Maps a position covered by a range mapping to its original position.
+ *
+ * Every character following the range mapping's start maps to the original code character
+ * by character, so the offset from the start carries over. Newlines are part of that: once
+ * a line boundary is crossed, both sides restart at column 0 and only the line offset
+ * applies.
+ *
+ * @param rangeMapping where the covering range mapping starts.
+ * @param lineNumber line of the position in the generated code.
+ * @param columnNumber column of the position in the generated code.
+ */
+export function interpolateOriginalPosition(rangeMapping, lineNumber, columnNumber) {
+    const lineOffset = lineNumber - rangeMapping.lineNumber;
+    return {
+        lineNumber: rangeMapping.sourceLineNumber + lineOffset,
+        columnNumber: lineOffset === 0 ? rangeMapping.sourceColumnNumber + (columnNumber - rangeMapping.columnNumber) :
+            columnNumber,
+    };
+}
+/**
+ * The inverse of {@link interpolateOriginalPosition}: maps an original position covered by
+ * a range mapping back to its position in the generated code.
+ *
+ * @param rangeMapping where the covering range mapping starts.
+ * @param lineNumber line of the position in the original code.
+ * @param columnNumber column of the position in the original code.
+ */
+export function interpolateGeneratedPosition(rangeMapping, lineNumber, columnNumber) {
+    const lineOffset = lineNumber - rangeMapping.sourceLineNumber;
+    return {
+        lineNumber: rangeMapping.lineNumber + lineOffset,
+        columnNumber: lineOffset === 0 ? rangeMapping.columnNumber + (columnNumber - rangeMapping.sourceColumnNumber) :
+            columnNumber,
+    };
+}
 //# sourceMappingURL=SourceMapRangeMappings.js.map

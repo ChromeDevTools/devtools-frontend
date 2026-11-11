@@ -14,7 +14,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <style>${networkTrackWidgetStyles}</style>
       <devtools-widget
         class="container"
-        ${widget((element) => new PerfUI.FlameChart.FlameChart(input.dataProvider, input.delegate, undefined, element), { windowTimes: input.windowTimes })}
+        ${widget((element) => new PerfUI.FlameChart.FlameChart(input.dataProvider, input.delegate, undefined, element), {
+        dataProvider: input.dataProvider,
+        delegate: input.delegate,
+        windowTimes: input.windowTimes,
+    })}
       ></devtools-widget>
     `, target);
     // clang-format on

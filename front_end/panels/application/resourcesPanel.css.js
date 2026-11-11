@@ -70,54 +70,6 @@ export default `/*
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
-.database-query-group-messages {
-  overflow-y: auto;
-}
-
-.database-query-prompt-container {
-  position: relative;
-  padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) var(--sys-size-11);
-  min-height: var(--sys-size-8);
-}
-
-.database-query-prompt {
-  white-space: pre-wrap;
-}
-
-.database-query-prompt-container .prompt-icon {
-  top: var(--sys-size-4);
-}
-
-.database-user-query {
-  position: relative;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) var(--sys-size-11);
-  min-height: var(--sys-size-8);
-  flex-shrink: 0;
-}
-
-.database-user-query:focus-visible {
-  background-color: var(--sys-color-state-focus-highlight);
-}
-
-.database-query-text {
-  color: var(--sys-color-primary-bright);
-  user-select: text;
-}
-
-.database-query-result {
-  position: relative;
-  padding: var(--sys-size-1) var(--sys-size-10);
-  min-height: var(--sys-size-8);
-  margin-left: calc(-1 * var(--sys-size-10));
-  padding-right: 0;
-}
-
-.database-query-result.error {
-  color: var(--sys-color-token-property-special);
-  user-select: text;
-}
-
 .resources-sidebar {
   padding: 0;
   overflow-x: auto;

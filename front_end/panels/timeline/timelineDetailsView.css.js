@@ -85,8 +85,8 @@ export default `/*
     background-color: var(--override-details-warning-background-color);
   }
 
-  .theme-with-dark-background .timeline-details-warning,
-  :host-context(.theme-with-dark-background) .timeline-details-warning {
+  .theme-with-dark-background .timeline-details-warning, /* stylelint-disable-line plugin/check_scope_selectors */
+  :host-context(.theme-with-dark-background) .timeline-details-warning { /* stylelint-disable-line plugin/check_scope_selectors */
     --override-details-warning-background-color: rgb(87 10 10 / 48%);
   }
 

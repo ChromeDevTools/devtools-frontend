@@ -49,8 +49,8 @@ __export(Trace_exports, {
   stackTraceInEvent: () => stackTraceInEvent
 });
 import * as Common from "../../../core/common/common.js";
-import * as Platform2 from "../../../core/platform/platform.js";
-import * as Types2 from "../types/types.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as Types from "../types/types.js";
 
 // ../../front_end/models/trace/helpers/SyntheticEvents.ts
 var SyntheticEvents_exports = {};
@@ -122,198 +122,6 @@ var SyntheticEventsManager = class _SyntheticEventsManager {
   }
 };
 
-// ../../front_end/models/trace/helpers/Timing.ts
-var Timing_exports = {};
-__export(Timing_exports, {
-  boundsIncludeTimeRange: () => boundsIncludeTimeRange,
-  combineTraceWindowsMicro: () => combineTraceWindowsMicro,
-  eventIsInBounds: () => eventIsInBounds,
-  eventTimingsMicroSeconds: () => eventTimingsMicroSeconds,
-  eventTimingsMilliSeconds: () => eventTimingsMilliSeconds,
-  expandWindowByPercentOrToOneMillisecond: () => expandWindowByPercentOrToOneMillisecond,
-  microToMilli: () => microToMilli,
-  microToSeconds: () => microToSeconds,
-  milliToMicro: () => milliToMicro,
-  secondsToMicro: () => secondsToMicro,
-  secondsToMilli: () => secondsToMilli,
-  timeStampForEventAdjustedByClosestNavigation: () => timeStampForEventAdjustedByClosestNavigation,
-  timestampIsInBounds: () => timestampIsInBounds,
-  traceWindowFromEvent: () => traceWindowFromEvent,
-  traceWindowFromMicroSeconds: () => traceWindowFromMicroSeconds,
-  traceWindowFromMilliSeconds: () => traceWindowFromMilliSeconds,
-  traceWindowFromOverlay: () => traceWindowFromOverlay,
-  traceWindowMicroSecondsToMilliSeconds: () => traceWindowMicroSecondsToMilliSeconds,
-  traceWindowMilliSeconds: () => traceWindowMilliSeconds,
-  windowFitsInsideBounds: () => windowFitsInsideBounds,
-  windowsEqual: () => windowsEqual
-});
-import * as Platform from "../../../core/platform/platform.js";
-import * as Types from "../types/types.js";
-var milliToMicro = (value) => Types.Timing.Micro(value * 1e3);
-var secondsToMilli = (value) => Types.Timing.Milli(value * 1e3);
-var secondsToMicro = (value) => milliToMicro(secondsToMilli(value));
-var microToMilli = (value) => Types.Timing.Milli(value / 1e3);
-var microToSeconds = (value) => Types.Timing.Seconds(value / 1e3 / 1e3);
-function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, softNavigationsById, navigationsByFrameId) {
-  let navigationForEvent = null;
-  if (Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
-    navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId) ?? null;
-  } else if (Types.Events.isSoftFirstContentfulPaint(event) && event.args?.context?.performanceTimelineNavigationId) {
-    navigationForEvent = softNavigationsById.get(event.args.context.performanceTimelineNavigationId) ?? null;
-  } else if (Types.Events.isSoftNavigationStart(event)) {
-    navigationForEvent = getNavigationForTraceEvent(event, event.args.frame, navigationsByFrameId);
-  } else {
-    const navigationId = navigationIDForEvent(event);
-    if (navigationId) {
-      navigationForEvent = navigationsByNavigationId.get(navigationId) ?? null;
-    } else {
-      const frameId = frameIDForEvent(event);
-      if (frameId) {
-        navigationForEvent = getNavigationForTraceEvent(event, frameId, navigationsByFrameId);
-      }
-    }
-  }
-  if (navigationForEvent) {
-    return Types.Timing.Micro(event.ts - navigationForEvent.ts);
-  }
-  return Types.Timing.Micro(event.ts - traceBounds.min);
-}
-function expandWindowByPercentOrToOneMillisecond(annotationWindow, maxTraceWindow, percentage) {
-  let newMin = annotationWindow.min - annotationWindow.range * (percentage / 100) / 2;
-  let newMax = annotationWindow.max + annotationWindow.range * (percentage / 100) / 2;
-  if (newMax - newMin < 1e3) {
-    const rangeMiddle = (annotationWindow.min + annotationWindow.max) / 2;
-    newMin = rangeMiddle - 500;
-    newMax = rangeMiddle + 500;
-  }
-  newMin = Math.max(newMin, maxTraceWindow.min);
-  newMax = Math.min(newMax, maxTraceWindow.max);
-  const expandedWindow = {
-    min: Types.Timing.Micro(newMin),
-    max: Types.Timing.Micro(newMax),
-    range: Types.Timing.Micro(newMax - newMin)
-  };
-  return expandedWindow;
-}
-function eventTimingsMicroSeconds(event) {
-  return {
-    startTime: event.ts,
-    endTime: event.ts + (event.dur ?? 0),
-    duration: event.dur || 0
-  };
-}
-function eventTimingsMilliSeconds(event) {
-  return {
-    startTime: event.ts / 1e3,
-    endTime: (event.ts + (event.dur ?? 0)) / 1e3,
-    duration: (event.dur || 0) / 1e3
-  };
-}
-function traceWindowMilliSeconds(bounds) {
-  return {
-    min: microToMilli(bounds.min),
-    max: microToMilli(bounds.max),
-    range: microToMilli(bounds.range)
-  };
-}
-function traceWindowMicroSecondsToMilliSeconds(bounds) {
-  return {
-    min: microToMilli(bounds.min),
-    max: microToMilli(bounds.max),
-    range: microToMilli(bounds.range)
-  };
-}
-function traceWindowFromMilliSeconds(min, max) {
-  const traceWindow = {
-    min: milliToMicro(min),
-    max: milliToMicro(max),
-    range: Types.Timing.Micro(milliToMicro(max) - milliToMicro(min))
-  };
-  return traceWindow;
-}
-function traceWindowFromMicroSeconds(min, max) {
-  const traceWindow = {
-    min,
-    max,
-    range: max - min
-  };
-  return traceWindow;
-}
-function traceWindowFromEvent(event) {
-  return {
-    min: event.ts,
-    max: event.ts + (event.dur ?? 0),
-    range: event.dur ?? 0
-  };
-}
-function traceWindowFromOverlay(overlay) {
-  switch (overlay.type) {
-    case "ENTRY_LABEL":
-    case "ENTRY_OUTLINE":
-    case "ENTRY_SELECTED":
-    case "COMMENT_PIN": {
-      return traceWindowFromEvent(overlay.entry);
-    }
-    case "TIMESPAN_BREAKDOWN": {
-      const windows = overlay.sections.map((s) => s.bounds);
-      if (overlay.entry) {
-        windows.push(traceWindowFromEvent(overlay.entry));
-      }
-      return combineTraceWindowsMicro(windows);
-    }
-    case "CANDY_STRIPED_TIME_RANGE":
-    case "TIME_RANGE": {
-      return structuredClone(overlay.bounds);
-    }
-    case "ENTRIES_LINK": {
-      const from = traceWindowFromEvent(overlay.entryFrom);
-      if (!overlay.entryTo) {
-        return from;
-      }
-      const to = traceWindowFromEvent(overlay.entryTo);
-      return combineTraceWindowsMicro([from, to]);
-    }
-    case "TIMESTAMP_MARKER":
-      return traceWindowFromMicroSeconds(overlay.timestamp, overlay.timestamp);
-    case "TIMINGS_MARKER":
-      return traceWindowFromMicroSeconds(overlay.adjustedTimestamp, overlay.adjustedTimestamp);
-    case "BOTTOM_INFO_BAR":
-      return null;
-    default:
-      Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
-  }
-}
-function combineTraceWindowsMicro(windows) {
-  if (!windows.length) {
-    return null;
-  }
-  const result = structuredClone(windows[0]);
-  for (const bounds of windows.slice(1)) {
-    result.min = Math.min(result.min, bounds.min);
-    result.max = Math.max(result.max, bounds.max);
-  }
-  result.range = result.max - result.min;
-  return result;
-}
-function boundsIncludeTimeRange(data) {
-  const { min: visibleMin, max: visibleMax } = data.bounds;
-  const { min: rangeMin, max: rangeMax } = data.timeRange;
-  return visibleMin <= rangeMax && visibleMax >= rangeMin;
-}
-function eventIsInBounds(event, bounds) {
-  const startTime = event.ts;
-  return startTime <= bounds.max && bounds.min < startTime + (event.dur ?? 0);
-}
-function timestampIsInBounds(bounds, timestamp) {
-  return timestamp >= bounds.min && timestamp <= bounds.max;
-}
-function windowFitsInsideBounds(data) {
-  return data.window.min >= data.bounds.min && data.window.max <= data.bounds.max;
-}
-function windowsEqual(w1, w2) {
-  return w1.min === w2.min && w1.max === w2.max;
-}
-
 // ../../front_end/models/trace/helpers/Trace.ts
 function getEventDataObject(event) {
   if (!event.args || !("data" in event.args) || typeof event.args.data !== "object" || !event.args.data || Array.isArray(event.args.data)) {
@@ -329,13 +137,13 @@ function stackTraceInEvent(event) {
   if (event.args && "stackTrace" in event.args && Array.isArray(event.args.stackTrace)) {
     return event.args.stackTrace;
   }
-  if (Types2.Events.isRecalcStyle(event)) {
+  if (Types.Events.isRecalcStyle(event)) {
     return event.args.beginData?.stackTrace || null;
   }
-  if (Types2.Events.isLayout(event)) {
+  if (Types.Events.isLayout(event)) {
     return event.args.beginData.stackTrace ?? null;
   }
-  if (Types2.Events.isFunctionCall(event)) {
+  if (Types.Events.isFunctionCall(event)) {
     const data2 = event.args.data;
     if (!data2) {
       return null;
@@ -346,7 +154,7 @@ function stackTraceInEvent(event) {
     }
     return [{ columnNumber, lineNumber, url, scriptId, functionName }];
   }
-  if (Types2.Events.isProfileCall(event)) {
+  if (Types.Events.isProfileCall(event)) {
     const callFrame = event.callFrame;
     if (!callFrame) {
       return null;
@@ -409,10 +217,10 @@ function eventTimeComparator(a, b) {
   if (timeDifference) {
     return timeDifference;
   }
-  if (Types2.Events.isProfileCall(a) && !Types2.Events.isProfileCall(b)) {
+  if (Types.Events.isProfileCall(a) && !Types.Events.isProfileCall(b)) {
     return -1;
   }
-  if (Types2.Events.isProfileCall(b) && !Types2.Events.isProfileCall(a)) {
+  if (Types.Events.isProfileCall(b) && !Types.Events.isProfileCall(a)) {
     return 1;
   }
   return 0;
@@ -451,7 +259,7 @@ function parseDevtoolsDetails(timingDetail, key) {
     if (!(key in detailObj)) {
       return null;
     }
-    if (!Types2.Extensions.isValidExtensionPayload(detailObj[key])) {
+    if (!Types.Extensions.isValidExtensionPayload(detailObj[key])) {
       return null;
     }
     return detailObj[key];
@@ -464,7 +272,7 @@ function getNavigationForTraceEvent(event, eventFrameId, navigationsByFrameId) {
   if (!navigations || eventFrameId === "") {
     return null;
   }
-  const eventNavigationIndex = Platform2.ArrayUtilities.nearestIndexFromEnd(navigations, (navigation) => navigation.ts <= event.ts);
+  const eventNavigationIndex = Platform.ArrayUtilities.nearestIndexFromEnd(navigations, (navigation) => navigation.ts <= event.ts);
   if (eventNavigationIndex === null) {
     return null;
   }
@@ -494,11 +302,11 @@ function makeProfileCall(node, profileId, sampleIndex, ts, pid, tid) {
     name: "ProfileCall",
     nodeId: node.id,
     args: {},
-    ph: Types2.Events.Phase.COMPLETE,
+    ph: Types.Events.Phase.COMPLETE,
     pid,
     tid,
     ts,
-    dur: Types2.Timing.Micro(0),
+    dur: Types.Timing.Micro(0),
     callFrame: node.callFrame,
     sampleIndex,
     profileId
@@ -514,15 +322,15 @@ function matchEvents(unpairedEvents) {
     if (id === void 0) {
       continue;
     }
-    if (Types2.Events.isPairableAsyncBegin(event)) {
+    if (Types.Events.isPairableAsyncBegin(event)) {
       const existingEvents = beginEventsById.get(id) ?? [];
       existingEvents.push(event);
       beginEventsById.set(id, existingEvents);
-    } else if (Types2.Events.isPairableAsyncInstant(event)) {
+    } else if (Types.Events.isPairableAsyncInstant(event)) {
       const existingEvents = instantEventsById.get(id) ?? [];
       existingEvents.push(event);
       instantEventsById.set(id, existingEvents);
-    } else if (Types2.Events.isPairableAsyncEnd(event)) {
+    } else if (Types.Events.isPairableAsyncEnd(event)) {
       const beginEventsWithMatchingId = beginEventsById.get(id) ?? [];
       const beginEvent = beginEventsWithMatchingId.pop();
       if (!beginEvent) {
@@ -600,7 +408,7 @@ function createSortedSyntheticEvents(matchedPairs) {
       // Both events have the same name, so it doesn't matter which we pick to
       // use as the description
       name: beginEvent.name,
-      dur: Types2.Timing.Micro(targetEvent.ts - beginEvent.ts),
+      dur: Types.Timing.Micro(targetEvent.ts - beginEvent.ts),
       ts: beginEvent.ts,
       args: {
         data: triplet
@@ -625,16 +433,16 @@ function getZeroIndexedLineAndColumnForEvent(event) {
   switch (event.name) {
     // All these events have line/column numbers which are 1 indexed; so we
     // subtract to make them 0 indexed.
-    case Types2.Events.Name.FUNCTION_CALL:
-    case Types2.Events.Name.EVALUATE_SCRIPT:
-    case Types2.Events.Name.COMPILE:
-    case Types2.Events.Name.CACHE_SCRIPT: {
+    case Types.Events.Name.FUNCTION_CALL:
+    case Types.Events.Name.EVALUATE_SCRIPT:
+    case Types.Events.Name.COMPILE:
+    case Types.Events.Name.CACHE_SCRIPT: {
       return {
         lineNumber: typeof lineNumber === "number" ? lineNumber - 1 : void 0,
         columnNumber: typeof columnNumber === "number" ? columnNumber - 1 : void 0
       };
     }
-    case Types2.Events.Name.PROFILE_CALL: {
+    case Types.Events.Name.PROFILE_CALL: {
       const callFrame = event.callFrame;
       return {
         lineNumber: typeof lineNumber === "number" ? callFrame.lineNumber - 1 : void 0,
@@ -652,15 +460,15 @@ function getZeroIndexedStackTraceInEventPayload(event) {
     return null;
   }
   switch (event.name) {
-    case Types2.Events.Name.SCHEDULE_STYLE_RECALCULATION:
-    case Types2.Events.Name.INVALIDATE_LAYOUT:
-    case Types2.Events.Name.FUNCTION_CALL:
-    case Types2.Events.Name.LAYOUT:
-    case Types2.Events.Name.RECALC_STYLE: {
+    case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
+    case Types.Events.Name.INVALIDATE_LAYOUT:
+    case Types.Events.Name.FUNCTION_CALL:
+    case Types.Events.Name.LAYOUT:
+    case Types.Events.Name.RECALC_STYLE: {
       return stack.map(makeZeroBasedCallFrame);
     }
     default: {
-      if (Types2.Events.isUserTiming(event) || Types2.Extensions.isSyntheticExtensionEntry(event)) {
+      if (Types.Events.isUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
         return stack.map(makeZeroBasedCallFrame);
       }
       return stack;
@@ -673,15 +481,15 @@ function getStackTraceTopCallFrameInEventPayload(event) {
     return null;
   }
   switch (event.name) {
-    case Types2.Events.Name.SCHEDULE_STYLE_RECALCULATION:
-    case Types2.Events.Name.INVALIDATE_LAYOUT:
-    case Types2.Events.Name.FUNCTION_CALL:
-    case Types2.Events.Name.LAYOUT:
-    case Types2.Events.Name.RECALC_STYLE: {
+    case Types.Events.Name.SCHEDULE_STYLE_RECALCULATION:
+    case Types.Events.Name.INVALIDATE_LAYOUT:
+    case Types.Events.Name.FUNCTION_CALL:
+    case Types.Events.Name.LAYOUT:
+    case Types.Events.Name.RECALC_STYLE: {
       return makeZeroBasedCallFrame(stack[0]);
     }
     default: {
-      if (Types2.Events.isUserTiming(event) || Types2.Extensions.isSyntheticExtensionEntry(event)) {
+      if (Types.Events.isUserTiming(event) || Types.Extensions.isSyntheticExtensionEntry(event)) {
         return makeZeroBasedCallFrame(stack[0]);
       }
       return stack[0];
@@ -689,7 +497,7 @@ function getStackTraceTopCallFrameInEventPayload(event) {
   }
 }
 function rawCallFrameForEntry(entry) {
-  if (Types2.Events.isProfileCall(entry)) {
+  if (Types.Events.isProfileCall(entry)) {
     return entry.callFrame;
   }
   const topCallFrame = getStackTraceTopCallFrameInEventPayload(entry);
@@ -741,13 +549,13 @@ function navigationIDForEvent(event) {
 }
 var DevToolsTimelineEventCategory = "disabled-by-default-devtools.timeline";
 function isTopLevelEvent(event) {
-  return event.cat.includes(DevToolsTimelineEventCategory) && event.name === Types2.Events.Name.RUN_TASK;
+  return event.cat.includes(DevToolsTimelineEventCategory) && event.name === Types.Events.Name.RUN_TASK;
 }
 function isExtensionUrl(url) {
   return url.startsWith("extensions:") || url.startsWith("chrome-extension:");
 }
 function topLevelEventIndexEndingAfter(events, time) {
-  let index = Platform2.ArrayUtilities.upperBound(events, time, (time2, event) => time2 - event.ts) - 1;
+  let index = Platform.ArrayUtilities.upperBound(events, time, (time2, event) => time2 - event.ts) - 1;
   while (index > 0 && !isTopLevelEvent(events[index])) {
     index--;
   }
@@ -758,7 +566,7 @@ function findRecalcStyleEvents(events, startTime, endTime) {
   const startEventIndex = topLevelEventIndexEndingAfter(events, startTime);
   for (let i = startEventIndex; i < events.length; i++) {
     const event = events[i];
-    if (!Types2.Events.isRecalcStyle(event)) {
+    if (!Types.Events.isRecalcStyle(event)) {
       continue;
     }
     if (event.ts >= (endTime || Infinity)) {
@@ -769,44 +577,46 @@ function findRecalcStyleEvents(events, startTime, endTime) {
   return foundEvents;
 }
 function findNextEventAfterTimestamp(candidates, ts) {
-  const index = Platform2.ArrayUtilities.nearestIndexFromBeginning(candidates, (candidate) => ts < candidate.ts);
+  const index = Platform.ArrayUtilities.nearestIndexFromBeginning(candidates, (candidate) => ts < candidate.ts);
   return index === null ? null : candidates[index];
 }
 function findPreviousEventBeforeTimestamp(candidates, ts) {
-  const index = Platform2.ArrayUtilities.nearestIndexFromEnd(candidates, (candidate) => candidate.ts < ts);
+  const index = Platform.ArrayUtilities.nearestIndexFromEnd(candidates, (candidate) => candidate.ts < ts);
   return index === null ? null : candidates[index];
 }
 function forEachEvent(events, config) {
-  const globalStartTime = config.startTime ?? Types2.Timing.Micro(0);
-  const globalEndTime = config.endTime || Types2.Timing.Micro(Infinity);
+  const globalStartTime = config.startTime ?? Types.Timing.Micro(0);
+  const globalEndTime = config.endTime || Types.Timing.Micro(Infinity);
   const ignoreAsyncEvents = config.ignoreAsyncEvents === false ? false : true;
   const stack = [];
   const startEventIndex = topLevelEventIndexEndingAfter(events, globalStartTime);
   for (let i = startEventIndex; i < events.length; i++) {
     const currentEvent = events[i];
-    const currentEventTimings = eventTimingsMicroSeconds(currentEvent);
-    if (currentEventTimings.endTime < globalStartTime) {
+    const startTime = currentEvent.ts;
+    const duration = currentEvent.dur || 0;
+    const endTime = startTime + duration;
+    if (endTime < globalStartTime) {
       continue;
     }
-    if (currentEventTimings.startTime > globalEndTime) {
+    if (startTime > globalEndTime) {
       break;
     }
-    const isIgnoredAsyncEvent = ignoreAsyncEvents && Types2.Events.isPhaseAsync(currentEvent.ph);
-    if (isIgnoredAsyncEvent || Types2.Events.isFlowPhase(currentEvent.ph)) {
+    if (currentEvent.ph !== Types.Events.Phase.COMPLETE && (ignoreAsyncEvents && Types.Events.isPhaseAsync(currentEvent.ph) || Types.Events.isFlowPhase(currentEvent.ph))) {
       continue;
     }
-    let lastEventOnStack = stack.at(-1);
-    let lastEventEndTime = lastEventOnStack ? eventTimingsMicroSeconds(lastEventOnStack).endTime : null;
-    while (lastEventOnStack && lastEventEndTime && lastEventEndTime <= currentEventTimings.startTime) {
+    while (stack.length > 0) {
+      const lastEventOnStack = stack[stack.length - 1];
+      const lastEventEndTime = lastEventOnStack.ts + (lastEventOnStack.dur ?? 0);
+      if (lastEventEndTime > startTime) {
+        break;
+      }
       stack.pop();
       config.onEndEvent(lastEventOnStack);
-      lastEventOnStack = stack.at(-1);
-      lastEventEndTime = lastEventOnStack ? eventTimingsMicroSeconds(lastEventOnStack).endTime : null;
     }
     if (config.eventFilter && !config.eventFilter(currentEvent)) {
       continue;
     }
-    if (currentEventTimings.duration) {
+    if (duration) {
       config.onStartEvent(currentEvent);
       stack.push(currentEvent);
     } else if (config.onInstantEvent) {
@@ -852,107 +662,108 @@ function extractSampleTraceId(event) {
   return null;
 }
 var VISIBLE_TRACE_EVENT_TYPES = /* @__PURE__ */ new Set([
-  Types2.Events.Name.ABORT_POST_TASK_CALLBACK,
-  Types2.Events.Name.ANIMATION,
-  Types2.Events.Name.ASYNC_TASK,
-  Types2.Events.Name.BACKGROUND_DESERIALIZE,
-  Types2.Events.Name.CACHE_MODULE,
-  Types2.Events.Name.CACHE_SCRIPT,
-  Types2.Events.Name.CANCEL_ANIMATION_FRAME,
-  Types2.Events.Name.CANCEL_IDLE_CALLBACK,
-  Types2.Events.Name.COMMIT,
-  Types2.Events.Name.COMPILE_CODE,
-  Types2.Events.Name.COMPILE_MODULE,
-  Types2.Events.Name.COMPILE,
-  Types2.Events.Name.COMPOSITE_LAYERS,
-  Types2.Events.Name.COMPUTE_INTERSECTION,
-  Types2.Events.Name.CONSOLE_TIME,
-  Types2.Events.Name.CPPGC_SWEEP,
-  Types2.Events.Name.CRYPTO_DO_DECRYPT_REPLY,
-  Types2.Events.Name.CRYPTO_DO_DECRYPT,
-  Types2.Events.Name.CRYPTO_DO_DIGEST_REPLY,
-  Types2.Events.Name.CRYPTO_DO_DIGEST,
-  Types2.Events.Name.CRYPTO_DO_ENCRYPT_REPLY,
-  Types2.Events.Name.CRYPTO_DO_ENCRYPT,
-  Types2.Events.Name.CRYPTO_DO_SIGN_REPLY,
-  Types2.Events.Name.CRYPTO_DO_SIGN,
-  Types2.Events.Name.CRYPTO_DO_VERIFY_REPLY,
-  Types2.Events.Name.CRYPTO_DO_VERIFY,
-  Types2.Events.Name.DECODE_IMAGE,
-  Types2.Events.Name.EMBEDDER_CALLBACK,
-  Types2.Events.Name.EVALUATE_MODULE,
-  Types2.Events.Name.EVALUATE_SCRIPT,
-  Types2.Events.Name.EVENT_DISPATCH,
-  Types2.Events.Name.EVENT_TIMING,
-  Types2.Events.Name.FINALIZE_DESERIALIZATION,
-  Types2.Events.Name.FIRE_ANIMATION_FRAME,
-  Types2.Events.Name.FIRE_IDLE_CALLBACK,
-  Types2.Events.Name.FUNCTION_CALL,
-  Types2.Events.Name.GC_COLLECT_GARBARGE,
-  Types2.Events.Name.GC,
-  Types2.Events.Name.GPU_TASK,
-  Types2.Events.Name.HANDLE_POST_MESSAGE,
-  Types2.Events.Name.HIT_TEST,
-  Types2.Events.Name.JS_SAMPLE,
-  Types2.Events.Name.LAYERIZE,
-  Types2.Events.Name.LAYOUT,
-  Types2.Events.Name.MAJOR_GC,
-  Types2.Events.Name.MINOR_GC,
-  Types2.Events.Name.OPTIMIZE_CODE,
-  Types2.Events.Name.PAINT_SETUP,
-  Types2.Events.Name.PAINT,
-  Types2.Events.Name.PARSE_AUTHOR_STYLE_SHEET,
-  Types2.Events.Name.PARSE_HTML,
-  Types2.Events.Name.PRE_PAINT,
-  Types2.Events.Name.PROFILE_CALL,
-  Types2.Events.Name.PROGRAM,
-  Types2.Events.Name.RASTER_TASK,
-  Types2.Events.Name.REQUEST_ANIMATION_FRAME,
-  Types2.Events.Name.REQUEST_IDLE_CALLBACK,
-  Types2.Events.Name.RESOURCE_FINISH,
-  Types2.Events.Name.RESOURCE_RECEIVE_DATA,
-  Types2.Events.Name.RESOURCE_RECEIVE_RESPONSE,
-  Types2.Events.Name.RESOURCE_SEND_REQUEST,
-  Types2.Events.Name.RESOURCE_WILL_SEND_REQUEST,
-  Types2.Events.Name.RUN_MICROTASKS,
-  Types2.Events.Name.RUN_POST_TASK_CALLBACK,
-  Types2.Events.Name.RUN_TASK,
-  Types2.Events.Name.SCHEDULE_POST_MESSAGE,
-  Types2.Events.Name.SCHEDULE_POST_TASK_CALLBACK,
-  Types2.Events.Name.SCHEDULE_STYLE_RECALCULATION,
-  Types2.Events.Name.SCROLL_LAYER,
-  Types2.Events.Name.START_PROFILING,
-  Types2.Events.Name.STREAMING_COMPILE_SCRIPT_PARSING,
-  Types2.Events.Name.STREAMING_COMPILE_SCRIPT_WAITING,
-  Types2.Events.Name.STREAMING_COMPILE_SCRIPT,
-  Types2.Events.Name.SYNTHETIC_LAYOUT_SHIFT_CLUSTER,
-  Types2.Events.Name.SYNTHETIC_LAYOUT_SHIFT,
-  Types2.Events.Name.TIME_STAMP,
-  Types2.Events.Name.TIMER_FIRE,
-  Types2.Events.Name.TIMER_INSTALL,
-  Types2.Events.Name.TIMER_REMOVE,
-  Types2.Events.Name.UPDATE_LAYER_TREE,
-  Types2.Events.Name.RECALC_STYLE,
-  Types2.Events.Name.USER_TIMING,
-  Types2.Events.Name.V8_CONSOLE_RUN_TASK,
-  Types2.Events.Name.WASM_CACHED_MODULE,
-  Types2.Events.Name.WASM_COMPILED_MODULE,
-  Types2.Events.Name.WASM_MODULE_CACHE_HIT,
-  Types2.Events.Name.WASM_MODULE_CACHE_INVALID,
-  Types2.Events.Name.WASM_STREAM_FROM_RESPONSE_CALLBACK,
-  Types2.Events.Name.WEB_SOCKET_CREATE,
-  Types2.Events.Name.WEB_SOCKET_DESTROY,
-  Types2.Events.Name.WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST,
-  Types2.Events.Name.WEB_SOCKET_RECEIVE,
-  Types2.Events.Name.WEB_SOCKET_SEND_HANDSHAKE_REQUEST,
-  Types2.Events.Name.WEB_SOCKET_SEND,
-  Types2.Events.Name.XHR_LOAD,
-  Types2.Events.Name.XHR_READY_STATE_CHANGED
+  Types.Events.Name.ABORT_POST_TASK_CALLBACK,
+  Types.Events.Name.ANIMATION,
+  Types.Events.Name.ASYNC_TASK,
+  Types.Events.Name.BACKGROUND_DESERIALIZE,
+  Types.Events.Name.CACHE_MODULE,
+  Types.Events.Name.CACHE_SCRIPT,
+  Types.Events.Name.CANCEL_ANIMATION_FRAME,
+  Types.Events.Name.CANCEL_IDLE_CALLBACK,
+  Types.Events.Name.COMMIT,
+  Types.Events.Name.COMPILE_CODE,
+  Types.Events.Name.COMPILE_MODULE,
+  Types.Events.Name.COMPILE,
+  Types.Events.Name.COMPOSITE_LAYERS,
+  Types.Events.Name.COMPUTE_INTERSECTION,
+  Types.Events.Name.CONSOLE_TIME,
+  Types.Events.Name.CPPGC_SWEEP,
+  Types.Events.Name.CRYPTO_DO_DECRYPT_REPLY,
+  Types.Events.Name.CRYPTO_DO_DECRYPT,
+  Types.Events.Name.CRYPTO_DO_DIGEST_REPLY,
+  Types.Events.Name.CRYPTO_DO_DIGEST,
+  Types.Events.Name.CRYPTO_DO_ENCRYPT_REPLY,
+  Types.Events.Name.CRYPTO_DO_ENCRYPT,
+  Types.Events.Name.CRYPTO_DO_SIGN_REPLY,
+  Types.Events.Name.CRYPTO_DO_SIGN,
+  Types.Events.Name.CRYPTO_DO_VERIFY_REPLY,
+  Types.Events.Name.CRYPTO_DO_VERIFY,
+  Types.Events.Name.DECODE_IMAGE,
+  Types.Events.Name.EMBEDDER_CALLBACK,
+  Types.Events.Name.EVALUATE_MODULE,
+  Types.Events.Name.EVALUATE_SCRIPT,
+  Types.Events.Name.EVENT_DISPATCH,
+  Types.Events.Name.EVENT_TIMING,
+  Types.Events.Name.FINALIZE_DESERIALIZATION,
+  Types.Events.Name.FIRE_ANIMATION_FRAME,
+  Types.Events.Name.FIRE_IDLE_CALLBACK,
+  Types.Events.Name.FUNCTION_CALL,
+  Types.Events.Name.GC_COLLECT_GARBARGE,
+  Types.Events.Name.GC,
+  Types.Events.Name.GPU_TASK,
+  Types.Events.Name.HANDLE_POST_MESSAGE,
+  Types.Events.Name.HIT_TEST,
+  Types.Events.Name.JS_SAMPLE,
+  Types.Events.Name.LAYERIZE,
+  Types.Events.Name.LAYOUT,
+  Types.Events.Name.MAJOR_GC,
+  Types.Events.Name.MINOR_GC,
+  Types.Events.Name.OPTIMIZE_CODE,
+  Types.Events.Name.PAINT_SETUP,
+  Types.Events.Name.PAINT,
+  Types.Events.Name.PARSE_AUTHOR_STYLE_SHEET,
+  Types.Events.Name.PARSE_HTML,
+  Types.Events.Name.PRE_PAINT,
+  Types.Events.Name.PROFILE_CALL,
+  Types.Events.Name.PROGRAM,
+  Types.Events.Name.RASTER_TASK,
+  Types.Events.Name.REQUEST_ANIMATION_FRAME,
+  Types.Events.Name.REQUEST_IDLE_CALLBACK,
+  Types.Events.Name.RESOURCE_FINISH,
+  Types.Events.Name.RESOURCE_RECEIVE_DATA,
+  Types.Events.Name.RESOURCE_RECEIVE_RESPONSE,
+  Types.Events.Name.RESOURCE_SEND_REQUEST,
+  Types.Events.Name.RESOURCE_WILL_SEND_REQUEST,
+  Types.Events.Name.RUN_MICROTASKS,
+  Types.Events.Name.RUN_POST_TASK_CALLBACK,
+  Types.Events.Name.RUN_TASK,
+  Types.Events.Name.SCHEDULE_POST_MESSAGE,
+  Types.Events.Name.SCHEDULE_POST_TASK_CALLBACK,
+  Types.Events.Name.SCHEDULE_STYLE_RECALCULATION,
+  Types.Events.Name.SCROLL_LAYER,
+  Types.Events.Name.START_PROFILING,
+  Types.Events.Name.STREAMING_COMPILE_SCRIPT_PARSING,
+  Types.Events.Name.STREAMING_COMPILE_SCRIPT_WAITING,
+  Types.Events.Name.STREAMING_COMPILE_SCRIPT,
+  Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT_CLUSTER,
+  Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT,
+  Types.Events.Name.TIME_STAMP,
+  Types.Events.Name.TIMER_FIRE,
+  Types.Events.Name.TIMER_INSTALL,
+  Types.Events.Name.TIMER_REMOVE,
+  Types.Events.Name.UPDATE_LAYER_TREE,
+  Types.Events.Name.RECALC_STYLE,
+  Types.Events.Name.USER_TIMING,
+  Types.Events.Name.V8_CONSOLE_RUN_TASK,
+  Types.Events.Name.WASM_CACHED_MODULE,
+  Types.Events.Name.WASM_COMPILED_MODULE,
+  Types.Events.Name.WASM_MODULE_CACHE_HIT,
+  Types.Events.Name.WASM_MODULE_CACHE_INVALID,
+  Types.Events.Name.WASM_STREAM_FROM_RESPONSE_CALLBACK,
+  Types.Events.Name.WEB_SOCKET_CREATE,
+  Types.Events.Name.WEB_SOCKET_DESTROY,
+  Types.Events.Name.WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST,
+  Types.Events.Name.WEB_SOCKET_RECEIVE,
+  Types.Events.Name.WEB_SOCKET_SEND_HANDSHAKE_REQUEST,
+  Types.Events.Name.WEB_SOCKET_SEND,
+  Types.Events.Name.XHR_LOAD,
+  Types.Events.Name.XHR_READY_STATE_CHANGED
 ]);
 
 // ../../front_end/models/trace/helpers/TreeHelpers.ts
 var TreeHelpers_exports = {};
 __export(TreeHelpers_exports, {
+  appendChild: () => appendChild,
   canBuildTreesFromEvents: () => canBuildTreesFromEvents,
   makeEmptyTraceEntryNode: () => makeEmptyTraceEntryNode,
   makeEmptyTraceEntryTree: () => makeEmptyTraceEntryTree,
@@ -962,25 +773,227 @@ __export(TreeHelpers_exports, {
   walkTreeFromEntry: () => walkTreeFromEntry
 });
 import * as Types3 from "../types/types.js";
+
+// ../../front_end/models/trace/helpers/Timing.ts
+var Timing_exports = {};
+__export(Timing_exports, {
+  boundsIncludeTimeRange: () => boundsIncludeTimeRange,
+  combineTraceWindowsMicro: () => combineTraceWindowsMicro,
+  eventIsInBounds: () => eventIsInBounds,
+  eventTimingsMicroSeconds: () => eventTimingsMicroSeconds,
+  eventTimingsMilliSeconds: () => eventTimingsMilliSeconds,
+  expandWindowByPercentOrToOneMillisecond: () => expandWindowByPercentOrToOneMillisecond,
+  microToMilli: () => microToMilli,
+  microToSeconds: () => microToSeconds,
+  milliToMicro: () => milliToMicro,
+  secondsToMicro: () => secondsToMicro,
+  secondsToMilli: () => secondsToMilli,
+  timeStampForEventAdjustedByClosestNavigation: () => timeStampForEventAdjustedByClosestNavigation,
+  timestampIsInBounds: () => timestampIsInBounds,
+  traceWindowFromEvent: () => traceWindowFromEvent,
+  traceWindowFromMicroSeconds: () => traceWindowFromMicroSeconds,
+  traceWindowFromMilliSeconds: () => traceWindowFromMilliSeconds,
+  traceWindowFromOverlay: () => traceWindowFromOverlay,
+  traceWindowMicroSecondsToMilliSeconds: () => traceWindowMicroSecondsToMilliSeconds,
+  traceWindowMilliSeconds: () => traceWindowMilliSeconds,
+  windowFitsInsideBounds: () => windowFitsInsideBounds,
+  windowsEqual: () => windowsEqual
+});
+import * as Platform2 from "../../../core/platform/platform.js";
+import * as Types2 from "../types/types.js";
+var milliToMicro = (value) => Types2.Timing.Micro(value * 1e3);
+var secondsToMilli = (value) => Types2.Timing.Milli(value * 1e3);
+var secondsToMicro = (value) => milliToMicro(secondsToMilli(value));
+var microToMilli = (value) => Types2.Timing.Milli(value / 1e3);
+var microToSeconds = (value) => Types2.Timing.Seconds(value / 1e3 / 1e3);
+function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, softNavigationsById, navigationsByFrameId) {
+  let navigationForEvent = null;
+  if (Types2.Events.isSoftLargestContentfulPaintCandidate(event)) {
+    navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId) ?? null;
+  } else if (Types2.Events.isSoftFirstContentfulPaint(event) && event.args?.context?.performanceTimelineNavigationId) {
+    navigationForEvent = softNavigationsById.get(event.args.context.performanceTimelineNavigationId) ?? null;
+  } else if (Types2.Events.isSoftNavigationStart(event)) {
+    navigationForEvent = getNavigationForTraceEvent(event, event.args.frame, navigationsByFrameId);
+  } else {
+    const navigationId = navigationIDForEvent(event);
+    if (navigationId) {
+      navigationForEvent = navigationsByNavigationId.get(navigationId) ?? null;
+    } else {
+      const frameId = frameIDForEvent(event);
+      if (frameId) {
+        navigationForEvent = getNavigationForTraceEvent(event, frameId, navigationsByFrameId);
+      }
+    }
+  }
+  if (navigationForEvent) {
+    return Types2.Timing.Micro(event.ts - navigationForEvent.ts);
+  }
+  return Types2.Timing.Micro(event.ts - traceBounds.min);
+}
+function expandWindowByPercentOrToOneMillisecond(annotationWindow, maxTraceWindow, percentage) {
+  let newMin = annotationWindow.min - annotationWindow.range * (percentage / 100) / 2;
+  let newMax = annotationWindow.max + annotationWindow.range * (percentage / 100) / 2;
+  if (newMax - newMin < 1e3) {
+    const rangeMiddle = (annotationWindow.min + annotationWindow.max) / 2;
+    newMin = rangeMiddle - 500;
+    newMax = rangeMiddle + 500;
+  }
+  newMin = Math.max(newMin, maxTraceWindow.min);
+  newMax = Math.min(newMax, maxTraceWindow.max);
+  const expandedWindow = {
+    min: Types2.Timing.Micro(newMin),
+    max: Types2.Timing.Micro(newMax),
+    range: Types2.Timing.Micro(newMax - newMin)
+  };
+  return expandedWindow;
+}
+function eventTimingsMicroSeconds(event) {
+  return {
+    startTime: event.ts,
+    endTime: event.ts + (event.dur ?? 0),
+    duration: event.dur || 0
+  };
+}
+function eventTimingsMilliSeconds(event) {
+  return {
+    startTime: event.ts / 1e3,
+    endTime: (event.ts + (event.dur ?? 0)) / 1e3,
+    duration: (event.dur || 0) / 1e3
+  };
+}
+function traceWindowMilliSeconds(bounds) {
+  return {
+    min: microToMilli(bounds.min),
+    max: microToMilli(bounds.max),
+    range: microToMilli(bounds.range)
+  };
+}
+function traceWindowMicroSecondsToMilliSeconds(bounds) {
+  return {
+    min: microToMilli(bounds.min),
+    max: microToMilli(bounds.max),
+    range: microToMilli(bounds.range)
+  };
+}
+function traceWindowFromMilliSeconds(min, max) {
+  const traceWindow = {
+    min: milliToMicro(min),
+    max: milliToMicro(max),
+    range: Types2.Timing.Micro(milliToMicro(max) - milliToMicro(min))
+  };
+  return traceWindow;
+}
+function traceWindowFromMicroSeconds(min, max) {
+  const traceWindow = {
+    min,
+    max,
+    range: max - min
+  };
+  return traceWindow;
+}
+function traceWindowFromEvent(event) {
+  return {
+    min: event.ts,
+    max: event.ts + (event.dur ?? 0),
+    range: event.dur ?? 0
+  };
+}
+function traceWindowFromOverlay(overlay) {
+  switch (overlay.type) {
+    case "ENTRY_LABEL":
+    case "ENTRY_OUTLINE":
+    case "ENTRY_SELECTED":
+    case "COMMENT_PIN": {
+      return traceWindowFromEvent(overlay.entry);
+    }
+    case "TIMESPAN_BREAKDOWN": {
+      const windows = overlay.sections.map((s) => s.bounds);
+      if (overlay.entry) {
+        windows.push(traceWindowFromEvent(overlay.entry));
+      }
+      return combineTraceWindowsMicro(windows);
+    }
+    case "CANDY_STRIPED_TIME_RANGE":
+    case "TIME_RANGE": {
+      return structuredClone(overlay.bounds);
+    }
+    case "ENTRIES_LINK": {
+      const from = traceWindowFromEvent(overlay.entryFrom);
+      if (!overlay.entryTo) {
+        return from;
+      }
+      const to = traceWindowFromEvent(overlay.entryTo);
+      return combineTraceWindowsMicro([from, to]);
+    }
+    case "TIMESTAMP_MARKER":
+      return traceWindowFromMicroSeconds(overlay.timestamp, overlay.timestamp);
+    case "TIMINGS_MARKER":
+      return traceWindowFromMicroSeconds(overlay.adjustedTimestamp, overlay.adjustedTimestamp);
+    case "BOTTOM_INFO_BAR":
+      return null;
+    default:
+      Platform2.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
+  }
+}
+function combineTraceWindowsMicro(windows) {
+  if (!windows.length) {
+    return null;
+  }
+  const result = structuredClone(windows[0]);
+  for (const bounds of windows.slice(1)) {
+    result.min = Math.min(result.min, bounds.min);
+    result.max = Math.max(result.max, bounds.max);
+  }
+  result.range = result.max - result.min;
+  return result;
+}
+function boundsIncludeTimeRange(data) {
+  const { min: visibleMin, max: visibleMax } = data.bounds;
+  const { min: rangeMin, max: rangeMax } = data.timeRange;
+  return visibleMin <= rangeMax && visibleMax >= rangeMin;
+}
+function eventIsInBounds(event, bounds) {
+  const startTime = event.ts;
+  return startTime <= bounds.max && bounds.min < startTime + (event.dur ?? 0);
+}
+function timestampIsInBounds(bounds, timestamp) {
+  return timestamp >= bounds.min && timestamp <= bounds.max;
+}
+function windowFitsInsideBounds(data) {
+  return data.window.min >= data.bounds.min && data.window.max <= data.bounds.max;
+}
+function windowsEqual(w1, w2) {
+  return w1.min === w2.min && w1.max === w2.max;
+}
+
+// ../../front_end/models/trace/helpers/TreeHelpers.ts
 var nodeIdCount = 0;
 var makeTraceEntryNodeId = () => ++nodeIdCount;
 var makeEmptyTraceEntryTree = () => ({
   roots: /* @__PURE__ */ new Set(),
   maxDepth: 0
 });
+var EMPTY_CHILDREN = [];
+function appendChild(parent, child) {
+  if (parent.children === EMPTY_CHILDREN) {
+    parent.children = [child];
+  } else {
+    parent.children.push(child);
+  }
+}
 var makeEmptyTraceEntryNode = (entry, id) => ({
   entry,
   id,
   parent: null,
-  children: [],
+  children: EMPTY_CHILDREN,
   depth: 0,
   // selfTime is set on every node after creation. Declaring it here keeps it
   // inside the object; adding it later makes V8 allocate a separate property
   // store for every node.
   selfTime: void 0
 });
-function treify(entries, options) {
-  const entryToNode = /* @__PURE__ */ new Map();
+function treify(entries, options, targetEntryToNode) {
+  const entryToNode = targetEntryToNode ?? /* @__PURE__ */ new Map();
   const stack = [];
   nodeIdCount = -1;
   const tree = makeEmptyTraceEntryTree();
@@ -990,14 +1003,13 @@ function treify(entries, options) {
       continue;
     }
     const duration = event.dur || 0;
-    const nodeId = makeTraceEntryNodeId();
-    const node = makeEmptyTraceEntryNode(event, nodeId);
     if (stack.length === 0) {
-      tree.roots.add(node);
-      node.selfTime = Types3.Timing.Micro(duration);
-      stack.push(node);
+      const node2 = makeEmptyTraceEntryNode(event, makeTraceEntryNodeId());
+      tree.roots.add(node2);
+      node2.selfTime = Types3.Timing.Micro(duration);
+      stack.push(node2);
       tree.maxDepth = Math.max(tree.maxDepth, stack.length);
-      entryToNode.set(event, node);
+      entryToNode.set(event, node2);
       continue;
     }
     const parentNode = stack.at(-1);
@@ -1018,16 +1030,16 @@ function treify(entries, options) {
     if (startsAfterParent) {
       stack.pop();
       i--;
-      nodeIdCount--;
       continue;
     }
     const endsAfterParent = end > parentEnd;
     if (endsAfterParent) {
       continue;
     }
+    const node = makeEmptyTraceEntryNode(event, makeTraceEntryNodeId());
     node.depth = stack.length;
     node.parent = parentNode;
-    parentNode.children.push(node);
+    appendChild(parentNode, node);
     node.selfTime = Types3.Timing.Micro(duration);
     if (parentNode.selfTime !== void 0) {
       parentNode.selfTime = Types3.Timing.Micro(parentNode.selfTime - (event.dur || 0));
@@ -1122,9 +1134,7 @@ function buildTrackDataFromExtensionEntries(extensionEntries, extensionTrackData
     for (const entries of Object.values(trackData.entriesByTrack)) {
       sortTraceEventsInPlace(entries);
       if (canBuildTreesFromEvents(entries)) {
-        for (const [entry, node] of treify(entries).entryToNode) {
-          entryToNode.set(entry, node);
-        }
+        treify(entries, void 0, entryToNode);
       }
     }
     extensionTrackData.push(trackData);
@@ -4121,13 +4131,14 @@ var SamplesIntegrator = class _SamplesIntegrator {
    */
   #profileModel;
   /**
-   * Because GC nodes don't have a stack, we artificially add a stack to
-   * them which corresponds to that of the previous sample. This map
-   * tracks which node is used for the stack of a GC call.
+   * Because GC nodes don't have a stack, the integrator attaches the stack
+   * of the preceding sample to them. This map records which node provides
+   * the stack for each GC sample, keyed by `sampleIndex` (all GC samples
+   * share one `gcNode` ID with different preceding stacks, and samples do
+   * not have distinct `ProfileCall` object identities during the merge).
    * Note that GC samples are not shown in the flamechart, however they
-   * are used during the construction of for profile calls, as we can
-   * infer information about the duration of the executed code when a
-   * GC node is sampled.
+   * are used during the construction of profile calls to infer the
+   * duration of the executed code when a GC node is sampled.
    */
   #nodeForGC = /* @__PURE__ */ new Map();
   #engineConfig;
@@ -4144,44 +4155,83 @@ var SamplesIntegrator = class _SamplesIntegrator {
     this.#engineConfig = configuration || Types4.Configuration.defaults();
     this.#profileId = profileId;
   }
+  /**
+   * Approximates JS call durations by streaming sorted `traceEvents` and
+   * `#profileModel.samples` in chronological order with two cursors.
+   *
+   * `traceEvents` must already be sorted with `sortTraceEventsInPlace()`
+   * (`#profileModel.samples` and `timestamps` are sorted during
+   * `CPUProfileDataModel` construction).
+   */
   buildProfileCalls(traceEvents) {
-    const mergedEvents = mergeEventsInOrder(traceEvents, this.callsFromProfileSamples());
-    const stack = [];
-    for (let i = 0; i < mergedEvents.length; i++) {
-      const event = mergedEvents[i];
-      if (event.ph === Types4.Events.Phase.INSTANT && !extractSampleTraceId(event)) {
-        continue;
-      }
-      if (stack.length === 0) {
-        if (Types4.Events.isProfileCall(event)) {
-          this.#onProfileCall(event);
+    this.#prepareSamples();
+    const samples = this.#profileModel.samples;
+    const timestamps = this.#profileModel.timestamps;
+    const numSamples = samples ? samples.length : 0;
+    let sampleEvent = null;
+    let sampleCursor = 0;
+    const advanceSample = () => {
+      while (sampleCursor < numSamples) {
+        const index = sampleCursor++;
+        const node = this.#profileModel.nodeByIndex(index);
+        if (!node) {
           continue;
         }
-        stack.push(event);
-        this.#onTraceEventStart(event);
-        continue;
+        const ts = milliToMicro(Types4.Timing.Milli(timestamps[index]));
+        if (sampleEvent === null) {
+          sampleEvent = makeProfileCall(node, this.#profileId, index, ts, this.#processId, this.#threadId);
+        } else {
+          sampleEvent.nodeId = node.id;
+          sampleEvent.callFrame = node.callFrame;
+          sampleEvent.sampleIndex = index;
+          sampleEvent.ts = ts;
+        }
+        return sampleEvent;
       }
-      const parentEvent = stack.at(-1);
-      if (parentEvent === void 0) {
-        continue;
+      return null;
+    };
+    let traceCursor = 0;
+    const numTraceEvents = traceEvents.length;
+    const advanceTrace = () => {
+      while (traceCursor < numTraceEvents) {
+        const traceEvent = traceEvents[traceCursor++];
+        if (traceEvent.ph === Types4.Events.Phase.INSTANT && !extractSampleTraceId(traceEvent)) {
+          continue;
+        }
+        return traceEvent;
       }
-      const begin = event.ts;
-      const parentBegin = parentEvent.ts;
-      const parentDuration = parentEvent.dur || 0;
-      const parentEnd = parentBegin + parentDuration;
-      const startsAfterParent = begin >= parentEnd;
-      if (startsAfterParent) {
+      return null;
+    };
+    const stack = [];
+    const unwindExpiredTraceEvents = (ts) => {
+      let parentEvent = stack.at(-1);
+      while (parentEvent !== void 0 && ts >= parentEvent.ts + (parentEvent.dur || 0)) {
         this.#onTraceEventEnd(parentEvent);
         stack.pop();
-        i--;
-        continue;
+        parentEvent = stack.at(-1);
       }
+      return parentEvent;
+    };
+    let nextSample = advanceSample();
+    let nextTraceEvent = advanceTrace();
+    while (nextTraceEvent !== null || nextSample !== null) {
+      const useSample = nextSample !== null && (nextTraceEvent === null || eventTimeComparator(nextTraceEvent, nextSample) > 0);
+      const event = useSample ? nextSample : nextTraceEvent;
+      if (event === null) {
+        break;
+      }
+      const parentEvent = unwindExpiredTraceEvents(event.ts);
       if (Types4.Events.isProfileCall(event)) {
         this.#onProfileCall(event, parentEvent);
-        continue;
+      } else {
+        this.#onTraceEventStart(event, parentEvent);
+        stack.push(event);
       }
-      this.#onTraceEventStart(event, parentEvent);
-      stack.push(event);
+      if (useSample) {
+        nextSample = advanceSample();
+      } else {
+        nextTraceEvent = advanceTrace();
+      }
     }
     while (stack.length) {
       const last = stack.pop();
@@ -4191,6 +4241,39 @@ var SamplesIntegrator = class _SamplesIntegrator {
     }
     sortTraceEventsInPlace(this.jsSampleEvents);
     return this.#constructedProfileCalls;
+  }
+  /**
+   * Pre-indexes the preceding non-GC node for each GC sample in `#nodeForGC`
+   * (keyed by `sampleIndex`) so `#stackNodesForProfileCall()` can resolve GC
+   * stacks during the streaming merge without per-sample `ProfileCall` objects.
+   *
+   * When `debugMode` is enabled, this pass also populates `jsSampleEvents`
+   * before `buildProfileCalls()` appends any `sampleTraceId` sample events.
+   */
+  #prepareSamples() {
+    const samples = this.#profileModel.samples;
+    const timestamps = this.#profileModel.timestamps;
+    if (!samples) {
+      return;
+    }
+    let prevNode;
+    for (let i = 0; i < samples.length; i++) {
+      const node = this.#profileModel.nodeByIndex(i);
+      if (!node) {
+        continue;
+      }
+      if (this.#engineConfig.debugMode) {
+        const timestamp = milliToMicro(Types4.Timing.Milli(timestamps[i]));
+        const call = makeProfileCall(node, this.#profileId, i, timestamp, this.#processId, this.#threadId);
+        const traceId = this.#profileModel.traceIds?.[i];
+        this.jsSampleEvents.push(this.#makeJSSampleEvent(call, timestamp, traceId));
+      }
+      if (node.id === this.#profileModel.gcNode?.id && prevNode) {
+        this.#nodeForGC.set(i, prevNode);
+        continue;
+      }
+      prevNode = node;
+    }
   }
   #onTraceEventStart(event, parent) {
     if (event.name === Types4.Events.Name.RUN_MICROTASKS || event.name === Types4.Events.Name.RUN_TASK) {
@@ -4211,10 +4294,15 @@ var SamplesIntegrator = class _SamplesIntegrator {
     }
     this.#lockedJsStackDepth.push(this.#currentJSStack.length);
   }
+  /**
+   * Integrates a CPU sample into `#currentJSStack`. During `buildProfileCalls()`,
+   * `event` is typically the mutable scratch `sampleEvent` and must never be
+   * retained by reference.
+   */
   #onProfileCall(event, parent) {
     if (parent && Types4.Events.isJSInvocationEvent(parent) || this.#fakeJSInvocation) {
       this.#extractStackTrace(event);
-    } else if (Types4.Events.isProfileCall(event) && this.#currentJSStack.length === 0) {
+    } else if (this.#currentJSStack.length === 0) {
       this.#fakeJSInvocation = true;
       const stackDepthBefore = this.#currentJSStack.length;
       this.#extractStackTrace(event);
@@ -4224,40 +4312,6 @@ var SamplesIntegrator = class _SamplesIntegrator {
   #onTraceEventEnd(event) {
     const endTime = Types4.Timing.Micro(event.ts + (event.dur ?? 0));
     this.#truncateJSStack(this.#lockedJsStackDepth.pop() || 0, endTime);
-  }
-  /**
-   * Builds the initial calls with no duration from samples. Their
-   * purpose is to be merged with the trace event array being parsed so
-   * that they can be traversed in order with them and their duration
-   * can be updated as the SampleIntegrator callbacks are invoked.
-   */
-  callsFromProfileSamples() {
-    const samples = this.#profileModel.samples;
-    const timestamps = this.#profileModel.timestamps;
-    if (!samples) {
-      return [];
-    }
-    const calls = [];
-    let prevNode;
-    for (let i = 0; i < samples.length; i++) {
-      const node = this.#profileModel.nodeByIndex(i);
-      const timestamp = milliToMicro(Types4.Timing.Milli(timestamps[i]));
-      if (!node) {
-        continue;
-      }
-      const call = makeProfileCall(node, this.#profileId, i, timestamp, this.#processId, this.#threadId);
-      calls.push(call);
-      if (this.#engineConfig.debugMode) {
-        const traceId = this.#profileModel.traceIds?.[i];
-        this.jsSampleEvents.push(this.#makeJSSampleEvent(call, timestamp, traceId));
-      }
-      if (node.id === this.#profileModel.gcNode?.id && prevNode) {
-        this.#nodeForGC.set(call, prevNode);
-        continue;
-      }
-      prevNode = node;
-    }
-    return calls;
   }
   /**
    * Given a synthetic profile call, returns the profile nodes of the
@@ -4272,7 +4326,7 @@ var SamplesIntegrator = class _SamplesIntegrator {
     let node = sampledNode;
     const isGarbageCollection = node?.id === this.#profileModel.gcNode?.id;
     if (isGarbageCollection) {
-      node = this.#nodeForGC.get(profileCall) || null;
+      node = this.#nodeForGC.get(profileCall.sampleIndex) || null;
     }
     if (!sampledNode || !node) {
       return [];

@@ -9,11 +9,33 @@ export const makeEmptyTraceEntryTree = () => ({
     roots: new Set(),
     maxDepth: 0,
 });
+// Most nodes in a trace tree are leaves, and most parent nodes have a single
+// child. Sharing an empty array for leaves and creating a 1-element literal on
+// the first append avoids allocating an empty JSArray per leaf and a 17-slot
+// backing store for single-child parents. This array is kept unfrozen so V8
+// uses the same PACKED_ELEMENTS map across leaf and parent children arrays.
+const EMPTY_CHILDREN = [];
+/**
+ * Appends a child to a `TraceEntryNode`.
+ *
+ * Call this helper instead of `parent.children.push(child)`. Nodes created by
+ * `makeEmptyTraceEntryNode` share a single empty array for their children to
+ * save memory; mutating `parent.children` directly on a leaf node corrupts all
+ * leaf nodes.
+ */
+export function appendChild(parent, child) {
+    if (parent.children === EMPTY_CHILDREN) {
+        parent.children = [child];
+    }
+    else {
+        parent.children.push(child);
+    }
+}
 export const makeEmptyTraceEntryNode = (entry, id) => ({
     entry,
     id,
     parent: null,
-    children: [],
+    children: EMPTY_CHILDREN,
     depth: 0,
     // selfTime is set on every node after creation. Declaring it here keeps it
     // inside the object; adding it later makes V8 allocate a separate property
@@ -34,13 +56,16 @@ export const makeEmptyTraceEntryNode = (entry, id) => ({
  * The nodes are also assumed to be created empty, with no known parent
  * or children.
  *
+ * If `targetEntryToNode` is provided, it is populated in-place with each
+ * event's `TraceEntryNode` and returned as `entryToNode`.
+ *
  * Complexity: O(n), where n = number of events
  */
-export function treify(entries, options) {
+export function treify(entries, options, targetEntryToNode) {
     // As we construct the tree, store a map of each entry to its node. This
     // means if you are iterating over a list of RendererEntry events you can
     // easily look up that node in the tree.
-    const entryToNode = new Map();
+    const entryToNode = targetEntryToNode ?? new Map();
     const stack = [];
     // Reset the node id counter for every new renderer.
     nodeIdCount = -1;
@@ -53,11 +78,10 @@ export function treify(entries, options) {
             continue;
         }
         const duration = event.dur || 0;
-        const nodeId = makeTraceEntryNodeId();
-        const node = makeEmptyTraceEntryNode(event, nodeId);
         // If the parent stack is empty, then the current event is a root. Create a
         // node for it, mark it as a root, then proceed with the next event.
         if (stack.length === 0) {
+            const node = makeEmptyTraceEntryNode(event, makeTraceEntryNodeId());
             tree.roots.add(node);
             node.selfTime = Types.Timing.Micro(duration);
             stack.push(node);
@@ -94,8 +118,6 @@ export function treify(entries, options) {
         if (startsAfterParent) {
             stack.pop();
             i--;
-            // The last created node has been discarded, so discard this id.
-            nodeIdCount--;
             continue;
         }
         // 3. If the current event starts during the parent event, but ends
@@ -110,9 +132,10 @@ export function treify(entries, options) {
         //    contained within the parent event. Create a node for the current
         //    event, establish the parent/child relationship, then proceed with the
         //    next event.
+        const node = makeEmptyTraceEntryNode(event, makeTraceEntryNodeId());
         node.depth = stack.length;
         node.parent = parentNode;
-        parentNode.children.push(node);
+        appendChild(parentNode, node);
         node.selfTime = Types.Timing.Micro(duration);
         if (parentNode.selfTime !== undefined) {
             parentNode.selfTime = Types.Timing.Micro(parentNode.selfTime - (event.dur || 0));

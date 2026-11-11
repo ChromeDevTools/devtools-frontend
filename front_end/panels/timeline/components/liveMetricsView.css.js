@@ -19,8 +19,6 @@ export default `/*
 }
 
 .live-metrics-view {
-  --min-main-area-size: 60%;
-
   background-color: var(--sys-color-cdt-base-container);
   display: flex;
   flex-direction: row;
@@ -115,10 +113,6 @@ export default `/*
   max-width: max-content;
 }
 
-.throttling-recommendation-value {
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
 .related-info {
   text-wrap: nowrap;
   margin-top: var(--sys-size-5);
@@ -152,16 +146,6 @@ export default `/*
   max-height: max-content;
 
   --app-color-toolbar-background: transparent;
-}
-
-.logs-section-header {
-  display: flex;
-  align-items: center;
-}
-
-.interactions-clear {
-  margin-left: var(--sys-size-3);
-  vertical-align: sub;
 }
 
 .log {

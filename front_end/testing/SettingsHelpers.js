@@ -120,9 +120,24 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("SOURCES" /* Common.Settings.SettingCategory.SOURCES */, 'text-editor-code-folding', true),
     createSettingValue("SOURCES" /* Common.Settings.SettingCategory.SOURCES */, 'text-editor-indent', '    '),
     createSettingValue("SOURCES" /* Common.Settings.SettingCategory.SOURCES */, 'text-editor-tab-moves-focus', false),
-    createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.touch', '', "enum" /* Common.Settings.SettingType.ENUM */),
-    createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.idle-detection', '', "enum" /* Common.Settings.SettingType.ENUM */),
-    createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.cpu-pressure', '', "enum" /* Common.Settings.SettingType.ENUM */),
+    createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.touch', '', "enum" /* Common.Settings.SettingType.ENUM */, undefined, [
+        rawOption('none', 'Device-based'),
+        rawOption('force', 'Force enabled'),
+    ]),
+    createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.idle-detection', '', "enum" /* Common.Settings.SettingType.ENUM */, undefined, [
+        rawOption('none', 'No idle emulation'),
+        rawOption('{"isUserActive":true,"isScreenUnlocked":true}', 'User active, screen unlocked'),
+        rawOption('{"isUserActive":true,"isScreenUnlocked":false}', 'User active, screen locked'),
+        rawOption('{"isUserActive":false,"isScreenUnlocked":true}', 'User idle, screen unlocked'),
+        rawOption('{"isUserActive":false,"isScreenUnlocked":false}', 'User idle, screen locked'),
+    ]),
+    createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.cpu-pressure', '', "enum" /* Common.Settings.SettingType.ENUM */, undefined, [
+        rawOption('none', 'No override'),
+        rawOption('nominal', 'Nominal'),
+        rawOption('fair', 'Fair'),
+        rawOption('serious', 'Serious'),
+        rawOption('critical', 'Critical'),
+    ]),
     createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.cpu-performance', 'no-override', "enum" /* Common.Settings.SettingType.ENUM */, undefined, [
         rawOption('no-override', 'No override'),
         rawOption('unknown', 'Tier 0: UNKNOWN'),

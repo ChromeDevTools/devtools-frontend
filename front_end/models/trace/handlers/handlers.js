@@ -4134,7 +4134,7 @@ function parseCPUProfileData(parseOptions) {
             return;
           }
           traceEntryNode.parent = parentNode;
-          parentNode.children.push(traceEntryNode);
+          Helpers6.TreeHelpers.appendChild(parentNode, traceEntryNode);
         }
       };
       if (!candidates.length) {
@@ -4488,11 +4488,12 @@ function buildHierarchy(processes2, options) {
         thread.tree = Helpers7.TreeHelpers.makeEmptyTraceEntryTree();
         continue;
       }
-      const treeData = Helpers7.TreeHelpers.treify(thread.entries, options);
+      const treeData = Helpers7.TreeHelpers.treify(thread.entries, options, entryToNode2);
       thread.tree = treeData.tree;
-      for (const [entry, node] of treeData.entryToNode) {
-        entryToNode2.set(entry, node);
-        addEventToEntityMapping(entry, entityMappings2);
+      for (const entry of thread.entries) {
+        if (entryToNode2.has(entry)) {
+          addEventToEntityMapping(entry, entityMappings2);
+        }
       }
     }
   }

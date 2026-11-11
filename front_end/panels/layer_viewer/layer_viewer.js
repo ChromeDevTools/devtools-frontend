@@ -44,7 +44,7 @@ table td {
 table td:first-child {
   color: var(--sys-color-on-surface-subtle);
   font: var(--sys-typescale-body5-medium);
-  line-height:  18px;
+  line-height: var(--sys-typescale-body5-line-height);
   white-space: nowrap;
 }
 

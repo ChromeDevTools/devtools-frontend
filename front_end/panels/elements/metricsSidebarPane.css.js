@@ -58,8 +58,8 @@ export default `/**
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
-  padding: 3px;
-  margin: 3px;
+  padding: var(--sys-size-2);
+  margin: var(--sys-size-2);
   position: relative;
 }
 

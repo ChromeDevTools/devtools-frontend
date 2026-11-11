@@ -814,6 +814,7 @@ var breakpointsView_css_default = `/*
  * found in the LICENSE file.
  */
 @scope to (devtools-widget > *) {
+  /* stylelint-disable-next-line plugin/check_scope_selectors */
   :host {
     flex: auto;
     display: flex;
@@ -987,8 +988,8 @@ var breakpointsView_css_default = `/*
     background-color: var(--sys-color-tonal-container);
   }
 
-  .theme-with-dark-background .type-indicator,
-  :host-context(.theme-with-dark-background) .type-indicator {
+  .theme-with-dark-background .type-indicator, /* stylelint-disable-line plugin/check_scope_selectors */
+  :host-context(.theme-with-dark-background) .type-indicator { /* stylelint-disable-line plugin/check_scope_selectors */
     --override-color-conditional-breakpoint: var(--ref-palette-yellow60);
     --override-color-logpoint: var(--ref-palette-pink70);
   }
@@ -9264,7 +9265,8 @@ var sourcesView_css_default = `/*
   .sources-toolbar {
     display: flex;
     flex: 0 0 auto;
-    min-height: 27px;
+    /* 28px toolbar height (--sys-size-12) minus 1px top border (--sys-size-1), matching the 26px devtools-toolbar height plus 1px border-top when empty. */
+    min-height: calc(var(--sys-size-12) - var(--sys-size-1));
     background-color: var(--sys-color-cdt-base-container);
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     overflow: hidden;

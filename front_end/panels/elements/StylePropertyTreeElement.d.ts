@@ -2,6 +2,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate, type TemplateResult } from '../../ui/lit/lit.js';
@@ -237,6 +238,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private parentsComputedStyles;
     private computedStyleExtraFields;
     private contextForTest;
+    readonly tooltipIdFactory: Tooltips.Tooltip.IdFactory;
     constructor({ stylesContainer, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }: StylePropertyTreeElementParams);
     onunbind(): void;
     carryOverCommittedProperty(previous: StylePropertyTreeElement): void;
@@ -272,7 +274,6 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     updateTitle(): void;
     createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: ElementsComponents.CSSVariableValueView.CSSVariableParserError | HTMLElement | null): Element;
     getTracingTooltip(functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, context: RenderingContext): TemplateResult;
-    getTooltipId(key: string): string;
     updateAuthoringHint(): void;
     updateAnimationOverrideHint(): void;
     private overriddenByAnimation;

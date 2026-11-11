@@ -4220,9 +4220,6 @@ var JavaScriptFormatter = class {
       if (AT.keyword(token, "while")) {
         return blockBody ? "sts" : "n<ts";
       }
-      if (AT.punctuator(token, ";")) {
-        return "tn";
-      }
     } else if (nodeType === "ClassBody") {
       if (AT.punctuator(token, "{")) {
         return "stn>";
@@ -4330,7 +4327,7 @@ var JavaScriptFormatter = class {
           return "<";
         }
       }
-    } else if (nodeType === "BreakStatement" || nodeType === "ContinueStatement" || nodeType === "ThrowStatement" || nodeType === "ReturnStatement" || nodeType === "ExpressionStatement") {
+    } else if (nodeType === "BreakStatement" || nodeType === "ContinueStatement" || nodeType === "ThrowStatement" || nodeType === "ReturnStatement" || nodeType === "ExpressionStatement" || nodeType === "DoWhileStatement") {
       return "n";
     } else if (nodeType === "ImportDeclaration" || nodeType === "ExportAllDeclaration" || nodeType === "ExportDefaultDeclaration" || nodeType === "ExportNamedDeclaration") {
       return "n";

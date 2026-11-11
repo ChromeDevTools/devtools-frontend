@@ -123,14 +123,18 @@ export default `/*
 }
 
 .toolbar-button .active-filters-count {
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 
   --override-adorner-background-color: var(--sys-color-tonal-container);
   --override-adorner-border-color: var(--sys-color-tonal-container);
   --override-adorner-text-color: var(--sys-color-primary);
-  --override-adorner-font-size: 10px;
+  --override-adorner-font-size: var(--sys-typescale-body5-size);
 
   font-weight: 700;
+
+  span {
+    line-height: 1;
+  }
 }
 
 .toolbar-text {

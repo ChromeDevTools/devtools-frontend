@@ -2979,6 +2979,7 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   emptyCategoryHeadline;
   categoryDescription;
   settingsKey;
+  wasDescendantSelected = false;
   constructor(resourcesPanel, categoryName, emptyCategoryHeadline, categoryDescription, settingsKey, settingsDefault = false) {
     super(resourcesPanel, categoryName, false, settingsKey);
     this.settingsKey = settingsKey;
@@ -3014,12 +3015,73 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   setLink(link2) {
     this.categoryLink = link2;
   }
+  select(omitFocus, selectedByUser) {
+    if (this.selected && selectedByUser && !this.expanded && this.childCount() > 0) {
+      this.expand();
+      const childToSelect = this.findChildToAutoSelect();
+      if (childToSelect) {
+        childToSelect.select(omitFocus, true);
+      }
+      return false;
+    }
+    const previousSelected = this.treeOutline?.selectedTreeElement ?? null;
+    this.wasDescendantSelected = Boolean(previousSelected?.hasAncestor(this));
+    try {
+      return super.select(omitFocus, selectedByUser);
+    } finally {
+      this.wasDescendantSelected = false;
+    }
+  }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
+    if (selectedByUser && !this.wasDescendantSelected && this.childCount() > 0) {
+      if (!this.expanded) {
+        this.expand();
+      }
+      const childToSelect = this.findChildToAutoSelect();
+      if (childToSelect) {
+        childToSelect.select(
+          /* omitFocus= */
+          false,
+          /* selectedByUser= */
+          true
+        );
+        return false;
+      }
+    }
     this.updateCategoryView();
     const item4 = this.createGenericStorageAiContext();
     UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item4);
     return false;
+  }
+  isOriginStorageCategory() {
+    return this.settingsKey === "cookies" || this.settingsKey === "local-storage" || this.settingsKey === "session-storage";
+  }
+  getMainPageOrigin() {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return "";
+    }
+    const mainFrame = target.model(SDK.ResourceTreeModel.ResourceTreeModel)?.mainFrame;
+    const url = mainFrame?.unreachableUrl() || mainFrame?.url || target.inspectedURL();
+    return url ? Common.ParsedURL.ParsedURL.extractOrigin(url) : "";
+  }
+  findChildToAutoSelect() {
+    if (!this.isOriginStorageCategory()) {
+      return null;
+    }
+    const selectableChildren = this.children().filter((child) => child.selectable && !child.isExpandable());
+    if (selectableChildren.length === 0) {
+      return null;
+    }
+    const mainPageOrigin = this.getMainPageOrigin();
+    if (mainPageOrigin) {
+      const matchingChild = selectableChildren.find((child) => child.titleAsText() === mainPageOrigin);
+      if (matchingChild) {
+        return matchingChild;
+      }
+    }
+    return selectableChildren.length === 1 ? selectableChildren[0] : null;
   }
   updateCategoryView() {
     const headline = this.childCount() === 0 ? this.emptyCategoryHeadline : this.categoryName;
@@ -15761,54 +15823,6 @@ var resourcesPanel_css_default = `/*
 .storage-view .filter-bar {
   border-top: none;
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.database-query-group-messages {
-  overflow-y: auto;
-}
-
-.database-query-prompt-container {
-  position: relative;
-  padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) var(--sys-size-11);
-  min-height: var(--sys-size-8);
-}
-
-.database-query-prompt {
-  white-space: pre-wrap;
-}
-
-.database-query-prompt-container .prompt-icon {
-  top: var(--sys-size-4);
-}
-
-.database-user-query {
-  position: relative;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) var(--sys-size-11);
-  min-height: var(--sys-size-8);
-  flex-shrink: 0;
-}
-
-.database-user-query:focus-visible {
-  background-color: var(--sys-color-state-focus-highlight);
-}
-
-.database-query-text {
-  color: var(--sys-color-primary-bright);
-  user-select: text;
-}
-
-.database-query-result {
-  position: relative;
-  padding: var(--sys-size-1) var(--sys-size-10);
-  min-height: var(--sys-size-8);
-  margin-left: calc(-1 * var(--sys-size-10));
-  padding-right: 0;
-}
-
-.database-query-result.error {
-  color: var(--sys-color-token-property-special);
-  user-select: text;
 }
 
 .resources-sidebar {

@@ -87,6 +87,14 @@ export declare class Tooltip extends HTMLElement {
     hideTooltip: (event?: MouseEvent | FocusEvent) => void;
     toggle: () => void;
 }
+export declare class IdFactory {
+    #private;
+    constructor(id?: number | string);
+    keyed(key: string | number, ...additionalSuffixes: Array<number | string>): string;
+    get(suffix: string | number, ...additionalSuffixes: Array<number | string>): string;
+    clearKeys(): void;
+    subfactory(name: string, suffix: string | number): IdFactory;
+}
 type IfExpandedContent = LitTemplate | Iterable<LitTemplate> | Promise<LitTemplate | Iterable<LitTemplate>>;
 declare class IfExpandedDirective extends AsyncDirective.AsyncDirective {
     #private;

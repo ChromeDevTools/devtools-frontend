@@ -13,6 +13,7 @@ declare class LargestContentfulPaint extends Metric {
      * Finds the NetworkNode corresponding to the LCP image in the dependency graph, if LCP was an image.
      */
     static findLcpNode(dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.NetworkNode | null;
+    static isSameFrameTextLcp(processedNavigation: Types.Simulation.ProcessedNavigation): boolean;
     static getOptimisticGraph(dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node;
     static getPessimisticGraph(dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node;
     static getEstimateFromSimulation(simulationResult: Simulation.Result, extras?: Extras): Simulation.Result;

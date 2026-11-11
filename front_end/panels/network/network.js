@@ -4233,10 +4233,10 @@ var networkConfigView_css_default = `/*
 
 .network-config-group {
   display: flex;
-  padding-bottom: 10px;
+  padding-bottom: var(--sys-size-5);
   flex-wrap: wrap;
   flex: 0 0 auto;
-  min-height: 30px;
+  min-height: var(--sys-size-12);
 }
 
 .network-config-title {
@@ -7602,7 +7602,8 @@ var networkLogView_css_default = `/*
 }
 
 .network-log-grid.data-grid.small td {
-  height: 21px;
+  /* 20px (--sys-size-9) base row + 1px (--sys-size-1) .icon top margin. */
+  height: calc(var(--sys-size-9) + var(--sys-size-1));
 }
 
 .network-log-grid.data-grid th {
@@ -7650,10 +7651,6 @@ var networkLogView_css_default = `/*
 .network-cell-subtitle {
   font-weight: normal;
   color: var(--sys-color-token-subtle);
-}
-
-.network-badge {
-  margin-right: var(--sys-size-3);
 }
 
 .status-column .devtools-link {
@@ -7862,12 +7859,6 @@ td.time-column {
   z-index: 0;
 }
 
-.network-log-grid.data-grid span.separator-in-cell {
-  user-select: none;
-  min-width: 1ex;
-  display: inline-block;
-}
-
 .network-status-pane {
   position: absolute;
   inset: 0;
@@ -7928,10 +7919,6 @@ td.time-column {
   display: inline-block;
   margin: -7px var(--sys-size-1);
   vertical-align: baseline;
-}
-
-.network-frame-group-badge {
-  margin-right: var(--sys-size-3);
 }
 
 .network-override-marker {
@@ -8794,18 +8781,15 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
   border: var(--sys-size-1) solid var(--sys-color-token-subtle);
 }
 
-.network-timing-bar.blocking,
-.-theme-preserve {
+.network-timing-bar.blocking {
   background-color: var(--network-waterfall-blocking); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.network-timing-bar.proxy,
-.-theme-preserve {
+.network-timing-bar.proxy {
   background-color: var(--override-network-overview-proxy);
 }
 
-.network-timing-bar.dns,
-.-theme-preserve {
+.network-timing-bar.dns {
   background-color: var(--sys-color-cyan);
 }
 
@@ -8813,18 +8797,15 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 .network-timing-bar.serviceworker,
 .network-timing-bar.serviceworker-preparation,
 .network-timing-bar.serviceworker-routerevaluation,
-.network-timing-bar.serviceworker-cachelookup,
-.-theme-preserve {
+.network-timing-bar.serviceworker-cachelookup {
   background-color: var(--network-overview-service-worker); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.network-timing-bar.ssl,
-.-theme-preserve {
+.network-timing-bar.ssl {
   background-color: var(--network-overview-ssl); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.network-timing-bar.serviceworker-respondwith,
-.-theme-preserve {
+.network-timing-bar.serviceworker-respondwith {
   background-color: var(--network-overview-service-worker-respond-with); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -8868,10 +8849,6 @@ tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fet
   display: none;
 }
 
-.network-fetch-timing-bar-details-expanded {
-  display: block;
-}
-
 .network-fetch-timing-bar-details,
 .router-evaluation-timing-bar-details {
   padding-left: var(--sys-size-5);
@@ -8882,13 +8859,11 @@ tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fet
   width: max-content;
 }
 
-.network-timing-bar.sending,
-.-theme-preserve {
+.network-timing-bar.sending {
   background-color: var(--override-network-overview-sending);
 }
 
-.network-timing-bar.waiting,
-.-theme-preserve {
+.network-timing-bar.waiting {
   background-color: var(--network-overview-waiting); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -8905,13 +8880,11 @@ td.throttled {
 }
 
 .network-timing-bar.receiving,
-.network-timing-bar.receiving-push,
-.-theme-preserve {
+.network-timing-bar.receiving-push {
   background-color: var(--network-overview-receiving); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.network-timing-bar.push,
-.-theme-preserve {
+.network-timing-bar.push {
   background-color: var(--network-overview-push); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -8956,8 +8929,7 @@ tr.synthetic {
   .network-timing-bar.receiving,
   .network-timing-bar.receiving-push,
   .network-timing-bar.push,
-  .network-timing-bar.server-timing,
-  .-theme-preserve {
+  .network-timing-bar.server-timing {
     forced-color-adjust: none;
   }
 
@@ -9545,6 +9517,13 @@ var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
     this.#view(input, void 0, this.contentElement);
   }
   set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK9.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+      this.#request?.removeEventListener(SDK9.NetworkRequest.Events.FINISHED_LOADING, this.requestUpdate, this);
+    }
     this.#request = request;
     if (this.isShowing()) {
       this.#request.addEventListener(SDK9.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
@@ -9553,6 +9532,16 @@ var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
     }
   }
   set calculator(calculator) {
+    if (this.#calculator === calculator) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#calculator?.removeEventListener(
+        NetworkTimeCalculator2.Events.BOUNDARIES_CHANGED,
+        this.#boundaryChanged,
+        this
+      );
+    }
     this.#calculator = calculator;
     if (this.isShowing()) {
       this.#calculator.addEventListener(NetworkTimeCalculator2.Events.BOUNDARIES_CHANGED, this.#boundaryChanged, this);
@@ -9573,8 +9562,8 @@ var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
     this.#calculator?.removeEventListener(NetworkTimeCalculator2.Events.BOUNDARIES_CHANGED, this.#boundaryChanged, this);
   }
   #boundaryChanged() {
-    const minimumBoundary = this.calculator.minimumBoundary();
-    if (minimumBoundary !== this.#lastMinimumBoundary) {
+    const minimumBoundary = this.#calculator?.minimumBoundary();
+    if (minimumBoundary !== void 0 && minimumBoundary !== this.#lastMinimumBoundary) {
       this.#lastMinimumBoundary = minimumBoundary;
       this.requestUpdate();
     }
@@ -13830,7 +13819,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     const ignoredHeaders = /* @__PURE__ */ new Set(["accept-encoding", "host", "method", "path", "scheme", "version", "authority", "protocol"]);
     function escapeStringWin(str) {
       const encapsChars = '^"';
-      return encapsChars + str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;*]/g, "^$&").replace(/%(?=[a-zA-Z0-9_])/g, "%^").replace(/[^ -~\r\n]/g, " ").replace(/\r?\n|\r/g, "^\n\n") + encapsChars;
+      return encapsChars + str.replace(/\\/g, "\\\\").replace(/"/g, '""').replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;*]/g, "^$&").replace(/%(?=[a-zA-Z0-9_])/g, "%^").replace(/[^ -~\r\n]/g, " ").replace(/\r?\n|\r/g, "^\n\n") + encapsChars;
     }
     function escapeStringPosix(str) {
       function escapeCharacter(x) {
@@ -14191,7 +14180,6 @@ var networkPanel_css_default = `/*
   --network-grid-focus-selected-color-has-error: var(--sys-color-surface-error);
   --network-grid-focus-selected-color-has-warning: var(--sys-color-surface-yellow);
   --network-grid-from-frame-color: var(--ref-palette-cyan95);
-  --network-grid-is-product-color: var(--ref-palette-yellow95);
   --network-frame-divider-color: var(--ref-palette-yellow60);
 }
 
@@ -14200,7 +14188,6 @@ var networkPanel_css_default = `/*
   --network-grid-initiator-path-color: var(--ref-palette-green40);
   --network-grid-initiated-path-color: var(--ref-palette-error20);
   --network-grid-from-frame-color: var(--ref-palette-neutral50);
-  --network-grid-is-product-color: var(--ref-palette-neutral70);
 }
 
 .network-details-view {

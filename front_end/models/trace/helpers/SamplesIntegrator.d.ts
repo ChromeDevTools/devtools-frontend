@@ -14,14 +14,16 @@ import * as Types from '../types/types.js';
  * the shape of a complete trace events and can be treated as flame
  * chart entries in the timeline.
  *
- * The approach to build the profile calls consists in tracking the
- * current stack as the following events happen (in order):
- * 1. A sample was done.
- * 2. A trace event started.
- * 3. A trace event ended.
- * Depending on the event and on the data that's coming with it the
- * stack is updated by adding or removing JS calls to it and updating
- * the duration of the calls in the tracking stack.
+ * `buildProfileCalls()` streams the two chronologically ordered inputs
+ * (sorted `traceEvents` and sorted `#profileModel.samples`) with two
+ * cursors and a single reusable scratch `SyntheticProfileCall`, avoiding
+ * per-sample event and merged-array allocations. As the cursors advance,
+ * the integrator tracks the active JS call stack across three transitions:
+ * 1. A trace event ended (its `ts + dur` precedes or equals the next item).
+ * 2. A CPU sample was taken.
+ * 3. A trace event started.
+ * Depending on the transition, the integrator opens, extends, or truncates
+ * JS calls on `#currentJSStack`.
  *
  * note: Although this approach has been implemented since long ago, and
  * is relatively efficient (adds a complexity over the trace parsing of
@@ -38,14 +40,15 @@ export declare class SamplesIntegrator {
      */
     jsSampleEvents: Types.Events.SyntheticJSSample[];
     constructor(profileModel: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, profileId: Types.Events.ProfileID, pid: Types.Events.ProcessID, tid: Types.Events.ThreadID, configuration?: Types.Configuration.Configuration);
-    buildProfileCalls(traceEvents: Types.Events.Event[]): Types.Events.SyntheticProfileCall[];
     /**
-     * Builds the initial calls with no duration from samples. Their
-     * purpose is to be merged with the trace event array being parsed so
-     * that they can be traversed in order with them and their duration
-     * can be updated as the SampleIntegrator callbacks are invoked.
+     * Approximates JS call durations by streaming sorted `traceEvents` and
+     * `#profileModel.samples` in chronological order with two cursors.
+     *
+     * `traceEvents` must already be sorted with `sortTraceEventsInPlace()`
+     * (`#profileModel.samples` and `timestamps` are sorted during
+     * `CPUProfileDataModel` construction).
      */
-    callsFromProfileSamples(): Types.Events.SyntheticProfileCall[];
+    buildProfileCalls(traceEvents: Types.Events.Event[]): Types.Events.SyntheticProfileCall[];
     static framesAreEqual(frame1: Protocol.Runtime.CallFrame, frame2: Protocol.Runtime.CallFrame): boolean;
     static showNativeName(name: string, runtimeCallStatsEnabled: boolean): boolean;
     static nativeGroup(nativeName: string): SamplesIntegrator.NativeGroups | null;

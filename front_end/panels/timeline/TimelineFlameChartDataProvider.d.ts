@@ -28,7 +28,6 @@ export declare class TimelineFlameChartDataProvider extends Common.ObjectWrapper
     modifyTree(action: PerfUI.FlameChart.FilterAction, entryIndex: number): void;
     findPossibleContextMenuActions(entryIndex: number): PerfUI.FlameChart.PossibleFilterActions | void;
     handleFlameChartTransformKeyboardEvent(event: KeyboardEvent, entryIndex: number, groupIndex: number): void;
-    private buildGroupStyle;
     setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Trace.EntityMapper.EntityMapper): void;
     /**
      * Instances and caches a CompatibilityTracksAppender using the

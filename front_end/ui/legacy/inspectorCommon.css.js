@@ -875,31 +875,14 @@ devtools-toolbar {
     z-index: -1;
   }
 
-  .toolbar-glyph {
-    flex: none;
-  }
   /* Button */
 
   .toolbar-button:disabled {
     opacity: 50%;
   }
 
-  .toolbar-button.toolbar-state-on .toolbar-glyph {
-    color: var(--icon-toggled);
-  }
-
-  .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
-  .toolbar-button.toolbar-state-off.toolbar-default-with-red-color
-    .toolbar-glyph {
-    color: var(
-      --icon-error
-    ) !important; /* stylelint-disable-line declaration-no-important */
-  }
-
   .toolbar-button:not(
-      .toolbar-has-glyph,
       .toolbar-has-dropdown,
-      .largeicon-menu,
       .toolbar-button-secondary
     ) {
     font-weight: bold;
@@ -919,16 +902,8 @@ devtools-toolbar {
     color: var(--sys-color-primary-bright);
   }
 
-  .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
-    color: var(--sys-color-on-surface);
-  }
-
   .toolbar-button:enabled:hover:not(:active) .toolbar-text {
     color: var(--sys-color-on-surface);
-  }
-
-  .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph {
-    color: var(--sys-color-primary);
   }
 
   .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text {
@@ -938,7 +913,7 @@ devtools-toolbar {
   /* Checkbox */
 
   & > devtools-checkbox {
-    padding: 0 5px 0 0;
+    padding: 0 var(--sys-size-3) 0 0;
     white-space: unset;
   }
 
@@ -1077,11 +1052,6 @@ devtools-toolbar {
       color: Graytext;
     }
 
-    .toolbar-button.toolbar-state-on .toolbar-glyph {
-      forced-color-adjust: none;
-      color: Highlight;
-    }
-
     .toolbar-button.toolbar-state-on .toolbar-text {
       forced-color-adjust: none;
       color: Highlight;
@@ -1096,18 +1066,6 @@ devtools-toolbar {
       color: GrayText;
     }
 
-    .toolbar-button:disabled .toolbar-glyph {
-      color: GrayText;
-    }
-
-    .toolbar-button:enabled.hover:not(:active) .toolbar-glyph {
-      forced-color-adjust: none;
-      color: Highlight;
-    }
-
-    .toolbar-button:enabled:hover .toolbar-glyph,
-    .toolbar-button:enabled:focus .toolbar-glyph,
-    .toolbar-button:enabled:hover:not(:active) .toolbar-glyph,
     .toolbar-button:enabled:hover devtools-icon,
     .toolbar-button:enabled:focus devtools-icon {
       color: HighlightText;
@@ -1139,16 +1097,6 @@ devtools-toolbar {
       background: ButtonFace;
       color: ButtonText;
     }
-  }
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 100%;
-  }
-
-  to {
-    opacity: 0%;
   }
 }
 

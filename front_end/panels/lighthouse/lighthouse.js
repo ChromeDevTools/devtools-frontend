@@ -3841,21 +3841,12 @@ var lighthousePanel_css_default = `/*
  */
 
 .lh-root {
-  --report-menu-width: 0;
-
   user-select: text;
 }
 /* for View Trace button */
 
 .lh-audit-group {
   position: relative;
-}
-
-/** \\'window.opener\\' is null for windows opened from DevTools. This breaks
-    the LH viewer app, so disable this feature. */
-
-.lh-tools--viewer {
-  display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .lighthouse-settings-pane {
@@ -4582,7 +4573,6 @@ var lighthouseStartView_css_default = `/*
   height: 100%;
   /* for buttons */
   --legacy-accent-color: #0535c1;
-  --legacy-accent-color-hover: #17b;
   --font-size: var(--sys-typescale-body2-size);
   --report-font-family: roboto, helvetica, arial, sans-serif;
 }
@@ -4636,10 +4626,6 @@ var lighthouseStartView_css_default = `/*
 .lighthouse-form-section-label i span {
   position: relative;
   top: calc(-1 * var(--sys-size-2));
-}
-
-.lighthouse-form-section-label span.largeicon-checkmark {
-  top: calc(-1 * var(--sys-size-3));
 }
 
 .lighthouse-form-section-label .lighthouse-learn-more {

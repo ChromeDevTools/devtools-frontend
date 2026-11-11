@@ -82,6 +82,9 @@
     },
     {
       "path": "../../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/components/tooltips/bundle-tsconfig.ref.json"
     }
   ]
 }

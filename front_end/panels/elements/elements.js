@@ -4533,12 +4533,6 @@ var stylePropertiesTreeOutline_css_default = `/*
     text-overflow: clip;
   }
 
-  &.editing-sub-part {
-    padding: 3px var(--sys-size-4) var(--sys-size-5) 18px;
-    margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
-    text-overflow: clip;
-  }
-
   &.child-editing {
     overflow-wrap: break-word !important; /* stylelint-disable-line declaration-no-important */
     white-space: normal !important; /* stylelint-disable-line declaration-no-important */
@@ -5344,7 +5338,7 @@ var VariableRenderer = class extends VariableRendererBase {
       this.#computedStyleExtraFields,
       context
     );
-    const tooltipId = this.#treeElement?.getTooltipId("custom-property-var");
+    const tooltipId = getTooltipId(this.#treeElement, "custom-property-var");
     const tooltip = tooltipId ? { tooltipId } : void 0;
     const varSwatch = html7`<span
         data-title=${computedValue || ""}
@@ -5396,7 +5390,7 @@ var VariableNameRenderer = class extends VariableNameRendererBase {
     const { declaration, value: variableValue } = match.resolveVariable() ?? {};
     const isDefined = variableValue !== void 0;
     const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
-    const tooltipId = this.#treeElement?.getTooltipId("custom-property-var");
+    const tooltipId = getTooltipId(this.#treeElement, "custom-property-var");
     const tooltip = tooltipId ? { tooltipId } : void 0;
     return html7`<devtools-link-swatch class=css-var-link .data=${{
       tooltip,
@@ -5479,7 +5473,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
       this.#computedStyleExtraFields,
       context
     );
-    const tooltipId = attributeMissing ? void 0 : this.#treeElement?.getTooltipId("custom-attribute");
+    const tooltipId = attributeMissing ? void 0 : getTooltipId(this.#treeElement, "custom-attribute");
     const tooltip = tooltipId ? { tooltipId } : void 0;
     const varSwatch = html7`<span
         data-title=${computedValue || ""}
@@ -5565,7 +5559,7 @@ var RelativeColorChannelRenderer = class extends RelativeColorChannelRendererBas
     if (evaluation) {
       return evaluation;
     }
-    const tooltipId = this.#treeElement?.getTooltipId("relative-color-channel");
+    const tooltipId = getTooltipId(this.#treeElement, "relative-color-channel");
     if (!tooltipId) {
       return html7`<span>${match.text}</span>`;
     }
@@ -5894,7 +5888,7 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
     if (context.tracing) {
       return html7`${swatch}${contentChild}`;
     }
-    const tooltipId = this.#treeElement?.getTooltipId("color-mix");
+    const tooltipId = getTooltipId(this.#treeElement, "color-mix");
     if (!tooltipId) {
       return html7`${swatch}${contentChild}`;
     }
@@ -6517,7 +6511,7 @@ var LengthRenderer = class extends LengthRendererBase {
       template,
       asyncEvalCallback: () => this.getTooltipValue(match, context)
     }));
-    const tooltipId = this.#treeElement?.getTooltipId("length");
+    const tooltipId = getTooltipId(this.#treeElement, "length");
     if (evaluation || !tooltipId) {
       return html7`<span tabindex=-1>${evaluation ?? template}</span>`;
     }
@@ -6960,6 +6954,25 @@ var PositionTryRenderer = class extends PositionTryRendererBase {
     }}></devtools-icon>${content}`;
   }
 };
+function getTooltipId(tooltipIdFactoryOrTreeElement, key2, property, shorthandName) {
+  if (!tooltipIdFactoryOrTreeElement) {
+    return void 0;
+  }
+  if (tooltipIdFactoryOrTreeElement instanceof StylePropertyTreeElement) {
+    const treeElement = tooltipIdFactoryOrTreeElement;
+    return getTooltipId(treeElement.tooltipIdFactory, key2, treeElement.property, treeElement.getLonghand()?.name);
+  }
+  if (!property) {
+    return void 0;
+  }
+  const propertyNameForCounting = shorthandName ?? property.name;
+  const ownIndex = property.ownerStyle.allProperties().indexOf(property);
+  const propertyCount = property.ownerStyle.allProperties().reduce(
+    (value5, other, index) => index < ownIndex && (other.name === property.name || other.name === propertyNameForCounting) ? value5 + 1 : value5,
+    0
+  );
+  return tooltipIdFactoryOrTreeElement.keyed(key2, propertyCount);
+}
 function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyles, treeElement, computedStyles, computedStyleExtraFields) {
   return [
     new VariableRenderer(stylesContainer, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
@@ -7030,7 +7043,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   computedStyleExtraFields = null;
   contextForTest;
   #gridNames = void 0;
-  #tooltipKeyCounts = /* @__PURE__ */ new Map();
+  tooltipIdFactory;
   // The changes that renderers made to the text of the value since it was rendered. Only available if the value was
   // parsed.
   #edits;
@@ -7049,6 +7062,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.selectable = false;
     this.#stylesContainer = stylesContainer;
     this.#parentSection = section5;
+    this.tooltipIdFactory = section5.sectionTooltipIdFactory.subfactory("swatch-tooltip", this.name);
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
     this.#lastCommittedProperty = {
@@ -7395,7 +7409,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.#updateTitle();
   }
   #updateTitle() {
-    this.#tooltipKeyCounts.clear();
+    this.tooltipIdFactory.clearKeys();
     this.updateState();
     if (this.isExpandable()) {
       this.expandElement = createIcon("triangle-right", "expand-icon");
@@ -7436,7 +7450,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       contents.variableName = this.property.name;
       contents.value = this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value;
       contents.details = this.#stylesContainer.getRegisteredPropertyDetails(this.matchedStyles(), this.property.name);
-      const tooltipId = this.getTooltipId("custom-property-decl");
+      const tooltipId = getTooltipId(this.tooltipIdFactory, "custom-property-decl", this.property, this.getLonghand()?.name);
       this.nameElement.setAttribute("aria-details", tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip(
         { anchor: this.nameElement, variant: "rich", id: tooltipId, jslogContext: "elements.css-var" }
@@ -7454,7 +7468,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       };
       this.listItemElement.appendChild(tooltip);
     } else if (Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor).get()) {
-      const tooltipId = this.getTooltipId("property-doc");
+      const tooltipId = getTooltipId(this.tooltipIdFactory, "property-doc", this.property, this.getLonghand()?.name);
       this.nameElement.setAttribute("aria-details", tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip({
         anchor: this.nameElement,
@@ -7571,7 +7585,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (title === null) {
       UI7.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
     } else {
-      const tooltipId = this.getTooltipId("property-warning");
+      const tooltipId = getTooltipId(this.tooltipIdFactory, "property-warning", this.property, this.getLonghand()?.name);
       exclamationElement.setAttribute("aria-describedby", tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip({
         anchor: exclamationElement,
@@ -7622,7 +7636,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     const shorthandPositionOffset = context.matchedResult.getComputedLonghandName(node);
     const { property } = context;
     const stylesContainer = this.stylesContainer();
-    const tooltipId = this.getTooltipId(`${functionName}-trace`);
+    const tooltipId = getTooltipId(this.tooltipIdFactory, `${functionName}-trace`, this.property, this.getLonghand()?.name);
     return html7`
         <span tabIndex=-1 class=tracing-anchor aria-details=${tooltipId}>${functionName.startsWith("--") ? this.#getLinkableFunction(functionName, matchedStyles, context.property) : functionName}</span>
         <devtools-tooltip
@@ -7673,20 +7687,6 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
           </devtools-widget>
         </devtools-tooltip>`;
   }
-  // Returns an id for <devtools-tooltips> that's stable across re-rendering of property values but unique across
-  // sections and across switches between different nodes.
-  getTooltipId(key2) {
-    const sectionId = this.section().sectionTooltipIdPrefix;
-    const tooltipKeyCount = this.#tooltipKeyCounts.get(key2) ?? 0;
-    this.#tooltipKeyCounts.set(key2, tooltipKeyCount + 1);
-    const propertyNameForCounting = this.getLonghand()?.name ?? this.name;
-    const ownIndex = this.style.allProperties().indexOf(this.property);
-    const propertyCount = this.style.allProperties().reduce(
-      (value5, property, index) => index < ownIndex && (property.name === this.name || property.name === propertyNameForCounting) ? value5 + 1 : value5,
-      0
-    );
-    return `swatch-tooltip-${sectionId}-${this.name}-${propertyCount}-${key2}-${tooltipKeyCount}`;
-  }
   updateAuthoringHint() {
     this.listItemElement.classList.remove("inactive-property");
     const existingElement = this.listItemElement.querySelector(".hint");
@@ -7721,7 +7721,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         wrapper.append(hintIcon);
         this.listItemElement.append(wrapper);
         this.listItemElement.classList.add("inactive-property");
-        const tooltipId = this.getTooltipId("css-hint");
+        const tooltipId = getTooltipId(this.tooltipIdFactory, "css-hint", this.property, this.getLonghand()?.name);
         hintIcon.setAttribute("aria-details", tooltipId);
         const tooltip = new Tooltips.Tooltip.Tooltip(
           { anchor: hintIcon, variant: "rich", padding: "large", id: tooltipId, jslogContext: "elements.css-hint" }
@@ -7751,7 +7751,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     hintIcon.tabIndex = -1;
     wrapper.append(hintIcon);
     this.listItemElement.append(wrapper);
-    const tooltipId = this.getTooltipId("animation-override-hint");
+    const tooltipId = getTooltipId(this.tooltipIdFactory, "animation-override-hint", this.property, this.getLonghand()?.name);
     hintIcon.setAttribute("aria-details", tooltipId);
     const tooltip = new Tooltips.Tooltip.Tooltip({
       anchor: hintIcon,
@@ -8938,9 +8938,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   sectionIdx = 0;
   #customHeaderText;
   #specificityTooltips;
-  static #nextSpecificityTooltipId = 0;
-  static #nextSectionTooltipIdPrefix = 0;
-  sectionTooltipIdPrefix = _StylePropertiesSection.#nextSectionTooltipIdPrefix++;
+  sectionTooltipIdFactory = new Tooltips2.Tooltip.IdFactory();
   ghostStyleTreeElements = [];
   #activeAiSuggestion;
   #isInactive = false;
@@ -9724,7 +9722,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       jslogContext: "container-query"
     };
     if (style) {
-      const tooltipPrefix = `container-${this.sectionTooltipIdPrefix}-${this.nestingLevel}`;
+      const tooltipPrefix = this.sectionTooltipIdFactory.subfactory("container", this.nestingLevel);
       void containerQuery.getContainerForNode(this.matchedStyles.node().id).then((container) => {
         if (container) {
           containerQueryElement.parseStyleQueries(this.matchedStyles, style, container.containerNode, tooltipPrefix);
@@ -10106,9 +10104,6 @@ var StylePropertiesSection = class _StylePropertiesSection {
     this.renderSelectors(rule.selectors, matchingSelectors, this.elementToSelectorIndex);
     this.markSelectorHighlights();
   }
-  static getNextSpecificityTooltipId() {
-    return `specificity-tooltip-${this.#nextSpecificityTooltipId++}`;
-  }
   renderSelectors(selectors, matchingSelectors, elementToSelectorIndex) {
     this.selectorElement.removeChildren();
     this.#specificityTooltips.removeChildren();
@@ -10125,7 +10120,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       if (i > 0) {
         targetElement.append(", ");
       }
-      const specificityTooltipId = selector.specificity ? _StylePropertiesSection.getNextSpecificityTooltipId() : null;
+      const specificityTooltipId = selector.specificity ? this.sectionTooltipIdFactory.keyed("specificity-tooltip") : null;
       const span = targetElement.createChild("span", "simple-selector");
       span.classList.toggle("selector-matches", matchingSelectors[i]);
       elementToSelectorIndex.set(span, i);
@@ -11239,7 +11234,6 @@ var stylesSidebarPane_css_default = `/**
   }
 
   .selector,
-  .try-rule-selector-element,
   .ancestor-rule-list,
   .ancestor-closing-braces {
     color: var(--app-color-element-sidebar-subtitle);
@@ -23850,8 +23844,8 @@ var metricsSidebarPane_css_default = `/**
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
-  padding: 3px;
-  margin: 3px;
+  padding: var(--sys-size-2);
+  margin: var(--sys-size-2);
   position: relative;
 }
 
@@ -26421,13 +26415,9 @@ var classesPaneWidget_css_default = `/**
 }
 
 .styles-element-classes-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
-
-.styles-element-classes-pane devtools-checkbox {
-  margin-right: 15px;
+  display: grid;
+  column-gap: var(--sys-size-6);
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .styles-element-classes-pane .title-container {

@@ -2,6 +2,15 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 export declare const makeTraceEntryNodeId: () => TraceEntryNodeId;
 export declare const makeEmptyTraceEntryTree: () => TraceEntryTree;
+/**
+ * Appends a child to a `TraceEntryNode`.
+ *
+ * Call this helper instead of `parent.children.push(child)`. Nodes created by
+ * `makeEmptyTraceEntryNode` share a single empty array for their children to
+ * save memory; mutating `parent.children` directly on a leaf node corrupts all
+ * leaf nodes.
+ */
+export declare function appendChild(parent: TraceEntryNode, child: TraceEntryNode): void;
 export declare const makeEmptyTraceEntryNode: (entry: Types.Events.Event, id: TraceEntryNodeId) => TraceEntryNode;
 export interface TraceEntryTree {
     roots: Set<TraceEntryNode>;
@@ -31,13 +40,16 @@ export type TraceEntryNodeId = Platform.Brand.Brand<number, 'traceEntryNodeIdTag
  * The nodes are also assumed to be created empty, with no known parent
  * or children.
  *
+ * If `targetEntryToNode` is provided, it is populated in-place with each
+ * event's `TraceEntryNode` and returned as `entryToNode`.
+ *
  * Complexity: O(n), where n = number of events
  */
 export declare function treify(entries: readonly Types.Events.Event[], options?: {
     filter: {
         has: (name: Types.Events.Name) => boolean;
     };
-}): {
+}, targetEntryToNode?: Map<Types.Events.Event, TraceEntryNode>): {
     tree: TraceEntryTree;
     entryToNode: Map<Types.Events.Event, TraceEntryNode>;
 };

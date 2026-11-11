@@ -6691,11 +6691,11 @@ function generateInsight17(data, context) {
   let totalElapsedUs = 0;
   let totalMatchAttempts = 0;
   let totalMatchCount = 0;
-  selectorTimings.map((timing) => {
+  for (const timing of selectorTimings) {
     totalElapsedUs += timing[Types12.Events.SelectorTimingsKey.Elapsed];
     totalMatchAttempts += timing[Types12.Events.SelectorTimingsKey.MatchAttempts];
     totalMatchCount += timing[Types12.Events.SelectorTimingsKey.MatchCount];
-  });
+  }
   let topSelectorElapsedMs = null;
   let topSelectorMatchAttempts = null;
   if (selectorTimings.length > 0) {

@@ -69,6 +69,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     filtersControl;
     delegate;
     currentTree;
+    #eventToTreeNode = new WeakMap();
     constructor(delegate) {
         super(undefined, { jslog: `${VisualLogging.pane('event-log').track({ resize: true })}` });
         this.filtersControl = new Filters();
@@ -88,8 +89,21 @@ export class EventsTimelineTreeView extends TimelineTreeView {
         }
     }
     buildTree() {
+        this.#eventToTreeNode = new WeakMap();
         this.currentTree = this.buildTopDownTree(true, null);
         return this.currentTree;
+    }
+    indexTreeNode(node) {
+        if (node.event) {
+            this.#eventToTreeNode.set(node.event, node);
+        }
+    }
+    dataGridElementForEvent(event) {
+        if (!event) {
+            return null;
+        }
+        const node = this.#eventToTreeNode.get(event);
+        return (node && this.dataGridNodeForTreeNode(node)?.element()) ?? null;
     }
     onFilterChanged() {
         const lastSelectedNode = this.lastSelectedNode();
@@ -100,16 +114,13 @@ export class EventsTimelineTreeView extends TimelineTreeView {
         }
     }
     selectEvent(event, expand) {
-        const node = this.eventToTreeNode.get(event);
+        const node = this.#eventToTreeNode.get(event);
         if (!node) {
             return;
         }
         this.selectProfileNode(node, false);
         if (expand) {
-            const dataGridNode = this.dataGridNodeForTreeNode(node);
-            if (dataGridNode) {
-                dataGridNode.expand();
-            }
+            this.dataGridNodeForTreeNode(node)?.expand();
         }
     }
     populateColumns(columns) {

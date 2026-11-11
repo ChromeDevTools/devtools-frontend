@@ -6969,25 +6969,28 @@ var TimelineController = class {
     }
   }
   async #navigateToAboutBlank() {
-    const aboutBlankNavigationComplete = new Promise(async (resolve, reject) => {
-      const target = this.primaryPageTarget;
-      const resourceModel = target.model(SDK5.ResourceTreeModel.ResourceTreeModel);
-      if (!resourceModel) {
-        reject("Could not load resourceModel");
-        return;
+    const resourceModel = this.primaryPageTarget.model(SDK5.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceModel) {
+      throw new Error("Could not load resourceModel");
+    }
+    const { promise, resolve, reject } = Promise.withResolvers();
+    function waitForAboutBlank(event) {
+      if (event.data.url === "about:blank") {
+        resolve();
+      } else {
+        reject(new Error(`Unexpected navigation to ${event.data.url}`));
       }
-      function waitForAboutBlank(event) {
-        if (event.data.url === "about:blank") {
-          resolve();
-        } else {
-          reject(`Unexpected navigation to ${event.data.url}`);
-        }
-        resourceModel?.removeEventListener(SDK5.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
-      }
-      resourceModel.addEventListener(SDK5.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
-      await resourceModel.navigate("about:blank");
-    });
-    await aboutBlankNavigationComplete;
+    }
+    resourceModel.addEventListener(SDK5.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+    try {
+      await Promise.all([
+        promise,
+        resourceModel.navigate("about:blank")
+      ]);
+    } finally {
+      resourceModel.removeEventListener(SDK5.ResourceTreeModel.Events.FrameNavigated, waitForAboutBlank);
+      resolve();
+    }
   }
   async #navigateWithSDK(url) {
     const resourceModel = this.primaryPageTarget.model(SDK5.ResourceTreeModel.ResourceTreeModel);
@@ -8762,9 +8765,6 @@ var timelineMiniMap_css_default = `/*
   margin-top: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.timeline-minimap #timeline-overview-input {
-  flex-basis: var(--sys-size-4);
-}
 
 .timeline-minimap #timeline-overview-pane {
   flex: auto;
@@ -8807,39 +8807,69 @@ var timelineMiniMap_css_default = `/*
 // ../../front_end/panels/timeline/TimelineMiniMap.ts
 var { widget, widgetRef } = UI6.Widget;
 var MiniMapOverviewPane = class extends PerfUI10.TimelineOverviewPane.TimelineOverviewPane {
-  #data = null;
+  #bounds;
+  #windowTimes;
+  #parsedTrace = null;
+  #showScreenshots = false;
+  #showMemory = false;
+  #highlightedBounds = null;
+  #appliedBounds;
+  #appliedWindowTimes;
+  #appliedParsedTrace = null;
+  #appliedShowScreenshots = false;
+  #appliedShowMemory = false;
+  #appliedHighlightedBounds = null;
   #controls = [];
-  #hadHighlightedBounds = false;
   constructor(element) {
     super(element);
     this.enableCreateBreadcrumbsButton();
   }
-  get data() {
-    return this.#data;
-  }
-  get controls() {
-    return this.#controls;
+  getControlsForTrace(parsedTrace) {
+    return parsedTrace && this.#appliedParsedTrace === parsedTrace ? this.#controls : [];
   }
   set bounds(bounds) {
-    if (bounds) {
-      this.setBounds(bounds.min, bounds.max);
+    if (this.#bounds === bounds) {
+      return;
     }
+    this.#bounds = bounds;
+    this.requestUpdate();
   }
   set windowTimes(windowTimes) {
-    if (windowTimes) {
-      this.setWindowTimes(windowTimes.min, windowTimes.max);
+    if (this.#windowTimes === windowTimes) {
+      return;
     }
+    this.#windowTimes = windowTimes;
+    this.requestUpdate();
   }
-  set data(data) {
-    if (this.#data === data) {
+  set parsedTrace(parsedTrace) {
+    if (this.#parsedTrace === parsedTrace) {
       return;
     }
-    this.#data = data;
-    if (data === null) {
-      this.#controls = [];
+    this.#parsedTrace = parsedTrace;
+    this.requestUpdate();
+  }
+  set showScreenshots(showScreenshots) {
+    if (this.#showScreenshots === showScreenshots) {
       return;
     }
-    const { parsedTrace, settings } = data;
+    this.#showScreenshots = showScreenshots;
+    this.requestUpdate();
+  }
+  set showMemory(showMemory) {
+    if (this.#showMemory === showMemory) {
+      return;
+    }
+    this.#showMemory = showMemory;
+    this.requestUpdate();
+  }
+  set highlightedBounds(highlightedBounds) {
+    if (this.#highlightedBounds === highlightedBounds) {
+      return;
+    }
+    this.#highlightedBounds = highlightedBounds;
+    this.requestUpdate();
+  }
+  #applyTraceMarkers(parsedTrace) {
     const markers = /* @__PURE__ */ new Map();
     const { Meta } = parsedTrace.data;
     const navStartEvents = Meta.mainFrameNavigations;
@@ -8850,37 +8880,76 @@ var MiniMapOverviewPane = class extends PerfUI10.TimelineOverviewPane.TimelineOv
     }
     this.setMarkers(markers);
     this.setNavStartTimes(navStartEvents);
-    const controls = [
-      new TimelineEventOverviewResponsiveness(parsedTrace),
-      new TimelineEventOverviewCPUActivity(parsedTrace),
-      new TimelineEventOverviewNetwork(parsedTrace)
-    ];
-    if (settings.showScreenshots) {
-      const filmStrip = Trace19.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
-      if (filmStrip.frames.length) {
-        controls.push(new TimelineFilmStripOverview(filmStrip));
+  }
+  performUpdate() {
+    const traceChanged = this.#parsedTrace !== this.#appliedParsedTrace;
+    const settingsChanged = this.#showScreenshots !== this.#appliedShowScreenshots || this.#showMemory !== this.#appliedShowMemory;
+    if ((traceChanged || settingsChanged) && !this.#parsedTrace) {
+      this.#appliedParsedTrace = null;
+      this.#appliedShowScreenshots = this.#showScreenshots;
+      this.#appliedShowMemory = this.#showMemory;
+      this.#controls = [];
+      this.setMarkers(/* @__PURE__ */ new Map());
+      this.setNavStartTimes([]);
+      this.setOverviewControls([]);
+      this.showingScreenshots = false;
+    }
+    const boundsCleared = Boolean(this.#appliedBounds && !this.#bounds);
+    if (boundsCleared) {
+      super.reset();
+      this.#appliedWindowTimes = void 0;
+      if (this.#appliedHighlightedBounds) {
+        this.clearBoundsHighlight();
+        this.#appliedHighlightedBounds = null;
       }
     }
-    if (settings.showMemory) {
-      controls.push(new TimelineEventOverviewMemory(parsedTrace));
+    if (this.#bounds && this.#bounds !== this.#appliedBounds) {
+      this.setBounds(this.#bounds.min, this.#bounds.max);
     }
-    this.#controls = controls;
-    this.setOverviewControls(controls);
-    this.showingScreenshots = settings.showScreenshots;
-  }
-  set highlightedBounds(highlightedBounds) {
-    if (highlightedBounds) {
-      this.highlightBounds(highlightedBounds.bounds, highlightedBounds.withBracket);
-      this.#hadHighlightedBounds = true;
-    } else if (this.#hadHighlightedBounds) {
-      this.clearBoundsHighlight();
-      this.#hadHighlightedBounds = false;
+    this.#appliedBounds = this.#bounds;
+    if (this.#windowTimes !== this.#appliedWindowTimes) {
+      if (this.#windowTimes) {
+        this.setWindowTimes(this.#windowTimes.min, this.#windowTimes.max);
+      } else {
+        this.setWindowTimes(Trace19.Types.Timing.Milli(0), Trace19.Types.Timing.Milli(Infinity));
+      }
+      this.#appliedWindowTimes = this.#windowTimes;
     }
-  }
-  reset() {
-    this.#data = null;
-    this.#controls = [];
-    super.reset();
+    if (this.#parsedTrace && (traceChanged || settingsChanged)) {
+      this.#appliedParsedTrace = this.#parsedTrace;
+      this.#appliedShowScreenshots = this.#showScreenshots;
+      this.#appliedShowMemory = this.#showMemory;
+      if (traceChanged || boundsCleared) {
+        this.#applyTraceMarkers(this.#parsedTrace);
+      }
+      const controls = [
+        new TimelineEventOverviewResponsiveness(this.#parsedTrace),
+        new TimelineEventOverviewCPUActivity(this.#parsedTrace),
+        new TimelineEventOverviewNetwork(this.#parsedTrace)
+      ];
+      if (this.#showScreenshots) {
+        const filmStrip = Trace19.Extras.FilmStrip.fromHandlerData(this.#parsedTrace.data);
+        if (filmStrip.frames.length) {
+          controls.push(new TimelineFilmStripOverview(filmStrip));
+        }
+      }
+      if (this.#showMemory) {
+        controls.push(new TimelineEventOverviewMemory(this.#parsedTrace));
+      }
+      this.#controls = controls;
+      this.setOverviewControls(controls);
+      this.showingScreenshots = this.#showScreenshots;
+    } else if (boundsCleared && this.#parsedTrace) {
+      this.#applyTraceMarkers(this.#parsedTrace);
+    }
+    if (this.#highlightedBounds !== this.#appliedHighlightedBounds) {
+      if (this.#highlightedBounds) {
+        this.highlightBounds(this.#highlightedBounds.bounds, this.#highlightedBounds.withBracket);
+      } else if (this.#appliedHighlightedBounds) {
+        this.clearBoundsHighlight();
+      }
+      this.#appliedHighlightedBounds = this.#highlightedBounds;
+    }
   }
 };
 var DEFAULT_VIEW2 = (input, output, target) => {
@@ -8895,12 +8964,13 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       ${widget(MiniMapOverviewPane, {
     bounds: input.bounds,
     windowTimes: input.windowTimes,
-    data: input.data,
+    parsedTrace: input.data?.parsedTrace ?? null,
+    showScreenshots: Boolean(input.data?.settings.showScreenshots),
+    showMemory: Boolean(input.data?.settings.showMemory),
     highlightedBounds: input.highlightedBounds
   })}
       ${widgetRef(MiniMapOverviewPane, (pane7) => {
-    output.getControls = (data) => pane7.data === data ? pane7.controls : [];
-    output.resetOverview = () => pane7.reset();
+    output.getControls = (parsedTrace) => pane7.getControlsForTrace(parsedTrace);
   })}
       @OverviewPaneWindowChanged=${(event) => {
     input.onOverviewWindowChanged(event.detail);
@@ -9094,12 +9164,13 @@ var TimelineMiniMap = class extends TimelineMiniMapBase {
     this.breadcrumbs = null;
     this.#initialBreadcrumb = null;
     this.#activeBreadcrumb = null;
+    this.#windowTimes = void 0;
+    this.#bounds = void 0;
     this.#highlightedBounds = null;
-    this.#viewOutput.resetOverview?.();
     this.requestUpdate();
   }
   getControls() {
-    return this.#viewOutput.getControls?.(this.#data) ?? [];
+    return this.#viewOutput.getControls?.(this.#data?.parsedTrace ?? null) ?? [];
   }
   setData(data) {
     if (data === null) {
@@ -15075,7 +15146,6 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
   #parsedTrace = null;
   #entityMapper = null;
   #lastHighlightedEvent = null;
-  eventToTreeNode = /* @__PURE__ */ new WeakMap();
   // Compact mode is used to render the tree view in a more compact UI,
   // suitable for AI assistance widgets. It removes sidebars and toolbars.
   #compactMode = false;
@@ -15388,9 +15458,6 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
     const gridNodes = [];
     for (const child of children.values()) {
       const gridNode = new TreeGridNode(child, totalUsedTime, maxSelfTime, maxTotalTime, this);
-      for (const e of child.events) {
-        this.eventToTreeNode.set(e, child);
-      }
       gridNodes.push(gridNode);
     }
     const columnId = this.dataGrid.sortColumnId() || "self";
@@ -15622,15 +15689,31 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
       this.appendContextMenuItems(contextMenu, profileNode);
     }
   }
+  gridNodeForEvent(event, parentNode = this.dataGrid.rootNode()) {
+    for (const child of parentNode.children) {
+      if (child.children.length) {
+        const descendant = this.gridNodeForEvent(event, child);
+        if (descendant) {
+          return descendant;
+        }
+      }
+      if (child instanceof GridNode && child.profileNode.events.includes(event)) {
+        return child;
+      }
+    }
+    return null;
+  }
   dataGridElementForEvent(event) {
     if (!event) {
       return null;
     }
-    const treeNode = this.eventToTreeNode.get(event);
-    return (treeNode && this.dataGridNodeForTreeNode(treeNode)?.element()) ?? null;
+    return this.gridNodeForEvent(event)?.element() ?? null;
   }
   dataGridNodeForTreeNode(treeNode) {
     return treeNodeToGridNode.get(treeNode) || null;
+  }
+  /** Hook for unaggregated views to index grid nodes by their event. */
+  indexTreeNode(_node) {
   }
   // UI.SearchableView.Searchable implementation
   onSearchCanceled() {
@@ -15844,6 +15927,7 @@ var TreeGridNode = class _TreeGridNode extends GridNode {
     super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
     this.setHasChildren(this.profileNode.hasChildren());
     treeNodeToGridNode.set(profileNode, this);
+    treeView.indexTreeNode(profileNode);
   }
   populate() {
     if (this.populated) {
@@ -15855,9 +15939,6 @@ var TreeGridNode = class _TreeGridNode extends GridNode {
     }
     for (const node of this.profileNode.children().values()) {
       const gridNode = new _TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView);
-      for (const e of node.events) {
-        this.treeView.eventToTreeNode.set(e, node);
-      }
       this.insertChildOrdered(gridNode);
     }
   }
@@ -16326,6 +16407,7 @@ var EventsTimelineTreeView = class extends TimelineTreeView {
   filtersControl;
   delegate;
   currentTree;
+  #eventToTreeNode = /* @__PURE__ */ new WeakMap();
   constructor(delegate) {
     super(void 0, { jslog: `${VisualLogging8.pane("event-log").track({ resize: true })}` });
     this.filtersControl = new Filters();
@@ -16345,8 +16427,21 @@ var EventsTimelineTreeView = class extends TimelineTreeView {
     }
   }
   buildTree() {
+    this.#eventToTreeNode = /* @__PURE__ */ new WeakMap();
     this.currentTree = this.buildTopDownTree(true, null);
     return this.currentTree;
+  }
+  indexTreeNode(node) {
+    if (node.event) {
+      this.#eventToTreeNode.set(node.event, node);
+    }
+  }
+  dataGridElementForEvent(event) {
+    if (!event) {
+      return null;
+    }
+    const node = this.#eventToTreeNode.get(event);
+    return (node && this.dataGridNodeForTreeNode(node)?.element()) ?? null;
   }
   onFilterChanged() {
     const lastSelectedNode = this.lastSelectedNode();
@@ -16357,16 +16452,13 @@ var EventsTimelineTreeView = class extends TimelineTreeView {
     }
   }
   selectEvent(event, expand) {
-    const node = this.eventToTreeNode.get(event);
+    const node = this.#eventToTreeNode.get(event);
     if (!node) {
       return;
     }
     this.selectProfileNode(node, false);
     if (expand) {
-      const dataGridNode = this.dataGridNodeForTreeNode(node);
-      if (dataGridNode) {
-        dataGridNode.expand();
-      }
+      this.dataGridNodeForTreeNode(node)?.expand();
     }
   }
   populateColumns(columns) {
@@ -16923,8 +17015,8 @@ var timelineDetailsView_css_default = `/*
     background-color: var(--override-details-warning-background-color);
   }
 
-  .theme-with-dark-background .timeline-details-warning,
-  :host-context(.theme-with-dark-background) .timeline-details-warning {
+  .theme-with-dark-background .timeline-details-warning, /* stylelint-disable-line plugin/check_scope_selectors */
+  :host-context(.theme-with-dark-background) .timeline-details-warning { /* stylelint-disable-line plugin/check_scope_selectors */
     --override-details-warning-background-color: rgb(87 10 10 / 48%);
   }
 
@@ -18372,15 +18464,12 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
         if (!node) {
           return;
         }
-        const treeNode = bottomUp.eventToTreeNode.get(node.event);
-        if (!treeNode) {
+        const gridNode = node.isGroupNode() ? bottomUp.dataGrid.rootNode().children.find((child) => child instanceof GridNode && child.profileNode.id === node.id) ?? null : bottomUp.gridNodeForEvent(node.event);
+        if (!gridNode) {
           return;
         }
-        bottomUp.selectProfileNode(treeNode, true);
-        const gridNode = bottomUp.dataGridNodeForTreeNode(treeNode);
-        if (gridNode) {
-          gridNode.expand();
-        }
+        bottomUp.selectProfileNode(gridNode.profileNode, true);
+        gridNode.expand();
         break;
       }
       default: {
@@ -21490,8 +21579,8 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     super();
     this.reset();
     [this.droppedFramePattern, this.partialFramePattern] = this.preparePatternCanvas();
-    this.framesGroupStyle = this.buildGroupStyle({ useFirstLineForOverview: true });
-    this.screenshotsGroupStyle = this.buildGroupStyle({
+    this.framesGroupStyle = buildGroupStyle({ useFirstLineForOverview: true });
+    this.screenshotsGroupStyle = buildGroupStyle({
       useFirstLineForOverview: true,
       nestingLevel: 1,
       collapsible: PerfUI16.FlameChart.GroupCollapsibleState.NEVER,
@@ -21710,18 +21799,6 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
       event.consume(true);
     }
   }
-  buildGroupStyle(extra) {
-    const defaultGroupStyle = {
-      padding: 4,
-      height: 17,
-      collapsible: PerfUI16.FlameChart.GroupCollapsibleState.ALWAYS,
-      color: ThemeSupport23.ThemeSupport.instance().getComputedValue("--sys-color-on-surface"),
-      backgroundColor: ThemeSupport23.ThemeSupport.instance().getComputedValue("--sys-color-cdt-base-container"),
-      nestingLevel: 0,
-      shareHeaderLine: true
-    };
-    return Object.assign(defaultGroupStyle, extra);
-  }
   setModel(parsedTrace, entityMapper) {
     this.reset();
     this.parsedTrace = parsedTrace;
@@ -21903,7 +21980,7 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     }
     const appendersByProcess = this.compatibilityTracksAppender.allThreadAppendersByProcess();
     for (const [pid, threadAppenders] of appendersByProcess) {
-      const processGroupStyle = this.buildGroupStyle({ shareHeaderLine: false });
+      const processGroupStyle = buildGroupStyle({ shareHeaderLine: false });
       const processName = this.parsedTrace?.data.Meta.processNames.get(pid)?.args.name || "Process";
       this.appendHeader(`${processName} (${pid})`, processGroupStyle, true, false);
       for (const appender of threadAppenders) {

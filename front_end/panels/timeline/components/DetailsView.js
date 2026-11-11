@@ -124,23 +124,15 @@ export function buildWarningElementsForEvent(event, parsedTrace) {
 export function buildRowsForWebSocketEvent(event, parsedTrace) {
     const rows = [];
     const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event);
-    if (initiator && Trace.Types.Events.isWebSocketCreate(initiator)) {
-        // The initiator will be a WebSocketCreate, but this check helps TypeScript
-        // to understand.
-        rows.push({ key: i18n.i18n.lockedString('URL'), value: initiator.args.data.url });
-        if (initiator.args.data.webSocketProtocol) {
+    const webSocketCreateEvent = initiator && Trace.Types.Events.isWebSocketCreate(initiator) ? initiator :
+        Trace.Types.Events.isWebSocketCreate(event) ? event :
+            null;
+    if (webSocketCreateEvent) {
+        rows.push({ key: i18n.i18n.lockedString('URL'), value: webSocketCreateEvent.args.data.url });
+        if (webSocketCreateEvent.args.data.webSocketProtocol) {
             rows.push({
                 key: i18nString(UIStrings.websocketProtocol),
-                value: initiator.args.data.webSocketProtocol,
-            });
-        }
-    }
-    else if (Trace.Types.Events.isWebSocketCreate(event)) {
-        rows.push({ key: i18n.i18n.lockedString('URL'), value: event.args.data.url });
-        if (event.args.data.webSocketProtocol) {
-            rows.push({
-                key: i18nString(UIStrings.websocketProtocol),
-                value: event.args.data.webSocketProtocol,
+                value: webSocketCreateEvent.args.data.webSocketProtocol,
             });
         }
     }

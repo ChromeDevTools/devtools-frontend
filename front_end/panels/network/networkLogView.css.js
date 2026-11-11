@@ -65,7 +65,8 @@ export default `/*
 }
 
 .network-log-grid.data-grid.small td {
-  height: 21px;
+  /* 20px (--sys-size-9) base row + 1px (--sys-size-1) .icon top margin. */
+  height: calc(var(--sys-size-9) + var(--sys-size-1));
 }
 
 .network-log-grid.data-grid th {
@@ -113,10 +114,6 @@ export default `/*
 .network-cell-subtitle {
   font-weight: normal;
   color: var(--sys-color-token-subtle);
-}
-
-.network-badge {
-  margin-right: var(--sys-size-3);
 }
 
 .status-column .devtools-link {
@@ -325,12 +322,6 @@ td.time-column {
   z-index: 0;
 }
 
-.network-log-grid.data-grid span.separator-in-cell {
-  user-select: none;
-  min-width: 1ex;
-  display: inline-block;
-}
-
 .network-status-pane {
   position: absolute;
   inset: 0;
@@ -391,10 +382,6 @@ td.time-column {
   display: inline-block;
   margin: -7px var(--sys-size-1);
   vertical-align: baseline;
-}
-
-.network-frame-group-badge {
-  margin-right: var(--sys-size-3);
 }
 
 .network-override-marker {

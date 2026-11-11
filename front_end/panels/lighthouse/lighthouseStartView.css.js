@@ -17,7 +17,6 @@ export default `/*
   height: 100%;
   /* for buttons */
   --legacy-accent-color: #0535c1;
-  --legacy-accent-color-hover: #17b;
   --font-size: var(--sys-typescale-body2-size);
   --report-font-family: roboto, helvetica, arial, sans-serif;
 }
@@ -71,10 +70,6 @@ export default `/*
 .lighthouse-form-section-label i span {
   position: relative;
   top: calc(-1 * var(--sys-size-2));
-}
-
-.lighthouse-form-section-label span.largeicon-checkmark {
-  top: calc(-1 * var(--sys-size-3));
 }
 
 .lighthouse-form-section-label .lighthouse-learn-more {

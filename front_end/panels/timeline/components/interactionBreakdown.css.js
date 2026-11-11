@@ -10,6 +10,7 @@ export default `/*
  */
 
 @scope to (devtools-widget > *) {
+  /* stylelint-disable-next-line plugin/check_scope_selectors */
   :host {
     display: block;
   }

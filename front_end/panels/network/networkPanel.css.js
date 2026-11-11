@@ -53,7 +53,6 @@ export default `/*
   --network-grid-focus-selected-color-has-error: var(--sys-color-surface-error);
   --network-grid-focus-selected-color-has-warning: var(--sys-color-surface-yellow);
   --network-grid-from-frame-color: var(--ref-palette-cyan95);
-  --network-grid-is-product-color: var(--ref-palette-yellow95);
   --network-frame-divider-color: var(--ref-palette-yellow60);
 }
 
@@ -62,7 +61,6 @@ export default `/*
   --network-grid-initiator-path-color: var(--ref-palette-green40);
   --network-grid-initiated-path-color: var(--ref-palette-error20);
   --network-grid-from-frame-color: var(--ref-palette-neutral50);
-  --network-grid-is-product-color: var(--ref-palette-neutral70);
 }
 
 .network-details-view {

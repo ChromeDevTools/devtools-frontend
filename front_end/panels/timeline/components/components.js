@@ -3944,20 +3944,13 @@ function buildWarningElementsForEvent(event, parsedTrace) {
 function buildRowsForWebSocketEvent(event, parsedTrace) {
   const rows = [];
   const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event);
-  if (initiator && Trace3.Types.Events.isWebSocketCreate(initiator)) {
-    rows.push({ key: i18n7.i18n.lockedString("URL"), value: initiator.args.data.url });
-    if (initiator.args.data.webSocketProtocol) {
+  const webSocketCreateEvent = initiator && Trace3.Types.Events.isWebSocketCreate(initiator) ? initiator : Trace3.Types.Events.isWebSocketCreate(event) ? event : null;
+  if (webSocketCreateEvent) {
+    rows.push({ key: i18n7.i18n.lockedString("URL"), value: webSocketCreateEvent.args.data.url });
+    if (webSocketCreateEvent.args.data.webSocketProtocol) {
       rows.push({
         key: i18nString4(UIStrings4.websocketProtocol),
-        value: initiator.args.data.webSocketProtocol
-      });
-    }
-  } else if (Trace3.Types.Events.isWebSocketCreate(event)) {
-    rows.push({ key: i18n7.i18n.lockedString("URL"), value: event.args.data.url });
-    if (event.args.data.webSocketProtocol) {
-      rows.push({
-        key: i18nString4(UIStrings4.websocketProtocol),
-        value: event.args.data.webSocketProtocol
+        value: webSocketCreateEvent.args.data.webSocketProtocol
       });
     }
   }
@@ -5490,6 +5483,7 @@ var interactionBreakdown_css_default = `/*
  */
 
 @scope to (devtools-widget > *) {
+  /* stylelint-disable-next-line plugin/check_scope_selectors */
   :host {
     display: block;
   }
@@ -6105,8 +6099,6 @@ var liveMetricsView_css_default = `/*
 }
 
 .live-metrics-view {
-  --min-main-area-size: 60%;
-
   background-color: var(--sys-color-cdt-base-container);
   display: flex;
   flex-direction: row;
@@ -6201,10 +6193,6 @@ var liveMetricsView_css_default = `/*
   max-width: max-content;
 }
 
-.throttling-recommendation-value {
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
 .related-info {
   text-wrap: nowrap;
   margin-top: var(--sys-size-5);
@@ -6238,16 +6226,6 @@ var liveMetricsView_css_default = `/*
   max-height: max-content;
 
   --app-color-toolbar-background: transparent;
-}
-
-.logs-section-header {
-  display: flex;
-  align-items: center;
-}
-
-.interactions-clear {
-  margin-left: var(--sys-size-3);
-  vertical-align: sub;
 }
 
 .log {
@@ -8660,6 +8638,7 @@ var networkRequestDetails_css_default = `/*
     width: fit-content;
   }
 
+  /* stylelint-disable-next-line plugin/check_scope_selectors */
   :host {
     display: contents; /* needed to avoid a floating border when scrolling */
   }
@@ -9545,7 +9524,7 @@ var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
   .container {
     display: flex;
     width: 100%;
-    height: 150px;
+    height: var(--sys-size-23);
     background-color: var(--sys-color-cdt-base-container);
     border-radius: var(--sys-shape-corner-small);
     border: var(--sys-size-1) solid var(--sys-color-divider);
@@ -9580,7 +9559,11 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
         class="container"
         ${widget4(
       (element) => new PerfUI2.FlameChart.FlameChart(input.dataProvider, input.delegate, void 0, element),
-      { windowTimes: input.windowTimes }
+      {
+        dataProvider: input.dataProvider,
+        delegate: input.delegate,
+        windowTimes: input.windowTimes
+      }
     )}
       ></devtools-widget>
     `,
@@ -10353,6 +10336,7 @@ var sidebarInsightsTab_css_default = `/*
  */
 
 @scope to (devtools-widget > *) {
+  /* stylelint-disable-next-line plugin/check_scope_selectors */
   :host {
     display: flex;
     flex-flow: column nowrap;

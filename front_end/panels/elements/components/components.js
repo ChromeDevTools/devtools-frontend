@@ -1637,7 +1637,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           input.onLinkActivate(variable ? variable.declaration : variableName);
         }
       };
-      const tooltipId = `${input.tooltipPrefix || "css-query"}-${index}-${variableName}`;
+      const tooltipId = input.tooltipPrefix ? input.tooltipPrefix.get(index, variableName) : `css-query-${index}-${variableName}`;
       const tooltip = { tooltipId };
       return html7`
             <devtools-link-swatch class="css-var-link" .data=${{
@@ -1689,7 +1689,7 @@ var CSSQuery = class extends UI7.Widget.Widget {
   #matchedStyles;
   #style;
   #containerNode;
-  #tooltipPrefix = "";
+  #tooltipPrefix;
   constructor(element, view = DEFAULT_VIEW6) {
     super(element, { useShadowDom: "pure" });
     this.#view = view;

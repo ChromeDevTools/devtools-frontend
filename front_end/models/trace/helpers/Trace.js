@@ -5,7 +5,6 @@ import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 import { SyntheticEventsManager } from './SyntheticEvents.js';
-import { eventTimingsMicroSeconds } from './Timing.js';
 export function getEventDataObject(event) {
     if (!event.args || !('data' in event.args) || typeof event.args.data !== 'object' || !event.args.data ||
         Array.isArray(event.args.data)) {
@@ -657,33 +656,37 @@ export function forEachEvent(events, config) {
     const startEventIndex = topLevelEventIndexEndingAfter(events, globalStartTime);
     for (let i = startEventIndex; i < events.length; i++) {
         const currentEvent = events[i];
-        const currentEventTimings = eventTimingsMicroSeconds(currentEvent);
-        if (currentEventTimings.endTime < globalStartTime) {
+        const startTime = currentEvent.ts;
+        const duration = currentEvent.dur || 0;
+        const endTime = startTime + duration;
+        if (endTime < globalStartTime) {
             continue;
         }
-        if (currentEventTimings.startTime > globalEndTime) {
+        if (startTime > globalEndTime) {
             break;
         }
-        const isIgnoredAsyncEvent = ignoreAsyncEvents && Types.Events.isPhaseAsync(currentEvent.ph);
-        if (isIgnoredAsyncEvent || Types.Events.isFlowPhase(currentEvent.ph)) {
+        if (currentEvent.ph !== Types.Events.Phase.COMPLETE &&
+            ((ignoreAsyncEvents && Types.Events.isPhaseAsync(currentEvent.ph)) ||
+                Types.Events.isFlowPhase(currentEvent.ph))) {
             continue;
         }
         // If we have now reached an event that is after a bunch of events, we need
         // to call the onEndEvent callback for those events before moving on.
-        let lastEventOnStack = stack.at(-1);
-        let lastEventEndTime = lastEventOnStack ? eventTimingsMicroSeconds(lastEventOnStack).endTime : null;
-        while (lastEventOnStack && lastEventEndTime && lastEventEndTime <= currentEventTimings.startTime) {
+        while (stack.length > 0) {
+            const lastEventOnStack = stack[stack.length - 1];
+            const lastEventEndTime = lastEventOnStack.ts + (lastEventOnStack.dur ?? 0);
+            if (lastEventEndTime > startTime) {
+                break;
+            }
             stack.pop();
             config.onEndEvent(lastEventOnStack);
-            lastEventOnStack = stack.at(-1);
-            lastEventEndTime = lastEventOnStack ? eventTimingsMicroSeconds(lastEventOnStack).endTime : null;
         }
         // Now we have dealt with all events prior to this one, see if we need to care about this one.
         if (config.eventFilter && !config.eventFilter(currentEvent)) {
             // The user has chosen to filter this event out, so continue on and do nothing
             continue;
         }
-        if (currentEventTimings.duration) {
+        if (duration) {
             config.onStartEvent(currentEvent);
             stack.push(currentEvent);
         }

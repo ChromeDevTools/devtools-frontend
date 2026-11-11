@@ -3327,6 +3327,7 @@ var generatedProperties = [
       "animation-fill-mode",
       "animation-iteration-count",
       "animation-name",
+      "animation-navigation-behavior",
       "animation-play-state",
       "animation-range-end",
       "animation-range-start",
@@ -3881,6 +3882,15 @@ var generatedProperties = [
       "none"
     ],
     "name": "animation-name"
+  },
+  {
+    "keywords": [
+      "abrupt",
+      "continuous"
+    ],
+    "name": "animation-navigation-behavior",
+    "runtime_flag": "CSSAnimationNavigationBehavior",
+    "runtime_flag_status": "experimental"
   },
   {
     "keywords": [
@@ -9279,6 +9289,12 @@ var generatedPropertyValues = {
   "animation-name": {
     "values": [
       "none"
+    ]
+  },
+  "animation-navigation-behavior": {
+    "values": [
+      "abrupt",
+      "continuous"
     ]
   },
   "animation-play-state": {
@@ -22060,7 +22076,9 @@ function comparePositions(a, b) {
 // ../../front_end/core/sdk/SourceMapRangeMappings.ts
 var SourceMapRangeMappings_exports = {};
 __export(SourceMapRangeMappings_exports, {
-  decodeRangeMappings: () => decodeRangeMappings
+  decodeRangeMappings: () => decodeRangeMappings,
+  interpolateGeneratedPosition: () => interpolateGeneratedPosition,
+  interpolateOriginalPosition: () => interpolateOriginalPosition
 });
 function decodeRangeMappings(encodedRangeMappings) {
   const rangeMappings = [];
@@ -22080,6 +22098,20 @@ function decodeRangeMappings(encodedRangeMappings) {
   }
   rangeMappings.push(indices);
   return rangeMappings;
+}
+function interpolateOriginalPosition(rangeMapping, lineNumber, columnNumber) {
+  const lineOffset = lineNumber - rangeMapping.lineNumber;
+  return {
+    lineNumber: rangeMapping.sourceLineNumber + lineOffset,
+    columnNumber: lineOffset === 0 ? rangeMapping.sourceColumnNumber + (columnNumber - rangeMapping.columnNumber) : columnNumber
+  };
+}
+function interpolateGeneratedPosition(rangeMapping, lineNumber, columnNumber) {
+  const lineOffset = lineNumber - rangeMapping.sourceLineNumber;
+  return {
+    lineNumber: rangeMapping.lineNumber + lineOffset,
+    columnNumber: lineOffset === 0 ? rangeMapping.columnNumber + (columnNumber - rangeMapping.sourceColumnNumber) : columnNumber
+  };
 }
 
 // ../../front_end/core/sdk/SourceMapScopesInfo.ts
@@ -23131,11 +23163,31 @@ var SourceMap = class _SourceMap {
     const index = Platform7.ArrayUtilities.upperBound(
       mappings,
       void 0,
-      (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber
+      (_, entry2) => lineNumber - entry2.lineNumber || columnNumber - entry2.columnNumber
     );
-    return index ? mappings[index - 1] : null;
+    if (!index) {
+      return null;
+    }
+    const entry = mappings[index - 1];
+    if (!entry.isRangeMapping || entry.lineNumber === lineNumber && entry.columnNumber === columnNumber) {
+      return entry;
+    }
+    const sourcePosition = interpolateOriginalPosition(entry, lineNumber, columnNumber);
+    return new SourceMapEntry(
+      lineNumber,
+      columnNumber,
+      entry.sourceIndex,
+      entry.sourceURL,
+      sourcePosition.lineNumber,
+      sourcePosition.columnNumber,
+      void 0,
+      true
+    );
   }
-  /** Returns the entry at the given position but only if an entry exists for that exact position */
+  /**
+   * Returns the entry at the given position but only if an entry exists for that exact position.
+   * A range mapping maps every position it covers exactly, so those positions count as exact too.
+   */
   findEntryExact(lineNumber, columnNumber) {
     const entry = this.findEntry(lineNumber, columnNumber);
     if (entry?.lineNumber === lineNumber && entry.columnNumber === columnNumber) {
@@ -23166,6 +23218,16 @@ var SourceMap = class _SourceMap {
       endLine,
       endColumn
     );
+    if (mappings[startIndex].isRangeMapping) {
+      const sourceEnd = endIndex < mappings.length ? interpolateOriginalPosition(mappings[startIndex], endLine, endColumn) : { lineNumber: endLine, columnNumber: endColumn };
+      const sourceRange2 = new TextUtils15.TextRange.TextRange(
+        mappings[startIndex].sourceLineNumber,
+        mappings[startIndex].sourceColumnNumber,
+        sourceEnd.lineNumber,
+        sourceEnd.columnNumber
+      );
+      return { range, sourceRange: sourceRange2, sourceURL };
+    }
     const reverseMappings = this.#reversedMappings(sourceURL);
     const startSourceLine = mappings[startIndex].sourceLineNumber;
     const startSourceColumn = mappings[startIndex].sourceColumnNumber;

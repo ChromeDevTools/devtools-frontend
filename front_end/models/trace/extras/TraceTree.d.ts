@@ -49,6 +49,7 @@ export declare class TopDownRootNode extends TopDownNode {
     /** Default behavior is to aggregate similar trace events into one Node based on generateEventID(), eventGroupIdCallback(), etc. Set true to keep nodes 1:1 with events. */
     readonly doNotAggregate: boolean | undefined;
     readonly includeInstantEvents?: boolean;
+    readonly eventId: (event: Types.Events.Event) => string;
     totalTime: number;
     selfTime: number;
     constructor(events: Types.Events.Event[], { filters, startTime, endTime, doNotAggregate, eventGroupIdCallback, includeInstantEvents }: {
@@ -73,6 +74,7 @@ export declare class BottomUpRootNode extends Node {
     eventGroupIdCallback: ((arg0: Types.Events.Event) => string) | null | undefined;
     private calculateTransferSize?;
     private forceGroupIdCallback?;
+    readonly eventId: (event: Types.Events.Event) => string;
     constructor(events: Types.Events.Event[], { textFilter, filters, startTime, endTime, eventGroupIdCallback, calculateTransferSize, forceGroupIdCallback, }: {
         textFilter: TraceFilter;
         filters: readonly TraceFilter[];

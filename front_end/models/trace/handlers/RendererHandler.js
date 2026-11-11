@@ -301,13 +301,14 @@ export function buildHierarchy(processes, options) {
                 continue;
             }
             // Step 3. Build the tree.
-            const treeData = Helpers.TreeHelpers.treify(thread.entries, options);
+            const treeData = Helpers.TreeHelpers.treify(thread.entries, options, entryToNode);
             thread.tree = treeData.tree;
-            // Update the entryToNode map with the entries from this thread
-            for (const [entry, node] of treeData.entryToNode) {
-                entryToNode.set(entry, node);
-                // Entity mapping is unrelated to the tree, but calling here as we need to call on every node anyway.
-                HandlerHelpers.addEventToEntityMapping(entry, entityMappings);
+            // Entity mapping is unrelated to the tree, but is called for every tree
+            // node in the same order that treify inserted them into entryToNode.
+            for (const entry of thread.entries) {
+                if (entryToNode.has(entry)) {
+                    HandlerHelpers.addEventToEntityMapping(entry, entityMappings);
+                }
             }
         }
     }

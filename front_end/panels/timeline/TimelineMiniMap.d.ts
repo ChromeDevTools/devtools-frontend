@@ -35,8 +35,7 @@ export interface ViewInput {
     onOverviewMouseLeave: () => void;
 }
 export interface ViewOutput {
-    getControls?: (data: OverviewData | null) => TimelineEventOverview[];
-    resetOverview?: () => void;
+    getControls?: (parsedTrace: Trace.TraceModel.ParsedTrace | null) => TimelineEventOverview[];
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

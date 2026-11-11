@@ -31,7 +31,6 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
     private caseSensitiveButton;
     private regexButton;
     private matchWholeWord;
-    eventToTreeNode: WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node>;
     /**
      * Determines if the first child in the data grid will be selected
      * by default when refreshTree() gets called.
@@ -97,8 +96,11 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
     willHide(): void;
     onGridNodeOpened(): void;
     private onContextMenu;
+    gridNodeForEvent(event: Trace.Types.Events.Event, parentNode?: DataGrid.DataGrid.DataGridNode<GridNode>): GridNode | null;
     dataGridElementForEvent(event: Trace.Types.Events.Event | null): HTMLElement | null;
     dataGridNodeForTreeNode(treeNode: Trace.Extras.TraceTree.Node): GridNode | null;
+    /** Hook for unaggregated views to index grid nodes by their event. */
+    indexTreeNode(_node: Trace.Extras.TraceTree.Node): void;
     onSearchCanceled(): void;
     performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, _jumpBackwards?: boolean): void;
     jumpToNextSearchResult(): void;

@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
@@ -65,6 +66,19 @@ describe('userAgentGroups', () => {
 });
 
 describeWithEnvironment('NetworkConfigView', () => {
+  describe('accessibility', () => {
+    it('has no aXe violations', async () => {
+      const networkConfigView = Network.NetworkConfigView.NetworkConfigView.instance({forceNew: true});
+      renderElementIntoDOM(networkConfigView);
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.exists(networkConfigView.contentElement.querySelector('.network-config-disable-cache'));
+      assert.exists(networkConfigView.contentElement.querySelector('.network-config-throttling'));
+      assert.exists(networkConfigView.contentElement.querySelector('.network-config-ua'));
+      assert.isEmpty(await getAxeViolations(networkConfigView.element));
+    });
+  });
+
   it('renders the network config view', async () => {
     const networkConfigView = Network.NetworkConfigView.NetworkConfigView.instance({forceNew: true});
     renderElementIntoDOM(networkConfigView);

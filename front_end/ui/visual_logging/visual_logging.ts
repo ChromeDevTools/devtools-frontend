@@ -20,7 +20,7 @@ export {
   parseJsLog,
   VisualElements,
 } from './LoggingConfig.js';
-export {addDocument, startLogging, stopLogging} from './LoggingDriver.js';
+export {addDocument, enableLogging, startLogging, stopLogging} from './LoggingDriver.js';
 export {logImpressions, logSettingAccess, logFunctionCall} from './LoggingEvents.js';
 export const logClick = (loggable: Loggable, event: Event, options: {doubleClick?: boolean} = {}): void =>
     LoggingEvents.logClick(LoggingDriver.clickLogThrottler)(loggable, event, options);

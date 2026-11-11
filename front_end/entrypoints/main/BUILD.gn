@@ -108,9 +108,12 @@ ts_library("unittests") {
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",
     "../../ui/legacy:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }

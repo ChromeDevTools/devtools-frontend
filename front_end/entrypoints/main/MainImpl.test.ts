@@ -3,16 +3,22 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, it} from 'mocha';
+import {afterEach, beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
+import {checkForPendingActivity} from '../../testing/TrackAsyncOperations.js';
+import {getVeHash} from '../../testing/VisualLoggingHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Main from './main.js';
 
@@ -134,4 +140,164 @@ describeWithEnvironment('MainImpl clipboard forwarding', () => {
        assert.isTrue((receivedEvent as CustomEvent).composed);
        assert.isTrue((receivedEvent as CustomEvent).bubbles);
      });
+});
+
+describeWithEnvironment('MainImpl VE logging startup', () => {
+  let loadAppProviderForTest: (() => Promise<UI.AppProvider.AppProvider>)|null = null;
+
+  UI.AppProvider.registerAppProvider({
+    condition: () => loadAppProviderForTest !== null,
+    loadAppProvider: () => loadAppProviderForTest!(),
+    order: -1,
+  });
+
+  beforeEach(() => {
+    Root.Runtime.experiments.clearForTest();
+    sinon.stub(Main.MainImpl.MainImpl.prototype, 'requestAndRegisterLocaleData').resolves();
+    sinon.stub(UI.ContextMenu.ContextMenu, 'installHandler');
+    sinon.stub(UI.ARIAUtils.LiveAnnouncer, 'initializeAnnouncerElements');
+  });
+
+  afterEach(async () => {
+    loadAppProviderForTest = null;
+    await checkForPendingActivity();
+    VisualLogging.setVeDebugLoggingEnabled(false);
+    await VisualLogging.stopLogging();
+    for (const style of document.body.querySelectorAll(':scope > style')) {
+      style.remove();
+    }
+    document.body.classList.remove('overlay-scrollbar-enabled');
+    document.documentElement.classList.remove('platform-' + Host.Platform.platform());
+    Main.MainImpl.MainImpl.instanceForTest = null;
+    Reflect.deleteProperty(globalThis, 'universe');
+    Reflect.deleteProperty(self, 'Extensions');
+  });
+
+  it('starts VE logging only after app UI and toolbars are rendered without burning leading-edge slot', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig')
+        .callsFake(cb => cb({devToolsVeLogging: {enabled: true}}));
+    const readyForTest = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'readyForTest');
+    const recordImpression = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordImpression');
+    const throttlerScheduleSpy = sinon.spy(Common.Throttler.Throttler.prototype, 'schedule');
+
+    const presentUI = sinon.spy((doc: Document) => {
+      const panel = doc.createElement('div');
+      panel.id = 'initial-panel';
+      panel.setAttribute('jslog', 'Panel; context: elements');
+      panel.style.width = '300px';
+      panel.style.height = '300px';
+      renderElementIntoDOM(panel, {allowMultipleChildren: true});
+      VisualLogging.registerLoggable({}, `${VisualLogging.expand()}`, panel, new DOMRect(0, 0, 16, 16));
+    });
+    loadAppProviderForTest = async () => ({
+      createApp: () => ({presentUI}),
+    });
+
+    const createToolbarsCalled = Promise.withResolvers<void>();
+    const toolbarsResolvers = Promise.withResolvers<void>();
+    sinon.stub(UI.InspectorView.InspectorView.prototype, 'createToolbars').callsFake(() => {
+      const toolbar = document.createElement('div');
+      toolbar.id = 'main-toolbar';
+      toolbar.setAttribute('jslog', 'Toolbar; context: main');
+      toolbar.style.width = '300px';
+      toolbar.style.height = '30px';
+      renderElementIntoDOM(toolbar, {allowMultipleChildren: true});
+      createToolbarsCalled.resolve();
+      return toolbarsResolvers.promise;
+    });
+
+    const main = new Main.MainImpl.MainImpl();
+
+    await createToolbarsCalled.promise;
+    sinon.assert.calledOnce(presentUI);
+    sinon.assert.notCalled(recordImpression);
+    sinon.assert.notCalled(readyForTest);
+
+    toolbarsResolvers.resolve();
+    await main.readyForTest();
+
+    sinon.assert.calledOnce(readyForTest);
+    sinon.assert.calledOnce(recordImpression);
+    const scheduledThrottlersDuringStartup = [...throttlerScheduleSpy.thisValues];
+    const impressions =
+        recordImpression.firstCall.firstArg.impressions as Host.InspectorFrontendHostAPI.VisualElementImpression[];
+    const contexts = impressions.map(i => i.context);
+    assert.includeMembers(contexts, [await getVeHash('elements'), await getVeHash('main')]);
+    assert.isTrue(impressions.some(i => i.width === 16 && i.height === 16));
+
+    // Verify processingThrottler's leading-edge slot was not consumed during startup.
+    recordImpression.resetHistory();
+    const panelContent = document.createElement('div');
+    panelContent.id = 'panel-content';
+    panelContent.setAttribute('jslog', 'TreeItem; context: 42');
+    panelContent.style.width = '100px';
+    panelContent.style.height = '100px';
+    renderElementIntoDOM(panelContent, {allowMultipleChildren: true});
+    const [impressionEvent] = await expectCall(recordImpression);
+    const processingThrottler = throttlerScheduleSpy.lastCall.thisValue;
+    assert.notInclude(scheduledThrottlersDuringStartup, processingThrottler);
+    assert.lengthOf(impressionEvent.impressions, 1);
+    assert.deepInclude(impressionEvent.impressions[0], {type: 1, context: 42, width: 100, height: 100});
+  });
+
+  it('enables VE debug logging early in test mode before app UI loads', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig')
+        .callsFake(cb => cb({devToolsVeLogging: {enabled: true, testing: true}}));
+    const recordImpression = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordImpression');
+
+    const loadAppProviderCalled = Promise.withResolvers<void>();
+    const appProviderResolvers = Promise.withResolvers<UI.AppProvider.AppProvider>();
+    let debugFormatDuringAppLoad: string|null = null;
+    loadAppProviderForTest = () => {
+      debugFormatDuringAppLoad = localStorage.getItem('veDebugLoggingEnabled');
+      loadAppProviderCalled.resolve();
+      return appProviderResolvers.promise;
+    };
+    sinon.stub(UI.InspectorView.InspectorView.prototype, 'createToolbars').resolves();
+
+    const main = new Main.MainImpl.MainImpl();
+
+    await loadAppProviderCalled.promise;
+    assert.strictEqual(debugFormatDuringAppLoad, VisualLogging.DebugLoggingFormat.TEST);
+    sinon.assert.notCalled(recordImpression);
+
+    appProviderResolvers.resolve({
+      createApp: () => ({
+        presentUI: () => {
+          const panel = document.createElement('div');
+          panel.setAttribute('jslog', 'Panel; context: console');
+          panel.style.width = '300px';
+          panel.style.height = '300px';
+          renderElementIntoDOM(panel, {allowMultipleChildren: true});
+        },
+      }),
+    });
+    await main.readyForTest();
+
+    sinon.assert.calledOnce(recordImpression);
+  });
+
+  it('resolves readyForTest cleanly when VE logging is disabled', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig')
+        .callsFake(cb => cb({devToolsVeLogging: {enabled: false}}));
+    const recordImpression = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordImpression');
+
+    loadAppProviderForTest = async () => ({
+      createApp: () => ({
+        presentUI: () => {
+          const panel = document.createElement('div');
+          panel.setAttribute('jslog', 'Panel; context: elements');
+          panel.style.width = '300px';
+          panel.style.height = '300px';
+          renderElementIntoDOM(panel, {allowMultipleChildren: true});
+        },
+      }),
+    });
+    sinon.stub(UI.InspectorView.InspectorView.prototype, 'createToolbars').resolves();
+
+    const main = new Main.MainImpl.MainImpl();
+    await main.readyForTest();
+
+    sinon.assert.notCalled(recordImpression);
+  });
 });

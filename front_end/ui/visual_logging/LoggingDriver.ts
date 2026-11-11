@@ -54,6 +54,10 @@ export function isLogging(): boolean {
   return logging;
 }
 
+export function enableLogging(): void {
+  logging = true;
+}
+
 export async function startLogging(options?: {
   processingThrottler?: Common.Throttler.Throttler,
   keyboardLogThrottler?: Common.Throttler.Throttler,

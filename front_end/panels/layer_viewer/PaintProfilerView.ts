@@ -202,7 +202,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 
   const emptyPieChartData: PerfUI.PieChart.PieChartData = {
     chartName: i18nString(UIStrings.profilingResults),
-    size: 55,
+    size: 56,
     formatter: formatPieChartTime,
     showLegend: false,
     total: 0,

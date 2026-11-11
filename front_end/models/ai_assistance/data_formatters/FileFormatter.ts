@@ -8,7 +8,7 @@ import type * as Workspace from '../../workspace/workspace.js';
 
 import {formatRequestInitiatorChain} from './NetworkRequestFormatter.js';
 
-const MAX_FILE_SIZE = 10000;
+const MAX_FILE_SIZE = 5_000;
 
 export interface FormatFileOptions {
   /**

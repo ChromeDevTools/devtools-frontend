@@ -121,7 +121,7 @@ File content:
 
     describe('long file content', () => {
       // Three runs of distinct characters make each part easy to identify.
-      const content = 'a'.repeat(10_000) + 'b'.repeat(10_000) + 'c'.repeat(500);
+      const content = 'a'.repeat(5_000) + 'b'.repeat(5_000) + 'c'.repeat(500);
 
       it('truncates long file content and gives the offset of the next part', async () => {
         const uiSourceCode = await createUISourceCode({content, requestContentData: true});
@@ -129,26 +129,26 @@ File content:
 URL: http://example.test/script.js
 File content:
 \`\`\`
-${'a'.repeat(10_000)}
+${'a'.repeat(5_000)}
 \`\`\`
-Content truncated: showing characters 0-10000 of 20500. The next part starts at offset 10000.`);
+Content truncated: showing characters 0-5000 of 10500. The next part starts at offset 5000.`);
       });
 
       it('returns the part that starts at the given offset', async () => {
         const uiSourceCode = await createUISourceCode({content, requestContentData: true});
-        assert.strictEqual(new FileFormatter.FileFormatter(uiSourceCode).formatFile({offset: 10_000}),
+        assert.strictEqual(new FileFormatter.FileFormatter(uiSourceCode).formatFile({offset: 5_000}),
                            `File name: script.js
 URL: http://example.test/script.js
 File content:
 \`\`\`
-${'b'.repeat(10_000)}
+${'b'.repeat(5_000)}
 \`\`\`
-Content truncated: showing characters 10000-20000 of 20500. The next part starts at offset 20000.`);
+Content truncated: showing characters 5000-10000 of 10500. The next part starts at offset 10000.`);
       });
 
       it('omits the truncation notice for the final part', async () => {
         const uiSourceCode = await createUISourceCode({content, requestContentData: true});
-        assert.strictEqual(new FileFormatter.FileFormatter(uiSourceCode).formatFile({offset: 20_000}),
+        assert.strictEqual(new FileFormatter.FileFormatter(uiSourceCode).formatFile({offset: 10_000}),
                            `File name: script.js
 URL: http://example.test/script.js
 File content:

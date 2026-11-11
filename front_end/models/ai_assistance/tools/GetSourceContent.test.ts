@@ -239,9 +239,9 @@ describe('GetSourceContentTool', () => {
     }
 
     it('reads the part of a long file that starts at the given offset', async () => {
-      const sourceId = createSource('a'.repeat(10_000) + 'b'.repeat(20));
+      const sourceId = createSource('a'.repeat(5_000) + 'b'.repeat(20));
 
-      const response = await tool.handler({id: sourceId, offset: 10_000}, context);
+      const response = await tool.handler({id: sourceId, offset: 5_000}, context);
       assertIsResult(response);
       assert.include(response.result.content,
                      '```\n' +
@@ -251,12 +251,12 @@ describe('GetSourceContentTool', () => {
     });
 
     it('returns a truncation notice with the next offset for the first part of a long file', async () => {
-      const sourceId = createSource('a'.repeat(10_000) + 'b'.repeat(20));
+      const sourceId = createSource('a'.repeat(5_000) + 'b'.repeat(20));
 
       const response = await tool.handler({id: sourceId}, context);
       assertIsResult(response);
       assert.include(response.result.content,
-                     'Content truncated: showing characters 0-10000 of 10020. The next part starts at offset 10000.');
+                     'Content truncated: showing characters 0-5000 of 5020. The next part starts at offset 5000.');
     });
 
     it('returns error for an offset at or past the end of the file', async () => {

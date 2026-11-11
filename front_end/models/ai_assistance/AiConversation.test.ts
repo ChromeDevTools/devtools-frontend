@@ -98,7 +98,7 @@ describe('AiConversation', () => {
 
     const listNetworkRequestsTool = AiAssistance.ToolRegistry.ToolRegistry.get('listNetworkRequests');
     assert.exists(listNetworkRequestsTool);
-    const stub = sinon.stub(listNetworkRequestsTool, 'handler').resolves({result: {requests: []}});
+    const stub = sinon.stub(listNetworkRequestsTool, 'handler').resolves({result: 'id;url;status;duration;size'});
 
     const aidaClient = mockAidaClient([
       // Turn 1: Model loads network skill and executes listNetworkRequests.

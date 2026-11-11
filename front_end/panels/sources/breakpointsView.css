@@ -107,8 +107,6 @@
     display: flex;
     align-items: center;
     justify-content: right;
-    font-size: 10px;
-    font-weight: 500;
   }
 
   .breakpoint-item-location-or-actions {

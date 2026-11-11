@@ -29,8 +29,8 @@
 
   .network-category-chip {
     box-sizing: border-box;
-    width: 10px;
-    height: 10px;
+    width: var(--sys-size-5);
+    height: var(--sys-size-5);
     border: var(--sys-size-1) solid var(--sys-color-divider);
     display: inline-block;
     margin-right: var(--sys-size-3);

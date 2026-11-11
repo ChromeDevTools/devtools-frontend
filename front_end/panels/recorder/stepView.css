@@ -61,7 +61,9 @@
   opacity: 0%;
   fill: var(--sys-color-primary);
   stroke: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
-  transform: translate(-1.92px, -3px);
+  /* Shift 24x24 path (left stroke 2px, y-center 12px) by (-2px, -4px)
+   * to align with the 8px (--sys-size-5) .circle-icon center, .chevron, and first line of the title. */
+  transform: translate(calc(-1 * var(--sys-size-2)), calc(-1 * var(--sys-size-3)));
 }
 
 .circle-icon {

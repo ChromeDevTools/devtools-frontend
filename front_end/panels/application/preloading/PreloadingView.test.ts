@@ -1976,6 +1976,79 @@ describeWithEnvironment('PreloadingSummaryView', () => {
 
     assert.include(usedPreloadingComponent.contentElement.textContent, 'This page was successfully prerendered');
   });
+
+  it('shows success when a re-triggered prefetch succeeds after an earlier pipeline failed', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createSummaryView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    const basePrefetchUpdate = {
+      key: {
+        loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+        action: Protocol.Preload.SpeculationAction.Prefetch,
+        url: 'https://example.com/prefetched.html',
+      },
+      initiatingFrameId: 'frameId' as Protocol.Page.FrameId,
+      prefetchUrl: 'https://example.com/prefetched.html',
+    };
+    dispatchEvent(emulator.primaryTarget, 'Preload.prefetchStatusUpdated', {
+      ...basePrefetchUpdate,
+      pipelineId: 'pipelineId:prefetch1' as Protocol.Preload.PreloadPipelineId,
+      status: Protocol.Preload.PreloadingStatus.Failure,
+      prefetchStatus: Protocol.Preload.PrefetchStatus.PrefetchFailedNetError,
+      requestId: 'requestId:1' as Protocol.Network.RequestId,
+    });
+    dispatchEvent(emulator.primaryTarget, 'Preload.prefetchStatusUpdated', {
+      ...basePrefetchUpdate,
+      pipelineId: 'pipelineId:prefetch2' as Protocol.Preload.PreloadPipelineId,
+      status: Protocol.Preload.PreloadingStatus.Success,
+      prefetchStatus: Protocol.Preload.PrefetchStatus.PrefetchResponseUsed,
+      requestId: 'requestId:2' as Protocol.Network.RequestId,
+    });
+    await emulator.navigateAndDispatchEvents('prefetched.html');
+
+    await view.updateComplete;
+    const usedPreloadingComponent = getChildWidget(view, PreloadingComponents.UsedPreloadingView.UsedPreloadingView);
+    await usedPreloadingComponent.updateComplete;
+
+    assert.include(usedPreloadingComponent.contentElement.textContent, 'This page was successfully prefetched');
+  });
+
+  it('shows success when a re-triggered prerender succeeds after an earlier pipeline failed', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createSummaryView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    dispatchEvent(emulator.primaryTarget, 'Preload.prerenderStatusUpdated', {
+      key: {
+        loaderId: 'loaderId:2' as Protocol.Network.LoaderId,
+        action: Protocol.Preload.SpeculationAction.Prerender,
+        url: 'https://example.com/prerendered.html',
+      },
+      pipelineId: 'pipelineId:prerender1' as Protocol.Preload.PreloadPipelineId,
+      status: Protocol.Preload.PreloadingStatus.Failure,
+      prerenderStatus: Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed,
+    });
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+    await emulator.activateAndDispatchEvents('prerendered.html');
+
+    await view.updateComplete;
+    const usedPreloadingComponent = getChildWidget(view, PreloadingComponents.UsedPreloadingView.UsedPreloadingView);
+    await usedPreloadingComponent.updateComplete;
+
+    assert.include(usedPreloadingComponent.contentElement.textContent, 'This page was successfully prerendered');
+  });
 });
 
 describeWithEnvironment('applyFilterText', () => {

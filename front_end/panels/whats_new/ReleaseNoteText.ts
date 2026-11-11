@@ -50,7 +50,7 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 158,
+  version: 159,
   header: 'New in DevTools (December 2026)',
   announcement: {
     title: 'Modern Web Guidance is now stable!',

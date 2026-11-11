@@ -288,7 +288,7 @@ td.time-column {
 .network-log-grid.data-grid.small .image-network-icon-preview {
   left: var(--sys-size-2);
   right: var(--sys-size-2);
-  max-width: 10px;
+  max-width: var(--sys-size-6);
   max-height: var(--sys-size-6);
 }
 

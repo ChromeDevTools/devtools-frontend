@@ -91,16 +91,6 @@ li.watch-expression-tree-item > span.tree-element-title {
   flex-shrink: 1;
 }
 
-.watch-expression .text-prompt {
-  text-overflow: clip;
-  overflow: hidden;
-  white-space: nowrap;
-  padding-left: var(--sys-size-3);
-  min-height: 18px;
-  line-height: 18px;
-  user-select: text;
-}
-
 .watch-expression-text-prompt-proxy {
   margin: var(--sys-size-2) var(--sys-size-6) var(--sys-size-2) calc(-1 * var(--sys-size-3));
 }

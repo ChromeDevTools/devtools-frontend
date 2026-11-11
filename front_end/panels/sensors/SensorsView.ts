@@ -11,7 +11,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Geometry from '../../ui/geometry/geometry.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {Directives, html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -190,6 +190,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {live} = Directives;
 
 interface ViewInput {
+  orientationSection: TemplateResult;
   touchSetting: Common.Settings.Setting<unknown>;
   idleDetectionSetting: Common.Settings.Setting<unknown>;
   hardwareConcurrencyCheckbox: HTMLElement;
@@ -202,6 +203,10 @@ interface ViewInput {
 // clang-format off
 const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   render(html`
+    <section class="sensors-group" jslog=${VisualLogging.section('device-orientation')}>
+      ${input.orientationSection}
+    </section>
+    <div class="panel-section-separator"></div>
     <div class="touch-section">
       ${SettingsUI.SettingsUI.renderControlForSetting(
           input.touchSetting, i18nString(UIStrings.forcesTouchInsteadOfClick))}
@@ -293,20 +298,24 @@ export class SensorsView extends UI.Widget.VBox {
     this.deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this.deviceOrientationSetting.get());
     this.deviceOrientationOverrideEnabled = false;
 
-    this.createDeviceOrientationSection();
-
-    this.createPanelSeparator();
-
     const {checkbox, numericInput, reset, warning} =
         MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
     this.#hardwareConcurrencyCheckbox = checkbox;
     this.#hardwareConcurrencyDetails = [numericInput.element, reset.element, warning.element];
 
     this.performUpdate();
+
+    this.enableOrientationFields(true);
+    this.setBoxOrientation(this.deviceOrientation, false);
+
+    this.alphaElement.value = String(this.deviceOrientation.alpha);
+    this.betaElement.value = String(this.deviceOrientation.beta);
+    this.gammaElement.value = String(this.deviceOrientation.gamma);
   }
 
   override performUpdate(): void {
     const input: ViewInput = {
+      orientationSection: this.#renderDeviceOrientationSection(),
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
       hardwareConcurrencyCheckbox: this.#hardwareConcurrencyCheckbox,
@@ -623,10 +632,7 @@ export class SensorsView extends UI.Widget.VBox {
     this.accuracyInput.value = SDK.EmulationModel.Location.DEFAULT_ACCURACY.toString();
   }
 
-  private createDeviceOrientationSection(): void {
-    const orientationGroup = this.contentElement.createChild('section', 'sensors-group');
-    orientationGroup.setAttribute('jslog', `${VisualLogging.section('device-orientation')}`);
-
+  #renderDeviceOrientationSection(): TemplateResult {
     const orientationOffOption = {
       title: i18nString(UIStrings.off),
       orientation: NonPresetOptions.NoOverride,
@@ -653,9 +659,7 @@ export class SensorsView extends UI.Widget.VBox {
     }];
 
     // clang-format off
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(
-      html`
+    return html`
         <label class="sensors-group-title" for="orientation-select">${i18nString(UIStrings.orientation)}</label>
         <div class="orientation-content">
           <div class="orientation-fields">
@@ -775,17 +779,8 @@ export class SensorsView extends UI.Widget.VBox {
             </div>
           </div>
         </div>
-      `,
-      orientationGroup,
-    );
+      `;
     // clang-format on
-
-    this.enableOrientationFields(true);
-    this.setBoxOrientation(this.deviceOrientation, false);
-
-    this.alphaElement.value = String(this.deviceOrientation.alpha);
-    this.betaElement.value = String(this.deviceOrientation.beta);
-    this.gammaElement.value = String(this.deviceOrientation.gamma);
   }
 
   override wasShown(): void {

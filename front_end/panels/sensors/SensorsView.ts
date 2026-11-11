@@ -190,6 +190,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {live} = Directives;
 
 interface ViewInput {
+  cpuPressureSetting: Common.Settings.Setting<unknown>;
   cpuPerformanceSetting: Common.Settings.Setting<unknown>;
   cpuPerformanceNoOverrideLabel: string;
 }
@@ -197,6 +198,11 @@ interface ViewInput {
 // clang-format off
 const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   render(html`
+    <div class="pressure-section">
+      ${SettingsUI.SettingsUI.renderControlForSetting(
+          input.cpuPressureSetting, i18nString(UIStrings.forcesSelectedPressureStateEmulation))}
+    </div>
+    <div class="panel-section-separator"></div>
     <div class="cpu-performance-section">
       ${SettingsUI.SettingsUI.renderSettingSelect(
           input.cpuPerformanceSetting, i18nString(UIStrings.forcesSelectedCpuPerformanceTierEmulation), false,
@@ -282,15 +288,12 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.createPanelSeparator();
 
-    this.createPressureSection();
-
-    this.createPanelSeparator();
-
     this.performUpdate();
   }
 
   override performUpdate(): void {
     const input: ViewInput = {
+      cpuPressureSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
       cpuPerformanceSetting:
           Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),
       cpuPerformanceNoOverrideLabel: this.#cpuPerformanceNoOverrideLabel(),
@@ -765,17 +768,6 @@ export class SensorsView extends UI.Widget.VBox {
     this.alphaElement.value = String(this.deviceOrientation.alpha);
     this.betaElement.value = String(this.deviceOrientation.beta);
     this.gammaElement.value = String(this.deviceOrientation.gamma);
-  }
-
-  private createPressureSection(): void {
-    const container = this.contentElement.createChild('div', 'pressure-section');
-    const control = SettingsUI.SettingsUI.createControlForSetting(
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
-        i18nString(UIStrings.forcesSelectedPressureStateEmulation));
-
-    if (control) {
-      container.appendChild(control);
-    }
   }
 
   override wasShown(): void {

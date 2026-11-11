@@ -376,7 +376,7 @@ td.time-column {
 
 .network-frame-group-icon {
   display: inline-block;
-  margin: -7px var(--sys-size-1);
+  margin: calc(-1 * var(--sys-size-4)) var(--sys-size-1);
   vertical-align: baseline;
 }
 

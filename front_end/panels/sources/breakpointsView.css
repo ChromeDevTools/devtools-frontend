@@ -32,7 +32,7 @@
     height: var(--sys-size-6);
     width: var(--sys-size-6);
     flex-shrink: 0;
-    margin: 3px 0;
+    margin: var(--sys-size-3) 0;
   }
 
   details {

@@ -23,6 +23,7 @@ const SCRIPT_TEST_DIRECTORIES = [
   'scripts/stylelint_rules/tests',
   'scripts/build/tests',
   'scripts/gn_deps_verifier/tests',
+  'scripts/ai_assistance',
   'test/ai_evals/report',
 ];
 

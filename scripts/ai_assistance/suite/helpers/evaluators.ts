@@ -17,7 +17,15 @@ import {generateGeminiContent} from './gemini.ts';
 import {getGolden, getMarkdownConversation, getOutputs, type Output} from './outputs.ts';
 import {generateReport} from './report_generator.ts';
 
-const argv = yargs(hideBin(process.argv)).option('repeat', {type: 'number', default: 1}).parseSync();
+function getRepeatCount(): number {
+  return yargs(hideBin(process.argv))
+      .option('repeat', {
+        type: 'number',
+        default: 1,
+      })
+      .parseSync()
+      .repeat;
+}
 
 /**
  * Ensures we don't exceed a certain number of concurrent tasks.
@@ -383,7 +391,7 @@ export async function itEval(config: ItEval): Promise<void> {
                                         }));
       state.store.saveResult(config.test, date, {type: 'BINARY', details});
     } else if ('judge' in config) {
-      const repeatCount = argv.repeat;
+      const repeatCount = getRepeatCount();
       const scoredEvals =
           conversations.flatMap(conversation => Array.from({length: repeatCount}, () => geminiLimiter.run(async () => {
             const res = await config.judge(conversation);

@@ -4,8 +4,7 @@
 
 /**
  * Tests for parts of the AI Assistance auto-run script.
- * NOTE: these are not run on CQ but exist to help you locally.
- * Run these with `npm run auto-run:test` from `scripts/ai_assistance` folder.
+ * Run locally with `./dt test scripts/ai_assistance`.
  */
 import {assert} from 'chai';
 import {describe, it} from 'mocha';

@@ -447,6 +447,7 @@ function main() {
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/build/tests')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/gn_deps_verifier/tests')),
+    new ScriptTests(path.join(SOURCE_ROOT, 'scripts/ai_assistance')),
     new ScriptTests(path.join(SOURCE_ROOT, 'test/ai_evals/report')),
   ];
 

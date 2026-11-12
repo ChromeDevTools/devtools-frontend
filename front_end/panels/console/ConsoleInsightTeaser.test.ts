@@ -290,4 +290,39 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
     assert.isFalse(input.hasTellMeMoreButton);
     teaser.detach();
   });
+
+  it('switches the loader shimmer gradient based on DevTools theme class', async () => {
+    const consoleViewMessage = setupBuiltInAi(async function*() {
+      yield 'response';
+    });
+    const builtInAi = new AiAssistanceModel.BuiltInAi.BuiltInAi();
+    await builtInAi.initDoneForTesting;
+
+    const anchor = document.createElement('div');
+    anchor.setAttribute('aria-details', 'teaser-test-uuid');
+    renderElementIntoDOM(anchor);
+
+    const teaser = new Console.ConsoleInsightTeaser.ConsoleInsightTeaser('test-uuid', consoleViewMessage, undefined,
+                                                                         undefined, builtInAi);
+    teaser.markAsRoot();
+    renderElementIntoDOM(teaser, {allowMultipleChildren: true});
+    await teaser.updateComplete;
+
+    try {
+      const loader = teaser.contentElement.querySelector('.loader');
+      assert.exists(loader);
+
+      document.documentElement.classList.remove('theme-with-dark-background');
+      const lightBackgroundImage = window.getComputedStyle(loader).backgroundImage;
+      assert.include(lightBackgroundImage, '0.15');
+
+      document.documentElement.classList.add('theme-with-dark-background');
+      const darkBackgroundImage = window.getComputedStyle(loader).backgroundImage;
+      assert.include(darkBackgroundImage, '0.3');
+      assert.notStrictEqual(lightBackgroundImage, darkBackgroundImage);
+    } finally {
+      document.documentElement.classList.remove('theme-with-dark-background');
+      teaser.detach();
+    }
+  });
 });

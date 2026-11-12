@@ -1267,6 +1267,7 @@ export class StylePropertiesSection {
       if (lastAncestor && this.#collapseIcon && this.#statusElement) {
         this.#collapseIcon.slot = 'indent';
         lastAncestor.append(this.#collapseIcon, this.#statusElement);
+        lastAncestor.classList.add('has-collapse-icon');
       }
       this.#ancestorClosingBracesElement.firstElementChild?.classList.add('sidebar-pane-closing-brace');
     }

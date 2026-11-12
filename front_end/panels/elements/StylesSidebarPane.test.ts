@@ -1238,6 +1238,53 @@ describe('StylesSidebarPane', () => {
                       'Section should retain collapsible class after manual expand');
       });
 
+      it('shows closing brace when a nested rule in an at-rule is collapsed', async () => {
+        enableCollapse();
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        const matchedStyles = await getMatchedStyles({
+          connection,
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node,
+          matchedPayload: [
+            {
+              rule: {
+                selectorList: {selectors: [], text: ''},
+                origin: Protocol.CSS.StyleSheetOrigin.Regular,
+                style: {
+                  cssProperties: [],
+                  shorthandEntries: [],
+                },
+                media: [{
+                  text: '(min-width: 1px)',
+                  source: Protocol.CSS.CSSMediaSource.MediaRule,
+                }],
+                ruleTypes: [Protocol.CSS.CSSRuleType.MediaRule, Protocol.CSS.CSSRuleType.StyleRule],
+              },
+              matchingSelectors: [],
+            },
+          ],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+        assert.lengthOf(sectionBlocks, 1);
+        const section = sectionBlocks[0].sections[0];
+        assert.exists(section);
+        assert.isTrue(section.element.classList.contains('collapsed'), 'Section should be collapsed');
+
+        renderElementIntoDOM(section.element);
+
+        const cssQuery = section.element.querySelector('.css-query');
+        assert.exists(cssQuery);
+        assert.isTrue(cssQuery.classList.contains('has-collapse-icon'));
+
+        section.expand();
+        assert.isFalse(section.element.classList.contains('collapsed'), 'Section should be expanded');
+      });
+
       it('reacts to toggling the collapse-non-contributing-css-rules setting at runtime', async () => {
         enableCollapse();
         const collapseSetting = Common.Settings.Settings.instance().resolve(

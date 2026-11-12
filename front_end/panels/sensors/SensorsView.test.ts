@@ -294,6 +294,16 @@ describeWithEnvironment('SensorsView', () => {
 
       assert.strictEqual(errorMessage('timezone'), '');
     });
+
+    it('clears the locale error when the selection changes', async () => {
+      localeErrorMessage = 'Invalid locale';
+      await selectLocation('Berlin');
+      localeErrorMessage = undefined;
+
+      await selectLocation('No override');
+
+      assert.strictEqual(errorMessage('locale'), '');
+    });
   });
 
   describe('Location input events', () => {

@@ -253,15 +253,14 @@ export class SensorsView extends UI.Widget.VBox {
   // Whether "Other…" is selected, even if the location matches one of the custom locations.
   #customLocationSelected = false;
   readonly #customLocationsSetting: Common.Settings.Setting<LocationDescription[]>;
-  private timezoneError!: HTMLElement;
+  #timezoneError = '';
+  #localeError = '';
   private locationSelectElement!: HTMLSelectElement;
   private latitudeInput!: HTMLInputElement;
   private longitudeInput!: HTMLInputElement;
   private timezoneInput!: HTMLInputElement;
   private localeInput!: HTMLInputElement;
   private accuracyInput!: HTMLInputElement;
-  private localeError!: HTMLElement;
-  private accuracyError!: HTMLElement;
   private readonly deviceOrientationSetting: Common.Settings.Setting<string>;
   private deviceOrientation: SDK.EmulationModel.DeviceOrientation;
   private deviceOrientationOverrideEnabled: boolean;
@@ -438,7 +437,7 @@ export class SensorsView extends UI.Widget.VBox {
               @focus=${this.#onLocationFocus.bind(this)}
             >
             <label class="timezone-title" for="timezone-input">${i18nString(UIStrings.timezoneId)}</label>
-            <div class="timezone-error" ${Directives.ref((el: Element | undefined) => { if (el) { this.timezoneError = el as HTMLElement; } })}></div>
+            <div class="timezone-error">${this.#timezoneError}</div>
           </div>
           <div class="latlong-group">
             <input
@@ -454,7 +453,7 @@ export class SensorsView extends UI.Widget.VBox {
               @focus=${this.#onLocationFocus.bind(this)}
             >
             <label class="locale-title" for="locale-input">${i18nString(UIStrings.locale)}</label>
-            <div class="locale-error" ${Directives.ref((el: Element | undefined) => { if (el) { this.localeError = el as HTMLElement; } })}></div>
+            <div class="locale-error">${this.#localeError}</div>
           </div>
           <div class="latlong-group">
             <!-- @ts-ignore -->
@@ -472,7 +471,6 @@ export class SensorsView extends UI.Widget.VBox {
               @focus=${this.#onLocationFocus.bind(this)}
             >
             <label class="accuracy-title" for="accuracy-input">${i18nString(UIStrings.accuracy)}</label>
-            <div class="accuracy-error" ${Directives.ref((el: Element | undefined) => { if (el) { this.accuracyError = el as HTMLElement; } })}></div>
           </div>
         </fieldset>
       </div>
@@ -481,8 +479,8 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   #locationSelectChanged(): void {
-    this.timezoneError.textContent = '';
-    this.accuracyError.textContent = '';
+    this.#timezoneError = '';
+    this.#localeError = '';
     const value = this.locationSelectElement.options[this.locationSelectElement.selectedIndex].value;
     this.#customLocationSelected = value === NonPresetOptions.Custom;
     if (value === NonPresetOptions.NoOverride) {
@@ -569,8 +567,8 @@ export class SensorsView extends UI.Widget.VBox {
       return;
     }
 
-    this.timezoneError.textContent = '';
-    this.accuracyError.textContent = '';
+    this.#timezoneError = '';
+    this.#localeError = '';
 
     this.setSelectElementLabel(this.locationSelectElement, NonPresetOptions.Custom);
     this.#customLocationSelected = true;
@@ -589,18 +587,15 @@ export class SensorsView extends UI.Widget.VBox {
       emulationModel.emulateLocation(this.#locationOverrideEnabled ? this.#location : null).catch(err => {
         switch (err.type) {
           case 'emulation-set-timezone': {
-            this.timezoneError.textContent = err.message;
+            this.#timezoneError = err.message;
             break;
           }
           case 'emulation-set-locale': {
-            this.localeError.textContent = err.message;
-            break;
-          }
-          case 'emulation-set-accuracy': {
-            this.accuracyError.textContent = err.message;
+            this.#localeError = err.message;
             break;
           }
         }
+        this.performUpdate();
       });
     }
   }

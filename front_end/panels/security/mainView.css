@@ -147,7 +147,7 @@
   }
 
   .security-explanation {
-    padding: 11px;
+    padding: var(--sys-size-6);
     display: flex;
     white-space: nowrap;
     border: none;

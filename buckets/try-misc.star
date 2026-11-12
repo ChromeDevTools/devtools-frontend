@@ -33,15 +33,6 @@ builder_coverage(
 builder_coverage(
     covered_oss = ["linux", "win64", "mac", "mac_arm64"],
     builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_shuffled_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout + 15 * time.minute,
-    priority = 50,
-)
-
-builder_coverage(
-    covered_oss = ["linux", "win64", "mac", "mac_arm64"],
-    builder_factory = try_builder,
     builder_name_pattern = "e2e_stressor_%s",
     recipe_name = "devtools/dtf-e2e-stress",
     execution_timeout = default_timeout,

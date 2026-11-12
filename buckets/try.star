@@ -9,10 +9,8 @@ load(
     "acls",
     "bucket",
     "builder",
-    "builder_coverage",
     "cq_acls",
     "cq_retry_config",
-    "default_timeout",
     "defaults",
     "dimensions",
     "recipe",
@@ -89,14 +87,6 @@ try_builder(
         "devtools_bundle": False,
     },
     legacy_variant = True,
-)
-
-builder_coverage(
-    covered_oss = ["mac_arm64"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout,
 )
 
 def try_pair(
@@ -192,9 +182,6 @@ cq_builders = struct(
     },
     includable_only_builders = [
         "dtf_mac_cross_rel",
-        "devtools_frontend_shuffled_linux_rel",
-        "devtools_frontend_shuffled_mac_rel",
-        "devtools_frontend_shuffled_win64_rel",
     ],
     # Builders that potentially need a legacy recipe
     has_legacy_variant = [

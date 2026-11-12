@@ -255,7 +255,6 @@ export class SensorsView extends UI.Widget.VBox {
   readonly #customLocationsSetting: Common.Settings.Setting<LocationDescription[]>;
   #timezoneError = '';
   #localeError = '';
-  private locationSelectElement!: HTMLSelectElement;
   private latitudeInput!: HTMLInputElement;
   private longitudeInput!: HTMLInputElement;
   private timezoneInput!: HTMLInputElement;
@@ -351,11 +350,6 @@ export class SensorsView extends UI.Widget.VBox {
       <div class="geo-fields">
         <select
           id="location-select"
-          ${Directives.ref((el: Element | undefined) => {
-            if (el) {
-              this.locationSelectElement = el as HTMLSelectElement;
-            }
-          })}
           @change=${this.#locationSelectChanged.bind(this)}
           jslog=${VisualLogging.dropDown().track({change: true})}
         >
@@ -478,10 +472,10 @@ export class SensorsView extends UI.Widget.VBox {
     // clang-format on
   }
 
-  #locationSelectChanged(): void {
+  #locationSelectChanged(event: Event): void {
     this.#timezoneError = '';
     this.#localeError = '';
-    const value = this.locationSelectElement.options[this.locationSelectElement.selectedIndex].value;
+    const value = (event.currentTarget as HTMLSelectElement).value;
     this.#customLocationSelected = value === NonPresetOptions.Custom;
     if (value === NonPresetOptions.NoOverride) {
       this.#locationOverrideEnabled = false;
@@ -570,7 +564,6 @@ export class SensorsView extends UI.Widget.VBox {
     this.#timezoneError = '';
     this.#localeError = '';
 
-    this.setSelectElementLabel(this.locationSelectElement, NonPresetOptions.Custom);
     this.#customLocationSelected = true;
     this.#location = location;
     this.applyLocation();
@@ -821,11 +814,6 @@ export class SensorsView extends UI.Widget.VBox {
       void emulationModel.emulateDeviceOrientation(
           this.deviceOrientationOverrideEnabled ? this.deviceOrientation : null);
     }
-  }
-
-  private setSelectElementLabel(selectElement: HTMLSelectElement, labelValue: string): void {
-    const optionValues = Array.prototype.map.call(selectElement.options, x => x.value);
-    selectElement.selectedIndex = optionValues.indexOf(labelValue);
   }
 
   private applyDeviceOrientationUserInput(input: HTMLInputElement): void {

@@ -499,14 +499,14 @@
 
 .object-state-note {
   display: inline-block;
-  width: 11px;
-  height: 11px;
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   color: var(--sys-color-on-tonal-container);
   text-align: center;
-  border-radius: 3px;
-  line-height: 13px;
+  border-radius: var(--sys-shape-corner-extra-small);
+  line-height: var(--sys-size-6);
   margin: 0 var(--sys-size-4);
-  font-size: 9px;
+  font-size: var(--sys-typescale-label-size);
 }
 
 .console-object {

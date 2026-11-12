@@ -889,13 +889,24 @@ class ArrayGroupTreeNode extends ObjectTreeNodeBase {
 
 export class ObjectTreeNode extends ObjectTreeNodeBase {
   #path?: string;
-  showAllChildren: boolean = false;
+  #showAllChildren = false;
   constructor(
       readonly property: SDK.RemoteObject.RemoteObjectProperty,
       parent: ObjectTreeNodeBase|undefined,
       options: ObjectTreeOptions,
   ) {
     super(parent, options);
+  }
+
+  get showAllChildren(): boolean {
+    return this.#showAllChildren;
+  }
+
+  set showAllChildren(value: boolean) {
+    if (this.#showAllChildren !== value) {
+      this.#showAllChildren = value;
+      this.dispatchEventToListeners(ObjectTreeNodeBase.Events.CHILDREN_CHANGED);
+    }
   }
   override get object(): SDK.RemoteObject.RemoteObject|undefined {
     return this.property.value;
@@ -1039,6 +1050,36 @@ export class ObjectTreeNode extends ObjectTreeNodeBase {
           matchIndexInNode: results.length,
           matchType: 'value',
           range: new TextUtils.TextRange.SourceRange(m.index ?? 0, m[0].length),
+        });
+      }
+    }
+
+    // 3. Fall back to matching the property path (e.g. items[1].id) if name and value did not match
+    if (results.length === 0 && !this.property.synthetic && this.path !== this.name) {
+      const parentPath =
+          (this.parent instanceof ObjectTreeNode && !this.parent.property.synthetic) ? this.parent.path : '';
+      const matchesLeafInPath = (candidatePath: string, candidateParentPath: string): boolean => {
+        const leafStart = candidateParentPath.length + 1;
+        for (const m of candidatePath.matchAll(nameGlobalRegex)) {
+          const start = m.index ?? 0;
+          const end = start + m[0].length;
+          if (start < leafStart && end > leafStart) {
+            return true;
+          }
+        }
+        return false;
+      };
+      // Also support dot-notation array indexing by translating e.g. items[1].id into items.1.id.
+      const normalizedPath = this.path.replace(/\[(\d+)\]/g, '.$1');
+      const normalizedParentPath = parentPath.replace(/\[(\d+)\]/g, '.$1');
+      if (matchesLeafInPath(this.path, parentPath) ||
+          (normalizedPath !== this.path && matchesLeafInPath(normalizedPath, normalizedParentPath))) {
+        results.push({
+          node: this,
+          isPostOrderMatch: false,
+          matchIndexInNode: 0,
+          matchType: 'name',
+          range: new TextUtils.TextRange.SourceRange(0, nameText.length),
         });
       }
     }

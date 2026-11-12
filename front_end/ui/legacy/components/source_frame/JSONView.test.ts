@@ -105,6 +105,67 @@ describeWithEnvironment('JSONView', () => {
     assert.strictEqual(currentMatches?.size ?? 0, 0);
   });
 
+  it('finds nested keys and values inside collapsed JSON branches and expands ancestors on jump', async () => {
+    const parsed = await SourceFrame.JSONView.JSONView.parseJSON('{"outer":{"inner":{"needle":"found-value"}}}');
+    assert.isNotNull(parsed);
+    const jsonView = new SourceFrame.JSONView.JSONView(parsed, true);
+    const searchableView = new UI.SearchableView.SearchableView(jsonView, null);
+    jsonView.setSearchableView(searchableView);
+    renderElementIntoDOM(jsonView);
+    await raf();
+
+    await jsonView.performSearch(new UI.SearchableView.SearchConfig('found-value', false, false, false), true);
+    await doubleRaf();
+
+    const treeView = jsonView.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+    assert.exists(treeView?.shadowRoot);
+    assert.include(treeView.shadowRoot.textContent ?? '', 'needle');
+    const currentMatches = CSS.highlights.get('current-search-result');
+    assert.strictEqual(currentMatches?.size, 1);
+    assert.exists(currentMatches);
+    assert.strictEqual(Array.from(currentMatches.values())[0]?.toString(), 'found-value');
+  });
+
+  it('matches property paths such as items[1].id or items.1.id', async () => {
+    const parsed = await SourceFrame.JSONView.JSONView.parseJSON('{"items":[{"id":"first"},{"id":"target"}]}');
+    assert.isNotNull(parsed);
+    const jsonView = new SourceFrame.JSONView.JSONView(parsed, true);
+    const searchableView = new UI.SearchableView.SearchableView(jsonView, null);
+    jsonView.setSearchableView(searchableView);
+    renderElementIntoDOM(jsonView);
+    await raf();
+
+    await jsonView.performSearch(new UI.SearchableView.SearchConfig('items[1].id', false, false, false), true);
+    await doubleRaf();
+
+    const treeView = jsonView.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+    assert.exists(treeView?.shadowRoot);
+    assert.include(treeView.shadowRoot.textContent ?? '', 'target');
+    let highlightedMatches = CSS.highlights.get('highlighted-search-result');
+    let currentMatches = CSS.highlights.get('current-search-result');
+    assert.strictEqual((highlightedMatches?.size ?? 0) + (currentMatches?.size ?? 0), 1);
+    assert.strictEqual(currentMatches?.size, 1);
+    assert.exists(currentMatches);
+    assert.strictEqual(Array.from(currentMatches.values())[0]?.toString(), 'id');
+
+    await jsonView.performSearch(new UI.SearchableView.SearchConfig('items.1.id', false, false, false), true);
+    await doubleRaf();
+
+    highlightedMatches = CSS.highlights.get('highlighted-search-result');
+    currentMatches = CSS.highlights.get('current-search-result');
+    assert.strictEqual((highlightedMatches?.size ?? 0) + (currentMatches?.size ?? 0), 1);
+    assert.strictEqual(currentMatches?.size, 1);
+    assert.exists(currentMatches);
+    assert.strictEqual(Array.from(currentMatches.values())[0]?.toString(), 'id');
+
+    await jsonView.performSearch(new UI.SearchableView.SearchConfig('items', false, false, false), true);
+    await doubleRaf();
+
+    highlightedMatches = CSS.highlights.get('highlighted-search-result');
+    currentMatches = CSS.highlights.get('current-search-result');
+    assert.strictEqual((highlightedMatches?.size ?? 0) + (currentMatches?.size ?? 0), 1);
+  });
+
   it('renders visual baseline of JSONView', async () => {
     const parsedJSON = new SourceFrame.JSONView.ParsedJSON({
       stringField: 'hello world',

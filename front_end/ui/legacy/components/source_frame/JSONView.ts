@@ -215,6 +215,26 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     this.view({objectTree: this.objectTree, parsedJSON: this.#parsedJSON}, undefined, this.contentElement);
   }
 
+  static readonly #MAX_SEARCH_NODES = 10000;
+
+  async #populateForSearch(root: ObjectUI.ObjectPropertiesSection.ObjectTree): Promise<void> {
+    const queue: ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase[] = [root];
+    let visited = 0;
+    while (queue.length > 0 && visited < JSONView.#MAX_SEARCH_NODES) {
+      const node = queue.shift();
+      if (!node || !node.canExpandRecursively) {
+        continue;
+      }
+      visited++;
+      await node.populateChildrenIfNeeded();
+      for (const child of node.treeNodeChildren()) {
+        if (child.hasChildren) {
+          queue.push(child);
+        }
+      }
+    }
+  }
+
   private jumpToMatch(): void {
     if (this.searchableView) {
       this.search.updateSearchableView(this.searchableView);
@@ -223,9 +243,13 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     if (currentMatch) {
       let current = currentMatch.node.parent;
       while (current) {
+        if (current instanceof ObjectUI.ObjectPropertiesSection.ObjectTreeNode) {
+          current.showAllChildren = true;
+        }
         current.expanded = true;
         current = current.parent;
       }
+      this.requestUpdate();
     }
   }
 
@@ -245,7 +269,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
       return;
     }
 
-    await this.objectTree.populateChildrenIfNeeded();
+    await this.#populateForSearch(this.objectTree);
 
     this.search.search(this.objectTree, jumpBackwards ?? false, (node, closeTag) => {
       if (closeTag || !searchRegex) {

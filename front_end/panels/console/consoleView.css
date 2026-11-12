@@ -594,7 +594,7 @@
 .hover-button:focus,
 .hover-button:hover {
   border-radius: var(--sys-shape-corner-extra-small);
-  max-width: 200px;
+  max-width: var(--sys-size-26);
   transition:
     max-width var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized),
     border-radius 50ms linear;

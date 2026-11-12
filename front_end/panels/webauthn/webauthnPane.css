@@ -109,12 +109,6 @@
     font: var(--sys-typescale-headline5);
   }
 
-  .authenticator-section-title.editing-name .authenticator-name-field {
-    border-bottom: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-    font-weight: normal;
-    animation: none;
-  }
-
   .authenticator-field-value {
     font: var(--sys-typescale-monospace-regular);
     line-height: 18px;

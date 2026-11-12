@@ -93,7 +93,7 @@ const processAssertionError =
       return undefined;
     };
 
-const reportTestResult = (test: TestExt) => {
+const reportTestResult = (test: TestExt, reReported = false) => {
   const result: KarmaResult = {
     id: '',
     description: test.title,
@@ -104,7 +104,9 @@ const reportTestResult = (test: TestExt) => {
     time: test.duration || 0,
     log: test[errorsSymbol] || [],
     assertionErrors: test[assertionErrorsSymbol] || [],
-    mocha: {},
+    mocha: {
+      reReported,
+    },
   };
 
   let parent = test.parent;
@@ -177,8 +179,9 @@ karma.start = () => {
       // To prevent the test from hanging in an unreported state, we forcefully report it now.
       // Additionally, if a test has already officially ended (endedSymbol is true) but fails later
       // (e.g. due to an unhandled promise rejection), we re-report the updated failure.
+      const reReported = reportedTests.has(targetTest);
       reportedTests.add(targetTest);
-      reportTestResult(targetTest);
+      reportTestResult(targetTest, reReported);
     }
   });
 
@@ -186,7 +189,7 @@ karma.start = () => {
     test[endedSymbol] = true;
     if (!reportedTests.has(test)) {
       reportedTests.add(test);
-      reportTestResult(test);
+      reportTestResult(test, false);
     }
   });
 };

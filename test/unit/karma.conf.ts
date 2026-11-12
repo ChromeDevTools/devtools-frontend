@@ -271,7 +271,19 @@ const ProgressWithDiffReporter = function(
     this: any, formatError: unknown, reportSlow: unknown, useColors: unknown, browserConsoleLogOptions: unknown) {
   BaseProgressReporter.call(this, formatError, reportSlow, useColors, browserConsoleLogOptions);
 
+  let reReportedCount = 0;
+  const baseOnBrowserStart = this.onBrowserStart;
+  this.onBrowserStart = function(this: any) {
+    reReportedCount = 0;
+    if (baseOnBrowserStart) {
+      baseOnBrowserStart.apply(this, arguments);
+    }
+  };
+
   const onSpecComplete = (result: any) => {
+    if (result.mocha?.reReported) {
+      reReportedCount++;
+    }
     if (result.mocha?.hasExclusiveTests) {
       this.hasExclusiveTests = true;
     }
@@ -329,10 +341,12 @@ const ProgressWithDiffReporter = function(
       baseOnRunComplete.apply(this, arguments);
     }
 
+    // `reReportedCount` assumes a single browser is configured in `options.browsers`.
     browsers.forEach((browser: any) => {
       const {total, success, failed, skipped} = browser.lastResult;
-      if (total !== success + failed + skipped && !this.hasExclusiveTests && !TestConfig.bail) {
-        throw new Error(`Karma exited early: executed ${success + failed + skipped} out of ${total} tests`);
+      const executed = success + failed + skipped - reReportedCount;
+      if (total !== executed && !this.hasExclusiveTests && !TestConfig.bail) {
+        throw new Error(`Karma exited early: executed ${executed} out of ${total} tests`);
       }
     });
     // eslint-disable-next-line no-console
@@ -697,6 +711,9 @@ export default function(config: any): void {
 
     reporters: [...reporters()],
 
+    // Reporters (ProgressWithDiffReporter, ResultsDBReporter, ScreenshotError) assume
+    // a single browser instance (e.g. a single `reReportedCount` counter). If multiple
+    // browsers are ever configured here, update per-run state to be tracked per browser.
     browsers: ['BrowserWithArgs'],
     customLaunchers: {
       BrowserWithArgs: {

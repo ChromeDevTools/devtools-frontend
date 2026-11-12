@@ -38,6 +38,10 @@ export const ResultsDBReporter: {
   this.USE_COLORS = false;
 
   const capturedLog: Array<{log: string, type: string}> = [];
+  let reReportedCount = 0;
+  this.onBrowserStart = () => {
+    reReportedCount = 0;
+  };
   this.onBrowserLog = (_browser: any, log: string, type: string) => {
     capturedLog.push({log, type});
   };
@@ -47,6 +51,9 @@ export const ResultsDBReporter: {
   };
 
   const specComplete = (_browser: any, result: any) => {
+    if (result.mocha?.reReported) {
+      reReportedCount++;
+    }
     if (result.mocha?.hasExclusiveTests) {
       this.hasExclusiveTests = true;
     }
@@ -148,10 +155,12 @@ export const ResultsDBReporter: {
   this.specFailure = specComplete;
 
   this.onRunComplete = (browsers: any, results: any) => {
+    // `reReportedCount` assumes a single browser is configured in `karma.conf.ts`.
     browsers.forEach((browser: any) => {
       const {total, success, failed, skipped} = browser.lastResult;
-      if (total !== success + failed + skipped && !this.hasExclusiveTests && !TestConfig.bail) {
-        throw new Error(`Karma exited early: executed ${success + failed + skipped} out of ${total} tests`);
+      const executed = success + failed + skipped - reReportedCount;
+      if (total !== executed && !this.hasExclusiveTests && !TestConfig.bail) {
+        throw new Error(`Karma exited early: executed ${executed} out of ${total} tests`);
       }
     });
 

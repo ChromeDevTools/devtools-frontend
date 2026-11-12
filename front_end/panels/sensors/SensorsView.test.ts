@@ -491,6 +491,17 @@ describeWithEnvironment('SensorsView', () => {
       assert.deepEqual(orientationOverrides.at(-1), {alpha: 0, beta: 90, gamma: 0});
     });
 
+    it('resets inputs that hold a value which was not applied', async () => {
+      await selectOrientation('Portrait');
+      // Out of range, so the value is not applied and the orientation stays the same as after the reset.
+      query<HTMLInputElement>('#beta-input').value = '999';
+
+      query('.orientation-reset-button').click();
+      await settled();
+
+      assert.deepEqual(orientationInputValues(), ['0', '90', '0']);
+    });
+
     it('clears the override but keeps the values when "Off" is selected', async () => {
       await selectOrientation('Landscape left');
       await selectOrientation('Off');

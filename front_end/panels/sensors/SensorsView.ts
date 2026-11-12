@@ -310,10 +310,6 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.setBoxOrientation(false);
     this.performUpdate();
-
-    this.alphaElement.value = String(this.deviceOrientation.alpha);
-    this.betaElement.value = String(this.deviceOrientation.beta);
-    this.gammaElement.value = String(this.deviceOrientation.gamma);
   }
 
   override performUpdate(): void {
@@ -652,6 +648,8 @@ export class SensorsView extends UI.Widget.VBox {
         {title: i18nString(UIStrings.displayDown), orientation: '[0, -180, 0]', jslogContext: 'displayUp-down'},
       ],
     }];
+    // The angles are not rounded in the state, only when they are shown in the inputs.
+    const roundAngle = (angle: number): string => String(Math.round(angle * 10000) / 10000);
 
     // clang-format off
     return html`
@@ -692,6 +690,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="359.9999"
                     step="any"
                     required
+                    .value=${live(roundAngle(this.deviceOrientation.alpha))}
                     ${Directives.ref((el: Element | undefined) => { if (el) { this.alphaElement = el as HTMLInputElement; } })}
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
@@ -708,6 +707,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="179.9999"
                     step="any"
                     required
+                    .value=${live(roundAngle(this.deviceOrientation.beta))}
                     ${Directives.ref((el: Element | undefined) => { if (el) { this.betaElement = el as HTMLInputElement; } })}
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
@@ -724,6 +724,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="89.9999"
                     step="any"
                     required
+                    .value=${live(roundAngle(this.deviceOrientation.gamma))}
                     ${Directives.ref((el: Element | undefined) => { if (el) { this.gammaElement = el as HTMLInputElement; } })}
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
@@ -872,19 +873,6 @@ export class SensorsView extends UI.Widget.VBox {
       modificationSource: DeviceOrientationModificationSource): void {
     if (!deviceOrientation) {
       return;
-    }
-
-    function roundAngle(angle: number): number {
-      return Math.round(angle * 10000) / 10000;
-    }
-
-    if (modificationSource !== DeviceOrientationModificationSource.USER_INPUT) {
-      // Even though the angles in |deviceOrientation| will not be rounded
-      // here, their precision will be rounded by CSS when we change
-      // |this.orientationLayer.style| in setBoxOrientation().
-      this.alphaElement.value = String(roundAngle(deviceOrientation.alpha));
-      this.betaElement.value = String(roundAngle(deviceOrientation.beta));
-      this.gammaElement.value = String(roundAngle(deviceOrientation.gamma));
     }
 
     const animate = modificationSource !== DeviceOrientationModificationSource.USER_DRAG;

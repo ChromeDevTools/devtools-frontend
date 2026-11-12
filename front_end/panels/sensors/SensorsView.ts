@@ -250,8 +250,9 @@ export class SensorsView extends UI.Widget.VBox {
   readonly #locationSetting: Common.Settings.Setting<string>;
   #location: SDK.EmulationModel.Location;
   #locationOverrideEnabled: boolean;
-  // Only re-created when the custom locations change. The inputs are still updated imperatively.
-  #locationSection: TemplateResult;
+  // Whether "Other…" is selected, even if the location matches one of the custom locations.
+  #customLocationSelected = false;
+  readonly #customLocationsSetting: Common.Settings.Setting<LocationDescription[]>;
   private fieldsetElement!: HTMLFieldSetElement;
   private timezoneError!: HTMLElement;
   private locationSelectElement!: HTMLSelectElement;
@@ -288,13 +289,9 @@ export class SensorsView extends UI.Widget.VBox {
     this.#location = SDK.EmulationModel.Location.parseSetting(this.#locationSetting.get());
     this.#locationOverrideEnabled = false;
 
-    const customLocationsSetting = Common.Settings.Settings.instance().resolve(
+    this.#customLocationsSetting = Common.Settings.Settings.instance().resolve(
         SettingUIRegistration.EmulationSettings.emulationLocationsSettingDescriptor);
-    this.#locationSection = this.#renderLocationSection(this.#location, customLocationsSetting);
-    customLocationsSetting.addChangeListener(() => {
-      this.#locationSection = this.#renderLocationSection(this.#location, customLocationsSetting);
-      this.performUpdate();
-    });
+    this.#customLocationsSetting.addChangeListener(() => this.performUpdate());
 
     this.deviceOrientationSetting =
         Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
@@ -312,7 +309,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   override performUpdate(): void {
     const input: ViewInput = {
-      locationSection: this.#locationSection,
+      locationSection: this.#renderLocationSection(this.#location, this.#customLocationsSetting),
       orientationSection: this.#renderDeviceOrientationSection(),
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
@@ -333,6 +330,8 @@ export class SensorsView extends UI.Widget.VBox {
     if (this.#locationOverrideEnabled) {
       if (location.unavailable) {
         selectedIndex = customLocations.length + 2;
+      } else if (this.#customLocationSelected) {
+        selectedIndex = customLocations.length + 1;
       } else {
         selectedIndex = customLocations.length + 1;
         for (const [i, customLocation] of customLocations.entries()) {
@@ -492,6 +491,7 @@ export class SensorsView extends UI.Widget.VBox {
     this.timezoneError.textContent = '';
     this.accuracyError.textContent = '';
     const value = this.locationSelectElement.options[this.locationSelectElement.selectedIndex].value;
+    this.#customLocationSelected = value === NonPresetOptions.Custom;
     if (value === NonPresetOptions.NoOverride) {
       this.#locationOverrideEnabled = false;
       this.#location = SDK.EmulationModel.Location.parseSetting('');
@@ -525,6 +525,7 @@ export class SensorsView extends UI.Widget.VBox {
     }
 
     this.applyLocation();
+    this.performUpdate();
     if (value === NonPresetOptions.Custom) {
       this.latitudeInput.focus();
     }
@@ -585,8 +586,10 @@ export class SensorsView extends UI.Widget.VBox {
     this.accuracyError.textContent = '';
 
     this.setSelectElementLabel(this.locationSelectElement, NonPresetOptions.Custom);
+    this.#customLocationSelected = true;
     this.#location = location;
     this.applyLocation();
+    this.performUpdate();
   }
 
   private applyLocation(): void {

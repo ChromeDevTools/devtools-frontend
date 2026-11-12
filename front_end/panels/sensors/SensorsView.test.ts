@@ -186,6 +186,7 @@ describeWithEnvironment('SensorsView', () => {
       await selectLocation('Location unavailable');
       await selectLocation('Other…');
 
+      assert.strictEqual(selectedLocationTitle(), 'Other…');
       assert.isFalse(locationInputsDisabled());
       assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
       assert.strictEqual(locationSetting.get(), '52.52@13.405:Europe/Berlin:de-DE::50');
@@ -252,6 +253,19 @@ describeWithEnvironment('SensorsView', () => {
       await settled();
 
       assert.strictEqual(selectedLocationTitle(), 'Location unavailable');
+      assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
+    });
+
+    it('keeps the selected location when the device orientation changes', async () => {
+      await selectLocation('Berlin');
+
+      const orientationSelect = view.contentElement.querySelector<HTMLSelectElement>('.orientation-fields select');
+      assert.exists(orientationSelect);
+      orientationSelect.value = '[0, 90, 0]';
+      orientationSelect.dispatchEvent(new Event('change'));
+      await settled();
+
+      assert.strictEqual(selectedLocationTitle(), 'Berlin');
       assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
     });
 

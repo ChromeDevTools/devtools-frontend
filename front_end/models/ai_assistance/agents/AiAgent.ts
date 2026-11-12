@@ -186,6 +186,13 @@ export interface ContextResponse {
   type: ResponseType.CONTEXT;
   details: [ContextDetail, ...ContextDetail[]];
   widgets?: AiWidget[];
+  /**
+   * Skills pre-loaded automatically from the selected context during `enhanceQuery()`.
+   * Attached to `ContextResponse` for `'ai-v2-auto-learn-skill'` telemetry rather than
+   * emitted as a separate walkthrough step, because `selectedContext` is attached
+   * before the model evaluates whether the user's question requires that skill.
+   */
+  autoLearnedSkills?: string[];
 }
 
 /**

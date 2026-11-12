@@ -177,6 +177,18 @@ function summarizeSteps(viewInput: AiAssistancePanel.ViewInput): unknown[] {
       .map(part => ({title: part.step.title, output: part.step.output, state: part.step.state.type}));
 }
 
+function assertIsStep(
+    part: AiAssistancePanel.ChatMessage.ModelMessagePart|undefined,
+    ): asserts part is AiAssistancePanel.ChatMessage.StepPart {
+  assert.strictEqual(part?.type, 'step');
+}
+
+function assertIsAnswer(
+    part: AiAssistancePanel.ChatMessage.ModelMessagePart|undefined,
+    ): asserts part is AiAssistancePanel.ChatMessage.AnswerPart {
+  assert.strictEqual(part?.type, 'answer');
+}
+
 /**
  * Creates a stubbed element node belonging to a document at `documentUrl`.
  *
@@ -1388,6 +1400,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
     let recordFunctionCallStub: sinon.SinonStub;
     let expectedQuerySubmitted: number;
     let expectedLearnSkill: number;
+    let expectedAutoLearnSkill: number;
     let expectedToolCall: number;
     let expectedPermissionPromptShown: number;
     let expectedPermissionAllowedOnce: number;
@@ -1423,6 +1436,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       );
       expectedQuerySubmitted = await getVeHash('ai-v2-query-submitted');
       expectedLearnSkill = await getVeHash('ai-v2-learn-skill');
+      expectedAutoLearnSkill = await getVeHash('ai-v2-auto-learn-skill');
       expectedToolCall = await getVeHash('ai-v2-tool-call');
       expectedPermissionPromptShown = await getVeHash('ai-permission-prompt-shown');
       expectedPermissionAllowedOnce = await getVeHash('ai-permission-allowed-once');
@@ -1848,6 +1862,17 @@ describeWithEnvironment('AI Assistance Panel', () => {
                toolName: 'getCookieValues',
              },
              {
+               type: AiAssistanceModel.AiAgent.ResponseType.CONTEXT,
+               details: [{title: 'DOM', text: 'details'}],
+               autoLearnedSkills: ['styling'],
+             },
+             {
+               type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+               canceled: false,
+               toolName: 'learnSkills',
+               loadedSkills: ['styling'],
+             },
+             {
                type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
                action: 'getStyles()',
                output: 'color: blue;',
@@ -1878,6 +1903,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedToolCall}));
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedPermissionPromptShown}));
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedPermissionAutoAllowed}));
+         sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedAutoLearnSkill}));
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedLearnSkill}));
          sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedError}));
        });
@@ -1915,7 +1941,55 @@ describeWithEnvironment('AI Assistance Panel', () => {
       sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedLearnSkill}));
       sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedError}));
     });
+
+    it('auto-learned skill logs VE event without adding a walkthrough step', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: 'Answer',
+        }],
+      ]);
+      const node = createStubbedElementNodeInDocument('https://example.com');
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+      sinon.stub(AiAssistanceModel.DOMNodeContext.DOMNodeContext.prototype, 'getPromptDetails').resolves('DOM prompt');
+      sinon.stub(AiAssistanceModel.DOMNodeContext.DOMNodeContext.prototype, 'getUserFacingDetails').resolves([
+        {title: 'DOM', text: 'details'},
+      ]);
+      const {view, panel} = await createAiAssistancePanel({aidaClient});
+
+      void panel.handleAction('freestyler.elements-floating-button');
+      const turnInput = await view.nextInput;
+      assert(turnInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      recordFunctionCallStub.resetHistory();
+
+      turnInput.props.onTextSubmit('question');
+      const doneInput = await waitForLoadingToFinish(view);
+      assert(doneInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      assert.deepEqual(
+          recordFunctionCallStub.withArgs(sinon.match({name: expectedAutoLearnSkill})).args,
+          [
+            [{name: expectedAutoLearnSkill, context: expectedStylingSkill}],
+          ],
+      );
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedLearnSkill}));
+      sinon.assert.neverCalledWith(recordFunctionCallStub, sinon.match({name: expectedToolCall}));
+
+      // Auto-loaded skills must not produce a separate walkthrough step.
+      const lastMessage = doneInput.props.messages.at(-1);
+      assert.isDefined(lastMessage);
+      assert(lastMessage.entity === AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL);
+      assert.lengthOf(lastMessage.parts, 2);
+      const [contextPart, answerPart] = lastMessage.parts;
+
+      assertIsStep(contextPart);
+      assert.strictEqual(contextPart.step.title, 'Analyzing data');
+      assert.isDefined(contextPart.step.contextDetails);
+
+      assertIsAnswer(answerPart);
+      assert.strictEqual(answerPart.text, 'Answer');
+    });
   });
+
   describe('opt-in change dialog', () => {
     it('should restore the prompt when onManageSettings is clicked', async () => {
       await enableAllFeatureAndSetting();

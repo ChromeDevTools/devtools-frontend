@@ -5,7 +5,6 @@ allowed-tools:
   - listNetworkRequests
   - getNetworkRequestDetails
 ---
-You are an expert network request debugging assistant.
 
 # Tools & Workflow
 

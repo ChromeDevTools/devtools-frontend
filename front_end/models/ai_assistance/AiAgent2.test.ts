@@ -16,7 +16,9 @@ import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import type * as LHModel from '../lighthouse/lighthouse.js';
+import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import type * as Trace from '../trace/trace.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
@@ -27,7 +29,8 @@ function assertIsFunctionResponse(part: Host.AidaClient.Part): asserts part is H
   assert.isTrue('functionResponse' in part);
 }
 
-function assertIsTextPart(part: Host.AidaClient.Part): asserts part is {text: string} {
+function assertIsTextPart(part: Host.AidaClient.Part|undefined): asserts part is {text: string} {
+  assert.isDefined(part);
   assert.isTrue('text' in part);
 }
 
@@ -383,8 +386,11 @@ describe('AiAgent2', () => {
 
     const enhancedQuery = await agent.enhanceQuery('my query', nodeContext);
 
-    assert.strictEqual(enhancedQuery,
-                       '# Inspected element\n\nelement-description\n\n# User request\n\nQUERY: my query');
+    assert.strictEqual(
+        enhancedQuery,
+        `Skill styling loaded. Instructions:\n${
+            SKILLS.styling
+                .instructions}\n\n# Inspected element\n\nelement-description\n\n# User request\n\nQUERY: my query`);
   });
 
   it('yields the selected element description in handleContextDetails', async () => {
@@ -2064,8 +2070,157 @@ describe('AiAgent2', () => {
       assert.deepEqual(answer.suggestions, ['Final suggestion']);
     });
   });
+  describe('Auto-learn skills', () => {
+    it('first-run DOMNodeContext auto-loads styling', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: 'Answer',
+          functionCalls: [{name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME, args: {suggestions: ['s']}}],
+        }],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+      const domNodeContext =
+          new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(domNodeContext, 'getPromptDetails').resolves('DOM prompt');
+      sinon.stub(domNodeContext, 'getUserFacingDetails').resolves([{title: 'DOM', text: 'details'}]);
+      const responses = await Array.fromAsync(agent.run('question', {selected: domNodeContext}));
+
+      const declarations = getFunctionDeclarations(aidaClient, 0).map(d => d.name);
+      assert.includeMembers(declarations, ['getStyles', 'setElementStyles', 'executeJavaScript']);
+
+      const part0 = aidaClient.doConversation.getCall(0).args[0].current_message.parts[0];
+      assertIsTextPart(part0);
+      assert.notInclude(part0.text, '- styling:');
+      assert.include(part0.text, 'Skill styling loaded. Instructions:');
+      assert.include(part0.text, SKILLS.styling.instructions);
+
+      const instructionsIndex = part0.text.indexOf(SKILLS.styling.instructions);
+      const promptIndex = part0.text.indexOf('DOM prompt');
+      assert.isTrue(instructionsIndex !== -1 && promptIndex !== -1 && instructionsIndex < promptIndex);
+
+      const contextEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT);
+      assert.lengthOf(contextEvents, 1);
+      assert.deepEqual(contextEvents[0].autoLearnedSkills, ['styling']);
+      const titleEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.TITLE);
+      assert.lengthOf(titleEvents, 0);
+      const actionEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actionEvents, 0);
+    });
+
+    it('first-run RequestContext auto-loads network', async () => {
+      const aidaClient = mockAidaClient([
+        [{explanation: 'Answer'}],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+      const requestContext =
+          new AiAssistance.RequestContext.RequestContext(sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest),
+                                                         new NetworkTimeCalculator.NetworkTransferTimeCalculator());
+      sinon.stub(requestContext, 'getPromptDetails').resolves('Network prompt');
+      sinon.stub(requestContext, 'getUserFacingDetails').resolves([{title: 'Network', text: 'details'}]);
+      const responses = await Array.fromAsync(agent.run('question', {selected: requestContext}));
+
+      const declarations = getFunctionDeclarations(aidaClient, 0).map(d => d.name);
+      assert.includeMembers(declarations, ['listNetworkRequests', 'getNetworkRequestDetails']);
+
+      const contextEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT);
+      assert.lengthOf(contextEvents, 1);
+      assert.deepEqual(contextEvents[0].autoLearnedSkills, ['network']);
+      const titleEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.TITLE);
+      assert.lengthOf(titleEvents, 0);
+      const actionEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actionEvents, 0);
+    });
+
+    it('first-run FileContext auto-loads sources', async () => {
+      const aidaClient = mockAidaClient([
+        [{explanation: 'Answer'}],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+      const fileContext =
+          new AiAssistance.FileContext.FileContext(sinon.createStubInstance(Workspace.UISourceCode.UISourceCode));
+      sinon.stub(fileContext, 'getPromptDetails').resolves('File prompt');
+      sinon.stub(fileContext, 'getUserFacingDetails').resolves([{title: 'File', text: 'details'}]);
+      const responses = await Array.fromAsync(agent.run('question', {selected: fileContext}));
+
+      const declarations = getFunctionDeclarations(aidaClient, 0).map(d => d.name);
+      assert.includeMembers(declarations, ['listSources', 'getSourceContent']);
+
+      const contextEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT);
+      assert.lengthOf(contextEvents, 1);
+      assert.deepEqual(contextEvents[0].autoLearnedSkills, ['sources']);
+      const titleEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.TITLE);
+      assert.lengthOf(titleEvents, 0);
+      const actionEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actionEvents, 0);
+    });
+
+    it('unmapped or null contexts do not auto-load', async () => {
+      const aidaClient = mockAidaClient([
+        [{explanation: 'Answer'}],
+        [{explanation: 'Answer'}],
+        [{explanation: 'Answer'}],
+        [{explanation: 'Answer'}],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+
+      const responses1 = await Array.fromAsync(agent.run('question', {selected: null}));
+      assert.strictEqual(agent.activeSkills.size, 0);
+
+      const perfContext = sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext);
+      perfContext.getPromptDetails.resolves('perf prompt');
+      perfContext.getUserFacingDetails.resolves([{title: 'perf', text: 'details'}]);
+      perfContext.getWidgets.resolves([]);
+      const responses2 = await Array.fromAsync(agent.run('question', {selected: perfContext}));
+      assert.strictEqual(agent.activeSkills.size, 0);
+
+      const lhContext = sinon.createStubInstance(AiAssistance.LighthouseContext.LighthouseContext);
+      lhContext.getPromptDetails.resolves('lh prompt');
+      lhContext.getUserFacingDetails.resolves([{title: 'lh', text: 'details'}]);
+      lhContext.getWidgets.resolves([]);
+      const responses3 = await Array.fromAsync(agent.run('question', {selected: lhContext}));
+      assert.strictEqual(agent.activeSkills.size, 0);
+
+      const storageContext = sinon.createStubInstance(AiAssistance.StorageContext.StorageContext);
+      storageContext.getPromptDetails.resolves('storage prompt');
+      storageContext.getUserFacingDetails.resolves([{title: 'storage', text: 'details'}]);
+      storageContext.getWidgets.resolves([]);
+      const responses4 = await Array.fromAsync(agent.run('question', {selected: storageContext}));
+      assert.strictEqual(agent.activeSkills.size, 0);
+
+      const declarations = getFunctionDeclarations(aidaClient, 3).map(d => d.name);
+      assert.deepEqual(declarations, ['learnSkills', 'suggestFollowUps']);
+
+      const contextEventsWithAutoLearn = [...responses1, ...responses2, ...responses3, ...responses4].filter(
+          (r): r is AiAssistance.AiAgent.ContextResponse =>
+              r.type === AiAssistance.AiAgent.ResponseType.CONTEXT && r.autoLearnedSkills !== undefined);
+      assert.lengthOf(contextEventsWithAutoLearn, 0);
+    });
+
+    it('follow-up turn with already-active skill', async () => {
+      const aidaClient = mockAidaClient([
+        [{explanation: 'Answer'}],
+        [{explanation: 'Answer 2'}],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+      const domNodeContext =
+          new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(domNodeContext, 'getPromptDetails').resolves('DOM prompt');
+      sinon.stub(domNodeContext, 'getUserFacingDetails').resolves([{title: 'DOM', text: 'details'}]);
+      await Array.fromAsync(agent.run('question 1', {selected: domNodeContext}));
+      const responses = await Array.fromAsync(agent.run('question 2', {selected: domNodeContext}));
+
+      const part0 = aidaClient.doConversation.getCall(1).args[0].current_message.parts[0];
+      assertIsTextPart(part0);
+      assert.notInclude(part0.text, SKILLS.styling.instructions);
+
+      const contextEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT);
+      assert.lengthOf(contextEvents, 1);
+      assert.isUndefined(contextEvents[0].autoLearnedSkills);
+    });
+  });
 
   describe('context deduplication', () => {
+    const stylingAutoLoadPrefix = `Skill styling loaded. Instructions:\n${SKILLS.styling.instructions}\n\n`;
     let contextA: AiAssistance.DOMNodeContext.DOMNodeContext;
     let contextB: AiAssistance.DOMNodeContext.DOMNodeContext;
     let promptDetailsStubA: sinon.SinonStub<[], Promise<string|null>>;
@@ -2102,8 +2257,9 @@ describe('AiAgent2', () => {
 
       assert.exists(responses1.find(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT));
       assert.exists(responses2.find(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT));
-      assert.strictEqual(getSentPromptText(aidaClient, 0),
-                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: question 1');
+      assert.strictEqual(
+          getSentPromptText(aidaClient, 0),
+          `${stylingAutoLoadPrefix}# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: question 1`);
       assert.strictEqual(
           getSentPromptText(aidaClient, 1),
           'The selected context is unchanged since it was last provided earlier in this conversation.\n\n# User request\n\nQUERY: question 2');
@@ -2111,15 +2267,16 @@ describe('AiAgent2', () => {
       const historicalPart = aidaClient.doConversation.getCall(1).args[0].historical_contexts?.[0]?.parts[0];
       assert.exists(historicalPart);
       assertIsTextPart(historicalPart);
-      assert.strictEqual(historicalPart.text,
-                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: question 1');
+      assert.strictEqual(
+          historicalPart.text,
+          `${stylingAutoLoadPrefix}# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: question 1`);
     });
 
     it('resends full context details after switching to another context and back', async () => {
       const agent = createAgent();
 
       assert.strictEqual(await agent.enhanceQuery('q1', contextA),
-                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: q1');
+                         `${stylingAutoLoadPrefix}# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: q1`);
       assert.strictEqual(await agent.enhanceQuery('q2', contextB),
                          '# Inspected element\n\nelement-B\n\n# User request\n\nQUERY: q2');
       assert.strictEqual(await agent.enhanceQuery('q3', contextA),

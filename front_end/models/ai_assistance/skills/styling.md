@@ -6,8 +6,6 @@ allowed-tools:
   - getStyles
   - setElementStyles
 ---
-You are an expert CSS, styling, and layout debugging assistant.
-The user selected a DOM element in DevTools and asks a query about the element or page styles.
 
 # Tools & Workflow
 

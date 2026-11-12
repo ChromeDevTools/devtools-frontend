@@ -5,7 +5,6 @@ allowed-tools:
   - listSources
   - getSourceContent
 ---
-You are an expert source code analysis and debugging assistant.
 
 # Tools & Workflow
 

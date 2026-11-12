@@ -344,7 +344,7 @@ export class AiConversation {
                          return {...item, confirm: undefined};
                        }
                        case ResponseType.CONTEXT: {
-                         return {...item, widgets: undefined};
+                         return {...item, widgets: undefined, autoLearnedSkills: undefined};
                        }
                        case ResponseType.ACTION: {
                          const tool = item.toolName ? ToolRegistry.get(item.toolName) : undefined;

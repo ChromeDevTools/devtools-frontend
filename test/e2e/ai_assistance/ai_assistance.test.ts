@@ -1135,12 +1135,12 @@ describe('AI Assistance', function() {
         query: 'Help me style this element',
         v2Architecture: true,
         messages: [
-          // Round-trip 1 response: Server requests executing the learnSkills function for 'styling'.
+          // Round-trip 1 response: Server requests executing the learnSkills function for 'network'.
           {
             functionCallChunk: {
               functionCall: {
                 name: 'learnSkills',
-                args: {skills: ['styling']},
+                args: {skills: ['network']},
               },
             },
           },
@@ -1155,14 +1155,15 @@ describe('AI Assistance', function() {
       // 2. Verify two round-trips occurred: tool invocation, followed by tool output response.
       assert.lengthOf(aidaRoundTrips, 2, 'Expected two round-trips to AIDA: tool invocation and tool response.');
 
-      // Round-trip 1: Only baseline tools (learnSkills and suggestFollowUps) are declared initially.
+      // Round-trip 1: Baseline tools and auto-learned 'styling' tools are declared initially.
       const initialTools = aidaRoundTrips[0].request.function_declarations?.map(decl => decl.name) ?? [];
-      assert.deepEqual(initialTools, ['learnSkills', 'suggestFollowUps']);
+      assert.sameMembers(initialTools,
+                         ['learnSkills', 'suggestFollowUps', 'executeJavaScript', 'getStyles', 'setElementStyles']);
 
-      // Round-trip 2: Contains functionResponse for learnSkills and registers styling tools (executeJavaScript, getStyles).
+      // Round-trip 2: Contains functionResponse for learnSkills and adds 'network' tools.
       const secondRequest = aidaRoundTrips[1].request;
       const secondCallTools = secondRequest.function_declarations?.map(decl => decl.name) ?? [];
-      assert.includeMembers(secondCallTools, ['learnSkills', 'executeJavaScript', 'getStyles']);
+      assert.includeMembers(secondCallTools, ['listNetworkRequests', 'getNetworkRequestDetails']);
 
       const [responsePart] = secondRequest.current_message.parts;
       assertIsFunctionResponsePart(responsePart);
@@ -1180,7 +1181,6 @@ describe('AI Assistance', function() {
         query: 'What are the color and display of this element?',
         v2Architecture: true,
         messages: [
-          {functionCallChunk: {functionCall: {name: 'learnSkills', args: {skills: ['styling']}}}},
           [
             {
               functionCallChunk: {
@@ -1204,8 +1204,8 @@ describe('AI Assistance', function() {
       });
 
       await devToolsPage.waitForElementWithTextContent(AI_RESPONSE);
-      assert.lengthOf(aidaRoundTrips, 3);
-      const parts = aidaRoundTrips[2].request.current_message.parts;
+      assert.lengthOf(aidaRoundTrips, 2);
+      const parts = aidaRoundTrips[1].request.current_message.parts;
       assert.lengthOf(parts, 2);
       const [colorPart, displayPart] = parts;
       assertIsFunctionResponsePart(colorPart);

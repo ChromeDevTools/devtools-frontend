@@ -22,11 +22,11 @@
   }
 
   input.devtools-text-input[type="text"] {
-    padding: 3px var(--sys-size-4);
+    padding: var(--sys-size-2) var(--sys-size-4);
     margin-left: var(--sys-size-3);
     margin-right: var(--sys-size-3);
-    width: 250px;
-    height: 25px;
+    width: var(--sys-size-29);
+    height: var(--sys-size-11);
   }
 
   input.devtools-text-input[type="text"]::placeholder {
@@ -35,6 +35,11 @@
 
   .protocol-handlers-row {
     margin: var(--sys-size-3) 0;
+
+    &:has(.protocol-select) {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .inline-icon {

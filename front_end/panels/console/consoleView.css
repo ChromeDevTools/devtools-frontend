@@ -542,7 +542,7 @@
 }
 
 .devtools-console-insight {
-  margin: 9px var(--sys-size-10) 11px var(--sys-size-11);
+  margin: var(--sys-size-5) var(--sys-size-10) var(--sys-size-5) var(--sys-size-11);
 }
 
 .hover-button {

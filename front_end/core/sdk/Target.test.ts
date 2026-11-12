@@ -214,4 +214,19 @@ describe('Target', () => {
       }
     }
   });
+
+  it('does not call suspendModel if resumed while preSuspendModel is pending', async () => {
+    const {promise, resolve} = Promise.withResolvers<void>();
+    const model = mainFrameTargetUnderTab.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(model);
+    sinon.stub(model, 'preSuspendModel').returns(promise);
+    const suspendModelSpy = sinon.spy(model, 'suspendModel');
+
+    const suspendPromise = mainFrameTargetUnderTab.suspend();
+    await mainFrameTargetUnderTab.resume();
+    resolve();
+    await suspendPromise;
+
+    sinon.assert.notCalled(suspendModelSpy);
+  });
 });

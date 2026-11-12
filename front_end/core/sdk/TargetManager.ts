@@ -159,7 +159,10 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
     this.#isSuspended = true;
     this.dispatchEventToListeners(Events.SUSPEND_STATE_CHANGED);
-    const suspendPromises = Array.from(this.#targets.values(), target => target.suspend(reason));
+    const suspendPromises = Array.from(this.#targets.values(), async target => {
+      await this.#waitForPromiseWithTimeout(target.suspend(reason),
+                                            `Timeout waiting for target ${target.name()} to suspend`);
+    });
     await Promise.all(suspendPromises);
   }
 
@@ -169,9 +172,12 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       this.getConsole().warn(timeoutMessage);
       timeoutResolve();
     }, 2000);
-    await Promise.race([promise, timeoutPromise]);
-    globalThis.clearTimeout(timeoutId);
-    timeoutResolve();  // avoids "pending async operations" error from test harness.
+    try {
+      await Promise.race([promise, timeoutPromise]);
+    } finally {
+      globalThis.clearTimeout(timeoutId);
+      timeoutResolve();  // avoids "pending async operations" error from test harness.
+    }
   }
 
   async resumeAllTargets(): Promise<void> {

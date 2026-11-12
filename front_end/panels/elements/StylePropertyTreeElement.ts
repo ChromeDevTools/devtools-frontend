@@ -3239,24 +3239,27 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement impleme
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
 
-    const that = this;
-    this.valueElement.addEventListener('keydown', nonEditingNameValueKeyDown);
-    this.nameElement.addEventListener('keydown', nonEditingNameValueKeyDown);
+    // The name and the value each start their own edit when the user presses Enter or Space on them.
+    const valueElement = this.valueElement;
+    const nameElement = this.nameElement;
+    valueElement.addEventListener('keydown', event => {
+      if (isStartEditingKey(valueElement, event)) {
+        this.startEditingValue();
+        event.consume(true);
+      }
+    });
+    nameElement.addEventListener('keydown', event => {
+      if (isStartEditingKey(nameElement, event)) {
+        this.startEditingName();
+        event.consume(true);
+      }
+    });
 
-    function nonEditingNameValueKeyDown(this: HTMLElement, event: KeyboardEvent): void {
-      if (UI.UIUtils.isBeingEdited(this)) {
-        return;
+    function isStartEditingKey(element: HTMLElement, event: KeyboardEvent): boolean {
+      if (UI.UIUtils.isBeingEdited(element)) {
+        return false;
       }
-      if (event.key !== Platform.KeyboardUtilities.ENTER_KEY && event.key !== ' ') {
-        return;
-      }
-      if (this === that.valueElement) {
-        that.startEditingValue();
-        event.consume(true);
-      } else if (this === that.nameElement) {
-        that.startEditingName();
-        event.consume(true);
-      }
+      return !event.isComposing && Platform.KeyboardUtilities.isEnterOrSpaceKey(event);
     }
   }
 

@@ -4,14 +4,12 @@
  * found in the LICENSE file.
  */
 @scope to (devtools-widget > *) {
-  .layout-shift-details-title,
-  .cluster-details-title {
+  .layout-shift-details-title {
     padding-bottom: var(--sys-size-5);
     display: flex;
     align-items: center;
 
-    .layout-shift-event-title,
-    .cluster-event-title {
+    .layout-shift-event-title {
       background-color: var(--app-color-rendering);
       width: var(--sys-size-6);
       height: var(--sys-size-6);
@@ -69,11 +67,6 @@
 
   .timeline-link.invalid-link {
     color: var(--sys-color-state-disabled);
-  }
-
-  .details-row {
-    display: flex;
-    min-height: var(--sys-size-9);
   }
 
   .title {

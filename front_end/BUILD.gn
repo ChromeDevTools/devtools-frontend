@@ -143,6 +143,7 @@ group("unittests") {
     "panels/css_overview:unittests",
     "panels/developer_resources:unittests",
     "panels/elements:unittests",
+    "panels/elements/components:unittests",
     "panels/emulation:unittests",
     "panels/event_listeners:unittests",
     "panels/explain/components:unittests",

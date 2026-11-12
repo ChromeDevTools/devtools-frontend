@@ -1136,6 +1136,24 @@ describe('bindToSetting (string)', () => {
     assert.strictEqual(setting.get(), 'new value via user edit');
   });
 
+  it('does not change the setting on Enter during IME composition', () => {
+    const {setting, input} = setup();
+
+    input.value = 'uncommitted composition';
+    const composingEvent = new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, isComposing: true});
+    input.dispatchEvent(composingEvent);
+
+    assert.strictEqual(setting.get(), 'defaultValue');
+    assert.isFalse(composingEvent.defaultPrevented);
+
+    input.value = 'committed value';
+    const enterEvent = new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, isComposing: false});
+    input.dispatchEvent(enterEvent);
+
+    assert.strictEqual(setting.get(), 'committed value');
+    assert.isTrue(enterEvent.defaultPrevented);
+  });
+
   it('changes the input when the setting changes', () => {
     const {setting, input} = setup();
 

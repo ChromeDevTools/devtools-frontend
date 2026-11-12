@@ -1420,7 +1420,7 @@ export function bindInput(input: HTMLInputElement, apply: (arg0: string) => void
   }
 
   function onKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.isComposing) {
       const valid = validate(input.value);
       if (valid) {
         apply(input.value);

@@ -81,10 +81,9 @@ describe('The Performance panel landing page', function() {
       await devToolsPage.renderCoordinatorQueueEmpty();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
-      const interactions = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
-      assert.isAtLeast(interactions.length, 2);
+      const interactions = await devToolsPage.waitForMany<HTMLElement>(INTERACTION_SELECTOR, 2);
 
-      const layoutShifts = await devToolsPage.$$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
+      const layoutShifts = await devToolsPage.waitForMany<HTMLElement>(LAYOUT_SHIFT_SELECTOR, 1);
       assert.lengthOf(layoutShifts, 1);
 
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
@@ -134,10 +133,9 @@ describe('The Performance panel landing page', function() {
       await devToolsPage.renderCoordinatorQueueEmpty();
 
       const [lcpValueElem, clsValueElem, inpValueElem] = await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
-      const interactions = await devToolsPage.$$(INTERACTION_SELECTOR);
-      assert.isAtLeast(interactions.length, 2);
+      await devToolsPage.waitForMany(INTERACTION_SELECTOR, 2);
 
-      const layoutShifts = await devToolsPage.$$(LAYOUT_SHIFT_SELECTOR);
+      const layoutShifts = await devToolsPage.waitForMany(LAYOUT_SHIFT_SELECTOR, 1);
       assert.lengthOf(layoutShifts, 1);
 
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
@@ -168,10 +166,9 @@ describe('The Performance panel landing page', function() {
       await devToolsPage.renderCoordinatorQueueEmpty();
 
       await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
-      const interactions1 = await devToolsPage.$$(INTERACTION_SELECTOR);
-      assert.isAtLeast(interactions1.length, 2);
+      await devToolsPage.waitForMany(INTERACTION_SELECTOR, 2);
 
-      const layoutShifts1 = await devToolsPage.$$(LAYOUT_SHIFT_SELECTOR);
+      const layoutShifts1 = await devToolsPage.waitForMany(LAYOUT_SHIFT_SELECTOR, 1);
       assert.lengthOf(layoutShifts1, 1);
 
       await inspectedPage.bringToFront();
@@ -257,8 +254,7 @@ describe('The Performance panel landing page', function() {
       await devToolsPage.renderCoordinatorQueueEmpty();
 
       await devToolsPage.waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
-      const interactions = await devToolsPage.$$<HTMLElement>(INTERACTION_SELECTOR);
-      assert.isAtLeast(interactions.length, 1);
+      await devToolsPage.waitForMany(INTERACTION_SELECTOR, 1);
 
       const liveMetricContexts = executionContexts.filter(e => e.name === 'DevTools Performance Metrics');
       assert.lengthOf(liveMetricContexts, 2);

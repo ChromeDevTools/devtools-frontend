@@ -1124,7 +1124,6 @@ export default defineConfig([
       'front_end/panels/network/EventSourceMessagesView.ts',
       'front_end/panels/network/NetworkDataGridNode.ts',
       'front_end/panels/network/NetworkFrameGrouper.ts',
-      'front_end/panels/network/NetworkLogView.ts',
       'front_end/panels/network/NetworkLogViewColumns.ts',
       'front_end/panels/network/NetworkManageCustomHeadersView.ts',
       'front_end/panels/network/NetworkOverview.ts',

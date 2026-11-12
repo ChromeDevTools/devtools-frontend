@@ -187,7 +187,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {classMap, live} = Directives;
+const {classMap, live, styleMap} = Directives;
 
 interface ViewInput {
   locationSection: TemplateResult;
@@ -270,7 +270,7 @@ export class SensorsView extends UI.Widget.VBox {
   private alphaElement!: HTMLInputElement;
   private betaElement!: HTMLInputElement;
   private gammaElement!: HTMLInputElement;
-  private orientationLayer!: HTMLDivElement;
+  #animateOrientation = false;
   private boxMatrix?: DOMMatrix;
   private mouseDownVector?: Geometry.Vector|null;
   private originalBoxMatrix?: DOMMatrix;
@@ -308,9 +308,8 @@ export class SensorsView extends UI.Widget.VBox {
     this.#hardwareConcurrencyCheckbox = checkbox;
     this.#hardwareConcurrencyDetails = [numericInput.element, reset.element, warning.element];
 
+    this.setBoxOrientation(false);
     this.performUpdate();
-
-    this.setBoxOrientation(this.deviceOrientation, false);
 
     this.alphaElement.value = String(this.deviceOrientation.alpha);
     this.betaElement.value = String(this.deviceOrientation.beta);
@@ -746,7 +745,7 @@ export class SensorsView extends UI.Widget.VBox {
             </fieldset>
           </div>
           <div
-            class="orientation-stage ${classMap({disabled: !this.deviceOrientationOverrideEnabled})}"
+            class="orientation-stage ${classMap({disabled: !this.deviceOrientationOverrideEnabled, 'is-animating': this.#animateOrientation})}"
             title=${this.deviceOrientationOverrideEnabled ? i18nString(UIStrings.shiftdragHorizontallyToRotate) :
                                                             i18nString(UIStrings.enableOrientationToRotate)}
             jslog=${VisualLogging.preview().track({drag: true})}
@@ -759,7 +758,7 @@ export class SensorsView extends UI.Widget.VBox {
               }
             })}
           >
-            <div class="orientation-layer" ${Directives.ref((el: Element | undefined) => { if (el) { this.orientationLayer = el as HTMLDivElement; } })}>
+            <div class="orientation-layer" style=${styleMap({transform: `rotateY(${this.deviceOrientation.alpha}deg) rotateX(${- this.deviceOrientation.beta}deg) rotateZ(${this.deviceOrientation.gamma}deg)`})}>
               <section
                 class="orientation-box orientation-element"
               >
@@ -889,10 +888,10 @@ export class SensorsView extends UI.Widget.VBox {
     }
 
     const animate = modificationSource !== DeviceOrientationModificationSource.USER_DRAG;
-    this.setBoxOrientation(deviceOrientation, animate);
-
     this.deviceOrientation = deviceOrientation;
+    this.setBoxOrientation(animate);
     this.applyDeviceOrientation();
+    this.performUpdate();
 
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(
         UIStrings.deviceOrientationSetToAlphaSBeta,
@@ -936,12 +935,8 @@ export class SensorsView extends UI.Widget.VBox {
     input.select();
   }
 
-  private setBoxOrientation(deviceOrientation: SDK.EmulationModel.DeviceOrientation, animate: boolean): void {
-    if (animate) {
-      this.stageElement.classList.add('is-animating');
-    } else {
-      this.stageElement.classList.remove('is-animating');
-    }
+  private setBoxOrientation(animate: boolean): void {
+    this.#animateOrientation = animate;
 
     // It is important to explain the multiple conversions happening here. A
     // few notes on coordinate spaces first:
@@ -967,9 +962,8 @@ export class SensorsView extends UI.Widget.VBox {
     // The CSS transforms, on the other hand, are done in the CSS coordinate
     // space, so we need to convert 2) to 1) while keeping 3) in mind. We can
     // cover 3) by swapping the Y and Z axes, and 2) by inverting the X axis.
-    const {alpha, beta, gamma} = deviceOrientation;
+    const {alpha, beta, gamma} = this.deviceOrientation;
     this.boxMatrix = new DOMMatrixReadOnly().rotate(0, 0, alpha).rotate(beta, 0, 0).rotate(0, gamma, 0);
-    this.orientationLayer.style.transform = `rotateY(${alpha}deg) rotateX(${- beta}deg) rotateZ(${gamma}deg)`;
   }
 
   private onBoxDrag(event: MouseEvent): boolean {

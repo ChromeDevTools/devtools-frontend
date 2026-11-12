@@ -188,10 +188,6 @@
   border: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
-.timeline-details .filter-input-field {
-  width: 120px;
-}
-
 .timeline-stack-view-header {
   height: 27px;
   background-color: var(--sys-color-cdt-base-container);

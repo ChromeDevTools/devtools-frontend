@@ -1,6 +1,6 @@
 ---
 name: styling
-description: CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.
+description: Inspecting or modifying live CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.
 allowed-tools:
   - executeJavaScript
   - getStyles
@@ -22,7 +22,8 @@ The user selected a DOM element in DevTools and asks a query about the element o
    - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.
 
 3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:
-   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading page state that `getStyles` cannot provide.
+   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.
+   - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.
    - Geometry & layout inspection example:
      ```javascript
      const rect = $0.getBoundingClientRect();

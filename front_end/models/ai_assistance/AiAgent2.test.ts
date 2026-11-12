@@ -20,8 +20,6 @@ import type * as Trace from '../trace/trace.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
-type Skill = AiAssistance.Skill.Skill;
-type SkillName = AiAssistance.Skill.SkillName;
 const SKILLS = AiAssistance.SkillRegistry.SKILLS;
 const PerformanceTraceFormatter = AiAssistance.PerformanceTraceFormatter.PerformanceTraceFormatter;
 
@@ -51,17 +49,6 @@ function getContextChangeResponse(
   );
   assert.exists(contextChange, 'Expected a CONTEXT_CHANGE response');
   return contextChange;
-}
-
-/**
- * Helper to mock the skills registry for an agent.
- * Since the agent expects a full `Record<SkillName, Skill>`, but individual tests only
- * need to mock a subset of skills, we use this helper to cast a partial set of skills
- * to the full record type and assign it to the agent. This prevents tests from
- * breaking when new skills are added to the global registry.
- */
-function mockSkills(agent: AiAssistance.AiAgent2.AiAgent2, skills: Partial<Record<SkillName, Skill>>): void {
-  agent.getSkills = () => skills as unknown as Record<SkillName, Skill>;
 }
 
 describe('AiAgent2', () => {
@@ -164,17 +151,18 @@ describe('AiAgent2', () => {
 
   it('appends compressed data formats to performance skill instructions when learned, but not in the unloaded manifest',
      async () => {
-       const aidaClient = mockAidaClient();
+       const aidaClient = mockAidaClient([[{explanation: 'Done'}]]);
        const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
-       mockSkills(agent, {
-         performance: SKILLS.performance,
-       });
 
-       const enhancedQuery = await agent.enhanceQuery('question');
-       assert.include(enhancedQuery, SKILLS.performance.description);
-       assert.notInclude(enhancedQuery, '# Data Formats');
-       assert.notInclude(enhancedQuery, PerformanceTraceFormatter.networkDataFormatDescription.trim());
-       assert.notInclude(enhancedQuery, PerformanceTraceFormatter.callFrameDataFormatDescription.trim());
+       await Array.fromAsync(agent.run('question', {selected: null}));
+       const learnSkillsDeclaration = getFunctionDeclarations(aidaClient, 0).find(d => d.name === 'learnSkills');
+       assert.exists(learnSkillsDeclaration);
+       assert.include(learnSkillsDeclaration.description, SKILLS.performance.description);
+       assert.notInclude(learnSkillsDeclaration.description, '# Data Formats');
+       assert.notInclude(learnSkillsDeclaration.description,
+                         PerformanceTraceFormatter.networkDataFormatDescription.trim());
+       assert.notInclude(learnSkillsDeclaration.description,
+                         PerformanceTraceFormatter.callFrameDataFormatDescription.trim());
 
        const learnResult = await agent.learnSkill(['performance']);
        assert.include(learnResult, '# Investigation Workflow');
@@ -206,13 +194,11 @@ describe('AiAgent2', () => {
   it('handles invalid skill names gracefully', async () => {
     const aidaClient = mockAidaClient();
     const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
-    mockSkills(agent, {
-      styling: SKILLS.styling,
-    });
 
     // @ts-expect-error
     const result = await agent.learnSkill(['non-existent-skill']);
-    assert.strictEqual(result, 'Failed to load skill non-existent-skill. Valid skills are: styling.');
+    assert.strictEqual(result,
+                       `Failed to load skill non-existent-skill. Valid skills are: ${Object.keys(SKILLS).join(', ')}.`);
   });
 
   it('can run a conversation flow', async () => {
@@ -311,40 +297,17 @@ describe('AiAgent2', () => {
     assert.deepEqual(actionResponse.loadedSkills, ['network']);
   });
 
-  it('injects skills manifest containing only unloaded skills', async () => {
+  it('does not inject skills manifest into enhanceQuery without selected context', async () => {
     const aidaClient = mockAidaClient();
     const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
-    mockSkills(agent, {
-      styling: SKILLS.styling,
-      network: SKILLS.network,
-    });
 
-    // Initially, styling and network are not loaded
     const firstQuery = await agent.enhanceQuery('test query');
-    assert.isTrue(firstQuery.includes('Available skills that are not yet loaded:'));
-    assert.isTrue(firstQuery.includes(
-        'styling: CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.'));
-    assert.isTrue(firstQuery.includes(
-        'network: Analyzing network traffic, network requests, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.'));
-    assert.isTrue(firstQuery.includes('User query: test query'));
+    assert.strictEqual(firstQuery, 'test query');
 
-    // Load 'styling' skill
     await agent.learnSkill(['styling']);
 
-    // Now, only 'network' skill is unloaded and should be injected
     const secondQuery = await agent.enhanceQuery('second query');
-    assert.isTrue(secondQuery.includes('Available skills that are not yet loaded:'));
-    assert.isFalse(secondQuery.includes('styling:'));
-    assert.isTrue(secondQuery.includes(
-        'network: Analyzing network traffic, network requests, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.'));
-    assert.isTrue(secondQuery.includes('User query: second query'));
-
-    // Load 'network' skill
-    await agent.learnSkill(['network']);
-
-    // Now all skills are loaded, manifest should NOT be injected
-    const thirdQuery = await agent.enhanceQuery('third query');
-    assert.strictEqual(thirdQuery, 'third query');
+    assert.strictEqual(secondQuery, 'second query');
   });
 
   it('registers allowed tools of a skill dynamically upon learning', async () => {
@@ -403,22 +366,10 @@ describe('AiAgent2', () => {
     const aidaClient = mockAidaClient();
     const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
 
-    // Override getSkills to include the dummy skill for testing
-    const dummySkill = {
-      name: 'dummy' as SkillName,
-      description: 'A dummy skill for testing',
-      allowedTools: ['getStyles'],
-      instructions: 'Dummy instructions.',
-    };
-    mockSkills(agent, {
-      styling: SKILLS.styling,
-      [dummySkill.name]: dummySkill,
-    });
-
     // Learn both skills. It should not throw a duplicate function declaration error.
-    await agent.learnSkill(['styling', 'dummy' as SkillName]);
+    await agent.learnSkill(['styling', 'lighthouse']);
     assert.isTrue(agent.activeSkills.has('styling'));
-    assert.isTrue(agent.activeSkills.has('dummy' as SkillName));
+    assert.isTrue(agent.activeSkills.has('lighthouse'));
   });
 
   it('enhances the query with the selected element description', async () => {
@@ -432,8 +383,8 @@ describe('AiAgent2', () => {
 
     const enhancedQuery = await agent.enhanceQuery('my query', nodeContext);
 
-    assert.isTrue(
-        enhancedQuery.includes('# Inspected element\n\nelement-description\n\n# User request\n\nQUERY: my query'));
+    assert.strictEqual(enhancedQuery,
+                       '# Inspected element\n\nelement-description\n\n# User request\n\nQUERY: my query');
   });
 
   it('yields the selected element description in handleContextDetails', async () => {
@@ -484,49 +435,6 @@ describe('AiAgent2', () => {
                        text: 'element-description',
                      }]);
     assert.deepEqual(contextResponse?.widgets, [fakeWidget]);
-  });
-
-  it('handles invalid skill names with overridden skills gracefully', async () => {
-    const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
-    const dummySkill = {
-      name: 'dummy' as SkillName,
-      description: 'A dummy skill for testing',
-      allowedTools: ['getStyles'],
-      instructions: 'Dummy instructions.',
-    };
-    mockSkills(agent, {
-      styling: SKILLS.styling,
-      network: SKILLS.network,
-      [dummySkill.name]: dummySkill,
-    });
-
-    // @ts-expect-error
-    const result = await agent.learnSkill(['non-existent-skill']);
-    assert.isTrue(result.includes('Failed to load skill non-existent-skill'));
-    assert.isTrue(result.includes('Valid skills are: styling, network, dummy'));
-  });
-
-  it('injects overridden skills manifest into the query', async () => {
-    const aidaClient = mockAidaClient();
-    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
-    const dummySkill = {
-      name: 'dummy' as SkillName,
-      description: 'A dummy skill for testing',
-      allowedTools: ['getStyles'],
-      instructions: 'Dummy instructions.',
-    };
-    mockSkills(agent, {
-      styling: SKILLS.styling,
-      [dummySkill.name]: dummySkill,
-    });
-
-    const firstQuery = await agent.enhanceQuery('test query');
-    assert.isTrue(firstQuery.includes('Available skills that are not yet loaded:'));
-    assert.isTrue(firstQuery.includes(
-        'styling: CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.'));
-    assert.isTrue(firstQuery.includes('dummy: A dummy skill for testing'));
-    assert.isTrue(firstQuery.includes('User query: test query'));
   });
 
   it('supports tools with side-effect approval flow (e.g. executeJavaScript)', async () => {
@@ -594,7 +502,7 @@ describe('AiAgent2', () => {
     assert.propertyVal(actionResponses[2], 'output', 'success');
   });
 
-  it('updates the learnSkills description dynamically to list only unloaded skills', async () => {
+  it('maintains a static learnSkills description across multi-step skill loading', async () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
@@ -614,27 +522,21 @@ describe('AiAgent2', () => {
 
     sinon.assert.callCount(aidaClient.doConversation, 3);
 
-    // Verify first call declarations: both styling and network are unloaded
+    const assertLearnSkillsDescription = (callIndex: number): void => {
+      const declarations = aidaClient.doConversation.getCall(callIndex).args[0].function_declarations ?? [];
+      const learnSkills = declarations.find(d => d.name === 'learnSkills');
+      assert.exists(learnSkills);
+      assert.isTrue(learnSkills?.description.includes(`- styling: ${SKILLS.styling.description}`));
+      assert.isTrue(learnSkills?.description.includes(`- network: ${SKILLS.network.description}`));
+      assert.isTrue(learnSkills?.description.includes('MUST call `learnSkills`'));
+      assert.isTrue(learnSkills?.description.includes('Do NOT call `learnSkills` for skills that were already loaded'));
+    };
+
+    assertLearnSkillsDescription(0);
     const firstCallDeclarations = aidaClient.doConversation.getCall(0).args[0].function_declarations ?? [];
-    const firstLearnSkills = firstCallDeclarations.find(d => d.name === 'learnSkills');
-    assert.exists(firstLearnSkills);
-    assert.isTrue(firstLearnSkills?.description.includes('styling'));
-    assert.isTrue(firstLearnSkills?.description.includes('network'));
     assert.exists(firstCallDeclarations.find(d => d.name === AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
-
-    // Verify second call declarations: styling is loaded, only network is unloaded
-    const secondCallDeclarations = aidaClient.doConversation.getCall(1).args[0].function_declarations ?? [];
-    const secondLearnSkills = secondCallDeclarations.find(d => d.name === 'learnSkills');
-    assert.exists(secondLearnSkills);
-    assert.isFalse(secondLearnSkills?.description.includes('styling'));
-    assert.isTrue(secondLearnSkills?.description.includes('network'));
-
-    // Verify third call declarations: both styling and network are loaded, none should be in description
-    const thirdCallDeclarations = aidaClient.doConversation.getCall(2).args[0].function_declarations ?? [];
-    const thirdLearnSkills = thirdCallDeclarations.find(d => d.name === 'learnSkills');
-    assert.exists(thirdLearnSkills);
-    assert.isFalse(thirdLearnSkills?.description.includes('styling'));
-    assert.isFalse(thirdLearnSkills?.description.includes('network'));
+    assertLearnSkillsDescription(1);
+    assertLearnSkillsDescription(2);
   });
 
   it('falls back to document body for getExecutionContextNode when context is not DOMNodeContext', async () => {
@@ -2169,9 +2071,7 @@ describe('AiAgent2', () => {
     let promptDetailsStubA: sinon.SinonStub<[], Promise<string|null>>;
 
     function createAgent(aidaClient = mockAidaClient()): AiAssistance.AiAgent2.AiAgent2 {
-      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
-      mockSkills(agent, {});
-      return agent;
+      return new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
     }
 
     function getSentPromptText(

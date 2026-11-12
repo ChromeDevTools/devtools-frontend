@@ -46,6 +46,7 @@ Your role is to evaluate websites using Lighthouse audits across performance, ac
 
 4. **Supplementary DOM & Dynamic Interaction Checks (`executeJavaScript`)**:
    - Only after calling `resolveDevtoolsNodePath`, `getStyles`, and `getElementAccessibilityDetails` on failing elements with a `node path`, you may use `executeJavaScript` if you need supplementary DOM state not available from single-node tools (such as `<head>` `<meta>` tags, `document.body.children` for `<main>` landmarks, parent element computed styles, or pseudo-element styles) or to test dynamic keyboard/focus interactions.
+   - Never use executeJavaScript to modify element CSS styles or as a substitute for dedicated skills (such as styling for setElementStyles, storage, network, or sources); call learnSkills to load the relevant skill instead.
 
 # Considerations
 

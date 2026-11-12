@@ -13,8 +13,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
-  assertSkillLoaded,
-  assertSkillNotLoaded,
   mockAidaClient,
 } from '../../testing/AiAssistanceHelpers.js';
 import {
@@ -200,12 +198,11 @@ describe('AiConversation', () => {
     // Turn 2: Query again.
     await Array.fromAsync(conversation.run('analyze'));
 
-    // 'network' should remain active on the agent across context changes, so it is omitted from
-    // the unloaded skills manifest, while other unloaded skills like 'styling' remain listed.
+    // 'network' should remain active on the agent across context changes, so its tools are still available.
     const lastRequest = aidaClient.doConversation.lastCall.firstArg;
-    const promptText = 'text' in lastRequest.current_message.parts[0] ? lastRequest.current_message.parts[0].text : '';
-    assertSkillLoaded(promptText, 'network');
-    assertSkillNotLoaded(promptText, 'styling');
+    const declaredTools = lastRequest.function_declarations?.map((d: {name: string}) => d.name) ?? [];
+    assert.includeMembers(declaredTools, ['listNetworkRequests', 'getNetworkRequestDetails']);
+    assert.notInclude(declaredTools, 'getStyles');
   });
 
   it('disables server-side logging when running with a context that disallows logging', async () => {

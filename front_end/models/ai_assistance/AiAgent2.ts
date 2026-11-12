@@ -26,7 +26,7 @@ import {DOMNodeContext} from './contexts/DOMNodeContext.js';
 import {LighthouseContext} from './contexts/LighthouseContext.js';
 import {PerformanceTraceContext} from './contexts/PerformanceTraceContext.js';
 import {ExtensionScope} from './ExtensionScope.js';
-import type {Skill, SkillName} from './skills/Skill.js';
+import type {SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
 import {
   type AllToolsCapabilities,
@@ -288,12 +288,14 @@ export class AiAgent2 extends AiAgent<unknown> {
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#originLock = opts.originLock;
     this.#declaredTools.add('learnSkills');
+    const skillsManifest = Object.entries(SKILLS).map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
     this.declareFunction<{skills: SkillName[]}>('learnSkills', {
-      description: () => {
-        const unloadedSkills = Object.keys(this.getSkills()).filter(name => !this.#activeSkills.has(name as SkillName));
-        return `Loads the specified skills to gain access to their specialized tools. Call this ONLY for skills listed under Available skills that are not yet loaded. Do not call this for skills that are already loaded. Available skills that are not yet loaded: ${
-            unloadedSkills.join(', ')}.`;
-      },
+      description: `Loads the specified skills to gain access to their specialized tools and instructions.
+If the user's request requires a skill that has not been loaded yet in this conversation, you MUST call \`learnSkills\` to load that skill first before using its tools, instead of attempting to solve the query using tools from other skills.
+Do NOT call \`learnSkills\` for skills that were already loaded earlier in this conversation.
+
+Available skills:
+${skillsManifest}`,
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: 'Parameters for learning skills',
@@ -304,7 +306,7 @@ export class AiAgent2 extends AiAgent<unknown> {
               type: Host.AidaClient.ParametersTypes.STRING,
               description: 'Skill name',
             },
-            description: 'List of unloaded skill names to load',
+            description: 'List of skill names to load (only include skills not yet loaded in this conversation)',
           },
         },
         required: ['skills'],
@@ -360,46 +362,27 @@ export class AiAgent2 extends AiAgent<unknown> {
       _multimodalInputType?: MultimodalInputType,
       ): Promise<string> {
     const promptDetails = selected ? await selected.getPromptDetails() : null;
-    let enhancedQuery = query;
 
     if (!promptDetails) {
       // Clear the tracker when there is no context (or an unsupported context type)
       // so that if the user later switches back to a previously sent context, it is
       // sent in full again rather than deduplicated.
       this.#lastSentPromptDetails = null;
+      return query;
+    }
+
+    let contextDetails: string;
+    if (promptDetails === this.#lastSentPromptDetails) {
+      contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
     } else {
-      let contextDetails: string;
-      if (promptDetails === this.#lastSentPromptDetails) {
-        contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
-      } else {
-        contextDetails = promptDetails;
-        this.#lastSentPromptDetails = promptDetails;
-      }
-      enhancedQuery = `${contextDetails}
+      contextDetails = promptDetails;
+      this.#lastSentPromptDetails = promptDetails;
+    }
+    return `${contextDetails}
 
 # User request
 
 QUERY: ${query}`;
-    }
-
-    const unloadedSkills =
-        Object.entries(this.getSkills()).filter(([name]) => !this.#activeSkills.has(name as SkillName));
-    if (unloadedSkills.length === 0) {
-      return enhancedQuery;
-    }
-
-    // Note: Test assertion helpers in front_end/testing/AiAssistanceHelpers.ts (assertSkillLoaded,
-    // assertSkillNotLoaded) rely on this formatting (`Available skills that are not yet loaded:`
-    // and `- ${name}: ${skill.description}`). If this format is updated, update those helpers too.
-    const skillsManifest = unloadedSkills.map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
-    return `Available skills that are not yet loaded:
-${skillsManifest}
-
-You must call \`learnSkills\` to load a skill before you can use its tools.
-If the user's request requires a skill that is not currently loaded, you MUST call \`learnSkills\` to load that skill first, instead of attempting to solve the query using tools from other skills.
-Do NOT call \`learnSkills\` for skills that are already loaded.
-
-User query: ${enhancedQuery}`;
   }
 
   /**
@@ -435,13 +418,8 @@ User query: ${enhancedQuery}`;
     }
   }
 
-  getSkills(): Record<SkillName, Skill> {
-    return SKILLS;
-  }
-
   async learnSkill(names: SkillName[]): Promise<string> {
     let response = '';
-    const skills = this.getSkills();
     for (const name of names) {
       if (this.#activeSkills.has(name)) {
         debugLog(`[AiAgent2] Skill '${name}' is already loaded`);
@@ -450,7 +428,7 @@ User query: ${enhancedQuery}`;
         continue;
       }
 
-      const skillObj: Skill = skills[name];
+      const skillObj = SKILLS[name];
       if (skillObj) {
         this.#activeSkills.add(name);
         debugLog(`[AiAgent2] Loaded skill '${name}' with tools: [${skillObj.allowedTools.join(', ')}]`);
@@ -463,7 +441,7 @@ User query: ${enhancedQuery}`;
         }
       } else {
         debugLog(`[AiAgent2] Failed to load skill '${name}'`);
-        response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(skills).join(', ')}.\n`;
+        response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(', ')}.\n`;
       }
     }
     return response.trim();

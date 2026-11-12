@@ -42,11 +42,6 @@ devtools-report-section:has(.quota-override-error:empty) {
   margin-top: var(--sys-size-7);
 }
 
-.quota-override-editor-with-button {
-  align-items: baseline;
-  display: flex;
-}
-
 .quota-override-notification-editor {
   border: solid var(--sys-size-1) var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-extra-small);

@@ -253,7 +253,6 @@ export class SensorsView extends UI.Widget.VBox {
   // Whether "Other…" is selected, even if the location matches one of the custom locations.
   #customLocationSelected = false;
   readonly #customLocationsSetting: Common.Settings.Setting<LocationDescription[]>;
-  private fieldsetElement!: HTMLFieldSetElement;
   private timezoneError!: HTMLElement;
   private locationSelectElement!: HTMLSelectElement;
   private latitudeInput!: HTMLInputElement;
@@ -384,11 +383,6 @@ export class SensorsView extends UI.Widget.VBox {
         <fieldset
           id="location-override-section"
           ?disabled=${!this.#locationOverrideEnabled}
-          ${Directives.ref((el: Element | undefined) => {
-            if (el) {
-              this.fieldsetElement = el as HTMLFieldSetElement;
-            }
-          })}
         >
           <div class="latlong-group">
             <!-- @ts-ignore -->
@@ -487,7 +481,6 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   #locationSelectChanged(): void {
-    this.fieldsetElement.disabled = false;
     this.timezoneError.textContent = '';
     this.accuracyError.textContent = '';
     const value = this.locationSelectElement.options[this.locationSelectElement.selectedIndex].value;
@@ -495,14 +488,13 @@ export class SensorsView extends UI.Widget.VBox {
     if (value === NonPresetOptions.NoOverride) {
       this.#locationOverrideEnabled = false;
       this.#location = SDK.EmulationModel.Location.parseSetting('');
-      this.clearFieldsetElementInputs();
-      this.fieldsetElement.disabled = true;
     } else if (value === NonPresetOptions.Custom) {
       this.#locationOverrideEnabled = true;
       const location = SDK.EmulationModel.Location.parseUserInput(
           this.latitudeInput.value.trim(), this.longitudeInput.value.trim(), this.timezoneInput.value.trim(),
           this.localeInput.value.trim(), this.accuracyInput.value.trim());
       if (!location) {
+        this.performUpdate();
         return;
       }
       this.#location = location;
@@ -517,11 +509,6 @@ export class SensorsView extends UI.Widget.VBox {
       this.#location = new SDK.EmulationModel.Location(
           coordinates.lat, coordinates.long, coordinates.timezoneId, coordinates.locale,
           coordinates.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY, false);
-      this.latitudeInput.value = coordinates.lat;
-      this.longitudeInput.value = coordinates.long;
-      this.timezoneInput.value = coordinates.timezoneId;
-      this.localeInput.value = coordinates.locale;
-      this.accuracyInput.value = String(coordinates.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY);
     }
 
     this.applyLocation();
@@ -616,14 +603,6 @@ export class SensorsView extends UI.Widget.VBox {
         }
       });
     }
-  }
-
-  private clearFieldsetElementInputs(): void {
-    this.latitudeInput.value = '0';
-    this.longitudeInput.value = '0';
-    this.timezoneInput.value = '';
-    this.localeInput.value = '';
-    this.accuracyInput.value = SDK.EmulationModel.Location.DEFAULT_ACCURACY.toString();
   }
 
   #renderDeviceOrientationSection(): TemplateResult {

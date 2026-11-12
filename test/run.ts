@@ -430,17 +430,51 @@ class MochaAiEvalsTests extends MochaTests {
   }
 }
 
+class ForAgentsTests extends Tests {
+  override readonly cwd = path.join(SOURCE_ROOT, 'for_agents');
+
+  override run(tests: TestId[]) {
+    const scriptPath = path.join(SOURCE_ROOT, 'for_agents', 'scripts', 'test.js');
+    const args = [scriptPath, '--build-dir', BUILD_ROOT];
+    const shardCount = Number(options['shard-count'] ?? 1);
+    const shardNumber = Number(options['shard-number'] ?? 1);
+    if (shardCount > 1) {
+      args.push(`--test-shard=${shardNumber}/${shardCount}`);
+    }
+    const isWholeSuite =
+        tests.length === 1 && path.normalize(tests[0].pathPair.buildPath) === path.normalize(this.suite.buildPath);
+    if (!isWholeSuite) {
+      for (const test of tests) {
+        args.push(test.pathPair.buildPath);
+      }
+    }
+    const env: NodeJS.ProcessEnv = {...process.env};
+    if (options['chrome-binary']) {
+      env['PUPPETEER_EXECUTABLE_PATH'] = String(options['chrome-binary']);
+    }
+    const result = runProcess(this.executable, args, {
+      encoding: 'utf-8',
+      stdio: 'inherit',
+      cwd: this.cwd,
+      env,
+    });
+    return !result.error && (result.status ?? 1) === 0;
+  }
+}
+
 /**
  * TODO(333423685)
  * - watch
  **/
 function main() {
   const tests: string[] = typeof options['tests'] === 'string' ? [options['tests']] : options['tests'];
+  const forAgentsTestsScript = path.join(SOURCE_ROOT, 'for_agents', 'scripts', 'test.js');
   const testKinds = [
     new MochaApiTests(path.join(GEN_DIR, 'front_end')),
     new (options['node-unit-tests'] ? MochaFrontendTests : KarmaTests)(
         path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay'), path.join(GEN_DIR, 'mcp')),
     new MochaTests(path.join(GEN_DIR, 'test/e2e'), 'run_devtools_e2e_tests'),
+    ...(fs.existsSync(forAgentsTestsScript) ? [new ForAgentsTests(path.join(GEN_DIR, 'for_agents/tests'))] : []),
     new MochaAiEvalsTests(path.join(GEN_DIR, 'test/ai_evals')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),

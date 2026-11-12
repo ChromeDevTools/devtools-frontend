@@ -25,6 +25,7 @@ export default defineConfig([
     'out/',
     // Don't include third party code
     'third_party/',
+    'for_agents/',
 
     'front_end/diff/diff_match_patch.js',
     'front_end/models/javascript_metadata/NativeFunctions.ts',

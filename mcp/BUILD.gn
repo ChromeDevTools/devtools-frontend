@@ -38,6 +38,11 @@ devtools_module("mcp") {
     "../front_end/models/workspace:bundle",
     "../front_end/third_party/marked:bundle",
   ]
+
+  visibility = [
+    "../*",
+    "../for_agents/*",
+  ]
 }
 
 ts_library("foundation_unittests") {

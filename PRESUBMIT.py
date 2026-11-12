@@ -25,6 +25,7 @@ PRESUBMIT_VERSION = '2.0.0'
 
 _EXCLUDED_PATHS = [
     r'^extensions[\\/]cxx_debugging[\\/]e2e[\\/]runner\.py$',  # Lines too long
+    r'^for_agents[\\/].*',  # Imported chrome-devtools-mcp (Apache-2.0)
     r'^front_end[\\/]core[\\/]common[\\/]Color\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]common[\\/]Object\.ts$',  # Apple copyright
     r'^front_end[\\/]core[\\/]common[\\/]ResourceType\.ts$',  # Apple copyright
@@ -811,12 +812,20 @@ def _TextFilesOnlyFilter(file):
     """
     excluded_prefixes = [
         'node_modules',
+        'for_agents/node_modules',
         'third_party',
         'front_end/third_party',
         'extensions/cxx_debugging/third_party',
     ]
     excluded_extensions = [
-        '.png', '.webm', '.svg', '.avif', '.rawresponse', '.gz'
+        '.png',
+        '.webm',
+        '.svg',
+        '.avif',
+        '.rawresponse',
+        '.gz',
+        '.heapsnapshot',
+        '.snapshot',
     ]
 
     if any(file.LocalPath().startswith(prefix)

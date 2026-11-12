@@ -3,4 +3,5 @@
 CRUX_API_KEY
 # Publicly-visible API key for Firebase analytics, used in NetworkRequestHandler.test.ts
 AIzaSyCGxLbbFQxH4BV1fY0RODlxTos9nJa2l_g
-
+# Publicly-visible API key for CrUX in for_agents/src/tools/performance.ts
+AIzaSyBn5gimNjhiEyA_euicSKko6IlD3HdgUfk

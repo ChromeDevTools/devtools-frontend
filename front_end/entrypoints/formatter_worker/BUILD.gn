@@ -68,6 +68,7 @@ devtools_entrypoint("worker_entrypoint") {
   ]
 
   visibility = [
+    "../../../for_agents/*",
     "../../../front_end",
     "../../models/formatter/*",
   ]

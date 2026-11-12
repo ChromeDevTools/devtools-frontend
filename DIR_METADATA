@@ -47,7 +47,8 @@ agentic_review: {
     path_expression_exclusion: [".*\\.test\\.ts"]
     review_capability_skills: [
       ".agents/skills/ui-widgets/SKILL.md",
-      ".agents/skills/ui-eng-vision-orchestrator/SKILL.md"
+      ".agents/skills/ui-eng-vision-orchestrator/SKILL.md",
+      ".agents/skills/visual-regression-audit/SKILL.md"
     ]
     rules: [
       ".agents/rules/ui-and-widgets/ui-modern-component-and-encapsulation-standards.md",

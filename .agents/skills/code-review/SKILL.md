@@ -33,7 +33,7 @@ Load the skill or `.agents/rules/` files that match what the diff touches, and a
 | If the diff touches… | Load skill or rules |
 | :--- | :--- |
 | Any `import` statement, or a new cross-module dependency | `devtools-imports` |
-| `UI.Widget`, lit-html views, components, CSS | `ui-widgets` |
+| `UI.Widget`, lit-html views, components, CSS, or UI layout changes | `ui-widgets`, `visual-regression-audit` |
 | Reviewing UI and widgets (`front_end/(panels|ui)/**/*.{ts,css}`) | `.agents/rules/ui-and-widgets/*.md` |
 | Migration of legacy imperative DOM to widgets or Lit | `ui-eng-vision-orchestrator` (and its sub-skills) |
 | New or changed tests: choosing unit, API, or E2E | `devtools-testing-guidance` |

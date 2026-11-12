@@ -43,6 +43,18 @@ describe('CSSMetadata', () => {
     assert.strictEqual(cssMetadata.canonicalPropertyName('color'), 'color');
   });
 
+  it('offers corner-shape keywords on the corner shorthand and shape longhands', () => {
+    const cssMetadata = SDK.CSSMetadata.cssMetadata();
+    for (const property
+             of ['corner', 'corner-top', 'corner-top-left', 'corner-bottom-shape', 'corner-start-start-shape']) {
+      const values = cssMetadata.getPropertyValues(property);
+      for (const keyword of ['round', 'scoop', 'bevel', 'notch', 'square', 'squircle', 'superellipse(0.5)',
+                             'superellipse(infinity)']) {
+        assert.include(values, keyword, `${property} should autocomplete ${keyword}`);
+      }
+    }
+  });
+
   it('identifies mixed-case color-aware properties case-insensitively', () => {
     const cssMetadata = SDK.CSSMetadata.cssMetadata();
     assert.isTrue(cssMetadata.isColorAwareProperty('CoLoR'));

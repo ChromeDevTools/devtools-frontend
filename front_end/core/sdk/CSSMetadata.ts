@@ -509,7 +509,59 @@ const cornerShapeValuePresetMap = new Map([
   ['superellipse(infinity)', 'superellipse(|infinity|)'],
 ]);
 
-const valuePresets = new Map([
+// Properties whose grammar includes <'corner-shape'>: shape longhands,
+// shape shorthands, and the <corner> shorthands that mix border-radius
+// with corner-shape. All get the shape keyword set and the superellipse()
+// preset.
+const cornerShapeAwareProperties = [
+  'corner-shape',
+  'corner-top-shape',
+  'corner-bottom-shape',
+  'corner-left-shape',
+  'corner-right-shape',
+  'corner-block-start-shape',
+  'corner-block-end-shape',
+  'corner-inline-start-shape',
+  'corner-inline-end-shape',
+  'corner-top-left-shape',
+  'corner-top-right-shape',
+  'corner-bottom-left-shape',
+  'corner-bottom-right-shape',
+  'corner-start-start-shape',
+  'corner-start-end-shape',
+  'corner-end-start-shape',
+  'corner-end-end-shape',
+  'corner',
+  'corner-top',
+  'corner-bottom',
+  'corner-left',
+  'corner-right',
+  'corner-block-start',
+  'corner-block-end',
+  'corner-inline-start',
+  'corner-inline-end',
+  'corner-top-left',
+  'corner-top-right',
+  'corner-bottom-left',
+  'corner-bottom-right',
+  'corner-start-start',
+  'corner-start-end',
+  'corner-end-start',
+  'corner-end-end',
+];
+
+const cornerShapeKeywords = new Set([
+  'round',
+  'scoop',
+  'bevel',
+  'notch',
+  'square',
+  'squircle',
+  'superellipse(0.5)',
+  'superellipse(infinity)',
+]);
+
+const valuePresets = new Map<string, Map<string, string>>([
   ['filter', filterValuePresetMap],
   ['backdrop-filter', filterValuePresetMap],
   ['background', imageValuePresetMap],
@@ -545,7 +597,7 @@ const valuePresets = new Map([
       ['perspective', 'perspective(|10px|)'],
     ]),
   ],
-  ['corner-shape', cornerShapeValuePresetMap],
+  ...cornerShapeAwareProperties.map((name): [string, Map<string, string>] => [name, cornerShapeValuePresetMap]),
   [
     'font-variant-alternates',
     new Map([
@@ -1626,19 +1678,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'stable',
     ]),
   ],
-  [
-    'corner-shape',
-    new Set([
-      'round',
-      'scoop',
-      'bevel',
-      'notch',
-      'square',
-      'squircle',
-      'superellipse(0.5)',
-      'superellipse(infinity)',
-    ]),
-  ],
+  ...cornerShapeAwareProperties.map((name): [string, Set<string>] => [name, cornerShapeKeywords]),
   ['outline-style', new Set(['auto'])],
   ['overflow-block', new Set(['auto', 'hidden', 'visible', 'overlay', 'scroll', 'clip'])],
   ['overflow-inline', new Set(['auto', 'hidden', 'visible', 'overlay', 'scroll', 'clip'])],

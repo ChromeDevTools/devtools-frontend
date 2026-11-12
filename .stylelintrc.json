@@ -16,6 +16,7 @@
     "hue-degree-notation": "angle",
     "comment-empty-line-before": null,
     "declaration-no-important": true,
+    "declaration-block-no-duplicate-properties": true,
     "color-named": "never",
     "selector-type-no-unknown": [
       true,

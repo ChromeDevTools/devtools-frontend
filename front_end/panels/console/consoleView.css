@@ -130,7 +130,10 @@
 }
 
 .console-message-repeat-count {
-  margin: 1.4px 0 0 10px;
+  display: inline-flex;
+  align-self: flex-start;
+  /* 24px (--sys-size-11) message gutter minus 14px (--sys-size-7) bubble size */
+  margin: var(--sys-size-2) 0 0 calc(var(--sys-size-11) - var(--sys-size-7));
   flex: none;
 }
 

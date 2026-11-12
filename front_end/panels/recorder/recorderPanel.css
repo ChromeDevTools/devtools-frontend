@@ -18,10 +18,6 @@
 
 :host {
   overflow-x: auto;
-}
-
-:host,
-devtools-create-recording-view {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -110,10 +106,6 @@ devtools-menu {
   width: 0;
   height: 0;
   position: absolute;
-}
-
-devtools-recording-list-view {
-  overflow: auto;
 }
 
 .error {

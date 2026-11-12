@@ -1159,7 +1159,6 @@ export default defineConfig([
       'front_end/panels/sources/EditingLocationHistoryManager.ts',
       'front_end/panels/sources/FilePathScoreFunction.ts',
       'front_end/panels/sources/FilteredUISourceCodeListProvider.ts',
-      'front_end/panels/sources/NavigatorView.ts',
       'front_end/panels/sources/OutlineQuickOpen.ts',
       'front_end/panels/sources/SourcesPanel.ts',
       'front_end/panels/sources/SourcesSearchScope.ts',

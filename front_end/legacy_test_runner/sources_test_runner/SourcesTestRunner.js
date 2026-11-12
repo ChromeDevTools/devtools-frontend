@@ -116,10 +116,11 @@ export const dumpNavigatorViewInMode = function(view, mode) {
       view :
       view.children().find(child => child instanceof Sources.NavigatorView.NavigatorView);
   navigatorView.performUpdate();
-  navigatorView.groupByFrame = mode.includes('frame');
-  navigatorView.groupByDomain = mode.includes('domain');
-  navigatorView.groupByFolder = mode.includes('folder');
-  navigatorView.resetForTest();
+  navigatorView.resetForTest({
+    frame: mode.includes('frame'),
+    domain: mode.includes('domain'),
+    folder: mode.includes('folder'),
+  });
   TestRunner.addResult('-------- Setting mode: [' + mode + ']');
   dumpNavigatorView(navigatorView);
 };

@@ -276,6 +276,7 @@ export type DispatchHttpRequestRequest = {
   path: string,
   method: 'GET',
   queryParams?: Record<string, string|string[]>,
+  headers?: Record<string, string>,
   streamId?: number,
   body?: never,
 }|{
@@ -283,6 +284,7 @@ export type DispatchHttpRequestRequest = {
   path: string,
   method: 'POST',
   queryParams?: Record<string, string|string[]>,
+  headers?: Record<string, string>,
   streamId?: number,
   // A JSON string containing the request body.
   body?: string,

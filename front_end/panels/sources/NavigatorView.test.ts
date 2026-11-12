@@ -2779,4 +2779,564 @@ describeWithEnvironment('NavigatorView', () => {
       sinon.assert.calledOnceWithExactly(mockTargetManager.unobserveTargets, navigatorView);
     });
   });
+
+  describe('legacy web-test coverage scenarios', () => {
+    it('handles query-string resources and duplicate base names correctly', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/foo/bar/script.js`;
+      const url2 = urlString`http://example.com/foo/bar/script.js?a=2`;
+
+      const {project, uiSourceCode: sc1} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+      const {uiSourceCode: sc2} = addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = createNavigatorView();
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(sc1);
+      navigatorView.revealUISourceCode(sc2);
+      await navigatorView.updateComplete;
+
+      assert.deepEqual(dumpTree(navigatorView), [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'foo/bar',
+                  children: [
+                    {title: 'script.js'},
+                    {title: 'script.js?a=2'},
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      // With folder grouping disabled, resources appear directly under the frame.
+      const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
+      groupByFolderSetting.set(false);
+      try {
+        await navigatorView.updateComplete;
+        assert.deepEqual(dumpTree(navigatorView), [
+          {
+            title: 'top',
+            children: [
+              {title: 'script.js'},
+              {title: 'script.js?a=2'},
+            ],
+          },
+        ]);
+      } finally {
+        groupByFolderSetting.set(true);
+      }
+
+      project.removeProject();
+    });
+
+    it('organizes resources across parent and child frames', async () => {
+      const mainFrame = await getMainFrame(target);
+      const childFrame = await addChildFrame(target);
+
+      const mainUrl = urlString`http://example.com/foo/bar/main.js`;
+      const childUrl1 = urlString`http://example.com/foo/bar/script.js?a=1`;
+      const childUrl2 = urlString`http://example.com/foo/baz/script.js`;
+
+      const {project, uiSourceCode: mainSc} = addResourceAndUISourceCode(mainUrl, mainFrame, '', 'text/javascript');
+      const {uiSourceCode: childSc1} =
+          addResourceAndUISourceCode(childUrl1, childFrame, '', 'text/javascript', project);
+      const {uiSourceCode: childSc2} =
+          addResourceAndUISourceCode(childUrl2, childFrame, '', 'text/javascript', project);
+
+      const navigatorView = createNavigatorView();
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(mainSc);
+      navigatorView.revealUISourceCode(childSc1);
+      navigatorView.revealUISourceCode(childSc2);
+      await navigatorView.updateComplete;
+
+      const dumped = dumpTree(navigatorView);
+      assert.deepEqual(dumped, [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'foo/bar',
+                  children: [{title: 'main.js'}],
+                },
+              ],
+            },
+            {
+              title: childFrame.displayName(),
+              children: [
+                {
+                  title: 'example.com',
+                  children: [
+                    {
+                      title: 'foo',
+                      children: [
+                        {
+                          title: 'bar',
+                          children: [{title: 'script.js?a=1'}],
+                        },
+                        {
+                          title: 'baz',
+                          children: [{title: 'script.js'}],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      project.removeProject();
+    });
+
+    it('organizes resources across main target and worker subtargets', async () => {
+      const mainFrame = await getMainFrame(target);
+      const mainUrl = urlString`http://example.com/main.js`;
+      const {project, uiSourceCode: mainSc} = addResourceAndUISourceCode(mainUrl, mainFrame, '', 'text/javascript');
+
+      const workerTarget = createTarget({
+        parentTarget: target,
+        type: SDK.Target.Type.Worker,
+        name: 'dedicated worker',
+      });
+      const workerUrl1 = urlString`http://example.com/resources/script1.js?a=3`;
+      const workerUrl2 = urlString`http://example.com/resources/script2.js`;
+
+      const workerProject = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+          workspace, 'WORKER_PROJECT_ID', Workspace.Workspace.projectTypes.Network, 'Worker project',
+          false /* isServiceProject */);
+      Bindings.NetworkProject.NetworkProject.setTargetForProject(workerProject, workerTarget);
+
+      const contentProvider1 = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+          workerUrl1, Common.ResourceType.resourceTypes.Script, '');
+      const sc1 = workerProject.createUISourceCode(workerUrl1, Common.ResourceType.resourceTypes.Script);
+      workerProject.addUISourceCodeWithProvider(
+          sc1, contentProvider1, new Workspace.UISourceCode.UISourceCodeMetadata(null, null), 'text/javascript');
+
+      const contentProvider2 = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+          workerUrl2, Common.ResourceType.resourceTypes.Script, '');
+      const sc2 = workerProject.createUISourceCode(workerUrl2, Common.ResourceType.resourceTypes.Script);
+      workerProject.addUISourceCodeWithProvider(
+          sc2, contentProvider2, new Workspace.UISourceCode.UISourceCodeMetadata(null, null), 'text/javascript');
+
+      const navigatorView = createNavigatorView();
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(mainSc);
+      navigatorView.revealUISourceCode(sc1);
+      navigatorView.revealUISourceCode(sc2);
+      await navigatorView.updateComplete;
+
+      const dumped = dumpTree(navigatorView);
+      assert.lengthOf(dumped, 2);
+      assert.strictEqual(dumped[0].title, 'top');
+      assert.strictEqual(dumped[1].title, 'dedicated worker');
+
+      const workerDomain = dumped[1].children?.[0];
+      assert.strictEqual(workerDomain?.title, 'example.com');
+      assert.deepEqual(workerDomain?.children, [
+        {
+          title: 'resources',
+          children: [
+            {title: 'script1.js?a=3'},
+            {title: 'script2.js'},
+          ],
+        },
+      ]);
+
+      // Removing worker target cleans up worker tree nodes.
+      workerProject.removeProject();
+      workerTarget.dispose('test ended');
+      await navigatorView.updateComplete;
+
+      const dumpedAfterWorkerRemoved = dumpTree(navigatorView);
+      assert.lengthOf(dumpedAfterWorkerRemoved, 1);
+      assert.strictEqual(dumpedAfterWorkerRemoved[0].title, 'top');
+
+      project.removeProject();
+    });
+
+    it('handles special, percent-encoded, and query-only URLs without throwing', async () => {
+      const mainFrame = await getMainFrame(target);
+      const specialUrls = [
+        urlString`http://example.com/`,
+        urlString`http://example.com/?a=b`,
+        urlString`http://example.com/the%2fdir/foo?bar=100&baz=a%20%2fb`,
+        urlString`http://example.com/the%2fdir/foo?bar=100%&baz=a%20%2fb`,
+        urlString`http://example.com/path%20with%20spaces/white%20space.html`,
+      ];
+
+      const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+          workspace, 'SPECIAL_URLS_PROJECT', Workspace.Workspace.projectTypes.Network, 'Special URLs project',
+          false /* isServiceProject */);
+      Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
+
+      const addedUISourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
+      for (const url of specialUrls) {
+        const resourceType = Common.ResourceType.resourceTypes.Document;
+        const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, resourceType, '');
+        const uiSourceCode = project.createUISourceCode(url, resourceType);
+        Bindings.NetworkProject.NetworkProject.setInitialFrameAttribution(uiSourceCode, mainFrame.id);
+        project.addUISourceCodeWithProvider(uiSourceCode, contentProvider,
+                                            new Workspace.UISourceCode.UISourceCodeMetadata(null, null), 'text/html');
+        addedUISourceCodes.push(uiSourceCode);
+      }
+
+      const navigatorView = createNavigatorView();
+      await navigatorView.updateComplete;
+
+      for (const sc of addedUISourceCodes) {
+        assert.doesNotThrow(() => navigatorView.revealUISourceCode(sc));
+      }
+      await navigatorView.updateComplete;
+
+      const dumped = dumpTree(navigatorView);
+      assert.lengthOf(dumped, 1);
+      assert.strictEqual(dumped[0].title, 'top');
+      project.removeProject();
+    });
+
+    it('safely handles Object.prototype property-name collision paths', async () => {
+      const mainFrame = await getMainFrame(target);
+      const collisionUrls = [
+        urlString`http://example.com/debugger3/hasOwnProperty/__proto__/constructor/foo.js`,
+        urlString`http://example.com/debugger3/hasOwnProperty/__proto__/foo.js`,
+        urlString`http://example.com/debugger3/hasOwnProperty/foo.js`,
+      ];
+
+      const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+          workspace, 'COLLISION_PROJECT', Workspace.Workspace.projectTypes.Network, 'Collision project',
+          false /* isServiceProject */);
+      Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
+
+      const addedUISourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
+      for (const url of collisionUrls) {
+        const resourceType = Common.ResourceType.resourceTypes.Script;
+        const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, resourceType, '');
+        const uiSourceCode = project.createUISourceCode(url, resourceType);
+        Bindings.NetworkProject.NetworkProject.setInitialFrameAttribution(uiSourceCode, mainFrame.id);
+        project.addUISourceCodeWithProvider(uiSourceCode, contentProvider,
+                                            new Workspace.UISourceCode.UISourceCodeMetadata(null, null),
+                                            'text/javascript');
+        addedUISourceCodes.push(uiSourceCode);
+      }
+
+      const navigatorView = createNavigatorView();
+      await navigatorView.updateComplete;
+
+      for (const sc of addedUISourceCodes) {
+        assert.doesNotThrow(() => navigatorView.revealUISourceCode(sc));
+      }
+      await navigatorView.updateComplete;
+
+      const dumped = dumpTree(navigatorView);
+      assert.lengthOf(dumped, 1);
+      assert.strictEqual(dumped[0].title, 'top');
+
+      const domain = dumped[0].children?.[0];
+      assert.strictEqual(domain?.title, 'example.com');
+      const rootFolder = domain?.children?.[0];
+      assert.strictEqual(rootFolder?.title, 'debugger3/hasOwnProperty');
+
+      // Verify that hasOwnProperty, __proto__, and constructor folders coexist cleanly.
+      assert.exists(rootFolder?.children);
+      const childTitles = rootFolder?.children?.map(c => c.title);
+      assert.include(childTitles, 'foo.js');
+      assert.include(childTitles, '__proto__');
+
+      project.removeProject();
+    });
+
+    it('keeps unexpanded merged folders collapsed when adding nested siblings until reveal', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/debugger2/foo/bar/script.js`;
+      const {project, uiSourceCode: sc1} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+
+      const navigatorView = createNavigatorView();
+      await navigatorView.updateComplete;
+
+      // Single-child chain is merged into debugger2/foo/bar and remains collapsed.
+      let dumped = dumpTree(navigatorView);
+      assert.deepEqual(dumped, [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'debugger2/foo/bar',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      // Add script.js?a=2 in the same folder.
+      const url2 = urlString`http://example.com/debugger2/foo/bar/script.js?a=2`;
+      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+      await navigatorView.updateComplete;
+
+      dumped = dumpTree(navigatorView);
+      assert.deepEqual(dumped, [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'debugger2/foo/bar',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      // Add sibling under foo/baz/script.js. The folder chain splits into debugger2/foo -> bar + baz.
+      const url3 = urlString`http://example.com/debugger2/foo/baz/script.js`;
+      const {uiSourceCode: sc3} = addResourceAndUISourceCode(url3, mainFrame, '', 'text/javascript', project);
+      await navigatorView.updateComplete;
+
+      dumped = dumpTree(navigatorView);
+      assert.deepEqual(dumped, [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'debugger2/foo',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      // Revealing sc3 expands the split tree up to the leaf.
+      navigatorView.revealUISourceCode(sc3);
+      await navigatorView.updateComplete;
+
+      dumped = dumpTree(navigatorView);
+      assert.deepEqual(dumped, [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'debugger2/foo',
+                  children: [
+                    {
+                      title: 'bar',
+                    },
+                    {
+                      title: 'baz',
+                      children: [
+                        {title: 'script.js'},
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      // Revealing sc1 expands the bar folder.
+      navigatorView.revealUISourceCode(sc1);
+      await navigatorView.updateComplete;
+
+      dumped = dumpTree(navigatorView);
+      assert.deepEqual(dumped, [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'debugger2/foo',
+                  children: [
+                    {
+                      title: 'bar',
+                      children: [
+                        {title: 'script.js'},
+                        {title: 'script.js?a=2'},
+                      ],
+                    },
+                    {
+                      title: 'baz',
+                      children: [
+                        {title: 'script.js'},
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      project.removeProject();
+    });
+
+    it('correctly partitions network scripts and content scripts across NetworkNavigatorView and ' +
+           'ContentScriptsNavigatorView',
+       async () => {
+         const mainFrame = await getMainFrame(target);
+         const networkUrl = urlString`http://example.com/network-script.js`;
+         const {project: networkProject, uiSourceCode: networkSc} =
+             addResourceAndUISourceCode(networkUrl, mainFrame, '', 'text/javascript');
+
+         // Create content script UISourceCodes in a ContentScripts project.
+         const csUrl1 = urlString`http://example.com/foo/bar/contentScript2.js?a=1`;
+         const csUrl2 = urlString`http://example.com/foo/bar/contentScript.js?a=2`;
+         const csUrl3 = urlString`http://example.com/foo/bar/contentScript.js?a=1`;
+
+         const contentScriptsProject = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+             workspace, 'CONTENT_SCRIPTS_PROJECT_ID', Workspace.Workspace.projectTypes.ContentScripts,
+             'Content scripts', false /* isServiceProject */);
+         Bindings.NetworkProject.NetworkProject.setTargetForProject(contentScriptsProject, target);
+
+         const contentProvider1 = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+             csUrl1, Common.ResourceType.resourceTypes.Script, '');
+         const cs1 = contentScriptsProject.createUISourceCode(csUrl1, Common.ResourceType.resourceTypes.Script);
+         Bindings.NetworkProject.NetworkProject.setInitialFrameAttribution(cs1, mainFrame.id);
+         contentScriptsProject.addUISourceCodeWithProvider(
+             cs1, contentProvider1, new Workspace.UISourceCode.UISourceCodeMetadata(null, null), 'text/javascript');
+
+         const contentProvider2 = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+             csUrl2, Common.ResourceType.resourceTypes.Script, '');
+         const cs2 = contentScriptsProject.createUISourceCode(csUrl2, Common.ResourceType.resourceTypes.Script);
+         Bindings.NetworkProject.NetworkProject.setInitialFrameAttribution(cs2, mainFrame.id);
+         contentScriptsProject.addUISourceCodeWithProvider(
+             cs2, contentProvider2, new Workspace.UISourceCode.UISourceCodeMetadata(null, null), 'text/javascript');
+
+         const contentProvider3 = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+             csUrl3, Common.ResourceType.resourceTypes.Script, '');
+         const cs3 = contentScriptsProject.createUISourceCode(csUrl3, Common.ResourceType.resourceTypes.Script);
+         Bindings.NetworkProject.NetworkProject.setInitialFrameAttribution(cs3, mainFrame.id);
+         contentScriptsProject.addUISourceCodeWithProvider(
+             cs3, contentProvider3, new Workspace.UISourceCode.UISourceCodeMetadata(null, null), 'text/javascript');
+
+         // Add a worker target with a worker network script to verify worker cleanup does not impact content scripts.
+         const workerTarget = createTarget({
+           parentTarget: target,
+           type: SDK.Target.Type.Worker,
+           name: 'dedicated worker',
+         });
+         const workerUrl = urlString`http://example.com/worker-script.js`;
+         const workerProject = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+             workspace, 'WORKER_PROJECT_ID_CS_TEST', Workspace.Workspace.projectTypes.Network, 'Worker project',
+             false /* isServiceProject */);
+         Bindings.NetworkProject.NetworkProject.setTargetForProject(workerProject, workerTarget);
+         const workerContentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+             workerUrl, Common.ResourceType.resourceTypes.Script, '');
+         const workerSc = workerProject.createUISourceCode(workerUrl, Common.ResourceType.resourceTypes.Script);
+         workerProject.addUISourceCodeWithProvider(workerSc, workerContentProvider,
+                                                   new Workspace.UISourceCode.UISourceCodeMetadata(null, null),
+                                                   'text/javascript');
+
+         const networkNavView = createNavigatorView(undefined, {mount: false});
+         networkNavView.projectFilter = p => p.type() === Workspace.Workspace.projectTypes.Network;
+
+         const contentScriptsNavView = createNavigatorView(undefined, {mount: false});
+         contentScriptsNavView.projectFilter = p => p.type() === Workspace.Workspace.projectTypes.ContentScripts;
+
+         renderElementIntoDOM(networkNavView, {allowMultipleChildren: true});
+         renderElementIntoDOM(contentScriptsNavView, {allowMultipleChildren: true});
+
+         networkNavView.revealUISourceCode(networkSc);
+         networkNavView.revealUISourceCode(workerSc);
+         contentScriptsNavView.revealUISourceCode(cs1);
+         contentScriptsNavView.revealUISourceCode(cs2);
+         contentScriptsNavView.revealUISourceCode(cs3);
+
+         await networkNavView.updateComplete;
+         await contentScriptsNavView.updateComplete;
+
+         // 1) NetworkNavigatorView displays ONLY network and worker scripts (excludes content scripts).
+         assert.deepEqual(dumpTree(networkNavView), [
+           {
+             title: 'top',
+             children: [
+               {
+                 title: 'example.com',
+                 children: [{title: 'network-script.js'}],
+               },
+             ],
+           },
+           {
+             title: 'dedicated worker',
+             children: [
+               {
+                 title: 'example.com',
+                 children: [{title: 'worker-script.js'}],
+               },
+             ],
+           },
+         ]);
+
+         // 2) ContentScriptsNavigatorView displays ONLY content scripts in the exact expected sorted order.
+         // Order in navigator-view-expected.txt: contentScript2.js?a=1, contentScript.js?a=1, contentScript.js?a=2
+         assert.deepEqual(dumpTree(contentScriptsNavView), [
+           {
+             title: 'top',
+             children: [
+               {
+                 title: 'example.com',
+                 children: [
+                   {
+                     title: 'foo/bar',
+                     children: [
+                       {title: 'contentScript2.js?a=1'},
+                       {title: 'contentScript.js?a=1'},
+                       {title: 'contentScript.js?a=2'},
+                     ],
+                   },
+                 ],
+               },
+             ],
+           },
+         ]);
+
+         // 3) Disposing the worker cleans up worker scripts from NetworkNavigatorView while leaving
+         // ContentScriptsNavigatorView unaffected.
+         workerProject.removeProject();
+         workerTarget.dispose('worker ended');
+         await networkNavView.updateComplete;
+         await contentScriptsNavView.updateComplete;
+
+         assert.lengthOf(dumpTree(networkNavView), 1);
+         assert.strictEqual(dumpTree(networkNavView)[0].title, 'top');
+
+         // Content scripts tree remains intact.
+         assert.lengthOf(dumpTree(contentScriptsNavView), 1);
+         assert.strictEqual(dumpTree(contentScriptsNavView)[0].title, 'top');
+
+         networkProject.removeProject();
+         contentScriptsProject.removeProject();
+       });
+  });
 });

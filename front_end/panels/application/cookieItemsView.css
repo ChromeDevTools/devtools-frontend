@@ -29,10 +29,4 @@
     flex: 1;
     overflow: auto;
   }
-
-  .cookie-preview-widget-toggle {
-    margin-left: var(--sys-size-6);
-    font-weight: normal;
-    flex-shrink: 1;
-  }
 }

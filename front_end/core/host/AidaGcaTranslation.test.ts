@@ -981,5 +981,58 @@ describe('AidaGcaTranslation', () => {
                          },
                        }]);
     });
+
+    describe('finishReason and promptFeedback.blockReason', () => {
+      function translateFinishReason(finishReason: GcaTypes.Candidate['finishReason']): AidaClient.AidaChunkResponse[] {
+        const response = createGcaResponse();
+        return AidaGcaTranslation.gcaChunkResponseToAidaChunkResponse(
+            {...response, candidates: [{...response.candidates[0], finishReason}]});
+      }
+
+      for (const finishReason of ['SAFETY', 'RECITATION', 'BLOCKLIST', 'PROHIBITED_CONTENT', 'SPII', 'IMAGE_SAFETY',
+                                  'IMAGE_PROHIBITED_CONTENT', 'IMAGE_RECITATION'] as const) {
+        it(`returns only a BLOCK chunk for finishReason ${finishReason}`, () => {
+          const chunks = translateFinishReason(finishReason);
+          assert.lengthOf(chunks, 1);
+          assert.notProperty(chunks[0], 'textChunk');
+          assert.strictEqual(chunks[0].metadata?.attributionMetadata?.attributionAction,
+                             AidaClient.RecitationAction.BLOCK);
+          assert.strictEqual(chunks[0].blockMessage, `GCA response blocked: ${finishReason}`);
+        });
+      }
+
+      it('accepts a numeric finishReason', () => {
+        assert.strictEqual(translateFinishReason(GcaTypes.FinishReason.RECITATION)[0].blockMessage,
+                           'GCA response blocked: RECITATION');
+      });
+
+      for (const [blockReason, name] of [['SAFETY', 'SAFETY'],
+                                         ['FUTURE_REASON', 'FUTURE_REASON'],
+                                         [GcaTypes.BlockReason.OTHER, 'OTHER'],
+      ] as const) {
+        it(`returns only a BLOCK chunk for promptFeedback.blockReason ${name} (${typeof blockReason})`, () => {
+          const response = createGcaResponse({
+            candidates: [],
+            promptFeedback: {
+              blockReason: blockReason as GcaTypes.PromptFeedback['blockReason'],
+              safetyRatings: [],
+              blockReasonMessage: '',
+            },
+          });
+          const chunks = AidaGcaTranslation.gcaChunkResponseToAidaChunkResponse(response);
+          assert.lengthOf(chunks, 1);
+          assert.strictEqual(chunks[0].metadata?.attributionMetadata?.attributionAction,
+                             AidaClient.RecitationAction.BLOCK);
+          assert.strictEqual(chunks[0].blockMessage, `GCA prompt blocked: ${name}`);
+        });
+      }
+
+      it('does not block for promptFeedback.blockReason BLOCKED_REASON_UNSPECIFIED as a string', () => {
+        const response = createGcaResponse();
+        const chunks = AidaGcaTranslation.gcaChunkResponseToAidaChunkResponse(
+            {...response, promptFeedback: {...response.promptFeedback, blockReason: 'BLOCKED_REASON_UNSPECIFIED'}});
+        assert.deepEqual(chunks.map(chunk => chunk.textChunk?.text), ['Hello there!']);
+      });
+    });
   });
 });

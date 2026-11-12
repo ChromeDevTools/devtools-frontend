@@ -339,7 +339,8 @@ export interface GenerateContentResponse {
 export interface Candidate {
   index: number;
   content: Content;
-  finishReason: FinishReason;
+  // GCA JSON responses send the enum name (for example 'STOP'), while `FinishReason` is a numeric enum.
+  finishReason: FinishReason|keyof typeof FinishReason;
   safetyRatings: SafetyRating[];
   citationMetadata: CitationMetadata;
   groundingMetadata: GroundingMetadata;
@@ -423,7 +424,8 @@ export interface PredictionMetadata {
 }
 
 export interface PromptFeedback {
-  blockReason: BlockReason;
+  // GCA JSON responses send the enum name (for example 'SAFETY'), while `BlockReason` is a numeric enum.
+  blockReason: BlockReason|keyof typeof BlockReason;
   safetyRatings: SafetyRating[];
   blockReasonMessage: string;
 }

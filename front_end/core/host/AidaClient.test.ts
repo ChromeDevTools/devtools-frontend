@@ -1654,6 +1654,46 @@ describe('AidaClient', () => {
       ]);
     });
 
+    // Streams the GCA responses in one chunk. Returns the thrown error and the recorded outcome.
+    async function runGcaConversation(responses: unknown[]) {
+      updateHostConfig({devToolsUseGcaApi: {enabled: true}});
+      const histogramSpy =
+          sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');
+      stubSingleChunkConversation(JSON.stringify(responses));
+      let error: unknown;
+      try {
+        for await (const result of new Host.AidaClient.AidaClient().doConversation(
+            buildConversationRequest(Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT))) {
+          void result;
+        }
+      } catch (err) {
+        error = err;
+      }
+      return {error, outcome: histogramSpy.firstCall.args[1]};
+    }
+
+    for (const {name, responses, message} of [{
+           name: 'GCA blocks the response after partial text',
+           responses: [
+             {candidates: [{content: {role: 'model', parts: [{text: 'Partial answer'}]}}]},
+             {candidates: [{content: {role: 'model', parts: []}, finishReason: 'SAFETY'}]},
+           ],
+           message: 'GCA response blocked: SAFETY',
+         },
+                                              {
+                                                name: 'GCA blocks the prompt',
+                                                responses: [{promptFeedback: {blockReason: 'PROHIBITED_CONTENT'}}],
+                                                message: 'GCA prompt blocked: PROHIBITED_CONTENT',
+                                              },
+    ]) {
+      it(`records BLOCKED_BY_SAFETY_OR_RECITATION when ${name}`, async () => {
+        const {error, outcome} = await runGcaConversation(responses);
+        assert.instanceOf(error, Host.AidaClient.AidaBlockError);
+        assert.strictEqual(error.message, message);
+        assert.strictEqual(outcome, AiClientRequestResult.BLOCKED_BY_SAFETY_OR_RECITATION);
+      });
+    }
+
     it('records HTTP_5XX_SERVER_ERROR when doConversation fails with HTTP 500', async () => {
       const histogramSpy =
           sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');

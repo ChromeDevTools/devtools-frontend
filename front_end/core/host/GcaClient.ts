@@ -26,6 +26,9 @@ import type {GenerateContentRequest, GenerateContentResponse} from './GcaTypes.j
 import type {AidaClientResult} from './InspectorFrontendHostAPI.js';
 
 const SERVICE_NAME = 'gcaService';
+const OPT_OUT_DATA_COLLECTION_HEADER = {
+  'User-Agent': 'Chrome (aidev_client; datacollection_opt_in=false)',
+};
 
 const ENDPOINTS = {
   CONTENT: '/v1beta:generateContent',
@@ -38,19 +41,25 @@ export class GcaClient {
     return Root.Runtime.hostConfig.devToolsUseGcaApi?.enabled;
   }
 
+  #getHeaders(disableUserContentLogging: boolean): Record<string, string>|undefined {
+    // Only send the User-Agent override when logging is disabled; otherwise omit it so
+    // GCA runs its own server-side eligibility and preference checks.
+    return disableUserContentLogging ? OPT_OUT_DATA_COLLECTION_HEADER : undefined;
+  }
+
   async conversationRequest(request: DoConversationRequest, streamId: number, options?: {signal?: AbortSignal}):
       Promise<void> {
     try {
       const gcaRequest = aidaDoConversationRequestToGcaRequest(request);
-      const response = await DispatchHttpRequestClient.makeHttpRequest<GenerateContentResponse>(
-          {
-            service: SERVICE_NAME,
-            path: ENDPOINTS.STREAM_CONTENT,
-            method: 'POST',
-            body: JSON.stringify(gcaRequest),
-            streamId,
-          },
-          options);
+      const response = await DispatchHttpRequestClient.makeHttpRequest<GenerateContentResponse>({
+        service: SERVICE_NAME,
+        path: ENDPOINTS.STREAM_CONTENT,
+        method: 'POST',
+        body: JSON.stringify(gcaRequest),
+        headers: this.#getHeaders(request.metadata.disable_user_content_logging),
+        streamId,
+      },
+                                                                                                options);
       debugLog('GCA conversation request succeeded:', JSON.stringify(request), JSON.stringify(response));
     } catch (err) {
       debugLog('GCA request failed:', JSON.stringify(request), err);
@@ -65,6 +74,7 @@ export class GcaClient {
       path: ENDPOINTS.SEND_TELEMETRY,
       method: 'POST',
       body: JSON.stringify(gcaEvent),
+      headers: this.#getHeaders(clientEvent.disable_user_content_logging),
     });
     return response.then(
         result => {
@@ -79,27 +89,29 @@ export class GcaClient {
 
   async completeCode(request: CompletionRequest): Promise<CompletionResponse> {
     const gcaRequest = aidaCompletionRequestToGcaRequest(request);
-    const result = await this.#requestContent(gcaRequest);
+    const result =
+        await this.#requestContent(gcaRequest, this.#getHeaders(request.metadata.disable_user_content_logging));
     return gcaResponseToAidaCompletionResponse(result);
   }
 
   async generateCode(request: GenerateCodeRequest, options?: {signal?: AbortSignal}): Promise<GenerateCodeResponse> {
     const gcaRequest = aidaGenerateCodeRequestToGcaRequest(request);
-    const result = await this.#requestContent(gcaRequest, options);
+    const result = await this.#requestContent(gcaRequest,
+                                              this.#getHeaders(request.metadata.disable_user_content_logging), options);
     return gcaResponseToAidaGenerateCodeResponse(result);
   }
 
-  async #requestContent(request: GenerateContentRequest,
+  async #requestContent(request: GenerateContentRequest, headers: Record<string, string>|undefined,
                         options?: {signal?: AbortSignal}): Promise<GenerateContentResponse> {
     try {
-      const response = await DispatchHttpRequestClient.makeHttpRequest<GenerateContentResponse>(
-          {
-            service: SERVICE_NAME,
-            path: ENDPOINTS.CONTENT,
-            method: 'POST',
-            body: JSON.stringify(request),
-          },
-          options);
+      const response = await DispatchHttpRequestClient.makeHttpRequest<GenerateContentResponse>({
+        service: SERVICE_NAME,
+        path: ENDPOINTS.CONTENT,
+        method: 'POST',
+        body: JSON.stringify(request),
+        headers,
+      },
+                                                                                                options);
       debugLog('GCA request succeeded:', JSON.stringify(request), JSON.stringify(response));
       return response;
     } catch (err) {

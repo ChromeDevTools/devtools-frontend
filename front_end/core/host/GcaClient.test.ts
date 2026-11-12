@@ -24,6 +24,34 @@ describe('GcaClient', () => {
     gcaClient = new Host.GcaClient.GcaClient();
   });
 
+  async function getConversationRequestHeaders(disableUserContentLogging: boolean):
+      Promise<Record<string, string>|undefined> {
+    let capturedRequest: DispatchHttpRequestRequest|undefined;
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+        .callsFake((request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
+          capturedRequest = request;
+          callback({statusCode: 200, response: '{}'});
+        });
+
+    await gcaClient.conversationRequest({
+      client: 'test',
+      client_feature: Host.AidaClient.ClientFeature.CHROME_CONSOLE_INSIGHTS,
+      current_message: {parts: [{text: 'test'}], role: Host.AidaClient.Role.USER},
+      metadata: {disable_user_content_logging: disableUserContentLogging, client_version: '1.2.3'},
+    },
+                                        1);
+    return capturedRequest?.headers;
+  }
+
+  it('omits headers when disable_user_content_logging is false', async () => {
+    assert.isUndefined(await getConversationRequestHeaders(false));
+  });
+
+  it('sets User-Agent header with datacollection_opt_in=false when disable_user_content_logging is true', async () => {
+    assert.deepEqual(await getConversationRequestHeaders(true),
+                     {'User-Agent': 'Chrome (aidev_client; datacollection_opt_in=false)'});
+  });
+
   it('throws for completeCode when request fails', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
         .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {

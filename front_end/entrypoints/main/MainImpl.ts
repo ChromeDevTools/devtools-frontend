@@ -597,7 +597,15 @@ export class MainImpl {
       runtimeModel?.addEventListener(SDK.RuntimeModel.Events.BindingCalled, event => {
         if (event.data.name === binding) {
           if (event.data.payload === 'true' || event.data.payload === 'false') {
-            VisualLogging.setVeDebuggingEnabled(event.data.payload === 'true', (query: string) => {
+            const enabled = event.data.payload === 'true';
+            if (enabled &&
+                UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.UNDOCKED) {
+              // Picking starts from the inspected page, so an undocked DevTools window is inactive at this point.
+              // On macOS, inactive windows get neither hover events nor the first click, so bring DevTools to
+              // front for the user to be able to pick right away.
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
+            }
+            VisualLogging.setVeDebuggingEnabled(enabled, (query: string) => {
               VisualLogging.setVeDebuggingEnabled(false);
               void runtimeModel?.defaultExecutionContext()?.evaluateWithSelectedFrameFallback({
                 expression: `window.inspect(${JSON.stringify(query)})`,

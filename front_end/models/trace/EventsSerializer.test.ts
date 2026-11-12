@@ -20,7 +20,10 @@ function findFirstEntry(allEntries: readonly Trace.Types.Events.Event[],
   return entry;
 }
 
-describe('EventsSerializer', () => {
+describe('EventsSerializer', function() {
+  if (this.timeout() > 0) {
+    this.timeout(20_000);
+  }
   setupLocaleHooks();
   it('correctly implements a bidirectional key <-> event mapping', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');

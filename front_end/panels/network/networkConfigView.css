@@ -23,7 +23,7 @@
 }
 
 .network-config-fields {
-  flex: 2 0 200px;
+  flex: 2 0 var(--sys-size-25);
 }
 
 .network-config-fields > span:first-of-type {

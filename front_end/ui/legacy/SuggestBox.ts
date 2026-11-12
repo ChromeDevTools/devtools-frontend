@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Geometry from '../geometry/geometry.js';
+import {html, type LitTemplate, nothing, render} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -208,17 +209,14 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     }
     titleElement.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
     titleElement.createChild('span', 'spacer');
-    if (item.subtitleRenderer) {
-      const subtitleElement = (item.subtitleRenderer.call(null) as HTMLElement);
-      subtitleElement.classList.add('suggestion-subtitle');
-      element.appendChild(subtitleElement);
-    } else if (item.subtitle) {
+    if (!item.subtitleTemplate && item.subtitle) {
       const subtitleElement = element.createChild('span', 'suggestion-subtitle');
       subtitleElement.textContent =
           Platform.StringUtilities.trimEndWithMaxLength(item.subtitle, maxTextLength - displayText.length);
     }
-    if (item.iconElement) {
-      element.appendChild(item.iconElement);
+    if (item.subtitleTemplate || item.iconTemplate) {
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(html`${item.subtitleTemplate ?? nothing}${item.iconTemplate ?? nothing}`, element);
     }
     return element;
   }
@@ -338,13 +336,20 @@ export interface Suggestion {
   subtitle?: string;
   priority?: number;
   isSecondary?: boolean;
-  subtitleRenderer?: (() => Element);
+  /**
+   * Rendered in place of the plain-text `subtitle`, e.g. to show a color swatch. The template is expected to
+   * render an element with the `suggestion-subtitle` class.
+   */
+  subtitleTemplate?: LitTemplate;
   selectionRange?: {
     startColumn: number,
     endColumn: number,
   };
   hideGhostText?: boolean;
-  iconElement?: HTMLElement;
+  /**
+   * Rendered at the end of the suggestion item, e.g. to show an icon.
+   */
+  iconTemplate?: LitTemplate;
   disableAcceptSuggestionOnStopCharacters?: boolean;
 }
 

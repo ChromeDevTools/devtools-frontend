@@ -30,7 +30,7 @@ import type {Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html} from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -2672,8 +2672,11 @@ describe('StylesSidebarPane', () => {
         await cssPropertyPrompt.complete(true);
 
         const colorCompletions = spyObj?.updateSuggestions.firstCall.args[1];
-        const renderedElement = colorCompletions?.[0].subtitleRenderer?.();
-        assert.instanceOf(renderedElement, InlineEditor.ColorSwatch.ColorSwatch);
+        const subtitleTemplate = colorCompletions?.[0].subtitleTemplate;
+        assert.exists(subtitleTemplate);
+        const container = document.createElement('div');
+        render(subtitleTemplate, container);
+        assert.instanceOf(container.querySelector('.suggestion-subtitle'), InlineEditor.ColorSwatch.ColorSwatch);
       });
 
       it('shows autocomplete item with color swatch for CSS variables with wide gamut color', async () => {
@@ -2687,8 +2690,11 @@ describe('StylesSidebarPane', () => {
         await cssPropertyPrompt.complete(true);
 
         const colorCompletions = spyObj?.updateSuggestions.firstCall.args[1];
-        const renderedElement = colorCompletions?.[0].subtitleRenderer?.();
-        assert.instanceOf(renderedElement, InlineEditor.ColorSwatch.ColorSwatch);
+        const subtitleTemplate = colorCompletions?.[0].subtitleTemplate;
+        assert.exists(subtitleTemplate);
+        const container = document.createElement('div');
+        render(subtitleTemplate, container);
+        assert.instanceOf(container.querySelector('.suggestion-subtitle'), InlineEditor.ColorSwatch.ColorSwatch);
       });
 
       it('shows autocomplete property names for CSS aliases', async () => {

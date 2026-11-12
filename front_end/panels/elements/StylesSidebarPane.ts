@@ -33,6 +33,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 
 import * as Common from '../../core/common/common.js';
@@ -50,11 +51,11 @@ import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import {createIcon, Icon} from '../../ui/kit/kit.js';
+import {createIcon, type Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {render} from '../../ui/lit/lit.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
@@ -211,6 +212,8 @@ const HIGHLIGHTABLE_PROPERTIES = [
 const DISCLAIMER_TOOLTIP_ID = 'styles-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'styles-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'styles-ai-code-completion-citations-tooltip';
+
+const {styleMap} = Directives;
 
 const StylesSidebarPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof ElementsSidebarPane> =
     Common.ObjectWrapper.eventMixin(
@@ -2489,13 +2492,11 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       if (!iconInfo) {
         continue;
       }
-      const icon = new Icon();
-      icon.name = iconInfo.iconName;
-      icon.classList.add('extra-small');
-      icon.style.transform = `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;
-      icon.style.maxHeight = 'var(--sys-size-6)';
-      icon.style.maxWidth = 'var(--sys-size-6)';
-      result.iconElement = icon;
+      result.iconTemplate = html`<devtools-icon class="extra-small" name=${iconInfo.iconName} style=${styleMap({
+        transform: `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`,
+        'max-height': 'var(--sys-size-6)',
+        'max-width': 'var(--sys-size-6)',
+      })}></devtools-icon>`;
     }
 
     if (this.isColorAware && !this.isEditingName) {
@@ -2521,10 +2522,12 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         if (computedValue) {
           const color = Common.Color.parse(computedValue.value);
           if (color) {
-            result.subtitleRenderer = colorSwatchRenderer.bind(null, color);
+            result.subtitleTemplate = html`<devtools-color-swatch class="suggestion-subtitle"
+                style="pointer-events: none;" .color=${color}></devtools-color-swatch>`;
             result.isCSSVariableColor = true;
           } else {
-            result.subtitleRenderer = computedValueSubtitleRenderer.bind(null, computedValue.value);
+            result.subtitleTemplate = html`<span class="suggestion-subtitle" style="max-width: 100px;"
+                title=${computedValue.value}>${computedValue.value}</span>`;
           }
         }
       }
@@ -2539,20 +2542,6 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       }
     }
 
-    function colorSwatchRenderer(color: Common.Color.Color): Element {
-      const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-      swatch.renderColor(color);
-      swatch.style.pointerEvents = 'none';
-      return swatch;
-    }
-    function computedValueSubtitleRenderer(computedValue: string): Element {
-      const subtitleElement = document.createElement('span');
-      subtitleElement.className = 'suggestion-subtitle';
-      subtitleElement.textContent = `${computedValue}`;
-      subtitleElement.style.maxWidth = '100px';
-      subtitleElement.title = `${computedValue}`;
-      return subtitleElement;
-    }
   }
 
   #updateAiCodeSuggestion(): void {
@@ -2869,7 +2858,10 @@ let buttonProviderInstance: ButtonProvider;
 export class ButtonProvider implements UI.Toolbar.Provider {
   private readonly button: UI.Toolbar.ToolbarButton;
   private constructor() {
-    this.button = UI.Toolbar.Toolbar.createActionButton('elements.new-style-rule');
+    // Toolbar providers hand out toolbar items rather than rendering them, so create the button from the
+    // registered action.
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.new-style-rule');
+    this.button = UI.Toolbar.Toolbar.createActionButton(action);
     this.button.setLongClickable(true);
 
     new UI.UIUtils.LongClickController(this.button.element, this.longClicked.bind(this));

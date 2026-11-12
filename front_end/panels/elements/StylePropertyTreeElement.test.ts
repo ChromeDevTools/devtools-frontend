@@ -3832,15 +3832,19 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
          assert.exists(redVar);
          assert.strictEqual(redVar.text, '--a)');
-         assert.exists(redVar.subtitleRenderer);
-         const swatchElement = redVar.subtitleRenderer();
+         assert.exists(redVar.subtitleTemplate);
+         const swatchContainer = document.createElement('div');
+         render(redVar.subtitleTemplate, swatchContainer);
+         const swatchElement = swatchContainer.querySelector('.suggestion-subtitle');
          assert.instanceOf(swatchElement, InlineEditor.ColorSwatch.ColorSwatch);
 
          assert.exists(customPropVar);
          assert.strictEqual(customPropVar.text, '--prop)');
-         assert.exists(customPropVar.subtitleRenderer);
-         const subtitleElement = customPropVar.subtitleRenderer();
-         assert.strictEqual(subtitleElement.textContent, 'customproperty');
+         assert.exists(customPropVar.subtitleTemplate);
+         const subtitleContainer = document.createElement('div');
+         render(customPropVar.subtitleTemplate, subtitleContainer);
+         const subtitleElement = subtitleContainer.querySelector('.suggestion-subtitle');
+         assert.strictEqual(subtitleElement?.textContent, 'customproperty');
        });
 
     it('adds and commits a new blank property in StylePropertyTreeElement', async () => {

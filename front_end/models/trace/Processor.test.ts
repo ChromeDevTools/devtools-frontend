@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -181,6 +181,55 @@ describe('TraceProcessor', function() {
       assert.strictEqual(thrown?.message, 'finalize failed');
       assert.isNull(processor.data);
       assert.strictEqual(Trace.Handlers.ModelHandlers.Renderer.data().processes.size, 0);
+    });
+  });
+
+  describe('Lantern simulation state', () => {
+    afterEach(() => {
+      Trace.Lantern.Simulation.Simulator.allNodeTimings.clear();
+    });
+
+    it('Successful parse clears Lantern timings', async function() {
+      const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+      const events = await TraceLoader.rawEvents(this, 'lantern/render-blocking/trace.json.gz');
+      const simulateSpy = sinon.spy(Trace.Lantern.Simulation.Simulator.prototype, 'simulate');
+      await processor.parse(events, {isFreshRecording: true, isCPUProfile: false, yieldToMain: false});
+
+      assert.isTrue(simulateSpy.callCount > 0);
+      assert.isOk(processor.insights);
+      const navigationInsight = processor.insights.get('NAVIGATION_0');
+      assert.isOk(navigationInsight);
+      assert.isOk(navigationInsight.model.RenderBlocking?.metricSavings);
+      assert.strictEqual(Trace.Lantern.Simulation.Simulator.allNodeTimings.size, 0);
+    });
+
+    it('Failed parse after Lantern runs clears Lantern timings', async function() {
+      const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+      const events = await TraceLoader.rawEvents(this, 'lantern/render-blocking/trace.json.gz');
+      sinon.stub(processor, 'sortInsightSet').throws(new Error('sort failed'));
+      const simulateSpy = sinon.spy(Trace.Lantern.Simulation.Simulator.prototype, 'simulate');
+
+      let thrown: Error|undefined;
+      try {
+        await processor.parse(events, {isFreshRecording: true, isCPUProfile: false, yieldToMain: false});
+      } catch (e) {
+        if (e instanceof Error) {
+          thrown = e;
+        }
+      }
+
+      assert.strictEqual(thrown?.message, 'sort failed');
+      assert.isTrue(simulateSpy.callCount > 0);
+      assert.isNull(processor.insights);
+      assert.strictEqual(Trace.Lantern.Simulation.Simulator.allNodeTimings.size, 0);
+    });
+
+    it('reset() clears Lantern timings', () => {
+      const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+      Trace.Lantern.Simulation.Simulator.allNodeTimings.set('test', new Map());
+      assert.strictEqual(Trace.Lantern.Simulation.Simulator.allNodeTimings.size, 1);
+      processor.reset();
+      assert.strictEqual(Trace.Lantern.Simulation.Simulator.allNodeTimings.size, 0);
     });
   });
 

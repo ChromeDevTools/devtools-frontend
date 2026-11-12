@@ -544,6 +544,10 @@ export default function(config: any): void {
   }
   const options = {
     basePath: CHECKOUT_ROOT,
+    // Bind and connect explicitly over IPv4 loopback to avoid IPv6 (::1) -> IPv4
+    // connection fallback delays when Chrome resolves `localhost` on Windows/macOS.
+    listenAddress: '127.0.0.1',
+    hostname: '127.0.0.1',
     logLevel,
     autoWatchBatchDelay: 1000,
     failOnEmptyTestSuite: TestConfig.dryRun,

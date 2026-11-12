@@ -99,7 +99,7 @@ describe('CSSQuery', () => {
     const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     const variableValue = {
       value: 'bar',
-      declaration: {} as unknown as SDK.CSSMatchedStyles.CSSValueSource,
+      declaration: new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)),
     };
     matchedStyles.computeCSSVariable.callsFake((_style, name) => name === '--foo' ? variableValue : null);
 
@@ -111,6 +111,96 @@ describe('CSSQuery', () => {
 
     swatch.linkElement?.click();
     sinon.assert.calledOnce(clickListener);
+  });
+
+  it('resolves style queries when styleQueryContext is set after data', () => {
+    const component = new ElementsComponents.CSSQuery.CSSQuery();
+    renderElementIntoDOM(component);
+
+    const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+    const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+    const containerNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    const declaration = new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty));
+    matchedStyles.computeCSSVariable.callsFake((_style, name) => name === '--foo' ? {value: 'bar', declaration} : null);
+
+    component.data = {
+      queryPrefix: '@container',
+      queryText: 'style(--foo: bar)',
+      onLinkActivate: () => {},
+      jslogContext: 'foo',
+    };
+    const idFactory = new Tooltips.Tooltip.IdFactory();
+    component.styleQueryContext = {
+      matchedStyles,
+      style,
+      containerNode,
+      tooltipPrefix: idFactory.subfactory('container', 0),
+    };
+
+    const swatch = component.contentElement.querySelector('devtools-link-swatch');
+    assert.exists(swatch);
+    assert.strictEqual(swatch.innerText, '--foo');
+    assert.exists(component.contentElement.querySelector('devtools-tooltip[id*="container"]'));
+  });
+
+  it('resolves style queries when styleQueryContext is set before data', () => {
+    const component = new ElementsComponents.CSSQuery.CSSQuery();
+    renderElementIntoDOM(component);
+
+    const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+    const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+    const containerNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    const declaration = new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty));
+    matchedStyles.computeCSSVariable.callsFake((_style, name) => name === '--foo' ? {value: 'bar', declaration} : null);
+
+    component.styleQueryContext = {
+      matchedStyles,
+      style,
+      containerNode,
+      tooltipPrefix: new Tooltips.Tooltip.IdFactory(),
+    };
+    component.data = {
+      queryPrefix: '@container',
+      queryText: 'style(--foo: bar)',
+      onLinkActivate: () => {},
+      jslogContext: 'foo',
+    };
+
+    const swatch = component.contentElement.querySelector('devtools-link-swatch');
+    assert.exists(swatch);
+    assert.strictEqual(swatch.innerText, '--foo');
+  });
+
+  it('resets parsed style query tokens when styleQueryContext is cleared', () => {
+    const component = new ElementsComponents.CSSQuery.CSSQuery();
+    renderElementIntoDOM(component);
+
+    const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+    const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+    const containerNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    const declaration = new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty));
+    matchedStyles.computeCSSVariable.callsFake((_style, name) => name === '--foo' ? {value: 'bar', declaration} : null);
+
+    component.data = {
+      queryPrefix: '@container',
+      queryText: 'style(--foo: bar)',
+      onLinkActivate: () => {},
+      jslogContext: 'foo',
+    };
+    component.styleQueryContext = {
+      matchedStyles,
+      style,
+      containerNode,
+      tooltipPrefix: new Tooltips.Tooltip.IdFactory(),
+    };
+    assert.exists(component.contentElement.querySelector('devtools-link-swatch'));
+
+    component.styleQueryContext = undefined;
+    assert.isNull(component.contentElement.querySelector('devtools-link-swatch'));
+    assert.strictEqual(
+        component.contentElement.querySelector<HTMLElement>('.query')?.innerText,
+        '@container style(--foo: bar) {',
+    );
   });
 
   it('shows a closing brace when collapsed with a collapse icon', () => {

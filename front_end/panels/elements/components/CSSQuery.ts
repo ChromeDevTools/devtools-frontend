@@ -33,6 +33,17 @@ export interface TextSection {
   isVariable: boolean;
 }
 
+/**
+ * Context needed to resolve custom properties in a container style query,
+ * for example `@container style(--foo: bar)`.
+ */
+export interface StyleQueryContext {
+  matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
+  containerNode: SDK.DOMModel.DOMNode;
+  tooltipPrefix: Tooltips.Tooltip.IdFactory;
+}
+
 export interface ViewInput {
   queryPrefix: string;
   queryName?: string;
@@ -115,7 +126,9 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
   #view: View;
   #queryPrefix = '';
   #queryName?: string;
+  #rawQueryText = '';
   #queryText: TextSection[] = [];
+  #styleQueryContext?: StyleQueryContext;
   #onQueryTextClick?: (event: Event) => void;
   #onLinkActivate?: (resolvedVariable: string|SDK.CSSMatchedStyles.CSSValueSource) => void;
   #getRegisteredPropertyDetails?: (variableName: string) => RegisteredPropertyDetails | undefined;
@@ -132,11 +145,38 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
   set data(data: CSSQueryData) {
     this.#queryPrefix = data.queryPrefix;
     this.#queryName = data.queryName;
+    this.#rawQueryText = data.queryText;
     this.#queryText = [{text: data.queryText, isVariable: false}];
     this.#onQueryTextClick = data.onQueryTextClick;
     this.#onLinkActivate = data.onLinkActivate;
     this.#getRegisteredPropertyDetails = data.getRegisteredPropertyDetails;
     this.#jslogContext = data.jslogContext;
+    if (this.#styleQueryContext) {
+      this.#applyStyleQueryContext(this.#styleQueryContext);
+    }
+    // Synchronous update required by ElementsTestRunner.printStyleSection and CSSQuery tests.
+    this.performUpdate();
+  }
+
+  /**
+   * Resolves custom properties in a container style query so parent Lit views
+   * can configure `CSSQuery` declaratively via `widget()` regardless of setter order.
+   */
+  set styleQueryContext(context: StyleQueryContext|undefined) {
+    if (this.#styleQueryContext === context) {
+      return;
+    }
+    this.#styleQueryContext = context;
+    if (context) {
+      this.#applyStyleQueryContext(context);
+    } else {
+      this.#matchedStyles = undefined;
+      this.#style = undefined;
+      this.#containerNode = undefined;
+      this.#tooltipPrefix = undefined;
+      this.#queryText = [{text: this.#rawQueryText, isVariable: false}];
+    }
+    // Synchronous update required by ElementsTestRunner.printStyleSection and CSSQuery tests.
     this.performUpdate();
   }
 
@@ -151,12 +191,17 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
       containerNode: SDK.DOMModel.DOMNode,
       tooltipPrefix: Tooltips.Tooltip.IdFactory,
       ): void {
+    this.styleQueryContext = {matchedStyles, style, containerNode, tooltipPrefix};
+  }
+
+  #applyStyleQueryContext(context: StyleQueryContext): void {
+    const {matchedStyles, style, containerNode, tooltipPrefix} = context;
     this.#matchedStyles = matchedStyles;
     this.#style = style;
     this.#containerNode = containerNode;
     this.#tooltipPrefix = tooltipPrefix;
 
-    const queryText = this.#queryText[0]?.text;
+    const queryText = this.#rawQueryText;
     if (!queryText) {
       return;
     }
@@ -204,7 +249,6 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
     }
 
     this.#queryText = sections;
-    this.performUpdate();
   }
 
   override performUpdate(): void {

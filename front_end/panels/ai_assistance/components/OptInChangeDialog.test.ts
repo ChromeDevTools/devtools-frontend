@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
-import {querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {assertScreenshot, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import type * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -23,6 +23,8 @@ describe('OptInChangeDialog', () => {
     });
     renderElementIntoDOM(component);
     await component.updateComplete;
+
+    await assertScreenshot('ai_assistance/opt_in_change_dialog.png');
 
     const h1 = querySelectorErrorOnMissing<HTMLElement>(component.element, 'h1');
     assert.strictEqual(h1.textContent?.trim(), 'AI assistance just got better');

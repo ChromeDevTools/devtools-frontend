@@ -32,11 +32,6 @@
   color: var(--sys-color-on-tonal-container);
 }
 
-.changes-toolbar {
-  background-color: var(--sys-color-cdt-base-container);
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
 [hidden] {
   display: none !important; /* stylelint-disable-line declaration-no-important */
 }

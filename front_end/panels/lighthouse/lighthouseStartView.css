@@ -10,8 +10,7 @@
   padding: var(--sys-size-11);
   overflow: auto;
   height: 100%;
-  /* for buttons */
-  --legacy-accent-color: #0535c1;
+
   --font-size: var(--sys-typescale-body2-size);
   --report-font-family: roboto, helvetica, arial, sans-serif;
 }

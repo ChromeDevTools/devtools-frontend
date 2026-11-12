@@ -87,6 +87,54 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.lengthOf(timelineData3.initiatorsData, 0);
   });
 
+  it('clears the cached selection on reset', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    dataProvider.timelineData();
+    const selection = dataProvider.createSelection(0);
+    assert.isNotNull(selection);
+    assert.strictEqual(dataProvider.entryIndexForSelection(selection), 0);
+    dataProvider.reset();
+    assert.strictEqual(dataProvider.entryIndexForSelection(selection), -1);
+  });
+
+  it('recomputes initiator arrows when loading a new trace at the same entry index', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    dataProvider.timelineData();
+
+    const event = parsedTrace.data.NetworkRequests.byId.get('90829.57');
+    assert.exists(event);
+    const index = dataProvider.indexForEvent(event);
+    assert.isNotNull(index);
+
+    dataProvider.buildFlowForInitiator(index);
+    assert.lengthOf(dataProvider.timelineData().initiatorsData, 3);
+
+    const parsedTrace2 = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const entityMapper2 = new Trace.EntityMapper.EntityMapper(parsedTrace2);
+
+    // Query the same numeric entry index in a fresh provider for the second trace to establish
+    // the expected arrows and verify index-keyed cache invalidation across setModel() calls.
+    const expectedProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    expectedProvider.setModel(parsedTrace2, entityMapper2);
+    expectedProvider.timelineData();
+    assert.exists(expectedProvider.eventByIndex(index));
+    expectedProvider.buildFlowForInitiator(index);
+    const expectedInitiators = expectedProvider.timelineData().initiatorsData;
+    assert.notStrictEqual(expectedInitiators.length, 3);
+
+    dataProvider.setModel(parsedTrace2, entityMapper2);
+    dataProvider.timelineData();
+
+    dataProvider.buildFlowForInitiator(index);
+    assert.deepEqual(dataProvider.timelineData().initiatorsData, expectedInitiators);
+  });
+
   it('can return the group for a given entryIndex', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');

@@ -515,11 +515,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   /**
-   * Reset all data other than the UI elements.
-   * This should be called when
-   * - initialized the data provider
-   * - a new trace file is coming (when `setModel()` is called)
-   * etc.
+   * Resets all per-trace data and caches while keeping cross-trace UI state
+   * (such as `#persistedGroupConfigSetting`).
    */
   reset(): void {
     this.currentLevel = 0;
@@ -537,6 +534,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.#entityMapper = null;
     this.#lastInitiatorEntryIndex = -1;
     this.#initiatorsCache.clear();
+    this.lastSelection = null;
   }
 
   maxStackDepth(): number {

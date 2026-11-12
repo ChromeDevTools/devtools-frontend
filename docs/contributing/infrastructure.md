@@ -130,8 +130,8 @@ and extended branch numbers in infra/config (example [CL](https://crrev.com/c/68
     - otherwise update it to the current stable number
   - stable number updates to the current beta number
   - beta number updates to the Chromium beta brunch number ([see](https://chromiumdash.appspot.com/branches))
-- regenerate the cfg files (`lucicfg main.star`), commit, upload and add
-  liviurau@chromium.org as reviewer (or another infra team member)
+- regenerate the cfg files (`lucicfg main.star`), commit, upload and add an
+  infra team member as reviewer
 
 Changing these numbers will reconfigure the CI and CQ for [beta](https://ci.chromium.org/p/devtools-frontend/g/beta/console),
 [stable](https://ci.chromium.org/p/devtools-frontend/g/stable/console) and

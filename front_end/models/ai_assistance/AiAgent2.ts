@@ -39,6 +39,9 @@ import {ToolRegistry} from './tools/ToolRegistry.js';
 
 const {debugLog} = AiUtils.Debug;
 
+const UNCHANGED_CONTEXT_PROMPT_NOTICE =
+    'The selected context is unchanged since it was last provided earlier in this conversation.';
+
 const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
   styling: 'CSS and styling',
   network: 'Network requests',
@@ -199,6 +202,18 @@ function hideStreamingSuggestions(text: string): string {
 }
 
 export class AiAgent2 extends AiAgent<unknown> {
+  /**
+   * Tracks the last context details sent to the LLM to prevent resending identical
+   * large context blocks on subsequent turns in the same conversation.
+   */
+  #lastSentPromptDetails: string|null = null;
+
+  override clearCache(): void {
+    super.clearCache();
+    // Reset the tracker so that if conversation history is dropped (e.g., after an
+    // abort or non-MAX_STEPS error), the full context block is safely resent on the next turn.
+    this.#lastSentPromptDetails = null;
+  }
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   readonly preamble: string = preamble;
   readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
@@ -344,16 +359,27 @@ export class AiAgent2 extends AiAgent<unknown> {
       // TODO: support multimodal input in AiAgent2.
       _multimodalInputType?: MultimodalInputType,
       ): Promise<string> {
+    const promptDetails = selected ? await selected.getPromptDetails() : null;
     let enhancedQuery = query;
-    if (selected) {
-      const promptDetails = await selected.getPromptDetails();
-      if (promptDetails) {
-        enhancedQuery = `${promptDetails}
+
+    if (!promptDetails) {
+      // Clear the tracker when there is no context (or an unsupported context type)
+      // so that if the user later switches back to a previously sent context, it is
+      // sent in full again rather than deduplicated.
+      this.#lastSentPromptDetails = null;
+    } else {
+      let contextDetails: string;
+      if (promptDetails === this.#lastSentPromptDetails) {
+        contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
+      } else {
+        contextDetails = promptDetails;
+        this.#lastSentPromptDetails = promptDetails;
+      }
+      enhancedQuery = `${contextDetails}
 
 # User request
 
 QUERY: ${query}`;
-      }
     }
 
     const unloadedSkills =

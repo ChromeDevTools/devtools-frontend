@@ -9,7 +9,7 @@ import sinon from 'sinon';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
+import {MockAidaAbortError, mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
@@ -27,6 +27,10 @@ const PerformanceTraceFormatter = AiAssistance.PerformanceTraceFormatter.Perform
 
 function assertIsFunctionResponse(part: Host.AidaClient.Part): asserts part is Host.AidaClient.FunctionResponsePart {
   assert.isTrue('functionResponse' in part);
+}
+
+function assertIsTextPart(part: Host.AidaClient.Part): asserts part is {text: string} {
+  assert.isTrue('text' in part);
 }
 
 function getFunctionDeclarations(
@@ -2158,4 +2162,134 @@ describe('AiAgent2', () => {
       assert.deepEqual(answer.suggestions, ['Final suggestion']);
     });
   });
+
+  describe('context deduplication', () => {
+    let contextA: AiAssistance.DOMNodeContext.DOMNodeContext;
+    let contextB: AiAssistance.DOMNodeContext.DOMNodeContext;
+    let promptDetailsStubA: sinon.SinonStub<[], Promise<string|null>>;
+
+    function createAgent(aidaClient = mockAidaClient()): AiAssistance.AiAgent2.AiAgent2 {
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+      mockSkills(agent, {});
+      return agent;
+    }
+
+    function getSentPromptText(
+        aidaClient: sinon.SinonStubbedInstance<Host.AidaClient.AidaClient>,
+        callIndex: number,
+        ): string {
+      const part = aidaClient.doConversation.getCall(callIndex).args[0].current_message.parts[0];
+      assertIsTextPart(part);
+      return part.text;
+    }
+
+    beforeEach(() => {
+      contextA = new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      promptDetailsStubA = sinon.stub(contextA, 'getPromptDetails').resolves('# Inspected element\n\nelement-A');
+      sinon.stub(contextA, 'getUserFacingDetails').resolves([{title: 'Data used', text: 'element-A'}]);
+
+      contextB = new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(contextB, 'getPromptDetails').resolves('# Inspected element\n\nelement-B');
+      sinon.stub(contextB, 'getUserFacingDetails').resolves([{title: 'Data used', text: 'element-B'}]);
+    });
+
+    it('replaces unchanged context details with a short notice on follow-up turns', async () => {
+      const aidaClient = mockAidaClient([[{explanation: 'answer 1'}], [{explanation: 'answer 2'}]]);
+      const agent = createAgent(aidaClient);
+
+      const responses1 = await Array.fromAsync(agent.run('question 1', {selected: contextA}));
+      const responses2 = await Array.fromAsync(agent.run('question 2', {selected: contextA}));
+
+      assert.exists(responses1.find(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT));
+      assert.exists(responses2.find(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT));
+      assert.strictEqual(getSentPromptText(aidaClient, 0),
+                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: question 1');
+      assert.strictEqual(
+          getSentPromptText(aidaClient, 1),
+          'The selected context is unchanged since it was last provided earlier in this conversation.\n\n# User request\n\nQUERY: question 2');
+
+      const historicalPart = aidaClient.doConversation.getCall(1).args[0].historical_contexts?.[0]?.parts[0];
+      assert.exists(historicalPart);
+      assertIsTextPart(historicalPart);
+      assert.strictEqual(historicalPart.text,
+                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: question 1');
+    });
+
+    it('resends full context details after switching to another context and back', async () => {
+      const agent = createAgent();
+
+      assert.strictEqual(await agent.enhanceQuery('q1', contextA),
+                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: q1');
+      assert.strictEqual(await agent.enhanceQuery('q2', contextB),
+                         '# Inspected element\n\nelement-B\n\n# User request\n\nQUERY: q2');
+      assert.strictEqual(await agent.enhanceQuery('q3', contextA),
+                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: q3');
+    });
+
+    it('resends full context details when the selected context mutates between turns', async () => {
+      const agent = createAgent();
+
+      await agent.enhanceQuery('q1', contextA);
+      promptDetailsStubA.resolves('# Inspected element\n\nelement-A-mutated');
+
+      assert.strictEqual(await agent.enhanceQuery('q2', contextA),
+                         '# Inspected element\n\nelement-A-mutated\n\n# User request\n\nQUERY: q2');
+    });
+
+    it('resends full context details after a turn with no selected context', async () => {
+      const agent = createAgent();
+
+      await agent.enhanceQuery('q1', contextA);
+      assert.strictEqual(await agent.enhanceQuery('q2', null), 'q2');
+      assert.strictEqual(await agent.enhanceQuery('q3', contextA),
+                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: q3');
+    });
+
+    it('resends full context details after a turn with a context that has no prompt details', async () => {
+      const agent = createAgent();
+      const storageContext = new AiAssistance.StorageContext.StorageContext(
+          AiAssistance.StorageItem.StorageItem.createGenericContext('https://example.com'));
+
+      await agent.enhanceQuery('q1', contextA);
+      assert.strictEqual(await agent.enhanceQuery('q2', storageContext), 'q2');
+      assert.strictEqual(await agent.enhanceQuery('q3', contextA),
+                         '# Inspected element\n\nelement-A\n\n# User request\n\nQUERY: q3');
+    });
+
+    it('resends full context details after a failed run clears the cache', async () => {
+      const aidaClient = mockAidaClient([[MockAidaAbortError], [{explanation: 'answer 2'}]]);
+      const agent = createAgent(aidaClient);
+
+      const responses1 = await Array.fromAsync(agent.run('q1', {selected: contextB}));
+      await Array.fromAsync(agent.run('q2', {selected: contextB}));
+
+      assert.exists(responses1.find(r => r.type === AiAssistance.AiAgent.ResponseType.ERROR &&
+                                        r.error === AiAssistance.AiAgent.ErrorType.ABORT));
+      assert.strictEqual(getSentPromptText(aidaClient, 1),
+                         '# Inspected element\n\nelement-B\n\n# User request\n\nQUERY: q2');
+    });
+
+    it('keeps deduplicating context details after a run reaches MAX_STEPS', async () => {
+      const mockData: Parameters<typeof mockAidaClient>[0] = [];
+      for (let i = 0; i < AiAssistance.AiAgent.MAX_STEPS; i++) {
+        mockData.push([{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['styling']}}] as [Host.AidaClient.AidaFunctionCall],
+        }]);
+      }
+      mockData.push([{explanation: 'follow-up answer'}]);
+      const aidaClient = mockAidaClient(mockData);
+      const agent = createAgent(aidaClient);
+
+      const responses1 = await Array.fromAsync(agent.run('q1', {selected: contextA}));
+      await Array.fromAsync(agent.run('q2', {selected: contextA}));
+
+      assert.exists(responses1.find(r => r.type === AiAssistance.AiAgent.ResponseType.ERROR &&
+                                        r.error === AiAssistance.AiAgent.ErrorType.MAX_STEPS));
+      assert.strictEqual(
+          getSentPromptText(aidaClient, AiAssistance.AiAgent.MAX_STEPS),
+          'The selected context is unchanged since it was last provided earlier in this conversation.\n\n# User request\n\nQUERY: q2');
+    });
+  });
+
 });

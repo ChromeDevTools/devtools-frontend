@@ -130,7 +130,7 @@
   /* See: crbug.com/1152736 for color variable migration. */
   font-weight: bold;
   padding-left: var(--sys-size-5);
-  padding-top: 10px;
+  padding-top: var(--sys-size-5);
 }
 
 .lighthouse-warning-text::before {

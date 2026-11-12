@@ -60,7 +60,7 @@ export async function getSelectedRequestName(devToolsPage: DevToolsPage): Promis
     return null;
   }
   return await request.evaluate(node => {
-    return node?.childNodes[2].textContent;
+    return [...node.childNodes].find(({nodeType}) => nodeType === Node.TEXT_NODE)?.textContent ?? null;
   });
 }
 

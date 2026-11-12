@@ -16,10 +16,40 @@ import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHe
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame} from '../../testing/ResourceHelpers.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Network from './network.js';
 
 const {urlString} = Platform.DevToolsPath;
+
+function createParentView(): sinon.SinonStubbedInstance<Network.NetworkLogView.NetworkLogView> {
+  return sinon.createStubInstance(Network.NetworkLogView.NetworkLogView);
+}
+
+function renderNodeRow(
+    node: Network.NetworkDataGridNode.NetworkRequestNode,
+    columnIds: string[] = ['name'],
+    ): HTMLTableRowElement {
+  const dataGrid = new DataGrid.DataGrid.DataGridImpl<Network.NetworkDataGridNode.NetworkNode>({
+    displayName: 'Network Log' as Platform.UIString.LocalizedString,
+    columns: columnIds.map(id => ({id, title: id as Platform.UIString.LocalizedString, sortable: false})),
+  });
+  node.dataGrid = dataGrid;
+  node.parent = dataGrid.rootNode();
+  const tr = document.createElement('tr');
+  node.createCells(tr);
+  return tr;
+}
+
+function renderNodeCell(
+    node: Network.NetworkDataGridNode.NetworkRequestNode,
+    columnId: string,
+    columnIds: string[] = [columnId],
+    ): HTMLTableCellElement {
+  const tr = renderNodeRow(node, columnIds);
+  const index = columnIds.indexOf(columnId);
+  return tr.cells[index >= 0 ? index : 0];
+}
 
 describeWithEnvironment('NetworkLogView', () => {
   it('adds marker to requests with overridden headers', async () => {
@@ -31,10 +61,8 @@ describeWithEnvironment('NetworkLogView', () => {
     });
     request.setWasIntercepted(true);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const marker = el.querySelector('.network-override-marker');
     const tooltip = el.querySelector('[title="Request headers are overridden"]');
     assert.instanceOf(marker, HTMLDivElement);
@@ -49,10 +77,8 @@ describeWithEnvironment('NetworkLogView', () => {
     request.setWasIntercepted(true);
     request.hasOverriddenContent = true;
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const marker = el.querySelector('.network-override-marker');
     const tooltip = el.querySelector('[title="Request content is overridden"]');
     assert.instanceOf(marker, HTMLDivElement);
@@ -69,10 +95,8 @@ describeWithEnvironment('NetworkLogView', () => {
     request.setWasIntercepted(true);
     request.hasOverriddenContent = true;
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const marker = el.querySelector('.network-override-marker');
     const tooltip = el.querySelector('[title="Both request content and headers are overridden"]');
     assert.instanceOf(marker, HTMLDivElement);
@@ -85,10 +109,8 @@ describeWithEnvironment('NetworkLogView', () => {
       statusCode: 200,
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const marker = el.querySelector('.network-override-marker');
     assert.isNull(marker);
   });
@@ -100,10 +122,8 @@ describeWithEnvironment('NetworkLogView', () => {
     });
     request.setWasIntercepted(true);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const marker = el.querySelector('.network-override-marker');
     assert.isNull(marker);
   });
@@ -114,11 +134,8 @@ describeWithEnvironment('NetworkLogView', () => {
       statusCode: 404,
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('cross-circle-filled', iconImage);
@@ -131,11 +148,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'text/html',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-document', iconImage);
@@ -151,11 +165,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'audio/mpeg',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-media', iconImage);
@@ -168,11 +179,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'application/wasm',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-wasm', iconImage);
@@ -185,11 +193,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: '',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-websocket', iconImage);
@@ -202,11 +207,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: '',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-fetch-xhr', iconImage);
@@ -219,11 +221,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'application/octet-stream',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-fetch-xhr', iconImage);
@@ -236,11 +235,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'image/svg+xml',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon.image') as HTMLElement;
     const imagePreview = el.querySelector('.image-network-icon-preview') as HTMLImageElement;
 
@@ -255,11 +251,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'text/html',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-document', iconImage);
@@ -272,11 +265,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'text/plain',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-generic', iconImage);
@@ -289,11 +279,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'application/javascript',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-script', iconImage);
@@ -306,11 +293,8 @@ describeWithEnvironment('NetworkLogView', () => {
       mimeType: 'application/json',
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('file-json', iconImage);
@@ -322,11 +306,8 @@ describeWithEnvironment('NetworkLogView', () => {
       statusCode: 305,
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-
-    networkRequestNode.renderCell(el, 'status');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'status');
 
     assert.strictEqual(el.title, '305 Use Proxy');
   });
@@ -340,10 +321,8 @@ describeWithEnvironment('NetworkLogView', () => {
     });
     request.setWasIntercepted(true);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'has-overrides');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'has-overrides');
     const marker = el.innerText;
     assert.strictEqual(marker, 'headers');
   });
@@ -356,10 +335,8 @@ describeWithEnvironment('NetworkLogView', () => {
     request.setWasIntercepted(true);
     request.hasOverriddenContent = true;
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'has-overrides');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'has-overrides');
     const marker = el.innerText;
     assert.strictEqual(marker, 'content');
   });
@@ -374,10 +351,8 @@ describeWithEnvironment('NetworkLogView', () => {
     request.setWasIntercepted(true);
     request.hasOverriddenContent = true;
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'has-overrides');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'has-overrides');
     const marker = el.innerText;
     assert.strictEqual(marker, 'content, headers');
   });
@@ -389,10 +364,8 @@ describeWithEnvironment('NetworkLogView', () => {
     });
     request.setWasIntercepted(false);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'has-overrides');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'has-overrides');
     const marker = el.innerText;
     assert.strictEqual(marker, '');
   });
@@ -414,10 +387,8 @@ describeWithEnvironment('NetworkLogView', () => {
       exemptedResponseCookies: undefined,
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'set-cookies');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'set-cookies');
     assert.strictEqual(el.innerText, '1');
   });
 
@@ -432,10 +403,8 @@ describeWithEnvironment('NetworkLogView', () => {
     });
     Logs.NetworkLog.NetworkLog.instance().importRequests([request1, request2]);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request2);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'request-number');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request2);
+    const el = renderNodeCell(networkRequestNode, 'request-number');
 
     assert.strictEqual(el.innerText, '2');
   });
@@ -444,10 +413,8 @@ describeWithEnvironment('NetworkLogView', () => {
     const request = createNetworkRequest({url: 'https://www.example.com'});
     request.setFromEarlyHints();
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'initiator');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'initiator');
 
     assert.strictEqual(el.innerText, 'Early-hints');
     const tooltip = el.getAttribute('title')!;
@@ -457,10 +424,8 @@ describeWithEnvironment('NetworkLogView', () => {
   it('shows other in initiator column when request has no initiator and is not from early hints', async () => {
     const request = createNetworkRequest({url: 'https://www.example.com'});
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'initiator');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'initiator');
 
     assert.strictEqual(el.innerText, 'Other');
     const tooltip = el.getAttribute('title')!;
@@ -479,10 +444,8 @@ describeWithEnvironment('NetworkLogView', () => {
     request.resourceSize = 4;
     request.setTransferSize(2);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'size');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'size');
     assert.strictEqual(el.innerText, '(ServiceWorker router)0.0\xa0kB');
     const tooltip = el.getAttribute('title')!;
     const expected = 'Matched to ServiceWorker router#1, 0.0\xa0kB transferred over network, resource size: 0.0\xa0kB';
@@ -499,10 +462,8 @@ describeWithEnvironment('NetworkLogView', () => {
     request.resourceSize = 4;
     request.setTransferSize(2);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'size');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'size');
     assert.strictEqual(el.innerText, '(ServiceWorker)0.0\xa0kB');
     const tooltip = el.getAttribute('title')!;
     assert.strictEqual(tooltip, 'Served from ServiceWorker, resource size: 0.0\xa0kB');
@@ -517,10 +478,8 @@ describeWithEnvironment('NetworkLogView', () => {
     request.resourceSize = 4;
     request.setTransferSize(2);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'size');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'size');
     assert.strictEqual(el.innerText, '0.0\xa0kB0.0\xa0kB');
     const tooltip = el.getAttribute('title')!;
     const expected = '0.0\xa0kB transferred over network, resource size: 0.0\xa0kB, no matching ServiceWorker routes';
@@ -535,12 +494,8 @@ describeWithEnvironment('NetworkLogView', () => {
       resourceType: Common.ResourceType.resourceTypes.Prefetch,
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.createCells(el);
-    const cell = el.appendChild(document.createElement('div'));
-    networkRequestNode.renderCell(cell, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeRow(networkRequestNode, ['name']);
 
     // The row should have the warning-row class name.
     assert.isTrue(el.classList.contains('network-warning-row'));
@@ -560,12 +515,8 @@ describeWithEnvironment('NetworkLogView', () => {
       initiator: {type: Protocol.Network.InitiatorType.Preload},
     });
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.createCells(el);
-    const cell = el.appendChild(document.createElement('div'));
-    networkRequestNode.renderCell(cell, 'name');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeRow(networkRequestNode, ['name']);
 
     // The row should have the warning-row class name.
     assert.isTrue(el.classList.contains('network-warning-row'));
@@ -620,8 +571,7 @@ describeWithEnvironment('NetworkLogView', () => {
           request.responseHeaders = [{name: 'foo', value: 'overridden'}];
           request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
         }
-        return new Network.NetworkDataGridNode.NetworkRequestNode(
-            {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+        return new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
       };
 
       const nodeNone = createRequest(false, false, 'none');
@@ -647,24 +597,21 @@ describeWithEnvironment('NetworkLogView', () => {
     });
 
     it('should handle null requests correctly', () => {
-      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, createNetworkRequest({
-            requestId: 'a',
-            url: 'https://www.example.com',
-          }));
+      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), createNetworkRequest({
+                                                                         requestId: 'a',
+                                                                         url: 'https://www.example.com',
+                                                                       }));
 
-      const nodeNull1 = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, createNetworkRequest({
-            requestId: 'null1',
-            url: 'https://www.example.com',
-          }));
+      const nodeNull1 = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), createNetworkRequest({
+                                                                             requestId: 'null1',
+                                                                             url: 'https://www.example.com',
+                                                                           }));
       sinon.stub(nodeNull1, 'requestOrFirstKnownChildRequest').returns(null);
 
-      const nodeNull2 = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, createNetworkRequest({
-            requestId: 'null2',
-            url: 'https://www.example.com',
-          }));
+      const nodeNull2 = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), createNetworkRequest({
+                                                                             requestId: 'null2',
+                                                                             url: 'https://www.example.com',
+                                                                           }));
       sinon.stub(nodeNull2, 'requestOrFirstKnownChildRequest').returns(null);
 
       // null vs null -> 0
@@ -687,8 +634,7 @@ describeWithEnvironment('NetworkLogView', () => {
           url: `https://www.example.com/${id}`,
         });
         req.setIsLinkPreload(isLinkPreload);
-        return new Network.NetworkDataGridNode.NetworkRequestNode(
-            {} as Network.NetworkDataGridNode.NetworkLogViewInterface, req);
+        return new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), req);
       };
 
       const nodePreloaded = createPreloadRequest(true, 'a');
@@ -701,10 +647,8 @@ describeWithEnvironment('NetworkLogView', () => {
     });
 
     it('handles nodes without requests symmetrically', () => {
-      const emptyNodeA =
-          new Network.NetworkDataGridNode.NetworkGroupNode({} as Network.NetworkDataGridNode.NetworkLogViewInterface);
-      const emptyNodeB =
-          new Network.NetworkDataGridNode.NetworkGroupNode({} as Network.NetworkDataGridNode.NetworkLogViewInterface);
+      const emptyNodeA = new Network.NetworkDataGridNode.NetworkGroupNode(createParentView());
+      const emptyNodeB = new Network.NetworkDataGridNode.NetworkGroupNode(createParentView());
 
       assert.strictEqual(Network.NetworkDataGridNode.NetworkRequestNode.IsPreloadedComparator(emptyNodeA, emptyNodeB),
                          0);
@@ -715,15 +659,12 @@ describeWithEnvironment('NetworkLogView', () => {
     const request = createNetworkRequest({url: 'https://www.example.com'});
     request.setIsLinkPreload(true);
 
-    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    const el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'is-preloaded');
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+    const el = renderNodeCell(networkRequestNode, 'is-preloaded');
     assert.strictEqual(el.textContent, 'true');
 
-    const el2 = document.createElement('div');
     request.setIsLinkPreload(false);
-    networkRequestNode.renderCell(el2, 'is-preloaded');
+    const el2 = renderNodeCell(networkRequestNode, 'is-preloaded');
     assert.strictEqual(el2.textContent, 'false');
   });
 
@@ -903,10 +844,8 @@ describeWithEnvironment('NetworkLogView', () => {
         url: 'https://www.example.com',
       });
 
-      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, requestA);
-      const nodeB = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, requestB);
+      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), requestA);
+      const nodeB = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), requestB);
 
       // Both have empty context (no target/frame), so they should be equal
       assert.strictEqual(Network.NetworkDataGridNode.NetworkRequestNode.ExecutionContextComparator(nodeA, nodeB), 0);
@@ -933,10 +872,8 @@ describeWithEnvironment('NetworkLogView', () => {
             return '';
           });
 
-      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, requestA);
-      const nodeB = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, requestB);
+      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), requestA);
+      const nodeB = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), requestB);
 
       assert.isBelow(Network.NetworkDataGridNode.NetworkRequestNode.ExecutionContextComparator(nodeA, nodeB), 0);
       assert.isAbove(Network.NetworkDataGridNode.NetworkRequestNode.ExecutionContextComparator(nodeB, nodeA), 0);
@@ -947,14 +884,12 @@ describeWithEnvironment('NetworkLogView', () => {
         requestId: 'a',
         url: 'https://www.example.com',
       });
-      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, requestA);
+      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), requestA);
 
-      const nodeNull = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, createNetworkRequest({
-            requestId: 'null',
-            url: 'https://www.example.com',
-          }));
+      const nodeNull = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), createNetworkRequest({
+                                                                            requestId: 'null',
+                                                                            url: 'https://www.example.com',
+                                                                          }));
       sinon.stub(nodeNull, 'requestOrFirstKnownChildRequest').returns(null);
 
       // null sorts before valid
@@ -1070,10 +1005,8 @@ describeWithEnvironment('NetworkLogView', () => {
         },
       });
 
-      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-      const el = document.createElement('div');
-      networkRequestNode.renderCell(el, 'name');
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+      const el = renderNodeCell(networkRequestNode, 'name');
       const icon = el.querySelector('.network-console-icon');
       assert.instanceOf(icon, HTMLElement);
     });
@@ -1085,10 +1018,8 @@ describeWithEnvironment('NetworkLogView', () => {
         mimeType: 'text/html',
       });
 
-      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-      const el = document.createElement('div');
-      networkRequestNode.renderCell(el, 'name');
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+      const el = renderNodeCell(networkRequestNode, 'name');
       const icon = el.querySelector('.network-console-icon');
       assert.isNull(icon);
     });
@@ -1106,10 +1037,8 @@ describeWithEnvironment('NetworkLogView', () => {
           resourceType: Common.ResourceType.resourceTypes.Document,
         });
 
-        const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-            {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-        const el = document.createElement('div');
-        networkRequestNode.renderCell(el, 'name');
+        const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+        const el = renderNodeCell(networkRequestNode, 'name');
         el.dispatchEvent(new MouseEvent('dblclick'));
 
         sinon.assert.notCalled(openInNewTabStub);
@@ -1123,10 +1052,8 @@ describeWithEnvironment('NetworkLogView', () => {
         resourceType: Common.ResourceType.resourceTypes.Document,
       });
 
-      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-      const el = document.createElement('div');
-      networkRequestNode.renderCell(el, 'name');
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+      const el = renderNodeCell(networkRequestNode, 'name');
       el.dispatchEvent(new MouseEvent('dblclick'));
 
       sinon.assert.calledOnceWithExactly(openInNewTabStub, urlString`https://www.example.com/`, undefined);
@@ -1159,10 +1086,8 @@ describeWithEnvironment('NetworkLogView', () => {
       const request = target.model(SDK.NetworkManager.NetworkManager)?.requestForId(requestId);
       assert.exists(request);
 
-      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-      const el = document.createElement('div');
-      networkRequestNode.renderCell(el, 'name');
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(createParentView(), request);
+      const el = renderNodeCell(networkRequestNode, 'name');
       el.dispatchEvent(new MouseEvent('dblclick'));
 
       sinon.assert.calledOnceWithExactly(openInNewTabStub, url, frame.id);

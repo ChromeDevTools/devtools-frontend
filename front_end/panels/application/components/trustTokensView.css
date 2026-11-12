@@ -27,7 +27,3 @@ devtools-icon {
   width: var(--sys-size-7);
   height: var(--sys-size-7);
 }
-
-.no-tt-message {
-  margin-top: var(--sys-size-9);
-}

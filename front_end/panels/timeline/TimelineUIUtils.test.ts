@@ -404,22 +404,13 @@ describeWithEnvironment('TimelineUIUtils', function() {
       styleElement.textContent = `
 :root {
   --app-color-loading: rgb(0 0 0);
-  --app-color-loading-children: rgb(1 1 1);
   --app-color-scripting: rgb(2 2 2);
-  --app-color-scripting-children: rgb(3 3 3);
   --app-color-rendering: rgb(4 4 4);
   --app-color-rendering-children: rgb(5 5 5);
   --app-color-painting: rgb(6 6 6);
-  --app-color-painting-children: rgb(7 7 7);
-  --app-color-task: rgb(8 8 8);
-  --app-color-task-children: rgb(9 9 9);
   --app-color-system: rgb(10 10 10);
-  --app-color-system-children: rgb(11 11 11);
   --app-color-idle: rgb(12 12 12);
-  --app-color-idle-children: rgb(13 13 13);
   --app-color-async: rgb(14 14 14);
-  --app-color-async-children: rgb(15 15 15);
-  --app-color-other: rgb(16 16 16);
 }
 `;
       document.documentElement.appendChild(styleElement);

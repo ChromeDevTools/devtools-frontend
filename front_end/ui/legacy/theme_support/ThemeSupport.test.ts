@@ -485,7 +485,7 @@ describeWithEnvironment('ThemeSupport', () => {
 
         this.#shadow.innerHTML = `<style>
           :host {
-            --color-primary-old: red;
+            --sys-color-primary: red;
           }
           </style>`;
       }
@@ -496,29 +496,29 @@ describeWithEnvironment('ThemeSupport', () => {
     });
 
     it('obtains computed values correctly (document)', () => {
-      assert.isNotEmpty(themeSupport.getComputedValue('--color-primary-old'));
+      assert.isNotEmpty(themeSupport.getComputedValue('--sys-color-primary'));
     });
 
     it('obtains computed values correctly (element)', () => {
       const element = new StyledComponent();
       renderElementIntoDOM(element);
 
-      const documentValue = themeSupport.getComputedValue('--color-primary-old');
-      const elementValue = themeSupport.getComputedValue('--color-primary-old', element);
+      const documentValue = themeSupport.getComputedValue('--sys-color-primary');
+      const elementValue = themeSupport.getComputedValue('--sys-color-primary', element);
       assert.isNotEmpty(elementValue);
       assert.notStrictEqual(documentValue, elementValue);
     });
 
     it('caches computed values (document)', () => {
-      const documentValue = themeSupport.getComputedValue('--color-primary-old');
+      const documentValue = themeSupport.getComputedValue('--sys-color-primary');
 
       // Update the styles by adding a new style tag, and confirm that the old
       // value is still returned.
       const newStyle = document.createElement('style');
-      newStyle.textContent = ':root { --color-primary-old: green; }';
+      newStyle.textContent = ':root { --sys-color-primary: green; }';
       document.head.appendChild(newStyle);
 
-      const updatedDocumentValue = themeSupport.getComputedValue('--color-primary-old');
+      const updatedDocumentValue = themeSupport.getComputedValue('--sys-color-primary');
       newStyle.remove();
 
       assert.strictEqual(documentValue, updatedDocumentValue);
@@ -528,16 +528,16 @@ describeWithEnvironment('ThemeSupport', () => {
       const element = new StyledComponent();
       renderElementIntoDOM(element);
 
-      const elementValue = themeSupport.getComputedValue('--color-primary-old', element);
+      const elementValue = themeSupport.getComputedValue('--sys-color-primary', element);
       assert.isNotEmpty(elementValue);
 
       // Update the styles by adding a new style tag, and confirm that the old
       // value is still returned.
       const newStyle = document.createElement('style');
-      newStyle.textContent = ':root { --color-primary-old: green; }';
+      newStyle.textContent = ':root { --sys-color-primary: green; }';
 
       element.shadowRoot!.appendChild(newStyle);
-      const updatedElementValue = themeSupport.getComputedValue('--color-primary-old', element);
+      const updatedElementValue = themeSupport.getComputedValue('--sys-color-primary', element);
 
       assert.strictEqual(elementValue, updatedElementValue);
     });

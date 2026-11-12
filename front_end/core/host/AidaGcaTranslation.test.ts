@@ -92,14 +92,24 @@ function describeCommonRequestFields(
     it('maps common options and metadata', () => {
       const aidaRequest = aidaRequestFactory({
         options: {temperature: 0.5, model_id: 'test-model'},
-        metadata: {string_session_id: 'session-123'},
+        metadata: {string_session_id: 'Session-123!'},
       });
       const result = translateFn(aidaRequest);
       assert.strictEqual(result.model, 'test-model');
-      assert.strictEqual(result.labels?.['session_id'], 'session-123');
+      assert.strictEqual(result.sessionId, 'Session-123!');
+      assert.strictEqual(result.labels?.['session_id'], 'session-123_');
       assert.strictEqual(result.labels?.['client_version'], '1_2_3_4');
       assert.strictEqual(result.labels?.['disable_user_content_logging'], 'false');
       assert.strictEqual(result.generationConfig?.temperature, 0.5);
+    });
+
+    it('omits sessionId when string_session_id is empty', () => {
+      const aidaRequest = aidaRequestFactory({
+        metadata: {string_session_id: ''},
+      });
+      const result = translateFn(aidaRequest);
+      assert.notProperty(result, 'sessionId');
+      assert.isUndefined(result.labels?.['session_id']);
     });
 
     it('maps client and feature labels', () => {
@@ -574,6 +584,7 @@ describe('AidaGcaTranslation', () => {
       const expectedGcaRequest = createGcaRequest('complete_code', {
         contents: [],
 
+        sessionId: 'session-456',
         model: 'code-model',
         generationConfig: {stopSequences: ['\n'], temperature: 0},
         labels: {
@@ -678,6 +689,7 @@ describe('AidaGcaTranslation', () => {
       const expectedGcaRequest = createGcaRequest('generate_code', {
         contents: [{role: 'user', parts: [{text: 'fix the bug'}]}],
         systemInstruction: {role: 'user', parts: [{text: 'Help me with this'}]},
+        sessionId: 'session-789',
         model: 'gen-model',
         generationConfig: {temperature: 0.7},
         labels: {

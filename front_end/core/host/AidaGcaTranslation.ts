@@ -94,6 +94,10 @@ function mapCommonAidaRequestFields(aidaRequest: AidaRequest, gcaRequest: GCA.Ge
       temperature: aidaRequest.options.temperature,
     };
   }
+  if (aidaRequest.metadata?.string_session_id) {
+    // Populate top-level sessionId for server-side session affinity; labels['session_id'] only sets a sanitized GCP label.
+    gcaRequest.sessionId = aidaRequest.metadata.string_session_id;
+  }
 }
 
 export function gcaResponseToAidaDoConversationResponse(response: GCA.GenerateContentResponse):

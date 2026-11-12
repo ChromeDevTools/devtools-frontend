@@ -6,7 +6,7 @@
 /* <3 */
 
 .lighthouse-start-view {
-  line-height: 18px;
+  line-height: var(--sys-typescale-body4-line-height);
   padding: var(--sys-size-11);
   overflow: auto;
   height: 100%;

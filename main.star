@@ -190,8 +190,6 @@ luci.notifier(
     ] + EXCLUDED_STEPS,
     notify_blamelist = True,
     notify_emails = [
-        "liviurau@google.org",
-        "chrome-devtools-waterfall-gardener-amer-oncall@google.com",
         "chrome-devtools-waterfall-gardener-emea-oncall@google.com",
     ],
 )
@@ -210,8 +208,6 @@ luci.notifier(
     ] + EXCLUDED_STEPS,
     notify_blamelist = False,
     notify_emails = [
-        "liviurau@google.org",
-        "chrome-devtools-waterfall-gardener-amer-oncall@google.com",
         "chrome-devtools-waterfall-gardener-emea-oncall@google.com",
     ],
 )
@@ -263,8 +259,7 @@ luci.notifier(
         ".*Previous roll failed",
     ],
     notify_emails = [
-        "liviurau@google.com",
-        "chrome-devtools-staff+oncall-change@google.com",
+        "chrome-devtools-waterfall-gardener-emea-oncall@google.com",
     ],
     template = luci.notifier_template(
         name = "sheriff_email",
@@ -285,7 +280,7 @@ luci.notifier(
     failed_step_regexp = [
         ".*look up .*",
     ],
-    notify_emails = ["alexschulze@google.com", "machenbach@google.com", "liviurau@google.com"],
+    notify_emails = ["alexschulze@google.com", "machenbach@google.com"],
     template = luci.notifier_template(
         name = "failed_deps_lookup_email",
         body = """Dependency Roller: {{.Build.Builder.Builder}} has not found a recent version

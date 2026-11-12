@@ -34,7 +34,6 @@ interface ViewInput {
 
 interface ViewOutput {
   replay?: () => void;
-  focus?: () => void;
 }
 
 type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
@@ -99,6 +98,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   render(html`
     <div class="animation-group-preview-ui">
       <button
+        autofocus
         jslog=${VisualLogging.item(`animations.buffer-preview${input.isScrollDrivenAnimationGroup ? '-sda' : ''}`).track({click: true, resize: true})}
         class=${classes}
         role="option"
@@ -106,14 +106,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         tabindex=${input.isFocusable ? 0 : -1}
         @keydown=${handleKeyDown}
         @click=${input.onSelectAnimationGroup}
-        @animationend=${input.onPreviewAnimationEnd}
-        ${ref(el => {
-          if (el instanceof HTMLElement) {
-            output.focus = () => {
-              el.focus();
-            };
-          }
-        })}>
+        @animationend=${input.onPreviewAnimationEnd}>
           <div class="animation-paused fill"></div>
           <devtools-icon name=${input.isScrollDrivenAnimationGroup ? 'mouse' : 'watch'} class="preview-icon"></devtools-icon>
           <div class="animation-buffer-preview-animation" ${ref(el => {
@@ -143,32 +136,35 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format on
 };
 
-interface AnimationGroupPreviewConfig {
-  animationGroup: SDK.AnimationModel.AnimationGroup;
-  label: string;
-  onRemoveAnimationGroup: () => void;
-  onSelectAnimationGroup: () => void;
-  onFocusNextGroup: () => void;
-  onFocusPreviousGroup: () => void;
-}
-
 export class AnimationGroupPreviewUI extends UI.Widget.Widget {
+  label = '';
+  onRemoveAnimationGroup: () => void = () => {};
+  onSelectAnimationGroup: () => void = () => {};
+  onFocusNextGroup: () => void = () => {};
+  onFocusPreviousGroup: () => void = () => {};
   #view: View;
   #viewOutput: ViewOutput = {};
-  #config: AnimationGroupPreviewConfig;
+  #animationGroup?: SDK.AnimationModel.AnimationGroup;
   #previewAnimationDisabled = false;
   #selected = false;
   #paused = false;
   #focusable = false;
 
-  constructor(config: AnimationGroupPreviewConfig, view: View = DEFAULT_VIEW) {
-    super();
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
     this.#view = view;
-    this.#config = config;
+  }
+
+  set animationGroup(animationGroup: SDK.AnimationModel.AnimationGroup) {
+    if (this.#animationGroup === animationGroup) {
+      return;
+    }
+
+    this.#animationGroup = animationGroup;
     this.requestUpdate();
   }
 
-  setSelected(selected: boolean): void {
+  set selected(selected: boolean) {
     if (this.#selected === selected) {
       return;
     }
@@ -177,7 +173,7 @@ export class AnimationGroupPreviewUI extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  setPaused(paused: boolean): void {
+  set paused(paused: boolean) {
     if (this.#paused === paused) {
       return;
     }
@@ -186,7 +182,7 @@ export class AnimationGroupPreviewUI extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  setFocusable(focusable: boolean): void {
+  set focusable(focusable: boolean) {
     if (this.#focusable === focusable) {
       return;
     }
@@ -195,41 +191,48 @@ export class AnimationGroupPreviewUI extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
+    const animationGroup = this.#animationGroup;
+    if (!animationGroup) {
+      return;
+    }
     this.#view({
-      isScrollDrivenAnimationGroup: this.#config.animationGroup.isScrollDriven(),
+      isScrollDrivenAnimationGroup: animationGroup.isScrollDriven(),
       isPreviewAnimationDisabled: this.#previewAnimationDisabled,
       isSelected: this.#selected,
       isPaused: this.#paused,
       isFocusable: this.#focusable,
-      label: this.#config.label,
-      animationGroupDuration: this.#config.animationGroup.groupDuration(),
-      animations: this.#config.animationGroup.animations().slice(0, MAX_ANIMATION_LINES_TO_SHOW),
+      label: this.label,
+      animationGroupDuration: animationGroup.groupDuration(),
+      animations: animationGroup.animations().slice(0, MAX_ANIMATION_LINES_TO_SHOW),
       onPreviewAnimationEnd: () => {
         this.#previewAnimationDisabled = true;
         this.requestUpdate();
       },
       onRemoveAnimationGroup: () => {
-        this.#config.onRemoveAnimationGroup();
+        this.onRemoveAnimationGroup();
       },
       onSelectAnimationGroup: () => {
-        this.#config.onSelectAnimationGroup();
+        this.onSelectAnimationGroup();
       },
       onFocusNextGroup: () => {
-        this.#config.onFocusNextGroup();
+        this.onFocusNextGroup();
       },
       onFocusPreviousGroup: () => {
-        this.#config.onFocusPreviousGroup();
+        this.onFocusPreviousGroup();
       },
     },
                this.#viewOutput, this.contentElement);
   }
 
-  override focus(): void {
-    this.#viewOutput.focus?.();
-  }
-
   replay(): void {
+    // The animation group may have been updated, so re-render the preview lines as well.
+    this.requestUpdate();
     this.#viewOutput.replay?.();
   }
 }

@@ -132,6 +132,17 @@ interface ToolbarViewInput {
   onSetPlaybackRateClick: (playbackRate: number) => void;
 }
 
+export interface NodeRowViewInput {
+  key: number;
+  /** `undefined` while the node is being resolved, `null` if it could not be resolved. */
+  node: SDK.DOMModel.DOMNode|null|undefined;
+  linkOptions: PanelsCommon.DOMLinkifier.Options;
+  backendNodeId?: string;
+  targetId?: string;
+  removed: boolean;
+  selected: boolean;
+}
+
 interface ToolbarViewOutput {
   focusClearButton?: () => void;
 }
@@ -619,7 +630,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       this.#selectedGroup.togglePause(pause);
       const preview = this.#previewMap.get(this.#selectedGroup);
       if (preview) {
-        preview.setPaused(pause);
+        preview.paused = pause;
       }
     }
     if (this.#scrubberPlayer) {
@@ -743,22 +754,21 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private createPreview(group: SDK.AnimationModel.AnimationGroup): void {
-    const preview = new AnimationGroupPreviewUI({
-      animationGroup: group,
-      label: i18nString(UIStrings.animationPreviewS, {PH1: this.#groupBuffer.length + 1}),
-      onRemoveAnimationGroup: () => {
-        this.removeAnimationGroup(group);
-      },
-      onSelectAnimationGroup: () => {
-        void this.selectAnimationGroup(group);
-      },
-      onFocusNextGroup: () => {
-        this.focusNextGroup(group);
-      },
-      onFocusPreviousGroup: () => {
-        this.focusNextGroup(group, /* focusPrevious */ true);
-      },
-    });
+    const preview = new AnimationGroupPreviewUI();
+    preview.animationGroup = group;
+    preview.label = i18nString(UIStrings.animationPreviewS, {PH1: this.#groupBuffer.length + 1});
+    preview.onRemoveAnimationGroup = () => {
+      this.removeAnimationGroup(group);
+    };
+    preview.onSelectAnimationGroup = () => {
+      void this.selectAnimationGroup(group);
+    };
+    preview.onFocusNextGroup = () => {
+      this.focusNextGroup(group);
+    };
+    preview.onFocusPreviousGroup = () => {
+      this.focusNextGroup(group, /* focusPrevious */ true);
+    };
 
     const previewUiContainer = document.createElement('div');
     previewUiContainer.classList.add('preview-ui-container');
@@ -775,7 +785,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     if (this.#previewMap.size === 1) {
       const preview = this.#previewMap.get(this.#groupBuffer[0]);
       if (preview) {
-        preview.setFocusable(true);
+        preview.focusable = true;
       }
     }
   }
@@ -860,13 +870,13 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     }
     const preview = this.#previewMap.get(this.#groupBuffer[nextIndex]);
     if (preview) {
-      preview.setFocusable(true);
+      preview.focusable = true;
       preview.focus();
     }
 
     const previousPreview = this.#previewMap.get(group);
     if (previousPreview) {
-      previousPreview.setFocusable(false);
+      previousPreview.focusable = false;
     }
   }
 
@@ -895,7 +905,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         this.#previewMap.get(this.#groupBuffer[currentGroupIndex]);
 
     if (nextGroup) {
-      nextGroup.setFocusable(true);
+      nextGroup.focusable = true;
       nextGroup.focus();
     }
   }
@@ -922,7 +932,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.clearTimeline();
     this.#selectedGroup = group;
     this.#previewMap.forEach((previewUI: AnimationGroupPreviewUI, group: SDK.AnimationModel.AnimationGroup) => {
-      previewUI.setSelected(this.#selectedGroup === group);
+      previewUI.selected = (this.#selectedGroup === group);
     });
 
     if (group.isScrollDriven()) {
@@ -1235,20 +1245,38 @@ export class AnimationTimeline extends UI.Widget.VBox implements
 
 export const GlobalPlaybackRates: number[] = [1, 0.25, 0.1];
 
-const enum ControlState {
+export const enum ControlState {
   PLAY = 'play-outline',
   REPLAY = 'replay-outline',
   PAUSE = 'pause-outline',
 }
 
+/**
+ * Presentation state of the timeline row for a single animated DOM node.
+ */
 export class NodeUI {
+  readonly #linkOptions: PanelsCommon.DOMLinkifier.Options = {
+    onClick: () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimatedNodeDescriptionClicked);
+    },
+  };
+  // Keeps the resolved DOMNode even after it is detached from the document so
+  // the row description continues rendering it (`undefined` while pending,
+  // `null` if resolution failed).
+  #resolvedNode?: SDK.DOMModel.DOMNode|null;
+  #backendNodeId?: string;
+  #targetId?: string;
+  #removed = false;
+  #selected = false;
+  // The currently attached DOMNode; cleared to `null` in `nodeRemoved()`.
+  #node?: SDK.DOMModel.DOMNode|null;
+
   element: HTMLDivElement;
   readonly #description: HTMLElement;
   readonly #timelineElement: HTMLElement;
   #overlayElement?: HTMLElement;
-  #node?: SDK.DOMModel.DOMNode|null;
 
-  constructor(_animationEffect: SDK.AnimationModel.AnimationEffect) {
+  constructor(_animationEffect?: SDK.AnimationModel.AnimationEffect) {
     this.element = document.createElement('div');
     this.element.classList.add('animation-node-row');
     this.element.setAttribute('jslog', `${VisualLogging.tableRow('animation-node-row')}`);
@@ -1259,20 +1287,27 @@ export class NodeUI {
     UI.ARIAUtils.markAsApplication(this.#timelineElement);
   }
 
+  /** The node rendered in the description, `undefined` while unresolved. */
+  get resolvedNode(): SDK.DOMModel.DOMNode|null|undefined {
+    return this.#resolvedNode;
+  }
+
   nodeResolved(node: SDK.DOMModel.DOMNode|null): void {
     if (!node) {
-      UI.UIUtils.createTextChild(this.#description, '<node>');
+      if (this.#resolvedNode === undefined) {
+        UI.UIUtils.createTextChild(this.#description, '<node>');
+        this.#resolvedNode = null;
+      }
       return;
     }
+    this.#backendNodeId = String(node.backendNodeId());
+    this.#targetId = node.domModel().target().id();
+    this.#resolvedNode = node;
     this.element.setAttribute('data-backend-node-id', String(node.backendNodeId()));
     this.element.setAttribute('data-target-id', node.domModel().target().id());
     this.#node = node;
     this.nodeChanged();
-    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
-      onClick: () => {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimatedNodeDescriptionClicked);
-      },
-    });
+    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, this.#linkOptions);
     render(link, this.#description, {host: this});
     if (!node.ownerDocument) {
       this.nodeRemoved();
@@ -1284,6 +1319,7 @@ export class NodeUI {
   }
 
   nodeRemoved(): void {
+    this.#removed = true;
     this.element.classList.add('animation-node-removed');
     if (!this.#overlayElement) {
       this.#overlayElement = document.createElement('div');
@@ -1303,7 +1339,20 @@ export class NodeUI {
       animationNodeSelected = (this.#node === UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
     }
 
+    this.#selected = animationNodeSelected;
     this.element.classList.toggle('animation-node-selected', animationNodeSelected);
+  }
+
+  toViewInput(key: number): NodeRowViewInput {
+    return {
+      key,
+      node: this.#resolvedNode,
+      linkOptions: this.#linkOptions,
+      backendNodeId: this.#backendNodeId,
+      targetId: this.#targetId,
+      removed: this.#removed,
+      selected: this.#selected,
+    };
   }
 }
 

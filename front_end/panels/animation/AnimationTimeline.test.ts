@@ -625,9 +625,8 @@ describeWithEnvironment('AnimationTimeline', () => {
         assert.isTrue(animationNodeRow.classList.contains('animation-node-removed'));
       });
 
-      it('sets data-backend-node-id and data-target-id on the row element when node is resolved', () => {
-        const effect = sinon.createStubInstance(SDK.AnimationModel.AnimationEffect);
-        const nodeUi = new Animation.AnimationTimeline.NodeUI(effect);
+      it('passes the backend node id and target id of the resolved node to the view', () => {
+        const nodeUi = new Animation.AnimationTimeline.NodeUI();
         const domNode = SDK.DOMModel.DOMNode.create(domModel, contentDocument, false, {
           nodeId: 2 as Protocol.DOM.NodeId,
           backendNodeId: 123 as Protocol.DOM.BackendNodeId,
@@ -637,8 +636,36 @@ describeWithEnvironment('AnimationTimeline', () => {
           nodeValue: '',
         });
         nodeUi.nodeResolved(domNode);
-        assert.strictEqual(nodeUi.element.getAttribute('data-backend-node-id'), '123');
-        assert.strictEqual(nodeUi.element.getAttribute('data-target-id'), target.id());
+        const nodeRow = nodeUi.toViewInput(123);
+        assert.strictEqual(nodeRow.node, domNode);
+        assert.strictEqual(nodeRow.backendNodeId, '123');
+        assert.strictEqual(nodeRow.targetId, target.id());
+        assert.isFalse(nodeRow.removed);
+      });
+
+      it('falls back to an unresolved node only if no animation of the row resolved it', () => {
+        const unresolvedNodeUi = new Animation.AnimationTimeline.NodeUI();
+        assert.isUndefined(unresolvedNodeUi.toViewInput(1).node);
+        unresolvedNodeUi.nodeResolved(null);
+        unresolvedNodeUi.nodeResolved(null);
+        assert.isNull(unresolvedNodeUi.toViewInput(1).node);
+        assert.strictEqual(unresolvedNodeUi.element.querySelector('.animation-node-description')?.textContent,
+                           '<node>');
+
+        const resolvedNodeUi = new Animation.AnimationTimeline.NodeUI();
+        const domNode = SDK.DOMModel.DOMNode.create(domModel, contentDocument, false, {
+          nodeId: 3 as Protocol.DOM.NodeId,
+          backendNodeId: 124 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'div',
+          localName: 'div',
+          nodeValue: '',
+        });
+        resolvedNodeUi.nodeResolved(domNode);
+        resolvedNodeUi.nodeResolved(null);
+        assert.strictEqual(resolvedNodeUi.toViewInput(124).node, domNode);
+        assert.notInclude(resolvedNodeUi.element.querySelector('.animation-node-description')?.textContent ?? '',
+                          '<node>');
       });
     });
 

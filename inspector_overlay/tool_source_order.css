@@ -27,10 +27,6 @@
   border-bottom-right-radius: var(--border-radius);
 }
 
-.bottom-corner {
-  border-top-right-radius: var(--border-radius);
-}
-
 .above-element {
   border-top-right-radius: var(--border-radius);
   border-top-left-radius: var(--border-radius);

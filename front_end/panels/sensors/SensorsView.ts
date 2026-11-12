@@ -187,7 +187,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {live} = Directives;
+const {classMap, live} = Directives;
 
 interface ViewInput {
   locationSection: TemplateResult;
@@ -265,7 +265,6 @@ export class SensorsView extends UI.Widget.VBox {
   private readonly deviceOrientationSetting: Common.Settings.Setting<string>;
   private deviceOrientation: SDK.EmulationModel.DeviceOrientation;
   private deviceOrientationOverrideEnabled: boolean;
-  private deviceOrientationFieldset!: HTMLFieldSetElement;
   private stageElement!: HTMLElement;
   private orientationSelectElement!: HTMLSelectElement;
   private alphaElement!: HTMLInputElement;
@@ -311,7 +310,6 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.performUpdate();
 
-    this.enableOrientationFields(true);
     this.setBoxOrientation(this.deviceOrientation, false);
 
     this.alphaElement.value = String(this.deviceOrientation.alpha);
@@ -683,11 +681,7 @@ export class SensorsView extends UI.Widget.VBox {
             </select>
             <fieldset
               class="device-orientation-override-section"
-              ${Directives.ref((el: Element | undefined) => {
-                if (el) {
-                  this.deviceOrientationFieldset = el as HTMLFieldSetElement;
-                }
-              })}
+              ?disabled=${!this.deviceOrientationOverrideEnabled}
             >
               <div class="orientation-inputs-cell">
                 <div class="orientation-axis-input-container">
@@ -752,7 +746,9 @@ export class SensorsView extends UI.Widget.VBox {
             </fieldset>
           </div>
           <div
-            class="orientation-stage"
+            class="orientation-stage ${classMap({disabled: !this.deviceOrientationOverrideEnabled})}"
+            title=${this.deviceOrientationOverrideEnabled ? i18nString(UIStrings.shiftdragHorizontallyToRotate) :
+                                                            i18nString(UIStrings.enableOrientationToRotate)}
             jslog=${VisualLogging.preview().track({drag: true})}
             ${Directives.ref((el: Element | undefined) => {
               if (el && !this.stageElement) {
@@ -826,33 +822,18 @@ export class SensorsView extends UI.Widget.VBox {
     return getOptionTitle('no-override') || 'No override';
   }
 
-  private enableOrientationFields(disable: boolean|null): void {
-    if (disable) {
-      this.deviceOrientationFieldset.disabled = true;
-      this.stageElement.classList.add('disabled');
-      UI.Tooltip.Tooltip.install(this.stageElement, i18nString(UIStrings.enableOrientationToRotate));
-    } else {
-      this.deviceOrientationFieldset.disabled = false;
-      this.stageElement.classList.remove('disabled');
-      UI.Tooltip.Tooltip.install(this.stageElement, i18nString(UIStrings.shiftdragHorizontallyToRotate));
-    }
-  }
-
   private orientationSelectChanged(): void {
     const value = this.orientationSelectElement.options[this.orientationSelectElement.selectedIndex].value;
-    this.enableOrientationFields(false);
+    this.deviceOrientationOverrideEnabled = value !== NonPresetOptions.NoOverride;
+    this.performUpdate();
 
     if (value === NonPresetOptions.NoOverride) {
-      this.deviceOrientationOverrideEnabled = false;
-      this.enableOrientationFields(true);
       this.applyDeviceOrientation();
     } else if (value === NonPresetOptions.Custom) {
-      this.deviceOrientationOverrideEnabled = true;
       this.resetDeviceOrientation();
       this.alphaElement.focus();
     } else {
       const parsedValue = JSON.parse(value);
-      this.deviceOrientationOverrideEnabled = true;
       this.deviceOrientation = new SDK.EmulationModel.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);
       this.setDeviceOrientation(this.deviceOrientation, DeviceOrientationModificationSource.SELECT_PRESET);
     }

@@ -494,6 +494,7 @@ export class SensorsView extends UI.Widget.VBox {
     const value = this.locationSelectElement.options[this.locationSelectElement.selectedIndex].value;
     if (value === NonPresetOptions.NoOverride) {
       this.#locationOverrideEnabled = false;
+      this.#location = SDK.EmulationModel.Location.parseSetting('');
       this.clearFieldsetElementInputs();
       this.fieldsetElement.disabled = true;
     } else if (value === NonPresetOptions.Custom) {
@@ -507,8 +508,9 @@ export class SensorsView extends UI.Widget.VBox {
       this.#location = location;
     } else if (value === NonPresetOptions.Unavailable) {
       this.#locationOverrideEnabled = true;
-      this.#location =
-          new SDK.EmulationModel.Location(0, 0, '', '', SDK.EmulationModel.Location.DEFAULT_ACCURACY, true);
+      // Keep the values that are shown in the inputs.
+      const {latitude, longitude, timezoneId, locale, accuracy} = this.#location;
+      this.#location = new SDK.EmulationModel.Location(latitude, longitude, timezoneId, locale, accuracy, true);
     } else {
       this.#locationOverrideEnabled = true;
       const coordinates = JSON.parse(value);

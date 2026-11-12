@@ -197,7 +197,7 @@ describeWithEnvironment('SensorsView', () => {
 
       assert.isFalse(locationInputsDisabled());
       assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
-      assert.strictEqual(locationSetting.get(), '0@0:::true:150');
+      assert.strictEqual(locationSetting.get(), '52.52@13.405:Europe/Berlin:de-DE:true:50');
       assert.deepEqual(geolocationOverrides.at(-1), {});
       assert.strictEqual(timezoneOverrides.at(-1), '');
     });
@@ -230,6 +230,28 @@ describeWithEnvironment('SensorsView', () => {
       await settled();
 
       assert.strictEqual(selectedLocationTitle(), 'Berlin');
+      assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
+    });
+
+    it('keeps the inputs reset when the list of custom locations changes after "No override"', async () => {
+      await selectLocation('Berlin');
+      await selectLocation('No override');
+
+      customLocationsSetting.set([BERLIN, {...BERLIN, title: 'Paris', lat: 48.8566, long: 2.3522}]);
+      await settled();
+
+      assert.strictEqual(selectedLocationTitle(), 'No override');
+      assert.deepEqual(locationInputValues(), ['0', '0', '', '', '150']);
+    });
+
+    it('keeps the input values when the list of custom locations changes while unavailable', async () => {
+      await selectLocation('Berlin');
+      await selectLocation('Location unavailable');
+
+      customLocationsSetting.set([BERLIN, {...BERLIN, title: 'Paris', lat: 48.8566, long: 2.3522}]);
+      await settled();
+
+      assert.strictEqual(selectedLocationTitle(), 'Location unavailable');
       assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
     });
 

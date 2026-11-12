@@ -182,7 +182,7 @@
   flex: none;
   position: relative;
   left: var(--sys-size-5);
-  top: 3px;
+  top: var(--sys-size-3);
   margin-right: var(--sys-size-2);
 }
 

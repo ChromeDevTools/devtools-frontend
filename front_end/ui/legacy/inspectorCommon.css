@@ -632,7 +632,7 @@ button.link:focus-visible {
   border: var(--override-spinner-size, 3px) solid
     var(--override-spinner-color, var(--sys-color-token-subtle));
   border-radius: var(--sys-shape-corner-medium-small);
-  clip-path: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
+  clip-path: rect(0 var(--clip-size, 15px) var(--clip-size, 15px) 0);
   content: '';
   position: absolute;
   animation: spinner-animation 1s linear infinite;

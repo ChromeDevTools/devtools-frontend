@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import {querySelectorErrorOnMissing, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, querySelectorErrorOnMissing, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createFakeSetting} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -1658,5 +1658,60 @@ describe('element value modifications', () => {
       assert.strictEqual(element.textContent, text);
       assert.isFalse(upEvent.defaultPrevented);
     });
+  });
+});
+
+describe('spinner', () => {
+  it('applies rect clip-path on the spinner pseudo element', () => {
+    const container = document.createElement('div');
+    UI.UIUtils.installComponentRootStyles(container);
+    const spinner = container.createChild('div', 'spinner');
+    renderElementIntoDOM(container);
+
+    const computedStyle = window.getComputedStyle(spinner, '::before');
+    assert.strictEqual(computedStyle.clipPath, 'inset(0px calc(100% - 15px) calc(100% - 15px) 0px)');
+
+    const smallSpinnerWrapper = container.createChild('div');
+    smallSpinnerWrapper.style.setProperty('--clip-size', '9px');
+    const smallSpinner = smallSpinnerWrapper.createChild('div', 'spinner');
+    const smallComputedStyle = window.getComputedStyle(smallSpinner, '::before');
+    assert.strictEqual(smallComputedStyle.clipPath, 'inset(0px calc(100% - 9px) calc(100% - 9px) 0px)');
+  });
+
+  it('renders loading spinner screenshot', async () => {
+    const container = document.createElement('div');
+    container.style.padding = '10px';
+    container.style.display = 'inline-flex';
+    container.style.gap = '20px';
+    container.style.alignItems = 'center';
+    UI.UIUtils.installComponentRootStyles(container);
+
+    // Give spinner hosts a real box and disable animation for stable screenshot.
+    const overrideStyle = document.createElement('style');
+    overrideStyle.textContent = `
+      .spinner {
+        display: inline-block;
+        position: relative;
+        width: var(--dimension, var(--sys-size-11));
+        height: var(--dimension, var(--sys-size-11));
+      }
+      .spinner::before {
+        animation: none !important;
+      }
+    `;
+    container.appendChild(overrideStyle);
+
+    // Default spinner (e.g. StylesSidebarPane)
+    container.createChild('span', 'spinner');
+
+    // Small spinner with --clip-size (e.g. ProfileSidebarTreeElement)
+    const smallSpinnerWrapper = container.createChild('div');
+    smallSpinnerWrapper.style.setProperty('--dimension', '14px');
+    smallSpinnerWrapper.style.setProperty('--clip-size', '9px');
+    smallSpinnerWrapper.style.setProperty('--override-spinner-size', '2px');
+    smallSpinnerWrapper.createChild('span', 'spinner');
+
+    renderElementIntoDOM(container);
+    await assertScreenshot('ui/legacy/loading_spinner.png');
   });
 });

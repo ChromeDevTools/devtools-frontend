@@ -160,9 +160,10 @@ describeWithEnvironment('AnimationTimeline', () => {
     view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
     view.markAsRoot();
     renderElementIntoDOM(view);
-    await new Promise<void>(resolve => setTimeout(resolve, 0));
+    await view.updateComplete;
 
-    const previewContainer = (view.contentElement.querySelector('.animation-timeline-buffer') as HTMLElement);
+    const previewContainer = view.contentElement.querySelector<HTMLElement>('.animation-timeline-buffer');
+    assert.exists(previewContainer);
 
     await model.animationStarted({
       id: 'id',
@@ -182,6 +183,7 @@ describeWithEnvironment('AnimationTimeline', () => {
 
     if (inScope) {
       await expectCall(sinon.stub(view, 'previewsCreatedForTest'));
+      await view.updateComplete;
     }
     const preview = await waitForAll('.animation-buffer-preview', previewContainer) as NodeListOf<HTMLElement>;
     assert.strictEqual(preview.length || 0, inScope ? 1 : 0);
@@ -312,7 +314,7 @@ describeWithEnvironment('AnimationTimeline', () => {
       view = new Animation.AnimationTimeline.AnimationTimeline();
       view.markAsRoot();
       renderElementIntoDOM(view);
-      const button = view.contentElement.querySelector<HTMLElement>('devtools-button[aria-label="Clear all"]');
+      const button = view.contentElement.querySelector<HTMLElement>('devtools-button[title="Clear all"]');
       assert.exists(button);
       clearButton = button;
       previewsCreated = sinon.stub(view, 'previewsCreatedForTest');
@@ -324,8 +326,18 @@ describeWithEnvironment('AnimationTimeline', () => {
       group = view.groupBuffer[0];
     });
 
+    const getPreviews = async(): Promise<UI.Widget.Widget[]> => {
+      await view.updateComplete;
+      return [...view.contentElement.querySelectorAll<HTMLElement>('.preview-ui-container > devtools-widget')].map(
+          element => {
+            const preview = UI.Widget.Widget.get(element);
+            assert.exists(preview);
+            return preview;
+          });
+    };
+
     const closeGroup = async(): Promise<void> => {
-      const preview = view.previewMap.get(group);
+      const [preview] = await getPreviews();
       assert.exists(preview);
       await waitFor('.animation-remove-button', preview.contentElement);
       const removeButton = preview.contentElement.querySelector<HTMLButtonElement>('.animation-remove-button');
@@ -340,8 +352,9 @@ describeWithEnvironment('AnimationTimeline', () => {
     // Wait for child previews to render, then verify state and DOM agree so stale or duplicate previews cannot hide.
     const assertPreviewCount = async(count: number): Promise<void> => {
       assert.lengthOf(view.groupBuffer, count);
-      assert.strictEqual(view.previewMap.size, count);
-      for (const preview of view.previewMap.values()) {
+      const previews = await getPreviews();
+      assert.lengthOf(previews, count);
+      for (const preview of previews) {
         await waitFor('.animation-buffer-preview', preview.contentElement);
       }
       assert.lengthOf(view.contentElement.querySelectorAll('.animation-buffer-preview'), count);
@@ -352,7 +365,7 @@ describeWithEnvironment('AnimationTimeline', () => {
     ]) {
       describe(description, () => {
         it('restores the preview when a known animation runs again', async () => {
-          const previousPreview = view.previewMap.get(group);
+          const [previousPreview] = await getPreviews();
           const releaseAnimations = sinon.spy(model.agent, 'invoke_releaseAnimations');
           await close();
           await assertPreviewCount(0);
@@ -367,7 +380,7 @@ describeWithEnvironment('AnimationTimeline', () => {
           assert.lengthOf(view.groupBuffer, 1);
           const restoredGroup = view.groupBuffer[0];
           assert.notStrictEqual(restoredGroup, group);
-          const restoredPreview = view.previewMap.get(restoredGroup);
+          const [restoredPreview] = await getPreviews();
           assert.exists(restoredPreview);
           assert.notStrictEqual(restoredPreview, previousPreview);
           await assertPreviewCount(1);
@@ -418,7 +431,7 @@ describeWithEnvironment('AnimationTimeline', () => {
       void model.animationUpdated({...TIME_ANIMATION_PAYLOAD, startTime: 100});
       void model.animationUpdated({...TIME_ANIMATION_PAYLOAD, startTime: 100});
       sinon.assert.notCalled(previewsCreated);
-      assert.strictEqual(view.previewMap.size, 0);
+      assert.lengthOf(view.groupBuffer, 0);
       await previewCreated;
 
       assert.lengthOf(view.groupBuffer, 1);
@@ -443,7 +456,7 @@ describeWithEnvironment('AnimationTimeline', () => {
       void model.animationUpdated({...TIME_ANIMATION_PAYLOAD, startTime: 200});
       void model.animationUpdated({...secondPayload, startTime: 300});
       sinon.assert.notCalled(previewsCreated);
-      assert.strictEqual(view.previewMap.size, 0);
+      assert.lengthOf(view.groupBuffer, 0);
       await previewCreated;
 
       assert.lengthOf(view.groupBuffer, 2);
@@ -459,7 +472,7 @@ describeWithEnvironment('AnimationTimeline', () => {
       let previewCreated = expectCall(previewsCreated);
       model.dispatchEventToListeners(SDK.AnimationModel.Events.AnimationGroupUpdated, group);
       sinon.assert.notCalled(previewsCreated);
-      assert.strictEqual(view.previewMap.size, 0);
+      assert.lengthOf(view.groupBuffer, 0);
       clearGroups();
       await previewCreated;
 
@@ -1094,6 +1107,7 @@ describeWithEnvironment('AnimationTimeline', () => {
     });
 
     await previewUpdatePromise.wait();
+    await view.updateComplete;
     const placeholder = view.contentElement.querySelector('.animation-timeline-rows-hint');
     assert.exists(placeholder);
 

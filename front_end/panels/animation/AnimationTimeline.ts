@@ -110,7 +110,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {render, html, Directives: {classMap}} = Lit;
+const {render, html, Directives: {classMap, repeat}} = Lit;
+const {widget, widgetRef} = UI.Widget;
 const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 
 const MIN_TIMELINE_CONTROLS_WIDTH = 120;
@@ -132,6 +133,23 @@ interface ToolbarViewInput {
   onSetPlaybackRateClick: (playbackRate: number) => void;
 }
 
+export interface PreviewViewInput {
+  animationGroup: SDK.AnimationModel.AnimationGroup;
+  label: string;
+  selected: boolean;
+  paused: boolean;
+  focusable: boolean;
+  onRemoveAnimationGroup: () => void;
+  onSelectAnimationGroup: () => void;
+  onFocusNextGroup: () => void;
+  onFocusPreviousGroup: () => void;
+}
+
+interface PreviewBufferOutput {
+  replayPreview?: (animationGroup: SDK.AnimationModel.AnimationGroup) => void;
+  focusPreview?: (animationGroup: SDK.AnimationModel.AnimationGroup) => void;
+}
+
 export interface NodeRowViewInput {
   key: number;
   /** `undefined` while the node is being resolved, `null` if it could not be resolved. */
@@ -149,8 +167,7 @@ interface ToolbarViewOutput {
 
 type ToolbarView = (input: ToolbarViewInput, output: ToolbarViewOutput, target: HTMLElement) => void;
 // clang-format off
-const DEFAULT_TOOLBAR_VIEW: ToolbarView =
-    (input: ToolbarViewInput, output: ToolbarViewOutput, target: HTMLElement): void => {
+const renderToolbar = (input: ToolbarViewInput, output: ToolbarViewOutput): Lit.LitTemplate => {
   const renderPlaybackRateControl = (): Lit.LitTemplate => {
     const focusNextPlaybackRateButton = (eventTarget: EventTarget|null, focusPrevious?: boolean): void => {
       const currentPlaybackRateButton = (eventTarget as HTMLElement);
@@ -165,7 +182,7 @@ const DEFAULT_TOOLBAR_VIEW: ToolbarView =
         return;
       }
       const nextPlaybackRate = GlobalPlaybackRates[nextIndex];
-      const nextPlaybackRateButton = target.querySelector(`[data-playback-rate="${nextPlaybackRate}"]`) as HTMLButtonElement | undefined;
+      const nextPlaybackRateButton = currentPlaybackRateButton.parentElement?.querySelector(`[data-playback-rate="${nextPlaybackRate}"]`) as HTMLButtonElement | null | undefined;
       if (!nextPlaybackRateButton) {
         return;
       }
@@ -216,12 +233,13 @@ const DEFAULT_TOOLBAR_VIEW: ToolbarView =
       </div>
     `;
   };
-  render(html`
+  const pauseAllTitle = input.allPaused ? i18nString(UIStrings.resumeAll) : i18nString(UIStrings.pauseAll);
+  return html`
     <div class="animation-timeline-toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar()}>
       <devtools-toolbar class="animation-timeline-toolbar" role="presentation">
         <devtools-button
           title=${i18nString(UIStrings.clearAll)}
-          aria-label=${i18nString(UIStrings.clearAll)}
+          .accessibleLabel=${i18nString(UIStrings.clearAll)}
           ${Lit.Directives.ref(element => {
             if (element instanceof HTMLElement) {
               output.focusClearButton = () => element.focus();
@@ -235,8 +253,8 @@ const DEFAULT_TOOLBAR_VIEW: ToolbarView =
         </devtools-button>
         <div class="toolbar-divider"></div>
         <devtools-button
-          title=${i18nString(UIStrings.pauseAll)}
-          aria-label=${i18nString(UIStrings.pauseAll)}
+          title=${pauseAllTitle}
+          .accessibleLabel=${pauseAllTitle}
           jslog=${
             /* Do not use `.jslogContext` here because we want this to be reported as Toggle */
             VisualLogging.toggle().track({click: true}).context('animations.pause-resume-all')
@@ -252,11 +270,43 @@ const DEFAULT_TOOLBAR_VIEW: ToolbarView =
       </devtools-toolbar>
       ${renderPlaybackRateControl()}
     </div>
-  `, target, {host: target});
+  `;
+};
+
+const renderPreviewBuffer = (
+    previews: PreviewViewInput[], output: PreviewBufferOutput): Lit.LitTemplate => {
+  const previewWidgets = new Map<SDK.AnimationModel.AnimationGroup, AnimationGroupPreviewUI>();
+  output.replayPreview = animationGroup => previewWidgets.get(animationGroup)?.replay();
+  output.focusPreview = animationGroup => previewWidgets.get(animationGroup)?.focus();
+  return html`${repeat(previews, preview => preview.animationGroup, preview => html`
+    <div class="preview-ui-container">
+      <devtools-widget
+        ${widget(AnimationGroupPreviewUI, {
+          animationGroup: preview.animationGroup,
+          label: preview.label,
+          selected: preview.selected,
+          paused: preview.paused,
+          focusable: preview.focusable,
+          onRemoveAnimationGroup: preview.onRemoveAnimationGroup,
+          onSelectAnimationGroup: preview.onSelectAnimationGroup,
+          onFocusNextGroup: preview.onFocusNextGroup,
+          onFocusPreviousGroup: preview.onFocusPreviousGroup,
+        })}
+        ${widgetRef(AnimationGroupPreviewUI, previewWidget => {
+          previewWidgets.set(preview.animationGroup, previewWidget);
+        })}>
+      </devtools-widget>
+    </div>`)}`;
 };
 // clang-format on
 
+const DEFAULT_TOOLBAR_VIEW: ToolbarView = (input, output, target) => {
+  render(renderToolbar(input, output), target, {host: target});
+};
+
 const DEFAULT_DURATION = 100;
+
+type PreviewState = Omit<PreviewViewInput, 'animationGroup'|'selected'>;
 
 let animationTimelineInstance: AnimationTimeline;
 export class AnimationTimeline extends UI.Widget.VBox implements
@@ -277,10 +327,10 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   readonly #nodesMap: Map<number, NodeUI>;
   #uiAnimations: AnimationUI[];
   #groupBuffer: SDK.AnimationModel.AnimationGroup[];
-  readonly #previewMap: Map<SDK.AnimationModel.AnimationGroup, AnimationGroupPreviewUI>;
+  readonly #previews = new Map<SDK.AnimationModel.AnimationGroup, PreviewState>();
+  readonly #viewOutput: PreviewBufferOutput = {};
   readonly #animationsMap: Map<string, SDK.AnimationModel.AnimationImpl>;
   #timelineScrubberLine?: HTMLElement;
-  #pauseButton?: UI.Toolbar.ToolbarToggle;
   #controlButton?: UI.Toolbar.ToolbarButton;
   #controlState?: ControlState;
   #redrawing?: boolean;
@@ -344,7 +394,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#uiAnimations = [];
     this.#groupBuffer = [];
     this.#collectedGroups = [];
-    this.#previewMap = new Map();
     this.#animationsMap = new Map();
 
     this.#timelineControlsWidth = DEFAULT_TIMELINE_CONTROLS_WIDTH;
@@ -393,10 +442,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         'ew-resize');
   }
 
-  get previewMap(): Map<SDK.AnimationModel.AnimationGroup, AnimationGroupPreviewUI> {
-    return this.#previewMap;
-  }
-
   get uiAnimations(): AnimationUI[] {
     return this.#uiAnimations;
   }
@@ -415,6 +460,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       this.#addExistingAnimationGroups(animationModel);
       this.addEventListeners(animationModel);
     }
+    this.requestUpdate();
   }
 
   override willHide(): void {
@@ -436,7 +482,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
 
   #addExistingAnimationGroups(animationModel: SDK.AnimationModel.AnimationModel): void {
     for (const animationGroup of animationModel.animationGroups.values()) {
-      if (this.#previewMap.has(animationGroup)) {
+      if (this.#previews.has(animationGroup)) {
         continue;
       }
 
@@ -453,7 +499,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   async revealAnimationGroup(animationGroup: SDK.AnimationModel.AnimationGroup): Promise<void> {
-    if (!this.#previewMap.has(animationGroup)) {
+    if (!this.#previews.has(animationGroup)) {
       await this.addAnimationGroup(animationGroup);
     }
 
@@ -505,6 +551,13 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     return !this.#selectedGroup?.isScrollDriven();
   }
 
+  override performUpdate(): void {
+    const previews =
+        [...this.#previews].map(([animationGroup, preview]) =>
+                                    ({...preview, animationGroup, selected: animationGroup === this.#selectedGroup}));
+    render(renderPreviewBuffer(previews, this.#viewOutput), this.#previewContainer);
+  }
+
   private performToolbarViewUpdate(): void {
     const controlsEnabled = !SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
     this.#toolbarView(
@@ -527,10 +580,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
                 this.#allPaused ? Host.UserMetrics.Action.AnimationsPaused : Host.UserMetrics.Action.AnimationsResumed,
             );
             this.setPlaybackRate(this.#playbackRate);
-            if (this.#pauseButton) {
-              this.#pauseButton.setTitle(
-                  this.#allPaused ? i18nString(UIStrings.resumeAll) : i18nString(UIStrings.pauseAll));
-            }
           },
           onSetPlaybackRateClick: (playbackRate: number) => {
             this.setPlaybackRate(playbackRate);
@@ -628,9 +677,10 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   private togglePause(pause: boolean): void {
     if (this.#selectedGroup) {
       this.#selectedGroup.togglePause(pause);
-      const preview = this.#previewMap.get(this.#selectedGroup);
+      const preview = this.#previews.get(this.#selectedGroup);
       if (preview) {
         preview.paused = pause;
+        this.requestUpdate();
       }
     }
     if (this.#scrubberPlayer) {
@@ -704,15 +754,14 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   private animationGroupUpdated({
     data: group,
   }: Common.EventTarget.EventTargetEvent<SDK.AnimationModel.AnimationGroup>): void {
-    if (!this.#previewMap.has(group)) {
+    if (!this.#previews.has(group)) {
       void this.addAnimationGroup(group);
       return;
     }
 
     void this.#animationGroupUpdatedThrottler.schedule(async () => {
-      const preview = this.#previewMap.get(group);
-      if (preview) {
-        preview.replay();
+      if (this.#previews.has(group)) {
+        this.#viewOutput.replayPreview?.(group);
       }
 
       if (this.#selectedGroup !== group) {
@@ -749,45 +798,41 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private clearPreviews(): void {
-    this.#previewMap.clear();
-    this.#previewContainer.removeChildren();
+    this.#previews.clear();
+    this.requestUpdate();
   }
 
   private createPreview(group: SDK.AnimationModel.AnimationGroup): void {
-    const preview = new AnimationGroupPreviewUI();
-    preview.animationGroup = group;
-    preview.label = i18nString(UIStrings.animationPreviewS, {PH1: this.#groupBuffer.length + 1});
-    preview.onRemoveAnimationGroup = () => {
-      this.removeAnimationGroup(group);
-    };
-    preview.onSelectAnimationGroup = () => {
-      void this.selectAnimationGroup(group);
-    };
-    preview.onFocusNextGroup = () => {
-      this.focusNextGroup(group);
-    };
-    preview.onFocusPreviousGroup = () => {
-      this.focusNextGroup(group, /* focusPrevious */ true);
-    };
-
-    const previewUiContainer = document.createElement('div');
-    previewUiContainer.classList.add('preview-ui-container');
-    preview.markAsRoot();
-    preview.show(previewUiContainer);
+    this.#previews.set(group, {
+      label: i18nString(UIStrings.animationPreviewS, {PH1: this.#groupBuffer.length + 1}),
+      paused: false,
+      focusable: false,
+      onRemoveAnimationGroup: () => {
+        this.removeAnimationGroup(group);
+      },
+      onSelectAnimationGroup: () => {
+        void this.selectAnimationGroup(group);
+      },
+      onFocusNextGroup: () => {
+        this.focusNextGroup(group);
+      },
+      onFocusPreviousGroup: () => {
+        this.focusNextGroup(group, /* focusPrevious */ true);
+      },
+    });
 
     this.#groupBuffer.push(group);
-    this.#previewMap.set(group, preview);
-    this.#previewContainer.appendChild(previewUiContainer);
 
     // If this is the first preview attached, we want it to be focusable directly.
     // Otherwise, we don't want the previews to be focusable via Tabbing and manage
     // their focus via arrow keys.
-    if (this.#previewMap.size === 1) {
-      const preview = this.#previewMap.get(this.#groupBuffer[0]);
+    if (this.#previews.size === 1) {
+      const preview = this.#previews.get(this.#groupBuffer[0]);
       if (preview) {
         preview.focusable = true;
       }
     }
+    this.requestUpdate();
   }
 
   previewsCreatedForTest(): void {
@@ -824,12 +869,11 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private addAnimationGroup(group: SDK.AnimationModel.AnimationGroup): Promise<void> {
-    const previewGroup = this.#previewMap.get(group);
-    if (previewGroup) {
+    if (this.#previews.has(group)) {
       if (this.#selectedGroup === group) {
         this.syncScrubber();
       } else {
-        previewGroup.replay();
+        this.#viewOutput.replayPreview?.(group);
       }
       return Promise.resolve();
     }
@@ -844,13 +888,12 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       groupsToDiscard.push(toDiscard[0]);
     }
     for (const g of groupsToDiscard) {
-      const discardGroup = this.#previewMap.get(g);
-      if (!discardGroup) {
+      if (!this.#previews.has(g)) {
         continue;
       }
-      discardGroup.detach();
-      this.#previewMap.delete(g);
+      this.#previews.delete(g);
       g.forget();
+      this.requestUpdate();
     }
 
     // Batch creating preview for arrivals happening closely together to ensure
@@ -868,45 +911,43 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     if (nextIndex < 0 || nextIndex >= this.#groupBuffer.length) {
       return;
     }
-    const preview = this.#previewMap.get(this.#groupBuffer[nextIndex]);
+    const nextGroup = this.#groupBuffer[nextIndex];
+    const preview = this.#previews.get(nextGroup);
     if (preview) {
       preview.focusable = true;
-      preview.focus();
+      this.#viewOutput.focusPreview?.(nextGroup);
     }
 
-    const previousPreview = this.#previewMap.get(group);
+    const previousPreview = this.#previews.get(group);
     if (previousPreview) {
       previousPreview.focusable = false;
     }
+    this.requestUpdate();
   }
 
   private removeAnimationGroup(group: SDK.AnimationModel.AnimationGroup): void {
     const currentGroupIndex = this.#groupBuffer.indexOf(group);
 
     Platform.ArrayUtilities.removeElement(this.#groupBuffer, group);
-    const previewGroup = this.#previewMap.get(group);
-    if (previewGroup) {
-      previewGroup.detach();
-    }
-    this.#previewMap.delete(group);
+    this.#previews.delete(group);
     group.forget();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.animationGroupClosed));
     if (this.#selectedGroup === group) {
       this.clearTimeline();
       this.renderGrid();
     }
+    this.requestUpdate();
 
     if (this.#groupBuffer.length === 0) {
       this.#toolbarViewOutput.focusClearButton?.();
       return;
     }
-    const nextGroup = currentGroupIndex >= this.#groupBuffer.length ?
-        this.#previewMap.get(this.#groupBuffer[this.#groupBuffer.length - 1]) :
-        this.#previewMap.get(this.#groupBuffer[currentGroupIndex]);
-
-    if (nextGroup) {
-      nextGroup.focusable = true;
-      nextGroup.focus();
+    const nextGroup = currentGroupIndex >= this.#groupBuffer.length ? this.#groupBuffer[this.#groupBuffer.length - 1] :
+                                                                      this.#groupBuffer[currentGroupIndex];
+    const nextPreview = this.#previews.get(nextGroup);
+    if (nextPreview) {
+      nextPreview.focusable = true;
+      this.#viewOutput.focusPreview?.(nextGroup);
     }
   }
 
@@ -931,9 +972,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     }
     this.clearTimeline();
     this.#selectedGroup = group;
-    this.#previewMap.forEach((previewUI: AnimationGroupPreviewUI, group: SDK.AnimationModel.AnimationGroup) => {
-      previewUI.selected = (this.#selectedGroup === group);
-    });
+    this.requestUpdate();
 
     if (group.isScrollDriven()) {
       const animationNode = await group.scrollNode();

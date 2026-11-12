@@ -531,6 +531,10 @@ text.animation-timeline-grid-label {
   }
 }
 
+.preview-ui-container > devtools-widget {
+  display: block;
+}
+
 .animation-group-preview-ui {
   position: relative;
 }

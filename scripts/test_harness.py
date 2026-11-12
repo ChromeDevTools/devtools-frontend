@@ -319,6 +319,62 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[1].get('status'), 'PASS')
         self.assertIs(results[1].get('expected'), True)
 
+    def test_unit_pending_async_and_timeout(self):
+        abs_test_file = self._resolve_test_file(
+            "test/harness/unit/pending_async.test.ts")
+        stdout, stderr, exit_code = self.run_test_with_output([
+            "node_modules/karma/bin/karma", "start",
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+            abs_test_file
+        ])
+        self.assertEqual(exit_code, 1)
+        self.assertNotIn("Karma exited early", stdout)
+        self.assertNotIn("Karma exited early", stderr)
+        self.assertIn("Failed tests (2):", stdout)
+        self.assertIn(
+            "test/harness/unit/pending_async.test.ts:suite_1:times_out_with_pending_promise_and_timer",
+            stdout)
+        self.assertIn(
+            "test/harness/unit/pending_async.test.ts:suite_1:fails_pending_activity_check_without_aborting_remaining_tests",
+            stdout)
+
+        results, rdb_exit_code = self.run_unit_test(
+            "test/harness/unit/pending_async.test.ts")
+        self.assertEqual(rdb_exit_code, 1)
+        self.assertEqual(
+            len(results), 4,
+            f"Expected 4 test results (1 timeout FAIL, 1 PASS + 1 afterEach FAIL, 1 PASS), got {len(results)}"
+        )
+        by_id = {}
+        for r in results:
+            by_id.setdefault(r.get('testId'), []).append(r.get('status'))
+        self.assertEqual(
+            by_id.get(
+                'test/harness/unit/pending_async.test.ts:suite_1:times_out_with_pending_promise_and_timer'
+            ), ['FAIL'])
+        self.assertEqual(
+            sorted(
+                by_id.get(
+                    'test/harness/unit/pending_async.test.ts:suite_1:fails_pending_activity_check_without_aborting_remaining_tests',
+                    [])), ['FAIL', 'PASS'])
+        self.assertEqual(
+            by_id.get(
+                'test/harness/unit/pending_async.test.ts:suite_2:runs_after_timeout_and_pending_activity_failures'
+            ), ['PASS'])
+
+    def test_unit_widget_update_after_failure(self):
+        results, exit_code = self.run_unit_test(
+            "test/harness/unit/widget_update_after_failure.test.ts")
+        self.assertEqual(exit_code, 1)
+        statuses = {r.get('testId'): r.get('status') for r in results}
+        self.assertEqual(
+            statuses, {
+                'test/harness/unit/widget_update_after_failure.test.ts:widget_updates_after_a_failed_test:fails_synchronously_after_requesting_a_widget_update':
+                'FAIL',
+                'test/harness/unit/widget_update_after_failure.test.ts:widget_updates_after_a_failed_test:still_runs_widget_updates_in_the_next_test':
+                'PASS',
+            })
+
     def test_unit_before_each_hook(self):
         results, exit_code = self.run_unit_test(
             "test/harness/unit/before_each_hook_fail.test.ts")

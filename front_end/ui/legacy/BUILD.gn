@@ -167,6 +167,10 @@ devtools_entrypoint("bundle") {
     "../components/tooltips:*",
     "./*",
 
+    # Test harness fixtures that verify widget updates recover after a
+    # failed unit test.
+    "../../../test/harness:*",
+
     # Required for correct button styling in the Computed tab
     # (http://crbug.com/435601104).
     "../components/tree_outline:*",

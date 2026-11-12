@@ -97,6 +97,10 @@ export async function checkForPendingActivity(testName = ''): Promise<void> {
 }
 
 export function stopTrackingAsyncActivity(): void {
+  // Pending callbacks are intentionally not cancelled: schedulers such as
+  // UI.Widget and RenderCoordinator keep the requested frame/timer ID in module
+  // state and only clear it from the callback, so cancelling would prevent all
+  // later updates from being scheduled.
   asyncActivity.length = 0;
   restoreAll();
 }
@@ -290,13 +294,19 @@ function stub<T extends TrackedAsyncOperation>(name: T) {
 }
 
 function restoreAll() {
+  // Restore every original and clear `stubs` before throwing, so a single
+  // unexpected stub does not make every later restore throw as well.
+  const unexpected: TrackedAsyncOperation[] = [];
   for (const name of stubs) {
     if (window[name] !== stubMethods[name]) {
-      throw new Error(`Unexpected stub for method ${name} found`);
+      unexpected.push(name);
     }
     (window[name] as unknown) = originals[name];
   }
   stubs.clear();
+  if (unexpected.length) {
+    throw new Error(`Unexpected stub for method ${unexpected.join(', ')} found`);
+  }
 }
 
 function getStack(error: Error): string {

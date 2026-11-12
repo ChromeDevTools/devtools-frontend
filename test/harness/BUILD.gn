@@ -52,15 +52,20 @@ devtools_ui_module("unit_fixtures") {
     "unit/global_before_hook_fail.test.ts",
     "unit/hooks.test.ts",
     "unit/multi_logs.test.ts",
+    "unit/pending_async.test.ts",
     "unit/screenshot_diff.test.ts",
     "unit/screenshot_retry.test.ts",
     "unit/sinon_restore.test.ts",
     "unit/snapshot.test.ts",
     "unit/unit.test.ts",
     "unit/unit_2.test.ts",
+    "unit/widget_update_after_failure.test.ts",
   ]
   data = [ "unit/snapshot.snapshot.txt" ]
-  ts_deps = [ "../../front_end/testing" ]
+  ts_deps = [
+    "../../front_end/testing",
+    "../../front_end/ui/legacy:bundle",
+  ]
 }
 
 generated_file("foundation_test_inputs") {

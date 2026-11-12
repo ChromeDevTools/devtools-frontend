@@ -69,8 +69,8 @@ export class AICallTree {
         // Build a tree bounded by the selected event's timestamps, and our other filters applied
         const rootNode = new Trace.Extras.TraceTree.TopDownRootNode(overlappingEvents, {
             filters: [minDurationFilter, compileCodeFilter, visibleEventsFilter],
-            startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
-            endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
+            startTime: bounds.min,
+            endTime: bounds.max,
             doNotAggregate: true,
             includeInstantEvents: true,
         });
@@ -127,8 +127,7 @@ export class AICallTree {
             return null;
         }
         const showAllEvents = parsedTrace.data.Meta.config.showAllEvents;
-        const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMilliSeconds(selectedEvent);
-        const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(Trace.Helpers.Timing.milliToMicro(startTime), Trace.Helpers.Timing.milliToMicro(endTime));
+        const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromEvent(selectedEvent);
         let threadEvents = data.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
         if (!threadEvents) {
             // None from the renderer: try the samples handler, this might be a CPU trace.
@@ -149,8 +148,8 @@ export class AICallTree {
         // Build a tree bounded by the selected event's timestamps, and our other filters applied
         const rootNode = new Trace.Extras.TraceTree.TopDownRootNode(overlappingEvents, {
             filters,
-            startTime,
-            endTime,
+            startTime: selectedEventBounds.min,
+            endTime: selectedEventBounds.max,
             includeInstantEvents: true,
         });
         // Walk the tree to find selectedNode
@@ -284,9 +283,9 @@ export class AICallTree {
             return String(Math.round(num * 10) / 10);
         };
         // 4. Duration
-        const durationStr = roundToTenths(node.totalTime);
+        const durationStr = roundToTenths(Trace.Helpers.Timing.microToMilli(node.totalTime));
         // 5. Self Time
-        const selfTimeStr = roundToTenths(node.selfTime);
+        const selfTimeStr = roundToTenths(Trace.Helpers.Timing.microToMilli(node.selfTime));
         // 6. URL Index
         const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event, this.workspace);
         const url = location?.url;

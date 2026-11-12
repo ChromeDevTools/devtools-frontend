@@ -52,7 +52,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 }
 
 .network-timing-table col.labels {
-  width: 156px;
+  width: var(--sys-size-23);
 }
 
 .network-timing-table col.duration {

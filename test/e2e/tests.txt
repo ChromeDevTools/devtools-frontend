@@ -208,6 +208,7 @@ sources/navigator-view.test.js
 sources/overrides.test.js
 sources/pause-button.test.js
 sources/popover.test.js
+sources/recurring-pause-actions.test.js
 sources/restart-frame.test.js
 sources/script-in-multiple-workers.test.js
 sources/scroll-into-view.test.js

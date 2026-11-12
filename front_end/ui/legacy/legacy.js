@@ -653,7 +653,7 @@ __export(Dialog_exports, {
 });
 import * as Common16 from "../../core/common/common.js";
 import * as i18n27 from "../../core/i18n/i18n.js";
-import { nothing as nothing7, render as render10 } from "../lit/lit.js";
+import { nothing as nothing7, render as render11 } from "../lit/lit.js";
 import * as Buttons7 from "../components/buttons/buttons.js";
 import * as VisualLogging17 from "../visual_logging/visual_logging.js";
 
@@ -840,7 +840,7 @@ import * as Root8 from "../../core/root/root.js";
 import * as Buttons5 from "../components/buttons/buttons.js";
 import * as VisualLogging15 from "../visual_logging/visual_logging.js";
 import { createIcon as createIcon7 } from "../kit/kit.js";
-import { nothing as nothing5, render as render7 } from "../lit/lit.js";
+import { nothing as nothing5, render as render8 } from "../lit/lit.js";
 import * as SettingUIRegistration from "../settings/settings.js";
 
 // ../../front_end/ui/legacy/ContextMenu.ts
@@ -859,7 +859,7 @@ __export(ContextMenu_exports, {
 import * as Host8 from "../../core/host/host.js";
 import * as Root7 from "../../core/root/root.js";
 import * as Buttons4 from "../components/buttons/buttons.js";
-import { html as html5, render as render6 } from "../lit/lit.js";
+import { html as html5, render as render7 } from "../lit/lit.js";
 import * as VisualLogging11 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ShortcutRegistry.ts
@@ -1635,6 +1635,7 @@ __export(SoftContextMenu_exports, {
 import * as i18n19 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon6 } from "../kit/kit.js";
 import * as VisualLogging10 from "../visual_logging/visual_logging.js";
+import { render as render6 } from "../lit/lit.js";
 
 // ../../front_end/ui/legacy/InspectorView.ts
 var InspectorView_exports = {};
@@ -2222,7 +2223,7 @@ var inspectorDrawerTabbedPane_css_default = `/*
 }
 
 .collapsed-vertical-drawer-container {
-  height: calc(100% - 27px);
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -4929,7 +4930,7 @@ var tabbedPane_css_default = `/*
   width: auto;
   flex: 0 0 auto;
   flex-direction: column;
-  padding-top: 5px;
+  padding-top: var(--sys-size-3);
   overflow: hidden;
 }
 
@@ -9933,13 +9934,20 @@ var SoftContextMenu = class _SoftContextMenu {
     }
     if (item8.element && !item8.label) {
       const wrapper = menuItemElement.createChild("div", "soft-context-menu-custom-item");
-      wrapper.appendChild(item8.element);
-      if (item8.element?.classList.contains("location-menu")) {
-        const label = item8.element.ariaLabel || "";
-        item8.element.ariaLabel = "";
+      if (item8.element instanceof Element) {
+        wrapper.appendChild(item8.element);
+      } else {
+        render6(item8.element, wrapper);
+      }
+      const customElement = item8.element instanceof Element ? item8.element : wrapper.firstElementChild;
+      if (customElement instanceof HTMLElement && customElement.classList.contains("location-menu")) {
+        const label = customElement.ariaLabel || "";
+        customElement.ariaLabel = "";
         setLabel(menuItemElement, label);
       }
-      detailsForElement.customElement = item8.element;
+      if (customElement instanceof HTMLElement) {
+        detailsForElement.customElement = customElement;
+      }
       this.detailsForElementMap.set(menuItemElement, detailsForElement);
       return menuItemElement;
     }
@@ -9948,7 +9956,13 @@ var SoftContextMenu = class _SoftContextMenu {
     }
     createTextChild(menuItemElement, item8.label || "");
     if (item8.element) {
-      menuItemElement.appendChild(item8.element);
+      if (item8.element instanceof Element) {
+        menuItemElement.appendChild(item8.element);
+      } else {
+        const fragment = document.createDocumentFragment();
+        render6(item8.element, fragment);
+        menuItemElement.appendChild(fragment);
+      }
     }
     menuItemElement.createChild("span", "soft-context-menu-shortcut").textContent = item8.shortcut || "";
     menuItemElement.addEventListener("mousedown", this.menuItemMouseDown.bind(this), false);
@@ -9968,7 +9982,7 @@ var SoftContextMenu = class _SoftContextMenu {
     } else if (item8.shortcut) {
       accessibleName = i18nString10(UIStrings10.sS, { PH1: String(item8.label), PH2: item8.shortcut });
     }
-    if (item8.element?.className === "new-badge") {
+    if (menuItemElement.querySelector(".new-badge")) {
       accessibleName = i18nString10(UIStrings10.sS, { PH1: String(item8.label), PH2: i18nString10(UIStrings10.newFeature) });
     }
     setLabel(menuItemElement, accessibleName);
@@ -11248,7 +11262,7 @@ var MenuButton = class extends HTMLElement {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
     const accessibleLabel = this.accessibleLabel ?? this.title;
-    render6(
+    render7(
       html5`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
@@ -13756,7 +13770,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
       }
     }
     this.items = [];
-    render7(nothing5, this);
+    render8(nothing5, this);
   }
   hideSeparatorDupes() {
     if (!this.items.length) {
@@ -15490,7 +15504,7 @@ button.link:focus-visible {
 :host-context(.theme-with-dark-background) devtools-adorner {
   --override-adorner-border-color: var(--sys-color-tonal-outline);
   --override-adorner-active-background-color: var(
-    --sys-color-state-riple-neutral-on-subtle
+    --sys-color-state-ripple-neutral-on-subtle
   );
 }
 
@@ -16125,7 +16139,8 @@ div.error {
 
 // ../../front_end/ui/legacy/UIUtils.ts
 var Directives4 = Lit4.Directives;
-var render9 = Lit4.render;
+var html7 = Lit4.html;
+var render10 = Lit4.render;
 var UIStrings13 = {
   /**
    * @description Context menu item to open a link in a new tab.
@@ -17560,11 +17575,7 @@ var PromotionManager = class _PromotionManager {
 function maybeCreateNewBadge(promotionId) {
   const promotionManager = PromotionManager.instance();
   if (promotionManager.maybeShowPromotion(promotionId)) {
-    const badge2 = document.createElement("div");
-    badge2.className = "new-badge";
-    badge2.textContent = i18nString13(UIStrings13.new);
-    badge2.setAttribute("jslog", `${VisualLogging16.badge("new-badge")}`);
-    return badge2;
+    return html7`<div class="new-badge" jslog=${VisualLogging16.badge("new-badge")}>${i18nString13(UIStrings13.new)}</div>`;
   }
   return void 0;
 }
@@ -17917,7 +17928,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       );
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render9(template, this.#contentTemplate.content);
+    render10(template, this.#contentTemplate.content);
   }
   flushPendingMutationsForTesting() {
     const records = this.#mutationObserver.takeRecords();
@@ -18814,7 +18825,7 @@ var DialogWidget = class extends DialogWidgetBase {
   }
   performUpdate() {
     if (this.open) {
-      render10(this.#content ?? nothing7, this.#dialog.contentElement);
+      render11(this.#content ?? nothing7, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
         this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
@@ -19295,7 +19306,7 @@ __export(EmptyWidget_exports, {
 });
 import "../kit/kit.js";
 import * as i18n29 from "../../core/i18n/i18n.js";
-import { html as html6, render as render11 } from "../lit/lit.js";
+import { html as html8, render as render12 } from "../lit/lit.js";
 import * as VisualLogging18 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -19328,14 +19339,14 @@ var UIStrings15 = {
 var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings15);
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render11(html6`
+  render12(html8`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}>
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? html6`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
+        ${input.link ? html8`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
       </div>
       <slot></slot>
     </div>`, target, { container: { classes: ["empty-widget-container", "empty-view-scroller"] } });
@@ -20300,7 +20311,7 @@ __export(ListWidget_exports, {
 import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform21 from "../../core/platform/platform.js";
 import * as Buttons8 from "../components/buttons/buttons.js";
-import { html as html7, nothing as nothing8, render as render12 } from "../lit/lit.js";
+import { html as html9, nothing as nothing8, render as render13 } from "../lit/lit.js";
 import * as VisualLogging20 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -20619,11 +20630,11 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render12(html7`
+    render13(html9`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          ${controlLabels?.hideEdit ? nothing8 : html7`<devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing8 : html9`<devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
@@ -21241,7 +21252,7 @@ var progressIndicator_css_default = `/*
 .progress-indicator-shadow-container .title {
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 150px;
+  max-width: var(--sys-size-22);
   margin-right: var(--sys-size-2);
   color: var(--sys-color-token-subtle);
 }
@@ -21346,7 +21357,7 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
 });
 import * as i18n35 from "../../core/i18n/i18n.js";
 import * as Buttons9 from "../components/buttons/buttons.js";
-import { html as html8, render as render13 } from "../lit/lit.js";
+import { html as html10, render as render14 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -21411,8 +21422,8 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render13(
-    html8`
+  render14(
+    html10`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString18(UIStrings18.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -22034,7 +22045,7 @@ var searchableView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./searchableView.css")} */`;
 
 // ../../front_end/ui/legacy/SearchableView.ts
-var { html: html9, nothing: nothing9, render: render14, Directives: Directives5 } = Lit5;
+var { html: html11, nothing: nothing9, render: render15, Directives: Directives5 } = Lit5;
 var UIStrings19 = {
   /**
    * @description Button text and placeholder to replace the current search match in the search bar.
@@ -22109,7 +22120,7 @@ var UIStrings19 = {
 var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings19);
 var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 function renderClearButton(jslogContext, onClick) {
-  return html9`
+  return html11`
     <devtools-button class="clear-button" tabindex="-1" aria-label=${i18nString19(UIStrings19.clearInput)}
         .data=${{
     variant: Buttons10.Button.Variant.ICON,
@@ -22121,7 +22132,7 @@ function renderClearButton(jslogContext, onClick) {
         @click=${onClick}></devtools-button>`;
 }
 function renderConfigToggle(iconName, label, toggled, onClick) {
-  return html9`
+  return html11`
     <devtools-button aria-label=${label}
         .data=${{
     variant: Buttons10.Button.Variant.ICON_TOGGLE,
@@ -22137,7 +22148,7 @@ function renderConfigToggle(iconName, label, toggled, onClick) {
 }
 var DEFAULT_VIEW4 = (input, output, target) => {
   const replaceLabel = input.secondRowVisible ? i18nString19(UIStrings19.disableFindAndReplace) : i18nString19(UIStrings19.enableFindAndReplace);
-  render14(html9`
+  render15(html11`
     <style>${searchableView_css_default}</style>
     <slot></slot>
     <div class="search-bar ${input.searchIsVisible ? "" : "hidden"} ${input.secondRowVisible ? "replaceable" : ""}"
@@ -23214,9 +23225,9 @@ var SimpleView = class extends VBox {
 };
 
 // ../../front_end/ui/legacy/StackPane.ts
-var { html: html10, render: render15 } = Lit6;
+var { html: html12, render: render16 } = Lit6;
 var SLOT_VIEW = (input, _output, target) => {
-  render15(html10`<slot name=${input.name}></slot>`, target);
+  render16(html12`<slot name=${input.name}></slot>`, target);
 };
 var SlotView = class extends SimpleView {
   #pane;
@@ -23241,7 +23252,7 @@ var SlotView = class extends SimpleView {
   }
 };
 var STACK_VIEW = (input, _output, target) => {
-  render15(html10`<devtools-widget ${widget(WrapperWidget, { widget: input.location.widget() })}></devtools-widget>`, target);
+  render16(html12`<devtools-widget ${widget(WrapperWidget, { widget: input.location.widget() })}></devtools-widget>`, target);
 };
 var StackPaneElement = class extends HTMLElement {
   #location = ViewManager.instance().createStackLocation();
@@ -23310,7 +23321,7 @@ __export(TargetCrashedScreen_exports, {
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n41 from "../../core/i18n/i18n.js";
-import { html as html11, render as render16 } from "../lit/lit.js";
+import { html as html13, render as render17 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -23346,8 +23357,8 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var DEFAULT_VIEW5 = (input, _output, target) => {
-  render16(
-    html11`
+  render17(
+    html13`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString21(UIStrings21.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString21(UIStrings21.oncePageIsReloadedDevtoolsWill)}</div>`,
@@ -23733,7 +23744,7 @@ var UIStrings22 = {
 var str_22 = i18n43.i18n.registerUIStrings("ui/legacy/Treeoutline.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render17 } = Lit7;
+var { render: render18 } = Lit7;
 var Events11 = /* @__PURE__ */ ((Events12) => {
   Events12["ElementAttached"] = "ElementAttached";
   Events12["ElementsDetached"] = "ElementsDetached";
@@ -24392,7 +24403,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render17(icons, this.leadingIconsElement);
+    render18(icons, this.leadingIconsElement);
   }
   setTrailingIcons(icons) {
     if (!this.trailingIconsElement && !icons.length) {
@@ -24405,7 +24416,7 @@ var TreeElement = class {
       this.listItemNode.appendChild(this.trailingIconsElement);
       this.ensureSelection();
     }
-    render17(icons, this.trailingIconsElement);
+    render18(icons, this.trailingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;
@@ -25364,7 +25375,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     }
   }
   removeNodes(nodes) {
-    for (const node of getTreeNodes(nodes)) {
+    const removeSingleNode = (node) => {
       if (node instanceof HTMLLIElement) {
         TreeViewTreeElement.get(node)?.removeFromTree();
       } else if (node.treeElement) {
@@ -25373,6 +25384,18 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
           Boolean(node.treeElement.parent && node.treeElement.parent.configElement?.querySelector(':scope > ul[role="group"]'))
         );
       }
+    };
+    const nodesWithSelection = [];
+    for (const node of getTreeNodes(nodes)) {
+      const treeElement = node instanceof HTMLLIElement ? TreeViewTreeElement.get(node) : node.treeElement;
+      if (treeElement && this.#treeOutline.selectedTreeElement?.hasAncestorOrSelf(treeElement)) {
+        nodesWithSelection.push(node);
+      } else {
+        removeSingleNode(node);
+      }
+    }
+    for (const node of nodesWithSelection) {
+      removeSingleNode(node);
     }
   }
   set hideOverflow(hide) {

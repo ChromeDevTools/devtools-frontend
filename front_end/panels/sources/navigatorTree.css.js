@@ -33,14 +33,19 @@ export default `/*
  */
 
 .is-ignore-listed {
-  .tree-element-title,
-  .leading-icons {
+  & > .tree-element-title {
     opacity: 40%;
   }
 }
 
 .tree-outline li {
   min-height: var(--sys-size-9);
+}
+
+.tree-outline.tree-variant-navigation li > .tree-element-title {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .tree-outline li:hover:not(.selected) .selection {

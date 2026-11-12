@@ -20,7 +20,7 @@ export default `/*
 }
 
 .collapsed-vertical-drawer-container {
-  height: calc(100% - 27px);
+  height: 100%;
   display: flex;
   flex-direction: column;
 }

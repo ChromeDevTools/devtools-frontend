@@ -31,7 +31,7 @@ var consoleContextSelector_css_default = `/*
     white-space: nowrap;
     display: flex;
     flex-direction: column;
-    height: 36px;
+    height: calc(var(--sys-size-13) + 2 * var(--sys-size-2)); /* 32px two-line content box (.title + .subtitle) + top and bottom --sys-size-2 padding */
     justify-content: center;
     overflow-y: auto;
 

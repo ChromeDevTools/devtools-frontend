@@ -72,6 +72,11 @@ export class RehydratingConnectionTransport {
     fetchPromiseForTest;
     #onConnectionLost;
     #rehydratingWindow = window;
+    // The window we announced ourselves to; the only one allowed to send the trace.
+    #hostWindow = null;
+    // Popup openers (`TimelinePanel.#launchRehydratedSession`) are always same-origin, whereas
+    // external tools may embed `trace_app.html` in a cross-origin iframe (crbug.com/453705035).
+    #requireSameOriginHost = false;
     #onReceiveHostWindowPayloadBound = this.onReceiveHostWindowPayload.bind(this);
     constructor(onConnectionLost) {
         this.#onConnectionLost = onConnectionLost;
@@ -113,11 +118,16 @@ export class RehydratingConnectionTransport {
         return false;
     }
     #setupMessagePassing() {
-        this.#rehydratingWindow.addEventListener('message', this.#onReceiveHostWindowPayloadBound);
         if (this.#rehydratingWindow.opener) {
+            this.#hostWindow = this.#rehydratingWindow.opener;
+            this.#requireSameOriginHost = true;
+            this.#rehydratingWindow.addEventListener('message', this.#onReceiveHostWindowPayloadBound);
             this.#rehydratingWindow.opener.postMessage({ type: 'REHYDRATING_WINDOW_READY' });
         }
         else if (this.#rehydratingWindow !== window.top) {
+            this.#hostWindow = this.#rehydratingWindow.parent;
+            this.#requireSameOriginHost = false;
+            this.#rehydratingWindow.addEventListener('message', this.#onReceiveHostWindowPayloadBound);
             this.#rehydratingWindow.parent.postMessage({ type: 'REHYDRATING_IFRAME_READY' }, '*');
         }
         else {
@@ -125,23 +135,41 @@ export class RehydratingConnectionTransport {
         }
     }
     /**
+     * The trace payload is replayed into the front-end as synthetic CDP events, so only accept it
+     * from the window we announced ourselves to. For popups, also require same-origin (matching
+     * `TimelinePanel.#launchRehydratedSession`); iframe embedders may be cross-origin
+     * (crbug.com/453705035), so `event.source` is checked there.
+     */
+    #isFromHostWindow(event) {
+        if (this.#hostWindow === null || event.source !== this.#hostWindow) {
+            return false;
+        }
+        if (this.#requireSameOriginHost && event.origin !== this.#rehydratingWindow.location.origin) {
+            return false;
+        }
+        return true;
+    }
+    /**
      * This is a callback for rehydrated session to receive payload from host window. Payload includes but not limited to
      * the trace event and all necessary data to power a rehydrated session.
      */
     onReceiveHostWindowPayload(event) {
-        if (event.data.type === 'REHYDRATING_TRACE_FILE') {
-            const traceJson = event.data.traceJson;
-            let trace;
-            try {
-                trace = new TraceObject(JSON.parse(traceJson));
-            }
-            catch {
-                this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
-                return;
-            }
-            void this.startHydration(trace);
+        // Ignore (and keep listening after) anything that is not the trace from the host window,
+        // so a stray or hostile message cannot take the one-shot channel away from the host.
+        if (!this.#isFromHostWindow(event) || event.data?.type !== 'REHYDRATING_TRACE_FILE') {
+            return;
         }
         this.#rehydratingWindow.removeEventListener('message', this.#onReceiveHostWindowPayloadBound);
+        const traceJson = event.data.traceJson;
+        let trace;
+        try {
+            trace = new TraceObject(JSON.parse(traceJson));
+        }
+        catch {
+            this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
+            return;
+        }
+        void this.startHydration(trace);
     }
     async startHydration(trace) {
         // OnMessage should've been set before hydration, and the connection should
@@ -238,6 +266,7 @@ export class RehydratingConnectionTransport {
         }
     }
     disconnect() {
+        this.#rehydratingWindow.removeEventListener('message', this.#onReceiveHostWindowPayloadBound);
         return Promise.reject();
     }
 }

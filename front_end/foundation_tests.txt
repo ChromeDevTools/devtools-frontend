@@ -218,6 +218,7 @@ models/bindings/SourceMapStepping.test.js
 models/bindings/StylesSourceMapping.test.js
 models/bindings/SymbolizedError.test.js
 models/breakpoints/BreakpointManager.test.js
+models/breakpoints/RecurringPauseDetector.test.js
 models/change_tracker/ChangeTracker.test.js
 models/comment_manager/CD4ABridge.test.js
 models/comment_manager/CommentManager.test.js

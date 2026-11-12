@@ -176,12 +176,12 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase {
     computedStyleModel() {
         return this.#computedStyleModelInternal;
     }
-    setActiveProperty(_treeElement) {
+    setActiveProperty(_propertyData) {
     }
-    refreshUpdate(editedSection, editedTreeElement, force = false) {
-        if (editedTreeElement) {
+    refreshUpdate(editedSection, editedProperty, force = false) {
+        if (editedProperty) {
             for (const section of this.#sections) {
-                section.updateVarFunctions(editedTreeElement);
+                section.updateVarFunctions(editedProperty);
             }
         }
         if (this.isEditingStyle && !force) {

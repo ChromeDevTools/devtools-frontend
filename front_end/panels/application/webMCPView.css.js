@@ -161,6 +161,17 @@ export default `/*
         margin-left: calc(-1 * var(--sys-size-3));
       }
 
+      &.schema {
+        padding: 0;
+        min-width: 0;
+        overflow: hidden;
+
+        > devtools-widget {
+          display: block;
+          max-width: 100%;
+        }
+      }
+
       &.tool-origin-container {
         display: flex;
         align-items: center;
@@ -314,6 +325,12 @@ export default `/*
     align-self: flex-end;
     margin: var(--sys-size-6) var(--sys-size-8);
   }
+}
+
+/* The schema tree is a child of a nested devtools-widget, which the @scope above excludes. */
+.tool-details-grid .value.schema > devtools-widget > devtools-tree {
+  display: block;
+  max-width: 100%;
 }
 
 /*# sourceURL=${import.meta.resolve('./webMCPView.css')} */`;

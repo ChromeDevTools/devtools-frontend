@@ -613,17 +613,26 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         return true;
     }
     static renderNameElement(name) {
-        const nameElement = document.createElement('span');
-        nameElement.setAttribute('jslog', `${VisualLogging.key().track({
+        const fragment = document.createDocumentFragment();
+        render(this.nameTemplate(name), fragment);
+        const nameElement = fragment.firstElementChild;
+        // Detach from the render fragment so callers get a standalone element.
+        nameElement.remove();
+        nameElement.normalize();
+        return nameElement;
+    }
+    static nameTemplate(name) {
+        // clang-format off
+        return html `<span
+      jslog=${VisualLogging.key().track({
             change: true,
             keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
-        })}`);
-        UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, { PH1: name }));
-        nameElement.className = 'webkit-css-property';
-        nameElement.textContent = name;
-        nameElement.normalize();
-        nameElement.tabIndex = -1;
-        return nameElement;
+        })}
+      aria-label=${i18nString(UIStrings.cssPropertyName, { PH1: name })}
+      class="webkit-css-property"
+      tabindex="-1"
+    >${name}</span>`;
+        // clang-format on
     }
     // This function renders a property value as HTML, customizing the presentation with a set of given AST matchers. This
     // comprises the following steps:
@@ -637,18 +646,29 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     // The renderers record the changes they make to the text of the value in `edits`, if given, see
     // `RenderingContext.recordEdit`.
     static renderValueElement(property, matchedResult, renderers, tracing, signal, edits) {
-        const valueElement = document.createElement('span');
-        valueElement.setAttribute('jslog', `${VisualLogging.value().track({
-            change: true,
-            keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
-        })}`);
-        UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, { PH1: property.value }));
-        valueElement.className = 'value';
-        valueElement.tabIndex = -1;
-        const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
-        render(nodes, valueElement);
+        const { template, cssControls } = this.valueTemplate(property, matchedResult, renderers, tracing, signal, edits);
+        const fragment = document.createDocumentFragment();
+        render(template, fragment);
+        const valueElement = fragment.firstElementChild;
+        // Detach from the render fragment so callers get a standalone element.
+        valueElement.remove();
         valueElement.normalize();
         return { valueElement, cssControls };
+    }
+    static valueTemplate(property, matchedResult, renderers, tracing, signal, edits) {
+        const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
+        // clang-format off
+        const template = html `<span
+      jslog=${VisualLogging.value().track({
+            change: true,
+            keydown: 'ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape',
+        })}
+      aria-label=${i18nString(UIStrings.cssPropertyValue, { PH1: property.value })}
+      class="value"
+      tabindex="-1"
+    >${nodes}</span>`;
+        // clang-format on
+        return { template, cssControls };
     }
     static renderValueNodes(property, matchedResult, renderers, tracing, signal, edits) {
         if (!matchedResult) {

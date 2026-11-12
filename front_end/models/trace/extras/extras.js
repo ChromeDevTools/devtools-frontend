@@ -526,9 +526,7 @@ function createEventIdCache() {
   };
 }
 var Node = class {
-  /** ms */
   totalTime;
-  /** ms */
   selfTime;
   transferSize;
   id;
@@ -544,8 +542,8 @@ var Node = class {
   isGroupNodeInternal;
   depth;
   constructor(id, event) {
-    this.totalTime = 0;
-    this.selfTime = 0;
+    this.totalTime = Types4.Timing.Micro(0);
+    this.selfTime = Types4.Timing.Micro(0);
     this.transferSize = 0;
     this.id = id;
     this.event = event;
@@ -629,8 +627,8 @@ var TopDownNode = class _TopDownNode extends Node {
         onStartEvent,
         onEndEvent,
         onInstantEvent: instantEventCallback,
-        startTime: Helpers3.Timing.milliToMicro(startTime),
-        endTime: Helpers3.Timing.milliToMicro(endTime),
+        startTime,
+        endTime,
         eventFilter: root.filter,
         ignoreAsyncEvents: false
       }
@@ -643,10 +641,10 @@ var TopDownNode = class _TopDownNode extends Node {
       if (!matchPath(e)) {
         return;
       }
-      const currentStartTime = Helpers3.Timing.microToMilli(e.ts);
-      const currentEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const currentStartTime = e.ts;
+      const currentEndTime = e.ts + (e.dur ?? 0);
       const actualEndTime = Math.min(currentEndTime, endTime);
-      const duration = actualEndTime - Math.max(startTime, currentStartTime);
+      const duration = Types4.Timing.Micro(actualEndTime - Math.max(startTime, currentStartTime));
       if (duration < 0) {
         console.error("Negative event duration");
       }
@@ -655,7 +653,7 @@ var TopDownNode = class _TopDownNode extends Node {
     function onInstantEvent(e) {
       ++depth;
       if (matchedDepth === path.length && depth <= path.length + 2) {
-        processEvent(e, 0);
+        processEvent(e, Types4.Timing.Micro(0));
       }
       --depth;
     }
@@ -665,7 +663,7 @@ var TopDownNode = class _TopDownNode extends Node {
           return;
         }
         currentDirectChild.setHasChildren(true);
-        currentDirectChild.selfTime -= duration;
+        currentDirectChild.selfTime = Types4.Timing.Micro(currentDirectChild.selfTime - duration);
         return;
       }
       let id;
@@ -687,8 +685,8 @@ var TopDownNode = class _TopDownNode extends Node {
       } else {
         node.events.push(e);
       }
-      node.selfTime += duration;
-      node.totalTime += duration;
+      node.selfTime = Types4.Timing.Micro(node.selfTime + duration);
+      node.totalTime = Types4.Timing.Micro(node.totalTime + duration);
       if (Types4.Events.isReceivedDataEvent(e)) {
         node.transferSize += e.args.data.encodedDataLength;
       }
@@ -701,7 +699,7 @@ var TopDownNode = class _TopDownNode extends Node {
       if (matchedDepth !== depth - 1) {
         return false;
       }
-      const eventEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const eventEndTime = e.ts + (e.dur ?? 0);
       if (!eventEndTime) {
         return false;
       }
@@ -726,6 +724,9 @@ var TopDownNode = class _TopDownNode extends Node {
       if (matchedDepth > depth) {
         matchedDepth = depth;
       }
+      if (depth === path.length) {
+        currentDirectChild = null;
+      }
     }
     this.childrenInternal = children;
     return children;
@@ -740,8 +741,6 @@ var TopDownRootNode = class extends TopDownNode {
   doNotAggregate;
   includeInstantEvents;
   eventId = createEventIdCache();
-  totalTime;
-  selfTime;
   constructor(events, { filters, startTime, endTime, doNotAggregate, eventGroupIdCallback, includeInstantEvents }) {
     super("", events[0], null);
     this.event = events[0];
@@ -753,7 +752,7 @@ var TopDownRootNode = class extends TopDownNode {
     this.eventGroupIdCallback = eventGroupIdCallback;
     this.doNotAggregate = doNotAggregate;
     this.includeInstantEvents = includeInstantEvents;
-    this.totalTime = endTime - startTime;
+    this.totalTime = Types4.Timing.Micro(endTime - startTime);
     this.selfTime = this.totalTime;
   }
   children() {
@@ -762,7 +761,7 @@ var TopDownRootNode = class extends TopDownNode {
   grouppedTopNodes() {
     const flatNodes = super.children();
     for (const node of flatNodes.values()) {
-      this.selfTime -= node.totalTime;
+      this.selfTime = Types4.Timing.Micro(this.selfTime - node.totalTime);
     }
     if (!this.eventGroupIdCallback) {
       return flatNodes;
@@ -811,7 +810,6 @@ var BottomUpRootNode = class extends Node {
   filter;
   startTime;
   endTime;
-  totalTime;
   eventGroupIdCallback;
   calculateTransferSize;
   forceGroupIdCallback;
@@ -833,7 +831,7 @@ var BottomUpRootNode = class extends Node {
     this.startTime = startTime;
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
-    this.totalTime = endTime - startTime;
+    this.totalTime = Types4.Timing.Micro(endTime - startTime);
     this.calculateTransferSize = calculateTransferSize;
     this.forceGroupIdCallback = forceGroupIdCallback;
   }
@@ -863,7 +861,7 @@ var BottomUpRootNode = class extends Node {
     const endTime = this.endTime;
     const stateStack = [];
     const nodeById = /* @__PURE__ */ new Map();
-    const selfTimeStack = [endTime - startTime];
+    const selfTimeStack = [Types4.Timing.Micro(endTime - startTime)];
     const firstNodeStack = [];
     const eventGroupIdCallback = this.eventGroupIdCallback;
     const forceGroupIdCallback = this.forceGroupIdCallback;
@@ -875,7 +873,7 @@ var BottomUpRootNode = class extends Node {
       if (!forceGroupIdCallback || !eventGroupIdCallback) {
         let state2 = stateById.get(id);
         if (!state2) {
-          state2 = { id, node: null, onStack: false, pendingTotalTime: 0 };
+          state2 = { id, node: null, onStack: false, pendingTotalTime: Types4.Timing.Micro(0) };
           stateById.set(id, state2);
         }
         return state2;
@@ -888,7 +886,7 @@ var BottomUpRootNode = class extends Node {
       }
       let state = groupedStates.get(groupId);
       if (!state) {
-        state = { id: `${id}-${groupId}`, node: null, onStack: false, pendingTotalTime: 0 };
+        state = { id: `${id}-${groupId}`, node: null, onStack: false, pendingTotalTime: Types4.Timing.Micro(0) };
         groupedStates.set(groupId, state);
       }
       return state;
@@ -928,18 +926,18 @@ var BottomUpRootNode = class extends Node {
         onStartEvent,
         onEndEvent,
         onInstantEvent: this.calculateTransferSize ? sumTransferSizeOfInstantEvent : void 0,
-        startTime: Helpers3.Timing.milliToMicro(this.startTime),
-        endTime: Helpers3.Timing.milliToMicro(this.endTime),
+        startTime: this.startTime,
+        endTime: this.endTime,
         eventFilter: this.filter,
         ignoreAsyncEvents: false
       }
     );
     function onStartEvent(e) {
-      const currentStartTime = Helpers3.Timing.microToMilli(e.ts);
-      const currentEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const currentStartTime = e.ts;
+      const currentEndTime = e.ts + (e.dur ?? 0);
       const actualEndTime = Math.min(currentEndTime, endTime);
-      const duration = actualEndTime - Math.max(currentStartTime, startTime);
-      selfTimeStack[selfTimeStack.length - 1] -= duration;
+      const duration = Types4.Timing.Micro(actualEndTime - Math.max(currentStartTime, startTime));
+      selfTimeStack[selfTimeStack.length - 1] = Types4.Timing.Micro(selfTimeStack[selfTimeStack.length - 1] - duration);
       selfTimeStack.push(duration);
       const state = stateForEvent(e);
       stateStack.push(state);
@@ -963,16 +961,16 @@ var BottomUpRootNode = class extends Node {
       } else {
         node.events.push(event);
       }
-      node.selfTime += selfTimeStack.pop() || 0;
+      node.selfTime = Types4.Timing.Micro(node.selfTime + (selfTimeStack.pop() || 0));
       if (firstNodeStack.pop()) {
-        node.totalTime += state.pendingTotalTime;
+        node.totalTime = Types4.Timing.Micro(node.totalTime + state.pendingTotalTime);
         state.onStack = false;
       }
       if (stateStack.length > 0) {
         node.setHasChildren(true);
       }
     }
-    this.selfTime = selfTimeStack.pop() || 0;
+    this.selfTime = Types4.Timing.Micro(selfTimeStack.pop() || 0);
     for (const pair of nodeById) {
       if (pair[1].selfTime <= 0 && (!this.calculateTransferSize || pair[1].transferSize <= 0)) {
         nodeById.delete(pair[0]);
@@ -1015,8 +1013,8 @@ var GroupNode = class extends Node {
   }
   addChild(child, selfTime, totalTime, transferSize) {
     this.childrenInternal.set(child.id, child);
-    this.selfTime += selfTime;
-    this.totalTime += totalTime;
+    this.selfTime = Types4.Timing.Micro(this.selfTime + selfTime);
+    this.totalTime = Types4.Timing.Micro(this.totalTime + totalTime);
     this.transferSize += transferSize;
     child.parent = this;
   }
@@ -1051,7 +1049,7 @@ var BottomUpNode = class _BottomUpNode extends Node {
     if (this.cachedChildren) {
       return this.cachedChildren;
     }
-    const selfTimeStack = [0];
+    const selfTimeStack = [Types4.Timing.Micro(0)];
     const eventIdStack = [];
     const eventStack = [];
     const nodeById = /* @__PURE__ */ new Map();
@@ -1065,21 +1063,21 @@ var BottomUpNode = class _BottomUpNode extends Node {
       {
         onStartEvent,
         onEndEvent,
-        startTime: Helpers3.Timing.milliToMicro(startTime),
-        endTime: Helpers3.Timing.milliToMicro(endTime),
+        startTime,
+        endTime,
         eventFilter: this.root.filter,
         ignoreAsyncEvents: false
       }
     );
     function onStartEvent(e) {
-      const currentStartTime = Helpers3.Timing.microToMilli(e.ts);
-      const currentEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
+      const currentStartTime = e.ts;
+      const currentEndTime = e.ts + (e.dur ?? 0);
       const actualEndTime = Math.min(currentEndTime, endTime);
-      const duration = actualEndTime - Math.max(currentStartTime, startTime);
+      const duration = Types4.Timing.Micro(actualEndTime - Math.max(currentStartTime, startTime));
       if (duration < 0) {
         console.assert(false, "Negative duration of an event");
       }
-      selfTimeStack[selfTimeStack.length - 1] -= duration;
+      selfTimeStack[selfTimeStack.length - 1] = Types4.Timing.Micro(selfTimeStack[selfTimeStack.length - 1] - duration);
       selfTimeStack.push(duration);
       const id = eventId(e);
       eventIdStack.push(id);
@@ -1108,12 +1106,12 @@ var BottomUpNode = class _BottomUpNode extends Node {
       } else {
         node.events.push(e);
       }
-      const currentStartTime = Helpers3.Timing.microToMilli(e.ts);
-      const currentEndTime = Helpers3.Timing.microToMilli(Types4.Timing.Micro(e.ts + (e.dur ?? 0)));
-      const actualEndTime = Math.min(currentEndTime, endTime);
-      const totalTime = actualEndTime - Math.max(currentStartTime, lastTimeMarker);
-      node.selfTime += selfTime || 0;
-      node.totalTime += totalTime;
+      const currentStartTime = e.ts;
+      const currentEndTime = e.ts + (e.dur ?? 0);
+      const actualEndTime = Types4.Timing.Micro(Math.min(currentEndTime, endTime));
+      const totalTime = Types4.Timing.Micro(actualEndTime - Math.max(currentStartTime, lastTimeMarker));
+      node.selfTime = Types4.Timing.Micro(node.selfTime + (selfTime || 0));
+      node.totalTime = Types4.Timing.Micro(node.totalTime + totalTime);
       lastTimeMarker = actualEndTime;
     }
     this.cachedChildren = this.root.filterChildren(nodeById);
@@ -1195,7 +1193,7 @@ function summarizeBottomUpByEntity(root, data) {
     }
     const summary = {
       transferSize: node.transferSize,
-      mainThreadTime: Types5.Timing.Milli(node.selfTime),
+      mainThreadTime: Helpers5.Timing.microToMilli(node.selfTime),
       entity,
       relatedEvents: data.Renderer.entityMappings.eventsByEntity.get(entity) ?? []
     };
@@ -1222,7 +1220,7 @@ function summarizeBottomUpByURL(root, data) {
       url,
       entity,
       transferSize: node.transferSize,
-      mainThreadTime: Types5.Timing.Milli(node.selfTime)
+      mainThreadTime: Helpers5.Timing.microToMilli(node.selfTime)
     };
     summaries.push(summary);
   }
@@ -1233,13 +1231,11 @@ var visibleEventsFilter = new VisibleEventsFilter(
   [...Helpers5.Trace.VISIBLE_TRACE_EVENT_TYPES.values(), Types5.Events.Name.SYNTHETIC_NETWORK_REQUEST]
 );
 function getBottomUpTree(mainThreadEvents, tracebounds, groupingFunction) {
-  const startTime = Helpers5.Timing.microToMilli(tracebounds.min);
-  const endTime = Helpers5.Timing.microToMilli(tracebounds.max);
   return new BottomUpRootNode(mainThreadEvents, {
     textFilter: exclusiveNameFilter,
     filters: [visibleEventsFilter],
-    startTime,
-    endTime,
+    startTime: tracebounds.min,
+    endTime: tracebounds.max,
     eventGroupIdCallback: groupingFunction,
     calculateTransferSize: true,
     // Ensure we group by 3P alongside eventID for correct 3P grouping.

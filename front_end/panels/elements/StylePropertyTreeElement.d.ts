@@ -5,8 +5,9 @@ import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.n
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { type LitTemplate, type TemplateResult } from '../../ui/lit/lit.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
+import { type Hint } from './CSSRuleValidator.js';
 import { type CSSControlMap, type MatchRenderer, type RendererBase, RenderingContext } from './PropertyRenderer.js';
 import type { ActiveAiSuggestionProperty, StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylesContainer } from './StylesContainer.js';
@@ -20,44 +21,68 @@ interface StylePropertyTreeElementParams {
     overloaded: boolean;
     newProperty: boolean;
 }
+export interface StylePropertyData {
+    property: SDK.CSSProperty.CSSProperty;
+    readonly name: string;
+    readonly value: string;
+    readonly tooltipIdFactory: Tooltips.Tooltip.IdFactory;
+    readonly lastCommittedProperty: {
+        readonly name: string;
+        readonly value: string;
+    };
+    editable(): boolean;
+    inherited(): boolean;
+    overloaded(): boolean;
+    parentShorthand(): StylePropertyData | null;
+    matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles;
+    stylesContainer(): StylesContainer;
+    section(): StylePropertiesSection;
+    getComputedStyles(): Map<string, string> | null;
+    getComputedStyleExtraFields(): Protocol.CSS.ComputedStyleExtraFields | null;
+    renderedPropertyText(): string;
+    updateTitle(): void;
+    applyStyleText(styleText: string, majorChange: boolean): Promise<void>;
+    carryOverCommittedProperty(previous: StylePropertyData): void;
+    setSiblingProperty(propertyName: string, value?: string): Promise<void>;
+}
 declare const EnvFunctionRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.EnvFunctionMatch>;
 export declare class EnvFunctionRenderer extends EnvFunctionRendererBase {
-    readonly treeElement: StylePropertyTreeElement | null;
+    readonly propertyData: StylePropertyData | null;
     readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
     readonly computedStyles: Map<string, string>;
     readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null;
-    constructor(treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
+    constructor(propertyData: StylePropertyData | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): LitTemplate;
 }
 declare const FlexGridRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch>;
 export declare class FlexGridRenderer extends FlexGridRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch, context: RenderingContext): LitTemplate;
 }
 declare const CSSWideKeywordRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch>;
 export declare class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): LitTemplate;
 }
 export declare function handleVarDefinitionActivate(variable: string | SDK.CSSMatchedStyles.CSSValueSource, stylesContainer: StylesContainer): void;
 declare const VariableRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.VariableMatch>;
 export declare class VariableRenderer extends VariableRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
+    constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): LitTemplate;
 }
 declare const VariableNameRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.VariableNameMatch>;
 export declare class VariableNameRenderer extends VariableNameRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
+    constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
     render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): LitTemplate;
 }
 declare const AttributeRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AttributeMatch>;
 export declare class AttributeRenderer extends AttributeRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
+    constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): LitTemplate;
 }
 declare const LinearGradientRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LinearGradientMatch>;
@@ -67,39 +92,39 @@ export declare class LinearGradientRenderer extends LinearGradientRendererBase {
 declare const RelativeColorChannelRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch>;
 export declare class RelativeColorChannelRenderer extends RelativeColorChannelRendererBase {
     #private;
-    constructor(treeElement: StylePropertyTreeElement | null);
+    constructor(propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch, context: RenderingContext): LitTemplate;
 }
 declare const ColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMatch>;
 export declare class ColorRenderer extends ColorRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): LitTemplate;
     renderColorSwatch(color: Common.Color.Color | undefined, match: SDK.CSSPropertyParser.Match, context: RenderingContext): InlineEditor.ColorSwatch.ColorSwatch;
 }
 declare const LightDarkColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LightDarkColorMatch>;
 export declare class LightDarkColorRenderer extends LightDarkColorRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): LitTemplate;
     applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: LitTemplate, dark: LitTemplate, lightControls: CSSControlMap, darkControls: CSSControlMap): Promise<LitTemplate>;
 }
 declare const ColorMixRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMixMatch>;
 export declare class ColorMixRenderer extends ColorMixRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): LitTemplate;
 }
 declare const ContrastColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ContrastColorMatch>;
 export declare class ContrastColorRenderer extends ContrastColorRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): LitTemplate;
 }
 declare const AngleRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AngleMatch>;
 export declare class AngleRenderer extends AngleRendererBase {
     #private;
-    constructor(treeElement: StylePropertyTreeElement | null);
+    constructor(propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.AngleMatch, context: RenderingContext): LitTemplate;
 }
 declare const LinkableNameRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LinkableNameMatch>;
@@ -111,7 +136,7 @@ export declare class LinkableNameRenderer extends LinkableNameRendererBase {
 declare const BezierRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.BezierMatch>;
 export declare class BezierRenderer extends BezierRendererBase {
     #private;
-    constructor(treeElement: StylePropertyTreeElement | null);
+    constructor(propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): LitTemplate;
 }
 declare const AutoBaseRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AutoBaseMatch>;
@@ -160,7 +185,7 @@ export declare class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShad
 declare const ShadowRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ShadowMatch>;
 export declare class ShadowRenderer extends ShadowRendererBase {
     #private;
-    constructor(treeElement: StylePropertyTreeElement | null);
+    constructor(propertyData: StylePropertyData | null);
     shadowModel(shadow: CodeMirror.SyntaxNode[], shadowType: SDK.CSSPropertyParserMatchers.ShadowType, context: RenderingContext): null | ShadowModel;
     render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): LitTemplate;
 }
@@ -172,14 +197,14 @@ export declare const SHORTHANDS_FOR_PERCENTAGES: Set<string>;
 declare const LengthRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LengthMatch>;
 export declare class LengthRenderer extends LengthRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, propertyName: string, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, propertyName: string, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): LitTemplate;
     getTooltipValue(match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<LitTemplate | null>;
 }
 declare const BaseFunctionRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>>;
 export declare class BaseFunctionRenderer extends BaseFunctionRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, propertyName: string, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, propertyName: string, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): LitTemplate;
     applyEvaluation(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<LitTemplate | null>;
     applyMathFunction(renderedArgs: LitTemplate[], match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<LitTemplate>;
@@ -209,17 +234,17 @@ export declare class PositionAnchorRenderer extends PositionAnchorRendererBase {
 declare const PositionAreaRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionAreaMatch>;
 export declare class PositionAreaRenderer extends PositionAreaRendererBase {
     #private;
-    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
+    constructor(stylesContainer: StylesContainer, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): LitTemplate;
 }
 declare const PositionTryRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionTryMatch>;
 export declare class PositionTryRenderer extends PositionTryRendererBase {
     #private;
-    constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null);
+    constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, propertyData: StylePropertyData | null);
     render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): LitTemplate;
 }
-export declare function getPropertyRenderers(propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Array<MatchRenderer<SDK.CSSPropertyParser.Match>>;
-export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
+export declare function getPropertyRenderers(propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, propertyData: StylePropertyData | null, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Array<MatchRenderer<SDK.CSSPropertyParser.Match>>;
+export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement implements StylePropertyData {
     #private;
     private readonly style;
     property: SDK.CSSProperty.CSSProperty;
@@ -241,10 +266,16 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     readonly tooltipIdFactory: Tooltips.Tooltip.IdFactory;
     constructor({ stylesContainer, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }: StylePropertyTreeElementParams);
     onunbind(): void;
-    carryOverCommittedProperty(previous: StylePropertyTreeElement): void;
+    get lastCommittedProperty(): {
+        readonly name: string;
+        readonly value: string;
+    };
+    carryOverCommittedProperty(previous: StylePropertyData): void;
+    setSiblingProperty(propertyName: string, value?: string): Promise<void>;
     gridNames(): Promise<Set<string>>;
     matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles;
     getLonghand(): StylePropertyTreeElement | null;
+    parentShorthand(): StylePropertyData | null;
     editable(): boolean;
     inherited(): boolean;
     overloaded(): boolean;
@@ -272,10 +303,12 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private updateExpandElement;
     refreshIfComputedValueChanged(): void;
     updateTitle(): void;
-    createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: ElementsComponents.CSSVariableValueView.CSSVariableParserError | HTMLElement | null): Element;
-    getTracingTooltip(functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, context: RenderingContext): TemplateResult;
+    createExclamationMark(property: SDK.CSSProperty.CSSProperty, details: ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | null): DocumentFragment;
+    exclamationMarkTemplate(property: SDK.CSSProperty.CSSProperty, details: ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | null): LitTemplate;
     updateAuthoringHint(): void;
+    authoringHintTemplate(hint: Hint): LitTemplate;
     updateAnimationOverrideHint(): void;
+    animationOverrideHintTemplate(): LitTemplate;
     private overriddenByAnimation;
     private mouseUp;
     private handleContextMenuEvent;

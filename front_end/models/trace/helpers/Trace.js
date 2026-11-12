@@ -659,11 +659,13 @@ export function forEachEvent(events, config) {
         const startTime = currentEvent.ts;
         const duration = currentEvent.dur || 0;
         const endTime = startTime + duration;
-        if (endTime < globalStartTime) {
-            continue;
-        }
         if (startTime > globalEndTime) {
             break;
+        }
+        if (endTime < globalStartTime ||
+            (duration > 0 && globalStartTime < globalEndTime &&
+                (endTime <= globalStartTime || startTime >= globalEndTime))) {
+            continue;
         }
         if (currentEvent.ph !== Types.Events.Phase.COMPLETE &&
             ((ignoreAsyncEvents && Types.Events.isPhaseAsync(currentEvent.ph)) ||

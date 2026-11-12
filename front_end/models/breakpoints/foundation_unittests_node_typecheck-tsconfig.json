@@ -46,7 +46,8 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/breakpoints/BreakpointManager.test.ts"
+    "../../../../../../front_end/models/breakpoints/BreakpointManager.test.ts",
+    "../../../../../../front_end/models/breakpoints/RecurringPauseDetector.test.ts"
   ],
   "references": [
     {

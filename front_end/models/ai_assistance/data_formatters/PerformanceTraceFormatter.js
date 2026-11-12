@@ -264,7 +264,7 @@ export class PerformanceTraceFormatter {
         // No nodes less than 1 ms.
         // Limit.
         const topNodes = [...rootNode.children().values()]
-            .filter(n => n.totalTime >= 1)
+            .filter(n => n.totalTime >= Trace.Types.Timing.Micro(1_000))
             .sort((a, b) => b.selfTime - a.selfTime)
             .slice(0, limit);
         const callFrames = [];
@@ -273,7 +273,7 @@ export class PerformanceTraceFormatter {
             let frame;
             if (Trace.Types.Events.isProfileCall(event)) {
                 frame = event.callFrame;
-                if (node.selfTime >= 100 && callFrames.length < 3) {
+                if (node.selfTime >= Trace.Types.Timing.Micro(100_000) && callFrames.length < 3) {
                     callFrames.push(frame);
                 }
             }
@@ -292,7 +292,7 @@ export class PerformanceTraceFormatter {
                 }
                 source += ')';
             }
-            return `- self: ${millis(node.selfTime)}, total: ${millis(node.totalTime)}, source: ${source}`;
+            return `- self: ${millis(Trace.Helpers.Timing.microToMilli(node.selfTime))}, total: ${millis(Trace.Helpers.Timing.microToMilli(node.totalTime))}, source: ${source}`;
         }
         return topNodes.map(node => nodeToText.call(this, node)).join('\n') +
             await this.#serializeRelevantFunctions(callFrames);
@@ -354,7 +354,7 @@ export class PerformanceTraceFormatter {
                 }
                 return longestTaskTrees
                     .map(tree => {
-                    const time = millis(tree.rootNode.totalTime);
+                    const time = millis(Trace.Helpers.Timing.microToMilli(tree.rootNode.totalTime));
                     return `- total time: ${time}, event: ${this.serializeEvent(tree.rootNode.event)}`;
                 })
                     .join('\n');

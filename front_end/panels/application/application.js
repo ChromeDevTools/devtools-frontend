@@ -28,7 +28,7 @@ __export(ApplicationPanelSidebar_exports, {
 });
 import * as Common19 from "../../core/common/common.js";
 import * as Host4 from "../../core/host/host.js";
-import * as i18n61 from "../../core/i18n/i18n.js";
+import * as i18n63 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
 import * as SDK25 from "../../core/sdk/sdk.js";
@@ -17093,9 +17093,9 @@ var WebMCPTreeElement_exports = {};
 __export(WebMCPTreeElement_exports, {
   WebMCPTreeElement: () => WebMCPTreeElement
 });
+import * as i18n61 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon9 } from "../../ui/kit/kit.js";
 import * as UI31 from "../../ui/legacy/legacy.js";
-import { html as html22, render as render23 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/application/WebMCPView.ts
 var WebMCPView_exports = {};
@@ -17350,6 +17350,17 @@ var webMCPView_css_default = `/*
         margin-left: calc(-1 * var(--sys-size-3));
       }
 
+      &.schema {
+        padding: 0;
+        min-width: 0;
+        overflow: hidden;
+
+        > devtools-widget {
+          display: block;
+          max-width: 100%;
+        }
+      }
+
       &.tool-origin-container {
         display: flex;
         align-items: center;
@@ -17503,6 +17514,12 @@ var webMCPView_css_default = `/*
     align-self: flex-end;
     margin: var(--sys-size-6) var(--sys-size-8);
   }
+}
+
+/* The schema tree is a child of a nested devtools-widget, which the @scope above excludes. */
+.tool-details-grid .value.schema > devtools-widget > devtools-tree {
+  display: block;
+  max-width: 100%;
 }
 
 /*# sourceURL=${import.meta.resolve("./webMCPView.css")} */`;
@@ -17676,7 +17693,11 @@ var UIStrings30 = {
   /**
    * @description Label for the tool origin in the tool details section of the WebMCP view in the Application panel.
    */
-  origin: "Origin"
+  origin: "Origin",
+  /**
+   * @description Label for the tool output schema, which describes the structure of the tool's return value, in the tool details section of the WebMCP view in the Application panel.
+   */
+  outputSchema: "Output schema"
 };
 var str_30 = i18n59.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings30);
 var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
@@ -18368,6 +18389,19 @@ var WebMCPView = class extends UI30.Widget.VBox {
     this.#selectedTab = void 0;
   }
 };
+var schemaObjectTreeCache = /* @__PURE__ */ new WeakMap();
+function getSchemaObjectTree(schema) {
+  let objectTree = schemaObjectTreeCache.get(schema);
+  if (!objectTree) {
+    objectTree = new ObjectUI2.ObjectPropertiesSection.ObjectTree(new SDK24.RemoteObject.LocalJSONObject(schema), {
+      readOnly: true,
+      propertiesMode: ObjectUI2.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+    });
+    objectTree.expanded = true;
+    schemaObjectTreeCache.set(schema, objectTree);
+  }
+  return objectTree;
+}
 var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   if (input.valueObject === void 0 && input.valueString === void 0 && !input.errorText && !input.symbolizedError) {
     render22(nothing13, target);
@@ -18492,6 +18526,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
   const tool = input.tool;
   const origin = input.origin;
   const flags = tool.flags;
+  const outputSchema = tool.outputSchema;
   const formatter = new Intl.ListFormat(i18n59.DevToolsLocale.DevToolsLocale.instance().locale, {
     style: "short",
     type: "unit"
@@ -18507,6 +18542,16 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
       ${flags.length > 0 ? html21`
       <div class="label">${i18nString30(UIStrings30.flags)}</div>
       <div class="value">${formattedFlags}</div>
+      ` : nothing13}
+      ${outputSchema ? html21`
+      <div class="label">${i18nString30(UIStrings30.outputSchema)}</div>
+      <div class="value schema">
+        ${widget12(ObjectUI2.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+    objectTree: getSchemaObjectTree(outputSchema),
+    skipProto: true,
+    showOverflow: false
+  })}
+      </div>
       ` : nothing13}
       ${tool.frame ? html21`
       <div class="label">${i18nString30(UIStrings30.frame)}</div>
@@ -18831,14 +18876,12 @@ function parseToolSchema(schema) {
 var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
   #view;
   constructor(storagePanel) {
-    super(storagePanel, "WebMCP", false, "web-mcp");
+    super(storagePanel, i18n61.i18n.lockedString("WebMCP"), false, "web-mcp");
     const icon = createIcon9("document");
     this.setLeadingIcons([icon]);
     const newBadge = UI31.UIUtils.maybeCreateNewBadge("web-mcp");
     if (newBadge) {
-      const fragment = document.createDocumentFragment();
-      render23(html22`<div class="trailing-icons icons-container">${newBadge}</div>`, fragment);
-      this.listItemElement.appendChild(fragment);
+      this.setTrailingIcons([newBadge]);
     }
   }
   get itemURL() {
@@ -19072,8 +19115,8 @@ var UIStrings31 = {
    */
   privateVerificationTokens: "Private verification tokens"
 };
-var str_31 = i18n61.i18n.registerUIStrings("panels/application/ApplicationPanelSidebar.ts", UIStrings31);
-var i18nString31 = i18n61.i18n.getLocalizedString.bind(void 0, str_31);
+var str_31 = i18n63.i18n.registerUIStrings("panels/application/ApplicationPanelSidebar.ts", UIStrings31);
+var i18nString31 = i18n63.i18n.getLocalizedString.bind(void 0, str_31);
 function assertNotMainTarget(targetId) {
   if (targetId === "main") {
     throw new Error("Unexpected main target id");
@@ -19772,7 +19815,7 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
 var ServiceWorkersTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
-    super(storagePanel, i18n61.i18n.lockedString("Service workers"), false, "service-workers");
+    super(storagePanel, i18n63.i18n.lockedString("Service workers"), false, "service-workers");
     const icon = createIcon10("gears");
     this.setLeadingIcons([icon]);
   }
@@ -20284,7 +20327,7 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
     const keyPathString = this.objectStore.keyPathString;
     let tooltipString = keyPathString !== null ? i18nString31(UIStrings31.keyPathS, { PH1: keyPathString }) : "";
     if (this.objectStore.autoIncrement) {
-      tooltipString += "\n" + i18n61.i18n.lockedString("autoIncrement");
+      tooltipString += "\n" + i18n63.i18n.lockedString("autoIncrement");
     }
     this.tooltip = tooltipString;
   }
@@ -20355,10 +20398,10 @@ var IDBIndexTreeElement = class extends ApplicationPanelTreeElement {
     const keyPathString = this.index.keyPathString;
     tooltipLines.push(i18nString31(UIStrings31.keyPathS, { PH1: keyPathString }));
     if (this.index.unique) {
-      tooltipLines.push(i18n61.i18n.lockedString("unique"));
+      tooltipLines.push(i18n63.i18n.lockedString("unique"));
     }
     if (this.index.multiEntry) {
-      tooltipLines.push(i18n61.i18n.lockedString("multiEntry"));
+      tooltipLines.push(i18n63.i18n.lockedString("multiEntry"));
     }
     this.tooltip = tooltipLines.join("\n");
   }
@@ -20950,7 +20993,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
   }
   workerCreated(targetInfo) {
     const categoryKey = targetInfo.type === "service_worker" ? "service-workers" : "web-workers";
-    const categoryName = targetInfo.type === "service_worker" ? i18n61.i18n.lockedString("Service workers") : i18nString31(UIStrings31.webWorkers);
+    const categoryName = targetInfo.type === "service_worker" ? i18n63.i18n.lockedString("Service workers") : i18nString31(UIStrings31.webWorkers);
     let categoryElement = this.categoryElements.get(categoryKey);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(

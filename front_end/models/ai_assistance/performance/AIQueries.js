@@ -55,13 +55,11 @@ export class AIQueries {
         const visibleEvents = Trace.Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
         const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleEvents.concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
         // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
-        const startTime = Trace.Helpers.Timing.microToMilli(bounds.min);
-        const endTime = Trace.Helpers.Timing.microToMilli(bounds.max);
         return new Trace.Extras.TraceTree.BottomUpRootNode(events, {
             textFilter: new Trace.Extras.TraceFilter.ExclusiveNameFilter([]),
             filters: [filter],
-            startTime,
-            endTime,
+            startTime: bounds.min,
+            endTime: bounds.max,
         });
     }
     /**
@@ -97,13 +95,11 @@ export class AIQueries {
         const visibleEvents = Trace.Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
         const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleEvents.concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
         // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
-        const startTime = Trace.Helpers.Timing.microToMilli(bounds.min);
-        const endTime = Trace.Helpers.Timing.microToMilli(bounds.max);
         return new Trace.Extras.TraceTree.BottomUpRootNode(events, {
             textFilter: new Trace.Extras.TraceFilter.ExclusiveNameFilter([]),
             filters: [filter],
-            startTime,
-            endTime,
+            startTime: bounds.min,
+            endTime: bounds.max,
         });
     }
     /**

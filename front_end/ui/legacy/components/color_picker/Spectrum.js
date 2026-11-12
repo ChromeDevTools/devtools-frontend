@@ -193,8 +193,7 @@ function getColorFromHsva(gamut, hsva) {
         }
     }
 }
-const SpectrumBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
-export class Spectrum extends SpectrumBase {
+export class Spectrum extends UI.Widget.VBox {
     #color;
     gamut = "srgb" /* SpectrumGamut.SRGB */;
     colorElement;
@@ -255,8 +254,9 @@ export class Spectrum extends SpectrumBase {
     // want to return the value of the variable but the
     // actual variable string.
     #colorString;
-    constructor(contrastInfo) {
-        super({ useShadowDom: true });
+    constructor(contrastInfoOrElement, element) {
+        super(contrastInfoOrElement instanceof HTMLElement ? contrastInfoOrElement : element, { useShadowDom: true });
+        const contrastInfo = contrastInfoOrElement instanceof HTMLElement ? undefined : contrastInfoOrElement;
         this.registerRequiredCSS(spectrumStyles);
         this.contentElement.tabIndex = 0;
         this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('colorPicker').parent('mapped').track({ keydown: 'Enter|Escape' })}`);
@@ -852,7 +852,7 @@ export class Spectrum extends SpectrumBase {
             }
         }
         this.element.style.height = (paletteTop + paletteMargin + (paletteColorHeight + paletteMargin) * rowsNeeded) + 'px';
-        this.dispatchEventToListeners("SizeChanged" /* Events.SIZE_CHANGED */);
+        this.element.dispatchEvent(new SizeChangedEvent());
     }
     onPaletteColorKeydown(palette, colorIndex, event) {
         if (event instanceof MouseEvent || Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
@@ -951,12 +951,6 @@ export class Spectrum extends SpectrumBase {
         this.customPaletteSetting.set(palette);
         this.showPalette(palette, false);
     }
-    setColor(color) {
-        this.#setColor(color, '', undefined /* colorName */, color.format(), ChangeSource.Model);
-        const colorValues = color.as("hsl" /* Common.Color.Format.HSL */).canonicalHSLA();
-        UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
-        UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
-    }
     colorSelected(color) {
         this.#setColor(color, '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
     }
@@ -965,6 +959,12 @@ export class Spectrum extends SpectrumBase {
             return this.#color;
         }
         return getColorFromHsva(this.gamut, this.hsv);
+    }
+    set color(color) {
+        this.#setColor(color, '', undefined /* colorName */, color.format(), ChangeSource.Model);
+        const colorValues = color.as("hsl" /* Common.Color.Format.HSL */).canonicalHSLA();
+        UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
+        UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
     }
     #setColor(colorOrHsv, colorString, colorName, colorFormat, changeSource) {
         // It is important to do `undefined` check here since we want to update the
@@ -1026,7 +1026,7 @@ export class Spectrum extends SpectrumBase {
             this.updateInput();
         }
         if (changeSource !== ChangeSource.Model) {
-            this.dispatchEventToListeners("ColorChanged" /* Events.COLOR_CHANGED */, this.colorString());
+            this.element.dispatchEvent(new ColorChangedEvent(this.colorString()));
         }
     }
     colorName() {
@@ -1294,11 +1294,6 @@ export const ChangeSource = {
     Model: 'Model',
     Other: 'Other',
 };
-export var Events;
-(function (Events) {
-    Events["COLOR_CHANGED"] = "ColorChanged";
-    Events["SIZE_CHANGED"] = "SizeChanged";
-})(Events || (Events = {}));
 const COLOR_CHIP_SIZE = 24;
 const ITEMS_PER_PALETTE_ROW = 8;
 const GeneratedPaletteTitle = 'Page colors';
@@ -1505,6 +1500,20 @@ export class Swatch {
     onCopyIconMouseout() {
         this.swatchCopyIcon.name = 'copy';
         UI.ARIAUtils.setPressed(this.swatchOverlayElement, false);
+    }
+}
+export class ColorChangedEvent extends Event {
+    static eventName = 'spectrumcolorchanged';
+    data;
+    constructor(color) {
+        super(ColorChangedEvent.eventName, {});
+        this.data = color;
+    }
+}
+export class SizeChangedEvent extends Event {
+    static eventName = 'sizechanged';
+    constructor() {
+        super(SizeChangedEvent.eventName, {});
     }
 }
 //# sourceMappingURL=Spectrum.js.map

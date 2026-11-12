@@ -2397,11 +2397,12 @@ var paintProfiler_css_default = `/*
   }
 
   .paint-profiler-pie-chart {
-    width: 60px !important; /* stylelint-disable-line declaration-no-important */
-    height: 60px !important; /* stylelint-disable-line declaration-no-important */
+    /* 56px (--sys-size-17) pie chart SVG + 2 * 2px (--sys-size-2) padding. */
+    width: calc(var(--sys-size-17) + 2 * var(--sys-size-2)) !important; /* stylelint-disable-line declaration-no-important */
+    height: calc(var(--sys-size-17) + 2 * var(--sys-size-2)) !important; /* stylelint-disable-line declaration-no-important */
     padding: var(--sys-size-2);
     overflow: hidden;
-    font-size: 10px;
+    font-size: var(--sys-typescale-body5-size);
   }
 
   .paint-profiler-canvas-container canvas {
@@ -2577,7 +2578,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
   `;
   const emptyPieChartData = {
     chartName: i18nString6(UIStrings6.profilingResults),
-    size: 55,
+    size: 56,
     formatter: formatPieChartTime,
     showLegend: false,
     total: 0,

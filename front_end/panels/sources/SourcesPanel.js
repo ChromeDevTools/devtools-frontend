@@ -336,8 +336,12 @@ export class SourcesPanel extends UI.Panel.Panel {
         this.#stepAction = UI.ActionRegistry.ActionRegistry.instance().getAction('debugger.step');
         this.#toggleBreakpointsActiveAction =
             UI.ActionRegistry.ActionRegistry.instance().getAction('debugger.toggle-breakpoints-active');
-        this.#debuggerPausedMessage =
-            new DebuggerPausedMessage(undefined, [SDK.EventBreakpointsModel.EventBreakpointsManager.instance()]);
+        this.#debuggerPausedMessage = new DebuggerPausedMessage(undefined, [
+            SDK.EventBreakpointsModel.EventBreakpointsManager.instance(),
+            Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+            Breakpoints.BreakpointManager.BreakpointManager.instance(),
+            Common.Settings.Settings.instance(),
+        ]);
         // Create navigator tabbed pane with toolbar.
         this.navigatorTabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(this.#revealNavigatorSidebar.bind(this), 'navigator-view', true, true);
         const tabbedPane = this.navigatorTabbedLocation.tabbedPane();
@@ -889,6 +893,9 @@ export class SourcesPanel extends UI.Panel.Panel {
         const active = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).get();
         this.#toggleBreakpointsActiveAction.setToggled(!active);
         this.#sourcesView.toggleBreakpointsActiveState(active);
+        if (this.#paused) {
+            void this.#updateDebuggerButtonsAndStatus();
+        }
     }
     appendApplicableItems(event, contextMenu, target) {
         if (target instanceof Workspace.UISourceCode.UISourceCode) {

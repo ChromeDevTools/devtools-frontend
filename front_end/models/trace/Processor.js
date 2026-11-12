@@ -122,13 +122,15 @@ export class TraceProcessor extends EventTarget {
         if (this.#status === "PARSING" /* Status.PARSING */) {
             throw new Error('Trace processor can\'t reset while parsing.');
         }
-        const handlers = Object.values(this.#traceHandlers);
-        for (const handler of handlers) {
-            handler.reset();
-        }
+        this.#resetHandlers();
         this.#data = null;
         this.#insights = null;
         this.#status = "IDLE" /* Status.IDLE */;
+    }
+    #resetHandlers() {
+        for (const handler of Object.values(this.#traceHandlers)) {
+            handler.reset();
+        }
     }
     async parse(traceEvents, options) {
         if (this.#status !== "IDLE" /* Status.IDLE */) {
@@ -155,6 +157,11 @@ export class TraceProcessor extends EventTarget {
             throw e;
         }
         finally {
+            // Handler state is module-level, so it is a second reference to the trace.
+            // Resetting here releases it, including after a failed parse. `#data`
+            // keeps the trace intact because every handler's reset() assigns new
+            // containers.
+            this.#resetHandlers();
             options.logger?.end('total');
         }
     }
@@ -174,9 +181,7 @@ export class TraceProcessor extends EventTarget {
         // Convert to array so that we are able to iterate all handlers multiple times.
         const sortedHandlers = [...sortHandlers(this.#traceHandlers).entries()];
         // Reset.
-        for (const [, handler] of sortedHandlers) {
-            handler.reset();
-        }
+        this.#resetHandlers();
         options.logger?.start('parse:handleEvent');
         // In bundled builds each handler is a module namespace object whose exports are getters, and every handler has a
         // different shape. V8 can't optimise a `handler.handleEvent` read that sees all these shapes, so reading it inside the

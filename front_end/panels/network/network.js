@@ -7625,7 +7625,7 @@ var networkLogView_css_default = `/*
 
 .network-waterfall-header.small,
 .network-log-grid.data-grid.small thead {
-  height: 27px;
+  height: var(--sys-size-11);
 }
 
 .network-log-grid.data-grid select {
@@ -8660,7 +8660,7 @@ var networkWaterfallColumn_css_default = `/*
 }
 
 .network-waterfall-v-scroll.small {
-  margin-top: 27px;
+  margin-top: var(--sys-size-11);
 }
 
 .network-waterfall-v-scroll-content {
@@ -8740,7 +8740,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 }
 
 .network-timing-table col.labels {
-  width: 156px;
+  width: var(--sys-size-23);
 }
 
 .network-timing-table col.duration {
@@ -14243,7 +14243,7 @@ var networkPanel_css_default = `/*
 }
 
 .network .network-overview {
-  flex: 0 0 60px;
+  flex: 0 0 var(--sys-size-18);
 }
 
 .network-overview .resources-dividers-label-bar .resources-divider {

@@ -23,7 +23,7 @@ var switch_css_default = `/*
 :host {
   position: relative;
   display: inline-block;
-  width: 26px;
+  width: var(--sys-size-12);
   height: var(--sys-size-8);
 }
 
@@ -78,7 +78,8 @@ input:checked {
   }
 
   & + .slider::before {
-    left: 11px;
+    /* Center --sys-size-6 thumb inside right --sys-size-8 (:host height) pill cap minus --sys-size-1 (.slider border). */
+    left: calc(100% - var(--sys-size-6) - ((var(--sys-size-8) - var(--sys-size-6)) / 2 - var(--sys-size-1)));
     height: var(--sys-size-6);
     width: var(--sys-size-6);
     top: calc(50% - var(--sys-size-4));

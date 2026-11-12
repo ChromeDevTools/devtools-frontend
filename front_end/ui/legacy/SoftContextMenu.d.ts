@@ -1,4 +1,5 @@
 import type * as Platform from '../../core/platform/platform.js';
+import { type TemplateResult } from '../lit/lit.js';
 export declare class SoftContextMenu {
     private items;
     private itemSelectedCallback;
@@ -52,7 +53,7 @@ export interface SoftContextMenuDescriptor {
     checked?: boolean;
     isDevToolsPerformanceMenuItem?: boolean;
     subItems?: SoftContextMenuDescriptor[];
-    element?: Element;
+    element?: Element | TemplateResult;
     shortcut?: string;
     tooltip?: Platform.UIString.LocalizedString;
     jslogContext?: string;

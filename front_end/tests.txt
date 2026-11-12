@@ -218,6 +218,7 @@ models/bindings/SourceMapStepping.test.js
 models/bindings/StylesSourceMapping.test.js
 models/bindings/SymbolizedError.test.js
 models/breakpoints/BreakpointManager.test.js
+models/breakpoints/RecurringPauseDetector.test.js
 models/change_tracker/ChangeTracker.test.js
 models/comment_manager/CD4ABridge.test.js
 models/comment_manager/CommentManager.test.js
@@ -440,6 +441,7 @@ panels/application/ServiceWorkersView.test.js
 panels/application/StorageBucketsTreeElement.test.js
 panels/application/StorageView.test.js
 panels/application/SubAppsView.test.js
+panels/application/WebMCPTreeElement.test.js
 panels/application/WebMCPView.test.js
 panels/application/preloading/PreloadingView.test.js
 panels/application/components/AdsView.test.js

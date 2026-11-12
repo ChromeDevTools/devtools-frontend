@@ -209,8 +209,8 @@ export default `/*
 
   devtools-icon[name="file-script"] {
     color: var(--icon-file-script);
-    width: 18px;
-    height: 18px;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
 
     summary:hover & {
       display: none;

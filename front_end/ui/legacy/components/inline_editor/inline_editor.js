@@ -630,8 +630,8 @@ var AnimationTimingUI = class {
 // ../../front_end/ui/legacy/components/inline_editor/BezierEditor.ts
 var BezierEditor_exports = {};
 __export(BezierEditor_exports, {
+  BezierChangedEvent: () => BezierChangedEvent,
   BezierEditor: () => BezierEditor,
-  Events: () => Events,
   Presets: () => Presets
 });
 import * as Common from "../../../../core/common/common.js";
@@ -868,11 +868,8 @@ svg.bezier-preset-modify:active {
 
 // ../../front_end/ui/legacy/components/inline_editor/BezierEditor.ts
 var PREVIEW_ANIMATION_DEBOUNCE_DELAY = 300;
-var BezierEditorBase = Common.ObjectWrapper.eventMixin(
-  UI3.Widget.VBox
-);
-var BezierEditor = class extends BezierEditorBase {
-  model;
+var BezierEditor = class extends UI3.Widget.VBox {
+  #model;
   previewElement;
   previewOnion;
   outerContainer;
@@ -885,10 +882,10 @@ var BezierEditor = class extends BezierEditorBase {
   label;
   previewAnimation;
   debouncedStartPreviewAnimation;
-  constructor(model) {
-    super({ useShadowDom: true });
+  constructor(modelOrElement, element) {
+    super(modelOrElement instanceof HTMLElement ? modelOrElement : element, { useShadowDom: true });
     this.registerRequiredCSS(bezierEditor_css_default);
-    this.model = model;
+    this.#model = modelOrElement instanceof HTMLElement ? LINEAR_BEZIER2 : modelOrElement ?? LINEAR_BEZIER2;
     this.contentElement.tabIndex = 0;
     this.contentElement.setAttribute(
       "jslog",
@@ -919,8 +916,8 @@ var BezierEditor = class extends BezierEditorBase {
     this.debouncedStartPreviewAnimation = Common.Debouncer.debounce(this.startPreviewAnimation.bind(this), PREVIEW_ANIMATION_DEBOUNCE_DELAY);
     this.animationTimingUI = new AnimationTimingUI({
       model: this.model,
-      onChange: (model2) => {
-        this.setModel(model2);
+      onChange: (model) => {
+        this.model = model;
         this.onchange();
         this.unselectPresets();
         this.debouncedStartPreviewAnimation();
@@ -940,9 +937,12 @@ var BezierEditor = class extends BezierEditorBase {
     plus.setAttribute("jslog", `${VisualLogging3.action("bezier.next-preset").track({ click: true })}`);
     this.label = this.header.createChild("span", "source-code bezier-display-value");
   }
-  setModel(model) {
-    this.model = model;
-    this.animationTimingUI?.setModel(this.model);
+  get model() {
+    return this.#model;
+  }
+  set model(model) {
+    this.#model = model;
+    this.animationTimingUI?.setModel(this.#model);
     this.updateUI();
   }
   wasShown() {
@@ -961,7 +961,7 @@ var BezierEditor = class extends BezierEditorBase {
   }
   onchange() {
     this.updateUI();
-    this.dispatchEventToListeners("BezierChanged" /* BEZIER_CHANGED */, this.model.asCSSText());
+    this.element.dispatchEvent(new BezierChangedEvent(this.model.asCSSText()));
   }
   updateUI() {
     const labelText = this.selectedCategory ? this.selectedCategory.presets[this.selectedCategory.presetIndex].name : this.model.asCSSText().replace(/\s(-\d\.\d)/g, "$1");
@@ -1008,7 +1008,7 @@ var BezierEditor = class extends BezierEditorBase {
     this.selectedCategory.icon.classList.add("bezier-preset-selected");
     const newModel = AnimationTimingModel.parse(category.presets[category.presetIndex].value);
     if (newModel) {
-      this.setModel(newModel);
+      this.model = newModel;
       this.onchange();
       this.startPreviewAnimation();
     }
@@ -1025,7 +1025,7 @@ var BezierEditor = class extends BezierEditorBase {
     const selectedPreset = this.selectedCategory.presets[this.selectedCategory.presetIndex].value;
     const newModel = AnimationTimingModel.parse(selectedPreset);
     if (newModel) {
-      this.setModel(newModel);
+      this.model = newModel;
       this.onchange();
       this.startPreviewAnimation();
     }
@@ -1057,10 +1057,6 @@ var BezierEditor = class extends BezierEditorBase {
     }
   }
 };
-var Events = /* @__PURE__ */ ((Events5) => {
-  Events5["BEZIER_CHANGED"] = "BezierChanged";
-  return Events5;
-})(Events || {});
 var Presets = [
   [
     { name: "linear", value: "linear" },
@@ -1102,6 +1098,14 @@ var Presets = [
     { name: "Out \xB7 Back", value: "cubic-bezier(0.18, 0.89, 0.32, 1.28)" }
   ]
 ];
+var BezierChangedEvent = class _BezierChangedEvent extends Event {
+  static eventName = "bezierchanged";
+  data;
+  constructor(bezier) {
+    super(_BezierChangedEvent.eventName, {});
+    this.data = bezier;
+  }
+};
 
 // ../../front_end/ui/legacy/components/inline_editor/ColorMixSwatch.ts
 var ColorMixSwatch_exports = {};
@@ -2112,7 +2116,7 @@ var CSSShadowEditor_exports = {};
 __export(CSSShadowEditor_exports, {
   CSSLength: () => CSSLength,
   CSSShadowEditor: () => CSSShadowEditor,
-  Events: () => Events2
+  Events: () => Events
 });
 import * as Common4 from "../../../../core/common/common.js";
 import * as i18n5 from "../../../../core/i18n/i18n.js";
@@ -2667,10 +2671,10 @@ var CSSShadowEditor = class extends CSSShadowEditorBase {
     return this.constrainPoint(new Geometry5.Point(x, y), this.innerCanvasSize);
   }
 };
-var Events2 = /* @__PURE__ */ ((Events5) => {
-  Events5["SHADOW_CHANGED"] = "ShadowChanged";
-  return Events5;
-})(Events2 || {});
+var Events = /* @__PURE__ */ ((Events4) => {
+  Events4["SHADOW_CHANGED"] = "ShadowChanged";
+  return Events4;
+})(Events || {});
 
 // ../../front_end/ui/legacy/components/inline_editor/LinkSwatch.ts
 var LinkSwatch_exports = {};
@@ -2770,7 +2774,7 @@ var PositionAreaEditor_exports = {};
 __export(PositionAreaEditor_exports, {
   Axis: () => Axis,
   DEFAULT_VIEW: () => DEFAULT_VIEW,
-  Events: () => Events3,
+  Events: () => Events2,
   Keyword: () => Keyword,
   Mode: () => Mode,
   PositionAreaEditor: () => PositionAreaEditor,
@@ -3539,11 +3543,11 @@ var DEFAULT_VIEW = (input, output, target) => {
     { container }
   );
 };
-var Events3 = /* @__PURE__ */ ((Events5) => {
-  Events5["POSITION_AREA_CHANGED"] = "positionAreaChanged";
-  Events5["PROPERTY_CHANGED"] = "propertyChanged";
-  return Events5;
-})(Events3 || {});
+var Events2 = /* @__PURE__ */ ((Events4) => {
+  Events4["POSITION_AREA_CHANGED"] = "positionAreaChanged";
+  Events4["PROPERTY_CHANGED"] = "propertyChanged";
+  return Events4;
+})(Events2 || {});
 var PositionAreaEditorBase = Common5.ObjectWrapper.eventMixin(
   UI6.Widget.VBox
 );
@@ -3792,7 +3796,7 @@ customElements.define("css-shadow-swatch", CSSShadowSwatch);
 // ../../front_end/ui/legacy/components/inline_editor/SwatchPopoverHelper.ts
 var SwatchPopoverHelper_exports = {};
 __export(SwatchPopoverHelper_exports, {
-  Events: () => Events4,
+  Events: () => Events3,
   SwatchPopoverHelper: () => SwatchPopoverHelper
 });
 import * as Common6 from "../../../../core/common/common.js";
@@ -3944,10 +3948,10 @@ var SwatchPopoverHelper = class extends Common6.ObjectWrapper.ObjectWrapper {
     }
   }
 };
-var Events4 = /* @__PURE__ */ ((Events5) => {
-  Events5["WILL_SHOW_POPOVER"] = "WillShowPopover";
-  return Events5;
-})(Events4 || {});
+var Events3 = /* @__PURE__ */ ((Events4) => {
+  Events4["WILL_SHOW_POPOVER"] = "WillShowPopover";
+  return Events4;
+})(Events3 || {});
 export {
   AnimationTimingModel_exports as AnimationTimingModel,
   AnimationTimingUI_exports as AnimationTimingUI,

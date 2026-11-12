@@ -25,6 +25,7 @@ export declare function executeJsCode(functionDeclaration: string, options: {
     contextNode: SDK.DOMModel.DOMNode | null;
     throwOnSideEffect?: boolean;
 }): Promise<string>;
+export declare const MAX_OBSERVATION_BYTE_LENGTH = 8000;
 export interface JavascriptExecutorOptions {
     readonly executionMode: Root.Runtime.HostConfigFreestylerExecutionMode;
     readonly getContextNode: () => SDK.DOMModel.DOMNode | null;

@@ -35,9 +35,9 @@ input[type="checkbox"] {
 
   &:not(:disabled):focus-visible::before {
     content: "";
-    height: 15px;
-    width: 15px;
-    border-radius: 5px;
+    height: var(--sys-size-7);
+    width: var(--sys-size-7);
+    border-radius: var(--sys-shape-corner-extra-small);
     position: absolute;
     border: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }

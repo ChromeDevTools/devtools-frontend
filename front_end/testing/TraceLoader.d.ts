@@ -98,7 +98,7 @@ export declare class TraceLoader {
      * parsing a trace in a test does not automatically set it.
      **/
     static initTraceBoundsManager(parsedTrace: Trace.TraceModel.ParsedTrace): void;
-    static executeTraceEngineOnFileContents(contents: Trace.Types.File.Contents, emulateFreshRecording?: boolean, traceEngineConfig?: Trace.Types.Configuration.Configuration): Promise<ParsedTraceAndModel>;
+    static executeTraceEngineOnFileContents(contents: Trace.Types.File.Contents | Protocol.Profiler.Profile, emulateFreshRecording?: boolean, traceEngineConfig?: Trace.Types.Configuration.Configuration): Promise<ParsedTraceAndModel>;
     static loadTraceFileFromURL(url: URL): Promise<Trace.Types.File.TraceFile>;
     /**
      * Karma test run in a single context if we load all the traces

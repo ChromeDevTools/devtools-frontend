@@ -683,7 +683,7 @@ button.link:focus-visible {
 :host-context(.theme-with-dark-background) devtools-adorner {
   --override-adorner-border-color: var(--sys-color-tonal-outline);
   --override-adorner-active-background-color: var(
-    --sys-color-state-riple-neutral-on-subtle
+    --sys-color-state-ripple-neutral-on-subtle
   );
 }
 

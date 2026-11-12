@@ -161,6 +161,9 @@ export class CompatibilityTracksAppender {
     }
     setFlameChartDataAndEntryData(flameChartData, entryData, legacyEntryTypeByLevel) {
         this.#trackForGroup.clear();
+        this.#trackForLevel.clear();
+        this.#eventsForTrack.clear();
+        this.#trackEventsForTreeview.clear();
         this.#flameChartData = flameChartData;
         this.#entryData = entryData;
         this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;

@@ -255,19 +255,14 @@ export declare class PromotionManager {
     maybeShowPromotion(id: string): boolean;
 }
 /**
- * Creates a `<div>` element with the localized text NEW.
+ * Creates a Lit template for a `<div>` element with the localized text NEW
+ * when the promotion should be shown.
  *
- * The element is automatically styled correctly, as long as the core styles (in particular
- * `inspectorCommon.css` is injected into the current document / shadow root). The lit
- * equivalent of calling this method is:
- *
- * ```js
- * const jslog = VisualLogging.badge('new-badge');
- * html`<div class='new-badge' jsog=${jslog}>i18nString(UIStrings.new)</div>`
- *
- * @returns the newly created `HTMLDivElement` for the new badge.
+ * The element is automatically styled correctly, as long as the core styles (in
+ * particular `inspectorCommon.css`) are injected into the current document or
+ * shadow root.
  */
-export declare function maybeCreateNewBadge(promotionId: string): HTMLDivElement | undefined;
+export declare function maybeCreateNewBadge(promotionId: string): Lit.TemplateResult | undefined;
 export declare function bindToAction(actionName: string): ReturnType<typeof Directives.ref>;
 export declare const cloneCustomElement: <T extends HTMLElement>(element: T, deep?: boolean) => T;
 export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {

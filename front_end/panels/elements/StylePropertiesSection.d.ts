@@ -7,7 +7,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
-import { type Context, StylePropertyTreeElement } from './StylePropertyTreeElement.js';
+import { type Context, type StylePropertyData, StylePropertyTreeElement } from './StylePropertyTreeElement.js';
 import type { StylesContainer } from './StylesContainer.js';
 export interface ActiveAiSuggestionProperty {
     name: string;
@@ -115,8 +115,9 @@ export declare class StylePropertiesSection {
     isPropertyInherited(propertyName: string): boolean;
     nextEditableSibling(): StylePropertiesSection | null;
     previousEditableSibling(): StylePropertiesSection | null;
-    refreshUpdate(editedTreeElement: StylePropertyTreeElement): void;
-    updateVarFunctions(editedTreeElement: StylePropertyTreeElement): void;
+    findProperty(propertyOrName: SDK.CSSProperty.CSSProperty | string): StylePropertyData | undefined;
+    refreshUpdate(editedProperty: StylePropertyData): void;
+    updateVarFunctions(editedProperty: StylePropertyData): void;
     update(full: boolean): void;
     showAllItems(event?: Event): void;
     onpopulate(): void;

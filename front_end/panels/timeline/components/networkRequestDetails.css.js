@@ -36,8 +36,7 @@ export default `/*
     width: fit-content;
   }
 
-  /* stylelint-disable-next-line plugin/check_scope_selectors */
-  :host {
+  :scope {
     display: contents; /* needed to avoid a floating border when scrolling */
   }
 

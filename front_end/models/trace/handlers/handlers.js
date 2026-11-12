@@ -534,11 +534,14 @@ function reset4() {
   processNames = /* @__PURE__ */ new Map();
   mainFrameNavigations = [];
   sameDocumentNavigations = [];
+  mainFrameId = "";
+  mainFrameURL = "";
   browserProcessId = Types5.Events.ProcessID(-1);
   browserThreadId = Types5.Events.ThreadID(-1);
   gpuProcessId = Types5.Events.ProcessID(-1);
   gpuThreadId = Types5.Events.ThreadID(-1);
   viewportRect = null;
+  devicePixelRatio = null;
   topLevelRendererIds = /* @__PURE__ */ new Set();
   threadsInProcess = /* @__PURE__ */ new Map();
   rendererProcessesByFrameId = /* @__PURE__ */ new Map();

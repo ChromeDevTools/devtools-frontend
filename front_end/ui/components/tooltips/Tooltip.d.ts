@@ -89,7 +89,7 @@ export declare class Tooltip extends HTMLElement {
 }
 export declare class IdFactory {
     #private;
-    constructor(id?: number | string);
+    constructor(id?: string);
     keyed(key: string | number, ...additionalSuffixes: Array<number | string>): string;
     get(suffix: string | number, ...additionalSuffixes: Array<number | string>): string;
     clearKeys(): void;

@@ -4451,7 +4451,7 @@ details > summary {
 }
 
 .content {
-  max-width: 360px;
+  max-width: var(--sys-size-32);
   box-sizing: border-box;
 }
 
@@ -5483,8 +5483,7 @@ var interactionBreakdown_css_default = `/*
  */
 
 @scope to (devtools-widget > *) {
-  /* stylelint-disable-next-line plugin/check_scope_selectors */
-  :host {
+  :scope {
     display: block;
   }
 
@@ -8638,8 +8637,7 @@ var networkRequestDetails_css_default = `/*
     width: fit-content;
   }
 
-  /* stylelint-disable-next-line plugin/check_scope_selectors */
-  :host {
+  :scope {
     display: contents; /* needed to avoid a floating border when scrolling */
   }
 
@@ -9948,7 +9946,7 @@ var sidebarAnnotationsTab_css_default = `/*
 
   .tutorial-title,
   .tutorial-description {
-    margin: 5px 0;
+    margin: var(--sys-size-4) 0;
   }
 }
 
@@ -10336,8 +10334,7 @@ var sidebarInsightsTab_css_default = `/*
  */
 
 @scope to (devtools-widget > *) {
-  /* stylelint-disable-next-line plugin/check_scope_selectors */
-  :host {
+  :scope {
     display: flex;
     flex-flow: column nowrap;
     flex-grow: 1;

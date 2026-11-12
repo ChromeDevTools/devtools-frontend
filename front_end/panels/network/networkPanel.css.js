@@ -116,7 +116,7 @@ export default `/*
 }
 
 .network .network-overview {
-  flex: 0 0 60px;
+  flex: 0 0 var(--sys-size-18);
 }
 
 .network-overview .resources-dividers-label-bar .resources-divider {

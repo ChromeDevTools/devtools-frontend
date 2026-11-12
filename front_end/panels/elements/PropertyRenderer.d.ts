@@ -132,11 +132,19 @@ export declare class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     renderedMatchForTest(_nodes: LitTemplate, _match: SDK.CSSPropertyParser.Match): void;
     protected enter({ node }: SDK.CSSPropertyParser.SyntaxNodeRef): boolean;
     static renderNameElement(name: string): HTMLElement;
+    static nameTemplate(name: string): LitTemplate;
     static renderValueElement(property: SDK.CSSProperty.CSSProperty | {
         name: string;
         value: string;
     }, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching | null, renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext, signal?: AbortSignal, edits?: ValueUpdateTracking): {
         valueElement: HTMLElement;
+        cssControls: CSSControlMap;
+    };
+    static valueTemplate(property: SDK.CSSProperty.CSSProperty | {
+        name: string;
+        value: string;
+    }, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching | null, renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext, signal?: AbortSignal, edits?: ValueUpdateTracking): {
+        template: LitTemplate;
         cssControls: CSSControlMap;
     };
     static renderValueNodes(property: SDK.CSSProperty.CSSProperty | {

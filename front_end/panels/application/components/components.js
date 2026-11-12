@@ -5468,7 +5468,7 @@ var permissionsPolicySection_css_default = `/*
   }
 
   .block-reason {
-    width: 215px;
+    width: var(--sys-size-26);
   }
 
   .disabled-features-button {

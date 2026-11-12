@@ -248,7 +248,7 @@ export default `/*
   width: auto;
   flex: 0 0 auto;
   flex-direction: column;
-  padding-top: 5px;
+  padding-top: var(--sys-size-3);
   overflow: hidden;
 }
 

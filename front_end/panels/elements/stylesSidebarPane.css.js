@@ -250,13 +250,13 @@ export default `/**
 
 .sidebar-separator {
   background-color: var(--sys-color-surface2);
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   color: var(--sys-color-on-surface-subtle);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  line-height: var(--sys-size-10);
+  line-height: var(--sys-typescale-body2-line-height);
 
   &.layer-separator {
     display: flex;

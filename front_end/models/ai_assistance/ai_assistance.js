@@ -12,7 +12,7 @@ __export(AccessibilityAgent_exports, {
 import * as Host29 from "../../core/host/host.js";
 import * as i18n47 from "../../core/i18n/i18n.js";
 import * as Root6 from "../../core/root/root.js";
-import * as SDK24 from "../../core/sdk/sdk.js";
+import * as SDK25 from "../../core/sdk/sdk.js";
 import * as AiUtils5 from "../ai-utils/ai-utils.js";
 
 // ../../front_end/models/ai_assistance/ChangeManager.ts
@@ -4043,7 +4043,7 @@ async function executeJsCode(functionDeclaration, options) {
     { throwOnSideEffect: !!throwOnSideEffect }
   );
 }
-var MAX_OBSERVATION_BYTE_LENGTH = 25e3;
+var MAX_OBSERVATION_BYTE_LENGTH = 8e3;
 var OBSERVATION_TIMEOUT = 5e3;
 var JavascriptExecutor = class {
   #options;
@@ -4142,7 +4142,9 @@ var JavascriptExecutor = class {
       const byteCount = Platform3.StringUtilities.countWtf8Bytes(result);
       Host.userMetrics.freestylerEvalResponseSize(byteCount);
       if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
-        throw new Error("Output exceeded the maximum allowed length.");
+        throw new Error(
+          `Output of ${byteCount} bytes exceeded the maximum allowed (${MAX_OBSERVATION_BYTE_LENGTH} bytes).`
+        );
       }
       return {
         observation: result,
@@ -4517,7 +4519,7 @@ import * as Platform4 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
 var lockedString2 = i18n3.i18n.lockedString;
 var MAX_LINES = 40;
-var MAX_LINE_LENGTH = 120;
+var MAX_LINE_LENGTH = 160;
 var MAX_TOTAL_CHARACTERS = 2500;
 var MAX_LONG_LINES_REPORTED = 3;
 var LONG_LINE_PREVIEW_LENGTH = 60;
@@ -4576,13 +4578,15 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
     description: "",
     nullable: false,
     properties: {
+      // The `description` below purposefully states `max 120 characters per line`
+      // as a soft target, while `MAX_LINE_LENGTH` enforces 160 as the hard stop.
       code: {
         type: Host2.AidaClient.ParametersTypes.STRING,
         description: `JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.
 
 # Instructions
 
-* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
+* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`, and serialized output must not exceed ${MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
 * $0 refers to the currently selected DOM node (or document body if none selected).
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
@@ -4937,8 +4941,8 @@ var AICallTree = class _AICallTree {
     const compileCodeFilter = new ExcludeCompileCodeFilter();
     const rootNode = new Trace.Extras.TraceTree.TopDownRootNode(overlappingEvents, {
       filters: [minDurationFilter, compileCodeFilter, visibleEventsFilter],
-      startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
-      endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
+      startTime: bounds.min,
+      endTime: bounds.max,
       doNotAggregate: true,
       includeInstantEvents: true
     });
@@ -4971,11 +4975,7 @@ var AICallTree = class _AICallTree {
       return null;
     }
     const showAllEvents = parsedTrace.data.Meta.config.showAllEvents;
-    const { startTime, endTime } = Trace.Helpers.Timing.eventTimingsMilliSeconds(selectedEvent);
-    const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-      Trace.Helpers.Timing.milliToMicro(startTime),
-      Trace.Helpers.Timing.milliToMicro(endTime)
-    );
+    const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromEvent(selectedEvent);
     let threadEvents = data.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
     if (!threadEvents) {
       threadEvents = data.Samples.profilesInProcess.get(selectedEvent.pid)?.get(selectedEvent.tid)?.profileCalls;
@@ -4991,8 +4991,8 @@ var AICallTree = class _AICallTree {
     }
     const rootNode = new Trace.Extras.TraceTree.TopDownRootNode(overlappingEvents, {
       filters,
-      startTime,
-      endTime,
+      startTime: selectedEventBounds.min,
+      endTime: selectedEventBounds.max,
       includeInstantEvents: true
     });
     let selectedNode = null;
@@ -5120,8 +5120,8 @@ ${nodesStr}`;
       }
       return String(Math.round(num * 10) / 10);
     };
-    const durationStr = roundToTenths(node.totalTime);
-    const selfTimeStr = roundToTenths(node.selfTime);
+    const durationStr = roundToTenths(Trace.Helpers.Timing.microToMilli(node.totalTime));
+    const selfTimeStr = roundToTenths(Trace.Helpers.Timing.microToMilli(node.selfTime));
     const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event, this.workspace);
     const url = location?.url;
     let urlIndexStr = "";
@@ -5474,13 +5474,11 @@ var AIQueries = class {
     const filter = new Trace3.Extras.TraceFilter.VisibleEventsFilter(
       visibleEvents.concat([Trace3.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST])
     );
-    const startTime = Trace3.Helpers.Timing.microToMilli(bounds.min);
-    const endTime = Trace3.Helpers.Timing.microToMilli(bounds.max);
     return new Trace3.Extras.TraceTree.BottomUpRootNode(events, {
       textFilter: new Trace3.Extras.TraceFilter.ExclusiveNameFilter([]),
       filters: [filter],
-      startTime,
-      endTime
+      startTime: bounds.min,
+      endTime: bounds.max
     });
   }
   /**
@@ -5515,13 +5513,11 @@ var AIQueries = class {
     const filter = new Trace3.Extras.TraceFilter.VisibleEventsFilter(
       visibleEvents.concat([Trace3.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST])
     );
-    const startTime = Trace3.Helpers.Timing.microToMilli(bounds.min);
-    const endTime = Trace3.Helpers.Timing.microToMilli(bounds.max);
     return new Trace3.Extras.TraceTree.BottomUpRootNode(events, {
       textFilter: new Trace3.Extras.TraceFilter.ExclusiveNameFilter([]),
       filters: [filter],
-      startTime,
-      endTime
+      startTime: bounds.min,
+      endTime: bounds.max
     });
   }
   /**
@@ -6215,14 +6211,14 @@ var PerformanceTraceFormatter = class {
     });
   }
   async #serializeBottomUpRootNode(rootNode, limit) {
-    const topNodes = [...rootNode.children().values()].filter((n) => n.totalTime >= 1).sort((a, b) => b.selfTime - a.selfTime).slice(0, limit);
+    const topNodes = [...rootNode.children().values()].filter((n) => n.totalTime >= Trace4.Types.Timing.Micro(1e3)).sort((a, b) => b.selfTime - a.selfTime).slice(0, limit);
     const callFrames = [];
     function nodeToText(node) {
       const event = node.event;
       let frame;
       if (Trace4.Types.Events.isProfileCall(event)) {
         frame = event.callFrame;
-        if (node.selfTime >= 100 && callFrames.length < 3) {
+        if (node.selfTime >= Trace4.Types.Timing.Micro(1e5) && callFrames.length < 3) {
           callFrames.push(frame);
         }
       } else {
@@ -6239,7 +6235,7 @@ var PerformanceTraceFormatter = class {
         }
         source += ")";
       }
-      return `- self: ${millis(node.selfTime)}, total: ${millis(node.totalTime)}, source: ${source}`;
+      return `- self: ${millis(Trace4.Helpers.Timing.microToMilli(node.selfTime))}, total: ${millis(Trace4.Helpers.Timing.microToMilli(node.totalTime))}, source: ${source}`;
     }
     return topNodes.map((node) => nodeToText.call(this, node)).join("\n") + await this.#serializeRelevantFunctions(callFrames);
   }
@@ -6301,7 +6297,7 @@ var PerformanceTraceFormatter = class {
           return null;
         }
         return longestTaskTrees.map((tree) => {
-          const time = millis(tree.rootNode.totalTime);
+          const time = millis(Trace4.Helpers.Timing.microToMilli(tree.rootNode.totalTime));
           return `- total time: ${time}, event: ${this.serializeEvent(tree.rootNode.event)}`;
         }).join("\n");
       }
@@ -8212,7 +8208,7 @@ __export(FileFormatter_exports, {
 });
 import * as Bindings from "../bindings/bindings.js";
 import * as Logs4 from "../logs/logs.js";
-var MAX_FILE_SIZE = 1e4;
+var MAX_FILE_SIZE = 5e3;
 var FileFormatter = class _FileFormatter {
   static formatSourceMapDetails(selectedFile, debuggerWorkspaceBinding) {
     const mappedFileUrls = [];
@@ -9240,17 +9236,67 @@ var ListNetworkRequests_exports = {};
 __export(ListNetworkRequests_exports, {
   ListNetworkRequestsTool: () => ListNetworkRequestsTool
 });
+import * as Common4 from "../../core/common/common.js";
 import * as Host20 from "../../core/host/host.js";
 import * as i18n35 from "../../core/i18n/i18n.js";
+import * as Platform6 from "../../core/platform/platform.js";
+import * as SDK16 from "../../core/sdk/sdk.js";
 import * as Logs5 from "../logs/logs.js";
 var UIStringsNotTranslate10 = {
   listingNetworkRequests: "Listing network requests"
 };
 var lockedString17 = i18n35.i18n.lockedString;
+function resolveBaseOrigin(establishedOrigin, requestsToShow) {
+  if (establishedOrigin.isFile()) {
+    return "";
+  }
+  for (const prefix of SDK16.SecurityOrigin.IMPORTED_ORIGIN_PREFIXES) {
+    if (establishedOrigin.siteId().startsWith(prefix)) {
+      return Common4.ParsedURL.ParsedURL.extractOrigin(requestsToShow[0].documentURL).toLowerCase();
+    }
+  }
+  return establishedOrigin.siteId();
+}
+function formatRequestUrl(rawUrl, baseOrigin) {
+  let cleanUrl = rawUrl.replace(/[\r\n]+/g, "");
+  if (/^data:/i.test(cleanUrl)) {
+    if (cleanUrl.length <= 80) {
+      return cleanUrl;
+    }
+    const commaIndex = cleanUrl.indexOf(",");
+    let truncated;
+    if (commaIndex !== -1 && commaIndex < 60) {
+      truncated = cleanUrl.slice(0, commaIndex + 1);
+    } else {
+      truncated = Platform6.StringUtilities.truncateToCodeUnitLength(cleanUrl, 60);
+    }
+    return truncated + "...<truncated>";
+  }
+  if (baseOrigin !== "" && cleanUrl.slice(0, baseOrigin.length).toLowerCase() === baseOrigin) {
+    const nextChar = cleanUrl[baseOrigin.length];
+    if (nextChar === void 0) {
+      cleanUrl = "/";
+    } else if (nextChar === "/") {
+      cleanUrl = cleanUrl.slice(baseOrigin.length);
+    } else if (nextChar === "?" || nextChar === "#") {
+      cleanUrl = "/" + cleanUrl.slice(baseOrigin.length);
+    }
+  }
+  const queryOrFragmentIndex = cleanUrl.search(/[?#]/);
+  const pathPart = queryOrFragmentIndex === -1 ? cleanUrl : cleanUrl.slice(0, queryOrFragmentIndex);
+  const suffixPart = queryOrFragmentIndex === -1 ? "" : cleanUrl.slice(queryOrFragmentIndex);
+  if (pathPart.length > 300) {
+    return Platform6.StringUtilities.truncateToCodeUnitLength(pathPart, 300) + "...<truncated>";
+  }
+  if (suffixPart.length > 100) {
+    return pathPart + Platform6.StringUtilities.truncateToCodeUnitLength(suffixPart, 100) + "...<truncated>";
+  }
+  return cleanUrl;
+}
 var ListNetworkRequestsTool = class {
   name = "listNetworkRequests" /* LIST_NETWORK_REQUESTS */;
   permissionPrompt = "never" /* NEVER */;
-  description = "Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.";
+  description = "Returns a compact semicolon-delimited table of requests initiated by the conversation's established origin, including request ID, URL, HTTP status code, duration, and transfer size.";
   #networkLog;
   constructor(networkLog) {
     this.#networkLog = networkLog;
@@ -9270,10 +9316,9 @@ var ListNetworkRequestsTool = class {
   }
   /**
    * Handles the request to list network requests.
-   * Returns requests matching the conversation's established origin, if set.
+   * Returns a compact semicolon-delimited table of requests initiated by the conversation's established origin.
    */
   async handler(_params, context) {
-    const requests = [];
     const originLock = context.getOriginLock();
     const originResult = resolveOriginFromLock(originLock);
     if ("error" in originResult) {
@@ -9288,16 +9333,9 @@ var ListNetworkRequestsTool = class {
         hasCrossOriginRequest = true;
         continue;
       }
-      requests.push({
-        id: request.requestId(),
-        url: request.url(),
-        statusCode: request.statusCode,
-        duration: seconds(request.duration),
-        transferSize: formatBytesToKb(request.transferSize)
-      });
       requestsToShow.push(request);
     }
-    if (requests.length === 0) {
+    if (requestsToShow.length === 0) {
       if (hasCrossOriginRequest) {
         return {
           error: `No requests showing with origin ${establishedOrigin.siteId()}. Tell the user to start a new chat`
@@ -9307,8 +9345,18 @@ var ListNetworkRequestsTool = class {
         error: "No network requests have been recorded. DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). Ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
       };
     }
+    const baseOrigin = resolveBaseOrigin(establishedOrigin, requestsToShow);
+    const HEADER = "id;url;status;duration;size";
+    const lines = baseOrigin ? [`origin: ${baseOrigin} (omitted from same-origin /... URLs)`, HEADER] : [HEADER];
+    for (const request of requestsToShow) {
+      const id = request.requestId().replace(/[\r\n]+/g, "");
+      const url = formatRequestUrl(request.url(), baseOrigin);
+      lines.push(
+        `${id};${url};${request.statusCode};${seconds(request.duration)};${formatBytesToKb(request.transferSize)}`
+      );
+    }
     return {
-      result: JSON.stringify(requests),
+      result: lines.join("\n"),
       widgets: [{
         name: "NETWORK_REQUESTS_LIST",
         data: {
@@ -9326,7 +9374,7 @@ __export(ListPageOrigins_exports, {
 });
 import * as Host21 from "../../core/host/host.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
-import * as SDK16 from "../../core/sdk/sdk.js";
+import * as SDK17 from "../../core/sdk/sdk.js";
 var lockedString18 = i18n37.i18n.lockedString;
 var ListPageOriginsTool = class {
   name = "listPageOrigins" /* LIST_PAGE_ORIGINS */;
@@ -9355,19 +9403,19 @@ var ListPageOriginsTool = class {
    *    so we check `frame.securityOrigin` directly instead of the frame's target origin.
    */
   async handler(_args, context) {
-    const targetManager = SDK16.TargetManager.TargetManager.instance();
+    const targetManager = SDK17.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
     const originLock = context.getOriginLock();
     const originResult = resolveOriginFromLock(originLock);
     if ("error" in originResult) {
       return originResult;
     }
-    const pageOrigin = primaryPageTarget ? SDK16.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
+    const pageOrigin = primaryPageTarget ? SDK17.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
     if (!pageOrigin || !isOriginAllowedByLock(originLock, pageOrigin)) {
       return { error: "No origin available or not allowed." };
     }
     const origins = [];
-    for (const frame of SDK16.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
+    for (const frame of SDK17.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
       if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
         continue;
       }
@@ -9390,8 +9438,8 @@ __export(ListStorageKeys_exports, {
 });
 import * as Host22 from "../../core/host/host.js";
 import * as i18n39 from "../../core/i18n/i18n.js";
-import * as Platform6 from "../../core/platform/platform.js";
-import * as SDK17 from "../../core/sdk/sdk.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as SDK18 from "../../core/sdk/sdk.js";
 var lockedString19 = i18n39.i18n.lockedString;
 var ListStorageKeysTool = class {
   name = "listStorageKeys" /* LIST_STORAGE_KEYS */;
@@ -9432,7 +9480,7 @@ var ListStorageKeysTool = class {
         title = lockedString19("Reading session storage keys");
         break;
       default:
-        Platform6.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
+        Platform7.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
     }
     return {
       title,
@@ -9441,7 +9489,7 @@ var ListStorageKeysTool = class {
   }
   async handler(args, context) {
     context.disableLogging();
-    const targetManager = SDK17.TargetManager.TargetManager.instance();
+    const targetManager = SDK18.TargetManager.TargetManager.instance();
     const targetOriginsResult = resolveAllowedTargetOrigins(args.origins, context, targetManager);
     if ("error" in targetOriginsResult) {
       return { error: targetOriginsResult.error };
@@ -9484,7 +9532,7 @@ var PerformanceTraceContext_exports = {};
 __export(PerformanceTraceContext_exports, {
   PerformanceTraceContext: () => PerformanceTraceContext
 });
-import * as SDK19 from "../../core/sdk/sdk.js";
+import * as SDK20 from "../../core/sdk/sdk.js";
 import * as Tracing2 from "../../services/tracing/tracing.js";
 import * as Bindings2 from "../bindings/bindings.js";
 import * as SourceMapScopes from "../source_map_scopes/source_map_scopes.js";
@@ -9505,9 +9553,9 @@ __export(AiAgent_exports, {
   sanitizeSuggestionsList: () => sanitizeSuggestionsList
 });
 import * as Host23 from "../../core/host/host.js";
-import * as Platform7 from "../../core/platform/platform.js";
+import * as Platform8 from "../../core/platform/platform.js";
 import * as Root4 from "../../core/root/root.js";
-import * as SDK18 from "../../core/sdk/sdk.js";
+import * as SDK19 from "../../core/sdk/sdk.js";
 import * as AiUtils4 from "../ai-utils/ai-utils.js";
 var { debugLog: debugLog2, isDebugMode } = AiUtils4.Debug;
 var MAX_SUGGESTION_LENGTH = 200;
@@ -9645,7 +9693,7 @@ var AiAgent = class {
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
     this.#allowedOrigin = opts.allowedOrigin;
-    this.#targetManager = opts.targetManager ?? SDK18.TargetManager.TargetManager.instance();
+    this.#targetManager = opts.targetManager ?? SDK19.TargetManager.TargetManager.instance();
     this.#alwaysAllowedTools = opts.alwaysAllowedTools;
   }
   async enhanceQuery(query) {
@@ -10276,7 +10324,7 @@ var AiAgent = class {
         responseTimestamp
       });
       try {
-        Platform7.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem(
+        Platform8.HostRuntime.HOST_RUNTIME.getLocalStorage()?.setItem(
           "aiAssistanceStructuredLog",
           JSON.stringify(this.#structuredLog)
         );
@@ -10472,7 +10520,7 @@ function getPerformanceAgentFocusFromModel(model) {
 
 // ../../front_end/models/ai_assistance/contexts/PerformanceTraceContext.ts
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
-  static fromParsedTrace(parsedTrace, targetManager = SDK19.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromParsedTrace(parsedTrace, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10483,7 +10531,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       debuggerWorkspaceBinding
     );
   }
-  static fromInsight(parsedTrace, insight, targetManager = SDK19.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromInsight(parsedTrace, insight, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10494,7 +10542,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       debuggerWorkspaceBinding
     );
   }
-  static fromCallTree(callTree, targetManager = SDK19.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  static fromCallTree(callTree, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10511,7 +10559,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   #freshRecordingTracker;
   #debuggerWorkspaceBinding;
   #origin;
-  constructor(focus, targetManager = SDK19.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
+  constructor(focus, targetManager = SDK20.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing2.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = (
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
   )) {
@@ -10566,7 +10614,7 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
    */
   canAccessResource(url) {
     const traceOrigin = this.getOrigin();
-    const targetOrigin = SDK19.SecurityOrigin.SecurityOrigin.create(url);
+    const targetOrigin = SDK20.SecurityOrigin.SecurityOrigin.create(url);
     if (traceOrigin.isFile() || targetOrigin.isFile()) {
       return false;
     }
@@ -10590,11 +10638,11 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   getOrigin() {
     if (!this.#origin) {
       if (this.isImported()) {
-        this.#origin = SDK19.SecurityOrigin.SecurityOrigin.createForImportedTrace(
+        this.#origin = SDK20.SecurityOrigin.SecurityOrigin.createForImportedTrace(
           this.#focus.parsedTrace.data.Meta.mainFrameURL
         );
       } else {
-        this.#origin = SDK19.SecurityOrigin.SecurityOrigin.create(
+        this.#origin = SDK20.SecurityOrigin.SecurityOrigin.create(
           this.#focus.parsedTrace.data.Meta.mainFrameURL
         );
       }
@@ -10956,7 +11004,7 @@ __export(ResolveDevtoolsNodePath_exports, {
 });
 import * as Host25 from "../../core/host/host.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
-import * as SDK20 from "../../core/sdk/sdk.js";
+import * as SDK21 from "../../core/sdk/sdk.js";
 var ResolveDevtoolsNodePathTool = class {
   name = "resolveDevtoolsNodePath" /* RESOLVE_DEVTOOLS_NODE_PATH */;
   permissionPrompt = "never" /* NEVER */;
@@ -11001,7 +11049,7 @@ var ResolveDevtoolsNodePathTool = class {
    */
   async handler(params, context) {
     const target = context.getTarget();
-    const domModel = target?.model(SDK20.DOMModel.DOMModel);
+    const domModel = target?.model(SDK21.DOMModel.DOMModel);
     if (!domModel) {
       return { error: "Error: Inspected target not found." };
     }
@@ -11049,7 +11097,7 @@ __export(LighthouseContext_exports, {
   LighthouseContext: () => LighthouseContext
 });
 import * as Root5 from "../../core/root/root.js";
-import * as SDK21 from "../../core/sdk/sdk.js";
+import * as SDK22 from "../../core/sdk/sdk.js";
 var LighthouseContext = class extends ConversationContext {
   // This context was previously named AccessibilityContext. The VE context
   // keeps its original value so that logged metrics stay comparable.
@@ -11072,7 +11120,7 @@ var LighthouseContext = class extends ConversationContext {
    * @returns The security origin of the audited page.
    */
   getOrigin() {
-    return SDK21.SecurityOrigin.SecurityOrigin.create(this.#url());
+    return SDK22.SecurityOrigin.SecurityOrigin.create(this.#url());
   }
   getItem() {
     return this.#lh;
@@ -11209,10 +11257,10 @@ var SelectTraceEventByKey_exports = {};
 __export(SelectTraceEventByKey_exports, {
   SelectTraceEventByKeyTool: () => SelectTraceEventByKeyTool
 });
-import * as Common4 from "../../core/common/common.js";
+import * as Common5 from "../../core/common/common.js";
 import * as Host27 from "../../core/host/host.js";
 import * as i18n45 from "../../core/i18n/i18n.js";
-import * as SDK22 from "../../core/sdk/sdk.js";
+import * as SDK23 from "../../core/sdk/sdk.js";
 var UIStringsNotTranslate12 = {
   selectingTraceEvent: "Selecting trace event"
 };
@@ -11250,9 +11298,9 @@ var SelectTraceEventByKeyTool = class {
     if (!event) {
       return { error: `Could not find event with key "${params.eventKey}".` };
     }
-    const revealable = new SDK22.TraceObject.RevealableEvent(event);
+    const revealable = new SDK23.TraceObject.RevealableEvent(event);
     try {
-      await Common4.Revealer.reveal(revealable);
+      await Common5.Revealer.reveal(revealable);
     } catch {
     }
     return {
@@ -11274,8 +11322,8 @@ __export(SetElementStyles_exports, {
   SetElementStylesTool: () => SetElementStylesTool
 });
 import * as Host28 from "../../core/host/host.js";
-import * as Platform8 from "../../core/platform/platform.js";
-import * as SDK23 from "../../core/sdk/sdk.js";
+import * as Platform9 from "../../core/platform/platform.js";
+import * as SDK24 from "../../core/sdk/sdk.js";
 var SetElementStylesTool = class {
   name = "setElementStyles" /* SET_ELEMENT_STYLES */;
   permissionPrompt = "never" /* NEVER */;
@@ -11350,12 +11398,12 @@ var SetElementStylesTool = class {
     if (!params.styleProperties?.length) {
       return { error: "Error: No style properties provided." };
     }
-    const styles = Platform8.StringUtilities.toKebabCaseKeys(
+    const styles = Platform9.StringUtilities.toKebabCaseKeys(
       Object.fromEntries(params.styleProperties.map((p) => [p.name, p.value]))
     );
     const maybeResolvedNodes = await Promise.all(
       params.elements.map(
-        (uid) => new SDK23.DOMModel.DeferredDOMNode(target, uid).resolvePromise()
+        (uid) => new SDK24.DOMModel.DeferredDOMNode(target, uid).resolvePromise()
       )
     );
     const resolvedNodes = [];
@@ -11405,7 +11453,7 @@ var SetElementStylesTool = class {
   async #applyStyleChangesToNode(resolvedNode, styles, changeManager) {
     const domModel = resolvedNode.domModel();
     const cssModel = domModel.cssModel();
-    const frameId = resolvedNode.frameId() ?? domModel.target().model(SDK23.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.id;
+    const frameId = resolvedNode.frameId() ?? domModel.target().model(SDK24.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.id;
     if (!frameId) {
       return { error: "Error: Main frame is not found for applying styles." };
     }
@@ -11571,7 +11619,7 @@ var AccessibilityAgent = class extends AiAgent {
   }
   async preRun() {
     const target = this.targetManager.primaryPageTarget();
-    const domModel = target?.model(SDK24.DOMModel.DOMModel);
+    const domModel = target?.model(SDK25.DOMModel.DOMModel);
     if (domModel && !domModel.existingDocument()) {
       try {
         await domModel.requestDocument();
@@ -11586,7 +11634,7 @@ var AccessibilityAgent = class extends AiAgent {
    * so that the AI has a valid $0 to start with.
    */
   #getDocumentBodyNode() {
-    const document = this.targetManager.primaryPageTarget()?.model(SDK24.DOMModel.DOMModel)?.existingDocument();
+    const document = this.targetManager.primaryPageTarget()?.model(SDK25.DOMModel.DOMModel)?.existingDocument();
     return document?.body ?? document ?? null;
   }
   async *handleContextDetails(lhr) {
@@ -11610,7 +11658,7 @@ var AccessibilityAgent = class extends AiAgent {
     if (!target) {
       return null;
     }
-    const domModel = target.model(SDK24.DOMModel.DOMModel);
+    const domModel = target.model(SDK25.DOMModel.DOMModel);
     if (!domModel) {
       return null;
     }
@@ -11860,7 +11908,7 @@ var AccessibilityAgent = class extends AiAgent {
         if (!node) {
           return { error: `Could not find the element with path: ${params.path}` };
         }
-        const accessibilityModel = node.domModel().target().model(SDK24.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = node.domModel().target().model(SDK25.AccessibilityModel.AccessibilityModel);
         if (!accessibilityModel) {
           return { error: "Accessibility model not found." };
         }
@@ -11938,7 +11986,7 @@ __export(DOMNodeContext_exports, {
   DOMNodeContext: () => DOMNodeContext
 });
 import * as i18n49 from "../../core/i18n/i18n.js";
-import * as SDK25 from "../../core/sdk/sdk.js";
+import * as SDK26 from "../../core/sdk/sdk.js";
 var UIStringsNotTranslate13 = {
   /**
    * @description Heading text for context details of DevTools AI Agent.
@@ -11966,7 +12014,7 @@ var DOMNodeContext = class extends ConversationContext {
     const origin = this.#node.securityOrigin();
     if (!origin) {
       if (!this.#opaqueOrigin) {
-        this.#opaqueOrigin = SDK25.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+        this.#opaqueOrigin = SDK26.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
       }
       return this.#opaqueOrigin;
     }
@@ -12039,8 +12087,8 @@ ${await this.describe()}`;
 * Its selector is \`${element.simpleSelector()}\``;
     const childNodes = await element.getChildNodesPromise();
     if (childNodes) {
-      const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === SDK25.DOMModel.NodeType.TEXT_NODE);
-      const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === SDK25.DOMModel.NodeType.ELEMENT_NODE);
+      const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === SDK26.DOMModel.NodeType.TEXT_NODE);
+      const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === SDK26.DOMModel.NodeType.ELEMENT_NODE);
       const formattedChildren = elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ");
       switch (elementChildNodes.length) {
         case 0:
@@ -12067,12 +12115,12 @@ ${await this.describe()}`;
       }
     }
     if (element.nextSibling) {
-      const elementOrNodeElementNodeText = element.nextSibling.nodeType() === SDK25.DOMModel.NodeType.ELEMENT_NODE ? `an element (uid=${element.nextSibling.backendNodeId()})` : "a non element";
+      const elementOrNodeElementNodeText = element.nextSibling.nodeType() === SDK26.DOMModel.NodeType.ELEMENT_NODE ? `an element (uid=${element.nextSibling.backendNodeId()})` : "a non element";
       output += `
 * It has a next sibling and it is ${elementOrNodeElementNodeText} node`;
     }
     if (element.previousSibling) {
-      const elementOrNodeElementNodeText = element.previousSibling.nodeType() === SDK25.DOMModel.NodeType.ELEMENT_NODE ? `an element (uid=${element.previousSibling.backendNodeId()})` : "a non element";
+      const elementOrNodeElementNodeText = element.previousSibling.nodeType() === SDK26.DOMModel.NodeType.ELEMENT_NODE ? `an element (uid=${element.previousSibling.backendNodeId()})` : "a non element";
       output += `
 * It has a previous sibling and it is ${elementOrNodeElementNodeText} node`;
     }
@@ -12084,14 +12132,14 @@ ${await this.describe()}`;
       const parentChildrenNodes = await parentNode.getChildNodesPromise();
       output += `
 * Its parent's selector is \`${parentNode.simpleSelector()}\` (uid=${parentNode.backendNodeId()})`;
-      const elementOrNodeElementNodeText = parentNode.nodeType() === SDK25.DOMModel.NodeType.ELEMENT_NODE ? "an element" : "a non element";
+      const elementOrNodeElementNodeText = parentNode.nodeType() === SDK26.DOMModel.NodeType.ELEMENT_NODE ? "an element" : "a non element";
       output += `
 * Its parent is ${elementOrNodeElementNodeText} node`;
       if (parentNode.isShadowRoot()) {
         output += "\n* Its parent is a shadow root.";
       }
       if (parentChildrenNodes) {
-        const childElementNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === SDK25.DOMModel.NodeType.ELEMENT_NODE);
+        const childElementNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === SDK26.DOMModel.NodeType.ELEMENT_NODE);
         switch (childElementNodes.length) {
           case 0:
             break;
@@ -12103,7 +12151,7 @@ ${await this.describe()}`;
 * Its parent has ${childElementNodes.length} child element nodes: ${childElementNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
             break;
         }
-        const siblingTextNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === SDK25.DOMModel.NodeType.TEXT_NODE);
+        const siblingTextNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === SDK26.DOMModel.NodeType.TEXT_NODE);
         switch (siblingTextNodes.length) {
           case 0:
             break;
@@ -12251,7 +12299,7 @@ var StorageContext_exports = {};
 __export(StorageContext_exports, {
   StorageContext: () => StorageContext
 });
-import * as SDK26 from "../../core/sdk/sdk.js";
+import * as SDK27 from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/ai_assistance/StorageItem.ts
 var StorageItem_exports = {};
@@ -12320,7 +12368,7 @@ var StorageContext = class extends ConversationContext {
    * @returns The security origin of the primary page target.
    */
   getOrigin() {
-    return SDK26.SecurityOrigin.SecurityOrigin.create(this.#item.primaryTargetOrigin);
+    return SDK27.SecurityOrigin.SecurityOrigin.create(this.#item.primaryTargetOrigin);
   }
   getItem() {
     return this.#item;
@@ -13094,11 +13142,11 @@ var PerformanceAgent_exports = {};
 __export(PerformanceAgent_exports, {
   PerformanceAgent: () => PerformanceAgent
 });
-import * as Common5 from "../../core/common/common.js";
+import * as Common6 from "../../core/common/common.js";
 import * as Host33 from "../../core/host/host.js";
 import * as i18n55 from "../../core/i18n/i18n.js";
 import * as Root10 from "../../core/root/root.js";
-import * as SDK27 from "../../core/sdk/sdk.js";
+import * as SDK28 from "../../core/sdk/sdk.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as Tracing3 from "../../services/tracing/tracing.js";
 import * as AiUtils7 from "../ai-utils/ai-utils.js";
@@ -13662,7 +13710,7 @@ ${result}`,
             const nodeId = lcpEvent.args.data?.nodeId;
             if (nodeId) {
               const target = this.targetManager.primaryPageTarget();
-              const domModel = target?.model(SDK27.DOMModel.DOMModel);
+              const domModel = target?.model(SDK28.DOMModel.DOMModel);
               if (domModel) {
                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
                 const node = nodeMap?.get(nodeId);
@@ -14005,7 +14053,7 @@ ${result}`,
         if (script?.content !== void 0) {
           content = script.content;
         } else if (isFresh || isTraceApp) {
-          const resource = SDK27.ResourceTreeModel.ResourceTreeModel.resourceForURL(this.targetManager, url);
+          const resource = SDK28.ResourceTreeModel.ResourceTreeModel.resourceForURL(this.targetManager, url);
           if (!resource) {
             return { error: "Resource not found" };
           }
@@ -14058,8 +14106,8 @@ ${result}`,
         if (!event) {
           return { error: "Invalid eventKey" };
         }
-        const revealable = new SDK27.TraceObject.RevealableEvent(event);
-        await Common5.Revealer.reveal(revealable);
+        const revealable = new SDK28.TraceObject.RevealableEvent(event);
+        await Common6.Revealer.reveal(revealable);
         return {
           result: { success: true },
           widgets: [{
@@ -14075,7 +14123,7 @@ ${result}`,
   }
   async #getNetworkRequestImageData(lcpRequest) {
     const target = this.targetManager.primaryPageTarget();
-    const networkManager = target?.model(SDK27.NetworkManager.NetworkManager);
+    const networkManager = target?.model(SDK28.NetworkManager.NetworkManager);
     if (!target || !networkManager) {
       return void 0;
     }
@@ -14101,11 +14149,11 @@ __export(StorageAgent_exports, {
   isSamePageOrigin: () => isSamePageOrigin,
   resolveDOMStorages: () => resolveDOMStorages2
 });
-import * as Common6 from "../../core/common/common.js";
+import * as Common7 from "../../core/common/common.js";
 import * as Host34 from "../../core/host/host.js";
 import * as i18n57 from "../../core/i18n/i18n.js";
 import * as Root11 from "../../core/root/root.js";
-import * as SDK28 from "../../core/sdk/sdk.js";
+import * as SDK29 from "../../core/sdk/sdk.js";
 var lockedString26 = i18n57.i18n.lockedString;
 var preamble6 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
@@ -14157,7 +14205,7 @@ function isSamePageOrigin(target, context) {
   if (!inspectedURL) {
     return false;
   }
-  const pageOrigin = SDK28.SecurityOrigin.SecurityOrigin.create(inspectedURL);
+  const pageOrigin = SDK29.SecurityOrigin.SecurityOrigin.create(inspectedURL);
   return !pageOrigin.isOpaque() && context.isOriginAllowed(pageOrigin);
 }
 var MAX_TARGET_ORIGINS2 = 100;
@@ -14205,7 +14253,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
           return { error: "No origin available or not allowed." };
         }
         const origins = [];
-        for (const frame of SDK28.ResourceTreeModel.ResourceTreeModel.frames(this.targetManager)) {
+        for (const frame of SDK29.ResourceTreeModel.ResourceTreeModel.frames(this.targetManager)) {
           if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
             continue;
           }
@@ -14521,7 +14569,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         if (response.getError()) {
           return { error: response.getError() || "Unknown CDP error" };
         }
-        const mainStorageKey = target.model(SDK28.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
+        const mainStorageKey = target.model(SDK29.StorageKeyManager.StorageKeyManager)?.mainStorageKey() || void 0;
         const localStorages = resolveDOMStorages2(this.context, "localStorage", origin, this.targetManager, mainStorageKey);
         const localStorageBytes = await calculateDOMStoragesUsage2(localStorages);
         const sessionStorages = resolveDOMStorages2(this.context, "sessionStorage", origin, this.targetManager, mainStorageKey);
@@ -14571,7 +14619,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
   static #formatContext(item) {
     const primaryTargetOrigin = `Primary target: ${item.primaryTargetOrigin}`;
     if (item instanceof CookieItem) {
-      const parsedURL = Common6.ParsedURL.ParsedURL.fromString(item.origin);
+      const parsedURL = Common7.ParsedURL.ParsedURL.fromString(item.origin);
       const domain = parsedURL ? parsedURL.host : item.origin;
       return `${primaryTargetOrigin}
 User-selected Context: Cookies${item.isGenericContext ? "" : `
@@ -14621,7 +14669,7 @@ ${query}`;
   }
 };
 async function getCookiesForDomain(target, origin) {
-  const cookieModel = target.model(SDK28.CookieModel.CookieModel);
+  const cookieModel = target.model(SDK29.CookieModel.CookieModel);
   if (!cookieModel) {
     return null;
   }
@@ -14632,8 +14680,8 @@ async function getCookiesForDomain(target, origin) {
   return allCookies.filter((cookie) => !cookie.httpOnly());
 }
 function findFrameForOrigin(context, origin, targetManager) {
-  const parsedOrigin = SDK28.SecurityOrigin.SecurityOrigin.create(origin);
-  for (const frame of SDK28.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
+  const parsedOrigin = SDK29.SecurityOrigin.SecurityOrigin.create(origin);
+  for (const frame of SDK29.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
     if (frame.securityOrigin().isSameOriginWith(parsedOrigin)) {
       const target = frame.resourceTreeModel().target();
       if (isSamePageOrigin(target.outermostTarget(), context)) {
@@ -14658,7 +14706,7 @@ async function calculateDOMStoragesUsage2(storages) {
 function resolveDOMStorages2(context, type, origin, targetManager, storageKey) {
   const resolvedStorages = [];
   const isLocalStorage = type === "localStorage";
-  const domStorageModels = targetManager.models(SDK28.DOMStorageModel.DOMStorageModel);
+  const domStorageModels = targetManager.models(SDK29.DOMStorageModel.DOMStorageModel);
   for (const domStorageModel of domStorageModels) {
     if (!isSamePageOrigin(domStorageModel.target().outermostTarget(), context)) {
       continue;
@@ -14673,14 +14721,14 @@ function resolveDOMStorages2(context, type, origin, targetManager, storageKey) {
       }
       if (storageKey) {
         if (storageKey === currentStorageKey) {
-          const parsedKey2 = SDK28.StorageKeyManager.parseStorageKey(currentStorageKey);
+          const parsedKey2 = SDK29.StorageKeyManager.parseStorageKey(currentStorageKey);
           if (parsedKey2.origin === origin) {
             resolvedStorages.push(storage);
           }
         }
         continue;
       }
-      const parsedKey = SDK28.StorageKeyManager.parseStorageKey(currentStorageKey);
+      const parsedKey = SDK29.StorageKeyManager.parseStorageKey(currentStorageKey);
       if (parsedKey.origin === origin) {
         resolvedStorages.push(storage);
       }
@@ -14867,7 +14915,7 @@ __export(AiAgent2_exports, {
 });
 import * as Host36 from "../../core/host/host.js";
 import * as Root13 from "../../core/root/root.js";
-import * as SDK29 from "../../core/sdk/sdk.js";
+import * as SDK30 from "../../core/sdk/sdk.js";
 import * as AiUtils8 from "../ai-utils/ai-utils.js";
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
@@ -14899,7 +14947,7 @@ var skill2 = {
     "listNetworkRequests",
     "getNetworkRequestDetails"
   ],
-  "instructions": "You are an expert network request debugging assistant.\n\n# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to discover recorded network requests matching the active origin.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain full headers, timing phases (DNS, initial connection, SSL, TTFB, content download), status text, and response body.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Origin Lock**: Only requests belonging to the conversation's established origin can be inspected.\n* **Recording**: DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). If `listNetworkRequests` reports that no requests have been recorded, ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
+  "instructions": "You are an expert network request debugging assistant.\n\n# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to list recorded requests initiated by the active origin as `id;url;status;duration;size` rows, where same-origin URLs omit the `origin` prefix and long query or `data:` URLs end with `...<truncated>`.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (DNS, initial connection, SSL, TTFB, content download), status text, and response body.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Origin Lock**: Only requests initiated by the conversation's established origin can be inspected.\n* **Recording**: DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). If `listNetworkRequests` reports that no requests have been recorded, ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
 };
 
 // gen/front_end/models/ai_assistance/skills/performance.skill.js
@@ -14962,7 +15010,19 @@ var skill6 = {
 var SKILLS = {
   styling: skill6,
   network: skill2,
-  performance: skill3,
+  // Append compressed format descriptions here to keep a single source of truth
+  // alongside PerformanceTraceFormatter without inflating performanceSkill.description
+  // in the unloaded skills manifest.
+  performance: {
+    ...skill3,
+    instructions: `${skill3.instructions}
+
+# Data Formats
+
+${PerformanceTraceFormatter.networkDataFormatDescription.trim()}
+
+${PerformanceTraceFormatter.callFrameDataFormatDescription.trim()}`
+  },
   storage: skill5,
   sources: skill4,
   lighthouse: skill
@@ -15072,7 +15132,7 @@ var AiAgent2 = class extends AiAgent {
     const target = this.targetManager.primaryPageTarget();
     const originLock = this.#originLock();
     const isTargetAllowed = target && isOriginAllowedByLock(originLock, target.inspectedSecurityOrigin());
-    const domModel = isTargetAllowed ? target.model(SDK29.DOMModel.DOMModel) : null;
+    const domModel = isTargetAllowed ? target.model(SDK30.DOMModel.DOMModel) : null;
     if (domModel) {
       if (!domModel.existingDocument()) {
         try {
@@ -15327,7 +15387,7 @@ ${skillObj.instructions}
    */
   #getDocumentBodyNode() {
     const target = this.#getTarget();
-    const document = target?.model(SDK29.DOMModel.DOMModel)?.existingDocument();
+    const document = target?.model(SDK30.DOMModel.DOMModel)?.existingDocument();
     if (!document) {
       return null;
     }
@@ -15352,16 +15412,16 @@ __export(AiConversation_exports, {
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Host37 from "../../core/host/host.js";
-import * as Platform9 from "../../core/platform/platform.js";
+import * as Platform10 from "../../core/platform/platform.js";
 import * as Root14 from "../../core/root/root.js";
-import * as SDK30 from "../../core/sdk/sdk.js";
+import * as SDK31 from "../../core/sdk/sdk.js";
 import * as AiUtils9 from "../ai-utils/ai-utils.js";
 var NOT_FOUND_IMAGE_DATA = "";
 var CONTEXT_TITLE = "Analyzing data";
 var MAX_TITLE_LENGTH = 80;
 var ALLOWED_PAGE_NAVIGATIONS = [
-  Platform9.DevToolsPath.urlString`about:blank`,
-  Platform9.DevToolsPath.urlString`chrome://terms`
+  Platform10.DevToolsPath.urlString`about:blank`,
+  Platform10.DevToolsPath.urlString`chrome://terms`
 ];
 function generateContextDetailsMarkdown(details) {
   const detailsMarkdown = [];
@@ -15427,7 +15487,7 @@ var AiConversation = class _AiConversation {
       lighthouseRecording,
       aiHistoryStorage = AiUtils9.AiHistoryStorage.AiHistoryStorage.instance(),
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-      targetManager = SDK30.TargetManager.TargetManager.instance(),
+      targetManager = SDK31.TargetManager.TargetManager.instance(),
       alwaysAllowedTools
     } = options;
     this.#changeManager = changeManager;
@@ -15691,7 +15751,7 @@ ${item.text.trim()}`);
       case AiUtils9.AiHistoryStorage.ConversationType.NONE:
         return new ContextSelectionAgent(options);
       default:
-        Platform9.assertNever(type, "Unknown conversation type");
+        Platform10.assertNever(type, "Unknown conversation type");
     }
   }
   async *run(initialQuery, options = {}) {
@@ -15712,8 +15772,8 @@ ${item.text.trim()}`);
     };
     const targetManager = this.#targetManager;
     targetManager.addModelListener(
-      SDK30.ResourceTreeModel.ResourceTreeModel,
-      SDK30.ResourceTreeModel.Events.PrimaryPageChanged,
+      SDK31.ResourceTreeModel.ResourceTreeModel,
+      SDK31.ResourceTreeModel.Events.PrimaryPageChanged,
       listener,
       this
     );
@@ -15724,8 +15784,8 @@ ${item.text.trim()}`);
       yield* this.#runAgent(initialQuery, options, { isInitialCall: true });
     } finally {
       targetManager.removeModelListener(
-        SDK30.ResourceTreeModel.ResourceTreeModel,
-        SDK30.ResourceTreeModel.Events.PrimaryPageChanged,
+        SDK31.ResourceTreeModel.ResourceTreeModel,
+        SDK31.ResourceTreeModel.Events.PrimaryPageChanged,
         listener,
         this
       );
@@ -15840,12 +15900,12 @@ function isAiAssistanceServerSideLoggingAllowed() {
 }
 function getPrimaryPageSecurityOrigin(targetManager) {
   const target = targetManager.primaryPageTarget();
-  const frameOrigin = target?.model(SDK30.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.securityOrigin();
+  const frameOrigin = target?.model(SDK31.ResourceTreeModel.ResourceTreeModel)?.mainFrame?.securityOrigin();
   if (frameOrigin) {
     return frameOrigin;
   }
   const inspectedURL = target?.inspectedURL();
-  return inspectedURL ? SDK30.SecurityOrigin.SecurityOrigin.create(inspectedURL) : void 0;
+  return inspectedURL ? SDK31.SecurityOrigin.SecurityOrigin.create(inspectedURL) : void 0;
 }
 
 // ../../front_end/models/ai_assistance/AlwaysAllowedTools.ts
@@ -15855,18 +15915,18 @@ __export(AlwaysAllowedTools_exports, {
   Events: () => Events,
   alwaysAllowedToolsSettingDescriptor: () => alwaysAllowedToolsSettingDescriptor
 });
-import * as Common7 from "../../core/common/common.js";
+import * as Common8 from "../../core/common/common.js";
 import * as AiUtils11 from "../ai-utils/ai-utils.js";
 var alwaysAllowedToolsSettingDescriptor = {
   name: "ai-assistance-always-allowed-tools",
-  type: Common7.Settings.SettingType.ARRAY,
+  type: Common8.Settings.SettingType.ARRAY,
   defaultValue: []
 };
 var Events = /* @__PURE__ */ ((Events2) => {
   Events2["TOOLS_CHANGED"] = "ToolsChanged";
   return Events2;
 })(Events || {});
-var AlwaysAllowedTools = class extends Common7.ObjectWrapper.ObjectWrapper {
+var AlwaysAllowedTools = class extends Common8.ObjectWrapper.ObjectWrapper {
   #impl;
   constructor(settings) {
     super();

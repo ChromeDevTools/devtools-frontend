@@ -2627,15 +2627,13 @@ async function makeBottomUpTimelineTreeWidget(widgetData) {
     return null;
   }
   const events = bottomUpRootNode.events;
-  const startTime = Trace2.Helpers.Timing.microToMilli(widgetData.data.bounds.min);
-  const endTime = Trace2.Helpers.Timing.microToMilli(widgetData.data.bounds.max);
   const renderedWidget = html5`<devtools-widget
       class="bottom-up-timeline-tree-widget"
       ${widget(Timeline.TimelineTreeView.BottomUpTimelineTreeView, {
     selectedEvents: events,
     parsedTrace: widgetData.data.parsedTrace,
-    startTime,
-    endTime,
+    startTime: widgetData.data.bounds.min,
+    endTime: widgetData.data.bounds.max,
     compactMode: true,
     maxLinkLength: 15,
     maxRows: 10
@@ -10081,6 +10079,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       }
     );
   }
+  /**
+   * Returns true when `defaultType` is NONE only because AI Assistance is in the
+   * main tab bar. The main tab bar shows one tab at a time, so while AI
+   * Assistance is selected there, no domain panel (Elements, Network, ...) can be
+   * visible. In that case NONE does not mean that the user moved away, and
+   * callers must keep the current conversation and its context.
+   */
+  #isDomainPanelHiddenByMainTabBar(defaultType) {
+    return AiAssistanceModel8.AiUtils.isContextSelectionEnabled() && defaultType === AiAssistanceModel8.AiHistoryStorage.ConversationType.NONE && UI10.ViewManager.ViewManager.instance().locationNameForViewId(_AiAssistancePanel.panelName) === "panel";
+  }
   #getDefaultConversationType() {
     const { hostConfig } = Root4.Runtime;
     const viewManager = UI10.ViewManager.ViewManager.instance();
@@ -10121,6 +10129,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
       return;
     }
     const targetConversationType = this.#getDefaultConversationType();
+    if (this.#conversation && this.#isDomainPanelHiddenByMainTabBar(targetConversationType)) {
+      this.requestUpdate();
+      return;
+    }
     if (this.#conversation?.type === targetConversationType) {
       this.requestUpdate();
       return;
@@ -10167,8 +10179,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
     }
     if (this.#conversation) {
       if (this.#conversation.isEmpty && AiAssistanceModel8.AiUtils.isContextSelectionEnabled()) {
-        const context = this.#getConversationContext(this.#getDefaultConversationType());
-        this.#conversation.setContext(context);
+        const defaultType = this.#getDefaultConversationType();
+        const lookupType = this.#isDomainPanelHiddenByMainTabBar(defaultType) ? this.#conversation.type : defaultType;
+        this.#conversation.setContext(this.#getConversationContext(lookupType));
       } else {
         const previousContext = this.#conversation.selectedContext;
         const previousItem = previousContext?.getItem();

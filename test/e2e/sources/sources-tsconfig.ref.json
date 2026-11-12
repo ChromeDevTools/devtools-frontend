@@ -44,6 +44,7 @@
     "../../../../../../test/e2e/sources/overrides.test.ts",
     "../../../../../../test/e2e/sources/pause-button.test.ts",
     "../../../../../../test/e2e/sources/popover.test.ts",
+    "../../../../../../test/e2e/sources/recurring-pause-actions.test.ts",
     "../../../../../../test/e2e/sources/restart-frame.test.ts",
     "../../../../../../test/e2e/sources/script-in-multiple-workers.test.ts",
     "../../../../../../test/e2e/sources/scroll-into-view.test.ts",

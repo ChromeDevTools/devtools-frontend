@@ -107,7 +107,7 @@ export default `/*
 
   .tutorial-title,
   .tutorial-description {
-    margin: 5px 0;
+    margin: var(--sys-size-4) 0;
   }
 }
 

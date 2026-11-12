@@ -558,7 +558,7 @@ var IdFactory = class _IdFactory {
   #keys = /* @__PURE__ */ new Map();
   #id;
   constructor(id) {
-    this.#id = id ?? _IdFactory.#nextId++;
+    this.#id = id ?? `id${_IdFactory.#nextId++}`;
   }
   keyed(key, ...additionalSuffixes) {
     const keyedId = Platform.MapUtilities.getWithDefault(this.#keys, key, () => 0);

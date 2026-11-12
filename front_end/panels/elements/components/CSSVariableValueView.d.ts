@@ -11,7 +11,9 @@ export type ParserErrorView = (input: ParserErrorViewInput, output: undefined, t
 export declare const DEFAULT_PARSER_ERROR_VIEW: ParserErrorView;
 export declare class CSSVariableParserError extends UI.Widget.Widget {
     #private;
-    constructor(details: RegisteredPropertyDetails, view?: ParserErrorView);
+    constructor(element?: HTMLElement, view?: ParserErrorView);
+    get details(): RegisteredPropertyDetails | undefined;
+    set details(details: RegisteredPropertyDetails | undefined);
     wasShown(): void;
     performUpdate(): void;
 }

@@ -32,6 +32,7 @@ export declare class Tool {
     get name(): string;
     get description(): string;
     get inputSchema(): JSONSchema7;
+    get outputSchema(): JSONSchema7 | undefined;
     get flags(): Array<keyof Protocol.WebMCP.Annotation>;
     get frame(): SDK.ResourceTreeModel.ResourceTreeFrame | undefined;
     get isDeclarative(): boolean;

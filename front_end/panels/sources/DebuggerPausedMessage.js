@@ -1,8 +1,12 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -104,6 +108,18 @@ const UIStrings = {
      * @example {"script-src 'self'"} PH1
      */
     scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
+    /**
+     * @description Button label in the Debugger paused banner of the Sources panel when execution repeatedly pauses at the same breakpoint. Clicking disables that breakpoint and resumes script execution.
+     */
+    disableBreakpoint: 'Disable breakpoint',
+    /**
+     * @description Button label in the Debugger paused banner of the Sources panel when execution repeatedly pauses at the same location. Clicking adds a never-pause-here rule at the current line and resumes script execution.
+     */
+    neverPauseHere: 'Never pause here',
+    /**
+     * @description Button label in the Debugger paused banner of the Sources panel when execution repeatedly pauses at the same location. Clicking deactivates all breakpoints and resumes script execution.
+     */
+    deactivateAll: 'Deactivate all',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPausedMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -130,7 +146,7 @@ function domBreakpointSubtext(data) {
       ${data.targetNode ? html `<br/>${message}` : nothing}
   `;
 }
-const DEFAULT_VIEW = (input, _output, target) => {
+export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
     <style>${debuggerPausedMessageStyles}</style>
@@ -146,6 +162,32 @@ const DEFAULT_VIEW = (input, _output, target) => {
               ${input.domBreakpointData ? domBreakpointSubtext(input.domBreakpointData) : input.subText}
             </div>` : nothing}
         </span>
+        ${input.onDisableBreakpoint || input.onNeverPauseHere || input.onDeactivateBreakpointsAndResume ? html `
+          <div class="status-actions">
+            ${input.onDisableBreakpoint ? html `
+              <devtools-button
+                  .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+                  .size=${"MICRO" /* Buttons.Button.Size.MICRO */}
+                  .jslogContext=${'disable-breakpoint'}
+                  @click=${() => input.onDisableBreakpoint?.()}>
+                ${i18nString(UIStrings.disableBreakpoint)}
+              </devtools-button>` : input.onNeverPauseHere ? html `
+              <devtools-button
+                  .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+                  .size=${"MICRO" /* Buttons.Button.Size.MICRO */}
+                  .jslogContext=${'never-pause-here'}
+                  @click=${() => input.onNeverPauseHere?.()}>
+                ${i18nString(UIStrings.neverPauseHere)}
+              </devtools-button>` : nothing}
+            ${input.onDeactivateBreakpointsAndResume ? html `
+              <devtools-button
+                  .variant=${"text" /* Buttons.Button.Variant.TEXT */}
+                  .size=${"MICRO" /* Buttons.Button.Size.MICRO */}
+                  .jslogContext=${'debugger.toggle-breakpoints-active'}
+                  @click=${() => input.onDeactivateBreakpointsAndResume?.()}>
+                ${i18nString(UIStrings.deactivateAll)}
+              </devtools-button>` : nothing}
+          </div>` : nothing}
       </div>` : nothing}
     </div>`, target, {
         container: {
@@ -157,15 +199,23 @@ const DEFAULT_VIEW = (input, _output, target) => {
 };
 export class DebuggerPausedMessage extends UI.Widget.Widget {
     view;
-    static INJECT = [SDK.EventBreakpointsModel.EventBreakpointsManager];
+    static INJECT = [
+        SDK.EventBreakpointsModel.EventBreakpointsManager,
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+        Breakpoints.BreakpointManager.BreakpointManager,
+        Common.Settings.Settings,
+    ];
     #viewInput = null;
+    #renderGeneration = 0;
     #eventBreakpointsManager;
-    constructor(element, [eventBreakpointsManager], view = DEFAULT_VIEW) {
+    #recurringPauseDetector;
+    constructor(element, [eventBreakpointsManager, debuggerWorkspaceBinding, breakpointManager, settings], view = DEFAULT_VIEW) {
         super(element, {
             useShadowDom: 'pure',
         });
         this.view = view;
         this.#eventBreakpointsManager = eventBreakpointsManager;
+        this.#recurringPauseDetector = new Breakpoints.RecurringPauseDetector.RecurringPauseDetector(debuggerWorkspaceBinding, breakpointManager, settings);
     }
     static descriptionWithoutStack(description) {
         const firstCallFrame = /^\s+at\s/m.exec(description);
@@ -214,7 +264,13 @@ export class DebuggerPausedMessage extends UI.Widget.Widget {
         return breakpoint?.name ?? '';
     }
     async render(details, debuggerWorkspaceBinding, breakpointManager) {
+        const generation = ++this.#renderGeneration;
+        const escapeActionsPromise = this.#recurringPauseDetector.onPaused(details);
         if (!details) {
+            await escapeActionsPromise;
+            if (generation !== this.#renderGeneration) {
+                return;
+            }
             this.#viewInput = null;
             this.requestUpdate();
             return;
@@ -223,22 +279,23 @@ export class DebuggerPausedMessage extends UI.Widget.Widget {
             details.reason === "promiseRejection" /* Protocol.Debugger.PausedEventReason.PromiseRejection */ ||
             details.reason === "assert" /* Protocol.Debugger.PausedEventReason.Assert */ ||
             details.reason === "OOM" /* Protocol.Debugger.PausedEventReason.OOM */;
+        let viewInput = null;
         if (details.reason === "DOM" /* Protocol.Debugger.PausedEventReason.DOM */) {
-            this.#viewInput = await DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
+            viewInput = await DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
         }
         else if (details.reason === "EventListener" /* Protocol.Debugger.PausedEventReason.EventListener */) {
             const eventNameForUI = this.#findEventNameForUi(details.auxData);
-            this.#viewInput = { mainText: i18nString(UIStrings.pausedOnEventListener), subText: eventNameForUI, errorLike };
+            viewInput = { mainText: i18nString(UIStrings.pausedOnEventListener), subText: eventNameForUI, errorLike };
         }
         else if (details.reason === "XHR" /* Protocol.Debugger.PausedEventReason.XHR */) {
             const auxData = details.auxData;
-            this.#viewInput = { mainText: i18nString(UIStrings.pausedOnXhrOrFetch), subText: auxData.url || '', errorLike };
+            viewInput = { mainText: i18nString(UIStrings.pausedOnXhrOrFetch), subText: auxData.url || '', errorLike };
         }
         else if (details.reason === "exception" /* Protocol.Debugger.PausedEventReason.Exception */) {
             const auxData = details.auxData;
             const description = auxData.description || auxData.value || '';
             const descriptionWithoutStack = DebuggerPausedMessage.descriptionWithoutStack(description);
-            this.#viewInput = {
+            viewInput = {
                 mainText: i18nString(UIStrings.pausedOnException),
                 subText: descriptionWithoutStack,
                 title: description,
@@ -249,7 +306,7 @@ export class DebuggerPausedMessage extends UI.Widget.Widget {
             const auxData = details.auxData;
             const description = auxData.description || auxData.value || '';
             const descriptionWithoutStack = DebuggerPausedMessage.descriptionWithoutStack(description);
-            this.#viewInput = {
+            viewInput = {
                 mainText: i18nString(UIStrings.pausedOnPromiseRejection),
                 subText: descriptionWithoutStack,
                 title: description,
@@ -257,25 +314,26 @@ export class DebuggerPausedMessage extends UI.Widget.Widget {
             };
         }
         else if (details.reason === "assert" /* Protocol.Debugger.PausedEventReason.Assert */) {
-            this.#viewInput = { mainText: i18nString(UIStrings.pausedOnAssertion), errorLike };
+            viewInput = { mainText: i18nString(UIStrings.pausedOnAssertion), errorLike };
         }
         else if (details.reason === "debugCommand" /* Protocol.Debugger.PausedEventReason.DebugCommand */) {
-            this.#viewInput = { mainText: i18nString(UIStrings.pausedOnDebuggedFunction), errorLike };
+            viewInput = { mainText: i18nString(UIStrings.pausedOnDebuggedFunction), errorLike };
         }
         else if (details.reason === "OOM" /* Protocol.Debugger.PausedEventReason.OOM */) {
-            this.#viewInput = { mainText: i18nString(UIStrings.pausedBeforePotentialOutofmemory), errorLike };
+            viewInput = { mainText: i18nString(UIStrings.pausedBeforePotentialOutofmemory), errorLike };
         }
-        else if (details.reason === "CSPViolation" /* Protocol.Debugger.PausedEventReason.CSPViolation */ && details.auxData?.['violationType']) {
+        else if (details.reason === "CSPViolation" /* Protocol.Debugger.PausedEventReason.CSPViolation */ &&
+            details.auxData?.['violationType']) {
             const text = details.auxData['violationType'];
             if (text === "trustedtype-sink-violation" /* Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation */) {
-                this.#viewInput = {
+                viewInput = {
                     mainText: i18nString(UIStrings.pausedOnCspViolation),
                     subText: i18nString(UIStrings.trustedTypeSinkViolation),
                     errorLike,
                 };
             }
             else if (text === "trustedtype-policy-violation" /* Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation */) {
-                this.#viewInput = {
+                viewInput = {
                     mainText: i18nString(UIStrings.pausedOnCspViolation),
                     subText: i18nString(UIStrings.trustedTypePolicyViolation),
                     errorLike,
@@ -286,12 +344,22 @@ export class DebuggerPausedMessage extends UI.Widget.Widget {
             const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
             const breakpoint = uiLocation ? breakpointManager.findBreakpoint(uiLocation) : null;
             const defaultText = breakpoint ? i18nString(UIStrings.pausedOnBreakpoint) : i18nString(UIStrings.debuggerPaused);
-            this.#viewInput = { mainText: defaultText, errorLike };
+            viewInput = { mainText: defaultText, errorLike };
         }
         else {
-            this.#viewInput = null;
             console.warn('ScriptsPanel paused, but callFrames.length is zero.'); // TODO remove this once we understand this case better
         }
+        const escapeActions = await escapeActionsPromise;
+        if (generation !== this.#renderGeneration) {
+            return;
+        }
+        this.#viewInput = viewInput ? {
+            ...viewInput,
+            onDisableBreakpoint: escapeActions.disableBreakpoint,
+            onNeverPauseHere: escapeActions.neverPauseHere,
+            onDeactivateBreakpointsAndResume: escapeActions.deactivateBreakpointsAndResume,
+        } :
+            null;
         this.requestUpdate();
     }
     performUpdate() {

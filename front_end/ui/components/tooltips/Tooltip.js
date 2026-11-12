@@ -566,7 +566,7 @@ export class IdFactory {
     #keys = new Map();
     #id;
     constructor(id) {
-        this.#id = id ?? IdFactory.#nextId++;
+        this.#id = id ?? `id${IdFactory.#nextId++}`;
     }
     keyed(key, ...additionalSuffixes) {
         const keyedId = Platform.MapUtilities.getWithDefault(this.#keys, key, () => 0);

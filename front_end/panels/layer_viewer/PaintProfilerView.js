@@ -157,7 +157,7 @@ const DEFAULT_VIEW = (input, output, target) => {
   `;
     const emptyPieChartData = {
         chartName: i18nString(UIStrings.profilingResults),
-        size: 55,
+        size: 56,
         formatter: formatPieChartTime,
         showLegend: false,
         total: 0,

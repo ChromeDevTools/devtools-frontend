@@ -1,23 +1,20 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as i18n from '../../core/i18n/i18n.js';
 import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, render } from '../../ui/lit/lit.js';
 import { ApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import { WebMCPView } from './WebMCPView.js';
 export class WebMCPTreeElement extends ApplicationPanelTreeElement {
     #view;
     constructor(storagePanel) {
-        super(storagePanel, 'WebMCP', false, 'web-mcp');
+        super(storagePanel, i18n.i18n.lockedString('WebMCP'), false, 'web-mcp');
         const icon = createIcon('document');
         this.setLeadingIcons([icon]);
         const newBadge = UI.UIUtils.maybeCreateNewBadge('web-mcp');
         if (newBadge) {
-            const fragment = document.createDocumentFragment();
-            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-            render(html `<div class="trailing-icons icons-container">${newBadge}</div>`, fragment);
-            this.listItemElement.appendChild(fragment);
+            this.setTrailingIcons([newBadge]);
         }
     }
     get itemURL() {

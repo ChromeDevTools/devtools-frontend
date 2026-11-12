@@ -8738,7 +8738,7 @@ var timelineMiniMap_css_default = `/*
 }
 
 .timeline-minimap #timeline-overview-filmstrip {
-  flex-basis: 30px;
+  flex-basis: var(--sys-size-12);
 }
 
 .timeline-minimap #timeline-overview-memory {
@@ -13601,10 +13601,12 @@ var TimelineUIUtils = class _TimelineUIUtils {
       }
       case Trace24.Types.Events.Name.CACHE_MODULE: {
         url = unsafeEventData && unsafeEventData["url"];
-        contentHelper.appendTextRow(
-          i18nString18(UIStrings18.compilationCacheSize),
-          i18n35.ByteUtilities.bytesToString(unsafeEventData["producedCacheSize"])
-        );
+        if (typeof unsafeEventData?.["producedCacheSize"] === "number") {
+          contentHelper.appendTextRow(
+            i18nString18(UIStrings18.compilationCacheSize),
+            i18n35.ByteUtilities.bytesToString(unsafeEventData["producedCacheSize"])
+          );
+        }
         break;
       }
       case Trace24.Types.Events.Name.CACHE_SCRIPT: {
@@ -13625,10 +13627,12 @@ var TimelineUIUtils = class _TimelineUIUtils {
           }
           entityAppended = true;
         }
-        contentHelper.appendTextRow(
-          i18nString18(UIStrings18.compilationCacheSize),
-          i18n35.ByteUtilities.bytesToString(unsafeEventData["producedCacheSize"])
-        );
+        if (typeof unsafeEventData?.["producedCacheSize"] === "number") {
+          contentHelper.appendTextRow(
+            i18nString18(UIStrings18.compilationCacheSize),
+            i18n35.ByteUtilities.bytesToString(unsafeEventData["producedCacheSize"])
+          );
+        }
         break;
       }
       case Trace24.Types.Events.Name.EVALUATE_SCRIPT: {
@@ -15198,7 +15202,7 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
     this.refreshTree();
   }
   get startTime() {
-    return this.startTimeInternal ?? Trace26.Types.Timing.Milli(0);
+    return this.startTimeInternal ?? Trace26.Types.Timing.Micro(0);
   }
   set endTime(endTime) {
     if (this.endTimeInternal === endTime) {
@@ -15208,7 +15212,7 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
     this.refreshTree();
   }
   get endTime() {
-    return this.endTimeInternal ?? Trace26.Types.Timing.Milli(Infinity);
+    return this.endTimeInternal ?? Trace26.Types.Timing.Micro(Infinity);
   }
   get compactMode() {
     return this.#compactMode;
@@ -15335,15 +15339,21 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
   }
   set activeSelection(selection) {
     const timings = rangeForSelection(selection);
-    const timingMilli = Trace26.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(timings);
-    this.setRange(timingMilli.min, timingMilli.max);
-  }
-  setRange(startTime, endTime) {
-    if (this.startTimeInternal === startTime && this.endTimeInternal === endTime) {
+    if (this.startTimeInternal === timings.min && this.endTimeInternal === timings.max) {
       return;
     }
-    this.startTimeInternal = startTime;
-    this.endTimeInternal = endTime;
+    this.startTimeInternal = timings.min;
+    this.endTimeInternal = timings.max;
+    this.refreshTree();
+  }
+  setRange(startTime, endTime) {
+    const startTimeMicro = Trace26.Types.Timing.Micro(Math.round(startTime * 1e3));
+    const endTimeMicro = Trace26.Types.Timing.Micro(Math.round(endTime * 1e3));
+    if (this.startTimeInternal === startTimeMicro && this.endTimeInternal === endTimeMicro) {
+      return;
+    }
+    this.startTimeInternal = startTimeMicro;
+    this.endTimeInternal = endTimeMicro;
     this.refreshTree();
   }
   highlightEventInTree(event) {
@@ -15840,56 +15850,44 @@ var GridNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
     if (columnId !== "self" && columnId !== "total" && columnId !== "start-time" && columnId !== "transfer-size") {
       return null;
     }
+    const cell = this.createTD(columnId);
+    cell.className = "numeric-column";
+    if (columnId === "transfer-size") {
+      const formattedSize = i18n37.ByteUtilities.formatBytesToKb(this.profileNode.transferSize);
+      cell.setAttribute("title", formattedSize);
+      cell.createChild("div").createChild("span").textContent = formattedSize;
+      return cell;
+    }
     let showPercents = false;
     let value;
     let maxTime;
-    let event;
-    let isSize = false;
     let showBottomUpButton = false;
-    const thirdPartyView = this.treeView;
     switch (columnId) {
-      case "start-time":
-        {
-          event = this.profileNode.event;
-          const parsedTrace = this.treeView.parsedTrace;
-          if (!parsedTrace) {
-            throw new Error("Unable to load trace data for tree view");
-          }
-          const timings = event && Trace26.Helpers.Timing.eventTimingsMilliSeconds(event);
-          const startTime = timings?.startTime ?? 0;
-          value = startTime - Trace26.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      case "start-time": {
+        const parsedTrace = this.treeView.parsedTrace;
+        if (!parsedTrace) {
+          throw new Error("Unable to load trace data for tree view");
         }
+        const startTime = this.profileNode.event?.ts ?? Trace26.Types.Timing.Micro(0);
+        value = Trace26.Types.Timing.Micro(startTime - parsedTrace.data.Meta.traceBounds.min);
         break;
+      }
       case "self":
         value = this.profileNode.selfTime;
         maxTime = this.maxSelfTime;
         showPercents = true;
-        showBottomUpButton = thirdPartyView.isThirdPartyTreeView();
+        showBottomUpButton = this.treeView.isThirdPartyTreeView();
         break;
       case "total":
         value = this.profileNode.totalTime;
         maxTime = this.maxTotalTime;
         showPercents = true;
         break;
-      case "transfer-size":
-        value = this.profileNode.transferSize;
-        isSize = true;
-        break;
-      default:
-        return null;
     }
-    const cell = this.createTD(columnId);
-    cell.className = "numeric-column";
-    let textDiv;
-    if (!isSize) {
-      cell.setAttribute("title", i18n37.TimeUtilities.preciseMillisToString(value, 4));
-      textDiv = cell.createChild("div");
-      textDiv.createChild("span").textContent = i18n37.TimeUtilities.preciseMillisToString(value, 1);
-    } else {
-      cell.setAttribute("title", i18n37.ByteUtilities.formatBytesToKb(value));
-      textDiv = cell.createChild("div");
-      textDiv.createChild("span").textContent = i18n37.ByteUtilities.formatBytesToKb(value);
-    }
+    const valueMs = Trace26.Helpers.Timing.microToMilli(value);
+    cell.setAttribute("title", i18n37.TimeUtilities.preciseMillisToString(valueMs, 4));
+    const textDiv = cell.createChild("div");
+    textDiv.createChild("span").textContent = i18n37.TimeUtilities.preciseMillisToString(valueMs, 1);
     if (showPercents && this.treeView.exposePercentages()) {
       textDiv.createChild("span", "percent-column").textContent = i18nString19(UIStrings19.percentPlaceholder, { PH1: (value / this.grandTotalTime * 100).toFixed(1) });
     }
@@ -17010,14 +17008,7 @@ var timelineDetailsView_css_default = `/*
   }
 
   .timeline-details-warning {
-    --override-details-warning-background-color: rgb(250 209 209 / 48%);
-
-    background-color: var(--override-details-warning-background-color);
-  }
-
-  .theme-with-dark-background .timeline-details-warning, /* stylelint-disable-line plugin/check_scope_selectors */
-  :host-context(.theme-with-dark-background) .timeline-details-warning { /* stylelint-disable-line plugin/check_scope_selectors */
-    --override-details-warning-background-color: rgb(87 10 10 / 48%);
+    background-color: var(--sys-color-surface-error);
   }
 
   .timeline-details-warning .timeline-details-view-row-title {
@@ -22952,6 +22943,9 @@ var CompatibilityTracksAppender = class {
   }
   setFlameChartDataAndEntryData(flameChartData, entryData, legacyEntryTypeByLevel) {
     this.#trackForGroup.clear();
+    this.#trackForLevel.clear();
+    this.#eventsForTrack.clear();
+    this.#trackEventsForTreeview.clear();
     this.#flameChartData = flameChartData;
     this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;

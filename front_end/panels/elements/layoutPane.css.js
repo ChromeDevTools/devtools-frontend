@@ -113,8 +113,8 @@ export default `/*
     cursor: default;
     display: inline-block;
     flex: none;
-    height: 10px;
-    width: 10px;
+    height: var(--sys-size-6);
+    width: var(--sys-size-6);
     position: relative;
 
     &:focus-within {

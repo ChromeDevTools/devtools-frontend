@@ -7,7 +7,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as ElementsComponents from './components/components.js';
 import { StylePropertiesSection } from './StylePropertiesSection.js';
-import type { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
+import type { StylePropertyData } from './StylePropertyTreeElement.js';
 import type { StylesContainer } from './StylesContainer.js';
 import { WebCustomData } from './WebCustomData.js';
 interface ViewInput {
@@ -40,8 +40,8 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     node(): SDK.DOMModel.DOMNode | null;
     cssModel(): SDK.CSSModel.CSSModel | null;
     computedStyleModel(): ComputedStyle.ComputedStyleModel.ComputedStyleModel;
-    setActiveProperty(_treeElement: StylePropertyTreeElement | null): void;
-    refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement, force?: boolean): void;
+    setActiveProperty(_propertyData: StylePropertyData | null): void;
+    refreshUpdate(editedSection: StylePropertiesSection, editedProperty?: StylePropertyData, force?: boolean): void;
     filterRegex(): RegExp | null;
     setEditingStyle(editing: boolean): void;
     suppressResets(): void;
@@ -50,7 +50,7 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     hideAllPopovers(): void;
     allSections(): StylePropertiesSection[];
     getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string): ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | undefined;
-    getVariableParserError(_matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, _variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError | null;
+    getVariableParserError(_matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, _variableName: string): ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | null;
     jumpToFunctionDefinition(_functionName: string, _treeScopeDistance: number): void;
     continueEditingElement(_sectionIndex: number, _propertyIndex: number): void;
     revealProperty(_cssProperty: SDK.CSSProperty.CSSProperty): void;

@@ -31,7 +31,7 @@ export default `/*
 }
 
 .network-waterfall-v-scroll.small {
-  margin-top: 27px;
+  margin-top: var(--sys-size-11);
 }
 
 .network-waterfall-v-scroll-content {

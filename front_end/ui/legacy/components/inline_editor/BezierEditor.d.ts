@@ -1,9 +1,7 @@
-import * as Common from '../../../../core/common/common.js';
 import * as UI from '../../legacy.js';
 import { AnimationTimingModel } from './AnimationTimingModel.js';
-declare const BezierEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
-export declare class BezierEditor extends BezierEditorBase {
-    private model;
+export declare class BezierEditor extends UI.Widget.VBox {
+    #private;
     private previewElement;
     private readonly previewOnion;
     private readonly outerContainer;
@@ -16,8 +14,9 @@ export declare class BezierEditor extends BezierEditorBase {
     private label;
     private previewAnimation?;
     private debouncedStartPreviewAnimation;
-    constructor(model: AnimationTimingModel);
-    setModel(model: AnimationTimingModel): void;
+    constructor(modelOrElement?: AnimationTimingModel | HTMLElement, element?: HTMLElement);
+    get model(): AnimationTimingModel;
+    set model(model: AnimationTimingModel);
     wasShown(): void;
     private onchange;
     private updateUI;
@@ -27,12 +26,6 @@ export declare class BezierEditor extends BezierEditorBase {
     private presetCategorySelected;
     private presetModifyClicked;
     private startPreviewAnimation;
-}
-export declare const enum Events {
-    BEZIER_CHANGED = "BezierChanged"
-}
-export interface EventTypes {
-    [Events.BEZIER_CHANGED]: string;
 }
 export declare const Presets: Array<Array<{
     name: string;
@@ -46,4 +39,13 @@ export interface PresetCategory {
     icon: Element;
     presetIndex: number;
 }
-export {};
+export declare class BezierChangedEvent extends Event {
+    static readonly eventName = "bezierchanged";
+    data: string;
+    constructor(bezier: string);
+}
+declare global {
+    interface HTMLElementEventMap {
+        [BezierChangedEvent.eventName]: BezierChangedEvent;
+    }
+}

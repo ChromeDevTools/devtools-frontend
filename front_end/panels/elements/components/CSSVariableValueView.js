@@ -46,17 +46,28 @@ export const DEFAULT_PARSER_ERROR_VIEW = (input, _output, target) => {
 export class CSSVariableParserError extends UI.Widget.Widget {
     #view;
     #details;
-    constructor(details, view = DEFAULT_PARSER_ERROR_VIEW) {
-        super();
+    constructor(element, view = DEFAULT_PARSER_ERROR_VIEW) {
+        super(element);
         this.#view = view;
+    }
+    get details() {
+        return this.#details;
+    }
+    set details(details) {
+        if (this.#details === details) {
+            return;
+        }
         this.#details = details;
-        this.performUpdate();
+        this.requestUpdate();
     }
     wasShown() {
         super.wasShown();
         this.performUpdate();
     }
     performUpdate() {
+        if (!this.#details) {
+            return;
+        }
         this.#view({ details: this.#details }, undefined, this.contentElement);
     }
 }

@@ -3538,13 +3538,15 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
     if (this.#status === "PARSING" /* PARSING */) {
       throw new Error("Trace processor can't reset while parsing.");
     }
-    const handlers = Object.values(this.#traceHandlers);
-    for (const handler of handlers) {
-      handler.reset();
-    }
+    this.#resetHandlers();
     this.#data = null;
     this.#insights = null;
     this.#status = "IDLE" /* IDLE */;
+  }
+  #resetHandlers() {
+    for (const handler of Object.values(this.#traceHandlers)) {
+      handler.reset();
+    }
   }
   async parse(traceEvents, options) {
     if (this.#status !== "IDLE" /* IDLE */) {
@@ -3569,6 +3571,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
       this.#status = "ERRORED_WHILE_PARSING" /* ERRORED_WHILE_PARSING */;
       throw e;
     } finally {
+      this.#resetHandlers();
       options.logger?.end("total");
     }
   }
@@ -3578,9 +3581,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
   async #computeParsedTrace(traceEvents, options) {
     const eventsPerChunk = 5e4;
     const sortedHandlers = [...sortHandlers(this.#traceHandlers).entries()];
-    for (const [, handler] of sortedHandlers) {
-      handler.reset();
-    }
+    this.#resetHandlers();
     options.logger?.start("parse:handleEvent");
     const handleEventFns = sortedHandlers.map(([, handler]) => handler.handleEvent);
     for (let i = 0; i < traceEvents.length; ++i) {

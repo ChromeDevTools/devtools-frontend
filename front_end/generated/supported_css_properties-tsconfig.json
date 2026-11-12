@@ -27,7 +27,7 @@
     "noImplicitReturns": true,
     "outDir": ".",
     "preserveConstEnums": true,
-    "rootDir": "../../../../../front_end/generated",
+    "rootDir": ".",
     "rootDirs": [
       "../../../../../",
       "../../"
@@ -45,7 +45,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../front_end/generated/SupportedCSSProperties.ts",
+    "SupportedCSSProperties.ts",
     "../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../node_modules/@types/filesystem/index.d.ts",

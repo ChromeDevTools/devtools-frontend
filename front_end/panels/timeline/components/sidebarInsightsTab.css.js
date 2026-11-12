@@ -10,8 +10,7 @@ export default `/*
  */
 
 @scope to (devtools-widget > *) {
-  /* stylelint-disable-next-line plugin/check_scope_selectors */
-  :host {
+  :scope {
     display: flex;
     flex-flow: column nowrap;
     flex-grow: 1;

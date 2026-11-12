@@ -4,7 +4,7 @@
 import * as Bindings from '../../bindings/bindings.js';
 import * as Logs from '../../logs/logs.js';
 import { formatRequestInitiatorChain } from './NetworkRequestFormatter.js';
-const MAX_FILE_SIZE = 10000;
+const MAX_FILE_SIZE = 5_000;
 /**
  * File that formats a file for the LLM usage.
  */

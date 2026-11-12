@@ -47,13 +47,25 @@ var Result = class {
     return this.#symbolizedError;
   }
 };
+function parseSchema(rawSchema) {
+  if (typeof rawSchema === "string") {
+    try {
+      rawSchema = JSON.parse(rawSchema);
+    } catch {
+      return void 0;
+    }
+  }
+  return typeof rawSchema === "object" && rawSchema !== null ? rawSchema : void 0;
+}
 var Tool = class {
   #protocolTool;
   #stackTrace;
   #target;
+  #outputSchema;
   constructor(tool, target) {
     this.#target = new WeakRef(target);
     this.#protocolTool = tool;
+    this.#outputSchema = parseSchema(tool.outputSchema);
     if (tool.stackTrace) {
       const debuggerWorkspaceBinding = target.targetManager().context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
       this.#stackTrace = debuggerWorkspaceBinding.createStackTraceFromProtocolRuntime(tool.stackTrace, target);
@@ -69,15 +81,10 @@ var Tool = class {
     return this.#protocolTool.description;
   }
   get inputSchema() {
-    let rawSchema = this.#protocolTool.inputSchema;
-    if (typeof rawSchema === "string") {
-      try {
-        rawSchema = JSON.parse(rawSchema);
-      } catch {
-        rawSchema = {};
-      }
-    }
-    return typeof rawSchema === "object" && rawSchema !== null ? rawSchema : {};
+    return parseSchema(this.#protocolTool.inputSchema) ?? {};
+  }
+  get outputSchema() {
+    return this.#outputSchema;
   }
   get flags() {
     const annotations = this.#protocolTool.annotations;

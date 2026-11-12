@@ -6,13 +6,12 @@ import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
-import { AnimationTimingModel } from './AnimationTimingModel.js';
+import { AnimationTimingModel, LINEAR_BEZIER } from './AnimationTimingModel.js';
 import { AnimationTimingUI, PresetUI } from './AnimationTimingUI.js';
 import bezierEditorStyles from './bezierEditor.css.js';
 const PREVIEW_ANIMATION_DEBOUNCE_DELAY = 300;
-const BezierEditorBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
-export class BezierEditor extends BezierEditorBase {
-    model;
+export class BezierEditor extends UI.Widget.VBox {
+    #model;
     previewElement;
     previewOnion;
     outerContainer;
@@ -25,10 +24,10 @@ export class BezierEditor extends BezierEditorBase {
     label;
     previewAnimation;
     debouncedStartPreviewAnimation;
-    constructor(model) {
-        super({ useShadowDom: true });
+    constructor(modelOrElement, element) {
+        super(modelOrElement instanceof HTMLElement ? modelOrElement : element, { useShadowDom: true });
         this.registerRequiredCSS(bezierEditorStyles);
-        this.model = model;
+        this.#model = modelOrElement instanceof HTMLElement ? LINEAR_BEZIER : (modelOrElement ?? LINEAR_BEZIER);
         this.contentElement.tabIndex = 0;
         this.contentElement.setAttribute('jslog', `${VisualLogging.dialog('bezierEditor').parent('mapped').track({ keydown: 'Enter|Escape' })}`);
         this.setDefaultFocusedElement(this.contentElement);
@@ -61,7 +60,7 @@ export class BezierEditor extends BezierEditorBase {
         this.animationTimingUI = new AnimationTimingUI({
             model: this.model,
             onChange: (model) => {
-                this.setModel(model);
+                this.model = model;
                 this.onchange();
                 this.unselectPresets();
                 this.debouncedStartPreviewAnimation();
@@ -78,9 +77,12 @@ export class BezierEditor extends BezierEditorBase {
         plus.setAttribute('jslog', `${VisualLogging.action('bezier.next-preset').track({ click: true })}`);
         this.label = this.header.createChild('span', 'source-code bezier-display-value');
     }
-    setModel(model) {
-        this.model = model;
-        this.animationTimingUI?.setModel(this.model);
+    get model() {
+        return this.#model;
+    }
+    set model(model) {
+        this.#model = model;
+        this.animationTimingUI?.setModel(this.#model);
         this.updateUI();
     }
     wasShown() {
@@ -100,7 +102,7 @@ export class BezierEditor extends BezierEditorBase {
     }
     onchange() {
         this.updateUI();
-        this.dispatchEventToListeners("BezierChanged" /* Events.BEZIER_CHANGED */, this.model.asCSSText());
+        this.element.dispatchEvent(new BezierChangedEvent(this.model.asCSSText()));
     }
     updateUI() {
         const labelText = this.selectedCategory ? this.selectedCategory.presets[this.selectedCategory.presetIndex].name :
@@ -150,7 +152,7 @@ export class BezierEditor extends BezierEditorBase {
         this.selectedCategory.icon.classList.add('bezier-preset-selected');
         const newModel = AnimationTimingModel.parse(category.presets[category.presetIndex].value);
         if (newModel) {
-            this.setModel(newModel);
+            this.model = newModel;
             this.onchange();
             this.startPreviewAnimation();
         }
@@ -167,7 +169,7 @@ export class BezierEditor extends BezierEditorBase {
         const selectedPreset = this.selectedCategory.presets[this.selectedCategory.presetIndex].value;
         const newModel = AnimationTimingModel.parse(selectedPreset);
         if (newModel) {
-            this.setModel(newModel);
+            this.model = newModel;
             this.onchange();
             this.startPreviewAnimation();
         }
@@ -196,10 +198,6 @@ export class BezierEditor extends BezierEditorBase {
         }
     }
 }
-export var Events;
-(function (Events) {
-    Events["BEZIER_CHANGED"] = "BezierChanged";
-})(Events || (Events = {}));
 export const Presets = [
     [
         { name: 'linear', value: 'linear' },
@@ -241,4 +239,12 @@ export const Presets = [
         { name: 'Out · Back', value: 'cubic-bezier(0.18, 0.89, 0.32, 1.28)' },
     ],
 ];
+export class BezierChangedEvent extends Event {
+    static eventName = 'bezierchanged';
+    data;
+    constructor(bezier) {
+        super(BezierChangedEvent.eventName, {});
+        this.data = bezier;
+    }
+}
 //# sourceMappingURL=BezierEditor.js.map

@@ -48,7 +48,7 @@ details > summary {
 }
 
 .content {
-  max-width: 360px;
+  max-width: var(--sys-size-32);
   box-sizing: border-box;
 }
 

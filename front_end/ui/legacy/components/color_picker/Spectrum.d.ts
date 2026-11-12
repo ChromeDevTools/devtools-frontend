@@ -2,8 +2,7 @@ import '../../legacy.js';
 import * as Common from '../../../../core/common/common.js';
 import * as UI from '../../legacy.js';
 import type { ContrastInfo } from './ContrastInfo.js';
-declare const SpectrumBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
-export declare class Spectrum extends SpectrumBase {
+export declare class Spectrum extends UI.Widget.VBox {
     #private;
     private gamut;
     private colorElement;
@@ -56,7 +55,7 @@ export declare class Spectrum extends SpectrumBase {
     private colorFormat;
     private eyeDropperAbortController;
     private isFormatPickerShown;
-    constructor(contrastInfo?: ContrastInfo | null);
+    constructor(contrastInfoOrElement?: ContrastInfo | null | HTMLElement, element?: HTMLElement);
     private dragStart;
     private contrastDetailsBackgroundColorPickerToggled;
     private contrastPanelExpandedChanged;
@@ -84,9 +83,9 @@ export declare class Spectrum extends SpectrumBase {
     private addColorToCustomPalette;
     private showPaletteColorContextMenu;
     private deletePaletteColors;
-    setColor(color: Common.Color.Color): void;
     private colorSelected;
     get color(): Common.Color.Color;
+    set color(color: Common.Color.Color);
     colorName(): string | undefined;
     private colorString;
     private updateHelperLocations;
@@ -111,14 +110,6 @@ export declare const ChangeSource: {
     Model: string;
     Other: string;
 };
-export declare const enum Events {
-    COLOR_CHANGED = "ColorChanged",
-    SIZE_CHANGED = "SizeChanged"
-}
-export interface EventTypes {
-    [Events.COLOR_CHANGED]: string;
-    [Events.SIZE_CHANGED]: void;
-}
 export declare class PaletteGenerator {
     private readonly callback;
     private readonly frequencyMap;
@@ -151,4 +142,18 @@ export interface Palette {
     mutable: boolean;
     matchUserFormat?: boolean;
 }
-export {};
+export declare class ColorChangedEvent extends Event {
+    static readonly eventName = "spectrumcolorchanged";
+    data: string;
+    constructor(color: string);
+}
+export declare class SizeChangedEvent extends Event {
+    static readonly eventName = "sizechanged";
+    constructor();
+}
+declare global {
+    interface HTMLElementEventMap {
+        [ColorChangedEvent.eventName]: ColorChangedEvent;
+        [SizeChangedEvent.eventName]: SizeChangedEvent;
+    }
+}

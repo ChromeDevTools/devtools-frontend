@@ -19,8 +19,8 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
     private lastHoveredProfileNode;
     private textFilterInternal;
     private taskFilter;
-    protected startTimeInternal?: Trace.Types.Timing.Milli;
-    protected endTimeInternal?: Trace.Types.Timing.Milli;
+    protected startTimeInternal?: Trace.Types.Timing.Micro;
+    protected endTimeInternal?: Trace.Types.Timing.Micro;
     splitWidget: UI.SplitWidget.SplitWidget;
     detailsView: UI.Widget.Widget;
     private searchableView;
@@ -41,10 +41,10 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
     set selectedEvents(selectedEvents: Trace.Types.Events.Event[] | null);
     set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace | null);
     get parsedTrace(): Trace.TraceModel.ParsedTrace | null;
-    set startTime(startTime: Trace.Types.Timing.Milli);
-    get startTime(): Trace.Types.Timing.Milli;
-    set endTime(endTime: Trace.Types.Timing.Milli);
-    get endTime(): Trace.Types.Timing.Milli;
+    set startTime(startTime: Trace.Types.Timing.Micro);
+    get startTime(): Trace.Types.Timing.Micro;
+    set endTime(endTime: Trace.Types.Timing.Micro);
+    get endTime(): Trace.Types.Timing.Micro;
     get compactMode(): boolean;
     set compactMode(v: boolean);
     get maxLinkLength(): number | undefined;

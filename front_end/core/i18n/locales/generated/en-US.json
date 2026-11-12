@@ -6365,6 +6365,9 @@
   "panels/application/WebMCPView.ts | output": {
     "message": "Output"
   },
+  "panels/application/WebMCPView.ts | outputSchema": {
+    "message": "Output schema"
+  },
   "panels/application/WebMCPView.ts | paste": {
     "message": "Paste"
   },
@@ -8616,7 +8619,7 @@
     "message": "Open shadow editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
-    "message": "Overridden by animation styles"
+    "message": "Overridden by animation styles. {PH1}"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionAreaEditorButton": {
     "message": "Open position-area editor"
@@ -15002,6 +15005,9 @@
   "panels/sources/DebuggerPausedMessage.ts | childSAdded": {
     "message": "Child {PH1} added"
   },
+  "panels/sources/DebuggerPausedMessage.ts | deactivateAll": {
+    "message": "Deactivate all"
+  },
   "panels/sources/DebuggerPausedMessage.ts | debuggerPaused": {
     "message": "Debugger paused"
   },
@@ -15010,6 +15016,12 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | descendantSRemoved": {
     "message": "Descendant {PH1} removed"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | disableBreakpoint": {
+    "message": "Disable breakpoint"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | neverPauseHere": {
+    "message": "Never pause here"
   },
   "panels/sources/DebuggerPausedMessage.ts | nodeRemoval": {
     "message": "node removal"

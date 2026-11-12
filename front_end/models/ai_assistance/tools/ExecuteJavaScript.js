@@ -5,11 +5,16 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
-import { JavascriptExecutor } from '../agents/ExecuteJavascript.js';
+import { JavascriptExecutor, MAX_OBSERVATION_BYTE_LENGTH } from '../agents/ExecuteJavascript.js';
 import { isOriginAllowedByLock, } from './Tool.js';
 const lockedString = i18n.i18n.lockedString;
 const MAX_LINES = 40;
-const MAX_LINE_LENGTH = 120;
+// Deliberately higher than the 120-character soft target in
+// `parameters.properties.code.description`: the prompt keeps the model aiming
+// for <= 120 characters/line for readability, while this 160-character hard stop
+// absorbs minor counting overshoots (`describeSizeLimitViolations()` reports 160
+// when exceeded).
+const MAX_LINE_LENGTH = 160;
 const MAX_TOTAL_CHARACTERS = 2500;
 const MAX_LONG_LINES_REPORTED = 3;
 const LONG_LINE_PREVIEW_LENGTH = 60;
@@ -88,13 +93,15 @@ export class ExecuteJavaScriptTool {
         description: '',
         nullable: false,
         properties: {
+            // The `description` below purposefully states `max 120 characters per line`
+            // as a soft target, while `MAX_LINE_LENGTH` enforces 160 as the hard stop.
             code: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
                 description: `JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.
 
 # Instructions
 
-* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
+* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`, and serialized output must not exceed ${MAX_OBSERVATION_BYTE_LENGTH} bytes (return targeted properties or slices rather than full DOM subtrees).
 * $0 refers to the currently selected DOM node (or document body if none selected).
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.

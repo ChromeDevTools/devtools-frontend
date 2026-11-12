@@ -1,6 +1,7 @@
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import { type TemplateResult } from '../lit/lit.js';
 import type { Key, Modifier } from './KeyboardShortcut.js';
 import { type SoftContextMenuDescriptor } from './SoftContextMenu.js';
 /**
@@ -27,7 +28,7 @@ export declare class Item {
     protected isDevToolsPerformanceMenuItem: boolean;
     protected contextMenu: ContextMenu | null;
     protected idInternal: number | undefined;
-    customElement?: Element;
+    customElement?: Element | TemplateResult;
     private shortcut?;
     protected jslogContext: string | undefined;
     constructor(contextMenu: ContextMenu | null, type: 'checkbox' | 'item' | 'separator' | 'subMenu', label?: string, isPreviewFeature?: boolean, disabled?: boolean, checked?: boolean, accelerator?: Host.InspectorFrontendHostAPI.AcceleratorDescriptor, tooltip?: Platform.UIString.LocalizedString, jslogContext?: string, featureName?: string);
@@ -103,7 +104,7 @@ export declare class Section {
         accelerator?: Host.InspectorFrontendHostAPI.AcceleratorDescriptor;
         isPreviewFeature?: boolean;
         disabled?: boolean;
-        additionalElement?: Element;
+        additionalElement?: Element | TemplateResult;
         tooltip?: Platform.UIString.LocalizedString;
         jslogContext?: string;
         featureName?: string;
@@ -115,7 +116,7 @@ export declare class Section {
      * @param jslogContext An optional string identifying the element for visual logging.
      * @returns The newly created `Item`.
      */
-    appendCustomItem(element: Element, jslogContext?: string): Item;
+    appendCustomItem(element: Element | TemplateResult, jslogContext?: string): Item;
     /**
      * Appends a visual separator to this section.
      * @returns The newly created separator `Item`.
@@ -148,7 +149,7 @@ export declare class Section {
         checked?: boolean;
         disabled?: boolean;
         experimental?: boolean;
-        additionalElement?: Element;
+        additionalElement?: Element | TemplateResult;
         tooltip?: Platform.UIString.LocalizedString;
         jslogContext?: string;
         featureName?: string;

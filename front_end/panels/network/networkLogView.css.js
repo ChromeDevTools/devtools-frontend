@@ -88,7 +88,7 @@ export default `/*
 
 .network-waterfall-header.small,
 .network-log-grid.data-grid.small thead {
-  height: 27px;
+  height: var(--sys-size-11);
 }
 
 .network-log-grid.data-grid select {

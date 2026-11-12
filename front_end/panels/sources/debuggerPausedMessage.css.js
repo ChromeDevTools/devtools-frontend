@@ -34,6 +34,13 @@ export default `/*
   text-overflow: ellipsis;
 }
 
+.status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sys-size-3);
+  padding-top: var(--sys-size-4);
+}
+
 .paused-status.error-reason .status-sub {
   color: var(--sys-color-error);
   line-height: 11px;

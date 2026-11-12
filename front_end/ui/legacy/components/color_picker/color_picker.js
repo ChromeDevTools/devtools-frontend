@@ -320,9 +320,9 @@ var ContrastInfo = class extends Common2.ObjectWrapper.ObjectWrapper {
     return this.contrastRatioThresholds[level];
   }
 };
-var Events = /* @__PURE__ */ ((Events4) => {
-  Events4["CONTRAST_INFO_UPDATED"] = "ContrastInfoUpdated";
-  return Events4;
+var Events = /* @__PURE__ */ ((Events3) => {
+  Events3["CONTRAST_INFO_UPDATED"] = "ContrastInfoUpdated";
+  return Events3;
 })(Events || {});
 
 // ../../front_end/ui/legacy/components/color_picker/ContrastDetails.ts
@@ -706,9 +706,9 @@ var ContrastDetails = class _ContrastDetails extends Common3.ObjectWrapper.Objec
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
   }
 };
-var Events2 = /* @__PURE__ */ ((Events4) => {
-  Events4["BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED"] = "BackgroundColorPickerWillBeToggled";
-  return Events4;
+var Events2 = /* @__PURE__ */ ((Events3) => {
+  Events3["BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED"] = "BackgroundColorPickerWillBeToggled";
+  return Events3;
 })(Events2 || {});
 var Swatch = class {
   swatchElement;
@@ -1008,9 +1008,10 @@ var FormatPickerContextMenu = class {
 var Spectrum_exports = {};
 __export(Spectrum_exports, {
   ChangeSource: () => ChangeSource,
-  Events: () => Events3,
+  ColorChangedEvent: () => ColorChangedEvent,
   MaterialPalette: () => MaterialPalette,
   PaletteGenerator: () => PaletteGenerator,
+  SizeChangedEvent: () => SizeChangedEvent,
   Spectrum: () => Spectrum,
   Swatch: () => Swatch2
 });
@@ -1896,10 +1897,7 @@ function getColorFromHsva(gamut, hsva) {
     }
   }
 }
-var SpectrumBase = Common6.ObjectWrapper.eventMixin(
-  UI4.Widget.VBox
-);
-var Spectrum = class extends SpectrumBase {
+var Spectrum = class extends UI4.Widget.VBox {
   #color;
   gamut = "srgb" /* SRGB */;
   colorElement;
@@ -1960,8 +1958,9 @@ var Spectrum = class extends SpectrumBase {
   // want to return the value of the variable but the
   // actual variable string.
   #colorString;
-  constructor(contrastInfo) {
-    super({ useShadowDom: true });
+  constructor(contrastInfoOrElement, element) {
+    super(contrastInfoOrElement instanceof HTMLElement ? contrastInfoOrElement : element, { useShadowDom: true });
+    const contrastInfo = contrastInfoOrElement instanceof HTMLElement ? void 0 : contrastInfoOrElement;
     this.registerRequiredCSS(spectrum_css_default);
     this.contentElement.tabIndex = 0;
     this.contentElement.setAttribute(
@@ -2157,9 +2156,9 @@ var Spectrum = class extends SpectrumBase {
         this.paletteSelected(MaterialPalette);
       }
     });
-    function getUpdatedSliderPosition(element, event) {
+    function getUpdatedSliderPosition(element2, event) {
       const keyboardEvent = event;
-      const elementPosition = element.getBoundingClientRect();
+      const elementPosition = element2.getBoundingClientRect();
       switch (keyboardEvent.key) {
         case "ArrowLeft":
         case "ArrowDown":
@@ -2590,7 +2589,7 @@ var Spectrum = class extends SpectrumBase {
       }
     }
     this.element.style.height = paletteTop + paletteMargin + (paletteColorHeight + paletteMargin) * rowsNeeded + "px";
-    this.dispatchEventToListeners("SizeChanged" /* SIZE_CHANGED */);
+    this.element.dispatchEvent(new SizeChangedEvent());
   }
   onPaletteColorKeydown(palette, colorIndex, event) {
     if (event instanceof MouseEvent || Platform3.KeyboardUtilities.isEnterOrSpaceKey(event)) {
@@ -2701,12 +2700,6 @@ var Spectrum = class extends SpectrumBase {
     this.customPaletteSetting.set(palette);
     this.showPalette(palette, false);
   }
-  setColor(color) {
-    this.#setColor(color, "", void 0, color.format(), ChangeSource.Model);
-    const colorValues = color.as(Common6.Color.Format.HSL).canonicalHSLA();
-    UI4.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
-    UI4.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
-  }
   colorSelected(color) {
     this.#setColor(color, "", void 0, void 0, ChangeSource.Other);
   }
@@ -2715,6 +2708,12 @@ var Spectrum = class extends SpectrumBase {
       return this.#color;
     }
     return getColorFromHsva(this.gamut, this.hsv);
+  }
+  set color(color) {
+    this.#setColor(color, "", void 0, color.format(), ChangeSource.Model);
+    const colorValues = color.as(Common6.Color.Format.HSL).canonicalHSLA();
+    UI4.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
+    UI4.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
   }
   #setColor(colorOrHsv, colorString, colorName, colorFormat, changeSource) {
     if (colorString !== void 0) {
@@ -2745,7 +2744,7 @@ var Spectrum = class extends SpectrumBase {
       this.updateInput();
     }
     if (changeSource !== ChangeSource.Model) {
-      this.dispatchEventToListeners("ColorChanged" /* COLOR_CHANGED */, this.colorString());
+      this.element.dispatchEvent(new ColorChangedEvent(this.colorString()));
     }
   }
   colorName() {
@@ -3009,11 +3008,6 @@ var ChangeSource = {
   Model: "Model",
   Other: "Other"
 };
-var Events3 = /* @__PURE__ */ ((Events4) => {
-  Events4["COLOR_CHANGED"] = "ColorChanged";
-  Events4["SIZE_CHANGED"] = "SizeChanged";
-  return Events4;
-})(Events3 || {});
 var COLOR_CHIP_SIZE = 24;
 var ITEMS_PER_PALETTE_ROW = 8;
 var GeneratedPaletteTitle = "Page colors";
@@ -3211,6 +3205,20 @@ var Swatch2 = class {
   onCopyIconMouseout() {
     this.swatchCopyIcon.name = "copy";
     UI4.ARIAUtils.setPressed(this.swatchOverlayElement, false);
+  }
+};
+var ColorChangedEvent = class _ColorChangedEvent extends Event {
+  static eventName = "spectrumcolorchanged";
+  data;
+  constructor(color) {
+    super(_ColorChangedEvent.eventName, {});
+    this.data = color;
+  }
+};
+var SizeChangedEvent = class _SizeChangedEvent extends Event {
+  static eventName = "sizechanged";
+  constructor() {
+    super(_SizeChangedEvent.eventName, {});
   }
 };
 export {

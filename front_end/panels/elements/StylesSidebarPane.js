@@ -519,13 +519,13 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             }
         }, FILTER_IDLE_PERIOD);
     }
-    refreshUpdate(editedSection, editedTreeElement, force = false) {
-        if (editedTreeElement) {
+    refreshUpdate(editedSection, editedProperty, force = false) {
+        if (editedProperty) {
             for (const section of this.allSections()) {
                 if (section instanceof BlankStylePropertiesSection && section.isBlank) {
                     continue;
                 }
-                section.updateVarFunctions(editedTreeElement);
+                section.updateVarFunctions(editedProperty);
             }
         }
         if (this.isEditingStyle && !force) {
@@ -607,10 +607,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         return registration ? { registration, goToDefinition } : undefined;
     }
     getVariableParserError(matchedStyles, variableName) {
-        const registrationDetails = this.getRegisteredPropertyDetails(matchedStyles, variableName);
-        return registrationDetails ?
-            new ElementsComponents.CSSVariableValueView.CSSVariableParserError(registrationDetails) :
-            null;
+        return this.getRegisteredPropertyDetails(matchedStyles, variableName) ?? null;
     }
     async fetchComputedStylesFor(nodeId) {
         const node = this.node();
@@ -668,7 +665,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             this.setActiveProperty(null);
         }
     }
-    setActiveProperty(treeElement) {
+    setActiveProperty(propertyData) {
         if (this.isEditingStyle) {
             return;
         }
@@ -680,20 +677,20 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         if (!node) {
             return;
         }
-        if (!treeElement || treeElement.overloaded() || treeElement.inherited()) {
+        if (!propertyData || propertyData.overloaded() || propertyData.inherited()) {
             return;
         }
-        const rule = treeElement.property.ownerStyle.parentRule;
+        const rule = propertyData.property.ownerStyle.parentRule;
         const selectorList = (rule instanceof SDK.CSSRule.CSSStyleRule) ? rule.selectorText() : undefined;
         for (const { properties, mode } of HIGHLIGHTABLE_PROPERTIES) {
-            if (!properties.includes(treeElement.name)) {
+            if (!properties.includes(propertyData.name)) {
                 continue;
             }
             node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, mode);
             this.isActivePropertyHighlighted = true;
             return;
         }
-        if (treeElement.value.includes('anchor(') || treeElement.value.includes('anchor-size(')) {
+        if (propertyData.value.includes('anchor(') || propertyData.value.includes('anchor-size(')) {
             node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, 'anchor-positioning');
             this.isActivePropertyHighlighted = true;
         }

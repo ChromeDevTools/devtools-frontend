@@ -1,2 +1,3 @@
 import * as BreakpointManager from './BreakpointManager.js';
-export { BreakpointManager };
+import * as RecurringPauseDetector from './RecurringPauseDetector.js';
+export { BreakpointManager, RecurringPauseDetector };

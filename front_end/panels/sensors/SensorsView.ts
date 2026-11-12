@@ -268,8 +268,6 @@ export class SensorsView extends UI.Widget.VBox {
   private stageElement!: HTMLElement;
   private orientationSelectElement!: HTMLSelectElement;
   private alphaElement!: HTMLInputElement;
-  private betaElement!: HTMLInputElement;
-  private gammaElement!: HTMLInputElement;
   #animateOrientation = false;
   private boxMatrix?: DOMMatrix;
   private mouseDownVector?: Geometry.Vector|null;
@@ -691,6 +689,7 @@ export class SensorsView extends UI.Widget.VBox {
                     step="any"
                     required
                     .value=${live(roundAngle(this.deviceOrientation.alpha))}
+                    name="alpha"
                     ${Directives.ref((el: Element | undefined) => { if (el) { this.alphaElement = el as HTMLInputElement; } })}
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
@@ -708,7 +707,7 @@ export class SensorsView extends UI.Widget.VBox {
                     step="any"
                     required
                     .value=${live(roundAngle(this.deviceOrientation.beta))}
-                    ${Directives.ref((el: Element | undefined) => { if (el) { this.betaElement = el as HTMLInputElement; } })}
+                    name="beta"
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
                     @focus=${this.#onOrientationFocus.bind(this)}
@@ -725,7 +724,7 @@ export class SensorsView extends UI.Widget.VBox {
                     step="any"
                     required
                     .value=${live(roundAngle(this.deviceOrientation.gamma))}
-                    ${Directives.ref((el: Element | undefined) => { if (el) { this.gammaElement = el as HTMLInputElement; } })}
+                    name="gamma"
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
                     @focus=${this.#onOrientationFocus.bind(this)}
@@ -854,10 +853,11 @@ export class SensorsView extends UI.Widget.VBox {
     selectElement.selectedIndex = optionValues.indexOf(labelValue);
   }
 
-  private applyDeviceOrientationUserInput(): void {
+  private applyDeviceOrientationUserInput(input: HTMLInputElement): void {
+    const {alpha, beta, gamma} = this.deviceOrientation;
+    const values = {alpha: String(alpha), beta: String(beta), gamma: String(gamma), [input.name]: input.value.trim()};
     this.setDeviceOrientation(
-        SDK.EmulationModel.DeviceOrientation.parseUserInput(
-            this.alphaElement.value.trim(), this.betaElement.value.trim(), this.gammaElement.value.trim()),
+        SDK.EmulationModel.DeviceOrientation.parseUserInput(values.alpha, values.beta, values.gamma),
         DeviceOrientationModificationSource.USER_INPUT);
     this.setSelectElementLabel(this.orientationSelectElement, NonPresetOptions.Custom);
   }
@@ -889,7 +889,7 @@ export class SensorsView extends UI.Widget.VBox {
   #onOrientationChange(event: Event): void {
     const input = event.currentTarget as HTMLInputElement;
     if (input.checkValidity()) {
-      this.applyDeviceOrientationUserInput();
+      this.applyDeviceOrientationUserInput(input);
     }
   }
 
@@ -897,7 +897,7 @@ export class SensorsView extends UI.Widget.VBox {
     const input = event.currentTarget as HTMLInputElement;
     if (event.key === 'Enter') {
       if (input.checkValidity()) {
-        this.applyDeviceOrientationUserInput();
+        this.applyDeviceOrientationUserInput(input);
       }
       event.preventDefault();
       return;
@@ -910,7 +910,7 @@ export class SensorsView extends UI.Widget.VBox {
     const prevValue = input.value;
     input.value = String(value);
     if (input.checkValidity()) {
-      this.applyDeviceOrientationUserInput();
+      this.applyDeviceOrientationUserInput(input);
     } else {
       // If ArrowUp/ArrowDown adjusts the value out of bounds, we reset it.
       input.value = prevValue;

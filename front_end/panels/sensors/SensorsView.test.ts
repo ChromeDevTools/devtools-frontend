@@ -479,6 +479,20 @@ describeWithEnvironment('SensorsView', () => {
       assert.deepEqual(orientationOverrides.at(-1), {alpha: 90, beta: 45, gamma: -90});
     });
 
+    it('ignores values of other inputs which were not applied', async () => {
+      await selectOrientation('Portrait');
+      // Out of range, so the value is not applied.
+      query<HTMLInputElement>('#alpha-input').value = '999';
+
+      const betaInput = query<HTMLInputElement>('#beta-input');
+      betaInput.value = '45';
+      betaInput.dispatchEvent(new Event('change'));
+      await settled();
+
+      assert.deepEqual(orientationInputValues(), ['0', '45', '0']);
+      assert.deepEqual(orientationOverrides.at(-1), {alpha: 0, beta: 45, gamma: 0});
+    });
+
     it('resets to portrait when the reset button is clicked', async () => {
       await selectOrientation('Landscape left');
 

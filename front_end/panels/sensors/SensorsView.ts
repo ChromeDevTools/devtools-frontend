@@ -266,7 +266,7 @@ export class SensorsView extends UI.Widget.VBox {
   private deviceOrientation: SDK.EmulationModel.DeviceOrientation;
   private deviceOrientationOverrideEnabled: boolean;
   private stageElement!: HTMLElement;
-  private orientationSelectElement!: HTMLSelectElement;
+  #selectedOrientation: string = NonPresetOptions.NoOverride;
   private alphaElement!: HTMLInputElement;
   #animateOrientation = false;
   private boxMatrix?: DOMMatrix;
@@ -656,20 +656,15 @@ export class SensorsView extends UI.Widget.VBox {
           <div class="orientation-fields">
             <select
               id="orientation-select"
-              ${Directives.ref((el: Element | undefined) => {
-                if (el) {
-                  this.orientationSelectElement = el as HTMLSelectElement;
-                }
-              })}
               @change=${this.orientationSelectChanged.bind(this)}
               jslog=${VisualLogging.dropDown().track({change: true})}
             >
-              <option value=${orientationOffOption.orientation} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
-              <option value=${customOrientationOption.orientation} jslog=${VisualLogging.item('custom')}>${customOrientationOption.title}</option>
+              <option value=${orientationOffOption.orientation} .selected=${live(this.#selectedOrientation === orientationOffOption.orientation)} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
+              <option value=${customOrientationOption.orientation} .selected=${live(this.#selectedOrientation === customOrientationOption.orientation)} jslog=${VisualLogging.item('custom')}>${customOrientationOption.title}</option>
               ${orientationGroups.map(group => html`
                 <optgroup label=${group.title}>
                   ${group.value.map(preset => html`
-                    <option value=${preset.orientation} jslog=${VisualLogging.item(preset.jslogContext)}>${preset.title}</option>
+                    <option value=${preset.orientation} .selected=${live(this.#selectedOrientation === preset.orientation)} jslog=${VisualLogging.item(preset.jslogContext)}>${preset.title}</option>
                   `)}
                 </optgroup>
               `)}
@@ -821,8 +816,9 @@ export class SensorsView extends UI.Widget.VBox {
     return getOptionTitle('no-override') || 'No override';
   }
 
-  private orientationSelectChanged(): void {
-    const value = this.orientationSelectElement.options[this.orientationSelectElement.selectedIndex].value;
+  private orientationSelectChanged(event: Event): void {
+    const value = (event.currentTarget as HTMLSelectElement).value;
+    this.#selectedOrientation = value;
     this.deviceOrientationOverrideEnabled = value !== NonPresetOptions.NoOverride;
     this.performUpdate();
 
@@ -856,16 +852,16 @@ export class SensorsView extends UI.Widget.VBox {
   private applyDeviceOrientationUserInput(input: HTMLInputElement): void {
     const {alpha, beta, gamma} = this.deviceOrientation;
     const values = {alpha: String(alpha), beta: String(beta), gamma: String(gamma), [input.name]: input.value.trim()};
+    this.#selectedOrientation = NonPresetOptions.Custom;
     this.setDeviceOrientation(
         SDK.EmulationModel.DeviceOrientation.parseUserInput(values.alpha, values.beta, values.gamma),
         DeviceOrientationModificationSource.USER_INPUT);
-    this.setSelectElementLabel(this.orientationSelectElement, NonPresetOptions.Custom);
   }
 
   private resetDeviceOrientation(): void {
+    this.#selectedOrientation = '[0, 90, 0]';
     this.setDeviceOrientation(
         new SDK.EmulationModel.DeviceOrientation(0, 90, 0), DeviceOrientationModificationSource.RESET_BUTTON);
-    this.setSelectElementLabel(this.orientationSelectElement, '[0, 90, 0]');
   }
 
   private setDeviceOrientation(
@@ -985,8 +981,8 @@ export class SensorsView extends UI.Widget.VBox {
     const eulerAngles = Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(currentMatrix);
     const newOrientation =
         new SDK.EmulationModel.DeviceOrientation(eulerAngles.alpha, eulerAngles.beta, eulerAngles.gamma);
+    this.#selectedOrientation = NonPresetOptions.Custom;
     this.setDeviceOrientation(newOrientation, DeviceOrientationModificationSource.USER_DRAG);
-    this.setSelectElementLabel(this.orientationSelectElement, NonPresetOptions.Custom);
     return false;
   }
 

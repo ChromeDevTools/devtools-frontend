@@ -18,15 +18,22 @@ describe('Snippets', function() {
     await devToolsPage.click(SNIPPETS_TAB_SELECTOR);
 
     await devToolsPage.click('[aria-label="New snippet"]');
+    // The tree item for the new snippet shows up before the rename prompt is
+    // activated, so wait for the prompt to be in editing mode before typing.
+    await devToolsPage.waitFor('[aria-label^="Script snippet"] devtools-prompt[editing]');
     await devToolsPage.typeText('file@name\n');
 
-    let treeItems = await devToolsPage.$$('.navigator-file-tree-item');
-    const treeItemNames = await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent)));
+    // Committing the rename and re-rendering the tree item happen asynchronously.
+    await devToolsPage.waitFor('[aria-label="file@name, file"]');
+    const treeItemNames = await devToolsPage.waitForFunction(async () => {
+      const treeItems = await devToolsPage.$$('.navigator-file-tree-item');
+      const names = await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent)));
+      return names.length === 1 && names[0] === 'file@name' ? names : undefined;
+    });
     assert.deepEqual(treeItemNames, ['file@name']);
 
     await openSoftContextMenuAndClickOnItem(devToolsPage, '[aria-label="file@name, file"]', 'Remove');
 
-    treeItems = await devToolsPage.$$('.navigator-file-tree-item');
-    assert.lengthOf(treeItems, 0);
+    await devToolsPage.waitForNone('.navigator-file-tree-item');
   });
 });

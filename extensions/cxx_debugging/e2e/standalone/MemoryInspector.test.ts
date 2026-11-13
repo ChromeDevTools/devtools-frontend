@@ -41,7 +41,7 @@ describe('LinearMemoryInspector', () => {
         async () => ((await devToolsPage.getPendingEvents('DevTools.DebuggerPaused')) || []).length > 0,
     );
 
-    const stopped = await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+    const stopped = await devToolsPage.waitFor(`${PAUSE_INDICATOR_SELECTOR} .status-main`);
     const stoppedText = await devToolsPage.waitForFunction(
         async () => await stopped.evaluate(node => node.textContent),
     );

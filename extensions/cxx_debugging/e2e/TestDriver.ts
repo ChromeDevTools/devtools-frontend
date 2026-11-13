@@ -83,7 +83,7 @@ describe('CXX Debugging Extension Test Suite', function() {
           await devToolsPage.waitForFunction(
               async () => ((await devToolsPage.getPendingEvents('DevTools.DebuggerPaused')) || []).length > 0);
 
-          const stopped = await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
+          const stopped = await devToolsPage.waitFor(`${PAUSE_INDICATOR_SELECTOR} .status-main`);
           const expectedReasonText = pausedReasonText(reason);
           const stoppedText = await devToolsPage.waitForFunction(async () => {
             const text = await stopped.evaluate(node => node.textContent);

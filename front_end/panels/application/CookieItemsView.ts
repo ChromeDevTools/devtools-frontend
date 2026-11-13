@@ -83,6 +83,10 @@ const UIStrings = {
    */
   clearAllCookies: 'Clear all cookies',
   /**
+   * @description Tooltip text for the cookie value.
+   */
+  cookieValue: 'Cookie value',
+  /**
    * @description Screen reader announcement for the number of cookies shown in the table of the Application panel.
    * @example {5} PH1
    */
@@ -121,7 +125,7 @@ export const DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW: CookiePreviewWidgetView = (inpu
   render(html`<style>${cookieItemsViewStyles}</style>
     <div class="cookie-preview-widget">
       <div class="cookie-preview-widget-header">
-        <span class="cookie-preview-widget-header-label">Cookie Value</span>
+        <span class="cookie-preview-widget-header-label">${i18nString(UIStrings.cookieValue)}</span>
         <devtools-checkbox
           .checked=${input.showDecoded}
           @change=${(e: Event) => input.onShowDecodedChanged((e.target as HTMLInputElement).checked)}
@@ -136,8 +140,8 @@ export const DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW: CookiePreviewWidgetView = (inpu
       </div>
     </div>
   `,
-      // clang-format on
-      target, {container: {attributes: {jslog: `${VisualLogging.pane('cookie-preview')}`}}});
+         // clang-format on
+         target, {container: {attributes: {jslog: `${VisualLogging.pane('cookie-preview')}`}}});
 };
 
 class CookiePreviewWidget extends UI.Widget.VBox {

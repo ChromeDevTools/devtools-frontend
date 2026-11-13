@@ -7,6 +7,7 @@ import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import type * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -252,6 +253,33 @@ describeWithEnvironment('PropertiesWidget', () => {
     assert.isTrue(
         viewFunction.input.objectTree?.children?.properties?.find(p => p.name === 'secondProperty')?.isFiltered,
         'secondProperty should be filtered');
+  });
+
+  it('records DOMPropertiesExpanded when expanding a property', async () => {
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    const model = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(model);
+
+    const node = new SDK.DOMModel.DOMNode(model);
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({nested: {child: 1}});
+    sinon.stub(node, 'resolveToObject').withArgs('properties-sidebar-pane').resolves(object);
+
+    const actionTaken = sinon.spy(Host.userMetrics, 'actionTaken');
+    const widget = new Elements.PropertiesWidget.PropertiesWidget();
+    renderElementIntoDOM(widget);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isFalse(actionTaken.calledWith(Host.UserMetrics.Action.DOMPropertiesExpanded));
+
+    const tree = widget.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    const nestedItem = tree.getInternalTreeOutlineForTest().rootElement().children().find(
+        item => item.listItemElement.textContent?.includes('nested'));
+    assert.exists(nestedItem);
+    nestedItem.expand();
+
+    sinon.assert.calledWith(actionTaken, Host.UserMetrics.Action.DOMPropertiesExpanded);
   });
 });
 

@@ -551,6 +551,11 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
     if (this.#expanded !== val) {
       this.#expanded = val;
       this.dispatchEventToListeners(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, val);
+      if (val) {
+        for (let ancestor = this.parent; ancestor; ancestor = ancestor.parent) {
+          ancestor.dispatchEventToListeners(ObjectTreeNodeBase.Events.NODE_EXPANDED, this);
+        }
+      }
     }
   }
 
@@ -804,12 +809,14 @@ export namespace ObjectTreeNodeBase {
     CHILDREN_CHANGED = 'children-changed',
     FILTER_CHANGED = 'filter-changed',
     EXPANDED_CHANGED = 'expanded-changed',
+    NODE_EXPANDED = 'node-expanded',
   }
   export interface EventTypes {
     [Events.VALUE_CHANGED]: void;
     [Events.CHILDREN_CHANGED]: void;
     [Events.FILTER_CHANGED]: void;
     [Events.EXPANDED_CHANGED]: boolean;
+    [Events.NODE_EXPANDED]: ObjectTreeNodeBase;
   }
 }
 

@@ -104,7 +104,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       ${input.objectTree && input.allChildrenFiltered ? html`
         <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
       ` : nothing}
-      <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html`
+      <devtools-tree show-selection-on-keyboard-focus .template=${html`
         <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
         <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
         <ul role=tree open class="source-code object-properties-section" ${
@@ -122,13 +122,6 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 const getShowAllPropertiesSetting = (): Common.Settings.Setting<boolean> =>
     Common.Settings.Settings.instance().createSetting('show-all-properties', /* defaultValue */ false);
 
-function onExpand(event: Event): void {
-  const expanded = (event as CustomEvent<{expanded: boolean}>).detail.expanded;
-  if (expanded) {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
-  }
-}
-
 export class PropertiesWidget extends UI.Widget.VBox {
   private readonly showAllPropertiesSetting: Common.Settings.Setting<boolean>;
   private filterRegex: RegExp|null = null;
@@ -138,6 +131,24 @@ export class PropertiesWidget extends UI.Widget.VBox {
   #objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree|null = null;
   #isRegex = false;
   #filterText = '';
+
+  #onNodeExpanded(): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#objectTree?.removeEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+                                          this.#onNodeExpanded, this);
+    this.#objectTree?.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+                                       this.#onNodeExpanded, this);
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.#objectTree?.removeEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+                                          this.#onNodeExpanded, this);
+  }
 
   constructor(view: View = DEFAULT_VIEW) {
     super({useShadowDom: true});
@@ -210,6 +221,9 @@ export class PropertiesWidget extends UI.Widget.VBox {
     this.#lastRequestedNode?.domModel().runtimeModel().releaseObjectGroup(OBJECT_GROUP_NAME);
     this.#lastRequestedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
+    this.#objectTree?.removeEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+                                          this.#onNodeExpanded, this);
+
     if (!this.#lastRequestedNode) {
       this.#objectTree = null;
       return;
@@ -224,6 +238,10 @@ export class PropertiesWidget extends UI.Widget.VBox {
       readOnly: true,
     });
     this.#objectTree.expanded = true;
+    if (this.isShowing()) {
+      this.#objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+                                        this.#onNodeExpanded, this);
+    }
     this.#updateFilter();
   }
 

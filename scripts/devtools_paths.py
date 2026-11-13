@@ -9,25 +9,20 @@ from os import path
 import sys
 import platform
 
+try:
+    old_sys_path = sys.path[:]
+    sys.path.append(path.dirname(path.abspath(__file__)))
+    from find_chromium_root import find_chromium_root
+finally:
+    sys.path = old_sys_path
+
 
 # Find the root path of the checkout.
-# In the Chromium repository, this is the src/chromium directory.
-# In the external repository, standalone build, this is the devtools-frontend directory.
-# In the external repository, integrated build, this is the src/chromium directory.
+# If DevTools is part of a Chromium checkout, this is the chromium/src directory.
+# In a standalone checkout, this is the devtools-frontend directory.
+# See find_chromium_root.py for how we tell the two apart.
 def root_path():
-    SCRIPTS_PATH = path.dirname(path.abspath(__file__))
-    ABS_DEVTOOLS_PATH = path.dirname(SCRIPTS_PATH)
-    PARENT_PATH = path.dirname(ABS_DEVTOOLS_PATH)
-    # TODO(1011259): remove Chromium repository handling
-    if path.basename(PARENT_PATH) == 'renderer':
-        # Chromium repository
-        return path.dirname(path.dirname(path.dirname(PARENT_PATH)))
-    elif path.basename(PARENT_PATH) == 'devtools-frontend':
-        # External repository, integrated build
-        return path.dirname(path.dirname(PARENT_PATH))
-    else:
-        # External repository, standalone build
-        return ABS_DEVTOOLS_PATH
+    return find_chromium_root(devtools_root_path()) or devtools_root_path()
 
 
 # This is the third_party path relative to the root of the checkout.

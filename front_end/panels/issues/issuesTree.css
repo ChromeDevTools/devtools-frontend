@@ -232,7 +232,7 @@ devtools-icon.leading-issue-icon {
 
 
 .affected-resources-label + .affected-resources {
-  padding: 3px 0 0;
+  padding: var(--sys-size-3) 0 0;
   position: relative;
   user-select: text;
 }

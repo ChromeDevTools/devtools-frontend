@@ -136,23 +136,6 @@ const UIStrings = {
    */
   openInSourcesPanel: 'Open in Sources panel',
   /**
-   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
-   */
-  startAChat: 'Start a chat',
-  /**
-   * @description Text of a context menu item to redirect to the AI assistance panel and directly execute
-   * a prompt to assess the performance of a script.
-   */
-  assessPerformance: 'Assess performance',
-  /**
-   * @description Context menu item in Sources panel to explain a script via AI.
-   */
-  explainThisScript: 'Explain this script',
-  /**
-   * @description Context menu item in Sources panel to explain input handling in a script via AI.
-   */
-  explainInputHandling: 'Explain input handling',
-  /**
    * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
    */
   navigatorShown: 'Navigator sidebar shown',
@@ -1107,15 +1090,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       const editorElement = this.element.querySelector('devtools-text-editor');
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction('drjones.sources-panel-context', i18nString(UIStrings.startAChat));
-        appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.assessPerformance),
-                                  'Is this script optimized for performance?', openAiAssistanceId + '.performance');
-        appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.explainThisScript), 'What does this script do?',
-                                  openAiAssistanceId + '.script');
-        appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.explainInputHandling),
-                                  'Does the script handle user input safely', openAiAssistanceId + '.input');
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
     }
 
@@ -1127,12 +1102,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
       this.#callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
     }
 
-    function appendSubmenuPromptAction(submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
-                                       label: Common.UIString.LocalizedString, prompt: string,
-                                       jslogContext: string): void {
-      submenu.defaultSection().appendItem(label, () => action.execute({prompt}),
-                                          {disabled: !action.enabled(), jslogContext});
-    }
   }
 
   #appendUISourceCodeFrameItems(contextMenu: UI.ContextMenu.ContextMenu, target: UISourceCodeFrame): void {

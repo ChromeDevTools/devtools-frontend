@@ -1869,7 +1869,7 @@ describeWithEnvironment('NetworkLogView', () => {
     }
   });
 
-  it('shows Debug with AI menu and submenu items when the flag is on', () => {
+  it('shows Debug with AI item in context menu when the flag is on', () => {
     registerActions([{
       actionId: 'drjones.network-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
@@ -1890,9 +1890,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
     assert.exists(debugWithAiItem);
-    assert.deepEqual(
-        debugWithAiItem?.subItems?.map(item => item.label),
-        ['Start a chat', 'Explain purpose', 'Explain slowness', 'Explain failures', 'Assess security headers']);
+    assert.isUndefined(debugWithAiItem.subItems);
+    assert.strictEqual(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest), request);
   });
 
   it('configures visual logging for preloaded column in header context menu', () => {

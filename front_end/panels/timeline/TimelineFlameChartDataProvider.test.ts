@@ -263,7 +263,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     });
   });
 
-  it('shows Debug with AI submenu items', async function() {
+  it('shows Debug with AI item in context menu', async function() {
     registerActions([{
       actionId: 'drjones.performance-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
@@ -278,9 +278,13 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     assert.exists(contextMenu);
     const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
     assert.exists(debugWithAiItem);
-    assert.deepEqual(
-        debugWithAiItem?.subItems?.map(item => item.label),
-        ['Start a chat', 'Label entry', 'Assess the purpose', 'Identify time spent', 'Find improvements']);
+    assert.isUndefined(debugWithAiItem.subItems);
+  });
+
+  it('returns undefined from customizedContextMenu when no trace is loaded', function() {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const contextMenu = dataProvider.customizedContextMenu(new MouseEvent('click'), 7, 0);
+    assert.isUndefined(contextMenu);
   });
 
   it('filters navigations to only return those that happen on the main frame', async function() {

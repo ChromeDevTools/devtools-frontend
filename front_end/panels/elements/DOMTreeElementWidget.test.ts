@@ -146,15 +146,6 @@ describe('DOMTreeElementWidget', () => {
 });
 
 describeWithEnvironment('DOMTreeElementWidget', () => {
-  const DEFAULT_LAYOUT_PROPERTIES = {
-    isFlex: false,
-    isGrid: false,
-    isSubgrid: false,
-    isGridLanes: false,
-    containerType: undefined,
-    hasScroll: false,
-  };
-
   let universe: TestUniverse;
 
   beforeEach(() => {
@@ -409,79 +400,50 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
     });
   });
 
-  async function getContextMenuForElementWithLayoutProperties(layoutProperties: SDK.CSSModel.LayoutProperties|
-                                                              null): Promise<UI.ContextMenu.ContextMenu> {
+  it('shows Debug with AI item in context menu', () => {
     const target = createTarget();
     const domModel = target.model(SDK.DOMModel.DOMModel);
-    const cssModel = target.model(SDK.CSSModel.CSSModel);
     assert.exists(domModel);
-    assert.exists(cssModel);
-
-    sinon.stub(cssModel, 'getLayoutPropertiesFromComputedStyle').resolves(layoutProperties);
 
     const node = new SDK.DOMModel.DOMNode(domModel);
     sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
     sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
     sinon.stub(node, 'nodeName').returns('DIV');
+
     const domTreeWidget = new Elements.DOMTreeWidget.DOMTreeWidget();
     const event = new Event('contextmenu');
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    await Elements.DOMTreeContextMenu.populateNodeContextMenu(contextMenu, domTreeWidget, node);
-    return contextMenu;
-  }
 
-  it('shows default submenu items', async () => {
-    const contextMenu = await getContextMenuForElementWithLayoutProperties(null);
+    Elements.DOMTreeContextMenu.populateNodeContextMenu(contextMenu, domTreeWidget, node);
+
     const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
     assert.exists(debugWithAiItem);
-    assert.deepEqual(debugWithAiItem?.subItems?.map(item => item.label),
-                     ['Start a chat', 'Assess visibility', 'Center element']);
+    assert.isUndefined(debugWithAiItem.subItems);
+    assert.strictEqual(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode), node);
   });
 
-  it('shows flexbox submenu items', async () => {
-    const contextMenu =
-        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, isFlex: true});
-    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
-    assert.exists(debugWithAiItem);
-    assert.deepEqual(debugWithAiItem?.subItems?.map(item => item.label),
-                     ['Start a chat', 'Wrap these items', 'Distribute items evenly', 'Explain flexbox']);
-  });
+  it('omits Debug with AI item when action is not registered', () => {
+    sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+        .withArgs('freestyler.element-panel-context')
+        .returns(false);
 
-  it('shows grid submenu items', async () => {
-    const contextMenu =
-        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, isGrid: true});
-    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
-    assert.exists(debugWithAiItem);
-    assert.deepEqual(debugWithAiItem?.subItems?.map(item => item.label),
-                     ['Start a chat', 'Align items', 'Add padding', 'Explain grid layout']);
-  });
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
 
-  it('shows subgrid submenu items', async () => {
-    const contextMenu = await getContextMenuForElementWithLayoutProperties(
-        {...DEFAULT_LAYOUT_PROPERTIES, isGrid: true, isSubgrid: true});
-    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
-    assert.exists(debugWithAiItem);
-    assert.deepEqual(debugWithAiItem?.subItems?.map(item => item.label),
-                     ['Start a chat', 'Find grid definition', 'Change parent properties', 'Explain subgrids']);
-  });
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
+    sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
+    sinon.stub(node, 'nodeName').returns('DIV');
 
-  it('shows scroll submenu items', async () => {
-    const contextMenu =
-        await getContextMenuForElementWithLayoutProperties({...DEFAULT_LAYOUT_PROPERTIES, hasScroll: true});
-    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
-    assert.exists(debugWithAiItem);
-    assert.deepEqual(debugWithAiItem?.subItems?.map(item => item.label),
-                     ['Start a chat', 'Remove scrollbars', 'Style scrollbars', 'Explain scrollbars']);
-  });
+    const domTreeWidget = new Elements.DOMTreeWidget.DOMTreeWidget();
+    const event = new Event('contextmenu');
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
 
-  it('shows container submenu items', async () => {
-    const contextMenu = await getContextMenuForElementWithLayoutProperties(
-        {...DEFAULT_LAYOUT_PROPERTIES, containerType: 'inline-size'});
+    Elements.DOMTreeContextMenu.populateNodeContextMenu(contextMenu, domTreeWidget, node);
+
     const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
-    assert.exists(debugWithAiItem);
-    assert.deepEqual(
-        debugWithAiItem?.subItems?.map(item => item.label),
-        ['Start a chat', 'Explain container queries', 'Explain container types', 'Explain container context']);
+    assert.isUndefined(debugWithAiItem);
   });
 
   it('opens element state pane when forced state is clicked in context menu', async () => {

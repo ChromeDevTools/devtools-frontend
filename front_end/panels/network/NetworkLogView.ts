@@ -520,26 +520,6 @@ const UIStrings = {
    */
   moreFilters: 'More filters',
   /**
-   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
-   */
-  startAChat: 'Start a chat',
-  /**
-   * @description Context menu item in Network panel to explain the purpose of a request via AI.
-   */
-  explainPurpose: 'Explain purpose',
-  /**
-   * @description Context menu item in Network panel to explain why a request is slow via AI.
-   */
-  explainSlowness: 'Explain slowness',
-  /**
-   * @description Context menu item in Network panel to explain why a request is failing via AI.
-   */
-  explainFailures: 'Explain failures',
-  /**
-   * @description Context menu item in Network panel to assess security headers of a request via AI.
-   */
-  assessSecurityHeaders: 'Assess security headers',
-  /**
    * @description A comment in a generated command indicating that the URL scheme is unsupported. The placeholder is the comment prefix (e.g. '//' or '#').
    * @example {//} PH1
    */
@@ -1779,29 +1759,8 @@ export class NetworkLogView extends NetworkLogViewBase implements
     if (request) {
       const openAiAssistanceId = 'drjones.network-panel-context';
       if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-        function appendSubmenuPromptAction(
-            submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
-            label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
-          submenu.defaultSection().appendItem(
-              label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
-        }
-
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
-        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
-        appendSubmenuPromptAction(
-            submenu, action, i18nString(UIStrings.explainPurpose), 'What is the purpose of this request?',
-            openAiAssistanceId + '.purpose');
-        appendSubmenuPromptAction(
-            submenu, action, i18nString(UIStrings.explainSlowness), 'Why is this request taking so long?',
-            openAiAssistanceId + '.slowness');
-        appendSubmenuPromptAction(
-            submenu, action, i18nString(UIStrings.explainFailures), 'Why is the request failing?',
-            openAiAssistanceId + '.failures');
-        appendSubmenuPromptAction(
-            submenu, action, i18nString(UIStrings.assessSecurityHeaders), 'Are there any security headers present?',
-            openAiAssistanceId + '.security');
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
       copyMenu.defaultSection().appendItem(
           i18nString(UIStrings.copyURL),

@@ -88,18 +88,6 @@ import {WebMCPTreeElement} from './WebMCPTreeElement.js';
 
 const UIStrings = {
   /**
-   * @description Context menu item to start a chat with AI in the Application panel sidebar.
-   */
-  startAChat: 'Start a chat',
-  /**
-   * @description Context menu item to explain storage with AI in the Application panel sidebar.
-   */
-  explainStorage: 'Explain storage',
-  /**
-   * @description Context menu item to explain cookies with AI in the Application panel sidebar.
-   */
-  explainCookies: 'Explain cookies',
-  /**
    * @description Tree item label for Sub Apps in the sidebar of the Application panel.
    */
   subApps: 'Sub apps',
@@ -1819,13 +1807,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
       const openAiAssistanceId = 'ai-assistance.application-panel-context';
       if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, storageItem);
-        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
-        submenu.defaultSection().appendItem(
-            i18nString(UIStrings.explainStorage),
-            () => action.execute({prompt: 'What is the purpose of this storage bucket?'}),
-            {disabled: !action.enabled(), jslogContext: openAiAssistanceId + '.storage'});
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
     }
 
@@ -1942,13 +1924,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
       const openAiAssistanceId = 'ai-assistance.application-panel-context';
       if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, storageItem);
-        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
-        submenu.defaultSection().appendItem(
-            i18nString(UIStrings.explainCookies),
-            () => action.execute({prompt: 'What is the purpose of these cookies?'}),
-            {disabled: !action.enabled(), jslogContext: openAiAssistanceId + '.cookies'});
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
     }
 

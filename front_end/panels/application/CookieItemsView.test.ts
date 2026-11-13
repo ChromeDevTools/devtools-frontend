@@ -85,7 +85,7 @@ describe('CookieItemsView', () => {
     sinon.assert.calledOnce(executeStub);
   });
 
-  it('populates context menu with Debug with AI submenu and expected items', () => {
+  it('populates context menu with Debug with AI item', () => {
     cookieItemsView.performUpdate();
 
     // Stub UI.Context flavor
@@ -101,7 +101,23 @@ describe('CookieItemsView', () => {
     const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
     assert.exists(debugWithAiItem, 'Expected Debug with AI context menu item');
 
-    assert.deepEqual(debugWithAiItem?.subItems?.map(item => item.label), ['Start a chat', 'Explain this cookie']);
+    assert.isUndefined(debugWithAiItem?.subItems);
+  });
+
+  it('omits Debug with AI item when StorageItem flavor is null', () => {
+    cookieItemsView.performUpdate();
+
+    // Stub UI.Context flavor
+    const contextFlavorStub = sinon.stub(UI.Context.Context.instance(), 'flavor');
+    contextFlavorStub.withArgs(AiAssistance.StorageItem.StorageItem).returns(null);
+
+    const dummyEvent = new Event('contextmenu');
+    const contextMenu = new UI.ContextMenu.ContextMenu(dummyEvent);
+    const cookie = new SDK.Cookie.Cookie('cookie-name', 'value');
+    viewFunction.input.onPopulateAiContextMenu?.(cookie, contextMenu);
+
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.isUndefined(debugWithAiItem);
   });
 
   it('sets StorageItem flavor on select', () => {

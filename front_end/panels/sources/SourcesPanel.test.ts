@@ -75,7 +75,7 @@ describeWithEnvironment('SourcesPanel', () => {
     return uiSourceCode;
   }
 
-  it('Shows Debug with Ai menu and submenu items', () => {
+  it('shows Debug with AI item in context menu', () => {
     registerActions([{
       actionId: 'drjones.sources-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,
@@ -95,8 +95,24 @@ describeWithEnvironment('SourcesPanel', () => {
 
     const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
     assert.exists(debugWithAiItem);
-    assert.deepEqual(debugWithAiItem.subItems?.map(item => item.label),
-                     ['Start a chat', 'Assess performance', 'Explain this script', 'Explain input handling']);
+    assert.isUndefined(debugWithAiItem.subItems);
+    assert.strictEqual(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode), uiSourceCode);
+  });
+
+  it('omits Debug with AI item when action is not registered', () => {
+    setUpEnvironment();
+
+    const sources = new Sources.SourcesPanel.SourcesPanel();
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+
+    const uiSourceCode = createStubUISourceCode();
+    sources.appendApplicableItems(event, contextMenu, uiSourceCode);
+
+    const debugWithAiItem = contextMenu.buildDescriptor().subItems?.find(item => item.label === 'Debug with AI');
+    assert.isUndefined(debugWithAiItem);
   });
 
   it('notifies ViewManager when debugger sidebar is toggled', () => {

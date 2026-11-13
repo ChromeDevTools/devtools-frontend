@@ -79,26 +79,6 @@ const UIStrings = {
    * @description Context menu item to restore all hidden entries in the timeline flame chart.
    */
   resetTrace: 'Reset trace',
-  /**
-   * @description Context menu item to start a chat in the AI assistance panel.
-   */
-  startAChat: 'Start a chat',
-  /**
-   * @description Context menu item to add a label annotation to an entry in the Performance panel.
-   */
-  labelEntry: 'Label entry',
-  /**
-   * @description Context menu item to assess the purpose of an entry using AI assistance in the Performance panel.
-   */
-  assessThePurpose: 'Assess the purpose',
-  /**
-   * @description Context menu item to identify time spent in a call tree using AI assistance in the Performance panel.
-   */
-  identifyTimeSpent: 'Identify time spent',
-  /**
-   * @description Context menu item to find performance improvements for a call tree using AI assistance in the Performance panel.
-   */
-  findImprovements: 'Find improvements',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -255,32 +235,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (perfAIEntryPointEnabled && this.parsedTrace) {
       const callTree = AIAssistance.AICallTree.AICallTree.fromEvent(entry, this.parsedTrace);
       if (callTree) {
-        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
-
-        function appendSubmenuPromptAction(
-            submenu: UI.ContextMenu.SubMenu, action: UI.ActionRegistration.Action,
-            label: Common.UIString.LocalizedString, prompt: string, jslogContext: string): void {
-          submenu.defaultSection().appendItem(
-              label, () => action.execute({prompt}), {disabled: !action.enabled(), jslogContext});
-        }
-
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, PERF_AI_ACTION_ID);
-        submenu.defaultSection().appendAction(PERF_AI_ACTION_ID, i18nString(UIStrings.startAChat));
-        submenu.defaultSection().appendItem(i18nString(UIStrings.labelEntry), () => {
-          this.dispatchEventToListeners(
-              Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex, withLinkCreationButton: false});
-        }, {
-          jslogContext: 'timeline.annotations.create-entry-label',
-        });
-        appendSubmenuPromptAction(
-            submenu, action, i18nString(UIStrings.assessThePurpose), 'What\'s the purpose of this entry?',
-            PERF_AI_ACTION_ID + '.purpose');
-        appendSubmenuPromptAction(
-            submenu, action, i18nString(UIStrings.identifyTimeSpent),
-            'Where is most time being spent in this call tree?', PERF_AI_ACTION_ID + '.time-spent');
-        appendSubmenuPromptAction(
-            submenu, action, i18nString(UIStrings.findImprovements), 'How can I reduce the time of this call tree?',
-            PERF_AI_ACTION_ID + '.improvements');
+        contextMenu.footerSection().appendAction(PERF_AI_ACTION_ID);
       }
     }
 
@@ -1401,16 +1356,11 @@ export const InstantEventVisibleDurationMs: Trace.Types.Timing.Milli = Trace.Typ
 export const enum Events {
   DATA_CHANGED = 'DataChanged',
   FLAME_CHART_ITEM_HOVERED = 'FlameChartItemHovered',
-  ENTRY_LABEL_ANNOTATION_ADDED = 'EntryLabelAnnotationAdded',
 }
 
 export interface EventTypes {
   [Events.DATA_CHANGED]: void;
   [Events.FLAME_CHART_ITEM_HOVERED]: Trace.Types.Events.Event|null;
-  [Events.ENTRY_LABEL_ANNOTATION_ADDED]: {
-    entryIndex: number,
-    withLinkCreationButton: boolean,
-  };
 }
 
 /**

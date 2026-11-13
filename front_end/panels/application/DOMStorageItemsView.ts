@@ -53,14 +53,6 @@ const UIStrings = {
    * @description Screen reader announcement when a DOM storage key-value item is deleted.
    */
   domStorageItemDeleted: 'The storage item was deleted',
-  /**
-   * @description Context menu item in the Application panel to start a chat with AI assistance.
-   */
-  startAChat: 'Start a chat',
-  /**
-   * @description Context menu item in the Application panel to explain a DOM storage item with AI assistance.
-   */
-  explainItem: 'Explain this item',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/DOMStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -224,12 +216,7 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(openAiAssistanceId)) {
       this.#setAiStorageContext(item);
-      const action = actionRegistry.getAction(openAiAssistanceId);
-      const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
-      submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
-      submenu.defaultSection().appendItem(i18nString(UIStrings.explainItem),
-                                          () => action.execute({prompt: 'Explain this storage item.'}),
-                                          {disabled: !action.enabled(), jslogContext: openAiAssistanceId + '.storage'});
+      contextMenu.footerSection().appendAction(openAiAssistanceId);
     }
   }
 

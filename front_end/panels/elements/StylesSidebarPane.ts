@@ -813,7 +813,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     const rule = propertyData.property.ownerStyle.parentRule;
     const selectorList = (rule instanceof SDK.CSSRule.CSSStyleRule) ? rule.selectorText() : undefined;
     for (const {properties, mode} of HIGHLIGHTABLE_PROPERTIES) {
-      if (!properties.includes(propertyData.name)) {
+      if (!properties.includes(propertyData.property.name)) {
         continue;
       }
       node.domModel().overlayModel().highlightInOverlay({node, selectorList}, mode);
@@ -821,7 +821,8 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
       return;
     }
 
-    if (propertyData.value.includes('anchor(') || propertyData.value.includes('anchor-size(')) {
+    const value = propertyData.property.value;
+    if (value.includes('anchor(') || value.includes('anchor-size(')) {
       node.domModel().overlayModel().highlightInOverlay({node, selectorList}, 'anchor-positioning');
       this.isActivePropertyHighlighted = true;
     }

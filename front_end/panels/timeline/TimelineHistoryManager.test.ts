@@ -100,6 +100,18 @@ function getOverviewCanvas(item: HTMLElement): HTMLCanvasElement {
   return canvas;
 }
 
+function hasNonTransparentPixels(canvas: HTMLCanvasElement): boolean {
+  const ctx = canvas.getContext('2d');
+  assert.isOk(ctx);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  for (let i = 3; i < imageData.data.length; i += 4) {
+    if (imageData.data[i] > 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function addSyntheticRecording(
     historyManager: Timeline.TimelineHistoryManager.TimelineHistoryManager,
     options: {
@@ -582,19 +594,46 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     assert.strictEqual(canvas.width, expectedWidth);
     assert.strictEqual(canvas.height, expectedHeight);
 
-    const ctx = canvas.getContext('2d');
-    assert.isOk(ctx);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    let hasNonTransparentPixel = false;
-    for (let i = 3; i < imageData.data.length; i += 4) {
-      if (imageData.data[i] > 0) {
-        hasNonTransparentPixel = true;
-        break;
-      }
-    }
-    assert.isTrue(hasNonTransparentPixel, 'Expected overview canvas to contain at least one non-transparent pixel');
+    assert.isTrue(hasNonTransparentPixels(canvas));
 
     historyManager.cancelIfShowing();
     await showPromise;
+  });
+
+  it('renders dropdown entries from data each time the dropdown opens', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+
+    historyManager.addRecording({
+      data: {
+        parsedTraceIndex: 1,
+        type: 'TRACE_INDEX',
+      },
+      filmStripForPreview: null,
+      parsedTrace,
+    });
+
+    const {showPromise: showPromise1} = await openDropDown(historyManager);
+    const firstMenuItems = getMenuItems();
+    assert.lengthOf(firstMenuItems, 2);
+    const firstRecordingItem = firstMenuItems[1];
+    const expectedText = firstRecordingItem.innerText.replaceAll('\n', '-');
+
+    const canvas1 = getOverviewCanvas(firstRecordingItem);
+    assert.isTrue(hasNonTransparentPixels(canvas1));
+
+    historyManager.cancelIfShowing();
+    await showPromise1;
+
+    const {showPromise: showPromise2} = await openDropDown(historyManager);
+    const secondMenuItems = getMenuItems();
+    assert.lengthOf(secondMenuItems, 2);
+    const secondRecordingItem = secondMenuItems[1];
+    assert.strictEqual(secondRecordingItem.innerText.replaceAll('\n', '-'), expectedText);
+
+    const canvas2 = getOverviewCanvas(secondRecordingItem);
+    assert.isTrue(hasNonTransparentPixels(canvas2));
+
+    historyManager.cancelIfShowing();
+    await showPromise2;
   });
 });

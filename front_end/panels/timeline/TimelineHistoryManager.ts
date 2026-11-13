@@ -8,7 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -20,7 +20,7 @@ import {
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 import type {TimelineMiniMap} from './TimelineMiniMap.js';
 
-const {ref} = Directives;
+const {ref, styleMap} = Directives;
 
 /**
  * The dropdown works by returning an index which is the trace index; but we
@@ -327,14 +327,6 @@ export class TimelineHistoryManager {
     this.action.setEnabled(this.recordings.length >= 1 && this.enabled);
   }
 
-  static previewElement(parsedTraceIndex: number): Element {
-    const data = TimelineHistoryManager.dataForTraceIndex(parsedTraceIndex);
-    if (!data) {
-      throw new Error('Unable to find data for model');
-    }
-    return data.preview;
-  }
-
   private title(item: RecordingData): string {
     if (item.type === 'LANDING_PAGE') {
       return this.#landingPageTitle;
@@ -347,9 +339,8 @@ export class TimelineHistoryManager {
     return data.title;
   }
 
-  #buildAndStorePreviewData(
-      parsedTraceIndex: number, parsedTrace: Trace.TraceModel.ParsedTrace,
-      filmStrip: Trace.Extras.FilmStrip.Data|null): HTMLDivElement {
+  #buildAndStorePreviewData(parsedTraceIndex: number, parsedTrace: Trace.TraceModel.ParsedTrace,
+                            filmStrip: Trace.Extras.FilmStrip.Data|null): void {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
     const domain = parsedURL ? parsedURL.host : '';
 
@@ -358,38 +349,12 @@ export class TimelineHistoryManager {
         domain ? i18nString(UIStrings.sD, {PH1: domain, PH2: sequenceNumber}) : `#${sequenceNumber}`;
     this.nextNumberByDomain.set(domain, sequenceNumber + 1);
 
-    const preview = document.createElement('div');
-    preview.classList.add('preview-item');
-    preview.classList.add('vbox');
-    preview.setAttribute('jslog', `${VisualLogging.dropDown('timeline.history-item').track({click: true})}`);
-    preview.style.width = `${previewWidth}px`;
     const customTitle = parsedTrace.metadata.title;
     const title = customTitle ?
         i18nString(UIStrings.customTitleWithSequence, {PH1: customTitle, PH2: titleWithSequenceNumber}) :
         titleWithSequenceNumber;
-    const data = {
-      preview,
-      title,
-      lastUsed: Date.now(),
-    };
-    parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
 
-    const overview = this.#buildOverview(parsedTrace);
-
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(html`
-      ${this.#renderTextDetails(parsedTrace.metadata, title)}
-      <div class="hbox">
-        ${this.#renderScreenshotThumbnail(filmStrip)}
-        ${renderOverview(overview, this.totalHeight)}
-      </div>
-    `,
-           preview, {host: this});
-
-    return data.preview;
-  }
-
-  #renderTextDetails(metadata: Trace.Types.File.MetaData|null, title: string): LitTemplate {
+    const metadata = parsedTrace.metadata;
     let metadataText = '';
     if (metadata) {
       const parts = [
@@ -400,33 +365,18 @@ export class TimelineHistoryManager {
       metadataText = listFormatter.format(parts as string[]);
     }
 
-    return html`
-      <div class="text-details hbox">
-        <span class="name">${title}</span>
-        ${metadataText ? html`<span class="metadata">${metadataText}</span>` : ''}
-      </div>
-    `;
-  }
+    const screenshotEvent = filmStrip?.frames.at(-1)?.screenshotEvent ?? null;
+    const overview = this.#buildOverview(parsedTrace);
 
-  #renderScreenshotThumbnail(filmStrip: Trace.Extras.FilmStrip.Data|null): LitTemplate {
-    const thumbnailAspectRatio = 3 / 2;
-    const width = this.totalHeight * thumbnailAspectRatio + 'px';
-    const height = this.totalHeight + 'px';
-    const container = html`<div class="screenshot-thumb" style="width: ${width}; height: ${height}"></div>`;
-    if (!filmStrip) {
-      return container;
-    }
-    const lastFrame = filmStrip.frames.at(-1);
-    if (!lastFrame) {
-      return container;
-    }
-    // TODO(paulirish): Adopt Util.ImageCache
-    const uri = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(lastFrame.screenshotEvent);
-    return html`
-      <div class="screenshot-thumb" style="width: ${width}; height: ${height}">
-        <img src=${uri}>
-      </div>
-    `;
+    const data: PreviewData = {
+      title,
+      lastUsed: Date.now(),
+      metadataText,
+      screenshotEvent,
+      overview,
+      overviewHeight: this.totalHeight,
+    };
+    parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
   }
 
   #buildOverview(parsedTrace: Trace.TraceModel.ParsedTrace): ImageBitmap {
@@ -452,17 +402,78 @@ export class TimelineHistoryManager {
   }
 }
 
-function renderOverview(overview: ImageBitmap, height: number): LitTemplate {
+const thumbnailAspectRatio = 3 / 2;
+
+// clang-format off
+function renderScreenshotThumbnail(
+    screenshotEvent: Trace.Extras.FilmStrip.Frame['screenshotEvent']|null,
+    height: number): LitTemplate {
   return html`
-    <div style="width: ${previewWidth}px; height: ${height}px">
-      <canvas width=${overview.width} height=${overview.height} ${ref(el => {
-    if (el instanceof HTMLCanvasElement) {
-      el.getContext('2d')?.drawImage(overview, 0, 0);
-    }
-  })}></canvas>
+    <div class="screenshot-thumb" style=${styleMap({width: `${height * thumbnailAspectRatio}px`, height: `${height}px`})}>
+      ${screenshotEvent ? html`<img src=${Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(screenshotEvent)}>` : nothing}
     </div>
   `;
 }
+
+function renderOverview(overview: ImageBitmap, height: number): LitTemplate {
+  return html`
+    <div style=${styleMap({width: `${previewWidth}px`, height: `${height}px`})}>
+      <canvas width=${overview.width} height=${overview.height} ${ref(el => {
+        if (el instanceof HTMLCanvasElement) {
+          el.getContext('2d')?.drawImage(overview, 0, 0);
+        }
+      })}></canvas>
+    </div>
+  `;
+}
+
+function renderRecordingEntry(data: PreviewData): LitTemplate {
+  return html`
+    <div class="preview-item vbox" role="menuitem"
+        jslog=${VisualLogging.dropDown('timeline.history-item').track({click: true})}
+        style=${styleMap({width: `${previewWidth}px`})}>
+      <div class="text-details hbox">
+        <span class="name">${data.title}</span>
+        ${data.metadataText ? html`<span class="metadata">${data.metadataText}</span>` : nothing}
+      </div>
+      <div class="hbox">
+        ${renderScreenshotThumbnail(data.screenshotEvent, data.overviewHeight)}
+        ${renderOverview(data.overview, data.overviewHeight)}
+      </div>
+    </div>
+  `;
+}
+
+function renderLandingPageEntry(title: Common.UIString.LocalizedString): LitTemplate {
+  return html`
+    <div class="preview-item landing-page-item" role="menuitem" style=${styleMap({width: `${previewWidth}px`})}>
+      <devtools-icon class="back-arrow" title=${i18nString(UIStrings.backButtonTooltip)} name="arrow-back"></devtools-icon>
+      <span>${title}</span>
+    </div>
+  `;
+}
+// clang-format on
+
+type ItemViewInput = {
+  type: 'LANDING_PAGE',
+  title: Common.UIString.LocalizedString,
+}|{
+  type: 'RECORDING',
+  preview: PreviewData,
+};
+
+const ITEM_VIEW = (input: ItemViewInput, _output: undefined, target: DocumentFragment): void => {
+  switch (input.type) {
+    case 'LANDING_PAGE':
+      render(renderLandingPageEntry(input.title), target);
+      break;
+    case 'RECORDING':
+      render(renderRecordingEntry(input.preview), target);
+      break;
+    default:
+      Platform.assertNever(input, 'Unknown history dropdown item');
+  }
+};
 
 export const maxRecordings = 5;
 export const previewWidth = 500;
@@ -471,9 +482,12 @@ export const previewWidth = 500;
 const parsedTraceIndexToPerformancePreviewData = new Map<number, PreviewData>();
 
 export interface PreviewData {
-  preview: Element;
   lastUsed: number;
   title: string;
+  metadataText: string;
+  screenshotEvent: Trace.Extras.FilmStrip.Frame['screenshotEvent']|null;
+  overview: ImageBitmap;
+  overviewHeight: number;
 }
 
 export class DropDown implements UI.ListControl.ListDelegate<number> {
@@ -586,33 +600,23 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
   }
 
   createElementForItem(parsedTraceIndex: number): Element {
+    const fragment = document.createDocumentFragment();
+    let input: ItemViewInput;
     if (parsedTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE) {
-      return this.#createLandingPageListItem();
+      input = {type: 'LANDING_PAGE', title: this.#landingPageTitle};
+    } else {
+      const preview = parsedTraceIndexToPerformancePreviewData.get(parsedTraceIndex);
+      if (!preview) {
+        throw new Error('Unable to find data for model');
+      }
+      input = {type: 'RECORDING', preview};
     }
-    const element = TimelineHistoryManager.previewElement(parsedTraceIndex);
-    UI.ARIAUtils.markAsMenuItem(element);
-    element.classList.remove('selected');
+    ITEM_VIEW(input, undefined, fragment);
+    const element = fragment.firstElementChild;
+    if (!element) {
+      throw new Error('Expected element to be rendered');
+    }
     return element;
-  }
-
-  #createLandingPageListItem(): HTMLElement {
-    const div = document.createElement('div');
-    UI.ARIAUtils.markAsMenuItem(div);
-    div.classList.remove('selected');
-    div.classList.add('preview-item');
-    div.classList.add('landing-page-item');
-
-    div.style.width = `${previewWidth}px`;
-
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(html`
-      <devtools-icon class="back-arrow" title=${
-               i18nString(UIStrings.backButtonTooltip)} name="arrow-back"></devtools-icon>
-      <span>${this.#landingPageTitle}</span>
-    `,
-           div, {host: this});
-
-    return div;
   }
 
   heightForItem(_parsedTraceIndex: number): number {

@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import {renderElementIntoDOM, setColorScheme} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM, setColorScheme} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as DataGrid from './data_grid.js';
@@ -21,25 +21,39 @@ describeWithEnvironment('DataGrid', () => {
     renderElementIntoDOM(container);
   });
 
-  describe('focus indicator', () => {
-    afterEach(() => setColorScheme('light'));
+  describe('selection and focus indicators', () => {
+    let widget: DataGrid.DataGrid.DataGridWidget<{key: string, value: string}>;
+
+    afterEach(() => {
+      widget?.detach();
+      setColorScheme('light');
+    });
 
     function createGrid() {
-      const dataGrid = new DataGrid.DataGrid.DataGridImpl({
+      const dataGrid = new DataGrid.DataGrid.DataGridImpl<{key: string, value: string}>({
         displayName: 'Test',
-        columns: [{id: 'key', title: i18n.i18n.lockedString('Key'), sortable: false, editable: true}],
+        columns: [
+          {id: 'key', title: i18n.i18n.lockedString('Key'), sortable: false, editable: true, weight: 1},
+          {id: 'value', title: i18n.i18n.lockedString('Value'), sortable: false, editable: true, weight: 1},
+        ],
       });
       const token = {token: 'DataGridInternalToken'} as Parameters<typeof dataGrid.setEditCallback>[1];
       dataGrid.setEditCallback(sinon.stub(), token);
-      const widget = dataGrid.asWidget();
+      widget = dataGrid.asWidget();
       widget.markAsRoot();
-      widget.show(container);
+      container.style.width = '360px';
       dataGrid.element.style.height = '100px';
+      widget.show(container);
       dataGrid.setStriped(true);
-      const nodes = ['first', 'second', 'third'].map(key => new DataGrid.DataGrid.DataGridNode({key}));
+      const nodes =
+          ['first', 'second', 'third'].map(key => new DataGrid.DataGrid.DataGridNode({key, value: `${key} value`}));
       for (const node of nodes) {
         dataGrid.rootNode().appendChild(node);
       }
+      dataGrid.updateWidths();
+      const cells = nodes[0].element().querySelectorAll('td');
+      assert.isAbove(cells[0].getBoundingClientRect().width, 0);
+      assert.isAbove(cells[1].getBoundingClientRect().width, 0);
       nodes[0].select();
       const outsideInput = document.createElement('input');
       container.appendChild(outsideInput);
@@ -47,60 +61,115 @@ describeWithEnvironment('DataGrid', () => {
       return {dataGrid, nodes, outsideInput};
     }
 
+    function assertSelectionIndicator(nodes: ReturnType<typeof createGrid>['nodes'], width: string) {
+      const selected = nodes.find(node => node.selected);
+      assert.exists(selected);
+      const style = getComputedStyle(selected.element());
+      assert.strictEqual(style.outlineStyle, 'solid');
+      assert.strictEqual(style.outlineWidth, width);
+      assert.strictEqual(style.outlineOffset, `-${width}`);
+      const outline = Common.Color.parse(style.outlineColor);
+      assert.exists(outline);
+      for (const node of nodes) {
+        const background = Common.Color.parse(getComputedStyle(node.element()).backgroundColor);
+        assert.exists(background);
+        assert.isAtLeast(
+            Common.ColorUtils.contrastRatio(outline.asLegacyColor().rgba(), background.asLegacyColor().rgba()), 3);
+        if (node !== selected) {
+          assert.strictEqual(getComputedStyle(node.element()).outlineStyle, 'none');
+        }
+      }
+    }
+
+    const screenshots = {
+      light: {
+        keyboard: 'data_grid/selection-keyboard-light.png',
+        blurred: 'data_grid/selection-blurred-light.png',
+        'cell-focus': 'data_grid/selection-cell-focus-light.png',
+      },
+      dark: {
+        keyboard: 'data_grid/selection-keyboard-dark.png',
+        blurred: 'data_grid/selection-blurred-dark.png',
+        'cell-focus': 'data_grid/selection-cell-focus-dark.png',
+      },
+    };
+
     for (const theme of ['light', 'dark'] as const) {
-      it(`outlines the selected row only during keyboard focus in the ${theme} theme`, () => {
+      it(`keeps selection distinct from keyboard focus and blur in the ${theme} theme`, () => {
         setColorScheme(theme);
         const {dataGrid, nodes, outsideInput} = createGrid();
         const selected = nodes[0].element();
         const blurredBackground = getComputedStyle(selected).backgroundColor;
-        assert.strictEqual(getComputedStyle(selected).outlineStyle, 'none');
+        assertSelectionIndicator(nodes, '1px');
 
         dataGrid.element.focus();
         assert.isTrue(dataGrid.element.matches(':focus-visible'));
-        const style = getComputedStyle(selected);
-        assert.strictEqual(style.outlineStyle, 'solid');
-        assert.strictEqual(style.outlineWidth, '2px');
-        assert.strictEqual(style.outlineOffset, '-2px');
-        const outline = Common.Color.parse(style.outlineColor);
-        assert.exists(outline);
-        for (const node of nodes) {
-          const background = Common.Color.parse(getComputedStyle(node.element()).backgroundColor);
-          assert.exists(background);
-          assert.isAtLeast(
-              Common.ColorUtils.contrastRatio(outline.asLegacyColor().rgba(), background.asLegacyColor().rgba()), 3);
-        }
+        assertSelectionIndicator(nodes, '2px');
 
         dataGrid.element.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
         assert.strictEqual(dataGrid.selectedNode, nodes[1]);
         assert.strictEqual(getComputedStyle(selected).outlineStyle, 'none');
-        assert.strictEqual(getComputedStyle(nodes[1].element()).outlineStyle, 'solid');
+        assertSelectionIndicator(nodes, '2px');
 
         outsideInput.focus();
         assert.strictEqual(dataGrid.selectedNode, nodes[1]);
-        assert.strictEqual(getComputedStyle(nodes[1].element()).outlineStyle, 'none');
+        assertSelectionIndicator(nodes, '1px');
         assert.strictEqual(getComputedStyle(nodes[1].element()).backgroundColor, blurredBackground);
       });
 
-      it(`preserves cell focus without a row outline in the ${theme} theme`, () => {
+      it(`preserves cell focus alongside selection in the ${theme} theme`, () => {
         setColorScheme(theme);
         const {dataGrid, nodes} = createGrid();
         dataGrid.element.focus();
         const selected = nodes[0].element();
-        assert.strictEqual(getComputedStyle(selected).outlineStyle, 'solid');
+        assertSelectionIndicator(nodes, '2px');
 
         const cell = selected.querySelector('td');
         assert.exists(cell);
         cell.focus();
         assert.isTrue(cell.matches(':focus-visible'));
         assert.strictEqual(dataGrid.selectedNode, nodes[0]);
-        assert.strictEqual(getComputedStyle(selected).outlineStyle, 'none');
+        assertSelectionIndicator(nodes, '1px');
         assert.strictEqual(getComputedStyle(cell).outlineStyle, 'solid');
         assert.strictEqual(getComputedStyle(cell).outlineWidth, '2px');
 
         dataGrid.element.focus();
         assert.strictEqual(getComputedStyle(cell).outlineStyle, 'none');
-        assert.strictEqual(getComputedStyle(selected).outlineStyle, 'solid');
+        assertSelectionIndicator(nodes, '2px');
       });
+
+      it(`outlines mouse selection without keyboard focus in the ${theme} theme`, () => {
+        setColorScheme(theme);
+        const {dataGrid, nodes, outsideInput} = createGrid();
+        nodes[1].element().dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+        assert.strictEqual(dataGrid.selectedNode, nodes[1]);
+        assert.isFalse(dataGrid.element.matches(':focus-visible'));
+        assertSelectionIndicator(nodes, '1px');
+
+        outsideInput.focus();
+        assertSelectionIndicator(nodes, '1px');
+        nodes[1].deselect();
+        assert.isNull(dataGrid.selectedNode);
+        for (const node of nodes) {
+          assert.strictEqual(getComputedStyle(node.element()).outlineStyle, 'none');
+        }
+      });
+
+      for (const state of ['keyboard', 'blurred', 'cell-focus'] as const) {
+        it(`renders ${state} selection in the ${theme} theme`, async () => {
+          setColorScheme(theme);
+          const {dataGrid, nodes, outsideInput} = createGrid();
+          dataGrid.element.focus();
+          if (state === 'blurred') {
+            outsideInput.focus();
+          } else if (state === 'cell-focus') {
+            const cell = nodes[0].element().querySelector('td');
+            assert.exists(cell);
+            cell.focus();
+          }
+          await assertScreenshot(screenshots[theme][state]);
+        });
+      }
     }
   });
 

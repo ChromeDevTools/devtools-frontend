@@ -237,9 +237,7 @@ describe('The Memory Panel', function() {
     // later down the line.
     assert.isTrue(textOfEl.startsWith('sharedinleaking()'));
 
-    // Have to click it not in the middle as the middle can hold the link to the
-    // file in the sources pane and we want to avoid clicking that.
-    await devToolsPage.clickElement(sharedInLeakingElementRow /* TODO(crbug.com/1363150): {maxPixelsFromLeft: 10} */);
+    await devToolsPage.clickElement(sharedInLeakingElementRow);
     // Expand the data-grid for the shared list
     await devToolsPage.page.keyboard.press('ArrowRight');
 

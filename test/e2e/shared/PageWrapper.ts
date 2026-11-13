@@ -194,8 +194,6 @@ export class PageWrapper {
 
   async performActionOnSelector(selector: string, options: {root?: puppeteer.ElementHandle},
                                 action: Action): Promise<puppeteer.ElementHandle> {
-    // TODO(crbug.com/1410168): we should refactor waitFor to be compatible with
-    // Puppeteer's syntax for selectors.
     const queryHandlers = new Set([
       'pierceShadowText',
       'pierce',

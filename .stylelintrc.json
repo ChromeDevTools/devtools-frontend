@@ -18,6 +18,7 @@
     "declaration-no-important": true,
     "declaration-block-no-duplicate-properties": true,
     "color-named": "never",
+    "selector-no-unmatchable": true,
     "selector-type-no-unknown": [
       true,
       {

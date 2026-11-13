@@ -92,7 +92,6 @@ export const DEFAULT_VIEW: ViewFunction = (input, _output, target) => {
   render(
     html`
     <style>${requestCookiesViewStyles}</style>
-    <style>${UI.inspectorCommonStyles}</style>
     <div class="request-cookies-view">
       ${input.gotCookies ? Lit.nothing : widget(UI.EmptyWidget.EmptyWidget, {
           header: i18nString(UIStrings.thisRequestHasNoCookies)})}

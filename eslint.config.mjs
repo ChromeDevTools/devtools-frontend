@@ -908,7 +908,6 @@ export default defineConfig([
             'front_end/panels/network/NetworkLogView.ts',
             'front_end/panels/network/NetworkPanel.ts',
             'front_end/panels/network/NetworkWaterfallColumn.ts',
-            'front_end/panels/network/RequestCookiesView.ts',
             'front_end/panels/network/RequestDeviceBoundSessionsView.ts',
             'front_end/panels/network/RequestHeadersView.ts',
             'front_end/panels/network/RequestPayloadView.ts',

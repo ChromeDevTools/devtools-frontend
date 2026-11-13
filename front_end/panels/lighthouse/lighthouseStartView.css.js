@@ -15,8 +15,7 @@ export default `/*
   padding: var(--sys-size-11);
   overflow: auto;
   height: 100%;
-  /* for buttons */
-  --legacy-accent-color: #0535c1;
+
   --font-size: var(--sys-typescale-body2-size);
   --report-font-family: roboto, helvetica, arial, sans-serif;
 }
@@ -136,7 +135,7 @@ export default `/*
   /* See: crbug.com/1152736 for color variable migration. */
   font-weight: bold;
   padding-left: var(--sys-size-5);
-  padding-top: 10px;
+  padding-top: var(--sys-size-5);
 }
 
 .lighthouse-warning-text::before {

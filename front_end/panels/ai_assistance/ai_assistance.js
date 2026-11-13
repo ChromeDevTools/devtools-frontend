@@ -630,10 +630,6 @@ var chatMessage_css_default = `/*
       }
     }
 
-    .ai-css-change {
-      margin: var(--sys-size-6) 0;
-    }
-
     .answer-body-wrapper {
       @container(min-width: 700px) {
         /* Indent the content to align with the walkthrough CTA
@@ -644,18 +640,6 @@ var chatMessage_css_default = `/*
 
     &.is-last-message {
       border-bottom: 0;
-    }
-
-    .message-info {
-      display: flex;
-      align-items: center;
-      height: var(--sys-size-11);
-      gap: var(--sys-size-4);
-      font: var(--sys-typescale-body4-bold);
-
-      h2 {
-        font: var(--sys-typescale-body4-bold);
-      }
     }
 
     .actions {
@@ -740,7 +724,7 @@ var chatMessage_css_default = `/*
 
   .js-code-output {
     devtools-code-block {
-      --code-block-max-code-height: 50px;
+      --code-block-max-code-height: var(--sys-size-17);
     }
   }
 
@@ -847,11 +831,6 @@ var chatMessage_css_default = `/*
         --code-block-background-color: var(--sys-color-surface1);
       }
     }
-  }
-
-
-  .error-step {
-    color: var(--sys-color-error);
   }
 
   .side-effect-confirmation {
@@ -1230,25 +1209,12 @@ var walkthroughView_css_default = `/*
     width: 100%;
   }
 
-  .step-container {
-    display: flex;
-    gap: var(--sys-size-5);
-    align-items: flex-start;
-  }
-
   .step-icon {
     color: var(--sys-color-on-surface-subtle);
     width: var(--sys-size-8);
     height: var(--sys-size-8);
     flex-shrink: 0;
     margin-top: var(--sys-size-2);
-  }
-
-  .step-content {
-    flex: 1;
-    font-size: var(--sys-typescale-body5-size);
-    color: var(--sys-color-on-surface);
-    line-height: 1.4;
   }
 
   .empty-state {
@@ -8859,7 +8825,7 @@ var exploreWidget_css_default = `/*
     .feature-card {
       display: flex;
       padding: var(--sys-size-4) var(--sys-size-6);
-      gap: 10px;
+      gap: var(--sys-size-6);
       background-color: var(--sys-color-surface2);
       border-radius: var(--sys-shape-corner-medium-small);
       width: 100%;
@@ -8890,24 +8856,6 @@ var exploreWidget_css_default = `/*
           line-height: var(--sys-typescale-body4-line-height);
         }
       }
-    }
-  }
-
-  .ai-assistance-explore-footer {
-    flex-shrink: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-block: var(--sys-size-3);
-    font: var(--sys-typescale-body5-regular);
-    border-top: var(--sys-size-1) solid var(--sys-color-divider);
-    text-wrap: balance;
-    text-align: center;
-
-    p {
-      margin: 0;
-      padding: 0;
     }
   }
 }
@@ -9153,7 +9101,7 @@ var optInChangeDialog_css_default = `/*
       }
 
       .text {
-        font: var(--sys-typescale-body4);
+        font: var(--sys-typescale-body4-regular);
         color: var(--sys-color-on-surface);
       }
     }

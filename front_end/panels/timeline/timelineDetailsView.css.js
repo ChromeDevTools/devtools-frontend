@@ -103,10 +103,6 @@ export default `/*
   .timeline-details-view-pie-chart-wrapper {
     margin: var(--sys-size-3) 0;
   }
-
-  .timeline-details-view-pie-chart {
-    margin-top: 5px;
-  }
 }
 
 /*# sourceURL=${import.meta.resolve('./timelineDetailsView.css')} */`;

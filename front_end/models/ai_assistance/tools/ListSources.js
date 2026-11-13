@@ -12,6 +12,7 @@ const lockedString = i18n.i18n.lockedString;
 /**
  * A tool that lists all network source files in the workspace.
  * Each file is returned with its displayName and a unique session-based numeric ID.
+ * The output is a semicolon-delimited list with an `id;name` header.
  */
 export class ListSourcesTool {
     name = "listSources" /* ToolName.LIST_SOURCES */;
@@ -89,14 +90,38 @@ export class ListSourcesTool {
             return originResult;
         }
         const files = ListSourcesTool.getUISourceCodes(originLock);
+        if (files.length === 0) {
+            return {
+                result: 'No source files found for the current origin.',
+            };
+        }
+        const establishedOrigin = originResult.origin;
+        const rows = files.map(file => {
+            const id = ListSourcesTool.uiSourceCodeId.get(file) ?? 0;
+            const name = formatSourceName(file, establishedOrigin);
+            return `${id};${name}`;
+        });
         return {
-            result: {
-                files: files.map(file => ({
-                    id: ListSourcesTool.uiSourceCodeId.get(file) ?? 0,
-                    name: file.fullDisplayName(),
-                })),
-            },
+            result: ['id;name', ...rows].join('\n'),
         };
     }
+}
+/**
+ * Formats a source file name for the `listSources` output.
+ *
+ * `fullDisplayName()` already strips `https?://` for network files while keeping the host,
+ * and decodes URI sequences (`%0D`, `%0A`) into raw `\r` and `\n`. Re-encode carriage returns
+ * and newlines so filenames cannot break the line-delimited `id;name` output.
+ */
+function formatSourceName(file, establishedOrigin) {
+    const fullName = file.fullDisplayName().replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+    const siteId = establishedOrigin.siteId();
+    if (/^https?:\/\//.test(siteId) && file.origin().toLowerCase() === siteId) {
+        const hostPrefix = siteId.replace(/^https?:\/\//, '');
+        if (fullName.slice(0, hostPrefix.length).toLowerCase() === hostPrefix && fullName[hostPrefix.length] === '/') {
+            return fullName.slice(hostPrefix.length);
+        }
+    }
+    return fullName;
 }
 //# sourceMappingURL=ListSources.js.map

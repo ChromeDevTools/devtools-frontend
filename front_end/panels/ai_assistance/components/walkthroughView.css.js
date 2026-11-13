@@ -72,25 +72,12 @@ export default `/*
     width: 100%;
   }
 
-  .step-container {
-    display: flex;
-    gap: var(--sys-size-5);
-    align-items: flex-start;
-  }
-
   .step-icon {
     color: var(--sys-color-on-surface-subtle);
     width: var(--sys-size-8);
     height: var(--sys-size-8);
     flex-shrink: 0;
     margin-top: var(--sys-size-2);
-  }
-
-  .step-content {
-    flex: 1;
-    font-size: var(--sys-typescale-body5-size);
-    color: var(--sys-color-on-surface);
-    line-height: 1.4;
   }
 
   .empty-state {

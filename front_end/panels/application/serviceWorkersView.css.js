@@ -12,7 +12,7 @@ export default `/*
 .service-worker-version {
   display: flex;
   /* The status string can be long, allow this line of the report to wrap. */
-  align-items: center;
+  align-items: baseline;
   flex-wrap: wrap;
 
   devtools-button {
@@ -50,13 +50,14 @@ export default `/*
 .service-worker-installing-circle {
   position: relative;
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  /* Center the --sys-size-1 stack bar (left: var(--sys-size-3)) under the circle. */
+  width: calc(2 * var(--sys-size-3) + var(--sys-size-1));
+  height: calc(2 * var(--sys-size-3) + var(--sys-size-1));
   z-index: 10;
   margin-right: var(--sys-size-4);
   border-radius: var(--sys-shape-corner-full);
   border: var(--sys-size-1) solid var(--sys-color-token-subtle);
-  align-self: center;
+  align-self: baseline;
   /* The circle should not shrink, to avoid risking becoming invisible. */
   flex-shrink: 0;
 }

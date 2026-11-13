@@ -2073,10 +2073,6 @@ var timelineFlamechartPopover_css_default = `/*
   margin-right: var(--sys-size-3);
 }
 
-.timeline-flamechart-popover span.popoverinfo-network-time {
-  color: var(--sys-color-primary);
-}
-
 .timeline-flamechart-popover span.popoverinfo-time {
   color: var(--sys-color-green);
 }
@@ -6493,7 +6489,7 @@ var timelineStatusDialog_css_default = `/*
   width: var(--sys-size-19);
   text-align: right;
   color: var(--sys-color-on-surface);
-  margin-right: 10px;
+  margin-right: var(--sys-size-5);
 }
 
 .timeline-status-dialog .progress .indicator-container {
@@ -9396,10 +9392,6 @@ var timelinePanel_css_default = `/*
   max-height: 300px;
   cursor: pointer;
   border: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.timeline-details .filter-input-field {
-  width: 120px;
 }
 
 .timeline-stack-view-header {
@@ -14893,18 +14885,6 @@ var timelineTreeView_css_default = `/*
   overflow: hidden;
 }
 
-.timeline-tree-view .data-grid .name-container .activity-warning::after {
-  content: "[deopt]";
-  margin: 0 var(--sys-size-3);
-  line-height: 12px;
-  font-size: 10px;
-  color: var(--sys-color-state-disabled);
-}
-
-.timeline-tree-view .data-grid tr.selected .name-container .activity-warning::after {
-  color: var(--sys-color-on-tonal-container);
-}
-
 .timeline-tree-view .data-grid .name-container .activity-link {
   flex: auto;
   overflow: hidden;
@@ -17030,10 +17010,6 @@ var timelineDetailsView_css_default = `/*
 
   .timeline-details-view-pie-chart-wrapper {
     margin: var(--sys-size-3) 0;
-  }
-
-  .timeline-details-view-pie-chart {
-    margin-top: 5px;
   }
 }
 

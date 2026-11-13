@@ -78,6 +78,10 @@ function mapCommonAidaRequestFields(aidaRequest, gcaRequest) {
             temperature: aidaRequest.options.temperature,
         };
     }
+    if (aidaRequest.metadata?.string_session_id) {
+        // Populate top-level sessionId for server-side session affinity; labels['session_id'] only sets a sanitized GCP label.
+        gcaRequest.sessionId = aidaRequest.metadata.string_session_id;
+    }
 }
 export function gcaResponseToAidaDoConversationResponse(response) {
     const functionCalls = [];
@@ -448,6 +452,30 @@ function convertAidaParamToGcaSchema(param) {
     }
     return schema;
 }
+// `FinishReason` covers normal completion ('STOP'), failures (for example 'MAX_TOKENS'),
+// and content blocks. Only the reasons below mean that GCA blocked the candidate output.
+const BLOCKING_FINISH_REASONS = new Set([
+    'SAFETY',
+    'RECITATION',
+    'BLOCKLIST',
+    'PROHIBITED_CONTENT',
+    'SPII',
+    'IMAGE_SAFETY',
+    'IMAGE_PROHIBITED_CONTENT',
+    'IMAGE_RECITATION',
+]);
+// GCA JSON responses send enum names (for example 'STOP'), while the GcaTypes enums and test fixtures use numbers.
+function enumName(value, names) {
+    return typeof value === 'number' ? names[value] : value;
+}
+// Setting `RecitationAction.BLOCK` makes `AidaClient` throw `AidaBlockError`.
+function blockedChunk(metadata, blockMessage) {
+    const citations = metadata.attributionMetadata?.citations ?? [];
+    return {
+        metadata: { ...metadata, attributionMetadata: { attributionAction: AIDA.RecitationAction.BLOCK, citations } },
+        blockMessage,
+    };
+}
 export function gcaChunkResponseToAidaChunkResponse(response) {
     try {
         if (response.error) {
@@ -477,6 +505,14 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
                     uri: c.uri,
                 })),
             };
+        }
+        const blockReason = enumName(response.promptFeedback?.blockReason, GCA.BlockReason);
+        if (blockReason && blockReason !== 'BLOCKED_REASON_UNSPECIFIED') {
+            return [blockedChunk(metadata, `GCA prompt blocked: ${blockReason}`)];
+        }
+        const finishReason = enumName(candidate?.finishReason, GCA.FinishReason);
+        if (finishReason && BLOCKING_FINISH_REASONS.has(finishReason)) {
+            return [blockedChunk(metadata, `GCA response blocked: ${finishReason}`)];
         }
         // Trailing chunks without parts still yield metadata so the client receives the final
         // rpcGlobalId, modelVersion, usageMetadata, and citationMetadata.

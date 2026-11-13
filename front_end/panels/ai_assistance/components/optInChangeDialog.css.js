@@ -79,7 +79,7 @@ export default `/*
       }
 
       .text {
-        font: var(--sys-typescale-body4);
+        font: var(--sys-typescale-body4-regular);
         color: var(--sys-color-on-surface);
       }
     }

@@ -282,7 +282,7 @@ export default `/*
   color: var(--sys-color-on-surface);
   position: relative;
 
-  & > .tabbed-pane-header-tab-icon devtools-icon {
+  & > .tabbed-pane-header-tab-icon {
     margin: 0;
     margin-right: var(--sys-size-6);
   }
@@ -292,6 +292,10 @@ export default `/*
     background-color: var(--app-color-navigation-drawer-background-selected);
 
     & > .tabbed-pane-header-tab-icon devtools-icon {
+      color: var(--app-color-navigation-drawer-label-selected);
+    }
+
+    & > .tabbed-pane-header-tab-icon slot::slotted(devtools-icon) {
       color: var(--app-color-navigation-drawer-label-selected);
     }
   }

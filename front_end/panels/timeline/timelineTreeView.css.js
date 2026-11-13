@@ -103,18 +103,6 @@ export default `/*
   overflow: hidden;
 }
 
-.timeline-tree-view .data-grid .name-container .activity-warning::after {
-  content: "[deopt]";
-  margin: 0 var(--sys-size-3);
-  line-height: 12px;
-  font-size: 10px;
-  color: var(--sys-color-state-disabled);
-}
-
-.timeline-tree-view .data-grid tr.selected .name-container .activity-warning::after {
-  color: var(--sys-color-on-tonal-container);
-}
-
 .timeline-tree-view .data-grid .name-container .activity-link {
   flex: auto;
   overflow: hidden;

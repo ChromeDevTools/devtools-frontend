@@ -5959,6 +5959,7 @@ var LoggingDriver_exports = {};
 __export(LoggingDriver_exports, {
   addDocument: () => addDocument,
   clickLogThrottler: () => clickLogThrottler,
+  enableLogging: () => enableLogging,
   isLogging: () => isLogging,
   keyboardLogThrottler: () => keyboardLogThrottler,
   process: () => process,
@@ -6232,6 +6233,9 @@ function observeMutations(roots) {
 var logging = false;
 function isLogging() {
   return logging;
+}
+function enableLogging() {
+  logging = true;
 }
 async function startLogging(options) {
   logging = true;

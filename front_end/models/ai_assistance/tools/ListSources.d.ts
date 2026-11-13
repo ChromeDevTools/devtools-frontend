@@ -1,17 +1,12 @@
 import * as Host from '../../../core/host/host.js';
 import * as Workspace from '../../workspace/workspace.js';
 import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, type OriginLockState, PermissionPrompt, ToolName } from './Tool.js';
-interface SourceSummary {
-    id: number;
-    name: string;
-}
 /**
  * A tool that lists all network source files in the workspace.
  * Each file is returned with its displayName and a unique session-based numeric ID.
+ * The output is a semicolon-delimited list with an `id;name` header.
  */
-export declare class ListSourcesTool implements DataTool<Record<string, never>, {
-    files: SourceSummary[];
-}, BaseToolCapability & OriginLockCapability> {
+export declare class ListSourcesTool implements DataTool<Record<string, never>, string, BaseToolCapability & OriginLockCapability> {
     readonly name: ToolName;
     readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
@@ -26,8 +21,5 @@ export declare class ListSourcesTool implements DataTool<Record<string, never>, 
         title: string;
         action: string;
     };
-    handler(_params: Record<string, never>, context: BaseToolCapability & OriginLockCapability): Promise<DataHandlerResult<{
-        files: SourceSummary[];
-    }>>;
+    handler(_params: Record<string, never>, context: BaseToolCapability & OriginLockCapability): Promise<DataHandlerResult<string>>;
 }
-export {};

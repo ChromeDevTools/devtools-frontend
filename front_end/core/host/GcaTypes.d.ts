@@ -294,7 +294,7 @@ export interface GenerateContentResponse {
 export interface Candidate {
     index: number;
     content: Content;
-    finishReason: FinishReason;
+    finishReason: FinishReason | keyof typeof FinishReason;
     safetyRatings: SafetyRating[];
     citationMetadata: CitationMetadata;
     groundingMetadata: GroundingMetadata;
@@ -367,7 +367,7 @@ export interface PredictionMetadata {
     classifierScore: number;
 }
 export interface PromptFeedback {
-    blockReason: BlockReason;
+    blockReason: BlockReason | keyof typeof BlockReason;
     safetyRatings: SafetyRating[];
     blockReasonMessage: string;
 }

@@ -48,7 +48,7 @@ export default `/*
 
 .metric-source-value {
   font-size: var(--sys-size-13);
-  line-height: 36px;
+  line-height: var(--sys-typescale-headline1-line-height);
   font-weight: var(--ref-typeface-weight-regular);
 }
 
@@ -96,10 +96,6 @@ export default `/*
 }
 
 .compare-text {
-  margin-top: var(--sys-size-5);
-}
-
-.environment-recs-intro {
   margin-top: var(--sys-size-5);
 }
 

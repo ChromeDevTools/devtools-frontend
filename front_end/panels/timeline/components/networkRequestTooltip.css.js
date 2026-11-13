@@ -34,8 +34,8 @@ export default `/*
 
   .network-category-chip {
     box-sizing: border-box;
-    width: 10px;
-    height: 10px;
+    width: var(--sys-size-5);
+    height: var(--sys-size-5);
     border: var(--sys-size-1) solid var(--sys-color-divider);
     display: inline-block;
     margin-right: var(--sys-size-3);
@@ -85,7 +85,8 @@ export default `/*
   .whisker-left {
     align-self: center;
     display: inline-flex;
-    width: 11px;
+    /* .indicator width (--sys-size-6) minus 1px border (--sys-size-1) on the open right side. */
+    width: calc(var(--sys-size-6) - var(--sys-size-1));
     height: var(--sys-size-4);
     margin-right: 5px;
     border-left: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
@@ -95,7 +96,8 @@ export default `/*
   .whisker-right {
     align-self: center;
     display: inline-flex;
-    width: 11px;
+    /* .indicator width (--sys-size-6) minus 1px border (--sys-size-1) on the open left side. */
+    width: calc(var(--sys-size-6) - var(--sys-size-1));
     height: var(--sys-size-4);
     margin-right: 5px;
     border-right: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);

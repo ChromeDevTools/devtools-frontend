@@ -390,8 +390,8 @@ export class UsedPreloadingView extends UI.Widget.VBox {
     #getSpeculativeLoadingStatusForThisPageData() {
         const pageURL = Common.ParsedURL.ParsedURL.urlWithoutHash(this.#data.pageURL);
         const forThisPage = this.#data.previousAttempts.filter(attempt => Common.ParsedURL.ParsedURL.urlWithoutHash(attempt.key.url) === pageURL);
-        const prefetch = forThisPage.filter(attempt => attempt.key.action === "Prefetch" /* Protocol.Preload.SpeculationAction.Prefetch */)[0];
-        const prerenderLike = forThisPage.filter(attempt => this.#isPrerenderLike(attempt.action))[0];
+        const prefetch = forThisPage.findLast(attempt => attempt.key.action === "Prefetch" /* Protocol.Preload.SpeculationAction.Prefetch */);
+        const prerenderLike = forThisPage.findLast(attempt => this.#isPrerenderLike(attempt.action));
         let kind = "NoPreloads" /* UsedKind.NO_PRELOADS */;
         // Prerender -> prefetch downgrade case
         //

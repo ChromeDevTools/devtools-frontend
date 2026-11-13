@@ -31,7 +31,7 @@ export default `/**
 }
 
 :host {
-  --metrics-height: 190px;
+  --metrics-height: var(--sys-size-25);
 }
 
 .metrics.collapsed {
@@ -58,7 +58,7 @@ export default `/**
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
-  padding: var(--sys-size-2);
+  padding: var(--sys-size-2) var(--sys-size-4);
   margin: var(--sys-size-2);
   position: relative;
 }
@@ -69,8 +69,8 @@ export default `/**
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px var(--sys-size-4);
-  margin: 3px;
+  padding: var(--sys-size-2) var(--sys-size-4);
+  margin: var(--sys-size-2);
   position: relative;
 }
 
@@ -91,10 +91,9 @@ export default `/**
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px var(--sys-size-4);
-  margin: 3px;
+  padding: var(--sys-size-2) var(--sys-size-4);
+  margin: var(--sys-size-2);
   position: relative;
-  min-width: 120px;
 }
 
 .metrics .content {

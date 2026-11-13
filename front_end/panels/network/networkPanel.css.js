@@ -172,8 +172,4 @@ export default `/*
   }
 }
 
-devtools-request-headers {
-  min-width: 360px;
-}
-
 /*# sourceURL=${import.meta.resolve('./networkPanel.css')} */`;

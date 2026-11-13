@@ -1043,12 +1043,6 @@ var spectrum_css_default = `/*
   overflow: hidden;
 }
 
-/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
-:selection {
-  background-color: var(--sys-color-tonal-container);
-  color: var(--sys-color-on-tonal-container);
-}
-
 .spectrum-color {
   position: relative;
   width: 232px;
@@ -1142,14 +1136,12 @@ var spectrum_css_default = `/*
   border-radius: var(--sys-size-7);
 }
 
-.spectrum-sat,
-.-theme-preserve {
+.spectrum-sat {
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background-image: linear-gradient(to right, #fff, rgb(204 154 129 / 0%));
 }
 
-.spectrum-val,
-.-theme-preserve {
+.spectrum-val {
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background-image: linear-gradient(to top, #000, rgb(204 154 129 / 0%));
 }

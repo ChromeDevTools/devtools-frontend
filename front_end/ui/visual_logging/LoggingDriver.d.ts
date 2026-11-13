@@ -3,6 +3,7 @@ export declare let keyboardLogThrottler: Common.Throttler.Throttler;
 export declare let clickLogThrottler: Common.Throttler.Throttler;
 export declare let resizeLogThrottler: Common.Throttler.Throttler;
 export declare function isLogging(): boolean;
+export declare function enableLogging(): void;
 export declare function startLogging(options?: {
     processingThrottler?: Common.Throttler.Throttler;
     keyboardLogThrottler?: Common.Throttler.Throttler;

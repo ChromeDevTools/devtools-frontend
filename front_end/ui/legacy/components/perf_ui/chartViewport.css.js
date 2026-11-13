@@ -36,7 +36,7 @@ export default `/*
 
 :host-context(.platform-mac) ::-webkit-scrollbar-thumb {
   background-color: var(--color-scrollbar-mac); /* stylelint-disable-line plugin/use_theme_colors */
-  border-radius: 50px;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 :host-context(.platform-mac) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {
@@ -67,14 +67,6 @@ export default `/*
   top: 0;
   bottom: 0;
   text-align: center;
-}
-
-.chart-viewport-selection-overlay .time-span {
-  white-space: nowrap;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
 /*# sourceURL=${import.meta.resolve('./chartViewport.css')} */`;

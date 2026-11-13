@@ -617,7 +617,7 @@ var eventListenersView_css_default = `/*
 
 .tree-outline-disclosure {
   padding-left: 0 !important; /* stylelint-disable-line declaration-no-important */
-  padding-right: 3px;
+  padding-right: var(--sys-size-2);
 }
 
 .tree-outline-disclosure li.parent::before {

@@ -208,7 +208,7 @@ export class AidaClient {
                         ...result.metadata,
                     };
                     if (metadata?.attributionMetadata?.attributionAction === RecitationAction.BLOCK) {
-                        throw new AidaBlockError();
+                        throw new AidaBlockError(result.blockMessage);
                     }
                 }
                 if (result.textChunk) {

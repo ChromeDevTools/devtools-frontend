@@ -43,6 +43,9 @@ let logging = false;
 export function isLogging() {
     return logging;
 }
+export function enableLogging() {
+    logging = true;
+}
 export async function startLogging(options) {
     logging = true;
     processingThrottler = options?.processingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);

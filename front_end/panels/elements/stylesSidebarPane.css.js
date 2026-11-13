@@ -271,12 +271,11 @@ export default `/**
 .sidebar-pane-section-toolbar {
   position: absolute;
   right: 0;
-  bottom: calc(-1 * var(--sys-size-1));
+  bottom: var(--sys-size-2);
   z-index: 0;
 
   &.new-rule-toolbar {
     visibility: hidden;
-    margin-bottom: 5px;
 
     --toolbar-height: var(--sys-size-8);
   }

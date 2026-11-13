@@ -56,7 +56,7 @@ export default `/*
   }
 
   .network-request-details-item, .network-request-details-col {
-    padding: 5px 10px;
+    padding: var(--sys-size-3) var(--sys-size-5);
   }
 
   .server-timing-column-header {
@@ -72,7 +72,7 @@ export default `/*
   .title {
     color: var(--sys-color-token-subtle);
     overflow: hidden;
-    padding-right: 10px;
+    padding-right: var(--sys-size-5);
     display: inline-block;
     vertical-align: top;
   }

@@ -29,15 +29,6 @@ export default `/*
     background-color: var(--sys-color-cdt-base-container);
     padding: var(--sys-size-1) var(--sys-size-3);
   }
-
-  .preloading-placeholder {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--sys-typescale-body3-size);
-    color: var(--sys-color-token-subtle);
-  }
 }
 
 /*# sourceURL=${import.meta.resolve('./preloadingGrid.css')} */`;

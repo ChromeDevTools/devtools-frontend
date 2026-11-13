@@ -26,6 +26,7 @@ button {
   background: transparent;
   margin: 0;
   padding: 0;
+  line-height: inherit;
 
   &.link {
     cursor: pointer;
@@ -38,8 +39,7 @@ button {
 
 devtools-icon {
   width: var(--sys-size-8);
-  height: var(--sys-size-8);
-  vertical-align: middle;
+  height: var(--sys-size-7);
 
   &[name="issue-cross-filled"] {
     color: var(--icon-error);

@@ -9,198 +9,455 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.network-log-grid.data-grid {
-  border: none !important; /* stylelint-disable-line declaration-no-important */
-  flex: auto;
-}
+@scope to (devtools-widget > *) {
+  .network-log-grid.data-grid {
+    border: none !important; /* stylelint-disable-line declaration-no-important */
+    flex: auto;
+  }
 
-.network-log-grid.data-grid.no-selection:focus-visible {
-  border: none !important; /* stylelint-disable-line declaration-no-important */
-}
+  .network-log-grid.data-grid.no-selection:focus-visible {
+    border: none !important; /* stylelint-disable-line declaration-no-important */
+  }
 
-#network-container {
-  overflow: hidden;
-}
+  :scope {
+    overflow: hidden;
+  }
 
-#network-container.grid-focused.no-node-selected:focus-within {
-  border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
-}
+  :scope.grid-focused.no-node-selected:focus-within {
+    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
+  }
 
-.network-summary-bar {
-  flex: 0 0 calc(var(--sys-size-12) - var(--sys-size-1)); /* 28px toolbar minus 1px top border */
-  align-items: center;
-  padding-left: var(--sys-size-4);
-  background-color: var(--sys-color-cdt-base-container);
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  user-select: text;
-}
+  .network-summary-bar {
+    flex: 0 0 calc(var(--sys-size-12) - var(--sys-size-1)); /* 28px toolbar minus 1px top border */
+    align-items: center;
+    padding-left: var(--sys-size-4);
+    background-color: var(--sys-color-cdt-base-container);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    user-select: text;
+  }
 
-.panel.network devtools-toolbar.network-summary-bar {
-  border-bottom: 0;
-}
+  devtools-toolbar.network-summary-bar {
+    border-bottom: 0;
+  }
 
-.network-summary-bar dt-icon-label {
-  margin-right: var(--sys-size-4);
-}
+  .network-summary-bar dt-icon-label {
+    margin-right: var(--sys-size-4);
+  }
 
-.network-summary-bar > * {
-  flex: none;
-}
+  .network-summary-bar > * {
+    flex: none;
+  }
 
-.network-log-grid.data-grid tbody {
-  background: transparent;
-}
+  .network-log-grid.data-grid tbody {
+    background: transparent;
+  }
 
-.network-log-grid.data-grid td {
-  height: 41px;
-  border-left: var(--sys-size-1) solid var(--sys-color-divider);
-  vertical-align: middle;
-}
+  .network-log-grid.data-grid td {
+    /* 2 * 20px (--sys-size-9) two-line base row + 1px (--sys-size-1) .icon top margin. */
+    height: calc(2 * var(--sys-size-9) + var(--sys-size-1));
+    border-left: var(--sys-size-1) solid var(--sys-color-divider);
+    vertical-align: middle;
+  }
 
-.network-log-grid.data-grid .corner {
-  display: none;
-}
+  /* Scoped rules outrank the equally specific \\'.data-grid td:first-child\\'
+     rule in dataGrid.css, so repeat it here to keep the first column flush. */
+  .network-log-grid.data-grid td:first-child {
+    border-left-width: 0;
+  }
 
-.network-log-grid.data-grid.small td {
-  /* 20px (--sys-size-9) base row + 1px (--sys-size-1) .icon top margin. */
-  height: calc(var(--sys-size-9) + var(--sys-size-1));
-}
+  .network-log-grid.data-grid .corner {
+    display: none;
+  }
 
-.network-log-grid.data-grid th {
-  border-bottom: none;
-}
+  .network-log-grid.data-grid.small td {
+    /* 20px (--sys-size-9) base row + 1px (--sys-size-1) .icon top margin. */
+    height: calc(var(--sys-size-9) + var(--sys-size-1));
+  }
 
-.network-waterfall-header,
-.network-log-grid.data-grid thead th {
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  border-left: var(--sys-size-1) solid var(--sys-color-divider);
-}
+  .network-log-grid.data-grid th {
+    border-bottom: none;
+  }
 
-.network-waterfall-header,
-.network-log-grid.data-grid thead {
-  /* 32px (--sys-size-13) header height minus 1px (--sys-size-1) bottom border offset. */
-  height: calc(var(--sys-size-13) - var(--sys-size-1));
-  background-color: var(--sys-color-surface1);
-}
+  .network-waterfall-header,
+  .network-log-grid.data-grid thead th {
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    border-left: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 
-.network-waterfall-header.small,
-.network-log-grid.data-grid.small thead {
-  height: var(--sys-size-11);
-}
+  .network-waterfall-header,
+  .network-log-grid.data-grid thead {
+    /* 32px (--sys-size-13) header height minus 1px (--sys-size-1) bottom border offset. */
+    height: calc(var(--sys-size-13) - var(--sys-size-1));
+    background-color: var(--sys-color-surface1);
+  }
 
-.network-log-grid.data-grid select {
-  appearance: none;
-  border: none;
-  width: 100%;
-  color: inherit;
-}
+  .network-waterfall-header.small,
+  .network-log-grid.data-grid.small thead {
+    height: var(--sys-size-11);
+  }
 
-.network-log-grid.data-grid .waterfall-column {
-  padding: var(--sys-size-1) 0;
-}
+  .network-log-grid.data-grid select {
+    appearance: none;
+    border: none;
+    width: 100%;
+    color: inherit;
+  }
 
-.network-log-grid.data-grid .waterfall-column .sort-order-icon-container {
-  right: var(--sys-size-7);
-  pointer-events: none;
-}
+  .network-log-grid.data-grid .waterfall-column {
+    padding: var(--sys-size-1) 0;
+  }
 
-.network-log-grid.data-grid th.sortable:active {
-  background-image: none !important; /* stylelint-disable-line declaration-no-important */
-}
+  .network-log-grid.data-grid .waterfall-column .sort-order-icon-container {
+    right: var(--sys-size-7);
+    pointer-events: none;
+  }
 
-.network-cell-subtitle {
-  font-weight: normal;
-  color: var(--sys-color-token-subtle);
-}
+  .network-log-grid.data-grid th.sortable:active {
+    background-image: none !important; /* stylelint-disable-line declaration-no-important */
+  }
 
-.status-column .devtools-link {
-  color: inherit;
-}
+  .network-cell-subtitle {
+    font-weight: normal;
+    color: var(--sys-color-token-subtle);
+  }
 
-.initiator-column .text-button.devtools-link,
-.initiator-column .text-button.devtools-link:focus-visible {
-  color: inherit;
-  background-color: transparent;
-  outline-offset: 0;
-  max-height: var(--sys-size-8);
-}
+  .status-column .devtools-link {
+    color: inherit;
+  }
 
-.network-error-row,
-.network-error-row .network-cell-subtitle {
-  /* stylelint-disable-next-line declaration-no-important */
-  color: var(--sys-color-error) !important;
-}
+  .initiator-column .text-button.devtools-link,
+  .initiator-column .text-button.devtools-link:focus-visible {
+    color: inherit;
+    background-color: transparent;
+    outline-offset: 0;
+    max-height: var(--sys-size-8);
+  }
 
-.network-throttled-row,
-.network-warning-row,
-.network-warning-row .network-cell-subtitle {
-  color: var(--sys-color-yellow);
-}
+  .network-error-row,
+  .network-error-row .network-cell-subtitle {
+    /* stylelint-disable-next-line declaration-no-important */
+    color: var(--sys-color-error) !important;
+  }
 
-.network-log-grid.data-grid tr.selected.network-error-row,
-.network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
-.network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell {
-  color: var(--sys-color-error);
-}
+  .network-throttled-row,
+  .network-warning-row,
+  .network-warning-row .network-cell-subtitle {
+    color: var(--sys-color-yellow);
+  }
 
-.network-log-grid.data-grid tr.selected.network-warning-row,
-.network-log-grid.data-grid tr.selected.network-warning-row .network-cell-subtitle,
-.network-log-grid.data-grid tr.selected.network-warning-row .network-dim-cell {
-  color: var(--sys-color-yellow);
-}
+  .network-log-grid.data-grid tr.selected.network-error-row,
+  .network-log-grid.data-grid tr.selected.network-error-row .network-cell-subtitle,
+  .network-log-grid.data-grid tr.selected.network-error-row .network-dim-cell {
+    color: var(--sys-color-error);
+  }
 
-.network-log-grid.data-grid:focus-within tr.selected.network-error-row,
-.network-log-grid.data-grid:focus-within tr.selected.network-error-row .devtools-link,
-.network-log-grid.data-grid:focus-within tr.selected.network-error-row .network-cell-subtitle,
-.network-log-grid.data-grid:focus-within tr.selected.network-error-row .network-dim-cell {
-  color: var(--sys-color-error);
-}
+  .network-log-grid.data-grid tr.selected.network-warning-row,
+  .network-log-grid.data-grid tr.selected.network-warning-row .network-cell-subtitle,
+  .network-log-grid.data-grid tr.selected.network-warning-row .network-dim-cell {
+    color: var(--sys-color-yellow);
+  }
 
-.network-log-grid.data-grid:focus-within tr.selected.network-warning-row,
-.network-log-grid.data-grid:focus-within tr.selected.network-warning-row .devtools-link,
-.network-log-grid.data-grid:focus-within tr.selected.network-warning-row .network-cell-subtitle,
-.network-log-grid.data-grid:focus-within tr.selected.network-warning-row .network-dim-cell {
-  color: var(--sys-color-yellow);
-}
+  .network-log-grid.data-grid:focus-within tr.selected.network-error-row,
+  .network-log-grid.data-grid:focus-within tr.selected.network-error-row .devtools-link,
+  .network-log-grid.data-grid:focus-within tr.selected.network-error-row .network-cell-subtitle,
+  .network-log-grid.data-grid:focus-within tr.selected.network-error-row .network-dim-cell {
+    color: var(--sys-color-error);
+  }
 
-.network-log-grid.data-grid tr.selected,
-.network-log-grid.data-grid tr.selected .network-cell-subtitle,
-.network-log-grid.data-grid tr.selected .network-dim-cell {
-  color: inherit;
-}
+  .network-log-grid.data-grid:focus-within tr.selected.network-warning-row,
+  .network-log-grid.data-grid:focus-within tr.selected.network-warning-row .devtools-link,
+  .network-log-grid.data-grid:focus-within tr.selected.network-warning-row .network-cell-subtitle,
+  .network-log-grid.data-grid:focus-within tr.selected.network-warning-row .network-dim-cell {
+    color: var(--sys-color-yellow);
+  }
 
-.network-log-grid.data-grid:focus tr.selected,
-.network-log-grid.data-grid:focus tr.selected .network-cell-subtitle,
-.network-log-grid.data-grid:focus tr.selected .network-dim-cell {
-  color: var(--sys-color-on-tonal-container);
-}
+  .network-log-grid.data-grid tr.selected,
+  .network-log-grid.data-grid tr.selected .network-cell-subtitle,
+  .network-log-grid.data-grid tr.selected .network-dim-cell {
+    color: inherit;
+  }
 
-.network-log-grid.data-grid tr.selected.network-throttled-row,
-.network-log-grid.data-grid tr.selected.network-throttled-row .devtools-link,
-.network-log-grid.data-grid tr.selected.network-throttled-row .network-cell-subtitle,
-.network-log-grid.data-grid tr.selected.network-throttled-row .network-dim-cell {
-  color: var(--sys-color-yellow);
-}
+  .network-log-grid.data-grid:focus tr.selected,
+  .network-log-grid.data-grid:focus tr.selected .network-cell-subtitle,
+  .network-log-grid.data-grid:focus tr.selected .network-dim-cell {
+    color: var(--sys-color-on-tonal-container);
+  }
 
-.network-header-subtitle {
-  color: var(--sys-color-token-subtle);
-}
+  .network-log-grid.data-grid tr.selected.network-throttled-row,
+  .network-log-grid.data-grid tr.selected.network-throttled-row .devtools-link,
+  .network-log-grid.data-grid tr.selected.network-throttled-row .network-cell-subtitle,
+  .network-log-grid.data-grid tr.selected.network-throttled-row .network-dim-cell {
+    color: var(--sys-color-yellow);
+  }
 
-.network-log-grid.data-grid.small .network-cell-subtitle,
-.network-log-grid.data-grid.small .network-header-subtitle {
-  display: none;
-}
+  .network-header-subtitle {
+    color: var(--sys-color-token-subtle);
+  }
 
-.network-log-grid.data-grid.small .network-cell-subtitle.always-visible {
-  display: inline;
-  margin-left: var(--sys-size-3);
-}
+  .network-log-grid.data-grid.small .network-cell-subtitle,
+  .network-log-grid.data-grid.small .network-header-subtitle {
+    display: none;
+  }
 
-.network-log-grid tr.highlighted-row {
-  animation: network-row-highlight-fadeout 2s 0s;
+  .network-log-grid.data-grid.small .network-cell-subtitle.always-visible {
+    display: inline;
+    margin-left: var(--sys-size-3);
+  }
+
+  .network-log-grid tr.highlighted-row {
+    animation: network-row-highlight-fadeout 2s 0s;
+  }
+
+  /* Resource preview icons */
+  /* These rules are grouped by type */
+  .network-log-grid.data-grid .icon.image {
+    position: relative;
+  }
+
+  .network-log-grid.data-grid .icon {
+    float: left;
+    width: var(--sys-size-13);
+    height: var(--sys-size-13);
+    margin-top: var(--sys-size-1);
+    margin-right: var(--sys-size-3);
+  }
+
+  .network-log-grid.data-grid:focus-within .network-error-row.selected div.icon:not(.image) {
+    filter: none;
+  }
+
+  .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node img.icon,
+  .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node.selected img.icon {
+    /* This is generated with https://codepen.io/sosuke/pen/Pjoqqp to target var(--color-red) */
+    filter: brightness(0) saturate(100%) invert(35%) sepia(76%) saturate(1413%) hue-rotate(338deg) brightness(92%) contrast(103%);
+  }
+
+  .network-throttled-row {
+    devtools-icon {
+      color: var(--sys-color-yellow);
+      vertical-align: middle;
+      width: var(--sys-size-8);
+      height: var(--sys-size-8);
+    }
+
+    .image.icon::before,
+    devtools-icon.icon::before {
+      background-color: var(--sys-color-yellow);
+      content: var(--image-file-empty);
+      width: 35%;
+      height: 35%;
+      border-radius: var(--sys-shape-corner-full);
+      outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
+      top: 60%;
+      left: 55%;
+      position: absolute;
+      z-index: 1;
+    }
+  }
+
+  td.time-column {
+    vertical-align: middle;
+  }
+
+  .data-grid-data-grid-node devtools-icon[name="arrow-up-down-circle"],
+  .data-grid-data-grid-node devtools-icon.network-console-icon,
+  .network-log-grid.data-grid.small .icon {
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    vertical-align: sub;
+  }
+
+  .data-grid-data-grid-node devtools-icon.network-console-icon {
+    margin-right: var(--sys-size-3);
+  }
+
+  .image-network-icon-preview {
+    inset: 0;
+    margin: auto;
+    overflow: hidden;
+  }
+
+  .network-log-grid.data-grid .image-network-icon-preview {
+    position: absolute;
+    max-width: var(--sys-size-8);
+    max-height: var(--sys-size-9);
+    min-width: var(--sys-size-1);
+    min-height: var(--sys-size-1);
+  }
+
+  .network-log-grid.data-grid.small .image-network-icon-preview {
+    left: var(--sys-size-2);
+    right: var(--sys-size-2);
+    max-width: var(--sys-size-6);
+    max-height: var(--sys-size-6);
+  }
+
+  .network-log-grid.data-grid .trailing-link-icon {
+    padding-left: 0.5ex;
+  }
+
+  /* This is part of the large color block declared above, but should not be
+     extracted out. */
+  .network-dim-cell {
+    color: var(--sys-color-token-subtle);
+  }
+
+  .network-frame-divider {
+    width: var(--sys-size-2);
+    background-color: var(--network-frame-divider-color); /* stylelint-disable-line plugin/use_theme_colors */
+    z-index: 10;
+    visibility: hidden;
+  }
+
+  :scope.has-waterfall .data-container {
+    overflow: hidden;
+  }
+
+  .network-log-grid.data-grid .resources-dividers {
+    z-index: 0;
+  }
+
+  .network-status-pane {
+    position: absolute;
+    inset: 0;
+    background-color: var(--sys-color-cdt-base-container);
+    z-index: 500;
+    overflow: auto;
+  }
+
+  .network-waterfall-header {
+    position: absolute;
+    border-left: 0;
+    width: 100%;
+    display: table;
+    z-index: 200;
+
+    & > div.hover-layer {
+      display: none;
+      background-color: var(--sys-color-state-hover-on-subtle);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    &:hover > div.hover-layer {
+      display: block;
+    }
+  }
+
+  .network-waterfall-header div {
+    display: table-cell;
+    line-height: var(--sys-size-7);
+    margin: auto 0;
+    vertical-align: middle;
+    text-align: left;
+    font-weight: normal;
+    padding: 0 var(--sys-size-3);
+  }
+
+  /* All network-waterfall-header rules are defined here instead of above */
+  .network-waterfall-header .sort-order-icon-container {
+    position: absolute;
+    top: var(--sys-size-1);
+    right: 0;
+    bottom: var(--sys-size-1);
+    display: flex;
+    align-items: center;
+  }
+
+  .network-waterfall-header .sort-order-icon {
+    align-items: center;
+    margin-right: var(--sys-size-3);
+    margin-bottom: calc(-1 * var(--sys-size-2));
+  }
+
+  .network-frame-group-icon {
+    display: inline-block;
+    margin: calc(-1 * var(--sys-size-4)) var(--sys-size-1);
+    vertical-align: baseline;
+  }
+
+  .network-override-marker {
+    position: relative;
+    float: left;
+  }
+
+  .network-override-marker::before {
+    background-color: var(--sys-color-purple-bright);
+    content: var(--image-file-empty);
+    width: var(--sys-size-4);
+    height: var(--sys-size-4);
+    border-radius: var(--sys-shape-corner-full);
+    outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
+    left: var(--sys-size-5);
+    position: absolute;
+    /* 16px (.network-log-grid.data-grid.small .icon height) minus 6px (dot height). */
+    top: calc(var(--sys-size-8) - var(--sys-size-4));
+    z-index: 1;
+  }
+
+  .empty-widget-container devtools-button {
+    margin-top: var(--sys-size-7);
+  }
+
+  @media (forced-colors: active) {
+    .initiator-column .devtools-link {
+      color: linktext;
+    }
+
+    .network-log-grid.data-grid tbody tr.revealed.selected,
+    .network-log-grid.data-grid:focus-within tbody tr.revealed.selected,
+    .network-log-grid.data-grid:focus-within tr.selected .network-dim-cell,
+    .network-log-grid.data-grid tr.selected .network-dim-cell,
+    .network-log-grid.data-grid:focus-within tr.selected .initiator-column .devtools-link,
+    .network-log-grid.data-grid tr.selected .initiator-column .devtools-link,
+    .network-waterfall-header:hover * {
+      color: HighlightText;
+    }
+
+    .network-log-grid {
+      --color-grid-default: canvas;
+      --color-grid-stripe: canvas;
+      --color-grid-hovered: Highlight;
+      --color-grid-selected: ButtonText;
+      --color-grid-focus-selected: Highlight;
+    }
+
+    :scope.no-node-selected:focus-within
+    {
+      forced-color-adjust: none;
+      border-color: Highlight;
+      background-color: canvas !important; /* stylelint-disable-line declaration-no-important */
+    }
+
+    .network-waterfall-header:hover {
+      forced-color-adjust: none;
+      background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
+
+      & > div.hover-layer {
+        display: none;
+      }
+    }
+
+    .network-waterfall-header.small,
+    .network-log-grid.data-grid.small thead .network-waterfall-header,
+    .network-log-grid.data-grid thead {
+      background-color: canvas;
+    }
+
+    .network-waterfall-header .sort-order-icon-container devtools-icon {
+      background-color: inherit;
+    }
+
+    .network-waterfall-header:hover .sort-order-icon-container devtools-icon {
+      color: HighlightText;
+    }
+  }
 }
 
 @keyframes network-row-highlight-fadeout {
@@ -210,254 +467,6 @@ export default `/*
 
   to {
     background-color: transparent;
-  }
-}
-
-/* Resource preview icons */
-/* These rules are grouped by type */
-.network-log-grid.data-grid .icon.image {
-  position: relative;
-}
-
-.network-log-grid.data-grid .icon {
-  float: left;
-  width: var(--sys-size-13);
-  height: var(--sys-size-13);
-  margin-top: var(--sys-size-1);
-  margin-right: var(--sys-size-3);
-}
-
-.network-log-grid.data-grid:focus-within .network-error-row.selected div.icon:not(.image) {
-  filter: none;
-}
-
-.network-log-grid.data-grid .network-error-row.data-grid-data-grid-node img.icon,
-.network-log-grid.data-grid .network-error-row.data-grid-data-grid-node.selected img.icon {
-  /* This is generated with https://codepen.io/sosuke/pen/Pjoqqp to target var(--color-red) */
-  filter: brightness(0) saturate(100%) invert(35%) sepia(76%) saturate(1413%) hue-rotate(338deg) brightness(92%) contrast(103%);
-}
-
-.network-throttled-row {
-  devtools-icon {
-    color: var(--sys-color-yellow);
-    vertical-align: middle;
-    width: var(--sys-size-8);
-    height: var(--sys-size-8);
-  }
-
-  .image.icon::before,
-  devtools-icon.icon::before {
-    background-color: var(--sys-color-yellow);
-    content: var(--image-file-empty);
-    width: 35%;
-    height: 35%;
-    border-radius: var(--sys-shape-corner-full);
-    outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
-    top: 60%;
-    left: 55%;
-    position: absolute;
-    z-index: 1;
-  }
-}
-
-td.time-column {
-  vertical-align: middle;
-}
-
-.data-grid-data-grid-node devtools-icon[name="arrow-up-down-circle"],
-.data-grid-data-grid-node devtools-icon.network-console-icon,
-.network-log-grid.data-grid.small .icon {
-  width: var(--sys-size-8);
-  height: var(--sys-size-8);
-  vertical-align: sub;
-}
-
-.data-grid-data-grid-node devtools-icon.network-console-icon {
-  margin-right: 3px;
-}
-
-.image-network-icon-preview {
-  inset: 0;
-  margin: auto;
-  overflow: hidden;
-}
-
-.network-log-grid.data-grid .image-network-icon-preview {
-  position: absolute;
-  max-width: 18px;
-  max-height: 21px;
-  min-width: var(--sys-size-1);
-  min-height: var(--sys-size-1);
-}
-
-.network-log-grid.data-grid.small .image-network-icon-preview {
-  left: var(--sys-size-2);
-  right: var(--sys-size-2);
-  max-width: 10px;
-  max-height: var(--sys-size-6);
-}
-
-.network-log-grid.data-grid .trailing-link-icon {
-  padding-left: 0.5ex;
-}
-
-/* This is part of the large color block declared above, but should not be
-   extracted out. */
-.network-dim-cell {
-  color: var(--sys-color-token-subtle);
-}
-
-.network-frame-divider {
-  width: var(--sys-size-2);
-  background-color: var(--network-frame-divider-color); /* stylelint-disable-line plugin/use_theme_colors */
-  z-index: 10;
-  visibility: hidden;
-}
-
-#network-container.has-waterfall .data-container {
-  overflow: hidden;
-}
-
-.network-log-grid.data-grid .resources-dividers {
-  z-index: 0;
-}
-
-.network-status-pane {
-  position: absolute;
-  inset: 0;
-  background-color: var(--sys-color-cdt-base-container);
-  z-index: 500;
-  overflow: auto;
-}
-
-.network-waterfall-header {
-  position: absolute;
-  border-left: 0;
-  width: 100%;
-  display: table;
-  z-index: 200;
-
-  & > div.hover-layer {
-    display: none;
-    background-color: var(--sys-color-state-hover-on-subtle);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  &:hover > div.hover-layer {
-    display: block;
-  }
-}
-
-.network-waterfall-header div {
-  display: table-cell;
-  line-height: var(--sys-size-7);
-  margin: auto 0;
-  vertical-align: middle;
-  text-align: left;
-  font-weight: normal;
-  padding: 0 var(--sys-size-3);
-}
-
-/* All network-waterfall-header rules are defined here instead of above */
-.network-waterfall-header .sort-order-icon-container {
-  position: absolute;
-  top: var(--sys-size-1);
-  right: 0;
-  bottom: var(--sys-size-1);
-  display: flex;
-  align-items: center;
-}
-
-.network-waterfall-header .sort-order-icon {
-  align-items: center;
-  margin-right: var(--sys-size-3);
-  margin-bottom: calc(-1 * var(--sys-size-2));
-}
-
-.network-frame-group-icon {
-  display: inline-block;
-  margin: -7px var(--sys-size-1);
-  vertical-align: baseline;
-}
-
-.network-override-marker {
-  position: relative;
-  float: left;
-}
-
-.network-override-marker::before {
-  background-color: var(--sys-color-purple-bright);
-  content: var(--image-file-empty);
-  width: var(--sys-size-4);
-  height: var(--sys-size-4);
-  border-radius: var(--sys-shape-corner-full);
-  outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
-  left: var(--sys-size-5);
-  position: absolute;
-  /* 16px (.network-log-grid.data-grid.small .icon height) minus 6px (dot height). */
-  top: calc(var(--sys-size-8) - var(--sys-size-4));
-  z-index: 1;
-}
-
-.empty-widget-container devtools-button {
-  margin-top: var(--sys-size-7);
-}
-
-@media (forced-colors: active) {
-  .initiator-column .devtools-link {
-    color: linktext;
-  }
-
-  .network-log-grid.data-grid tbody tr.revealed.selected,
-  .network-log-grid.data-grid:focus-within tbody tr.revealed.selected,
-  .network-log-grid.data-grid:focus-within tr.selected .network-dim-cell,
-  .network-log-grid.data-grid tr.selected .network-dim-cell,
-  .network-log-grid.data-grid:focus-within tr.selected .initiator-column .devtools-link,
-  .network-log-grid.data-grid tr.selected .initiator-column .devtools-link,
-  .network-waterfall-header:hover * {
-    color: HighlightText;
-  }
-
-  .network-log-grid {
-    --color-grid-default: canvas;
-    --color-grid-stripe: canvas;
-    --color-grid-hovered: Highlight;
-    --color-grid-selected: ButtonText;
-    --color-grid-focus-selected: Highlight;
-  }
-
-  #network-container.no-node-selected:focus-within
-  {
-    forced-color-adjust: none;
-    border-color: Highlight;
-    background-color: canvas !important; /* stylelint-disable-line declaration-no-important */
-  }
-
-  .network-waterfall-header:hover {
-    forced-color-adjust: none;
-    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
-
-    & > div.hover-layer {
-      display: none;
-    }
-  }
-
-  .network-waterfall-header.small,
-  .network-log-grid.data-grid.small thead .network-waterfall-header,
-  .network-log-grid.data-grid thead {
-    background-color: canvas;
-  }
-
-  .network-waterfall-header .sort-order-icon-container devtools-icon {
-    background-color: inherit;
-  }
-
-  .network-waterfall-header:hover .sort-order-icon-container devtools-icon {
-    color: HighlightText;
   }
 }
 

@@ -4514,15 +4514,6 @@ var preloadingGrid_css_default = `/*
     background-color: var(--sys-color-cdt-base-container);
     padding: var(--sys-size-1) var(--sys-size-3);
   }
-
-  .preloading-placeholder {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--sys-typescale-body3-size);
-    color: var(--sys-color-token-subtle);
-  }
 }
 
 /*# sourceURL=${import.meta.resolve("./preloadingGrid.css")} */`;
@@ -5470,8 +5461,8 @@ var UsedPreloadingView = class extends UI7.Widget.VBox {
     const forThisPage = this.#data.previousAttempts.filter(
       (attempt) => Common4.ParsedURL.ParsedURL.urlWithoutHash(attempt.key.url) === pageURL
     );
-    const prefetch = forThisPage.filter((attempt) => attempt.key.action === Preload.SpeculationAction.Prefetch)[0];
-    const prerenderLike = forThisPage.filter((attempt) => this.#isPrerenderLike(attempt.action))[0];
+    const prefetch = forThisPage.findLast((attempt) => attempt.key.action === Preload.SpeculationAction.Prefetch);
+    const prerenderLike = forThisPage.findLast((attempt) => this.#isPrerenderLike(attempt.action));
     let kind = "NoPreloads" /* NO_PRELOADS */;
     if (prerenderLike?.status === SDK7.PreloadingModel.PreloadingStatus.FAILURE && prefetch?.status === SDK7.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = "DowngradedPrerenderToPrefetchAndUsed" /* DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED */;

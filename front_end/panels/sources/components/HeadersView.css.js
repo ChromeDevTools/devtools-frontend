@@ -86,7 +86,7 @@ export default `/*
 
 .centered {
   margin: 1em;
-  max-width: 300px;
+  max-width: var(--sys-size-31);
   text-align: center;
 }
 
@@ -101,7 +101,7 @@ export default `/*
 }
 
 .add-block {
-  margin-top: 3px;
+  margin-top: var(--sys-size-3);
 }
 
 .header-name,

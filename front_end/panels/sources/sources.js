@@ -814,13 +814,6 @@ var breakpointsView_css_default = `/*
  * found in the LICENSE file.
  */
 @scope to (devtools-widget > *) {
-  /* stylelint-disable-next-line plugin/check_scope_selectors */
-  :host {
-    flex: auto;
-    display: flex;
-    flex-direction: column;
-  }
-
   .code-snippet {
     width: 100%;
     font-family: var(--source-code-font-family);
@@ -842,7 +835,7 @@ var breakpointsView_css_default = `/*
     height: var(--sys-size-6);
     width: var(--sys-size-6);
     flex-shrink: 0;
-    margin: 3px 0;
+    margin: var(--sys-size-3) 0;
   }
 
   details {
@@ -917,8 +910,6 @@ var breakpointsView_css_default = `/*
     display: flex;
     align-items: center;
     justify-content: right;
-    font-size: 10px;
-    font-weight: 500;
   }
 
   .breakpoint-item-location-or-actions {
@@ -946,7 +937,7 @@ var breakpointsView_css_default = `/*
   }
 
   button + button {
-    padding-left: 11px;
+    padding-left: var(--sys-size-6);
   }
 
   summary:hover button {
@@ -963,9 +954,6 @@ var breakpointsView_css_default = `/*
   }
 
   .type-indicator {
-    --override-color-conditional-breakpoint: var(--ref-palette-orange70);
-    --override-color-logpoint: var(--ref-palette-pink60);
-
     border-right: var(--sys-size-3) solid;
     border-radius: 0 var(--sys-size-2) var(--sys-size-2) 0;
     border-color: transparent;
@@ -988,18 +976,12 @@ var breakpointsView_css_default = `/*
     background-color: var(--sys-color-tonal-container);
   }
 
-  .theme-with-dark-background .type-indicator, /* stylelint-disable-line plugin/check_scope_selectors */
-  :host-context(.theme-with-dark-background) .type-indicator { /* stylelint-disable-line plugin/check_scope_selectors */
-    --override-color-conditional-breakpoint: var(--ref-palette-yellow60);
-    --override-color-logpoint: var(--ref-palette-pink70);
-  }
-
   .breakpoint-item.logpoint > label > .type-indicator {
-    border-color: var(--override-color-logpoint);
+    border-color: var(--sys-color-pink-bright);
   }
 
   .breakpoint-item.conditional-breakpoint > label > .type-indicator {
-    border-color: var(--override-color-conditional-breakpoint);
+    border-color: var(--sys-color-orange-bright);
   }
 
   .checkbox-label {
@@ -6832,83 +6814,234 @@ var Events2 = /* @__PURE__ */ ((Events6) => {
 })(Events2 || {});
 var NavigatorViewBase = Common8.ObjectWrapper.eventMixin(UI7.Widget.VBox);
 var NavigatorView = class _NavigatorView extends NavigatorViewBase {
-  static INJECT = [Bindings4.NetworkProject.NetworkProjectManager];
-  uiSourceCodeNodes;
-  subfolderNodes;
+  static INJECT = [
+    Bindings4.NetworkProject.NetworkProjectManager,
+    Workspace5.Workspace.WorkspaceImpl,
+    Workspace5.IgnoreListManager.IgnoreListManager,
+    Persistence3.Persistence.PersistenceImpl,
+    Persistence3.NetworkPersistenceManager.NetworkPersistenceManager,
+    SDK5.TargetManager.TargetManager,
+    Common8.Settings.Settings
+  ];
+  #uiSourceCodeNodes;
+  #subfolderNodes;
   rootNode;
-  frameNodes;
-  authoredNode;
-  deployedNode;
-  navigatorGroupByFolderSetting;
-  navigatorJustMyCodeSetting;
-  navigatorGroupByAuthoredSetting;
+  #frameNodes;
+  #authoredNode;
+  #deployedNode;
+  #navigatorGroupByFolderSetting;
+  #navigatorJustMyCodeSetting;
+  #navigatorGroupByAuthoredSetting;
   #navigatorGroupByAuthoredChangeListener;
   #enableAuthoredGrouping = false;
   #projectFilter;
-  #workspace = Workspace5.Workspace.WorkspaceImpl.instance();
-  #initialized = false;
-  groupByFrame;
-  groupByAuthored;
-  groupByDomain;
-  groupByFolder;
-  selectedNode = null;
-  expandedNodes = /* @__PURE__ */ new WeakSet();
+  #workspace;
+  #subscribed = false;
+  #needsRegroup = false;
+  #prevJustMyCode;
+  #groupingChangedListener = this.#groupingChanged.bind(this);
+  #ignoreListChangedListener = this.#ignoreListChanged.bind(this);
+  #networkProjectManager;
+  #ignoreListManager;
+  #persistence;
+  #networkPersistenceManager;
+  #targetManager;
+  #settings;
+  #groupByFrame;
+  #groupByAuthored;
+  #groupByDomain;
+  #groupByFolder;
+  #selectedNode = null;
+  #expandedNodes = /* @__PURE__ */ new WeakSet();
   #renamingNode = null;
   #view;
-  constructor(element, [networkProjectManager] = [Bindings4.NetworkProject.NetworkProjectManager.instance()], view = DEFAULT_VIEW5) {
+  constructor(element, [
+    networkProjectManager = Bindings4.NetworkProject.NetworkProjectManager.instance(),
+    workspace = Workspace5.Workspace.WorkspaceImpl.instance(),
+    ignoreListManager = Workspace5.IgnoreListManager.IgnoreListManager.instance(),
+    persistence = Persistence3.Persistence.PersistenceImpl.instance(),
+    networkPersistenceManager = Persistence3.NetworkPersistenceManager.NetworkPersistenceManager.instance(),
+    targetManager = SDK5.TargetManager.TargetManager.instance(),
+    settings = Common8.Settings.Settings.instance()
+  ] = [], view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.uiSourceCodeNodes = new Platform5.MapUtilities.Multimap();
-    this.subfolderNodes = /* @__PURE__ */ new Map();
+    this.#networkProjectManager = networkProjectManager;
+    this.#workspace = workspace;
+    this.#ignoreListManager = ignoreListManager;
+    this.#persistence = persistence;
+    this.#networkPersistenceManager = networkPersistenceManager;
+    this.#targetManager = targetManager;
+    this.#settings = settings;
+    this.#uiSourceCodeNodes = new Platform5.MapUtilities.Multimap();
+    this.#subfolderNodes = /* @__PURE__ */ new Map();
     this.rootNode = new NavigatorRootTreeNode(this);
     this.rootNode.populate();
-    this.frameNodes = /* @__PURE__ */ new Map();
+    this.#frameNodes = /* @__PURE__ */ new Map();
     UI7.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(
       this.contentElement,
-      { "sources.rename": this.renameShortcut.bind(this) }
+      { "sources.rename": this.#renameShortcut.bind(this) }
     );
-    this.navigatorGroupByFolderSetting = Common8.Settings.Settings.instance().resolve(SettingsUI2.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
-    this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
-    this.navigatorJustMyCodeSetting = Common8.Settings.Settings.instance().resolve(SettingsUI2.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
-    this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
-    Workspace5.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
-    this.initGrouping();
-    Persistence3.Persistence.PersistenceImpl.instance().addEventListener(
-      Persistence3.Persistence.Events.BindingCreated,
-      this.onBindingChanged,
-      this
-    );
-    Persistence3.Persistence.PersistenceImpl.instance().addEventListener(
-      Persistence3.Persistence.Events.BindingRemoved,
-      this.onBindingChanged,
-      this
-    );
-    Persistence3.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+    this.#navigatorGroupByFolderSetting = this.#settings.resolve(SettingsUI2.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
+    this.#navigatorJustMyCodeSetting = this.#settings.resolve(SettingsUI2.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
+    this.#initGrouping();
+    this.requestUpdate();
+  }
+  get ignoreListManager() {
+    return this.#ignoreListManager;
+  }
+  get persistence() {
+    return this.#persistence;
+  }
+  get settings() {
+    return this.#settings;
+  }
+  wasShown() {
+    super.wasShown();
+    this.#subscribe();
+    this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    this.#unsubscribe();
+  }
+  #subscribe() {
+    if (this.#subscribed) {
+      return;
+    }
+    this.#subscribed = true;
+    this.#navigatorGroupByFolderSetting.addChangeListener(this.#groupingChangedListener);
+    this.#navigatorJustMyCodeSetting.addChangeListener(this.#groupingChangedListener);
+    if (this.#navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
+      this.#navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+    }
+    this.#ignoreListManager.addChangeListener(this.#ignoreListChangedListener);
+    this.#persistence.addEventListener(Persistence3.Persistence.Events.BindingCreated, this.#onBindingChanged, this);
+    this.#persistence.addEventListener(Persistence3.Persistence.Events.BindingRemoved, this.#onBindingChanged, this);
+    this.#networkPersistenceManager.addEventListener(
       Persistence3.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
       this.#onRequestsForHeaderOverridesFileChanged,
       this
     );
-    SDK5.TargetManager.TargetManager.instance().addEventListener(
-      SDK5.TargetManager.Events.NAME_CHANGED,
-      this.targetNameChanged,
-      this
-    );
-    SDK5.TargetManager.TargetManager.instance().observeTargets(this);
-    networkProjectManager.addEventListener(
+    this.#targetManager.addEventListener(SDK5.TargetManager.Events.NAME_CHANGED, this.#targetNameChanged, this);
+    this.#targetManager.observeTargets(this);
+    this.#networkProjectManager.addEventListener(
       Bindings4.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED,
-      this.frameAttributionAdded,
+      this.#frameAttributionAdded,
       this
     );
-    networkProjectManager.addEventListener(
+    this.#networkProjectManager.addEventListener(
       Bindings4.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
-      this.frameAttributionRemoved,
+      this.#frameAttributionRemoved,
       this
     );
-    this.requestUpdate();
+    const prevGroupByFolder = this.#groupByFolder;
+    const prevGroupByDomain = this.#groupByDomain;
+    const prevGroupByAuthored = this.#groupByAuthored;
+    const prevJustMyCode = this.#prevJustMyCode;
+    this.#initGrouping();
+    const groupingChanged = prevGroupByFolder !== this.#groupByFolder || prevGroupByDomain !== this.#groupByDomain || prevGroupByAuthored !== this.#groupByAuthored || prevJustMyCode !== this.#prevJustMyCode;
+    if (groupingChanged || this.#needsRegroup) {
+      this.#needsRegroup = false;
+      this.#groupingChanged();
+      return;
+    }
+    this.#resetWorkspace(this.#workspace);
+    const current = new Set(this.#workspace.uiSourceCodes());
+    const workspaceProjects = new Set(this.#workspace.projects());
+    const toRemove = [];
+    for (const uiSourceCode of this.#uiSourceCodeNodes.keys()) {
+      if (!current.has(uiSourceCode) || !workspaceProjects.has(uiSourceCode.project()) || !this.#acceptsUISourceCode(uiSourceCode) || this.#navigatorJustMyCodeSetting.get() && this.#ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+        toRemove.push(uiSourceCode);
+      }
+    }
+    if (toRemove.length > 0) {
+      this.#removeUISourceCodes(toRemove);
+    }
+    const rootOrDeployed = this.#rootOrDeployedNode();
+    for (const child of [...rootOrDeployed.children()]) {
+      if (child instanceof NavigatorGroupTreeNode && child.project && !workspaceProjects.has(child.project)) {
+        this.removeProject(child.project);
+      }
+    }
+    for (const uiSourceCode of current) {
+      if (!this.#uiSourceCodeNodes.has(uiSourceCode)) {
+        this.#addUISourceCode(uiSourceCode);
+      } else {
+        const frames = Bindings4.NetworkProject.NetworkProject.framesForUISourceCode(uiSourceCode);
+        const desiredFrames = new Set(frames.length > 0 ? frames : [null]);
+        for (const node of [...this.#uiSourceCodeNodes.get(uiSourceCode)]) {
+          if (!desiredFrames.has(node.frame())) {
+            this.#removeUISourceCodeNode(node);
+          }
+        }
+        const existingFrames = new Set(Array.from(this.#uiSourceCodeNodes.get(uiSourceCode), (node) => node.frame()));
+        for (const frame of desiredFrames) {
+          if (!existingFrames.has(frame)) {
+            this.#addUISourceCodeNode(uiSourceCode, frame);
+          }
+        }
+      }
+    }
+    if (this.#targetManager) {
+      const liveTargets = new Set(this.#targetManager.targets());
+      const scopeTarget = this.#targetManager.scopeTarget();
+      for (const child of [...rootOrDeployed.children()]) {
+        if (child.id.startsWith("target:")) {
+          const targetId = child.id.slice("target:".length);
+          const target = this.#targetManager.targetById(targetId);
+          if (!target || !liveTargets.has(target) || target === scopeTarget) {
+            rootOrDeployed.removeChild(child);
+          } else {
+            child.setTitle(target.name());
+          }
+        }
+      }
+    }
+    this.rootNode.updateTitleRecursive();
   }
-  wasShown() {
-    super.wasShown();
-    this.requestUpdate();
+  #unsubscribe() {
+    if (!this.#subscribed) {
+      return;
+    }
+    this.#subscribed = false;
+    this.#navigatorGroupByFolderSetting.removeChangeListener(this.#groupingChangedListener);
+    this.#navigatorJustMyCodeSetting.removeChangeListener(this.#groupingChangedListener);
+    if (this.#navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
+      this.#navigatorGroupByAuthoredSetting.removeChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+    }
+    this.#ignoreListManager.removeChangeListener(this.#ignoreListChangedListener);
+    this.#persistence.removeEventListener(Persistence3.Persistence.Events.BindingCreated, this.#onBindingChanged, this);
+    this.#persistence.removeEventListener(Persistence3.Persistence.Events.BindingRemoved, this.#onBindingChanged, this);
+    this.#networkPersistenceManager.removeEventListener(
+      Persistence3.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
+      this.#onRequestsForHeaderOverridesFileChanged,
+      this
+    );
+    this.#targetManager.removeEventListener(SDK5.TargetManager.Events.NAME_CHANGED, this.#targetNameChanged, this);
+    this.#targetManager.unobserveTargets(this);
+    this.#networkProjectManager.removeEventListener(
+      Bindings4.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED,
+      this.#frameAttributionAdded,
+      this
+    );
+    this.#networkProjectManager.removeEventListener(
+      Bindings4.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
+      this.#frameAttributionRemoved,
+      this
+    );
+    this.#workspace.removeEventListener(
+      Workspace5.Workspace.Events.UISourceCodeAdded,
+      this.#uiSourceCodeAddedCallback,
+      this
+    );
+    this.#workspace.removeEventListener(
+      Workspace5.Workspace.Events.UISourceCodeRemoved,
+      this.#uiSourceCodeRemovedCallback,
+      this
+    );
+    this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectAdded, this.#projectAddedCallback, this);
+    this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectRemoved, this.#projectRemovedCallback, this);
   }
   get enableAuthoredGrouping() {
     return this.#enableAuthoredGrouping;
@@ -6918,20 +7051,25 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       return;
     }
     this.#enableAuthoredGrouping = enableAuthoredGrouping;
-    if (this.navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
-      this.navigatorGroupByAuthoredSetting.removeChangeListener(this.#navigatorGroupByAuthoredChangeListener);
-      this.navigatorGroupByAuthoredSetting = void 0;
+    if (this.#navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
+      this.#navigatorGroupByAuthoredSetting.removeChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+      this.#navigatorGroupByAuthoredSetting = void 0;
       this.#navigatorGroupByAuthoredChangeListener = void 0;
     }
     if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredSetting = Common8.Settings.Settings.instance().resolve(
-        SettingsUI2.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor
-      );
-      this.#navigatorGroupByAuthoredChangeListener = this.groupingChanged.bind(this);
-      this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+      this.#navigatorGroupByAuthoredSetting = this.#settings.resolve(SettingsUI2.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
+      this.#navigatorGroupByAuthoredChangeListener = this.#groupingChanged.bind(this);
+      if (this.#subscribed) {
+        this.#navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+      }
     }
-    if (this.#initialized && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
-      this.groupingChanged();
+    if (Boolean(this.#groupByAuthored) !== Boolean(this.#navigatorGroupByAuthoredSetting?.get())) {
+      if (this.#subscribed) {
+        this.#initGrouping();
+        this.#groupingChanged();
+      } else {
+        this.#needsRegroup = true;
+      }
     }
     this.requestUpdate();
   }
@@ -6943,12 +7081,14 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       return;
     }
     this.#projectFilter = projectFilter;
-    if (this.#initialized) {
-      this.groupingChanged();
+    if (this.#subscribed) {
+      this.#groupingChanged();
+    } else {
+      this.#needsRegroup = true;
     }
     this.requestUpdate();
   }
-  static nodeOrder(node) {
+  static #nodeOrder(node) {
     if (node.boostOrder) {
       return 0;
     }
@@ -6968,8 +7108,8 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     return order;
   }
   static compareNodes(node1, node2) {
-    const order1 = _NavigatorView.nodeOrder(node1);
-    const order2 = _NavigatorView.nodeOrder(node2);
+    const order1 = _NavigatorView.#nodeOrder(node1);
+    const order2 = _NavigatorView.#nodeOrder(node2);
     if (order1 > order2) {
       return 1;
     }
@@ -6988,42 +7128,36 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     );
   }
   performUpdate() {
-    if (!this.#initialized) {
-      this.#initialized = true;
-      this.initGrouping();
-      this.resetWorkspace(this.#workspace);
-      this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
-    }
     const nodes = this.rootNode.effectiveChildren();
     this.#view(
       {
         nodes,
-        expandedNodes: this.expandedNodes,
-        selectedNode: this.selectedNode,
-        onExpand: this.onExpand.bind(this),
-        onSelect: this.onSelect.bind(this),
-        onDoubleClick: this.onDoubleClick.bind(this),
-        onContextMenu: this.onContextMenu.bind(this),
-        onHover: this.onHover.bind(this),
-        onMouseDown: this.onMouseDown.bind(this),
+        expandedNodes: this.#expandedNodes,
+        selectedNode: this.#selectedNode,
+        onExpand: this.#onExpand.bind(this),
+        onSelect: this.#onSelect.bind(this),
+        onDoubleClick: this.#onDoubleClick.bind(this),
+        onContextMenu: this.#onContextMenu.bind(this),
+        onHover: this.#onHover.bind(this),
+        onMouseDown: this.#onMouseDown.bind(this),
         onSelectSource: this.sourceSelected.bind(this),
-        onCommitRename: this.onCommitRename.bind(this),
-        onCancelRename: this.onCancelRename.bind(this),
+        onCommitRename: this.#onCommitRename.bind(this),
+        onCancelRename: this.#onCancelRename.bind(this),
         showTree: nodes.length > 0
       },
       void 0,
       this.contentElement
     );
   }
-  onBindingChanged(event) {
+  #onBindingChanged(event) {
     const binding = event.data;
     let isFromSourceMap = false;
-    const networkNodes = this.uiSourceCodeNodes.get(binding.network);
+    const networkNodes = this.#uiSourceCodeNodes.get(binding.network);
     for (const networkNode of networkNodes) {
       networkNode.updateTitle();
       isFromSourceMap ||= networkNode.uiSourceCode().contentType().isFromSourceMap();
     }
-    const fileSystemNodes = this.uiSourceCodeNodes.get(binding.fileSystem);
+    const fileSystemNodes = this.#uiSourceCodeNodes.get(binding.fileSystem);
     for (const fileSystemNode of fileSystemNodes) {
       fileSystemNode.updateTitle();
       isFromSourceMap ||= fileSystemNode.uiSourceCode().contentType().isFromSourceMap();
@@ -7032,7 +7166,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     let folderPath = Platform5.DevToolsPath.EmptyEncodedPathString;
     for (let i = 0; i < pathTokens.length - 1; ++i) {
       folderPath = Common8.ParsedURL.ParsedURL.concatenate(folderPath, pathTokens[i]);
-      const folderId = this.folderNodeId(
+      const folderId = this.#folderNodeId(
         binding.fileSystem.project(),
         null,
         null,
@@ -7040,56 +7174,56 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
         isFromSourceMap,
         folderPath
       );
-      const folderNode = this.subfolderNodes.get(folderId);
+      const folderNode = this.#subfolderNodes.get(folderId);
       if (folderNode) {
         folderNode.updateTitle();
       }
       folderPath = Common8.ParsedURL.ParsedURL.concatenate(folderPath, "/");
     }
-    const fileSystemRoot = this.rootOrDeployedNode().child(binding.fileSystem.project().id());
+    const fileSystemRoot = this.#rootOrDeployedNode().child(binding.fileSystem.project().id());
     if (fileSystemRoot) {
       fileSystemRoot.updateTitle();
     }
   }
   #onRequestsForHeaderOverridesFileChanged(event) {
     const headersFileUiSourceCode = event.data;
-    const networkNodes = this.uiSourceCodeNodes.get(headersFileUiSourceCode);
+    const networkNodes = this.#uiSourceCodeNodes.get(headersFileUiSourceCode);
     for (const networkNode of networkNodes) {
       networkNode.updateTitle();
     }
   }
   selectNode(node) {
-    this.selectedNode = node;
+    this.#selectedNode = node;
     this.requestUpdate();
   }
   expandNode(node) {
     const leaf = node instanceof NavigatorFolderTreeNode ? node.mergedLeafNode() : node;
-    this.expandedNodes.add(node);
-    this.expandedNodes.add(leaf);
+    this.#expandedNodes.add(node);
+    this.#expandedNodes.add(leaf);
     node.populate();
     leaf.populate();
     this.requestUpdate();
   }
   collapseNode(node) {
     const leaf = node instanceof NavigatorFolderTreeNode ? node.mergedLeafNode() : node;
-    this.expandedNodes.delete(node);
-    this.expandedNodes.delete(leaf);
+    this.#expandedNodes.delete(node);
+    this.#expandedNodes.delete(leaf);
     this.requestUpdate();
   }
   isNodeExpanded(node) {
-    return this.expandedNodes.has(node);
+    return this.#expandedNodes.has(node);
   }
   isNodeSelected(node) {
-    return this.selectedNode === node;
+    return this.#selectedNode === node;
   }
   setNodeSelected(node) {
-    this.selectedNode = node;
+    this.#selectedNode = node;
   }
   setNodeExpanded(node) {
-    this.expandedNodes.add(node);
+    this.#expandedNodes.add(node);
   }
   isNodeSelectedOrDescendant(node) {
-    let curr = this.selectedNode;
+    let curr = this.#selectedNode;
     while (curr) {
       if (curr === node) {
         return true;
@@ -7100,38 +7234,38 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
   }
   deselectIfDescendant(node) {
     if (this.isNodeSelectedOrDescendant(node)) {
-      this.selectedNode = null;
+      this.#selectedNode = null;
     }
   }
-  onExpand(node, expanded) {
+  #onExpand(node, expanded) {
     const leaf = node instanceof NavigatorFolderTreeNode ? node.mergedLeafNode() : node;
     if (expanded) {
-      this.expandedNodes.add(node);
-      this.expandedNodes.add(leaf);
+      this.#expandedNodes.add(node);
+      this.#expandedNodes.add(leaf);
       node.populate();
       leaf.populate();
     } else {
-      this.expandedNodes.delete(node);
-      this.expandedNodes.delete(leaf);
+      this.#expandedNodes.delete(node);
+      this.#expandedNodes.delete(leaf);
     }
     this.requestUpdate();
   }
-  onSelect(node, selectedByUser) {
-    if (!selectedByUser && this.selectedNode !== null) {
+  #onSelect(node, selectedByUser) {
+    if (!selectedByUser && this.#selectedNode !== null) {
       return;
     }
     if (node instanceof NavigatorFolderTreeNode) {
-      this.selectedNode = node.mergedLeafNode();
+      this.#selectedNode = node.mergedLeafNode();
     } else {
-      this.selectedNode = node;
+      this.#selectedNode = node;
     }
   }
-  onDoubleClick(node, middleClick) {
+  #onDoubleClick(node, middleClick) {
     if (node instanceof NavigatorUISourceCodeTreeNode) {
       this.sourceSelected(node.uiSourceCode(), !middleClick);
     }
   }
-  onContextMenu(node, contextMenu) {
+  #onContextMenu(node, contextMenu) {
     this.selectNode(node);
     if (node instanceof NavigatorUISourceCodeTreeNode) {
       this.handleFileContextMenu(contextMenu, node);
@@ -7139,12 +7273,12 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       this.handleFolderContextMenu(contextMenu, node);
     }
   }
-  onHover(node, hovered) {
+  #onHover(node, hovered) {
     if (node instanceof NavigatorFolderTreeNode || node instanceof NavigatorGroupTreeNode) {
       this.folderHovered(node, hovered);
     }
   }
-  onMouseDown(node) {
+  #onMouseDown(node) {
     if (!(node instanceof NavigatorUISourceCodeTreeNode)) {
       return;
     }
@@ -7157,55 +7291,61 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       }
     }, 300);
   }
-  onCommitRename(node, newTitle) {
+  #onCommitRename(node, newTitle) {
     void node.commitRename(newTitle);
   }
-  onCancelRename(node) {
+  #onCancelRename(node) {
     node.cancelRename();
   }
-  resetWorkspace(workspace) {
-    if (this.#workspace) {
+  #resetWorkspace(workspace) {
+    if (this.#subscribed && this.#workspace) {
       this.#workspace.removeEventListener(
         Workspace5.Workspace.Events.UISourceCodeAdded,
-        this.uiSourceCodeAddedCallback,
+        this.#uiSourceCodeAddedCallback,
         this
       );
       this.#workspace.removeEventListener(
         Workspace5.Workspace.Events.UISourceCodeRemoved,
-        this.uiSourceCodeRemovedCallback,
+        this.#uiSourceCodeRemovedCallback,
         this
       );
-      this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
-      this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
+      this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectAdded, this.#projectAddedCallback, this);
+      this.#workspace.removeEventListener(
+        Workspace5.Workspace.Events.ProjectRemoved,
+        this.#projectRemovedCallback,
+        this
+      );
     }
     this.#workspace = workspace;
-    this.#workspace.addEventListener(
-      Workspace5.Workspace.Events.UISourceCodeAdded,
-      this.uiSourceCodeAddedCallback,
-      this
-    );
-    this.#workspace.addEventListener(
-      Workspace5.Workspace.Events.UISourceCodeRemoved,
-      this.uiSourceCodeRemovedCallback,
-      this
-    );
-    this.#workspace.addEventListener(Workspace5.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
-    this.#workspace.addEventListener(Workspace5.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
-    this.#workspace.projects().forEach(this.projectAdded.bind(this));
-    this.computeUniqueFileSystemProjectNames();
+    if (this.#subscribed) {
+      this.#workspace.addEventListener(
+        Workspace5.Workspace.Events.UISourceCodeAdded,
+        this.#uiSourceCodeAddedCallback,
+        this
+      );
+      this.#workspace.addEventListener(
+        Workspace5.Workspace.Events.UISourceCodeRemoved,
+        this.#uiSourceCodeRemovedCallback,
+        this
+      );
+      this.#workspace.addEventListener(Workspace5.Workspace.Events.ProjectAdded, this.#projectAddedCallback, this);
+      this.#workspace.addEventListener(Workspace5.Workspace.Events.ProjectRemoved, this.#projectRemovedCallback, this);
+    }
+    this.#workspace.projects().forEach(this.#projectAdded.bind(this));
+    this.#computeUniqueFileSystemProjectNames();
   }
-  projectAddedCallback(event) {
+  #projectAddedCallback(event) {
     const project = event.data;
-    this.projectAdded(project);
+    this.#projectAdded(project);
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
-      this.computeUniqueFileSystemProjectNames();
+      this.#computeUniqueFileSystemProjectNames();
     }
   }
-  projectRemovedCallback(event) {
+  #projectRemovedCallback(event) {
     const project = event.data;
     this.removeProject(project);
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
-      this.computeUniqueFileSystemProjectNames();
+      this.#computeUniqueFileSystemProjectNames();
     }
   }
   acceptProject(project) {
@@ -7214,35 +7354,33 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     return !project.isServiceProject();
   }
-  frameAttributionAdded(event) {
+  #frameAttributionAdded(event) {
     const { uiSourceCode } = event.data;
-    if (!this.acceptsUISourceCode(uiSourceCode)) {
+    if (!this.#acceptsUISourceCode(uiSourceCode)) {
       return;
     }
     const addedFrame = event.data.frame;
-    this.addUISourceCodeNode(uiSourceCode, addedFrame);
+    this.#addUISourceCodeNode(uiSourceCode, addedFrame);
   }
-  frameAttributionRemoved(event) {
+  #frameAttributionRemoved(event) {
     const { uiSourceCode } = event.data;
-    if (!this.acceptsUISourceCode(uiSourceCode)) {
+    if (!this.#acceptsUISourceCode(uiSourceCode)) {
       return;
     }
     const removedFrame = event.data.frame;
-    const node = Array.from(this.uiSourceCodeNodes.get(uiSourceCode)).find((node2) => node2.frame() === removedFrame);
+    const node = Array.from(this.#uiSourceCodeNodes.get(uiSourceCode)).find((node2) => node2.frame() === removedFrame);
     if (node) {
-      this.removeUISourceCodeNode(node);
+      this.#removeUISourceCodeNode(node);
     }
   }
-  acceptsUISourceCode(uiSourceCode) {
+  #acceptsUISourceCode(uiSourceCode) {
     return this.acceptProject(uiSourceCode.project());
   }
-  addUISourceCode(uiSourceCode) {
-    if (this.navigatorJustMyCodeSetting.get() && Workspace5.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
-      uiSourceCode
-    )) {
+  #addUISourceCode(uiSourceCode) {
+    if (this.#navigatorJustMyCodeSetting.get() && this.#ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
       return;
     }
-    if (!this.acceptsUISourceCode(uiSourceCode)) {
+    if (!this.#acceptsUISourceCode(uiSourceCode)) {
       return;
     }
     if (uiSourceCode.isFetchXHR()) {
@@ -7251,14 +7389,14 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     const frames = Bindings4.NetworkProject.NetworkProject.framesForUISourceCode(uiSourceCode);
     if (frames.length) {
       for (const frame of frames) {
-        this.addUISourceCodeNode(uiSourceCode, frame);
+        this.#addUISourceCodeNode(uiSourceCode, frame);
       }
     } else {
-      this.addUISourceCodeNode(uiSourceCode, null);
+      this.#addUISourceCodeNode(uiSourceCode, null);
     }
     this.dispatchEventToListeners("ui-source-code-added" /* UI_SOURCE_CODE_ADDED */, uiSourceCode);
   }
-  addUISourceCodeNode(uiSourceCode, frame) {
+  #addUISourceCodeNode(uiSourceCode, frame) {
     const isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
     let path;
     if (uiSourceCode.project().type() === Workspace5.Workspace.projectTypes.FileSystem) {
@@ -7268,33 +7406,33 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     const project = uiSourceCode.project();
     const target = Bindings4.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
-    const folderNode = this.folderNode(uiSourceCode, project, target, frame, uiSourceCode.origin(), path, isFromSourceMap);
+    const folderNode = this.#folderNode(uiSourceCode, project, target, frame, uiSourceCode.origin(), path, isFromSourceMap);
     const uiSourceCodeNode = new NavigatorUISourceCodeTreeNode(this, uiSourceCode, frame);
     const existingNode = folderNode.child(uiSourceCodeNode.id);
     if (existingNode && existingNode instanceof NavigatorUISourceCodeTreeNode) {
-      this.uiSourceCodeNodes.set(uiSourceCode, existingNode);
+      this.#uiSourceCodeNodes.set(uiSourceCode, existingNode);
     } else {
       folderNode.appendChild(uiSourceCodeNode);
-      this.uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
+      this.#uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
       uiSourceCodeNode.updateTitleBubbleUp();
     }
-    this.selectDefaultTreeNode();
+    this.#selectDefaultTreeNode();
   }
-  uiSourceCodeAddedCallback(event) {
+  #uiSourceCodeAddedCallback(event) {
     const uiSourceCode = event.data;
-    this.addUISourceCode(uiSourceCode);
+    this.#addUISourceCode(uiSourceCode);
   }
-  uiSourceCodeRemovedCallback(event) {
-    this.removeUISourceCodes([event.data]);
+  #uiSourceCodeRemovedCallback(event) {
+    this.#removeUISourceCodes([event.data]);
   }
   tryAddProject(project) {
-    this.projectAdded(project);
+    this.#projectAdded(project);
     for (const uiSourceCode of project.uiSourceCodes()) {
-      this.addUISourceCode(uiSourceCode);
+      this.#addUISourceCode(uiSourceCode);
     }
   }
-  projectAdded(project) {
-    const rootOrDeployed = this.rootOrDeployedNode();
+  #projectAdded(project) {
+    const rootOrDeployed = this.#rootOrDeployedNode();
     const FILE_SYSTEM_TYPES = [
       Workspace5.Workspace.projectTypes.ConnectableFileSystem,
       Workspace5.Workspace.projectTypes.FileSystem
@@ -7304,16 +7442,16 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     const type = project instanceof Persistence3.AutomaticFileSystemWorkspaceBinding.FileSystem || project instanceof Persistence3.FileSystemWorkspaceBinding.FileSystem && project.fileSystem().automatic ? Types.AutomaticFileSystem : Types.FileSystem;
     rootOrDeployed.appendChild(new NavigatorGroupTreeNode(this, project, project.id(), type, project.displayName()));
-    this.selectDefaultTreeNode();
+    this.#selectDefaultTreeNode();
   }
   // TODO(einbinder) remove this code after crbug.com/964075 is fixed
-  selectDefaultTreeNode() {
+  #selectDefaultTreeNode() {
     const children = this.rootNode.children();
-    if (children.length && !this.selectedNode) {
+    if (children.length && !this.#selectedNode) {
       this.selectNode(children[0]);
     }
   }
-  computeUniqueFileSystemProjectNames() {
+  #computeUniqueFileSystemProjectNames() {
     const fileSystemProjects = this.#workspace.projectsForType(Workspace5.Workspace.projectTypes.FileSystem);
     if (!fileSystemProjects.length) {
       return;
@@ -7326,7 +7464,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       reversedPaths.push(reversedPathParts);
       reversedIndex.add(reversedPathParts);
     }
-    const rootOrDeployed = this.rootOrDeployedNode();
+    const rootOrDeployed = this.#rootOrDeployedNode();
     for (let i = 0; i < fileSystemProjects.length; ++i) {
       const reversedPath = reversedPaths[i];
       const project = fileSystemProjects[i];
@@ -7348,21 +7486,18 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
   }
   removeProject(project) {
-    this.removeUISourceCodes(project.uiSourceCodes());
+    this.#removeUISourceCodes(project.uiSourceCodes());
     if (project.type() !== Workspace5.Workspace.projectTypes.ConnectableFileSystem && project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return;
     }
-    const fileSystemNode = this.rootNode.child(project.id());
-    if (!fileSystemNode) {
-      return;
-    }
-    this.rootNode.removeChild(fileSystemNode);
+    const fileSystemNode = this.#rootOrDeployedNode().child(project.id()) ?? this.rootNode.child(project.id());
+    fileSystemNode?.parent?.removeChild(fileSystemNode);
   }
-  folderNodeId(project, target, frame, projectOrigin, isFromSourceMap, path) {
+  #folderNodeId(project, target, frame, projectOrigin, isFromSourceMap, path) {
     const projectId = project.type() === Workspace5.Workspace.projectTypes.FileSystem ? project.id() : "";
-    let targetId = target && !(this.groupByAuthored && isFromSourceMap) ? target.id() : "";
-    let frameId = this.groupByFrame && frame ? frame.id : "";
-    if (this.groupByAuthored) {
+    let targetId = target && !(this.#groupByAuthored && isFromSourceMap) ? target.id() : "";
+    let frameId = this.#groupByFrame && frame ? frame.id : "";
+    if (this.#groupByAuthored) {
       if (isFromSourceMap) {
         targetId = "Authored";
         frameId = "";
@@ -7372,40 +7507,40 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     return targetId + ":" + projectId + ":" + frameId + ":" + projectOrigin + ":" + path;
   }
-  folderNode(uiSourceCode, project, target, frame, projectOrigin, path, fromSourceMap) {
+  #folderNode(uiSourceCode, project, target, frame, projectOrigin, path, fromSourceMap) {
     if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
       return this.rootNode;
     }
-    if (target && !this.groupByFolder && !fromSourceMap) {
-      return this.domainNode(uiSourceCode, project, target, frame, projectOrigin);
+    if (target && !this.#groupByFolder && !fromSourceMap) {
+      return this.#domainNode(uiSourceCode, project, target, frame, projectOrigin);
     }
     const folderPath = Common8.ParsedURL.ParsedURL.join(path, "/");
-    const folderId = this.folderNodeId(project, target, frame, projectOrigin, fromSourceMap, folderPath);
-    let folderNode = this.subfolderNodes.get(folderId);
+    const folderId = this.#folderNodeId(project, target, frame, projectOrigin, fromSourceMap, folderPath);
+    let folderNode = this.#subfolderNodes.get(folderId);
     if (folderNode) {
       return folderNode;
     }
     if (!path.length) {
       if (target) {
-        return this.domainNode(uiSourceCode, project, target, frame, projectOrigin);
+        return this.#domainNode(uiSourceCode, project, target, frame, projectOrigin);
       }
-      return this.rootOrDeployedNode().child(project.id());
+      return this.#rootOrDeployedNode().child(project.id());
     }
-    const parentNode = this.folderNode(uiSourceCode, project, target, frame, projectOrigin, path.slice(0, -1), fromSourceMap);
+    const parentNode = this.#folderNode(uiSourceCode, project, target, frame, projectOrigin, path.slice(0, -1), fromSourceMap);
     let type = Types.NetworkFolder;
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       type = Types.FileSystemFolder;
     }
     const name = Common8.ParsedURL.ParsedURL.encodedPathToRawPathString(path[path.length - 1]);
     folderNode = new NavigatorFolderTreeNode(this, project, folderId, type, folderPath, name, projectOrigin);
-    this.subfolderNodes.set(folderId, folderNode);
+    this.#subfolderNodes.set(folderId, folderNode);
     parentNode.appendChild(folderNode);
     return folderNode;
   }
-  domainNode(uiSourceCode, project, target, frame, projectOrigin) {
+  #domainNode(uiSourceCode, project, target, frame, projectOrigin) {
     const isAuthored = uiSourceCode.contentType().isFromSourceMap();
-    const frameNode = this.frameNode(project, target, frame, isAuthored);
-    if (!this.groupByDomain) {
+    const frameNode = this.#frameNode(project, target, frame, isAuthored);
+    if (!this.#groupByDomain) {
       return frameNode;
     }
     let domainNode = frameNode.child(projectOrigin);
@@ -7417,22 +7552,22 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       project,
       projectOrigin,
       Types.Domain,
-      this.computeProjectDisplayName(target, projectOrigin)
+      this.#computeProjectDisplayName(target, projectOrigin)
     );
     if (frame && projectOrigin === Common8.ParsedURL.ParsedURL.extractOrigin(frame.url)) {
       domainNode.boostOrder = true;
     }
     frameNode.appendChild(domainNode);
-    if (isAuthored && this.groupByAuthored) {
+    if (isAuthored && this.#groupByAuthored) {
       this.expandNode(domainNode);
     }
     return domainNode;
   }
-  frameNode(project, target, frame, isAuthored) {
-    if (!this.groupByFrame || !frame || this.groupByAuthored && isAuthored) {
-      return this.targetNode(project, target, isAuthored);
+  #frameNode(project, target, frame, isAuthored) {
+    if (!this.#groupByFrame || !frame || this.#groupByAuthored && isAuthored) {
+      return this.#targetNode(project, target, isAuthored);
     }
-    let frameNode = this.frameNodes.get(frame);
+    let frameNode = this.#frameNodes.get(frame);
     if (frameNode) {
       return frameNode;
     }
@@ -7445,21 +7580,21 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       void 0,
       frame
     );
-    this.frameNodes.set(frame, frameNode);
+    this.#frameNodes.set(frame, frameNode);
     const parentFrame = frame.parentFrame();
     if (!parentFrame) {
       frameNode.boostOrder = true;
     }
-    this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored).appendChild(frameNode);
+    this.#frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored).appendChild(frameNode);
     if (!parentFrame) {
       this.expandNode(frameNode);
     }
     return frameNode;
   }
-  targetNode(project, target, isAuthored) {
-    if (this.groupByAuthored && isAuthored) {
-      if (!this.authoredNode) {
-        this.authoredNode = new NavigatorGroupTreeNode(
+  #targetNode(project, target, isAuthored) {
+    if (this.#groupByAuthored && isAuthored) {
+      if (!this.#authoredNode) {
+        this.#authoredNode = new NavigatorGroupTreeNode(
           this,
           null,
           "group:Authored",
@@ -7467,13 +7602,13 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
           i18nString5(UIStrings6.authored),
           i18nString5(UIStrings6.authoredTooltip)
         );
-        this.rootNode.appendChild(this.authoredNode);
-        this.expandNode(this.authoredNode);
+        this.rootNode.appendChild(this.#authoredNode);
+        this.expandNode(this.#authoredNode);
       }
-      return this.authoredNode;
+      return this.#authoredNode;
     }
-    const rootOrDeployed = this.rootOrDeployedNode();
-    if (target === SDK5.TargetManager.TargetManager.instance().scopeTarget()) {
+    const rootOrDeployed = this.#rootOrDeployedNode();
+    if (target === this.#targetManager.scopeTarget()) {
       return rootOrDeployed;
     }
     let targetNode = rootOrDeployed.child("target:" + target.id());
@@ -7489,10 +7624,10 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     return targetNode;
   }
-  rootOrDeployedNode() {
-    if (this.groupByAuthored) {
-      if (!this.deployedNode) {
-        this.deployedNode = new NavigatorGroupTreeNode(
+  #rootOrDeployedNode() {
+    if (this.#groupByAuthored) {
+      if (!this.#deployedNode) {
+        this.#deployedNode = new NavigatorGroupTreeNode(
           this,
           null,
           "group:Deployed",
@@ -7500,13 +7635,13 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
           i18nString5(UIStrings6.deployed),
           i18nString5(UIStrings6.deployedTooltip)
         );
-        this.rootNode.appendChild(this.deployedNode);
+        this.rootNode.appendChild(this.#deployedNode);
       }
-      return this.deployedNode;
+      return this.#deployedNode;
     }
     return this.rootNode;
   }
-  computeProjectDisplayName(target, projectOrigin) {
+  #computeProjectDisplayName(target, projectOrigin) {
     const runtimeModel = target.model(SDK5.RuntimeModel.RuntimeModel);
     const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
     let matchingContextName = null;
@@ -7534,7 +7669,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     return prettyURL || projectOrigin;
   }
   revealUISourceCode(uiSourceCode, select) {
-    const nodes = this.uiSourceCodeNodes.get(uiSourceCode);
+    const nodes = this.#uiSourceCodeNodes.get(uiSourceCode);
     if (nodes.size === 0) {
       return null;
     }
@@ -7542,11 +7677,11 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (!node) {
       return null;
     }
-    if (this.selectedNode) {
+    if (this.#selectedNode) {
       if (this.isRenaming()) {
         return null;
       }
-      this.selectedNode = null;
+      this.#selectedNode = null;
     }
     node.reveal(select);
     return node;
@@ -7558,7 +7693,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
   #isUISourceCodeOrAnyAncestorSelected(node) {
     let currentNode = node;
     while (currentNode) {
-      if (currentNode === this.selectedNode) {
+      if (currentNode === this.#selectedNode) {
         return true;
       }
       currentNode = currentNode.parent;
@@ -7568,10 +7703,10 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     return false;
   }
-  removeUISourceCodes(uiSourceCodes) {
+  #removeUISourceCodes(uiSourceCodes) {
     const nodesWithSelectionOnPath = [];
     for (const uiSourceCode of uiSourceCodes) {
-      const nodes = this.uiSourceCodeNodes.get(uiSourceCode);
+      const nodes = this.#uiSourceCodeNodes.get(uiSourceCode);
       for (const node of nodes) {
         if (this.#isUISourceCodeOrAnyAncestorSelected(node)) {
           nodesWithSelectionOnPath.push(node);
@@ -7583,8 +7718,11 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     nodesWithSelectionOnPath.forEach(this.removeUISourceCodeNode.bind(this));
   }
   removeUISourceCodeNode(node) {
+    this.#removeUISourceCodeNode(node);
+  }
+  #removeUISourceCodeNode(node) {
     const uiSourceCode = node.uiSourceCode();
-    this.uiSourceCodeNodes.delete(uiSourceCode, node);
+    this.#uiSourceCodeNodes.delete(uiSourceCode, node);
     const project = uiSourceCode.project();
     const target = Bindings4.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
     let frame = node.frame();
@@ -7599,7 +7737,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       if (!parentNode) {
         break;
       }
-      if ((parentNode === this.rootNode || parentNode === this.deployedNode) && project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
+      if ((parentNode === this.rootNode || parentNode === this.#deployedNode) && project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
         break;
       }
       if (!(currentNode instanceof NavigatorGroupTreeNode || currentNode instanceof NavigatorFolderTreeNode)) {
@@ -7610,13 +7748,13 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
         break;
       }
       if (currentNode.type === Types.Frame) {
-        this.discardFrame(
+        this.#discardFrame(
           frame,
-          Boolean(this.groupByAuthored) && uiSourceCode.contentType().isFromSourceMap()
+          Boolean(this.#groupByAuthored) && uiSourceCode.contentType().isFromSourceMap()
         );
         frame = frame.parentFrame();
       } else {
-        const folderId = this.folderNodeId(
+        const folderId = this.#folderNodeId(
           project,
           target,
           frame,
@@ -7624,43 +7762,43 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
           uiSourceCode.contentType().isFromSourceMap(),
           currentNode instanceof NavigatorFolderTreeNode && currentNode.folderPath || Platform5.DevToolsPath.EmptyEncodedPathString
         );
-        this.subfolderNodes.delete(folderId);
+        this.#subfolderNodes.delete(folderId);
         parentNode.removeChild(currentNode);
       }
-      if (currentNode === this.authoredNode) {
-        this.authoredNode = void 0;
-      } else if (currentNode === this.deployedNode) {
-        this.deployedNode = void 0;
+      if (currentNode === this.#authoredNode) {
+        this.#authoredNode = void 0;
+      } else if (currentNode === this.#deployedNode) {
+        this.#deployedNode = void 0;
       }
       currentNode = parentNode;
     }
   }
   reset(tearDownOnly) {
-    for (const node of this.uiSourceCodeNodes.valuesArray()) {
+    for (const node of this.#uiSourceCodeNodes.valuesArray()) {
       node.dispose();
     }
-    this.selectedNode = null;
+    this.#selectedNode = null;
     this.#renamingNode = null;
-    this.expandedNodes = /* @__PURE__ */ new WeakSet();
-    this.uiSourceCodeNodes.clear();
-    this.subfolderNodes.clear();
-    this.frameNodes.clear();
+    this.#expandedNodes = /* @__PURE__ */ new WeakSet();
+    this.#uiSourceCodeNodes.clear();
+    this.#subfolderNodes.clear();
+    this.#frameNodes.clear();
     this.rootNode.reset();
-    this.authoredNode = void 0;
-    this.deployedNode = void 0;
+    this.#authoredNode = void 0;
+    this.#deployedNode = void 0;
     if (!tearDownOnly) {
-      this.resetWorkspace(Workspace5.Workspace.WorkspaceImpl.instance());
+      this.#resetWorkspace(this.#workspace);
     }
     this.requestUpdate();
   }
-  async renameShortcut() {
-    if (!(this.selectedNode instanceof NavigatorUISourceCodeTreeNode) || !this.selectedNode.uiSourceCode().canRename()) {
+  async #renameShortcut() {
+    if (!(this.#selectedNode instanceof NavigatorUISourceCodeTreeNode) || !this.#selectedNode.uiSourceCode().canRename()) {
       return false;
     }
-    this.rename(this.selectedNode, false);
+    this.rename(this.#selectedNode, false);
     return true;
   }
-  handleContextMenuCreate(project, path, uiSourceCode) {
+  #handleContextMenuCreate(project, path, uiSourceCode) {
     if (uiSourceCode) {
       const relativePath = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(uiSourceCode);
       relativePath.pop();
@@ -7668,10 +7806,10 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     void this.create(project, path, uiSourceCode);
   }
-  handleContextMenuRename(node) {
+  #handleContextMenuRename(node) {
     this.rename(node, false);
   }
-  async handleContextMenuExclude(project, path) {
+  async #handleContextMenuExclude(project, path) {
     const shouldExclude = await UI7.UIUtils.ConfirmDialog.show(
       i18nString5(UIStrings6.folderWillNotBeShown),
       i18nString5(UIStrings6.excludeThisFolder),
@@ -7686,7 +7824,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       UI7.UIUtils.endBatchUpdate();
     }
   }
-  async handleContextMenuDelete(uiSourceCode) {
+  async #handleContextMenuDelete(uiSourceCode) {
     const shouldDelete = await UI7.UIUtils.ConfirmDialog.show(
       i18nString5(UIStrings6.actionCannotBeUndone),
       i18nString5(UIStrings6.deleteThisFile),
@@ -7701,7 +7839,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (!node.uiSourceCode().canRename()) {
       return false;
     }
-    return this.selectedNode === node && this.contentElement.hasFocus() && !this.isRenaming();
+    return this.#selectedNode === node && this.contentElement.hasFocus() && !this.isRenaming();
   }
   startRenamingNode(node) {
     this.#renamingNode = node;
@@ -7734,7 +7872,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       );
       contextMenu.saveSection().appendItem(
         i18nString5(UIStrings6.saveAs),
-        this.handleSaveAs.bind(this, uiSourceCode),
+        this.#handleSaveAs.bind(this, uiSourceCode),
         { jslogContext: "save-as" }
       );
       void contextMenu.show();
@@ -7745,23 +7883,23 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       contextMenu.editSection().appendItem(
         i18nString5(UIStrings6.rename),
-        this.handleContextMenuRename.bind(this, node),
+        this.#handleContextMenuRename.bind(this, node),
         { jslogContext: "rename" }
       );
       contextMenu.editSection().appendItem(
         i18nString5(UIStrings6.makeACopy),
-        this.handleContextMenuCreate.bind(this, project, Platform5.DevToolsPath.EmptyEncodedPathString, uiSourceCode),
+        this.#handleContextMenuCreate.bind(this, project, Platform5.DevToolsPath.EmptyEncodedPathString, uiSourceCode),
         { jslogContext: "make-a-copy" }
       );
       contextMenu.editSection().appendItem(
         i18nString5(UIStrings6.delete),
-        this.handleContextMenuDelete.bind(this, uiSourceCode),
+        this.#handleContextMenuDelete.bind(this, uiSourceCode),
         { jslogContext: "delete" }
       );
     }
     void contextMenu.show();
   }
-  async handleSaveAs(uiSourceCode) {
+  async #handleSaveAs(uiSourceCode) {
     uiSourceCode.commitWorkingCopy();
     const contentData = await uiSourceCode.requestContentData();
     if (TextUtils4.ContentData.ContentData.isError(contentData)) {
@@ -7774,17 +7912,17 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       return;
     }
     await Workspace5.FileManager.FileManager.instance().save(
-      this.addJSExtension(uiSourceCode.url()),
+      this.#addJSExtension(uiSourceCode.url()),
       contentData,
       /* forceSaveAs=*/
       true
     );
     Workspace5.FileManager.FileManager.instance().close(uiSourceCode.url());
   }
-  addJSExtension(url) {
+  #addJSExtension(url) {
     return Common8.ParsedURL.ParsedURL.concatenate(url, ".js");
   }
-  async handleDeleteFolder(node) {
+  async #handleDeleteFolder(node) {
     const shouldRemove = await UI7.UIUtils.ConfirmDialog.show(
       i18nString5(UIStrings6.actionCannotBeUndone),
       i18nString5(UIStrings6.deleteFolder),
@@ -7793,33 +7931,33 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     );
     if (shouldRemove) {
       Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.OverrideTabDeleteFolderContextMenu);
-      const topNode = this.findTopNonMergedNode(node);
-      await this.removeUISourceCodeFromProject(topNode);
-      await this.deleteDirectoryRecursively(topNode);
+      const topNode = this.#findTopNonMergedNode(node);
+      await this.#removeUISourceCodeFromProject(topNode);
+      await this.#deleteDirectoryRecursively(topNode);
     }
   }
-  async removeUISourceCodeFromProject(node) {
+  async #removeUISourceCodeFromProject(node) {
     node.children().slice(0).forEach(async (child) => {
-      await this.removeUISourceCodeFromProject(child);
+      await this.#removeUISourceCodeFromProject(child);
     });
     if (node instanceof NavigatorUISourceCodeTreeNode) {
       node.uiSourceCode().project().removeUISourceCode(node.uiSourceCode().url());
     }
   }
-  async deleteDirectoryRecursively(node) {
+  async #deleteDirectoryRecursively(node) {
     if (!(node instanceof NavigatorFolderTreeNode)) {
       return;
     }
-    await Persistence3.NetworkPersistenceManager.NetworkPersistenceManager.instance().project()?.deleteDirectoryRecursively(node.folderPath);
+    await this.#networkPersistenceManager.project()?.deleteDirectoryRecursively(node.folderPath);
   }
-  findTopNonMergedNode(node) {
+  #findTopNonMergedNode(node) {
     if (!node.isMerged) {
       return node;
     }
     if (!(node.parent instanceof NavigatorFolderTreeNode)) {
       return node;
     }
-    return this.findTopNonMergedNode(node.parent);
+    return this.#findTopNonMergedNode(node.parent);
   }
   folderHovered(node, hovered) {
     if (node instanceof NavigatorGroupTreeNode && node.frame) {
@@ -7829,7 +7967,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
           overlayModel.highlightFrame(node.frame.id);
         }
       } else {
-        SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK5.TargetManager.TargetManager.instance());
+        SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(this.#targetManager);
       }
     }
   }
@@ -7855,7 +7993,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       );
       if (project.canCreateFile()) {
         contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.newFile), () => {
-          this.handleContextMenuCreate(project, path, void 0);
+          this.#handleContextMenuCreate(project, path, void 0);
         }, { jslogContext: "new-file" });
       }
     } else if (activeNode instanceof NavigatorFolderTreeNode && activeNode.origin && activeNode.folderPath) {
@@ -7865,14 +8003,17 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
         isKnownThirdParty: activeNode.recursiveProperties.exclusivelyThirdParty || false,
         isCurrentlyIgnoreListed: activeNode.recursiveProperties.exclusivelyIgnored || false
       };
-      for (const { text, callback, jslogContext } of Workspace5.IgnoreListManager.IgnoreListManager.instance().getIgnoreListFolderContextMenuItems(url, options)) {
+      for (const { text, callback, jslogContext } of this.#ignoreListManager.getIgnoreListFolderContextMenuItems(
+        url,
+        options
+      )) {
         contextMenu.defaultSection().appendItem(text, callback, { jslogContext });
       }
     }
     if (project.canExcludeFolder(path)) {
       contextMenu.defaultSection().appendItem(
         i18nString5(UIStrings6.excludeFolder),
-        this.handleContextMenuExclude.bind(this, project, path),
+        this.#handleContextMenuExclude.bind(this, project, path),
         { jslogContext: "exclude-folder" }
       );
     }
@@ -7905,7 +8046,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       } else if (!(activeNode instanceof NavigatorGroupTreeNode)) {
         contextMenu.defaultSection().appendItem(
           i18nString5(UIStrings6.delete),
-          this.handleDeleteFolder.bind(this, activeNode),
+          this.#handleDeleteFolder.bind(this, activeNode),
           { jslogContext: "delete" }
         );
       }
@@ -7943,61 +8084,73 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       this.rename(node, true);
     }
   }
-  groupingChanged() {
+  #groupingChanged() {
     this.reset(true);
-    this.initGrouping();
-    this.resetWorkspace(Workspace5.Workspace.WorkspaceImpl.instance());
-    this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
+    this.#initGrouping();
+    this.#resetWorkspace(this.#workspace);
+    this.#workspace.uiSourceCodes().forEach(this.#addUISourceCode.bind(this));
   }
-  ignoreListChanged() {
-    if (this.navigatorJustMyCodeSetting.get()) {
-      this.groupingChanged();
+  #ignoreListChanged() {
+    if (this.#navigatorJustMyCodeSetting.get()) {
+      this.#groupingChanged();
     } else {
       this.rootNode.updateTitleRecursive();
     }
   }
-  initGrouping() {
-    this.groupByFrame = true;
-    this.groupByDomain = this.navigatorGroupByFolderSetting.get();
-    this.groupByFolder = this.groupByDomain;
-    if (this.navigatorGroupByAuthoredSetting) {
-      this.groupByAuthored = this.navigatorGroupByAuthoredSetting.get();
+  #initGrouping() {
+    this.#groupByFrame = true;
+    this.#groupByDomain = this.#navigatorGroupByFolderSetting.get();
+    this.#groupByFolder = this.#groupByDomain;
+    if (this.#navigatorGroupByAuthoredSetting) {
+      this.#groupByAuthored = this.#navigatorGroupByAuthoredSetting.get();
     } else {
-      this.groupByAuthored = false;
+      this.#groupByAuthored = false;
     }
+    this.#prevJustMyCode = this.#navigatorJustMyCodeSetting.get();
   }
-  resetForTest() {
+  resetForTest(groupBy) {
+    if (groupBy) {
+      if (typeof groupBy.frame === "boolean") {
+        this.#groupByFrame = groupBy.frame;
+      }
+      if (typeof groupBy.domain === "boolean") {
+        this.#groupByDomain = groupBy.domain;
+      }
+      if (typeof groupBy.folder === "boolean") {
+        this.#groupByFolder = groupBy.folder;
+      }
+    }
     this.reset();
-    this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
+    this.#workspace.uiSourceCodes().forEach(this.#addUISourceCode.bind(this));
   }
-  discardFrame(frame, isAuthored) {
+  #discardFrame(frame, isAuthored) {
     if (isAuthored) {
       return;
     }
-    const node = this.frameNodes.get(frame);
+    const node = this.#frameNodes.get(frame);
     if (!node) {
       return;
     }
     if (node.parent) {
       node.parent.removeChild(node);
     }
-    this.frameNodes.delete(frame);
+    this.#frameNodes.delete(frame);
     for (const child of frame.childFrames) {
-      this.discardFrame(child, isAuthored);
+      this.#discardFrame(child, isAuthored);
     }
   }
   targetAdded(_target) {
   }
   targetRemoved(target) {
-    const rootOrDeployed = this.rootOrDeployedNode();
+    const rootOrDeployed = this.#rootOrDeployedNode();
     const targetNode = rootOrDeployed.child("target:" + target.id());
     if (targetNode) {
       rootOrDeployed.removeChild(targetNode);
     }
   }
-  targetNameChanged(event) {
+  #targetNameChanged(event) {
     const target = event.data;
-    const targetNode = this.rootOrDeployedNode().child("target:" + target.id());
+    const targetNode = this.#rootOrDeployedNode().child("target:" + target.id());
     if (targetNode) {
       targetNode.setTitle(target.name());
     }
@@ -8009,7 +8162,7 @@ var NavigatorTreeNode = class {
   type;
   boostOrder = false;
   hasMappedFiles = false;
-  populated;
+  #populated = false;
   isMerged = false;
   mergedTitle() {
     return this.title;
@@ -8029,7 +8182,6 @@ var NavigatorTreeNode = class {
     this.navigatorView = navigatorView;
     this.type = type;
     this.tooltip = tooltip;
-    this.populated = false;
     this.recursiveProperties = {
       exclusivelySourceMapped: null,
       exclusivelyIgnored: null,
@@ -8092,7 +8244,7 @@ var NavigatorTreeNode = class {
     if (this.parent) {
       this.parent.populate();
     }
-    this.populated = true;
+    this.#populated = true;
     this.wasPopulated();
   }
   wasPopulated() {
@@ -8104,7 +8256,7 @@ var NavigatorTreeNode = class {
   willRemoveChild(_node) {
   }
   isPopulated() {
-    return this.populated;
+    return this.#populated;
   }
   isEmpty() {
     return !this.#children.length;
@@ -8171,7 +8323,7 @@ var NavigatorRootTreeNode = class extends NavigatorTreeNode {
 var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
   #uiSourceCode;
   isEditing = false;
-  eventListeners;
+  #eventListeners;
   #frame;
   #renameCallback;
   constructor(navigatorView, uiSourceCode, frame) {
@@ -8189,7 +8341,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     ));
     this.updateTitle();
     const updateTitleBound = this.updateTitle.bind(this, void 0);
-    this.eventListeners = [
+    this.#eventListeners = [
       this.#uiSourceCode.addEventListener(Workspace5.UISourceCode.Events.TitleChanged, updateTitleBound),
       this.#uiSourceCode.addEventListener(Workspace5.UISourceCode.Events.WorkingCopyChanged, updateTitleBound),
       this.#uiSourceCode.addEventListener(Workspace5.UISourceCode.Events.WorkingCopyCommitted, updateTitleBound)
@@ -8202,9 +8354,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     return this.#uiSourceCode;
   }
   updateTitle(ignoreIsDirty) {
-    const isIgnoreListed = Workspace5.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
-      this.#uiSourceCode
-    );
+    const isIgnoreListed = this.navigatorView.ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(this.#uiSourceCode);
     this.recursiveProperties.exclusivelyIgnored = this.#uiSourceCode.contentType().isScript() || isIgnoreListed ? isIgnoreListed : null;
     let titleText = this.#uiSourceCode.displayName();
     if (!ignoreIsDirty && !this.isEditing && this.#uiSourceCode.isDirty()) {
@@ -8227,7 +8377,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
   }
   dispose() {
     super.dispose();
-    Common8.EventTarget.removeEventListeners(this.eventListeners);
+    Common8.EventTarget.removeEventListeners(this.#eventListeners);
     if (this.isEditing) {
       this.isEditing = false;
       this.navigatorView.stopRenamingNode(this);
@@ -8279,16 +8429,15 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
       }
       this.parent?.resortChild(this);
     }
-    this.parent?.resortChild(this);
-    this.afterEditing(true);
+    this.#afterEditing(true);
   }
   cancelRename() {
     if (this.isDisposed()) {
       return;
     }
-    this.afterEditing(false);
+    this.#afterEditing(false);
   }
-  afterEditing(committed) {
+  #afterEditing(committed) {
     this.isEditing = false;
     this.navigatorView.stopRenamingNode(this);
     this.updateTitle();
@@ -8326,7 +8475,7 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
     }
     return super.computedTooltip();
   }
-  computeHasMappedFiles() {
+  #computeHasMappedFiles() {
     if (!this.project || this.project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return false;
     }
@@ -8338,7 +8487,7 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
       this.folderPath
     );
     const isOverrides = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === "overrides";
-    return isOverrides ? Common8.Settings.Settings.instance().resolve(Persistence3.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).get() : Persistence3.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
+    return isOverrides ? this.navigatorView.settings.resolve(Persistence3.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).get() : this.navigatorView.persistence.filePathHasBindings(absoluteFileSystemPath);
   }
   updateTitle() {
     let propName;
@@ -8354,7 +8503,7 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
       }
       this.recursiveProperties[propName] = propValue;
     }
-    this.hasMappedFiles = this.computeHasMappedFiles();
+    this.hasMappedFiles = this.#computeHasMappedFiles();
     this.navigatorView.requestUpdate();
   }
   didAddChild(node) {
@@ -8415,7 +8564,7 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
     this.frame = frame;
     this.populate();
   }
-  computeHasMappedFiles() {
+  #computeHasMappedFiles() {
     if (!this.project || this.project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return false;
     }
@@ -8423,11 +8572,11 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
       this.project.id()
     );
     const isOverrides = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === "overrides";
-    return isOverrides ? Common8.Settings.Settings.instance().resolve(Persistence3.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).get() : Persistence3.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
+    return isOverrides ? this.navigatorView.settings.resolve(Persistence3.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).get() : this.navigatorView.persistence.filePathHasBindings(fileSystemPath);
   }
   updateTitle() {
     const wasActive = this.hasMappedFiles;
-    this.hasMappedFiles = this.computeHasMappedFiles();
+    this.hasMappedFiles = this.#computeHasMappedFiles();
     const isActive = this.hasMappedFiles;
     if (this.project?.type() === Workspace5.Workspace.projectTypes.FileSystem && wasActive !== isActive) {
       if (isActive) {
@@ -8451,18 +8600,9 @@ var sourcesNavigator_css_default = `/*
  * found in the LICENSE file.
  */
 
-.border-container {
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  flex-shrink: 0;
-}
-
 .navigator-toolbar {
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding-left: var(--sys-size-5);
-}
-
-.automatic-workspace-infobar {
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .automatic-file-system-nudge {
@@ -19144,16 +19284,6 @@ li.watch-expression-tree-item > span.tree-element-title {
   padding-left: var(--sys-size-3);
   text-overflow: ellipsis;
   flex-shrink: 1;
-}
-
-.watch-expression .text-prompt {
-  text-overflow: clip;
-  overflow: hidden;
-  white-space: nowrap;
-  padding-left: var(--sys-size-3);
-  min-height: 18px;
-  line-height: 18px;
-  user-select: text;
 }
 
 .watch-expression-text-prompt-proxy {

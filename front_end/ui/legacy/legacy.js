@@ -4964,7 +4964,7 @@ var tabbedPane_css_default = `/*
   color: var(--sys-color-on-surface);
   position: relative;
 
-  & > .tabbed-pane-header-tab-icon devtools-icon {
+  & > .tabbed-pane-header-tab-icon {
     margin: 0;
     margin-right: var(--sys-size-6);
   }
@@ -4974,6 +4974,10 @@ var tabbedPane_css_default = `/*
     background-color: var(--app-color-navigation-drawer-background-selected);
 
     & > .tabbed-pane-header-tab-icon devtools-icon {
+      color: var(--app-color-navigation-drawer-label-selected);
+    }
+
+    & > .tabbed-pane-header-tab-icon slot::slotted(devtools-icon) {
       color: var(--app-color-navigation-drawer-label-selected);
     }
   }
@@ -14700,13 +14704,12 @@ input {
   color: var(--sys-color-on-primary);
 }
 
-:host(:not(.small)) input:not(.small) {
+:host(:not(.small, .inside-datagrid)) input:not(.small) {
   margin: var(--sys-size-4);
 }
 
 :host(.inside-datagrid) input {
-  height: 10px;
-  width: 10px;
+  margin: 0 var(--sys-size-3);
 }
 
 .devtools-checkbox-text {
@@ -14721,47 +14724,6 @@ input {
 .devtools-checkbox-subtitle {
   color: var(--sys-color-token-subtle);
   white-space: break-spaces;
-}
-
-@media (forced-colors: active) {
-  input.devtools-checkbox-theme-preserve {
-    forced-color-adjust: none;
-  }
-
-  input.devtools-checkbox-theme-preserve:active {
-    background: HighlightText;
-  }
-
-  input.devtools-checkbox-theme-preserve:checked,
-  input.devtools-checkbox-theme-preserve:active:checked {
-    background: Highlight;
-    border-color: Highlight;
-  }
-
-  input.devtools-checkbox-theme-preserve:hover:enabled {
-    border-color: Highlight;
-  }
-
-  input.devtools-checkbox-theme-preserve:active::before,
-  input.devtools-checkbox-theme-preserve:active::after {
-    background-color: Highlight;
-  }
-
-  input.devtools-checkbox-theme-preserve:checked::before,
-  input.devtools-checkbox-theme-preserve:checked::after,
-  input.devtools-checkbox-theme-preserve:active:checked::before,
-  input.devtools-checkbox-theme-preserve:active:checked::after {
-    background-color: HighlightText;
-  }
-
-  input.devtools-checkbox-theme-preserve:hover:checked::before,
-  input.devtools-checkbox-theme-preserve:hover:checked::after {
-    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
-  }
-
-  input.devtools-checkbox-theme-preserve:hover:checked {
-    background: HighlightText;
-  }
 }
 
 /*# sourceURL=${import.meta.resolve("./checkboxTextLabel.css")} */`;
@@ -15428,7 +15390,7 @@ dt-icon-label {
 button.link {
   border: none;
   background: none;
-  padding: 3px;
+  padding: var(--sys-size-2);
 }
 
 button.link:focus-visible {
@@ -15617,16 +15579,8 @@ devtools-toolbar {
     }
   }
 
-  .toolbar-item-search {
-    min-width: 5.2em;
-    max-width: 300px;
-    flex: 1 1 auto;
-    justify-content: start;
-    overflow: revert;
-  }
-
   .toolbar-text {
-    margin: 0 5px;
+    margin: 0 var(--sys-size-3);
     flex: none;
     color: var(--ui-text);
   }
@@ -15814,7 +15768,7 @@ devtools-toolbar {
   .toolbar-divider {
     background-color: var(--sys-color-divider);
     width: var(--sys-size-1);
-    margin: 5px var(--sys-size-3);
+    margin: var(--sys-size-3);
     height: var(--sys-size-8);
   }
 

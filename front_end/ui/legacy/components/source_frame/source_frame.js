@@ -2401,6 +2401,24 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     }
     this.view({ objectTree: this.objectTree, parsedJSON: this.#parsedJSON }, void 0, this.contentElement);
   }
+  static #MAX_SEARCH_NODES = 1e4;
+  async #populateForSearch(root) {
+    const queue = [root];
+    let visited = 0;
+    while (queue.length > 0 && visited < _JSONView.#MAX_SEARCH_NODES) {
+      const node = queue.shift();
+      if (!node || !node.canExpandRecursively) {
+        continue;
+      }
+      visited++;
+      await node.populateChildrenIfNeeded();
+      for (const child of node.treeNodeChildren()) {
+        if (child.hasChildren) {
+          queue.push(child);
+        }
+      }
+    }
+  }
   jumpToMatch() {
     if (this.searchableView) {
       this.search.updateSearchableView(this.searchableView);
@@ -2409,9 +2427,13 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     if (currentMatch) {
       let current = currentMatch.node.parent;
       while (current) {
+        if (current instanceof ObjectUI.ObjectPropertiesSection.ObjectTreeNode) {
+          current.showAllChildren = true;
+        }
         current.expanded = true;
         current = current.parent;
       }
+      this.requestUpdate();
     }
   }
   onSearchCanceled() {
@@ -2427,7 +2449,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     if (!this.objectTree) {
       return;
     }
-    await this.objectTree.populateChildrenIfNeeded();
+    await this.#populateForSearch(this.objectTree);
     this.search.search(this.objectTree, jumpBackwards ?? false, (node, closeTag) => {
       if (closeTag || !searchRegex) {
         return [];

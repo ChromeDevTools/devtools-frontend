@@ -149,8 +149,8 @@ export function mapError(err, detail) {
  * - `'AIDA request was blocked'`: `HandleAidaClientUnavailable()` returns this string on
  *   `aidaCodeComplete` when `AidaClient::CanUseAida()` blocks the profile, and the embedder
  *   dispatcher returns it when a non-local frontend invokes `aidaCodeComplete`.
- * - `'Disallowed path or method'`: `OnHttpRequestPerformed()` returns this string for
- *   `kAccessDenied` when `DevToolsHttpServiceRegistry` rejects the endpoint path or HTTP method.
+ * - `'Disallowed path, method, or header'`: `OnHttpRequestPerformed()` returns this string for
+ *   `kAccessDenied` when `DevToolsHttpServiceRegistry` rejects the endpoint path, HTTP method, or header.
  * - `'Request validation failed'`: `OnHttpRequestPerformed()` returns this string for
  *   `kValidationFailed` when `CanMakeRequest()` rejects the profile (off-the-record, enterprise
  *   policy, age, or geo restrictions), and the embedder dispatcher returns it when a non-local
@@ -160,7 +160,7 @@ export function mapError(err, detail) {
  */
 const VALIDATION_ERROR_MESSAGES = new Set([
     'AIDA request was blocked',
-    'Disallowed path or method',
+    'Disallowed path, method, or header',
     'Request validation failed',
     'Service not found',
 ]);

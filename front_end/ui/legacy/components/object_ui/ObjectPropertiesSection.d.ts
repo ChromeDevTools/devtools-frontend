@@ -110,8 +110,9 @@ declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
 export declare class ObjectTreeNode extends ObjectTreeNodeBase {
     #private;
     readonly property: SDK.RemoteObject.RemoteObjectProperty;
-    showAllChildren: boolean;
     constructor(property: SDK.RemoteObject.RemoteObjectProperty, parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions);
+    get showAllChildren(): boolean;
+    set showAllChildren(value: boolean);
     get object(): SDK.RemoteObject.RemoteObject | undefined;
     get isFiltered(): boolean;
     get canExpandRecursively(): boolean;

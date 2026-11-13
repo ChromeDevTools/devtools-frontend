@@ -8374,16 +8374,33 @@ var ListSourcesTool = class _ListSourcesTool {
       return originResult;
     }
     const files = _ListSourcesTool.getUISourceCodes(originLock);
+    if (files.length === 0) {
+      return {
+        result: "No source files found for the current origin."
+      };
+    }
+    const establishedOrigin = originResult.origin;
+    const rows = files.map((file) => {
+      const id = _ListSourcesTool.uiSourceCodeId.get(file) ?? 0;
+      const name = formatSourceName(file, establishedOrigin);
+      return `${id};${name}`;
+    });
     return {
-      result: {
-        files: files.map((file) => ({
-          id: _ListSourcesTool.uiSourceCodeId.get(file) ?? 0,
-          name: file.fullDisplayName()
-        }))
-      }
+      result: ["id;name", ...rows].join("\n")
     };
   }
 };
+function formatSourceName(file, establishedOrigin) {
+  const fullName = file.fullDisplayName().replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+  const siteId = establishedOrigin.siteId();
+  if (/^https?:\/\//.test(siteId) && file.origin().toLowerCase() === siteId) {
+    const hostPrefix = siteId.replace(/^https?:\/\//, "");
+    if (fullName.slice(0, hostPrefix.length).toLowerCase() === hostPrefix && fullName[hostPrefix.length] === "/") {
+      return fullName.slice(hostPrefix.length);
+    }
+  }
+  return fullName;
+}
 
 // ../../front_end/models/ai_assistance/tools/GetSourceContent.ts
 var UIStringsNotTranslate4 = {
@@ -9762,7 +9779,7 @@ var AiAgent = class {
     for (const [name, definition] of this.#functionDeclarations.entries()) {
       declarations.push({
         name,
-        description: typeof definition.description === "function" ? definition.description() : definition.description,
+        description: definition.description,
         parameters: definition.parameters
       });
     }
@@ -14936,7 +14953,7 @@ var skill = {
     "getElementAccessibilityDetails",
     "executeJavaScript"
   ],
-  "instructions": "You are an expert web quality, Lighthouse audit, and accessibility debugging assistant integrated into Chrome DevTools.\nYour role is to evaluate websites using Lighthouse audits across performance, accessibility, best practices, and SEO, and to inspect live DOM elements for accessibility and styling fixes.\n\n# Tools & Workflow\n\n1. **Lighthouse Audits (`runLighthouse` & `getLighthouseAudits`)**:\n   - The Lighthouse report context contains only category scores and failing audit titles. To answer any question about a Lighthouse run, failing audits, or how to improve a score, you MUST call `getLighthouseAudits` for the relevant category to fetch the full audit details. Never reply using only the initial summary.\n   - If an active Lighthouse report context already exists and no fresh audit is requested:\n     - To inspect the entire report, multiple categories, or general opportunities to improve the score, call `getLighthouseAudits` with `categoryId: 'all'`.\n     - For a specific category, call `getLighthouseAudits` with the corresponding category ID (e.g. `'performance'`, `'accessibility'`, `'best-practices'`, `'seo'`).\n   - If no active report exists or a fresh audit is requested, call `runLighthouse`:\n     - If the user asks for a general report or multiple categories, use `categoryId: 'all'`.\n     - For a single category, pass that category ID (e.g. `'accessibility'`).\n     - Only pass `categoryId: 'agentic-browsing'` when the user explicitly asks for an agentic browsing audit, such as how ready the page is for AI agents to navigate and use it, or WebMCP checks. `'all'` does not include it, so never pick it for general audits, and never substitute another category (such as `'seo'`) when the user asks for it. Use `\"navigation\"` mode for `'agentic-browsing'` unless the user explicitly asks for another mode, because its WebMCP audits only run in `\"navigation\"` mode.\n     - Execution mode:\n       - Use `\"navigation\"` mode for full page-load audits (default for full site reviews).\n       - Use `\"snapshot\"` mode (and recommend Snapshot mode rather than \"Analyze page load\" if instructing the user) to re-evaluate live in-page DOM/CSS modifications, because `\"navigation\"` mode reloads the page and wipes out temporary live changes.\n       - Use `\"timespan\"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n     - **CRITICAL**: `runLighthouse` only records the report and returns `\"Lighthouse audit completed\"` without audit details. Immediately after `runLighthouse` completes, you MUST call `getLighthouseAudits` (with the matching `categoryId`) to retrieve the audit results before responding.\n\n2. **Resolving & Inspecting Failing Audit Elements (`resolveDevtoolsNodePath`, `getStyles`, `getElementAccessibilityDetails`)**:\n   - `getLighthouseAudits` only returns static HTML snippets and DevTools `node path` strings (e.g. `\"1,HTML,1,BODY,2,BUTTON\"`), not live CSS rules, rendered dimensions, or accessibility tree state.\n   - Whenever failing audits reference specific page elements by `node path` (excluding document-level `\"1,HTML\"` landmark checks) and those elements have not yet been resolved and inspected in the conversation:\n     1. Deduplicate `node path` strings first so an element referenced across multiple failing audits is only resolved once.\n     2. You MUST call `resolveDevtoolsNodePath` for each unique failing element's `node path` to obtain its `backendNodeId`. Never guess `backendNodeId` numbers; only pass `backendNodeId` values provided by the active context or returned by `resolveDevtoolsNodePath`.\n     3. You MUST then inspect those `backendNodeId`s using dedicated tools before answering:\n        - Call `getStyles` on the `backendNodeId` for sizing/layout audits (such as `unsized-images` to find the actual rendered CSS `width` and `height`), color contrast, or link styling (`link-in-text-block`).\n        - Call `getElementAccessibilityDetails` on the `backendNodeId` for accessibility, ARIA, role, or accessible name audits (such as `button-name`).\n   - Never guess CSS dimensions, styles, or ARIA properties from the static HTML snippet alone, and never use `executeJavaScript` (`document.querySelector`) as a substitute for `resolveDevtoolsNodePath`, `getStyles`, or `getElementAccessibilityDetails`.\n\n3. **Direct Element Accessibility Inspection (`getElementAccessibilityDetails` & `getStyles`)**:\n   - When inspecting a selected DOM element for accessibility, ALWAYS call `getElementAccessibilityDetails` on its `backendNodeId` to retrieve the computed role, accessible name, name source, ARIA attributes, ignored state, and accessibility properties directly from the accessibility tree.\n   - Call `getStyles` on the `backendNodeId` to inspect layout, color contrast, or font properties when relevant.\n\n4. **Supplementary DOM & Dynamic Interaction Checks (`executeJavaScript`)**:\n   - Only after calling `resolveDevtoolsNodePath`, `getStyles`, and `getElementAccessibilityDetails` on failing elements with a `node path`, you may use `executeJavaScript` if you need supplementary DOM state not available from single-node tools (such as `<head>` `<meta>` tags, `document.body.children` for `<main>` landmarks, parent element computed styles, or pseudo-element styles) or to test dynamic keyboard/focus interactions.\n\n# Considerations\n\n- Base all analysis on empirical Lighthouse audit data and live element inspection. Never fabricate audit scores or results.\n- For performance-only questions (e.g. loading speed, Core Web Vitals) when no Lighthouse report is active, do not run Lighthouse unless the user mentions Lighthouse or a Lighthouse score. Record a performance trace with the performance skill instead.\n- When summarizing a full Lighthouse run, highlight overall category scores first, then detail failing audits (score < 90)."
+  "instructions": "You are an expert web quality, Lighthouse audit, and accessibility debugging assistant integrated into Chrome DevTools.\nYour role is to evaluate websites using Lighthouse audits across performance, accessibility, best practices, and SEO, and to inspect live DOM elements for accessibility and styling fixes.\n\n# Tools & Workflow\n\n1. **Lighthouse Audits (`runLighthouse` & `getLighthouseAudits`)**:\n   - The Lighthouse report context contains only category scores and failing audit titles. To answer any question about a Lighthouse run, failing audits, or how to improve a score, you MUST call `getLighthouseAudits` for the relevant category to fetch the full audit details. Never reply using only the initial summary.\n   - If an active Lighthouse report context already exists and no fresh audit is requested:\n     - To inspect the entire report, multiple categories, or general opportunities to improve the score, call `getLighthouseAudits` with `categoryId: 'all'`.\n     - For a specific category, call `getLighthouseAudits` with the corresponding category ID (e.g. `'performance'`, `'accessibility'`, `'best-practices'`, `'seo'`).\n   - If no active report exists or a fresh audit is requested, call `runLighthouse`:\n     - If the user asks for a general report or multiple categories, use `categoryId: 'all'`.\n     - For a single category, pass that category ID (e.g. `'accessibility'`).\n     - Only pass `categoryId: 'agentic-browsing'` when the user explicitly asks for an agentic browsing audit, such as how ready the page is for AI agents to navigate and use it, or WebMCP checks. `'all'` does not include it, so never pick it for general audits, and never substitute another category (such as `'seo'`) when the user asks for it. Use `\"navigation\"` mode for `'agentic-browsing'` unless the user explicitly asks for another mode, because its WebMCP audits only run in `\"navigation\"` mode.\n     - Execution mode:\n       - Use `\"navigation\"` mode for full page-load audits (default for full site reviews).\n       - Use `\"snapshot\"` mode (and recommend Snapshot mode rather than \"Analyze page load\" if instructing the user) to re-evaluate live in-page DOM/CSS modifications, because `\"navigation\"` mode reloads the page and wipes out temporary live changes.\n       - Use `\"timespan\"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n     - **CRITICAL**: `runLighthouse` only records the report and returns `\"Lighthouse audit completed\"` without audit details. Immediately after `runLighthouse` completes, you MUST call `getLighthouseAudits` (with the matching `categoryId`) to retrieve the audit results before responding.\n\n2. **Resolving & Inspecting Failing Audit Elements (`resolveDevtoolsNodePath`, `getStyles`, `getElementAccessibilityDetails`)**:\n   - `getLighthouseAudits` only returns static HTML snippets and DevTools `node path` strings (e.g. `\"1,HTML,1,BODY,2,BUTTON\"`), not live CSS rules, rendered dimensions, or accessibility tree state.\n   - Whenever failing audits reference specific page elements by `node path` (excluding document-level `\"1,HTML\"` landmark checks) and those elements have not yet been resolved and inspected in the conversation:\n     1. Deduplicate `node path` strings first so an element referenced across multiple failing audits is only resolved once.\n     2. You MUST call `resolveDevtoolsNodePath` for each unique failing element's `node path` to obtain its `backendNodeId`. Never guess `backendNodeId` numbers; only pass `backendNodeId` values provided by the active context or returned by `resolveDevtoolsNodePath`.\n     3. You MUST then inspect those `backendNodeId`s using dedicated tools before answering:\n        - Call `getStyles` on the `backendNodeId` for sizing/layout audits (such as `unsized-images` to find the actual rendered CSS `width` and `height`), color contrast, or link styling (`link-in-text-block`).\n        - Call `getElementAccessibilityDetails` on the `backendNodeId` for accessibility, ARIA, role, or accessible name audits (such as `button-name`).\n   - Never guess CSS dimensions, styles, or ARIA properties from the static HTML snippet alone, and never use `executeJavaScript` (`document.querySelector`) as a substitute for `resolveDevtoolsNodePath`, `getStyles`, or `getElementAccessibilityDetails`.\n\n3. **Direct Element Accessibility Inspection (`getElementAccessibilityDetails` & `getStyles`)**:\n   - When inspecting a selected DOM element for accessibility, ALWAYS call `getElementAccessibilityDetails` on its `backendNodeId` to retrieve the computed role, accessible name, name source, ARIA attributes, ignored state, and accessibility properties directly from the accessibility tree.\n   - Call `getStyles` on the `backendNodeId` to inspect layout, color contrast, or font properties when relevant.\n\n4. **Supplementary DOM & Dynamic Interaction Checks (`executeJavaScript`)**:\n   - Only after calling `resolveDevtoolsNodePath`, `getStyles`, and `getElementAccessibilityDetails` on failing elements with a `node path`, you may use `executeJavaScript` if you need supplementary DOM state not available from single-node tools (such as `<head>` `<meta>` tags, `document.body.children` for `<main>` landmarks, parent element computed styles, or pseudo-element styles) or to test dynamic keyboard/focus interactions.\n   - Never use executeJavaScript to modify element CSS styles or as a substitute for dedicated skills (such as styling for setElementStyles, storage, network, or sources); call learnSkills to load the relevant skill instead.\n\n# Considerations\n\n- Base all analysis on empirical Lighthouse audit data and live element inspection. Never fabricate audit scores or results.\n- For performance-only questions (e.g. loading speed, Core Web Vitals) when no Lighthouse report is active, do not run Lighthouse unless the user mentions Lighthouse or a Lighthouse score. Record a performance trace with the performance skill instead.\n- When summarizing a full Lighthouse run, highlight overall category scores first, then detail failing audits (score < 90)."
 };
 
 // gen/front_end/models/ai_assistance/skills/network.skill.js
@@ -14976,7 +14993,7 @@ var skill4 = {
     "listSources",
     "getSourceContent"
   ],
-  "instructions": 'You are an expert source code analysis and debugging assistant.\n\n# Tools & Workflow\n\n1. **Discover Files (`listSources`)**:\n   - Call `listSources` to retrieve all deployed and authored source files (including source-mapped files) in the workspace matching the active origin.\n   - Inspect the returned list for file names and unique numeric `id` values.\n\n2. **Inspect File Content (`getSourceContent`)**:\n   - Call `getSourceContent` with the numeric `id` to retrieve the source code.\n   - Long files are returned in parts. If the result ends with a "Content truncated" notice, call `getSourceContent` again with the same `id` and the `offset` from the notice. Do not repeat a call with the same `id` and `offset`; it returns the same content.\n   - Parts are split by character count, so a part can end or start partway through a line or token. Do not treat text cut at a part boundary as a syntax error; read the next part instead.\n\n# Considerations\n\n* Provide clean code snippets with direct line references where helpful.\n* Redact sensitive personal data, secrets, or API keys found in source files.'
+  "instructions": 'You are an expert source code analysis and debugging assistant.\n\n# Tools & Workflow\n\n1. **Discover Files (`listSources`)**:\n   - Call `listSources` to retrieve all deployed and authored source files (including source-mapped files) in the workspace matching the active origin.\n   - The output is formatted as `id;name` lines. Same-origin `http(s)` files omit the locked origin scheme and host (e.g. `/assets/app.js`, `/(index)`), while virtual source-map files retain their scheme (e.g. `webpack:///./src/index.ts`).\n\n2. **Inspect File Content (`getSourceContent`)**:\n   - Call `getSourceContent` with the numeric `id` to retrieve the source code.\n   - Long files are returned in parts. If the result ends with a "Content truncated" notice, call `getSourceContent` again with the same `id` and the `offset` from the notice. Do not repeat a call with the same `id` and `offset`; it returns the same content.\n   - Parts are split by character count, so a part can end or start partway through a line or token. Do not treat text cut at a part boundary as a syntax error; read the next part instead.\n\n# Considerations\n\n* Provide clean code snippets with direct line references where helpful.\n* Redact sensitive personal data, secrets, or API keys found in source files.'
 };
 
 // gen/front_end/models/ai_assistance/skills/storage.skill.js
@@ -14997,13 +15014,13 @@ var skill5 = {
 // gen/front_end/models/ai_assistance/skills/styling.skill.js
 var skill6 = {
   "name": "styling",
-  "description": "CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.",
+  "description": "Inspecting or modifying live CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.",
   "allowedTools": [
     "executeJavaScript",
     "getStyles",
     "setElementStyles"
   ],
-  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element's `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: 'display', value: 'flex'}, {name: 'justify-content', value: 'center'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading page state that `getStyles` cannot provide.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
+  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element's `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: 'display', value: 'flex'}, {name: 'justify-content', value: 'center'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.\n   - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
 };
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
@@ -15030,6 +15047,7 @@ ${PerformanceTraceFormatter.callFrameDataFormatDescription.trim()}`
 
 // ../../front_end/models/ai_assistance/AiAgent2.ts
 var { debugLog: debugLog6 } = AiUtils8.Debug;
+var UNCHANGED_CONTEXT_PROMPT_NOTICE = "The selected context is unchanged since it was last provided earlier in this conversation.";
 var SKILL_DISPLAY_NAMES = {
   styling: "CSS and styling",
   network: "Network requests",
@@ -15111,6 +15129,15 @@ function hideStreamingSuggestions(text) {
   return match ? removeDirectiveFromLastLine(lines, match[1]) : text;
 }
 var AiAgent2 = class extends AiAgent {
+  /**
+   * Tracks the last context details sent to the LLM to prevent resending identical
+   * large context blocks on subsequent turns in the same conversation.
+   */
+  #lastSentPromptDetails = null;
+  clearCache() {
+    super.clearCache();
+    this.#lastSentPromptDetails = null;
+  }
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   preamble = preamble8;
   clientFeature = Host36.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
@@ -15172,11 +15199,14 @@ var AiAgent2 = class extends AiAgent {
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#originLock = opts.originLock;
     this.#declaredTools.add("learnSkills");
+    const skillsManifest = Object.entries(SKILLS).map(([name, skill7]) => `- ${name}: ${skill7.description}`).join("\n");
     this.declareFunction("learnSkills", {
-      description: () => {
-        const unloadedSkills = Object.keys(this.getSkills()).filter((name) => !this.#activeSkills.has(name));
-        return `Loads the specified skills to gain access to their specialized tools. Call this ONLY for skills listed under Available skills that are not yet loaded. Do not call this for skills that are already loaded. Available skills that are not yet loaded: ${unloadedSkills.join(", ")}.`;
-      },
+      description: `Loads the specified skills to gain access to their specialized tools and instructions.
+If the user's request requires a skill that has not been loaded yet in this conversation, you MUST call \`learnSkills\` to load that skill first before using its tools, instead of attempting to solve the query using tools from other skills.
+Do NOT call \`learnSkills\` for skills that were already loaded earlier in this conversation.
+
+Available skills:
+${skillsManifest}`,
       parameters: {
         type: Host36.AidaClient.ParametersTypes.OBJECT,
         description: "Parameters for learning skills",
@@ -15187,7 +15217,7 @@ var AiAgent2 = class extends AiAgent {
               type: Host36.AidaClient.ParametersTypes.STRING,
               description: "Skill name"
             },
-            description: "List of unloaded skill names to load"
+            description: "List of skill names to load (only include skills not yet loaded in this conversation)"
           }
         },
         required: ["skills"]
@@ -15234,30 +15264,23 @@ var AiAgent2 = class extends AiAgent {
     });
   }
   async enhanceQuery(query, selected = null, _multimodalInputType) {
-    let enhancedQuery = query;
-    if (selected) {
-      const promptDetails = await selected.getPromptDetails();
-      if (promptDetails) {
-        enhancedQuery = `${promptDetails}
+    const promptDetails = selected ? await selected.getPromptDetails() : null;
+    if (!promptDetails) {
+      this.#lastSentPromptDetails = null;
+      return query;
+    }
+    let contextDetails;
+    if (promptDetails === this.#lastSentPromptDetails) {
+      contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
+    } else {
+      contextDetails = promptDetails;
+      this.#lastSentPromptDetails = promptDetails;
+    }
+    return `${contextDetails}
 
 # User request
 
 QUERY: ${query}`;
-      }
-    }
-    const unloadedSkills = Object.entries(this.getSkills()).filter(([name]) => !this.#activeSkills.has(name));
-    if (unloadedSkills.length === 0) {
-      return enhancedQuery;
-    }
-    const skillsManifest = unloadedSkills.map(([name, skill7]) => `- ${name}: ${skill7.description}`).join("\n");
-    return `Available skills that are not yet loaded:
-${skillsManifest}
-
-You must call \`learnSkills\` to load a skill before you can use its tools.
-If the user's request requires a skill that is not currently loaded, you MUST call \`learnSkills\` to load that skill first, instead of attempting to solve the query using tools from other skills.
-Do NOT call \`learnSkills\` for skills that are already loaded.
-
-User query: ${enhancedQuery}`;
   }
   /**
    * Parses a completed response. Only the last line can be the follow-up
@@ -15288,12 +15311,8 @@ User query: ${enhancedQuery}`;
       }
     }
   }
-  getSkills() {
-    return SKILLS;
-  }
   async learnSkill(names) {
     let response = "";
-    const skills = this.getSkills();
     for (const name of names) {
       if (this.#activeSkills.has(name)) {
         debugLog6(`[AiAgent2] Skill '${name}' is already loaded`);
@@ -15301,7 +15320,7 @@ User query: ${enhancedQuery}`;
 `;
         continue;
       }
-      const skillObj = skills[name];
+      const skillObj = SKILLS[name];
       if (skillObj) {
         this.#activeSkills.add(name);
         debugLog6(`[AiAgent2] Loaded skill '${name}' with tools: [${skillObj.allowedTools.join(", ")}]`);
@@ -15316,7 +15335,7 @@ ${skillObj.instructions}
         }
       } else {
         debugLog6(`[AiAgent2] Failed to load skill '${name}'`);
-        response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(skills).join(", ")}.
+        response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(", ")}.
 `;
       }
     }

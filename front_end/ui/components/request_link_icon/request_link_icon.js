@@ -44,6 +44,7 @@ button {
   padding: 0;
   font-family: inherit;
   font-size: inherit;
+  line-height: inherit;
   color: inherit;
 
   &.link {
@@ -57,8 +58,7 @@ button {
 
 devtools-icon {
   width: var(--sys-size-8);
-  height: var(--sys-size-8);
-  vertical-align: middle;
+  height: var(--sys-size-7);
   color: var(--icon-no-request);
 
   .link > & {

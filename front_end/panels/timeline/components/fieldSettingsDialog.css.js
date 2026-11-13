@@ -57,11 +57,6 @@ details > summary {
   flex-direction: row;
 }
 
-.origin-mapping-grid {
-  border: var(--sys-size-1) solid var(--sys-color-divider);
-  margin-top: var(--sys-size-5);
-}
-
 .origin-mapping-description {
   margin-bottom: var(--sys-size-5);
 }

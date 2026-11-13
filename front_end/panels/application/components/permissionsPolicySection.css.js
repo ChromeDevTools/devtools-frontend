@@ -41,7 +41,7 @@ export default `/*
   }
 
   .permissions-row div {
-    padding-right: 5px;
+    padding-right: var(--sys-size-4);
   }
 
   .feature-name {

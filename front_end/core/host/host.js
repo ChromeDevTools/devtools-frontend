@@ -2406,7 +2406,7 @@ var UserMetrics = class {
     }
   }
 };
-function createDynamicEnumProxy(enumName, fallbackEnum) {
+function createDynamicEnumProxy(enumName2, fallbackEnum) {
   return new Proxy(fallbackEnum, {
     get(_target, prop) {
       if (typeof prop === "symbol") {
@@ -2416,7 +2416,7 @@ function createDynamicEnumProxy(enumName, fallbackEnum) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         globalThis.DevToolsMetrics
       );
-      const enumObj = metrics && metrics[enumName];
+      const enumObj = metrics && metrics[enumName2];
       if (enumObj && prop in enumObj) {
         return enumObj[prop];
       }
@@ -2435,7 +2435,7 @@ function createDynamicEnumProxy(enumName, fallbackEnum) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         globalThis.DevToolsMetrics
       );
-      const enumObj = metrics && metrics[enumName];
+      const enumObj = metrics && metrics[enumName2];
       if (enumObj && prop in enumObj) {
         return true;
       }
@@ -2449,7 +2449,7 @@ function createDynamicEnumProxy(enumName, fallbackEnum) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         globalThis.DevToolsMetrics
       );
-      const enumObj = metrics && metrics[enumName];
+      const enumObj = metrics && metrics[enumName2];
       return enumObj ? Reflect.ownKeys(enumObj) : Reflect.ownKeys(fallbackEnum);
     },
     getOwnPropertyDescriptor(_target, prop) {
@@ -2457,7 +2457,7 @@ function createDynamicEnumProxy(enumName, fallbackEnum) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         globalThis.DevToolsMetrics
       );
-      const enumObj = metrics && metrics[enumName];
+      const enumObj = metrics && metrics[enumName2];
       if (!enumObj) {
         return Reflect.getOwnPropertyDescriptor(fallbackEnum, prop);
       }
@@ -2649,7 +2649,7 @@ function mapError(err, detail) {
 }
 var VALIDATION_ERROR_MESSAGES = /* @__PURE__ */ new Set([
   "AIDA request was blocked",
-  "Disallowed path or method",
+  "Disallowed path, method, or header",
   "Request validation failed",
   "Service not found"
 ]);
@@ -3057,6 +3057,9 @@ function mapCommonAidaRequestFields(aidaRequest, gcaRequest) {
       temperature: aidaRequest.options.temperature
     };
   }
+  if (aidaRequest.metadata?.string_session_id) {
+    gcaRequest.sessionId = aidaRequest.metadata.string_session_id;
+  }
 }
 function gcaResponseToAidaDoConversationResponse(response) {
   const functionCalls = [];
@@ -3413,6 +3416,26 @@ function convertAidaParamToGcaSchema(param) {
   }
   return schema;
 }
+var BLOCKING_FINISH_REASONS = /* @__PURE__ */ new Set([
+  "SAFETY",
+  "RECITATION",
+  "BLOCKLIST",
+  "PROHIBITED_CONTENT",
+  "SPII",
+  "IMAGE_SAFETY",
+  "IMAGE_PROHIBITED_CONTENT",
+  "IMAGE_RECITATION"
+]);
+function enumName(value, names) {
+  return typeof value === "number" ? names[value] : value;
+}
+function blockedChunk(metadata, blockMessage) {
+  const citations = metadata.attributionMetadata?.citations ?? [];
+  return {
+    metadata: { ...metadata, attributionMetadata: { attributionAction: "BLOCK" /* BLOCK */, citations } },
+    blockMessage
+  };
+}
 function gcaChunkResponseToAidaChunkResponse(response) {
   try {
     if (response.error) {
@@ -3442,6 +3465,14 @@ function gcaChunkResponseToAidaChunkResponse(response) {
           uri: c.uri
         }))
       };
+    }
+    const blockReason = enumName(response.promptFeedback?.blockReason, BlockReason);
+    if (blockReason && blockReason !== "BLOCKED_REASON_UNSPECIFIED") {
+      return [blockedChunk(metadata, `GCA prompt blocked: ${blockReason}`)];
+    }
+    const finishReason = enumName(candidate?.finishReason, FinishReason);
+    if (finishReason && BLOCKING_FINISH_REASONS.has(finishReason)) {
+      return [blockedChunk(metadata, `GCA response blocked: ${finishReason}`)];
     }
     const chunks = parts.length === 0 ? [{ metadata }] : parts.map((part) => {
       const aidaChunkResponse = { metadata };
@@ -3484,6 +3515,9 @@ __export(GcaClient_exports, {
 });
 import * as Root2 from "../root/root.js";
 var SERVICE_NAME = "gcaService";
+var OPT_OUT_DATA_COLLECTION_HEADER = {
+  "User-Agent": "Chrome (aidev_client; datacollection_opt_in=false)"
+};
 var ENDPOINTS = {
   CONTENT: "/v1beta:generateContent",
   SEND_TELEMETRY: "/v1beta:sendTelemetry",
@@ -3492,6 +3526,9 @@ var ENDPOINTS = {
 var GcaClient = class {
   enabled() {
     return Root2.Runtime.hostConfig.devToolsUseGcaApi?.enabled;
+  }
+  #getHeaders(disableUserContentLogging) {
+    return disableUserContentLogging ? OPT_OUT_DATA_COLLECTION_HEADER : void 0;
   }
   async conversationRequest(request, streamId, options) {
     try {
@@ -3502,6 +3539,7 @@ var GcaClient = class {
           path: ENDPOINTS.STREAM_CONTENT,
           method: "POST",
           body: JSON.stringify(gcaRequest),
+          headers: this.#getHeaders(request.metadata.disable_user_content_logging),
           streamId
         },
         options
@@ -3518,7 +3556,8 @@ var GcaClient = class {
       service: SERVICE_NAME,
       path: ENDPOINTS.SEND_TELEMETRY,
       method: "POST",
-      body: JSON.stringify(gcaEvent)
+      body: JSON.stringify(gcaEvent),
+      headers: this.#getHeaders(clientEvent.disable_user_content_logging)
     });
     return response.then(
       (result) => {
@@ -3533,22 +3572,27 @@ var GcaClient = class {
   }
   async completeCode(request) {
     const gcaRequest = aidaCompletionRequestToGcaRequest(request);
-    const result = await this.#requestContent(gcaRequest);
+    const result = await this.#requestContent(gcaRequest, this.#getHeaders(request.metadata.disable_user_content_logging));
     return gcaResponseToAidaCompletionResponse(result);
   }
   async generateCode(request, options) {
     const gcaRequest = aidaGenerateCodeRequestToGcaRequest(request);
-    const result = await this.#requestContent(gcaRequest, options);
+    const result = await this.#requestContent(
+      gcaRequest,
+      this.#getHeaders(request.metadata.disable_user_content_logging),
+      options
+    );
     return gcaResponseToAidaGenerateCodeResponse(result);
   }
-  async #requestContent(request, options) {
+  async #requestContent(request, headers, options) {
     try {
       const response = await makeHttpRequest(
         {
           service: SERVICE_NAME,
           path: ENDPOINTS.CONTENT,
           method: "POST",
-          body: JSON.stringify(request)
+          body: JSON.stringify(request),
+          headers
         },
         options
       );
@@ -3753,7 +3797,7 @@ var AidaClient = class {
             ...result.metadata
           };
           if (metadata?.attributionMetadata?.attributionAction === "BLOCK" /* BLOCK */) {
-            throw new AidaBlockError();
+            throw new AidaBlockError(result.blockMessage);
           }
         }
         if (result.textChunk) {

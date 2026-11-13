@@ -6156,6 +6156,9 @@ var logging = false;
 function isLogging() {
   return logging;
 }
+function enableLogging() {
+  logging = true;
+}
 async function startLogging(options) {
   logging = true;
   processingThrottler = options?.processingThrottler || new Common2.Throttler.Throttler(PROCESS_DOM_INTERVAL);
@@ -6579,6 +6582,7 @@ export {
   dropDown,
   elementKey,
   elementsBreadcrumbs,
+  enableLogging,
   expand,
   filterDropdown,
   getLoggingConfig,

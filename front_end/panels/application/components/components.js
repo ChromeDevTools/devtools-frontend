@@ -4368,13 +4368,6 @@ devtools-report-value {
   align-self: start;
 }
 
-.report-value {
-  padding: 0 var(--sys-size-4);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .link,
 .devtools-link {
   color: var(--sys-color-primary);
@@ -5456,7 +5449,7 @@ var permissionsPolicySection_css_default = `/*
   }
 
   .permissions-row div {
-    padding-right: 5px;
+    padding-right: var(--sys-size-4);
   }
 
   .feature-name {
@@ -5720,55 +5713,62 @@ var protocolHandlersView_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: flex;
-  flex-direction: column;
-}
-
-.devtools-link {
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-  outline-offset: var(--sys-size-2);
-}
-
-.devtools-link:focus-visible {
-  outline-width: unset;
-}
-
-input.devtools-text-input[type="text"] {
-  padding: 3px var(--sys-size-4);
-  margin-left: var(--sys-size-3);
-  margin-right: var(--sys-size-3);
-  width: 250px;
-  height: 25px;
-}
-
-input.devtools-text-input[type="text"]::placeholder {
-  color: var(--sys-color-token-subtle);
-}
-
-.protocol-handlers-row {
-  margin: var(--sys-size-3) 0;
-}
-
-.inline-icon {
-  width: var(--sys-size-8);
-  height: var(--sys-size-8);
-
-  &[name="check-circle"] {
-    color: var(--icon-checkmark-green);
+@scope to (devtools-widget > *) {
+  :scope {
+    display: flex;
+    flex-direction: column;
   }
-}
 
-@media (forced-colors: active) {
-  .devtools-link:not(.devtools-link-prevent-click) {
-    color: linktext;
+  .devtools-link {
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    outline-offset: var(--sys-size-2);
   }
 
   .devtools-link:focus-visible {
-    background: Highlight;
-    color: HighlightText;
+    outline-width: unset;
+  }
+
+  input.devtools-text-input[type="text"] {
+    padding: var(--sys-size-2) var(--sys-size-4);
+    margin-left: var(--sys-size-3);
+    margin-right: var(--sys-size-3);
+    width: var(--sys-size-29);
+    height: var(--sys-size-11);
+  }
+
+  input.devtools-text-input[type="text"]::placeholder {
+    color: var(--sys-color-token-subtle);
+  }
+
+  .protocol-handlers-row {
+    margin: var(--sys-size-3) 0;
+
+    &:has(.protocol-select) {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .inline-icon {
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+
+    &[name="check-circle"] {
+      color: var(--icon-checkmark-green);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .devtools-link:not(.devtools-link-prevent-click) {
+      color: linktext;
+    }
+
+    .devtools-link:focus-visible {
+      background: Highlight;
+      color: HighlightText;
+    }
   }
 }
 
@@ -6576,10 +6576,6 @@ devtools-data-grid {
 devtools-icon {
   width: var(--sys-size-7);
   height: var(--sys-size-7);
-}
-
-.no-tt-message {
-  margin-top: var(--sys-size-9);
 }
 
 /*# sourceURL=${import.meta.resolve("./trustTokensView.css")} */`;

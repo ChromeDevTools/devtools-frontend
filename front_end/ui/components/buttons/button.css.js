@@ -301,12 +301,6 @@ button {
     &.tonal {
       background: color-mix(in srgb, var(--sys-color-tonal-container), var(--sys-color-state-hover-on-subtle));
     }
-
-    &.toobar {
-      devtools-icon {
-        color: var(--icon-default-hover);
-      }
-    }
   }
 
   &:active::before,

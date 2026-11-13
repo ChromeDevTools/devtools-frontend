@@ -16,7 +16,7 @@ export default `/*
 }
 
 .film-strip-view .frame .time {
-  font-size: 10px;
+  font-size: var(--sys-typescale-body5-size);
   margin-top: var(--sys-size-2);
 }
 

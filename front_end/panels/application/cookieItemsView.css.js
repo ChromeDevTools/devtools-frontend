@@ -19,7 +19,6 @@ export default `/*
     user-select: none;
     white-space: nowrap;
     margin-bottom: var(--sys-size-3);
-    flex: 0 0 18px;
     display: flex;
     align-items: center;
   }
@@ -33,12 +32,6 @@ export default `/*
     word-break: break-all;
     flex: 1;
     overflow: auto;
-  }
-
-  .cookie-preview-widget-toggle {
-    margin-left: var(--sys-size-6);
-    font-weight: normal;
-    flex-shrink: 1;
   }
 }
 

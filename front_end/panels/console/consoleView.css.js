@@ -135,7 +135,10 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .console-message-repeat-count {
-  margin: 1.4px 0 0 10px;
+  display: inline-flex;
+  align-self: flex-start;
+  /* 24px (--sys-size-11) message gutter minus 14px (--sys-size-7) bubble size */
+  margin: var(--sys-size-2) 0 0 calc(var(--sys-size-11) - var(--sys-size-7));
   flex: none;
 }
 
@@ -184,7 +187,7 @@ export default `/* Copyright 2021 The Chromium Authors
   flex: none;
   position: relative;
   left: var(--sys-size-5);
-  top: 3px;
+  top: var(--sys-size-3);
   margin-right: var(--sys-size-2);
 }
 
@@ -504,14 +507,14 @@ export default `/* Copyright 2021 The Chromium Authors
 
 .object-state-note {
   display: inline-block;
-  width: 11px;
-  height: 11px;
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   color: var(--sys-color-on-tonal-container);
   text-align: center;
-  border-radius: 3px;
-  line-height: 13px;
+  border-radius: var(--sys-shape-corner-extra-small);
+  line-height: var(--sys-size-6);
   margin: 0 var(--sys-size-4);
-  font-size: 9px;
+  font-size: var(--sys-typescale-label-size);
 }
 
 .console-object {
@@ -544,7 +547,7 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .devtools-console-insight {
-  margin: 9px var(--sys-size-10) 11px var(--sys-size-11);
+  margin: var(--sys-size-5) var(--sys-size-10) var(--sys-size-5) var(--sys-size-11);
 }
 
 .hover-button {
@@ -554,7 +557,7 @@ export default `/* Copyright 2021 The Chromium Authors
   border-radius: var(--sys-shape-corner-full);
   border: none;
   /* todo: extract to global styles and make it work with dark mode. */
-  box-shadow: 0 1px 3px 1px rgb(0 0 0 / 15%), 0 1px 2px 0 rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  box-shadow: var(--sys-elevation-level1);
   box-sizing: border-box;
   background-color: var(--sys-color-tonal-container);
   color: var(--sys-color-on-tonal-container);
@@ -599,7 +602,7 @@ export default `/* Copyright 2021 The Chromium Authors
 .hover-button:focus,
 .hover-button:hover {
   border-radius: var(--sys-shape-corner-extra-small);
-  max-width: 200px;
+  max-width: var(--sys-size-26);
   transition:
     max-width var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized),
     border-radius 50ms linear;

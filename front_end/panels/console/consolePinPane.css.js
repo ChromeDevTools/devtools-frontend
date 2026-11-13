@@ -50,7 +50,9 @@ export default `/*
 }
 
 .console-pin-name {
-  margin-left: -5px;
+  /* Cancel CodeMirror .cm-line's 6px left padding so
+   * expression text aligns with .console-pin-preview. */
+  margin-left: calc(-1 * var(--sys-size-4));
   margin-bottom: var(--sys-size-1);
   height: auto;
 }

@@ -96,10 +96,6 @@ export default `/*
   color: var(--sys-color-state-disabled);
 }
 
-.request-payload-show-more-button {
-  margin: 0 var(--sys-size-3);
-}
-
 @media (forced-colors: active) {
   :host-context(.request-payload-tree) ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
     background: Highlight;

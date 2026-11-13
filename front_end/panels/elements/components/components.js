@@ -1405,7 +1405,7 @@ var cssQuery_css_default = `/*
   cursor: var(--override-styles-section-text-hover-cursor);
 }
 
-:host-context(.collapsed):host(:has(devtools-icon)) .sidebar-pane-open-brace::after {
+:host-context(.collapsed):host(.has-collapse-icon) .sidebar-pane-open-brace::after {
   content: "}";
 }
 

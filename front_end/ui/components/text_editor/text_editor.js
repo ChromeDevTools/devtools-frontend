@@ -1584,7 +1584,7 @@ import * as CodeHighlighter from "../code_highlighter/code_highlighter.js";
 import * as CM2 from "../../../third_party/codemirror.next/codemirror.next.js";
 var editorTheme = CM2.EditorView.theme({
   "&.cm-editor": {
-    color: "color: var(--sys-color-on-subtle)",
+    color: "var(--sys-color-on-surface)",
     cursor: "auto",
     "&.cm-focused": {
       outline: "none"

@@ -3,7 +3,7 @@ import type * as LHModel from '../lighthouse/lighthouse.js';
 import type * as Trace from '../trace/trace.js';
 import { AiAgent, type ContextResponse, type ConversationContext, type MultimodalInputType, type ParsedResponse, type RequestOptions } from './agents/AiAgent.js';
 import { type ExecuteJsAgentOptions } from './agents/ExecuteJavascript.js';
-import type { Skill, SkillName } from './skills/Skill.js';
+import type { SkillName } from './skills/Skill.js';
 import { type OriginLockState } from './tools/Tool.js';
 export interface AiAgent2Options extends ExecuteJsAgentOptions {
     /**
@@ -15,6 +15,7 @@ export interface AiAgent2Options extends ExecuteJsAgentOptions {
 }
 export declare class AiAgent2 extends AiAgent<unknown> {
     #private;
+    clearCache(): void;
     readonly preamble: string;
     readonly clientFeature: Host.AidaClient.ClientFeature;
     get userTier(): string | undefined;
@@ -33,7 +34,6 @@ export declare class AiAgent2 extends AiAgent<unknown> {
      */
     protected parsePartialTextResponse(response: string): ParsedResponse;
     handleContextDetails(selected: ConversationContext<unknown> | null): AsyncGenerator<ContextResponse, void, void>;
-    getSkills(): Record<SkillName, Skill>;
     learnSkill(names: SkillName[]): Promise<string>;
     get activeSkills(): Set<SkillName>;
 }

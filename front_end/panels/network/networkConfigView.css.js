@@ -28,7 +28,7 @@ export default `/*
 }
 
 .network-config-fields {
-  flex: 2 0 200px;
+  flex: 2 0 var(--sys-size-25);
 }
 
 .network-config-fields > span:first-of-type {
@@ -117,7 +117,6 @@ export default `/*
 }
 
 .status-text {
-  padding: 10px;
   color: var(--sys-color-tertiary);
 }
 

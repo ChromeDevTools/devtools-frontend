@@ -49,7 +49,7 @@ var chartViewport_css_default = `/*
 
 :host-context(.platform-mac) ::-webkit-scrollbar-thumb {
   background-color: var(--color-scrollbar-mac); /* stylelint-disable-line plugin/use_theme_colors */
-  border-radius: 50px;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 :host-context(.platform-mac) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {
@@ -80,14 +80,6 @@ var chartViewport_css_default = `/*
   top: 0;
   bottom: 0;
   text-align: center;
-}
-
-.chart-viewport-selection-overlay .time-span {
-  white-space: nowrap;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
 /*# sourceURL=${import.meta.resolve("./chartViewport.css")} */`;
@@ -4610,7 +4602,7 @@ var filmStripView_css_default = `/*
 }
 
 .film-strip-view .frame .time {
-  font-size: 10px;
+  font-size: var(--sys-typescale-body5-size);
   margin-top: var(--sys-size-2);
 }
 
@@ -8116,7 +8108,8 @@ var overviewGrid_css_default = `/*
 }
 
 .overview-grid-window-resizer::after {
-  left: 5px;
+  /* 2px (--sys-size-2) ::before left inset + 1px (--sys-size-1) ::before width + 2px (--sys-size-2) inter-grip gap */
+  left: calc(2 * var(--sys-size-2) + var(--sys-size-1));
 }
 
 .overview-grid-window-resizer:focus-visible {

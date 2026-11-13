@@ -10,18 +10,11 @@ export default `/*
  */
 
 @scope to (devtools-widget > *) {
-  .resource-service-worker-update-view {
-    display: block;
-    margin: var(--sys-size-4);
-    color: var(--sys-color-on-surface-subtle);
-    overflow: auto;
-  }
-
   .service-worker-update-timing-table {
     border: var(--sys-size-1) solid var(--sys-color-divider);
     border-spacing: 0;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: var(--sys-size-6);
+    padding-right: var(--sys-size-6);
     line-height: initial;
     table-layout: auto;
     overflow: hidden;

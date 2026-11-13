@@ -57,7 +57,7 @@ slot {
 }
 
 :host([aria-pressed="true"]) slot {
-  color: var(--override-adorner-active-text-color, var(--sys-color-on-primary));
+  color: var(--sys-color-on-primary);
   background-color: var(--override-adorner-active-background-color, var(--sys-color-primary));
   border: var(--sys-size-1) solid var(--override-adorner-active-background-color, var(--sys-color-primary));
 

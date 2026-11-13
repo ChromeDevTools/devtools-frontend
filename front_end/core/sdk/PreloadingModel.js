@@ -636,8 +636,8 @@ class PreloadingAttemptRegistry {
         this.reconstructPipelines();
     }
     mergePrevious(prev) {
-        for (const [id, attempt] of this.map.entries()) {
-            prev.map.set(id, attempt);
+        for (const attempt of this.map.values()) {
+            prev.upsert(attempt);
         }
         this.map = prev.map;
         this.reconstructPipelines();

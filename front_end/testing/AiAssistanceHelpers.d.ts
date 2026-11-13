@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
-import * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
+import type * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import type * as Trace from '../models/trace/trace.js';
 import * as Workspace from '../models/workspace/workspace.js';
@@ -82,13 +82,3 @@ export declare function stubPerformanceTraceFormatter(traceContext: AiAssistance
     resolveFunctionCodeAtLocation?: sinon.SinonStub;
     formatFunctionCode?: sinon.SinonStub;
 }): sinon.SinonStub;
-/**
- * Asserts that a skill is loaded/active by verifying that its full manifest entry
- * (`- <name>: <description>`) is omitted from the prompt's unloaded skills manifest.
- */
-export declare function assertSkillLoaded(prompt: string, skillName: AiAssistance.Skill.SkillName): void;
-/**
- * Asserts that a skill is not loaded by verifying that its full manifest entry
- * (`- <name>: <description>`) is present in the prompt's unloaded skills manifest.
- */
-export declare function assertSkillNotLoaded(prompt: string, skillName: AiAssistance.Skill.SkillName): void;

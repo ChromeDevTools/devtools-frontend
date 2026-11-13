@@ -19,6 +19,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     #id;
     #modelByConstructor = new Map();
     #isSuspended;
+    #suspendGeneration = 0;
     /**
      * Generally when a target crashes we don't need to know, with one exception.
      * If a target crashes during the recording of a performance trace, after the
@@ -218,6 +219,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
             return;
         }
         this.#isSuspended = true;
+        const generation = ++this.#suspendGeneration;
         // If the target has crashed, we will not attempt to suspend all the
         // models, but we still mark it as suspended so we correctly track the
         // state.
@@ -225,6 +227,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
             return;
         }
         await Promise.all(Array.from(this.models().values(), m => m.preSuspendModel(reason)));
+        if (generation !== this.#suspendGeneration) {
+            return;
+        }
         await Promise.all(Array.from(this.models().values(), m => m.suspendModel(reason)));
     }
     async resume() {
@@ -232,6 +237,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
             return;
         }
         this.#isSuspended = false;
+        ++this.#suspendGeneration;
         if (this.#hasCrashed) {
             return;
         }

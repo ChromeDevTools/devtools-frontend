@@ -20,10 +20,6 @@ export default `/*
     justify-content: flex-start;
   }
 
-  .data-grid td .url-outer .filter-highlight {
-    font-weight: bold;
-  }
-
   .data-grid td .url-prefix {
     overflow-x: hidden;
     text-overflow: ellipsis;

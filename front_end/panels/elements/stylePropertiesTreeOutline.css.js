@@ -296,13 +296,8 @@ devtools-icon.icon-link {
   vertical-align: bottom;
 }
 
-devtools-css-angle,
-devtools-css-length {
+devtools-css-angle {
   display: inline-block;
-}
-
-devtools-css-length {
-  margin-left: var(--sys-size-1);
 }
 
 devtools-icon.open-in-animations-panel {

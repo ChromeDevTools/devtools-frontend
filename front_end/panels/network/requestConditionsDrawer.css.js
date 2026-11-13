@@ -28,10 +28,6 @@ export default `/*
   overflow: hidden auto;
 }
 
-.no-blocked-urls > span {
-  white-space: pre;
-}
-
 .blocked-url {
   display: flex;
   flex-direction: row;

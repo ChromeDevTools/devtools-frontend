@@ -4760,13 +4760,8 @@ devtools-icon.icon-link {
   vertical-align: bottom;
 }
 
-devtools-css-angle,
-devtools-css-length {
+devtools-css-angle {
   display: inline-block;
-}
-
-devtools-css-length {
-  margin-left: var(--sys-size-1);
 }
 
 devtools-icon.open-in-animations-panel {
@@ -9868,6 +9863,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       if (lastAncestor && this.#collapseIcon && this.#statusElement) {
         this.#collapseIcon.slot = "indent";
         lastAncestor.append(this.#collapseIcon, this.#statusElement);
+        lastAncestor.classList.add("has-collapse-icon");
       }
       this.#ancestorClosingBracesElement.firstElementChild?.classList.add("sidebar-pane-closing-brace");
     }
@@ -11439,12 +11435,11 @@ var stylesSidebarPane_css_default = `/**
 .sidebar-pane-section-toolbar {
   position: absolute;
   right: 0;
-  bottom: calc(-1 * var(--sys-size-1));
+  bottom: var(--sys-size-2);
   z-index: 0;
 
   &.new-rule-toolbar {
     visibility: hidden;
-    margin-bottom: 5px;
 
     --toolbar-height: var(--sys-size-8);
   }
@@ -23846,7 +23841,7 @@ var metricsSidebarPane_css_default = `/**
 }
 
 :host {
-  --metrics-height: 190px;
+  --metrics-height: var(--sys-size-25);
 }
 
 .metrics.collapsed {
@@ -23873,7 +23868,7 @@ var metricsSidebarPane_css_default = `/**
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
-  padding: var(--sys-size-2);
+  padding: var(--sys-size-2) var(--sys-size-4);
   margin: var(--sys-size-2);
   position: relative;
 }
@@ -23884,8 +23879,8 @@ var metricsSidebarPane_css_default = `/**
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px var(--sys-size-4);
-  margin: 3px;
+  padding: var(--sys-size-2) var(--sys-size-4);
+  margin: var(--sys-size-2);
   position: relative;
 }
 
@@ -23906,10 +23901,9 @@ var metricsSidebarPane_css_default = `/**
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px var(--sys-size-4);
-  margin: 3px;
+  padding: var(--sys-size-2) var(--sys-size-4);
+  margin: var(--sys-size-2);
   position: relative;
-  min-width: 120px;
 }
 
 .metrics .content {
@@ -24458,7 +24452,7 @@ var platformFontsWidget_css_default = `/**
   }
 
   .title {
-    padding: 0 5px;
+    padding: 0 var(--sys-size-3);
     border-top: var(--sys-size-1) solid;
     border-bottom: var(--sys-size-1) solid;
     border-color: var(--sys-color-divider);

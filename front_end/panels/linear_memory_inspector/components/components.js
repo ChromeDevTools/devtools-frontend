@@ -38,10 +38,10 @@ var linearMemoryHighlightChipList_css_default = `/*
 .highlight-chip {
   background: var(--sys-color-cdt-base-container);
   border: var(--sys-size-1) solid var(--sys-color-divider);
-  height: 18px;
+  height: calc(var(--sys-size-8) + 2 * var(--sys-size-1)); /* --sys-size-8 micro button height + top/bottom --sys-size-1 borders */
   border-radius: var(--sys-shape-corner-extra-small);
   flex: 0 0 auto;
-  max-width: 250px;
+  max-width: var(--sys-size-29);
   position: relative;
   padding: 0 var(--sys-size-4);
 }
@@ -1516,7 +1516,7 @@ var linearMemoryViewer_css_default = `/*
   .cell {
     text-align: center;
     border: var(--sys-size-1) solid transparent;
-    border-radius: 2px;
+    border-radius: var(--sys-shape-corner-extra-small);
 
     &.focused-area {
       background-color: var(--sys-color-tonal-container);
@@ -1531,7 +1531,7 @@ var linearMemoryViewer_css_default = `/*
   }
 
   .byte-cell {
-    min-width: 21px;
+    min-width: var(--sys-size-9);
     color: var(--sys-color-on-surface);
   }
 

@@ -40,10 +40,6 @@ export default `/*
   height: calc(100% - 22px);
 }
 
-.object-popover-container {
-  display: inline-block;
-}
-
 .object-popover-description-box {
   padding: var(--sys-size-4);
   max-width: 350px;

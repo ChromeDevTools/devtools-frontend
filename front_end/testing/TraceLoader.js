@@ -6,6 +6,12 @@ import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Trace from '../models/trace/trace.js';
 import * as TraceBounds from '../services/trace_bounds/trace_bounds.js';
+// Capture native timers and Promise before Sinon fake timers or TrackAsyncOperations
+// install test-time stubs so diagnostic timeouts in wrapInTimeout are neither
+// fast-forwarded by checkForPendingActivity/fake timers nor reported as leaked activity.
+const nativeSetTimeout = globalThis.setTimeout.bind(globalThis);
+const nativeClearTimeout = globalThis.clearTimeout.bind(globalThis);
+const NativePromise = globalThis.Promise;
 // We maintain two caches:
 // 1. The file contents JSON.parsed for a given trace file.
 // 2. The trace engine models for a given file (used by the traceEngine function)
@@ -271,8 +277,8 @@ export async function fetchFileAsText(url) {
  * @returns A promise that resolves with the operation's result, or rejects if it times out.
  */
 async function wrapInTimeout(mochaContext, callback, timeoutMs, stepName) {
-    const timeout = Promise.withResolvers();
-    const timeoutId = setTimeout(() => {
+    const timeout = NativePromise.withResolvers();
+    const timeoutId = nativeSetTimeout(() => {
         let testTitle = '(unknown test)';
         if (mochaContext) {
             try {
@@ -295,14 +301,14 @@ async function wrapInTimeout(mochaContext, callback, timeoutMs, stepName) {
     }, timeoutMs);
     // Race the original promise against the timeout promise
     try {
-        const cbResult = await Promise.race([callback(), timeout.promise]);
+        const cbResult = await NativePromise.race([callback(), timeout.promise]);
         timeout.resolve();
         return cbResult;
     }
     finally {
         // Clear the timeout if the original promise resolves/rejects,
         // or if the timeout promise wins the race.
-        clearTimeout(timeoutId);
+        nativeClearTimeout(timeoutId);
     }
 }
 function isMochaContext(arg) {

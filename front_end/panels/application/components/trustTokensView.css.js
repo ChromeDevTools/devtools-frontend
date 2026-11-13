@@ -33,8 +33,4 @@ devtools-icon {
   height: var(--sys-size-7);
 }
 
-.no-tt-message {
-  margin-top: var(--sys-size-9);
-}
-
 /*# sourceURL=${import.meta.resolve('./trustTokensView.css')} */`;

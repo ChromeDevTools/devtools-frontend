@@ -163,10 +163,6 @@ export default `/*
       }
     }
 
-    .ai-css-change {
-      margin: var(--sys-size-6) 0;
-    }
-
     .answer-body-wrapper {
       @container(min-width: 700px) {
         /* Indent the content to align with the walkthrough CTA
@@ -177,18 +173,6 @@ export default `/*
 
     &.is-last-message {
       border-bottom: 0;
-    }
-
-    .message-info {
-      display: flex;
-      align-items: center;
-      height: var(--sys-size-11);
-      gap: var(--sys-size-4);
-      font: var(--sys-typescale-body4-bold);
-
-      h2 {
-        font: var(--sys-typescale-body4-bold);
-      }
     }
 
     .actions {
@@ -273,7 +257,7 @@ export default `/*
 
   .js-code-output {
     devtools-code-block {
-      --code-block-max-code-height: 50px;
+      --code-block-max-code-height: var(--sys-size-17);
     }
   }
 
@@ -380,11 +364,6 @@ export default `/*
         --code-block-background-color: var(--sys-color-surface1);
       }
     }
-  }
-
-
-  .error-step {
-    color: var(--sys-color-error);
   }
 
   .side-effect-confirmation {

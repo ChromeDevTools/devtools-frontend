@@ -32,13 +32,6 @@ export default `/*
       text-overflow: ellipsis;
       flex-grow: 0;
     }
-
-    .badge {
-      pointer-events: none;
-      margin-right: var(--sys-size-3);
-      display: inline-block;
-      height: 15px;
-    }
   }
 
   &.highlighted .console-context-selector-element .subtitle {

@@ -59,13 +59,6 @@ devtools-report-value {
   align-self: start;
 }
 
-.report-value {
-  padding: 0 var(--sys-size-4);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .link,
 .devtools-link {
   color: var(--sys-color-primary);

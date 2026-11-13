@@ -33,7 +33,7 @@ export default `/*
   width: var(--sys-size-19);
   text-align: right;
   color: var(--sys-color-on-surface);
-  margin-right: 10px;
+  margin-right: var(--sys-size-5);
 }
 
 .timeline-status-dialog .progress .indicator-container {

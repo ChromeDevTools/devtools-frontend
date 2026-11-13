@@ -2180,7 +2180,7 @@ var cssShadowEditor_css_default = `/*
   /* Match half of the combined width of the text input (--sys-size-17), gap (--sys-size-5), and 2D/range slider (--sys-size-19) below. */
   width: calc((var(--sys-size-17) + var(--sys-size-5) + var(--sys-size-19)) / 2);
   height: var(--sys-size-11);
-  padding: 3px 7px;
+  padding: var(--sys-size-2) var(--sys-size-4);
   line-height: var(--sys-size-8);
   border: var(--sys-size-1) solid var(--divider-line);
   color: var(--sys-color-on-surface);

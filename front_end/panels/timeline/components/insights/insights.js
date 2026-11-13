@@ -149,18 +149,6 @@ var baseInsightComponent_css_default = `/*
   color: var(--sys-color-primary);
 }
 
-.dl-title {
-  font-weight: bold;
-}
-
-dd.dl-title {
-  text-align: right;
-}
-
-.dl-value {
-  font-weight: bold;
-}
-
 .image-ref {
   display: inline-flex;
   align-items: center;

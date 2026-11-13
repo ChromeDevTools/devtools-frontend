@@ -27,10 +27,10 @@ var surveyLink_css_default = `/*
 }
 
 .link {
-  padding: var(--issue-link-padding, var(--sys-size-3) 0 0 0);
-  text-decoration: var(--issue-link-text-decoration, underline);
+  padding: var(--sys-size-3) 0 0 0;
+  text-decoration: underline;
   cursor: pointer;
-  font-size: var(--issue-link-font-size, var(--sys-typescale-body2-size));
+  font-size: var(--sys-typescale-body2-size);
   color: var(--sys-color-primary);
   outline-offset: var(--sys-size-2);
   border: none;
@@ -138,7 +138,7 @@ var SurveyLink = class extends HTMLElement {
       <button
           class="link ${linkState}" tabindex=${ariaDisabled ? "-1" : "0"}
           .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.#sendSurvey}>
-        <devtools-icon class="link-icon" name="review" style="color: var(--sys-color-primary); width: var(--issue-link-icon-size, 16px); height: var(--issue-link-icon-size, 16px)">
+        <devtools-icon class="link-icon" name="review" style="color: var(--sys-color-primary); width: 16px; height: 16px">
         </devtools-icon>
         ${linkText}
       </button>`;

@@ -50,6 +50,12 @@
       "path": "../../panels/mobile_throttling/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/menus/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/kit/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
     },
     {

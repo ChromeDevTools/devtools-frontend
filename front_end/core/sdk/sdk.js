@@ -15925,6 +15925,7 @@ var Target2 = class extends ProtocolClient.InspectorBackend.TargetBase {
   #id;
   #modelByConstructor = /* @__PURE__ */ new Map();
   #isSuspended;
+  #suspendGeneration = 0;
   /**
    * Generally when a target crashes we don't need to know, with one exception.
    * If a target crashes during the recording of a performance trace, after the
@@ -16113,10 +16114,14 @@ var Target2 = class extends ProtocolClient.InspectorBackend.TargetBase {
       return;
     }
     this.#isSuspended = true;
+    const generation = ++this.#suspendGeneration;
     if (this.#hasCrashed) {
       return;
     }
     await Promise.all(Array.from(this.models().values(), (m) => m.preSuspendModel(reason)));
+    if (generation !== this.#suspendGeneration) {
+      return;
+    }
     await Promise.all(Array.from(this.models().values(), (m) => m.suspendModel(reason)));
   }
   async resume() {
@@ -16124,6 +16129,7 @@ var Target2 = class extends ProtocolClient.InspectorBackend.TargetBase {
       return;
     }
     this.#isSuspended = false;
+    ++this.#suspendGeneration;
     if (this.#hasCrashed) {
       return;
     }
@@ -24239,7 +24245,12 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     }
     this.#isSuspended = true;
     this.dispatchEventToListeners("SuspendStateChanged" /* SUSPEND_STATE_CHANGED */);
-    const suspendPromises = Array.from(this.#targets.values(), (target) => target.suspend(reason));
+    const suspendPromises = Array.from(this.#targets.values(), async (target) => {
+      await this.#waitForPromiseWithTimeout(
+        target.suspend(reason),
+        `Timeout waiting for target ${target.name()} to suspend`
+      );
+    });
     await Promise.all(suspendPromises);
   }
   async #waitForPromiseWithTimeout(promise, timeoutMessage) {
@@ -24248,9 +24259,12 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
       this.getConsole().warn(timeoutMessage);
       timeoutResolve();
     }, 2e3);
-    await Promise.race([promise, timeoutPromise]);
-    globalThis.clearTimeout(timeoutId);
-    timeoutResolve();
+    try {
+      await Promise.race([promise, timeoutPromise]);
+    } finally {
+      globalThis.clearTimeout(timeoutId);
+      timeoutResolve();
+    }
   }
   async resumeAllTargets() {
     if (!this.#isSuspended) {
@@ -45347,8 +45361,8 @@ var PreloadingAttemptRegistry = class {
     this.reconstructPipelines();
   }
   mergePrevious(prev) {
-    for (const [id, attempt] of this.map.entries()) {
-      prev.map.set(id, attempt);
+    for (const attempt of this.map.values()) {
+      prev.upsert(attempt);
     }
     this.map = prev.map;
     this.reconstructPipelines();

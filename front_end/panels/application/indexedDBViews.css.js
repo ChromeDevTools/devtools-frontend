@@ -43,10 +43,6 @@ export default `/*
   unicode-bidi: isolate;
 }
 
-.indexed-db-container {
-  overflow: auto;
-}
-
 .source-code.indexed-db-key-path {
   font-size: unset !important; /* stylelint-disable-line declaration-no-important */
 }
@@ -78,8 +74,6 @@ export default `/*
 }
 
 .stale-data-warning .warning-icon {
-  --icon-color: var(--icon-warning);
-
   width: var(--sys-size-9);
   height: var(--sys-size-9);
 }

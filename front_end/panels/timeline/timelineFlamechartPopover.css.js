@@ -24,10 +24,6 @@ export default `/*
   margin-right: var(--sys-size-3);
 }
 
-.timeline-flamechart-popover span.popoverinfo-network-time {
-  color: var(--sys-color-primary);
-}
-
 .timeline-flamechart-popover span.popoverinfo-time {
   color: var(--sys-color-green);
 }

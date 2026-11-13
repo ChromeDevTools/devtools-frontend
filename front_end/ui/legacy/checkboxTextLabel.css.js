@@ -27,13 +27,12 @@ input {
   color: var(--sys-color-on-primary);
 }
 
-:host(:not(.small)) input:not(.small) {
+:host(:not(.small, .inside-datagrid)) input:not(.small) {
   margin: var(--sys-size-4);
 }
 
 :host(.inside-datagrid) input {
-  height: 10px;
-  width: 10px;
+  margin: 0 var(--sys-size-3);
 }
 
 .devtools-checkbox-text {
@@ -48,47 +47,6 @@ input {
 .devtools-checkbox-subtitle {
   color: var(--sys-color-token-subtle);
   white-space: break-spaces;
-}
-
-@media (forced-colors: active) {
-  input.devtools-checkbox-theme-preserve {
-    forced-color-adjust: none;
-  }
-
-  input.devtools-checkbox-theme-preserve:active {
-    background: HighlightText;
-  }
-
-  input.devtools-checkbox-theme-preserve:checked,
-  input.devtools-checkbox-theme-preserve:active:checked {
-    background: Highlight;
-    border-color: Highlight;
-  }
-
-  input.devtools-checkbox-theme-preserve:hover:enabled {
-    border-color: Highlight;
-  }
-
-  input.devtools-checkbox-theme-preserve:active::before,
-  input.devtools-checkbox-theme-preserve:active::after {
-    background-color: Highlight;
-  }
-
-  input.devtools-checkbox-theme-preserve:checked::before,
-  input.devtools-checkbox-theme-preserve:checked::after,
-  input.devtools-checkbox-theme-preserve:active:checked::before,
-  input.devtools-checkbox-theme-preserve:active:checked::after {
-    background-color: HighlightText;
-  }
-
-  input.devtools-checkbox-theme-preserve:hover:checked::before,
-  input.devtools-checkbox-theme-preserve:hover:checked::after {
-    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
-  }
-
-  input.devtools-checkbox-theme-preserve:hover:checked {
-    background: HighlightText;
-  }
 }
 
 /*# sourceURL=${import.meta.resolve('./checkboxTextLabel.css')} */`;

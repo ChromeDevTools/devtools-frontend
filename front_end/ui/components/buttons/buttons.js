@@ -315,12 +315,6 @@ button {
     &.tonal {
       background: color-mix(in srgb, var(--sys-color-tonal-container), var(--sys-color-state-hover-on-subtle));
     }
-
-    &.toobar {
-      devtools-icon {
-        color: var(--icon-default-hover);
-      }
-    }
   }
 
   &:active::before,
@@ -991,7 +985,7 @@ var textButton_css_default = `/*
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
-.text-button:not(:disabled, .primary-button):focus-visible {
+.text-button:not(:disabled):focus-visible {
   outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   color: var(--sys-color-on-primary);
   background-color: var(--sys-color-cdt-base-container);
@@ -1015,30 +1009,6 @@ var textButton_css_default = `/*
   font: inherit;
   cursor: pointer;
   height: unset;
-}
-
-.text-button.primary-button,
-.text-button.primary-button:not(:disabled):focus {
-  background-color: var(--sys-color-primary);
-  border: none;
-  color: var(--sys-color-on-primary);
-}
-
-.text-button.primary-button:not(:disabled):active {
-  background-color: color-mix(in srgb, var(--sys-color-primary), var(--sys-color-state-ripple-primary) 32%);
-  color: var(--sys-color-on-primary);
-}
-
-.text-button.primary-button:not(:disabled):hover {
-  background-color: color-mix(in srgb, var(--sys-color-primary), var(--sys-color-state-hover-on-prominent) 6%);
-  color: var(--sys-color-on-primary);
-}
-
-.text-button.primary-button:not(:disabled):focus-visible {
-  background-color: var(--sys-color-primary);
-  outline-offset: var(--sys-size-2);
-  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-  color: var(--sys-color-on-primary);
 }
 
 @media (forced-colors: active) {
@@ -1071,26 +1041,6 @@ var textButton_css_default = `/*
     background-color: Highlight;
     color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
     box-shadow: var(--sys-color-primary);
-  }
-
-  .text-button.primary-button {
-    forced-color-adjust: none;
-    background-color: Highlight;
-    color: HighlightText;
-    border: var(--sys-size-1) solid Highlight;
-  }
-
-  .text-button.primary-button:not(:disabled):focus-visible {
-    background-color: Highlight;
-    color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
-    border-color: ButtonText;
-  }
-
-  .text-button.primary-button:not(:disabled):hover,
-  .text-button.primary-button:not(:disabled):active {
-    background-color: HighlightText;
-    color: Highlight !important; /* stylelint-disable-line declaration-no-important */
-    border-color: Highlight;
   }
 }
 

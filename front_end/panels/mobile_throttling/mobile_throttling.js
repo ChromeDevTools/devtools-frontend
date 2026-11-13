@@ -1520,8 +1520,8 @@ var throttlingSettingsTab_css_default = `/*
 }
 
 .conditions-list-item {
-  padding: 3px 5px;
-  height: 30px;
+  padding: var(--sys-size-2) var(--sys-size-3);
+  height: var(--sys-size-12);
   display: flex;
   align-items: center;
   position: relative;

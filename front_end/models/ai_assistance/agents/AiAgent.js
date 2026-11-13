@@ -315,7 +315,7 @@ export class AiAgent {
         for (const [name, definition] of this.#functionDeclarations.entries()) {
             declarations.push({
                 name,
-                description: typeof definition.description === 'function' ? definition.description() : definition.description,
+                description: definition.description,
                 parameters: definition.parameters,
             });
         }

@@ -9,13 +9,6 @@ export default `/*
  * found in the LICENSE file.
  */
 @scope to (devtools-widget > *) {
-  /* stylelint-disable-next-line plugin/check_scope_selectors */
-  :host {
-    flex: auto;
-    display: flex;
-    flex-direction: column;
-  }
-
   .code-snippet {
     width: 100%;
     font-family: var(--source-code-font-family);
@@ -37,7 +30,7 @@ export default `/*
     height: var(--sys-size-6);
     width: var(--sys-size-6);
     flex-shrink: 0;
-    margin: 3px 0;
+    margin: var(--sys-size-3) 0;
   }
 
   details {
@@ -112,8 +105,6 @@ export default `/*
     display: flex;
     align-items: center;
     justify-content: right;
-    font-size: 10px;
-    font-weight: 500;
   }
 
   .breakpoint-item-location-or-actions {
@@ -141,7 +132,7 @@ export default `/*
   }
 
   button + button {
-    padding-left: 11px;
+    padding-left: var(--sys-size-6);
   }
 
   summary:hover button {
@@ -158,9 +149,6 @@ export default `/*
   }
 
   .type-indicator {
-    --override-color-conditional-breakpoint: var(--ref-palette-orange70);
-    --override-color-logpoint: var(--ref-palette-pink60);
-
     border-right: var(--sys-size-3) solid;
     border-radius: 0 var(--sys-size-2) var(--sys-size-2) 0;
     border-color: transparent;
@@ -183,18 +171,12 @@ export default `/*
     background-color: var(--sys-color-tonal-container);
   }
 
-  .theme-with-dark-background .type-indicator, /* stylelint-disable-line plugin/check_scope_selectors */
-  :host-context(.theme-with-dark-background) .type-indicator { /* stylelint-disable-line plugin/check_scope_selectors */
-    --override-color-conditional-breakpoint: var(--ref-palette-yellow60);
-    --override-color-logpoint: var(--ref-palette-pink70);
-  }
-
   .breakpoint-item.logpoint > label > .type-indicator {
-    border-color: var(--override-color-logpoint);
+    border-color: var(--sys-color-pink-bright);
   }
 
   .breakpoint-item.conditional-breakpoint > label > .type-indicator {
-    border-color: var(--override-color-conditional-breakpoint);
+    border-color: var(--sys-color-orange-bright);
   }
 
   .checkbox-label {

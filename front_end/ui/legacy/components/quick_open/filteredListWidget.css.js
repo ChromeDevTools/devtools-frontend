@@ -119,11 +119,6 @@ devtools-text-prompt {
   flex-shrink: 0;
 }
 
-.filtered-list-widget-item .deprecated-tag {
-  font-size: var(--sys-typescale-body5-size);
-  color: var(--sys-color-token-subtle);
-}
-
 .not-found-text {
   display: flex;
   align-items: center;

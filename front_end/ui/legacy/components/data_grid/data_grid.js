@@ -409,9 +409,7 @@ var dataGrid_css_default = `/*
   }
 
   .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty, .selected),
-  .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty, .selected),
-  .request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
-  .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
+  .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty, .selected) {
     background-color: canvas;
   }
 
@@ -424,9 +422,7 @@ var dataGrid_css_default = `/*
   .data-grid tbody tr.revealed:hover,
   .data-grid tbody tr.revealed.selected,
   .striped-data-grid .revealed:hover.data-grid-data-grid-node:nth-child(odd):not(.dirty, .selected),
-  .striped-data-grid-starts-with-odd .revealed:hover.data-grid-data-grid-node:nth-child(even):not(.dirty, .selected),
-  .request-cookies-view tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
-  .cookies-table tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
+  .striped-data-grid-starts-with-odd .revealed:hover.data-grid-data-grid-node:nth-child(even):not(.dirty, .selected) {
     forced-color-adjust: none;
     background-color: Highlight;
   }

@@ -38,7 +38,7 @@ export default `/*
   .cell {
     text-align: center;
     border: var(--sys-size-1) solid transparent;
-    border-radius: 2px;
+    border-radius: var(--sys-shape-corner-extra-small);
 
     &.focused-area {
       background-color: var(--sys-color-tonal-container);
@@ -53,7 +53,7 @@ export default `/*
   }
 
   .byte-cell {
-    min-width: 21px;
+    min-width: var(--sys-size-9);
     color: var(--sys-color-on-surface);
   }
 

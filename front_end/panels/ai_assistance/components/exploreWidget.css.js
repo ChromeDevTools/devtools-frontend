@@ -86,7 +86,7 @@ export default `/*
     .feature-card {
       display: flex;
       padding: var(--sys-size-4) var(--sys-size-6);
-      gap: 10px;
+      gap: var(--sys-size-6);
       background-color: var(--sys-color-surface2);
       border-radius: var(--sys-shape-corner-medium-small);
       width: 100%;
@@ -117,24 +117,6 @@ export default `/*
           line-height: var(--sys-typescale-body4-line-height);
         }
       }
-    }
-  }
-
-  .ai-assistance-explore-footer {
-    flex-shrink: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-block: var(--sys-size-3);
-    font: var(--sys-typescale-body5-regular);
-    border-top: var(--sys-size-1) solid var(--sys-color-divider);
-    text-wrap: balance;
-    text-align: center;
-
-    p {
-      margin: 0;
-      padding: 0;
     }
   }
 }

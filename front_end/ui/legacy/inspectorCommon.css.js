@@ -607,7 +607,7 @@ dt-icon-label {
 button.link {
   border: none;
   background: none;
-  padding: 3px;
+  padding: var(--sys-size-2);
 }
 
 button.link:focus-visible {
@@ -796,16 +796,8 @@ devtools-toolbar {
     }
   }
 
-  .toolbar-item-search {
-    min-width: 5.2em;
-    max-width: 300px;
-    flex: 1 1 auto;
-    justify-content: start;
-    overflow: revert;
-  }
-
   .toolbar-text {
-    margin: 0 5px;
+    margin: 0 var(--sys-size-3);
     flex: none;
     color: var(--ui-text);
   }
@@ -993,7 +985,7 @@ devtools-toolbar {
   .toolbar-divider {
     background-color: var(--sys-color-divider);
     width: var(--sys-size-1);
-    margin: 5px var(--sys-size-3);
+    margin: var(--sys-size-3);
     height: var(--sys-size-8);
   }
 

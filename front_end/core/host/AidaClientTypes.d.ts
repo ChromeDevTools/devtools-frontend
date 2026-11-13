@@ -369,6 +369,8 @@ export interface AidaChunkResponse {
      * {"code": 429, "message": "You have exhausted your capacity on this model.", "status": "RESOURCE_EXHAUSTED", "details": [...]}).
      */
     error?: string | Record<string, unknown>;
+    /** Why GCA blocked the prompt or the response, for the `AidaBlockError` message. */
+    blockMessage?: string;
 }
 export declare function debugLog(...log: unknown[]): void;
 export {};

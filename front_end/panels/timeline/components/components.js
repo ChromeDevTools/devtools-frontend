@@ -4460,11 +4460,6 @@ details > summary {
   flex-direction: row;
 }
 
-.origin-mapping-grid {
-  border: var(--sys-size-1) solid var(--sys-color-divider);
-  margin-top: var(--sys-size-5);
-}
-
 .origin-mapping-description {
   margin-bottom: var(--sys-size-5);
 }
@@ -5592,14 +5587,12 @@ var layoutShiftDetails_css_default = `/*
  * found in the LICENSE file.
  */
 @scope to (devtools-widget > *) {
-  .layout-shift-details-title,
-  .cluster-details-title {
+  .layout-shift-details-title {
     padding-bottom: var(--sys-size-5);
     display: flex;
     align-items: center;
 
-    .layout-shift-event-title,
-    .cluster-event-title {
+    .layout-shift-event-title {
       background-color: var(--app-color-rendering);
       width: var(--sys-size-6);
       height: var(--sys-size-6);
@@ -5657,11 +5650,6 @@ var layoutShiftDetails_css_default = `/*
 
   .timeline-link.invalid-link {
     color: var(--sys-color-state-disabled);
-  }
-
-  .details-row {
-    display: flex;
-    min-height: var(--sys-size-9);
   }
 
   .title {
@@ -6550,7 +6538,7 @@ var metricCard_css_default = `/*
 
 .metric-source-value {
   font-size: var(--sys-size-13);
-  line-height: 36px;
+  line-height: var(--sys-typescale-headline1-line-height);
   font-weight: var(--ref-typeface-weight-regular);
 }
 
@@ -6598,10 +6586,6 @@ var metricCard_css_default = `/*
 }
 
 .compare-text {
-  margin-top: var(--sys-size-5);
-}
-
-.environment-recs-intro {
   margin-top: var(--sys-size-5);
 }
 
@@ -8657,7 +8641,7 @@ var networkRequestDetails_css_default = `/*
   }
 
   .network-request-details-item, .network-request-details-col {
-    padding: 5px 10px;
+    padding: var(--sys-size-3) var(--sys-size-5);
   }
 
   .server-timing-column-header {
@@ -8673,7 +8657,7 @@ var networkRequestDetails_css_default = `/*
   .title {
     color: var(--sys-color-token-subtle);
     overflow: hidden;
-    padding-right: 10px;
+    padding-right: var(--sys-size-5);
     display: inline-block;
     vertical-align: top;
   }
@@ -8783,8 +8767,8 @@ var networkRequestTooltip_css_default = `/*
 
   .network-category-chip {
     box-sizing: border-box;
-    width: 10px;
-    height: 10px;
+    width: var(--sys-size-5);
+    height: var(--sys-size-5);
     border: var(--sys-size-1) solid var(--sys-color-divider);
     display: inline-block;
     margin-right: var(--sys-size-3);
@@ -8834,7 +8818,8 @@ var networkRequestTooltip_css_default = `/*
   .whisker-left {
     align-self: center;
     display: inline-flex;
-    width: 11px;
+    /* .indicator width (--sys-size-6) minus 1px border (--sys-size-1) on the open right side. */
+    width: calc(var(--sys-size-6) - var(--sys-size-1));
     height: var(--sys-size-4);
     margin-right: 5px;
     border-left: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
@@ -8844,7 +8829,8 @@ var networkRequestTooltip_css_default = `/*
   .whisker-right {
     align-self: center;
     display: inline-flex;
-    width: 11px;
+    /* .indicator width (--sys-size-6) minus 1px border (--sys-size-1) on the open left side. */
+    width: calc(var(--sys-size-6) - var(--sys-size-1));
     height: var(--sys-size-4);
     margin-right: 5px;
     border-right: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);

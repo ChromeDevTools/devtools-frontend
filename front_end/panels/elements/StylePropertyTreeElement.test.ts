@@ -1531,7 +1531,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       parseTextShadowFailure('1px 2px rgb(0, 0, 0) 2px');
       parseTextShadowFailure('hello 1px 2px');
       parseTextShadowFailure('1px 2px black 0 0 #ffffff');
-      // TODO(crbug.com/40945390) Add coverage after rolling codemirror: parseTextShadowFailure('1px2px');
+      parseTextShadowFailure('1px2px');
       parseTextShadowFailure('1px 2pxrgb(0, 0, 0)');
 
       parseBoxShadowSuccess('0 0');
@@ -1560,7 +1560,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       parseBoxShadowFailure('1px 2px rgb(0, 0, 0) 2px');
       parseBoxShadowFailure('hello 1px 2px');
       parseBoxShadowFailure('1px 2px black 0 0 #ffffff');
-      // TODO(crbug.com/40945390) Add coverage after rolling codemirror: parseBoxShadowFailure('1px2px');
+      parseBoxShadowFailure('1px2px');
       parseBoxShadowFailure('1px 2pxrgb(0, 0, 0)');
     });
 

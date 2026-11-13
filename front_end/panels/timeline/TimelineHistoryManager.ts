@@ -8,7 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -19,6 +19,8 @@ import {
 } from './TimelineEventOverview.js';
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 import type {TimelineMiniMap} from './TimelineMiniMap.js';
+
+const {ref} = Directives;
 
 /**
  * The dropdown works by returning an index which is the trace index; but we
@@ -372,12 +374,14 @@ export class TimelineHistoryManager {
     };
     parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
 
+    const overview = this.#buildOverview(parsedTrace);
+
     // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
     render(html`
       ${this.#renderTextDetails(parsedTrace.metadata, title)}
       <div class="hbox">
         ${this.#renderScreenshotThumbnail(filmStrip)}
-        ${this.#buildOverview(parsedTrace)}
+        ${renderOverview(overview, this.totalHeight)}
       </div>
     `,
            preview, {host: this});
@@ -425,15 +429,9 @@ export class TimelineHistoryManager {
     `;
   }
 
-  #buildOverview(parsedTrace: Trace.TraceModel.ParsedTrace): Element {
-    const container = document.createElement('div');
+  #buildOverview(parsedTrace: Trace.TraceModel.ParsedTrace): ImageBitmap {
     const dPR = window.devicePixelRatio;
-    container.style.width = previewWidth + 'px';
-    container.style.height = this.totalHeight + 'px';
-    const canvas = container.createChild('canvas');
-    canvas.width = dPR * previewWidth;
-    canvas.height = dPR * this.totalHeight;
-
+    const canvas = new OffscreenCanvas(dPR * previewWidth, dPR * this.totalHeight);
     const ctx = canvas.getContext('2d');
     let yOffset = 0;
 
@@ -446,12 +444,24 @@ export class TimelineHistoryManager {
       }
       yOffset += overview.height * dPR;
     }
-    return container;
+    return canvas.transferToImageBitmap();
   }
 
   private static dataForTraceIndex(index: number): PreviewData|null {
     return parsedTraceIndexToPerformancePreviewData.get(index) || null;
   }
+}
+
+function renderOverview(overview: ImageBitmap, height: number): LitTemplate {
+  return html`
+    <div style="width: ${previewWidth}px; height: ${height}px">
+      <canvas width=${overview.width} height=${overview.height} ${ref(el => {
+    if (el instanceof HTMLCanvasElement) {
+      el.getContext('2d')?.drawImage(overview, 0, 0);
+    }
+  })}></canvas>
+    </div>
+  `;
 }
 
 export const maxRecordings = 5;

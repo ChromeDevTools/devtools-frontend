@@ -94,6 +94,12 @@ async function renderDropDownForScreenshot(): Promise<void> {
   await raf();
 }
 
+function getOverviewCanvas(item: HTMLElement): HTMLCanvasElement {
+  const canvas = item.querySelector('canvas');
+  assert.isOk(canvas, 'Expected preview item to contain an overview canvas');
+  return canvas;
+}
+
 function addSyntheticRecording(
     historyManager: Timeline.TimelineHistoryManager.TimelineHistoryManager,
     options: {
@@ -545,6 +551,48 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
     await renderDropDownForScreenshot();
     await assertScreenshot('timeline/timeline_history_manager_filmstrip.png');
+
+    historyManager.cancelIfShowing();
+    await showPromise;
+  });
+
+  it('snapshots the overview into a canvas with expected dimensions and pixel content', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+
+    historyManager.addRecording({
+      data: {
+        parsedTraceIndex: 1,
+        type: 'TRACE_INDEX',
+      },
+      filmStripForPreview: null,
+      parsedTrace,
+    });
+
+    const {showPromise} = await openDropDown(historyManager);
+    const menuItems = getMenuItems();
+    assert.lengthOf(menuItems, 2);
+
+    const recordingItem = menuItems[1];
+    const canvas = getOverviewCanvas(recordingItem);
+
+    const dPR = window.devicePixelRatio;
+    const expectedWidth = dPR * Timeline.TimelineHistoryManager.previewWidth;
+    const expectedHeight = dPR * 31;  // 3 (responsiveness) + 20 (CPU) + 8 (network)
+
+    assert.strictEqual(canvas.width, expectedWidth);
+    assert.strictEqual(canvas.height, expectedHeight);
+
+    const ctx = canvas.getContext('2d');
+    assert.isOk(ctx);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let hasNonTransparentPixel = false;
+    for (let i = 3; i < imageData.data.length; i += 4) {
+      if (imageData.data[i] > 0) {
+        hasNonTransparentPixel = true;
+        break;
+      }
+    }
+    assert.isTrue(hasNonTransparentPixel, 'Expected overview canvas to contain at least one non-transparent pixel');
 
     historyManager.cancelIfShowing();
     await showPromise;

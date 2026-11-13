@@ -18,7 +18,7 @@ import stepViewStyles from './stepView.css.js';
 import {TimelineSection} from './TimelineSection.js';
 
 const {html} = Lit;
-const {ifDefined} = Lit.Directives;
+const {classMap, ifDefined} = Lit.Directives;
 const {widget} = UI.Widget;
 
 const UIStrings = {
@@ -370,7 +370,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             input.onStepHover(stepOrSection);
           }
         }}
-        class=${Lit.Directives.classMap(stepClasses)}>
+        class=${classMap(stepClasses)}>
         <svg slot="icon" width="24" height="24" class="icon"
           role=${input.step ? 'button' : 'presentation'}
           aria-label=${ifDefined(input.step ? breakpointTitle : undefined)}
@@ -428,7 +428,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
               onStepEdited: input.stepEdited,
               onAttributeRequested: input.onAttributeRequested,
             })}
-            class=${input.isSelected ? 'is-selected' : ''}></devtools-widget>`
+            class=${classMap({'step-editor': true, 'is-selected': input.isSelected})}></devtools-widget>`
           }
           ${
             input.section?.causingStep &&
@@ -438,7 +438,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
               disabled: input.isPlaying,
               onStepEdited: input.stepEdited,
               onAttributeRequested: input.onAttributeRequested,
-            })}></devtools-widget>`
+            })}
+            class="step-editor"></devtools-widget>`
           }
         </div>
         ${

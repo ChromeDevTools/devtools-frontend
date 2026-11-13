@@ -18,7 +18,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Converters from './converters/converters.js';
 import * as Models from './models/models.js';
-import {RecordingView, type StepView} from './recorder.js';
+import {RecordingView, StepView} from './recorder.js';
 
 describeWithEnvironment('RecordingView', () => {
   setupActionRegistry();
@@ -208,6 +208,22 @@ describeWithEnvironment('RecordingView', () => {
     }
   });
 
+  it('should select the step that starts a section when the section is clicked', async () => {
+    const [view] = await createView();
+    const causingStep = {type: Models.Schema.StepType.Click as const, selectors: ['#link'], offsetX: 1, offsetY: 1};
+
+    // onStepClick updates the view synchronously.
+    view.input.onStepClick({...section, causingStep});
+    assert.strictEqual(view.input.selectedStep, causingStep);
+
+    view.input.onStepClick(step);
+    assert.strictEqual(view.input.selectedStep, step);
+
+    // Sections that are not started by a step (e.g. the initial "Current page" section) clear the selection.
+    view.input.onStepClick(section);
+    assert.isNull(view.input.selectedStep);
+  });
+
   describe('view', () => {
     const screenshot = ('data:image/svg+xml,' +
                         encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120">' +
@@ -260,8 +276,11 @@ describeWithEnvironment('RecordingView', () => {
       await Promise.all([...component.contentElement.querySelectorAll('img')].map(img => img.decode()));
     }
 
-    async function renderRecordingView(width: number,
-                                       options: {currentError?: Error} = {}): Promise<RecordingView.RecordingView> {
+    async function renderRecordingView(width: number, options: {
+      currentError?: Error,
+      height?: number,
+      withSettings?: boolean,
+    } = {}): Promise<RecordingView.RecordingView> {
       const steps = makeSteps();
       const sections = Models.Section.buildSections(steps);
       sections[0].screenshot = screenshot;
@@ -271,13 +290,86 @@ describeWithEnvironment('RecordingView', () => {
         sections,
         currentStep: options.currentError ? steps[2] : undefined,
         currentError: options.currentError,
+        settings: options.withSettings ? {
+          viewportSettings: {
+            type: Models.Schema.StepType.SetViewport,
+            width: 1280,
+            height: 720,
+            deviceScaleFactor: 1,
+            isMobile: false,
+            hasTouch: false,
+            isLandscape: false,
+          },
+          timeout: 5000,
+        } :
+                                         undefined,
         recorderSettings: new Models.RecorderSettings.RecorderSettings(),
         replayAllowed: true,
         builtInConverters: [new Converters.JSONConverter.JSONConverter('  ')],
       });
-      renderElementIntoDOM(component, {width, height: 420, includeCommonStyles: true});
+      renderElementIntoDOM(component, {width, height: options.height ?? 420, includeCommonStyles: true});
       await waitForRendering(component);
       return component;
+    }
+
+    /**
+     * Renders the pure view function with a synthetic input and returns the params that it passes to each StepView
+     * in document order (each section row followed by its steps).
+     */
+    function renderView(overrides: Partial<Parameters<typeof RecordingView.DEFAULT_VIEW>[0]>):
+        Array<Partial<StepView.StepView>> {
+      const steps = makeSteps();
+      const noop = (): void => {};
+      const input: Parameters<typeof RecordingView.DEFAULT_VIEW>[0] = {
+        breakpointIndexes: new Set(),
+        builtInConverters: [],
+        converterId: Models.ConverterIds.ConverterIds.JSON,
+        currentError: null,
+        currentStep: null,
+        editorState: null,
+        extensionConverters: [],
+        isRecording: false,
+        isTitleInvalid: false,
+        lastReplayResult: null,
+        recorderSettings: null,
+        recording: {title: 'Recording', steps},
+        recordingTogglingInProgress: false,
+        replayAllowed: true,
+        replayExtensions: [],
+        replaySettingsExpanded: false,
+        replayState: {isPlaying: false, isPausedOnBreakpoint: false},
+        sections: Models.Section.buildSections(steps),
+        selectedStep: null,
+        settings: null,
+        showCodeView: false,
+        onAddAssertion: noop,
+        onRecordingFinished: noop,
+        getSectionState: () => StepView.State.DEFAULT,
+        getStepState: () => StepView.State.DEFAULT,
+        onAbortReplay: noop,
+        onMeasurePerformanceClick: noop,
+        onTogglePlaying: noop,
+        onCodeFormatChange: noop,
+        onCopyStep: noop,
+        onEditTitleButtonClick: noop,
+        onNetworkConditionsChange: noop,
+        onReplaySettingsKeydown: noop,
+        onStepClick: noop,
+        onStepHover: noop,
+        onTimeoutInput: noop,
+        onTitleBlur: noop,
+        onTitleInputKeyDown: noop,
+        onToggleReplaySettings: noop,
+        onWrapperClick: noop,
+        showCodeToggle: noop,
+        ...overrides,
+      };
+      const target = document.createElement('div');
+      RecordingView.DEFAULT_VIEW(input, {}, target);
+      return [...target.querySelectorAll<HTMLElement>('devtools-widget')]
+          .map(element => UI.Widget.widgetConfigs.get(element))
+          .filter(config => config?.widgetClass === StepView.StepView)
+          .map(config => config?.widgetParams as Partial<StepView.StepView>);
     }
 
     it('renders the sections with their screenshots', async () => {
@@ -285,8 +377,8 @@ describeWithEnvironment('RecordingView', () => {
       await assertScreenshot('recorder/RecordingView_sections.png');
     });
 
-    it('hides the screenshots in narrow panels', async () => {
-      await renderRecordingView(360);
+    it('hides the screenshots and wraps the settings without dangling separators in narrow panels', async () => {
+      await renderRecordingView(360, {withSettings: true});
       await assertScreenshot('recorder/RecordingView_narrow.png');
     });
 
@@ -305,6 +397,45 @@ describeWithEnvironment('RecordingView', () => {
     it('draws the timeline after a failed step as an error', async () => {
       await renderRecordingView(600, {currentError: new Error('Timed out')});
       await assertScreenshot('recorder/RecordingView_error.png');
+    });
+
+    it('only selects sections that are started by the selected step', () => {
+      const steps = makeSteps();
+      const sections = Models.Section.buildSections(steps);
+      // The rows are: section (started by the navigation), click, change, click, section (not started by a step), key
+      // down.
+      assert.lengthOf(sections, 2);
+      assert.strictEqual(sections[0].causingStep, steps[0]);
+      assert.isUndefined(sections[1].causingStep);
+
+      const getSelectedStates = (selectedStep: Models.Schema.Step|null): Array<boolean|undefined> =>
+          renderView({recording: {title: 'Recording', steps}, sections, selectedStep}).map(params => params.isSelected);
+
+      // A section that is not started by a step must not be selected while nothing is selected.
+      assert.deepEqual(getSelectedStates(null), [false, false, false, false, false, false]);
+      assert.deepEqual(getSelectedStates(steps[0]), [true, false, false, false, false, false]);
+      assert.deepEqual(getSelectedStates(steps[2]), [false, false, true, false, false, false]);
+      assert.deepEqual(getSelectedStates(steps[3]), [false, false, false, true, false, false]);
+    });
+
+    it('scrolls to the last step including steps that are not rendered yet', async () => {
+      const component = await renderRecordingView(600, {height: 300});
+      const stepsPane = component.contentElement.querySelector('.steps-pane');
+      assert.exists(stepsPane);
+      assert.strictEqual(stepsPane.scrollTop, 0);
+
+      await component.scrollToBottom();
+      const maxScrollTop = stepsPane.scrollHeight - stepsPane.clientHeight;
+      assert.isAbove(maxScrollTop, 0);
+      assert.closeTo(stepsPane.scrollTop, maxScrollTop, 1);
+
+      const steps = [...component.recording.steps, {type: Models.Schema.StepType.KeyUp, key: 'Enter'} as const];
+      component.recording = {...component.recording, steps};
+      component.sections = Models.Section.buildSections(steps);
+      component.requestUpdate();
+      await component.scrollToBottom();
+      assert.isAbove(stepsPane.scrollTop, maxScrollTop);
+      assert.closeTo(stepsPane.scrollTop, stepsPane.scrollHeight - stepsPane.clientHeight, 1);
     });
   });
 });

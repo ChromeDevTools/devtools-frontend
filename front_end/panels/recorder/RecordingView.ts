@@ -212,7 +212,6 @@ function renderSettings({
           : i18nString(UIStrings.desktop)
       }</div>`,
     );
-    environmentFragments.push(html`<div class="separator"></div>`);
     environmentFragments.push(
       html`<div>${settings.viewportSettings.width}×${
         settings.viewportSettings.height
@@ -262,7 +261,6 @@ function renderSettings({
       // clang-format on
     }
     // clang-format off
-    replaySettingsFragments.push(html`<div class="separator"></div>`);
     replaySettingsFragments.push(
       html`<div>${i18nString(UIStrings.timeout, {
         value: settings.timeout || Models.RecordingPlayer.defaultTimeout,
@@ -397,7 +395,7 @@ function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTempla
           sidebar-initial-size="300"
           show=${input.showCodeView ? 'both' : 'main'}
         >
-          <div slot="main" role="region" aria-labelledby="recording-steps-heading">
+          <div slot="main" class="steps-pane" role="region" aria-labelledby="recording-steps-heading">
             ${renderSections(input)}
           </div>
           <div id="recording-code-pane" slot="sidebar" role="region" aria-labelledby="recording-code-heading"
@@ -584,8 +582,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                       i === input.sections.length - 1 &&
                       section.steps.length === 0,
                     isAfterError: getPreviousState(i, -1) === State.ERROR,
-                    isSelected:
-                      input.selectedStep === (section.causingStep || null),
+                    isSelected: section.causingStep !== undefined && input.selectedStep === section.causingStep,
                     sectionIndex: i,
                     isRecording: input.isRecording,
                     isPlaying: input.replayState.isPlaying,
@@ -736,7 +733,6 @@ function renderHeader(input: ViewInput): Lit.LitTemplate {
               >
                 ${i18nString(UIStrings.performancePanel)}
               </devtools-button>
-              <div class="separator"></div>
               ${renderReplayOrAbortButton(input)}
             </div>`
           : Lit.nothing
@@ -1025,12 +1021,16 @@ export class RecordingView extends UI.Widget.Widget {
     document.removeEventListener('copy', this.#onCopyBound);
   }
 
-  scrollToBottom(): void {
-    const wrapper = this.contentElement?.querySelector('.sections');
-    if (!wrapper) {
+  /**
+   * Scrolls to the last step once all pending updates are rendered.
+   */
+  async scrollToBottom(): Promise<void> {
+    await UI.Widget.Widget.allUpdatesComplete;
+    const stepsPane = this.contentElement.querySelector('.steps-pane');
+    if (!stepsPane) {
       return;
     }
-    wrapper.scrollTop = wrapper.scrollHeight;
+    stepsPane.scrollTop = stepsPane.scrollHeight;
   }
 
   #getStepState(step: Models.Schema.Step): State {

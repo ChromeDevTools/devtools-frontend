@@ -34,6 +34,10 @@
   padding-inline: var(--timeline-section-inset-inline-start, 0) var(--timeline-section-inset-inline-end, 0);
 }
 
+.timeline-section.is-start-of-group:not(.is-first-section) {
+  --timeline-section-padding-block-start: var(--sys-size-8);
+}
+
 .timeline-section.is-end-of-group {
   --timeline-section-padding-block-end: var(--sys-size-8);
 }

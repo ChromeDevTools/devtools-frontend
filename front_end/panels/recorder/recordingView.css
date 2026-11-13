@@ -97,12 +97,6 @@
     margin-inline-start: calc(var(--timeline-section-inset-inline-start) + var(--sys-size-14));
   }
 
-  .step .action {
-    font-size: var(--sys-typescale-body3-size);
-    line-height: var(--sys-typescale-body4-line-height);
-    letter-spacing: 0.03em;
-  }
-
   .recording {
     color: var(--sys-color-primary);
     font-style: italic;
@@ -231,10 +225,19 @@
     outline-offset: var(--sys-size-2);
   }
 
+  /*
+   * The settings and the actions are separated by column rules, which are only
+   * drawn between items on the same line, so that no separator is left
+   * dangling at the end of a line when they wrap.
+   * This relies on CSS gap decorations (column-rule on flex containers);
+   * browsers without them show no separators.
+   */
   .settings {
     margin-top: var(--sys-size-3);
     display: flex;
     flex-wrap: wrap;
+    column-gap: calc(2 * 5px + var(--sys-size-1));
+    column-rule: var(--sys-size-1) solid var(--sys-color-divider);
     font-size: var(--sys-typescale-body4-size);
     line-height: var(--sys-typescale-body2-line-height);
     letter-spacing: 0.03em;
@@ -243,26 +246,15 @@
 
   .settings.expanded {
     gap: 10px;
-  }
-
-  .settings .separator {
-    width: var(--sys-size-1);
-    height: var(--sys-size-9);
-    background-color: var(--sys-color-divider);
-    margin: 0 5px;
+    column-rule: none;
   }
 
   .actions {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: var(--sys-size-6);
-  }
-
-  .actions .separator {
-    width: var(--sys-size-1);
-    height: var(--sys-size-11);
-    background-color: var(--sys-color-divider);
+    gap: var(--sys-size-6) calc(2 * var(--sys-size-6) + var(--sys-size-1));
+    column-rule: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .is-recording .header-title::before {

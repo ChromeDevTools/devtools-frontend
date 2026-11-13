@@ -1518,7 +1518,7 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
                                                         data,
                                                         this.currentRecording.storageName,
                                                         ));
-                                                    this.#recordingView?.scrollToBottom();
+                                                    void this.#recordingView?.scrollToBottom();
 
                                                     await takeScreenshot(this.currentRecording);
                                                   });

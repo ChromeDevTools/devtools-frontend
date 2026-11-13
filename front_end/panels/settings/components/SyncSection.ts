@@ -344,7 +344,6 @@ export class SyncSection extends UI.Widget.Widget {
   }
 
   #onWarningClick(event: Event): void {
-    // TODO: investigate if /advance link is alive
     const warningLink =
         this.#syncInfo.isSyncActive ? 'chrome://settings/syncSetup/advanced' : 'chrome://settings/syncSetup';
     UIHelpers.openInNewTab(warningLink, /* allowPrivileged=*/ true);

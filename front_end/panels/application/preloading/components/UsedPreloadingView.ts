@@ -419,9 +419,8 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 /**
- * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
- * This also shows summary of speculations initiated by this page.
- **/
+ * Shows preloading used for the current page and a summary of speculations initiated by this page.
+ */
 export class UsedPreloadingView extends UI.Widget.VBox {
   readonly #view: View;
 

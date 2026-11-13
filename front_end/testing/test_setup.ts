@@ -20,9 +20,11 @@ import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
 import {cleanTestDOM, setupTestDOM} from './DOMHooks.js';
 import {createFakeSetting, resetHostConfig} from './EnvironmentHelpers.js';
+import {hasPendingTestTeardowns, runTestTeardowns, setRootTeardownRunnerRegistered} from './TestTeardown.js';
 import {TraceLoader} from './TraceLoader.js';
 import {
   checkForPendingActivity,
+  flushPendingActivity,
   startTrackingAsyncActivity,
   stopTrackingAsyncActivity,
 } from './TrackAsyncOperations.js';
@@ -47,6 +49,7 @@ async function setupTestFont() {
 before(async function() {
   // All setup function should manage their own timeout
   this.timeout(0);
+  setRootTeardownRunnerRegistered();
   await setupTestFont();
 
   // There is no way to provide after each file run via a test set up file.
@@ -69,6 +72,16 @@ beforeEach(async function(this: Mocha.Context) {
   // Clear out any Sinon stubs or spies between individual tests.
   sinon.restore();
   stopTrackingAsyncActivity();
+  if (hasPendingTestTeardowns()) {
+    const title = this.currentTest?.fullTitle();
+    console.error(`Leftover test teardowns before "${
+        title}"; registerTestTeardown() must only be called while a test is running`);
+    try {
+      await runTestTeardowns();
+    } catch (err) {
+      console.error(`Error draining leftover test teardowns before "${title}":`, err);
+    }
+  }
   resetHostConfig();
   await setupTestDOM();
 
@@ -104,11 +117,17 @@ afterEach(async function() {
     }
   };
 
+  // Invariant: everything that can still render (fake timers, DOM cleanup, pending async work)
+  // must run while the per-test environment (locale, settings, target manager, actions) is still
+  // intact.
   await run(() => cleanTestDOM(title));
-  // Flush and restore any Sinon fake timers before checking for pending activity,
-  // so fake timers do not intercept timeouts scheduled while flushing pending async work.
   await run(() => sinon.clock?.runToLast());
   await run(() => sinon.clock?.restore());
+  await run(() => flushPendingActivity());
+
+  // Now that all pending renders have settled, run registered per-test teardowns (LIFO order).
+  await run(() => runTestTeardowns());
+
   // Only check for leaked async operations when the test completed normally.
   // Failed or timed-out tests abort mid-execution while async work is still in flight.
   if (this.currentTest?.state === 'passed') {

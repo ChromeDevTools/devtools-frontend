@@ -51,6 +51,7 @@ ts_library("testing") {
     "StubIssue.ts",
     "StyleHelpers.ts",
     "TargetHelpers.ts",
+    "TestTeardown.ts",
     "TestUniverse.ts",
     "TraceHelpers.ts",
     "TraceHelpersCore.ts",
@@ -163,6 +164,7 @@ ts_library("unittests") {
     "MutationHelpers.test.ts",
     "SnapshotTester.test.ts",
     "SourceMapEncoder.test.ts",
+    "TestTeardown.test.ts",
   ]
 
   data = [ "SnapshotTester.snapshot.txt" ]

@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
@@ -29,10 +30,7 @@ describe('IsolateSelector', () => {
       sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
       sinon.stub(SDK.IsolateManager.IsolateManager, 'instance').returns(universe.isolateManager);
       sinon.stub(universe.isolateManager, 'observeIsolates');
-    });
-
-    afterEach(() => {
-      UI.Context.Context.removeInstance();
+      registerTestTeardown(() => UI.Context.Context.removeInstance());
     });
 
     function createIsolate(id: string, name: string): SDK.IsolateManager.Isolate {

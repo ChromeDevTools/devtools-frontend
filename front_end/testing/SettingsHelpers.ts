@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {afterEach, beforeEach} from 'mocha';
-
 import * as Common from '../core/common/common.js';
+
+import {beforeEachWithTeardown} from './TestTeardown.js';
 
 function createSettingValue(category: Common.Settings.SettingCategory, settingName: string, defaultValue: unknown,
                             settingType: Common.SettingRegistration.SettingType = Common.Settings.SettingType.BOOLEAN,
@@ -301,8 +301,7 @@ export function cleanupSettings(): void {
 }
 
 export function setupSettingsHooks(): void {
-  beforeEach(() => setupSettings(true));
-  afterEach(cleanupSettings);
+  beforeEachWithTeardown(() => setupSettings(true), cleanupSettings);
 }
 
 export function createSettingsForTest(settingRegistrations: Common.SettingRegistration.SettingRegistration[] = DEFAULT_SETTING_REGISTRATIONS_FOR_TEST.slice(0)): Common.Settings.Settings {

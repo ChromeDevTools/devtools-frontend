@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, afterEach, before, beforeEach, describe} from 'mocha';
+import {after, before, describe} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../core/common/common.js';
@@ -23,6 +23,7 @@ import type * as UIModule from '../ui/legacy/legacy.js';
 import {deinitializeGlobalLocaleVars, initializeGlobalLocaleVars} from './LocaleHelpers.js';
 import {cleanupRuntime, setupRuntime} from './RuntimeHelpers.js';
 import {cleanupSettings, setupSettings} from './SettingsHelpers.js';
+import {beforeEachWithTeardown} from './TestTeardown.js';
 
 // Don't import UI at this stage because it will fail without
 // the environment. Instead we do the import at the end of the
@@ -31,6 +32,7 @@ import {cleanupSettings, setupSettings} from './SettingsHelpers.js';
 let UI: typeof UIModule;
 
 export {createTarget, waitForTarget} from './TargetHelpers.js';
+export {beforeEachWithTeardown, registerTestTeardown} from './TestTeardown.js';
 
 export function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void {
   for (const action of actions) {
@@ -136,9 +138,8 @@ export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) =
   reset: true,
 }): Mocha.Suite {
   return describe(title, function() {
-    beforeEach(async () => await initializeGlobalVars(opts));
+    beforeEachWithTeardown(async () => await initializeGlobalVars(opts), deinitializeGlobalVars);
     fn.call(this);
-    afterEach(async () => await deinitializeGlobalVars());
   });
 }
 
@@ -148,9 +149,8 @@ export namespace describeWithEnvironment {
   }): Mocha.Suite {
     // eslint-disable-next-line mocha/no-exclusive-tests
     return describe.only(title, function() {
-      beforeEach(async () => await initializeGlobalVars(opts));
+      beforeEachWithTeardown(async () => await initializeGlobalVars(opts), deinitializeGlobalVars);
       fn.call(this);
-      afterEach(async () => await deinitializeGlobalVars());
     });
   }
 }
@@ -168,19 +168,20 @@ export function createFakeRegExpSetting(name: string, defaultValue: string): Com
 }
 
 export function setupActionRegistry(): void {
-  beforeEach(function() {
-    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-    UI.ShortcutRegistry.ShortcutRegistry.instance({
-      forceNew: true,
-      actionRegistry,
-    });
-  });
-  afterEach(function() {
-    if (UI) {
-      UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-      UI.ActionRegistry.ActionRegistry.removeInstance();
-    }
-  });
+  beforeEachWithTeardown(
+      () => {
+        const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+        UI.ShortcutRegistry.ShortcutRegistry.instance({
+          forceNew: true,
+          actionRegistry,
+        });
+      },
+      () => {
+        if (UI) {
+          UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+          UI.ActionRegistry.ActionRegistry.removeInstance();
+        }
+      });
 }
 
 /** This needs to be invoked within a describe block, rather than within an it() block. **/

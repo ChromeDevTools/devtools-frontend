@@ -22,7 +22,6 @@ describeWithEnvironment('ScreencastApp', () => {
 
   afterEach(() => {
     screencastApp?.rootView?.detach();
-    UI.InspectorView.InspectorView.removeInstance();
   });
 
   it('can start casting', async () => {

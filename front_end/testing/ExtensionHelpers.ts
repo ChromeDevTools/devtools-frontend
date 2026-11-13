@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {afterEach, beforeEach} from 'mocha';
 import sinon from 'sinon';
 
 import type {Chrome} from '../../extension-api/ExtensionAPI.js';
@@ -20,6 +19,7 @@ import {
   setupActionRegistry,
 } from './EnvironmentHelpers.js';
 import {MockDebuggerBackend} from './MockScopeChain.js';
+import {beforeEachWithTeardown} from './TestTeardown.js';
 
 export interface ExtensionContext {
   chrome: Partial<Chrome.DevTools.Chrome>;
@@ -67,13 +67,11 @@ export function setupDevtoolsExtensionHooks(extension: Partial<Host.InspectorFro
     context.chrome = chrome;
   }
 
-  beforeEach(async () => {
-    await initializeGlobalVars();
-  });
+  beforeEachWithTeardown(initializeGlobalVars, deinitializeGlobalVars);
 
   setupActionRegistry();
 
-  beforeEach(() => {
+  beforeEachWithTeardown(() => {
     cleanupExtensionHelper();
     const backend = new MockDebuggerBackend();
     context.backend = backend;
@@ -88,12 +86,7 @@ export function setupDevtoolsExtensionHooks(extension: Partial<Host.InspectorFro
     sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(networkLog);
 
     setupExtensionHelper();
-  });
-
-  afterEach(async () => {
-    cleanupExtensionHelper();
-    await deinitializeGlobalVars();
-  });
+  }, cleanupExtensionHelper);
 
   return context;
 }

@@ -37,10 +37,14 @@ interface AsyncActivity {
 
 const asyncActivity: AsyncActivity[] = [];
 
-export async function checkForPendingActivity(testName = ''): Promise<void> {
+/**
+ * Best-effort flush of pending async operations (such as animation frame renders
+ * and scheduled timeouts). Never throws, is bounded by a maximum retry limit, and
+ * returns any operations that remain pending.
+ */
+export async function flushPendingActivity(retries = 2): Promise<AsyncActivity[]> {
   let stillPending: AsyncActivity[] = [];
   const wait = 5;
-  let retries = 20;
   // We will perform multiple iteration of waiting and forced completions to see
   // if all promises are eventually resolved.
   while (retries > 0) {
@@ -89,6 +93,11 @@ export async function checkForPendingActivity(testName = ''): Promise<void> {
       }
     }
   }
+  return stillPending;
+}
+
+export async function checkForPendingActivity(testName = ''): Promise<void> {
+  const stillPending = await flushPendingActivity(20);
   if (stillPending.length) {
     throw new Error(
         `The test "${testName}" has completed, but there are still pending async operations\n` +

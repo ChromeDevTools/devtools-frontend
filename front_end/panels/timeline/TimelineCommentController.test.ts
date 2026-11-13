@@ -12,6 +12,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Trace from '../../models/trace/trace.js';
 import {raf} from '../../testing/DOMHelpers.js';
+import {registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -139,6 +140,7 @@ describe('TimelineCommentController', function() {
       win: window,
       frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
     });
+    registerTestTeardown(() => UI.ZoomManager.ZoomManager.removeInstance());
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
@@ -164,7 +166,6 @@ describe('TimelineCommentController', function() {
         .createSetting<PerfUI.FlameChart.PersistedGroupConfig[]|null>(
             'timeline-persisted-network-flamechart-track-config', null)
         .set(null);
-    UI.ZoomManager.ZoomManager.removeInstance();
   });
 
   describe('anchor resolution', () => {

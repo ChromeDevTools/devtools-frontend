@@ -12,7 +12,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
@@ -64,6 +64,10 @@ describe('SettingsScreen', () => {
     }
     UI.ViewManager.ViewManager.instance({forceNew: true, universe});
     Settings.SettingsScreen.SettingsScreen.instance({forceNew: true});
+    registerTestTeardown(() => {
+      UI.InspectorView.InspectorView.removeInstance();
+      UI.ViewManager.ViewManager.removeInstance();
+    });
     return {tabLinks};
   }
 
@@ -72,8 +76,6 @@ describe('SettingsScreen', () => {
       UI.Dialog.Dialog.getInstance()?.hide();
     }
     Settings.SettingsScreen.SettingsScreen.removeInstanceForTesting();
-    UI.InspectorView.InspectorView.removeInstance();
-    UI.ViewManager.ViewManager.removeInstance();
     UI.ViewManager.resetViewRegistration();
   });
 

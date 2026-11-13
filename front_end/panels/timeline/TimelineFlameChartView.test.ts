@@ -16,6 +16,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {assertScreenshot, dispatchClickEvent, doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -96,6 +97,7 @@ describe('TimelineFlameChartView', function() {
       win: window,
       frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
     });
+    registerTestTeardown(() => UI.ZoomManager.ZoomManager.removeInstance());
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
@@ -107,7 +109,6 @@ describe('TimelineFlameChartView', function() {
   afterEach(() => {
     // Avoid any group expansion state leaking across tests.
     clearPersistTrackConfigSettings();
-    UI.ZoomManager.ZoomManager.removeInstance();
   });
 
   describe('rendering', () => {

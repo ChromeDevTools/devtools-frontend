@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {afterEach, beforeEach} from 'mocha';
-
 import * as Host from '../core/host/host.js';
+
+import {beforeEachWithTeardown} from './TestTeardown.js';
 
 /**
  * @returns True, iff a metric event with the provided name and code was recorded. False otherwise.
@@ -28,64 +28,64 @@ export function resetRecordedMetrics(): void {
 }
 
 export function setupUserMetricHooks(): void {
-  beforeEach(() => {
-    const mockEnumCodes = new Map<string, Map<string, number>>();
-    function getMockEnumCode(enumName: string, prop: string): number {
-      if (prop === 'MAX_VALUE') {
-        return 1000;
-      }
-      if (!mockEnumCodes.has(enumName)) {
-        mockEnumCodes.set(enumName, new Map());
-      }
-      const propMap = mockEnumCodes.get(enumName)!;
-      if (!propMap.has(prop)) {
-        propMap.set(prop, propMap.size);
-      }
-      return propMap.get(prop)!;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    (globalThis as unknown as {DevToolsMetrics: unknown}).DevToolsMetrics = new Proxy({}, {
-      get(_target, enumName) {
-        if (typeof enumName !== 'string') {
-          return undefined;
+  beforeEachWithTeardown(
+      () => {
+        const mockEnumCodes = new Map<string, Map<string, number>>();
+        function getMockEnumCode(enumName: string, prop: string): number {
+          if (prop === 'MAX_VALUE') {
+            return 1000;
+          }
+          if (!mockEnumCodes.has(enumName)) {
+            mockEnumCodes.set(enumName, new Map());
+          }
+          const propMap = mockEnumCodes.get(enumName)!;
+          if (!propMap.has(prop)) {
+            propMap.set(prop, propMap.size);
+          }
+          return propMap.get(prop)!;
         }
-        return new Proxy({}, {
-          get(_target, prop) {
-            if (typeof prop !== 'string' || prop === 'then') {
+
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        (globalThis as unknown as {DevToolsMetrics: unknown}).DevToolsMetrics = new Proxy({}, {
+          get(_target, enumName) {
+            if (typeof enumName !== 'string') {
               return undefined;
             }
-            return getMockEnumCode(enumName, prop);
-          },
-          has(_target, prop) {
-            if (typeof prop === 'string' && /^\d+$/.test(prop)) {
-              return false;
-            }
-            return true;
-          },
-          ownKeys(_target) {
-            const propMap = mockEnumCodes.get(enumName);
-            return propMap ? Array.from(propMap.keys()) : [];
-          },
-          getOwnPropertyDescriptor(_target, prop) {
-            if (typeof prop !== 'string') {
-              return undefined;
-            }
-            return {
-              configurable: true,
-              enumerable: true,
-              value: getMockEnumCode(enumName, prop),
-              writable: false,
-            };
+            return new Proxy({}, {
+              get(_target, prop) {
+                if (typeof prop !== 'string' || prop === 'then') {
+                  return undefined;
+                }
+                return getMockEnumCode(enumName, prop);
+              },
+              has(_target, prop) {
+                if (typeof prop === 'string' && /^\d+$/.test(prop)) {
+                  return false;
+                }
+                return true;
+              },
+              ownKeys(_target) {
+                const propMap = mockEnumCodes.get(enumName);
+                return propMap ? Array.from(propMap.keys()) : [];
+              },
+              getOwnPropertyDescriptor(_target, prop) {
+                if (typeof prop !== 'string') {
+                  return undefined;
+                }
+                return {
+                  configurable: true,
+                  enumerable: true,
+                  value: getMockEnumCode(enumName, prop),
+                  writable: false,
+                };
+              },
+            });
           },
         });
       },
-    });
-  });
-
-  afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const globalObject = globalThis as unknown as {DevToolsMetrics?: unknown};
-    delete globalObject.DevToolsMetrics;
-  });
+      () => {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        const globalObject = globalThis as unknown as {DevToolsMetrics?: unknown};
+        delete globalObject.DevToolsMetrics;
+      });
 }

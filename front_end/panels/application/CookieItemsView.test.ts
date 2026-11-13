@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, before, beforeEach, describe, it} from 'mocha';
+import {before, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -11,6 +11,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
+import {registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -41,11 +42,6 @@ describe('CookieItemsView', () => {
     });
   });
 
-  afterEach(() => {
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-    UI.ActionRegistry.ActionRegistry.removeInstance();
-  });
-
   let universe: TestUniverse;
   let cookieItemsView: Application.CookieItemsView.CookieItemsView;
   let viewFunction: ViewFunctionStub<typeof Application.CookieItemsView.CookieItemsView>;
@@ -60,6 +56,10 @@ describe('CookieItemsView', () => {
     UI.ShortcutRegistry.ShortcutRegistry.instance({
       forceNew: true,
       actionRegistry,
+    });
+    registerTestTeardown(() => {
+      UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+      UI.ActionRegistry.ActionRegistry.removeInstance();
     });
 
     universe.createTarget({url: urlString`http://example.com`}).setInspectedURL(urlString`http://example.com`);

@@ -155,7 +155,6 @@ describeWithEnvironment('AdvancedApp docking', () => {
     for (const rootView of bodies.flatMap(body => [...body.querySelectorAll(':scope > .root-view')])) {
       UI.Widget.Widget.get(rootView)?.detach();
     }
-    UI.InspectorView.InspectorView.removeInstance();
     Emulation.AdvancedApp.AdvancedApp.removeInstance();
     Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance({forceNew: true});
     UI.ActionRegistration.maybeRemoveActionExtension('emulation.toggle-device-mode');

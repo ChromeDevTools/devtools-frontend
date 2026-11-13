@@ -9,7 +9,7 @@ import sinon from 'sinon';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import {assertScreenshot, querySelectorErrorOnMissing, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createFakeSetting} from '../../testing/EnvironmentHelpers.js';
+import {createFakeSetting, registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
@@ -173,12 +173,14 @@ describe('UIUtils', () => {
       });
       const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
       UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry});
+      registerTestTeardown(() => {
+        UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+        UI.ActionRegistry.ActionRegistry.reset();
+      });
     });
 
     afterEach(() => {
       UI.ActionRegistration.reset();
-      UI.ActionRegistry.ActionRegistry.reset();
-      UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
     });
 
     function setup() {

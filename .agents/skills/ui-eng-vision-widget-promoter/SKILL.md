@@ -85,6 +85,7 @@ clean `UI.Widget` classes that use native update rendering delegates.
     *   Trigger initial renders and external subscriptions in `wasShown()`, detaching them symmetrically in `willHide()`. Reconcile state incrementally rather than wiping populated presenter state via `reset()` on every re-show.
     *   Use `this.requestUpdate()` across all presenter methods and setters; avoid synchronous `this.performUpdate()` calls or custom `#renderView()` methods.
     *   Use declarative `autofocus` for default focus targets rather than imperative `focus()` overrides or `ViewOutput` focus closures.
+    *   **`UI.Toolbar.Provider` Visibility Sync**: When promoting a `UI.Toolbar.Provider` to `UI.Widget` with `new UI.Toolbar.ToolbarItem(this.element)`, remember that `Widget.#showWidget()` strips `'hidden'` from `this.element` on mount. Re-apply `this.#toolbarItem.setVisible(...)` in `override show(...)` and `override wasShown()`, and test mounting into a `<devtools-toolbar>` while initially hidden.
     *   Verify that no legacy `UI.TreeOutline`, `extends UI.TreeOutline.TreeElement` subclasses, `UI.ListControl`, `UI.ListWidget`, or `UI.InplaceEditor` remain before marking `Fixed: <id>`. If any remain, use `Bug: <id>`.
     *   Verify that Light DOM stylesheets satisfy `@devtools/no-unscoped-light-dom-styles` (removed from the `eslint.config.mjs` `burndown` list) and pass `plugin/check_scope_selectors` (`:scope` instead of `:host`, theme-aware tokens instead of ancestor theme/platform classes) before marking `Fixed: <id>`.
 

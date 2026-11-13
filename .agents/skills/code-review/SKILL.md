@@ -157,8 +157,14 @@ findings):
 - Don't take detours to reach a value. If a module is imported, call
   `TextUtils.TextRange.TextRange.fromObject(...)` directly instead of going
   through `rule.style.range.constructor`.
-- Look for dead code, leftover debug code, commented-out blocks, and unrelated
-  formatting churn.
+- Look for dead code, leftover debug code, commented-out blocks, pure-whitespace
+  diff hunks in non-CSS files, and unrelated formatting churn.
+- **Live-code & abstraction checks in UI migrations**: Flag `DEFAULT_VIEW` or
+  `*_VIEW` functions that have zero production callers in the CL (unused views
+  staged for a later CL), stateless single-row/item child `UI.Widget` subclasses
+  where a `LitTemplate` helper in the parent view suffices, and call sites that
+  inline non-trivial shared helpers (such as `UI.UIUtils.maybeCreateNewBadge`)
+  instead of converting the shared helper to return `LitTemplate`.
 - Check that the change stays in scope. Flag unrelated refactors that should be
   split into a separate CL.
 - Check for lifecycle issues: event listeners and observers that are added
@@ -170,15 +176,20 @@ findings):
 - The description explains *why*, including external dependencies (for
   example, "V8 will stop emitting X; this must land first").
 - Include a `Bug:` or `Fixed:` trailer, or `Bug: None`. Keep lines under 72
-  characters.
+  characters, and keep diffs at or under `350` changed lines (`insertions + deletions`)
+  where practical.
+- **Descriptive subject lines & live vertical splits**: The first line (`<= 72`
+  chars) must describe *what the CL changes functionally*, never which step or
+  pass of a migration it is (no `Pass 1:`, `(2/6)`, or `Step 3 of migration` in
+  the subject; place stack context in the body if needed). Flag split CLs that
+  defer unit tests to a follow-up test-only CL or defer dead-code removal to a
+  cleanup-only tail CL.
 - **Never add Piper `KEY=VALUE` tags:** Flag any column-0 lines matching
   `TAG=`, `CONV=`, `BUG=`, `FIXED=`, or `MARKDOWN=true`. DevTools commit
   descriptions must use standard Git trailers (`Bug:`, `Fixed:`) only; Piper
   tags break Git trailer parsing and are rejected by `PRESUBMIT.py`. Agent
   conversations should be linked out of band via
   `git config --global cl.upload-conversation-id true`.
-- For migrations and stacked series, list the legacy tests or files covered,
-  and number the series (for example, `(13/16)`).
 - **UI Eng Vision migration completeness & `Fixed:` vs `Bug:`**: Flag
   `Fixed: <id>` on UI Eng Vision migration CLs when core violations remain in
   the target file: legacy `UI.TreeOutline` or `extends UI.TreeOutline.TreeElement`

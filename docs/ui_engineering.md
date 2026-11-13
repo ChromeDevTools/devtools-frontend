@@ -596,7 +596,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 ## Migrating `UI.Toolbar.ToolbarButton`
 
-Replace the imperative creation of a `ToolbarButton` with the declarative `<devtools-button>` component.
+Replace the imperative creation of a `ToolbarButton` with the declarative `<devtools-button>` component. For icon-only buttons, always bind `.accessibleLabel` (in addition to `title`) because `<devtools-button>` sets `role="presentation"` on its host element and forwards `.accessibleLabel` to its inner `<button>`.
 
 **Before:**
 ```typescript
@@ -620,7 +620,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div>
       <devtools-toolbar>
-        <devtools-button title=${i18nString(UIStrings.editName)} @click=${this.onClick.bind(this)}
+        <devtools-button title=${i18nString(UIStrings.editName)}
+            .accessibleLabel=${i18nString(UIStrings.editName)} @click=${this.onClick.bind(this)}
             .variant=${Buttons.Button.Variant.TOOLBAR} .iconName=${'edit'}
             .jslogContext=${'edit-name'}></devtools-button>
       </devtools-toolbar>

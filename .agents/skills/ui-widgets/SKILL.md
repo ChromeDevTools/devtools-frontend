@@ -11,7 +11,7 @@ Adhere strictly to the Model-View-Presenter (MVP) architecture.
 * **Presenters (`Widget`)**: Orchestrate data flow, manage UI-specific state, and handle interactions.
 * **Views (`function`)**: Purely presentational. Stateless functions that receive data/callbacks and render using `lit-html`.
 
-**Refactoring Note:** When refactoring legacy widgets to this framework, the widget's class name MUST NOT be changed. If you're refactoring a UI piece that uses shadow root (e.g. custom HTMLElements) to a Widget, make sure to update its styles to wrap the rules with a `@scope to (devtools-widget > *)` rule.
+**Refactoring Note:** When refactoring legacy widgets to this framework, the widget's class name MUST NOT be changed. Truly reusable UI primitives (`front_end/ui/components/**`, `front_end/ui/kit/**`) stay custom elements (`HTMLElement`) and should not be migrated to `DEFAULT_VIEW` or `UI.Widget`, whereas single-use custom elements under `front_end/panels/**/components/` used solely for encapsulation in one feature should migrate to `UI.Widget` with `@scope to (devtools-widget > *)` styles.
 
 ### Presenter (`Widget`) Rules
 
@@ -37,9 +37,9 @@ Adhere strictly to the Model-View-Presenter (MVP) architecture.
   * **Template Formatting & Whitespace:** The custom `html` tag from `ui/lit/lit.js` (`front_end/ui/lit/strip-whitespace.ts`) automatically strips `\n\s*` outside of `<...>` tags at runtime, so multi-line formatting between text interpolations and inline elements (`<span>`, etc.) does not introduce whitespace text nodes.
 * MUST NOT hold state, fetch data, or perform business logic.
 
-#### Helper Functions in Views
+#### Helper Functions in Views vs. Child Widgets
 
-Complex views can be broken down using helper functions defined inside `DEFAULT_VIEW` to access `input` and `output`.
+Complex views and repeated item rows should be broken down using pure helper functions returning `LitTemplate` inside `DEFAULT_VIEW` (iterating over pure data arrays on `input`), rather than extracting stateless single-row or single-item child `UI.Widget` subclasses. Only extract a child `UI.Widget` when the sub-component owns independent lifecycle (`wasShown`/`willHide`), external subscriptions, or an isolated DOM mutation boundary (such as editable `<devtools-prompt>` rows inside `<devtools-tree>`).
 
 ```ts
 // clang-format off
@@ -130,7 +130,7 @@ render(html`
 **Note:** The `{host: input}` option in `render()` is generally **not required** unless you are using specific Shadow DOM patterns that necessitate it. The `@scope` strategy is the preferred method for style isolation in DevTools widgets.
 
 ### Legacy Interop & Refs
-*   **Raw Elements:** Use `Directives.ref` (from `ui/lit/lit.js`) to obtain a reference to a raw `HTMLElement` if needed for imperative APIs (e.g., `splitWidget.installResizer(element)`).
+*   **Raw Elements:** Use `Directives.ref` (from `ui/lit/lit.js`) to obtain a reference to a raw `HTMLElement` only when strictly required for legacy imperative APIs (e.g., `splitWidget.installResizer(element)`). When a shared DevTools UI primitive (`ui/kit`, `ui/components`, `ui/legacy`) would force callers to use `ref(...)` + imperative setters just to link elements together (such as a `<devtools-menu>` trigger anchor), extend the shared primitive with an HTML-native ID/attribute API in a standalone prerequisite CL rather than adding `ref(...)` boilerplate at call sites.
 *   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget inside the view function if you need to call imperative methods on it. **Do NOT store child widget instances on `ViewOutput` as a final result** (doing so is only acceptable temporarily in intermediate migration CLs). Instead, either supply all needed configuration declaratively through setters/inputs on the child widget, or if imperative calls are strictly necessary, expose narrow action functions on `ViewOutput` (e.g., `output.doLayout = () => splitWidget.doLayout()`, `output.revealPosition = pos => childWidget.revealPosition(pos)`). Do not keep `get*ForTest()` methods that return child widget instances via `ViewOutput`; tests should query rendered `<devtools-widget>` elements via `.getWidget()` or assert on `ViewInput` via `createViewFunctionStub`.
 
 ### Visibility (`?hidden` Attribute Only)
@@ -139,9 +139,10 @@ Toggle element visibility declaratively using the HTML `?hidden` attribute:
 html`<div ?hidden=${!input.isVisible}>...</div>`
 ```
 Never combine a `.hidden` CSS class (`classMap({hidden: ...})` or `classList.toggle('hidden', ...)`) with `?hidden` (`inspectorCommon.css` already defines `[hidden] { display: none !important; }`).
+*   **`UI.Toolbar.Provider` Widgets (`new ToolbarItem(this.element)`):** `Widget.#showWidget()` unconditionally removes `'hidden'` from `this.element` when `Toolbar.appendToolbarItem` (or `show()`) mounts the widget. Any `UI.Widget` wrapping `this.element` in `UI.Toolbar.ToolbarItem` that can start hidden must re-apply `this.#toolbarItem.setVisible(...)` in `override show(...)` and `override wasShown()`, with a unit test mounting the widget into a `<devtools-toolbar>` while initially hidden.
 
 ### Declarative Default Focus (`autofocus` / `?autofocus`)
-`UI.Widget.prototype.focus()` natively queries `[autofocus]` via `getDefaultFocusedElement()` across both plain HTML elements (e.g. `<devtools-tree autofocus>`) and child widgets. Mark the default focus target with `autofocus` or `?autofocus=${...}` (ensuring at most one element has `autofocus` in any render state) instead of overriding `focus()`, calling `this.setDefaultFocusedElement(...)`, or plumbing focus closures through `ViewOutput`.
+`UI.Widget.prototype.focus()` natively queries `[autofocus]` via `getDefaultFocusedElement()` across both plain HTML elements (e.g. `<devtools-tree autofocus>`) and child widgets. Mark the default focus target with `autofocus` or `?autofocus=${...}` directly in the Lit template (ensuring at most one element has `autofocus` in any render state) instead of overriding `focus()`, calling `this.setDefaultFocusedElement(...)`, plumbing focus closures through `ViewOutput`, or mutating `element.autofocus` / `setAttribute('autofocus', ...)` / `toggleAttribute('autofocus', ...)` imperatively in TypeScript or `ref(...)` callbacks.
 
 ### `<devtools-tree>` & Editable `<devtools-prompt ?editing>` Rows
 *   Keep `<devtools-tree>` (`ui/kit/kit.js`) contracts intact without widening `front_end/ui/legacy/Treeoutline.ts` (`TreeViewElement`/`TreeViewTreeElement`). Drive selection and expansion purely via `?selected`, `?open`, `@select`, and `@expand`.
@@ -327,7 +328,7 @@ export class ParentWidget extends UI.Widget.Widget {
 
 ### 3\. Testing Widgets
 
-Testing focuses on the Presenter's logic. The View MUST be replaced by a stub using `createViewFunctionStub`.
+Ship unit tests in the **same CL** as the presenter/view change (never defer tests to a follow-up test-only CL). Testing focuses on the Presenter's logic using `createViewFunctionStub`, while template layout is covered by `assertScreenshot` / E2E tests (per `docs/ui_engineering.md`). When adding targeted unit tests for view rendering, name the suite `describe('view', ...)` (never `describe('... DEFAULT_VIEW', ...)`), and avoid 80–150 line synthetic `DEFAULT_VIEW` DOM assertion suites that duplicate presenter tests.
 
 * **`describeWithEnvironment`**: Sets up the testing environment.
 * **`createViewFunctionStub`**: Stubs the view to capture `input` data.

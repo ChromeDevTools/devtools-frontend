@@ -19,10 +19,11 @@ Run the scripts from the root `package.json` (`test`, `lint`, `build`, `start`, 
 
 - Check for build issues by running `autoninja -C out/Default`.
 
-## Linting
+## Linting & Diff-Range Formatting
 
 - `./dt lint` will execute ESLint and StyleLint. It will report any violations and automatically fix them where possible.
 - To run the linter on a specific file or directory, you can run `./dt lint <PATH>` where `PATH` is a path to a file or directory. This will also automatically fix violations where possible.
+- **Format changed line ranges only**: Format only modified line ranges (`git clang-format` or `clang-format --lines=<start>:<end>`) instead of running whole-file `clang-format`, which introduces unrelated whitespace churn in untouched code. Before uploading, verify `git diff` vs `git diff -w` has zero pure-whitespace hunks in non-CSS files.
 
 ## Fetching Tryjob Results, Failure Logs, & Screenshot Goldens
 

@@ -22,10 +22,10 @@ git new-branch <branch-name>
 *Note: This automatically sets the upstream to `origin/main`.*
 
 ### Making Changes
-1. Make your changes.
+1. Make your changes (keeping each CL `<= 350` lines of `insertions + deletions`, with 100% of new code called in production and tested in the same CL).
 2. Stage them: `git add <files>`.
 3. Create the commit: `git commit -m "Your message"`.
-   * Follow public commit message conventions: a concise summary line, a blank line, an explanatory body wrapping at 72 characters, and Git trailers (`Bug:`, `Fixed:`) in the footer.
+   * Follow public commit message conventions: a concise summary line (`<= 72` characters) describing *what the CL changes functionally* (never migration pass/step labels such as `Pass 1:` or `(2/6)` in the subject line), a blank line, an explanatory body wrapping at 72 characters, and Git trailers (`Bug:`, `Fixed:`) in the footer. When splitting a migration into a stack, preserve the target Buganizer ID across every CL (`Bug: <id>` on intermediate CLs, `Fixed: <id>` only on the final complete CL).
    * **Never add Piper `KEY=VALUE` tags** (such as `TAG=agy`, `CONV=...`, `BUG=...`, `FIXED=...`, or `MARKDOWN=true`). Commit messages must use Git trailers only; `PRESUBMIT.py` rejects Piper tags because they break Git trailer parsing and can cause duplicate `Change-Id:` footers.
    * To associate agent conversations out of band without polluting commit descriptions with `CONV=`, configure:
      ```bash
@@ -135,6 +135,7 @@ To upload an updated CL:
 git cl upload -f --cq-dry-run -t "<one sentence patch set description>"
 ```
 * **Updating an existing stack of CLs:** Once all CLs in a stack have been initially created, **only run `git cl upload` from the leaf (latest) branch in the chain** for subsequent updates. Uploading from the leaf branch automatically runs presubmit checks and uploads new patchsets for all parent CLs in the stack simultaneously. Never upload intermediate CLs one by one when updating a stack.
+* **Cog (`citc`) Workspaces & Continuous Stack CQ/CRUAS Checks:** In Cog workspaces (`/google/cog/cloud/...`), use `cog_api.py` / `vcs.sh` instead of raw `git new-branch`, and **always finish on a clean, empty working copy `@`** (`The working copy has no changes`) by squashing or abandoning temporary `@` commits immediately. After publishing a stack from its leaf commit, trigger `Commit-Queue+1` (`"notify": "NONE"`, never `Commit-Queue+2`) and check `ChromiumCodeReviewAgent` (`gerrit findings --all` and inline comments) across **every** CL in the stack throughout development rather than waiting until human review.
 
 ## Release and Roll Status
 

@@ -39,44 +39,50 @@ principles.
     file matches older patterns or generic examples. Always perform a structure
     analysis of the active file first and adapt the plan to the actual, current
     code.
-4.  **Hybrid Files/Multiple Classes**: Files may contain multiple classes in
+4.  **Reusable vs. Single-Use Web Components Gate**:
+    *   **Reusable UI primitives** (`front_end/ui/components/**`, `front_end/ui/kit/**` — shared buttons, menus, dialogs, links, badges, or trees reused across panels) must remain custom elements (`HTMLElement`). Do **not** migrate them to `UI.Widget` or `DEFAULT_VIEW`.
+    *   **Single-use custom elements** (`extends HTMLElement` or `LitElement` under `front_end/panels/**/components/` used solely for encapsulation in one feature or panel) **should** migrate to `UI.Widget` + `DEFAULT_VIEW` + `@scope to (devtools-widget > *)`.
+5.  **Hybrid Files/Multiple Classes**: Files may contain multiple classes in
     different states of modernization (e.g., one partially migrated class and
     one fully legacy class). If the file being migrated contains several
     classes, the migration needs to be done separately for each class, starting
     with the leaves and going up the dependency chain. Propose modifications
     only for classes with actual violations.
-5.  **Coupling Analysis**: Always check the integration files (e.g., sidebar
+6.  **Coupling Analysis**: Always check the integration files (e.g., sidebar
     files, parent panel files) where the target class is instantiated to see if
     there are any direct `.element` or `.contentElement` couplings. If found,
     include the decoupling of these references in the plan.
-6.  **Neighboring Component Reference**: Inspect neighboring modernized files of
+7.  **Neighboring Component Reference**: Inspect neighboring modernized files of
     the same archetype (e.g., `DOMStorageItemsView.ts` or
     `KeyValueStorageItemsView.ts` for storage-like components) to find proven
     patterns for toolbar and data-grid configurations.
-7.  **The Narrow Bridge Principle**: Keep code modifications tightly scoped to a
+8.  **The Narrow Bridge Principle**: Keep code modifications tightly scoped to a
     single responsibility per CL. Do not combine technology migrations (e.g.,
     converting imperative DOM to Lit-html) with base class refactoring in the
     same diff.
-8.  **Strict Intermediate Stability**: The code must compile and work correctly,
+9.  **Strict Intermediate Stability**: The code must compile and work correctly,
     and all tests must pass after each step. You **MUST** update usages if you
     change APIs.
-9.  **Establish Comprehensive Guardrails First**: Ensure both **logic tests**
+10. **Establish Comprehensive Guardrails First**: Ensure both **logic tests**
     (verifying presenter interactions and state updates) and **screenshot
     tests** (verifying layout/styling) exist before rewriting code. If coverage
     is missing, scaffold it first.
-10. **Pre-flight Clarification**: Before starting, verify if the task is
+11. **Pre-flight Clarification**: Before starting, verify if the task is
     underspecified or ambiguous. If so, point this out and ask for
     clarifications before proceeding.
-11. **Step Sizing & Complexity Assessment**: Assess the complexity of each step
-    beforehand. Aim for intermediate steps that involve changing or adding
-    roughly 300 lines of code. If a step is predicted to be too complex, break
-    it down into smaller substeps. The agent must stop and report back after
-    each step or substep to allow verification.
-12. **Context Hygiene via Subagents**: To keep the main conversation context
+12. **Step Sizing (`<= 350` Lines) & 100% Live-Code Rule**: Keep every CL at or
+    under **`350` changed lines (`insertions + deletions`)**. Every CL must
+    execute 100% of its new view and presenter code in production, remove the
+    imperative code it replaces, and include unit tests covering that behavior in
+    the **same CL**. Never create a CL that adds an unused `DEFAULT_VIEW` or
+    `*_VIEW` export, defers unit tests to a follow-up test-only CL, or defers
+    imperative dead-code removal to a cleanup-only tail CL. The agent must stop
+    and report back after each step or substep to allow verification.
+13. **Context Hygiene via Subagents**: To keep the main conversation context
     clean and focused on high-level orchestration, prefer delegating intense
     execution tasks (like running tests, debugging compilations, or processing
     independent classes in parallel) to specialized subagents.
-13. **Cross-Repo Runtime Coupling Check (`legacy_test_runner` & `blink/web_tests`)**:
+14. **Cross-Repo Runtime Coupling Check (`legacy_test_runner` & `blink/web_tests`)**:
     Before converting TypeScript `private` fields/methods to ES `#private` or
     removing widget properties (e.g., `.tabbedPane`, `.sidebarPaneStack`,
     `.threadsSidebarPane`, `.searchInputElement`), search both
@@ -86,15 +92,10 @@ principles.
     members in untyped JS). Keep accessed members as TypeScript `private` with a
     `// Accessed in web_tests / legacy_test_runner` comment, or migrate the
     web_tests first in a dedicated CL.
-14. **Strict CL Splitting Rules**:
-    *   **One Class Per CL for Hybrid Files**: When modernizing files containing
-        multiple classes, extract or migrate secondary classes (e.g.,
-        `QuickSourceView`) into their own dedicated CLs.
-    *   **Separate Infrastructure CLs**: Keep shared `ui/legacy` or component
-        infrastructure changes (e.g., `bindToAction`, `SplitWidget`,
-        `WrapperWidget`) in separate, preceding CLs. Always verify with
-        `cog_api.py diff` before uploading that no changes from later commits
-        leaked into earlier infrastructure CLs.
+15. **Strict CL Splitting Rules**:
+    *   **Live Split Patterns (`<= 350` Lines)**: When a migration exceeds 350 lines, split using one of three live-code patterns: (a) **one live class or low-fanout shared helper per CL** (leaf-to-root, wired to callers and tested immediately), (b) **2-pass `Local Lit in performUpdate()` -> `UI.Widget + DEFAULT_VIEW promotion`** (Pass 1 renders Lit templates live in `performUpdate()`, removes imperative DOM, and tests behavior; Pass 2 promotes to `DEFAULT_VIEW` and `createViewFunctionStub` tests), or (c) **vertical UI compartment slices** (migrating one toolbar, settings pane, split pane, or formatter batch end-to-end per CL).
+    *   **Separate Infrastructure & Shared-Helper CLs**: Keep shared `ui/legacy`, `ui/kit`, or `UI.UIUtils` changes (e.g., converting a low-fanout helper like `UI.UIUtils.maybeCreateNewBadge` to return `LitTemplate` across its callers, or adding an HTML-native ID/attribute API to `<devtools-menu>`) in separate, preceding CLs rather than inlining helper internals or adding `ref(...)` workarounds at call sites. Always verify with `cog_api.py diff` before uploading that no changes from later commits leaked into earlier infrastructure CLs.
+    *   **CL Descriptions & Bug Trailers Across Stacks**: Carry the target Buganizer issue ID across every CL in a split stack (`Bug: <id>` on intermediate CLs, `Fixed: <id>` only on the final complete CL). Write descriptive `<= 72`-character subject lines stating what each CL changes functionally, without pass or step numbers (`Pass 1:`, `(2/6)`) in the subject line.
     *   **Standalone CSS `@scope` CLs**: Migrating a Light DOM widget includes
         ensuring its stylesheet is wrapped in `@scope to (devtools-widget > *)`
         (removing the file from the `@devtools/no-unscoped-light-dom-styles`

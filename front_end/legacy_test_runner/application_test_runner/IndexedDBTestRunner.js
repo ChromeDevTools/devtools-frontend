@@ -47,8 +47,8 @@ export const dumpIndexedDBTree = async function() {
 
 export const dumpObjectStores = async function() {
   TestRunner.addResult('Dumping ObjectStore data:');
-  const idbDatabaseTreeElement =
-      Application.ResourcesPanel.ResourcesPanel.instance().sidebar.indexedDBListTreeElement.idbDatabaseTreeElements[0];
+  const [idbDatabaseTreeElement] =
+      Application.ResourcesPanel.ResourcesPanel.instance().sidebar.indexedDBListTreeElement.idbDatabaseTreeElements;
   for (let i = 0; i < idbDatabaseTreeElement.childCount(); ++i) {
     const objectStoreTreeElement = idbDatabaseTreeElement.childAt(i);
     objectStoreTreeElement.onselect(false);

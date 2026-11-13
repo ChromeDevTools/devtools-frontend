@@ -35,7 +35,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
   // clang-format off
   render(html`
     <style>${endpointsGridStyles}</style>
-    <style>${UI.inspectorCommonStyles}</style>
     <div class="endpoints-container" jslog=${VisualLogging.section('endpoints')}>
       <div class="endpoints-header">${i18n.i18n.lockedString('Endpoints')}</div>
       ${input.endpoints.size > 0 ? html`

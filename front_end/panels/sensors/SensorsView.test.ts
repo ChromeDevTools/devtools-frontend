@@ -181,6 +181,22 @@ describeWithEnvironment('SensorsView', () => {
       assert.deepEqual(geolocationOverrides.at(-1), {latitude: 10, longitude: 13.405, accuracy: 50});
     });
 
+    it('ignores values of other inputs which were not applied', async () => {
+      await selectLocation('Berlin');
+      // Out of range, so the value is not applied.
+      locationInput('longitude').value = '999';
+
+      const latitudeInput = locationInput('latitude');
+      latitudeInput.value = '10';
+      latitudeInput.dispatchEvent(new Event('change'));
+      await settled();
+
+      assert.strictEqual(locationSetting.get(), '10@13.405:Europe/Berlin:de-DE::50');
+      assert.deepEqual(geolocationOverrides.at(-1), {latitude: 10, longitude: 13.405, accuracy: 50});
+      // The value that is being edited is not overwritten.
+      assert.strictEqual(locationInput('longitude').value, '999');
+    });
+
     it('applies the current input values when "Other…" is selected', async () => {
       await selectLocation('Berlin');
       await selectLocation('Location unavailable');

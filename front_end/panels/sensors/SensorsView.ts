@@ -256,10 +256,6 @@ export class SensorsView extends UI.Widget.VBox {
   #timezoneError = '';
   #localeError = '';
   private latitudeInput!: HTMLInputElement;
-  private longitudeInput!: HTMLInputElement;
-  private timezoneInput!: HTMLInputElement;
-  private localeInput!: HTMLInputElement;
-  private accuracyInput!: HTMLInputElement;
   private readonly deviceOrientationSetting: Common.Settings.Setting<string>;
   private deviceOrientation: SDK.EmulationModel.DeviceOrientation;
   private deviceOrientationOverrideEnabled: boolean;
@@ -410,7 +406,6 @@ export class SensorsView extends UI.Widget.VBox {
               name="longitude"
               title=${modifierKeyMessage}
               jslog=${VisualLogging.textField('longitude').track({change: true})}
-              ${Directives.ref((el: Element | undefined) => { if (el) { this.longitudeInput = el as HTMLInputElement; } })}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
               @focus=${this.#onLocationFocus.bind(this)}
@@ -425,7 +420,6 @@ export class SensorsView extends UI.Widget.VBox {
               .value=${location.timezoneId}
               name="timezone"
               jslog=${VisualLogging.textField('timezone').track({change: true})}
-              ${Directives.ref((el: Element | undefined) => { if (el) { this.timezoneInput = el as HTMLInputElement; } })}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
               @focus=${this.#onLocationFocus.bind(this)}
@@ -441,7 +435,6 @@ export class SensorsView extends UI.Widget.VBox {
               .value=${location.locale}
               name="locale"
               jslog=${VisualLogging.textField('locale').track({change: true})}
-              ${Directives.ref((el: Element | undefined) => { if (el) { this.localeInput = el as HTMLInputElement; } })}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
               @focus=${this.#onLocationFocus.bind(this)}
@@ -459,7 +452,6 @@ export class SensorsView extends UI.Widget.VBox {
               .value=${String(location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY)}
               name="accuracy"
               jslog=${VisualLogging.textField('accuracy').track({change: true})}
-              ${Directives.ref((el: Element | undefined) => { if (el) { this.accuracyInput = el as HTMLInputElement; } })}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
               @focus=${this.#onLocationFocus.bind(this)}
@@ -480,21 +472,12 @@ export class SensorsView extends UI.Widget.VBox {
     if (value === NonPresetOptions.NoOverride) {
       this.#locationOverrideEnabled = false;
       this.#location = SDK.EmulationModel.Location.parseSetting('');
-    } else if (value === NonPresetOptions.Custom) {
-      this.#locationOverrideEnabled = true;
-      const location = SDK.EmulationModel.Location.parseUserInput(
-          this.latitudeInput.value.trim(), this.longitudeInput.value.trim(), this.timezoneInput.value.trim(),
-          this.localeInput.value.trim(), this.accuracyInput.value.trim());
-      if (!location) {
-        this.performUpdate();
-        return;
-      }
-      this.#location = location;
-    } else if (value === NonPresetOptions.Unavailable) {
+    } else if (value === NonPresetOptions.Custom || value === NonPresetOptions.Unavailable) {
       this.#locationOverrideEnabled = true;
       // Keep the values that are shown in the inputs.
       const {latitude, longitude, timezoneId, locale, accuracy} = this.#location;
-      this.#location = new SDK.EmulationModel.Location(latitude, longitude, timezoneId, locale, accuracy, true);
+      this.#location = new SDK.EmulationModel.Location(latitude, longitude, timezoneId, locale, accuracy,
+                                                       value === NonPresetOptions.Unavailable);
     } else {
       this.#locationOverrideEnabled = true;
       const coordinates = JSON.parse(value);
@@ -513,7 +496,7 @@ export class SensorsView extends UI.Widget.VBox {
   #onLocationChange(event: Event): void {
     const input = event.currentTarget as HTMLInputElement;
     if (input.checkValidity()) {
-      this.applyLocationUserInput();
+      this.applyLocationUserInput(input);
     }
   }
 
@@ -521,18 +504,17 @@ export class SensorsView extends UI.Widget.VBox {
     const input = event.currentTarget as HTMLInputElement;
     if (event.key === 'Enter') {
       if (input.checkValidity()) {
-        this.applyLocationUserInput();
+        this.applyLocationUserInput(input);
       }
       event.preventDefault();
       return;
     }
 
-    const isNumeric = input === this.latitudeInput || input === this.longitudeInput || input === this.accuracyInput;
-    if (!isNumeric) {
+    if (input.type !== 'number') {
       return;
     }
 
-    const multiplier = input === this.accuracyInput ? 1 : 0.1;
+    const multiplier = input.name === 'accuracy' ? 1 : 0.1;
     const value = UI.UIUtils.modifiedFloatNumber(parseFloat(input.value), event, multiplier);
     if (value === null) {
       return;
@@ -540,7 +522,7 @@ export class SensorsView extends UI.Widget.VBox {
     const prevValue = input.value;
     input.value = String(value);
     if (input.checkValidity()) {
-      this.applyLocationUserInput();
+      this.applyLocationUserInput(input);
     } else {
       // If ArrowUp/ArrowDown adjusts the value out of bounds, we reset it.
       input.value = prevValue;
@@ -553,10 +535,19 @@ export class SensorsView extends UI.Widget.VBox {
     input.select();
   }
 
-  private applyLocationUserInput(): void {
-    const location = SDK.EmulationModel.Location.parseUserInput(
-        this.latitudeInput.value.trim(), this.longitudeInput.value.trim(), this.timezoneInput.value.trim(),
-        this.localeInput.value.trim(), this.accuracyInput.value.trim());
+  private applyLocationUserInput(input: HTMLInputElement): void {
+    // Only the changed input is read, the other values are taken from the current location.
+    const {latitude, longitude, timezoneId: timezone, locale, accuracy} = this.#location;
+    const values = {
+      latitude: String(latitude),
+      longitude: String(longitude),
+      timezone,
+      locale,
+      accuracy: String(accuracy),
+      [input.name]: input.value.trim(),
+    };
+    const location = SDK.EmulationModel.Location.parseUserInput(values.latitude, values.longitude, values.timezone,
+                                                                values.locale, values.accuracy);
     if (!location) {
       return;
     }

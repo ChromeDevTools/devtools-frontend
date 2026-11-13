@@ -159,7 +159,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   render(html`
      <style>${backendLinkingSettingsTabStyles}</style>
-      <style>${UI.inspectorCommonStyles}</style>
       <div class="settings-card-container-wrapper" jslog=${VisualLogging.pane('backend-linking')}>
         <div class="settings-card-container">
           <devtools-card heading=${i18nString(UIStrings.rulesSectionHeading)}>

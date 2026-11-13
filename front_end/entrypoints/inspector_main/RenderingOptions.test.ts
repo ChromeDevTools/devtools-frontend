@@ -211,7 +211,6 @@ describeWithEnvironment('RenderingOptions', () => {
         showAdHighlightsSetting: null,
         prefersContrastSetting: null,
         prefersReducedDataSetting: null,
-        prefersReducedTransparencySetting: null,
         jpegXlFormatDisabledSetting: null,
       });
 
@@ -223,7 +222,7 @@ describeWithEnvironment('RenderingOptions', () => {
       assert.isUndefined(checkboxes.find(cb => cb.getAttribute('title') === 'Disable `JPEG XL` image format'));
 
       const selects = target.querySelectorAll('select');
-      assert.lengthOf(selects, 7);
+      assert.lengthOf(selects, 8);
     });
   });
 

@@ -619,7 +619,12 @@ export class MainImpl {
 
   async #lateInitialization(): Promise<void> {
     MainImpl.time('Main._lateInitialization');
-    PanelCommon.ExtensionServer.ExtensionServer.instance().initializeExtensions();
+    const extensionServer = PanelCommon.ExtensionServer.ExtensionServer.instance();
+    if (!extensionServer.framesWidget().isShowing()) {
+      extensionServer.framesWidget().markAsRoot();
+      extensionServer.framesWidget().show(document.body);
+    }
+    extensionServer.initializeExtensions();
     void Promise.all(Common.Runnable.lateInitializationRunnables().map(async lateInitializationLoader => {
       const runnable = await lateInitializationLoader();
       return await runnable.run();

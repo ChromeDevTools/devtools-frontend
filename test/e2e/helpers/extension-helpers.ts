@@ -42,8 +42,9 @@ export async function loadExtension(devToolsPage: DevToolsPage, inspectedPage: I
         {source: `(${declareChrome})();${injectedAPI}('${extensionScriptId}')`});
 
     try {
-      await devToolsPage.evaluate(extensionInfo => {
+      await devToolsPage.evaluate(async extensionInfo => {
         globalThis.Extensions.extensionServer.addExtension(extensionInfo);
+        await globalThis.Extensions.extensionServer.framesWidget().updateComplete;
         const extensionIFrames = document.body.querySelectorAll(`[data-devtools-extension="${extensionInfo.name}"]`);
         if (extensionIFrames.length > 1) {
           throw new Error(`Duplicate extension ${extensionInfo.name}`);
@@ -51,7 +52,7 @@ export async function loadExtension(devToolsPage: DevToolsPage, inspectedPage: I
         if (extensionIFrames.length === 0) {
           throw new Error('Installing the extension failed.');
         }
-        return new Promise<void>(resolve => {
+        return await new Promise<void>(resolve => {
           (extensionIFrames[0] as HTMLIFrameElement).onload = () => resolve();
         });
       }, extensionInfo);

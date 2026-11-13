@@ -168,11 +168,12 @@ export class StartView extends UI.Widget.Widget {
     }
     parentElement.appendChild(labelEl);
 
-    const control = new RadioSetting(
-        runtimeSetting.options, runtimeSetting.setting as Common.Settings.Setting<string>,
-        runtimeSetting.description());
-    parentElement.appendChild(control.element);
-    UI.ARIAUtils.setLabel(control.element, label);
+    const control = new RadioSetting();
+    control.options = runtimeSetting.options;
+    control.setting = runtimeSetting.setting as Common.Settings.Setting<string>;
+    control.description = runtimeSetting.description();
+    control.label = label;
+    control.show(parentElement);
   }
 
   private populateRuntimeSettingAsToolbarCheckbox(settingName: string, toolbar: UI.Toolbar.Toolbar): void {

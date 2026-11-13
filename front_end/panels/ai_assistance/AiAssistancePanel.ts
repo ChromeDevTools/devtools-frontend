@@ -2050,7 +2050,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             }
 
             // When there is an answer without any thinking steps, we don't want to show the thinking step.
-            // TODO(crbug.com/463323934): Remove specially handling this case.
             if (systemMessage.parts.length > 1) {
               const firstPart = systemMessage.parts[0];
               if (firstPart.type === 'step' && firstPart.step.state.type === 'in_progress' && !firstPart.step.thought &&

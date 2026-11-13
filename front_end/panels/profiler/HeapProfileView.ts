@@ -1079,9 +1079,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   }
 
   override get description(): string {
-    // TODO(l10n): Do not concatenate localized strings.
-    const formattedDescription = [i18nString(UIStrings.recordMemoryAllocations)];
-    return formattedDescription.join('\n');
+    return i18nString(UIStrings.recordMemoryAllocations);
   }
 
   override hasTemporaryView(): boolean {

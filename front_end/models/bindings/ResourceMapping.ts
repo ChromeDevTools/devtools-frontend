@@ -342,7 +342,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
       endPosition.columnNumber += script.columnOffset;
     }
 
-    const name = '';  // TODO(crbug.com/452333154): update ScopeVariableAnalysis to include function name.
+    const name = result.name ?? '';
     const range = new TextUtils.TextRange.TextRange(
         startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
     return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);

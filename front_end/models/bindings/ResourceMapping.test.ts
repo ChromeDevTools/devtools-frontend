@@ -280,8 +280,7 @@ describe('ResourceMapping', () => {
     it('finds the function bounds for an inline script', async () => {
       const functionBounds = await resourceMapping.functionBoundsAtRawLocation(makeLocation(SCRIPTS[0], 5, 16));
       assert.isOk(functionBounds);
-      // TODO(crbug.com/452333154)
-      // assert.strictEqual(functionBounds.name, 'foo');
+      assert.strictEqual(functionBounds.name, 'foo');
       assert.strictEqual(functionBounds.range.startLine, 5);
       assert.strictEqual(functionBounds.range.startColumn, 12);
       assert.strictEqual(functionBounds.range.endLine, 5);

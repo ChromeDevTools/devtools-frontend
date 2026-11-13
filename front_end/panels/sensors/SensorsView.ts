@@ -189,6 +189,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStri
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {classMap, live, styleMap} = Directives;
 
+function selectInputContent(event: Event): void {
+  (event.currentTarget as HTMLInputElement).select();
+}
+
 interface ViewInput {
   locationSection: TemplateResult;
   orientationSection: TemplateResult;
@@ -389,7 +393,7 @@ export class SensorsView extends UI.Widget.VBox {
               ${Directives.ref((el: Element | undefined) => { if (el) { this.latitudeInput = el as HTMLInputElement; } })}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
-              @focus=${this.#onLocationFocus.bind(this)}
+              @focus=${selectInputContent}
             >
             <label class="latlong-title" for="latitude-input">${i18nString(UIStrings.latitude)}</label>
           </div>
@@ -408,7 +412,7 @@ export class SensorsView extends UI.Widget.VBox {
               jslog=${VisualLogging.textField('longitude').track({change: true})}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
-              @focus=${this.#onLocationFocus.bind(this)}
+              @focus=${selectInputContent}
             >
             <label class="latlong-title" for="longitude-input">${i18nString(UIStrings.longitude)}</label>
           </div>
@@ -422,7 +426,7 @@ export class SensorsView extends UI.Widget.VBox {
               jslog=${VisualLogging.textField('timezone').track({change: true})}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
-              @focus=${this.#onLocationFocus.bind(this)}
+              @focus=${selectInputContent}
             >
             <label class="timezone-title" for="timezone-input">${i18nString(UIStrings.timezoneId)}</label>
             <div class="timezone-error">${this.#timezoneError}</div>
@@ -437,7 +441,7 @@ export class SensorsView extends UI.Widget.VBox {
               jslog=${VisualLogging.textField('locale').track({change: true})}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
-              @focus=${this.#onLocationFocus.bind(this)}
+              @focus=${selectInputContent}
             >
             <label class="locale-title" for="locale-input">${i18nString(UIStrings.locale)}</label>
             <div class="locale-error">${this.#localeError}</div>
@@ -454,7 +458,7 @@ export class SensorsView extends UI.Widget.VBox {
               jslog=${VisualLogging.textField('accuracy').track({change: true})}
               @change=${this.#onLocationChange.bind(this)}
               @keydown=${this.#onLocationKeyDown.bind(this)}
-              @focus=${this.#onLocationFocus.bind(this)}
+              @focus=${selectInputContent}
             >
             <label class="accuracy-title" for="accuracy-input">${i18nString(UIStrings.accuracy)}</label>
           </div>
@@ -528,11 +532,6 @@ export class SensorsView extends UI.Widget.VBox {
       input.value = prevValue;
     }
     event.preventDefault();
-  }
-
-  #onLocationFocus(event: Event): void {
-    const input = event.currentTarget as HTMLInputElement;
-    input.select();
   }
 
   private applyLocationUserInput(input: HTMLInputElement): void {
@@ -651,7 +650,7 @@ export class SensorsView extends UI.Widget.VBox {
                     ${Directives.ref((el: Element | undefined) => { if (el) { this.alphaElement = el as HTMLInputElement; } })}
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
-                    @focus=${this.#onOrientationFocus.bind(this)}
+                    @focus=${selectInputContent}
                   >
                   <label for="alpha-input">${i18nString(UIStrings.alpha)}</label>
                 </div>
@@ -668,7 +667,7 @@ export class SensorsView extends UI.Widget.VBox {
                     name="beta"
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
-                    @focus=${this.#onOrientationFocus.bind(this)}
+                    @focus=${selectInputContent}
                   >
                   <label for="beta-input">${i18nString(UIStrings.beta)}</label>
                 </div>
@@ -685,7 +684,7 @@ export class SensorsView extends UI.Widget.VBox {
                     name="gamma"
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
-                    @focus=${this.#onOrientationFocus.bind(this)}
+                    @focus=${selectInputContent}
                   >
                   <label for="gamma-input">${i18nString(UIStrings.gamma)}</label>
                 </div>
@@ -870,11 +869,6 @@ export class SensorsView extends UI.Widget.VBox {
       input.value = prevValue;
     }
     event.preventDefault();
-  }
-
-  #onOrientationFocus(event: Event): void {
-    const input = event.currentTarget as HTMLInputElement;
-    input.select();
   }
 
   private setBoxOrientation(animate: boolean): void {

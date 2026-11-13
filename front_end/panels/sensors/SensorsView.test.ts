@@ -197,6 +197,16 @@ describeWithEnvironment('SensorsView', () => {
       assert.strictEqual(locationInput('longitude').value, '999');
     });
 
+    it('selects the content of an input when it is focused', async () => {
+      await selectLocation('Berlin');
+      const timezoneInput = locationInput('timezone');
+
+      timezoneInput.dispatchEvent(new FocusEvent('focus'));
+
+      assert.strictEqual(timezoneInput.selectionStart, 0);
+      assert.strictEqual(timezoneInput.selectionEnd, 'Europe/Berlin'.length);
+    });
+
     it('applies the current input values when "Other…" is selected', async () => {
       await selectLocation('Berlin');
       await selectLocation('Location unavailable');

@@ -151,7 +151,7 @@ describeWithEnvironment('SubAppsView', () => {
 
     beforeEach(() => {
       target = document.createElement('div');
-      renderElementIntoDOM(target);
+      renderElementIntoDOM(target, {includeCommonStyles: true});
       target.style.display = 'flex';
       target.style.width = '640px';
       target.style.height = '200px';

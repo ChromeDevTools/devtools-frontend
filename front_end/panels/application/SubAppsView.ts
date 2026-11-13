@@ -85,7 +85,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   Lit.render(html`
     <style>${subAppsViewStyles}</style>
-    <style>${UI.inspectorCommonStyles}</style>
     <div jslog=${VisualLogging.pane('sub-apps')}>
       <span class="heading">${headingText}</span>
       <devtools-data-grid striped inline role="grid" aria-label=${headingText}>

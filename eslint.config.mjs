@@ -883,7 +883,6 @@ export default defineConfig([
             'front_end/panels/application/ResourcesPanel.ts',
             'front_end/panels/application/ServiceWorkerCacheViews.ts',
             'front_end/panels/application/ServiceWorkersView.ts',
-            'front_end/panels/application/SubAppsView.ts',
             'front_end/panels/application/WebMCPView.ts',
             'front_end/panels/application/components/EndpointsGrid.ts',
             'front_end/panels/application/components/ProtocolHandlersView.ts',

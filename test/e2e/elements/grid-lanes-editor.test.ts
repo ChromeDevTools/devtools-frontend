@@ -7,6 +7,7 @@ import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
   getCSSPropertyInRule,
+  waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,
   waitForCSSPropertyValue,
 } from '../helpers/elements-helpers.js';
@@ -26,13 +27,14 @@ describe('Grid Lanes Editor', function() {
     `);
     await waitForContentOfSelectedElementsNode(devToolsPage, '<body>\u200B');
     await focusElementsTree(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['<div id=\u200B"target">']);
     await clickNthChildOfSelectedElementNode(devToolsPage, 1);
     await waitForCSSPropertyValue(devToolsPage, '#target', 'display', 'grid-lanes', undefined);
   }
 
   it('can be opened and grid-lanes styles can be edited', async ({devToolsPage, inspectedPage}) => {
     await setupStyles(devToolsPage, inspectedPage);
-    await clickStylePropertyEditorButton(devToolsPage, 'Open grid-lanes editor', 'devtools-grid-lanes-editor');
+    await clickStylePropertyEditorButton(devToolsPage, 'Open grid-lanes editor', 'devtools-widget.grid-lanes-editor');
     await clickPropertyButton(devToolsPage, '[title="Add justify-items: start"]');
     await waitForCSSPropertyValue(devToolsPage, '#target', 'justify-items', 'start', undefined);
     await clickPropertyButton(devToolsPage, '[title="Remove justify-items: start"]');

@@ -25,6 +25,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<Even
   constructor() {
     super();
     this.popover = new UI.GlassPane.GlassPane();
+    this.popover.contentElement.classList.add('swatch-popover');
     this.popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.popover.setMarginBehavior(UI.GlassPane.MarginBehavior.DEFAULT_MARGIN);
     this.popover.element.addEventListener('mousedown', e => e.consume(), false);

@@ -7,6 +7,7 @@ import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
   getCSSPropertyInRule,
+  waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,
   waitForCSSPropertyValue,
 } from '../helpers/elements-helpers.js';
@@ -19,6 +20,7 @@ describe('Grid Editor', function() {
     await inspectedPage.goToResource('elements/grid-editor.html');
     await waitForContentOfSelectedElementsNode(devToolsPage, '<body>\u200B');
     await focusElementsTree(devToolsPage);
+    await waitForChildrenOfSelectedElementNode(devToolsPage, ['<div id=\u200B"target">']);
     await clickNthChildOfSelectedElementNode(devToolsPage, 1);
     await waitForCSSPropertyValue(devToolsPage, '#target', 'display', 'grid', undefined);
   }
@@ -26,7 +28,7 @@ describe('Grid Editor', function() {
   it('can be opened and grid styles can be edited', async ({devToolsPage, inspectedPage}) => {
     await setupStyles(devToolsPage, inspectedPage);
 
-    await clickStylePropertyEditorButton(devToolsPage, 'Open grid editor', 'devtools-grid-editor');
+    await clickStylePropertyEditorButton(devToolsPage, 'Open grid editor', 'devtools-widget.grid-editor');
 
     // Clicking once sets the value.
     await clickPropertyButton(devToolsPage, '[title="Add align-items: start"]');

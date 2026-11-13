@@ -7,8 +7,9 @@ import {assert} from 'chai';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 export async function clickStylePropertyEditorButton(devToolsPage: DevToolsPage, title: string,
-                                                     editorElement: 'devtools-grid-editor'|'devtools-flexbox-editor'|
-                                                     'devtools-grid-lanes-editor'): Promise<void> {
+                                                     editorElement: 'devtools-widget.grid-editor'|
+                                                     'devtools-widget.flexbox-editor'|
+                                                     'devtools-widget.grid-lanes-editor'): Promise<void> {
   const gridEditorButtons = await devToolsPage.$$(`[title="${title}"]`);
   assert.lengthOf(gridEditorButtons, 1);
   await devToolsPage.click(`[title="${title}"]`);

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 import type {SinonStub, SinonStubbedInstance} from 'sinon';
 
@@ -4993,6 +4993,163 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
             'Changed style property "justify-self" from "start" to "center" in rule "div"',
             sinon.match.object,
         );
+      });
+    });
+
+    describe('StyleEditorWidget popover', () => {
+      beforeEach(() => {
+        // Give document.body an explicit viewport height so GlassPane does not clamp the popover to the 1-line test container height.
+        document.body.style.height = '600px';
+      });
+
+      afterEach(() => {
+        stylesSidebarPane.swatchPopoverHelper().hide(true);
+        document.body.style.height = '';
+      });
+
+      it('sizes the flexbox editor without scrollbars on open, after wide edits, and across reopens', async () => {
+        const section = await createLiveSection('display: flex;', {inline: true});
+        const getTriggerButton = () =>
+            treeElementAt(section, 0).listItemElement.querySelector<HTMLElement>('.styles-pane-button');
+
+        const assertPopoverLayout = (step: string) => {
+          const glassPaneHost = document.querySelector('[data-devtools-glass-pane]');
+          assert.exists(glassPaneHost, `${step}: glass pane host should exist`);
+          const glassPaneWidget = glassPaneHost.shadowRoot?.querySelector<HTMLElement>('.widget.swatch-popover');
+          assert.exists(glassPaneWidget, `${step}: glass pane .widget.swatch-popover should exist`);
+          assert.strictEqual(glassPaneWidget.parentNode, glassPaneHost.shadowRoot);
+          assert.isAtMost(
+              glassPaneWidget.scrollWidth, glassPaneWidget.clientWidth,
+              `${step}: horizontal overflow (${glassPaneWidget.scrollWidth} > ${glassPaneWidget.clientWidth})`);
+          assert.isAtMost(
+              glassPaneWidget.scrollHeight, glassPaneWidget.clientHeight,
+              `${step}: vertical overflow (${glassPaneWidget.scrollHeight} > ${glassPaneWidget.clientHeight})`);
+
+          assert.notStrictEqual(window.getComputedStyle(glassPaneWidget).boxShadow, 'none',
+                                `${step}: outer popover should have elevation box-shadow`);
+          const styleEditorElement = Elements.StyleEditorWidget.StyleEditorWidget.instance().element;
+          assert.strictEqual(window.getComputedStyle(styleEditorElement).boxShadow, 'none',
+                             `${step}: StyleEditorWidget element should not have a nested box-shadow`);
+          const innerEditorWidget = styleEditorElement.querySelector<HTMLElement>('devtools-widget.flexbox-editor');
+          assert.exists(innerEditorWidget, `${step}: inner flexbox-editor widget should exist`);
+          assert.strictEqual(window.getComputedStyle(innerEditorWidget).boxShadow, 'none',
+                             `${step}: inner flexbox-editor widget should not have a nested box-shadow`);
+          assert.strictEqual(window.getComputedStyle(innerEditorWidget).borderRadius, '0px',
+                             `${step}: inner flexbox-editor widget should not have a nested border-radius`);
+
+          const container = innerEditorWidget.querySelector<HTMLElement>('.container');
+          assert.exists(container, `${step}: editor .container should exist`);
+          const outerRect = glassPaneWidget.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          assert.isAbove(containerRect.left - outerRect.left, 0, `${step}: left padding missing`);
+          assert.isAbove(containerRect.top - outerRect.top, 0, `${step}: top padding missing`);
+          assert.isAbove(outerRect.right - containerRect.right, 0, `${step}: right padding missing`);
+          assert.isAbove(outerRect.bottom - containerRect.bottom, 0, `${step}: bottom padding missing`);
+        };
+
+        const openButton1 = getTriggerButton();
+        assert.exists(openButton1);
+        openButton1.click();
+        await waitFor(() => stylesSidebarPane.swatchPopoverHelper().isShowing());
+        await LegacyUI.Widget.Widget.allUpdatesComplete;
+        assertPopoverLayout('initial open');
+
+        const widget = Elements.StyleEditorWidget.StyleEditorWidget.instance();
+        const spaceBetweenButton =
+            widget.contentElement.querySelector<HTMLButtonElement>('[title="Add justify-content: space-between"]');
+        assert.exists(spaceBetweenButton);
+        spaceBetweenButton.click();
+        await waitFor(
+            () => Boolean(widget.contentElement.querySelector('[title="Remove justify-content: space-between"]')));
+        await LegacyUI.Widget.Widget.allUpdatesComplete;
+        assertPopoverLayout('after justify-content: space-between');
+
+        // Also verify with a proportional font (rather than integer-width Ahem) to catch subpixel width truncation.
+        const glassPaneWidget = document.querySelector('[data-devtools-glass-pane]')
+                                    ?.shadowRoot?.querySelector<HTMLElement>('.widget.swatch-popover');
+        assert.exists(glassPaneWidget);
+        glassPaneWidget.style.fontFamily = 'Arial, sans-serif';
+        stylesSidebarPane.swatchPopoverHelper().reposition();
+        assertPopoverLayout('proportional font after justify-content: space-between');
+
+        const columnReverseButton =
+            widget.contentElement.querySelector<HTMLButtonElement>('[title="Add flex-direction: column-reverse"]');
+        assert.exists(columnReverseButton);
+        columnReverseButton.click();
+        await waitFor(
+            () => Boolean(widget.contentElement.querySelector('[title="Remove flex-direction: column-reverse"]')));
+        await LegacyUI.Widget.Widget.allUpdatesComplete;
+        assertPopoverLayout('after flex-direction: column-reverse');
+
+        // Close #1 and reopen #2 + close #2 to verify GlassPane detaches cleanly without hideOnDetach poisoning.
+        stylesSidebarPane.swatchPopoverHelper().hide(true);
+        assert.isNull(document.querySelector('[data-devtools-glass-pane]'), 'detached after close #1');
+
+        const openButton2 = getTriggerButton();
+        assert.exists(openButton2);
+        openButton2.click();
+        await waitFor(() => stylesSidebarPane.swatchPopoverHelper().isShowing());
+        await LegacyUI.Widget.Widget.allUpdatesComplete;
+        assertPopoverLayout('reopen #2');
+
+        stylesSidebarPane.swatchPopoverHelper().hide(true);
+        assert.isNull(document.querySelector('[data-devtools-glass-pane]'), 'detached after close #2');
+      });
+
+      it('enters style editing mode while open and still refreshes the section on edits', async () => {
+        const section = await createLiveSection('display: flex;', {inline: true});
+        assert.isFalse(stylesSidebarPane.isEditingStyle);
+
+        const triggerButton =
+            treeElementAt(section, 0).listItemElement.querySelector<HTMLElement>('.styles-pane-button');
+        assert.exists(triggerButton);
+        triggerButton.click();
+        await waitFor(() => stylesSidebarPane.swatchPopoverHelper().isShowing());
+        await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+        assert.isTrue(stylesSidebarPane.isEditingStyle);
+
+        const widget = Elements.StyleEditorWidget.StyleEditorWidget.instance();
+        const columnButton =
+            widget.contentElement.querySelector<HTMLButtonElement>('[title="Add flex-direction: column"]');
+        assert.exists(columnButton);
+        columnButton.click();
+        await waitFor(() => Boolean(widget.contentElement.querySelector('[title="Remove flex-direction: column"]')));
+        await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+        assert.strictEqual(section.propertiesTreeOutline.rootElement().childCount(), 2);
+        assert.strictEqual(treeElementAt(section, 1).property.name, 'flex-direction');
+        assert.strictEqual(treeElementAt(section, 1).property.value, 'column');
+
+        const updatedTriggerButton =
+            treeElementAt(section, 0).listItemElement.querySelector<HTMLElement>('.styles-pane-button');
+        assert.exists(updatedTriggerButton);
+        updatedTriggerButton.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true}));
+        updatedTriggerButton.click();
+        assert.isFalse(stylesSidebarPane.swatchPopoverHelper().isShowing());
+        assert.isFalse(stylesSidebarPane.isEditingStyle);
+      });
+
+      it('preserves the active editor across section context rebinding', async () => {
+        const section = await createLiveSection('display: flex;', {inline: true});
+
+        const triggerButton =
+            treeElementAt(section, 0).listItemElement.querySelector<HTMLElement>('.styles-pane-button');
+        assert.exists(triggerButton);
+        triggerButton.click();
+        await waitFor(() => stylesSidebarPane.swatchPopoverHelper().isShowing());
+        await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+        const widget = Elements.StyleEditorWidget.StyleEditorWidget.instance();
+        assert.exists(widget.contentElement.querySelector('devtools-widget.flexbox-editor'));
+
+        widget.unbindContext();
+        widget.bindContext(stylesSidebarPane, section);
+        widget.requestUpdate();
+        await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+        assert.exists(widget.contentElement.querySelector('devtools-widget.flexbox-editor'));
+        assert.exists(widget.contentElement.querySelector('[title="Add flex-direction: column"]'));
       });
     });
   });

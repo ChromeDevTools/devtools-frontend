@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
@@ -133,5 +133,30 @@ describeWithEnvironment('ScreencastApp', () => {
     const input = await view.nextInput;
     assert.strictEqual(input.progressPercent, 0.1);
     sinon.assert.calledTwice(navigationHistoryStub);
+  });
+
+  it('renders default view with common styles', async () => {
+    const rootView = new UI.RootView.RootView(new TestUniverse());
+    renderElementIntoDOM(rootView, {includeCommonStyles: true, width: 800, height: 600});
+
+    const target = createTarget();
+    const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
+    assert.exists(screenCaptureModel);
+    sinon.stub(screenCaptureModel, 'startScreencast');
+
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    sinon.stub(resourceTreeModel, 'navigationHistory').resolves(null);
+
+    Screencast.ScreencastApp.DEFAULT_VIEW({
+      screencastEnabled: true,
+      screenCaptureModel,
+    },
+                                          undefined, rootView.contentElement);
+
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
+
+    await assertScreenshot('screencast/screencast_app.png');
   });
 });

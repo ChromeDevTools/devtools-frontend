@@ -310,8 +310,6 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     ]);
   });
 
-  // TODO(https://crbug.com/1317959): Add cancelled reason once
-  // finalStatus and disallowedApiMethod added to prerenderStatusUpdated.
   it('renders prerendering details with cancelled reason', async () => {
     const url = urlString`https://example.com/prerendered.html`;
     const data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData = {

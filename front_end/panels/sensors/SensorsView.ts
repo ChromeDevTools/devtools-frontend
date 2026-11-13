@@ -196,8 +196,11 @@ function selectInputContent(event: Event): void {
 interface LocationViewInput {
   location: SDK.EmulationModel.Location;
   locationOverrideEnabled: boolean;
+  customLocations: LocationDescription[];
+  selectedLocationIndex: number;
   timezoneError: string;
   localeError: string;
+  onManageLocations: () => void;
 }
 
 interface ViewInput extends LocationViewInput {
@@ -312,15 +315,19 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
+    const customLocations = this.#customLocationsSetting.get();
     const locationInput: LocationViewInput = {
       location: this.#location,
       locationOverrideEnabled: this.#locationOverrideEnabled,
+      customLocations,
+      selectedLocationIndex: this.#selectedLocationIndex(customLocations),
       timezoneError: this.#timezoneError,
       localeError: this.#localeError,
+      onManageLocations: () => Common.Revealer.reveal(this.#customLocationsSetting),
     };
     const input: ViewInput = {
       ...locationInput,
-      locationSection: this.#renderLocationSection(locationInput, this.#customLocationsSetting),
+      locationSection: this.#renderLocationSection(locationInput),
       orientationSection: this.#renderDeviceOrientationSection(),
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
@@ -357,11 +364,7 @@ export class SensorsView extends UI.Widget.VBox {
     return selectedIndex;
   }
 
-  #renderLocationSection(input: LocationViewInput,
-                         customLocationsSetting: Common.Settings.Setting<LocationDescription[]>): TemplateResult {
-    const customLocations = customLocationsSetting.get();
-    const selectedIndex = this.#selectedLocationIndex(customLocations);
-
+  #renderLocationSection(input: LocationViewInput): TemplateResult {
     const cmdOrCtrl = Host.Platform.isMac() ? '\u2318' : 'Ctrl';
     const modifierKeyMessage = i18nString(UIStrings.adjustWithMousewheelOrUpdownKeys, {PH1: cmdOrCtrl});
 
@@ -374,21 +377,21 @@ export class SensorsView extends UI.Widget.VBox {
           @change=${this.#locationSelectChanged.bind(this)}
           jslog=${VisualLogging.dropDown().track({change: true})}
         >
-          <option value=${NonPresetOptions.NoOverride} .selected=${live(selectedIndex === 0)} jslog=${VisualLogging.item('no-override')}>${i18nString(UIStrings.noOverride)}</option>
+          <option value=${NonPresetOptions.NoOverride} .selected=${live(input.selectedLocationIndex === 0)} jslog=${VisualLogging.item('no-override')}>${i18nString(UIStrings.noOverride)}</option>
           <optgroup label=${i18nString(UIStrings.overrides)}>
-            ${customLocations.map((customLocation, i) => html`
-              <option value=${JSON.stringify(customLocation)} .selected=${live(selectedIndex === i + 1)} jslog=${VisualLogging.item('custom')}>${customLocation.title}</option>
+            ${input.customLocations.map((customLocation, i) => html`
+              <option value=${JSON.stringify(customLocation)} .selected=${live(input.selectedLocationIndex === i + 1)} jslog=${VisualLogging.item('custom')}>${customLocation.title}</option>
             `)}
           </optgroup>
-          <option value=${NonPresetOptions.Custom} .selected=${live(selectedIndex === customLocations.length + 1)} jslog=${VisualLogging.item('other')}>${i18nString(UIStrings.other)}</option>
+          <option value=${NonPresetOptions.Custom} .selected=${live(input.selectedLocationIndex === input.customLocations.length + 1)} jslog=${VisualLogging.item('other')}>${i18nString(UIStrings.other)}</option>
           <optgroup label=${i18nString(UIStrings.error)}>
-            <option value=${NonPresetOptions.Unavailable} .selected=${live(selectedIndex === customLocations.length + 2)} jslog=${VisualLogging.item('unavailable')}>${i18nString(UIStrings.locationUnavailable)}</option>
+            <option value=${NonPresetOptions.Unavailable} .selected=${live(input.selectedLocationIndex === input.customLocations.length + 2)} jslog=${VisualLogging.item('unavailable')}>${i18nString(UIStrings.locationUnavailable)}</option>
           </optgroup>
         </select>
         <devtools-button
           .variant=${Buttons.Button.Variant.OUTLINED}
           class="manage-locations"
-          @click=${() => Common.Revealer.reveal(customLocationsSetting)}
+          @click=${input.onManageLocations}
           aria-label=${i18nString(UIStrings.manageTheListOfLocations)}
           jslog=${VisualLogging.action('sensors.manage-locations').track({click: true})}
         >

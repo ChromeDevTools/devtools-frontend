@@ -427,9 +427,7 @@ export class LayoutPane extends UI.Widget.Widget {
           }
         }
       } catch (error) {
-        // TODO(crbug.com/1167706): Sometimes in E2E tests the layout panel is updated after a DOM node
-        // has been removed. This causes an error that a node has not been found.
-        // We can skip nodes that resulted in an error.
+        // Skip models whose DOM nodes were removed while the layout panel was updating.
         console.warn(error);
       }
     }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {execSync} from 'node:child_process';
+import {execFileSync} from 'node:child_process';
 import type * as puppeteer from 'puppeteer-core';
 
 const MAX_LOGIN_ATTEMPTS = 2;
@@ -68,11 +68,15 @@ export async function configureDevToolsPreferences(page: puppeteer.Page): Promis
 }
 
 export function getOtaPassword(email: string): string {
-  const cmd =
-      `stubby call blade:identity-testaccount-service-prod TestaccountService.ChangeTestAccountPassword 'email: "${
-          email}" generate_string_password: true' --output_json`;
+  const args = [
+    'call',
+    'blade:identity-testaccount-service-prod',
+    'TestaccountService.ChangeTestAccountPassword',
+    `email: ${JSON.stringify(email)} generate_string_password: true`,
+    '--output_json',
+  ];
   try {
-    const output = execSync(cmd, {encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe']});
+    const output = execFileSync('stubby', args, {encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe']});
     const parsed = JSON.parse(output);
     if (!parsed || typeof parsed !== 'object' || !parsed.string_password) {
       throw new Error(`Could not find string_password in stubby JSON output:\n${output}`);
@@ -82,6 +86,9 @@ export function getOtaPassword(email: string): string {
     console.error(`Failed to get password for ${email}.`);
     if (error && typeof error === 'object' && 'stderr' in error) {
       console.error(`stubby error:\n${error.stderr}`);
+    }
+    if (error instanceof Error && !error.message.includes('stubby call')) {
+      error.message = `Command failed: stubby ${args.join(' ')}\n${error.message}`;
     }
     throw error;
   }

@@ -16,6 +16,7 @@ import {
   rootPath,
 } from './devtools_paths.js';
 import { ENV, getEnvBoolean, getEnvString } from './env-utils.mjs';
+import { launchWithOtaSignIn, splitRestArgs } from './run_ota_chrome.mjs';
 
 // The default feature set.
 const DEFAULT_FEATURE_SET = new FeatureSet();
@@ -49,18 +50,19 @@ DEFAULT_FEATURE_SET.enable('DevToolsUseGcaApi');
 // The unstable feature set (can be enabled via `--enable-unstable-features`).
 const UNSTABLE_FEATURE_SET = new FeatureSet();
 
-const argv = yargs(hideBin(process.argv))
+const argv = yargs(import.meta.main ? hideBin(process.argv) : [])
   .option('browser', {
     type: 'string',
     // CfT is not downloaded in Chromium checkout
-    default: getEnvString(
-      ENV.BROWSER,
-      isInChromiumDirectory().isInChromium ? 'canary' : 'cft',
-    ),
+    default: getEnvString(ENV.BROWSER, ''),
+    defaultDescription: isInChromiumDirectory().isInChromium
+      ? '"canary"'
+      : '"cft"',
     description:
       'Launch in specified Chrome channel, CfT, chromium (checkout) or a custom binary',
     coerce(arg) {
       if (
+        !arg ||
         arg.includes(path.sep) ||
         arg.includes(path.posix.sep) ||
         ['chromium', 'cft', 'stable', 'beta', 'dev', 'canary'].includes(arg)
@@ -120,6 +122,18 @@ const argv = yargs(hideBin(process.argv))
     default: getEnvString(ENV.USER_DATA_DIR, ''),
     description: 'Launch Chrome with the given profile directory',
   })
+  .option('ota-username', {
+    type: 'string',
+    default: getEnvString(ENV.OTA_USERNAME, ''),
+    description:
+      'Test account email used to automatically sign in to Chrome on launch (requires --user-data-dir)',
+  })
+  .option('ota-password', {
+    type: 'string',
+    default: getEnvString(ENV.OTA_PASSWORD, ''),
+    description:
+      'Test account password for --ota-username (fetched via stubby on gLinux if omitted)',
+  })
   .option('verbose', {
     type: 'boolean',
     default: false,
@@ -129,16 +143,18 @@ const argv = yargs(hideBin(process.argv))
     ['unstable-features', 'enable-features', 'disable-features'],
     'Feature options:',
   )
+  .group(['ota-username', 'ota-password'], 'Authentication options:')
   .usage('scripts/tools/dt.py start [options] [urls...]')
   .help('help')
   .version(false)
   .parseSync();
 
 const {
-  browser,
   buildTarget,
   disableFeatures,
   enableFeatures,
+  otaPassword,
+  otaUsername,
   unstableFeatures,
   open,
   remoteDebuggingPort,
@@ -146,6 +162,7 @@ const {
   userDataDir,
   verbose,
 } = argv;
+const browser = resolveBrowser(argv);
 const cwd = process.cwd();
 const { env } = process;
 const runBuildPath = path.join(import.meta.dirname, 'run_build.mjs');
@@ -210,35 +227,38 @@ async function findBrowserBinary() {
   return browser;
 }
 
-// The `--remote-debugging-port` command line flag only has an effect in Chrome
-// nowadays when used with a non-default data directory, so we fail if the user
-// didn't also specify the `--user-data-dir` command line flag. In Chrome for
-// Testing the remote debugging port still works with the default profile.
-if (remoteDebuggingPort && browser !== 'cft' && !userDataDir) {
-  console.error(
-    'The `--remote-debugging-port` command line switch must be accompanied by the `--user-data-dir` switch\n' +
-      'to point to a non-standard directory. See https://developer.chrome.com/blog/remote-debugging-port for\n' +
-      'more information.\n',
-  );
-  process.exit(1);
-}
+if (import.meta.main) {
+  try {
+    validateStartOptions({
+      browser,
+      otaPassword,
+      otaUsername,
+      remoteDebuggingPort,
+      userDataDir,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`${message}\n`);
+    process.exit(1);
+  }
 
-// Perform the initial build.
-const { status } = childProcess.spawnSync(
-  process.argv[0],
-  [
-    runBuildPath,
-    `--target=${target}`,
-    ...(buildTarget ? [`--build-target=${buildTarget}`] : []),
-  ],
-  {
-    cwd,
-    env,
-    stdio: 'inherit',
-  },
-);
-if (status !== 0) {
-  process.exit(1);
+  // Perform the initial build.
+  const { status } = childProcess.spawnSync(
+    process.argv[0],
+    [
+      runBuildPath,
+      `--target=${target}`,
+      ...(buildTarget ? [`--build-target=${buildTarget}`] : []),
+    ],
+    {
+      cwd,
+      env,
+      stdio: 'inherit',
+    },
+  );
+  if (status !== 0) {
+    process.exit(1);
+  }
 }
 
 /** Launch Chrome with our custom DevTools front-end. **/
@@ -277,10 +297,10 @@ async function start() {
   args.push(...featureSet);
 
   // Custom flags for Chrome.
-  if (remoteDebuggingPort) {
+  if (remoteDebuggingPort !== undefined) {
     args.push(`--remote-debugging-port=${remoteDebuggingPort}`);
   }
-  if (userDataDir) {
+  if (userDataDir && !otaUsername) {
     args.push(`--user-data-dir=${userDataDir}`);
   }
 
@@ -295,6 +315,24 @@ async function start() {
   if (open) {
     args.push('--auto-open-devtools-for-tabs');
   }
+
+  if (otaUsername) {
+    const { extraChromeFlags, targetUrls } = splitRestArgs(argv._);
+    await launchWithOtaSignIn({
+      binary,
+      baseArgs: args,
+      env,
+      extraChromeFlags,
+      otaPassword,
+      otaUsername,
+      remoteDebuggingPort,
+      targetUrls,
+      userDataDir,
+      verbose,
+    });
+    return;
+  }
+
   const restArg = argv._.filter(arg => typeof arg === 'string');
   args.push(...restArg);
 
@@ -309,24 +347,107 @@ async function start() {
   });
 }
 
-// Run build watcher in the background to automatically rebuild
-// devtools-frontend whenever there are changes detected.
-const watcher = argv.watch ? childProcess.spawn(
-  process.argv[0],
-  [
-    runBuildPath,
-    '--skip-initial-build',
-    `--target=${target}`,
-    ...(buildTarget ? [`--build-target=${buildTarget}`] : []),
-    '--watch',
-  ],
-  { cwd, env, stdio: 'inherit' },
-) : null;
-try {
-  // Launch chrome.
-  await start();
-} finally {
-  if(watcher) {
-    watcher.kill();
+if (import.meta.main) {
+  // Run build watcher in the background to automatically rebuild
+  // devtools-frontend whenever there are changes detected.
+  const watcher = argv.watch
+    ? childProcess.spawn(
+        process.argv[0],
+        [
+          runBuildPath,
+          '--skip-initial-build',
+          `--target=${target}`,
+          ...(buildTarget ? [`--build-target=${buildTarget}`] : []),
+          '--watch',
+        ],
+        { cwd, env, stdio: 'inherit' },
+      )
+    : null;
+  try {
+    // Launch chrome.
+    await start();
+  } finally {
+    if (watcher) {
+      watcher.kill();
+    }
+  }
+}
+
+/**
+ * Resolves the effective `--browser` setting when `--browser` is not explicitly provided.
+ *
+ * @param {{browser?: string, otaUsername?: string, inChromium?: boolean}} options
+ */
+export function resolveBrowser({
+  browser,
+  otaUsername,
+  inChromium = isInChromiumDirectory().isInChromium,
+}) {
+  if (browser) {
+    return browser;
+  }
+  if (otaUsername) {
+    return 'stable';
+  }
+  return inChromium ? 'canary' : 'cft';
+}
+
+/**
+ * Validates combinations of parsed CLI options before running the build.
+ *
+ * @param {{
+ *   browser: string,
+ *   otaPassword?: string,
+ *   otaUsername?: string,
+ *   remoteDebuggingPort?: number,
+ *   userDataDir?: string,
+ * }} options
+ */
+export function validateStartOptions(options) {
+  const { browser, otaPassword, otaUsername, remoteDebuggingPort, userDataDir } =
+    options;
+
+  if (otaPassword && !otaUsername) {
+    throw new Error(
+      'The `--ota-password` command line switch requires `--ota-username`.',
+    );
+  }
+
+  if (otaUsername && browser === 'cft') {
+    throw new Error(
+      '`--ota-username` cannot be used with Chrome for Testing (`--browser=cft`), ' +
+        'which does not support Chrome account sign-in. Pass a branded Chrome channel ' +
+        '(for example `--browser=canary` or `--browser=stable`) or a custom binary.',
+    );
+  }
+
+  if (otaUsername && !userDataDir) {
+    throw new Error(
+      'The `--ota-username` command line switch must be accompanied by the `--user-data-dir` switch\n' +
+        'to point to a non-standard directory so the test account does not modify your default Chrome profile.',
+    );
+  }
+
+  if (
+    remoteDebuggingPort !== undefined &&
+    (!Number.isInteger(remoteDebuggingPort) ||
+      remoteDebuggingPort < 0 ||
+      remoteDebuggingPort > 65535)
+  ) {
+    throw new Error(
+      `Invalid \`--remote-debugging-port\` value "${remoteDebuggingPort}". Expected an integer between 0 and 65535.`,
+    );
+  }
+
+  // The `--remote-debugging-port` command line flag only has an effect in
+  // Chrome nowadays when used with a non-default data directory, so we fail if
+  // the user didn't also specify `--user-data-dir`. In Chrome for Testing the
+  // remote debugging port still works with the default profile.
+  if (remoteDebuggingPort !== undefined && browser !== 'cft' && !userDataDir) {
+    throw new Error(
+      'The `--remote-debugging-port` command line switch must be accompanied by the `--user-data-dir` switch\n' +
+        'to point to a non-standard directory. See https://developer.chrome.com/blog/remote-debugging-port for\n' +
+        'more information.',
+    );
   }
 }

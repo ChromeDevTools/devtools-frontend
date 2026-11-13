@@ -10,7 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, registerActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Comments from '../../ui/comments/comments.js';
@@ -26,9 +26,19 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     commentManager = new CommentManager.CommentManager.CommentManager();
     commentManager.setAgentAttached(true);
     overlayManager = new Comments.CommentOverlayManager.CommentOverlayManager(commentManager);
+
+    registerActions([{
+      category: UI.ActionRegistration.ActionCategory.GLOBAL,
+      actionId: 'comments.toggle-comment-mode',
+      toggleable: true,
+      async loadActionDelegate() {
+        return new PanelCommon.CommentsOverlayWidget.ActionDelegate(commentManager);
+      },
+    }]);
   });
 
   afterEach(() => {
+    UI.ActionRegistration.maybeRemoveActionExtension('comments.toggle-comment-mode');
     PanelCommon.CommentsOverlayWidget.ActionDelegate.resetForTest();
     overlayManager.clear();
     commentManager.clear();
@@ -579,14 +589,6 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
   it('updates ButtonProvider item visibility and action enabled state when agentAttached changes', () => {
     commentManager.setAgentAttached(false);
-    UI.ActionRegistration.registerActionExtension({
-      category: UI.ActionRegistration.ActionCategory.GLOBAL,
-      actionId: 'comments.toggle-comment-mode',
-      toggleable: true,
-      async loadActionDelegate() {
-        return new PanelCommon.CommentsOverlayWidget.ActionDelegate(commentManager);
-      },
-    });
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     const action = actionRegistry.getAction('comments.toggle-comment-mode');
     const provider = new PanelCommon.CommentsOverlayWidget.ButtonProvider(commentManager);

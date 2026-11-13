@@ -886,7 +886,6 @@ export default defineConfig([
             'front_end/panels/application/WebMCPView.ts',
             'front_end/panels/application/components/EndpointsGrid.ts',
             'front_end/panels/application/components/ProtocolHandlersView.ts',
-            'front_end/panels/application/preloading/components/PreloadingDetailsReportView.ts',
             'front_end/panels/changes/CombinedDiffView.ts',
             'front_end/panels/common/CommentThreadWidget.ts',
             'front_end/panels/console/ConsolePinPane.ts',

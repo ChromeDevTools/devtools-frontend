@@ -66,7 +66,7 @@ describeWithEnvironment('ObjectEventListenersSidebarPane', () => {
 
   function eventListenerTypes(pane: BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane):
       string[] {
-    const tree = pane.eventListenersView.contentElement.querySelector('devtools-tree');
+    const tree = pane.contentElement.querySelector('devtools-tree');
     if (!tree) {
       return [];
     }
@@ -76,6 +76,29 @@ describeWithEnvironment('ObjectEventListenersSidebarPane', () => {
         .filter(child => !child.hidden)
         .map(child => child.titleElement.textContent?.trim() ?? '');
   }
+
+  it('updates objects and releases the previous object group on context change and when hidden', async () => {
+    const pageTarget = createTarget();
+    const {executionContext: firstContext, globalObject: firstGlobal} = createExecutionContext(pageTarget, 'win-1');
+    const {executionContext: secondContext, globalObject: secondGlobal} = createExecutionContext(pageTarget, 'win-2');
+    const releaseSpy = sinon.spy(firstGlobal.runtimeModel(), 'releaseObjectGroup');
+
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, firstContext);
+    const pane = new BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane();
+    renderElementIntoDOM(pane);
+    await pane.updateComplete;
+
+    assert.strictEqual(pane.contentElement.getAttribute('jslog'), 'Section; context: sources.global-listeners');
+    assert.deepEqual(pane.objects, [firstGlobal]);
+
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, secondContext);
+    await pane.updateComplete;
+    sinon.assert.calledOnceWithExactly(releaseSpy, BrowserDebugger.ObjectEventListenersSidebarPane.objectGroupName);
+    assert.deepEqual(pane.objects, [secondGlobal]);
+
+    pane.detach();
+    sinon.assert.calledTwice(releaseSpy);
+  });
 
   it('renders no listeners for a service worker context and the window listeners for the main frame', async () => {
     const pageTarget = createTarget();
@@ -92,33 +115,27 @@ describeWithEnvironment('ObjectEventListenersSidebarPane', () => {
 
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, serviceWorkerContext);
     const pane = new BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane();
-    const container = document.createElement('div');
-    renderElementIntoDOM(container);
-    pane.markAsRoot();
-    pane.show(container);
+    renderElementIntoDOM(pane);
     await pane.updateComplete;
 
     sinon.assert.calledOnce(serviceWorkerContext.evaluateWithSelectedFrameFallback);
     assert.deepEqual(eventListenerTypes(pane), []);
-    assert.exists(pane.eventListenersView.contentElement.querySelector('.placeholder'));
+    assert.exists(pane.contentElement.querySelector('.placeholder'));
 
     // Selecting the main frame context shows the listeners of its window.
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, mainContext);
     await pane.updateComplete;
-    await pane.eventListenersView.updateComplete;
     sinon.assert.calledOnce(mainContext.evaluateWithSelectedFrameFallback);
     sinon.assert.calledWith(eventListenersStub, windowObject);
     assert.deepEqual(eventListenerTypes(pane), ['load']);
-    assert.isNull(pane.eventListenersView.contentElement.querySelector('.placeholder'));
+    assert.isNull(pane.contentElement.querySelector('.placeholder'));
 
     // Switching back to the service worker context clears the listeners again.
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, serviceWorkerContext);
     await pane.updateComplete;
-    await pane.eventListenersView.updateComplete;
     assert.deepEqual(eventListenerTypes(pane), []);
-    assert.exists(pane.eventListenersView.contentElement.querySelector('.placeholder'));
+    assert.exists(pane.contentElement.querySelector('.placeholder'));
 
     pane.detach();
-    container.remove();
   });
 });

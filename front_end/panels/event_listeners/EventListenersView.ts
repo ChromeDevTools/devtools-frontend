@@ -66,6 +66,7 @@ interface ViewInput {
   reveal(object: SDK.RemoteObject.RemoteObject): void;
   listeners: Map<string, ListenerEntry[]>;
   filter?: {showFramework: boolean, showPassive: boolean, showBlocking: boolean};
+  jslog?: string;
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -203,10 +204,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </ul>
     `}></devtools-tree>`}`,
          // clang-format on
-         target);
+         target, {container: {attributes: {jslog: input.jslog}}});
 };
 
 export class EventListenersView extends UI.Widget.VBox {
+  protected readonly jslog?: string;
   #objects: Array<SDK.RemoteObject.RemoteObject|null> = [];
   #filter: {showFramework: boolean, showPassive: boolean, showBlocking: boolean}|undefined;
   #view: View;
@@ -224,9 +226,13 @@ export class EventListenersView extends UI.Widget.VBox {
     if (this.#objects === val) {
       return;
     }
+    this.setObjects(val);
+    this.requestUpdate();
+  }
+
+  protected setObjects(val: Array<SDK.RemoteObject.RemoteObject|null>): void {
     this.#listeners = undefined;
     this.#objects = val;
-    this.requestUpdate();
   }
   get filter(): {showFramework: boolean, showPassive: boolean, showBlocking: boolean}|undefined {
     return this.#filter;
@@ -252,6 +258,7 @@ export class EventListenersView extends UI.Widget.VBox {
     const input: ViewInput = {
       listeners: listeners ?? new Map(),
       filter: this.#filter,
+      jslog: this.jslog,
       togglePassiveListener: (listener: SDK.DOMDebuggerModel.EventListener) => {
         void listener.togglePassive().then(() => {
           this.#listeners = undefined;

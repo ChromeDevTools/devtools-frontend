@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
@@ -529,6 +530,198 @@ describe('ConsoleViewport', () => {
       assert.isFalse(info.isAtBottom, 'After collapse: Should not be at bottom');
       assert.isFalse(info.shouldStick, 'After collapse: Should not stick to bottom');
       assert.isTrue(info.selectedVisible, 'After collapse: Selected item should be visible');
+    });
+  });
+
+  describe('DOM virtualization and lifecycle', () => {
+    const ITEM_HEIGHT = 20;
+    const SMALL_COUNT = 3;
+    const VISIBLE_COUNT = 10;
+    const MAX_ACTIVE_COUNT = 20;
+
+    interface TrackedItem extends Console.ConsoleViewport.ConsoleViewportElement {
+      wasShownSpy: sinon.SinonSpy;
+      willHideSpy: sinon.SinonSpy;
+    }
+
+    function createTrackedItems(count: number, startIndex = 0): TrackedItem[] {
+      const items: TrackedItem[] = [];
+      for (let i = 0; i < count; ++i) {
+        const el = document.createElement('div');
+        el.textContent = `Message #${startIndex + i}`;
+        el.style.height = `${ITEM_HEIGHT}px`;
+        Object.defineProperty(el, 'offsetHeight', {value: ITEM_HEIGHT, configurable: true});
+        const wasShownSpy = sinon.spy();
+        const willHideSpy = sinon.spy();
+        items.push({
+          willHide: willHideSpy,
+          wasShown: wasShownSpy,
+          element: () => el,
+          focusLastChildOrSelf: () => {},
+          wasShownSpy,
+          willHideSpy,
+        });
+      }
+      return items;
+    }
+
+    function setTrackedItems(items: TrackedItem[]): void {
+      mockProvider.minimumRowHeightValue = ITEM_HEIGHT;
+      mockProvider.setItems(Array(items.length).fill(ITEM_HEIGHT));
+      mockProvider.setItemElements(items);
+      viewport.invalidate();
+    }
+
+    it('renders and shows all items when count is smaller than visible viewport', () => {
+      const items = createTrackedItems(SMALL_COUNT);
+      setTrackedItems(items);
+      viewport.forceScrollItemToBeFirst(0);
+
+      assert.strictEqual(viewport.contentElement().childElementCount, SMALL_COUNT);
+      assert.isTrue(items.every(item => item.element().isConnected));
+      assert.strictEqual(viewport.firstVisibleIndex(), 0);
+      assert.strictEqual(viewport.lastVisibleIndex(), SMALL_COUNT - 1);
+      for (const item of items) {
+        sinon.assert.calledOnce(item.wasShownSpy);
+        sinon.assert.notCalled(item.willHideSpy);
+      }
+    });
+
+    it('renders extra items beyond visible count when within active window', () => {
+      const items = createTrackedItems(VISIBLE_COUNT + 1);
+      setTrackedItems(items);
+      viewport.forceScrollItemToBeFirst(0);
+
+      assert.strictEqual(viewport.contentElement().childElementCount, VISIBLE_COUNT + 1);
+      assert.isTrue(items.every(item => item.element().isConnected));
+      assert.strictEqual(viewport.firstVisibleIndex(), 0);
+      assert.strictEqual(viewport.lastVisibleIndex(), VISIBLE_COUNT - 1);
+    });
+
+    it('renders up to max active items in the DOM when scrolled to top', () => {
+      const items = createTrackedItems(MAX_ACTIVE_COUNT);
+      setTrackedItems(items);
+      viewport.forceScrollItemToBeFirst(0);
+
+      assert.strictEqual(viewport.contentElement().childElementCount, MAX_ACTIVE_COUNT);
+      assert.isTrue(items.every(item => item.element().isConnected));
+      assert.strictEqual(viewport.firstVisibleIndex(), 0);
+      assert.strictEqual(viewport.lastVisibleIndex(), VISIBLE_COUNT - 1);
+    });
+
+    it('caps rendered DOM items at max active count when total items exceed it', () => {
+      const items = createTrackedItems(MAX_ACTIVE_COUNT + SMALL_COUNT);
+      setTrackedItems(items);
+      viewport.forceScrollItemToBeFirst(0);
+
+      assert.strictEqual(viewport.contentElement().childElementCount, MAX_ACTIVE_COUNT);
+      assert.isTrue(items.slice(0, MAX_ACTIVE_COUNT).every(item => item.element().isConnected));
+      assert.isTrue(items.slice(MAX_ACTIVE_COUNT).every(item => !item.element().isConnected));
+      assert.strictEqual(viewport.firstVisibleIndex(), 0);
+      assert.strictEqual(viewport.lastVisibleIndex(), VISIBLE_COUNT - 1);
+    });
+
+    it('keeps all items in DOM without show or hide calls when scrolling within partial active window', () => {
+      // With 14 items (280px total) in a 200px viewport, scrolling to the bottom sets scrollTop to 80px,
+      // which stays within the 100px active buffer above the visible viewport.
+      const partialActiveCount = 14;
+      const items = createTrackedItems(partialActiveCount);
+      setTrackedItems(items);
+      viewport.forceScrollItemToBeFirst(0);
+      for (const item of items) {
+        item.wasShownSpy.resetHistory();
+        item.willHideSpy.resetHistory();
+      }
+
+      scrollTo(viewport.element.scrollHeight - viewport.element.clientHeight);
+
+      for (const item of items) {
+        sinon.assert.notCalled(item.wasShownSpy);
+        sinon.assert.notCalled(item.willHideSpy);
+      }
+      assert.strictEqual(viewport.contentElement().childElementCount, partialActiveCount);
+      assert.isTrue(items.every(item => item.element().isConnected));
+      assert.strictEqual(viewport.firstVisibleIndex(), 4);
+      assert.strictEqual(viewport.lastVisibleIndex(), 13);
+    });
+
+    it('adds bottom items and hides top items when scrolling beyond active window', () => {
+      const items = createTrackedItems(MAX_ACTIVE_COUNT + 1);
+      setTrackedItems(items);
+      viewport.forceScrollItemToBeFirst(0);
+      assert.isFalse(items[MAX_ACTIVE_COUNT].element().isConnected);
+      for (const item of items) {
+        item.wasShownSpy.resetHistory();
+        item.willHideSpy.resetHistory();
+      }
+
+      scrollTo(viewport.element.scrollHeight - viewport.element.clientHeight - 3);
+
+      // At scrollTop = 217px, the 100px active buffer above starts at 118px (index 5), evicting items 0..4.
+      for (const item of items.slice(0, 5)) {
+        sinon.assert.calledOnce(item.willHideSpy);
+        sinon.assert.notCalled(item.wasShownSpy);
+        assert.isFalse(item.element().isConnected);
+      }
+      for (const item of items.slice(5, MAX_ACTIVE_COUNT)) {
+        sinon.assert.notCalled(item.wasShownSpy);
+        sinon.assert.notCalled(item.willHideSpy);
+        assert.isTrue(item.element().isConnected);
+      }
+      sinon.assert.calledOnce(items[MAX_ACTIVE_COUNT].wasShownSpy);
+      sinon.assert.notCalled(items[MAX_ACTIVE_COUNT].willHideSpy);
+      assert.isTrue(items[MAX_ACTIVE_COUNT].element().isConnected);
+    });
+
+    it('does not reconnect or re-show existing DOM elements when appending items', () => {
+      const firstBatch = createTrackedItems(SMALL_COUNT, 0);
+      setTrackedItems(firstBatch);
+
+      const addedNodes: Node[] = [];
+      const removedNodes: Node[] = [];
+      const observer = new MutationObserver(records => {
+        for (const record of records) {
+          addedNodes.push(...record.addedNodes);
+          removedNodes.push(...record.removedNodes);
+        }
+      });
+      observer.observe(viewport.contentElement(), {childList: true});
+      try {
+        const secondBatch = createTrackedItems(SMALL_COUNT, SMALL_COUNT);
+        const allItems = [...firstBatch, ...secondBatch];
+        setTrackedItems(allItems);
+        observer.takeRecords().forEach(record => {
+          addedNodes.push(...record.addedNodes);
+          removedNodes.push(...record.removedNodes);
+        });
+
+        for (const item of allItems) {
+          sinon.assert.calledOnce(item.wasShownSpy);
+          sinon.assert.notCalled(item.willHideSpy);
+        }
+        assert.isEmpty(removedNodes);
+        assert.deepEqual(addedNodes, secondBatch.map(item => item.element()));
+      } finally {
+        observer.disconnect();
+      }
+    });
+
+    it('reorders existing DOM elements without firing wasShown or willHide', () => {
+      const items = createTrackedItems(SMALL_COUNT);
+      setTrackedItems(items);
+      for (const item of items) {
+        item.wasShownSpy.resetHistory();
+        item.willHideSpy.resetHistory();
+      }
+
+      const reordered = [items[1], items[0], items[2]];
+      setTrackedItems(reordered);
+
+      for (const item of items) {
+        sinon.assert.notCalled(item.wasShownSpy);
+        sinon.assert.notCalled(item.willHideSpy);
+      }
+      assert.deepEqual(Array.from(viewport.contentElement().children), reordered.map(item => item.element()));
     });
   });
 });

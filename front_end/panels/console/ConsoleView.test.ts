@@ -282,6 +282,31 @@ describeWithEnvironment('ConsoleView', () => {
     sinon.assert.calledOnceWithExactly(copyText, 'message 2');
   });
 
+  it('collapses consecutive repeating messages into a single rendered viewport item', async () => {
+    universe.settings.resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor).set(true);
+    const target = universe.createTarget();
+    universe.targetManager.setScopeTarget(target);
+    renderElementIntoDOM(consoleView, {height: 200});
+
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assert.exists(consoleModel);
+    const wasShownSpy = sinon.spy(Console.ConsoleViewMessage.ConsoleViewMessage.prototype, 'wasShown');
+    const willHideSpy = sinon.spy(Console.ConsoleViewMessage.ConsoleViewMessage.prototype, 'willHide');
+
+    for (let i = 0; i < 10; ++i) {
+      consoleModel.addMessage(createConsoleMessage(target, 'Repeating message'));
+    }
+    await consoleView.getScheduledRefreshPromiseForTest();
+
+    assert.strictEqual(consoleView.itemCount(), 1);
+    sinon.assert.calledOnce(wasShownSpy);
+    sinon.assert.notCalled(willHideSpy);
+    const message = consoleView.itemElement(0);
+    assert.instanceOf(message, Console.ConsoleViewMessage.ConsoleViewMessage);
+    assert.strictEqual(message.repeatCount(), 10);
+    assert.isTrue(message.element().isConnected);
+  });
+
   it('does not offer to copy a message when no message was right-clicked', () => {
     const target = createTarget();
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);

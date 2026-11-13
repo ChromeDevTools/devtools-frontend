@@ -34,7 +34,6 @@ export class DevToolsLocale {
   private constructor(data: DevToolsLocaleData) {
     this.lookupClosestDevToolsLocale = data.lookupClosestDevToolsLocale;
 
-    // TODO(crbug.com/1163928): Use constant once setting actually exists.
     if (data.settingLanguage === 'browserLanguage') {
       this.locale = data.navigatorLanguage || 'en-US';
     } else {

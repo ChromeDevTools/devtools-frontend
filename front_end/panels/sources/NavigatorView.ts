@@ -1293,7 +1293,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.#selectDefaultTreeNode();
   }
 
-  // TODO(einbinder) remove this code after crbug.com/964075 is fixed
   #selectDefaultTreeNode(): void {
     const children = this.rootNode.children();
     if (children.length && !this.#selectedNode) {

@@ -444,10 +444,9 @@ export interface Timing {
   send: number;
   wait: number;
   receive: number;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // Custom HAR 1.2 fields use leading underscores.
   // eslint-disable-next-line @typescript-eslint/naming-convention
   _blocked_queueing: number;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
   _blocked_proxy?: number;
 

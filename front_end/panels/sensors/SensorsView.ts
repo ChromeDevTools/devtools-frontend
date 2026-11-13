@@ -206,7 +206,14 @@ interface LocationViewInput {
   onLocationKeyDown: (event: KeyboardEvent) => void;
 }
 
-interface ViewInput extends LocationViewInput {
+interface OrientationViewInput {
+  orientation: SDK.EmulationModel.DeviceOrientation;
+  orientationOverrideEnabled: boolean;
+  selectedOrientation: string;
+  animateOrientation: boolean;
+}
+
+interface ViewInput extends LocationViewInput, OrientationViewInput {
   locationSection: TemplateResult;
   orientationSection: TemplateResult;
   touchSetting: Common.Settings.Setting<unknown>;
@@ -331,10 +338,17 @@ export class SensorsView extends UI.Widget.VBox {
       onLocationChange: this.#onLocationChange.bind(this),
       onLocationKeyDown: this.#onLocationKeyDown.bind(this),
     };
+    const orientationInput: OrientationViewInput = {
+      orientation: this.deviceOrientation,
+      orientationOverrideEnabled: this.deviceOrientationOverrideEnabled,
+      selectedOrientation: this.#selectedOrientation,
+      animateOrientation: this.#animateOrientation,
+    };
     const input: ViewInput = {
       ...locationInput,
+      ...orientationInput,
       locationSection: this.#renderLocationSection(locationInput),
-      orientationSection: this.#renderDeviceOrientationSection(),
+      orientationSection: this.#renderDeviceOrientationSection(orientationInput),
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
       hardwareConcurrencyCheckbox: this.#hardwareConcurrencyCheckbox,
@@ -613,7 +627,7 @@ export class SensorsView extends UI.Widget.VBox {
     }
   }
 
-  #renderDeviceOrientationSection(): TemplateResult {
+  #renderDeviceOrientationSection(input: OrientationViewInput): TemplateResult {
     const orientationOffOption = {
       title: i18nString(UIStrings.off),
       orientation: NonPresetOptions.NoOverride,
@@ -651,19 +665,19 @@ export class SensorsView extends UI.Widget.VBox {
               @change=${this.orientationSelectChanged.bind(this)}
               jslog=${VisualLogging.dropDown().track({change: true})}
             >
-              <option value=${orientationOffOption.orientation} .selected=${live(this.#selectedOrientation === orientationOffOption.orientation)} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
-              <option value=${customOrientationOption.orientation} .selected=${live(this.#selectedOrientation === customOrientationOption.orientation)} jslog=${VisualLogging.item('custom')}>${customOrientationOption.title}</option>
+              <option value=${orientationOffOption.orientation} .selected=${live(input.selectedOrientation === orientationOffOption.orientation)} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
+              <option value=${customOrientationOption.orientation} .selected=${live(input.selectedOrientation === customOrientationOption.orientation)} jslog=${VisualLogging.item('custom')}>${customOrientationOption.title}</option>
               ${orientationGroups.map(group => html`
                 <optgroup label=${group.title}>
                   ${group.value.map(preset => html`
-                    <option value=${preset.orientation} .selected=${live(this.#selectedOrientation === preset.orientation)} jslog=${VisualLogging.item(preset.jslogContext)}>${preset.title}</option>
+                    <option value=${preset.orientation} .selected=${live(input.selectedOrientation === preset.orientation)} jslog=${VisualLogging.item(preset.jslogContext)}>${preset.title}</option>
                   `)}
                 </optgroup>
               `)}
             </select>
             <fieldset
               class="device-orientation-override-section"
-              ?disabled=${!this.deviceOrientationOverrideEnabled}
+              ?disabled=${!input.orientationOverrideEnabled}
             >
               <div class="orientation-inputs-cell">
                 <div class="orientation-axis-input-container">
@@ -675,7 +689,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="359.9999"
                     step="any"
                     required
-                    .value=${roundAngle(this.deviceOrientation.alpha)}
+                    .value=${roundAngle(input.orientation.alpha)}
                     name="alpha"
                     ${Directives.ref((el: Element | undefined) => { if (el) { this.alphaElement = el as HTMLInputElement; } })}
                     @change=${this.#onOrientationChange.bind(this)}
@@ -693,7 +707,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="179.9999"
                     step="any"
                     required
-                    .value=${roundAngle(this.deviceOrientation.beta)}
+                    .value=${roundAngle(input.orientation.beta)}
                     name="beta"
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
@@ -710,7 +724,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="89.9999"
                     step="any"
                     required
-                    .value=${roundAngle(this.deviceOrientation.gamma)}
+                    .value=${roundAngle(input.orientation.gamma)}
                     name="gamma"
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
@@ -732,8 +746,8 @@ export class SensorsView extends UI.Widget.VBox {
             </fieldset>
           </div>
           <div
-            class="orientation-stage ${classMap({disabled: !this.deviceOrientationOverrideEnabled, 'is-animating': this.#animateOrientation})}"
-            title=${this.deviceOrientationOverrideEnabled ? i18nString(UIStrings.shiftdragHorizontallyToRotate) :
+            class="orientation-stage ${classMap({disabled: !input.orientationOverrideEnabled, 'is-animating': input.animateOrientation})}"
+            title=${input.orientationOverrideEnabled ? i18nString(UIStrings.shiftdragHorizontallyToRotate) :
                                                             i18nString(UIStrings.enableOrientationToRotate)}
             jslog=${VisualLogging.preview().track({drag: true})}
             ${Directives.ref((el: Element | undefined) => {
@@ -745,7 +759,7 @@ export class SensorsView extends UI.Widget.VBox {
               }
             })}
           >
-            <div class="orientation-layer" style=${styleMap({transform: `rotateY(${this.deviceOrientation.alpha}deg) rotateX(${- this.deviceOrientation.beta}deg) rotateZ(${this.deviceOrientation.gamma}deg)`})}>
+            <div class="orientation-layer" style=${styleMap({transform: `rotateY(${input.orientation.alpha}deg) rotateX(${- input.orientation.beta}deg) rotateZ(${input.orientation.gamma}deg)`})}>
               <section
                 class="orientation-box orientation-element"
               >

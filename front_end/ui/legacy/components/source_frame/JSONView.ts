@@ -109,6 +109,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     }
     this.#parsedJSON = parsedJSON;
     this.objectTree = null;
+    this.#autoExpandCanceled = false;
     this.onSearchCanceled();
     this.requestUpdate();
   }
@@ -196,11 +197,79 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     });
     if (!this.startCollapsed) {
       this.objectTree.expanded = true;
+      void this.#autoExpandInitial(this.objectTree);
     }
     this.objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
                                      this.#onChildrenChanged, this);
     this.objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED,
                                      this.#onChildrenChanged, this);
+  }
+
+  static readonly #AUTO_EXPAND_ROW_BUDGET = 30;
+  static readonly #AUTO_EXPAND_MAX_DEPTH = 4;
+  #autoExpandCanceled = false;
+
+  async #autoExpandInitial(tree: ObjectUI.ObjectPropertiesSection.ObjectTree): Promise<void> {
+    await tree.populateChildrenIfNeeded();
+    if (this.objectTree !== tree || !tree.expanded || this.#autoExpandCanceled) {
+      return;
+    }
+
+    const rootChildren = Array.from(tree.treeNodeChildren());
+    let visibleRows = Math.max(rootChildren.length, tree.arrayLength);
+    let frontier = rootChildren.filter(n => n.hasChildren && n.canExpandRecursively);
+
+    for (let depth = 1; depth < JSONView.#AUTO_EXPAND_MAX_DEPTH && frontier.length > 0; depth++) {
+      // Rule 1: always unwrap a single-child wrapper chain (e.g. {data: {user: ...}}).
+      if (frontier.length === 1 && visibleRows <= JSONView.#AUTO_EXPAND_ROW_BUDGET) {
+        const only = frontier[0];
+        await only.populateChildrenIfNeeded();
+        if (this.objectTree !== tree || !tree.expanded || this.#autoExpandCanceled) {
+          return;
+        }
+        const onlyChildren = Array.from(only.treeNodeChildren());
+        const added = Math.max(onlyChildren.length, only.arrayLength);
+        if (added > 1 && visibleRows + added > JSONView.#AUTO_EXPAND_ROW_BUDGET) {
+          break;
+        }
+        only.expanded = true;
+        visibleRows += added;
+        frontier = onlyChildren.filter(n => n.hasChildren && n.canExpandRecursively);
+        continue;
+      }
+
+      // Rule 2: level-atomic expansion — expand every node at this depth or none.
+      let addedRows = 0;
+      for (const node of frontier) {
+        await node.populateChildrenIfNeeded();
+        if (this.objectTree !== tree || !tree.expanded || this.#autoExpandCanceled) {
+          return;
+        }
+        const nodeChildren = Array.from(node.treeNodeChildren());
+        addedRows += Math.max(nodeChildren.length, node.arrayLength);
+        if (visibleRows + addedRows > JSONView.#AUTO_EXPAND_ROW_BUDGET) {
+          break;
+        }
+      }
+      if (visibleRows + addedRows > JSONView.#AUTO_EXPAND_ROW_BUDGET) {
+        break;
+      }
+
+      const nextFrontier: ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase[] = [];
+      for (const node of frontier) {
+        node.expanded = true;
+        for (const child of node.treeNodeChildren()) {
+          if (child.hasChildren && child.canExpandRecursively) {
+            nextFrontier.push(child);
+          }
+        }
+      }
+      visibleRows += addedRows;
+      frontier = nextFrontier;
+    }
+
+    tree.dispatchEventToListeners(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED);
+    this.requestUpdate();
   }
 
   #onChildrenChanged(): void {
@@ -263,6 +332,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   async performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean,
                       jumpBackwards?: boolean): Promise<void> {
     this.initialize();
+    this.#autoExpandCanceled = true;
     this.onSearchCanceled();
     const searchRegex = searchConfig.toSearchRegex(true).regex;
     if (!this.objectTree) {

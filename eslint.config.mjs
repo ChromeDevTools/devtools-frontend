@@ -932,7 +932,6 @@ export default defineConfig([
             'front_end/panels/timeline/TimelinePanel.ts',
             'front_end/panels/timeline/TimelineSelectorStatsView.ts',
             'front_end/panels/timeline/TimelineTreeView.ts',
-            'front_end/panels/timeline/components/LayoutShiftDetails.ts',
             'front_end/panels/webauthn/WebauthnPane.ts',
             'front_end/ui/components/dialogs/FreDialog.ts',
             'front_end/ui/components/text_editor/AiCodeGenerationUpgradeDialog.ts',

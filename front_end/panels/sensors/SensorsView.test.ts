@@ -304,6 +304,17 @@ describeWithEnvironment('SensorsView', () => {
 
       assert.strictEqual(errorMessage('locale'), '');
     });
+
+    it('keeps a value that is being typed when the view updates', async () => {
+      await selectLocation('Berlin');
+      // Typed, but not applied yet.
+      locationInput('latitude').value = '12';
+
+      view.requestUpdate();
+      await settled();
+
+      assert.strictEqual(locationInput('latitude').value, '12');
+    });
   });
 
   describe('Location input events', () => {
@@ -535,7 +546,8 @@ describeWithEnvironment('SensorsView', () => {
       betaInput.dispatchEvent(new Event('change'));
       await settled();
 
-      assert.deepEqual(orientationInputValues(), ['0', '45', '0']);
+      // The value that was not applied stays in its input, but is not emulated.
+      assert.deepEqual(orientationInputValues(), ['999', '45', '0']);
       assert.deepEqual(orientationOverrides.at(-1), {alpha: 0, beta: 45, gamma: 0});
     });
 
@@ -551,15 +563,15 @@ describeWithEnvironment('SensorsView', () => {
       assert.deepEqual(orientationOverrides.at(-1), {alpha: 0, beta: 90, gamma: 0});
     });
 
-    it('resets inputs that hold a value which was not applied', async () => {
+    it('keeps a value that is being typed when the view updates', async () => {
       await selectOrientation('Portrait');
-      // Out of range, so the value is not applied and the orientation stays the same as after the reset.
-      query<HTMLInputElement>('#beta-input').value = '999';
+      // Typed, but not applied yet.
+      query<HTMLInputElement>('#beta-input').value = '45';
 
-      query('.orientation-reset-button').click();
+      view.requestUpdate();
       await settled();
 
-      assert.deepEqual(orientationInputValues(), ['0', '90', '0']);
+      assert.deepEqual(orientationInputValues(), ['0', '45', '0']);
     });
 
     it('clears the override but keeps the values when "Off" is selected', async () => {

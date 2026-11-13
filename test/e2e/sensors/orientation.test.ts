@@ -25,12 +25,9 @@ async function assertValidationFails(
   assert.strictEqual(await getInputFieldValue(inputElement), value.toString());
   await devToolsPage.tabForward();
 
+  // The value is not applied and stays in the input. No clean up is needed to call this function
+  // again: focusing an input selects its content, so typing replaces the previous value.
   assert.isTrue(await inputElement.evaluate(element => element.matches(':invalid')));
-
-  // Clean up so that this function can be called again.
-  const resetButton = await devToolsPage.waitFor('.orientation-reset-button');
-  await resetButton.click();
-  await devToolsPage.waitForNone(':invalid');
 }
 
 describe('Orientation emulation on Sensors panel', () => {

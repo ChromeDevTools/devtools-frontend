@@ -655,7 +655,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="359.9999"
                     step="any"
                     required
-                    .value=${live(roundAngle(this.deviceOrientation.alpha))}
+                    .value=${roundAngle(this.deviceOrientation.alpha)}
                     name="alpha"
                     ${Directives.ref((el: Element | undefined) => { if (el) { this.alphaElement = el as HTMLInputElement; } })}
                     @change=${this.#onOrientationChange.bind(this)}
@@ -673,7 +673,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="179.9999"
                     step="any"
                     required
-                    .value=${live(roundAngle(this.deviceOrientation.beta))}
+                    .value=${roundAngle(this.deviceOrientation.beta)}
                     name="beta"
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}
@@ -690,7 +690,7 @@ export class SensorsView extends UI.Widget.VBox {
                     max="89.9999"
                     step="any"
                     required
-                    .value=${live(roundAngle(this.deviceOrientation.gamma))}
+                    .value=${roundAngle(this.deviceOrientation.gamma)}
                     name="gamma"
                     @change=${this.#onOrientationChange.bind(this)}
                     @keydown=${this.#onOrientationKeyDown.bind(this)}

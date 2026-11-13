@@ -320,9 +320,9 @@ export class SensorsView extends UI.Widget.VBox {
     this.#view(input, undefined, this.contentElement);
   }
 
-  #renderLocationSection(location: SDK.EmulationModel.Location,
-                         customLocationsSetting: Common.Settings.Setting<LocationDescription[]>): TemplateResult {
-    const customLocations = customLocationsSetting.get();
+  /** @returns the index of the selected option of the location select. */
+  #selectedLocationIndex(customLocations: LocationDescription[]): number {
+    const location = this.#location;
     let selectedIndex = 0;
     if (this.#locationOverrideEnabled) {
       if (location.unavailable) {
@@ -340,6 +340,13 @@ export class SensorsView extends UI.Widget.VBox {
         }
       }
     }
+    return selectedIndex;
+  }
+
+  #renderLocationSection(location: SDK.EmulationModel.Location,
+                         customLocationsSetting: Common.Settings.Setting<LocationDescription[]>): TemplateResult {
+    const customLocations = customLocationsSetting.get();
+    const selectedIndex = this.#selectedLocationIndex(customLocations);
 
     const cmdOrCtrl = Host.Platform.isMac() ? '\u2318' : 'Ctrl';
     const modifierKeyMessage = i18nString(UIStrings.adjustWithMousewheelOrUpdownKeys, {PH1: cmdOrCtrl});

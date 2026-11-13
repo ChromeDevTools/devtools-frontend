@@ -879,7 +879,6 @@ export default defineConfig([
             'front_end/panels/application/DeviceBoundSessionsView.ts',
             'front_end/panels/application/IndexedDBViews.ts',
             'front_end/panels/application/KeyValueStorageItemsView.ts',
-            'front_end/panels/application/ReportingApiView.ts',
             'front_end/panels/application/ResourcesPanel.ts',
             'front_end/panels/application/ServiceWorkerCacheViews.ts',
             'front_end/panels/application/ServiceWorkersView.ts',

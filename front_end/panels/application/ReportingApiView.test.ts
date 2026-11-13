@@ -243,7 +243,7 @@ describeWithEnvironment('ReportingApiView', () => {
       });
 
       const container = document.createElement('div');
-      renderElementIntoDOM(container);
+      renderElementIntoDOM(container, {includeCommonStyles: true});
       const widget = new UI.Widget.Widget();
       widget.markAsRoot();
       widget.show(container);

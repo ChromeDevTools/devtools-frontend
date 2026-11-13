@@ -265,7 +265,6 @@ export class Automapping {
         this.#sourceCodeToProcessingPromiseMap.delete(networkSourceCode);
         return;
       }
-      // TODO(lushnikov): remove this check once there's a single uiSourceCode per url. @see crbug.com/670180
       if (this.#sourceCodeToAutoMappingStatusMap.has(status.network) ||
           this.#sourceCodeToAutoMappingStatusMap.has(status.fileSystem)) {
         this.#sourceCodeToProcessingPromiseMap.delete(networkSourceCode);

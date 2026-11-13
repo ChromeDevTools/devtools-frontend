@@ -1742,13 +1742,6 @@ export class TrackingHeapSnapshotProfileType extends TrackingHeapSnapshotProfile
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static override readonly TypeId = 'HEAP-RECORD';
-  // TODO(crbug.com/1228674): Remove event strings once they are no longer used in web tests.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly HeapStatsUpdate = 'HeapStatsUpdate';
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly TrackingStarted = 'TrackingStarted';
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly TrackingStopped = 'TrackingStopped';
 }
 
 export const enum TrackingHeapSnapshotProfileTypeEvents {

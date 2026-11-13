@@ -918,7 +918,6 @@ export default defineConfig([
             'front_end/panels/profiler/HeapProfileView.ts',
             'front_end/panels/profiler/ProfileLauncherView.ts',
             'front_end/panels/profiler/ProfilesPanel.ts',
-            'front_end/panels/screencast/ScreencastApp.ts',
             'front_end/panels/settings/AISettingsTab.ts',
             'front_end/panels/settings/BackendLinkingSettingsTab.ts',
             'front_end/panels/settings/emulation/DevicesSettingsTab.ts',

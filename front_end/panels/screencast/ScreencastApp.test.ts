@@ -26,6 +26,9 @@ describeWithEnvironment('ScreencastApp', () => {
   });
 
   it('can start casting', async () => {
+    // presentUI() attaches the root view to document.body. Production installs the common
+    // styles on the document; the test container provides them and is cleaned up after each test.
+    renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true});
     screencastApp = new Screencast.ScreencastApp.ScreencastApp(new TestUniverse());
     screencastApp.presentUI(document);
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});

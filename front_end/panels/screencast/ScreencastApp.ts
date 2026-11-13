@@ -35,7 +35,6 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${UI.inspectorCommonStyles}</style>
     <devtools-split-view
       direction="column"
       sidebar-position="second"

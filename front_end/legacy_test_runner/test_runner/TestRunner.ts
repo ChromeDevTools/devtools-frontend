@@ -63,12 +63,6 @@ self['onerror'] = (message, source, lineno, colno, error) => {
 })();
 _printDevToolsConsole();
 
-// TODO(crbug.com/1032477): Re-enable once test timeouts are handled in Chromium
-// setTimeout(() => {
-//   addResult('TEST TIMED OUT!');
-//   completeTest();
-// }, 6000);
-
 /** @type {!Array<string>} */
 let _results = [];
 

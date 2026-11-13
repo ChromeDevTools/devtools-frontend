@@ -28,7 +28,6 @@ devtools_ui_module("source_frame") {
     "PreviewFactory.ts",
     "ResourceSourceFrame.ts",
     "SourceFrame.ts",
-    "StreamingContentHexView.ts",
     "XMLView.ts",
   ]
 
@@ -43,7 +42,6 @@ devtools_ui_module("source_frame") {
     "../../../../entrypoints/formatter_actions:bundle",
     "../../../../models/formatter:bundle",
     "../../../../models/workspace:bundle",
-    "../../../../panels/linear_memory_inspector/components:bundle",
     "../../../../third_party/codemirror.next:bundle",
     "../../../../ui/components/highlighting:bundle",
     "../../../../ui/components/text_editor:bundle",
@@ -108,7 +106,6 @@ devtools_ui_module("unittests") {
     "JSONView.test.ts",
     "ResourceSourceFrame.test.ts",
     "SourceFrame.test.ts",
-    "StreamingContentHexView.test.ts",
     "XMLView.test.ts",
   ]
 

@@ -7,7 +7,6 @@ import type * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
-import {StreamingContentHexView} from './StreamingContentHexView.js';
 
 export class BinaryResourceViewFactory {
   private streamingContent: TextUtils.StreamingContentData.StreamingContentData;
@@ -39,10 +38,6 @@ export class BinaryResourceViewFactory {
   createBase64View(element?: HTMLElement): ResourceSourceFrame {
     return new StreamingResourceSourceFrame(this.streamingContent, () => this.base64(), this.contentUrl,
                                             this.resourceType, {lineNumbers: false, lineWrapping: true}, element);
-  }
-
-  createHexView(element?: HTMLElement): StreamingContentHexView {
-    return new StreamingContentHexView(this.streamingContent, element);
   }
 
   createUtf8View(element?: HTMLElement): ResourceSourceFrame {

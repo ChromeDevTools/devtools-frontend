@@ -13,8 +13,9 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as LinearMemoryInspectorComponents from '../linear_memory_inspector/components/components.js';
 
 import * as Network from './network.js';
 
@@ -213,16 +214,57 @@ describeWithEnvironment('BinaryResourceView', () => {
     });
 
     it('carries the reading position of the active view over to the new view type', async () => {
-      const activeView = {getPositionPercentage: () => 0.42} as unknown as
-          SourceFrame.StreamingContentHexView.StreamingContentHexView;
+      const activeView = sinon.createStubInstance(SourceFrame.ResourceSourceFrame.ResourceSourceFrame);
+      activeView.getPositionPercentage.returns(0.42);
       const {view, widget} = await createView({activeView});
       assert.strictEqual(view.input.binaryViewType, 'hex');
       assert.strictEqual(view.input.activePositionPercentage, 0);
 
-      view.input.binaryViewTypeChanged({target: {value: 'base64'}} as unknown as Event);
-      const input = await view.nextInput;
+      view.input.onAddressChanged(5);
+      let input = await view.nextInput;
+      assert.strictEqual(input.address, 5);
+      assert.closeTo(input.activePositionPercentage, 5 / 11, 0.001);
+
+      const select = document.createElement('select');
+      for (const type of ['base64', 'hex']) {
+        const option = document.createElement('option');
+        option.value = type;
+        select.appendChild(option);
+      }
+      select.value = 'base64';
+      const base64Event = new Event('change');
+      Object.defineProperty(base64Event, 'target', {value: select});
+      view.input.binaryViewTypeChanged(base64Event);
+      input = await view.nextInput;
       assert.strictEqual(input.binaryViewType, 'base64');
+      assert.closeTo(input.activePositionPercentage, 5 / 11, 0.001);
+
+      select.value = 'hex';
+      const hexEvent = new Event('change');
+      Object.defineProperty(hexEvent, 'target', {value: select});
+      view.input.binaryViewTypeChanged(hexEvent);
+      input = await view.nextInput;
+      assert.strictEqual(input.binaryViewType, 'hex');
       assert.strictEqual(input.activePositionPercentage, 0.42);
+      assert.strictEqual(input.address, Math.floor(11 * 0.42));
+
+      widget.detach();
+    });
+
+    it('updates memory when StreamingContentData receives a new chunk', async () => {
+      const contentData = TextUtils.StreamingContentData.StreamingContentData.from(
+          new TextUtils.ContentData.ContentData(btoa('abc'), true, 'application/octet-stream'));
+      const view = createViewFunctionStub(Network.BinaryResourceView.BinaryResourceView);
+      const widget = new Network.BinaryResourceView.BinaryResourceView(
+          contentData, urlString`http://example.com`, Common.ResourceType.resourceTypes.XHR, undefined, view);
+      widget.markAsRoot();
+      renderElementIntoDOM(widget);
+      const initialInput = await view.nextInput;
+      assert.deepEqual(Array.from(initialInput.memory), [97, 98, 99]);
+
+      contentData.addChunk(btoa('def'));
+      const updatedInput = await view.nextInput;
+      assert.deepEqual(Array.from(updatedInput.memory), [97, 98, 99, 100, 101, 102]);
 
       widget.detach();
     });
@@ -247,10 +289,11 @@ describeWithEnvironment('BinaryResourceView Position Syncing', () => {
 
     const currentViewWidget = view.element.querySelector('devtools-widget');
     assert.isOk(currentViewWidget);
-    const oldWidget = UI.Widget.Widget.get(currentViewWidget) as unknown as {setPositionPercentage(p: number): void};
+    const oldWidget = UI.Widget.Widget.get(currentViewWidget);
+    assert.instanceOf(oldWidget, LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector);
 
-    // Fake the position percentage
-    oldWidget.setPositionPercentage(0.42);
+    // Fake the position percentage (42% of 1100 bytes = 462)
+    oldWidget.address = 462;
 
     const combobox = view.element.querySelector('select');
     assert.isOk(combobox);

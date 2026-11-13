@@ -8,12 +8,13 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as TextUtils from '../../core/text_utils/text_utils.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as LinearMemoryInspectorComponents from '../linear_memory_inspector/components/components.js';
 
 import binaryResourceViewStyles from './binaryResourceView.css.js';
 
@@ -67,23 +68,23 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/BinaryResourceView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-type BinaryView =
-    SourceFrame.ResourceSourceFrame.ResourceSourceFrame|SourceFrame.StreamingContentHexView.StreamingContentHexView;
-
 export interface ViewInput {
   binaryViewObjects: BinaryViewObject[];
   content: TextUtils.StreamingContentData.StreamingContentData;
   contentUrl: Platform.DevToolsPath.UrlString;
   resourceType: Common.ResourceType.ResourceType;
+  memory: Uint8Array<ArrayBuffer>;
+  address: number;
   activePositionPercentage: number;
   binaryViewType: string;
   copiedText: string;
   copiedTextFadeout: boolean;
+  onAddressChanged: (address: number) => void;
   binaryViewTypeChanged: (event: Event) => void;
   copySelectedViewToClipboard: () => void;
 }
 export interface ViewOutput {
-  activeView?: BinaryView;
+  activeView?: SourceFrame.ResourceSourceFrame.ResourceSourceFrame;
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
@@ -93,19 +94,25 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     <style>${binaryResourceViewStyles}</style>
     <div class="vbox flex-auto">
       ${input.binaryViewObjects.map(
-        obj => obj.type === input.binaryViewType ? html`
+        obj => obj.type !== input.binaryViewType ? nothing : obj.type === 'hex' ? html`
+          ${widget(LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector, {
+            memory: input.memory.length > 0 ? input.memory : new Uint8Array([0]),
+            address: input.address,
+            memoryOffset: 0,
+            outerMemoryLength: input.memory.length > 0 ? input.memory.length : 1,
+            hideValueInspector: true,
+            onAddressChanged: input.onAddressChanged,
+          })}
+        ` : html`
           <devtools-widget
             class="widget vbox flex-auto"
             ${widget((e: HTMLElement) => {
               const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(
                   input.content, input.contentUrl, input.resourceType);
-              let view: BinaryView;
+              let view: SourceFrame.ResourceSourceFrame.ResourceSourceFrame;
               switch (obj.type) {
                 case 'base64':
                   view = factory.createBase64View(e);
-                  break;
-                case 'hex':
-                  view = factory.createHexView(e);
                   break;
                 case 'utf8':
                   view = factory.createUtf8View(e);
@@ -118,7 +125,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               return view;
             })}>
           </devtools-widget>
-        ` : nothing,
+        `,
       )}
       <devtools-toolbar class="binary-view-toolbar">
           <select class="toolbar-item" title=${i18nString(UIStrings.binaryViewType)}
@@ -156,6 +163,8 @@ export class BinaryResourceView extends UI.Widget.VBox {
   private readonly resourceType: Common.ResourceType.ResourceType;
   private readonly binaryViewObjects: BinaryViewObject[];
   private binaryViewTypeSetting: Common.Settings.Setting<string>;
+  #memory: Uint8Array<ArrayBuffer> = new Uint8Array();
+  #address = 0;
   #copiedText = '';
   #copiedTextFadeout = false;
   #fadeoutTimeoutId: number|null = null;
@@ -190,6 +199,30 @@ export class BinaryResourceView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
+    this.#updateMemoryFromContentData();
+    this.streamingContent.addEventListener(TextUtils.StreamingContentData.Events.CHUNK_ADDED,
+                                           this.#updateMemoryFromContentData, this);
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.streamingContent.removeEventListener(TextUtils.StreamingContentData.Events.CHUNK_ADDED,
+                                              this.#updateMemoryFromContentData, this);
+  }
+
+  #updateMemoryFromContentData(): void {
+    this.#memory = Common.Base64.decode(this.streamingContent.content().base64);
+    this.#address =
+        Math.min(Math.floor(this.#memory.length * this.activePositionPercentage), Math.max(0, this.#memory.length - 1));
+    this.requestUpdate();
+  }
+
+  #onAddressChanged(address: number): void {
+    if (this.#address === address) {
+      return;
+    }
+    this.#address = address;
+    this.activePositionPercentage = this.#memory.length === 0 ? 0 : this.#address / this.#memory.length;
     this.requestUpdate();
   }
 
@@ -223,15 +256,21 @@ export class BinaryResourceView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
+    if (this.binaryViewTypeSetting.get() === 'hex') {
+      this.#viewOutput.activeView = undefined;
+    }
     const viewInput: ViewInput = {
       activePositionPercentage: this.activePositionPercentage,
       content: this.streamingContent,
       contentUrl: this.contentUrl,
       resourceType: this.resourceType,
+      memory: this.#memory,
+      address: this.#address,
       binaryViewObjects: this.binaryViewObjects,
       binaryViewType: this.binaryViewTypeSetting.get(),
       copiedText: this.#copiedText,
       copiedTextFadeout: this.#copiedTextFadeout,
+      onAddressChanged: this.#onAddressChanged.bind(this),
       binaryViewTypeChanged: this.binaryViewTypeChanged.bind(this),
       copySelectedViewToClipboard: this.copySelectedViewToClipboard.bind(this),
     };
@@ -245,10 +284,13 @@ export class BinaryResourceView extends UI.Widget.VBox {
     }
 
     // Carry the reading position of the outgoing view over to the new one.
-    const activeView = this.#viewOutput.activeView;
-    if (activeView) {
-      this.activePositionPercentage = activeView.getPositionPercentage();
+    if (this.binaryViewTypeSetting.get() === 'hex') {
+      this.activePositionPercentage = this.#memory.length === 0 ? 0 : this.#address / this.#memory.length;
+    } else if (this.#viewOutput.activeView) {
+      this.activePositionPercentage = this.#viewOutput.activeView.getPositionPercentage();
     }
+    this.#address =
+        Math.min(Math.floor(this.#memory.length * this.activePositionPercentage), Math.max(0, this.#memory.length - 1));
 
     this.binaryViewTypeSetting.set(newViewType);
     this.requestUpdate();

@@ -32,7 +32,6 @@ describeWithEnvironment('BinaryResourceViewFactory', () => {
     assert.strictEqual(
         await getResourceText(factory.createBase64View()),
         'c2VuZGluZyB0aGlzIHV0Zi04IHN0cmluZyBhcyBhIGJpbmFyeSBtZXNzYWdlLi4u');
-    assert.instanceOf(factory.createHexView(), SourceFrame.StreamingContentHexView.StreamingContentHexView);
     assert.strictEqual(
         await getResourceText(factory.createUtf8View()), 'sending this utf-8 string as a binary message...');
   });

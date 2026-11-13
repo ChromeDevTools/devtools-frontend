@@ -49,11 +49,7 @@ describeWithEnvironment('ReportsGrid', () => {
     let target!: HTMLElement;
 
     beforeEach(async () => {
-      const container = document.createElement('div');
-      renderElementIntoDOM(container);
-      const widget = new UI.Widget.Widget();
-      widget.markAsRoot();
-      widget.show(container);
+      const widget = renderElementIntoDOM(new UI.Widget.Widget(), {includeCommonStyles: true});
       target = widget.element;
       target.style.display = 'flex';
       target.style.width = '780px';

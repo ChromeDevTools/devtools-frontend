@@ -61,7 +61,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
   // clang-format off
   render(html`
     <style>${reportsGridStyles}</style>
-    <style>${UI.inspectorCommonStyles}</style>
     <div class="reporting-container" jslog=${VisualLogging.section('reports')}>
       <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
       ${input.reports.length > 0 ? html`

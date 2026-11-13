@@ -696,12 +696,6 @@
       // crbug.com/538260158
       name: "AnnotationSpaceForMultiCol",
       status: "experimental",
-      depends_on: ["AnnotationSpaceOnStart"],
-    },
-    {
-      // crbug.com/445727139
-      name: "AnnotationSpaceOnStart",
-      status: "stable",
     },
     {
       name: "AnonymousIframe",
@@ -823,7 +817,7 @@
       // Shared MessagePort between AudioWorklet and AudioWorkletGlobalScope.
       // https://chromestatus.com/feature/5079784523694080
       name: "AudioWorkletSharedPort",
-      status: "experimental",
+      status: "stable",
     },
     {
       // https://drafts.csswg.org/css-scroll-snap
@@ -1119,6 +1113,11 @@
       status: "test",
     },
     {
+      // Enabled by default; kept as a killswitch to be removed.
+      name: "Canvas2dPathOpsWithoutBitmap",
+      status: "stable",
+    },
+    {
       // https://github.com/WICG/html-in-canvas/blob/main/README.md
       // Note the API name has changed to `drawElementImage`.
       name: "CanvasDrawElement",
@@ -1249,6 +1248,13 @@
       status: "stable",
     },
     {
+      // Makes anchor name matching case-sensitive in quirks mode.
+      // Ships in M160; the kill switch can be removed in M162.
+      // https://chromestatus.com/feature/5085237991309312
+      name: "CaseSensitiveAnchorMatching",
+      status: "stable",
+    },
+    {
       // Kill switch for changes to RenderFrameMetadataObserverImpl in connection with Engagement
       // Signals. See https://crrev.com/c/4544201 and https://crbug.com/1458640.
       name: "CCTNewRFMPushBehavior",
@@ -1295,6 +1301,14 @@
       // behaviors are triggered. It should not affect behavior.
       // This flag shipped in M157 and can be removed in M160.
       name: "CleanUpActivationBehavior",
+      status: "stable",
+    },
+    {
+      // Killswitch for preventing cross-document relatedTarget on boundary
+      // events.
+      // https://issues.chromium.org/issues/574379564
+      name: "ClearCrossDocumentRelatedTarget",
+      depends_on: ["ClearCrossOriginRelatedTarget"],
       status: "stable",
     },
     {
@@ -1749,17 +1763,6 @@
       status: "test",
     },
     {
-      // In the cases where it is impossible or impractical to determine the
-      // measure of the “0” glyph, it must be assumed to be 0.5em wide by 1em
-      // tall. Thus, the ch unit falls back to 0.5em in the general case, and to
-      // 1em when it would be typeset upright (i.e. writing-mode is vertical-rl or
-      // vertical-lr and text-orientation is upright).
-      // https://drafts.csswg.org/css-values-4/#ch
-      // See crbug.com/416145497 for more details.
-      name: "CSSChUnitSpecCompliantFallback",
-      status: "stable",
-    },
-    {
       name: "CSSColorTypedOM",
       status: "experimental",
     },
@@ -1777,7 +1780,7 @@
     {
       // https://drafts.csswg.org/css-borders-4/#corner-shaping
       name: "CSSCornersShorthand",
-      status: "experimental",
+      status: "stable",
     },
     {
       // https://drafts.csswg.org/css-lists-3/#counter-reset
@@ -1789,6 +1792,11 @@
       // The symbols() function for defining an anonymous counter style inline.
       // https://drafts.csswg.org/css-counter-styles-3/#symbols-function
       name: "CSSCounterStyleSymbolsFunction",
+      status: "stable",
+    },
+    {
+      // https://crbug.com/583907061
+      name: "CSSCQHiddenScrollableFix",
       status: "stable",
     },
     {
@@ -1841,10 +1849,6 @@
       // per CSSWG resolution. See https://github.com/w3c/csswg-drafts/issues/5846.
       name: "CSSFontFamilySerialization",
       status: "experimental",
-    },
-    {
-      name: "CSSFontSizeAdjust",
-      status: "stable",
     },
     {
       // https://drafts.csswg.org/css-mixins-1/#function-rule
@@ -2402,6 +2406,14 @@
       name: "Database",
     },
     {
+      // Killswitch. When enabled, a data: URL document in a subframe is a
+      // secure context iff its ancestors are, per the HTML Standard's
+      // "secure context" algorithm. See
+      // https://html.spec.whatwg.org/C/#secure-context.
+      name: "DataUrlSubframeSecureContext",
+      status: "stable",
+    },
+    {
       // Killswitch for https://crbug.com/40622827
       name: "DateTimeFieldTypeWithoutSelection",
       status: "stable",
@@ -2611,6 +2623,10 @@
       // https://issues.chromium.org/issues/523737685
       // Enabled in 151, safe to remove in 153.
       name: "DisableFormControlChangeEventDuringMutation",
+      status: "stable",
+    },
+    {
+      name: "DisallowSpecialSchemeOnNonSpecialUrl",
       status: "stable",
     },
     {
@@ -2994,10 +3010,6 @@
       status: "experimental",
     },
     {
-      name: "ExposeCSSFontFeatureValuesRule",
-      status: "stable",
-    },
-    {
       name: "ExposeRenderTimeNonTaoDelayedImage",
     },
     {
@@ -3332,11 +3344,6 @@
       status: "stable",
     },
     {
-      // crbug.com/553136688 and crbug.com/553252820
-      name: "FindIgnoreSuggestionFix",
-      status: "stable",
-    },
-    {
       // Enables asymmetric diacritic matching in Find-in-Page so base
       // characters match diacritic variants while explicit diacritics only
       // match that diacritic (https://crbug.com/40518349).
@@ -3442,11 +3449,6 @@
       name: "FontFamilyStyleMatchingCTMigration",
     },
     {
-      // crbug.com/40398871
-      name: "FontFeatureSettingsDescriptor",
-      status: "stable",
-    },
-    {
       name: "FontFormatAvar2",
       status: "stable",
     },
@@ -3456,7 +3458,8 @@
       status: "stable",
     },
     {
-      name: "FontMatchAliasesAsLastResort",
+      // https://crbug.com/40083285
+      name: "FontNonNullPrimaryFont",
       status: "stable",
     },
     {
@@ -3522,6 +3525,11 @@
       name: "FractionalScrollOffsetsForWebAPI",
     },
     {
+      // Kill switch for https://crbug.com/581341594.
+      name: "FragmentedBoxVisualOverflow",
+      status: "stable",
+    },
+    {
       // Generate layout fragments for out-of-flow positioned elements as
       // children of their actual containing block - ALSO when inside block
       // fragmentation, such as multicol. See crbug.com/40267498
@@ -3558,14 +3566,6 @@
     },
     {
       name: "GamepadWindowEventHandlers",
-      status: "stable",
-    },
-    {
-      // When enabled, the drag image overlay for an element will be created
-      // before the "dragstart" event is fired. This fixes a bug that made
-      // drags not start if the "dragstart" event caused a layout shift that
-      // made the mouse hit test miss the drag source.
-      name: "GenerateDragOverlayBeforeDragStart",
       status: "stable",
     },
     {
@@ -3756,6 +3756,12 @@
       status: "stable",
     },
     {
+      // Kill switch. Hit tests on a local root that can't enter child frames
+      // (such as elementFromPoint()) skip the lifecycle update of child frames.
+      name: "HitTestSkipChildFrameLifecycle",
+      status: "stable",
+    },
+    {
       name: "HrefTranslate",
       depends_on: ["TranslateService"],
       origin_trial_feature_name: "HrefTranslate",
@@ -3888,10 +3894,6 @@
       status: "stable",
     },
     {
-      name: "IgnoreLetterSpacingInCursiveScripts",
-      status: "stable",
-    },
-    {
       name: "ImageDataPixelFormat",
       status: "stable",
     },
@@ -3990,6 +3992,11 @@
       // https://github.com/w3c/csswg-drafts/issues/13502
       name: "InputClientRectWithoutInlinePadding",
       status: "stable",
+    },
+    {
+      // Enables the defaultindeterminate attribute on <input type="checkbox">.
+      // https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/DefaultIndeterminate/explainer.md
+      name: "InputDefaultIndeterminateAttribute",
     },
     {
       // Prevents running DefaultEventHandler on disabled input elements.
@@ -4341,11 +4348,12 @@
       status: "stable",
     },
     {
-      name: "MacCharacterFallbackCache",
+      name: "MacDisableCtrlHomeEnd",
       status: "stable",
     },
     {
-      name: "MacDisableCtrlHomeEnd",
+      // Kill switch for https://crbug.com/582409909 on macOS.
+      name: "MacFontFallbackPreferContentLocale",
       status: "stable",
     },
     {
@@ -4846,8 +4854,10 @@
     {
       // iframes send pagehide/unload/visibilitychange when removed.
       // This not spec-compliant, but might have web-compat consequences.
-      // This flag omits firing those events on element removal.
+      // This flag omits firing those events on element removal when the
+      // subframe shares an agent with the document the node is removed from.
       name: "OmitSubframeDetachmentEventsOnRemoval",
+      status: "test",
     },
     {
       name: "OnDeviceWebSpeechAvailable",
@@ -5311,13 +5321,6 @@
       // https://crbug.com/440387014
       name: "Prerender2CrossOriginIframes",
       origin_trial_feature_name: "Prerender2CrossOriginIframes",
-      status: "stable",
-    },
-    {
-      // Used to allow prerender activation by form submission.
-      // See https://crbug.com/346555939.
-      name: "PrerenderActivationByFormSubmission",
-      origin_trial_feature_name: "PrerenderActivationByFormSubmission",
       status: "stable",
     },
     {
@@ -5800,11 +5803,27 @@
       status: "stable",
     },
     {
+      // Lets the outer line breaker, not the sub-line breakers for ruby base
+      // and annotations, decide when to apply `overflow-wrap` emergency
+      // breaking, so a ruby wraps at an earlier break opportunity first.
+      // https://crbug.com/580840306
+      name: "RubyOverflowWrapDeferToOuterLine",
+      status: "stable",
+    },
+    {
       // Allows a soft wrap after a preserved space (e.g. `white-space:
       // pre-wrap`) that is followed by a <ruby>, by ignoring the bidi
       // controls of ruby columns when checking break opportunities.
       // https://crbug.com/580840306
       name: "RubySoftWrapAfterPreservedSpace",
+      status: "stable",
+    },
+    {
+      // Starts the sub-line breakers for ruby base and annotations with the
+      // style of the <ruby> or <rt> instead of the container's line style, so
+      // that properties such as `overflow-wrap` and `white-space` set on them
+      // apply. https://crbug.com/580840306
+      name: "RubySubLineUsesRubyStyle",
       status: "stable",
     },
     {
@@ -6377,6 +6396,12 @@
       status: "stable",
     },
     {
+      // Kill switch for https://crbug.com/583144621: skips serializing table
+      // part elements when they don't actually contain any selected content.
+      name: "SkipSerializingUnselectedTablePartElements",
+      status: "stable",
+    },
+    {
       // crbug.com/517761566
       name: "SkipStaleUndoStepsInIdleSpellCheck",
       status: "stable",
@@ -6703,6 +6728,10 @@
       status: "stable",
     },
     {
+      name: "SvgImageDeferShutdown",
+      status: "stable",
+    },
+    {
       name: "SvgImageNonUniformScalingFix",
       status: "stable",
     },
@@ -6726,6 +6755,12 @@
     },
     {
       name: "SvgNewZoom",
+    },
+    {
+      // Kill switch for clipping nested SVG viewports with `overflow: auto`.
+      // https://crbug.com/491070386
+      name: "SvgOverflowAutoClipsViewport",
+      status: "stable",
     },
     {
       // Structured access to SVG path segments via getPathData/setPathData.
@@ -7950,8 +7985,7 @@
       // Note: enabling this without setting WebTransportCongestionControl to
       // either BBRv1 or BBRv2 will produce poor bandwidth estimates.
       name: "WebTransportStats",
-      status: "experimental",
-      base_feature: "none",
+      status: "stable",
     },
     {
       // Fetches the WebUI code cache from the resource bundle asynchronously
@@ -8149,8 +8183,11 @@
       // RuntimeEnabledFeature status unless the base::Feature is overridden,
       // in which case both sides follow the override. This keeps the renderer
       // and browser consistent, so that the browser can reject split requests
-      // from a renderer when the base::Feature is disabled.
+      // from a renderer when the base::Feature is disabled. For the same
+      // reason, OriginTrialContext::CanEnableTrialFromName() refuses to enable
+      // the origin trial when the base::Feature is disabled.
       name: "WindowOpenSplitTab",
+      origin_trial_feature_name: "WindowOpenSplitTab",
       status: "experimental",
       base_feature_status: "enabled",
       copied_from_base_feature_if: "overridden",

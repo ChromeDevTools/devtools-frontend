@@ -275,8 +275,10 @@
         // Field is stored as an enum and has a initial/getter/setter/resetter.
         // If include_paths is empty, we would also generate the corresponding
         // enum definition in ComputedStyleConstants.h.
-        // "keyword" properties are required to be parsed in
-        // CSSParserFastPaths.
+        // Parsing for most "keyword" properties is generated
+        // by build/scripts/core/css/make_css_property_keywords.py
+        // using build/scripts/core/css/templates/css_property_keywords.cc.tmpl,
+        // but some exceptional cases are parsed in CSSParserFastPaths.
         // Use "keyword_custom" if a custom ParseSingleValue implementation is
         // necessary.
         "keyword",
@@ -469,9 +471,11 @@
         "Image"
       ],
     },
-    // If typedom_types include "Keyword", these keywords are the ones reified
-    // and accepted as CSSKeywordValue objects when set on StylePropertyMap.
-    // Defaults to the same as 'keywords'.
+    // If typedom_types include "Keyword", these keywords are the ones
+    // accepted as CSSKeywordValue objects when set on StylePropertyMap.
+    // Defaults to the same as 'keywords'. runtime_enabled_keywords are included
+    // in either case. This does not change the parser's keyword lookup or
+    // determine how parsed values are reified.
     typedom_keywords: {
     },
 
@@ -1598,7 +1602,6 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
       inherited: true,
-      runtime_flag: "CSSFontSizeAdjust",
       font: true,
       name_for_methods: "SizeAdjust",
       converter: "ConvertFontSizeAdjust",
@@ -2047,6 +2050,7 @@
     {
       name: "-webkit-writing-mode",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      keywords: ["horizontal-tb", "vertical-rl", "vertical-lr"],
       inherited: true,
       type_name: "WritingMode",
       priority: 1,
@@ -3523,8 +3527,11 @@
         "table-row", "table-column-group", "table-column", "table-cell",
         "table-caption", "-webkit-box", "-webkit-inline-box", "flex",
         "inline-flex", "grid", "inline-grid", "contents", "flow-root", "none",
-        "flow", "math", "ruby", "ruby-text", "grid-lanes", "inline-grid-lanes"
+        "flow", "math", "ruby", "ruby-text"
       ],
+      runtime_enabled_keywords: {
+        CSSGridLanesLayout: ["grid-lanes", "inline-grid-lanes"],
+      },
       // `grid-lanes` and `inline-grid-lanes` are experimental keywords and
       // currently behind the CSSGridLanesLayout flag. Since they are not
       // fully supported yet, they are not being exposed to devtools.
@@ -5281,6 +5288,7 @@
     },
     {
       name: "page-orientation",
+      keywords: ["upright", "rotate-left", "rotate-right"],
       is_descriptor: true,
       field_template: "primitive",
       field_group: "*",
@@ -7096,6 +7104,7 @@
     {
       name: "app-region",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      keywords: ["drag", "no-drag", "none"],
       surrogate_for: "window-drag",
       devtools_keywords: ["none", "move", "no-drag"],
     },
@@ -7470,7 +7479,7 @@
       includes_currentcolor: true,
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationColorDataList",
-      invalidate: ["paint"],
+      invalidate: ["paint", "gap-decorations"],
     },
     {
       name: "row-rule-color",
@@ -7487,7 +7496,7 @@
       includes_currentcolor: true,
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationColorDataList",
-      invalidate: ["paint"],
+      invalidate: ["paint", "gap-decorations"],
     },
     {
       name: "column-rule-style",
@@ -7561,7 +7570,7 @@
       converter: "ConvertGapDecorationWidthDataList",
       keywords: ["thin", "medium", "thick"],
       typedom_types: ["Keyword", "Length"],
-      invalidate: ["paint"],
+      invalidate: ["paint", "gap-decorations"],
       affected_by_zoom: true,
     },
     {
@@ -7578,7 +7587,7 @@
       converter: "ConvertGapDecorationWidthDataList",
       keywords: ["thin", "medium", "thick"],
       typedom_types: ["Keyword", "Length"],
-      invalidate: ["paint"],
+      invalidate: ["paint", "gap-decorations"],
       affected_by_zoom: true,
     },
     {

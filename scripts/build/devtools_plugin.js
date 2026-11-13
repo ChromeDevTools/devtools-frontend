@@ -380,3 +380,20 @@ export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles, bundleAll
     };
   };
 }
+
+/**
+ * Formats a Ninja depfile mapping `outfile` to the inputs recorded in an
+ * esbuild metafile, with forward-slash paths relative to `cwd`.
+ *
+ * @param {string} outfile
+ * @param {Record<string, unknown>} metafileInputs
+ * @param {string} cwd
+ */
+export function formatDepfile(outfile, metafileInputs, cwd) {
+  const escapeDepfilePath = /** @param {string} file */ file => file.replaceAll('\\', '/').replaceAll(' ', '\\ ');
+  const inputs = Object.keys(metafileInputs).map(inputFile => {
+    const absPath = path.isAbsolute(inputFile) ? inputFile : path.resolve(cwd, inputFile);
+    return escapeDepfilePath(path.relative(cwd, absPath));
+  });
+  return `${escapeDepfilePath(outfile)}: ${inputs.join(' ')}\n`;
+}

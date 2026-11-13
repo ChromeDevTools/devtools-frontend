@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import sinon from 'sinon';
 
@@ -13,7 +14,9 @@ import {
   createRelativeExternalsResolver,
   devtoolsPlugin,
   esbuildPlugin,
+  formatDepfile,
 } from '../devtools_plugin.js';
+import {writeIfChanged} from '../ninja/write-if-changed.js';
 
 describe('devtools_plugin can compute paths with', () => {
   const devtoolsRoot = path.resolve(import.meta.dirname, '../../..');
@@ -581,6 +584,61 @@ describe('createRelativeExternalsResolver', () => {
       );
     } finally {
       stub.restore();
+    }
+  });
+});
+
+describe('formatDepfile', () => {
+  const cwd = path.resolve('/workspace/devtools/out/Default');
+
+  it('formats outfile with relative forward-slash input paths', () => {
+    const inputs = {
+      [path.join(cwd, '../../src/entry.ts')]: {bytes: 10},
+      'gen/generated.ts': {bytes: 20},
+    };
+    assert.strictEqual(
+        formatDepfile('gen/bundle.js', inputs, cwd),
+        'gen/bundle.js: ../../src/entry.ts gen/generated.ts\n',
+    );
+  });
+
+  it('normalizes backslashes and escapes spaces in output and input paths', () => {
+    const inputs = {
+      [path.join(cwd, '../../src/my dir/entry.ts')]: {bytes: 10},
+    };
+    assert.strictEqual(
+        formatDepfile('gen\\my dir\\bundle.js', inputs, cwd),
+        'gen/my\\ dir/bundle.js: ../../src/my\\ dir/entry.ts\n',
+    );
+  });
+});
+
+describe('writeIfChanged', () => {
+  it('creates parent directories and preserves mtime when content is unchanged', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'devtools-write-if-changed-'));
+    try {
+      const textFile = path.join(tempDir, 'nested', 'out.txt');
+      const binFile = path.join(tempDir, 'nested', 'out.bin');
+
+      await writeIfChanged(textFile, 'hello');
+      await writeIfChanged(binFile, new Uint8Array([1, 2, 3]));
+
+      const past = new Date(Date.now() - 10_000);
+      fs.utimesSync(textFile, past, past);
+      fs.utimesSync(binFile, past, past);
+      const textMtimeBefore = fs.statSync(textFile).mtimeMs;
+      const binMtimeBefore = fs.statSync(binFile).mtimeMs;
+
+      await writeIfChanged(textFile, 'hello');
+      await writeIfChanged(binFile, new Uint8Array([1, 2, 3]));
+
+      assert.strictEqual(fs.statSync(textFile).mtimeMs, textMtimeBefore);
+      assert.strictEqual(fs.statSync(binFile).mtimeMs, binMtimeBefore);
+
+      await writeIfChanged(textFile, 'updated');
+      assert.strictEqual(fs.readFileSync(textFile, 'utf-8'), 'updated');
+    } finally {
+      fs.rmSync(tempDir, {recursive: true, force: true});
     }
   });
 });

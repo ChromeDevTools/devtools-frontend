@@ -179,6 +179,14 @@ template("bundle") {
 
     outputs = [ invoker.output_file_location ]
 
+    if (defined(invoker.metafile)) {
+      args += [
+        "--metafile",
+        rebase_path(invoker.metafile, root_build_dir),
+      ]
+      outputs += [ invoker.metafile ]
+    }
+
     forward_variables_from(invoker,
                            [
                              "data",

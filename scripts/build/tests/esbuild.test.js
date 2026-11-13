@@ -77,4 +77,9 @@ describe('esbuild.js argument validation', () => {
       assert.include(stderr, '--node-require-shim requires --platform=node and --format=esm');
     });
   }
+
+  it('accepts --metafile', async () => {
+    const stderr = await expectEsbuildFailure(['--metafile=out.meta.json'], {bundleAll: false});
+    assert.include(stderr, 'Missing required --entrypoints-file argument');
+  });
 });

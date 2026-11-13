@@ -11,7 +11,13 @@ import {parseArgs} from 'node:util';
 
 import {devtoolsRootPath} from '../devtools_paths.js';
 
-import {createNodeModulesCheck, createRelativeExternalsResolver, esbuildPlugin} from './devtools_plugin.js';
+import {
+  createNodeModulesCheck,
+  createRelativeExternalsResolver,
+  esbuildPlugin,
+  formatDepfile,
+} from './devtools_plugin.js';
+import {writeIfChanged} from './ninja/write-if-changed.js';
 
 // Disable goroutine preemption to avoid random hangs
 // See crbug.com/478754070
@@ -72,6 +78,9 @@ const {values} = parseArgs({
     depfile: {
       type: 'string',
     },
+    metafile: {
+      type: 'string',
+    },
     'entrypoints-file': {
       type: 'string',
     },
@@ -103,6 +112,7 @@ const {
   'root-dir': rootDir,
   'root-gen-dir': rootGenDir,
   depfile,
+  metafile,
   'entrypoints-file': entrypointsFile,
   external,
   'node-require-shim': nodeRequireShim,
@@ -263,19 +273,16 @@ try {
     plugins: [plugin],
     sourcemap,
     minify,
-    metafile: Boolean(depfile),
+    metafile: Boolean(depfile || metafile),
   });
 
   if (depfile && result.metafile) {
-    const cwd = process.cwd();
-    const inputs = Object.keys(result.metafile.inputs).map(inputFile => {
-      const absPath = path.isAbsolute(inputFile) ? inputFile : path.resolve(cwd, inputFile);
-      return path.relative(cwd, absPath).replaceAll('\\', '/');
-    });
-
-    const normalizedOutfile = outfile.replaceAll('\\', '/');
-    const depfileContent = `${normalizedOutfile}: ${inputs.join(' ')}\n`;
+    const depfileContent = formatDepfile(outfile, result.metafile.inputs, process.cwd());
     await fs.promises.writeFile(depfile, depfileContent, 'utf-8');
+  }
+
+  if (metafile && result.metafile) {
+    await writeIfChanged(metafile, JSON.stringify(result.metafile));
   }
 
   if (maxSize !== undefined) {

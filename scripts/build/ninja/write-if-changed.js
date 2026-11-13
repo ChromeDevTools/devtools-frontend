@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 
 /**
  * Only write content to a file if the content is different that what it previously contained.
@@ -37,5 +38,6 @@ export async function writeIfChanged(generatedFileLocation, newContents) {
     }
   }
 
+  await fs.mkdir(path.dirname(generatedFileLocation), {recursive: true});
   await fs.writeFile(generatedFileLocation, newContents);
 }

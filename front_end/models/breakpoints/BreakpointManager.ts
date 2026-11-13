@@ -1077,10 +1077,8 @@ export class ModelBreakpoint {
     const maybeRescheduleUpdate =
         serverError && this.#debuggerModel.debuggerEnabled() && !this.#debuggerModel.isReadyToPause();
     if (!breakpointIds.length && maybeRescheduleUpdate) {
-      // TODO(crbug.com/1229541): This is a quickfix to prevent #breakpoints from
-      // disappearing if the Debugger is actually not enabled
-      // yet. This quickfix should be removed as soon as we have a solution
-      // to correctly synchronize the front-end with the inspector back-end.
+      // Prevent #breakpoints from disappearing if the Debugger is not
+      // ready to pause yet.
       return DebuggerUpdateResult.PENDING;
     }
 

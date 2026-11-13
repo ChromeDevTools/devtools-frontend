@@ -52,7 +52,7 @@ describe('TimelineTreeView', function() {
   describe('EventsTimelineTreeView', function() {
     afterEach(() => {
       // One of the unit tests changes this, so ensure it gets set back after the test.
-      Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.hidden = false;
+      Trace.Styles.getCategoryStyles().scripting.hidden = false;
     });
 
     it('Creates a tree from nestable async events', function() {
@@ -115,7 +115,7 @@ describe('TimelineTreeView', function() {
       });
       assert.deepEqual(topLevelChildren, ['second measure', 'third measure']);
       // Now make the scripting category hidden and tell the treeview to re-render.
-      Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.hidden = true;
+      Trace.Styles.getCategoryStyles().scripting.hidden = true;
       eventTreeView.refreshTree();
       tree = eventTreeView.buildTree();
       const newTopLevelChildren = Array.from(tree.children().values(), childNode => {

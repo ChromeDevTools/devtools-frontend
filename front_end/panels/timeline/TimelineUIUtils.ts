@@ -1954,12 +1954,6 @@ export class TimelineUIUtils {
     return new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes());
   }
 
-  // Included only for layout tests.
-  // TODO(crbug.com/1386091): Fix/port layout tests and remove.
-  static categories(): Trace.Styles.CategoryPalette {
-    return Trace.Styles.getCategoryStyles();
-  }
-
   static generatePieChart(aggregatedStats: TimeRangeCategoryStats, selfCategory?: Trace.Styles.TimelineCategory,
                           selfTime?: Trace.Types.Timing.Micro): Element {
     let total = 0;

@@ -201,6 +201,9 @@ interface LocationViewInput {
   timezoneError: string;
   localeError: string;
   onManageLocations: () => void;
+  onLocationSelectChange: (event: Event) => void;
+  onLocationChange: (event: Event) => void;
+  onLocationKeyDown: (event: KeyboardEvent) => void;
 }
 
 interface ViewInput extends LocationViewInput {
@@ -324,6 +327,9 @@ export class SensorsView extends UI.Widget.VBox {
       timezoneError: this.#timezoneError,
       localeError: this.#localeError,
       onManageLocations: () => Common.Revealer.reveal(this.#customLocationsSetting),
+      onLocationSelectChange: this.#locationSelectChanged.bind(this),
+      onLocationChange: this.#onLocationChange.bind(this),
+      onLocationKeyDown: this.#onLocationKeyDown.bind(this),
     };
     const input: ViewInput = {
       ...locationInput,
@@ -374,7 +380,7 @@ export class SensorsView extends UI.Widget.VBox {
       <div class="geo-fields">
         <select
           id="location-select"
-          @change=${this.#locationSelectChanged.bind(this)}
+          @change=${input.onLocationSelectChange}
           jslog=${VisualLogging.dropDown().track({change: true})}
         >
           <option value=${NonPresetOptions.NoOverride} .selected=${live(input.selectedLocationIndex === 0)} jslog=${VisualLogging.item('no-override')}>${i18nString(UIStrings.noOverride)}</option>
@@ -415,8 +421,8 @@ export class SensorsView extends UI.Widget.VBox {
               title=${modifierKeyMessage}
               jslog=${VisualLogging.textField('latitude').track({change: true})}
               ${Directives.ref((el: Element | undefined) => { if (el) { this.latitudeInput = el as HTMLInputElement; } })}
-              @change=${this.#onLocationChange.bind(this)}
-              @keydown=${this.#onLocationKeyDown.bind(this)}
+              @change=${input.onLocationChange}
+              @keydown=${input.onLocationKeyDown}
               @focus=${selectInputContent}
             >
             <label class="latlong-title" for="latitude-input">${i18nString(UIStrings.latitude)}</label>
@@ -434,8 +440,8 @@ export class SensorsView extends UI.Widget.VBox {
               name="longitude"
               title=${modifierKeyMessage}
               jslog=${VisualLogging.textField('longitude').track({change: true})}
-              @change=${this.#onLocationChange.bind(this)}
-              @keydown=${this.#onLocationKeyDown.bind(this)}
+              @change=${input.onLocationChange}
+              @keydown=${input.onLocationKeyDown}
               @focus=${selectInputContent}
             >
             <label class="latlong-title" for="longitude-input">${i18nString(UIStrings.longitude)}</label>
@@ -448,8 +454,8 @@ export class SensorsView extends UI.Widget.VBox {
               .value=${input.location.timezoneId}
               name="timezone"
               jslog=${VisualLogging.textField('timezone').track({change: true})}
-              @change=${this.#onLocationChange.bind(this)}
-              @keydown=${this.#onLocationKeyDown.bind(this)}
+              @change=${input.onLocationChange}
+              @keydown=${input.onLocationKeyDown}
               @focus=${selectInputContent}
             >
             <label class="timezone-title" for="timezone-input">${i18nString(UIStrings.timezoneId)}</label>
@@ -463,8 +469,8 @@ export class SensorsView extends UI.Widget.VBox {
               .value=${input.location.locale}
               name="locale"
               jslog=${VisualLogging.textField('locale').track({change: true})}
-              @change=${this.#onLocationChange.bind(this)}
-              @keydown=${this.#onLocationKeyDown.bind(this)}
+              @change=${input.onLocationChange}
+              @keydown=${input.onLocationKeyDown}
               @focus=${selectInputContent}
             >
             <label class="locale-title" for="locale-input">${i18nString(UIStrings.locale)}</label>
@@ -480,8 +486,8 @@ export class SensorsView extends UI.Widget.VBox {
               .value=${String(input.location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY)}
               name="accuracy"
               jslog=${VisualLogging.textField('accuracy').track({change: true})}
-              @change=${this.#onLocationChange.bind(this)}
-              @keydown=${this.#onLocationKeyDown.bind(this)}
+              @change=${input.onLocationChange}
+              @keydown=${input.onLocationKeyDown}
               @focus=${selectInputContent}
             >
             <label class="accuracy-title" for="accuracy-input">${i18nString(UIStrings.accuracy)}</label>

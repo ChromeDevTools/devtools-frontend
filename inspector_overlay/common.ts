@@ -136,9 +136,6 @@ export class Overlay {
   setPlatform(platform: string): void {
     this.platform = platform;
     this.document.body.classList.add('platform-' + platform);
-    if (!this._installed) {
-      this.install();
-    }
   }
 
   dispatch(message: unknown[]): void {

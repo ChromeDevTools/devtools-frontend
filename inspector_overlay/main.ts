@@ -89,15 +89,13 @@ const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLooku
     }
     currentOverlay = overlays[overlayName];
     currentOverlay.setPlatform(platformName);
-    // TODO: setPlatform invokes install() for compatibility with the backend.
-    // The call to install() can be removed from setPlatform() after the backend is updated.
     if (!currentOverlay.installed) {
       currentOverlay.install();
     }
   } else if (functionName === 'setPlatform') {
     platformName = message[1] as PlatformName;
   } else if (functionName === 'drawingFinished') {
-    // TODO The logic needs to be added here once the backend starts sending this event.
+    // Sent by InspectorOverlayAgent::PaintOverlayPage after drawing commands.
   } else {
     currentOverlay.dispatch(message);
   }

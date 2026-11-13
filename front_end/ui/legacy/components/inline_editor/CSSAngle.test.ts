@@ -192,7 +192,6 @@ describe('CSSAngle', () => {
           {value: 20.8, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
       assert.isNull(InlineEditor.CSSAngleUtils.parseText('rotate(12345)'));
       assert.isNull(InlineEditor.CSSAngleUtils.parseText(''));
-      // TODO(changhaohan): crbug.com/1138628 handle unitless 0 case
       assert.isNull(InlineEditor.CSSAngleUtils.parseText('rotate(0)'));
     });
 

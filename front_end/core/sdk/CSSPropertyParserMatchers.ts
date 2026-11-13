@@ -394,7 +394,6 @@ export class AngleMatcher extends AngleMatcherBase {
       return null;
     }
     const unit = node.getChild('Unit');
-    // TODO(crbug/1138628) handle unitless 0
     if (!unit || !['deg', 'grad', 'rad', 'turn'].includes(matching.ast.text(unit))) {
       return null;
     }

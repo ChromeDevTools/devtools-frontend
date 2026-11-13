@@ -4,19 +4,29 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
+import '../../ui/kit/kit.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {render} from '../../ui/lit/lit.js';
+import {Directives, html, i18nTemplate, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
 import accessibilityNodeStyles from './accessibilityNode.css.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
+
+const {classMap, ifDefined} = Directives;
+const {widget} = UI.Widget;
+
+const MAX_CONTENT_LENGTH = 10000;
+const DOM_NODE_LINK_OPTIONS: PanelsCommon.DOMLinkifier.Options = {
+  preventKeyboardFocus: true,
+};
 
 const UIStrings = {
   /**
@@ -122,6 +132,117 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export function createSimpleValueElement(type: Protocol.Accessibility.AXValueType|null, value: string): LitTemplate {
+  const isMonospace = Boolean(type && type !== Protocol.Accessibility.AXValueType.ValueUndefined &&
+                              type !== Protocol.Accessibility.AXValueType.ComputedString);
+  const isStringProperty = Boolean(type && StringProperties.has(type));
+  // Render \n as a nice unicode cr symbol.
+  const valueText = isStringProperty ? '"' + value.replace(/\n/g, '\u21B5') + '"' : String(value);
+  const typeStyle = type && type in TypeStyles ? TypeStyles[type] : '';
+  const classes = {
+    monospace: isMonospace,
+    ...(typeStyle ? {[typeStyle]: true} : {}),
+  };
+  return html`<span class=${classMap(classes)} title=${ifDefined(value || undefined)}>${
+      Platform.StringUtilities.trimMiddle(valueText || '', MAX_CONTENT_LENGTH)}</span>`;
+}
+
+export function createExclamationMark(tooltip: string): LitTemplate {
+  return html`<devtools-icon name="warning-filled" class="small" title=${tooltip}></devtools-icon>`;
+}
+
+export function renderNameElement(name: string): LitTemplate {
+  if (name in AXAttributes) {
+    const attribute = AXAttributes[name];
+    return html`<span class="ax-readable-name" title=${attribute.description()}>${attribute.name()}</span>`;
+  }
+  return html`<span class="ax-name monospace">${name}</span>`;
+}
+
+export function renderRelatedNode(
+    node: {backendDOMNodeId?: Protocol.DOM.BackendNodeId, idref?: string},
+    resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
+    ): LitTemplate {
+  if (node.backendDOMNodeId !== undefined) {
+    const resolvedNode = resolvedNodes.get(node.backendDOMNodeId);
+    return html`<span><span>${
+        resolvedNode ? widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+          node: resolvedNode,
+          options: DOM_NODE_LINK_OPTIONS,
+        }) :
+                       nothing}</span></span>`;
+  }
+  if (node.idref) {
+    return html`<span class="invalid">${createExclamationMark(i18nString(UIStrings.noNodeWithThisId))}${
+        node.idref}</span>`;
+  }
+  return html`<span></span>`;
+}
+
+export function createReasonElement(reason: string|null, roleName: string): LitTemplate {
+  let content: LitTemplate|string|null = null;
+  switch (reason) {
+    case 'activeModalDialog':
+      content = i18nString(UIStrings.elementIsHiddenBy);
+      break;
+    case 'hiddenByChildTree':
+      content = i18nString(UIStrings.elementIsHiddenByChildTree);
+      break;
+    case 'ancestorIsLeafNode':
+      content = i18nString(UIStrings.ancestorChildrenAreAll);
+      break;
+    case 'ariaHiddenElement':
+      content =
+          i18nTemplate(str_, UIStrings.elementIsPlaceholder, {PH1: html`<span class="source-code">aria-hidden</span>`});
+      break;
+    case 'ariaHiddenSubtree':
+      content = i18nTemplate(str_, UIStrings.placeholderIsPlaceholderOnAncestor, {
+        PH1: html`<span class="source-code">aria-hidden</span>`,
+        PH2: html`<span class="source-code">true</span>`,
+      });
+      break;
+    case 'emptyAlt':
+      content = i18nString(UIStrings.elementHasEmptyAltText);
+      break;
+    case 'emptyText':
+      content = i18nString(UIStrings.noTextContent);
+      break;
+    case 'inertElement':
+      content = i18nString(UIStrings.elementIsInert);
+      break;
+    case 'inertSubtree':
+      content = i18nString(UIStrings.elementIsInAnInertSubTree);
+      break;
+    case 'inheritsPresentation':
+      content = i18nString(UIStrings.elementsInheritsPresentational);
+      break;
+    case 'labelContainer':
+      content = i18nString(UIStrings.partOfLabelElement);
+      break;
+    case 'labelFor':
+      content = i18nString(UIStrings.labelFor);
+      break;
+    case 'notRendered':
+      content = i18nString(UIStrings.elementIsNotRendered);
+      break;
+    case 'notVisible':
+      content = i18nString(UIStrings.elementIsNotVisible);
+      break;
+    case 'presentationalRole':
+      content = i18nTemplate(str_, UIStrings.elementHasPlaceholder,
+                             {PH1: html`<span class="source-code">role=${roleName}</span>`});
+      break;
+    case 'probablyPresentational':
+      content = i18nString(UIStrings.elementIsPresentational);
+      break;
+    case 'uninteresting':
+      content = i18nString(UIStrings.elementNotInteresting);
+      break;
+  }
+  return content ? html`<span class="ax-reason">${content}</span>` : nothing;
+}
+
 export class AXNodeSubPane extends AccessibilitySubPane {
   private readonly noNodeInfo: UI.EmptyWidget.EmptyWidget;
   private readonly ignoredInfo: UI.EmptyWidget.EmptyWidget;
@@ -240,53 +361,21 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   static createSimpleValueElement(type: Protocol.Accessibility.AXValueType|null, value: string): Element {
-    let valueElement;
-    if (!type || type === Protocol.Accessibility.AXValueType.ValueUndefined ||
-        type === Protocol.Accessibility.AXValueType.ComputedString) {
-      valueElement = document.createElement('span');
-    } else {
-      valueElement = document.createElement('span');
-      valueElement.classList.add('monospace');
-    }
-    let valueText;
-    const isStringProperty = type && StringProperties.has(type);
-    if (isStringProperty) {
-      // Render \n as a nice unicode cr symbol.
-      valueText = '"' + value.replace(/\n/g, '\u21B5') + '"';
-    } else {
-      valueText = String(value);
-    }
-
-    if (type && type in TypeStyles) {
-      valueElement.classList.add(TypeStyles[type]);
-    }
-
-    valueElement.setTextContentTruncatedIfNeeded(valueText || '');
-
-    UI.Tooltip.Tooltip.install(valueElement, String(value) || '');
-
-    return valueElement;
+    const container = document.createElement('span');
+    render(createSimpleValueElement(type, value), container);
+    return container.firstElementChild ?? container;
   }
 
   static createExclamationMark(tooltip: string): Element {
-    const exclamationElement = UI.UIUtils.createIconLabel({iconName: 'warning-filled', color: 'var(--icon-warning)'});
-    UI.Tooltip.Tooltip.install(exclamationElement, tooltip);
-    return exclamationElement;
+    const container = document.createElement('span');
+    render(createExclamationMark(tooltip), container);
+    return container.firstElementChild ?? container;
   }
 
   appendNameElement(name: string): void {
-    const nameElement = document.createElement('span');
-    if (name in AXAttributes) {
-      const attribute = AXAttributes[name];
-      nameElement.textContent = attribute.name();
-      UI.Tooltip.Tooltip.install(nameElement, attribute.description());
-      nameElement.classList.add('ax-readable-name');
-    } else {
-      nameElement.textContent = name;
-      nameElement.classList.add('ax-name');
-      nameElement.classList.add('monospace');
-    }
-    this.listItemElement.appendChild(nameElement);
+    const container = document.createElement('span');
+    render(renderNameElement(name), container);
+    this.listItemElement.appendChild(container.firstElementChild ?? container);
   }
 
   appendValueElement(value: Protocol.Accessibility.AXValue): void {
@@ -579,28 +668,20 @@ export class AXRelatedNodeElement {
   }
 
   render(): Element {
-    const element = document.createElement('span');
-
+    const container = document.createElement('span');
     if (this.deferredNode) {
-      const valueElement = document.createElement('span');
-      element.appendChild(valueElement);
+      const backendDOMNodeId = this.deferredNode.backendNodeId();
+      render(renderRelatedNode({backendDOMNodeId}, new Map()), container);
       void this.deferredNode.resolvePromise().then(node => {
         if (!node) {
           return;
         }
-        render(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
-          preventKeyboardFocus: true,
-        }),
-               valueElement);
+        render(renderRelatedNode({backendDOMNodeId}, new Map([[backendDOMNodeId, node]])), container);
       });
     } else if (this.idref) {
-      element.classList.add('invalid');
-      const valueElement = AXNodePropertyTreeElement.createExclamationMark(i18nString(UIStrings.noNodeWithThisId));
-      UI.UIUtils.createTextChild(valueElement, this.idref);
-      element.appendChild(valueElement);
+      render(renderRelatedNode({idref: this.idref}, new Map()), container);
     }
-
-    return element;
+    return container;
   }
 
   /**
@@ -616,7 +697,6 @@ export class AXRelatedNodeElement {
 export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
   private property: Protocol.Accessibility.AXProperty;
   override toggleOnClick: boolean;
-  private reasonElement?: Element|null;
 
   constructor(property: Protocol.Accessibility.AXProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
@@ -626,85 +706,9 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
     this.selectable = false;
   }
 
-  static createReasonElement(reason: string|null, axNode: SDK.AccessibilityModel.AccessibilityNode|null): Element|null {
-    let reasonElement: Element|null = null;
-    switch (reason) {
-      case 'activeModalDialog':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementIsHiddenBy, {});
-        break;
-      case 'hiddenByChildTree':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementIsHiddenByChildTree, {});
-        break;
-      case 'ancestorIsLeafNode':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.ancestorChildrenAreAll, {});
-        break;
-      case 'ariaHiddenElement': {
-        const ariaHiddenSpan = document.createElement('span', {is: 'source-code'}).textContent = 'aria-hidden';
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementIsPlaceholder, {PH1: ariaHiddenSpan});
-        break;
-      }
-      case 'ariaHiddenSubtree': {
-        const ariaHiddenSpan = document.createElement('span', {is: 'source-code'}).textContent = 'aria-hidden';
-        const trueSpan = document.createElement('span', {is: 'source-code'}).textContent = 'true';
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.placeholderIsPlaceholderOnAncestor,
-                                                        {PH1: ariaHiddenSpan, PH2: trueSpan});
-        break;
-      }
-      case 'emptyAlt':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementHasEmptyAltText, {});
-        break;
-      case 'emptyText':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.noTextContent, {});
-        break;
-      case 'inertElement':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementIsInert, {});
-        break;
-      case 'inertSubtree':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementIsInAnInertSubTree, {});
-        break;
-      case 'inheritsPresentation':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementsInheritsPresentational, {});
-        break;
-      case 'labelContainer':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.partOfLabelElement, {});
-        break;
-      case 'labelFor':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.labelFor, {});
-        break;
-      case 'notRendered':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementIsNotRendered, {});
-        break;
-      case 'notVisible':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementIsNotVisible, {});
-        break;
-      case 'presentationalRole': {
-        const role = axNode?.role()?.value || '';
-        const rolePresentationSpan = document.createElement('span', {is: 'source-code'}).textContent = 'role=' + role;
-        reasonElement =
-            uiI18n.getFormatLocalizedString(str_, UIStrings.elementHasPlaceholder, {PH1: rolePresentationSpan});
-        break;
-      }
-      case 'probablyPresentational':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementIsPresentational, {});
-        break;
-      case 'uninteresting':
-        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.elementNotInteresting, {});
-        break;
-    }
-    if (reasonElement) {
-      reasonElement.classList.add('ax-reason');
-    }
-    return reasonElement;
-  }
-
   override onattach(): void {
-    this.listItemElement.removeChildren();
-
-    this.reasonElement = AXNodeIgnoredReasonTreeElement.createReasonElement(this.property.name, this.axNode);
-    if (this.reasonElement) {
-      this.listItemElement.appendChild(this.reasonElement);
-    }
-
+    const roleName = String(this.axNode.role()?.value || '');
+    render(createReasonElement(this.property.name, roleName), this.listItemElement);
     const value = this.property.value;
     if (value.type === Protocol.Accessibility.AXValueType.Idref) {
       this.appendRelatedNodeListValueElement(value);

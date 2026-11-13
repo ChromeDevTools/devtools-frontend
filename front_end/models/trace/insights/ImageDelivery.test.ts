@@ -123,9 +123,6 @@ describe('ImageDelivery', function() {
           'http://localhost:10200/byte-efficiency/lighthouse-480x320.jpg',
           'http://localhost:10200/byte-efficiency/lighthouse-480x320.jpg?attributesized',
           'http://localhost:10200/byte-efficiency/lighthouse-480x320.webp',
-          // TODO(b/400518751): Assume 2 viewport size for image that isn't rendered.
-          // https://github.com/GoogleChrome/lighthouse/issues/7236
-          // 'localhost:10200/byte-efficiency/lighthouse-2048x1356.webp?size0'
         ],
     );
   });

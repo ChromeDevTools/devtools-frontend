@@ -193,7 +193,14 @@ function selectInputContent(event: Event): void {
   (event.currentTarget as HTMLInputElement).select();
 }
 
-interface ViewInput {
+interface LocationViewInput {
+  location: SDK.EmulationModel.Location;
+  locationOverrideEnabled: boolean;
+  timezoneError: string;
+  localeError: string;
+}
+
+interface ViewInput extends LocationViewInput {
   locationSection: TemplateResult;
   orientationSection: TemplateResult;
   touchSetting: Common.Settings.Setting<unknown>;
@@ -305,8 +312,15 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
+    const locationInput: LocationViewInput = {
+      location: this.#location,
+      locationOverrideEnabled: this.#locationOverrideEnabled,
+      timezoneError: this.#timezoneError,
+      localeError: this.#localeError,
+    };
     const input: ViewInput = {
-      locationSection: this.#renderLocationSection(this.#location, this.#customLocationsSetting),
+      ...locationInput,
+      locationSection: this.#renderLocationSection(locationInput, this.#customLocationsSetting),
       orientationSection: this.#renderDeviceOrientationSection(),
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
@@ -343,7 +357,7 @@ export class SensorsView extends UI.Widget.VBox {
     return selectedIndex;
   }
 
-  #renderLocationSection(location: SDK.EmulationModel.Location,
+  #renderLocationSection(input: LocationViewInput,
                          customLocationsSetting: Common.Settings.Setting<LocationDescription[]>): TemplateResult {
     const customLocations = customLocationsSetting.get();
     const selectedIndex = this.#selectedLocationIndex(customLocations);
@@ -382,7 +396,7 @@ export class SensorsView extends UI.Widget.VBox {
         </devtools-button>
         <fieldset
           id="location-override-section"
-          ?disabled=${!this.#locationOverrideEnabled}
+          ?disabled=${!input.locationOverrideEnabled}
         >
           <div class="latlong-group">
             <!-- @ts-ignore -->
@@ -393,7 +407,7 @@ export class SensorsView extends UI.Widget.VBox {
               max="90"
               step="any"
               required
-              .value=${String(location.latitude)}
+              .value=${String(input.location.latitude)}
               name="latitude"
               title=${modifierKeyMessage}
               jslog=${VisualLogging.textField('latitude').track({change: true})}
@@ -413,7 +427,7 @@ export class SensorsView extends UI.Widget.VBox {
               max="180"
               step="any"
               required
-              .value=${String(location.longitude)}
+              .value=${String(input.location.longitude)}
               name="longitude"
               title=${modifierKeyMessage}
               jslog=${VisualLogging.textField('longitude').track({change: true})}
@@ -428,7 +442,7 @@ export class SensorsView extends UI.Widget.VBox {
               id="timezone-input"
               type="text"
               pattern=".*[a-zA-Z].*"
-              .value=${location.timezoneId}
+              .value=${input.location.timezoneId}
               name="timezone"
               jslog=${VisualLogging.textField('timezone').track({change: true})}
               @change=${this.#onLocationChange.bind(this)}
@@ -436,14 +450,14 @@ export class SensorsView extends UI.Widget.VBox {
               @focus=${selectInputContent}
             >
             <label class="timezone-title" for="timezone-input">${i18nString(UIStrings.timezoneId)}</label>
-            <div class="timezone-error">${this.#timezoneError}</div>
+            <div class="timezone-error">${input.timezoneError}</div>
           </div>
           <div class="latlong-group">
             <input
               id="locale-input"
               type="text"
               pattern=".*[a-zA-Z]{2}.*"
-              .value=${location.locale}
+              .value=${input.location.locale}
               name="locale"
               jslog=${VisualLogging.textField('locale').track({change: true})}
               @change=${this.#onLocationChange.bind(this)}
@@ -451,7 +465,7 @@ export class SensorsView extends UI.Widget.VBox {
               @focus=${selectInputContent}
             >
             <label class="locale-title" for="locale-input">${i18nString(UIStrings.locale)}</label>
-            <div class="locale-error">${this.#localeError}</div>
+            <div class="locale-error">${input.localeError}</div>
           </div>
           <div class="latlong-group">
             <!-- @ts-ignore -->
@@ -460,7 +474,7 @@ export class SensorsView extends UI.Widget.VBox {
               type="number"
               min="0"
               step="any"
-              .value=${String(location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY)}
+              .value=${String(input.location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY)}
               name="accuracy"
               jslog=${VisualLogging.textField('accuracy').track({change: true})}
               @change=${this.#onLocationChange.bind(this)}

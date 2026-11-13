@@ -75,8 +75,33 @@ describeWithEnvironment('OutermostTargetSelector', () => {
 
   it('hides when only one target is present', () => {
     assert.isTrue(selector.item().visible());
+    assert.isFalse(selector.element.classList.contains('hidden'));
     prerenderTarget.dispose('');
     assert.isFalse(selector.item().visible());
+    assert.isTrue(selector.element.classList.contains('hidden'));
+  });
+
+  it('keeps element hidden when shown in a toolbar with a single target', async () => {
+    prerenderTarget.dispose('');
+    selector.detach();
+
+    const toolbarHost = new UI.Widget.Widget();
+    renderElementIntoDOM(toolbarHost);
+    const toolbar = toolbarHost.contentElement.createChild('devtools-toolbar');
+
+    selector = new InspectorMain.OutermostTargetSelector.OutermostTargetSelector(undefined, view);
+    toolbar.appendToolbarItem(selector.item());
+    await view.nextInput;
+
+    assert.isFalse(selector.item().visible());
+    assert.isTrue(selector.element.classList.contains('hidden'));
+
+    createTarget(
+        {parentTarget: tabTarget, subtype: 'prerender', url: 'http://example.com/prerender2', name: 'prerender2'});
+    await view.nextInput;
+    assert.isTrue(selector.item().visible());
+    assert.isFalse(selector.element.classList.contains('hidden'));
+    toolbarHost.detach();
   });
 
   it('updates selected target when UI context flavor changes', async () => {

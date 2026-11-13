@@ -348,4 +348,20 @@ describe('Toolbar', () => {
       assert.strictEqual(box.element.title, 'Option 2');
     });
   });
+
+  describe('ToolbarItem', () => {
+    it('re-applies hidden class when setVisible(false) is called after Widget.show strips it', () => {
+      const widget = new UI.Widget.Widget();
+      const item = new UI.Toolbar.ToolbarItem(widget.element);
+      item.setVisible(false);
+      assert.isTrue(widget.element.classList.contains('hidden'));
+
+      renderElementIntoDOM(widget);
+      assert.isFalse(widget.element.classList.contains('hidden'));
+
+      item.setVisible(false);
+      assert.isTrue(widget.element.classList.contains('hidden'));
+      widget.detach();
+    });
+  });
 });

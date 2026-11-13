@@ -118,6 +118,7 @@ export class OutermostTargetSelector extends UI.Widget.Widget implements SDK.Tar
     this.#view = view;
     this.#toolbarItem = new UI.Toolbar.ToolbarItem(this.element);
     this.#toolbarItem.setEnabled(false);
+    this.#toolbarItem.setVisible(false);
 
     const targetManager = SDK.TargetManager.TargetManager.instance();
     targetManager.addModelListener(
@@ -130,8 +131,15 @@ export class OutermostTargetSelector extends UI.Widget.Widget implements SDK.Tar
     this.requestUpdate();
   }
 
+  override show(parentElement: Element|DocumentFragment, insertBefore?: Node|null,
+                suppressOrphanWidgetError?: boolean): void {
+    super.show(parentElement, insertBefore, suppressOrphanWidgetError);
+    this.#toolbarItem.setVisible(this.#targets.length > 1);
+  }
+
   override wasShown(): void {
     super.wasShown();
+    this.#toolbarItem.setVisible(this.#targets.length > 1);
     this.requestUpdate();
   }
 

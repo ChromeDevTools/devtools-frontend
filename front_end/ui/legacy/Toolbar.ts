@@ -438,10 +438,10 @@ export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends C
   }
 
   setVisible(x: boolean): void {
+    this.element.classList.toggle('hidden', !x);
     if (this.#visible === x) {
       return;
     }
-    this.element.classList.toggle('hidden', !x);
     this.#visible = x;
     if (this.toolbar && !(this instanceof ToolbarSeparator)) {
       this.toolbar.hideSeparatorDupes();

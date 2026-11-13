@@ -46,13 +46,8 @@ def script_main(args):
         wasm_as(), options.input, '-g', '-sm', sourcemap, '-o', options.output
     ])
 
-    wasm_obj_headers = subprocess.check_output([
-        llvm_readobj(),
-        '-e',
-        # TODO(crbug.com/1328729): use JSON output as soon as that's supported for wasm
-        # '--elf-output-style=JSON',
-        options.output
-    ])
+    wasm_obj_headers = subprocess.check_output(
+        [llvm_readobj(), '-e', options.output])
     (size, offset) = re.search(
         rb'Section {[^}]*Type: CODE[^}]*Size: (\d*)[^}]*Offset: (\d*)[^}]*}',
         wasm_obj_headers).groups()

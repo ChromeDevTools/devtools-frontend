@@ -741,7 +741,6 @@ export function prerenderFailureReason(
     case Protocol.Preload.PrerenderFinalStatus.OtherPrerenderedPageActivated:
     case Protocol.Preload.PrerenderFinalStatus.V8OptimizerDisabled:
     case Protocol.Preload.PrerenderFinalStatus.PrerenderFailedDuringPrefetch:
-      // TODO(crbug.com/350870118): Add message for this.
       return '';
     default:
       // Note that we use switch and exhaustiveness check to prevent to

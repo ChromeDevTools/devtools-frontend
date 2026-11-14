@@ -64,6 +64,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "EntriesLinkOverlay.test.ts",
     "TimeRangeOverlay.test.ts",
     "TimespanBreakdownOverlay.test.ts",
   ]

@@ -36,11 +36,39 @@ export class EntryLinkStartCreating extends Event {
   }
 }
 
+export interface EntryCutOff {
+  cutOffTop: boolean;
+  cutOffBottom: boolean;
+  cutOffRight: boolean;
+}
+
+export interface EntryDimensionAndCoordinates {
+  x: number;
+  y: number;
+  length: number;
+  height: number;
+  cutOffTop?: boolean;
+  cutOffBottom?: boolean;
+  cutOffRight?: boolean;
+}
+
+export interface ToEntryDimensionAndCoordinates {
+  x: number;
+  y: number;
+  length?: number;
+  height?: number;
+  cutOffTop?: boolean;
+  cutOffBottom?: boolean;
+  cutOffRight?: boolean;
+}
+
 export interface ViewInput {
   coordinateFrom: {x: number, y: number};
   fromEntryDimensions: {width: number, height: number};
+  fromEntryCutOff: EntryCutOff;
   coordinateTo: {x: number, y: number};
   toEntryDimensions: {width: number, height: number}|null;
+  toEntryCutOff: EntryCutOff;
   entryFromVisible: boolean;
   entryToVisible: boolean;
   fromEntryIsSource: boolean;
@@ -82,18 +110,32 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     'entry-wrapper': true,
     'from-highlight-wrapper': true,
     'entry-is-not-source': !input.fromEntryIsSource,
+    'cut-off-top': input.fromEntryCutOff.cutOffTop,
+    'cut-off-bottom': input.fromEntryCutOff.cutOffBottom,
+    'cut-off-right': input.fromEntryCutOff.cutOffRight,
   });
   const fromHighlightStyles = Directives.styleMap({
     visibility: input.entryFromVisible ? 'visible' : 'hidden',
+    left: `${input.coordinateFrom.x}px`,
+    top: `${input.coordinateFrom.y}px`,
+    width: `${input.fromEntryDimensions.width}px`,
+    height: `${input.fromEntryDimensions.height}px`,
   });
 
   const toHighlightClasses = Directives.classMap({
     'entry-wrapper': true,
     'to-highlight-wrapper': true,
     'entry-is-not-source': !input.toEntryIsSource,
+    'cut-off-top': input.toEntryCutOff.cutOffTop,
+    'cut-off-bottom': input.toEntryCutOff.cutOffBottom,
+    'cut-off-right': input.toEntryCutOff.cutOffRight,
   });
   const toHighlightStyles = Directives.styleMap({
     visibility: input.entryToVisible && input.toEntryDimensions !== null ? 'visible' : 'hidden',
+    left: input.toEntryDimensions ? `${input.coordinateTo.x}px` : undefined,
+    top: input.toEntryDimensions ? `${input.coordinateTo.y}px` : undefined,
+    width: input.toEntryDimensions ? `${input.toEntryDimensions.width}px` : undefined,
+    height: input.toEntryDimensions ? `${input.toEntryDimensions.height}px` : undefined,
   });
 
   const createLinkIconStyles = Directives.styleMap({
@@ -180,8 +222,10 @@ export class EntriesLinkOverlay extends HTMLElement {
   readonly #view: View;
   #coordinateFrom: {x: number, y: number};
   #fromEntryDimensions: {width: number, height: number};
+  #fromEntryCutOff: EntryCutOff = {cutOffTop: false, cutOffBottom: false, cutOffRight: false};
   #coordinateTo: {x: number, y: number};
   #toEntryDimensions: {width: number, height: number}|null = null;
+  #toEntryCutOff: EntryCutOff = {cutOffTop: false, cutOffBottom: false, cutOffRight: false};
   #entryFromVisible = true;
   #entryToVisible = true;
   #canvasRect: DOMRect|null = null;
@@ -220,14 +264,6 @@ export class EntriesLinkOverlay extends HTMLElement {
     this.#render();
   }
 
-  entryFromWrapper(): HTMLElement|null {
-    return this.#shadow.querySelector<HTMLElement>('.from-highlight-wrapper');
-  }
-
-  entryToWrapper(): HTMLElement|null {
-    return this.#shadow.querySelector<HTMLElement>('.to-highlight-wrapper');
-  }
-
   /**
    * If one entry that is linked is in a collapsed track, we show the outlines
    * but hide only the arrow.
@@ -240,9 +276,19 @@ export class EntriesLinkOverlay extends HTMLElement {
     this.#render();
   }
 
-  set fromEntryCoordinateAndDimensions(fromEntryParams: {x: number, y: number, length: number, height: number}) {
+  set fromEntryCoordinateAndDimensions(fromEntryParams: EntryDimensionAndCoordinates) {
+    const cutOffTop = Boolean(fromEntryParams.cutOffTop);
+    const cutOffBottom = Boolean(fromEntryParams.cutOffBottom);
+    const cutOffRight = Boolean(fromEntryParams.cutOffRight);
+    if (this.#coordinateFrom.x === fromEntryParams.x && this.#coordinateFrom.y === fromEntryParams.y &&
+        this.#fromEntryDimensions.width === fromEntryParams.length &&
+        this.#fromEntryDimensions.height === fromEntryParams.height && this.#fromEntryCutOff.cutOffTop === cutOffTop &&
+        this.#fromEntryCutOff.cutOffBottom === cutOffBottom && this.#fromEntryCutOff.cutOffRight === cutOffRight) {
+      return;
+    }
     this.#coordinateFrom = {x: fromEntryParams.x, y: fromEntryParams.y};
     this.#fromEntryDimensions = {width: fromEntryParams.length, height: fromEntryParams.height};
+    this.#fromEntryCutOff = {cutOffTop, cutOffBottom, cutOffRight};
     this.#render();
   }
 
@@ -254,13 +300,22 @@ export class EntriesLinkOverlay extends HTMLElement {
 
   // The arrow might be pointing either to an entry or an empty space.
   // If the dimensions are not passed, it is pointing at an empty space.
-  set toEntryCoordinateAndDimensions(toEntryParams: {x: number, y: number, length?: number, height?: number}) {
-    this.#coordinateTo = {x: toEntryParams.x, y: toEntryParams.y};
-    if (toEntryParams.length && toEntryParams.height) {
-      this.#toEntryDimensions = {width: toEntryParams.length, height: toEntryParams.height};
-    } else {
-      this.#toEntryDimensions = null;
+  set toEntryCoordinateAndDimensions(toEntryParams: ToEntryDimensionAndCoordinates) {
+    const newDimensions = (toEntryParams.length && toEntryParams.height) ?
+        {width: toEntryParams.length, height: toEntryParams.height} :
+        null;
+    const cutOffTop = Boolean(toEntryParams.cutOffTop);
+    const cutOffBottom = Boolean(toEntryParams.cutOffBottom);
+    const cutOffRight = Boolean(toEntryParams.cutOffRight);
+    if (this.#coordinateTo.x === toEntryParams.x && this.#coordinateTo.y === toEntryParams.y &&
+        this.#toEntryDimensions?.width === newDimensions?.width &&
+        this.#toEntryDimensions?.height === newDimensions?.height && this.#toEntryCutOff.cutOffTop === cutOffTop &&
+        this.#toEntryCutOff.cutOffBottom === cutOffBottom && this.#toEntryCutOff.cutOffRight === cutOffRight) {
+      return;
     }
+    this.#coordinateTo = {x: toEntryParams.x, y: toEntryParams.y};
+    this.#toEntryDimensions = newDimensions;
+    this.#toEntryCutOff = {cutOffTop, cutOffBottom, cutOffRight};
     this.#render();
   }
 
@@ -323,8 +378,10 @@ export class EntriesLinkOverlay extends HTMLElement {
         {
           coordinateFrom: this.#coordinateFrom,
           fromEntryDimensions: this.#fromEntryDimensions,
+          fromEntryCutOff: this.#fromEntryCutOff,
           coordinateTo: this.#coordinateTo,
           toEntryDimensions: this.#toEntryDimensions,
+          toEntryCutOff: this.#toEntryCutOff,
           entryFromVisible: this.#entryFromVisible,
           entryToVisible: this.#entryToVisible,
           fromEntryIsSource: this.#fromEntryIsSource,

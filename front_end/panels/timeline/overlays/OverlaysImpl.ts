@@ -268,6 +268,33 @@ interface EntriesLinkVisibleEntries {
   entryToIsSource: boolean;
 }
 
+/**
+ * The position of the border around an entry, in pixels.
+ */
+export interface EntryBorderOutlinePosition {
+  /**
+   * The height of the entry, including any part that is cut off.
+   */
+  entryHeight: number;
+  /**
+   * The width of the visible part of the entry.
+   */
+  entryWidth: number;
+  /**
+   * The height of the visible part of the entry.
+   */
+  height: number;
+  /**
+   * The height of the part of the entry that is cut off.
+   */
+  cutOffHeight: number;
+  cutOffTop: boolean;
+  cutOffBottom: boolean;
+  cutOffRight: boolean;
+  x: number;
+  y: number;
+}
+
 export class EventReferenceClick extends Event {
   static readonly eventName = 'eventreferenceclick';
 
@@ -1078,12 +1105,6 @@ export class Overlays extends EventTarget {
       component.hideArrow = hideArrow;
 
       const {entryFrom, entryTo, entryFromIsSource, entryToIsSource} = entriesToConnect;
-      const entryFromWrapper = component.entryFromWrapper();
-
-      // Should not happen, the 'from' wrapper should always exist. Something went wrong, return in this case.
-      if (!entryFromWrapper) {
-        return;
-      }
 
       const entryFromVisibility = this.entryIsVisibleOnChart(entryFrom) && !fromEntryInCollapsedTrack;
       const entryToVisibility = entryTo ? this.entryIsVisibleOnChart(entryTo) && !toEntryInCollapsedTrack : false;
@@ -1094,16 +1115,23 @@ export class Overlays extends EventTarget {
 
       // If the entry is visible, draw the arrow to the entry.
       if (entryFromVisibility) {
-        const fromEntryParams = this.#positionEntryBorderOutlineType(entriesToConnect.entryFrom, entryFromWrapper);
+        const fromEntryParams = this.#calculateEntryBorderOutlinePosition(entriesToConnect.entryFrom);
         if (fromEntryParams) {
-          const fromEntryHeight = fromEntryParams?.entryHeight;
-          const fromEntryWidth = fromEntryParams?.entryWidth;
-          const fromCutOffHeight = fromEntryParams?.cutOffHeight;
-          fromEntryX = fromEntryParams?.x;
-          fromEntryY = fromEntryParams?.y;
+          const fromEntryHeight = fromEntryParams.entryHeight;
+          const fromEntryWidth = fromEntryParams.entryWidth;
+          const fromCutOffHeight = fromEntryParams.cutOffHeight;
+          fromEntryX = fromEntryParams.x;
+          fromEntryY = fromEntryParams.y;
 
-          component.fromEntryCoordinateAndDimensions =
-              {x: fromEntryX, y: fromEntryY, length: fromEntryWidth, height: fromEntryHeight - fromCutOffHeight};
+          component.fromEntryCoordinateAndDimensions = {
+            x: fromEntryX,
+            y: fromEntryY,
+            length: fromEntryWidth,
+            height: fromEntryHeight - fromCutOffHeight,
+            cutOffTop: fromEntryParams.cutOffTop,
+            cutOffBottom: fromEntryParams.cutOffBottom,
+            cutOffRight: fromEntryParams.cutOffRight,
+          };
         } else {
           // Something went if the entry is visible and we cannot get its' parameters.
           return;
@@ -1118,26 +1146,27 @@ export class Overlays extends EventTarget {
 
       // If entryTo exists, pass the coordinates and dimensions of the entry that the arrow snaps to.
       // If it does not, the event tracking mouse coordinates updates 'to coordinates' so the arrow follows the mouse instead.
-      const entryToWrapper = component.entryToWrapper();
-
-      if (entryTo && entryToWrapper) {
+      if (entryTo) {
         let toEntryX = this.xPixelForEventStartOnChart(entryTo) ?? 0;
         // If the 'to' entry is visible, set the entry Y as an arrow coordinate to point to. If not, get the canvas edge coordate to point the arrow to.
         let toEntryY = this.#yCoordinateForNotVisibleEntry(entryTo);
-        const toEntryParams = this.#positionEntryBorderOutlineType(entryTo, entryToWrapper);
+        const toEntryParams = this.#calculateEntryBorderOutlinePosition(entryTo);
 
         if (toEntryParams) {
-          const toEntryHeight = toEntryParams?.entryHeight;
-          const toEntryWidth = toEntryParams?.entryWidth;
-          const toCutOffHeight = toEntryParams?.cutOffHeight;
-          toEntryX = toEntryParams?.x;
-          toEntryY = toEntryParams?.y;
+          const toEntryHeight = toEntryParams.entryHeight;
+          const toEntryWidth = toEntryParams.entryWidth;
+          const toCutOffHeight = toEntryParams.cutOffHeight;
+          toEntryX = toEntryParams.x;
+          toEntryY = toEntryParams.y;
 
           component.toEntryCoordinateAndDimensions = {
             x: toEntryX,
             y: toEntryY,
             length: toEntryWidth,
             height: toEntryHeight - toCutOffHeight,
+            cutOffTop: toEntryParams.cutOffTop,
+            cutOffBottom: toEntryParams.cutOffBottom,
+            cutOffRight: toEntryParams.cutOffRight,
           };
         } else {
           // if the entry exists and we cannot get its' parameters, it is probably loaded and is off screen.
@@ -1343,14 +1372,11 @@ export class Overlays extends EventTarget {
   }
 
   /**
-   * Draw and position borders around an entry. Multiple overlays either fully consist
-   * of a border around an entry of have an entry border as a part of the overlay.
-   * Positions an EntrySelected or EntryOutline overlay and a part of the Trace.Types.Overlays.EntryLabel.
-   * @param overlay the EntrySelected/EntryOutline/Trace.Types.Overlays.EntryLabel overlay that we need to position.
-   * @param element the DOM element representing the overlay
+   * Calculates the position of the border around an entry. Multiple overlays either fully consist
+   * of a border around an entry or have an entry border as a part of the overlay.
+   * @param entry the entry that the border is drawn around.
    */
-  #positionEntryBorderOutlineType(entry: Trace.Types.Overlays.OverlayEntry, element: HTMLElement):
-      {entryHeight: number, entryWidth: number, cutOffHeight: number, x: number, y: number}|null {
+  #calculateEntryBorderOutlinePosition(entry: Trace.Types.Overlays.OverlayEntry): EntryBorderOutlinePosition|null {
     const chartName = chartForEntry(entry);
     let x = this.xPixelForEventStartOnChart(entry);
     let y = this.yPixelForEventOnChart(entry);
@@ -1394,7 +1420,6 @@ export class Overlays extends EventTarget {
     // Calculate the visible overlay width by subtracting the entry width that is outside of the flamechart width
     const cutOffRight = (x + widthPixels > chartWidth) ? (x + widthPixels) - chartWidth : null;
     const cutOffLeft = (x < 0) ? Math.abs(x) : null;
-    element.classList.toggle('cut-off-right', cutOffRight !== null);
 
     if (cutOffRight) {
       widthPixels = widthPixels - cutOffRight;
@@ -1408,7 +1433,6 @@ export class Overlays extends EventTarget {
 
     // The entry selected overlay is always at least 2px wide.
     const finalWidth = Math.max(2, widthPixels);
-    element.style.width = `${finalWidth}px`;
 
     // If the event is on the main chart, we need to adjust its selected border
     // if the event is cut off the top of the screen, because we need to ensure
@@ -1418,14 +1442,15 @@ export class Overlays extends EventTarget {
     // the top border, making it appear like it is going behind the resizer.
     // We don't need to worry about it going off the bottom, because in that
     // case we don't draw the overlay anyway.
+    let cutOffTop = false;
+    let cutOffBottom = false;
     if (chartName === 'main') {
       const chartTopPadding = this.networkChartOffsetHeight();
       // We now calculate the available height: if the entry is cut off we don't
       // show the border for the part that is cut off.
-      const cutOffTop = y < chartTopPadding;
+      cutOffTop = y < chartTopPadding;
 
       height = cutOffTop ? Math.abs(y + height - chartTopPadding) : height;
-      element.classList.toggle('cut-off-top', cutOffTop);
       if (cutOffTop) {
         // Adjust the y position: we need to move it down from the top Y
         // position to the Y position of the first visible pixel. The
@@ -1442,21 +1467,51 @@ export class Overlays extends EventTarget {
       // as we can show the full overlay and it gets cut off by the minimap UI.
       const networkHeight = this.#dimensions.charts.network?.heightPixels ?? 0;
       const lastVisibleY = y + totalHeight;
-      const cutOffBottom = lastVisibleY > networkHeight;
-      element.classList.toggle('cut-off-bottom', cutOffBottom);
+      cutOffBottom = lastVisibleY > networkHeight;
       if (cutOffBottom) {
         // Adjust the height of the overlay to be the amount of visible pixels.
         height = networkHeight - y;
       }
     }
 
-    element.style.height = `${height}px`;
-    element.style.top = `${y}px`;
-    element.style.left = `${x}px`;
-
-    return {entryHeight: totalHeight, entryWidth: finalWidth, cutOffHeight: totalHeight - height, x, y};
+    return {
+      entryHeight: totalHeight,
+      entryWidth: finalWidth,
+      height,
+      cutOffHeight: totalHeight - height,
+      cutOffTop,
+      cutOffBottom,
+      cutOffRight: cutOffRight !== null,
+      x,
+      y,
+    };
   }
 
+  /**
+   * Draw and position borders around an entry. Multiple overlays either fully consist
+   * of a border around an entry or have an entry border as a part of the overlay.
+   * Positions an EntrySelected or EntryOutline overlay and a part of the Trace.Types.Overlays.EntryLabel.
+   * @param entry the entry that the border is drawn around.
+   * @param element the DOM element representing the overlay
+   */
+  #positionEntryBorderOutlineType(entry: Trace.Types.Overlays.OverlayEntry,
+                                  element: HTMLElement): EntryBorderOutlinePosition|null {
+    const position = this.#calculateEntryBorderOutlinePosition(entry);
+    if (!position) {
+      return null;
+    }
+    element.classList.toggle('cut-off-right', position.cutOffRight);
+    if (chartForEntry(entry) === 'main') {
+      element.classList.toggle('cut-off-top', position.cutOffTop);
+    } else {
+      element.classList.toggle('cut-off-bottom', position.cutOffBottom);
+    }
+    element.style.width = `${position.entryWidth}px`;
+    element.style.height = `${position.height}px`;
+    element.style.top = `${position.y}px`;
+    element.style.left = `${position.x}px`;
+    return position;
+  }
   /**
    * We draw an arrow between connected entries but this can get complicated
    * depending on if the entries are visible or not. For example, the user might

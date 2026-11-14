@@ -785,4 +785,63 @@ describe('TimelineTreeView', function() {
          bottomUpTreeView.detach();
        });
   });
+
+  describe('nameCellViewInput', function() {
+    it('builds presentation data for an event node', function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.None);
+      callTreeView.setRange(Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min),
+                            Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max));
+      callTreeView.model = {
+        selectedEvents: [...parsedTrace.data.UserTimings.consoleTimings],
+        parsedTrace,
+        entityMapper: null,
+      };
+      const tree = callTreeView.buildTree();
+      const firstNode = tree.children().values().next().value;
+      assert.exists(firstNode);
+
+      const input = Timeline.TimelineTreeView.nameCellViewInput(callTreeView, firstNode, 'activity');
+      assert.strictEqual(input.columnId, 'activity');
+      assert.strictEqual(input.name, 'first console time');
+      assert.isString(input.iconColor);
+      assert.strictEqual(input.iconLabel, 'Scripting');
+      assert.strictEqual(input.topCallFrameLink?.event, firstNode.event);
+    });
+
+    it('builds badges for first-party and extension group nodes in the 3P tree', function() {
+      try {
+        const parsedTrace = syncLikeTimingsParsedTrace;
+        const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+        callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Category);
+        callTreeView.setRange(Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min),
+                              Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max));
+        callTreeView.model = {
+          selectedEvents: [...parsedTrace.data.UserTimings.consoleTimings],
+          parsedTrace,
+          entityMapper: null,
+        };
+        const groupNode = callTreeView.buildTree().children().values().next().value;
+        assert.exists(groupNode);
+        assert.isTrue(groupNode.isGroupNode());
+
+        const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+        sinon.stub(thirdPartyTree, 'displayInfoForGroupNode').returns({name: 'example.com', color: 'gray'});
+        const firstPartyStub = sinon.stub(thirdPartyTree, 'nodeIsFirstParty').returns(true);
+        sinon.stub(thirdPartyTree, 'nodeIsExtension').returns(true);
+
+        const firstPartyInput = Timeline.TimelineTreeView.nameCellViewInput(thirdPartyTree, groupNode, 'site');
+        assert.strictEqual(firstPartyInput.badge, '1st party');
+
+        firstPartyStub.returns(false);
+        const extensionInput = Timeline.TimelineTreeView.nameCellViewInput(thirdPartyTree, groupNode, 'site');
+        assert.strictEqual(extensionInput.badge, 'Extension');
+      } finally {
+        Common.Settings.Settings.instance()
+            .createSetting('timeline-tree-group-by', Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.None)
+            .set(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.None);
+      }
+    });
+  });
 });

@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 import '../../../../ui/kit/kit.js';
 
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
@@ -22,6 +20,14 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntriesLinkOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const CONNECTOR_CIRCLE_RADIUS = 2;
+const CONNECTOR_CIRCLE_STROKE_WIDTH = 1;
+const MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES = 8;
+
+// Defines the gap in the border when we are drawing a dashed outline.
+// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
+const DASHED_STROKE_AMOUNT = 4;
+
 export class EntryLinkStartCreating extends Event {
   static readonly eventName = 'entrylinkstartcreating';
 
@@ -30,8 +36,148 @@ export class EntryLinkStartCreating extends Event {
   }
 }
 
+export interface ViewInput {
+  coordinateFrom: {x: number, y: number};
+  fromEntryDimensions: {width: number, height: number};
+  coordinateTo: {x: number, y: number};
+  toEntryDimensions: {width: number, height: number}|null;
+  entryFromVisible: boolean;
+  entryToVisible: boolean;
+  fromEntryIsSource: boolean;
+  toEntryIsSource: boolean;
+  arrowHidden: boolean;
+  linkState: Trace.Types.File.EntriesLinkState;
+  partlyVisibleConnectionLinePercentage: number;
+  arrowColor: string;
+  onStartCreating: () => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const isCreationNotStarted = input.linkState === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED;
+  const fromX = input.coordinateFrom.x + input.fromEntryDimensions.width;
+  const fromY = input.coordinateFrom.y + input.fromEntryDimensions.height / 2;
+  const toX = input.coordinateTo.x;
+  const toY =
+      input.toEntryDimensions ? input.coordinateTo.y + input.toEntryDimensions.height / 2 : input.coordinateTo.y;
+  const drawFromEntryConnectorCircle = !isCreationNotStarted && input.toEntryDimensions !== null &&
+      input.entryFromVisible && !input.arrowHidden && input.fromEntryIsSource &&
+      input.fromEntryDimensions.width >= MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES;
+  const drawToEntryConnectorCircle = !isCreationNotStarted && input.toEntryDimensions !== null &&
+      input.entryToVisible && !input.arrowHidden && input.toEntryIsSource &&
+      input.toEntryDimensions.width >= MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES;
+  const showConnectorLine =
+      !isCreationNotStarted && !input.arrowHidden && (input.entryFromVisible || input.entryToVisible);
+  let connectorStroke = input.arrowColor;
+  if (input.toEntryDimensions && !(input.entryFromVisible && input.entryToVisible)) {
+    if (input.entryFromVisible && !input.entryToVisible) {
+      connectorStroke = 'url(#fromVisibleLineGradient)';
+    } else if (input.entryToVisible && !input.entryFromVisible) {
+      connectorStroke = 'url(#toVisibleLineGradient)';
+    }
+  }
+  // Only draw the entry wrapper if that entry is visible.
+  const fromHighlightClasses = Directives.classMap({
+    'entry-wrapper': true,
+    'from-highlight-wrapper': true,
+    'entry-is-not-source': !input.fromEntryIsSource,
+  });
+  const fromHighlightStyles = Directives.styleMap({
+    visibility: input.entryFromVisible ? 'visible' : 'hidden',
+  });
+
+  const toHighlightClasses = Directives.classMap({
+    'entry-wrapper': true,
+    'to-highlight-wrapper': true,
+    'entry-is-not-source': !input.toEntryIsSource,
+  });
+  const toHighlightStyles = Directives.styleMap({
+    visibility: input.entryToVisible && input.toEntryDimensions !== null ? 'visible' : 'hidden',
+  });
+
+  const createLinkIconStyles = Directives.styleMap({
+    display: isCreationNotStarted ? undefined : 'none',
+    left: isCreationNotStarted ? `${fromX}px` : undefined,
+    top: isCreationNotStarted ? `${input.coordinateFrom.y}px` : undefined,
+  });
+  // clang-format off
+  render(
+      html`
+        <style>${entriesLinkOverlayStyles}</style>
+        <svg class="connectorContainer" width="100%" height="100%" role="region" aria-label=${i18nString(UIStrings.diagram)}>
+          <defs>
+            <linearGradient
+              id="fromVisibleLineGradient"
+              x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop
+                offset="0%"
+                stop-color=${input.arrowColor}
+                stop-opacity="1" />
+              <stop
+                offset="${input.partlyVisibleConnectionLinePercentage}%"
+                stop-color=${input.arrowColor}
+                stop-opacity="0" />
+            </linearGradient>
+
+            <linearGradient
+              id="toVisibleLineGradient"
+              x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop
+                offset="${100 - input.partlyVisibleConnectionLinePercentage}%"
+                stop-color=${input.arrowColor}
+                stop-opacity="0" />
+              <stop
+                offset="100%"
+                stop-color=${input.arrowColor}
+                stop-opacity="1" />
+            </linearGradient>
+            <marker
+              id="arrow"
+              orient="auto"
+              markerWidth="3"
+              markerHeight="4"
+              fill-opacity="1"
+              refX="4"
+              refY="2"
+              visibility=${input.entryToVisible || !input.toEntryDimensions ? 'visible' : 'hidden'}>
+              <path d="M0,0 V4 L4,2 Z" fill=${input.arrowColor} />
+            </marker>
+          </defs>
+          <line
+            marker-end="url(#arrow)"
+            stroke=${connectorStroke}
+            stroke-width="2"
+            stroke-dasharray=${!input.fromEntryIsSource || !input.toEntryIsSource ? DASHED_STROKE_AMOUNT : 'none'}
+            visibility=${!input.entryFromVisible && !input.entryToVisible ? 'hidden' : 'visible'}
+            style=${Directives.styleMap({display: showConnectorLine ? 'block' : 'none'})}
+            x1=${fromX}
+            y1=${fromY}
+            x2=${toX}
+            y2=${toY}
+            />
+          <circle class="entryFromConnector" fill="none" stroke=${input.arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} cx=${fromX} cy=${fromY} visibility=${drawFromEntryConnectorCircle ? 'visible' : 'hidden'} />
+          <circle class="entryToConnector" fill="none" stroke=${input.arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} cx=${toX} cy=${toY} visibility=${drawToEntryConnectorCircle ? 'visible' : 'hidden'} />
+        </svg>
+        <div class=${fromHighlightClasses} style=${fromHighlightStyles}></div>
+        <div class=${toHighlightClasses} style=${toHighlightStyles}></div>
+        <div class="create-link-box" ?hidden=${!isCreationNotStarted}>
+          <devtools-icon
+            class="create-link-icon"
+            style=${createLinkIconStyles}
+            jslog=${VisualLogging.action('timeline.annotations.create-entry-link').track({click: true})}
+            @click=${input.onStartCreating}
+            name="arrow-right-circle">
+          </devtools-icon>
+        </div>
+      `,
+      target);
+  // clang-format on
+};
+
 export class EntriesLinkOverlay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #view: View;
   #coordinateFrom: {x: number, y: number};
   #fromEntryDimensions: {width: number, height: number};
   #coordinateTo: {x: number, y: number};
@@ -49,10 +195,10 @@ export class EntriesLinkOverlay extends HTMLElement {
   #arrowHidden = false;
   #linkState: Trace.Types.File.EntriesLinkState;
 
-  constructor(
-      initialFromEntryCoordinateAndDimensions: {x: number, y: number, width: number, height: number},
-      linkCreationNotStartedState: Trace.Types.File.EntriesLinkState) {
+  constructor(initialFromEntryCoordinateAndDimensions: {x: number, y: number, width: number, height: number},
+              linkCreationNotStartedState: Trace.Types.File.EntriesLinkState, view: View = DEFAULT_VIEW) {
     super();
+    this.#view = view;
     this.#coordinateFrom = {x: initialFromEntryCoordinateAndDimensions.x, y: initialFromEntryCoordinateAndDimensions.y};
     this.#fromEntryDimensions = {
       width: initialFromEntryCoordinateAndDimensions.width,
@@ -142,7 +288,7 @@ export class EntriesLinkOverlay extends HTMLElement {
    * is going to. Therefore, to not needlessly take space, the faded line is very short.
    *
    * To achieve this, we need to calculate what percentage of the
-   * shole connection the short line is currently occupying and apply
+   * whole connection the short line is currently occupying and apply
    * that gradient to the visible connection part.
    */
   #partlyVisibleConnectionLinePercentage(): number {
@@ -173,125 +319,27 @@ export class EntriesLinkOverlay extends HTMLElement {
   */
   #render(): void {
     const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
-    const isCreationNotStarted = this.#linkState === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED;
-    const fromX = this.#coordinateFrom.x + this.#fromEntryDimensions.width;
-    const fromY = this.#coordinateFrom.y + this.#fromEntryDimensions.height / 2;
-    const toX = this.#coordinateTo.x;
-    const toY =
-        this.#toEntryDimensions ? this.#coordinateTo.y + this.#toEntryDimensions.height / 2 : this.#coordinateTo.y;
-    const drawFromEntryConnectorCircle = !isCreationNotStarted && this.#toEntryDimensions !== null &&
-        this.#entryFromVisible && !this.#arrowHidden && this.#fromEntryIsSource &&
-        this.#fromEntryDimensions.width >= MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES;
-    const drawToEntryConnectorCircle = !isCreationNotStarted && this.#toEntryDimensions !== null &&
-        this.#entryToVisible && !this.#arrowHidden && this.#toEntryIsSource &&
-        this.#toEntryDimensions.width >= MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES;
-    const showConnectorLine =
-        !isCreationNotStarted && !this.#arrowHidden && (this.#entryFromVisible || this.#entryToVisible);
-    let connectorStroke = arrowColor;
-    if (this.#toEntryDimensions && !(this.#entryFromVisible && this.#entryToVisible)) {
-      if (this.#entryFromVisible && !this.#entryToVisible) {
-        connectorStroke = 'url(#fromVisibleLineGradient)';
-      } else if (this.#entryToVisible && !this.#entryFromVisible) {
-        connectorStroke = 'url(#toVisibleLineGradient)';
-      }
-    }
-    const fromHighlightClasses = Directives.classMap({
-      'entry-wrapper': true,
-      'from-highlight-wrapper': true,
-      'entry-is-not-source': !this.#fromEntryIsSource,
-    });
-    const toHighlightClasses = Directives.classMap({
-      'entry-wrapper': true,
-      'to-highlight-wrapper': true,
-      'entry-is-not-source': !this.#toEntryIsSource,
-    });
-    const createLinkIconStyles = Directives.styleMap({
-      display: isCreationNotStarted ? undefined : 'none',
-      left: isCreationNotStarted ? `${fromX}px` : undefined,
-      top: isCreationNotStarted ? `${this.#coordinateFrom.y}px` : undefined,
-    });
-    // clang-format off
-    render(
-        html`
-          <style>${entriesLinkOverlayStyles}</style>
-          <svg class="connectorContainer" width="100%" height="100%" role="region" aria-label=${i18nString(UIStrings.diagram)}>
-            <defs>
-              <linearGradient
-                id="fromVisibleLineGradient"
-                x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop
-                  offset="0%"
-                  stop-color=${arrowColor}
-                  stop-opacity="1" />
-                <stop
-                  offset="${this.#partlyVisibleConnectionLinePercentage()}%"
-                  stop-color=${arrowColor}
-                  stop-opacity="0" />
-              </linearGradient>
-
-              <linearGradient
-                id="toVisibleLineGradient"
-                x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop
-                  offset="${100 - this.#partlyVisibleConnectionLinePercentage()}%"
-                  stop-color=${arrowColor}
-                  stop-opacity="0" />
-                <stop
-                  offset="100%"
-                  stop-color=${arrowColor}
-                  stop-opacity="1" />
-              </linearGradient>
-              <marker
-                id="arrow"
-                orient="auto"
-                markerWidth="3"
-                markerHeight="4"
-                fill-opacity="1"
-                refX="4"
-                refY="2"
-                visibility=${this.#entryToVisible || !this.#toEntryDimensions ? 'visible' : 'hidden'}>
-                <path d="M0,0 V4 L4,2 Z" fill=${arrowColor} />
-              </marker>
-            </defs>
-            <line
-              marker-end="url(#arrow)"
-              stroke=${connectorStroke}
-              stroke-width="2"
-              stroke-dasharray=${!this.#fromEntryIsSource || !this.#toEntryIsSource ? DASHED_STROKE_AMOUNT : 'none'}
-              visibility=${!this.#entryFromVisible && !this.#entryToVisible ? 'hidden' : 'visible'}
-              style=${Directives.styleMap({display: showConnectorLine ? 'block' : 'none'})}
-              x1=${fromX}
-              y1=${fromY}
-              x2=${toX}
-              y2=${toY}
-              />
-            <circle class="entryFromConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} cx=${fromX} cy=${fromY} visibility=${drawFromEntryConnectorCircle ? 'visible' : 'hidden'} />
-            <circle class="entryToConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} cx=${toX} cy=${toY} visibility=${drawToEntryConnectorCircle ? 'visible' : 'hidden'} />
-          </svg>
-          <div class=${fromHighlightClasses} style=${Directives.styleMap({visibility: this.#entryFromVisible ? 'visible' : 'hidden'})}></div>
-          <div class=${toHighlightClasses} style=${Directives.styleMap({visibility: this.#entryToVisible && this.#toEntryDimensions !== null ? 'visible' : 'hidden'})}></div>
-          <div class="create-link-box" ?hidden=${!isCreationNotStarted}>
-            <devtools-icon
-              class="create-link-icon"
-              style=${createLinkIconStyles}
-              jslog=${VisualLogging.action('timeline.annotations.create-entry-link').track({click: true})}
-              @click=${this.#startCreatingConnection}
-              name="arrow-right-circle">
-            </devtools-icon>
-          </div>
-        `,
-        this.#shadow, {host: this});
-    // clang-format on
+    this.#view(
+        {
+          coordinateFrom: this.#coordinateFrom,
+          fromEntryDimensions: this.#fromEntryDimensions,
+          coordinateTo: this.#coordinateTo,
+          toEntryDimensions: this.#toEntryDimensions,
+          entryFromVisible: this.#entryFromVisible,
+          entryToVisible: this.#entryToVisible,
+          fromEntryIsSource: this.#fromEntryIsSource,
+          toEntryIsSource: this.#toEntryIsSource,
+          arrowHidden: this.#arrowHidden,
+          linkState: this.#linkState,
+          partlyVisibleConnectionLinePercentage: this.#partlyVisibleConnectionLinePercentage(),
+          arrowColor,
+          onStartCreating: this.#startCreatingConnection.bind(this),
+        },
+        undefined,
+        this.#shadow,
+    );
   }
 }
-
-const CONNECTOR_CIRCLE_RADIUS = 2;
-const CONNECTOR_CIRCLE_STROKE_WIDTH = 1;
-const MIN_WIDTH_TO_DRAW_CONNECTOR_CIRCLES = 8;
-
-// Defines the gap in the border when we are drawing a dashed outline.
-// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
-const DASHED_STROKE_AMOUNT = 4;
 
 customElements.define('devtools-entries-link-overlay', EntriesLinkOverlay);
 

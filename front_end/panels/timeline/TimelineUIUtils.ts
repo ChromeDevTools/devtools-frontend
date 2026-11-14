@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2013 Google Inc. All rights reserved.
@@ -57,7 +56,15 @@ import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.cs
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {
+  Directives,
+  html,
+  i18nTemplate,
+  type LitTemplate,
+  nothing,
+  render,
+  type TemplateResult,
+} from '../../ui/lit/lit.js';
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
@@ -501,7 +508,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {classMap, styleMap} = Directives;
+const {classMap, styleMap, until} = Directives;
 
 /** Look for scheme:// plus text and exclude any punctuation at the end. **/
 export const URL_REGEX: RegExp = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
@@ -689,8 +696,8 @@ export class TimelineUIUtils {
 
   static async buildDetailsNodeForTraceEvent(event: Trace.Types.Events.Event, target: SDK.Target.Target|null,
                                              linkifier: LegacyComponents.Linkifier.Linkifier, isFreshOrEnhanced = false,
-                                             parsedTrace: Trace.TraceModel.ParsedTrace): Promise<Node|null> {
-    let details: HTMLElement|HTMLSpanElement|(Element | null)|Text|null = null;
+                                             parsedTrace: Trace.TraceModel.ParsedTrace): Promise<LitTemplate|null> {
+    let details: LitTemplate|null = null;
     let detailsText;
     // TODO(40287735): update this code with type-safe data checks.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -698,6 +705,9 @@ export class TimelineUIUtils {
     // TODO(40287735): update this code with type-safe data checks.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const unsafeEventData = unsafeEventArgs?.data as Record<string, any>;
+    // The Linkifier is a legacy rendering engine that produces DOM elements;
+    // they are embedded into the returned templates as-is.
+    const linkifiedTemplate = (element: Element|null): LitTemplate|null => element ? html`${element}` : null;
 
     switch (event.name) {
       case Trace.Types.Events.Name.PAINT_IMAGE:
@@ -716,22 +726,18 @@ export class TimelineUIUtils {
             tabStop: true,
             showColumnNumber: false,
           };
-          details = LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options);
+          details = linkifiedTemplate(LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
         }
         break;
       }
 
       case Trace.Types.Events.Name.FUNCTION_CALL: {
-        details = document.createElement('span');
-
         // FunctionCall events have an args.data that could be a CallFrame, if all the details are present, so we check for that.
         const callFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.at(0);
-        if (Trace.Types.Events.isFunctionCall(event) && callFrame) {
-          UI.UIUtils.createTextChild(
-              details,
-              TimelineUIUtils.frameDisplayName(
-                  {...callFrame, scriptId: String(callFrame.scriptId) as Protocol.Runtime.ScriptId}));
-        }
+        const functionName = Trace.Types.Events.isFunctionCall(event) && callFrame ?
+            TimelineUIUtils.frameDisplayName(
+                {...callFrame, scriptId: String(callFrame.scriptId) as Protocol.Runtime.ScriptId}) :
+            nothing;
         const location = this.linkifyLocation({
           scriptId: unsafeEventData['scriptId'],
           url: unsafeEventData['url'],
@@ -742,16 +748,13 @@ export class TimelineUIUtils {
           linkifier,
           omitOrigin: true,
         });
-        if (location) {
-          UI.UIUtils.createTextChild(details, ' @ ');
-          details.appendChild(location);
-        }
+        details = html`<span>${functionName}${location ? html` @ ${location}` : nothing}</span>`;
         break;
       }
 
       case Trace.Types.Events.Name.COMPILE_MODULE:
       case Trace.Types.Events.Name.CACHE_MODULE: {
-        details = this.linkifyLocation({
+        details = linkifiedTemplate(this.linkifyLocation({
           scriptId: null,
           url: unsafeEventArgs['fileName'],
           lineNumber: 0,
@@ -759,7 +762,7 @@ export class TimelineUIUtils {
           target,
           isFreshOrEnhanced,
           linkifier,
-        });
+        }));
         break;
       }
 
@@ -767,7 +770,7 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.STREAMING_COMPILE_SCRIPT: {
         const url = unsafeEventData['url'];
         if (url) {
-          details = this.linkifyLocation({
+          details = linkifiedTemplate(this.linkifyLocation({
             scriptId: null,
             url,
             lineNumber: 0,
@@ -776,7 +779,7 @@ export class TimelineUIUtils {
             isFreshOrEnhanced,
             linkifier,
             omitOrigin: true,
-          });
+          }));
         }
         break;
       }
@@ -791,14 +794,14 @@ export class TimelineUIUtils {
             Trace.Types.Events.isProfileCall(event)) {
           detailsText = null;
         } else {
-          details = this.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced) ?? null;
+          details = linkifiedTemplate(this.linkifyTopCallFrame(event, target, linkifier, isFreshOrEnhanced));
         }
         break;
       }
     }
 
     if (!details && detailsText) {
-      details = document.createTextNode(detailsText);
+      details = html`${detailsText}`;
     }
     return details;
   }
@@ -844,7 +847,7 @@ export class TimelineUIUtils {
     return LegacyComponents.Linkifier.Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, options);
   }
 
-  static buildDetailsNodeForMarkerEvents(event: Trace.Types.Events.MarkerEvent): HTMLElement {
+  static buildDetailsNodeForMarkerEvents(event: Trace.Types.Events.MarkerEvent): LitTemplate {
     let link = 'https://web.dev/user-centric-performance-metrics/';
     let name = 'page performance metrics';
     switch (event.name) {
@@ -872,10 +875,8 @@ export class TimelineUIUtils {
         break;
     }
 
-    const div = document.createElement('div');
-
-    render(html`<devtools-link href=${link}>${i18nString(UIStrings.learnMore)}</devtools-link> about ${name}.`, div);
-    return div;
+    return html`<div><devtools-link href=${link}>${i18nString(UIStrings.learnMore)}</devtools-link> about ${
+        name}.</div>`;
   }
 
   static buildConsumeCacheDetails(eventData: {
@@ -940,11 +941,11 @@ export class TimelineUIUtils {
 
   /**
    * Takes an input string and parses it to look for links. It does this by
-   * looking for URLs in the input string. The returned fragment will contain
+   * looking for URLs in the input string. The returned template will contain
    * the same string but with any links wrapped in clickable links. The text
    * of the link is the URL, so the visible string to the user is unchanged.
    */
-  static parseStringForLinks(rawString: string): DocumentFragment {
+  static parseStringForLinks(rawString: string): LitTemplate {
     const results = TextUtils.TextUtils.Utils.splitStringByRegexes(rawString, [URL_REGEX]);
     const nodes = results.map(result => {
       if (result.regexIndex === -1) {
@@ -953,9 +954,7 @@ export class TimelineUIUtils {
       return TimelineUIUtils.maybeCreateLinkElement(result.value) ?? result.value;
     });
 
-    const frag = document.createDocumentFragment();
-    frag.append(...nodes);
-    return frag;
+    return html`${nodes}`;
   }
 
   static async buildTraceEventDetails(
@@ -976,17 +975,19 @@ export class TimelineUIUtils {
 
     if (maybeTarget) {
       if (!previewElementCache.has(event)) {
-        let previewElement: (Element|null)|null = null;
+        let preview: LitTemplate|null = null;
         const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
         if (url) {
-          previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(url, false, {
+          const previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(url, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
             align: LegacyComponents.ImagePreview.Align.START,
           });
+          preview = previewElement ? html`${previewElement}` : null;
         } else if (Trace.Types.Events.isPaint(event)) {
-          previewElement = await TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
+          const previewElement = await TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
+          preview = previewElement ? html`${previewElement}` : null;
         }
-        previewElementCache.set(event, previewElement);
+        previewElementCache.set(event, preview);
       }
     }
 
@@ -1312,11 +1313,10 @@ export class TimelineUIUtils {
         const selectorStatsSetting = Common.Settings.Settings.instance().resolve(
             SettingUIRegistration.TimelineSettings.timelineCaptureSelectorStatsSettingDescriptor);
         if (!selectorStatsSetting.get()) {
-          const note = document.createElement('span');
-          note.textContent = i18nString(UIStrings.sSelectorStatsInfo, {
+          const note = i18nString(UIStrings.sSelectorStatsInfo, {
             PH1: SettingUIRegistration.SettingUIRegistration.resolve(selectorStatsSetting.descriptor()).title,
           });
-          contentHelper.appendElementRow(i18nString(UIStrings.selectorStatsTitle), note);
+          contentHelper.appendElementRow(i18nString(UIStrings.selectorStatsTitle), html`<span>${note}</span>`);
         }
 
         break;
@@ -1549,16 +1549,16 @@ export class TimelineUIUtils {
     const relatedNodes = relatedNodesMap?.values() || [];
     for (const relatedNode of relatedNodes) {
       if (relatedNode) {
-        const nodeSpan = document.createElement('span');
-        render(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode), nodeSpan);
-        contentHelper.appendElementRow(relatedNodeLabel || i18nString(UIStrings.relatedNode), nodeSpan);
+        const nodeLink = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedNode);
+        contentHelper.appendElementRow(relatedNodeLabel || i18nString(UIStrings.relatedNode),
+                                       html`<span>${nodeLink}</span>`);
       }
     }
 
-    const previewElement = previewElementCache.get(event);
-    if (previewElement) {
+    const preview = previewElementCache.get(event);
+    if (preview) {
       contentHelper.addSection(i18nString(UIStrings.preview));
-      contentHelper.appendElementRow('', previewElement);
+      contentHelper.appendElementRow('', preview);
     }
 
     if (!entityAppended) {
@@ -1599,43 +1599,33 @@ export class TimelineUIUtils {
       ...{args: event.args},
       ...event,
     };
-    const highlightContainer = TimelineUIUtils.renderObjectJson(eventWithArgsFirst);
-    contentHelper.appendElementRow('', highlightContainer);
+    const highlightedJson = TimelineUIUtils.renderObjectJson(eventWithArgsFirst);
+    contentHelper.appendElementRow('', highlightedJson);
   }
 
-  private static renderObjectJson(obj: Object|Trace.Types.Extensions.JsonValue): HTMLDivElement {
+  private static renderObjectJson(obj: Object|Trace.Types.Extensions.JsonValue): LitTemplate {
     const indentLength =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get().length;
     // Elide if the data is huge. Then remove the initial new-line for a denser UI
     const eventStr = JSON.stringify(obj, null, indentLength).slice(0, 10_000).replace(/{\n  /, '{ ');
 
-    // Use CodeHighlighter for syntax highlighting.
-    const highlightContainer = document.createElement('div');
-    const shadowRoot =
-        UI.UIUtils.createShadowRootWithCoreStyles(highlightContainer, {cssFile: CodeHighlighter.codeHighlighterStyles});
-    const elem = shadowRoot.createChild('div');
-    elem.classList.add('monospace', 'source-code');
-    elem.textContent = eventStr;
-    // Highlighting is done async (shrug), but we'll return the container immediately.
-    void CodeHighlighter.CodeHighlighter.highlightNode(elem, 'text/javascript').then(() => {
-      /**
-       * Linkify any URLs within the text nodes.
-       * Use a TreeWalker to find all our text nodes
-       **/
-      function* iterateTreeWalker(walker: TreeWalker): IterableIterator<Node> {
-        while (walker.nextNode()) {
-          yield walker.currentNode;
-        }
-      }
-      const walker = document.createTreeWalker(elem, NodeFilter.SHOW_TEXT);
-      // Gather all the nodes first, then we'll potentially replace them.
-      for (const node of Array.from(iterateTreeWalker(walker))) {
-        const frag = TimelineUIUtils.parseStringForLinks(node.textContent || '');
-        node.parentNode?.replaceChild(frag, node);
-      }
+    // Use CodeHighlighter for syntax highlighting. Highlighting is done async
+    // (shrug), so the plain text is rendered until the highlighted tokens are
+    // ready. Any URLs within the highlighted tokens are linkified.
+    const highlightedTokens = CodeHighlighter.CodeHighlighter.create(eventStr, 'text/javascript').then(highlighter => {
+      const tokens: LitTemplate[] = [];
+      highlighter.highlight((text, style) => {
+        const linkified = TimelineUIUtils.parseStringForLinks(text);
+        tokens.push(style ? html`<span class=${style}>${linkified}</span>` : linkified);
+      });
+      return tokens;
     });
 
-    return highlightContainer;
+    // clang-format off
+    return html`
+      <style>@scope to (devtools-widget > *) { ${CodeHighlighter.codeHighlighterStyles} }</style>
+      <div class="monospace source-code">${until(highlightedTokens, eventStr)}</div>`;
+    // clang-format on
   }
 
   static stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]|
@@ -1693,14 +1683,11 @@ export class TimelineUIUtils {
 
     if (initiatorFor) {
       // If the event is an initiator for some entries, add links to reveal them.
-      const links = document.createElement('div');
-      initiatorFor.map((initiator, i) => {
-        links.appendChild(this.createEntryLink(initiator));
-        // Add space between each link if it's not last
-        if (i < initiatorFor.length - 1) {
-          links.append(' ');
-        }
-      });
+      // Add space between each link if it's not last
+      const links = html`<div>${
+          initiatorFor.map(
+              (initiator, i) =>
+                  html`${this.createEntryLink(initiator)}${i < initiatorFor.length - 1 ? ' ' : nothing}`)}</div>`;
       contentHelper.appendElementRow(UIStrings.initiatorFor, links);
     }
 
@@ -1712,14 +1699,12 @@ export class TimelineUIUtils {
     }
   }
 
-  private static createEntryLink(entry: Trace.Types.Events.Event): HTMLElement {
-    const link = document.createElement('span');
-
+  private static createEntryLink(entry: Trace.Types.Events.Event): LitTemplate {
     const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
 
     if (!traceBoundsState) {
       console.error('Tried to link to an entry without any traceBoundsState. This should never happen.');
-      return link;
+      return html`<span></span>`;
     }
 
     // Check is the entry is outside of the current breadcrumb. If it is, don't create a link to navigate to it because there is no way to navigate outside breadcrumb without removing it. Instead, just display the name and "outside breadcrumb" text
@@ -1730,31 +1715,30 @@ export class TimelineUIUtils {
     // Check if it is in the hidden array
     const isEntryHidden = ModificationsManager.activeManager()?.getEntriesFilter().entryIsInvisible(entry);
 
-    if (!isEntryOutsideBreadcrumb) {
-      link.classList.add('timeline-link');
-      UI.ARIAUtils.markAsLink(link);
-      link.tabIndex = 0;
-      link.addEventListener('click', () => {
-        TimelinePanel.instance().select(selectionFromEvent(entry));
-      });
-
-      link.addEventListener('keydown', event => {
-        if (event.key === Platform.KeyboardUtilities.ENTER_KEY) {
-          TimelinePanel.instance().select(selectionFromEvent(entry));
-          event.consume(true);
-        }
-      });
-    }
-
+    let text;
     if (isEntryHidden) {
-      link.textContent = this.eventTitle(entry) + ' ' + i18nString(UIStrings.entryIsHidden);
+      text = this.eventTitle(entry) + ' ' + i18nString(UIStrings.entryIsHidden);
     } else if (isEntryOutsideBreadcrumb) {
-      link.textContent = this.eventTitle(entry) + ' ' + i18nString(UIStrings.outsideBreadcrumbRange);
+      text = this.eventTitle(entry) + ' ' + i18nString(UIStrings.outsideBreadcrumbRange);
     } else {
-      link.textContent = this.eventTitle(entry);
+      text = this.eventTitle(entry);
     }
 
-    return link;
+    if (isEntryOutsideBreadcrumb) {
+      return html`<span>${text}</span>`;
+    }
+
+    const selectEntry = (): void => {
+      TimelinePanel.instance().select(selectionFromEvent(entry));
+    };
+    return html`<button
+        type="button"
+        class="timeline-link link-style"
+        role="link"
+        jslog=${VisualLogging.link('reveal').track({
+      click: true,
+    })}
+        @click=${selectEntry}>${text}</button>`;
   }
 
   private static async generateInvalidationsList(invalidations: Trace.Types.Events.InvalidationTrackingEvent[],
@@ -1777,24 +1761,22 @@ export class TimelineUIUtils {
                                                 invalidations: Trace.Types.Events.InvalidationTrackingEvent[],
                                                 relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null,
                                                 contentHelper: TimelineDetailsContentHelper): void {
-    function createLinkForInvalidationNode(invalidation: Trace.Types.Events.InvalidationTrackingEvent):
-        HTMLSpanElement {
-      const node = (invalidation.args.data.nodeId && relatedNodesMap) ?
-          relatedNodesMap.get(invalidation.args.data.nodeId) :
+    function nodeForInvalidation(invalidation: Trace.Types.Events.InvalidationTrackingEvent): SDK.DOMModel.DOMNode|
+        null {
+      return (invalidation.args.data.nodeId && relatedNodesMap) ?
+          relatedNodesMap.get(invalidation.args.data.nodeId) ?? null :
           null;
+    }
+
+    function createLinkForInvalidationNode(invalidation: Trace.Types.Events.InvalidationTrackingEvent): TemplateResult {
+      const node = nodeForInvalidation(invalidation);
       if (node) {
-        const nodeSpan = document.createElement('span');
-        render(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node), nodeSpan);
-        return nodeSpan;
+        return html`<span>${PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node)}</span>`;
       }
       if (invalidation.args.data.nodeName) {
-        const nodeSpan = document.createElement('span');
-        nodeSpan.textContent = invalidation.args.data.nodeName;
-        return nodeSpan;
+        return html`<span>${invalidation.args.data.nodeName}</span>`;
       }
-      const nodeSpan = document.createElement('span');
-      UI.UIUtils.createTextChild(nodeSpan, i18nString(UIStrings.UnknownNode));
-      return nodeSpan;
+      return html`<span>${i18nString(UIStrings.UnknownNode)}</span>`;
     }
 
     const generatedItems = new Set<string>();
@@ -1815,21 +1797,24 @@ export class TimelineUIUtils {
 
       const niceNodeLink = createLinkForInvalidationNode(invalidation);
 
-      const text = scriptLink ? uiI18n.getFormatLocalizedString(str_, UIStrings.invalidationWithCallFrame,
-                                                                {PH1: niceNodeLink, PH2: scriptLink}) as HTMLElement :
-                                niceNodeLink;
+      const text = scriptLink ?
+          i18nTemplate(str_, UIStrings.invalidationWithCallFrame, {PH1: niceNodeLink, PH2: html`${scriptLink}`}) :
+          niceNodeLink;
 
       // Sometimes we can get different Invalidation events which cause
       // the same text for the same element for the same reason to be
       // generated. Rather than show the user duplicates, if we have
-      // generated text that looks identical to this before, we will
-      // bail.
-      const generatedText: string = (typeof text === 'string' ? text : text.innerText);
-      if (generatedItems.has(generatedText)) {
+      // generated a row for the same element and script location before, we
+      // will bail.
+      const node = nodeForInvalidation(invalidation);
+      const nodeKey = node ? `node:${node.backendNodeId()}` : `name:${invalidation.args.data.nodeName ?? ''}`;
+      const locationKey = scriptLink && callFrame ? `${callFrame.url}:${callFrame.lineNumber}` : '';
+      const generatedKey = `${nodeKey} ${locationKey}`;
+      if (generatedItems.has(generatedKey)) {
         continue;
       }
 
-      generatedItems.add(generatedText);
+      generatedItems.add(generatedKey);
       contentHelper.appendElementRow(reason, text);
     }
   }
@@ -2210,7 +2195,7 @@ export class TimelineUIUtils {
   }
 }
 
-const previewElementCache = new WeakMap<Trace.Types.Events.Event, Element|null>();
+const previewElementCache = new WeakMap<Trace.Types.Events.Event, LitTemplate|null>();
 
 export class EventDispatchTypeDescriptor {
   priority: number;

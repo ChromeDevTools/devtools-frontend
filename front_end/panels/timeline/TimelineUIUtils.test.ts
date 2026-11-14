@@ -19,6 +19,7 @@ import {
   dispatchClickEvent,
   raf,
   renderElementIntoDOM,
+  stripLitHtmlCommentNodes,
 } from '../../testing/DOMHelpers.js';
 import {
   createTarget,
@@ -44,7 +45,7 @@ import {
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import {html} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
 
 import * as Timeline from './timeline.js';
 
@@ -64,9 +65,15 @@ function getInnerTextAcrossShadowRoots(root: Node|null): string {
   return Array.from(root.childNodes).map(getInnerTextAcrossShadowRoots).join('');
 }
 
+function renderTemplate(template: LitTemplate): HTMLDivElement {
+  const container = document.createElement('div');
+  render(template, container);
+  return container;
+}
+
 function getRowDataForDetailsElement(details: DocumentFragment) {
   const container = document.createElement('div');
-  renderElementIntoDOM(container);
+  renderElementIntoDOM(container, {includeCommonStyles: true});
   container.appendChild(details);
   return Array.from(container.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
     const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
@@ -186,7 +193,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
            throw new Error('Node was unexpectedly null');
          }
          // URL path
-         assert.strictEqual(node.textContent, 'test @ /test.js:1:1');
+         assert.strictEqual(renderTemplate(node).textContent, 'test @ /test.js:1:1');
        });
 
     it('makes the script location of a call frame a script name when the inspected target is the one the call frame was taken from',
@@ -218,7 +225,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
          if (!node) {
            throw new Error('Node was unexpectedly null');
          }
-         assert.strictEqual(node.textContent, 'test @ /test.js:1:1');
+         assert.strictEqual(renderTemplate(node).textContent, 'test @ /test.js:1:1');
        });
   });
 
@@ -1771,82 +1778,73 @@ describeWithEnvironment('TimelineUIUtils', function() {
     it('builds the right link for an LCP Event', () => {
       const markLCPEvent =
           makeInstantEvent(Trace.Types.Events.Name.MARK_LCP_CANDIDATE, 0) as Trace.Types.Events.MarkerEvent;
-      const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
+      const container = renderTemplate(Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markLCPEvent,
-      );
-      const url = html.querySelector('devtools-link')?.getAttribute('href');
+          ));
+      const url = container.querySelector('devtools-link')?.getAttribute('href');
       assert.strictEqual(url, 'https://web.dev/lcp/');
-      assert.strictEqual(html.innerText, 'Learn more about Largest Contentful Paint.');
+      assert.strictEqual(container.textContent, 'Learn more about Largest Contentful Paint.');
     });
 
     it('builds the right link for an FCP Event', () => {
       const markFCPEvent = makeInstantEvent(Trace.Types.Events.Name.MARK_FCP, 0) as Trace.Types.Events.MarkerEvent;
-      const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
+      const container = renderTemplate(Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markFCPEvent,
-      );
-      const url = html.querySelector('devtools-link')?.getAttribute('href');
+          ));
+      const url = container.querySelector('devtools-link')?.getAttribute('href');
       assert.strictEqual(url, 'https://web.dev/first-contentful-paint/');
-      assert.strictEqual(html.innerText, 'Learn more about First Contentful Paint.');
+      assert.strictEqual(container.textContent, 'Learn more about First Contentful Paint.');
     });
 
     it('builds a generic event for other marker events', () => {
       const markLoadEvent = makeInstantEvent(Trace.Types.Events.Name.MARK_LOAD, 0) as Trace.Types.Events.MarkerEvent;
-      const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
+      const container = renderTemplate(Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markLoadEvent,
-      );
-      const url = html.querySelector('devtools-link')?.getAttribute('href');
+          ));
+      const url = container.querySelector('devtools-link')?.getAttribute('href');
       assert.strictEqual(url, 'https://web.dev/user-centric-performance-metrics/');
-      assert.strictEqual(html.innerText, 'Learn more about page performance metrics.');
+      assert.strictEqual(container.textContent, 'Learn more about page performance metrics.');
     });
   });
 
   describe('parseStringForLinks', () => {
     it('should handle a string with no links', () => {
       const rawString = 'This is a string with no links.';
-      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
-      const container = document.createElement('div');
-      container.appendChild(fragment);
-      assert.strictEqual(container.innerHTML, 'This is a string with no links.');
+      const container = renderTemplate(Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString));
+      assert.strictEqual(stripLitHtmlCommentNodes(container.innerHTML), 'This is a string with no links.');
     });
 
     it('should handle a url and terminating punctuation', () => {
       const rawString = 'Check out: https://example.com.';
-      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
-      const container = document.createElement('div');
-      container.appendChild(fragment);
+      const container = renderTemplate(Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString));
       assert.strictEqual(
-          container.innerHTML,
+          stripLitHtmlCommentNodes(container.innerHTML),
           'Check out: <button role="link" class=" devtools-link text-button link-style " title="https://example.com" jslog="Link; context: url; track: click" tabindex="-1"></button>.');
     });
 
     it('should handle URLs anywhere within the string', () => {
       const rawString =
           'http://example.com at the beginning. http://example.com in the middle or at the end: http://example.com';
-      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
-      const container = document.createElement('div');
-      container.appendChild(fragment);
+      const container = renderTemplate(Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString));
       assert.strictEqual(
-          container.innerHTML,
+          stripLitHtmlCommentNodes(container.innerHTML),
           `<button role="link" class=" devtools-link text-button link-style " title="http://example.com" jslog="Link; context: url; track: click" tabindex="-1"></button> at the beginning. <button role="link" class=" devtools-link text-button link-style " title="http://example.com" jslog="Link; context: url; track: click" tabindex="-1"></button> in the middle or at the end: <button role="link" class=" devtools-link text-button link-style " title="http://example.com" jslog="Link; context: url; track: click" tabindex="-1"></button>`
               .replace(/\n/g, ' '));
     });
 
     it('does not linkify custom scheme URLs', () => {
       const rawString = 'Node: ext://node/123   Root Cause: ext://node/13566';
-      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
-      const container = document.createElement('div');
-      container.appendChild(fragment);
-      assert.strictEqual(container.innerHTML, 'Node: ext://node/123   Root Cause: ext://node/13566');
+      const container = renderTemplate(Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString));
+      assert.strictEqual(stripLitHtmlCommentNodes(container.innerHTML),
+                         'Node: ext://node/123   Root Cause: ext://node/13566');
     });
 
     it('does not linkify data URI or www. prefixed text handle a data URI', () => {
       const rawString =
           'so data:text/html,%3Cscript%3Ealert%28%27hi%27%29%3B%3C%2Fscript%3E and www.site.com remain plain';
-      const fragment = Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString);
-      const container = document.createElement('div');
-      container.appendChild(fragment);
+      const container = renderTemplate(Timeline.TimelineUIUtils.TimelineUIUtils.parseStringForLinks(rawString));
       assert.strictEqual(
-          container.innerHTML,
+          stripLitHtmlCommentNodes(container.innerHTML),
           'so data:text/html,%3Cscript%3Ealert%28%27hi%27%29%3B%3C%2Fscript%3E and www.site.com remain plain');
     });
   });

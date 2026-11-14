@@ -160,9 +160,10 @@ describeWithEnvironment('ConsoleView', () => {
   });
 
   it('adds a title to every checkbox label in the settings view', async () => {
+    await consoleView.updateComplete;
     const consoleSettingsCheckboxes =
-        consoleView.element.querySelector('devtools-toolbar')!.querySelectorAll('devtools-checkbox');
-    assert.isOk(consoleSettingsCheckboxes, 'No checkbox found in console settings');
+        consoleView.element.querySelector('.console-settings-pane')!.querySelectorAll('devtools-checkbox');
+    assert.lengthOf(consoleSettingsCheckboxes, 9);
     for (const checkbox of consoleSettingsCheckboxes) {
       assert.isTrue(checkbox.shadowRoot?.querySelector('.devtools-checkbox-text')?.hasAttribute('title'));
     }
@@ -170,6 +171,18 @@ describeWithEnvironment('ConsoleView', () => {
     // is run without the environments set in this test. Thus wait for its completion
     // before proceding to the next test.
     await consoleView.getScheduledRefreshPromiseForTest();
+  });
+
+  it('invokes onCancel when PROGRESS_VIEW receives a canceled event', () => {
+    const target = document.createElement('div');
+    const onCancel = sinon.spy();
+    Console.ConsoleView.PROGRESS_VIEW({title: 'Searching', worked: 1, totalWork: 10, onCancel}, undefined, target);
+    const indicator = target.querySelector('devtools-progress');
+    assert.exists(indicator);
+
+    indicator.dispatchEvent(new Event('canceled'));
+
+    sinon.assert.calledOnce(onCancel);
   });
 
   function createConsoleMessage(

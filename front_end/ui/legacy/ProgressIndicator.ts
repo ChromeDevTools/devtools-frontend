@@ -53,6 +53,7 @@ export class ProgressIndicator extends HTMLElement implements Common.Progress.Pr
       this.#stopButton = this.#contentElement.createChild('button', 'progress-indicator-shadow-stop-button');
       this.#stopButton.addEventListener('click', () => {
         this.canceled = true;
+        this.dispatchEvent(new Event('canceled'));
       });
     }
   }

@@ -54,9 +54,9 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
-import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {AiCodeCompletionSummaryToolbar} from '../common/common.js';
@@ -293,6 +293,110 @@ const DISCLAIMER_TOOLTIP_ID = 'console-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'console-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'console-ai-code-completion-citations-tooltip';
 
+const {bindToSetting} = UI.UIUtils;
+
+export interface SettingsPaneInput {
+  showSettingsPane: boolean;
+  networkMessagesSetting: Common.Settings.Setting<boolean>;
+  networkMessagesTitle: Common.UIString.LocalizedString;
+  monitoringXHREnabledSetting: Common.Settings.Setting<boolean>;
+  preserveConsoleLogSetting: Common.Settings.Setting<boolean>;
+  consoleEagerEvalSetting: Common.Settings.Setting<boolean>;
+  consoleEagerEvalLabel: Common.UIString.LocalizedString;
+  filterByExecutionContextSetting: Common.Settings.Setting<boolean>;
+  consoleHistoryAutocompleteSetting: Common.Settings.Setting<boolean>;
+  consoleHistoryAutocompleteLabel: Common.UIString.LocalizedString;
+  groupSimilarSetting: Common.Settings.Setting<boolean>;
+  groupSimilarLabel: Common.UIString.LocalizedString;
+  userActivationEvalSetting: Common.Settings.Setting<boolean>;
+  userActivationEvalLabel: Common.UIString.LocalizedString;
+  showCorsErrorsSetting: Common.Settings.Setting<boolean>;
+  showCorsErrorsLabel: Common.UIString.LocalizedString;
+}
+
+function renderSettingsPane(input: SettingsPaneInput): LitTemplate {
+  // clang-format off
+  return html`<div
+      class="console-settings-pane"
+      ?hidden=${!input.showSettingsPane}
+      role="group"
+      aria-label=${i18nString(UIStrings.consoleSettings)}>
+    <devtools-checkbox
+        title=${input.networkMessagesTitle}
+        ${bindToSetting(input.networkMessagesSetting)}>
+      ${i18nString(UIStrings.networkMessages)}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.logXMLHttpRequests)}
+        ${bindToSetting(input.monitoringXHREnabledSetting)}>
+      ${i18nString(UIStrings.logXMLHttpRequests)}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.doNotClearLogOnPageReload)}
+        ${bindToSetting(input.preserveConsoleLogSetting)}>
+      ${i18nString(UIStrings.preserveLog)}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)}
+        ${bindToSetting(input.consoleEagerEvalSetting)}>
+      ${input.consoleEagerEvalLabel}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)}
+        ${bindToSetting(input.filterByExecutionContextSetting)}>
+      ${i18nString(UIStrings.selectedContextOnly)}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.autocompleteFromHistory)}
+        ${bindToSetting(input.consoleHistoryAutocompleteSetting)}>
+      ${input.consoleHistoryAutocompleteLabel}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.groupSimilarMessagesInConsole)}
+        ${bindToSetting(input.groupSimilarSetting)}>
+      ${input.groupSimilarLabel}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.treatEvaluationAsUserActivation)}
+        ${bindToSetting(input.userActivationEvalSetting)}>
+      ${input.userActivationEvalLabel}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.showCorsErrorsInConsole)}
+        ${bindToSetting(input.showCorsErrorsSetting)}>
+      ${input.showCorsErrorsLabel}
+    </devtools-checkbox>
+  </div>`;
+  // clang-format on
+}
+
+export type SettingsPaneView = (input: SettingsPaneInput, output: undefined, target: HTMLElement) => void;
+
+export const SETTINGS_PANE_VIEW: SettingsPaneView = (input, _output, target) => {
+  render(renderSettingsPane(input), target);
+};
+
+export interface ProgressViewInput {
+  title: string;
+  worked: number;
+  totalWork: number;
+  onCancel: () => void;
+}
+
+export type ProgressView = (input: ProgressViewInput|null, output: undefined, target: HTMLElement) => void;
+
+export const PROGRESS_VIEW: ProgressView = (progressInput, _output, target) => {
+  // clang-format off
+  render(progressInput ? html`
+    <devtools-progress
+        .title=${progressInput.title}
+        .worked=${progressInput.worked}
+        .totalWork=${progressInput.totalWork}
+        @canceled=${progressInput.onCancel}>
+    </devtools-progress>` : nothing, target);
+  // clang-format on
+};
+
 export class ConsoleView extends UI.Widget.VBox implements
     UI.SearchableView.Searchable, ConsoleViewportProvider,
     SDK.TargetManager.SDKModelObserver<SDK.ConsoleModel.ConsoleModel> {
@@ -322,6 +426,11 @@ export class ConsoleView extends UI.Widget.VBox implements
   private readonly showCorsErrorsSetting: Common.Settings.Setting<boolean>;
   private readonly timestampsSetting: Common.Settings.Setting<boolean>;
   private readonly consoleHistoryAutocompleteSetting: Common.Settings.Setting<boolean>;
+  readonly #monitoringXHREnabledSetting: Common.Settings.Setting<boolean>;
+  readonly #consoleEagerEvalSetting: Common.Settings.Setting<boolean>;
+  readonly #preserveConsoleLogSetting: Common.Settings.Setting<boolean>;
+  readonly #userActivationEvalSetting: Common.Settings.Setting<boolean>;
+  readonly #settingsPaneContainer = document.createElement('div');
   private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
   readonly pinPane: ConsolePinPane;
   private viewport: ConsoleViewport;
@@ -342,7 +451,8 @@ export class ConsoleView extends UI.Widget.VBox implements
   private needsFullUpdate?: boolean;
   private buildHiddenCacheTimeout?: number;
   private searchShouldJumpBackwards?: boolean;
-  private searchProgressIndicator?: UI.ProgressIndicator.ProgressIndicator;
+  private searchProgressIndicator?: Common.Progress.Progress;
+  #progress: Common.Progress.Progress|null = null;
   #searchTimeoutId?: number;
   private muteViewportUpdates?: boolean;
   private waitForScrollTimeout?: number;
@@ -360,9 +470,14 @@ export class ConsoleView extends UI.Widget.VBox implements
   aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
   private aiCodeCompletionSummaryToolbarContainer?: HTMLElement;
   private aiCodeCompletionSummaryToolbar?: AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar;
+  readonly #settingsPaneView: SettingsPaneView;
+  readonly #progressView: ProgressView;
 
-  constructor(viewportThrottlerTimeout: number) {
+  constructor(viewportThrottlerTimeout: number, settingsPaneView: SettingsPaneView = SETTINGS_PANE_VIEW,
+              progressView: ProgressView = PROGRESS_VIEW) {
     super();
+    this.#settingsPaneView = settingsPaneView;
+    this.#progressView = progressView;
     this.setMinimumSize(0, 35);
     // We register the SymbolizedErrorWidget styles here because many web and e2e
     // tests use `deepTextContent`, which would also include <style> tags if they
@@ -487,7 +602,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     toolbar.appendToolbarItem(this.filterStatusText);
     toolbar.appendToolbarItem(this.showSettingsPaneButton);
 
-    const monitoringXHREnabledSetting =
+    this.#monitoringXHREnabledSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.monitoringXHREnabledSettingDescriptor);
     this.timestampsSetting =
         Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
@@ -496,49 +611,15 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
         'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
 
-    const settingsPane = this.contentsElement.createChild('div', 'console-settings-pane');
-    UI.ARIAUtils.setLabel(settingsPane, i18nString(UIStrings.consoleSettings));
-    UI.ARIAUtils.markAsGroup(settingsPane);
-
-    const consoleEagerEvalSetting =
+    this.#consoleEagerEvalSetting =
         Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleEagerEvalSettingDescriptor);
-    const preserveConsoleLogSetting =
+    this.#preserveConsoleLogSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor);
-    const userActivationEvalSetting =
+    this.#userActivationEvalSetting =
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.consoleUserActivationEvalSettingDescriptor);
-    settingsPane.append(
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            i18nString(UIStrings.networkMessages), this.filter.networkMessagesSetting,
-            Settings.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title),
-        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests),
-                                                    monitoringXHREnabledSetting),
-        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.preserveLog), preserveConsoleLogSetting,
-                                                    i18nString(UIStrings.doNotClearLogOnPageReload)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            Settings.SettingUIRegistration.resolve(consoleEagerEvalSetting.descriptor()).title, consoleEagerEvalSetting,
-            i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)),
-        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.selectedContextOnly),
-                                                    this.filter.filterByExecutionContextSetting,
-                                                    i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            Settings.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title,
-            this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            Settings.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
-            this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            Settings.SettingUIRegistration.resolve(userActivationEvalSetting.descriptor()).title,
-            userActivationEvalSetting, i18nString(UIStrings.treatEvaluationAsUserActivation)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            Settings.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title,
-            this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole)),
-    );
-
-    if (!this.showSettingsPaneSetting.get()) {
-      settingsPane.classList.add('hidden');
-    }
-    this.showSettingsPaneSetting.addChangeListener(
-        () => settingsPane.classList.toggle('hidden', !this.showSettingsPaneSetting.get()));
+    this.#settingsPaneContainer.style.display = 'contents';
+    this.contentsElement.appendChild(this.#settingsPaneContainer);
+    this.showSettingsPaneSetting.addChangeListener(() => this.requestUpdate());
 
     this.pinPane = new ConsolePinPane(() => this.prompt.focus());
     this.pinPane.element.classList.add('console-view-pinpane');
@@ -637,6 +718,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.timestampsSetting.addChangeListener(this.consoleTimestampsSettingChanged, this);
 
     this.registerWithMessageSink();
+    this.requestUpdate();
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext,
                                                           this.executionContextChanged, this);
@@ -669,6 +751,47 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.issueToolbarThrottle = new Common.Throttler.Throttler(100);
     issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
                                    this.#onIssuesCountUpdateBound);
+  }
+
+  #createProgressViewInput(): ProgressViewInput|null {
+    const progress = this.#progress;
+    if (!progress) {
+      return null;
+    }
+    return {
+      title: progress.title ?? '',
+      worked: progress.worked,
+      totalWork: progress.totalWork,
+      onCancel: () => {
+        progress.canceled = true;
+      },
+    };
+  }
+
+  override performUpdate(): void {
+    this.#settingsPaneView({
+      showSettingsPane: this.showSettingsPaneSetting.get(),
+      networkMessagesSetting: this.filter.networkMessagesSetting,
+      networkMessagesTitle:
+          Settings.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title,
+      monitoringXHREnabledSetting: this.#monitoringXHREnabledSetting,
+      preserveConsoleLogSetting: this.#preserveConsoleLogSetting,
+      consoleEagerEvalSetting: this.#consoleEagerEvalSetting,
+      consoleEagerEvalLabel: Settings.SettingUIRegistration.resolve(this.#consoleEagerEvalSetting.descriptor()).title,
+      filterByExecutionContextSetting: this.filter.filterByExecutionContextSetting,
+      consoleHistoryAutocompleteSetting: this.consoleHistoryAutocompleteSetting,
+      consoleHistoryAutocompleteLabel:
+          Settings.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title,
+      groupSimilarSetting: this.groupSimilarSetting,
+      groupSimilarLabel: Settings.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
+      userActivationEvalSetting: this.#userActivationEvalSetting,
+      userActivationEvalLabel:
+          Settings.SettingUIRegistration.resolve(this.#userActivationEvalSetting.descriptor()).title,
+      showCorsErrorsSetting: this.showCorsErrorsSetting,
+      showCorsErrorsLabel: Settings.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title,
+    },
+                           undefined, this.#settingsPaneContainer);
+    this.#progressView(this.#createProgressViewInput(), undefined, this.progressToolbarItem.element);
   }
 
   static clearConsoleViewInstanceForTest(): void {
@@ -1381,16 +1504,23 @@ export class ConsoleView extends UI.Widget.VBox implements
                                                       Date.now()) as Platform.DevToolsPath.RawPathString;
     const stream = new Bindings.FileUtils.FileOutputStream(Workspace.FileManager.FileManager.instance());
 
-    const progressIndicator = document.createElement('devtools-progress');
-    progressIndicator.title = i18nString(UIStrings.writingFile);
-    progressIndicator.totalWork = this.itemCount();
+    const progress = new Common.Progress.Progress();
+    progress.title = i18nString(UIStrings.writingFile);
+    progress.totalWork = this.itemCount();
+    const progressIndicator = new Common.Progress.ProgressProxy(progress, () => {
+      if (this.#progress === progress) {
+        this.#progress = null;
+      }
+      this.requestUpdate();
+    }, () => this.requestUpdate());
 
     const chunkSize = 350;
 
     if (!await stream.open(filename)) {
       return;
     }
-    this.progressToolbarItem.element.appendChild(progressIndicator);
+    this.#progress = progress;
+    this.requestUpdate();
 
     let messageIndex = 0;
     while (messageIndex < this.itemCount() && !progressIndicator.canceled) {
@@ -1674,10 +1804,17 @@ export class ConsoleView extends UI.Widget.VBox implements
       this.searchShouldJumpBackwards = Boolean(jumpBackwards);
     }
 
-    this.searchProgressIndicator = document.createElement('devtools-progress');
-    this.searchProgressIndicator.title = i18nString(UIStrings.searching);
-    this.searchProgressIndicator.totalWork = this.visibleViewMessages.length;
-    this.progressToolbarItem.element.appendChild(this.searchProgressIndicator);
+    const progress = new Common.Progress.Progress();
+    progress.title = i18nString(UIStrings.searching);
+    progress.totalWork = this.visibleViewMessages.length;
+    this.searchProgressIndicator = new Common.Progress.ProgressProxy(progress, () => {
+      if (this.#progress === progress) {
+        this.#progress = null;
+      }
+      this.requestUpdate();
+    }, () => this.requestUpdate());
+    this.#progress = progress;
+    this.requestUpdate();
 
     this.#search(0);
   }

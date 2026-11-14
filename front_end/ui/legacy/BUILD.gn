@@ -200,6 +200,7 @@ devtools_ui_module("unittests") {
     "ListModel.test.ts",
     "ListWidget.test.ts",
     "PlusButton.test.ts",
+    "ProgressIndicator.test.ts",
     "SearchableView.test.ts",
     "ShortcutRegistry.test.ts",
     "SoftContextMenu.test.ts",

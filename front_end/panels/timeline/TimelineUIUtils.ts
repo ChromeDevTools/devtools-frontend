@@ -57,7 +57,7 @@ import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.cs
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
@@ -500,6 +500,8 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const {classMap, styleMap} = Directives;
 
 /** Look for scheme:// plus text and exclude any punctuation at the end. **/
 export const URL_REGEX: RegExp = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
@@ -2242,63 +2244,136 @@ export function stripScriptIds(stackTrace: Protocol.Runtime.StackTrace): Protoco
   };
 }
 
+/**
+ * A row in a section of the trace event details. `text` and `element` rows
+ * render a title/value pair; `body` rows render their template directly
+ * inside the section body (used for stack traces).
+ */
+export type DetailsRow = {
+  type: 'text',
+  title: string,
+  value: string,
+}|{
+  type: 'element',
+  title: string,
+  value: string | LitTemplate,
+  isWarning: boolean,
+  isStacked: boolean,
+}|{
+  type: 'body',
+  body: LitTemplate,
+};
+
+export interface DetailsSection {
+  title: string;
+  swatchColor?: string;
+  onRevealEntry?: () => void;
+  rows: DetailsRow[];
+}
+
+export interface ViewInput {
+  sections: readonly DetailsSection[];
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
+
+function renderDetailsRow(row: DetailsRow): LitTemplate {
+  switch (row.type) {
+    case 'text':
+      // clang-format off
+      return html`
+        <div class="timeline-details-view-row" jslog=${VisualLogging.item('detail-row')}>
+          <div class="timeline-details-view-row-title">${row.title}</div>
+          <div class="timeline-details-view-row-value">${row.value}</div>
+        </div>`;
+    // clang-format on
+    case 'element': {
+      const classes = {
+        'timeline-details-view-row': true,
+        'timeline-details-warning': row.isWarning,
+        'timeline-details-stack-values': row.isStacked,
+      };
+      // clang-format off
+      return html`
+        <div class=${classMap(classes)} jslog=${VisualLogging.item('detail-row')} data-row-title=${row.title}>
+          <div class="timeline-details-view-row-title">${row.title}</div>
+          <div class="timeline-details-view-row-value">${row.value}</div>
+        </div>`;
+      // clang-format on
+    }
+    case 'body':
+      return row.body;
+    default:
+      Platform.assertNever(row, `Unknown details row: ${JSON.stringify(row)}`);
+  }
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`${input.sections.map(section => html`
+    <div class="timeline-details-view-block" jslog=${VisualLogging.section('timeline.event-details')}>
+      ${section.title ? html`
+        <div class="timeline-details-chip-title">
+          ${section.swatchColor ? html`
+            <div style=${styleMap({'background-color': section.swatchColor})}></div>` : nothing}
+          ${section.onRevealEntry ? html`
+            <button type="button" class="timeline-details-chip-title-reveal-entry"
+                jslog=${VisualLogging.action('reveal').track({click: true})}
+                @click=${section.onRevealEntry}>${section.title}</button>` :
+            html`<span>${section.title}</span>`}
+        </div>` : nothing}
+      <div class="vbox timeline-details-chip-body">${section.rows.map(renderDetailsRow)}</div>
+    </div>`)}`, target);
+  // clang-format on
+};
+
+/**
+ * Collects the sections and rows of the details of a trace event, and renders
+ * them with the view into a new fragment when `fragment` is read.
+ */
 export class TimelineDetailsContentHelper {
-  fragment: DocumentFragment;
-  #linkifier: LegacyComponents.Linkifier.Linkifier|null;
-  private target: SDK.Target.Target|null;
-  element: HTMLDivElement;
-  private tableElement: HTMLElement;
+  readonly #view: View;
+  readonly #linkifier: LegacyComponents.Linkifier.Linkifier|null;
+  readonly #target: SDK.Target.Target|null;
+  readonly #sections: DetailsSection[] = [];
+  #currentSection: DetailsSection = {title: '', rows: []};
 
-  constructor(target: SDK.Target.Target|null, linkifier: LegacyComponents.Linkifier.Linkifier|null) {
-    this.fragment = document.createDocumentFragment();
-
+  constructor(target: SDK.Target.Target|null, linkifier: LegacyComponents.Linkifier.Linkifier|null,
+              view: View = DEFAULT_VIEW) {
     this.#linkifier = linkifier;
-    this.target = target;
+    this.#target = target;
+    this.#view = view;
+    this.#sections.push(this.#currentSection);
+  }
 
-    this.element = document.createElement('div');
-    this.element.classList.add('timeline-details-view-block');
-    this.element.setAttribute('jslog', `${VisualLogging.section('timeline.event-details')}`);
-    this.tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
-    this.fragment.appendChild(this.element);
+  get fragment(): DocumentFragment {
+    const fragment = document.createDocumentFragment();
+    this.#view({sections: this.#sections}, undefined, fragment);
+    return fragment;
   }
 
   addSection(title: string, swatchColor?: string, event?: Trace.Types.Events.Event): void {
-    if (!this.tableElement.hasChildNodes()) {
-      this.element.removeChildren();
+    const section: DetailsSection = {
+      title,
+      swatchColor,
+      onRevealEntry: event ? () => TimelinePanel.instance().zoomEvent(event) : undefined,
+      rows: [],
+    };
+    if (this.#currentSection.rows.length) {
+      this.#sections.push(section);
     } else {
-      this.element = document.createElement('div');
-      this.element.classList.add('timeline-details-view-block');
-      this.element.setAttribute('jslog', `${VisualLogging.section('timeline.event-details')}`);
-      this.fragment.appendChild(this.element);
+      // The current section is still empty, so the new section replaces it.
+      this.#sections[this.#sections.length - 1] = section;
     }
-
-    if (title) {
-      const titleElement = this.element.createChild('div', 'timeline-details-chip-title');
-      if (swatchColor) {
-        titleElement.createChild('div').style.backgroundColor = swatchColor;
-      }
-
-      const textChild = titleElement.createChild('span');
-      textChild.textContent = title;
-
-      if (event) {
-        textChild.classList.add('timeline-details-chip-title-reveal-entry');
-        textChild.addEventListener('click', function() {
-          TimelinePanel.instance().zoomEvent(event);
-        });
-      }
-    }
-
-    this.tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
-    this.fragment.appendChild(this.element);
+    this.#currentSection = section;
   }
 
   /**
-   * Creates a new section, but only if the provided `body` element is present,
+   * Creates a new section, but only if the provided `body` template is present,
    * otherwise it does nothing.
    */
   appendSectionWithBodyIfExists(title: string, options: {
-    body: HTMLElement|null,
+    body: HTMLElement|LitTemplate|null,
     swatchColor?: string,
     event?: Trace.Types.Events.Event,
   }): void {
@@ -2306,7 +2381,8 @@ export class TimelineDetailsContentHelper {
       return;
     }
     this.addSection(title, options.swatchColor, options.event);
-    this.tableElement.appendChild(options.body);
+    this.#currentSection.rows.push(
+        {type: 'body', body: options.body instanceof Node ? html`${options.body}` : options.body});
   }
 
   /**
@@ -2332,30 +2408,16 @@ export class TimelineDetailsContentHelper {
   }
 
   appendTextRow(title: string, value: string|number|boolean): void {
-    const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
-    rowElement.setAttribute('jslog', `${VisualLogging.item('detail-row')}`);
-    rowElement.createChild('div', 'timeline-details-view-row-title').textContent = title;
-    rowElement.createChild('div', 'timeline-details-view-row-value').textContent = value.toString();
+    this.#currentSection.rows.push({type: 'text', title, value: value.toString()});
   }
 
-  appendElementRow(title: string, content: string|Node, isWarning?: boolean, isStacked?: boolean): void {
-    const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
-    rowElement.setAttribute('jslog', `${VisualLogging.item('detail-row')}`);
-    rowElement.setAttribute('data-row-title', title);
-    if (isWarning) {
-      rowElement.classList.add('timeline-details-warning');
-    }
-    if (isStacked) {
-      rowElement.classList.add('timeline-details-stack-values');
-    }
-    const titleElement = rowElement.createChild('div', 'timeline-details-view-row-title');
-    titleElement.textContent = title;
-    const valueElement = rowElement.createChild('div', 'timeline-details-view-row-value');
-    if (content instanceof Node) {
-      valueElement.appendChild(content);
-    } else {
-      UI.UIUtils.createTextChild(valueElement, content || '');
-    }
+  /**
+   * `content` can be a DOM node created by a legacy rendering engine (such as
+   * the Linkifier or ImagePreview); it is embedded into the row as-is.
+   */
+  appendElementRow(title: string, content: string|Node|LitTemplate, isWarning = false, isStacked = false): void {
+    const value = content instanceof Node ? html`${content}` : content || '';
+    this.#currentSection.rows.push({type: 'element', title, value, isWarning, isStacked});
   }
 
   appendLocationRow(title: string, url: string, startLine: number, startColumn?: number, text?: string,
@@ -2371,7 +2433,7 @@ export class TimelineDetailsContentHelper {
       text,
       omitOrigin,
     };
-    const link = this.#linkifier.maybeLinkifyScriptLocation(this.target, null, url as Platform.DevToolsPath.UrlString,
+    const link = this.#linkifier.maybeLinkifyScriptLocation(this.#target, null, url as Platform.DevToolsPath.UrlString,
                                                             startLine, options);
     if (!link) {
       return;
@@ -2380,11 +2442,11 @@ export class TimelineDetailsContentHelper {
   }
 
   appendLocationRange(title: string, url: Platform.DevToolsPath.UrlString, startLine: number, endLine?: number): void {
-    if (!this.#linkifier || !this.target) {
+    if (!this.#linkifier || !this.#target) {
       return;
     }
     const locationContent = document.createElement('span');
-    const link = this.#linkifier.maybeLinkifyScriptLocation(this.target, null, url, startLine, {tabStop: true});
+    const link = this.#linkifier.maybeLinkifyScriptLocation(this.#target, null, url, startLine, {tabStop: true});
     if (!link) {
       return;
     }
@@ -2405,7 +2467,7 @@ export class TimelineDetailsContentHelper {
     // Fallback to the main page/root target. Maybe the main page has a source map we need.
     // Worst case the stack is identity mapped.
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const target = this.target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
+    const target = this.#target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
     if (!target) {
       return null;
     }

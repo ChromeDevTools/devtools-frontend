@@ -44,6 +44,7 @@ import {
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {html} from '../../ui/lit/lit.js';
 
 import * as Timeline from './timeline.js';
 
@@ -2148,5 +2149,100 @@ describeWithEnvironment('TimelineUIUtils - mapping to authored function name whe
     container.removeChild(stackTraceElement);
     await removed;
     assert.strictEqual(activeListeners(), 0);
+  });
+});
+
+describe('TimelineDetailsContentHelper', function() {
+  function createHelperWithViewStub() {
+    const view = sinon.spy<Timeline.TimelineUIUtils.View>(() => {});
+    const helper = new Timeline.TimelineUIUtils.TimelineDetailsContentHelper(null, null, view);
+    return {helper, view};
+  }
+
+  it('passes collected sections, rows, and reveal callback to the view', () => {
+    const timelinePanel = sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel);
+    sinon.stub(Timeline.TimelinePanel.TimelinePanel, 'instance').callsFake(() => timelinePanel);
+    const event = makeCompleteEvent('RunTask', 0, 100);
+    const {helper, view} = createHelperWithViewStub();
+    helper.appendTextRow('Count', 3);
+    helper.addSection('Title', 'red', event);
+    helper.appendElementRow('Warning', 'Slow', true);
+    const fragment = helper.fragment;
+
+    sinon.assert.calledOnce(view);
+    const [input, output, target] = view.firstCall.args;
+    assert.isUndefined(output);
+    assert.strictEqual(target, fragment);
+    assert.deepEqual(input.sections[0], {title: '', rows: [{type: 'text', title: 'Count', value: '3'}]});
+    assert.strictEqual(input.sections[1].title, 'Title');
+    assert.strictEqual(input.sections[1].swatchColor, 'red');
+    assert.deepEqual(input.sections[1].rows, [
+      {type: 'element', title: 'Warning', value: 'Slow', isWarning: true, isStacked: false},
+    ]);
+    input.sections[1].onRevealEntry?.();
+    sinon.assert.calledOnceWithExactly(timelinePanel.zoomEvent, event);
+  });
+
+  it('replaces an empty section when addSection is called', () => {
+    const {helper, view} = createHelperWithViewStub();
+    helper.addSection('Replaced');
+    helper.addSection('Kept');
+    helper.appendTextRow('Key', 'value');
+    void helper.fragment;
+
+    const [input] = view.firstCall.args;
+    assert.deepEqual(input.sections.map(s => s.title), ['Kept']);
+  });
+
+  it('skips null body sections in appendSectionWithBodyIfExists', () => {
+    const {helper, view} = createHelperWithViewStub();
+    helper.appendSectionWithBodyIfExists('Empty', {body: null});
+    const body = html`<div class="body"></div>`;
+    helper.appendSectionWithBodyIfExists('Stack', {body});
+    void helper.fragment;
+
+    const [input] = view.firstCall.args;
+    assert.deepEqual(input.sections.map(s => s.title), ['Stack']);
+    assert.deepEqual(input.sections[0].rows, [{type: 'body', body}]);
+  });
+
+  describe('view', () => {
+    function renderView(sections: Timeline.TimelineUIUtils.DetailsSection[]): HTMLElement {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      Timeline.TimelineUIUtils.DEFAULT_VIEW({sections}, undefined, target);
+      return target;
+    }
+
+    it('renders section headers, reveal buttons, and text/element/body rows', () => {
+      const onRevealEntry = sinon.spy();
+      const target = renderView([
+        {
+          title: 'Task',
+          swatchColor: 'rgb(255, 0, 0)',
+          onRevealEntry,
+          rows: [
+            {type: 'text', title: 'Count', value: '3'},
+            {type: 'element', title: 'Details', value: html`<b>bold</b>`, isWarning: true, isStacked: true},
+            {type: 'body', body: html`<div class="custom-body">stack</div>`},
+          ],
+        },
+        {title: 'Plain', rows: []},
+      ]);
+
+      const blocks = target.querySelectorAll<HTMLElement>(':scope > .timeline-details-view-block');
+      assert.lengthOf(blocks, 2);
+      const revealBtn = blocks[0].querySelector<HTMLButtonElement>('button.timeline-details-chip-title-reveal-entry')!;
+      assert.strictEqual(revealBtn.textContent, 'Task');
+      revealBtn.click();
+      sinon.assert.calledOnce(onRevealEntry);
+      assert.strictEqual(blocks[1].querySelector('.timeline-details-chip-title span')?.textContent, 'Plain');
+      const rows = blocks[0].querySelectorAll<HTMLElement>('.timeline-details-view-row');
+      assert.lengthOf(rows, 2);
+      assert.strictEqual(rows[0].querySelector('.timeline-details-view-row-value')?.textContent, '3');
+      assert.isTrue(rows[1].classList.contains('timeline-details-warning'));
+      assert.isTrue(rows[1].classList.contains('timeline-details-stack-values'));
+      assert.strictEqual(blocks[0].querySelector('.custom-body')?.textContent, 'stack');
+    });
   });
 });

@@ -21,6 +21,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {ActiveFilters} from './ActiveFilters.js';
 import * as Extensions from './extensions/extensions.js';
 import {targetForEvent} from './TargetForEvent.js';
+import timelineDetailsViewStyles from './timelineDetailsView.css.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {
   rangeForSelection,
@@ -242,8 +243,8 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   constructor(element?: HTMLElement, options?: UI.Widget.WidgetOptions) {
     super(element, options);
     this.#selectedEvents = null;
-    this.element.classList.add('timeline-tree-view');
-    this.registerRequiredCSS(timelineTreeViewStyles);
+    // The details sidebar (`detailsView`) renders trace event details styled by `timelineDetailsViewStyles`.
+    this.registerRequiredCSS(timelineTreeViewStyles, timelineDetailsViewStyles);
 
     this.searchResults = [];
   }
@@ -443,6 +444,10 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
 
   override wasShown(): void {
     super.wasShown();
+    this.element.classList.add('timeline-tree-view');
+    if (!this.#compactMode && this.splitWidget) {
+      this.splitWidget.show(this.element);
+    }
     // Only refresh if data or configuration changed while detached,
     // avoiding rebuilding the DataGrid which resets expanded nodes and
     // selection.
@@ -829,8 +834,12 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   }
 
   override willHide(): void {
+    this.element.classList.remove('timeline-tree-view');
     this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange, this);
     this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.#onDataGridDeselection, this);
+    if (!this.#compactMode) {
+      this.splitWidget?.detach();
+    }
     super.willHide();
   }
 
@@ -1198,6 +1207,10 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.init();
     this.stackView = new TimelineStackView(this);
     this.stackView.addEventListener(TimelineStackView.Events.SELECTION_CHANGED, this.onStackViewSelectionChanged, this);
+    // Surface hovers in the heaviest stack sidebar as hovers of this tree view.
+    this.stackView.addEventListener(
+        TimelineStackView.Events.TREE_ROW_HOVERED,
+        ({data: node}) => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node}));
   }
 
   override refreshTree(forceRefresh = false): void {

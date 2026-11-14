@@ -67,7 +67,7 @@ export class SplitWidget extends SplitWidgetBase {
       defaultSidebarWidth?: number,
       defaultSidebarHeight?: number,
       constraintsInDip?: boolean,
-      element?: SplitWidgetElement,
+      element?: HTMLElement,
   ) {
     super(element, {useShadowDom: true});
     this.element.classList.add('split-widget');

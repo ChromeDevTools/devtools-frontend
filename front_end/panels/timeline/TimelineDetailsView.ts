@@ -36,7 +36,6 @@ import {
   BottomUpTimelineTreeView,
   CallTreeTimelineTreeView,
   GridNode,
-  TimelineStackView,
   TimelineTreeView,
 } from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
@@ -180,12 +179,6 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, node.data);
       });
 
-      // If there's a heaviest stack sidebar view, also listen to hover within it.
-      if (view instanceof AggregatedTimelineTreeView) {
-        view.stackView.addEventListener(
-            TimelineStackView.Events.TREE_ROW_HOVERED,
-            node => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node: node.data}));
-      }
     });
 
     this.#summaryContent.onTreeRowHovered = (node, events) => {
@@ -295,9 +288,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       return this.lazySelectorStatsView;
     }
 
-    this.lazySelectorStatsView = new TimelineSelectorStatsView(
-        this.#parsedTrace,
-    );
+    this.lazySelectorStatsView = new TimelineSelectorStatsView(undefined, this.#parsedTrace);
     return this.lazySelectorStatsView;
   }
 

@@ -29,8 +29,9 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   private lastLoadedSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
   #parsedTrace: Trace.TraceModel.ParsedTrace;
 
-  constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
-    super(false, false);
+  constructor(parsedTrace: Trace.TraceModel.ParsedTrace, element?: HTMLElement) {
+    super(false, false, /* settingName */ undefined, /* defaultSidebarWidth */ undefined,
+          /* defaultSidebarHeight */ undefined, /* constraintsInDip */ undefined, element);
     this.setSidebarSize(60);
     this.setResizable(false);
 

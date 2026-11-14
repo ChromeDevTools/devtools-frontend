@@ -400,4 +400,21 @@ describe('TimelineDetailsView', function() {
       detailsView.detach();
     });
   });
+
+  it('forwards heaviest stack row hover once from AggregatedTimelineTreeView', async () => {
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+    const hoverSpy = sinon.spy();
+    detailsView.addEventListener(Timeline.TimelineTreeView.TimelineTreeView.Events.TREE_ROW_HOVERED, hoverSpy);
+    detailsView.selectTab(Timeline.TimelineDetailsView.Tab.BottomUp, null);
+    await detailsView.updateComplete;
+    const treeEl = detailsView.element.querySelector('.timeline-tree-view');
+    assert.isNotNull(treeEl);
+    const bottomUp = UI.Widget.Widget.get(treeEl);
+    assert.instanceOf(bottomUp, Timeline.TimelineTreeView.BottomUpTimelineTreeView);
+    bottomUp.stackView.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineStackView.Events.TREE_ROW_HOVERED,
+                                                null);
+    sinon.assert.calledOnce(hoverSpy);
+    detailsView.detach();
+  });
 });

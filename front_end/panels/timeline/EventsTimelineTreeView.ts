@@ -80,11 +80,11 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/EventsTimelineTreeView
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventsTimelineTreeView extends TimelineTreeView {
   private readonly filtersControl: Filters;
-  private readonly delegate: TimelineModeViewDelegate;
+  private readonly delegate: Pick<TimelineModeViewDelegate, 'highlightEvent'>;
   private currentTree!: Trace.Extras.TraceTree.Node;
   #eventToTreeNode = new WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node>();
-  constructor(delegate: TimelineModeViewDelegate) {
-    super(undefined, {jslog: `${VisualLogging.pane('event-log').track({resize: true})}`});
+  constructor(delegate: Pick<TimelineModeViewDelegate, 'highlightEvent'>, element?: HTMLElement) {
+    super(element, {jslog: `${VisualLogging.pane('event-log').track({resize: true})}`});
     this.filtersControl = new Filters();
     this.filtersControl.addEventListener(Events.FILTER_CHANGED, this.onFilterChanged, this);
     this.init();

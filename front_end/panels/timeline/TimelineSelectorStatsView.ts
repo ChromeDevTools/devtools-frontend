@@ -212,14 +212,32 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
   #view: View;
   #timings: SelectorTiming[] = [];
 
-  constructor(parsedTrace: Trace.TraceModel.ParsedTrace|null, view: View = DEFAULT_VIEW) {
-    super();
-
+  constructor(
+      element?: HTMLElement,
+      parsedTrace: Trace.TraceModel.ParsedTrace|null = null,
+      view: View = DEFAULT_VIEW,
+  ) {
+    super(element);
     this.#view = view;
     this.#selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
     this.#parsedTrace = parsedTrace;
+    this.requestUpdate();
+  }
 
-    this.performUpdate();
+  set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null) {
+    if (this.#parsedTrace === parsedTrace) {
+      return;
+    }
+    this.#parsedTrace = parsedTrace;
+    this.#selectorLocations.clear();
+    this.#lastStatsSourceEventOrEvents = null;
+    this.#timings = [];
+    this.requestUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
   #onContextMenu(e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>): void {

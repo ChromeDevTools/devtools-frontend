@@ -844,4 +844,31 @@ describe('TimelineTreeView', function() {
       }
     });
   });
+
+  describe('valueCellViewInput', function() {
+    it('computes microsecond-to-millisecond formatting, percentages, and bar width', function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.None);
+      callTreeView.setRange(Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min),
+                            Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max));
+      callTreeView.model = {
+        selectedEvents: [...parsedTrace.data.UserTimings.consoleTimings],
+        parsedTrace,
+        entityMapper: null,
+      };
+      const firstNode = callTreeView.buildTree().children().values().next().value;
+      assert.exists(firstNode);
+      const scale = {
+        grandTotalTime: firstNode.totalTime * 2,
+        maxSelfTime: firstNode.selfTime,
+        maxTotalTime: firstNode.totalTime,
+      };
+      const totalInput =
+          Timeline.TimelineTreeView.valueCellViewInput(callTreeView, firstNode, 'total', scale, () => {});
+      assert.exists(totalInput);
+      assert.strictEqual(totalInput.barWidth, '100.0%');
+      assert.include(totalInput.percent ?? '', '50.0');
+    });
+  });
 });

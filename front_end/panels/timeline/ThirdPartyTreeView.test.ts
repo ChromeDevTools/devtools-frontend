@@ -67,13 +67,23 @@ describe('Third party tree', function() {
     const tree = treeView.buildTree() as Trace.Extras.TraceTree.BottomUpRootNode;
     const topNodesIterator = [...tree.children().values()].flat().sort((a, b) => b.selfTime - a.selfTime);
 
+    function renderSiteCell(gridNode: Timeline.TimelineTreeView.TreeGridNode): HTMLElement {
+      gridNode.dataGrid = treeView.dataGrid;
+      gridNode.parent = treeView.dataGrid.rootNode();
+      const tr = document.createElement('tr');
+      gridNode.createCells(tr);
+      const cell = tr.querySelector<HTMLElement>('td.site-column');
+      assert.exists(cell);
+      return cell;
+    }
+
     // Node with first party
     let node = topNodesIterator[0];
     assert.strictEqual(node.id.toString(), 'localhost');
     assert.strictEqual(node.selfTime, 1008451);
     let gridNode =
         new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
-    let entity = gridNode?.createCell('site');
+    let entity = renderSiteCell(gridNode);
     let gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
     assert.strictEqual(gotBadgeName, '1st party');
 
@@ -83,7 +93,7 @@ describe('Third party tree', function() {
     assert.strictEqual(node.selfTime, 2532);
     gridNode =
         new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
-    entity = gridNode?.createCell('site');
+    entity = renderSiteCell(gridNode);
     gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
     assert.strictEqual(gotBadgeName, 'Extension');
 
@@ -94,7 +104,7 @@ describe('Third party tree', function() {
     assert.isAbove(node.transferSize, 0);
     gridNode =
         new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
-    entity = gridNode?.createCell('site');
+    entity = renderSiteCell(gridNode);
     gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
     assert.strictEqual(gotBadgeName, '');  // no badge
   });

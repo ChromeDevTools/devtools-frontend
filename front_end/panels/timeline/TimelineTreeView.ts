@@ -182,6 +182,11 @@ const UIStrings = {
    * @description Badge text for an extension entity in timeline tree views.
    */
   extension: 'Extension',
+  /**
+   * @description Accessible text indicating the depth level of a row in a hierarchical datagrid.
+   * @example {1} PH1
+   */
+  levelS: 'Level {PH1}',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -201,10 +206,11 @@ function renderDetailsPlaceholder(input: {showPlaceholder: boolean}, _output: un
          target);
 }
 
-const {ifDefined, styleMap} = Directives;
+const {classMap, ifDefined, repeat, styleMap} = Directives;
 
 export const enum CellKind {
   NAME = 'name',
+  VALUE = 'value',
 }
 
 /** Parameters needed to linkify the top call frame of an event in the view layer. */
@@ -219,6 +225,8 @@ export interface TopCallFrameLinkInput {
 /** Presentation data for the activity (or 1st / 3rd party) name cell of a timeline tree row. */
 export interface NameCellViewInput {
   columnId: string;
+  disclosure?: boolean;
+  leftPadding?: number;
   kind: CellKind.NAME;
   name: string;
   iconColor?: string;
@@ -260,15 +268,109 @@ function renderNameCell(input: NameCellViewInput, output?: GridRowViewOutput): L
   // clang-format on
 }
 
-function renderNameCellIntoTd(input: NameCellViewInput, output: GridRowViewOutput, target: HTMLElement): void {
-  render(renderNameCell(input, output), target);
+/** Presentation data for a numeric (time or size) cell of a timeline tree row. */
+export interface ValueCellViewInput {
+  columnId: string;
+  disclosure?: boolean;
+  leftPadding?: number;
+  kind: CellKind.VALUE;
+  text: string;
+  title: string;
+  percent?: string;
+  /** The width of the background bar, for example `'42.0%'`. */
+  barWidth?: string;
+  onBottomUpButtonClick?: () => void;
+}
+
+export type CellViewInput = NameCellViewInput|ValueCellViewInput;
+
+export interface GridRowViewInput {
+  cells: readonly CellViewInput[];
+}
+
+export type GridRowView = (input: GridRowViewInput, output: GridRowViewOutput|undefined, target: HTMLElement) => void;
+
+function renderBottomUpButton(onClick: () => void): LitTemplate {
+  // clang-format off
+  return html`<devtools-button
+      .data=${{
+        variant: Buttons.Button.Variant.ICON,
+        iconName: 'account-tree',
+        size: Buttons.Button.Size.SMALL,
+        title: i18nString(UIStrings.bottomUp),
+        accessibleLabel: i18nString(UIStrings.viewBottomUp),
+        jslogContext: 'bottom-up',
+      } as Buttons.Button.ButtonData}
+      @click=${onClick}></devtools-button>`;
+  // clang-format on
+}
+
+function renderValueCell(input: ValueCellViewInput): LitTemplate {
+  // clang-format off
+  return html`
+    <div class=${classMap({'background-bar-text': Boolean(input.barWidth)})}>
+      <span>${input.text}</span>
+      ${input.percent ? html`<span class="percent-column">${input.percent}</span>` : nothing}
+      ${input.onBottomUpButtonClick ? renderBottomUpButton(input.onBottomUpButtonClick) : nothing}
+    </div>
+    ${input.barWidth ? html`
+      <div class="background-bar-container">
+        <div class="background-bar" style=${styleMap({width: input.barWidth})}></div>
+      </div>` : nothing}`;
+  // clang-format on
+}
+
+function renderCell(cell: CellViewInput, output?: GridRowViewOutput): LitTemplate {
+  const classes = {
+    [`${cell.columnId}-column`]: true,
+    disclosure: Boolean(cell.disclosure),
+    'numeric-column': cell.kind === CellKind.VALUE,
+  };
+  const style = cell.leftPadding ? styleMap({'padding-left': `${cell.leftPadding}px`}) : nothing;
+  const jslog =
+      VisualLogging.tableCell().track({click: true}).context(Platform.StringUtilities.toKebabCase(cell.columnId));
+  switch (cell.kind) {
+    case CellKind.NAME:
+      // clang-format off
+      return html`<td class=${classMap(classes)} style=${style} jslog=${jslog}>
+        ${renderNameCell(cell, output)}
+      </td>`;
+      // clang-format on
+    case CellKind.VALUE:
+      // clang-format off
+      return html`<td class=${classMap(classes)} style=${style} title=${cell.title} jslog=${jslog}>
+        ${renderValueCell(cell)}
+      </td>`;
+      // clang-format on
+    default:
+      Platform.assertNever(cell, `Unknown cell kind: ${JSON.stringify(cell)}`);
+  }
+}
+
+/**
+ * Renders the cells of a timeline tree data grid row into the `<tr>` that the
+ * `DataGridNode` creates for the row.
+ */
+export const GRID_ROW_VIEW: GridRowView = (input, output, target) => {
+  // clang-format off
+  render(html`
+    ${repeat(input.cells, cell => cell.columnId, cell => renderCell(cell, output))}
+    <td class="corner" aria-hidden="true"></td>`,
+    target);
+  // clang-format on
+};
+
+export interface CellScale {
+  grandTotalTime: number;
+  maxSelfTime: number;
+  maxTotalTime: number;
 }
 
 /**
  * Computes the presentation data of the name cell for `profileNode`.
  */
 export function nameCellViewInput(treeView: TimelineTreeView, profileNode: Trace.Extras.TraceTree.Node,
-                                  columnId: string): NameCellViewInput {
+                                  columnId: string, disclosure?: boolean, leftPadding?: number): NameCellViewInput {
   const event = profileNode.event;
   if (profileNode.isGroupNode()) {
     const info = (treeView as AggregatedTimelineTreeView).displayInfoForGroupNode(profileNode);
@@ -282,6 +384,8 @@ export function nameCellViewInput(treeView: TimelineTreeView, profileNode: Trace
     }
     return {
       columnId,
+      disclosure,
+      leftPadding,
       kind: CellKind.NAME,
       name: info.name,
       iconColor: info.color,
@@ -289,7 +393,7 @@ export function nameCellViewInput(treeView: TimelineTreeView, profileNode: Trace
     };
   }
   if (!event) {
-    return {columnId, kind: CellKind.NAME, name: ''};
+    return {columnId, disclosure, leftPadding, kind: CellKind.NAME, name: ''};
   }
   const parsedTrace = treeView.parsedTrace;
   const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
@@ -300,6 +404,8 @@ export function nameCellViewInput(treeView: TimelineTreeView, profileNode: Trace
       TimelineUIUtils.eventColor(event);
   return {
     columnId,
+    disclosure,
+    leftPadding,
     kind: CellKind.NAME,
     name: TimelineUIUtils.eventTitle(event),
     iconColor,
@@ -311,6 +417,69 @@ export function nameCellViewInput(treeView: TimelineTreeView, profileNode: Trace
       isFreshOrEnhanced,
       maxLength: treeView.maxLinkLength,
     },
+  };
+}
+
+/**
+ * Computes the presentation data of a numeric cell for `profileNode`, or
+ * returns `null` if `columnId` is not a numeric column.
+ */
+export function valueCellViewInput(treeView: TimelineTreeView, profileNode: Trace.Extras.TraceTree.Node,
+                                   columnId: string, scale: CellScale, onBottomUpButtonClick: () => void,
+                                   disclosure?: boolean, leftPadding?: number): ValueCellViewInput|null {
+  if (columnId === 'transfer-size') {
+    const formattedSize = i18n.ByteUtilities.formatBytesToKb(profileNode.transferSize);
+    return {
+      columnId,
+      disclosure,
+      leftPadding,
+      kind: CellKind.VALUE,
+      text: formattedSize,
+      title: formattedSize,
+    };
+  }
+  let showPercents = false;
+  let value: Trace.Types.Timing.Micro;
+  let maxTime: number|undefined;
+  let showBottomUpButton = false;
+  switch (columnId) {
+    case 'start-time': {
+      const parsedTrace = treeView.parsedTrace;
+      if (!parsedTrace) {
+        throw new Error('Unable to load trace data for tree view');
+      }
+      const startTime = profileNode.event?.ts ?? Trace.Types.Timing.Micro(0);
+      value = Trace.Types.Timing.Micro(startTime - parsedTrace.data.Meta.traceBounds.min);
+      break;
+    }
+    case 'self':
+      value = profileNode.selfTime;
+      maxTime = scale.maxSelfTime;
+      showPercents = true;
+      // Show the bottom-up button on hover for the self time cell of the 3P tree.
+      showBottomUpButton = treeView.isThirdPartyTreeView();
+      break;
+    case 'total':
+      value = profileNode.totalTime;
+      maxTime = scale.maxTotalTime;
+      showPercents = true;
+      break;
+    default:
+      return null;
+  }
+  const valueMs = Trace.Helpers.Timing.microToMilli(value);
+  return {
+    columnId,
+    disclosure,
+    leftPadding,
+    kind: CellKind.VALUE,
+    text: i18n.TimeUtilities.preciseMillisToString(valueMs, 1),
+    title: i18n.TimeUtilities.preciseMillisToString(valueMs, 4),
+    percent: showPercents && treeView.exposePercentages() ?
+        i18nString(UIStrings.percentPlaceholder, {PH1: (value / scale.grandTotalTime * 100).toFixed(1)}) :
+        undefined,
+    barWidth: maxTime ? (value * 100 / maxTime).toFixed(1) + '%' : undefined,
+    onBottomUpButtonClick: showBottomUpButton ? onBottomUpButtonClick : undefined,
   };
 }
 
@@ -1114,10 +1283,11 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   protected grandTotalTime: number;
   protected maxSelfTime: number;
   protected maxTotalTime: number;
+  protected readonly rowView: GridRowView;
   readonly #viewOutput: GridRowViewOutput = {};
 
   constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number,
-              maxTotalTime: number, treeView: TimelineTreeView) {
+              maxTotalTime: number, treeView: TimelineTreeView, rowView: GridRowView = GRID_ROW_VIEW) {
     super(null, false);
     this.populated = false;
     this.profileNode = profileNode;
@@ -1125,102 +1295,51 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     this.grandTotalTime = grandTotalTime;
     this.maxSelfTime = maxSelfTime;
     this.maxTotalTime = maxTotalTime;
+    this.rowView = rowView;
   }
 
   appendLinkContextMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
     this.#viewOutput.appendContextMenuItems?.(contextMenu);
   }
 
-  override createCell(columnId: string): HTMLElement {
-    if (columnId === 'activity' || columnId === 'site') {
-      return this.createNameCell(columnId);
+  override createCells(element: Element): void {
+    if (!this.dataGrid || !this.parent) {
+      return;
     }
-    return this.createValueCell(columnId) || super.createCell(columnId);
-  }
-
-  private createNameCell(columnId: string): HTMLElement {
-    const cell = this.createTD(columnId);
-    renderNameCellIntoTd(nameCellViewInput(this.treeView, this.profileNode, columnId), this.#viewOutput, cell);
-    return cell;
-  }
-
-  private createValueCell(columnId: string): HTMLElement|null {
-    if (columnId !== 'self' && columnId !== 'total' && columnId !== 'start-time' && columnId !== 'transfer-size') {
-      return null;
-    }
-
-    const cell = this.createTD(columnId);
-    cell.className = 'numeric-column';
-    if (columnId === 'transfer-size') {
-      const formattedSize = i18n.ByteUtilities.formatBytesToKb(this.profileNode.transferSize);
-      cell.setAttribute('title', formattedSize);
-      cell.createChild('div').createChild('span').textContent = formattedSize;
-      return cell;
-    }
-
-    let showPercents = false;
-    let value: Trace.Types.Timing.Micro;
-    let maxTime: number|undefined;
-    let showBottomUpButton = false;
-    switch (columnId) {
-      case 'start-time': {
-        const parsedTrace = this.treeView.parsedTrace;
-        if (!parsedTrace) {
-          throw new Error('Unable to load trace data for tree view');
+    const columnsArray = this.dataGrid.visibleColumnsArray;
+    const cells: CellViewInput[] = [];
+    for (const column of columnsArray) {
+      const disclosure = column.id === this.dataGrid.disclosureColumnId;
+      const leftPadding = disclosure && this.leftPadding ? this.leftPadding : undefined;
+      if (column.id === 'activity' || column.id === 'site') {
+        cells.push(nameCellViewInput(this.treeView, this.profileNode, column.id, disclosure, leftPadding));
+      } else {
+        const input = valueCellViewInput(this.treeView, this.profileNode, column.id, {
+          grandTotalTime: this.grandTotalTime,
+          maxSelfTime: this.maxSelfTime,
+          maxTotalTime: this.maxTotalTime,
+        },
+                                         () => this.#bottomUpButtonClicked(), disclosure, leftPadding);
+        if (input) {
+          cells.push(input);
         }
-        const startTime = this.profileNode.event?.ts ?? Trace.Types.Timing.Micro(0);
-        value = Trace.Types.Timing.Micro(startTime - parsedTrace.data.Meta.traceBounds.min);
-        break;
       }
-      case 'self':
-        value = this.profileNode.selfTime;
-        maxTime = this.maxSelfTime;
-        showPercents = true;
-        showBottomUpButton = this.treeView.isThirdPartyTreeView();
-        break;
-      case 'total':
-        value = this.profileNode.totalTime;
-        maxTime = this.maxTotalTime;
-        showPercents = true;
-        break;
     }
-    const valueMs = Trace.Helpers.Timing.microToMilli(value);
-    cell.setAttribute('title', i18n.TimeUtilities.preciseMillisToString(valueMs, 4));
-    const textDiv = cell.createChild('div');
-    textDiv.createChild('span').textContent = i18n.TimeUtilities.preciseMillisToString(valueMs, 1);
-
-    if (showPercents && this.treeView.exposePercentages()) {
-      textDiv.createChild('span', 'percent-column').textContent =
-          i18nString(UIStrings.percentPlaceholder, {PH1: (value / this.grandTotalTime * 100).toFixed(1)});
+    this.#viewOutput.appendContextMenuItems = undefined;
+    this.rowView({cells}, this.#viewOutput, element as HTMLElement);
+    const accessibleTextArray: string[] = [];
+    if (this.hasChildren() || !this.parent.isRoot) {
+      accessibleTextArray.push(i18nString(UIStrings.levelS, {PH1: this.depth + 1}));
     }
-    if (maxTime) {
-      textDiv.classList.add('background-bar-text');
-      cell.createChild('div', 'background-bar-container').createChild('div', 'background-bar').style.width =
-          (value * 100 / maxTime).toFixed(1) + '%';
+    const tdElements = element.querySelectorAll(':scope > td:not(.corner)');
+    for (let i = 0; i < columnsArray.length; ++i) {
+      const column = columnsArray[i];
+      const cell = tdElements[i];
+      if (cell) {
+        accessibleTextArray.push(`${column.title}: ${this.cellAccessibleTextMap.get(column.id) || cell.textContent}`);
+      }
     }
-    // Generate button on hover for 3P self time cell.
-    if (showBottomUpButton) {
-      this.generateBottomUpButton(textDiv);
-    }
-    return cell;
-  }
-
-  // Generates bottom up tree hover button and appends it to the provided cell
-  // element.
-  private generateBottomUpButton(textDiv: HTMLElement): void {
-    const button = new Buttons.Button.Button();
-    button.data = {
-      variant: Buttons.Button.Variant.ICON,
-      iconName: 'account-tree',
-      size: Buttons.Button.Size.SMALL,
-      toggledIconName: i18nString(UIStrings.bottomUp),
-    };
-    UI.ARIAUtils.setLabel(button, i18nString(UIStrings.viewBottomUp));
-    button.addEventListener('click', () => this.#bottomUpButtonClicked());
-    UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.bottomUp));
-
-    // Append the button to the last column
-    textDiv.appendChild(button);
+    this.nodeAccessibleText = accessibleTextArray.join(', ');
   }
 
   #bottomUpButtonClicked(): void {
@@ -1236,8 +1355,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
  */
 export class TreeGridNode extends GridNode {
   constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number,
-              maxTotalTime: number, treeView: TimelineTreeView) {
-    super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
+              maxTotalTime: number, treeView: TimelineTreeView, rowView: GridRowView = GRID_ROW_VIEW) {
+    super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView, rowView);
     this.setHasChildren(this.profileNode.hasChildren());
     treeNodeToGridNode.set(profileNode, this);
     treeView.indexTreeNode(profileNode);
@@ -1252,7 +1371,8 @@ export class TreeGridNode extends GridNode {
       return;
     }
     for (const node of this.profileNode.children().values()) {
-      const gridNode = new TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView);
+      const gridNode =
+          new TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView, this.rowView);
       this.insertChildOrdered(gridNode);
     }
   }

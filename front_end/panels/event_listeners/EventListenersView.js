@@ -171,9 +171,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
       </ul>
     `}></devtools-tree>`}`, 
     // clang-format on
-    target);
+    target, { container: { attributes: { jslog: input.jslog } } });
 };
 export class EventListenersView extends UI.Widget.VBox {
+    jslog;
     #objects = [];
     #filter;
     #view;
@@ -189,9 +190,12 @@ export class EventListenersView extends UI.Widget.VBox {
         if (this.#objects === val) {
             return;
         }
+        this.setObjects(val);
+        this.requestUpdate();
+    }
+    setObjects(val) {
         this.#listeners = undefined;
         this.#objects = val;
-        this.requestUpdate();
     }
     get filter() {
         return this.#filter;
@@ -215,6 +219,7 @@ export class EventListenersView extends UI.Widget.VBox {
         const input = {
             listeners: listeners ?? new Map(),
             filter: this.#filter,
+            jslog: this.jslog,
             togglePassiveListener: (listener) => {
                 void listener.togglePassive().then(() => {
                     this.#listeners = undefined;

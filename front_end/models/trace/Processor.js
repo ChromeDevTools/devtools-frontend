@@ -123,6 +123,7 @@ export class TraceProcessor extends EventTarget {
             throw new Error('Trace processor can\'t reset while parsing.');
         }
         this.#resetHandlers();
+        Lantern.Simulation.Simulator.allNodeTimings.clear();
         this.#data = null;
         this.#insights = null;
         this.#status = "IDLE" /* Status.IDLE */;
@@ -160,8 +161,10 @@ export class TraceProcessor extends EventTarget {
             // Handler state is module-level, so it is a second reference to the trace.
             // Resetting here releases it, including after a failed parse. `#data`
             // keeps the trace intact because every handler's reset() assigns new
-            // containers.
+            // containers. Lantern simulation timings are also module-level and are
+            // cleared here to avoid retaining the dependency graph.
             this.#resetHandlers();
+            Lantern.Simulation.Simulator.allNodeTimings.clear();
             options.logger?.end('total');
         }
     }

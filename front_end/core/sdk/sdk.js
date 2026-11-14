@@ -3219,6 +3219,11 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "keywords": [
+      "horizontal-tb",
+      "vertical-rl",
+      "vertical-lr"
+    ],
     "name": "-webkit-writing-mode"
   },
   {
@@ -3948,6 +3953,11 @@ var generatedProperties = [
       "none",
       "move",
       "no-drag"
+    ],
+    "keywords": [
+      "drag",
+      "no-drag",
+      "none"
     ],
     "name": "app-region"
   },
@@ -5242,7 +5252,7 @@ var generatedProperties = [
     ],
     "name": "corner",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5253,7 +5263,7 @@ var generatedProperties = [
     ],
     "name": "corner-block-end",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5271,7 +5281,7 @@ var generatedProperties = [
     ],
     "name": "corner-block-start",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5289,7 +5299,7 @@ var generatedProperties = [
     ],
     "name": "corner-bottom",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5298,7 +5308,7 @@ var generatedProperties = [
     ],
     "name": "corner-bottom-left",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "keywords": [
@@ -5318,7 +5328,7 @@ var generatedProperties = [
     ],
     "name": "corner-bottom-right",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "keywords": [
@@ -5345,7 +5355,7 @@ var generatedProperties = [
     ],
     "name": "corner-end-end",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "name": "corner-end-end-shape"
@@ -5357,7 +5367,7 @@ var generatedProperties = [
     ],
     "name": "corner-end-start",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "name": "corner-end-start-shape"
@@ -5371,7 +5381,7 @@ var generatedProperties = [
     ],
     "name": "corner-inline-end",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5389,7 +5399,7 @@ var generatedProperties = [
     ],
     "name": "corner-inline-start",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5407,7 +5417,7 @@ var generatedProperties = [
     ],
     "name": "corner-left",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5425,7 +5435,7 @@ var generatedProperties = [
     ],
     "name": "corner-right",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5450,7 +5460,7 @@ var generatedProperties = [
     ],
     "name": "corner-start-end",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "name": "corner-start-end-shape"
@@ -5462,7 +5472,7 @@ var generatedProperties = [
     ],
     "name": "corner-start-start",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "name": "corner-start-start-shape"
@@ -5476,7 +5486,7 @@ var generatedProperties = [
     ],
     "name": "corner-top",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -5485,7 +5495,7 @@ var generatedProperties = [
     ],
     "name": "corner-top-left",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "keywords": [
@@ -5505,7 +5515,7 @@ var generatedProperties = [
     ],
     "name": "corner-top-right",
     "runtime_flag": "CSSCornersShorthand",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "keywords": [
@@ -5667,9 +5677,7 @@ var generatedProperties = [
       "flow",
       "math",
       "ruby",
-      "ruby-text",
-      "grid-lanes",
-      "inline-grid-lanes"
+      "ruby-text"
     ],
     "name": "display"
   },
@@ -5945,9 +5953,7 @@ var generatedProperties = [
       "ic-height",
       "from-font"
     ],
-    "name": "font-size-adjust",
-    "runtime_flag": "CSSFontSizeAdjust",
-    "runtime_flag_status": "stable"
+    "name": "font-size-adjust"
   },
   {
     "inherited": true,
@@ -7328,6 +7334,11 @@ var generatedProperties = [
   },
   {
     "is_descriptor": true,
+    "keywords": [
+      "upright",
+      "rotate-left",
+      "rotate-right"
+    ],
     "name": "page-orientation"
   },
   {
@@ -9200,6 +9211,13 @@ var generatedPropertyValues = {
       "read-only",
       "read-write",
       "read-write-plaintext-only"
+    ]
+  },
+  "-webkit-writing-mode": {
+    "values": [
+      "horizontal-tb",
+      "vertical-rl",
+      "vertical-lr"
     ]
   },
   "accent-color": {
@@ -11194,6 +11212,13 @@ var generatedPropertyValues = {
       "none",
       "clamp",
       "add"
+    ]
+  },
+  "page-orientation": {
+    "values": [
+      "upright",
+      "rotate-left",
+      "rotate-right"
     ]
   },
   "paint-order": {
@@ -33270,10 +33295,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     return await enablePromise;
   }
   onFrameNavigated() {
-    if (_DebuggerModel.shouldResyncDebuggerId) {
-      return;
-    }
-    _DebuggerModel.shouldResyncDebuggerId = true;
+    _DebuggerModel.modelsNeedingDebuggerIdResync.add(this);
   }
   registerDebugger(response) {
     if (response.getError()) {
@@ -33281,6 +33303,9 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       return;
     }
     const { debuggerId } = response;
+    if (typeof this.#debuggerId === "string" && this.#debuggerId !== debuggerId) {
+      debuggerIdToModel.delete(this.#debuggerId);
+    }
     debuggerIdToModel.set(debuggerId, this);
     this.#debuggerId = debuggerId;
     this.dispatchEventToListeners("DebuggerIsReadyToPause" /* DebuggerIsReadyToPause */, this);
@@ -33289,19 +33314,29 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     return Boolean(this.#debuggerId);
   }
   static async modelForDebuggerId(debuggerId) {
-    if (_DebuggerModel.shouldResyncDebuggerId) {
+    const existingModel = debuggerIdToModel.get(debuggerId);
+    if (existingModel) {
+      return existingModel;
+    }
+    if (_DebuggerModel.modelsNeedingDebuggerIdResync.size > 0 || _DebuggerModel.resyncDebuggerIdPromise) {
       await _DebuggerModel.resyncDebuggerIdForModels();
-      _DebuggerModel.shouldResyncDebuggerId = false;
     }
     return debuggerIdToModel.get(debuggerId) || null;
   }
   static async resyncDebuggerIdForModels() {
-    const dbgModels = debuggerIdToModel.values();
-    for (const dbgModel of dbgModels) {
-      if (dbgModel.debuggerEnabled()) {
-        await dbgModel.syncDebuggerId();
-      }
+    if (!_DebuggerModel.resyncDebuggerIdPromise) {
+      const promise = (async () => {
+        while (_DebuggerModel.modelsNeedingDebuggerIdResync.size > 0) {
+          const dbgModels = Array.from(_DebuggerModel.modelsNeedingDebuggerIdResync).filter((m) => m.debuggerEnabled());
+          _DebuggerModel.modelsNeedingDebuggerIdResync.clear();
+          await Promise.all(dbgModels.map((m) => m.syncDebuggerId()));
+        }
+      })();
+      _DebuggerModel.resyncDebuggerIdPromise = promise.finally(() => {
+        _DebuggerModel.resyncDebuggerIdPromise = null;
+      });
     }
+    await _DebuggerModel.resyncDebuggerIdPromise;
   }
   async disableDebugger() {
     if (!this.#debuggerEnabled) {
@@ -33317,6 +33352,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       debuggerIdToModel.delete(this.#debuggerId);
     }
     this.#debuggerId = null;
+    _DebuggerModel.modelsNeedingDebuggerIdResync.delete(this);
   }
   skipAllPauses(skip) {
     if (this.#skipAllPausesSetting.get()) {
@@ -33790,6 +33826,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     return !error;
   }
   dispose() {
+    _DebuggerModel.modelsNeedingDebuggerIdResync.delete(this);
     if (this.#debuggerId) {
       debuggerIdToModel.delete(this.#debuggerId);
     }
@@ -33808,7 +33845,8 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   async resumeModel() {
     await this.enableDebugger();
   }
-  static shouldResyncDebuggerId = false;
+  static modelsNeedingDebuggerIdResync = /* @__PURE__ */ new Set();
+  static resyncDebuggerIdPromise = null;
   getEvaluateOnCallFrameCallback() {
     return this.evaluateOnCallFrameCallback;
   }

@@ -73,6 +73,10 @@ declare class Simulator<T = Lantern.AnyNetworkObject> {
         label?: string;
     }): Result<T>;
     computeWastedMsFromWastedBytes(wastedBytes: number): number;
+    /**
+     * Lighthouse's asset-saver reads this map. TraceProcessor clears it after
+     * every parse and on reset() so it does not retain the Lantern dependency graph.
+     */
     static get allNodeTimings(): Map<string, Map<Graph.Node, CompleteNodeTiming>>;
     /**
      * We attempt to start nodes by their observed start time using the request priority as a tie breaker.

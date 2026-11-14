@@ -69,7 +69,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
     <style>${requestCookiesViewStyles}</style>
-    <style>${UI.inspectorCommonStyles}</style>
     <div class="request-cookies-view">
       ${input.gotCookies ? Lit.nothing : widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.thisRequestHasNoCookies)

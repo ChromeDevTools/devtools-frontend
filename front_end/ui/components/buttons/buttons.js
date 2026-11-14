@@ -307,14 +307,6 @@ button {
     top: 0;
     left: 0;
     background-color: var(--hover-layer-color); /* stylelint-disable-line plugin/use_theme_colors */
-
-    &.primary {
-      border: var(--button-border-size) solid color-mix(in srgb, var(--sys-color-primary), var(--sys-color-state-hover-on-prominent) 6%);
-    }
-
-    &.tonal {
-      background: color-mix(in srgb, var(--sys-color-tonal-container), var(--sys-color-state-hover-on-subtle));
-    }
   }
 
   &:active::before,
@@ -327,20 +319,6 @@ button {
     top: 0;
     left: 0;
     background-color: var(--active-layer-color); /* stylelint-disable-line plugin/use_theme_colors */
-
-    &.primary {
-      border: var(--button-border-size) solid color-mix(in srgb, var(--sys-color-primary), var(--sys-color-state-ripple-primary) 32%);
-    }
-
-    &.tonal {
-      background: color-mix(in srgb, var(--sys-color-tonal-container), var(--sys-color-state-ripple-primary) 50%);
-    }
-
-    &.toolbar {
-      devtools-icon {
-        color: var(--icon-toggled);
-      }
-    }
   }
 }
 

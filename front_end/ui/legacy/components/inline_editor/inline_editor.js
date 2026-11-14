@@ -3811,7 +3811,7 @@ var swatchPopover_css_default = `/*
  * found in the LICENSE file.
  */
 
-.widget {
+.widget.swatch-popover {
   display: flex;
   overflow: auto;
   user-select: text;
@@ -3843,6 +3843,7 @@ var SwatchPopoverHelper = class extends Common6.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     this.popover = new UI7.GlassPane.GlassPane();
+    this.popover.contentElement.classList.add("swatch-popover");
     this.popover.setSizeBehavior(UI7.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.popover.setMarginBehavior(UI7.GlassPane.MarginBehavior.DEFAULT_MARGIN);
     this.popover.element.addEventListener("mousedown", (e) => e.consume(), false);

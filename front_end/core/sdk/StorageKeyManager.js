@@ -70,6 +70,5 @@ export var Events;
     Events["STORAGE_KEY_REMOVED"] = "StorageKeyRemoved";
     Events["MAIN_STORAGE_KEY_CHANGED"] = "MainStorageKeyChanged";
 })(Events || (Events = {}));
-// TODO(jarhar): this is the one of the two usages of Capability.None. Do something about it!
 SDKModel.register(StorageKeyManager, { capabilities: 0 /* Capability.NONE */, autostart: false });
 //# sourceMappingURL=StorageKeyManager.js.map

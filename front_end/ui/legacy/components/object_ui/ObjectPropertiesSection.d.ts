@@ -80,13 +80,15 @@ export declare namespace ObjectTreeNodeBase {
         VALUE_CHANGED = "value-changed",
         CHILDREN_CHANGED = "children-changed",
         FILTER_CHANGED = "filter-changed",
-        EXPANDED_CHANGED = "expanded-changed"
+        EXPANDED_CHANGED = "expanded-changed",
+        NODE_EXPANDED = "node-expanded"
     }
     interface EventTypes {
         [Events.VALUE_CHANGED]: void;
         [Events.CHILDREN_CHANGED]: void;
         [Events.FILTER_CHANGED]: void;
         [Events.EXPANDED_CHANGED]: boolean;
+        [Events.NODE_EXPANDED]: ObjectTreeNodeBase;
     }
 }
 export declare class ObjectTree extends ObjectTreeNodeBase {

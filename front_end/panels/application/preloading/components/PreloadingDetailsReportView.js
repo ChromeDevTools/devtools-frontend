@@ -149,7 +149,6 @@ const DEFAULT_VIEW = (input, _output, target) => {
         // clang-format off
         Lit.render(html `
       <style>${preloadingDetailsReportViewStyles}</style>
-      <style>${UI.inspectorCommonStyles}</style>
       <div class="empty-state">
         <span class="empty-state-header">${i18nString(UIStrings.noElementSelected)}</span>
         <span class="empty-state-description">${i18nString(UIStrings.selectAnElementForMoreDetails)}</span>
@@ -356,7 +355,6 @@ const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     Lit.render(html `
     <style>${preloadingDetailsReportViewStyles}</style>
-    <style>${UI.inspectorCommonStyles}</style>
     <devtools-report
       .data=${{ reportTitle: 'Speculative Loading Attempt' }}
       jslog=${VisualLogging.section('preloading-details')}>

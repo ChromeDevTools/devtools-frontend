@@ -226,11 +226,6 @@ export default `/*
     margin-bottom: var(--sys-size-2);
   }
 
-  /* TODO(crbug.com/1382762): Remove special casing with dependent toggles as soon as Node LTS caught up on independent pause of exception toggles. */
-  input:disabled + span {
-    color: var(--sys-color-state-disabled);
-  }
-
   .pause-on-caught-exceptions > .checkbox-label > input,
   .pause-on-uncaught-exceptions > .checkbox-label > input {
     margin-left: var(--sys-size-4);

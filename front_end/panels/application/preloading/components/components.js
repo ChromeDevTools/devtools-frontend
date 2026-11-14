@@ -3939,7 +3939,6 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   if (input.data === null) {
     Lit2.render(html2`
       <style>${preloadingDetailsReportView_css_default}</style>
-      <style>${UI2.inspectorCommonStyles}</style>
       <div class="empty-state">
         <span class="empty-state-header">${i18nString3(UIStrings3.noElementSelected)}</span>
         <span class="empty-state-description">${i18nString3(UIStrings3.selectAnElementForMoreDetails)}</span>
@@ -4140,7 +4139,6 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   };
   Lit2.render(html2`
     <style>${preloadingDetailsReportView_css_default}</style>
-    <style>${UI2.inspectorCommonStyles}</style>
     <devtools-report
       .data=${{ reportTitle: "Speculative Loading Attempt" }}
       jslog=${VisualLogging.section("preloading-details")}>

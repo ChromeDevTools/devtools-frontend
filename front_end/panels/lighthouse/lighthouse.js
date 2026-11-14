@@ -4526,8 +4526,7 @@ var Item = class {
     this.report = lighthouseResult;
     this.renderReport = renderReport2;
     this.showLandingCallback = showLandingCallback;
-    const finalDisplayedUrl = lighthouseResult.finalDisplayedUrl || lighthouseResult.finalUrl || "";
-    const url = new Common4.ParsedURL.ParsedURL(finalDisplayedUrl);
+    const url = new Common4.ParsedURL.ParsedURL(lighthouseResult.finalDisplayedUrl);
     const timestamp = lighthouseResult.fetchTime;
     this.element = document.createElement("option");
     this.element.textContent = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
@@ -4567,7 +4566,7 @@ var lighthouseStartView_css_default = `/*
 /* <3 */
 
 .lighthouse-start-view {
-  line-height: 18px;
+  line-height: var(--sys-typescale-body4-line-height);
   padding: var(--sys-size-11);
   overflow: auto;
   height: 100%;
@@ -4592,18 +4591,13 @@ var lighthouseStartView_css_default = `/*
 }
 
 .lighthouse-logo {
-  width: 75px;
-  height: 75px;
+  width: var(--sys-size-15);
+  height: var(--sys-size-15);
   flex-shrink: 0;
   background-repeat: no-repeat;
   background-size: contain;
   /* stylelint-disable-next-line custom-property-pattern */
   background-image: var(--image-file-lighthouse_logo);
-}
-
-.lighthouse-start-view .lighthouse-logo {
-  width: var(--sys-size-15);
-  height: var(--sys-size-15);
 }
 
 .lighthouse-form-section {

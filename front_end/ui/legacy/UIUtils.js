@@ -1211,7 +1211,7 @@ export function bindInput(input, apply, validate, numeric, modifierMultiplier) {
         }
     }
     function onKeyDown(event) {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && !event.isComposing) {
             const valid = validate(input.value);
             if (valid) {
                 apply(input.value);

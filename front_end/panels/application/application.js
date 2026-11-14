@@ -10638,7 +10638,6 @@ var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilit
 var DEFAULT_VIEW7 = (input, output, target) => {
   if (input.hasReports || input.hasEndpoints) {
     render11(html11`
-      <style>${UI14.inspectorCommonStyles}</style>
       <devtools-split-view sidebar-position="second" sidebar-initial-size="150" jslog=${VisualLogging8.pane("reporting-api")}>
         ${input.hasReports ? html11`
           <devtools-split-view slot="main" sidebar-position="second" sidebar-initial-size="150">
@@ -16960,7 +16959,6 @@ var DEFAULT_VIEW15 = (input, output, target) => {
   const headingText = input.isSiblingSubApps ? i18nString28(UIStrings28.siblingSubApps) : i18nString28(UIStrings28.subApps);
   Lit3.render(html20`
     <style>${subAppsView_css_default}</style>
-    <style>${UI28.inspectorCommonStyles}</style>
     <div jslog=${VisualLogging20.pane("sub-apps")}>
       <span class="heading">${headingText}</span>
       <devtools-data-grid striped inline role="grid" aria-label=${headingText}>
@@ -19960,7 +19958,7 @@ var StorageTreeElement = class extends ApplicationPanelTreeElement {
   }
 };
 var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
-  idbDatabaseTreeElements;
+  idbDatabaseTreeElements = /* @__PURE__ */ new Set();
   storageBucket;
   constructor(storagePanel, storageBucket) {
     super(
@@ -19972,7 +19970,6 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     );
     const icon = createIcon10("database");
     this.setLeadingIcons([icon]);
-    this.idbDatabaseTreeElements = [];
     this.storageBucket = storageBucket;
     this.initialize();
   }
@@ -20005,7 +20002,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
       this,
       { scoped: true }
     );
-    this.idbDatabaseTreeElements = [];
+    this.idbDatabaseTreeElements.clear();
     for (const indexedDBModel of SDK25.TargetManager.TargetManager.instance().models(IndexedDBModel, { scoped: true })) {
       const databases = indexedDBModel.databases();
       for (let j = 0; j < databases.length; ++j) {
@@ -20019,9 +20016,10 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     }
   }
   removeIndexedDBForModel(model) {
-    const idbDatabaseTreeElements = this.idbDatabaseTreeElements.filter((element) => element.model === model);
-    for (const idbDatabaseTreeElement of idbDatabaseTreeElements) {
-      this.removeIDBDatabaseTreeElement(idbDatabaseTreeElement);
+    for (const idbDatabaseTreeElement of this.idbDatabaseTreeElements) {
+      if (idbDatabaseTreeElement.model === model) {
+        this.removeIDBDatabaseTreeElement(idbDatabaseTreeElement);
+      }
     }
   }
   onattach() {
@@ -20058,7 +20056,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
       return;
     }
     const idbDatabaseTreeElement = new IDBDatabaseTreeElement(this.resourcesPanel, model, databaseId);
-    this.idbDatabaseTreeElements.push(idbDatabaseTreeElement);
+    this.idbDatabaseTreeElements.add(idbDatabaseTreeElement);
     this.appendChild(idbDatabaseTreeElement);
     model.refreshDatabase(databaseId);
   }
@@ -20074,7 +20072,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   removeIDBDatabaseTreeElement(idbDatabaseTreeElement) {
     idbDatabaseTreeElement.clear();
     this.removeChild(idbDatabaseTreeElement);
-    Platform12.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
+    this.idbDatabaseTreeElements.delete(idbDatabaseTreeElement);
     this.setExpandable(this.childCount() > 0);
   }
   indexedDBLoaded({ data: { database, model, entriesUpdated } }) {
@@ -20097,7 +20095,12 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     idbDatabaseTreeElement.indexedDBContentUpdated(objectStoreName);
   }
   idbDatabaseTreeElement(model, databaseId) {
-    return this.idbDatabaseTreeElements.find((x) => x.databaseId.equals(databaseId) && x.model === model) || null;
+    for (const element of this.idbDatabaseTreeElements) {
+      if (element.databaseId.equals(databaseId) && element.model === model) {
+        return element;
+      }
+    }
+    return null;
   }
 };
 var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {

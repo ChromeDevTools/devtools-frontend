@@ -1079,7 +1079,6 @@ export class NavigatorView extends NavigatorViewBase {
         rootOrDeployed.appendChild(new NavigatorGroupTreeNode(this, project, project.id(), type, project.displayName()));
         this.#selectDefaultTreeNode();
     }
-    // TODO(einbinder) remove this code after crbug.com/964075 is fixed
     #selectDefaultTreeNode() {
         const children = this.rootNode.children();
         if (children.length && !this.#selectedNode) {

@@ -1031,11 +1031,6 @@ var breakpointsView_css_default = `/*
     margin-bottom: var(--sys-size-2);
   }
 
-  /* TODO(crbug.com/1382762): Remove special casing with dependent toggles as soon as Node LTS caught up on independent pause of exception toggles. */
-  input:disabled + span {
-    color: var(--sys-color-state-disabled);
-  }
-
   .pause-on-caught-exceptions > .checkbox-label > input,
   .pause-on-uncaught-exceptions > .checkbox-label > input {
     margin-left: var(--sys-size-4);
@@ -7444,7 +7439,6 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     rootOrDeployed.appendChild(new NavigatorGroupTreeNode(this, project, project.id(), type, project.displayName()));
     this.#selectDefaultTreeNode();
   }
-  // TODO(einbinder) remove this code after crbug.com/964075 is fixed
   #selectDefaultTreeNode() {
     const children = this.rootNode.children();
     if (children.length && !this.#selectedNode) {

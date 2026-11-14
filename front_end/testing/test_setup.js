@@ -61,14 +61,44 @@ beforeEach(async function () {
     startTrackingAsyncActivity();
 });
 afterEach(async function () {
-    cleanTestDOM(this.currentTest?.fullTitle());
+    const title = this.currentTest?.fullTitle();
+    // Run every cleanup step even if an earlier one throws, so that a failure in
+    // one step can't leave fake timers, Sinon stubs or tracking stubs installed.
+    const errors = [];
+    const run = async (step) => {
+        try {
+            await step();
+        }
+        catch (err) {
+            errors.push(err);
+        }
+    };
+    await run(() => cleanTestDOM(title));
     // Flush and restore any Sinon fake timers before checking for pending activity,
     // so fake timers do not intercept timeouts scheduled while flushing pending async work.
-    sinon.clock?.runToLast();
-    sinon.clock?.restore();
-    await checkForPendingActivity(this.currentTest?.fullTitle());
-    stopTrackingAsyncActivity();
-    // Clear out any Sinon stubs or spies between individual tests.
-    sinon.restore();
+    await run(() => sinon.clock?.runToLast());
+    await run(() => sinon.clock?.restore());
+    // Only check for leaked async operations when the test completed normally.
+    // Failed or timed-out tests abort mid-execution while async work is still in flight.
+    if (this.currentTest?.state === 'passed') {
+        await run(() => checkForPendingActivity(title));
+    }
+    // Restore Sinon (including fake timers) before the tracking stubs, matching
+    // the order in the root beforeEach.
+    await run(() => sinon.restore());
+    await run(() => stopTrackingAsyncActivity());
+    if (errors.length === 0) {
+        return;
+    }
+    for (const err of errors.slice(1)) {
+        console.error(`Additional afterEach cleanup error in "${title}":`, err);
+    }
+    if (this.currentTest && this.test) {
+        // Fail the test itself via Hook.error() instead of failing the root afterEach hook,
+        // which would cause Mocha to abort the root suite and skip all remaining tests.
+        this.test.error(errors[0]);
+        return;
+    }
+    throw errors[0];
 });
 //# sourceMappingURL=test_setup.js.map

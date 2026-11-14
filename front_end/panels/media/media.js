@@ -1514,7 +1514,7 @@ var playerPropertiesView_css_default = `/*
 .media-property-renderer-title {
   font-size: var(--sys-typescale-body4-size);
   float: left;
-  width: 150px;
+  width: var(--sys-size-23);
 }
 
 .media-property-renderer-title::first-letter {
@@ -2199,8 +2199,7 @@ var playerListView_css_default = `/*
 }
 
 .player-entry-player-title {
-  height: 26px;
-  padding-left: 10px;
+  padding-left: var(--sys-size-5);
   overflow: hidden;
 }
 

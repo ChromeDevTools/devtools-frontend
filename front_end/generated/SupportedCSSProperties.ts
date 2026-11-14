@@ -331,6 +331,11 @@ export const generatedProperties: CSSProperty[] = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "horizontal-tb",
+   "vertical-rl",
+   "vertical-lr"
+  ],
   "name": "-webkit-writing-mode"
  },
  {
@@ -1060,6 +1065,11 @@ export const generatedProperties: CSSProperty[] = [
    "none",
    "move",
    "no-drag"
+  ],
+  "keywords": [
+   "drag",
+   "no-drag",
+   "none"
   ],
   "name": "app-region"
  },
@@ -2354,7 +2364,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2365,7 +2375,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-block-end",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2383,7 +2393,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-block-start",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2401,7 +2411,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-bottom",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2410,7 +2420,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-bottom-left",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "keywords": [
@@ -2430,7 +2440,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-bottom-right",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "keywords": [
@@ -2457,7 +2467,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-end-end",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "name": "corner-end-end-shape"
@@ -2469,7 +2479,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-end-start",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "name": "corner-end-start-shape"
@@ -2483,7 +2493,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-inline-end",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2501,7 +2511,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-inline-start",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2519,7 +2529,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-left",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2537,7 +2547,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-right",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2562,7 +2572,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-start-end",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "name": "corner-start-end-shape"
@@ -2574,7 +2584,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-start-start",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "name": "corner-start-start-shape"
@@ -2588,7 +2598,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-top",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "longhands": [
@@ -2597,7 +2607,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-top-left",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "keywords": [
@@ -2617,7 +2627,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "corner-top-right",
   "runtime_flag": "CSSCornersShorthand",
-  "runtime_flag_status": "experimental"
+  "runtime_flag_status": "stable"
  },
  {
   "keywords": [
@@ -2779,9 +2789,7 @@ export const generatedProperties: CSSProperty[] = [
    "flow",
    "math",
    "ruby",
-   "ruby-text",
-   "grid-lanes",
-   "inline-grid-lanes"
+   "ruby-text"
   ],
   "name": "display"
  },
@@ -3057,9 +3065,7 @@ export const generatedProperties: CSSProperty[] = [
    "ic-height",
    "from-font"
   ],
-  "name": "font-size-adjust",
-  "runtime_flag": "CSSFontSizeAdjust",
-  "runtime_flag_status": "stable"
+  "name": "font-size-adjust"
  },
  {
   "inherited": true,
@@ -4440,6 +4446,11 @@ export const generatedProperties: CSSProperty[] = [
  },
  {
   "is_descriptor": true,
+  "keywords": [
+   "upright",
+   "rotate-left",
+   "rotate-right"
+  ],
   "name": "page-orientation"
  },
  {
@@ -6312,6 +6323,13 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "read-only",
    "read-write",
    "read-write-plaintext-only"
+  ]
+ },
+ "-webkit-writing-mode": {
+  "values": [
+   "horizontal-tb",
+   "vertical-rl",
+   "vertical-lr"
   ]
  },
  "accent-color": {
@@ -8306,6 +8324,13 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "none",
    "clamp",
    "add"
+  ]
+ },
+ "page-orientation": {
+  "values": [
+   "upright",
+   "rotate-left",
+   "rotate-right"
   ]
  },
  "paint-order": {

@@ -6798,8 +6798,14 @@ var requestCookiesView_css_default = `/*
   .request-cookies-view .request-cookies-title {
     font-size: var(--sys-typescale-body4-size);
     font-weight: bold;
-    margin-right: 30px;
+    margin-right: var(--sys-size-12);
     color: var(--sys-color-on-surface);
+    vertical-align: middle;
+  }
+
+  .request-cookies-view devtools-checkbox {
+    font-size: var(--sys-typescale-body4-size);
+    vertical-align: middle;
   }
 
   .request-cookies-view .cookie-line {
@@ -6876,7 +6882,6 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   render7(
     html6`
     <style>${requestCookiesView_css_default}</style>
-    <style>${UI7.inspectorCommonStyles}</style>
     <div class="request-cookies-view">
       ${input.gotCookies ? Lit.nothing : widget3(UI7.EmptyWidget.EmptyWidget, {
       header: i18nString7(UIStrings7.thisRequestHasNoCookies)
@@ -7755,16 +7760,6 @@ var networkLogView_css_default = `/*
     height: var(--sys-size-13);
     margin-top: var(--sys-size-1);
     margin-right: var(--sys-size-3);
-  }
-
-  .network-log-grid.data-grid:focus-within .network-error-row.selected div.icon:not(.image) {
-    filter: none;
-  }
-
-  .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node img.icon,
-  .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node.selected img.icon {
-    /* This is generated with https://codepen.io/sosuke/pen/Pjoqqp to target var(--color-red) */
-    filter: brightness(0) saturate(100%) invert(35%) sepia(76%) saturate(1413%) hue-rotate(338deg) brightness(92%) contrast(103%);
   }
 
   .network-throttled-row {

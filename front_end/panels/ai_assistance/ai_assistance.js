@@ -10885,6 +10885,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             step.widgets = data.widgets;
             step.state = { type: "completed" };
             commitStep();
+            if (!this.#conversation?.isReadOnly && AiAssistanceModel8.AiUtils.isAiV2Enabled() && data.autoLearnedSkills) {
+              for (const skill of data.autoLearnedSkills) {
+                void VisualLogging9.logFunctionCall("ai-v2-auto-learn-skill", skill);
+              }
+            }
             break;
           }
           case AiAssistanceModel8.AiAgent.ResponseType.TITLE: {

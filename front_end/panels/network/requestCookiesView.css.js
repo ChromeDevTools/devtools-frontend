@@ -20,8 +20,14 @@ export default `/*
   .request-cookies-view .request-cookies-title {
     font-size: var(--sys-typescale-body4-size);
     font-weight: bold;
-    margin-right: 30px;
+    margin-right: var(--sys-size-12);
     color: var(--sys-color-on-surface);
+    vertical-align: middle;
+  }
+
+  .request-cookies-view devtools-checkbox {
+    font-size: var(--sys-typescale-body4-size);
+    vertical-align: middle;
   }
 
   .request-cookies-view .cookie-line {

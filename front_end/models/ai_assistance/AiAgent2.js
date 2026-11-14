@@ -9,8 +9,10 @@ import { AiAgent, sanitizeSuggestionsList, SUGGEST_FOLLOW_UPS_FUNCTION_NAME, } f
 import { executeJsCode } from './agents/ExecuteJavascript.js';
 import { ChangeManager } from './ChangeManager.js';
 import { DOMNodeContext } from './contexts/DOMNodeContext.js';
+import { FileContext } from './contexts/FileContext.js';
 import { LighthouseContext } from './contexts/LighthouseContext.js';
 import { PerformanceTraceContext } from './contexts/PerformanceTraceContext.js';
+import { RequestContext } from './contexts/RequestContext.js';
 import { ExtensionScope } from './ExtensionScope.js';
 import { SKILLS } from './skills/SkillRegistry.js';
 import { isOriginAllowedByLock, } from './tools/Tool.js';
@@ -182,6 +184,7 @@ export class AiAgent2 extends AiAgent {
         return {};
     }
     async preRun() {
+        await super.preRun();
         // One-way latch: once sensitive data enters the conversation history,
         // logging must remain disabled for the lifetime of this agent instance.
         if (this.context && !this.context.isLoggingEnabled()) {
@@ -217,6 +220,10 @@ export class AiAgent2 extends AiAgent {
     }
     #activeSkills = new Set();
     #declaredTools = new Set();
+    /**
+     * Tracks skills auto-loaded during enhanceQuery() so handleContextDetails() can attach them to ContextResponse for telemetry without rendering a walkthrough step.
+     */
+    #pendingAutoLearnedSkills = [];
     constructor(opts) {
         super({
             ...opts,
@@ -302,30 +309,57 @@ ${skillsManifest}`,
             handler: async () => ({ result: 'Suggestions recorded.' }),
         });
     }
+    /**
+     * Maps selected contexts (DOMNodeContext, RequestContext, FileContext) to their domain skill to skip a redundant step-1 learnSkills round trip.
+     */
+    #skillForContext(selected) {
+        if (selected instanceof DOMNodeContext) {
+            return 'styling';
+        }
+        if (selected instanceof RequestContext) {
+            return 'network';
+        }
+        if (selected instanceof FileContext) {
+            return 'sources';
+        }
+        return null;
+    }
     async enhanceQuery(query, selected = null, 
     // TODO: support multimodal input in AiAgent2.
     _multimodalInputType) {
+        this.#pendingAutoLearnedSkills = [];
         const promptDetails = selected ? await selected.getPromptDetails() : null;
+        let enhancedQuery = query;
         if (!promptDetails) {
             // Clear the tracker when there is no context (or an unsupported context type)
             // so that if the user later switches back to a previously sent context, it is
             // sent in full again rather than deduplicated.
             this.#lastSentPromptDetails = null;
-            return query;
-        }
-        let contextDetails;
-        if (promptDetails === this.#lastSentPromptDetails) {
-            contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
         }
         else {
-            contextDetails = promptDetails;
-            this.#lastSentPromptDetails = promptDetails;
-        }
-        return `${contextDetails}
+            let contextDetails;
+            if (promptDetails === this.#lastSentPromptDetails) {
+                contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
+            }
+            else {
+                contextDetails = promptDetails;
+                this.#lastSentPromptDetails = promptDetails;
+            }
+            enhancedQuery = `${contextDetails}
 
 # User request
 
 QUERY: ${query}`;
+        }
+        const mappedSkill = this.#skillForContext(selected);
+        if (mappedSkill && SKILLS[mappedSkill] && !this.#activeSkills.has(mappedSkill)) {
+            const autoLoadedBlock = await this.learnSkill([mappedSkill]);
+            this.#pendingAutoLearnedSkills.push(mappedSkill);
+            if (autoLoadedBlock) {
+                return `${autoLoadedBlock}\n\n${enhancedQuery}`;
+            }
+        }
+        return enhancedQuery;
     }
     /**
      * Parses a completed response. Only the last line can be the follow-up
@@ -342,18 +376,26 @@ QUERY: ${query}`;
         return { answer: hideStreamingSuggestions(response.trim()) };
     }
     async *handleContextDetails(selected) {
-        if (selected) {
-            const [details, widgets] = await Promise.all([
-                selected.getUserFacingDetails(),
-                selected.getWidgets(),
-            ]);
-            if (details) {
-                yield {
-                    type: "context" /* ResponseType.CONTEXT */,
-                    details,
-                    ...(widgets.length > 0 ? { widgets } : {}),
-                };
-            }
+        const autoLearned = this.#pendingAutoLearnedSkills;
+        this.#pendingAutoLearnedSkills = [];
+        if (!selected) {
+            return;
+        }
+        const [details, widgets] = await Promise.all([
+            selected.getUserFacingDetails(),
+            selected.getWidgets(),
+        ]);
+        if (details) {
+            // Do not yield a separate TITLE/ACTION walkthrough step for autoLearned skills:
+            // DevTools attaches the active panel's selected item before the model evaluates
+            // whether the user's question needs that skill, so showing "Loaded skill: ..."
+            // in the walkthrough misleads the user when their question is about another domain.
+            yield {
+                type: "context" /* ResponseType.CONTEXT */,
+                details,
+                ...(widgets.length > 0 ? { widgets } : {}),
+                ...(autoLearned.length > 0 ? { autoLearnedSkills: autoLearned } : {}),
+            };
         }
     }
     async learnSkill(names) {

@@ -34,7 +34,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
     if (input.hasReports || input.hasEndpoints) {
         // clang-format off
         render(html `
-      <style>${UI.inspectorCommonStyles}</style>
       <devtools-split-view sidebar-position="second" sidebar-initial-size="150" jslog=${VisualLogging.pane('reporting-api')}>
         ${input.hasReports ? html `
           <devtools-split-view slot="main" sidebar-position="second" sidebar-initial-size="150">

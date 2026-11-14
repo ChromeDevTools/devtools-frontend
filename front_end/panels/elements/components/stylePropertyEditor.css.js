@@ -9,75 +9,79 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.container {
-  min-width: var(--sys-size-24);
+@scope to (devtools-widget > *) {
+  .container {
+    min-width: var(--sys-size-24);
+  }
+
+  .row {
+    padding: 0;
+    color: var(--sys-color-on-surface);
+    padding-bottom: var(--sys-size-8);
+  }
+
+  .row:last-child {
+    padding-bottom: 0;
+  }
+
+  .property {
+    padding-bottom: var(--sys-size-3);
+    white-space: nowrap;
+  }
+
+  .property-name {
+    color: var(--sys-color-token-property-special);
+  }
+
+  .property-value {
+    color: var(--sys-color-on-surface);
+  }
+
+  .property-value.not-authored {
+    color: var(--sys-color-state-disabled);
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .buttons > :first-child {
+    border-radius: var(--sys-shape-corner-extra-small) 0 0 var(--sys-shape-corner-extra-small);
+  }
+
+  .buttons > :last-child {
+    border-radius: 0 var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) 0;
+  }
+
+  .button {
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    background-color: var(--sys-color-cdt-base-container);
+    width: var(--sys-size-11);
+    height: var(--sys-size-11);
+    min-width: var(--sys-size-11);
+    min-height: var(--sys-size-11);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+
+  .button devtools-icon {
+    color: var(--icon-default);
+  }
+
+  .button:hover devtools-icon {
+    color: var(--icon-default-hover);
+  }
+
+  .button.selected devtools-icon {
+    color: var(--icon-toggled);
+  }
 }
 
-.row {
-  padding: 0;
-  color: var(--sys-color-on-surface);
-  padding-bottom: var(--sys-size-8);
-}
-
-.row:last-child {
-  padding-bottom: 0;
-}
-
-.property {
-  padding-bottom: var(--sys-size-3);
-  white-space: nowrap;
-}
-
-.property-name {
-  color: var(--sys-color-token-property-special);
-}
-
-.property-value {
-  color: var(--sys-color-on-surface);
-}
-
-.property-value.not-authored {
-  color: var(--sys-color-state-disabled);
-}
-
-.buttons {
-  display: flex;
-  flex-direction: row;
-}
-
-.buttons > :first-child {
-  border-radius: var(--sys-shape-corner-extra-small) 0 0 var(--sys-shape-corner-extra-small);
-}
-
-.buttons > :last-child {
-  border-radius: 0 var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) 0;
-}
-
-.button {
-  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-  background-color: var(--sys-color-cdt-base-container);
-  width: var(--sys-size-11);
-  height: var(--sys-size-11);
-  min-width: var(--sys-size-11);
-  min-height: var(--sys-size-11);
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.button devtools-icon {
-  color: var(--icon-default);
-}
-
-.button:hover devtools-icon {
-  color: var(--icon-default-hover);
-}
-
-.button.selected devtools-icon {
-  color: var(--icon-toggled);
-}
 
 /*# sourceURL=${import.meta.resolve('./stylePropertyEditor.css')} */`;

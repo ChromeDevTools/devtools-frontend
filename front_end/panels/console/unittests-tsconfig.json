@@ -49,6 +49,7 @@
     "../../../../../../front_end/panels/console/ConsoleContextSelector.test.ts",
     "../../../../../../front_end/panels/console/ConsoleFormat.test.ts",
     "../../../../../../front_end/panels/console/ConsoleInsightTeaser.test.ts",
+    "../../../../../../front_end/panels/console/ConsolePanel.test.ts",
     "../../../../../../front_end/panels/console/ConsolePinPane.test.ts",
     "../../../../../../front_end/panels/console/ConsolePrompt.test.ts",
     "../../../../../../front_end/panels/console/ConsoleSidebar.test.ts",

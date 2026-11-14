@@ -2310,6 +2310,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     }
     this.#parsedJSON = parsedJSON;
     this.objectTree = null;
+    this.#autoExpandCanceled = false;
     this.onSearchCanceled();
     this.requestUpdate();
   }
@@ -2379,6 +2380,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     });
     if (!this.startCollapsed) {
       this.objectTree.expanded = true;
+      void this.#autoExpandInitial(this.objectTree);
     }
     this.objectTree.addEventListener(
       ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
@@ -2390,6 +2392,64 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
       this.#onChildrenChanged,
       this
     );
+  }
+  static #AUTO_EXPAND_ROW_BUDGET = 30;
+  static #AUTO_EXPAND_MAX_DEPTH = 4;
+  #autoExpandCanceled = false;
+  async #autoExpandInitial(tree) {
+    await tree.populateChildrenIfNeeded();
+    if (this.objectTree !== tree || !tree.expanded || this.#autoExpandCanceled) {
+      return;
+    }
+    const rootChildren = Array.from(tree.treeNodeChildren());
+    let visibleRows = Math.max(rootChildren.length, tree.arrayLength);
+    let frontier = rootChildren.filter((n) => n.hasChildren && n.canExpandRecursively);
+    for (let depth = 1; depth < _JSONView.#AUTO_EXPAND_MAX_DEPTH && frontier.length > 0; depth++) {
+      if (frontier.length === 1 && visibleRows <= _JSONView.#AUTO_EXPAND_ROW_BUDGET) {
+        const only = frontier[0];
+        await only.populateChildrenIfNeeded();
+        if (this.objectTree !== tree || !tree.expanded || this.#autoExpandCanceled) {
+          return;
+        }
+        const onlyChildren = Array.from(only.treeNodeChildren());
+        const added = Math.max(onlyChildren.length, only.arrayLength);
+        if (added > 1 && visibleRows + added > _JSONView.#AUTO_EXPAND_ROW_BUDGET) {
+          break;
+        }
+        only.expanded = true;
+        visibleRows += added;
+        frontier = onlyChildren.filter((n) => n.hasChildren && n.canExpandRecursively);
+        continue;
+      }
+      let addedRows = 0;
+      for (const node of frontier) {
+        await node.populateChildrenIfNeeded();
+        if (this.objectTree !== tree || !tree.expanded || this.#autoExpandCanceled) {
+          return;
+        }
+        const nodeChildren = Array.from(node.treeNodeChildren());
+        addedRows += Math.max(nodeChildren.length, node.arrayLength);
+        if (visibleRows + addedRows > _JSONView.#AUTO_EXPAND_ROW_BUDGET) {
+          break;
+        }
+      }
+      if (visibleRows + addedRows > _JSONView.#AUTO_EXPAND_ROW_BUDGET) {
+        break;
+      }
+      const nextFrontier = [];
+      for (const node of frontier) {
+        node.expanded = true;
+        for (const child of node.treeNodeChildren()) {
+          if (child.hasChildren && child.canExpandRecursively) {
+            nextFrontier.push(child);
+          }
+        }
+      }
+      visibleRows += addedRows;
+      frontier = nextFrontier;
+    }
+    tree.dispatchEventToListeners(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED);
+    this.requestUpdate();
   }
   #onChildrenChanged() {
     this.requestUpdate();
@@ -2444,6 +2504,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
   }
   async performSearch(searchConfig, shouldJump, jumpBackwards) {
     this.initialize();
+    this.#autoExpandCanceled = true;
     this.onSearchCanceled();
     const searchRegex = searchConfig.toSearchRegex(true).regex;
     if (!this.objectTree) {

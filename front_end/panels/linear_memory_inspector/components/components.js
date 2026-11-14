@@ -1199,7 +1199,7 @@ var valueInterpreterSettings_css_default = `/*
     display: flex;
     flex-wrap: wrap;
     margin: 0 var(--sys-size-6) var(--sys-size-6);
-    gap: 15px 45px;
+    gap: var(--sys-size-8) var(--sys-size-16);
   }
 
   .value-types-selection {
@@ -1331,7 +1331,6 @@ function renderEndiannessSetting(onEndiannessChanged, currentEndiannes) {
 var DEFAULT_VIEW5 = (input, _output, target) => {
   render5(
     html5`
-    <style>${UI5.inspectorCommonStyles}</style>
     <style>${linearMemoryValueInterpreter_css_default}</style>
     <div class="value-interpreter">
       <div class="settings-toolbar">

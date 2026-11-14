@@ -1422,7 +1422,9 @@ var ExtensionSidebarPane = class extends UI5.View.SimpleView {
 // ../../front_end/panels/common/ExtensionServer.ts
 var ExtensionServer_exports = {};
 __export(ExtensionServer_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   Events: () => Events,
+  ExtensionFramesWidget: () => ExtensionFramesWidget,
   ExtensionServer: () => ExtensionServer,
   ExtensionStatus: () => ExtensionStatus,
   HostsPolicy: () => HostsPolicy,
@@ -1443,6 +1445,8 @@ import * as Workspace from "../../models/workspace/workspace.js";
 import * as Components from "../../ui/legacy/components/utils/utils.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
+import { Directives as Directives2, html as html5, render as render5 } from "../../ui/lit/lit.js";
+var { ifDefined, repeat } = Directives2;
 var extensionOrigins = /* @__PURE__ */ new WeakMap();
 var extensionServerInstance;
 function parseCanonicalURL(url) {
@@ -1542,6 +1546,43 @@ var RevealableNetworkRequestFilter = class {
   }
   filter;
 };
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render5(html5`
+    ${repeat(input.frames, (frame) => frame.key, (frame) => html5`
+      <iframe
+        src=${frame.startPage}
+        data-devtools-extension=${ifDefined(frame.name)}
+        style="display: none;"></iframe>
+    `)}
+  `, target, { container: { attributes: { style: "display: contents" } } });
+};
+var ExtensionFramesWidget = class extends UI6.Widget.Widget {
+  #view;
+  #frames = [];
+  #nextKey = 0;
+  constructor(element, view = DEFAULT_VIEW4) {
+    super(element);
+    this.#view = view;
+  }
+  addFrame({ startPage, name }) {
+    this.#frames.push({ key: this.#nextKey++, startPage, name });
+    this.requestUpdate();
+  }
+  clear() {
+    this.#frames.length = 0;
+    this.#nextKey = 0;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    if (this.#frames.length > 0) {
+      this.requestUpdate();
+    }
+  }
+  performUpdate() {
+    this.#view({ frames: [...this.#frames] }, void 0, this.contentElement);
+  }
+};
 var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.ObjectWrapper {
   clientObjects;
   handlers;
@@ -1564,8 +1605,10 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   // Origin of the extension that currently owns the extension-set user agent
   // override in MultitargetNetworkManager, if any.
   userAgentOverrideOwner = null;
-  constructor() {
+  #framesWidget;
+  constructor(framesWidget = new ExtensionFramesWidget()) {
     super();
+    this.#framesWidget = framesWidget;
     this.clientObjects = /* @__PURE__ */ new Map();
     this.handlers = /* @__PURE__ */ new Map();
     this.subscribers = /* @__PURE__ */ new Map();
@@ -1696,7 +1739,12 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
   get isEnabledForTest() {
     return this.extensionsEnabled;
   }
+  framesWidget() {
+    return this.#framesWidget;
+  }
   dispose() {
+    this.#framesWidget.clear();
+    this.#framesWidget.detach();
     ThemeSupport.ThemeSupport.instance().removeEventListener(
       ThemeSupport.ThemeChangeEvent.eventName,
       this.#onThemeChange
@@ -1728,10 +1776,10 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
     }
   };
   static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
+    const { forceNew, framesWidget } = opts;
     if (!extensionServerInstance || forceNew) {
       extensionServerInstance?.dispose();
-      extensionServerInstance = new _ExtensionServer();
+      extensionServerInstance = new _ExtensionServer(framesWidget);
     }
     return extensionServerInstance;
   }
@@ -2940,12 +2988,12 @@ var ExtensionServer = class _ExtensionServer extends Common4.ObjectWrapper.Objec
       this.initializeExtensions();
     }
   }
-  addExtensionFrame({ startPage, name }) {
-    const iframe = document.createElement("iframe");
-    iframe.src = startPage;
-    iframe.dataset.devtoolsExtension = name;
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
+  addExtensionFrame(extensionInfo) {
+    if (!this.#framesWidget.isShowing()) {
+      this.#framesWidget.markAsRoot();
+      this.#framesWidget.show(document.body);
+    }
+    this.#framesWidget.addFrame(extensionInfo);
   }
   addExtension(extensionInfo) {
     const startPage = extensionInfo.startPage;
@@ -3362,7 +3410,7 @@ import * as Platform3 from "../../core/platform/platform.js";
 import * as Persistence from "../../models/persistence/persistence.js";
 import * as Workspace3 from "../../models/workspace/workspace.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
-import { html as html5 } from "../../ui/lit/lit.js";
+import { html as html6 } from "../../ui/lit/lit.js";
 var UIStrings4 = {
   /**
    * @description Tooltip text indicating that a file is linked to a source map.
@@ -3403,7 +3451,7 @@ var PersistenceUtils = class _PersistenceUtils {
         return null;
       }
       const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
-      return html5`<devtools-icon class="small dot ${dotClass}" name="document"
+      return html6`<devtools-icon class="small dot ${dotClass}" name="document"
                                  title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
                   </devtools-icon>`;
     }
@@ -3413,9 +3461,9 @@ var PersistenceUtils = class _PersistenceUtils {
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
       uiSourceCode
     )) {
-      return html5`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
+      return html6`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
     }
-    return html5`<devtools-icon class="small" name="document"
+    return html6`<devtools-icon class="small" name="document"
                                title=${_PersistenceUtils.tooltipForUISourceCode(uiSourceCode)}>
                 </devtools-icon>`;
   }
@@ -3446,7 +3494,7 @@ import * as Common6 from "../../core/common/common.js";
 import * as i18n13 from "../../core/i18n/i18n.js";
 import * as SDK4 from "../../core/sdk/sdk.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html6, nothing as nothing3, render as render5 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html7, nothing as nothing3, render as render6 } from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
@@ -3508,7 +3556,7 @@ var domLinkifier_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./domLinkifier.css")} */`;
 
 // ../../front_end/panels/common/DOMLinkifier.ts
-var { classMap, ifDefined } = Directives2;
+var { classMap, ifDefined: ifDefined2 } = Directives3;
 var { widget: widget2 } = UI7.Widget;
 var UIStrings5 = {
   /**
@@ -3520,15 +3568,15 @@ var UIStrings5 = {
 };
 var str_5 = i18n13.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings5);
 var i18nString5 = i18n13.i18n.getLocalizedString.bind(void 0, str_5);
-var DEFAULT_VIEW4 = (input, _output, target) => {
-  render5(html6`${input.tagName || input.pseudo ? html6`
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render6(html7`${input.tagName || input.pseudo ? html7`
     <style>${domLinkifier_css_default}</style>
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
     "dynamic-link": Boolean(input.dynamic),
     disabled: Boolean(input.disabled)
   })}"
-          aria-description=${ifDefined(input.ariaDescription)}
+          aria-description=${ifDefined2(input.ariaDescription)}
           jslog=${VisualLogging2.link("node").track({ click: true, keydown: "Enter" })}
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
@@ -3540,10 +3588,10 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html6`<span class="node-label-name">${input.tagName}</span>` : nothing3,
-    input.id ? html6`<span class="node-label-id">#${input.id}</span>` : nothing3,
-    ...input.classes.map((className) => html6`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html6`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing3
+    input.tagName ? html7`<span class="node-label-name">${input.tagName}</span>` : nothing3,
+    input.id ? html7`<span class="node-label-id">#${input.id}</span>` : nothing3,
+    ...input.classes.map((className) => html7`<span class="extra node-label-class">.${className}</span>`),
+    input.pseudo ? html7`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing3
   ]}</button>
     </span>` : i18nString5(UIStrings5.node)}`, target);
 };
@@ -3551,7 +3599,7 @@ var DOMNodeLink = class extends UI7.Widget.Widget {
   #node = void 0;
   #options = void 0;
   #view;
-  constructor(element, node, options, view = DEFAULT_VIEW4) {
+  constructor(element, node, options, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
     this.element.classList.remove("vbox");
     this.#node = node;
@@ -3645,7 +3693,7 @@ var DOMNodeLink = class extends UI7.Widget.Widget {
   }
 };
 var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
-  render5(html6`
+  render6(html7`
       <style>${domLinkifier_css_default}</style>
       <button class="node-link text-button link-style"
           jslog=${VisualLogging2.link("node").track({ click: true })}
@@ -3724,10 +3772,10 @@ var Linkifier3 = class _Linkifier {
   }
   linkify(node, options) {
     if (node instanceof SDK4.DOMModel.DOMNode) {
-      return html6`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html6`${options.textContent}` : nothing3}</devtools-widget>`;
+      return html7`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     if (node instanceof SDK4.DOMModel.DeferredDOMNode) {
-      return html6`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html6`${options.textContent}` : nothing3}</devtools-widget>`;
+      return html7`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     throw new Error("Can't linkify non-node");
   }
@@ -3737,7 +3785,7 @@ var Linkifier3 = class _Linkifier {
 var CommentThreadWidget_exports = {};
 __export(CommentThreadWidget_exports, {
   CommentThreadWidget: () => CommentThreadWidget,
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   computeCommentTitle: () => computeCommentTitle,
   inputDisclaimer: () => inputDisclaimer
 });
@@ -3985,7 +4033,7 @@ var commentThreadWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./commentThreadWidget.css")} */`;
 
 // ../../front_end/panels/common/CommentThreadWidget.ts
-var { html: html7, render: render6, Directives: { classMap: classMap2, createRef, ref: ref2 } } = Lit3;
+var { html: html8, render: render7, Directives: { classMap: classMap2, createRef, ref: ref2 } } = Lit3;
 var { widget: widget3 } = UI8.Widget;
 var UIStrings6 = {
   /**
@@ -4053,7 +4101,7 @@ var lockedString3 = i18n15.i18n.lockedString;
 function inputDisclaimer() {
   return lockedString3(UIStringsNotTranslate2.inputDisclaimer);
 }
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW6 = (input, _output, target) => {
   const hasComment = input.comments.length > 0;
   const showCommentInput = !hasComment || input.isEditing;
   let buttonText;
@@ -4080,14 +4128,14 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     switch (input.status) {
       case "SENT_TO_AGENT":
         if (input.transmitted) {
-          return html7`
+          return html8`
             <div class="working-status">
               <devtools-spinner></devtools-spinner>
               <span>${i18nString6(UIStrings6.working)}</span>
             </div>
           `;
         }
-        return html7`
+        return html8`
           <div class="sent-status">
             <devtools-icon
               class="check-icon"
@@ -4099,7 +4147,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         `;
       // clang-format on
       case "ACTIVE":
-        return html7`
+        return html8`
           <devtools-button
             class="delete-button"
             aria-label=${i18nString6(UIStrings6.deleteQueuedComment)}
@@ -4115,21 +4163,21 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         return Lit3.nothing;
     }
   };
-  render6(html7`
+  render7(html8`
     <style>${Input.textInputStyles}${commentThreadWidget_css_default}</style>
     <div
       class="comment-thread-widget ${classMap2({ submitted: !showCommentInput })}"
       jslog=${VisualLogging3.popover("comment-thread")}>
       <div class="header">
         <span class="selected-item">
-          ${"node" in input.title ? widget3(DOMNodeLink, { node: input.title.node }) : html7`<span class="selected-item-text">${input.title.text}</span>`}
+          ${"node" in input.title ? widget3(DOMNodeLink, { node: input.title.node }) : html8`<span class="selected-item-text">${input.title.text}</span>`}
         </span>
         <div class="header-actions">
           ${renderHeaderStatus()}
         </div>
       </div>
 
-      ${showCommentInput ? html7`
+      ${showCommentInput ? html8`
         <textarea
           ${ref2(input.textAreaRef)}
           class="devtools-text-input input"
@@ -4179,7 +4227,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             ${buttonText}
           </devtools-button>
         </div>
-      ` : html7`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? html7`
+      ` : html8`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? html8`
           <div class="comment-text"
             @click=${() => {
     input.onSetEditMode(true);
@@ -4187,7 +4235,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
           >
             ${comment.text}
           </div>
-        ` : html7`
+        ` : html8`
           <div class="agent-response">
             <div class="elbow"></div>
             <div class="response-content">
@@ -4201,7 +4249,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         `)}</div>
       `}
 
-      ${input.elementRemoved ? html7`
+      ${input.elementRemoved ? html8`
         <div class="element-removed-banner" role="status">
           <span>${i18nString6(UIStrings6.elementNoLongerAvailable)}</span>
         </div>
@@ -4225,7 +4273,7 @@ var CommentThreadWidget = class extends UI8.Widget.Widget {
   onDeleteQueuedComment;
   onSaveEdit;
   onStartEdit;
-  constructor(element, view = DEFAULT_VIEW5) {
+  constructor(element, view = DEFAULT_VIEW6) {
     super(element);
     this.#view = view;
   }
@@ -4476,10 +4524,10 @@ var UIStrings7 = {
 var str_7 = i18n17.i18n.registerUIStrings("panels/common/CommentsOverlayWidget.ts", UIStrings7);
 var i18nString7 = i18n17.i18n.getLocalizedString.bind(void 0, str_7);
 var {
-  html: html8,
-  render: render7,
+  html: html9,
+  render: render8,
   nothing: nothing5,
-  Directives: { classMap: classMap3, repeat, styleMap }
+  Directives: { classMap: classMap3, repeat: repeat2, styleMap }
 } = Lit4;
 var POPUP_MARGIN = 8;
 var PIN_HEIGHT = 30;
@@ -4517,7 +4565,7 @@ function renderAnchorHighlight(thread, highlight) {
   if (!thread || !highlight?.visible) {
     return nothing5;
   }
-  return html8`
+  return html9`
     <div
       class=${classMap3({
     "comment-anchor-highlight": true,
@@ -4531,11 +4579,11 @@ function renderAnchorHighlight(thread, highlight) {
     </div>
   `;
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
-  render7(html8`
+var DEFAULT_VIEW7 = (input, _output, target) => {
+  render8(html9`
     <style>${commentsOverlay_css_default}</style>
     <div class="comments-overlay-container">
-      ${input.hoverHighlight && input.hoverHighlight.visible ? html8`
+      ${input.hoverHighlight && input.hoverHighlight.visible ? html9`
         <div
           class="comment-hover-highlight"
           style=${styleMap({
@@ -4547,10 +4595,10 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       ` : nothing5}
       ${renderAnchorHighlight(input.activeThread, input.activeHighlight)}
       ${renderAnchorHighlight(input.hoveredThread, input.hoveredHighlight)}
-      ${repeat(
+      ${repeat2(
     input.pins.filter((p) => p.visible),
     (p) => p.id,
-    (p) => html8`
+    (p) => html9`
           <div
             class="comment-pin"
             aria-hidden="true"
@@ -4569,7 +4617,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           </div>
         `
   )}
-      ${repeat(
+      ${repeat2(
     getPopupItems(input),
     // Keyed by thread so that the popup DOM (and focus) is kept when a
     // hover preview becomes the open thread.
@@ -4582,7 +4630,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       const topOffset = item2.anchoredToPin ? item2.position.top + PIN_HEIGHT : item2.position.top - POPUP_MARGIN;
       const maxTop = target.clientHeight - (item2.anchoredToPin ? POPUP_HEIGHT : POPUP_MARGIN);
       const popupTop = Math.min(Math.max(POPUP_MARGIN, topOffset), Math.max(POPUP_MARGIN, maxTop));
-      return html8`
+      return html9`
             <div
               class="comment-popup-widget"
               style=${styleMap({
@@ -4677,7 +4725,7 @@ var CommentsOverlayWidget = class extends UI9.Widget.Widget {
     }
     this.#commentManager.getCommentThread(this.#activeThreadId)?.markResponseSeen();
   }
-  constructor(element, [commentManager], view = DEFAULT_VIEW6) {
+  constructor(element, [commentManager], view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: false });
     this.#view = view;
     this.#commentManager = commentManager;
@@ -5203,7 +5251,7 @@ var ButtonProvider = class {
 var CommentsStatusBarPill_exports = {};
 __export(CommentsStatusBarPill_exports, {
   CommentsStatusBarPill: () => CommentsStatusBarPill,
-  DEFAULT_VIEW: () => DEFAULT_VIEW7
+  DEFAULT_VIEW: () => DEFAULT_VIEW8
 });
 import * as i18n19 from "../../core/i18n/i18n.js";
 import * as CommentManager3 from "../../models/comment_manager/comment_manager.js";
@@ -5260,12 +5308,12 @@ var UIStrings8 = {
 };
 var str_8 = i18n19.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings8);
 var i18nString8 = i18n19.i18n.getLocalizedString.bind(void 0, str_8);
-var { html: html9, render: render8 } = Lit5;
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var { html: html10, render: render9 } = Lit5;
+var DEFAULT_VIEW8 = (input, _output, target) => {
   const tooltip = input.threads.flatMap((thread) => thread.comments.map((comment) => comment.text)).join("\n");
-  render8(html9`
+  render9(html10`
     <style>${commentsStatusBarPill_css_default}</style>
-    ${input.threads.length <= 0 ? Lit5.nothing : html9`
+    ${input.threads.length <= 0 ? Lit5.nothing : html10`
       <button
         class="devtools-pill"
         title=${tooltip}
@@ -5274,7 +5322,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         @click=${input.onPillClick}
         jslog=${VisualLogging4.action("comments-status-bar-pill").track({ click: true })}>
         <span>${i18nString8(UIStrings8.viewComments)}</span>
-        ${input.unseenResponseCount > 0 ? html9`
+        ${input.unseenResponseCount > 0 ? html10`
           <span class="comments-counter-badge">${input.unseenResponseCount}</span>
         ` : Lit5.nothing}
       </button>
@@ -5285,7 +5333,7 @@ var CommentsStatusBarPill = class extends UI10.Widget.Widget {
   static INJECT = [CommentManager3.CommentManager.CommentManager];
   #view;
   #commentManager;
-  constructor(element, [commentManager], view = DEFAULT_VIEW7) {
+  constructor(element, [commentManager], view = DEFAULT_VIEW8) {
     super(element);
     this.#view = view;
     this.#commentManager = commentManager;

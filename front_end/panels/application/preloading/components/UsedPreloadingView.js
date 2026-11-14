@@ -353,9 +353,8 @@ const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 /**
- * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
- * This also shows summary of speculations initiated by this page.
- **/
+ * Shows preloading used for the current page and a summary of speculations initiated by this page.
+ */
 export class UsedPreloadingView extends UI.Widget.VBox {
     #view;
     constructor(element, view = DEFAULT_VIEW) {

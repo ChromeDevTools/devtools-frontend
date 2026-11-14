@@ -16,14 +16,17 @@ interface ViewInput {
         showPassive: boolean;
         showBlocking: boolean;
     };
+    jslog?: string;
 }
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class EventListenersView extends UI.Widget.VBox {
     #private;
+    protected readonly jslog?: string;
     constructor(element?: HTMLElement, view?: View);
     get objects(): Array<SDK.RemoteObject.RemoteObject | null>;
     set objects(val: Array<SDK.RemoteObject.RemoteObject | null>);
+    protected setObjects(val: Array<SDK.RemoteObject.RemoteObject | null>): void;
     get filter(): {
         showFramework: boolean;
         showPassive: boolean;

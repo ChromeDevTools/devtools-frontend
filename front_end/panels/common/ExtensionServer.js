@@ -16,7 +16,9 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
 import { ExtensionButton, ExtensionPanel, ExtensionSidebarPane } from './ExtensionPanel.js';
+const { ifDefined, repeat } = Directives;
 const extensionOrigins = new WeakMap();
 let extensionServerInstance;
 function parseCanonicalURL(url) {
@@ -119,6 +121,45 @@ export class RevealableNetworkRequestFilter {
         this.filter = filter;
     }
 }
+export const DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `
+    ${repeat(input.frames, frame => frame.key, frame => html `
+      <iframe
+        src=${frame.startPage}
+        data-devtools-extension=${ifDefined(frame.name)}
+        style="display: none;"></iframe>
+    `)}
+  `, target, { container: { attributes: { style: 'display: contents' } } });
+    // clang-format on
+};
+export class ExtensionFramesWidget extends UI.Widget.Widget {
+    #view;
+    #frames = [];
+    #nextKey = 0;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    addFrame({ startPage, name }) {
+        this.#frames.push({ key: this.#nextKey++, startPage, name });
+        this.requestUpdate();
+    }
+    clear() {
+        this.#frames.length = 0;
+        this.#nextKey = 0;
+        this.requestUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        if (this.#frames.length > 0) {
+            this.requestUpdate();
+        }
+    }
+    performUpdate() {
+        this.#view({ frames: [...this.#frames] }, undefined, this.contentElement);
+    }
+}
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     clientObjects;
     handlers;
@@ -141,8 +182,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     // Origin of the extension that currently owns the extension-set user agent
     // override in MultitargetNetworkManager, if any.
     userAgentOverrideOwner = null;
-    constructor() {
+    #framesWidget;
+    constructor(framesWidget = new ExtensionFramesWidget()) {
         super();
+        this.#framesWidget = framesWidget;
         this.clientObjects = new Map();
         this.handlers = new Map();
         this.subscribers = new Map();
@@ -204,7 +247,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     get isEnabledForTest() {
         return this.extensionsEnabled;
     }
+    framesWidget() {
+        return this.#framesWidget;
+    }
     dispose() {
+        this.#framesWidget.clear();
+        this.#framesWidget.detach();
         ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
         // Set up by this.initExtensions in the constructor.
         SDK.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.inspectedURLChanged, this);
@@ -222,10 +270,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
     };
     static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
+        const { forceNew, framesWidget } = opts;
         if (!extensionServerInstance || forceNew) {
             extensionServerInstance?.dispose();
-            extensionServerInstance = new ExtensionServer();
+            extensionServerInstance = new ExtensionServer(framesWidget);
         }
         return extensionServerInstance;
     }
@@ -1324,12 +1372,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             this.initializeExtensions();
         }
     }
-    addExtensionFrame({ startPage, name }) {
-        const iframe = document.createElement('iframe');
-        iframe.src = startPage;
-        iframe.dataset.devtoolsExtension = name;
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe); // Only for main window.
+    addExtensionFrame(extensionInfo) {
+        if (!this.#framesWidget.isShowing()) {
+            this.#framesWidget.markAsRoot();
+            this.#framesWidget.show(document.body); // Only for main window.
+        }
+        this.#framesWidget.addFrame(extensionInfo);
     }
     addExtension(extensionInfo) {
         const startPage = extensionInfo.startPage;

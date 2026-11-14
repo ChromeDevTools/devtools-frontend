@@ -389,10 +389,10 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
         return this.#visible;
     }
     setVisible(x) {
+        this.element.classList.toggle('hidden', !x);
         if (this.#visible === x) {
             return;
         }
-        this.element.classList.toggle('hidden', !x);
         this.#visible = x;
         if (this.toolbar && !(this instanceof ToolbarSeparator)) {
             this.toolbar.hideSeparatorDupes();

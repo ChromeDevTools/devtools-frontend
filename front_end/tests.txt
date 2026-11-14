@@ -483,6 +483,7 @@ panels/common/GdpSignUpDialog.test.js
 panels/console/ConsoleContextSelector.test.js
 panels/console/ConsoleFormat.test.js
 panels/console/ConsoleInsightTeaser.test.js
+panels/console/ConsolePanel.test.js
 panels/console/ConsolePinPane.test.js
 panels/console/ConsolePrompt.test.js
 panels/console/ConsoleSidebar.test.js
@@ -572,6 +573,7 @@ panels/linear_memory_inspector/LinearMemoryInspectorPane.test.js
 panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.test.js
 panels/linear_memory_inspector/components/LinearMemoryInspector.test.js
 panels/linear_memory_inspector/components/LinearMemoryNavigator.test.js
+panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.test.js
 panels/linear_memory_inspector/components/LinearMemoryViewer.test.js
 panels/linear_memory_inspector/components/ValueInterpreterDisplay.test.js
 panels/linear_memory_inspector/components/ValueInterpreterSettings.test.js

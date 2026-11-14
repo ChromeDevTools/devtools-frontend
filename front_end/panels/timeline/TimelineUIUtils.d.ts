@@ -60,7 +60,6 @@ export declare class TimelineUIUtils {
     static buildPicturePreviewContent(parsedTrace: Trace.TraceModel.ParsedTrace, event: Trace.Types.Events.Paint, target: SDK.Target.Target): Promise<Element | null>;
     static createEventDivider(event: Trace.Types.Events.Event, zeroTime: number): HTMLDivElement;
     static visibleEventsFilter(): Trace.Extras.TraceFilter.TraceFilter;
-    static categories(): Trace.Styles.CategoryPalette;
     static generatePieChart(aggregatedStats: TimeRangeCategoryStats, selfCategory?: Trace.Styles.TimelineCategory, selfTime?: Trace.Types.Timing.Micro): Element;
     static generateDetailsContentForFrame(frame: Trace.Types.Events.LegacyTimelineFrame, filmStrip: Trace.Extras.FilmStrip.Data | null, filmStripFrame: Trace.Extras.FilmStrip.Frame | null): DocumentFragment;
     static frameDuration(frame: Trace.Types.Events.LegacyTimelineFrame): Element;

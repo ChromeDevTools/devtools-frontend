@@ -4261,16 +4261,6 @@
                     ]
                 },
                 {
-                    "name": "addPrivacySandboxEnrollmentOverride",
-                    "description": "Allows a site to use privacy sandbox features that require enrollment\nwithout the site actually being enrolled. Only supported on page targets.",
-                    "parameters": [
-                        {
-                            "name": "url",
-                            "type": "string"
-                        }
-                    ]
-                },
-                {
                     "name": "getGlobalPrivacyControl",
                     "description": "Gets the current globally-applied privacy control status\nSee https://www.w3.org/TR/gpc/#get-global-privacy-control",
                     "experimental": true,
@@ -31811,6 +31801,28 @@
                             "type": "array",
                             "items": {
                                 "$ref": "BreakLocation"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "getScopeChain",
+                    "description": "Returns the current scope chain of the given call frame. Unlike the scope chain reported\nwith the `paused` event, it reflects changes made to variables since then (e.g. via\n`evaluateOnCallFrame` or `setVariableValue`).",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "callFrameId",
+                            "description": "Call frame identifier to get the scope chain for.",
+                            "$ref": "CallFrameId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "scopeChain",
+                            "description": "Scope chain for the call frame.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Scope"
                             }
                         }
                     ]

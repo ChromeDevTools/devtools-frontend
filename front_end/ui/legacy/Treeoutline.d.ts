@@ -330,15 +330,6 @@ export declare namespace TreeViewElement {
     class EnterEvent extends CustomEvent<void> {
         constructor();
     }
-    /**
-     * @deprecated
-     */
-    class TreeElementExpandEvent extends CustomEvent<{
-        treeElement: TreeElement;
-        expanded: boolean;
-    }> {
-        constructor(treeElement: TreeElement, expanded: boolean);
-    }
 }
 declare class IfExpandedDirective extends Lit.Directive.Directive {
     #private;
@@ -346,15 +337,9 @@ declare class IfExpandedDirective extends Lit.Directive.Directive {
     render(content: Lit.LitTemplate | Iterable<Lit.LitTemplate> | (() => Lit.LitTemplate | Iterable<Lit.LitTemplate>)): Lit.LitTemplate | Iterable<Lit.LitTemplate>;
 }
 export declare const ifExpanded: (content: Lit.LitTemplate | Iterable<Lit.LitTemplate> | (() => Lit.LitTemplate | Iterable<Lit.LitTemplate>)) => Lit.DirectiveResult<typeof IfExpandedDirective>;
-export declare class TreeElementWrapper extends HTMLElement {
-    #private;
-    set treeElement(treeElement: TreeElement);
-    get treeElement(): TreeElement | undefined;
-}
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-tree': TreeViewElement;
-        'devtools-tree-wrapper': TreeElementWrapper;
     }
 }
 export {};

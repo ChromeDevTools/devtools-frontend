@@ -20,7 +20,7 @@ export default `/*
     display: flex;
     flex-wrap: wrap;
     margin: 0 var(--sys-size-6) var(--sys-size-6);
-    gap: 15px 45px;
+    gap: var(--sys-size-8) var(--sys-size-16);
   }
 
   .value-types-selection {

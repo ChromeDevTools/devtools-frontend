@@ -49,6 +49,7 @@
     "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.test.ts",
     "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.test.ts",
     "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryNavigator.test.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.test.ts",
     "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryViewer.test.ts",
     "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.test.ts",
     "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterSettings.test.ts",

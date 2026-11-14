@@ -31,23 +31,16 @@ export default `/*
     background-size: 400% 100%;
     animation: gradient 4s infinite linear;
     margin-top: var(--sys-size-5);
-  }
+    background-image: linear-gradient(
+      70deg,
+      color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 0%,
+      color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 30%,
+      color-mix(in srgb, var(--sys-color-on-surface) 15%, transparent) 50%,
+      color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 70%,
+      color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 100%
+    );
 
-  @media (prefers-color-scheme: light) {
-    .loader {
-      background-image: linear-gradient(
-        70deg,
-        color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 0%,
-        color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 30%,
-        color-mix(in srgb, var(--sys-color-on-surface) 15%, transparent) 50%,
-        color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 70%,
-        color-mix(in srgb, var(--sys-color-on-surface) 5%, transparent) 100%
-      );
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .loader {
+    .theme-with-dark-background & {
       background-image: linear-gradient(
         70deg,
         color-mix(in srgb, var(--sys-color-on-surface) 10%, transparent) 0%,

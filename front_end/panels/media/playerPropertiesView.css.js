@@ -44,7 +44,7 @@ export default `/*
 .media-property-renderer-title {
   font-size: var(--sys-typescale-body4-size);
   float: left;
-  width: 150px;
+  width: var(--sys-size-23);
 }
 
 .media-property-renderer-title::first-letter {

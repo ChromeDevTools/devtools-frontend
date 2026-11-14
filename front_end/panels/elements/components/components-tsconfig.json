@@ -87,9 +87,6 @@
       "path": "../../../ui/components/helpers/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../ui/components/input/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../../ui/components/node_text/bundle-tsconfig.ref.json"
     },
     {

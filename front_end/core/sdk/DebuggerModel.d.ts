@@ -129,7 +129,8 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     dispose(): void;
     suspendModel(): Promise<void>;
     resumeModel(): Promise<void>;
-    private static shouldResyncDebuggerId;
+    private static readonly modelsNeedingDebuggerIdResync;
+    private static resyncDebuggerIdPromise;
     getEvaluateOnCallFrameCallback(): ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult | null>) | null;
     /**
      * Iterates the async stack trace parents.

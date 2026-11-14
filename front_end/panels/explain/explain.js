@@ -392,8 +392,7 @@ var consoleInsight_css_default = `/*
   }
 
   @scope (.insight-sources) {
-    /* stylelint-disable-next-line plugin/check_scope_selectors */
-    :root {
+    :scope {
       padding: 0;
       margin: 0;
       box-sizing: border-box;

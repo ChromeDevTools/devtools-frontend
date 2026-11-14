@@ -7,9 +7,11 @@ global_after_hook_fail.test.js
 global_before_hook_fail.test.js
 hooks.test.js
 multi_logs.test.js
+pending_async.test.js
 screenshot_diff.test.js
 screenshot_retry.test.js
 sinon_restore.test.js
 snapshot.test.js
 unit.test.js
 unit_2.test.js
+widget_update_after_failure.test.js

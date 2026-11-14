@@ -666,7 +666,6 @@ export function prerenderFailureReason(attempt, statusCode) {
         case "OtherPrerenderedPageActivated" /* Protocol.Preload.PrerenderFinalStatus.OtherPrerenderedPageActivated */:
         case "V8OptimizerDisabled" /* Protocol.Preload.PrerenderFinalStatus.V8OptimizerDisabled */:
         case "PrerenderFailedDuringPrefetch" /* Protocol.Preload.PrerenderFinalStatus.PrerenderFailedDuringPrefetch */:
-            // TODO(crbug.com/350870118): Add message for this.
             return '';
         default:
             // Note that we use switch and exhaustiveness check to prevent to

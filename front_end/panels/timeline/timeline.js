@@ -450,7 +450,6 @@ var InteractionsTrackAppender = class {
 // ../../front_end/panels/timeline/LayoutShiftsTrackAppender.ts
 var LayoutShiftsTrackAppender_exports = {};
 __export(LayoutShiftsTrackAppender_exports, {
-  LAYOUT_SHIFT_SYNTHETIC_DURATION: () => LAYOUT_SHIFT_SYNTHETIC_DURATION,
   LayoutShiftsTrackAppender: () => LayoutShiftsTrackAppender
 });
 import * as Common from "../../core/common/common.js";
@@ -477,7 +476,6 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/timeline/LayoutShiftsTrackAppender.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var LAYOUT_SHIFT_SYNTHETIC_DURATION = Trace5.Types.Timing.Micro(5e3);
 var LayoutShiftsTrackAppender = class _LayoutShiftsTrackAppender {
   appenderName = "LayoutShifts";
   #compatibilityBuilder;
@@ -14257,11 +14255,6 @@ var TimelineUIUtils = class _TimelineUIUtils {
   }
   static visibleEventsFilter() {
     return new Trace24.Extras.TraceFilter.VisibleEventsFilter(Trace24.Styles.visibleTypes());
-  }
-  // Included only for layout tests.
-  // TODO(crbug.com/1386091): Fix/port layout tests and remove.
-  static categories() {
-    return Trace24.Styles.getCategoryStyles();
   }
   static generatePieChart(aggregatedStats, selfCategory, selfTime) {
     let total = 0;

@@ -260,10 +260,7 @@ export class DebuggerModel extends SDKModel {
         return await enablePromise;
     }
     onFrameNavigated() {
-        if (DebuggerModel.shouldResyncDebuggerId) {
-            return;
-        }
-        DebuggerModel.shouldResyncDebuggerId = true;
+        DebuggerModel.modelsNeedingDebuggerIdResync.add(this);
     }
     registerDebugger(response) {
         if (response.getError()) {
@@ -271,6 +268,9 @@ export class DebuggerModel extends SDKModel {
             return;
         }
         const { debuggerId } = response;
+        if (typeof this.#debuggerId === 'string' && this.#debuggerId !== debuggerId) {
+            debuggerIdToModel.delete(this.#debuggerId);
+        }
         debuggerIdToModel.set(debuggerId, this);
         this.#debuggerId = debuggerId;
         this.dispatchEventToListeners(Events.DebuggerIsReadyToPause, this);
@@ -279,19 +279,29 @@ export class DebuggerModel extends SDKModel {
         return Boolean(this.#debuggerId);
     }
     static async modelForDebuggerId(debuggerId) {
-        if (DebuggerModel.shouldResyncDebuggerId) {
+        const existingModel = debuggerIdToModel.get(debuggerId);
+        if (existingModel) {
+            return existingModel;
+        }
+        if (DebuggerModel.modelsNeedingDebuggerIdResync.size > 0 || DebuggerModel.resyncDebuggerIdPromise) {
             await DebuggerModel.resyncDebuggerIdForModels();
-            DebuggerModel.shouldResyncDebuggerId = false;
         }
         return debuggerIdToModel.get(debuggerId) || null;
     }
     static async resyncDebuggerIdForModels() {
-        const dbgModels = debuggerIdToModel.values();
-        for (const dbgModel of dbgModels) {
-            if (dbgModel.debuggerEnabled()) {
-                await dbgModel.syncDebuggerId();
-            }
+        if (!DebuggerModel.resyncDebuggerIdPromise) {
+            const promise = (async () => {
+                while (DebuggerModel.modelsNeedingDebuggerIdResync.size > 0) {
+                    const dbgModels = Array.from(DebuggerModel.modelsNeedingDebuggerIdResync).filter(m => m.debuggerEnabled());
+                    DebuggerModel.modelsNeedingDebuggerIdResync.clear();
+                    await Promise.all(dbgModels.map(m => m.syncDebuggerId()));
+                }
+            })();
+            DebuggerModel.resyncDebuggerIdPromise = promise.finally(() => {
+                DebuggerModel.resyncDebuggerIdPromise = null;
+            });
         }
+        await DebuggerModel.resyncDebuggerIdPromise;
     }
     async disableDebugger() {
         if (!this.#debuggerEnabled) {
@@ -307,6 +317,7 @@ export class DebuggerModel extends SDKModel {
             debuggerIdToModel.delete(this.#debuggerId);
         }
         this.#debuggerId = null;
+        DebuggerModel.modelsNeedingDebuggerIdResync.delete(this);
     }
     skipAllPauses(skip) {
         if (this.#skipAllPausesSetting.get()) {
@@ -764,6 +775,7 @@ export class DebuggerModel extends SDKModel {
         return !error;
     }
     dispose() {
+        DebuggerModel.modelsNeedingDebuggerIdResync.delete(this);
         if (this.#debuggerId) {
             debuggerIdToModel.delete(this.#debuggerId);
         }
@@ -784,7 +796,8 @@ export class DebuggerModel extends SDKModel {
     async resumeModel() {
         await this.enableDebugger();
     }
-    static shouldResyncDebuggerId = false;
+    static modelsNeedingDebuggerIdResync = new Set();
+    static resyncDebuggerIdPromise = null;
     getEvaluateOnCallFrameCallback() {
         return this.evaluateOnCallFrameCallback;
     }

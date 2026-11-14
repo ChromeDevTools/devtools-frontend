@@ -727,12 +727,6 @@ declare namespace ProtocolProxyApi {
     invoke_executeBrowserCommand(params: Protocol.Browser.ExecuteBrowserCommandRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Allows a site to use privacy sandbox features that require enrollment
-     * without the site actually being enrolled. Only supported on page targets.
-     */
-    invoke_addPrivacySandboxEnrollmentOverride(params: Protocol.Browser.AddPrivacySandboxEnrollmentOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
      * Gets the current globally-applied privacy control status
      * See https://www.w3.org/TR/gpc/#get-global-privacy-control
      */
@@ -4961,6 +4955,13 @@ declare namespace ProtocolProxyApi {
      * the same.
      */
     invoke_getPossibleBreakpoints(params: Protocol.Debugger.GetPossibleBreakpointsRequest): Promise<Protocol.Debugger.GetPossibleBreakpointsResponse>;
+
+    /**
+     * Returns the current scope chain of the given call frame. Unlike the scope chain reported
+     * with the `paused` event, it reflects changes made to variables since then (e.g. via
+     * `evaluateOnCallFrame` or `setVariableValue`).
+     */
+    invoke_getScopeChain(params: Protocol.Debugger.GetScopeChainRequest): Promise<Protocol.Debugger.GetScopeChainResponse>;
 
     /**
      * Returns source for the script with given id.

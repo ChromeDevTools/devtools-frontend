@@ -13872,10 +13872,10 @@ var ToolbarItem = class extends Common14.ObjectWrapper.ObjectWrapper {
     return this.#visible;
   }
   setVisible(x) {
+    this.element.classList.toggle("hidden", !x);
     if (this.#visible === x) {
       return;
     }
-    this.element.classList.toggle("hidden", !x);
     this.#visible = x;
     if (this.toolbar && !(this instanceof ToolbarSeparator)) {
       this.toolbar.hideSeparatorDupes();
@@ -15062,18 +15062,6 @@ input[type='radio'] {
   }
 }
 
-@media (forced-colors: active) {
-  input[type='radio'] {
-    --gradient-start: ButtonFace;
-    --gradient-end: ButtonFace;
-
-    &:checked {
-      --gradient-start: Highlight;
-      --gradient-end: Highlight;
-    }
-  }
-}
-
 /* Range inputs */
 input[type='range'] {
   appearance: none;
@@ -15085,8 +15073,7 @@ input[type='range'] {
   background: none;
 }
 
-input[type='range']::-webkit-slider-thumb,
-.-theme-preserve {
+input[type='range']::-webkit-slider-thumb {
   appearance: none;
   margin: 0;
   padding: 0;
@@ -15433,7 +15420,7 @@ button.link:focus-visible {
   border: var(--override-spinner-size, 3px) solid
     var(--override-spinner-color, var(--sys-color-token-subtle));
   border-radius: var(--sys-shape-corner-medium-small);
-  clip-path: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
+  clip-path: rect(0 var(--clip-size, 15px) var(--clip-size, 15px) 0);
   content: '';
   position: absolute;
   animation: spinner-animation 1s linear infinite;
@@ -15498,7 +15485,6 @@ iframe.panel.extension {
 
 @media (forced-colors: active) {
   :root {
-    --legacy-accent-color: Highlight;
     --legacy-focus-ring-inactive-shadow-color: ButtonText;
   }
 }
@@ -17162,7 +17148,7 @@ function bindInput(input, apply, validate, numeric, modifierMultiplier) {
     }
   }
   function onKeyDown(event) {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.isComposing) {
       const valid2 = validate(input.value);
       if (valid2) {
         apply(input.value);
@@ -19465,7 +19451,7 @@ var filter_css_default = `/*
 .filter-divider {
   background-color: var(--sys-color-divider);
   width: var(--sys-size-1);
-  margin: 5px var(--sys-size-3);
+  margin: var(--sys-size-3);
   height: var(--sys-size-8);
 }
 
@@ -20307,7 +20293,7 @@ var listWidget_css_default = `/*
 
 .list-widget-input-validation-error {
   color: var(--sys-color-error);
-  margin: 0 5px;
+  margin: 0 var(--sys-size-3);
 }
 
 .controls-container {
@@ -23337,7 +23323,6 @@ var Treeoutline_exports = {};
 __export(Treeoutline_exports, {
   Events: () => Events11,
   TreeElement: () => TreeElement,
-  TreeElementWrapper: () => TreeElementWrapper,
   TreeOutline: () => TreeOutline,
   TreeOutlineInShadow: () => TreeOutlineInShadow,
   TreeSearch: () => TreeSearch,
@@ -25094,19 +25079,14 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
 };
 function getTreeNodes(nodeList) {
   return nodeList.values().flatMap((node) => {
-    if (node instanceof TreeElementWrapper) {
-      return [node];
-    }
     if (node instanceof HTMLLIElement && node.role === "treeitem") {
       return [
         node,
-        ...node.querySelectorAll(
-          'ul[role="group"] li[role="treeitem"],ul[role="group"] devtools-tree-wrapper'
-        )
+        ...node.querySelectorAll('ul[role="group"] li[role="treeitem"]')
       ];
     }
     if (node instanceof HTMLElement) {
-      return node.querySelectorAll('li[role="treeitem"],devtools-tree-wrapper');
+      return node.querySelectorAll('li[role="treeitem"]');
     }
     return [];
   }).toArray();
@@ -25156,13 +25136,11 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       }
     });
     this.#treeOutline.addEventListener("ElementExpanded" /* ElementExpanded */, (event) => {
-      this.dispatchEvent(new _TreeViewElement.TreeElementExpandEvent(event.data, true));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.ExpandEvent({ expanded: true }));
       }
     });
     this.#treeOutline.addEventListener("ElementCollapsed" /* ElementCollapsed */, (event) => {
-      this.dispatchEvent(new _TreeViewElement.TreeElementExpandEvent(event.data, false));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.ExpandEvent({ expanded: false }));
       }
@@ -25290,38 +25268,22 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
           nextElement = nextTreeEl;
           break;
         }
-        if (e instanceof TreeElementWrapper && e.treeElement && e.treeElement.parent === parent.treeElement) {
-          nextElement = e.treeElement;
-          break;
-        }
       }
       const index = nextElement ? parent.treeElement.indexOfChild(nextElement) : parent.treeElement.children().length;
-      let treeElement;
-      if (node instanceof HTMLLIElement) {
-        treeElement = new TreeViewTreeElement(this.#treeOutline, node);
-        const expandable = Boolean(node.querySelector(':scope > ul[role="group"]'));
-        treeElement.setExpandable(expandable);
-        treeElement.updateExpansionFromAttribute();
-      } else {
-        treeElement = node.treeElement;
+      const treeElement = new TreeViewTreeElement(this.#treeOutline, node);
+      const expandable = Boolean(node.querySelector(':scope > ul[role="group"]'));
+      treeElement.setExpandable(expandable);
+      treeElement.updateExpansionFromAttribute();
+      parent.treeElement.insertChild(treeElement, index);
+      if (parent.treeElement instanceof TreeViewTreeElement) {
+        parent.treeElement.updateExpansionFromAttribute();
       }
-      if (treeElement) {
-        if (treeElement.parent) {
-          removeNode(treeElement);
-        }
-        parent.treeElement.insertChild(treeElement, index);
-        if (parent.treeElement instanceof TreeViewTreeElement) {
-          parent.treeElement.updateExpansionFromAttribute();
-        }
-        if (hasBooleanAttribute(node, "selected")) {
-          treeElement.revealAndSelect(!this.hasFocus());
-        }
-        if (node instanceof HTMLLIElement) {
-          HTMLElementWithLightDOMTemplate.registerClone(node, treeElement.listItemElement);
-        }
-        if (parent.expanded) {
-          parent.treeElement.expand();
-        }
+      if (hasBooleanAttribute(node, "selected")) {
+        treeElement.revealAndSelect(!this.hasFocus());
+      }
+      HTMLElementWithLightDOMTemplate.registerClone(node, treeElement.listItemElement);
+      if (parent.expanded) {
+        parent.treeElement.expand();
       }
     }
     for (const element of new Set(getStyleElements(nodes))) {
@@ -25329,27 +25291,17 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     }
   }
   removeNodes(nodes) {
-    const removeSingleNode = (node) => {
-      if (node instanceof HTMLLIElement) {
-        TreeViewTreeElement.get(node)?.removeFromTree();
-      } else if (node.treeElement) {
-        removeNode(
-          node.treeElement,
-          Boolean(node.treeElement.parent && node.treeElement.parent.configElement?.querySelector(':scope > ul[role="group"]'))
-        );
-      }
-    };
     const nodesWithSelection = [];
     for (const node of getTreeNodes(nodes)) {
-      const treeElement = node instanceof HTMLLIElement ? TreeViewTreeElement.get(node) : node.treeElement;
+      const treeElement = TreeViewTreeElement.get(node);
       if (treeElement && this.#treeOutline.selectedTreeElement?.hasAncestorOrSelf(treeElement)) {
         nodesWithSelection.push(node);
       } else {
-        removeSingleNode(node);
+        treeElement?.removeFromTree();
       }
     }
     for (const node of nodesWithSelection) {
-      removeSingleNode(node);
+      TreeViewTreeElement.get(node)?.removeFromTree();
     }
   }
   set hideOverflow(hide) {
@@ -25413,12 +25365,6 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     }
   }
   TreeViewElement2.EnterEvent = EnterEvent;
-  class TreeElementExpandEvent extends CustomEvent {
-    constructor(treeElement, expanded) {
-      super("treeelementexpand", { detail: { treeElement, expanded } });
-    }
-  }
-  TreeViewElement2.TreeElementExpandEvent = TreeElementExpandEvent;
 })(TreeViewElement || (TreeViewElement = {}));
 var IfExpandedDirective = class extends Lit7.Directive.Directive {
   #partInfo;
@@ -25463,26 +25409,7 @@ var IfExpandedDirective = class extends Lit7.Directive.Directive {
   }
 };
 var ifExpanded = Lit7.Directive.directive(IfExpandedDirective);
-var TreeElementWrapper = class extends HTMLElement {
-  #treeElement;
-  set treeElement(treeElement) {
-    if (this.#treeElement === treeElement) {
-      return;
-    }
-    if (this.#treeElement?.parent) {
-      const parent = this.#treeElement.parent;
-      const index = parent.indexOfChild(this.#treeElement);
-      parent.removeChildAtIndex(index);
-      parent.insertChild(treeElement, index);
-    }
-    this.#treeElement = treeElement;
-  }
-  get treeElement() {
-    return this.#treeElement;
-  }
-};
 customElements.define("devtools-tree", TreeViewElement);
-customElements.define("devtools-tree-wrapper", TreeElementWrapper);
 function loggingParentProvider(e) {
   const treeElement = TreeElement.getTreeElementBylistItemNode(e);
   const parentElement = treeElement?.parent?.listItemElement;

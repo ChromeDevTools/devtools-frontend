@@ -3241,7 +3241,7 @@ import * as i18n16 from "../../core/i18n/i18n.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
-import { AsyncDirective, Directive, html as html10, nothing as nothing3, render as render8 } from "../../ui/lit/lit.js";
+import { AsyncDirective, Directive, html as html10, nothing as nothing4, render as render8 } from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/ImagePreviewPopover.ts
@@ -3576,7 +3576,7 @@ __export(StyleEditorWidget_exports, {
 import "../../ui/kit/kit.js";
 import * as Elements2 from "../../models/elements/elements.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html8, render as render5 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html8, nothing as nothing2, render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/StylePropertyTreeElement.ts
@@ -5174,7 +5174,7 @@ var EnvFunctionRenderer = class extends EnvFunctionRendererBase {
       this.propertyData.stylesContainer(),
       this.propertyData.tooltipIdFactory,
       this.propertyData.property,
-      this.propertyData.parentShorthand()?.name
+      this.propertyData.parentShorthand()?.property.name
     ) : "env";
     const valueClass = classMap2({ "inactive-value": !match.varNameIsValid });
     const fallbackClass = classMap2({ "inactive-value": match.varNameIsValid });
@@ -5343,7 +5343,7 @@ var VariableRenderer = class extends VariableRendererBase {
       this.#stylesContainer,
       this.#propertyData.tooltipIdFactory,
       this.#propertyData.property,
-      this.#propertyData.parentShorthand()?.name
+      this.#propertyData.parentShorthand()?.property.name
     ) : void 0;
     const tooltipId = getTooltipId(this.#propertyData, "custom-property-var");
     const tooltip = tooltipId ? { tooltipId } : void 0;
@@ -5482,7 +5482,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
       this.#stylesContainer,
       this.#propertyData.tooltipIdFactory,
       this.#propertyData.property,
-      this.#propertyData.parentShorthand()?.name
+      this.#propertyData.parentShorthand()?.property.name
     ) : void 0;
     const tooltipId = attributeMissing ? void 0 : getTooltipId(this.#propertyData, "custom-attribute");
     const tooltip = tooltipId ? { tooltipId } : void 0;
@@ -5534,9 +5534,7 @@ var LinearGradientRenderer = class extends LinearGradientRendererBase {
     if (angle instanceof InlineEditor.CSSAngle.CSSAngle) {
       angle.updateProperty(context.matchedResult.getComputedText(match.node));
       const args = ASTUtils.callArgs(match.node);
-      const angleNode = args[0]?.find(
-        (node) => context.matchedResult.getMatch(node) instanceof SDK4.CSSPropertyParserMatchers.AngleMatch
-      );
+      const angleNode = args[0]?.find((node) => context.matchedResult.getMatch(node) instanceof SDK4.CSSPropertyParserMatchers.AngleMatch);
       const angleMatch = angleNode && context.matchedResult.getMatch(angleNode);
       if (angleMatch) {
         angle.addEventListener(InlineEditor.InlineEditorUtils.ValueChangedEvent.eventName, (ev) => {
@@ -5609,7 +5607,7 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
       this.#stylesContainer,
       this.#propertyData.tooltipIdFactory,
       this.#propertyData.property,
-      this.#propertyData.parentShorthand()?.name
+      this.#propertyData.parentShorthand()?.property.name
     ) : func}${nodes}</span>`;
     return { valueChild, cssControls, childTracingContexts };
   }
@@ -5759,12 +5757,10 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
       return this.#renderContent(match, light, dark);
     }
     const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get("color");
-    activeColorSwatches?.forEach(
-      (swatch) => swatch.addEventListener(
-        InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
-        (ev) => colorSwatch.setColor(ev.data.color)
-      )
-    );
+    activeColorSwatches?.forEach((swatch) => swatch.addEventListener(
+      InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
+      (ev) => colorSwatch.setColor(ev.data.color)
+    ));
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
     const color = colorText && Common.Color.parse(colorText);
     if (color) {
@@ -5855,7 +5851,7 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
       this.#stylesContainer,
       this.#propertyData.tooltipIdFactory,
       this.#propertyData.property,
-      this.#propertyData.parentShorthand()?.name
+      this.#propertyData.parentShorthand()?.property.name
     ) : "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` : ""}${color1.nodes}, ${color2.nodes})</span>`;
     const color1Controls = color1.cssControls.get("color") ?? [];
     const color2Controls = color2.cssControls.get("color") ?? [];
@@ -6033,9 +6029,7 @@ var LinkableNameRenderer = class extends LinkableNameRendererBase {
           metric: null,
           ruleBlock: "",
           // Not used
-          isDefined: Boolean(this.#matchedStyles.atRules().find(
-            (ar) => ar.type() === "font-palette-values" && ar.name()?.text === match.text
-          ))
+          isDefined: Boolean(this.#matchedStyles.atRules().find((ar) => ar.type() === "font-palette-values" && ar.name()?.text === match.text))
         };
       case SDK4.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE:
       case SDK4.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE_TYPE:
@@ -6044,9 +6038,7 @@ var LinkableNameRenderer = class extends LinkableNameRendererBase {
           metric: null,
           ruleBlock: "",
           // Not used
-          isDefined: Boolean(this.#matchedStyles.atRules().find(
-            (ar) => ar.type() === "counter-style" && ar.name()?.text === match.text
-          ))
+          isDefined: Boolean(this.#matchedStyles.atRules().find((ar) => ar.type() === "counter-style" && ar.name()?.text === match.text))
         };
       case SDK4.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY:
       case SDK4.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY_FALLBACKS:
@@ -6361,9 +6353,7 @@ var ShadowRenderer = class extends ShadowRendererBase {
     const properties = [];
     const missingLengths = ["spread" /* SPREAD */, "blur" /* BLUR */, "y" /* Y */, "x" /* X */];
     let stillAcceptsLengths = true;
-    const queue = shadow.map(
-      (value5) => ({ value: value5, source: value5, match: context.matchedResult.getMatch(value5), expansionContext: null })
-    );
+    const queue = shadow.map((value5) => ({ value: value5, source: value5, match: context.matchedResult.getMatch(value5), expansionContext: null }));
     for (let item2 = queue.shift(); item2; item2 = queue.shift()) {
       const { value: value5, source, match, expansionContext } = item2;
       const text = (expansionContext ?? context).ast.text(value5);
@@ -6589,7 +6579,7 @@ var BaseFunctionRenderer = class extends BaseFunctionRendererBase {
       this.#stylesContainer,
       this.#propertyData.tooltipIdFactory,
       this.#propertyData.property,
-      this.#propertyData.parentShorthand()?.name
+      this.#propertyData.parentShorthand()?.property.name
     ) : match.func;
     const args = this.#renderArgs(renderedArgs);
     if (childTracingContexts) {
@@ -6961,7 +6951,7 @@ function getTooltipId(tooltipIdFactoryOrPropertyData, key2, property, shorthandN
       propertyData.tooltipIdFactory,
       key2,
       propertyData.property,
-      propertyData.parentShorthand()?.name
+      propertyData.parentShorthand()?.property.name
     );
   }
   if (!property) {
@@ -7098,6 +7088,61 @@ function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyle
     new RelativeColorChannelRenderer(propertyData),
     new AttributeRenderer(stylesContainer, propertyData, matchedStyles, computedStyles, computedStyleExtraFields)
   ];
+}
+function exclamationMarkTemplate(propertyData, details) {
+  const tooltipId = details ? getTooltipId(
+    propertyData.tooltipIdFactory,
+    "property-warning",
+    propertyData.property,
+    propertyData.parentShorthand()?.property.name
+  ) : void 0;
+  return html7`<span><span
+      class="exclamation-mark"
+      tabindex="-1"
+      title=${ifDefined2(details ? void 0 : getInvalidPropertyMessage(propertyData.property))}
+      aria-details=${ifDefined2(tooltipId)}></span>${details && tooltipId ? html7`<devtools-tooltip
+        id=${tooltipId}
+        variant="rich"
+        jslogContext="elements.invalid-property-decl-popover">${widget2(ElementsComponents2.CSSVariableValueView.CSSVariableParserError, { details })}</devtools-tooltip>` : nothing}</span>`;
+}
+function authoringHintTemplate(propertyData, hint) {
+  const tooltipId = getTooltipId(
+    propertyData.tooltipIdFactory,
+    "css-hint",
+    propertyData.property,
+    propertyData.parentShorthand()?.property.name
+  );
+  return html7`<span class="hint-wrapper"><devtools-icon
+      name="info"
+      class="hint small"
+      tabindex="-1"
+      aria-details=${tooltipId}></devtools-icon></span><devtools-tooltip
+      id=${tooltipId}
+      variant="rich"
+      padding="large"
+      jslogContext="elements.css-hint">${widget2(ElementsComponents2.CSSHintDetailsView.CSSHintDetailsView, { authoringHint: hint })}</devtools-tooltip>`;
+}
+function animationOverrideHintTemplate(propertyData) {
+  const tooltipId = getTooltipId(
+    propertyData.tooltipIdFactory,
+    "animation-override-hint",
+    propertyData.property,
+    propertyData.parentShorthand()?.property.name
+  );
+  return html7`<span class="animation-override-hint-wrapper hint-wrapper"><devtools-icon
+      name="info"
+      class="hint small"
+      tabindex="-1"
+      aria-details=${tooltipId}></devtools-icon></span><devtools-tooltip
+      id=${tooltipId}
+      variant="rich"
+      padding="large"
+      jslogContext="elements.css-animation-hint"><div class="animation-override-hint">${i18nTemplate(UIStrings4.overriddenByAnimation, { PH1: html7`<devtools-link
+          jslogContext="open-in-animations-panel"
+          @click=${(event) => {
+    event.preventDefault();
+    void UI7.ViewManager.ViewManager.instance().showView("animations");
+  }}>${i18nString4(UIStrings4.openAnimationsPanel)}</devtools-link>` })}</div></devtools-tooltip>`;
 }
 var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeOutline.TreeElement {
   style;
@@ -7659,45 +7704,36 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       }
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
-    const that = this;
-    this.valueElement.addEventListener("keydown", nonEditingNameValueKeyDown);
-    this.nameElement.addEventListener("keydown", nonEditingNameValueKeyDown);
-    function nonEditingNameValueKeyDown(event) {
-      if (UI7.UIUtils.isBeingEdited(this)) {
-        return;
-      }
-      if (event.key !== Platform.KeyboardUtilities.ENTER_KEY && event.key !== " ") {
-        return;
-      }
-      if (this === that.valueElement) {
-        that.startEditingValue();
-        event.consume(true);
-      } else if (this === that.nameElement) {
-        that.startEditingName();
+    const valueElement = this.valueElement;
+    const nameElement = this.nameElement;
+    valueElement.addEventListener("keydown", (event) => {
+      if (isStartEditingKey(valueElement, event)) {
+        this.startEditingValue();
         event.consume(true);
       }
+    });
+    nameElement.addEventListener("keydown", (event) => {
+      if (isStartEditingKey(nameElement, event)) {
+        this.startEditingName();
+        event.consume(true);
+      }
+    });
+    function isStartEditingKey(element, event) {
+      if (UI7.UIUtils.isBeingEdited(element)) {
+        return false;
+      }
+      return !event.isComposing && Platform.KeyboardUtilities.isEnterOrSpaceKey(event);
     }
   }
   createExclamationMark(property, details) {
     const fragment = document.createDocumentFragment();
-    render4(this.exclamationMarkTemplate(property, details), fragment);
+    render4(exclamationMarkTemplate(this, details), fragment);
     const invalidString = i18nString4(
       UIStrings4.invalidString,
       { PH1: getInvalidPropertyMessage(property), PH2: property.name, PH3: property.value }
     );
     property.setDisplayedStringForInvalidProperty(invalidString);
     return fragment;
-  }
-  exclamationMarkTemplate(property, details) {
-    const tooltipId = details ? getTooltipId(this.tooltipIdFactory, "property-warning", this.property, this.getLonghand()?.name) : void 0;
-    return html7`<span><span
-        class="exclamation-mark"
-        tabindex="-1"
-        title=${ifDefined2(details ? void 0 : getInvalidPropertyMessage(property))}
-        aria-details=${ifDefined2(tooltipId)}></span>${details && tooltipId ? html7`<devtools-tooltip
-          id=${tooltipId}
-          variant="rich"
-          jslogContext="elements.invalid-property-decl-popover">${widget2(ElementsComponents2.CSSVariableValueView.CSSVariableParserError, { details })}</devtools-tooltip>` : nothing}</span>`;
   }
   updateAuthoringHint() {
     this.listItemElement.classList.remove("inactive-property");
@@ -7725,24 +7761,12 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       );
       if (hint) {
         const fragment = document.createDocumentFragment();
-        render4(this.authoringHintTemplate(hint), fragment);
+        render4(authoringHintTemplate(this, hint), fragment);
         this.listItemElement.append(fragment);
         this.listItemElement.classList.add("inactive-property");
         break;
       }
     }
-  }
-  authoringHintTemplate(hint) {
-    const tooltipId = getTooltipId(this.tooltipIdFactory, "css-hint", this.property, this.getLonghand()?.name);
-    return html7`<span class="hint-wrapper"><devtools-icon
-        name="info"
-        class="hint small"
-        tabindex="-1"
-        aria-details=${tooltipId}></devtools-icon></span><devtools-tooltip
-        id=${tooltipId}
-        variant="rich"
-        padding="large"
-        jslogContext="elements.css-hint">${widget2(ElementsComponents2.CSSHintDetailsView.CSSHintDetailsView, { authoringHint: hint })}</devtools-tooltip>`;
   }
   updateAnimationOverrideHint() {
     const existingElement = this.listItemElement.querySelector(".animation-override-hint-wrapper");
@@ -7753,25 +7777,8 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       return;
     }
     const fragment = document.createDocumentFragment();
-    render4(this.animationOverrideHintTemplate(), fragment);
+    render4(animationOverrideHintTemplate(this), fragment);
     this.listItemElement.append(fragment);
-  }
-  animationOverrideHintTemplate() {
-    const tooltipId = getTooltipId(this.tooltipIdFactory, "animation-override-hint", this.property, this.getLonghand()?.name);
-    return html7`<span class="animation-override-hint-wrapper hint-wrapper"><devtools-icon
-        name="info"
-        class="hint small"
-        tabindex="-1"
-        aria-details=${tooltipId}></devtools-icon></span><devtools-tooltip
-        id=${tooltipId}
-        variant="rich"
-        padding="large"
-        jslogContext="elements.css-animation-hint"><div class="animation-override-hint">${i18nTemplate(UIStrings4.overriddenByAnimation, { PH1: html7`<devtools-link
-            jslogContext="open-in-animations-panel"
-            @click=${(event) => {
-      event.preventDefault();
-      void UI7.ViewManager.ViewManager.instance().showView("animations");
-    }}>${i18nString4(UIStrings4.openAnimationsPanel)}</devtools-link>` })}</div></devtools-tooltip>`;
   }
   overriddenByAnimation() {
     return this.#matchedStyles.isPropertyOverriddenByAnimation(this.property);
@@ -8516,61 +8523,76 @@ var GhostStylePropertyTreeElement = class extends StylePropertyTreeElement {
 };
 
 // ../../front_end/panels/elements/StyleEditorWidget.ts
-var { ref: ref4 } = Directives2;
+var { ref: ref4, repeat } = Directives2;
 var instance = null;
-var DEFAULT_VIEW3 = (input, _output, target) => {
-  input.editor.data = {
-    authoredProperties: input.authoredProperties,
-    computedProperties: input.computedProperties
-  };
+var DEFAULT_VIEW3 = (input, output, target) => {
   render5(
-    html8`<div tabindex="0" autofocus>${input.editor}</div>`,
+    html8`<div tabindex="0" autofocus>${input.editorClass ? repeat(
+      [input.editorClass],
+      (editorClass) => editorClass,
+      (editorClass) => html8`<devtools-widget
+            ${UI8.Widget.widget(editorClass, {
+        authoredProperties: input.authoredProperties,
+        computedProperties: input.computedProperties
+      })}
+            ${UI8.Widget.widgetRef(editorClass, (editor) => {
+        output.waitForEditorUpdate = () => editor.updateComplete;
+      })}
+            @propertyselected=${input.onPropertySelected}
+            @propertydeselected=${input.onPropertyDeselected}
+          ></devtools-widget>`
+    ) : nothing2}</div>`,
     target,
     { container: { classes: ["with-padding"] } }
   );
 };
 var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
-  editor;
-  stylesContainer;
-  section;
+  #editorClass;
+  #stylesContainer;
+  #section;
   #view;
+  #viewOutput = {};
   #triggerKey;
   #initialProperties = null;
   constructor(element, view = DEFAULT_VIEW3) {
-    super(element, { useShadowDom: true });
+    super(element);
     this.#view = view;
-    this.onPropertySelected = this.onPropertySelected.bind(this);
-    this.onPropertyDeselected = this.onPropertyDeselected.bind(this);
   }
   getSection() {
-    return this.section;
+    return this.#section;
   }
   async onPropertySelected(event) {
-    if (!this.section) {
+    if (!this.#section) {
       return;
     }
-    const target = ensureTreeElementForProperty(this.section, event.data.name);
-    target.property.value = event.data.value;
+    const { name, value: value5 } = event.data;
+    const target = ensureTreeElementForProperty(this.#section, name);
+    target.property.value = value5;
     target.updateTitle();
     await target.applyStyleText(target.renderedPropertyText(), false);
+    if (this.#section) {
+      this.#stylesContainer?.refreshUpdate(this.#section, target, true);
+    }
     this.requestUpdate();
   }
   async onPropertyDeselected(event) {
-    if (!this.section) {
+    if (!this.#section) {
       return;
     }
-    const target = ensureTreeElementForProperty(this.section, event.data.name);
+    const { name } = event.data;
+    const target = ensureTreeElementForProperty(this.#section, name);
     await target.applyStyleText("", false);
+    if (this.#section) {
+      this.#stylesContainer?.refreshUpdate(this.#section, target, true);
+    }
     this.requestUpdate();
   }
   bindContext(stylesContainer, section5) {
-    this.stylesContainer = stylesContainer;
-    this.section = section5;
+    this.#stylesContainer = stylesContainer;
+    this.#section = section5;
     if (!this.#initialProperties) {
-      this.#initialProperties = this.editor ? getAuthoredStyles(section5, this.editor.getEditableProperties()) : /* @__PURE__ */ new Map();
+      this.#initialProperties = this.#editorClass ? getAuthoredStyles(section5, this.#editorClass.editableProperties) : /* @__PURE__ */ new Map();
     }
-    this.editor?.addEventListener("propertyselected", this.onPropertySelected);
-    this.editor?.addEventListener("propertydeselected", this.onPropertyDeselected);
   }
   setTriggerKey(value5) {
     this.#triggerKey = value5;
@@ -8579,24 +8601,37 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     return this.#triggerKey;
   }
   unbindContext() {
-    this.stylesContainer = void 0;
-    this.section = void 0;
-    this.editor?.removeEventListener("propertyselected", this.onPropertySelected);
-    this.editor?.removeEventListener("propertydeselected", this.onPropertyDeselected);
+    this.#stylesContainer = void 0;
+    this.#section = void 0;
+  }
+  #clearEditor() {
+    this.#editorClass = void 0;
+    this.#initialProperties = null;
+    this.#viewOutput.waitForEditorUpdate = void 0;
+    this.#view(
+      {
+        authoredProperties: /* @__PURE__ */ new Map(),
+        computedProperties: /* @__PURE__ */ new Map(),
+        onPropertySelected: this.onPropertySelected.bind(this),
+        onPropertyDeselected: this.onPropertyDeselected.bind(this)
+      },
+      this.#viewOutput,
+      this.contentElement
+    );
   }
   #trackChanges() {
     const initialProperties = this.#initialProperties;
     this.#initialProperties = null;
-    if (!this.editor || !this.section || !this.stylesContainer || !initialProperties) {
+    if (!this.#editorClass || !this.#section || !this.#stylesContainer || !initialProperties) {
       return;
     }
-    const finalProperties = getAuthoredStyles(this.section, this.editor.getEditableProperties());
-    const node = this.stylesContainer.node() ?? this.section.matchedStyles.node();
-    const ruleHeader = this.section.headerText();
-    for (const { propertyName } of this.editor.getEditableProperties()) {
+    const finalProperties = getAuthoredStyles(this.#section, this.#editorClass.editableProperties);
+    const node = this.#stylesContainer.node() ?? this.#section.matchedStyles.node();
+    const ruleHeader = this.#section.headerText();
+    for (const { propertyName } of this.#editorClass.editableProperties) {
       const oldValue = initialProperties.get(propertyName) ?? "";
       const newValue = finalProperties.get(propertyName) ?? "";
-      Elements2.StyleChanges.trackStylePropertyEdit(this.stylesContainer.changeTracker, node, {
+      Elements2.StyleChanges.trackStylePropertyEdit(this.#stylesContainer.changeTracker, node, {
         ruleHeader,
         oldName: oldValue ? propertyName : "",
         oldValue,
@@ -8606,21 +8641,31 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     }
   }
   async render() {
-    if (!this.editor) {
+    if (!this.#editorClass) {
       return;
     }
+    const computedProperties = this.#stylesContainer ? await fetchComputedStyles(this.#stylesContainer) : /* @__PURE__ */ new Map();
+    if (!this.#editorClass) {
+      return;
+    }
+    const authoredProperties = this.#section ? getAuthoredStyles(this.#section, this.#editorClass.editableProperties) : /* @__PURE__ */ new Map();
     this.#view(
       {
-        editor: this.editor,
-        authoredProperties: this.section ? getAuthoredStyles(this.section, this.editor.getEditableProperties()) : /* @__PURE__ */ new Map(),
-        computedProperties: this.stylesContainer ? await fetchComputedStyles(this.stylesContainer) : /* @__PURE__ */ new Map()
+        editorClass: this.#editorClass,
+        authoredProperties,
+        computedProperties,
+        onPropertySelected: this.onPropertySelected.bind(this),
+        onPropertyDeselected: this.onPropertyDeselected.bind(this)
       },
-      void 0,
+      this.#viewOutput,
       this.contentElement
     );
+    await this.#viewOutput.waitForEditorUpdate?.();
+    if (this.#stylesContainer?.swatchPopoverHelper().isShowing(this)) {
+      this.#stylesContainer.swatchPopoverHelper().reposition();
+    }
   }
   async performUpdate() {
-    await super.performUpdate();
     await this.render();
   }
   static instance() {
@@ -8630,9 +8675,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
     return instance;
   }
   setEditor(editorClass) {
-    if (!(this.editor instanceof editorClass)) {
-      this.editor = new editorClass();
-    }
+    this.#editorClass = editorClass;
   }
   static createTriggerButton(stylesContainer, section5, editorClass, buttonTitle, triggerKey, jslogContext, onClick) {
     const popoverHelper = stylesContainer.swatchPopoverHelper();
@@ -8657,20 +8700,34 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
         return;
       }
       const widget8 = _StyleEditorWidget.instance();
+      if (popoverHelper.isShowing()) {
+        const isSameTrigger = popoverHelper.isShowing(widget8) && widget8.getTriggerKey() === triggerKey;
+        popoverHelper.hide(true);
+        if (isSameTrigger) {
+          return;
+        }
+      }
       widget8.setEditor(editorClass);
       widget8.bindContext(stylesContainer, section5);
       widget8.setTriggerKey(triggerKey);
       await widget8.render();
-      widget8.focus();
+      if (!triggerButton.isConnected) {
+        widget8.unbindContext();
+        widget8.#clearEditor();
+        return;
+      }
       const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass("style-panes-wrapper");
       const onScroll = () => {
         popoverHelper.hide(true);
       };
       const onStylesUpdateCompleted = widget8.requestUpdate.bind(widget8);
       stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
+      stylesContainer.setEditingStyle(true);
       popoverHelper.show(widget8, triggerButton, () => {
+        stylesContainer.setEditingStyle(false);
         widget8.#trackChanges();
         widget8.unbindContext();
+        widget8.#clearEditor();
         if (scrollerElement) {
           scrollerElement.removeEventListener("scroll", onScroll);
         }
@@ -8680,6 +8737,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
         scrollerElement.addEventListener("scroll", onScroll);
       }
     }}
+      @mousedown=${(event) => event.consume()}
       @mouseup=${(event) => {
       event.stopPropagation();
     }}
@@ -8740,7 +8798,7 @@ import * as Tooltips2 from "../../ui/components/tooltips/tooltips.js";
 import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
-import { html as html9, nothing as nothing2, render as render6 } from "../../ui/lit/lit.js";
+import { html as html9, nothing as nothing3, render as render6 } from "../../ui/lit/lit.js";
 import * as SettingsUI2 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
@@ -9150,7 +9208,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   static createRuleOriginNode(matchedStyles, linkifier, rule) {
     if (!rule) {
-      return nothing2;
+      return nothing3;
     }
     const ruleLocation = _StylePropertiesSection.getRuleLocationFromCSSRule(rule);
     const header = rule.header;
@@ -9213,7 +9271,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (node) {
       return node;
     }
-    return nothing2;
+    return nothing3;
   }
   createRuleOriginNode(matchedStyles, linkifier, rule) {
     return _StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
@@ -12224,14 +12282,15 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     const rule = propertyData.property.ownerStyle.parentRule;
     const selectorList = rule instanceof SDK6.CSSRule.CSSStyleRule ? rule.selectorText() : void 0;
     for (const { properties, mode } of HIGHLIGHTABLE_PROPERTIES) {
-      if (!properties.includes(propertyData.name)) {
+      if (!properties.includes(propertyData.property.name)) {
         continue;
       }
       node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, mode);
       this.isActivePropertyHighlighted = true;
       return;
     }
-    if (propertyData.value.includes("anchor(") || propertyData.value.includes("anchor-size(")) {
+    const value5 = propertyData.property.value;
+    if (value5.includes("anchor(") || value5.includes("anchor-size(")) {
       node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, "anchor-positioning");
       this.isActivePropertyHighlighted = true;
     }
@@ -14050,7 +14109,7 @@ function rendererBase(matchT) {
   class RendererBaseClass {
     matchType = matchT;
     render(_match, _context) {
-      return nothing3;
+      return nothing4;
     }
   }
   return RendererBaseClass;
@@ -14139,7 +14198,7 @@ var HighlightDirective = class extends Directive.Directive {
   #startNode = null;
   update(part, [highlighting, match]) {
     if (part.type !== Directive.PartType.CHILD) {
-      return nothing3;
+      return nothing4;
     }
     this.#startNode ??= part.startNode?.parentNode?.firstChild ?? null;
     const nodes = [];
@@ -14149,10 +14208,10 @@ var HighlightDirective = class extends Directive.Directive {
       }
     }
     highlighting.addMatch(match, nodes);
-    return nothing3;
+    return nothing4;
   }
   render(_highlighting, _match) {
-    return nothing3;
+    return nothing4;
   }
 };
 var highlightDirective = Directive.directive(HighlightDirective);
@@ -14585,7 +14644,7 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
       const rendered = renderer?.render(match, this.#context) ?? html10`<span>${match.text}</span>`;
       const output = highlight(this.#context.tracing?.highlighting, match, rendered);
       this.renderedMatchForTest(output, match);
-      if (this.#output.some((t) => t !== nothing3)) {
+      if (this.#output.some((t) => t !== nothing4)) {
         const spacing = precedingSpace(node, this.#context.ast, this.#matchedResult);
         if (spacing) {
           this.#output.push(html10`${spacing}`);
@@ -15088,7 +15147,7 @@ import * as TreeOutline7 from "../../ui/components/tree_outline/tree_outline.js"
 import * as InlineEditor4 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
-import { html as html11, nothing as nothing4, render as render9 } from "../../ui/lit/lit.js";
+import { html as html11, nothing as nothing5, render as render9 } from "../../ui/lit/lit.js";
 import * as ElementsComponents5 from "./components/components.js";
 
 // gen/front_end/panels/elements/computedStyleWidget.css.js
@@ -15500,7 +15559,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
           >${i18nString10(UIStrings10.group)}</devtools-checkbox>
         </devtools-toolbar>
       </div>
-      ` : nothing4}
+      ` : nothing5}
     ${input.computedStylesTree}
     ${!input.hasMatches ? html11`<div class="gray-info-message">${i18nString10(UIStrings10.noMatchingProperty)}</div>` : ""}
   `, target);
@@ -17217,7 +17276,7 @@ function buildChangeSelector(tracker, node) {
   }
   return void 0;
 }
-var { html: html15, nothing: nothing5, render: render12, Directives: { classMap: classMap3, ifDefined: ifDefined3, ref: ref6, repeat, styleMap, until: until2 } } = Lit6;
+var { html: html15, nothing: nothing6, render: render12, Directives: { classMap: classMap3, ifDefined: ifDefined3, ref: ref6, repeat: repeat2, styleMap, until: until2 } } = Lit6;
 var { animateOn } = UI16.UIUtils;
 var { widget: widget5 } = UI16.Widget;
 var { RegisteredAdorners } = ElementsComponents6.AdornerManager;
@@ -17509,7 +17568,7 @@ function formatCandidateLabel(node) {
 }
 function renderTitle(node, input) {
   const { isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, issues } = input;
-  const { onHighlightSearchResults, onExpand: onExpand2 } = input;
+  const { onHighlightSearchResults, onExpand } = input;
   switch (node.nodeType()) {
     case Node.ATTRIBUTE_NODE:
       return renderAttribute(
@@ -17537,7 +17596,7 @@ function renderTitle(node, input) {
       if (isExpandable) {
         if (!expanded) {
           return html15`${openingTag}<devtools-widget ${widget5(ElementsComponents6.ElementsTreeExpandButton.ElementsTreeExpandButton, {
-            clickHandler: onExpand2
+            clickHandler: onExpand
           })}></devtools-widget><span style="font-size: 0;"
                   >\u2026</span>\u200B${renderClosingTag()}`;
         }
@@ -17648,7 +17707,7 @@ function renderTitle(node, input) {
   }
 }
 function renderLinkifiedSrcset(tokens, node) {
-  return html15`${repeat(tokens, (token) => {
+  return html15`${repeat2(tokens, (token) => {
     switch (token.type) {
       case Common9.Srcset.TokenType.URL:
         return renderLinkifiedValue(token.value, node);
@@ -17796,7 +17855,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   } else if (nodeName === "image" && (name === "xlink:href" || name === "href")) {
     valueType = 2 /* SRCSET */;
   }
-  let valueContent = nothing5;
+  let valueContent = nothing6;
   if (valueType === 1 /* SRC */) {
     valueContent = renderLinkifiedValue(value5, node);
   } else if (valueType === 2 /* SRCSET */) {
@@ -17823,7 +17882,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until2(relationPromise, name) : name}</span>${hasText ? html15`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(
     Boolean(updateRecord?.isAttributeModified(name) && hasText),
     DOM_UPDATE_ANIMATION_CLASS_NAME
-  )}>${valueContent}</span>"` : nothing5}</span>`;
+  )}>${valueContent}</span>"` : nothing6}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord, issues) {
   const tagClasses = {
@@ -17850,13 +17909,13 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
   const ariaLabel = isClosingTag ? `</${tagName}>` : `<${tagName}${attributes.map((attr) => attr.value ? ` ${attr.name}="${attr.value}"` : ` ${attr.name}`).join("")}>`;
   return html15`<span
       class=${classMap3(tagClasses)} aria-label=${ariaLabel}
-      >&lt;<span class=${classMap3(tagNameClasses)} jslog=${jslog || nothing5} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html15` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
+      >&lt;<span class=${classMap3(tagNameClasses)} jslog=${jslog || nothing6} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html15` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 function renderAdorner(adorner3) {
   const interactive = Boolean(adorner3.onClick);
   const toggleable = adorner3.active !== void 0;
   const classes = [adorner3.classes, interactive ? "clickable" : void 0].filter(Boolean).join(" ");
-  const onKeyDown = adorner3.onClick && adorner3.keyboardActivatable !== false ? handleAdornerKeydown(adorner3.onClick) : nothing5;
+  const onKeyDown = adorner3.onClick && adorner3.keyboardActivatable !== false ? handleAdornerKeydown(adorner3.onClick) : nothing6;
   return html15`<devtools-adorner
       class=${classes}
       role=${ifDefined3(interactive ? "button" : void 0)}
@@ -17866,14 +17925,14 @@ function renderAdorner(adorner3) {
       .name=${adorner3.name}
       jslog=${VisualLogging10.adorner(adorner3.name).track({ click: true })}
       aria-label=${ifDefined3(adorner3.ariaLabel)}
-      @click=${adorner3.onClick ?? nothing5}
+      @click=${adorner3.onClick ?? nothing6}
       @keydown=${onKeyDown}
-      @mousedown=${adorner3.onMouseDown ?? nothing5}
+      @mousedown=${adorner3.onMouseDown ?? nothing6}
       ${adornerRef()}>${adorner3.content ?? html15`<span>${adorner3.name}</span>`}</devtools-adorner>`;
 }
 function maybeRenderAdAdorner(input) {
   if (!input.adProvenance) {
-    return nothing5;
+    return nothing6;
   }
   return html15`
     <devtools-adorner
@@ -17894,7 +17953,7 @@ function maybeRenderAdAdorner(input) {
         ${input.adProvenance.filterlistRule ? html15`
           <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.filterListRule)}</div>
           <div class="ad-provenance-tooltip-content">${input.adProvenance.filterlistRule}</div>
-        ` : nothing5}
+        ` : nothing6}
 
         ${input.adProvenance.adScriptAncestry && input.target ? html15`
           <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.creatorAdScriptAncestry)}</div>
@@ -17915,12 +17974,12 @@ function maybeRenderAdAdorner(input) {
             <div class="ad-provenance-tooltip-content">
               ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule}
             </div>
-          ` : nothing5}
-        ` : nothing5}
+          ` : nothing6}
+        ` : nothing6}
 
         ${!input.adProvenance.adScriptAncestry && !input.adProvenance.filterlistRule ? html15`
             <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.noProvenanceAvailable)}</div>
-          ` : nothing5}
+          ` : nothing6}
       </div>
     </devtools-tooltip>
   `;
@@ -17933,7 +17992,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     hidden: Boolean(input.editorState)
   };
   if (input.clearDOM) {
-    render12(nothing5, target);
+    render12(nothing6, target);
   }
   render12(html15`
     <div style=${styleMap({ "--indent": `${input.indent}px` })}
@@ -17941,8 +18000,8 @@ var DEFAULT_VIEW6 = (input, output, target) => {
          ${ref6((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html15`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input)}</span>` : nothing5}
-      ${input.renderSelection !== false ? html15`<div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing5}
+      ${input.node ? html15`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input)}</span>` : nothing6}
+      ${input.renderSelection !== false ? html15`<div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing6}
       <div class=${classMap3(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -17952,7 +18011,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
              title=${input.decorationsTooltip}>
              ${input.decorations.map((d) => html15`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
              ${input.descendantDecorations.map((d) => html15`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
-        </div>` : nothing5}
+        </div>` : nothing6}
       </div>
       ${hasAdorners ? html15`<div class="adorner-container ${input.editorState ? "hidden" : ""}">
         ${maybeRenderAdAdorner(input)}
@@ -17960,13 +18019,13 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     name: RegisteredAdorners.VIEW_SOURCE,
     ariaLabel: i18nString13(UIStrings14.viewSourceCode),
     onClick: input.onViewSourceAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showCustomElementAdorner ? renderAdorner({
     name: RegisteredAdorners.CUSTOM_ELEMENT,
     classes: "custom-element",
     ariaLabel: i18nString13(UIStrings14.showCustomElementDefinition),
     onClick: input.onCustomElementAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showContainerAdorner ? renderAdorner({
     name: RegisteredAdorners.CONTAINER,
     active: input.containerAdornerActive,
@@ -17976,25 +18035,25 @@ var DEFAULT_VIEW6 = (input, output, target) => {
             <devtools-icon name="container"></devtools-icon>
             <span>${input.containerType}</span>
           </span>`
-  }) : nothing5}
+  }) : nothing6}
         ${input.showFlexAdorner ? renderAdorner({
     name: RegisteredAdorners.FLEX,
     active: input.flexAdornerActive,
     ariaLabel: input.flexAdornerActive ? i18nString13(UIStrings14.disableFlexMode) : i18nString13(UIStrings14.enableFlexMode),
     onClick: input.onFlexAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showGridAdorner ? renderAdorner({
     name: input.isSubgrid ? RegisteredAdorners.SUBGRID : RegisteredAdorners.GRID,
     active: input.gridAdornerActive,
     ariaLabel: input.gridAdornerActive ? i18nString13(UIStrings14.disableGridMode) : i18nString13(UIStrings14.enableGridMode),
     onClick: input.onGridAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showGridLanesAdorner ? renderAdorner({
     name: RegisteredAdorners.GRID_LANES,
     active: input.gridAdornerActive,
     ariaLabel: input.gridAdornerActive ? i18nString13(UIStrings14.disableGridLanesMode) : i18nString13(UIStrings14.enableGridLanesMode),
     onClick: input.onGridAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showMediaAdorner ? renderAdorner({
     name: RegisteredAdorners.MEDIA,
     ariaLabel: i18nString13(UIStrings14.openMediaPanel),
@@ -18002,19 +18061,19 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     content: html15`<span class="adorner-with-icon">
             ${RegisteredAdorners.MEDIA}<devtools-icon name="select-element"></devtools-icon>
           </span>`
-  }) : nothing5}
+  }) : nothing6}
         ${input.showPopoverAdorner ? renderAdorner({
     name: RegisteredAdorners.POPOVER,
     active: input.popoverAdornerActive,
     ariaLabel: input.popoverAdornerActive ? i18nString13(UIStrings14.stopForceOpenPopover) : i18nString13(UIStrings14.forceOpenPopover),
     onClick: input.onPopoverAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showInterestAdorner ? renderAdorner({
     name: RegisteredAdorners.INTEREST,
     active: input.interestAdornerActive,
     ariaLabel: input.interestAdornerActive ? i18nString13(UIStrings14.stopForceShowInterest) : i18nString13(UIStrings14.forceShowInterest),
     onClick: input.onInterestAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showTopLayerAdorner ? renderAdorner({
     name: RegisteredAdorners.TOP_LAYER,
     ariaLabel: i18nString13(UIStrings14.reveal),
@@ -18022,19 +18081,19 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     content: html15`<span class="adorner-with-icon">
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
           </span>`
-  }) : nothing5}
+  }) : nothing6}
         ${input.showStartingStyleAdorner ? renderAdorner({
     name: RegisteredAdorners.STARTING_STYLE,
     classes: "starting-style",
     active: input.startingStyleAdornerActive,
     ariaLabel: input.startingStyleAdornerActive ? i18nString13(UIStrings14.disableStartingStyle) : i18nString13(UIStrings14.enableStartingStyle),
     onClick: input.onStartingStyleAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showScrollAdorner ? renderAdorner({
     name: RegisteredAdorners.SCROLL,
     classes: "scroll",
     ariaLabel: i18nString13(UIStrings14.elementHasScrollableOverflow)
-  }) : nothing5}
+  }) : nothing6}
         ${input.showSlotAdorner ? renderAdorner({
     name: RegisteredAdorners.SLOT,
     onClick: input.onSlotAdornerClick,
@@ -18044,18 +18103,18 @@ var DEFAULT_VIEW6 = (input, output, target) => {
             <devtools-icon name="select-element"></devtools-icon>
             <span>${RegisteredAdorners.SLOT}</span>
           </span>`
-  }) : nothing5}
+  }) : nothing6}
         ${input.showScrollSnapAdorner ? renderAdorner({
     name: RegisteredAdorners.SCROLL_SNAP,
     classes: "scroll-snap",
     active: input.scrollSnapAdornerActive,
     ariaLabel: input.scrollSnapAdornerActive ? i18nString13(UIStrings14.disableScrollSnap) : i18nString13(UIStrings14.enableScrollSnap),
     onClick: input.onScrollSnapAdornerClick
-  }) : nothing5}
-      </div>` : nothing5}
+  }) : nothing6}
+      </div>` : nothing6}
       ${input.isSelected && input.canInspect ? html15`
         <span class="selected-hint ${input.editorState ? "hidden" : ""}" title=${i18nString13(UIStrings14.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
-      ` : nothing5}
+      ` : nothing6}
       ${input.showAiButton ? html15`
         <span class="ai-button-container ${input.editorState ? "hidden" : ""}">
           <devtools-floating-button
@@ -18066,7 +18125,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
             @mousedown=${(e) => e.stopPropagation()}>
           </devtools-floating-button>
         </span>
-      ` : nothing5}
+      ` : nothing6}
       ${input.editorState ? html15`<div @keydown=${(event) => {
     if (event.key === "Escape") {
       event.consume(true);
@@ -18078,7 +18137,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
         <devtools-text-editor .state=${input.editorState} ${ref6((el) => {
     output.editorRef = el;
   })}></devtools-text-editor>
-      </div>` : nothing5}
+      </div>` : nothing6}
     </div>
   `, target);
 };
@@ -20667,7 +20726,7 @@ li.shadow-root + ol.children {
 /*# sourceURL=${import.meta.resolve("./domTreeWidget.css")} */`;
 
 // ../../front_end/panels/elements/DOMTreeWidget.ts
-var { html: html16, nothing: nothing6, render: render13, Directives: { classMap: classMap4, ifDefined: ifDefined4, repeat: repeat2, styleMap: styleMap2 } } = Lit7;
+var { html: html16, nothing: nothing7, render: render13, Directives: { classMap: classMap4, ifDefined: ifDefined4, repeat: repeat3, styleMap: styleMap2 } } = Lit7;
 var { clonedRef } = UI18.UIUtils;
 var scrollHighlightedRowIntoView = (element) => {
   element?.scrollIntoViewIfNeeded(
@@ -20896,14 +20955,14 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           <ul role="group">
             ${shortcut.childShortcuts.map((child) => renderShortcut(child, shortcutDepth + 1))}
           </ul>
-        ` : nothing6}
+        ` : nothing7}
       </li>
     `;
   };
   const renderTopLayerContainer = (doc, containerDepth) => {
     const shortcuts = input.getTopLayerShortcuts(doc);
     if (shortcuts.length === 0) {
-      return nothing6;
+      return nothing7;
     }
     const isTopLayerExpanded = input.isTopLayerExpanded(doc);
     const onTopLayerExpand = (event) => {
@@ -20934,7 +20993,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const linkText = header?.sourceURL;
     const isExpanded = input.isAdoptedStyleSheetExpanded(sheet);
     const isSelected = input.selectedAdoptedStyleSheet === sheet;
-    const onExpand2 = (event) => {
+    const onExpand = (event) => {
       input.onToggleAdoptedStyleSheetExpanded(sheet, event.detail.expanded);
     };
     const onSelect = (event) => {
@@ -20949,13 +21008,13 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           class="elements-tree-adopted-style-sheet"
           style=${styleMap2({ "--indent": `${computeLeftIndent(depth, true)}px` })}
           @select=${on(onSelect)}
-          @expand=${on(onExpand2)}
+          @expand=${on(onExpand)}
           jslog=${treeItemJslog("adopted-style-sheet")}>
         <span class="elements-tree-shortcut-title">#adopted-style-sheet${linkText ? html16` (${UIComponentUtils.Linkifier.Linkifier.linkifyURL(linkText, {
       text: linkText,
       preventClick: true,
       showColumnNumber: false
-    })})` : nothing6}</span>
+    })})` : nothing7}</span>
         <ul role="group">
           ${UI18.TreeOutline.ifExpanded(html16`
             ${header ? html16`
@@ -20965,7 +21024,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
                   jslog=${treeItemJslog("adopted-style-sheet-contents")}>
                 ${UI18.Widget.widget(AdoptedStyleSheetContentsWidget, { styleSheetHeader: header })}
               </li>
-            ` : nothing6}
+            ` : nothing7}
           `)}
         </ul>
       </li>
@@ -20974,10 +21033,10 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
   const renderAdoptedStyleSheets = (node, depth) => {
     const sheets = node.adoptedStyleSheetsForNode;
     if (!sheets || sheets.length === 0) {
-      return nothing6;
+      return nothing7;
     }
     const isExpanded = input.isAdoptedStyleSheetsExpanded(node);
-    const onExpand2 = (event) => {
+    const onExpand = (event) => {
       input.onToggleAdoptedStyleSheetsExpanded(node, event.detail.expanded);
     };
     const onSelect = (event) => {
@@ -20991,7 +21050,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           class="elements-tree-adopted-style-sheets"
           style=${styleMap2({ "--indent": `${computeLeftIndent(depth, true)}px` })}
           @select=${on(onSelect)}
-          @expand=${on(onExpand2)}
+          @expand=${on(onExpand)}
           jslog=${treeItemJslog("adopted-style-sheets")}>
         <span class="elements-tree-shortcut-title">#adopted-style-sheets</span>
         <ul role="group">
@@ -21106,7 +21165,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const onSelect = (isClosingTag = false, selectedByUser = false) => {
       input.onSelect(node, isClosingTag, selectedByUser);
     };
-    const onExpand2 = (event) => {
+    const onExpand = (event) => {
       if (!isCollapsible) {
         return;
       }
@@ -21170,13 +21229,13 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           data-target-id=${ifDefined4(node.domModel().target().id())}
           selectable=${input.selectEnabled ? "true" : "false"}
           ?selected=${isSelected && !input.selectedClosingTag}
-          ${input.currentHighlightedNode === node ? clonedRef(scrollHighlightedRowIntoView) : nothing6}
+          ${input.currentHighlightedNode === node ? clonedRef(scrollHighlightedRowIntoView) : nothing7}
           class=${classes}
           style=${styleMap2({ "--indent": `${computeLeftIndent(depth, isExpandable)}px` })}
           ?open=${hasChildren && isExpanded && !isEditingAsHTML}
           draggable=${isDraggable ? "true" : "false"}
           @select=${on((event) => onSelect(false, Boolean(event.detail?.selectedByUser)))}
-          @expand=${on(onExpand2)}
+          @expand=${on(onExpand)}
           @mousemove=${on(onMouseMove(
       /* isClosingTag= */
       false
@@ -21236,8 +21295,8 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       updateRecord: input.updateRecordForNode(node) ?? null
     })}${hasChildren ? html16`<ul role="group">
             ${isExpanded && !isEditingAsHTML ? html16`
-              ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing6}
-              ${repeat2(children, (child) => child.id, (child) => renderNode(child, depth + 1))}
+              ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing7}
+              ${repeat3(children, (child) => child.id, (child) => renderNode(child, depth + 1))}
               ${remainingChildrenCount > 0 ? html16`
                 <li role="treeitem"
                     selectable="false"
@@ -21250,9 +21309,9 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       event.stopPropagation();
       input.onExpandAllChildren(node);
     })}>${i18nString15(UIStrings16.showAllNodesDMore, { PH1: remainingChildrenCount })}</devtools-button></li>
-              ` : nothing6}
-              ${node.isInsertionPoint() ? node.distributedNodes().map((distributedNode) => renderShortcut(distributedNode, depth + 1)) : nothing6}
-              ${node instanceof SDK15.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing6}
+              ` : nothing7}
+              ${node.isInsertionPoint() ? node.distributedNodes().map((distributedNode) => renderShortcut(distributedNode, depth + 1)) : nothing7}
+              ${node instanceof SDK15.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing7}
               ${needsClosingTag ? html16`
                 <li role="treeitem"
                     data-backend-node-id=${ifDefined4(node.backendNodeId())}
@@ -21303,9 +21362,9 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       },
       updateRecord: input.updateRecordForNode(node) ?? null
     })}</li>
-              ` : nothing6}
-            ` : nothing6}
-          </ul>` : nothing6}</li>
+              ` : nothing7}
+            ` : nothing7}
+          </ul>` : nothing7}</li>
     `;
   };
   const isSingleNode = Boolean(input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input));
@@ -21340,12 +21399,12 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           <style>${domTreeWidget_css_default}</style>
           <style>${CodeHighlighter5.codeHighlighterStyles}</style>
           <ul role="tree" class="elements-tree-outline source-code ${input.wrap ? "" : "elements-tree-nowrap"} ${input.hideGutter ? "elements-hide-gutter" : ""} ${isSingleNode ? "single-node" : ""}" aria-label=${i18nString15(UIStrings16.pageDom)}>
-            ${input.omitRootDOMNode && input.rootDOMNode && input.rootDOMNode.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(input.rootDOMNode, 0) : nothing6}
-            ${repeat2(rootNodes, (node) => node.id, (node) => renderNode(node))}
+            ${input.omitRootDOMNode && input.rootDOMNode && input.rootDOMNode.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(input.rootDOMNode, 0) : nothing7}
+            ${repeat3(rootNodes, (node) => node.id, (node) => renderNode(node))}
             ${input.omitRootDOMNode && input.rootDOMNode ? (() => {
     const remaining = allRootNodes.length - rootNodes.length;
     if (remaining <= 0) {
-      return nothing6;
+      return nothing7;
     }
     const root = input.rootDOMNode;
     return html16`
@@ -21361,8 +21420,8 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       input.onExpandAllChildren(root);
     })}>${i18nString15(UIStrings16.showAllNodesDMore, { PH1: remaining })}</devtools-button></li>
               `;
-  })() : nothing6}
-            ${input.omitRootDOMNode && input.rootDOMNode instanceof SDK15.DOMModel.DOMDocument ? renderTopLayerContainer(input.rootDOMNode, 0) : nothing6}
+  })() : nothing7}
+            ${input.omitRootDOMNode && input.rootDOMNode instanceof SDK15.DOMModel.DOMDocument ? renderTopLayerContainer(input.rootDOMNode, 0) : nothing7}
           </ul>
         `}>
       </devtools-tree>
@@ -21375,7 +21434,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         @click=${input.onClearMaxRows}>
         ${i18nString15(UIStrings16.showAllLines, { PH1: truncatedLines })}
       </button>
-    ` : nothing6}
+    ` : nothing7}
   `, target);
   if (input.nodesWithDirtyAdorners.size > 0) {
     input.onDirtyAdornersUpdated();
@@ -21642,7 +21701,7 @@ var DOMTreeWidget = class extends UI18.Widget.Widget {
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
             if (!elementIssueDetails) {
-              return nothing6;
+              return nothing7;
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
             const openIssueEvent = () => Common11.Revealer.reveal(issue);
@@ -23809,7 +23868,7 @@ import * as Common13 from "../../core/common/common.js";
 import * as Platform9 from "../../core/platform/platform.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html18, nothing as nothing7, render as render15 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html18, nothing as nothing8, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -24014,7 +24073,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
     Common13.Color.Legacy.fromRGBA([0, 0, 0, 0])
   ];
   const boxLabels = ["content", "padding", "border", "margin", "position"];
-  let previousBox = nothing7;
+  let previousBox = nothing8;
   for (let i = 0; i < boxes.length; ++i) {
     const name = boxes[i];
     const display = style.get("display");
@@ -26184,7 +26243,7 @@ import * as Platform11 from "../../core/platform/platform.js";
 import * as SDK21 from "../../core/sdk/sdk.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI25 from "../../ui/legacy/legacy.js";
-import { html as html21, nothing as nothing8, render as render18 } from "../../ui/lit/lit.js";
+import { html as html21, nothing as nothing9, render as render18 } from "../../ui/lit/lit.js";
 import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -26250,8 +26309,8 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
       </div>
       ${input.objectTree && input.allChildrenFiltered ? html21`
         <div class="gray-info-message">${i18nString20(UIStrings21.noMatchingProperty)}</div>
-      ` : nothing8}
-      <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html21`
+      ` : nothing9}
+      <devtools-tree show-selection-on-keyboard-focus .template=${html21`
         <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
         <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
         <ul role=tree open class="source-code object-properties-section" ${widget7(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, {
@@ -26269,12 +26328,6 @@ var getShowAllPropertiesSetting = () => Common17.Settings.Settings.instance().cr
   /* defaultValue */
   false
 );
-function onExpand(event) {
-  const expanded = event.detail.expanded;
-  if (expanded) {
-    Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.DOMPropertiesExpanded);
-  }
-}
 var PropertiesWidget = class extends UI25.Widget.VBox {
   showAllPropertiesSetting;
   filterRegex = null;
@@ -26284,6 +26337,30 @@ var PropertiesWidget = class extends UI25.Widget.VBox {
   #objectTree = null;
   #isRegex = false;
   #filterText = "";
+  #onNodeExpanded() {
+    Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.DOMPropertiesExpanded);
+  }
+  wasShown() {
+    super.wasShown();
+    this.#objectTree?.removeEventListener(
+      ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+      this.#onNodeExpanded,
+      this
+    );
+    this.#objectTree?.addEventListener(
+      ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+      this.#onNodeExpanded,
+      this
+    );
+  }
+  willHide() {
+    super.willHide();
+    this.#objectTree?.removeEventListener(
+      ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+      this.#onNodeExpanded,
+      this
+    );
+  }
   constructor(view = DEFAULT_VIEW12) {
     super({ useShadowDom: true });
     this.showAllPropertiesSetting = getShowAllPropertiesSetting();
@@ -26363,6 +26440,11 @@ var PropertiesWidget = class extends UI25.Widget.VBox {
     this.#pendingNodeUpdate = false;
     this.#lastRequestedNode?.domModel().runtimeModel().releaseObjectGroup(OBJECT_GROUP_NAME);
     this.#lastRequestedNode = UI25.Context.Context.instance().flavor(SDK21.DOMModel.DOMNode);
+    this.#objectTree?.removeEventListener(
+      ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+      this.#onNodeExpanded,
+      this
+    );
     if (!this.#lastRequestedNode) {
       this.#objectTree = null;
       return;
@@ -26376,6 +26458,13 @@ var PropertiesWidget = class extends UI25.Widget.VBox {
       readOnly: true
     });
     this.#objectTree.expanded = true;
+    if (this.isShowing()) {
+      this.#objectTree.addEventListener(
+        ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED,
+        this.#onNodeExpanded,
+        this
+      );
+    }
     this.#updateFilter();
   }
   async performUpdate() {
@@ -26491,7 +26580,7 @@ var UIStrings22 = {
 };
 var str_22 = i18n44.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings22);
 var i18nString21 = i18n44.i18n.getLocalizedString.bind(void 0, str_22);
-var { ref: ref7, repeat: repeat3 } = Directives4;
+var { ref: ref7, repeat: repeat4 } = Directives4;
 var DEFAULT_VIEW13 = (input, output, target) => {
   const onKeyDown = (event) => {
     if (event.key === Platform12.KeyboardUtilities.ENTER_KEY && !event.isComposing) {
@@ -26510,7 +26599,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
   })}></div>
       </div>
       <div class="source-code styles-element-classes-container">
-        ${repeat3(input.classes, (item2) => item2.className, (item2) => html22`
+        ${repeat4(input.classes, (item2) => item2.className, (item2) => html22`
           <devtools-checkbox
               class="monospace"
               small

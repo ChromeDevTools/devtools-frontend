@@ -89,7 +89,6 @@ export class ModificationsManager extends EventTarget {
         // Instead, after the second call, the cached setting is returned.
         this.#annotationsHiddenSetting =
             Common.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
-        // TODO: Assign annotations loaded from the trace file
         this.#overlayForAnnotation = new Map();
     }
     getEntriesFilter() {

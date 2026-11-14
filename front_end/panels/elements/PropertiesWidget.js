@@ -86,7 +86,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       ${input.objectTree && input.allChildrenFiltered ? html `
         <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
       ` : nothing}
-      <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html `
+      <devtools-tree show-selection-on-keyboard-focus .template=${html `
         <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
         <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
         <ul role=tree open class="source-code object-properties-section" ${widget(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, {
@@ -100,12 +100,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 const getShowAllPropertiesSetting = () => Common.Settings.Settings.instance().createSetting('show-all-properties', /* defaultValue */ false);
-function onExpand(event) {
-    const expanded = event.detail.expanded;
-    if (expanded) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
-    }
-}
 export class PropertiesWidget extends UI.Widget.VBox {
     showAllPropertiesSetting;
     filterRegex = null;
@@ -115,6 +109,18 @@ export class PropertiesWidget extends UI.Widget.VBox {
     #objectTree = null;
     #isRegex = false;
     #filterText = '';
+    #onNodeExpanded() {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
+    }
+    wasShown() {
+        super.wasShown();
+        this.#objectTree?.removeEventListener("node-expanded" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED */, this.#onNodeExpanded, this);
+        this.#objectTree?.addEventListener("node-expanded" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED */, this.#onNodeExpanded, this);
+    }
+    willHide() {
+        super.willHide();
+        this.#objectTree?.removeEventListener("node-expanded" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED */, this.#onNodeExpanded, this);
+    }
     constructor(view = DEFAULT_VIEW) {
         super({ useShadowDom: true });
         this.showAllPropertiesSetting = getShowAllPropertiesSetting();
@@ -172,6 +178,7 @@ export class PropertiesWidget extends UI.Widget.VBox {
         this.#pendingNodeUpdate = false;
         this.#lastRequestedNode?.domModel().runtimeModel().releaseObjectGroup(OBJECT_GROUP_NAME);
         this.#lastRequestedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+        this.#objectTree?.removeEventListener("node-expanded" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED */, this.#onNodeExpanded, this);
         if (!this.#lastRequestedNode) {
             this.#objectTree = null;
             return;
@@ -185,6 +192,9 @@ export class PropertiesWidget extends UI.Widget.VBox {
             readOnly: true,
         });
         this.#objectTree.expanded = true;
+        if (this.isShowing()) {
+            this.#objectTree.addEventListener("node-expanded" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.NODE_EXPANDED */, this.#onNodeExpanded, this);
+        }
         this.#updateFilter();
     }
     async performUpdate() {

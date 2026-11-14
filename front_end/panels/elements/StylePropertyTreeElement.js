@@ -189,7 +189,7 @@ export class EnvFunctionRenderer extends EnvFunctionRendererBase {
             }
         }
         const func = this.propertyData ?
-            getTracingTooltip('env', match.node, this.matchedStyles, this.computedStyles, this.computedStyleExtraFields, context, this.propertyData.stylesContainer(), this.propertyData.tooltipIdFactory, this.propertyData.property, this.propertyData.parentShorthand()?.name) :
+            getTracingTooltip('env', match.node, this.matchedStyles, this.computedStyles, this.computedStyleExtraFields, context, this.propertyData.stylesContainer(), this.propertyData.tooltipIdFactory, this.propertyData.property, this.propertyData.parentShorthand()?.property.name) :
             'env';
         const valueClass = classMap({ 'inactive-value': !match.varNameIsValid });
         const fallbackClass = classMap({ 'inactive-value': match.varNameIsValid });
@@ -341,7 +341,7 @@ export class VariableRenderer extends VariableRendererBase {
         }
         const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
         const varCall = this.#propertyData ?
-            getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.name) :
+            getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.property.name) :
             undefined;
         const tooltipId = getTooltipId(this.#propertyData, 'custom-property-var');
         const tooltip = tooltipId ? { tooltipId } : undefined;
@@ -469,7 +469,7 @@ export class AttributeRenderer extends AttributeRendererBase {
         }
         const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
         const attrCall = this.#propertyData ?
-            getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.name) :
+            getTracingTooltip('attr', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.property.name) :
             undefined;
         const tooltipId = attributeMissing ? undefined : getTooltipId(this.#propertyData, 'custom-attribute');
         const tooltip = tooltipId ? { tooltipId } : undefined;
@@ -524,7 +524,8 @@ export class LinearGradientRenderer extends LinearGradientRendererBase {
         if (angle instanceof InlineEditor.CSSAngle.CSSAngle) {
             angle.updateProperty(context.matchedResult.getComputedText(match.node));
             const args = ASTUtils.callArgs(match.node);
-            const angleNode = args[0]?.find(node => context.matchedResult.getMatch(node) instanceof SDK.CSSPropertyParserMatchers.AngleMatch);
+            const angleNode = args[0]?.find(node => context.matchedResult.getMatch(node) instanceof
+                SDK.CSSPropertyParserMatchers.AngleMatch);
             const angleMatch = angleNode && context.matchedResult.getMatch(angleNode);
             if (angleMatch) {
                 angle.addEventListener(InlineEditor.InlineEditorUtils.ValueChangedEvent.eventName, ev => {
@@ -588,7 +589,7 @@ export class ColorRenderer extends ColorRendererBase {
         const renderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
         const { nodes, cssControls } = Renderer.render(args, renderingContext);
         const valueChild = html `<span>${this.#propertyData ?
-            getTracingTooltip(func, match.node, this.#propertyData.matchedStyles(), this.#propertyData.getComputedStyles() ?? new Map(), this.#propertyData.getComputedStyleExtraFields(), renderingContext, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.name) :
+            getTracingTooltip(func, match.node, this.#propertyData.matchedStyles(), this.#propertyData.getComputedStyles() ?? new Map(), this.#propertyData.getComputedStyleExtraFields(), renderingContext, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.property.name) :
             func}${nodes}</span>`;
         return { valueChild, cssControls, childTracingContexts };
     }
@@ -823,7 +824,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
         const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
         const color1 = Renderer.render(match.color1, color1RenderingContext);
         const color2 = Renderer.render(match.color2, color2RenderingContext);
-        const contentChild = html `<span>${this.#propertyData ? getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.name) :
+        const contentChild = html `<span>${this.#propertyData ? getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.property.name) :
             'color-mix'}(${match.space.length ? html `${Renderer.render(match.space, spaceRenderingContext).nodes}, ` :
             ''}${color1.nodes}, ${color2.nodes})</span>`;
         const color1Controls = color1.cssControls.get('color') ?? [];
@@ -1010,7 +1011,8 @@ export class LinkableNameRenderer extends LinkableNameRendererBase {
                     jslogContext: 'css-font-palette',
                     metric: null,
                     ruleBlock: '', // Not used
-                    isDefined: Boolean(this.#matchedStyles.atRules().find(ar => ar.type() === 'font-palette-values' && ar.name()?.text === match.text)),
+                    isDefined: Boolean(this.#matchedStyles.atRules().find(ar => ar.type() === 'font-palette-values' &&
+                        ar.name()?.text === match.text)),
                 };
             case "list-style" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE */:
             case "list-style-type" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE_TYPE */:
@@ -1018,7 +1020,8 @@ export class LinkableNameRenderer extends LinkableNameRendererBase {
                     jslogContext: 'css-list-style-type',
                     metric: null,
                     ruleBlock: '', // Not used
-                    isDefined: Boolean(this.#matchedStyles.atRules().find(ar => ar.type() === 'counter-style' && ar.name()?.text === match.text)),
+                    isDefined: Boolean(this.#matchedStyles.atRules().find(ar => ar.type() === 'counter-style' &&
+                        ar.name()?.text === match.text)),
                 };
             case "position-try" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY */:
             case "position-try-fallbacks" /* SDK.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY_FALLBACKS */:
@@ -1583,7 +1586,7 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
         const renderedArgs = match.args.map((arg, idx) => Renderer.render(arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context)
             .nodes);
         const func = this.#propertyData ?
-            getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.name) :
+            getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context, this.#stylesContainer, this.#propertyData.tooltipIdFactory, this.#propertyData.property, this.#propertyData.parentShorthand()?.property.name) :
             match.func;
         const args = this.#renderArgs(renderedArgs);
         if (childTracingContexts) {
@@ -1966,7 +1969,7 @@ function getTooltipId(tooltipIdFactoryOrPropertyData, key, property, shorthandNa
     }
     if (!(tooltipIdFactoryOrPropertyData instanceof Tooltips.Tooltip.IdFactory)) {
         const propertyData = tooltipIdFactoryOrPropertyData;
-        return getTooltipId(propertyData.tooltipIdFactory, key, propertyData.property, propertyData.parentShorthand()?.name);
+        return getTooltipId(propertyData.tooltipIdFactory, key, propertyData.property, propertyData.parentShorthand()?.property.name);
     }
     if (!property) {
         return undefined;
@@ -2079,6 +2082,53 @@ export function getPropertyRenderers(propertyName, style, stylesContainer, match
         new RelativeColorChannelRenderer(propertyData),
         new AttributeRenderer(stylesContainer, propertyData, matchedStyles, computedStyles, computedStyleExtraFields),
     ];
+}
+function exclamationMarkTemplate(propertyData, details) {
+    const tooltipId = details ? getTooltipId(propertyData.tooltipIdFactory, 'property-warning', propertyData.property, propertyData.parentShorthand()?.property.name) :
+        undefined;
+    // clang-format off
+    return html `<span><span
+      class="exclamation-mark"
+      tabindex="-1"
+      title=${ifDefined(details ? undefined : getInvalidPropertyMessage(propertyData.property))}
+      aria-details=${ifDefined(tooltipId)}></span>${details && tooltipId ? html `<devtools-tooltip
+        id=${tooltipId}
+        variant="rich"
+        jslogContext="elements.invalid-property-decl-popover">${widget(ElementsComponents.CSSVariableValueView.CSSVariableParserError, { details })}</devtools-tooltip>` : nothing}</span>`;
+    // clang-format on
+}
+function authoringHintTemplate(propertyData, hint) {
+    const tooltipId = getTooltipId(propertyData.tooltipIdFactory, 'css-hint', propertyData.property, propertyData.parentShorthand()?.property.name);
+    // clang-format off
+    return html `<span class="hint-wrapper"><devtools-icon
+      name="info"
+      class="hint small"
+      tabindex="-1"
+      aria-details=${tooltipId}></devtools-icon></span><devtools-tooltip
+      id=${tooltipId}
+      variant="rich"
+      padding="large"
+      jslogContext="elements.css-hint">${widget(ElementsComponents.CSSHintDetailsView.CSSHintDetailsView, { authoringHint: hint })}</devtools-tooltip>`;
+    // clang-format on
+}
+function animationOverrideHintTemplate(propertyData) {
+    const tooltipId = getTooltipId(propertyData.tooltipIdFactory, 'animation-override-hint', propertyData.property, propertyData.parentShorthand()?.property.name);
+    // clang-format off
+    return html `<span class="animation-override-hint-wrapper hint-wrapper"><devtools-icon
+      name="info"
+      class="hint small"
+      tabindex="-1"
+      aria-details=${tooltipId}></devtools-icon></span><devtools-tooltip
+      id=${tooltipId}
+      variant="rich"
+      padding="large"
+      jslogContext="elements.css-animation-hint"><div class="animation-override-hint">${i18nTemplate(UIStrings.overriddenByAnimation, { PH1: html `<devtools-link
+          jslogContext="open-in-animations-panel"
+          @click=${(event) => {
+            event.preventDefault();
+            void UI.ViewManager.ViewManager.instance().showView('animations');
+        }}>${i18nString(UIStrings.openAnimationsPanel)}</devtools-link>` })}</div></devtools-tooltip>`;
+    // clang-format on
 }
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     style;
@@ -2627,49 +2677,36 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             }
             this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
         }
-        const that = this;
-        this.valueElement.addEventListener('keydown', nonEditingNameValueKeyDown);
-        this.nameElement.addEventListener('keydown', nonEditingNameValueKeyDown);
-        function nonEditingNameValueKeyDown(event) {
-            if (UI.UIUtils.isBeingEdited(this)) {
-                return;
-            }
-            if (event.key !== Platform.KeyboardUtilities.ENTER_KEY && event.key !== ' ') {
-                return;
-            }
-            if (this === that.valueElement) {
-                that.startEditingValue();
+        // The name and the value each start their own edit when the user presses Enter or Space on them.
+        const valueElement = this.valueElement;
+        const nameElement = this.nameElement;
+        valueElement.addEventListener('keydown', event => {
+            if (isStartEditingKey(valueElement, event)) {
+                this.startEditingValue();
                 event.consume(true);
             }
-            else if (this === that.nameElement) {
-                that.startEditingName();
+        });
+        nameElement.addEventListener('keydown', event => {
+            if (isStartEditingKey(nameElement, event)) {
+                this.startEditingName();
                 event.consume(true);
             }
+        });
+        function isStartEditingKey(element, event) {
+            if (UI.UIUtils.isBeingEdited(element)) {
+                return false;
+            }
+            return !event.isComposing && Platform.KeyboardUtilities.isEnterOrSpaceKey(event);
         }
     }
     createExclamationMark(property, details) {
         const fragment = document.createDocumentFragment();
         // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(this.exclamationMarkTemplate(property, details), fragment);
+        render(exclamationMarkTemplate(this, details), fragment);
         const invalidString = i18nString(UIStrings.invalidString, { PH1: getInvalidPropertyMessage(property), PH2: property.name, PH3: property.value });
         // Storing the invalidString for future screen reader support when editing the property
         property.setDisplayedStringForInvalidProperty(invalidString);
         return fragment;
-    }
-    exclamationMarkTemplate(property, details) {
-        const tooltipId = details ?
-            getTooltipId(this.tooltipIdFactory, 'property-warning', this.property, this.getLonghand()?.name) :
-            undefined;
-        // clang-format off
-        return html `<span><span
-        class="exclamation-mark"
-        tabindex="-1"
-        title=${ifDefined(details ? undefined : getInvalidPropertyMessage(property))}
-        aria-details=${ifDefined(tooltipId)}></span>${details && tooltipId ? html `<devtools-tooltip
-          id=${tooltipId}
-          variant="rich"
-          jslogContext="elements.invalid-property-decl-popover">${widget(ElementsComponents.CSSVariableValueView.CSSVariableParserError, { details })}</devtools-tooltip>` : nothing}</span>`;
-        // clang-format on
     }
     updateAuthoringHint() {
         this.listItemElement.classList.remove('inactive-property');
@@ -2693,26 +2730,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             if (hint) {
                 const fragment = document.createDocumentFragment();
                 // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-                render(this.authoringHintTemplate(hint), fragment);
+                render(authoringHintTemplate(this, hint), fragment);
                 this.listItemElement.append(fragment);
                 this.listItemElement.classList.add('inactive-property');
                 break;
             }
         }
-    }
-    authoringHintTemplate(hint) {
-        const tooltipId = getTooltipId(this.tooltipIdFactory, 'css-hint', this.property, this.getLonghand()?.name);
-        // clang-format off
-        return html `<span class="hint-wrapper"><devtools-icon
-        name="info"
-        class="hint small"
-        tabindex="-1"
-        aria-details=${tooltipId}></devtools-icon></span><devtools-tooltip
-        id=${tooltipId}
-        variant="rich"
-        padding="large"
-        jslogContext="elements.css-hint">${widget(ElementsComponents.CSSHintDetailsView.CSSHintDetailsView, { authoringHint: hint })}</devtools-tooltip>`;
-        // clang-format on
     }
     updateAnimationOverrideHint() {
         const existingElement = this.listItemElement.querySelector('.animation-override-hint-wrapper');
@@ -2727,27 +2750,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         const fragment = document.createDocumentFragment();
         // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(this.animationOverrideHintTemplate(), fragment);
+        render(animationOverrideHintTemplate(this), fragment);
         this.listItemElement.append(fragment);
-    }
-    animationOverrideHintTemplate() {
-        const tooltipId = getTooltipId(this.tooltipIdFactory, 'animation-override-hint', this.property, this.getLonghand()?.name);
-        // clang-format off
-        return html `<span class="animation-override-hint-wrapper hint-wrapper"><devtools-icon
-        name="info"
-        class="hint small"
-        tabindex="-1"
-        aria-details=${tooltipId}></devtools-icon></span><devtools-tooltip
-        id=${tooltipId}
-        variant="rich"
-        padding="large"
-        jslogContext="elements.css-animation-hint"><div class="animation-override-hint">${i18nTemplate(UIStrings.overriddenByAnimation, { PH1: html `<devtools-link
-            jslogContext="open-in-animations-panel"
-            @click=${(event) => {
-                event.preventDefault();
-                void UI.ViewManager.ViewManager.instance().showView('animations');
-            }}>${i18nString(UIStrings.openAnimationsPanel)}</devtools-link>` })}</div></devtools-tooltip>`;
-        // clang-format on
     }
     overriddenByAnimation() {
         return this.#matchedStyles.isPropertyOverriddenByAnimation(this.property);

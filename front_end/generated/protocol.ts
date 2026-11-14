@@ -2799,10 +2799,6 @@ export namespace Browser {
     commandId: BrowserCommandId;
   }
 
-  export interface AddPrivacySandboxEnrollmentOverrideRequest {
-    url: string;
-  }
-
   export interface GetGlobalPrivacyControlResponse extends ProtocolResponseWithError {
     gpc: boolean;
   }
@@ -21053,6 +21049,20 @@ export namespace Debugger {
      * List of the possible breakpoint locations.
      */
     locations: BreakLocation[];
+  }
+
+  export interface GetScopeChainRequest {
+    /**
+     * Call frame identifier to get the scope chain for.
+     */
+    callFrameId: CallFrameId;
+  }
+
+  export interface GetScopeChainResponse extends ProtocolResponseWithError {
+    /**
+     * Scope chain for the call frame.
+     */
+    scopeChain: Scope[];
   }
 
   export interface GetScriptSourceRequest {

@@ -2586,9 +2586,6 @@ export declare namespace Browser {
     interface ExecuteBrowserCommandRequest {
         commandId: BrowserCommandId;
     }
-    interface AddPrivacySandboxEnrollmentOverrideRequest {
-        url: string;
-    }
     interface GetGlobalPrivacyControlResponse extends ProtocolResponseWithError {
         gpc: boolean;
     }
@@ -19490,6 +19487,18 @@ export declare namespace Debugger {
          * List of the possible breakpoint locations.
          */
         locations: BreakLocation[];
+    }
+    interface GetScopeChainRequest {
+        /**
+         * Call frame identifier to get the scope chain for.
+         */
+        callFrameId: CallFrameId;
+    }
+    interface GetScopeChainResponse extends ProtocolResponseWithError {
+        /**
+         * Scope chain for the call frame.
+         */
+        scopeChain: Scope[];
     }
     interface GetScriptSourceRequest {
         /**

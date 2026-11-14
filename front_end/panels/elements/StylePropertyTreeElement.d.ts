@@ -7,7 +7,6 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
-import { type Hint } from './CSSRuleValidator.js';
 import { type CSSControlMap, type MatchRenderer, type RendererBase, RenderingContext } from './PropertyRenderer.js';
 import type { ActiveAiSuggestionProperty, StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylesContainer } from './StylesContainer.js';
@@ -23,8 +22,6 @@ interface StylePropertyTreeElementParams {
 }
 export interface StylePropertyData {
     property: SDK.CSSProperty.CSSProperty;
-    readonly name: string;
-    readonly value: string;
     readonly tooltipIdFactory: Tooltips.Tooltip.IdFactory;
     readonly lastCommittedProperty: {
         readonly name: string;
@@ -304,11 +301,8 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     refreshIfComputedValueChanged(): void;
     updateTitle(): void;
     createExclamationMark(property: SDK.CSSProperty.CSSProperty, details: ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | null): DocumentFragment;
-    exclamationMarkTemplate(property: SDK.CSSProperty.CSSProperty, details: ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | null): LitTemplate;
     updateAuthoringHint(): void;
-    authoringHintTemplate(hint: Hint): LitTemplate;
     updateAnimationOverrideHint(): void;
-    animationOverrideHintTemplate(): LitTemplate;
     private overriddenByAnimation;
     private mouseUp;
     private handleContextMenuEvent;

@@ -41,7 +41,7 @@ export default `/*
 
 .list-widget-input-validation-error {
   color: var(--sys-color-error);
-  margin: 0 5px;
+  margin: 0 var(--sys-size-3);
 }
 
 .controls-container {

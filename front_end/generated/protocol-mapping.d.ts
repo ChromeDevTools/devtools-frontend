@@ -1493,14 +1493,6 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Allows a site to use privacy sandbox features that require enrollment
-     * without the site actually being enrolled. Only supported on page targets.
-     */
-    'Browser.addPrivacySandboxEnrollmentOverride': {
-      paramsType: [Protocol.Browser.AddPrivacySandboxEnrollmentOverrideRequest];
-      returnType: void;
-    };
-    /**
      * Gets the current globally-applied privacy control status
      * See https://www.w3.org/TR/gpc/#get-global-privacy-control
      */
@@ -5478,6 +5470,15 @@ export namespace ProtocolMapping {
     'Debugger.getPossibleBreakpoints': {
       paramsType: [Protocol.Debugger.GetPossibleBreakpointsRequest];
       returnType: Protocol.Debugger.GetPossibleBreakpointsResponse;
+    };
+    /**
+     * Returns the current scope chain of the given call frame. Unlike the scope chain reported
+     * with the `paused` event, it reflects changes made to variables since then (e.g. via
+     * `evaluateOnCallFrame` or `setVariableValue`).
+     */
+    'Debugger.getScopeChain': {
+      paramsType: [Protocol.Debugger.GetScopeChainRequest];
+      returnType: Protocol.Debugger.GetScopeChainResponse;
     };
     /**
      * Returns source for the script with given id.

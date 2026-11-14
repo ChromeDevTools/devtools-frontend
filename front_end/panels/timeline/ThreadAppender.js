@@ -96,12 +96,8 @@ export class ThreadAppender {
     #headerNestingLevel = null;
     constructor(compatibilityBuilder, parsedTrace, processId, threadId, threadName, type, entries, tree) {
         this.#compatibilityBuilder = compatibilityBuilder;
-        // TODO(crbug.com/1456706):
-        // The values for this color generator have been taken from the old
-        // engine to keep the colors the same after the migration. This
-        // generator is used here to create colors for js frames (profile
-        // calls) in the flamechart by hashing the script's url. We might
-        // need to reconsider this generator when migrating to GM3 colors.
+        // Generate flamechart colors for JS frames (profile calls) by
+        // hashing the script URL.
         this.#colorGenerator =
             new Common.Color.Generator({ min: 30, max: 330, count: undefined }, { min: 50, max: 80, count: 3 }, 85);
         // Add a default color for call frames with no url.

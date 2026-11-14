@@ -14,6 +14,8 @@ export declare class PropertiesWidget extends UI.Widget.VBox {
     #private;
     private readonly showAllPropertiesSetting;
     private filterRegex;
+    wasShown(): void;
+    willHide(): void;
     constructor(view?: View);
     private onFilterChanged;
     private onRegexToggled;

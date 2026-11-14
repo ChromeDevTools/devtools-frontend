@@ -2516,6 +2516,7 @@ var QueryContainer = class extends UI9.Widget.Widget {
 // ../../front_end/panels/elements/components/StylePropertyEditor.ts
 var StylePropertyEditor_exports = {};
 __export(StylePropertyEditor_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   FlexboxEditableProperties: () => FlexboxEditableProperties,
   FlexboxEditor: () => FlexboxEditor,
   GridEditableProperties: () => GridEditableProperties,
@@ -2527,10 +2528,9 @@ __export(StylePropertyEditor_exports, {
   StylePropertyEditor: () => StylePropertyEditor
 });
 import "../../../ui/kit/kit.js";
-import "../../../ui/legacy/legacy.js";
 import * as i18n15 from "../../../core/i18n/i18n.js";
-import * as Input from "../../../ui/components/input/input.js";
-import * as Lit5 from "../../../ui/lit/lit.js";
+import * as UI10 from "../../../ui/legacy/legacy.js";
+import { Directives as Directives5, html as html11, render as render11 } from "../../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/stylePropertyEditor.css.js
@@ -2540,76 +2540,80 @@ var stylePropertyEditor_css_default = `/*
  * found in the LICENSE file.
  */
 
-.container {
-  min-width: var(--sys-size-24);
+@scope to (devtools-widget > *) {
+  .container {
+    min-width: var(--sys-size-24);
+  }
+
+  .row {
+    padding: 0;
+    color: var(--sys-color-on-surface);
+    padding-bottom: var(--sys-size-8);
+  }
+
+  .row:last-child {
+    padding-bottom: 0;
+  }
+
+  .property {
+    padding-bottom: var(--sys-size-3);
+    white-space: nowrap;
+  }
+
+  .property-name {
+    color: var(--sys-color-token-property-special);
+  }
+
+  .property-value {
+    color: var(--sys-color-on-surface);
+  }
+
+  .property-value.not-authored {
+    color: var(--sys-color-state-disabled);
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .buttons > :first-child {
+    border-radius: var(--sys-shape-corner-extra-small) 0 0 var(--sys-shape-corner-extra-small);
+  }
+
+  .buttons > :last-child {
+    border-radius: 0 var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) 0;
+  }
+
+  .button {
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    background-color: var(--sys-color-cdt-base-container);
+    width: var(--sys-size-11);
+    height: var(--sys-size-11);
+    min-width: var(--sys-size-11);
+    min-height: var(--sys-size-11);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+
+  .button devtools-icon {
+    color: var(--icon-default);
+  }
+
+  .button:hover devtools-icon {
+    color: var(--icon-default-hover);
+  }
+
+  .button.selected devtools-icon {
+    color: var(--icon-toggled);
+  }
 }
 
-.row {
-  padding: 0;
-  color: var(--sys-color-on-surface);
-  padding-bottom: var(--sys-size-8);
-}
-
-.row:last-child {
-  padding-bottom: 0;
-}
-
-.property {
-  padding-bottom: var(--sys-size-3);
-  white-space: nowrap;
-}
-
-.property-name {
-  color: var(--sys-color-token-property-special);
-}
-
-.property-value {
-  color: var(--sys-color-on-surface);
-}
-
-.property-value.not-authored {
-  color: var(--sys-color-state-disabled);
-}
-
-.buttons {
-  display: flex;
-  flex-direction: row;
-}
-
-.buttons > :first-child {
-  border-radius: var(--sys-shape-corner-extra-small) 0 0 var(--sys-shape-corner-extra-small);
-}
-
-.buttons > :last-child {
-  border-radius: 0 var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) 0;
-}
-
-.button {
-  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-  background-color: var(--sys-color-cdt-base-container);
-  width: var(--sys-size-11);
-  height: var(--sys-size-11);
-  min-width: var(--sys-size-11);
-  min-height: var(--sys-size-11);
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.button devtools-icon {
-  color: var(--icon-default);
-}
-
-.button:hover devtools-icon {
-  color: var(--icon-default-hover);
-}
-
-.button.selected devtools-icon {
-  color: var(--icon-toggled);
-}
 
 /*# sourceURL=${import.meta.resolve("./stylePropertyEditor.css")} */`;
 
@@ -2634,7 +2638,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/elements/components/StylePropertyEditor.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { render: render11, html: html11, Directives: Directives5 } = Lit5;
+var { classMap: classMap2 } = Directives5;
 var PropertySelectedEvent = class _PropertySelectedEvent extends Event {
   static eventName = "propertyselected";
   data;
@@ -2651,73 +2655,130 @@ var PropertyDeselectedEvent = class _PropertyDeselectedEvent extends Event {
     this.data = { name, value };
   }
 };
-var StylePropertyEditor = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+function renderButton(input, propertyValue, propertyName, selected = false) {
+  const query = `${propertyName}: ${propertyValue}`;
+  const iconInfo = input.findIcon(query);
+  if (!iconInfo) {
+    throw new Error(`Icon for ${query} is not found`);
+  }
+  const transform = `transform: rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX}, ${iconInfo.scaleY})`;
+  const classes = classMap2({
+    button: true,
+    selected
+  });
+  const values = { propertyName, propertyValue };
+  const title = selected ? i18nString8(UIStrings8.deselectButton, values) : i18nString8(UIStrings8.selectButton, values);
+  return html11`
+    <button title=${title}
+            class=${classes}
+            jslog=${VisualLogging7.item().track({ click: true, resize: true }).context(`${propertyName}-${propertyValue}`)}
+            @click=${() => input.onButtonClick(propertyName, propertyValue, selected)}>
+      <devtools-icon style=${transform} name=${iconInfo.iconName}>
+      </devtools-icon>
+    </button>
+  `;
+}
+function renderGridAutoFlowProperty(input, prop, shownValue, classes) {
+  const authoredValue = input.authoredProperties.get(prop.propertyName);
+  const isDense = authoredValue === "dense" || authoredValue === "row dense" || authoredValue === "column dense";
+  const isRow = authoredValue === "row" || authoredValue === "row dense";
+  const isColumn = authoredValue === "column" || authoredValue === "column dense";
+  return html11`<div class="row">
+    <div class="property">
+      <span class="property-name">${prop.propertyName}</span>: <span class=${classes}>${shownValue}</span>
+    </div>
+    <div class="buttons">
+      ${renderButton(input, "row", prop.propertyName, isRow)}
+      ${renderButton(input, "column", prop.propertyName, isColumn)}
+      <devtools-checkbox
+        .checked=${isDense}
+        @change=${(e) => input.onDenseCheckboxChange(e.target.checked, isRow, isColumn)}
+      >
+        ${i18nString8(UIStrings8.denseLabel)}
+      </devtools-checkbox>
+    </div>
+  </div>`;
+}
+function renderProperty(input, prop) {
+  const authoredValue = input.authoredProperties.get(prop.propertyName);
+  const notAuthored = !authoredValue;
+  const shownValue = authoredValue || input.computedProperties.get(prop.propertyName);
+  const classes = classMap2({
+    "property-value": true,
+    "not-authored": notAuthored
+  });
+  if (prop.propertyName === "grid-auto-flow") {
+    return renderGridAutoFlowProperty(input, prop, shownValue, classes);
+  }
+  return html11`<div class="row">
+    <div class="property">
+      <span class="property-name">${prop.propertyName}</span>: <span class=${classes}>${shownValue}</span>
+    </div>
+    <div class="buttons">
+      ${prop.propertyValues.map((value) => renderButton(input, value, prop.propertyName, value === authoredValue))}
+    </div>
+  </div>`;
+}
+var DEFAULT_VIEW9 = (input, _output, target) => {
+  render11(html11`
+    <style>${stylePropertyEditor_css_default}</style>
+    <div class="container">
+      ${input.editableProperties.map((prop) => renderProperty(input, prop))}
+    </div>
+  `, target, { container: { classes: input.containerClass ? [input.containerClass] : [] } });
+};
+var StylePropertyEditor = class extends UI10.Widget.VBox {
+  static get editableProperties() {
+    return [];
+  }
+  containerClass = "";
+  #view;
   #authoredProperties = /* @__PURE__ */ new Map();
   #computedProperties = /* @__PURE__ */ new Map();
-  editableProperties = [];
+  constructor(element, view = DEFAULT_VIEW9) {
+    super(element);
+    this.#view = view;
+  }
   getEditableProperties() {
-    return this.editableProperties;
+    return this.constructor.editableProperties;
   }
-  set data(data) {
-    this.#authoredProperties = data.authoredProperties;
-    this.#computedProperties = data.computedProperties;
-    this.#render();
+  get authoredProperties() {
+    return this.#authoredProperties;
   }
-  #render() {
-    render11(html11`
-      <style>${stylePropertyEditor_css_default}</style>
-      <style>${Input.checkboxStyles}</style>
-      <div class="container">
-        ${this.editableProperties.map((prop) => this.#renderProperty(prop))}
-      </div>
-    `, this.#shadow, {
-      host: this
-    });
-  }
-  #renderProperty(prop) {
-    const authoredValue = this.#authoredProperties.get(prop.propertyName);
-    const notAuthored = !authoredValue;
-    const shownValue = authoredValue || this.#computedProperties.get(prop.propertyName);
-    const classes = Directives5.classMap({
-      "property-value": true,
-      "not-authored": notAuthored
-    });
-    if (prop.propertyName === "grid-auto-flow") {
-      return this.#renderGridAutoFlowProperty(prop, shownValue, classes);
+  set authoredProperties(authoredProperties) {
+    if (this.#authoredProperties === authoredProperties) {
+      return;
     }
-    return html11`<div class="row">
-      <div class="property">
-        <span class="property-name">${prop.propertyName}</span>: <span class=${classes}>${shownValue}</span>
-      </div>
-      <div class="buttons">
-        ${prop.propertyValues.map((value) => this.#renderButton(value, prop.propertyName, value === authoredValue))}
-      </div>
-    </div>`;
+    this.#authoredProperties = authoredProperties;
+    this.requestUpdate();
   }
-  #renderGridAutoFlowProperty(prop, shownValue, classes) {
-    const authoredValue = this.#authoredProperties.get(prop.propertyName);
-    const isDense = authoredValue === "dense" || authoredValue === "row dense" || authoredValue === "column dense";
-    const isRow = authoredValue === "row" || authoredValue === "row dense";
-    const isColumn = authoredValue === "column" || authoredValue === "column dense";
-    return html11`<div class="row">
-      <div class="property">
-        <span class="property-name">${prop.propertyName}</span>: <span class=${classes}>${shownValue}</span>
-      </div>
-      <div class="buttons">
-        ${this.#renderButton("row", prop.propertyName, isRow)}
-        ${this.#renderButton("column", prop.propertyName, isColumn)}
-        <devtools-checkbox
-          .checked=${isDense}
-          @change=${(e) => this.#onDenseCheckboxChange(e, isRow, isColumn)}
-        >
-          ${i18nString8(UIStrings8.denseLabel)}
-        </devtools-checkbox>
-      </div>
-    </div>`;
+  get computedProperties() {
+    return this.#computedProperties;
   }
-  #onDenseCheckboxChange(e, isRow, isColumn) {
-    const checked = e.target.checked;
+  set computedProperties(computedProperties) {
+    if (this.#computedProperties === computedProperties) {
+      return;
+    }
+    this.#computedProperties = computedProperties;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const viewInput = {
+      authoredProperties: this.#authoredProperties,
+      computedProperties: this.#computedProperties,
+      editableProperties: this.getEditableProperties(),
+      containerClass: this.containerClass,
+      findIcon: (query) => this.findIcon(query, this.#computedProperties),
+      onButtonClick: this.#onButtonClick.bind(this),
+      onDenseCheckboxChange: this.#onDenseCheckboxChange.bind(this)
+    };
+    this.#view(viewInput, void 0, this.contentElement);
+  }
+  #onDenseCheckboxChange(checked, isRow, isColumn) {
     const propertyName = "grid-auto-flow";
     const currentValue = this.#authoredProperties.get(propertyName);
     let newValue = "";
@@ -2729,34 +2790,11 @@ var StylePropertyEditor = class extends HTMLElement {
       newValue = checked ? "dense" : "";
     }
     if (currentValue) {
-      this.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
+      this.element.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
     }
     if (newValue) {
-      this.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
+      this.element.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
     }
-  }
-  #renderButton(propertyValue, propertyName, selected = false) {
-    const query = `${propertyName}: ${propertyValue}`;
-    const iconInfo = this.findIcon(query, this.#computedProperties);
-    if (!iconInfo) {
-      throw new Error(`Icon for ${query} is not found`);
-    }
-    const transform = `transform: rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX}, ${iconInfo.scaleY})`;
-    const classes = Directives5.classMap({
-      button: true,
-      selected
-    });
-    const values = { propertyName, propertyValue };
-    const title = selected ? i18nString8(UIStrings8.deselectButton, values) : i18nString8(UIStrings8.selectButton, values);
-    return html11`
-      <button title=${title}
-              class=${classes}
-              jslog=${VisualLogging7.item().track({ click: true, resize: true }).context(`${propertyName}-${propertyValue}`)}
-              @click=${() => this.#onButtonClick(propertyName, propertyValue, selected)}>
-        <devtools-icon style=${transform} name=${iconInfo.iconName}>
-        </devtools-icon>
-      </button>
-    `;
   }
   #onButtonClick(propertyName, propertyValue, selected) {
     if (propertyName === "grid-auto-flow") {
@@ -2765,52 +2803,55 @@ var StylePropertyEditor = class extends HTMLElement {
       if (selected) {
         const newValue = isDense ? "dense" : "";
         if (currentValue) {
-          this.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
+          this.element.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
         }
         if (newValue) {
-          this.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
+          this.element.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
         }
       } else {
         const newValue = isDense ? `${propertyValue} dense` : propertyValue;
         if (currentValue) {
-          this.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
+          this.element.dispatchEvent(new PropertyDeselectedEvent(propertyName, currentValue));
         }
-        this.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
+        this.element.dispatchEvent(new PropertySelectedEvent(propertyName, newValue));
       }
     } else if (selected) {
-      this.dispatchEvent(new PropertyDeselectedEvent(propertyName, propertyValue));
+      this.element.dispatchEvent(new PropertyDeselectedEvent(propertyName, propertyValue));
     } else {
-      this.dispatchEvent(new PropertySelectedEvent(propertyName, propertyValue));
+      this.element.dispatchEvent(new PropertySelectedEvent(propertyName, propertyValue));
     }
   }
   findIcon(_query, _computedProperties) {
-    throw new Error("Not implemented");
+    return null;
   }
 };
 var FlexboxEditor = class extends StylePropertyEditor {
-  jslogContext = "cssFlexboxEditor";
-  editableProperties = FlexboxEditableProperties;
+  static get editableProperties() {
+    return FlexboxEditableProperties;
+  }
+  containerClass = "flexbox-editor";
   findIcon(query, computedProperties) {
     return findFlexContainerIcon(query, computedProperties);
   }
 };
-customElements.define("devtools-flexbox-editor", FlexboxEditor);
 var GridEditor = class extends StylePropertyEditor {
-  jslogContext = "cssGridEditor";
-  editableProperties = GridEditableProperties;
+  static get editableProperties() {
+    return GridEditableProperties;
+  }
+  containerClass = "grid-editor";
   findIcon(query, computedProperties) {
     return findGridContainerIcon(query, computedProperties);
   }
 };
-customElements.define("devtools-grid-editor", GridEditor);
 var GridLanesEditor = class extends StylePropertyEditor {
-  jslogContext = "cssGridLanesEditor";
-  editableProperties = GridLanesEditableProperties;
+  static get editableProperties() {
+    return GridLanesEditableProperties;
+  }
+  containerClass = "grid-lanes-editor";
   findIcon(query, computedProperties) {
     return findGridContainerIcon(query, computedProperties);
   }
 };
-customElements.define("devtools-grid-lanes-editor", GridLanesEditor);
 var FlexboxEditableProperties = [
   {
     propertyName: "flex-direction",

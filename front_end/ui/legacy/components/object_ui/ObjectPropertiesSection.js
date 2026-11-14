@@ -465,6 +465,11 @@ export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
         if (this.#expanded !== val) {
             this.#expanded = val;
             this.dispatchEventToListeners("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, val);
+            if (val) {
+                for (let ancestor = this.parent; ancestor; ancestor = ancestor.parent) {
+                    ancestor.dispatchEventToListeners("node-expanded" /* ObjectTreeNodeBase.Events.NODE_EXPANDED */, this);
+                }
+            }
         }
     }
     get readOnly() {
@@ -678,6 +683,7 @@ export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
         Events["CHILDREN_CHANGED"] = "children-changed";
         Events["FILTER_CHANGED"] = "filter-changed";
         Events["EXPANDED_CHANGED"] = "expanded-changed";
+        Events["NODE_EXPANDED"] = "node-expanded";
     })(Events = ObjectTreeNodeBase.Events || (ObjectTreeNodeBase.Events = {}));
 })(ObjectTreeNodeBase || (ObjectTreeNodeBase = {}));
 export class ObjectTree extends ObjectTreeNodeBase {

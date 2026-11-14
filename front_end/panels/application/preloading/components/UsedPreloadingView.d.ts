@@ -51,9 +51,8 @@ interface ViewInput {
 }
 type View = (input: ViewInput, output: undefined, target: HTMLElement | ShadowRoot) => void;
 /**
- * TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
- * This also shows summary of speculations initiated by this page.
- **/
+ * Shows preloading used for the current page and a summary of speculations initiated by this page.
+ */
 export declare class UsedPreloadingView extends UI.Widget.VBox {
     #private;
     constructor(element?: HTMLElement, view?: View);

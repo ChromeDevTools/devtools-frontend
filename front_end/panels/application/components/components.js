@@ -6018,7 +6018,6 @@ var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilit
 var DEFAULT_VIEW8 = (input, output, target) => {
   render8(html8`
     <style>${reportsGrid_css_default}</style>
-    <style>${UI8.inspectorCommonStyles}</style>
     <div class="reporting-container" jslog=${VisualLogging7.section("reports")}>
       <div class="reporting-header">${i18n17.i18n.lockedString("Reports")}</div>
       ${input.reports.length > 0 ? html8`

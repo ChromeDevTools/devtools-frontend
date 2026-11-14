@@ -1713,11 +1713,6 @@ export class TimelineUIUtils {
     static visibleEventsFilter() {
         return new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes());
     }
-    // Included only for layout tests.
-    // TODO(crbug.com/1386091): Fix/port layout tests and remove.
-    static categories() {
-        return Trace.Styles.getCategoryStyles();
-    }
     static generatePieChart(aggregatedStats, selfCategory, selfTime) {
         let total = 0;
         for (const categoryName in aggregatedStats) {

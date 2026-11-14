@@ -1579,6 +1579,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         step.widgets = data.widgets;
                         step.state = { type: 'completed' };
                         commitStep();
+                        // Auto-loaded skills are logged for telemetry on the CONTEXT event without
+                        // creating a user-facing walkthrough step, because the selected context may
+                        // not be relevant to the user's question.
+                        if (!this.#conversation?.isReadOnly && AiAssistanceModel.AiUtils.isAiV2Enabled() &&
+                            data.autoLearnedSkills) {
+                            for (const skill of data.autoLearnedSkills) {
+                                void VisualLogging.logFunctionCall('ai-v2-auto-learn-skill', skill);
+                            }
+                        }
                         break;
                     }
                     case "title" /* AiAssistanceModel.AiAgent.ResponseType.TITLE */: {
@@ -1700,7 +1709,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                             });
                         }
                         // When there is an answer without any thinking steps, we don't want to show the thinking step.
-                        // TODO(crbug.com/463323934): Remove specially handling this case.
                         if (systemMessage.parts.length > 1) {
                             const firstPart = systemMessage.parts[0];
                             if (firstPart.type === 'step' && firstPart.step.state.type === 'in_progress' && !firstPart.step.thought &&

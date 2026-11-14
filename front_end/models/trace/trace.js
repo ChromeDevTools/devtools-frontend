@@ -3539,6 +3539,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
       throw new Error("Trace processor can't reset while parsing.");
     }
     this.#resetHandlers();
+    Lantern2.Simulation.Simulator.allNodeTimings.clear();
     this.#data = null;
     this.#insights = null;
     this.#status = "IDLE" /* IDLE */;
@@ -3572,6 +3573,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
       throw e;
     } finally {
       this.#resetHandlers();
+      Lantern2.Simulation.Simulator.allNodeTimings.clear();
       options.logger?.end("total");
     }
   }

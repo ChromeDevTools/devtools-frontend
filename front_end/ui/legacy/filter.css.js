@@ -110,7 +110,7 @@ export default `/*
 .filter-divider {
   background-color: var(--sys-color-divider);
   width: var(--sys-size-1);
-  margin: 5px var(--sys-size-3);
+  margin: var(--sys-size-3);
   height: var(--sys-size-8);
 }
 

@@ -10,7 +10,6 @@ export var BadgeAction;
     BadgeAction["DOM_ELEMENT_OR_ATTRIBUTE_EDITED"] = "dom-element-or-attribute-edited";
     BadgeAction["MODERN_DOM_BADGE_CLICKED"] = "modern-dom-badge-clicked";
     BadgeAction["STARTED_AI_CONVERSATION"] = "started-ai-conversation";
-    // TODO(ergunsh): Instrument performance insight clicks.
     BadgeAction["PERFORMANCE_INSIGHT_CLICKED"] = "performance-insight-clicked";
     BadgeAction["DEBUGGER_PAUSED"] = "debugger-paused";
     BadgeAction["BREAKPOINT_ADDED"] = "breakpoint-added";

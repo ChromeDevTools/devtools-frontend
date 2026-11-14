@@ -22,12 +22,14 @@
     "../../../../../test/harness/unit/global_before_hook_fail.test.ts",
     "../../../../../test/harness/unit/hooks.test.ts",
     "../../../../../test/harness/unit/multi_logs.test.ts",
+    "../../../../../test/harness/unit/pending_async.test.ts",
     "../../../../../test/harness/unit/screenshot_diff.test.ts",
     "../../../../../test/harness/unit/screenshot_retry.test.ts",
     "../../../../../test/harness/unit/sinon_restore.test.ts",
     "../../../../../test/harness/unit/snapshot.test.ts",
     "../../../../../test/harness/unit/unit.test.ts",
     "../../../../../test/harness/unit/unit_2.test.ts",
+    "../../../../../test/harness/unit/widget_update_after_failure.test.ts",
     "../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -36,6 +38,9 @@
   "references": [
     {
       "path": "../../front_end/testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/ui/legacy/bundle-tsconfig.ref.json"
     }
   ]
 }

@@ -1101,13 +1101,12 @@ export class StorageTreeElement extends ApplicationPanelTreeElement {
     }
 }
 export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement {
-    idbDatabaseTreeElements;
+    idbDatabaseTreeElements = new Set();
     storageBucket;
     constructor(storagePanel, storageBucket) {
         super(storagePanel, i18nString(UIStrings.indexeddb), i18nString(UIStrings.noIndexeddb), i18nString(UIStrings.indexeddbDescription), 'indexed-db');
         const icon = createIcon('database');
         this.setLeadingIcons([icon]);
-        this.idbDatabaseTreeElements = [];
         this.storageBucket = storageBucket;
         this.initialize();
     }
@@ -1116,9 +1115,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
         SDK.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, IndexedDBModelEvents.DatabaseRemoved, this.indexedDBRemoved, this, { scoped: true });
         SDK.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, IndexedDBModelEvents.DatabaseLoaded, this.indexedDBLoaded, this, { scoped: true });
         SDK.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, IndexedDBModelEvents.IndexedDBContentUpdated, this.indexedDBContentUpdated, this, { scoped: true });
-        // TODO(szuend): Replace with a Set once two web tests no longer directly access this private
-        //               variable (indexeddb/live-update-indexeddb-content.js, indexeddb/delete-entry.js).
-        this.idbDatabaseTreeElements = [];
+        this.idbDatabaseTreeElements.clear();
         for (const indexedDBModel of SDK.TargetManager.TargetManager.instance().models(IndexedDBModel, { scoped: true })) {
             const databases = indexedDBModel.databases();
             for (let j = 0; j < databases.length; ++j) {
@@ -1132,9 +1129,10 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
         }
     }
     removeIndexedDBForModel(model) {
-        const idbDatabaseTreeElements = this.idbDatabaseTreeElements.filter(element => element.model === model);
-        for (const idbDatabaseTreeElement of idbDatabaseTreeElements) {
-            this.removeIDBDatabaseTreeElement(idbDatabaseTreeElement);
+        for (const idbDatabaseTreeElement of this.idbDatabaseTreeElements) {
+            if (idbDatabaseTreeElement.model === model) {
+                this.removeIDBDatabaseTreeElement(idbDatabaseTreeElement);
+            }
         }
     }
     onattach() {
@@ -1165,7 +1163,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
             return;
         }
         const idbDatabaseTreeElement = new IDBDatabaseTreeElement(this.resourcesPanel, model, databaseId);
-        this.idbDatabaseTreeElements.push(idbDatabaseTreeElement);
+        this.idbDatabaseTreeElements.add(idbDatabaseTreeElement);
         this.appendChild(idbDatabaseTreeElement);
         model.refreshDatabase(databaseId);
     }
@@ -1179,7 +1177,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
     removeIDBDatabaseTreeElement(idbDatabaseTreeElement) {
         idbDatabaseTreeElement.clear();
         this.removeChild(idbDatabaseTreeElement);
-        Platform.ArrayUtilities.removeElement(this.idbDatabaseTreeElements, idbDatabaseTreeElement);
+        this.idbDatabaseTreeElements.delete(idbDatabaseTreeElement);
         this.setExpandable(this.childCount() > 0);
     }
     indexedDBLoaded({ data: { database, model, entriesUpdated } }) {
@@ -1201,7 +1199,12 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
         idbDatabaseTreeElement.indexedDBContentUpdated(objectStoreName);
     }
     idbDatabaseTreeElement(model, databaseId) {
-        return this.idbDatabaseTreeElements.find(x => x.databaseId.equals(databaseId) && x.model === model) || null;
+        for (const element of this.idbDatabaseTreeElements) {
+            if (element.databaseId.equals(databaseId) && element.model === model) {
+                return element;
+            }
+        }
+        return null;
     }
 }
 export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {

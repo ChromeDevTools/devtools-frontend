@@ -262,7 +262,7 @@ export class AiConversation {
                         return { ...item, confirm: undefined };
                     }
                     case "context" /* ResponseType.CONTEXT */: {
-                        return { ...item, widgets: undefined };
+                        return { ...item, widgets: undefined, autoLearnedSkills: undefined };
                     }
                     case "action" /* ResponseType.ACTION */: {
                         const tool = item.toolName ? ToolRegistry.get(item.toolName) : undefined;

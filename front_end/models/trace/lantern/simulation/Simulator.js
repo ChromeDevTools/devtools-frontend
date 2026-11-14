@@ -441,7 +441,10 @@ class Simulator {
         // This is an estimate of wasted time, so we won't be more precise than 10ms.
         return Math.round(wastedMs / 10) * 10;
     }
-    // Used by Lighthouse asset-saver
+    /**
+     * Lighthouse's asset-saver reads this map. TraceProcessor clears it after
+     * every parse and on reset() so it does not retain the Lantern dependency graph.
+     */
     static get allNodeTimings() {
         return ALL_SIMULATION_NODE_TIMINGS;
     }

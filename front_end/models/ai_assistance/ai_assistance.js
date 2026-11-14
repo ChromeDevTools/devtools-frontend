@@ -14964,7 +14964,7 @@ var skill2 = {
     "listNetworkRequests",
     "getNetworkRequestDetails"
   ],
-  "instructions": "You are an expert network request debugging assistant.\n\n# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to list recorded requests initiated by the active origin as `id;url;status;duration;size` rows, where same-origin URLs omit the `origin` prefix and long query or `data:` URLs end with `...<truncated>`.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (DNS, initial connection, SSL, TTFB, content download), status text, and response body.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Origin Lock**: Only requests initiated by the conversation's established origin can be inspected.\n* **Recording**: DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). If `listNetworkRequests` reports that no requests have been recorded, ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
+  "instructions": "# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to list recorded requests initiated by the active origin as `id;url;status;duration;size` rows, where same-origin URLs omit the `origin` prefix and long query or `data:` URLs end with `...<truncated>`.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (DNS, initial connection, SSL, TTFB, content download), status text, and response body.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Origin Lock**: Only requests initiated by the conversation's established origin can be inspected.\n* **Recording**: DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). If `listNetworkRequests` reports that no requests have been recorded, ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again."
 };
 
 // gen/front_end/models/ai_assistance/skills/performance.skill.js
@@ -14993,7 +14993,7 @@ var skill4 = {
     "listSources",
     "getSourceContent"
   ],
-  "instructions": 'You are an expert source code analysis and debugging assistant.\n\n# Tools & Workflow\n\n1. **Discover Files (`listSources`)**:\n   - Call `listSources` to retrieve all deployed and authored source files (including source-mapped files) in the workspace matching the active origin.\n   - The output is formatted as `id;name` lines. Same-origin `http(s)` files omit the locked origin scheme and host (e.g. `/assets/app.js`, `/(index)`), while virtual source-map files retain their scheme (e.g. `webpack:///./src/index.ts`).\n\n2. **Inspect File Content (`getSourceContent`)**:\n   - Call `getSourceContent` with the numeric `id` to retrieve the source code.\n   - Long files are returned in parts. If the result ends with a "Content truncated" notice, call `getSourceContent` again with the same `id` and the `offset` from the notice. Do not repeat a call with the same `id` and `offset`; it returns the same content.\n   - Parts are split by character count, so a part can end or start partway through a line or token. Do not treat text cut at a part boundary as a syntax error; read the next part instead.\n\n# Considerations\n\n* Provide clean code snippets with direct line references where helpful.\n* Redact sensitive personal data, secrets, or API keys found in source files.'
+  "instructions": '# Tools & Workflow\n\n1. **Discover Files (`listSources`)**:\n   - Call `listSources` to retrieve all deployed and authored source files (including source-mapped files) in the workspace matching the active origin.\n   - The output is formatted as `id;name` lines. Same-origin `http(s)` files omit the locked origin scheme and host (e.g. `/assets/app.js`, `/(index)`), while virtual source-map files retain their scheme (e.g. `webpack:///./src/index.ts`).\n\n2. **Inspect File Content (`getSourceContent`)**:\n   - Call `getSourceContent` with the numeric `id` to retrieve the source code.\n   - Long files are returned in parts. If the result ends with a "Content truncated" notice, call `getSourceContent` again with the same `id` and the `offset` from the notice. Do not repeat a call with the same `id` and `offset`; it returns the same content.\n   - Parts are split by character count, so a part can end or start partway through a line or token. Do not treat text cut at a part boundary as a syntax error; read the next part instead.\n\n# Considerations\n\n* Provide clean code snippets with direct line references where helpful.\n* Redact sensitive personal data, secrets, or API keys found in source files.'
 };
 
 // gen/front_end/models/ai_assistance/skills/storage.skill.js
@@ -15020,7 +15020,7 @@ var skill6 = {
     "getStyles",
     "setElementStyles"
   ],
-  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element's `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: 'display', value: 'flex'}, {name: 'justify-content', value: 'center'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.\n   - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
+  "instructions": "# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Modify Element Styles (`setElementStyles`)**:\n   - ALWAYS use the `setElementStyles` tool (and NEVER `executeJavaScript`) when modifying or fixing CSS styles on elements.\n   - `setElementStyles` takes `elements` (an array of numeric element `uid`s / backend node IDs, such as the selected element's `uid` or `uid`s discovered earlier) and `styleProperties` (an array of `{name, value}` CSS declaration objects in kebab-case, e.g. `[{name: 'display', value: 'flex'}, {name: 'justify-content', value: 'center'}]`).\n   - `setElementStyles` is an internal tool name; do not mention `setElementStyles` directly to the user.\n\n3. **Inspect Geometry or Traverse DOM (`executeJavaScript`)**:\n   - Use `executeJavaScript` ONLY when inspecting computed geometry (`getBoundingClientRect()`), traversing related DOM nodes (`$0.parentElement`, `$0.children`) to inspect their structure/attributes, or reading DOM/layout state that getStyles cannot provide.\n   - Never use executeJavaScript as a substitute for dedicated skills (such as browser storage/cookies, network requests, workspace source files, or accessibility tree inspection); call learnSkills to load the relevant skill instead.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const style = window.getComputedStyle($0);\n     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: style.display,\n       parentDisplay: parentStyle?.display ?? null,\n     };\n     ```\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue.\n* If the target element is in a cross-origin iframe, stop and ask the user to select it in the Elements panel and start a new chat with that context."
 };
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
@@ -15153,6 +15153,7 @@ var AiAgent2 = class extends AiAgent {
     return {};
   }
   async preRun() {
+    await super.preRun();
     if (this.context && !this.context.isLoggingEnabled()) {
       this.disableServerSideLogging();
     }
@@ -15179,6 +15180,10 @@ var AiAgent2 = class extends AiAgent {
   }
   #activeSkills = /* @__PURE__ */ new Set();
   #declaredTools = /* @__PURE__ */ new Set();
+  /**
+   * Tracks skills auto-loaded during enhanceQuery() so handleContextDetails() can attach them to ContextResponse for telemetry without rendering a walkthrough step.
+   */
+  #pendingAutoLearnedSkills = [];
   constructor(opts) {
     super({
       ...opts,
@@ -15263,24 +15268,52 @@ ${skillsManifest}`,
       handler: async () => ({ result: "Suggestions recorded." })
     });
   }
+  /**
+   * Maps selected contexts (DOMNodeContext, RequestContext, FileContext) to their domain skill to skip a redundant step-1 learnSkills round trip.
+   */
+  #skillForContext(selected) {
+    if (selected instanceof DOMNodeContext) {
+      return "styling";
+    }
+    if (selected instanceof RequestContext) {
+      return "network";
+    }
+    if (selected instanceof FileContext) {
+      return "sources";
+    }
+    return null;
+  }
   async enhanceQuery(query, selected = null, _multimodalInputType) {
+    this.#pendingAutoLearnedSkills = [];
     const promptDetails = selected ? await selected.getPromptDetails() : null;
+    let enhancedQuery = query;
     if (!promptDetails) {
       this.#lastSentPromptDetails = null;
-      return query;
-    }
-    let contextDetails;
-    if (promptDetails === this.#lastSentPromptDetails) {
-      contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
     } else {
-      contextDetails = promptDetails;
-      this.#lastSentPromptDetails = promptDetails;
-    }
-    return `${contextDetails}
+      let contextDetails;
+      if (promptDetails === this.#lastSentPromptDetails) {
+        contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
+      } else {
+        contextDetails = promptDetails;
+        this.#lastSentPromptDetails = promptDetails;
+      }
+      enhancedQuery = `${contextDetails}
 
 # User request
 
 QUERY: ${query}`;
+    }
+    const mappedSkill = this.#skillForContext(selected);
+    if (mappedSkill && SKILLS[mappedSkill] && !this.#activeSkills.has(mappedSkill)) {
+      const autoLoadedBlock = await this.learnSkill([mappedSkill]);
+      this.#pendingAutoLearnedSkills.push(mappedSkill);
+      if (autoLoadedBlock) {
+        return `${autoLoadedBlock}
+
+${enhancedQuery}`;
+      }
+    }
+    return enhancedQuery;
   }
   /**
    * Parses a completed response. Only the last line can be the follow-up
@@ -15297,18 +15330,22 @@ QUERY: ${query}`;
     return { answer: hideStreamingSuggestions(response.trim()) };
   }
   async *handleContextDetails(selected) {
-    if (selected) {
-      const [details, widgets] = await Promise.all([
-        selected.getUserFacingDetails(),
-        selected.getWidgets()
-      ]);
-      if (details) {
-        yield {
-          type: "context" /* CONTEXT */,
-          details,
-          ...widgets.length > 0 ? { widgets } : {}
-        };
-      }
+    const autoLearned = this.#pendingAutoLearnedSkills;
+    this.#pendingAutoLearnedSkills = [];
+    if (!selected) {
+      return;
+    }
+    const [details, widgets] = await Promise.all([
+      selected.getUserFacingDetails(),
+      selected.getWidgets()
+    ]);
+    if (details) {
+      yield {
+        type: "context" /* CONTEXT */,
+        details,
+        ...widgets.length > 0 ? { widgets } : {},
+        ...autoLearned.length > 0 ? { autoLearnedSkills: autoLearned } : {}
+      };
     }
   }
   async learnSkill(names) {
@@ -15693,7 +15730,7 @@ ${item.text.trim()}`);
             return { ...item, confirm: void 0 };
           }
           case "context" /* CONTEXT */: {
-            return { ...item, widgets: void 0 };
+            return { ...item, widgets: void 0, autoLearnedSkills: void 0 };
           }
           case "action" /* ACTION */: {
             const tool = item.toolName ? ToolRegistry.get(item.toolName) : void 0;

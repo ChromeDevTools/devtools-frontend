@@ -9,7 +9,7 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.widget {
+.widget.swatch-popover {
   display: flex;
   overflow: auto;
   user-select: text;

@@ -96,9 +96,7 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .console-prompt-editor-container {
-  min-height: 21px;
   padding-left: var(--sys-size-2);
-  padding-top: var(--sys-size-1);
 }
 
 .console-message,

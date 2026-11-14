@@ -4,6 +4,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Extensions from '../../models/extensions/extensions.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import { ExtensionSidebarPane } from './ExtensionPanel.js';
 declare global {
     interface Window {
@@ -23,6 +24,24 @@ export declare class HostsPolicy {
 export declare class RevealableNetworkRequestFilter {
     readonly filter: string | undefined;
     constructor(filter: string | undefined);
+}
+export interface ExtensionFrameDescriptor {
+    key: number;
+    startPage: string;
+    name?: string;
+}
+export interface ViewInput {
+    frames: readonly ExtensionFrameDescriptor[];
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class ExtensionFramesWidget extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: View);
+    addFrame({ startPage, name }: Host.InspectorFrontendHostAPI.ExtensionDescriptor): void;
+    clear(): void;
+    wasShown(): void;
+    performUpdate(): void;
 }
 export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
@@ -45,9 +64,11 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private userAgentOverrideOwner;
     private constructor();
     get isEnabledForTest(): boolean;
+    framesWidget(): ExtensionFramesWidget;
     dispose(): void;
     static instance(opts?: {
         forceNew: boolean | null;
+        framesWidget?: ExtensionFramesWidget;
     }): ExtensionServer;
     initializeExtensions(): void;
     hasExtensions(): boolean;
@@ -136,7 +157,7 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private notifyElementsSelectionChanged;
     sourceSelectionChanged(url: Platform.DevToolsPath.UrlString, range: TextUtils.TextRange.TextRange): void;
     private setInspectedTabId;
-    addExtensionFrame({ startPage, name }: Host.InspectorFrontendHostAPI.ExtensionDescriptor): void;
+    addExtensionFrame(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): void;
     addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean | undefined;
     private registerExtension;
     private onWindowMessage;

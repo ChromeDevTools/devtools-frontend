@@ -917,7 +917,6 @@ export default defineConfig([
             'front_end/panels/timeline/TimelineFlameChartDataProvider.ts',
             'front_end/panels/timeline/TimelineFlameChartView.ts',
             'front_end/panels/timeline/TimelineMiniMap.ts',
-            'front_end/panels/timeline/TimelinePaintProfilerView.ts',
             'front_end/panels/timeline/TimelinePanel.ts',
             'front_end/panels/timeline/TimelineSelectorStatsView.ts',
             'front_end/panels/timeline/TimelineTreeView.ts',

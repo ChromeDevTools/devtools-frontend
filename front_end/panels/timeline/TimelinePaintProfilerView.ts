@@ -8,14 +8,13 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Geometry from '../../ui/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
 import timelinePaintProfilerStyles from './timelinePaintProfiler.css.js';
 import {TracingFrameLayerTree} from './TracingLayerTree.js';
 
-const {html, render} = Lit;
-const {createRef, ref} = Lit.Directives;
+const {ifDefined, styleMap} = Directives;
 
 export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   private readonly logAndImageSplitWidget: UI.SplitWidget.SplitWidget;
@@ -220,49 +219,42 @@ export interface TimelinePaintImageViewInput {
     borderRightWidth?: string,
     borderBottomWidth?: string,
   };
+  onImageLoaded: (naturalWidth: number, naturalHeight: number) => void;
 }
 
-export interface TimelinePaintImageViewOutput {
-  imageElementNaturalHeight?: number;
-  imageElementNaturalWidth?: number;
-}
+export type TimelinePaintImageViewFunction =
+    (input: TimelinePaintImageViewInput, output: undefined, target: HTMLElement) => void;
 
-export type View = (input: TimelinePaintImageViewInput, output: TimelinePaintImageViewOutput, target: HTMLElement) =>
-    void;
+export const IMAGE_VIEW_DEFAULT_VIEW: TimelinePaintImageViewFunction =
+    (input: TimelinePaintImageViewInput, _output: undefined, target: HTMLElement): void => {
+      const onLoad = (event: Event): void => {
+        if (event.target instanceof HTMLImageElement) {
+          input.onImageLoaded(event.target.naturalWidth, event.target.naturalHeight);
+        }
+      };
+      // clang-format off
+      render(html`
+        <style>${timelinePaintProfilerStyles}</style>
+        <div class="paint-profiler-image-view fill">
+          <div class="paint-profiler-image-container"
+              ?hidden=${input.imageContainerHidden}
+              style=${styleMap({'-webkit-transform': input.imageContainerWebKitTransform})}>
+            <img src=${ifDefined(input.imageURL || undefined)} @load=${onLoad}>
+            <div style=${styleMap({
+              display: input.maskElementHidden ? 'none' : 'block',
+              ...input.maskElementStyle})}>
+            </div>
+          </div>
+        </div>`,
+        target);
+      // clang-format on
+    };
 
-export const DEFAULT_VIEW: View = (input: TimelinePaintImageViewInput, output: TimelinePaintImageViewOutput,
-                                   target: HTMLElement): void => {
-  const imageElementRef = createRef<HTMLImageElement>();
-  // clang-format off
-  render(html`
-  <div class="paint-profiler-image-view fill">
-    <div class="paint-profiler-image-container" style="-webkit-transform: ${input.imageContainerWebKitTransform}">
-      <img src=${input.imageURL} display=${input.imageContainerHidden ? 'none' : 'block'} ${ref(imageElementRef)}>
-      <div style=${Lit.Directives.styleMap({
-        display: input.maskElementHidden ? 'none' : 'block',
-        ...input.maskElementStyle})}>
-      </div>
-    </div>
-  </div>`,
- target);
-  // clang-format on
-
-  // The elements are guaranteed to exist after render completes
-  // because they are not conditionally rendered within the template.
-  const imageElement = imageElementRef.value;
-
-  if (!imageElement?.naturalHeight || !imageElement.naturalWidth) {
-    throw new Error('ImageElement were not found in the TimelinePaintImageView.');
-  }
-
-  output.imageElementNaturalHeight = imageElement.naturalHeight;
-  output.imageElementNaturalWidth = imageElement.naturalWidth;
-};
 export class TimelinePaintImageView extends UI.Widget.Widget {
   private transformController: LayerViewer.TransformController.TransformController;
-  private maskRectangle?: Protocol.DOM.Rect|null;
+  #maskRectangle: Protocol.DOM.Rect|null = null;
 
-  #inputData: TimelinePaintImageViewInput = {
+  #inputData: Omit<TimelinePaintImageViewInput, 'onImageLoaded'> = {
     maskElementHidden: true,
     imageContainerHidden: true,
     imageURL: '',
@@ -270,19 +262,23 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     maskElementStyle: {},
   };
 
-  #view: View;
+  readonly #view: TimelinePaintImageViewFunction;
   #imageElementDimensions?: {
     naturalHeight: number,
     naturalWidth: number,
   };
 
-  constructor(view: View = DEFAULT_VIEW) {
-    super();
-    this.registerRequiredCSS(timelinePaintProfilerStyles);
+  constructor(element?: HTMLElement, view: TimelinePaintImageViewFunction = IMAGE_VIEW_DEFAULT_VIEW) {
+    super(element);
     this.#view = view;
     this.transformController = new LayerViewer.TransformController.TransformController((this.contentElement), true);
     this.transformController.addEventListener(
         LayerViewer.TransformController.Events.TRANSFORM_CHANGED, this.updateImagePosition, this);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
   override onResize(): void {
@@ -306,14 +302,14 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
 
     const oldMaskStyle = JSON.stringify(this.#inputData.maskElementStyle);
     let newMaskStyle = {};
-    if (this.maskRectangle) {
+    if (this.#maskRectangle) {
       newMaskStyle = {
         width: width + 'px',
         height: height + 'px',
-        borderLeftWidth: this.maskRectangle.x + 'px',
-        borderTopWidth: this.maskRectangle.y + 'px',
-        borderRightWidth: (width - this.maskRectangle.x - this.maskRectangle.width) + 'px',
-        borderBottomWidth: (height - this.maskRectangle.y - this.maskRectangle.height) + 'px',
+        borderLeftWidth: this.#maskRectangle.x + 'px',
+        borderTopWidth: this.#maskRectangle.y + 'px',
+        borderRightWidth: (width - this.#maskRectangle.x - this.#maskRectangle.width) + 'px',
+        borderBottomWidth: (height - this.#maskRectangle.y - this.#maskRectangle.height) + 'px',
       };
     }
     this.#inputData.maskElementStyle = newMaskStyle;
@@ -342,31 +338,51 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     }
   }
 
-  showImage(imageURL?: string): void {
-    this.#inputData.imageContainerHidden = !imageURL;
-    if (imageURL) {
-      this.#inputData.imageURL = imageURL;
+  set imageURL(imageURL: string|undefined) {
+    if (this.imageURL === imageURL) {
+      return;
     }
+    this.#imageElementDimensions = undefined;
+    // Drop the previous image's geometry until the new image reports its size.
+    this.#inputData.maskElementStyle = {};
+    this.#inputData.imageContainerWebKitTransform = '';
+    this.#inputData.imageContainerHidden = !imageURL;
+    this.#inputData.imageURL = imageURL ?? '';
     this.requestUpdate();
+  }
+
+  get imageURL(): string|undefined {
+    return this.#inputData.imageContainerHidden ? undefined : this.#inputData.imageURL;
+  }
+
+  set maskRectangle(maskRectangle: Protocol.DOM.Rect|null) {
+    if (this.#maskRectangle === maskRectangle) {
+      return;
+    }
+    this.#maskRectangle = maskRectangle;
+    this.#inputData.maskElementHidden = !maskRectangle;
+    this.updateImagePosition();
+    this.requestUpdate();
+  }
+
+  get maskRectangle(): Protocol.DOM.Rect|null {
+    return this.#maskRectangle;
+  }
+
+  #onImageLoaded = (naturalWidth: number, naturalHeight: number): void => {
+    this.#imageElementDimensions = {naturalHeight, naturalWidth};
+    this.updateImagePosition();
+  };
+
+  showImage(imageURL?: string): void {
+    this.imageURL = imageURL;
   }
 
   setMask(maskRectangle: Protocol.DOM.Rect|null): void {
     this.maskRectangle = maskRectangle;
-
-    this.#inputData.maskElementHidden = !maskRectangle;
-    this.requestUpdate();
   }
 
   override performUpdate(): void {
-    const output: TimelinePaintImageViewOutput = {};
-    this.#view(this.#inputData, output, this.contentElement);
-    if (output.imageElementNaturalHeight !== undefined && output.imageElementNaturalWidth !== undefined) {
-      this.#imageElementDimensions = {
-        naturalHeight: output.imageElementNaturalHeight,
-        naturalWidth: output.imageElementNaturalWidth,
-      };
-    }
-    // Image can only be updated to correctly fit the component when the component has loaded.
-    this.updateImagePosition();
+    this.#view({...this.#inputData, onImageLoaded: this.#onImageLoaded}, undefined, this.contentElement);
   }
 }

@@ -202,6 +202,8 @@ devtools_ui_module("unittests") {
     "TimelineFlameChartNetworkDataProvider.test.ts",
     "TimelineFlameChartView.test.ts",
     "TimelineHistoryManager.test.ts",
+    "TimelineInvariants.test.ts",
+    "TimelineInvariants.ts",
     "TimelineLoader.test.ts",
     "TimelineMiniMap.test.ts",
     "TimelinePanel.test.ts",

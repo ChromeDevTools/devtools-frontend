@@ -5,6 +5,16 @@
  */
 
 @scope to (devtools-widget > *) {
+  .timeline-paint-profiler-view {
+    overflow: hidden;
+  }
+
+  .timeline-paint-profiler-view > .timeline-paint-profiler-bar {
+    flex: none;
+    height: 60px;
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  }
+
   .paint-profiler-image-view {
     overflow: hidden;
   }

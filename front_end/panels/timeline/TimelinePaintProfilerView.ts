@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -15,61 +14,85 @@ import timelinePaintProfilerStyles from './timelinePaintProfiler.css.js';
 import {TracingFrameLayerTree} from './TracingLayerTree.js';
 
 const {ifDefined, styleMap} = Directives;
+const {widget} = UI.Widget;
 
-export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
-  private readonly logAndImageSplitWidget: UI.SplitWidget.SplitWidget;
-  private readonly imageView: TimelinePaintImageView;
-  private readonly paintProfilerView: LayerViewer.PaintProfilerView.PaintProfilerView;
-  private readonly logTreeView: LayerViewer.PaintProfilerView.PaintProfilerCommandLogView;
-  private needsUpdateWhenVisible: boolean;
-  private pendingSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
-  private event: Trace.Types.Events.Event|null;
-  private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
-  private lastLoadedSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
-  #parsedTrace: Trace.TraceModel.ParsedTrace;
+export interface ViewInput {
+  snapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
+  log: SDK.PaintProfiler.PaintProfilerLogItem[];
+  clipRect: Protocol.DOM.Rect|null;
+  selectionWindow: {left: number, right: number}|null;
+  imageURL: string|undefined;
+  onShowImage: (imageURL?: string) => void;
+  onWindowChanged: (selectionWindow: {left: number, right: number}|null) => void;
+}
 
-  constructor(parsedTrace: Trace.TraceModel.ParsedTrace, element?: HTMLElement) {
-    super(false, false, /* settingName */ undefined, /* defaultSidebarWidth */ undefined,
-          /* defaultSidebarHeight */ undefined, /* constraintsInDip */ undefined, element);
-    this.setSidebarSize(60);
-    this.setResizable(false);
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
+export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  // clang-format off
+  render(html`
+    <style>${timelinePaintProfilerStyles}</style>
+    <div class="timeline-paint-profiler-view vbox flex-auto">
+      <devtools-widget class="timeline-paint-profiler-bar"
+          ${widget(LayerViewer.PaintProfilerView.PaintProfilerView, {
+            showImageCallback: input.onShowImage,
+            snapshotAndLog: {snapshot: input.snapshot, log: input.log, clipRect: input.clipRect},
+          })}
+          @WindowChanged=${(e: CustomEvent<{left: number, right: number}|null>) => input.onWindowChanged(e.detail)}>
+      </devtools-widget>
+      <devtools-split-view direction="column" sidebar-position="first" name="timeline-paint-profiler-log-split">
+        <devtools-widget slot="sidebar"
+            ${widget(LayerViewer.PaintProfilerView.PaintProfilerCommandLogView, {
+              commandLog: input.log,
+              selectionWindow: input.selectionWindow,
+            })}>
+        </devtools-widget>
+        <devtools-widget slot="main"
+            ${widget(TimelinePaintImageView, {
+              imageURL: input.imageURL,
+              maskRectangle: input.clipRect,
+            })}>
+        </devtools-widget>
+      </devtools-split-view>
+    </div>`,
+    target);
+  // clang-format on
+};
+
+export class TimelinePaintProfilerView extends UI.Widget.VBox {
+  readonly #view: View;
+  #needsUpdateWhenVisible = false;
+  #pendingSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null = null;
+  #event: Trace.Types.Events.Event|null = null;
+  #paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null = null;
+  #lastLoadedSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null = null;
+  #parsedTrace?: Trace.TraceModel.ParsedTrace;
+  #snapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null = null;
+  #log: SDK.PaintProfiler.PaintProfilerLogItem[] = [];
+  #clipRect: Protocol.DOM.Rect|null = null;
+  #selectionWindow: {left: number, right: number}|null = null;
+  #imageURL: string|undefined = undefined;
+
+  constructor(element?: HTMLElement, parsedTrace?: Trace.TraceModel.ParsedTrace, view: View = DEFAULT_VIEW) {
+    super(element);
     this.#parsedTrace = parsedTrace;
-
-    this.logAndImageSplitWidget = new UI.SplitWidget.SplitWidget(true, false, 'timeline-paint-profiler-log-split');
-    this.setMainWidget(this.logAndImageSplitWidget);
-    this.imageView = new TimelinePaintImageView();
-    this.logAndImageSplitWidget.setMainWidget(this.imageView);
-
-    this.paintProfilerView = new LayerViewer.PaintProfilerView.PaintProfilerView();
-    this.paintProfilerView.showImageCallback = this.imageView.showImage.bind(this.imageView);
-    this.paintProfilerView.addEventListener(
-        LayerViewer.PaintProfilerView.Events.WINDOW_CHANGED, this.onWindowChanged, this);
-    this.setSidebarWidget(this.paintProfilerView);
-
-    this.logTreeView = new LayerViewer.PaintProfilerView.PaintProfilerCommandLogView();
-    this.logAndImageSplitWidget.setSidebarWidget(this.logTreeView);
-
-    this.needsUpdateWhenVisible = false;
-    this.pendingSnapshot = null;
-    this.event = null;
-    this.paintProfilerModel = null;
-    this.lastLoadedSnapshot = null;
+    this.#view = view;
   }
 
   override wasShown(): void {
     super.wasShown();
-    if (this.needsUpdateWhenVisible) {
-      this.needsUpdateWhenVisible = false;
-      this.update();
+    this.requestUpdate();
+    if (this.#needsUpdateWhenVisible) {
+      this.#needsUpdateWhenVisible = false;
+      this.#updateSnapshot();
     }
   }
 
   setSnapshot(snapshot: SDK.PaintProfiler.PaintProfilerSnapshot): void {
-    this.releaseSnapshot();
-    this.pendingSnapshot = snapshot;
-    this.event = null;
-    this.updateWhenVisible();
+    this.#releaseSnapshot();
+    this.#pendingSnapshot = snapshot;
+    this.#event = null;
+    this.#updateWhenVisible();
   }
 
   #rasterEventHasTile(event: Trace.Types.Events.RasterTask): boolean {
@@ -78,7 +101,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       return false;
     }
 
-    const frame = this.#parsedTrace.data.Frames.framesById[data.sourceFrameNumber];
+    const frame = this.#parsedTrace?.data.Frames.framesById[data.sourceFrameNumber];
     if (!frame?.layerTree) {
       return false;
     }
@@ -86,14 +109,14 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   }
 
   setEvent(paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel, event: Trace.Types.Events.Event): boolean {
-    this.releaseSnapshot();
-    this.paintProfilerModel = paintProfilerModel;
-    this.pendingSnapshot = null;
-    this.event = event;
+    this.#releaseSnapshot();
+    this.#paintProfilerModel = paintProfilerModel;
+    this.#pendingSnapshot = null;
+    this.#event = event;
 
-    this.updateWhenVisible();
+    this.#updateWhenVisible();
     if (Trace.Types.Events.isPaint(event)) {
-      const snapshot = this.#parsedTrace.data.LayerTree.paintsToSnapshots.get(event);
+      const snapshot = this.#parsedTrace?.data.LayerTree.paintsToSnapshots.get(event);
       return Boolean(snapshot);
     }
     if (Trace.Types.Events.isRasterTask(event)) {
@@ -102,11 +125,11 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     return false;
   }
 
-  private updateWhenVisible(): void {
+  #updateWhenVisible(): void {
     if (this.isShowing()) {
-      this.update();
+      this.#updateSnapshot();
     } else {
-      this.needsUpdateWhenVisible = true;
+      this.#needsUpdateWhenVisible = true;
     }
   }
 
@@ -128,7 +151,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       return null;
     }
 
-    const frame = this.#parsedTrace.data.Frames.framesById[data.sourceFrameNumber];
+    const frame = this.#parsedTrace?.data.Frames.framesById[data.sourceFrameNumber];
     if (!frame?.layerTree) {
       return null;
     }
@@ -141,68 +164,92 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     return tracingLayerTree ? await tracingLayerTree.pictureForRasterTile(data.tileId.id_ref) : null;
   }
 
-  update(): void {
-    this.logTreeView.commandLog = [];
-    void this.paintProfilerView.setSnapshotAndLog(null, [], null);
+  #updateSnapshot(): void {
+    this.#snapshot = null;
+    this.#log = [];
+    this.requestUpdate();
 
     let snapshotPromise: Promise<{
       rect: Protocol.DOM.Rect | null,
       snapshot: SDK.PaintProfiler.PaintProfilerSnapshot,
     }|null>;
-    if (this.pendingSnapshot) {
-      snapshotPromise = Promise.resolve({rect: null, snapshot: this.pendingSnapshot});
-    } else if (this.event && this.paintProfilerModel && Trace.Types.Events.isPaint(this.event)) {
+    if (this.#pendingSnapshot) {
+      snapshotPromise = Promise.resolve({rect: null, snapshot: this.#pendingSnapshot});
+    } else if (this.#event && this.#paintProfilerModel && Trace.Types.Events.isPaint(this.#event)) {
       // When we process events (TimelineModel#processEvent) and find a
       // snapshot event, we look for the last paint that occurred and link the
       // snapshot to that paint event. That is why here if the event is a Paint
       // event, we look to see if it has had a matching picture event set for
       // it.
-      const snapshotEvent = this.#parsedTrace.data.LayerTree.paintsToSnapshots.get(this.event);
+      const snapshotEvent = this.#parsedTrace?.data.LayerTree.paintsToSnapshots.get(this.#event);
       if (snapshotEvent) {
         const encodedData = snapshotEvent.args.snapshot.skp64;
-        snapshotPromise = this.paintProfilerModel.loadSnapshot(encodedData).then(snapshot => {
+        snapshotPromise = this.#paintProfilerModel.loadSnapshot(encodedData).then(snapshot => {
           return snapshot && {rect: null, snapshot};
         });
       } else {
         snapshotPromise = Promise.resolve(null);
       }
 
-    } else if (this.event && Trace.Types.Events.isRasterTask(this.event)) {
-      snapshotPromise = this.#rasterTilePromise(this.event);
+    } else if (this.#event && Trace.Types.Events.isRasterTask(this.#event)) {
+      snapshotPromise = this.#rasterTilePromise(this.#event);
     } else {
       console.assert(false, 'Unexpected event type or no snapshot');
       return;
     }
     void snapshotPromise.then(snapshotWithRect => {
-      this.releaseSnapshot();
+      this.#releaseSnapshot();
       if (!snapshotWithRect) {
-        this.imageView.showImage();
+        this.#imageURL = undefined;
+        this.requestUpdate();
         return;
       }
       const snapshot = snapshotWithRect.snapshot;
-      this.lastLoadedSnapshot = snapshot;
-      this.imageView.setMask(snapshotWithRect.rect);
+      this.#lastLoadedSnapshot = snapshot;
+      this.#clipRect = snapshotWithRect.rect;
+      this.requestUpdate();
       void snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log || []));
     });
 
     function onCommandLogDone(
         this: TimelinePaintProfilerView, snapshot: SDK.PaintProfiler.PaintProfilerSnapshot,
         clipRect: Protocol.DOM.Rect|null, log?: SDK.PaintProfiler.PaintProfilerLogItem[]): void {
-      this.logTreeView.commandLog = log || [];
-      void this.paintProfilerView.setSnapshotAndLog(snapshot, log || [], clipRect);
+      this.#snapshot = snapshot;
+      this.#log = log || [];
+      this.#clipRect = clipRect;
+      this.requestUpdate();
     }
   }
 
-  private releaseSnapshot(): void {
-    if (!this.lastLoadedSnapshot) {
+  #releaseSnapshot(): void {
+    if (!this.#lastLoadedSnapshot) {
       return;
     }
-    this.lastLoadedSnapshot.release();
-    this.lastLoadedSnapshot = null;
+    this.#lastLoadedSnapshot.release();
+    this.#lastLoadedSnapshot = null;
   }
 
-  private onWindowChanged(): void {
-    this.logTreeView.selectionWindow = this.paintProfilerView.selectionWindow();
+  #onShowImage = (imageURL?: string): void => {
+    this.#imageURL = imageURL;
+    this.requestUpdate();
+  };
+
+  #onWindowChanged = (selectionWindow: {left: number, right: number}|null): void => {
+    this.#selectionWindow = selectionWindow;
+    this.requestUpdate();
+  };
+
+  override performUpdate(): void {
+    const input: ViewInput = {
+      snapshot: this.#snapshot,
+      log: this.#log,
+      clipRect: this.#clipRect,
+      selectionWindow: this.#selectionWindow,
+      imageURL: this.#imageURL,
+      onShowImage: this.#onShowImage,
+      onWindowChanged: this.#onWindowChanged,
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 }
 

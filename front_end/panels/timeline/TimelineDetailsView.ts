@@ -669,7 +669,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     if (!this.#parsedTrace) {
       return null;
     }
-    this.lazyPaintProfilerView = new TimelinePaintProfilerView(this.#parsedTrace);
+    this.lazyPaintProfilerView = new TimelinePaintProfilerView(undefined, this.#parsedTrace);
     return this.lazyPaintProfilerView;
   }
 

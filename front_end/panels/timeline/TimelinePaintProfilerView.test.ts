@@ -4,14 +4,18 @@
 
 import {assert} from 'chai';
 import {it} from 'mocha';
+import sinon from 'sinon';
 
+import * as SDK from '../../core/sdk/sdk.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
 import * as Timeline from './timeline.js';
 
-const {TimelinePaintImageView} = Timeline.TimelinePaintProfilerView;
+const {TimelinePaintProfilerView, TimelinePaintImageView} = Timeline.TimelinePaintProfilerView;
 
 // A 40x20 PNG, blue on the left half and orange on the right half.
 const SCREENSHOT_IMAGE_URL = 'data:image/png;base64,' +
@@ -20,6 +24,128 @@ const SCREENSHOT_IMAGE_URL = 'data:image/png;base64,' +
 // A 1x2 transparent PNG.
 const IMAGE_URL = 'data:image/png;base64,' +
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAC0lEQVR4nGNggAEAAAoAAX+AdF4AAAAASUVORK5CYII=';
+
+function createSnapshot(log: SDK.PaintProfiler.PaintProfilerLogItem[] = []) {
+  const snapshot = sinon.createStubInstance(SDK.PaintProfiler.PaintProfilerSnapshot);
+  snapshot.commandLog.resolves(log);
+  snapshot.profile.resolves([]);
+  snapshot.replay.resolves(null);
+  return snapshot;
+}
+
+async function waitForInput<T>(view: {input: T, nextInput: Promise<T>}, pred: (i: T) => boolean): Promise<T> {
+  while (!view.input || !pred(view.input)) {
+    await view.nextInput;
+  }
+  return view.input;
+}
+
+describeWithEnvironment('TimelinePaintProfilerView', () => {
+  async function createShownWidget() {
+    const view = createViewFunctionStub(TimelinePaintProfilerView);
+    const widget = new TimelinePaintProfilerView(undefined, undefined, view);
+    renderElementIntoDOM(widget);
+    await view.nextInput;
+    return {view, widget};
+  }
+
+  it('renders an empty profiler initially', async () => {
+    const {view} = await createShownWidget();
+    assert.isNull(view.input.snapshot);
+    assert.isEmpty(view.input.log);
+    assert.isUndefined(view.input.imageURL);
+  });
+
+  it('passes the snapshot command log to the view', async () => {
+    const {view, widget} = await createShownWidget();
+    const log = [new SDK.PaintProfiler.PaintProfilerLogItem({method: 'drawRect', params: null}, 0)];
+    const s1 = createSnapshot(log);
+    widget.setSnapshot(s1);
+    assert.strictEqual((await waitForInput(view, i => i.snapshot === s1)).log, log);
+  });
+
+  it('releases the previous snapshot when replaced', async () => {
+    const {view, widget} = await createShownWidget();
+    const s1 = createSnapshot();
+    const s2 = createSnapshot();
+    widget.setSnapshot(s1);
+    await waitForInput(view, i => i.snapshot === s1);
+    widget.setSnapshot(s2);
+    await waitForInput(view, i => i.snapshot === s2);
+    sinon.assert.calledOnce(s1.release);
+  });
+
+  it('defers loading the snapshot until the widget is shown', async () => {
+    const view = createViewFunctionStub(TimelinePaintProfilerView);
+    const widget = new TimelinePaintProfilerView(undefined, undefined, view);
+    const snapshot = createSnapshot();
+    widget.setSnapshot(snapshot);
+    sinon.assert.notCalled(snapshot.commandLog);
+    renderElementIntoDOM(widget);
+    await waitForInput(view, i => i.snapshot === snapshot);
+    sinon.assert.calledOnce(snapshot.commandLog);
+  });
+
+  it('updates the image URL when the profiler shows an image', async () => {
+    const {view} = await createShownWidget();
+    view.input.onShowImage(IMAGE_URL);
+    assert.strictEqual((await view.nextInput).imageURL, IMAGE_URL);
+    view.input.onShowImage();
+    assert.isUndefined((await view.nextInput).imageURL);
+  });
+
+  it('updates the selection window when the profiler window changes', async () => {
+    const {view} = await createShownWidget();
+    view.input.onWindowChanged({left: 1, right: 3});
+    assert.deepEqual((await view.nextInput).selectionWindow, {left: 1, right: 3});
+  });
+});
+
+describeWithEnvironment('TimelinePaintProfilerView view', () => {
+  setupActionRegistry();
+
+  async function renderView(overrides: Partial<Timeline.TimelinePaintProfilerView.ViewInput> = {}) {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    const input: Timeline.TimelinePaintProfilerView.ViewInput = {
+      snapshot: null,
+      log: [],
+      clipRect: null,
+      selectionWindow: null,
+      imageURL: undefined,
+      onShowImage: () => {},
+      onWindowChanged: () => {},
+      ...overrides,
+    };
+    Timeline.TimelinePaintProfilerView.DEFAULT_VIEW(input, undefined, target);
+    await UI.Widget.Widget.allUpdatesComplete;
+    return target;
+  }
+
+  it('renders the paint profiler, the command log and the image view', async () => {
+    const log = [new SDK.PaintProfiler.PaintProfilerLogItem({method: 'drawRect', params: null}, 0)];
+    const clipRect = {x: 1, y: 2, width: 3, height: 4};
+    const target = await renderView({log, clipRect, selectionWindow: {left: 0, right: 1}, imageURL: IMAGE_URL});
+    const bar = target.querySelector<HTMLElement>('.timeline-paint-profiler-bar')!;
+    assert.instanceOf(UI.Widget.Widget.get(bar), LayerViewer.PaintProfilerView.PaintProfilerView);
+    const split = target.querySelector('devtools-split-view')!;
+    const logView = UI.Widget.Widget.get(split.querySelector<HTMLElement>('[slot="sidebar"]')!);
+    assert.instanceOf(logView, LayerViewer.PaintProfilerView.PaintProfilerCommandLogView);
+    assert.strictEqual(logView.commandLog, log);
+    const imgView = UI.Widget.Widget.get(split.querySelector<HTMLElement>('[slot="main"]')!);
+    assert.instanceOf(imgView, TimelinePaintImageView);
+    assert.strictEqual(imgView.imageURL, IMAGE_URL);
+    assert.deepEqual(imgView.maskRectangle, clipRect);
+  });
+
+  it('forwards profiler window changes to the presenter', async () => {
+    const onWindowChanged = sinon.stub();
+    const target = await renderView({onWindowChanged});
+    const event = new CustomEvent('WindowChanged', {detail: {left: 2, right: 5}});
+    target.querySelector('.timeline-paint-profiler-bar')?.dispatchEvent(event);
+    sinon.assert.calledOnceWithExactly(onWindowChanged, {left: 2, right: 5});
+  });
+});
 
 describeWithEnvironment('TimelinePaintImageView', () => {
   setupActionRegistry();

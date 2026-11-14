@@ -11,6 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {Printer} from '../../testing/PropertyParser.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import {type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 
@@ -207,6 +208,89 @@ describeWithEnvironment('PropertyRenderer', () => {
       assert.strictEqual(valueElement.textContent, '-webkit-image-set(url(test-1x.png) 1x, url(test-2x.png) 2x)');
     });
   });
+
+  describe('StringRenderer', () => {
+    it('renders string with unescaped tooltip title', () => {
+      const renderer = new Elements.PropertyRenderer.StringRenderer();
+      const name = 'content';
+      const value = '"\\2716"';
+      const matchers = [new SDK.CSSPropertyParserMatchers.StringMatcher()];
+      const matchedResult = SDK.CSSPropertyParser.matchDeclaration(name, value, matchers);
+      assert.exists(matchedResult);
+
+      const {valueElement} =
+          Elements.PropertyRenderer.Renderer.renderValueElement({name, value}, matchedResult, [renderer]);
+
+      const span = valueElement.querySelector('span');
+      assert.exists(span);
+      assert.strictEqual(span.textContent, '"\\2716"');
+      assert.strictEqual(span.title, '"\u2716"');
+    });
+  });
+
+  describe('EditableContent', () => {
+    it('renders initial state with null editedValue', () => {
+      const view = createViewFunctionStub(Elements.PropertyRenderer.EditableContent);
+      const widget = new Elements.PropertyRenderer.EditableContent(undefined, view);
+      renderElementIntoDOM(widget);
+
+      assert.isNull(view.input.editedValue);
+    });
+
+    it('updates editedValue when onValueEdit is called', () => {
+      const view = createViewFunctionStub(Elements.PropertyRenderer.EditableContent);
+      const widget = new Elements.PropertyRenderer.EditableContent(undefined, view);
+      renderElementIntoDOM(widget);
+
+      view.input.onValueEdit('42px');
+
+      assert.strictEqual(view.input.editedValue, '42px');
+    });
+
+    describe('view', () => {
+      it('renders default slot when editedValue is null', () => {
+        const target = document.createElement('div');
+        Elements.PropertyRenderer.DEFAULT_VIEW({
+          editedValue: null,
+          onValueEdit: () => {},
+        },
+                                               undefined, target);
+
+        assert.exists(target.querySelector('slot[name="icon"]'));
+        assert.exists(target.querySelector('slot:not([name])'));
+      });
+
+      it('renders editedValue text instead of default slot when editedValue is set', () => {
+        const target = document.createElement('div');
+        Elements.PropertyRenderer.DEFAULT_VIEW({
+          editedValue: '100deg',
+          onValueEdit: () => {},
+        },
+                                               undefined, target);
+
+        assert.exists(target.querySelector('slot[name="icon"]'));
+        assert.isNull(target.querySelector('slot:not([name])'));
+        assert.strictEqual(target.textContent, '100deg');
+      });
+
+      it('forwards ValueEditEvent detail to onValueEdit', () => {
+        const target = document.createElement('div');
+        const onValueEdit = sinon.spy();
+        Elements.PropertyRenderer.DEFAULT_VIEW({
+          editedValue: null,
+          onValueEdit,
+        },
+                                               undefined, target);
+
+        const iconSlot = target.querySelector('slot[name="icon"]');
+        assert.exists(iconSlot);
+        iconSlot.dispatchEvent(new Elements.PropertyRenderer.ValueEditEvent('2turn'));
+
+        sinon.assert.calledOnceWithExactly(onValueEdit, '2turn');
+      });
+    });
+  });
+
 });
 
 describe('TracingContext', () => {

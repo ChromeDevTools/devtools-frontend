@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
@@ -613,17 +612,19 @@ export class ValueEditEvent extends CustomEvent<string> {
   }
 }
 
-interface EditableContentViewInput {
+export interface ViewInput {
   editedValue: string|null;
-  onValueEdit: (event: ValueEditEvent) => void;
+  onValueEdit: (value: string) => void;
 }
 
-type EditableContentView = (input: EditableContentViewInput, output: undefined, target: HTMLElement|DocumentFragment) =>
-    void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
-const EDITABLE_CONTENT_DEFAULT_VIEW: EditableContentView = (input, _output, target) => {
-  render(html`<slot name="icon" @valueedit=${input.onValueEdit}></slot>${input.editedValue ?? html`<slot></slot>`}`,
-         target);
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const onValueEdit = (event: ValueEditEvent): void => {
+    event.stopPropagation();
+    input.onValueEdit(event.detail);
+  };
+  render(html`<slot name="icon" @valueedit=${onValueEdit}></slot>${input.editedValue ?? html`<slot></slot>`}`, target);
 };
 
 /**
@@ -635,9 +636,9 @@ const EDITABLE_CONTENT_DEFAULT_VIEW: EditableContentView = (input, _output, targ
  **/
 export class EditableContent extends UI.Widget.Widget<DocumentFragment> {
   #editedValue: string|null = null;
-  readonly #view: EditableContentView;
+  readonly #view: View;
 
-  constructor(element?: HTMLElement, view: EditableContentView = EDITABLE_CONTENT_DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
     this.element.classList.remove('widget');
     this.#view = view;
@@ -645,9 +646,12 @@ export class EditableContent extends UI.Widget.Widget<DocumentFragment> {
     this.performUpdate();
   }
 
-  #onValueEdit = (event: ValueEditEvent): void => {
-    event.stopPropagation();
-    this.#editedValue = event.detail;
+  #onValueEdit = (value: string): void => {
+    if (this.#editedValue === value) {
+      return;
+    }
+    this.#editedValue = value;
+    // Render synchronously so that synchronous callers (e.g. `renderedPropertyText()`) observe the updated text immediately.
     this.performUpdate();
   };
 
@@ -888,18 +892,20 @@ const URLRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.URLMatch> =
 // clang-format off
 export class URLRenderer extends URLRendererBase {
   // clang-format on
-  constructor(private readonly rule: SDK.CSSRule.CSSRule|null, private readonly node: SDK.DOMModel.DOMNode|null) {
+  readonly #rule: SDK.CSSRule.CSSRule|null;
+  readonly #node: SDK.DOMModel.DOMNode|null;
+  constructor(rule: SDK.CSSRule.CSSRule|null, node: SDK.DOMModel.DOMNode|null) {
     super();
+    this.#rule = rule;
+    this.#node = node;
   }
   override render(match: SDK.CSSPropertyParserMatchers.URLMatch): LitTemplate {
     const url = unescapeCssString(match.url) as Platform.DevToolsPath.UrlString;
-    const container = document.createDocumentFragment();
-    UI.UIUtils.createTextChild(container, 'url(');
     let hrefUrl: Platform.DevToolsPath.UrlString|null = null;
-    if (this.rule?.resourceURL()) {
-      hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
-    } else if (this.node) {
-      hrefUrl = this.node.resolveURL(url);
+    if (this.#rule?.resourceURL()) {
+      hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.#rule.resourceURL(), url);
+    } else if (this.#node) {
+      hrefUrl = this.#node.resolveURL(url);
     }
     const link = ImagePreviewPopover.setImageUrl(Components.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
       text: url,
@@ -912,9 +918,7 @@ export class URLRenderer extends URLRendererBase {
       showColumnNumber: false,
     }),
                                                  hrefUrl || url);
-    container.appendChild(link);
-    UI.UIUtils.createTextChild(container, ')');
-    return html`${[container]}`;
+    return html`url(${link})`;
   }
 }
 
@@ -924,10 +928,7 @@ const StringRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.StringMatch
 export class StringRenderer extends StringRendererBase {
   // clang-format on
   override render(match: SDK.CSSPropertyParserMatchers.StringMatch): LitTemplate {
-    const element = document.createElement('span');
-    element.innerText = match.text;
-    UI.Tooltip.Tooltip.install(element, unescapeCssString(match.text));
-    return html`${[element]}`;
+    return html`<span title=${unescapeCssString(match.text)}>${match.text}</span>`;
   }
 }
 
@@ -940,6 +941,6 @@ export class BinOpRenderer extends BinOpRendererBase {
     const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node)
                                   .map(child => html`<span>${Renderer.render(child, context).nodes}</span>`);
 
-    return html`${[lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs]}`;
+    return html`${lhs} ${binop} ${rhs}`;
   }
 }

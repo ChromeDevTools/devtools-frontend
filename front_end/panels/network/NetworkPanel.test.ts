@@ -105,6 +105,30 @@ describeWithEnvironment('NetworkPanel', () => {
     await RenderCoordinator.done({waitForWork: true});
     sinon.assert.called(networkLogResetSpy);
   });
+
+  it('renders checkboxes and file input in DEFAULT_SETTINGS_PANE_VIEW', () => {
+    const target = document.createElement('div');
+    const output: Network.NetworkPanel.SettingsPaneViewOutput = {};
+    const setting = Common.Settings.Settings.instance().createSetting('network-view-test', true);
+    const onLoadFromFile = sinon.spy();
+    Network.NetworkPanel.DEFAULT_SETTINGS_PANE_VIEW(
+        {
+          showSettingsPane: true,
+          largeRowsSetting: setting,
+          groupByFrameSetting: setting,
+          showOverviewSetting: setting,
+          recordFilmStripSetting: setting,
+          onLoadFromFile,
+        },
+        output,
+        target,
+    );
+    const pane = target.querySelector<HTMLElement>('.network-settings-pane');
+    assert.isNotNull(pane);
+    assert.isFalse(pane.hidden);
+    assert.lengthOf(pane.querySelectorAll('devtools-checkbox'), 4);
+    assert.isFunction(output.openFileSelector);
+  });
 });
 
 describeWithEnvironment('BackendLinking', () => {

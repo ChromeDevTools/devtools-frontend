@@ -49,8 +49,8 @@ import type * as PanelCommon from '../../panels/common/common.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -62,6 +62,8 @@ import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
 import networkPanelStyles from './networkPanel.css.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';
+
+const {bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**
@@ -280,12 +282,62 @@ export class BackendLinking {
   }
 }
 
+export interface SettingsPaneViewInput {
+  showSettingsPane: boolean;
+  largeRowsSetting: Common.Settings.Setting<boolean>;
+  groupByFrameSetting: Common.Settings.Setting<boolean>;
+  showOverviewSetting: Common.Settings.Setting<boolean>;
+  recordFilmStripSetting: Common.Settings.Setting<boolean>;
+  onLoadFromFile: (file: File) => void;
+}
+
+export interface SettingsPaneViewOutput {
+  openFileSelector?: () => void;
+}
+
+export type SettingsPaneView = (input: SettingsPaneViewInput, output: SettingsPaneViewOutput, target: HTMLElement) =>
+    void;
+
+function renderSettingsPane(input: SettingsPaneViewInput, output: SettingsPaneViewOutput): LitTemplate {
+  // clang-format off
+  return html`
+    <div class="network-settings-pane" ?hidden=${!input.showSettingsPane}>
+      <devtools-checkbox title=${i18nString(UIStrings.showMoreInformationInRequestRows)}
+          ${bindToSetting(input.largeRowsSetting)}>${i18nString(UIStrings.useLargeRequestRows)}</devtools-checkbox>
+      <devtools-checkbox title=${i18nString(UIStrings.groupRequestsByTopLevelRequest)}
+          ${bindToSetting(input.groupByFrameSetting)}>${i18nString(UIStrings.groupByFrame)}</devtools-checkbox>
+      <devtools-checkbox title=${i18nString(UIStrings.showOverviewOfNetworkRequests)}
+          ${bindToSetting(input.showOverviewSetting)}>${i18nString(UIStrings.showOverview)}</devtools-checkbox>
+      <devtools-checkbox title=${i18nString(UIStrings.captureScreenshotsWhenLoadingA)}
+          ${bindToSetting(input.recordFilmStripSetting)}>${i18nString(UIStrings.captureScreenshots)}</devtools-checkbox>
+    </div>
+    <input type="file" hidden tabindex="-1"
+        ${Directives.ref(el => {
+          output.openFileSelector = el instanceof HTMLInputElement ? () => el.click() : undefined;
+        })}
+        @click=${(event: Event) => {
+          if (event.target instanceof HTMLInputElement) {
+            event.target.value = '';
+          }
+        }}
+        @change=${(event: Event) => {
+          if (event.target instanceof HTMLInputElement && event.target.files?.length) {
+            input.onLoadFromFile(event.target.files[0]);
+          }
+        }}>`;
+  // clang-format on
+}
+
+export const DEFAULT_SETTINGS_PANE_VIEW: SettingsPaneView = (input, output, target) => {
+  render(renderSettingsPane(input, output), target);
+};
+
 export class NetworkPanel extends UI.Panel.Panel implements
     UI.ContextMenu
         .Provider<SDK.NetworkRequest.NetworkRequest|SDK.Resource.Resource|Workspace.UISourceCode.UISourceCode>,
     UI.View.ViewLocationResolver {
-  private readonly networkLogShowOverviewSetting: Common.Settings.Setting<boolean>;
-  private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
+  readonly #networkLogShowOverviewSetting: Common.Settings.Setting<boolean>;
+  readonly #networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
   private readonly networkRecordFilmStripSetting: Common.Settings.Setting<boolean>;
   private readonly toggleRecordAction: UI.ActionRegistration.Action;
   private pendingStopTimer!: number|undefined;
@@ -296,7 +348,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private readonly panelToolbar: UI.Toolbar.Toolbar;
   private readonly rightToolbar: UI.Toolbar.Toolbar;
   private readonly filterBar: UI.FilterBar.FilterBar;
-  private showSettingsPaneSetting: Common.Settings.Setting<boolean>;
+  readonly #showSettingsPaneSetting: Common.Settings.Setting<boolean>;
   private readonly filmStripPlaceholderElement: HTMLElement;
   private readonly overviewPane: PerfUI.TimelineOverviewPane.TimelineOverviewPane;
   private readonly networkOverview: NetworkOverview;
@@ -306,7 +358,9 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private readonly sidebarLocation: UI.View.TabbedViewLocation;
   private readonly progressBarContainer: HTMLDivElement;
   networkLogView: NetworkLogView;
-  private readonly fileSelectorElement: HTMLElement;
+  readonly #settingsPaneContainer = document.createElement('div');
+  readonly #settingsPaneOutput: SettingsPaneViewOutput = {};
+  readonly #groupByFrameSetting: Common.Settings.Setting<boolean>;
   private readonly detailsWidget: UI.Widget.VBox;
   private readonly closeButtonElement: UI.UIUtils.DevToolsCloseButton;
   private preserveLogSetting: Common.Settings.Setting<boolean>;
@@ -314,9 +368,11 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private readonly throttlingSelect: UI.Toolbar.ToolbarItem;
   private readonly displayScreenshotDelay: number;
   readonly backendLinking: BackendLinking|null;
+  readonly #settingsPaneView: SettingsPaneView;
 
-  constructor(displayScreenshotDelay: number) {
+  constructor(displayScreenshotDelay: number, settingsPaneView: SettingsPaneView = DEFAULT_SETTINGS_PANE_VIEW) {
     super('network');
+    this.#settingsPaneView = settingsPaneView;
     this.registerRequiredCSS(networkPanelStyles);
 
     const backendLinkingSetting =
@@ -324,9 +380,9 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.backendLinking = 'setting' in backendLinkingSetting ? new BackendLinking(backendLinkingSetting.setting) : null;
 
     this.displayScreenshotDelay = displayScreenshotDelay;
-    this.networkLogShowOverviewSetting =
+    this.#networkLogShowOverviewSetting =
         Common.Settings.Settings.instance().createSetting('network-log-show-overview', true);
-    this.networkLogLargeRowsSetting =
+    this.#networkLogLargeRowsSetting =
         Common.Settings.Settings.instance().createSetting('network-log-large-rows', false);
     this.networkRecordFilmStripSetting =
         Common.Settings.Settings.instance().createSetting('network-record-film-strip-setting', false);
@@ -351,28 +407,11 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.filterBar.show(panel.contentElement);
     this.filterBar.addEventListener(UI.FilterBar.FilterBarEvents.CHANGED, this.handleFilterChanged.bind(this));
 
-    const settingsPane = panel.contentElement.createChild('div', 'network-settings-pane');
-    settingsPane.append(
-        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.useLargeRequestRows),
-                                                    this.networkLogLargeRowsSetting,
-                                                    i18nString(UIStrings.showMoreInformationInRequestRows)),
-        SettingsUI.SettingsUI.createSettingCheckbox(
-            i18nString(UIStrings.groupByFrame),
-            Common.Settings.Settings.instance().resolve(Settings.NetworkSettings.groupByFrameSettingDescriptor),
-            i18nString(UIStrings.groupRequestsByTopLevelRequest)),
-        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.showOverview),
-                                                    this.networkLogShowOverviewSetting,
-                                                    i18nString(UIStrings.showOverviewOfNetworkRequests)),
-        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.captureScreenshots),
-                                                    this.networkRecordFilmStripSetting,
-                                                    i18nString(UIStrings.captureScreenshotsWhenLoadingA)),
-
-    );
-    this.showSettingsPaneSetting =
+    this.#groupByFrameSetting =
+        Common.Settings.Settings.instance().resolve(Settings.NetworkSettings.groupByFrameSettingDescriptor);
+    this.#showSettingsPaneSetting =
         Common.Settings.Settings.instance().createSetting('network-show-settings-toolbar', false);
-    settingsPane.classList.toggle('hidden', !this.showSettingsPaneSetting.get());
-    this.showSettingsPaneSetting.addChangeListener(
-        () => settingsPane.classList.toggle('hidden', !this.showSettingsPaneSetting.get()));
+    panel.contentElement.appendChild(this.#settingsPaneContainer);
 
     this.filmStripPlaceholderElement = panel.contentElement.createChild('div', 'network-film-strip-placeholder');
 
@@ -424,11 +463,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.progressBarContainer = document.createElement('div');
 
     this.networkLogView =
-        new NetworkLogView(this.filterBar, this.progressBarContainer, this.networkLogLargeRowsSetting);
+        new NetworkLogView(this.filterBar, this.progressBarContainer, this.#networkLogLargeRowsSetting);
     this.splitWidget.setSidebarWidget(this.networkLogView);
-    this.fileSelectorElement = (UI.UIUtils.createFileSelectorElement(
-                                    this.networkLogView.onLoadFromFile.bind(this.networkLogView)) as HTMLElement);
-    panel.element.appendChild(this.fileSelectorElement);
 
     this.detailsWidget = new UI.Widget.VBox();
     this.detailsWidget.element.classList.add('network-details-view');
@@ -441,8 +477,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     }, false);
     this.closeButtonElement.style.margin = '0 5px';
 
-    this.networkLogShowOverviewSetting.addChangeListener(this.toggleShowOverview, this);
-    this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
+    this.#networkLogShowOverviewSetting.addChangeListener(this.#toggleShowOverview, this);
+    this.#networkLogLargeRowsSetting.addChangeListener(this.#toggleLargerRequests, this);
     this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
 
     this.preserveLogSetting =
@@ -455,10 +491,12 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.setupToolbarButtons(splitWidget);
 
     this.toggleRecord(this.recordLogSetting.get());
-    this.toggleShowOverview();
-    this.toggleLargerRequests();
+    this.#toggleShowOverview();
+    this.#toggleLargerRequests();
     this.toggleRecordFilmStrip();
-    this.updateUI();
+    this.#updateUI();
+    // Perform initial synchronous render for callers that inspect panel DOM immediately after construction.
+    this.performUpdate();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
                                                                 SDK.ResourceTreeModel.Events.WillReloadPage,
@@ -574,7 +612,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.progressBarContainer));
     this.rightToolbar.appendSeparator();
-    this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, 'gear',
+    this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(this.#showSettingsPaneSetting, 'gear',
                                                                             i18nString(UIStrings.networkSettings),
                                                                             'gear-filled', 'network-settings'));
 
@@ -594,8 +632,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.panelToolbar.appendSeparator();
     const importHarButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.importHarFile), 'import', undefined, 'import-har');
-    importHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => this.fileSelectorElement.click(),
-                                     this);
+    importHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK,
+                                     () => this.#settingsPaneOutput.openFileSelector?.(), this);
     this.panelToolbar.appendToolbarItem(importHarButton);
     const exportHarButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHarSanitized), 'download', undefined, 'export-har');
@@ -688,12 +726,12 @@ export class NetworkPanel extends UI.Panel.Panel implements
     delete this.pendingStopTimer;
   }
 
-  private toggleLargerRequests(): void {
-    this.updateUI();
+  #toggleLargerRequests(): void {
+    this.#updateUI();
   }
 
-  private toggleShowOverview(): void {
-    const toggled = this.networkLogShowOverviewSetting.get();
+  #toggleShowOverview(): void {
+    const toggled = this.#networkLogShowOverviewSetting.get();
     if (toggled) {
       this.overviewPane.show(this.overviewPlaceholderElement);
     } else {
@@ -742,15 +780,35 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return this.networkLogView.elementsToRestoreScrollPositionsFor();
   }
 
+  override performUpdate(): void {
+    this.#settingsPaneView(
+        {
+          showSettingsPane: this.#showSettingsPaneSetting.get(),
+          largeRowsSetting: this.#networkLogLargeRowsSetting,
+          groupByFrameSetting: this.#groupByFrameSetting,
+          showOverviewSetting: this.#networkLogShowOverviewSetting,
+          recordFilmStripSetting: this.networkRecordFilmStripSetting,
+          onLoadFromFile: (file: File) => {
+            void this.networkLogView.onLoadFromFile(file);
+          },
+        },
+        this.#settingsPaneOutput,
+        this.#settingsPaneContainer,
+    );
+  }
+
   override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(NetworkPanel, this);
+    this.#showSettingsPaneSetting.addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
 
     // Record the network tool load time after the panel has loaded.
     UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('network', 'DevTools.Launch.Network');
   }
 
   override willHide(): void {
+    this.#showSettingsPaneSetting.removeChangeListener(this.requestUpdate, this);
     UI.Context.Context.instance().setFlavor(NetworkPanel, null);
     super.willHide();
   }
@@ -813,20 +871,20 @@ export class NetworkPanel extends UI.Panel.Panel implements
         networkItemView.focus();
       }
     }
-    this.updateUI();
+    this.#updateUI();
   }
 
   hideRequestPanel(): void {
     this.clearNetworkItemView();
     this.splitWidget.hideMain();
-    this.updateUI();
+    this.#updateUI();
   }
 
   private updateNetworkItemView(): void {
     if (this.splitWidget.showMode() === UI.SplitWidget.ShowMode.BOTH) {
       this.clearNetworkItemView();
       this.createNetworkItemView();
-      this.updateUI();
+      this.#updateUI();
     }
   }
 
@@ -848,10 +906,10 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return this.networkItemView;
   }
 
-  private updateUI(): void {
+  #updateUI(): void {
     if (this.detailsWidget) {
       this.detailsWidget.element.classList.toggle('network-details-view-tall-header',
-                                                  this.networkLogLargeRowsSetting.get());
+                                                  this.#networkLogLargeRowsSetting.get());
     }
     if (this.networkLogView) {
       this.networkLogView.switchViewMode(!this.splitWidget.isResizable());

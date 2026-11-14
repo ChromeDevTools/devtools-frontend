@@ -21,6 +21,7 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -265,6 +266,107 @@ describeWithEnvironment('DeviceModeView', () => {
 
         sinon.assert.calledWith(setWidthAndScaleToFitSpy, 2560);
       });
+
+      it('projects model and ruler setting state into view input', async () => {
+        const viewStub = createViewFunctionStub(Emulation.DeviceModeView.DeviceModeView);
+        const widget = new Emulation.DeviceModeView.DeviceModeView(undefined, viewStub);
+        renderElementIntoDOM(widget);
+
+        showRulersSetting.set(true);
+        deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+        await widget.updateComplete;
+
+        assert.isTrue(viewStub.input.showDeviceMode);
+        assert.isTrue(viewStub.input.resizable);
+        assert.isTrue(viewStub.input.showRulers);
+      });
+
+      it('forwards sizing callbacks from view input to the model', async () => {
+        const viewStub = createViewFunctionStub(Emulation.DeviceModeView.DeviceModeView);
+        const widget = new Emulation.DeviceModeView.DeviceModeView(undefined, viewStub);
+        renderElementIntoDOM(widget);
+        await widget.updateComplete;
+
+        const setWidthSpy = sinon.spy(deviceModeModel, 'setWidth');
+        const setHeightSpy = sinon.spy(deviceModeModel, 'setHeight');
+        const setWidthAndScaleToFitSpy = sinon.spy(deviceModeModel, 'setWidthAndScaleToFit');
+        const setHeightAndScaleToFitSpy = sinon.spy(deviceModeModel, 'setHeightAndScaleToFit');
+
+        viewStub.input.onSetWidth(400);
+        sinon.assert.calledOnceWithExactly(setWidthSpy, 400);
+
+        viewStub.input.onDoubleclickBottomResizer();
+        sinon.assert.calledOnceWithExactly(setHeightSpy, 0);
+
+        viewStub.input.onApplyPresetSize(768);
+        sinon.assert.calledOnceWithExactly(setWidthAndScaleToFitSpy, 768);
+
+        setWidthAndScaleToFitSpy.resetHistory();
+        viewStub.input.onWidthMarkerSelected(320);
+        sinon.assert.calledOnceWithExactly(setWidthAndScaleToFitSpy, 320);
+
+        viewStub.input.onHeightMarkerSelected(480);
+        sinon.assert.calledOnceWithExactly(setHeightAndScaleToFitSpy, 480);
+      });
+
+      it('updates model available size from measureContentArea on resize', async () => {
+        const measureContentArea = sinon.stub().returns({
+          rect: new DOMRect(0, 0, 500, 400),
+          handleWidth: 20,
+          handleHeight: 20,
+        });
+        const viewStub = createViewFunctionStub(Emulation.DeviceModeView.DeviceModeView, {
+          measureContentArea,
+        });
+        const widget = new Emulation.DeviceModeView.DeviceModeView(undefined, viewStub);
+        renderElementIntoDOM(widget);
+        deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+        await widget.updateComplete;
+
+        const setAvailableSizeSpy = sinon.spy(deviceModeModel, 'setAvailableSize');
+        measureContentArea.resetHistory();
+        widget.onResize();
+
+        sinon.assert.calledOnce(measureContentArea);
+        sinon.assert.calledOnceWithExactly(
+            setAvailableSizeSpy,
+            sinon.match({width: 500, height: 400}),
+            sinon.match({width: 460, height: 380}),
+        );
+      });
+
+      it('populates measureContentArea in DEFAULT_VIEW', () => {
+        const target = document.createElement('div');
+        renderElementIntoDOM(target);
+        const output: Emulation.DeviceModeView.ViewOutput = {};
+        const noop = (): void => {};
+        const input: Emulation.DeviceModeView.ViewInput = {
+          model: deviceModeModel,
+          showDeviceMode: true,
+          resizable: true,
+          showRulers: false,
+          showMediaInspector: false,
+          scale: 1,
+          getAppliedDeviceWidth: () => 400,
+          onSetWidth: noop,
+          onApplyPresetSize: noop,
+          onWidthMarkerSelected: noop,
+          onHeightMarkerSelected: noop,
+          bottomRightResizerRef: noop,
+          bottomLeftResizerRef: noop,
+          rightResizerRef: noop,
+          leftResizerRef: noop,
+          bottomResizerRef: noop,
+          onDoubleclickBottomResizer: noop,
+        };
+
+        Emulation.DeviceModeView.DEFAULT_VIEW(input, output, target);
+
+        assert.isTrue(target.classList.contains('device-mode-view'));
+        assert.isDefined(output.measureContentArea);
+        const measurements = output.measureContentArea();
+        assert.isNotNull(measurements);
+      });
     });
   });
 
@@ -277,6 +379,57 @@ describeWithEnvironment('DeviceModeView', () => {
 
       const markers = ruler.contentElement.querySelectorAll('.device-mode-ruler-marker');
       assert.lengthOf(markers, 0);
+    });
+
+    it('passes state to RulerView', async () => {
+      const viewStub = createViewFunctionStub(Emulation.DeviceModeView.Ruler);
+      const ruler = new Emulation.DeviceModeView.Ruler(undefined, viewStub);
+      ruler.horizontal = false;
+      ruler.scale = 0.5;
+      renderElementIntoDOM(ruler);
+      await ruler.updateComplete;
+
+      assert.isFalse(viewStub.input.horizontal);
+      assert.strictEqual(viewStub.input.scale, 0.5);
+      assert.strictEqual(viewStub.input.zoomFactor, 1);
+    });
+
+    it('dispatches marker selected event when marker is clicked', async () => {
+      const viewStub = createViewFunctionStub(Emulation.DeviceModeView.Ruler);
+      const ruler = new Emulation.DeviceModeView.Ruler(undefined, viewStub);
+      renderElementIntoDOM(ruler);
+      await ruler.updateComplete;
+
+      const onMarkerSelected = sinon.spy();
+      ruler.addEventListener(Emulation.DeviceModeView.RulerEvents.MARKER_SELECTED, onMarkerSelected);
+      viewStub.input.onMarkerClick(200);
+
+      sinon.assert.calledOnce(onMarkerSelected);
+      assert.strictEqual(onMarkerSelected.firstCall.args[0].data, 200);
+    });
+
+    it('invokes onMarkerClick when a ruler text marker is clicked in DEFAULT_RULER_VIEW', () => {
+      const target = document.createElement('div');
+      Object.defineProperty(target, 'offsetWidth', {value: 300});
+      renderElementIntoDOM(target);
+      const onMarkerClick = sinon.spy();
+
+      Emulation.DeviceModeView.DEFAULT_RULER_VIEW(
+          {
+            horizontal: true,
+            scale: 1,
+            zoomFactor: 1,
+            onMarkerClick,
+          },
+          undefined,
+          target,
+      );
+
+      const markerText = target.querySelector<HTMLElement>('.device-mode-ruler-text');
+      assert.instanceOf(markerText, HTMLElement);
+      markerText.click();
+
+      sinon.assert.calledOnceWithExactly(onMarkerClick, 100);
     });
   });
 

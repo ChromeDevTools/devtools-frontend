@@ -422,6 +422,7 @@ describeWithEnvironment('IndexedDBModel', () => {
   });
 
   it('handles protocol error and does not invoke callback when loading object store data fails', async () => {
+    const consoleErrorStub = sinon.stub(console, 'error');
     const callbackSpy = sinon.spy();
     connection.setSuccessHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
     connection.setFailureHandler('IndexedDB.requestData', () => ({message: 'Aborted upgrade.', code: -32000}));
@@ -433,6 +434,7 @@ describeWithEnvironment('IndexedDBModel', () => {
     indexedDBModel.loadObjectStoreData(testDBId, 'test-store', null, 0, 2, callbackSpy);
     await new Promise(resolve => setTimeout(resolve, 0));
 
+    sinon.assert.calledWith(consoleErrorStub, 'IndexedDBAgent error: Aborted upgrade.');
     sinon.assert.notCalled(callbackSpy);
   });
 

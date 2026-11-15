@@ -160,6 +160,7 @@ describeWithEnvironment('AutofillView', () => {
   });
 
   it('correctly rerenders upon AddressFormFilled events', async () => {
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
     const address = 'Foo Bar';
     const filledFields: Protocol.Autofill.FilledField[] = [];
     const matches: AutofillManager.AutofillManager.Match[] = [];

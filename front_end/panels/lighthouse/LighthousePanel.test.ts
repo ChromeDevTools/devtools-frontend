@@ -145,11 +145,13 @@ describeWithEnvironment('LighthousePanel', () => {
   });
 
   it('returns a failed result when the run fails to start, and can run again afterwards', async () => {
+    const consoleErrorStub = sinon.stub(console, 'error');
     (protocolService.attach as sinon.SinonStub).onFirstCall().rejects(new Error('attach failed'));
     const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
 
     const failedResult = await instance.handleCompleteRun();
     assert.deepEqual(failedResult, {status: 'failed'});
+    sinon.assert.calledWith(consoleErrorStub, sinon.match({message: 'attach failed'}));
 
     const secondResult = await instance.handleCompleteRun();
     assert.deepEqual(secondResult, {status: 'completed', report: LH_REPORT.lhr});

@@ -757,6 +757,8 @@ describeWithEnvironment('LiveMetricsView', () => {
           ?.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, {
             url: 'https://example.com',
             isPrimaryFrame: () => true,
+            isMainFrame: () => true,
+            isOutermostFrame: () => true,
           } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
       await view.updateComplete;
@@ -786,6 +788,8 @@ describeWithEnvironment('LiveMetricsView', () => {
           ?.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, {
             url: 'https://example.com',
             isPrimaryFrame: () => true,
+            isMainFrame: () => true,
+            isOutermostFrame: () => true,
           } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
       await view.updateComplete;
@@ -824,6 +828,8 @@ describeWithEnvironment('LiveMetricsView', () => {
           ?.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, {
             url: 'https://example.com',
             isPrimaryFrame: () => true,
+            isMainFrame: () => true,
+            isOutermostFrame: () => true,
           } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
       await view.updateComplete;

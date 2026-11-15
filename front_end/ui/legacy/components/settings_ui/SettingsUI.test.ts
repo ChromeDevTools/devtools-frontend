@@ -191,6 +191,7 @@ describeWithEnvironment('SettingsUI', () => {
     });
 
     it('returns nothing for an unsupported setting type', () => {
+      const consoleErrorStub = sinon.stub(console, 'error');
       const setting = createSettingsForTest([{
                         settingName: 'test-array-setting',
                         settingType: Common.Settings.SettingType.ARRAY,
@@ -199,6 +200,7 @@ describeWithEnvironment('SettingsUI', () => {
 
       const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
       assert.strictEqual(template, Lit.nothing);
+      sinon.assert.calledWith(consoleErrorStub, 'Invalid setting type: array');
     });
   });
 });

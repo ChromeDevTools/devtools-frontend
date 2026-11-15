@@ -26,6 +26,7 @@ describe('ExternalHandler', () => {
   let removeItemStub: sinon.SinonStub;
 
   beforeEach(() => {
+    sinon.stub(console, 'log');
     getItemStub = sinon.stub(localStorage, 'getItem');
     setItemStub = sinon.stub(localStorage, 'setItem');
     removeItemStub = sinon.stub(localStorage, 'removeItem');

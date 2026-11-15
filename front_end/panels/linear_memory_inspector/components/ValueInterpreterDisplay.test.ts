@@ -9,6 +9,7 @@ import {
   assertScreenshot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
+import {expectConsoleLogs} from '../../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
@@ -17,6 +18,12 @@ export const DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR = '[data-jump]';
 
 describe('ValueInterpreterDisplay', () => {
   setupLocaleHooks();
+  expectConsoleLogs({
+    error: [
+      'No known way of showing value for Float 32-bit',
+      'No known way of showing value for Pointer 32-bit',
+    ],
+  });
   const combinationsForNumbers = [
     {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE, signed: true},
     {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE, signed: false},

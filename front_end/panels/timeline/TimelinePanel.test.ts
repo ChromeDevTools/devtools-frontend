@@ -719,6 +719,7 @@ describe('TimelinePanel', function() {
            }
            return event;
          });
+         const consoleErrorStub = sinon.stub(console, 'error');
          const loadResourceStub = resourceLoader.loadResource as sinon.SinonStub;
          loadResourceStub.rejects(new Error('CSP violation'));
 
@@ -734,6 +735,11 @@ describe('TimelinePanel', function() {
          assert.strictEqual(initiator.target, primaryTarget,
                             'Expected initiator.target to be primaryPageTarget, not null');
          assert.strictEqual(initiator.initiatorUrl, 'http://localhost:8080/index.html');
+         sinon.assert.calledWith(
+             consoleErrorStub,
+             sinon.match.has(
+                 'message',
+                 sinon.match(/Could not load content for http:\/\/localhost:8080\/source\.map\.json: CSP violation/)));
        } finally {
          primaryTarget.dispose('test');
        }

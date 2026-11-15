@@ -17,6 +17,14 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Profiler from './profiler.js';
 
 class TestProfileFlameChartDataProvider extends Profiler.ProfileFlameChart.ProfileFlameChartDataProvider {
+  constructor() {
+    super();
+    this.entryNodes = [
+      {functionName: 'apple', scriptId: '1', url: 'a.js'} as CPUProfile.ProfileTreeModel.ProfileNode,
+      {functionName: 'banana', scriptId: '2', url: 'b.js'} as CPUProfile.ProfileTreeModel.ProfileNode,
+    ];
+  }
+
   override minimumBoundary(): number {
     return 0;
   }

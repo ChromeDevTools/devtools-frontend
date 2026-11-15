@@ -11,16 +11,18 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, i18nTemplate, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
 import accessibilityNodeStyles from './accessibilityNode.css.js';
+import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
-const {classMap, ifDefined} = Directives;
+const {classMap, ifDefined, repeat} = Directives;
 const {widget} = UI.Widget;
 
 const MAX_CONTENT_LENGTH = 10000;
@@ -133,7 +135,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function createSimpleValueElement(type: Protocol.Accessibility.AXValueType|null, value: string): LitTemplate {
+function createSimpleValueElement(type: Protocol.Accessibility.AXValueType|null, value: string): LitTemplate {
   const isMonospace = Boolean(type && type !== Protocol.Accessibility.AXValueType.ValueUndefined &&
                               type !== Protocol.Accessibility.AXValueType.ComputedString);
   const isStringProperty = Boolean(type && StringProperties.has(type));
@@ -148,11 +150,11 @@ export function createSimpleValueElement(type: Protocol.Accessibility.AXValueTyp
       Platform.StringUtilities.trimMiddle(valueText || '', MAX_CONTENT_LENGTH)}</span>`;
 }
 
-export function createExclamationMark(tooltip: string): LitTemplate {
+function createExclamationMark(tooltip: string): LitTemplate {
   return html`<devtools-icon name="warning-filled" class="small" title=${tooltip}></devtools-icon>`;
 }
 
-export function renderNameElement(name: string): LitTemplate {
+function renderNameElement(name: string): LitTemplate {
   if (name in AXAttributes) {
     const attribute = AXAttributes[name];
     return html`<span class="ax-readable-name" title=${attribute.description()}>${attribute.name()}</span>`;
@@ -160,7 +162,7 @@ export function renderNameElement(name: string): LitTemplate {
   return html`<span class="ax-name monospace">${name}</span>`;
 }
 
-export function renderRelatedNode(
+function renderRelatedNode(
     node: {backendDOMNodeId?: Protocol.DOM.BackendNodeId, idref?: string},
     resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
     ): LitTemplate {
@@ -180,7 +182,7 @@ export function renderRelatedNode(
   return html`<span></span>`;
 }
 
-export function createReasonElement(reason: string|null, roleName: string): LitTemplate {
+function createReasonElement(reason: string|null, roleName: string): LitTemplate {
   let content: LitTemplate|string|null = null;
   switch (reason) {
     case 'activeModalDialog':
@@ -243,11 +245,123 @@ export function createReasonElement(reason: string|null, roleName: string): LitT
   return content ? html`<span class="ax-reason">${content}</span>` : nothing;
 }
 
+function renderSourceNameElement(source: Protocol.Accessibility.AXValueSource): LitTemplate {
+  const type = source.type;
+  switch (type) {
+    case Protocol.Accessibility.AXValueSourceType.Attribute:
+    case Protocol.Accessibility.AXValueSourceType.Placeholder:
+    case Protocol.Accessibility.AXValueSourceType.RelatedElement:
+      if (source.nativeSource) {
+        const nativeSource = source.nativeSource;
+        return html`<span class="ax-readable-name" title=${AXNativeSourceTypes[nativeSource].description()}>${
+            AXNativeSourceTypes[nativeSource].name()}</span>`;
+      }
+      return html`<span class="ax-name monospace">${source.attribute || ''}</span>`;
+    default:
+      if (type in AXSourceTypes) {
+        return html`<span class="ax-readable-name" title=${AXSourceTypes[type].description()}>${
+            AXSourceTypes[type].name()}</span>`;
+      }
+      console.warn(type, 'not in AXSourceTypes');
+      return html`<span>${type}</span>`;
+  }
+}
+
+export interface IgnoredViewInput {
+  roleName: string;
+  ignoredReasons: Protocol.Accessibility.AXProperty[];
+  resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>;
+  onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void;
+}
+
+interface RenderedValue {
+  inline: LitTemplate;
+  children: LitTemplate[];
+  expanded: boolean;
+}
+
+function renderRelatedNodeSourceTreeElement(
+    node: {backendDOMNodeId?: Protocol.DOM.BackendNodeId, idref?: string},
+    value: Protocol.Accessibility.AXRelatedNode|undefined,
+    resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
+    onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void,
+    ): LitTemplate {
+  const onEnter = (): void => {
+    if (node.backendDOMNodeId !== undefined) {
+      onRevealNode(node.backendDOMNodeId);
+    }
+  };
+  return html`<li role="treeitem" @enter=${onEnter}>${renderRelatedNode(node, resolvedNodes)}${
+      value?.text ? createSimpleValueElement(Protocol.Accessibility.AXValueType.ComputedString, value.text) :
+                    nothing}</li>`;
+}
+
+function renderRelatedNodeListValueElement(
+    value: Protocol.Accessibility.AXValue,
+    resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
+    onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void,
+    ): RenderedValue {
+  const relatedNodes = value.relatedNodes;
+  const expanded = Boolean(relatedNodes && relatedNodes.length <= 3);
+  if (relatedNodes?.length === 1 && !value.value) {
+    return {
+      inline: renderRelatedNode({backendDOMNodeId: relatedNodes[0].backendDOMNodeId}, resolvedNodes),
+      children: [],
+      expanded,
+    };
+  }
+  const children =
+      (relatedNodes || [])
+          .map(relatedNode => renderRelatedNodeSourceTreeElement({backendDOMNodeId: relatedNode.backendDOMNodeId},
+                                                                 relatedNode, resolvedNodes, onRevealNode));
+  return {inline: nothing, children, expanded};
+}
+
+function renderIgnoredReasonTreeElement(
+    property: Protocol.Accessibility.AXProperty,
+    roleName: string,
+    resolvedNodes: ReadonlyMap<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>,
+    onRevealNode: (backendDOMNodeId: Protocol.DOM.BackendNodeId) => void,
+    ): LitTemplate {
+  const reasonTemplate = createReasonElement(property.name, roleName);
+  const value = property.value;
+  const {inline, children, expanded} = value.type === Protocol.Accessibility.AXValueType.Idref ?
+      renderRelatedNodeListValueElement(value, resolvedNodes, onRevealNode) :
+      {inline: nothing, children: [], expanded: false};
+  return html`<li role="treeitem" ?toggle-on-click=${true} selectable="false"
+      ?open=${expanded && children.length > 0}>${reasonTemplate}${inline}${
+      children.length > 0 ? html`<ul role="group">${children}</ul>` : nothing}</li>`;
+}
+
+export function renderIgnoredView(input: IgnoredViewInput): LitTemplate {
+  // clang-format off
+  return html`
+    <devtools-widget
+      ${widget(UI.EmptyWidget.EmptyWidget, {text: i18nString(UIStrings.accessibilityNodeNotExposed)})}
+      class="ax-ignored-info info-message-overflow"></devtools-widget>
+    ${input.ignoredReasons.length > 0 ? html`
+      <devtools-tree
+        hide-overflow
+        .template=${html`
+          <style>${accessibilityNodeStyles}</style>
+          <style>${accessibilityPropertiesStyles}</style>
+          <style>${objectValueStyles}</style>
+          <ul role="tree">
+            ${repeat(
+                input.ignoredReasons,
+                (property, index) => `${property.name}:${index}`,
+                property => renderIgnoredReasonTreeElement(
+                    property, input.roleName, input.resolvedNodes, input.onRevealNode))}
+          </ul>
+        `}></devtools-tree>` : nothing}`;
+  // clang-format on
+}
+
 export class AXNodeSubPane extends AccessibilitySubPane {
   private readonly noNodeInfo: UI.EmptyWidget.EmptyWidget;
-  private readonly ignoredInfo: UI.EmptyWidget.EmptyWidget;
   private readonly treeOutline: UI.TreeOutline.TreeOutline;
-  private readonly ignoredReasonsTree: UI.TreeOutline.TreeOutline;
+  readonly #declarativeContainer = document.createElement('div');
+  readonly #resolvedNodes = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
   constructor(element?: HTMLElement) {
     super(element, {
       title: i18nString(UIStrings.computedProperties),
@@ -259,10 +373,9 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this.contentElement.classList.add('ax-subpane');
 
     this.noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
-    this.ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info', 'hidden');
-
+    this.#declarativeContainer.style.display = 'contents';
+    this.contentElement.appendChild(this.#declarativeContainer);
     this.treeOutline = this.createTreeOutline();
-    this.ignoredReasonsTree = this.createTreeOutline();
 
     this.element.classList.add('accessibility-computed');
 
@@ -275,16 +388,13 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     }
     super.setAXNode(axNode);
 
+    this.#resolvedNodes.clear();
     const treeOutline = this.treeOutline;
     treeOutline.removeChildren();
-    const ignoredReasons = this.ignoredReasonsTree;
-    ignoredReasons.removeChildren();
+    this.requestUpdate();
 
     if (!axNode) {
       treeOutline.element.classList.add('hidden');
-      this.ignoredInfo.element.classList.add('hidden');
-      ignoredReasons.element.classList.add('hidden');
-
       this.noNodeInfo.element.classList.remove('hidden');
       this.element.classList.add('ax-ignored-node-pane');
 
@@ -295,26 +405,10 @@ export class AXNodeSubPane extends AccessibilitySubPane {
       this.noNodeInfo.element.classList.add('hidden');
       treeOutline.element.classList.add('hidden');
       this.element.classList.add('ax-ignored-node-pane');
-
-      this.ignoredInfo.element.classList.remove('hidden');
-      ignoredReasons.element.classList.remove('hidden');
-      function addIgnoredReason(property: Protocol.Accessibility.AXProperty): void {
-        ignoredReasons.appendChild(
-            new AXNodeIgnoredReasonTreeElement(property, axNode as SDK.AccessibilityModel.AccessibilityNode));
-      }
-      const ignoredReasonsArray = axNode.ignoredReasons() as Protocol.Accessibility.AXProperty[];
-      for (const reason of ignoredReasonsArray) {
-        addIgnoredReason(reason);
-      }
-      if (!ignoredReasons.firstChild()) {
-        ignoredReasons.element.classList.add('hidden');
-      }
+      this.#resolveRelatedNodes(axNode);
       return;
     }
     this.element.classList.remove('ax-ignored-node-pane');
-
-    this.ignoredInfo.element.classList.add('hidden');
-    ignoredReasons.element.classList.add('hidden');
     this.noNodeInfo.element.classList.add('hidden');
 
     treeOutline.element.classList.remove('hidden');
@@ -347,8 +441,88 @@ export class AXNodeSubPane extends AccessibilitySubPane {
   }
 
   protected override setNode(node: SDK.DOMModel.DOMNode|null): void {
+    if (this.node === node) {
+      return;
+    }
     super.setNode(node);
     this.setAXNode(null);
+  }
+
+  #resolveRelatedNodes(axNode: SDK.AccessibilityModel.AccessibilityNode): void {
+    const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
+    const collectFromValue = (value: Protocol.Accessibility.AXValue|undefined): void => {
+      for (const relatedNode of value?.relatedNodes ?? []) {
+        backendNodeIds.add(relatedNode.backendDOMNodeId);
+      }
+      for (const source of value?.sources ?? []) {
+        collectFromValue(source.attributeValue);
+        collectFromValue(source.nativeSourceValue);
+        collectFromValue(source.value);
+      }
+    };
+    const items = axNode.ignored() ?
+        (axNode.ignoredReasons() as Protocol.Accessibility.AXProperty[] | null) ?? [] :
+        [...axNode.coreProperties(), ...(axNode.properties() as Protocol.Accessibility.AXProperty[] | null) ?? []];
+    for (const property of items) {
+      collectFromValue(property.value);
+    }
+    if (!axNode.ignored()) {
+      collectFromValue(axNode.role() ?? undefined);
+    }
+    const domModel = axNode.accessibilityModel().target().model(SDK.DOMModel.DOMModel);
+    if (domModel && backendNodeIds.size > 0) {
+      void domModel.pushNodesByBackendIdsToFrontend(backendNodeIds).then(resolvedMap => {
+        if (this.axNode !== axNode || !resolvedMap) {
+          return;
+        }
+        for (const [id, node] of resolvedMap) {
+          if (node) {
+            this.#resolvedNodes.set(id, node);
+          }
+        }
+        this.requestUpdate();
+      });
+    }
+  }
+
+  #onRevealNode = (backendDOMNodeId: Protocol.DOM.BackendNodeId): void => {
+    const node = this.#resolvedNodes.get(backendDOMNodeId);
+    if (node) {
+      void Common.Revealer.reveal(node);
+      return;
+    }
+    const currentAxNode = this.axNode;
+    if (currentAxNode) {
+      const deferredNode =
+          new SDK.DOMModel.DeferredDOMNode(currentAxNode.accessibilityModel().target(), backendDOMNodeId);
+      void deferredNode.resolvePromise().then(resolved => {
+        if (resolved) {
+          if (this.axNode === currentAxNode) {
+            this.#resolvedNodes.set(backendDOMNodeId, resolved);
+            this.requestUpdate();
+          }
+          void Common.Revealer.reveal(resolved);
+        }
+      });
+    }
+  };
+
+  override performUpdate(): void {
+    const axNode = this.axNode;
+    if (!axNode?.ignored()) {
+      render(nothing, this.#declarativeContainer);
+      return;
+    }
+    const ignoredReasons = (axNode.ignoredReasons() as Protocol.Accessibility.AXProperty[] | null) ?? [];
+    render(
+        renderIgnoredView({
+          roleName: String(axNode.role()?.value || ''),
+          ignoredReasons,
+          resolvedNodes: new Map(this.#resolvedNodes),
+          onRevealNode: this.#onRevealNode,
+        }),
+        this.#declarativeContainer,
+    );
   }
 }
 
@@ -553,34 +727,9 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
   }
 
   appendSourceNameElement(source: Protocol.Accessibility.AXValueSource): void {
-    const nameElement = document.createElement('span');
-    const type = source.type;
-    switch (type) {
-      case Protocol.Accessibility.AXValueSourceType.Attribute:
-      case Protocol.Accessibility.AXValueSourceType.Placeholder:
-      case Protocol.Accessibility.AXValueSourceType.RelatedElement:
-        if (source.nativeSource) {
-          const nativeSource = source.nativeSource;
-          nameElement.textContent = AXNativeSourceTypes[nativeSource].name();
-          UI.Tooltip.Tooltip.install(nameElement, AXNativeSourceTypes[nativeSource].description());
-          nameElement.classList.add('ax-readable-name');
-          break;
-        }
-        nameElement.textContent = source.attribute || null;
-        nameElement.classList.add('ax-name');
-        nameElement.classList.add('monospace');
-        break;
-      default:
-        if (type in AXSourceTypes) {
-          nameElement.textContent = AXSourceTypes[type].name();
-          UI.Tooltip.Tooltip.install(nameElement, AXSourceTypes[type].description());
-          nameElement.classList.add('ax-readable-name');
-        } else {
-          console.warn(type, 'not in AXSourceTypes');
-          nameElement.textContent = type;
-        }
-    }
-    this.listItemElement.appendChild(nameElement);
+    const container = document.createElement('span');
+    render(renderSourceNameElement(source), container);
+    this.listItemElement.appendChild(container.firstElementChild ?? container);
   }
 
   private update(): void {
@@ -690,28 +839,6 @@ export class AXRelatedNodeElement {
   revealNode(): void {
     if (this.deferredNode) {
       void this.deferredNode.resolvePromise().then(node => Common.Revealer.reveal(node));
-    }
-  }
-}
-
-export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
-  private property: Protocol.Accessibility.AXProperty;
-  override toggleOnClick: boolean;
-
-  constructor(property: Protocol.Accessibility.AXProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
-    super(axNode);
-    this.property = property;
-    this.axNode = axNode;
-    this.toggleOnClick = true;
-    this.selectable = false;
-  }
-
-  override onattach(): void {
-    const roleName = String(this.axNode.role()?.value || '');
-    render(createReasonElement(this.property.name, roleName), this.listItemElement);
-    const value = this.property.value;
-    if (value.type === Protocol.Accessibility.AXValueType.Idref) {
-      this.appendRelatedNodeListValueElement(value);
     }
   }
 }

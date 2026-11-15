@@ -212,6 +212,9 @@ devtools_ui_module("unittests") {
     "TimelineSelection.test.ts",
     "TimelineTreeView.test.ts",
     "TimelineUIUtils.test.ts",
+    "TraceSnapshotHarness.ts",
+    "TraceSnapshotSerializer.test.ts",
+    "TraceSnapshotSerializer.ts",
     "TrackConfigBanner.test.ts",
     "TrackConfiguration.test.ts",
   ]
@@ -242,6 +245,7 @@ devtools_ui_module("unittests") {
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
     "./components:bundle",
   ]

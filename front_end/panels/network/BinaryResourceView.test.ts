@@ -11,7 +11,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -272,6 +272,8 @@ describeWithEnvironment('BinaryResourceView', () => {
 });
 
 describeWithEnvironment('BinaryResourceView Position Syncing', () => {
+  expectConsoleLogs({warn: ['Measure loop restarted more than 5 times']});
+
   it('synchronizes cursor position percentage between views', async () => {
     // We need more content so that a 50% scroll is meaningful and document length > 0
     const base64content = btoa('hello world'.repeat(100));
@@ -283,7 +285,7 @@ describeWithEnvironment('BinaryResourceView Position Syncing', () => {
         Common.ResourceType.resourceTypes.XHR,
     );
     // Needed to instantiate CodeMirror for the base64 view
-    renderElementIntoDOM(view, {width: 800, height: 600});
+    renderElementIntoDOM(view, {width: 800, height: 600, includeCommonStyles: true});
 
     await waitForViewToSettle(view);
 

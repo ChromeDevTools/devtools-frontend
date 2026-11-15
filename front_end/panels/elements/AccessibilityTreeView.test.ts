@@ -32,9 +32,8 @@ describeWithEnvironment('AccessibilityTreeView', () => {
 
     const model = target.model(SDK.AccessibilityModel.AccessibilityModel);
     assert.exists(model);
-    sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getOutermostFrame').returns({
-      id: MAIN_FRAME_ID,
-    } as SDK.ResourceTreeModel.ResourceTreeFrame);
+    sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getOutermostFrame')
+        .returns(inScope ? {id: MAIN_FRAME_ID} as SDK.ResourceTreeModel.ResourceTreeFrame : null);
 
     const rootPayload: Protocol.Accessibility.AXNode = {
       nodeId: 'root-id' as Protocol.Accessibility.AXNodeId,

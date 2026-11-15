@@ -20,7 +20,7 @@ describeWithEnvironment('CodeBlock', () => {
   let clock: sinon.SinonFakeTimers;
 
   beforeEach(() => {
-    clock = sinon.useFakeTimers();
+    clock = sinon.useFakeTimers({shouldClearNativeTimers: true});
   });
 
   it('copies the code to clipboard', async () => {

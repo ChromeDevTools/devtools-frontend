@@ -16,7 +16,7 @@ import {
   dispatchPasteEvent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, expectConsoleLogs} from '../../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../../testing/ExpectStubCall.js';
 import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
@@ -28,6 +28,8 @@ import * as SourceFrame from './source_frame.js';
 const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('SourceFrame', () => {
+  expectConsoleLogs({warn: ['Measure loop restarted more than 5 times']});
+
   let setting: Common.Settings.Setting<boolean>;
 
   beforeEach(() => {

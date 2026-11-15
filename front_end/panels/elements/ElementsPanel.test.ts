@@ -236,8 +236,8 @@ describeWithEnvironment('ElementsPanel', () => {
   it('hides DOM node highlight on search canceled and when navigating search results', async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const domModel = target.model(SDK.DOMModel.DOMModel)!;
-    const node1 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    const node2 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    const node1 = sinon.createStubInstance(SDK.DOMModel.DOMNode, {domModel});
+    const node2 = sinon.createStubInstance(SDK.DOMModel.DOMNode, {domModel});
     sinon.stub(domModel, 'performSearch').resolves(2);
     const searchResultStub = sinon.stub(domModel, 'searchResult');
     searchResultStub.withArgs(0).resolves(node1);

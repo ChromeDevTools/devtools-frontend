@@ -42,7 +42,12 @@ describeWithEnvironment('EventListenersView', () => {
       type: Protocol.Runtime.RemoteObjectType.Object,
       objectId: objectId as Protocol.Runtime.RemoteObjectId,
     });
-    const callFunctionStub = sinon.stub(eventTarget, 'callFunction').resolves({object: null});
+    const resultObject = runtimeModel.createRemoteObject({
+      type: Protocol.Runtime.RemoteObjectType.Object,
+      objectId: `${objectId}-result` as Protocol.Runtime.RemoteObjectId,
+    });
+    sinon.stub(resultObject, 'getOwnProperties').resolves({properties: [], internalProperties: []});
+    const callFunctionStub = sinon.stub(eventTarget, 'callFunction').resolves({object: resultObject});
     return {eventTarget, callFunctionStub};
   }
 

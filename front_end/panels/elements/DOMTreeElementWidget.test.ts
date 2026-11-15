@@ -1764,7 +1764,13 @@ describeWithEnvironment('DOMTreeElementWidget issue management', () => {
   it('does not highlight tree element for non-supported issue', async () => {
     const inspectorIssue = {
       code: Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
-      details: {},
+      details: {
+        contentSecurityPolicyIssueDetails: {
+          violatedDirective: 'script-src',
+          isReportOnly: false,
+          contentSecurityPolicyViolationType: Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation,
+        },
+      },
     };
     const issue = IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue.fromInspectorIssue(
         mockModel, inspectorIssue)[0];

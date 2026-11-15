@@ -453,14 +453,14 @@ describeWithEnvironment('Widget', () => {
     it('resolves when performUpdate throws an error', async () => {
       const widget = new (class extends Widget {
         override async performUpdate(): Promise<void> {
-          throw new Error('AbortError');
+          throw new DOMException('AbortError', 'AbortError');
         }
       })();
 
       // Prevent the test from failing due to the unhandled rejection
       const originalHandler = window.onunhandledrejection;
       window.onunhandledrejection = e => {
-        if (e.reason?.message === 'AbortError') {
+        if (e.reason?.name === 'AbortError') {
           e.preventDefault();
         }
       };

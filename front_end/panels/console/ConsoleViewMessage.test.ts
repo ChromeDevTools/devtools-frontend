@@ -2352,5 +2352,37 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       assert.strictEqual(computedStyle.color, 'rgb(255, 85, 255)');
       assert.strictEqual(computedStyle.backgroundColor, 'rgb(255, 85, 255)');
     });
+
+    it('renders customPreview widget directly inside .console-message-text', async () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const rawCustomParam: Protocol.Runtime.RemoteObject = {
+        type: Protocol.Runtime.RemoteObjectType.Object,
+        objectId: 'custom-1' as Protocol.Runtime.RemoteObjectId,
+        customPreview: {
+          header: JSON.stringify(['span', {}, 'Custom header']),
+          bodyGetterId: 'body-1' as Protocol.Runtime.RemoteObjectId,
+        },
+      };
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          '',
+          {
+            type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+            parameters: [rawCustomParam],
+          },
+      );
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const host = new UI.Widget.Widget();
+      host.markAsRoot();
+      renderElementIntoDOM(host);
+      host.contentElement.appendChild(message.toMessageElement());
+      const firstInText = message.contentElement().querySelector('.console-message-text *');
+      assert.exists(firstInText);
+      await UI.Widget.Widget.get(firstInText)?.updateComplete;
+      assert.include(firstInText.deepTextContent(), 'Custom header');
+    });
   });
 });

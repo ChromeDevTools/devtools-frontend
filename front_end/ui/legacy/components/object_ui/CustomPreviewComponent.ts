@@ -4,7 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as SDK from '../../../../core/sdk/sdk.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
@@ -314,7 +314,11 @@ export class CustomPreviewComponent extends UI.Widget.Widget<DocumentFragment> {
   }
 
   set object(object: SDK.RemoteObject.RemoteObject|undefined) {
-    if (this.#object === object) {
+    if (this.#object === object ||
+        (this.#object && object && this.#object.objectId !== undefined && this.#object.objectId === object.objectId &&
+         this.#object instanceof SDK.RemoteObject.RemoteObjectImpl &&
+         object instanceof SDK.RemoteObject.RemoteObjectImpl &&
+         this.#object.runtimeModel() === object.runtimeModel())) {
       return;
     }
     this.#object = object;

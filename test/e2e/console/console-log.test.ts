@@ -329,15 +329,19 @@ describe('The Console Tab', () => {
     async function getConsoleMessageTextChunksWithStyle(
         devToolsPage: DevToolsPage, styles: Array<keyof CSSStyleDeclaration> = []): Promise<string[][][]> {
       return await devToolsPage.evaluate((selector, styles) => {
-        return [...document.querySelectorAll(selector)].map(message => [...message.childNodes].map(node => {
-          // For all nodes, extract text.
-          const result = [node.textContent as string];
-          // For element nodes, get the requested styles.
-          for (const style of styles) {
-            result.push(((node as HTMLElement).style?.[style] as string) ?? '');
-          }
-          return result;
-        }));
+        return [...document.querySelectorAll(selector)].map(
+            message => [...message.childNodes]
+                           .filter(node => node.nodeType !== Node.COMMENT_NODE &&
+                                       (node.nodeType !== Node.TEXT_NODE || node.nodeValue !== ''))
+                           .map(node => {
+                             // For all nodes, extract text.
+                             const result = [node.textContent as string];
+                             // For element nodes, get the requested styles.
+                             for (const style of styles) {
+                               result.push(((node as HTMLElement).style?.[style] as string) ?? '');
+                             }
+                             return result;
+                           }));
       }, CONSOLE_ALL_MESSAGES_SELECTOR, styles);
     }
 

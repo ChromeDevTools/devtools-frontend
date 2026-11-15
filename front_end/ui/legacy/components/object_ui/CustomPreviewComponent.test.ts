@@ -146,6 +146,41 @@ describe('CustomPreviewComponent', () => {
     assert.notExists(customSectionAfter);
   });
 
+  it('preserves disassembled state when re-assigned a RemoteObject wrapper with the same objectId', async () => {
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    const runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
+    runtimeModel.target.returns(target);
+    const customPreview: Protocol.Runtime.CustomPreview = {
+      header: JSON.stringify(['span', {}, 'Header']),
+    };
+    const firstWrapper =
+        new SDK.RemoteObject.RemoteObjectImpl(runtimeModel, 'obj-1' as Protocol.Runtime.RemoteObjectId, 'object',
+                                              undefined, undefined, undefined, 'Object', undefined, customPreview);
+    const secondWrapper =
+        new SDK.RemoteObject.RemoteObjectImpl(runtimeModel, 'obj-1' as Protocol.Runtime.RemoteObjectId, 'object',
+                                              undefined, undefined, undefined, 'Object', undefined, customPreview);
+    sinon.stub(firstWrapper, 'getAllProperties').resolves({properties: [], internalProperties: []});
+    sinon.stub(secondWrapper, 'getAllProperties').resolves({properties: [], internalProperties: []});
+
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component);
+    component.object = firstWrapper;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const contextMenu = getContextMenuForElement(component.element);
+    const disassembleItem = findMenuItemWithLabel(contextMenu.revealSection(), 'Show as JavaScript object');
+    assert.exists(disassembleItem);
+    contextMenu.invokeHandler(disassembleItem.id());
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.exists(component.element.shadowRoot?.querySelector('devtools-tree'));
+
+    component.object = secondWrapper;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.exists(component.element.shadowRoot?.querySelector('devtools-tree'));
+    assert.notExists(component.element.shadowRoot?.querySelector('.custom-expandable-section'));
+  });
+
   it('screenshot: renders a custom preview', async () => {
     const object = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'});
     sinon.stub(object, 'customPreview').returns({

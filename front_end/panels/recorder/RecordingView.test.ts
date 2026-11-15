@@ -7,7 +7,7 @@ import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
-import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
   setupActionRegistry,
@@ -31,11 +31,12 @@ describeWithEnvironment('RecordingView', () => {
   } as Models.RecorderSettings.RecorderSettings;
   const views: RecordingView.RecordingView[] = [];
 
-  afterEach(() => {
+  afterEach(async () => {
     // Unregister global listeners in willHide to prevent leaks.
     for (const view of views) {
       view.willHide();
     }
+    await doubleRaf();
   });
 
   async function createView(output?: RecordingView.ViewOutput):
@@ -85,6 +86,7 @@ describeWithEnvironment('RecordingView', () => {
     assert.strictEqual(line, 3);
     assert.strictEqual(length, 3);
     assert.isFalse(scroll);
+    await doubleRaf();
   });
 
   it('should close code view', async () => {

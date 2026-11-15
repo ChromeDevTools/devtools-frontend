@@ -144,6 +144,7 @@ describeWithEnvironment('ConsoleInsight', () => {
       };
     }
 
+    const stub = sinon.stub(console, 'error');
     const {view, component} = await createConsoleInsightWidget({
       aidaClient: getAidaClientWithTimeout(),
     });
@@ -156,6 +157,8 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.strictEqual(nextInput.state.type, Explain.State.INSIGHT);
     const insight = nextInput.state as Insight;
     assert.isTrue(insight.timedOut);
+    sinon.assert.calledWith(stub, '[ConsoleInsight] Error in #generateInsight:',
+                            sinon.match.has('message', 'doAidaConversation timed out'));
   });
 
   const reportsRating = (positive: boolean, disallowLogging: boolean) => async () => {

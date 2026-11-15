@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, beforeEach, describe, it} from 'mocha';
+import {after, afterEach, beforeEach, describe, it} from 'mocha';
 
+import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
   setupActionRegistry,
@@ -17,6 +18,16 @@ import {RecorderPanel, type RecordingView, StepView} from './recorder.js';
 
 describeWithEnvironment('RecorderPanel', () => {
   setupActionRegistry();
+
+  let panel: RecorderPanel.RecorderPanel|null = null;
+
+  afterEach(async () => {
+    if (panel) {
+      panel.detach();
+      await doubleRaf();
+      panel = null;
+    }
+  });
 
   function makeRecording(): Models.RecordingStorage.StoredRecording {
     const step = {
@@ -33,28 +44,26 @@ describeWithEnvironment('RecorderPanel', () => {
   async function setupPanel(
       recording: Models.RecordingStorage.StoredRecording,
       ): Promise<RecorderPanel.RecorderPanel> {
-    const panel = new RecorderPanel.RecorderPanel();
+    panel = new RecorderPanel.RecorderPanel();
     panel.setCurrentPageForTesting(RecorderPanel.Pages.RECORDING_PAGE);
     panel.setCurrentRecordingForTesting(recording);
-    const div = document.createElement('div');
-    panel.markAsRoot();
-    panel.show(div);
+    renderElementIntoDOM(panel);
     await panel.updateComplete;
+    await doubleRaf();
     return panel;
   }
 
   describe('Navigation', () => {
     it('should return back to the previous page if recording was cancelled', async () => {
       const previousPage = RecorderPanel.Pages.ALL_RECORDINGS_PAGE;
-      const panel = new RecorderPanel.RecorderPanel();
+      panel = new RecorderPanel.RecorderPanel();
       panel.setCurrentPageForTesting(previousPage);
       panel.setCurrentPageForTesting(
           RecorderPanel.Pages.CREATE_RECORDING_PAGE,
       );
-      const div = document.createElement('div');
-      panel.markAsRoot();
-      panel.show(div);
+      renderElementIntoDOM(panel);
       await panel.updateComplete;
+      await doubleRaf();
 
       await panel.onRecordingCancelled();
       assert.strictEqual(panel.getCurrentPageForTesting(), previousPage);

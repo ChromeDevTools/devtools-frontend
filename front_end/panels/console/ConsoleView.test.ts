@@ -56,7 +56,9 @@ describeWithEnvironment('ConsoleView', () => {
     consoleView = Console.ConsoleView.ConsoleView.instance({forceNew: true, viewportThrottlerTimeout: 0});
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
     consoleView.dispose();
     Console.ConsoleView.ConsoleView.clearConsoleViewInstanceForTest();
     consoleView.detach();
@@ -1532,6 +1534,10 @@ describeWithEnvironment('ConsoleView', () => {
       activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
       activeElement = getActiveElement();
       assert.include(activeElement.textContent || '', 'foo.js:23');
+
+      messageView.willHide();
+      await UI.Widget.Widget.allUpdatesComplete;
+      await doubleRaf();
     });
   });
 

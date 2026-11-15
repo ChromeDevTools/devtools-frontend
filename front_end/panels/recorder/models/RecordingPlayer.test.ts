@@ -282,17 +282,21 @@ describe('RecordingPlayer', () => {
     }
 
     it('should reject navigation to chrome:// URLs', async () => {
+      sinon.stub(console, 'error');
       const url = urlString`chrome://settings`;
       const error = await waitForRecordingUrlError(url);
       assert.isNotNull(error);
       assert.strictEqual(error!.message, `Navigation to ${url} is not allowed, due to blocked schema`);
+      sinon.assert.calledWith(console.error as sinon.SinonStub, 'Replay error', error!.message);
     });
 
     it('should reject navigation to javascript:// URLs', async () => {
+      sinon.stub(console, 'error');
       const url = urlString`javascript:alert(1)`;
       const error = await waitForRecordingUrlError(url);
       assert.isNotNull(error);
       assert.strictEqual(error.message, `Navigation to ${url} is not allowed, due to blocked schema`);
+      sinon.assert.calledWith(console.error as sinon.SinonStub, 'Replay error', error.message);
     });
 
     it('should allow navigation to http:// URLs', async () => {
@@ -320,10 +324,12 @@ describe('RecordingPlayer', () => {
     });
 
     it('should reject navigation to other about: URLs', async () => {
+      sinon.stub(console, 'error');
       const url = urlString`about:srcdoc`;
       const error = await waitForRecordingUrlError(url);
       assert.isNotNull(error);
       assert.strictEqual(error.message, `Navigation to ${url} is not allowed, due to blocked schema`);
+      sinon.assert.calledWith(console.error as sinon.SinonStub, 'Replay error', error.message);
     });
   });
 });

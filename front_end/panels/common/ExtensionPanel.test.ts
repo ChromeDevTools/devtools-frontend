@@ -7,6 +7,7 @@ import {it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
+import * as Extensions from '../../models/extensions/extensions.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -80,6 +81,135 @@ describeWithEnvironment('ExtensionNotifierView', () => {
   });
 });
 
+describeWithEnvironment('ExtensionPanel', () => {
+  it('passes initial state via view function', () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const dummySearchableView = sinon.createStubInstance(UI.SearchableView.SearchableView);
+    const view = createViewFunctionStub(Common.ExtensionPanel.ExtensionPanel, {
+      searchableView: dummySearchableView,
+    });
+    const panel = new Common.ExtensionPanel.ExtensionPanel(server, 'test-panel', 'panel-id',
+                                                           'chrome-extension://ext/page.html', view);
+
+    assert.strictEqual(view.input.server, server);
+    assert.strictEqual(view.input.id, 'panel-id');
+    assert.strictEqual(view.input.pageURL, 'chrome-extension://ext/page.html');
+    assert.strictEqual(view.input.searchProvider, panel);
+    assert.lengthOf(view.input.toolbarItems, 0);
+    assert.strictEqual(panel.searchableView(), dummySearchableView);
+  });
+
+  it('updates toolbar items via view function', async () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const view = createViewFunctionStub(Common.ExtensionPanel.ExtensionPanel);
+    const panel = new Common.ExtensionPanel.ExtensionPanel(server, 'test-panel', 'panel-id',
+                                                           'chrome-extension://ext/page.html', view);
+
+    const button = new Common.ExtensionPanel.ExtensionButton(server, 'btn-1', 'chrome-extension://ext/icon.png',
+                                                             'My Tooltip', false);
+    panel.addToolbarItem(button.toolbarButton());
+    await view.nextInput;
+
+    assert.lengthOf(view.input.toolbarItems, 1);
+    assert.strictEqual(view.input.toolbarItems[0].id, 'btn-1');
+    assert.strictEqual(view.input.toolbarItems[0].iconURL, 'chrome-extension://ext/icon.png');
+    assert.strictEqual(view.input.toolbarItems[0].tooltip, 'My Tooltip');
+    assert.isFalse(view.input.toolbarItems[0].disabled);
+
+    view.input.toolbarItems[0].onClick();
+    sinon.assert.calledOnceWithExactly(server.notifyButtonClicked, 'btn-1');
+
+    button.update('chrome-extension://ext/icon2.png', 'Updated Tooltip', true);
+    await view.nextInput;
+
+    assert.strictEqual(view.input.toolbarItems[0].iconURL, 'chrome-extension://ext/icon2.png');
+    assert.strictEqual(view.input.toolbarItems[0].tooltip, 'Updated Tooltip');
+    assert.isTrue(view.input.toolbarItems[0].disabled);
+  });
+
+  it('forwards search actions to the extension server', () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const dummySearchableView = sinon.createStubInstance(UI.SearchableView.SearchableView);
+    const view = createViewFunctionStub(Common.ExtensionPanel.ExtensionPanel, {
+      searchableView: dummySearchableView,
+    });
+    const panel = new Common.ExtensionPanel.ExtensionPanel(server, 'test-panel', 'panel-id',
+                                                           'chrome-extension://ext/page.html', view);
+
+    panel.performSearch(new UI.SearchableView.SearchConfig('needle', false, false, false), true);
+    sinon.assert.calledWithExactly(server.notifySearchAction, 'panel-id',
+                                   Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch, 'needle');
+
+    panel.jumpToNextSearchResult();
+    sinon.assert.calledWithExactly(server.notifySearchAction, 'panel-id',
+                                   Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
+
+    panel.jumpToPreviousSearchResult();
+    sinon.assert.calledWithExactly(server.notifySearchAction, 'panel-id',
+                                   Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult);
+
+    panel.onSearchCanceled();
+    sinon.assert.calledWithExactly(server.notifySearchAction, 'panel-id',
+                                   Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
+    sinon.assert.calledOnceWithExactly(dummySearchableView.updateSearchMatchesCount, 0);
+  });
+
+  it('renders toolbar items in DEFAULT_VIEW', () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const searchable = sinon.createStubInstance(Common.ExtensionPanel.ExtensionPanel);
+    const target = document.createElement('div');
+    const output: Common.ExtensionPanel.ViewOutput = {};
+
+    Common.ExtensionPanel.DEFAULT_VIEW({
+      server,
+      id: 'panel-id',
+      pageURL: 'about:blank',
+      searchProvider: searchable,
+      toolbarItems: [],
+    },
+                                       output, target);
+
+    const toolbar = target.querySelector('devtools-toolbar');
+    assert.exists(toolbar);
+    assert.isTrue(toolbar.hasAttribute('hidden'));
+    assert.instanceOf(output.searchableView, UI.SearchableView.SearchableView);
+
+    const onClick = sinon.stub();
+    Common.ExtensionPanel.DEFAULT_VIEW({
+      server,
+      id: 'panel-id',
+      pageURL: 'about:blank',
+      searchProvider: searchable,
+      toolbarItems: [{
+        id: 'btn-1',
+        iconURL: 'chrome-extension://ext/icon.png',
+        tooltip: 'Click me',
+        disabled: false,
+        onClick,
+      }],
+    },
+                                       output, target);
+
+    assert.isFalse(toolbar.hasAttribute('hidden'));
+    const button = toolbar.querySelector('devtools-button');
+    assert.exists(button);
+    assert.strictEqual(button.title, 'Click me');
+    button.click();
+    sinon.assert.calledOnce(onClick);
+  });
+
+  it('mounts the extension iframe when the panel is attached to the DOM', async () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const panel = new Common.ExtensionPanel.ExtensionPanel(server, 'test-panel', 'panel-id', 'about:blank');
+
+    renderElementIntoDOM(panel);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const iframe = panel.element.querySelector('iframe.extension');
+    assert.instanceOf(iframe, HTMLIFrameElement);
+    assert.strictEqual(iframe.getAttribute('src'), 'about:blank');
+  });
+});
 describeWithEnvironment('ExtensionSidebarPane', () => {
   it('creates a read-only object properties section for objects', async () => {
     const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);

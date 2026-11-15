@@ -4,54 +4,131 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Platform from '../../core/platform/platform.js';
-import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 
 import type {ExtensionServer} from './ExtensionServer.js';
 import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
 
+const {repeat, styleMap} = Directives;
+const {widget, widgetRef} = UI.Widget;
+
+export interface ToolbarButtonData {
+  id: string;
+  iconURL: string;
+  tooltip: string;
+  disabled: boolean;
+  onClick: () => void;
+}
+
+export interface ViewInput {
+  server: ExtensionServer;
+  id: string;
+  pageURL: string;
+  searchProvider: UI.SearchableView.Searchable;
+  toolbarItems: ToolbarButtonData[];
+}
+
+export interface ViewOutput {
+  searchableView?: UI.SearchableView.SearchableView;
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
+  render(html`
+    <devtools-toolbar ?hidden=${input.toolbarItems.length === 0}>
+      ${repeat(input.toolbarItems, item => item.id, item => html`
+        <devtools-button
+          class="toolbar-button toolbar-item"
+          style=${styleMap({backgroundImage: item.iconURL ? `url(${item.iconURL})` : undefined})}
+          title=${item.tooltip}
+          ?disabled=${item.disabled}
+          .data=${{
+            variant: Buttons.Button.Variant.TEXT,
+            reducedFocusRing: true,
+            title: item.tooltip,
+            disabled: item.disabled,
+          } as Buttons.Button.ButtonData}
+          @click=${item.onClick}
+        ></devtools-button>
+      `)}
+    </devtools-toolbar>
+    <devtools-widget class="vbox flex-auto"
+      ${widget(UI.SearchableView.SearchableView, {searchProvider: input.searchProvider})}
+      ${widgetRef(UI.SearchableView.SearchableView, e => {
+        output.searchableView = e;
+      })}>
+      ${widget(ExtensionView, {
+        data: {
+          server: input.server,
+          id: input.id,
+          src: input.pageURL,
+          className: 'extension',
+        },
+      })}
+    </devtools-widget>
+  `, target);
+  // clang-format on
+};
+
 export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable {
-  private readonly server: ExtensionServer;
-  private readonly id: string;
-  private readonly panelToolbar: UI.Toolbar.Toolbar;
-  readonly #searchableView: UI.SearchableView.SearchableView;
+  readonly #server: ExtensionServer;
+  readonly #id: string;
+  readonly #pageURL: string;
+  readonly #toolbarItems: ExtensionButton[] = [];
+  readonly #view: View;
+  #searchableView?: UI.SearchableView.SearchableView;
 
-  constructor(server: ExtensionServer, panelName: string, id: string, pageURL: string) {
+  constructor(server: ExtensionServer, panelName: string, id: string, pageURL: string, view: View = DEFAULT_VIEW) {
     super(panelName);
-    this.server = server;
-    this.id = id;
+    this.#server = server;
+    this.#id = id;
+    this.#pageURL = pageURL;
+    this.#view = view;
     this.setHideOnDetach();
-    this.panelToolbar = this.element.createChild('devtools-toolbar', 'hidden');
-
-    this.#searchableView = new UI.SearchableView.SearchableView(this, null);
-    this.#searchableView.show(this.element);
-
-    const extensionView = new ExtensionView();
-    extensionView.data = {server, id: this.id, src: pageURL, className: 'extension'};
-    extensionView.show(this.#searchableView.element);
+    this.performUpdate();
   }
 
-  addToolbarItem(item: UI.Toolbar.ToolbarItem): void {
-    this.panelToolbar.classList.remove('hidden');
-    this.panelToolbar.appendToolbarItem(item);
+  override performUpdate(): void {
+    const output: ViewOutput = {};
+    this.#view({
+      server: this.#server,
+      id: this.#id,
+      pageURL: this.#pageURL,
+      searchProvider: this,
+      toolbarItems: this.#toolbarItems.map(item => item.data()),
+    },
+               output, this.element);
+    if (output.searchableView) {
+      this.#searchableView = output.searchableView;
+    }
+  }
+
+  addToolbarItem(item: ExtensionButton): void {
+    item.setOnUpdate(() => this.requestUpdate());
+    this.#toolbarItems.push(item);
+    this.requestUpdate();
   }
 
   onSearchCanceled(): void {
-    this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
-    this.#searchableView.updateSearchMatchesCount(0);
+    this.#server.notifySearchAction(this.#id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
+    this.#searchableView?.updateSearchMatchesCount(0);
   }
 
-  override searchableView(): UI.SearchableView.SearchableView {
-    return this.#searchableView;
+  override searchableView(): UI.SearchableView.SearchableView|null {
+    return this.#searchableView ?? null;
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, _jumpBackwards?: boolean): void {
     const query = searchConfig.query;
-    this.server.notifySearchAction(
-        this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch, query);
+    this.#server.notifySearchAction(this.#id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch,
+                                    query);
   }
 
   supportsMatchCounts(): boolean {
@@ -59,12 +136,12 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
   }
 
   jumpToNextSearchResult(): void {
-    this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
+    this.#server.notifySearchAction(this.#id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
   }
 
   jumpToPreviousSearchResult(): void {
-    this.server.notifySearchAction(
-        this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult);
+    this.#server.notifySearchAction(this.#id,
+                                    Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult);
   }
 
   supportsCaseSensitiveSearch(): boolean {
@@ -81,31 +158,50 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
 }
 
 export class ExtensionButton {
-  private readonly id: string;
-  readonly #toolbarButton: UI.Toolbar.ToolbarButton;
-  constructor(server: ExtensionServer, id: string, iconURL: string, tooltip?: string, disabled?: boolean) {
-    this.id = id;
+  readonly #id: string;
+  readonly #server: ExtensionServer;
+  #iconURL = '';
+  #tooltip = '';
+  #disabled = false;
+  #onUpdate?: () => void;
 
-    this.#toolbarButton = new UI.Toolbar.ToolbarButton('', '');
-    this.#toolbarButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.CLICK, server.notifyButtonClicked.bind(server, this.id));
+  constructor(server: ExtensionServer, id: string, iconURL: string, tooltip?: string, disabled?: boolean) {
+    this.#server = server;
+    this.#id = id;
     this.update(iconURL, tooltip, disabled);
+  }
+
+  setOnUpdate(onUpdate: () => void): void {
+    this.#onUpdate = onUpdate;
   }
 
   update(iconURL?: string, tooltip?: string, disabled?: boolean): void {
     if (typeof iconURL === 'string') {
-      this.#toolbarButton.setBackgroundImage(iconURL);
+      this.#iconURL = iconURL;
     }
     if (typeof tooltip === 'string') {
-      this.#toolbarButton.setTitle(tooltip);
+      this.#tooltip = tooltip;
     }
     if (typeof disabled === 'boolean') {
-      this.#toolbarButton.setEnabled(!disabled);
+      this.#disabled = disabled;
     }
+    this.#onUpdate?.();
   }
 
-  toolbarButton(): UI.Toolbar.ToolbarButton {
-    return this.#toolbarButton;
+  data(): ToolbarButtonData {
+    return {
+      id: this.#id,
+      iconURL: this.#iconURL,
+      tooltip: this.#tooltip,
+      disabled: this.#disabled,
+      onClick: () => {
+        this.#server.notifyButtonClicked(this.#id);
+      },
+    };
+  }
+
+  toolbarButton(): ExtensionButton {
+    return this;
   }
 }
 

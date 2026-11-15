@@ -533,46 +533,54 @@ describe('ConsoleViewport', () => {
     });
   });
 
-  describe('declarative DOM reconciliation', () => {
+  describe('view input', () => {
+    function useViewSpy(): sinon.SinonSpy<Parameters<Console.ConsoleViewport.View>, void> {
+      const view = sinon.spy(Console.ConsoleViewport.DEFAULT_VIEW);
+      viewport = new Console.ConsoleViewport.ConsoleViewport(mockProvider, view);
+      viewport.element.style.width = `${viewportWidth}px`;
+      viewport.element.style.height = `${viewportHeight}px`;
+      renderElementIntoDOM(viewport.element, {allowMultipleChildren: true});
+      return view;
+    }
+
     function createViewportElement(height: number) {
       const element = document.createElement('div');
       element.style.height = `${height}px`;
       Object.defineProperty(element, 'offsetHeight', {value: height, configurable: true});
-      return {
-        willHide: sinon.spy(),
-        wasShown: sinon.spy(),
-        element: () => element,
-        focusLastChildOrSelf: () => {},
-      };
+      return {willHide: sinon.spy(), wasShown: sinon.spy(), element: () => element, focusLastChildOrSelf: () => {}};
     }
 
-    it('renders empty gaps and unfocusable content synchronously on construction', () => {
-      assert.strictEqual(viewport.element.style.overflow, 'auto');
-      const [topGap, content, bottomGap] = viewport.element.children as HTMLCollectionOf<HTMLElement>;
-      assert.strictEqual(content, viewport.contentElement());
-      assert.strictEqual(topGap.style.height, '0px');
-      assert.strictEqual(bottomGap.style.height, '0px');
-      assert.strictEqual(content.tabIndex, -1);
+    it('renders an empty viewport synchronously on construction', () => {
+      const view = useViewSpy();
+      sinon.assert.calledOnce(view);
+      const [input, , target] = view.firstCall.args;
+      assert.strictEqual(target, viewport.element);
+      assert.deepInclude(input,
+                         {items: [], topGapHeight: 0, bottomGapHeight: 0, expandContent: false, contentTabIndex: -1});
+      assert.strictEqual(viewport.contentElement(), viewport.element.children[1]);
     });
 
-    it('updates active items, gap heights, and lifecycle callbacks on scroll', () => {
+    it('passes active items, gap heights, and temporary content expansion to the view', () => {
+      const view = useViewSpy();
       const items = Array.from({length: 100}, () => createViewportElement(20));
       mockProvider.setItemElements(items);
       setItemsAndRefresh(Array(100).fill(20));
+      assert.lengthOf(view.lastCall.args[0].items, 25);
+      assert.strictEqual(view.lastCall.args[0].contentTabIndex, 0);
 
-      sinon.assert.calledOnce(items[0].wasShown);
-      sinon.assert.notCalled(items[25].wasShown);
-      assert.strictEqual((viewport.contentElement() as HTMLElement).tabIndex, 0);
-
+      view.resetHistory();
       scrollTo(1000);
-      const [topGap, , bottomGap] = viewport.element.children as HTMLCollectionOf<HTMLElement>;
-      assert.strictEqual(topGap.style.height, '900px');
-      assert.strictEqual(bottomGap.style.height, '600px');
+      const expandStates = view.getCalls().map(c => c.args[0].expandContent);
+      assert.include(expandStates, true);
+      assert.isFalse(expandStates.at(-1));
+      assert.strictEqual(view.lastCall.args[0].topGapHeight, 900);
+      assert.strictEqual(view.lastCall.args[0].bottomGapHeight, 600);
       sinon.assert.calledOnce(items[0].willHide);
       sinon.assert.calledOnce(items[45].wasShown);
     });
 
     it('preserves trailing children appended to the viewport element by its owner', () => {
+      useViewSpy();
       const prompt = document.createElement('div');
       viewport.element.appendChild(prompt);
       setItemsAndRefresh(Array(100).fill(20));
@@ -772,6 +780,133 @@ describe('ConsoleViewport', () => {
         sinon.assert.notCalled(item.willHideSpy);
       }
       assert.deepEqual(Array.from(viewport.contentElement().children), reordered.map(item => item.element()));
+    });
+  });
+
+  describe('view', () => {
+    function renderView(overrides: Partial<Console.ConsoleViewport.ViewInput> = {}) {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target, {allowMultipleChildren: true});
+      const output: Console.ConsoleViewport.ViewOutput = {};
+      const input: Console.ConsoleViewport.ViewInput = {
+        topGapHeight: 0,
+        bottomGapHeight: 0,
+        expandContent: false,
+        contentTabIndex: -1,
+        items: [],
+        onScroll: () => {},
+        onCopy: () => null,
+        onDragStart: () => null,
+        onFocusIn: () => {},
+        onFocusOut: () => {},
+        onKeyDown: () => false,
+        ...overrides,
+      };
+      Console.ConsoleViewport.DEFAULT_VIEW(input, output, target);
+      return {target, output};
+    }
+
+    it('renders gaps and content element tabindex', () => {
+      const {target} = renderView({topGapHeight: 10, bottomGapHeight: 20, contentTabIndex: 0});
+      const [topGap, content, bottomGap] = target.children as HTMLCollectionOf<HTMLElement>;
+      assert.strictEqual(content.getAttribute('tabindex'), '0');
+      assert.strictEqual(topGap.style.height, '10px');
+      assert.strictEqual(bottomGap.style.height, '20px');
+    });
+
+    it('checks whether a range intersects a gap', () => {
+      const {target, output} = renderView({topGapHeight: 10, bottomGapHeight: 20});
+      const [topGap] = target.children as HTMLCollectionOf<HTMLElement>;
+      const range = document.createRange();
+      range.selectNodeContents(topGap);
+      assert.isTrue(output.rangeIntersectsGap?.(range, 'top'));
+      assert.isFalse(output.rangeIntersectsGap?.(range, 'bottom'));
+    });
+
+    it('sets selection base and extent across gap endpoints', () => {
+      const {target, output} = renderView({topGapHeight: 10, bottomGapHeight: 20});
+      const [topGap, , bottomGap] = target.children as HTMLCollectionOf<HTMLElement>;
+      const selection = sinon.createStubInstance(window.Selection);
+      output.setSelectionBaseAndExtent?.(selection, {gap: 'top', atEnd: false}, {gap: 'bottom', atEnd: true});
+      sinon.assert.calledOnceWithExactly(selection.setBaseAndExtent, topGap, 0, bottomGap, 1);
+    });
+
+    it('keeps surviving item elements in place without dropping focus', () => {
+      const mk = (t: string): Console.ConsoleViewport.ConsoleViewportElement => {
+        const el = document.createElement('div');
+        el.tabIndex = -1;
+        el.textContent = t;
+        return {willHide: () => {}, wasShown: () => {}, element: () => el, focusLastChildOrSelf: () => {}};
+      };
+      const [a, b, c, d] = ['a', 'b', 'c', 'd'].map(mk);
+      const {target, output} = renderView({items: [a, b, c]});
+      b.element().focus();
+      assert.strictEqual(document.activeElement, b.element());
+      Console.ConsoleViewport.DEFAULT_VIEW({
+        topGapHeight: 0,
+        bottomGapHeight: 0,
+        expandContent: false,
+        contentTabIndex: -1,
+        items: [b, c, d],
+        onScroll: () => {},
+        onCopy: () => null,
+        onDragStart: () => null,
+        onFocusIn: () => {},
+        onFocusOut: () => {},
+        onKeyDown: () => false,
+      },
+                                           output, target);
+      assert.strictEqual(document.activeElement, b.element());
+      assert.isFalse(a.element().isConnected);
+    });
+
+    it('forwards scroll events', () => {
+      const onScroll = sinon.spy();
+      const {target} = renderView({onScroll});
+      target.dispatchEvent(new Event('scroll'));
+      sinon.assert.calledOnce(onScroll);
+    });
+
+    it('forwards focusin events', () => {
+      const onFocusIn = sinon.spy();
+      const {target} = renderView({onFocusIn});
+      const content = target.children[1] as HTMLElement;
+      const outside = document.createElement('div');
+      content.dispatchEvent(new FocusEvent('focusin', {relatedTarget: outside}));
+      sinon.assert.calledOnceWithExactly(onFocusIn, -1, true, true);
+    });
+
+    it('forwards focusout events', () => {
+      const onFocusOut = sinon.spy();
+      const {target} = renderView({onFocusOut});
+      const content = target.children[1] as HTMLElement;
+      const outside = document.createElement('div');
+      content.dispatchEvent(new FocusEvent('focusout', {relatedTarget: outside}));
+      sinon.assert.calledOnceWithExactly(onFocusOut, true);
+    });
+
+    it('forwards keydown events and prevents default when handled', () => {
+      const onKeyDown = sinon.stub<[string, boolean], boolean>().callsFake(k => k === 'ArrowUp');
+      const {target} = renderView({onKeyDown});
+      const content = target.children[1] as HTMLElement;
+      const handled = new KeyboardEvent('keydown', {key: 'ArrowUp', shiftKey: true, cancelable: true});
+      content.dispatchEvent(handled);
+      assert.isTrue(handled.defaultPrevented);
+    });
+
+    it('populates clipboard data from presenter onCopy callback', () => {
+      const {target} = renderView({onCopy: () => ({plainText: 'copied'})});
+      const copy = new ClipboardEvent('copy', {clipboardData: new DataTransfer(), cancelable: true});
+      target.dispatchEvent(copy);
+      assert.isTrue(copy.defaultPrevented);
+      assert.strictEqual(copy.clipboardData?.getData('text/plain'), 'copied');
+    });
+
+    it('populates drag data from presenter onDragStart callback', () => {
+      const {target} = renderView({onDragStart: () => 'dragged'});
+      const drag = new DragEvent('dragstart', {dataTransfer: new DataTransfer()});
+      target.dispatchEvent(drag);
+      assert.strictEqual(drag.dataTransfer?.getData('text/plain'), 'dragged');
     });
   });
 });

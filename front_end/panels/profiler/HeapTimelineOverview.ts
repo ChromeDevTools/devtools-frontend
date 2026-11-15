@@ -80,6 +80,7 @@ export class HeapTimelineOverview extends HeapTimelineOverviewBase {
   readonly #viewOutput: ViewOutput = {};
   readonly #onWindowChangedBound = this.onWindowChanged.bind(this);
   readonly #onThemeChanged = (): void => this.update();
+  readonly #resizeObserver = new ResizeObserver(() => this.scheduleUpdate());
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
@@ -129,6 +130,33 @@ export class HeapTimelineOverview extends HeapTimelineOverviewBase {
 
   stop(): void {
     this.running = false;
+  }
+
+  get samples(): Samples {
+    return this.profileSamples;
+  }
+
+  set samples(samples: Samples) {
+    if (this.profileSamples === samples) {
+      return;
+    }
+    this.setSamples(samples);
+    this.updateGrid();
+  }
+
+  get isRunning(): boolean {
+    return Boolean(this.running);
+  }
+
+  set isRunning(running: boolean) {
+    if (Boolean(this.running) === running) {
+      return;
+    }
+    if (running) {
+      this.start();
+    } else {
+      this.stop();
+    }
   }
 
   setSamples(samples: Samples): void {
@@ -264,12 +292,14 @@ export class HeapTimelineOverview extends HeapTimelineOverviewBase {
     super.wasShown();
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName,
                                                           this.#onThemeChanged);
+    this.#resizeObserver.observe(this.overviewContainer);
     // Theme changes are only observed while shown, so repaint in case the
     // theme changed while the overview was hidden.
     this.scheduleUpdate();
   }
 
   override willHide(): void {
+    this.#resizeObserver.disconnect();
     ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
                                                              this.#onThemeChanged);
     super.willHide();

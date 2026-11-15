@@ -52,4 +52,35 @@ describeWithEnvironment('HeapTimelineOverview', () => {
       clock.restore();
     }
   });
+
+  it('updates samples and dispatches range changes via samples setter', () => {
+    const overview = new Profiler.HeapTimelineOverview.HeapTimelineOverview();
+    assert.isFalse(overview.hasEventListeners(Profiler.HeapTimelineOverview.Events.IDS_RANGE_CHANGED));
+    const rangeEvents: Profiler.HeapTimelineOverview.IdsRangeChangedEvent[] = [];
+    const domRangeEvents: Profiler.HeapTimelineOverview.IdsRangeChangedEvent[] = [];
+    overview.addEventListener(Profiler.HeapTimelineOverview.Events.IDS_RANGE_CHANGED, e => rangeEvents.push(e.data));
+    overview.element.addEventListener(Profiler.HeapTimelineOverview.Events.IDS_RANGE_CHANGED, event => {
+      domRangeEvents.push((event as CustomEvent<Profiler.HeapTimelineOverview.IdsRangeChangedEvent>).detail);
+    });
+
+    const samples = new Profiler.HeapTimelineOverview.Samples();
+    samples.ids = [10, 20];
+    samples.timestamps = [0, 1000];
+    samples.sizes = [64, 128];
+    samples.max = [64, 128];
+    samples.totalTime = 1000;
+
+    overview.samples = samples;
+    assert.strictEqual(overview.samples, samples);
+    assert.deepEqual(rangeEvents, [{minId: 0, maxId: Infinity, size: 192}]);
+    assert.deepEqual(domRangeEvents, [{minId: 0, maxId: Infinity, size: 192}]);
+  });
+
+  it('toggles running state via isRunning setter', () => {
+    const overview = new Profiler.HeapTimelineOverview.HeapTimelineOverview();
+    overview.isRunning = true;
+    assert.isTrue(overview.isRunning);
+    overview.isRunning = false;
+    assert.isFalse(overview.isRunning);
+  });
 });

@@ -10,6 +10,7 @@ import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -172,5 +173,18 @@ describeWithEnvironment('LighthousePanel', () => {
 
     instance.selectReport(LH_REPORT.lhr);
     assert.strictEqual(context.flavor(Lighthouse.LighthousePanel.ActiveLighthouseReport)?.report, LH_REPORT.lhr);
+  });
+
+  it('focuses the report topbar URL after the report widget finishes rendering', async () => {
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+    renderElementIntoDOM(instance);
+
+    await instance.handleCompleteRun();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const topbarUrl = instance.contentElement.querySelector<HTMLElement>('.lh-topbar__url');
+    assert.exists(topbarUrl);
+    assert.strictEqual(document.activeElement, topbarUrl);
+    instance.detach();
   });
 });

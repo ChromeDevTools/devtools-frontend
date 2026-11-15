@@ -111,7 +111,6 @@ devtools_ui_module("unittests") {
     "../../models/live-metrics:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
-    "../../ui/lit:bundle",
     "../common:bundle",
   ]
 }

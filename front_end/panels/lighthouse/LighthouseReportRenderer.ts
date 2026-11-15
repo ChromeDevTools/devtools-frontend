@@ -1,7 +1,6 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -14,21 +13,176 @@ import * as LighthouseReport from '../../third_party/lighthouse/report/report.js
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
+const {widget} = UI.Widget;
+
 const MaxLengthForLinks = 40;
+
+export interface NodeDetailsViewInput {
+  type: 'node';
+  node: SDK.DOMModel.DOMNode;
+  snippet?: string;
+}
+
+export interface SourceLocationViewInput {
+  type: 'source-location';
+  url: Platform.DevToolsPath.UrlString;
+  lineNumber: number;
+  columnNumber: number;
+}
+
+export interface ReportViewInput {
+  type: 'report';
+  report: LighthouseModel.ReporterTypes.ReportJSON|null;
+  darkMode: boolean;
+  onViewTrace?: () => Promise<void>;
+  onSaveFileOverride: (blob: Blob) => Promise<void>;
+  onPrintOverride: (rootEl: HTMLElement) => Promise<void>;
+  getStandaloneReportHTML: () => string;
+}
+
+export type ViewInput = NodeDetailsViewInput|SourceLocationViewInput|ReportViewInput;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+function renderContent(input: ViewInput): LitTemplate {
+  switch (input.type) {
+    case 'node':
+      return html`${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+        node: input.node,
+        options: {tooltip: input.snippet},
+      })}`;
+    case 'source-location':
+      return Components.Linkifier.Linkifier.renderLinkifiedUrl(input.url, {
+        lineNumber: input.lineNumber,
+        columnNumber: input.columnNumber,
+        showColumnNumber: false,
+        maxLength: MaxLengthForLinks,
+      });
+    case 'report': {
+      if (!input.report) {
+        return nothing;
+      }
+      const reportEl = LighthouseReport.renderReport(input.report, {
+        disableDarkMode: true,
+        onViewTrace: input.onViewTrace,
+        onSaveFileOverride: input.onSaveFileOverride,
+        onPrintOverride: input.onPrintOverride,
+        getStandaloneReportHTML: input.getStandaloneReportHTML,
+      });
+      reportEl.classList.add('lh-devtools');
+      reportEl.classList.toggle('lh-dark', input.darkMode);
+      LighthouseReportRenderer.installVisualLogging(reportEl);
+      return html`${reportEl}`;
+    }
+    default:
+      Platform.assertNever(input, 'Unknown Lighthouse view input type');
+  }
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  render(renderContent(input), target);
+};
 
 interface RenderReportOpts {
   beforePrint?: () => void;
   afterPrint?: () => void;
 }
 
-export class LighthouseReportRenderer {
-  static renderLighthouseReport(
-      lhr: LighthouseModel.ReporterTypes.ReportJSON, artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts,
-      opts?: RenderReportOpts): HTMLElement {
+export class LighthouseReportRenderer extends UI.Widget.Widget {
+  readonly #view: View;
+  #report: LighthouseModel.ReporterTypes.ReportJSON|null = null;
+  #artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts;
+  #beforePrint?: () => void;
+  #afterPrint?: () => void;
+  #isRendered = false;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  get report(): LighthouseModel.ReporterTypes.ReportJSON|null {
+    return this.#report;
+  }
+
+  set report(report: LighthouseModel.ReporterTypes.ReportJSON|null) {
+    if (this.#report === report) {
+      return;
+    }
+    this.#report = report;
+    this.#isRendered = false;
+    this.requestUpdate();
+  }
+
+  set artifacts(artifacts: LighthouseModel.ReporterTypes.RunnerResultArtifacts|undefined) {
+    if (this.#artifacts === artifacts) {
+      return;
+    }
+    this.#artifacts = artifacts;
+    this.#isRendered = false;
+    this.requestUpdate();
+  }
+
+  set beforePrint(beforePrint: (() => void)|undefined) {
+    if (this.#beforePrint === beforePrint) {
+      return;
+    }
+    this.#beforePrint = beforePrint;
+    this.#isRendered = false;
+    this.requestUpdate();
+  }
+
+  set afterPrint(afterPrint: (() => void)|undefined) {
+    if (this.#afterPrint === afterPrint) {
+      return;
+    }
+    this.#afterPrint = afterPrint;
+    this.#isRendered = false;
+    this.requestUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
+    this.#onThemeChange();
+    if (!this.#isRendered) {
+      this.requestUpdate();
+    }
+  }
+
+  override willHide(): void {
+    ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
+                                                             this.#onThemeChange);
+    super.willHide();
+  }
+
+  #onThemeChange = (): void => {
+    const darkMode =
+        ThemeSupport.ThemeSupport.hasInstance() && ThemeSupport.ThemeSupport.instance().themeName() === 'dark';
+    this.contentElement.querySelector('.lh-devtools')?.classList.toggle('lh-dark', darkMode);
+  };
+
+  override performUpdate(): void {
+    this.#isRendered = true;
+    const darkMode =
+        ThemeSupport.ThemeSupport.hasInstance() && ThemeSupport.ThemeSupport.instance().themeName() === 'dark';
+    const reportOptions = LighthouseReportRenderer.#createReportOptions(this.#report, this.#artifacts, {
+      beforePrint: this.#beforePrint,
+      afterPrint: this.#afterPrint,
+    });
+    this.#view({type: 'report', report: this.#report, darkMode, ...reportOptions}, undefined, this.contentElement);
+    const reportEl = this.contentElement.querySelector<HTMLElement>('.lh-devtools');
+    if (this.#report && reportEl) {
+      LighthouseReportRenderer.#finalizeRenderedReport(reportEl, this.#report, this.#artifacts, this.#view);
+    }
+  }
+
+  static #createReportOptions(lhr: LighthouseModel.ReporterTypes.ReportJSON|null,
+                              artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts,
+                              opts?: RenderReportOpts): Omit<ReportViewInput, 'type'|'report'|'darkMode'> {
     let onViewTrace: (() => Promise<void>)|undefined = undefined;
     if (artifacts) {
       onViewTrace = async () => {
@@ -39,6 +193,9 @@ export class LighthouseReportRenderer {
     }
 
     async function onSaveFileOverride(blob: Blob): Promise<void> {
+      if (!lhr) {
+        return;
+      }
       const domain = new Common.ParsedURL.ParsedURL(lhr.finalUrl || lhr.finalDisplayedUrl).domain();
       const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
       const timestamp = Platform.DateUtilities.toISO8601Compact(new Date(lhr.fetchTime));
@@ -59,7 +216,6 @@ export class LighthouseReportRenderer {
       }
 
       printWindow.document.body.replaceWith(clonedReport);
-      // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.
       await LighthouseReportRenderer.linkifyNodeDetails(clonedReport as HTMLElement);
 
       opts?.beforePrint?.();
@@ -74,13 +230,33 @@ export class LighthouseReportRenderer {
       return Lighthouse.ReportGenerator.ReportGenerator.generateReportHtml(lhr);
     }
 
+    return {onViewTrace, onSaveFileOverride, onPrintOverride, getStandaloneReportHTML};
+  }
+
+  static #finalizeRenderedReport(
+      reportEl: HTMLElement,
+      lhr: LighthouseModel.ReporterTypes.ReportJSON,
+      artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts,
+      view: View = DEFAULT_VIEW,
+      ): void {
+    // @ts-expect-error Expose LHR on DOM for e2e tests
+    reportEl._lighthouseResultForTesting = lhr;
+    // @ts-expect-error Expose Artifacts on DOM for e2e tests
+    reportEl._lighthouseArtifactsForTesting = artifacts;
+
+    void LighthouseReportRenderer.waitForMainTargetLoad().then(() => {
+      void LighthouseReportRenderer.linkifyNodeDetails(reportEl, view);
+      void LighthouseReportRenderer.linkifySourceLocationDetails(reportEl, view);
+    });
+  }
+
+  static renderLighthouseReport(lhr: LighthouseModel.ReporterTypes.ReportJSON,
+                                artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts,
+                                opts?: RenderReportOpts): HTMLElement {
+    const reportOptions = LighthouseReportRenderer.#createReportOptions(lhr, artifacts, opts);
     const reportEl = LighthouseReport.renderReport(lhr, {
-      // Disable dark mode so we can manually adjust it.
       disableDarkMode: true,
-      onViewTrace,
-      onSaveFileOverride,
-      onPrintOverride,
-      getStandaloneReportHTML,
+      ...reportOptions,
     });
     reportEl.classList.add('lh-devtools');
 
@@ -91,22 +267,8 @@ export class LighthouseReportRenderer {
         ThemeSupport.ThemeChangeEvent.eventName, updateDarkModeIfNecessary);
     updateDarkModeIfNecessary();
 
-    // @ts-expect-error Expose LHR on DOM for e2e tests
-    reportEl._lighthouseResultForTesting = lhr;
-    // @ts-expect-error Expose Artifacts on DOM for e2e tests
-    reportEl._lighthouseArtifactsForTesting = artifacts;
-
-    // This should block the report rendering as we need visual logging ready
-    // before the user starts interacting with the report.
     LighthouseReportRenderer.installVisualLogging(reportEl);
-
-    // Linkifying requires the target be loaded. Do not block the report
-    // from rendering, as this is just an embellishment and the main target
-    // could take awhile to load.
-    void LighthouseReportRenderer.waitForMainTargetLoad().then(() => {
-      void LighthouseReportRenderer.linkifyNodeDetails(reportEl);
-      void LighthouseReportRenderer.linkifySourceLocationDetails(reportEl);
-    });
+    LighthouseReportRenderer.#finalizeRenderedReport(reportEl, lhr, artifacts);
 
     return reportEl;
   }
@@ -153,7 +315,7 @@ export class LighthouseReportRenderer {
     await resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
   }
 
-  static async linkifyNodeDetails(el: Element): Promise<void> {
+  static async linkifyNodeDetails(el: Element, view: View = DEFAULT_VIEW): Promise<void> {
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
       return;
@@ -180,17 +342,16 @@ export class LighthouseReportRenderer {
         continue;
       }
 
-      const element = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(
-          node, {tooltip: detailsItem.snippet, preventKeyboardFocus: undefined});
       UI.Tooltip.Tooltip.install(origHTMLElement, '');
 
       const screenshotElement = origHTMLElement.querySelector('.lh-element-screenshot');
-      origHTMLElement.textContent = '';
-      render(html`${screenshotElement ?? nothing}${element}`, origHTMLElement);
+      const linkContainer = document.createElement('span');
+      origHTMLElement.replaceChildren(...(screenshotElement ? [screenshotElement] : []), linkContainer);
+      view({type: 'node', node, snippet: detailsItem.snippet}, undefined, linkContainer);
     }
   }
 
-  static async linkifySourceLocationDetails(el: Element): Promise<void> {
+  static async linkifySourceLocationDetails(el: Element, view: View = DEFAULT_VIEW): Promise<void> {
     for (const origElement of el.getElementsByClassName('lh-source-location')) {
       const origHTMLElement = origElement as HTMLElement;
       const detailsItem = origHTMLElement.dataset as {
@@ -201,18 +362,16 @@ export class LighthouseReportRenderer {
       if (!detailsItem.sourceUrl || !detailsItem.sourceLine || !detailsItem.sourceColumn) {
         continue;
       }
-      const url = detailsItem.sourceUrl;
-      const line = Number(detailsItem.sourceLine);
-      const column = Number(detailsItem.sourceColumn);
-      const element = Components.Linkifier.Linkifier.linkifyURL(url, {
-        lineNumber: line,
-        columnNumber: column,
-        showColumnNumber: false,
-        maxLength: MaxLengthForLinks,
-      });
       UI.Tooltip.Tooltip.install(origHTMLElement, '');
-      origHTMLElement.textContent = '';
-      origHTMLElement.appendChild(element);
+
+      origHTMLElement.replaceChildren();
+      view({
+        type: 'source-location',
+        url: detailsItem.sourceUrl,
+        lineNumber: Number(detailsItem.sourceLine),
+        columnNumber: Number(detailsItem.sourceColumn),
+      },
+           undefined, origHTMLElement);
     }
   }
 

@@ -74,7 +74,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   private readonly timespanView: TimespanView;
   private warningText: Nullable<string>;
   private unauditableExplanation: Nullable<string>;
-  private readonly cachedRenderedReports: Map<LighthouseModel.ReporterTypes.ReportJSON, HTMLElement>;
+  private readonly cachedRenderedReports: Map<LighthouseModel.ReporterTypes.ReportJSON, LighthouseReportRenderer>;
   private readonly auditResultsElement: HTMLElement;
   private clearButton!: UI.Toolbar.ToolbarButton;
   private newButton!: UI.Toolbar.ToolbarButton;
@@ -273,6 +273,9 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   private renderStartView(): void {
+    for (const reportWidget of this.cachedRenderedReports.values()) {
+      reportWidget.detach();
+    }
     this.auditResultsElement.removeChildren();
     this.statusView.hide();
 
@@ -313,31 +316,35 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.statusView.toggleCancelButton(true);
   }
 
-  private renderReport(
-      lighthouseResult: LighthouseModel.ReporterTypes.ReportJSON,
-      artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts): void {
+  private renderReport(lighthouseResult: LighthouseModel.ReporterTypes.ReportJSON,
+                       artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts): LighthouseReportRenderer {
     this.toggleSettingsDisplay(false);
     this.contentElement.classList.toggle('in-progress', false);
     this.startView.hideWidget();
     this.statusView.hide();
+    for (const reportWidget of this.cachedRenderedReports.values()) {
+      reportWidget.detach();
+    }
     this.auditResultsElement.removeChildren();
     this.newButton.setEnabled(true);
     this.refreshToolbarUI();
 
     UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, new ActiveLighthouseReport(lighthouseResult));
 
-    const cachedRenderedReport = this.cachedRenderedReports.get(lighthouseResult);
-    if (cachedRenderedReport) {
-      this.auditResultsElement.appendChild(cachedRenderedReport);
-      return;
+    let reportWidget = this.cachedRenderedReports.get(lighthouseResult);
+    if (!reportWidget) {
+      reportWidget = new LighthouseReportRenderer();
+      reportWidget.report = lighthouseResult;
+      reportWidget.artifacts = artifacts;
+      reportWidget.beforePrint = this.beforePrint.bind(this);
+      reportWidget.afterPrint = this.afterPrint.bind(this);
+      this.cachedRenderedReports.set(lighthouseResult, reportWidget);
     }
-
-    const reportContainer = LighthouseReportRenderer.renderLighthouseReport(lighthouseResult, artifacts, {
-      beforePrint: this.beforePrint.bind(this),
-      afterPrint: this.afterPrint.bind(this),
-    });
-
-    this.cachedRenderedReports.set(lighthouseResult, reportContainer);
+    reportWidget.show(this.auditResultsElement);
+    if (!reportWidget.isShowing()) {
+      reportWidget.requestUpdate();
+    }
+    return reportWidget;
   }
 
   private buildReportUI(
@@ -347,12 +354,15 @@ export class LighthousePanel extends UI.Panel.Panel {
       return;
     }
 
-    const optionElement = new Item(
-        lighthouseResult, () => this.renderReport(lighthouseResult, artifacts), this.renderStartView.bind(this));
+    const optionElement = new Item(lighthouseResult, () => {
+      this.renderReport(lighthouseResult, artifacts);
+    }, this.renderStartView.bind(this));
     this.reportSelector.prepend(optionElement);
     this.refreshToolbarUI();
-    this.renderReport(lighthouseResult);
-    (this.auditResultsElement.querySelector('.lh-topbar__url') as HTMLElement | null)?.focus();
+    const reportWidget = this.renderReport(lighthouseResult);
+    void reportWidget.updateComplete.then(() => {
+      (this.auditResultsElement.querySelector('.lh-topbar__url') as HTMLElement | null)?.focus();
+    });
   }
 
   private handleDrop(dataTransfer: DataTransfer): void {

@@ -514,9 +514,9 @@ function renderEntry(
   `;
 }
 
-type NavigationTarget = 'previous'|'next'|'first'|'last';
+export type NavigationTarget = 'previous'|'next'|'first'|'last';
 
-interface DropDownViewInput {
+export interface DropDownViewInput {
   items: DropDownItem[];
   selectedItem: DropDownItem|null;
   onHover: (item: DropDownItem) => void;
@@ -526,11 +526,10 @@ interface DropDownViewInput {
   onCancel: () => void;
 }
 
-interface DropDownViewOutput {
-  focusMenu?: () => void;
-}
+export type View = (input: DropDownViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
-const DROPDOWN_VIEW = (input: DropDownViewInput, output: DropDownViewOutput, target: HTMLElement): void => {
+// clang-format off
+export const DEFAULT_VIEW: View = (input: DropDownViewInput, _output: undefined, target: HTMLElement|DocumentFragment): void => {
   const activeDescendantId = input.selectedItem ? itemId(input.selectedItem) : nothing;
   const onKeyDown = (event: KeyboardEvent): void => {
     switch (event.key) {
@@ -561,21 +560,22 @@ const DROPDOWN_VIEW = (input: DropDownViewInput, output: DropDownViewOutput, tar
 
   render(
       html`
-        <div role="menu"
-            aria-label=${i18nString(UIStrings.selectTimelineSession)}
-            tabindex="-1"
-            style="overflow-y: auto"
-            aria-activedescendant=${activeDescendantId}
-            @keydown=${onKeyDown}
-            ${ref(el => {
-              output.focusMenu = el instanceof HTMLElement ? () => el.focus() : undefined;
-            })}>
-          ${input.items.map((item, index) => {
-            const isSelected = item === input.selectedItem;
-            return renderEntry(
-                item, isSelected, index + 1, input.items.length, (): void => input.onHover(item),
-                (): void => input.onActivate(item));
-          })}
+        <style>${timelineHistoryManagerStyles}</style>
+        <div class="drop-down">
+          <div role="menu"
+              aria-label=${i18nString(UIStrings.selectTimelineSession)}
+              tabindex="-1"
+              autofocus
+              style="overflow-y: auto"
+              aria-activedescendant=${activeDescendantId}
+              @keydown=${onKeyDown}>
+            ${input.items.map((item, index) => {
+              const isSelected = item === input.selectedItem;
+              return renderEntry(
+                  item, isSelected, index + 1, input.items.length, (): void => input.onHover(item),
+                  (): void => input.onActivate(item));
+            })}
+          </div>
         </div>
       `,
       target);
@@ -597,34 +597,64 @@ export interface PreviewData {
   overviewHeight: number;
 }
 
-export class DropDown {
-  private readonly glassPane: UI.GlassPane.GlassPane;
-  #previousFocus: HTMLElement|null = null;
-  private selectionDone: ((arg0: number|null) => void)|null = null;
-  contentElement: HTMLElement;
-  readonly #items: DropDownItem[];
+export class DropDown extends UI.Widget.Widget<ShadowRoot> {
+  readonly #view: View;
+  #items: DropDownItem[] = [];
   #selectedItem: DropDownItem|null = null;
-  readonly #viewOutput: DropDownViewOutput = {};
+  #glassPane: UI.GlassPane.GlassPane|null = null;
+  #previousFocus: HTMLElement|null = null;
+  #selectionDone: ((arg0: number|null) => void)|null = null;
 
-  constructor(items: DropDownItem[]) {
-    this.#items = items;
-
-    this.glassPane = new UI.GlassPane.GlassPane();
-    this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    this.glassPane.setOutsideClickCallback(() => this.close(null));
-    this.glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
-    this.glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PREFER_BOTTOM);
-    this.glassPane.element.addEventListener('blur', () => this.close(null));
-
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
-        this.glassPane.contentElement, {cssFile: timelineHistoryManagerStyles});
-    this.contentElement = shadowRoot.createChild('div', 'drop-down');
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: 'pure'});
+    this.#view = view;
   }
 
-  static show(
-      availableparsedTraceIndexes: number[], activeparsedTraceIndex: number, anchor: Element,
-      landingPageTitle: Common.UIString.LocalizedString = i18nString(UIStrings.landingPageTitle)):
-      Promise<number|null> {
+  get items(): DropDownItem[] {
+    return this.#items;
+  }
+
+  set items(items: DropDownItem[]) {
+    if (this.#items === items) {
+      return;
+    }
+    this.#items = items;
+    this.requestUpdate();
+  }
+
+  get selectedItem(): DropDownItem|null {
+    return this.#selectedItem;
+  }
+
+  set selectedItem(item: DropDownItem|null) {
+    if (this.#selectedItem === item) {
+      return;
+    }
+    this.#selectedItem = item;
+    this.requestUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const input: DropDownViewInput = {
+      items: this.#items,
+      selectedItem: this.#selectedItem,
+      onHover: item => this.#hover(item),
+      onActivate: item => this.#activate(item),
+      onNavigate: target => this.#navigate(target),
+      onActivateSelected: () => this.#activateSelected(),
+      onCancel: () => this.#close(null),
+    };
+    this.#view(input, undefined, this.contentElement);
+  }
+
+  static show(availableparsedTraceIndexes: number[], activeparsedTraceIndex: number, anchor: Element,
+              landingPageTitle: Common.UIString.LocalizedString = i18nString(UIStrings.landingPageTitle),
+              view: View = DEFAULT_VIEW): Promise<number|null> {
     if (DropDown.instance) {
       return Promise.resolve(null);
     }
@@ -642,48 +672,50 @@ export class DropDown {
         preview,
       });
     }
-    const instance = new DropDown(items);
-    return instance.show(anchor, activeparsedTraceIndex);
+    const instance = new DropDown(undefined, view);
+    DropDown.instance = instance;
+    instance.items = items;
+    return instance.#show(anchor, activeparsedTraceIndex);
   }
 
   static cancelIfShowing(): void {
     if (!DropDown.instance) {
       return;
     }
-    DropDown.instance.close(null);
+    DropDown.instance.#close(null);
   }
 
-  private show(anchor: Element, activeparsedTraceIndex: number): Promise<number|null> {
-    DropDown.instance = this;
+  #show(anchor: Element, activeparsedTraceIndex: number): Promise<number|null> {
     const activeItem = this.#items.find(item => {
       if (item.type === 'LANDING_PAGE') {
         return activeparsedTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE;
       }
       return item.parsedTraceIndex === activeparsedTraceIndex;
     });
-    this.#selectedItem = activeItem ?? null;
-    this.#render();
-    this.glassPane.setContentAnchorBox(anchor.boxInWindow());
-    this.glassPane.show(this.glassPane.contentElement.ownerDocument);
+    this.selectedItem = activeItem ?? null;
     this.#previousFocus = UI.DOMUtilities.deepActiveElement(document) as HTMLElement | null;
-    this.#viewOutput.focusMenu?.();
+
+    this.#glassPane = new UI.GlassPane.GlassPane();
+    this.#glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    this.#glassPane.setOutsideClickCallback(() => this.#close(null));
+    this.#glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
+    this.#glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PREFER_BOTTOM);
+    this.#glassPane.element.addEventListener('blur', () => this.#close(null));
+
+    super.show(this.#glassPane.contentElement);
+
+    void this.updateComplete.then(() => {
+      if (DropDown.instance !== this || !this.#glassPane) {
+        return;
+      }
+      this.#glassPane.setContentAnchorBox(anchor.boxInWindow());
+      this.#glassPane.show(this.#glassPane.contentElement.ownerDocument);
+      this.focus();
+    });
 
     return new Promise(fulfill => {
-      this.selectionDone = fulfill;
+      this.#selectionDone = fulfill;
     });
-  }
-
-  #render(): void {
-    const input: DropDownViewInput = {
-      items: this.#items,
-      selectedItem: this.#selectedItem,
-      onHover: item => this.#hover(item),
-      onActivate: item => this.#activate(item),
-      onNavigate: target => this.#navigate(target),
-      onActivateSelected: () => this.#activateSelected(),
-      onCancel: () => this.close(null),
-    };
-    DROPDOWN_VIEW(input, this.#viewOutput, this.contentElement);
   }
 
   #navigate(target: NavigationTarget): void {
@@ -710,38 +742,46 @@ export class DropDown {
   }
 
   #selectAt(index: number): void {
-    this.#selectedItem = this.#items[index];
-    this.#render();
+    this.selectedItem = this.#items[index];
   }
 
   #hover(item: DropDownItem): void {
-    if (this.#selectedItem !== item) {
-      this.#selectedItem = item;
-      this.#render();
-    }
+    this.selectedItem = item;
   }
 
   #activate(item: DropDownItem): void {
     const choice = item.type === 'LANDING_PAGE' ? LANDING_PAGE_INDEX_DROPDOWN_CHOICE : item.parsedTraceIndex;
-    this.close(choice);
+    this.#close(choice);
   }
 
   #activateSelected(): void {
     if (this.#selectedItem) {
       this.#activate(this.#selectedItem);
     } else {
-      this.close(null);
+      this.#close(null);
     }
   }
 
-  private close(traceIndex: number|null): void {
-    if (this.selectionDone) {
-      this.selectionDone(traceIndex);
+  #close(traceIndex: number|null): void {
+    if (DropDown.instance !== this) {
+      return;
     }
-    this.glassPane.hide();
+    DropDown.instance = null;
+
+    if (this.#selectionDone) {
+      this.#selectionDone(traceIndex);
+      this.#selectionDone = null;
+    }
+
     this.#previousFocus?.focus();
     this.#previousFocus = null;
-    DropDown.instance = null;
+
+    const glassPane = this.#glassPane;
+    this.#glassPane = null;
+    glassPane?.hide();
+    if (this.isShowing()) {
+      this.detach();
+    }
   }
 
   static instance: DropDown|null = null;

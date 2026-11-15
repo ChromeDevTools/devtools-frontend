@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
@@ -14,6 +15,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {getBaseTraceHandlerData} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -22,7 +24,10 @@ import * as Timeline from './timeline.js';
 function getDropDown(): HTMLElement {
   const instance = Timeline.TimelineHistoryManager.DropDown.instance;
   if (instance?.contentElement) {
-    return instance.contentElement;
+    const dropdown = instance.contentElement.querySelector<HTMLElement>('.drop-down');
+    if (dropdown) {
+      return dropdown;
+    }
   }
   const glassPane = document.querySelector('div[data-devtools-glass-pane]');
   const dropdown =
@@ -55,21 +60,23 @@ function getSelectedMenuItemText(container: HTMLElement = getDropDownMenu()): st
   return selected ? selected.innerText.replaceAll('\n', '-') : null;
 }
 
-function pressKey(key: string, target: HTMLElement = getDropDownMenu()): void {
+async function pressKey(key: string, target: HTMLElement = getDropDownMenu()): Promise<void> {
   target.dispatchEvent(new KeyboardEvent('keydown', {
     key,
     bubbles: true,
     composed: true,
     cancelable: true,
   }));
+  await UI.Widget.Widget.allUpdatesComplete;
 }
 
-function hoverMenuItem(item: HTMLElement): void {
+async function hoverMenuItem(item: HTMLElement): Promise<void> {
   item.dispatchEvent(new MouseEvent('mousemove', {
     bubbles: true,
     composed: true,
     cancelable: true,
   }));
+  await UI.Widget.Widget.allUpdatesComplete;
 }
 
 function clickMenuItem(item: HTMLElement): void {
@@ -83,15 +90,17 @@ function clickMenuItem(item: HTMLElement): void {
 async function openDropDown(historyManager: Timeline.TimelineHistoryManager.TimelineHistoryManager):
     Promise<{showPromise: Promise<Timeline.TimelineHistoryManager.RecordingData|null>}> {
   const showPromise = historyManager.showHistoryDropDown();
+  await UI.Widget.Widget.allUpdatesComplete;
   await raf();
   return {showPromise};
 }
 
 async function renderDropDownForScreenshot(): Promise<void> {
   const instance = Timeline.TimelineHistoryManager.DropDown.instance;
-  const host = instance?.contentElement.parentNodeOrShadowHost();
-  assert.isOk(host);
-  renderElementIntoDOM(host);
+  assert.isOk(instance);
+  instance.detach();
+  renderElementIntoDOM(instance, {includeCommonStyles: true});
+  await instance.updateComplete;
   await raf();
 }
 
@@ -332,24 +341,24 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     const {showPromise} = await openDropDown(historyManager);
     assert.strictEqual(getSelectedMenuItemText(), 'b.com #1');
 
-    pressKey('ArrowDown');
+    await pressKey('ArrowDown');
     assert.strictEqual(getSelectedMenuItemText(), 'a.com #1');
 
     // Wraps around to landing page item
-    pressKey('ArrowDown');
+    await pressKey('ArrowDown');
     assert.strictEqual(getSelectedMenuItemText(), 'Live metrics');
 
-    pressKey('ArrowDown');
+    await pressKey('ArrowDown');
     assert.strictEqual(getSelectedMenuItemText(), 'b.com #1');
 
     // ArrowUp moves backwards and wraps around
-    pressKey('ArrowUp');
+    await pressKey('ArrowUp');
     assert.strictEqual(getSelectedMenuItemText(), 'Live metrics');
 
-    pressKey('ArrowUp');
+    await pressKey('ArrowUp');
     assert.strictEqual(getSelectedMenuItemText(), 'a.com #1');
 
-    pressKey('ArrowUp');
+    await pressKey('ArrowUp');
     assert.strictEqual(getSelectedMenuItemText(), 'b.com #1');
 
     historyManager.cancelIfShowing();
@@ -363,10 +372,10 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     const {showPromise} = await openDropDown(historyManager);
     assert.strictEqual(getSelectedMenuItemText(), 'b.com #1');
 
-    pressKey('Home');
+    await pressKey('Home');
     assert.strictEqual(getSelectedMenuItemText(), 'Live metrics');
 
-    pressKey('End');
+    await pressKey('End');
     assert.strictEqual(getSelectedMenuItemText(), 'a.com #1');
 
     historyManager.cancelIfShowing();
@@ -378,10 +387,10 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     addSyntheticRecording(historyManager, {parsedTraceIndex: 2, url: 'https://b.com'});
 
     const {showPromise} = await openDropDown(historyManager);
-    pressKey('ArrowDown');
+    await pressKey('ArrowDown');
     assert.strictEqual(getSelectedMenuItemText(), 'a.com #1');
 
-    pressKey('Enter');
+    await pressKey('Enter');
     const result = await showPromise;
 
     assert.deepEqual(result, {type: 'TRACE_INDEX', parsedTraceIndex: 1});
@@ -395,10 +404,10 @@ describeWithEnvironment('TimelineHistoryManager', function() {
       addSyntheticRecording(historyManager, {parsedTraceIndex: 2, url: 'https://b.com'});
 
       const {showPromise} = await openDropDown(historyManager);
-      pressKey('ArrowDown');
+      await pressKey('ArrowDown');
       assert.strictEqual(getSelectedMenuItemText(), 'a.com #1');
 
-      pressKey(key);
+      await pressKey(key);
       assert.isNull(await showPromise);
       assert.strictEqual(historyManager.button().element.innerText, 'b.com #1');
       assert.isNull(Timeline.TimelineHistoryManager.DropDown.instance);
@@ -436,10 +445,10 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     assert.strictEqual(getSelectedMenuItemText(), 'b.com #1');
 
     const items = getMenuItems();
-    hoverMenuItem(items[2]);
+    await hoverMenuItem(items[2]);
     assert.strictEqual(getSelectedMenuItemText(), 'a.com #1');
 
-    hoverMenuItem(items[0]);
+    await hoverMenuItem(items[0]);
     assert.strictEqual(getSelectedMenuItemText(), 'Live metrics');
 
     historyManager.cancelIfShowing();
@@ -464,9 +473,9 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     assert.isOk(ctx);
     const initialPixels = Array.from(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
 
-    pressKey('ArrowDown');
-    hoverMenuItem(getMenuItems()[1]);
-    pressKey('ArrowUp');
+    await pressKey('ArrowDown');
+    await hoverMenuItem(getMenuItems()[1]);
+    await pressKey('ArrowUp');
 
     const updatedCanvas = getOverviewCanvas(getMenuItems()[2]);
     const updatedCtx = updatedCanvas.getContext('2d');
@@ -477,6 +486,18 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
     historyManager.cancelIfShowing();
     await showPromise;
+  });
+
+  it('resolves with null on outside click', async function() {
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://a.com'});
+
+    const {showPromise} = await openDropDown(historyManager);
+    assert.isOk(Timeline.TimelineHistoryManager.DropDown.instance);
+
+    document.body.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true}));
+
+    assert.isNull(await showPromise);
+    assert.isNull(Timeline.TimelineHistoryManager.DropDown.instance);
   });
 
   it('manages enabled state and resolves with null when disabled or empty', async function() {
@@ -731,7 +752,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
       }
     }
 
-    pressKey('ArrowDown');
+    await pressKey('ArrowDown');
     const selectedItem2 = getSelectedMenuItem();
     assert.isOk(selectedItem2);
     assert.notStrictEqual(selectedItem2, selectedItem1);
@@ -794,5 +815,96 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
     historyManager.cancelIfShowing();
     await showPromise;
+  });
+
+  describe('DropDown', () => {
+    it('passes items and selectedItem to the view', async () => {
+      const view = createViewFunctionStub(Timeline.TimelineHistoryManager.DropDown);
+      const dropDown = new Timeline.TimelineHistoryManager.DropDown(undefined, view);
+      const items: Timeline.TimelineHistoryManager.DropDownItem[] = [
+        {type: 'LANDING_PAGE', title: i18n.i18n.lockedString('Live metrics')},
+      ];
+      dropDown.items = items;
+      dropDown.selectedItem = items[0];
+
+      await view.nextInput;
+      assert.strictEqual(view.input.items, items);
+      assert.strictEqual(view.input.selectedItem, items[0]);
+    });
+
+    it('updates selectedItem on navigate', async () => {
+      const view = createViewFunctionStub(Timeline.TimelineHistoryManager.DropDown);
+      const dropDown = new Timeline.TimelineHistoryManager.DropDown(undefined, view);
+      const items: Timeline.TimelineHistoryManager.DropDownItem[] = [
+        {type: 'LANDING_PAGE', title: i18n.i18n.lockedString('Live metrics')},
+        {
+          type: 'RECORDING',
+          parsedTraceIndex: 1,
+          preview: {
+            title: 'Rec 1',
+            lastUsed: 0,
+            metadataText: '',
+            screenshotEvent: null,
+            overview: {} as ImageBitmap,
+            overviewHeight: 0,
+          },
+        },
+      ];
+      dropDown.items = items;
+      dropDown.selectedItem = items[0];
+
+      await view.nextInput;
+      assert.strictEqual(view.input.selectedItem, items[0]);
+
+      view.input.onNavigate('next');
+      await view.nextInput;
+      assert.strictEqual(view.input.selectedItem, items[1]);
+      assert.strictEqual(dropDown.selectedItem, items[1]);
+    });
+
+    it('updates selectedItem on hover', async () => {
+      const view = createViewFunctionStub(Timeline.TimelineHistoryManager.DropDown);
+      const dropDown = new Timeline.TimelineHistoryManager.DropDown(undefined, view);
+      const items: Timeline.TimelineHistoryManager.DropDownItem[] = [
+        {type: 'LANDING_PAGE', title: i18n.i18n.lockedString('Live metrics')},
+        {
+          type: 'RECORDING',
+          parsedTraceIndex: 1,
+          preview: {
+            title: 'Rec 1',
+            lastUsed: 0,
+            metadataText: '',
+            screenshotEvent: null,
+            overview: {} as ImageBitmap,
+            overviewHeight: 0,
+          },
+        },
+      ];
+      dropDown.items = items;
+      dropDown.selectedItem = items[1];
+
+      await view.nextInput;
+      assert.strictEqual(view.input.selectedItem, items[1]);
+
+      view.input.onHover(items[0]);
+      await view.nextInput;
+      assert.strictEqual(view.input.selectedItem, items[0]);
+      assert.strictEqual(dropDown.selectedItem, items[0]);
+    });
+
+    it('resolves DropDown.show on activate', async () => {
+      const view = createViewFunctionStub(Timeline.TimelineHistoryManager.DropDown);
+      addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://a.com'});
+
+      const anchor = document.createElement('div');
+      renderElementIntoDOM(anchor);
+
+      const showPromise = Timeline.TimelineHistoryManager.DropDown.show([1], 1, anchor, undefined, view);
+      await view.nextInput;
+
+      view.input.onActivate(view.input.items[1]);
+      const result = await showPromise;
+      assert.strictEqual(result, 1);
+    });
   });
 });

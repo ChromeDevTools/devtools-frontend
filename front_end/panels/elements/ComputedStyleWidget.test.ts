@@ -14,8 +14,9 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createStubbedDomNodeWithModels} from '../../testing/StyleHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
+import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html} from '../../ui/lit/lit.js';
 
 import * as Elements from './elements.js';
 
@@ -65,18 +66,22 @@ function createWidgetWithMultipleProperties(
   return widget;
 }
 
-type ComputedStylesTree =
-    ViewFunctionStub<typeof Elements.ComputedStyleWidget.ComputedStyleWidget>['input']['computedStylesTree'];
+type ComputedStylesTreeData =
+    ViewFunctionStub<typeof Elements.ComputedStyleWidget.ComputedStyleWidget>['input']['treeData'];
 
-async function getDisplayedProperties(widgetOrTree: Elements.ComputedStyleWidget.ComputedStyleWidget|
-                                      ComputedStylesTree): Promise<string[]> {
-  const treeOutline = widgetOrTree instanceof Elements.ComputedStyleWidget.ComputedStyleWidget ?
-      widgetOrTree.contentElement.querySelector('devtools-tree-outline') :
-      widgetOrTree;
-  assert.exists(treeOutline, 'Tree outline not found');
+async function getDisplayedProperties(widgetOrTreeData: Elements.ComputedStyleWidget.ComputedStyleWidget|
+                                      ComputedStylesTreeData): Promise<string[]> {
+  let treeData: ComputedStylesTreeData;
+  if (widgetOrTreeData instanceof Elements.ComputedStyleWidget.ComputedStyleWidget) {
+    const treeOutline = widgetOrTreeData.contentElement.querySelector('devtools-tree-outline');
+    assert.exists(treeOutline, 'Tree outline not found');
+    treeData = treeOutline.data as ComputedStylesTreeData;
+  } else {
+    treeData = widgetOrTreeData;
+  }
   type TreeNodeData = {tag: 'property', propertyName: string}|{tag: 'category'};
   const matchedPropertyNames: string[] = [];
-  for (const node of treeOutline.data.tree) {
+  for (const node of treeData.tree) {
     const data = node.treeNodeData as TreeNodeData;
     if (data.tag === 'property') {
       matchedPropertyNames.push(data.propertyName);
@@ -107,7 +112,8 @@ describeWithEnvironment('ComputedStyleWidget', () => {
     function createDefaultViewInput(overrides: Partial<Elements.ComputedStyleWidget.ComputedStyleWidgetInput> = {}):
         Elements.ComputedStyleWidget.ComputedStyleWidgetInput {
       return {
-        computedStylesTree: new TreeOutline.TreeOutline.TreeOutline<Elements.ComputedStyleWidget.ComputedStyleData>(),
+        treeData: {tree: [], compact: true, defaultRenderer: node => html`${node.id}`},
+        isNarrow: false,
         hasMatches: true,
         showInheritedComputedStylePropertiesSetting:
             Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false),
@@ -124,7 +130,7 @@ describeWithEnvironment('ComputedStyleWidget', () => {
     it('renders container class and toolbar when includeToolbar is true', () => {
       const target = document.createElement('div');
       renderElementIntoDOM(target);
-      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({includeToolbar: true, hasMatches: true}), null,
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({includeToolbar: true, hasMatches: true}), {},
                                                 target);
       assert.isTrue(target.classList.contains('styles-sidebar-computed-style-widget'));
       assert.isNotNull(target.querySelector('devtools-toolbar'));
@@ -134,8 +140,8 @@ describeWithEnvironment('ComputedStyleWidget', () => {
     it('hides toolbar and shows no-matches message when hasMatches is false', () => {
       const target = document.createElement('div');
       renderElementIntoDOM(target);
-      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({includeToolbar: false, hasMatches: false}),
-                                                null, target);
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({includeToolbar: false, hasMatches: false}), {},
+                                                target);
       assert.isNull(target.querySelector('devtools-toolbar'));
       assert.isNotNull(target.querySelector('.gray-info-message'));
     });
@@ -144,7 +150,7 @@ describeWithEnvironment('ComputedStyleWidget', () => {
       const target = document.createElement('div');
       renderElementIntoDOM(target);
       const onFilterChanged = sinon.spy();
-      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({onFilterChanged}), null, target);
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({onFilterChanged}), {}, target);
 
       const toolbarInput = target.querySelector('devtools-toolbar-input')!;
       toolbarInput.dispatchEvent(new CustomEvent('change', {detail: 'color'}));
@@ -155,11 +161,33 @@ describeWithEnvironment('ComputedStyleWidget', () => {
       const target = document.createElement('div');
       renderElementIntoDOM(target);
       const onRegexToggled = sinon.spy();
-      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({onRegexToggled}), null, target);
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({onRegexToggled}), {}, target);
 
       const toolbarInput = target.querySelector('devtools-toolbar-input')!;
       toolbarInput.dispatchEvent(new CustomEvent('regextoggle', {detail: true}));
       sinon.assert.calledOnceWithExactly(onRegexToggled, true);
+    });
+
+    it('applies computed-narrow class when isNarrow is true', () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({isNarrow: true}), {}, target);
+
+      const treeOutline = target.querySelector('devtools-tree-outline')!;
+      assert.isTrue(treeOutline.classList.contains('computed-narrow'));
+    });
+
+    it('populates expandGroupLists callback on ViewOutput', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      const output: Elements.ComputedStyleWidget.ViewOutput = {};
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput(), output, target);
+
+      const treeOutline = target.querySelector('devtools-tree-outline')!;
+      assert.isFunction(output.expandGroupLists);
+      const expandSpy = sinon.spy(treeOutline, 'expandRecursively');
+      await output.expandGroupLists?.();
+      sinon.assert.calledOnceWithExactly(expandSpy, 0);
     });
   });
 
@@ -425,11 +453,11 @@ describeWithEnvironment('ComputedStyleWidget', () => {
       computedStyleWidget.requestUpdate();
       await computedStyleWidget.updateComplete;
 
-      const propertyNames = await getDisplayedProperties(view.input.computedStylesTree);
+      const propertyNames = await getDisplayedProperties(view.input.treeData);
       assert.deepEqual(propertyNames, ['order', 'order', 'order']);
 
       const propertyNodeIds: string[] = [];
-      for (const category of view.input.computedStylesTree.data.tree) {
+      for (const category of view.input.treeData.tree) {
         const children = await category.children?.() ?? [];
         for (const child of children) {
           propertyNodeIds.push(child.id);
@@ -468,12 +496,12 @@ describeWithEnvironment('ComputedStyleWidget', () => {
       computedStyleWidget = createWidgetWithMultipleProperties(new Map([['order', '1']]), false, view);
       renderElementIntoDOM(computedStyleWidget);
       await computedStyleWidget.updateComplete;
-      assert.deepEqual(await getDisplayedProperties(view.input.computedStylesTree), ['order']);
+      assert.deepEqual(await getDisplayedProperties(view.input.treeData), ['order']);
 
       Common.Settings.Settings.instance().createSetting('group-computed-styles', false).set(true);
       await computedStyleWidget.updateComplete;
 
-      assert.deepEqual(await getDisplayedProperties(view.input.computedStylesTree), ['order', 'order', 'order']);
+      assert.deepEqual(await getDisplayedProperties(view.input.treeData), ['order', 'order', 'order']);
     });
   });
 
@@ -483,17 +511,20 @@ describeWithEnvironment('ComputedStyleWidget', () => {
         ['display', 'block'],
       ]);
       computedStyleWidget = createWidgetWithMultipleProperties(properties);
+      await computedStyleWidget.updateComplete;
       const treeOutline = computedStyleWidget.contentElement.querySelector('devtools-tree-outline');
       assert.exists(treeOutline);
 
       // Set width to 200px
       sinon.stub(computedStyleWidget.contentElement, 'offsetWidth').get(() => 200);
       computedStyleWidget.onResize();
+      await computedStyleWidget.updateComplete;
       assert.isTrue(treeOutline.classList.contains('computed-narrow'));
 
       // Set width to 300px
       sinon.stub(computedStyleWidget.contentElement, 'offsetWidth').get(() => 300);
       computedStyleWidget.onResize();
+      await computedStyleWidget.updateComplete;
       assert.isFalse(treeOutline.classList.contains('computed-narrow'));
     });
 
@@ -503,12 +534,14 @@ describeWithEnvironment('ComputedStyleWidget', () => {
       ]);
       computedStyleWidget = createWidgetWithMultipleProperties(properties);
       computedStyleWidget.enableNarrowViewResizing = false;
+      await computedStyleWidget.updateComplete;
       const treeOutline = computedStyleWidget.contentElement.querySelector('devtools-tree-outline');
       assert.exists(treeOutline);
 
       // Set width to 200px
       sinon.stub(computedStyleWidget.contentElement, 'offsetWidth').get(() => 200);
       computedStyleWidget.onResize();
+      await computedStyleWidget.updateComplete;
       assert.isFalse(treeOutline.classList.contains('computed-narrow'));
     });
   });

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -13,9 +13,10 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import {getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {checkForPendingActivity} from '../../testing/TrackAsyncOperations.js';
 import {getVeHash} from '../../testing/VisualLoggingHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -90,6 +91,128 @@ describeWithEnvironment('MainMenuItem', () => {
 
     // Verify focus is not scheduled on AFTER_DOCK_SIDE_CHANGED.
     sinon.assert.notCalled(focusSpy);
+  });
+
+  it('passes dock state and shortcut title to the view when docking is supported', () => {
+    const dockController = UI.DockController.DockController.instance({forceNew: true, canDock: true});
+    dockController.setDockSide(UI.DockController.DockState.RIGHT);
+
+    const view = sinon.spy((_input: Main.MainImpl.ViewInput, _output: undefined, _target: HTMLElement) => {});
+    const item = new Main.MainImpl.MainMenuItem(view).item();
+    assert.instanceOf(item, UI.Toolbar.ToolbarMenuButton);
+
+    getMenuForToolbarButton(item);
+
+    sinon.assert.calledOnce(view);
+    const [input, output, target] = view.firstCall.args;
+    assert.strictEqual(input.dockSide, UI.DockController.DockState.RIGHT);
+    assert.strictEqual(input.toggleDockSideShortcutTitle, 'Ctrl+Shift+D');
+    assert.isUndefined(output);
+    assert.instanceOf(target, HTMLDivElement);
+  });
+
+  it('omits dock side header item when docking is not supported', () => {
+    UI.DockController.DockController.instance({forceNew: true, canDock: false});
+
+    const view = sinon.spy((_input: Main.MainImpl.ViewInput, _output: undefined, _target: HTMLElement) => {});
+    const item = new Main.MainImpl.MainMenuItem(view).item();
+    assert.instanceOf(item, UI.Toolbar.ToolbarMenuButton);
+
+    const menu = getMenuForToolbarButton(item);
+
+    sinon.assert.notCalled(view);
+    assert.isEmpty(menu.headerSection().items);
+  });
+
+  it('focuses main menu button after switching between docked sides', async () => {
+    const dockController = UI.DockController.DockController.instance({forceNew: true, canDock: true});
+    dockController.setDockSide(UI.DockController.DockState.BOTTOM);
+
+    const view = sinon.spy((_input: Main.MainImpl.ViewInput, _output: undefined, _target: HTMLElement) => {});
+    const item = new Main.MainImpl.MainMenuItem(view).item();
+    assert.instanceOf(item, UI.Toolbar.ToolbarMenuButton);
+    renderElementIntoDOM(item.element);
+    const focusStub = sinon.stub(item.element, 'focus');
+    const focused = new Promise<void>(resolve => focusStub.callsFake(() => resolve()));
+
+    const menu = getMenuForToolbarButton(item);
+    const discardSpy = sinon.spy(menu, 'discard');
+
+    sinon.assert.calledOnce(view);
+    view.firstCall.args[0].onSelectDockSide(UI.DockController.DockState.LEFT);
+
+    assert.strictEqual(dockController.dockSide(), UI.DockController.DockState.LEFT);
+    sinon.assert.calledOnce(discardSpy);
+    await focused;
+    sinon.assert.calledOnce(focusStub);
+  });
+});
+
+describe('MainMenuItem view', () => {
+  setupLocaleHooks();
+
+  function renderView(
+      overrides: Partial<Main.MainImpl.ViewInput> = {},
+      parent?: HTMLElement,
+      ): HTMLElement {
+    const target = document.createElement('div');
+    if (parent) {
+      parent.appendChild(target);
+      renderElementIntoDOM(parent);
+    } else {
+      renderElementIntoDOM(target);
+    }
+    Main.MainImpl.DEFAULT_VIEW({
+      dockSide: UI.DockController.DockState.BOTTOM,
+      toggleDockSideShortcutTitle: 'Ctrl+Shift+D',
+      onSelectDockSide: () => {},
+      ...overrides,
+    },
+                               undefined, target);
+    return target;
+  }
+
+  it('renders dock buttons and active state', () => {
+    const target = renderView();
+    assert.isTrue(target.classList.contains('location-menu'));
+    assert.strictEqual(
+        target.getAttribute('aria-label'),
+        'Dock side Use left and right arrow keys to navigate the options',
+    );
+    const buttons = Array.from(target.querySelectorAll('devtools-button'));
+    assert.deepEqual(
+        buttons.map(b => b.getAttribute('aria-label')),
+        ['Undock into separate window', 'Dock to left', 'Dock to bottom', 'Dock to right'],
+    );
+    assert.deepEqual(buttons.map(b => b.toggled), [false, false, true, false]);
+  });
+
+  it('invokes onSelectDockSide when a dock button is clicked', () => {
+    const onSelectDockSide = sinon.spy();
+    const target = renderView({onSelectDockSide});
+    target.querySelector<HTMLElement>('devtools-button[aria-label="Dock to right"]')?.click();
+    sinon.assert.calledOnceWithExactly(onSelectDockSide, UI.DockController.DockState.RIGHT);
+  });
+
+  it('navigates dock buttons with ArrowLeft and ArrowRight', () => {
+    const target = renderView();
+    const buttons = Array.from(target.querySelectorAll('devtools-button'));
+    dispatchKeyDownEvent(target, {key: 'ArrowRight'});
+    assert.isTrue(buttons[0].hasFocus());
+    dispatchKeyDownEvent(target, {key: 'ArrowRight'});
+    assert.isTrue(buttons[1].hasFocus());
+    dispatchKeyDownEvent(target, {key: 'ArrowLeft'});
+    assert.isTrue(buttons[0].hasFocus());
+  });
+
+  it('forwards ArrowDown to soft context menu', () => {
+    const softContextMenu = document.createElement('div');
+    softContextMenu.classList.add('soft-context-menu');
+    const target = renderView({}, softContextMenu);
+    const menuKeyDownSpy = sinon.spy();
+    softContextMenu.addEventListener('keydown', menuKeyDownSpy);
+    dispatchKeyDownEvent(target, {key: 'ArrowDown'});
+    sinon.assert.calledOnce(menuKeyDownSpy);
   });
 });
 

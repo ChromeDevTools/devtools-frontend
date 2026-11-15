@@ -1,8 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2006, 2007, 2008 Apple Inc.  All rights reserved.
@@ -786,9 +784,109 @@ export class SearchActionDelegate implements UI.ActionRegistration.ActionDelegat
     return false;
   }
 }
+
+export interface ViewInput {
+  dockSide: UI.DockController.DockState|undefined;
+  toggleDockSideShortcutTitle: string;
+  onSelectDockSide: (side: UI.DockController.DockState) => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const onKeyDown = (event: Event): void => {
+    if (!(event instanceof KeyboardEvent)) {
+      return;
+    }
+    let dir = 0;
+    if (event.key === 'ArrowLeft') {
+      dir = -1;
+    } else if (event.key === 'ArrowRight') {
+      dir = 1;
+    } else if (event.key === 'ArrowDown') {
+      const contextMenuElement = target.closest('.soft-context-menu');
+      contextMenuElement?.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown'}));
+      return;
+    } else {
+      return;
+    }
+
+    const buttons = Array.from(target.querySelectorAll('devtools-button'));
+    let index = buttons.findIndex(button => button.hasFocus());
+    index = Platform.NumberUtilities.clamp(index + dir, 0, buttons.length - 1);
+    buttons[index]?.focus();
+    event.consume(true);
+  };
+
+  const dockOptions = [
+    {
+      side: UI.DockController.DockState.UNDOCKED,
+      context: 'current-dock-state-undock',
+      title: i18nString(UIStrings.undockIntoSeparateWindow),
+      iconName: 'dock-window',
+    },
+    {
+      side: UI.DockController.DockState.LEFT,
+      context: 'current-dock-state-left',
+      title: i18nString(UIStrings.dockToLeft),
+      iconName: 'dock-left',
+    },
+    {
+      side: UI.DockController.DockState.BOTTOM,
+      context: 'current-dock-state-bottom',
+      title: i18nString(UIStrings.dockToBottom),
+      iconName: 'dock-bottom',
+    },
+    {
+      side: UI.DockController.DockState.RIGHT,
+      context: 'current-dock-state-right',
+      title: i18nString(UIStrings.dockToRight),
+      iconName: 'dock-right',
+    },
+  ];
+
+  // clang-format off
+  render(html`
+    <span class="dockside-title"
+          title=${i18nString(UIStrings.placementOfDevtoolsRelativeToThe, {PH1: input.toggleDockSideShortcutTitle})}>
+      ${i18nString(UIStrings.dockSide)}
+    </span>
+    <devtools-toolbar @mousedown=${(event: Event) => event.consume()}>
+      ${dockOptions.map(option => html`
+        <devtools-button class="toolbar-button"
+                         jslog=${VisualLogging.toggle().track({click: true}).context(option.context)}
+                         title=${option.title}
+                         aria-label=${option.title}
+                         .iconName=${option.iconName}
+                         .toggled=${input.dockSide === option.side}
+                         .toggledIconName=${option.iconName}
+                         .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+                         .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+                         @click=${() => input.onSelectDockSide(option.side)}></devtools-button>
+      `)}
+    </devtools-toolbar>
+  `, target, {
+    container: {
+      classes: ['flex-auto', 'flex-centered', 'location-menu'],
+      attributes: {
+        jslog: `${VisualLogging.item('dock-side').track({keydown: 'ArrowDown|ArrowLeft|ArrowRight'})}`,
+        tabindex: '-1',
+        'aria-label': `${i18nString(UIStrings.dockSide)} ${i18nString(UIStrings.dockSideNavigation)}`,
+      },
+      listeners: {
+        keydown: onKeyDown,
+      },
+    },
+  });
+  // clang-format on
+};
+
 export class MainMenuItem implements UI.Toolbar.Provider {
   readonly #item: UI.Toolbar.ToolbarMenuButton;
-  constructor() {
+  readonly #view: View;
+
+  constructor(view: View = DEFAULT_VIEW) {
+    this.#view = view;
     this.#item = new UI.Toolbar.ToolbarMenuButton(
         this.#handleContextMenu.bind(this), /* isIconDropdown */ true,
         /* useSoftMenu */ true, 'main-menu', 'dots-vertical');
@@ -802,99 +900,27 @@ export class MainMenuItem implements UI.Toolbar.Provider {
 
   #handleContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     const dockController = UI.DockController.DockController.instance();
-    if (dockController.canDock()) {
-      const dockItemElement = document.createElement('div');
-      dockItemElement.classList.add('flex-auto', 'flex-centered', 'location-menu');
-      dockItemElement.setAttribute(
-          'jslog', `${VisualLogging.item('dock-side').track({keydown: 'ArrowDown|ArrowLeft|ArrowRight'})}`);
-      dockItemElement.tabIndex = -1;
-      UI.ARIAUtils.setLabel(dockItemElement, UIStrings.dockSide + UIStrings.dockSideNavigation);
-      const [toggleDockSideShortcut] =
-          UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('main.toggle-dock');
-
-      // clang-format off
-      render(html`
-        <span class="dockside-title"
-              title=${i18nString(UIStrings.placementOfDevtoolsRelativeToThe, {PH1: toggleDockSideShortcut.title()})}>
-          ${i18nString(UIStrings.dockSide)}
-        </span>
-        <devtools-toolbar @mousedown=${(event: Event) => event.consume()}>
-          <devtools-button class="toolbar-button"
-                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-undock')}
-                           title=${i18nString(UIStrings.undockIntoSeparateWindow)}
-                           aria-label=${i18nString(UIStrings.undockIntoSeparateWindow)}
-                           .iconName=${'dock-window'}
-                           .toggled=${dockController.dockSide() === UI.DockController.DockState.UNDOCKED}
-                           .toggledIconName=${'dock-window'}
-                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
-                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
-                           @click=${setDockSide.bind(null, UI.DockController.DockState.UNDOCKED)}></devtools-button>
-          <devtools-button class="toolbar-button"
-                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-left')}
-                           title=${i18nString(UIStrings.dockToLeft)}
-                           aria-label=${i18nString(UIStrings.dockToLeft)}
-                           .iconName=${'dock-left'}
-                           .toggled=${dockController.dockSide() === UI.DockController.DockState.LEFT}
-                           .toggledIconName=${'dock-left'}
-                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
-                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
-                           @click=${setDockSide.bind(null, UI.DockController.DockState.LEFT)}></devtools-button>
-          <devtools-button class="toolbar-button"
-                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-bottom')}
-                           title=${i18nString(UIStrings.dockToBottom)}
-                           aria-label=${i18nString(UIStrings.dockToBottom)}
-                           .iconName=${'dock-bottom'}
-                           .toggled=${dockController.dockSide() === UI.DockController.DockState.BOTTOM}
-                           .toggledIconName=${'dock-bottom'}
-                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
-                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
-                           @click=${setDockSide.bind(null, UI.DockController.DockState.BOTTOM)}></devtools-button>
-          <devtools-button class="toolbar-button"
-                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-right')}
-                           title=${i18nString(UIStrings.dockToRight)}
-                           aria-label=${i18nString(UIStrings.dockToRight)}
-                           .iconName=${'dock-right'}
-                           .toggled=${dockController.dockSide() === UI.DockController.DockState.RIGHT}
-                           .toggledIconName=${'dock-right'}
-                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
-                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
-                           @click=${setDockSide.bind(null, UI.DockController.DockState.RIGHT)}></devtools-button>
-        </devtools-toolbar>
-      `, dockItemElement, {host: this});
-      // clang-format on
-
-      dockItemElement.addEventListener('keydown', event => {
-        let dir = 0;
-        if (event.key === 'ArrowLeft') {
-          dir = -1;
-        } else if (event.key === 'ArrowRight') {
-          dir = 1;
-        } else if (event.key === 'ArrowDown') {
-          const contextMenuElement = dockItemElement.closest('.soft-context-menu');
-          contextMenuElement?.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown'}));
-          return;
-        } else {
-          return;
-        }
-
-        const buttons = Array.from(dockItemElement.querySelectorAll('devtools-button'));
-        let index = buttons.findIndex(button => button.hasFocus());
-        index = Platform.NumberUtilities.clamp(index + dir, 0, buttons.length - 1);
-        buttons[index].focus();
-        event.consume(true);
-      });
-      contextMenu.headerSection().appendCustomItem(dockItemElement, 'dock-side');
-    }
-
     const button = this.#item.element;
-
-    function setDockSide(side: UI.DockController.DockState): void {
+    const setDockSide = (side: UI.DockController.DockState): void => {
       if (dockController.dockSide() !== UI.DockController.DockState.UNDOCKED &&
           side !== UI.DockController.DockState.UNDOCKED) {
         void dockController.once(UI.DockController.Events.AFTER_DOCK_SIDE_CHANGED).then(() => button.focus());
       }
       dockController.setDockSide(side);
       contextMenu.discard();
+    };
+
+    if (dockController.canDock()) {
+      const [toggleDockSideShortcut] =
+          UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('main.toggle-dock');
+      const dockItemElement = document.createElement('div');
+      this.#view({
+        dockSide: dockController.dockSide(),
+        toggleDockSideShortcutTitle: toggleDockSideShortcut?.title() ?? '',
+        onSelectDockSide: setDockSide,
+      },
+                 undefined, dockItemElement);
+      contextMenu.headerSection().appendCustomItem(dockItemElement, 'dock-side');
     }
 
     contextMenu.defaultSection().appendAction('freestyler.main-menu', undefined, /* optional */ true);

@@ -533,6 +533,55 @@ describe('ConsoleViewport', () => {
     });
   });
 
+  describe('declarative DOM reconciliation', () => {
+    function createViewportElement(height: number) {
+      const element = document.createElement('div');
+      element.style.height = `${height}px`;
+      Object.defineProperty(element, 'offsetHeight', {value: height, configurable: true});
+      return {
+        willHide: sinon.spy(),
+        wasShown: sinon.spy(),
+        element: () => element,
+        focusLastChildOrSelf: () => {},
+      };
+    }
+
+    it('renders empty gaps and unfocusable content synchronously on construction', () => {
+      assert.strictEqual(viewport.element.style.overflow, 'auto');
+      const [topGap, content, bottomGap] = viewport.element.children as HTMLCollectionOf<HTMLElement>;
+      assert.strictEqual(content, viewport.contentElement());
+      assert.strictEqual(topGap.style.height, '0px');
+      assert.strictEqual(bottomGap.style.height, '0px');
+      assert.strictEqual(content.tabIndex, -1);
+    });
+
+    it('updates active items, gap heights, and lifecycle callbacks on scroll', () => {
+      const items = Array.from({length: 100}, () => createViewportElement(20));
+      mockProvider.setItemElements(items);
+      setItemsAndRefresh(Array(100).fill(20));
+
+      sinon.assert.calledOnce(items[0].wasShown);
+      sinon.assert.notCalled(items[25].wasShown);
+      assert.strictEqual((viewport.contentElement() as HTMLElement).tabIndex, 0);
+
+      scrollTo(1000);
+      const [topGap, , bottomGap] = viewport.element.children as HTMLCollectionOf<HTMLElement>;
+      assert.strictEqual(topGap.style.height, '900px');
+      assert.strictEqual(bottomGap.style.height, '600px');
+      sinon.assert.calledOnce(items[0].willHide);
+      sinon.assert.calledOnce(items[45].wasShown);
+    });
+
+    it('preserves trailing children appended to the viewport element by its owner', () => {
+      const prompt = document.createElement('div');
+      viewport.element.appendChild(prompt);
+      setItemsAndRefresh(Array(100).fill(20));
+      scrollTo(1000);
+      setItemsAndRefresh(Array(50).fill(20));
+      assert.strictEqual(viewport.element.lastElementChild, prompt);
+    });
+  });
+
   describe('DOM virtualization and lifecycle', () => {
     const ITEM_HEIGHT = 20;
     const SMALL_COUNT = 3;
@@ -699,8 +748,9 @@ describe('ConsoleViewport', () => {
           sinon.assert.calledOnce(item.wasShownSpy);
           sinon.assert.notCalled(item.willHideSpy);
         }
-        assert.isEmpty(removedNodes);
-        assert.deepEqual(addedNodes, secondBatch.map(item => item.element()));
+        // Lit adds comment markers for the new parts; only elements matter here.
+        assert.isEmpty(removedNodes.filter(node => node instanceof Element));
+        assert.deepEqual(addedNodes.filter(node => node instanceof Element), secondBatch.map(item => item.element()));
       } finally {
         observer.disconnect();
       }

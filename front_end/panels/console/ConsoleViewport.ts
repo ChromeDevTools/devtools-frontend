@@ -1,13 +1,17 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 
 import {ConsoleViewMessage, getMessageForElement} from './ConsoleViewMessage.js';
+
+const {ref, repeat, styleMap} = Directives;
 
 interface SelectionModel {
   item: number;
@@ -15,12 +19,18 @@ interface SelectionModel {
   offset: number;
 }
 
+export interface CopyResult {
+  // The plain text to put on the clipboard. Not set if the selection was already copied with styles.
+  plainText?: string;
+}
+
+type Gap = 'top'|'bottom';
+
+const EXPANDED_CONTENT_HEIGHT = '10000000px';
+
 export class ConsoleViewport {
   element: HTMLElement;
-  private topGapElement: HTMLElement;
   private topGapElementActive: boolean;
-  #contentElement: HTMLElement;
-  private bottomGapElement: HTMLElement;
   private bottomGapElementActive: boolean;
   private provider: ConsoleViewportProvider;
   private virtualSelectedIndex: number;
@@ -41,37 +51,22 @@ export class ConsoleViewport {
   private selectionIsBackward: boolean;
   private lastSelectedElement?: HTMLElement|null;
   private cachedProviderElements?: Array<ConsoleViewportElement|null>;
+  readonly #gaps = new Map<Gap, HTMLElement>();
+  #contentElementRef?: HTMLElement;
+  #topGapHeight = 0;
+  #bottomGapHeight = 0;
+  #expandContent = false;
+  #contentTabIndex = -1;
+  #rendering = false;
+  #renderRequested = false;
 
   constructor(provider: ConsoleViewportProvider) {
     this.element = document.createElement('div');
-    this.element.style.overflow = 'auto';
-    this.topGapElement = this.element.createChild('div');
-    this.topGapElement.style.height = '0px';
-    this.topGapElement.style.color = 'transparent';
     this.topGapElementActive = false;
-    this.#contentElement = this.element.createChild('div');
-    this.bottomGapElement = this.element.createChild('div');
-    this.bottomGapElement.style.height = '0px';
-    this.bottomGapElement.style.color = 'transparent';
     this.bottomGapElementActive = false;
 
-    // Text content needed for range intersection checks in updateSelectionModel.
-    // Use Unicode ZERO WIDTH NO-BREAK SPACE, which avoids contributing any height to the element's layout overflow.
-    this.topGapElement.textContent = '\uFEFF';
-    this.bottomGapElement.textContent = '\uFEFF';
-
-    UI.ARIAUtils.setHidden(this.topGapElement, true);
-    UI.ARIAUtils.setHidden(this.bottomGapElement, true);
-
     this.provider = provider;
-    this.element.addEventListener('scroll', this.onScroll.bind(this), false);
-    this.element.addEventListener('copy', (this.onCopy.bind(this) as EventListener), false);
-    this.element.addEventListener('dragstart', (this.onDragStart.bind(this) as (arg0: Event) => unknown), false);
-    this.#contentElement.addEventListener('focusin', (this.onFocusIn.bind(this) as EventListener), false);
-    this.#contentElement.addEventListener('focusout', (this.onFocusOut.bind(this) as EventListener), false);
-    this.#contentElement.addEventListener('keydown', (this.onKeyDown.bind(this) as EventListener), false);
     this.virtualSelectedIndex = -1;
-    this.#contentElement.tabIndex = -1;
 
     this.firstActiveIndex = -1;
     this.lastActiveIndex = -1;
@@ -89,6 +84,90 @@ export class ConsoleViewport {
     this.observerConfig = {childList: true, subtree: true};
     this.#stickToBottom = false;
     this.selectionIsBackward = false;
+
+    // Render synchronously, so that the content element is available right away.
+    this.#render();
+  }
+
+  #render(): void {
+    // Focus changes caused by the DOM updates may request another render before this one is finished.
+    if (this.#rendering) {
+      this.#renderRequested = true;
+      return;
+    }
+    this.#rendering = true;
+    try {
+      do {
+        this.#renderRequested = false;
+        const setGap = (gap: Gap, element: Element|undefined): void => {
+          if (element instanceof HTMLElement) {
+            this.#gaps.set(gap, element);
+          } else {
+            this.#gaps.delete(gap);
+          }
+        };
+        const onCopy = (event: Event): void => {
+          const result = this.onCopy();
+          if (!result) {
+            return;
+          }
+          event.preventDefault();
+          if (result.plainText !== undefined) {
+            (event as ClipboardEvent).clipboardData?.setData('text/plain', result.plainText);
+          }
+        };
+        const onDragStart = (event: Event): void => {
+          const text = this.onDragStart();
+          const {dataTransfer} = event as DragEvent;
+          if (text && dataTransfer) {
+            dataTransfer.clearData();
+            dataTransfer.setData('text/plain', text);
+            dataTransfer.effectAllowed = 'copy';
+          }
+        };
+        const onKeyDown = (event: KeyboardEvent): void => {
+          if (this.onKeyDown(event.key, event.shiftKey)) {
+            event.consume(true);
+          }
+        };
+        // clang-format off
+        render(html`
+          <div style=${styleMap({height: `${this.#topGapHeight}px`, color: 'transparent'})} aria-hidden="true"
+               ${ref(e => setGap('top', e))}>&#xFEFF;</div>
+          <div tabindex=${this.#contentTabIndex}
+               style=${styleMap({height: this.#expandContent ? EXPANDED_CONTENT_HEIGHT : undefined})}
+               @focusin=${(event: FocusEvent) => this.onFocusIn(event.target as Node | null,
+                                                                event.relatedTarget as Element | null)}
+               @focusout=${(event: FocusEvent) => this.onFocusOut(event.relatedTarget as Element | null)}
+               @keydown=${onKeyDown}
+               ${ref(e => { this.#contentElementRef = e instanceof HTMLElement ? e : undefined; })}>
+            ${repeat(this.renderedItems, item => item, item => item.element())}
+          </div>
+          <div style=${styleMap({height: `${this.#bottomGapHeight}px`, color: 'transparent'})} aria-hidden="true"
+               ${ref(e => setGap('bottom', e))}>&#xFEFF;</div>`,
+          this.element, {
+            container: {
+              attributes: {style: 'overflow: auto'},
+              listeners: {scroll: () => this.onScroll(), copy: onCopy, dragstart: onDragStart},
+            },
+          });
+        // clang-format on
+      } while (this.#renderRequested);
+    } finally {
+      this.#rendering = false;
+    }
+  }
+
+  get #contentElement(): HTMLElement {
+    assertNotNullOrUndefined(this.#contentElementRef);
+    return this.#contentElementRef;
+  }
+
+  #setContentTabIndex(tabIndex: number): void {
+    if (this.#contentTabIndex !== tabIndex) {
+      this.#contentTabIndex = tabIndex;
+      this.#render();
+    }
   }
 
   stickToBottom(): boolean {
@@ -114,35 +193,32 @@ export class ConsoleViewport {
     this.muteCopyHandler = false;
   }
 
-  private onCopy(event: ClipboardEvent): void {
+  private onCopy(): CopyResult|null {
     if (this.muteCopyHandler) {
-      return;
+      return null;
     }
 
     const text = this.selectedText();
     if (!text) {
-      return;
+      return null;
     }
-
-    event.preventDefault();
 
     if (this.selectionContainsTable()) {
       this.copyWithStyles();
-    } else if (event.clipboardData) {
-      event.clipboardData.setData('text/plain', text);
+      return {};
     }
+    return {plainText: text};
   }
 
-  private onFocusIn(event: FocusEvent): void {
-    const renderedIndex =
-        this.renderedItems.findIndex(item => item.element().isSelfOrAncestor((event.target as Node | null)));
+  private onFocusIn(target: Node|null, relatedTarget: Element|null): void {
+    const renderedIndex = this.renderedItems.findIndex(item => item.element().isSelfOrAncestor(target));
     if (renderedIndex !== -1) {
       this.virtualSelectedIndex = this.firstActiveIndex + renderedIndex;
     }
     let focusLastChild = false;
     // Make default selection when moving from external (e.g. prompt) to the container.
-    if (this.virtualSelectedIndex === -1 && this.isOutsideViewport((event.relatedTarget as Element | null)) &&
-        event.target === this.#contentElement && this.itemCount) {
+    if (this.virtualSelectedIndex === -1 && this.isOutsideViewport(relatedTarget) && target === this.#contentElement &&
+        this.itemCount) {
       focusLastChild = true;
       this.virtualSelectedIndex = this.itemCount - 1;
 
@@ -153,8 +229,8 @@ export class ConsoleViewport {
     this.updateFocusedItem(focusLastChild);
   }
 
-  private onFocusOut(event: FocusEvent): void {
-    if (this.isOutsideViewport((event.relatedTarget as Element | null))) {
+  private onFocusOut(relatedTarget: Element|null): void {
+    if (this.isOutsideViewport(relatedTarget)) {
       this.virtualSelectedIndex = -1;
     }
     this.updateFocusedItem();
@@ -164,38 +240,29 @@ export class ConsoleViewport {
     return element !== null && !element.isSelfOrDescendant(this.#contentElement);
   }
 
-  private onDragStart(event: DragEvent): boolean {
-    const text = this.selectedText();
-    if (!text) {
-      return false;
-    }
-    if (event.dataTransfer) {
-      event.dataTransfer.clearData();
-      event.dataTransfer.setData('text/plain', text);
-      event.dataTransfer.effectAllowed = 'copy';
-    }
-    return true;
+  private onDragStart(): string|null {
+    return this.selectedText() || null;
   }
 
-  private onKeyDown(event: KeyboardEvent): void {
-    if (UI.UIUtils.isEditing() || !this.itemCount || event.shiftKey) {
-      return;
+  private onKeyDown(key: string, shiftKey: boolean): boolean {
+    if (UI.UIUtils.isEditing() || !this.itemCount || shiftKey) {
+      return false;
     }
     let isArrowUp = false;
-    switch (event.key) {
+    switch (key) {
       case 'ArrowUp':
         if (this.virtualSelectedIndex > 0) {
           isArrowUp = true;
           this.virtualSelectedIndex--;
         } else {
-          return;
+          return false;
         }
         break;
       case 'ArrowDown':
         if (this.virtualSelectedIndex < this.itemCount - 1) {
           this.virtualSelectedIndex++;
         } else {
-          return;
+          return false;
         }
         break;
       case 'Home':
@@ -205,11 +272,11 @@ export class ConsoleViewport {
         this.virtualSelectedIndex = this.itemCount - 1;
         break;
       default:
-        return;
+        return false;
     }
-    event.consume(true);
     this.scrollItemIntoView(this.virtualSelectedIndex);
     this.updateFocusedItem(isArrowUp);
+    return true;
   }
 
   private updateFocusedItem(focusLastChild?: boolean): void {
@@ -234,9 +301,9 @@ export class ConsoleViewport {
       }
     }
     if (this.itemCount && !this.#contentElement.hasFocus()) {
-      this.#contentElement.tabIndex = 0;
+      this.#setContentTabIndex(0);
     } else {
-      this.#contentElement.tabIndex = -1;
+      this.#setContentTabIndex(-1);
     }
     this.lastSelectedElement = selectedElement;
   }
@@ -345,8 +412,10 @@ export class ConsoleViewport {
         hasVisibleSelection = true;
       }
     }
-    const topOverlap = range.intersectsNode(this.topGapElement) && this.topGapElementActive;
-    const bottomOverlap = range.intersectsNode(this.bottomGapElement) && this.bottomGapElementActive;
+    const topGap = this.#gaps.get('top');
+    const bottomGap = this.#gaps.get('bottom');
+    const topOverlap = Boolean(topGap && range.intersectsNode(topGap)) && this.topGapElementActive;
+    const bottomOverlap = Boolean(bottomGap && range.intersectsNode(bottomGap)) && this.bottomGapElementActive;
     if (!topOverlap && !bottomOverlap && !hasVisibleSelection) {
       this.headSelection = null;
       this.anchorSelection = null;
@@ -404,8 +473,9 @@ export class ConsoleViewport {
         return {element: selection.node, offset: selection.offset};
       }
 
-      const element = selection.item < this.firstActiveIndex ? this.topGapElement : this.bottomGapElement;
-      return {element, offset: isSelectionBackwards ? 1 : 0};
+      const gapElement = this.#gaps.get(selection.item < this.firstActiveIndex ? 'top' : 'bottom');
+      assertNotNullOrUndefined(gapElement);
+      return {element: gapElement, offset: isSelectionBackwards ? gapElement.childNodes.length : 0};
     };
 
     const {element: anchorElement, offset: anchorOffset} =
@@ -450,11 +520,11 @@ export class ConsoleViewport {
         this.renderedItems[i].willHide();
       }
       this.renderedItems = [];
-      this.#contentElement.removeChildren();
-      this.topGapElement.style.height = '0px';
-      this.bottomGapElement.style.height = '0px';
+      this.#topGapHeight = 0;
+      this.#bottomGapHeight = 0;
       this.firstActiveIndex = -1;
       this.lastActiveIndex = -1;
+      this.#render();
       this.updateFocusedItem();
       return;
     }
@@ -489,15 +559,16 @@ export class ConsoleViewport {
         this.cumulativeHeights[this.cumulativeHeights.length - 1] - this.cumulativeHeights[this.lastActiveIndex];
 
     function prepare(this: ConsoleViewport): void {
-      this.topGapElement.style.height = topGapHeight + 'px';
-      this.bottomGapElement.style.height = bottomGapHeight + 'px';
+      this.#topGapHeight = topGapHeight;
+      this.#bottomGapHeight = bottomGapHeight;
       this.topGapElementActive = Boolean(topGapHeight);
       this.bottomGapElementActive = Boolean(bottomGapHeight);
-      this.#contentElement.style.setProperty('height', '10000000px');
+      this.#expandContent = true;
     }
 
     this.partialViewportUpdate(prepare.bind(this));
-    this.#contentElement.style.removeProperty('height');
+    this.#expandContent = false;
+    this.#render();
     // Should be the last call in the method as it might force layout.
     if (shouldRestoreSelection) {
       this.restoreSelection(selection);
@@ -524,27 +595,20 @@ export class ConsoleViewport {
     let hadFocus = false;
     for (let i = 0; i < willBeHidden.length; ++i) {
       hadFocus = hadFocus || willBeHidden[i].element().hasFocus();
-      willBeHidden[i].element().remove();
     }
 
     const wasShown = [];
-    let anchor: (ChildNode|null) = this.#contentElement.firstChild;
     for (const viewportElement of itemsToRender) {
-      const element = viewportElement.element();
-      if (element !== anchor) {
-        const shouldCallWasShown = !element.parentElement;
-        if (shouldCallWasShown) {
-          wasShown.push(viewportElement);
-        }
-        this.#contentElement.insertBefore(element, anchor);
-      } else {
-        anchor = anchor.nextSibling;
+      const shouldCallWasShown = !viewportElement.element().parentElement;
+      if (shouldCallWasShown) {
+        wasShown.push(viewportElement);
       }
     }
+    this.renderedItems = Array.from(itemsToRender);
+    this.#render();
     for (let i = 0; i < wasShown.length; ++i) {
       wasShown[i].wasShown();
     }
-    this.renderedItems = Array.from(itemsToRender);
 
     if (hadFocus) {
       this.#contentElement.focus();
@@ -661,7 +725,7 @@ export class ConsoleViewport {
     return chars + offset;
   }
 
-  private onScroll(_event: Event): void {
+  private onScroll(): void {
     this.refresh();
   }
 

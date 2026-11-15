@@ -716,6 +716,7 @@ panels/timeline/TimelineFlameChartDataProvider.test.js
 panels/timeline/TimelineFlameChartNetworkDataProvider.test.js
 panels/timeline/TimelineFlameChartView.test.js
 panels/timeline/TimelineHistoryManager.test.js
+panels/timeline/TimelineInvariants.test.js
 panels/timeline/TimelineLoader.test.js
 panels/timeline/TimelineMiniMap.test.js
 panels/timeline/TimelinePanel.test.js

@@ -7,9 +7,9 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
-const NEW_HEAP_SNAPSHOT_BUTTON = 'devtools-button[aria-label="Take heap snapshot"]';
+const NEW_HEAP_SNAPSHOT_BUTTON = 'button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
-const PROFILE_TREE_SIDEBAR = 'div.profiles-tree-sidebar';
+const PROFILE_TREE_SIDEBAR = '.profiles-tree-sidebar';
 export const MEMORY_TAB_ID = '#tab-heap-profiler';
 const CLASS_FILTER_INPUT = 'div[aria-placeholder="Filter by class"]';
 export const SELECTED_RESULT = '#profile-views table.data tr.data-grid-data-grid-node.revealed.parent.selected';
@@ -22,16 +22,16 @@ export async function navigateToMemoryTab(devToolsPage: DevToolsPage): Promise<v
 
 export async function takeDetachedElementsProfile(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('xpath///label[text()="Detached elements"]');
-  await devToolsPage.click('devtools-button[aria-label="Get detached elements"]');
+  await devToolsPage.click('button[aria-label="Get detached elements"]');
   await devToolsPage.waitForNone('.profile-sidebar-tree-item.wait');
   await devToolsPage.waitFor('.profile-sidebar-tree-item.selected');
 }
 
 export async function takeAllocationProfile(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('xpath///label[text()="Allocation sampling"]');
-  await devToolsPage.click('devtools-button[aria-label="Start heap profiling"]');
+  await devToolsPage.click('button[aria-label="Start heap profiling"]');
   await new Promise(r => setTimeout(r, 200));
-  await devToolsPage.click('devtools-button[aria-label="Stop heap profiling"]');
+  await devToolsPage.click('button[aria-label="Stop heap profiling"]');
   await devToolsPage.waitForNone('.profile-sidebar-tree-item.wait');
   await devToolsPage.waitFor('.profile-sidebar-tree-item.selected');
 }
@@ -46,9 +46,9 @@ export async function takeAllocationTimelineProfile(devToolsPage: DevToolsPage,
   if (isChecked !== recordStacks) {
     await devToolsPage.click('[title="Allocation stack traces (more overhead)"]');
   }
-  await devToolsPage.click('devtools-button[aria-label="Start recording heap profile"]');
+  await devToolsPage.click('button[aria-label="Start recording heap profile"]');
   await new Promise(r => setTimeout(r, 200));
-  await devToolsPage.click('devtools-button[aria-label="Stop recording heap profile"]');
+  await devToolsPage.click('button[aria-label="Stop recording heap profile"]');
   await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }

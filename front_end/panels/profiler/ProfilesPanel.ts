@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-imperative-dom-api, @devtools/no-lit-render-outside-of-view */
 
 /*
  * Copyright (C) 2008 Apple Inc. All Rights Reserved.
@@ -33,10 +33,11 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {render} from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -97,6 +98,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const {bindToAction} = UI.UIUtils;
+
 function createSidebarTreeElement(
     profiler: ProfileHeader, dataDisplayDelegate: DataDisplayDelegate): ProfileSidebarTreeElement {
   if (profiler instanceof HeapProfileHeader) {
@@ -137,7 +140,11 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   profileViews: HTMLDivElement;
   readonly toolbarElement: HTMLDivElement;
   toggleRecordAction: UI.ActionRegistration.Action;
-  readonly toggleRecordButton: UI.Toolbar.ToolbarButton;
+  readonly #sidebarToolbarContainer = document.createElement('div');
+  #recordButtonTitle: string;
+  #recordButtonEnabled: boolean;
+  #recordButtonToggled: boolean;
+  #fileSelectorElement?: HTMLInputElement;
   readonly #saveToFileAction: UI.ActionRegistration.Action;
   readonly profileViewToolbar: UI.Toolbar.Toolbar;
   profileGroups: Record<string, ProfileGroup>;
@@ -148,7 +155,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     view: UI.Widget.Widget,
   }>;
   typeIdToSidebarSection: Record<string, ProfileTypeSidebarSection>;
-  fileSelectorElement!: HTMLInputElement;
   selectedProfileType?: ProfileType;
   static #registry: ProfileTypeRegistry|null = null;
   static get registry(): ProfileTypeRegistry {
@@ -161,6 +167,10 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
       };
     }
     return ProfilesPanel.#registry;
+  }
+
+  static resetRegistryForTest(): void {
+    ProfilesPanel.#registry = null;
   }
 
   constructor(
@@ -194,24 +204,13 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     mainContainer.element.insertBefore(this.toolbarElement, mainContainer.element.firstChild);
 
     this.panelSidebarElement().classList.add('profiles-tree-sidebar');
-    const toolbarContainerLeft = document.createElement('div');
-    toolbarContainerLeft.classList.add('profiles-toolbar');
-    toolbarContainerLeft.setAttribute('jslog', `${VisualLogging.toolbar('profiles-sidebar')}`);
-    this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
-    const toolbar = toolbarContainerLeft.createChild('devtools-toolbar');
-    toolbar.wrappable = true;
+    this.panelSidebarElement().insertBefore(this.#sidebarToolbarContainer, this.panelSidebarElement().firstChild);
     this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction(recordingActionId);
-    this.toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction);
-    toolbar.appendToolbarItem(this.toggleRecordButton);
-
-    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('profiler.clear-all'));
-    toolbar.appendSeparator();
-    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('profiler.load-from-file'));
+    this.#recordButtonTitle = this.toggleRecordAction.title();
+    this.#recordButtonEnabled = this.toggleRecordAction.enabled();
+    this.#recordButtonToggled = this.toggleRecordAction.toggled();
     this.#saveToFileAction = UI.ActionRegistry.ActionRegistry.instance().getAction('profiler.save-to-file');
     this.#saveToFileAction.setEnabled(false);
-    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#saveToFileAction));
-    toolbar.appendSeparator();
-    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('components.collect-garbage'));
 
     this.profileViewToolbar = this.toolbarElement.createChild('devtools-toolbar');
     this.profileViewToolbar.wrappable = true;
@@ -232,7 +231,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.launcherView.restoreSelectedProfileType();
     this.profilesItemTreeElement.select();
     this.showLauncherView();
-    this.createFileSelectorElement();
+    this.requestUpdate();
 
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.onSuspendStateChanged, this);
@@ -241,6 +240,46 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.HeapProfilerModel.HeapProfilerModel, this.updateProfileTypeSpecificUI, this);
   }
+
+  override performUpdate(): void {
+    const iconName = this.toggleRecordAction.icon() ?? '';
+    const recordButtonData: Buttons.Button.ButtonData = {
+      variant: Buttons.Button.Variant.ICON_TOGGLE,
+      iconName,
+      toggledIconName: this.toggleRecordAction.toggledIcon() ?? iconName,
+      toggleType: this.toggleRecordAction.toggleWithRedColor() ? Buttons.Button.ToggleType.RED :
+                                                                 Buttons.Button.ToggleType.PRIMARY,
+      toggled: this.#recordButtonToggled,
+      toggleOnClick: false,
+      disabled: !this.#recordButtonEnabled,
+    };
+    // clang-format off
+    render(html`
+          <devtools-toolbar wrappable>
+            <devtools-button .title=${this.#recordButtonTitle}
+                             .accessibleLabel=${this.#recordButtonTitle}
+                             .data=${recordButtonData}
+                             jslog=${
+                                 VisualLogging.toggle().track({click: true}).context(this.toggleRecordAction.id())}
+                             @click=${this.#onToggleRecord}></devtools-button>
+            <devtools-button ${bindToAction('profiler.clear-all')}></devtools-button>
+            <div class="toolbar-divider"></div>
+            <devtools-button ${bindToAction('profiler.load-from-file')}></devtools-button>
+            <devtools-button ${bindToAction('profiler.save-to-file')}></devtools-button>
+            <div class="toolbar-divider"></div>
+            <devtools-button ${bindToAction('components.collect-garbage')}></devtools-button>
+          </devtools-toolbar>`, this.#sidebarToolbarContainer, {
+      container: {
+        classes: ['profiles-toolbar'],
+        attributes: {jslog: `${VisualLogging.toolbar('profiles-sidebar')}`},
+      },
+    });
+    // clang-format on
+  }
+
+  readonly #onToggleRecord = (): void => {
+    void this.toggleRecordAction.execute();
+  };
 
   get profileTypes(): ProfileType[] {
     return Object.values(ProfilesPanel.registry);
@@ -263,14 +302,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     return visibleView?.searchableView ? visibleView.searchableView() : null;
   }
 
-  createFileSelectorElement(): void {
-    if (this.fileSelectorElement) {
-      this.element.removeChild(this.fileSelectorElement);
-    }
-    this.fileSelectorElement = UI.UIUtils.createFileSelectorElement(this.loadFromFile.bind(this));
-    this.element.appendChild(this.fileSelectorElement);
-  }
-
   findProfileTypeByExtension(fileName: string): ProfileType|null {
     return this.profileTypes.find(
                type => Boolean(type.fileExtension()) && fileName.endsWith(type.fileExtension() || '')) ||
@@ -278,8 +309,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   }
 
   async loadFromFile(file: File): Promise<void> {
-    this.createFileSelectorElement();
-
     const profileType = this.findProfileTypeByExtension(file.name);
     if (!profileType) {
       const extensions = new Set(this.profileTypes.map(type => type.fileExtension()).filter(ext => ext));
@@ -337,14 +366,17 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     const enable = toggled || (!SDK.TargetManager.TargetManager.instance().allTargetsSuspended() && hasSelectedTarget);
     this.toggleRecordAction.setEnabled(enable);
     this.toggleRecordAction.setToggled(toggled);
+    this.#recordButtonEnabled = enable;
+    this.#recordButtonToggled = toggled;
     if (enable) {
-      this.toggleRecordButton.setTitle(this.selectedProfileType ? this.selectedProfileType.buttonTooltip : '');
+      this.#recordButtonTitle = this.selectedProfileType ? this.selectedProfileType.buttonTooltip : '';
     } else {
-      this.toggleRecordButton.setTitle(UI.UIUtils.anotherProfilerActiveLabel());
+      this.#recordButtonTitle = UI.UIUtils.anotherProfilerActiveLabel();
     }
     if (this.selectedProfileType) {
       this.launcherView.updateProfileType(this.selectedProfileType, enable);
     }
+    this.requestUpdate();
   }
 
   profileBeingRecordedRemoved(): void {
@@ -358,9 +390,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   }
 
   updateProfileTypeSpecificUI(): void {
-    if (this.selectedProfileType?.isInstantProfile()) {
-      this.toggleRecordButton.toggleOnClick(false);
-    }
     this.updateToggleRecordAction(this.toggleRecordAction.toggled());
   }
 
@@ -421,7 +450,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   }
 
   showLoadFromFileDialog(): void {
-    this.fileSelectorElement.click();
+    this.#fileSelectorElement = UI.UIUtils.createFileSelectorElement(this.loadFromFile.bind(this));
+    this.#fileSelectorElement.click();
   }
 
   addProfileHeader(profile: ProfileHeader): void {
@@ -482,7 +512,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.profileViewToolbar.removeToolbarItems();
 
     void (view as unknown as UI.View.View).toolbarItems().then(items => {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
       render(items, this.profileViewToolbar);
     });
 
@@ -527,6 +556,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(ProfilesPanel, this);
+    this.requestUpdate();
   }
 
   override willHide(): void {

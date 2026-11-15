@@ -1,7 +1,6 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -20,7 +19,7 @@ import {
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 import type {TimelineMiniMap} from './TimelineMiniMap.js';
 
-const {ref, styleMap} = Directives;
+const {classMap, ifDefined, ref, styleMap} = Directives;
 
 /**
  * The dropdown works by returning an index which is the trace index; but we
@@ -229,7 +228,7 @@ export class TimelineHistoryManager {
     this.#updateButton();
   }
 
-  #getActiveTraceIndexForListControl(): number {
+  #getActiveTraceIndex(): number {
     if (!this.lastActiveTrace) {
       return -1;
     }
@@ -245,16 +244,15 @@ export class TimelineHistoryManager {
     }
 
     // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
-    const activeTraceIndex = await DropDown.show(this.recordings.map(recording => recording.parsedTraceIndex),
-                                                 this.#getActiveTraceIndexForListControl(), this.#buttonItem.element,
-                                                 this.#landingPageTitle);
+    const activeTraceIndex =
+        await DropDown.show(this.recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndex(),
+                            this.#buttonItem.element, this.#landingPageTitle);
 
     if (activeTraceIndex === null) {
       return null;
     }
 
-    // The ListControl class that backs the dropdown uses indexes; we represent
-    // the landing page choice via this special index.
+    // The dropdown choice uses indexes; we represent the landing page choice via this special index.
     if (activeTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE) {
       this.#setActiveTrace({type: 'LANDING_PAGE'});
       return {type: 'LANDING_PAGE'};
@@ -411,6 +409,22 @@ export class TimelineHistoryManager {
   }
 }
 
+export type DropDownItem = {
+  type: 'LANDING_PAGE',
+  title: Common.UIString.LocalizedString,
+}|{
+  type: 'RECORDING',
+  parsedTraceIndex: number,
+  preview: PreviewData,
+};
+
+function itemId(item: DropDownItem): string {
+  if (item.type === 'LANDING_PAGE') {
+    return 'history-dropdown-item-landing-page';
+  }
+  return `history-dropdown-item-${item.parsedTraceIndex}`;
+}
+
 const thumbnailAspectRatio = 3 / 2;
 
 // clang-format off
@@ -429,60 +443,144 @@ function renderOverview(overview: ImageBitmap, height: number): LitTemplate {
     <div style=${styleMap({width: `${previewWidth}px`, height: `${height}px`})}>
       <canvas width=${overview.width} height=${overview.height} ${ref(el => {
         if (el instanceof HTMLCanvasElement) {
-          el.getContext('2d')?.drawImage(overview, 0, 0);
+          const ctx = el.getContext('2d');
+          if (ctx) {
+            ctx.clearRect(0, 0, el.width, el.height);
+            ctx.drawImage(overview, 0, 0);
+          }
         }
       })}></canvas>
     </div>
   `;
 }
 
-function renderRecordingEntry(data: PreviewData): LitTemplate {
+function renderLandingPageContent(item: Extract<DropDownItem, {type: 'LANDING_PAGE'}>): LitTemplate {
   return html`
-    <div class="preview-item vbox" role="menuitem"
-        jslog=${VisualLogging.dropDown('timeline.history-item').track({click: true})}
-        style=${styleMap({width: `${previewWidth}px`})}>
-      <div class="text-details hbox">
-        <span class="name">${data.title}</span>
-        ${data.metadataText ? html`<span class="metadata">${data.metadataText}</span>` : nothing}
-      </div>
-      <div class="hbox">
-        ${renderScreenshotThumbnail(data.screenshotEvent, data.overviewHeight)}
-        ${renderOverview(data.overview, data.overviewHeight)}
-      </div>
+    <devtools-icon class="back-arrow" title=${i18nString(UIStrings.backButtonTooltip)} name="arrow-back"></devtools-icon>
+    <span>${item.title}</span>
+  `;
+}
+
+function renderRecordingContent(data: PreviewData): LitTemplate {
+  return html`
+    <div class="text-details hbox">
+      <span class="name">${data.title}</span>
+      ${data.metadataText ? html`<span class="metadata">${data.metadataText}</span>` : nothing}
+    </div>
+    <div class="hbox">
+      ${renderScreenshotThumbnail(data.screenshotEvent, data.overviewHeight)}
+      ${renderOverview(data.overview, data.overviewHeight)}
     </div>
   `;
 }
 
-function renderLandingPageEntry(title: Common.UIString.LocalizedString): LitTemplate {
-  return html`
-    <div class="preview-item landing-page-item" role="menuitem" style=${styleMap({width: `${previewWidth}px`})}>
-      <devtools-icon class="back-arrow" title=${i18nString(UIStrings.backButtonTooltip)} name="arrow-back"></devtools-icon>
-      <span>${title}</span>
-    </div>
-  `;
-}
-// clang-format on
-
-type ItemViewInput = {
-  type: 'LANDING_PAGE',
-  title: Common.UIString.LocalizedString,
-}|{
-  type: 'RECORDING',
-  preview: PreviewData,
-};
-
-const ITEM_VIEW = (input: ItemViewInput, _output: undefined, target: DocumentFragment): void => {
-  switch (input.type) {
+function renderEntry(
+    item: DropDownItem,
+    isSelected: boolean,
+    posInSet: number,
+    setSize: number,
+    onHover: () => void,
+    onActivate: () => void): LitTemplate {
+  const classes: Record<string, boolean> = {'preview-item': true, selected: isSelected};
+  let jslog: VisualLogging.Loggable;
+  let content: LitTemplate;
+  switch (item.type) {
     case 'LANDING_PAGE':
-      render(renderLandingPageEntry(input.title), target);
+      jslog = VisualLogging.item().track({click: true, resize: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End'});
+      content = renderLandingPageContent(item);
+      classes['landing-page-item'] = true;
       break;
     case 'RECORDING':
-      render(renderRecordingEntry(input.preview), target);
+      jslog = VisualLogging.dropDown('timeline.history-item').track({click: true});
+      content = renderRecordingContent(item.preview);
+      classes['vbox'] = true;
       break;
     default:
-      Platform.assertNever(input, 'Unknown history dropdown item');
+      Platform.assertNever(item, 'Unknown history dropdown item');
   }
+  return html`
+    <div class=${classMap(classes)}
+        role="menuitem"
+        id=${itemId(item)}
+        aria-posinset=${posInSet}
+        aria-setsize=${setSize}
+        aria-selected=${ifDefined(isSelected ? 'true' : undefined)}
+        jslog=${jslog}
+        style=${styleMap({width: `${previewWidth}px`})}
+        @mousemove=${onHover}
+        @click=${onActivate}>
+      ${content}
+    </div>
+  `;
+}
+
+type NavigationTarget = 'previous'|'next'|'first'|'last';
+
+interface DropDownViewInput {
+  items: DropDownItem[];
+  selectedItem: DropDownItem|null;
+  onHover: (item: DropDownItem) => void;
+  onActivate: (item: DropDownItem) => void;
+  onNavigate: (target: NavigationTarget) => void;
+  onActivateSelected: () => void;
+  onCancel: () => void;
+}
+
+interface DropDownViewOutput {
+  focusMenu?: () => void;
+}
+
+const DROPDOWN_VIEW = (input: DropDownViewInput, output: DropDownViewOutput, target: HTMLElement): void => {
+  const activeDescendantId = input.selectedItem ? itemId(input.selectedItem) : nothing;
+  const onKeyDown = (event: KeyboardEvent): void => {
+    switch (event.key) {
+      case 'ArrowUp':
+        input.onNavigate('previous');
+        break;
+      case 'ArrowDown':
+        input.onNavigate('next');
+        break;
+      case 'Home':
+        input.onNavigate('first');
+        break;
+      case 'End':
+        input.onNavigate('last');
+        break;
+      case 'Enter':
+        input.onActivateSelected();
+        break;
+      case 'Tab':
+      case 'Escape':
+        input.onCancel();
+        break;
+      default:
+        return;
+    }
+    event.consume(true);
+  };
+
+  render(
+      html`
+        <div role="menu"
+            aria-label=${i18nString(UIStrings.selectTimelineSession)}
+            tabindex="-1"
+            style="overflow-y: auto"
+            aria-activedescendant=${activeDescendantId}
+            @keydown=${onKeyDown}
+            ${ref(el => {
+              output.focusMenu = el instanceof HTMLElement ? () => el.focus() : undefined;
+            })}>
+          ${input.items.map((item, index) => {
+            const isSelected = item === input.selectedItem;
+            return renderEntry(
+                item, isSelected, index + 1, input.items.length, (): void => input.onHover(item),
+                (): void => input.onActivate(item));
+          })}
+        </div>
+      `,
+      target);
 };
+// clang-format on
 
 export const maxRecordings = 5;
 export const previewWidth = 500;
@@ -499,16 +597,17 @@ export interface PreviewData {
   overviewHeight: number;
 }
 
-export class DropDown implements UI.ListControl.ListDelegate<number> {
+export class DropDown {
   private readonly glassPane: UI.GlassPane.GlassPane;
-  private readonly listControl: UI.ListControl.ListControl<number>;
-  private readonly focusRestorer: UI.UIUtils.ElementFocusRestorer;
-  private selectionDone: ((arg0: number|null) => void)|null;
-  #landingPageTitle: Common.UIString.LocalizedString;
+  #previousFocus: HTMLElement|null = null;
+  private selectionDone: ((arg0: number|null) => void)|null = null;
   contentElement: HTMLElement;
+  readonly #items: DropDownItem[];
+  #selectedItem: DropDownItem|null = null;
+  readonly #viewOutput: DropDownViewOutput = {};
 
-  constructor(availableparsedTraceIndexes: number[], landingPageTitle: Common.UIString.LocalizedString) {
-    this.#landingPageTitle = landingPageTitle;
+  constructor(items: DropDownItem[]) {
+    this.#items = items;
 
     this.glassPane = new UI.GlassPane.GlassPane();
     this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
@@ -520,20 +619,6 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
     const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
         this.glassPane.contentElement, {cssFile: timelineHistoryManagerStyles});
     this.contentElement = shadowRoot.createChild('div', 'drop-down');
-
-    const listModel = new UI.ListModel.ListModel<number>();
-    this.listControl = new UI.ListControl.ListControl<number>(listModel, this, UI.ListControl.ListMode.NonViewport);
-    this.listControl.element.addEventListener('mousemove', this.onMouseMove.bind(this), false);
-    listModel.replaceAll(availableparsedTraceIndexes);
-
-    UI.ARIAUtils.markAsMenu(this.listControl.element);
-    UI.ARIAUtils.setLabel(this.listControl.element, i18nString(UIStrings.selectTimelineSession));
-    this.contentElement.appendChild(this.listControl.element);
-    this.contentElement.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    this.contentElement.addEventListener('click', this.onClick.bind(this), false);
-
-    this.focusRestorer = new UI.UIUtils.ElementFocusRestorer(this.listControl.element);
-    this.selectionDone = null;
   }
 
   static show(
@@ -543,9 +628,21 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
     if (DropDown.instance) {
       return Promise.resolve(null);
     }
-    const availableDropdownChoices = [...availableparsedTraceIndexes];
-    availableDropdownChoices.unshift(LANDING_PAGE_INDEX_DROPDOWN_CHOICE);
-    const instance = new DropDown(availableDropdownChoices, landingPageTitle);
+    const items: DropDownItem[] = [
+      {type: 'LANDING_PAGE', title: landingPageTitle},
+    ];
+    for (const traceIndex of availableparsedTraceIndexes) {
+      const preview = parsedTraceIndexToPerformancePreviewData.get(traceIndex);
+      if (!preview) {
+        throw new Error('Unable to find data for model');
+      }
+      items.push({
+        type: 'RECORDING',
+        parsedTraceIndex: traceIndex,
+        preview,
+      });
+    }
+    const instance = new DropDown(items);
     return instance.show(anchor, activeparsedTraceIndex);
   }
 
@@ -558,96 +655,93 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
 
   private show(anchor: Element, activeparsedTraceIndex: number): Promise<number|null> {
     DropDown.instance = this;
+    const activeItem = this.#items.find(item => {
+      if (item.type === 'LANDING_PAGE') {
+        return activeparsedTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE;
+      }
+      return item.parsedTraceIndex === activeparsedTraceIndex;
+    });
+    this.#selectedItem = activeItem ?? null;
+    this.#render();
     this.glassPane.setContentAnchorBox(anchor.boxInWindow());
     this.glassPane.show(this.glassPane.contentElement.ownerDocument);
-    this.listControl.element.focus();
-    this.listControl.selectItem(activeparsedTraceIndex);
+    this.#previousFocus = UI.DOMUtilities.deepActiveElement(document) as HTMLElement | null;
+    this.#viewOutput.focusMenu?.();
 
     return new Promise(fulfill => {
       this.selectionDone = fulfill;
     });
   }
 
-  private onMouseMove(event: Event): void {
-    const node = (event.target as Node).enclosingNodeOrSelfWithClass('preview-item');
-    const listItem = node && this.listControl.itemForNode(node);
-    if (listItem === null) {
-      return;
-    }
-    this.listControl.selectItem(listItem);
+  #render(): void {
+    const input: DropDownViewInput = {
+      items: this.#items,
+      selectedItem: this.#selectedItem,
+      onHover: item => this.#hover(item),
+      onActivate: item => this.#activate(item),
+      onNavigate: target => this.#navigate(target),
+      onActivateSelected: () => this.#activateSelected(),
+      onCancel: () => this.close(null),
+    };
+    DROPDOWN_VIEW(input, this.#viewOutput, this.contentElement);
   }
 
-  private onClick(event: Event): void {
-    if (!(event.target as Node).enclosingNodeOrSelfWithClass('preview-item')) {
-      return;
-    }
-    this.close(this.listControl.selectedItem());
-  }
-
-  private onKeyDown(event: KeyboardEvent): void {
-    switch (event.key) {
-      case 'Tab':
-      case 'Escape':
-        this.close(null);
+  #navigate(target: NavigationTarget): void {
+    const len = this.#items.length;
+    const current = this.#selectedItem ? this.#items.indexOf(this.#selectedItem) : -1;
+    let nextIndex: number;
+    switch (target) {
+      case 'first':
+        nextIndex = 0;
         break;
-      case 'Enter':
-        this.close(this.listControl.selectedItem());
+      case 'last':
+        nextIndex = len - 1;
+        break;
+      case 'previous':
+        nextIndex = current === -1 ? len - 1 : (current - 1 + len) % len;
+        break;
+      case 'next':
+        nextIndex = current === -1 ? 0 : (current + 1) % len;
         break;
       default:
-        return;
+        Platform.assertNever(target, 'Unknown navigation target');
     }
-    event.consume(true);
+    this.#selectAt(nextIndex);
+  }
+
+  #selectAt(index: number): void {
+    this.#selectedItem = this.#items[index];
+    this.#render();
+  }
+
+  #hover(item: DropDownItem): void {
+    if (this.#selectedItem !== item) {
+      this.#selectedItem = item;
+      this.#render();
+    }
+  }
+
+  #activate(item: DropDownItem): void {
+    const choice = item.type === 'LANDING_PAGE' ? LANDING_PAGE_INDEX_DROPDOWN_CHOICE : item.parsedTraceIndex;
+    this.close(choice);
+  }
+
+  #activateSelected(): void {
+    if (this.#selectedItem) {
+      this.#activate(this.#selectedItem);
+    } else {
+      this.close(null);
+    }
   }
 
   private close(traceIndex: number|null): void {
     if (this.selectionDone) {
       this.selectionDone(traceIndex);
     }
-    this.focusRestorer.restore();
     this.glassPane.hide();
+    this.#previousFocus?.focus();
+    this.#previousFocus = null;
     DropDown.instance = null;
-  }
-
-  createElementForItem(parsedTraceIndex: number): Element {
-    const fragment = document.createDocumentFragment();
-    let input: ItemViewInput;
-    if (parsedTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE) {
-      input = {type: 'LANDING_PAGE', title: this.#landingPageTitle};
-    } else {
-      const preview = parsedTraceIndexToPerformancePreviewData.get(parsedTraceIndex);
-      if (!preview) {
-        throw new Error('Unable to find data for model');
-      }
-      input = {type: 'RECORDING', preview};
-    }
-    ITEM_VIEW(input, undefined, fragment);
-    const element = fragment.firstElementChild;
-    if (!element) {
-      throw new Error('Expected element to be rendered');
-    }
-    return element;
-  }
-
-  heightForItem(_parsedTraceIndex: number): number {
-    console.assert(false, 'Should not be called');
-    return 0;
-  }
-
-  isItemSelectable(_parsedTraceIndex: number): boolean {
-    return true;
-  }
-
-  selectedItemChanged(_from: number|null, _to: number|null, fromElement: Element|null, toElement: Element|null): void {
-    if (fromElement) {
-      fromElement.classList.remove('selected');
-    }
-    if (toElement) {
-      toElement.classList.add('selected');
-    }
-  }
-
-  updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {
-    return false;
   }
 
   static instance: DropDown|null = null;

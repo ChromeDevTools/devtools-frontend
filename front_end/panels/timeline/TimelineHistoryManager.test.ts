@@ -446,6 +446,39 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     await showPromise;
   });
 
+  it('does not darken overview canvas on selection changes', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    historyManager.addRecording({
+      data: {
+        parsedTraceIndex: 1,
+        type: 'TRACE_INDEX',
+      },
+      filmStripForPreview: null,
+      parsedTrace,
+    });
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 2, url: 'https://b.com'});
+
+    const {showPromise} = await openDropDown(historyManager);
+    const canvas = getOverviewCanvas(getMenuItems()[2]);
+    const ctx = canvas.getContext('2d');
+    assert.isOk(ctx);
+    const initialPixels = Array.from(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
+
+    pressKey('ArrowDown');
+    hoverMenuItem(getMenuItems()[1]);
+    pressKey('ArrowUp');
+
+    const updatedCanvas = getOverviewCanvas(getMenuItems()[2]);
+    const updatedCtx = updatedCanvas.getContext('2d');
+    assert.isOk(updatedCtx);
+    const updatedPixels = Array.from(updatedCtx.getImageData(0, 0, updatedCanvas.width, updatedCanvas.height).data);
+
+    assert.deepEqual(updatedPixels, initialPixels);
+
+    historyManager.cancelIfShowing();
+    await showPromise;
+  });
+
   it('manages enabled state and resolves with null when disabled or empty', async function() {
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
     const buttonElement = historyManager.button().element as HTMLButtonElement;
@@ -677,5 +710,89 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     } finally {
       executeStub.restore();
     }
+  });
+  it('updates aria-activedescendant and aria-selected when selection changes', async function() {
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://a.com'});
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 2, url: 'https://b.com'});
+
+    const {showPromise} = await openDropDown(historyManager);
+    const menu = getDropDownMenu();
+    const menuItems = getMenuItems();
+    assert.lengthOf(menuItems, 3);
+
+    const selectedItem1 = getSelectedMenuItem();
+    assert.isOk(selectedItem1);
+    assert.strictEqual(menu.getAttribute('aria-activedescendant'), selectedItem1.id);
+    for (const item of menuItems) {
+      if (item === selectedItem1) {
+        assert.strictEqual(item.getAttribute('aria-selected'), 'true');
+      } else {
+        assert.isNull(item.getAttribute('aria-selected'));
+      }
+    }
+
+    pressKey('ArrowDown');
+    const selectedItem2 = getSelectedMenuItem();
+    assert.isOk(selectedItem2);
+    assert.notStrictEqual(selectedItem2, selectedItem1);
+    assert.strictEqual(menu.getAttribute('aria-activedescendant'), selectedItem2.id);
+    for (const item of menuItems) {
+      if (item === selectedItem2) {
+        assert.strictEqual(item.getAttribute('aria-selected'), 'true');
+      } else {
+        assert.isNull(item.getAttribute('aria-selected'));
+      }
+    }
+
+    historyManager.cancelIfShowing();
+    await showPromise;
+  });
+
+  it('exposes aria-posinset and aria-setsize on menu items', async function() {
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://a.com'});
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 2, url: 'https://b.com'});
+
+    const {showPromise} = await openDropDown(historyManager);
+    const menuItems = getMenuItems();
+    assert.lengthOf(menuItems, 3);
+
+    menuItems.forEach((item, index) => {
+      assert.strictEqual(item.getAttribute('aria-posinset'), String(index + 1));
+      assert.strictEqual(item.getAttribute('aria-setsize'), '3');
+    });
+
+    historyManager.cancelIfShowing();
+    await showPromise;
+  });
+
+  it('ignores unhandled keys', async function() {
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://a.com'});
+
+    const {showPromise} = await openDropDown(historyManager);
+    const menu = getDropDownMenu();
+    const initialSelectedText = getSelectedMenuItemText();
+
+    const unhandledEvent = new KeyboardEvent('keydown', {key: 'a', bubbles: true, composed: true, cancelable: true});
+    menu.dispatchEvent(unhandledEvent);
+    assert.isFalse(unhandledEvent.defaultPrevented);
+    assert.strictEqual(getSelectedMenuItemText(), initialSelectedText);
+
+    historyManager.cancelIfShowing();
+    await showPromise;
+  });
+
+  it('prevents default on handled navigation keys', async function() {
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://a.com'});
+
+    const {showPromise} = await openDropDown(historyManager);
+    const menu = getDropDownMenu();
+
+    const handledEvent =
+        new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true, cancelable: true});
+    menu.dispatchEvent(handledEvent);
+    assert.isTrue(handledEvent.defaultPrevented);
+
+    historyManager.cancelIfShowing();
+    await showPromise;
   });
 });

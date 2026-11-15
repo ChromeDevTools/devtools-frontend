@@ -15,6 +15,7 @@ import {
 import {getBaseTraceHandlerData} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Timeline from './timeline.js';
 
@@ -635,5 +636,46 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
     historyManager.cancelIfShowing();
     await showPromise2;
+  });
+
+  it('updates button text and attributes when a recording is added', function() {
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
+    const actionTitle = action.title();
+    const buttonElement = historyManager.button().element;
+
+    assert.isTrue(buttonElement.classList.contains('history-dropdown-button'));
+    assert.strictEqual(buttonElement.getAttribute('jslog'), `${VisualLogging.dropDown('history')}`);
+    assert.strictEqual(buttonElement.getAttribute('title'), actionTitle);
+
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://example.com'});
+    assert.strictEqual(buttonElement.innerText, 'example.com #1');
+    assert.strictEqual(
+        buttonElement.getAttribute('aria-label'),
+        `Current session: example.com #1. ${actionTitle}`,
+    );
+  });
+
+  it('resets button text and aria-label after clear', function() {
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
+    const actionTitle = action.title();
+    const buttonElement = historyManager.button().element;
+
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://example.com'});
+    historyManager.clear();
+    assert.strictEqual(buttonElement.innerText, 'Live metrics');
+    assert.strictEqual(buttonElement.getAttribute('aria-label'), actionTitle);
+  });
+
+  it('executes the timeline.show-history action when clicked', function() {
+    addSyntheticRecording(historyManager, {parsedTraceIndex: 1, url: 'https://example.com'});
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
+    const executeStub = sinon.stub(action, 'execute');
+    try {
+      const buttonElement = historyManager.button().element as HTMLButtonElement;
+      buttonElement.click();
+      sinon.assert.calledOnce(executeStub);
+    } finally {
+      executeStub.restore();
+    }
   });
 });

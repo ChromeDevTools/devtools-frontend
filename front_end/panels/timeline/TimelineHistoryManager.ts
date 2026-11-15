@@ -118,7 +118,7 @@ export class TimelineHistoryManager {
   private recordings: TraceRecordingHistoryItem[];
   private readonly action: UI.ActionRegistration.Action;
   private readonly nextNumberByDomain: Map<string, number>;
-  readonly #button: ToolbarButton;
+  readonly #buttonItem: UI.Toolbar.ToolbarItem;
   private readonly allOverviews: Array<{
     constructor: (parsedTrace: Trace.TraceModel.ParsedTrace) => TimelineEventOverview,
     height: number,
@@ -134,12 +134,15 @@ export class TimelineHistoryManager {
     this.#minimapComponent = minimapComponent;
     this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
     this.nextNumberByDomain = new Map();
-    this.#button = new ToolbarButton(this.action);
+
+    this.#buttonItem = new UI.Toolbar.ToolbarItem(document.createElement('button'));
+    this.#buttonItem.setEnabled(this.action.enabled());
+    this.action.addEventListener(UI.ActionRegistration.Events.ENABLED,
+                                 event => this.#buttonItem.setEnabled(event.data));
 
     this.#landingPageTitle =
         isNode ? i18nString(UIStrings.nodeLandingPageTitle) : i18nString(UIStrings.landingPageTitle);
 
-    UI.ARIAUtils.markAsMenuButton(this.#button.element);
     this.clear();
 
     // Attempt to reuse the overviews coming from the panel's minimap
@@ -191,11 +194,7 @@ export class TimelineHistoryManager {
     // subsequent code depends on us storing the preview data into the map.
     this.#buildAndStorePreviewData(newInput.data.parsedTraceIndex, newInput.parsedTrace, filmStrip);
 
-    const modelTitle = this.title(newInput.data);
-    this.#button.setText(modelTitle);
-    const buttonTitle = this.action.title();
-    UI.ARIAUtils.setLabel(
-        this.#button.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
+    this.#updateButton();
     this.updateState();
     if (this.recordings.length <= maxRecordings) {
       return;
@@ -218,16 +217,16 @@ export class TimelineHistoryManager {
     this.updateState();
   }
 
-  button(): ToolbarButton {
-    return this.#button;
+  button(): UI.Toolbar.ToolbarItem {
+    return this.#buttonItem;
   }
 
   clear(): void {
     this.recordings = [];
     this.lastActiveTrace = null;
     this.updateState();
-    this.#button.setText(this.#landingPageTitle);
     this.nextNumberByDomain.clear();
+    this.#updateButton();
   }
 
   #getActiveTraceIndexForListControl(): number {
@@ -246,9 +245,9 @@ export class TimelineHistoryManager {
     }
 
     // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
-    const activeTraceIndex = await DropDown.show(
-        this.recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndexForListControl(),
-        this.#button.element, this.#landingPageTitle);
+    const activeTraceIndex = await DropDown.show(this.recordings.map(recording => recording.parsedTraceIndex),
+                                                 this.#getActiveTraceIndexForListControl(), this.#buttonItem.element,
+                                                 this.#landingPageTitle);
 
     if (activeTraceIndex === null) {
       return null;
@@ -316,11 +315,21 @@ export class TimelineHistoryManager {
     }
 
     this.lastActiveTrace = item;
-    const modelTitle = this.title(item);
-    const buttonTitle = this.action.title();
-    this.#button.setText(modelTitle);
-    UI.ARIAUtils.setLabel(
-        this.#button.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
+    this.#updateButton();
+  }
+
+  #updateButton(): void {
+    const title = this.lastActiveTrace ? this.title(this.lastActiveTrace) : this.#landingPageTitle;
+    const ariaLabel = this.lastActiveTrace ?
+        i18nString(UIStrings.currentSessionSS, {PH1: title, PH2: this.action.title()}) :
+        this.action.title();
+    const input: ButtonViewInput = {
+      title,
+      ariaLabel,
+      tooltip: this.action.title(),
+      onClick: () => void this.action.execute(),
+    };
+    BUTTON_VIEW(input, undefined, this.#buttonItem.element);
   }
 
   private updateState(): void {
@@ -644,20 +653,30 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
   static instance: DropDown|null = null;
 }
 
-export class ToolbarButton extends UI.Toolbar.ToolbarItem {
-  constructor(action: UI.ActionRegistration.Action) {
-    const element = document.createElement('button');
-    element.classList.add('history-dropdown-button');
-    element.setAttribute('jslog', `${VisualLogging.dropDown('history')}`);
-    super(element);
-    this.element.addEventListener('click', () => void action.execute(), false);
-    this.setEnabled(action.enabled());
-    action.addEventListener(UI.ActionRegistration.Events.ENABLED, event => this.setEnabled(event.data));
-    this.setTitle(action.title());
-  }
-
-  setText(text: string): void {
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(html`<span class="content">${text}</span>`, this.element, {host: this});
-  }
+interface ButtonViewInput {
+  title: string;
+  ariaLabel: string;
+  tooltip: string;
+  onClick: () => void;
 }
+
+const BUTTON_VIEW = (input: ButtonViewInput, _output: undefined, target: HTMLElement): void => {
+  render(
+      html`<span class="content">${input.title}</span>`,
+      target,
+      {
+        container: {
+          classes: ['history-dropdown-button'],
+          attributes: {
+            'aria-haspopup': 'true',
+            'aria-label': input.ariaLabel,
+            title: input.tooltip,
+            jslog: `${VisualLogging.dropDown('history')}`,
+          },
+          listeners: {
+            click: input.onClick,
+          },
+        },
+      },
+  );
+};

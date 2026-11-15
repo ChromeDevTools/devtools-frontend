@@ -385,7 +385,8 @@ describe('The Memory Panel', function() {
       let row: puppeteer.ElementHandle<Element>|null = null;
       // Find the row with the desired constructor.
       for (const r of rows) {
-        const constructorName = await devToolsPage.waitForFunction(() => r.evaluate(e => e.firstChild?.textContent));
+        const constructorName =
+            await devToolsPage.waitForFunction(() => r.evaluate(e => e.firstElementChild?.textContent));
         if (entry.constructor === constructorName) {
           row = r;
           break;

@@ -14,7 +14,7 @@ import * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js'
 import {createIcon} from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -125,9 +125,102 @@ const UIStrings = {
    * @description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#sliced-string.
    */
   slicedStringSummary: 'A string which represents some of the characters from another string',
+  /**
+   * @description Accessible text indicating the depth level of a row in a hierarchical datagrid.
+   * @example {1} PH1
+   */
+  levelS: 'Level {PH1}',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotGridNodes.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const {classMap, ifDefined} = Directives;
+
+/**
+ * A numeric cell showing a value, optionally followed by its percentage of the snapshot total size.
+ */
+export interface ValueCellViewInput {
+  type: 'value';
+  /** `null` if the snapshot has no total size, in which case the cell stays empty. */
+  value: string|null;
+  percent?: string;
+  tooltip?: string;
+  accessibleName?: string;
+}
+
+/**
+ * A plain text cell, used for the constructor and diff nodes.
+ */
+export interface TextCellViewInput {
+  type: 'text';
+  columnId: string;
+  text: string;
+  numeric: boolean;
+  disclosure: boolean;
+  indent: number;
+  /** The number of objects shown after the constructor name, or `null` if it is not shown. */
+  objectsCount: string|null;
+}
+
+export type CellViewInput = ValueCellViewInput|TextCellViewInput;
+
+export interface ViewInput {
+  cells: readonly CellViewInput[];
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+function renderValueCell(input: ValueCellViewInput): LitTemplate {
+  // clang-format off
+  return html`<td class="numeric-column"
+                  aria-label=${ifDefined(input.accessibleName)}
+                  jslog=${VisualLogging.tableCell('numeric-column').track({click: true})}>${
+    input.value === null ? nothing : input.percent ? html`
+      <div class="profile-multiple-values" aria-hidden="true">
+        <span aria-hidden="true" title=${ifDefined(input.tooltip)}>${input.value}</span>
+        <span class="percent-column" aria-hidden="true">${input.percent}</span>
+      </div>` : html`
+      <div>
+        <span title=${ifDefined(input.tooltip)}>${input.value}</span>
+      </div>`}</td>`;
+  // clang-format on
+}
+
+function renderTextCell(input: TextCellViewInput): LitTemplate {
+  const classes = {
+    [`${input.columnId}-column`]: true,
+    disclosure: input.disclosure,
+    'numeric-column': input.numeric,
+  };
+  // clang-format off
+  return html`<td class=${classMap(classes)}
+                  style=${ifDefined(input.disclosure && input.indent ? `padding-left: ${input.indent}px` : undefined)}
+                  jslog=${VisualLogging.tableCell().track({click: true}).context(
+                      Platform.StringUtilities.toKebabCase(input.columnId))}>${input.text}${
+    input.objectsCount !== null ? html`
+      <span class="objects-count">×${input.objectsCount}</span>` : nothing}</td>`;
+  // clang-format on
+}
+
+function renderCell(input: CellViewInput): LitTemplate {
+  switch (input.type) {
+    case 'value':
+      return renderValueCell(input);
+    case 'text':
+      return renderTextCell(input);
+    default:
+      Platform.assertNever(input, `Unknown cell type: ${JSON.stringify(input)}`);
+  }
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(
+      input.cells.length === 0 ?
+          nothing :
+          html`${input.cells.map(renderCell)}<td class="corner" aria-hidden="true"></td>`,
+      target);
+  // clang-format on
+};
 
 class HeapSnapshotGridNodeRawBase extends DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode> {}
 
@@ -191,10 +284,6 @@ export class HeapSnapshotGridNode extends HeapSnapshotGridNodeBase {
       this.providerObject = this.createProvider();
     }
     return this.providerObject;
-  }
-
-  override createCell(columnId: string): HTMLElement {
-    return super.createCell(columnId);
   }
 
   override collapse(): void {
@@ -262,6 +351,53 @@ export class HeapSnapshotGridNode extends HeapSnapshotGridNodeBase {
     return null;
   }
 
+  protected createCellsWithView(element: Element): void {
+    if (!this.dataGrid || !this.parent) {
+      DEFAULT_VIEW({cells: []}, undefined, element as HTMLElement);
+      return;
+    }
+    const columnsArray = this.dataGrid.visibleColumnsArray;
+    const cells = columnsArray.map(column => {
+      const cellInput = this.cellViewInput(column.id);
+      if (cellInput.type === 'value' && cellInput.accessibleName) {
+        this.cellAccessibleTextMap.set(column.id, cellInput.accessibleName);
+      }
+      return cellInput;
+    });
+    DEFAULT_VIEW({cells}, undefined, element as HTMLElement);
+
+    const accessibleTextArray: string[] = [];
+    if (this.hasChildren() || !this.parent.isRoot) {
+      accessibleTextArray.push(i18nString(UIStrings.levelS, {PH1: this.depth + 1}));
+    }
+    for (let i = 0; i < columnsArray.length; ++i) {
+      const column = columnsArray[i];
+      const cell = element.children[i];
+      accessibleTextArray.push(
+          `${column.title}: ${this.cellAccessibleTextMap.get(column.id) || cell?.textContent || ''}`);
+    }
+    this.nodeAccessibleText = accessibleTextArray.join(', ');
+  }
+
+  cellViewInput(columnId: string): CellViewInput {
+    return this.valueCellViewInput(columnId);
+  }
+
+  protected valueCellViewInput(columnId: string): ValueCellViewInput {
+    const dataGrid = (this.dataGrid as HeapSnapshotSortableDataGrid);
+    if (!dataGrid.snapshot || dataGrid.snapshot.totalSize === 0) {
+      return {type: 'value', value: null};
+    }
+    const value: string = this.data[columnId];
+    const percent: string|undefined = this.data[columnId + '-percent'];
+    const tooltip: string|undefined = this.data[`${columnId}-tooltip`];
+    if (!percent) {
+      return {type: 'value', value, tooltip};
+    }
+    const accessibleName = i18nString(UIStrings.genericStringsTwoPlaceholders, {PH1: value, PH2: percent});
+    return {type: 'value', value, percent, tooltip, accessibleName};
+  }
+
   createValueCell(columnId: string): HTMLElement {
     const jslog = VisualLogging.tableCell('numeric-column').track({click: true});
     const cell = document.createElement('td');
@@ -275,22 +411,20 @@ export class HeapSnapshotGridNode extends HeapSnapshotGridNodeBase {
       const tooltipColumn = `${columnId}-tooltip`;
       const tooltip = this.data[tooltipColumn];
       if (percent) {
-        render(
-            html`
+        render(html`
           <div class="profile-multiple-values">
             <span aria-hidden="true" title=${Directives.ifDefined(tooltip)}>${value}</span>
             <span class="percent-column" aria-hidden="true">${percent}</span>
           </div>`,
-            cell);
-        this.setCellAccessibleName(
-            i18nString(UIStrings.genericStringsTwoPlaceholders, {PH1: value, PH2: percent}), cell, columnId);
+               cell);
+        this.setCellAccessibleName(i18nString(UIStrings.genericStringsTwoPlaceholders, {PH1: value, PH2: percent}),
+                                   cell, columnId);
       } else {
-        render(
-            html`
+        render(html`
           <div>
             <span title=${Directives.ifDefined(tooltip)}>${value}</span>
           </div>`,
-            cell);
+               cell);
       }
     }
     return cell;
@@ -1172,13 +1306,23 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
     return this.nameInternal.toLowerCase().indexOf(filterValue) === -1;
   }
 
-  override createCell(columnId: string): HTMLElement {
-    const cell = columnId === 'object' ? super.createCell(columnId) : this.createValueCell(columnId);
-    if (columnId === 'object' && this.count > 1) {
-      const template = html`<span class="objects-count">×${this.data.count}</span>`;
-      render(template, cell);
+  override createCells(element: Element): void {
+    this.createCellsWithView(element);
+  }
+
+  override cellViewInput(columnId: string): CellViewInput {
+    if (columnId !== 'object') {
+      return this.valueCellViewInput(columnId);
     }
-    return cell;
+    return {
+      type: 'text',
+      columnId,
+      text: this.data.object,
+      numeric: false,
+      disclosure: columnId === this.dataGrid?.disclosureColumnId,
+      indent: this.leftPadding,
+      objectsCount: this.count > 1 ? this.data.count : null,
+    };
   }
 
   override createChildNode(item: HeapSnapshotModel.HeapSnapshotModel.Node|HeapSnapshotModel.HeapSnapshotModel.Edge):

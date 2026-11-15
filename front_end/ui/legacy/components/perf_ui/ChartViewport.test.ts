@@ -144,3 +144,74 @@ describeWithEnvironment('ChartViewport', () => {
     viewport.willHide();
   });
 });
+
+describeWithEnvironment('ChartViewport with the default view', () => {
+  it('exposes the rendered canvas host as the viewport element right after construction', () => {
+    const viewport =
+        new PerfUI.ChartViewport.ChartViewport(new FakeChartViewportDelegate(), {enableCursorElement: true});
+
+    const {viewportElement} = viewport;
+
+    assert.strictEqual(viewportElement.parentElement, viewport.contentElement);
+    assert.isTrue(viewportElement.classList.contains('fill'));
+    assert.isTrue(viewportElement.nextElementSibling?.classList.contains('chart-viewport-v-scroll'));
+  });
+
+  it('shows the cursor while Shift is held over the chart', async () => {
+    const viewport =
+        new PerfUI.ChartViewport.ChartViewport(new FakeChartViewportDelegate(), {enableCursorElement: true});
+    renderWidgetInVbox(viewport, {width: 600, height: 400, flexAuto: true});
+    const cursorElement = viewport.contentElement.querySelector('.chart-cursor-element');
+    assert.instanceOf(cursorElement, HTMLElement);
+    assert.isTrue(cursorElement.hidden);
+
+    viewport.viewportElement.dispatchEvent(new MouseEvent('mousemove', {shiftKey: true}));
+    await viewport.updateComplete;
+
+    assert.isFalse(cursorElement.hidden);
+  });
+
+  it('shows the vertical scrollbar when alwaysShowVerticalScroll is called after setContentHeight', async () => {
+    const viewport =
+        new PerfUI.ChartViewport.ChartViewport(new FakeChartViewportDelegate(), {enableCursorElement: false});
+    renderWidgetInVbox(viewport, {width: 600, height: 400, flexAuto: true});
+    viewport.onResize();
+    viewport.setContentHeight(100);
+    assert.isFalse(viewport.verticalScrollBarVisible());
+
+    viewport.alwaysShowVerticalScroll();
+    await viewport.updateComplete;
+
+    assert.isTrue(viewport.verticalScrollBarVisible());
+  });
+
+  it('does not show the cursor on Shift keydown when enableCursorElement is false', async () => {
+    const viewport =
+        new PerfUI.ChartViewport.ChartViewport(new FakeChartViewportDelegate(), {enableCursorElement: false});
+    renderWidgetInVbox(viewport, {width: 600, height: 400, flexAuto: true});
+    const cursorElement = viewport.contentElement.querySelector<HTMLElement>('.chart-cursor-element');
+    assert.instanceOf(cursorElement, HTMLElement);
+
+    viewport.viewportElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Shift', shiftKey: true}));
+    await viewport.updateComplete;
+
+    assert.isTrue(cursorElement.hidden);
+  });
+
+  it('positions the cursor at the hovered offset when Shift is pressed after mousemove', async () => {
+    const viewport =
+        new PerfUI.ChartViewport.ChartViewport(new FakeChartViewportDelegate(), {enableCursorElement: true});
+    renderWidgetInVbox(viewport, {width: 600, height: 400, flexAuto: true});
+    const cursorElement = viewport.contentElement.querySelector<HTMLElement>('.chart-cursor-element');
+    assert.instanceOf(cursorElement, HTMLElement);
+
+    const moveEvent = new MouseEvent('mousemove', {shiftKey: false});
+    Object.defineProperty(moveEvent, 'offsetX', {value: 145});
+    viewport.viewportElement.dispatchEvent(moveEvent);
+    viewport.viewportElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Shift', shiftKey: true}));
+    await viewport.updateComplete;
+
+    assert.isFalse(cursorElement.hidden);
+    assert.strictEqual(cursorElement.style.left, '145px');
+  });
+});

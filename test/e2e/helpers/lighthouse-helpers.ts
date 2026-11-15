@@ -110,9 +110,7 @@ export async function setToolbarCheckboxWithText(devToolsPage: DevToolsPage, ena
   const toolbarHandle = await devToolsPage.waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
   const label = await devToolsPage.waitForElementWithTextContent(textContext, toolbarHandle);
   await label.evaluate((label, enabled: boolean) => {
-    const rootNode = label.getRootNode() as ShadowRoot;
-    const checkboxId = label.getAttribute('for') as string;
-    const checkboxElem = rootNode.getElementById(checkboxId) as HTMLInputElement;
+    const checkboxElem = label.closest('devtools-checkbox') as CheckboxLabel;
     checkboxElem.checked = enabled;
     checkboxElem.dispatchEvent(new Event('change'));  // Need change event to update the backing setting.
   }, enabled);

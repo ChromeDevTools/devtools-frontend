@@ -69,7 +69,7 @@ describe('ShortcutDialog', () => {
     assert.isNotNull(shortcutDialog.shadowRoot);
     const dialog = shortcutDialog.shadowRoot.querySelector('devtools-button-dialog');
     assert.isOk(dialog, 'devtools-button-dialog not found');
-    assert.instanceOf(dialog, HTMLElement);
+    assert.instanceOf(dialog, Dialogs.ButtonDialog.ButtonDialog);
     return dialog;
   }
 
@@ -97,5 +97,19 @@ describe('ShortcutDialog', () => {
   it('renders the shortcut dialog to the right when the button is on the left side', async () => {
     await getShortcutDialog(true, undefined, false);
     await assertScreenshot('dialog/shortcut_dialog_open_to_the_right.png');
+  });
+
+  it('preserves pending open request across back-to-back data updates before render', async () => {
+    const shortcutDialog = await getShortcutDialog(false);
+
+    shortcutDialog.data = {...shortcutDialog.data, open: true};
+    shortcutDialog.data = {...shortcutDialog.data, open: false};
+    assert.isTrue(shortcutDialog.data.open);
+
+    await RenderCoordinator.done();
+    await raf();
+
+    const buttonDialog = getDialogFromShortcutDialog(shortcutDialog);
+    assert.isTrue(buttonDialog.open);
   });
 });

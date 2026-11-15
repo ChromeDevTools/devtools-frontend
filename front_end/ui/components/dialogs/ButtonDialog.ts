@@ -49,6 +49,10 @@ export class ButtonDialog extends HTMLElement {
   #showButton: Buttons.Button.Button|null = null;
   #data: ButtonDialogData|null = null;
 
+  get open(): boolean {
+    return Boolean(this.#dialog?.hasAttribute('open'));
+  }
+
   set data(data: ButtonDialogData) {
     this.#data = data;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);

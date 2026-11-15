@@ -63,23 +63,6 @@
   max-width: 100%;
 }
 
-.nav-radio-buttons {
-  display: flex;
-  flex-direction: column;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  padding-bottom: var(--sys-size-5);
-
-  & label {
-    display: flex;
-    font: var(--sys-typescale-body3-regular);
-    gap: var(--sys-size-2);
-  }
-
-  input[type="radio"] {
-    margin-left: 0;
-  }
-}
-
 .keybinds-key {
   display: flex;
   align-items: center;

@@ -7,6 +7,7 @@ import {after, afterEach, before, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -982,6 +983,31 @@ describe('TimelinePanel', function() {
     }
   });
 
+  it('updates shortcuts dialog when flamechartSelectedNavigation changes externally', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+    await timeline.updateComplete;
+
+    const navSetting = Common.Settings.Settings.instance().resolve(
+        SettingsUI.TimelineSettings.flamechartSelectedNavigationSettingDescriptor);
+    navSetting.set('modern');
+    await timeline.updateComplete;
+
+    const dialog = timeline.element.querySelector('devtools-shortcut-dialog');
+    assert.exists(dialog);
+    const radios = dialog.querySelectorAll<HTMLInputElement>('input[type="radio"]');
+    assert.lengthOf(radios, 2);
+    assert.isTrue(radios[0].checked);
+    assert.isFalse(radios[1].checked);
+    assert.notDeepEqual(dialog.data.shortcuts[0]?.rows[0], [{key: 'Scroll ↕'}]);
+
+    navSetting.set('classic');
+    await timeline.updateComplete;
+    assert.isFalse(radios[0].checked);
+    assert.isTrue(radios[1].checked);
+    assert.deepEqual(dialog.data.shortcuts[0]?.rows[0], [{key: 'Scroll ↕'}]);
+  });
+
   describe('views', () => {
     it('renders settings pane checkboxes and file input in DEFAULT_SETTINGS_PANE_VIEW', () => {
       const host = new UI.Widget.Widget();
@@ -1018,6 +1044,83 @@ describe('TimelinePanel', function() {
       assert.lengthOf(pane.querySelectorAll('devtools-checkbox'), 4);
       assert.isFunction(output.openFileSelector);
       host.detach();
+    });
+
+    function renderRightToolbar(overrides: Partial<Timeline.TimelinePanel.RightToolbarViewInput> = {}) {
+      const target = document.createElement('div');
+      Timeline.TimelinePanel.DEFAULT_RIGHT_TOOLBAR_VIEW(
+          {
+            isNode: false,
+            canRecord: true,
+            isLoading: false,
+            settingsToggle: {
+              toggled: false,
+              checked: false,
+              title: 'Capture settings',
+              onToggle: () => {},
+            },
+            navigationSettingInitialized: true,
+            isNavClassic: false,
+            shortcutsDialogTitle: 'Shortcuts' as Platform.UIString.LocalizedString,
+            shortcuts: [],
+            shortcutsDialogOpen: false,
+            onNavRadioChange: () => {},
+            ...overrides,
+          },
+          undefined,
+          target,
+      );
+      return target;
+    }
+
+    it('renders the shortcuts dialog and settings toggle in DEFAULT_RIGHT_TOOLBAR_VIEW', () => {
+      const target = renderRightToolbar();
+      assert.isNotNull(target.querySelector('devtools-shortcut-dialog'));
+      const toggle = target.querySelector('devtools-button');
+      assert.exists(toggle);
+      assert.isTrue(toggle.classList.contains('timeline-settings-toggle'));
+      assert.isFalse(toggle.toggled);
+      assert.strictEqual(toggle.accessibleLabel, 'Capture settings');
+    });
+
+    it('reflects settings toggle state in DEFAULT_RIGHT_TOOLBAR_VIEW', () => {
+      const onToggle = sinon.spy();
+      const target = renderRightToolbar({
+        isLoading: true,
+        settingsToggle: {toggled: true, checked: true, title: 'CPU throttling is enabled', onToggle},
+      });
+      const toggle = target.querySelector('devtools-button');
+      assert.exists(toggle);
+      assert.isTrue(toggle.classList.contains('timeline-settings-toggle'));
+      assert.isTrue(toggle.toggled);
+      assert.isTrue(toggle.disabled);
+      assert.strictEqual(toggle.accessibleLabel, 'CPU throttling is enabled');
+    });
+
+    it('calls onToggle when the settings toggle is clicked in DEFAULT_RIGHT_TOOLBAR_VIEW', () => {
+      const onToggle = sinon.spy();
+      const target = renderRightToolbar({
+        settingsToggle: {toggled: false, checked: false, title: 'Capture settings', onToggle},
+      });
+      const toggle = target.querySelector('devtools-button');
+      assert.exists(toggle);
+      assert.isTrue(toggle.classList.contains('timeline-settings-toggle'));
+      toggle.click();
+      sinon.assert.calledOnce(onToggle);
+    });
+
+    it('omits the settings toggle when there is none in DEFAULT_RIGHT_TOOLBAR_VIEW', () => {
+      const target = renderRightToolbar({settingsToggle: null});
+      assert.isNull(target.querySelector('.timeline-settings-toggle'));
+    });
+
+    it('calls onNavRadioChange when a navigation radio changes in DEFAULT_RIGHT_TOOLBAR_VIEW', () => {
+      const onNavRadioChange = sinon.spy();
+      const target = renderRightToolbar({onNavRadioChange});
+      const radios = target.querySelectorAll<HTMLInputElement>('input[type="radio"]');
+      assert.lengthOf(radios, 2);
+      radios[1].dispatchEvent(new Event('change'));
+      sinon.assert.calledOnceWithExactly(onNavRadioChange, 'classic');
     });
   });
 });

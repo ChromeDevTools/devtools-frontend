@@ -50,6 +50,7 @@ export interface Shortcut {
 export interface ShortcutDialogData {
   shortcuts: Shortcut[];
   open?: boolean;
+  disabled?: boolean;
   customTitle?: Platform.UIString.LocalizedString;
 }
 
@@ -58,6 +59,7 @@ export class ShortcutDialog extends HTMLElement {
 
   #shortcuts: Shortcut[] = [];
   #openOnRender = false;
+  #disabled = false;
   #customTitle?: Platform.UIString.LocalizedString;
   #prependedElement: HTMLElement|null = null;
 
@@ -65,6 +67,7 @@ export class ShortcutDialog extends HTMLElement {
     return {
       shortcuts: this.#shortcuts,
       open: this.#openOnRender,
+      disabled: this.#disabled,
       customTitle: this.#customTitle,
     };
   }
@@ -74,6 +77,7 @@ export class ShortcutDialog extends HTMLElement {
     if (data.open) {
       this.#openOnRender = data.open;
     }
+    this.#disabled = Boolean(data.disabled);
     if (data.customTitle) {
       this.#customTitle = data.customTitle;
     }
@@ -105,13 +109,16 @@ export class ShortcutDialog extends HTMLElement {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error('Shortcut dialog render was not scheduled');
     }
+    const openOnRender = this.#openOnRender;
+    this.#openOnRender = false;
 
     // clang-format off
     render(
       html`
       <style>${shortcutDialogStyles}</style>
       <devtools-button-dialog .data=${{
-          openOnRender: this.#openOnRender,
+          openOnRender,
+          disabled: this.#disabled,
           closeButton: true,
           dialogTitle: this.#customTitle ?? i18nString(UIStrings.dialogTitle),
           variant: Buttons.Button.Variant.TOOLBAR,
@@ -119,6 +126,7 @@ export class ShortcutDialog extends HTMLElement {
           iconTitle: i18nString(UIStrings.showShortcutTitle),
           horizontalAlignment: DialogHorizontalAlignment.AUTO,
         } as ButtonDialogData}>
+        <slot></slot>
         <ul class="keybinds-list">
           ${(this.#prependedElement) ? html`${this.#prependedElement}` : nothing}
           ${this.#shortcuts.map(shortcut =>

@@ -30,6 +30,7 @@ import {
 import {type StubbedFileManager, stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {makeCompleteEvent} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as TimelineComponents from './components/components.js';
@@ -92,8 +93,9 @@ describe('TimelinePanel', function() {
     renderElementIntoDOM(timeline);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     timeline.detach(/* overrideHideOnDetach= */ true);
+    await RenderCoordinator.done();
     Timeline.TimelinePanel.TimelinePanel.removeInstance();
     Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
@@ -944,5 +946,44 @@ describe('TimelinePanel', function() {
     window.dispatchEvent(new MessageEvent('message', {data: {type: 'REHYDRATING_WINDOW_READY'}, source: window}));
     sinon.assert.calledOnce(postMessageStub);
     assert.deepEqual(postMessageStub.firstCall.args[0], {type: 'REHYDRATING_TRACE_FILE', traceJson});
+  });
+
+  describe('views', () => {
+    it('renders settings pane checkboxes and file input in DEFAULT_SETTINGS_PANE_VIEW', () => {
+      const host = new UI.Widget.Widget();
+      host.markAsRoot();
+      renderElementIntoDOM(host, {allowMultipleChildren: true});
+      const output: Timeline.TimelinePanel.SettingsPaneViewOutput = {};
+      const boolSetting = Common.Settings.Settings.instance().createSetting('test-timeline-bool-setting', true);
+      Timeline.TimelinePanel.DEFAULT_SETTINGS_PANE_VIEW(
+          {
+            isNode: false,
+            canRecord: true,
+            uiControlsEnabled: true,
+            showSettingsPane: true,
+            showScreenshots: true,
+            captureSelectorStatsSetting: boolSetting,
+            captureSelectorStatsTitle: 'Enable CSS selector stats (slow)',
+            captureLayersAndPicturesSetting: boolSetting,
+            captureLayersAndPicturesTitle: 'Enable advanced paint instrumentation (slow)',
+            disableCaptureJSProfileSetting: boolSetting,
+            disableCaptureJSProfileTitle: 'Disable JavaScript samples',
+            screenshotCaptureModeTitle: 'Screenshot resolution',
+            selectedScreenshotCaptureMode: 'auto',
+            thirdPartyTracksSetting: boolSetting,
+            thirdPartyTracksTitle: 'Show custom tracks',
+            onScreenshotPresetChange: () => {},
+            onLoadFromFile: () => {},
+          },
+          output,
+          host.contentElement,
+      );
+      const pane = host.contentElement.querySelector<HTMLElement>('.timeline-settings-pane');
+      assert.isNotNull(pane);
+      assert.isFalse(pane.hidden);
+      assert.lengthOf(pane.querySelectorAll('devtools-checkbox'), 4);
+      assert.isFunction(output.openFileSelector);
+      host.detach();
+    });
   });
 });

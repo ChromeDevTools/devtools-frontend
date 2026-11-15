@@ -583,18 +583,18 @@ describeWithEnvironment('AnimationTimeline', () => {
         const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
         preview.click();
         await waitForAnimationGroupSelectedPromise.wait();
+        await view.updateComplete;
 
         const gridHeader = view.element.shadowRoot!.querySelector('.animation-grid-header');
         assert.exists(gridHeader);
         assert.isTrue(gridHeader.classList.contains('scrubber-enabled'));
 
-        const scrubber = view.element.shadowRoot!.querySelector('.animation-scrubber');
+        const scrubber = view.element.shadowRoot!.querySelector<HTMLElement>('.animation-scrubber');
         assert.exists(scrubber);
-        assert.isFalse(scrubber.classList.contains('hidden'));
+        assert.isFalse(scrubber.hidden);
 
         const controlButton =
-            view.element.shadowRoot!.querySelector('.animation-controls-toolbar')?.querySelector('.toolbar-button') as
-            HTMLButtonElement;
+            view.element.shadowRoot!.querySelector<HTMLButtonElement>('.animation-controls-toolbar devtools-button');
         assert.exists(controlButton);
         assert.isFalse(controlButton.disabled);
 
@@ -602,8 +602,9 @@ describeWithEnvironment('AnimationTimeline', () => {
         assert.exists(currentTime);
 
         domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: domNode, parent: contentDocument});
+        await view.updateComplete;
         assert.isFalse(gridHeader.classList.contains('scrubber-enabled'));
-        assert.isTrue(scrubber.classList.contains('hidden'));
+        assert.isTrue(scrubber.hidden);
         assert.isTrue(controlButton.disabled);
         assert.strictEqual(currentTime.textContent, '');
       });
@@ -624,6 +625,7 @@ describeWithEnvironment('AnimationTimeline', () => {
         await waitForAnimationGroupSelectedPromise.wait();
 
         // Wait for the animation group to be fully selected and scrubber enabled.
+        await view.updateComplete;
         const gridHeader = view.element.shadowRoot!.querySelector('.animation-grid-header');
         assert.exists(gridHeader);
         assert.isTrue(gridHeader.classList.contains('scrubber-enabled'));
@@ -698,18 +700,18 @@ describeWithEnvironment('AnimationTimeline', () => {
         const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
         preview.click();
         await waitForAnimationGroupSelectedPromise.wait();
+        await view.updateComplete;
 
         const gridHeader = view.element.shadowRoot!.querySelector('.animation-grid-header');
         assert.exists(gridHeader);
         assert.isFalse(gridHeader.classList.contains('scrubber-enabled'));
 
-        const scrubber = view.element.shadowRoot!.querySelector('.animation-scrubber');
+        const scrubber = view.element.shadowRoot!.querySelector<HTMLElement>('.animation-scrubber');
         assert.exists(scrubber);
-        assert.isTrue(scrubber.classList.contains('hidden'));
+        assert.isTrue(scrubber.hidden);
 
         const controlButton =
-            view.element.shadowRoot!.querySelector('.animation-controls-toolbar')?.querySelector('.toolbar-button') as
-            HTMLButtonElement;
+            view.element.shadowRoot!.querySelector<HTMLButtonElement>('.animation-controls-toolbar devtools-button');
         assert.exists(controlButton);
         assert.isTrue(controlButton.disabled);
 
@@ -961,6 +963,7 @@ describeWithEnvironment('AnimationTimeline', () => {
       const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
       preview.click();
       await waitForAnimationGroupSelectedPromise.wait();
+      await view.updateComplete;
 
       const currentTimeElement = view.element.shadowRoot!.querySelector('.animation-timeline-current-time')!;
       assert.isTrue(currentTimeElement.textContent?.includes('px'));
@@ -970,6 +973,7 @@ describeWithEnvironment('AnimationTimeline', () => {
       const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
       preview.click();
       await waitForAnimationGroupSelectedPromise.wait();
+      await view.updateComplete;
 
       const labelElements = [...view.element.shadowRoot!.querySelectorAll('.animation-timeline-grid-label')];
       assert.isTrue(
@@ -1026,6 +1030,7 @@ describeWithEnvironment('AnimationTimeline', () => {
         const SCROLL_TOP = 5;
         stubbedAnimationDOMNode.scrollTop.resolves(SCROLL_TOP);
         const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
+        await view.updateComplete;
         const currentTimeElement = view.element.shadowRoot!.querySelector('.animation-timeline-current-time');
         assert.isNotNull(currentTimeElement);
         assert.isNotNull(preview);
@@ -1035,6 +1040,7 @@ describeWithEnvironment('AnimationTimeline', () => {
         void animationModel.animationUpdated(SDA_ANIMATION_PAYLOAD);
 
         await waitForScheduleRedrawAfterAnimationGroupUpdated.wait();
+        await view.updateComplete;
         assert.strictEqual(currentTimeElement.textContent, '5px');
       });
 
@@ -1042,6 +1048,7 @@ describeWithEnvironment('AnimationTimeline', () => {
         const SCROLL_TOP = 5;
         stubbedAnimationDOMNode.scrollTop.resolves(SCROLL_TOP);
         const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
+        await view.updateComplete;
         const timelineScrubberElement = view.element.shadowRoot!.querySelector('.animation-scrubber') as HTMLElement;
         preview.click();
         await waitForAnimationGroupSelectedPromise.wait();
@@ -1049,6 +1056,7 @@ describeWithEnvironment('AnimationTimeline', () => {
         void animationModel.animationUpdated(SDA_ANIMATION_PAYLOAD);
 
         await waitForScheduleRedrawAfterAnimationGroupUpdated.wait();
+        await view.updateComplete;
         const translateX = Number.parseFloat(timelineScrubberElement.style.transform.match(/translateX\((.*)px\)/)![1]);
         assert.closeTo(translateX, SCROLL_TOP * view.pixelTimeRatio(), 0.5);
       });

@@ -544,6 +544,7 @@ text.animation-timeline-grid-label {
 }
 
 .timeline-controls-resizer {
+  cursor: ew-resize;
   position: absolute;
   width: var(--sys-size-4);
   height: 100%;

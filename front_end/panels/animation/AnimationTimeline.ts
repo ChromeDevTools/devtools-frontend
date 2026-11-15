@@ -110,7 +110,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {render, html, Directives: {classMap, repeat}} = Lit;
+const {render, html, svg, Directives: {classMap, ref, repeat, styleMap}} = Lit;
 const {widget, widgetRef} = UI.Widget;
 const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 
@@ -145,9 +145,16 @@ export interface PreviewViewInput {
   onFocusPreviousGroup: () => void;
 }
 
-interface PreviewBufferOutput {
+export interface GridLabel {
+  x: number;
+  text: string;
+}
+
+interface TimelineChromeOutput {
   replayPreview?: (animationGroup: SDK.AnimationModel.AnimationGroup) => void;
   focusPreview?: (animationGroup: SDK.AnimationModel.AnimationGroup) => void;
+  animateScrubber?: (width: number, duration: number) => Animation;
+  getGridOffsetLeft?: () => number;
 }
 
 export interface NodeRowViewInput {
@@ -273,8 +280,86 @@ const renderToolbar = (input: ToolbarViewInput, output: ToolbarViewOutput): Lit.
   `;
 };
 
+const renderGridAndScrubber = (
+    gridLines: number[], gridLabels: GridLabel[], scrubberEnabled: boolean,
+    scrubberOffset: number|undefined, output: TimelineChromeOutput): Lit.LitTemplate => html`
+  <svg class="animation-timeline-grid" ${ref(element => {
+    output.getGridOffsetLeft = element instanceof SVGElement ? () => element.getBoundingClientRect().left : undefined;
+  })}>
+    ${gridLines.map(x => svg`
+      <rect class="animation-timeline-grid-line" x=${x} y="23" height="100%" width="1"></rect>`)}
+    ${gridLabels.map(label => svg`
+      <text class="animation-timeline-grid-label" x=${label.x} y="16">${label.text}</text>`)}
+  </svg>
+  <div class="animation-scrubber"
+       ?hidden=${!scrubberEnabled}
+       style=${styleMap({
+         transform: scrubberOffset === undefined ? undefined : `translateX(${scrubberOffset}px)`,
+       })}
+       ${ref(element => {
+         output.animateScrubber = element instanceof HTMLElement ?
+             (width, duration) => element.animate(
+                 [{transform: 'translateX(0px)'}, {transform: `translateX(${width}px)`}],
+                 {duration, fill: 'forwards'}) :
+             undefined;
+       })}>
+    <div class="animation-scrubber-line">
+      <div class="animation-scrubber-head"></div>
+    </div>
+    <div class="animation-time-overlay"></div>
+  </div>`;
+
+const renderTimelineHeader = (
+    currentTimeText: string, controlState: ControlState, controlButtonEnabled: boolean,
+    scrubberEnabled: boolean, onControlButtonClick: () => void,
+    onScrubberDragStart: (clientX: number) => boolean, onScrubberDrag: (clientX: number) => void,
+    onScrubberDragEnd: () => void): Lit.LitTemplate => {
+  let controlButtonIconName: string;
+  let controlButtonTitle: string;
+  switch (controlState) {
+    case ControlState.PLAY:
+      controlButtonIconName = 'play';
+      controlButtonTitle = i18nString(UIStrings.playTimeline);
+      break;
+    case ControlState.REPLAY:
+      controlButtonIconName = 'replay';
+      controlButtonTitle = i18nString(UIStrings.replayTimeline);
+      break;
+    case ControlState.PAUSE:
+      controlButtonIconName = 'pause';
+      controlButtonTitle = i18nString(UIStrings.pauseTimeline);
+      break;
+    default:
+      Platform.assertNever(controlState, `Unknown control state: ${controlState}`);
+  }
+  return html`
+    <div class="animation-controls">
+      <div class="animation-timeline-current-time monospace">${currentTimeText}</div>
+      <devtools-toolbar class="animation-controls-toolbar">
+        <devtools-button
+          .title=${controlButtonTitle}
+          .accessibleLabel=${controlButtonTitle}
+          .iconName=${controlButtonIconName}
+          .jslogContext=${'animations.play-replay-pause-animation-group'}
+          .variant=${controlState === ControlState.PAUSE ?
+              Buttons.Button.Variant.TOOLBAR : Buttons.Button.Variant.PRIMARY_TOOLBAR}
+          .disabled=${!controlButtonEnabled}
+          @click=${onControlButtonClick}>
+        </devtools-button>
+      </devtools-toolbar>
+    </div>
+    <div class=${classMap({'animation-grid-header': true, 'scrubber-enabled': scrubberEnabled})}
+         jslog=${VisualLogging.timeline('animations.grid-header').track({drag: true, click: true})}
+         @pointerdown=${(event: PointerEvent) => UI.UIUtils.elementDragStart(
+             event.currentTarget as Element,
+             (dragEvent: MouseEvent) => onScrubberDragStart(dragEvent.clientX),
+             (dragEvent: MouseEvent) => onScrubberDrag(dragEvent.clientX),
+             () => onScrubberDragEnd(), null, event)}>
+    </div>`;
+};
+
 const renderPreviewBuffer = (
-    previews: PreviewViewInput[], output: PreviewBufferOutput): Lit.LitTemplate => {
+    previews: PreviewViewInput[], output: TimelineChromeOutput): Lit.LitTemplate => {
   const previewWidgets = new Map<SDK.AnimationModel.AnimationGroup, AnimationGroupPreviewUI>();
   output.replayPreview = animationGroup => previewWidgets.get(animationGroup)?.replay();
   output.focusPreview = animationGroup => previewWidgets.get(animationGroup)?.focus();
@@ -312,15 +397,13 @@ let animationTimelineInstance: AnimationTimeline;
 export class AnimationTimeline extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.AnimationModel.AnimationModel> {
   #gridWrapper: HTMLElement;
-  #grid: Element;
   #playbackRate: number;
   #allPaused: boolean;
   #animationsContainer: HTMLElement;
-  #previewContainer!: HTMLElement;
+  #previewContainer: HTMLElement;
+  #headerContainer: HTMLElement;
   readonly #pausedStatus: HTMLElement;
-  #timelineScrubber!: HTMLElement;
-  #currentTime!: HTMLElement;
-  #selectedGroup!: SDK.AnimationModel.AnimationGroup|null;
+  #selectedGroup: SDK.AnimationModel.AnimationGroup|null = null;
   #renderQueue!: AnimationUI[];
   #duration: number;
   #timelineControlsWidth: number;
@@ -328,11 +411,14 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #uiAnimations: AnimationUI[];
   #groupBuffer: SDK.AnimationModel.AnimationGroup[];
   readonly #previews = new Map<SDK.AnimationModel.AnimationGroup, PreviewState>();
-  readonly #viewOutput: PreviewBufferOutput = {};
+  readonly #viewOutput: TimelineChromeOutput = {};
   readonly #animationsMap: Map<string, SDK.AnimationModel.AnimationImpl>;
-  #timelineScrubberLine?: HTMLElement;
-  #controlButton?: UI.Toolbar.ToolbarButton;
-  #controlState?: ControlState;
+  #controlState: ControlState = ControlState.REPLAY;
+  #controlButtonEnabled = false;
+  #currentTimeText = '';
+  #scrubberEnabled = false;
+  #scrubberTime?: number;
+  #resizeOriginX?: number;
   #redrawing?: boolean;
   #cachedTimelineWidth?: number;
   #scrubberPlayer?: Animation;
@@ -341,7 +427,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #animationGroupPausedBeforeScrub: boolean;
   #originalMousePosition?: number;
   #timelineControlsResizer: HTMLElement;
-  #gridHeader!: HTMLElement;
   #scrollListenerId?: number|null;
   #collectedGroups: SDK.AnimationModel.AnimationGroup[];
   #createPreviewForCollectedGroupsThrottler = new Common.Throttler.Throttler(10);
@@ -365,13 +450,16 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#timelineControlsResizer = this.contentElement.createChild('div', 'timeline-controls-resizer');
 
     this.#gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
-    this.#grid = UI.UIUtils.createSVGChild(this.#gridWrapper, 'svg', 'animation-timeline-grid');
 
     this.#playbackRate = 1;
     this.#allPaused = false;
     this.#animationGroupPausedBeforeScrub = false;
     this.#toolbarViewContainer = this.contentElement.createChild('div', 'toolbar-view-container');
-    this.createHeader();
+    this.#previewContainer = this.contentElement.createChild('div', 'animation-timeline-buffer');
+    this.#previewContainer.setAttribute('jslog', `${VisualLogging.section('film-strip')}`);
+    UI.ARIAUtils.markAsListBox(this.#previewContainer);
+    UI.ARIAUtils.setLabel(this.#previewContainer, i18nString(UIStrings.animationPreviews));
+    this.#headerContainer = this.contentElement.createChild('div', 'animation-timeline-header');
     this.#animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
     this.#animationsContainer.setAttribute('jslog', `${VisualLogging.section('animations')}`);
     this.#pausedStatus = this.contentElement.createChild('div', 'animation-timeline-paused hidden');
@@ -416,30 +504,33 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     return animationTimelineInstance;
   }
 
-  #setupTimelineControlsResizer(): void {
-    let resizeOriginX: number|undefined = undefined;
-    UI.UIUtils.installDragHandle(
-        this.#timelineControlsResizer,
-        (ev: MouseEvent) => {
-          resizeOriginX = ev.clientX;
-          return true;
-        },
-        (ev: MouseEvent) => {
-          if (resizeOriginX === undefined) {
-            return;
-          }
+  #onTimelineControlsResizeStart(clientX: number): boolean {
+    this.#resizeOriginX = clientX;
+    return true;
+  }
 
-          const newWidth = this.#timelineControlsWidth + ev.clientX - resizeOriginX;
-          this.#timelineControlsWidth =
-              Math.min(Math.max(newWidth, MIN_TIMELINE_CONTROLS_WIDTH), MAX_TIMELINE_CONTROLS_WIDTH);
-          resizeOriginX = ev.clientX;
-          this.element.style.setProperty('--timeline-controls-width', this.#timelineControlsWidth + 'px');
-          this.onResize();
-        },
-        () => {
-          resizeOriginX = undefined;
-        },
-        'ew-resize');
+  #onTimelineControlsResize(clientX: number): void {
+    if (this.#resizeOriginX === undefined) {
+      return;
+    }
+
+    const newWidth = this.#timelineControlsWidth + clientX - this.#resizeOriginX;
+    this.#timelineControlsWidth =
+        Math.min(Math.max(newWidth, MIN_TIMELINE_CONTROLS_WIDTH), MAX_TIMELINE_CONTROLS_WIDTH);
+    this.#resizeOriginX = clientX;
+    this.element.style.setProperty('--timeline-controls-width', this.#timelineControlsWidth + 'px');
+    this.onResize();
+  }
+
+  #onTimelineControlsResizeEnd(): void {
+    this.#resizeOriginX = undefined;
+  }
+
+  #setupTimelineControlsResizer(): void {
+    UI.UIUtils.installDragHandle(this.#timelineControlsResizer,
+                                 (ev: MouseEvent) => this.#onTimelineControlsResizeStart(ev.clientX),
+                                 (ev: MouseEvent) => this.#onTimelineControlsResize(ev.clientX),
+                                 () => this.#onTimelineControlsResizeEnd(), 'ew-resize');
   }
 
   get uiAnimations(): AnimationUI[] {
@@ -537,25 +628,24 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     }
   }
 
-  private createScrubber(): HTMLElement {
-    this.#timelineScrubber = document.createElement('div');
-    this.#timelineScrubber.classList.add('animation-scrubber');
-    this.#timelineScrubber.classList.add('hidden');
-    this.#timelineScrubberLine = this.#timelineScrubber.createChild('div', 'animation-scrubber-line');
-    this.#timelineScrubberLine.createChild('div', 'animation-scrubber-head');
-    this.#timelineScrubber.createChild('div', 'animation-time-overlay');
-    return this.#timelineScrubber;
-  }
-
   #isVariablePlaybackRateSupported(): boolean {
     return !this.#selectedGroup?.isScrollDriven();
   }
 
   override performUpdate(): void {
+    const {gridLines, gridLabels} = this.computeGrid();
+    const scrubberOffset = this.#scrubberTime === undefined ? undefined : this.#scrubberTime * this.pixelTimeRatio();
+    render(renderGridAndScrubber(gridLines, gridLabels, this.#scrubberEnabled, scrubberOffset, this.#viewOutput),
+           this.#gridWrapper);
     const previews =
         [...this.#previews].map(([animationGroup, preview]) =>
                                     ({...preview, animationGroup, selected: animationGroup === this.#selectedGroup}));
     render(renderPreviewBuffer(previews, this.#viewOutput), this.#previewContainer);
+    render(renderTimelineHeader(this.#currentTimeText, this.#controlState, this.#controlButtonEnabled,
+                                this.#scrubberEnabled, () => this.controlButtonToggle(),
+                                clientX => this.scrubberDragStart(clientX), clientX => this.scrubberDragMove(clientX),
+                                () => this.scrubberDragEnd()),
+           this.#headerContainer);
   }
 
   private performToolbarViewUpdate(): void {
@@ -588,36 +678,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         this.#toolbarViewOutput, this.#toolbarViewContainer);
   }
 
-  private createHeader(): HTMLElement {
-    this.#previewContainer = this.contentElement.createChild('div', 'animation-timeline-buffer');
-    this.#previewContainer.setAttribute('jslog', `${VisualLogging.section('film-strip')}`);
-    UI.ARIAUtils.markAsListBox(this.#previewContainer);
-    UI.ARIAUtils.setLabel(this.#previewContainer, i18nString(UIStrings.animationPreviews));
-    const container = this.contentElement.createChild('div', 'animation-timeline-header');
-    const controls = container.createChild('div', 'animation-controls');
-    this.#currentTime = controls.createChild('div', 'animation-timeline-current-time monospace');
-
-    const toolbar = controls.createChild('devtools-toolbar', 'animation-controls-toolbar');
-    this.#controlButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.replayTimeline), 'replay', undefined, 'animations.play-replay-pause-animation-group');
-    this.#controlButton.element.classList.add('toolbar-state-on');
-    this.#controlState = ControlState.REPLAY;
-    this.#controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.controlButtonToggle.bind(this));
-    toolbar.appendToolbarItem(this.#controlButton);
-
-    this.#gridHeader = container.createChild('div', 'animation-grid-header');
-    this.#gridHeader.setAttribute(
-        'jslog', `${VisualLogging.timeline('animations.grid-header').track({drag: true, click: true})}`);
-    UI.UIUtils.installDragHandle(
-        this.#gridHeader, this.scrubberDragStart.bind(this), this.scrubberDragMove.bind(this),
-        this.scrubberDragEnd.bind(this), null);
-    this.#gridWrapper.appendChild(this.createScrubber());
-
-    this.clearCurrentTimeText();
-
-    return container;
-  }
-
   private setPlaybackRate(playbackRate: number): void {
     this.#playbackRate = playbackRate;
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(
@@ -644,30 +704,18 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private updateControlButton(): void {
-    if (!this.#controlButton) {
-      return;
-    }
-
-    this.#controlButton.setEnabled(Boolean(this.#selectedGroup) && this.hasAnimationGroupActiveNodes() &&
-                                   this.#isVariablePlaybackRateSupported());
+    this.#controlButtonEnabled =
+        Boolean(this.#selectedGroup) && this.hasAnimationGroupActiveNodes() && this.#isVariablePlaybackRateSupported();
     if (this.#selectedGroup && this.#selectedGroup.paused()) {
       this.#controlState = ControlState.PLAY;
-      this.#controlButton.element.classList.toggle('toolbar-state-on', true);
-      this.#controlButton.setTitle(i18nString(UIStrings.playTimeline));
-      this.#controlButton.setGlyph('play');
-    } else if (
-        !this.#scrubberPlayer || !this.#scrubberPlayer.currentTime ||
-        typeof this.#scrubberPlayer.currentTime !== 'number' || this.#scrubberPlayer.currentTime >= this.duration()) {
+    } else if (!this.#scrubberPlayer || !this.#scrubberPlayer.currentTime ||
+               typeof this.#scrubberPlayer.currentTime !== 'number' ||
+               this.#scrubberPlayer.currentTime >= this.duration()) {
       this.#controlState = ControlState.REPLAY;
-      this.#controlButton.element.classList.toggle('toolbar-state-on', true);
-      this.#controlButton.setTitle(i18nString(UIStrings.replayTimeline));
-      this.#controlButton.setGlyph('replay');
     } else {
       this.#controlState = ControlState.PAUSE;
-      this.#controlButton.element.classList.toggle('toolbar-state-on', false);
-      this.#controlButton.setTitle(i18nString(UIStrings.pauseTimeline));
-      this.#controlButton.setGlyph('pause');
     }
+    this.requestUpdate();
   }
 
   private effectivePlaybackRate(): number {
@@ -720,8 +768,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#animationsMap.clear();
     this.#animationsContainer.removeChildren();
     this.#duration = DEFAULT_DURATION;
-    this.#timelineScrubber.classList.add('hidden');
-    this.#gridHeader.classList.remove('scrubber-enabled');
+    this.#scrubberEnabled = false;
+    this.#scrubberTime = undefined;
     this.#selectedGroup = null;
     if (this.#scrubberPlayer) {
       this.#scrubberPlayer.cancel();
@@ -741,7 +789,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#groupBuffer = [];
     this.#collectedGroups = [];
     this.clearPreviews();
-    this.renderGrid();
   }
 
   private animationGroupStarted({data}: Common.EventTarget.EventTargetEvent<SDK.AnimationModel.AnimationGroup>): void {
@@ -934,7 +981,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.animationGroupClosed));
     if (this.#selectedGroup === group) {
       this.clearTimeline();
-      this.renderGrid();
     }
     this.requestUpdate();
 
@@ -952,7 +998,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private clearCurrentTimeText(): void {
-    this.#currentTime.textContent = '';
+    this.#currentTimeText = '';
+    this.requestUpdate();
   }
 
   private setCurrentTimeText(time: number): void {
@@ -960,8 +1007,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       return;
     }
 
-    this.#currentTime.textContent =
+    this.#currentTimeText =
         this.#selectedGroup?.isScrollDriven() ? `${time.toFixed(0)}px` : i18n.TimeUtilities.millisToString(time);
+    this.requestUpdate();
   }
 
   private async selectAnimationGroup(group: SDK.AnimationModel.AnimationGroup): Promise<void> {
@@ -1010,8 +1058,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.togglePause(false);
     this.replay();
     if (this.hasAnimationGroupActiveNodes()) {
-      this.#timelineScrubber.classList.remove('hidden');
-      this.#gridHeader.classList.add('scrubber-enabled');
+      this.#scrubberEnabled = true;
+      this.requestUpdate();
     }
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupSelected);
@@ -1061,8 +1109,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     // are removed for the currently selected animation. If that's the case
     // we remove the scrubber and update control button to be disabled.
     if (!this.hasAnimationGroupActiveNodes()) {
-      this.#gridHeader.classList.remove('scrubber-enabled');
-      this.#timelineScrubber.classList.add('hidden');
+      this.#scrubberEnabled = false;
       this.#scrubberPlayer?.cancel();
       this.#scrubberPlayer = undefined;
       this.clearCurrentTimeText();
@@ -1080,34 +1127,35 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     return false;
   }
 
-  private renderGrid(): void {
+  private computeGrid(): {gridLines: number[], gridLabels: GridLabel[]} {
+    const gridLines: number[] = [];
+    const gridLabels: GridLabel[] = [];
     const isScrollDriven = this.#selectedGroup?.isScrollDriven();
     // For scroll driven animations, show divider lines for each 10% progres.
     // For time based animations, show divider lines for each 250ms progress.
     const gridSize = isScrollDriven ? this.duration() / 10 : 250;
-    this.#grid.removeChildren();
+    if (gridSize <= 0) {
+      return {gridLines, gridLabels};
+    }
     let lastDraw: number|undefined = undefined;
     for (let time = 0; time < this.duration(); time += gridSize) {
-      const line = UI.UIUtils.createSVGChild(this.#grid, 'rect', 'animation-timeline-grid-line');
-      line.setAttribute('x', (time * this.pixelTimeRatio() + GRID_OFFSET_LEFT).toString());
-      line.setAttribute('y', '23');
-      line.setAttribute('height', '100%');
-      line.setAttribute('width', '1');
+      gridLines.push(time * this.pixelTimeRatio() + GRID_OFFSET_LEFT);
     }
     for (let time = 0; time < this.duration(); time += gridSize) {
       const gridWidth = time * this.pixelTimeRatio();
       if (lastDraw === undefined || gridWidth - lastDraw > 50) {
         lastDraw = gridWidth;
-        const label = UI.UIUtils.createSVGChild(this.#grid, 'text', 'animation-timeline-grid-label');
-        label.textContent = isScrollDriven ? `${time.toFixed(0)}px` : i18n.TimeUtilities.millisToString(time);
-        label.setAttribute('x', (gridWidth + GRID_LABEL_OFFSET_LEFT).toString());
-        label.setAttribute('y', '16');
+        gridLabels.push({
+          x: gridWidth + GRID_LABEL_OFFSET_LEFT,
+          text: isScrollDriven ? `${time.toFixed(0)}px` : i18n.TimeUtilities.millisToString(time),
+        });
       }
     }
+    return {gridLines, gridLabels};
   }
 
   scheduleRedraw(): void {
-    this.renderGrid();
+    this.requestUpdate();
     this.#renderQueue = [];
     for (const ui of this.#uiAnimations) {
       this.#renderQueue.push(ui);
@@ -1166,9 +1214,10 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       this.#scrubberPlayer.cancel();
     }
 
-    this.#scrubberPlayer = this.#timelineScrubber.animate(
-        [{transform: 'translateX(0px)'}, {transform: 'translateX(' + this.width() + 'px)'}],
-        {duration: this.duration(), fill: 'forwards'});
+    this.#scrubberPlayer = this.#viewOutput.animateScrubber?.(this.width(), this.duration());
+    if (!this.#scrubberPlayer) {
+      return;
+    }
     this.#scrubberPlayer.playbackRate = this.effectivePlaybackRate();
     this.#scrubberPlayer.onfinish = () => {
       this.updateControlButton();
@@ -1193,17 +1242,15 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     }
   }
 
-  private scrubberDragStart(event: MouseEvent): boolean {
+  private scrubberDragStart(x: number): boolean {
     if (!this.#selectedGroup || !this.hasAnimationGroupActiveNodes()) {
       return false;
     }
 
     // Seek to current mouse position.
     if (!this.#gridOffsetLeft) {
-      this.#gridOffsetLeft = this.#grid.getBoundingClientRect().left + GRID_OFFSET_LEFT;
+      this.#gridOffsetLeft = (this.#viewOutput.getGridOffsetLeft?.() ?? 0) + GRID_OFFSET_LEFT;
     }
-
-    const {x} = event;
     const seekTime = Math.max(0, x - this.#gridOffsetLeft) / this.pixelTimeRatio();
     // Interface with scrubber drag.
     this.#originalScrubberTime = seekTime;
@@ -1239,11 +1286,11 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private setTimelineScrubberPosition(time: number): void {
-    this.#timelineScrubber.style.transform = `translateX(${time * this.pixelTimeRatio()}px)`;
+    this.#scrubberTime = time;
+    this.requestUpdate();
   }
 
-  private scrubberDragMove(event: MouseEvent): void {
-    const {x} = event;
+  private scrubberDragMove(x: number): void {
     const delta = x - (this.#originalMousePosition || 0);
     const currentTime =
         Math.max(0, Math.min((this.#originalScrubberTime || 0) + delta / this.pixelTimeRatio(), this.duration()));
@@ -1264,7 +1311,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     return typeof this.#scrubberPlayer?.currentTime === 'number' ? this.#scrubberPlayer.currentTime : 0;
   }
 
-  private scrubberDragEnd(_event: Event): void {
+  private scrubberDragEnd(): void {
     if (this.#scrubberPlayer) {
       const currentTime = Math.max(0, this.#scrubberCurrentTime());
       this.#scrubberPlayer.play();
@@ -1274,7 +1321,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     if (this.#selectedGroup?.isScrollDriven()) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScrollDrivenAnimationGroupScrubbed);
     }
-    this.#currentTime.window().requestAnimationFrame(this.updateScrubber.bind(this));
+    this.element.window().requestAnimationFrame(this.updateScrubber.bind(this));
 
     if (!this.#animationGroupPausedBeforeScrub) {
       this.togglePause(false);

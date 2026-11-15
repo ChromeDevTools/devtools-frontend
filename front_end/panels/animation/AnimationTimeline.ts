@@ -16,7 +16,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render, svg} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -110,9 +110,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {render, html, svg, Directives: {classMap, ref, repeat, styleMap}} = Lit;
+const {classMap, ifDefined, ref, repeat, styleMap} = Directives;
 const {widget, widgetRef} = UI.Widget;
 const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
+const initializedAnimationRows = new WeakSet<HTMLElement>();
 
 const MIN_TIMELINE_CONTROLS_WIDTH = 120;
 const DEFAULT_TIMELINE_CONTROLS_WIDTH = 144;
@@ -157,6 +158,11 @@ interface TimelineChromeOutput {
   getGridOffsetLeft?: () => number;
 }
 
+export interface AnimationRowViewInput {
+  key: string;
+  createAnimationUI: (container: HTMLElement) => void;
+}
+
 export interface NodeRowViewInput {
   key: number;
   /** `undefined` while the node is being resolved, `null` if it could not be resolved. */
@@ -166,6 +172,7 @@ export interface NodeRowViewInput {
   targetId?: string;
   removed: boolean;
   selected: boolean;
+  animations: AnimationRowViewInput[];
 }
 
 interface ToolbarViewOutput {
@@ -174,8 +181,8 @@ interface ToolbarViewOutput {
 
 type ToolbarView = (input: ToolbarViewInput, output: ToolbarViewOutput, target: HTMLElement) => void;
 // clang-format off
-const renderToolbar = (input: ToolbarViewInput, output: ToolbarViewOutput): Lit.LitTemplate => {
-  const renderPlaybackRateControl = (): Lit.LitTemplate => {
+const renderToolbar = (input: ToolbarViewInput, output: ToolbarViewOutput): LitTemplate => {
+  const renderPlaybackRateControl = (): LitTemplate => {
     const focusNextPlaybackRateButton = (eventTarget: EventTarget|null, focusPrevious?: boolean): void => {
       const currentPlaybackRateButton = (eventTarget as HTMLElement);
       const currentPlaybackRate = Number(currentPlaybackRateButton.dataset.playbackRate);
@@ -247,7 +254,7 @@ const renderToolbar = (input: ToolbarViewInput, output: ToolbarViewOutput): Lit.
         <devtools-button
           title=${i18nString(UIStrings.clearAll)}
           .accessibleLabel=${i18nString(UIStrings.clearAll)}
-          ${Lit.Directives.ref(element => {
+          ${ref(element => {
             if (element instanceof HTMLElement) {
               output.focusClearButton = () => element.focus();
             }
@@ -282,7 +289,7 @@ const renderToolbar = (input: ToolbarViewInput, output: ToolbarViewOutput): Lit.
 
 const renderGridAndScrubber = (
     gridLines: number[], gridLabels: GridLabel[], scrubberEnabled: boolean,
-    scrubberOffset: number|undefined, output: TimelineChromeOutput): Lit.LitTemplate => html`
+    scrubberOffset: number|undefined, output: TimelineChromeOutput): LitTemplate => html`
   <svg class="animation-timeline-grid" ${ref(element => {
     output.getGridOffsetLeft = element instanceof SVGElement ? () => element.getBoundingClientRect().left : undefined;
   })}>
@@ -313,7 +320,7 @@ const renderTimelineHeader = (
     currentTimeText: string, controlState: ControlState, controlButtonEnabled: boolean,
     scrubberEnabled: boolean, onControlButtonClick: () => void,
     onScrubberDragStart: (clientX: number) => boolean, onScrubberDrag: (clientX: number) => void,
-    onScrubberDragEnd: () => void): Lit.LitTemplate => {
+    onScrubberDragEnd: () => void): LitTemplate => {
   let controlButtonIconName: string;
   let controlButtonTitle: string;
   switch (controlState) {
@@ -359,7 +366,7 @@ const renderTimelineHeader = (
 };
 
 const renderPreviewBuffer = (
-    previews: PreviewViewInput[], output: TimelineChromeOutput): Lit.LitTemplate => {
+    previews: PreviewViewInput[], output: TimelineChromeOutput): LitTemplate => {
   const previewWidgets = new Map<SDK.AnimationModel.AnimationGroup, AnimationGroupPreviewUI>();
   output.replayPreview = animationGroup => previewWidgets.get(animationGroup)?.replay();
   output.focusPreview = animationGroup => previewWidgets.get(animationGroup)?.focus();
@@ -383,6 +390,45 @@ const renderPreviewBuffer = (
       </devtools-widget>
     </div>`)}`;
 };
+// clang-format on
+
+// clang-format off
+const renderNodeDescription = (row: NodeRowViewInput): LitTemplate|string => {
+  if (row.node === undefined) {
+    return nothing;
+  }
+  if (row.node === null) {
+    return '<node>';
+  }
+  return html`${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {node: row.node, options: row.linkOptions})}`;
+};
+
+const renderNodeRow = (row: NodeRowViewInput): LitTemplate => html`
+  <div class=${classMap({
+         'animation-node-row': true,
+         'animation-node-selected': row.selected,
+         'animation-node-removed': row.removed,
+       })}
+       jslog=${VisualLogging.tableRow('animation-node-row')}
+       data-backend-node-id=${ifDefined(row.backendNodeId)}
+       data-target-id=${ifDefined(row.targetId)}>
+    <div class="animation-node-description" jslog=${VisualLogging.tableCell('description').track({resize: true})}>
+      ${renderNodeDescription(row)}
+      ${row.removed ? html`<div class="animation-node-removed-overlay"></div>` : nothing}
+    </div>
+    <div class="animation-node-timeline" role="application"
+         jslog=${VisualLogging.tableCell('timeline').track({resize: true})}>
+      ${repeat(row.animations, animation => animation.key, animation => html`
+        <div class="animation-timeline-row"
+          ${ref(element => {
+            if (element instanceof HTMLElement && !initializedAnimationRows.has(element)) {
+              initializedAnimationRows.add(element);
+              animation.createAnimationUI(element);
+            }
+          })}>
+        </div>`)}
+    </div>
+  </div>`;
 // clang-format on
 
 const DEFAULT_TOOLBAR_VIEW: ToolbarView = (input, output, target) => {
@@ -462,7 +508,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#headerContainer = this.contentElement.createChild('div', 'animation-timeline-header');
     this.#animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
     this.#animationsContainer.setAttribute('jslog', `${VisualLogging.section('animations')}`);
-    this.#pausedStatus = this.contentElement.createChild('div', 'animation-timeline-paused hidden');
+    this.#pausedStatus = this.contentElement.createChild('div', 'animation-timeline-paused');
+    this.#pausedStatus.hidden = true;
     this.#pausedStatus.setAttribute('role', 'status');
     const pausedPlaceholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.animationInspectionPaused));
     pausedPlaceholder.show(this.#pausedStatus);
@@ -565,10 +612,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   #updateSuspendedState(): void {
-    const suspended = SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
-    this.element.classList.toggle('suspended', suspended);
-    this.#pausedStatus.classList.toggle('hidden', !suspended);
     this.performToolbarViewUpdate();
+    this.requestUpdate();
   }
 
   #addExistingAnimationGroups(animationModel: SDK.AnimationModel.AnimationModel): void {
@@ -626,6 +671,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     for (const nodeUI of this.#nodesMap.values()) {
       nodeUI.nodeChanged();
     }
+    this.requestUpdate();
   }
 
   #isVariablePlaybackRateSupported(): boolean {
@@ -646,6 +692,11 @@ export class AnimationTimeline extends UI.Widget.VBox implements
                                 clientX => this.scrubberDragStart(clientX), clientX => this.scrubberDragMove(clientX),
                                 () => this.scrubberDragEnd()),
            this.#headerContainer);
+    const nodeRows = [...this.#nodesMap].map(([key, nodeUI]) => nodeUI.toViewInput(key));
+    render(html`${repeat(nodeRows, row => row.key, renderNodeRow)}`, this.#animationsContainer);
+    const suspended = SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
+    this.element.classList.toggle('suspended', suspended);
+    this.#pausedStatus.hidden = !suspended;
   }
 
   private performToolbarViewUpdate(): void {
@@ -766,7 +817,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#uiAnimations = [];
     this.#nodesMap.clear();
     this.#animationsMap.clear();
-    this.#animationsContainer.removeChildren();
     this.#duration = DEFAULT_DURATION;
     this.#scrubberEnabled = false;
     this.#scrubberTime = undefined;
@@ -1073,22 +1123,40 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private async addAnimation(animation: SDK.AnimationModel.AnimationImpl): Promise<void> {
-    let nodeUI = this.#nodesMap.get(animation.source().backendNodeId());
+    const backendNodeId = animation.source().backendNodeId();
+    let nodeUI = this.#nodesMap.get(backendNodeId);
     if (!nodeUI) {
-      nodeUI = new NodeUI(animation.source());
-      this.#animationsContainer.appendChild(nodeUI.element);
-      this.#nodesMap.set(animation.source().backendNodeId(), nodeUI);
+      nodeUI = new NodeUI();
+      this.#nodesMap.set(backendNodeId, nodeUI);
     }
-    const nodeRow = nodeUI.createNewRow();
-    const uiAnimation = new AnimationUI(animation, this, nodeRow);
-    const node = await animation.source().deferredNode().resolvePromise();
-    uiAnimation.setNode(node);
-    if (node && nodeUI) {
-      nodeUI.nodeResolved(node);
-      nodeUIsByNode.set(node, nodeUI);
-    }
-    this.#uiAnimations.push(uiAnimation);
+    const animationNodeUI = nodeUI;
+    // The `AnimationUI` renders imperatively into the row container that the
+    // view provides once the row is rendered.
+    nodeUI.addAnimation(animation, (container: HTMLElement) => {
+      if (this.#nodesMap.get(backendNodeId) !== animationNodeUI) {
+        return;
+      }
+      const uiAnimation = new AnimationUI(animation, this, container);
+      uiAnimation.setNode(animationNodeUI.resolvedNode ?? null);
+      this.#uiAnimations.push(uiAnimation);
+      this.scheduleRedraw();
+    });
     this.#animationsMap.set(animation.id(), animation);
+    this.requestUpdate();
+
+    const node = await animation.source().deferredNode().resolvePromise();
+    for (const uiAnimation of this.#uiAnimations) {
+      if (uiAnimation.animation() === animation) {
+        uiAnimation.setNode(node);
+      }
+    }
+    if (this.#nodesMap.get(backendNodeId) === nodeUI) {
+      nodeUI.nodeResolved(node);
+      if (node) {
+        nodeUIsByNode.set(node, nodeUI);
+      }
+      this.requestUpdate();
+    }
   }
 
   private markNodeAsRemoved(node: SDK.DOMModel.DOMNode): void {
@@ -1115,6 +1183,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       this.clearCurrentTimeText();
       this.updateControlButton();
     }
+    this.requestUpdate();
   }
 
   private hasAnimationGroupActiveNodes(): boolean {
@@ -1164,7 +1233,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       return;
     }
     this.#redrawing = true;
-    this.#animationsContainer.window().requestAnimationFrame(this.render.bind(this));
+    this.element.window().requestAnimationFrame(this.render.bind(this));
   }
 
   private render(timestamp?: number): void {
@@ -1175,7 +1244,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       }
     }
     if (this.#renderQueue.length) {
-      this.#animationsContainer.window().requestAnimationFrame(this.render.bind(this));
+      this.element.window().requestAnimationFrame(this.render.bind(this));
     } else {
       this.#redrawing = undefined;
     }
@@ -1341,6 +1410,7 @@ export const enum ControlState {
  * Presentation state of the timeline row for a single animated DOM node.
  */
 export class NodeUI {
+  readonly #animations: AnimationRowViewInput[] = [];
   readonly #linkOptions: PanelsCommon.DOMLinkifier.Options = {
     onClick: () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimatedNodeDescriptionClicked);
@@ -1357,31 +1427,19 @@ export class NodeUI {
   // The currently attached DOMNode; cleared to `null` in `nodeRemoved()`.
   #node?: SDK.DOMModel.DOMNode|null;
 
-  element: HTMLDivElement;
-  readonly #description: HTMLElement;
-  readonly #timelineElement: HTMLElement;
-  #overlayElement?: HTMLElement;
-
-  constructor(_animationEffect?: SDK.AnimationModel.AnimationEffect) {
-    this.element = document.createElement('div');
-    this.element.classList.add('animation-node-row');
-    this.element.setAttribute('jslog', `${VisualLogging.tableRow('animation-node-row')}`);
-    this.#description = this.element.createChild('div', 'animation-node-description');
-    this.#description.setAttribute('jslog', `${VisualLogging.tableCell('description').track({resize: true})}`);
-    this.#timelineElement = this.element.createChild('div', 'animation-node-timeline');
-    this.#timelineElement.setAttribute('jslog', `${VisualLogging.tableCell('timeline').track({resize: true})}`);
-    UI.ARIAUtils.markAsApplication(this.#timelineElement);
-  }
-
   /** The node rendered in the description, `undefined` while unresolved. */
   get resolvedNode(): SDK.DOMModel.DOMNode|null|undefined {
     return this.#resolvedNode;
   }
 
+  addAnimation(animation: SDK.AnimationModel.AnimationImpl, createAnimationUI: (container: HTMLElement) => void): void {
+    this.#animations.push({key: animation.id(), createAnimationUI});
+  }
+
   nodeResolved(node: SDK.DOMModel.DOMNode|null): void {
     if (!node) {
+      // Keep a node that another animation of this row already resolved.
       if (this.#resolvedNode === undefined) {
-        UI.UIUtils.createTextChild(this.#description, '<node>');
         this.#resolvedNode = null;
       }
       return;
@@ -1389,29 +1447,15 @@ export class NodeUI {
     this.#backendNodeId = String(node.backendNodeId());
     this.#targetId = node.domModel().target().id();
     this.#resolvedNode = node;
-    this.element.setAttribute('data-backend-node-id', String(node.backendNodeId()));
-    this.element.setAttribute('data-target-id', node.domModel().target().id());
     this.#node = node;
     this.nodeChanged();
-    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, this.#linkOptions);
-    render(link, this.#description, {host: this});
     if (!node.ownerDocument) {
       this.nodeRemoved();
     }
   }
 
-  createNewRow(): Element {
-    return this.#timelineElement.createChild('div', 'animation-timeline-row');
-  }
-
   nodeRemoved(): void {
     this.#removed = true;
-    this.element.classList.add('animation-node-removed');
-    if (!this.#overlayElement) {
-      this.#overlayElement = document.createElement('div');
-      this.#overlayElement.classList.add('animation-node-removed-overlay');
-      this.#description.appendChild(this.#overlayElement);
-    }
     this.#node = null;
   }
 
@@ -1426,7 +1470,6 @@ export class NodeUI {
     }
 
     this.#selected = animationNodeSelected;
-    this.element.classList.toggle('animation-node-selected', animationNodeSelected);
   }
 
   toViewInput(key: number): NodeRowViewInput {
@@ -1438,6 +1481,7 @@ export class NodeUI {
       targetId: this.#targetId,
       removed: this.#removed,
       selected: this.#selected,
+      animations: [...this.#animations],
     };
   }
 }

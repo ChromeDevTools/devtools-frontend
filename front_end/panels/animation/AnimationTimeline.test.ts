@@ -196,12 +196,26 @@ describeWithEnvironment('AnimationTimeline', () => {
     let targetManager: SDK.TargetManager.TargetManager;
     let allTargetsSuspended: sinon.SinonStub;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       targetManager = SDK.TargetManager.TargetManager.instance();
       allTargetsSuspended = sinon.stub(targetManager, 'allTargetsSuspended').returns(false);
       view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
       renderElementIntoDOM(view);
+      await view.updateComplete;
     });
+
+    const setSuspended = async(suspended: boolean): Promise<void> => {
+      allTargetsSuspended.returns(suspended);
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      await view.updateComplete;
+    };
+
+    const resetAnimationModel = async(): Promise<void> => {
+      const animationModel = target.model(SDK.AnimationModel.AnimationModel);
+      assert.exists(animationModel);
+      animationModel.dispatchEventToListeners(SDK.AnimationModel.Events.ModelReset);
+      await view.updateComplete;
+    };
 
     const assertControlsDisabled = (disabled: boolean): void => {
       const toolbar = view.contentElement.querySelector('.animation-timeline-toolbar');
@@ -218,10 +232,9 @@ describeWithEnvironment('AnimationTimeline', () => {
       }
     };
 
-    it('disables clear, pause, and speed controls while suspended and restores them on resume', () => {
+    it('disables clear, pause, and speed controls while suspended and restores them on resume', async () => {
       assertControlsDisabled(false);
-      allTargetsSuspended.returns(true);
-      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      await setSuspended(true);
       assertControlsDisabled(true);
 
       const animationModel = target.model(SDK.AnimationModel.AnimationModel);
@@ -237,15 +250,14 @@ describeWithEnvironment('AnimationTimeline', () => {
       }
       sinon.assert.notCalled(setPlaybackRate);
 
-      animationModel.dispatchEventToListeners(SDK.AnimationModel.Events.ModelReset);
+      await resetAnimationModel();
       assertControlsDisabled(true);
 
-      allTargetsSuspended.returns(false);
-      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      await setSuspended(false);
       assertControlsDisabled(false);
     });
 
-    it('shows a paused status during suspension and restores the preview bar on resume', () => {
+    it('shows a paused status during suspension and restores the preview bar on resume', async () => {
       const previewBar = view.contentElement.querySelector<HTMLElement>('.animation-timeline-buffer');
       const pausedStatus = view.contentElement.querySelector<HTMLElement>('.animation-timeline-paused');
       const playbackArea = view.contentElement.querySelector<HTMLElement>('.animation-timeline-header');
@@ -255,47 +267,45 @@ describeWithEnvironment('AnimationTimeline', () => {
       assert.exists(playbackArea);
       assert.exists(waitingHint);
       assert.isTrue(previewBar.checkVisibility({visibilityProperty: true}));
-      assert.isTrue(pausedStatus.classList.contains('hidden'));
+      assert.isTrue(pausedStatus.hidden);
       assert.isTrue(playbackArea.checkVisibility({visibilityProperty: true}));
       assert.isTrue(waitingHint.checkVisibility({visibilityProperty: true}));
 
-      allTargetsSuspended.returns(true);
-      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      await setSuspended(true);
       assert.isFalse(previewBar.checkVisibility({visibilityProperty: true}));
-      assert.isFalse(pausedStatus.classList.contains('hidden'));
+      assert.isFalse(pausedStatus.hidden);
       assert.isFalse(playbackArea.checkVisibility({visibilityProperty: true}));
       assert.isFalse(waitingHint.checkVisibility({visibilityProperty: true}));
       assert.strictEqual(pausedStatus.getAttribute('role'), 'status');
 
-      const animationModel = target.model(SDK.AnimationModel.AnimationModel);
-      assert.exists(animationModel);
-      animationModel.dispatchEventToListeners(SDK.AnimationModel.Events.ModelReset);
-      assert.isFalse(pausedStatus.classList.contains('hidden'));
+      await resetAnimationModel();
+      assert.isFalse(pausedStatus.hidden);
 
-      allTargetsSuspended.returns(false);
-      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      await setSuspended(false);
       assert.isTrue(previewBar.checkVisibility({visibilityProperty: true}));
-      assert.isTrue(pausedStatus.classList.contains('hidden'));
+      assert.isTrue(pausedStatus.hidden);
       assert.isTrue(playbackArea.checkVisibility({visibilityProperty: true}));
       assert.isTrue(waitingHint.checkVisibility({visibilityProperty: true}));
     });
 
-    it('refreshes the paused status when shown after the suspension state changes while hidden', () => {
+    it('refreshes the paused status when shown after the suspension state changes while hidden', async () => {
       view.detach();
       allTargetsSuspended.returns(true);
       targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
       renderElementIntoDOM(view);
+      await view.updateComplete;
 
       const pausedStatus = view.contentElement.querySelector<HTMLElement>('.animation-timeline-paused');
       assert.exists(pausedStatus);
-      assert.isFalse(pausedStatus.classList.contains('hidden'));
+      assert.isFalse(pausedStatus.hidden);
       assertControlsDisabled(true);
 
       view.detach();
       allTargetsSuspended.returns(false);
       targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
       renderElementIntoDOM(view);
-      assert.isTrue(pausedStatus.classList.contains('hidden'));
+      await view.updateComplete;
+      assert.isTrue(pausedStatus.hidden);
       assertControlsDisabled(false);
     });
   });
@@ -637,6 +647,7 @@ describeWithEnvironment('AnimationTimeline', () => {
         assert.isFalse(animationNodeRow.classList.contains('animation-node-removed'));
 
         domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: domNode, parent: contentDocument});
+        await view.updateComplete;
         assert.isTrue(animationNodeRow.classList.contains('animation-node-removed'));
       });
 
@@ -662,10 +673,7 @@ describeWithEnvironment('AnimationTimeline', () => {
         const unresolvedNodeUi = new Animation.AnimationTimeline.NodeUI();
         assert.isUndefined(unresolvedNodeUi.toViewInput(1).node);
         unresolvedNodeUi.nodeResolved(null);
-        unresolvedNodeUi.nodeResolved(null);
         assert.isNull(unresolvedNodeUi.toViewInput(1).node);
-        assert.strictEqual(unresolvedNodeUi.element.querySelector('.animation-node-description')?.textContent,
-                           '<node>');
 
         const resolvedNodeUi = new Animation.AnimationTimeline.NodeUI();
         const domNode = SDK.DOMModel.DOMNode.create(domModel, contentDocument, false, {
@@ -679,8 +687,6 @@ describeWithEnvironment('AnimationTimeline', () => {
         resolvedNodeUi.nodeResolved(domNode);
         resolvedNodeUi.nodeResolved(null);
         assert.strictEqual(resolvedNodeUi.toViewInput(124).node, domNode);
-        assert.notInclude(resolvedNodeUi.element.querySelector('.animation-node-description')?.textContent ?? '',
-                          '<node>');
       });
     });
 

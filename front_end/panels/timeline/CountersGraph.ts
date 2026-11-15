@@ -39,11 +39,18 @@ const UIStrings = {
    */
   gpuMemory: 'GPU memory',
   /**
-   * @description Range text content in the counters graph of the Performance panel.
-   * @example {2} PH1
-   * @example {10} PH2
+   * @description Label for a counter checkbox with its min-max value range in the Performance panel.
+   * @example {JS heap} PH1
+   * @example {704 kB} PH2
+   * @example {5.5 MB} PH3
    */
-  ss: '[{PH1} – {PH2}]',
+  counterRange: '{PH1} [{PH2} – {PH3}]',
+  /**
+   * @description Current value text for a counter at the hovered timestamp in the Performance panel.
+   * @example {JS heap} PH1
+   * @example {1.5 MB} PH2
+   */
+  counterCurrentValue: '{PH1}: {PH2}',
   /**
    * @description Message displayed when no memory usage data is found in the counters graph of the Performance panel.
    */
@@ -318,8 +325,8 @@ export class Counter {
   x: number[];
   minimumIndex: number;
   maximumIndex: number;
-  private maxTime: number;
-  private minTime: number;
+  #maxTime: number;
+  #minTime: number;
   limitValue?: number;
 
   constructor() {
@@ -328,8 +335,8 @@ export class Counter {
     this.x = [];
     this.minimumIndex = 0;
     this.maximumIndex = 0;
-    this.maxTime = 0;
-    this.minTime = 0;
+    this.#maxTime = 0;
+    this.#minTime = 0;
   }
 
   appendSample(time: number, value: number): void {
@@ -390,8 +397,8 @@ export class Counter {
         this.times.length - 1);
 
     // Current window bounds.
-    this.minTime = start;
-    this.maxTime = end;
+    this.#minTime = start;
+    this.#maxTime = end;
   }
 
   calculateXValues(width: number): void {
@@ -399,11 +406,11 @@ export class Counter {
       return;
     }
 
-    const xFactor = width / (this.maxTime - this.minTime);
+    const xFactor = width / (this.#maxTime - this.#minTime);
 
     this.x = new Array(this.values.length);
     for (let i = this.minimumIndex + 1; i <= this.maximumIndex; i++) {
-      this.x[i] = xFactor * (this.times[i] - this.minTime);
+      this.x[i] = xFactor * (this.times[i] - this.#minTime);
     }
   }
 }
@@ -474,9 +481,38 @@ export class CounterUI {
   setRange(minValue: number, maxValue: number): void {
     const min = this.formatter(minValue);
     const max = this.formatter(maxValue);
-    const rangeText = i18nString(UIStrings.ss, {PH1: min, PH2: max});
-    const newLabelText = `${this.counterName} ${rangeText}` as Common.UIString.LocalizedString;
-    this.#updateFilterLabel(newLabelText);
+    this.#updateFilterLabel(i18nString(UIStrings.counterRange, {PH1: this.counterName, PH2: min, PH3: max}));
+  }
+
+  calculateYValues(canvasHeight: number): {minValue: number, yFactor: number}|null {
+    const height = canvasHeight - 2 * this.verticalPadding;
+    if (height <= 0) {
+      this.graphYValues = [];
+      return null;
+    }
+    const counter = this.counter;
+    const values = counter.values;
+    if (!values.length) {
+      return null;
+    }
+    const {min: minValue, max: maxValue} = counter.calculateBounds();
+    this.setRange(minValue, maxValue);
+    if (!this.visible()) {
+      return null;
+    }
+    const originY = this.verticalPadding;
+    const yValues = this.graphYValues;
+    const yFactor = (maxValue - minValue) ? height / (maxValue - minValue) : 1;
+    let value: number = values[counter.minimumIndex];
+    let i = counter.minimumIndex;
+    for (; i <= counter.maximumIndex; i++) {
+      if (typeof values[i] !== 'undefined') {
+        value = values[i];
+      }
+      yValues[i] = Math.round(originY + height - (value - minValue) * yFactor);
+    }
+    yValues.length = i;
+    return {minValue, yFactor};
   }
 
   private toggleCounterGraph(): void {
@@ -497,7 +533,7 @@ export class CounterUI {
     }
     const index = this.recordIndexAt(x);
     const value = this.formatter(this.counter.values[index]);
-    this.value.textContent = `${this.counterName}: ${value}`;
+    this.value.textContent = i18nString(UIStrings.counterCurrentValue, {PH1: this.counterName, PH2: value});
     const y = this.graphYValues[index] / window.devicePixelRatio;
     this.marker.style.left = x + 'px';
     this.marker.style.top = y + 'px';
@@ -514,32 +550,16 @@ export class CounterUI {
     if (!ctx) {
       throw new Error('Unable to get canvas context');
     }
+    const scale = this.calculateYValues(canvas.height);
+    const counter = this.counter;
+    const yValues = this.graphYValues;
+    if (!scale || !yValues.length) {
+      return;
+    }
     const width = canvas.width;
     const height = canvas.height - 2 * this.verticalPadding;
-    if (height <= 0) {
-      this.graphYValues = [];
-      return;
-    }
     const originY = this.verticalPadding;
-    const counter = this.counter;
-    const values = counter.values;
-
-    if (!values.length) {
-      return;
-    }
-
-    const bounds = counter.calculateBounds();
-    const minValue = bounds.min;
-    const maxValue = bounds.max;
-    this.setRange(minValue, maxValue);
-
-    if (!this.visible()) {
-      return;
-    }
-
-    const yValues = this.graphYValues;
-    const maxYRange = maxValue - minValue;
-    const yFactor = maxYRange ? height / (maxYRange) : 1;
+    const {minValue, yFactor} = scale;
 
     ctx.save();
     ctx.lineWidth = window.devicePixelRatio;
@@ -547,22 +567,14 @@ export class CounterUI {
       ctx.translate(0.5, 0.5);
     }
     ctx.beginPath();
-    let value: number = values[counter.minimumIndex];
-    let currentY = Math.round(originY + height - (value - minValue) * yFactor);
+    let currentY = yValues[counter.minimumIndex];
     ctx.moveTo(0, currentY);
-    let i = counter.minimumIndex;
-    for (; i <= counter.maximumIndex; i++) {
+    for (let i = counter.minimumIndex; i <= counter.maximumIndex; i++) {
       const x = Math.round(counter.x[i]);
       ctx.lineTo(x, currentY);
-      const currentValue = values[i];
-      if (typeof currentValue !== 'undefined') {
-        value = currentValue;
-      }
-      currentY = Math.round(originY + height - (value - minValue) * yFactor);
+      currentY = yValues[i];
       ctx.lineTo(x, currentY);
-      yValues[i] = currentY;
     }
-    yValues.length = i;
     ctx.lineTo(width, currentY);
     ctx.strokeStyle = this.graphColor;
     ctx.stroke();
@@ -584,24 +596,18 @@ export class CounterUI {
   }
 }
 
-export class Calculator implements Calculator {
-  #minimumBoundary: number;
-  #maximumBoundary: number;
-  private workingArea: number;
-  #zeroTime: number;
+export class Calculator {
+  #minimumBoundary = 0;
+  #maximumBoundary = 0;
+  #workingArea = 0;
+  #zeroTime = 0;
 
-  constructor() {
-    this.#minimumBoundary = 0;
-    this.#maximumBoundary = 0;
-    this.workingArea = 0;
-    this.#zeroTime = 0;
-  }
   setZeroTime(time: number): void {
     this.#zeroTime = time;
   }
 
   computePosition(time: number): number {
-    return (time - this.#minimumBoundary) / this.boundarySpan() * this.workingArea;
+    return (time - this.#minimumBoundary) / this.boundarySpan() * this.#workingArea;
   }
 
   setWindow(minimumBoundary: number, maximumBoundary: number): void {
@@ -610,7 +616,7 @@ export class Calculator implements Calculator {
   }
 
   setDisplayWidth(clientWidth: number): void {
-    this.workingArea = clientWidth;
+    this.#workingArea = clientWidth;
   }
 
   formatValue(value: number, precision?: number): string {

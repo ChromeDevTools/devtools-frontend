@@ -90,4 +90,42 @@ describeWithEnvironment('CountersGraph', () => {
       'GPU memory',
     ]);
   });
+
+  it('computes position in Calculator', () => {
+    const calculator = new Timeline.CountersGraph.Calculator();
+    calculator.setZeroTime(100);
+    calculator.setWindow(100, 300);
+    calculator.setDisplayWidth(200);
+    assert.strictEqual(calculator.computePosition(200), 100);
+  });
+
+  it('computes visible sample bounds in Counter', () => {
+    const calculator = new Timeline.CountersGraph.Calculator();
+    calculator.setZeroTime(100);
+    calculator.setWindow(100, 300);
+    calculator.setDisplayWidth(200);
+
+    const counter = new Timeline.CountersGraph.Counter();
+    counter.appendSample(100, 10);
+    counter.appendSample(200, 50);
+    counter.appendSample(300, 30);
+    counter.calculateVisibleIndexes(calculator);
+    assert.deepEqual(counter.calculateBounds(), {min: 10, max: 50});
+  });
+
+  it('computes X coordinates in Counter', () => {
+    const calculator = new Timeline.CountersGraph.Calculator();
+    calculator.setZeroTime(100);
+    calculator.setWindow(100, 300);
+    calculator.setDisplayWidth(200);
+
+    const counter = new Timeline.CountersGraph.Counter();
+    counter.appendSample(100, 10);
+    counter.appendSample(200, 50);
+    counter.appendSample(300, 30);
+    counter.calculateVisibleIndexes(calculator);
+    counter.calculateXValues(200);
+    assert.strictEqual(counter.x[1], 100);
+    assert.strictEqual(counter.x[2], 200);
+  });
 });

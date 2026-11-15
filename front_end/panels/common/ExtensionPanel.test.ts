@@ -7,6 +7,7 @@ import {it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -15,6 +16,8 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Common from './common.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('ExtensionView', () => {
   it('updates view input when properties change', async () => {
@@ -215,6 +218,7 @@ describeWithEnvironment('ExtensionSidebarPane', () => {
     const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
     const sidebarPane = new Common.ExtensionPanel.ExtensionSidebarPane(
         server, 'panel-name', 'panel title' as Platform.UIString.LocalizedString, 'id');
+    renderElementIntoDOM(sidebarPane);
 
     await new Promise(resolve => sidebarPane.setObject({foo: 'bar'}, 'title', resolve));
 
@@ -224,6 +228,74 @@ describeWithEnvironment('ExtensionSidebarPane', () => {
     assert.instanceOf(section, ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget);
     assert.exists(section.objectTree);
     assert.isTrue(section.objectTree.readOnly);
+  });
+
+  it('materializes the object properties section while detached', async () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const sidebarPane = new Common.ExtensionPanel.ExtensionSidebarPane(
+        server, 'panel-name', 'panel title' as Platform.UIString.LocalizedString, 'id');
+
+    await new Promise(resolve => sidebarPane.setObject({foo: 'bar'}, 'title', resolve));
+
+    const sectionElement = sidebarPane.element.firstElementChild?.firstElementChild;
+    assert.exists(sectionElement);
+    const section = UI.Widget.Widget.get(sectionElement);
+    assert.instanceOf(section, ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget);
+    assert.exists(section.objectTree);
+    assert.isTrue(section.objectTree.readOnly);
+  });
+
+  it('updates view input when setPage is called', async () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const view = createViewFunctionStub(Common.ExtensionPanel.ExtensionSidebarPane);
+    const sidebarPane = new Common.ExtensionPanel.ExtensionSidebarPane(
+        server, 'elements', 'Sidebar' as Platform.UIString.LocalizedString, 'sidebar-1', 'ext-1', view);
+    await view.nextInput;
+
+    assert.isFalse(view.input.showObjectProperties);
+    assert.isUndefined(view.input.pageURL);
+
+    sidebarPane.setPage(urlString`chrome-extension://ext-1/sidebar.html`);
+    await view.nextInput;
+
+    assert.strictEqual(view.input.pageURL, urlString`chrome-extension://ext-1/sidebar.html`);
+    assert.strictEqual(view.input.height, '150px');
+    assert.isFalse(view.input.showObjectProperties);
+  });
+
+  it('updates view input when setHeight is called', async () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const view = createViewFunctionStub(Common.ExtensionPanel.ExtensionSidebarPane);
+    const sidebarPane = new Common.ExtensionPanel.ExtensionSidebarPane(
+        server, 'elements', 'Sidebar' as Platform.UIString.LocalizedString, 'sidebar-1', 'ext-1', view);
+    await view.nextInput;
+
+    sidebarPane.setHeight('250px');
+    await view.nextInput;
+
+    assert.strictEqual(view.input.height, '250px');
+  });
+
+  it('cancels pending setExpression when setPage is called before evaluation completes', async () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const view = createViewFunctionStub(Common.ExtensionPanel.ExtensionSidebarPane);
+    const sidebarPane = new Common.ExtensionPanel.ExtensionSidebarPane(
+        server, 'elements', 'Sidebar' as Platform.UIString.LocalizedString, 'sidebar-1', 'ext-1', view);
+    await view.nextInput;
+
+    const callback = sinon.stub();
+    sidebarPane.setExpression('1 + 1', 'Result', undefined, 'chrome-extension://ext-1', callback);
+    await view.nextInput;
+
+    assert.isTrue(view.input.showObjectProperties);
+    assert.isUndefined(view.input.pageURL);
+
+    sidebarPane.setPage(urlString`chrome-extension://ext-1/other.html`);
+    await view.nextInput;
+
+    const evaluateCallback = server.evaluate.firstCall.args[5];
+    evaluateCallback(null, sinon.createStubInstance(SDK.RemoteObject.RemoteObject), false);
+    sinon.assert.calledOnceWithExactly(callback, 'operation cancelled');
   });
 
   it('generates a stable, namespaced viewId satisfying viewId requirements', () => {

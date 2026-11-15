@@ -610,7 +610,7 @@
   };
 
   TestSuite.prototype.switchToPanel = function(panelName) {
-    this.showPanel(panelName).then(this.releaseControl.bind(this));
+    this.showPanel(panelName).then(() => UI.Widget.Widget.allUpdatesComplete).then(this.releaseControl.bind(this));
     this.takeControl();
   };
 
@@ -625,7 +625,9 @@
   };
 
   TestSuite.prototype.switchToExtensionSidebarPane = function(title) {
-    this.showExtensionSidebarPane(title).then(this.releaseControl.bind(this));
+    this.showExtensionSidebarPane(title)
+        .then(() => UI.Widget.Widget.allUpdatesComplete)
+        .then(this.releaseControl.bind(this));
     this.takeControl();
   };
 

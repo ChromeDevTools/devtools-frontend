@@ -29,7 +29,8 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
     this.#searchableView = new UI.SearchableView.SearchableView(this, null);
     this.#searchableView.show(this.element);
 
-    const extensionView = new ExtensionView(server, this.id, pageURL, 'extension');
+    const extensionView = new ExtensionView();
+    extensionView.data = {server, id: this.id, src: pageURL, className: 'extension'};
     extensionView.show(this.#searchableView.element);
   }
 
@@ -164,7 +165,8 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
       this.extensionView.detach(true);
     }
 
-    this.extensionView = new ExtensionView(this.server, this.#id, url, 'extension fill');
+    this.extensionView = new ExtensionView();
+    this.extensionView.data = {server: this.server, id: this.#id, src: url, className: 'extension fill'};
     this.extensionView.show(this.element);
 
     if (!this.element.style.height) {
@@ -196,7 +198,8 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
       this.extensionView.detach(true);
       delete this.extensionView;
     }
-    this.objectPropertiesView = new ExtensionNotifierView(this.server, this.#id);
+    this.objectPropertiesView = new ExtensionNotifierView();
+    this.objectPropertiesView.data = {server: this.server, id: this.#id};
     this.objectPropertiesView.show(this.element);
   }
 

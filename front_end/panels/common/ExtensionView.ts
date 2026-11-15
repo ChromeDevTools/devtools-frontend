@@ -4,26 +4,42 @@
 
 import type * as Extensions from '../../models/extensions/extensions.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 
 import type {ExtensionServer} from './ExtensionServer.js';
 
-const {render, html, Directives: {ref}} = Lit;
+const {ref} = Directives;
 
-interface ViewInput {
+export interface ViewInput {
   src: string;
   className: string;
   onLoad: () => void;
 }
 
-interface ViewOutput {
-  iframe?: HTMLIFrameElement;
+export interface ViewOutput {
+  getContentWindow?: () => Window | null;
 }
 
-const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export interface ExtensionViewData {
+  server?: ExtensionServer;
+  id: string;
+  src: string;
+  className: string;
+}
+
+export interface ExtensionNotifierViewData {
+  server?: ExtensionServer;
+  id: string;
+}
+
+export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   // clang-format off
   render(html`<iframe
-    ${ref(element => {output.iframe = element as HTMLIFrameElement; })}
+    ${ref(element => {
+      output.getContentWindow = element instanceof HTMLIFrameElement ? () => element.contentWindow : undefined;
+    })}
     src=${input.src}
     allow="language-model; summarizer; translator; language-detector; writer; rewriter; proofreader; clipboard-write; autoplay"
     class=${input.className}
@@ -32,28 +48,53 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 };
 
 export class ExtensionView extends UI.Widget.Widget {
-  #server: ExtensionServer;
-  #id: string;
-  #src: string;
-  #className: string;
+  #server?: ExtensionServer;
+  #id = '';
+  #src = '';
+  #className = '';
 
-  #iframe?: HTMLIFrameElement;
+  #getContentWindow?: () => Window | null;
+  #hasRendered = false;
   #frameIndex?: number;
+  #isNotifiedShown = false;
 
-  #view: typeof DEFAULT_VIEW;
-  constructor(server: ExtensionServer, id: string, src: string, className: string,
-              view: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void = DEFAULT_VIEW) {
-    super();
+  #view: View;
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
     this.#view = view;
-    this.#server = server;
-    this.#src = src;
-    this.#className = className;
-    this.#id = id;
     this.setHideOnDetach();  // Override
-    void this.performUpdate();
+  }
+
+  set data({server, id, src, className}: ExtensionViewData) {
+    const targetChanged = server !== this.#server || id !== this.#id;
+    const srcChanged = src !== this.#src;
+    const classNameChanged = className !== this.#className;
+    if (!targetChanged && !srcChanged && !classNameChanged) {
+      return;
+    }
+    if ((targetChanged || srcChanged) && this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = false;
+      this.#server.notifyViewHidden(this.#id);
+    }
+    this.#server = server;
+    this.#id = id;
+    this.#className = className;
+    if (srcChanged) {
+      this.#src = src;
+      this.#frameIndex = undefined;
+    }
+    if (srcChanged || classNameChanged) {
+      this.requestUpdate();
+    }
+    if (this.isShowing() && typeof this.#frameIndex === 'number' && !this.#isNotifiedShown && this.#server &&
+        this.#id) {
+      this.#isNotifiedShown = true;
+      this.#server.notifyViewShown(this.#id, this.#frameIndex);
+    }
   }
 
   override performUpdate(): Promise<void>|void {
+    this.#hasRendered = true;
     const output: ViewOutput = {};
     this.#view(
         {
@@ -62,55 +103,77 @@ export class ExtensionView extends UI.Widget.Widget {
           onLoad: this.onLoad.bind(this),
         },
         output, this.element);
-    if (output.iframe) {
-      this.#iframe = output.iframe;
-    }
+    this.#getContentWindow = output.getContentWindow;
   }
 
   override wasShown(): void {
+    if (!this.#hasRendered) {
+      this.requestUpdate();
+    }
     super.wasShown();
-    if (typeof this.#frameIndex === 'number') {
+    if (typeof this.#frameIndex === 'number' && !this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
       this.#server.notifyViewShown(this.#id, this.#frameIndex);
     }
   }
 
   override willHide(): void {
     super.willHide();
-    if (typeof this.#frameIndex === 'number') {
+    if (typeof this.#frameIndex === 'number' && this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = false;
       this.#server.notifyViewHidden(this.#id);
     }
   }
 
   private onLoad(): void {
-    if (!this.#iframe) {
+    const contentWindow = this.#getContentWindow?.();
+    if (!contentWindow) {
       return;
     }
     const frames = window.frames;
-    this.#frameIndex = Array.prototype.indexOf.call(frames, this.#iframe.contentWindow);
-    if (this.isShowing()) {
+    this.#frameIndex = Array.prototype.indexOf.call(frames, contentWindow);
+    if (this.isShowing() && !this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
       this.#server.notifyViewShown(this.#id, this.#frameIndex);
     }
   }
 }
 
 export class ExtensionNotifierView extends UI.Widget.VBox {
-  private readonly server: ExtensionServer;
-  private readonly id: string;
-  constructor(server: ExtensionServer, id: string) {
-    super();
+  #server?: ExtensionServer;
+  #id = '';
+  #isNotifiedShown = false;
 
-    this.server = server;
-    this.id = id;
+  set data({server, id}: ExtensionNotifierViewData) {
+    if (server === this.#server && id === this.#id) {
+      return;
+    }
+    if (this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = false;
+      this.#server.notifyViewHidden(this.#id);
+    }
+    this.#server = server;
+    this.#id = id;
+    if (this.isShowing() && !this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
+      this.#server.notifyViewShown(this.#id);
+    }
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.server.notifyViewShown(this.id);
+    if (!this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
+      this.#server.notifyViewShown(this.#id);
+    }
   }
 
   override willHide(): void {
     super.willHide();
-    this.server.notifyViewHidden(this.id);
+    if (this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = false;
+      this.#server.notifyViewHidden(this.#id);
+    }
   }
 }
 

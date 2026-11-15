@@ -7,11 +7,78 @@ import {it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Common from './common.js';
+
+describeWithEnvironment('ExtensionView', () => {
+  it('updates view input when properties change', async () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const viewStub = createViewFunctionStub(Common.ExtensionView.ExtensionView);
+    const extensionView = new Common.ExtensionView.ExtensionView(undefined, viewStub);
+    extensionView.data = {server, id: 'ext-view-1', src: 'chrome-extension://ext/view.html', className: 'extension'};
+    renderElementIntoDOM(extensionView);
+    await viewStub.nextInput;
+
+    assert.strictEqual(viewStub.input.src, 'chrome-extension://ext/view.html');
+    assert.strictEqual(viewStub.input.className, 'extension');
+
+    extensionView.data = {server, id: 'ext-view-1', src: 'chrome-extension://ext/view2.html', className: 'extension'};
+    await viewStub.nextInput;
+    assert.strictEqual(viewStub.input.src, 'chrome-extension://ext/view2.html');
+  });
+
+  it('renders iframe and invokes onLoad in DEFAULT_VIEW', () => {
+    const target = document.createElement('div');
+    const output: Common.ExtensionView.ViewOutput = {};
+    const onLoad = sinon.stub();
+    Common.ExtensionView.DEFAULT_VIEW({src: 'about:blank', className: 'extension', onLoad}, output, target);
+    const iframe = target.querySelector('iframe.extension');
+    assert.instanceOf(iframe, HTMLIFrameElement);
+    assert.isFunction(output.getContentWindow);
+    iframe.dispatchEvent(new Event('load'));
+    sinon.assert.calledOnce(onLoad);
+  });
+});
+
+describeWithEnvironment('ExtensionNotifierView', () => {
+  it('notifies server when shown and hidden', () => {
+    const server = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const notifierView = new Common.ExtensionView.ExtensionNotifierView();
+    notifierView.data = {server, id: 'ext-notifier-1'};
+
+    renderElementIntoDOM(notifierView);
+    sinon.assert.calledOnceWithExactly(server.notifyViewShown, 'ext-notifier-1');
+
+    notifierView.detach();
+    sinon.assert.calledOnceWithExactly(server.notifyViewHidden, 'ext-notifier-1');
+  });
+
+  it('synchronizes notifications when server or id changes while visible', () => {
+    const server1 = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const server2 = sinon.createStubInstance(Common.ExtensionServer.ExtensionServer);
+    const notifierView = new Common.ExtensionView.ExtensionNotifierView();
+    renderElementIntoDOM(notifierView);
+
+    notifierView.data = {server: server1, id: ''};
+    sinon.assert.notCalled(server1.notifyViewShown);
+    notifierView.data = {server: server1, id: 'ext-notifier-1'};
+    sinon.assert.calledOnceWithExactly(server1.notifyViewShown, 'ext-notifier-1');
+
+    notifierView.data = {server: server1, id: 'ext-notifier-2'};
+    sinon.assert.calledOnceWithExactly(server1.notifyViewHidden, 'ext-notifier-1');
+    sinon.assert.calledWithExactly(server1.notifyViewShown.secondCall, 'ext-notifier-2');
+
+    notifierView.data = {server: server2, id: 'ext-notifier-2'};
+    sinon.assert.calledWithExactly(server1.notifyViewHidden.secondCall, 'ext-notifier-2');
+    sinon.assert.calledOnceWithExactly(server2.notifyViewShown, 'ext-notifier-2');
+    notifierView.detach();
+  });
+});
 
 describeWithEnvironment('ExtensionSidebarPane', () => {
   it('creates a read-only object properties section for objects', async () => {

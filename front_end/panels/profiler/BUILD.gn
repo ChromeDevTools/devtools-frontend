@@ -120,6 +120,7 @@ devtools_ui_module("unittests") {
     "../../generated",
     "../../models/bindings:bundle",
     "../../models/cpu_profile:bundle",
+    "../../models/heap_snapshot:bundle",
     "../../models/issues_manager:bundle",
     "../../panels/elements:bundle",
     "../../testing",

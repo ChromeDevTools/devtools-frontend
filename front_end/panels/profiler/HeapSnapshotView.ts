@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -15,7 +16,7 @@ import * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js'
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -47,7 +48,8 @@ import {
 } from './ProfileHeader.js';
 import type {ProfileTypeRegistry} from './ProfileTypeRegistry.js';
 
-const {html} = Lit;
+const {Directives: {live}, html, nothing, render} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -1964,17 +1966,47 @@ export class HeapProfileHeader extends ProfileHeader {
   }
 }
 
+export interface HeapSnapshotStatisticsViewInput {
+  pieChartData: PerfUI.PieChart.PieChartData;
+}
+
+export type StatisticsView = (
+    input: HeapSnapshotStatisticsViewInput,
+    output: undefined,
+    target: HTMLElement,
+    ) => void;
+
+export const STATISTICS_DEFAULT_VIEW: StatisticsView = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <devtools-perf-piechart
+      class="heap-snapshot-stats-pie-chart"
+      .data=${input.pieChartData}
+    ></devtools-perf-piechart>
+  `, target, {
+    container: {
+      classes: ['heap-snapshot-statistics-view'],
+      attributes: {
+        jslog: `${VisualLogging.pane('profiler.heap-snapshot-statistics-view').track({resize: true})}`,
+      },
+    },
+  });
+  // clang-format on
+};
+
 export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
-  pieChart: PerfUI.PieChart.PieChart;
-  constructor() {
-    super();
-    this.element.classList.add('heap-snapshot-statistics-view');
-    this.element.setAttribute(
-        'jslog', `${VisualLogging.pane('profiler.heap-snapshot-statistics-view').track({resize: true})}`);
-    this.pieChart = new PerfUI.PieChart.PieChart();
-    this.setTotalAndRecords(0, []);
-    this.pieChart.classList.add('heap-snapshot-stats-pie-chart');
-    this.element.appendChild(this.pieChart);
+  readonly #view: StatisticsView;
+  #total = 0;
+  #records: PerfUI.PieChart.Slice[] = [];
+
+  constructor(element?: HTMLElement, view: StatisticsView = STATISTICS_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
   static valueFormatter(value: number): string {
@@ -1985,43 +2017,166 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
     return formatter.format(Math.round(value / 1000));
   }
 
+  set total(total: number) {
+    if (this.#total === total) {
+      return;
+    }
+    this.#total = total;
+    this.requestUpdate();
+  }
+
+  set records(records: PerfUI.PieChart.Slice[]) {
+    if (this.#records === records) {
+      return;
+    }
+    this.#records = records;
+    this.requestUpdate();
+  }
+
   setTotalAndRecords(total: number, records: PerfUI.PieChart.Slice[]): void {
-    this.pieChart.data = {
-      chartName: i18nString(UIStrings.heapMemoryUsage),
-      size: 150,
-      formatter: HeapSnapshotStatisticsView.valueFormatter,
-      showLegend: true,
-      total,
-      slices: records,
+    if (this.#total === total && this.#records === records) {
+      return;
+    }
+    this.#total = total;
+    this.#records = records;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const viewInput: HeapSnapshotStatisticsViewInput = {
+      pieChartData: {
+        chartName: i18nString(UIStrings.heapMemoryUsage),
+        size: 150,
+        formatter: HeapSnapshotStatisticsView.valueFormatter,
+        showLegend: true,
+        total: this.#total,
+        slices: this.#records,
+      },
     };
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }
 
+export interface HeapAllocationStackViewInput {
+  frames: HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame[]|null|undefined;
+  target: SDK.Target.Target|null;
+}
+
+export type AllocationStackView = (
+    input: HeapAllocationStackViewInput,
+    output: undefined,
+    target: HTMLElement,
+    ) => void;
+
+export const ALLOCATION_STACK_DEFAULT_VIEW: AllocationStackView = (input, _output, target) => {
+  if (input.frames === undefined) {
+    render(nothing, target);
+    return;
+  }
+  if (input.frames === null) {
+    // clang-format off
+    render(html`
+      <div class="no-heap-allocation-stack">
+        ${i18nString(UIStrings.stackWasNotRecordedForThisObject)}
+      </div>
+    `, target);
+    // clang-format on
+    return;
+  }
+  const onFrameContextMenu = (event: Event): void => {
+    const frameElement = (event.currentTarget as HTMLElement | null);
+    const link = frameElement?.querySelector('.devtools-link');
+    if (link) {
+      HeapAllocationStackView.onContextMenu(link, event);
+    }
+  };
+  // clang-format off
+  render(html`
+    <div class="heap-allocation-stack" @keydown=${HeapAllocationStackView.onStackViewKeydown}>
+      ${input.frames.map((frame, index) => html`
+        <div
+          class="stack-frame"
+          .tabIndex=${live(index === 0 ? 0 : -1)}
+          @contextmenu=${frame.scriptId ? onFrameContextMenu : nothing}
+        >
+          <div>${UI.UIUtils.beautifyFunctionName(frame.functionName)}</div>
+          ${frame.scriptId ? html`<devtools-widget class="flex-none" ${widget(Components.Linkifier.ScriptLocationLink, {
+            target: input.target ?? undefined,
+            scriptId: String(frame.scriptId) as Protocol.Runtime.ScriptId,
+            sourceURL: Platform.DevToolsPath.urlString`${frame.scriptName}`,
+            lineNumber: frame.line - 1,
+            options: {columnNumber: frame.column - 1},
+          })}></devtools-widget>` : nothing}
+        </div>
+      `)}
+    </div>
+  `, target);
+  // clang-format on
+};
+
 export class HeapAllocationStackView extends UI.Widget.Widget {
-  readonly heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
-  readonly linkifier: Components.Linkifier.Linkifier;
-  frameElements: HTMLElement[];
-  constructor(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null) {
-    super();
-    this.heapProfilerModel = heapProfilerModel;
-    this.linkifier = new Components.Linkifier.Linkifier();
-    this.frameElements = [];
+  #heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
+  readonly #view: AllocationStackView;
+  #frames: HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame[]|null|undefined;
+  #requestId = 0;
+
+  constructor(
+      heapProfilerModelOrElement?: SDK.HeapProfilerModel.HeapProfilerModel|null|HTMLElement,
+      view: AllocationStackView = ALLOCATION_STACK_DEFAULT_VIEW,
+  ) {
+    super(heapProfilerModelOrElement instanceof HTMLElement ? heapProfilerModelOrElement : undefined);
+    this.#heapProfilerModel =
+        heapProfilerModelOrElement instanceof HTMLElement ? null : (heapProfilerModelOrElement ?? null);
+    this.#view = view;
   }
 
-  onContextMenu(link: Element, event: Event): void {
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  get heapProfilerModel(): SDK.HeapProfilerModel.HeapProfilerModel|null {
+    return this.#heapProfilerModel;
+  }
+
+  set heapProfilerModel(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null) {
+    if (this.#heapProfilerModel === heapProfilerModel) {
+      return;
+    }
+    this.#heapProfilerModel = heapProfilerModel;
+    this.requestUpdate();
+  }
+
+  get frames(): HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame[]|null|undefined {
+    return this.#frames;
+  }
+
+  set frames(frames: HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame[]|null|undefined) {
+    if (this.#frames === frames) {
+      return;
+    }
+    this.#frames = frames;
+    this.requestUpdate();
+  }
+
+  static onContextMenu(link: Element, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(link);
     void contextMenu.show();
     event.consume(true);
   }
 
-  onStackViewKeydown(event: KeyboardEvent): void {
+  onContextMenu(link: Element, event: Event): void {
+    HeapAllocationStackView.onContextMenu(link, event);
+  }
+
+  static onStackViewKeydown(event: KeyboardEvent): void {
     const target = (event.target as HTMLElement | null);
     if (!target) {
       return;
     }
-    if (event.key === 'Enter') {
-      const link = stackFrameToURLElement.get(target);
+    if (event.key === 'Enter' && !event.isComposing) {
+      const link = target.querySelector<HTMLElement>('.devtools-link');
       if (!link) {
         return;
       }
@@ -2045,61 +2200,48 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
       return;
     }
 
-    const index = this.frameElements.indexOf(target);
+    const stackElement = (event.currentTarget as HTMLElement | null);
+    const frameElements = stackElement ? Array.from(stackElement.querySelectorAll<HTMLElement>('.stack-frame')) : [];
+    const index = frameElements.indexOf(target);
     if (index === -1) {
       return;
     }
     const nextIndex = navDown ? index + 1 : index - 1;
-    if (nextIndex < 0 || nextIndex >= this.frameElements.length) {
+    if (nextIndex < 0 || nextIndex >= frameElements.length) {
       return;
     }
 
-    const nextFrame = this.frameElements[nextIndex];
+    const nextFrame = frameElements[nextIndex];
     nextFrame.tabIndex = 0;
     target.tabIndex = -1;
     nextFrame.focus();
     event.consume(true);
   }
 
-  async setAllocatedObject(snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy, snapshotNodeIndex: number):
-      Promise<void> {
+  onStackViewKeydown(event: KeyboardEvent): void {
+    HeapAllocationStackView.onStackViewKeydown(event);
+  }
+
+  async setAllocatedObject(snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy,
+                           snapshotNodeIndex: number): Promise<void> {
     this.clear();
+    const requestId = this.#requestId;
     const frames = await snapshot.allocationStack(snapshotNodeIndex);
-
-    if (!frames) {
-      const stackDiv = this.element.createChild('div', 'no-heap-allocation-stack');
-      UI.UIUtils.createTextChild(stackDiv, i18nString(UIStrings.stackWasNotRecordedForThisObject));
-      return;
+    if (requestId === this.#requestId) {
+      this.frames = frames;
     }
-
-    const stackDiv = this.element.createChild('div', 'heap-allocation-stack');
-    stackDiv.addEventListener('keydown', this.onStackViewKeydown.bind(this), false);
-    for (const frame of frames) {
-      const frameDiv = stackDiv.createChild('div', 'stack-frame');
-      this.frameElements.push(frameDiv);
-      frameDiv.tabIndex = -1;
-      const name = frameDiv.createChild('div');
-      name.textContent = UI.UIUtils.beautifyFunctionName(frame.functionName);
-      if (!frame.scriptId) {
-        continue;
-      }
-      const target = this.heapProfilerModel ? this.heapProfilerModel.target() : null;
-      const options = {columnNumber: frame.column - 1};
-      const urlElement = this.linkifier.linkifyScriptLocation(
-          target, String(frame.scriptId) as Protocol.Runtime.ScriptId,
-          frame.scriptName as Platform.DevToolsPath.UrlString, frame.line - 1, options);
-      frameDiv.appendChild(urlElement);
-      stackFrameToURLElement.set(frameDiv, urlElement);
-      frameDiv.addEventListener('contextmenu', this.onContextMenu.bind(this, urlElement));
-    }
-    this.frameElements[0].tabIndex = 0;
   }
 
   clear(): void {
-    this.element.removeChildren();
-    this.frameElements = [];
-    this.linkifier.reset();
+    ++this.#requestId;
+    this.frames = undefined;
+  }
+
+  override performUpdate(): void {
+    const viewInput: HeapAllocationStackViewInput = {
+      frames: this.#frames,
+      target: this.#heapProfilerModel ? this.#heapProfilerModel.target() : null,
+    };
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }
-
-const stackFrameToURLElement = new WeakMap<HTMLElement, HTMLElement>();

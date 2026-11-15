@@ -114,30 +114,30 @@ const listFormatter = (function defineFormatter() {
 })();
 
 export class TimelineHistoryManager {
-  private recordings: TraceRecordingHistoryItem[];
-  private readonly action: UI.ActionRegistration.Action;
-  private readonly nextNumberByDomain: Map<string, number>;
+  #recordings: TraceRecordingHistoryItem[];
+  readonly #action: UI.ActionRegistration.Action;
+  readonly #nextNumberByDomain: Map<string, number>;
   readonly #buttonItem: UI.Toolbar.ToolbarItem;
-  private readonly allOverviews: Array<{
+  readonly #allOverviews: Array<{
     constructor: (parsedTrace: Trace.TraceModel.ParsedTrace) => TimelineEventOverview,
     height: number,
   }>;
-  private totalHeight: number;
-  private enabled: boolean;
-  private lastActiveTrace: RecordingData|null = null;
+  #totalHeight: number;
+  #enabled: boolean;
+  #lastActiveTrace: RecordingData|null = null;
   #minimapComponent?: TimelineMiniMap;
   #landingPageTitle: Common.UIString.LocalizedString;
 
   constructor(minimapComponent?: TimelineMiniMap, isNode?: boolean) {
-    this.recordings = [];
+    this.#recordings = [];
     this.#minimapComponent = minimapComponent;
-    this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
-    this.nextNumberByDomain = new Map();
+    this.#action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
+    this.#nextNumberByDomain = new Map();
 
     this.#buttonItem = new UI.Toolbar.ToolbarItem(document.createElement('button'));
-    this.#buttonItem.setEnabled(this.action.enabled());
-    this.action.addEventListener(UI.ActionRegistration.Events.ENABLED,
-                                 event => this.#buttonItem.setEnabled(event.data));
+    this.#buttonItem.setEnabled(this.#action.enabled());
+    this.#action.addEventListener(UI.ActionRegistration.Events.ENABLED,
+                                  event => this.#buttonItem.setEnabled(event.data));
 
     this.#landingPageTitle =
         isNode ? i18nString(UIStrings.nodeLandingPageTitle) : i18nString(UIStrings.landingPageTitle);
@@ -146,7 +146,7 @@ export class TimelineHistoryManager {
 
     // Attempt to reuse the overviews coming from the panel's minimap
     // before creating new instances.
-    this.allOverviews = [
+    this.#allOverviews = [
       {
 
         constructor: parsedTrace => {
@@ -180,30 +180,30 @@ export class TimelineHistoryManager {
         height: 8,
       },
     ];
-    this.totalHeight = this.allOverviews.reduce((acc, entry) => acc + entry.height, 0);
-    this.enabled = true;
+    this.#totalHeight = this.#allOverviews.reduce((acc, entry) => acc + entry.height, 0);
+    this.#enabled = true;
   }
 
   addRecording(newInput: NewHistoryRecordingData): void {
     const filmStrip = newInput.filmStripForPreview;
-    this.lastActiveTrace = newInput.data;
-    this.recordings.unshift(newInput.data);
+    this.#lastActiveTrace = newInput.data;
+    this.#recordings.unshift(newInput.data);
 
     // Order is important: this needs to happen first because lots of the
     // subsequent code depends on us storing the preview data into the map.
     this.#buildAndStorePreviewData(newInput.data.parsedTraceIndex, newInput.parsedTrace, filmStrip);
 
     this.#updateButton();
-    this.updateState();
-    if (this.recordings.length <= maxRecordings) {
+    this.#updateState();
+    if (this.#recordings.length <= maxRecordings) {
       return;
     }
     const modelUsedMoreTimeAgo =
-        this.recordings.reduce((a, b) => lastUsedTime(a.parsedTraceIndex) < lastUsedTime(b.parsedTraceIndex) ? a : b);
-    this.recordings.splice(this.recordings.indexOf(modelUsedMoreTimeAgo), 1);
+        this.#recordings.reduce((a, b) => lastUsedTime(a.parsedTraceIndex) < lastUsedTime(b.parsedTraceIndex) ? a : b);
+    this.#recordings.splice(this.#recordings.indexOf(modelUsedMoreTimeAgo), 1);
 
     function lastUsedTime(index: number): number {
-      const data = TimelineHistoryManager.dataForTraceIndex(index);
+      const data = TimelineHistoryManager.#dataForTraceIndex(index);
       if (!data) {
         throw new Error('Unable to find data for model');
       }
@@ -212,8 +212,8 @@ export class TimelineHistoryManager {
   }
 
   setEnabled(enabled: boolean): void {
-    this.enabled = enabled;
-    this.updateState();
+    this.#enabled = enabled;
+    this.#updateState();
   }
 
   button(): UI.Toolbar.ToolbarItem {
@@ -221,31 +221,31 @@ export class TimelineHistoryManager {
   }
 
   clear(): void {
-    this.recordings = [];
-    this.lastActiveTrace = null;
-    this.updateState();
-    this.nextNumberByDomain.clear();
+    this.#recordings = [];
+    this.#lastActiveTrace = null;
+    this.#updateState();
+    this.#nextNumberByDomain.clear();
     this.#updateButton();
   }
 
   #getActiveTraceIndex(): number {
-    if (!this.lastActiveTrace) {
+    if (!this.#lastActiveTrace) {
       return -1;
     }
-    if (this.lastActiveTrace.type === 'LANDING_PAGE') {
+    if (this.#lastActiveTrace.type === 'LANDING_PAGE') {
       return LANDING_PAGE_INDEX_DROPDOWN_CHOICE;
     }
-    return this.lastActiveTrace.parsedTraceIndex;
+    return this.#lastActiveTrace.parsedTraceIndex;
   }
 
   async showHistoryDropDown(): Promise<RecordingData|null> {
-    if (this.recordings.length < 1 || !this.enabled) {
+    if (this.#recordings.length < 1 || !this.#enabled) {
       return null;
     }
 
     // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
     const activeTraceIndex =
-        await DropDown.show(this.recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndex(),
+        await DropDown.show(this.#recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndex(),
                             this.#buttonItem.element, this.#landingPageTitle);
 
     if (activeTraceIndex === null) {
@@ -258,14 +258,14 @@ export class TimelineHistoryManager {
       return {type: 'LANDING_PAGE'};
     }
 
-    const index = this.recordings.findIndex(recording => recording.parsedTraceIndex === activeTraceIndex);
+    const index = this.#recordings.findIndex(recording => recording.parsedTraceIndex === activeTraceIndex);
     if (index < 0) {
       console.assert(false, 'selected recording not found');
       return null;
     }
 
-    this.#setActiveTrace(this.recordings[index]);
-    return this.recordings[index];
+    this.#setActiveTrace(this.#recordings[index]);
+    return this.#recordings[index];
   }
 
   cancelIfShowing(): void {
@@ -278,25 +278,25 @@ export class TimelineHistoryManager {
    * over only the traces.
    */
   navigate(direction: number): TraceRecordingHistoryItem|null {
-    if (!this.enabled || this.lastActiveTrace === null) {
+    if (!this.#enabled || this.#lastActiveTrace === null) {
       return null;
     }
-    if (!this.lastActiveTrace || this.lastActiveTrace.type === 'LANDING_PAGE') {
+    if (!this.#lastActiveTrace || this.#lastActiveTrace.type === 'LANDING_PAGE') {
       return null;
     }
 
-    const index = this.recordings.findIndex(recording => {
-      return this.lastActiveTrace?.type === 'TRACE_INDEX' && recording.type === 'TRACE_INDEX' &&
-          recording.parsedTraceIndex === this.lastActiveTrace.parsedTraceIndex;
+    const index = this.#recordings.findIndex(recording => {
+      return this.#lastActiveTrace?.type === 'TRACE_INDEX' && recording.type === 'TRACE_INDEX' &&
+          recording.parsedTraceIndex === this.#lastActiveTrace.parsedTraceIndex;
     });
 
     if (index < 0) {
       return null;
     }
 
-    const newIndex = Platform.NumberUtilities.clamp(index + direction, 0, this.recordings.length - 1);
-    this.#setActiveTrace(this.recordings[newIndex]);
-    return this.recordings[newIndex];
+    const newIndex = Platform.NumberUtilities.clamp(index + direction, 0, this.#recordings.length - 1);
+    this.#setActiveTrace(this.#recordings[newIndex]);
+    return this.#recordings[newIndex];
   }
 
   navigateToLandingPage(): void {
@@ -305,41 +305,41 @@ export class TimelineHistoryManager {
 
   #setActiveTrace(item: RecordingData): void {
     if (item.type === 'TRACE_INDEX') {
-      const data = TimelineHistoryManager.dataForTraceIndex(item.parsedTraceIndex);
+      const data = TimelineHistoryManager.#dataForTraceIndex(item.parsedTraceIndex);
       if (!data) {
         throw new Error('Unable to find data for model');
       }
       data.lastUsed = Date.now();
     }
 
-    this.lastActiveTrace = item;
+    this.#lastActiveTrace = item;
     this.#updateButton();
   }
 
   #updateButton(): void {
-    const title = this.lastActiveTrace ? this.title(this.lastActiveTrace) : this.#landingPageTitle;
-    const ariaLabel = this.lastActiveTrace ?
-        i18nString(UIStrings.currentSessionSS, {PH1: title, PH2: this.action.title()}) :
-        this.action.title();
+    const title = this.#lastActiveTrace ? this.#title(this.#lastActiveTrace) : this.#landingPageTitle;
+    const ariaLabel = this.#lastActiveTrace ?
+        i18nString(UIStrings.currentSessionSS, {PH1: title, PH2: this.#action.title()}) :
+        this.#action.title();
     const input: ButtonViewInput = {
       title,
       ariaLabel,
-      tooltip: this.action.title(),
-      onClick: () => void this.action.execute(),
+      tooltip: this.#action.title(),
+      onClick: () => void this.#action.execute(),
     };
     BUTTON_VIEW(input, undefined, this.#buttonItem.element);
   }
 
-  private updateState(): void {
-    this.action.setEnabled(this.recordings.length >= 1 && this.enabled);
+  #updateState(): void {
+    this.#action.setEnabled(this.#recordings.length >= 1 && this.#enabled);
   }
 
-  private title(item: RecordingData): string {
+  #title(item: RecordingData): string {
     if (item.type === 'LANDING_PAGE') {
       return this.#landingPageTitle;
     }
 
-    const data = TimelineHistoryManager.dataForTraceIndex(item.parsedTraceIndex);
+    const data = TimelineHistoryManager.#dataForTraceIndex(item.parsedTraceIndex);
     if (!data) {
       throw new Error('Unable to find data for model');
     }
@@ -351,10 +351,10 @@ export class TimelineHistoryManager {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
     const domain = parsedURL ? parsedURL.host : '';
 
-    const sequenceNumber = this.nextNumberByDomain.get(domain) || 1;
+    const sequenceNumber = this.#nextNumberByDomain.get(domain) || 1;
     const titleWithSequenceNumber =
         domain ? i18nString(UIStrings.sD, {PH1: domain, PH2: sequenceNumber}) : `#${sequenceNumber}`;
-    this.nextNumberByDomain.set(domain, sequenceNumber + 1);
+    this.#nextNumberByDomain.set(domain, sequenceNumber + 1);
 
     const customTitle = parsedTrace.metadata.title;
     const title = customTitle ?
@@ -381,18 +381,18 @@ export class TimelineHistoryManager {
       metadataText,
       screenshotEvent,
       overview,
-      overviewHeight: this.totalHeight,
+      overviewHeight: this.#totalHeight,
     };
     parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
   }
 
   #buildOverview(parsedTrace: Trace.TraceModel.ParsedTrace): ImageBitmap {
     const dPR = window.devicePixelRatio;
-    const canvas = new OffscreenCanvas(dPR * previewWidth, dPR * this.totalHeight);
+    const canvas = new OffscreenCanvas(dPR * previewWidth, dPR * this.#totalHeight);
     const ctx = canvas.getContext('2d');
     let yOffset = 0;
 
-    for (const overview of this.allOverviews) {
+    for (const overview of this.#allOverviews) {
       const timelineOverviewComponent = overview.constructor(parsedTrace);
       timelineOverviewComponent.update();
       if (ctx) {
@@ -404,7 +404,7 @@ export class TimelineHistoryManager {
     return canvas.transferToImageBitmap();
   }
 
-  private static dataForTraceIndex(index: number): PreviewData|null {
+  static #dataForTraceIndex(index: number): PreviewData|null {
     return parsedTraceIndexToPerformancePreviewData.get(index) || null;
   }
 }

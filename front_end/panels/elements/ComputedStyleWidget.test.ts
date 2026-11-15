@@ -14,7 +14,7 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createStubbedDomNodeWithModels} from '../../testing/StyleHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
+import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
@@ -96,10 +96,71 @@ async function getDisplayedProperties(widgetOrTree: Elements.ComputedStyleWidget
 }
 
 describeWithEnvironment('ComputedStyleWidget', () => {
-  let computedStyleWidget: Elements.ComputedStyleWidget.ComputedStyleWidget;
+  let computedStyleWidget: Elements.ComputedStyleWidget.ComputedStyleWidget|undefined;
 
   afterEach(() => {
-    computedStyleWidget.detach();
+    computedStyleWidget?.detach();
+    computedStyleWidget = undefined;
+  });
+
+  describe('view', () => {
+    function createDefaultViewInput(overrides: Partial<Elements.ComputedStyleWidget.ComputedStyleWidgetInput> = {}):
+        Elements.ComputedStyleWidget.ComputedStyleWidgetInput {
+      return {
+        computedStylesTree: new TreeOutline.TreeOutline.TreeOutline<Elements.ComputedStyleWidget.ComputedStyleData>(),
+        hasMatches: true,
+        showInheritedComputedStylePropertiesSetting:
+            Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false),
+        groupComputedStylesSetting: Common.Settings.Settings.instance().createSetting('group-computed-styles', false),
+        onFilterChanged: () => {},
+        filterText: '',
+        filterIsRegex: false,
+        onRegexToggled: () => {},
+        includeToolbar: true,
+        ...overrides,
+      };
+    }
+
+    it('renders container class and toolbar when includeToolbar is true', () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({includeToolbar: true, hasMatches: true}), null,
+                                                target);
+      assert.isTrue(target.classList.contains('styles-sidebar-computed-style-widget'));
+      assert.isNotNull(target.querySelector('devtools-toolbar'));
+      assert.isNull(target.querySelector('.gray-info-message'));
+    });
+
+    it('hides toolbar and shows no-matches message when hasMatches is false', () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({includeToolbar: false, hasMatches: false}),
+                                                null, target);
+      assert.isNull(target.querySelector('devtools-toolbar'));
+      assert.isNotNull(target.querySelector('.gray-info-message'));
+    });
+
+    it('forwards filter change events from the toolbar input', () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      const onFilterChanged = sinon.spy();
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({onFilterChanged}), null, target);
+
+      const toolbarInput = target.querySelector('devtools-toolbar-input')!;
+      toolbarInput.dispatchEvent(new CustomEvent('change', {detail: 'color'}));
+      sinon.assert.calledOnceWithExactly(onFilterChanged, 'color');
+    });
+
+    it('forwards regex toggle events from the toolbar input', () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target);
+      const onRegexToggled = sinon.spy();
+      Elements.ComputedStyleWidget.DEFAULT_VIEW(createDefaultViewInput({onRegexToggled}), null, target);
+
+      const toolbarInput = target.querySelector('devtools-toolbar-input')!;
+      toolbarInput.dispatchEvent(new CustomEvent('regextoggle', {detail: true}));
+      sinon.assert.calledOnceWithExactly(onRegexToggled, true);
+    });
   });
 
   describe('trace element', () => {

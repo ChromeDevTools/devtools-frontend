@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
@@ -32,6 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/legacy/components/inline_editor/inline_editor.js';
 import '../../ui/legacy/legacy.js';
 
 import * as Common from '../../core/common/common.js';
@@ -40,7 +40,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
-import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
@@ -140,7 +139,7 @@ const createPropertyElement =
             }
           },
         })}
-        @oncontextmenu=${onContextMenu}>
+        @contextmenu=${onContextMenu}>
           ${name}
           ${value}
       </devtools-widget>`;
@@ -149,15 +148,12 @@ const createPropertyElement =
 
 const createTraceElement =
     (node: SDK.DOMModel.DOMNode, property: SDK.CSSProperty.CSSProperty, isPropertyOverloaded: boolean,
-     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-     linkifier: Components.Linkifier.Linkifier): ElementsComponents.ComputedStyleTrace.ComputedStyleTrace => {
-      const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
-
+     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier,
+     onContextMenu: (event: Event) => void): TemplateResult => {
       const valueElement =
           Renderer.renderValueElement(property, matchProperty(property.name, property.value),
                                       [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
       valueElement.slot = 'trace-value';
-      trace.appendChild(valueElement);
 
       const rule = (property.ownerStyle.parentRule as SDK.CSSRule.CSSStyleRule | null);
       let ruleOriginNode;
@@ -175,14 +171,18 @@ const createTraceElement =
         selector = 'transitions style';
       }
 
-      trace.data = {
-        selector,
-        active: !isPropertyOverloaded,
-        onNavigateToSource: navigateToSource.bind(null, property),
-        ruleOriginNode,
-      };
-
-      return trace;
+      // clang-format off
+      return html`<devtools-computed-style-trace
+        .data=${{
+          selector,
+          active: !isPropertyOverloaded,
+          onNavigateToSource: navigateToSource.bind(null, property),
+          ruleOriginNode,
+        } as ElementsComponents.ComputedStyleTrace.ComputedStyleTraceData}
+        @contextmenu=${onContextMenu}>
+          ${valueElement}
+      </devtools-computed-style-trace>`;
+      // clang-format on
     };
 
 // clang-format off
@@ -194,10 +194,12 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
       return html`${match.text}`;
     }
 
-    const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-    swatch.setReadonly(true);
-    swatch.renderColor(color);
-    return html`${swatch}<span>${match.text}</span>`;
+    // clang-format off
+    return html`<devtools-color-swatch
+      .color=${color}
+      .readonly=${true}
+    ></devtools-color-swatch><span>${match.text}</span>`;
+    // clang-format on
   }
 
   matcher(): SDK.CSSPropertyParserMatchers.ColorMatcher {
@@ -210,7 +212,7 @@ const navigateToSource = (cssProperty: SDK.CSSProperty.CSSProperty, event?: Even
   event?.consume(true);
 };
 
-type ComputedStyleData = {
+export type ComputedStyleData = {
   tag: 'property',
   propertyName: string,
   propertyValue: string,
@@ -225,19 +227,19 @@ type ComputedStyleData = {
   name: string,
 };
 
-interface ComputedStyleWidgetInput {
+export interface ComputedStyleWidgetInput {
   computedStylesTree: TreeOutline.TreeOutline.TreeOutline<ComputedStyleData>;
   hasMatches: boolean;
   showInheritedComputedStylePropertiesSetting: Common.Settings.Setting<boolean>;
   groupComputedStylesSetting: Common.Settings.Setting<boolean>;
-  onFilterChanged: (event: CustomEvent<string>) => void;
+  onFilterChanged: (newFilterText: string) => void;
   filterText: string;
   filterIsRegex: boolean;
-  onRegexToggled: (event: CustomEvent<boolean>) => void;
+  onRegexToggled: (regexToggled: boolean) => void;
   includeToolbar: boolean;
 }
 
-type View = (input: ComputedStyleWidgetInput, output: null, target: HTMLElement) => void;
+export type View = (input: ComputedStyleWidgetInput, output: null, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -252,8 +254,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             ?regex=${true}
             ?regex-toggled=${input.filterIsRegex}
             value=${input.filterText}
-            @change=${input.onFilterChanged}
-            @regextoggle=${input.onRegexToggled}
+            @change=${(event: CustomEvent<string>) => input.onFilterChanged(event.detail)}
+            @regextoggle=${(event: CustomEvent<boolean>) => input.onRegexToggled(event.detail)}
           ></devtools-toolbar-input>
           <devtools-checkbox
             title=${i18nString(UIStrings.showAll)}
@@ -267,8 +269,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       </div>
       ` : nothing}
     ${input.computedStylesTree}
-    ${!input.hasMatches ? html`<div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>` : ''}
-  `, target);
+    ${!input.hasMatches ? html`<div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>` : nothing}
+  `, target, {container: {classes: ['styles-sidebar-computed-style-widget']}});
   // clang-format on
 };
 
@@ -323,8 +325,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
-
-    this.contentElement.classList.add('styles-sidebar-computed-style-widget');
 
     this.showInheritedComputedStylePropertiesSetting =
         Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
@@ -595,11 +595,8 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
       if (data.tag === 'traceElement') {
         const isPropertyOverloaded =
             matchedStyles.propertyState(data.property) === SDK.CSSMatchedStyles.PropertyState.OVERLOADED;
-        const traceElement =
-            createTraceElement(domNode, data.property, isPropertyOverloaded, matchedStyles, this.linkifier);
-        traceElement.addEventListener(
-            'contextmenu', this.handleContextMenuEvent.bind(this, matchedStyles, data.property));
-        return html`${traceElement}`;
+        return createTraceElement(domNode, data.property, isPropertyOverloaded, matchedStyles, this.linkifier,
+                                  this.handleContextMenuEvent.bind(this, matchedStyles, data.property));
       }
       return html`<span style="cursor: text; color: var(--sys-color-on-surface-subtle);">${data.name}</span>`;
     };
@@ -667,19 +664,19 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     return new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
   }
 
-  private async onRegexToggled(event: CustomEvent<boolean>): Promise<void> {
-    this.#filterIsRegex = event.detail;
+  private async onRegexToggled(regexToggled: boolean): Promise<void> {
+    this.#filterIsRegex = regexToggled;
     this.requestUpdate();
     await this.filterComputedStyles(this.#buildFilterRegex(this.#filterText));
   }
 
-  private async onFilterChanged(event: CustomEvent<string>): Promise<void> {
-    this.#filterText = event.detail;
-    await this.filterComputedStyles(this.#buildFilterRegex(event.detail));
+  private async onFilterChanged(newFilterText: string): Promise<void> {
+    this.#filterText = newFilterText;
+    await this.filterComputedStyles(this.#buildFilterRegex(newFilterText));
 
-    if (event.detail && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
+    if (newFilterText && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
       UI.ARIAUtils.LiveAnnouncer.alert(i18nString(
-          UIStrings.filterUpdateAriaText, {PH1: event.detail, PH2: this.#computedStylesTree.data.tree.length}));
+          UIStrings.filterUpdateAriaText, {PH1: newFilterText, PH2: this.#computedStylesTree.data.tree.length}));
     }
   }
 

@@ -56,7 +56,7 @@ export class ColorSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tooltip: string = i18nString(UIStrings.shiftclickToChangeColorFormat);
   #color: Common.Color.Color|null = null;
-  private readonly = false;
+  #readonly = false;
 
   constructor(tooltip?: string) {
     super();
@@ -71,12 +71,21 @@ export class ColorSwatch extends HTMLElement {
     return element.localName === 'devtools-color-swatch';
   }
 
+  /** Whether clicking the swatch is ignored instead of opening the color editor. */
+  get readonly(): boolean {
+    return this.#readonly;
+  }
+
+  set readonly(readonly: boolean) {
+    this.setReadonly(readonly);
+  }
+
   setReadonly(readonly: boolean): void {
-    if (this.readonly === readonly) {
+    if (this.#readonly === readonly) {
       return;
     }
 
-    this.readonly = readonly;
+    this.#readonly = readonly;
     if (this.#color) {
       this.renderColor(this.#color);
     }
@@ -108,7 +117,7 @@ export class ColorSwatch extends HTMLElement {
 
     const colorSwatchClasses = Lit.Directives.classMap({
       'color-swatch': true,
-      readonly: this.readonly,
+      readonly: this.#readonly,
     });
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -132,7 +141,7 @@ export class ColorSwatch extends HTMLElement {
   }
 
   private onActivate(e: KeyboardEvent|MouseEvent): void {
-    if (this.readonly) {
+    if (this.#readonly) {
       return;
     }
 

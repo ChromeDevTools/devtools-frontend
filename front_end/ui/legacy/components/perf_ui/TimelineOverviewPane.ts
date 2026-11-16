@@ -1,7 +1,6 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../../../core/common/common.js';
 import * as Trace from '../../../../models/trace/trace.js';
@@ -19,16 +18,146 @@ const {ref, styleMap} = Directives;
 
 const BRACKET_TRIANGLE_SIZE = 5;
 
-interface HighlightRange {
+export interface HighlightRange {
   left: number;
   right: number;
   withBracket: boolean;
 }
 
+export interface ViewInput {
+  /**
+   * Prefix for the element ids and the visual logging context, for example
+   * `timeline` or `network`.
+   */
+  prefix: string;
+  /**
+   * The `OverviewGrid`, which is the resizer and canvas host of the overview:
+   * the grid manages the time grid, the window resizers and the overview
+   * control canvases in it. The view places it in the pane and adds the cursor
+   * to it.
+   */
+  overviewGrid: OverviewGrid;
+  overviewInfo: OverviewInfo;
+  overviewInfoElements: readonly Element[];
+  cursorPosition: number;
+  cursorVisible: boolean;
+  highlight: HighlightRange|null;
+  highlightBackgroundColor: string;
+  highlightBracketColor: string;
+  onPointerDown: () => void;
+  onPointerUp: () => void;
+  onCursorMove: (position: number) => void;
+  onCursorLeave: () => void;
+}
+
+export interface ViewOutput {
+  /**
+   * Returns the left edge of the cursor area in client coordinates.
+   */
+  cursorAreaLeft?: () => number;
+  /**
+   * Returns the box of the cursor marker. The overview info is anchored to it.
+   */
+  cursorAnchorBox?: () => AnchorBox;
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
 function bracketPoints({left, right}: HighlightRange): string {
   const size = BRACKET_TRIANGLE_SIZE;
   return `${left},0 ${left},${size} ${left + size - 1},1 ${right - size - 1},1 ${right},${size} ${right},0`;
 }
+
+const renderOverviewGridView: View = (input, output, target) => {
+  const onPointerDown = (event: PointerEvent): void => {
+    if (!(event.target instanceof HTMLElement)) {
+      return;
+    }
+    event.target.setPointerCapture(event.pointerId);
+    input.onPointerDown();
+  };
+  const onPointerUp = (event: PointerEvent): void => {
+    if (!(event.target instanceof HTMLElement)) {
+      return;
+    }
+    // The browser releases the capture before it dispatches `pointercancel`.
+    if (event.target.hasPointerCapture(event.pointerId)) {
+      event.target.releasePointerCapture(event.pointerId);
+    }
+    input.onPointerUp();
+  };
+  const onPointerMove = (event: PointerEvent): void => {
+    if (!(event.target instanceof Element) || !(event.currentTarget instanceof Element)) {
+      return;
+    }
+    const offsetLeftRelativeToCursorArea =
+        event.target.getBoundingClientRect().left - event.currentTarget.getBoundingClientRect().left;
+    input.onCursorMove(event.offsetX + offsetLeftRelativeToCursorArea);
+  };
+  // clang-format off
+  render(html`
+    <div
+      class="overview-grid-cursor-area"
+      @pointerdown=${onPointerDown}
+      @pointerup=${onPointerUp}
+      @pointercancel=${onPointerUp}
+      @pointermove=${onPointerMove}
+      @pointerleave=${input.onCursorLeave}
+      ${ref(element => {
+        output.cursorAreaLeft = element instanceof HTMLElement ?
+            () => element.getBoundingClientRect().left : undefined;
+      })}></div>
+    <div
+      class="overview-grid-cursor-position"
+      style=${styleMap({
+        left: `${input.cursorPosition}px`,
+        visibility: input.cursorVisible ? 'visible' : 'hidden',
+      })}
+      ${ref(element => {
+        output.cursorAnchorBox = element instanceof HTMLElement ? () => element.boxInWindow() : undefined;
+      })}></div>
+  `, target, {
+    container: {
+      attributes: {
+        jslog: `${VisualLogging.timeline(`${input.prefix}-overview`).track({click: true, drag: true, hover: true})}`,
+      },
+    },
+  });
+  // clang-format on
+};
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const {highlight} = input;
+  const overviewGridElement = input.overviewGrid.element;
+  // clang-format off
+  render(html`
+    ${overviewGridElement}
+    <svg class="timeline-minimap-dim-highlight-svg" ?hidden=${!highlight}>
+      <defs>
+        <mask id="${input.prefix}-dim-highlight-cutouts">
+          <rect width="100%" height="100%" fill="hsl(0deg 0% 95%)"></rect>
+          <rect class="punch" x=${highlight?.left ?? nothing} y="0"
+              width=${highlight ? highlight.right - highlight.left : nothing} height="100%" fill="black"></rect>
+        </mask>
+      </defs>
+      <rect class="background" width="100%" height="100%" fill=${input.highlightBackgroundColor}
+          mask="url(#${input.prefix}-dim-highlight-cutouts)" style="mix-blend-mode: saturation"></rect>
+      <polygon ?hidden=${!highlight?.withBracket} fill=${input.highlightBracketColor}
+          points=${highlight?.withBracket ? bracketPoints(highlight) : nothing}></polygon>
+    </svg>
+  `, target, {
+    container: {
+      attributes: {id: `${input.prefix}-overview-pane`},
+    },
+  });
+  // clang-format on
+  renderOverviewGridView(input, output, overviewGridElement);
+  renderOverviewInfoView(input, output, input.overviewInfo.contentRoot);
+};
+
+const renderOverviewInfoView = (input: ViewInput, _output: ViewOutput, target: DocumentFragment): void => {
+  render(html`<div class="overview-info">${input.overviewInfoElements}</div>`, target);
+};
 
 const TimelineOverviewPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
@@ -50,18 +179,22 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
   private muteOnWindowChanged = false;
   private hasPointer = false;
   readonly #prefix: string;
-  #cursorAreaLeft?: () => number;
-  #cursorAnchorBox?: () => AnchorBox;
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
   #cursorVisible = false;
   #overviewInfoVisible = false;
   #overviewInfoElements: readonly Element[] = [];
   #highlight: HighlightRange|null = null;
   readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
+  readonly #onPointerDownBound = this.#onPointerDown.bind(this);
+  readonly #onPointerUpBound = this.#onPointerUp.bind(this);
+  readonly #onCursorMoveBound = this.#onCursorMove.bind(this);
   readonly #onCursorLeaveBound = this.hideCursor.bind(this);
 
-  constructor(prefixOrElement: string|HTMLElement = 'timeline') {
+  constructor(prefixOrElement: string|HTMLElement = 'timeline', view: View = DEFAULT_VIEW) {
     super(prefixOrElement instanceof HTMLElement ? prefixOrElement : undefined);
     this.#prefix = typeof prefixOrElement === 'string' ? prefixOrElement : 'timeline';
+    this.#view = view;
 
     this.overviewCalculator = new TimelineOverviewCalculator();
     this.overviewGrid = new OverviewGrid(this.#prefix, this.overviewCalculator);
@@ -85,45 +218,22 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
 
   #render(): void {
     const themeSupport = ThemeSupport.ThemeSupport.instance();
-    const highlight = this.#highlight;
-    const bg = themeSupport.getComputedValue('--color-background');
-    const bracketColor = themeSupport.getComputedValue('--sys-color-state-on-header-hover');
-    // clang-format off
-    render(html`
-      ${this.overviewGrid.element}
-      <svg class="timeline-minimap-dim-highlight-svg" ?hidden=${!highlight}>
-        <defs>
-          <mask id="${this.#prefix}-dim-highlight-cutouts">
-            <rect width="100%" height="100%" fill="hsl(0deg 0% 95%)"></rect>
-            <rect class="punch" x=${highlight?.left ?? nothing} y="0"
-                width=${highlight ? highlight.right - highlight.left : nothing} height="100%" fill="black"></rect>
-          </mask>
-        </defs>
-        <rect class="background" width="100%" height="100%" fill=${bg}
-            mask="url(#${this.#prefix}-dim-highlight-cutouts)" style="mix-blend-mode: saturation"></rect>
-        <polygon ?hidden=${!highlight?.withBracket} fill=${bracketColor}
-            points=${highlight?.withBracket ? bracketPoints(highlight) : nothing}></polygon>
-      </svg>`, this.contentElement, {container: {attributes: {id: `${this.#prefix}-overview-pane`}}});
-    render(html`
-      <div class="overview-grid-cursor-area"
-          @pointerdown=${(e: PointerEvent) => this.onMouseDown(e)}
-          @pointerup=${(e: PointerEvent) => this.onMouseCancel(e)}
-          @pointercancel=${(e: PointerEvent) => this.onMouseCancel(e)}
-          @pointermove=${(e: PointerEvent) => this.onMouseMove(e)}
-          @pointerleave=${this.#onCursorLeaveBound}
-          ${ref(el => { this.#cursorAreaLeft = el instanceof HTMLElement ? () => el.getBoundingClientRect().left : undefined; })}></div>
-      <div class="overview-grid-cursor-position"
-          style=${styleMap({left: `${this.cursorPosition}px`, visibility: this.#cursorVisible ? 'visible' : 'hidden'})}
-          ${ref(el => { this.#cursorAnchorBox = el instanceof HTMLElement ? () => el.boxInWindow() : undefined; })}></div>`,
-      this.overviewGrid.element, {
-        container: {
-          attributes: {
-            jslog: `${VisualLogging.timeline(`${this.#prefix}-overview`).track({click: true, drag: true, hover: true})}`,
-          },
-        },
-      });
-    render(html`<div class="overview-info">${this.#overviewInfoElements}</div>`, this.overviewInfo.contentRoot);
-    // clang-format on
+    this.#view({
+      prefix: this.#prefix,
+      overviewGrid: this.overviewGrid,
+      overviewInfo: this.overviewInfo,
+      overviewInfoElements: this.#overviewInfoElements,
+      cursorPosition: this.cursorPosition,
+      cursorVisible: this.#cursorVisible,
+      highlight: this.#highlight,
+      highlightBackgroundColor: themeSupport.getComputedValue('--color-background'),
+      highlightBracketColor: themeSupport.getComputedValue('--sys-color-state-on-header-hover'),
+      onPointerDown: this.#onPointerDownBound,
+      onPointerUp: this.#onPointerUpBound,
+      onCursorMove: this.#onCursorMoveBound,
+      onCursorLeave: this.#onCursorLeaveBound,
+    },
+               this.#viewOutput, this.contentElement);
   }
 
   enableCreateBreadcrumbsButton(): void {
@@ -159,7 +269,7 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     if (!(event.target instanceof Element)) {
       return;
     }
-    const cursorAreaLeft = this.#cursorAreaLeft?.() ?? 0;
+    const cursorAreaLeft = this.#viewOutput.cursorAreaLeft?.() ?? 0;
     const offsetLeftRelativeToCursorArea = event.target.getBoundingClientRect().left - cursorAreaLeft;
     this.#onCursorMove(event.offsetX + offsetLeftRelativeToCursorArea);
   }
@@ -172,7 +282,7 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
 
   #onPointerUp(): void {
     this.#overviewInfoVisible = true;
-    this.overviewInfo.show(this.#cursorAnchorBox?.() ?? null);
+    this.overviewInfo.show(this.#viewOutput.cursorAnchorBox?.() ?? null);
     this.hasPointer = false;
   }
 
@@ -216,7 +326,7 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     if (!this.#overviewInfoVisible) {
       return;
     }
-    this.overviewInfo.show(this.#cursorAnchorBox?.() ?? null);
+    this.overviewInfo.show(this.#viewOutput.cursorAnchorBox?.() ?? null);
   }
 
   private hideCursor(): void {

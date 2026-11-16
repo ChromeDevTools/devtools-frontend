@@ -621,7 +621,6 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
 
     // clang-format off
     Lit.render(html`
-      <style>${Input.textInputStyles}</style>
       <style>${chatMessageStyles}</style>
       <div class="user-query-wrapper">
         <section class=${messageClasses} jslog=${VisualLogging.section('question')}>
@@ -644,7 +643,7 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
   });
   // clang-format off
   Lit.render(html`
-    <style>${Input.textInputStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${Input.textInputStyles} }</style>
     <style>${chatMessageStyles}</style>
     <section class=${messageClasses} jslog=${VisualLogging.section('answer')}>
       ${renderWalkthroughUI(input, steps)}

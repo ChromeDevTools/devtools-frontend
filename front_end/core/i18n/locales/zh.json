@@ -893,9 +893,6 @@
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "打开 AI 辅助面板"
   },
-  "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "打开 Gemini 面板"
-  },
   "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
     "message": "AI 模型已下载"
   },
@@ -1023,7 +1020,7 @@
     "message": "浅色"
   },
   "entrypoints/main/main-meta.ts | localOverrides": {
-    "message": "本地替换"
+    "message": "本地覆盖"
   },
   "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
     "message": "与 Chrome 配色方案匹配"
@@ -1223,9 +1220,6 @@
   "generated/Deprecation.ts | FencedFrame": {
     "message": "Fenced Frame API 已被弃用，并计划移除。"
   },
-  "generated/Deprecation.ts | Fledge": {
-    "message": "Protected Audience API 已弃用，将在未来版本中移除。"
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/。"
   },
@@ -1243,9 +1237,6 @@
   },
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "该网站向网络请求了一项子资源，而且仅仅因为其用户的特权网络位置而能够访问此项资源。此类请求会向互联网公开非公用设备和服务器，这会增加跨站请求伪造 (CSRF) 攻击和/或信息泄露的风险。为降低这类风险，Chrome 不再支持从非安全上下文发起针对非公用子资源的请求，并将开始阻止此类请求。"
-  },
-  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
-    "message": "向 joinAdInterestGroup() 传递的 InterestGroups 所含 dailyUpdateUrl 字段已被重命名为 updateUrl，以便更准确地反映其行为。"
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Intl.v8BreakIterator 已被弃用。请改用 Intl.Segmenter。"
@@ -1372,6 +1363,9 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "扩展程序应选择启用跨域隔离，以便继续使用 SharedArrayBuffer。请参阅 https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/。"
+  },
+  "generated/Deprecation.ts | ViewTransitionPreventSvgFilterPaint": {
+    "message": "SVG 滤镜无法应用于视图过渡内容（例如 ::view-transition-old() 和 ::view-transition-new()），因为这些内容可能包含跨域 iframe 或插件。"
   },
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "BluetoothRemoteGATTCharacteristic.writeValue() 已被弃用。请改为使用 writeValueWithResponse() 或 writeValueWithoutResponse()。"
@@ -2630,6 +2624,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
     "message": "部分框架的录制功能已被屏蔽："
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | resizeAnnouncementsPane": {
+    "message": "调整通知窗格的大小"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
     "message": "开始录制"
   },
@@ -3080,20 +3077,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "使用 AI 调试"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
-    "message": "使用 Gemini 进行调试"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "启用 AI 助理"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "启用 Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "显示 AI 助理"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "显示 Gemini"
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "您也可以使用上面建议的提示之一来开始对话"
@@ -3170,6 +3158,9 @@
   "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
     "message": "您可以通过微件验证结果，或在特定调试场景下直接跳转到源数据"
   },
+  "panels/ai_assistance/components/RelevantDataDisclaimer.ts | learnAbout": {
+    "message": "了解开发者工具中的 AI 功能"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "关闭"
   },
@@ -3193,6 +3184,9 @@
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "您可以在此页面上检查和修改动画"
+  },
+  "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
+    "message": "已暂停动画检查"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "动画预览 {PH1}"
@@ -3632,6 +3626,9 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "您可以在此页面上查看通过 window.open() 打开的窗口"
   },
+  "panels/application/ApplicationPanelSidebar.ts | privateVerificationTokens": {
+    "message": "私密验证令牌"
+  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "刷新 IndexedDB"
   },
@@ -3644,11 +3641,17 @@
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "您可以在此页面上查看、添加、修改和删除会话存储空间的键值对"
   },
+  "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
+    "message": "同级子应用"
+  },
   "panels/application/ApplicationPanelSidebar.ts | startAChat": {
     "message": "发起对话"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "存储空间"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | subApps": {
+    "message": "子应用"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "已通过 document.write() 动态生成此文档的内容"
@@ -4583,6 +4586,42 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "推测加载"
   },
+  "panels/application/PrivateVerificationTokensView.ts | clearAll": {
+    "message": "全部清除"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | creationTime": {
+    "message": "创建时间"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | deleteSelected": {
+    "message": "删除所选项"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | expiration": {
+    "message": "过期时间"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isIssuer": {
+    "message": "是否为颁发方"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isRedeemer": {
+    "message": "是否为兑换方"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | issuer": {
+    "message": "颁发方"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | keyId": {
+    "message": "公钥 ID"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
+    "message": "此源没有私密验证令牌"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenId": {
+    "message": "令牌 ID"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenPayload": {
+    "message": "令牌 (Base64)"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | version": {
+    "message": "版本"
+  },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "崩溃报告上下文"
   },
@@ -4885,6 +4924,27 @@
   },
   "panels/application/StorageView.ts | usage": {
     "message": "用量"
+  },
+  "panels/application/SubAppsView.ts | manifestId": {
+    "message": "清单 ID"
+  },
+  "panels/application/SubAppsView.ts | manifestIdAndStartUrl": {
+    "message": "清单 ID/起始网址"
+  },
+  "panels/application/SubAppsView.ts | name": {
+    "message": "名称"
+  },
+  "panels/application/SubAppsView.ts | scope": {
+    "message": "范围"
+  },
+  "panels/application/SubAppsView.ts | siblingSubApps": {
+    "message": "同级子应用"
+  },
+  "panels/application/SubAppsView.ts | startUrl": {
+    "message": "起始网址"
+  },
+  "panels/application/SubAppsView.ts | subApps": {
+    "message": "子应用"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "私密状态令牌"
@@ -5771,6 +5831,9 @@
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "您可以在此页面上查看当前浏览上下文中所有可用的私密状态令牌"
   },
+  "panels/application/preloading/PreloadingView.ts | clearSpeculativeLoads": {
+    "message": "清除推测加载内容"
+  },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "所有推测加载"
   },
@@ -5986,6 +6049,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
     "message": "预提取操作已被舍弃，因为发起页中已有太多正在进行的预提取操作，而此操作为最早的一项"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedCrossOriginSubframe": {
+    "message": "由于父框架延迟或其响应中未包含相应的 Supports-Loading-Mode 标头，因此跨域子框架的导航在预渲染期间延迟"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "预提取已重定向，但重定向网址无法进行预提取"
@@ -6629,20 +6695,32 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "显示“更改”工具"
   },
+  "panels/comments/CommentsPane.ts | addComment": {
+    "message": "添加评论"
+  },
   "panels/comments/CommentsPane.ts | clearComments": {
     "message": "清除所有评论"
+  },
+  "panels/comments/CommentsPane.ts | commentModeIcon": {
+    "message": "评论模式"
   },
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "删除评论"
   },
-  "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "没有已加入队列的评论。在开发者工具中为元素添加评论，即可发送给 AI 编码智能体。"
+  "panels/comments/CommentsPane.ts | emptyStateDescription": {
+    "message": "使用 {PH1} 选择元素，并向编码智能体发送任务、问题和上下文"
   },
-  "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "没有已发送的评论。向 AI 编码智能体发送评论后，即可在此处查看。"
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "没有评论"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "没有已加入队列的评论"
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "已加入队列"
+  },
+  "panels/comments/CommentsPane.ts | removed": {
+    "message": "已移除"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "查看回答"
@@ -6653,8 +6731,17 @@
   "panels/comments/CommentsPane.ts | sent": {
     "message": "已发送"
   },
+  "panels/comments/CommentsPane.ts | sentCheckmark": {
+    "message": "已发送对勾标记"
+  },
+  "panels/comments/CommentsPane.ts | sentComments": {
+    "message": "已发送的评论"
+  },
+  "panels/comments/CommentsPane.ts | sentStatus": {
+    "message": "已发送"
+  },
   "panels/comments/CommentsPane.ts | working": {
-    "message": "正在处理"
+    "message": "工作中"
   },
   "panels/comments/comments-meta.ts | comments": {
     "message": "评论"
@@ -6710,8 +6797,14 @@
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "删除已加入队列的评论"
   },
+  "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
+    "message": "元素已不再可用"
+  },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "将评论加入队列"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
+    "message": "按 {PH1} + ↵ 可将评论加入队列"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "回答："
@@ -6728,8 +6821,17 @@
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "已发送对勾标记"
   },
-  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "评论 ({PH1})"
+  "panels/common/CommentThreadWidget.ts | working": {
+    "message": "工作中"
+  },
+  "panels/common/CommentsOverlayWidget.ts | addComment": {
+    "message": "添加评论"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewComments": {
+    "message": "查看评论"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewCommentsWithCount": {
+    "message": "查看评论 ({PH1})"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<节点>"
@@ -6781,27 +6883,6 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "服务条款"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
-    "message": "认识一下您的 AI 赋能型 Web 开发伙伴"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
-    "message": "针对控制台错误获得即时准确的答案"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
-    "message": "即时生成 CSS 和 JS 代码段"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
-    "message": "自动查找性能跟踪记录中的问题"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "DevTools中的 Gemini 3 Flash"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
-    "message": "关闭"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
-    "message": "开始使用"
   },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "已链接到 {PH1}"
@@ -6915,7 +6996,10 @@
     "message": "控制台边栏处于显示状态"
   },
   "panels/console/ConsoleView.ts | copyConsole": {
-    "message": "复制控制台日志"
+    "message": "复制所有消息"
+  },
+  "panels/console/ConsoleView.ts | copyMessage": {
+    "message": "复制消息"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "复制带有可见样式的选择内容"
@@ -8312,6 +8396,9 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "在“来源”面板中打开"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openShadowEditor": {
+    "message": "打开阴影编辑器"
+  },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
     "message": "已被动画样式覆盖"
   },
@@ -8781,7 +8868,7 @@
     "message": "正在生成说明…"
   },
   "panels/explain/components/ConsoleInsight.ts | goodResponse": {
-    "message": "响应良好"
+    "message": "答得好"
   },
   "panels/explain/components/ConsoleInsight.ts | inputData": {
     "message": "用于了解此消息的数据"
@@ -8870,8 +8957,8 @@
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "请求"
   },
-  "panels/issues/AffectedCookiesView.ts | domain": {
-    "message": "网域"
+  "panels/issues/AffectedCookiesView.ts | domainAndPath": {
+    "message": "域名和路径"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
     "message": "在“网络”面板中显示包含此 Set-Cookie 标头的网络请求"
@@ -8885,14 +8972,14 @@
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "名称"
   },
-  "panels/issues/AffectedCookiesView.ts | path": {
-    "message": "路径"
-  },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
     "message": "禁止的后代"
   },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
-    "message": "{n,plural, =1{ 后代}other{ 后代}}"
+    "message": "{n,plural, =1{# 个后代}other{# 个后代}}"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | unavailable": {
+    "message": "不可用"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "已阻止"
@@ -8930,11 +9017,17 @@
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
     "message": "{n,plural, =1{ 个文档}other{  个文档}}"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | unavailable": {
+    "message": "不可用"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "网址"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# 个元素}other{# 个元素}}"
+  },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "不可用"
   },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "CPU 峰值上限"
@@ -10019,6 +10112,18 @@
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "视频播放质量差距"
   },
+  "panels/media/TickingFlameChart.ts | duration": {
+    "message": "时长：{PH1} - {PH2}"
+  },
+  "panels/media/TickingFlameChart.ts | durationLive": {
+    "message": "时长：{PH1} - 实时！"
+  },
+  "panels/media/TickingFlameChart.ts | name": {
+    "message": "名称：{PH1}"
+  },
+  "panels/media/TickingFlameChart.ts | time": {
+    "message": "时间：{PH1}"
+  },
   "panels/media/media-meta.ts | media": {
     "message": "媒体"
   },
@@ -10160,6 +10265,9 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
     "message": "慢速 3G 和 {PH1} 倍 CPU 降速"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | add": {
+    "message": "添加"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "添加性能分析报告"
   },
@@ -10267,6 +10375,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "{PH1}必须是介于 {PH2} kbit/s到 {PH3} kbit/s（含端点值）之间的数字"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | save": {
+    "message": "保存"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "上传"
@@ -11102,6 +11213,12 @@
   "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "添加自定义标头…"
   },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerAlreadyExists": {
+    "message": "标头已存在"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerCannotBeEmpty": {
+    "message": "标头名称不能为空"
+  },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "标头名称"
   },
@@ -11413,6 +11530,9 @@
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "无法加载响应数据"
+  },
+  "panels/network/RequestPreviewView.ts | nothingToPreview": {
+    "message": "没有可预览的内容"
   },
   "panels/network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "无法预览"
@@ -12572,6 +12692,15 @@
   "panels/profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "正在加载示例…"
   },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeContextVars": {
+    "message": "正在加载作用域上下文变量…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeUses": {
+    "message": "正在加载作用域使用情况…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopes": {
+    "message": "正在加载作用域…"
+  },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "正在加载快照信息…"
   },
@@ -13059,7 +13188,7 @@
     "message": "请输入有效的操作类型"
   },
   "panels/recorder/StepView.ts | addBreakpoint": {
-    "message": "添加断点"
+    "message": "为“{title}”添加断点"
   },
   "panels/recorder/StepView.ts | addStepAfter": {
     "message": "在此后添加步骤"
@@ -13112,11 +13241,14 @@
   "panels/recorder/StepView.ts | navigateStepTitle": {
     "message": "导航"
   },
+  "panels/recorder/StepView.ts | noTitle": {
+    "message": "（无标题）"
+  },
   "panels/recorder/StepView.ts | openStepActions": {
-    "message": "打开步骤操作"
+    "message": "打开“{title}”的步骤操作"
   },
   "panels/recorder/StepView.ts | removeBreakpoint": {
-    "message": "移除断点"
+    "message": "移除“{title}”的断点"
   },
   "panels/recorder/StepView.ts | removeStep": {
     "message": "移除步骤"
@@ -14069,6 +14201,9 @@
   "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
     "message": "网址格式"
   },
+  "panels/settings/EditFileSystemView.ts | addSubfolder": {
+    "message": "添加子文件夹"
+  },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "输入路径"
   },
@@ -14078,8 +14213,14 @@
   "panels/settings/EditFileSystemView.ts | excludedFolders": {
     "message": "已排除子文件夹"
   },
+  "panels/settings/EditFileSystemView.ts | folderPath": {
+    "message": "文件夹路径"
+  },
   "panels/settings/EditFileSystemView.ts | url": {
     "message": "网址"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | add": {
+    "message": "添加"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "为脚本的网址添加正则表达式规则"
@@ -14089,6 +14230,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "来源映射中的已知第三方脚本"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | cancel": {
+    "message": "取消"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "自定义排除规则"
@@ -14131,6 +14275,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "规则必须是有效的正则表达式"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | save": {
+    "message": "保存"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "DevTools 键盘快捷键和手势的完整列表"
@@ -14282,8 +14429,14 @@
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "查看资料"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | add": {
+    "message": "添加"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "添加自定义设备"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cancel": {
+    "message": "取消"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
     "message": "圆圈"
@@ -14404,6 +14557,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
     "message": "{PH1}：顶部和底部边衬区不得超过设备高度"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | save": {
+    "message": "保存"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "用户代理字符串"
@@ -14647,6 +14803,9 @@
   },
   "panels/sources/BreakpointsView.ts | checked": {
     "message": "已勾选"
+  },
+  "panels/sources/BreakpointsView.ts | collapseAll": {
+    "message": "全部收起"
   },
   "panels/sources/BreakpointsView.ts | conditionCode": {
     "message": "条件：{PH1}"
@@ -15050,11 +15209,20 @@
   "panels/sources/NavigatorView.ts | rename": {
     "message": "重命名…"
   },
+  "panels/sources/NavigatorView.ts | run": {
+    "message": "运行"
+  },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1}（来自源代码映射）"
   },
   "panels/sources/NavigatorView.ts | sIgnoreListed": {
     "message": "{PH1}（位于忽略列表中）"
+  },
+  "panels/sources/NavigatorView.ts | saveAs": {
+    "message": "另存为…"
+  },
+  "panels/sources/NavigatorView.ts | saveAsFailed": {
+    "message": "未能将文件保存到磁盘"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "在所有文件中搜索"
@@ -15131,6 +15299,9 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
+  "panels/sources/SourcesNavigator.ts | addFolderManually": {
+    "message": "手动添加文件夹"
+  },
   "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
     "message": "使用 {PH1} 可自动连接项目文件夹"
   },
@@ -15151,6 +15322,9 @@
   },
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
     "message": "建议您设置工作区，以将所做修改直接同步到您开发的源代码"
+  },
+  "panels/sources/SourcesNavigator.ts | localOverrides": {
+    "message": "本地覆盖"
   },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "新代码段"
@@ -17279,6 +17453,12 @@
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
     "message": "数据分析：{PH1}"
   },
+  "panels/timeline/components/Sidebar.ts | annotations": {
+    "message": "注释"
+  },
+  "panels/timeline/components/Sidebar.ts | insights": {
+    "message": "数据分析"
+  },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "为跟踪记录添加注释，方便自己和他人参考"
   },
@@ -17554,6 +17734,9 @@
   },
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "状态"
+  },
+  "panels/web_audio/WebAudioView.ts | webAudioInspectionPaused": {
+    "message": "Web Audio 检查已暂停"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "audio"

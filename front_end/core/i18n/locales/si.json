@@ -893,9 +893,6 @@
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "AI සහාය පැනලය විවෘත කරන්න"
   },
-  "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "Gemini පැනලය විවෘත කරන්න"
-  },
   "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
     "message": "AI ආකෘතිය බාගෙන ඇත"
   },
@@ -1023,7 +1020,7 @@
     "message": "ආලෝකය"
   },
   "entrypoints/main/main-meta.ts | localOverrides": {
-    "message": "දේශීය අතික්‍රමණයන්"
+    "message": "දේශීය ප්‍රතික්‍ෂේප කිරීම්"
   },
   "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
     "message": "Chrome වර්ණ පටිපාටියට ගළපන්න"
@@ -1223,9 +1220,6 @@
   "generated/Deprecation.ts | FencedFrame": {
     "message": "Fenced Frame API අත්හරින ලද අතර ඉවත් කිරීමට නියමිතයි."
   },
-  "generated/Deprecation.ts | Fledge": {
-    "message": "ආරක්ෂිත ප්‍රේක්ෂක API අත්හරින ලද අතර අනාගත නිකුතුවක දී ඉවත් කරනු ඇත."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() සහ watchPosition() අනාරක්ෂිත මූලාරම්භවල තවදුරටත් ක්‍රියා නොකරයි. මෙම විශේෂාංගය භාවිත කිරීමට, ඔබ ඔබේ යෙදුම HTTPS වැනි ආරක්ෂිත මූලාරම්භයකට මාරු කිරීම සලකා බැලිය යුතුය. වැඩි විස්තර සඳහා https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ බලන්න."
   },
@@ -1243,9 +1237,6 @@
   },
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "වෙබ් අඩවිය එහි පරිශීලකයින්ගේ වරප්‍රසාද ලත් ජාල පිහිටීම නිසා පමණක් ප්‍රවේශ විය හැකි ජාලයකින් උප සම්පතක් ඉල්ලා ඇත. මෙම ඉල්ලීම් අන්තර්ජාලයට පොදු නොවන උපාංග සහ සේවාදායක, හරස් අඩවි ඉල්ලීම් ව්‍යාජ (CSRF) ප්‍රහාරයක් සහ/හෝ තොරතුරු කාන්දු වීමේ අවදානම වැඩි කරමින් නිරාවරණය කරයි. මෙම අවදානම් අවම කිරීම සඳහා, ආරක්ෂිත නොවන සන්දර්භවලින් ආරම්භ කරන විට Chrome විසින් පොදු නොවන උප සම්පත් වෙත ඉල්ලීම් අවලංගු කරන අතර, ඒවා අවහිර කිරීම ආරම්භ කරනු ඇත."
-  },
-  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
-    "message": "එහි හැසිරීම වඩාත් නිවැරදිව පිළිබිඹු කිරීම සඳහා, joinAdInterestGroup() වෙත ලබා දුන් InterestGroups හි dailyUpdateUrl ක්ෂේත්‍රය updateUrl වෙත යළි නම් කර ඇත."
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Intl.v8BreakIterator අත්හරිනු ලැබේ. කරුණාකර ඒ වෙනුවට Intl.Segmenter භාවිත කරන්න."
@@ -1372,6 +1363,9 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer භාවිත කිරීම දිගටම කරගෙන යාමට දිගු හරස් සම්භවය හුදකලාව තෝරා ගත යුතුය. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ බලන්න."
+  },
+  "generated/Deprecation.ts | ViewTransitionPreventSvgFilterPaint": {
+    "message": "හරස්-ප්‍රභව iFrame හෝ පේනු අඩංගු විය හැකි බැවින්, ::view-transition-old() සහ ::view-transition-new() වැනි සංක්‍රාන්ති අන්තර්ගතයන් බැලීමට SVG පෙරහන් යෙදිය නොහැක."
   },
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "BluetoothRemoteGATTCharacteristic.writeValue() අත්හරිනු ලැබේ. ඒ වෙනුවට writeValueWithResponse() හෝ writeValueWithoutResponse() භාවිත කරන්න."
@@ -2630,6 +2624,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
     "message": "ඇතැම් රාමු සඳහා පටිගත කිරීම අවහිර කරන ලදී"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | resizeAnnouncementsPane": {
+    "message": "නිවේදන තහඩුව ප්‍රතිප්‍රමාණ කරන්න"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
     "message": "පටිගත කිරීම අරඹන්න"
   },
@@ -3080,20 +3077,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "AI සමග නිදොස් කරන්න"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
-    "message": "Gemini සමඟ නිදොස් කරන්න"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "AI සහාය සබල කරන්න"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "Gemini සබල කරන්න"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "AI සහාය පෙන්වන්න"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "Gemini පෙන්වන්න"
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "ඔබේ සංවාදය ආරම්භ කිරීමට ඉහත යෝජිත විමසුම් වලින් එකක් භාවිතා කිරීමට ද ඔබට හැක"
@@ -3170,6 +3158,9 @@
   "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
     "message": "ප්‍රතිඵල සත්‍යාපනය කිරීමට හෝ තෝරාගත් නිදොස් කිරීමේ අවස්ථා සඳහා මූලාශ්‍ර දත්ත වෙත පැනීමට විජට් භාවිතා කරන්න"
   },
+  "panels/ai_assistance/components/RelevantDataDisclaimer.ts | learnAbout": {
+    "message": "DevTools හි AI ගැන ඉගෙන ගන්න"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "වසන්න"
   },
@@ -3193,6 +3184,9 @@
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "මෙම පිටුවේදී ඔබට සජීවන පරීක්ෂා කර වෙනස් කළ හැක"
+  },
+  "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
+    "message": "සජීවීකරණ පරීක්ෂාව විරාම කරන ලදි"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "සජීවීකරණ පෙරදසුන {PH1}"
@@ -3632,6 +3626,9 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "මෙම පිටුවේදී ඔබට window.open() හරහා විවෘත කර ඇති කවුළු නැරඹිය හැක"
   },
+  "panels/application/ApplicationPanelSidebar.ts | privateVerificationTokens": {
+    "message": "පෞද්ගලික සත්‍යාපන ටෝකන"
+  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB නැවුම් කරන්න"
   },
@@ -3644,11 +3641,17 @@
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "මෙම පිටුවෙහි ඔබට සැසි ආචයන යතුරු-අගය යුගල බැලීමට, එක් කිරීමට, සංස්කරණය කිරීමට සහ මකා දැමීමට හැකිය"
   },
+  "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
+    "message": "සහෝදර උප යෙදුම්"
+  },
   "panels/application/ApplicationPanelSidebar.ts | startAChat": {
     "message": "කථාබස් ආරම්භ කරන්න"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "ගබඩාව"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | subApps": {
+    "message": "උප යෙදුම්"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "මෙම ලේඛනයේ අන්තර්ගතය document.write() ඔස්සේ ගතිකව ජනනය කර ඇත"
@@ -4583,6 +4586,42 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "සමපේක්ෂන පූරණ"
   },
+  "panels/application/PrivateVerificationTokensView.ts | clearAll": {
+    "message": "සියල්ල හිස් කරන්න"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | creationTime": {
+    "message": "නිර්මාණය කළේ"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | deleteSelected": {
+    "message": "තෝරා ගත් ඒවා මකන්න"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | expiration": {
+    "message": "කල් ඉකුත් වීම"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isIssuer": {
+    "message": "නිකුත් කරන්නා වේ"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isRedeemer": {
+    "message": "මුදා හරින්නා වේ"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | issuer": {
+    "message": "නිකුත් කරන්නා"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | keyId": {
+    "message": "යතුරු ID"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
+    "message": "මෙම මූලාරම්භය සඳහා පුද්ගලික සත්‍යාපන ටෝකන නොමැත"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenId": {
+    "message": "ටෝකන අංකය"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenPayload": {
+    "message": "ටෝකනය (Base64)"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | version": {
+    "message": "අනුවාදය"
+  },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "බිඳ වැටීම් වාර්තා සන්දර්භය"
   },
@@ -4885,6 +4924,27 @@
   },
   "panels/application/StorageView.ts | usage": {
     "message": "භාවිතය"
+  },
+  "panels/application/SubAppsView.ts | manifestId": {
+    "message": "මැනිෆෙස්ට් ID"
+  },
+  "panels/application/SubAppsView.ts | manifestIdAndStartUrl": {
+    "message": "මැනිෆෙස්ට් ID / ආරම්භක URL"
+  },
+  "panels/application/SubAppsView.ts | name": {
+    "message": "නම"
+  },
+  "panels/application/SubAppsView.ts | scope": {
+    "message": "අවකාශය"
+  },
+  "panels/application/SubAppsView.ts | siblingSubApps": {
+    "message": "සහෝදර උප යෙදුම්"
+  },
+  "panels/application/SubAppsView.ts | startUrl": {
+    "message": "URL ආරම්භ කරන්න"
+  },
+  "panels/application/SubAppsView.ts | subApps": {
+    "message": "උප යෙදුම්"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "පෞද්ගලික තත්ත්ව ටෝකන"
@@ -5771,6 +5831,9 @@
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "මෙම පිටුවෙහි ඔබට වත්මන් බ්‍රවුස් කිරීමේ සන්දර්භය තුළ ඇති සියලුම පෞද්ගලික තත්ත්ව ටෝකන නැරඹිය හැක"
   },
+  "panels/application/preloading/PreloadingView.ts | clearSpeculativeLoads": {
+    "message": "සමපේක්ෂන පැටවීම් හිස් කරන්න"
+  },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "සියලු සමපේක්ෂාත්මක පූරණ"
   },
@@ -5986,6 +6049,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
     "message": "ආරම්භක පිටුවේ බොහෝ පූර්ව ලබාගැනීම් ක්‍රියාත්මක වන නිසා පූර්ව ලබාගැනීම ඉවත දමන ලද අතර, මෙය පැරණිතම එකක් විය"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedCrossOriginSubframe": {
+    "message": "මාපිය රාමුව කල් දැමූ නිසා හෝ එහි ප්‍රතිචාරයෙහි නිසි සහය පූරණ මාදිලි ශීර්ෂකය ඇතුළත් නොවූ නිසා, පූර්ව යෙදීමේදී හරස්-ප්‍රභව උප රාමු සංචාලනය කල් දමන ලදි."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "පෙර ලබා ගැනීම යළි හරවා යවන ලද නමුත්, යළි-යොමුවීම් URL පෙර ලබා ගැනීම සඳහා සුදුසුකම් නොලබයි"
@@ -6629,20 +6695,32 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "වෙනස් කිරීම් පෙන්වන්න"
   },
+  "panels/comments/CommentsPane.ts | addComment": {
+    "message": "අදහසක් එක් කරන්න"
+  },
   "panels/comments/CommentsPane.ts | clearComments": {
     "message": "සියලු අදහස් හිස් කරන්න"
+  },
+  "panels/comments/CommentsPane.ts | commentModeIcon": {
+    "message": "අදහස් මාදිලිය"
   },
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "අදහස මකන්න"
   },
-  "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "පෝලිම්ගත අදහස් නොමැත. ඔබගේ AI කේතන නියෝජිතයා වෙත යැවීමට DevTools හි මූලාංග පිළිබඳ අදහස් එක් කරන්න."
+  "panels/comments/CommentsPane.ts | emptyStateDescription": {
+    "message": "මූලද්‍රව්‍යයක් තෝරා ඔබේ කේතන නියෝජිතයාට කාර්යයන්, ප්‍රශ්න සහ සන්දර්භය යැවීමට {PH1} භාවිතා කරන්න"
   },
-  "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "යැවූ අදහස් නැත. ඔබේ AI කේතන නියෝජිතයා වෙත අදහස් යවා ඒවා මෙහි බලන්න."
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "අදහස් නැත"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "පෝලිම්ගත අදහස් නොමැත"
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "පෙළ ගසන ලදි"
+  },
+  "panels/comments/CommentsPane.ts | removed": {
+    "message": "ඉවත් කරන ලදි"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "ප්‍රතිචාරය බලන්න"
@@ -6652,6 +6730,15 @@
   },
   "panels/comments/CommentsPane.ts | sent": {
     "message": "යවන ලදී"
+  },
+  "panels/comments/CommentsPane.ts | sentCheckmark": {
+    "message": "යැවූ පිරික්සුම් සලකුණ"
+  },
+  "panels/comments/CommentsPane.ts | sentComments": {
+    "message": "යැවූ අදහස්"
+  },
+  "panels/comments/CommentsPane.ts | sentStatus": {
+    "message": "යැවිණි"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "වැඩ කිරීම"
@@ -6710,8 +6797,14 @@
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "පෝලිම්ගත අදහස මකන්න"
   },
+  "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
+    "message": "මූලාංගය තවදුරටත් ලබා ගත නොහැක"
+  },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "අදහස පෝලිම් කරන්න"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
+    "message": "{PH1} + ↵ අදහස් පෝලිම් කිරීමට"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "ප්‍රතිචාරය:"
@@ -6728,8 +6821,17 @@
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "යැවූ පිරික්සුම් සලකුණ"
   },
-  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "අදහස් ({PH1})"
+  "panels/common/CommentThreadWidget.ts | working": {
+    "message": "වැඩ කිරීම"
+  },
+  "panels/common/CommentsOverlayWidget.ts | addComment": {
+    "message": "අදහස එක් කරන්න"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewComments": {
+    "message": "අදහස් බලන්න"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewCommentsWithCount": {
+    "message": "අදහස් බලන්න ({PH1})"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<නෝඩය>"
@@ -6781,27 +6883,6 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "සේවා නියම"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
-    "message": "වෙබ් සංවර්ධනය සඳහා ඔබේ AI-බලගන්වන ලද සහායක හමුවන්න"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
-    "message": "කොන්සෝල දෝෂ සඳහා ක්ෂණික, නිවැරදි පිළිතුරු ලබා ගන්න"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
-    "message": "ක්ෂණිකව CSS සහ JS කොටස් උත්පාදනය කරන්න"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
-    "message": "කාර්ය සාධන හෝඩුවාවන් තුළ ගැටලු ස්වයංක්‍රීයව සොයා ගන්න"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "DevTools හි Gemini 3 Flash"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
-    "message": "අස් කරන්න"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
-    "message": "පටන් ගන්න"
   },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "{PH1} සමඟ සම්බන්ධයි"
@@ -6915,7 +6996,10 @@
     "message": "කොන්සෝල පැති තීරුව පෙන්වා ඇත"
   },
   "panels/console/ConsoleView.ts | copyConsole": {
-    "message": "කොන්සෝලය පිටපත් කරන්න"
+    "message": "සියලු පණිවිඩ පිටපත් කරන්න"
+  },
+  "panels/console/ConsoleView.ts | copyMessage": {
+    "message": "පණිවිඩය පිටපත් කරන්න"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "දෘශ්‍යමාන සැලසුම් කළ තේරීම පිටපත් කරන්න"
@@ -8312,6 +8396,9 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "මූලාශ්‍ර පැනලය තුළ විවෘත කරන්න"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openShadowEditor": {
+    "message": "සෙවනැලි සංස්කාරක විවෘත කරන්න"
+  },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
     "message": "සජීවීකරණ මෝස්තර මගින් අභිබවා ඇත"
   },
@@ -8870,8 +8957,8 @@
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "ඉල්ලීම"
   },
-  "panels/issues/AffectedCookiesView.ts | domain": {
-    "message": "වසම"
+  "panels/issues/AffectedCookiesView.ts | domainAndPath": {
+    "message": "වසම සහ පථය"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
     "message": "ජාල පැනලය තුළ මෙම Set-Cookie ශීර්ෂකය අඩංගු ජාල ඉල්ලීම් පෙන්වන්න"
@@ -8885,14 +8972,14 @@
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "නම"
   },
-  "panels/issues/AffectedCookiesView.ts | path": {
-    "message": "පෙත"
-  },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
     "message": "අවසර නොදුන් පැවත එන්නා"
   },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
-    "message": "{n,plural, =1{ පැවත එන්නා}one{ පැවත එන්නන්}other{ පැවත එන්නන්}}"
+    "message": "{n,plural, =1{# පැවත එන්නෙක්}one{පැවත එන්නන් #ක්}other{# පැවතෙන්නන්}}"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | unavailable": {
+    "message": "නොමැත"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "අවහිර කර ඇත"
@@ -8930,11 +9017,17 @@
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
     "message": "{n,plural, =1{ ලේඛනය}one{ ලේඛන}other{ ලේඛන}}"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | unavailable": {
+    "message": "නොමැත"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "URL"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{මූලාංග #}one{මූලාංග #}other{මූලාංග #}}"
+  },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "නොමැත"
   },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "CPU කාර්ය බහුල සීමාව"
@@ -10019,6 +10112,18 @@
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "වීඩියෝ පසුධාවන රළු බව"
   },
+  "panels/media/TickingFlameChart.ts | duration": {
+    "message": "කාල සීමාව: {PH1} - {PH2}"
+  },
+  "panels/media/TickingFlameChart.ts | durationLive": {
+    "message": "කාල සීමාව: {PH1} - සජීවී!"
+  },
+  "panels/media/TickingFlameChart.ts | name": {
+    "message": "නම: {PH1}"
+  },
+  "panels/media/TickingFlameChart.ts | time": {
+    "message": "වේලාව: {PH1}"
+  },
   "panels/media/media-meta.ts | media": {
     "message": "මාධ්‍ය"
   },
@@ -10160,6 +10265,9 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
     "message": "මන්දගාමී 3G සහ {PH1}x CPU වේගය අඩු කිරීම"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | add": {
+    "message": "එක් කරන්න"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "පැතිකඩ එක් කරන්න"
   },
@@ -10267,6 +10375,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "{PH1} {PH2} kbit/s සිට {PH3} kbit/s දක්වා ඒවා ඇතුළත්ව අංකයක් විය යුතුය"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | save": {
+    "message": "සුරකින්න"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "උඩුගත කරන්න"
@@ -11102,6 +11213,12 @@
   "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "පාරිභෝගික ශීර්ෂකය එක් කරමින්…"
   },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerAlreadyExists": {
+    "message": "ශීර්ෂකය දැනටමත් පවතී"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerCannotBeEmpty": {
+    "message": "ශීර්ෂ නාමය හිස් විය නොහැක"
+  },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "ශීර්ෂක නම"
   },
@@ -11413,6 +11530,9 @@
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "ප්‍රතිචාර දත්ත පූරණය කිරීමට අසමත් විය"
+  },
+  "panels/network/RequestPreviewView.ts | nothingToPreview": {
+    "message": "පෙරදසුන් කිරීමට කිසිවක් නැත"
   },
   "panels/network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "පෙරදසුන ලබා ගත නොහැකිය"
@@ -12572,6 +12692,15 @@
   "panels/profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "සාම්පල පූරණය කරමින්…"
   },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeContextVars": {
+    "message": "විෂය පථ සන්දර්භ විචල්‍යයන් පූරණය කරමින්…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeUses": {
+    "message": "විෂය පථ භාවිතයන් පූරණය කරමින්…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopes": {
+    "message": "විෂය පථ පූරණය කරමින්…"
+  },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "සැණ රුව තොරතුරු පූරණය වේ…"
   },
@@ -13059,7 +13188,7 @@
     "message": "වලංගු ක්‍රියා වර්ගයක් ඇතුළු කරන්න"
   },
   "panels/recorder/StepView.ts | addBreakpoint": {
-    "message": "බිඳුම් ලක්ෂ්‍යය එක් කරන්න"
+    "message": "{title} සඳහා බිඳුම් ලක්ෂ්‍යය එක් කරන්න"
   },
   "panels/recorder/StepView.ts | addStepAfter": {
     "message": "පසු පියවර එක් කරන්න"
@@ -13112,11 +13241,14 @@
   "panels/recorder/StepView.ts | navigateStepTitle": {
     "message": "සංචාලනය කරන්න"
   },
+  "panels/recorder/StepView.ts | noTitle": {
+    "message": "(මාතෘකාවක් නැත)"
+  },
   "panels/recorder/StepView.ts | openStepActions": {
-    "message": "පියවර ක්‍රියා විවෘත කරන්න"
+    "message": "{title} සඳහා පියවර ක්‍රියා විවෘත කරන්න"
   },
   "panels/recorder/StepView.ts | removeBreakpoint": {
-    "message": "බිඳුම් ලක්ෂ්‍යය ඉවත් කරන්න"
+    "message": "{title} සඳහා බිඳුම් ලක්ෂ්‍යය ඉවත් කරන්න"
   },
   "panels/recorder/StepView.ts | removeStep": {
     "message": "පියවර ඉවත් කරන්න"
@@ -14069,6 +14201,9 @@
   "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
     "message": "URL රටාව"
   },
+  "panels/settings/EditFileSystemView.ts | addSubfolder": {
+    "message": "උප ෆෝල්ඩරය එක් කරන්න"
+  },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "පෙතක් ඇතුළත් කරන්න"
   },
@@ -14078,8 +14213,14 @@
   "panels/settings/EditFileSystemView.ts | excludedFolders": {
     "message": "බැහැර කරන ලද උප ෆෝල්ඩර"
   },
+  "panels/settings/EditFileSystemView.ts | folderPath": {
+    "message": "ෆෝල්ඩර පෙත"
+  },
   "panels/settings/EditFileSystemView.ts | url": {
     "message": "URL"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | add": {
+    "message": "එක් කරන්න"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ස්ක්‍රිප්ටයේ URL සඳහා විධිමත් ප්‍රකාශන රීතියක් එක් කරන්න"
@@ -14089,6 +14230,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "මූලාශ්‍ර සිතියම්වලින් දන්නා තුන්වන පාර්ශ්ව ස්ක්‍රිප්ට"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | cancel": {
+    "message": "අවලංගු කරන්න"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "අභිරුචි බැහැර කිරීමේ නීති"
@@ -14131,6 +14275,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "රීතිය වලංගු විධිමත් ප්‍රකාශනයක් විය යුතුය"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | save": {
+    "message": "සුරකින්න"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "DevTools යතුරු පුවරු කෙටි මං සහ ඉඟිවල සම්පූර්ණ ලැයිස්තුව"
@@ -14282,8 +14429,14 @@
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "පැතිකඩ බලන්න"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | add": {
+    "message": "එක් කරන්න"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "අභිරුචි උපාංගය එක් කරන්න"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cancel": {
+    "message": "අවලංගු කරන්න"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
     "message": "කවය"
@@ -14404,6 +14557,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
     "message": "{PH1}: ඉහළ සහ පහළ ඇතුළත් කිරීම් උපාංගයේ උස ඉක්මවා නොයා යුතුය"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | save": {
+    "message": "සුරකින්න"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "පරිශීලක නියෝජිත අනුලකුණු වැල"
@@ -14647,6 +14803,9 @@
   },
   "panels/sources/BreakpointsView.ts | checked": {
     "message": "ලකුණු කර ඇත"
+  },
+  "panels/sources/BreakpointsView.ts | collapseAll": {
+    "message": "සියල්ල හකුළන්න"
   },
   "panels/sources/BreakpointsView.ts | conditionCode": {
     "message": "තත්ත්වය: {PH1}"
@@ -15050,11 +15209,20 @@
   "panels/sources/NavigatorView.ts | rename": {
     "message": "යළි නම් කරන්න…"
   },
+  "panels/sources/NavigatorView.ts | run": {
+    "message": "ධාවනය කරන්න"
+  },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (මූලාශ්‍ර සිතියම වෙතින්)"
   },
   "panels/sources/NavigatorView.ts | sIgnoreListed": {
     "message": "{PH1} (නොසලකා හැරීමේ ලැයිස්තුවේ ඇති)"
+  },
+  "panels/sources/NavigatorView.ts | saveAs": {
+    "message": "ලෙස සුරකින්න…"
+  },
+  "panels/sources/NavigatorView.ts | saveAsFailed": {
+    "message": "ගොනුව තැටියට සුරැකීමට නොහැකි විය"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "සියලු ගොනුවල සොයන්න"
@@ -15131,6 +15299,9 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
+  "panels/sources/SourcesNavigator.ts | addFolderManually": {
+    "message": "ෆෝල්ඩරය හස්තීයව එක් කරන්න"
+  },
   "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
     "message": "ඔබේ ව්‍යාපෘති ෆෝල්ඩරය ස්වයංක්‍රීයව සම්බන්ධ කිරීමට {PH1} භාවිතා කරන්න"
   },
@@ -15151,6 +15322,9 @@
   },
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
     "message": "ඔබ සංවර්ධනය කරන මූලාශ්‍ර වෙත සංස්කරණ සෘජුවම සමමුහුර්ත කිරීමට කාර්ය ඉඩ සකසන්න"
+  },
+  "panels/sources/SourcesNavigator.ts | localOverrides": {
+    "message": "දේශීය ප්‍රතික්‍ෂේප කිරීම්"
   },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "නව කොටස"
@@ -17279,6 +17453,12 @@
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
     "message": "ඇතුළාන්තය: {PH1}"
   },
+  "panels/timeline/components/Sidebar.ts | annotations": {
+    "message": "අනුසටහන්"
+  },
+  "panels/timeline/components/Sidebar.ts | insights": {
+    "message": "ඇතුළාන්ත"
+  },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "ඔබ සහ අන් අය සඳහා හෝඩුවාවක් සටහන් කරන්න"
   },
@@ -17554,6 +17734,9 @@
   },
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "ජනපදය"
+  },
+  "panels/web_audio/WebAudioView.ts | webAudioInspectionPaused": {
+    "message": "වෙබ් ශ්‍රව්‍ය පරීක්ෂාව විරාම කරන ලදි"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "ශ්‍රව්‍යය"

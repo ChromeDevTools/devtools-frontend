@@ -893,9 +893,6 @@
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "AI આસિસ્ટન્સ પૅનલ ખોલો"
   },
-  "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "Gemini પૅનલ ખોલો"
-  },
   "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
     "message": "AI મૉડલ ડાઉનલોડ કર્યું"
   },
@@ -1223,9 +1220,6 @@
   "generated/Deprecation.ts | FencedFrame": {
     "message": "Fenced Frame API કાયમ માટે બંધ કરવામાં આવ્યું છે અને તેને કાઢી નાખવા માટે શેડ્યૂલ કરવામાં આવ્યું છે."
   },
-  "generated/Deprecation.ts | Fledge": {
-    "message": "Protected Audience API કાયમ માટે બંધ કરવામાં આવ્યું છે અને ભવિષ્યની રિલીઝમાં તે કાઢી નાખવામાં આવશે."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() અને watchPosition() હવેથી અસુરક્ષિત ઑરિજિન પર કામ કરતા નથી. આ સુવિધાનો ઉપયોગ કરવા માટે તમારે તમારી ઍપ્લિકેશનને HTTPS જેવા સુરક્ષિત ઑરિજિન પર સ્વિચ કરવાનું વિચારવું જોઈએ. વધુ વિગતો માટે https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ જુઓ."
   },
@@ -1243,9 +1237,6 @@
   },
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "વેબસાઇટ દ્વારા તેના વપરાશકર્તાઓના નેટવર્કની વિશિષ્ટ સ્થિતિને કારણે તે ઍક્સેસ કરી શકે માત્ર એવા જ નેટવર્કમાંથી પેટા સંસાધનની વિનંતી કરવામાં આવી છે. આવી વિનંતીઓ ઇન્ટરનેટ પર બિન સાર્વજનિક ડિવાઇસ અને સર્વરની માહિતી જાહેર કરતી હોવાથી બનાવટી ક્રૉસ-સાઇટ વિનંતીનો હુમલો (CSRF) અને/અથવા માહિતી લીક થવાનું જોખમ વધી જાય છે. આવા જોખમોને ઘટાડવા માટે, જ્યારે અસુરક્ષિત સંદર્ભોમાંથી બિન સાર્વજનિક પેટા સંસાધનોને વિનંતીઓ કરવામાં આવે ત્યારે Chrome તેમને ટાળે છે અને તેમને બ્લૉક કરવાનું શરૂ કરી દેશે."
-  },
-  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
-    "message": "InterestGroupsનું dailyUpdateUrl ફીલ્ડ જે joinAdInterestGroup()ને પાસ કરવામાં આવ્યું હતું, તેનું નામ બદલીને updateUrl રાખવામાં આવ્યું છે, જેથી તેની વર્તણૂક વધુ સચોટ રીતે દર્શાવી શકાય."
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Intl.v8BreakIteratorનો ઉપયોગ કાયમ માટે બંધ કરવામાં આવ્યો છે. તેને બદલે કૃપા કરીને Intl.Segmenterનો ઉપયોગ કરો."
@@ -1372,6 +1363,9 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBufferનો ઉપયોગ કરવાનું ચાલુ રાખવા માટે એક્સ્ટેન્શનને ક્રોસ-ઑરિજિન આઇસોલેશનમાં જઈને પસંદ કરવું જોઈએ. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ જુઓ."
+  },
+  "generated/Deprecation.ts | ViewTransitionPreventSvgFilterPaint": {
+    "message": "વ્યૂ ટ્રાન્ઝિશન કન્ટેન્ટ, જેમ કે ::view-transition-old() અને ::view-transition-new() પર SVG ફિલ્ટર લાગુ કરી શકાતા નથી, કારણ કે તેમાં ક્રૉસ ઓરિજિનની iframe અથવા પ્લગ-ઇન હોઈ શકે છે."
   },
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "BluetoothRemoteGATTCharacteristic.writeValue() કાયમ માટે બંધ કરવામાં આવ્યું છે. તેના બદલે writeValueWithResponse() અથવા writeValueWithoutResponse()નો ઉપયોગ કરો."
@@ -2630,6 +2624,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
     "message": "કેટલીક ફ્રેમ માટે રેકોર્ડિંગ બ્લૉક કરવામાં આવ્યું હતું:"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | resizeAnnouncementsPane": {
+    "message": "ઘોષણાઓ વિભાગનું કદ બદલો"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
     "message": "રેકોર્ડિંગ શરૂ કરો"
   },
@@ -3080,20 +3077,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "AI વડે ડિબગ કરો"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
-    "message": "Gemini વડે ડિબગ કરો"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "AI આસિસ્ટંટની સુવિધા ચાલુ કરો"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "Gemini ચાલુ કરો"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "AI આસિસ્ટંટ બતાવો"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "Gemini બતાવો"
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "તમારી વાતચીત શરૂ કરવા માટે, તમે ઉપર સૂચવેલા પ્રૉમ્પ્ટમાંથી એકનો ઉપયોગ પણ કરી શકો છો"
@@ -3170,6 +3158,9 @@
   "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
     "message": "પરિણામોની ચકાસણી કરવા માટે વિજેટનો ઉપયોગ કરો અથવા પસંદગીના ડિબગીંગ કેસ માટે સીધા સૉર્સ ડેટા પર જાઓ"
   },
+  "panels/ai_assistance/components/RelevantDataDisclaimer.ts | learnAbout": {
+    "message": "DevToolsમાં AI વિશે જાણો"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "બંધ કરો"
   },
@@ -3193,6 +3184,9 @@
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "આ પેજ પર તમે ઍનિમેશનનું નિરીક્ષણ અને તેમાં ફેરફાર કરી શકો છો"
+  },
+  "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
+    "message": "ઍનિમેશનનું નિરીક્ષણ થોભાવ્યું"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "ઍનિમેશનનો પ્રીવ્યૂ {PH1}"
@@ -3632,6 +3626,9 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "આ પેજ પર તમે window.open() મારફતે ખોલવામાં આવેલી વિન્ડો જોઈ શકો છો"
   },
+  "panels/application/ApplicationPanelSidebar.ts | privateVerificationTokens": {
+    "message": "ખાનગી ચકાસણી સંબંધિત ટોકન"
+  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB રિફ્રેશ કરો"
   },
@@ -3644,11 +3641,17 @@
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "આ પેજ પર તમે સત્રના સ્ટોરેજની કી-વેલ્યૂની જોડીઓ જોઈ શકો છો, તેને ઉમેરી શકો છો, તેમાં ફેરફાર કરી શકો છો અને તેને ડિલીટ કરી શકો છો"
   },
+  "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
+    "message": "સિબ્લિંગ સબ ઍપ"
+  },
   "panels/application/ApplicationPanelSidebar.ts | startAChat": {
     "message": "ચૅટ શરૂ કરો"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "સ્ટોરેજ"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | subApps": {
+    "message": "સબ ઍપ"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "આ દસ્તાવેજનું કન્ટેન્ટ document.write() મારફતે ડાઇનેમિક રૂપે જનરેટ કરવામાં આવ્યું છે"
@@ -4583,6 +4586,42 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "પૂર્વધારણા મુજબ લોડ કરવાની સુવિધા"
   },
+  "panels/application/PrivateVerificationTokensView.ts | clearAll": {
+    "message": "બધું સાફ કરો"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | creationTime": {
+    "message": "બનાવ્યું"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | deleteSelected": {
+    "message": "પસંદ કરેલું ડિલીટ કરો"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | expiration": {
+    "message": "સમાપ્તિ"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isIssuer": {
+    "message": "રજૂકર્તા છે"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isRedeemer": {
+    "message": "રિડીમ કરનાર છે"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | issuer": {
+    "message": "જારીકર્તા"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | keyId": {
+    "message": "કી ID"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
+    "message": "આ ઑરિજિન માટે ખાનગી ચકાસણી સંબંધિત કોઈ ટોકન નથી"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenId": {
+    "message": "ટોકન ID"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenPayload": {
+    "message": "ટોકન (Base64)"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | version": {
+    "message": "વર્ઝન"
+  },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "ક્રૅશ રિપોર્ટનો સંદર્ભ"
   },
@@ -4885,6 +4924,27 @@
   },
   "panels/application/StorageView.ts | usage": {
     "message": "વપરાશ"
+  },
+  "panels/application/SubAppsView.ts | manifestId": {
+    "message": "મેનિફેસ્ટ ID"
+  },
+  "panels/application/SubAppsView.ts | manifestIdAndStartUrl": {
+    "message": "મેનિફેસ્ટ ID / URL શરૂ કરો"
+  },
+  "panels/application/SubAppsView.ts | name": {
+    "message": "નામ"
+  },
+  "panels/application/SubAppsView.ts | scope": {
+    "message": "કાર્યક્ષેત્ર"
+  },
+  "panels/application/SubAppsView.ts | siblingSubApps": {
+    "message": "સિબ્લિંગ સબ ઍપ"
+  },
+  "panels/application/SubAppsView.ts | startUrl": {
+    "message": "URL શરૂ કરો"
+  },
+  "panels/application/SubAppsView.ts | subApps": {
+    "message": "સબ ઍપ"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "ખાનગી સ્ટેટસ દર્શાવતા ટોકન"
@@ -5771,6 +5831,9 @@
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "આ પેજ પર તમે વર્તમાન બ્રાઉઝિંગના સંદર્ભમાં ખાનગી સ્ટેટસ દર્શાવતા ઉપલબ્ધ બધા ટોકન જોઈ શકો છો"
   },
+  "panels/application/preloading/PreloadingView.ts | clearSpeculativeLoads": {
+    "message": "પૂર્વધારણા મુજબ લોડ કરવાની સુવિધા સાફ કરો"
+  },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "પૂર્વધારણા મુજબના તમામ લોડ"
   },
@@ -5986,6 +6049,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
     "message": "પ્રીફેચ કાઢી નાખવામાં આવ્યું હતું, કારણ કે પ્રારંભિક પેજમાં ઘણા બધા પ્રીફેચ ચાલુ છે, અને આ સૌથી જૂનામાંથી એક હતું"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedCrossOriginSubframe": {
+    "message": "પ્રીરેંડરિંગ દરમિયાન ક્રૉસ-ઑરિજિન સબફ્રેમ નૅવિગેશનને ટાળવામાં આવ્યું હતું કારણ કે પેરન્ટ ફ્રેમને ટાળવામાં આવી હતી અથવા તેના રિસ્પૉન્સમાં યોગ્ય Supports-Loading-Mode હેડર શામેલ ન હતું"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "પ્રીફેચ રીડાયરેક્ટ કરાયું હતું, પરંતુ રીડાયરેક્ટ URL પ્રીફેચ માટે યોગ્ય નથી"
@@ -6629,20 +6695,32 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "ફેરફારો બતાવો"
   },
+  "panels/comments/CommentsPane.ts | addComment": {
+    "message": "કૉમેન્ટ ઉમેરો"
+  },
   "panels/comments/CommentsPane.ts | clearComments": {
     "message": "બધી કૉમેન્ટ સાફ કરો"
+  },
+  "panels/comments/CommentsPane.ts | commentModeIcon": {
+    "message": "કૉમેન્ટ મોડ"
   },
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "કૉમેન્ટ ડિલીટ કરો"
   },
-  "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "કતારમાં કોઈ કૉમેન્ટ નથી. તમારા AI કોડિંગ એજન્ટને મોકલવા માટે DevToolsમાં એલિમેન્ટ પર કૉમેન્ટ ઉમેરો."
+  "panels/comments/CommentsPane.ts | emptyStateDescription": {
+    "message": "એલિમેન્ટ પસંદ કરવા અને તમારા કોડિંગ એજન્ટને ટાસ્ક, પ્રશ્નો અને સંદર્ભ મોકલવા માટે {PH1}નો ઉપયોગ કરો"
   },
-  "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "મોકલેલી કોઈ કૉમેન્ટ નથી. તમારા AI કોડિંગ એજન્ટને કૉમેન્ટ મોકલો, જેથી તેને અહીં જોઈ શકાય."
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "કોઈ કૉમેન્ટ નથી"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "કતારમાં કોઈ કૉમેન્ટ નથી"
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "કતારમાં"
+  },
+  "panels/comments/CommentsPane.ts | removed": {
+    "message": "કાઢી નાખ્યું"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "જવાબ જુઓ"
@@ -6653,8 +6731,17 @@
   "panels/comments/CommentsPane.ts | sent": {
     "message": "મોકલી"
   },
+  "panels/comments/CommentsPane.ts | sentCheckmark": {
+    "message": "મોકલ્યાનું ચેકમાર્ક"
+  },
+  "panels/comments/CommentsPane.ts | sentComments": {
+    "message": "કૉમેન્ટ મોકલી છે"
+  },
+  "panels/comments/CommentsPane.ts | sentStatus": {
+    "message": "મોકલ્યો"
+  },
   "panels/comments/CommentsPane.ts | working": {
-    "message": "કાર્યરત"
+    "message": "કામ ચાલુ છે"
   },
   "panels/comments/comments-meta.ts | comments": {
     "message": "કૉમેન્ટ"
@@ -6710,8 +6797,14 @@
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "કતારમાંની કૉમેન્ટ ડિલીટ કરો"
   },
+  "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
+    "message": "એલિમેન્ટ હવે ઉપલબ્ધ નથી"
+  },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "કૉમેન્ટને કતારમાં મૂકો"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
+    "message": "કૉમેન્ટને કતારમાં મૂકવા માટે {PH1} + ↵"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "જવાબ:"
@@ -6728,8 +6821,17 @@
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "મોકલ્યાનું ચેકમાર્ક"
   },
-  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "કૉમેન્ટ ({PH1})"
+  "panels/common/CommentThreadWidget.ts | working": {
+    "message": "કામ ચાલુ છે"
+  },
+  "panels/common/CommentsOverlayWidget.ts | addComment": {
+    "message": "કૉમેન્ટ ઉમેરો"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewComments": {
+    "message": "ટિપ્પણીઓ જુઓ"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewCommentsWithCount": {
+    "message": "કૉમેન્ટ જુઓ ({PH1})"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<node>"
@@ -6781,27 +6883,6 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "સેવાની શરતો"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
-    "message": "વેબ ડેવલપમેન્ટ માટે તમારા AI-સંચાલિત સાથીને મળો"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
-    "message": "કન્સોલની ભૂલો માટે ઝટપટ, સચોટ જવાબો મેળવો"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
-    "message": "તરત જ CSS અને JS સ્નિપેટ જનરેટ કરો"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
-    "message": "પર્ફોર્મન્સ ટ્રેસમાં ઑટોમૅટિક રીતે સમસ્યાઓ શોધો"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "DevToolsમાં Gemini 3 Flash"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
-    "message": "છોડી દો"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
-    "message": "શરૂ કરો"
   },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "{PH1} સાથે લિંક કરેલી છે"
@@ -6900,7 +6981,7 @@
     "message": "ઇતિહાસમાંથી ઑટોમૅટિક રીતે પૂર્ણ કરો"
   },
   "panels/console/ConsoleView.ts | collapseAll": {
-    "message": "બધા નાના કરો"
+    "message": "બધું નાનું કરો"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "કન્સોલનો ડેટા સાફ કરવામાં આવ્યો"
@@ -6915,7 +6996,10 @@
     "message": "કન્સોલ સાઇડબાર બતાવ્યો"
   },
   "panels/console/ConsoleView.ts | copyConsole": {
-    "message": "કન્સોલ કૉપિ કરો"
+    "message": "બધા મેસેજ કૉપિ કરો"
+  },
+  "panels/console/ConsoleView.ts | copyMessage": {
+    "message": "મેસેજ કૉપિ કરો"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "જોઈ શકાય એવી શૈલીવાળી પસંદગીને કૉપિ કરો"
@@ -8312,6 +8396,9 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "સૉર્સ પૅનલમાં ખોલો"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openShadowEditor": {
+    "message": "શૅડો એડિટર ખોલો"
+  },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
     "message": "ઍનિમેશનની શૈલીઓ દ્વારા ઓવરરાઇડ કરવામાં આવ્યું"
   },
@@ -8870,8 +8957,8 @@
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "વિનંતી કરો"
   },
-  "panels/issues/AffectedCookiesView.ts | domain": {
-    "message": "ડોમેન"
+  "panels/issues/AffectedCookiesView.ts | domainAndPath": {
+    "message": "ડોમેન અને પાથ"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
     "message": "નેટવર્ક પૅનલમાં આ Set-Cookie હેડર શામેલ હોય તેવી નેટવર્ક માટેની વિનંતીઓ બતાવો"
@@ -8885,14 +8972,14 @@
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "નામ"
   },
-  "panels/issues/AffectedCookiesView.ts | path": {
-    "message": "પાથ"
-  },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
     "message": "મંજૂરી ન હોય તેવું ડિસેન્ડન્ટ"
   },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
-    "message": "{n,plural, =1{ ડિસેન્ડન્ટ}one{ ડિસેન્ડન્ટ}other{ ડિસેન્ડન્ટ}}"
+    "message": "{n,plural, =1{# ડિસેન્ડન્ટ}one{# ડિસેન્ડન્ટ}other{# ડિસેન્ડન્ટ}}"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | unavailable": {
+    "message": "અનુપલબ્ધ"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "બ્લૉક કરેલું છે"
@@ -8930,11 +9017,17 @@
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
     "message": "{n,plural, =1{ દસ્તાવેજ}one{ દસ્તાવેજ}other{ દસ્તાવેજો}}"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | unavailable": {
+    "message": "અનુપલબ્ધ"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "URL"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# એલિમેન્ટ}one{# એલિમેન્ટ}other{# એલિમેન્ટ}}"
+  },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "અનુપલબ્ધ"
   },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "CPUની મહત્તમ મર્યાદા"
@@ -8994,7 +9087,7 @@
     "message": "ફ્રેમની DOM નોડને એલિમેન્ટની પૅનલમાં બતાવવા માટે ક્લિક કરો"
   },
   "panels/issues/AffectedResourcesView.ts | unavailable": {
-    "message": "ઉપલબ્ધ નથી"
+    "message": "અનુપલબ્ધ"
   },
   "panels/issues/AffectedResourcesView.ts | unknown": {
     "message": "અજાણ"
@@ -10019,6 +10112,18 @@
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "વીડિયો પ્લેબૅકની રફનેસ"
   },
+  "panels/media/TickingFlameChart.ts | duration": {
+    "message": "અવધિ: {PH1} - {PH2}"
+  },
+  "panels/media/TickingFlameChart.ts | durationLive": {
+    "message": "અવધિ: {PH1} - લાઇવ!"
+  },
+  "panels/media/TickingFlameChart.ts | name": {
+    "message": "નામ: {PH1}"
+  },
+  "panels/media/TickingFlameChart.ts | time": {
+    "message": "સમય: {PH1}"
+  },
   "panels/media/media-meta.ts | media": {
     "message": "મીડિયા"
   },
@@ -10160,6 +10265,9 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
     "message": "ધીમું 3G અને CPUની {PH1}x ધીમી ગતિ"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | add": {
+    "message": "ઉમેરો"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "પ્રોફાઇલ ઉમેરો"
   },
@@ -10267,6 +10375,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "{PH1} એ {PH2} kbit/s અને {PH3} kbit/s સહિત તેની વચ્ચેની સંખ્યા હોવી જરૂરી છે"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | save": {
+    "message": "સાચવો"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "અપલોડ"
@@ -11102,6 +11213,12 @@
   "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "કસ્ટમ હેડર ઉમેરો…"
   },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerAlreadyExists": {
+    "message": "હેડર પહેલેથી અસ્તિત્વમાં છે"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerCannotBeEmpty": {
+    "message": "હેડરનું નામ ખાલી હોઈ શકે નહીં"
+  },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "હેડરનું નામ"
   },
@@ -11413,6 +11530,9 @@
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "પ્રતિસાદ ડેટા લોડ કરવામાં નિષ્ફળ રહ્યાં"
+  },
+  "panels/network/RequestPreviewView.ts | nothingToPreview": {
+    "message": "પ્રીવ્યૂ માટે કંઈ નથી"
   },
   "panels/network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "પ્રીવ્યૂ ઉપલબ્ધ નથી"
@@ -12572,6 +12692,15 @@
   "panels/profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "સેમ્પલ લોડ કરી રહ્યાં છીએ…"
   },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeContextVars": {
+    "message": "સ્કોપ સંદર્ભ વેરિયેબલ લોડ કરી રહ્યાં છીએ…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeUses": {
+    "message": "સ્કોપના ઉપયોગો લોડ કરી રહ્યાં છીએ…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopes": {
+    "message": "સ્કોપ લોડ કરી રહ્યાં છીએ…"
+  },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "સ્નૅપશૉટની માહિતી લોડ કરી રહ્યાં છીએ…"
   },
@@ -13059,7 +13188,7 @@
     "message": "માન્ય ઍક્શનનો પ્રકાર દાખલ કરો"
   },
   "panels/recorder/StepView.ts | addBreakpoint": {
-    "message": "બ્રેકપૉઇન્ટ ઉમેરો"
+    "message": "{title} માટે બ્રેકપૉઇન્ટ ઉમેરો"
   },
   "panels/recorder/StepView.ts | addStepAfter": {
     "message": "આના પછી પગલું ઉમેરો"
@@ -13112,11 +13241,14 @@
   "panels/recorder/StepView.ts | navigateStepTitle": {
     "message": "નૅવિગેટ કરો"
   },
+  "panels/recorder/StepView.ts | noTitle": {
+    "message": "(કોઈ શીર્ષક નથી)"
+  },
   "panels/recorder/StepView.ts | openStepActions": {
-    "message": "પગલાંની ક્રિયાઓ ખોલો"
+    "message": "{title} માટે પગલાંની ક્રિયાઓ ખોલો"
   },
   "panels/recorder/StepView.ts | removeBreakpoint": {
-    "message": "બ્રેકપૉઇન્ટ કાઢી નાખો"
+    "message": "{title} માટે બ્રેકપૉઇન્ટ કાઢી નાખો"
   },
   "panels/recorder/StepView.ts | removeStep": {
     "message": "પગલું કાઢી નાખો"
@@ -14069,6 +14201,9 @@
   "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
     "message": "URLની પૅટર્ન"
   },
+  "panels/settings/EditFileSystemView.ts | addSubfolder": {
+    "message": "સબ-ફોલ્ડર ઉમેરો"
+  },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "પથ દાખલ કરો"
   },
@@ -14078,8 +14213,14 @@
   "panels/settings/EditFileSystemView.ts | excludedFolders": {
     "message": "બાકાત રાખેલા સબફોલ્ડર"
   },
+  "panels/settings/EditFileSystemView.ts | folderPath": {
+    "message": "ફોલ્ડરનો પથ"
+  },
   "panels/settings/EditFileSystemView.ts | url": {
     "message": "URL"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | add": {
+    "message": "ઉમેરો"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "સ્ક્રિપ્ટના URL માટે રેગ્યુલર એક્સપ્રેશનનો કોઈ નિયમ ઉમેરો"
@@ -14089,6 +14230,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "સૉર્સ નકશા દ્વારા જાણીતા ત્રીજા-પક્ષની સ્ક્રિપ્ટ"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | cancel": {
+    "message": "રદ કરો"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "બાકાત રાખવાના કસ્ટમ નિયમો"
@@ -14131,6 +14275,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "નિયમ માન્ય રેગ્યુલર એક્સપ્રેશન હોવો જરૂરી છે"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | save": {
+    "message": "સાચવો"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "DevTools કીબોર્ડ શૉર્ટકટ અને સંકેતોની સંપૂર્ણ સૂચિ"
@@ -14282,8 +14429,14 @@
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "પ્રોફાઇલ જુઓ"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | add": {
+    "message": "ઉમેરો"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "કસ્ટમ ડિવાઇસ ઉમેરો"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cancel": {
+    "message": "રદ કરો"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
     "message": "વર્તુળ"
@@ -14404,6 +14557,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
     "message": "{PH1}: ઉપર અને નીચેના ઇનસેટ ડિવાઇસની ઊંચાઈ કરતાં વધુ ન હોવા જોઈએ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | save": {
+    "message": "સાચવો"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "વપરાશકર્તા એજન્ટની સ્ટ્રિંગ"
@@ -14647,6 +14803,9 @@
   },
   "panels/sources/BreakpointsView.ts | checked": {
     "message": "ચેક કરી છે"
+  },
+  "panels/sources/BreakpointsView.ts | collapseAll": {
+    "message": "બધું નાનું કરો"
   },
   "panels/sources/BreakpointsView.ts | conditionCode": {
     "message": "સ્થિતિ: {PH1}"
@@ -15050,11 +15209,20 @@
   "panels/sources/NavigatorView.ts | rename": {
     "message": "નામ બદલો…"
   },
+  "panels/sources/NavigatorView.ts | run": {
+    "message": "ચલાવો"
+  },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (સૉર્સના નકશામાંથી)"
   },
   "panels/sources/NavigatorView.ts | sIgnoreListed": {
     "message": "{PH1} (અવગણવાની સૂચિમાં છે)"
+  },
+  "panels/sources/NavigatorView.ts | saveAs": {
+    "message": "આ રીતે સાચવો…"
+  },
+  "panels/sources/NavigatorView.ts | saveAsFailed": {
+    "message": "ફાઇલને ડિસ્ક પર સાચવવામાં નિષ્ફળ રહ્યાં"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "બધી ફાઇલોમાં શોધો"
@@ -15131,6 +15299,9 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
+  "panels/sources/SourcesNavigator.ts | addFolderManually": {
+    "message": "ફોલ્ડર મેન્યુઅલી ઉમેરો"
+  },
   "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
     "message": "તમારા પ્રોજેક્ટ ફોલ્ડરને ઑટોમૅટિક રીતે કનેક્ટ કરવા માટે {PH1}નો ઉપયોગ કરો"
   },
@@ -15151,6 +15322,9 @@
   },
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
     "message": "તમે ડેવલપ કરતા હો એ સૉર્સ પર ફેરફારોને સીધા જ સિંક કરવા માટે ફાઇલ ફોલ્ડરોનું સેટઅપ કરો"
+  },
+  "panels/sources/SourcesNavigator.ts | localOverrides": {
+    "message": "સ્થાનિક ઓવરરાઇડ"
   },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "નવું સ્નિપેટ"
@@ -17279,6 +17453,12 @@
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
     "message": "જાણકારી: {PH1}"
   },
+  "panels/timeline/components/Sidebar.ts | annotations": {
+    "message": "ટીકાટિપ્પણીઓ"
+  },
+  "panels/timeline/components/Sidebar.ts | insights": {
+    "message": "જાણકારીઓ"
+  },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "તમારા માટે અને અન્ય લોકો માટે ટ્રેસની ટીકાટિપ્પણી કરો"
   },
@@ -17554,6 +17734,9 @@
   },
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "સ્થિતિ"
+  },
+  "panels/web_audio/WebAudioView.ts | webAudioInspectionPaused": {
+    "message": "વેબ ઑડિયોનું નિરીક્ષણ થોભાવ્યું"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "ઑડિયો"

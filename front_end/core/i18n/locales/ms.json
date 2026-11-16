@@ -893,9 +893,6 @@
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "Buka panel bantuan AI"
   },
-  "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "Buka panel Gemini"
-  },
   "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
     "message": "Model AI dimuat turun"
   },
@@ -1223,9 +1220,6 @@
   "generated/Deprecation.ts | FencedFrame": {
     "message": "Fenced Frame API telah ditamatkan dan dijadualkan untuk dialih keluar."
   },
-  "generated/Deprecation.ts | Fledge": {
-    "message": "Protected Audience API telah ditamatkan dan akan dialih keluar dalam keluaran yang akan datang."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() dan watchPosition() tidak berfungsi lagi pada asalan yang tidak selamat. Untuk menggunakan ciri ini, anda harus mempertimbangkan untuk menukar aplikasi anda kepada asalan yang selamat, seperti HTTPS. Lihat https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/ untuk mendapatkan butiran lanjut."
   },
@@ -1243,9 +1237,6 @@
   },
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "Laman web meminta subsumber daripada rangkaian yang hanya boleh diakses kerana kedudukan rangkaian istimewa penggunanya. Permintaan ini mendedahkan peranti bukan umum dan pelayan kepada Internet, meningkatkan risiko serangan pemalsuan permintaan rentas laman (CSRF) dan/atau kebocoran maklumat. Untuk mengurangkan risiko ini, Chrome menamatkan permintaan kepada subsumber bukan umum apabila dimulakan daripada konteks tidak selamat dan akan mula menyekatnya."
-  },
-  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
-    "message": "Medan dailyUpdateUrl bagi InterestGroups yang disampaikan kepada joinAdInterestGroup() telah dinamakan semula kepada updateUrl, untuk menggambarkan gelagat yang lebih tepat."
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Intl.v8BreakIterator telah ditamatkan. Sila gunakan Intl.Segmenter."
@@ -1372,6 +1363,9 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Sambungan harus ikut serta dalam pengasingan rentas asalan untuk terus menggunakan SharedArrayBuffer. Lihat https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | ViewTransitionPreventSvgFilterPaint": {
+    "message": "Penapis SVG tidak boleh digunakan pada kandungan peralihan paparan, seperti ::view-transition-old() dan ::view-transition-new(), kerana kandungan tersebut mungkin mengandungi iframe atau pemalam rentas asalan."
   },
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "BluetoothRemoteGATTCharacteristic.writeValue() telah ditamatkan. Gunakan writeValueWithResponse() atau writeValueWithoutResponse()."
@@ -2630,6 +2624,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
     "message": "Rakaman telah disekat untuk sesetengah bingkai:"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | resizeAnnouncementsPane": {
+    "message": "Ubah saiz anak tetingkap pengumuman"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
     "message": "Mulakan rakaman"
   },
@@ -3080,20 +3077,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "Nyahpepijat dengan AI"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
-    "message": "Nyahpepijat dengan Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "Dayakan bantuan AI"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "Dayakan Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Tunjukkan bantuan AI"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "Paparkan Gemini"
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Anda juga boleh menggunakan satu daripada gesaan yang dicadangkan di atas untuk memulakan perbualan anda"
@@ -3170,6 +3158,9 @@
   "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
     "message": "Gunakan widget untuk mengesahkan hasil atau melangkau kepada data sumber untuk kes penyahpepijatan terpilih"
   },
+  "panels/ai_assistance/components/RelevantDataDisclaimer.ts | learnAbout": {
+    "message": "Ketahui tentang AI dalam Alatan Pembangun"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Tutup"
   },
@@ -3193,6 +3184,9 @@
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Pada halaman ini, anda boleh memeriksa dan mengubah suai animasi"
+  },
+  "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
+    "message": "Pemeriksaan animasi dijeda"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Pratonton animasi {PH1}"
@@ -3632,6 +3626,9 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "Pada halaman ini anda boleh melihat tetingkap yang dibuka melalui window.open()"
   },
+  "panels/application/ApplicationPanelSidebar.ts | privateVerificationTokens": {
+    "message": "Token pengesahan peribadi"
+  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Muat semula IndexedDB"
   },
@@ -3644,11 +3641,17 @@
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "Pada halaman ini anda boleh melihat, menambahkan, mengedit dan memadamkan gandingan kekunci nilai storan sesi"
   },
+  "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
+    "message": "Subapl saudara"
+  },
   "panels/application/ApplicationPanelSidebar.ts | startAChat": {
     "message": "Mulakan sembang"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Storan"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | subApps": {
+    "message": "Subapl"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Kandungan dokumen ini telah dijana secara dinamik melalui document.write()"
@@ -4583,6 +4586,42 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Pemuatan spekulatif"
   },
+  "panels/application/PrivateVerificationTokensView.ts | clearAll": {
+    "message": "Kosongkan semua"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | creationTime": {
+    "message": "Dibuat"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | deleteSelected": {
+    "message": "Padamkan yang dipilih"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | expiration": {
+    "message": "Tamat tempoh"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isIssuer": {
+    "message": "Merupakan pengeluar"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isRedeemer": {
+    "message": "Ialah penebus"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | issuer": {
+    "message": "Pengeluar"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | keyId": {
+    "message": "ID Kekunci"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
+    "message": "Tiada token pengesahan peribadi untuk asalan ini"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenId": {
+    "message": "ID Token"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenPayload": {
+    "message": "Token (Base64)"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | version": {
+    "message": "Versi"
+  },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "Konteks laporan ranap sistem"
   },
@@ -4885,6 +4924,27 @@
   },
   "panels/application/StorageView.ts | usage": {
     "message": "Penggunaan"
+  },
+  "panels/application/SubAppsView.ts | manifestId": {
+    "message": "ID Manifes"
+  },
+  "panels/application/SubAppsView.ts | manifestIdAndStartUrl": {
+    "message": "ID Manifes / URL Mula"
+  },
+  "panels/application/SubAppsView.ts | name": {
+    "message": "Nama"
+  },
+  "panels/application/SubAppsView.ts | scope": {
+    "message": "Skop"
+  },
+  "panels/application/SubAppsView.ts | siblingSubApps": {
+    "message": "Subapl saudara"
+  },
+  "panels/application/SubAppsView.ts | startUrl": {
+    "message": "Mulakan URL"
+  },
+  "panels/application/SubAppsView.ts | subApps": {
+    "message": "Subapl"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Token keadaan sulit"
@@ -5771,6 +5831,9 @@
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "Pada halaman ini, anda boleh melihat semua token keadaan sulit yang tersedia dalam konteks semakan imbas semasa"
   },
+  "panels/application/preloading/PreloadingView.ts | clearSpeculativeLoads": {
+    "message": "Kosongkan pemuatan spekulatif"
+  },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "Semua pemuatan spekulatif"
   },
@@ -5986,6 +6049,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
     "message": "Praambil telah dibuang kerana halaman permulaan memiliki terlalu banyak praambil yang sedang dijalankan dan praambil ini adalah antara yang paling lama"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedCrossOriginSubframe": {
+    "message": "Navigasi subbingkai silang asalan telah ditangguhkan semasa prapemaparan kerana bingkai induk telah ditangguhkan atau respons bingkai induk tidak menyertakan pengepala Supports-Loading-Mode yang bersesuaian"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "Prapengambilan telah diubah hala tetapi URL ubah hala tidak layak untuk prapengambilan"
@@ -6629,32 +6695,53 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Paparkan Perubahan"
   },
+  "panels/comments/CommentsPane.ts | addComment": {
+    "message": "Tambahkan ulasan"
+  },
   "panels/comments/CommentsPane.ts | clearComments": {
     "message": "Kosongkan semua ulasan"
+  },
+  "panels/comments/CommentsPane.ts | commentModeIcon": {
+    "message": "Mod ulasan"
   },
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "Padamkan ulasan"
   },
-  "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "Tiada ulasan yang dibaris gilir. Tambahkan ulasan pada elemen dalam Alatan Pembangun untuk dihantar kepada ejen pengekodan AI anda."
+  "panels/comments/CommentsPane.ts | emptyStateDescription": {
+    "message": "Gunakan {PH1} untuk memilih elemen dan menghantar tugasan, soalan dan konteks kepada ejen pengekodan anda"
   },
-  "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "Tiada ulasan dihantar. Hantar ulasan kepada ejen pengekodan AI anda untuk melihat ulasan tersebut di sini."
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "Tiada ulasan"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "Tiada ulasan yang dibaris gilir"
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "Dibaris Gilir"
+  },
+  "panels/comments/CommentsPane.ts | removed": {
+    "message": "dialih keluar"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Lihat respons"
   },
   "panels/comments/CommentsPane.ts | sendToAgent": {
-    "message": "Hantar kepada Ejen"
+    "message": "Hantar kepada ejen"
   },
   "panels/comments/CommentsPane.ts | sent": {
     "message": "Dihantar"
   },
+  "panels/comments/CommentsPane.ts | sentCheckmark": {
+    "message": "Tanda rait dihantar"
+  },
+  "panels/comments/CommentsPane.ts | sentComments": {
+    "message": "Ulasan yang dihantar"
+  },
+  "panels/comments/CommentsPane.ts | sentStatus": {
+    "message": "Dihantar"
+  },
   "panels/comments/CommentsPane.ts | working": {
-    "message": "Bekerja"
+    "message": "Sedang dijalankan"
   },
   "panels/comments/comments-meta.ts | comments": {
     "message": "Ulasan"
@@ -6710,8 +6797,14 @@
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "Padamkan ulasan yang dibaris gilir"
   },
+  "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
+    "message": "Elemen tidak tersedia lagi"
+  },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "Baris gilirkan ulasan"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
+    "message": "{PH1} + ↵ untuk mengantur ulasan"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Respons:"
@@ -6728,8 +6821,17 @@
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Tanda rait dihantar"
   },
-  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "Ulasan ({PH1})"
+  "panels/common/CommentThreadWidget.ts | working": {
+    "message": "Sedang dijalankan"
+  },
+  "panels/common/CommentsOverlayWidget.ts | addComment": {
+    "message": "Tambahkan ulasan"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewComments": {
+    "message": "Lihat ulasan"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewCommentsWithCount": {
+    "message": "Lihat ulasan ({PH1})"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<nod>"
@@ -6781,27 +6883,6 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Syarat Perkhidmatan"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
-    "message": "Temui rakan anda yang dikuasakan AI untuk pembangunan web"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
-    "message": "Dapatkan jawapan yang tepat dengan segera untuk ralat konsol"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
-    "message": "Jana coretan CSS dan JS dengan pantas"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
-    "message": "Cari masalah dalam jejak prestasi secara automatik"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "Gemini 3 Flash dalam DevTools"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
-    "message": "Ketepikan"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
-    "message": "Bermula"
   },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "Dipautkan kepada {PH1}"
@@ -6915,7 +6996,10 @@
     "message": "Bar sisi konsol dipaparkan"
   },
   "panels/console/ConsoleView.ts | copyConsole": {
-    "message": "Salin konsol"
+    "message": "Salin semua mesej"
+  },
+  "panels/console/ConsoleView.ts | copyMessage": {
+    "message": "Salin mesej"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Salin pemilihan bergaya yang kelihatan"
@@ -8312,6 +8396,9 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Buka dalam panel Sumber"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openShadowEditor": {
+    "message": "Buka editor bebayang"
+  },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
     "message": "Digantikan oleh gaya animasi"
   },
@@ -8870,8 +8957,8 @@
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "Permintaan"
   },
-  "panels/issues/AffectedCookiesView.ts | domain": {
-    "message": "Domain"
+  "panels/issues/AffectedCookiesView.ts | domainAndPath": {
+    "message": "Domain & laluan"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
     "message": "Paparkan permintaan rangkaian yang merangkumi pengepala Set-Cookie ini dalam Panel rangkaian"
@@ -8885,14 +8972,14 @@
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nama"
   },
-  "panels/issues/AffectedCookiesView.ts | path": {
-    "message": "Laluan"
-  },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
     "message": "Bawahan yang tidak dibenarkan"
   },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
-    "message": "{n,plural, =1{ bawahan}other{ bawahan}}"
+    "message": "{n,plural, =1{# bawahan}other{# bawahan}}"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | unavailable": {
+    "message": "Tidak tersedia"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "Disekat"
@@ -8930,11 +9017,17 @@
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
     "message": "{n,plural, =1{ dokumen}other{ dokumen}}"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | unavailable": {
+    "message": "Tidak tersedia"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "URL"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# elemen}other{# elemen}}"
+  },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "Tidak tersedia"
   },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "Had puncak CPU"
@@ -10019,6 +10112,18 @@
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "Kekasaran main balik video"
   },
+  "panels/media/TickingFlameChart.ts | duration": {
+    "message": "Tempoh: {PH1} - {PH2}"
+  },
+  "panels/media/TickingFlameChart.ts | durationLive": {
+    "message": "Tempoh: {PH1} - LANGSUNG!"
+  },
+  "panels/media/TickingFlameChart.ts | name": {
+    "message": "Nama: {PH1}"
+  },
+  "panels/media/TickingFlameChart.ts | time": {
+    "message": "Masa: {PH1}"
+  },
   "panels/media/media-meta.ts | media": {
     "message": "Media"
   },
@@ -10160,6 +10265,9 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
     "message": "3G perlahan & {PH1}x pemerlahanan CPU"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | add": {
+    "message": "Tambah"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "Tambahkan profil"
   },
@@ -10267,6 +10375,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "{PH1} mestilah nombor antara {PH2} kbit/s hingga {PH3} kbit/s (terangkum)"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | save": {
+    "message": "Simpan"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Muat naik"
@@ -11102,6 +11213,12 @@
   "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "Tambah pengepala tersuai…"
   },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerAlreadyExists": {
+    "message": "Pengepala sudah wujud"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerCannotBeEmpty": {
+    "message": "Nama pengepala tidak boleh dibiarkan kosong"
+  },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "Nama pengepala"
   },
@@ -11413,6 +11530,9 @@
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Gagal memuatkan data respons"
+  },
+  "panels/network/RequestPreviewView.ts | nothingToPreview": {
+    "message": "Tiada apa-apa untuk dipratonton"
   },
   "panels/network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "Pratonton tidak tersedia"
@@ -12572,6 +12692,15 @@
   "panels/profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "Memuatkan sampel…"
   },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeContextVars": {
+    "message": "Memuatkan pemboleh ubah konteks skop…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeUses": {
+    "message": "Memuatkan penggunaan skop…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopes": {
+    "message": "Memuatkan skop…"
+  },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "Memuatkan maklumat gambar…"
   },
@@ -13059,7 +13188,7 @@
     "message": "Masukkan jenis tindakan yang sah"
   },
   "panels/recorder/StepView.ts | addBreakpoint": {
-    "message": "Tambah titik putus"
+    "message": "Tambahkan titik putus untuk {title}"
   },
   "panels/recorder/StepView.ts | addStepAfter": {
     "message": "Tambah langkah selanjutnya"
@@ -13112,11 +13241,14 @@
   "panels/recorder/StepView.ts | navigateStepTitle": {
     "message": "Navigasi"
   },
+  "panels/recorder/StepView.ts | noTitle": {
+    "message": "(Tiada tajuk)"
+  },
   "panels/recorder/StepView.ts | openStepActions": {
-    "message": "Tindakan langkah terbuka"
+    "message": "Buka tindakan langkah untuk {title}"
   },
   "panels/recorder/StepView.ts | removeBreakpoint": {
-    "message": "Alih keluar titik putus"
+    "message": "Alih keluar titik putus untuk {title}"
   },
   "panels/recorder/StepView.ts | removeStep": {
     "message": "Alih keluar langkah"
@@ -14069,6 +14201,9 @@
   "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
     "message": "Pola URL"
   },
+  "panels/settings/EditFileSystemView.ts | addSubfolder": {
+    "message": "Tambahkan subfolder"
+  },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "Masukkan laluan"
   },
@@ -14078,8 +14213,14 @@
   "panels/settings/EditFileSystemView.ts | excludedFolders": {
     "message": "Subfolder yang dikecualikan"
   },
+  "panels/settings/EditFileSystemView.ts | folderPath": {
+    "message": "Laluan folder"
+  },
   "panels/settings/EditFileSystemView.ts | url": {
     "message": "URL"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | add": {
+    "message": "Tambah"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Tambahkan peraturan ungkapan nalar untuk URL"
@@ -14089,6 +14230,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Skrip pihak ketiga yang diketahui daripada peta sumber"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | cancel": {
+    "message": "Batal"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Peraturan pengecualian tersuai"
@@ -14131,6 +14275,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "Peraturan mestilah ungkapan nalar yang sah"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | save": {
+    "message": "Simpan"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "Senarai penuh pintasan papan kekunci dan gerak isyarat DevTools"
@@ -14282,8 +14429,14 @@
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Lihat profil"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | add": {
+    "message": "Tambah"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Tambahkan peranti tersuai"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cancel": {
+    "message": "Batal"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
     "message": "Bulatkan"
@@ -14404,6 +14557,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
     "message": "{PH1}: Sisipan atas dan bawah tidak boleh melebihi ketinggian peranti"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | save": {
+    "message": "Simpan"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Rentetan ejen pengguna"
@@ -14647,6 +14803,9 @@
   },
   "panels/sources/BreakpointsView.ts | checked": {
     "message": "ditandai"
+  },
+  "panels/sources/BreakpointsView.ts | collapseAll": {
+    "message": "Kuncupkan semua"
   },
   "panels/sources/BreakpointsView.ts | conditionCode": {
     "message": "Keadaan: {PH1}"
@@ -15050,11 +15209,20 @@
   "panels/sources/NavigatorView.ts | rename": {
     "message": "Namakan semula…"
   },
+  "panels/sources/NavigatorView.ts | run": {
+    "message": "Jalankan"
+  },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (daripada peta sumber)"
   },
   "panels/sources/NavigatorView.ts | sIgnoreListed": {
     "message": "{PH1} (disenaraiabaikan)"
+  },
+  "panels/sources/NavigatorView.ts | saveAs": {
+    "message": "Simpan sebagai…"
+  },
+  "panels/sources/NavigatorView.ts | saveAsFailed": {
+    "message": "Gagal menyimpan fail pada cakera"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Cari dalam semua fail"
@@ -15131,6 +15299,9 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
+  "panels/sources/SourcesNavigator.ts | addFolderManually": {
+    "message": "Tambahkan folder secara manual"
+  },
   "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
     "message": "Gunakan {PH1} untuk menyambung folder projek anda secara automatik"
   },
@@ -15151,6 +15322,9 @@
   },
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
     "message": "Tetapkan ruang kerja untuk menyegerakkan edit secara terus kepada sumber yang anda bangunkan"
+  },
+  "panels/sources/SourcesNavigator.ts | localOverrides": {
+    "message": "Penggantian setempat"
   },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Coretan baharu"
@@ -17279,6 +17453,12 @@
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
     "message": "Cerapan: {PH1}"
   },
+  "panels/timeline/components/Sidebar.ts | annotations": {
+    "message": "Anotasi"
+  },
+  "panels/timeline/components/Sidebar.ts | insights": {
+    "message": "Cerapan"
+  },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Anotasikan surih untuk diri anda dan orang lain"
   },
@@ -17554,6 +17734,9 @@
   },
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "Keadaan"
+  },
+  "panels/web_audio/WebAudioView.ts | webAudioInspectionPaused": {
+    "message": "Pemeriksaan Audio Web dijeda"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "audio"

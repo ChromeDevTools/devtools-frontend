@@ -8,11 +8,12 @@ import sinon from 'sinon';
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import {getAxeViolations} from '../../../../testing/AxeHelpers.js';
 import {renderElementIntoDOM, setColorScheme} from '../../../../testing/DOMHelpers.js';
-import {createFakeSetting} from '../../../../testing/EnvironmentHelpers.js';
+import {createFakeSetting, describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import * as SettingsUI from '../../../settings/settings.js';
-import {ListModel} from '../../legacy.js';
+import * as UI from '../../legacy.js';
 
 import * as QuickOpen from './quick_open.js';
 
@@ -31,7 +32,7 @@ function createCommandMenuProvider(inputs: string[]) {
 async function testMatch(inputs: string[], query: string, expectedSelection: number, expectedMatches: number[]) {
   const provider = createCommandMenuProvider(inputs);
   const selectItem = sinon.spy(provider, 'selectItem');
-  const listModelReplaceAll = sinon.spy(ListModel.ListModel.prototype, 'replaceAll');
+  const listModelReplaceAll = sinon.spy(UI.ListModel.ListModel.prototype, 'replaceAll');
   const history: string[] = [];
   const filteredListWidget = new QuickOpen.FilteredListWidget.FilteredListWidget(provider, history, () => undefined);
   await filteredListWidget.setQuery(query);
@@ -169,4 +170,50 @@ describe('FilteredListWidget', () => {
     await testMatch(['^[]{}()\\.$*+?|', '0123456789abcdef'], '^[]{}()\\.$*+?|', 0, [0]);
   });
 
+});
+
+describeWithEnvironment('QuickOpen dialog accessibility', () => {
+  let resolveProvider!: (provider: QuickOpen.FilteredListWidget.Provider) => void;
+  let defaultProviderRegistration!: QuickOpen.FilteredListWidget.ProviderRegistration;
+
+  beforeEach(() => {
+    // Keep the default provider pending while the dialog opens, matching the
+    // asynchronous module load in `sources-meta.ts` so `FilteredListWidget`
+    // renders its initial empty-provider dialog state during validation.
+    const {promise, resolve} = Promise.withResolvers<QuickOpen.FilteredListWidget.Provider>();
+    resolveProvider = resolve;
+    defaultProviderRegistration = {
+      prefix: '',
+      iconName: 'document',
+      provider: () => promise,
+      helpTitle: () => 'Open file',
+      titlePrefix: () => 'Open',
+      titleSuggestion: () => 'File',
+      jslogContext: 'source-file',
+    };
+    QuickOpen.FilteredListWidget.registerProvider(defaultProviderRegistration);
+  });
+
+  afterEach(() => {
+    UI.Dialog.Dialog.getInstance()?.hide();
+    resolveProvider(new QuickOpen.FilteredListWidget.Provider());
+    const registeredProviders = QuickOpen.FilteredListWidget.getRegisteredProviders();
+    const index = registeredProviders.indexOf(defaultProviderRegistration);
+    if (index !== -1) {
+      registeredProviders.splice(index, 1);
+    }
+  });
+
+  it('has no aXe violations', async () => {
+    QuickOpen.QuickOpen.QuickOpenImpl.show('');
+
+    const dialog = UI.Dialog.Dialog.getInstance();
+    assert.exists(dialog);
+    const defaultFocusedElement = dialog.widget().getDefaultFocusedElement();
+    assert.exists(defaultFocusedElement);
+    const filteredListWidget = UI.Widget.Widget.get(defaultFocusedElement);
+    assert.instanceOf(filteredListWidget, QuickOpen.FilteredListWidget.FilteredListWidget);
+
+    assert.isEmpty(await getAxeViolations(filteredListWidget.contentElement));
+  });
 });

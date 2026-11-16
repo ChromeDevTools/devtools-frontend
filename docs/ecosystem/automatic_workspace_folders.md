@@ -47,10 +47,19 @@ from a well-known location on the devserver, as outlined in the
 `/.well-known/appspecific/` folder of the inspected page. For the automatic
 workspace folders, it has to contain a `workspace` object with two properties:
 
--   `workspace.root` is the absolute path to the project folder (where the
-    source code is located).
--   `workspace.uuid` is a valid UUID, ideally a v4 UUID, generated randomly when
-    setting up the project folder.
+-   `workspace.root` is a non-empty local absolute path to the non-root project
+    folder (where the source code is located). It must not contain leading or
+    trailing whitespace, control or bidirectional control characters, relative
+    or UNC/network paths, filesystem or drive roots (such as `/` or `C:\`),
+    `.` or `..` path segments, or (on Windows) segments ending with `.` or a
+    space or containing `:` (alternate data streams). Chrome also blocks
+    OS/system directories (such as `/etc`), user home or profile directories and
+    sensitive dotfiles (such as `~/.ssh`), Chrome user data directories,
+    write-blocked `.git`/`.mvn` paths, and symlinks resolving to blocked
+    locations.
+-   `workspace.uuid` is a valid canonical UUID string
+    (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` hex format), ideally a v4 UUID
+    generated randomly when setting up the project folder.
 
 An example `com.chrome.devtools.json` would look like this:
 

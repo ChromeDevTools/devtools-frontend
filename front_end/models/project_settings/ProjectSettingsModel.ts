@@ -70,6 +70,82 @@ export type ProjectSettingsAvailability = 'available'|'unavailable';
 
 const EMPTY_PROJECT_SETTINGS: ProjectSettings = Object.freeze({});
 const IDLE_PROMISE: Promise<void> = Promise.resolve();
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const DISALLOWED_PATH_CHARS_REGEX = /[\p{Cc}\p{Cs}\p{Bidi_Control}]/u;
+const WINDOWS_DRIVE_ABSOLUTE_PREFIX_REGEX = /^[A-Za-z]:[\\/]/;
+
+/**
+ * Checks whether `uuid` is a valid canonical UUID string (`8-4-4-4-12` hex
+ * format).
+ *
+ * @param uuid the candidate workspace UUID string.
+ * @returns `true` if `uuid` matches the canonical UUID format.
+ */
+function isValidWorkspaceUuid(uuid: string): boolean {
+  return UUID_REGEX.test(uuid);
+}
+
+/**
+ * Validates that `root` is a syntactically valid local absolute non-root
+ * directory path for `workspace.root`.
+ *
+ * Validation is intentionally platform-agnostic: it accepts both POSIX and
+ * Windows drive-letter local directory syntax regardless of the host OS so
+ * behavior and unit tests stay consistent across platforms.
+ *
+ * Requirements enforced:
+ * - Non-empty string with no leading or trailing whitespace (`root.trim() === root`).
+ * - No Unicode control characters (`\p{Cc}`: NUL, C0, DEL, C1), lone UTF-16
+ *   surrogates (`\p{Cs}`), or bidirectional control characters
+ *   (`\p{Bidi_Control}`, including LRM, RLM, ALM, embeddings, overrides, and
+ *   isolates).
+ * - Either a local POSIX absolute path starting with `/` (rejecting `//` and
+ *   mixed `/\` prefixes used by UNC/network paths and `///`) or a Windows
+ *   drive-letter absolute path starting with `[A-Za-z]:\` or `[A-Za-z]:/`
+ *   (rejecting relative paths, drive-relative paths like `C:foo` or `\foo`,
+ *   and UNC/network paths like `\\server\share`, `\\wsl.localhost`, or
+ *   `\\wsl$`, which are also rejected by
+ *   `DevToolsFileHelper::ConnectAutomaticFileSystem` via `!path.IsNetwork()`).
+ * - At least one non-empty path segment after the root or drive prefix
+ *   (rejecting filesystem and drive roots such as `/`, `C:\`, `D:/`), while
+ *   permitting trailing separators on non-root directories (e.g.,
+ *   `/home/user/project/`).
+ * - No `.` or `..` traversal segments. Windows-specific segment checks
+ *   (rejecting trailing `.` or `' '`, which Win32 normalization collapses, e.g.,
+ *   `D:\. \`, and `:` alternate data streams) apply only to `[A-Za-z]:[\\/]`
+ *   paths because POSIX legitimately permits `:` and trailing `.` in folder
+ *   names, whereas on Windows any path starting with a single `/` is
+ *   drive-relative (`!path.IsAbsolute()`) and is synchronously rejected by
+ *   `DevToolsFileHelper` on the browser side.
+ *
+ * Browser-side sensitive directory checks (OS/system directories such as
+ * `/etc`, user home/profile directories and sensitive dotfiles such as
+ * `~/.ssh`, Chrome user data directories, `.git`/`.mvn` write-blocked paths,
+ * and symlinks resolving to blocked paths) are enforced separately in the
+ * browser host (`DevToolsFileHelper`).
+ *
+ * @param root the candidate workspace root string.
+ * @returns `true` if `root` satisfies all syntactic workspace root checks.
+ */
+function isValidWorkspaceRoot(root: string): root is Platform.DevToolsPath.RawPathString {
+  if (root.length === 0 || root.trim() !== root || DISALLOWED_PATH_CHARS_REGEX.test(root)) {
+    return false;
+  }
+  if (root.startsWith('/')) {
+    if (root.startsWith('//') || root.startsWith('/\\')) {
+      return false;
+    }
+    const segments = root.slice(1).split('/').filter(segment => segment.length > 0);
+    return segments.length > 0 && segments.every(segment => segment !== '.' && segment !== '..');
+  }
+  if (WINDOWS_DRIVE_ABSOLUTE_PREFIX_REGEX.test(root)) {
+    const segments = root.slice(2).split(/[\\/]/).filter(segment => segment.length > 0);
+    return segments.length > 0 &&
+        segments.every(segment => segment !== '.' && segment !== '..' && !segment.endsWith('.') &&
+                           !segment.endsWith(' ') && !segment.includes(':'));
+  }
+  return false;
+}
 
 export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #pageResourceLoader: SDK.PageResourceLoader.PageResourceLoader;
@@ -177,17 +253,24 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
         {target, frameId, initiatorUrl},
     );
     const devtoolsJSON = JSON.parse(content);
-    if (typeof devtoolsJSON.workspace !== 'undefined') {
+    if (typeof devtoolsJSON !== 'object' || devtoolsJSON === null || Array.isArray(devtoolsJSON)) {
+      throw new Error('Invalid project settings payload');
+    }
+    // Guard with Object.hasOwn as defense-in-depth against Object.prototype pollution.
+    if (Object.hasOwn(devtoolsJSON, 'workspace') && typeof devtoolsJSON.workspace !== 'undefined') {
       const {workspace} = devtoolsJSON;
-      if (typeof workspace !== 'object' || workspace === null) {
+      if (typeof workspace !== 'object' || workspace === null || Array.isArray(workspace)) {
         throw new Error('Invalid "workspace" field');
       }
-      if (typeof workspace.root !== 'string') {
+      if (!Object.hasOwn(workspace, 'root') || typeof workspace.root !== 'string' ||
+          !isValidWorkspaceRoot(workspace.root)) {
         throw new Error('Invalid or missing "workspace.root" field');
       }
-      if (typeof workspace.uuid !== 'string') {
+      if (!Object.hasOwn(workspace, 'uuid') || typeof workspace.uuid !== 'string' ||
+          !isValidWorkspaceUuid(workspace.uuid)) {
         throw new Error('Invalid or missing "workspace.uuid" field');
       }
+      Object.freeze(workspace);
     }
     return Object.freeze(devtoolsJSON);
   }

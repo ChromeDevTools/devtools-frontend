@@ -65,7 +65,6 @@ devtools_entrypoint("meta") {
 
   ts_deps = [
     ":bundle",
-    "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
   ]

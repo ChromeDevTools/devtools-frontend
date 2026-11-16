@@ -6,6 +6,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 
 import {DataSaverOverride} from './EmulationModel.js';
+import type {Conditions} from './NetworkManager.js';
 
 export const jsSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
   name: 'js-source-maps-enabled',
@@ -351,5 +352,12 @@ export const textEditorIndentSettingDescriptor: Common.Settings.SettingDescripto
   name: 'text-editor-indent',
   type: Common.Settings.SettingType.ENUM,
   defaultValue: '    ',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};
+
+export const customNetworkConditionsSettingDescriptor: Common.Settings.SettingDescriptor<Conditions[]> = {
+  name: 'custom-network-conditions',
+  type: Common.Settings.SettingType.ARRAY,
+  defaultValue: [],
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };

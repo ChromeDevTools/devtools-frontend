@@ -28,6 +28,7 @@ import {type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
 import {
   cacheDisabledSettingDescriptor,
+  customNetworkConditionsSettingDescriptor,
   monitoringXHREnabledSettingDescriptor,
   preserveNetworkLogSettingDescriptor,
   requestBlockingEnabledSettingDescriptor,
@@ -166,7 +167,7 @@ const CONNECTION_TYPES = new Map([
  */
 export function customUserNetworkConditionsSetting(settings: Common.Settings.Settings):
     Common.Settings.Setting<Conditions[]> {
-  return settings.moduleSetting<Conditions[]>('custom-network-conditions');
+  return settings.resolve(customNetworkConditionsSettingDescriptor);
 }
 
 export function activeNetworkThrottlingKeySetting(settings: Common.Settings.Settings):

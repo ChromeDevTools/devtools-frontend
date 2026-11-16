@@ -127,13 +127,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.deviceTy
   title: i18nLazyString(UIStrings.device),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.modeSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.mode),
-  settingName: 'lighthouse.mode',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'navigation',
 });
 
 Common.Settings.registerSettingExtension({

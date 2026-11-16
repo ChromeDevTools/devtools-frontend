@@ -45,3 +45,10 @@ export const deviceTypeSettingDescriptor: Common.Settings.SettingDescriptor<stri
   defaultValue: 'mobile',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const modeSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'lighthouse.mode',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'navigation',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

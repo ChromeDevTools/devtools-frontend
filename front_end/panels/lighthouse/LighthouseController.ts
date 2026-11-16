@@ -805,7 +805,7 @@ export function getRuntimeSettings(): LighthouseModel.RunTypes.RuntimeSetting[] 
         ],
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.mode'),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.modeSettingDescriptor),
         title: i18nLazyString(UIStrings.lighthouseMode),
         description: i18nLazyString(UIStrings.runLighthouseInMode),
         setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {

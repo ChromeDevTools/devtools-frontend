@@ -112,13 +112,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catBestP
   title: i18nLazyString(UIStrings.bestPractices),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catSeoSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.seo),
-  settingName: 'lighthouse.cat-seo',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

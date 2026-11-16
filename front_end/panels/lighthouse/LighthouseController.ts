@@ -758,7 +758,7 @@ export function getPresets(): LighthouseModel.RunTypes.Preset[] {
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES,
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-seo'),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catSeoSettingDescriptor),
         configID: 'seo',
         title: i18nLazyString(UIStrings.seo),
         description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),

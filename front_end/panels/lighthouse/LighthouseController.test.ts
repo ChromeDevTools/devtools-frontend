@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
@@ -54,7 +55,7 @@ describeWithEnvironment('LighthouseController', () => {
       const protocolService = sinon.createStubInstance(Lighthouse.LighthouseProtocolService.ProtocolService);
       const controller = new Lighthouse.LighthouseController.LighthouseController(protocolService);
 
-      Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-seo').set(false);
+      Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catSeoSettingDescriptor).set(false);
       Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf').set(true);
 
       const categories = controller.getCategoryIDs();
@@ -67,7 +68,7 @@ describeWithEnvironment('LighthouseController', () => {
          const protocolService = sinon.createStubInstance(Lighthouse.LighthouseProtocolService.ProtocolService);
          const controller = new Lighthouse.LighthouseController.LighthouseController(protocolService);
 
-         Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-seo').set(false);
+         Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catSeoSettingDescriptor).set(false);
          Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf').set(false);
 
          const categoriesNoAI = controller.getCategoryIDs({isAIControlled: false, mode: 'navigation'});

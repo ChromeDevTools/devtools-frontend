@@ -191,7 +191,7 @@ export class NetworkLogViewColumns {
   private calculatorsMap: Map<string, NetworkTimeCalculator.NetworkTimeCalculator>;
   private lastWheelTime: number;
   #dataGrid!: DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>;
-  private splitWidget!: UI.SplitWidget.SplitWidget;
+  #isWaterfallVisible = false;
   private waterfallColumn!: NetworkWaterfallColumn;
   private activeScroller!: Element;
   private dataGridScroller!: HTMLElement;
@@ -303,10 +303,8 @@ export class NetworkLogViewColumns {
     this.activeWaterfallSortId = WaterfallSortIds.StartTime;
     this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid.DataGrid.Order.Ascending);
 
-    this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'network-panel-split-view-waterfall', 200);
     const widget = this.#dataGrid.asWidget();
     widget.setMinimumSize(150, 0);
-    this.splitWidget.setMainWidget(widget);
   }
 
   private setupWaterfall(): void {
@@ -336,7 +334,6 @@ export class NetworkLogViewColumns {
     this.waterfallColumn.contentElement.classList.add('network-waterfall-view');
 
     this.waterfallColumn.setMinimumSize(100, 0);
-    this.splitWidget.setSidebarWidget(this.waterfallColumn);
 
     this.switchViewMode(false);
 
@@ -474,16 +471,16 @@ export class NetworkLogViewColumns {
     });
   }
 
-  show(element: Element): void {
-    this.splitWidget.show(element);
-  }
-
-  setHidden(value: boolean): void {
-    UI.ARIAUtils.setHidden(this.splitWidget.element, value);
-  }
-
   dataGrid(): DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode> {
     return this.#dataGrid;
+  }
+
+  waterfall(): NetworkWaterfallColumn {
+    return this.waterfallColumn;
+  }
+
+  isWaterfallVisible(): boolean {
+    return this.#isWaterfallVisible;
   }
 
   sortByCurrentColumn(): void {
@@ -588,20 +585,22 @@ export class NetworkLogViewColumns {
   }
 
   private setWaterfallVisibility(visible: boolean): void {
-    if (!this.splitWidget) {
+    if (!this.waterfallScroller) {
       return;
     }
-    this.networkLogView.element.classList.toggle('has-waterfall', visible);
+    const visibilityChanged = this.#isWaterfallVisible !== visible;
+    this.#isWaterfallVisible = visible;
     if (visible) {
-      this.splitWidget.showBoth();
       this.activeScroller = this.waterfallScroller;
       this.waterfallScroller.scrollTop = this.dataGridScroller.scrollTop;
       this.#dataGrid.setScrollContainer(this.waterfallScroller);
     } else {
       this.networkLogView.removeAllNodeHighlights();
-      this.splitWidget.hideSidebar();
       this.activeScroller = this.dataGridScroller;
       this.#dataGrid.setScrollContainer(this.dataGridScroller);
+    }
+    if (visibilityChanged) {
+      this.networkLogView.requestUpdate();
     }
   }
 

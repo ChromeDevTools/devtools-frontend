@@ -900,7 +900,6 @@ export default defineConfig([
             'front_end/panels/media/EventDisplayTable.ts',
             'front_end/panels/media/PlayerMessagesView.ts',
             'front_end/panels/media/PlayerPropertiesView.ts',
-            'front_end/panels/network/NetworkLogView.ts',
             'front_end/panels/network/NetworkPanel.ts',
             'front_end/panels/network/NetworkWaterfallColumn.ts',
             'front_end/panels/network/RequestDeviceBoundSessionsView.ts',

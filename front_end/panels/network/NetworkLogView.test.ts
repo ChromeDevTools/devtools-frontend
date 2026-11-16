@@ -575,7 +575,7 @@ describeWithEnvironment('NetworkLogView', () => {
           rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [URL_2]);
     });
 
-    it('shows summary toolbar with content', () => {
+    it('shows summary toolbar with content', async () => {
       target.setInspectedURL(urlString`http://example.com/`);
       const request = createNetworkRequest('http://example.com/', {finished: true});
       request.endTime = 0.669414;
@@ -589,8 +589,10 @@ describeWithEnvironment('NetworkLogView', () => {
           SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 0.686191});
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 0.683709);
       renderElementIntoDOM(networkLogView);
+      await networkLogView.updateComplete;
 
-      const toolbar = networkLogView.summaryToolbar();
+      const toolbar = networkLogView.element.querySelector('.network-summary-bar');
+      assert.exists(toolbar);
       const textElements = toolbar.querySelectorAll('.toolbar-text');
       assert.exists(textElements);
       const textContents = [...textElements].map(item => item.textContent);
@@ -608,7 +610,7 @@ describeWithEnvironment('NetworkLogView', () => {
       }
     });
 
-    it('shows summary toolbar with filtered counts when filter is active', () => {
+    it('shows summary toolbar with filtered counts when filter is active', async () => {
       target.setInspectedURL(urlString`http://example.com/`);
       const request1 = createNetworkRequest('http://example.com/index.html', {finished: true});
       request1.setTransferSize(1024);
@@ -619,8 +621,10 @@ describeWithEnvironment('NetworkLogView', () => {
 
       networkLogView.setTextFilterValue('script.js');
       renderElementIntoDOM(networkLogView);
+      await networkLogView.updateComplete;
 
-      const toolbar = networkLogView.summaryToolbar();
+      const toolbar = networkLogView.element.querySelector('.network-summary-bar');
+      assert.exists(toolbar);
       const textElements = toolbar.querySelectorAll('.toolbar-text');
       const textContents = [...textElements].map(item => item.textContent);
       if (inScope) {
@@ -861,8 +865,10 @@ describeWithEnvironment('NetworkLogView', () => {
       waterfall: {visible: false, title: 'waterfall'},
     });
     networkLogView = createNetworkLogView();
+    await networkLogView.updateComplete;
     let columns = networkLogView.columns();
-    let networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
+    let networkColumnWidget =
+        UI.Widget.Widget.getOrCreateWidget(networkLogView.element.querySelector('devtools-split-view')!);
     assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
     assert.strictEqual((networkColumnWidget).showMode(), UI.SplitWidget.ShowMode.ONLY_MAIN);
 
@@ -872,7 +878,9 @@ describeWithEnvironment('NetworkLogView', () => {
     networkLogView = createNetworkLogView();
     columns = networkLogView.columns();
     columns.switchViewMode(true);
-    networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
+    await networkLogView.updateComplete;
+    networkColumnWidget =
+        UI.Widget.Widget.getOrCreateWidget(networkLogView.element.querySelector('devtools-split-view')!);
     assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
     assert.strictEqual((networkColumnWidget).showMode(), UI.SplitWidget.ShowMode.BOTH);
   });
@@ -889,9 +897,12 @@ describeWithEnvironment('NetworkLogView', () => {
 
     // First open of NetworkLogView loads custom columns and settings.
     networkLogView = createNetworkLogView();
+    await networkLogView.updateComplete;
     let columns = networkLogView.columns();
     columns.switchViewMode(true);
-    let networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
+    await networkLogView.updateComplete;
+    let networkColumnWidget =
+        UI.Widget.Widget.getOrCreateWidget(networkLogView.element.querySelector('devtools-split-view')!);
     assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
     assert.strictEqual(networkColumnWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
     assert.isFalse(columns.dataGrid().visibleColumnsArray.some(c => c.id === 'response-header-content-type'));
@@ -900,7 +911,9 @@ describeWithEnvironment('NetworkLogView', () => {
     networkLogView = createNetworkLogView();
     columns = networkLogView.columns();
     columns.switchViewMode(true);
-    networkColumnWidget = columns.dataGrid().asWidget().parentWidget();
+    await networkLogView.updateComplete;
+    networkColumnWidget =
+        UI.Widget.Widget.getOrCreateWidget(networkLogView.element.querySelector('devtools-split-view')!);
     assert.instanceOf(networkColumnWidget, UI.SplitWidget.SplitWidget);
     assert.strictEqual(networkColumnWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
     assert.isFalse(columns.dataGrid().visibleColumnsArray.some(c => c.id === 'response-header-content-type'));
@@ -1817,6 +1830,8 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
 
   it('shows instruction to start recording', async () => {
     const networkLogView = createNetworkLogView();
+    renderElementIntoDOM(networkLogView);
+    await networkLogView.updateComplete;
     testPlaceholderText(
         networkLogView, 'No network activity recorded',
         'Record network log to display network activity by using the \"Start recording\" button or by pressing Ctrl');
@@ -1825,7 +1840,9 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
 
   it('shows placeholder with instruction to reload page if already recording', async () => {
     const networkLogView = createNetworkLogView();
+    renderElementIntoDOM(networkLogView);
     networkLogView.setRecording(true);
+    await networkLogView.updateComplete;
 
     testPlaceholderText(networkLogView, 'Currently recording network activity',
                         'Perform a request or reload the page by using the \"Reload page\" button or by pressing Ctrl');
@@ -1835,6 +1852,7 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
   it('hides placeholder when requests are recorded and shows it again on reset', async () => {
     const networkLogView = createNetworkLogView();
     renderElementIntoDOM(networkLogView);
+    await networkLogView.updateComplete;
 
     assert.isNotNull(networkLogView.element.querySelector('.network-status-pane'));
 
@@ -1842,6 +1860,7 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
     const requestsStub = sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requests').returns([request]);
     Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(Logs.NetworkLog.Events.RequestAdded, {request});
     await RenderCoordinator.done({waitForWork: true});
+    await networkLogView.updateComplete;
 
     assert.isNull(networkLogView.element.querySelector('.network-status-pane'));
 
@@ -1849,6 +1868,7 @@ describeWithEnvironment('NetworkLogView placeholder', () => {
     Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(Logs.NetworkLog.Events.Reset,
                                                                    {clearIfPreserved: true});
     await RenderCoordinator.done({waitForWork: true});
+    await networkLogView.updateComplete;
 
     assert.isNotNull(networkLogView.element.querySelector('.network-status-pane'));
     networkLogView.detach();
@@ -1919,14 +1939,24 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.isNull(call.args[1]);
   });
 
-  it('toggles no-node-selected class on container when updateNodeSelectedClass is called', () => {
-    const networkLogView = createNetworkLogView();
+  it('toggles no-node-selected class on container when updateNodeSelectedClass is called', async () => {
+    const view = sinon.spy(Network.NetworkLogView.DEFAULT_VIEW);
+    const filterBar = new UI.FilterBar.FilterBar('network-test');
+    const networkLogView = new Network.NetworkLogView.NetworkLogView(
+        filterBar, document.createElement('div'),
+        Common.Settings.Settings.instance().createSetting('network-log-large-rows', false), view);
+    await networkLogView.updateComplete;
+    assert.isFalse(view.lastCall.args[0].isNodeSelected);
     assert.isTrue(networkLogView.element.classList.contains('no-node-selected'));
 
     networkLogView.updateNodeSelectedClass(true);
+    await networkLogView.updateComplete;
+    assert.isTrue(view.lastCall.args[0].isNodeSelected);
     assert.isFalse(networkLogView.element.classList.contains('no-node-selected'));
 
     networkLogView.updateNodeSelectedClass(false);
+    await networkLogView.updateComplete;
+    assert.isFalse(view.lastCall.args[0].isNodeSelected);
     assert.isTrue(networkLogView.element.classList.contains('no-node-selected'));
   });
 });

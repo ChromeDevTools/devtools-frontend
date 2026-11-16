@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -59,7 +58,7 @@ import dataGridAiButtonStyles from '../../ui/legacy/components/data_grid/dataGri
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -77,6 +76,7 @@ import {
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import networkLogViewStyles from './networkLogView.css.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
+import type {NetworkWaterfallColumn} from './NetworkWaterfallColumn.js';
 
 const UIStrings = {
   /**
@@ -535,6 +535,178 @@ const enum FetchStyle {
   NODE_JS = 1,
 }
 
+export interface ViewInput {
+  recording: boolean;
+  showRecordingHint: boolean;
+  recordingActionShortcut: string;
+  onRecordingAction?: () => void;
+  nodeCount: number;
+  selectedNodeCount: number;
+  transferSize: number;
+  selectedTransferSize: number;
+  resourceSize: number;
+  selectedResourceSize: number;
+  baseTime: number;
+  maxTime: number;
+  domContentLoadedTime: number;
+  loadTime: number;
+  isNodeSelected: boolean;
+  isGridFocused: boolean;
+  isWaterfallVisible: boolean;
+  // TODO(crbug.com/414631097): Remove once NetworkLogViewColumns is migrated to UI eng vision.
+  dataGridWidget: DataGrid.DataGrid.DataGridWidget<NetworkNode>;
+  waterfallColumn: NetworkWaterfallColumn;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const classes: string[] = [];
+  if (!input.isNodeSelected) {
+    classes.push('no-node-selected');
+  }
+  if (input.isGridFocused) {
+    classes.push('grid-focused');
+  }
+  if (input.isWaterfallVisible) {
+    classes.push('has-waterfall');
+  }
+
+  const actionName = input.recording ? 'inspector-main.reload' : 'network.toggle-recording';
+  const header = input.recording ? i18nString(UIStrings.recordingNetworkActivity) :
+                                   i18nString(UIStrings.noNetworkActivityRecorded);
+  const instruction =
+      input.recording ? UIStrings.performARequestOrHitSToRecordThe : UIStrings.recordToDisplayNetworkActivity;
+  const buttonText = input.recording ? i18nString(UIStrings.reloadPage) : i18nString(UIStrings.startRecording);
+  // eslint-disable-next-line @devtools/l10n-i18nString-call-only-with-uistrings
+  const description = input.recordingActionShortcut ? i18nString(instruction, {
+    PH1: buttonText,
+    PH2: input.recordingActionShortcut,
+  }) :
+                                                      '';
+
+  const summaryItems: Array<{
+    text: Common.UIString.LocalizedString,
+    title: Common.UIString.LocalizedString,
+    color?: string,
+  }> = [];
+  if (!input.showRecordingHint && input.nodeCount > 0) {
+    const appendChunk =
+        (chunk: Common.UIString.LocalizedString, title?: Common.UIString.LocalizedString, color?: string): void => {
+          summaryItems.push({text: chunk, title: title ?? chunk, color});
+        };
+
+    if (input.selectedNodeCount !== input.nodeCount) {
+      appendChunk(i18nString(UIStrings.sSRequests, {PH1: input.selectedNodeCount, PH2: input.nodeCount}));
+      appendChunk(i18nString(UIStrings.sSTransferred, {
+                    PH1: i18n.ByteUtilities.formatBytesToKb(input.selectedTransferSize),
+                    PH2: i18n.ByteUtilities.formatBytesToKb(input.transferSize),
+                  }),
+                  i18nString(UIStrings.sBSBTransferredOverNetwork, {
+                    PH1: input.selectedTransferSize,
+                    PH2: input.transferSize,
+                  }));
+      appendChunk(i18nString(UIStrings.sSResources, {
+                    PH1: i18n.ByteUtilities.formatBytesToKb(input.selectedResourceSize),
+                    PH2: i18n.ByteUtilities.formatBytesToKb(input.resourceSize),
+                  }),
+                  i18nString(UIStrings.sBSBResourcesLoadedByThePage, {
+                    PH1: input.selectedResourceSize,
+                    PH2: input.resourceSize,
+                  }));
+    } else {
+      appendChunk(i18nString(UIStrings.sRequests, {PH1: input.nodeCount}));
+      appendChunk(i18nString(UIStrings.sTransferred, {PH1: i18n.ByteUtilities.bytesToString(input.transferSize)}),
+                  i18nString(UIStrings.sBTransferredOverNetwork, {PH1: input.transferSize}));
+      appendChunk(i18nString(UIStrings.sResources, {PH1: i18n.ByteUtilities.bytesToString(input.resourceSize)}),
+                  i18nString(UIStrings.sBResourcesLoadedByThePage, {PH1: input.resourceSize}));
+    }
+
+    if (input.baseTime !== -1 && input.maxTime !== -1) {
+      appendChunk(i18nString(UIStrings.finishS, {
+        PH1: i18n.TimeUtilities.secondsToString(input.maxTime - input.baseTime),
+      }));
+      if (input.domContentLoadedTime !== -1 && input.domContentLoadedTime > input.baseTime) {
+        const domContentLoadedText = i18nString(UIStrings.domcontentloadedS, {
+          PH1: i18n.TimeUtilities.secondsToString(input.domContentLoadedTime - input.baseTime),
+        });
+        appendChunk(domContentLoadedText, undefined, NetworkLogView.getDCLEventColor());
+      }
+      if (input.loadTime !== -1) {
+        const loadText = i18nString(UIStrings.loadS, {
+          PH1: i18n.TimeUtilities.secondsToString(input.loadTime - input.baseTime),
+        });
+        appendChunk(loadText, undefined, NetworkLogView.getLoadEventColor());
+      }
+    }
+  }
+
+  // clang-format off
+  render(html`
+    <style>${networkLogViewStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${dataGridAiButtonStyles} }</style>
+    <devtools-split-view
+      direction="column"
+      sidebar-position="second"
+      name="network-panel-split-view-waterfall"
+      sidebar-initial-size="200"
+      show=${input.isWaterfallVisible ? 'both' : 'main'}
+      aria-hidden=${input.showRecordingHint}>
+      <div
+        slot="main"
+        ${UI.Widget.widget(UI.Widget.WrapperWidget, {widget: input.dataGridWidget})}>
+      </div>
+      <div
+        slot="sidebar"
+        ${UI.Widget.widget(UI.Widget.WrapperWidget, {
+          widget: input.isWaterfallVisible ? input.waterfallColumn : null,
+        })}>
+      </div>
+    </devtools-split-view>
+    ${input.showRecordingHint ? html`
+      <devtools-widget
+        class="network-status-pane"
+        ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, {
+          header,
+          text: description,
+          link: 'https://developer.chrome.com/docs/devtools/network/' as Platform.DevToolsPath.UrlString,
+        })}>
+        ${input.onRecordingAction ? html`
+          <devtools-button
+            .variant=${Buttons.Button.Variant.TONAL}
+            .jslogContext=${actionName}
+            @click=${input.onRecordingAction}>
+            ${buttonText}
+          </devtools-button>
+        ` : nothing}
+      </devtools-widget>
+    ` : nothing}
+    <devtools-toolbar
+      class="network-summary-bar"
+      role="status"
+      aria-hidden=${input.showRecordingHint}>
+      ${summaryItems.map((item, index) => html`
+        ${index > 0 ? html`<div class="toolbar-divider toolbar-item"></div>` : nothing}
+        <div
+          class="toolbar-text toolbar-item"
+          title=${item.title}
+          aria-label=${item.title}
+          style=${Directives.styleMap({color: item.color ? `var(${item.color})` : undefined})}>
+          ${item.text}
+        </div>
+      `)}
+    </devtools-toolbar>
+  `, target, {
+    container: {
+      attributes: {
+        id: 'network-container',
+      },
+      classes,
+    },
+  });
+  // clang-format on
+};
+
 const NetworkLogViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
         UI.Widget.VBox,
@@ -542,6 +714,7 @@ const NetworkLogViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.
 
 export class NetworkLogView extends NetworkLogViewBase implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
+  readonly #view: View;
   readonly #networkInvertFilterSetting: Common.Settings.Setting<boolean>;
   readonly #networkHideDataURLSetting: Common.Settings.Setting<boolean>;
   readonly #networkHideChromeExtensions: Common.Settings.Setting<boolean>;
@@ -565,7 +738,17 @@ export class NetworkLogView extends NetworkLogViewBase implements
   #filters: Filter[];
   #timeFilter: Filter|null;
   #hoveredNode: NetworkNode|null;
-  #recordingHint: UI.EmptyWidget.EmptyWidget|null;
+  #showRecordingHintState: boolean;
+  #nodeCount: number;
+  #selectedNodeCount: number;
+  #transferSize: number;
+  #selectedTransferSize: number;
+  #resourceSize: number;
+  #selectedResourceSize: number;
+  #baseTime: number;
+  #maxTime: number;
+  #isNodeSelected: boolean;
+  #isGridFocused: boolean;
   #highlightedNode: NetworkRequestNode|null;
   readonly #linkifier: Components.Linkifier.Linkifier;
   // Accessed in web_tests / legacy_test_runner.
@@ -586,20 +769,15 @@ export class NetworkLogView extends NetworkLogViewBase implements
   // Accessed in web_tests / legacy_test_runner.
   // eslint-disable-next-line @devtools/prefer-private-class-members
   private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>;
-  readonly #summaryToolbar: UI.Toolbar.Toolbar;
   readonly #filterBar: UI.FilterBar.FilterBar;
   readonly #textFilterSetting: Common.Settings.Setting<string>;
   #networkRequestToNode: WeakMap<SDK.NetworkRequest.NetworkRequest, NetworkRequestNode>;
 
   constructor(filterBar: UI.FilterBar.FilterBar, progressBarContainer: Element,
-              networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
+              networkLogLargeRowsSetting: Common.Settings.Setting<boolean>, view: View = DEFAULT_VIEW) {
     super();
-    this.registerRequiredCSS(networkLogViewStyles);
-    this.registerRequiredCSS(dataGridAiButtonStyles);
+    this.#view = view;
     this.setMinimumSize(50, 64);
-
-    this.element.id = 'network-container';
-    this.element.classList.add('no-node-selected');
 
     this.#networkRequestToNode = new WeakMap();
 
@@ -635,7 +813,6 @@ export class NetworkLogView extends NetworkLogViewBase implements
 
     this.#columns =
         new NetworkLogViewColumns(this, this.#timeCalculator, this.#durationCalculator, networkLogLargeRowsSetting);
-    this.#columns.show(this.element);
 
     this.staleRequests = new Set();
     this.#mainRequestLoadTime = -1;
@@ -644,7 +821,17 @@ export class NetworkLogView extends NetworkLogViewBase implements
     this.#filters = [];
     this.#timeFilter = null;
     this.#hoveredNode = null;
-    this.#recordingHint = null;
+    this.#showRecordingHintState = false;
+    this.#nodeCount = 0;
+    this.#selectedNodeCount = 0;
+    this.#transferSize = 0;
+    this.#selectedTransferSize = 0;
+    this.#resourceSize = 0;
+    this.#selectedResourceSize = 0;
+    this.#baseTime = -1;
+    this.#maxTime = -1;
+    this.#isNodeSelected = false;
+    this.#isGridFocused = false;
     this.#highlightedNode = null;
 
     this.#linkifier = new Components.Linkifier.Linkifier();
@@ -701,9 +888,6 @@ export class NetworkLogView extends NetworkLogViewBase implements
     filterBar.filterButton().addEventListener(
         UI.Toolbar.ToolbarButton.Events.CLICK, this.dataGrid.scheduleUpdate.bind(this.dataGrid, true /* isFromUser */));
 
-    this.#summaryToolbar = this.element.createChild('devtools-toolbar', 'network-summary-bar');
-    this.#summaryToolbar.setAttribute('role', 'status');
-
     new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.File], i18nString(UIStrings.dropHarFilesHere),
                                  this.#handleDrop.bind(this));
 
@@ -731,6 +915,43 @@ export class NetworkLogView extends NetworkLogViewBase implements
     if (this.#textFilterSetting.get()) {
       this.#textFilterUI.setValue(this.#textFilterSetting.get());
     }
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+    const actionName = this.recording ? 'inspector-main.reload' : 'network.toggle-recording';
+    const action = actionRegistry.hasAction(actionName) ? actionRegistry.getAction(actionName) : null;
+    const shortcutTitle = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? '';
+    this.#view(
+        {
+          recording: this.recording,
+          showRecordingHint: this.#showRecordingHintState,
+          recordingActionShortcut: shortcutTitle,
+          onRecordingAction: shortcutTitle && action ?
+              () => {
+                void action.execute();
+              } :
+              undefined,
+          nodeCount: this.#nodeCount,
+          selectedNodeCount: this.#selectedNodeCount,
+          transferSize: this.#transferSize,
+          selectedTransferSize: this.#selectedTransferSize,
+          resourceSize: this.#resourceSize,
+          selectedResourceSize: this.#selectedResourceSize,
+          baseTime: this.#baseTime,
+          maxTime: this.#maxTime,
+          domContentLoadedTime: this.#mainRequestDOMContentLoadedTime,
+          loadTime: this.#mainRequestLoadTime,
+          isNodeSelected: this.#isNodeSelected,
+          isGridFocused: this.#isGridFocused,
+          isWaterfallVisible: this.#columns.isWaterfallVisible(),
+          dataGridWidget: this.dataGrid.asWidget(),
+          waterfallColumn: this.#columns.waterfall(),
+        },
+        undefined,
+        this.contentElement,
+    );
   }
 
   #updateGroupByFrame(): void {
@@ -1022,10 +1243,6 @@ export class NetworkLogView extends NetworkLogViewBase implements
     return this.#columns;
   }
 
-  summaryToolbar(): UI.Toolbar.Toolbar {
-    return this.#summaryToolbar;
-  }
-
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
     // TODO(allada) Remove dependency on networkManager and instead use NetworkLog and PageLoad for needed data.
     const target = networkManager.target();
@@ -1117,52 +1334,22 @@ export class NetworkLogView extends NetworkLogViewBase implements
   }
 
   #showRecordingHint(): void {
-    this.#hideRecordingHint();
-
-    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-    const actionName = this.recording ? 'inspector-main.reload' : 'network.toggle-recording';
-    const action = actionRegistry.hasAction(actionName) ? actionRegistry.getAction(actionName) : null;
-    const shortcutTitle = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? '';
-
-    const header = this.recording ? i18nString(UIStrings.recordingNetworkActivity) :
-                                    i18nString(UIStrings.noNetworkActivityRecorded);
-    const instruction =
-        this.recording ? UIStrings.performARequestOrHitSToRecordThe : UIStrings.recordToDisplayNetworkActivity;
-    const buttonText = this.recording ? i18nString(UIStrings.reloadPage) : i18nString(UIStrings.startRecording);
-    // eslint-disable-next-line @devtools/l10n-i18nString-call-only-with-uistrings
-    const description = i18nString(instruction, {
-      PH1: buttonText,
-      PH2: shortcutTitle,
-    });
-
-    this.#recordingHint = new UI.EmptyWidget.EmptyWidget(header, shortcutTitle ? description : '');
-    this.#recordingHint.element.classList.add('network-status-pane');
-    this.#recordingHint.link = 'https://developer.chrome.com/docs/devtools/network/' as Platform.DevToolsPath.UrlString;
-    if (shortcutTitle && action) {
-      const button = UI.UIUtils.createTextButton(buttonText, () => action.execute(), {
-        jslogContext: actionName,
-        variant: Buttons.Button.Variant.TONAL,
-      });
-      this.#recordingHint.element.appendChild(button);
-    }
-
-    this.#recordingHint.show(this.element);
+    this.#showRecordingHintState = true;
     this.#setHidden(true);
+    this.requestUpdate();
   }
 
   #hideRecordingHint(): void {
     this.#setHidden(false);
-    if (this.#recordingHint) {
-      this.#recordingHint.detach();
-      this.#recordingHint = null;
+    if (this.#showRecordingHintState) {
+      this.#showRecordingHintState = false;
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkDataAvailable));
+      this.requestUpdate();
     }
-    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkDataAvailable));
   }
 
   #setHidden(value: boolean): void {
-    this.#columns.setHidden(value);
     this.dataGrid.setInert(value);
-    UI.ARIAUtils.setHidden(this.#summaryToolbar, value);
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {
@@ -1244,8 +1431,6 @@ export class NetworkLogView extends NetworkLogViewBase implements
   }
 
   #updateSummaryBar(): void {
-    this.#hideRecordingHint();
-
     let transferSize = 0;
     let resourceSize = 0;
     let selectedNodeNumber = 0;
@@ -1287,64 +1472,22 @@ export class NetworkLogView extends NetworkLogViewBase implements
       }
     }
 
+    this.#nodeCount = nodeCount;
+    this.#selectedNodeCount = selectedNodeNumber;
+    this.#transferSize = transferSize;
+    this.#selectedTransferSize = selectedTransferSize;
+    this.#resourceSize = resourceSize;
+    this.#selectedResourceSize = selectedResourceSize;
+    this.#baseTime = baseTime;
+    this.#maxTime = maxTime;
+
     if (!nodeCount) {
       this.#showRecordingHint();
       return;
     }
 
-    this.#summaryToolbar.removeToolbarItems();
-    const appendChunk = (chunk: string, title?: string): HTMLDivElement => {
-      const toolbarText = new UI.Toolbar.ToolbarText(chunk);
-      toolbarText.setTitle(title ? title : chunk);
-      this.#summaryToolbar.appendToolbarItem(toolbarText);
-      return toolbarText.element as HTMLDivElement;
-    };
-
-    if (selectedNodeNumber !== nodeCount) {
-      appendChunk(i18nString(UIStrings.sSRequests, {PH1: selectedNodeNumber, PH2: nodeCount}));
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(
-          i18nString(UIStrings.sSTransferred, {
-            PH1: i18n.ByteUtilities.formatBytesToKb(selectedTransferSize),
-            PH2: i18n.ByteUtilities.formatBytesToKb(transferSize),
-          }),
-          i18nString(UIStrings.sBSBTransferredOverNetwork, {PH1: selectedTransferSize, PH2: transferSize}));
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(
-          i18nString(UIStrings.sSResources, {
-            PH1: i18n.ByteUtilities.formatBytesToKb(selectedResourceSize),
-            PH2: i18n.ByteUtilities.formatBytesToKb(resourceSize),
-          }),
-          i18nString(UIStrings.sBSBResourcesLoadedByThePage, {PH1: selectedResourceSize, PH2: resourceSize}));
-    } else {
-      appendChunk(i18nString(UIStrings.sRequests, {PH1: nodeCount}));
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(
-          i18nString(UIStrings.sTransferred, {PH1: i18n.ByteUtilities.bytesToString(transferSize)}),
-          i18nString(UIStrings.sBTransferredOverNetwork, {PH1: transferSize}));
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(
-          i18nString(UIStrings.sResources, {PH1: i18n.ByteUtilities.bytesToString(resourceSize)}),
-          i18nString(UIStrings.sBResourcesLoadedByThePage, {PH1: resourceSize}));
-    }
-
-    if (baseTime !== -1 && maxTime !== -1) {
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(i18nString(UIStrings.finishS, {PH1: i18n.TimeUtilities.secondsToString(maxTime - baseTime)}));
-      if (this.#mainRequestDOMContentLoadedTime !== -1 && this.#mainRequestDOMContentLoadedTime > baseTime) {
-        this.#summaryToolbar.appendSeparator();
-        const domContentLoadedText =
-            i18nString(UIStrings.domcontentloadedS,
-                       {PH1: i18n.TimeUtilities.secondsToString(this.#mainRequestDOMContentLoadedTime - baseTime)});
-        appendChunk(domContentLoadedText).style.color = `var(${NetworkLogView.getDCLEventColor()})`;
-      }
-      if (this.#mainRequestLoadTime !== -1) {
-        this.#summaryToolbar.appendSeparator();
-        const loadText = i18nString(UIStrings.loadS,
-                                    {PH1: i18n.TimeUtilities.secondsToString(this.#mainRequestLoadTime - baseTime)});
-        appendChunk(loadText).style.color = `var(${NetworkLogView.getLoadEventColor()})`;
-      }
-    }
+    this.#hideRecordingHint();
+    this.requestUpdate();
   }
 
   scheduleRefresh(): void {
@@ -1458,14 +1601,18 @@ export class NetworkLogView extends NetworkLogViewBase implements
   }
 
   #onDataGridFocus(): void {
-    if (this.dataGrid.element.matches(':focus-visible')) {
-      this.element.classList.add('grid-focused');
+    if (this.dataGrid.element.matches(':focus-visible') && !this.#isGridFocused) {
+      this.#isGridFocused = true;
+      this.requestUpdate();
     }
     this.updateNodeBackground();
   }
 
   #onDataGridBlur(): void {
-    this.element.classList.remove('grid-focused');
+    if (this.#isGridFocused) {
+      this.#isGridFocused = false;
+      this.requestUpdate();
+    }
     this.updateNodeBackground();
   }
 
@@ -1476,11 +1623,11 @@ export class NetworkLogView extends NetworkLogViewBase implements
   }
 
   updateNodeSelectedClass(isSelected: boolean): void {
-    if (isSelected) {
-      this.element.classList.remove('no-node-selected');
-    } else {
-      this.element.classList.add('no-node-selected');
+    if (this.#isNodeSelected === isSelected) {
+      return;
     }
+    this.#isNodeSelected = isSelected;
+    this.requestUpdate();
   }
 
   stylesChanged(): void {

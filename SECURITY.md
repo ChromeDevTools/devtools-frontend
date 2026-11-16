@@ -57,3 +57,7 @@ Chrome DevTools is a privileged web app running in a sandboxed renderer process,
 
 ### Self-XSS Paste Gate
 * The self-XSS paste gate is not a security boundary. It is supposed to reduce the chance for abuse, not to fully prevent it. Issues around bypassing it are social engineering, and outside of our threat model.
+
+### DevToolsUIBindings::LoadNetworkResource
+* `DevToolsUIBindings::LoadNetworkResource` is a binding exposed to the Chrome DevTools web app. DevTools uses it to load resources such as source maps when loading through the CDP target is not possible.
+* `DevToolsUIBindings::LoadNetworkResource` does not enforce Local Network Access checks on the requests because the resource content is not exposed to the inspected page and loading local source maps is a valid use case. Requests to local network endpoints triggered through this binding when DevTools is open are intended behavior and outside of our threat model.

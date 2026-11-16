@@ -913,7 +913,6 @@ export default defineConfig([
             'front_end/panels/profiler/HeapProfileView.ts',
             'front_end/panels/profiler/ProfileLauncherView.ts',
             'front_end/panels/profiler/ProfilesPanel.ts',
-            'front_end/panels/settings/AISettingsTab.ts',
             'front_end/panels/settings/emulation/DevicesSettingsTab.ts',
             'front_end/panels/settings/emulation/components/UserAgentClientHintsForm.ts',
             'front_end/panels/sources/FilteredUISourceCodeListProvider.ts',

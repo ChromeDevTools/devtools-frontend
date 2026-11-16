@@ -92,16 +92,15 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
     }
 
     function stringMatchesQuery(string: string): boolean {
-      const flags = searchConfig.ignoreCase() ? 'i' : '';
-      const regExps =
-          searchConfig.queries().map(query => new RegExp(Platform.StringUtilities.escapeForRegExp(query), flags));
+      const regExps = searchConfig.queries().map(query => Platform.StringUtilities.createSearchRegex(
+                                                     query, !searchConfig.ignoreCase(), searchConfig.isRegex()));
       let pos = 0;
       for (const regExp of regExps) {
-        const match = string.substr(pos).match(regExp);
-        if (match?.index === undefined) {
+        regExp.lastIndex = pos;
+        if (!regExp.exec(string)) {
           return false;
         }
-        pos += match.index + match[0].length;
+        pos = regExp.lastIndex;
       }
       return true;
     }

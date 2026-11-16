@@ -210,6 +210,27 @@ describe('SearchResultsPane', () => {
         ['the', 'the', 'the']);
   });
 
+  for (const {query,
+              lineContent,
+              expectedRanges} of [{query: '^', lineContent: 'a', expectedRanges: []},
+                                  {query: 'a|', lineContent: 'aba', expectedRanges: [[0, 1], [2, 1]]},
+  ]) {
+    it(`handles zero-length regex matches for "${query}"`, async () => {
+      const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
+      const searchConfig = new Workspace.SearchConfig.SearchConfig(query, false, true);
+      const resultPane = new Search.SearchResultsPane.SearchResultsPane(undefined, view);
+      resultPane.searchConfig = searchConfig;
+      const searchResult = new FakeSearchResult('file.txt', 'file.txt', [{lineNumber: 0, lineContent}]);
+      resultPane.searchResults = [searchResult];
+
+      resultPane.showAllMatches();
+
+      const matches = (await view.nextInput).matches.get(searchResult)!;
+      assert.lengthOf(matches, 1);
+      assert.deepEqual(matches[0].matchRanges.map(range => [range.offset, range.length]), expectedRanges);
+    });
+  }
+
   it('highlights only the specified match when matchColumn/matchLength is present', async () => {
     const view = createViewFunctionStub(Search.SearchResultsPane.SearchResultsPane);
     const searchConfig = new Workspace.SearchConfig.SearchConfig('the', true, false);

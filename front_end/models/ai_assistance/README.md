@@ -23,6 +23,7 @@ Contexts are defined as subclasses extending the `ConversationContext` abstract 
 - `getOrigin()`: the origin of the data. This is critical for security: if the user switches to a new context with a different origin, the panel forces a new conversation to avoid cross-origin data exposure.
 - `getTitle()`: returns the user-facing title of the context.
 - `getPromptDetails()`: returns a Markdown formatted description of the context item to be directly included in the LLM prompt.
+- `getPromptFacts()`: returns persistent facts about the context that are only sent to the model once per conversation. Used only by `AiAgent2` (V1 agents use `addFact()`), and implementations must return stable constant `PromptFact` references because `AiAgent2` deduplicates facts by reference identity.
 - `getUserFacingDetails()`: returns structured details (such as request/response headers, timings, etc.) displayed to the user in the UI under the "Analyzing data" accordion.
 
 Encapsulating prompt formatting and UI generation within the context classes simplifies agent implementations and promotes reusability. Contexts are located in the `contexts/` directory.

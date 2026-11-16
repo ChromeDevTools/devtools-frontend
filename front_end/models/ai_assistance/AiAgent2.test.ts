@@ -895,7 +895,8 @@ describe('AiAgent2', () => {
           undefined = AiAssistance.ToolRegistry.ToolRegistry.get('recordPerformanceTrace');
       assert.exists(recordTraceTool);
       sinon.stub(recordTraceTool, 'permissionPrompt').value(AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS);
-      const fakeContext = sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext);
+      const fakeContext =
+          sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext, {getPromptFacts: []});
       const handlerStub = sinon.stub(recordTraceTool, 'handler').callsFake(async (_args, _capabilities, options) => {
         if (options?.approved !== true) {
           return {
@@ -1184,7 +1185,8 @@ describe('AiAgent2', () => {
       lighthouseRecording: runLighthouseStub,
       originLock: defaultOriginLock,
     });
-    const traceContext = sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext);
+    const traceContext =
+        sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext, {getPromptFacts: []});
 
     const runLighthouseTool = AiAssistance.ToolRegistry.ToolRegistry.get(AiAssistance.Tool.ToolName.RUN_LIGHTHOUSE);
     assert.exists(runLighthouseTool);
@@ -1252,7 +1254,8 @@ describe('AiAgent2', () => {
   });
 
   it('provides getPerformanceTraceContext capability to performance tools', async () => {
-    const traceContext = sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext);
+    const traceContext =
+        sinon.createStubInstance(AiAssistance.PerformanceTraceContext.PerformanceTraceContext, {getPromptFacts: []});
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
@@ -2346,6 +2349,156 @@ describe('AiAgent2', () => {
       assert.strictEqual(
           getSentPromptText(aidaClient, AiAssistance.AiAgent.MAX_STEPS),
           'The selected context is unchanged since it was last provided earlier in this conversation.\n\n# User request\n\nQUERY: q2');
+    });
+  });
+
+  describe('prompt facts deduplication', () => {
+    let agent: AiAssistance.AiAgent2.AiAgent2;
+
+    const factA: AiAssistance.AiAgent.PromptFact = {title: 'Fact A', description: 'desc-A'};
+    const factB: AiAssistance.AiAgent.PromptFact = {title: 'Fact B', description: 'desc-B'};
+    const sharedFact: AiAssistance.AiAgent.PromptFact = {title: 'Shared Fact', description: 'shared-desc'};
+    const contextFact: AiAssistance.AiAgent.PromptFact = {title: 'Context Fact', description: 'context-desc'};
+
+    function createUnmappedContext(
+        promptDetails: string|null,
+        facts: readonly AiAssistance.AiAgent.PromptFact[],
+        ): sinon.SinonStubbedInstance<AiAssistance.LighthouseContext.LighthouseContext> {
+      return sinon.createStubInstance(AiAssistance.LighthouseContext.LighthouseContext, {
+        getPromptDetails: Promise.resolve(promptDetails),
+        getPromptFacts: facts,
+      });
+    }
+
+    beforeEach(() => {
+      sinon.stub(SKILLS, 'styling').value({
+        name: 'styling',
+        description: '',
+        allowedTools: [],
+        instructions: 'instructions for styling',
+        facts: [factA, sharedFact],
+      });
+      sinon.stub(SKILLS, 'network').value({
+        name: 'network',
+        description: '',
+        allowedTools: [],
+        instructions: 'instructions for network',
+        facts: [factB, sharedFact],
+      });
+      agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient(), originLock: defaultOriginLock});
+    });
+
+    it('appends unsent context facts on the first turn and omits them on follow-up turns', async () => {
+      const context = createUnmappedContext('# Lighthouse report\n\nreport details', [factA]);
+
+      const enhancedQuery1 = await agent.enhanceQuery('q1', context);
+      assert.include(enhancedQuery1, '# Lighthouse report\n\nreport details\n\n# References\n\n## Fact A\n\ndesc-A');
+
+      const enhancedQuery2 = await agent.enhanceQuery('q2', context);
+      assert.include(enhancedQuery2, 'The selected context is unchanged');
+      assert.notInclude(enhancedQuery2, 'Fact A');
+    });
+
+    it('sends prompt facts when context details are null and omits them on follow-up turns', async () => {
+      const context = createUnmappedContext(null, [factA]);
+
+      const enhancedQuery1 = await agent.enhanceQuery('q1', context);
+      assert.strictEqual(enhancedQuery1, '# References\n\n## Fact A\n\ndesc-A\n\n# User request\n\nQUERY: q1');
+
+      const enhancedQuery2 = await agent.enhanceQuery('q2', context);
+      assert.strictEqual(enhancedQuery2, 'q2');
+    });
+
+    it('deduplicates facts across context and skill loading', async () => {
+      const context = createUnmappedContext(null, [factA]);
+
+      await agent.enhanceQuery('q1', context);
+
+      const skillResponse = await agent.learnSkill(['styling']);
+      assert.include(skillResponse, 'instructions for styling\n\n# References\n\n## Shared Fact\n\nshared-desc');
+      assert.notInclude(skillResponse, 'Fact A');
+    });
+
+    it('deduplicates facts across skill loading then context evaluation', async () => {
+      await agent.learnSkill(['styling']);
+
+      const context = createUnmappedContext('context details', [factA]);
+
+      const enhancedQuery = await agent.enhanceQuery('q1', context);
+      assert.strictEqual(enhancedQuery, 'context details\n\n# User request\n\nQUERY: q1');
+    });
+
+    it('deduplicates shared facts across an auto-loaded skill and its context', async () => {
+      const context = new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(context, 'getPromptDetails').resolves('# Inspected element\n\nnode details');
+      sinon.stub(context, 'getPromptFacts').returns([sharedFact, contextFact]);
+
+      const enhancedQuery = await agent.enhanceQuery('q1', context);
+      assert.strictEqual(
+          enhancedQuery,
+          [
+            'Skill styling loaded. Instructions:\ninstructions for styling',
+            '# References\n\n## Fact A\n\ndesc-A\n\n## Shared Fact\n\nshared-desc',
+            '# Inspected element\n\nnode details',
+            '# References\n\n## Context Fact\n\ncontext-desc',
+            '# User request\n\nQUERY: q1',
+          ].join('\n\n'),
+      );
+    });
+
+    it('delimits the query when an auto-loaded skill consumes all facts on a null-details context', async () => {
+      const context = new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(context, 'getPromptDetails').resolves(null);
+      sinon.stub(context, 'getPromptFacts').returns([sharedFact]);
+
+      const enhancedQuery = await agent.enhanceQuery('q1', context);
+      assert.strictEqual(
+          enhancedQuery,
+          [
+            'Skill styling loaded. Instructions:\ninstructions for styling',
+            '# References\n\n## Fact A\n\ndesc-A\n\n## Shared Fact\n\nshared-desc',
+            '# User request\n\nQUERY: q1',
+          ].join('\n\n'),
+      );
+    });
+
+    it('deduplicates shared facts within a multi-skill learnSkill call', async () => {
+      const skillResponse = await agent.learnSkill(['styling', 'network']);
+
+      assert.strictEqual(
+          skillResponse,
+          'Skill styling loaded. Instructions:\ninstructions for styling\n\n# References\n\n## Fact A\n\ndesc-A\n\n## Shared Fact\n\nshared-desc\n\n' +
+              'Skill network loaded. Instructions:\ninstructions for network\n\n# References\n\n## Fact B\n\ndesc-B');
+    });
+
+    it('resends facts after an abort error clears the cache', async () => {
+      agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient: mockAidaClient([[MockAidaAbortError]]),
+        originLock: defaultOriginLock,
+      });
+
+      const context = createUnmappedContext('context details', [factA]);
+
+      await Array.fromAsync(agent.run('q1', {selected: context}));
+
+      const enhancedQuery = await agent.enhanceQuery('q2', context);
+      assert.include(enhancedQuery, 'context details\n\n# References\n\n## Fact A\n\ndesc-A');
+    });
+
+    it('omits facts on follow-up turns after a MAX_STEPS error', async () => {
+      const stepResponse: NonNullable<Parameters<typeof mockAidaClient>[0]>[number] = [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['styling']}}],
+      }];
+      const limitAidaClient = mockAidaClient(Array.from({length: AiAssistance.AiAgent.MAX_STEPS}, () => stepResponse));
+      agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: limitAidaClient, originLock: defaultOriginLock});
+
+      const context = createUnmappedContext('context details', [factA]);
+
+      await Array.fromAsync(agent.run('q1', {selected: context}));
+
+      const enhancedQuery = await agent.enhanceQuery('q2', context);
+      assert.notInclude(enhancedQuery, 'Fact A');
     });
   });
 

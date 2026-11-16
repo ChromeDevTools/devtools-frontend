@@ -3,14 +3,17 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {it} from 'mocha';
+import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as Persistence from '../../models/persistence/persistence.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createFakeRegExpSetting, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Settings from './settings.js';
 
@@ -146,5 +149,32 @@ describeWithEnvironment('WorkspaceSettingsTab widget', () => {
     view.input.onRemoveClicked(fileSystem as Persistence.IsolatedFileSystem.IsolatedFileSystem);
 
     sinon.assert.calledOnceWithExactly(removeFileSystemStub, fileSystem);
+  });
+
+  describe('accessibility', () => {
+    it('has no aXe violations', async () => {
+      setUpEnvironment();
+      const fileSystemManager =
+          Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance({forceNew: true});
+      const fileSystem = createStubFileSystem('file:///this/is/a/test');
+      fileSystem.excludedFolders.returns(new Set());
+      fileSystemManager.addPlatformFileSystem(fileSystem.path(), fileSystem);
+
+      const workspaceWidget = new WorkspaceSettingsTab();
+      renderElementIntoDOM(workspaceWidget, {includeCommonStyles: true});
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const cards = workspaceWidget.contentElement.querySelectorAll('devtools-card');
+      assert.lengthOf(cards, 2);
+      assert.strictEqual(cards[0].getAttribute('heading'), 'Workspace');
+      assert.strictEqual(cards[1].getAttribute('heading'), 'test');
+      assert.strictEqual(workspaceWidget.contentElement.querySelector('.excluded-folder-url')?.textContent,
+                         'file:///this/is/a/test');
+      const bounds = workspaceWidget.element.getBoundingClientRect();
+      assert.isAbove(bounds.width, 0);
+      assert.isAbove(bounds.height, 0);
+
+      assert.isEmpty(await getAxeViolations(workspaceWidget.element));
+    });
   });
 });

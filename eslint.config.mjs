@@ -908,7 +908,6 @@ export default defineConfig([
             'front_end/panels/profiler/ProfileLauncherView.ts',
             'front_end/panels/profiler/ProfilesPanel.ts',
             'front_end/panels/settings/emulation/DevicesSettingsTab.ts',
-            'front_end/panels/settings/emulation/components/UserAgentClientHintsForm.ts',
             'front_end/panels/sources/FilteredUISourceCodeListProvider.ts',
             'front_end/panels/sources/SourcesNavigator.ts',
             'front_end/panels/sources/SourcesPanel.ts',

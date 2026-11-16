@@ -82,6 +82,7 @@ devtools_foundation_module("foundation_unittests") {
     "GcaClient.test.ts",
     "GdpClient.test.ts",
     "Platform.test.ts",
+    "ResourceLoader.test.ts",
   ]
 
   ts_deps = [

@@ -1380,12 +1380,20 @@ export class DevToolsCloseButton extends HTMLElement {
     this.#button.size = size;
   }
 
+  set size(size: Buttons.Button.Size) {
+    this.setSize(size);
+  }
+
   setTabbable(tabbable: boolean): void {
     if (tabbable) {
       this.#button.tabIndex = 0;
     } else {
       this.#button.tabIndex = -1;
     }
+  }
+
+  set tabbable(tabbable: boolean) {
+    this.setTabbable(tabbable);
   }
 
   override focus(): void {

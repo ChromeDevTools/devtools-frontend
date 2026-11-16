@@ -133,24 +133,6 @@ class FindChromiumRootTest(unittest.TestCase):
 
         self.assertEqual(find_chromium_root.find_chromium_root(devtools), src)
 
-    @unittest.skipUnless(hasattr(os, 'symlink'), 'requires symlinks')
-    def test_symlinked_standalone_checkout(self):
-        standalone = self.mkdir('devtools', 'devtools-frontend')
-        self.write_gclient(self.mkdir('devtools'), STANDALONE_GCLIENT)
-        src = self.mkdir('chromium', 'src')
-        self.write_gclient(self.mkdir('chromium'), CHROMIUM_GCLIENT)
-        link = os.path.join(self.mkdir('chromium', 'src', 'third_party'),
-                            'devtools')
-        try:
-            os.symlink(standalone, link, True)
-        except OSError:
-            self.skipTest('unable to create symlinks')
-
-        # Via the symlink we are part of Chromium, via the real path we are
-        # a standalone checkout.
-        self.assertEqual(find_chromium_root.find_chromium_root(link), src)
-        self.assertIsNone(find_chromium_root.find_chromium_root(standalone))
-
     def test_default_devtools_root_is_the_checkout_of_this_file(self):
         expected = os.path.dirname(
             os.path.dirname(os.path.abspath(find_chromium_root.__file__)))

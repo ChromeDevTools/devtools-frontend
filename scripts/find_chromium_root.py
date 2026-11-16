@@ -24,10 +24,6 @@ If there is no `.gclient` file at all (e.g. in a Chromium source tarball), we
 fall back to looking for `chrome/VERSION` in the ancestors of the DevTools
 directory. If that doesn't exist either, we are in a standalone checkout.
 
-Symbolic links are intentionally not resolved. This way a standalone checkout
-that is symlinked into a Chromium checkout is treated as part of Chromium when
-it is accessed via the symlink.
-
 Use `find_chromium_root()` from Python, or run this file as a script. The
 script prints the absolute path of the Chromium root, or nothing for a
 standalone checkout. This is how `devtools_paths.js` reuses this logic.
@@ -46,7 +42,6 @@ class GclientParseError(Exception):
 
 
 def _default_devtools_root():
-    # Don't resolve symlinks here, see module docstring.
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -127,7 +122,7 @@ def find_chromium_root(devtools_root=None):
 
     Args:
       devtools_root: The root directory of DevTools. Defaults to the DevTools
-          directory that contains this file. Symlinks are not resolved.
+          directory that contains this file.
 
     Raises:
       GclientParseError: The `.gclient` file was found but can't be parsed.
@@ -154,8 +149,8 @@ def main(argv):
         'Prints nothing if DevTools is a standalone checkout.'))
     parser.add_argument(
         '--devtools-root',
-        help=('Root directory of DevTools. Symlinks are not resolved. '
-              'Defaults to the checkout that contains this script.'))
+        help=('Root directory of DevTools. Defaults to the checkout that '
+              'contains this script.'))
     options = parser.parse_args(argv)
 
     try:

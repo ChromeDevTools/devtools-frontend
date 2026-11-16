@@ -208,7 +208,8 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
 
   // clang-format off
   render(html`
-    <style>${Input.textInputStyles}${commentThreadWidgetStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${Input.textInputStyles} }</style>
+    <style>${commentThreadWidgetStyles}</style>
     <div
       class="comment-thread-widget ${classMap({submitted: !showCommentInput})}"
       jslog=${VisualLogging.popover('comment-thread')}>

@@ -15,14 +15,15 @@ import {skill as stylingSkill} from './styling.skill.js';
 export const SKILLS: Record<SkillName, Skill> = {
   styling: stylingSkill,
   network: networkSkill,
-  // Append compressed format descriptions here to keep a single source of truth
-  // alongside PerformanceTraceFormatter without inflating performanceSkill.description
-  // in the unloaded skills manifest.
+  // Append compressed format descriptions as facts to deduplicate across
+  // PerformanceTraceContext and learnSkills(['performance']) without inflating
+  // performanceSkill.description in the unloaded skills manifest.
   performance: {
     ...performanceSkill,
-    instructions: `${performanceSkill.instructions}\n\n# Data Formats\n\n${
-        PerformanceTraceFormatter.networkDataFormatDescription.trim()}\n\n${
-        PerformanceTraceFormatter.callFrameDataFormatDescription.trim()}`,
+    facts: [
+      PerformanceTraceFormatter.networkDataFormatFact,
+      PerformanceTraceFormatter.callFrameDataFormatFact,
+    ],
   },
   storage: storageSkill,
   sources: sourcesSkill,

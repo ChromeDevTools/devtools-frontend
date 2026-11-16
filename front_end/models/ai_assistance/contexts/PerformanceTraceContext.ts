@@ -13,6 +13,7 @@ import {
   type ContextDetail,
   ConversationContext,
   type ConversationSuggestions,
+  type PromptFact,
 } from '../agents/AiAgent.js';
 import {
   PerformanceInsightFormatter,
@@ -279,6 +280,18 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     }
 
     return suggestions;
+  }
+
+  /**
+   * Supplies the compressed network request column legend on the first turn when
+   * critical requests exist, without exposing static LLM format instructions in
+   * `getUserFacingDetails()` UI disclosures or mutating `getPromptDetails()`.
+   */
+  override getPromptFacts(): readonly PromptFact[] {
+    if (this.createFormatter().hasCriticalRequests()) {
+      return [PerformanceTraceFormatter.networkDataFormatFact];
+    }
+    return [];
   }
 
   /**

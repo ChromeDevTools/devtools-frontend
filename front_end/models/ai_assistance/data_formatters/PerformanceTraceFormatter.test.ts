@@ -145,6 +145,18 @@ describe('PerformanceTraceFormatter', function() {
     });
   });
 
+  describe('hasCriticalRequests', () => {
+    it('returns true when trace contains critical requests', async function() {
+      const {formatter} = await createFormatter(this, 'render-blocking-requests.json.gz', cruxManager);
+      assert.isTrue(formatter.hasCriticalRequests());
+    });
+
+    it('returns false when trace does not contain critical requests', async function() {
+      const {formatter} = await createFormatter(this, 'multiple-navigations-render-blocking.json.gz', cruxManager);
+      assert.isFalse(formatter.hasCriticalRequests());
+    });
+  });
+
   describe('formatCriticalRequests', () => {
     it('render-blocking-requests.json.gz', async function() {
       const {formatter} = await createFormatter(this, 'render-blocking-requests.json.gz', cruxManager);

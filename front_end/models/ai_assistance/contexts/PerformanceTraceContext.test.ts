@@ -8,13 +8,16 @@ import sinon from 'sinon';
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../../trace/trace.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describe('PerformanceTraceContext', () => {
   setupSettingsHooks();
+  setupLocaleHooks();
 
   let universe: TestUniverse;
 
@@ -85,6 +88,37 @@ Mock Longest Tasks`);
       {title: 'Third party summary', text: 'Mock Third Party'},
       {title: 'Longest tasks', text: 'Mock Longest Tasks'},
     ]);
+  });
+
+  it('returns networkDataFormatFact when critical requests exist', async function() {
+    const trace = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
+    const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+        trace, universe.targetManager, undefined, universe.debuggerWorkspaceBinding);
+
+    const facts = context.getPromptFacts();
+    assert.deepEqual(facts, [AiAssistance.PerformanceTraceFormatter.PerformanceTraceFormatter.networkDataFormatFact]);
+  });
+
+  it('excludes networkDataFormatDescription from user-facing details when critical requests exist', async function() {
+    const trace = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
+    const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+        trace, universe.targetManager, undefined, universe.debuggerWorkspaceBinding);
+
+    const details = await context.getUserFacingDetails();
+    assert.isNotNull(details);
+    const hasNetworkDataFormatDescription = details.some(
+        d => d.text.includes(
+            AiAssistance.PerformanceTraceFormatter.PerformanceTraceFormatter.networkDataFormatDescription.trim()));
+    assert.isFalse(hasNetworkDataFormatDescription);
+  });
+
+  it('returns empty facts when critical requests do not exist', async function() {
+    const trace = await TraceLoader.traceEngine(this, 'multiple-navigations-render-blocking.json.gz');
+    const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+        trace, universe.targetManager, undefined, universe.debuggerWorkspaceBinding);
+
+    const facts = context.getPromptFacts();
+    assert.deepEqual(facts, []);
   });
 
   it('returns CORE_VITALS widget when primaryInsightSet is present', async () => {

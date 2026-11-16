@@ -7,6 +7,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as CrUXManager from '../../crux-manager/crux-manager.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
+import type {PromptFact} from '../agents/AiAgent.js';
 import type {AICallTree} from '../performance/AICallTree.js';
 import type {AgentFocus} from '../performance/AIContext.js';
 import {AIQueries} from '../performance/AIQueries.js';
@@ -295,6 +296,29 @@ export class PerformanceTraceFormatter {
     return lines.join('\n');
   }
 
+  #getCriticalRequests(insightSet: Trace.Insights.Types.InsightSet): Trace.Types.Events.SyntheticNetworkRequest[] {
+    const criticalRequests: Trace.Types.Events.SyntheticNetworkRequest[] = [];
+    const walkRequest = (node: Trace.Insights.Models.NetworkDependencyTree.CriticalRequestNode): void => {
+      criticalRequests.push(node.request);
+      node.children.forEach(walkRequest);
+    };
+    insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
+    return criticalRequests;
+  }
+
+  /**
+   * Returns true when `formatCriticalRequests()` emits compressed network rows
+   * (backed by `NetworkDependencyTree.rootNodes`, the insight's `CriticalRequestNode` tree).
+   */
+  hasCriticalRequests(): boolean {
+    for (const insightSet of this.#parsedTrace.insights?.values() ?? []) {
+      if (this.#getCriticalRequests(insightSet).length > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   formatCriticalRequests(): Promise<string> {
     const parsedTrace = this.#parsedTrace;
     return this.#formatFactByInsightSet({
@@ -302,14 +326,7 @@ export class PerformanceTraceFormatter {
       title: 'Critical network requests',
       empty: 'none',
       cb: async insightSet => {
-        const criticalRequests: Trace.Types.Events.SyntheticNetworkRequest[] = [];
-
-        const walkRequest = (node: Trace.Insights.Models.NetworkDependencyTree.CriticalRequestNode): void => {
-          criticalRequests.push(node.request);
-          node.children.forEach(walkRequest);
-        };
-        insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
-
+        const criticalRequests = this.#getCriticalRequests(insightSet);
         return criticalRequests.length ? this.formatNetworkRequests(criticalRequests, {verbose: false}) : null;
       },
     });
@@ -852,6 +869,24 @@ Durations (all in milliseconds):
 - \`responseHeaders\`: A list (separated by '|') of values for specific, pre-defined response headers, enclosed in square brackets.
 The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
 `;
+
+  /**
+   * Shared `PromptFact` wrapper for `callFrameDataFormatDescription`, enabling
+   * reference-based deduplication across `AiAgent2` callers.
+   */
+  static readonly callFrameDataFormatFact: PromptFact = {
+    title: 'Call frame data format',
+    description: PerformanceTraceFormatter.callFrameDataFormatDescription,
+  };
+
+  /**
+   * Shared `PromptFact` wrapper for `networkDataFormatDescription`, enabling
+   * reference-based deduplication across `PerformanceTraceContext` and `SKILLS.performance`.
+   */
+  static readonly networkDataFormatFact: PromptFact = {
+    title: 'Network request data format',
+    description: PerformanceTraceFormatter.networkDataFormatDescription,
+  };
 
   /**
    * This is the network request data passed to the Performance agent.

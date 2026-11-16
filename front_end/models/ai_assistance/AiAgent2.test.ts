@@ -15,6 +15,7 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 import type * as LHModel from '../lighthouse/lighthouse.js';
 import * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import type * as Trace from '../trace/trace.js';
@@ -161,7 +162,9 @@ describe('AiAgent2', () => {
        const learnSkillsDeclaration = getFunctionDeclarations(aidaClient, 0).find(d => d.name === 'learnSkills');
        assert.exists(learnSkillsDeclaration);
        assert.include(learnSkillsDeclaration.description, SKILLS.performance.description);
-       assert.notInclude(learnSkillsDeclaration.description, '# Data Formats');
+       assert.notInclude(learnSkillsDeclaration.description, '# References');
+       assert.notInclude(learnSkillsDeclaration.description, '## Network request data format');
+       assert.notInclude(learnSkillsDeclaration.description, '## Call frame data format');
        assert.notInclude(learnSkillsDeclaration.description,
                          PerformanceTraceFormatter.networkDataFormatDescription.trim());
        assert.notInclude(learnSkillsDeclaration.description,
@@ -169,7 +172,9 @@ describe('AiAgent2', () => {
 
        const learnResult = await agent.learnSkill(['performance']);
        assert.include(learnResult, '# Investigation Workflow');
-       assert.include(learnResult, '# Data Formats');
+       assert.include(learnResult, '# References');
+       assert.include(learnResult, '## Network request data format');
+       assert.include(learnResult, '## Call frame data format');
        assert.include(learnResult, PerformanceTraceFormatter.networkDataFormatDescription.trim());
        assert.include(learnResult, PerformanceTraceFormatter.callFrameDataFormatDescription.trim());
 
@@ -177,10 +182,49 @@ describe('AiAgent2', () => {
        assert.strictEqual(
            secondLearnResult,
            'Error: Skill \'performance\' is already loaded. Call its tools directly instead of invoking learnSkills for \'performance\' again.');
-       assert.notInclude(secondLearnResult, '# Data Formats');
+       assert.notInclude(secondLearnResult, '# References');
+       assert.notInclude(secondLearnResult, '## Network request data format');
+       assert.notInclude(secondLearnResult, '## Call frame data format');
        assert.notInclude(secondLearnResult, PerformanceTraceFormatter.networkDataFormatDescription.trim());
        assert.notInclude(secondLearnResult, PerformanceTraceFormatter.callFrameDataFormatDescription.trim());
      });
+
+  describe('end-to-end trace formatting integration', () => {
+    let traceContext: AiAssistance.PerformanceTraceContext.PerformanceTraceContext;
+    let agent: AiAssistance.AiAgent2.AiAgent2;
+
+    beforeEach(async function() {
+      const trace = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
+      traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          trace, universe.targetManager, undefined, universe.debuggerWorkspaceBinding);
+      agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient(), originLock: defaultOriginLock});
+    });
+
+    it('deduplicates facts when trace context is present before learnSkill', async () => {
+      const enhancedQuery = await agent.enhanceQuery('q1', traceContext);
+      assert.include(enhancedQuery, '# References');
+      assert.include(enhancedQuery, '## Network request data format');
+      assert.include(enhancedQuery, PerformanceTraceFormatter.networkDataFormatDescription.trim());
+      assert.notInclude(enhancedQuery, '## Call frame data format');
+
+      const learnResult = await agent.learnSkill(['performance']);
+      assert.include(learnResult, '## Call frame data format');
+      assert.include(learnResult, PerformanceTraceFormatter.callFrameDataFormatDescription.trim());
+      assert.notInclude(learnResult, '## Network request data format');
+      assert.notInclude(learnResult, PerformanceTraceFormatter.networkDataFormatDescription.trim());
+    });
+
+    it('deduplicates facts when learnSkill precedes context attachment', async () => {
+      const learnResult = await agent.learnSkill(['performance']);
+      assert.include(learnResult, '## Network request data format');
+      assert.include(learnResult, '## Call frame data format');
+
+      const enhancedQuery = await agent.enhanceQuery('q1', traceContext);
+      assert.include(enhancedQuery, '# Critical network requests');
+      assert.notInclude(enhancedQuery, '# References');
+      assert.notInclude(enhancedQuery, PerformanceTraceFormatter.networkDataFormatDescription.trim());
+    });
+  });
 
   it('prevents duplicate loading', async () => {
     const aidaClient = mockAidaClient();

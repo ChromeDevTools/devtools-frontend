@@ -8,23 +8,36 @@ const ANSI_YELLOW = '\x1b[33m';
 const ANSI_RED = '\x1b[31m';
 const ANSI_RESET = '\x1b[0m';
 
+export interface EvalLoggerOptions {
+  /**
+   * When true, per-task progress and step logs (`taskLog`) are echoed to the
+   * terminal in addition to being recorded for GCS upload.
+   */
+  verbose?: boolean;
+}
+
 /**
  * Logger for AI Evaluation runs and tasks.
  * Captures suite-level run logs (`eval_run.log`) and granular per-task
  * execution/stderr logs (`agent_logs/agent.log` and `agent_logs/agent_stderr.log`).
  *
- * Run headers and task progress are also printed to the console while the run
- * is in progress, one line per message, so that Mocha's reporter output stays
- * visible.
+ * Run headers and task errors are always printed to the console. Per-task
+ * progress and step logs (`taskLog`) are only printed to the console when
+ * `verbose` is enabled, while still being recorded for GCS upload.
  */
 export class EvalLogger {
   readonly #startTime = performance.now();
+  readonly #verbose: boolean;
   // Suite-level run log entries uploaded per run to GCS as eval_run.log.
   #runLogEntries: string[] = [];
   // Granular per-task agent execution traces keyed by taskId, uploaded per trajectory to GCS as agent_logs/agent.log.
   #taskLogEntries = new Map<string, string[]>();
   // Granular per-task agent stderr traces keyed by taskId, uploaded per trajectory to GCS as agent_logs/agent_stderr.log.
   #taskStderrEntries = new Map<string, string[]>();
+
+  constructor(options: EvalLoggerOptions = {}) {
+    this.#verbose = Boolean(options.verbose);
+  }
 
   #stripAnsi(text: string): string {
     return text.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '').trim();
@@ -87,13 +100,6 @@ export class EvalLogger {
   }
 
   /**
-   * Prints a line to the console without recording it in any log file.
-   */
-  info(text: string): void {
-    console.log(text);
-  }
-
-  /**
    * Prints a run-level header to the console and records it in the run log
    * (`eval_run.log`).
    */
@@ -107,12 +113,14 @@ export class EvalLogger {
   }
 
   /**
-   * Records a line in the task log (`agent_logs/agent.log`) and prints it to the console
-   * prefixed with the task ID.
+   * Records a line in the task log (`agent_logs/agent.log`). When verbose
+   * logging is enabled, also prints it to the console prefixed with the task ID.
    */
   taskLog(taskId: string, text: string): void {
     this.#recordTaskLog(taskId, text);
-    console.log(`${ANSI_YELLOW}${taskId}:${ANSI_RESET} ${text}`);
+    if (this.#verbose) {
+      console.log(`${ANSI_YELLOW}${taskId}:${ANSI_RESET} ${text}`);
+    }
   }
 
   /**

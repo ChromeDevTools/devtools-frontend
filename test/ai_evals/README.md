@@ -42,6 +42,12 @@ AI Evals tests (uses the default team OTA account from `eval_data/ota_account.tx
 ./dt test test/ai_evals
 ```
 
+To print per-eval step logs and grading tables to the terminal (always uploaded to GCS regardless):
+
+```bash
+./dt test test/ai_evals --verbose
+```
+
 To override with a custom OTA account:
 
 ```bash

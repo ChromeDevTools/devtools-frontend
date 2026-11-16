@@ -163,7 +163,7 @@ export class AiEvalStateProvider extends StateProvider {
   #runId = '';
   #runStartTimestamp = '';
   #tempOutputDir = '';
-  #logger = new EvalLogger();
+  #logger = new EvalLogger({verbose: TestConfig.verbose > 0});
   #taskStatuses: TaskStatus[] = [];
   #taskToolCallStats = new Map<string, ToolCallStats>();
   #taskTokens = new Map<string, TurnTokens>();
@@ -187,7 +187,7 @@ export class AiEvalStateProvider extends StateProvider {
     this.#runId = generateRunId();
     this.#runStartTimestamp = new Date().toISOString();
     this.#tempOutputDir = createTempEvalDir();
-    this.#logger = new EvalLogger();
+    this.#logger = new EvalLogger({verbose: TestConfig.verbose > 0});
     this.#taskStatuses = [];
     this.#taskToolCallStats = new Map();
     this.#taskTokens = new Map();
@@ -219,9 +219,8 @@ export class AiEvalStateProvider extends StateProvider {
     const status: RunOutcomeStatus = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
     const metrics = aggregateRunMetrics(this.#taskToolCallStats.values(), this.#taskTokens.values());
     this.#logger.head(`\nTotal tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
-    this.#logger.head(`Model: ${this.#resolvedModel ?? 'unknown'}, Tool calls: ${
-        metrics.totalToolCalls ??
-        0}, Total tokens: ${metrics.totalTokens ?? 0}, Elapsed: ${this.#logger.formatElapsedTime()}`);
+    this.#logger.head(`Model: ${this.#resolvedModel ?? 'unknown'}, Total tokens: ${
+        metrics.totalTokens ?? 0}, Elapsed: ${this.#logger.formatElapsedTime()}`);
     this.#logger.append(`Run completed with status: ${status}`);
     uploadRunLog(this.#runId, this.#logger.getRunLogContent());
     uploadRunCompleted({
@@ -400,7 +399,9 @@ export class AiEvalStateProvider extends StateProvider {
     let gradingOutput: string|undefined;
     if (store.results.size > 0) {
       this.#resultStores.push(store);
-      printResults(store);
+      if (TestConfig.verbose > 0) {
+        printResults(store);
+      }
       gradingOutput = formatStoreResults(store);
       evalTask.log(`Graded: score=${customScore ?? 'N/A'} (${gradingDurationSeconds}s)`);
       this.#logger.append(

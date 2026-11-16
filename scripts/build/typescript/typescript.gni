@@ -103,6 +103,12 @@ import("./typescript_vars.gni")
 # Sources that a generator writes to $target_gen_dir (see
 # scripts/build/ninja/generated_ts.gni) are compiled with
 # `rootdir = target_gen_dir` and `deps` on the generator target.
+#
+# Non-ts_library targets whose generated outputs (e.g. .js + .d.ts pairs without
+# a tsconfig) are imported by the library or re-exported belong in
+# `public_deps`: this orders `_checked` (and `ts_type_check`) without blocking
+# `-dts`, forwards `public_inputs` via `_sources` for bundling, and propagates
+# `grd_files` metadata.
 template("ts_library") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
@@ -295,6 +301,9 @@ template("ts_library") {
       inputs += invoker.inputs
     }
 
+    # `-dts` runs tsc with `--isolatedDeclarations --noResolve` and never reads
+    # imported declarations from `public_deps`; generators producing files in
+    # `sources`, `inputs`, or `additional_type_definitions` belong in `deps`.
     deps = _non_ts_deps
 
     outputs = _dts_outputs
@@ -372,6 +381,9 @@ template("ts_library") {
       public_inputs += invoker.inputs
     }
     public_deps = _non_ts_deps + _sources_deps
+    if (defined(invoker.public_deps)) {
+      public_deps += invoker.public_deps
+    }
   }
 
   # Sub-target 3: Generate tsconfig.json used by sub-target 4 for
@@ -421,6 +433,9 @@ template("ts_library") {
              ":$_dts_target",
              ":$_tsconfig_target",
            ] + _ts_deps + _non_ts_deps
+    if (defined(invoker.public_deps)) {
+      deps += invoker.public_deps
+    }
 
     if (_has_handwritten_dts) {
       deps += [ ":$_copy_dts_target" ]

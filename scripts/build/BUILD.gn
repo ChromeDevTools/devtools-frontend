@@ -11,6 +11,7 @@ group("tests") {
     "typescript/tests/fixtures/generated_ts",
     "typescript/tests/fixtures/no_emit",
     "typescript/tests/fixtures/prebuilt",
+    "typescript/tests/fixtures/public_deps",
     "typescript/tests/fixtures/simple_dep",
   ]
 }

@@ -62,6 +62,9 @@ template("devtools_entrypoint") {
     if (defined(invoker.deps)) {
       _bundle_deps += invoker.deps
     }
+    if (defined(invoker.public_deps)) {
+      _bundle_deps += invoker.public_deps
+    }
     if (defined(invoker.ts_deps)) {
       foreach(dep, invoker.ts_deps) {
         _dep_dir = get_label_info(dep, "dir")

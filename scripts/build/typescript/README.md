@@ -52,6 +52,9 @@ ts_library("my_feature") {
 - **`deps`** (`list(string)`, optional):
   Non-TypeScript build dependencies such as asset generators, copy actions, or CSS compilation targets that must complete before compiling this library.
 
+- **`public_deps`** (`list(string)`, optional):
+  Non-`ts_library` dependencies whose generated outputs (such as `.js` + `.d.ts` pairs without a `tsconfig`) are imported by the library or re-exported to dependents. Forwarding `public_deps` orders `${target_name}_checked` (and `ts_type_check`) without blocking `${target_name}-dts`, forwards `public_inputs` through `${target_name}_sources` for bundling, and propagates `grd_files` metadata. Note that runtime-only assets placed in `public_deps` will also order `${target_name}_checked` and `${target_name}_sources`.
+
 - **`testonly`** (`boolean`, optional):
   Set to `true` for unit tests and test helpers (`testonly = true`). Compiling with `testonly = true` adds the type definitions of Mocha, Chai and Sinon to the inputs of the target. They are not declared globally: tests import `describe`, `it`, etc. from `mocha` (or from the Mocha interface of their test suite).
 

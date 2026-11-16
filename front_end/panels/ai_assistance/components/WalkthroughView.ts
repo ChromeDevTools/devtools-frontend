@@ -5,7 +5,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as Input from '../../../ui/components/input/input.js';
 import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -233,11 +232,8 @@ export const DEFAULT_VIEW = (
   ` : Lit.nothing;
 
   render(html`
-    <style>
-      ${Input.textInputStyles}
-      ${chatMessageStyles}
-      ${walkthroughViewStyles}
-    </style>
+    <style>${chatMessageStyles}</style>
+    <style>${walkthroughViewStyles}</style>
     ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput, allSteps)
                      : renderSidebarWalkthrough(input, stepsOutput, renderableSteps.length)
     }`, target);

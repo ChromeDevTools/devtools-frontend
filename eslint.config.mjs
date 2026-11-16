@@ -874,7 +874,6 @@ export default defineConfig([
             'front_end/panels/ai_assistance/components/ChatInput.ts',
             'front_end/panels/ai_assistance/components/ChatMessage.ts',
             'front_end/panels/ai_assistance/components/RelevantDataDisclaimer.ts',
-            'front_end/panels/ai_assistance/components/WalkthroughView.ts',
             'front_end/panels/application/BackgroundServiceView.ts',
             'front_end/panels/application/CrashReportContextView.ts',
             'front_end/panels/application/DeviceBoundSessionsView.ts',

@@ -211,6 +211,10 @@ interface OrientationViewInput {
   orientationOverrideEnabled: boolean;
   selectedOrientation: string;
   animateOrientation: boolean;
+  onOrientationSelectChange: (event: Event) => void;
+  onOrientationChange: (event: Event) => void;
+  onOrientationKeyDown: (event: KeyboardEvent) => void;
+  onOrientationReset: () => void;
 }
 
 interface ViewInput extends LocationViewInput, OrientationViewInput {
@@ -343,6 +347,10 @@ export class SensorsView extends UI.Widget.VBox {
       orientationOverrideEnabled: this.deviceOrientationOverrideEnabled,
       selectedOrientation: this.#selectedOrientation,
       animateOrientation: this.#animateOrientation,
+      onOrientationSelectChange: this.orientationSelectChanged.bind(this),
+      onOrientationChange: this.#onOrientationChange.bind(this),
+      onOrientationKeyDown: this.#onOrientationKeyDown.bind(this),
+      onOrientationReset: this.resetDeviceOrientation.bind(this),
     };
     const input: ViewInput = {
       ...locationInput,
@@ -662,7 +670,7 @@ export class SensorsView extends UI.Widget.VBox {
           <div class="orientation-fields">
             <select
               id="orientation-select"
-              @change=${this.orientationSelectChanged.bind(this)}
+              @change=${input.onOrientationSelectChange}
               jslog=${VisualLogging.dropDown().track({change: true})}
             >
               <option value=${orientationOffOption.orientation} .selected=${live(input.selectedOrientation === orientationOffOption.orientation)} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
@@ -692,8 +700,8 @@ export class SensorsView extends UI.Widget.VBox {
                     .value=${roundAngle(input.orientation.alpha)}
                     name="alpha"
                     ${Directives.ref((el: Element | undefined) => { if (el) { this.alphaElement = el as HTMLInputElement; } })}
-                    @change=${this.#onOrientationChange.bind(this)}
-                    @keydown=${this.#onOrientationKeyDown.bind(this)}
+                    @change=${input.onOrientationChange}
+                    @keydown=${input.onOrientationKeyDown}
                     @focus=${selectInputContent}
                   >
                   <label for="alpha-input">${i18nString(UIStrings.alpha)}</label>
@@ -709,8 +717,8 @@ export class SensorsView extends UI.Widget.VBox {
                     required
                     .value=${roundAngle(input.orientation.beta)}
                     name="beta"
-                    @change=${this.#onOrientationChange.bind(this)}
-                    @keydown=${this.#onOrientationKeyDown.bind(this)}
+                    @change=${input.onOrientationChange}
+                    @keydown=${input.onOrientationKeyDown}
                     @focus=${selectInputContent}
                   >
                   <label for="beta-input">${i18nString(UIStrings.beta)}</label>
@@ -726,8 +734,8 @@ export class SensorsView extends UI.Widget.VBox {
                     required
                     .value=${roundAngle(input.orientation.gamma)}
                     name="gamma"
-                    @change=${this.#onOrientationChange.bind(this)}
-                    @keydown=${this.#onOrientationKeyDown.bind(this)}
+                    @change=${input.onOrientationChange}
+                    @keydown=${input.onOrientationKeyDown}
                     @focus=${selectInputContent}
                   >
                   <label for="gamma-input">${i18nString(UIStrings.gamma)}</label>
@@ -737,7 +745,7 @@ export class SensorsView extends UI.Widget.VBox {
                   class="orientation-reset-button"
                   type="reset"
                   aria-label=${i18nString(UIStrings.resetDeviceOrientation)}
-                  @click=${this.resetDeviceOrientation.bind(this)}
+                  @click=${input.onOrientationReset}
                   jslog=${VisualLogging.action('sensors.reset-device-orientiation').track({click: true})}
                 >
                   ${i18nString(UIStrings.reset)}

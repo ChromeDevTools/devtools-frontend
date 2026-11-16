@@ -1036,3 +1036,45 @@ describeWithEnvironment('TabbedPaneElement', () => {
     });
   });
 });
+
+describeWithEnvironment('TabbedPane shrinkable tabs', () => {
+  /**
+   * Returns the widths that shrinkable tabs with the given measured widths
+   * get in a tabbed pane header of the given width.
+   */
+  async function layOutShrinkableTabs(measuredWidths: number[], totalWidth: number): Promise<number[]> {
+    const tabbedPane = new UI.TabbedPane.TabbedPane();
+    tabbedPane.setShrinkableTabs(true);
+    measuredWidths.forEach((_, i) => tabbedPane.appendTab(`tab${i}`, `Tab ${i}`, new UI.Widget.Widget()));
+    renderElementIntoDOM(tabbedPane, {width: totalWidth});
+    assert.strictEqual(tabbedPane.headerElement().getBoundingClientRect().width, totalWidth);
+
+    // wasShown() clears the cached measurements, so seed them afterwards.
+    measuredWidths.forEach((width, i) => {
+      tabbedPane.tabsById.get(`tab${i}`)!.measuredWidth = width;
+    });
+    tabbedPane.requestUpdate();
+    await tabbedPane.updateComplete;
+    return measuredWidths.map((_, i) => tabbedPane.tabsById.get(`tab${i}`)!.width());
+  }
+
+  it('keeps every tab at its measured width when all tabs fit', async () => {
+    assert.deepEqual(await layOutShrinkableTabs([50, 70, 20], 150), [50, 70, 20]);
+  });
+
+  it('keeps every tab at its measured width when the tabs fill the header exactly', async () => {
+    assert.deepEqual(await layOutShrinkableTabs([50, 80, 20], 150), [50, 80, 20]);
+  });
+
+  it('shrinks only the widest tab when that is enough', async () => {
+    assert.deepEqual(await layOutShrinkableTabs([50, 90, 20], 150), [50, 80, 20]);
+  });
+
+  it('shrinks the two widest tabs to the same width', async () => {
+    assert.deepEqual(await layOutShrinkableTabs([90, 90, 20], 150), [65, 65, 20]);
+  });
+
+  it('splits the header width evenly when every tab has to shrink', async () => {
+    assert.deepEqual(await layOutShrinkableTabs([90, 80, 70], 150), [50, 50, 50]);
+  });
+});

@@ -1584,6 +1584,70 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridd
 
     assert.strictEqual(dataGrid.selectedNode, node);
   });
+
+  describe('domain filter', () => {
+    async function domainSuggestions(domain: string): Promise<string[]> {
+      const setSuggestionProviderSpy = sinon.spy(UI.FilterBar.TextFilterUI.prototype, 'setSuggestionProvider');
+      const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
+      networkLogView = createNetworkLogView(filterBar);
+      sinon.assert.calledOnce(setSuggestionProviderSpy);
+      const suggestionProvider = setSuggestionProviderSpy.firstCall.args[0];
+      setSuggestionProviderSpy.restore();
+      createNetworkRequest(`https://${domain}/`, {target});
+      const suggestions = await suggestionProvider('', 'domain:');
+      return suggestions.map(suggestion => suggestion.text);
+    }
+
+    function matchDomains(filterValue: string, domains: string[]): Array<{domain: string, matches: boolean}> {
+      const requests = domains.map(domain => createNetworkRequest(`https://${domain}/`, {target}));
+      const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
+      networkLogView = createNetworkLogView(filterBar);
+      networkLogView.setTextFilterValue(`domain:${filterValue}`);
+      renderElementIntoDOM(networkLogView);
+      const visibleRequests = new Set(networkLogView.flatNodesList().map(node => node.request()));
+      return requests.map((request, index) => ({
+                            domain: domains[index],
+                            matches: visibleRequests.has(request),
+                          }));
+    }
+
+    it('computes domain filter suggestions with wildcard subdomains', async () => {
+      assert.deepEqual(await domainSuggestions('foo.bar.com'), [
+        'domain:*.bar.com',
+        'domain:*.com',
+        'domain:foo.bar.com',
+      ]);
+    });
+
+    it('computes domain filter suggestions for a single-label host', async () => {
+      assert.deepEqual(await domainSuggestions('thumbnails'), [
+        'domain:thumbnails',
+      ]);
+    });
+
+    it('filters requests by exact domain without wildcards', () => {
+      assert.deepEqual(matchDomains('bar.com', ['foo.bar.com', 'bar.com', 'com']), [
+        {domain: 'foo.bar.com', matches: false},
+        {domain: 'bar.com', matches: true},
+        {domain: 'com', matches: false},
+      ]);
+    });
+
+    it('filters requests by leading subdomain wildcard', () => {
+      assert.deepEqual(matchDomains('*.bar.com', ['foo.bar.com', 'bar.com']), [
+        {domain: 'foo.bar.com', matches: true},
+        {domain: 'bar.com', matches: false},
+      ]);
+    });
+
+    it('filters requests by multiple wildcards', () => {
+      assert.deepEqual(matchDomains('*.bar.*', ['foo.bar.com', 'baz.bar.org', 'bar.foo.net']), [
+        {domain: 'foo.bar.com', matches: true},
+        {domain: 'baz.bar.org', matches: true},
+        {domain: 'bar.foo.net', matches: false},
+      ]);
+    });
+  });
 });
 
 describeWithEnvironment('Edit and resend as fetch', () => {

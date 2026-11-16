@@ -42,7 +42,7 @@ describe('ScopeChainResolver', () => {
     fakeFrame.debuggerModel = debuggerModel;
     // @ts-expect-error readonly for test.
     fakeFrame.script = script;
-    fakeFrame.scopeChain.returns([]);
+    fakeFrame.scopeChain.resolves([]);
     return fakeFrame;
   }
 

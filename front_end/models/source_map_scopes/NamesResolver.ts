@@ -406,8 +406,8 @@ function shouldIgnoreScope(scope: SDK.DebuggerModel.Scope, hasLocalScope: boolea
   return scope.emptyReason() !== undefined;
 }
 
-function visibleScopeChain(callFrame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.Scope[] {
-  const scopeChain = callFrame.scopeChain();
+async function visibleScopeChain(callFrame: SDK.DebuggerModel.CallFrame): Promise<SDK.DebuggerModel.Scope[]> {
+  const scopeChain = await callFrame.scopeChain();
   const hasLocalScope = scopeChain.some(scope => scope.type() === Protocol.Debugger.ScopeType.Local);
   return scopeChain.filter(scope => !shouldIgnoreScope(scope, hasLocalScope));
 }
@@ -428,18 +428,18 @@ export const resolveScopeChain =
             if (!sourceMap && callFrame.debuggerModel?.sourceMapManager) {
               sourceMap = await callFrame.debuggerModel.sourceMapManager().sourceMapForClientPromise(callFrame.script);
             }
-            const mappedScopeChain = sourceMap?.resolveScopeChain(callFrame, callFrame.scopeChain());
+            const mappedScopeChain = sourceMap?.resolveScopeChain(callFrame, await callFrame.scopeChain());
             if (mappedScopeChain) {
               return mappedScopeChain;
             }
           }
 
           if (callFrame.script.isWasm()) {
-            return callFrame.scopeChain();
+            return await callFrame.scopeChain();
           }
           const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
-          return visibleScopeChain(callFrame).map(
-              scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
+          return (await visibleScopeChain(callFrame))
+              .map(scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
         };
 
 /**
@@ -498,7 +498,7 @@ export const allVariablesInCallFrame = async(
         }
       }
 
-      const scopeChain = visibleScopeChain(callFrame);
+      const scopeChain = await visibleScopeChain(callFrame);
       const resolvedScopes =
           await Promise.all(scopeChain.map(scope => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
       const result = resolvedScopes.map(toScopeVariableMapping);
@@ -555,7 +555,7 @@ export const resolveThisObject = async(
     callFrame: SDK.DebuggerModel.CallFrame,
     debuggerWorkspaceBinding:
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<SDK.RemoteObject.RemoteObject|null> => {
-  const innermostScope = visibleScopeChain(callFrame).at(0);
+  const innermostScope = (await visibleScopeChain(callFrame)).at(0);
   if (!innermostScope) {
     return callFrame.thisObject();
   }

@@ -42,7 +42,7 @@ describe('ScopeChainModel', () => {
     fakeFrame.debuggerModel = debuggerModel;
     // @ts-expect-error readonly for test.
     fakeFrame.script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
-    fakeFrame.scopeChain.returns([]);
+    fakeFrame.scopeChain.resolves([]);
 
     const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame, universe.scopeChainResolver);
     const listenerStub = sinon.stub();
@@ -65,7 +65,7 @@ describe('ScopeChainModel', () => {
     // @ts-expect-error readonly for test.
     fakeFrame.script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
 
-    fakeFrame.scopeChain.returns([]);
+    fakeFrame.scopeChain.resolves([]);
 
     const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame, universe.scopeChainResolver);
     const listenerStub = sinon.stub();
@@ -96,7 +96,7 @@ describe('ScopeChainModel', () => {
     });
     // @ts-expect-error readonly for test.
     fakeFrame.script = script;
-    fakeFrame.scopeChain.returns([]);
+    fakeFrame.scopeChain.resolves([]);
 
     const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame, universe.scopeChainResolver);
     const listenerStub = sinon.stub();
@@ -134,7 +134,7 @@ describe('ScopeChainModel', () => {
          type: Protocol.Debugger.ScopeType.Local,
        });
        localScope.object.callsFake(() => new SDK.RemoteObject.LocalJSONObject({x: 42}));
-       fakeFrame.scopeChain.returns([localScope]);
+       fakeFrame.scopeChain.resolves([localScope]);
 
        const model1 = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame, universe.scopeChainResolver);
        const listenerStub = sinon.stub();
@@ -172,7 +172,7 @@ describe('ScopeChainModel', () => {
     fakeFrame.debuggerModel = debuggerModel;
     // @ts-expect-error readonly for test.
     fakeFrame.script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
-    fakeFrame.scopeChain.returns([]);
+    fakeFrame.scopeChain.resolves([]);
 
     const scopeChainModel = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame, universe.scopeChainResolver);
     const listenerStub = sinon.stub();
@@ -201,7 +201,7 @@ describe('ScopeChainModel', () => {
     });
     // @ts-expect-error readonly for test.
     fakeFrame.script = script;
-    fakeFrame.scopeChain.returns([]);
+    fakeFrame.scopeChain.resolves([]);
 
     // Simulate selecting the call frame, and then selecting a different one.
     const model1 = new SourceMapScopes.ScopeChainModel.ScopeChainModel(fakeFrame, universe.scopeChainResolver);

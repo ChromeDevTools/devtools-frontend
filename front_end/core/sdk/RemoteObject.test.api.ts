@@ -49,7 +49,7 @@ describe('ScopeRemoteObject API Test', () => {
       assert.strictEqual(await evaluate('localObject1.a'), 310);
       assert.strictEqual(await evaluate('localObject2'), 42);
 
-      const localScopeObject = callerFrame.scopeChain()[0].object();
+      const localScopeObject = (await callerFrame.scopeChain())[0].object();
       assert.isUndefined(await localScopeObject.setPropertyValue('localObject1', '({a: -290})'));
       assert.isUndefined(await localScopeObject.setPropertyValue({value: 'localObject2'}, '123'));
 

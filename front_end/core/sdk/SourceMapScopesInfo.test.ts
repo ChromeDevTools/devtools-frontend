@@ -46,7 +46,7 @@ function stubScopeChain(callFrame: sinon.SinonStubbedInstance<SDK.DebuggerModel.
   callFrame.getPayload.returns({scopeChain: payloads} as Protocol.Debugger.CallFrame);
   const scopeChain = payloads.map((_, ordinal) => new SDK.DebuggerModel.Scope(callFrame, ordinal));
   stubbedScopeChains.set(callFrame, scopeChain);
-  callFrame.scopeChain.returns(scopeChain);
+  callFrame.scopeChain.resolves(scopeChain);
 }
 
 /** @returns the scope chain {@link stubScopeChain} set up for `callFrame`. */

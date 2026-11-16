@@ -1315,7 +1315,7 @@ export class CallFrame {
     return this.payload.callFrameId;
   }
 
-  scopeChain(): Scope[] {
+  async scopeChain(): Promise<Scope[]> {
     return this.#scopeChain;
   }
 

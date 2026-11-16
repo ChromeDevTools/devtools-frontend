@@ -360,7 +360,7 @@ describe('DebuggerModel', () => {
       }
     });
 
-    it('attaches extra properties to the local scope even if preceded by a block scope', () => {
+    it('attaches extra properties to the local scope even if preceded by a block scope', async () => {
       const target = universe.createTarget();
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
       const scriptUrl = urlString`https://script-host/script.js`;
@@ -390,13 +390,13 @@ describe('DebuggerModel', () => {
         canBeRestarted: false,
       };
       const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, script, payload, 0);
-      const scopes = callFrame.scopeChain();
+      const scopes = await callFrame.scopeChain();
       assert.lengthOf(scopes[0].extraProperties(), 0);
       assert.lengthOf(scopes[1].extraProperties(), 1);
       assert.strictEqual(scopes[1].extraProperties()[0].name, 'Return value');
     });
 
-    it('exposes emptyReason and retains empty scopes in the scope chain', () => {
+    it('exposes emptyReason and retains empty scopes in the scope chain', async () => {
       const target = universe.createTarget();
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
       const scriptUrl = urlString`https://script-host/script.js`;
@@ -431,7 +431,7 @@ describe('DebuggerModel', () => {
         canBeRestarted: false,
       };
       const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, script, payload, 0);
-      const scopes = callFrame.scopeChain();
+      const scopes = await callFrame.scopeChain();
       assert.lengthOf(scopes, 3);
       assert.strictEqual(scopes[0].emptyReason(), Protocol.Debugger.ScopeEmptyReason.NoVariables);
       assert.isUndefined(scopes[1].emptyReason());

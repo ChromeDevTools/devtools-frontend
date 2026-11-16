@@ -17,3 +17,10 @@ export const catA11ySettingDescriptor: Common.Settings.SettingDescriptor<boolean
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const catBestPracticesSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'lighthouse.cat-best-practices',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

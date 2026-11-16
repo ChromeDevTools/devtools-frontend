@@ -749,7 +749,8 @@ export function getPresets(): LighthouseModel.RunTypes.Preset[] {
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY,
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-best-practices'),
+        setting: Common.Settings.Settings.instance().resolve(
+            SettingsUI.LighthouseSettings.catBestPracticesSettingDescriptor),
         configID: 'best-practices',
         title: i18nLazyString(UIStrings.bestPractices),
         description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),

@@ -107,13 +107,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catA11yS
   title: i18nLazyString(UIStrings.accessibility),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catBestPracticesSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.bestPractices),
-  settingName: 'lighthouse.cat-best-practices',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

@@ -202,6 +202,10 @@ export class Button extends HTMLElement {
     this.#render();
   }
 
+  get variant(): Variant {
+    return this.#props.variant;
+  }
+
   set variant(variant: Variant) {
     this.#props.variant = variant;
     this.#render();

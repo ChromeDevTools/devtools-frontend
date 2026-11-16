@@ -46,7 +46,7 @@ function strip(strings: TemplateStringsArray): TemplateStringsArray {
   const stripped = strings.map(s => s.replace(/[<>]|\n\s*/g, s => {
     if (s === '<') {
       inTag = true;
-    } else if (inTag && s === '>') {
+    } else if (s === '>') {
       inTag = false;
     } else if (!inTag) {
       return '';

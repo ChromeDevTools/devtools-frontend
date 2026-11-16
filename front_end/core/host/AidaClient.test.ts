@@ -1694,6 +1694,41 @@ describe('AidaClient', () => {
       });
     }
 
+    function gcaResponse(parts: unknown[], finishReason?: string): Record<string, unknown> {
+      return {candidates: [{content: {role: 'model', parts}, finishReason}]};
+    }
+
+    for (const {name,
+                responses,
+                reason} of [{
+           name: 'MALFORMED_FUNCTION_CALL after text',
+           responses: [gcaResponse([{text: 'Visible'}]), gcaResponse([{text: ' more'}], 'MALFORMED_FUNCTION_CALL')],
+           reason: 'MALFORMED_FUNCTION_CALL',
+         },
+                            {
+                              name: 'MAX_TOKENS without visible output',
+                              responses: [gcaResponse([{text: 'Plan', thought: true}], 'MAX_TOKENS'), gcaResponse([])],
+                              reason: 'MAX_TOKENS',
+                            },
+    ]) {
+      it(`records UNKNOWN_ERROR for GCA ${name}`, async () => {
+        const {error, outcome} = await runGcaConversation(responses);
+        assert.instanceOf(error, Host.AidaClient.AidaUnknownError);
+        assert.include(error.message, reason);
+        assert.strictEqual(outcome, AiClientRequestResult.UNKNOWN_ERROR);
+      });
+    }
+
+    for (const [name, part] of [['text', {text: 'Partial'}],
+                                ['a function call', {functionCall: {name: 'getStyles', args: {}}}],
+    ] as const) {
+      it(`records SUCCESS when an empty GCA MAX_TOKENS response follows ${name}`, async () => {
+        const {error, outcome} = await runGcaConversation([gcaResponse([part]), gcaResponse([], 'MAX_TOKENS')]);
+        assert.isUndefined(error);
+        assert.strictEqual(outcome, AiClientRequestResult.SUCCESS);
+      });
+    }
+
     it('records HTTP_5XX_SERVER_ERROR when doConversation fails with HTTP 500', async () => {
       const histogramSpy =
           sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'recordEnumeratedHistogram');

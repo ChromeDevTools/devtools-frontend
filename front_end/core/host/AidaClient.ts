@@ -274,12 +274,15 @@ export class AidaClient {
     let inCodeChunk = false;
     const functionCalls: AidaFunctionCall[] = [];
     let metadata: ResponseMetadata = {rpcGlobalId: 0};
+    let finishReason: string|undefined;
     while ((chunk = await stream.read())) {
       debugLog('doConversation stream chunk:', chunk);
       let textUpdated = false;
       const results = this.#parseAndTranslate(chunk);
 
       for (const result of results) {
+        // Later chunks (e.g. a trailing metadata-only chunk) may omit `finishReason`, so keep the previous one.
+        finishReason = result.finishReason ?? finishReason;
         if (result.metadata) {
           metadata = {
             ...metadata,
@@ -327,6 +330,10 @@ export class AidaClient {
           completed: false,
         };
       }
+    }
+    // A non-block reason, e.g. MAX_TOKENS, fails the request only if the stream produced no output.
+    if (finishReason && !text.length && !functionCalls.length) {
+      throw mapError({status: finishReason, message: `GCA response finished with ${finishReason}`});
     }
     yield {
       explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ''),

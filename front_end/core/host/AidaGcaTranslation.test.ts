@@ -1021,6 +1021,19 @@ describe('AidaGcaTranslation', () => {
             {...response, promptFeedback: {...response.promptFeedback, blockReason: 'BLOCKED_REASON_UNSPECIFIED'}});
         assert.deepEqual(chunks.map(chunk => chunk.textChunk?.text), ['Hello there!']);
       });
+
+      for (const finishReason of ['MALFORMED_FUNCTION_CALL', 'UNEXPECTED_TOOL_CALL', 'OTHER'] as const) {
+        it(`returns only an error chunk for finishReason ${finishReason}, even with text`, () => {
+          assert.deepEqual(translateFinishReason(finishReason),
+                           [{error: {status: finishReason, message: `GCA response finished with ${finishReason}`}}]);
+        });
+      }
+
+      it('keeps the text and tags the chunk for finishReason MAX_TOKENS', () => {
+        const [chunk] = translateFinishReason(GcaTypes.FinishReason.MAX_TOKENS);
+        assert.strictEqual(chunk.textChunk?.text, 'Hello there!');
+        assert.strictEqual(chunk.finishReason, 'MAX_TOKENS');
+      });
     });
   });
 });

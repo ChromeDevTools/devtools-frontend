@@ -893,9 +893,6 @@
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "Отваряне на панела „Помощ от AI“"
   },
-  "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "Отваряне на панела Gemini"
-  },
   "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
     "message": "Моделът на AI е изтеглен"
   },
@@ -1223,9 +1220,6 @@
   "generated/Deprecation.ts | FencedFrame": {
     "message": "API за изолирани рамки е оттеглен и е насрочен за премахване."
   },
-  "generated/Deprecation.ts | Fledge": {
-    "message": "Protected Audience API е оттеглен и ще бъде премахнат в бъдеща версия."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() и watchPosition() вече не работят за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
@@ -1243,9 +1237,6 @@
   },
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "Уебсайтът заяви подресурс от мрежа, до която успя да осъществи достъп само заради специалните разрешения на потребителите в нея. Тези заявки разкриват в интернет информация за непублични устройства и сървъри. Това повишава риска от атаки чрез фалшифициране на заявки от друг сайт (CSRF) и/или от изтичане на информация. За да намали този риск, Chrome оттегля инициираните от незащитен контекст заявки до непублични подресурси и ще започне да ги блокира."
-  },
-  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
-    "message": "Полето dailyUpdateUrl на InterestGroups, което се задава за joinAdInterestGroup(), бе преименувано на updateUrl, за да се отрази по-точно поведението му."
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Приложният програмен интерфейс Intl.v8BreakIterator е оттеглен. Вместо него използвайте Intl.Segmenter."
@@ -1372,6 +1363,9 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Разширенията трябва да се включат в изолирането от външни източници, за да продължат да използват SharedArrayBuffer. Вижте https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | ViewTransitionPreventSvgFilterPaint": {
+    "message": "Филтрите за SVG не могат да се прилагат към съдържание за преход между изгледи, като например ::view-transition-old() и ::view-transition-new(), тъй като то може да включва вложени рамки или приставки от различни източници."
   },
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "Методът BluetoothRemoteGATTCharacteristic.writeValue() е оттеглен. Вместо него използвайте writeValueWithResponse() или writeValueWithoutResponse()."
@@ -2630,6 +2624,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
     "message": "Записването бе блокирано за някои рамки:"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | resizeAnnouncementsPane": {
+    "message": "Преоразмеряване на панела за известия"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
     "message": "Стартиране на запис"
   },
@@ -3080,20 +3077,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "Отстраняване на грешки с AI"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
-    "message": "Отстраняване на грешки с(ъс) Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "Активиране на „Помощ от AI“"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "Активиране на Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Показване на „Помощ от AI“"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "Показване на Gemini"
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Можете да използвате и една от предложените подкани по-горе, за да започнете разговора си"
@@ -3170,6 +3158,9 @@
   "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
     "message": "Използвайте приспособления, за да проверявате резултатите или да преминавате към изходните данни за определени случаи на отстраняване на грешки"
   },
+  "panels/ai_assistance/components/RelevantDataDisclaimer.ts | learnAbout": {
+    "message": "Научете за AI в DevTools"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Затваряне"
   },
@@ -3193,6 +3184,9 @@
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "На тази страница можете да проверявате и променяте анимациите"
+  },
+  "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
+    "message": "Проверката на анимацията е поставена на пауза"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Визуализация на анимация {PH1}"
@@ -3492,7 +3486,7 @@
     "message": "Показване само на минималната безопасна зона за адаптивни икони"
   },
   "panels/application/AppManifestView.ts | startUrl": {
-    "message": "Стартиране на URL адрес"
+    "message": "Начален URL адрес"
   },
   "panels/application/AppManifestView.ts | theAppIsAlreadyInstalled": {
     "message": "Приложението вече е инсталирано"
@@ -3632,6 +3626,9 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "На тази страница можете да преглеждате прозорците, отворени чрез window.open()"
   },
+  "panels/application/ApplicationPanelSidebar.ts | privateVerificationTokens": {
+    "message": "Токени за частно потвърждаване"
+  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Опресняване на IndexedDB"
   },
@@ -3644,11 +3641,17 @@
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "На тази страница можете да преглеждате, добавяте, редактирате и изтривате двойките ключ – стойност в сесийното хранилище"
   },
+  "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
+    "message": "Сродни подприложения"
+  },
   "panels/application/ApplicationPanelSidebar.ts | startAChat": {
     "message": "Стартиране на чат"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Хранилище"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | subApps": {
+    "message": "Подприложения"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Съдържанието на този документ е генерирано динамично чрез document.write()"
@@ -4583,6 +4586,42 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Спекулативни зареждания"
   },
+  "panels/application/PrivateVerificationTokensView.ts | clearAll": {
+    "message": "Изчистване на всички"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | creationTime": {
+    "message": "Създадено"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | deleteSelected": {
+    "message": "Изтриване на избраното"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | expiration": {
+    "message": "Валидност"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isIssuer": {
+    "message": "Може да издава"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isRedeemer": {
+    "message": "Може да осребри"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | issuer": {
+    "message": "Издател"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | keyId": {
+    "message": "Идентификатор на ключа"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
+    "message": "За този източник няма частни токени за потвърждаване"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenId": {
+    "message": "Идентификатор на токена"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenPayload": {
+    "message": "Токен (Base64)"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | version": {
+    "message": "Версия"
+  },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "Контекст на сигналите за сривове"
   },
@@ -4885,6 +4924,27 @@
   },
   "panels/application/StorageView.ts | usage": {
     "message": "Употреба"
+  },
+  "panels/application/SubAppsView.ts | manifestId": {
+    "message": "ID на манифеста"
+  },
+  "panels/application/SubAppsView.ts | manifestIdAndStartUrl": {
+    "message": "ID на манифеста/начален URL адрес"
+  },
+  "panels/application/SubAppsView.ts | name": {
+    "message": "Име"
+  },
+  "panels/application/SubAppsView.ts | scope": {
+    "message": "Обхват"
+  },
+  "panels/application/SubAppsView.ts | siblingSubApps": {
+    "message": "Сродни подприложения"
+  },
+  "panels/application/SubAppsView.ts | startUrl": {
+    "message": "Начален URL адрес"
+  },
+  "panels/application/SubAppsView.ts | subApps": {
+    "message": "Подприложения"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Токени за частно състояние"
@@ -5771,6 +5831,9 @@
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "На тази страница можете да прегледате всички налични токени за частно състояние в текущия контекст на сърфиране"
   },
+  "panels/application/preloading/PreloadingView.ts | clearSpeculativeLoads": {
+    "message": "Изчистване на спекулативните зареждания"
+  },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "Всички спекулативни зареждания"
   },
@@ -5986,6 +6049,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
     "message": "Предварителното извличане не бе изпълнено, защото за страницата, поискала това, вече се изпълняват твърде много предварителни извличания, а въпросното е едно от най-старите"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedCrossOriginSubframe": {
+    "message": "Навигацията в подрамка от различни източници бе отложена по време на предварителното рендериране, защото родителската рамка бе отложена или отговорът ѝ не включваше подходящата заглавка Supports-Loading-Mode"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "Предварителното извличане бе пренасочено, но URL адресът за пренасочване не отговаря на условията за предварително извличане"
@@ -6629,20 +6695,32 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Показване на промените"
   },
+  "panels/comments/CommentsPane.ts | addComment": {
+    "message": "Добавяне на коментар"
+  },
   "panels/comments/CommentsPane.ts | clearComments": {
     "message": "Изчистване на всички коментари"
+  },
+  "panels/comments/CommentsPane.ts | commentModeIcon": {
+    "message": "Режим на коментиране"
   },
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "Изтриване на коментара"
   },
-  "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "Няма коментари в опашката. Добавете коментари за елементите в DevTools, които да бъдат изпратени до AI агента ви за програмиране."
+  "panels/comments/CommentsPane.ts | emptyStateDescription": {
+    "message": "Използвайте {PH1}, за да изберете елемент и да изпратите задачи, въпроси и контекст до агента си за програмиране"
   },
-  "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "Няма изпратени коментари. Изпратете коментари до AI агента си за програмиране, за да ги видите тук."
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "Няма коментари"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "Няма коментари в опашката"
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "На опашката"
+  },
+  "panels/comments/CommentsPane.ts | removed": {
+    "message": "премахнатo"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Преглед на отговора"
@@ -6651,6 +6729,15 @@
     "message": "Изпращане до агента"
   },
   "panels/comments/CommentsPane.ts | sent": {
+    "message": "Изпратени"
+  },
+  "panels/comments/CommentsPane.ts | sentCheckmark": {
+    "message": "Изпратена отметка"
+  },
+  "panels/comments/CommentsPane.ts | sentComments": {
+    "message": "Изпратени коментари"
+  },
+  "panels/comments/CommentsPane.ts | sentStatus": {
     "message": "Изпратени"
   },
   "panels/comments/CommentsPane.ts | working": {
@@ -6710,8 +6797,14 @@
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "Изтриване на коментара в опашката"
   },
+  "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
+    "message": "Елементът вече не е налице"
+  },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "Поставяне на коментара в опашката"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
+    "message": "{PH1} + ↵ за поставяне на коментари в опашката"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Отговор:"
@@ -6726,10 +6819,19 @@
     "message": "Изпратени"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
-    "message": "Отметка за изпращане"
+    "message": "Изпратена отметка"
   },
-  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "Коментари ({PH1})"
+  "panels/common/CommentThreadWidget.ts | working": {
+    "message": "Обработва се"
+  },
+  "panels/common/CommentsOverlayWidget.ts | addComment": {
+    "message": "Добавяне на коментар"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewComments": {
+    "message": "Преглед на коментарите"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewCommentsWithCount": {
+    "message": "Преглед на коментарите ({PH1})"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<възел>"
@@ -6781,27 +6883,6 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Общите условия"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
-    "message": "Запознайте се с базирания на AI асистент за уеб програмиране"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
-    "message": "Получавайте незабавни и точни отговори за грешките в конзолата"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
-    "message": "Генериране на CSS и JS фрагменти в движение"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
-    "message": "Автоматично намиране на проблеми в трасирането на ефективността"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "Gemini 3 Flash в(ъв) DevTools"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
-    "message": "Отхвърляне"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
-    "message": "Първи стъпки"
   },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "Свързано с(ъс) {PH1}"
@@ -6915,7 +6996,10 @@
     "message": "Страничната лента за конзолата е показана"
   },
   "panels/console/ConsoleView.ts | copyConsole": {
-    "message": "Копиране на регистрационния файл в конзолата"
+    "message": "Копиране на всички съобщения"
+  },
+  "panels/console/ConsoleView.ts | copyMessage": {
+    "message": "Копиране на съобщението"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Копиране на избраните видими елементи с приложен стил"
@@ -8312,6 +8396,9 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Отваряне в панела „Източници“"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openShadowEditor": {
+    "message": "Отваряне на редактора на сенки"
+  },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
     "message": "Заменено от стиловете на анимацията"
   },
@@ -8870,8 +8957,8 @@
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "Заявка"
   },
-  "panels/issues/AffectedCookiesView.ts | domain": {
-    "message": "Домейн"
+  "panels/issues/AffectedCookiesView.ts | domainAndPath": {
+    "message": "Домейн и път"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
     "message": "Показване на мрежовите заявки, които включват тази заглавка Set-Cookie, в панела за мрежата"
@@ -8885,14 +8972,14 @@
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Име"
   },
-  "panels/issues/AffectedCookiesView.ts | path": {
-    "message": "Път"
-  },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
     "message": "Непозволен дъщерен елемент"
   },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
-    "message": "{n,plural, =1{ дъщерен елемент}other{ дъщерни елемента}}"
+    "message": "{n,plural, =1{# дъщерен елемент}other{# дъщерни елемента}}"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | unavailable": {
+    "message": "Не е налице"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "Блокирано"
@@ -8930,11 +9017,17 @@
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
     "message": "{n,plural, =1{ документ}other{ документа}}"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | unavailable": {
+    "message": "Не е налице"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "URL адрес"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# елемент}other{# елемента}}"
+  },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "Не е налице"
   },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "Ограничение за пиково натоварване на процесора"
@@ -10019,6 +10112,18 @@
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "Отклонение от идеалното качество за възпроизвеждането на видео"
   },
+  "panels/media/TickingFlameChart.ts | duration": {
+    "message": "Продължителност: {PH1} – {PH2}"
+  },
+  "panels/media/TickingFlameChart.ts | durationLive": {
+    "message": "Продължителност: {PH1} – НА ЖИВО!"
+  },
+  "panels/media/TickingFlameChart.ts | name": {
+    "message": "Име: {PH1}"
+  },
+  "panels/media/TickingFlameChart.ts | time": {
+    "message": "Час: {PH1}"
+  },
   "panels/media/media-meta.ts | media": {
     "message": "Мултимедия"
   },
@@ -10160,6 +10265,9 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
     "message": "Бавна 3G връзка и {PH1}-кратно забавяне на процесора"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | add": {
+    "message": "Добавяне"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "Добавяне на профил"
   },
@@ -10267,6 +10375,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "Стойността за „{PH1}“ трябва да е число между {PH2} kbit/s и {PH3} kbit/s включително"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | save": {
+    "message": "Запазване"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Качване"
@@ -11102,6 +11213,12 @@
   "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "Добавяне на персонализирана заглавка…"
   },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerAlreadyExists": {
+    "message": "Заглавката вече съществува"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerCannotBeEmpty": {
+    "message": "Трябва да въведете име на заглавката"
+  },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "Име на заглавката"
   },
@@ -11413,6 +11530,9 @@
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Зареждането на данните за отговора не бе успешно"
+  },
+  "panels/network/RequestPreviewView.ts | nothingToPreview": {
+    "message": "Няма нищо за визуализация"
   },
   "panels/network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "Визуализацията не е налице"
@@ -12572,6 +12692,15 @@
   "panels/profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "Извадките се зареждат…"
   },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeContextVars": {
+    "message": "Променливите за контекста на обхвата се зареждат…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeUses": {
+    "message": "Използването на обхвата се зарежда…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopes": {
+    "message": "Обхватите се зареждат…"
+  },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "Информацията за моментната снимка се зарежда…"
   },
@@ -13059,7 +13188,7 @@
     "message": "Въведете валиден тип действие"
   },
   "panels/recorder/StepView.ts | addBreakpoint": {
-    "message": "Добавяне на точка на прекъсване"
+    "message": "Добавяне на точка на прекъсване за {title}"
   },
   "panels/recorder/StepView.ts | addStepAfter": {
     "message": "Добавяне на стъпка след текущата"
@@ -13112,11 +13241,14 @@
   "panels/recorder/StepView.ts | navigateStepTitle": {
     "message": "Навигация"
   },
+  "panels/recorder/StepView.ts | noTitle": {
+    "message": "(Без заглавие)"
+  },
   "panels/recorder/StepView.ts | openStepActions": {
-    "message": "Отваряне на действията за стъпката"
+    "message": "Отваряне на действията за стъпката за {title}"
   },
   "panels/recorder/StepView.ts | removeBreakpoint": {
-    "message": "Премахване на точката на прекъсване"
+    "message": "Премахване на точката на прекъсване за {title}"
   },
   "panels/recorder/StepView.ts | removeStep": {
     "message": "Премахване на стъпката"
@@ -13932,7 +14064,7 @@
     "message": "Активиране на предложенията от AI за анотации за панела за ефективност"
   },
   "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
-    "message": "Активиране на Console insights"
+    "message": "Активиране на „Console insights“"
   },
   "panels/settings/AISettingsTab.ts | experimentalFeatures": {
     "message": "Тези функции използват генеративен AI и може да предоставят неточна или обидна информация, която не отразява възгледите на Google"
@@ -14069,6 +14201,9 @@
   "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
     "message": "Образец на URL адрес"
   },
+  "panels/settings/EditFileSystemView.ts | addSubfolder": {
+    "message": "Добавяне на подпапка"
+  },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "Въведете път"
   },
@@ -14078,8 +14213,14 @@
   "panels/settings/EditFileSystemView.ts | excludedFolders": {
     "message": "Изключени подпапки"
   },
+  "panels/settings/EditFileSystemView.ts | folderPath": {
+    "message": "Път до папката"
+  },
   "panels/settings/EditFileSystemView.ts | url": {
     "message": "URL адрес"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | add": {
+    "message": "Добавяне"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Добавяне на правило за регулярен израз за URL адреса на скрипта"
@@ -14089,6 +14230,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Известни скриптове на трети страни от картите на изходния код"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | cancel": {
+    "message": "Отказ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Персонализирани правила за изключване"
@@ -14131,6 +14275,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "Правилото трябва да е валиден регулярен израз"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | save": {
+    "message": "Запазване"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "Пълен списък на клавишните комбинации и жестовете за DevTools"
@@ -14282,8 +14429,14 @@
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Преглед на потребителския профил"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | add": {
+    "message": "Добавяне"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Добавяне на персонализирано устройство"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cancel": {
+    "message": "Отказ"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
     "message": "Кръг"
@@ -14404,6 +14557,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
     "message": "{PH1}: Горният и долният вътрешен прозорец не трябва да надвишават височината на устройството"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | save": {
+    "message": "Запазване"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Низ за потребителския агент"
@@ -14647,6 +14803,9 @@
   },
   "panels/sources/BreakpointsView.ts | checked": {
     "message": "с отметка"
+  },
+  "panels/sources/BreakpointsView.ts | collapseAll": {
+    "message": "Свиване на всички"
   },
   "panels/sources/BreakpointsView.ts | conditionCode": {
     "message": "Условие: {PH1}"
@@ -15050,11 +15209,20 @@
   "panels/sources/NavigatorView.ts | rename": {
     "message": "Преименуване…"
   },
+  "panels/sources/NavigatorView.ts | run": {
+    "message": "Стартиране"
+  },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (от картата на изходния код)"
   },
   "panels/sources/NavigatorView.ts | sIgnoreListed": {
     "message": "{PH1} (в списъка за пренебрегване)"
+  },
+  "panels/sources/NavigatorView.ts | saveAs": {
+    "message": "Запазване като…"
+  },
+  "panels/sources/NavigatorView.ts | saveAsFailed": {
+    "message": "Запазването на файла в диска не бе успешно"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Търсене във всички файлове"
@@ -15131,6 +15299,9 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Enter"
   },
+  "panels/sources/SourcesNavigator.ts | addFolderManually": {
+    "message": "Ръчно добавяне на папка"
+  },
   "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
     "message": "Използвайте {PH1}, за да свържете автоматично папката на проекта си"
   },
@@ -15151,6 +15322,9 @@
   },
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
     "message": "Настройте работни пространства, за да синхронизирате редакциите директно с разработваните от вас източници"
+  },
+  "panels/sources/SourcesNavigator.ts | localOverrides": {
+    "message": "Замени на локални настройки"
   },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Нов фрагмент"
@@ -17279,6 +17453,12 @@
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
     "message": "Статистика: {PH1}"
   },
+  "panels/timeline/components/Sidebar.ts | annotations": {
+    "message": "Пояснения"
+  },
+  "panels/timeline/components/Sidebar.ts | insights": {
+    "message": "Статистика"
+  },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Добавете пояснение към трасиране за себе си и другите"
   },
@@ -17554,6 +17734,9 @@
   },
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "Състояние"
+  },
+  "panels/web_audio/WebAudioView.ts | webAudioInspectionPaused": {
+    "message": "Проверката на Web Audio е поставена на пауза"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "аудио"

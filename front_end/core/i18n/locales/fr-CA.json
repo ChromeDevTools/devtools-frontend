@@ -348,13 +348,13 @@
     "message": "Cette tentative de définir un témoin par l'intermédiaire d'un en-tête « Set-Cookie » a été bloquée parce qu'elle utilisait le préfixe « __Secure- » ou « __Host- » dans son nom et qu'elle enfreignait les règles supplémentaires appliquées aux témoins ayant ces préfixes, telles qu'elles sont définies sur https://tools.ietf.org/html/draft-west-cookie-prefixes-05"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "Cette tentative de définir un témoin par l'intermédiaire d'un en-tête « Set-Cookie » a été bloquée, car elle n'a pas été envoyée par l'intermédiaire d'une connexion sécurisée et aurait écrasé un témoin possédant l'attribut « Secure »"
+    "message": "Cette tentative de définir un témoin par l'intermédiaire d'un en-tête « Set-Cookie » a été bloquée, car elle n'a pas passé par une connexion sécurisée et aurait écrasé un témoin possédant l'attribut « Secure »"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "Cette tentative de définir un témoin par l'intermédiaire d'un en-tête « Set-Cookie » a été bloquée parce qu'elle avait l'attribut « SameSite=None », mais n'avait pas l'attribut « Secure », qui est nécessaire pour utiliser « SameSite=None »"
+    "message": "Cette tentative de définir un témoin par l'intermédiaire d'un en-tête « Set-Cookie » a été bloquée parce que le témoin avait l'attribut « SameSite=None », mais n'avait pas l'attribut « Secure », qui est nécessaire pour utiliser « SameSite=None »"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "Cette tentative de définir un témoin par l'intermédiaire d'un en-tête « Set-Cookie » a été bloquée parce qu'elle avait l'attribut « {PH1} », mais provenait d'une réponse intersite qui n'était pas la réponse à une navigation de niveau supérieur"
+    "message": "Cette tentative de définir un témoin par l'intermédiaire d'un en-tête « Set-Cookie » a été bloquée parce que le témoin avait l'attribut « {PH1} », mais provenait d'une réponse intersite qui n'était pas la réponse à une navigation de niveau supérieur"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
     "message": "Cet en-tête « Set-Cookie » n'a pas indiqué d'attribut « SameSite ». Il a été défini par défaut à « SameSite=Lax » et a été bloqué parce qu'il provenait d'une réponse intersite qui n'était pas la réponse à une navigation de niveau supérieur. L'en-tête « Set-Cookie » aurait dû être défini avec « SameSite=None » pour permettre une utilisation intersite."
@@ -387,7 +387,7 @@
     "message": "Ce témoin a été bloqué parce que son chemin d'accès n'était pas une correspondance exacte ni un superrépertoire du chemin d'accès de l'URL de la requête"
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
-    "message": "Ce témoin a été bloqué parce qu'il avait l'attribut « SameSite=Lax », et la demande a été effectuée à partir d'un autre site et n'a pas été lancée par une navigation de niveau supérieur"
+    "message": "Ce témoin a été bloqué parce qu'il avait l'attribut « SameSite=Lax », et que la demande a été effectuée à partir d'un autre site et n'a pas été lancée par une navigation de niveau supérieur"
   },
   "core/sdk/NetworkRequest.ts | sameSiteNoneInsecure": {
     "message": "Ce témoin a été bloqué parce qu'il comportait l'attribut « SameSite=None », mais n'était pas marqué « Secure ». Les témoins sans restriction SameSite doivent être marqués « Secure » et envoyés par l'intermédiaire d'une connexion sécurisée."
@@ -893,9 +893,6 @@
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "Ouvrir le panneau d'assistance IA"
   },
-  "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "Ouvrir le panneau Gemini"
-  },
   "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
     "message": "Modèle d'IA téléchargé"
   },
@@ -1223,9 +1220,6 @@
   "generated/Deprecation.ts | FencedFrame": {
     "message": "L'API Fenced Frame est obsolète et son retrait est prévu."
   },
-  "generated/Deprecation.ts | Fledge": {
-    "message": "L'API Protected Audience est obsolète et sera retirée dans une future version."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() et watchPosition() ne fonctionnent plus sur les origines non sécurisées. Pour utiliser cette fonctionnalité, envisagez de faire passer votre application à une origine sécurisée, comme HTTPS. Pour en savoir plus, consultez la page https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
@@ -1243,9 +1237,6 @@
   },
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "Le site Web a demandé une sous-ressource à un réseau auquel il ne pouvait accéder qu'en raison de la position privilégiée de ses utilisateurs sur le réseau. Ces demandes exposent les appareils et les serveurs non publics à Internet, ce qui augmente le risque d'une attaque de falsification de demande intersite (CSRF) ou d'une fuite d'informations. Pour atténuer ces risques, Chrome abandonne les demandes aux sous-ressources non publiques lorsqu'elles sont lancées à partir de contextes non sécurisés, et commencera à les bloquer."
-  },
-  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
-    "message": "Le champ dailyUpdateUrl de InterestGroups transmis à joinAdInterestGroup() a été renommé en updateUrl, afin de refléter avec plus de précision son comportement."
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "Intl.v8BreakIterator est obsolète. Veuillez utiliser la politique Intl.Segmenter à la place."
@@ -1341,7 +1332,7 @@
     "message": "La contrainte DtlsSrtpKeyAgreement est retirée. Vous avez indiqué une valeur true pour cette contrainte, qui n'a eu aucun effet, mais vous pouvez la retirer par souci de netteté."
   },
   "generated/Deprecation.ts | RTCPeerConnectionCreateDTMFSender": {
-    "message": "RTCPeerConnection.createDTMFSender() est obsolète et sera retiré. Veuillez utiliser RTCRtpSender.dtmf à la place."
+    "message": "RTCPeerConnection.createDTMFSender() est obsolète et sera retirée. Veuillez utiliser RTCRtpSender.dtmf à la place."
   },
   "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
     "message": "Le getStats() basé sur le rappel est obsolète et sera retiré. Utilisez plutôt le getStats() conforme aux spécifications."
@@ -1372,6 +1363,9 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Les extensions doivent opter pour l'isolation d'origines multiples pour continuer à utiliser SharedArrayBuffer. Consultez la page https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | ViewTransitionPreventSvgFilterPaint": {
+    "message": "Les filtres SVG ne peuvent pas être appliqués au contenu de transition d'affichage, tel que ::view-transition-old() et ::view-transition-new(), car celui-ci peut contenir des iframes ou des plugiciels multiorigines."
   },
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "BluetoothRemoteGATTCharacteristic.writeValue() est obsolète. Utilisez plutôt writeValueWithResponse() ou writeValueWithoutResponse()."
@@ -2630,6 +2624,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
     "message": "L'enregistrement a été bloqué pour certains cadres :"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | resizeAnnouncementsPane": {
+    "message": "Redimensionner le volet des annonces"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
     "message": "Commencer l'enregistrement"
   },
@@ -3080,20 +3077,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "Déboguer avec l'IA"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
-    "message": "Déboguer avec Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "Activer l'assistant IA"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "Activer Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Afficher l'assistant IA"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "Afficher Gemini"
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Vous pouvez aussi utiliser l'une des requêtes suggérées ci-dessus pour commencer votre conversation"
@@ -3170,6 +3158,9 @@
   "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
     "message": "Utilisez des widgets pour vérifier les résultats ou accéder aux données sources pour certains cas de débogage"
   },
+  "panels/ai_assistance/components/RelevantDataDisclaimer.ts | learnAbout": {
+    "message": "En savoir plus sur l'IA dans les outils pour les développeurs"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Fermer"
   },
@@ -3193,6 +3184,9 @@
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Sur cette page, vous pouvez inspecter et modifier les animations"
+  },
+  "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
+    "message": "Inspection de l'animation suspendue"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Aperçu de l'animation {PH1}"
@@ -3492,7 +3486,7 @@
     "message": "Afficher uniquement la zone de sécurité minimale pour les icônes masquables"
   },
   "panels/application/AppManifestView.ts | startUrl": {
-    "message": "Démarrer l'URL"
+    "message": "URL de démarrage"
   },
   "panels/application/AppManifestView.ts | theAppIsAlreadyInstalled": {
     "message": "L'application est déjà installée"
@@ -3632,6 +3626,9 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "Sur cette page, vous pouvez afficher les fenêtres ouvertes via window.open()"
   },
+  "panels/application/ApplicationPanelSidebar.ts | privateVerificationTokens": {
+    "message": "Jetons de vérification privés"
+  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Actualiser IndexedDB"
   },
@@ -3644,11 +3641,17 @@
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "Sur cette page, vous pouvez afficher, ajouter, modifier et supprimer des paires clé-valeur de stockage de session"
   },
+  "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
+    "message": "Sous-applis sœurs"
+  },
   "panels/application/ApplicationPanelSidebar.ts | startAChat": {
     "message": "Démarrer un clavardage"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Espace de stockage"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | subApps": {
+    "message": "Sous-applis"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "Le contenu de ce document a été généré de façon dynamique via document.write()"
@@ -4583,6 +4586,42 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Chargements spéculatifs"
   },
+  "panels/application/PrivateVerificationTokensView.ts | clearAll": {
+    "message": "Tout effacer"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | creationTime": {
+    "message": "Créé"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | deleteSelected": {
+    "message": "Supprimer les éléments sélectionnés"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | expiration": {
+    "message": "Expiration"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isIssuer": {
+    "message": "Est l'émetteur"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isRedeemer": {
+    "message": "Est l'utilisateur"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | issuer": {
+    "message": "Émetteur"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | keyId": {
+    "message": "Identifiant de clé"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
+    "message": "Aucun jeton de vérification privé pour cette origine"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenId": {
+    "message": "Identifiant de jeton"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenPayload": {
+    "message": "Jeton (Base64)"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | version": {
+    "message": "Version"
+  },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "Contexte du rapport de plantage"
   },
@@ -4886,6 +4925,27 @@
   "panels/application/StorageView.ts | usage": {
     "message": "Utilisation"
   },
+  "panels/application/SubAppsView.ts | manifestId": {
+    "message": "Identifiant du fichier de configuration"
+  },
+  "panels/application/SubAppsView.ts | manifestIdAndStartUrl": {
+    "message": "Identifiant du fichier de configuration/URL de démarrage"
+  },
+  "panels/application/SubAppsView.ts | name": {
+    "message": "Nom"
+  },
+  "panels/application/SubAppsView.ts | scope": {
+    "message": "Portée"
+  },
+  "panels/application/SubAppsView.ts | siblingSubApps": {
+    "message": "Sous-applis sœurs"
+  },
+  "panels/application/SubAppsView.ts | startUrl": {
+    "message": "URL de démarrage"
+  },
+  "panels/application/SubAppsView.ts | subApps": {
+    "message": "Sous-applis"
+  },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Jetons de confiance"
   },
@@ -4896,7 +4956,7 @@
     "message": "Annulé"
   },
   "panels/application/WebMCPView.ts | canceledCount": {
-    "message": "Le {PH1} a été annulé"
+    "message": "{PH1} annulé(s)"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Supprimer les filtres"
@@ -5094,7 +5154,7 @@
     "message": "s. o."
   },
   "panels/application/components/AdsView.ts | rootScriptFilterListRule": {
-    "message": "Règle de la liste de filtres du script d'accès racine"
+    "message": "Règle de la liste de filtres du script racine"
   },
   "panels/application/components/AdsView.ts | settings": {
     "message": "Paramètres"
@@ -5139,7 +5199,7 @@
     "message": "Chrome a détecté une page qui a tenté d'exécuter un élément JavaScript alors qu'elle était mise en cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
-    "message": "À l'heure actuelle, les pages qui ont demandé un élément AppBanner ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui ont demandé un élément AppBanner ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Des indicateurs désactivent la mise en cache complète bidirectionnelle. Accédez à la page chrome://flags/#back-forward-cache pour l'activer localement sur cet appareil."
@@ -5157,7 +5217,7 @@
     "message": "La mise en cache complète bidirectionnelle est désactivée pour la fonctionnalité de prérendu"
   },
   "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "La page ne peut pas être mise en cache en raison d'une instance de BroadcastChannel auprès d'auditeurs inscrits"
+    "message": "La page ne peut pas être mise en cache parce qu'elle comporte une instance de BroadcastChannel auprès d'auditeurs inscrits"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
     "message": "Les pages qui contiennent un en-tête cache-control:no-store ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
@@ -5169,7 +5229,7 @@
     "message": "La page a été éjectée du cache pour permettre la mise en cache d'une autre page"
   },
   "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "À l'heure actuelle, les pages qui contiennent des plugiciels ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui contiennent des plugiciels ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentDiscarded": {
     "message": "Non défini"
@@ -5181,28 +5241,28 @@
     "message": "Les pages qui utilisent l'API File System Access ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Les pages qui utilisent Media Device Dispatcher ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "Les pages qui utilisent Media Device Dispatcher ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
     "message": "Un lecteur multimédia était en cours d'utilisation lorsque l'utilisateur a quitté la page"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Les pages qui utilisent l'API MediaSession et qui définissent un état de lecture ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "Les pages qui utilisent l'API MediaSession et qui définissent un état de lecture ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Les pages qui utilisent l'API MediaSession et des modules de traitement d'actions définies ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "Les pages qui utilisent l'API MediaSession et qui définissent des modules de traitement d'actions ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
     "message": "La mise en cache complète bidirectionnelle est désactivée en raison du lecteur d'écran"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Les pages qui utilisent SecurityHandler ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "Les pages qui utilisent SecurityHandler ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
     "message": "Les pages qui utilisent l'API Serial ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Les pages qui utilisent l'API WebAuthentication ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "Les pages qui utilisent l'API WebAuthentication ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
     "message": "Les pages qui utilisent l'API WebBluetooth ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
@@ -5214,10 +5274,10 @@
     "message": "La mise en cache complète bidirectionnelle est désactivée, car les témoins sont désactivés sur une page qui utilise Cache-Control: no-store"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "À l'heure actuelle, les pages qui utilisent un script de traitement ou un groupe de tâches dédié ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent un script de traitement ou un worklet dédié ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Le chargement du document ne s'est pas terminé avant que l'utilisateur le quitte"
+    "message": "L'utilisateur a quitté la page avant la fin du chargement du document"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
     "message": "Une bannière d'appli était présente lorsque l'utilisateur a quitté la page"
@@ -5244,7 +5304,7 @@
     "message": "La mise en cache complète bidirectionnelle est désactivée en raison de la présence d'extensions"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "La boîte de dialogue modale, comme le nouvel envoi d'un formulaire ou la boîte de dialogue du mot de passe du protocole HTTP, était affichée lorsque l'utilisateur a quitté la page"
+    "message": "Une boîte de dialogue modale, comme un nouvel envoi d'un formulaire ou une boîte de dialogue du mot de passe du protocole HTTP, était affichée lorsque l'utilisateur a quitté la page"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
     "message": "La page hors ligne était affichée lorsque l'utilisateur a quitté la page"
@@ -5295,7 +5355,7 @@
     "message": "Des API non admissibles ont été utilisées"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "À l'heure actuelle, les pages dans lesquelles des extensions ont intégré JavaScript ne sont pas admissibles à la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages dans lesquelles des extensions ont intégré JavaScript ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
     "message": "À l'heure actuelle, les pages dans lesquelles des extensions ont intégré un StyleSheet ne sont pas admissibles pour la mise en cache complète bidirectionnelle"
@@ -5310,13 +5370,13 @@
     "message": "La mise en cache complète bidirectionnelle est désactivée en raison d'une demande de connexion persistante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "À l'heure actuelle, les pages qui utilisent le verrouillage du clavier ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle."
+    "message": "À l'heure actuelle, les pages qui utilisent le verrouillage du clavier ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | loading": {
-    "message": "Le chargement de la page ne s'est pas terminé avant que l'utilisateur la quitte"
+    "message": "L'utilisateur a quitté la page avant qu'elle finisse de charger"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Les pages dont la ressource principale contient la valeur cache-control:no-cache ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "Les pages dont la ressource principale contient la valeur cache-control:no-cache ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
     "message": "Les pages dont la ressource principale contient la valeur cache-control:no-store ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
@@ -5328,7 +5388,7 @@
     "message": "La page a été éjectée du cache parce qu'une connexion réseau active a reçu trop de données. Chrome impose une limite quant à la quantité de données qu'une page peut recevoir alors qu'elle est mise en cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "À l'heure actuelle, les pages qui contiennent une demande-réseau XHR ou fetch() en cours ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui contiennent une demande réseau XHR ou fetch() en cours ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
     "message": "La page a été éjectée de la mise en cache complète bidirectionnelle en raison d'une demande réseau active qui inclut une redirection"
@@ -5343,19 +5403,19 @@
     "message": "La navigation s'est produite dans un cadre autre que le cadre principal"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "À l'heure actuelle, les pages qui sont en train d'exécuter des transactions relatives à une base de données indexées ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui sont en train d'exécuter des transactions relatives à une base de données indexée ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
     "message": "À l'heure actuelle, les pages qui comprennent une demande réseau en cours ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "À l'heure actuelle, les pages qui comprennent une demande réseau de récupération en cours ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui comprennent une demande réseau de récupération en cours ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
     "message": "À l'heure actuelle, les pages qui comprennent une demande réseau en cours ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "À l'heure actuelle, les pages qui comprennent une demande réseau XHR en cours ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui comprennent une demande réseau XHR en cours ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
     "message": "À l'heure actuelle, les pages qui utilisent PaymentManager ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
@@ -5376,7 +5436,7 @@
     "message": "Le processus de rendu pour la page en mise en cache complète bidirectionnelle a été arrêté"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "À l'heure actuelle, les pages qui ont demandé des autorisations de capture audio ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui ont demandé des autorisations de capture audio ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
     "message": "À l'heure actuelle, les pages qui ont demandé des autorisations d'accès à des capteurs ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
@@ -5385,16 +5445,16 @@
     "message": "À l'heure actuelle, les pages qui ont demandé les autorisations de synchronisation ou de récupération en arrière-plan ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "À l'heure actuelle, les pages qui ont demandé des autorisations d'accès aux appareils MIDI ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui ont demandé des autorisations d'accès aux appareils MIDI ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "À l'heure actuelle, les pages qui ont demandé des autorisations de notification ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui ont demandé des autorisations de notification ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
     "message": "À l'heure actuelle, les pages qui ont demandé un accès à l'espace de stockage ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "À l'heure actuelle, les pages qui ont demandé des autorisations de capture vidéo ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui ont demandé des autorisations de capture vidéo ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
     "message": "Seules les pages dont le schéma d'URL est HTTP ou HTTPS peuvent être mises en cache"
@@ -5421,10 +5481,10 @@
     "message": "La page a été éjectée de la mise en cache parce qu'elle a reçu un message d'un SharedWorker"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "À l'heure actuelle, les pages qui utilisent SpeechRecognizer ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent SpeechRecognizer ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Les pages qui utilisent SpeechSynthesis ne peuvent actuellement pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent SpeechSynthesis ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
     "message": "Un élément iframe sur la page a démarré une navigation qui n'a pas été terminée"
@@ -5451,19 +5511,19 @@
     "message": "Le navigateur a changé l'en-tête de remplacement de l'agent utilisateur"
   },
   "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "À l'heure actuelle, les pages qui ont accordé l'autorisation d'enregistrement vidéo ou audio ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui ont accordé l'autorisation d'enregistrement vidéo ou audio ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "À l'heure actuelle, les pages qui utilisent WebDatabase ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent WebDatabase ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webHID": {
-    "message": "À l'heure actuelle, les pages qui utilisent WebHID ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent WebHID ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
-    "message": "À l'heure actuelle, les pages qui utilisent WebLocks ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent WebLocks ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
-    "message": "À l'heure actuelle, les pages qui utilisent WebNfc ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent WebNfc ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
     "message": "À l'heure actuelle, les pages qui utilisent WebOTPService ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
@@ -5475,7 +5535,7 @@
     "message": "La mise en cache complète bidirectionnelle est désactivée, car WebRTC a été utilisé"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
-    "message": "À l'heure actuelle, les pages qui utilisent WebShare ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent WebShare ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Les pages qui font appel à la technologie WebSocket ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
@@ -5484,16 +5544,16 @@
     "message": "La mise en cache complète bidirectionnelle est désactivée, car WebSocket a été utilisée"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Les pages qui utilisent WebTransport ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "Les pages qui utilisent WebTransport ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
     "message": "La mise en cache complète bidirectionnelle est désactivée, car WebTransport a été utilisé"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
-    "message": "À l'heure actuelle, les pages qui utilisent WebXR ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle"
+    "message": "À l'heure actuelle, les pages qui utilisent WebXR ne peuvent pas être enregistrées dans le cache de navigation"
   },
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Mise en cache complète bidirectionnelle"
+    "message": "Cache de navigation"
   },
   "panels/application/components/BackForwardCacheView.ts | blankURLTitle": {
     "message": "URL vide [{PH1}]"
@@ -5505,7 +5565,7 @@
     "message": "Aucune action possible"
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Ces raisons ne peuvent pas faire l'objet d'une action, par exemple, un facteur externe indépendant de la page a empêché la mise en cache"
+    "message": "Ces raisons ne peuvent pas faire l'objet d'une action, c'est-à-dire que la mise en cache a été empêchée par un élément indépendant du contrôle direct de la page"
   },
   "panels/application/components/BackForwardCacheView.ts | filesPerIssue": {
     "message": "{n,plural, =1{# fichier}one{# fichier}other{# fichiers}}"
@@ -5553,7 +5613,7 @@
     "message": "Prise en charge en attente"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "La prise en charge de ces raisons par Chrome est en attente, c'est-à-dire qu'elles n'empêcheront pas la page d'être enregistrée dans la mise en cache complète bidirectionnelle dans une future version de Chrome"
+    "message": "La prise en charge de ces raisons par Chrome est en attente, c'est-à-dire qu'elles n'empêcheront pas la page d'être enregistrée dans le cache de navigation dans une future version de Chrome"
   },
   "panels/application/components/BackForwardCacheView.ts | testCompleted": {
     "message": "Test de la mise en cache complète bidirectionnelle terminé"
@@ -5616,7 +5676,7 @@
     "message": "Cliquez pour afficher la demande dont l'en-tête HTTP « Permissions-Policy » désactive cette fonctionnalité"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
-    "message": "Cliquer pour afficher l'iframe du dessus qui n'autorise pas cette fonctionnalité dans le panneau Éléments"
+    "message": "Cliquer pour afficher l'iframe tout en haut de la hiérarchie qui n'autorise pas cette fonctionnalité dans le panneau Éléments"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
     "message": "désactivée à l'intérieur d'un fencedframe"
@@ -5634,7 +5694,7 @@
     "message": "Masquer les renseignements"
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
-    "message": "Afficher les renseignements"
+    "message": "Afficher les détails"
   },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "Sélectionnez le module de traitement de protocoles"
@@ -5770,6 +5830,9 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "Sur cette page, vous pouvez afficher tous les jetons de confiance accessibles dans le contexte de navigation actuel"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearSpeculativeLoads": {
+    "message": "Effacer les chargements spéculatifs"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "Tous les chargements spéculatifs"
@@ -5987,6 +6050,9 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
     "message": "La prélecture a été supprimée, car la page d'origine a déjà trop de prélectures en cours, et celle-ci était l'une des plus anciennes"
   },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedCrossOriginSubframe": {
+    "message": "La navigation dans le sous-cadre multiorigine a été différée pendant le prérendu, car le cadre parent a été différé ou sa réponse n'incluait pas l'en-tête Supports-Loading-Mode approprié"
+  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "La prélecture a été redirigée, mais l'URL de redirection n'est pas admissible à la prélecture"
   },
@@ -6027,7 +6093,7 @@
     "message": "L'URL n'est pas admissible à la prélecture, car dans le contexte par défaut du réseau, elle est configurée pour utiliser un serveur mandataire"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
-    "message": "L'URL n'était pas admissible à la prélecture, car son hôte n'était pas unique (p. ex. une adresse IP non routable publiquement ou un nom d'hôte qui n'est pas contrôlé par le registre), mais la prélecture aurait dû être mandatée"
+    "message": "L'URL n'était pas admissible à la prélecture, car son hôte n'était pas unique (p. ex. une adresse IP non routable publiquement ou un nom d'hôte qui n'est pas contrôlé par le registre), mais la prélecture devait obligatoirement passer par un mandataire"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
     "message": "L'URL n'était pas admissible à la prélecture, car elle utilise un partitionnement du stockage autre que celui par défaut"
@@ -6069,7 +6135,7 @@
     "message": "Le prérendu n'a pas été utilisé, car pendant le temps d'activation, de nouveaux paramètres de navigation (p. ex. les en-têtes HTTP) qui n'étaient pas dans la demande de navigation de prérendu d'origine ont été calculés"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
-    "message": "Le prérendu n'a pas été utilisé, car pendant le temps d'activation, la navigation a une URL efficace différente de son URL normale. (Par exemple, la page Nouvel onglet ou les applis hébergées.)"
+    "message": "Le prérendu n'a pas été utilisé, car pendant le temps d'activation, l'URL réelle de la navigation est différente de son URL normale. (Par exemple, la page Nouvel onglet ou les applis hébergées.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
     "message": "Toutes les pages prérendues ont été déchargées par le navigateur pour une raison quelconque (par exemple, WebViewCompat.addWebMessageListener() a été appelé lors du prérendu)."
@@ -6629,20 +6695,32 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Afficher les modifications"
   },
+  "panels/comments/CommentsPane.ts | addComment": {
+    "message": "Ajoutez un commentaire"
+  },
   "panels/comments/CommentsPane.ts | clearComments": {
     "message": "Effacer tous les commentaires"
+  },
+  "panels/comments/CommentsPane.ts | commentModeIcon": {
+    "message": "Mode Commentaires"
   },
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "Supprimer le commentaire"
   },
-  "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "Aucun commentaire en file d'attente. Ajoutez des commentaires sur les éléments dans les outils pour les développeurs à envoyer à votre agent de codage IA."
+  "panels/comments/CommentsPane.ts | emptyStateDescription": {
+    "message": "Utilisez {PH1} pour sélectionner un élément et envoyer des tâches, des questions et du contexte à votre agent de codage"
   },
-  "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "Aucun commentaire envoyé. Envoyez des commentaires à votre agent de codage IA pour les voir ici."
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "Aucun commentaire"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "Aucun commentaire en file d'attente"
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "En file d'attente"
+  },
+  "panels/comments/CommentsPane.ts | removed": {
+    "message": "retiré"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Afficher la réponse"
@@ -6652,6 +6730,15 @@
   },
   "panels/comments/CommentsPane.ts | sent": {
     "message": "Envoyés"
+  },
+  "panels/comments/CommentsPane.ts | sentCheckmark": {
+    "message": "Coche d'envoi effectué"
+  },
+  "panels/comments/CommentsPane.ts | sentComments": {
+    "message": "Commentaires envoyés"
+  },
+  "panels/comments/CommentsPane.ts | sentStatus": {
+    "message": "Envoyé"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Traitement en cours…"
@@ -6710,8 +6797,14 @@
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "Supprimer le commentaire en file d'attente"
   },
+  "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
+    "message": "L'élément n'est plus accessible"
+  },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "Mettre le commentaire en file d'attente"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
+    "message": "{PH1} + ↵ pour mettre les commentaires en file d'attente"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Réponse :"
@@ -6728,8 +6821,17 @@
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Coche d'envoi effectué"
   },
-  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "Commentaires ({PH1})"
+  "panels/common/CommentThreadWidget.ts | working": {
+    "message": "Traitement en cours…"
+  },
+  "panels/common/CommentsOverlayWidget.ts | addComment": {
+    "message": "Ajouter un commentaire"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewComments": {
+    "message": "Afficher les commentaires"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewCommentsWithCount": {
+    "message": "Afficher les commentaires ({PH1})"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<nœud>"
@@ -6781,27 +6883,6 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Conditions d'utilisation"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
-    "message": "Voici votre compagnon propulsé par l'IA pour le développement Web"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
-    "message": "Obtenez des réponses instantanées et précises aux erreurs de la console"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
-    "message": "Générez des extraits CSS et JS à la volée"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
-    "message": "Trouvez automatiquement les problèmes dans les traces de performances"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "Gemini 3 Flash dans DevTools"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
-    "message": "Fermer"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
-    "message": "Premiers pas"
   },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "Associé à {PH1}"
@@ -6915,7 +6996,10 @@
     "message": "Barre latérale de la console affichée"
   },
   "panels/console/ConsoleView.ts | copyConsole": {
-    "message": "Copier la console"
+    "message": "Copier tous les messages"
+  },
+  "panels/console/ConsoleView.ts | copyMessage": {
+    "message": "Copier le message"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copier la sélection visible stylisée"
@@ -8312,6 +8396,9 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Ouvrir dans le panneau Sources"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openShadowEditor": {
+    "message": "Ouvrir l'éditeur d'ombre"
+  },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
     "message": "Remplacée par les styles d'animation"
   },
@@ -8870,8 +8957,8 @@
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "Requête"
   },
-  "panels/issues/AffectedCookiesView.ts | domain": {
-    "message": "Domaine"
+  "panels/issues/AffectedCookiesView.ts | domainAndPath": {
+    "message": "Domaine et chemin d'accès"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
     "message": "Afficher les requêtes réseau qui comprennent l'en-tête Set-Cookie dans le panneau Network"
@@ -8885,14 +8972,14 @@
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nom"
   },
-  "panels/issues/AffectedCookiesView.ts | path": {
-    "message": "Chemin"
-  },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
     "message": "Descendant non autorisé"
   },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
-    "message": "{n,plural, =1{ descendant}one{ descendant}other{ descendants}}"
+    "message": "{n,plural, =1{# descendant}one{# descendant}other{# descendants}}"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | unavailable": {
+    "message": "Non accessible"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "Bloqué"
@@ -8930,11 +9017,17 @@
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
     "message": "{n,plural, =1{document}one{ document}other{ documents}}"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | unavailable": {
+    "message": "Non accessible"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "URL"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# élément}one{# élément}other{# éléments}}"
+  },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "Non accessible"
   },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "Limite de crête du processeur"
@@ -9030,7 +9123,7 @@
     "message": "{n,plural, =1{# cas de non-respect}one{# cas de non-respect}other{# cas de non-respect}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
-    "message": "SharedArrayBuffer a été transféré vers un contexte qui n'est pas un contexte isolé multiorigine"
+    "message": "SharedArrayBuffer a été transféré vers un contexte qui n'est ni isolé ni multiorigine"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sourceLocation": {
     "message": "Lieu de la source"
@@ -10019,6 +10112,18 @@
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "Irrégularité de la lecture vidéo"
   },
+  "panels/media/TickingFlameChart.ts | duration": {
+    "message": "Durée : {PH1} – {PH2}"
+  },
+  "panels/media/TickingFlameChart.ts | durationLive": {
+    "message": "Durée : {PH1} – EN DIRECT!"
+  },
+  "panels/media/TickingFlameChart.ts | name": {
+    "message": "Nom : {PH1}"
+  },
+  "panels/media/TickingFlameChart.ts | time": {
+    "message": "Durée : {PH1}"
+  },
   "panels/media/media-meta.ts | media": {
     "message": "Multimédia"
   },
@@ -10160,6 +10265,9 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
     "message": "Connexion 3G lente et processeur {PH1} fois plus lent"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | add": {
+    "message": "Ajouter"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "Ajouter un profil"
   },
@@ -10267,6 +10375,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "{PH1} doit être un nombre allant de {PH2} kbit/s à {PH3} kbit/s"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | save": {
+    "message": "Enregistrer"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Téléverser"
@@ -11102,6 +11213,12 @@
   "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "Ajouter un en-tête personnalisé…"
   },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerAlreadyExists": {
+    "message": "L'en-tête existe déjà"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerCannotBeEmpty": {
+    "message": "Le nom de l'en-tête est obligatoire"
+  },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "Nom de l'en-tête"
   },
@@ -11413,6 +11530,9 @@
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Échec du chargement des données de la réponse"
+  },
+  "panels/network/RequestPreviewView.ts | nothingToPreview": {
+    "message": "Aucun élément à prévisualiser"
   },
   "panels/network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "Aperçu non accessible"
@@ -12572,6 +12692,15 @@
   "panels/profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "Chargement des échantillons en cours…"
   },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeContextVars": {
+    "message": "Chargement des variables de contexte des portées en cours…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeUses": {
+    "message": "Chargement des utilisations des portées en cours…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopes": {
+    "message": "Chargement des portées en cours…"
+  },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "Chargement des données de l'instantané en cours…"
   },
@@ -12984,7 +13113,7 @@
     "message": "Délai d'expiration : {value} ms"
   },
   "panels/recorder/RecordingView.ts | timeoutExplanation": {
-    "message": "Le paramètre de délai avant expiration (en millisecondes) s'applique à chaque action lors de la relecture de l'enregistrement. Par exemple, si un élément DOM identifié par un sélecteur CSS n'apparaît pas sur la page dans le délai indiqué, la relecture échoue avec une erreur."
+    "message": "Le paramètre de délai avant expiration (en millisecondes) s'applique à chaque action lors de la relecture de l'enregistrement. Par exemple, si un élément DOM identifié par un sélecteur CSS n'apparaît pas sur la page dans le délai indiqué, la relecture rencontre une erreur."
   },
   "panels/recorder/RecordingView.ts | timeoutLabel": {
     "message": "Délai avant expiration"
@@ -13059,7 +13188,7 @@
     "message": "Entrez un type d'action valide"
   },
   "panels/recorder/StepView.ts | addBreakpoint": {
-    "message": "Ajouter un point d'arrêt"
+    "message": "Ajouter un point d'arrêt pour {title}"
   },
   "panels/recorder/StepView.ts | addStepAfter": {
     "message": "Ajouter une étape après"
@@ -13112,11 +13241,14 @@
   "panels/recorder/StepView.ts | navigateStepTitle": {
     "message": "Naviguer"
   },
+  "panels/recorder/StepView.ts | noTitle": {
+    "message": "(Sans titre)"
+  },
   "panels/recorder/StepView.ts | openStepActions": {
-    "message": "Ouvrir les actions par étape"
+    "message": "Ouvrir les actions relatives aux étapes pour {title}"
   },
   "panels/recorder/StepView.ts | removeBreakpoint": {
-    "message": "Retirer le point d'arrêt"
+    "message": "Retirer le point d'arrêt pour {title}"
   },
   "panels/recorder/StepView.ts | removeStep": {
     "message": "Retirer l'étape"
@@ -13518,7 +13650,7 @@
     "message": "Le nom d'hôte de ce site est similaire à celui de {PH1}. Les pirates tentent parfois d'imiter des sites Web en modifiant légèrement le nom de domaine utilisé."
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "Pour vérifier l'état de cette page, consultez g.co/safebrowsingstatus"
+    "message": "Pour vérifier l'état de cette page, visitez la page g.co/safebrowsingstatus"
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "inconnue"
@@ -14069,6 +14201,9 @@
   "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
     "message": "Format d'URL"
   },
+  "panels/settings/EditFileSystemView.ts | addSubfolder": {
+    "message": "Ajouter un sous-dossier"
+  },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "Entrez un chemin d'accès"
   },
@@ -14078,8 +14213,14 @@
   "panels/settings/EditFileSystemView.ts | excludedFolders": {
     "message": "Sous-dossiers exclus"
   },
+  "panels/settings/EditFileSystemView.ts | folderPath": {
+    "message": "Chemin d'accès au dossier"
+  },
   "panels/settings/EditFileSystemView.ts | url": {
     "message": "URL"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | add": {
+    "message": "Ajouter"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Ajouter une règle d'expression rationnelle pour l'URL du script"
@@ -14089,6 +14230,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Scripts tiers connus à partir des correspondances sources"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | cancel": {
+    "message": "Annuler"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Règles d'exclusion personnalisées"
@@ -14131,6 +14275,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "La règle doit être une expression rationnelle valide"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | save": {
+    "message": "Enregistrer"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "Liste complète des raccourcis-clavier et des gestes dans les outils de conception"
@@ -14282,8 +14429,14 @@
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Afficher le profil"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | add": {
+    "message": "Ajouter"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Ajouter un appareil personnalisé"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cancel": {
+    "message": "Annuler"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
     "message": "Cercle"
@@ -14404,6 +14557,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
     "message": "{PH1} : les encarts supérieur et inférieur ne doivent pas dépasser la hauteur de l'appareil"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | save": {
+    "message": "Enregistrer"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Chaîne agent utilisateur"
@@ -14647,6 +14803,9 @@
   },
   "panels/sources/BreakpointsView.ts | checked": {
     "message": "coché"
+  },
+  "panels/sources/BreakpointsView.ts | collapseAll": {
+    "message": "Tout réduire"
   },
   "panels/sources/BreakpointsView.ts | conditionCode": {
     "message": "Condition : {PH1}"
@@ -15050,11 +15209,20 @@
   "panels/sources/NavigatorView.ts | rename": {
     "message": "Renommer…"
   },
+  "panels/sources/NavigatorView.ts | run": {
+    "message": "Exécuter"
+  },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (à partir de la carte source)"
   },
   "panels/sources/NavigatorView.ts | sIgnoreListed": {
     "message": "{PH1} (liste des éléments à ignorer)"
+  },
+  "panels/sources/NavigatorView.ts | saveAs": {
+    "message": "Enregistrer sous…"
+  },
+  "panels/sources/NavigatorView.ts | saveAsFailed": {
+    "message": "Échec de l'enregistrement du fichier sur le disque"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Rechercher dans tous les fichiers"
@@ -15131,6 +15299,9 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Entrée"
   },
+  "panels/sources/SourcesNavigator.ts | addFolderManually": {
+    "message": "Ajouter manuellement un dossier"
+  },
   "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
     "message": "Utilisez {PH1} pour connecter automatiquement votre dossier de projet"
   },
@@ -15151,6 +15322,9 @@
   },
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
     "message": "Configurez les espaces de travail pour synchroniser les modifications directement avec les sources que vous développez"
+  },
+  "panels/sources/SourcesNavigator.ts | localOverrides": {
+    "message": "Remplacements locaux"
   },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Nouvel extrait"
@@ -15396,7 +15570,7 @@
     "message": "Désactiver les suivis de pile asynchrones"
   },
   "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
-    "message": "Ne pas mettre en évidence le panneau des dources lors du déclenchement d'un point d'arrêt"
+    "message": "Ne pas mettre en évidence le panneau des sources lors du déclenchement d'un point d'arrêt"
   },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Désactiver la saisie semi-automatique"
@@ -15453,7 +15627,7 @@
     "message": "Ne pas rechercher dans les scripts anonymes et de contenu"
   },
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
-    "message": "Ne pas afficher les caractères d'espacement"
+    "message": "Ne pas afficher les caractères blancs"
   },
   "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
     "message": "Ouvrir le panneau Sources lors du déclenchement d'un point d'arrêt"
@@ -17279,6 +17453,12 @@
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
     "message": "Statistiques : {PH1}"
   },
+  "panels/timeline/components/Sidebar.ts | annotations": {
+    "message": "Annotations"
+  },
+  "panels/timeline/components/Sidebar.ts | insights": {
+    "message": "Statistiques"
+  },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Annoter une trace pour vous-même et pour les autres"
   },
@@ -17554,6 +17734,9 @@
   },
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "État"
+  },
+  "panels/web_audio/WebAudioView.ts | webAudioInspectionPaused": {
+    "message": "Inspection Web Audio suspendue"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "audio"

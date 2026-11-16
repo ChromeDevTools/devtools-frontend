@@ -384,7 +384,7 @@
     "message": "Esta cookie bloqueouse porque era demasiado grande. O tamaño combinado do nome e o valor debe ser inferior ou igual a 4096 caracteres."
   },
   "core/sdk/NetworkRequest.ts | notOnPath": {
-    "message": "Esta cookie bloqueouse porque a súa ruta non era un superdirectorio da ruta do URL da solicitude ou non coincidía exactamente con un"
+    "message": "Esta cookie bloqueouse porque a súa ruta non era un superdirectorio da ruta do URL da solicitude ou non coincidía exactamente coa devandita ruta"
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "Esta cookie bloqueouse porque tiña o atributo \"SameSite=Lax\" e porque a solicitude se realizou desde un sitio distinto e non a iniciou unha navegación de nivel superior"
@@ -399,7 +399,7 @@
     "message": "Esta cookie non especificaba un atributo SameSite cando se almacenou (tiña asignado un atributo SameSite=Lax de forma predeterminada) e bloqueouse porque a solicitude procedía dun sitio distinto e non a iniciou unha navegación de nivel superior. Para que puidese usarse en varios sitios, a cookie teríase que definir co atributo SameSite=None."
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
-    "message": "Esta cookie bloqueouse porque tiña o atributo \"Secure\" e a conexión non era segura"
+    "message": "Esta cookie bloqueouse porque tiña o atributo Secure e a conexión non era segura"
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
     "message": "A cabeceira Set-Cookie ignórase na resposta do URL: {PH1}. O tamaño combinado do nome e o valor debe ser inferior ou igual a 4096 caracteres."
@@ -893,9 +893,6 @@
   "entrypoints/main/GlobalAiButton.ts | openAiAssistance": {
     "message": "Abrir o panel de asistencia de IA"
   },
-  "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "Abrir o panel de Gemini"
-  },
   "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
     "message": "Descargouse o modelo de IA"
   },
@@ -1223,9 +1220,6 @@
   "generated/Deprecation.ts | FencedFrame": {
     "message": "Fenced Frame API quedou obsoleta, polo que se quitará proximamente."
   },
-  "generated/Deprecation.ts | Fledge": {
-    "message": "A Protected Audience API quedou obsoleta, polo que se quitará nun lanzamento futuro."
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() e watchPosition() xa non funcionan nas orixes non seguras. Recomendámosche que cambies a aplicación a unha orixe segura, como HTTPS, para usar esta función. Consulta máis información en https://www.chromium.org/Home/chromium-security/deprecating-powerful-features-on-insecure-origins/."
   },
@@ -1243,9 +1237,6 @@
   },
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
-  },
-  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
-    "message": "O nome do campo dailyUpdateUrl de InterestGroups transmitido a joinAdInterestGroup() cambiou a updateUrl para reflectir o seu comportamento con máis precisión."
   },
   "generated/Deprecation.ts | IntlV8BreakIterator": {
     "message": "O construtor Intl.v8BreakIterator quedou obsoleto. Mellor usa Intl.Segmenter."
@@ -1372,6 +1363,9 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | ViewTransitionPreventSvgFilterPaint": {
+    "message": "Os filtros SVG non se poden aplicar ao contido de transición de vista, como ::view-transition-old() e ::view-transition-new(), xa que pode conter plugins ou iframes de orixe cruzada."
   },
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "A sintaxe BluetoothRemoteGATTCharacteristic.writeValue() quedou obsoleta. Usa writeValueWithResponse() ou writeValueWithoutResponse() no seu lugar."
@@ -2630,6 +2624,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
     "message": "Bloqueouse a gravación dalgúns marcos:"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | resizeAnnouncementsPane": {
+    "message": "Cambiar o tamaño do panel de anuncios"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
     "message": "Iniciar gravación"
   },
@@ -3080,20 +3077,11 @@
   "panels/ai_assistance/ai_assistance-meta.ts | debugWithAi": {
     "message": "Depurar coa IA"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | debugWithGemini": {
-    "message": "Depurar con Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
     "message": "Activar asistencia de IA"
   },
-  "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "Activar Gemini"
-  },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "Mostrar asistencia de IA"
-  },
-  "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "Mostrar Gemini"
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Tamén podes usar unha das solicitudes suxeridas máis arriba para iniciar a conversa"
@@ -3170,6 +3158,9 @@
   "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
     "message": "Usa os widgets para verificar os resultados ou acceder aos datos de orixe en determinados casos de depuración"
   },
+  "panels/ai_assistance/components/RelevantDataDisclaimer.ts | learnAbout": {
+    "message": "Máis información sobre IA en DevTools"
+  },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Pechar"
   },
@@ -3193,6 +3184,9 @@
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "Nesta páxina podes inspeccionar e modificar as animacións"
+  },
+  "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
+    "message": "A inspección de animacións está en pausa"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Vista previa da animación {PH1}"
@@ -3492,7 +3486,7 @@
     "message": "Mostrar só a área segura mínima para iconas adaptables"
   },
   "panels/application/AppManifestView.ts | startUrl": {
-    "message": "Iniciar URL"
+    "message": "URl de inicio"
   },
   "panels/application/AppManifestView.ts | theAppIsAlreadyInstalled": {
     "message": "A aplicación xa está instalada"
@@ -3632,6 +3626,9 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "Nesta páxina podes ver as ventás abertas mediante window.open()"
   },
+  "panels/application/ApplicationPanelSidebar.ts | privateVerificationTokens": {
+    "message": "Tokens de verificación privados"
+  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Actualizar IndexedDB"
   },
@@ -3644,11 +3641,17 @@
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "Nesta páxina podes ver, engadir, editar e eliminar pares de valor clave de almacenamento de sesións"
   },
+  "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
+    "message": "Subaplicacións do mesmo nivel"
+  },
   "panels/application/ApplicationPanelSidebar.ts | startAChat": {
     "message": "Iniciar chat"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Almacenamento"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | subApps": {
+    "message": "Subaplicacións"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "O contido deste documento xerouse de forma dinámica usando document.write()"
@@ -3690,7 +3693,7 @@
     "message": "DevTools rexistrará toda a actividade de {PH1} durante un máximo de 3 días, mesmo cando estea pechado."
   },
   "panels/application/BackgroundServiceView.ts | empty": {
-    "message": "baleiros"
+    "message": "baleiro"
   },
   "panels/application/BackgroundServiceView.ts | event": {
     "message": "Evento"
@@ -4583,6 +4586,42 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Cargas especulativas"
   },
+  "panels/application/PrivateVerificationTokensView.ts | clearAll": {
+    "message": "Borrar todo"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | creationTime": {
+    "message": "Creación"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | deleteSelected": {
+    "message": "Eliminar os elementos seleccionados"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | expiration": {
+    "message": "Vencemento"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isIssuer": {
+    "message": "É emisor"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | isRedeemer": {
+    "message": "É trocador"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | issuer": {
+    "message": "Emisor"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | keyId": {
+    "message": "Código da chave"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
+    "message": "Non hai tokens de verificación privados para esta orixe"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenId": {
+    "message": "ID do token"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | tokenPayload": {
+    "message": "Token (Base64)"
+  },
+  "panels/application/PrivateVerificationTokensView.ts | version": {
+    "message": "Versión"
+  },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "Contexto do informe de fallos"
   },
@@ -4886,6 +4925,27 @@
   "panels/application/StorageView.ts | usage": {
     "message": "Uso"
   },
+  "panels/application/SubAppsView.ts | manifestId": {
+    "message": "Código de manifesto"
+  },
+  "panels/application/SubAppsView.ts | manifestIdAndStartUrl": {
+    "message": "Código de identificación do manifesto / URL de inicio"
+  },
+  "panels/application/SubAppsView.ts | name": {
+    "message": "Nome"
+  },
+  "panels/application/SubAppsView.ts | scope": {
+    "message": "Alcance"
+  },
+  "panels/application/SubAppsView.ts | siblingSubApps": {
+    "message": "Subaplicacións do mesmo nivel"
+  },
+  "panels/application/SubAppsView.ts | startUrl": {
+    "message": "URL de inicio"
+  },
+  "panels/application/SubAppsView.ts | subApps": {
+    "message": "Subaplicacións"
+  },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Tokens de estado privado"
   },
@@ -4929,7 +4989,7 @@
     "message": "Erro"
   },
   "panels/application/WebMCPView.ts | failed": {
-    "message": "Produciuse un erro ({PH1})"
+    "message": "Erros: {PH1}"
   },
   "panels/application/WebMCPView.ts | filter": {
     "message": "Filtra o contido"
@@ -5277,16 +5337,16 @@
     "message": "Expulsouse esta páxina da memoria caché para que puidese almacenarse nela outra páxina"
   },
   "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "As páxinas que concederon acceso á reprodución de contido multimedia en tempo real actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que concederon acceso á reprodución de contido multimedia en tempo real non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "As páxinas que teñen determinados tipos de contido inserido (por exemplo, PDF) actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que teñen determinados tipos de contido inserido (por exemplo, PDF) non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
-    "message": "As páxinas que usan IdleManager actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que usan IdleManager non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "As páxinas que teñen unha conexión IndexedDB aberta actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que teñen unha conexión IndexedDB aberta non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
     "message": "A caché atrás/adiante está desactivada debido a un evento de IndexedDB"
@@ -5298,7 +5358,7 @@
     "message": "Nestes momentos, as páxinas nas que se incorpora JavaScript a través de extensións non se gardan correctamente na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "As páxinas nas que se incorpora StyleSheet a través de extensións actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas nas que se incorpora StyleSheet a través de extensións non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Produciuse un erro interno"
@@ -5346,25 +5406,25 @@
     "message": "Nestes momentos, as páxinas con transaccións de IndexedDB en curso non se gardan correctamente na memoria caché de páxinas anteriores e seguintes"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "As páxinas cunha solicitude de rede en execución actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas cunha solicitude de rede en execución non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
     "message": "Nestes momentos, as páxinas cunha solicitude de rede de recuperación en execución non se gardan correctamente na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "As páxinas cunha solicitude de rede en execución actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas cunha solicitude de rede en execución non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
     "message": "Nestes momentos, as páxinas cunha solicitude de rede XHR en execución non se gardan correctamente na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "As páxinas que usan PaymentManager actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que usan PaymentManager non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "As páxinas que usan a pantalla superposta actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que usan a pantalla superposta non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | printing": {
-    "message": "As páxinas nas que se mostra a interface de impresión actualmente non cumpren os requisitos para almacenarse caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas nas que se mostra a interface de impresión non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
     "message": "A páxina abriuse mediante window.open() e hai outra pestana cunha referencia a ela, ou ben a páxina abriu unha ventá"
@@ -5379,10 +5439,10 @@
     "message": "Nestes momentos, as páxinas que solicitaron permisos para gravar audio non se gardan correctamente na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Nestes momentos, as páxinas que solicitaron permisos de acceso a sensores actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que solicitaron permisos de acceso a sensores non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "As páxinas que solicitaron permisos de recuperación ou sincronización en segundo plano actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que solicitaron permisos de recuperación ou sincronización en segundo plano non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
     "message": "Nestes momentos, as páxinas que solicitaron permisos de acceso a dispositivos MIDI non se gardan correctamente na caché atrás/adiante"
@@ -5391,7 +5451,7 @@
     "message": "Nestes momentos, as páxinas que solicitaron permisos de acceso ás notificacións non se gardan correctamente na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Nestes momentos, as páxinas que solicitaron acceso ao almacenamento actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que solicitaron acceso ao almacenamento non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
     "message": "Nestes momentos, as páxinas que solicitaron permisos para gravar vídeo non se gardan correctamente na caché atrás/adiante"
@@ -5415,7 +5475,7 @@
     "message": "Chrome reiniciou a caché atrás/adiante, ademais de borrar as súas entradas"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "As páxinas que usan SharedWorker actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que usan SharedWorker non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorkerMessage": {
     "message": "Expulsouse a páxina da memoria caché porque recibiu unha mensaxe dun SharedWorker"
@@ -5466,7 +5526,7 @@
     "message": "Nestes momentos, as páxinas que usan WebNfc non se gardan correctamente na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "As páxinas que usan WebOTPService actualmente non cumpren os requisitos para almacenarse na caché atrás/adiante"
+    "message": "Nestes momentos, as páxinas que usan WebOTPService non cumpren os requisitos para almacenarse na caché atrás/adiante"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "As páxinas con WebRTC non poden almacenarse na caché atrás/adiante"
@@ -5604,7 +5664,7 @@
     "message": "Valor"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
-    "message": "Aquí atoparás a lista de terminais que reciben os informes"
+    "message": "Aquí atoparás a lista de puntos de conexión que reciben os informes"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Non hai ningún punto final para mostrar"
@@ -5770,6 +5830,9 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "Nesta páxina podes ver todos os tokens de estado privado dispoñibles no contexto de navegación actual"
+  },
+  "panels/application/preloading/PreloadingView.ts | clearSpeculativeLoads": {
+    "message": "Borrar as cargas especulativas"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "Todas as cargas especulativas"
@@ -5987,6 +6050,9 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedForNewerPrefetch": {
     "message": "Descartouse a precarga porque a páxina iniciadora ten moitas precargas en curso e esta era unha das máis antigas"
   },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedCrossOriginSubframe": {
+    "message": "A navegación do submarco de orixe cruzada aprazouse durante a renderización previa porque o marco principal se aprazou ou a súa resposta non incluía a cabeceira Supports-Loading-Mode adecuada"
+  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
     "message": "Redirixiuse a precarga, pero o URL de redirección non cumpría os requisitos para ela"
   },
@@ -6009,7 +6075,7 @@
     "message": "Unha precarga anterior á orixe recibiu unha resposta HTTP 503 cunha cabeceira Retry-After que aínda non finalizou"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
-    "message": "O URL non cumpría os requisitos para a obtención previa porque había un service worker rexistrado ou cookies doutro sitio nesa orixe. De todos modos, a obtención previa colocouse na rede e non se usou para ocultar que o usuario tiña algún tipo de relación previa coa orixe"
+    "message": "O URL non cumpría os requisitos para a obtención previa porque había un service worker rexistrado ou cookies doutro sitio nesa orixe. De todos modos, a obtención previa colocouse na rede e non se usou, para ocultar que o usuario tiña algún tipo de relación previa coa orixe"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
     "message": "Transcorreu moito tempo entre a precarga e o uso, polo que se descartou a precarga"
@@ -6629,20 +6695,32 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Mostrar cambios"
   },
+  "panels/comments/CommentsPane.ts | addComment": {
+    "message": "Engadir un comentario"
+  },
   "panels/comments/CommentsPane.ts | clearComments": {
     "message": "Borrar todos os comentarios"
+  },
+  "panels/comments/CommentsPane.ts | commentModeIcon": {
+    "message": "Modo de comentarios"
   },
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "Eliminar o comentario"
   },
-  "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "Non hai ningún comentario na cola. Engade comentarios sobre os elementos de DevTools para enviarlle ao teu axente de programación de IA."
+  "panels/comments/CommentsPane.ts | emptyStateDescription": {
+    "message": "Usa {PH1} para seleccionar un elemento e enviar tarefas, preguntas e contexto ao teu axente de programación"
   },
-  "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "Non se enviou ningún comentario. Os comentarios que lle mandes ao teu axente de programación de IA aparecerán aquí."
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "Non hai comentarios"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "Non hai ningún comentario na cola"
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "Na cola"
+  },
+  "panels/comments/CommentsPane.ts | removed": {
+    "message": "eliminado"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Ver resposta"
@@ -6652,6 +6730,15 @@
   },
   "panels/comments/CommentsPane.ts | sent": {
     "message": "Comentarios enviados"
+  },
+  "panels/comments/CommentsPane.ts | sentCheckmark": {
+    "message": "Marca de verificación de envío"
+  },
+  "panels/comments/CommentsPane.ts | sentComments": {
+    "message": "Comentarios enviados"
+  },
+  "panels/comments/CommentsPane.ts | sentStatus": {
+    "message": "Enviado"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "En curso"
@@ -6710,8 +6797,14 @@
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "Eliminar comentario na cola"
   },
+  "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
+    "message": "O elemento xa non está dispoñible"
+  },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "Engadir comentario á cola"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
+    "message": "{PH1} + ↵ para poñer comentarios na cola"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Resposta:"
@@ -6728,8 +6821,17 @@
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Marca de verificación de envío"
   },
-  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "Comentarios ({PH1})"
+  "panels/common/CommentThreadWidget.ts | working": {
+    "message": "Traballando"
+  },
+  "panels/common/CommentsOverlayWidget.ts | addComment": {
+    "message": "Engadir comentario"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewComments": {
+    "message": "Ver comentarios"
+  },
+  "panels/common/CommentsStatusBarPill.ts | viewCommentsWithCount": {
+    "message": "Ver comentarios ({PH1})"
   },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<nó>"
@@ -6781,27 +6883,6 @@
   },
   "panels/common/GdpSignUpDialog.ts | termsOfService": {
     "message": "Condicións de servizo"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailAiCompanion": {
-    "message": "Coñece o teu compañeiro impulsado por IA para o desenvolvemento web"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailConsoleErrors": {
-    "message": "Obtén respostas precisas e instantáneas para os erros da consola"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailGenerateCode": {
-    "message": "Xera fragmentos de CSS e JS ao instante"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | detailPerformance": {
-    "message": "Atopa automaticamente problemas nos rastros de rendemento"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "Gemini 3 Flash en DevTools"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
-    "message": "Pechar"
-  },
-  "panels/common/GeminiRebrandPromoDialog.ts | getStarted": {
-    "message": "Comezar"
   },
   "panels/common/PersistenceUtils.ts | linkedToS": {
     "message": "Con vinculación a {PH1}"
@@ -6915,7 +6996,10 @@
     "message": "Barra lateral da consola mostrada"
   },
   "panels/console/ConsoleView.ts | copyConsole": {
-    "message": "Copiar consola"
+    "message": "Copiar todas as mensaxes"
+  },
+  "panels/console/ConsoleView.ts | copyMessage": {
+    "message": "Copiar mensaxe"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copiar selección con estilo visible"
@@ -8312,6 +8396,9 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Abrir no panel Fontes"
   },
+  "panels/elements/StylePropertyTreeElement.ts | openShadowEditor": {
+    "message": "Abrir editor de sombras"
+  },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
     "message": "Anulada polos estilos de animación"
   },
@@ -8433,7 +8520,7 @@
     "message": "Denso"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
-    "message": "Eliminar {propertyName}: {propertyValue}"
+    "message": "Quitar {propertyName}: {propertyValue}"
   },
   "panels/elements/components/StylePropertyEditor.ts | selectButton": {
     "message": "Engadir {propertyName}: {propertyValue}"
@@ -8466,7 +8553,7 @@
     "message": "Non mostrar áreas con nome da grade"
   },
   "panels/elements/elements-meta.ts | doNotShowGridTrackSizes": {
-    "message": "Non mostrar os tamaños das pistas de grade"
+    "message": "Non mostrar tamaños de pistas de grade"
   },
   "panels/elements/elements-meta.ts | doNotShowRulersOnHover": {
     "message": "Non mostrar as regras ao pasar por enriba dun elemento"
@@ -8870,8 +8957,8 @@
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "Solicitude"
   },
-  "panels/issues/AffectedCookiesView.ts | domain": {
-    "message": "Dominio"
+  "panels/issues/AffectedCookiesView.ts | domainAndPath": {
+    "message": "Dominio e ruta"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
     "message": "Mostrar as solicitudes de rede que inclúan esta cabeceira de Set-Cookie no panel Rede"
@@ -8885,14 +8972,14 @@
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nome"
   },
-  "panels/issues/AffectedCookiesView.ts | path": {
-    "message": "Ruta"
-  },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
     "message": "Descendente non permitido"
   },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
-    "message": "{n,plural, =1{ descendente}other{ descendentes}}"
+    "message": "{n,plural, =1{# descendente}other{# descendentes}}"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | unavailable": {
+    "message": "Non dispoñible"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "Bloqueado"
@@ -8930,11 +9017,17 @@
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
     "message": "{n,plural, =1{ documento}other{ documentos}}"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | unavailable": {
+    "message": "Non dispoñible"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "URL"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# elemento}other{# elementos}}"
+  },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "Non dispoñible"
   },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "Límite máximo da CPU"
@@ -10019,6 +10112,18 @@
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "Calidade de reprodución de vídeo"
   },
+  "panels/media/TickingFlameChart.ts | duration": {
+    "message": "Duración: {PH1} - {PH2}"
+  },
+  "panels/media/TickingFlameChart.ts | durationLive": {
+    "message": "Duración: {PH1}. EN DIRECTO!"
+  },
+  "panels/media/TickingFlameChart.ts | name": {
+    "message": "Nome: {PH1}"
+  },
+  "panels/media/TickingFlameChart.ts | time": {
+    "message": "Hora: {PH1}"
+  },
   "panels/media/media-meta.ts | media": {
     "message": "Multimedia"
   },
@@ -10160,6 +10265,9 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
     "message": "Conexión 3G lenta e CPU {PH1} veces máis lenta"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | add": {
+    "message": "Engadir"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "Engadir perfil"
   },
@@ -10267,6 +10375,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "{PH1} debe ser un número entre {PH2} kbit/s e {PH3} kbit/s, inclusive"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | save": {
+    "message": "Gardar"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Carga"
@@ -11102,6 +11213,12 @@
   "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "Engadir cabeceira personalizada…"
   },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerAlreadyExists": {
+    "message": "A cabeceira xa existe"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerCannotBeEmpty": {
+    "message": "O nome da cabeceira non pode estar baleiro"
+  },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "Nome da cabeceira"
   },
@@ -11413,6 +11530,9 @@
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Produciuse un erro ao cargar os datos das respostas"
+  },
+  "panels/network/RequestPreviewView.ts | nothingToPreview": {
+    "message": "Non hai nada que mostrar na vista previa"
   },
   "panels/network/RequestPreviewView.ts | previewNotAvailable": {
     "message": "Vista previa non dispoñible"
@@ -12572,6 +12692,15 @@
   "panels/profiler/ModuleUIStrings.ts | loadingSamples": {
     "message": "Cargando mostras…"
   },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeContextVars": {
+    "message": "Cargando variables de contexto do alcance…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopeUses": {
+    "message": "Cargando usos do alcance…"
+  },
+  "panels/profiler/ModuleUIStrings.ts | loadingScopes": {
+    "message": "Cargando alcances…"
+  },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
     "message": "Cargando información da instantánea…"
   },
@@ -13059,7 +13188,7 @@
     "message": "Indica un tipo de acción válido"
   },
   "panels/recorder/StepView.ts | addBreakpoint": {
-    "message": "Engadir punto de interrupción"
+    "message": "Engadir punto de interrupción para {title}"
   },
   "panels/recorder/StepView.ts | addStepAfter": {
     "message": "Engadir paso posterior"
@@ -13112,11 +13241,14 @@
   "panels/recorder/StepView.ts | navigateStepTitle": {
     "message": "Navegar"
   },
+  "panels/recorder/StepView.ts | noTitle": {
+    "message": "(Sen título)"
+  },
   "panels/recorder/StepView.ts | openStepActions": {
-    "message": "Abrir accións do paso"
+    "message": "Abrir accións do paso {title}"
   },
   "panels/recorder/StepView.ts | removeBreakpoint": {
-    "message": "Quitar punto de interrupción"
+    "message": "Quitar punto de interrupción de {title}"
   },
   "panels/recorder/StepView.ts | removeStep": {
     "message": "Quitar paso"
@@ -13281,7 +13413,7 @@
     "message": "contido mixto activo"
   },
   "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
-    "message": "Todos os recursos desta páxina se publican de forma segura."
+    "message": "Todos os recursos desta páxina se publican de forma segura"
   },
   "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "publícanse todos de forma segura"
@@ -13464,7 +13596,7 @@
     "message": "A conexión con este sitio está encriptada e autenticada mediante {PH1}, {PH2} e {PH3}"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
-    "message": "A conexión con este sitio usa ningún certificado de servidor válido e de confianza emitido por {PH1}"
+    "message": "A conexión con este sitio usa un certificado de servidor válido e de confianza emitido por {PH1}"
   },
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Os detalles de seguranza anteriores son da primeira resposta inspeccionada"
@@ -14069,6 +14201,9 @@
   "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
     "message": "Padrón de URL"
   },
+  "panels/settings/EditFileSystemView.ts | addSubfolder": {
+    "message": "Engadir cartafol secundario"
+  },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "Escribe unha ruta"
   },
@@ -14078,8 +14213,14 @@
   "panels/settings/EditFileSystemView.ts | excludedFolders": {
     "message": "Cartafoles secundarios excluídos"
   },
+  "panels/settings/EditFileSystemView.ts | folderPath": {
+    "message": "Ruta de cartafoles"
+  },
   "panels/settings/EditFileSystemView.ts | url": {
     "message": "URL"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | add": {
+    "message": "Engadir"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Engadir unha norma de expresión regular para o URL do script"
@@ -14089,6 +14230,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Scripts de terceiros coñecidos procedentes de mapas de orixe"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | cancel": {
+    "message": "Cancelar"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Normas de exclusión personalizadas"
@@ -14131,6 +14275,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "A norma debe ser unha expresión regular válida"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | save": {
+    "message": "Gardar"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "Lista completa de atallos de teclado e xestos de DevTools"
@@ -14282,8 +14429,14 @@
   "panels/settings/components/SyncSection.ts | viewProfile": {
     "message": "Ver o perfil"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | add": {
+    "message": "Engadir"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Engadir dispositivo personalizado"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cancel": {
+    "message": "Cancelar"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
     "message": "Círculo"
@@ -14331,7 +14484,7 @@
     "message": "Recorte x"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutXAndWidthExceedDeviceWidth": {
-    "message": "A suma do valor de x do recorte e da largura non pode superar a largura do dispositivo"
+    "message": "A suma do valor de x do recorte e da largura non debe superar a largura do dispositivo"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutY": {
     "message": "Recorte y"
@@ -14388,7 +14541,7 @@
     "message": "Inserción inferior"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaHorizontalInsetsExceedWidth": {
-    "message": "{PH1}: As marxes esquerda e dereita non poden exceder a largura do dispositivo"
+    "message": "{PH1}: As marxes esquerda e dereita non deben exceder a largura do dispositivo"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaLeft": {
     "message": "Inserción á esquerda"
@@ -14404,6 +14557,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
     "message": "{PH1}: As marxes superior e inferior non deben exceder a altura do dispositivo"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | save": {
+    "message": "Gardar"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Cadea do axente de usuario"
@@ -14647,6 +14803,9 @@
   },
   "panels/sources/BreakpointsView.ts | checked": {
     "message": "marcado"
+  },
+  "panels/sources/BreakpointsView.ts | collapseAll": {
+    "message": "Contraer todo"
   },
   "panels/sources/BreakpointsView.ts | conditionCode": {
     "message": "Condición: {PH1}"
@@ -15050,11 +15209,20 @@
   "panels/sources/NavigatorView.ts | rename": {
     "message": "Cambiar nome…"
   },
+  "panels/sources/NavigatorView.ts | run": {
+    "message": "Executar"
+  },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (do mapa de orixe)"
   },
   "panels/sources/NavigatorView.ts | sIgnoreListed": {
     "message": "{PH1} (na lista de elementos ignorados)"
+  },
+  "panels/sources/NavigatorView.ts | saveAs": {
+    "message": "Gardar como…"
+  },
+  "panels/sources/NavigatorView.ts | saveAsFailed": {
+    "message": "Produciuse un erro ao gardar o ficheiro no disco"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Buscar en todos os ficheiros"
@@ -15131,6 +15299,9 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Introducir"
   },
+  "panels/sources/SourcesNavigator.ts | addFolderManually": {
+    "message": "Engadir cartafol manualmente"
+  },
   "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
     "message": "Usa {PH1} para conectar automaticamente o cartafol do teu proxecto"
   },
@@ -15151,6 +15322,9 @@
   },
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
     "message": "Configura espazos de traballo para sincronizar os cambios directamente coas fontes que desenvolvas"
+  },
+  "panels/sources/SourcesNavigator.ts | localOverrides": {
+    "message": "Omisións locais"
   },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Novo fragmento"
@@ -17279,6 +17453,12 @@
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
     "message": "Estatísticas: {PH1}"
   },
+  "panels/timeline/components/Sidebar.ts | annotations": {
+    "message": "Anotacións"
+  },
+  "panels/timeline/components/Sidebar.ts | insights": {
+    "message": "Estatísticas"
+  },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Anotar un rastro para ti e para outras persoas"
   },
@@ -17554,6 +17734,9 @@
   },
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "Estado"
+  },
+  "panels/web_audio/WebAudioView.ts | webAudioInspectionPaused": {
+    "message": "A inspección de Web Audio está en pausa"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "audio"
@@ -18450,7 +18633,7 @@
     "message": "Coordinar"
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | deselectButton": {
-    "message": "Eliminar {propertyName}: {propertyValue}"
+    "message": "Quitar {propertyName}: {propertyValue}"
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "Lóxicos"

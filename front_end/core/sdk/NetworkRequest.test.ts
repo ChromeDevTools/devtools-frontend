@@ -1084,3 +1084,145 @@ describe('requestStreamingContent', () => {
     });
   });
 });
+
+describe('NetworkRequest name() and path()', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+  const dataURL = urlString`data:text/html,<html><body><img src="data:,foobar" /></body></html>`;
+  let target: SDK.Target.Target;
+  let networkManager: SDK.NetworkManager.NetworkManager;
+  let requestCount: number;
+
+  beforeEach(() => {
+    const universe = new TestUniverse();
+    target = universe.createTarget();
+    const manager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(manager);
+    networkManager = manager;
+    requestCount = 0;
+    target.setInspectedURL(urlString`http://127.0.0.1/aFolder/aTest.html`);
+  });
+
+  function nameAndPath(url: string): {name: string, path: string, inspectedURL: string|undefined} {
+    const requestId = String(++requestCount) as Protocol.Network.RequestId;
+    networkManager.dispatcher.requestWillBeSent({requestId, request: {url}} as Protocol.Network.RequestWillBeSentEvent);
+    const request = networkManager.requestForId(requestId);
+    assert.exists(request);
+    return {
+      name: request.name(),
+      path: request.path(),
+      inspectedURL: SDK.NetworkManager.NetworkManager.forRequest(request)?.target().inspectedURL(),
+    };
+  }
+
+  it('derives name and path from URLs on other hosts', () => {
+    assert.deepEqual(nameAndPath('http://www.example.com/foo/bar/baz?key=value'), {
+      name: 'baz?key=value',
+      path: 'www.example.com/foo/bar',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://www.example.com/foo/bar/?key=value'), {
+      name: 'bar/?key=value',
+      path: 'www.example.com/foo/bar',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://www.example.com/foo/bar/baz'), {
+      name: 'baz',
+      path: 'www.example.com/foo/bar',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://www.example.com/foo/bar/'), {
+      name: 'bar/',
+      path: 'www.example.com/foo/bar',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://www.example.com/baz?key=value'), {
+      name: 'baz?key=value',
+      path: 'www.example.com',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://www.example.com/?key=value'), {
+      name: '?key=value',
+      path: 'www.example.com',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://www.example.com/baz'), {
+      name: 'baz',
+      path: 'www.example.com',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://www.example.com/'), {
+      name: 'www.example.com',
+      path: '',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+  });
+
+  it('omits the inspected host from the path of URLs on that host', () => {
+    assert.deepEqual(nameAndPath('http://127.0.0.1/foo/bar/baz?key=value'), {
+      name: 'baz?key=value',
+      path: '/foo/bar',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://127.0.0.1/foo/bar/?key=value'), {
+      name: 'bar/?key=value',
+      path: '/foo/bar',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://127.0.0.1/foo/bar/baz'), {
+      name: 'baz',
+      path: '/foo/bar',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://127.0.0.1/foo/bar/'), {
+      name: 'bar/',
+      path: '/foo/bar',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://127.0.0.1/baz?key=value'), {
+      name: 'baz?key=value',
+      path: '',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://127.0.0.1/?key=value'), {
+      name: '?key=value',
+      path: '',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://127.0.0.1/baz'), {
+      name: 'baz',
+      path: '',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+    assert.deepEqual(nameAndPath('http://127.0.0.1/'), {
+      name: '127.0.0.1',
+      path: '',
+      inspectedURL: 'http://127.0.0.1/aFolder/aTest.html',
+    });
+  });
+
+  it('derives name and path when the inspected URL is a data: URL', () => {
+    target.setInspectedURL(dataURL);
+    assert.deepEqual(nameAndPath('http://127.0.0.1/'), {
+      name: '127.0.0.1',
+      path: '',
+      inspectedURL: 'data:text/html,<html><body><img src="data:,foobar" /></body></html>',
+    });
+  });
+
+  it('derives name and path from data: URLs', () => {
+    target.setInspectedURL(dataURL);
+    assert.deepEqual(nameAndPath(dataURL), {
+      name: 'data:text/html,<htm…',
+      path: '',
+      inspectedURL: 'data:text/html,<html><body><img src="data:,foobar" /></body></html>',
+    });
+    target.setInspectedURL(urlString`http://127.0.0.1/`);
+    assert.deepEqual(nameAndPath(dataURL), {
+      name: 'data:text/html,<htm…',
+      path: '',
+      inspectedURL: 'http://127.0.0.1/',
+    });
+  });
+});

@@ -66,16 +66,28 @@ export class EmptyWidget extends VBox<ShadowRoot> {
     this.performUpdate();
   }
 
+  get link(): Platform.DevToolsPath.UrlString|undefined|null {
+    return this.#link;
+  }
+
   set link(link: Platform.DevToolsPath.UrlString|undefined|null) {
     this.#link = link;
     // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
     this.performUpdate();
   }
 
+  get text(): string {
+    return this.#text;
+  }
+
   set text(text: string) {
     this.#text = text;
     // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
     this.performUpdate();
+  }
+
+  get header(): string {
+    return this.#header;
   }
 
   set header(header: string) {

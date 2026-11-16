@@ -13,7 +13,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {ApplicationPanelSidebar, StorageCategoryView} from './ApplicationPanelSidebar.js';
+import {ApplicationPanelSidebar} from './ApplicationPanelSidebar.js';
 import type {StorageMetadataView} from './components/components.js';
 import {CookieItemsView} from './CookieItemsView.js';
 import type {DeviceBoundSessionsModel} from './DeviceBoundSessionsModel.js';
@@ -31,7 +31,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   private readonly resourcesLastSelectedItemSetting: Common.Settings.Setting<Platform.DevToolsPath.UrlString[]>;
   visibleView: UI.Widget.AnyWidget|null;
   private pendingViewPromise: Promise<UI.Widget.AnyWidget>|null;
-  private categoryView: StorageCategoryView|null;
+  private categoryView: UI.EmptyWidget.EmptyWidget|null;
   storageViews: HTMLElement;
   private readonly storageViewToolbar: UI.Toolbar.Toolbar;
   private domStorageView: DOMStorageItemsView|null;
@@ -162,13 +162,15 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
       categoryName: string, categoryHeadline: string, categoryDescription: string,
       categoryLink: Platform.DevToolsPath.UrlString|null): void {
     if (!this.categoryView) {
-      this.categoryView = new StorageCategoryView();
+      this.categoryView = new UI.EmptyWidget.EmptyWidget(categoryHeadline, categoryDescription);
+      this.categoryView.element.classList.add('storage-view');
+    } else {
+      this.categoryView.header = categoryHeadline;
+      this.categoryView.text = categoryDescription;
     }
     this.categoryView.element.setAttribute(
         'jslog', `${VisualLogging.pane().context(Platform.StringUtilities.toKebabCase(categoryName))}`);
-    this.categoryView.setHeadline(categoryHeadline);
-    this.categoryView.setText(categoryDescription);
-    this.categoryView.setLink(categoryLink);
+    this.categoryView.link = categoryLink;
     this.showView(this.categoryView);
   }
 

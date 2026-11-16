@@ -321,6 +321,18 @@ describeWithEnvironment('ApplicationPanelSidebar', () => {
     sinon.assert.calledWith(fetchSchemefulSiteStub, {origin: 'https://example.device-bound-sessions.com'});
     sinon.assert.calledWith(addVisibleSiteSpy, 'https://device-bound-sessions.com');
   });
+
+  it('shows an EmptyWidget for storage category views', () => {
+    const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    const link = urlString`https://developer.chrome.com/docs/devtools/storage/localstorage/`;
+    panel.showCategoryView('Local storage', 'No local storage', 'Local storage description', link);
+
+    assert.instanceOf(panel.visibleView, UI.EmptyWidget.EmptyWidget);
+    assert.isTrue(panel.visibleView.element.classList.contains('storage-view'));
+    assert.strictEqual(panel.visibleView.header, 'No local storage');
+    assert.strictEqual(panel.visibleView.text, 'Local storage description');
+    assert.strictEqual(panel.visibleView.link, link);
+  });
 });
 
 describeWithEnvironment('IDBDatabaseTreeElement', () => {

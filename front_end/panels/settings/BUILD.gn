@@ -97,6 +97,7 @@ devtools_ui_module("unittests") {
     "BackendLinkingSettingsTab.test.ts",
     "EditFileSystemView.test.ts",
     "FrameworkIgnoreListSettingsTab.test.ts",
+    "KeybindsSettingsTab.test.ts",
     "SettingsScreen.test.ts",
     "WorkspaceSettingsTab.test.ts",
   ]
@@ -115,6 +116,7 @@ devtools_ui_module("unittests") {
     "../../ui/components/render_coordinator:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/settings:bundle",
     "../network/forward:bundle",
     "../utils:bundle",
   ]

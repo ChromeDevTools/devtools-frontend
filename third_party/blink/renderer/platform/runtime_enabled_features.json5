@@ -524,6 +524,12 @@
       status: "stable",
     },
     {
+      // Gates access to the thinking mode enhancement for "AIPromptAPI".
+      // This feature alone does not expose any "AIPromptAPI" feature access.
+      name: "AIPromptAPIThinkingMode",
+      status: "experimental",
+    },
+    {
       // Gates access to the tool use (function calling) enhancement for
       // "AIPromptAPI". This feature alone does not expose any "AIPromptAPI"
       // feature access.
@@ -1289,11 +1295,6 @@
       // https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes
       // https://w3c.github.io/webappsec-csp/#should-block-inline
       name: "CheckCSPOnInlineScriptAttributeSet",
-      status: "stable",
-    },
-    {
-      // crbug.com/517429018
-      name: "ClampUnfocusedSelectionCache",
       status: "stable",
     },
     {
@@ -2220,6 +2221,11 @@
       // ChromeStatus: https://chromestatus.com/feature/6323071520735232
       name: "CSSShapeOutsideRectAndXywhSupport",
       status: "stable",
+    },
+    {
+      // crbug.com/537526308
+      name: "CssSizeShrinkContent",
+      status: "test",
     },
     {
       // https://drafts.csswg.org/cssom-1/#dom-cssstylesheetinit-baseurl
@@ -3468,22 +3474,12 @@
       status: "stable",
     },
     {
-      // crbug.com/393391746
-      name: "FontStyleObliqueZeroDegreeAsNormal",
-      status: "stable",
-    },
-    {
       // crbug.com/325826179
       name: "FontUniqueNameTypefaceCache",
       status: "stable",
     },
     {
       name: "FontVariableItalicAxis",
-      status: "stable",
-    },
-    {
-      // crbug.com/40398871
-      name: "FontVariationSettingsDescriptor",
       status: "stable",
     },
     {
@@ -4007,12 +4003,8 @@
     },
     {
       // The HTML parser inserts a </select> end tag before inserting <input>
-      // when parsing inside of a <select> tag. We want to allow <input> inside
-      // <select>, but it isn't web compatible enough. This flag allows <input>
-      // inside <select> but only if there is another open tag in between the
-      // <input> and the <select>, like <select><div><input>.
-      // For now, this flag also makes <input> close <select> like it used to
-      // when the <input> is put directly within an <option> or <optgroup>.
+      // when parsing inside of a <select> tag. This flag stops inserting the
+      // </select> end tag, allowing <input> anywhere inside <select>.
       name: "InputInSelect",
       status: "experimental",
     },
@@ -4080,6 +4072,12 @@
       // events - they should not be composed events.
       // This shipped in M149 and can be removed in M151.
       name: "InterestEventsNonComposed",
+      status: "stable",
+    },
+    {
+      // Kill switch for several `interestfor` behavior changes that align with
+      // the spec PR (https://github.com/whatwg/html/pull/11006).
+      name: "InterestForSpecAlignment",
       status: "stable",
     },
     {
@@ -5684,6 +5682,13 @@
       status: "stable",
     },
     {
+      // Retarget coalesced and predicted events in PointerEvent across shadow
+      // boundaries.
+      // crbug.com/515272369
+      name: "RetargetEventsInPointerEventLists",
+      status: "stable",
+    },
+    {
       // If enabled, makes the root scrollbars' foreground elements follow the
       // browser
       name: "RootScrollbarFollowsBrowserTheme",
@@ -5747,6 +5752,12 @@
     },
     {
       name: "RTCEncodedVideoFrameConstructor",
+      status: "experimental",
+    },
+    // Enables the use of |RTCRtpEncodingParameters.encodingComplexity|
+    // Spec: https://github.com/w3c/webrtc-extensions/pull/252
+    {
+      name: "RTCEncodingComplexity",
       status: "experimental",
     },
     // Enables the use of jitterBufferTarget attribute in WebRTC.
@@ -6067,6 +6078,14 @@
       name: "SelectedcontentMultiple",
       status: "experimental",
       depends_on: ["CustomizableSelectMultiplePopup"],
+    },
+    {
+      // When cloning an option into a <selectedcontent> element, removes
+      // script, SVG script, frame, iframe, embed, and object elements from
+      // the cloned content, including in shadow trees.
+      // https://github.com/whatwg/html/pull/13201
+      name: "SelectedcontentOmitScriptsAndFrames",
+      status: "stable",
     },
     {
       // Makes minor tweaks to edge cases with the <selectedcontent> element.
@@ -6491,7 +6510,7 @@
       // https://mimesniff.spec.whatwg.org/#xml-mime-type
       // https://crbug.com/362282752
       name: "SpecCompliantXmlMimeTypes",
-      status: "experimental",
+      status: "stable",
     },
     {
       // Exposes speculation measurement data (preloads, prefetches, prerenders)
@@ -6585,6 +6604,12 @@
       // new information), so it's hidden behind a flag to provide a kill switch
       // in the event of breakage.
       name: "StaleIntersectionGeometryForThrottledFrames",
+      status: "stable",
+    },
+    {
+      // Kill switch for image context menu actions and copying rendered images
+      // from standalone SVG documents.
+      name: "StandaloneSVGImageActions",
       status: "stable",
     },
     {
@@ -6689,6 +6714,12 @@
     {
       // Don't accept the empty string as a valid value in some cases.
       name: "SvgEmptyAttributeStringParsingFix",
+      status: "stable",
+    },
+    {
+      // getBBox() returns the empty rect for shapes that are not rendered,
+      // i.e. zero/negative geometry or a non-rendered ancestor.
+      name: "SvgEmptyBBoxForNonRendered",
       status: "stable",
     },
     {
@@ -6987,11 +7018,6 @@
       status: {"Android": "stable"},
     },
     {
-      // crbug.com/556235808
-      name: "TextIteratorExcludeAutofilledSelectFix",
-      status: "stable",
-    },
-    {
       name: "TextMetricsBaselines",
       status: "stable",
     },
@@ -7019,19 +7045,12 @@
     },
     {
       // crbug.com/431660829
-      name: "TextSpacingTrimFallback",
-      status: "stable",
-    },
-    {
-      // crbug.com/431660829
       name: "TextSpacingTrimFallback2",
-      depends_on: ["TextSpacingTrimFallback"],
       status: "test",
     },
     {
       // crbug.com/440947112
       name: "TextSpacingTrimFallbackChws",
-      depends_on: ["TextSpacingTrimFallback"],
       status: "stable",
     },
     {
@@ -7576,13 +7595,22 @@
       name: "WebAuthAuthenticatorAttachment",
       status: "test",
     },
-    // Prototyping https://github.com/w3c/webauthn/issues/2144
+    // Enables non-autofill ambient sign-in UI for conditional credential
+    // requests (uiMode: "passive"). See
+    // https://github.com/w3c/webauthn/issues/2144.
+    // When removing the Origin Trial or enabling by default, update the entry
+    // in content/child/runtime_features.cc from kSetOnlyIfOverridden to
+    // kDefault.
+    // LINT_SKIP.IfChange(WebAuthenticationAmbient)
     {
       name: "WebAuthenticationAmbient",
       status: "experimental",
+      origin_trial_feature_name: "WebAuthenticationAmbient",
+      origin_trial_os: ["win", "mac", "linux", "chromeos"],
       base_feature: "none",
       public: true,
     },
+    // LINT_SKIP.ThenChange(//content/child/runtime_features.cc:WebAuthenticationAmbient)
     // https://w3c.github.io/webauthn/#dom-publickeycredentialcreationoptions-attestationformats
     {
       name: "WebAuthenticationAttestationFormats",
@@ -7644,6 +7672,11 @@
       public: true,
       status: "experimental",
       base_feature: "none",
+    },
+    {
+      name: "WebBluetoothMaxWriteWithoutResponseSize",
+      public: true,
+      status: "stable",
     },
     {
       name: "WebBluetoothScanning",
@@ -7906,7 +7939,12 @@
     },
     {
       name: "WebSpeechTimestamps",
-      status: "experimental",
+      status: {
+        "Win": "stable",
+        "Mac": "stable",
+        "Linux": "stable",
+        "default": "",
+      },
     },
     {
       name: "WebSpeechUnspokenPunctuation",

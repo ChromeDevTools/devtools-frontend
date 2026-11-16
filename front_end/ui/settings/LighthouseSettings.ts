@@ -59,3 +59,10 @@ export const throttlingSettingDescriptor: Common.Settings.SettingDescriptor<stri
   defaultValue: 'simulate',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const clearStorageSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'lighthouse.clear-storage',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

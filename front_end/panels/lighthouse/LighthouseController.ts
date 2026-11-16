@@ -853,7 +853,8 @@ export function getRuntimeSettings(): LighthouseModel.RunTypes.RuntimeSetting[] 
         ],
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.clear-storage'),
+        setting:
+            Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.clearStorageSettingDescriptor),
         title: i18nLazyString(UIStrings.clearStorage),
         description: i18nLazyString(UIStrings.resetStorageLocalstorage),
         setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {

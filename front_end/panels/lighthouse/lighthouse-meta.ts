@@ -137,13 +137,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.throttli
   title: i18nLazyString(UIStrings.throttling),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.clearStorageSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.clearStorage),
-  settingName: 'lighthouse.clear-storage',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

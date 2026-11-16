@@ -193,6 +193,39 @@ function selectInputContent(event: Event): void {
   (event.currentTarget as HTMLInputElement).select();
 }
 
+/** Maps the position of a mouse event to a point on a virtual sphere around the center of `stage`. */
+function calculateRadiusVector(stage: HTMLElement, event: MouseEvent): Geometry.Vector {
+  const rect = stage.getBoundingClientRect();
+  const radius = Math.max(rect.width, rect.height) / 2;
+  const sphereX = (event.x - rect.left - rect.width / 2) / radius;
+  const sphereY = (event.y - rect.top - rect.height / 2) / radius;
+  const sqrSum = sphereX * sphereX + sphereY * sphereY;
+  if (sqrSum > 0.5) {
+    return new Geometry.Vector(sphereX, sphereY, 0.5 / Math.sqrt(sqrSum));
+  }
+
+  return new Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
+}
+
+const stagesWithDragHandle = new WeakSet<Element>();
+
+function installStageDragHandle(stage: HTMLElement, onDragStart: OrientationViewInput['onStageDragStart'],
+                                onDrag: OrientationViewInput['onStageDrag']): void {
+  UI.UIUtils.installDragHandle(stage,
+                               event => {
+                                 if (!onDragStart(calculateRadiusVector(stage, event))) {
+                                   return false;
+                                 }
+                                 event.consume(true);
+                                 return true;
+                               },
+                               event => {
+                                 event.consume(true);
+                                 onDrag(calculateRadiusVector(stage, event), event.shiftKey);
+                               },
+                               null, '-webkit-grabbing', '-webkit-grab');
+}
+
 interface LocationViewInput {
   location: SDK.EmulationModel.Location;
   locationOverrideEnabled: boolean;
@@ -215,6 +248,9 @@ interface OrientationViewInput {
   onOrientationChange: (event: Event) => void;
   onOrientationKeyDown: (event: KeyboardEvent) => void;
   onOrientationReset: () => void;
+  /** @returns whether the drag should start. */
+  onStageDragStart: (mouseDownVector: Geometry.Vector) => boolean;
+  onStageDrag: (mouseMoveVector: Geometry.Vector, shiftKey: boolean) => void;
 }
 
 interface ViewInput extends LocationViewInput, OrientationViewInput {
@@ -292,7 +328,6 @@ export class SensorsView extends UI.Widget.VBox {
   private readonly deviceOrientationSetting: Common.Settings.Setting<string>;
   private deviceOrientation: SDK.EmulationModel.DeviceOrientation;
   private deviceOrientationOverrideEnabled: boolean;
-  private stageElement!: HTMLElement;
   #selectedOrientation: string = NonPresetOptions.NoOverride;
   #animateOrientation = false;
   private boxMatrix?: DOMMatrix;
@@ -355,6 +390,8 @@ export class SensorsView extends UI.Widget.VBox {
       onOrientationChange: this.#onOrientationChange.bind(this),
       onOrientationKeyDown: this.#onOrientationKeyDown.bind(this),
       onOrientationReset: this.resetDeviceOrientation.bind(this),
+      onStageDragStart: this.onBoxDragStart.bind(this),
+      onStageDrag: this.onBoxDrag.bind(this),
     };
     const input: ViewInput = {
       ...locationInput,
@@ -763,11 +800,9 @@ export class SensorsView extends UI.Widget.VBox {
                                                             i18nString(UIStrings.enableOrientationToRotate)}
             jslog=${VisualLogging.preview().track({drag: true})}
             ${Directives.ref((el: Element | undefined) => {
-              if (el && !this.stageElement) {
-                this.stageElement = el as HTMLElement;
-                UI.UIUtils.installDragHandle(this.stageElement, this.onBoxDragStart.bind(this), event => {
-                  this.onBoxDrag(event);
-                }, null, '-webkit-grabbing', '-webkit-grab');
+              if (el && !stagesWithDragHandle.has(el)) {
+                stagesWithDragHandle.add(el);
+                installStageDragHandle(el as HTMLElement, input.onStageDragStart, input.onStageDrag);
               }
             })}
           >
@@ -958,19 +993,13 @@ export class SensorsView extends UI.Widget.VBox {
     this.boxMatrix = new DOMMatrixReadOnly().rotate(0, 0, alpha).rotate(beta, 0, 0).rotate(0, gamma, 0);
   }
 
-  private onBoxDrag(event: MouseEvent): boolean {
-    const mouseMoveVector = this.calculateRadiusVector(event.x, event.y);
-    if (!mouseMoveVector) {
-      return true;
-    }
-
+  private onBoxDrag(mouseMoveVector: Geometry.Vector, shiftKey: boolean): void {
     if (!this.mouseDownVector) {
-      return true;
+      return;
     }
 
-    event.consume(true);
     let axis, angle;
-    if (event.shiftKey) {
+    if (shiftKey) {
       axis = new Geometry.Vector(0, 0, 1);
       angle = (mouseMoveVector.x - this.mouseDownVector.x) * ShiftDragOrientationSpeed;
     } else {
@@ -991,36 +1020,16 @@ export class SensorsView extends UI.Widget.VBox {
         new SDK.EmulationModel.DeviceOrientation(eulerAngles.alpha, eulerAngles.beta, eulerAngles.gamma);
     this.#selectedOrientation = NonPresetOptions.Custom;
     this.setDeviceOrientation(newOrientation, DeviceOrientationModificationSource.USER_DRAG);
-    return false;
   }
 
-  private onBoxDragStart(event: MouseEvent): boolean {
+  private onBoxDragStart(mouseDownVector: Geometry.Vector): boolean {
     if (!this.deviceOrientationOverrideEnabled) {
       return false;
     }
 
-    this.mouseDownVector = this.calculateRadiusVector(event.x, event.y);
+    this.mouseDownVector = mouseDownVector;
     this.originalBoxMatrix = this.boxMatrix;
-
-    if (!this.mouseDownVector) {
-      return false;
-    }
-
-    event.consume(true);
     return true;
-  }
-
-  private calculateRadiusVector(x: number, y: number): Geometry.Vector|null {
-    const rect = this.stageElement.getBoundingClientRect();
-    const radius = Math.max(rect.width, rect.height) / 2;
-    const sphereX = (x - rect.left - rect.width / 2) / radius;
-    const sphereY = (y - rect.top - rect.height / 2) / radius;
-    const sqrSum = sphereX * sphereX + sphereY * sphereY;
-    if (sqrSum > 0.5) {
-      return new Geometry.Vector(sphereX, sphereY, 0.5 / Math.sqrt(sqrSum));
-    }
-
-    return new Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
   }
 }
 

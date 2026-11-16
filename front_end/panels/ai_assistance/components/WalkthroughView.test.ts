@@ -7,7 +7,7 @@ import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import type * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import {querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {assertScreenshot, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {makeFakeParsedTrace} from '../../../testing/TraceHelpers.js';
 import type {Icon} from '../../../ui/kit/kit.js';
@@ -23,8 +23,10 @@ describeWithEnvironment('WalkthroughView', () => {
     isInlined: boolean,
     isExpanded: boolean,
     prompt?: string,
+    element?: HTMLElement,
+    renderOptions?: {includeCommonStyles?: boolean, width?: number},
   }): Promise<AiAssistance.WalkthroughView.WalkthroughView> {
-    const view = new WalkthroughView();
+    const view = new WalkthroughView(state.element);
     view.isLoading = state.isLoading;
     view.message = state.message;
     view.isInlined = state.isInlined;
@@ -32,7 +34,7 @@ describeWithEnvironment('WalkthroughView', () => {
     view.prompt = state.prompt ?? '';
     view.markdownRenderer = new AiAssistance.MarkdownRendererWithCodeBlock();
 
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, state.renderOptions);
     view.performUpdate();
     await view.updateComplete;
     return view;
@@ -279,6 +281,44 @@ describeWithEnvironment('WalkthroughView', () => {
 
     const title = querySelectorErrorOnMissing(view.contentElement, '.walkthrough-title');
     assert.strictEqual(title.innerText, 'Agent walkthrough');
+  });
+
+  it('renders an expanded walkthrough screenshot', async () => {
+    const message: AiAssistance.ChatMessage.ModelChatMessage = {
+      entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+      id: '1',
+      parts: [
+        {
+          type: 'step',
+          step: {
+            state: {type: 'completed'},
+            title: 'Inspecting page layout',
+            thought: 'Checking the computed flex styles on the container.',
+            action: 'getComputedStyle($0).display',
+            output: '"flex"',
+          },
+        },
+        {
+          type: 'step',
+          step: {
+            state: {type: 'completed'},
+            title: 'Checking child alignment',
+            thought: 'Verifying alignment properties on child elements.',
+          },
+        },
+      ],
+    };
+
+    await makeWalkthrough({
+      isLoading: false,
+      message,
+      isInlined: true,
+      isExpanded: true,
+      element: document.createElement('devtools-widget'),
+      renderOptions: {includeCommonStyles: true, width: 600},
+    });
+
+    await assertScreenshot('ai_assistance/walkthrough_view.png');
   });
 
   it('calls scrollIntoView on the last step when it is loading', async () => {

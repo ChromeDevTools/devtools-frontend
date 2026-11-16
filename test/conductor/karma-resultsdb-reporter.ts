@@ -110,8 +110,7 @@ export const ResultsDBReporter: {
     const testResult: ResultsDb.TestResult = {
       duration,
       status,
-      // Always report expected=false to resultsdb for failures to avoid LUCI considering this test failure a pass.
-      expected: status === 'FAIL' ? false : expected,
+      expected,
       summaryHtml,
       ...ResultsDb.buildTestProperties(exactTestId, coarseName, fineName, caseName),
     };

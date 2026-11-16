@@ -16,6 +16,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {findMenuItemWithLabel, getContextMenuForElement, getMenuItemLabels} from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, dispatchPasteEvent, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
@@ -1769,6 +1770,23 @@ describeWithEnvironment('ConsoleView', () => {
         'Sort properties alphabetically',
         'Show all',
       ]);
+    });
+  });
+
+  describe('accessibility', () => {
+    it('has no aXe violations', async () => {
+      const target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+
+      renderElementIntoDOM(consoleView, {includeCommonStyles: true, width: 800, height: 600});
+      consoleView.focus();
+      await consoleView.getScheduledRefreshPromiseForTest();
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.exists(consoleView.element.querySelector('.console-main-toolbar'));
+      assert.exists(consoleView.element.querySelector('#console-messages'));
+      assert.exists(consoleView.element.querySelector('#console-prompt'));
+      assert.isEmpty(await getAxeViolations(consoleView.element));
     });
   });
 });

@@ -102,13 +102,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catPerfS
   title: i18nLazyString(UIStrings.performance),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catA11ySettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.accessibility),
-  settingName: 'lighthouse.cat-a11y',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

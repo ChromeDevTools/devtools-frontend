@@ -741,7 +741,7 @@ export function getPresets(): LighthouseModel.RunTypes.Preset[] {
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE,
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-a11y'),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catA11ySettingDescriptor),
         configID: 'accessibility',
         title: i18nLazyString(UIStrings.accessibility),
         description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),

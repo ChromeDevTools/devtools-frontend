@@ -8,6 +8,7 @@ node_ts_library("animations") {
   sources = [ "animations.test.ts" ]
 
   ts_deps = [
+    "../../../front_end/core/sdk:bundle",
     "../conductor:implementation",
     "../helpers",
     "../shared",

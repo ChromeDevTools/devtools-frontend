@@ -197,6 +197,29 @@ function shouldGroupAnimations(firstAnimation: AnimationImpl, anim: AnimationImp
   return !animationTimeline && firstAnimation.startTime() === anim.startTime();
 }
 
+function getParticipantId(animation: AnimationImpl): string {
+  const source = animation.source();
+  const timeline = animation.viewOrScrollTimeline();
+  const target = `node:${source.backendNodeId()}`;
+  const timelineId = timeline ? `|timeline:${timeline.sourceNodeId}:${timeline.axis}` : '';
+  const cssId = animation.cssId();
+  if (cssId) {
+    // `cssId` hashes the stylesheet rules that declared the animation, but not the
+    // target element, and is shared by all animations declared in one rule.
+    return `${target}|css:${JSON.stringify([cssId, animation.name()])}${timelineId}`;
+  }
+  // Without a cssId, this is a best-effort replay signature, not a unique ID.
+  // Omit mutable effect details (duration, delays, iterations, direction, fill,
+  // easing and keyframe data, including offsets) so editing an animation in the
+  // Animations panel does not prevent it from matching a subsequent replay.
+  // Animation events omit animated property names and values. Retrieving them
+  // requires resolving and inspecting each animation remotely. We intentionally
+  // avoid those asynchronous protocol round trips and accept false-positive
+  // matches between different effects with the same type, name, node and timeline.
+  const fingerprint = [animation.type(), animation.name()];
+  return `${target}|web:${JSON.stringify(fingerprint)}${timelineId}`;
+}
+
 export class AnimationModel extends SDKModel<EventTypes> {
   readonly runtimeModel: RuntimeModel;
   readonly agent: ProtocolProxyApi.AnimationApi;
@@ -301,9 +324,10 @@ export class AnimationModel extends SDKModel<EventTypes> {
   }
 
   #matchExistingGroups(incomingGroup: AnimationGroup): boolean {
+    const incomingParticipantIds = incomingGroup.getParticipantIds();
     let matchedGroup: AnimationGroup|null = null;
     for (const group of this.animationGroups.values()) {
-      if (group.matches(incomingGroup)) {
+      if (group.matches(incomingGroup, incomingParticipantIds)) {
         matchedGroup = group;
         group.rebaseTo(incomingGroup);
         break;
@@ -839,15 +863,15 @@ export class AnimationGroup {
   }
 
   seekTo(currentTime: number): void {
-    const animations = [];
+    const animationIds = [];
     const currentTimes = [];
     for (const animation of this.#animations) {
       // Seek from the end of the animation if it is reversed.
-      animations.push(animation.id());
+      animationIds.push(animation.id());
       currentTimes.push(animation.playbackRate() >= 0 ? currentTime :
                                                         animation.endTime() - animation.startTime() - currentTime);
     }
-    void this.#animationModel.agent.invoke_seekAnimations({animations, currentTimes});
+    void this.#animationModel.agent.invoke_seekAnimations({animations: animationIds, currentTimes});
   }
 
   paused(): boolean {
@@ -877,26 +901,23 @@ export class AnimationGroup {
         .then(({currentTime}) => currentTime || 0);
   }
 
-  matches(group: AnimationGroup): boolean {
-    function extractId(anim: AnimationImpl): string {
-      const timelineId = (anim.viewOrScrollTimeline()?.sourceNodeId ?? '') + (anim.viewOrScrollTimeline()?.axis ?? '');
-      const regularId =
-          anim.type() === Protocol.Animation.AnimationType.WebAnimation ? anim.type() + anim.id() : anim.cssId();
+  /**
+   * Best-effort signatures for matching replays on the same element despite new
+   * protocol IDs. Animations without a cssId can match different effects; mutable
+   * timing and keyframe details are intentionally excluded.
+   * Returned as a sorted multiset: identical animations are kept as duplicates.
+   */
+  getParticipantIds(): string[] {
+    return this.#animations.map(getParticipantId).sort();
+  }
 
-      return regularId + timelineId;
-    }
-
-    if (this.#animations.length !== group.#animations.length) {
+  matches(group: AnimationGroup, participantIds?: readonly string[]): boolean {
+    if (this.#animationModel !== group.#animationModel || this.#animations.length !== group.#animations.length) {
       return false;
     }
-    const left = this.#animations.map(extractId).sort();
-    const right = group.#animations.map(extractId).sort();
-    for (let i = 0; i < left.length; i++) {
-      if (left[i] !== right[i]) {
-        return false;
-      }
-    }
-    return true;
+    const thisParticipantIds = this.getParticipantIds();
+    const otherParticipantIds = participantIds ?? group.getParticipantIds();
+    return thisParticipantIds.every((id, index) => id === otherParticipantIds[index]);
   }
 
   shouldInclude(group: AnimationGroup): boolean {
@@ -912,7 +933,11 @@ export class AnimationGroup {
   }
 
   rebaseTo(group: AnimationGroup): void {
-    this.#animationModel.releaseAnimations(this.#animationIds());
+    const incomingIds = new Set(group.#animationIds());
+    const releasedIds = this.#animationIds().filter(id => !incomingIds.has(id));
+    if (releasedIds.length) {
+      this.#animationModel.releaseAnimations(releasedIds);
+    }
     this.#animations = group.#animations;
     this.#scrollNode = undefined;
   }

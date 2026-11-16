@@ -249,6 +249,53 @@ describe('StylesSidebarPane', () => {
       });
     });
 
+    describe('header view', () => {
+      it('invokes onFilterChanged when filter input changes', () => {
+        const host = new UI.Widget.Widget();
+        renderElementIntoDOM(host);
+        const onFilterChanged = sinon.spy();
+        Elements.StylesSidebarPane.DEFAULT_HEADER_VIEW(
+            {
+              showNoMatches: false,
+              toolbarItems: [],
+              toolbarPane: null,
+              toolbarPaneAnimation: null,
+              onFilterChanged,
+              onRegexToggled: () => {},
+              onToolbarPaneAnimationEnd: () => {},
+            },
+            undefined,
+            host.contentElement,
+        );
+        const filterInput = host.contentElement.querySelector('devtools-toolbar-input[type="filter"]');
+        assert.exists(filterInput);
+        filterInput.dispatchEvent(new CustomEvent('change', {detail: 'color'}));
+        sinon.assert.calledOnceWithExactly(onFilterChanged, 'color');
+      });
+
+      it('renders no-matches message when showNoMatches is true', () => {
+        const host = new UI.Widget.Widget();
+        renderElementIntoDOM(host);
+        Elements.StylesSidebarPane.DEFAULT_HEADER_VIEW(
+            {
+              showNoMatches: true,
+              toolbarItems: [],
+              toolbarPane: null,
+              toolbarPaneAnimation: null,
+              onFilterChanged: () => {},
+              onRegexToggled: () => {},
+              onToolbarPaneAnimationEnd: () => {},
+            },
+            undefined,
+            host.contentElement,
+        );
+        const noMatches = host.contentElement.querySelector<HTMLElement>('.gray-info-message');
+        assert.exists(noMatches);
+        assert.isFalse(noMatches.hidden);
+        assert.strictEqual(noMatches.textContent, 'No matching selector or style');
+      });
+    });
+
     describe('createNewRuleInViaInspectorStyleSheet', () => {
       it('creates a new rule in the via inspector stylesheet and starts editing the selector', async () => {
         (node.frameId as sinon.SinonStub).returns('frame-id' as Protocol.Page.FrameId);

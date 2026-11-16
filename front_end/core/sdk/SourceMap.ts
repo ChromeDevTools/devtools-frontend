@@ -7,7 +7,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import type {CallFrame, Location, ScopeChainEntry} from './DebuggerModel.js';
+import type {CallFrame, Location, Scope, ScopeChainEntry} from './DebuggerModel.js';
 import {scopeTreeForScript} from './ScopeTreeCache.js';
 import type {Script} from './Script.js';
 import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
@@ -875,13 +875,13 @@ export class SourceMap {
         this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
   }
 
-  resolveScopeChain(frame: CallFrame): ScopeChainEntry[]|null {
+  resolveScopeChain(frame: CallFrame, scopeChain: Scope[]): ScopeChainEntry[]|null {
     this.#ensureSourceMapProcessed();
     if (this.#provenance === SourceMapProvenance.USER || !this.#scopesInfo?.hasVariablesAndBindings()) {
       return null;
     }
 
-    return this.#scopesInfo.resolveMappedScopeChain(frame);
+    return this.#scopesInfo.resolveMappedScopeChain(frame, scopeChain);
   }
 
   resolveMappedVariablesAtPosition(location: Location,

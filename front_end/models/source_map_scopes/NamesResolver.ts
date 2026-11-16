@@ -428,7 +428,7 @@ export const resolveScopeChain =
             if (!sourceMap && callFrame.debuggerModel?.sourceMapManager) {
               sourceMap = await callFrame.debuggerModel.sourceMapManager().sourceMapForClientPromise(callFrame.script);
             }
-            const mappedScopeChain = sourceMap?.resolveScopeChain(callFrame);
+            const mappedScopeChain = sourceMap?.resolveScopeChain(callFrame, callFrame.scopeChain());
             if (mappedScopeChain) {
               return mappedScopeChain;
             }

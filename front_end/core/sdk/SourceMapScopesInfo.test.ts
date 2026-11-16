@@ -38,11 +38,20 @@ function scopePayload(type: Protocol.Debugger.ScopeType, start?: {line: number, 
   };
 }
 
+const stubbedScopeChains = new WeakMap<SDK.DebuggerModel.CallFrame, SDK.DebuggerModel.Scope[]>();
+
 /** Makes `callFrame.scopeChain()` return real `Scope` instances built from `payloads`. */
 function stubScopeChain(callFrame: sinon.SinonStubbedInstance<SDK.DebuggerModel.CallFrame>,
                         payloads: Protocol.Debugger.Scope[]): void {
   callFrame.getPayload.returns({scopeChain: payloads} as Protocol.Debugger.CallFrame);
-  callFrame.scopeChain.returns(payloads.map((_, ordinal) => new SDK.DebuggerModel.Scope(callFrame, ordinal)));
+  const scopeChain = payloads.map((_, ordinal) => new SDK.DebuggerModel.Scope(callFrame, ordinal));
+  stubbedScopeChains.set(callFrame, scopeChain);
+  callFrame.scopeChain.returns(scopeChain);
+}
+
+/** @returns the scope chain {@link stubScopeChain} set up for `callFrame`. */
+function scopesOf(callFrame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.Scope[] {
+  return stubbedScopeChains.get(callFrame) ?? [];
 }
 
 /** Like {@link stringifyFrame}, but renders frames at unmapped generated positions as `url:unmapped`. */
@@ -681,7 +690,7 @@ describe('SourceMapScopesInfo', () => {
       ]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 10}, {line: 0, column: 90}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 10}, {line: 0, column: 90}));
 
       assert.strictEqual(scopeNumber, 1);
     });
@@ -705,7 +714,7 @@ describe('SourceMapScopesInfo', () => {
       ]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 10}, {line: 0, column: 90}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 10}, {line: 0, column: 90}));
 
       assert.strictEqual(scopeNumber, 2);
     });
@@ -722,7 +731,7 @@ describe('SourceMapScopesInfo', () => {
       ]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 45}, {line: 0, column: 55}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 45}, {line: 0, column: 55}));
 
       assert.strictEqual(scopeNumber, 0);
     });
@@ -737,7 +746,7 @@ describe('SourceMapScopesInfo', () => {
       ]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 30}, {line: 0, column: 80}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 30}, {line: 0, column: 80}));
 
       assert.strictEqual(scopeNumber, 0);
     });
@@ -752,7 +761,7 @@ describe('SourceMapScopesInfo', () => {
       ]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 20}, {line: 0, column: 70}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 20}, {line: 0, column: 70}));
 
       assert.strictEqual(scopeNumber, 0);
     });
@@ -772,7 +781,7 @@ describe('SourceMapScopesInfo', () => {
       const callFrame = callFrameWithScopes([otherScriptScope]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 10}, {line: 0, column: 90}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 10}, {line: 0, column: 90}));
 
       assert.isUndefined(scopeNumber);
     });
@@ -796,9 +805,9 @@ describe('SourceMapScopesInfo', () => {
       ]);
 
       const asStackFrame = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 20}, {line: 0, column: 80}, /* isStackFrame */ true));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 20}, {line: 0, column: 80}, /* isStackFrame */ true));
       const asPlainRange = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 20}, {line: 0, column: 80}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 20}, {line: 0, column: 80}));
 
       assert.strictEqual(asStackFrame, 0);
       assert.strictEqual(asPlainRange, 1);
@@ -818,7 +827,7 @@ describe('SourceMapScopesInfo', () => {
       ]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 10}, {line: 0, column: 90}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 10}, {line: 0, column: 90}));
 
       assert.strictEqual(scopeNumber, 1);
     });
@@ -832,7 +841,7 @@ describe('SourceMapScopesInfo', () => {
           [scopePayload(Protocol.Debugger.ScopeType.Local, {line: 0, column: 0}, {line: 0, column: 10})]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 5}, {line: 0, column: 20}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 5}, {line: 0, column: 20}));
 
       assert.isUndefined(scopeNumber);
     });
@@ -844,7 +853,7 @@ describe('SourceMapScopesInfo', () => {
       const callFrame = callFrameWithScopes([]);
 
       const scopeNumber = SDK.SourceMapScopesInfo.findMatchingScopeNumber(
-          callFrame, range({line: 0, column: 0}, {line: 0, column: 10}));
+          callFrame, scopesOf(callFrame), range({line: 0, column: 0}, {line: 0, column: 10}));
 
       assert.isUndefined(scopeNumber);
     });
@@ -900,7 +909,7 @@ describe('SourceMapScopesInfo', () => {
       const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({generatedPausedPosition: {line: 0, column: 15}});
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNull(scopeChain);
     });
@@ -945,7 +954,7 @@ describe('SourceMapScopesInfo', () => {
       callFrame.evaluate.resolves({object: new SDK.RemoteObject.LocalJSONObject({0: 42})});
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNotNull(scopeChain);
       assert.lengthOf(scopeChain, 4);
@@ -973,7 +982,7 @@ describe('SourceMapScopesInfo', () => {
       });
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNotNull(scopeChain);
       assert.lengthOf(scopeChain, 1);
@@ -1001,7 +1010,7 @@ describe('SourceMapScopesInfo', () => {
          });
          const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-         const scopeChain = info.resolveMappedScopeChain(callFrame);
+         const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
          assert.isNotNull(scopeChain);
          assert.lengthOf(scopeChain, 2);
@@ -1032,7 +1041,7 @@ describe('SourceMapScopesInfo', () => {
       });
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNotNull(scopeChain);
       assert.lengthOf(scopeChain, 1);
@@ -1065,7 +1074,7 @@ describe('SourceMapScopesInfo', () => {
       });
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNotNull(scopeChain);
       assert.lengthOf(scopeChain, 3);
@@ -1100,7 +1109,7 @@ describe('SourceMapScopesInfo', () => {
       });
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNotNull(scopeChain);
       assert.lengthOf(scopeChain, 1);
@@ -1156,7 +1165,7 @@ describe('SourceMapScopesInfo', () => {
       });
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNotNull(scopeChain);
       assert.lengthOf(scopeChain, 2);
@@ -1222,7 +1231,7 @@ describe('SourceMapScopesInfo', () => {
       });
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNotNull(scopeChain);
       assert.lengthOf(scopeChain, 1);
@@ -1295,7 +1304,7 @@ describe('SourceMapScopesInfo', () => {
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       {
-        const scopeChain = info.resolveMappedScopeChain(callFrame);
+        const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
         assert.isNotNull(scopeChain);
         assert.lengthOf(scopeChain, 2);
         assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Local);
@@ -1306,7 +1315,7 @@ describe('SourceMapScopesInfo', () => {
       callFrame['inlineFrameIndex'] = 1;
 
       {
-        const scopeChain = info.resolveMappedScopeChain(callFrame);
+        const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
         assert.isNotNull(scopeChain);
         assert.lengthOf(scopeChain, 3);
         assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Block);
@@ -1318,7 +1327,7 @@ describe('SourceMapScopesInfo', () => {
       callFrame['inlineFrameIndex'] = 2;
 
       {
-        const scopeChain = info.resolveMappedScopeChain(callFrame);
+        const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
         assert.isNotNull(scopeChain);
         assert.lengthOf(scopeChain, 1);
         assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Global);
@@ -1349,7 +1358,7 @@ describe('SourceMapScopesInfo', () => {
       });
       const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
-      const scopeChain = info.resolveMappedScopeChain(callFrame);
+      const scopeChain = info.resolveMappedScopeChain(callFrame, scopesOf(callFrame));
 
       assert.isNotNull(scopeChain);
       assert.lengthOf(scopeChain, 3);
@@ -1386,7 +1395,7 @@ describe('SourceMapScopesInfo', () => {
            mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
          });
          const info1 = new SourceMapScopesInfo(setup1.sourceMap, builder.build());
-         const scopeChain1 = info1.resolveMappedScopeChain(setup1.callFrame);
+         const scopeChain1 = info1.resolveMappedScopeChain(setup1.callFrame, scopesOf(setup1.callFrame));
          assert.isNotNull(scopeChain1);
          assert.lengthOf(scopeChain1, 2);
          assert.strictEqual(scopeChain1[0].type(), Protocol.Debugger.ScopeType.Local);
@@ -1397,7 +1406,7 @@ describe('SourceMapScopesInfo', () => {
            generatedPausedPosition: {line: 0, column: 75},
          });
          const info2 = new SourceMapScopesInfo(setup2.sourceMap, builder.build());
-         const scopeChain2 = info2.resolveMappedScopeChain(setup2.callFrame);
+         const scopeChain2 = info2.resolveMappedScopeChain(setup2.callFrame, scopesOf(setup2.callFrame));
          assert.isNull(scopeChain2);
        });
 
@@ -1426,20 +1435,20 @@ describe('SourceMapScopesInfo', () => {
              urlString`http://example.com/bundle.js`, urlString`http://example.com/bundle.js.map`, payload,
              universe.console, undefined, SDK.SourceMap.SourceMapProvenance.USER);
          assert.strictEqual(userMap.provenance(), SDK.SourceMap.SourceMapProvenance.USER);
-         assert.isNull(userMap.resolveScopeChain(callFrame));
+         assert.isNull(userMap.resolveScopeChain(callFrame, scopesOf(callFrame)));
          assert.strictEqual(userMap.findOriginalFunctionName({line: 0, column: 50}), 'authoredFn');
 
          const cdpMap = new SDK.SourceMap.SourceMap(urlString`http://example.com/bundle.js`,
                                                     urlString`http://example.com/bundle.js.map`, payload,
                                                     universe.console, undefined, SDK.SourceMap.SourceMapProvenance.CDP);
          assert.strictEqual(cdpMap.provenance(), SDK.SourceMap.SourceMapProvenance.CDP);
-         assert.isNotNull(cdpMap.resolveScopeChain(callFrame));
+         assert.isNotNull(cdpMap.resolveScopeChain(callFrame, scopesOf(callFrame)));
 
          const extMap = new SDK.SourceMap.SourceMap(
              urlString`http://example.com/bundle.js`, urlString`http://example.com/bundle.js.map`, payload,
              universe.console, undefined, SDK.SourceMap.SourceMapProvenance.EXTENSION);
          assert.strictEqual(extMap.provenance(), SDK.SourceMap.SourceMapProvenance.EXTENSION);
-         assert.isNotNull(extMap.resolveScopeChain(callFrame));
+         assert.isNotNull(extMap.resolveScopeChain(callFrame, scopesOf(callFrame)));
        });
 
     it('returns null from SourceMap.resolveScopeChain when scopes do not contain variables or bindings', () => {
@@ -1466,7 +1475,7 @@ describe('SourceMapScopesInfo', () => {
           universe.console);
 
       assert.isTrue(sourceMap.hasScopeInfo());
-      assert.isNull(sourceMap.resolveScopeChain(callFrame));
+      assert.isNull(sourceMap.resolveScopeChain(callFrame, scopesOf(callFrame)));
     });
   });
 

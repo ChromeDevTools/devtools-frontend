@@ -2305,4 +2305,163 @@ describe('CSSMatchedStyles', () => {
                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
     });
   });
+
+  describe('flat-tree inherited node attribution', () => {
+    let nextNodeId = 1;
+
+    function createNode(
+        parentNode: SDK.DOMModel.DOMNode|null = null,
+        options?: {
+          isShadowRoot?: boolean,
+          nodeType?: SDK.DOMModel.NodeType,
+          assignedSlot?: SDK.DOMModel.DOMNode,
+        },
+        ): sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode> {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = nextNodeId++ as Protocol.DOM.NodeId;
+      node.parentNode = parentNode;
+      node.isShadowRoot.returns(Boolean(options?.isShadowRoot));
+      node.nodeType.returns(
+          options?.nodeType ??
+          (options?.isShadowRoot ? SDK.DOMModel.NodeType.DOCUMENT_FRAGMENT_NODE : SDK.DOMModel.NodeType.ELEMENT_NODE));
+      if (options?.assignedSlot) {
+        node.hasAssignedSlot.returns(true);
+        const deferredNode = sinon.createStubInstance(SDK.DOMModel.DeferredDOMNode);
+        deferredNode.resolvePromise.resolves(options.assignedSlot);
+        node.assignedSlot = {
+          nodeType: SDK.DOMModel.NodeType.ELEMENT_NODE,
+          nodeName: 'SLOT',
+          deferredNode,
+          childShortcuts: [],
+        };
+      }
+      return node;
+    }
+
+    function inheritedEntry(selector: string): Protocol.CSS.InheritedStyleEntry {
+      return {matchedCSSRules: [ruleMatch(selector, [{name: 'color', value: 'red'}])]};
+    }
+
+    function ruleNodePairs(
+        matched: SDK.CSSMatchedStyles.CSSMatchedStyles,
+        styles: SDK.CSSStyleDeclaration.CSSStyleDeclaration[] = matched.nodeStyles(),
+        ): Array<[string, SDK.DOMModel.DOMNode | null]> {
+      return styles.flatMap(style => {
+        if (!matched.isInherited(style) || !(style.parentRule instanceof SDK.CSSRule.CSSStyleRule)) {
+          return [];
+        }
+        return [[style.parentRule.selectorText(), matched.nodeForStyle(style)]];
+      });
+    }
+
+    it('skips shadow roots for nested and direct shadow children', async () => {
+      const doc = createNode(null, {nodeType: SDK.DOMModel.NodeType.DOCUMENT_NODE});
+      const body = createNode(doc);
+      const outer = createNode(body);
+      const host = createNode(outer);
+      const shadowRoot = createNode(host, {isShadowRoot: true});
+      const wrapper = createNode(shadowRoot);
+      const inner = createNode(wrapper);
+
+      // Nested shadow child skips #shadow-root between wrapper and host.
+      const innerMatched = await getMatchedStyles({
+        connection,
+        node: inner,
+        inheritedPayload: [
+          inheritedEntry('#wrapper'),
+          inheritedEntry(':host'),
+          inheritedEntry('#outer'),
+          inheritedEntry('body'),
+        ],
+      });
+      assert.deepEqual(ruleNodePairs(innerMatched), [
+        ['#wrapper', wrapper],
+        [':host', host],
+        ['#outer', outer],
+        ['body', body],
+      ]);
+      const hostRule =
+          innerMatched.nodeStyles()
+              .find(s => s.parentRule instanceof SDK.CSSRule.CSSStyleRule && s.parentRule.selectorText() === ':host')
+              ?.parentRule;
+      assert.deepEqual(innerMatched.getMatchingSelectors(hostRule as SDK.CSSRule.CSSStyleRule), [0]);
+
+      // Direct child of #shadow-root starts at host rather than #shadow-root.
+      const wrapperMatched = await getMatchedStyles({
+        connection,
+        node: wrapper,
+        inheritedPayload: [inheritedEntry(':host'), inheritedEntry('#outer')],
+      });
+      assert.deepEqual(ruleNodePairs(wrapperMatched), [
+        [':host', host],
+        ['#outer', outer],
+      ]);
+    });
+
+    it('follows assignedSlot for slotted elements and chained slots, stopping at document', async () => {
+      const doc = createNode(null, {nodeType: SDK.DOMModel.NodeType.DOCUMENT_NODE});
+      const outerHost = createNode(doc);
+      const outerShadow = createNode(outerHost, {isShadowRoot: true});
+      const outerWrap = createNode(outerShadow);
+      const outerSlot = createNode(outerWrap);
+      const innerHost = createNode(outerHost);
+      const innerShadow = createNode(innerHost, {isShadowRoot: true});
+      const innerSlot = createNode(innerShadow, {assignedSlot: outerSlot});
+      const slotted = createNode(innerHost, {assignedSlot: innerSlot});
+
+      const matched = await getMatchedStyles({
+        connection,
+        node: slotted,
+        inheritedPayload: [
+          inheritedEntry('#inner-slot'),
+          inheritedEntry('#outer-slot'),
+          inheritedEntry('#outer-wrap'),
+          inheritedEntry('#outer-host'),
+          // Extra entry past the document root must not be attributed to #document.
+          inheritedEntry('past-root'),
+        ],
+      });
+      assert.deepEqual(ruleNodePairs(matched), [
+        ['#inner-slot', innerSlot],
+        ['#outer-slot', outerSlot],
+        ['#outer-wrap', outerWrap],
+        ['#outer-host', outerHost],
+      ]);
+    });
+
+    it('attributes inherited pseudo-element styles across shadow roots and slots', async () => {
+      const doc = createNode(null, {nodeType: SDK.DOMModel.NodeType.DOCUMENT_NODE});
+      const host = createNode(doc);
+      const shadowRoot = createNode(host, {isShadowRoot: true});
+      const slotWrapper = createNode(shadowRoot);
+      const slot = createNode(slotWrapper);
+      const slotted = createNode(host, {assignedSlot: slot});
+
+      const matched = await getMatchedStyles({
+        connection,
+        node: slotted,
+        pseudoPayload: [],
+        inheritedPseudoPayload: [
+          {pseudoElements: []},
+          {
+            pseudoElements: [{
+              pseudoType: Protocol.DOM.PseudoType.Selection,
+              matches: [ruleMatch('#slot-wrapper::selection', [{name: 'color', value: 'purple'}])],
+            }],
+          },
+          {
+            pseudoElements: [{
+              pseudoType: Protocol.DOM.PseudoType.Highlight,
+              matches: [ruleMatch(':host::highlight(custom)', [{name: 'color', value: 'orange'}])],
+            }],
+          },
+        ],
+      });
+
+      assert.deepEqual(ruleNodePairs(matched, matched.pseudoStyles(Protocol.DOM.PseudoType.Selection)),
+                       [['#slot-wrapper::selection', slotWrapper]]);
+      assert.deepEqual(ruleNodePairs(matched, matched.customHighlightPseudoStyles('custom')),
+                       [[':host::highlight(custom)', host]]);
+    });
+  });
 });

@@ -1051,4 +1051,100 @@ describe('CSSModel Keyframes, Style Formatting, and Iframe Styles', () => {
        assert.strictEqual(listMatched.propertyState(findPropertyIn(listMatched, 'list-style-type', 'disc')),
                           SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
      });
+
+  it('attributes inherited styles to the right flat-tree ancestors across shadow roots and slots',
+     async ({inspectedPage, universe}) => {
+       const primaryTarget = universe.targetManager.primaryPageTarget();
+       assert.isNotNull(primaryTarget);
+       const domModel = primaryTarget.model(SDK.DOMModel.DOMModel);
+       assert.isNotNull(domModel);
+       const cssModel = primaryTarget.model(SDK.CSSModel.CSSModel);
+       assert.isNotNull(cssModel);
+
+       await inspectedPage.goToHtml(`
+         <style>
+           body { font-family: "Courier New", monospace; }
+           div#outer { line-height: 2; }
+           x-host#h { color: rgb(255, 0, 0); }
+         </style>
+         <div id="outer">
+           <x-host id="h">
+             <template shadowrootmode="open">
+               <style>
+                 :host { letter-spacing: 2px; }
+                 div#slot-wrapper { word-spacing: 4px; }
+                 slot#main-slot { text-transform: uppercase; }
+                 span#inner { font-weight: bold; }
+               </style>
+               <div id="shadow-wrapper" style="font-style: italic;">
+                 <span id="inner">Inside shadow root</span>
+               </div>
+               <div id="slot-wrapper">
+                 <slot id="main-slot"></slot>
+               </div>
+             </template>
+             <span id="slotted-light">Slotted light DOM child</span>
+           </x-host>
+         </div>
+       `);
+
+       const documentNode = await domModel.requestDocument();
+       assert.isNotNull(documentNode);
+
+       const inheritedStyleNodes =
+           async(rootId: SDK.DOMModel.DOMNode['id'], selector: string): Promise<Array<[string, string]>> => {
+         const nodeId = await domModel.querySelector(rootId, selector);
+         assert.exists(nodeId);
+         const matched = await cssModel.getMatchedStyles(nodeId);
+         assert.exists(matched);
+         return matched.nodeStyles().flatMap(style => {
+           if (!matched.isInherited(style)) {
+             return [];
+           }
+           const label = style.type === SDK.CSSStyleDeclaration.Type.Inline ?
+               'inline' :
+               (style.parentRule instanceof SDK.CSSRule.CSSStyleRule && !style.parentRule.isUserAgent() ?
+                    style.parentRule.selectorText() :
+                    null);
+           if (!label) {
+             return [];
+           }
+           const node = matched.nodeForStyle(style);
+           assert.exists(node);
+           return [[label, node.simpleSelector()]];
+         });
+       };
+
+       // Inspect slotted light-DOM child before expanding the shadow root subtree.
+       assert.deepEqual(await inheritedStyleNodes(documentNode.id, '#slotted-light'), [
+         ['slot#main-slot', 'slot#main-slot'],
+         ['div#slot-wrapper', 'div#slot-wrapper'],
+         ['x-host#h', 'x-host#h'],
+         [':host', 'x-host#h'],
+         ['div#outer', 'div#outer'],
+         ['body', 'body'],
+       ]);
+
+       // Inspect shadow-tree elements (both nested and direct shadow-root child).
+       const hostNodeId = await domModel.querySelector(documentNode.id, '#h');
+       assert.exists(hostNodeId);
+       const shadowRoot = domModel.nodeForId(hostNodeId)?.shadowRoots()[0];
+       assert.exists(shadowRoot);
+       await shadowRoot.getSubtree(3, true);
+
+       assert.deepEqual(await inheritedStyleNodes(shadowRoot.id, '#inner'), [
+         ['inline', 'div#shadow-wrapper'],
+         ['x-host#h', 'x-host#h'],
+         [':host', 'x-host#h'],
+         ['div#outer', 'div#outer'],
+         ['body', 'body'],
+       ]);
+
+       assert.deepEqual(await inheritedStyleNodes(shadowRoot.id, '#shadow-wrapper'), [
+         ['x-host#h', 'x-host#h'],
+         [':host', 'x-host#h'],
+         ['div#outer', 'div#outer'],
+         ['body', 'body'],
+       ]);
+     });
 });

@@ -122,13 +122,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catAgent
   title: i18nLazyString(UIStrings.agenticBrowsing),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.deviceTypeSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.device),
-  settingName: 'lighthouse.device-type',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'mobile',
 });
 
 Common.Settings.registerSettingExtension({

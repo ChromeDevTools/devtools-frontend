@@ -38,3 +38,10 @@ export const catAgenticBrowsingSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const deviceTypeSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'lighthouse.device-type',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'mobile',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

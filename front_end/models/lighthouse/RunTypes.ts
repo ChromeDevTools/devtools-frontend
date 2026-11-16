@@ -27,7 +27,7 @@ export interface Preset {
   userMetric: Host.UserMetrics.LighthouseCategoryUsed;
 }
 export interface RuntimeSetting {
-  setting: Common.Settings.Setting<string|boolean>;
+  setting: Common.Settings.Setting<string>|Common.Settings.Setting<boolean>|Common.Settings.Setting<string|boolean>;
   description: () => Common.UIString.LocalizedString;
   setFlags: (flags: Flags, value: string|boolean) => void;
   options?: Array<{

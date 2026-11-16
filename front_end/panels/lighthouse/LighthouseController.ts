@@ -784,7 +784,7 @@ export function getRuntimeSettings(): LighthouseModel.RunTypes.RuntimeSetting[] 
   if (!runtimeSettings) {
     runtimeSettings = [
       {
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.device-type'),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.deviceTypeSettingDescriptor),
         title: i18nLazyString(UIStrings.applyMobileEmulation),
         description: i18nLazyString(UIStrings.applyMobileEmulationDuring),
         setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {

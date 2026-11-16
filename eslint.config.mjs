@@ -893,7 +893,6 @@ export default defineConfig([
             'front_end/panels/elements/ElementsPanel.ts',
             'front_end/panels/elements/LayersWidget.ts',
             'front_end/panels/event_listeners/EventListenersView.ts',
-            'front_end/panels/explain/components/ConsoleInsight.ts',
             'front_end/panels/layer_viewer/Layers3DView.ts',
             'front_end/panels/lighthouse/LighthousePanel.ts',
             'front_end/panels/linear_memory_inspector/components/LinearMemoryNavigator.ts',

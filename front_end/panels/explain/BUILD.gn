@@ -29,7 +29,6 @@ devtools_ui_module("explain") {
     "../../models/ai_assistance:bundle",
     "../../third_party/marked:bundle",
     "../../ui/components/buttons:bundle",
-    "../../ui/components/input:bundle",
     "../../ui/components/markdown_view:bundle",
     "../../ui/components/spinners:bundle",
     "../../ui/kit:bundle",

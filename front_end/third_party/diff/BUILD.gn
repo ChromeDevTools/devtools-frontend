@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_pre_built("diff_match_patch") {
@@ -49,4 +50,12 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_third_party_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "DiffWrapper.test.ts" ]
+
+  ts_deps = [ ":bundle" ]
 }

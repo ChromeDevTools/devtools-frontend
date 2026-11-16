@@ -142,11 +142,7 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.clearSto
   title: i18nLazyString(UIStrings.clearStorage),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.enableSamplingSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.enableSampling),
-  settingName: 'lighthouse.enable-sampling',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });

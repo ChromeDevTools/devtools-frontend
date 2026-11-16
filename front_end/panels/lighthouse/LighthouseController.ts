@@ -862,7 +862,8 @@ export function getRuntimeSettings(): LighthouseModel.RunTypes.RuntimeSetting[] 
         },
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.enable-sampling'),
+        setting:
+            Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.enableSamplingSettingDescriptor),
         title: i18nLazyString(UIStrings.enableSampling),
         description: i18nLazyString(UIStrings.enableJavaScriptSampling),
         setFlags: (flags: LighthouseModel.RunTypes.Flags, value: string|boolean) => {

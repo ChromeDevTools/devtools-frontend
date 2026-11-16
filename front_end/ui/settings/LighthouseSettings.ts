@@ -66,3 +66,10 @@ export const clearStorageSettingDescriptor: Common.Settings.SettingDescriptor<bo
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const enableSamplingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'lighthouse.enable-sampling',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

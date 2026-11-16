@@ -207,23 +207,22 @@ function calculateRadiusVector(stage: HTMLElement, event: MouseEvent): Geometry.
   return new Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
 }
 
-const stagesWithDragHandle = new WeakSet<Element>();
-
-function installStageDragHandle(stage: HTMLElement, onDragStart: OrientationViewInput['onStageDragStart'],
-                                onDrag: OrientationViewInput['onStageDrag']): void {
-  UI.UIUtils.installDragHandle(stage,
-                               event => {
-                                 if (!onDragStart(calculateRadiusVector(stage, event))) {
-                                   return false;
-                                 }
-                                 event.consume(true);
-                                 return true;
-                               },
-                               event => {
-                                 event.consume(true);
-                                 onDrag(calculateRadiusVector(stage, event), event.shiftKey);
-                               },
-                               null, '-webkit-grabbing', '-webkit-grab');
+/** Starts a drag of the orientation stage. The handlers are read from `input` for every drag. */
+function startStageDrag(event: PointerEvent, input: OrientationViewInput): void {
+  const stage = event.currentTarget as HTMLElement;
+  UI.UIUtils.elementDragStart(stage,
+                              event => {
+                                if (!input.onStageDragStart(calculateRadiusVector(stage, event))) {
+                                  return false;
+                                }
+                                event.consume(true);
+                                return true;
+                              },
+                              event => {
+                                event.consume(true);
+                                input.onStageDrag(calculateRadiusVector(stage, event), event.shiftKey);
+                              },
+                              null, '-webkit-grabbing', event);
 }
 
 interface LocationViewInput {
@@ -518,12 +517,7 @@ function renderDeviceOrientationSection(input: OrientationViewInput, output: Vie
           title=${input.orientationOverrideEnabled ? i18nString(UIStrings.shiftdragHorizontallyToRotate) :
                                                           i18nString(UIStrings.enableOrientationToRotate)}
           jslog=${VisualLogging.preview().track({drag: true})}
-          ${Directives.ref((el: Element | undefined) => {
-            if (el && !stagesWithDragHandle.has(el)) {
-              stagesWithDragHandle.add(el);
-              installStageDragHandle(el as HTMLElement, input.onStageDragStart, input.onStageDrag);
-            }
-          })}
+          @pointerdown=${(event: PointerEvent) => startStageDrag(event, input)}
         >
           <div class="orientation-layer" style=${styleMap({transform: `rotateY(${input.orientation.alpha}deg) rotateX(${- input.orientation.beta}deg) rotateZ(${input.orientation.gamma}deg)`})}>
             <section

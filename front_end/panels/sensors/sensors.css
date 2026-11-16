@@ -116,6 +116,7 @@
   transition: 0.2s ease opacity, 0.2s ease filter;
   overflow: hidden;
   margin-bottom: 10px;
+  cursor: grab;
 }
 
 .theme-with-dark-background .orientation-stage,

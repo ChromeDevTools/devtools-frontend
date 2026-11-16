@@ -183,7 +183,7 @@ describe('ListSourcesTool', () => {
       '2;/script.js',
     ].join('\n'));
 
-    const sourceCodes = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(
+    const {files: sourceCodes} = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(
         {status: 'ESTABLISHED_ORIGIN', origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')},
         universe.workspace);
     assert.lengthOf(sourceCodes, 1);
@@ -342,6 +342,92 @@ describe('ListSourcesTool', () => {
     ].join('\n'));
   });
 
+  it('excludes non-SVG binary files without allocating IDs and appends an omitted-count footer', async () => {
+    const {uiSourceCodes} = createContentProviderUISourceCodes({
+      items: [
+        {url: urlString`https://example.com/logo.png`, mimeType: 'image/png'},
+        {url: urlString`https://example.com/icon.svg`, mimeType: 'image/svg+xml'},
+        {url: urlString`https://example.com/module.wasm`, mimeType: 'application/wasm'},
+        {url: urlString`https://example.com/app.js`, mimeType: 'application/javascript'},
+      ],
+      projectId: 'project1',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe,
+    });
+    createContentProviderUISourceCodes({
+      items: [
+        {url: urlString`https://example.com/logo.png`, mimeType: 'image/png'},
+        {url: urlString`https://example.com/app.js`, mimeType: 'application/octet-stream'},
+      ],
+      projectId: 'project2',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe,
+    });
+
+    const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+    const response = await tool.handler({}, {getOriginLock: () => ({status: 'ESTABLISHED_ORIGIN', origin})});
+    assertIsResult(response);
+    assert.strictEqual(response.result, [
+      'id;name',
+      '1;/icon.svg',
+      '2;/app.js',
+      '(Omitted 2 binary image/font/media/wasm files; load the network skill and call listNetworkRequests to inspect binary asset URLs.)',
+    ].join('\n'));
+    assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.lastSourceId, 2);
+    assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[1]), 1);
+    assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[3]), 2);
+  });
+
+  it('appends the omitted-count footer to the empty-state message when only binary files match the origin', async () => {
+    createContentProviderUISourceCodes({
+      items: [
+        {url: urlString`https://example.com/logo.png`, mimeType: 'image/png'},
+        {url: urlString`https://example.com/font.woff2`, mimeType: 'font/woff2'},
+        {url: urlString`https://another.com/other.png`, mimeType: 'image/png'},
+      ],
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe,
+    });
+
+    const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+    const response = await tool.handler({}, {getOriginLock: () => ({status: 'ESTABLISHED_ORIGIN', origin})});
+    assertIsResult(response);
+    assert.strictEqual(response.result, [
+      'No source files found for the current origin.',
+      '(Omitted 2 binary image/font/media/wasm files; load the network skill and call listNetworkRequests to inspect binary asset URLs.)',
+    ].join('\n'));
+  });
+
+  it('falls back to contentType().isTextType() when mimeType is empty', async () => {
+    const {uiSourceCodes} = createContentProviderUISourceCodes({
+      items: [
+        {
+          url: urlString`https://example.com/banner`,
+          mimeType: '',
+          resourceType: Common.ResourceType.resourceTypes.Image,
+        },
+        {
+          url: urlString`https://example.com/bundle`,
+          mimeType: '',
+          resourceType: Common.ResourceType.resourceTypes.Script,
+        },
+      ],
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe,
+    });
+
+    const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+    const response = await tool.handler({}, {getOriginLock: () => ({status: 'ESTABLISHED_ORIGIN', origin})});
+    assertIsResult(response);
+    assert.strictEqual(response.result, [
+      'id;name',
+      '1;/bundle',
+      '(Omitted 1 binary image/font/media/wasm files; load the network skill and call listNetworkRequests to inspect binary asset URLs.)',
+    ].join('\n'));
+    assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.lastSourceId, 1);
+    assert.strictEqual(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[1]), 1);
+  });
+
   describe('getUISourceCodes and getSourceById', () => {
     it('filters sources by established origin in getUISourceCodes', () => {
       createContentProviderUISourceCodes({
@@ -365,7 +451,8 @@ describe('ListSourcesTool', () => {
         status: 'ESTABLISHED_ORIGIN',
         origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
       };
-      const filtered = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(originLock, universe.workspace);
+      const {files: filtered} =
+          AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(originLock, universe.workspace);
       assert.lengthOf(filtered, 1);
       assert.strictEqual(filtered[0].url(), 'https://example.com/script1.js');
     });
@@ -387,14 +474,16 @@ describe('ListSourcesTool', () => {
         status: 'ESTABLISHED_ORIGIN',
         origin: SDK.SecurityOrigin.SecurityOrigin.create('about:blank'),
       };
-      assert.lengthOf(AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(opaqueLock, universe.workspace), 0);
-
-      const uninitializedLock: AiAssistance.Tool.OriginLockState = {status: 'UNINITIALIZED'};
-      assert.lengthOf(AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(uninitializedLock, universe.workspace),
+      assert.lengthOf(AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(opaqueLock, universe.workspace).files,
                       0);
 
+      const uninitializedLock: AiAssistance.Tool.OriginLockState = {status: 'UNINITIALIZED'};
+      assert.lengthOf(
+          AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(uninitializedLock, universe.workspace).files, 0);
+
       const blockedLock: AiAssistance.Tool.OriginLockState = {status: 'BLOCKED_BY_NAVIGATION'};
-      assert.lengthOf(AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(blockedLock, universe.workspace), 0);
+      assert.lengthOf(AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(blockedLock, universe.workspace).files,
+                      0);
     });
 
     it('retrieves source by ID when matching established origin in getSourceById', () => {
@@ -523,7 +612,8 @@ describe('ListSourcesTool', () => {
         status: 'ESTABLISHED_ORIGIN',
         origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
       };
-      const filtered = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(originLock, universe.workspace);
+      const {files: filtered} =
+          AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(originLock, universe.workspace);
 
       assert.notInclude(filtered, uiSourceCodes[0]);
       assert.isFalse(AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.has(uiSourceCodes[0]));

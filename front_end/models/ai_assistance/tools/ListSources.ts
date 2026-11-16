@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Workspace from '../../workspace/workspace.js';
 
@@ -26,9 +27,9 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 
 /**
- * A tool that lists all network source files in the workspace.
+ * A tool that lists readable text network source files in the workspace, excluding binary assets.
  * Each file is returned with its displayName and a unique session-based numeric ID.
- * The output is a semicolon-delimited list with an `id;name` header.
+ * The output is a semicolon-delimited list with an `id;name` header, plus an omitted-count footer when binary files are skipped.
  */
 export class ListSourcesTool implements
     DataTool<Record<string, never>, string, BaseToolCapability&OriginLockCapability> {
@@ -49,16 +50,21 @@ export class ListSourcesTool implements
     ListSourcesTool.idToUiSourceCode = new Map();
   }
 
+  /**
+   * Collects readable text network `UISourceCode`s allowed by the origin lock, skipping ignore-listed and binary files.
+   * Returns the deduplicated files alongside the count of distinct omitted binary URLs that have no readable counterpart.
+   */
   static getUISourceCodes(
       originLock: OriginLockState,
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance(),
-      ): Workspace.UISourceCode.UISourceCode[] {
+      ): {files: Workspace.UISourceCode.UISourceCode[], omittedBinaryCount: number} {
     if (originLock.status !== 'ESTABLISHED_ORIGIN' || originLock.origin.isOpaque()) {
-      return [];
+      return {files: [], omittedBinaryCount: 0};
     }
 
     const uiSourceCodes = new Map<string, Workspace.UISourceCode.UISourceCode>();
+    const omittedBinaryUrls = new Set<string>();
 
     for (const project of workspace.projectsForType(Workspace.Workspace.projectTypes.Network)) {
       const projectOrigin = project.securityOrigin?.();
@@ -76,7 +82,17 @@ export class ListSourcesTool implements
           continue;
         }
 
+        // Check `mimeType` first to match `ContentData#isTextContent`, which `FileFormatter` uses to decode content.
+        // `contentType().isTextType()` reports `.wasm` scripts and binary `Fetch`/`XHR` payloads as text, and
+        // `image/svg+xml` as binary.
+        const mimeType = uiSourceCode.mimeType();
+        const isReadable = mimeType ? Platform.MimeType.isTextType(mimeType) : uiSourceCode.contentType().isTextType();
         const url = uiSourceCode.url();
+        if (!isReadable) {
+          omittedBinaryUrls.add(url);
+          continue;
+        }
+
         if (!uiSourceCodes.get(url) || uiSourceCode.contentType().isFromSourceMap()) {
           uiSourceCodes.set(url, uiSourceCode);
           if (!ListSourcesTool.uiSourceCodeId.has(uiSourceCode)) {
@@ -88,7 +104,15 @@ export class ListSourcesTool implements
       }
     }
 
-    return Array.from(uiSourceCodes.values());
+    // Projects can register the same URL in any order, so only count omitted URLs without a readable file.
+    for (const url of uiSourceCodes.keys()) {
+      omittedBinaryUrls.delete(url);
+    }
+
+    return {
+      files: Array.from(uiSourceCodes.values()),
+      omittedBinaryCount: omittedBinaryUrls.size,
+    };
   }
 
   static getSourceById(
@@ -133,25 +157,19 @@ export class ListSourcesTool implements
       return originResult;
     }
 
-    const files = ListSourcesTool.getUISourceCodes(originLock);
-
-    if (files.length === 0) {
-      return {
-        result: 'No source files found for the current origin.',
-      };
+    const {files, omittedBinaryCount} = ListSourcesTool.getUISourceCodes(originLock);
+    const lines = files.length === 0 ? ['No source files found for the current origin.'] : [
+      'id;name',
+      ...files.map(file => {
+        const id = ListSourcesTool.uiSourceCodeId.get(file) ?? 0;
+        return `${id};${formatSourceName(file, originResult.origin)}`;
+      }),
+    ];
+    if (omittedBinaryCount > 0) {
+      lines.push(`(Omitted ${
+          omittedBinaryCount} binary image/font/media/wasm files; load the network skill and call listNetworkRequests to inspect binary asset URLs.)`);
     }
-
-    const establishedOrigin = originResult.origin;
-
-    const rows = files.map(file => {
-      const id = ListSourcesTool.uiSourceCodeId.get(file) ?? 0;
-      const name = formatSourceName(file, establishedOrigin);
-      return `${id};${name}`;
-    });
-
-    return {
-      result: ['id;name', ...rows].join('\n'),
-    };
+    return {result: lines.join('\n')};
   }
 }
 

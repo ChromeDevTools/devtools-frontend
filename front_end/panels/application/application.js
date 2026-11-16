@@ -834,7 +834,6 @@ var DOM;
     PseudoType2["SelectListbox"] = "select-listbox";
     PseudoType2["PermissionIcon"] = "permission-icon";
     PseudoType2["OverscrollAreaParent"] = "overscroll-area-parent";
-    PseudoType2["OverscrollBackdrop"] = "overscroll-backdrop";
     PseudoType2["Skeleton"] = "skeleton";
   })(PseudoType = DOM2.PseudoType || (DOM2.PseudoType = {}));
   let ShadowRootType;
@@ -13577,6 +13576,10 @@ var UIStrings22 = {
    */
   clearAllCookies: "Clear all cookies",
   /**
+   * @description Tooltip text for the cookie value.
+   */
+  cookieValue: "Cookie value",
+  /**
    * @description Screen reader announcement for the number of cookies shown in the table of the Application panel.
    * @example {5} PH1
    */
@@ -13603,7 +13606,7 @@ var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
     html16`<style>${cookieItemsView_css_default}</style>
     <div class="cookie-preview-widget">
       <div class="cookie-preview-widget-header">
-        <span class="cookie-preview-widget-header-label">Cookie Value</span>
+        <span class="cookie-preview-widget-header-label">${i18nString22(UIStrings22.cookieValue)}</span>
         <devtools-checkbox
           .checked=${input.showDecoded}
           @change=${(e) => input.onShowDecodedChanged(e.target.checked)}

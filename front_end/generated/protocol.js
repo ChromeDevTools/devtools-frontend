@@ -924,7 +924,6 @@ export var DOM;
         PseudoType["SelectListbox"] = "select-listbox";
         PseudoType["PermissionIcon"] = "permission-icon";
         PseudoType["OverscrollAreaParent"] = "overscroll-area-parent";
-        PseudoType["OverscrollBackdrop"] = "overscroll-backdrop";
         PseudoType["Skeleton"] = "skeleton";
     })(PseudoType = DOM.PseudoType || (DOM.PseudoType = {}));
     /**

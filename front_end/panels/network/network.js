@@ -15,11 +15,13 @@ import "../../ui/legacy/legacy.js";
 import * as Common from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
 import * as i18n from "../../core/i18n/i18n.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as SourceFrame from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI from "../../ui/legacy/legacy.js";
 import { Directives, html, nothing, render } from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
+import * as LinearMemoryInspectorComponents from "../linear_memory_inspector/components/components.js";
 
 // gen/front_end/panels/network/binaryResourceView.css.js
 var binaryResourceView_css_default = `/*
@@ -95,7 +97,16 @@ var DEFAULT_VIEW = (input, output, target) => {
     <style>${binaryResourceView_css_default}</style>
     <div class="vbox flex-auto">
       ${input.binaryViewObjects.map(
-    (obj) => obj.type === input.binaryViewType ? html`
+    (obj) => obj.type !== input.binaryViewType ? nothing : obj.type === "hex" ? html`
+          ${widget(LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector, {
+      memory: input.memory.length > 0 ? input.memory : new Uint8Array([0]),
+      address: input.address,
+      memoryOffset: 0,
+      outerMemoryLength: input.memory.length > 0 ? input.memory.length : 1,
+      hideValueInspector: true,
+      onAddressChanged: input.onAddressChanged
+    })}
+        ` : html`
           <devtools-widget
             class="widget vbox flex-auto"
             ${widget((e) => {
@@ -109,9 +120,6 @@ var DEFAULT_VIEW = (input, output, target) => {
         case "base64":
           view = factory.createBase64View(e);
           break;
-        case "hex":
-          view = factory.createHexView(e);
-          break;
         case "utf8":
           view = factory.createUtf8View(e);
           break;
@@ -123,7 +131,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       return view;
     })}>
           </devtools-widget>
-        ` : nothing
+        `
   )}
       <devtools-toolbar class="binary-view-toolbar">
           <select class="toolbar-item" title=${i18nString(UIStrings.binaryViewType)}
@@ -159,6 +167,8 @@ var BinaryResourceView = class extends UI.Widget.VBox {
   resourceType;
   binaryViewObjects;
   binaryViewTypeSetting;
+  #memory = new Uint8Array();
+  #address = 0;
   #copiedText = "";
   #copiedTextFadeout = false;
   #fadeoutTimeoutId = null;
@@ -195,6 +205,32 @@ var BinaryResourceView = class extends UI.Widget.VBox {
   }
   wasShown() {
     super.wasShown();
+    this.#updateMemoryFromContentData();
+    this.streamingContent.addEventListener(
+      TextUtils.StreamingContentData.Events.CHUNK_ADDED,
+      this.#updateMemoryFromContentData,
+      this
+    );
+  }
+  willHide() {
+    super.willHide();
+    this.streamingContent.removeEventListener(
+      TextUtils.StreamingContentData.Events.CHUNK_ADDED,
+      this.#updateMemoryFromContentData,
+      this
+    );
+  }
+  #updateMemoryFromContentData() {
+    this.#memory = Common.Base64.decode(this.streamingContent.content().base64);
+    this.#address = Math.min(Math.floor(this.#memory.length * this.activePositionPercentage), Math.max(0, this.#memory.length - 1));
+    this.requestUpdate();
+  }
+  #onAddressChanged(address) {
+    if (this.#address === address) {
+      return;
+    }
+    this.#address = address;
+    this.activePositionPercentage = this.#memory.length === 0 ? 0 : this.#address / this.#memory.length;
     this.requestUpdate();
   }
   getCurrentViewObject() {
@@ -225,15 +261,21 @@ var BinaryResourceView = class extends UI.Widget.VBox {
     this.requestUpdate();
   }
   performUpdate() {
+    if (this.binaryViewTypeSetting.get() === "hex") {
+      this.#viewOutput.activeView = void 0;
+    }
     const viewInput = {
       activePositionPercentage: this.activePositionPercentage,
       content: this.streamingContent,
       contentUrl: this.contentUrl,
       resourceType: this.resourceType,
+      memory: this.#memory,
+      address: this.#address,
       binaryViewObjects: this.binaryViewObjects,
       binaryViewType: this.binaryViewTypeSetting.get(),
       copiedText: this.#copiedText,
       copiedTextFadeout: this.#copiedTextFadeout,
+      onAddressChanged: this.#onAddressChanged.bind(this),
       binaryViewTypeChanged: this.binaryViewTypeChanged.bind(this),
       copySelectedViewToClipboard: this.copySelectedViewToClipboard.bind(this)
     };
@@ -244,10 +286,12 @@ var BinaryResourceView = class extends UI.Widget.VBox {
     if (this.binaryViewTypeSetting.get() === newViewType) {
       return;
     }
-    const activeView = this.#viewOutput.activeView;
-    if (activeView) {
-      this.activePositionPercentage = activeView.getPositionPercentage();
+    if (this.binaryViewTypeSetting.get() === "hex") {
+      this.activePositionPercentage = this.#memory.length === 0 ? 0 : this.#address / this.#memory.length;
+    } else if (this.#viewOutput.activeView) {
+      this.activePositionPercentage = this.#viewOutput.activeView.getPositionPercentage();
     }
+    this.#address = Math.min(Math.floor(this.#memory.length * this.activePositionPercentage), Math.max(0, this.#memory.length - 1));
     this.binaryViewTypeSetting.set(newViewType);
     this.requestUpdate();
   }
@@ -1794,7 +1838,6 @@ var DOM;
     PseudoType2["SelectListbox"] = "select-listbox";
     PseudoType2["PermissionIcon"] = "permission-icon";
     PseudoType2["OverscrollAreaParent"] = "overscroll-area-parent";
-    PseudoType2["OverscrollBackdrop"] = "overscroll-backdrop";
     PseudoType2["Skeleton"] = "skeleton";
   })(PseudoType = DOM2.PseudoType || (DOM2.PseudoType = {}));
   let ShadowRootType;
@@ -7151,7 +7194,7 @@ import * as Host5 from "../../core/host/host.js";
 import * as i18n25 from "../../core/i18n/i18n.js";
 import * as Platform6 from "../../core/platform/platform.js";
 import * as SDK11 from "../../core/sdk/sdk.js";
-import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as TextUtils2 from "../../core/text_utils/text_utils.js";
 import * as Bindings3 from "../../models/bindings/bindings.js";
 import * as HAR from "../../models/har/har.js";
 import * as Logs5 from "../../models/logs/logs.js";
@@ -12156,7 +12199,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       this
     );
     filterBar.addFilter(this.resourceCategoryFilterUI);
-    this.#filterParser = new TextUtils.TextUtils.FilterParser(searchKeys);
+    this.#filterParser = new TextUtils2.TextUtils.FilterParser(searchKeys);
     this.#suggestionBuilder = new UI14.FilterSuggestionBuilder.FilterSuggestionBuilder(searchKeys, _NetworkLogView.#sortSearchValues);
     this.#resetSuggestionBuilder();
     this.dataGrid = this.#columns.dataGrid();
@@ -12372,7 +12415,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
   static async #copyResponse(request) {
     const contentData = await request.requestContentData();
     let content;
-    if (TextUtils.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils2.ContentData.ContentData.isError(contentData)) {
       content = "";
     } else if (!contentData.isTextContent) {
       content = contentData.asDataUrl() ?? "";
@@ -14330,7 +14373,7 @@ __export(NetworkSearchScope_exports, {
 });
 import * as i18n27 from "../../core/i18n/i18n.js";
 import * as Platform7 from "../../core/platform/platform.js";
-import * as TextUtils3 from "../../core/text_utils/text_utils.js";
+import * as TextUtils4 from "../../core/text_utils/text_utils.js";
 import * as NetworkForward3 from "./forward/forward.js";
 var UIStrings14 = {
   /**
@@ -14423,7 +14466,7 @@ var NetworkSearchScope = class _NetworkSearchScope {
       if (tmpMatches.length === 0) {
         return [];
       }
-      matches = Platform7.ArrayUtilities.mergeOrdered(matches, tmpMatches, TextUtils3.ContentProvider.SearchMatch.comparator);
+      matches = Platform7.ArrayUtilities.mergeOrdered(matches, tmpMatches, TextUtils4.ContentProvider.SearchMatch.comparator);
     }
     return matches;
   }
@@ -16077,7 +16120,7 @@ import * as Host8 from "../../core/host/host.js";
 import * as i18n35 from "../../core/i18n/i18n.js";
 import * as Platform10 from "../../core/platform/platform.js";
 import * as SDK14 from "../../core/sdk/sdk.js";
-import * as TextUtils4 from "../../core/text_utils/text_utils.js";
+import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as Buttons9 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 
@@ -16699,7 +16742,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
      <div class="raw-payload-section"
           jslog=${VisualLogging13.section().context("binary-request-payload")}>
        ${widget6((element) => {
-    const streamingContent = TextUtils4.StreamingContentData.StreamingContentData.from(
+    const streamingContent = TextUtils5.StreamingContentData.StreamingContentData.from(
       input.binaryPayloadContentData
     );
     return new BinaryResourceView(
@@ -16896,7 +16939,7 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
     this.#binaryPayloadContentData = null;
     if (this.request && !this.#formParameters) {
       const contentData = await this.request.requestFormDataContentData();
-      if (!TextUtils4.ContentData.ContentData.isError(contentData) && !contentData.isTextContent && contentData.createdFromBase64) {
+      if (!TextUtils5.ContentData.ContentData.isError(contentData) && !contentData.isTextContent && contentData.createdFromBase64) {
         this.#binaryPayloadContentData = contentData;
       }
     }
@@ -16934,7 +16977,7 @@ __export(RequestPreviewView_exports, {
 import "../../ui/legacy/legacy.js";
 import * as Common17 from "../../core/common/common.js";
 import * as i18n39 from "../../core/i18n/i18n.js";
-import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
 import { Directives as Directives11, html as html16, render as render17 } from "../../ui/lit/lit.js";
@@ -17599,7 +17642,7 @@ var RequestPreviewView = class extends UI21.Widget.VBox {
     if (this.#request !== request) {
       return;
     }
-    if (TextUtils5.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils6.ContentData.ContentData.isError(contentData)) {
       this.#error = contentData.error;
       return;
     }
@@ -17645,7 +17688,7 @@ __export(RequestResponseView_exports, {
 import * as Common18 from "../../core/common/common.js";
 import * as Host10 from "../../core/host/host.js";
 import * as i18n41 from "../../core/i18n/i18n.js";
-import * as TextUtils6 from "../../core/text_utils/text_utils.js";
+import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
 import * as Lit4 from "../../ui/lit/lit.js";
@@ -17669,7 +17712,7 @@ var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var { widgetRef, widget: widget8 } = UI22.Widget;
 var DEFAULT_VIEW17 = (input, output, target) => {
   let widgetTemplate;
-  if (TextUtils6.StreamingContentData.isError(input.contentData)) {
+  if (TextUtils7.StreamingContentData.isError(input.contentData)) {
     widgetTemplate = html17`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.failedToLoadResponseData),
       input.contentData.error,
@@ -17717,10 +17760,10 @@ var RequestResponseView = class extends UI22.Widget.VBox {
     const contentData = await this.request.requestStreamingContent();
     let renderAsText = false;
     const mimeType = this.getMimeTypeForDisplay();
-    if (!TextUtils6.StreamingContentData.isError(contentData)) {
+    if (!TextUtils7.StreamingContentData.isError(contentData)) {
       const isWasm = contentData.mimeType === "application/wasm";
       renderAsText = contentData.isTextContent || isWasm;
-      const isMinified = isWasm || !contentData.isTextContent ? false : TextUtils6.TextUtils.isMinified(contentData.content().text);
+      const isMinified = isWasm || !contentData.isTextContent ? false : TextUtils7.TextUtils.isMinified(contentData.content().text);
       const mediaType = Common18.ResourceType.ResourceType.mediaTypeForMetrics(
         mimeType,
         this.request.resourceType().isFromSourceMap(),
@@ -17761,7 +17804,7 @@ import * as Common20 from "../../core/common/common.js";
 import * as i18n45 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
 import * as SDK15 from "../../core/sdk/sdk.js";
-import * as TextUtils9 from "../../core/text_utils/text_utils.js";
+import * as TextUtils10 from "../../core/text_utils/text_utils.js";
 import * as DataGrid8 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as Lit6 from "../../ui/lit/lit.js";
 import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
@@ -17771,7 +17814,7 @@ import * as Common19 from "../../core/common/common.js";
 import * as Host11 from "../../core/host/host.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
-import * as TextUtils8 from "../../core/text_utils/text_utils.js";
+import * as TextUtils9 from "../../core/text_utils/text_utils.js";
 import * as Buttons10 from "../../ui/components/buttons/buttons.js";
 import * as DataGrid6 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
@@ -18125,7 +18168,7 @@ var ResourceChunkView = class extends UI23.Widget.VBox {
       return;
     }
     this.sidebarWidget = new SourceFrame4.ResourceSourceFrame.ResourceSourceFrame(
-      TextUtils8.StaticContentProvider.StaticContentProvider.fromString(
+      TextUtils9.StaticContentProvider.StaticContentProvider.fromString(
         this.request.url(),
         this.request.resourceType(),
         content
@@ -18380,8 +18423,8 @@ var ResourceChunkNode = class extends DataGridItem {
     if (!this.#binaryView) {
       if (this.dataText().length > 0) {
         this.#binaryView = new BinaryResourceView(
-          TextUtils9.StreamingContentData.StreamingContentData.from(
-            new TextUtils9.ContentData.ContentData(this.dataText(), true, "application/octet-stream")
+          TextUtils10.StreamingContentData.StreamingContentData.from(
+            new TextUtils10.ContentData.ContentData(this.dataText(), true, "application/octet-stream")
           ),
           Platform12.DevToolsPath.EmptyUrlString,
           Common20.ResourceType.resourceTypes.DirectSocket
@@ -18404,7 +18447,7 @@ import * as Common21 from "../../core/common/common.js";
 import * as i18n47 from "../../core/i18n/i18n.js";
 import * as Platform13 from "../../core/platform/platform.js";
 import * as SDK16 from "../../core/sdk/sdk.js";
-import * as TextUtils10 from "../../core/text_utils/text_utils.js";
+import * as TextUtils11 from "../../core/text_utils/text_utils.js";
 import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings24 = {
   /**
@@ -18571,8 +18614,8 @@ var ResourceFrameNode = class extends DataGridItem {
     if (!this.#binaryView) {
       if (this.#dataText.length > 0) {
         this.#binaryView = new BinaryResourceView(
-          TextUtils10.StreamingContentData.StreamingContentData.from(
-            new TextUtils10.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")
+          TextUtils11.StreamingContentData.StreamingContentData.from(
+            new TextUtils11.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")
           ),
           Platform13.DevToolsPath.EmptyUrlString,
           Common21.ResourceType.resourceTypes.WebSocket

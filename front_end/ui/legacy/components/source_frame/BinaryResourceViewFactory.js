@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import { ResourceSourceFrame } from './ResourceSourceFrame.js';
-import { StreamingContentHexView } from './StreamingContentHexView.js';
 export class BinaryResourceViewFactory {
     streamingContent;
     contentUrl;
@@ -26,9 +25,6 @@ export class BinaryResourceViewFactory {
     }
     createBase64View(element) {
         return new StreamingResourceSourceFrame(this.streamingContent, () => this.base64(), this.contentUrl, this.resourceType, { lineNumbers: false, lineWrapping: true }, element);
-    }
-    createHexView(element) {
-        return new StreamingContentHexView(this.streamingContent, element);
     }
     createUtf8View(element) {
         return new StreamingResourceSourceFrame(this.streamingContent, () => this.utf8(), this.contentUrl, this.resourceType, { lineNumbers: true, lineWrapping: true }, element);

@@ -52,7 +52,6 @@
     "../../../../../../../../front_end/ui/legacy/components/source_frame/PreviewFactory.ts",
     "../../../../../../../../front_end/ui/legacy/components/source_frame/ResourceSourceFrame.ts",
     "../../../../../../../../front_end/ui/legacy/components/source_frame/SourceFrame.ts",
-    "../../../../../../../../front_end/ui/legacy/components/source_frame/StreamingContentHexView.ts",
     "../../../../../../../../front_end/ui/legacy/components/source_frame/XMLView.ts",
     "../../../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -89,9 +88,6 @@
     },
     {
       "path": "../../../../models/workspace/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../../../panels/linear_memory_inspector/components/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../../third_party/codemirror.next/bundle-tsconfig.ref.json"

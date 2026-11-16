@@ -960,7 +960,6 @@ var DOM;
     PseudoType2["SelectListbox"] = "select-listbox";
     PseudoType2["PermissionIcon"] = "permission-icon";
     PseudoType2["OverscrollAreaParent"] = "overscroll-area-parent";
-    PseudoType2["OverscrollBackdrop"] = "overscroll-backdrop";
     PseudoType2["Skeleton"] = "skeleton";
   })(PseudoType = DOM2.PseudoType || (DOM2.PseudoType = {}));
   let ShadowRootType;

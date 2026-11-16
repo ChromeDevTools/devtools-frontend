@@ -3601,6 +3601,20 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "name": "simulateGATTMtuChange",
+                    "description": "Simulates the ATT MTU exchange procedure from Bluetooth Core Specification\nVol 3 Part F 3.4.2 establishing |mtu| for the connection to the peripheral\nwith |address|.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        },
+                        {
+                            "name": "mtu",
+                            "type": "integer"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -7391,7 +7405,6 @@
                         "select-listbox",
                         "permission-icon",
                         "overscroll-area-parent",
-                        "overscroll-backdrop",
                         "skeleton"
                     ]
                 },

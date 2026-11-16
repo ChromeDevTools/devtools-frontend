@@ -99,7 +99,9 @@ export const generatedProperties: CSSProperty[] = [
  {
   "keywords": [
    "horizontal",
-   "vertical"
+   "vertical",
+   "inline-axis",
+   "block-axis"
   ],
   "name": "-webkit-box-orient"
  },
@@ -6201,7 +6203,9 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
  "-webkit-box-orient": {
   "values": [
    "horizontal",
-   "vertical"
+   "vertical",
+   "inline-axis",
+   "block-axis"
   ]
  },
  "-webkit-box-pack": {

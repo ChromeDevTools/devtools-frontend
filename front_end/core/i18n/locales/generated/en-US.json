@@ -4526,6 +4526,9 @@
   "panels/application/CookieItemsView.ts | clearFilteredCookies": {
     "message": "Clear filtered cookies"
   },
+  "panels/application/CookieItemsView.ts | cookieValue": {
+    "message": "Cookie value"
+  },
   "panels/application/CookieItemsView.ts | explainCookie": {
     "message": "Explain this cookie"
   },

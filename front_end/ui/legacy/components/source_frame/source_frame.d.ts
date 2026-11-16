@@ -5,6 +5,5 @@ import * as JSONView from './JSONView.js';
 import * as PreviewFactory from './PreviewFactory.js';
 import * as ResourceSourceFrame from './ResourceSourceFrame.js';
 import * as SourceFrame from './SourceFrame.js';
-import * as StreamingContentHexView from './StreamingContentHexView.js';
 import * as XMLView from './XMLView.js';
-export { BinaryResourceViewFactory, FontView, ImageView, JSONView, PreviewFactory, ResourceSourceFrame, SourceFrame, StreamingContentHexView, XMLView, };
+export { BinaryResourceViewFactory, FontView, ImageView, JSONView, PreviewFactory, ResourceSourceFrame, SourceFrame, XMLView, };

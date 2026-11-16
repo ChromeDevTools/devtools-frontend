@@ -1356,6 +1356,15 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Simulates the ATT MTU exchange procedure from Bluetooth Core Specification
+     * Vol 3 Part F 3.4.2 establishing |mtu| for the connection to the peripheral
+     * with |address|.
+     */
+    'BluetoothEmulation.simulateGATTMtuChange': {
+      paramsType: [Protocol.BluetoothEmulation.SimulateGATTMtuChangeRequest];
+      returnType: void;
+    };
+    /**
      * Set permission settings for given embedding and embedded origins.
      */
     'Browser.setPermission': {

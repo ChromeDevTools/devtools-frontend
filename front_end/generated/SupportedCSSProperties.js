@@ -81,7 +81,9 @@ export const generatedProperties = [
     {
         "keywords": [
             "horizontal",
-            "vertical"
+            "vertical",
+            "inline-axis",
+            "block-axis"
         ],
         "name": "-webkit-box-orient"
     },
@@ -6183,7 +6185,9 @@ export const generatedPropertyValues = {
     "-webkit-box-orient": {
         "values": [
             "horizontal",
-            "vertical"
+            "vertical",
+            "inline-axis",
+            "block-axis"
         ]
     },
     "-webkit-box-pack": {

@@ -2177,6 +2177,10 @@ export declare namespace BluetoothEmulation {
     interface SimulateGATTDisconnectionRequest {
         address: string;
     }
+    interface SimulateGATTMtuChangeRequest {
+        address: string;
+        mtu: integer;
+    }
     /**
      * Event for when a GATT operation of |type| to the peripheral with |address|
      * happened.
@@ -4524,7 +4528,6 @@ export declare namespace DOM {
         SelectListbox = "select-listbox",
         PermissionIcon = "permission-icon",
         OverscrollAreaParent = "overscroll-area-parent",
-        OverscrollBackdrop = "overscroll-backdrop",
         Skeleton = "skeleton"
     }
     /**

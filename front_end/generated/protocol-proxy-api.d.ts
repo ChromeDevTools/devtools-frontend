@@ -601,6 +601,13 @@ declare namespace ProtocolProxyApi {
      */
     invoke_simulateGATTDisconnection(params: Protocol.BluetoothEmulation.SimulateGATTDisconnectionRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Simulates the ATT MTU exchange procedure from Bluetooth Core Specification
+     * Vol 3 Part F 3.4.2 establishing |mtu| for the connection to the peripheral
+     * with |address|.
+     */
+    invoke_simulateGATTMtuChange(params: Protocol.BluetoothEmulation.SimulateGATTMtuChangeRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface BluetoothEmulationDispatcher {
     /**

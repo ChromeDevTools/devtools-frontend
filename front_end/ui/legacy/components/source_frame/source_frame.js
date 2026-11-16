@@ -9,7 +9,7 @@ var BinaryResourceViewFactory_exports = {};
 __export(BinaryResourceViewFactory_exports, {
   BinaryResourceViewFactory: () => BinaryResourceViewFactory
 });
-import * as TextUtils5 from "../../../../core/text_utils/text_utils.js";
+import * as TextUtils4 from "../../../../core/text_utils/text_utils.js";
 
 // ../../front_end/ui/legacy/components/source_frame/ResourceSourceFrame.ts
 var ResourceSourceFrame_exports = {};
@@ -1342,108 +1342,6 @@ var SearchableContainer = class extends UI2.Widget.VBox {
   }
 };
 
-// ../../front_end/ui/legacy/components/source_frame/StreamingContentHexView.ts
-var StreamingContentHexView_exports = {};
-__export(StreamingContentHexView_exports, {
-  StreamingContentHexView: () => StreamingContentHexView
-});
-import * as TextUtils4 from "../../../../core/text_utils/text_utils.js";
-import * as LinearMemoryInspectorComponents from "../../../../panels/linear_memory_inspector/components/components.js";
-import * as UI3 from "../../legacy.js";
-var MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1e3;
-var LinearMemoryInspectorView = class extends UI3.Widget.VBox {
-  #memory = new Uint8Array([0]);
-  #address = 0;
-  #positionPercentageToReveal = null;
-  #inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
-  constructor(element) {
-    super(element);
-    this.#inspector.onMemoryRequest = this.#memoryRequested.bind(this);
-    this.#inspector.onAddressChanged = (address) => {
-      this.#address = address;
-    };
-    this.#inspector.show(this.contentElement);
-  }
-  wasShown() {
-    super.wasShown();
-    this.refreshData();
-  }
-  setMemory(memory) {
-    this.#memory = memory;
-    if (this.#positionPercentageToReveal !== null && this.#memory.length > 0) {
-      this.#address = Math.floor(this.#memory.length * this.#positionPercentageToReveal);
-      this.#positionPercentageToReveal = null;
-    }
-    this.refreshData();
-  }
-  getPositionPercentage() {
-    return this.#memory.length === 0 ? 0 : this.#address / this.#memory.length;
-  }
-  setPositionPercentage(percentage) {
-    this.#positionPercentageToReveal = percentage;
-    if (this.#memory.length > 0 && this.#memory.length !== 1) {
-      this.#address = Math.floor(this.#memory.length * percentage);
-      this.#positionPercentageToReveal = null;
-      this.refreshData();
-    }
-  }
-  refreshData() {
-    const memoryChunkStart = Math.max(0, this.#address - MEMORY_TRANSFER_MIN_CHUNK_SIZE / 2);
-    const memoryChunkEnd = memoryChunkStart + MEMORY_TRANSFER_MIN_CHUNK_SIZE;
-    const memory = this.#memory.slice(memoryChunkStart, memoryChunkEnd);
-    this.#inspector.memory = memory;
-    this.#inspector.address = this.#address;
-    this.#inspector.memoryOffset = memoryChunkStart;
-    this.#inspector.outerMemoryLength = this.#memory.length;
-    this.#inspector.hideValueInspector = true;
-  }
-  #memoryRequested(request) {
-    const { start, end, address } = request;
-    if (address < start || address >= end) {
-      throw new Error("Requested address is out of bounds.");
-    }
-    if (start < 0 || start > end || start >= this.#memory.length) {
-      throw new Error("Requested range is out of bounds.");
-    }
-    const chunkEnd = Math.max(end, start + MEMORY_TRANSFER_MIN_CHUNK_SIZE);
-    const memory = this.#memory.slice(start, chunkEnd);
-    this.#inspector.memory = memory;
-    this.#inspector.address = address;
-    this.#inspector.memoryOffset = start;
-    this.#inspector.outerMemoryLength = this.#memory.length;
-    this.#inspector.hideValueInspector = true;
-  }
-};
-var StreamingContentHexView = class extends LinearMemoryInspectorView {
-  #streamingContentData;
-  constructor(streamingContentData, element) {
-    super(element);
-    this.#streamingContentData = streamingContentData;
-  }
-  wasShown() {
-    super.wasShown();
-    this.#updateMemoryFromContentData();
-    this.#streamingContentData.addEventListener(
-      TextUtils4.StreamingContentData.Events.CHUNK_ADDED,
-      this.#updateMemoryFromContentData,
-      this
-    );
-  }
-  willHide() {
-    super.willHide();
-    this.#streamingContentData.removeEventListener(
-      TextUtils4.StreamingContentData.Events.CHUNK_ADDED,
-      this.#updateMemoryFromContentData,
-      this
-    );
-  }
-  #updateMemoryFromContentData() {
-    const binaryString = window.atob(this.#streamingContentData.content().base64);
-    const memory = Uint8Array.from(binaryString, (m) => m.codePointAt(0));
-    this.setMemory(memory);
-  }
-};
-
 // ../../front_end/ui/legacy/components/source_frame/BinaryResourceViewFactory.ts
 var BinaryResourceViewFactory = class _BinaryResourceViewFactory {
   streamingContent;
@@ -1463,7 +1361,7 @@ var BinaryResourceViewFactory = class _BinaryResourceViewFactory {
     return this.streamingContent.content().base64;
   }
   utf8() {
-    return new TextUtils5.ContentData.ContentData(
+    return new TextUtils4.ContentData.ContentData(
       this.base64(),
       /* isBase64 */
       true,
@@ -1480,9 +1378,6 @@ var BinaryResourceViewFactory = class _BinaryResourceViewFactory {
       { lineNumbers: false, lineWrapping: true },
       element
     );
-  }
-  createHexView(element) {
-    return new StreamingContentHexView(this.streamingContent, element);
   }
   createUtf8View(element) {
     return new StreamingResourceSourceFrame(
@@ -1514,7 +1409,7 @@ var StreamingResourceSourceFrame = class extends ResourceSourceFrame {
   #getContent;
   constructor(streamingContent, getContent, contentUrl, resourceType, options, element) {
     super(
-      TextUtils5.StaticContentProvider.StaticContentProvider.fromString(contentUrl, resourceType, getContent()),
+      TextUtils4.StaticContentProvider.StaticContentProvider.fromString(contentUrl, resourceType, getContent()),
       resourceType.canonicalMimeType(),
       options,
       element
@@ -1525,7 +1420,7 @@ var StreamingResourceSourceFrame = class extends ResourceSourceFrame {
   wasShown() {
     super.wasShown();
     this.#streamingContent.addEventListener(
-      TextUtils5.StreamingContentData.Events.CHUNK_ADDED,
+      TextUtils4.StreamingContentData.Events.CHUNK_ADDED,
       this.#onChunkAdded,
       this
     );
@@ -1533,7 +1428,7 @@ var StreamingResourceSourceFrame = class extends ResourceSourceFrame {
   willHide() {
     super.willHide();
     this.#streamingContent.removeEventListener(
-      TextUtils5.StreamingContentData.Events.CHUNK_ADDED,
+      TextUtils4.StreamingContentData.Events.CHUNK_ADDED,
       this.#onChunkAdded,
       this
     );
@@ -1551,10 +1446,10 @@ __export(FontView_exports, {
 });
 import "../../../kit/kit.js";
 import * as i18n5 from "../../../../core/i18n/i18n.js";
-import * as TextUtils6 from "../../../../core/text_utils/text_utils.js";
+import * as TextUtils5 from "../../../../core/text_utils/text_utils.js";
 import { Directives, html as html3, nothing as nothing3, render as render3 } from "../../../lit/lit.js";
 import * as VisualLogging2 from "../../../visual_logging/visual_logging.js";
-import * as UI4 from "../../legacy.js";
+import * as UI3 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/source_frame/fontView.css.js
 var fontView_css_default = `/*
@@ -1625,7 +1520,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     return { width: dummyEl.offsetWidth, height: dummyEl.offsetHeight };
   };
 };
-var FontView = class extends UI4.View.SimpleView {
+var FontView = class extends UI3.View.SimpleView {
   url;
   contentProvider;
   #mimeType;
@@ -1666,7 +1561,7 @@ var FontView = class extends UI4.View.SimpleView {
     this.#contentLoaded = true;
     this.#fontFamily = `WebInspectorFontPreview${++fontId}`;
     void this.contentProvider.requestContentData().then((contentData) => {
-      const url = TextUtils6.ContentData.ContentData.isError(contentData) ? this.url : contentData.asDataUrl();
+      const url = TextUtils5.ContentData.ContentData.isError(contentData) ? this.url : contentData.asDataUrl();
       if (url) {
         const sheet = new CSSStyleSheet();
         sheet.insertRule("@font-face {}");
@@ -1746,11 +1641,11 @@ import * as Host2 from "../../../../core/host/host.js";
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as Platform2 from "../../../../core/platform/platform.js";
 import * as SDK2 from "../../../../core/sdk/sdk.js";
-import * as TextUtils7 from "../../../../core/text_utils/text_utils.js";
+import * as TextUtils6 from "../../../../core/text_utils/text_utils.js";
 import * as Workspace from "../../../../models/workspace/workspace.js";
 import { html as html4, nothing as nothing4, render as render4 } from "../../../lit/lit.js";
 import * as VisualLogging3 from "../../../visual_logging/visual_logging.js";
-import * as UI5 from "../../legacy.js";
+import * as UI4 from "../../legacy.js";
 import * as Components from "../utils/utils.js";
 
 // gen/front_end/ui/legacy/components/source_frame/imageView.css.js
@@ -1903,7 +1798,7 @@ var Events2 = /* @__PURE__ */ ((Events3) => {
   return Events3;
 })(Events2 || {});
 var ImageViewBase = Common3.ObjectWrapper.eventMixin(
-  UI5.View.SimpleView
+  UI4.View.SimpleView
 );
 var ImageView = class extends ImageViewBase {
   #url;
@@ -1932,9 +1827,9 @@ var ImageView = class extends ImageViewBase {
     this.#contentProvider = contentProvider;
     this.#uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
     if (this.#uiSourceCode) {
-      new UI5.DropTarget.DropTarget(
+      new UI4.DropTarget.DropTarget(
         this.element,
-        [UI5.DropTarget.Type.ImageFile, UI5.DropTarget.Type.URI],
+        [UI4.DropTarget.Type.ImageFile, UI4.DropTarget.Type.URI],
         i18nString4(UIStrings4.dropImageFileHere),
         this.#handleDrop.bind(this)
       );
@@ -2036,7 +1931,7 @@ var ImageView = class extends ImageViewBase {
   }
   async #updateContentIfNeeded(notifyToolbarItemsChanged = false) {
     const content = await this.#contentProvider.requestContentData();
-    if (TextUtils7.ContentData.ContentData.isError(content) || this.#cachedContent?.contentEqualTo(content)) {
+    if (TextUtils6.ContentData.ContentData.isError(content) || this.#cachedContent?.contentEqualTo(content)) {
       await this.#loadPromise;
       return;
     }
@@ -2072,7 +1967,7 @@ var ImageView = class extends ImageViewBase {
     }
   }
   #contextMenu(event) {
-    const contextMenu = new UI5.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI4.ContextMenu.ContextMenu(event);
     const parsedSrc = new Common3.ParsedURL.ParsedURL(this.#imageSrc ?? "");
     if (!this.#parsedURL.isDataURL()) {
       contextMenu.clipboardSection().appendItem(i18nString4(UIStrings4.copyImageUrl), this.#copyImageURL.bind(this), {
@@ -2201,7 +2096,7 @@ import * as i18n9 from "../../../../core/i18n/i18n.js";
 import * as SDK3 from "../../../../core/sdk/sdk.js";
 import { html as html5, render as render5 } from "../../../lit/lit.js";
 import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
-import * as UI6 from "../../legacy.js";
+import * as UI5 from "../../legacy.js";
 import * as ObjectUI from "../object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/source_frame/jsonView.css.js
@@ -2238,7 +2133,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   render5(
     html5`
     <style>${jsonView_css_default}</style>
-    ${UI6.Widget.widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+    ${UI5.Widget.widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
       objectTree: input.objectTree,
       title
     })}
@@ -2254,7 +2149,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     }
   );
 };
-var JSONView = class _JSONView extends UI6.Widget.VBox {
+var JSONView = class _JSONView extends UI5.Widget.VBox {
   #parsedJSON;
   startCollapsed;
   searchableView = null;
@@ -2265,7 +2160,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     super(element);
     this.#parsedJSON = parsedJSON;
     this.startCollapsed = Boolean(startCollapsed);
-    this.search = new UI6.TreeOutline.TreeSearch();
+    this.search = new UI5.TreeOutline.TreeSearch();
     this.view = view;
   }
   static async createView(content) {
@@ -2274,7 +2169,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
       return null;
     }
     const jsonView = new _JSONView(parsedJSON);
-    const searchableView = new UI6.SearchableView.SearchableView(jsonView, null);
+    const searchableView = new UI5.SearchableView.SearchableView(jsonView, null);
     searchableView.setPlaceholder(i18nString5(UIStrings5.find));
     jsonView.searchableView = searchableView;
     jsonView.show(searchableView.element);
@@ -2282,7 +2177,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
   }
   static createViewSync(obj, element) {
     const jsonView = new _JSONView(new ParsedJSON(obj, "", ""));
-    const searchableView = new UI6.SearchableView.SearchableView(jsonView, null, void 0, element);
+    const searchableView = new UI5.SearchableView.SearchableView(jsonView, null, void 0, element);
     searchableView.setPlaceholder(i18nString5(UIStrings5.find));
     jsonView.searchableView = searchableView;
     jsonView.show(searchableView.element);
@@ -2551,7 +2446,7 @@ var ParsedJSON = class {
     this.suffix = suffix;
   }
 };
-var SearchableJsonView = class extends UI6.SearchableView.SearchableView {
+var SearchableJsonView = class extends UI5.SearchableView.SearchableView {
   #jsonView;
   constructor(element) {
     const jsonView = new JSONView(new ParsedJSON("", "", ""));
@@ -2586,8 +2481,8 @@ __export(PreviewFactory_exports, {
 });
 import * as Common4 from "../../../../core/common/common.js";
 import * as i18n13 from "../../../../core/i18n/i18n.js";
-import * as TextUtils9 from "../../../../core/text_utils/text_utils.js";
-import * as UI8 from "../../legacy.js";
+import * as TextUtils8 from "../../../../core/text_utils/text_utils.js";
+import * as UI7 from "../../legacy.js";
 
 // ../../front_end/ui/legacy/components/source_frame/XMLView.ts
 var XMLView_exports = {};
@@ -2599,10 +2494,10 @@ __export(XMLView_exports, {
 });
 import "../../../components/highlighting/highlighting.js";
 import * as i18n11 from "../../../../core/i18n/i18n.js";
-import * as TextUtils8 from "../../../../core/text_utils/text_utils.js";
+import * as TextUtils7 from "../../../../core/text_utils/text_utils.js";
 import * as Lit from "../../../lit/lit.js";
 import * as VisualLogging5 from "../../../visual_logging/visual_logging.js";
-import * as UI7 from "../../legacy.js";
+import * as UI6 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/source_frame/xmlTree.css.js
 var xmlTree_css_default = `/*
@@ -2761,7 +2656,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     const entries = input.search.getResults(node);
     for (const entry of entries ?? []) {
       if (entry.isPostOrderMatch === closeTag) {
-        const range = new TextUtils8.TextRange.SourceRange(entry.match.index, entry.match[0].length);
+        const range = new TextUtils7.TextRange.SourceRange(entry.match.index, entry.match[0].length);
         if (entry === input.jumpToNextSearchResult) {
           selected = `${range.offset},${range.length}`;
         } else {
@@ -2899,7 +2794,7 @@ var XMLTreeViewModel = class {
     this.root.expanded = true;
   }
 };
-var XMLView = class _XMLView extends UI7.Widget.Widget {
+var XMLView = class _XMLView extends UI6.Widget.Widget {
   searchableView = null;
   #search;
   #treeViewModel;
@@ -2938,7 +2833,7 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
   static createSearchableView(parsedXML, element) {
     const xmlView = new _XMLView();
     xmlView.parsedXML = parsedXML;
-    const searchableView = new UI7.SearchableView.SearchableView(
+    const searchableView = new UI6.SearchableView.SearchableView(
       xmlView,
       /* replaceable= */
       null,
@@ -2981,7 +2876,7 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
     }
     const { regex } = searchConfig.toSearchRegex(true);
     if (!this.#search) {
-      this.#search = new UI7.TreeOutline.TreeSearch();
+      this.#search = new UI6.TreeOutline.TreeSearch();
     }
     this.#search.search(
       this.#treeViewModel.root,
@@ -3039,14 +2934,14 @@ var PreviewFactory = class {
         return new FontView(mimeType, provider);
     }
     const contentData = await provider.requestContentData();
-    if (TextUtils9.ContentData.ContentData.isError(contentData)) {
-      return new UI8.EmptyWidget.EmptyWidget(i18nString7(UIStrings7.failedToLoadData), contentData.error);
+    if (TextUtils8.ContentData.ContentData.isError(contentData)) {
+      return new UI7.EmptyWidget.EmptyWidget(i18nString7(UIStrings7.failedToLoadData), contentData.error);
     }
     if (!contentData.isTextContent) {
       return null;
     }
     if (!contentData.text) {
-      return new UI8.EmptyWidget.EmptyWidget(i18nString7(UIStrings7.nothingToPreview), "");
+      return new UI7.EmptyWidget.EmptyWidget(i18nString7(UIStrings7.nothingToPreview), "");
     }
     const parsedXML = XMLView.parseXML(contentData.text, contentData.mimeType);
     if (parsedXML) {
@@ -3068,7 +2963,6 @@ export {
   PreviewFactory_exports as PreviewFactory,
   ResourceSourceFrame_exports as ResourceSourceFrame,
   SourceFrame_exports as SourceFrame,
-  StreamingContentHexView_exports as StreamingContentHexView,
   XMLView_exports as XMLView
 };
 //# sourceMappingURL=source_frame.js.map

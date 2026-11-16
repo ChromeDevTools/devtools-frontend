@@ -63,6 +63,7 @@ describeWithEnvironment('SourcesPanel', () => {
         .returns(networkPersistenceManager);
     sinon.stub(UI.ViewManager.ViewManager.instance(), 'view')
         .callsFake(() => sinon.createStubInstance(UI.View.SimpleView));
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
   }
 
   function createStubUISourceCode() {
@@ -224,7 +225,7 @@ describeWithEnvironment('SourcesPanel', () => {
           .withArgs(Workspace.Workspace.projectTypes.FileSystem)
           .returns([dirtyFileSystemCode, cleanFileSystemCode]);
 
-      const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+      const showViewStub = UI.ViewManager.ViewManager.instance().showView as sinon.SinonStub;
       const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
 
       const sources = new Sources.SourcesPanel.SourcesPanel();
@@ -252,7 +253,7 @@ describeWithEnvironment('SourcesPanel', () => {
       });
       assert.isFalse(cleanFileSystemCode.isDirty());
 
-      const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
+      const showViewStub = UI.ViewManager.ViewManager.instance().showView as sinon.SinonStub;
       const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
 
       const sources = new Sources.SourcesPanel.SourcesPanel();
@@ -338,7 +339,9 @@ describeWithEnvironment('SourcesPanel', () => {
     debuggerModel.runtimeModel.returns(runtimeModel);
     debuggerModel.target.returns(target);
     debuggerModel.isPaused.returns(true);
-    debuggerModel.debuggerPausedDetails.returns(sinon.createStubInstance(SDK.DebuggerModel.DebuggerPausedDetails));
+    const pausedDetails = sinon.createStubInstance(SDK.DebuggerModel.DebuggerPausedDetails);
+    pausedDetails.debuggerModel = debuggerModel;
+    debuggerModel.debuggerPausedDetails.returns(pausedDetails);
     target.model.withArgs(SDK.DebuggerModel.DebuggerModel).returns(debuggerModel);
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, target);
 

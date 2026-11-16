@@ -24,7 +24,6 @@ import {
   setColorScheme,
 } from '../../testing/DOMHelpers.js';
 import {
-  deinitializeGlobalVars,
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -733,9 +732,18 @@ describe('BreakpointsSidebarController', () => {
     });
   });
 
-  afterEach(async () => {
-    await deinitializeGlobalVars();
-  });
+  function setupBreakpointResponder(url: string = 'test.js', lineNumber: number = 0) {
+    void backend.responderToBreakpointByUrlRequest(url, lineNumber)({
+      result: {
+        breakpointId: 'DUMMY_BREAKPOINT' as Protocol.Debugger.BreakpointId,
+        locations: [{
+          scriptId: '0' as Protocol.Runtime.ScriptId,
+          lineNumber,
+          columnNumber: 0,
+        }],
+      },
+    });
+  }
 
   const DEFAULT_BREAKPOINT:
       [Breakpoints.BreakpointManager.UserCondition, boolean, boolean, Breakpoints.BreakpointManager.BreakpointOrigin] =
@@ -755,6 +763,7 @@ describe('BreakpointsSidebarController', () => {
         Sources.BreakpointsView.BreakpointsSidebarController.instance({forceNew: true, breakpointManager, settings});
 
     // Add one breakpoint and collapse the tree.
+    setupBreakpointResponder();
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
     assert.exists(b1);
     {
@@ -766,6 +775,7 @@ describe('BreakpointsSidebarController', () => {
     }
 
     // Add a new breakpoint and check if it's expanded as expected.
+    setupBreakpointResponder();
     const b2 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 3, ...DEFAULT_BREAKPOINT);
     assert.exists(b2);
     {
@@ -790,6 +800,7 @@ describe('BreakpointsSidebarController', () => {
         Sources.BreakpointsView.BreakpointsSidebarController.instance({forceNew: true, breakpointManager, settings});
 
     // Add one breakpoint and collapse the tree.
+    setupBreakpointResponder();
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
     assert.exists(b1);
     {
@@ -801,6 +812,7 @@ describe('BreakpointsSidebarController', () => {
     }
 
     // Add a new non-user triggered breakpoint and check if it's still collapsed.
+    setupBreakpointResponder();
     const b2 = await breakpointManager.setBreakpoint(
         uiSourceCode, 0, 3, Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION, true, false,
         Breakpoints.BreakpointManager.BreakpointOrigin.OTHER);
@@ -826,6 +838,7 @@ describe('BreakpointsSidebarController', () => {
     const controller =
         Sources.BreakpointsView.BreakpointsSidebarController.instance({forceNew: true, breakpointManager, settings});
 
+    setupBreakpointResponder();
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
     assert.exists(b1);
     controller.expandedStateChanged(url, false /* expanded */);
@@ -854,12 +867,14 @@ describe('BreakpointsSidebarController', () => {
     const controller =
         Sources.BreakpointsView.BreakpointsSidebarController.instance({forceNew: true, breakpointManager, settings});
 
+    setupBreakpointResponder();
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
     assert.exists(b1);
     controller.expandedStateChanged(url, false /* expanded */);
     await b1.remove(false /* keepInStorage */);
 
     // A breakpoint that does not auto-expand shows up expanded again.
+    setupBreakpointResponder();
     const b2 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 3,
                                                      Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION, true,
                                                      false, Breakpoints.BreakpointManager.BreakpointOrigin.OTHER);
@@ -988,10 +1003,6 @@ describe('BreakpointsView', () => {
       debuggerWorkspaceBinding: backend.universe.debuggerWorkspaceBinding,
       settings: backend.universe.settings,
     });
-  });
-
-  afterEach(async () => {
-    await deinitializeGlobalVars();
   });
 
   it('correctly expands breakpoint groups', async () => {

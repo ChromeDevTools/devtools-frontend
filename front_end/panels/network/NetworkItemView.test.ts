@@ -3,16 +3,18 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as NetworkForward from './forward/forward.js';
 import * as Network from './network.js';
@@ -30,6 +32,15 @@ function renderNetworkItemView(request?: SDK.NetworkRequest.NetworkRequest): Net
   return networkItemView;
 }
 
+async function cleanupNetworkItemView(networkItemView: Network.NetworkItemView.NetworkItemView): Promise<void> {
+  await UI.Widget.Widget.allUpdatesComplete;
+  await RenderCoordinator.done();
+  networkItemView.detach();
+  await raf();
+  await UI.Widget.Widget.allUpdatesComplete;
+  await RenderCoordinator.done();
+}
+
 function getOverrideIndicator(view: Network.NetworkItemView.NetworkItemView, tabId: string): HTMLElement|null {
   const tab = view.tabsById.get(tabId)?.tabElement;
   const statusDot = tab?.querySelector('.status-dot');
@@ -40,10 +51,6 @@ function getOverrideIndicator(view: Network.NetworkItemView.NetworkItemView, tab
 describeWithEnvironment('NetworkItemView', () => {
   beforeEach(() => {
     setUpEnvironment();
-  });
-
-  afterEach(async () => {
-    await deinitializeGlobalVars();
   });
 
   it('reveals header in RequestHeadersView', async () => {
@@ -58,7 +65,7 @@ describeWithEnvironment('NetworkItemView', () => {
 
     sinon.assert.calledWith(
         headersViewComponentSpy, NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, 'headerName');
-    networkItemView.detach();
+    await cleanupNetworkItemView(networkItemView);
   });
 });
 
@@ -66,13 +73,14 @@ describeWithEnvironment('NetworkItemView', () => {
   let request: SDK.NetworkRequest.NetworkRequest;
 
   beforeEach(async () => {
+    setUpEnvironment();
     request = createNetworkRequest({
       url: 'https://www.example.com',
       statusCode: 200,
     });
   });
 
-  it('shows indicator for overridden headers and responses', () => {
+  it('shows indicator for overridden headers and responses', async () => {
     request.setWasIntercepted(true);
     request.hasOverriddenContent = true;
     request.responseHeaders = [{name: 'foo', value: 'overridden'}];
@@ -82,13 +90,13 @@ describeWithEnvironment('NetworkItemView', () => {
     const headersIndicator = getOverrideIndicator(networkItemView, 'headers-component');
     const responseIndicator = getOverrideIndicator(networkItemView, 'response');
 
-    networkItemView.detach();
+    await cleanupNetworkItemView(networkItemView);
 
     assert.isNotNull(headersIndicator);
     assert.isNotNull(responseIndicator);
   });
 
-  it('shows indicator for overridden headers', () => {
+  it('shows indicator for overridden headers', async () => {
     request.setWasIntercepted(true);
     request.responseHeaders = [{name: 'foo', value: 'overridden'}];
     request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
@@ -97,13 +105,13 @@ describeWithEnvironment('NetworkItemView', () => {
     const headersIndicator = getOverrideIndicator(networkItemView, 'headers-component');
     const responseIndicator = getOverrideIndicator(networkItemView, 'response');
 
-    networkItemView.detach();
+    await cleanupNetworkItemView(networkItemView);
 
     assert.isNotNull(headersIndicator);
     assert.isNull(responseIndicator);
   });
 
-  it('shows indicator for overridden content', () => {
+  it('shows indicator for overridden content', async () => {
     request.setWasIntercepted(true);
     request.hasOverriddenContent = true;
 
@@ -111,34 +119,34 @@ describeWithEnvironment('NetworkItemView', () => {
     const headersIndicator = getOverrideIndicator(networkItemView, 'headers-component');
     const responseIndicator = getOverrideIndicator(networkItemView, 'response');
 
-    networkItemView.detach();
+    await cleanupNetworkItemView(networkItemView);
 
     assert.isNull(headersIndicator);
     assert.isNotNull(responseIndicator);
   });
 
-  it('does not show indicator for unoverriden request', () => {
+  it('does not show indicator for unoverriden request', async () => {
     const networkItemView = renderNetworkItemView(request);
     const headersIndicator = getOverrideIndicator(networkItemView, 'headers-component');
     const responseIndicator = getOverrideIndicator(networkItemView, 'response');
 
-    networkItemView.detach();
+    await cleanupNetworkItemView(networkItemView);
 
     assert.isNull(headersIndicator);
     assert.isNull(responseIndicator);
   });
 
-  it('shows the Response and EventSource tab for text/event-stream requests', () => {
+  it('shows the Response and EventSource tab for text/event-stream requests', async () => {
     request.mimeType = 'text/event-stream';
     const networkItemView = renderNetworkItemView(request);
 
     assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.EVENT_SOURCE));
     assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE));
 
-    networkItemView.detach();
+    await cleanupNetworkItemView(networkItemView);
   });
 
-  it('shows the ConnectionInfo tab for DirectSocket requests', () => {
+  it('shows the ConnectionInfo tab for DirectSocket requests', async () => {
     request.setResourceType(Common.ResourceType.resourceTypes.DirectSocket);
     request.directSocketInfo = {
       type: SDK.NetworkRequest.DirectSocketType.TCP,
@@ -160,6 +168,6 @@ describeWithEnvironment('NetworkItemView', () => {
     assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.INITIATOR));
     assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.TIMING));
 
-    networkItemView.detach();
+    await cleanupNetworkItemView(networkItemView);
   });
 });

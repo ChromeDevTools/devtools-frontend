@@ -196,6 +196,7 @@ describe('TabbedEditorContainer', () => {
     });
 
     it('renders open tabs correctly', async () => {
+      const consoleWarnStub = sinon.stub(console, 'warn');
       const container = document.createElement('div');
       container.style.width = '800px';
       container.style.height = '300px';
@@ -268,6 +269,10 @@ describe('TabbedEditorContainer', () => {
       assert.strictEqual(activeTabElement.getAttribute('label'), 'active.js');
       assert.strictEqual(activeTabElement.getAttribute('tab-tooltip'), 'active.js');
       await assertScreenshot('sources/tabbed-editor-container-tabs.png');
+      sinon.assert.calledWith(
+          consoleWarnStub,
+          sinon.match(/aria-details.*tab-tooltip-tab-unsaved/),
+      );
     });
 
     it('renders tab content elements with label and tab-tooltip instead of title', async () => {

@@ -16,6 +16,7 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -63,6 +64,7 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
   }
 
   beforeEach(() => {
+    setUpEnvironment();
     cacheEntries = [];
     const connection = new MockCDPConnection();
     connection.setSuccessHandler('CacheStorage.requestEntries', params => {

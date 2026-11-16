@@ -250,7 +250,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
 };
 // clang-format on
 
-let callstackSidebarPaneInstance: CallStackSidebarPane;
+let callstackSidebarPaneInstance: CallStackSidebarPane|undefined;
 
 export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> implements
     UI.ContextFlavorListener.ContextFlavorListener {
@@ -292,6 +292,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView<DocumentFragment> i
     }
 
     return callstackSidebarPaneInstance;
+  }
+
+  static removeInstance(): void {
+    callstackSidebarPaneInstance = undefined;
   }
 
   override wasShown(): void {

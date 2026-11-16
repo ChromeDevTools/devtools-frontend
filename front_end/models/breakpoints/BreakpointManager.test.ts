@@ -13,7 +13,6 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
-import {expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import type {MockCDPConnection} from '../../testing/MockCDPConnection.js';
@@ -250,6 +249,12 @@ describe('BreakpointManager', () => {
       const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
 
       // Create a breakpoint at line 10, column 5.
+      void backend.responderToBreakpointByUrlRequest(URL, 10)({
+        result: {
+          breakpointId: 'DUMMY_BREAKPOINT' as Protocol.Debugger.BreakpointId,
+          locations: [],
+        },
+      });
       const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 10, 5, ...DEFAULT_BREAKPOINT);
       assert.exists(breakpoint);
 
@@ -293,6 +298,12 @@ describe('BreakpointManager', () => {
       const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
 
       // Create a breakpoint at line 10, column 5.
+      void backend.responderToBreakpointByUrlRequest(URL, 10)({
+        result: {
+          breakpointId: 'DUMMY_BREAKPOINT' as Protocol.Debugger.BreakpointId,
+          locations: [],
+        },
+      });
       const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 10, 5, ...DEFAULT_BREAKPOINT);
       assert.exists(breakpoint);
 
@@ -319,6 +330,12 @@ describe('BreakpointManager', () => {
       const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
 
       // Create a breakpoint at line 10, column 5.
+      void backend.responderToBreakpointByUrlRequest(URL, 10)({
+        result: {
+          breakpointId: 'DUMMY_BREAKPOINT' as Protocol.Debugger.BreakpointId,
+          locations: [],
+        },
+      });
       const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 10, 5, ...DEFAULT_BREAKPOINT);
       assert.exists(breakpoint);
 
@@ -355,15 +372,15 @@ describe('BreakpointManager', () => {
         enabled: true,
         isLogpoint,
       };
+      void backend.responderToBreakpointByUrlRequest(URL, 5)({
+        result: {
+          breakpointId: 'DUMMY_BREAKPOINT' as Protocol.Debugger.BreakpointId,
+          locations: [],
+        },
+      });
       return new Breakpoints.BreakpointManager.Breakpoint(
           breakpointManager, uiSourceCode, storageState, Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION);
     }
-
-    expectConsoleLogs({
-      error: [
-        'Unexpected setBreakpointByUrl request [object Object]',
-      ],
-    });
 
     it('wraps logpoints in console.log', () => {
       const breakpoint = createBreakpoint('x', /* isLogpoint */ true);

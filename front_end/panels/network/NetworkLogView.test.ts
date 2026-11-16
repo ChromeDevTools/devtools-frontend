@@ -75,10 +75,16 @@ describeWithEnvironment('NetworkLogView', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     if (networkLogView) {
       networkLogView.detach();
     }
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
+    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
+    await RenderCoordinator.done();
     Logs.NetworkLog.NetworkLog.removeInstance();
   });
 
@@ -1598,10 +1604,16 @@ describeWithEnvironment('Edit and resend as fetch', () => {
     target = createTarget({parentTarget: tabTarget});
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     if (networkLogView) {
       networkLogView.detach();
     }
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
+    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
+    await RenderCoordinator.done();
   });
 
   function createRequest(url: string): SDK.NetworkRequest.NetworkRequest {

@@ -215,6 +215,7 @@ devtools_foundation_module("foundation_unittests") {
     "EmulationModel.test.ts",
     "EnhancedTracesParser.test.ts",
     "FrameManager.test.ts",
+    "IsolateManager.test.ts",
     "NetworkManager.test.ts",
     "NetworkRequest.test.ts",
     "NetworkRequestAccess.test.ts",

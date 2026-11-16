@@ -833,7 +833,7 @@ export function getRuntimeSettings(): LighthouseModel.RunTypes.RuntimeSetting[] 
       },
       {
         // This setting is disabled, but we keep it around to show in the UI.
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.throttling'),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.throttlingSettingDescriptor),
         title: i18nLazyString(UIStrings.throttlingMethod),
         // We will disable this when we have a Lantern trace viewer within DevTools.
         learnMore:

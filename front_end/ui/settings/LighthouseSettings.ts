@@ -52,3 +52,10 @@ export const modeSettingDescriptor: Common.Settings.SettingDescriptor<string> = 
   defaultValue: 'navigation',
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const throttlingSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'lighthouse.throttling',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: 'simulate',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

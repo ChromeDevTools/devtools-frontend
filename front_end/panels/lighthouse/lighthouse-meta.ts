@@ -132,13 +132,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.modeSett
   title: i18nLazyString(UIStrings.mode),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.throttlingSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.throttling),
-  settingName: 'lighthouse.throttling',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'simulate',
 });
 
 Common.Settings.registerSettingExtension({

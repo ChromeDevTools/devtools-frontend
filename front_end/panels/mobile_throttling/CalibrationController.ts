@@ -81,8 +81,8 @@ export class CalibrationController {
     this.#originalUrl = primaryPageTarget.inspectedURL();
 
     // The following functions runs in the inspected page so we don't use lit for rendering.
-    /* eslint-disable @devtools/no-imperative-dom-api */
     function setupTestPage(text: string): void {
+      // eslint-disable-next-line @devtools/no-imperative-dom-api
       const textEl = document.createElement('span');
       textEl.textContent = text;
 
@@ -101,13 +101,13 @@ export class CalibrationController {
         justify-content: center;
       `;
 
+      // eslint-disable-next-line @devtools/no-imperative-dom-api
       const moonEl = document.createElement('span');
       document.body.append(moonEl);
       moonEl.id = 'moon';
       moonEl.textContent = '🌑';
       moonEl.style.cssText = 'font-size: 5em';
     }
-    /* eslint-enable @devtools/no-imperative-dom-api */
 
     await primaryPageTarget.pageAgent().invoke_navigate({url: 'about:blank'});
 

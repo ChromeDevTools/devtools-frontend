@@ -1,7 +1,6 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -538,42 +537,45 @@ function renderDeviceOrientationSection(input: OrientationViewInput, output: Vie
 }
 
 // clang-format off
-const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment): void => {
   render(html`
-    <section class="sensors-group" jslog=${VisualLogging.section('location')}>
-      ${renderLocationSection(input, output)}
-    </section>
-    <div class="panel-section-separator"></div>
-    <section class="sensors-group" jslog=${VisualLogging.section('device-orientation')}>
-      ${renderDeviceOrientationSection(input, output)}
-    </section>
-    <div class="panel-section-separator"></div>
-    <div class="touch-section">
-      ${SettingsUI.SettingsUI.renderControlForSetting(
-          input.touchSetting, i18nString(UIStrings.forcesTouchInsteadOfClick))}
-    </div>
-    <div class="panel-section-separator"></div>
-    <div class="idle-section">
-      ${SettingsUI.SettingsUI.renderControlForSetting(
-          input.idleDetectionSetting, i18nString(UIStrings.forcesSelectedIdleStateEmulation))}
-    </div>
-    <div class="panel-section-separator"></div>
-    <div class="concurrency-section">
-      ${input.hardwareConcurrencyCheckbox}
-      <div class="concurrency-details">${input.hardwareConcurrencyDetails}</div>
-    </div>
-    <div class="panel-section-separator"></div>
-    <div class="pressure-section">
-      ${SettingsUI.SettingsUI.renderControlForSetting(
-          input.cpuPressureSetting, i18nString(UIStrings.forcesSelectedPressureStateEmulation))}
-    </div>
-    <div class="panel-section-separator"></div>
-    <div class="cpu-performance-section">
-      ${SettingsUI.SettingsUI.renderSettingSelect(
-          input.cpuPerformanceSetting, i18nString(UIStrings.forcesSelectedCpuPerformanceTierEmulation), false,
-          new Map([['no-override', input.cpuPerformanceNoOverrideLabel]]))}
-    </div>
-    <div class="panel-section-separator"></div>`, target, {
+    <style>${sensorsStyles}</style>
+    <div class="sensors-view">
+      <section class="sensors-group" jslog=${VisualLogging.section('location')}>
+        ${renderLocationSection(input, output)}
+      </section>
+      <div class="panel-section-separator"></div>
+      <section class="sensors-group" jslog=${VisualLogging.section('device-orientation')}>
+        ${renderDeviceOrientationSection(input, output)}
+      </section>
+      <div class="panel-section-separator"></div>
+      <div class="touch-section">
+        ${SettingsUI.SettingsUI.renderControlForSetting(
+            input.touchSetting, i18nString(UIStrings.forcesTouchInsteadOfClick))}
+      </div>
+      <div class="panel-section-separator"></div>
+      <div class="idle-section">
+        ${SettingsUI.SettingsUI.renderControlForSetting(
+            input.idleDetectionSetting, i18nString(UIStrings.forcesSelectedIdleStateEmulation))}
+      </div>
+      <div class="panel-section-separator"></div>
+      <div class="concurrency-section">
+        ${input.hardwareConcurrencyCheckbox}
+        <div class="concurrency-details">${input.hardwareConcurrencyDetails}</div>
+      </div>
+      <div class="panel-section-separator"></div>
+      <div class="pressure-section">
+        ${SettingsUI.SettingsUI.renderControlForSetting(
+            input.cpuPressureSetting, i18nString(UIStrings.forcesSelectedPressureStateEmulation))}
+      </div>
+      <div class="panel-section-separator"></div>
+      <div class="cpu-performance-section">
+        ${SettingsUI.SettingsUI.renderSettingSelect(
+            input.cpuPerformanceSetting, i18nString(UIStrings.forcesSelectedCpuPerformanceTierEmulation), false,
+            new Map([['no-override', input.cpuPerformanceNoOverrideLabel]]))}
+      </div>
+      <div class="panel-section-separator"></div>
+    </div>`, target, {
     container: {attributes: {jslog: `${VisualLogging.panel('sensors').track({resize: true})}`}},
   });
 };
@@ -581,7 +583,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 
 type View = typeof DEFAULT_VIEW;
 
-export class SensorsView extends UI.Widget.VBox {
+export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   readonly #view: View;
   readonly #output: ViewOutput = {};
   readonly #locationSetting: Common.Settings.Setting<string>;
@@ -605,10 +607,8 @@ export class SensorsView extends UI.Widget.VBox {
   readonly #hardwareConcurrencyDetails: HTMLElement[];
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view;
-    this.registerRequiredCSS(sensorsStyles);
-    this.contentElement.classList.add('sensors-view');
 
     this.#cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
 

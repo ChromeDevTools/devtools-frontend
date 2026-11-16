@@ -1023,7 +1023,7 @@ describeWithEnvironment('SensorsView screenshots', () => {
   }
 
   function finishAnimations(): void {
-    for (const animation of view.contentElement.getAnimations({subtree: true})) {
+    for (const animation of view.contentElement.getAnimations()) {
       animation.finish();
     }
   }

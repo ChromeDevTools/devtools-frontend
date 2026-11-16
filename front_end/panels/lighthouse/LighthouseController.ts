@@ -11,6 +11,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as Emulation from '../emulation/emulation.js';
 
 import type {LighthouseRun as LighthouseRunType, ProtocolService} from './LighthouseProtocolService.js';
@@ -732,7 +733,7 @@ export function getPresets(): LighthouseModel.RunTypes.Preset[] {
     presets = [
       // configID maps to Lighthouse's Object.keys(config.categories)[0] value
       {
-        setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf'),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catPerfSettingDescriptor),
         configID: 'performance',
         title: i18nLazyString(UIStrings.performance),
         description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),

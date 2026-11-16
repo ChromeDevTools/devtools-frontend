@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Lighthouse from './lighthouse.js';
 
@@ -96,13 +97,9 @@ Common.Revealer.registerRevealer({
   },
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catPerfSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.performance),
-  settingName: 'lighthouse.cat-perf',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 Common.Settings.registerSettingExtension({

@@ -29,6 +29,7 @@ devtools_ui_module("components") {
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
+    "../../../ui/settings:bundle",
     "../../../ui/visual_logging:bundle",
   ]
   deps = [ ":css_files" ]

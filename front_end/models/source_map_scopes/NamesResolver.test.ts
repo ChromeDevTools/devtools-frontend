@@ -43,9 +43,13 @@ describe('NameResolver', () => {
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
   });
 
+  function localScope(callFrame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.Scope|undefined {
+    return callFrame.scopeChain().find(scope => scope.type() === Protocol.Debugger.ScopeType.Local);
+  }
+
   /** Resolves the function name at the start of `callFrame`'s local scope, i.e. where V8 reports a function's location. */
   async function resolveFunctionNameAtScopeStart(callFrame: SDK.DebuggerModel.CallFrame): Promise<string|null> {
-    const scopeStart = callFrame.localScope()?.range()?.start;
+    const scopeStart = localScope(callFrame)?.range()?.start;
     assert.exists(scopeStart);
     return await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(
         scopeStart, target, backend.universe.debuggerWorkspaceBinding);
@@ -826,7 +830,7 @@ function mulWithOffset(param1, param2, offset) {
         createProtocolScope(Protocol.Debugger.ScopeType.Module, Protocol.Debugger.ScopeEmptyReason.AllUnavailable),
         createProtocolScope(Protocol.Debugger.ScopeType.Global),
       ]);
-      assert.isNull(callFrame.localScope());
+      assert.isUndefined(localScope(callFrame));
 
       const resolvedScopeChain =
           await SourceMapScopes.NamesResolver.resolveScopeChain(callFrame, backend.universe.debuggerWorkspaceBinding);
@@ -841,7 +845,7 @@ function mulWithOffset(param1, param2, offset) {
         createProtocolScope(Protocol.Debugger.ScopeType.Module, Protocol.Debugger.ScopeEmptyReason.NoVariables),
         createProtocolScope(Protocol.Debugger.ScopeType.Global),
       ]);
-      assert.isNotNull(callFrame.localScope());
+      assert.exists(localScope(callFrame));
 
       const resolvedScopeChain =
           await SourceMapScopes.NamesResolver.resolveScopeChain(callFrame, backend.universe.debuggerWorkspaceBinding);

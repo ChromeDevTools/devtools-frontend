@@ -437,7 +437,6 @@ describe('DebuggerModel', () => {
       assert.isUndefined(scopes[1].emptyReason());
       assert.strictEqual(scopes[2].emptyReason(), Protocol.Debugger.ScopeEmptyReason.AllUnavailable);
       assert.deepEqual(scopes.map(scope => scope.ordinal()), [0, 1, 2]);
-      assert.strictEqual(callFrame.localScope(), scopes[1]);
     });
   });
 

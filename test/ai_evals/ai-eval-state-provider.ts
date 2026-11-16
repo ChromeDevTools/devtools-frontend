@@ -109,8 +109,7 @@ export class EvalTaskHandle {
 
   async executePrompt(options: ExecutePromptOptions): Promise<Step[]> {
     for (const prompt of options.prompts) {
-      this.log(`Executing query: "${prompt}" for task: ${this.taskId}`);
-      this.log(`[Info]: Running the user prompt "${prompt}" (This step might take a long time)`);
+      this.log(`Prompt: "${prompt}"`);
     }
     const executionStartTime = performance.now();
     try {
@@ -207,7 +206,7 @@ export class AiEvalStateProvider extends StateProvider {
       status: 'RUNNING',
       tags: buildRunTags(targets),
     });
-    this.#logger.head('Running examples sequentially...');
+    this.#logger.head(`Running examples sequentially... (run: ${this.#runId})`);
   }
 
   finishEvalRun(): void {
@@ -219,8 +218,8 @@ export class AiEvalStateProvider extends StateProvider {
     const passedTasks = totalTasks - failedTasks;
     const status: RunOutcomeStatus = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
     const metrics = aggregateRunMetrics(this.#taskToolCallStats.values(), this.#taskTokens.values());
-    this.#logger.append(`Total tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
-    this.#logger.append(`Model: ${this.#resolvedModel ?? 'unknown'}, Tool calls: ${
+    this.#logger.head(`\nTotal tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
+    this.#logger.head(`Model: ${this.#resolvedModel ?? 'unknown'}, Tool calls: ${
         metrics.totalToolCalls ??
         0}, Total tokens: ${metrics.totalTokens ?? 0}, Elapsed: ${this.#logger.formatElapsedTime()}`);
     this.#logger.append(`Run completed with status: ${status}`);
@@ -241,7 +240,6 @@ export class AiEvalStateProvider extends StateProvider {
     if (this.#tempOutputDir && fs.existsSync(this.#tempOutputDir)) {
       fs.rmSync(this.#tempOutputDir, {recursive: true, force: true});
     }
-    this.#logger.info(`\nElapsed time: ${this.#logger.formatElapsedTime()}`);
   }
 
   override async launchBrowser(settings: BrowserSettings): Promise<BrowserWrapper> {

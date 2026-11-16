@@ -165,8 +165,6 @@ function getGcsAccessToken(forceRefresh = false): string|undefined {
  * Uploads a local file to GCS using system gcloud CLI.
  */
 function uploadFileToGCS(localFilePath: string, destination: string, contentType?: string): boolean {
-  const fileName = path.posix.basename(destination);
-  console.log(`[GCS] Preparing upload of ${localFilePath} to ${destination}`);
   const type = contentType ?? getContentType(destination);
   const command = [
     'gcloud storage cp',
@@ -186,19 +184,18 @@ function uploadFileToGCS(localFilePath: string, destination: string, contentType
           CLOUDSDK_STORAGE_THREAD_COUNT: '1',
           ...(accessToken ? {CLOUDSDK_AUTH_ACCESS_TOKEN: accessToken} : {}),
         },
-        stdio: ['ignore', 'inherit', 'inherit'],
+        stdio: ['ignore', 'pipe', 'pipe'],
         timeout: 30_000,
       });
-      console.log(`[GCS] ✅ Upload successful: ${fileName}`);
       return true;
     } catch (error) {
       if (attempt < MAX_UPLOAD_ATTEMPTS) {
-        console.warn(`[GCS] ⚠️ Upload attempt ${attempt}/${MAX_UPLOAD_ATTEMPTS} failed for ${destination}; retrying...`);
         continue;
       }
-      console.error(`[GCS] ❌ Failed to upload to ${
-          destination}. Ensure you have a valid 'gcert' session or 'gcloud auth login'.`);
-      console.error(error);
+      const stderr = error instanceof Error && 'stderr' in error && error.stderr ? String(error.stderr).trim() : '';
+      const details = stderr || String(error);
+      console.error(`[GCS] ❌ Failed to upload ${localFilePath} to ${
+          destination}. Ensure you have a valid 'gcert' session or 'gcloud auth login'.\n${details}`);
     }
   }
   return false;
@@ -373,8 +370,9 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
       JSON.stringify(jsonContent, null, 2),
       formatGCSRunDestination(payload.runId, 'run_completed.json'),
   );
-  if (jsonUploaded) {
-    return uploadMarker(payload.runId, Markers.RUN_COMPLETED);
+  if (jsonUploaded && uploadMarker(payload.runId, Markers.RUN_COMPLETED)) {
+    console.log(`[GCS] Run artifacts uploaded to gs://${BUCKET}/${PROJECT_ID}/runs/${payload.runId}`);
+    return true;
   }
   return false;
 }

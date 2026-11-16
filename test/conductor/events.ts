@@ -51,7 +51,12 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Extension server error: Operation failed: Failed',
 ];
 
-const FILTERED_LOGS = ['Autofocus processing was blocked because a document already has a focused element'];
+const FILTERED_LOGS = [
+  'Autofocus processing was blocked because a document already has a focused element',
+  'DevTools AI debug config:',
+  '[AiAgent]',
+  '[AiAgent2]',
+];
 
 const logLevels = {
   log: 'I',

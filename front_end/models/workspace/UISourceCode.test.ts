@@ -6,10 +6,12 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import {setupMockedUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import * as Bindings from '../bindings/bindings.js';
 
 import * as Workspace from './workspace.js';
 
@@ -176,6 +178,43 @@ describe('UISourceCode', () => {
     const result = await sutObject.sut.requestContentData();
 
     assert.strictEqual(result, contentData);
+  });
+
+  it('requests file content from the project only once for all callers', async () => {
+    const log: string[] = [];
+    const {promise: fileContent, resolve: resolveFileContent} =
+        Promise.withResolvers<TextUtils.ContentData.ContentDataOrError>();
+    const project = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
+    project.requestFileContent.callsFake(() => {
+      log.push('Content is requested from SourceCodeProvider.');
+      return fileContent;
+    });
+    project.mimeType.returns('text/javascript');
+    const uiSourceCode =
+        new Workspace.UISourceCode.UISourceCode(project, urlString`url`, Common.ResourceType.resourceTypes.Script);
+    const didRequestContent = (callNumber: number, contentData: TextUtils.ContentData.ContentDataOrError): void => {
+      log.push(`Callback ${callNumber} is invoked.`);
+      assert.strictEqual(uiSourceCode.mimeType(), 'text/javascript');
+      assert.propertyVal(contentData, 'text', 'var x = 0;');
+    };
+
+    const callbacks = [
+      uiSourceCode.requestContentData().then(contentData => didRequestContent(1, contentData)),
+      uiSourceCode.requestContentData().then(contentData => didRequestContent(2, contentData)),
+      uiSourceCode.requestContentData().then(contentData => didRequestContent(3, contentData)),
+    ];
+    resolveFileContent(new TextUtils.ContentData.ContentData('var x = 0;', false, 'text/javascript'));
+    await Promise.all(callbacks);
+    const cachedContentData = await uiSourceCode.requestContentData();
+
+    assert.strictEqual(uiSourceCode.mimeType(), 'text/javascript');
+    assert.propertyVal(cachedContentData, 'text', 'var x = 0;');
+    assert.deepEqual(log, [
+      'Content is requested from SourceCodeProvider.',
+      'Callback 1 is invoked.',
+      'Callback 2 is invoked.',
+      'Callback 3 is invoked.',
+    ]);
   });
 
   it('can commit content', async () => {

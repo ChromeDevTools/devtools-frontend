@@ -229,8 +229,13 @@ interface ViewInput extends LocationViewInput, OrientationViewInput {
   cpuPerformanceNoOverrideLabel: string;
 }
 
+interface ViewOutput {
+  focusLatitudeInput?: () => void;
+  focusAlphaInput?: () => void;
+}
+
 // clang-format off
-const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
   render(html`
     <section class="sensors-group" jslog=${VisualLogging.section('location')}>
       ${input.locationSection}
@@ -275,6 +280,7 @@ type View = typeof DEFAULT_VIEW;
 
 export class SensorsView extends UI.Widget.VBox {
   readonly #view: View;
+  readonly #output: ViewOutput = {};
   readonly #locationSetting: Common.Settings.Setting<string>;
   #location: SDK.EmulationModel.Location;
   #locationOverrideEnabled: boolean;
@@ -283,13 +289,11 @@ export class SensorsView extends UI.Widget.VBox {
   readonly #customLocationsSetting: Common.Settings.Setting<LocationDescription[]>;
   #timezoneError = '';
   #localeError = '';
-  private latitudeInput!: HTMLInputElement;
   private readonly deviceOrientationSetting: Common.Settings.Setting<string>;
   private deviceOrientation: SDK.EmulationModel.DeviceOrientation;
   private deviceOrientationOverrideEnabled: boolean;
   private stageElement!: HTMLElement;
   #selectedOrientation: string = NonPresetOptions.NoOverride;
-  private alphaElement!: HTMLInputElement;
   #animateOrientation = false;
   private boxMatrix?: DOMMatrix;
   private mouseDownVector?: Geometry.Vector|null;
@@ -355,8 +359,8 @@ export class SensorsView extends UI.Widget.VBox {
     const input: ViewInput = {
       ...locationInput,
       ...orientationInput,
-      locationSection: this.#renderLocationSection(locationInput),
-      orientationSection: this.#renderDeviceOrientationSection(orientationInput),
+      locationSection: this.#renderLocationSection(locationInput, this.#output),
+      orientationSection: this.#renderDeviceOrientationSection(orientationInput, this.#output),
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
       hardwareConcurrencyCheckbox: this.#hardwareConcurrencyCheckbox,
@@ -366,7 +370,7 @@ export class SensorsView extends UI.Widget.VBox {
           Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),
       cpuPerformanceNoOverrideLabel: this.#cpuPerformanceNoOverrideLabel(),
     };
-    this.#view(input, undefined, this.contentElement);
+    this.#view(input, this.#output, this.contentElement);
   }
 
   /** @returns the index of the selected option of the location select. */
@@ -392,7 +396,7 @@ export class SensorsView extends UI.Widget.VBox {
     return selectedIndex;
   }
 
-  #renderLocationSection(input: LocationViewInput): TemplateResult {
+  #renderLocationSection(input: LocationViewInput, output: ViewOutput): TemplateResult {
     const cmdOrCtrl = Host.Platform.isMac() ? '\u2318' : 'Ctrl';
     const modifierKeyMessage = i18nString(UIStrings.adjustWithMousewheelOrUpdownKeys, {PH1: cmdOrCtrl});
 
@@ -442,7 +446,7 @@ export class SensorsView extends UI.Widget.VBox {
               name="latitude"
               title=${modifierKeyMessage}
               jslog=${VisualLogging.textField('latitude').track({change: true})}
-              ${Directives.ref((el: Element | undefined) => { if (el) { this.latitudeInput = el as HTMLInputElement; } })}
+              ${Directives.ref((el: Element | undefined) => { output.focusLatitudeInput = el ? () => (el as HTMLInputElement).focus() : undefined; })}
               @change=${input.onLocationChange}
               @keydown=${input.onLocationKeyDown}
               @focus=${selectInputContent}
@@ -545,7 +549,7 @@ export class SensorsView extends UI.Widget.VBox {
     this.applyLocation();
     this.performUpdate();
     if (value === NonPresetOptions.Custom) {
-      this.latitudeInput.focus();
+      this.#output.focusLatitudeInput?.();
     }
   }
 
@@ -635,7 +639,7 @@ export class SensorsView extends UI.Widget.VBox {
     }
   }
 
-  #renderDeviceOrientationSection(input: OrientationViewInput): TemplateResult {
+  #renderDeviceOrientationSection(input: OrientationViewInput, output: ViewOutput): TemplateResult {
     const orientationOffOption = {
       title: i18nString(UIStrings.off),
       orientation: NonPresetOptions.NoOverride,
@@ -699,7 +703,7 @@ export class SensorsView extends UI.Widget.VBox {
                     required
                     .value=${roundAngle(input.orientation.alpha)}
                     name="alpha"
-                    ${Directives.ref((el: Element | undefined) => { if (el) { this.alphaElement = el as HTMLInputElement; } })}
+                    ${Directives.ref((el: Element | undefined) => { output.focusAlphaInput = el ? () => (el as HTMLInputElement).focus() : undefined; })}
                     @change=${input.onOrientationChange}
                     @keydown=${input.onOrientationKeyDown}
                     @focus=${selectInputContent}
@@ -840,7 +844,7 @@ export class SensorsView extends UI.Widget.VBox {
       this.applyDeviceOrientation();
     } else if (value === NonPresetOptions.Custom) {
       this.resetDeviceOrientation();
-      this.alphaElement.focus();
+      this.#output.focusAlphaInput?.();
     } else {
       const parsedValue = JSON.parse(value);
       this.deviceOrientation = new SDK.EmulationModel.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);

@@ -216,6 +216,8 @@ describeWithEnvironment('SensorsView', () => {
       assert.isFalse(locationInputsDisabled());
       assert.deepEqual(locationInputValues(), BERLIN_INPUT_VALUES);
       assert.strictEqual(locationSetting.get(), '52.52@13.405:Europe/Berlin:de-DE::50');
+      const latitudeInput = locationInput('latitude');
+      assert.strictEqual((latitudeInput.getRootNode() as ShadowRoot).activeElement, latitudeInput);
     });
 
     it('emulates an unavailable location', async () => {
@@ -547,6 +549,8 @@ describeWithEnvironment('SensorsView', () => {
       assert.isFalse(orientationInputsDisabled());
       assert.deepEqual(orientationInputValues(), ['0', '90', '0']);
       assert.deepEqual(orientationOverrides, [{alpha: 0, beta: 90, gamma: 0}]);
+      const alphaInput = query<HTMLInputElement>('#alpha-input');
+      assert.strictEqual((alphaInput.getRootNode() as ShadowRoot).activeElement, alphaInput);
     });
 
     it('switches to "Custom orientation" when the inputs of a preset are edited', async () => {

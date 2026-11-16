@@ -228,7 +228,6 @@ devtools_ui_module("unittests") {
     "../linear_memory_inspector/components:bundle",
     "../search:bundle",
     "../utils:bundle",
-    "./components:bundle",
     "./forward:bundle",
   ]
 }

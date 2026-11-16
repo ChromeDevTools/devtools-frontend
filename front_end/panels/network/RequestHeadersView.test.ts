@@ -36,7 +36,6 @@ import * as RenderCoordinator from '../../ui/components/render_coordinator/rende
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import type * as NetworkComponents from './components/components.js';
 import * as NetworkForward from './forward/forward.js';
 import * as Network from './network.js';
 
@@ -87,6 +86,7 @@ async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest
   renderElementIntoDOM(component, {includeCommonStyles: true});
   await UI.Widget.Widget.allUpdatesComplete;
   await RenderCoordinator.done();
+  await UI.Widget.Widget.allUpdatesComplete;
   return component;
 }
 
@@ -102,7 +102,7 @@ const getTextFromRow = (row: HTMLElement) => {
 const getRowsFromCategory = (category: HTMLDetailsElement) => {
   const section = category.lastElementChild;
   assert.instanceOf(section, HTMLElement);
-  const rows = (section.shadowRoot ?? section).querySelectorAll('devtools-header-section-row');
+  const rows = (section.shadowRoot ?? section).querySelectorAll<HTMLElement>('devtools-header-section-row');
   return Array.from(rows);
 };
 
@@ -580,12 +580,10 @@ describeWithEnvironment('RequestHeadersView', () => {
 
     const checkRow = (shadowRoot: ShadowRoot, headerName: string, headerValue: string, isEditable: boolean) => {
       assert.strictEqual(shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
-      const valueEditableComponent =
-          shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>('.header-value devtools-editable-span');
+      const valueEditableComponent = shadowRoot.querySelector('.header-value devtools-widget');
       if (isEditable) {
         assert.instanceOf(valueEditableComponent, HTMLElement);
-        assert.isNotNull(valueEditableComponent.shadowRoot);
-        const valueEditable = valueEditableComponent.shadowRoot.querySelector('.editable');
+        const valueEditable = valueEditableComponent.querySelector('.editable');
         assert.instanceOf(valueEditable, HTMLSpanElement);
         assert.strictEqual(valueEditable.textContent?.trim(), headerValue);
       } else {
@@ -601,6 +599,7 @@ describeWithEnvironment('RequestHeadersView', () => {
     pencilButton.click();
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     checkRow(headerRow.shadowRoot, 'foo', 'bar', true);
     assert.isTrue(recordedMetricsContain(
@@ -638,6 +637,7 @@ describeWithEnvironment('RequestHeadersView', () => {
     pencilButton.click();
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.isTrue(recordedMetricsContain(
         Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
@@ -749,6 +749,7 @@ describeWithEnvironment('RequestHeadersView', () => {
                                             undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const button = container.querySelector<HTMLElement>('.backend-link-button');
     assert.exists(button);

@@ -1,6 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as UI from '../../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -15,7 +16,7 @@ export interface ViewOutput {
   focus?: () => void;
 }
 
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement|ShadowRoot) => void;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target): void => {
   const onFocusIn = (event: Event): void => {
@@ -58,44 +59,49 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
   // clang-format on
 };
 
-export class EditableSpan extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #view: View = DEFAULT_VIEW;
+export class EditableSpan extends UI.Widget.Widget {
+  readonly #view: View;
   readonly #viewOutput: ViewOutput = {};
   #value = '';
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
 
   get value(): string {
     return this.#value;
   }
 
   set value(value: string) {
+    if (this.#value === value) {
+      return;
+    }
     this.#value = value;
-    this.performUpdate();
+    this.requestUpdate();
   }
 
   #onInput = (value: string): void => {
     this.#value = value;
   };
 
-  performUpdate(): void {
+  override performUpdate(): void {
     const viewInput: ViewInput = {
       value: this.#value,
       onInput: this.#onInput,
     };
-    this.#view(viewInput, this.#viewOutput, this.#shadow);
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
 
   override focus(): void {
-    requestAnimationFrame(() => {
+    // Wait for any scheduled UI.Widget/Lit update to finish rendering before focusing.
+    void this.updateComplete.then(() => {
       this.#viewOutput.focus?.();
     });
-  }
-}
-
-customElements.define('devtools-editable-span', EditableSpan);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-editable-span': EditableSpan;
   }
 }

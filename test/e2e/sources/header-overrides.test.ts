@@ -143,7 +143,7 @@ describe('The Overrides Panel', function() {
     await devToolsPage.click('.add-header-button');
 
     await devToolsPage.waitFor('.row.header-overridden.header-editable');
-    await devToolsPage.click('.header-name devtools-editable-span');
+    await devToolsPage.click('.header-name devtools-widget .editable');
     await editHeaderItem(devToolsPage, 'foo', 'header-name');
     await editHeaderItem(devToolsPage, 'bar', 'header value');
 

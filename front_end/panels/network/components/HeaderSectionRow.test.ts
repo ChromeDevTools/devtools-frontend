@@ -26,6 +26,14 @@ import * as NetworkComponents from './components.js';
 
 type EditableSpan = NetworkComponents.EditableSpan.EditableSpan;
 
+function getEditableSpanWidget(shadowRoot: ShadowRoot, selector: string): EditableSpan {
+  const widgetElement = shadowRoot.querySelector(selector);
+  assert.instanceOf(widgetElement, HTMLElement);
+  const widget = UI.Widget.Widget.get(widgetElement);
+  assert.instanceOf(widget, NetworkComponents.EditableSpan.EditableSpan);
+  return widget;
+}
+
 async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow.HeaderDescriptor): Promise<{
   component: NetworkComponents.HeaderSectionRow.HeaderSectionRow,
   nameEditable: HTMLSpanElement | null,
@@ -38,25 +46,22 @@ async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow
   sinon.assert.notCalled(scrollIntoViewSpy);
   component.data = {header};
   await RenderCoordinator.done();
+  await UI.Widget.Widget.allUpdatesComplete;
   assert.isNotNull(component.shadowRoot);
 
   let nameEditable: HTMLSpanElement|null = null;
-  const nameEditableComponent = component.shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>(
-      '.header-name devtools-editable-span');
+  const nameEditableComponent = component.shadowRoot.querySelector('.header-name devtools-widget');
   if (nameEditableComponent) {
     assert.instanceOf(nameEditableComponent, HTMLElement);
-    assert.isNotNull(nameEditableComponent.shadowRoot);
-    nameEditable = nameEditableComponent.shadowRoot.querySelector('.editable');
+    nameEditable = nameEditableComponent.querySelector('.editable');
     assert.instanceOf(nameEditable, HTMLSpanElement);
   }
 
   let valueEditable: HTMLSpanElement|null = null;
-  const valueEditableComponent = component.shadowRoot.querySelector<NetworkComponents.EditableSpan.EditableSpan>(
-      '.header-value devtools-editable-span');
+  const valueEditableComponent = component.shadowRoot.querySelector('.header-value devtools-widget');
   if (valueEditableComponent) {
     assert.instanceOf(valueEditableComponent, HTMLElement);
-    assert.isNotNull(valueEditableComponent.shadowRoot);
-    valueEditable = valueEditableComponent.shadowRoot.querySelector('.editable');
+    valueEditable = valueEditableComponent.querySelector('.editable');
     assert.instanceOf(valueEditable, HTMLSpanElement);
   }
 
@@ -299,6 +304,7 @@ Learn more`,
     nameEditable.innerText = '';
     dispatchInputEvent(nameEditable, {inputType: 'insertText', data: '', bubbles: true, composed: true});
     nameEditable.blur();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.strictEqual(headerEditedEventCount, 0);
     assert.strictEqual(nameEditable.innerText, 'Some-Header-Name');
@@ -328,6 +334,8 @@ Learn more`,
     dispatchInputEvent(valueEditable,
                        {inputType: 'insertText', data: 'new value for header', bubbles: true, composed: true});
     dispatchKeyDownEvent(valueEditable, {key: 'Escape', bubbles: true, composed: true});
+    await RenderCoordinator.done();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.strictEqual(eventCount, 0);
     assert.strictEqual(valueEditable.innerText, originalHeaderValue);
@@ -496,8 +504,8 @@ Learn more`,
     assert.strictEqual(headerValueFromEvent, 'unload=(https://xyz.com)');
 
     // final value on UI
-    const nameEl = component.shadowRoot.querySelector('.header-name devtools-editable-span') as EditableSpan;
-    const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
+    const nameEl = getEditableSpanWidget(component.shadowRoot, '.header-name devtools-widget');
+    const valueEl = getEditableSpanWidget(component.shadowRoot, '.header-value devtools-widget');
 
     assert.strictEqual(nameEl.value, 'permissions-policy');
     assert.strictEqual(valueEl.value, 'unload=(https://xyz.com)');
@@ -531,8 +539,8 @@ Learn more`,
     nameEditable.focus();
     dispatchPasteEvent(nameEditable, {clipboardData: dt, bubbles: true, composed: true});
 
-    const nameEl = component.shadowRoot.querySelector('.header-name devtools-editable-span') as EditableSpan;
-    const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
+    const nameEl = getEditableSpanWidget(component.shadowRoot, '.header-name devtools-widget');
+    const valueEl = getEditableSpanWidget(component.shadowRoot, '.header-value devtools-widget');
 
     await RenderCoordinator.done();
     assert.strictEqual(nameEl.value, ':abc');
@@ -573,8 +581,8 @@ Learn more`,
     nameEditable.focus();
     dispatchPasteEvent(nameEditable, {clipboardData: dt, bubbles: true, composed: true});
 
-    const nameEl = component.shadowRoot.querySelector('.header-name devtools-editable-span') as EditableSpan;
-    const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
+    const nameEl = getEditableSpanWidget(component.shadowRoot, '.header-name devtools-widget');
+    const valueEl = getEditableSpanWidget(component.shadowRoot, '.header-value devtools-widget');
 
     await RenderCoordinator.done();
     assert.strictEqual(nameEl.value, 'permissions-Policy');

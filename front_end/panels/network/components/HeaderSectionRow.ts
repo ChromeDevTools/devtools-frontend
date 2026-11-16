@@ -17,10 +17,11 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import type {EditableSpan} from './EditableSpan.js';
+import {EditableSpan} from './EditableSpan.js';
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
 const {render, html} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -189,13 +190,13 @@ export class HeaderSectionRow extends HTMLElement {
             </devtools-icon>` : Lit.nothing
           }
           ${isHeaderNameEditable && !this.#header.isDeleted ?
-            html`<devtools-editable-span
+            html`<devtools-widget
               @focusout=${this.#onHeaderNameFocusOut}
               @keydown=${this.#onKeyDown}
               @input=${this.#onHeaderNameEdit}
               @paste=${this.#onHeaderNamePaste}
-              .value=${this.#header.name}
-            ></devtools-editable-span>` :
+              ${widget(EditableSpan, {value: this.#header.name})}
+            ></devtools-widget>` :
             this.#header.name}
         </div>
         <div
@@ -251,13 +252,13 @@ export class HeaderSectionRow extends HTMLElement {
     `;
     }
     return html`
-      <devtools-editable-span
+      <devtools-widget
         @focusout=${this.#onHeaderValueFocusOut}
         @input=${this.#onHeaderValueEdit}
         @paste=${this.#onHeaderValueEdit}
         @keydown=${this.#onKeyDown}
-        .value=${this.#header.value || ''}
-      ></devtools-editable-span>
+        ${widget(EditableSpan, {value: this.#header.value || ''})}
+      ></devtools-widget>
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
       <devtools-button
         title=${i18nString(UIStrings.removeOverride)}
@@ -288,7 +289,7 @@ export class HeaderSectionRow extends HTMLElement {
 
   override focus(): void {
     requestAnimationFrame(() => {
-      const editableName = this.#shadow.querySelector<HTMLElement>('.header-name devtools-editable-span');
+      const editableName = this.#shadow.querySelector<HTMLElement>('.header-name devtools-widget');
       editableName?.focus();
     });
   }
@@ -357,7 +358,7 @@ export class HeaderSectionRow extends HTMLElement {
   }
 
   #onHeaderValueFocusOut(event: Event): void {
-    const target = event.target as EditableSpan;
+    const target = UI.Widget.Widget.get(event.currentTarget as Node) as EditableSpan;
     if (!this.#header) {
       return;
     }
@@ -377,7 +378,7 @@ export class HeaderSectionRow extends HTMLElement {
   }
 
   #onHeaderNameFocusOut(event: Event): void {
-    const target = event.target as EditableSpan;
+    const target = UI.Widget.Widget.get(event.currentTarget as Node) as EditableSpan;
     if (!this.#header) {
       return;
     }
@@ -400,39 +401,45 @@ export class HeaderSectionRow extends HTMLElement {
     if (!this.#header) {
       return;
     }
-    const headerValueElement = this.#shadow.querySelector('.header-value devtools-editable-span') as EditableSpan;
-    if (this.#header.originalValue) {
-      headerValueElement.value = this.#header?.originalValue;
+    const headerValueWidget =
+        this.#shadow.querySelector<UI.Widget.WidgetElement<EditableSpan>>('.header-value devtools-widget')?.getWidget();
+    if (this.#header.originalValue && headerValueWidget) {
+      headerValueWidget.value = this.#header.originalValue;
     }
     this.dispatchEvent(new HeaderRemovedEvent(this.#header.name, this.#header.value || ''));
   }
 
   #onKeyDown(event: KeyboardEvent): void {
-    const target = event.target as EditableSpan;
+    const currentTarget = event.currentTarget as HTMLElement;
+    const target = UI.Widget.Widget.get(currentTarget) as EditableSpan;
     if (event.key === 'Escape') {
       event.consume();
-      if (target.matches('.header-name devtools-editable-span')) {
+      if (currentTarget.matches('.header-name devtools-widget')) {
         target.value = this.#header?.name || '';
         this.#onHeaderNameEdit(event);
-      } else if (target.matches('.header-value devtools-editable-span')) {
+      } else if (currentTarget.matches('.header-value devtools-widget')) {
         target.value = this.#header?.value || '';
         this.#onHeaderValueEdit(event);
 
         if (this.#header?.originalName) {
-          const headerNameElement = this.#shadow.querySelector('.header-name devtools-editable-span') as EditableSpan;
-          headerNameElement.value = this.#header.originalName;
-          this.#header.originalName = '';
-          headerNameElement.dispatchEvent(new Event('input'));
-          headerNameElement.focus();
+          const headerNameWidget =
+              this.#shadow.querySelector<UI.Widget.WidgetElement<EditableSpan>>('.header-name devtools-widget')
+                  ?.getWidget();
+          if (headerNameWidget) {
+            headerNameWidget.value = this.#header.originalName;
+            this.#header.originalName = '';
+            headerNameWidget.dispatchDOMEvent(new Event('input'));
+            headerNameWidget.focus();
+          }
           return;
         }
       }
-      target.blur();
+      (event.target as HTMLElement).blur();
     }
   }
 
   #onHeaderNameEdit(event: Event): void {
-    const editable = event.target as EditableSpan;
+    const editable = UI.Widget.Widget.get(event.currentTarget as Node) as EditableSpan;
     const isValidName = isValidHeaderName(editable.value);
     if (this.#isValidHeaderName !== isValidName) {
       this.#isValidHeaderName = isValidName;
@@ -441,7 +448,7 @@ export class HeaderSectionRow extends HTMLElement {
   }
 
   #onHeaderValueEdit(event: Event): void {
-    const editable = event.target as EditableSpan;
+    const editable = UI.Widget.Widget.get(event.currentTarget as Node) as EditableSpan;
     const isEdited =
         this.#header?.originalValue !== undefined && !compareHeaders(this.#header?.originalValue || '', editable.value);
     if (this.#isHeaderValueEdited !== isEdited) {
@@ -458,15 +465,15 @@ export class HeaderSectionRow extends HTMLElement {
       return;
     }
 
-    const nameEl = event.target as EditableSpan;
+    const nameWidget = UI.Widget.Widget.get(event.currentTarget as Node) as EditableSpan;
     const clipboardText = event.clipboardData.getData('text/plain') || '';
     const separatorPosition = clipboardText.indexOf(':');
 
     if (separatorPosition < 1) {
       // Not processing further either case 'abc' or ':abc'
-      nameEl.value = clipboardText;
+      nameWidget.value = clipboardText;
       event.preventDefault();
-      nameEl.dispatchEvent(new Event('input', {bubbles: true}));
+      nameWidget.dispatchDOMEvent(new Event('input', {bubbles: true}));
       return;
     }
 
@@ -477,14 +484,15 @@ export class HeaderSectionRow extends HTMLElement {
     const headerValue = clipboardText.substring(separatorPosition + 1, clipboardText.length).trim();
     const headerName = clipboardText.substring(0, separatorPosition);
 
-    nameEl.value = headerName;
-    nameEl.dispatchEvent(new Event('input'));
+    nameWidget.value = headerName;
+    nameWidget.dispatchDOMEvent(new Event('input'));
 
-    const valueEL = this.#shadow.querySelector<HTMLElement>('.header-value devtools-editable-span');
-    if (valueEL) {
-      valueEL.focus();
-      (valueEL as EditableSpan).value = headerValue;
-      valueEL.dispatchEvent(new Event('input'));
+    const valueWidget =
+        this.#shadow.querySelector<UI.Widget.WidgetElement<EditableSpan>>('.header-value devtools-widget')?.getWidget();
+    if (valueWidget) {
+      valueWidget.value = headerValue;
+      valueWidget.focus();
+      valueWidget.dispatchDOMEvent(new Event('input'));
     }
     event.preventDefault();
   }
@@ -509,7 +517,6 @@ customElements.define('devtools-header-section-row', HeaderSectionRow);
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-header-section-row': HeaderSectionRow;
-    'devtools-editable-span': EditableSpan;
   }
 
   interface HTMLElementEventMap {

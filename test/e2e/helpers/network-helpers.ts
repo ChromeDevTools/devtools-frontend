@@ -159,20 +159,19 @@ export async function getTextFromHeadersRow(devToolsPage: DevToolsPage,
                                             row: puppeteer.ElementHandle<Element>): Promise<string[]> {
   const headerNameElement = await row.waitForSelector('.header-name');
   assert.isOk(headerNameElement);
-  const headerNameText = await headerNameElement.evaluate(el => el.textContent || '');
+  const headerNameWidget = await devToolsPage.$('devtools-widget', headerNameElement);
+  const headerNameText = headerNameWidget ?
+      await (await devToolsPage.waitFor('.editable', headerNameWidget)).evaluate(el => el.textContent || '') :
+      await headerNameElement.evaluate(el => el.textContent || '');
 
   const headerValueElement = await row.waitForSelector('.header-value');
   assert.isOk(headerValueElement);
-  let headerValueText = (await headerValueElement.evaluate(el => el.textContent || '')).trim();
-  if (headerValueText === '') {
-    const headerValueEditableSpanComponent = await devToolsPage.waitFor('.header-value devtools-editable-span', row);
-    assert.isOk(headerValueEditableSpanComponent);
-    const editableSpan = await devToolsPage.waitFor('.editable', headerValueEditableSpanComponent);
-    assert.isOk(editableSpan);
-    headerValueText = (await editableSpan.evaluate(el => el.textContent || '')).trim();
-  }
+  const headerValueWidget = await devToolsPage.$('devtools-widget', headerValueElement);
+  const headerValueText = headerValueWidget ?
+      await (await devToolsPage.waitFor('.editable', headerValueWidget)).evaluate(el => el.textContent || '') :
+      await headerValueElement.evaluate(el => el.textContent || '');
 
-  return [headerNameText.trim(), headerValueText];
+  return [headerNameText.trim(), headerValueText.trim()];
 }
 
 export async function elementContainsTextWithSelector(

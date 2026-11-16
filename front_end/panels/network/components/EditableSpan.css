@@ -4,34 +4,36 @@
  * found in the LICENSE file.
  */
 
-:host {
-  display: inline;
-}
-
-.editable {
-  cursor: text;
-  overflow-wrap: anywhere;
-  min-height: 18px;
-  line-height: 18px;
-  min-width: 0.5em;
-  background: transparent;
-  border: none;
-  border-radius: var(--sys-shape-corner-extra-small);
-  outline: none;
-  display: inline-block;
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-
-  &:hover {
-    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+@scope to (devtools-widget > *) {
+  :scope {
+    display: inline;
   }
 
-  &:focus {
-    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
-  }
-}
+  .editable {
+    cursor: text;
+    overflow-wrap: anywhere;
+    min-height: 18px;
+    line-height: 18px;
+    min-width: 0.5em;
+    background: transparent;
+    border: none;
+    border-radius: var(--sys-shape-corner-extra-small);
+    outline: none;
+    display: inline-block;
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
 
-.editable::selection {
-  color: var(--sys-color-on-tonal-container);
-  background-color: var(--sys-color-tonal-container);
+    &:hover {
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    }
+
+    &:focus {
+      border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
+    }
+
+    &::selection {
+      color: var(--sys-color-on-tonal-container);
+      background-color: var(--sys-color-tonal-container);
+    }
+  }
 }

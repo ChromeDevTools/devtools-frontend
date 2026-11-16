@@ -12,23 +12,25 @@ import {
 
 import * as NetworkComponents from './components.js';
 
-function renderEditableSpan(value: string, includeCommonStyles = false): {
-  component: NetworkComponents.EditableSpan.EditableSpan,
-  editable: HTMLSpanElement,
-} {
-  const component = new NetworkComponents.EditableSpan.EditableSpan();
-  renderElementIntoDOM(component, {includeCommonStyles});
-  component.value = value;
+const {EditableSpan} = NetworkComponents.EditableSpan;
 
-  assert.isNotNull(component.shadowRoot);
-  const editable = component.shadowRoot.querySelector('.editable');
+async function renderEditableSpan(value: string, includeCommonStyles = false): Promise<{
+  widget: NetworkComponents.EditableSpan.EditableSpan,
+  editable: HTMLSpanElement,
+}> {
+  const widget = new EditableSpan();
+  widget.value = value;
+  renderElementIntoDOM(widget, {includeCommonStyles});
+  await widget.updateComplete;
+
+  const editable = widget.contentElement.querySelector('.editable');
   assert.instanceOf(editable, HTMLSpanElement);
-  return {component, editable};
+  return {widget, editable};
 }
 
 describe('EditableSpan', () => {
-  it('selects all text contents of .editable span on focusin', () => {
-    const {editable} = renderEditableSpan('select-me');
+  it('selects all text contents of .editable span on focusin', async () => {
+    const {editable} = await renderEditableSpan('select-me');
 
     editable.focus();
 
@@ -38,7 +40,7 @@ describe('EditableSpan', () => {
   });
 
   it('renders an editable span', async () => {
-    renderEditableSpan('example-header-value', true);
+    await renderEditableSpan('example-header-value', true);
 
     await assertScreenshot('network/editable_span.png');
   });

@@ -64,6 +64,17 @@ devtools_entrypoint("bundle") {
   visibility += devtools_models_visibility
 }
 
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "ExtensionAPI.test.ts" ]
+
+  ts_deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}
+
 devtools_foundation_module("foundation_unittests") {
   testonly = true
 

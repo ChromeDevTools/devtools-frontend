@@ -125,6 +125,7 @@ group("unittests") {
     "entrypoints/wasmparser_worker:unittests",
     "models/ai-utils:unittests",
     "models/ai_assistance:unittests",
+    "models/extensions:unittests",
     "panels/accessibility:unittests",
     "panels/ai_assistance:unittests",
     "panels/animation:unittests",

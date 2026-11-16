@@ -728,13 +728,13 @@ describeWithEnvironment('NetworkLogView', () => {
     }
 
     assert.strictEqual(getMoreFiltersActiveCount(filterBar), '0');
-    assert.isTrue(getCountAdorner(filterBar)?.classList.contains('hidden'));
+    assert.isTrue(getCountAdorner(filterBar)?.hidden);
 
     const softMenu = getMenu(() => dropdown.click());
     await selectMoreFiltersOption(softMenu, 'Hide extension URLs');
 
     assert.strictEqual(getMoreFiltersActiveCount(filterBar), '1');
-    assert.isFalse(getCountAdorner(filterBar)?.classList.contains('hidden'));
+    assert.isFalse(getCountAdorner(filterBar)?.hidden);
 
     softMenu.discard();
   });
@@ -1933,18 +1933,32 @@ describeWithEnvironment('NetworkLogView', () => {
 
 describeWithEnvironment('MoreFiltersDropDownUI', () => {
   it('tracks active state and selected filter labels across settings', () => {
-    const moreFilters = new Network.NetworkLogView.MoreFiltersDropDownUI();
+    const view = sinon.spy();
+    const moreFilters = new Network.NetworkLogView.MoreFiltersDropDownUI(view);
     assert.isFalse(moreFilters.isActive());
     assert.deepEqual(moreFilters.selectedFilters(), []);
+    sinon.assert.calledOnce(view);
+    assert.strictEqual(view.lastCall.args[0].activeFiltersCount, 0);
+    assert.strictEqual(view.lastCall.args[0].tooltip, 'Show only/hide requests');
+    assert.isFalse(view.lastCall.args[0].hideDataURLs);
+    assert.isFalse(view.lastCall.args[0].hideChromeExtensions);
+    assert.isFalse(view.lastCall.args[0].showBlockedCookiesOnly);
+    assert.isFalse(view.lastCall.args[0].onlyBlockedRequests);
+    assert.isFalse(view.lastCall.args[0].onlyThirdParty);
 
-    Common.Settings.Settings.instance().createSetting('network-hide-data-url', false).set(true);
-    Common.Settings.Settings.instance().createSetting('network-only-blocked-requests', false).set(true);
-    Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false).set(true);
-    moreFilters.updateActiveFiltersCount();
-    moreFilters.updateTooltip();
+    view.lastCall.args[0].onHideDataURLsChange();
+    view.lastCall.args[0].onOnlyBlockedRequestsChange();
+    view.lastCall.args[0].onOnlyThirdPartyChange();
 
     assert.isTrue(moreFilters.isActive());
     assert.deepEqual(moreFilters.selectedFilters(), ['Hide data URLs', 'Blocked requests', '3rd-party requests']);
+    assert.strictEqual(view.lastCall.args[0].activeFiltersCount, 3);
+    assert.strictEqual(view.lastCall.args[0].tooltip, 'Hide data URLs, Blocked requests, 3rd-party requests');
+    assert.isTrue(view.lastCall.args[0].hideDataURLs);
+    assert.isFalse(view.lastCall.args[0].hideChromeExtensions);
+    assert.isFalse(view.lastCall.args[0].showBlockedCookiesOnly);
+    assert.isTrue(view.lastCall.args[0].onlyBlockedRequests);
+    assert.isTrue(view.lastCall.args[0].onlyThirdParty);
   });
 });
 

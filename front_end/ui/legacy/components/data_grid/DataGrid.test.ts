@@ -283,3 +283,74 @@ describeWithEnvironment('DataGrid', () => {
     assert.strictEqual(document.activeElement, dataGrid.element);
   });
 });
+
+describe('DataGridImpl', () => {
+  describe('autoSizeColumns', () => {
+    /**
+     * Creates a grid without rows that has one column per entry in `widths`,
+     * with a title that is `widths[i]` characters long, so that
+     * autoSizeColumns() measures exactly `widths`. Returns the column weights
+     * after auto-sizing.
+     */
+    function autoSizedWeights(widths: number[], minPercent: number, maxPercent?: number): Array<number|undefined> {
+      const columns: DataGrid.DataGrid.ColumnDescriptor[] = widths.map((width, index) => {
+        return {id: `column${index}`, title: i18n.i18n.lockedString('x'.repeat(width)), sortable: false};
+      });
+      const dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: 'Test', columns});
+      dataGrid.autoSizeColumns(minPercent, maxPercent);
+      return dataGrid.visibleColumnsArray.map(column => column.weight);
+    }
+
+    it('caps minPercent at an equal share of three columns', () => {
+      assert.deepEqual(autoSizedWeights([198, 2, 400], 90), [33, 33, 34]);
+    });
+
+    it('sizes a single wide column to 100 percent', () => {
+      assert.deepEqual(autoSizedWeights([1000], 5), [100]);
+    });
+
+    it('sizes a single narrow column to 100 percent', () => {
+      assert.deepEqual(autoSizedWeights([10], 5), [100]);
+    });
+
+    it('splits two columns of equal width evenly', () => {
+      assert.deepEqual(autoSizedWeights([1000, 1000], 5), [50, 50]);
+    });
+
+    it('splits four columns of equal width evenly', () => {
+      assert.deepEqual(autoSizedWeights([30, 30, 30, 30], 5), [25, 25, 25, 25]);
+    });
+
+    it('raises a narrow column to minPercent and takes the excess from the wider columns', () => {
+      assert.deepEqual(autoSizedWeights([1, 100, 100, 100], 25), [25, 25, 25, 25]);
+    });
+
+    it('keeps four columns of equal width at minPercent', () => {
+      assert.deepEqual(autoSizedWeights([100, 100, 100, 100], 25), [25, 25, 25, 25]);
+    });
+
+    it('raises three narrow columns to minPercent and takes the excess from the widest column', () => {
+      assert.deepEqual(autoSizedWeights([1, 1, 1, 100], 25), [25, 25, 25, 25]);
+    });
+
+    it('clamps columns to minPercent and maxPercent and takes the excess from the wider columns', () => {
+      assert.deepEqual(autoSizedWeights([1, 100, 100], 25, 40), [25, 37, 38]);
+    });
+
+    it('adds a rounding deficit to the columns below maxPercent', () => {
+      assert.deepEqual(autoSizedWeights([100, 100, 100], 25, 40), [34, 33, 33]);
+    });
+
+    it('adds the deficit from a maxPercent clamp to the narrower columns', () => {
+      assert.deepEqual(autoSizedWeights([1, 1, 100], 25, 40), [30, 30, 40]);
+    });
+
+    // https://bugs.webkit.org/show_bug.cgi?id=101363
+    it('caps minPercent at an equal share of 25 columns', () => {
+      assert.deepEqual(
+          autoSizedWeights(
+              [3, 10, 7, 7, 13, 13, 9, 10, 15, 15, 20, 20, 14, 14, 12, 12, 12, 10, 9, 14, 10, 6, 7, 10, 18], 5),
+          [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]);
+    });
+  });
+});

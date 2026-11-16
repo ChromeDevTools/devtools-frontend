@@ -47,6 +47,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
+import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -539,7 +540,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
     this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
     Common.Settings.Settings.instance()
-        .moduleSetting('timeline-enable-soft-navigations')
+        .resolve(LiveMetrics.timelineEnableSoftNavigationsSettingDescriptor)
         .addChangeListener(this.#onModelConfigurationChanged, this);
 
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
@@ -761,7 +762,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
                            .resolve(SettingUIRegistration.TimelineSettings.timelineDebugModeSettingDescriptor)
                            .get();
     config.enableSoftNavigation =
-        Common.Settings.Settings.instance().moduleSetting('timeline-enable-soft-navigations').get() as boolean;
+        Common.Settings.Settings.instance().resolve(LiveMetrics.timelineEnableSoftNavigationsSettingDescriptor).get();
     return config;
   }
 

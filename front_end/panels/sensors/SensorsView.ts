@@ -233,6 +233,8 @@ interface LocationViewInput {
   selectedLocationIndex: number;
   timezoneError: string;
   localeError: string;
+  /** Tooltip of the latitude and longitude inputs, which names the platform's modifier key. */
+  modifierKeyMessage: string;
   onManageLocations: () => void;
   onLocationSelectChange: (event: Event) => void;
   onLocationChange: (event: Event) => void;
@@ -376,6 +378,8 @@ export class SensorsView extends UI.Widget.VBox {
       selectedLocationIndex: this.#selectedLocationIndex(customLocations),
       timezoneError: this.#timezoneError,
       localeError: this.#localeError,
+      modifierKeyMessage:
+          i18nString(UIStrings.adjustWithMousewheelOrUpdownKeys, {PH1: Host.Platform.isMac() ? '\u2318' : 'Ctrl'}),
       onManageLocations: () => Common.Revealer.reveal(this.#customLocationsSetting),
       onLocationSelectChange: this.#locationSelectChanged.bind(this),
       onLocationChange: this.#onLocationChange.bind(this),
@@ -434,9 +438,6 @@ export class SensorsView extends UI.Widget.VBox {
   }
 
   #renderLocationSection(input: LocationViewInput, output: ViewOutput): TemplateResult {
-    const cmdOrCtrl = Host.Platform.isMac() ? '\u2318' : 'Ctrl';
-    const modifierKeyMessage = i18nString(UIStrings.adjustWithMousewheelOrUpdownKeys, {PH1: cmdOrCtrl});
-
     // clang-format off
     return html`
       <label class="sensors-group-title" id="location-select-label" for="location-select">${i18nString(UIStrings.location)}</label>
@@ -481,7 +482,7 @@ export class SensorsView extends UI.Widget.VBox {
               required
               .value=${String(input.location.latitude)}
               name="latitude"
-              title=${modifierKeyMessage}
+              title=${input.modifierKeyMessage}
               jslog=${VisualLogging.textField('latitude').track({change: true})}
               ${Directives.ref((el: Element | undefined) => { output.focusLatitudeInput = el ? () => (el as HTMLInputElement).focus() : undefined; })}
               @change=${input.onLocationChange}
@@ -501,7 +502,7 @@ export class SensorsView extends UI.Widget.VBox {
               required
               .value=${String(input.location.longitude)}
               name="longitude"
-              title=${modifierKeyMessage}
+              title=${input.modifierKeyMessage}
               jslog=${VisualLogging.textField('longitude').track({change: true})}
               @change=${input.onLocationChange}
               @keydown=${input.onLocationKeyDown}

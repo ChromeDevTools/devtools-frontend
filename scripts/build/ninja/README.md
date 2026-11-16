@@ -171,6 +171,74 @@ All implementation files for components are listed in `grd_files_unbundled_sourc
 
 > Rule: the implementation files are only present in the GRD file in a debug build, because the release build bundles all files into the respective entrypoint.
 
+## Build-time TypeScript generators
+
+TypeScript and `.d.ts` files derived from upstream Chromium data (such as `.pdl`
+protocol schemas or Blink `.json5` tables) are generated at build time into
+`$target_gen_dir` (`out/Default/gen/...`) and never checked into the source
+tree.
+
+To add a build-time generator (see `front_end/generated/BUILD.gn` for examples):
+
+1. **Write a deterministic generator script** under `scripts/build/` that takes
+   explicit `--input` and `--output` (or `--output-dir`) flags with no
+   repository-relative defaults. Always write the output file unconditionally
+   with deterministic bytes (fixed copyright year, no checkout paths, no
+   `eslint-disable` comments); `generated_ts()` runs the script under
+   `scripts/build/run_with_restat.py`, which preserves output mtimes when bytes
+   are unchanged so Ninja prunes downstream `tsc` steps. (`generated_ts()`
+   expects a `.py` script; wrap Node generators in a thin Python launcher
+   calling `third_party/node/node.py`, as in
+   `scripts/build/generate_protocol_typescript.py`.)
+2. **Declare `generated_ts()` and `ts_library()` targets**:
+
+   ```gn
+   import("../../scripts/build/ninja/chromium_deps.gni")
+   import("../../scripts/build/ninja/generated_ts.gni")
+   import("../../scripts/build/typescript/typescript.gni")
+
+   generated_ts("generate_foo") {
+     script = "../../scripts/build/generate_foo.py"
+     _input = devtools_chromium_deps_root + "third_party/blink/.../foo.json5"
+     inputs = [ _input ] + _pyjson5_inputs
+     outputs = [ "$target_gen_dir/Foo.ts" ]
+     args = [
+       "--input",
+       rebase_path(_input, root_build_dir),
+       "--output",
+       rebase_path(outputs[0], root_build_dir),
+     ]
+   }
+
+   ts_library("foo") {
+     rootdir = target_gen_dir
+     sources = [ "$target_gen_dir/Foo.ts" ]
+     deps = [ ":generate_foo" ]
+   }
+   ```
+
+   - Reference Chromium-owned inputs through `devtools_chromium_deps_root`
+     (`scripts/build/ninja/chromium_deps.gni`) so the rule works both against
+     the rolled snapshot and directly inside a Chromium checkout.
+   - List every file the generator reads in `inputs` (both data files and
+     imported repository modules or Node binaries) so strict remote Siso builds
+     succeed.
+   - A `ts_library()` has a single `rootdir`, so generated sources cannot share
+     a `ts_library()` with committed sources. Keep independent generated files
+     in separate `ts_library()` targets so input changes only recompile their
+     consumers.
+3. **Add tests and GRD/l10n entries**:
+   - Add a `scripts/build/<name>_unittest.py` unit test (run automatically by
+     `scripts/build/PRESUBMIT.py`).
+   - Add emitted runtime `.js` files (not `.d.ts`-only outputs) to
+     `grd_files_unbundled_sources` in `config/gni/devtools_grd_files.gni`.
+   - IDE type resolution reads `out/Default/gen/front_end` via `rootDirs` in
+     `config/typescript/tsconfig.base.json` after one `autoninja -C out/Default`
+     build.
+   - If the generated file defines `UIStrings`, wire it into
+     `front_end/core/i18n/locales/BUILD.gn` and
+     `scripts/tools/collect_strings.py` (like `Deprecation.ts`).
+
 # Implementing DevTools build system templates
 
 Note: this section is useful only if you want to implement custom build templates. If you want help on using the existing templates and build system, this is not the section for you.
@@ -187,4 +255,7 @@ Since GN has no notion of a "root" folder for DevTools, computation of sub-folde
 
 Additionally, GN is a [timestamp-based build system](https://gn.googlesource.com/gn/+/master/docs/reference.md#target-declarations-action_declare-a-target-that-runs-a-script-a-single-time-outputs) when checking for correctness.
 This means that you want to avoid writing to the file system if the content stays the same.
-For Node scripts, use the `writeIfChanged` function from [write-if-changed.js](./write-if-changed.js) to integrate nicely with GN.
+For Python actions (including `generated_ts()`), wrap the action in
+[run_with_restat.py](../run_with_restat.py) (which `generated_ts()` does
+automatically); for custom Node scripts, you can also use `writeIfChanged` from
+[write-if-changed.js](./write-if-changed.js).

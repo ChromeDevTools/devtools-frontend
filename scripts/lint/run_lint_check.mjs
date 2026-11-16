@@ -65,7 +65,6 @@ if (flags.debug) {
 const LIT_ANALYZER_EXCLUDED_FOLDERS = [
   'front_end/core',
   'front_end/foundation',
-  'front_end/generated',
   'front_end/legacy_test_runner',
   'front_end/models',
   'front_end/services',

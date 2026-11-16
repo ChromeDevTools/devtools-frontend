@@ -363,35 +363,6 @@ def CheckDevToolsLint(input_api, output_api):
     return results
 
 
-def CheckGeneratedFiles(input_api, output_api):
-    v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                               'v8')
-    blink_directory_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'third_party', 'blink')
-    scripts_generated_output_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'front_end', 'generated')
-
-    affected_files = _GetAffectedFiles(input_api, [
-        v8_directory_path,
-        blink_directory_path,
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party',
-                               'pyjson5'),
-        scripts_generated_output_path,
-    ], [], ['.pdl', '.json5', '.py', '.js', '.ts'])
-
-    if len(affected_files) == 0:
-        return []
-
-    generate_protocol_resources_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'scripts', 'deps',
-        'generate_protocol_resources.py')
-
-    return _ExecuteSubProcess(input_api,
-                              output_api,
-                              generate_protocol_resources_path,
-                              message='Generated files')
-
-
 def CheckL10nStrings(input_api, output_api):
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')

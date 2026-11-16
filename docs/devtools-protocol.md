@@ -117,7 +117,7 @@ outputs = [
 ]
 ```
 
-### 2- Sync the browser_protocol files and generate the protocol resources
+### 2- Sync the browser_protocol files
 As mentioned before, there are many browser_protocol files. To synchronize the
 modifications, run this command from your Chrome DevTools repository:
 
@@ -127,7 +127,10 @@ scripts/deps/roll_deps.py ~/chromium/src .
 
 The first parameter is the path from your Chrome DevTools repository to the
 chromium repository. The second parameter is the root of the
-Chrome DevTools repository.
+Chrome DevTools repository. Building DevTools (`autoninja -C out/Default`) will
+then regenerate the TypeScript protocol definitions under
+`out/Default/gen/front_end/generated/` (including any newly included domain PDL
+files in `browser_protocol.pdl`).
 
 ### 3- Create the Agent on the Chromium repository
 

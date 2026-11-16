@@ -61,7 +61,6 @@ const emitHeaderComments = () => {
   emitLine();
   emitLine('/**');
   emitLine(' * This file is auto-generated, do not edit manually. *');
-  emitLine(' * Re-generate with: scripts/tools/dt.py generate-protocol-resources.');
   emitLine(' */');
   emitLine();
 };

@@ -182,38 +182,6 @@ def generate_signatures(options):
     ])
 
 
-def generate_protocol_resources(options):
-    print('generating protocol resources')
-    subprocess.check_call([
-        os.path.join(options.devtools_dir, 'scripts', 'deps',
-                     'generate_protocol_resources.py')
-    ],
-                          cwd=options.devtools_dir)
-
-
-def run_git_cl_format(options):
-    print('running `git cl format` to format generated TS files')
-    subprocess.check_call(['git', 'cl', 'format', '--js', '--full'],
-                          cwd=options.devtools_dir)
-
-
-def run_eslint(options):
-    print('running eslint with --fix for generated files')
-    result = subprocess.check_output(
-        ['git', 'diff', '--diff-filter=d', '--name-only'],
-        cwd=options.devtools_dir).strip()
-    generated_source_files = []
-    for line in result.split(b'\n'):
-        if line.endswith(b'.js') or line.endswith(b'.ts'):
-            generated_source_files.append(line)
-    subprocess.check_call([
-        node_path(options),
-        os.path.join(options.devtools_dir, 'scripts', 'lint',
-                     'run_lint_check.mjs')
-    ] + generated_source_files,
-                          cwd=options.devtools_dir)
-
-
 def files_changed(options):
     return subprocess.check_output(['git', 'diff', '--name-only'],
                                    cwd=options.devtools_dir,
@@ -398,10 +366,6 @@ if __name__ == '__main__':
         sync_node(OPTIONS)
     copy_files(OPTIONS)
     generate_signatures(OPTIONS)
-    generate_protocol_resources(OPTIONS)
     if files_changed(OPTIONS):
-        # EsLint needs before git cl format
-        run_eslint(OPTIONS)
-        run_git_cl_format(OPTIONS)
         update_deps_revision(OPTIONS)
         update_readme_revision(OPTIONS)

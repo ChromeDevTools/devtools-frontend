@@ -11,13 +11,10 @@ will simultaneously update both the DEPS entry as well as the gitlink entry for
 the corresponding git submodule.
 
 To sync dependencies from Chromium to DevTools frontend, use
-`scripts/deps/roll_deps.py`. Note that this may: - Introduce unneeded
-whitespace/formatting changes. Presubmit scripts (e.g. invoked via `git cl
-upload`) will automatically fix these locally, so just apply the changes
-directly to your change (e.g. with `git commit --amend`) afterwards. - Introduce
-breaking changes to the devtools protocol, causing compilation failures.
-Unfortunately these need to be handled manually as there are some changes (e.g.
-removing an enum value) that cannot fail gracefully.
+`scripts/deps/roll_deps.py`. Note that this may introduce breaking changes to
+the DevTools protocol (for example, removing an enum value or required property)
+that surface as compilation failures on the next build and need to be handled
+manually in consumer code.
 
 The following scripts run as AutoRollers, but can be manually invoked if
 desired:

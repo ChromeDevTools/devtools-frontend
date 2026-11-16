@@ -23,7 +23,6 @@
     "check-gn": "vpython3 third_party/node/node.py --output scripts/gn_deps_verifier/cli.ts",
     "collect-strings": "vpython3 scripts/tools/collect_strings.py",
     "debug-webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js --debug-devtools",
-    "generate-protocol-resources": "vpython3 scripts/deps/generate_protocol_resources.py && git cl format --js",
     "install-deps": "vpython3 scripts/deps/manage_node_deps.py",
     "lint": "vpython3 third_party/node/node.py --output scripts/lint/run_lint_check.mjs",
     "prebuild": "gn gen out/Default",

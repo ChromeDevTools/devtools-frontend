@@ -31,3 +31,10 @@ export const catSeoSettingDescriptor: Common.Settings.SettingDescriptor<boolean>
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const catAgenticBrowsingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'lighthouse.cat-agentic-browsing',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

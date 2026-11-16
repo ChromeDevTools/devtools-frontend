@@ -117,13 +117,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catSeoSe
   title: i18nLazyString(UIStrings.seo),
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.LighthouseSettings.catAgenticBrowsingSettingDescriptor, {
   category: Common.Settings.SettingCategory.NONE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.agenticBrowsing),
-  settingName: 'lighthouse.cat-agentic-browsing',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

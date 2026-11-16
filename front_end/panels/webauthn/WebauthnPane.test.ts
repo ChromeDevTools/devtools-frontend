@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
 
@@ -402,6 +402,19 @@ describeWithEnvironment('WebAuthn pane', () => {
       assert.isFalse(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED));
       assert.isFalse(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_UPDATED));
       assert.isFalse(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_DELETED));
+    });
+
+    it('renders the panel when the virtual authenticator environment is enabled', async () => {
+      renderElementIntoDOM(panel, {includeCommonStyles: true, width: 800, height: 600});
+      const setVirtualAuthEnvEnabled = sinon.stub(model, 'setVirtualAuthEnvEnabled').resolves();
+      const enableCheckbox = panel.contentElement.querySelector<HTMLElement>('devtools-checkbox');
+      assert.isOk(enableCheckbox);
+      enableCheckbox.click();
+      await expectCalled(setVirtualAuthEnvEnabled);
+      await doubleRaf();
+      await panel.updateComplete;
+
+      await assertScreenshot('webauthn/webauthn_pane.png');
     });
   });
   describe('out of scope', () => tests(false));

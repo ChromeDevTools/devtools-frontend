@@ -256,7 +256,6 @@ interface OrientationViewInput {
 }
 
 interface ViewInput extends LocationViewInput, OrientationViewInput {
-  orientationSection: TemplateResult;
   touchSetting: Common.Settings.Setting<unknown>;
   idleDetectionSetting: Common.Settings.Setting<unknown>;
   hardwareConcurrencyCheckbox: HTMLElement;
@@ -396,6 +395,154 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
   // clang-format on
 }
 
+function renderDeviceOrientationSection(input: OrientationViewInput, output: ViewOutput): TemplateResult {
+  const orientationOffOption = {
+    title: i18nString(UIStrings.off),
+    orientation: NonPresetOptions.NoOverride,
+    jslogContext: 'off',
+  };
+  const customOrientationOption = {
+    title: i18nString(UIStrings.customOrientation),
+    orientation: NonPresetOptions.Custom,
+  };
+  const orientationGroups = [{
+    title: i18nString(UIStrings.presets),
+    value: [
+      {title: i18nString(UIStrings.portrait), orientation: '[0, 90, 0]', jslogContext: 'portrait'},
+      {
+        title: i18nString(UIStrings.portraitUpsideDown),
+        orientation: '[180, -90, 0]',
+        jslogContext: 'portrait-upside-down',
+      },
+      {title: i18nString(UIStrings.landscapeLeft), orientation: '[90, 0, -90]', jslogContext: 'landscape-left'},
+      {title: i18nString(UIStrings.landscapeRight), orientation: '[90, -180, -90]', jslogContext: 'landscape-right'},
+      {title: i18nString(UIStrings.displayUp), orientation: '[0, 0, 0]', jslogContext: 'display-up'},
+      {title: i18nString(UIStrings.displayDown), orientation: '[0, -180, 0]', jslogContext: 'displayUp-down'},
+    ],
+  }];
+  // The angles are not rounded in the state, only when they are shown in the inputs.
+  const roundAngle = (angle: number): string => String(Math.round(angle * 10000) / 10000);
+
+  // clang-format off
+  return html`
+      <label class="sensors-group-title" for="orientation-select">${i18nString(UIStrings.orientation)}</label>
+      <div class="orientation-content">
+        <div class="orientation-fields">
+          <select
+            id="orientation-select"
+            @change=${input.onOrientationSelectChange}
+            jslog=${VisualLogging.dropDown().track({change: true})}
+          >
+            <option value=${orientationOffOption.orientation} .selected=${live(input.selectedOrientation === orientationOffOption.orientation)} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
+            <option value=${customOrientationOption.orientation} .selected=${live(input.selectedOrientation === customOrientationOption.orientation)} jslog=${VisualLogging.item('custom')}>${customOrientationOption.title}</option>
+            ${orientationGroups.map(group => html`
+              <optgroup label=${group.title}>
+                ${group.value.map(preset => html`
+                  <option value=${preset.orientation} .selected=${live(input.selectedOrientation === preset.orientation)} jslog=${VisualLogging.item(preset.jslogContext)}>${preset.title}</option>
+                `)}
+              </optgroup>
+            `)}
+          </select>
+          <fieldset
+            class="device-orientation-override-section"
+            ?disabled=${!input.orientationOverrideEnabled}
+          >
+            <div class="orientation-inputs-cell">
+              <div class="orientation-axis-input-container">
+                <!-- @ts-ignore -->
+                <input
+                  id="alpha-input"
+                  type="number"
+                  min="0"
+                  max="359.9999"
+                  step="any"
+                  required
+                  .value=${roundAngle(input.orientation.alpha)}
+                  name="alpha"
+                  ${Directives.ref((el: Element | undefined) => { output.focusAlphaInput = el ? () => (el as HTMLInputElement).focus() : undefined; })}
+                  @change=${input.onOrientationChange}
+                  @keydown=${input.onOrientationKeyDown}
+                  @focus=${selectInputContent}
+                >
+                <label for="alpha-input">${i18nString(UIStrings.alpha)}</label>
+              </div>
+              <div class="orientation-axis-input-container">
+                <!-- @ts-ignore -->
+                <input
+                  id="beta-input"
+                  type="number"
+                  min="-180"
+                  max="179.9999"
+                  step="any"
+                  required
+                  .value=${roundAngle(input.orientation.beta)}
+                  name="beta"
+                  @change=${input.onOrientationChange}
+                  @keydown=${input.onOrientationKeyDown}
+                  @focus=${selectInputContent}
+                >
+                <label for="beta-input">${i18nString(UIStrings.beta)}</label>
+              </div>
+              <div class="orientation-axis-input-container">
+                <!-- @ts-ignore -->
+                <input
+                  id="gamma-input"
+                  type="number"
+                  min="-90"
+                  max="89.9999"
+                  step="any"
+                  required
+                  .value=${roundAngle(input.orientation.gamma)}
+                  name="gamma"
+                  @change=${input.onOrientationChange}
+                  @keydown=${input.onOrientationKeyDown}
+                  @focus=${selectInputContent}
+                >
+                <label for="gamma-input">${i18nString(UIStrings.gamma)}</label>
+              </div>
+              <devtools-button
+                .variant=${Buttons.Button.Variant.OUTLINED}
+                class="orientation-reset-button"
+                type="reset"
+                aria-label=${i18nString(UIStrings.resetDeviceOrientation)}
+                @click=${input.onOrientationReset}
+                jslog=${VisualLogging.action('sensors.reset-device-orientiation').track({click: true})}
+              >
+                ${i18nString(UIStrings.reset)}
+              </devtools-button>
+            </div>
+          </fieldset>
+        </div>
+        <div
+          class="orientation-stage ${classMap({disabled: !input.orientationOverrideEnabled, 'is-animating': input.animateOrientation})}"
+          title=${input.orientationOverrideEnabled ? i18nString(UIStrings.shiftdragHorizontallyToRotate) :
+                                                          i18nString(UIStrings.enableOrientationToRotate)}
+          jslog=${VisualLogging.preview().track({drag: true})}
+          ${Directives.ref((el: Element | undefined) => {
+            if (el && !stagesWithDragHandle.has(el)) {
+              stagesWithDragHandle.add(el);
+              installStageDragHandle(el as HTMLElement, input.onStageDragStart, input.onStageDrag);
+            }
+          })}
+        >
+          <div class="orientation-layer" style=${styleMap({transform: `rotateY(${input.orientation.alpha}deg) rotateX(${- input.orientation.beta}deg) rotateZ(${input.orientation.gamma}deg)`})}>
+            <section
+              class="orientation-box orientation-element"
+            >
+              <section class="orientation-front orientation-element"></section>
+              <section class="orientation-top orientation-element"></section>
+              <section class="orientation-back orientation-element"></section>
+              <section class="orientation-left orientation-element"></section>
+              <section class="orientation-right orientation-element"></section>
+              <section class="orientation-bottom orientation-element"></section>
+            </section>
+          </div>
+        </div>
+      </div>
+    `;
+  // clang-format on
+}
+
 // clang-format off
 const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   render(html`
@@ -404,7 +551,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
     </section>
     <div class="panel-section-separator"></div>
     <section class="sensors-group" jslog=${VisualLogging.section('device-orientation')}>
-      ${input.orientationSection}
+      ${renderDeviceOrientationSection(input, output)}
     </section>
     <div class="panel-section-separator"></div>
     <div class="touch-section">
@@ -524,7 +671,6 @@ export class SensorsView extends UI.Widget.VBox {
     const input: ViewInput = {
       ...locationInput,
       ...orientationInput,
-      orientationSection: this.#renderDeviceOrientationSection(orientationInput, this.#output),
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
       hardwareConcurrencyCheckbox: this.#hardwareConcurrencyCheckbox,
@@ -673,154 +819,6 @@ export class SensorsView extends UI.Widget.VBox {
         this.performUpdate();
       });
     }
-  }
-
-  #renderDeviceOrientationSection(input: OrientationViewInput, output: ViewOutput): TemplateResult {
-    const orientationOffOption = {
-      title: i18nString(UIStrings.off),
-      orientation: NonPresetOptions.NoOverride,
-      jslogContext: 'off',
-    };
-    const customOrientationOption = {
-      title: i18nString(UIStrings.customOrientation),
-      orientation: NonPresetOptions.Custom,
-    };
-    const orientationGroups = [{
-      title: i18nString(UIStrings.presets),
-      value: [
-        {title: i18nString(UIStrings.portrait), orientation: '[0, 90, 0]', jslogContext: 'portrait'},
-        {
-          title: i18nString(UIStrings.portraitUpsideDown),
-          orientation: '[180, -90, 0]',
-          jslogContext: 'portrait-upside-down',
-        },
-        {title: i18nString(UIStrings.landscapeLeft), orientation: '[90, 0, -90]', jslogContext: 'landscape-left'},
-        {title: i18nString(UIStrings.landscapeRight), orientation: '[90, -180, -90]', jslogContext: 'landscape-right'},
-        {title: i18nString(UIStrings.displayUp), orientation: '[0, 0, 0]', jslogContext: 'display-up'},
-        {title: i18nString(UIStrings.displayDown), orientation: '[0, -180, 0]', jslogContext: 'displayUp-down'},
-      ],
-    }];
-    // The angles are not rounded in the state, only when they are shown in the inputs.
-    const roundAngle = (angle: number): string => String(Math.round(angle * 10000) / 10000);
-
-    // clang-format off
-    return html`
-        <label class="sensors-group-title" for="orientation-select">${i18nString(UIStrings.orientation)}</label>
-        <div class="orientation-content">
-          <div class="orientation-fields">
-            <select
-              id="orientation-select"
-              @change=${input.onOrientationSelectChange}
-              jslog=${VisualLogging.dropDown().track({change: true})}
-            >
-              <option value=${orientationOffOption.orientation} .selected=${live(input.selectedOrientation === orientationOffOption.orientation)} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
-              <option value=${customOrientationOption.orientation} .selected=${live(input.selectedOrientation === customOrientationOption.orientation)} jslog=${VisualLogging.item('custom')}>${customOrientationOption.title}</option>
-              ${orientationGroups.map(group => html`
-                <optgroup label=${group.title}>
-                  ${group.value.map(preset => html`
-                    <option value=${preset.orientation} .selected=${live(input.selectedOrientation === preset.orientation)} jslog=${VisualLogging.item(preset.jslogContext)}>${preset.title}</option>
-                  `)}
-                </optgroup>
-              `)}
-            </select>
-            <fieldset
-              class="device-orientation-override-section"
-              ?disabled=${!input.orientationOverrideEnabled}
-            >
-              <div class="orientation-inputs-cell">
-                <div class="orientation-axis-input-container">
-                  <!-- @ts-ignore -->
-                  <input
-                    id="alpha-input"
-                    type="number"
-                    min="0"
-                    max="359.9999"
-                    step="any"
-                    required
-                    .value=${roundAngle(input.orientation.alpha)}
-                    name="alpha"
-                    ${Directives.ref((el: Element | undefined) => { output.focusAlphaInput = el ? () => (el as HTMLInputElement).focus() : undefined; })}
-                    @change=${input.onOrientationChange}
-                    @keydown=${input.onOrientationKeyDown}
-                    @focus=${selectInputContent}
-                  >
-                  <label for="alpha-input">${i18nString(UIStrings.alpha)}</label>
-                </div>
-                <div class="orientation-axis-input-container">
-                  <!-- @ts-ignore -->
-                  <input
-                    id="beta-input"
-                    type="number"
-                    min="-180"
-                    max="179.9999"
-                    step="any"
-                    required
-                    .value=${roundAngle(input.orientation.beta)}
-                    name="beta"
-                    @change=${input.onOrientationChange}
-                    @keydown=${input.onOrientationKeyDown}
-                    @focus=${selectInputContent}
-                  >
-                  <label for="beta-input">${i18nString(UIStrings.beta)}</label>
-                </div>
-                <div class="orientation-axis-input-container">
-                  <!-- @ts-ignore -->
-                  <input
-                    id="gamma-input"
-                    type="number"
-                    min="-90"
-                    max="89.9999"
-                    step="any"
-                    required
-                    .value=${roundAngle(input.orientation.gamma)}
-                    name="gamma"
-                    @change=${input.onOrientationChange}
-                    @keydown=${input.onOrientationKeyDown}
-                    @focus=${selectInputContent}
-                  >
-                  <label for="gamma-input">${i18nString(UIStrings.gamma)}</label>
-                </div>
-                <devtools-button
-                  .variant=${Buttons.Button.Variant.OUTLINED}
-                  class="orientation-reset-button"
-                  type="reset"
-                  aria-label=${i18nString(UIStrings.resetDeviceOrientation)}
-                  @click=${input.onOrientationReset}
-                  jslog=${VisualLogging.action('sensors.reset-device-orientiation').track({click: true})}
-                >
-                  ${i18nString(UIStrings.reset)}
-                </devtools-button>
-              </div>
-            </fieldset>
-          </div>
-          <div
-            class="orientation-stage ${classMap({disabled: !input.orientationOverrideEnabled, 'is-animating': input.animateOrientation})}"
-            title=${input.orientationOverrideEnabled ? i18nString(UIStrings.shiftdragHorizontallyToRotate) :
-                                                            i18nString(UIStrings.enableOrientationToRotate)}
-            jslog=${VisualLogging.preview().track({drag: true})}
-            ${Directives.ref((el: Element | undefined) => {
-              if (el && !stagesWithDragHandle.has(el)) {
-                stagesWithDragHandle.add(el);
-                installStageDragHandle(el as HTMLElement, input.onStageDragStart, input.onStageDrag);
-              }
-            })}
-          >
-            <div class="orientation-layer" style=${styleMap({transform: `rotateY(${input.orientation.alpha}deg) rotateX(${- input.orientation.beta}deg) rotateZ(${input.orientation.gamma}deg)`})}>
-              <section
-                class="orientation-box orientation-element"
-              >
-                <section class="orientation-front orientation-element"></section>
-                <section class="orientation-top orientation-element"></section>
-                <section class="orientation-back orientation-element"></section>
-                <section class="orientation-left orientation-element"></section>
-                <section class="orientation-right orientation-element"></section>
-                <section class="orientation-bottom orientation-element"></section>
-              </section>
-            </div>
-          </div>
-        </div>
-      `;
-    // clang-format on
   }
 
   override wasShown(): void {

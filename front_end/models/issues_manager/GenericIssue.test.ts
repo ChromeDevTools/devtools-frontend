@@ -7,12 +7,16 @@ import {describe, it} from 'mocha';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
 describe('GenericIssue', () => {
   setupLocaleHooks();
+  expectConsoleLogs({
+    warn: ['Generic issue without details received.'],
+  });
 
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
 

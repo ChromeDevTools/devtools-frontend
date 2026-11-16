@@ -176,6 +176,7 @@ describe('ServiceWorkerVersion', () => {
   });
 
   it('fails to parse typedRouterRules when sourceDict is missing for SourceDict source type', () => {
+    const consoleError = sinon.stub(console, 'error');
     const TYPED_ROUTER_RULES_PAYLOAD = {
       ...VERSION_PAYLOAD,
       routerRules: undefined,
@@ -195,9 +196,12 @@ describe('ServiceWorkerVersion', () => {
     const version = makeVersion(REGISTRATION_PAYLOAD, TYPED_ROUTER_RULES_PAYLOAD);
 
     assert.isNull(version.routerRules);
+    sinon.assert.calledOnceWithExactly(consoleError,
+                                       'Parse error: `sourceDict` is missing in `typedRouterRules` source');
   });
 
   it('fails to parse typedRouterRules when sourceDict is present for non-SourceDict source type', () => {
+    const consoleError = sinon.stub(console, 'error');
     const TYPED_ROUTER_RULES_PAYLOAD = {
       ...VERSION_PAYLOAD,
       routerRules: undefined,
@@ -220,6 +224,8 @@ describe('ServiceWorkerVersion', () => {
     const version = makeVersion(REGISTRATION_PAYLOAD, TYPED_ROUTER_RULES_PAYLOAD);
 
     assert.isNull(version.routerRules);
+    sinon.assert.calledOnceWithExactly(consoleError,
+                                       'Parse error: Unexpected `sourceDict` in `typedRouterRules` source');
   });
 
   it('should update the version with the given payload', () => {

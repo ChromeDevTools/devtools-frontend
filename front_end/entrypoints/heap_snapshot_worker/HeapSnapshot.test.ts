@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
 
@@ -1378,6 +1379,7 @@ describe('HeapSnapshot', () => {
   });
 
   it('heapSnapshotRetainedByContext', async () => {
+    sinon.stub(console, 'warn');
     const builder = new HeapSnapshotBuilder();
     const root = builder.rootNode;
 

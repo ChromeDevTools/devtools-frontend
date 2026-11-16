@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {afterEach, beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -122,6 +123,10 @@ describe('WebAuthnModel', () => {
     assert.deepEqual(await request, {authenticatorId: AUTHENTICATOR_ID, credentialId: CREDENTIAL.credentialId});
   });
   describe('when the backend returns an error', () => {
+    beforeEach(() => {
+      sinon.stub(console, 'error');
+    });
+
     const ERROR_MESSAGE = 'Could not find a virtual authenticator matching the ID';
 
     function failWith(method: ProtocolClient.CDPConnection.Command): void {

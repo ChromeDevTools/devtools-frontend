@@ -89,6 +89,7 @@ describe('ObjectWrapper', () => {
     });
 
     it('handle errors in sync event handlers', () => {
+      const consoleError = sinon.stub(console, 'error');
       const callback = sinon.stub();
       const throwCallback = sinon.stub().throws('Sync throw');
       const callbackTwo = sinon.stub();
@@ -101,6 +102,7 @@ describe('ObjectWrapper', () => {
       sinon.assert.calledOnce(callback);
       sinon.assert.calledOnce(throwCallback);
       sinon.assert.calledOnce(callbackTwo);
+      sinon.assert.calledOnce(consoleError);
     });
   });
 });

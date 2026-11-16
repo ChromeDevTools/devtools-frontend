@@ -34,7 +34,7 @@ describe('ElementAccessibilityIssue', () => {
   }
 
   expectConsoleLogs({
-    warn: ['Select Element Accessibility issue without details received.'],
+    warn: ['Element Accessibility issue without details received.'],
   });
 
   it('can be created for various reasons', () => {

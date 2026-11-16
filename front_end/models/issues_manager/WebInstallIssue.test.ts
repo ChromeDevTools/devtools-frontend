@@ -8,11 +8,15 @@ import sinon from 'sinon';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 
 import * as IssuesManager from './issues_manager.js';
 
 describe('WebInstallIssue', () => {
+  expectConsoleLogs({
+    warn: ['Web install issue without details received.'],
+  });
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
   const manifestUrl = 'https://example.com/manifest.json';
 

@@ -7,6 +7,7 @@ import {describe, it} from 'mocha';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 
@@ -14,6 +15,9 @@ import * as IssuesManager from './issues_manager.js';
 
 describe('SelectivePermissionsInterventionIssue', () => {
   setupLocaleHooks();
+  expectConsoleLogs({
+    warn: ['Selective Permissions Intervention issue without details received.'],
+  });
 
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
   const mockTarget = {

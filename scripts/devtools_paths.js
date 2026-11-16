@@ -10,35 +10,20 @@
  * here. Please add any paths you need that are missing.
  */
 
+import childProcess from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 
-/**
- * You would think we can use import.meta.filename here but we cannot because import.meta.filename
- * has any symlinks resolved. This means we can't use it to tell if the user is
- * using the external repo with a standalone build setup because the symlink
- * from chromium/src/third_party/devtools-frontend => devtools-frontend repo
- * gets resolved by Node before it gives us import.meta.filename.
- *
- * We can use process.argv[1], which is the path to the file currently being
- * executed without any symlinks resolution. If we assume that file is always in
- * the devtools-frontend repository/directory, we can use that file as the
- * starting point for figuring out if we're in Chromium or not. until we find
- * the scripts directory, at which point we've found this file and can use it
- * for all subsequent logic.
- *
- * e.g. the user executes a script: scripts/lint/run_lint_check.mjs
- *
- * process.argv[1] =
- * /full/path/devtools-frontend/src/scripts/lint/run_lint_check.mjs
- */
-const PATH_TO_EXECUTED_FILE = process.argv[1];
-
 const _lookUpCaches = new Map();
+
 /**
  * This function figures out if we're within a chromium directory, and therefore
  * we are in the integrated workflow mode, rather than working in a standalone
  * devtools-frontend repository.
+ *
+ * The location of DevTools inside of Chromium is not hard-coded. Instead,
+ * `find_chromium_root.py` looks at the `.gclient` file of the checkout. We run
+ * that script here so there is only a single implementation of the logic.
  *
  * @returns {{isInChromium: boolean, chromiumDirectory: string}}
  */
@@ -48,25 +33,49 @@ export function isInChromiumDirectory() {
     return cached;
   }
 
-  const normalizedPath = PATH_TO_EXECUTED_FILE.split(path.sep).join('/');
-  const devtoolsPath = 'third_party/devtools-frontend/src';
-  const isInChromium = normalizedPath.includes(devtoolsPath);
-  const potentialChromiumDir = PATH_TO_EXECUTED_FILE.substring(
-      0,
-      normalizedPath.indexOf(devtoolsPath),
-  );
-  const result = {isInChromium, chromiumDirectory: potentialChromiumDir};
+  const scriptArgs = [
+    path.join(import.meta.dirname, 'find_chromium_root.py'),
+    '--devtools-root',
+    devtoolsRootPath(),
+  ];
+  // On Windows `python3` is a batch file from depot_tools.
+  const [exe, args] = os.platform() === 'win32' ? [process.env.ComSpec ?? 'cmd.exe', ['/c', 'python3', ...scriptArgs]] :
+                                                  ['python3', scriptArgs];
+  const chromiumDirectory = childProcess
+                                .execFileSync(exe, args, {
+                                  encoding: 'utf-8',
+                                  stdio: ['ignore', 'pipe', 'inherit'],
+                                })
+                                .trim();
+  const result = {isInChromium: chromiumDirectory !== '', chromiumDirectory};
   _lookUpCaches.set('chromium', result);
   return result;
 }
+
 /**
  * Returns the path to the root of the devtools-frontend repository.
  *
- * If we're in Chromium, this will be /path/to/chromium/src/third_party/devtools-frontend/src
+ * If we're in Chromium, this will be e.g. /path/to/chromium/src/third_party/devtools
  * If it's standalone, it will be /path/to/devtools-frontend
  */
 export function devtoolsRootPath() {
   return path.dirname(import.meta.dirname);
+}
+
+/**
+ * Returns the path of the DevTools directory relative to `rootPath()`.
+ *
+ * If we're in Chromium, this is the location of DevTools inside of
+ * chromium/src, e.g. `third_party/devtools`. This is also where the build
+ * output of DevTools is located inside of the `gen` directory.
+ * If it's standalone, this is the empty string.
+ */
+export function devtoolsPathRelativeToRoot() {
+  const {isInChromium, chromiumDirectory} = isInChromiumDirectory();
+  if (!isInChromium) {
+    return '';
+  }
+  return path.relative(chromiumDirectory, devtoolsRootPath());
 }
 
 /**
@@ -94,18 +103,12 @@ export function thirdPartyPath() {
   return path.join(rootPath(), 'third_party');
 }
 
+/**
+ * Path to the third_party directory of DevTools itself, regardless of whether
+ * we're in Chromium or in a standalone checkout.
+ */
 export function devToolsThirdPartyPath() {
-  const {isInChromium} = isInChromiumDirectory();
-  if (isInChromium) {
-    return path.join(
-        rootPath(),
-        'third_party',
-        'devtools-frontend',
-        'src',
-        'third_party',
-    );
-  }
-  return thirdPartyPath();
+  return path.join(devtoolsRootPath(), 'third_party');
 }
 
 export function nodePath() {

@@ -1030,6 +1030,36 @@ describeWithEnvironment('Widget', () => {
       assert.strictEqual(detachedCount, 1);
     });
 
+    it('does not propagate hideOnDetach to ancestor widgets across disconnect and reconnect', () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
+      try {
+        const container = document.createElement('div');
+        renderElementIntoDOM(container);
+
+        const parent = new UI.Widget.Widget();
+        parent.markAsRoot();
+        parent.show(container);
+
+        Lit.render(html`<devtools-widget ${UI.Widget.widget(TestWidget)}></devtools-widget>`, parent.contentElement);
+        assert.strictEqual(attachedCount, 1);
+        assert.isFalse(parent.shouldHideOnDetach());
+
+        parent.detach();
+        clock.tick(0);
+        assert.isFalse(parent.element.isConnected);
+        assert.isNotNull(parent.contentElement.querySelector('devtools-widget'));
+
+        parent.show(container);
+        assert.isTrue(parent.element.isConnected);
+        assert.isFalse(parent.shouldHideOnDetach());
+
+        parent.detach();
+        assert.isFalse(parent.element.isConnected);
+      } finally {
+        clock.restore();
+      }
+    });
+
     it('detaches the widget in a shadow root when the owner element is removed', async () => {
       const container = document.createElement('div');
       renderElementIntoDOM(container);

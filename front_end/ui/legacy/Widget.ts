@@ -255,6 +255,8 @@ export function instantiateWidget<WidgetT extends AnyWidget>(element: HTMLElemen
   return newWidget;
 }
 
+const trackerDetachingWidgets = new WeakSet<AnyWidget>();
+
 function setUpLifecycleTracking<WidgetT extends AnyWidget>(element: HTMLElement): void {
   let tracker: WidgetElement<WidgetT>;
   if (element instanceof WidgetElement) {
@@ -271,8 +273,12 @@ function setUpLifecycleTracking<WidgetT extends AnyWidget>(element: HTMLElement)
     }
     const widget = Widget.get(element);
     if (widget) {
-      widget.setHideOnDetach();
-      widget.detach();
+      trackerDetachingWidgets.add(widget);
+      try {
+        widget.detach();
+      } finally {
+        trackerDetachingWidgets.delete(widget);
+      }
     }
   };
   tracker.onConnect = () => {
@@ -966,7 +972,8 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
     //
     // overrideHideOnDetach will override hideOnDetach and the client takes
     // responsibility for the consequences.
-    const removeFromDOM = overrideHideOnDetach || !this.shouldHideOnDetach();
+    const removeFromDOM =
+        Boolean(overrideHideOnDetach) || (!trackerDetachingWidgets.has(this) && !this.shouldHideOnDetach());
     if (this.#visible) {
       this.#hideWidget(removeFromDOM);
     } else if (removeFromDOM) {

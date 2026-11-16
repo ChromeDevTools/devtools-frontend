@@ -188,6 +188,7 @@ devtools_ui_module("unittests") {
     "Breadcrumbs.test.ts",
     "CountersGraph.test.ts",
     "EntriesFilter.test.ts",
+    "EventsTimelineTreeView.test.ts",
     "Initiators.test.ts",
     "ModificationsManager.test.ts",
     "RecordingMetadata.test.ts",

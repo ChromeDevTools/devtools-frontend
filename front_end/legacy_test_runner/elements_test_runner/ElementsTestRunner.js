@@ -706,14 +706,16 @@ ElementsTestRunner.dumpSelectedElementStyles =
         continue;
       }
 
-      if (section.element.previousSibling && section.element.previousSibling.className === 'sidebar-separator') {
+      // Sections are rendered with Lit, so skip its comment markers when looking for the separator.
+      const separator = section.element.previousElementSibling;
+      if (separator && separator.className === 'sidebar-separator' && !separator.hidden) {
         let nodeDescription = '';
 
-        if (section.element.previousSibling.firstElementChild) {
-          nodeDescription = text(section.element.previousSibling.firstElementChild.shadowRoot.lastChild);
+        if (separator.firstElementChild?.shadowRoot?.lastChild) {
+          nodeDescription = text(separator.firstElementChild.shadowRoot.lastChild);
         }
 
-        TestRunner.addResult('======== ' + text(section.element.previousSibling) + nodeDescription + ' ========');
+        TestRunner.addResult('======== ' + text(separator) + nodeDescription + ' ========');
       }
 
       await printStyleSection(section, omitLonghands, includeSelectorGroupMarks);

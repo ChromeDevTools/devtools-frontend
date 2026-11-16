@@ -52,11 +52,10 @@ describeWithEnvironment('StylePropertyHighlighter', () => {
         /* parentsComputedStyles */ null, /* computedStyleExtraFields */ null, sectionName);
   }
 
-  function createBlockAndSection(
-      stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane,
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, sectionName?: string, propertyName?: string) {
-    const titleElement = sinon.createStubInstance(Element);
-    const block = new Elements.StylesSidebarPane.SectionBlock(titleElement, true);
+  function createBlockAndSection(stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane,
+                                 matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, sectionName?: string,
+                                 propertyName?: string) {
+    const block = new Elements.StylesSidebarPane.SectionBlock({text: 'blockname'}, true);
     block.sections = [createSection(stylesSidebarPane, matchedStyles, sectionName, propertyName)];
 
     return block;
@@ -76,15 +75,15 @@ describeWithEnvironment('StylePropertyHighlighter', () => {
     style.leadingProperties.returns([property]);
     assert.isUndefined(section.propertiesTreeOutline.firstChild());
 
+    const highlightBlockSpy = sinon.spy(stylesSidebarPane, 'highlightSectionBlock');
     const highlighter = new Elements.StylePropertyHighlighter.StylePropertyHighlighter(stylesSidebarPane);
-    const highlightSpy = sinon.spy(PanelUtils.PanelUtils, 'highlightElement');
     highlighter.findAndHighlightSectionBlock('dontcare');
 
     const firstChild = section.propertiesTreeOutline.firstChild();
     assert.exists(firstChild);
     assert.deepEqual((firstChild as Elements.StylePropertyTreeElement.StylePropertyTreeElement).property, property);
 
-    sinon.assert.calledOnceWithExactly(highlightSpy, block.titleElement() as HTMLElement);
+    sinon.assert.calledOnceWithExactly(highlightBlockSpy, block);
   });
 
   it('highlights sections', async () => {

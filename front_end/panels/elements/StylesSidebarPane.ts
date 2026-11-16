@@ -33,6 +33,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// Registers <devtools-icon> and legacy custom elements used in Lit templates.
 import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 
@@ -51,7 +52,6 @@ import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import {createIcon, type Icon} from '../../ui/kit/kit.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -59,6 +59,7 @@ import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
@@ -219,6 +220,55 @@ const TOOLBAR_PANE_SLIDE_OUT_ANIMATION = 'styles-element-state-pane-slideout';
 const {ref, styleMap} = Directives;
 const {widget} = UI.Widget;
 
+function sectionBlockTitleClasses(block: SectionBlock): string[] {
+  const classes = ['sidebar-separator'];
+  if (block.title?.layerName !== undefined) {
+    classes.push('layer-separator');
+  }
+  if (block.expandable && !block.expanded) {
+    classes.push('empty-section');
+  }
+  return classes;
+}
+
+function renderSectionBlockTitleContent(
+    block: SectionBlock,
+    onRevealLayer: (layerName: string) => void,
+    ): LitTemplate {
+  const title = block.title;
+  if (!title) {
+    return nothing;
+  }
+  // clang-format off
+  if (title.layerName !== undefined) {
+    return html`
+      <div>${title.text}</div>
+      ${title.canRevealLayer ? html`
+        <button class="link" title=${i18nString(UIStrings.clickToRevealLayer)}
+            jslog=${VisualLogging.action('css-layers').track({click: true})}
+            @click=${() => onRevealLayer(title.layerName ?? '')}>
+          ${title.layerName}
+        </button>
+      ` : html`
+        <div>${title.layerName}</div>
+      `}
+    `;
+  }
+  return html`
+    ${block.expandable ? html`
+      <devtools-icon class="section-block-expand-icon"
+          name=${block.expanded ? 'triangle-down' : 'triangle-right'}>
+      </devtools-icon>
+    ` : nothing}
+    ${title.text}
+    ${title.node ? widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+      node: title.node,
+      options: {preventKeyboardFocus: true},
+    }) : nothing}
+  `;
+  // clang-format on
+}
+
 export interface HeaderViewInput {
   showNoMatches: boolean;
   toolbarItems: readonly UI.Toolbar.ToolbarItem[];
@@ -295,6 +345,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   #showNoMatches = false;
   readonly #headerContainer = document.createElement('div');
   readonly #toolbarItems: UI.Toolbar.ToolbarItem[] = [];
+  readonly #blockTitleContainers = new WeakMap<SectionBlock, HTMLElement>();
   private sectionsContainer: UI.Widget.Widget;
   sectionByElement: WeakMap<Node, StylePropertiesSection> = new WeakMap<Node, StylePropertiesSection>();
   readonly #swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
@@ -1221,9 +1272,9 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     let index = 0;
     let elementToFocus: HTMLDivElement|null = null;
     for (const block of this.sectionBlocks) {
-      const titleElement = block.titleElement();
-      if (titleElement) {
-        fragment.appendChild(titleElement);
+      if (block.title) {
+        const container = this.#renderBlockTitleContainer(block);
+        fragment.appendChild(container);
       }
       for (const section of block.sections) {
         fragment.appendChild(section.element);
@@ -1727,6 +1778,11 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     }
     this.#showNoMatches = !hasAnyVisibleBlock;
     this.visibleSections = visibleSections;
+    for (const block of this.sectionBlocks) {
+      if (block.title) {
+        this.#renderBlockTitleContainer(block);
+      }
+    }
     this.#renderHeader();
   }
 
@@ -1754,7 +1810,49 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   }
 
   getSectionBlockByName(name: string): SectionBlock|undefined {
-    return this.sectionBlocks.find(block => block.titleElement()?.textContent === name);
+    return this.sectionBlocks.find(block => block.titleText() === name);
+  }
+
+  highlightSectionBlock(block: SectionBlock): void {
+    const el = this.#blockTitleContainers.get(block);
+    if (el) {
+      PanelUtils.PanelUtils.highlightElement(el);
+    }
+  }
+
+  #renderBlockTitleContainer(block: SectionBlock): HTMLElement {
+    let container = this.#blockTitleContainers.get(block);
+    if (!container) {
+      container = document.createElement('div');
+      this.#blockTitleContainers.set(block, container);
+      block.onExpandedChanged = () => this.#renderBlockTitleContainer(block);
+    }
+    const jslog = block.title?.jslogContext ? VisualLogging.sectionHeader(block.title.jslogContext) : undefined;
+    render(
+        renderSectionBlockTitleContent(block, name => LayersWidget.LayersWidget.instance().revealLayer(name)),
+        container, {
+          container: {
+            classes: sectionBlockTitleClasses(block),
+            attributes: {
+              hidden: block.isHidden(),
+              jslog,
+              role: block.expandable ? 'button' : undefined,
+              tabindex: block.expandable ? '0' : undefined,
+              'aria-expanded': block.expandable ? String(block.expanded) : undefined,
+            },
+            listeners: block.expandable ? {
+              click: () => block.expand(!block.expanded),
+              keydown: (e: Event) => {
+                if (e instanceof KeyboardEvent && !e.isComposing && Platform.KeyboardUtilities.isEnterOrSpaceKey(e)) {
+                  e.consume(true);
+                  block.expand(!block.expanded);
+                }
+              },
+            } :
+                                          undefined,
+          },
+        });
+    return container;
   }
 
   allSections(): StylePropertiesSection[] {
@@ -2026,134 +2124,111 @@ export interface EventTypes {
 
 const MAX_LINK_LENGTH = 23;
 
+/**
+ * Describes the separator that is rendered above the sections of a {@link SectionBlock}.
+ */
+export interface SectionBlockTitle {
+  /** Text of the separator. For layer separators, this is the "Layer" label. */
+  text: string;
+  /** Context of the `sectionHeader` visual logging element, if any. */
+  jslogContext?: string;
+  /** Node to link to after the text, e.g. for blocks of inherited styles. */
+  node?: SDK.DOMModel.DOMNode;
+  /** Name of the layer, for layer separators. */
+  layerName?: string;
+  /** Whether the layer name is rendered as a link that reveals the layer in the layer tree. */
+  canRevealLayer?: boolean;
+}
+
 export class SectionBlock {
-  readonly #titleElement: Element|null;
+  readonly title: SectionBlockTitle|null;
+  readonly expandable: boolean;
   sections: StylePropertiesSection[];
   childBlocks: SectionBlock[] = [];
+  /** Called when the block is expanded or collapsed, so that the owner can re-render its title. */
+  onExpandedChanged?: () => void;
   #expanded = false;
-  #icon: Icon|undefined;
-  constructor(titleElement: Element|null, expandable?: boolean, expandedByDefault?: boolean, readonly id = 'main') {
-    this.#titleElement = titleElement;
+  #hidden = false;
+  constructor(title: SectionBlockTitle|null, expandable?: boolean, expandedByDefault?: boolean, readonly id = 'main') {
+    this.title = title;
+    this.expandable = Boolean(expandable && title);
     this.sections = [];
     this.#expanded = expandedByDefault ?? false;
+  }
 
-    if (expandable && titleElement instanceof HTMLElement) {
-      this.#icon = createIcon(this.#expanded ? 'triangle-down' : 'triangle-right', 'section-block-expand-icon');
-      titleElement.classList.toggle('empty-section', !this.#expanded);
-      UI.ARIAUtils.setExpanded(titleElement, this.#expanded);
-      titleElement.appendChild(this.#icon);
-      // Intercept focus to avoid highlight on click.
-      titleElement.tabIndex = -1;
-      titleElement.addEventListener('click', () => this.expand(!this.#expanded), false);
-    }
+  get expanded(): boolean {
+    return this.#expanded;
   }
 
   expand(expand: boolean): void {
-    if (!this.#titleElement || !this.#icon) {
+    if (!this.expandable) {
       return;
     }
-    this.#titleElement.classList.toggle('empty-section', !expand);
-    this.#icon.name = expand ? 'triangle-down' : 'triangle-right';
-    UI.ARIAUtils.setExpanded(this.#titleElement, expand);
     this.#expanded = expand;
     this.sections.forEach(section => section.element.classList.toggle('hidden', !expand));
+    this.onExpandedChanged?.();
   }
 
   static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string|null): SectionBlock {
-    const separatorElement = document.createElement('div');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('pseudotype')}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
-    separatorElement.textContent = i18nString(UIStrings.pseudoSElement, {PH1: pseudoTypeString});
-    return new SectionBlock(separatorElement, false, false, `pseudo:${pseudoType}:${pseudoArgument ?? ''}`);
+    return new SectionBlock(
+        {text: i18nString(UIStrings.pseudoSElement, {PH1: pseudoTypeString}), jslogContext: 'pseudotype'}, false, false,
+        `pseudo:${pseudoType}:${pseudoArgument ?? ''}`);
   }
 
   static async createInheritedPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string|null,
                                               node: SDK.DOMModel.DOMNode): Promise<SectionBlock> {
-    const separatorElement = document.createElement('div');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('inherited-pseudotype')}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
-    UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, {PH1: pseudoTypeString}));
-    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {preventKeyboardFocus: true});
-    render(link, separatorElement);
-    return new SectionBlock(separatorElement, false, false,
-                            `inherited-pseudo:${pseudoType}:${pseudoArgument ?? ''}:${node.id}`);
+    return new SectionBlock({
+      text: i18nString(UIStrings.inheritedFromSPseudoOf, {PH1: pseudoTypeString}),
+      jslogContext: 'inherited-pseudotype',
+      node,
+    },
+                            false, false, `inherited-pseudo:${pseudoType}:${pseudoArgument ?? ''}:${node.id}`);
   }
 
   static createRegisteredPropertiesBlock(expandedByDefault: boolean): SectionBlock {
-    const separatorElement = document.createElement('div');
-    const block = new SectionBlock(separatorElement, true, expandedByDefault, 'registered-properties');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.appendChild(document.createTextNode(REGISTERED_PROPERTY_SECTION_NAME));
-    return block;
+    return new SectionBlock({text: REGISTERED_PROPERTY_SECTION_NAME}, true, expandedByDefault, 'registered-properties');
   }
 
   static createFunctionBlock(expandedByDefault: boolean): SectionBlock {
-    const separatorElement = document.createElement('div');
-    const block = new SectionBlock(separatorElement, true, expandedByDefault, 'functions');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.appendChild(document.createTextNode(FUNCTION_SECTION_NAME));
-    return block;
+    return new SectionBlock({text: FUNCTION_SECTION_NAME}, true, expandedByDefault, 'functions');
   }
 
   static createKeyframesBlock(keyframesName: string): SectionBlock {
-    const separatorElement = document.createElement('div');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('keyframes')}`);
-    separatorElement.textContent = `@keyframes ${keyframesName}`;
-    return new SectionBlock(separatorElement, false, false, `keyframes:${keyframesName}`);
+    return new SectionBlock({text: `@keyframes ${keyframesName}`, jslogContext: 'keyframes'}, false, false,
+                            `keyframes:${keyframesName}`);
   }
 
   static createAtRuleBlock(expandedByDefault: boolean): SectionBlock {
-    const separatorElement = document.createElement('div');
-    const block = new SectionBlock(separatorElement, true, expandedByDefault, 'at-rules');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.appendChild(document.createTextNode(i18nString(UIStrings.atRuleSection)));
-    return block;
+    return new SectionBlock({text: i18nString(UIStrings.atRuleSection)}, true, expandedByDefault, 'at-rules');
   }
 
   static createPositionTryBlock(positionTryName: string): SectionBlock {
-    const separatorElement = document.createElement('div');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('position-try')}`);
-    separatorElement.textContent = `@position-try ${positionTryName}`;
-    return new SectionBlock(separatorElement, false, false, `position-try:${positionTryName}`);
+    return new SectionBlock({text: `@position-try ${positionTryName}`, jslogContext: 'position-try'}, false, false,
+                            `position-try:${positionTryName}`);
   }
 
   static async createInheritedNodeBlock(node: SDK.DOMModel.DOMNode): Promise<SectionBlock> {
-    const separatorElement = document.createElement('div');
-    separatorElement.className = 'sidebar-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('inherited')}`);
-    UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFroms));
-    const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
-      preventKeyboardFocus: true,
-    });
-    render(link, separatorElement);
-    return new SectionBlock(separatorElement, false, false, `inherited-node:${node.id}`);
+    return new SectionBlock({text: i18nString(UIStrings.inheritedFroms), jslogContext: 'inherited', node}, false, false,
+                            `inherited-node:${node.id}`);
   }
 
   static createLayerBlock(rule: SDK.CSSRule.CSSStyleRule, parentBlockId = 'main'): SectionBlock {
-    const separatorElement = document.createElement('div');
-    separatorElement.className = 'sidebar-separator layer-separator';
-    separatorElement.setAttribute('jslog', `${VisualLogging.sectionHeader('layer')}`);
-    UI.UIUtils.createTextChild(separatorElement.createChild('div'), i18nString(UIStrings.layer));
     const layers = rule.layers;
     if (!layers.length && rule.origin === Protocol.CSS.StyleSheetOrigin.UserAgent) {
       const name = rule.origin === Protocol.CSS.StyleSheetOrigin.UserAgent ? '\xa0user\xa0agent\xa0stylesheet' :
                                                                              '\xa0implicit\xa0outer\xa0layer';
-      UI.UIUtils.createTextChild(separatorElement.createChild('div'), name);
-      return new SectionBlock(separatorElement, false, false, `layer:${parentBlockId}:${name}`);
+      return new SectionBlock(
+          {text: i18nString(UIStrings.layer), jslogContext: 'layer', layerName: name, canRevealLayer: false}, false,
+          false, `layer:${parentBlockId}:${name}`);
     }
-    const layerLink = separatorElement.createChild('button');
-    layerLink.className = 'link';
-    layerLink.title = i18nString(UIStrings.clickToRevealLayer);
     const name = layers.map(layer => SDK.CSSModel.CSSModel.readableLayerName(layer.text)).join('.');
-    layerLink.textContent = name;
-    layerLink.onclick = () => LayersWidget.LayersWidget.instance().revealLayer(name);
-    return new SectionBlock(separatorElement, false, false, `layer:${parentBlockId}:${name}`);
+    return new SectionBlock(
+        {text: i18nString(UIStrings.layer), jslogContext: 'layer', layerName: name, canRevealLayer: true}, false, false,
+        `layer:${parentBlockId}:${name}`);
   }
 
   updateFilter(): number {
@@ -2164,14 +2239,27 @@ export class SectionBlock {
     for (const section of this.sections) {
       numVisibleSections += section.updateFilter() ? 1 : 0;
     }
-    if (this.#titleElement) {
-      this.#titleElement.classList.toggle('hidden', numVisibleSections === 0);
+    if (this.title) {
+      this.#hidden = numVisibleSections === 0;
     }
     return numVisibleSections;
   }
 
-  titleElement(): Element|null {
-    return this.#titleElement;
+  /**
+   * Whether the title of this block is hidden because none of its sections match the current filter.
+   */
+  isHidden(): boolean {
+    return this.#hidden;
+  }
+
+  /**
+   * The text content of the rendered title, or `null` if the block has no title.
+   */
+  titleText(): string|null {
+    if (!this.title) {
+      return null;
+    }
+    return `${this.title.text}${this.title.layerName ?? ''}`;
   }
 }
 
@@ -2601,7 +2689,6 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         anywhereResults.push(result);
       }
     }
-
   }
 
   #updateAiCodeSuggestion(): void {

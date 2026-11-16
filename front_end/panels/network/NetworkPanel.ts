@@ -380,7 +380,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.overviewPane = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('network');
     this.overviewPane.addEventListener(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_WINDOW_CHANGED,
                                        this.onWindowChanged.bind(this));
-    this.overviewPane.element.id = 'network-overview-panel';
     this.networkOverview = new NetworkOverview();
     this.overviewPane.setOverviewControls([this.networkOverview]);
     this.overviewPlaceholderElement = panel.contentElement.createChild('div');

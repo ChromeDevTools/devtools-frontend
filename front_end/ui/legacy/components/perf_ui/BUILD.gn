@@ -117,6 +117,7 @@ devtools_ui_module("unittests") {
     "PieChart.test.ts",
     "TimelineGrid.test.ts",
     "TimelineOverviewCalculator.test.ts",
+    "TimelineOverviewPane.test.ts",
   ]
 
   ts_deps = [

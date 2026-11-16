@@ -1,11 +1,12 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../../../core/common/common.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as TraceBounds from '../../../../services/trace_bounds/trace_bounds.js';
+import {Directives, html, nothing, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
@@ -13,6 +14,21 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
 import {Events as OverviewGridEvents, OverviewGrid, type WindowChangedWithPositionEvent} from './OverviewGrid.js';
 import {TimelineOverviewCalculator} from './TimelineOverviewCalculator.js';
 import timelineOverviewInfoStyles from './timelineOverviewInfo.css.js';
+
+const {ref, styleMap} = Directives;
+
+const BRACKET_TRIANGLE_SIZE = 5;
+
+interface HighlightRange {
+  left: number;
+  right: number;
+  withBracket: boolean;
+}
+
+function bracketPoints({left, right}: HighlightRange): string {
+  const size = BRACKET_TRIANGLE_SIZE;
+  return `${left},0 ${left},${size} ${left + size - 1},1 ${right - size - 1},1 ${right},${size} ${right},0`;
+}
 
 const TimelineOverviewPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
@@ -22,8 +38,6 @@ const TimelineOverviewPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, type
 export class TimelineOverviewPane extends TimelineOverviewPaneBase {
   readonly overviewCalculator: TimelineOverviewCalculator;
   private readonly overviewGrid: OverviewGrid;
-  private readonly cursorArea: HTMLElement;
-  private cursorElement: HTMLElement;
   private overviewControls: TimelineOverview[] = [];
   private markers = new Map<number, HTMLDivElement>();
   private readonly overviewInfo: OverviewInfo;
@@ -35,36 +49,81 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
   private windowEndTime = Trace.Types.Timing.Milli(Infinity);
   private muteOnWindowChanged = false;
   private hasPointer = false;
-  #dimHighlightSVG: Element;
+  readonly #prefix: string;
+  #cursorAreaLeft?: () => number;
+  #cursorAnchorBox?: () => AnchorBox;
+  #cursorVisible = false;
+  #overviewInfoVisible = false;
+  #overviewInfoElements: readonly Element[] = [];
+  #highlight: HighlightRange|null = null;
   readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
+  readonly #onCursorLeaveBound = this.hideCursor.bind(this);
 
   constructor(prefixOrElement: string|HTMLElement = 'timeline') {
     super(prefixOrElement instanceof HTMLElement ? prefixOrElement : undefined);
-    const prefix = typeof prefixOrElement === 'string' ? prefixOrElement : 'timeline';
-    this.element.id = prefix + '-overview-pane';
+    this.#prefix = typeof prefixOrElement === 'string' ? prefixOrElement : 'timeline';
 
     this.overviewCalculator = new TimelineOverviewCalculator();
-    this.overviewGrid = new OverviewGrid(prefix, this.overviewCalculator);
-    this.overviewGrid.element.setAttribute(
-        'jslog', `${VisualLogging.timeline(`${prefix}-overview`).track({click: true, drag: true, hover: true})}`);
-    this.element.appendChild(this.overviewGrid.element);
-    this.cursorArea = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
-    this.cursorElement = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
-    this.cursorArea.addEventListener('pointerdown', this.onMouseDown.bind(this), true);
-    this.cursorArea.addEventListener('pointerup', this.onMouseCancel.bind(this), true);
-    this.cursorArea.addEventListener('pointercancel', this.onMouseCancel.bind(this), true);
-    this.cursorArea.addEventListener('pointermove', this.onMouseMove.bind(this), true);
-    this.cursorArea.addEventListener('pointerleave', this.hideCursor.bind(this), true);
+    this.overviewGrid = new OverviewGrid(this.#prefix, this.overviewCalculator);
 
     this.overviewGrid.setResizeEnabled(false);
     this.overviewGrid.addEventListener(OverviewGridEvents.WINDOW_CHANGED_WITH_POSITION, this.onWindowChanged, this);
     this.overviewGrid.addEventListener(OverviewGridEvents.BREADCRUMB_ADDED, this.onBreadcrumbAdded, this);
     this.overviewGrid.setClickHandler(this.onClick.bind(this));
 
-    this.overviewInfo = new OverviewInfo(this.cursorElement);
+    this.overviewInfo = new OverviewInfo();
 
-    this.#dimHighlightSVG = UI.UIUtils.createSVGChild(this.element, 'svg', 'timeline-minimap-dim-highlight-svg hidden');
-    this.#initializeDimHighlightSVG();
+    // Render synchronously, so that the overview grid is attached before
+    // `update()` measures it in `wasShown()`, and before subclasses and callers
+    // show the overview controls in it.
+    this.#render();
+  }
+
+  override performUpdate(): void {
+    this.#render();
+  }
+
+  #render(): void {
+    const themeSupport = ThemeSupport.ThemeSupport.instance();
+    const highlight = this.#highlight;
+    const bg = themeSupport.getComputedValue('--color-background');
+    const bracketColor = themeSupport.getComputedValue('--sys-color-state-on-header-hover');
+    // clang-format off
+    render(html`
+      ${this.overviewGrid.element}
+      <svg class="timeline-minimap-dim-highlight-svg" ?hidden=${!highlight}>
+        <defs>
+          <mask id="${this.#prefix}-dim-highlight-cutouts">
+            <rect width="100%" height="100%" fill="hsl(0deg 0% 95%)"></rect>
+            <rect class="punch" x=${highlight?.left ?? nothing} y="0"
+                width=${highlight ? highlight.right - highlight.left : nothing} height="100%" fill="black"></rect>
+          </mask>
+        </defs>
+        <rect class="background" width="100%" height="100%" fill=${bg}
+            mask="url(#${this.#prefix}-dim-highlight-cutouts)" style="mix-blend-mode: saturation"></rect>
+        <polygon ?hidden=${!highlight?.withBracket} fill=${bracketColor}
+            points=${highlight?.withBracket ? bracketPoints(highlight) : nothing}></polygon>
+      </svg>`, this.contentElement, {container: {attributes: {id: `${this.#prefix}-overview-pane`}}});
+    render(html`
+      <div class="overview-grid-cursor-area"
+          @pointerdown=${(e: PointerEvent) => this.onMouseDown(e)}
+          @pointerup=${(e: PointerEvent) => this.onMouseCancel(e)}
+          @pointercancel=${(e: PointerEvent) => this.onMouseCancel(e)}
+          @pointermove=${(e: PointerEvent) => this.onMouseMove(e)}
+          @pointerleave=${this.#onCursorLeaveBound}
+          ${ref(el => { this.#cursorAreaLeft = el instanceof HTMLElement ? () => el.getBoundingClientRect().left : undefined; })}></div>
+      <div class="overview-grid-cursor-position"
+          style=${styleMap({left: `${this.cursorPosition}px`, visibility: this.#cursorVisible ? 'visible' : 'hidden'})}
+          ${ref(el => { this.#cursorAnchorBox = el instanceof HTMLElement ? () => el.boxInWindow() : undefined; })}></div>`,
+      this.overviewGrid.element, {
+        container: {
+          attributes: {
+            jslog: `${VisualLogging.timeline(`${this.#prefix}-overview`).track({click: true, drag: true, hover: true})}`,
+          },
+        },
+      });
+    render(html`<div class="overview-info">${this.#overviewInfoElements}</div>`, this.overviewInfo.contentRoot);
+    // clang-format on
   }
 
   enableCreateBreadcrumbsButton(): void {
@@ -82,8 +141,7 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     }
 
     event.target.setPointerCapture(event.pointerId);
-    this.overviewInfo.hide();
-    this.hasPointer = true;
+    this.#onPointerDown();
   }
 
   private onMouseCancel(event: PointerEvent): void {
@@ -91,22 +149,40 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
       return;
     }
 
-    event.target.releasePointerCapture(event.pointerId);
-    this.overviewInfo.show();
-    this.hasPointer = false;
+    if (event.target.hasPointerCapture(event.pointerId)) {
+      event.target.releasePointerCapture(event.pointerId);
+    }
+    this.#onPointerUp();
   }
 
   private onMouseMove(event: MouseEvent): void {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+    const cursorAreaLeft = this.#cursorAreaLeft?.() ?? 0;
+    const offsetLeftRelativeToCursorArea = event.target.getBoundingClientRect().left - cursorAreaLeft;
+    this.#onCursorMove(event.offsetX + offsetLeftRelativeToCursorArea);
+  }
+
+  #onPointerDown(): void {
+    this.#overviewInfoVisible = false;
+    this.overviewInfo.hide();
+    this.hasPointer = true;
+  }
+
+  #onPointerUp(): void {
+    this.#overviewInfoVisible = true;
+    this.overviewInfo.show(this.#cursorAnchorBox?.() ?? null);
+    this.hasPointer = false;
+  }
+
+  #onCursorMove(position: number): void {
     if (!this.cursorEnabled) {
       return;
     }
-    const mouseEvent = event;
-    const target = (event.target as HTMLElement);
-    const offsetLeftRelativeToCursorArea =
-        target.getBoundingClientRect().left - this.cursorArea.getBoundingClientRect().left;
-    this.cursorPosition = mouseEvent.offsetX + offsetLeftRelativeToCursorArea;
-    this.cursorElement.style.left = this.cursorPosition + 'px';
-    this.cursorElement.style.visibility = 'visible';
+    this.cursorPosition = position;
+    this.#cursorVisible = true;
+    this.requestUpdate();
 
     // Dispatch an event to notify the flame chart to show a timestamp marker for the current timestamp if it's visible
     // in the flame chart.
@@ -121,28 +197,40 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     }
 
     if (!this.hasPointer) {
-      void this.overviewInfo.setContent(this.buildOverviewInfo());
+      void this.updateOverviewInfo();
     }
   }
 
-  private async buildOverviewInfo(): Promise<DocumentFragment> {
-    const document = this.element.ownerDocument;
+  private async updateOverviewInfo(): Promise<void> {
+    this.#overviewInfoVisible = true;
     const x = this.cursorPosition;
     const elements = await Promise.all(this.overviewControls.map(control => control.overviewInfoPromise(x)));
-    const fragment = document.createDocumentFragment();
-    const nonNullElements = (elements.filter(element => element !== null));
-    fragment.append(...nonNullElements);
-    return fragment;
+    if (!this.#overviewInfoVisible) {
+      return;
+    }
+    this.#overviewInfoElements = elements.filter(element => element !== null);
+    this.requestUpdate();
+    // The overview info is anchored to the cursor marker, so wait until it is
+    // rendered at the new position.
+    await this.updateComplete;
+    if (!this.#overviewInfoVisible) {
+      return;
+    }
+    this.overviewInfo.show(this.#cursorAnchorBox?.() ?? null);
   }
 
   private hideCursor(): void {
-    this.cursorElement.style.visibility = 'hidden';
+    this.#cursorVisible = false;
+    this.#overviewInfoVisible = false;
+    this.#overviewInfoElements = [];
+    this.requestUpdate();
     this.dispatchEventToListeners(Events.OVERVIEW_PANE_MOUSE_LEAVE);
     this.overviewInfo.hide();
   }
 
   #onThemeChanged(): void {
     this.scheduleUpdate();
+    this.requestUpdate();
   }
 
   override wasShown(): void {
@@ -152,11 +240,13 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     this.update(start, end);
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName,
                                                           this.#boundOnThemeChanged);
+    this.requestUpdate();
   }
 
   override willHide(): void {
     ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
                                                              this.#boundOnThemeChanged);
+    this.#overviewInfoVisible = false;
     this.overviewInfo.hide();
     super.willHide();
   }
@@ -272,6 +362,8 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     for (const control of this.overviewControls) {
       control.reset();
     }
+    this.#overviewInfoVisible = false;
+    this.#overviewInfoElements = [];
     this.overviewInfo.hide();
     this.scheduleUpdate();
   }
@@ -333,96 +425,25 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
   }
 
   /**
-   * This function will create three rectangles and a polygon, which will be use to highlight the time range.
+   * Desaturates the overview outside of the given time bounds.
+   *
+   * @param bounds the time bounds to keep saturated.
+   * @param withBracket whether to draw a bracket above the time bounds.
    */
-  #initializeDimHighlightSVG(): void {
-    // Set up the desaturation mask
-    const defs = UI.UIUtils.createSVGChild(this.#dimHighlightSVG, 'defs');
-    const mask = UI.UIUtils.createSVGChild(defs, 'mask');
-    mask.id = 'dim-highlight-cutouts';
-    /* Within the mask...
-        - black fill = punch, fully transparently, through to the next thing. these are the cutouts to the color.
-        - white fill = be 100% desaturated
-        - grey fill  = show at the Lightness level of grayscale/desaturation
-    */
-
-    // This a rectangle covers the entire SVG and has a light gray fill. This sets the base desaturation level for the
-    // masked area.
-    // The colour here should be fixed because the colour's brightness changes the desaturation level.
-    const showAllRect = UI.UIUtils.createSVGChild(mask, 'rect');
-    showAllRect.setAttribute('width', '100%');
-    showAllRect.setAttribute('height', '100%');
-    showAllRect.setAttribute('fill', 'hsl(0deg 0% 95%)');
-
-    // This rectangle also covers the entire SVG and has a fill with the current background. It is linked to the
-    // `mask` element.
-    // The `mixBlendMode` is set to 'saturation', so this rectangle will completely desaturate the area it covers
-    // within the mask.
-    const desaturateRect = UI.UIUtils.createSVGChild(this.#dimHighlightSVG, 'rect', 'background');
-    desaturateRect.setAttribute('width', '100%');
-    desaturateRect.setAttribute('height', '100%');
-    desaturateRect.setAttribute('fill', ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'));
-    desaturateRect.setAttribute('mask', `url(#${mask.id})`);
-    desaturateRect.style.mixBlendMode = 'saturation';
-
-    // This rectangle is positioned at the top of the not-to-desaturate time range, with full height and a black fill.
-    // It will be used to "punch" through the desaturation, revealing the original colours beneath.
-    // The *black* fill on the "punch-out" rectangle is crucial because black is fully transparent in a mask.
-    const punchRect = UI.UIUtils.createSVGChild(mask, 'rect', 'punch');
-    punchRect.setAttribute('y', '0');
-    punchRect.setAttribute('height', '100%');
-    punchRect.setAttribute('fill', 'black');
-
-    // This polygon is for the bracket beyond the not desaturated area.
-    const bracketColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-on-header-hover');
-    const bracket = UI.UIUtils.createSVGChild(this.#dimHighlightSVG, 'polygon');
-    bracket.setAttribute('fill', bracketColor);
-
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
-      const desaturateRect = this.#dimHighlightSVG.querySelector('rect.background');
-      desaturateRect?.setAttribute('fill', ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'));
-
-      const bracket = this.#dimHighlightSVG.querySelector('polygon');
-      bracket?.setAttribute('fill',
-                            ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-on-header-hover'));
-    });
-  }
-
-  #addBracket(left: number, right: number): void {
-    const TRIANGLE_SIZE = 5;  // px size of triangles
-    const bracket = this.#dimHighlightSVG.querySelector('polygon');
-    bracket?.setAttribute('points',
-                          `${left},0 ${left},${TRIANGLE_SIZE} ${left + TRIANGLE_SIZE - 1},1 ${
-                              right - TRIANGLE_SIZE - 1},1 ${right},${TRIANGLE_SIZE} ${right},0`);
-    bracket?.classList.remove('hidden');
-  }
-
-  #hideBracket(): void {
-    const bracket = this.#dimHighlightSVG.querySelector('polygon');
-    bracket?.classList.add('hidden');
-  }
-
   highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicro, withBracket: boolean): void {
-    const left = this.overviewCalculator.computePosition(Trace.Helpers.Timing.microToMilli(bounds.min));
-    const right = this.overviewCalculator.computePosition(Trace.Helpers.Timing.microToMilli(bounds.max));
     this.#dimMarkers(bounds);
-    // Update the punch out rectangle to the not-to-desaturate time range.
-    const punchRect = this.#dimHighlightSVG.querySelector('rect.punch');
-    punchRect?.setAttribute('x', left.toString());
-    punchRect?.setAttribute('width', (right - left).toString());
-
-    if (withBracket) {
-      this.#addBracket(left, right);
-    } else {
-      this.#hideBracket();
-    }
-
-    this.#dimHighlightSVG.classList.remove('hidden');
+    this.#highlight = {
+      left: this.overviewCalculator.computePosition(Trace.Helpers.Timing.microToMilli(bounds.min)),
+      right: this.overviewCalculator.computePosition(Trace.Helpers.Timing.microToMilli(bounds.max)),
+      withBracket,
+    };
+    this.requestUpdate();
   }
 
   clearBoundsHighlight(): void {
     this.#dimMarkers();
-    this.#dimHighlightSVG.classList.add('hidden');
+    this.#highlight = null;
+    this.requestUpdate();
   }
 }
 
@@ -479,6 +500,9 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
       super(elementOrOptions ?? options);
     }
     this.#calculator = null;
+    // Subclasses (such as `TimelineEventOverview`) render their own Lit content
+    // into `this.element`, so the base class cannot render the canvas with Lit.
+    // eslint-disable-next-line @devtools/no-imperative-dom-api
     this.canvas = this.element.createChild('canvas', 'fill');
     this.#context = this.canvas.getContext('2d');
   }
@@ -538,44 +562,26 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
 }
 
 export class OverviewInfo {
-  private readonly anchorElement: Element;
-  private glassPane: UI.GlassPane.GlassPane;
-  private visible: boolean;
-  private readonly element: Element;
+  readonly #glassPane: UI.GlassPane.GlassPane;
+  readonly contentRoot: ShadowRoot;
 
-  constructor(anchor: Element) {
-    this.anchorElement = anchor;
-    this.glassPane = new UI.GlassPane.GlassPane();
-    this.glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PIERCE_CONTENTS);
-    this.glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.DEFAULT_MARGIN);
-    this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    this.visible = false;
-    this.element =
-        UI.UIUtils.createShadowRootWithCoreStyles(this.glassPane.contentElement, {cssFile: timelineOverviewInfoStyles})
-            .createChild('div', 'overview-info');
+  constructor() {
+    this.#glassPane = new UI.GlassPane.GlassPane();
+    this.#glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PIERCE_CONTENTS);
+    this.#glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.DEFAULT_MARGIN);
+    this.#glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    this.contentRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.#glassPane.contentElement,
+                                                                 {cssFile: timelineOverviewInfoStyles});
   }
 
-  async setContent(contentPromise: Promise<DocumentFragment>): Promise<void> {
-    this.visible = true;
-    const content = await contentPromise;
-    if (!this.visible) {
-      return;
-    }
-    this.element.removeChildren();
-    this.element.appendChild(content);
-    this.glassPane.setContentAnchorBox(this.anchorElement.boxInWindow());
-    if (!this.glassPane.isShowing()) {
-      this.glassPane.show((this.anchorElement.ownerDocument));
+  show(anchorBox: AnchorBox|null): void {
+    this.#glassPane.setContentAnchorBox(anchorBox);
+    if (!this.#glassPane.isShowing()) {
+      this.#glassPane.show(window.document);
     }
   }
 
   hide(): void {
-    this.visible = false;
-    this.glassPane.hide();
-  }
-
-  show(): void {
-    this.visible = true;
-    this.glassPane.show(window.document);
+    this.#glassPane.hide();
   }
 }

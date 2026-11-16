@@ -216,6 +216,7 @@ class MiniMapOverviewPane extends PerfUI.TimelineOverviewPane.TimelineOverviewPa
       }
       this.#appliedHighlightedBounds = this.#highlightedBounds;
     }
+    super.performUpdate();
   }
 }
 

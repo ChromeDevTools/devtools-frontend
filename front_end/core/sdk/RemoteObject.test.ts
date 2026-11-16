@@ -585,3 +585,51 @@ describe('RemoteObject TypedArray', () => {
     assert.strictEqual(SDK.RemoteObject.RemoteObject.arrayNameFromDescription('Int32Array[20]'), 'Int32Array');
   });
 });
+
+describe('LocalJSONObject', () => {
+  describe('callFunctionJSON', () => {
+    it('returns the result of calling the function on the local object', async () => {
+      const localObject = SDK.RemoteObject.RemoteObject.fromLocalObject([6, 28, 496]);
+
+      function getItem(this: number[], index: number): number {
+        return this[index];
+      }
+
+      assert.strictEqual(await localObject.callFunctionJSON(getItem, [{value: 1}]), 28);
+    });
+  });
+
+  describe('callFunction', () => {
+    it('applies compare-and-swap calls to the original object in order', async () => {
+      const object = [6, 28, 496];
+      const localObject = SDK.RemoteObject.RemoteObject.fromLocalObject(object);
+
+      function compareAndSwap(this: number[], index: number, value: number, newValue: number): string {
+        if (this[index] !== value) {
+          throw new Error('Data corrupted');
+        }
+        this[index] = newValue;
+        return 'Done';
+      }
+
+      let result = await localObject.callFunction(compareAndSwap, [{value: 1}, {value: 28}, {value: 42}]);
+      assert.strictEqual(result.object?.description, 'Done');
+      result = await localObject.callFunction(compareAndSwap, [{value: 1}, {value: 28}, {value: 42}]);
+      assert.isTrue(result.wasThrown);
+
+      await localObject.callFunction(compareAndSwap, [{value: 0}, {value: 6}, {value: 7}]);
+      assert.deepEqual(object, [7, 42, 496]);
+    });
+
+    it('accepts an undefined argument list', async () => {
+      const localObject = SDK.RemoteObject.RemoteObject.fromLocalObject([6, 28, 496]);
+
+      function guessWhat(): number {
+        return 42;
+      }
+
+      const result = await localObject.callFunction(guessWhat, undefined);
+      assert.strictEqual(result.object?.description, '42');
+    });
+  });
+});

@@ -30,6 +30,17 @@ function getRootTreeElement(section: ObjectUI.ObjectPropertiesSection.ObjectProp
   return child;
 }
 
+/**
+ * Dumps the text of a tree element and its descendants, one line per element,
+ * indenting each nesting level by four spaces.
+ */
+function dumpTree(element: UI.TreeOutline.TreeElement, indent = ''): string[] {
+  return [
+    `${indent}${element.listItemElement.textContent}`,
+    ...element.children().flatMap(child => dumpTree(child, `${indent}    `)),
+  ];
+}
+
 export type MockPropertyValue = number|string|MockPropertyValue[]|RecursiveObjectDefinition;
 
 export interface RecursiveObjectDefinition {
@@ -675,6 +686,38 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
       await raf();
       assert.isFalse(groupElement.classList.contains('expanded'));
     });
+  });
+
+  it('works with local remote objects', async () => {
+    const array = [];
+    for (let i = 1000; i < 1256; ++i) {
+      array.push(i);
+    }
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({a: 'b', c: array});
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.root = object;
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = 'local object';
+    section.title = titleSpan;
+    renderElementIntoDOM(section);
+    assert.exists(section.objectTree);
+    section.objectTree.expanded = true;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const rootElement = getRootTreeElement(section);
+    const arrayElement = rootElement.childAt(1);
+    assert.exists(arrayElement);
+    arrayElement.expand();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.deepEqual(dumpTree(rootElement), [
+      'local object',
+      '    a: "b"',
+      '    c: [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016,…]',
+      '        [0 … 99]',
+      '        [100 … 199]',
+      '        [200 … 255]',
+    ]);
   });
 
   it('populates the context menu with a copy option for LocalJSONObjects', async () => {

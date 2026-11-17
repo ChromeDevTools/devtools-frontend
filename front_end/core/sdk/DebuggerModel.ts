@@ -1384,15 +1384,19 @@ export class CallFrame {
 
     const evaluateResponse = await this.debuggerModel.agent.invoke_evaluateOnCallFrame(
         {callFrameId: this.id, expression, silent: true, objectGroup: 'backtrace'});
-    if (evaluateResponse.getError() || evaluateResponse.exceptionDetails) {
+    if (evaluateResponse.getError()) {
+      return null;
+    }
+    if (evaluateResponse.exceptionDetails) {
+      this.debuggerModel.invalidateScopeChains();
       return null;
     }
     const response = await this.debuggerModel.agent.invoke_setReturnValue({newValue: evaluateResponse.result});
-    if (response.getError()) {
-      return null;
+    if (!response.getError()) {
+      this.#returnValue = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
     }
-    this.#returnValue = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
-    return this.#returnValue;
+    this.debuggerModel.invalidateScopeChains();
+    return response.getError() ? null : this.#returnValue;
   }
 
   location(): Location {

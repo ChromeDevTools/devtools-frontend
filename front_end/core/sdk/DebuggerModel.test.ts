@@ -554,6 +554,79 @@ describe('DebuggerModel', () => {
     });
   });
 
+  describe('CallFrame.setReturnValue', () => {
+    function setup() {
+      const connection = new MockCDPConnection();
+      const evaluateOnCallFrame = sinon.stub().returns({
+        result: {result: {type: Protocol.Runtime.RemoteObjectType.Number, value: 42}},
+      });
+      const setReturnValue = sinon.stub().returns({result: {}});
+      connection.setHandler('Debugger.evaluateOnCallFrame', evaluateOnCallFrame);
+      connection.setHandler('Debugger.setReturnValue', setReturnValue);
+      const debuggerModel = universe.createTarget({connection}).model(SDK.DebuggerModel.DebuggerModel)!;
+      const invalidateScopeChains = sinon.stub(debuggerModel, 'invalidateScopeChains');
+      const script =
+          new SDK.Script.Script(debuggerModel, SCRIPT_ID_ONE, urlString`https://script-host/script.js`, 0, 0, 0, 0, 0,
+                                '', false, undefined, false, 0, null, null, null, null, null, null, null);
+      const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, script, {
+        callFrameId: 'frame' as Protocol.Debugger.CallFrameId,
+        functionName: 'test',
+        location: {scriptId: SCRIPT_ID_ONE, lineNumber: 0, columnNumber: 0},
+        url: 'test-url',
+        scopeChain: [],
+        this: {type: 'object'} as Protocol.Runtime.RemoteObject,
+        returnValue: {type: Protocol.Runtime.RemoteObjectType.Number, value: 1},
+      });
+      return {callFrame, evaluateOnCallFrame, setReturnValue, invalidateScopeChains};
+    }
+
+    it('updates the return value before invalidating scope chains', async () => {
+      const {callFrame, invalidateScopeChains} = setup();
+      let returnValueDuringInvalidation: unknown;
+      invalidateScopeChains.callsFake(() => {
+        returnValueDuringInvalidation = callFrame.returnValue()?.value;
+      });
+
+      const updated = await callFrame.setReturnValue('42');
+
+      assert.strictEqual(updated?.value, 42);
+      assert.strictEqual(returnValueDuringInvalidation, 42);
+      sinon.assert.calledOnce(invalidateScopeChains);
+    });
+
+    it('invalidates scope chains even when the expression throws', async () => {
+      const {callFrame, evaluateOnCallFrame, invalidateScopeChains} = setup();
+      evaluateOnCallFrame.returns({
+        result: {
+          result: {type: Protocol.Runtime.RemoteObjectType.Object},
+          exceptionDetails: {exceptionId: 1, text: 'Uncaught', lineNumber: 0, columnNumber: 0},
+        },
+      });
+
+      assert.isNull(await callFrame.setReturnValue('x = 2, boom()'));
+      assert.strictEqual(callFrame.returnValue()?.value, 1);
+      sinon.assert.calledOnce(invalidateScopeChains);
+    });
+
+    it('invalidates scope chains when Debugger.setReturnValue fails after evaluation', async () => {
+      const {callFrame, setReturnValue, invalidateScopeChains} = setup();
+      setReturnValue.returns({error: {message: 'Failed', code: -32000}});
+
+      assert.isNull(await callFrame.setReturnValue('x = 2, 42'));
+      assert.strictEqual(callFrame.returnValue()?.value, 1);
+      sinon.assert.calledOnce(invalidateScopeChains);
+    });
+
+    it('does not invalidate scope chains on evaluation protocol error', async () => {
+      const {callFrame, evaluateOnCallFrame, invalidateScopeChains} = setup();
+      evaluateOnCallFrame.returns({error: {message: 'Failed', code: -32000}});
+
+      assert.isNull(await callFrame.setReturnValue('42'));
+      assert.strictEqual(callFrame.returnValue()?.value, 1);
+      sinon.assert.notCalled(invalidateScopeChains);
+    });
+  });
+
   describe('pause', () => {
     it('with empty call frame list will invoke plain step-into', async () => {
       const connection = new MockCDPConnection();

@@ -1020,26 +1020,15 @@ export abstract class AiAgent<T> {
   }
 
   /**
-   * Parses a streaming text response into a
-   * though/action/title/answer/suggestions component.
+   * Parses a partial or completed model text response into answer text and
+   * optional follow-up suggestions.
+   *
+   * By default, extracts `SUGGESTIONS:` text directives for V1 agents
+   * (`StylingAgent`, `PerformanceAgent`). `AiAgent2` overrides this method
+   * because V2 receives suggestions from `suggestFollowUps` tool calls.
    */
   parseTextResponse(response: string): ParsedResponse {
     return this.parseTextResponseForSuggestions(response.trim());
-  }
-
-  /**
-   * Parses the text of a response that is still streaming. Only the `answer`
-   * of the result is shown, as a partial answer. By default, partial answers
-   * use the same parsing as completed answers.
-   *
-   * This hook exists so that `AiAgent2` (AI V2) can parse follow-up
-   * suggestions differently without changing the V1 agents. Remove it once
-   * AI V2 ships and the V1 agents are removed. b/568697679 explores getting
-   * suggestions from a function call instead of parsing them from text,
-   * which would remove the need for this parsing.
-   */
-  protected parsePartialTextResponse(response: string): ParsedResponse {
-    return this.parseTextResponse(response);
   }
 
   protected async finalizeAnswer(answer: AnswerResponse): Promise<AnswerResponse> {
@@ -1130,7 +1119,7 @@ export abstract class AiAgent<T> {
           functionCalls = fetchResult.functionCalls;
 
           if (!functionCalls && !fetchResult.completed) {
-            const parsed = this.parsePartialTextResponse(textResponse);
+            const parsed = this.parseTextResponse(textResponse);
             const partialAnswer = 'answer' in parsed ? parsed.answer : '';
             if (!partialAnswer) {
               continue;
@@ -1230,10 +1219,8 @@ export abstract class AiAgent<T> {
       }],
       role: Host.AidaClient.Role.MODEL,
     });
-    // Fall back to text-parsed `SUGGESTIONS:` while server-side preambles still
-    // emit text directives.
-    // TODO(b/568697679): Remove `parsedResponse.suggestions` fallback once
-    // `suggestFollowUps` is deployed and the server-side preamble is updated.
+    // The `parsedResponse.suggestions` fallback for text-parsed `SUGGESTIONS:`
+    // remains only while V1 agents (`StylingAgent`, `PerformanceAgent`) exist.
     const suggestions = followUpSuggestions ?? parsedResponse.suggestions;
     yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId, suggestions);
   }
@@ -1677,9 +1664,10 @@ export abstract class AiAgent<T> {
 }
 
 /**
- * Validates and sanitizes raw follow-up suggestions from the model (either
- * `args.suggestions` from a `suggestFollowUps` tool call or a `JSON.parse`d
- * `SUGGESTIONS:` text directive).
+ * Validates and sanitizes raw follow-up suggestions from the model. Used for
+ * `args.suggestions` from `suggestFollowUps` tool calls, and for parsed
+ * `SUGGESTIONS:` text directives while V1 agents (`StylingAgent`,
+ * `PerformanceAgent`) exist.
  *
  * Expects `parsed` to be a `string[]`, but accepts `unknown` because model
  * output is untrusted. Returns non-empty string items with whitespace
@@ -1714,8 +1702,8 @@ export function sanitizeSuggestionsList(parsed: unknown): [string, ...string[]]|
  * Returns `undefined` if `suggestions` is not valid JSON, not an array, or no
  * items remain.
  *
- * TODO(b/568697679): Remove this JSON-string wrapper and consolidate into a
- * single function once legacy `SUGGESTIONS:` text parsing is removed.
+ * This JSON-string sanitization wrapper remains only while V1 agents
+ * (`StylingAgent`, `PerformanceAgent`) exist.
  */
 export function sanitizeSuggestions(suggestions: string): [string, ...string[]]|undefined {
   try {

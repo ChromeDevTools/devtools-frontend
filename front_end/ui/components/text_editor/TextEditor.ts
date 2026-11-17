@@ -9,7 +9,15 @@ import * as UI from '../../legacy/legacy.js';
 import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
-import {baseConfiguration, dummyDarkTheme, dynamicSetting, DynamicSetting, themeSelection} from './config.js';
+import {
+  baseConfiguration,
+  drawSelectionCompartment,
+  dummyDarkTheme,
+  dynamicSetting,
+  DynamicSetting,
+  getConfiguredDrawSelectionExtension,
+  themeSelection,
+} from './config.js';
 import {toLineColumn, toOffset} from './position.js';
 
 declare global {
@@ -37,9 +45,10 @@ export class TextEditor extends HTMLElement {
     }
   };
   #devtoolsResizeObserver = new ResizeObserver(this.#resizeListener);
+  #observedThemeSupport?: ThemeSupport.ThemeSupport;
   #themeListener = (): void => {
     const editor = this.#activeEditor;
-    if (!editor) {
+    if (!editor || !ThemeSupport.ThemeSupport.hasInstance()) {
       return;
     }
     const isDark = ThemeSupport.ThemeSupport.instance().themeName() === 'dark';
@@ -49,6 +58,21 @@ export class TextEditor extends HTMLElement {
       return;
     }
     editor.dispatch({effects: themeSelection.reconfigure(isDark ? dummyDarkTheme : [])});
+  };
+  #caretBlinkIntervalListener = (): void => {
+    const editor = this.#activeEditor;
+    if (!editor) {
+      return;
+    }
+    const current = drawSelectionCompartment.get(editor.state);
+    if (current === undefined) {
+      return;
+    }
+    const expected = getConfiguredDrawSelectionExtension();
+    if (current === expected) {
+      return;
+    }
+    editor.dispatch({effects: drawSelectionCompartment.reconfigure(expected)});
   };
 
   static get observedAttributes(): string[] {
@@ -105,9 +129,10 @@ export class TextEditor extends HTMLElement {
 
     this.#ensureSettingListeners();
     this.#startObservingResize();
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#themeListener);
-    // The theme may have changed while this editor was disconnected.
+    this.#attachThemeSupportListeners();
+    // The theme or caret blink interval may have changed while this editor was disconnected.
     this.#themeListener();
+    this.#caretBlinkIntervalListener();
     return this.#activeEditor;
   }
 
@@ -139,6 +164,7 @@ export class TextEditor extends HTMLElement {
     if (this.#activeEditor) {
       this.#activeEditor.setState(state);
       this.#ensureSettingListeners();
+      this.#caretBlinkIntervalListener();
     }
   }
 
@@ -150,6 +176,9 @@ export class TextEditor extends HTMLElement {
       this.#createEditor();
     } else {
       this.#activeEditor.dispatch({effects: this.#lastScrollSnapshot});
+      this.#attachThemeSupportListeners();
+      this.#themeListener();
+      this.#caretBlinkIntervalListener();
     }
   }
 
@@ -159,12 +188,36 @@ export class TextEditor extends HTMLElement {
       this.#pendingState = this.#activeEditor.state;
       this.#devtoolsResizeObserver.disconnect();
       window.removeEventListener('resize', this.#resizeListener);
-      ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
-                                                               this.#themeListener);
+      this.#detachThemeSupportListeners();
       this.#activeEditor.destroy();
       this.#activeEditor = undefined;
       this.#ensureSettingListeners();
     }
+  }
+
+  #attachThemeSupportListeners(): void {
+    if (!ThemeSupport.ThemeSupport.hasInstance()) {
+      return;
+    }
+    const themeSupport = ThemeSupport.ThemeSupport.instance();
+    if (this.#observedThemeSupport === themeSupport) {
+      return;
+    }
+    this.#detachThemeSupportListeners();
+    this.#observedThemeSupport = themeSupport;
+    themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#themeListener);
+    themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName,
+                                  this.#caretBlinkIntervalListener);
+  }
+
+  #detachThemeSupportListeners(): void {
+    if (!this.#observedThemeSupport) {
+      return;
+    }
+    this.#observedThemeSupport.removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#themeListener);
+    this.#observedThemeSupport.removeEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName,
+                                                   this.#caretBlinkIntervalListener);
+    this.#observedThemeSupport = undefined;
   }
 
   override focus(): void {

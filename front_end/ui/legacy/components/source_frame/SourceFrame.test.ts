@@ -7,6 +7,7 @@ import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
@@ -16,10 +17,11 @@ import {
   dispatchPasteEvent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
-import {describeWithEnvironment, expectConsoleLogs} from '../../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, expectConsoleLogs, updateHostConfig} from '../../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../../testing/ExpectStubCall.js';
 import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
+import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import {render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
@@ -179,6 +181,22 @@ describeWithEnvironment('SourceFrame', () => {
     sinon.assert.calledOnce(stopPropagationSpy);
 
     sourceFrame.disposeView();
+  });
+
+  it('configures the text editor caret blink interval from hostConfig and live updates', async () => {
+    updateHostConfig({caretBlinkInterval: 0});
+    const sourceFrame = await createSourceFrame('Example');
+    renderElementIntoDOM(sourceFrame);
+
+    assert.strictEqual(TextEditor.Config.drawSelectionCompartment.get(sourceFrame.textEditor.state),
+                       TextEditor.Config.getDrawSelectionExtension(0));
+
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
+        Host.InspectorFrontendHostAPI.Events.CaretBlinkIntervalChanged, 500);
+    assert.strictEqual(TextEditor.Config.drawSelectionCompartment.get(sourceFrame.textEditor.state),
+                       TextEditor.Config.getDrawSelectionExtension(500));
+
+    sourceFrame.detach();
   });
 
   describe('toolbarItems', () => {

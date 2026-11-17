@@ -5,11 +5,13 @@
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
 import {Icon} from '../../kit/kit.js';
 import * as UI from '../../legacy/legacy.js';
+import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
 import * as SettingsUI from '../../settings/settings.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
@@ -358,6 +360,35 @@ function themeIsDark(): boolean {
 
 export const dummyDarkTheme: CM.Extension = CM.EditorView.theme({}, {dark: true});
 export const themeSelection: CM.Compartment = new CM.Compartment();
+export const drawSelectionCompartment: CM.Compartment = new CM.Compartment();
+
+const defaultDrawSelection = CM.drawSelection();
+const nonBlinkingDrawSelection = CM.drawSelection({cursorBlinkRate: 0});
+const cachedDrawSelectionExtensions = new Map<number, CM.Extension>([[0, nonBlinkingDrawSelection]]);
+
+export function getDrawSelectionExtension(caretBlinkInterval?: number): CM.Extension {
+  const normalized = ThemeSupport.normalizeCaretBlinkInterval(caretBlinkInterval);
+  if (normalized === undefined) {
+    return defaultDrawSelection;
+  }
+  const cursorBlinkRate = normalized * 2;
+  if (!Number.isFinite(cursorBlinkRate)) {
+    return defaultDrawSelection;
+  }
+  let extension = cachedDrawSelectionExtensions.get(cursorBlinkRate);
+  if (!extension) {
+    extension = CM.drawSelection({cursorBlinkRate});
+    cachedDrawSelectionExtensions.set(cursorBlinkRate, extension);
+  }
+  return extension;
+}
+
+export function getConfiguredDrawSelectionExtension(): CM.Extension {
+  const caretBlinkInterval = ThemeSupport.ThemeSupport.hasInstance() ?
+      ThemeSupport.ThemeSupport.instance().caretBlinkInterval() :
+      Root.Runtime.hostConfig.caretBlinkInterval;
+  return getDrawSelectionExtension(caretBlinkInterval);
+}
 
 export function theme(): CM.Extension {
   return [editorTheme, themeIsDark() ? themeSelection.of(dummyDarkTheme) : themeSelection.of([])];
@@ -378,7 +409,7 @@ export function baseConfiguration(text: string|CM.Text): CM.Extension {
     CM.highlightSpecialChars(),
     CM.highlightSelectionMatches(),
     CM.history(),
-    CM.drawSelection(),
+    drawSelectionCompartment.of(getConfiguredDrawSelectionExtension()),
     CM.EditorState.allowMultipleSelections.of(true),
     CM.indentOnInput(),
     CM.syntaxHighlighting(CodeHighlighter.CodeHighlighter.highlightStyle),

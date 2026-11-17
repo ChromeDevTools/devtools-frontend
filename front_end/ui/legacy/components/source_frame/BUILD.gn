@@ -112,6 +112,7 @@ devtools_ui_module("unittests") {
   ts_deps = [
     ":bundle",
     "../../../../core/common:bundle",
+    "../../../../core/host:bundle",
     "../../../../core/platform:bundle",
     "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
@@ -121,6 +122,7 @@ devtools_ui_module("unittests") {
     "../../../../third_party/codemirror.next:bundle",
     "../../../../ui/legacy:bundle",
     "../../../components/buttons:bundle",
+    "../../../components/text_editor:bundle",
     "../../../lit:bundle",
     "../object_ui:bundle",
   ]

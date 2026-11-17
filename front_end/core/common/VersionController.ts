@@ -639,21 +639,17 @@ export class VersionController {
   }
 
   updateVersionFrom37To38(): void {
-    const getConsoleInsightsEnabledSetting = (): Setting<boolean>|undefined => {
-      try {
-        return this.#settings.moduleSetting('console-insights-enabled') as Setting<boolean>;
-      } catch {
-        return;
-      }
-    };
+    if (!this.#settings.globalStorage.has('console-insights-enabled')) {
+      return;
+    }
 
-    const consoleInsightsEnabled = getConsoleInsightsEnabledSetting();
+    const consoleInsightsEnabled = this.#settings.createSetting('console-insights-enabled', false);
     const onboardingFinished = this.#settings.createLocalSetting('console-insights-onboarding-finished', false);
 
-    if (consoleInsightsEnabled && consoleInsightsEnabled.get() === true && onboardingFinished.get() === false) {
+    if (consoleInsightsEnabled.get() === true && onboardingFinished.get() === false) {
       consoleInsightsEnabled.set(false);
     }
-    if (consoleInsightsEnabled && consoleInsightsEnabled.get() === false) {
+    if (consoleInsightsEnabled.get() === false) {
       onboardingFinished.set(false);
     }
   }

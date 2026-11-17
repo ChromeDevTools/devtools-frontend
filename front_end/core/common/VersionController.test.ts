@@ -349,12 +349,6 @@ describe('updateVersionFrom37To38', () => {
     const globalStorage = new Common.Settings.SettingsStorage({}, mockStore);
     const localStorage = new Common.Settings.SettingsStorage({}, mockStore);
 
-    Common.Settings.registerSettingExtension({
-      settingName: 'console-insights-enabled',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: true,
-    });
-
     settings = new Common.Settings.Settings({
       syncedStorage,
       globalStorage,
@@ -365,13 +359,9 @@ describe('updateVersionFrom37To38', () => {
     });
   });
 
-  afterEach(() => {
-    Common.Settings.resetSettings();  // Clear SettingsRegistrations.
-  });
-
   it('disables console insights setting if onboarding not done', () => {
     const versionController = new Common.VersionController.VersionController(settings);
-    const consoleInsightsEnabled: Common.Settings.Setting<boolean> = settings.moduleSetting('console-insights-enabled');
+    const consoleInsightsEnabled = settings.createSetting('console-insights-enabled', false);
     consoleInsightsEnabled.set(true);
     const onboardingFinished = settings.createLocalSetting('console-insights-onboarding-finished', false);
 
@@ -382,7 +372,7 @@ describe('updateVersionFrom37To38', () => {
 
   it('preserves state if console insights disabled and not onboarded ', () => {
     const versionController = new Common.VersionController.VersionController(settings);
-    const consoleInsightsEnabled: Common.Settings.Setting<boolean> = settings.moduleSetting('console-insights-enabled');
+    const consoleInsightsEnabled = settings.createSetting('console-insights-enabled', false);
     consoleInsightsEnabled.set(false);
     const onboardingFinished = settings.createLocalSetting('console-insights-onboarding-finished', false);
 
@@ -393,7 +383,7 @@ describe('updateVersionFrom37To38', () => {
 
   it('preserves state if console insights enabled and onboarded', () => {
     const versionController = new Common.VersionController.VersionController(settings);
-    const consoleInsightsEnabled: Common.Settings.Setting<boolean> = settings.moduleSetting('console-insights-enabled');
+    const consoleInsightsEnabled = settings.createSetting('console-insights-enabled', false);
     consoleInsightsEnabled.set(true);
     const onboardingFinished = settings.createLocalSetting('console-insights-onboarding-finished', true);
 
@@ -404,13 +394,35 @@ describe('updateVersionFrom37To38', () => {
 
   it('resets onboarding if console insights setting is disabled', () => {
     const versionController = new Common.VersionController.VersionController(settings);
-    const consoleInsightsEnabled: Common.Settings.Setting<boolean> = settings.moduleSetting('console-insights-enabled');
+    const consoleInsightsEnabled = settings.createSetting('console-insights-enabled', false);
     consoleInsightsEnabled.set(false);
     const onboardingFinished = settings.createLocalSetting('console-insights-onboarding-finished', true);
 
     versionController.updateVersionFrom37To38();
     assert.isFalse(consoleInsightsEnabled.get());
     assert.isFalse(onboardingFinished.get());
+  });
+
+  it('migrates console-insights-enabled during constructor migration when not pre-registered', () => {
+    const mockStore = new InMemoryStorage();
+    const syncedStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    const globalStorage = new Common.Settings.SettingsStorage({
+      [Common.VersionController.VersionController.GLOBAL_VERSION_SETTING_NAME]: '37',
+      'console-insights-enabled': JSON.stringify(true),
+    },
+                                                              mockStore);
+    const localStorage = new Common.Settings.SettingsStorage({}, mockStore);
+
+    const freshSettings = new Common.Settings.Settings({
+      syncedStorage,
+      globalStorage,
+      localStorage,
+      settingRegistrations: [],
+      runSettingsMigration: true,
+      console: new Common.Console.Console(),
+    });
+
+    assert.isFalse(freshSettings.createSetting('console-insights-enabled', true).get());
   });
 });
 

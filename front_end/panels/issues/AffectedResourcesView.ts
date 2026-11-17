@@ -16,13 +16,13 @@ import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import {Icon} from '../../ui/kit/kit.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as PanelsCommon from '../common/common.js';
 
 import type {IssueView} from './IssueView.js';
+
+const {classMap, ref} = Directives;
 
 const UIStrings = {
   /**
@@ -102,64 +102,98 @@ export function renderFrameCell(frame: FrameCellData|undefined): LitTemplate {
   // clang-format on
 }
 
+export interface ViewInput {
+  resourceNameWithCount: string;
+  labelClass?: string;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const labelClasses: Record<string, boolean> = {'affected-resource-label': true};
+  if (input.labelClass) {
+    labelClasses[input.labelClass] = true;
+  }
+  render(html`<div class=${classMap(labelClasses)}>${input.resourceNameWithCount}</div>`, target);
+};
+
+export interface TableViewInput {
+  onTableRef: (table: HTMLTableElement) => void;
+}
+
+export type TableView = (input: TableViewInput, output: undefined, target: HTMLElement) => void;
+
+export const TABLE_VIEW: TableView = (input, _output, target) => {
+  render(html`<table class="affected-resource-list" ${ref(e => {
+           if (e instanceof HTMLTableElement) {
+             input.onTableRef(e);
+           }
+         })}></table>`,
+         target);
+};
+
 /**
  * The base class for all affected resource views. It provides basic scaffolding
  * as well as machinery for resolving request and frame ids to SDK objects.
  */
 export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   readonly #parentView: IssueView;
+  readonly #view: View;
   protected issue: IssuesManager.IssueAggregator.AggregatedIssue;
-  protected affectedResourcesCountElement: HTMLElement;
   protected affectedResources: HTMLElement;
-  #affectedResourcesCount: number;
-  #frameListeners: Common.EventTarget.EventDescriptor[];
-  #unresolvedFrameIds: Set<string>;
+  #affectedResourcesCount = 0;
+  #resourceNameWithCount = '';
+  #frameListeners: Common.EventTarget.EventDescriptor[] = [];
+  #unresolvedFrameIds = new Set<string>();
   protected requestResolver: Logs.RequestResolver.RequestResolver;
 
-  constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string) {
+  constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string,
+              view: View = DEFAULT_VIEW, tableView: TableView = TABLE_VIEW) {
     super(/* title */ undefined, /* expandable */ undefined, jslogContext);
     this.#parentView = parent;
+    this.#view = view;
     this.issue = issue;
     this.toggleOnClick = true;
-    this.affectedResourcesCountElement = this.createAffectedResourcesCounter();
+    this.#render();
 
-    this.affectedResources = this.createAffectedResources();
-    this.#affectedResourcesCount = 0;
+    const body = new UI.TreeOutline.TreeElement();
+    let table: HTMLTableElement|undefined;
+    tableView({
+      onTableRef: el => {
+        table = el;
+      },
+    },
+              undefined, body.listItemElement);
+    if (!table) {
+      throw new Error('The affected resources table view did not render a table');
+    }
+    this.appendChild(body);
+    this.affectedResources = table;
     this.requestResolver = new Logs.RequestResolver.RequestResolver(Logs.NetworkLog.NetworkLog.instance());
-    this.#frameListeners = [];
-    this.#unresolvedFrameIds = new Set();
   }
 
-  /**
-   * Sets the issue to take the resources from. Does not
-   * trigger an update, the caller needs to do that explicitly.
-   */
   setIssue(issue: IssuesManager.IssueAggregator.AggregatedIssue): void {
     this.issue = issue;
   }
 
-  createAffectedResourcesCounter(): HTMLElement {
-    const counterLabel = document.createElement('div');
-    counterLabel.classList.add('affected-resource-label');
-    this.listItemElement.appendChild(counterLabel);
-    return counterLabel;
+  #render(): void {
+    const input: ViewInput = {
+      resourceNameWithCount: this.#resourceNameWithCount,
+      labelClass: this.getAffectedResourcesLabelClass(),
+    };
+    this.#view(input, undefined, this.listItemElement);
   }
 
-  createAffectedResources(): HTMLElement {
-    const body = new UI.TreeOutline.TreeElement();
-    const affectedResources = document.createElement('table');
-    affectedResources.classList.add('affected-resource-list');
-    body.listItemElement.appendChild(affectedResources);
-    this.appendChild(body);
-
-    return affectedResources;
+  protected getAffectedResourcesLabelClass(): string|undefined {
+    return undefined;
   }
 
   protected abstract getResourceNameWithCount(count: number): string;
 
   protected updateAffectedResourceCount(count: number): void {
     this.#affectedResourcesCount = count;
-    this.affectedResourcesCountElement.textContent = this.getResourceNameWithCount(count);
+    this.#resourceNameWithCount = this.getResourceNameWithCount(count);
+    this.#render();
     this.hidden = this.#affectedResourcesCount === 0;
     this.#parentView.updateAffectedResourceVisibility();
   }
@@ -169,7 +203,6 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   }
 
   clear(): void {
-    this.affectedResources.textContent = '';
     this.requestResolver.clear();
   }
 
@@ -309,57 +342,6 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     cellElement.classList.add('affected-resource-element', 'devtools-link');
     render(anchor, cellElement);
     return cellElement;
-  }
-
-  protected appendSourceLocation(
-      element: HTMLElement,
-      sourceLocation: {url: string, lineNumber: number, scriptId?: Protocol.Runtime.ScriptId, columnNumber?: number}|
-      undefined,
-      target: SDK.Target.Target|null|undefined): void {
-    const sourceCodeLocation = document.createElement('td');
-    sourceCodeLocation.classList.add('affected-source-location');
-    if (sourceLocation) {
-      const linkifier = new Components.Linkifier.Linkifier(UI.UIUtils.MaxLengthForDisplayedURLsInConsole);
-      const sourceAnchor = linkifier.linkifyScriptLocation(
-          target || null, sourceLocation.scriptId || null, sourceLocation.url as Platform.DevToolsPath.UrlString,
-          sourceLocation.lineNumber, {columnNumber: sourceLocation.columnNumber});
-      sourceAnchor.setAttribute('jslog', `${VisualLogging.link('source-location').track({click: true})}`);
-      sourceCodeLocation.appendChild(sourceAnchor);
-    }
-    element.appendChild(sourceCodeLocation);
-  }
-
-  protected appendColumnTitle(header: HTMLElement, title: string, additionalClass: string|null = null): void {
-    const info = document.createElement('td');
-    info.classList.add('affected-resource-header');
-    if (additionalClass) {
-      info.classList.add(additionalClass);
-    }
-    info.textContent = title;
-    header.appendChild(info);
-  }
-
-  protected createIssueDetailCell(textContent: string|HTMLElement,
-                                  additionalClass: string|null = null): HTMLTableDataCellElement {
-    const cell = document.createElement('td');
-
-    if (typeof textContent === 'string') {
-      cell.textContent = textContent;
-    } else {
-      cell.appendChild(textContent);
-    }
-
-    if (additionalClass) {
-      cell.classList.add(additionalClass);
-    }
-    return cell;
-  }
-
-  protected appendIssueDetailCell(element: HTMLElement, textContent: string|HTMLElement,
-                                  additionalClass: string|null = null): HTMLTableDataCellElement {
-    const cell = this.createIssueDetailCell(textContent, additionalClass);
-    element.appendChild(cell);
-    return cell;
   }
 
   abstract update(): void;

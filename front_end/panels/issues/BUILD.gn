@@ -104,6 +104,7 @@ devtools_ui_module("unittests") {
     "AffectedDescendantsWithinSelectElementView.test.ts",
     "AffectedLazyLoadImagesView.test.ts",
     "AffectedMetadataAllowedSitesView.test.ts",
+    "AffectedResourcesView.test.ts",
     "AffectedSelectivePermissionsInterventionView.test.ts",
     "GenericIssueDetailsView.test.ts",
     "IssueView.test.ts",

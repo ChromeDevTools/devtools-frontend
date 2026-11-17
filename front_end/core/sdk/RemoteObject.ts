@@ -647,6 +647,8 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
     if (error) {
       return error;
     }
+    // Others (e.g. the inline values in the editor) hold on to the previous value of the variable.
+    this.debuggerModel().invalidateScopeChains();
     if (this.#savedScopeProperties) {
       for (const property of this.#savedScopeProperties) {
         if (property.name === name) {

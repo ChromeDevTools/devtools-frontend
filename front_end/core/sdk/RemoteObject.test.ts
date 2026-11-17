@@ -444,6 +444,40 @@ describe('ScopeRemoteObject', () => {
     const properties = await remoteObject.getAllProperties(false, false);
     assert.deepEqual(properties.properties?.map(p => p.writable), [true, true, true]);
   });
+
+  describe('setting a variable', () => {
+    function setup({succeeds}: {succeeds: boolean}) {
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('Runtime.evaluate',
+                                   () => ({result: {type: Protocol.Runtime.RemoteObjectType.Number, value: 42}}));
+      connection.setHandler('Debugger.setVariableValue',
+                            () => succeeds ? {result: {}} : {error: {message: 'Failed', code: -32000}});
+      const target = universe.createTarget({connection});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
+      const invalidateScopeChains = sinon.stub(debuggerModel, 'invalidateScopeChains');
+      const remoteObject = new SDK.RemoteObject.ScopeRemoteObject(
+          target.model(SDK.RuntimeModel.RuntimeModel)!, 'scope' as Protocol.Runtime.RemoteObjectId,
+          new SDK.RemoteObject.ScopeRef(0, 'frame-id' as Protocol.Debugger.CallFrameId),
+          Protocol.Runtime.RemoteObjectType.Object, undefined, undefined);
+      return {remoteObject, invalidateScopeChains};
+    }
+
+    it('invalidates the scope chains, as others hold on to the previous value', async () => {
+      const {remoteObject, invalidateScopeChains} = setup({succeeds: true});
+
+      assert.isUndefined(await remoteObject.setPropertyValue('a', '42'));
+
+      sinon.assert.calledOnce(invalidateScopeChains);
+    });
+
+    it('does not invalidate the scope chains if the variable could not be set', async () => {
+      const {remoteObject, invalidateScopeChains} = setup({succeeds: false});
+
+      assert.strictEqual(await remoteObject.setPropertyValue('a', '42'), 'Failed');
+
+      sinon.assert.notCalled(invalidateScopeChains);
+    });
+  });
 });
 
 describe('RemoteError', () => {

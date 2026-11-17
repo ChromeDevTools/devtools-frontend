@@ -13,7 +13,6 @@ import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHe
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
-import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import * as Sensors from './sensors.js';
 
@@ -878,9 +877,6 @@ describeWithEnvironment('SensorsView', () => {
       const target = createTarget({connection});
       assert.exists(target.model(SDK.EmulationModel.EmulationModel));
 
-      // The throttling manager singleton outlives the per-test SDK singletons,
-      // so the view needs a fresh one to observe the target created above.
-      MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
       view.detach();
       view = new Sensors.SensorsView.SensorsView();
       renderElementIntoDOM(view);
@@ -901,7 +897,7 @@ describeWithEnvironment('SensorsView', () => {
 
     const checkbox = (): UI.UIUtils.CheckboxLabel => query('devtools-checkbox');
     const numericInput = (): HTMLInputElement => query('.concurrency-details input');
-    const resetButton = (): HTMLElement => query('[aria-label="Reset to the default value"]');
+    const resetButton = (): HTMLElement => query('[accessiblelabel="Reset to the default value"]');
     const warning = (): HTMLElement =>
         query('[aria-label="Exceeding the default value may degrade system performance"]');
     const isVisible = (element: HTMLElement): boolean => getComputedStyle(element).visibility === 'visible';

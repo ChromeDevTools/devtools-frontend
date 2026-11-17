@@ -1836,6 +1836,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/mobile_throttling/ThrottlingManager.js",
   "front_end/panels/mobile_throttling/ThrottlingPresets.js",
   "front_end/panels/mobile_throttling/ThrottlingSettingsTab.js",
+  "front_end/panels/mobile_throttling/hardwareConcurrencySelector.css.js",
   "front_end/panels/mobile_throttling/throttlingSettingsTab.css.js",
   "front_end/panels/network/BinaryResourceView.js",
   "front_end/panels/network/EventSourceMessagesView.js",

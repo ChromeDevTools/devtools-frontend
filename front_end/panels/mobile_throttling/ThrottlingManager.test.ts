@@ -13,6 +13,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -20,9 +21,12 @@ import * as MobileThrottling from './mobile_throttling.js';
 
 const {
   CPUPerformanceTier,
+  DEFAULT_HARDWARE_CONCURRENCY_VIEW,
+  HardwareConcurrencySelector,
   SaveDataOverrideSelect,
   ThrottlingManager,
 } = MobileThrottling.ThrottlingManager;
+type HardwareConcurrencyViewInput = MobileThrottling.ThrottlingManager.HardwareConcurrencyViewInput;
 
 function createSaveDataOverrideSelector(): HTMLSelectElement {
   const select = document.createElement('select');
@@ -201,6 +205,195 @@ describeWithEnvironment('ThrottlingManager', () => {
       sinon.assert.notCalled(requestUpdateSpy);
     });
   });
+
+  describe('HardwareConcurrencySelector view', () => {
+    function renderView(overrides: Partial<HardwareConcurrencyViewInput> = {}): HTMLElement {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      const noop = (): void => {};
+      const input: HardwareConcurrencyViewInput = {
+        initialized: true,
+        overrideEnabled: true,
+        value: 8,
+        defaultValue: 8,
+        onToggle: noop,
+        onInput: noop,
+        onReset: noop,
+        ...overrides,
+      };
+      DEFAULT_HARDWARE_CONCURRENCY_VIEW(input, undefined, container);
+      return container;
+    }
+
+    it('renders disabled controls before initialization', () => {
+      const container = renderView({initialized: false, overrideEnabled: false, value: 0, defaultValue: 0});
+      assert.isTrue(container.classList.contains('concurrency-section'));
+      assert.isTrue(container.querySelector<UI.UIUtils.CheckboxLabel>('devtools-checkbox')?.disabled);
+      const numInput = container.querySelector<HTMLInputElement>('input[type="number"]');
+      assert.isTrue(numInput?.disabled);
+      assert.strictEqual(numInput?.value, '');
+      assert.isTrue(container.querySelector('devtools-button')?.classList.contains('concurrency-hidden'));
+      assert.isTrue(container.querySelector('devtools-icon')?.classList.contains('concurrency-hidden'));
+    });
+
+    it('toggles reset and warning visibility based on value', () => {
+      const cases: Array<{input: Partial<HardwareConcurrencyViewInput>, reset: boolean, warning: boolean}> = [
+        {input: {value: 8, defaultValue: 8}, reset: false, warning: false},
+        {input: {value: 16, defaultValue: 8}, reset: true, warning: true},
+        {input: {value: 4, defaultValue: 8}, reset: true, warning: false},
+        {input: {overrideEnabled: false, value: 16, defaultValue: 8}, reset: false, warning: false},
+      ];
+      for (const {input, reset, warning} of cases) {
+        const container = renderView(input);
+        const message = JSON.stringify(input);
+        assert.strictEqual(container.querySelector('devtools-button')?.classList.contains('concurrency-hidden'), !reset,
+                           message);
+        assert.strictEqual(container.querySelector('devtools-icon')?.classList.contains('concurrency-hidden'), !warning,
+                           message);
+        container.remove();
+      }
+    });
+
+    it('invokes onToggle when checkbox changes', () => {
+      const onToggle = sinon.spy();
+      const checkbox = renderView({onToggle}).querySelector<UI.UIUtils.CheckboxLabel>('devtools-checkbox')!;
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change'));
+      sinon.assert.calledOnceWithExactly(onToggle, false);
+    });
+
+    it('invokes onInput when number input changes', () => {
+      const onInput = sinon.spy();
+      const input = renderView({onInput}).querySelector<HTMLInputElement>('input[type="number"]')!;
+      input.value = '16';
+      input.dispatchEvent(new Event('input'));
+      sinon.assert.calledOnceWithExactly(onInput, 16);
+    });
+
+    it('does not invoke onInput when number input is cleared', () => {
+      const onInput = sinon.spy();
+      const input = renderView({onInput}).querySelector<HTMLInputElement>('input[type="number"]')!;
+      input.value = '';
+      input.dispatchEvent(new Event('input'));
+      sinon.assert.notCalled(onInput);
+    });
+
+    it('invokes onReset when reset button is clicked', () => {
+      const onReset = sinon.spy();
+      renderView({value: 12, defaultValue: 8, onReset}).querySelector<HTMLElement>('devtools-button')?.click();
+      sinon.assert.calledOnce(onReset);
+    });
+  });
+
+  describe('HardwareConcurrencySelector', () => {
+    async function mountSelector(getDefaultValue: () => Promise<number> = () => Promise.resolve(8)) {
+      const cpu = SDK.CPUThrottlingManager.CPUThrottlingManager.instance({forceNew: true});
+      const getStub = sinon.stub(cpu, 'getHardwareConcurrency').callsFake(getDefaultValue);
+      const setSpy = sinon.stub(cpu, 'setHardwareConcurrency');
+      const view = createViewFunctionStub(HardwareConcurrencySelector);
+      const widget = new HardwareConcurrencySelector(undefined, view);
+      widget.markAsRoot();
+      renderElementIntoDOM(widget);
+      await view.nextInput;
+      return {getStub, setSpy, view, widget};
+    }
+
+    function reshow(widget: UI.Widget.Widget): void {
+      widget.detach();
+      renderElementIntoDOM(widget);
+    }
+
+    it('loads default hardware concurrency on mount', async () => {
+      const {view, widget} = await mountSelector();
+      assert.deepInclude(view.input, {initialized: true, overrideEnabled: false, value: 8, defaultValue: 8});
+      widget.detach();
+    });
+
+    it('applies the value when enabled and the default value when disabled', async () => {
+      const {setSpy, view, widget} = await mountSelector();
+      view.input.onInput(16);
+      assert.deepInclude(await view.nextInput, {overrideEnabled: false, value: 16});
+      sinon.assert.notCalled(setSpy);
+
+      view.input.onToggle(true);
+      assert.isTrue((await view.nextInput).overrideEnabled);
+      sinon.assert.calledOnceWithExactly(setSpy, 16);
+
+      view.input.onToggle(false);
+      assert.deepInclude(await view.nextInput, {overrideEnabled: false, value: 16});
+      sinon.assert.calledTwice(setSpy);
+      sinon.assert.calledWithExactly(setSpy.lastCall, 8);
+      widget.detach();
+    });
+
+    it('applies input values and the default value on reset while enabled', async () => {
+      const {setSpy, view, widget} = await mountSelector();
+      view.input.onToggle(true);
+      await view.nextInput;
+
+      view.input.onInput(16);
+      assert.strictEqual((await view.nextInput).value, 16);
+      sinon.assert.calledWithExactly(setSpy.lastCall, 16);
+
+      view.input.onReset();
+      assert.deepInclude(await view.nextInput, {overrideEnabled: true, value: 8});
+      sinon.assert.calledWithExactly(setSpy.lastCall, 8);
+      widget.detach();
+    });
+
+    it('does not apply values below 1', async () => {
+      const {setSpy, view, widget} = await mountSelector();
+      view.input.onToggle(true);
+      await view.nextInput;
+      setSpy.resetHistory();
+
+      view.input.onInput(0);
+      assert.strictEqual((await view.nextInput).value, 0);
+      sinon.assert.notCalled(setSpy);
+      widget.detach();
+    });
+
+    it('retries loading the default value when shown again after a failure', async () => {
+      const {getStub, view, widget} = await mountSelector(() => Promise.reject(new Error('Target navigated')));
+      assert.isFalse(view.input.initialized);
+
+      getStub.callsFake(() => Promise.resolve(8));
+      reshow(widget);
+      assert.deepInclude(await view.nextInput, {initialized: true, value: 8});
+      sinon.assert.calledTwice(getStub);
+      widget.detach();
+    });
+
+    it('ignores changes and loads the default value once while loading', async () => {
+      const {promise, resolve} = Promise.withResolvers<number>();
+      const {getStub, setSpy, view, widget} = await mountSelector(() => promise);
+      view.input.onToggle(true);
+      view.input.onInput(4);
+      sinon.assert.notCalled(setSpy);
+
+      reshow(widget);
+      assert.deepInclude(await view.nextInput, {initialized: false, overrideEnabled: false});
+      sinon.assert.calledOnce(getStub);
+
+      resolve(8);
+      assert.isTrue((await view.nextInput).initialized);
+      widget.detach();
+    });
+
+    it('keeps the override state when shown again', async () => {
+      const {getStub, view, widget} = await mountSelector();
+      view.input.onToggle(true);
+      await view.nextInput;
+      view.input.onInput(16);
+      await view.nextInput;
+
+      reshow(widget);
+      assert.deepInclude(await view.nextInput, {initialized: true, overrideEnabled: true, value: 16});
+      sinon.assert.calledOnce(getStub);
+      widget.detach();
+    });
+  });
+
   describe('CPU Performance', () => {
     it('updates the effective CPU performance tier when selecting constant slowdown factors', async () => {
       // Set the host default tier to "Ultra".

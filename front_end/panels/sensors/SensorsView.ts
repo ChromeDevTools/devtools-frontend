@@ -187,6 +187,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {classMap, live, styleMap} = Directives;
+const {widget} = UI.Widget;
 
 function selectInputContent(event: Event): void {
   (event.currentTarget as HTMLInputElement).select();
@@ -264,8 +265,6 @@ interface OrientationViewInput {
 interface ViewInput extends LocationViewInput, OrientationViewInput {
   touchSetting: Common.Settings.Setting<unknown>;
   idleDetectionSetting: Common.Settings.Setting<unknown>;
-  hardwareConcurrencyCheckbox: HTMLElement;
-  hardwareConcurrencyDetails: HTMLElement[];
   cpuPressureSetting: Common.Settings.Setting<unknown>;
   cpuPerformanceSetting: Common.Settings.Setting<unknown>;
   cpuPerformanceNoOverrideLabel: string;
@@ -567,10 +566,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|
             input.idleDetectionSetting, i18nString(UIStrings.forcesSelectedIdleStateEmulation))}
       </div>
       <div class="panel-section-separator"></div>
-      <div class="concurrency-section">
-        ${input.hardwareConcurrencyCheckbox}
-        <div class="concurrency-details">${input.hardwareConcurrencyDetails}</div>
-      </div>
+      ${widget(MobileThrottling.ThrottlingManager.HardwareConcurrencySelector)}
       <div class="panel-section-separator"></div>
       <div class="pressure-section">
         ${SettingsUI.SettingsUI.renderControlForSetting(
@@ -613,8 +609,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   #mouseDownVector?: Geometry.Vector|null;
   #originalBoxMatrix?: DOMMatrix;
   readonly #cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
-  readonly #hardwareConcurrencyCheckbox: HTMLElement;
-  readonly #hardwareConcurrencyDetails: HTMLElement[];
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
@@ -633,11 +627,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
         Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
     this.#deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this.#deviceOrientationSetting.get());
     this.#deviceOrientationOverrideEnabled = false;
-
-    const {checkbox, numericInput, reset, warning} =
-        MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
-    this.#hardwareConcurrencyCheckbox = checkbox;
-    this.#hardwareConcurrencyDetails = [numericInput.element, reset.element, warning.element];
 
     this.#setBoxOrientation(false);
   }
@@ -675,8 +664,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       ...orientationInput,
       touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
-      hardwareConcurrencyCheckbox: this.#hardwareConcurrencyCheckbox,
-      hardwareConcurrencyDetails: this.#hardwareConcurrencyDetails,
       cpuPressureSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
       cpuPerformanceSetting:
           Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),

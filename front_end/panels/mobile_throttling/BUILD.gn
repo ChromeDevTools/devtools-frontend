@@ -9,7 +9,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [ "throttlingSettingsTab.css" ]
+  sources = [
+    "hardwareConcurrencySelector.css",
+    "throttlingSettingsTab.css",
+  ]
 }
 
 devtools_ui_module("mobile_throttling") {

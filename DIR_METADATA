@@ -72,6 +72,11 @@ agentic_review: {
     ]
   }
   capability_groups: {
+    path_expression: ["front_end/entrypoints/.*\\.(ts|css)"]
+    path_expression_exclusion: [".*\\.test\\.ts", "front_end/entrypoints/.*_worker/.*"]
+    review_capability_skills: [".agents/skills/visual-regression-audit/SKILL.md"]
+  }
+  capability_groups: {
     path_expression: [".*\\.test\\.ts", "test/.*\\.ts", "front_end/testing/.*\\.ts"]
     review_capability_skills: [
       ".agents/skills/devtools-testing-guidance/SKILL.md",

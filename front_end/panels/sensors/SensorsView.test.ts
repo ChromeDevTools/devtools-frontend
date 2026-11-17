@@ -22,12 +22,13 @@ const {CPUPerformanceTier, CPUThrottlingManager} = SDK.CPUThrottlingManager;
 describeWithEnvironment('SensorsView', () => {
   let view: Sensors.SensorsView.SensorsView;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     view = new Sensors.SensorsView.SensorsView();
     renderElementIntoDOM(view);
+    await UI.Widget.Widget.allUpdatesComplete;
   });
 
-  it('updates the custom location select when the setting changes', () => {
+  it('updates the custom location select when the setting changes', async () => {
     const customLocationsSetting =
         Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor);
 
@@ -39,6 +40,7 @@ describeWithEnvironment('SensorsView', () => {
       locale: 'en-US',
       accuracy: 0,
     }]);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const select = view.contentElement.querySelector('.geo-fields select') as HTMLSelectElement;
     assert.exists(select);
@@ -220,6 +222,36 @@ describeWithEnvironment('SensorsView', () => {
       assert.strictEqual((latitudeInput.getRootNode() as ShadowRoot).activeElement, latitudeInput);
     });
 
+    it('does not focus the latitude input when "Other…" is replaced before the view updates', async () => {
+      await selectLocation('Berlin');
+      const select = locationSelect();
+
+      select.value = 'custom';
+      select.dispatchEvent(new Event('change'));
+      select.value = 'unavailable';
+      select.dispatchEvent(new Event('change'));
+      await settled();
+
+      assert.strictEqual(selectedLocationTitle(), 'Location unavailable');
+      assert.notStrictEqual((select.getRootNode() as ShadowRoot).activeElement, locationInput('latitude'));
+    });
+
+    it('does not focus the latitude input when the view is detached before it updates', async () => {
+      await selectLocation('Berlin');
+      const select = locationSelect();
+
+      select.value = 'custom';
+      select.dispatchEvent(new Event('change'));
+      // Detaching cancels the pending update.
+      view.detach();
+      await settled();
+      renderElementIntoDOM(view);
+      await settled();
+
+      assert.strictEqual(selectedLocationTitle(), 'Other…');
+      assert.notStrictEqual((select.getRootNode() as ShadowRoot).activeElement, locationInput('latitude'));
+    });
+
     it('emulates an unavailable location', async () => {
       await selectLocation('Berlin');
       await selectLocation('Location unavailable');
@@ -346,11 +378,12 @@ describeWithEnvironment('SensorsView', () => {
   });
 
   describe('Location input events', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const select = view.contentElement.querySelector('.geo-fields select') as HTMLSelectElement;
       assert.exists(select);
       select.value = 'custom';
       select.dispatchEvent(new Event('change'));
+      await UI.Widget.Widget.allUpdatesComplete;
     });
 
     it('validates latitude input and adds error class if invalid', () => {
@@ -656,11 +689,12 @@ describeWithEnvironment('SensorsView', () => {
   describe('Device Orientation input events', () => {
     let alphaInput: HTMLInputElement;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       const select = view.contentElement.querySelector('.orientation-content select') as HTMLSelectElement;
       assert.exists(select);
       select.value = 'custom';
       select.dispatchEvent(new Event('change'));
+      await UI.Widget.Widget.allUpdatesComplete;
 
       alphaInput = view.contentElement.querySelector('#alpha-input') as HTMLInputElement;
       assert.exists(alphaInput);
@@ -940,12 +974,13 @@ describeWithEnvironment('SensorsView', () => {
 
       mockHostTier = CPUPerformanceTier.Low;
       await CPUThrottlingManager.instance().updateHostDefaultCPUPerformanceTier();
+      await UI.Widget.Widget.allUpdatesComplete;
 
       assert.strictEqual(option.text, 'No override (Tier 1: LOW)');
       assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
     });
 
-    it('dynamically updates "no-override" label when CPU throttling rate changes', () => {
+    it('dynamically updates "no-override" label when CPU throttling rate changes', async () => {
       const select = view.contentElement.querySelector('.cpu-performance-section select') as HTMLSelectElement;
       assert.exists(select);
 
@@ -955,35 +990,43 @@ describeWithEnvironment('SensorsView', () => {
       assert.strictEqual(option.text, 'No override (Tier 4: ULTRA)');
 
       CPUThrottlingManager.instance().setCPUThrottlingRate(4);
+      await UI.Widget.Widget.allUpdatesComplete;
       assert.strictEqual(option.text, 'No override (Tier 2: MID)');
       assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
 
       CPUThrottlingManager.instance().setCPUThrottlingRate(1);
+      await UI.Widget.Widget.allUpdatesComplete;
       assert.strictEqual(option.text, 'No override (Tier 4: ULTRA)');
       assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
     });
 
-    it('dynamically updates "no-override" label when CPU throttling rate changes even with active override', () => {
-      const select = view.contentElement.querySelector('.cpu-performance-section select') as HTMLSelectElement;
-      assert.exists(select);
+    it('dynamically updates "no-override" label when CPU throttling rate changes even with active override',
+       async () => {
+         const select = view.contentElement.querySelector('.cpu-performance-section select') as HTMLSelectElement;
+         assert.exists(select);
 
-      const option = select.querySelector('option[value="no-override"]') as HTMLOptionElement;
-      assert.exists(option);
+         const option = select.querySelector('option[value="no-override"]') as HTMLOptionElement;
+         assert.exists(option);
 
-      select.value = 'low';
-      select.dispatchEvent(new Event('change'));
-      assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
-      assert.strictEqual(option.text, 'No override (Tier 4: ULTRA)');
+         select.value = 'low';
+         select.dispatchEvent(new Event('change'));
+         await UI.Widget.Widget.allUpdatesComplete;
+         assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
+         assert.strictEqual(option.text, 'No override (Tier 4: ULTRA)');
 
+         CPUThrottlingManager.instance().setCPUThrottlingRate(4);
+         await UI.Widget.Widget.allUpdatesComplete;
+         assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
+         assert.strictEqual(option.text, 'No override (Tier 2: MID)');
+       });
+
+    it('shows the throttled tier in "no-override" option label when throttling is active on startup', async () => {
       CPUThrottlingManager.instance().setCPUThrottlingRate(4);
-      assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
-      assert.strictEqual(option.text, 'No override (Tier 2: MID)');
-    });
-
-    it('shows the throttled tier in "no-override" option label when throttling is active on startup', () => {
-      CPUThrottlingManager.instance().setCPUThrottlingRate(4);
+      await UI.Widget.Widget.allUpdatesComplete;
 
       const localView = new Sensors.SensorsView.SensorsView();
+      renderElementIntoDOM(localView, {allowMultipleChildren: true});
+      await UI.Widget.Widget.allUpdatesComplete;
 
       const select = localView.contentElement.querySelector('.cpu-performance-section select') as HTMLSelectElement;
       assert.exists(select);

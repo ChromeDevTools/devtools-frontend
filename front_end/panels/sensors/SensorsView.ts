@@ -620,7 +620,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
     this.#customLocationsSetting = Common.Settings.Settings.instance().resolve(
         SettingUIRegistration.EmulationSettings.emulationLocationsSettingDescriptor);
-    this.#customLocationsSetting.addChangeListener(() => this.performUpdate());
+    this.#customLocationsSetting.addChangeListener(() => this.requestUpdate());
 
     this.deviceOrientationSetting =
         Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
@@ -633,7 +633,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.#hardwareConcurrencyDetails = [numericInput.element, reset.element, warning.element];
 
     this.setBoxOrientation(false);
-    this.performUpdate();
   }
 
   override performUpdate(): void {
@@ -735,7 +734,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     }
 
     this.applyLocation();
-    this.performUpdate();
+    this.requestUpdate();
   }
 
   #onLocationChange(event: Event): void {
@@ -798,7 +797,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.#customLocationSelected = true;
     this.#location = location;
     this.applyLocation();
-    this.performUpdate();
+    this.requestUpdate();
   }
 
   private applyLocation(): void {
@@ -819,7 +818,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
             break;
           }
         }
-        this.performUpdate();
+        this.requestUpdate();
       });
     }
   }
@@ -827,24 +826,19 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   override wasShown(): void {
     super.wasShown();
     this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
-                                                this.#updateCPUPerformanceNoOverrideLabel, this);
-    this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
-                                                this.#updateCPUPerformanceNoOverrideLabel, this);
-    this.#updateCPUPerformanceNoOverrideLabel();
+                                                this.requestUpdate, this);
+    this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
   }
 
   override willHide(): void {
     super.willHide();
     this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
-                                                   this.#updateCPUPerformanceNoOverrideLabel, this);
-    this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
-                                                   this.#updateCPUPerformanceNoOverrideLabel, this);
+                                                   this.requestUpdate, this);
+    this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.requestUpdate,
+                                                   this);
     // A pending update is cancelled when the widget is detached. Don't focus when it is shown again.
     this.#inputToFocus = undefined;
-  }
-
-  #updateCPUPerformanceNoOverrideLabel(): void {
-    this.performUpdate();
   }
 
   #cpuPerformanceNoOverrideLabel(): string {
@@ -877,11 +871,10 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.#inputToFocus = value === NonPresetOptions.Custom ? 'alpha' : undefined;
     this.deviceOrientationOverrideEnabled = value !== NonPresetOptions.NoOverride;
 
-    // Setting the device orientation updates the view. Update only once, so that the alpha input
-    // is focused, which selects its content, after its value was reset.
+    // Setting the device orientation schedules an update of the view.
     if (value === NonPresetOptions.NoOverride) {
       this.applyDeviceOrientation();
-      this.performUpdate();
+      this.requestUpdate();
     } else if (value === NonPresetOptions.Custom) {
       this.resetDeviceOrientation();
     } else {
@@ -927,7 +920,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.deviceOrientation = deviceOrientation;
     this.setBoxOrientation(animate);
     this.applyDeviceOrientation();
-    this.performUpdate();
+    this.requestUpdate();
 
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(
         UIStrings.deviceOrientationSetToAlphaSBeta,

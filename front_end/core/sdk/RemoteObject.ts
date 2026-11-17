@@ -499,7 +499,12 @@ export class RemoteObjectImpl extends RemoteObject {
       silent: true,
     });
     const error = response.getError();
-    return error || response.exceptionDetails ? error || response.result.description : undefined;
+    if (error || response.exceptionDetails) {
+      return error || response.result.description;
+    }
+    // Mutating an object (or running a setter) can stale inline previews and captured variables.
+    this.debuggerModel().invalidateScopeChains();
+    return undefined;
   }
 
   override async deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
@@ -523,6 +528,8 @@ export class RemoteObjectImpl extends RemoteObject {
       return 'Failed to delete property.';
     }
 
+    // Deleting a property can stale inline previews of the object.
+    this.debuggerModel().invalidateScopeChains();
     return undefined;
   }
 

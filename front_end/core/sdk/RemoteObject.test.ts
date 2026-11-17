@@ -633,3 +633,74 @@ describe('LocalJSONObject', () => {
     });
   });
 });
+
+describe('RemoteObjectImpl', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  beforeEach(() => {
+    universe = new TestUniverse();
+  });
+
+  function setup() {
+    const connection = new MockCDPConnection();
+    const evaluate = sinon.stub().returns({
+      result: {result: {type: Protocol.Runtime.RemoteObjectType.Number, value: 42}},
+    });
+    const callFunctionOn = sinon.stub().returns({
+      result: {result: {type: Protocol.Runtime.RemoteObjectType.Boolean, value: true}},
+    });
+    connection.setHandler('Runtime.evaluate', evaluate);
+    connection.setHandler('Runtime.callFunctionOn', callFunctionOn);
+    const target = universe.createTarget({connection});
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
+    const invalidateScopeChains = sinon.stub(debuggerModel, 'invalidateScopeChains');
+    const remoteObject = new SDK.RemoteObject.RemoteObjectImpl(
+        target.model(SDK.RuntimeModel.RuntimeModel)!, 'obj' as Protocol.Runtime.RemoteObjectId,
+        Protocol.Runtime.RemoteObjectType.Object, undefined, undefined);
+    return {remoteObject, callFunctionOn, invalidateScopeChains};
+  }
+
+  it('invalidates scope chains after setting a property', async () => {
+    const {remoteObject, invalidateScopeChains} = setup();
+
+    assert.isUndefined(await remoteObject.setPropertyValue('a', '42'));
+
+    sinon.assert.calledOnce(invalidateScopeChains);
+  });
+
+  it('does not invalidate scope chains when setting a property fails', async () => {
+    const {remoteObject, callFunctionOn, invalidateScopeChains} = setup();
+    callFunctionOn.returns({
+      result: {
+        result: {type: Protocol.Runtime.RemoteObjectType.Object, description: 'TypeError'},
+        exceptionDetails: {exceptionId: 1, text: 'Uncaught', lineNumber: 0, columnNumber: 0},
+      },
+    });
+
+    assert.strictEqual(await remoteObject.setPropertyValue('a', '42'), 'TypeError');
+
+    sinon.assert.notCalled(invalidateScopeChains);
+  });
+
+  it('invalidates scope chains after deleting a property', async () => {
+    const {remoteObject, invalidateScopeChains} = setup();
+
+    assert.isUndefined(await remoteObject.deleteProperty({value: 'a'}));
+
+    sinon.assert.calledOnce(invalidateScopeChains);
+  });
+
+  it('does not invalidate scope chains when deleting a property fails', async () => {
+    const {remoteObject, callFunctionOn, invalidateScopeChains} = setup();
+    callFunctionOn.returns({
+      result: {result: {type: Protocol.Runtime.RemoteObjectType.Boolean, value: false}},
+    });
+
+    assert.strictEqual(await remoteObject.deleteProperty({value: 'a'}), 'Failed to delete property.');
+
+    sinon.assert.notCalled(invalidateScopeChains);
+  });
+});

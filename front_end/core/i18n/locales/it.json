@@ -14133,7 +14133,7 @@
     "message": "Termini di servizio di Google"
   },
   "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
-    "message": "L'utilizzo di queste funzionalità è soggetto ai {PH1} e all'{PH2}"
+    "message": "L'utilizzo di queste funzionalità è soggetto ai {PH1} e all''{PH2}"
   },
   "panels/settings/AISettingsTab.ts | thingsToConsider": {
     "message": "Aspetti da considerare"

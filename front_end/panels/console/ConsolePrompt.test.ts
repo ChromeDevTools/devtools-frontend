@@ -10,8 +10,9 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -121,22 +122,47 @@ describeWithEnvironment('ConsoleContextSelector', () => {
     assert.strictEqual(messages[0].messageText, '{a: 1, b: 2}');
   });
 
-  it('allows user to enable pasting by typing \'allow pasting\'', async () => {
-    const setting = Common.Settings.Settings.instance().createSetting(
-        'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
-    assert.isFalse(setting.get());
+  for (const {label, input} of [{label: 'unquoted phrase', input: 'allow pasting'},
+                                {label: 'double-quoted phrase', input: '"allow pasting"'},
+                                {label: 'single-quoted phrase', input: '\'allow pasting\''},
+                                {label: 'curly-quoted phrase', input: '“allow pasting”'},
+  ]) {
+    it(`allows pasting for ${label}`, async () => {
+      const setting = Common.Settings.Settings.instance().createSetting('disable-self-xss-warning', false,
+                                                                        Common.Settings.SettingStorageType.SYNCED);
+      setting.set(false);
 
-    consolePrompt.showSelfXssWarning();
-    dispatchKeydown('Enter');
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(setting.get());
+      consolePrompt.showSelfXssWarning();
+      setCodeMirrorContent(input);
+      dispatchKeydown('Enter');
+      await raf();
 
-    consolePrompt.showSelfXssWarning();
-    setCodeMirrorContent('allow pasting');
-    dispatchKeydown('Enter');
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isTrue(setting.get());
-  });
+      assert.isTrue(setting.get());
+      sinon.assert.notCalled(evaluateOnTarget);
+    });
+  }
+
+  for (const {label,
+              input,
+              evaluates} of [{label: 'arbitrary expression', input: 'foo', evaluates: true},
+                             {label: 'partial quoted phrase', input: '"allow"', evaluates: true},
+                             {label: 'empty input', input: '', evaluates: false},
+                             {label: 'unclosed single-quoted phrase', input: '\'allow pasting', evaluates: true},
+  ]) {
+    it(`rejects ${label} when confirming self-XSS warning`, async () => {
+      const setting = Common.Settings.Settings.instance().createSetting('disable-self-xss-warning', false,
+                                                                        Common.Settings.SettingStorageType.SYNCED);
+      setting.set(false);
+
+      consolePrompt.showSelfXssWarning();
+      setCodeMirrorContent(input);
+      const evaluated = evaluates ? expectCall(evaluateOnTarget) : raf();
+      dispatchKeydown('Enter');
+      await evaluated;
+
+      assert.isFalse(setting.get());
+    });
+  }
 
   it('does not evaluate incomplete expression', async () => {
     compileScript.resolves(compileScriptResponse('SyntaxError: Unexpected end of input'));

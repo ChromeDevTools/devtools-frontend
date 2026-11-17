@@ -324,7 +324,7 @@
     "message": "Offline"
   },
   "core/sdk/NetworkManager.ts | requestWasBlockedByDevtoolsS": {
-    "message": "Request was blocked by DevTools: '{PH1}'"
+    "message": "Request was blocked by DevTools: ''{PH1}''"
   },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
     "message": "{PH1} failed loading: {PH2} \"{PH3}\""
@@ -4404,10 +4404,10 @@
     "message": "Collapse"
   },
   "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
-    "message": "Clear '{PH1}' object store?"
+    "message": "Clear ''{PH1}'' object store?"
   },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
-    "message": "Delete '{PH1}' database?"
+    "message": "Delete ''{PH1}'' database?"
   },
   "panels/application/IndexedDBViews.ts | dataMayBeStale": {
     "message": "Data may be stale"
@@ -5748,7 +5748,7 @@
     "message": "The selected storage bucket and contained data will be removed"
   },
   "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
-    "message": "Delete the '{PH1}' bucket?"
+    "message": "Delete the ''{PH1}'' bucket?"
   },
   "panels/application/components/StorageMetadataView.ts | defaultBucket": {
     "message": "Default bucket"
@@ -6618,7 +6618,7 @@
     "message": "URL breakpoint"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
-    "message": "URL contains '{PH1}'"
+    "message": "URL contains ''{PH1}''"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
     "message": "XHR/Fetch breakpoints"
@@ -6942,7 +6942,7 @@
     "message": "Remove expression: {PH1}"
   },
   "panels/console/ConsolePinPane.ts | typeAllowPasting": {
-    "message": "Type '{PH1}'"
+    "message": "Type ''{PH1}''"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "allow pasting"
@@ -6951,7 +6951,7 @@
     "message": "Console prompt"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Warning: Don't paste code into the DevTools Console that you don't understand or haven't reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type '{PH1}' below and press Enter to allow pasting."
+    "message": "Warning: Don't paste code into the DevTools Console that you don't understand or haven't reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type ''{PH1}'' below and press Enter to allow pasting."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{No errors}=1{# error}other{# errors}}"
@@ -7743,7 +7743,7 @@
     "message": "This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers"
   },
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
-    "message": "Value for setting '{PH1}' {PH2} is outside the supported range [{PH3}, {PH4}] for font family '{PH5}'."
+    "message": "Value for setting ''{PH1}'' {PH2} is outside the supported range [{PH3}, {PH4}] for font family ''{PH5}''."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
     "message": "An anchor was defined but the element wasn’t anchor-positioned but positioned \"{POSITION}\""
@@ -11361,7 +11361,7 @@
     "message": "URL pattern was moved up"
   },
   "panels/network/RequestConditionsDrawer.ts | patternWasUpgraded": {
-    "message": "This pattern was upgraded from '{PH1}'"
+    "message": "This pattern was upgraded from ''{PH1}''"
   },
   "panels/network/RequestConditionsDrawer.ts | requestConditionsLabel": {
     "message": "Request conditions"
@@ -12738,7 +12738,7 @@
     "message": "Profile options"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Can’t load file. Supported file extensions: '{PH1}'."
+    "message": "Can’t load file. Supported file extensions: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Can't load profile while another profile is being recorded"
@@ -12759,7 +12759,7 @@
     "message": "Failed to read file"
   },
   "panels/profiler/WritableProfileHeader.ts | fileSReadErrorS": {
-    "message": "File '{PH1}' read error: {PH2}"
+    "message": "File ''{PH1}'' read error: {PH2}"
   },
   "panels/profiler/WritableProfileHeader.ts | loaded": {
     "message": "Loaded"
@@ -12957,7 +12957,7 @@
     "message": "Delete recording"
   },
   "panels/recorder/RecorderPanel.ts | doNotImport": {
-    "message": "Don't import recordings that you don't understand or haven't reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type '{PH1}' below to allow importing."
+    "message": "Don't import recordings that you don't understand or haven't reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type ''{PH1}'' below to allow importing."
   },
   "panels/recorder/RecorderPanel.ts | doYouTrustThisCode": {
     "message": "Do you trust this recording?"
@@ -13017,7 +13017,7 @@
     "message": "Toggle Code view"
   },
   "panels/recorder/RecorderPanel.ts | typeAllowImporting": {
-    "message": "Type '{PH1}'"
+    "message": "Type ''{PH1}''"
   },
   "panels/recorder/RecordingListView.ts | createRecording": {
     "message": "Create a new recording"
@@ -14259,7 +14259,7 @@
     "message": "When enabled, the debugger will skip over ignore-listed scripts and will ignore exceptions that only affect them and the Performance panel will collapse matching flamechart items"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Ignore scripts whose names match '{PH1}'"
+    "message": "Ignore scripts whose names match ''{PH1}''"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
     "message": "Learn more"
@@ -14883,7 +14883,7 @@
     "message": "The debug information for function {PH1} is incomplete"
   },
   "panels/sources/CallStackSidebarPane.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "No debug information for function '{PH1}'"
+    "message": "No debug information for function ''{PH1}''"
   },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Not paused"
@@ -15498,7 +15498,7 @@
     "message": "Learn more"
   },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
-    "message": "This is most likely due to a syntax error in '{PH1}'. Try opening this file in an external editor to fix the error or delete the file and re-create the override."
+    "message": "This is most likely due to a syntax error in ''{PH1}''. Try opening this file in an external editor to fix the error or delete the file and re-create the override."
   },
   "panels/sources/components/HeadersView.ts | removeBlock": {
     "message": "Remove this 'ApplyTo'-section"
@@ -16968,7 +16968,7 @@
     "message": "Ignore scripts whose names match ''{regex}''"
   },
   "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
-    "message": "Remove the regex: '{regex}'"
+    "message": "Remove the regex: ''{regex}''"
   },
   "panels/timeline/components/IgnoreListSetting.ts | showIgnoreListSettingDialog": {
     "message": "Show ignore list setting dialogue"
@@ -17472,7 +17472,7 @@
     "message": "Delete annotation: {PH1}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescriptionLabel": {
-    "message": "A '{PH1}' event annotated with the text '{PH2}'"
+    "message": "A ''{PH1}'' event annotated with the text ''{PH2}''"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
     "message": "Double-click or press Enter on an item and type to add an item label"
@@ -17481,7 +17481,7 @@
     "message": "Label an item"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkDescriptionLabel": {
-    "message": "A link between a '{PH1}' event and a '{PH2}' event"
+    "message": "A link between a ''{PH1}'' event and a ''{PH2}'' event"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialDescription": {
     "message": "Double-click on an item, click on the adjacent rightward arrow, then select the destination item"
@@ -18558,7 +18558,7 @@
     "message": "Delete"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
-    "message": "Edit '{PH1}'"
+    "message": "Edit ''{PH1}''"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
     "message": "An empty table row was added. Double-click or use the context menu to edit."
@@ -18954,7 +18954,7 @@
     "message": "Source"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Type '{PH1}'"
+    "message": "Type ''{PH1}''"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Find"

@@ -12432,7 +12432,7 @@
     "message": "சுருக்கக் காட்சியில் காட்டு"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "@{PH2} ஐடியுடன் கூடிய '{PH1}' எனும் ஆப்ஜெக்ட்டைச் சுருக்கக் காட்சியில் காட்டு"
+    "message": "@{PH2} ஐடியுடன் கூடிய ''{PH1}'' எனும் ஆப்ஜெக்ட்டைச் சுருக்கக் காட்சியில் காட்டு"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "மற்றொரு வார்த்தையில் உள்ள சில எழுத்துகளைக் குறிக்கும் வார்த்தை"

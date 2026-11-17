@@ -5748,7 +5748,7 @@
     "message": "קטגוריית האחסון שנבחרה והנתונים שכלולים בה יוסרו"
   },
   "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
-    "message": "למחוק את הקטגוריה '{PH1}'?"
+    "message": "למחוק את הקטגוריה ''{PH1}''?"
   },
   "panels/application/components/StorageMetadataView.ts | defaultBucket": {
     "message": "קטגוריית ברירת המחדל"
@@ -12738,7 +12738,7 @@
     "message": "אפשרויות הפרופיל"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "לא ניתן לטעון את הקובץ. סיומות קובץ נתמכות: '{PH1}'."
+    "message": "לא ניתן לטעון את הקובץ. סיומות קובץ נתמכות: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "אי אפשר לטעון פרופיל כשפרופיל אחר מוקלט במקביל"
@@ -12759,7 +12759,7 @@
     "message": "קריאת הקובץ נכשלה"
   },
   "panels/profiler/WritableProfileHeader.ts | fileSReadErrorS": {
-    "message": "שגיאת קריאה של הקובץ '{PH1}':‏ {PH2}"
+    "message": "שגיאת קריאה של הקובץ ''{PH1}'':‏ {PH2}"
   },
   "panels/profiler/WritableProfileHeader.ts | loaded": {
     "message": "נטען"
@@ -14328,7 +14328,7 @@
     "message": "קיצור הדרך השתנה"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcutRemoved": {
-    "message": "קיצור הדרך '{PH1}' הוסר"
+    "message": "קיצור הדרך ''{PH1}'' הוסר"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "מקשי קיצור"
@@ -14883,7 +14883,7 @@
     "message": "המידע על תוצאות ניפוי הבאגים לפונקציה {PH1} לא שלם"
   },
   "panels/sources/CallStackSidebarPane.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "אין מידע על תוצאות ניפוי הבאגים לפונקציה '{PH1}'"
+    "message": "אין מידע על תוצאות ניפוי הבאגים לפונקציה ''{PH1}''"
   },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "לא בהשהיה"
@@ -15252,7 +15252,7 @@
     "message": "‫\"{PH1}\" הוא קובץ שממופה למקור ולא ניתן לשנות אותו"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "לשנות את '{PH1}' במקום זאת?"
+    "message": "לשנות את ''{PH1}'' במקום זאת?"
   },
   "panels/sources/PersistenceActions.ts | saveAs": {
     "message": "שמירה בשם…"
@@ -15498,7 +15498,7 @@
     "message": "מידע נוסף"
   },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
-    "message": "הסיבה לכך היא כנראה שגיאת תחביר ב‑'{PH1}'. אפשר לנסות לפתוח את הקובץ בכלי עריכה חיצוני כדי לתקן את השגיאה, או למחוק את הקובץ וליצור מחדש את השינוי מברירת המחדל."
+    "message": "הסיבה לכך היא כנראה שגיאת תחביר ב‑''{PH1}''. אפשר לנסות לפתוח את הקובץ בכלי עריכה חיצוני כדי לתקן את השגיאה, או למחוק את הקובץ וליצור מחדש את השינוי מברירת המחדל."
   },
   "panels/sources/components/HeadersView.ts | removeBlock": {
     "message": "הסרת הקטע 'ApplyTo'"
@@ -17472,7 +17472,7 @@
     "message": "מחיקת הערה: {PH1}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescriptionLabel": {
-    "message": "אירוע מסוג '{PH1}' עם ההערה '{PH2}'"
+    "message": "אירוע מסוג ''{PH1}'' עם ההערה ''{PH2}''"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
     "message": "כדי להוסיף תווית לפריט, צריך ללחוץ לחיצה כפולה על הפריט או ללחוץ על Enter ולהקליד"
@@ -17481,7 +17481,7 @@
     "message": "הוספת תווית לפריט"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkDescriptionLabel": {
-    "message": "קישור בין אירוע מסוג '{PH1}' לבין אירוע מסוג '{PH2}'"
+    "message": "קישור בין אירוע מסוג ''{PH1}'' לבין אירוע מסוג ''{PH2}''"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialDescription": {
     "message": "לוחצים לחיצה כפולה על פריט, לוחצים על החץ ימינה לידו ובוחרים את פריט היעד"

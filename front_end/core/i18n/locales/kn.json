@@ -15249,7 +15249,7 @@
     "message": "ಓವರ್‌ರೈಡ್ ಕಂಟೆಂಟ್‌"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "'{PH1}' ಎಂಬುದು ಮೂಲವನ್ನು ಮ್ಯಾಪ್ ಮಾಡಿದ ಫೈಲ್ ಆಗಿದೆ ಮತ್ತು ಅದನ್ನು ಅತಿಕ್ರಮಿಸಲಾಗುವುದಿಲ್ಲ"
+    "message": "''{PH1}'' ಎಂಬುದು ಮೂಲವನ್ನು ಮ್ಯಾಪ್ ಮಾಡಿದ ಫೈಲ್ ಆಗಿದೆ ಮತ್ತು ಅದನ್ನು ಅತಿಕ್ರಮಿಸಲಾಗುವುದಿಲ್ಲ"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
     "message": "ಬದಲಿಗೆ ‘{PH1}’ ಅನ್ನು ಅತಿಕ್ರಮಿಸಬೇಕೆ?"
@@ -15498,7 +15498,7 @@
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
-    "message": "ಇದು ಬಹುತೇಕ '{PH1}'' ನಲ್ಲಿನ ಸಿಂಟ್ಯಾಕ್ಸ್ ದೋಷದ ಕಾರಣದಿಂದಾಗಿರಬಹುದು. ದೋಷವನ್ನು ಸರಿಪಡಿಸಲು ಅಥವಾ ಫೈಲ್ ಅನ್ನು ಅಳಿಸಲು ಮತ್ತು ಅತಿಕ್ರಮಣವನ್ನು ಮರು-ರಚಿಸಲು ಈ ಫೈಲ್ ಅನ್ನು ಬಾಹ್ಯ ಎಡಿಟರ್‌ನಲ್ಲಿ ತೆರೆಯಲು ಪ್ರಯತ್ನಿಸಿ."
+    "message": "ಇದು ಬಹುತೇಕ ''{PH1}'' ನಲ್ಲಿನ ಸಿಂಟ್ಯಾಕ್ಸ್ ದೋಷದ ಕಾರಣದಿಂದಾಗಿರಬಹುದು. ದೋಷವನ್ನು ಸರಿಪಡಿಸಲು ಅಥವಾ ಫೈಲ್ ಅನ್ನು ಅಳಿಸಲು ಮತ್ತು ಅತಿಕ್ರಮಣವನ್ನು ಮರು-ರಚಿಸಲು ಈ ಫೈಲ್ ಅನ್ನು ಬಾಹ್ಯ ಎಡಿಟರ್‌ನಲ್ಲಿ ತೆರೆಯಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "panels/sources/components/HeadersView.ts | removeBlock": {
     "message": "ಈ 'ApplyTo' ವಿಭಾಗವನ್ನು ತೆಗೆದುಹಾಕಿ"

@@ -3105,7 +3105,7 @@
     "message": "Activez {PH1} pour obtenir de l'aide pour comprendre les styles CSS"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesAndRequests": {
-    "message": "Activez l'{PH1} pour obtenir de l'aide sur les styles et les demandes réseau"
+    "message": "Activez l''{PH1} pour obtenir de l'aide sur les styles et les demandes réseau"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | turnOnForStylesRequestsAndFiles": {
     "message": "Activez {PH1} pour obtenir de l'aide sur les styles, les requêtes réseau et les fichiers"
@@ -14133,7 +14133,7 @@
     "message": "Conditions d'utilisation de Google"
   },
   "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
-    "message": "L'utilisation de ces fonctionnalités est soumise aux {PH1} et à l'{PH2}"
+    "message": "L'utilisation de ces fonctionnalités est soumise aux {PH1} et à l''{PH2}"
   },
   "panels/settings/AISettingsTab.ts | thingsToConsider": {
     "message": "Points à prendre en compte"

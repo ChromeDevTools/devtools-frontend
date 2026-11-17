@@ -324,13 +324,13 @@
     "message": "Offline"
   },
   "core/sdk/NetworkManager.ts | requestWasBlockedByDevtoolsS": {
-    "message": "Verzoek is geblokkeerd door DevTools: '{PH1}'"
+    "message": "Verzoek is geblokkeerd door DevTools: ''{PH1}''"
   },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
-    "message": "Kan {PH1} niet laden: {PH2} '{PH3}'"
+    "message": "Kan {PH1} niet laden: {PH2} ''{PH3}''"
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
-    "message": "{PH1} is geladen: {PH2} '{PH3}'"
+    "message": "{PH1} is geladen: {PH2} ''{PH3}''"
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G"
@@ -462,19 +462,19 @@
     "message": "Beëindigde syntaxis gevonden voor statistiek {PH1}. Gebruik: <naam>;dur=<duur>;desc=<beschrijving>."
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
-    "message": "Dubbele parameter '{PH1}' genegeerd"
+    "message": "Dubbele parameter ''{PH1}'' genegeerd"
   },
   "core/sdk/ServerTiming.ts | extraneousTrailingCharacters": {
     "message": "Overbodige losse tekens"
   },
   "core/sdk/ServerTiming.ts | noValueFoundForParameterS": {
-    "message": "Geen waarde gevonden voor parameter '{PH1}'"
+    "message": "Geen waarde gevonden voor parameter ''{PH1}''"
   },
   "core/sdk/ServerTiming.ts | unableToParseSValueS": {
     "message": "Kan {PH1}-waarde {PH2} niet parseren"
   },
   "core/sdk/ServerTiming.ts | unrecognizedParameterS": {
-    "message": "Niet herkende parameter '{PH1}'"
+    "message": "Niet herkende parameter ''{PH1}''"
   },
   "core/sdk/ServiceWorkerCacheModel.ts | serviceworkercacheagentError": {
     "message": "ServiceWorkerCacheAgent-fout bij het verwijderen van cachegeheugenitem {PH1} in cachegeheugen: {PH2}"
@@ -5748,7 +5748,7 @@
     "message": "De geselecteerde opslagbucket en de gegevens die deze bevat, worden verwijderd"
   },
   "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
-    "message": "De bucket '{PH1}' verwijderen?"
+    "message": "De bucket ''{PH1}'' verwijderen?"
   },
   "panels/application/components/StorageMetadataView.ts | defaultBucket": {
     "message": "Standaardbucket"
@@ -6912,7 +6912,7 @@
     "message": "plakken toestaan"
   },
   "panels/console/ConsolePinPane.ts | doNotPaste": {
-    "message": "Plak geen code in DevTools die je niet begrijpt of die je niet zelf hebt gecontroleerd. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder '{PH1}' om plakken toe te staan."
+    "message": "Plak geen code in DevTools die je niet begrijpt of die je niet zelf hebt gecontroleerd. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder ''{PH1}'' om plakken toe te staan."
   },
   "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
     "message": "Vertrouw je deze code?"
@@ -7743,7 +7743,7 @@
     "message": "Dit element is een {CONTAINER_DISPLAY_NAME}-item en dus een onderliggend item van een {CONTAINER_DISPLAY_NAME}-container, maar {PROPERTY_NAME} is alleen van toepassing op containers"
   },
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
-    "message": "De waarde {PH2} om '{PH1}' in te stellen ligt buiten het ondersteunde bereik [{PH3}, {PH4}] voor lettertypefamilie '{PH5}'."
+    "message": "De waarde {PH2} om ''{PH1}'' in te stellen ligt buiten het ondersteunde bereik [{PH3}, {PH4}] voor lettertypefamilie ''{PH5}''."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
     "message": "Er is een anker gedefinieerd, maar het element is niet ankergepositioneerd maar gepositioneerd als {POSITION}"
@@ -15150,7 +15150,7 @@
     "message": "Deze actie kan niet ongedaan worden gemaakt"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "'{PH1}' uit werkruimte verwijderen?"
+    "message": "''{PH1}'' uit werkruimte verwijderen?"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Geschreven"
@@ -15252,7 +15252,7 @@
     "message": "{PH1} is een bronbestand dat niet kan worden overschreven"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "'{PH1}' in plaats daarvan overschrijven?"
+    "message": "''{PH1}'' in plaats daarvan overschrijven?"
   },
   "panels/sources/PersistenceActions.ts | saveAs": {
     "message": "Opslaan als…"
@@ -16215,7 +16215,7 @@
     "message": "Meer informatie"
   },
   "panels/timeline/TimelinePanel.ts | loadCpuProfileConfirmation": {
-    "message": "Wil je het opgenomen CPU-profiel '{PH1}' laden in het deelvenster Prestaties?"
+    "message": "Wil je het opgenomen CPU-profiel ''{PH1}'' laden in het deelvenster Prestaties?"
   },
   "panels/timeline/TimelinePanel.ts | loadCpuProfileHeader": {
     "message": "CPU-profiel laden?"
@@ -16968,7 +16968,7 @@
     "message": "Scripts negeren waarvan de namen overeenkomen met {regex}"
   },
   "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
-    "message": "Regex verwijderen: '{regex}'"
+    "message": "Regex verwijderen: ''{regex}''"
   },
   "panels/timeline/components/IgnoreListSetting.ts | showIgnoreListSettingDialog": {
     "message": "Dialoogvenster voor het instellen van de negeerlijst tonen"
@@ -18933,7 +18933,7 @@
     "message": "{PH1} selectieregio's"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Plak geen code in DevTools die je niet begrijpt of die je niet zelf hebt gecontroleerd. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder '{PH1}' om plakken toe te staan."
+    "message": "Plak geen code in DevTools die je niet begrijpt of die je niet zelf hebt gecontroleerd. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder ''{PH1}'' om plakken toe te staan."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Vertrouw je deze code?"

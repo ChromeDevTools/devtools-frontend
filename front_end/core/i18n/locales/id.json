@@ -15249,10 +15249,10 @@
     "message": "Ganti konten"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "'{PH1}' adalah file yang dipetakan sumber dan tidak dapat diganti"
+    "message": "''{PH1}'' adalah file yang dipetakan sumber dan tidak dapat diganti"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "Ganti '{PH1}'?"
+    "message": "Ganti ''{PH1}''?"
   },
   "panels/sources/PersistenceActions.ts | saveAs": {
     "message": "Simpan sebagai…"

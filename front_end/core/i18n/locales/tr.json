@@ -15150,7 +15150,7 @@
     "message": "Bu işlem geri alınamaz"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "'{PH1}' çalışma alanından kaldırılsın mı?"
+    "message": "''{PH1}'' çalışma alanından kaldırılsın mı?"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Oluşturuldu"

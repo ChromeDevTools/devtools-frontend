@@ -4407,7 +4407,7 @@
     "message": "\"{PH1}\" 객체 스토어를 삭제하시겠습니까?"
   },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
-    "message": "'{PH1}' 데이터베이스를 삭제하시겠습니까?"
+    "message": "''{PH1}'' 데이터베이스를 삭제하시겠습니까?"
   },
   "panels/application/IndexedDBViews.ts | dataMayBeStale": {
     "message": "데이터가 오래되었을 수 있음"
@@ -6618,7 +6618,7 @@
     "message": "URL 중단점"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
-    "message": "URL에 '{PH1}' 포함됨"
+    "message": "URL에 ''{PH1}'' 포함됨"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
     "message": "XHR/가져오기 중단점"
@@ -7428,7 +7428,7 @@
     "message": "범위 단위 선택: 단위가 함수일 경우 오버헤드가 낮고 블록일 경우 높습니다."
   },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "'{PH1}' 버튼을 클릭하여 범위 캡처를 시작하세요."
+    "message": "''{PH1}'' 버튼을 클릭하여 범위 캡처를 시작하세요."
   },
   "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
     "message": "\"{PH1}\" 버튼을 클릭하여 새로고침하고 범위 캡처를 시작하세요"
@@ -11019,7 +11019,7 @@
     "message": "\"{PH1}\" 버튼 또는 {PH2} 키를 눌러 요청을 실행하거나 페이지를 새로고침하세요"
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "네트워크 활동을 표시하려면 '{PH1}' 버튼을 사용하거나 {PH2} 키를 눌러 네트워크 로그를 기록하세요."
+    "message": "네트워크 활동을 표시하려면 ''{PH1}'' 버튼을 사용하거나 {PH2} 키를 눌러 네트워크 로그를 기록하세요."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "현재 네트워크 활동 기록 중"
@@ -17472,7 +17472,7 @@
     "message": "{PH1} 주석 삭제"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescriptionLabel": {
-    "message": "'{PH2}' 텍스트가 주석으로 달린 '{PH1}' 이벤트"
+    "message": "''{PH2}'' 텍스트가 주석으로 달린 ''{PH1}'' 이벤트"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
     "message": "항목을 더블클릭하거나 Enter 키를 누르고 항목 라벨을 입력하여 추가하세요."
@@ -17481,7 +17481,7 @@
     "message": "항목 라벨 지정"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkDescriptionLabel": {
-    "message": "'{PH1}' 이벤트와 '{PH2}' 이벤트 간의 연결"
+    "message": "''{PH1}'' 이벤트와 ''{PH2}'' 이벤트 간의 연결"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialDescription": {
     "message": "항목을 더블클릭하고 옆에 있는 오른쪽 방향 화살표를 클릭한 후 대상 항목을 선택합니다."
@@ -18558,7 +18558,7 @@
     "message": "삭제"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
-    "message": "'{PH1}' 수정"
+    "message": "''{PH1}'' 수정"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
     "message": "빈 표 행이 추가되었습니다. 더블클릭하거나 컨텍스트 메뉴를 사용하여 수정하세요."

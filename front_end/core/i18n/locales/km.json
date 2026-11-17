@@ -12432,7 +12432,7 @@
     "message": "បង្ហាញនៅក្នុងទិដ្ឋភាពសង្ខេប"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "បង្ហាញវត្ថុ '{PH1}' ដែលមានលេខកូដសម្គាល់ @{PH2} នៅក្នុងទិដ្ឋភាពសង្ខេប"
+    "message": "បង្ហាញវត្ថុ ''{PH1}'' ដែលមានលេខកូដសម្គាល់ @{PH2} នៅក្នុងទិដ្ឋភាពសង្ខេប"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | slicedStringSummary": {
     "message": "ជួរអក្សរ​ដែលតំណាងឱ្យ​តួអក្សរ​មួយចំនួន​ពីជួរអក្សរ​ផ្សេងទៀត"

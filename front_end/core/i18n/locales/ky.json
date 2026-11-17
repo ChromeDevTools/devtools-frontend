@@ -459,7 +459,7 @@
     "message": "Скрипт булагы алынган жок"
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Колдоого алынбаган синтаксис '{PH1}' метрикасында табылган. Биз төмөнкү белгилерди колдонууну сунуштайбыз: <name>;dur=<duration>;desc=<description>."
+    "message": "Колдоого алынбаган синтаксис ''{PH1}'' метрикасында табылган. Биз төмөнкү белгилерди колдонууну сунуштайбыз: <name>;dur=<duration>;desc=<description>."
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "\"{PH1}\" параметринин көчүрмөсү четке кагылды"

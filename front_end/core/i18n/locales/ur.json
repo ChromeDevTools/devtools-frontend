@@ -15252,7 +15252,7 @@
     "message": "‫‘{PH1}' سورس سے میپ کی گئی فائل ہے اور اسے اوور رائیڈ نہیں کیا جا سکتا"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
-    "message": "اس کے بجائے '{PH1}' کو اوور رائیڈ کریں؟"
+    "message": "اس کے بجائے ''{PH1}'' کو اوور رائیڈ کریں؟"
   },
   "panels/sources/PersistenceActions.ts | saveAs": {
     "message": "محفوظ کریں بطور…"

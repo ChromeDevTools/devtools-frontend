@@ -78,12 +78,34 @@ export function bakePlaceholders(messages, allowedKeys) {
     const placeholders = defn.placeholders;
 
     if (placeholders) {
+      const icuNames = [];
       for (const [placeholder, {content}] of Object.entries(placeholders)) {
+        if (!/^\w+$/.test(placeholder)) {
+          throw new Error(
+              `Invalid placeholder name "${placeholder}" in message "${message}".`,
+          );
+        }
         if (!message.includes('$' + placeholder + '$')) {
           throw Error(
               `Provided placeholder "${placeholder}" not found in message "${message}".`,
           );
         }
+        // MARKDOWN_SNIPPET_* placeholders hold literal code spans (which may
+        // start with `{`) rather than ICU MessageFormat placeholders.
+        if (!placeholder.startsWith('MARKDOWN_SNIPPET_') && content.startsWith('{')) {
+          icuNames.push(placeholder);
+        }
+      }
+      if (icuNames.length > 0) {
+        const icuToken = `(?:\\$(?:${icuNames.join('|')})\\$)+`;
+        // Double odd runs of ASCII single quotes wrapping or adjacent to ICU
+        // placeholders so IntlMessageFormat does not parse `'{PH1}'` or
+        // `l'{PH1}` as a quoted literal.
+        message = message.replace(new RegExp(`(?<!')(?:'')*'${icuToken}'(?:'')*(?!')`, 'g'), '\'$&\'')
+                      .replace(new RegExp(`(?<!')(?:'')*'${icuToken}`, 'g'), '\'$&')
+                      .replace(new RegExp(`${icuToken}'(?:'')*(?=[{}<>#])`, 'g'), '$&\'');
+      }
+      for (const [placeholder, {content}] of Object.entries(placeholders)) {
         // Need a global replace due to plural ICU copying placeholders
         // (and therefore ICU vars) multiple times.
         const regex = new RegExp('\\$' + placeholder + '\\$', 'g');

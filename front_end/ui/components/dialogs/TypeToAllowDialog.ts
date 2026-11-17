@@ -89,6 +89,43 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class TypeToAllowDialog {
+  static readonly #QUOTE_PAIRS: ReadonlyArray<readonly[string, string]> = [
+    ['"', '"'],
+    ['\'', '\''],
+    ['“', '”'],
+    ['”', '”'],
+    ['‘', '’'],
+    ['‘', '\''],
+    ['„', '“'],
+    ['„', '”'],
+    ['«', '»'],
+    ['»', '«'],
+    ['「', '」'],
+  ];
+
+  /**
+   * Returns true if `input` matches `phrase`, optionally wrapped in matching
+   * quote characters from any supported locale's quote style.
+   */
+  static matchesPhrase(input: string, phrase: string): boolean {
+    if (phrase.length === 0) {
+      return false;
+    }
+    const trimmed = input.trim();
+    if (trimmed === phrase) {
+      return true;
+    }
+    for (const [open, close] of TypeToAllowDialog.#QUOTE_PAIRS) {
+      if (trimmed.length >= open.length + close.length && trimmed.startsWith(open) && trimmed.endsWith(close)) {
+        const inner = trimmed.slice(open.length, trimmed.length - close.length).trim();
+        if (inner === phrase) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   static async show(options: {
     jslogContext: {
       dialog: string,
@@ -126,7 +163,7 @@ export class TypeToAllowDialog {
             resolve(false);
           },
           onAllow: () => {
-            resolve(currentValue === options.typePhrase || currentValue === `'${options.typePhrase}'`);
+            resolve(TypeToAllowDialog.matchesPhrase(currentValue, options.typePhrase));
           },
           onCancel: () => {
             resolve(false);

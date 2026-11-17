@@ -14,6 +14,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -458,8 +459,7 @@ export class ConsolePrompt extends ConsolePromptBase {
       return;
     }
     if (this.#selfXssWarningShown &&
-        (this.text() === i18nString(UIStrings.allowPasting) ||
-         this.text() === `'${i18nString(UIStrings.allowPasting)}'`)) {
+        Dialogs.TypeToAllowDialog.TypeToAllowDialog.matchesPhrase(this.text(), i18nString(UIStrings.allowPasting))) {
       Common.Console.Console.instance().log(this.text());
       this.editor.dispatch({
         changes: {from: 0, to: this.editor.state.doc.length},

@@ -23,4 +23,5 @@ Local Modifications:
 7. Enable the scanning of files with .ts extensions
 8. Add checks for ICU plural format
 9. Migrated to ESM
+10. Double unescaped ICU single quotes around placeholders during baking in bake-ctc-to-lhl.js
 

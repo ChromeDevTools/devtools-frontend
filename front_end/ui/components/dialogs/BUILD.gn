@@ -55,10 +55,12 @@ devtools_ui_module("unittests") {
     "ButtonDialog.test.ts",
     "Dialog.test.ts",
     "ShortcutDialog.test.ts",
+    "TypeToAllowDialog.test.ts",
   ]
 
   ts_deps = [
     ":bundle",
+    "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
     "../../../testing",
     "../buttons:bundle",

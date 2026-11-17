@@ -5748,7 +5748,7 @@
     "message": "Bydd y bwced storio a ddewiswyd a'r data a gynhwysir yn cael eu tynnu"
   },
   "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
-    "message": "Dileu'r bwced '{PH1}'?"
+    "message": "Dileu'r bwced ''{PH1}''?"
   },
   "panels/application/components/StorageMetadataView.ts | defaultBucket": {
     "message": "Bwced diofyn"
@@ -15150,7 +15150,7 @@
     "message": "Nid oes modd dadwneud y weithred hon"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "Tynnu '{PH1}' o'r fan gwaith?"
+    "message": "Tynnu ''{PH1}'' o'r fan gwaith?"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Awdurwyd"

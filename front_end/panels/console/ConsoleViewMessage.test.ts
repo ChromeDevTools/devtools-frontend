@@ -20,7 +20,7 @@ import {
   createConsoleViewMessageWithStubDeps,
   createStackTrace,
 } from '../../testing/ConsoleHelpers.js';
-import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   describeWithEnvironment,
@@ -2613,6 +2613,87 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       objSpan.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
 
       sinon.assert.calledOnce(showStub);
+    });
+
+    it('renders pure-inline formatted console message text without wrapper elements', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+
+      const substRawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          '--%s--',
+          {
+            type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+            parameters: [
+              SDK.RemoteObject.RemoteObject.fromLocalObject('--%s--'),
+              SDK.RemoteObject.RemoteObject.fromLocalObject('text'),
+            ],
+          },
+      );
+      const substElement = createConsoleViewMessageWithStubDeps(substRawMessage).message.toMessageElement();
+      const substTextEl = substElement.querySelector('.console-message-text');
+      assert.isNotNull(substTextEl);
+      assert.strictEqual(stripLitHtmlCommentNodes(substTextEl.innerHTML), '--text--');
+    });
+
+    it('renders sanitized %c style substitutions without wrapper elements', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+
+      const sanitizedStyleRawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          'PRE%cBG',
+          {
+            type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+            parameters: [
+              SDK.RemoteObject.RemoteObject.fromLocalObject('PRE%cBG'),
+              SDK.RemoteObject.RemoteObject.fromLocalObject('background-image: url(http://localhost/image.png)'),
+            ],
+          },
+      );
+      const sanitizedElement =
+          createConsoleViewMessageWithStubDeps(sanitizedStyleRawMessage).message.toMessageElement();
+      const sanitizedTextEl = sanitizedElement.querySelector('.console-message-text');
+      assert.isNotNull(sanitizedTextEl);
+      assert.strictEqual(stripLitHtmlCommentNodes(sanitizedTextEl.innerHTML), 'PREBG');
+    });
+
+    it('renders allowed %c styles, !important priorities, and multiline <br> splits', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+
+      const styledRawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          '%cfirst\nsecond',
+          {
+            type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+            parameters: [
+              SDK.RemoteObject.RemoteObject.fromLocalObject('%cfirst\nsecond'),
+              SDK.RemoteObject.RemoteObject.fromLocalObject('color: red !important; font-weight: bold'),
+            ],
+          },
+      );
+      const styledElement = createConsoleViewMessageWithStubDeps(styledRawMessage).message.toMessageElement();
+      const styledTextEl = styledElement.querySelector('.console-message-text');
+      assert.isNotNull(styledTextEl);
+      const spans = styledTextEl.querySelectorAll<HTMLSpanElement>(':scope > span');
+      assert.lengthOf(spans, 2);
+      assert.lengthOf(styledTextEl.querySelectorAll(':scope > br'), 1);
+      for (const [index, expectedText] of ['first', 'second'].entries()) {
+        const span = spans[index];
+        assert.strictEqual(span.textContent, expectedText);
+        assert.strictEqual(span.style.getPropertyValue('color'), 'red');
+        assert.strictEqual(span.style.getPropertyPriority('color'), 'important');
+        assert.strictEqual(span.style.getPropertyValue('font-weight'), 'bold');
+        assert.strictEqual(span.style.getPropertyValue('contain'), 'paint');
+        assert.strictEqual(span.style.getPropertyValue('display'), 'inline-block');
+      }
     });
   });
 

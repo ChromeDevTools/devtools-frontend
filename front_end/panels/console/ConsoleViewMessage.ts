@@ -67,7 +67,7 @@ import consoleViewStyles from './consoleView.css.js';
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 import {SymbolizedErrorWidget} from './SymbolizedErrorWidget.js';
 
-const {ifDefined, until} = Directives;
+const {ifDefined, styleMap, until} = Directives;
 const {widget, widgetRef} = UI.Widget;
 
 /**
@@ -441,12 +441,9 @@ const hoverButtonObserver = new IntersectionObserver(results => {
   }
 });
 
-function appendOrShow(parent: Element, child: DocumentFragment|UI.Widget.AnyWidget|HTMLElement): void {
-  if (child instanceof UI.Widget.Widget) {
-    child.show(parent, null, /* suppressOprhanWidgetError=*/ true);
-  } else {
-    parent.appendChild(child);
-  }
+function renderMessageText(formatted: LitTemplate, extraClass = '', title?: string): LitTemplate {
+  const classes = extraClass ? `${extraClass} console-message-text` : 'console-message-text';
+  return html`<span class=${classes} title=${ifDefined(title)}>${formatted}</span>`;
 }
 
 interface NodeParamViewInput {
@@ -958,12 +955,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   protected buildMessage(): HTMLElement {
-    let messageElement;
+    let messageElement: HTMLElement|undefined;
+    let formattedContent: LitTemplate|undefined;
     let messageText: Common.UIString.LocalizedString|string = this.message.messageText;
     if (this.message.source === Common.Console.FrontendMessageSource.ConsoleAPI) {
       switch (this.message.type) {
         case Protocol.Runtime.ConsoleAPICalledEventType.Trace:
-          messageElement = this.format(this.message.parameters || ['console.trace']);
+          formattedContent = this.format(this.message.parameters || ['console.trace']);
           break;
         case Protocol.Runtime.ConsoleAPICalledEventType.Clear:
           messageElement = document.createElement('span');
@@ -981,12 +979,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         case Protocol.Runtime.ConsoleAPICalledEventType.Dir: {
           const obj = this.message.parameters ? this.message.parameters[0] : undefined;
           const args = ['%O', obj];
-          messageElement = this.format(args);
+          formattedContent = this.format(args);
           break;
         }
         case Protocol.Runtime.ConsoleAPICalledEventType.Profile:
         case Protocol.Runtime.ConsoleAPICalledEventType.ProfileEnd:
-          messageElement = this.format([messageText]);
+          formattedContent = this.format([messageText]);
           break;
         default: {
           if (this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Assert) {
@@ -998,20 +996,22 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
               const value = parameter.value as string;
               const runtimeModel = this.message.runtimeModel();
               if (runtimeModel && Bindings.SymbolizedError.isErrorLike(value)) {
-                const remoteObj = parameter instanceof SDK.RemoteObject.RemoteObject ?
-                    parameter :
-                    runtimeModel.createRemoteObject(parameter);
-                messageElement = document.createElement('span');
-                render(this.renderSymbolizedError(remoteObj), messageElement);
+                const remoteObj = this.#parameterToRemoteObject(parameter);
+                formattedContent = this.renderSymbolizedError(remoteObj);
               }
             }
           }
-          const args = this.message.parameters || [messageText];
-          messageElement = messageElement || this.format(args);
+          if (!formattedContent) {
+            const args = this.message.parameters || [messageText];
+            formattedContent = this.format(args);
+          }
         }
       }
     } else if (this.message.source === Protocol.Log.LogEntrySource.Network) {
-      messageElement = this.formatAsNetworkRequest() || this.format([messageText]);
+      messageElement = this.formatAsNetworkRequest() ?? undefined;
+      if (!messageElement) {
+        formattedContent = this.format([messageText]);
+      }
     } else {
       const messageInParameters = this.message.parameters && messageText === (this.message.parameters[0] as string);
       // These terms are locked because the console message will not be translated anyway.
@@ -1022,21 +1022,19 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       } else if (this.message.source === Protocol.Log.LogEntrySource.Deprecation) {
         messageText = i18nString(UIStrings.deprecationS, {PH1: messageText});
       }
-      const args = this.message.parameters || [messageText];
+      const args = this.message.parameters ? [...this.message.parameters] : [messageText];
       if (messageInParameters) {
         args[0] = messageText;
       }
-      messageElement = this.format(args);
+      formattedContent = this.format(args);
     }
-    messageElement.classList.add('console-message-text');
+    messageElement?.classList.add('console-message-text');
 
     const formattedMessage = document.createElement('span');
-    formattedMessage.classList.add('source-code');
     this.anchorElement = this.buildMessageAnchor();
-    if (this.anchorElement) {
-      formattedMessage.appendChild(this.anchorElement);
-    }
-    formattedMessage.appendChild(messageElement);
+    render(html`${this.anchorElement ?? nothing}${
+               formattedContent ? renderMessageText(formattedContent) : (messageElement ?? nothing)}`,
+           formattedMessage, {container: {classes: ['source-code']}});
     return formattedMessage;
   }
 
@@ -1078,7 +1076,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
             return linkElement;
           });
-      appendOrShow(messageElement, fragment);
+      if (fragment instanceof UI.Widget.Widget) {
+        fragment.show(messageElement, null, /* suppressOrphanWidgetError=*/ true);
+      } else {
+        messageElement.appendChild(fragment);
+      }
     }
     return messageElement;
   }
@@ -1287,17 +1289,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private format(rawParameters: Array<string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined>):
-      HTMLElement {
-    const formattedResult = document.createElement('span');
-    const parts: Array<LitTemplate|Node|string> = [];
+      LitTemplate {
+    const parts: Array<LitTemplate|string> = [];
     if (this.messagePrefix) {
       parts.push(html`<span>${this.messagePrefix}</span>`);
     }
     if (!rawParameters.length) {
-      if (parts.length) {
-        render(html`${parts}`, formattedResult);
-      }
-      return formattedResult;
+      return html`${parts}`;
     }
 
     // Formatting code below assumes that parameters are all wrappers whereas frontend console
@@ -1311,7 +1309,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     // Multiple parameters with the first being a format string. Save unused substitutions.
     if (shouldFormatMessage) {
-      parameters = this.formatWithSubstitutionString((parameters[0].description as string), parameters.slice(1), parts);
+      const substitution =
+          this.formatWithSubstitutionString((parameters[0].description as string), parameters.slice(1));
+      parts.push(substitution.formatted);
+      parameters = substitution.args;
       if (parameters.length) {
         parts.push(' ');
       }
@@ -1329,8 +1330,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         parts.push(' ');
       }
     }
-    render(html`${parts}`, formattedResult);
-    return formattedResult;
+    return html`${parts}`;
   }
 
   protected formatParameter(output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean,
@@ -1639,9 +1639,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return this.renderPropertyPreview(type, subtype, resultObj.className, description);
   };
 
-  private formatWithSubstitutionString(formatString: string, parameters: SDK.RemoteObject.RemoteObject[],
-                                       parts: Array<LitTemplate|Node|string>): SDK.RemoteObject.RemoteObject[] {
-    const currentStyle = new Map();
+  private formatWithSubstitutionString(formatString: string, parameters: SDK.RemoteObject.RemoteObject[]): {
+    formatted: LitTemplate,
+    args: SDK.RemoteObject.RemoteObject[],
+  } {
+    const currentStyle = new Map<string, {value: string, priority: string}>();
+    const parts: LitTemplate[] = [];
     const {tokens, args} = format(formatString, parameters);
     for (const token of tokens) {
       switch (token.type) {
@@ -1658,19 +1661,19 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             parts.push(this.linkifyStringAsFragment(token.value));
           } else {
             const lines = token.value.split('\n');
+            const style: Record<string, string> = {
+              contain: 'paint',
+              display: 'inline-block',
+              'max-width': '100%',
+            };
+            for (const [property, {value, priority}] of currentStyle) {
+              style[property] = priority ? `${value} !${priority}` : value;
+            }
             for (let i = 0; i < lines.length; i++) {
               if (i > 0) {
-                parts.push(document.createElement('br'));
+                parts.push(html`<br>`);
               }
-              const wrapper = document.createElement('span');
-              wrapper.style.setProperty('contain', 'paint');
-              wrapper.style.setProperty('display', 'inline-block');
-              wrapper.style.setProperty('max-width', '100%');
-              render(this.linkifyStringAsFragment(lines[i]), wrapper);
-              for (const [property, {value, priority}] of currentStyle) {
-                wrapper.style.setProperty(property, value, priority);
-              }
-              parts.push(wrapper);
+              parts.push(html`<span style=${styleMap(style)}>${this.linkifyStringAsFragment(lines[i])}</span>`);
             }
           }
           break;
@@ -1681,7 +1684,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           break;
       }
     }
-    return args;
+    return {formatted: html`${parts}`, args};
   }
 
   matchesFilterRegex(regexObject: RegExp): boolean {

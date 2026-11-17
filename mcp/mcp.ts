@@ -44,6 +44,7 @@ export {AgentFocus} from '../front_end/models/ai_assistance/performance/AIContex
 export {DebuggerWorkspaceBinding} from '../front_end/models/bindings/DebuggerWorkspaceBinding.js';
 export * as BreakpointManager from '../front_end/models/breakpoints/BreakpointManager.js';
 export type * as CD4ABridge from '../front_end/models/comment_manager/CD4ABridge.js';
+export * as ComputedStyle from '../front_end/models/computed_style/computed_style.js';
 export * as CrUXManager from '../front_end/models/crux-manager/CrUXManager.js';
 export * as Formatter from '../front_end/models/formatter/formatter.js';
 export * as HeapSnapshotModel from '../front_end/models/heap_snapshot/heap_snapshot.js';

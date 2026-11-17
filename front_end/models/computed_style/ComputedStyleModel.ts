@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
 /**
@@ -223,4 +224,78 @@ export class ComputedStyle {
     this.node = node;
     this.computedStyle = computedStyle;
   }
+}
+
+export interface ComputedStyleProperty {
+  name: string;
+  value: string;
+  inherited: boolean;
+}
+
+export interface FilterComputedStylePropertiesOptions {
+  showAll?: boolean;
+  extraProperties?: Iterable<string>;
+  sort?: boolean;
+}
+
+const alwaysShownComputedProperties: ReadonlySet<string> = new Set<string>(['display', 'height', 'width']);
+
+export function propertySorter(propA: string, propB: string): number {
+  if (propA.startsWith('--') !== propB.startsWith('--')) {
+    return propA.startsWith('--') ? 1 : -1;
+  }
+  if (propA.startsWith('-webkit') !== propB.startsWith('-webkit')) {
+    return propA.startsWith('-webkit') ? 1 : -1;
+  }
+  const canonicalA = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propA);
+  const canonicalB = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propB);
+  return Platform.StringUtilities.compare(canonicalA, canonicalB);
+}
+
+export function computeNonInheritedProperties(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): Set<string> {
+  const result = new Set<string>();
+  for (const style of matchedStyles.nodeStyles()) {
+    for (const property of style.allProperties()) {
+      if (!matchedStyles.propertyState(property)) {
+        continue;
+      }
+      result.add(SDK.CSSMetadata.cssMetadata().canonicalPropertyName(property.name));
+    }
+  }
+  return result;
+}
+
+export function filterComputedStyleProperties(
+    computedStyle: ReadonlyMap<string, string>,
+    matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+    options?: FilterComputedStylePropertiesOptions,
+    ): ComputedStyleProperty[] {
+  const showAll = options?.showAll ?? false;
+  const sort = options?.sort ?? true;
+  const extraProperties = options?.extraProperties ? new Set(options.extraProperties) : null;
+  const uniqueProperties = sort ? [...computedStyle.keys()].sort(propertySorter) : computedStyle.keys();
+  const nonInheritedProperties = computeNonInheritedProperties(matchedStyles);
+
+  const result: ComputedStyleProperty[] = [];
+  for (const propertyName of uniqueProperties) {
+    const propertyValue = computedStyle.get(propertyName) || '';
+    const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
+    const isInherited = !nonInheritedProperties.has(canonicalName);
+    const isExtraProperty = extraProperties?.has(propertyName) ?? false;
+    if (!showAll && isInherited && !alwaysShownComputedProperties.has(propertyName) && !isExtraProperty) {
+      continue;
+    }
+    if (!showAll && propertyName.startsWith('--') && !isExtraProperty) {
+      continue;
+    }
+    if (propertyName !== canonicalName && propertyValue === computedStyle.get(canonicalName) && !isExtraProperty) {
+      continue;
+    }
+    result.push({
+      name: propertyName,
+      value: propertyValue,
+      inherited: isInherited,
+    });
+  }
+  return result;
 }

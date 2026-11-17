@@ -38,7 +38,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
+import * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -211,18 +211,6 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
 const navigateToSource = (cssProperty: SDK.CSSProperty.CSSProperty, event?: Event): void => {
   void Common.Revealer.reveal(cssProperty);
   event?.consume(true);
-};
-
-const propertySorter = (propA: string, propB: string): number => {
-  if (propA.startsWith('--') !== propB.startsWith('--')) {
-    return propA.startsWith('--') ? 1 : -1;
-  }
-  if (propA.startsWith('-webkit') !== propB.startsWith('-webkit')) {
-    return propA.startsWith('-webkit') ? 1 : -1;
-  }
-  const canonicalA = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propA);
-  const canonicalB = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propB);
-  return Platform.StringUtilities.compare(canonicalA, canonicalB);
 };
 
 type ComputedStyleData = {
@@ -508,29 +496,12 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     this.imagePreviewPopover.hide();
     this.linkifier.reset();
 
-    const uniqueProperties = [...nodeStyle.computedStyle.keys()];
-    uniqueProperties.sort(propertySorter);
-
     const node = nodeStyle.node;
     const propertyTraces = this.#propertyTraces || new Map();
-    const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
-    const showInherited = this.#shouldShowAllStyles();
-    const tree: Array<TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>> = [];
-    for (const propertyName of uniqueProperties) {
-      const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';
-      const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
-      const isInherited = !nonInheritedProperties.has(canonicalName);
-      if (!showInherited && isInherited && !alwaysShownComputedProperties.has(propertyName)) {
-        continue;
-      }
-      if (!showInherited && propertyName.startsWith('--')) {
-        continue;
-      }
-      if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName)) {
-        continue;
-      }
-      tree.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited));
-    }
+    const properties = ComputedStyleModule.ComputedStyleModel.filterComputedStyleProperties(
+        nodeStyle.computedStyle, matchedStyles, {showAll: this.#shouldShowAllStyles()});
+    const tree = properties.map(
+        property => this.buildTreeNode(propertyTraces, property.name, property.value, property.inherited));
 
     const defaultRenderer = this.createTreeNodeRenderer(propertyTraces, node, matchedStyles);
     this.#treeData = {
@@ -553,45 +524,30 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
 
     const node = nodeStyle.node;
     const propertyTraces = this.#propertyTraces || new Map();
-    const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
-    const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
+    const properties = ComputedStyleModule.ComputedStyleModel.filterComputedStyleProperties(
+        nodeStyle.computedStyle, matchedStyles,
+        {showAll: this.showInheritedComputedStylePropertiesSetting.get(), sort: false});
 
-    const propertiesByCategory = new Map<Category, string[]>();
+    const propertiesByCategory = new Map<Category, ComputedStyleModule.ComputedStyleModel.ComputedStyleProperty[]>();
 
     const tree: Array<TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>> = [];
-    for (const [propertyName, propertyValue] of nodeStyle.computedStyle) {
-      const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
-      const isInherited = !nonInheritedProperties.has(canonicalName);
-      if (!showInherited && isInherited && !alwaysShownComputedProperties.has(propertyName)) {
-        continue;
-      }
-      if (!showInherited && propertyName.startsWith('--')) {
-        continue;
-      }
-      if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName)) {
-        continue;
-      }
-
-      const categories = categorizePropertyName(propertyName);
+    for (const property of properties) {
+      const categories = categorizePropertyName(property.name);
       for (const category of categories) {
         if (!propertiesByCategory.has(category)) {
           propertiesByCategory.set(category, []);
         }
-        propertiesByCategory.get(category)?.push(propertyName);
+        propertiesByCategory.get(category)?.push(property);
       }
     }
 
     this.#computedStylesTree.removeChildren();
     for (const category of DefaultCategoryOrder) {
-      const properties = propertiesByCategory.get(category);
-      if (properties && properties.length > 0) {
-        const propertyNodes: Array<TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>> = [];
-        for (const propertyName of properties) {
-          const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';
-          const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
-          const isInherited = !nonInheritedProperties.has(canonicalName);
-          propertyNodes.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited, category));
-        }
+      const categoryProperties = propertiesByCategory.get(category);
+      if (categoryProperties && categoryProperties.length > 0) {
+        const propertyNodes =
+            categoryProperties.map(property => this.buildTreeNode(propertyTraces, property.name, property.value,
+                                                                  property.inherited, category));
         tree.push({id: category, treeNodeData: {tag: 'category', name: category}, children: async () => propertyNodes});
       }
     }
@@ -700,19 +656,6 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
     void contextMenu.show();
   }
 
-  private computeNonInheritedProperties(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): Set<string> {
-    const result = new Set<string>();
-    for (const style of matchedStyles.nodeStyles()) {
-      for (const property of style.allProperties()) {
-        if (!matchedStyles.propertyState(property)) {
-          continue;
-        }
-        result.add(SDK.CSSMetadata.cssMetadata().canonicalPropertyName(property.name));
-      }
-    }
-    return result;
-  }
-
   #buildFilterRegex(text: string): RegExp|null {
     if (!text) {
       return null;
@@ -803,4 +746,3 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
 }
 
 const maxLinkLength = 30;
-const alwaysShownComputedProperties = new Set<string>(['display', 'height', 'width']);

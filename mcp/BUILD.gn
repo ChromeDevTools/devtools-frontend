@@ -27,6 +27,7 @@ devtools_module("mcp") {
     "../front_end/models/bindings",
     "../front_end/models/breakpoints",
     "../front_end/models/comment_manager",
+    "../front_end/models/computed_style:bundle",
     "../front_end/models/crux-manager",
     "../front_end/models/formatter:bundle",
     "../front_end/models/heap_snapshot:bundle",

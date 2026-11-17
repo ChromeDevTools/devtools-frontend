@@ -11,6 +11,7 @@ devtools_foundation_module("computed_style") {
 
   ts_deps = [
     "../../core/common:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
   ]
 }
@@ -22,6 +23,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../mcp/*",
     "../../panels/ai_assistance/*",
     "../../panels/elements/*",
     "../ai_assistance/*",

@@ -270,4 +270,170 @@ describe('ComputedStyleModel', () => {
       assert.isFalse(traces.has('color'));
     });
   });
+
+  describe('propertySorter', () => {
+    it('sorts standard properties first, then -webkit prefixed, then custom properties', () => {
+      const props = [
+        '--custom-b',
+        '-webkit-appearance',
+        'z-index',
+        '--custom-a',
+        'color',
+        '-webkit-align-items',
+        'align-items',
+      ];
+      props.sort(ComputedStyle.ComputedStyleModel.propertySorter);
+      assert.deepEqual(props, [
+        'align-items',
+        'color',
+        'z-index',
+        '-webkit-align-items',
+        '-webkit-appearance',
+        '--custom-a',
+        '--custom-b',
+      ]);
+    });
+  });
+
+  describe('computeNonInheritedProperties', () => {
+    it('collects canonical names of properties with a determined state on the node', async () => {
+      const mockMatchedStyles = await getMatchedStyles({
+        matchedPayload: [
+          ruleMatch('div',
+                    [
+                      {name: 'color', value: 'red'},
+                      {name: '-webkit-transition', value: 'all 1s'},
+                    ]),
+        ],
+        connection,
+      });
+
+      const nonInherited = ComputedStyle.ComputedStyleModel.computeNonInheritedProperties(mockMatchedStyles);
+      assert.isTrue(nonInherited.has('color'));
+      assert.isTrue(nonInherited.has('transition'));
+    });
+
+    it('excludes properties whose propertyState is null', async () => {
+      const mockMatchedStyles = await getMatchedStyles({
+        matchedPayload: [ruleMatch('div', [{name: 'color', value: 'red'}])],
+        connection,
+      });
+      sinon.stub(mockMatchedStyles, 'propertyState').returns(null);
+
+      const nonInherited = ComputedStyle.ComputedStyleModel.computeNonInheritedProperties(mockMatchedStyles);
+      assert.isFalse(nonInherited.has('color'));
+    });
+  });
+
+  describe('filterComputedStyleProperties', () => {
+    it('filters inherited and custom properties by default while keeping always-shown properties', async () => {
+      const mockMatchedStyles = await getMatchedStyles({
+        matchedPayload:
+            [ruleMatch('div', [{name: 'color', value: 'rgb(255, 0, 0)'}, {name: '--local-var', value: '1'}])],
+        connection,
+      });
+      const computedStyle = new Map<string, string>([
+        ['--inherited-var', '2'],
+        ['--local-var', '1'],
+        ['color', 'rgb(255, 0, 0)'],
+        ['display', 'block'],
+        ['font-size', '16px'],
+        ['height', '100px'],
+        ['width', '200px'],
+      ]);
+
+      const filtered = ComputedStyle.ComputedStyleModel.filterComputedStyleProperties(computedStyle, mockMatchedStyles);
+      assert.deepEqual(filtered, [
+        {name: 'color', value: 'rgb(255, 0, 0)', inherited: false},
+        {name: 'display', value: 'block', inherited: true},
+        {name: 'height', value: '100px', inherited: true},
+        {name: 'width', value: '200px', inherited: true},
+      ]);
+    });
+
+    it('deduplicates non-canonical vendor-prefixed properties when their value matches the canonical property',
+       async () => {
+         const mockMatchedStyles = await getMatchedStyles({
+           matchedPayload: [ruleMatch('div', [{name: 'transition', value: 'opacity 0.2s'}])],
+           connection,
+         });
+         const computedStyle = new Map<string, string>([
+           ['transition', 'opacity 0.2s'],
+           ['-webkit-transition', 'opacity 0.2s'],
+           ['-webkit-user-select', 'none'],
+           ['user-select', 'auto'],
+         ]);
+
+         const filtered = ComputedStyle.ComputedStyleModel.filterComputedStyleProperties(
+             computedStyle, mockMatchedStyles, {showAll: true});
+         assert.deepEqual(filtered, [
+           {name: 'transition', value: 'opacity 0.2s', inherited: false},
+           {name: 'user-select', value: 'auto', inherited: true},
+           {name: '-webkit-user-select', value: 'none', inherited: true},
+         ]);
+       });
+
+    it('includes inherited and custom properties when showAll is true', async () => {
+      const mockMatchedStyles = await getMatchedStyles({
+        matchedPayload: [ruleMatch('div', [{name: 'color', value: 'rgb(255, 0, 0)'}])],
+        connection,
+      });
+      const computedStyle = new Map<string, string>([
+        ['--theme', 'dark'],
+        ['font-size', '16px'],
+        ['color', 'rgb(255, 0, 0)'],
+      ]);
+
+      const filtered = ComputedStyle.ComputedStyleModel.filterComputedStyleProperties(computedStyle, mockMatchedStyles,
+                                                                                      {showAll: true});
+      assert.deepEqual(filtered, [
+        {name: 'color', value: 'rgb(255, 0, 0)', inherited: false},
+        {name: 'font-size', value: '16px', inherited: true},
+        {name: '--theme', value: 'dark', inherited: true},
+      ]);
+    });
+
+    it('includes extraProperties even when showAll is false', async () => {
+      const mockMatchedStyles = await getMatchedStyles({
+        matchedPayload: [ruleMatch('div', [{name: 'padding-top', value: '8px'}])],
+        connection,
+      });
+      const computedStyle = new Map<string, string>([
+        ['--theme', 'dark'],
+        ['color', 'rgb(0, 0, 0)'],
+        ['font-size', '16px'],
+        ['padding-top', '8px'],
+      ]);
+
+      const filtered = ComputedStyle.ComputedStyleModel.filterComputedStyleProperties(
+          computedStyle, mockMatchedStyles, {showAll: false, extraProperties: ['font-size', '--theme']});
+      assert.deepEqual(filtered, [
+        {name: 'font-size', value: '16px', inherited: true},
+        {name: 'padding-top', value: '8px', inherited: false},
+        {name: '--theme', value: 'dark', inherited: true},
+      ]);
+    });
+
+    it('preserves Map insertion order when sort is false', async () => {
+      const mockMatchedStyles = await getMatchedStyles({
+        matchedPayload: [ruleMatch('div', [{name: 'z-index', value: '2'}, {name: 'color', value: 'red'}])],
+        connection,
+      });
+      const computedStyle = new Map<string, string>([
+        ['--theme', 'dark'],
+        ['z-index', '2'],
+        ['width', '200px'],
+        ['color', 'red'],
+      ]);
+
+      const filtered = ComputedStyle.ComputedStyleModel.filterComputedStyleProperties(computedStyle, mockMatchedStyles,
+                                                                                      {showAll: true, sort: false});
+      assert.deepEqual(filtered, [
+        {name: '--theme', value: 'dark', inherited: true},
+        {name: 'z-index', value: '2', inherited: false},
+        {name: 'width', value: '200px', inherited: true},
+        {name: 'color', value: 'red', inherited: false},
+      ]);
+    });
+  });
 });

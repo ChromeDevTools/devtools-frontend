@@ -248,6 +248,7 @@ export class DebuggerPlugin extends Plugin {
   private readonly loader: SDK.PageResourceLoader.PageResourceLoader;
 
   private readonly ignoreListCallback: () => void;
+  readonly #scopeChainResolver: SourceMapScopes.ScopeChainResolver.ScopeChainResolver;
 
   constructor(
       uiSourceCode: Workspace.UISourceCode.UISourceCode,
@@ -278,6 +279,11 @@ export class DebuggerPlugin extends Plugin {
 
     UI.Context.Context.instance().addFlavorChangeListener(
         StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
+
+    // TODO(crbug.com/458180550): Receive the ScopeChainResolver via constructor.
+    this.#scopeChainResolver = SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance();
+    this.#scopeChainResolver.addEventListener(SourceMapScopes.ScopeChainResolver.Events.SCOPE_CHAIN_INVALIDATED,
+                                              this.#scopeChainInvalidated, this);
 
     this.updateScriptFiles();
 
@@ -1735,6 +1741,19 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
+  /**
+   * The scope mappings are derived from the resolved scope chain of the selected call frame. Once that is
+   * invalidated (e.g. a console evaluation assigned to a variable), recompute them and the inline values.
+   */
+  #scopeChainInvalidated(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+    const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    if (frameFlavor?.sdkFrame.script !== event.data) {
+      return;
+    }
+    this.#scopeMappingsCache.clear();
+    void this.updateValueDecorations();
+  }
+
   private setExecutionLocation(executionLocation: Workspace.UISourceCode.UILocation|null): void {
     if (this.executionLocation === executionLocation || !this.editor) {
       return;
@@ -1801,6 +1820,8 @@ export class DebuggerPlugin extends Plugin {
 
     UI.Context.Context.instance().removeFlavorChangeListener(
         StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
+    this.#scopeChainResolver.removeEventListener(SourceMapScopes.ScopeChainResolver.Events.SCOPE_CHAIN_INVALIDATED,
+                                                 this.#scopeChainInvalidated, this);
   }
 
   /**

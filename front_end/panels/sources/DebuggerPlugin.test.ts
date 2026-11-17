@@ -1029,7 +1029,11 @@ globalThis.foo = bar + baz;
   });
 
   describeWithEnvironment('getPopoverRequest', () => {
-    it('highlights the evaluated expression for both scoped variables and evaluated expressions', async () => {
+    const source = ['function f(localVar) {', '  return localVar + obj.prop;', '}'].join('\n');
+    const scopes = ['          {           ', '                             ', '}'].join('\n');
+
+    /** Sets up a DebuggerPlugin for `source`, paused at the `return` with `localVar` being 42. */
+    async function setupPausedPlugin() {
       const backend = new MockDebuggerBackend();
       const target = backend.createTarget();
       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
@@ -1048,11 +1052,10 @@ globalThis.foo = bar + baz;
           .returns(sinon.createStubInstance(Breakpoints.BreakpointManager.BreakpointManager, {
             breakpointLocationsForUISourceCode: [],
           }));
-      sinon.stub(ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper, 'buildObjectPopover')
-          .resolves(sinon.createStubInstance(ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper));
+      const buildObjectPopover =
+          sinon.stub(ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper, 'buildObjectPopover')
+              .resolves(sinon.createStubInstance(ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper));
 
-      const source = 'function f(localVar) { return localVar + obj.prop; }';
-      const scopes = '          {                                        }';
       const url = urlString`http://example.com/script.js`;
       const {uiSourceCode} = createContentProviderUISourceCode({url, mimeType: 'text/javascript', content: source});
       sinon.stub(backend.universe.debuggerWorkspaceBinding, 'rawLocationToUILocation')
@@ -1061,15 +1064,21 @@ globalThis.foo = bar + baz;
 
       const scopeObject = backend.createSimpleRemoteObject([{name: 'localVar', value: 42}]);
       const callFrame = await backend.createCallFrame(target, {url, content: source}, scopes, null, [scopeObject]);
-      const evaluateStub =
-          sinon.stub(callFrame, 'evaluate').resolves({object: new SDK.RemoteObject.LocalJSONObject(99)});
-
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
+      const {scriptId} = callFrame.script;
+      sinon.stub(callFrame, 'functionLocation').returns(new SDK.DebuggerModel.Location(debuggerModel, scriptId, 0, 9));
+      sinon.stub(callFrame, 'location').returns(new SDK.DebuggerModel.Location(debuggerModel, scriptId, 1, 2));
+
       sinon.stub(debuggerModel, 'isPaused').returns(true);
+      const pausedDetails = sinon.createStubInstance(SDK.DebuggerModel.DebuggerPausedDetails);
+      pausedDetails.callFrames = [callFrame];
+      sinon.stub(debuggerModel, 'debuggerPausedDetails').returns(pausedDetails);
       const frameFlavor =
           StackTrace.StackTrace.DebuggableFrameFlavor.for(stubFrame<StackTrace.StackTrace.DebuggableFrame>(
-                                                              {sdkFrame: callFrame, line: 0, column: 23}));
+                                                              {sdkFrame: callFrame, uiSourceCode, line: 1, column: 2}));
       UI.Context.Context.instance().setFlavor(SDK.Target.Target, target);
+      UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext,
+                                              sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext));
       UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, frameFlavor);
 
       const plugin = new Sources.DebuggerPlugin.DebuggerPlugin(uiSourceCode, {
@@ -1084,28 +1093,75 @@ globalThis.foo = bar + baz;
       sinon.stub(editor.editor, 'coordsAtPos').returns({left: 0, right: 50, top: 0, bottom: 20});
       plugin.editorInitialized(editor);
 
-      // 1. Hover over `localVar` (resolved via scopeMappings without calling callFrame.evaluate).
-      const localVarPos = source.lastIndexOf('localVar');
-      const localVarRequest =
-          plugin.getPopoverRequest(new MouseEvent('mousemove', {clientX: localVarPos, clientY: 10}));
-      assert.isNotNull(localVarRequest);
-      assert.isTrue(await localVarRequest.show(new UI.GlassPane.GlassPane()));
-      sinon.assert.notCalled(evaluateStub);
-      assert.strictEqual(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression')?.textContent, 'localVar');
+      /**
+       * Simulates the user running `localVar = <value>` in the console: The scope object V8 reported with the
+       * pause keeps the old value. The debugger marks the scope chains of the paused call frames stale and
+       * notifies its listeners, like `DebuggerModel.invalidateScopeChains` does for a real pause.
+       */
+      const assignFromConsole = (value: number) => {
+        const [scope] = callFrame.payload.scopeChain;
+        const object = backend.createSimpleRemoteObject([{name: 'localVar', value}]);
+        backend.cdpConnection.setSuccessHandler('Debugger.getScopeChain', () => ({scopeChain: [{...scope, object}]}));
+        callFrame.markScopeChainStale();
+        debuggerModel.dispatchEventToListeners(SDK.DebuggerModel.Events.ScopeChainsInvalidated, debuggerModel);
+      };
 
-      localVarRequest.hide?.();
-      assert.isNull(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression'));
+      /** Hovers over the (last) occurrence of `text` and returns the value shown in the popover. */
+      const hover = async (text: string) => {
+        const request =
+            plugin.getPopoverRequest(new MouseEvent('mousemove', {clientX: source.lastIndexOf(text), clientY: 10}));
+        assert.isNotNull(request);
+        assert.isTrue(await request.show(new UI.GlassPane.GlassPane()));
+        const highlighted = editor.editor.contentDOM.querySelector('.cm-evaluatedExpression')?.textContent;
+        request.hide?.();
+        assert.isNull(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression'));
+        return {value: buildObjectPopover.lastCall.args[0].value, highlighted};
+      };
+
+      const inlineValues = () => editor.editor.contentDOM.querySelector('.cm-variableValues')?.textContent;
+      const waitForInlineValues = async (expected: string) => {
+        while (inlineValues() !== expected) {
+          await spyCall(editor, 'dispatch');
+        }
+      };
+
+      return {callFrame, plugin, assignFromConsole, hover, waitForInlineValues};
+    }
+
+    it('highlights the evaluated expression for both scoped variables and evaluated expressions', async () => {
+      const {callFrame, plugin, hover} = await setupPausedPlugin();
+      const evaluateStub =
+          sinon.stub(callFrame, 'evaluate').resolves({object: new SDK.RemoteObject.LocalJSONObject(99)});
+
+      // 1. Hover over `localVar` (resolved via scopeMappings without calling callFrame.evaluate).
+      assert.deepEqual(await hover('localVar'), {value: 42, highlighted: 'localVar'});
+      sinon.assert.notCalled(evaluateStub);
 
       // 2. Hover over `obj.prop` (falls back to callFrame.evaluate).
-      const propPos = source.indexOf('prop');
-      const propRequest = plugin.getPopoverRequest(new MouseEvent('mousemove', {clientX: propPos, clientY: 10}));
-      assert.isNotNull(propRequest);
-      assert.isTrue(await propRequest.show(new UI.GlassPane.GlassPane()));
+      assert.deepEqual(await hover('prop'), {value: 99, highlighted: 'obj.prop'});
       sinon.assert.calledOnce(evaluateStub);
-      assert.strictEqual(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression')?.textContent, 'obj.prop');
 
-      propRequest.hide?.();
-      assert.isNull(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression'));
+      plugin.dispose();
+    });
+
+    // Regression tests for crbug.com/583942448.
+    it('shows the current value of a variable that was assigned from the console while paused', async () => {
+      const {plugin, assignFromConsole, hover} = await setupPausedPlugin();
+      assert.strictEqual((await hover('localVar')).value, 42);
+
+      assignFromConsole(9999);
+
+      assert.strictEqual((await hover('localVar')).value, 9999);
+      plugin.dispose();
+    });
+
+    it('updates the inline value of a variable that was assigned from the console while paused', async () => {
+      const {plugin, assignFromConsole, waitForInlineValues} = await setupPausedPlugin();
+      await waitForInlineValues('localVar = 42');
+
+      assignFromConsole(9999);
+
+      await waitForInlineValues('localVar = 9999');
       plugin.dispose();
     });
   });
@@ -1116,6 +1172,8 @@ globalThis.foo = bar + baz;
       const {breakpointManager} = backend.universe;
       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
           .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+          .returns(backend.universe.scopeChainResolver);
       sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
       sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
       sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance')
@@ -1170,6 +1228,8 @@ globalThis.foo = bar + baz;
       backend.createTarget();
       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
           .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+          .returns(backend.universe.scopeChainResolver);
       sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
       sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
       sinon.stub(Sources.SourcesPanel.SourcesPanel, 'instance')
@@ -1326,6 +1386,8 @@ globalThis.foo = bar + baz;
       sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
           .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+          .returns(backend.universe.scopeChainResolver);
       sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
       sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
       sinon.stub(Sources.SourcesPanel.SourcesPanel, 'instance')
@@ -1397,6 +1459,8 @@ globalThis.foo = bar + baz;
       backend.createTarget();
       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
           .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+          .returns(backend.universe.scopeChainResolver);
       sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
       sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
       sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance')
@@ -1465,6 +1529,8 @@ globalThis.foo = bar + baz;
       backend.createTarget();
       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
           .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SourceMapScopes.ScopeChainResolver.ScopeChainResolver, 'instance')
+          .returns(backend.universe.scopeChainResolver);
       sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
       sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
       sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance')

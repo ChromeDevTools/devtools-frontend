@@ -701,16 +701,7 @@ export class VersionController {
    *    setting.
    */
   updateVersionFrom39To40(): void {
-    const hasCustomNetworkConditionsSetting = (): boolean => {
-      try {
-        // this will error if it does not exist
-        this.#settings.moduleSetting('custom-network-conditions');
-        return true;
-      } catch {
-        return false;
-      }
-    };
-    if (hasCustomNetworkConditionsSetting()) {
+    if (this.#settings.syncedStorage.has('custom-network-conditions')) {
       /**
        * We added keys to custom network throttling conditions in M140, so we
        * need to go through any existing profiles the user has and add the key to
@@ -720,8 +711,8 @@ export class VersionController {
        * objects, and we need to set the right key on each one. The actual keys &
        * values in the object are not important.
        */
-      const conditionsSetting =
-          this.#settings.moduleSetting('custom-network-conditions') as Setting<Array<{key?: string}>>;
+      const conditionsSetting = this.#settings.createSetting<Array<{key?: string}>>('custom-network-conditions', [],
+                                                                                    SettingStorageType.SYNCED);
       const customConditions = conditionsSetting.get();
       if (customConditions?.length > 0) {
         customConditions.forEach((condition, i) => {

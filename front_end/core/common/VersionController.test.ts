@@ -487,12 +487,6 @@ describe('updateVersionFrom38To39', () => {
       const globalStorage = new Common.Settings.SettingsStorage({}, mockStore);
       const localStorage = new Common.Settings.SettingsStorage({}, mockStore);
 
-      Common.Settings.registerSettingExtension({
-        settingName: 'custom-network-conditions',
-        settingType: Common.Settings.SettingType.ARRAY,
-        defaultValue: [],
-      });
-
       settings = new Common.Settings.Settings({
         syncedStorage,
         globalStorage,
@@ -501,12 +495,9 @@ describe('updateVersionFrom38To39', () => {
         runSettingsMigration: false,
         console: new Common.Console.Console(),
       });
-      customNetworkCondSetting = settings.moduleSetting('custom-network-conditions');
+      customNetworkCondSetting =
+          settings.createSetting('custom-network-conditions', [], Common.Settings.SettingStorageType.SYNCED);
       preferredNetworkCondSetting = settings.createSetting('preferred-network-condition', {i18nTitleKey: 'Offline'});
-    });
-
-    afterEach(() => {
-      Common.Settings.resetSettings();  // Clear SettingsRegistrations.
     });
 
     it('updates all settings to have a key', () => {
@@ -536,6 +527,34 @@ describe('updateVersionFrom38To39', () => {
           key: 'KEY',
         },
       ]);
+    });
+
+    it('updates settings during constructor migration when not pre-registered', () => {
+      const mockStore = new InMemoryStorage();
+      const syncedStorage = new Common.Settings.SettingsStorage({
+        [Common.VersionController.VersionController.SYNCED_VERSION_SETTING_NAME]: '39',
+        'custom-network-conditions': JSON.stringify([{}]),
+      },
+                                                                mockStore);
+      const globalStorage = new Common.Settings.SettingsStorage({}, mockStore);
+      const localStorage = new Common.Settings.SettingsStorage({}, mockStore);
+
+      const freshSettings = new Common.Settings.Settings({
+        syncedStorage,
+        globalStorage,
+        localStorage,
+        settingRegistrations: [],
+        runSettingsMigration: true,
+        console: new Common.Console.Console(),
+      });
+
+      const resolved = freshSettings.resolve({
+        name: 'custom-network-conditions',
+        type: Common.Settings.SettingType.ARRAY,
+        defaultValue: [],
+        storageType: Common.Settings.SettingStorageType.SYNCED,
+      });
+      assert.deepEqual(resolved.get(), [{key: 'USER_CUSTOM_SETTING_1'}]);
     });
 
     it('migrates users who have a preferred-network-condition set to "Fast 4G"', () => {

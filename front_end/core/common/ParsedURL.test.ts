@@ -838,6 +838,7 @@ describe('Parsed URL', () => {
         urlString`chrome-untrusted://terminal/html/terminal.html`,
         urlString`devtools://devtools/bundled/inspector.html`,
         urlString`file:///etc/passwd`,
+        urlString`externalfile:drive-user/root/file.txt`,
         urlString`isolated-app://abcdefghijklmnop/index.html`,
         urlString`blob:chrome-extension://abcdefghijklmnop/550e8400-e29b-41d4-a716-446655440000`,
         urlString`filesystem:chrome-extension://abcdefghijklmnop/persistent/file.txt`,

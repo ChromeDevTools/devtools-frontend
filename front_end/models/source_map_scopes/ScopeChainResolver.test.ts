@@ -135,6 +135,32 @@ describe('ScopeChainResolver', () => {
     });
   });
 
+  it('invalidates the cache for all scripts on the call stack when the scope chains are invalidated', () => {
+    const debuggerModel = universe.createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
+    const script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
+    const fakeFrame1 = createFakeCallFrame(debuggerModel, script);
+    const fakeFrame2 = createFakeCallFrame(debuggerModel, script);
+    const fakeFrame3 = createFakeCallFrame(debuggerModel);
+    const unrelatedFrame = createFakeCallFrame(debuggerModel);
+    const pausedDetails = sinon.createStubInstance(SDK.DebuggerModel.DebuggerPausedDetails);
+    pausedDetails.callFrames = [fakeFrame1, fakeFrame2, fakeFrame3];
+    sinon.stub(debuggerModel, 'debuggerPausedDetails').returns(pausedDetails);
+    const resolver = universe.scopeChainResolver;
+    const promises = pausedDetails.callFrames.map(frame => resolver.resolveScopeChain(frame));
+    const unrelatedPromise = resolver.resolveScopeChain(unrelatedFrame);
+    const listenerStub = sinon.stub();
+    resolver.addEventListener(SourceMapScopes.ScopeChainResolver.Events.SCOPE_CHAIN_INVALIDATED, listenerStub);
+
+    debuggerModel.dispatchEventToListeners(SDK.DebuggerModel.Events.ScopeChainsInvalidated, debuggerModel);
+
+    for (const [index, frame] of pausedDetails.callFrames.entries()) {
+      assert.notStrictEqual(resolver.resolveScopeChain(frame), promises[index]);
+    }
+    assert.strictEqual(resolver.resolveScopeChain(unrelatedFrame), unrelatedPromise);
+    // Once per script, not once per call frame.
+    assert.deepEqual(listenerStub.getCalls().map(call => call.args[0].data), [script, fakeFrame3.script]);
+  });
+
   it('does not invalidate the cache of unrelated scripts', () => {
     const debuggerModel = universe.createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
     const fakeFrame = createFakeCallFrame(debuggerModel);

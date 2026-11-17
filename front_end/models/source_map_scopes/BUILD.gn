@@ -75,7 +75,10 @@ devtools_foundation_module("foundation_unittests") {
 }
 
 devtools_api_test_module("api_tests") {
-  sources = [ "NamesResolver.test.api.ts" ]
+  sources = [
+    "NamesResolver.test.api.ts",
+    "ScopeChainResolver.test.api.ts",
+  ]
 
   ts_deps = [
     ":bundle",

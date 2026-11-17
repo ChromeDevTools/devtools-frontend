@@ -233,19 +233,49 @@ describe('MarkdownView', () => {
     function getRenderedLitTemplate(token: Marked.Marked.Token) {
       return renderer.renderToken(token) as Lit.TemplateResult;
     }
-    it('renders link as texts', () => {
-      const result = getRenderedLitTemplate(
-          {type: 'link', text: 'learn more', href: 'https://example.test'} as Marked.Marked.Token);
-      assert.strictEqual(result.values[0], 'learn more');
+
+    function assertRendersSingleCodeUrl(token: Marked.Marked.Token, expectedUrl: string): void {
+      const container = renderTemplateResult(renderer.renderToken(token));
+      assert.strictEqual(container.textContent, expectedUrl);
+      assert.lengthOf(container.querySelectorAll('code'), 1);
+      assert.strictEqual(container.querySelector('code')?.textContent, expectedUrl);
+    }
+
+    it('renders titled external links as label followed by inline code URL', () => {
+      const container = renderTemplateResult(
+          renderer.renderToken(getFakeToken({type: 'link', text: 'learn more', href: 'https://example.test'})));
+      assert.strictEqual(container.textContent, 'learn more (https://example.test/)');
+      assert.strictEqual(container.querySelector('code')?.textContent, 'https://example.test/');
+      assert.isNull(container.querySelector('a, devtools-link'));
     });
-    it('renders link urls as texts', () => {
-      const result = getRenderedLitTemplate({type: 'link', href: 'https://example.test'} as Marked.Marked.Token);
-      assert.strictEqual(result.values[0], 'https://example.test');
+    it('preserves inline formatting in external link labels', () => {
+      const firstToken = Marked.Marked.lexer('[**bold** and `code`](https://example.test/path)')[0];
+      assert.exists(firstToken);
+      const linkToken = 'tokens' in firstToken ? firstToken.tokens?.find(token => token.type === 'link') : undefined;
+      assert.exists(linkToken);
+      const container = renderTemplateResult(renderer.renderToken(linkToken));
+      assert.strictEqual(container.querySelector('strong')?.textContent, 'bold');
+      assert.deepEqual(Array.from(container.querySelectorAll('code')).map(element => element.textContent),
+                       ['code', 'https://example.test/path']);
+      assert.strictEqual(container.textContent, 'bold and code (https://example.test/path)');
+      assert.isNull(container.querySelector('a, devtools-link'));
+    });
+    it('renders link URLs without a distinct label as a single inline code span', () => {
+      assertRendersSingleCodeUrl(getFakeToken({type: 'link', href: 'https://example.test'}), 'https://example.test/');
+      assertRendersSingleCodeUrl(getFakeToken({type: 'link', text: '   ', href: 'https://example.test'}),
+                                 'https://example.test/');
+      assertRendersSingleCodeUrl(
+          getFakeToken({type: 'link', text: 'https://example.test', href: 'https://example.test/'}),
+          'https://example.test/');
     });
     it('does not render URLs with "javascript:"', () => {
       const result = getRenderedLitTemplate(
           {type: 'link', text: 'learn more', href: 'javascript:alert("test")'} as Marked.Marked.Token);
       assert.isUndefined(result.values[0]);
+
+      const imageResult =
+          getRenderedLitTemplate(getFakeToken({type: 'image', text: 'learn more', href: 'javascript:alert("test")'}));
+      assert.isUndefined(imageResult.values[0]);
     });
     it('does not render chrome:// URLs', () => {
       const result =
@@ -257,13 +287,21 @@ describe('MarkdownView', () => {
       assert.isUndefined(result.values[0]);
     });
     it('renders images as text', () => {
-      const result = getRenderedLitTemplate(
-          {type: 'image', text: 'learn more', href: 'https://example.test'} as Marked.Marked.Token);
-      assert.strictEqual(result.values[0], 'learn more');
+      const container = renderTemplateResult(
+          renderer.renderToken(getFakeToken({type: 'image', text: 'learn more', href: 'https://example.test'})));
+      assert.strictEqual(container.textContent, 'learn more');
+      assert.isNull(container.querySelector('code, devtools-markdown-image'));
     });
     it('renders image urls as text', () => {
-      const result = getRenderedLitTemplate({type: 'image', href: 'https://example.test'} as Marked.Marked.Token);
-      assert.strictEqual(result.values[0], 'https://example.test');
+      const omittedTextContainer =
+          renderTemplateResult(renderer.renderToken(getFakeToken({type: 'image', href: 'https://example.test'})));
+      assert.strictEqual(omittedTextContainer.textContent, 'https://example.test');
+      assert.isNull(omittedTextContainer.querySelector('code, devtools-markdown-image'));
+
+      const emptyTextContainer = renderTemplateResult(
+          renderer.renderToken(getFakeToken({type: 'image', text: '', href: 'https://example.test'})));
+      assert.strictEqual(emptyTextContainer.textContent, 'https://example.test');
+      assert.isNull(emptyTextContainer.querySelector('code, devtools-markdown-image'));
     });
     it('renders headings as headings with the `insight` class', () => {
       const renderResult = getRenderedLitTemplate(getFakeToken({type: 'heading', text: 'a heading text', depth: 3}));

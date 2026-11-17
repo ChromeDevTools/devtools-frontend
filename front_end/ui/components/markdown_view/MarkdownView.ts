@@ -404,14 +404,26 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     switch (token.type) {
       case 'heading':
         return this.renderHeading(token as Marked.Marked.Tokens.Heading);
-      case 'link':
-      case 'image': {
+      case 'link': {
         const sanitizedUrl = this.sanitizeUrl(token.href);
         if (!sanitizedUrl) {
           return null;
         }
-        // Only links pointing to resources within DevTools can be rendered here.
-        return html`${token.text ?? token.href}`;
+        // Subclasses handle internal DevTools anchors; render external HTTP(S) links as non-clickable text with an inline <code> URL.
+        const codeUrl = html`<code class=${this.customClassMapForToken('codespan')}>${sanitizedUrl}</code>`;
+        const label = typeof token.text === 'string' ? token.text.trim() : '';
+        // Compare against sanitizedUrl so bare URLs normalized with a trailing slash do not duplicate.
+        if (label && this.sanitizeUrl(label) !== sanitizedUrl) {
+          return html`${this.renderText(token)} (${codeUrl})`;
+        }
+        return codeUrl;
+      }
+      case 'image': {
+        if (!this.sanitizeUrl(token.href)) {
+          return null;
+        }
+        // Render plain text instead of <img> to avoid fetching untrusted external images.
+        return html`${token.text || token.href}`;
       }
       case 'code':
         return html`<devtools-code-block

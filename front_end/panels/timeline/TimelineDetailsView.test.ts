@@ -462,4 +462,35 @@ describe('TimelineDetailsView', function() {
     assert.strictEqual(detailsView.getDetailsContentElementForTest().scrollTop, 50);
     detailsView.detach();
   });
+
+  it('populates range tree model only on the active range tab when selected', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents: allThreadEntriesInTrace(parsedTrace),
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    });
+    detailsView.selectTab(Timeline.TimelineDetailsView.Tab.CallTree, null);
+    await detailsView.updateComplete;
+    const callTreeTab = detailsView.headerElement().querySelector('#tab-call-tree');
+    assert.isOk(callTreeTab);
+    assert.isTrue(callTreeTab.classList.contains('selected'));
+    const tabbedPane =
+        UI.Widget.Widget.get(detailsView.element.querySelector('.tabbed-pane')!) as UI.TabbedPane.TabbedPane |
+        undefined;
+    assert.exists(tabbedPane);
+    const callTreeView = tabbedPane.tabView(Timeline.TimelineDetailsView.Tab.CallTree);
+    const bottomUpView = tabbedPane.tabView(Timeline.TimelineDetailsView.Tab.BottomUp);
+    const eventLogView = tabbedPane.tabView(Timeline.TimelineDetailsView.Tab.EventLog);
+    assert.instanceOf(callTreeView, Timeline.TimelineTreeView.CallTreeTimelineTreeView);
+    assert.isAbove(callTreeView.dataGrid.rootNode().children.length, 0);
+    assert.instanceOf(bottomUpView, Timeline.TimelineTreeView.BottomUpTimelineTreeView);
+    assert.lengthOf(bottomUpView.dataGrid.rootNode().children, 0);
+    assert.instanceOf(eventLogView, Timeline.EventsTimelineTreeView.EventsTimelineTreeView);
+    assert.lengthOf(eventLogView.dataGrid.rootNode().children, 0);
+    detailsView.detach();
+  });
 });

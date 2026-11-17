@@ -87,6 +87,45 @@ export enum Tab {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
+/** The tabs that show a tree view of the selected range. */
+type RangeTab = Tab.BottomUp|Tab.CallTree|Tab.EventLog;
+
+function isTab(tabId: string|null|undefined): tabId is Tab {
+  return Object.values(Tab).includes(tabId as Tab);
+}
+
+function isRangeTab(tab: Tab): tab is RangeTab {
+  return tab === Tab.BottomUp || tab === Tab.CallTree || tab === Tab.EventLog;
+}
+
+interface TreeViewModel {
+  selectedEvents: Trace.Types.Events.Event[]|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
+  entityMapper: Trace.EntityMapper.EntityMapper|null;
+}
+
+function revealNodeInBottomUpTree(bottomUp: BottomUpTimelineTreeView, node: Trace.Extras.TraceTree.Node|null,
+                                  groupBySetting?: AggregatedTimelineTreeView.GroupBy): void {
+  if (groupBySetting) {
+    bottomUp.setGroupBySetting(groupBySetting);
+    bottomUp.refreshTree();
+  }
+  if (!node) {
+    return;
+  }
+  // Match GroupNodes by group ID instead of scanning each group's events array.
+  const gridNode = node.isGroupNode() ?
+      bottomUp.dataGrid.rootNode().children.find((child): child is GridNode =>
+                                                     child instanceof GridNode && child.profileNode.id === node.id) ??
+          null :
+      bottomUp.gridNodeForEvent(node.event);
+  if (!gridNode) {
+    return;
+  }
+  bottomUp.selectProfileNode(gridNode.profileNode, true);
+  gridNode.expand();
+}
+
 interface SelectedRange {
   startTime: Trace.Types.Timing.Milli;
   endTime: Trace.Types.Timing.Milli;
@@ -211,7 +250,13 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   #selectedEvents: Trace.Types.Events.Event[]|null = null;
   private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
   private lazyLayersView?: TimelineLayersView|null;
-  private preferredTabId?: string;
+  #headerHidden = false;
+  #tabHistory: Tab[] = [Tab.Details];
+  #preferredTab: Tab = Tab.Details;
+  #treeViewModel: TreeViewModel = {selectedEvents: null, parsedTrace: null, entityMapper: null};
+  #renderedTreeViewModel: TreeViewModel|null = null;
+  readonly #rangeSelections = new Map<RangeTab, TimelineSelection>();
+  readonly #renderedRangeSelections = new Map<RangeTab, TimelineSelection>();
   #selection: TimelineSelection|null = null;
   #debouncedUpdateContentsFromWindow: (() => void)&
       {cancel: () => void} = Common.Debouncer.debounce(() => this.updateContentsFromWindow(), 100);
@@ -263,7 +308,6 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
 
     this.defaultDetailsWidget = new SummaryTabWidget();
     this.appendTab(Tab.Details, i18nString(UIStrings.summary), this.defaultDetailsWidget);
-    this.setPreferredTab(Tab.Details);
 
     this.rangeDetailViews = new Map();
 
@@ -293,7 +337,11 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     });
 
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
-
+    this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, event => {
+      if (isTab(event.data.tabId)) {
+        this.#onTabClosed(event.data.tabId);
+      }
+    });
     this.lazySelectorStatsView = null;
     this.requestUpdate();
   }
@@ -309,6 +357,25 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         undefined,
         this.defaultDetailsWidget.contentElement,
     );
+    const modelChanged = this.#renderedTreeViewModel !== this.#treeViewModel;
+    this.#renderedTreeViewModel = this.#treeViewModel;
+    for (const [tabId, view] of this.rangeDetailViews.entries()) {
+      if (modelChanged) {
+        view.model = this.#treeViewModel;
+      }
+      if (isTab(tabId) && isRangeTab(tabId)) {
+        const activeSel = this.#rangeSelections.get(tabId);
+        if (activeSel && this.#renderedRangeSelections.get(tabId) !== activeSel) {
+          this.#renderedRangeSelections.set(tabId, activeSel);
+          view.activeSelection = activeSel;
+        }
+      }
+    }
+    this.tabbedPane.headerElement().classList.toggle('hidden', this.#headerHidden);
+    const targetTab = this.#selectedTab();
+    if (this.tabbedPane.hasTab(targetTab) && this.tabbedPane.selectedTabId !== targetTab) {
+      this.tabbedPane.selectTab(targetTab);
+    }
   }
 
   readonly #onTreeRowHovered: TreeRowCallback = (node, events) => {
@@ -354,7 +421,16 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
    */
   selectTab(tabName: Tab, node: Trace.Extras.TraceTree.Node|null, groupBySetting?: AggregatedTimelineTreeView.GroupBy):
       void {
-    this.tabbedPane.selectTab(tabName, true, true);
+    if (!this.#isTabAvailable(tabName)) {
+      return;
+    }
+    this.#onTabSelected(tabName, /* isUserGesture */ true);
+    void this.#revealSelectedTab(tabName, node, groupBySetting);
+  }
+
+  async #revealSelectedTab(tabName: Tab, node: Trace.Extras.TraceTree.Node|null,
+                           groupBySetting?: AggregatedTimelineTreeView.GroupBy): Promise<void> {
+    await this.updateComplete;
     /**
      * For a11y, ensure that the header is focused.
      */
@@ -374,32 +450,9 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         break;
       }
       case Tab.BottomUp: {
-        if (!(this.tabbedPane.visibleView instanceof BottomUpTimelineTreeView)) {
-          return;
+        if (this.tabbedPane.visibleView instanceof BottomUpTimelineTreeView) {
+          revealNodeInBottomUpTree(this.tabbedPane.visibleView, node, groupBySetting);
         }
-        // Set grouping if necessary.
-        const bottomUp = this.tabbedPane.visibleView;
-        if (groupBySetting) {
-          bottomUp.setGroupBySetting(groupBySetting);
-          bottomUp.refreshTree();
-        }
-
-        if (!node) {
-          return;
-        }
-
-        // Match GroupNodes by group ID instead of scanning each group's events array.
-        const gridNode = node.isGroupNode() ?
-            bottomUp.dataGrid.rootNode().children.find((child): child is GridNode => child instanceof GridNode &&
-                                                           child.profileNode.id === node.id) ??
-                null :
-            bottomUp.gridNodeForEvent(node.event);
-        if (!gridNode) {
-          return;
-        }
-        bottomUp.selectProfileNode(gridNode.profileNode, true);
-        // Reveal/expand the bottom up tree grid node.
-        gridNode.expand();
         break;
       }
       default: {
@@ -477,13 +530,14 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     this.#summary.parsedTrace = this.#parsedTrace;
     this.#summary.entityMapper = this.#entityMapper;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
-    for (const view of this.rangeDetailViews.values()) {
-      view.model = {
-        selectedEvents: data.selectedEvents,
-        parsedTrace: data.parsedTrace,
-        entityMapper: this.#entityMapper,
-      };
-    }
+    this.#rangeSelections.clear();
+    this.#renderedRangeSelections.clear();
+    this.#treeViewModel = {
+      selectedEvents: data.selectedEvents,
+      parsedTrace: data.parsedTrace,
+      entityMapper: this.#entityMapper,
+    };
+    this.requestUpdate();
     // `setSelection(null)` short-circuits without updating the summary pane when any
     // of these dependencies are missing, so trigger the update directly.
     if (!this.#parsedTrace || !this.#selectedEvents || !TraceBounds.TraceBounds.BoundsManager.instance().state()) {
@@ -506,7 +560,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       }
     }
 
-    if (this.tabbedPane.selectedTabId !== Tab.Details) {
+    if (this.#selectedTab() !== Tab.Details) {
       this.#summaryNeedsUpdate = true;
       return;
     }
@@ -527,17 +581,19 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       return;
     }
     const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
-    // Update the view that we currently have selected.
-    const view = this.rangeDetailViews.get(this.tabbedPane.selectedTabId || '');
-    if (view) {
-      view.activeSelection = this.#selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max);
+    const selectedTab = this.#selectedTab();
+    if (isRangeTab(selectedTab)) {
+      const activeSel = this.#selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max);
+      this.#rangeSelections.set(selectedTab, activeSel);
+      this.requestUpdate();
     }
   }
 
-  private appendTab(id: string, tabTitle: string, view: UI.Widget.Widget, isCloseable?: boolean): void {
+  private appendTab(id: Tab, tabTitle: string, view: UI.Widget.Widget, isCloseable?: boolean): void {
     this.tabbedPane.appendTab(id, tabTitle, view, undefined, undefined, isCloseable);
-    if (this.preferredTabId !== this.tabbedPane.selectedTabId) {
-      this.tabbedPane.selectTab(id);
+    this.#onTabAppended(id);
+    if (this.tabbedPane.selectedTabId !== this.#selectedTab()) {
+      this.tabbedPane.selectTab(this.#selectedTab());
     }
   }
 
@@ -546,11 +602,9 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   }
 
   hideHeader(): void {
+    this.#headerHidden = true;
     this.tabbedPane.headerElement().classList.add('hidden');
-  }
-
-  setPreferredTab(tabId: string): void {
-    this.preferredTabId = tabId;
+    this.requestUpdate();
   }
 
   /**
@@ -642,17 +696,66 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   }
 
   private tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
-    if (event.data.tabId === Tab.Details && this.#summaryNeedsUpdate) {
+    if (isTab(event.data.tabId)) {
+      this.#onTabSelected(event.data.tabId, Boolean(event.data.isUserGesture));
+    }
+  }
+
+  #selectedTab(): Tab {
+    if (this.#headerHidden) {
+      return Tab.Details;
+    }
+    return this.#tabHistory.find(tab => this.#isTabAvailable(tab)) ?? Tab.Details;
+  }
+
+  #isTabAvailable(tab: Tab): boolean {
+    switch (tab) {
+      case Tab.Details:
+      case Tab.BottomUp:
+      case Tab.CallTree:
+      case Tab.EventLog:
+        return true;
+      case Tab.PaintProfiler:
+      case Tab.LayerViewer:
+      case Tab.SelectorStats:
+        return this.tabbedPane.hasTab(tab);
+      default:
+        Platform.assertNever(tab, `Unknown Tab: ${tab}. Add new case to switch.`);
+    }
+  }
+
+  #recordSelectedTab(tab: Tab): void {
+    this.#tabHistory = [tab, ...this.#tabHistory.filter(previousTab => previousTab !== tab)];
+  }
+
+  #onTabAppended(tab: Tab): void {
+    if (this.#preferredTab === tab) {
+      this.#recordSelectedTab(tab);
+    }
+  }
+
+  readonly #onTabSelected = (tab: Tab, isUserGesture: boolean): void => {
+    const previousTab = this.#selectedTab();
+    this.#recordSelectedTab(tab);
+    let needsUpdate = previousTab !== tab;
+    if (tab === Tab.Details && this.#summaryNeedsUpdate) {
       this.#summaryNeedsUpdate = false;
       this.#commitSummary();
+      needsUpdate = true;
+    }
+    if (isUserGesture) {
+      this.#preferredTab = tab;
+      this.updateContents();
+    }
+    if (needsUpdate) {
       this.requestUpdate();
     }
-    if (!event.data.isUserGesture) {
-      return;
-    }
-    this.setPreferredTab(event.data.tabId);
-    this.updateContents();
-  }
+  };
+
+  readonly #onTabClosed = (tab: Tab): void => {
+    this.#tabHistory = this.#tabHistory.filter(previousTab => previousTab !== tab);
+    this.requestUpdate();
+  };
 
   private layersView(): TimelineLayersView {
     if (this.lazyLayersView) {

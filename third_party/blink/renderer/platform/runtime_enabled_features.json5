@@ -1226,6 +1226,13 @@
       status: {"Android": "", "default": "stable"},
     },
     {
+      // Kill switch for https://crbug.com/582918766. Checks that the current
+      // and incumbent V8 contexts are same-origin with the target
+      // ExecutionContext before capturing a V8 stack trace.
+      name: "CaptureSourceLocationSameOriginCheck",
+      status: "stable",
+    },
+    {
       // Allows automated test runners to keep focused carets visible.
       name: "CaretBlinking",
       status: "stable",
@@ -3813,6 +3820,13 @@
       name: "HTMLElementScrollParent",
       status: "experimental",
     },
+    {
+      // Kill switch: map hspace, vspace and border on <input> only in the
+      // Image Button state, including after the type attribute changes.
+      // Ships in M160 and can be removed in M162. https://crbug.com/581012178
+      name: "HTMLInputHspaceVspaceImageOnly",
+      status: "stable",
+    },
     // Adds support for the `::interest-button` pseudo element, which is a sub-
     // feature of the interest invokers feature.
     // https://open-ui.org/components/interest-invokers.explainer/
@@ -4038,6 +4052,15 @@
     // https://crbug.com/327665597
     {
       name: "InsertBlockquoteBeforeOuterBlock",
+      status: "stable",
+    },
+    // Make insertParagraph insert a line break instead of a <div> when the
+    // editing host cannot have a <div>, e.g., <p contenteditable>, and split a
+    // block inside such an editing host instead of inserting a line break.
+    // Kill switch, enabled by default in M160.
+    // crbug.com/40869970
+    {
+      name: "InsertParagraphInEditingHostCannotHaveDiv",
       status: "stable",
     },
     {

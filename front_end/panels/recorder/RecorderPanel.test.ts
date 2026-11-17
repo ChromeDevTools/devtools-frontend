@@ -53,6 +53,15 @@ describeWithEnvironment('RecorderPanel', () => {
     return panel;
   }
 
+  describe('Visual logging', () => {
+    it('should set the panel visual logging context on the root element', async () => {
+      panel = new RecorderPanel.RecorderPanel();
+      renderElementIntoDOM(panel);
+      await panel.updateComplete;
+      assert.strictEqual(panel.element.getAttribute('jslog'), 'Panel; context: chrome-recorder; track: resize');
+    });
+  });
+
   describe('Navigation', () => {
     it('should return back to the previous page if recording was cancelled', async () => {
       const previousPage = RecorderPanel.Pages.ALL_RECORDINGS_PAGE;

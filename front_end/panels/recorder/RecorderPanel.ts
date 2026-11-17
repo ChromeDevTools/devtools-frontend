@@ -581,7 +581,14 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
           }
           ${renderCurrentPage()}
         </div>
-    `, target, { container: { listeners: {setrecording: input.onSetRecording}}});
+    `, target, {
+      container: {
+        // Visual logging attributes all interactions in the panel to this root.
+        // Panel usage metrics depend on it.
+        attributes: {jslog: `${VisualLogging.panel(RecorderPanel.panelName).track({resize: true})}`},
+        listeners: {setrecording: input.onSetRecording},
+      },
+    });
   // clang-format on
 };
 

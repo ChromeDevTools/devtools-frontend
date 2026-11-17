@@ -16,6 +16,7 @@ import {
   stopRecording,
   toggleCodeView,
 } from '../helpers/recorder-helpers.js';
+import {expectVeEvents, veClick, veImpression, veImpressionsUnder} from '../helpers/visual-logging-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';
 
@@ -419,6 +420,29 @@ describe('Recorder', function() {
         await toggleCodeView(devToolsPage);
         assert.strictEqual(await getSplitWidgetVisibility(), 'main');
       });
+    });
+  });
+
+  describe('Visual logging', () => {
+    it('should log impressions and interactions under the Recorder panel', async ({devToolsPage, inspectedPage}) => {
+      await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, 'recorder/recorder.html');
+      await expectVeEvents(
+          devToolsPage,
+          [veImpressionsUnder(
+              'Panel: chrome-recorder',
+              [
+                veImpression('Section', 'start-view', [veImpression('Link', 'learn-more')]),
+                veImpression('Toolbar', undefined, [veImpression('Action', 'chrome-recorder.create-recording')]),
+              ])],
+          undefined);
+
+      const button = await devToolsPage.waitForAria('Create recording');
+      await button.click();
+      await devToolsPage.waitForAria('RECORDING NAME');
+
+      await expectVeEvents(devToolsPage,
+                           [veClick('Panel: chrome-recorder > Toolbar > Action: chrome-recorder.create-recording')],
+                           undefined);
     });
   });
 

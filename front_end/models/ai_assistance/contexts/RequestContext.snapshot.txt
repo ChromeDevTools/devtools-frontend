@@ -1,6 +1,7 @@
 Title: RequestContext getPromptDetails describes the network request correctly
 Content:
 # Selected network request
+Request ID: requestId
 Request: https://www.example.com/api/users
 Request headers:
 Accept: application/json

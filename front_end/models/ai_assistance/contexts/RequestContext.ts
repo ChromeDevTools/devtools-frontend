@@ -62,9 +62,14 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
     });
   }
 
+  /**
+   * Includes the request ID so the model can match this request to
+   * `listNetworkRequests` rows without calling `getNetworkRequestDetails`.
+   */
   override async getPromptDetails(): Promise<string|null> {
     const formatter = this.#createFormatter();
-    return `# Selected network request\n${await formatter.formatNetworkRequest()}`;
+    return `# Selected network request\nRequest ID: ${this.#request.requestId()}\n${
+        await formatter.formatNetworkRequest()}`;
   }
 
   override async getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]]|null> {

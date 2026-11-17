@@ -917,6 +917,14 @@ export class SplitWidget extends SplitWidgetBase {
 
 export type ShowAttribute = 'main'|'sidebar'|'both';
 
+/**
+ * `<devtools-split-view>` hosts a `SplitWidget`.
+ *
+ * `direction`, `sidebar-position`, and `show` can change at any time.
+ * `name`, `sidebar-initial-size`, `sidebar-initial-width`,
+ * `sidebar-initial-height`, and `constraints-in-dip` are only read when
+ * the widget is created.
+ */
 export class SplitWidgetElement extends WidgetElement<SplitWidget> {
   static readonly observedAttributes: string[] = ['direction', 'sidebar-position', 'sidebar-initial-size', 'show'];
 
@@ -929,12 +937,15 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
                            const secondIsSidebar = element.getAttribute('sidebar-position') === 'second';
                            const settingName = element.getAttribute('name') ?? undefined;
                            const sidebarSize = parseFloat(element.getAttribute('sidebar-initial-size') || '');
-                           const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : undefined;
-                           const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : undefined;
+                           const sidebarWidth = parseFloat(element.getAttribute('sidebar-initial-width') || '');
+                           const sidebarHeight = parseFloat(element.getAttribute('sidebar-initial-height') || '');
+                           const fallbackSize = !isNaN(sidebarSize) ? sidebarSize : 200;
+                           const defaultSidebarWidth = !isNaN(sidebarWidth) ? sidebarWidth : fallbackSize;
+                           const defaultSidebarHeight = !isNaN(sidebarHeight) ? sidebarHeight : fallbackSize;
 
                            const widget = new SplitWidget(
                                vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight,
-                               /* constraintsInDip=*/ false, element as SplitWidgetElement);
+                               element.hasAttribute('constraints-in-dip'), element as SplitWidgetElement);
 
                            if (element.getAttribute('sidebar-initial-size') === 'minimized') {
                              widget.setSidebarMinimized(true);

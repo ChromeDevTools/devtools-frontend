@@ -8,10 +8,11 @@ import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 
 import * as UI from './legacy.js';
 
+const {ifDefined} = Directives;
 const widgetRef = UI.Widget.widgetRef;
 const SplitWidget = UI.SplitWidget.SplitWidget;
 
@@ -506,5 +507,113 @@ describeWithEnvironment('SplitWidget', () => {
     });
 
     splitWidget.detach();
+  });
+
+  describe('devtools-split-view construction attributes', () => {
+    interface SplitViewOptions {
+      direction?: 'row'|'column';
+      name?: string;
+      show?: UI.SplitWidget.ShowAttribute;
+      sidebarInitialSize?: string;
+      sidebarInitialWidth?: string;
+      sidebarInitialHeight?: string;
+      constraintsInDip?: boolean;
+    }
+
+    async function renderSplitView(options: SplitViewOptions, size = 1000): Promise<UI.SplitWidget.SplitWidget> {
+      const container = document.createElement('div');
+      container.style.display = 'flex';
+      container.style.width = `${size}px`;
+      container.style.height = `${size}px`;
+      renderElementIntoDOM(container, {includeCommonStyles: true, allowMultipleChildren: true});
+      let widget!: UI.SplitWidget.SplitWidget;
+
+      // clang-format off
+      render(
+          html`
+        <devtools-split-view direction=${options.direction ?? 'column'} sidebar-position="second"
+                             name=${ifDefined(options.name)} show=${ifDefined(options.show)}
+                             sidebar-initial-size=${ifDefined(options.sidebarInitialSize)}
+                             sidebar-initial-width=${ifDefined(options.sidebarInitialWidth)}
+                             sidebar-initial-height=${ifDefined(options.sidebarInitialHeight)}
+                             ?constraints-in-dip=${Boolean(options.constraintsInDip)}
+                             ${widgetRef(SplitWidget, e => {widget = e;})}>
+          <div slot="main">Main content</div>
+          <div slot="sidebar">Sidebar content</div>
+        </devtools-split-view>`,
+          container);
+      // clang-format on
+
+      assert.exists(widget);
+      await widget.updateComplete;
+      return widget;
+    }
+
+    it('uses sidebar-initial-width for column splits', async () => {
+      const widget =
+          await renderSplitView({direction: 'column', sidebarInitialWidth: '555', sidebarInitialHeight: '300'});
+      assert.isTrue(widget.isVertical());
+      assert.strictEqual(widget.sidebarSize(), 555);
+      widget.detach();
+    });
+
+    it('uses sidebar-initial-height for row splits', async () => {
+      const widget = await renderSplitView({direction: 'row', sidebarInitialWidth: '555', sidebarInitialHeight: '300'});
+      assert.isFalse(widget.isVertical());
+      assert.strictEqual(widget.sidebarSize(), 300);
+      widget.detach();
+    });
+
+    it('falls back to sidebar-initial-size per orientation', async () => {
+      const rowWidget =
+          await renderSplitView({direction: 'row', sidebarInitialSize: '150', sidebarInitialWidth: '555'});
+      assert.strictEqual(rowWidget.sidebarSize(), 150);
+      rowWidget.detach();
+
+      const columnWidget = await renderSplitView({direction: 'column', sidebarInitialSize: '150'});
+      assert.strictEqual(columnWidget.sidebarSize(), 150);
+      columnWidget.detach();
+    });
+
+    it('supports sidebar-initial-size="minimized"', async () => {
+      const widget = await renderSplitView({direction: 'column', sidebarInitialSize: 'minimized'});
+      assert.isTrue(widget.isSidebarMinimized());
+      widget.detach();
+    });
+
+    it('defaults height to 200 when only sidebar-initial-width is set', async () => {
+      const widget = await renderSplitView({direction: 'row', sidebarInitialWidth: '555'});
+      assert.isFalse(widget.isVertical());
+      assert.strictEqual(widget.sidebarSize(), 200);
+      widget.detach();
+    });
+
+    it('defaults width to 200 when only sidebar-initial-height is set', async () => {
+      const widget = await renderSplitView({direction: 'column', sidebarInitialHeight: '300'});
+      assert.isTrue(widget.isVertical());
+      assert.strictEqual(widget.sidebarSize(), 200);
+      widget.detach();
+    });
+
+    it('applies constraints in DIP when constraints-in-dip attribute is set', async () => {
+      // Stubbing zoomFactor() only affects #applyConstraints(); cssToDIP()/dipToCSS()
+      // keep using the real zoom factor (1). So the minimum of 100 plus the 1px
+      // splitter border is scaled by 2 (202), unless constraints-in-dip is set (101).
+      sinon.stub(UI.ZoomManager.ZoomManager.instance(), 'zoomFactor').returns(2);
+
+      const cssWidget = await renderSplitView({sidebarInitialSize: '50'}, 500);
+      const cssSidebar = cssWidget.sidebarWidget();
+      assert.exists(cssSidebar);
+      cssSidebar.setMinimumSize(100, 0);
+      assert.strictEqual(cssWidget.sidebarSize(), 202);
+      cssWidget.detach();
+
+      const dipWidget = await renderSplitView({sidebarInitialSize: '50', constraintsInDip: true}, 500);
+      const dipSidebar = dipWidget.sidebarWidget();
+      assert.exists(dipSidebar);
+      dipSidebar.setMinimumSize(100, 0);
+      assert.strictEqual(dipWidget.sidebarSize(), 101);
+      dipWidget.detach();
+    });
   });
 });

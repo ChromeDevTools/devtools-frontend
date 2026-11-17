@@ -84,6 +84,11 @@ export interface AiConversationOptions {
   aiHistoryStorage?: AiHistoryStorage;
   alwaysAllowedTools?: AlwaysAllowedTools;
   targetManager?: SDK.TargetManager.TargetManager;
+  /**
+   * Whether server-side content logging is allowed for this conversation.
+   * Setting this to `false` disables logging and cannot override a global `disallowLogging` policy.
+   */
+  serverSideLoggingAllowed?: boolean;
 }
 
 export class AiConversation {
@@ -130,6 +135,7 @@ export class AiConversation {
   readonly #aiHistoryStorage: AiHistoryStorage;
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #alwaysAllowedTools?: AlwaysAllowedTools;
+  readonly #serverSideLoggingAllowed: boolean;
 
   constructor(options: AiConversationOptions) {
     const {
@@ -147,6 +153,7 @@ export class AiConversation {
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       targetManager = SDK.TargetManager.TargetManager.instance(),
       alwaysAllowedTools,
+      serverSideLoggingAllowed = true,
     } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
@@ -157,6 +164,7 @@ export class AiConversation {
     this.#aiHistoryStorage = aiHistoryStorage;
     this.#targetManager = targetManager;
     this.#alwaysAllowedTools = alwaysAllowedTools;
+    this.#serverSideLoggingAllowed = serverSideLoggingAllowed;
 
     this.id = id;
     this.#isReadOnly = isReadOnly;
@@ -403,7 +411,7 @@ export class AiConversation {
 
     const baseOptions = {
       aidaClient: this.#aidaClient,
-      serverSideLoggingAllowed: isAiAssistanceServerSideLoggingAllowed(),
+      serverSideLoggingAllowed: this.#serverSideLoggingAllowed && isAiAssistanceServerSideLoggingAllowed(),
       sessionId: this.id,
       changeManager: this.#changeManager,
       performanceRecordAndReload: this.#performanceRecordAndReload,

@@ -1065,8 +1065,7 @@ export class DebuggerPlugin extends Plugin {
 
     const uiPositionToEditorOffset = (lineNumber: number, columnNumber: number): number|null =>
         this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
-    const scopeChain =
-        await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(callFrame);
+    const scopeChain = await this.#scopeChainResolver.resolveScopeChain(callFrame);
     const localOriginalScope = scopeChain
                                    .find((s): s is SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry =>
                                              s instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry &&

@@ -1270,12 +1270,17 @@ function isDisplayableProperty(property: SDK.RemoteObject.RemoteObjectProperty,
   return !useless;
 }
 
+export type ObjectPropertiesSectionTitle = Element|TemplateResult|
+    ((options: {filterChanged: boolean, includeNullOrUndefinedValues: boolean}) => Element|TemplateResult);
+
 export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
   #root?: ObjectTree;
-  #title?: Element|TemplateResult;
+  #title?: ObjectPropertiesSectionTitle;
+  #filterChanged = false;
   #skipProto = false;
   #linkifier?: Components.Linkifier.Linkifier;
   #showOverflow = true;
+  onTreeResized?: (element: HTMLElement) => void;
   readonly #view: ObjectPropertiesSectionView = OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW;
 
   constructor(element?: HTMLElement, view: ObjectPropertiesSectionView = OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW) {
@@ -1288,7 +1293,11 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
   }
 
   set root(val: SDK.RemoteObject.RemoteObject) {
-    if (val === this.#root?.object) {
+    const current = this.#root?.object;
+    if (val === current ||
+        (current && val.objectId !== undefined && val.objectId === current.objectId &&
+         current instanceof SDK.RemoteObject.RemoteObjectImpl && val instanceof SDK.RemoteObject.RemoteObjectImpl &&
+         current.runtimeModel() === val.runtimeModel())) {
       return;
     }
     this.objectTree = new ObjectTree(val, {
@@ -1305,19 +1314,40 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     if (val === this.#root) {
       return;
     }
-    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#unobserveRoot();
     this.#root = val;
-    this.#root?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-    this.#root?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#filterChanged = false;
+    this.#observeRoot();
     this.requestUpdate();
   }
 
-  get title(): Element|TemplateResult|undefined {
+  #observeRoot(): void {
+    this.#root?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.#onTreeResized, this);
+    this.#root?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.#onTreeResized, this);
+    this.#root?.addEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.#onFilterChanged, this);
+  }
+
+  #unobserveRoot(): void {
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.#onTreeResized, this);
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.#onTreeResized, this);
+    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.#onFilterChanged, this);
+  }
+
+  #onTreeResized(): void {
+    this.requestUpdate();
+    this.onTreeResized?.(this.element);
+  }
+
+  #onFilterChanged(): void {
+    this.#filterChanged = true;
+    this.requestUpdate();
+  }
+
+  get title(): ObjectPropertiesSectionTitle|undefined {
     return this.#title;
   }
 
-  set title(val: Element|TemplateResult|undefined) {
+  set title(val: ObjectPropertiesSectionTitle|undefined) {
     if (val === this.#title) {
       return;
     }
@@ -1375,9 +1405,14 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     if (!this.#root) {
       return;
     }
+    const title = typeof this.#title === 'function' ? this.#title({
+      filterChanged: this.#filterChanged,
+      includeNullOrUndefinedValues: this.#root.includeNullOrUndefinedValues,
+    }) :
+                                                      this.#title;
     this.#view({
       objectTree: this.#root,
-      title: this.#title,
+      title,
       linkifier: this.#linkifier,
       skipProto: this.#skipProto,
       showOverflow: this.#showOverflow,
@@ -1388,16 +1423,18 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
   }
 
   override onDetach(): void {
-    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#unobserveRoot();
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-    this.#root?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
-    this.#root?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-    this.#root?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#unobserveRoot();
+    this.#observeRoot();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.#unobserveRoot();
   }
 
   private onRootItemContextMenu = (contextMenu: UI.ContextMenu.ContextMenu): void => {

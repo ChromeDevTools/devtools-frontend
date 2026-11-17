@@ -1740,4 +1740,26 @@ describeWithEnvironment('ObjectTreeExpansionTracker', () => {
     assert.isTrue(quux.expanded);
     assert.strictEqual(quux.childCount(), 1);
   });
+
+  it('preserves objectTree when re-assigned a RemoteObject wrapper with the same objectId', () => {
+    const target = createTarget();
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+    const rawObject: Protocol.Runtime.RemoteObject = {
+      type: Protocol.Runtime.RemoteObjectType.Object,
+      className: 'Object',
+      description: 'Object',
+      objectId: 'same-obj-id' as Protocol.Runtime.RemoteObjectId,
+    };
+    const firstWrapper = runtimeModel.createRemoteObject(rawObject);
+    const secondWrapper = runtimeModel.createRemoteObject(rawObject);
+
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
+    section.root = firstWrapper;
+    const initialTree = section.objectTree;
+    assert.exists(initialTree);
+
+    section.root = secondWrapper;
+    assert.strictEqual(section.objectTree, initialTree);
+  });
 });

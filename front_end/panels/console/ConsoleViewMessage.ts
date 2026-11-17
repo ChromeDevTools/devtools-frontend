@@ -56,7 +56,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../elements/elements.js';
@@ -67,8 +67,8 @@ import consoleViewStyles from './consoleView.css.js';
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 import {SymbolizedErrorWidget} from './SymbolizedErrorWidget.js';
 
-const {ifDefined} = Directives;
-const {widget} = UI.Widget;
+const {ifDefined, until} = Directives;
+const {widget, widgetRef} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -242,14 +242,6 @@ const UIStrings = {
    * @description Submenu item to copy table as CSV.
    */
   copyAsCsv: 'Copy as CSV',
-  /**
-   * @description Text to expand something recursively
-   */
-  expandRecursively: 'Expand recursively',
-  /**
-   * @description Text to collapse children of a parent group
-   */
-  collapseChildren: 'Collapse children',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -309,6 +301,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     element: HTMLElement,
     forceSelect: () => void,
   }>;
+  // Re-formatting reuses these, so that the rendered parameters keep their
+  // identity and async content isn't requested and rendered again.
+  readonly #remoteObjects = new WeakMap<Protocol.Runtime.RemoteObject, SDK.RemoteObject.RemoteObject>();
+  readonly #objectSelectableItems =
+      new WeakMap<SDK.RemoteObject.RemoteObject, {element: HTMLElement, forceSelect: () => void}>();
+  readonly #objectFunctionTitlePromises = new WeakMap<SDK.RemoteObject.RemoteObject, Promise<LitTemplate>>();
+  readonly #functionParameterPromises =
+      new WeakMap<SDK.RemoteObject.RemoteObject, Map<boolean, Promise<LitTemplate>>>();
   // Trees rendering logged DOM nodes; they follow the message visibility.
   private readonly domTreeWidgets: Elements.DOMTreeWidget.DOMTreeWidget[] = [];
   // Stack trace previews are also root widgets and follow the message visibility.
@@ -319,7 +319,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   protected elementInternal: HTMLElement|null;
   // The element that wraps console message elements in a row.
   protected consoleRowWrapper: HTMLElement|null = null;
-  private readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
+  protected readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
   private searchRegexInternal: RegExp|null;
   protected messageIcon: Icon|null;
   private traceExpanded: boolean;
@@ -813,7 +813,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     // Formatting code below assumes that parameters are all wrappers whereas frontend console
     // API allows passing arbitrary values as messages (strings, numbers, etc.). Wrap them here.
-    let parameters = rawParameters.map(parameterToRemoteObject(this.message.runtimeModel()));
+    let parameters = rawParameters.map(parameter => this.#parameterToRemoteObject(parameter));
 
     // There can be string log and string eval result. We distinguish between them based on message type.
     const shouldFormatMessage = SDK.RemoteObject.RemoteObject.type((parameters)[0]) === 'string' &&
@@ -858,8 +858,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         element = this.renderSymbolizedError(output);
         break;
       case 'function':
-        element = this.formatParameterAsFunction(output, includePreview);
-        break;
+        return this.formatParameterAsFunction(output, includePreview, typeClasses);
       case 'array':
       case 'arraybuffer':
       case 'blob':
@@ -876,14 +875,15 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       case 'weakmap':
       case 'weakset':
       case 'webassemblymemory':
-        element = this.formatParameterAsObject(output, includePreview);
-        break;
+        return this.formatParameterAsObject(output, includePreview, typeClasses);
       case 'node':
-        element = output.isNode() ? this.formatParameterAsNode(output) : this.formatParameterAsObject(output, false);
+        if (!output.isNode()) {
+          return this.formatParameterAsObject(output, false, typeClasses);
+        }
+        element = this.formatParameterAsNode(output);
         break;
       case 'trustedtype':
-        element = this.formatParameterAsObject(output, false);
-        break;
+        return this.formatParameterAsObject(output, false, typeClasses);
       case 'string':
         return this.formatParameterAsString(output, typeClasses);
       case 'boolean':
@@ -925,115 +925,154 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         this.formatParameterAsString(obj)}</span></span>`;
   }
 
-  private formatParameterAsObject(obj: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
-    const titleElement = document.createElement('span');
-    titleElement.tabIndex = -1;
-    titleElement.classList.add('console-object');
-    const renderPreview = (includeNullOrUndefined: boolean): void => {
-      if (obj.preview) {
-        titleElement.classList.add('console-object-preview');
+  private formatParameterAsObject(obj: SDK.RemoteObject.RemoteObject, includePreview?: boolean,
+                                  extraClasses = ''): LitTemplate {
+    const isExpandable = Boolean(obj.hasChildren && !obj.customPreview());
 
-        render(html`${this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined)}${
-                   ObjectUI.ObjectPropertiesSection.getMemoryIcon(obj)}`,
-               titleElement);
+    const renderTitleSpan = (extraSpanClasses = '', withContextMenu = false, filterChanged = false,
+                             includeNullOrUndefinedValues = true): LitTemplate => {
+      const showPreview = Boolean((includePreview || filterChanged) && obj.preview);
+      const spanClasses = [
+        'console-object',
+        showPreview ? 'console-object-preview' : '',
+        !showPreview && obj.type === 'function' ? 'object-value-function' : '',
+        extraSpanClasses,
+      ].filter(Boolean).join(' ');
+      let inner: LitTemplate|string;
+      if (showPreview && obj.preview) {
+        inner = html`${this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefinedValues)}${
+            ObjectUI.ObjectPropertiesSection.getMemoryIcon(obj)}`;
+      } else if (obj.type === 'function') {
+        inner = html`${until(this.#getObjectFunctionTitlePromise(obj))}`;
+      } else if (obj.subtype === 'trustedtype') {
+        inner = this.formatParameterAsTrustedType(obj);
+      } else {
+        inner = obj.description || '';
       }
+      // clang-format off
+          return html`<span
+            tabindex="-1"
+            class=${spanClasses}
+            @contextmenu=${withContextMenu ? this.contextMenuEventFired.bind(this, obj) : nothing}>${inner}</span>`;
+      // clang-format on
     };
 
-    if (includePreview && obj.preview) {
-      renderPreview(true);
-    } else if (obj.type === 'function') {
-      titleElement.classList.add('object-value-function');
-      void ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(obj, false).then(t => {
-        const fragment = document.createDocumentFragment();
-
-        render(t, fragment, {host: this});
-        titleElement.insertBefore(fragment, titleElement.firstChild);
-      });
-    } else if (obj.subtype === 'trustedtype') {
-      render(this.formatParameterAsTrustedType(obj), titleElement);
-    } else {
-      UI.UIUtils.createTextChild(titleElement, obj.description || '');
+    if (!isExpandable) {
+      return renderTitleSpan(extraClasses, true);
     }
 
-    if (!obj.hasChildren || obj.customPreview()) {
-      return titleElement;
+    let selectableItem = this.#objectSelectableItems.get(obj);
+    if (!selectableItem) {
+      selectableItem = {
+        element: document.createElement('span'),
+        forceSelect: () => {},
+      };
+      this.#objectSelectableItems.set(obj, selectableItem);
+    }
+    if (!this.selectableChildren.includes(selectableItem)) {
+      this.selectableChildren.push(selectableItem);
     }
 
-    const container = document.createElement('span');
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-    section.markAsRoot();
-    const treeElement = section.element;
-    treeElement.classList.add('console-view-object-properties-section');
+    const noteTitle = this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult ?
+        i18nString(UIStrings.thisValueWillNotBeCollectedUntil) :
+        i18nString(UIStrings.thisValueWasEvaluatedUponFirst);
 
-    titleElement.addEventListener('contextmenu', (event: Event) => {
-      event.consume(true);
-      const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      contextMenu.appendApplicableItems(obj);
-      if (obj instanceof SDK.RemoteObject.LocalJSONObject) {
-        contextMenu.viewSection().appendItem(
-            i18nString(UIStrings.expandRecursively),
-            () => section.objectTree?.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH),
-            {jslogContext: 'expand-recursively'});
-        contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren),
-                                             () => section.objectTree?.collapseRecursively(),
-                                             {jslogContext: 'collapse-children'});
-      }
-      void contextMenu.show();
-    });
+    const sectionTitle: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionTitle = ({
+      filterChanged,
+      includeNullOrUndefinedValues,
+    }): TemplateResult => {
+      return html`<style>${consoleViewStyles}</style>${
+          renderTitleSpan('', false, filterChanged, includeNullOrUndefinedValues)}<span
+          class="object-state-note info-note" title=${noteTitle}></span>`;
+    };
 
-    section.root = obj;
-    section.title =
-        html`<style>${consoleViewStyles}</style>${titleElement}<span class="object-state-note info-note" title=${
-            this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult ?
-                i18nString(UIStrings.thisValueWillNotBeCollectedUntil) :
-                i18nString(UIStrings.thisValueWasEvaluatedUponFirst)}></span>`;
-    section.linkifier = this.linkifier;
-    this.selectableChildren.push({
-      element: treeElement,
-      forceSelect: () => {},
-    });
-    if (section.objectTree) {
-      const resizeEvent = {data: treeElement} as unknown as
-          Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>;
-      section.objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
-                                          () => this.messageResized(resizeEvent));
-      section.objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED,
-                                          () => this.messageResized(resizeEvent));
-      section.objectTree.addEventListener(
-          ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.FILTER_CHANGED,
-          () => renderPreview(section.objectTree?.includeNullOrUndefinedValues || false));
-    }
-    section.show(container);
-    return container;
+    // clang-format off
+    return html`<span class=${ifDefined(extraClasses || undefined)}><devtools-widget
+      class="console-view-object-properties-section"
+      ${widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+        root: obj,
+        title: sectionTitle,
+        linkifier: this.linkifier,
+        onTreeResized: this.#onTreeResized,
+      })}
+      ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, section => {
+        selectableItem.element = section.element;
+        selectableItem.forceSelect = () => {
+          const tree = section.element.querySelector<HTMLElement>('devtools-tree');
+          tree?.focus();
+          if (tree && !tree.hasFocus()) {
+            tree.focus();
+          }
+        };
+      })}></devtools-widget></span>`;
+    // clang-format on
   }
 
-  private formatParameterAsFunction(originalFunction: SDK.RemoteObject.RemoteObject, includePreview?: boolean):
-      HTMLElement {
-    const result = document.createElement('span');
-    void SDK.RemoteObject.RemoteFunction.objectAsFunction(originalFunction)
-        .targetFunction()
-        .then(formatTargetFunction.bind(this));
-    return result;
-
-    function formatTargetFunction(this: ConsoleViewMessage, targetFunction: SDK.RemoteObject.RemoteObject): void {
-      const promise = ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, true, includePreview);
-      if (targetFunction !== originalFunction) {
-        const note = result.createChild('span', 'object-state-note info-note');
-        UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.functionWasResolvedFromBound));
-      }
-      result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, originalFunction), false);
-      void promise.then(t => {
-        const fragment = document.createDocumentFragment();
-
-        render(t, fragment, {host: this});
-        result.insertBefore(fragment, result.firstChild);
-        this.formattedParameterAsFunctionForTest();
-      });
+  private formatParameterAsFunction(originalFunction: SDK.RemoteObject.RemoteObject, includePreview?: boolean,
+                                    extraClasses = ''): LitTemplate {
+    const previewKey = Boolean(includePreview);
+    let byPreview = this.#functionParameterPromises.get(originalFunction);
+    if (!byPreview) {
+      byPreview = new Map();
+      this.#functionParameterPromises.set(originalFunction, byPreview);
     }
+    let promise = byPreview.get(previewKey);
+    if (!promise) {
+      promise = SDK.RemoteObject.RemoteFunction.objectAsFunction(originalFunction)
+                    .targetFunction()
+                    .then(async targetFunction => {
+                      const fnTemplate = await ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(
+                          targetFunction, true, includePreview);
+                      const isBound = targetFunction !== originalFunction;
+                      // clang-format off
+                      return html`<span
+                        @contextmenu=${this.contextMenuEventFired.bind(this, originalFunction)}>${
+                        fnTemplate}${
+                        isBound
+                          ? html`<span
+                              class="object-state-note info-note"
+                              title=${i18nString(UIStrings.functionWasResolvedFromBound)}></span>`
+                          : nothing}</span>`;
+                      // clang-format on
+                    });
+      byPreview.set(previewKey, promise);
+    }
+    void promise.then(() => {
+      queueMicrotask(() => this.formattedParameterAsFunctionForTest());
+    });
+    return html`<span class=${ifDefined(extraClasses || undefined)}>${until(promise)}</span>`;
   }
 
+  // Sniffed in web_tests and unit tests.
   private formattedParameterAsFunctionForTest(): void {
   }
+
+  #parameterToRemoteObject(parameter?: SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|
+                           string): SDK.RemoteObject.RemoteObject {
+    const toRemoteObject = parameterToRemoteObject(this.message.runtimeModel());
+    if (typeof parameter !== 'object' || parameter instanceof SDK.RemoteObject.RemoteObject) {
+      return toRemoteObject(parameter);
+    }
+    let remoteObject = this.#remoteObjects.get(parameter);
+    if (!remoteObject) {
+      remoteObject = toRemoteObject(parameter);
+      this.#remoteObjects.set(parameter, remoteObject);
+    }
+    return remoteObject;
+  }
+
+  #getObjectFunctionTitlePromise(obj: SDK.RemoteObject.RemoteObject): Promise<LitTemplate> {
+    let promise = this.#objectFunctionTitlePromises.get(obj);
+    if (!promise) {
+      promise = ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(obj, false);
+      this.#objectFunctionTitlePromises.set(obj, promise);
+    }
+    return promise;
+  }
+
+  readonly #onTreeResized = (element: HTMLElement|UI.TreeOutline.TreeElement): void => {
+    this.messageResized({data: element} as Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>);
+  };
 
   private contextMenuEventFired(obj: SDK.RemoteObject.RemoteObject, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -1096,7 +1135,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       if (!node) {
         this.domTreeWidgets.splice(this.domTreeWidgets.indexOf(domTree), 1);
         domTree.detach();
-        result.appendChild(this.formatParameterAsObject(remoteObject, false));
+        render(this.formatParameterAsObject(remoteObject, false), result);
         return;
       }
       domTree.rootDOMNode = node;

@@ -234,7 +234,7 @@ interface LocationViewInput {
   /** Tooltip of the latitude and longitude inputs, which names the platform's modifier key. */
   modifierKeyMessage: string;
   onManageLocations: () => void;
-  onLocationSelectChange: (event: Event) => void;
+  onLocationSelectChange: (value: string) => void;
   onLocationChange: (event: Event) => void;
   onLocationKeyDown: (event: KeyboardEvent) => void;
 }
@@ -244,7 +244,7 @@ interface OrientationViewInput {
   orientationOverrideEnabled: boolean;
   selectedOrientation: string;
   animateOrientation: boolean;
-  onOrientationSelectChange: (event: Event) => void;
+  onOrientationSelectChange: (value: string) => void;
   onOrientationChange: (event: Event) => void;
   onOrientationKeyDown: (event: KeyboardEvent) => void;
   onOrientationReset: () => void;
@@ -275,7 +275,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
     <div class="geo-fields">
       <select
         id="location-select"
-        @change=${input.onLocationSelectChange}
+        @change=${(event: Event) => input.onLocationSelectChange((event.currentTarget as HTMLSelectElement).value)}
         jslog=${VisualLogging.dropDown().track({change: true})}
       >
         <option value=${NonPresetOptions.NoOverride} .selected=${live(input.selectedLocationIndex === 0)} jslog=${VisualLogging.item('no-override')}>${i18nString(UIStrings.noOverride)}</option>
@@ -428,7 +428,7 @@ function renderDeviceOrientationSection(input: OrientationViewInput, output: Vie
         <div class="orientation-fields">
           <select
             id="orientation-select"
-            @change=${input.onOrientationSelectChange}
+            @change=${(event: Event) => input.onOrientationSelectChange((event.currentTarget as HTMLSelectElement).value)}
             jslog=${VisualLogging.dropDown().track({change: true})}
           >
             <option value=${orientationOffOption.orientation} .selected=${live(input.selectedOrientation === orientationOffOption.orientation)} jslog=${VisualLogging.item(orientationOffOption.jslogContext)}>${orientationOffOption.title}</option>
@@ -709,10 +709,9 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     return selectedIndex;
   }
 
-  #locationSelectChanged(event: Event): void {
+  #locationSelectChanged(value: string): void {
     this.#timezoneError = '';
     this.#localeError = '';
-    const value = (event.currentTarget as HTMLSelectElement).value;
     this.#customLocationSelected = value === NonPresetOptions.Custom;
     this.#inputToFocus = value === NonPresetOptions.Custom ? 'latitude' : undefined;
     if (value === NonPresetOptions.NoOverride) {
@@ -866,8 +865,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     return getOptionTitle('no-override') || 'No override';
   }
 
-  #orientationSelectChanged(event: Event): void {
-    const value = (event.currentTarget as HTMLSelectElement).value;
+  #orientationSelectChanged(value: string): void {
     this.#selectedOrientation = value;
     this.#inputToFocus = value === NonPresetOptions.Custom ? 'alpha' : undefined;
     this.#deviceOrientationOverrideEnabled = value !== NonPresetOptions.NoOverride;

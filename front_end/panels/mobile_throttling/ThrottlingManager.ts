@@ -10,17 +10,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
-import {ThrottlingPresets} from './ThrottlingPresets.js';
-
 export import CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
-
-export interface CPUThrottlingSelectorWrapper {
-  control: UI.Toolbar.ToolbarComboBox;
-  updateRecommendedOption(recommendedOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption|null): void;
-}
 
 const UIStrings = {
   /**
@@ -35,10 +27,6 @@ const UIStrings = {
    * @description Icon title in throttling manager of the Network panel.
    */
   cpuThrottlingIsEnabled: 'CPU throttling is enabled',
-  /**
-   * @description Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel.
-   */
-  cpuThrottling: 'CPU throttling',
   /**
    * @description Tooltip text in throttling manager of the Performance panel.
    */
@@ -55,20 +43,6 @@ const UIStrings = {
    * @description Tooltip text for an input box that overrides navigator.hardwareConcurrency on the page.
    */
   hardwareConcurrencySettingLabel: 'Override the value reported by `navigator.hardwareConcurrency`',
-  /**
-   * @description Text label for a selection box showing that a specific option is recommended for CPU or network throttling.
-   * @example {Fast 4G} PH1
-   * @example {4x slowdown} PH1
-   */
-  recommendedThrottling: '{PH1} – recommended',
-  /**
-   * @description Text to prompt the user to run the CPU calibration process.
-   */
-  calibrate: 'Calibrate…',
-  /**
-   * @description Text to prompt the user to re-run the CPU calibration process.
-   */
-  recalibrate: 'Recalibrate…',
   /**
    * @description Text to indicate Save-Data override is not set.
    */
@@ -91,8 +65,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let throttlingManagerInstance: ThrottlingManager;
 
 export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<void> {
-  private readonly cpuThrottlingControls: Set<UI.Toolbar.ToolbarComboBox>;
-  private readonly cpuThrottlingOptions: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption[];
   private readonly customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
   private readonly currentNetworkThrottlingConditionKeySetting:
       Common.Settings.Setting<SDK.NetworkManager.ThrottlingConditionKey>;
@@ -113,8 +85,6 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<void> 
     this.cpuThrottlingManager.addEventListener(
         SDK.CPUThrottlingManager.Events.RATE_CHANGED,
         (event: Common.EventTarget.EventTargetEvent<number>) => this.onCPUThrottlingRateChangedOnSDK(event.data));
-    this.cpuThrottlingControls = new Set();
-    this.cpuThrottlingOptions = ThrottlingPresets.cpuThrottlingPresets;
     this.customNetworkConditionsSetting = SDK.NetworkManager.customUserNetworkConditionsSetting(settings);
 
     this.currentNetworkThrottlingConditionKeySetting = SDK.NetworkManager.activeNetworkThrottlingKeySetting(settings);
@@ -160,9 +130,9 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<void> 
   }
 
   createOfflineToolbarCheckbox(): UI.Toolbar.ToolbarCheckbox {
-    const checkbox = new UI.Toolbar.ToolbarCheckbox(
-        i18nString(UIStrings.offline), i18nString(UIStrings.forceDisconnectedFromNetwork), forceOffline.bind(this));
-    checkbox.element.setAttribute('jslog', `${VisualLogging.toggle('disconnect-from-network').track({click: true})}`);
+    const checkbox = new UI.Toolbar.ToolbarCheckbox(i18nString(UIStrings.offline),
+                                                    i18nString(UIStrings.forceDisconnectedFromNetwork),
+                                                    forceOffline.bind(this), 'disconnect-from-network');
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, networkConditionsChanged);
     checkbox.setChecked(SDK.NetworkManager.MultitargetNetworkManager.instance().isOffline());
@@ -228,80 +198,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<void> 
     const option = PanelsCommon.CPUThrottlingOption.determineOptionFromRate(rate, this.#currentCPUThrottlingOption);
     this.#currentCPUThrottlingOption = option;
 
-    const index = this.cpuThrottlingOptions.indexOf(option);
-    for (const control of this.cpuThrottlingControls) {
-      control.setSelectedIndex(index);
-    }
     this.updatePanelIcon();
-  }
-
-  createCPUThrottlingSelector(): CPUThrottlingSelectorWrapper {
-    const getCalibrationString = (): Common.UIString.LocalizedString => {
-      const value = this.calibratedCpuThrottlingSetting.get();
-      const hasCalibrated = value.low || value.mid;
-      return hasCalibrated ? i18nString(UIStrings.recalibrate) : i18nString(UIStrings.calibrate);
-    };
-
-    const optionSelected = (): void => {
-      if (control.selectedIndex() === control.options().length - 1) {
-        const index = this.cpuThrottlingOptions.indexOf(this.#currentCPUThrottlingOption);
-        control.setSelectedIndex(index);
-        void Common.Revealer.reveal(this.calibratedCpuThrottlingSetting);
-      } else {
-        this.setCPUThrottlingOption(this.cpuThrottlingOptions[control.selectedIndex()]);
-      }
-    };
-
-    const control =
-        new UI.Toolbar.ToolbarComboBox(optionSelected, i18nString(UIStrings.cpuThrottling), '', 'cpu-throttling');
-    this.cpuThrottlingControls.add(control);
-    const currentOption = this.#currentCPUThrottlingOption;
-
-    const optionEls: HTMLOptionElement[] = [];
-    const options = this.cpuThrottlingOptions;
-
-    for (let i = 0; i < this.cpuThrottlingOptions.length; ++i) {
-      const option = this.cpuThrottlingOptions[i];
-      const title = option.title();
-      const value = option.jslogContext;
-      const optionEl = control.createOption(title, value);
-      control.addOption(optionEl);
-      if (currentOption === option) {
-        control.setSelectedIndex(i);
-      }
-
-      optionEls.push(optionEl);
-    }
-
-    const optionEl = control.createOption(getCalibrationString(), '');
-    control.addOption(optionEl);
-    optionEls.push(optionEl);
-
-    return {
-      control,
-      updateRecommendedOption(recommendedOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption|null) {
-        for (let i = 0; i < optionEls.length - 1; i++) {
-          const option = options[i];
-          optionEls[i].text = option === recommendedOption ?
-              i18nString(UIStrings.recommendedThrottling, {PH1: option.title()}) :
-              option.title();
-          optionEls[i].disabled = option.rate() === 0;
-        }
-
-        optionEls[optionEls.length - 1].textContent = getCalibrationString();
-      },
-    };
-  }
-
-  createSaveDataOverrideSelector(className?: string): HTMLSelectElement {
-    const select = document.createElement('select');
-    select.title = i18nString(UIStrings.saveDataSettingTooltip);
-    UI.ARIAUtils.setLabel(select, i18nString(UIStrings.saveDataSettingTooltip));
-    if (className) {
-      select.className = className;
-    }
-    UI.Widget.registerWidgetConfig(select, UI.Widget.widgetConfig(SaveDataOverrideSelect));
-    return select;
   }
 
   /** Hardware Concurrency doesn't store state in a setting. */
@@ -407,7 +304,19 @@ export const DEFAULT_SAVE_DATA_VIEW: SaveDataOverrideViewFunction = (input, _out
     <option value=${SDK.EmulationModel.DataSaverOverride.UNSET} .selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.UNSET}>${i18nString(UIStrings.noSaveDataOverride)}</option>
     <option value=${SDK.EmulationModel.DataSaverOverride.ENABLED} .selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.ENABLED}>${i18nString(UIStrings.saveDataOn)}</option>
     <option value=${SDK.EmulationModel.DataSaverOverride.DISABLED} .selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.DISABLED}>${i18nString(UIStrings.saveDataOff)}</option>
-  `, target, {container: {listeners: {change: (e: Event) => input.onSelect((e.target as HTMLSelectElement).value as SDK.EmulationModel.DataSaverOverride)}}});
+  `, target, {
+    container: {
+      attributes: {
+        title: i18nString(UIStrings.saveDataSettingTooltip),
+        'aria-label': i18nString(UIStrings.saveDataSettingTooltip),
+      },
+      listeners: {
+        change: (e: Event) => {
+          input.onSelect((e.target as HTMLSelectElement).value as SDK.EmulationModel.DataSaverOverride);
+        },
+      },
+    },
+  });
   // clang-format on
 };
 

@@ -44,10 +44,6 @@ const UIStrings = {
    */
   networkThrottling: 'Network',
   /**
-   * @description Tooltip and accessible label for the save data override selector.
-   */
-  saveDataSettingTooltip: 'Override the value reported by navigator.connection.saveData on the page',
-  /**
    * @description Section header for user agent settings in network conditions view of the Network panel.
    */
   userAgent: 'User agent',
@@ -176,8 +172,6 @@ function renderNetworkThrottlingSection(): LitTemplate {
         })}></select>
     <select
         class="chrome-select"
-        title=${i18nString(UIStrings.saveDataSettingTooltip)}
-        aria-label=${i18nString(UIStrings.saveDataSettingTooltip)}
         ${UI.Widget.widget(MobileThrottling.ThrottlingManager.SaveDataOverrideSelect)}></select>
   `);
 }

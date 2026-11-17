@@ -17,7 +17,6 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import * as Emulation from './emulation.js';
 
@@ -92,12 +91,6 @@ describeWithEnvironment('DeviceModeToolbar', () => {
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
-
-    // Stub ThrottlingManager to avoid dependency on network condition settings.
-    const fakeSelectElement = document.createElement('select');
-    sinon.stub(MobileThrottling.ThrottlingManager.ThrottlingManager, 'instance').returns({
-      createSaveDataOverrideSelector: () => fakeSelectElement,
-    } as unknown as MobileThrottling.ThrottlingManager.ThrottlingManager);
 
     toolbar = new Emulation.DeviceModeToolbar.DeviceModeToolbar();
     toolbar.model = deviceModeModel;

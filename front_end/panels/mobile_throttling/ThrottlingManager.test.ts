@@ -18,8 +18,17 @@ import * as PanelsCommon from '../common/common.js';
 
 import * as MobileThrottling from './mobile_throttling.js';
 
-const {CPUPerformanceTier, ThrottlingManager} = MobileThrottling.ThrottlingManager;
-const {ThrottlingPresets} = MobileThrottling.ThrottlingPresets;
+const {
+  CPUPerformanceTier,
+  SaveDataOverrideSelect,
+  ThrottlingManager,
+} = MobileThrottling.ThrottlingManager;
+
+function createSaveDataOverrideSelector(): HTMLSelectElement {
+  const select = document.createElement('select');
+  UI.Widget.registerWidgetConfig(select, UI.Widget.widgetConfig(SaveDataOverrideSelect));
+  return select;
+}
 
 describeWithEnvironment('ThrottlingManager', () => {
   describe('OfflineToolbarCheckbox', () => {
@@ -77,21 +86,34 @@ describeWithEnvironment('ThrottlingManager', () => {
     });
   });
   describe('CPU throttling', () => {
-    it('listens to changes in cpu throttling setting', () => {
+    it('updates current cpu throttling option', () => {
       SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
-      const cpuThrottlingPresets = ThrottlingPresets.cpuThrottlingPresets;
       const throttlingManager = ThrottlingManager.instance({forceNew: true});
-      const selector = throttlingManager.createCPUThrottlingSelector().control;
-      assert.strictEqual(cpuThrottlingPresets[selector.selectedIndex()],
-                         PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
+      assert.strictEqual(throttlingManager.cpuThrottlingOption(), PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
 
       throttlingManager.setCPUThrottlingOption(PanelsCommon.CPUThrottlingOption.ExtraSlowThrottlingOption);
-      assert.strictEqual(cpuThrottlingPresets[selector.selectedIndex()],
+      assert.strictEqual(throttlingManager.cpuThrottlingOption(),
                          PanelsCommon.CPUThrottlingOption.ExtraSlowThrottlingOption);
+      assert.strictEqual(SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate(),
+                         PanelsCommon.CPUThrottlingOption.ExtraSlowThrottlingOption.rate());
 
       throttlingManager.setCPUThrottlingOption(PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
-      assert.strictEqual(cpuThrottlingPresets[selector.selectedIndex()],
-                         PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
+      assert.strictEqual(throttlingManager.cpuThrottlingOption(), PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
+      assert.strictEqual(SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate(),
+                         PanelsCommon.CPUThrottlingOption.NoThrottlingOption.rate());
+    });
+
+    it('updates current cpu throttling option when the rate changes in the SDK', () => {
+      SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+      const throttlingManager = ThrottlingManager.instance({forceNew: true});
+      const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+
+      cpuThrottlingManager.setCPUThrottlingRate(PanelsCommon.CPUThrottlingOption.ExtraSlowThrottlingOption.rate());
+      assert.strictEqual(throttlingManager.cpuThrottlingOption(),
+                         PanelsCommon.CPUThrottlingOption.ExtraSlowThrottlingOption);
+
+      cpuThrottlingManager.setCPUThrottlingRate(PanelsCommon.CPUThrottlingOption.NoThrottlingOption.rate());
+      assert.strictEqual(throttlingManager.cpuThrottlingOption(), PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
     });
   });
   describe('DataSaverEmulation', () => {
@@ -103,9 +125,12 @@ describeWithEnvironment('ThrottlingManager', () => {
       assert.exists(emulationModel);
       const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.dataSaverSettingDescriptor);
 
-      const select = ThrottlingManager.instance({forceNew: true}).createSaveDataOverrideSelector();
+      const select = createSaveDataOverrideSelector();
       renderElementIntoDOM(select);
       await UI.Widget.Widget.allUpdatesComplete;
+      assert.strictEqual(select.title, 'Override the value reported by navigator.connection.saveData on the page');
+      assert.strictEqual(select.getAttribute('aria-label'),
+                         'Override the value reported by navigator.connection.saveData on the page');
       const options = Array.from(select.options);
       assert.deepEqual(
           options.map(option => option.textContent),
@@ -137,7 +162,7 @@ describeWithEnvironment('ThrottlingManager', () => {
       const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.dataSaverSettingDescriptor);
       setting.set(SDK.EmulationModel.DataSaverOverride.ENABLED);
 
-      const select = ThrottlingManager.instance({forceNew: true}).createSaveDataOverrideSelector();
+      const select = createSaveDataOverrideSelector();
       renderElementIntoDOM(select);
       await UI.Widget.Widget.allUpdatesComplete;
 
@@ -147,7 +172,7 @@ describeWithEnvironment('ThrottlingManager', () => {
 
     it('updates selection when setting changes', async () => {
       const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.dataSaverSettingDescriptor);
-      const select = ThrottlingManager.instance({forceNew: true}).createSaveDataOverrideSelector();
+      const select = createSaveDataOverrideSelector();
       renderElementIntoDOM(select);
       await UI.Widget.Widget.allUpdatesComplete;
 
@@ -161,7 +186,7 @@ describeWithEnvironment('ThrottlingManager', () => {
 
     it('stops listening to setting changes when removed from DOM', async () => {
       const setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.dataSaverSettingDescriptor);
-      const select = ThrottlingManager.instance({forceNew: true}).createSaveDataOverrideSelector();
+      const select = createSaveDataOverrideSelector();
       renderElementIntoDOM(select);
       await UI.Widget.Widget.allUpdatesComplete;
 
@@ -191,32 +216,20 @@ describeWithEnvironment('ThrottlingManager', () => {
       await SDK.CPUThrottlingManager.CPUThrottlingManager.instance().updateHostDefaultCPUPerformanceTier();
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
 
-      const selectorWrapper = throttlingManager.createCPUThrottlingSelector();
-      const selector = selectorWrapper.control;
-      const options = ThrottlingPresets.cpuThrottlingPresets;
-
       // Select MidTierThrottlingOption (4x slowdown)
-      const midIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption);
-      selector.setSelectedIndex(midIndex);
-      selector.element.dispatchEvent(new Event('change'));
+      throttlingManager.setCPUThrottlingOption(PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption);
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
 
       // Select LowTierThrottlingOption (6x slowdown)
-      const lowIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.LowTierThrottlingOption);
-      selector.setSelectedIndex(lowIndex);
-      selector.element.dispatchEvent(new Event('change'));
+      throttlingManager.setCPUThrottlingOption(PanelsCommon.CPUThrottlingOption.LowTierThrottlingOption);
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
 
       // Select ExtraSlowThrottlingOption (20x slowdown)
-      const extraSlowIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.ExtraSlowThrottlingOption);
-      selector.setSelectedIndex(extraSlowIndex);
-      selector.element.dispatchEvent(new Event('change'));
+      throttlingManager.setCPUThrottlingOption(PanelsCommon.CPUThrottlingOption.ExtraSlowThrottlingOption);
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
 
       // Select NoThrottlingOption (1x no throttling)
-      const noIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
-      selector.setSelectedIndex(noIndex);
-      selector.element.dispatchEvent(new Event('change'));
+      throttlingManager.setCPUThrottlingOption(PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
     });
 
@@ -237,14 +250,8 @@ describeWithEnvironment('ThrottlingManager', () => {
          await SDK.CPUThrottlingManager.CPUThrottlingManager.instance().updateHostDefaultCPUPerformanceTier();
          assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
 
-         const selectorWrapper = throttlingManager.createCPUThrottlingSelector();
-         const selector = selectorWrapper.control;
-         const options = ThrottlingPresets.cpuThrottlingPresets;
-
          // Select MidTierThrottlingOption (4x slowdown).
-         const midIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption);
-         selector.setSelectedIndex(midIndex);
-         selector.element.dispatchEvent(new Event('change'));
+         throttlingManager.setCPUThrottlingOption(PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption);
          assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
 
          emulationModelSpy.resetHistory();
@@ -290,26 +297,18 @@ describeWithEnvironment('ThrottlingManager', () => {
         actualScore: 3000,
       });
 
-      const selectorWrapper = throttlingManager.createCPUThrottlingSelector();
-      const selector = selectorWrapper.control;
-      const options = ThrottlingPresets.cpuThrottlingPresets;
-
       // Select CalibratedMidTierMobileThrottlingOption
-      const midIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption);
-      selector.setSelectedIndex(midIndex);
-      selector.element.dispatchEvent(new Event('change'));
+      throttlingManager.setCPUThrottlingOption(
+          PanelsCommon.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption);
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
 
       // Select CalibratedLowTierMobileThrottlingOption
-      const lowIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption);
-      selector.setSelectedIndex(lowIndex);
-      selector.element.dispatchEvent(new Event('change'));
+      throttlingManager.setCPUThrottlingOption(
+          PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption);
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
 
       // Select NoThrottlingOption (1x no throttling)
-      const noIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
-      selector.setSelectedIndex(noIndex);
-      selector.element.dispatchEvent(new Event('change'));
+      throttlingManager.setCPUThrottlingOption(PanelsCommon.CPUThrottlingOption.NoThrottlingOption);
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
     });
   });

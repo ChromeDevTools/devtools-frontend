@@ -5,55 +5,15 @@
 import {assert} from 'chai';
 import {after, before, describe, it} from 'mocha';
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import {
   deinitializeGlobalVars,
-  describeWithEnvironment,
   initializeGlobalVars,
 } from '../../testing/EnvironmentHelpers.js';
 
 import * as QuickOpen from './components/quick_open/quick_open.js';
 import * as UI from './legacy.js';
-
-describeWithEnvironment('ActionRegistration', () => {
-  it('toggling settings affects registered actions', () => {
-    Common.Settings.registerSettingExtension({
-      settingName: 'test-setting',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-    });
-
-    // Force new instance for the setting extension to apply.
-    const dummyStorage = new Common.Settings.SettingsStorage({});
-    Common.Settings.Settings.instance({
-      forceNew: true,
-      syncedStorage: dummyStorage,
-      globalStorage: dummyStorage,
-      localStorage: dummyStorage,
-      settingRegistrations: Common.SettingRegistration.getRegisteredSettings(),
-      console: Common.Console.Console.instance(),
-    });
-
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'test-action',
-      category: UI.ActionRegistration.ActionCategory.GLOBAL,
-      setting: 'test-setting',
-    });
-
-    let list = UI.ActionRegistration.getRegisteredActionExtensions();
-    assert.lengthOf(list, 0);
-
-    Common.Settings.Settings.instance().moduleSetting('test-setting').set(true);
-    list = UI.ActionRegistration.getRegisteredActionExtensions();
-    assert.lengthOf(list, 1);
-
-    Common.Settings.Settings.instance().moduleSetting('test-setting').set(false);
-    list = UI.ActionRegistration.getRegisteredActionExtensions();
-    assert.lengthOf(list, 0);
-  });
-});
 
 describe('ActionRegistration', () => {
   let actionExecuted = false;

@@ -227,10 +227,6 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return this.actionRegistration.featurePromotionId;
   }
 
-  setting(): string|undefined {
-    return this.actionRegistration.setting;
-  }
-
   condition(): Root.Runtime.Condition|undefined {
     return this.actionRegistration.condition;
   }
@@ -260,17 +256,6 @@ export function reset(): void {
 export function getRegisteredActionExtensions(): Action[] {
   return Array.from(registeredActions.values())
       .filter(action => {
-        const settingName = action.setting();
-        try {
-          if (settingName && !Common.Settings.Settings.instance().moduleSetting(settingName).get()) {
-            return false;
-          }
-        } catch (err) {
-          if (err.message.startsWith('No setting registered')) {
-            return false;
-          }
-        }
-
         return Root.Runtime.Runtime.isDescriptorEnabled({
           experiment: action.experiment(),
           condition: action.condition(),
@@ -557,13 +542,6 @@ export interface ActionRegistration {
    * Whether an action needs to be promoted. A new badge is shown next to the menu items then.
    */
   featurePromotionId?: string;
-  /**
-   * The name of the setting an action is associated with. Enabling and
-   * disabling the declared setting will enable and disable the action
-   * respectively. Note that changing the setting requires a reload for it to
-   * apply to action registration.
-   */
-  setting?: string;
   /**
    * A condition is a function that will make the action available if it
    * returns true, and not available, otherwise. Make sure that objects you

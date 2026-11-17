@@ -599,6 +599,8 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   private deviceOrientationOverrideEnabled: boolean;
   #selectedOrientation: string = NonPresetOptions.NoOverride;
   #animateOrientation = false;
+  // The input to focus after the next update. Set when a custom location or orientation is selected.
+  #inputToFocus?: 'latitude'|'alpha';
   private boxMatrix?: DOMMatrix;
   private mouseDownVector?: Geometry.Vector|null;
   private originalBoxMatrix?: DOMMatrix;
@@ -675,6 +677,15 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       cpuPerformanceNoOverrideLabel: this.#cpuPerformanceNoOverrideLabel(),
     };
     this.#view(input, this.#output, this.contentElement);
+
+    if (this.isShowing()) {
+      if (this.#inputToFocus === 'latitude') {
+        this.#output.focusLatitudeInput?.();
+      } else if (this.#inputToFocus === 'alpha') {
+        this.#output.focusAlphaInput?.();
+      }
+    }
+    this.#inputToFocus = undefined;
   }
 
   /** @returns the index of the selected option of the location select. */
@@ -705,6 +716,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.#localeError = '';
     const value = (event.currentTarget as HTMLSelectElement).value;
     this.#customLocationSelected = value === NonPresetOptions.Custom;
+    this.#inputToFocus = value === NonPresetOptions.Custom ? 'latitude' : undefined;
     if (value === NonPresetOptions.NoOverride) {
       this.#locationOverrideEnabled = false;
       this.#location = SDK.EmulationModel.Location.parseSetting('');
@@ -724,9 +736,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
     this.applyLocation();
     this.performUpdate();
-    if (value === NonPresetOptions.Custom) {
-      this.#output.focusLatitudeInput?.();
-    }
   }
 
   #onLocationChange(event: Event): void {
@@ -830,6 +839,8 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
                                                    this.#updateCPUPerformanceNoOverrideLabel, this);
     this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED,
                                                    this.#updateCPUPerformanceNoOverrideLabel, this);
+    // A pending update is cancelled when the widget is detached. Don't focus when it is shown again.
+    this.#inputToFocus = undefined;
   }
 
   #updateCPUPerformanceNoOverrideLabel(): void {
@@ -863,14 +874,16 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   private orientationSelectChanged(event: Event): void {
     const value = (event.currentTarget as HTMLSelectElement).value;
     this.#selectedOrientation = value;
+    this.#inputToFocus = value === NonPresetOptions.Custom ? 'alpha' : undefined;
     this.deviceOrientationOverrideEnabled = value !== NonPresetOptions.NoOverride;
-    this.performUpdate();
 
+    // Setting the device orientation updates the view. Update only once, so that the alpha input
+    // is focused, which selects its content, after its value was reset.
     if (value === NonPresetOptions.NoOverride) {
       this.applyDeviceOrientation();
+      this.performUpdate();
     } else if (value === NonPresetOptions.Custom) {
       this.resetDeviceOrientation();
-      this.#output.focusAlphaInput?.();
     } else {
       const parsedValue = JSON.parse(value);
       this.deviceOrientation = new SDK.EmulationModel.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);

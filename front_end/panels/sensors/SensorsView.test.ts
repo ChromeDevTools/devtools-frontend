@@ -553,6 +553,23 @@ describeWithEnvironment('SensorsView', () => {
       assert.strictEqual((alphaInput.getRootNode() as ShadowRoot).activeElement, alphaInput);
     });
 
+    it('focuses the alpha input after its value is reset when "Custom orientation" is selected', async () => {
+      await selectOrientation('Landscape left');
+      const alphaInput = query<HTMLInputElement>('#alpha-input');
+      const valuesOnFocus: string[] = [];
+      const focus = alphaInput.focus.bind(alphaInput);
+      alphaInput.focus = () => {
+        valuesOnFocus.push(alphaInput.value);
+        focus();
+      };
+
+      await selectOrientation('Custom orientation');
+
+      // Focusing the input selects its content. Writing the value afterwards would drop the selection.
+      assert.deepEqual(valuesOnFocus, ['0']);
+      assert.deepEqual(orientationInputValues(), ['0', '90', '0']);
+    });
+
     it('switches to "Custom orientation" when the inputs of a preset are edited', async () => {
       await selectOrientation('Landscape left');
 

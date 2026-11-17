@@ -1261,7 +1261,9 @@ export class CallFrame {
   readonly script: Script;
   payload: Protocol.Debugger.CallFrame;
   readonly #location: Location;
-  readonly #scopeChain: Scope[];
+  /** Shared with the virtual call frames of this call frame, as they share the payload. */
+  #scopeChainState: {stale: boolean, refetch?: Promise<void>} = {stale: false};
+  #scopes?: {payload: Protocol.Debugger.Scope[], chain: Scope[]};
   readonly inlineFrameIndex: number;
   readonly functionName: string;
   readonly #functionLocation: Location|undefined;
@@ -1277,14 +1279,10 @@ export class CallFrame {
     this.script = script;
     this.payload = payload;
     this.#location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
-    this.#scopeChain = [];
     this.inlineFrameIndex = inlineFrameIndex || 0;
     this.functionName = functionName ?? payload.functionName;
     this.canBeRestarted = Boolean(payload.canBeRestarted);
     this.exception = exception;
-    for (let i = 0; i < payload.scopeChain.length; ++i) {
-      this.#scopeChain.push(new Scope(this, i));
-    }
     if (payload.functionLocation) {
       this.#functionLocation = Location.fromPayload(debuggerModel, payload.functionLocation);
     }
@@ -1308,15 +1306,50 @@ export class CallFrame {
   }
 
   createVirtualCallFrame(inlineFrameIndex: number, name: string): CallFrame {
-    return new CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name, this.exception);
+    const callFrame =
+        new CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name, this.exception);
+    callFrame.#scopeChainState = this.#scopeChainState;
+    return callFrame;
   }
 
   get id(): Protocol.Debugger.CallFrameId {
     return this.payload.callFrameId;
   }
 
+  /**
+   * Call this after running code in the paused target that can assign to variables. The scope chain V8
+   * reported with the pause is a snapshot, so it is re-fetched the next time it is requested.
+   */
+  markScopeChainStale(): void {
+    this.#scopeChainState.stale = true;
+  }
+
   async scopeChain(): Promise<Scope[]> {
-    return this.#scopeChain;
+    const state = this.#scopeChainState;
+    while (state.stale || state.refetch) {
+      if (!state.refetch) {
+        state.stale = false;
+        state.refetch = this.#refetchScopeChain();
+      }
+      await state.refetch;
+    }
+    const payload = this.payload.scopeChain;
+    if (this.#scopes?.payload !== payload) {
+      this.#scopes = {payload, chain: payload.map((_, ordinal) => new Scope(this, ordinal))};
+    }
+    return this.#scopes.chain;
+  }
+
+  async #refetchScopeChain(): Promise<void> {
+    try {
+      const response = await this.debuggerModel.agent.invoke_getScopeChain({callFrameId: this.id});
+      // Older backends don't support `Debugger.getScopeChain`. We stick with the scope chain we have then.
+      if (!response.getError()) {
+        this.payload.scopeChain = response.scopeChain;
+      }
+    } finally {
+      this.#scopeChainState.refetch = undefined;
+    }
   }
 
   thisObject(): RemoteObject|null {

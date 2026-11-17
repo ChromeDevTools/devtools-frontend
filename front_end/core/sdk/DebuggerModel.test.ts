@@ -440,6 +440,120 @@ describe('DebuggerModel', () => {
     });
   });
 
+  describe('CallFrame.scopeChain', () => {
+    const scope = (objectId: string): Protocol.Debugger.Scope => ({
+      type: Protocol.Debugger.ScopeType.Local,
+      object: {type: 'object', objectId} as Protocol.Runtime.RemoteObject,
+    });
+
+    function setup() {
+      const connection = new MockCDPConnection();
+      // V8 hands out new scope objects with every `Debugger.getScopeChain`.
+      const getScopeChain = sinon.stub().callsFake(
+          ({callFrameId}: Protocol.Debugger.GetScopeChainRequest) =>
+              ({result: {scopeChain: [scope(`${callFrameId}-refetched-${getScopeChain.callCount}`)]}}));
+      connection.setHandler('Debugger.getScopeChain', getScopeChain);
+      const debuggerModel = universe.createTarget({connection}).model(SDK.DebuggerModel.DebuggerModel)!;
+      const script =
+          new SDK.Script.Script(debuggerModel, SCRIPT_ID_ONE, urlString`https://script-host/script.js`, 0, 0, 0, 0, 0,
+                                '', false, undefined, false, 0, null, null, null, null, null, null, null);
+      const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, script, {
+        callFrameId: 'frame' as Protocol.Debugger.CallFrameId,
+        functionName: 'test',
+        location: {scriptId: SCRIPT_ID_ONE, lineNumber: 0, columnNumber: 0},
+        url: 'test-url',
+        scopeChain: [scope('frame-paused')],
+        this: {type: 'object'} as Protocol.Runtime.RemoteObject,
+      });
+      const objectIds = async (callFrame: SDK.DebuggerModel.CallFrame) =>
+          (await callFrame.scopeChain()).map(scope => String(scope.object().objectId));
+      return {callFrame, getScopeChain, objectIds};
+    }
+
+    it('is the scope chain V8 reported with the pause as long as it is not marked stale', async () => {
+      const {callFrame, getScopeChain, objectIds} = setup();
+
+      assert.deepEqual(await objectIds(callFrame), ['frame-paused']);
+      assert.strictEqual(await callFrame.scopeChain(), await callFrame.scopeChain());
+      sinon.assert.notCalled(getScopeChain);
+    });
+
+    it('is re-fetched once after it was marked stale', async () => {
+      const {callFrame, getScopeChain, objectIds} = setup();
+      const pausedScopeChain = await callFrame.scopeChain();
+
+      callFrame.markScopeChainStale();
+      const [scopeChain1, scopeChain2] = await Promise.all([callFrame.scopeChain(), callFrame.scopeChain()]);
+
+      assert.notStrictEqual(scopeChain1, pausedScopeChain);
+      assert.strictEqual(scopeChain1, scopeChain2);
+      assert.deepEqual(await objectIds(callFrame), ['frame-refetched-1']);
+      sinon.assert.calledOnce(getScopeChain);
+
+      callFrame.markScopeChainStale();
+      assert.deepEqual(await objectIds(callFrame), ['frame-refetched-2']);
+      sinon.assert.calledTwice(getScopeChain);
+    });
+
+    it('re-fetches again if marked stale while a re-fetch is in flight', async () => {
+      const {callFrame, getScopeChain} = setup();
+      const firstRequest = Promise.withResolvers<{result: {scopeChain: Protocol.Debugger.Scope[]}}>();
+      const secondRequest = Promise.withResolvers<{result: {scopeChain: Protocol.Debugger.Scope[]}}>();
+      const secondRequestStarted = Promise.withResolvers<void>();
+      getScopeChain.onFirstCall().returns(firstRequest.promise);
+      getScopeChain.onSecondCall().callsFake(() => {
+        secondRequestStarted.resolve();
+        return secondRequest.promise;
+      });
+
+      callFrame.markScopeChainStale();
+      const firstCaller = callFrame.scopeChain();
+      let firstCallerSettled = false;
+      void firstCaller.then(() => {
+        firstCallerSettled = true;
+      });
+      sinon.assert.calledOnce(getScopeChain);
+
+      // Marked stale again while the first request is still in flight; a concurrent caller also waits on it.
+      callFrame.markScopeChainStale();
+      const secondCaller = callFrame.scopeChain();
+      callFrame.markScopeChainStale();
+      sinon.assert.calledOnce(getScopeChain);
+
+      firstRequest.resolve({result: {scopeChain: [scope('frame-refetched-1')]}});
+      await secondRequestStarted.promise;
+      assert.isFalse(firstCallerSettled);
+
+      secondRequest.resolve({result: {scopeChain: [scope('frame-refetched-2')]}});
+      const [firstResult, secondResult] = await Promise.all([firstCaller, secondCaller]);
+      assert.strictEqual(firstResult, secondResult);
+      assert.deepEqual(firstResult.map(s => String(s.object().objectId)), ['frame-refetched-2']);
+      sinon.assert.calledTwice(getScopeChain);
+    });
+
+    it('is shared with virtual call frames', async () => {
+      const {callFrame, getScopeChain, objectIds} = setup();
+      // The call frame of an inlined function. It shares the payload with its physical call frame.
+      const virtualCallFrame = callFrame.createVirtualCallFrame(1, 'inlined');
+
+      callFrame.markScopeChainStale();
+
+      assert.deepEqual(await objectIds(virtualCallFrame), ['frame-refetched-1']);
+      assert.deepEqual(await objectIds(callFrame), ['frame-refetched-1']);
+      assert.strictEqual((await virtualCallFrame.scopeChain())[0].callFrame(), virtualCallFrame);
+      sinon.assert.calledOnce(getScopeChain);
+    });
+
+    it('stays as is if the backend does not support Debugger.getScopeChain', async () => {
+      const {callFrame, getScopeChain, objectIds} = setup();
+      getScopeChain.callsFake(() => ({error: {message: '\'Debugger.getScopeChain\' wasn\'t found', code: -32601}}));
+
+      callFrame.markScopeChainStale();
+
+      assert.deepEqual(await objectIds(callFrame), ['frame-paused']);
+    });
+  });
+
   describe('pause', () => {
     it('with empty call frame list will invoke plain step-into', async () => {
       const connection = new MockCDPConnection();

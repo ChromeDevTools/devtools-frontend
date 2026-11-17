@@ -100,6 +100,9 @@ const PRIVILEGED_SCHEMES = new Set([
   // protocol, so without this entry a devtools_page extension without file
   // access could read local files on external mounts.
   'externalfile:',
+  // Android-specific schemes.
+  'content:',
+  'chrome-native:',
 ]);
 
 /**

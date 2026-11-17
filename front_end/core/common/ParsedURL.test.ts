@@ -840,6 +840,8 @@ describe('Parsed URL', () => {
         urlString`file:///etc/passwd`,
         urlString`externalfile:drive-user/root/file.txt`,
         urlString`isolated-app://abcdefghijklmnop/index.html`,
+        urlString`content://com.android.providers.downloads.documents/document/1`,
+        urlString`chrome-native://newtab/`,
         urlString`blob:chrome-extension://abcdefghijklmnop/550e8400-e29b-41d4-a716-446655440000`,
         urlString`filesystem:chrome-extension://abcdefghijklmnop/persistent/file.txt`,
         urlString`blob:filesystem:chrome-extension://abcdefghijklmnop/persistent/file.txt`,

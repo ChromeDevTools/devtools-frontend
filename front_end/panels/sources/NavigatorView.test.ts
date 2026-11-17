@@ -2817,7 +2817,8 @@ describeWithEnvironment('NavigatorView', () => {
       ]);
 
       // With folder grouping disabled, resources appear directly under the frame.
-      const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigator-group-by-folder');
+      const groupByFolderSetting = Common.Settings.Settings.instance().resolve(
+          SettingsUI.SourcesSettings.navigatorGroupByFolderSettingDescriptor);
       groupByFolderSetting.set(false);
       try {
         await navigatorView.updateComplete;

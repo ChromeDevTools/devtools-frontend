@@ -8,7 +8,9 @@ import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 export async function setCustomOrientation(devtoolsPage: DevToolsPage): Promise<void> {
   const dropDown = await devtoolsPage.waitFor('.orientation-fields select');
-  void (await dropDown.toElement('select')).select('custom');
+  await (await dropDown.toElement('select')).select('custom');
+  // The inputs exist before the orientation override is enabled. Wait until the view has updated.
+  await devtoolsPage.waitFor('.device-orientation-override-section:not([disabled])');
 }
 
 export async function getInputFieldValue(field: ElementHandle<Element>): Promise<string> {

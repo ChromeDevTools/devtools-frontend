@@ -15,6 +15,7 @@ import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
@@ -551,6 +552,7 @@ describe('ServerSentEvents', () => {
     } as Protocol.Network.RequestWillBeSentEvent);
     networkManager.dispatcher.responseReceived({
       requestId: '1' as Protocol.Network.RequestId,
+      type: Protocol.Network.ResourceType.EventSource,
       response: {
         url: 'https://example.com/sse',
         mimeType: 'text/event-stream',
@@ -579,6 +581,105 @@ describe('ServerSentEvents', () => {
     assert.lengthOf(networkEvents, 2);
     assert.deepEqual(networkEvents[0], {data: 'foo', eventId: 'fooId', eventName: 'fooName', time: 21});
     assert.deepEqual(networkEvents[1], {data: 'bar', eventId: 'barId', eventName: 'barName', time: 42});
+  });
+
+  it('preserves EventSource resource type and retrieves content after loading finishes', async () => {
+    connection.setSuccessHandler('Network.getResponseBody', () => ({
+                                                              body: 'data: hello\n\n',
+                                                              base64Encoded: false,
+                                                            }));
+    const getResponseBodySpy = sinon.spy(target.networkAgent(), 'invoke_getResponseBody');
+    const streamResourceContentSpy = sinon.spy(target.networkAgent(), 'invoke_streamResourceContent');
+
+    networkManager.dispatcher.requestWillBeSent({
+      requestId: '1' as Protocol.Network.RequestId,
+      request: {
+        url: 'https://example.com/resources/event-stream.asis',
+      },
+      type: Protocol.Network.ResourceType.EventSource,
+    } as Protocol.Network.RequestWillBeSentEvent);
+    networkManager.dispatcher.responseReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      type: Protocol.Network.ResourceType.EventSource,
+      response: {
+        url: 'https://example.com/resources/event-stream.asis',
+        mimeType: 'text/event-stream',
+      } as Protocol.Network.Response,
+    } as Protocol.Network.ResponseReceivedEvent);
+
+    const request = networkManager.requestForId('1')!;
+    assert.strictEqual(request.url(), 'https://example.com/resources/event-stream.asis');
+    assert.strictEqual(request.resourceType(), Common.ResourceType.resourceTypes.EventSource);
+    assert.strictEqual(request.resourceType().name(), 'eventsource');
+
+    networkManager.dispatcher.eventSourceMessageReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      timestamp: 21,
+      data: 'hello',
+      eventId: '',
+      eventName: 'message',
+    });
+    networkManager.dispatcher.dataReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      dataLength: 13,
+      encodedDataLength: 13,
+      timestamp: 22,
+      data: globalThis.btoa('data: hello\n\n'),
+    });
+    // EventSource requests get messages directly via CDP rather than parsing streamed chunks.
+    await Promise.resolve();
+    sinon.assert.notCalled(streamResourceContentSpy);
+    assert.deepEqual(request.eventSourceMessages(), [
+      {data: 'hello', eventId: '', eventName: 'message', time: 21},
+    ]);
+
+    networkManager.dispatcher.loadingFinished({
+      requestId: '1' as Protocol.Network.RequestId,
+    } as Protocol.Network.LoadingFinishedEvent);
+    assert.isTrue(request.finished);
+    assert.isFalse(Boolean(request.failed));
+
+    const contentData = await request.requestContentData();
+    if (TextUtils.ContentData.ContentData.isError(contentData)) {
+      assert.fail(contentData.error);
+    }
+    assert.strictEqual(contentData.text, 'data: hello\n\n');
+    assert.strictEqual(contentData.mimeType, 'text/event-stream');
+    sinon.assert.calledOnceWithExactly(getResponseBodySpy, {requestId: '1' as Protocol.Network.RequestId});
+  });
+
+  it('returns an error when requesting content for an in-flight EventSource request with messages', async () => {
+    const getResponseBodySpy = sinon.spy(target.networkAgent(), 'invoke_getResponseBody');
+
+    networkManager.dispatcher.requestWillBeSent({
+      requestId: '1' as Protocol.Network.RequestId,
+      request: {
+        url: 'https://example.com/sse',
+      },
+      type: Protocol.Network.ResourceType.EventSource,
+    } as Protocol.Network.RequestWillBeSentEvent);
+    networkManager.dispatcher.responseReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      type: Protocol.Network.ResourceType.EventSource,
+      response: {
+        url: 'https://example.com/sse',
+        mimeType: 'text/event-stream',
+      } as Protocol.Network.Response,
+    } as Protocol.Network.ResponseReceivedEvent);
+    networkManager.dispatcher.eventSourceMessageReceived({
+      requestId: '1' as Protocol.Network.RequestId,
+      timestamp: 21,
+      data: 'hello',
+      eventId: '',
+      eventName: 'message',
+    });
+
+    const request = networkManager.requestForId('1')!;
+    assert.isFalse(Boolean(request.finished));
+
+    const contentData = await request.requestContentData();
+    assert.deepEqual(contentData, {error: 'Content for Server-Sent Events (SSE) is currently not supported'});
+    sinon.assert.notCalled(getResponseBodySpy);
   });
 
   it('sends EventSourceMessageAdded events for raw text/event-stream', async () => {

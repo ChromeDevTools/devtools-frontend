@@ -886,9 +886,9 @@ export abstract class AiAgent<T> {
   }
 
   /**
-   * Clears any subclass-specific caches. This is called when a run encounters
-   * an error (e.g., cross-origin navigation, abort, or execution error) to
-   * prevent unvalidated cached data from being replayed in subsequent runs.
+   * Clears subclass-specific caches after a non-`MAX_STEPS` error (such as
+   * cross-origin navigation, abort, or execution failure) when uncommitted
+   * `runEntries` are discarded instead of committed to `#history`.
    */
   clearCache(): void {
   }
@@ -919,12 +919,22 @@ export abstract class AiAgent<T> {
   buildRequest(part: Host.AidaClient.Part|Host.AidaClient.Part[],
                role: Host.AidaClient.Role.USER|
                Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest {
+    return this.#buildRequest(part, role, this.#history);
+  }
+
+  /**
+   * Constructs the AIDA conversation request, accepting an explicit `history`
+   * array so active runs can include uncommitted `runEntries` alongside `#history`.
+   */
+  #buildRequest(part: Host.AidaClient.Part|Host.AidaClient.Part[],
+                role: Host.AidaClient.Role.USER|Host.AidaClient.Role.ROLE_UNSPECIFIED,
+                history: readonly Host.AidaClient.Content[]): Host.AidaClient.DoConversationRequest {
     const parts = Array.isArray(part) ? part : [part];
     const currentMessage: Host.AidaClient.Content = {
       parts,
       role,
     };
-    const history = [...this.#history];
+    const historicalContexts = history.length ? [...history] : undefined;
     const declarations: Host.AidaClient.FunctionDeclaration[] = [];
     for (const [name, definition] of this.#functionDeclarations.entries()) {
       declarations.push({
@@ -945,7 +955,7 @@ export abstract class AiAgent<T> {
       current_message: currentMessage,
       preamble,
 
-      historical_contexts: history.length ? history : undefined,
+      historical_contexts: historicalContexts,
       facts: facts.length ? facts : undefined,
 
       ...(enableAidaFunctionCalling ? {function_declarations: declarations} : {}),
@@ -1067,6 +1077,24 @@ export abstract class AiAgent<T> {
   protected async preRun(): Promise<void> {
   }
 
+  /**
+   * Appends the completed run's messages to `#history` and notifies subclasses
+   * to promote their in-flight run drafts.
+   */
+  #commitRun(runEntries: readonly Host.AidaClient.Content[]): void {
+    this.#history.push(...runEntries);
+    this.onRunCommitted();
+  }
+
+  /**
+   * Called after `#commitRun()` appends a run's messages to `#history` on final
+   * answers, `CONTEXT_CHANGE`, and `MAX_STEPS`, and skipped on aborts, errors,
+   * or early generator exits. Subclasses can override this method to promote
+   * per-run draft state to session state.
+   */
+  protected onRunCommitted(): void {
+  }
+
   async *
       run(
           initialQuery: string,
@@ -1090,8 +1118,9 @@ export abstract class AiAgent<T> {
 
     const query: Host.AidaClient.Part[] =
         multimodalInput ? [{text: enhancedQuery}, multimodalInput.input] : [{text: enhancedQuery}];
+    const runEntries: Host.AidaClient.Content[] = [];
     // Request is built here to capture history up to this point.
-    let request = this.buildRequest(query, Host.AidaClient.Role.USER);
+    let request = this.#buildRequest(query, Host.AidaClient.Role.USER, [...this.#history, ...runEntries]);
 
     const clientFeatureName = Host.AidaClient.getClientFeatureName(this.clientFeature);
     debugLog(`[AiAgent] Starting conversation with client ${clientFeatureName}, userTier ${this.userTier}`);
@@ -1140,14 +1169,14 @@ export abstract class AiAgent<T> {
         break;
       }
 
-      this.#history.push(request.current_message);
+      runEntries.push(request.current_message);
 
       // If the model calls other tools alongside suggestFollowUps, the investigation is still in progress,
       // so premature suggestions are discarded until the concluding turn.
       const hasOtherFunctionCalls =
           Boolean(functionCalls?.some(call => call.name !== SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
       if (!functionCalls || !hasOtherFunctionCalls) {
-        yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId);
+        yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId, runEntries);
         break;
       }
 
@@ -1157,7 +1186,7 @@ export abstract class AiAgent<T> {
       }
 
       debugLog(`[AiAgent] Step ${i + 1}: Model requested function calls:`, functionCalls);
-      const outcome = yield* this.#runFunctionCalls(functionCalls, textResponse, options);
+      const outcome = yield* this.#runFunctionCalls(functionCalls, textResponse, options, runEntries);
       if (outcome.type === 'contextChanged') {
         return;
       }
@@ -1169,15 +1198,17 @@ export abstract class AiAgent<T> {
         // Normally, the functionResponses are pushed at the start of the next
         // iteration. Since no further iteration will run, push them here so the
         // last functionCalls are not left unpaired in history.
-        this.#history.push({
+        runEntries.push({
           parts: outcome.functionResponses,
           role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
         });
+        this.#commitRun(runEntries);
         yield this.#createErrorResponse(ErrorType.MAX_STEPS);
         break;
       }
 
-      request = this.buildRequest(outcome.functionResponses, Host.AidaClient.Role.ROLE_UNSPECIFIED);
+      request = this.#buildRequest(outcome.functionResponses, Host.AidaClient.Role.ROLE_UNSPECIFIED,
+                                   [...this.#history, ...runEntries]);
     }
 
     if (isDebugMode()) {
@@ -1201,6 +1232,7 @@ export abstract class AiAgent<T> {
           textResponse: string,
           functionCalls: FunctionCalls|undefined,
           rpcId: Host.AidaClient.RpcGlobalId|undefined,
+          runEntries: Host.AidaClient.Content[],
           ): AsyncGenerator<ResponseData, void, void> {
     if (!textResponse) {
       debugLog('[AiAgent] Model returned an empty text response without tool calls:',
@@ -1213,12 +1245,13 @@ export abstract class AiAgent<T> {
     const followUpSuggestions = sanitizeSuggestionsList(lastSuggestCall?.args?.suggestions);
     const parsedResponse = this.parseTextResponse(textResponse);
     debugLog(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
-    this.#history.push({
+    runEntries.push({
       parts: [{
         text: parsedResponse.answer,
       }],
       role: Host.AidaClient.Role.MODEL,
     });
+    this.#commitRun(runEntries);
     // The `parsedResponse.suggestions` fallback for text-parsed `SUGGESTIONS:`
     // remains only while V1 agents (`StylingAgent`, `PerformanceAgent`) exist.
     const suggestions = followUpSuggestions ?? parsedResponse.suggestions;
@@ -1251,16 +1284,16 @@ export abstract class AiAgent<T> {
    * The model's text and all calls are stored in history as one MODEL turn.
    * Every `functionCall` in history gets a matching `functionResponse`: in the
    * returned `functionResponses`, or, after a context change, in history
-   * directly. When the run stops, the ERROR response removes the run from
-   * history instead.
+   * directly. When the run stops, uncommitted `runEntries` are discarded.
    */
   async *
-      #runFunctionCalls(functionCalls: FunctionCalls, textResponse: string, options: {signal?: AbortSignal}):
+      #runFunctionCalls(functionCalls: FunctionCalls, textResponse: string, options: {signal?: AbortSignal},
+                        runEntries: Host.AidaClient.Content[]):
           AsyncGenerator<ResponseData, FunctionCallsOutcome, void> {
     // Each call keeps its own `thoughtSignature`, if it has one.
     const modelParts: Host.AidaClient.Part[] = textResponse ? [{text: textResponse}] : [];
     modelParts.push(...functionCalls.map(functionCall => ({functionCall})));
-    this.#history.push({
+    runEntries.push({
       parts: modelParts,
       role: Host.AidaClient.Role.MODEL,
     });
@@ -1291,8 +1324,7 @@ export abstract class AiAgent<T> {
         const result = yield* this.#callFunction(functionCall.name, functionCall.args, options);
 
         if (options.signal?.aborted) {
-          // The remaining calls do not run. The ABORT response removes the run
-          // from history.
+          // The remaining calls do not run. The ABORT response discards the uncommitted `runEntries`.
           yield this.#createErrorResponse(ErrorType.ABORT);
           return {type: 'stopped'};
         }
@@ -1300,10 +1332,11 @@ export abstract class AiAgent<T> {
         if ('context' in result) {
           functionResponses.push(
               ...this.#contextChangeResponses(functionCall, functionCalls.slice(index + 1), result.description));
-          this.#history.push({
+          runEntries.push({
             parts: functionResponses,
             role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
           });
+          this.#commitRun(runEntries);
           yield {
             type: ResponseType.CONTEXT_CHANGE,
             description: result.description,
@@ -1640,16 +1673,9 @@ export abstract class AiAgent<T> {
     }
   }
 
-  #removeLastRunParts(): void {
-    this.#history.splice(this.#history.findLastIndex(item => {
-      return item.role === Host.AidaClient.Role.USER;
-    }));
-  }
-
   #createErrorResponse(error: ErrorType): ResponseData {
-    // If we hit MAX_STEPS, we still want to keep the call history as this may be relevant for follow-up requests.
+    // MAX_STEPS runs commit their history before yielding this error, so preserve subclass caches for follow-up requests.
     if (error !== ErrorType.MAX_STEPS) {
-      this.#removeLastRunParts();
       this.clearCache();
     }
     if (error !== ErrorType.ABORT) {

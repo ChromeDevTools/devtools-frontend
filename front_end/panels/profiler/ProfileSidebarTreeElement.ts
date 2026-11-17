@@ -33,10 +33,13 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
   override titleElement: HTMLElement;
   subtitleElement: HTMLElement;
   readonly className: string;
-  small: boolean;
-  readonly dataDisplayDelegate: DataDisplayDelegate;
+  readonly #dataDisplayDelegate: DataDisplayDelegate;
   profile: ProfileHeader;
-  editing: UI.InplaceEditor.Controller|null;
+  #editing: UI.InplaceEditor.Controller|null = null;
+  #title: string;
+  #subtitle: string|null = null;
+  #wait = false;
+  #small = false;
   constructor(dataDisplayDelegate: DataDisplayDelegate, profile: ProfileHeader, className: string) {
     super('', false, 'profile-item');
     this.iconElement = document.createElement('div');
@@ -56,70 +59,84 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
       title: i18nString(UIStrings.profileOptions),
     };
     this.menuElement.tabIndex = -1;
-    this.menuElement.addEventListener('click', this.handleContextMenuEvent.bind(this));
+    this.menuElement.addEventListener('click', this.#handleContextMenuEvent.bind(this));
     this.menuElement.setAttribute('jslog', `${VisualLogging.dropDown('profile-options').track({click: true})}`);
     UI.Tooltip.Tooltip.install(this.menuElement, i18nString(UIStrings.profileOptions));
 
-    this.titleElement.textContent = profile.title;
+    this.#title = profile.title;
     this.className = className;
-    this.small = false;
-    this.dataDisplayDelegate = dataDisplayDelegate;
+    this.#dataDisplayDelegate = dataDisplayDelegate;
     this.profile = profile;
-    profile.addEventListener(ProfileHeaderEvents.UPDATE_STATUS, this.updateStatus, this);
-    this.editing = null;
+    profile.addEventListener(ProfileHeaderEvents.UPDATE_STATUS, this.#updateStatus, this);
+    this.performUpdate();
   }
 
-  updateStatus(event: Common.EventTarget.EventTargetEvent<StatusUpdate>): void {
+  performUpdate(): void {
+    if (!this.#editing) {
+      this.titleElement.textContent = this.#title;
+    }
+    this.subtitleElement.textContent = this.#subtitle ? `(${this.#subtitle})` : '';
+    this.titlesElement.classList.toggle('no-subtitle', !this.#subtitle);
+    if (this.#subtitle !== null) {
+      UI.ARIAUtils.setLabel(this.listItemElement, `${this.profile.title}, ${this.#subtitle}`);
+    }
+    this.iconElement.classList.toggle('spinner', this.#wait);
+    this.listItemElement.classList.toggle('wait', this.#wait);
+    this.listItemElement.classList.toggle('small', this.#small);
+  }
+
+  #updateStatus(event: Common.EventTarget.EventTargetEvent<StatusUpdate>): void {
     const statusUpdate = event.data;
     if (statusUpdate.subtitle !== null) {
-      this.subtitleElement.textContent = statusUpdate.subtitle.length > 0 ? `(${statusUpdate.subtitle})` : '';
-      this.titlesElement.classList.toggle('no-subtitle', !statusUpdate.subtitle);
-      UI.ARIAUtils.setLabel(this.listItemElement, `${this.profile.title}, ${statusUpdate.subtitle}`);
+      this.#subtitle = statusUpdate.subtitle;
     }
-    if (typeof statusUpdate.wait === 'boolean' && this.listItemElement) {
-      this.iconElement.classList.toggle('spinner', statusUpdate.wait);
-      this.listItemElement.classList.toggle('wait', statusUpdate.wait);
+    if (typeof statusUpdate.wait === 'boolean') {
+      this.#wait = statusUpdate.wait;
     }
+    this.performUpdate();
   }
 
   override ondblclick(event: Event): boolean {
-    if (!this.editing) {
-      this.startEditing((event.target as Element));
+    if (!this.#editing) {
+      this.#startEditing((event.target as Element));
     }
     return false;
   }
 
-  startEditing(eventTarget: Element): void {
+  #startEditing(eventTarget: Element): void {
     const container = eventTarget.enclosingNodeOrSelfWithClass('title');
     if (!container) {
       return;
     }
     const config =
-        new UI.InplaceEditor.Config(this.editingCommitted.bind(this), this.editingCancelled.bind(this), undefined);
-    this.editing = UI.InplaceEditor.InplaceEditor.startEditing(container, config);
+        new UI.InplaceEditor.Config(this.#editingCommitted.bind(this), this.#editingCancelled.bind(this), undefined);
+    this.#editing = UI.InplaceEditor.InplaceEditor.startEditing(container, config);
   }
 
-  editingCommitted(_container: Element, newTitle: string): void {
+  #editingCommitted(_container: Element, newTitle: string): void {
     if (newTitle.trim().length === 0) {
-      if (this.editing) {
-        this.editing.cancel();
+      if (this.#editing) {
+        this.#editing.cancel();
       }
     } else {
-      this.editing = null;
+      this.#editing = null;
+      this.#title = newTitle;
       this.profile.setTitle(newTitle);
+      this.performUpdate();
     }
   }
 
-  editingCancelled(): void {
-    this.editing = null;
+  #editingCancelled(): void {
+    this.#editing = null;
+    this.performUpdate();
   }
 
   dispose(): void {
-    this.profile.removeEventListener(ProfileHeaderEvents.UPDATE_STATUS, this.updateStatus, this);
+    this.profile.removeEventListener(ProfileHeaderEvents.UPDATE_STATUS, this.#updateStatus, this);
   }
 
   override onselect(): boolean {
-    this.dataDisplayDelegate.showProfile(this.profile);
+    this.#dataDisplayDelegate.showProfile(this.profile);
     return true;
   }
 
@@ -132,29 +149,25 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     if (this.className) {
       this.listItemElement.classList.add(this.className);
     }
-    if (this.small) {
-      this.listItemElement.classList.add('small');
-    }
     this.listItemElement.append(this.iconElement, this.titlesElement, this.menuElement);
-    this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
+    this.listItemElement.addEventListener('contextmenu', this.#handleContextMenuEvent.bind(this), true);
 
     UI.ARIAUtils.setDescription(this.listItemElement, this.profile.profileType().name);
   }
 
-  handleContextMenuEvent(event: Event): void {
+  #handleContextMenuEvent(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.appendItemsAtLocation('profilerMenu');
     void contextMenu.show();
   }
 
   setSmall(small: boolean): void {
-    this.small = small;
-    if (this.listItemElement) {
-      this.listItemElement.classList.toggle('small', this.small);
-    }
+    this.#small = small;
+    this.performUpdate();
   }
 
   setMainTitle(title: string): void {
-    this.titleElement.textContent = title;
+    this.#title = title;
+    this.performUpdate();
   }
 }

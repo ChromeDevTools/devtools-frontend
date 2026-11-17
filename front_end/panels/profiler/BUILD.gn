@@ -110,6 +110,7 @@ devtools_ui_module("unittests") {
     "HeapTimelineOverview.test.ts",
     "IsolateSelector.test.ts",
     "ProfileFlameChartDataProvider.test.ts",
+    "ProfileSidebarTreeElement.test.ts",
   ]
 
   ts_deps = [
@@ -127,4 +128,5 @@ devtools_ui_module("unittests") {
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",
   ]
+  deps = [ ":css_files" ]
 }

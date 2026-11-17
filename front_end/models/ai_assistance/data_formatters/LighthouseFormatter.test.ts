@@ -1043,4 +1043,298 @@ describe('LighthouseFormatter', function() {
     const output = formatter.audits(webmcpReport, 'agentic-browsing');
     snapshotTester.assert(this, output);
   });
+
+  function formatPerformanceAuditDetails(details: Lighthouse.ReporterTypes.DetailsJSON): string {
+    const audit: Lighthouse.ReporterTypes.AuditResultJSON = {
+      id: 'test-audit',
+      title: 'Test Audit',
+      description: 'Audit description.',
+      scoreDisplayMode: 'numeric',
+      error: false,
+      score: 0.5,
+      details,
+    };
+    const category: Lighthouse.ReporterTypes.CategoryJSON = {
+      title: 'Performance',
+      id: 'performance',
+      score: 0.5,
+      manualDescription: '',
+      auditRefs: [{id: 'test-audit', score: 0.5, weight: 1, result: audit}],
+    };
+    const singleAuditReport: Lighthouse.ReporterTypes.ReportJSON = {
+      ...report,
+      categories: {
+        ...report.categories,
+        performance: category,
+      },
+      audits: {
+        'test-audit': audit,
+      },
+    };
+    return new AiAssistance.LighthouseFormatter.LighthouseFormatter().audits(singleAuditReport, 'performance');
+  }
+
+  it('caps table items at 10 and appends omitted count', function() {
+    const output = formatPerformanceAuditDetails({
+      type: 'table',
+      summary: {wastedBytes: 4096},
+      headings: [
+        {key: 'url', label: 'URL', valueType: 'url'},
+        {key: 'wastedBytes', label: 'Wasted Bytes', valueType: 'bytes'},
+      ],
+      items: Array.from({length: 12}, (_, index) => ({
+                                        url: `https://example.com/item-${index + 1}.js`,
+                                        wastedBytes: (index + 1) * 1000,
+                                      })),
+    });
+
+    assert.include(output, 'Wasted bytes: 4096');
+    assert.include(output, 'https://example.com/item-1.js');
+    assert.include(output, 'https://example.com/item-10.js');
+    assert.notInclude(output, 'https://example.com/item-11.js');
+    assert.notInclude(output, 'https://example.com/item-12.js');
+    assert.isTrue(output.endsWith('\n    - ...and 2 more items omitted'));
+  });
+
+  it('uses singular item noun when capping 11 opportunity items', function() {
+    const output = formatPerformanceAuditDetails({
+      type: 'opportunity',
+      overallSavingsMs: 300,
+      headings: [
+        {key: 'url', label: 'URL', valueType: 'url'},
+        {key: 'wastedMs', label: 'Est Savings', valueType: 'timespanMs'},
+      ],
+      items: Array.from({length: 11}, (_, index) => ({
+                                        url: `https://example.com/chunk-${index + 1}.js`,
+                                        wastedMs: 30,
+                                      })),
+    });
+
+    assert.include(output, 'Potential savings: 300ms');
+    assert.include(output, 'https://example.com/chunk-1.js');
+    assert.include(output, 'https://example.com/chunk-10.js');
+    assert.notInclude(output, 'https://example.com/chunk-11.js');
+    assert.isTrue(output.endsWith('\n    - ...and 1 more item omitted'));
+  });
+
+  it('groups multi-column subItems per row, inherits heading valueType, and caps at 5', function() {
+    const output = formatPerformanceAuditDetails({
+      type: 'table',
+      headings: [
+        {
+          key: 'entity',
+          valueType: 'text',
+          label: '3rd Party',
+          subItemsHeading: {key: 'url', valueType: 'url'},
+        },
+        {
+          key: 'transferSize',
+          valueType: 'bytes',
+          label: 'Transfer Size',
+          subItemsHeading: {key: 'transferSize'},
+        },
+        {
+          key: 'mainThreadTime',
+          valueType: 'timespanMs',
+          label: 'Main-Thread Blocking Time',
+          subItemsHeading: {key: 'mainThreadTime'},
+        },
+      ],
+      items: [
+        {
+          entity: 'Example Analytics',
+          transferSize: 70_000,
+          mainThreadTime: 350,
+          subItems: {
+            type: 'subitems',
+            items: Array.from({length: 7}, (_, index) => ({
+                                             url: `https://cdn.example.com/script-${index + 1}.js`,
+                                             transferSize: (index + 1) * 2_000,
+                                             mainThreadTime: (index + 1) * 10,
+                                           })),
+          },
+        },
+      ],
+    });
+
+    assert.strictEqual(output.match(/\* \*\*Sub-items\*\*:/g)?.length, 1);
+    assert.include(output,
+                   '      * **3rd Party**: Example Analytics\n' +
+                       '      * **Transfer Size**: 70\xA0kB\n' +
+                       '      * **Main-Thread Blocking Time**: 350\xA0ms\n' +
+                       '      * **Sub-items**:');
+    assert.include(
+        output,
+        '        * https://cdn.example.com/script-1.js, Transfer Size: 2\xA0kB, Main-Thread Blocking Time: 10\xA0ms');
+    assert.include(
+        output,
+        '        * https://cdn.example.com/script-5.js, Transfer Size: 10\xA0kB, Main-Thread Blocking Time: 50\xA0ms');
+    assert.notInclude(output, 'script-6.js');
+    assert.notInclude(output, 'script-7.js');
+    assert.isTrue(output.endsWith('\n        * ...and 2 more sub-items omitted'));
+  });
+
+  it('omits parent heading label on type-mismatched sub-item columns and uses singular sub-item noun', function() {
+    const parentNode: Lighthouse.ReporterTypes.NodeDetailsJSON = {
+      type: 'node',
+      nodeLabel: 'div.shifted',
+      selector: 'main > div.shifted',
+      path: '1,HTML,1,BODY,0,MAIN,0,DIV',
+    };
+    const output = formatPerformanceAuditDetails({
+      type: 'table',
+      headings: [
+        {
+          key: 'node',
+          valueType: 'node',
+          label: 'Element',
+          subItemsHeading: {key: 'extra', valueType: 'node'},
+        },
+        {
+          key: 'score',
+          valueType: 'numeric',
+          label: 'Layout shift score',
+          subItemsHeading: {key: 'cause', valueType: 'text'},
+        },
+      ],
+      items: [
+        {
+          node: parentNode,
+          score: 0.25,
+          subItems: {
+            type: 'subitems',
+            items: [
+              {extra: parentNode},
+              {
+                extra: {type: 'node', nodeLabel: 'img.hero', selector: 'header > img.hero'},
+                cause: 'Unsized image',
+              },
+              {extra: {type: 'node', nodeLabel: 'div.cause-2'}, cause: ''},
+              {extra: {type: 'node', nodeLabel: 'div.cause-3'}, cause: 'Injected iframe'},
+              {extra: {type: 'node', nodeLabel: 'div.cause-4'}, cause: 'Dynamic banner'},
+              {extra: {type: 'node', nodeLabel: 'div.cause-5'}, cause: 'Late stylesheet'},
+              {extra: {type: 'node', nodeLabel: 'div.cause-6'}, cause: 'Trailing footer'},
+            ],
+          },
+        },
+      ],
+    });
+
+    assert.include(output, '        * Element: img.hero, Element selector: header > img.hero, Unsized image');
+    assert.notInclude(output, 'Layout shift score: Unsized image');
+    assert.include(output, '        * Element: div.cause-2\n');
+    assert.include(output, '        * Element: div.cause-5, Late stylesheet');
+    assert.notInclude(output, 'div.cause-6');
+    assert.isTrue(output.endsWith('\n        * ...and 1 more sub-item omitted'));
+  });
+
+  it('caps non-longest network-tree siblings at 3, skips non-longest child recursion, and appends total omitted requests',
+     function() {
+       const output = formatPerformanceAuditDetails({
+         type: 'network-tree',
+         longestChain: {duration: 650},
+         chains: {
+           root: {
+             url: 'https://example.com/',
+             navStartToEndTime: 200,
+             transferSize: 4096,
+             isLongest: true,
+             children: {
+               css: {
+                 url: 'https://example.com/styles.css',
+                 navStartToEndTime: 450,
+                 transferSize: 8192,
+                 isLongest: true,
+                 children: {
+                   font: {
+                     url: 'https://example.com/font.woff2',
+                     navStartToEndTime: 650,
+                     transferSize: 16384,
+                     isLongest: true,
+                   },
+                 },
+               },
+               sibling1: {
+                 url: 'https://example.com/sibling-1.js',
+                 navStartToEndTime: 300,
+                 transferSize: 2048,
+                 children: {
+                   grandchild1: {
+                     url: 'https://example.com/grandchild-1.js',
+                     navStartToEndTime: 380,
+                     transferSize: 1024,
+                   },
+                   grandchild2: {
+                     url: 'https://example.com/grandchild-2.js',
+                     navStartToEndTime: 390,
+                     transferSize: 1024,
+                   },
+                 },
+               },
+               sibling2: {
+                 url: 'https://example.com/sibling-2.js',
+                 navStartToEndTime: 310,
+                 transferSize: 2048,
+               },
+               sibling3: {
+                 url: 'https://example.com/sibling-3.js',
+                 navStartToEndTime: 320,
+                 transferSize: 2048,
+               },
+               sibling4: {
+                 url: 'https://example.com/sibling-4.js',
+                 navStartToEndTime: 330,
+                 transferSize: 2048,
+               },
+             },
+           },
+         },
+       });
+
+       assert.include(output, '    - https://example.com/ (200\xA0ms, 4.1\xA0kB) (longest chain)');
+       assert.include(output, '      - https://example.com/styles.css (450\xA0ms, 8.2\xA0kB) (longest chain)');
+       assert.include(output, '        - https://example.com/font.woff2 (650\xA0ms, 16.4\xA0kB) (longest chain)');
+       assert.include(output, '      - https://example.com/sibling-1.js (300\xA0ms, 2\xA0kB)');
+       assert.include(output, '      - https://example.com/sibling-2.js (310\xA0ms, 2\xA0kB)');
+       assert.include(output, '      - https://example.com/sibling-3.js (320\xA0ms, 2\xA0kB)');
+       assert.notInclude(output, 'sibling-4.js');
+       assert.notInclude(output, 'grandchild-1.js');
+       assert.notInclude(output, 'grandchild-2.js');
+       assert.isTrue(output.endsWith('\n    - ...and 3 more requests omitted'));
+     });
+
+  it('uses singular request noun when omitting 1 network-tree node', function() {
+    const output = formatPerformanceAuditDetails({
+      type: 'network-tree',
+      longestChain: {duration: 450},
+      chains: {
+        root: {
+          url: 'https://example.com/',
+          navStartToEndTime: 200,
+          transferSize: 4096,
+          isLongest: true,
+          children: {
+            leaf1: {url: 'https://example.com/leaf-1.js', navStartToEndTime: 300, transferSize: 1024},
+            leaf2: {url: 'https://example.com/leaf-2.js', navStartToEndTime: 310, transferSize: 1024},
+            leaf3: {url: 'https://example.com/leaf-3.js', navStartToEndTime: 320, transferSize: 1024},
+            leaf4: {url: 'https://example.com/leaf-4.js', navStartToEndTime: 330, transferSize: 1024},
+            critical: {
+              url: 'https://example.com/critical.css',
+              navStartToEndTime: 450,
+              transferSize: 8192,
+              isLongest: true,
+            },
+          },
+        },
+      },
+    });
+
+    assert.include(output, 'critical.css');
+    assert.isBelow(output.indexOf('critical.css'), output.indexOf('leaf-1.js'));
+    assert.include(output, 'leaf-1.js');
+    assert.include(output, 'leaf-2.js');
+    assert.include(output, 'leaf-3.js');
+    assert.notInclude(output, 'leaf-4.js');
+    assert.isTrue(output.endsWith('\n    - ...and 1 more request omitted'));
+  });
 });

@@ -114,9 +114,10 @@ The following audits in this category have a score below 90 and may need attenti
 
     - Item:
       * **URL**: https://example.com/script.js
+      * **Map URL**: https://example.com/script.js.map
+      * **Sub-items**:
         * Failed to load sourcemap
         * Another error
-      * **Map URL**: https://example.com/script.js.map
 === end content
 
 Title: LighthouseFormatter formats image-delivery-insight audit from realistic data
@@ -131,16 +132,18 @@ The following audits in this category have a score below 90 and may need attenti
       * **node**: div.devsite-landing-row-item-media > figure.devsite-landing-row-item-image > picture > img
       * **node path**: 1,HTML,1,BODY,2,SECTION,6,SECTION,0,MAIN,1,DEVSITE-CONTENT,0,ARTICLE,4,DIV,0,SECTION,0,DIV,0,DIV,0,DIV,0,DIV,0,FIGURE,0,PICTURE,0,IMG
       * **URL**: https://web.dev/static/images/home-blue_856.png
-        * This image file is larger than it needs to be (856x505) for its displayed dimensions (568x335). Use responsive images to reduce the image download size.
       * **Resource Size**: 33.3 kB
       * **Est Savings**: 18.6 kB
+      * **Sub-items**:
+        * This image file is larger than it needs to be (856x505) for its displayed dimensions (568x335). Use responsive images to reduce the image download size.
     - Item:
       * **node**: figure.devsite-landing-row-item-image > a > picture > img
       * **node path**: 1,HTML,1,BODY,2,SECTION,6,SECTION,0,MAIN,1,DEVSITE-CONTENT,0,ARTICLE,4,DIV,1,SECTION,0,DIV,0,DIV,3,DIV,0,DIV,0,FIGURE,0,A,0,PICTURE,0,IMG
       * **URL**: https://web.dev/static/identity/image/hero-identity_480.png
-        * This image file is larger than it needs to be (1296x881) for its displayed dimensions (632x430). Use responsive images to reduce the image download size.
       * **Resource Size**: 22.2 kB
       * **Est Savings**: 16.9 kB
+      * **Sub-items**:
+        * This image file is larger than it needs to be (1296x881) for its displayed dimensions (632x430). Use responsive images to reduce the image download size.
 === end content
 
 Title: LighthouseFormatter formats 0-based source locations as 1-based

@@ -176,6 +176,37 @@ describeWithEnvironment('IssueView', () => {
     view.clear();
   });
 
+  it('renders the issue body items with their position in the set', () => {
+    const view = new Issues.IssueView.IssueView(createAggregatedIssue(), {
+      title: 'Mock issue',
+      links: [{link: 'https://example.com/learn', linkTitle: 'Example article'}],
+      markdown: [],
+    });
+    const treeOutline = new UI.TreeOutline.TreeOutline();
+    treeOutline.appendChild(view);
+
+    const description = view.childrenListElement.querySelector('devtools-markdown-view')?.parentElement;
+    assert.exists(description);
+    assert.strictEqual(description.getAttribute('aria-posinset'), '1');
+    assert.strictEqual(description.getAttribute('aria-setsize'), '3');
+
+    const affectedResourcesLabel = view.affectedResources.listItemElement;
+    assert.isTrue(affectedResourcesLabel.classList.contains('affected-resources-label'));
+    assert.strictEqual(affectedResourcesLabel.textContent, 'Affected resources');
+    assert.strictEqual(affectedResourcesLabel.getAttribute('aria-posinset'), '2');
+    assert.strictEqual(affectedResourcesLabel.getAttribute('aria-setsize'), '3');
+    assert.isTrue(view.affectedResources.hidden);
+
+    const linkWrapper = view.childrenListElement.querySelector('li.link-wrapper');
+    assert.exists(linkWrapper);
+    assert.strictEqual(linkWrapper.getAttribute('aria-posinset'), '3');
+    assert.strictEqual(linkWrapper.getAttribute('aria-setsize'), '3');
+    const link = linkWrapper.querySelector('devtools-link');
+    assert.exists(link);
+    assert.strictEqual(link.getAttribute('href'), 'https://example.com/learn');
+    assert.strictEqual(link.textContent, 'Learn more: Example article');
+  });
+
   describe('request rows view', () => {
     it('renders one row per affected request', () => {
       const target = renderElementIntoDOM(document.createElement('table'));

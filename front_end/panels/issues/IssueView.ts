@@ -294,6 +294,70 @@ class AffectedMixedContentView extends AffectedResourcesView {
   }
 }
 
+type IssueBodyItemInput =|{
+  kind: 'description',
+  markdownData: MarkdownView.MarkdownView.MarkdownViewData,
+  setSize: number,
+}|{
+  kind: 'affected-resources',
+  setSize: number,
+}|{
+  kind: 'links',
+  links: ReadonlyArray<{link: string, linkTitle: string}>,
+};
+
+function renderLinks(links: ReadonlyArray<{link: string, linkTitle: string}>): LitTemplate {
+  // clang-format off
+  return html`
+    <ul class="link-list">
+      ${links.map(({link, linkTitle}) => html`
+        <li>
+          <devtools-link class="link devtools-link" href=${link} jslogcontext="learn-more">${
+            i18nString(UIStrings.learnMoreS, {PH1: linkTitle})}</devtools-link>
+        </li>
+      `)}
+    </ul>`;
+  // clang-format on
+}
+
+function renderIssueBodyItem(input: IssueBodyItemInput, _output: undefined, target: HTMLElement): void {
+  switch (input.kind) {
+    case 'description':
+      render(html`<devtools-markdown-view .data=${input.markdownData}></devtools-markdown-view>`, target, {
+        container: {attributes: {'aria-posinset': 1, 'aria-setsize': input.setSize}},
+      });
+      return;
+    case 'affected-resources':
+      render(html`${i18nString(UIStrings.affectedResources)}`, target, {
+        container: {
+          classes: ['affected-resources-label'],
+          attributes: {'aria-posinset': 2, 'aria-setsize': input.setSize},
+        },
+      });
+      return;
+    case 'links':
+      render(renderLinks(input.links), target, {
+        container: {classes: ['link-wrapper'], attributes: {'aria-posinset': 3, 'aria-setsize': 3}},
+      });
+      return;
+    default:
+      Platform.assertNever(input, `Unhandled IssueBodyItemInput: ${JSON.stringify(input)}`);
+  }
+}
+
+/**
+ * A non-collapsible tree item in the issue body whose row content is rendered
+ * declaratively.
+ */
+class IssueBodyTreeElement extends UI.TreeOutline.TreeElement {
+  constructor(input: IssueBodyItemInput, jslogContext?: string) {
+    super(undefined, false, jslogContext);
+    this.setCollapsible(false);
+    this.selectable = false;
+    renderIssueBodyItem(input, undefined, this.listItemElement);
+  }
+}
+
 export class IssueView extends UI.TreeOutline.TreeElement {
   #issue: IssuesManager.IssueAggregator.AggregatedIssue;
   #description: IssuesManager.MarkdownIssueDescription.IssueDescription;
@@ -490,33 +554,30 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.affectedResources.hidden = noResources;
   }
 
+  #getBodySetSize(): number {
+    return this.#description.links.length === 0 ? 2 : 3;
+  }
+
   #createAffectedResources(): UI.TreeOutline.TreeElement {
-    const wrapper = new UI.TreeOutline.TreeElement(undefined, false, 'affected-resources');
-    wrapper.setCollapsible(false);
+    const wrapper =
+        new IssueBodyTreeElement({kind: 'affected-resources', setSize: this.#getBodySetSize()}, 'affected-resources');
     wrapper.setExpandable(true);
     wrapper.expand();
-    wrapper.selectable = false;
-    wrapper.listItemElement.classList.add('affected-resources-label');
-    wrapper.listItemElement.textContent = i18nString(UIStrings.affectedResources);
     wrapper.childrenListElement.classList.add('affected-resources');
-    UI.ARIAUtils.setPositionInSet(wrapper.listItemElement, 2);
-    UI.ARIAUtils.setSetSize(wrapper.listItemElement, this.#description.links.length === 0 ? 2 : 3);
     return wrapper;
   }
 
   #createBody(): void {
-    const messageElement = new UI.TreeOutline.TreeElement(undefined, false, 'issue-description');
-    messageElement.setCollapsible(false);
-    messageElement.selectable = false;
-    const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();
-    markdownComponent.data = {
-      tokens: this.#description.markdown,
-      renderer: new MarkdownView.MarkdownPlaceholderLitRenderer.MarkdownPlaceholderLitRenderer(
-          this.#description.substitutions),
-    };
-    messageElement.listItemElement.appendChild(markdownComponent);
-    UI.ARIAUtils.setPositionInSet(messageElement.listItemElement, 1);
-    UI.ARIAUtils.setSetSize(messageElement.listItemElement, this.#description.links.length === 0 ? 2 : 3);
+    const messageElement = new IssueBodyTreeElement({
+      kind: 'description',
+      markdownData: {
+        tokens: this.#description.markdown,
+        renderer: new MarkdownView.MarkdownPlaceholderLitRenderer.MarkdownPlaceholderLitRenderer(
+            this.#description.substitutions),
+      },
+      setSize: this.#getBodySetSize(),
+    },
+                                                    'issue-description');
     this.appendChild(messageElement);
   }
 
@@ -524,23 +585,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     if (this.#description.links.length === 0) {
       return;
     }
-
-    const linkWrapper = new UI.TreeOutline.TreeElement();
-    linkWrapper.setCollapsible(false);
-    linkWrapper.listItemElement.classList.add('link-wrapper');
-    UI.ARIAUtils.setPositionInSet(linkWrapper.listItemElement, 3);
-    UI.ARIAUtils.setSetSize(linkWrapper.listItemElement, 3);
-
-    const linkList = linkWrapper.listItemElement.createChild('ul', 'link-list');
-    for (const description of this.#description.links) {
-      const linkListItem = linkList.createChild('li');
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(
-          html`<devtools-link class="link devtools-link" href=${description.link} jslogcontext="learn-more">${
-              i18nString(UIStrings.learnMoreS, {PH1: description.linkTitle})}</devtools-link>`,
-          linkListItem);
-    }
-    this.appendChild(linkWrapper);
+    this.appendChild(new IssueBodyTreeElement({kind: 'links', links: this.#description.links}));
   }
 
   #doUpdate(): void {

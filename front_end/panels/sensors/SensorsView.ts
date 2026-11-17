@@ -192,6 +192,14 @@ function selectInputContent(event: Event): void {
   (event.currentTarget as HTMLInputElement).select();
 }
 
+/** Reports the name and the value of the input that dispatched `event`, if the value is valid. */
+function applyValidInput(event: Event, onChange: (name: string, value: string) => void): void {
+  const input = event.currentTarget as HTMLInputElement;
+  if (input.checkValidity()) {
+    onChange(input.name, input.value.trim());
+  }
+}
+
 /** Maps the position of a mouse event to a point on a virtual sphere around the center of `stage`. */
 function calculateRadiusVector(stage: HTMLElement, event: MouseEvent): Geometry.Vector {
   const rect = stage.getBoundingClientRect();
@@ -235,7 +243,7 @@ interface LocationViewInput {
   modifierKeyMessage: string;
   onManageLocations: () => void;
   onLocationSelectChange: (value: string) => void;
-  onLocationChange: (event: Event) => void;
+  onLocationFieldChange: (name: string, value: string) => void;
   onLocationKeyDown: (event: KeyboardEvent) => void;
 }
 
@@ -316,7 +324,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             title=${input.modifierKeyMessage}
             jslog=${VisualLogging.textField('latitude').track({change: true})}
             ${Directives.ref((el: Element | undefined) => { output.focusLatitudeInput = el ? () => (el as HTMLInputElement).focus() : undefined; })}
-            @change=${input.onLocationChange}
+            @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
             @keydown=${input.onLocationKeyDown}
             @focus=${selectInputContent}
           >
@@ -335,7 +343,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             name="longitude"
             title=${input.modifierKeyMessage}
             jslog=${VisualLogging.textField('longitude').track({change: true})}
-            @change=${input.onLocationChange}
+            @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
             @keydown=${input.onLocationKeyDown}
             @focus=${selectInputContent}
           >
@@ -349,7 +357,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             .value=${input.location.timezoneId}
             name="timezone"
             jslog=${VisualLogging.textField('timezone').track({change: true})}
-            @change=${input.onLocationChange}
+            @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
             @keydown=${input.onLocationKeyDown}
             @focus=${selectInputContent}
           >
@@ -364,7 +372,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             .value=${input.location.locale}
             name="locale"
             jslog=${VisualLogging.textField('locale').track({change: true})}
-            @change=${input.onLocationChange}
+            @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
             @keydown=${input.onLocationKeyDown}
             @focus=${selectInputContent}
           >
@@ -381,7 +389,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             .value=${String(input.location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY)}
             name="accuracy"
             jslog=${VisualLogging.textField('accuracy').track({change: true})}
-            @change=${input.onLocationChange}
+            @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
             @keydown=${input.onLocationKeyDown}
             @focus=${selectInputContent}
           >
@@ -647,7 +655,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
           i18nString(UIStrings.adjustWithMousewheelOrUpdownKeys, {PH1: Host.Platform.isMac() ? '\u2318' : 'Ctrl'}),
       onManageLocations: () => Common.Revealer.reveal(this.#customLocationsSetting),
       onLocationSelectChange: this.#locationSelectChanged.bind(this),
-      onLocationChange: this.#onLocationChange.bind(this),
+      onLocationFieldChange: this.#applyLocationUserInput.bind(this),
       onLocationKeyDown: this.#onLocationKeyDown.bind(this),
     };
     const orientationInput: OrientationViewInput = {
@@ -735,18 +743,11 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.requestUpdate();
   }
 
-  #onLocationChange(event: Event): void {
-    const input = event.currentTarget as HTMLInputElement;
-    if (input.checkValidity()) {
-      this.#applyLocationUserInput(input);
-    }
-  }
-
   #onLocationKeyDown(event: KeyboardEvent): void {
     const input = event.currentTarget as HTMLInputElement;
     if (event.key === 'Enter') {
       if (input.checkValidity()) {
-        this.#applyLocationUserInput(input);
+        this.#applyLocationUserInput(input.name, input.value.trim());
       }
       event.preventDefault();
       return;
@@ -764,7 +765,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     const prevValue = input.value;
     input.value = String(value);
     if (input.checkValidity()) {
-      this.#applyLocationUserInput(input);
+      this.#applyLocationUserInput(input.name, input.value.trim());
     } else {
       // If ArrowUp/ArrowDown adjusts the value out of bounds, we reset it.
       input.value = prevValue;
@@ -772,7 +773,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     event.preventDefault();
   }
 
-  #applyLocationUserInput(input: HTMLInputElement): void {
+  #applyLocationUserInput(name: string, value: string): void {
     // Only the changed input is read, the other values are taken from the current location.
     const {latitude, longitude, timezoneId: timezone, locale, accuracy} = this.#location;
     const values = {
@@ -781,7 +782,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       timezone,
       locale,
       accuracy: String(accuracy),
-      [input.name]: input.value.trim(),
+      [name]: value,
     };
     const location = SDK.EmulationModel.Location.parseUserInput(values.latitude, values.longitude, values.timezone,
                                                                 values.locale, values.accuracy);

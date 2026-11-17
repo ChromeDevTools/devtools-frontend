@@ -94,7 +94,6 @@ devtools_ui_module("network") {
     "../../services/tracing:bundle",
     "../../ui/components/adorners:bundle",
     "../../ui/components/buttons:bundle",
-    "../../ui/components/input:bundle",
     "../../ui/components/lists:bundle",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/components/tooltips:bundle",
@@ -120,6 +119,7 @@ devtools_ui_module("network") {
     ":css_files",
     "../../ui/legacy/components/data_grid:css_files",
     "../../ui/legacy/components/object_ui:css_files",
+    "./components:css_files",
   ]
 }
 

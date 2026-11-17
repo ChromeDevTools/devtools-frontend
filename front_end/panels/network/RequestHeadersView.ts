@@ -13,13 +13,13 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../sources/sources.js';
 
 import * as NetworkComponents from './components/components.js';
+import requestHeadersViewStyles from './components/RequestHeadersView.css.js';
 import {NetworkPanel} from './NetworkPanel.js';
 import {ShowMoreDetailsWidget} from './ShowMoreDetailsWidget.js';
 
@@ -185,8 +185,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(
       html`
-        <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
-        <style>${Input.checkboxStyles}</style>
+        <style>${requestHeadersViewStyles}</style>
         ${renderGeneralSection(input, input.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL)}
         ${!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0
           ? Lit.nothing
@@ -262,8 +261,7 @@ export const GENERAL_HEADERS_ONLY_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(
       html`
-        <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
-        <style>${Input.checkboxStyles}</style>
+        <style>${requestHeadersViewStyles}</style>
         ${renderGeneralRows(input)}
       `,
       target, {container: {attributes: {jslog: `${VisualLogging.pane('headers').track({resize: true})}`}}});

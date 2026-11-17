@@ -902,7 +902,6 @@ export default defineConfig([
             'front_end/panels/network/NetworkPanel.ts',
             'front_end/panels/network/NetworkWaterfallColumn.ts',
             'front_end/panels/network/RequestDeviceBoundSessionsView.ts',
-            'front_end/panels/network/RequestHeadersView.ts',
             'front_end/panels/network/RequestPayloadView.ts',
             'front_end/panels/network/RequestTimingView.ts',
             'front_end/panels/profiler/HeapProfileView.ts',

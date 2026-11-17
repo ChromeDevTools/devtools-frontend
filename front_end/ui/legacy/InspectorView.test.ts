@@ -9,9 +9,10 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, getElementWithinComponent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as LegacyUI from './legacy.js';
 
@@ -99,6 +100,56 @@ describe('InspectorView', () => {
       assert.exists(secondLabel);
       assert.strictEqual(firstLabel.textContent, 'Debugged tab reload required');
       assert.strictEqual(secondLabel.textContent, 'DevTools reload required');
+    });
+
+    it('removes debugged tab reload warning and allows showing it again', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      inspectorView.removeDebuggedTabReloadRequiredWarning();
+      inspectorView.displayDebuggedTabReloadRequiredWarning('Debugged tab reload required');
+
+      const infoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
+      assert.exists(infoBarDiv);
+      assert.strictEqual(infoBarDiv.childElementCount, 1);
+
+      inspectorView.removeDebuggedTabReloadRequiredWarning();
+      assert.strictEqual(infoBarDiv.childElementCount, 0);
+
+      inspectorView.displayDebuggedTabReloadRequiredWarning('Debugged tab reload required again');
+      assert.strictEqual(infoBarDiv.childElementCount, 1);
+      const readdedInfobar = infoBarDiv.children[0];
+      assert.instanceOf(readdedInfobar, HTMLElement);
+      const label = getElementWithinComponent(readdedInfobar, '.infobar-info-text', HTMLElement);
+      assert.strictEqual(label.textContent, 'Debugged tab reload required again');
+    });
+  });
+
+  describe('select override folder infobar', () => {
+    it('displays the infobar once until dismissed and invokes the callback on action click', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      const firstCallback = sinon.spy();
+      const secondCallback = sinon.spy();
+
+      inspectorView.displaySelectOverrideFolderInfobar(firstCallback);
+      inspectorView.displaySelectOverrideFolderInfobar(secondCallback);
+
+      const infoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
+      assert.exists(infoBarDiv);
+      assert.strictEqual(infoBarDiv.childElementCount, 1);
+
+      const infobar = infoBarDiv.children[0];
+      assert.instanceOf(infobar, HTMLElement);
+      const label = getElementWithinComponent(infobar, '.infobar-info-text', HTMLElement);
+      assert.strictEqual(label.textContent, 'Select a folder to store override files in');
+
+      const selectButton = getElementWithinComponent(infobar, 'devtools-button', HTMLElement);
+      selectButton.click();
+
+      sinon.assert.calledOnce(firstCallback);
+      sinon.assert.notCalled(secondCallback);
+      assert.strictEqual(infoBarDiv.childElementCount, 0);
+
+      inspectorView.displaySelectOverrideFolderInfobar(secondCallback);
+      assert.strictEqual(infoBarDiv.childElementCount, 1);
     });
   });
 
@@ -218,6 +269,74 @@ describe('InspectorView', () => {
     });
   });
 
+  describe('panel locking', () => {
+    it('restricts panel selection to the active panel when targets are suspended', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      inspectorView.tabbedPane.appendTab('panel-a', 'Panel A', new LegacyUI.Widget.Widget());
+      inspectorView.tabbedPane.appendTab('panel-b', 'Panel B', new LegacyUI.Widget.Widget());
+      inspectorView.tabbedPane.selectTab('panel-a');
+
+      assert.isTrue(inspectorView.canSelectPanel('panel-a'));
+      assert.isTrue(inspectorView.canSelectPanel('panel-b'));
+
+      inspectorView.onSuspendStateChanged(true);
+      assert.isTrue(inspectorView.canSelectPanel('panel-a'));
+      assert.isFalse(inspectorView.canSelectPanel('panel-b'));
+      assert.isTrue(inspectorView.tabbedPane.headerElement().classList.contains('locked'));
+      assert.isFalse(inspectorView.tabbedPane.leftToolbar().enabled);
+      assert.isFalse(inspectorView.tabbedPane.rightToolbar().enabled);
+
+      inspectorView.onSuspendStateChanged(false);
+      assert.isTrue(inspectorView.canSelectPanel('panel-a'));
+      assert.isTrue(inspectorView.canSelectPanel('panel-b'));
+      assert.isFalse(inspectorView.tabbedPane.headerElement().classList.contains('locked'));
+      assert.isTrue(inspectorView.tabbedPane.leftToolbar().enabled);
+      assert.isTrue(inspectorView.tabbedPane.rightToolbar().enabled);
+    });
+  });
+
+  describe('panel warnings', () => {
+    it('sets, updates, and clears warning icons on main panel and drawer tabs', async () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM, {width: 640, height: 360});
+      inspectorView.tabbedPane.appendTab('panel-a', 'Panel A', new LegacyUI.Widget.Widget());
+      const drawerLocation = inspectorView.resolveLocation('drawer-view') as LegacyUI.View.TabbedViewLocation | null;
+      assert.exists(drawerLocation);
+      const drawerTabbedPane = drawerLocation.tabbedPane();
+      drawerTabbedPane.appendTab('drawer-tab', 'Drawer Tab', new LegacyUI.Widget.Widget());
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+      inspectorView.setPanelWarnings('panel-a', ['First warning']);
+      const mainWarningIcon =
+          inspectorView.tabbedPane.headerElement().querySelector('.tabbed-pane-header-tab-suffix-element .warning');
+      assert.instanceOf(mainWarningIcon, HTMLElement);
+      assert.strictEqual(mainWarningIcon.title, 'First warning');
+
+      inspectorView.setPanelWarnings('panel-a', ['Warning one', 'Warning two']);
+      const updatedMainWarningIcon =
+          inspectorView.tabbedPane.headerElement().querySelector('.tabbed-pane-header-tab-suffix-element .warning');
+      assert.instanceOf(updatedMainWarningIcon, HTMLElement);
+      assert.strictEqual(updatedMainWarningIcon.title, '· Warning one\n· Warning two');
+
+      inspectorView.setPanelWarnings('panel-a', []);
+      assert.isNull(
+          inspectorView.tabbedPane.headerElement().querySelector('.tabbed-pane-header-tab-suffix-element .warning'));
+
+      inspectorView.setPanelWarnings('drawer-tab', ['Drawer warning']);
+      const drawerWarningIcon =
+          drawerTabbedPane.headerElement().querySelector('.tabbed-pane-header-tab-suffix-element .warning');
+      assert.instanceOf(drawerWarningIcon, HTMLElement);
+      assert.strictEqual(drawerWarningIcon.title, 'Drawer warning');
+
+      inspectorView.setPanelWarnings('drawer-tab', []);
+      assert.isNull(drawerTabbedPane.headerElement().querySelector('.tabbed-pane-header-tab-suffix-element .warning'));
+
+      inspectorView.setPanelWarnings('nonexistent-tab', ['Ignored']);
+      assert.isNull(inspectorView.tabbedPane.headerElement().querySelector('.warning'));
+      assert.isNull(drawerTabbedPane.headerElement().querySelector('.warning'));
+    });
+  });
+
   describe('window layout CSS variables', () => {
     it('sets --devtools-window-* custom properties on documentElement root', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
@@ -280,6 +399,50 @@ describe('InspectorView', () => {
       await LegacyUI.Widget.Widget.allUpdatesComplete;
       await finishAnimations(inspectorView.element);
       await assertScreenshot('inspector_view/vertical-minimized-drawer.png');
+    });
+  });
+
+  describe('drawer initialization and orientation', () => {
+    it('returns false without throwing when VIEW_VISIBILITY_CHANGED queries isViewVisible during construction', () => {
+      const testViewId = 'test-drawer-visibility-view';
+      LegacyUI.ViewManager.registerViewExtension({
+        id: testViewId,
+        location: LegacyUI.ViewManager.ViewLocationValues.DRAWER_VIEW,
+        persistence: LegacyUI.ViewManager.ViewPersistence.PERMANENT,
+        commandPrompt: () => i18n.i18n.lockedString('Test drawer view'),
+        title: () => i18n.i18n.lockedString('Test drawer view'),
+        async loadView() {
+          return new LegacyUI.Widget.Widget();
+        },
+      });
+      Common.Settings.Settings.instance().createSetting('drawer-view-selected-tab', testViewId).set(testViewId);
+      const viewManager = LegacyUI.ViewManager.ViewManager.instance({forceNew: true, universe: new TestUniverse()});
+      const observedVisibilities: boolean[] = [];
+      const listener = viewManager.addEventListener(LegacyUI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, () => {
+        observedVisibilities.push(viewManager.isViewVisible(testViewId));
+      });
+
+      try {
+        LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+        InspectorView.instance({forceNew: true});
+        assert.deepEqual(observedVisibilities, [false]);
+      } finally {
+        Common.EventTarget.removeEventListeners([listener]);
+        LegacyUI.ViewManager.maybeRemoveViewExtension(testViewId);
+        LegacyUI.ViewManager.ViewManager.removeInstance();
+      }
+    });
+
+    it('updates drawer orientation when toggleDrawerOrientation is called on an unmounted InspectorView', () => {
+      LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+      const inspectorView = InspectorView.instance({forceNew: true});
+      assert.isFalse(inspectorView.isShowing());
+      assert.isTrue(inspectorView.isDrawerOrientationVertical());
+
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+      inspectorView.toggleDrawerOrientation();
+
+      assert.isFalse(inspectorView.isDrawerOrientationVertical());
     });
   });
 });

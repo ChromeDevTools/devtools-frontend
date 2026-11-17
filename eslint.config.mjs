@@ -1183,7 +1183,6 @@ export default defineConfig([
       'front_end/ui/legacy/FilterSuggestionBuilder.ts',
       'front_end/ui/legacy/GlassPane.ts',
       'front_end/ui/legacy/InplaceEditor.ts',
-      'front_end/ui/legacy/InspectorView.ts',
       'front_end/ui/legacy/ListControl.ts',
       'front_end/ui/legacy/ListModel.ts',
       'front_end/ui/legacy/ListWidget.ts',

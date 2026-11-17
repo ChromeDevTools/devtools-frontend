@@ -372,6 +372,7 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       const {message, pushObjectAsNodeToFrontend} = createDOMNodeMessage();
       const messageElement = message.toMessageElement();
       await pushObjectAsNodeToFrontend.firstCall.returnValue;
+      await UI.Widget.Widget.allUpdatesComplete;
       const tree = messageElement.querySelector('devtools-tree');
       assert.exists(tree);
       const domTree = getDOMTreeWidgetFor(tree);
@@ -398,17 +399,44 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       message.willHide();
     });
 
+    it('only shows the current DOM tree after the node resolves', async () => {
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const addModelListener = sinon.spy(targetManager, 'addModelListener');
+      const removeModelListener = sinon.spy(targetManager, 'removeModelListener');
+      const {node, message, pushObjectAsNodeToFrontend} = createDOMNodeMessage();
+      const {promise, resolve} = Promise.withResolvers<SDK.DOMModel.DOMNode|null>();
+      pushObjectAsNodeToFrontend.returns(promise);
+      const messageElement = message.toMessageElement();
+      renderElementIntoDOM(messageElement);
+      message.wasShown();
+      const isHighlightListener = (call: sinon.SinonSpyCall): boolean =>
+          call.args[0] === SDK.OverlayModel.OverlayModel &&
+          call.args[1] === SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED;
+      assert.strictEqual(addModelListener.getCalls().filter(isHighlightListener).length -
+                             removeModelListener.getCalls().filter(isHighlightListener).length,
+                         0);
+
+      resolve(node);
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.strictEqual(addModelListener.getCalls().filter(isHighlightListener).length -
+                             removeModelListener.getCalls().filter(isHighlightListener).length,
+                         1);
+      message.willHide();
+    });
+
     it('falls back to an object section when the DOM node cannot be resolved', async () => {
       const {message, pushObjectAsNodeToFrontend} = createDOMNodeMessage();
       pushObjectAsNodeToFrontend.resolves(null);
       const messageElement = message.toMessageElement();
       await pushObjectAsNodeToFrontend.firstCall.returnValue;
+      await UI.Widget.Widget.allUpdatesComplete;
 
       assert.notExists(messageElement.querySelector('.elements-tree-outline'));
       const section = messageElement.querySelector('.console-view-object-properties-section');
       assert.exists(section);
-      // The object template is appended without an extra wrapper element.
-      assert.isTrue(section.parentElement?.parentElement?.classList.contains('object-value-node'));
+      // The object is rendered in place of the DOM tree, inside the node parameter.
+      assert.isTrue(section.closest('.console-node-param')?.classList.contains('object-value-node'));
     });
 
     it('holds stack trace preview listeners only while the message is visible', () => {

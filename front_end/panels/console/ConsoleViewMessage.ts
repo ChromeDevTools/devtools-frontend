@@ -395,6 +395,237 @@ function appendOrShow(parent: Element, child: DocumentFragment|UI.Widget.AnyWidg
   }
 }
 
+interface NodeParamViewInput {
+  node: SDK.DOMModel.DOMNode|null;
+  /** Rendered instead of the DOM tree once the node turns out to be unresolvable. */
+  fallback: LitTemplate|null;
+  onTreeResized: () => void;
+  onDOMTreeCreated: (domTree: Elements.DOMTreeWidget.DOMTreeWidget) => void;
+}
+
+type NodeParamView = (input: NodeParamViewInput, output: undefined, target: HTMLElement) => void;
+
+export const NODE_PARAM_VIEW: NodeParamView = (input, _output, target) => {
+  if (input.fallback) {
+    render(input.fallback, target);
+    return;
+  }
+  // clang-format off
+  render(html`<devtools-widget
+    data-console-selectable=${SelectableKind.DOM_TREE}
+    ${widget((element: HTMLElement) => new Elements.DOMTreeWidget.DOMTreeWidget(element), {
+      omitRootDOMNode: false,
+      selectEnabled: true,
+      hideGutter: true,
+      deindentSingleNode: true,
+      showSelectionOnKeyboardFocus: true,
+      // Long lines wrap like the rest of the message.
+      wrap: true,
+      rootDOMNode: input.node,
+      onElementsTreeUpdated: input.onTreeResized,
+      onElementExpanded: input.onTreeResized,
+      onElementCollapsed: input.onTreeResized,
+    })}
+    ${widgetRef(Elements.DOMTreeWidget.DOMTreeWidget, input.onDOMTreeCreated)}></devtools-widget>`, target);
+  // clang-format on
+};
+
+/**
+ * A logged DOM node. Resolves the node itself and shows it as a DOM tree, or
+ * falls back to `renderFallback` if the node can't be resolved.
+ */
+export class ConsoleNodeParam extends UI.Widget.Widget {
+  #remoteObject: SDK.RemoteObject.RemoteObject|null = null;
+  #node: SDK.DOMModel.DOMNode|null = null;
+  #unresolvable = false;
+  #visible = false;
+  #domTree: Elements.DOMTreeWidget.DOMTreeWidget|null = null;
+  readonly #view: NodeParamView;
+  renderFallback: (object: SDK.RemoteObject.RemoteObject) => LitTemplate = () => nothing;
+  onDimensionChange: (element: HTMLElement) => void = () => {};
+  onNodeResolved: () => void = () => {};
+
+  constructor(element?: HTMLElement, view: NodeParamView = NODE_PARAM_VIEW) {
+    super(element);
+    this.element.classList.remove('widget');
+    this.#view = view;
+  }
+
+  set remoteObject(remoteObject: SDK.RemoteObject.RemoteObject) {
+    if (this.#remoteObject === remoteObject) {
+      return;
+    }
+    this.#remoteObject = remoteObject;
+    this.#node = null;
+    this.#unresolvable = false;
+    this.requestUpdate();
+    void this.#resolveNode(remoteObject);
+  }
+
+  /**
+   * Whether the message is visible. The DOM tree registers global listeners
+   * while it is shown, so it only stays shown while the message is visible.
+   */
+  set visible(visible: boolean) {
+    if (this.#visible === visible) {
+      return;
+    }
+    this.#visible = visible;
+    this.#updateDOMTreeVisibility();
+  }
+
+  async #resolveNode(remoteObject: SDK.RemoteObject.RemoteObject): Promise<void> {
+    const domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel.DOMModel);
+    const node = domModel ? await domModel.pushObjectAsNodeToFrontend(remoteObject) : null;
+    if (remoteObject !== this.#remoteObject) {
+      return;
+    }
+    this.#node = node;
+    this.#unresolvable = !node;
+    this.requestUpdate();
+    await this.updateComplete;
+    // The node arrives asynchronously, after the message was measured.
+    if (this.#domTree) {
+      this.onDimensionChange(this.#domTree.element);
+    }
+    this.onNodeResolved();
+  }
+
+  #updateDOMTreeVisibility(): void {
+    if (!this.#domTree) {
+      return;
+    }
+    if (!this.#visible) {
+      this.#domTree.hideWidget();
+    } else if (this.#domTree.element.isConnected) {
+      this.#domTree.showWidget();
+    }
+  }
+
+  #onDOMTreeCreated = (domTree: Elements.DOMTreeWidget.DOMTreeWidget): void => {
+    if (this.#domTree === domTree) {
+      return;
+    }
+    this.#domTree = domTree;
+    // @ts-expect-error used in console_test_runner
+    domTree.element.domTreeWidgetForTest = domTree;
+  };
+
+  #onTreeResized = (): void => {
+    if (this.#domTree) {
+      this.onDimensionChange(this.#domTree.element);
+    }
+  };
+
+  override performUpdate(): void {
+    if (!this.#remoteObject) {
+      return;
+    }
+    if (this.#unresolvable) {
+      this.#domTree?.hideWidget();
+      this.#domTree = null;
+    }
+    this.#view({
+      node: this.#node,
+      fallback: this.#unresolvable ? this.renderFallback(this.#remoteObject) : null,
+      onTreeResized: this.#onTreeResized,
+      onDOMTreeCreated: this.#onDOMTreeCreated,
+    },
+               undefined, this.contentElement);
+    this.#updateDOMTreeVisibility();
+  }
+}
+
+interface ErrorParamViewInput {
+  error: Bindings.SymbolizedError.SymbolizedError|null;
+  ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
+}
+
+type ErrorParamView = (input: ErrorParamViewInput, output: undefined, target: HTMLElement) => void;
+
+export const ERROR_PARAM_VIEW: ErrorParamView = (input, _output, target) => {
+  // clang-format off
+  render(html`<devtools-widget
+    data-console-selectable=${SelectableKind.LINKS}
+    ${input.error
+      ? widget(SymbolizedErrorWidget, {ignoreListManager: input.ignoreListManager, error: input.error})
+      : widget(SymbolizedErrorWidget, {ignoreListManager: input.ignoreListManager})}
+    ${widgetRef(SymbolizedErrorWidget, ensureWidgetCreated)}></devtools-widget>`, target);
+  // clang-format on
+};
+
+/** A logged error, symbolized against its source maps before it is shown. */
+export class ConsoleErrorParam extends UI.Widget.Widget {
+  #remoteObject: SDK.RemoteObject.RemoteObject|null = null;
+  #exceptionDetails?: Protocol.Runtime.ExceptionDetails;
+  #error: Bindings.SymbolizedError.SymbolizedError|null = null;
+  #symbolizeScheduled = false;
+  #symbolized: Promise<void> = Promise.resolve();
+  readonly #view: ErrorParamView;
+
+  constructor(element?: HTMLElement, view: ErrorParamView = ERROR_PARAM_VIEW) {
+    super(element);
+    this.element.classList.remove('widget');
+    this.#view = view;
+  }
+
+  set remoteObject(remoteObject: SDK.RemoteObject.RemoteObject) {
+    if (this.#remoteObject === remoteObject) {
+      return;
+    }
+    this.#remoteObject = remoteObject;
+    this.#scheduleSymbolize();
+  }
+
+  set exceptionDetails(exceptionDetails: Protocol.Runtime.ExceptionDetails|undefined) {
+    if (this.#exceptionDetails === exceptionDetails) {
+      return;
+    }
+    this.#exceptionDetails = exceptionDetails;
+    this.#scheduleSymbolize();
+  }
+
+  /** Resolves once the error is symbolized and rendered. */
+  get symbolizedForTest(): Promise<void> {
+    return this.#symbolized;
+  }
+
+  #scheduleSymbolize(): void {
+    this.#error = null;
+    this.requestUpdate();
+    // Both properties are usually set together; symbolize once for both.
+    if (this.#symbolizeScheduled) {
+      return;
+    }
+    this.#symbolizeScheduled = true;
+    this.#symbolized = Promise.resolve().then(() => {
+      this.#symbolizeScheduled = false;
+      return this.#symbolize();
+    });
+  }
+
+  async #symbolize(): Promise<void> {
+    const remoteObject = this.#remoteObject;
+    if (!remoteObject) {
+      return;
+    }
+    const error = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(
+        remoteObject, this.#exceptionDetails);
+    if (remoteObject !== this.#remoteObject || !error) {
+      return;
+    }
+    this.#error = error;
+    this.requestUpdate();
+    await this.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
+  }
+
+  override performUpdate(): void {
+    this.#view({error: this.#error, ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager.instance()},
+               undefined, this.contentElement);
+  }
+}
+
 export class ConsoleViewMessage implements ConsoleViewportElement {
   protected message: SDK.ConsoleModel.ConsoleMessage;
   private readonly linkifier: Components.Linkifier.Linkifier;
@@ -407,8 +638,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   readonly #objectFunctionTitlePromises = new WeakMap<SDK.RemoteObject.RemoteObject, Promise<LitTemplate>>();
   readonly #functionParameterPromises =
       new WeakMap<SDK.RemoteObject.RemoteObject, Map<boolean, Promise<LitTemplate>>>();
-  // Trees rendering logged DOM nodes; they follow the message visibility.
-  private readonly domTreeWidgets: Elements.DOMTreeWidget.DOMTreeWidget[] = [];
   // Stack trace previews are also root widgets and follow the message visibility.
   private readonly stackTracePreviews: Components.JSPresentationUtils.StackTracePreviewContent[] = [];
   private readonly messageResized:
@@ -503,8 +732,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   wasShown(): void {
     this.isVisibleInternal = true;
-    for (const domTree of this.domTreeWidgets) {
-      domTree.wasShown();
+    for (const nodeParam of this.#nodeParams()) {
+      nodeParam.visible = true;
     }
     for (const stackTracePreview of this.stackTracePreviews) {
       stackTracePreview.wasShown();
@@ -517,11 +746,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   onResize(): void {
   }
 
+  #nodeParams(): ConsoleNodeParam[] {
+    const hosts = this.elementInternal?.querySelectorAll<HTMLElement>('.console-node-param') ?? [];
+    return [...hosts].map(host => UI.Widget.Widget.get(host)).filter(param => param instanceof ConsoleNodeParam);
+  }
+
   willHide(): void {
     this.isVisibleInternal = false;
     this.cachedHeight = this.element().offsetHeight;
-    for (const domTree of this.domTreeWidgets) {
-      domTree.willHide();
+    for (const nodeParam of this.#nodeParams()) {
+      nodeParam.visible = false;
     }
     for (const stackTracePreview of this.stackTracePreviews) {
       stackTracePreview.willHide();
@@ -602,7 +836,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
                 const remoteObj = parameter instanceof SDK.RemoteObject.RemoteObject ?
                     parameter :
                     runtimeModel.createRemoteObject(parameter);
-                messageElement = this.renderSymbolizedError(remoteObj);
+                messageElement = document.createElement('span');
+                render(this.renderSymbolizedError(remoteObj), messageElement);
               }
             }
           }
@@ -934,18 +1169,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   protected formatParameter(output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean,
-                            includePreview?: boolean): LitTemplate|HTMLElement {
+                            includePreview?: boolean): LitTemplate {
     if (output.customPreview()) {
       return html`${widget(ObjectUI.CustomPreviewComponent.CustomPreviewComponent, {object: output})}`;
     }
 
     const outputType = forceObjectFormat ? 'object' : (output.subtype || output.type);
     const typeClasses = `object-value-${outputType} source-code`;
-    let element;
     switch (outputType) {
       case 'error':
-        element = this.renderSymbolizedError(output);
-        break;
+        return this.renderSymbolizedError(output, typeClasses);
       case 'function':
         return this.formatParameterAsFunction(output, includePreview, typeClasses);
       case 'array':
@@ -966,11 +1199,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       case 'webassemblymemory':
         return this.formatParameterAsObject(output, includePreview, typeClasses);
       case 'node':
-        if (!output.isNode()) {
-          return this.formatParameterAsObject(output, false, typeClasses);
-        }
-        element = this.formatParameterAsNode(output);
-        break;
+        return output.isNode() ? this.formatParameterAsNode(output, typeClasses) :
+                                 this.formatParameterAsObject(output, false, typeClasses);
       case 'trustedtype':
         return this.formatParameterAsObject(output, false, typeClasses);
       case 'string':
@@ -988,9 +1218,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         console.error(`Tried to format remote object of unknown type ${outputType}.`);
         return this.formatParameterAsValue(output, typeClasses);
     }
-    element.classList.add(`object-value-${outputType}`);
-    element.classList.add('source-code');
-    return element;
   }
 
   private formatParameterAsValue(obj: SDK.RemoteObject.RemoteObject, extraClasses = ''): LitTemplate {
@@ -1160,63 +1387,32 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         property.type, 'subtype' in property ? property.subtype : undefined, null, property.value);
   }
 
-  private formatParameterAsNode(remoteObject: SDK.RemoteObject.RemoteObject): HTMLElement {
-    const result = document.createElement('span');
-
-    const domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel.DOMModel);
-    if (!domModel) {
-      return result;
-    }
-    // Show the widget into the still detached container right away (like the
-    // object properties section) so that widget bookkeeping does not spill
-    // into the message element, which is rebuilt with plain DOM methods.
-    const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
-    domTree.omitRootDOMNode = false;
-    domTree.selectEnabled = true;
-    domTree.hideGutter = true;
-    domTree.deindentSingleNode = true;
-    domTree.showSelectionOnKeyboardFocus = true;
-    // Long lines wrap like the rest of the message (the legacy outline wrapped
-    // by default; DOMTreeWidget does not).
-    domTree.wrap = true;
-    // FIXME: this should not be needed once ConsoleViewMessage is rendering
-    // declaratively and the tree auto-resizes itself.
-    const dispatchDimensionChange = (): void => {
-      this.messageResized({data: domTree.element});
-    };
-    domTree.onElementsTreeUpdated = dispatchDimensionChange;
-    domTree.onElementExpanded = dispatchDimensionChange;
-    domTree.onElementCollapsed = dispatchDimensionChange;
-    domTree.markAsRoot();
-    domTree.show(result);
-    // The tree is a root widget, so it does not learn about the message
-    // visibility from the widget hierarchy. Follow the message instead (see
-    // wasShown/willHide) so that the tree does not stay alive through the
-    // global listeners it registers while showing.
-    this.domTreeWidgets.push(domTree);
-    if (!this.isVisibleInternal) {
-      domTree.willHide();
-    }
-    // @ts-expect-error used in console_test_runner
-    result.domTreeWidgetForTest = domTree;
-
-    void domModel.pushObjectAsNodeToFrontend(remoteObject).then((node: SDK.DOMModel.DOMNode|null) => {
-      if (!node) {
-        this.domTreeWidgets.splice(this.domTreeWidgets.indexOf(domTree), 1);
-        domTree.detach();
-        render(this.formatParameterAsObject(remoteObject, false), result);
-        return;
-      }
-      domTree.rootDOMNode = node;
-      domTree.element.setAttribute(SELECTABLE_ATTRIBUTE, SelectableKind.DOM_TREE);
-      // The node arrives asynchronously, after the message was measured.
-      dispatchDimensionChange();
-      this.formattedParameterAsNodeForTest();
-    });
-
-    return result;
+  private formatParameterAsNode(remoteObject: SDK.RemoteObject.RemoteObject, extraClasses = ''): LitTemplate {
+    // clang-format off
+    return html`<devtools-widget class=${`console-node-param ${extraClasses}`}
+      ${widget(ConsoleNodeParam, {
+        remoteObject,
+        visible: this.isVisibleInternal,
+        renderFallback: this.#renderNodeParamFallback,
+        onDimensionChange: this.#onNodeParamResized,
+        onNodeResolved: this.#onNodeParamResolved,
+      })}
+      ${widgetRef(ConsoleNodeParam, ensureWidgetCreated)}></devtools-widget>`;
+    // clang-format on
   }
 
+  readonly #renderNodeParamFallback = (object: SDK.RemoteObject.RemoteObject): LitTemplate =>
+      this.formatParameterAsObject(object, false);
+
+  readonly #onNodeParamResized = (element: HTMLElement): void => {
+    this.messageResized({data: element});
+  };
+
+  readonly #onNodeParamResolved = (): void => {
+    this.formattedParameterAsNodeForTest();
+  };
+
+  // Sniffed in web_tests.
   private formattedParameterAsNodeForTest(): void {
   }
 
@@ -1231,25 +1427,15 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     // clang-format on
   }
 
-  private renderSymbolizedError(errorRemoteObject: SDK.RemoteObject.RemoteObject): HTMLElement {
-    const container = document.createElement('span');
-    const widget = new SymbolizedErrorWidget();
-    widget.ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
-    widget.element.setAttribute(SELECTABLE_ATTRIBUTE, SelectableKind.LINKS);
-
-    const format = async(): Promise<void> => {
-      const error = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(
-          errorRemoteObject, this.message.exceptionDetails);
-      if (error) {
-        widget.error = error;
-      }
-      await widget.updateComplete;
-    };
-
-    this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, format()]).then(() => {});
-    widget.markAsRoot();
-    widget.show(container);
-    return container;
+  private renderSymbolizedError(errorRemoteObject: SDK.RemoteObject.RemoteObject, extraClasses = ''): LitTemplate {
+    // clang-format off
+    return html`<devtools-widget class=${ifDefined(extraClasses || undefined)}
+      ${widget(ConsoleErrorParam, {exceptionDetails: this.message.exceptionDetails, remoteObject: errorRemoteObject})}
+      ${widgetRef(ConsoleErrorParam, errorParam => {
+        this.#formatErrorStackPromiseForTest =
+            Promise.all([this.#formatErrorStackPromiseForTest, errorParam.symbolizedForTest]).then(() => {});
+      })}></devtools-widget>`;
+    // clang-format on
   }
 
   private formatAsArrayEntry(output: SDK.RemoteObject.RemoteObject): DocumentFragment {

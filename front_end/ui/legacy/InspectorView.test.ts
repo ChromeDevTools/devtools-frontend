@@ -9,8 +9,8 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 
 import * as LegacyUI from './legacy.js';
@@ -24,7 +24,8 @@ describe('InspectorView', () => {
   before(async () => await initializeGlobalVars());
   after(async () => await deinitializeGlobalVars());
 
-  function createInspectorViewWithDockState(dockState: LegacyUI.DockController.DockState): {
+  function createInspectorViewWithDockState(dockState: LegacyUI.DockController.DockState,
+                                            renderOptions?: Parameters<typeof renderElementIntoDOM>[1]): {
     inspectorView: LegacyUI.InspectorView.InspectorView,
     dockController: LegacyUI.DockController.DockController,
   } {
@@ -32,15 +33,45 @@ describe('InspectorView', () => {
     dockController.setDockSide(dockState);
 
     const inspectorView = InspectorView.instance({forceNew: true});
-    inspectorView.markAsRoot();
-    renderElementIntoDOM(inspectorView);
+    renderElementIntoDOM(inspectorView, renderOptions);
 
     return {inspectorView, dockController};
+  }
+
+  function getDrawerSplitWidget(inspectorView: LegacyUI.InspectorView.InspectorView): LegacyUI.SplitWidget.SplitWidget {
+    const splitElement = inspectorView.element.querySelector('.split-widget');
+    assert.instanceOf(splitElement, HTMLElement);
+    const splitWidget = LegacyUI.Widget.Widget.get(splitElement);
+    assert.instanceOf(splitWidget, LegacyUI.SplitWidget.SplitWidget);
+    return splitWidget;
+  }
+
+  async function finishAnimations(root: Element): Promise<void> {
+    await raf();
+    const finishInRoot = (node: Element|ShadowRoot): void => {
+      for (const animation of node.getAnimations()) {
+        animation.finish();
+      }
+      for (const element of node.querySelectorAll('*')) {
+        if (element.shadowRoot) {
+          finishInRoot(element.shadowRoot);
+        }
+      }
+    };
+    for (const animation of root.getAnimations({subtree: true})) {
+      animation.finish();
+    }
+    finishInRoot(root);
+    await raf();
   }
 
   beforeEach(() => {
     // `setIsDocked` resolves async and leaves elements in the body after the test is finished.
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'setIsDocked');
+  });
+
+  afterEach(() => {
+    InspectorView.removeInstance();
   });
 
   describe('reload required warnings', () => {
@@ -152,8 +183,7 @@ describe('InspectorView', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       assert.isTrue(inspectorView.drawerVisible());
-      const drawerSplitWidget =
-          (inspectorView as unknown as {drawerSplitWidget: LegacyUI.SplitWidget.SplitWidget}).drawerSplitWidget;
+      const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
       const hideSidebarSpy = sinon.spy(drawerSplitWidget, 'hideSidebar');
 
       const delegate = new LegacyUI.InspectorView.ActionDelegate();
@@ -166,8 +196,7 @@ describe('InspectorView', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       inspectorView.setDrawerMinimized(true);
-      const drawerSplitWidget =
-          (inspectorView as unknown as {drawerSplitWidget: LegacyUI.SplitWidget.SplitWidget}).drawerSplitWidget;
+      const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
       const hideSidebarSpy = sinon.spy(drawerSplitWidget, 'hideSidebar');
 
       const delegate = new LegacyUI.InspectorView.ActionDelegate();
@@ -197,6 +226,60 @@ describe('InspectorView', () => {
       assert.isNotEmpty(rootStyle.getPropertyValue('--devtools-window-height'));
       assert.isNotEmpty(rootStyle.getPropertyValue('--devtools-window-left'));
       assert.isNotEmpty(rootStyle.getPropertyValue('--devtools-window-top'));
+    });
+  });
+
+  describe('screenshots', () => {
+    function createScreenshotTabPanel(text: string): LegacyUI.Widget.VBox {
+      const panel = new LegacyUI.Widget.VBox();
+      const content = document.createElement('div');
+      content.style.padding = '12px';
+      content.textContent = text;
+      panel.contentElement.appendChild(content);
+      return panel;
+    }
+
+    function populateScreenshotTabs(inspectorView: LegacyUI.InspectorView.InspectorView): void {
+      inspectorView.tabbedPane.appendTab('elements', 'Elements', createScreenshotTabPanel('Main panel content'));
+      inspectorView.tabbedPane.selectTab('elements');
+
+      const drawerLocation = inspectorView.resolveLocation('drawer-view') as LegacyUI.View.TabbedViewLocation | null;
+      assert.exists(drawerLocation);
+      const drawerTabbedPane = drawerLocation.tabbedPane();
+      drawerTabbedPane.appendTab('console-view', 'Console', createScreenshotTabPanel('Drawer panel content'));
+      drawerTabbedPane.selectTab('console-view');
+    }
+
+    it('renders horizontal drawer open with an infobar', async () => {
+      const {inspectorView} =
+          createInspectorViewWithDockState(DockState.RIGHT, {includeCommonStyles: true, width: 640, height: 360});
+      populateScreenshotTabs(inspectorView);
+      inspectorView.displayReloadRequiredWarning(
+          'One or more settings have changed which requires a reload to take effect.');
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+
+      assert.isFalse(inspectorView.isDrawerOrientationVertical());
+      assert.isTrue(inspectorView.drawerVisible());
+
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      await finishAnimations(inspectorView.element);
+      await assertScreenshot('inspector_view/drawer-and-infobar.png');
+    });
+
+    it('renders vertical minimized drawer', async () => {
+      updateHostConfig({devToolsFlexibleLayout: {verticalDrawerEnabled: true}});
+      const {inspectorView} =
+          createInspectorViewWithDockState(DockState.BOTTOM, {includeCommonStyles: true, width: 640, height: 360});
+      populateScreenshotTabs(inspectorView);
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+      inspectorView.setDrawerMinimized(true);
+
+      assert.isTrue(inspectorView.isDrawerOrientationVertical());
+      assert.isTrue(inspectorView.isDrawerMinimized());
+
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      await finishAnimations(inspectorView.element);
+      await assertScreenshot('inspector_view/vertical-minimized-drawer.png');
     });
   });
 });

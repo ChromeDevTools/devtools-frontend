@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, before, beforeEach, describe, it} from 'mocha';
+import {after, afterEach, before, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {getElementWithinComponent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -43,15 +43,32 @@ describe('InspectorDrawerView', () => {
     dockController.setDockSide(dockState);
 
     const inspectorView = InspectorView.instance({forceNew: true});
-    inspectorView.markAsRoot();
     renderElementIntoDOM(inspectorView);
 
     return {inspectorView, dockController};
   }
 
+  function getDrawerSplitWidget(inspectorView: LegacyUI.InspectorView.InspectorView): LegacyUI.SplitWidget.SplitWidget {
+    const splitElement = inspectorView.element.querySelector('.split-widget');
+    assert.instanceOf(splitElement, HTMLElement);
+    const splitWidget = LegacyUI.Widget.Widget.get(splitElement);
+    assert.instanceOf(splitWidget, LegacyUI.SplitWidget.SplitWidget);
+    return splitWidget;
+  }
+
+  function getDrawerTabbedPane(inspectorView: LegacyUI.InspectorView.InspectorView): LegacyUI.TabbedPane.TabbedPane {
+    const location = inspectorView.resolveLocation('drawer-view') as LegacyUI.View.TabbedViewLocation | null;
+    assert.exists(location);
+    return location.tabbedPane();
+  }
+
   beforeEach(() => {
     // `setIsDocked` resolves async and leaves elements in the body after the test is finished.
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'setIsDocked');
+  });
+
+  afterEach(() => {
+    InspectorView.removeInstance();
   });
 
   describe('drawer minimize/expand', () => {
@@ -107,18 +124,39 @@ describe('InspectorDrawerView', () => {
       assert.isTrue(inspectorView.isDrawerMinimized(), 'drawer should be minimized');
     });
 
+    it('showDrawer({focus: true}) followed by closeDrawer() restores focus to the previous element', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      const previousFocusElement = document.createElement('button');
+      renderElementIntoDOM(previousFocusElement, {allowMultipleChildren: true});
+      previousFocusElement.focus();
+      assert.strictEqual(document.activeElement, previousFocusElement);
+
+      inspectorView.showDrawer({focus: true, hasTargetDrawer: false});
+      assert.notStrictEqual(document.activeElement, previousFocusElement);
+
+      inspectorView.closeDrawer();
+
+      assert.strictEqual(document.activeElement, previousFocusElement);
+    });
+
     it('minimizeDrawer does not restore focus to avoid main panel content shift', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      const previousFocusElement = document.createElement('button');
+      renderElementIntoDOM(previousFocusElement, {allowMultipleChildren: true});
+      previousFocusElement.focus();
+      assert.strictEqual(document.activeElement, previousFocusElement);
+
       inspectorView.showDrawer({focus: true, hasTargetDrawer: false});
-      const focusRestorer =
-          (inspectorView as unknown as {focusRestorer: LegacyUI.Widget.WidgetFocusRestorer | null}).focusRestorer;
-      assert.exists(focusRestorer);
-      const restoreSpy = sinon.spy(focusRestorer, 'restore');
+      assert.notStrictEqual(document.activeElement, previousFocusElement);
 
       inspectorView.minimizeDrawer();
 
-      sinon.assert.notCalled(restoreSpy);
       assert.isTrue(inspectorView.isDrawerMinimized());
+      assert.notStrictEqual(document.activeElement, previousFocusElement);
+
+      inspectorView.closeDrawer();
+
+      assert.notStrictEqual(document.activeElement, previousFocusElement);
     });
 
     it('closeDrawer fully hides the drawer', () => {
@@ -136,8 +174,7 @@ describe('InspectorDrawerView', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
 
-      const drawerSplitWidget =
-          (inspectorView as unknown as {drawerSplitWidget: LegacyUI.SplitWidget.SplitWidget}).drawerSplitWidget;
+      const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
       const hideSidebarSpy = sinon.spy(drawerSplitWidget, 'hideSidebar');
 
       inspectorView.closeDrawer();
@@ -150,8 +187,7 @@ describe('InspectorDrawerView', () => {
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       inspectorView.setDrawerMinimized(true);
 
-      const drawerSplitWidget =
-          (inspectorView as unknown as {drawerSplitWidget: LegacyUI.SplitWidget.SplitWidget}).drawerSplitWidget;
+      const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
       const hideSidebarSpy = sinon.spy(drawerSplitWidget, 'hideSidebar');
 
       inspectorView.closeDrawer();
@@ -209,8 +245,7 @@ describe('InspectorDrawerView', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
 
-      const drawerTabbedPane =
-          (inspectorView as unknown as {drawerTabbedPane: LegacyUI.TabbedPane.TabbedPane}).drawerTabbedPane;
+      const drawerTabbedPane = getDrawerTabbedPane(inspectorView);
       const paneVisibilityEvents: boolean[] = [];
       drawerTabbedPane.addEventListener(LegacyUI.TabbedPane.Events.PaneVisibilityChanged, event => {
         paneVisibilityEvents.push(event.data.isVisible);
@@ -226,8 +261,7 @@ describe('InspectorDrawerView', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
 
-      const drawerTabbedPane =
-          (inspectorView as unknown as {drawerTabbedPane: LegacyUI.TabbedPane.TabbedPane}).drawerTabbedPane;
+      const drawerTabbedPane = getDrawerTabbedPane(inspectorView);
       const paneVisibilityEvents: boolean[] = [];
       drawerTabbedPane.addEventListener(LegacyUI.TabbedPane.Events.PaneVisibilityChanged, event => {
         paneVisibilityEvents.push(event.data.isVisible);
@@ -247,8 +281,7 @@ describe('InspectorDrawerView', () => {
       inspectorView.setDrawerMinimized(true);
       assert.isTrue(inspectorView.isDrawerMinimized());
 
-      const drawerTabbedPane =
-          (inspectorView as unknown as {drawerTabbedPane: LegacyUI.TabbedPane.TabbedPane}).drawerTabbedPane;
+      const drawerTabbedPane = getDrawerTabbedPane(inspectorView);
       drawerTabbedPane.dispatchEventToListeners(LegacyUI.TabbedPane.Events.TabSelected, {
         tabId: 'elements',
         prevTabId: 'console-view',
@@ -264,8 +297,7 @@ describe('InspectorDrawerView', () => {
       inspectorView.setDrawerMinimized(true);
       assert.isTrue(inspectorView.isDrawerMinimized());
 
-      const drawerTabbedPane =
-          (inspectorView as unknown as {drawerTabbedPane: LegacyUI.TabbedPane.TabbedPane}).drawerTabbedPane;
+      const drawerTabbedPane = getDrawerTabbedPane(inspectorView);
       drawerTabbedPane.dispatchEventToListeners(LegacyUI.TabbedPane.Events.TabInvoked, {
         tabId: 'console-view',
         prevTabId: 'console-view',
@@ -282,8 +314,7 @@ describe('InspectorDrawerView', () => {
       inspectorView.setDrawerMinimized(true);
       assert.isTrue(inspectorView.isDrawerMinimized());
 
-      const drawerTabbedPane =
-          (inspectorView as unknown as {drawerTabbedPane: LegacyUI.TabbedPane.TabbedPane}).drawerTabbedPane;
+      const drawerTabbedPane = getDrawerTabbedPane(inspectorView);
       drawerTabbedPane.dispatchEventToListeners(LegacyUI.TabbedPane.Events.TabInvoked, {
         tabId: 'console-view',
         prevTabId: 'elements',
@@ -304,8 +335,7 @@ describe('InspectorDrawerView', () => {
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       assert.isFalse(inspectorView.isDrawerMinimized());
 
-      const drawerTabbedPane =
-          (inspectorView as unknown as {drawerTabbedPane: LegacyUI.TabbedPane.TabbedPane}).drawerTabbedPane;
+      const drawerTabbedPane = getDrawerTabbedPane(inspectorView);
       drawerTabbedPane.dispatchEventToListeners(LegacyUI.TabbedPane.Events.TabInvoked, {
         tabId: 'console-view',
         prevTabId: 'elements',
@@ -323,17 +353,15 @@ describe('InspectorDrawerView', () => {
     it('clicking expand drawer button does not expand when main console tab is active', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       sinon.stub(inspectorView.tabbedPane, 'selectedTabId').get(() => 'console');
-      const drawerTabbedPane =
-          (inspectorView as unknown as {drawerTabbedPane: LegacyUI.TabbedPane.TabbedPane}).drawerTabbedPane;
+      const drawerTabbedPane = getDrawerTabbedPane(inspectorView);
       sinon.stub(drawerTabbedPane, 'selectedTabId').get(() => 'console-view');
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       inspectorView.setDrawerMinimized(true);
       assert.isTrue(inspectorView.isDrawerMinimized());
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
-      assert.exists(drawerElement);
-      const expandButton = drawerElement.shadowRoot!.querySelector('[aria-label="Expand drawer"]') as HTMLElement;
-      assert.exists(expandButton);
+      assert.instanceOf(drawerElement, HTMLElement);
+      const expandButton = getElementWithinComponent(drawerElement, '[aria-label="Expand drawer"]', HTMLElement);
 
       expandButton.click();
 
@@ -538,8 +566,7 @@ describe('InspectorDrawerView', () => {
           dockController.setDockSide(DockState.UNDOCKED);
           await waitForDockSideChangeHandled;
 
-          const drawerSplitWidget =
-              (inspectorView as unknown as {drawerSplitWidget: LegacyUI.SplitWidget.SplitWidget}).drawerSplitWidget;
+          const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
           assert.isTrue(inspectorView.isDrawerMinimized());
           assert.isFalse(inspectorView.isDrawerOrientationVertical());
           assert.isFalse(drawerSplitWidget.isResizable());
@@ -558,8 +585,7 @@ describe('InspectorDrawerView', () => {
           dockController.setDockSide(DockState.UNDOCKED);
           await waitForDockSideChangeHandled;
 
-          const drawerSplitWidget =
-              (inspectorView as unknown as {drawerSplitWidget: LegacyUI.SplitWidget.SplitWidget}).drawerSplitWidget;
+          const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
           assert.isTrue(inspectorView.isDrawerMinimized());
           assert.isFalse(inspectorView.isDrawerOrientationVertical());
           assert.isFalse(drawerSplitWidget.isResizable());
@@ -577,8 +603,7 @@ describe('InspectorDrawerView', () => {
           assert.isTrue(inspectorView.isDrawerMinimized());
           dockController.setDockSide(DockState.RIGHT);
 
-          const drawerSplitWidget =
-              (inspectorView as unknown as {drawerSplitWidget: LegacyUI.SplitWidget.SplitWidget}).drawerSplitWidget;
+          const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
           assert.isTrue(inspectorView.drawerVisible());
           assert.isTrue(inspectorView.isDrawerMinimized());
           assert.isFalse(drawerSplitWidget.isResizable());
@@ -813,11 +838,8 @@ describe('InspectorDrawerView', () => {
 
       inspectorView.setDrawerMinimized(true);
 
-      const splitWidgetElement = inspectorView.element.querySelector('.split-widget');
-      assert.exists(splitWidgetElement);
-      const resizerElement =
-          splitWidgetElement.shadowRoot!.querySelector('.shadow-split-widget-resizer') as HTMLElement | null;
-      assert.exists(resizerElement);
+      const resizerElement = getDrawerSplitWidget(inspectorView).resizerElement();
+      assert.instanceOf(resizerElement, HTMLElement);
       assert.strictEqual(
           resizerElement.style.getPropertyValue('cursor'), '', 'resizer cursor should be removed when minimized');
     });
@@ -829,11 +851,8 @@ describe('InspectorDrawerView', () => {
       inspectorView.setDrawerMinimized(true);
       inspectorView.setDrawerMinimized(false);
 
-      const splitWidgetElement = inspectorView.element.querySelector('.split-widget');
-      assert.exists(splitWidgetElement);
-      const resizerElement =
-          splitWidgetElement.shadowRoot!.querySelector('.shadow-split-widget-resizer') as HTMLElement | null;
-      assert.exists(resizerElement);
+      const resizerElement = getDrawerSplitWidget(inspectorView).resizerElement();
+      assert.instanceOf(resizerElement, HTMLElement);
       assert.isNotEmpty(resizerElement.style.getPropertyValue('cursor'), 'resizer cursor should be set when expanded');
     });
   });

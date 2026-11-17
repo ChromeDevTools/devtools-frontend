@@ -878,7 +878,9 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
   private attachInfobar(infobar: Infobar): void {
     this.createInfoBarDiv();
-    this.infoBarDiv?.appendChild(infobar.element);
+    if (this.infoBarDiv) {
+      infobar.show(this.infoBarDiv);
+    }
   }
 }
 

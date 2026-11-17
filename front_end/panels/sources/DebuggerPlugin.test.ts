@@ -1458,4 +1458,84 @@ globalThis.foo = bar + baz;
       plugin.dispose();
     });
   });
+
+  describeWithEnvironment('infobar attachment', () => {
+    it('attaches multiple infobars idempotently and removes them cleanly', () => {
+      const backend = new MockDebuggerBackend();
+      backend.createTarget();
+      sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+          .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
+      sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
+      sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance')
+          .returns(sinon.createStubInstance(UI.ShortcutRegistry.ShortcutRegistry, {
+            getShortcutListener: () => {},
+          }));
+      sinon.stub(Sources.SourcesPanel.SourcesPanel, 'instance')
+          .returns(sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
+      sinon.stub(Breakpoints.BreakpointManager.BreakpointManager, 'instance')
+          .returns(sinon.createStubInstance(Breakpoints.BreakpointManager.BreakpointManager, {
+            breakpointLocationsForUISourceCode: [],
+          }));
+
+      const infobarPanelState = CodeMirror.StateField.define<SourceFrame.SourceFrame.SourceFrameInfobar[]>({
+        create: () => [],
+        update(current, tr) {
+          for (const effect of tr.effects) {
+            if (effect.is(SourceFrame.SourceFrame.addSourceFrameInfobar)) {
+              current = current.concat(effect.value);
+            } else if (effect.is(SourceFrame.SourceFrame.removeSourceFrameInfobar)) {
+              current = current.filter(b => b.element !== effect.value.element);
+            }
+          }
+          return current;
+        },
+        provide: field =>
+            CodeMirror.showPanel.computeN([field], state => state.field(field).map(bar => () => ({dom: bar.element}))),
+      });
+
+      const source = 'let a = 1;\n';
+      const {uiSourceCode} = createContentProviderUISourceCode(
+          {url: urlString`http://example.com/script.js`, mimeType: 'text/javascript', content: source});
+      const plugin = new Sources.DebuggerPlugin.DebuggerPlugin(uiSourceCode, {
+        editorLocationToUILocation: (lineNumber: number, columnNumber?: number) =>
+            ({lineNumber, columnNumber: columnNumber ?? 0}),
+        uiLocationToEditorLocation: (lineNumber: number, columnNumber?: number) =>
+            ({lineNumber, columnNumber: columnNumber ?? 0}),
+      });
+      const editor = new TextEditor.TextEditor.TextEditor(
+          makeState(source, [CodeMirror.javascript.javascript(), plugin.editorExtension(), infobarPanelState]));
+      const container = new UI.Widget.Widget();
+      container.contentElement.appendChild(editor);
+      renderElementIntoDOM(container);
+      plugin.editorInitialized(editor);
+
+      const bar1 = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'First infobar');
+      const bar2 = new UI.Infobar.Infobar(UI.Infobar.Type.WARNING, 'Second infobar');
+
+      plugin.attachInfobar(bar1);
+      plugin.attachInfobar(bar2);
+      plugin.attachInfobar(bar1);
+
+      assert.isTrue(bar1.isShowing());
+      assert.isTrue(bar2.isShowing());
+      assert.isTrue(bar1.element.isConnected);
+      assert.isTrue(bar2.element.isConnected);
+      assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-panels > div'), 2);
+
+      plugin.removeInfobar(bar1);
+      assert.isFalse(bar1.isShowing());
+      assert.isFalse(bar1.element.isConnected);
+      assert.isTrue(bar2.isShowing());
+      assert.isTrue(bar2.element.isConnected);
+      assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-panels > div'), 1);
+
+      plugin.removeInfobar(bar2);
+      assert.isFalse(bar2.isShowing());
+      assert.isFalse(bar2.element.isConnected);
+      assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-panels > div'), 0);
+
+      plugin.dispose();
+    });
+  });
 });

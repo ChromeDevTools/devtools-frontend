@@ -8,12 +8,11 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../components/buttons/buttons.js';
-import {Directives, html, nothing, render} from '../lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import infobarStyles from './infobar.css.js';
-import {createShadowRootWithCoreStyles} from './UIUtils.js';
-import type {Widget} from './Widget.js';
+import {Widget, WidgetElement} from './Widget.js';
 
 const {ifDefined} = Directives;
 
@@ -30,21 +29,23 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Infobar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export type DetailsRowMessage = Element|string|LitTemplate;
+
 export interface ViewInput {
   type: Type;
   text: string;
   actions?: InfobarAction[];
   hasDisableSetting: boolean;
   jslogContext?: string;
-  detailsRows: Array<Element|string>;
+  detailsRows: readonly DetailsRowMessage[];
   onDisable: () => void;
   onAction: (action: InfobarAction) => void;
   onDismiss: () => void;
 }
 
-export type View = (input: ViewInput, output: undefined, target: ShadowRoot) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|ShadowRoot) => void;
 
-export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: ShadowRoot): void => {
+export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement|ShadowRoot): void => {
   const defaultActionButtonVariant =
       input.hasDisableSetting ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.OUTLINED;
   // clang-format off
@@ -85,6 +86,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
 
   // clang-format off
   render(html`
+    <style>${infobarStyles}</style>
     <div
         class=${`infobar infobar-${input.type}`}
         role=${ifDefined(input.actions ? 'group' : undefined)}
@@ -124,30 +126,41 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
   // clang-format on
 };
 
-export class Infobar {
-  element: HTMLElement;
-  readonly #shadowRoot: ShadowRoot;
-  readonly #type: Type;
+export class Infobar extends Widget<ShadowRoot> {
+  #type: Type;
   #text: string;
-  readonly #actions?: InfobarAction[];
-  readonly #disableSetting: Common.Settings.Setting<boolean>|null;
-  readonly #jslogContext?: string;
+  #actions?: InfobarAction[];
+  #disableSetting: Common.Settings.Setting<boolean>|null;
+  #jslogContext?: string;
   readonly #view: View;
-  readonly #detailsRows: Array<Element|string> = [];
+  #detailsRows: readonly DetailsRowMessage[] = [];
   #closeCallback: (() => void)|null = null;
   #parentView?: Widget;
+  #needsUpdate = true;
 
   constructor(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
-              jslogContext?: string, view: View = DEFAULT_VIEW) {
-    this.element = document.createElement('div');
-    this.#shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: infobarStyles});
-    this.#type = type;
-    this.#text = text;
-    this.#actions = actions;
-    this.#disableSetting = disableSetting || null;
-    this.#jslogContext = jslogContext;
-    this.#view = view;
-    this.#render();
+              jslogContext?: string, view?: View);
+  constructor(element?: HTMLElement, view?: View);
+  constructor(typeOrElement?: Type|HTMLElement, textOrView?: string|View, actions?: InfobarAction[],
+              disableSetting?: Common.Settings.Setting<boolean>, jslogContext?: string, view: View = DEFAULT_VIEW) {
+    if (typeof typeOrElement === 'string') {
+      super(undefined, {useShadowDom: 'pure'});
+      this.#type = typeOrElement;
+      this.#text = typeof textOrView === 'string' ? textOrView : '';
+      this.#actions = actions;
+      this.#disableSetting = disableSetting || null;
+      this.#jslogContext = jslogContext;
+      this.#view = view;
+      // Flush initial render synchronously for legacy positional callers such as OverlaysImpl
+      // (#positionInfoBarBanner) that measure clientHeight immediately and synchronous DOM unit tests.
+      this.performUpdate();
+    } else {
+      super(typeOrElement, {useShadowDom: 'pure'});
+      this.#type = Type.INFO;
+      this.#text = '';
+      this.#disableSetting = null;
+      this.#view = typeof textOrView === 'function' ? textOrView : DEFAULT_VIEW;
+    }
   }
 
   static create(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
@@ -158,17 +171,109 @@ export class Infobar {
     return new Infobar(type, text, actions, disableSetting, jslogContext, view);
   }
 
+  get type(): Type {
+    return this.#type;
+  }
+
+  set type(type: Type) {
+    if (this.#type === type) {
+      return;
+    }
+    this.#type = type;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+
+  get text(): string {
+    return this.#text;
+  }
+
+  set text(text: string) {
+    if (this.#text === text) {
+      return;
+    }
+    this.#text = text;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+    void this.updateComplete.then(() => this.#onResize());
+  }
+
+  get actions(): InfobarAction[]|undefined {
+    return this.#actions;
+  }
+
+  set actions(actions: InfobarAction[]|undefined) {
+    if (this.#actions === actions) {
+      return;
+    }
+    this.#actions = actions;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+
+  get disableSetting(): Common.Settings.Setting<boolean>|null {
+    return this.#disableSetting;
+  }
+
+  set disableSetting(disableSetting: Common.Settings.Setting<boolean>|null) {
+    if (this.#disableSetting === disableSetting) {
+      return;
+    }
+    this.#disableSetting = disableSetting;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+
+  get jslogContext(): string|undefined {
+    return this.#jslogContext;
+  }
+
+  set jslogContext(jslogContext: string|undefined) {
+    if (this.#jslogContext === jslogContext) {
+      return;
+    }
+    this.#jslogContext = jslogContext;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+
+  get detailsRows(): readonly DetailsRowMessage[] {
+    return this.#detailsRows;
+  }
+
+  set detailsRows(detailsRows: readonly DetailsRowMessage[]) {
+    if (this.#detailsRows === detailsRows) {
+      return;
+    }
+    this.#detailsRows = detailsRows;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+
+  get onClose(): (() => void)|null {
+    return this.#closeCallback;
+  }
+
+  set onClose(callback: (() => void)|null) {
+    this.#closeCallback = callback;
+  }
+
   dispose(): void {
-    this.element.remove();
-    this.#onResize();
+    if (!(this.element instanceof WidgetElement)) {
+      this.detach();
+    }
     if (this.#closeCallback) {
       this.#closeCallback.call(null);
     }
   }
 
   setText(text: string): void {
+    if (this.#text === text) {
+      return;
+    }
     this.#text = text;
-    this.#render();
+    // TODO: migrate to `requestUpdate()` once legacy synchronous callers use declarative views.
+    this.performUpdate();
     this.#onResize();
   }
 
@@ -180,7 +285,20 @@ export class Infobar {
     this.#parentView = parentView;
   }
 
-  #render(): void {
+  override wasShown(): void {
+    super.wasShown();
+    if (this.#needsUpdate) {
+      this.requestUpdate();
+    }
+  }
+
+  override wasHidden(): void {
+    super.wasHidden();
+    this.#onResize();
+  }
+
+  override performUpdate(): void {
+    this.#needsUpdate = false;
     this.#view(
         {
           type: this.#type,
@@ -194,7 +312,7 @@ export class Infobar {
           onDismiss: this.dispose.bind(this),
         },
         undefined,
-        this.#shadowRoot,
+        this.contentElement,
     );
   }
 
@@ -208,9 +326,7 @@ export class Infobar {
   }
 
   #onResize(): void {
-    if (this.#parentView) {
-      this.#parentView.doResize();
-    }
+    (this.#parentView ?? this.parentWidget())?.doResize();
   }
 
   #onDisable(): void {
@@ -220,9 +336,10 @@ export class Infobar {
     this.dispose();
   }
 
-  createDetailsRowMessage(message: Element|string): void {
-    this.#detailsRows.push(message);
-    this.#render();
+  createDetailsRowMessage(message: DetailsRowMessage): void {
+    this.#detailsRows = [...this.#detailsRows, message];
+    // TODO: migrate to `requestUpdate()` once legacy synchronous callers use declarative views.
+    this.performUpdate();
   }
 }
 export interface InfobarAction {

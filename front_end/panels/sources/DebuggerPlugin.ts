@@ -242,6 +242,8 @@ export class DebuggerPlugin extends Plugin {
   #activeBreakpointEditRequest?: BreakpointEditRequest = undefined;
   #scheduledFinishingActiveDialog = false;
   private missingDebugInfoBar: UI.Infobar.Infobar|null = null;
+  #infobarContainers =
+      new WeakMap<UI.Infobar.Infobar, {container: HTMLDivElement, editor: TextEditor.TextEditor.TextEditor}>();
   #sourcesPanelDebuggedMetricsRecorded = false;
   private readonly loader: SDK.PageResourceLoader.PageResourceLoader;
 
@@ -452,14 +454,35 @@ export class DebuggerPlugin extends Plugin {
   }
 
   attachInfobar(bar: UI.Infobar.Infobar): void {
-    if (this.editor) {
-      this.editor.dispatch({effects: SourceFrame.SourceFrame.addSourceFrameInfobar.of({element: bar.element})});
+    if (!this.editor) {
+      return;
     }
+    const existing = this.#infobarContainers.get(bar);
+    if (existing?.editor === this.editor && bar.isShowing() && existing.container.isConnected) {
+      return;
+    }
+    if (existing) {
+      bar.detach();
+      existing.editor.dispatch(
+          {effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of({element: existing.container})});
+      this.#infobarContainers.delete(bar);
+    }
+    const container = this.editor.editor.dom.ownerDocument.createElement('div');
+    bar.show(container, undefined, true);
+    this.#infobarContainers.set(bar, {container, editor: this.editor});
+    this.editor.dispatch({effects: SourceFrame.SourceFrame.addSourceFrameInfobar.of({element: container})});
   }
 
   removeInfobar(bar: UI.Infobar.Infobar|null): void {
-    if (this.editor && bar) {
-      this.editor.dispatch({effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of({element: bar.element})});
+    if (!bar) {
+      return;
+    }
+    const existing = this.#infobarContainers.get(bar);
+    this.#infobarContainers.delete(bar);
+    bar.detach();
+    if (existing) {
+      existing.editor.dispatch(
+          {effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of({element: existing.container})});
     }
   }
 
@@ -1744,6 +1767,9 @@ export class DebuggerPlugin extends Plugin {
 
   override dispose(): void {
     this.hideIgnoreListInfobar();
+    if (this.missingDebugInfoBar) {
+      this.missingDebugInfoBar.dispose();
+    }
     if (this.sourceMapInfobar) {
       this.sourceMapInfobar.dispose();
     }

@@ -18,8 +18,11 @@ import {
   createFakeSetting,
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import {Link} from '../kit/kit.js';
+import {html, nothing, render} from '../lit/lit.js';
 
 import * as UI from './legacy.js';
 
@@ -81,7 +84,7 @@ describeWithEnvironment('Infobar', () => {
   };
 
   const checkDetailsMessage = (component: UI.Infobar.Infobar, messageText: string) => {
-    renderElementIntoDOM(component.element);
+    renderElementIntoDOM(component);
 
     const details = getDetails(component);
     assert.isFalse(details.hasAttribute('open'));
@@ -93,7 +96,7 @@ describeWithEnvironment('Infobar', () => {
 
   it('shows main message', () => {
     const component = new UI.Infobar.Infobar(UI.Infobar.Type.WARNING, 'This is a warning');
-    renderElementIntoDOM(component.element);
+    renderElementIntoDOM(component);
     assert.strictEqual(getMainRow(component).textContent, 'This is a warning');
   });
 
@@ -117,7 +120,7 @@ describeWithEnvironment('Infobar', () => {
     infobar.createDetailsRowMessage('First row');
     infobar.createDetailsRowMessage('Second row');
     infobar.createDetailsRowMessage('Third row');
-    renderElementIntoDOM(infobar.element);
+    renderElementIntoDOM(infobar);
 
     assert.deepEqual(
         getDetailsRows(infobar).map(row => row.textContent),
@@ -133,7 +136,7 @@ describeWithEnvironment('Infobar', () => {
         {text: 'Keep open', delegate: keepOpenDelegate, dismiss: false},
       ]);
       infobar.setCloseCallback(closeCallback);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       const button = getButtonByText(infobar, 'Keep open');
       button.click();
@@ -150,7 +153,7 @@ describeWithEnvironment('Infobar', () => {
         {text: 'Apply and close', delegate: dismissDelegate, dismiss: true},
       ]);
       infobar.setCloseCallback(closeCallback);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       const button = getButtonByText(infobar, 'Apply and close');
       button.click();
@@ -166,7 +169,7 @@ describeWithEnvironment('Infobar', () => {
         {text: 'Dismiss only', delegate: null, dismiss: true},
       ]);
       infobar.setCloseCallback(closeCallback);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       const button = getButtonByText(infobar, 'Dismiss only');
       button.click();
@@ -181,7 +184,7 @@ describeWithEnvironment('Infobar', () => {
         {text: 'No-op', delegate: null, dismiss: false},
       ]);
       infobar.setCloseCallback(closeCallback);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       const button = getButtonByText(infobar, 'No-op');
       button.click();
@@ -195,7 +198,7 @@ describeWithEnvironment('Infobar', () => {
         {text: 'Default action', delegate: null, dismiss: false},
         {text: 'Explicit primary', delegate: null, dismiss: false, buttonVariant: Buttons.Button.Variant.PRIMARY},
       ]);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       assert.strictEqual(getButtonByText(infobar, 'Default action').variant, Buttons.Button.Variant.OUTLINED);
       assert.strictEqual(getButtonByText(infobar, 'Explicit primary').variant, Buttons.Button.Variant.PRIMARY);
@@ -212,7 +215,7 @@ describeWithEnvironment('Infobar', () => {
           ],
           disableSetting,
       );
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       assert.strictEqual(getButtonByText(infobar, 'Don’t show again').variant, Buttons.Button.Variant.OUTLINED);
       assert.strictEqual(getButtonByText(infobar, 'Default tonal').variant, Buttons.Button.Variant.TONAL);
@@ -225,7 +228,7 @@ describeWithEnvironment('Infobar', () => {
       const withoutSetting = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message', [
         {text: 'Action', delegate: null, dismiss: false},
       ]);
-      renderElementIntoDOM(withoutSetting.element);
+      renderElementIntoDOM(withoutSetting);
       assert.deepEqual(
           getActionButtons(withoutSetting).map(button => button.textContent),
           ['Action'],
@@ -233,7 +236,7 @@ describeWithEnvironment('Infobar', () => {
 
       const disableSetting = createFakeSetting('infobar-test-disable-button', false);
       const withSetting = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message', undefined, disableSetting);
-      renderElementIntoDOM(withSetting.element, {allowMultipleChildren: true});
+      renderElementIntoDOM(withSetting, {allowMultipleChildren: true});
       assert.deepEqual(
           getActionButtons(withSetting).map(button => button.textContent),
           ['Don’t show again'],
@@ -245,7 +248,7 @@ describeWithEnvironment('Infobar', () => {
       const closeCallback = sinon.spy();
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message', undefined, disableSetting);
       infobar.setCloseCallback(closeCallback);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       const dontShowButton = getButtonByText(infobar, 'Don’t show again');
       dontShowButton.click();
@@ -270,7 +273,7 @@ describeWithEnvironment('Infobar', () => {
       const closeCallback = sinon.spy();
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message');
       infobar.setCloseCallback(closeCallback);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       getCloseButton(infobar).click();
 
@@ -282,7 +285,7 @@ describeWithEnvironment('Infobar', () => {
       const closeCallback = sinon.spy();
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message');
       infobar.setCloseCallback(closeCallback);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
       const parentKeyDown = sinon.spy();
       infobar.element.parentElement!.addEventListener('keydown', parentKeyDown);
 
@@ -303,7 +306,7 @@ describeWithEnvironment('Infobar', () => {
       const closeCallback = sinon.spy();
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message');
       infobar.setCloseCallback(closeCallback);
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
       const parentKeyDown = sinon.spy();
       infobar.element.parentElement!.addEventListener('keydown', parentKeyDown);
 
@@ -324,7 +327,7 @@ describeWithEnvironment('Infobar', () => {
       const doResizeSpy = sinon.spy(parentView, 'doResize');
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message');
       infobar.setParentView(parentView);
-      parentView.element.appendChild(infobar.element);
+      infobar.show(parentView.element);
 
       infobar.dispose();
 
@@ -337,7 +340,7 @@ describeWithEnvironment('Infobar', () => {
       const doResizeSpy = sinon.spy(parentView, 'doResize');
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Initial text');
       infobar.setParentView(parentView);
-      parentView.element.appendChild(infobar.element);
+      infobar.show(parentView.element);
 
       infobar.setText('Updated text');
 
@@ -349,7 +352,7 @@ describeWithEnvironment('Infobar', () => {
   describe('attributes and text updates', () => {
     it('sets aria-label on .infobar and alert ARIA attributes on .infobar-info-text', () => {
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Initial text');
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       assert.strictEqual(getInfobarElement(infobar).getAttribute('aria-label'), 'Initial text');
       const infoText = getInfoText(infobar);
@@ -359,13 +362,42 @@ describeWithEnvironment('Infobar', () => {
 
     it('updates .infobar-info-text when setText is called', () => {
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Initial text');
-      renderElementIntoDOM(infobar.element);
+      renderElementIntoDOM(infobar);
 
       const infoText = getInfoText(infobar);
       assert.strictEqual(infoText.textContent, 'Initial text');
 
       infobar.setText('Updated text');
       assert.strictEqual(infoText.textContent, 'Updated text');
+    });
+
+    it('renders updated reactive property when detached before animation frame and re-shown', async () => {
+      const infobar = new UI.Infobar.Infobar(undefined);
+      infobar.text = 'Initial';
+      renderElementIntoDOM(infobar);
+      await infobar.updateComplete;
+      assert.strictEqual(getInfoText(infobar).textContent, 'Initial');
+
+      infobar.text = 'Updated';
+      infobar.detach();
+      renderElementIntoDOM(infobar, {allowMultipleChildren: true});
+      await infobar.updateComplete;
+
+      assert.strictEqual(getInfoText(infobar).textContent, 'Updated');
+    });
+
+    it('renders reactive property mutated while detached once shown', async () => {
+      const infobar = new UI.Infobar.Infobar(undefined);
+      infobar.text = 'Initial';
+      renderElementIntoDOM(infobar);
+      await infobar.updateComplete;
+
+      infobar.detach();
+      infobar.text = 'Updated while detached';
+      renderElementIntoDOM(infobar, {allowMultipleChildren: true});
+      await infobar.updateComplete;
+
+      assert.strictEqual(getInfoText(infobar).textContent, 'Updated while detached');
     });
 
     it('sets jslog on infobar.element only when jslogContext is passed', () => {
@@ -379,26 +411,26 @@ describeWithEnvironment('Infobar', () => {
 
     it('sets role="group" on .infobar only when actions are passed', () => {
       const withoutActions = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message');
-      renderElementIntoDOM(withoutActions.element);
+      renderElementIntoDOM(withoutActions);
       assert.isFalse(getInfobarElement(withoutActions).hasAttribute('role'));
 
       const withActions = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message', [
         {text: 'Action', delegate: null, dismiss: false},
       ]);
-      renderElementIntoDOM(withActions.element, {allowMultipleChildren: true});
+      renderElementIntoDOM(withActions, {allowMultipleChildren: true});
       assert.strictEqual(getInfobarElement(withActions).getAttribute('role'), 'group');
     });
 
     it('sets tabindex on .infobar for every type except Type.ISSUE', () => {
       for (const type of [UI.Infobar.Type.WARNING, UI.Infobar.Type.INFO, UI.Infobar.Type.ERROR]) {
         const infobar = new UI.Infobar.Infobar(type, 'Message');
-        renderElementIntoDOM(infobar.element, {allowMultipleChildren: true});
+        renderElementIntoDOM(infobar, {allowMultipleChildren: true});
         const infobarElement = getInfobarElement(infobar);
         assert.strictEqual(infobarElement.getAttribute('tabindex'), '0', `Expected tabindex="0" for type ${type}`);
       }
 
       const issueInfobar = new UI.Infobar.Infobar(UI.Infobar.Type.ISSUE, 'Issue message');
-      renderElementIntoDOM(issueInfobar.element, {allowMultipleChildren: true});
+      renderElementIntoDOM(issueInfobar, {allowMultipleChildren: true});
       assert.isFalse(getInfobarElement(issueInfobar).hasAttribute('tabindex'));
     });
   });
@@ -415,7 +447,7 @@ describeWithEnvironment('Infobar', () => {
           ],
           disableSetting,
       );
-      renderElementIntoDOM(infobar.element, {includeCommonStyles: true, width: 560, height: 120});
+      renderElementIntoDOM(infobar, {includeCommonStyles: true, width: 560, height: 120});
       await finishAnimations(infobar);
 
       await assertScreenshot('infobar/warning-with-actions.png');
@@ -428,7 +460,7 @@ describeWithEnvironment('Infobar', () => {
       );
       infobar.createDetailsRowMessage('Debugging power is reduced without a source map.');
       infobar.createDetailsRowMessage('Check the Developer Resources panel for details.');
-      renderElementIntoDOM(infobar.element, {includeCommonStyles: true, width: 560, height: 160});
+      renderElementIntoDOM(infobar, {includeCommonStyles: true, width: 560, height: 160});
 
       expandDetails(infobar);
       await finishAnimations(infobar);
@@ -436,4 +468,190 @@ describeWithEnvironment('Infobar', () => {
       await assertScreenshot('infobar/info-with-details-expanded.png');
     });
   });
+});
+
+describeWithEnvironment('Infobar Widget', () => {
+  it('renders via view function and updates reactive properties', async () => {
+    const view = createViewFunctionStub(UI.Infobar.Infobar);
+    const infobar = new UI.Infobar.Infobar(undefined, view);
+    renderElementIntoDOM(infobar);
+    await infobar.updateComplete;
+
+    sinon.assert.callCount(view, 1);
+    assert.strictEqual(view.input.type, UI.Infobar.Type.INFO);
+    assert.strictEqual(view.input.text, '');
+    assert.isFalse(view.input.hasDisableSetting);
+    assert.deepEqual(view.input.detailsRows, []);
+
+    const nextInput = view.nextInput;
+    const actions: UI.Infobar.InfobarAction[] = [{text: 'Action', delegate: null, dismiss: true}];
+    const disableSetting = createFakeSetting('infobar-widget-disable', false);
+    infobar.type = UI.Infobar.Type.WARNING;
+    infobar.text = 'Updated';
+    infobar.actions = actions;
+    infobar.disableSetting = disableSetting;
+    infobar.jslogContext = 'my-infobar';
+    infobar.detailsRows = [html`<span>Template row</span>`];
+
+    const updated = await nextInput;
+    assert.strictEqual(updated.type, UI.Infobar.Type.WARNING);
+    assert.strictEqual(updated.text, 'Updated');
+    assert.strictEqual(updated.actions, actions);
+    assert.isTrue(updated.hasDisableSetting);
+    assert.strictEqual(updated.jslogContext, 'my-infobar');
+    assert.lengthOf(updated.detailsRows, 1);
+  });
+
+  it('does not schedule updates when property values are unchanged', async () => {
+    const view = createViewFunctionStub(UI.Infobar.Infobar);
+    const infobar = new UI.Infobar.Infobar(undefined, view);
+
+    infobar.type = UI.Infobar.Type.INFO;
+    infobar.text = '';
+    infobar.actions = undefined;
+    infobar.disableSetting = null;
+    infobar.jslogContext = undefined;
+    infobar.detailsRows = infobar.detailsRows;
+
+    await UI.Widget.Widget.allUpdatesComplete;
+    sinon.assert.callCount(view, 0);
+  });
+
+  it('calls parentWidget().doResize() after text property update completes', async () => {
+    const view = createViewFunctionStub(UI.Infobar.Infobar);
+    const parentView = renderElementIntoDOM(new UI.Widget.VBox());
+    const doResizeSpy = sinon.spy(parentView, 'doResize');
+
+    const infobar = new UI.Infobar.Infobar(undefined, view);
+    infobar.show(parentView.element);
+    await infobar.updateComplete;
+
+    infobar.text = 'New';
+    sinon.assert.notCalled(doResizeSpy);
+    await infobar.updateComplete;
+    sinon.assert.calledOnce(doResizeSpy);
+  });
+
+  it('calls setParentView target doResize() after text property update completes', async () => {
+    const view = createViewFunctionStub(UI.Infobar.Infobar);
+    const parentView = renderElementIntoDOM(new UI.Widget.VBox());
+    const doResizeSpy = sinon.spy(parentView, 'doResize');
+
+    const infobar = new UI.Infobar.Infobar(undefined, view);
+    infobar.setParentView(parentView);
+    renderElementIntoDOM(infobar, {allowMultipleChildren: true});
+    await infobar.updateComplete;
+
+    infobar.text = 'New';
+    sinon.assert.notCalled(doResizeSpy);
+    await infobar.updateComplete;
+    sinon.assert.calledOnce(doResizeSpy);
+  });
+
+  it('invokes non-dismissing action delegate via onAction without calling onClose', async () => {
+    const view = createViewFunctionStub(UI.Infobar.Infobar);
+    const onClose = sinon.spy();
+    const delegate = sinon.spy();
+    const infobar = new UI.Infobar.Infobar(undefined, view);
+    infobar.onClose = onClose;
+    renderElementIntoDOM(infobar);
+    await infobar.updateComplete;
+
+    view.input.onAction({text: 'Keep', delegate, dismiss: false});
+    sinon.assert.calledOnce(delegate);
+    sinon.assert.notCalled(onClose);
+  });
+
+  it('invokes dismissing action delegate via onAction and calls onClose', async () => {
+    const view = createViewFunctionStub(UI.Infobar.Infobar);
+    const onClose = sinon.spy();
+    const delegate = sinon.spy();
+    const infobar = new UI.Infobar.Infobar(undefined, view);
+    infobar.onClose = onClose;
+    renderElementIntoDOM(infobar);
+    await infobar.updateComplete;
+
+    view.input.onAction({text: 'Close', delegate, dismiss: true});
+    sinon.assert.calledOnce(delegate);
+    sinon.assert.calledOnce(onClose);
+  });
+
+  it('updates disableSetting and calls onClose when onDisable is invoked', async () => {
+    const view = createViewFunctionStub(UI.Infobar.Infobar);
+    const onClose = sinon.spy();
+    const disableSetting = createFakeSetting('infobar-widget-callback-disable', false);
+    const infobar = new UI.Infobar.Infobar(undefined, view);
+    infobar.onClose = onClose;
+    infobar.disableSetting = disableSetting;
+    renderElementIntoDOM(infobar);
+    await infobar.updateComplete;
+
+    view.input.onDisable();
+    assert.isTrue(disableSetting.get());
+    sinon.assert.calledOnce(onClose);
+  });
+
+  it('calls onClose when onDismiss is invoked', async () => {
+    const view = createViewFunctionStub(UI.Infobar.Infobar);
+    const onClose = sinon.spy();
+    const infobar = new UI.Infobar.Infobar(undefined, view);
+    infobar.onClose = onClose;
+    renderElementIntoDOM(infobar);
+    await infobar.updateComplete;
+
+    view.input.onDismiss();
+    sinon.assert.calledOnce(onClose);
+  });
+
+  it('keeps declarative devtools-widget connected when dispose() is called', async () => {
+    const container = renderElementIntoDOM(document.createElement('div'));
+    const onClose = sinon.spy();
+    render(html`${UI.Widget.widget(UI.Infobar.Infobar, {
+             type: UI.Infobar.Type.INFO,
+             text: 'Hello',
+             onClose,
+           })}`,
+           container);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const widgetElement = container.querySelector('devtools-widget') as UI.Widget.WidgetElement<UI.Infobar.Infobar>;
+    assert.exists(widgetElement);
+    const infobar = widgetElement.getWidget();
+    assert.instanceOf(infobar, UI.Infobar.Infobar);
+
+    infobar.dispose();
+
+    sinon.assert.calledOnce(onClose);
+    assert.isTrue(widgetElement.isConnected);
+    assert.isTrue(infobar.element.isConnected);
+  });
+
+  it('calls parentWidget().doResize() when declarative devtools-widget disconnects, and not synchronously in dispose()',
+     async () => {
+       const parentView = renderElementIntoDOM(new UI.Widget.VBox());
+       const onClose = sinon.spy();
+       render(html`${UI.Widget.widget(UI.Infobar.Infobar, {
+                type: UI.Infobar.Type.INFO,
+                text: 'Hello',
+                onClose,
+              })}`,
+              parentView.contentElement);
+       await UI.Widget.Widget.allUpdatesComplete;
+
+       const widgetElement =
+           parentView.contentElement.querySelector('devtools-widget') as UI.Widget.WidgetElement<UI.Infobar.Infobar>;
+       assert.exists(widgetElement);
+       const infobar = widgetElement.getWidget();
+       assert.instanceOf(infobar, UI.Infobar.Infobar);
+
+       const doResizeStub = sinon.stub(parentView, 'doResize');
+       infobar.dispose();
+       sinon.assert.calledOnce(onClose);
+       sinon.assert.notCalled(doResizeStub);
+
+       const doResizeCalled = expectCall(doResizeStub);
+       render(nothing, parentView.contentElement);
+       await doResizeCalled;
+       sinon.assert.calledOnce(doResizeStub);
+     });
 });

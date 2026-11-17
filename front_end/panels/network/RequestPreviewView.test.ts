@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
@@ -168,5 +169,191 @@ describe('RequestPreviewView', () => {
     const secondWidget = await component.contentViewPromise;
     assert.exists(secondWidget);
     assert.notStrictEqual(secondWidget, firstWidget);
+  });
+
+  describe('chooses the preview view for the received data', () => {
+    const RESOURCE_TYPES = [
+      Common.ResourceType.resourceTypes.XHR,
+      Common.ResourceType.resourceTypes.Fetch,
+      Common.ResourceType.resourceTypes.Document,
+      Common.ResourceType.resourceTypes.Other,
+    ];
+
+    function getViewName(previewer: UI.Widget.AnyWidget|null): string {
+      if (!previewer) {
+        return '** NONE **';
+      }
+      if (previewer instanceof SourceFrame.ResourceSourceFrame.SearchableContainer) {
+        return 'SearchableContainer > ' + getViewName(previewer.children()[0]);
+      }
+      if (previewer instanceof UI.SearchableView.SearchableView) {
+        const {searchProvider} = previewer;
+        assert.instanceOf(searchProvider, UI.Widget.Widget);
+        return 'SearchableView > ' + getViewName(searchProvider);
+      }
+      if (previewer instanceof SourceFrame.JSONView.JSONView) {
+        return 'JSONView';
+      }
+      if (previewer instanceof SourceFrame.XMLView.XMLView) {
+        return 'XMLView';
+      }
+      if (previewer instanceof Network.RequestHTMLView.RequestHTMLView) {
+        return 'RequestHTMLView';
+      }
+      if (previewer instanceof SourceFrame.ImageView.ImageView) {
+        return 'ImageView';
+      }
+      if (previewer instanceof SourceFrame.ResourceSourceFrame.ResourceSourceFrame) {
+        return 'ResourceSourceFrame';
+      }
+      if (previewer instanceof UI.EmptyWidget.EmptyWidget) {
+        return 'EmptyWidget';
+      }
+      assert.fail(`Unexpected preview widget: ${previewer.constructor.name}`);
+    }
+
+    /**
+     * Shows a RequestPreviewView for a request with the given MIME type,
+     * content, and status code once for each of the resource types above, and
+     * returns the name of the chosen preview view for each resource type.
+     */
+    async function getViewNames(mimeType: string, content: string,
+                                statusCode: number): Promise<Record<string, string>> {
+      const viewNames: Record<string, string> = {};
+      for (const resourceType of RESOURCE_TYPES) {
+        const request = createNetworkRequest({
+          url: 'http://localhost',
+          documentURL: '',
+          resourceType,
+          mimeType,
+          contentData: async () => new TextUtils.ContentData.ContentData(content, false, mimeType),
+          statusCode,
+        });
+        const previewView = new Network.RequestPreviewView.RequestPreviewView(request);
+        renderElementIntoDOM(previewView);
+        const contentView = await previewView.contentViewPromise;
+        await UI.Widget.Widget.allUpdatesComplete;
+        viewNames[resourceType.name()] = getViewName(contentView);
+        previewView.detach();
+      }
+      return viewNames;
+    }
+
+    it('uses a JSON view for simple JSON', async () => {
+      assert.deepEqual(await getViewNames('application/json', '[533,3223]', 200), {
+        xhr: 'SearchableView > JSONView',
+        fetch: 'SearchableView > JSONView',
+        document: 'SearchableView > JSONView',
+        other: 'SearchableView > JSONView',
+      });
+    });
+
+    it('uses a JSON view for JSON with a JSON MIME type', async () => {
+      assert.deepEqual(await getViewNames('application/vnd.document+json', '{"foo0foo": 123}', 200), {
+        xhr: 'SearchableView > JSONView',
+        fetch: 'SearchableView > JSONView',
+        document: 'SearchableView > JSONView',
+        other: 'SearchableView > JSONView',
+      });
+    });
+
+    it('uses an XML view for simple XML', async () => {
+      assert.deepEqual(await getViewNames('text/xml', '<bar><foo/></bar>', 200), {
+        xhr: 'SearchableView > XMLView',
+        fetch: 'SearchableView > XMLView',
+        document: 'SearchableView > XMLView',
+        other: 'SearchableView > XMLView',
+      });
+    });
+
+    it('uses a JSON view for JSON with an XML MIME type', async () => {
+      assert.deepEqual(await getViewNames('text/xml', '{"foo0": "barr", "barr": "fooo"}', 200), {
+        xhr: 'SearchableView > JSONView',
+        fetch: 'SearchableView > JSONView',
+        document: 'SearchableView > JSONView',
+        other: 'SearchableView > JSONView',
+      });
+    });
+
+    it('uses a JSON view for JSON with an HTML MIME type', async () => {
+      assert.deepEqual(await getViewNames('text/html', '{"hi": "hi"}', 200), {
+        xhr: 'SearchableView > JSONView',
+        fetch: 'SearchableView > JSONView',
+        document: 'SearchableView > JSONView',
+        other: 'SearchableView > JSONView',
+      });
+    });
+
+    it('uses a JSON view for JSON with a text MIME type', async () => {
+      assert.deepEqual(await getViewNames('text/plain', '{"hi": "hi"}', 200), {
+        xhr: 'SearchableView > JSONView',
+        fetch: 'SearchableView > JSONView',
+        document: 'SearchableView > JSONView',
+        other: 'SearchableView > JSONView',
+      });
+    });
+
+    it('uses an HTML view for HTML with a 500 status code', async () => {
+      assert.deepEqual(await getViewNames('text/html', 'This\n<b>is a </b><br /><br />test.', 500), {
+        xhr: 'RequestHTMLView',
+        fetch: 'RequestHTMLView',
+        document: 'RequestHTMLView',
+        other: 'RequestHTMLView',
+      });
+    });
+
+    it('uses an HTML view for HTML with a plain text MIME type', async () => {
+      assert.deepEqual(await getViewNames('text/plain', 'This\n<b>is a </b><br /><br />test.', 200), {
+        xhr: 'RequestHTMLView',
+        fetch: 'RequestHTMLView',
+        document: 'RequestHTMLView',
+        other: 'RequestHTMLView',
+      });
+    });
+
+    it('uses a source view for XML with an unknown MIME type', async () => {
+      assert.deepEqual(await getViewNames('text/foobar', '<bar><foo/></bar>', 200), {
+        xhr: 'SearchableContainer > SearchableView > ResourceSourceFrame',
+        fetch: 'SearchableContainer > SearchableView > ResourceSourceFrame',
+        document: 'SearchableContainer > SearchableView > ResourceSourceFrame',
+        other: 'SearchableContainer > SearchableView > ResourceSourceFrame',
+      });
+    });
+
+    it('uses an XML view for XML with a 500 status code', async () => {
+      assert.deepEqual(await getViewNames('text/xml', '<bar><foo/></bar>', 500), {
+        xhr: 'SearchableView > XMLView',
+        fetch: 'SearchableView > XMLView',
+        document: 'SearchableView > XMLView',
+        other: 'SearchableView > XMLView',
+      });
+    });
+
+    it('uses a source view for a 500 response with an unknown text MIME type', async () => {
+      assert.deepEqual(await getViewNames('text/foobar', 'Foo Bar', 500), {
+        xhr: 'SearchableContainer > SearchableView > ResourceSourceFrame',
+        fetch: 'SearchableContainer > SearchableView > ResourceSourceFrame',
+        document: 'SearchableContainer > SearchableView > ResourceSourceFrame',
+        other: 'SearchableContainer > SearchableView > ResourceSourceFrame',
+      });
+    });
+
+    it('uses an image view for a binary image file', async () => {
+      assert.deepEqual(await getViewNames('image/png', 'Bin\0ary\x01 File\0\0', 200), {
+        xhr: 'ImageView',
+        fetch: 'ImageView',
+        document: 'ImageView',
+        other: 'ImageView',
+      });
+    });
+
+    it('uses an image view for a blank image file', async () => {
+      assert.deepEqual(await getViewNames('image/png', '', 200), {
+        xhr: 'ImageView',
+        fetch: 'ImageView',
+        document: 'ImageView',
+        other: 'ImageView',
+      });
+    });
   });
 });

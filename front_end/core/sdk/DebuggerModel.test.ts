@@ -675,6 +675,83 @@ describe('DebuggerModel', () => {
     });
   });
 
+  describe('invalidateScopeChains', () => {
+    const callFrame = (callFrameId: string): Protocol.Debugger.CallFrame => ({
+      callFrameId: callFrameId as Protocol.Debugger.CallFrameId,
+      functionName: 'foo',
+      location: {scriptId: SCRIPT_ID_ONE, lineNumber: 0, columnNumber: 5},
+      url: 'http://localhost/foo.js',
+      scopeChain: [],
+      this: {type: 'object'} as Protocol.Runtime.RemoteObject,
+    });
+
+    async function setUpTarget() {
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('Debugger.enable',
+                                   () => ({debuggerId: 'debugger-id' as Protocol.Runtime.UniqueDebuggerId}));
+      const getScopeChain = sinon.stub().returns({scopeChain: []});
+      connection.setSuccessHandler('Debugger.getScopeChain', getScopeChain);
+      const target = universe.createTarget({connection});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assert.exists(debuggerModel);
+      if (!debuggerModel.isReadyToPause()) {
+        await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+      }
+      connection.dispatchEvent('Debugger.scriptParsed', {
+        scriptId: SCRIPT_ID_ONE,
+        url: 'http://localhost/foo.js',
+        startLine: 0,
+        startColumn: 0,
+        endLine: 1,
+        endColumn: 10,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+        hasSourceURL: false,
+        length: 10,
+      },
+                               target.sessionId);
+      debuggerModel.setComputeAutoStepCallback(null);
+      debuggerModel.setBeforePausedCallback(null);
+      const pause = async () => {
+        const paused = debuggerModel.once(SDK.DebuggerModel.Events.DebuggerPaused);
+        connection.dispatchEvent(
+            'Debugger.paused',
+            {callFrames: [callFrame('top'), callFrame('caller')], reason: Protocol.Debugger.PausedEventReason.Other},
+            target.sessionId);
+        await paused;
+        return debuggerModel.debuggerPausedDetails()!.callFrames;
+      };
+      const listener = sinon.stub();
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ScopeChainsInvalidated, listener);
+      return {debuggerModel, getScopeChain, pause, listener};
+    }
+
+    it('marks the scope chains of all paused call frames stale and notifies listeners', async () => {
+      const {debuggerModel, getScopeChain, pause, listener} = await setUpTarget();
+      const [top, caller] = await pause();
+
+      debuggerModel.invalidateScopeChains();
+
+      sinon.assert.calledOnce(listener);
+      assert.strictEqual(listener.firstCall.args[0].data, debuggerModel);
+      // The scope chains are only re-fetched once somebody asks for them.
+      sinon.assert.notCalled(getScopeChain);
+      await top.scopeChain();
+      await caller.scopeChain();
+      assert.deepEqual(getScopeChain.getCalls().map(call => call.args[0]),
+                       [{callFrameId: 'top'}, {callFrameId: 'caller'}]);
+    });
+
+    it('does nothing if the debugger is not paused', async () => {
+      const {debuggerModel, listener} = await setUpTarget();
+
+      debuggerModel.invalidateScopeChains();
+
+      sinon.assert.notCalled(listener);
+    });
+  });
+
   describe('ignoring sourcemaps', () => {
     it('ignores sourcemaps when DWARF symbols are present', () => {
       const connection = new MockCDPConnection();

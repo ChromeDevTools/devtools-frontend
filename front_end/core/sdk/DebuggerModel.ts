@@ -661,6 +661,21 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   /**
+   * Call this after running code in the paused target that can assign to variables (e.g. a console evaluation).
+   * The scope chains of the paused call frames are re-fetched on demand afterwards. Listeners are expected to
+   * recompute whatever they derived from a scope chain, similar to what happens after a step.
+   */
+  invalidateScopeChains(): void {
+    const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
+    for (const callFrame of callFrames) {
+      callFrame.markScopeChainStale();
+    }
+    if (callFrames.length > 0) {
+      this.dispatchEventToListeners(Events.ScopeChainsInvalidated, this);
+    }
+  }
+
+  /**
    * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
    */
   private async setDebuggerPausedDetails(debuggerPausedDetails: DebuggerPausedDetails): Promise<AutoStep|null> {
@@ -1067,6 +1082,7 @@ export enum Events {
   GlobalObjectCleared = 'GlobalObjectCleared',
   CallFrameSelected = 'CallFrameSelected',
   DebuggerIsReadyToPause = 'DebuggerIsReadyToPause',
+  ScopeChainsInvalidated = 'ScopeChainsInvalidated',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -1081,6 +1097,7 @@ export interface EventTypes {
   [Events.CallFrameSelected]: DebuggerModel;
   [Events.DebuggerIsReadyToPause]: DebuggerModel;
   [Events.DebugInfoAttached]: Script;
+  [Events.ScopeChainsInvalidated]: DebuggerModel;
 }
 
 class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {

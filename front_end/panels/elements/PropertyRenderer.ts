@@ -11,7 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {AsyncDirective, Directive, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {AsyncDirective, Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -85,8 +85,8 @@ export class Highlighting {
   readonly #nodesForMatches = new Map<SDK.CSSPropertyParser.Match, Node[][]>();
   readonly #matchesForNodes = new Map<Node, SDK.CSSPropertyParser.Match[]>();
   readonly #registry: Highlight;
-  readonly #boundOnEnter: (e: Event) => void;
-  readonly #boundOnExit: (e: Event) => void;
+  readonly onEnter: (e: Event) => void;
+  readonly onExit: (e: Event) => void;
 
   constructor() {
     const registry = CSS.highlights.get(Highlighting.REGISTRY_NAME);
@@ -94,8 +94,26 @@ export class Highlighting {
     if (!registry) {
       CSS.highlights.set(Highlighting.REGISTRY_NAME, this.#registry);
     }
-    this.#boundOnExit = this.#onExit.bind(this);
-    this.#boundOnEnter = this.#onEnter.bind(this);
+    this.onExit = this.#onExit.bind(this);
+    this.onEnter = this.#onEnter.bind(this);
+  }
+
+  registerMatchElement(match: SDK.CSSPropertyParser.Match, element: HTMLElement): void {
+    const existingMatches = this.#matchesForNodes.get(element);
+    if (existingMatches?.includes(match)) {
+      return;
+    }
+    const ranges = this.#nodesForMatches.get(match);
+    if (ranges) {
+      ranges.push([element]);
+    } else {
+      this.#nodesForMatches.set(match, [[element]]);
+    }
+    if (existingMatches) {
+      existingMatches.push(match);
+    } else {
+      this.#matchesForNodes.set(element, [match]);
+    }
   }
 
   addMatch(match: SDK.CSSPropertyParser.Match, nodes: Node[]): void {
@@ -115,23 +133,31 @@ export class Highlighting {
         this.#matchesForNodes.set(node, [match]);
       }
       if (node instanceof HTMLElement) {
-        node.onmouseenter = this.#boundOnEnter;
-        node.onmouseleave = this.#boundOnExit;
-        node.onfocus = this.#boundOnEnter;
-        node.onblur = this.#boundOnExit;
+        node.onmouseenter = this.onEnter;
+        node.onmouseleave = this.onExit;
+        node.onfocus = this.onEnter;
+        node.onblur = this.onExit;
         node.tabIndex = 0;
       }
     }
   }
 
   * #nodeRangesHitByMouseEvent(e: Event): Generator<Node[]> {
+    let hitTabbableMatch = false;
     for (const node of e.composedPath()) {
       const matches = this.#matchesForNodes.get(node as Node);
-      if (matches) {
-        for (const match of matches) {
-          yield* this.#nodesForMatches.get(match) ?? [];
-        }
+      if (!matches) {
+        continue;
+      }
+      const isTabbable = node instanceof HTMLElement && node.hasAttribute('tabindex');
+      if (hitTabbableMatch && isTabbable) {
         break;
+      }
+      for (const match of matches) {
+        yield* this.#nodesForMatches.get(match) ?? [];
+      }
+      if (isTabbable) {
+        hitTabbableMatch = true;
       }
     }
   }
@@ -161,37 +187,27 @@ export class Highlighting {
   }
 }
 
-class HighlightDirective extends Directive.Directive {
-  #startNode: Node|null = null;
-
-  override update(part: Directive.Part, [highlighting, match]: [Highlighting, SDK.CSSPropertyParser.Match]): unknown {
-    if (part.type !== Directive.PartType.CHILD) {
-      return nothing;
-    }
-    this.#startNode ??= part.startNode?.parentNode?.firstChild ?? null;
-    const nodes: Node[] = [];
-    for (let node = this.#startNode?.nextSibling; node && node !== part.startNode; node = node.nextSibling) {
-      if (!(node instanceof Comment)) {
-        nodes.push(node);
-      }
-    }
-    highlighting.addMatch(match, nodes);
-    return nothing;
-  }
-
-  render(_highlighting: Highlighting, _match: SDK.CSSPropertyParser.Match): typeof nothing {
-    return nothing;
-  }
-}
-
-const highlightDirective = Directive.directive(HighlightDirective);
-
-function highlight(highlighting: Highlighting|undefined, match: SDK.CSSPropertyParser.Match,
-                   template: LitTemplate): LitTemplate {
+function highlight(highlighting: Highlighting|undefined, match: SDK.CSSPropertyParser.Match, template: LitTemplate,
+                   tabbable = true, autofocus = false): LitTemplate {
   if (!highlighting) {
     return template;
   }
-  return html`${template}${highlightDirective(highlighting, match)}`;
+  const register = Directives.ref(element => {
+    if (element instanceof HTMLElement) {
+      highlighting.registerMatchElement(match, element);
+    }
+  });
+  if (!tabbable) {
+    return html`<span ${register}>${template}</span>`;
+  }
+  return html`<span
+      tabindex="0"
+      ?autofocus=${autofocus}
+      @mouseenter=${highlighting.onEnter}
+      @mouseleave=${highlighting.onExit}
+      @focus=${highlighting.onEnter}
+      @blur=${highlighting.onExit}
+      ${register}>${template}</span>`;
 }
 
 class LazyEvaluationBlackboard {
@@ -270,6 +286,8 @@ export class TracingContext {
   #root: {match: SDK.CSSPropertyParser.Match, context: RenderingContext}|null = null;
   #propertyName: string|null;
   #asyncEvalCallbacks: Array<(() => Promise<boolean>)|undefined> = [];
+  #autofocusNextMatch = false;
+  #matchStack: Array<{autofocus: boolean, hasChildMatch: boolean, substituted: boolean}> = [];
   readonly expandPercentagesInShorthands: boolean;
 
   constructor(highlighting: Highlighting, expandPercentagesInShorthands: boolean, initialLonghandOffset = 0,
@@ -283,6 +301,44 @@ export class TracingContext {
     this.#propertyName = matchedResult?.ast.propertyName ?? null;
     this.#longhandOffset = initialLonghandOffset;
     this.expandPercentagesInShorthands = expandPercentagesInShorthands;
+  }
+
+  #rootTracing(): TracingContext {
+    return this.#parent ? this.#parent.#rootTracing() : this;
+  }
+
+  enableAutofocusOnFirstMatch(): void {
+    this.#rootTracing().#autofocusNextMatch = true;
+  }
+
+  beginMatch(): void {
+    const root = this.#rootTracing();
+    const parentFrame = root.#matchStack.at(-1);
+    let autofocus = false;
+    if (parentFrame?.substituted && parentFrame.autofocus && !parentFrame.hasChildMatch) {
+      autofocus = true;
+      parentFrame.autofocus = false;
+    } else if (root.#autofocusNextMatch) {
+      autofocus = true;
+      root.#autofocusNextMatch = false;
+    }
+    if (parentFrame) {
+      parentFrame.hasChildMatch = true;
+    }
+    root.#matchStack.push({autofocus, hasChildMatch: false, substituted: false});
+  }
+
+  endMatch(hasOutput: boolean): {substituted: boolean, autofocus: boolean} {
+    const root = this.#rootTracing();
+    const frame = root.#matchStack.pop();
+    if (!frame) {
+      return {substituted: false, autofocus: false};
+    }
+    const substituted = frame.substituted && frame.hasChildMatch;
+    if (!hasOutput && frame.autofocus) {
+      root.#autofocusNextMatch = true;
+    }
+    return {substituted, autofocus: hasOutput && !substituted && frame.autofocus};
   }
 
   get highlighting(): Highlighting {
@@ -402,6 +458,10 @@ export class TracingContext {
     if (this.#substitutionDepth <= 0) {
       this.#setHasMoreSubstitutions();
       return null;
+    }
+    const parentFrame = this.#rootTracing().#matchStack.at(-1);
+    if (parentFrame) {
+      parentFrame.substituted = true;
     }
     const child = new TracingContext(this.#highlighting, this.expandPercentagesInShorthands);
     child.#parent = this;
@@ -710,8 +770,13 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     const renderer = match &&
         this.#context.renderers.get(match.constructor as Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>);
     if (renderer || match instanceof SDK.CSSPropertyParserMatchers.TextMatch) {
+      this.#context.tracing?.beginMatch();
       const rendered = renderer?.render(match, this.#context) ?? html`<span>${match.text}</span>`;
-      const output = highlight(this.#context.tracing?.highlighting, match, rendered);
+      const {substituted, autofocus} =
+          this.#context.tracing?.endMatch(rendered !== nothing) ?? {substituted: false, autofocus: false};
+      const output = rendered === nothing ?
+          nothing :
+          highlight(this.#context.tracing?.highlighting, match, rendered, !substituted, autofocus);
       this.renderedMatchForTest(output, match);
       if (this.#output.some(t => t !== nothing)) {
         const spacing = precedingSpace(node, this.#context.ast, this.#matchedResult);

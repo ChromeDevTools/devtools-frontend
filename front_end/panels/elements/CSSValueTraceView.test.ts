@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
@@ -16,7 +16,7 @@ import {getMatchedStylesWithBlankRule} from '../../testing/StyleHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {type LitTemplate, render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
 
 import * as Elements from './elements.js';
 
@@ -304,5 +304,139 @@ describeWithEnvironment('CSSValueTraceView', () => {
     const evaluations = getLineText(input.evaluations);
     assert.deepEqual(substitutions, []);
     assert.deepEqual(evaluations, ['calc(100% - calc(50% + 2px))']);
+  });
+
+  async function showTraceInView(
+      view: Elements.CSSValueTraceView.CSSValueTraceView, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      stylesPane: Elements.StylesSidebarPane.StylesSidebarPane, name: string, value: string, focus: boolean,
+      variables?: Record<string, {value: string, computedValue?: string}>): Promise<void> {
+    const {property, treeElement} = await getTreeElement(matchedStyles, stylesPane, name, value, variables);
+    await view.showTrace(property, null, matchedStyles, new Map(),
+                         Elements.StylePropertyTreeElement.getPropertyRenderers(
+                             property.name, property.ownerStyle, treeElement.stylesContainer(), matchedStyles, null,
+                             treeElement.getComputedStyles() ?? new Map(), treeElement.getComputedStyleExtraFields()),
+                         false, 0, focus);
+  }
+
+  it('focuses the default autofocus element once when showTrace is called with focus=true', async () => {
+    const {matchedStyles, stylesPane} = await setUpStyles(connection);
+    const view = new Elements.CSSValueTraceView.CSSValueTraceView();
+    renderElementIntoDOM(view);
+    await view.updateComplete;
+    const focusSpy = sinon.spy(view, 'focus');
+
+    await showTraceInView(view, matchedStyles, stylesPane, 'width', 'var(--w)', true, {'--w': {value: '40px'}});
+    await view.updateComplete;
+    sinon.assert.calledOnce(focusSpy);
+    const defaultFocused = view.getDefaultFocusedElement();
+    assert.isOk(defaultFocused);
+    assert.strictEqual(view.element.shadowRoot?.activeElement, defaultFocused);
+
+    view.requestUpdate();
+    await view.updateComplete;
+    sinon.assert.calledOnce(focusSpy);
+  });
+
+  it('does not focus the view when resetPendingFocus is called before update', async () => {
+    const {matchedStyles, stylesPane} = await setUpStyles(connection);
+    const view = new Elements.CSSValueTraceView.CSSValueTraceView();
+    renderElementIntoDOM(view);
+    await view.updateComplete;
+    const focusSpy = sinon.spy(view, 'focus');
+
+    await showTraceInView(view, matchedStyles, stylesPane, 'width', 'var(--w)', true, {'--w': {value: '40px'}});
+    view.resetPendingFocus();
+    await view.updateComplete;
+    sinon.assert.notCalled(focusSpy);
+  });
+
+  it('declaratively marks only the first tabbable trace element with autofocus across trace modes', async () => {
+    const {matchedStyles, stylesPane} = await setUpStyles(connection);
+    const view = new Elements.CSSValueTraceView.CSSValueTraceView();
+    renderElementIntoDOM(view);
+    await view.updateComplete;
+
+    await showTraceInView(view, matchedStyles, stylesPane, 'width', 'var(--w)', false, {'--w': {value: '40px'}});
+    await view.updateComplete;
+    assert.lengthOf(view.getDefaultFocusedElements(), 1);
+    assert.strictEqual(view.getDefaultFocusedElement()?.textContent, '40px');
+
+    await showTraceInView(view, matchedStyles, stylesPane, 'font-size',
+                          'calc(clamp(16px, calc(1vw + 1em), 24px) + 3.2px)', false);
+    await view.updateComplete;
+    assert.lengthOf(view.getDefaultFocusedElements(), 1);
+    assert.strictEqual(view.getDefaultFocusedElement()?.tagName, 'SUMMARY');
+
+    await showTraceInView(view, matchedStyles, stylesPane, 'width', 'calc(1px + 1px)', false);
+    await view.updateComplete;
+    assert.lengthOf(view.getDefaultFocusedElements(), 1);
+    assert.strictEqual(view.getDefaultFocusedElement()?.textContent, '2px');
+  });
+});
+
+describe('CSSValueTraceView view', () => {
+  it('renders a single evaluation result without summary details', () => {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+
+    Elements.CSSValueTraceView.DEFAULT_VIEW({substitutions: [], evaluations: [html`40px`], onToggle: () => {}},
+                                            undefined, target);
+
+    const fullRow = target.querySelector('.trace-line.full-row');
+    assert.exists(fullRow);
+    assert.strictEqual(fullRow.textContent?.trim(), '40px');
+    const details = target.querySelector('details');
+    assert.exists(details);
+    assert.isTrue(details.hidden);
+    assert.isNull(target.querySelector('[autofocus]'));
+  });
+
+  it('renders intermediate evaluations inside expandable details', () => {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    const onToggle = sinon.spy();
+
+    Elements.CSSValueTraceView.DEFAULT_VIEW({
+      substitutions: [html`var(--a)`],
+      evaluations: [html`calc(1vw + 1em)`, html`calc(10px + 16px)`, html`26px`],
+      onToggle,
+    },
+                                            undefined, target);
+
+    const details = target.querySelector('details');
+    assert.exists(details);
+    assert.isFalse(details.hidden);
+    const lines = Array.from(target.querySelectorAll('.trace-line'), el => el.textContent?.trim());
+    assert.deepEqual(lines, ['var(--a)', 'calc(1vw + 1em)', 'calc(10px + 16px)', '26px']);
+
+    details.dispatchEvent(new Event('toggle'));
+    sinon.assert.calledOnce(onToggle);
+  });
+
+  it('marks only the first tabbable element with autofocus across updates', () => {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+
+    Elements.CSSValueTraceView.DEFAULT_VIEW({
+      substitutions: [],
+      evaluations: [html`step 1`, html`step 2`, html`final`],
+      onToggle: () => {},
+    },
+                                            undefined, target);
+
+    const summary = target.querySelector('summary');
+    assert.exists(summary);
+    assert.deepEqual(Array.from(target.querySelectorAll('[autofocus]')), [summary]);
+
+    Elements.CSSValueTraceView.DEFAULT_VIEW({
+      substitutions: [html`<span class="sub-stop" tabindex="0" autofocus>var(--a)</span>`],
+      evaluations: [html`step 1`, html`step 2`, html`final`],
+      onToggle: () => {},
+    },
+                                            undefined, target);
+
+    const subStop = target.querySelector('.sub-stop');
+    assert.exists(subStop);
+    assert.deepEqual(Array.from(target.querySelectorAll('[autofocus]')), [subStop]);
   });
 });

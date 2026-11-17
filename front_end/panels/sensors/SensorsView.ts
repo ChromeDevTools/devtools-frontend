@@ -201,6 +201,37 @@ function applyValidInput(event: Event, onChange: (name: string, value: string) =
   }
 }
 
+/**
+ * Applies the value of the input that dispatched `event` on Enter. For number inputs the value is
+ * also adjusted with the up/down keys, in steps that are scaled by `multiplier`.
+ */
+function stepOrApplyInput(event: KeyboardEvent, onChange: (name: string, value: string) => void, multiplier = 1): void {
+  const input = event.currentTarget as HTMLInputElement;
+  if (event.key === 'Enter' && !event.isComposing) {
+    applyValidInput(event, onChange);
+    event.preventDefault();
+    return;
+  }
+
+  if (input.type !== 'number') {
+    return;
+  }
+
+  const value = UI.UIUtils.modifiedFloatNumber(parseFloat(input.value), event, multiplier);
+  if (value === null) {
+    return;
+  }
+  const prevValue = input.value;
+  input.value = String(value);
+  if (input.checkValidity()) {
+    onChange(input.name, input.value.trim());
+  } else {
+    // If ArrowUp/ArrowDown adjusts the value out of bounds, we reset it.
+    input.value = prevValue;
+  }
+  event.preventDefault();
+}
+
 /** Maps the position of a mouse event to a point on a virtual sphere around the center of `stage`. */
 function calculateRadiusVector(stage: HTMLElement, event: MouseEvent): Geometry.Vector {
   const rect = stage.getBoundingClientRect();
@@ -245,7 +276,6 @@ interface LocationViewInput {
   onManageLocations: () => void;
   onLocationSelectChange: (value: string) => void;
   onLocationFieldChange: (name: string, value: string) => void;
-  onLocationKeyDown: (event: KeyboardEvent) => void;
 }
 
 interface OrientationViewInput {
@@ -324,7 +354,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             jslog=${VisualLogging.textField('latitude').track({change: true})}
             ${Directives.ref((el: Element | undefined) => { output.focusLatitudeInput = el ? () => (el as HTMLInputElement).focus() : undefined; })}
             @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
-            @keydown=${input.onLocationKeyDown}
+            @keydown=${(event: KeyboardEvent) => stepOrApplyInput(event, input.onLocationFieldChange, 0.1)}
             @focus=${selectInputContent}
           >
           <label class="latlong-title" for="latitude-input">${i18nString(UIStrings.latitude)}</label>
@@ -343,7 +373,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             title=${input.modifierKeyMessage}
             jslog=${VisualLogging.textField('longitude').track({change: true})}
             @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
-            @keydown=${input.onLocationKeyDown}
+            @keydown=${(event: KeyboardEvent) => stepOrApplyInput(event, input.onLocationFieldChange, 0.1)}
             @focus=${selectInputContent}
           >
           <label class="latlong-title" for="longitude-input">${i18nString(UIStrings.longitude)}</label>
@@ -357,7 +387,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             name="timezone"
             jslog=${VisualLogging.textField('timezone').track({change: true})}
             @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
-            @keydown=${input.onLocationKeyDown}
+            @keydown=${(event: KeyboardEvent) => stepOrApplyInput(event, input.onLocationFieldChange)}
             @focus=${selectInputContent}
           >
           <label class="timezone-title" for="timezone-input">${i18nString(UIStrings.timezoneId)}</label>
@@ -372,7 +402,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             name="locale"
             jslog=${VisualLogging.textField('locale').track({change: true})}
             @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
-            @keydown=${input.onLocationKeyDown}
+            @keydown=${(event: KeyboardEvent) => stepOrApplyInput(event, input.onLocationFieldChange)}
             @focus=${selectInputContent}
           >
           <label class="locale-title" for="locale-input">${i18nString(UIStrings.locale)}</label>
@@ -389,7 +419,7 @@ function renderLocationSection(input: LocationViewInput, output: ViewOutput): Te
             name="accuracy"
             jslog=${VisualLogging.textField('accuracy').track({change: true})}
             @change=${(event: Event) => applyValidInput(event, input.onLocationFieldChange)}
-            @keydown=${input.onLocationKeyDown}
+            @keydown=${(event: KeyboardEvent) => stepOrApplyInput(event, input.onLocationFieldChange)}
             @focus=${selectInputContent}
           >
           <label class="accuracy-title" for="accuracy-input">${i18nString(UIStrings.accuracy)}</label>
@@ -645,7 +675,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       onManageLocations: () => Common.Revealer.reveal(this.#customLocationsSetting),
       onLocationSelectChange: this.#locationSelectChanged.bind(this),
       onLocationFieldChange: this.#applyLocationUserInput.bind(this),
-      onLocationKeyDown: this.#onLocationKeyDown.bind(this),
     };
     const orientationInput: OrientationViewInput = {
       orientation: this.#deviceOrientation,
@@ -728,36 +757,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
     this.#applyLocation();
     this.requestUpdate();
-  }
-
-  #onLocationKeyDown(event: KeyboardEvent): void {
-    const input = event.currentTarget as HTMLInputElement;
-    if (event.key === 'Enter' && !event.isComposing) {
-      if (input.checkValidity()) {
-        this.#applyLocationUserInput(input.name, input.value.trim());
-      }
-      event.preventDefault();
-      return;
-    }
-
-    if (input.type !== 'number') {
-      return;
-    }
-
-    const multiplier = input.name === 'accuracy' ? 1 : 0.1;
-    const value = UI.UIUtils.modifiedFloatNumber(parseFloat(input.value), event, multiplier);
-    if (value === null) {
-      return;
-    }
-    const prevValue = input.value;
-    input.value = String(value);
-    if (input.checkValidity()) {
-      this.#applyLocationUserInput(input.name, input.value.trim());
-    } else {
-      // If ArrowUp/ArrowDown adjusts the value out of bounds, we reset it.
-      input.value = prevValue;
-    }
-    event.preventDefault();
   }
 
   #applyLocationUserInput(name: string, value: string): void {

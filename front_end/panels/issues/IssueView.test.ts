@@ -3,19 +3,29 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {it} from 'mocha';
+import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import {raf} from '../../testing/DOMHelpers.js';
+import * as Logs from '../../models/logs/logs.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {StubIssue} from '../../testing/StubIssue.js';
 import {recordedMetricsContain, setupUserMetricHooks} from '../../testing/UserMetricsHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Issues from './issues.js';
+
+const {MIXED_CONTENT_ROWS_VIEW, REQUEST_ROWS_VIEW} = Issues.IssueView;
+
+function createAggregatedIssue(code = 'code'): IssuesManager.IssueAggregator.AggregatedIssue {
+  const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
+  return new IssuesManager.IssueAggregator.AggregatedIssue(code, aggregationKey);
+}
 
 describeWithEnvironment('IssueView', () => {
   setupUserMetricHooks();
@@ -148,4 +158,87 @@ describeWithEnvironment('IssueView', () => {
        assert.isNull(markdownView.shadowRoot?.querySelector('devtools-link'));
        view.clear();
      });
+  it('renders affected requests as table rows when expanded', () => {
+    const aggregatedIssue = createAggregatedIssue();
+    aggregatedIssue.addInstance(StubIssue.createFromRequestIds(['id1', 'id2']));
+    const view = new Issues.IssueView.IssueView(aggregatedIssue, {title: 'Mock issue', links: [], markdown: []});
+    const treeOutline = new UI.TreeOutline.TreeOutline();
+    treeOutline.appendChild(view);
+
+    view.expand();
+
+    const rows = view.childrenListElement.querySelectorAll('tr.affected-resource-request');
+    assert.lengthOf(rows, 2);
+    assert.strictEqual(rows[0].getAttribute('data-network-request-id'), 'id1');
+    assert.strictEqual(rows[1].getAttribute('data-network-request-id'), 'id2');
+    assert.lengthOf(rows[0].querySelectorAll('td.affected-resource-cell devtools-request-link-icon'), 1);
+    assert.isFalse(view.affectedResources.hidden);
+    view.clear();
+  });
+
+  describe('request rows view', () => {
+    it('renders one row per affected request', () => {
+      const target = renderElementIntoDOM(document.createElement('table'));
+
+      REQUEST_ROWS_VIEW({
+        requests: [
+          {
+            affectedRequest: {requestId: 'id1' as Protocol.Network.RequestId, url: 'https://example.com/a.js'},
+            networkTab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
+          },
+          {
+            affectedRequest: {url: 'https://example.com/b.js'},
+            networkTab: NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES,
+          },
+        ],
+        requestResolver: new Logs.RequestResolver.RequestResolver(Logs.NetworkLog.NetworkLog.instance()),
+        onRequestClick: () => {},
+      },
+                        undefined, target);
+
+      const rows = target.querySelectorAll('tr.affected-resource-request');
+      assert.lengthOf(rows, 2);
+      assert.strictEqual(rows[0].getAttribute('data-network-request-id'), 'id1');
+      assert.isFalse(rows[1].hasAttribute('data-network-request-id'));
+      assert.lengthOf(target.querySelectorAll('td.affected-resource-cell > devtools-request-link-icon'), 2);
+    });
+  });
+
+  describe('mixed content rows view', () => {
+    it('renders a header row and one row per mixed content resource', () => {
+      const target = renderElementIntoDOM(document.createElement('table'));
+
+      MIXED_CONTENT_ROWS_VIEW({
+        rows: [
+          {
+            request: {
+              affectedRequest: {requestId: 'id1' as Protocol.Network.RequestId, url: 'http://example.com/a.js'},
+              networkTab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
+            },
+            insecureURL: 'http://example.com/a.js',
+            shortPath: 'a.js',
+            status: 'Blocked' as Platform.UIString.LocalizedString,
+          },
+          {
+            insecureURL: 'http://example.com/images/b.png',
+            shortPath: 'b.png',
+            status: 'Warned' as Platform.UIString.LocalizedString,
+          },
+        ],
+        requestResolver: new Logs.RequestResolver.RequestResolver(Logs.NetworkLog.NetworkLog.instance()),
+        onRequestClick: () => {},
+      },
+                              undefined, target);
+
+      const headerCells = target.querySelectorAll('td.affected-resource-header');
+      assert.deepEqual(Array.from(headerCells, cell => cell.textContent), ['Name', 'Restriction status']);
+      const rows = target.querySelectorAll<HTMLTableRowElement>('tr.affected-resource-mixed-content');
+      assert.lengthOf(rows, 2);
+      assert.lengthOf(rows[0].querySelectorAll('td.affected-resource-cell > devtools-request-link-icon'), 1);
+      assert.strictEqual(rows[0].cells[1].textContent, 'Blocked');
+      assert.strictEqual(rows[1].cells[0].textContent, 'b.png');
+      assert.strictEqual(rows[1].cells[0].title, 'http://example.com/images/b.png');
+      assert.strictEqual(rows[1].cells[1].textContent, 'Warned');
+    });
+  });
 });

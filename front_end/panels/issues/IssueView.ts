@@ -3,19 +3,23 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../ui/components/request_link_icon/request_link_icon.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import type * as Logs from '../../models/logs/logs.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
+import type * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
@@ -37,6 +41,8 @@ import {AffectedTrackingSitesView} from './AffectedTrackingSitesView.js';
 import * as Components from './components/components.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
+
+const {ifDefined} = Directives;
 
 const UIStrings = {
   /**
@@ -88,29 +94,77 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/**
+ * Data needed to render a request link cell in the affected resources tables.
+ */
+export interface RequestCellData {
+  affectedRequest: Protocol.Audits.AffectedRequest;
+  networkTab: NetworkForward.UIRequestLocation.UIRequestTabs;
+}
+
+function renderRequestCell(request: RequestCellData, requestResolver: Logs.RequestResolver.RequestResolver,
+                           onRequestClick: () => void): LitTemplate {
+  const data: RequestLinkIcon.RequestLinkIcon.RequestLinkIconData = {
+    affectedRequest: request.affectedRequest,
+    networkTab: request.networkTab,
+    requestResolver,
+    displayURL: true,
+    additionalOnClickAction: onRequestClick,
+  };
+  // clang-format off
+  return html`
+    <td class="affected-resource-cell">
+      <devtools-request-link-icon .data=${data}></devtools-request-link-icon>
+    </td>
+  `;
+  // clang-format on
+}
+
+export interface RequestRowsViewInput {
+  requests: RequestCellData[];
+  requestResolver: Logs.RequestResolver.RequestResolver;
+  onRequestClick: () => void;
+}
+
+export type RequestRowsView = (input: RequestRowsViewInput, output: undefined, target: HTMLElement) => void;
+
+export const REQUEST_ROWS_VIEW: RequestRowsView = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    ${input.requests.map(request => html`
+      <tr class="affected-resource-request"
+          jslog=${VisualLogging.tableRow('affected-request')}
+          data-network-request-id=${ifDefined(request.affectedRequest.requestId)}>
+        ${renderRequestCell(request, input.requestResolver, input.onRequestClick)}
+      </tr>
+    `)}
+  `, target);
+  // clang-format on
+};
+
 class AffectedRequestsView extends AffectedResourcesView {
-  #appendAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
-    let count = 0;
-    for (const affectedRequest of affectedRequests) {
-      const element = document.createElement('tr');
-      element.classList.add('affected-resource-request');
-      element.setAttribute('jslog', `${VisualLogging.tableRow('affected-request')}`);
-      if (affectedRequest.requestId) {
-        element.setAttribute('data-network-request-id', affectedRequest.requestId);
-      }
-      const category = this.issue.getCategory();
-      const tab =
-          issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
-      element.appendChild(this.createRequestCell(affectedRequest, {
-        networkTab: tab,
-        additionalOnClickAction() {
-          Host.userMetrics.issuesPanelResourceOpened(category, AffectedItem.REQUEST);
-        },
-      }));
-      this.affectedResources.appendChild(element);
-      count++;
-    }
-    this.updateAffectedResourceCount(count);
+  readonly #view: RequestRowsView;
+
+  constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string,
+              view: RequestRowsView = REQUEST_ROWS_VIEW) {
+    super(parent, issue, jslogContext);
+    this.#view = view;
+  }
+
+  #renderAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
+    const category = this.issue.getCategory();
+    const networkTab =
+        issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
+    const requests = Array.from(affectedRequests, affectedRequest => ({affectedRequest, networkTab}));
+    const input: RequestRowsViewInput = {
+      requests,
+      requestResolver: this.requestResolver,
+      onRequestClick: () => {
+        Host.userMetrics.issuesPanelResourceOpened(category, AffectedItem.REQUEST);
+      },
+    };
+    this.#view(input, undefined, this.affectedResources);
+    this.updateAffectedResourceCount(requests.length);
   }
 
   protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
@@ -118,20 +172,13 @@ class AffectedRequestsView extends AffectedResourcesView {
   }
 
   update(): void {
-    this.clear();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const unused of this.issue.getBlockedByResponseDetails()) {
-      // If the issue has blockedByResponseDetails, the corresponding AffectedBlockedByResponseView
-      // will take care of displaying the request.
-      this.updateAffectedResourceCount(0);
-      return;
-    }
-    if (this.issue.getCategory() === IssuesManager.Issue.IssueCategory.MIXED_CONTENT) {
-      // The AffectedMixedContentView takes care of displaying the resources.
-      this.updateAffectedResourceCount(0);
-      return;
-    }
-    this.#appendAffectedRequests(this.issue.requests());
+    this.requestResolver.clear();
+    // If the issue has blockedByResponseDetails, the corresponding AffectedBlockedByResponseView
+    // will take care of displaying the request.
+    const hasBlockedByResponseDetails = Array.from(this.issue.getBlockedByResponseDetails()).length > 0;
+    // The AffectedMixedContentView takes care of displaying the resources.
+    const isMixedContent = this.issue.getCategory() === IssuesManager.Issue.IssueCategory.MIXED_CONTENT;
+    this.#renderAffectedRequests(hasBlockedByResponseDetails || isMixedContent ? [] : this.issue.requests());
   }
 }
 
@@ -151,51 +198,82 @@ const issueTypeToNetworkHeaderMap =
       ],
     ]);
 
-class AffectedMixedContentView extends AffectedResourcesView {
-  #appendAffectedMixedContentDetails(mixedContentIssues: Iterable<IssuesManager.MixedContentIssue.MixedContentIssue>):
-      void {
-    const header = document.createElement('tr');
-    this.appendColumnTitle(header, i18nString(UIStrings.name));
-    this.appendColumnTitle(header, i18nString(UIStrings.restrictionStatus));
+export interface MixedContentRow {
+  // Set when the mixed content resource is backed by a network request.
+  request?: RequestCellData;
+  insecureURL: string;
+  shortPath: string;
+  status: Platform.UIString.LocalizedString;
+}
 
-    this.affectedResources.appendChild(header);
+export interface MixedContentRowsViewInput {
+  rows: MixedContentRow[];
+  requestResolver: Logs.RequestResolver.RequestResolver;
+  onRequestClick: () => void;
+}
 
-    let count = 0;
-    for (const issue of mixedContentIssues) {
-      const details = issue.details();
-      this.appendAffectedMixedContent(details);
-      count++;
+export type MixedContentRowsView = (input: MixedContentRowsViewInput, output: undefined, target: HTMLElement) => void;
+
+export const MIXED_CONTENT_ROWS_VIEW: MixedContentRowsView = (input, _output, target) => {
+  const renderResourceCell = (row: MixedContentRow): LitTemplate => {
+    if (row.request) {
+      return renderRequestCell(row.request, input.requestResolver, input.onRequestClick);
     }
-    this.updateAffectedResourceCount(count);
+    return html`<td class="affected-resource-mixed-content-info" title=${row.insecureURL}>${row.shortPath}</td>`;
+  };
+
+  // clang-format off
+  render(html`
+    <tr>
+      <td class="affected-resource-header">${i18nString(UIStrings.name)}</td>
+      <td class="affected-resource-header">${i18nString(UIStrings.restrictionStatus)}</td>
+    </tr>
+    ${input.rows.map(row => html`
+      <tr class="affected-resource-mixed-content">
+        ${renderResourceCell(row)}
+        <td class="affected-resource-mixed-content-info">${row.status}</td>
+      </tr>
+    `)}
+  `, target);
+  // clang-format on
+};
+
+class AffectedMixedContentView extends AffectedResourcesView {
+  readonly #view: MixedContentRowsView;
+
+  constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string,
+              view: MixedContentRowsView = MIXED_CONTENT_ROWS_VIEW) {
+    super(parent, issue, jslogContext);
+    this.#view = view;
+  }
+
+  #renderAffectedMixedContentDetails(mixedContentIssues: Iterable<IssuesManager.MixedContentIssue.MixedContentIssue>):
+      void {
+    const networkTab = issueTypeToNetworkHeaderMap.get(this.issue.getCategory()) ||
+        NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
+    const rows = Array.from(mixedContentIssues, (issue): MixedContentRow => {
+      const details = issue.details();
+      return {
+        request: details.request ? {affectedRequest: details.request, networkTab} : undefined,
+        insecureURL: details.insecureURL,
+        shortPath: extractShortPath(details.insecureURL as Platform.DevToolsPath.UrlString),
+        status: AffectedMixedContentView.#translateStatus(details.resolutionStatus),
+      };
+    });
+    const input: MixedContentRowsViewInput = {
+      rows,
+      requestResolver: this.requestResolver,
+      onRequestClick: () => {
+        Host.userMetrics.issuesPanelResourceOpened(IssuesManager.Issue.IssueCategory.MIXED_CONTENT,
+                                                   AffectedItem.REQUEST);
+      },
+    };
+    this.#view(input, undefined, this.affectedResources);
+    this.updateAffectedResourceCount(rows.length);
   }
 
   protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nResources, {n: count});
-  }
-
-  appendAffectedMixedContent(mixedContent: Protocol.Audits.MixedContentIssueDetails): void {
-    const element = document.createElement('tr');
-    element.classList.add('affected-resource-mixed-content');
-
-    if (mixedContent.request) {
-      const networkTab = issueTypeToNetworkHeaderMap.get(this.issue.getCategory()) ||
-          NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
-      element.appendChild(this.createRequestCell(mixedContent.request, {
-        networkTab,
-        additionalOnClickAction() {
-          Host.userMetrics.issuesPanelResourceOpened(
-              IssuesManager.Issue.IssueCategory.MIXED_CONTENT, AffectedItem.REQUEST);
-        },
-      }));
-    } else {
-      const filename = extractShortPath(mixedContent.insecureURL as Platform.DevToolsPath.UrlString);
-      const cell = this.appendIssueDetailCell(element, filename, 'affected-resource-mixed-content-info');
-      cell.title = mixedContent.insecureURL;
-    }
-
-    this.appendIssueDetailCell(element, AffectedMixedContentView.#translateStatus(mixedContent.resolutionStatus),
-                               'affected-resource-mixed-content-info');
-    this.affectedResources.appendChild(element);
   }
 
   static #translateStatus(resolutionStatus: Protocol.Audits.MixedContentResolutionStatus):
@@ -211,8 +289,8 @@ class AffectedMixedContentView extends AffectedResourcesView {
   }
 
   update(): void {
-    this.clear();
-    this.#appendAffectedMixedContentDetails(this.issue.getMixedContentIssues());
+    this.requestResolver.clear();
+    this.#renderAffectedMixedContentDetails(this.issue.getMixedContentIssues());
   }
 }
 

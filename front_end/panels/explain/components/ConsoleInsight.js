@@ -10,7 +10,6 @@ import * as Root from '../../../core/root/root.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as Input from '../../../ui/components/input/input.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -597,7 +596,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `
     <style>${styles}</style>
-    <style>${Input.checkboxStyles}</style>
     <div
       class=${Directives.classMap({ wrapper: true, closing: input.closing })}
       jslog=${VisualLogging.pane('console-insights').track({ resize: true })}

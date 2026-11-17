@@ -149,6 +149,28 @@ function shouldGroupAnimations(firstAnimation, anim) {
     // is a time based one too and if so, compare their start times.
     return !animationTimeline && firstAnimation.startTime() === anim.startTime();
 }
+function getParticipantId(animation) {
+    const source = animation.source();
+    const timeline = animation.viewOrScrollTimeline();
+    const target = `node:${source.backendNodeId()}`;
+    const timelineId = timeline ? `|timeline:${timeline.sourceNodeId}:${timeline.axis}` : '';
+    const cssId = animation.cssId();
+    if (cssId) {
+        // `cssId` hashes the stylesheet rules that declared the animation, but not the
+        // target element, and is shared by all animations declared in one rule.
+        return `${target}|css:${JSON.stringify([cssId, animation.name()])}${timelineId}`;
+    }
+    // Without a cssId, this is a best-effort replay signature, not a unique ID.
+    // Omit mutable effect details (duration, delays, iterations, direction, fill,
+    // easing and keyframe data, including offsets) so editing an animation in the
+    // Animations panel does not prevent it from matching a subsequent replay.
+    // Animation events omit animated property names and values. Retrieving them
+    // requires resolving and inspecting each animation remotely. We intentionally
+    // avoid those asynchronous protocol round trips and accept false-positive
+    // matches between different effects with the same type, name, node and timeline.
+    const fingerprint = [animation.type(), animation.name()];
+    return `${target}|web:${JSON.stringify(fingerprint)}${timelineId}`;
+}
 export class AnimationModel extends SDKModel {
     runtimeModel;
     agent;
@@ -213,6 +235,7 @@ export class AnimationModel extends SDKModel {
             }
         }
         if (!foundAnimation || !foundAnimationGroup) {
+            await this.animationStarted(payload);
             return;
         }
         await foundAnimation.setPayload(payload);
@@ -236,9 +259,10 @@ export class AnimationModel extends SDKModel {
         this.#flushPendingAnimations();
     }
     #matchExistingGroups(incomingGroup) {
+        const incomingParticipantIds = incomingGroup.getParticipantIds();
         let matchedGroup = null;
         for (const group of this.animationGroups.values()) {
-            if (group.matches(incomingGroup)) {
+            if (group.matches(incomingGroup, incomingParticipantIds)) {
                 matchedGroup = group;
                 group.rebaseTo(incomingGroup);
                 break;
@@ -288,6 +312,12 @@ export class AnimationModel extends SDKModel {
     }
     releaseAnimations(animations) {
         void this.agent.invoke_releaseAnimations({ animations });
+    }
+    forgetAnimationGroup(group) {
+        this.animationGroups.delete(group.id());
+        for (const animation of group.animations()) {
+            this.#animationsById.delete(animation.id());
+        }
     }
     async suspendModel() {
         await this.agent.invoke_disable().then(() => this.#reset());
@@ -613,9 +643,8 @@ export class AnimationGroup {
     animations() {
         return this.#animations;
     }
-    release() {
-        this.#animationModel.animationGroups.delete(this.id());
-        this.#animationModel.releaseAnimations(this.#animationIds());
+    forget() {
+        this.#animationModel.forgetAnimationGroup(this);
     }
     #animationIds() {
         function extractId(animation) {
@@ -671,15 +700,15 @@ export class AnimationGroup {
         return this.#scrollNode;
     }
     seekTo(currentTime) {
-        const animations = [];
+        const animationIds = [];
         const currentTimes = [];
         for (const animation of this.#animations) {
             // Seek from the end of the animation if it is reversed.
-            animations.push(animation.id());
+            animationIds.push(animation.id());
             currentTimes.push(animation.playbackRate() >= 0 ? currentTime :
                 animation.endTime() - animation.startTime() - currentTime);
         }
-        void this.#animationModel.agent.invoke_seekAnimations({ animations, currentTimes });
+        void this.#animationModel.agent.invoke_seekAnimations({ animations: animationIds, currentTimes });
     }
     paused() {
         return this.#paused;
@@ -704,23 +733,22 @@ export class AnimationGroup {
         return this.#animationModel.agent.invoke_getCurrentTime({ id: longestAnim.id() })
             .then(({ currentTime }) => currentTime || 0);
     }
-    matches(group) {
-        function extractId(anim) {
-            const timelineId = (anim.viewOrScrollTimeline()?.sourceNodeId ?? '') + (anim.viewOrScrollTimeline()?.axis ?? '');
-            const regularId = anim.type() === "WebAnimation" /* Protocol.Animation.AnimationType.WebAnimation */ ? anim.type() + anim.id() : anim.cssId();
-            return regularId + timelineId;
-        }
-        if (this.#animations.length !== group.#animations.length) {
+    /**
+     * Best-effort signatures for matching replays on the same element despite new
+     * protocol IDs. Animations without a cssId can match different effects; mutable
+     * timing and keyframe details are intentionally excluded.
+     * Returned as a sorted multiset: identical animations are kept as duplicates.
+     */
+    getParticipantIds() {
+        return this.#animations.map(getParticipantId).sort();
+    }
+    matches(group, participantIds) {
+        if (this.#animationModel !== group.#animationModel || this.#animations.length !== group.#animations.length) {
             return false;
         }
-        const left = this.#animations.map(extractId).sort();
-        const right = group.#animations.map(extractId).sort();
-        for (let i = 0; i < left.length; i++) {
-            if (left[i] !== right[i]) {
-                return false;
-            }
-        }
-        return true;
+        const thisParticipantIds = this.getParticipantIds();
+        const otherParticipantIds = participantIds ?? group.getParticipantIds();
+        return thisParticipantIds.every((id, index) => id === otherParticipantIds[index]);
     }
     shouldInclude(group) {
         // We want to include the animations coming from the incoming group
@@ -733,7 +761,11 @@ export class AnimationGroup {
         this.#animations.push(...animations);
     }
     rebaseTo(group) {
-        this.#animationModel.releaseAnimations(this.#animationIds());
+        const incomingIds = new Set(group.#animationIds());
+        const releasedIds = this.#animationIds().filter(id => !incomingIds.has(id));
+        if (releasedIds.length) {
+            this.#animationModel.releaseAnimations(releasedIds);
+        }
         this.#animations = group.#animations;
         this.#scrollNode = undefined;
     }

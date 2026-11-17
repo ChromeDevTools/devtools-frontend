@@ -1,9 +1,45 @@
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
+import * as UI from '../../ui/legacy/legacy.js';
+export interface NodeDetailsViewInput {
+    type: 'node';
+    node: SDK.DOMModel.DOMNode;
+    snippet?: string;
+}
+export interface SourceLocationViewInput {
+    type: 'source-location';
+    url: Platform.DevToolsPath.UrlString;
+    lineNumber: number;
+    columnNumber: number;
+}
+export interface ReportViewInput {
+    type: 'report';
+    report: LighthouseModel.ReporterTypes.ReportJSON | null;
+    darkMode: boolean;
+    onViewTrace?: () => Promise<void>;
+    onSaveFileOverride: (blob: Blob) => Promise<void>;
+    onPrintOverride: (rootEl: HTMLElement) => Promise<void>;
+    getStandaloneReportHTML: () => string;
+}
+export type ViewInput = NodeDetailsViewInput | SourceLocationViewInput | ReportViewInput;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 interface RenderReportOpts {
     beforePrint?: () => void;
     afterPrint?: () => void;
 }
-export declare class LighthouseReportRenderer {
+export declare class LighthouseReportRenderer extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: View);
+    get report(): LighthouseModel.ReporterTypes.ReportJSON | null;
+    set report(report: LighthouseModel.ReporterTypes.ReportJSON | null);
+    set artifacts(artifacts: LighthouseModel.ReporterTypes.RunnerResultArtifacts | undefined);
+    set beforePrint(beforePrint: (() => void) | undefined);
+    set afterPrint(afterPrint: (() => void) | undefined);
+    wasShown(): void;
+    willHide(): void;
+    performUpdate(): void;
     static renderLighthouseReport(lhr: LighthouseModel.ReporterTypes.ReportJSON, artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts, opts?: RenderReportOpts): HTMLElement;
     /**
      * Renders only the score gauges component of the Lighthouse report, stripping out
@@ -20,8 +56,8 @@ export declare class LighthouseReportRenderer {
      */
     static renderLighthouseScores(lhr: LighthouseModel.ReporterTypes.ReportJSON): HTMLElement | null;
     static waitForMainTargetLoad(): Promise<void>;
-    static linkifyNodeDetails(el: Element): Promise<void>;
-    static linkifySourceLocationDetails(el: Element): Promise<void>;
+    static linkifyNodeDetails(el: Element, view?: View): Promise<void>;
+    static linkifySourceLocationDetails(el: Element, view?: View): Promise<void>;
     static installVisualLogging(el: Element): void;
 }
 export {};

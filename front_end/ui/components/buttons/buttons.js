@@ -476,6 +476,9 @@ var Button = class _Button extends HTMLElement {
     this.#props.toggleType = toggleType;
     this.#render();
   }
+  get variant() {
+    return this.#props.variant;
+  }
   set variant(variant) {
     this.#props.variant = variant;
     this.#render();

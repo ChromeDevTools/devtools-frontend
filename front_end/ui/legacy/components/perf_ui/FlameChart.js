@@ -2320,7 +2320,8 @@ export class FlameChart extends FlameChartBase {
                     markerIndices.push(entryIndex);
                     continue;
                 }
-                if (duration >= minTextWidthDuration || this.forceDecorationCache?.[entryIndex]) {
+                if ((duration >= minTextWidthDuration || this.forceDecorationCache?.[entryIndex]) &&
+                    !this.#indexToDrawOverride.has(entryIndex)) {
                     // If the event is big enough visually to have its text rendered,
                     // or if it's in the array of event indexes that we forcibly render (as defined by the data provider)
                     // then we store its index. Later on, we'll loop through all
@@ -2425,10 +2426,6 @@ export class FlameChart extends FlameChartBase {
                 return;
             }
             if (!this.isGroupCollapsible(index) || group.expanded) {
-                if (!group.style.shareHeaderLine && this.isGroupFocused(index)) {
-                    context.fillStyle = group.style.backgroundColor;
-                    context.fillRect(0, offset, width, group.style.height);
-                }
                 return;
             }
             let nextGroup = index + 1;
@@ -2843,6 +2840,13 @@ export class FlameChart extends FlameChartBase {
                 lastDrawOffset = barX;
                 const color = this.getColorForEntry(entryIndex);
                 const endBarX = this.timeToPositionClipped(entryEndTime);
+                const drawOverride = this.#indexToDrawOverride.get(entryIndex);
+                if (group.style.useDecoratorsForOverview && drawOverride) {
+                    const unclippedXStart = this.chartViewport.timeToPosition(entryStartTime);
+                    const unclippedXEnd = this.chartViewport.timeToPosition(entryEndTime);
+                    drawOverride(context, unclippedXStart, y, unclippedXEnd - unclippedXStart, groupBarHeight, time => this.chartViewport.timeToPosition(time), color => this.#transformColor(entryIndex, color));
+                    continue;
+                }
                 if (group.style.useDecoratorsForOverview && this.dataProvider.forceDecoration(entryIndex)) {
                     const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
                     const barWidth = this.#eventBarWidth(this.rawTimelineData, entryIndex);

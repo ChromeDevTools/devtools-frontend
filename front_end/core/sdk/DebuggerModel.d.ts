@@ -217,8 +217,7 @@ export declare class CallFrame {
     static fromPayloadArray(debuggerModel: DebuggerModel, callFrames: Protocol.Debugger.CallFrame[], exception: RemoteObject | null): CallFrame[];
     createVirtualCallFrame(inlineFrameIndex: number, name: string): CallFrame;
     get id(): Protocol.Debugger.CallFrameId;
-    scopeChain(): Scope[];
-    localScope(): Scope | null;
+    scopeChain(): Promise<Scope[]>;
     thisObject(): RemoteObject | null;
     returnValue(): RemoteObject | null;
     setReturnValue(expression: string): Promise<RemoteObject | null>;

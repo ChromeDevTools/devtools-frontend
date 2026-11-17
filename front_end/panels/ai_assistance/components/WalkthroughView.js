@@ -4,7 +4,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as Input from '../../../ui/components/input/input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -181,11 +180,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
     </div>
   ` : Lit.nothing;
     render(html `
-    <style>
-      ${Input.textInputStyles}
-      ${chatMessageStyles}
-      ${walkthroughViewStyles}
-    </style>
+    <style>${chatMessageStyles}</style>
+    <style>${walkthroughViewStyles}</style>
     ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput, allSteps)
         : renderSidebarWalkthrough(input, stepsOutput, renderableSteps.length)}`, target);
     // clang-format on

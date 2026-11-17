@@ -12,7 +12,7 @@ import { Cookie } from './Cookie.js';
 import { DirectSocketChunkType, DirectSocketStatus, DirectSocketType, Events as NetworkRequestEvents, NetworkRequest, } from './NetworkRequest.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
-import { cacheDisabledSettingDescriptor, monitoringXHREnabledSettingDescriptor, preserveNetworkLogSettingDescriptor, requestBlockingEnabledSettingDescriptor, } from './SDKSettings.js';
+import { cacheDisabledSettingDescriptor, customNetworkConditionsSettingDescriptor, monitoringXHREnabledSettingDescriptor, preserveNetworkLogSettingDescriptor, requestBlockingEnabledSettingDescriptor, } from './SDKSettings.js';
 import { TargetManager } from './TargetManager.js';
 const UIStrings = {
     /**
@@ -139,7 +139,7 @@ const CONNECTION_TYPES = new Map([
  * mean extra settings get mistakenly created.
  */
 export function customUserNetworkConditionsSetting(settings) {
-    return settings.moduleSetting('custom-network-conditions');
+    return settings.resolve(customNetworkConditionsSettingDescriptor);
 }
 export function activeNetworkThrottlingKeySetting(settings) {
     return settings.createSetting('active-network-condition-key', "NO_THROTTLING" /* PredefinedThrottlingConditionKey.NO_THROTTLING */);

@@ -970,7 +970,6 @@ export class CallFrame {
     payload;
     #location;
     #scopeChain;
-    #localScope;
     inlineFrameIndex;
     functionName;
     #functionLocation;
@@ -983,17 +982,12 @@ export class CallFrame {
         this.payload = payload;
         this.#location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
         this.#scopeChain = [];
-        this.#localScope = null;
         this.inlineFrameIndex = inlineFrameIndex || 0;
         this.functionName = functionName ?? payload.functionName;
         this.canBeRestarted = Boolean(payload.canBeRestarted);
         this.exception = exception;
         for (let i = 0; i < payload.scopeChain.length; ++i) {
-            const scope = new Scope(this, i);
-            this.#scopeChain.push(scope);
-            if (scope.type() === "local" /* Protocol.Debugger.ScopeType.Local */) {
-                this.#localScope = scope;
-            }
+            this.#scopeChain.push(new Scope(this, i));
         }
         if (payload.functionLocation) {
             this.#functionLocation = Location.fromPayload(debuggerModel, payload.functionLocation);
@@ -1019,11 +1013,8 @@ export class CallFrame {
     get id() {
         return this.payload.callFrameId;
     }
-    scopeChain() {
+    async scopeChain() {
         return this.#scopeChain;
-    }
-    localScope() {
-        return this.#localScope;
     }
     thisObject() {
         return this.payload.this ? this.debuggerModel.runtimeModel().createRemoteObject(this.payload.this) : null;
@@ -1188,7 +1179,7 @@ export class Scope {
         return this.#payload.emptyReason;
     }
     extraProperties() {
-        if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {
+        if (this.#type !== "local" /* Protocol.Debugger.ScopeType.Local */ || this.#callFrame.script.isWasm()) {
             return [];
         }
         const extraProperties = [];

@@ -3820,7 +3820,7 @@ var objectValue_css_default = `/*
 // ../../front_end/panels/console/ConsoleViewMessage.ts
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI3 from "../../ui/legacy/legacy.js";
-import { html as html3, nothing as nothing3, render as render3 } from "../../ui/lit/lit.js";
+import { Directives, html as html3, nothing as nothing3, render as render3 } from "../../ui/lit/lit.js";
 import * as Settings2 from "../../ui/settings/settings.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 import * as Elements from "../elements/elements.js";
@@ -4703,6 +4703,8 @@ var SymbolizedErrorWidget = class extends UI2.Widget.Widget {
 };
 
 // ../../front_end/panels/console/ConsoleViewMessage.ts
+var { ifDefined } = Directives;
+var { widget: widget2 } = UI3.Widget;
 var UIStrings2 = {
   /**
    * @description Message element text content in Console view message of the Console panel. Shown
@@ -5381,43 +5383,43 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   format(rawParameters) {
     const formattedResult = document.createElement("span");
+    const parts = [];
     if (this.messagePrefix) {
-      formattedResult.createChild("span").textContent = this.messagePrefix;
+      parts.push(html3`<span>${this.messagePrefix}</span>`);
     }
     if (!rawParameters.length) {
+      if (parts.length) {
+        render3(html3`${parts}`, formattedResult);
+      }
       return formattedResult;
     }
     let parameters = rawParameters.map(parameterToRemoteObject(this.message.runtimeModel()));
     const shouldFormatMessage = SDK3.RemoteObject.RemoteObject.type(parameters[0]) === "string" && (this.message.type !== SDK3.ConsoleModel.FrontendMessageType.Result || this.message.level === Log.LogEntryLevel.Error);
     if (shouldFormatMessage) {
-      parameters = this.formatWithSubstitutionString(
-        parameters[0].description,
-        parameters.slice(1),
-        formattedResult
-      );
+      parameters = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1), parts);
       if (parameters.length) {
-        UI3.UIUtils.createTextChild(formattedResult, " ");
+        parts.push(" ");
       }
     }
     for (let i = 0; i < parameters.length; ++i) {
       if (shouldFormatMessage && parameters[i].type === "string") {
-        appendOrShow(formattedResult, this.linkifyStringAsFragment(parameters[i].description || ""));
+        parts.push(this.linkifyStringAsFragment(parameters[i].description || ""));
       } else {
-        appendOrShow(formattedResult, this.formatParameter(parameters[i], false, true));
+        parts.push(this.formatParameter(parameters[i], false, true));
       }
       if (i < parameters.length - 1) {
-        UI3.UIUtils.createTextChild(formattedResult, " ");
+        parts.push(" ");
       }
     }
+    render3(html3`${parts}`, formattedResult);
     return formattedResult;
   }
   formatParameter(output, forceObjectFormat, includePreview) {
     if (output.customPreview()) {
-      const component = new ObjectUI3.CustomPreviewComponent.CustomPreviewComponent();
-      component.object = output;
-      return component;
+      return html3`${widget2(ObjectUI3.CustomPreviewComponent.CustomPreviewComponent, { object: output })}`;
     }
     const outputType = forceObjectFormat ? "object" : output.subtype || output.type;
+    const typeClasses = `object-value-${outputType} source-code`;
     let element;
     switch (outputType) {
       case "error":
@@ -5451,8 +5453,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         element = this.formatParameterAsObject(output, false);
         break;
       case "string":
-        element = this.formatParameterAsString(output);
-        break;
+        return this.formatParameterAsString(output, typeClasses);
       case "boolean":
       case "date":
       case "null":
@@ -5461,43 +5462,27 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       case "symbol":
       case "undefined":
       case "bigint":
-        element = this.formatParameterAsValue(output);
-        break;
+        return this.formatParameterAsValue(output, typeClasses);
       default:
-        element = this.formatParameterAsValue(output);
         console.error(`Tried to format remote object of unknown type ${outputType}.`);
+        return this.formatParameterAsValue(output, typeClasses);
     }
     element.classList.add(`object-value-${outputType}`);
     element.classList.add("source-code");
     return element;
   }
-  formatParameterAsValue(obj) {
-    const result = document.createElement("span");
+  formatParameterAsValue(obj, extraClasses = "") {
     const description = obj.description || "";
-    if (description.length > getMaxTokenizableStringLength()) {
-      const propertyValue = new ObjectUI3.ObjectPropertiesSection.ExpandableTextPropertyValue();
-      propertyValue.text = description;
-      propertyValue.maxLength = getLongStringVisibleLength();
-      propertyValue.show(
-        result,
-        null,
-        /* suppressOprhanWidgetError=*/
-        true
-      );
-    } else {
-      UI3.UIUtils.createTextChild(result, description);
-    }
-    result.addEventListener("contextmenu", this.contextMenuEventFired.bind(this, obj), false);
-    return result;
+    const classes = extraClasses || void 0;
+    return html3`<span
+      class=${ifDefined(classes)}
+      @contextmenu=${this.contextMenuEventFired.bind(this, obj)}>${description.length > getMaxTokenizableStringLength() ? widget2(ObjectUI3.ObjectPropertiesSection.ExpandableTextPropertyValue, {
+      text: description,
+      maxLength: getLongStringVisibleLength()
+    }) : description}</span>`;
   }
   formatParameterAsTrustedType(obj) {
-    const result = document.createElement("span");
-    const trustedContentSpan = document.createElement("span");
-    trustedContentSpan.appendChild(this.formatParameterAsString(obj));
-    trustedContentSpan.classList.add("object-value-string");
-    UI3.UIUtils.createTextChild(result, `${obj.className} `);
-    result.appendChild(trustedContentSpan);
-    return result;
+    return html3`<span>${`${obj.className} `}<span class="object-value-string">${this.formatParameterAsString(obj)}</span></span>`;
   }
   formatParameterAsObject(obj, includePreview) {
     const titleElement = document.createElement("span");
@@ -5522,7 +5507,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         titleElement.insertBefore(fragment, titleElement.firstChild);
       });
     } else if (obj.subtype === "trustedtype") {
-      titleElement.appendChild(this.formatParameterAsTrustedType(obj));
+      render3(this.formatParameterAsTrustedType(obj), titleElement);
     } else {
       UI3.UIUtils.createTextChild(titleElement, obj.description || "");
     }
@@ -5664,18 +5649,17 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   formattedParameterAsNodeForTest() {
   }
-  formatParameterAsString(output) {
+  formatParameterAsString(output, extraClasses = "") {
     const description = output.description ?? "";
     const text = Platform2.StringUtilities.formatAsJSLiteral(description);
-    const result = document.createElement("span");
-    result.addEventListener("contextmenu", this.contextMenuEventFired.bind(this, output), false);
-    appendOrShow(result, this.linkifyStringAsFragment(text));
-    return result;
+    return html3`<span
+      class=${ifDefined(extraClasses || void 0)}
+      @contextmenu=${this.contextMenuEventFired.bind(this, output)}>${this.linkifyStringAsFragment(text)}</span>`;
   }
   renderSymbolizedError(errorRemoteObject) {
     const container = document.createElement("span");
-    const widget4 = new SymbolizedErrorWidget();
-    widget4.ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
+    const widget5 = new SymbolizedErrorWidget();
+    widget5.ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
     const selectableChildIndex = this.selectableChildren.length;
     const format2 = async () => {
       const error = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(
@@ -5683,16 +5667,16 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         this.message.exceptionDetails
       );
       if (error) {
-        widget4.error = error;
+        widget5.error = error;
       }
-      await widget4.updateComplete;
-      const selectableLinks = widget4.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
+      await widget5.updateComplete;
+      const selectableLinks = widget5.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
       this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
     };
     this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, format2()]).then(() => {
     });
-    widget4.markAsRoot();
-    widget4.show(container);
+    widget5.markAsRoot();
+    widget5.show(container);
     return container;
   }
   formatAsArrayEntry(output) {
@@ -5761,53 +5745,47 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     return rootElement;
   }
-  formatWithSubstitutionString(formatString, parameters, formattedResult) {
+  formatWithSubstitutionString(formatString, parameters, parts) {
     const currentStyle = /* @__PURE__ */ new Map();
     const { tokens, args } = format(formatString, parameters);
     for (const token of tokens) {
       switch (token.type) {
         case "generic": {
-          appendOrShow(
-            formattedResult,
-            this.formatParameter(
-              token.value,
-              true,
-              false
-              /* includePreview */
-            )
-          );
+          parts.push(this.formatParameter(
+            token.value,
+            true,
+            false
+            /* includePreview */
+          ));
           break;
         }
         case "optimal": {
-          appendOrShow(
-            formattedResult,
-            this.formatParameter(
-              token.value,
-              false,
-              true
-              /* includePreview */
-            )
-          );
+          parts.push(this.formatParameter(
+            token.value,
+            false,
+            true
+            /* includePreview */
+          ));
           break;
         }
         case "string": {
           if (currentStyle.size === 0) {
-            appendOrShow(formattedResult, this.linkifyStringAsFragment(token.value));
+            parts.push(this.linkifyStringAsFragment(token.value));
           } else {
             const lines = token.value.split("\n");
             for (let i = 0; i < lines.length; i++) {
               if (i > 0) {
-                formattedResult.append(document.createElement("br"));
+                parts.push(document.createElement("br"));
               }
               const wrapper = document.createElement("span");
               wrapper.style.setProperty("contain", "paint");
               wrapper.style.setProperty("display", "inline-block");
               wrapper.style.setProperty("max-width", "100%");
-              appendOrShow(wrapper, this.linkifyStringAsFragment(lines[i]));
+              render3(html3`${this.linkifyStringAsFragment(lines[i])}`, wrapper);
               for (const [property, { value, priority }] of currentStyle) {
                 wrapper.style.setProperty(property, value, priority);
               }
-              formattedResult.append(wrapper);
+              parts.push(wrapper);
             }
           }
           break;
@@ -6429,6 +6407,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return executionContext ? Components2.Linkifier.openInNewTabInitiatorId(executionContext) : void 0;
   }
   linkifyStringAsFragment(string) {
+    if (string.length > getMaxTokenizableStringLength()) {
+      return html3`${widget2(ObjectUI3.ObjectPropertiesSection.ExpandableTextPropertyValue, {
+        text: string,
+        maxLength: getLongStringVisibleLength()
+      })}`;
+    }
     const initiatorId = () => this.initiatorId();
     return _ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
       const options = { text, lineNumber, columnNumber, initiatorId };
@@ -6734,8 +6718,8 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
         const formattedResult = document.createElement("span");
         formattedResult.classList.add("console-message-text");
         const tableElement = formattedResult.createChild("div", "console-message-formatted-table");
-        const dataGridContainer = tableElement.createChild("span");
-        appendOrShow(tableElement, this.formatParameter(actualTable, true, false));
+        const dataGridContainer = document.createElement("span");
+        render3(html3`${dataGridContainer}${this.formatParameter(actualTable, true, false)}`, tableElement);
         const shadowRoot = dataGridContainer.attachShadow({ mode: "open" });
         const dataGridWidget = this.dataGrid.asWidget();
         dataGridWidget.markAsRoot();
@@ -7056,12 +7040,12 @@ async function formatStackTrace(message) {
   if (!previewContainer) {
     return "";
   }
-  const widget4 = UI4.Widget.Widget.get(previewContainer);
-  if (!widget4) {
+  const widget5 = UI4.Widget.Widget.get(previewContainer);
+  if (!widget5) {
     return "";
   }
-  await widget4.updateComplete;
-  const preview = widget4.contentElement.querySelector(".stack-preview-container");
+  await widget5.updateComplete;
+  const preview = widget5.contentElement.querySelector(".stack-preview-container");
   const nodes = preview.childTextNodes();
   const messageContent = nodes.filter((n) => {
     return !n.parentElement?.closest(".show-all-link,.show-less-link,.hidden-row");
@@ -7724,7 +7708,7 @@ import * as Dialogs2 from "../../ui/components/dialogs/dialogs.js";
 import * as TextEditor from "../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI4 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
-import { Directives, html as html5, nothing as nothing5, render as render5 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html5, nothing as nothing5, render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/consolePinPane.css.js
@@ -7808,8 +7792,8 @@ var consolePinPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./consolePinPane.css")} */`;
 
 // ../../front_end/panels/console/ConsolePinPane.ts
-var { createRef, ref: ref2, repeat } = Directives;
-var { widget: widget2 } = UI6.Widget;
+var { createRef, ref: ref2, repeat } = Directives2;
+var { widget: widget3 } = UI6.Widget;
 var UIStrings3 = {
   /**
    * @description A context menu item in the live expressions section of the Console panel.
@@ -7872,7 +7856,7 @@ var DEFAULT_PANE_VIEW = (input, _output, target) => {
     ${repeat(
     input.pins,
     (pin) => pin,
-    (pin) => widget2(ConsolePinPresenter, {
+    (pin) => widget3(ConsolePinPresenter, {
       pin,
       focusOut: input.focusOut,
       onRemove: () => input.onRemove(pin)
@@ -9288,7 +9272,7 @@ import * as CodeMirror2 from "../../third_party/codemirror.next/codemirror.next.
 import * as TextEditor2 from "../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI5 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html8, nothing as nothing7, render as render8 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html8, nothing as nothing7, render as render8 } from "../../ui/lit/lit.js";
 import * as Settings10 from "../../ui/settings/settings.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
@@ -11296,10 +11280,10 @@ var messagesSortedBySymbol = /* @__PURE__ */ new WeakMap();
 var consoleMessageToViewMessage = /* @__PURE__ */ new WeakMap();
 
 // ../../front_end/panels/console/ConsolePanel.ts
-var { widget: widget3 } = UI10.Widget;
+var { widget: widget4 } = UI10.Widget;
 var DEFAULT_VIEW6 = (input, _output, target) => {
   render7(html7`
-    ${widget3(UI10.Widget.WrapperWidget, {
+    ${widget4(UI10.Widget.WrapperWidget, {
     widget: input.showConsoleView ? ConsoleView.instance() : null
   })}
   `, target, {
@@ -11482,7 +11466,7 @@ var consolePrompt_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./consolePrompt.css")} */`;
 
 // ../../front_end/panels/console/ConsolePrompt.ts
-var { classMap, ref: ref3 } = Directives2;
+var { classMap, ref: ref3 } = Directives3;
 var { Direction } = TextEditor2.TextEditorHistory;
 var UIStrings6 = {
   /**

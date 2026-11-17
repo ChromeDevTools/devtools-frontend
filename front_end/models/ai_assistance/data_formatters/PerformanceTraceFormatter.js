@@ -242,6 +242,27 @@ export class PerformanceTraceFormatter {
         }
         return lines.join('\n');
     }
+    #getCriticalRequests(insightSet) {
+        const criticalRequests = [];
+        const walkRequest = (node) => {
+            criticalRequests.push(node.request);
+            node.children.forEach(walkRequest);
+        };
+        insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
+        return criticalRequests;
+    }
+    /**
+     * Returns true when `formatCriticalRequests()` emits compressed network rows
+     * (backed by `NetworkDependencyTree.rootNodes`, the insight's `CriticalRequestNode` tree).
+     */
+    hasCriticalRequests() {
+        for (const insightSet of this.#parsedTrace.insights?.values() ?? []) {
+            if (this.#getCriticalRequests(insightSet).length > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
     formatCriticalRequests() {
         const parsedTrace = this.#parsedTrace;
         return this.#formatFactByInsightSet({
@@ -249,12 +270,7 @@ export class PerformanceTraceFormatter {
             title: 'Critical network requests',
             empty: 'none',
             cb: async (insightSet) => {
-                const criticalRequests = [];
-                const walkRequest = (node) => {
-                    criticalRequests.push(node.request);
-                    node.children.forEach(walkRequest);
-                };
-                insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
+                const criticalRequests = this.#getCriticalRequests(insightSet);
                 return criticalRequests.length ? this.formatNetworkRequests(criticalRequests, { verbose: false }) : null;
             },
         });
@@ -694,6 +710,22 @@ Durations (all in milliseconds):
 - \`responseHeaders\`: A list (separated by '|') of values for specific, pre-defined response headers, enclosed in square brackets.
 The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
 `;
+    /**
+     * Shared `PromptFact` wrapper for `callFrameDataFormatDescription`, enabling
+     * reference-based deduplication across `AiAgent2` callers.
+     */
+    static callFrameDataFormatFact = {
+        title: 'Call frame data format',
+        description: PerformanceTraceFormatter.callFrameDataFormatDescription,
+    };
+    /**
+     * Shared `PromptFact` wrapper for `networkDataFormatDescription`, enabling
+     * reference-based deduplication across `PerformanceTraceContext` and `SKILLS.performance`.
+     */
+    static networkDataFormatFact = {
+        title: 'Network request data format',
+        description: PerformanceTraceFormatter.networkDataFormatDescription,
+    };
     /**
      * This is the network request data passed to the Performance agent.
      *

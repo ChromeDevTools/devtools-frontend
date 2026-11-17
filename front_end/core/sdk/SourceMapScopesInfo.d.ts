@@ -2,7 +2,7 @@ import * as Formatter from '../../models/formatter/formatter.js';
 import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import type * as Platform from '../platform/platform.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
-import type { CallFrame, Location, ScopeChainEntry } from './DebuggerModel.js';
+import type { CallFrame, Location, Scope, ScopeChainEntry } from './DebuggerModel.js';
 import type { SourceMap } from './SourceMap.js';
 export declare class SourceMapScopesInfo {
     #private;
@@ -50,7 +50,7 @@ export declare class SourceMapScopesInfo {
      *      paused position. We need the generated range to resolve variable
      *      values.
      */
-    resolveMappedScopeChain(callFrame: CallFrame): ScopeChainEntry[] | null;
+    resolveMappedScopeChain(callFrame: CallFrame, scopeChain: Scope[]): ScopeChainEntry[] | null;
     resolveMappedVariablesAtPosition(line: number, column: number, ignoreInnerBlockScopes?: boolean, inlineFrameIndex?: number): Array<Map<string, string | null>> | null;
     /**
      * Returns the authored function name of the function containing the provided generated position.
@@ -181,4 +181,4 @@ export declare function scriptRelativePosition(location: Location): ScopesCodec.
  * @returns The scope number, or `undefined` if nothing matched. Callers should then omit `scopeNumber`
  *          and let CDP default to the inner-most scope.
  */
-export declare function findMatchingScopeNumber(callFrame: CallFrame, range: ScopesCodec.GeneratedRange): number | undefined;
+export declare function findMatchingScopeNumber(callFrame: CallFrame, scopeChain: Scope[], range: ScopesCodec.GeneratedRange): number | undefined;

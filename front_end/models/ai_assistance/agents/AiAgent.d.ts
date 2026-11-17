@@ -342,6 +342,20 @@ export interface ConversationSuggestion {
 /** At least one. */
 export type ConversationSuggestions = [ConversationSuggestion, ...ConversationSuggestion[]];
 export type ConversationContextJslog = 'ai-context-dom-node' | 'ai-context-network-request' | 'ai-context-file' | 'ai-context-performance-trace' | 'ai-context-accessibility' | 'ai-context-storage';
+/**
+ * A persistent fact about the context or skill that is only sent to the model once
+ * per conversation to save tokens.
+ *
+ * `AiAgent2` deduplicates facts by object reference identity (`Set<PromptFact>`),
+ * so callers must return stable constant references rather than inline object literals.
+ */
+export interface PromptFact {
+    readonly title: string;
+    /**
+     * Omit custom markdown headings because AiAgent2 renders `# References` and `## ${title}` automatically.
+     */
+    readonly description: string;
+}
 export declare abstract class ConversationContext<T> {
     abstract readonly jslogContext: ConversationContextJslog;
     abstract getItem(): T;
@@ -389,6 +403,13 @@ export declare abstract class ConversationContext<T> {
      * Currently only used by AiAgent2.
      */
     getPromptDetails(): Promise<string | null>;
+    /**
+     * Returns persistent facts about the context that are only sent to the model
+     * once per conversation, reducing token usage in subsequent turns.
+     * Return stable constant `PromptFact` references so `AiAgent2` can deduplicate them.
+     * Currently only used by AiAgent2 (V1 agents use `addFact()`).
+     */
+    getPromptFacts(): readonly PromptFact[];
     /**
      * Returns a list of context details to display to the user in the UI.
      * Currently only used by AiAgent2.

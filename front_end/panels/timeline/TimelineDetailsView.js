@@ -139,10 +139,6 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
                 // Re-dispatch to reach the tree row dimmer.
                 this.dispatchEventToListeners("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, node.data);
             });
-            // If there's a heaviest stack sidebar view, also listen to hover within it.
-            if (view instanceof AggregatedTimelineTreeView) {
-                view.stackView.addEventListener("TreeRowHovered" /* TimelineStackView.Events.TREE_ROW_HOVERED */, node => this.dispatchEventToListeners("TreeRowHovered" /* TimelineTreeView.Events.TREE_ROW_HOVERED */, { node: node.data }));
-            }
         });
         this.#summaryContent.onTreeRowHovered = (node, events) => {
             // Re-dispatch through 3P event to get 3P dimmer.
@@ -241,7 +237,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         if (this.lazySelectorStatsView) {
             return this.lazySelectorStatsView;
         }
-        this.lazySelectorStatsView = new TimelineSelectorStatsView(this.#parsedTrace);
+        this.lazySelectorStatsView = new TimelineSelectorStatsView(undefined, this.#parsedTrace);
         return this.lazySelectorStatsView;
     }
     getDetailsContentElementForTest() {

@@ -319,7 +319,7 @@ var timelineGrid_css_default = `/*
 .resources-divider-label {
   position: absolute;
   top: var(--sys-size-3);
-  right: 3px;
+  right: var(--sys-size-2);
   font-size: 80%;
   white-space: nowrap;
   pointer-events: none;
@@ -2614,7 +2614,7 @@ var FlameChart = class extends FlameChartBase {
           markerIndices.push(entryIndex);
           continue;
         }
-        if (duration >= minTextWidthDuration || this.forceDecorationCache?.[entryIndex]) {
+        if ((duration >= minTextWidthDuration || this.forceDecorationCache?.[entryIndex]) && !this.#indexToDrawOverride.has(entryIndex)) {
           titleIndices.push(entryIndex);
         }
         const entryStartTime = entryStartTimes[entryIndex];
@@ -2705,10 +2705,6 @@ var FlameChart = class extends FlameChartBase {
         return;
       }
       if (!this.isGroupCollapsible(index) || group.expanded) {
-        if (!group.style.shareHeaderLine && this.isGroupFocused(index)) {
-          context.fillStyle = group.style.backgroundColor;
-          context.fillRect(0, offset, width, group.style.height);
-        }
         return;
       }
       let nextGroup = index + 1;
@@ -3102,6 +3098,21 @@ var FlameChart = class extends FlameChartBase {
         lastDrawOffset = barX;
         const color = this.getColorForEntry(entryIndex);
         const endBarX = this.timeToPositionClipped(entryEndTime);
+        const drawOverride = this.#indexToDrawOverride.get(entryIndex);
+        if (group.style.useDecoratorsForOverview && drawOverride) {
+          const unclippedXStart = this.chartViewport.timeToPosition(entryStartTime);
+          const unclippedXEnd = this.chartViewport.timeToPosition(entryEndTime);
+          drawOverride(
+            context,
+            unclippedXStart,
+            y,
+            unclippedXEnd - unclippedXStart,
+            groupBarHeight,
+            (time) => this.chartViewport.timeToPosition(time),
+            (color2) => this.#transformColor(entryIndex, color2)
+          );
+          continue;
+        }
         if (group.style.useDecoratorsForOverview && this.dataProvider.forceDecoration(entryIndex)) {
           const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
           const barWidth = this.#eventBarWidth(this.rawTimelineData, entryIndex);

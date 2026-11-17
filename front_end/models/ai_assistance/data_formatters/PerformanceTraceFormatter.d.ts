@@ -2,6 +2,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as CrUXManager from '../../crux-manager/crux-manager.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
+import type { PromptFact } from '../agents/AiAgent.js';
 import type { AICallTree } from '../performance/AICallTree.js';
 import type { AgentFocus } from '../performance/AIContext.js';
 export interface NetworkRequestFormatOptions {
@@ -15,6 +16,11 @@ export declare class PerformanceTraceFormatter {
     serializeEvent(event: Trace.Types.Events.Event): string;
     serializeBounds(bounds: Trace.Types.Timing.TraceWindowMicro): string;
     formatTraceSummary(): string;
+    /**
+     * Returns true when `formatCriticalRequests()` emits compressed network rows
+     * (backed by `NetworkDependencyTree.rootNodes`, the insight's `CriticalRequestNode` tree).
+     */
+    hasCriticalRequests(): boolean;
     formatCriticalRequests(): Promise<string>;
     formatMainThreadBottomUpSummary(): Promise<string>;
     formatThirdPartySummary(): Promise<string>;
@@ -29,6 +35,16 @@ export declare class PerformanceTraceFormatter {
      * Network requests format description that is sent to the model as a fact.
      */
     static networkDataFormatDescription: string;
+    /**
+     * Shared `PromptFact` wrapper for `callFrameDataFormatDescription`, enabling
+     * reference-based deduplication across `AiAgent2` callers.
+     */
+    static readonly callFrameDataFormatFact: PromptFact;
+    /**
+     * Shared `PromptFact` wrapper for `networkDataFormatDescription`, enabling
+     * reference-based deduplication across `PerformanceTraceContext` and `SKILLS.performance`.
+     */
+    static readonly networkDataFormatFact: PromptFact;
     resolveFunctionCodeAtLocation(url: Platform.DevToolsPath.UrlString, line: number, column: number): Promise<SourceMapScopes.FunctionCodeResolver.FunctionCode | null>;
     formatFunctionCode(code: SourceMapScopes.FunctionCodeResolver.FunctionCode): string;
 }

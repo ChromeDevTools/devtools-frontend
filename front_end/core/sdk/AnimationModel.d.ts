@@ -50,6 +50,7 @@ export declare class AnimationModel extends SDKModel<EventTypes> {
     animationStarted(payload: Protocol.Animation.Animation): Promise<void>;
     setPlaybackRate(playbackRate: number): void;
     releaseAnimations(animations: string[]): void;
+    forgetAnimationGroup(group: AnimationGroup): void;
     suspendModel(): Promise<void>;
     resumeModel(): Promise<void>;
 }
@@ -127,7 +128,7 @@ export declare class AnimationGroup {
     isScrollDriven(): boolean;
     id(): string;
     animations(): AnimationImpl[];
-    release(): void;
+    forget(): void;
     startTime(): number;
     groupDuration(): number;
     finiteDuration(): number;
@@ -137,7 +138,14 @@ export declare class AnimationGroup {
     paused(): boolean;
     togglePause(paused: boolean): void;
     currentTimePromise(): Promise<number>;
-    matches(group: AnimationGroup): boolean;
+    /**
+     * Best-effort signatures for matching replays on the same element despite new
+     * protocol IDs. Animations without a cssId can match different effects; mutable
+     * timing and keyframe details are intentionally excluded.
+     * Returned as a sorted multiset: identical animations are kept as duplicates.
+     */
+    getParticipantIds(): string[];
+    matches(group: AnimationGroup, participantIds?: readonly string[]): boolean;
     shouldInclude(group: AnimationGroup): boolean;
     appendAnimations(animations: AnimationImpl[]): void;
     rebaseTo(group: AnimationGroup): void;

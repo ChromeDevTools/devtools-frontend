@@ -316,7 +316,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.#onMainEntriesLinkAnnotationCreated = event => this.onEntriesLinkAnnotationCreate(this.mainDataProvider, event.data.entryFromIndex);
         this.#onNetworkEntriesLinkAnnotationCreated = event => this.onEntriesLinkAnnotationCreate(this.networkDataProvider, event.data.entryFromIndex);
         this.mainFlameChart.addEventListener("EntryLabelAnnotationAdded" /* PerfUI.FlameChart.Events.ENTRY_LABEL_ANNOTATION_ADDED */, this.onMainAddEntryLabelAnnotation, this);
-        this.mainDataProvider.addEventListener("EntryLabelAnnotationAdded" /* TimelineFlameChartDataProviderEvents.ENTRY_LABEL_ANNOTATION_ADDED */, this.onMainAddEntryLabelAnnotation, this);
         this.networkFlameChart.addEventListener("EntryLabelAnnotationAdded" /* PerfUI.FlameChart.Events.ENTRY_LABEL_ANNOTATION_ADDED */, this.onNetworkAddEntryLabelAnnotation, this);
         this.mainFlameChart.addEventListener("EntriesLinkAnnotationCreated" /* PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED */, this.#onMainEntriesLinkAnnotationCreated, this);
         this.networkFlameChart.addEventListener("EntriesLinkAnnotationCreated" /* PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED */, this.#onNetworkEntriesLinkAnnotationCreated, this);

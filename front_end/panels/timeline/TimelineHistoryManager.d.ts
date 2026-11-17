@@ -29,17 +29,10 @@ export interface NewHistoryRecordingData {
 }
 export declare class TimelineHistoryManager {
     #private;
-    private recordings;
-    private readonly action;
-    private readonly nextNumberByDomain;
-    private readonly allOverviews;
-    private totalHeight;
-    private enabled;
-    private lastActiveTrace;
     constructor(minimapComponent?: TimelineMiniMap, isNode?: boolean);
     addRecording(newInput: NewHistoryRecordingData): void;
     setEnabled(enabled: boolean): void;
-    button(): ToolbarButton;
+    button(): UI.Toolbar.ToolbarItem;
     clear(): void;
     showHistoryDropDown(): Promise<RecordingData | null>;
     cancelIfShowing(): void;
@@ -50,42 +43,48 @@ export declare class TimelineHistoryManager {
      */
     navigate(direction: number): TraceRecordingHistoryItem | null;
     navigateToLandingPage(): void;
-    private updateState;
-    static previewElement(parsedTraceIndex: number): Element;
-    private title;
-    private static dataForTraceIndex;
 }
+export type DropDownItem = {
+    type: 'LANDING_PAGE';
+    title: Common.UIString.LocalizedString;
+} | {
+    type: 'RECORDING';
+    parsedTraceIndex: number;
+    preview: PreviewData;
+};
+export type NavigationTarget = 'previous' | 'next' | 'first' | 'last';
+export interface DropDownViewInput {
+    items: DropDownItem[];
+    selectedItem: DropDownItem | null;
+    onHover: (item: DropDownItem) => void;
+    onActivate: (item: DropDownItem) => void;
+    onNavigate: (target: NavigationTarget) => void;
+    onActivateSelected: () => void;
+    onCancel: () => void;
+}
+export type View = (input: DropDownViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
+export declare const DEFAULT_VIEW: View;
 export declare const maxRecordings = 5;
 export declare const previewWidth = 500;
 export interface PreviewData {
-    preview: Element;
     lastUsed: number;
     title: string;
+    metadataText: string;
+    screenshotEvent: Trace.Extras.FilmStrip.Frame['screenshotEvent'] | null;
+    overview: ImageBitmap;
+    overviewHeight: number;
 }
-export declare class DropDown implements UI.ListControl.ListDelegate<number> {
+export declare class DropDown extends UI.Widget.Widget<ShadowRoot> {
     #private;
-    private readonly glassPane;
-    private readonly listControl;
-    private readonly focusRestorer;
-    private selectionDone;
-    contentElement: HTMLElement;
-    constructor(availableparsedTraceIndexes: number[], landingPageTitle: Common.UIString.LocalizedString);
-    static show(availableparsedTraceIndexes: number[], activeparsedTraceIndex: number, anchor: Element, landingPageTitle?: Common.UIString.LocalizedString): Promise<number | null>;
+    constructor(element?: HTMLElement, view?: View);
+    get items(): DropDownItem[];
+    set items(items: DropDownItem[]);
+    get selectedItem(): DropDownItem | null;
+    set selectedItem(item: DropDownItem | null);
+    wasShown(): void;
+    performUpdate(): void;
+    static show(availableparsedTraceIndexes: number[], activeparsedTraceIndex: number, anchor: Element, landingPageTitle?: Common.UIString.LocalizedString, view?: View): Promise<number | null>;
     static cancelIfShowing(): void;
-    private show;
-    private onMouseMove;
-    private onClick;
-    private onKeyDown;
-    private close;
-    createElementForItem(parsedTraceIndex: number): Element;
-    heightForItem(_parsedTraceIndex: number): number;
-    isItemSelectable(_parsedTraceIndex: number): boolean;
-    selectedItemChanged(_from: number | null, _to: number | null, fromElement: Element | null, toElement: Element | null): void;
-    updateSelectedItemARIA(_fromElement: Element | null, _toElement: Element | null): boolean;
     static instance: DropDown | null;
-}
-export declare class ToolbarButton extends UI.Toolbar.ToolbarItem {
-    constructor(action: UI.ActionRegistration.Action);
-    setText(text: string): void;
 }
 export {};

@@ -65,7 +65,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private buildMessageWithIgnoreLinks;
     private buildMessageHelper;
     private format;
-    protected formatParameter(output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean, includePreview?: boolean): HTMLElement | UI.Widget.AnyWidget;
+    protected formatParameter(output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean, includePreview?: boolean): LitTemplate | HTMLElement;
     private formatParameterAsValue;
     private formatParameterAsTrustedType;
     private formatParameterAsObject;

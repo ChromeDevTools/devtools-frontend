@@ -694,12 +694,12 @@ export class SourceMap {
         return this.embeddedContentByURL(sourceURL) === other.embeddedContentByURL(sourceURL) &&
             this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
     }
-    resolveScopeChain(frame) {
+    resolveScopeChain(frame, scopeChain) {
         this.#ensureSourceMapProcessed();
         if (this.#provenance === "user" /* SourceMapProvenance.USER */ || !this.#scopesInfo?.hasVariablesAndBindings()) {
             return null;
         }
-        return this.#scopesInfo.resolveMappedScopeChain(frame);
+        return this.#scopesInfo.resolveMappedScopeChain(frame, scopeChain);
     }
     resolveMappedVariablesAtPosition(location, ignoreInnerBlockScopes = false) {
         this.#ensureSourceMapProcessed();

@@ -5957,7 +5957,7 @@ function formatLines(title, lines, maxLength) {
 }
 
 // ../../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.ts
-var PerformanceTraceFormatter = class {
+var PerformanceTraceFormatter = class _PerformanceTraceFormatter {
   #focus;
   #parsedTrace;
   #insightSet;
@@ -6192,6 +6192,27 @@ var PerformanceTraceFormatter = class {
     }
     return lines.join("\n");
   }
+  #getCriticalRequests(insightSet) {
+    const criticalRequests = [];
+    const walkRequest = (node) => {
+      criticalRequests.push(node.request);
+      node.children.forEach(walkRequest);
+    };
+    insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
+    return criticalRequests;
+  }
+  /**
+   * Returns true when `formatCriticalRequests()` emits compressed network rows
+   * (backed by `NetworkDependencyTree.rootNodes`, the insight's `CriticalRequestNode` tree).
+   */
+  hasCriticalRequests() {
+    for (const insightSet of this.#parsedTrace.insights?.values() ?? []) {
+      if (this.#getCriticalRequests(insightSet).length > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
   formatCriticalRequests() {
     const parsedTrace = this.#parsedTrace;
     return this.#formatFactByInsightSet({
@@ -6199,12 +6220,7 @@ var PerformanceTraceFormatter = class {
       title: "Critical network requests",
       empty: "none",
       cb: async (insightSet) => {
-        const criticalRequests = [];
-        const walkRequest = (node) => {
-          criticalRequests.push(node.request);
-          node.children.forEach(walkRequest);
-        };
-        insightSet.model.NetworkDependencyTree?.rootNodes.forEach(walkRequest);
+        const criticalRequests = this.#getCriticalRequests(insightSet);
         return criticalRequests.length ? this.formatNetworkRequests(criticalRequests, { verbose: false }) : null;
       }
     });
@@ -6655,6 +6671,22 @@ Durations (all in milliseconds):
 - \`responseHeaders\`: A list (separated by '|') of values for specific, pre-defined response headers, enclosed in square brackets.
 The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
 `;
+  /**
+   * Shared `PromptFact` wrapper for `callFrameDataFormatDescription`, enabling
+   * reference-based deduplication across `AiAgent2` callers.
+   */
+  static callFrameDataFormatFact = {
+    title: "Call frame data format",
+    description: _PerformanceTraceFormatter.callFrameDataFormatDescription
+  };
+  /**
+   * Shared `PromptFact` wrapper for `networkDataFormatDescription`, enabling
+   * reference-based deduplication across `PerformanceTraceContext` and `SKILLS.performance`.
+   */
+  static networkDataFormatFact = {
+    title: "Network request data format",
+    description: _PerformanceTraceFormatter.networkDataFormatDescription
+  };
   /**
    * This is the network request data passed to the Performance agent.
    *
@@ -9656,6 +9688,15 @@ var ConversationContext = class {
     return null;
   }
   /**
+   * Returns persistent facts about the context that are only sent to the model
+   * once per conversation, reducing token usage in subsequent turns.
+   * Return stable constant `PromptFact` references so `AiAgent2` can deduplicate them.
+   * Currently only used by AiAgent2 (V1 agents use `addFact()`).
+   */
+  getPromptFacts() {
+    return [];
+  }
+  /**
    * Returns a list of context details to display to the user in the UI.
    * Currently only used by AiAgent2.
    */
@@ -10734,6 +10775,17 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
       }
     }
     return suggestions;
+  }
+  /**
+   * Supplies the compressed network request column legend on the first turn when
+   * critical requests exist, without exposing static LLM format instructions in
+   * `getUserFacingDetails()` UI disclosures or mutating `getPromptDetails()`.
+   */
+  getPromptFacts() {
+    if (this.createFormatter().hasCriticalRequests()) {
+      return [PerformanceTraceFormatter.networkDataFormatFact];
+    }
+    return [];
   }
   /**
    * Returns a markdown-formatted payload containing the trace data facts
@@ -15026,18 +15078,15 @@ var skill6 = {
 var SKILLS = {
   styling: skill6,
   network: skill2,
-  // Append compressed format descriptions here to keep a single source of truth
-  // alongside PerformanceTraceFormatter without inflating performanceSkill.description
-  // in the unloaded skills manifest.
+  // Append compressed format descriptions as facts to deduplicate across
+  // PerformanceTraceContext and learnSkills(['performance']) without inflating
+  // performanceSkill.description in the unloaded skills manifest.
   performance: {
     ...skill3,
-    instructions: `${skill3.instructions}
-
-# Data Formats
-
-${PerformanceTraceFormatter.networkDataFormatDescription.trim()}
-
-${PerformanceTraceFormatter.callFrameDataFormatDescription.trim()}`
+    facts: [
+      PerformanceTraceFormatter.networkDataFormatFact,
+      PerformanceTraceFormatter.callFrameDataFormatFact
+    ]
   },
   storage: skill5,
   sources: skill4,
@@ -15133,9 +15182,42 @@ var AiAgent2 = class extends AiAgent {
    * large context blocks on subsequent turns in the same conversation.
    */
   #lastSentPromptDetails = null;
+  /**
+   * Tracks `PromptFact` instances already appended to `#history` in this conversation.
+   * Facts are injected into append-only history rather than AIDA's wire `request.facts`
+   * field (which `FactsToText` prepends to `current_message` on every step, repeating
+   * tokens and invalidating prefix caching) or `getPromptDetails()` (which must stay
+   * deterministic across turns for `#lastSentPromptDetails` deduplication).
+   */
+  #sentFacts = /* @__PURE__ */ new Set();
   clearCache() {
     super.clearCache();
     this.#lastSentPromptDetails = null;
+    this.#sentFacts.clear();
+  }
+  /**
+   * Appends any `facts` not yet recorded in `#sentFacts` to `content` under
+   * `# References` with `## ${fact.title}` subheadings.
+   */
+  #appendUnsentFacts(content, facts = []) {
+    const factSections = [];
+    for (const fact of facts) {
+      if (!this.#sentFacts.has(fact)) {
+        this.#sentFacts.add(fact);
+        factSections.push(`## ${fact.title}
+
+${fact.description.trim()}`);
+      }
+    }
+    if (factSections.length === 0) {
+      return content;
+    }
+    const references = `# References
+
+${factSections.join("\n\n")}`;
+    return content ? `${content}
+
+${references}` : references;
   }
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   preamble = preamble8;
@@ -15285,34 +15367,26 @@ ${skillsManifest}`,
   async enhanceQuery(query, selected = null, _multimodalInputType) {
     this.#pendingAutoLearnedSkills = [];
     const promptDetails = selected ? await selected.getPromptDetails() : null;
-    let enhancedQuery = query;
+    let contextDetails = "";
     if (!promptDetails) {
       this.#lastSentPromptDetails = null;
     } else {
-      let contextDetails;
-      if (promptDetails === this.#lastSentPromptDetails) {
-        contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
-      } else {
-        contextDetails = promptDetails;
-        this.#lastSentPromptDetails = promptDetails;
-      }
-      enhancedQuery = `${contextDetails}
+      contextDetails = promptDetails === this.#lastSentPromptDetails ? UNCHANGED_CONTEXT_PROMPT_NOTICE : promptDetails;
+      this.#lastSentPromptDetails = promptDetails;
+    }
+    let autoLoadedBlock = "";
+    const mappedSkill = this.#skillForContext(selected);
+    if (mappedSkill && SKILLS[mappedSkill] && !this.#activeSkills.has(mappedSkill)) {
+      autoLoadedBlock = await this.learnSkill([mappedSkill]);
+      this.#pendingAutoLearnedSkills.push(mappedSkill);
+    }
+    const contextBlock = this.#appendUnsentFacts(contextDetails, selected?.getPromptFacts());
+    const prefix = [autoLoadedBlock, contextBlock].filter(Boolean).join("\n\n");
+    return prefix ? `${prefix}
 
 # User request
 
-QUERY: ${query}`;
-    }
-    const mappedSkill = this.#skillForContext(selected);
-    if (mappedSkill && SKILLS[mappedSkill] && !this.#activeSkills.has(mappedSkill)) {
-      const autoLoadedBlock = await this.learnSkill([mappedSkill]);
-      this.#pendingAutoLearnedSkills.push(mappedSkill);
-      if (autoLoadedBlock) {
-        return `${autoLoadedBlock}
-
-${enhancedQuery}`;
-      }
-    }
-    return enhancedQuery;
+QUERY: ${query}` : query;
   }
   /**
    * Parses a completed response. Only the last line can be the follow-up
@@ -15348,21 +15422,20 @@ ${enhancedQuery}`;
     }
   }
   async learnSkill(names) {
-    let response = "";
+    const sections = [];
     for (const name of names) {
       if (this.#activeSkills.has(name)) {
         debugLog6(`[AiAgent2] Skill '${name}' is already loaded`);
-        response += `Error: Skill '${name}' is already loaded. Call its tools directly instead of invoking learnSkills for '${name}' again.
-`;
+        sections.push(`Error: Skill '${name}' is already loaded. Call its tools directly instead of invoking learnSkills for '${name}' again.`);
         continue;
       }
       const skillObj = SKILLS[name];
       if (skillObj) {
         this.#activeSkills.add(name);
         debugLog6(`[AiAgent2] Loaded skill '${name}' with tools: [${skillObj.allowedTools.join(", ")}]`);
-        response += `Skill ${name} loaded. Instructions:
-${skillObj.instructions}
-`;
+        const instructions = this.#appendUnsentFacts(skillObj.instructions.trim(), skillObj.facts);
+        sections.push(`Skill ${name} loaded. Instructions:
+${instructions}`);
         for (const toolName of skillObj.allowedTools) {
           const tool = ToolRegistry.get(toolName);
           if (tool) {
@@ -15371,11 +15444,10 @@ ${skillObj.instructions}
         }
       } else {
         debugLog6(`[AiAgent2] Failed to load skill '${name}'`);
-        response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(", ")}.
-`;
+        sections.push(`Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(", ")}.`);
       }
     }
-    return response.trim();
+    return sections.join("\n\n");
   }
   #getExecutionContextNode() {
     if (this.context instanceof DOMNodeContext) {

@@ -21,6 +21,9 @@
   ],
   "references": [
     {
+      "path": "../../../front_end/core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../conductor/implementation-tsconfig.ref.json"
     },
     {

@@ -1,3 +1,4 @@
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -20,6 +21,18 @@ import { WebCustomData } from './WebCustomData.js';
 export declare const REGISTERED_PROPERTY_SECTION_NAME = "@property";
 /** Title of the function section **/
 export declare const FUNCTION_SECTION_NAME = "@function";
+export interface HeaderViewInput {
+    showNoMatches: boolean;
+    toolbarItems: readonly UI.Toolbar.ToolbarItem[];
+    toolbarItemsLocation?: string;
+    toolbarPane: UI.Widget.Widget | null;
+    toolbarPaneAnimation: string | null;
+    onFilterChanged: (text: string) => void;
+    onRegexToggled: (toggled: boolean) => void;
+    onToolbarPaneAnimationEnd: (animationName: string) => void;
+}
+export type HeaderView = (input: HeaderViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_HEADER_VIEW: HeaderView;
 declare const StylesSidebarPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof ElementsSidebarPane>;
 export declare class StylesSidebarPane extends StylesSidebarPaneBase implements StylesContainer {
     #private;
@@ -28,11 +41,8 @@ export declare class StylesSidebarPane extends StylesSidebarPaneBase implements 
     private animatedToolbarPane;
     private pendingWidget;
     private pendingWidgetToggle;
-    private toolbar;
-    private toolbarPaneElement;
     private lastFilterChange;
     private visibleSections;
-    private noMatchesElement;
     private sectionsContainer;
     sectionByElement: WeakMap<Node, StylePropertiesSection>;
     readonly linkifier: Components.Linkifier.Linkifier;
@@ -56,7 +66,7 @@ export declare class StylesSidebarPane extends StylesSidebarPaneBase implements 
     activeCSSAngle: InlineEditor.CSSAngle.CSSAngle | null;
     aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
     aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
-    constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, changeTracker?: ChangeTracker.ChangeTracker.ChangeTracker);
+    constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, changeTracker?: ChangeTracker.ChangeTracker.ChangeTracker, headerView?: HeaderView);
     get webCustomData(): WebCustomData | undefined;
     get changeTracker(): ChangeTracker.ChangeTracker.ChangeTracker | undefined;
     private onScroll;
@@ -72,7 +82,6 @@ export declare class StylesSidebarPane extends StylesSidebarPaneBase implements 
     jumpToCounterStyleDefinition(counterStyleName: string): void;
     forceUpdate(): void;
     private updateCollapsedSectionsSetting;
-    private sectionsContainerKeyDown;
     private sectionsContainerFocusChanged;
     resetFocus(): void;
     onAddButtonLongClick(event: Event): void;
@@ -117,7 +126,6 @@ export declare class StylesSidebarPane extends StylesSidebarPaneBase implements 
     getSectionBlockByName(name: string): SectionBlock | undefined;
     allSections(): StylePropertiesSection[];
     private clipboardCopy;
-    private createStylesSidebarToolbar;
     showToolbarPane(widget: UI.Widget.Widget | null, toggle: UI.Toolbar.ToolbarToggle | null): void;
     appendToolbarItem(item: UI.Toolbar.ToolbarItem): void;
     addStyleUpdateListener(listener: () => void): void;

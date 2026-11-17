@@ -41,3 +41,8 @@ export declare function getDurationString(totalTime?: Trace.Types.Timing.Micro, 
  */
 export declare function getEventLevel(event: Trace.Types.Events.Event, lastTimestampByLevel: LastTimestampByLevel): number;
 export declare function addDecorationToEvent(timelineData: PerfUI.FlameChart.FlameChartTimelineData, eventIndex: number, decoration: PerfUI.FlameChart.FlameChartDecoration): void;
+export declare const WHISKER_STROKE_COLOR = "#ccc";
+/**
+ * Draws left and right duration whiskers with 6px vertical end-ticks flanking an event's core box.
+ */
+export declare function drawWhiskers(context: CanvasRenderingContext2D, whiskerStartX: number, boxStartX: number, boxEndX: number, whiskerEndX: number, y: number, height: number, strokeColor: string): void;

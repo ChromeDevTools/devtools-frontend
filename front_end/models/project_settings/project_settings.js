@@ -29,6 +29,29 @@ function isLocalFrame(frame) {
 }
 var EMPTY_PROJECT_SETTINGS = Object.freeze({});
 var IDLE_PROMISE = Promise.resolve();
+var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+var DISALLOWED_PATH_CHARS_REGEX = /[\p{Cc}\p{Cs}\p{Bidi_Control}]/u;
+var WINDOWS_DRIVE_ABSOLUTE_PREFIX_REGEX = /^[A-Za-z]:[\\/]/;
+function isValidWorkspaceUuid(uuid) {
+  return UUID_REGEX.test(uuid);
+}
+function isValidWorkspaceRoot(root) {
+  if (root.length === 0 || root.trim() !== root || DISALLOWED_PATH_CHARS_REGEX.test(root)) {
+    return false;
+  }
+  if (root.startsWith("/")) {
+    if (root.startsWith("//") || root.startsWith("/\\")) {
+      return false;
+    }
+    const segments = root.slice(1).split("/").filter((segment) => segment.length > 0);
+    return segments.length > 0 && segments.every((segment) => segment !== "." && segment !== "..");
+  }
+  if (WINDOWS_DRIVE_ABSOLUTE_PREFIX_REGEX.test(root)) {
+    const segments = root.slice(2).split(/[\\/]/).filter((segment) => segment.length > 0);
+    return segments.length > 0 && segments.every((segment) => segment !== "." && segment !== ".." && !segment.endsWith(".") && !segment.endsWith(" ") && !segment.includes(":"));
+  }
+  return false;
+}
 var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
   #pageResourceLoader;
   #targetManager;
@@ -123,17 +146,21 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
       { target, frameId, initiatorUrl }
     );
     const devtoolsJSON = JSON.parse(content);
-    if (typeof devtoolsJSON.workspace !== "undefined") {
+    if (typeof devtoolsJSON !== "object" || devtoolsJSON === null || Array.isArray(devtoolsJSON)) {
+      throw new Error("Invalid project settings payload");
+    }
+    if (Object.hasOwn(devtoolsJSON, "workspace") && typeof devtoolsJSON.workspace !== "undefined") {
       const { workspace } = devtoolsJSON;
-      if (typeof workspace !== "object" || workspace === null) {
+      if (typeof workspace !== "object" || workspace === null || Array.isArray(workspace)) {
         throw new Error('Invalid "workspace" field');
       }
-      if (typeof workspace.root !== "string") {
+      if (!Object.hasOwn(workspace, "root") || typeof workspace.root !== "string" || !isValidWorkspaceRoot(workspace.root)) {
         throw new Error('Invalid or missing "workspace.root" field');
       }
-      if (typeof workspace.uuid !== "string") {
+      if (!Object.hasOwn(workspace, "uuid") || typeof workspace.uuid !== "string" || !isValidWorkspaceUuid(workspace.uuid)) {
         throw new Error('Invalid or missing "workspace.uuid" field');
       }
+      Object.freeze(workspace);
     }
     return Object.freeze(devtoolsJSON);
   }

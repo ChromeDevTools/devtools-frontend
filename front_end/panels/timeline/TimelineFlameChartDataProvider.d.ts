@@ -64,11 +64,8 @@ export declare class TimelineFlameChartDataProvider extends Common.ObjectWrapper
      */
     rebuildTimelineData(): void;
     /**
-     * Reset all data other than the UI elements.
-     * This should be called when
-     * - initialized the data provider
-     * - a new trace file is coming (when `setModel()` is called)
-     * etc.
+     * Resets all per-trace data and caches while keeping cross-trace UI state
+     * (such as `#persistedGroupConfigSetting`).
      */
     reset(): void;
     maxStackDepth(): number;
@@ -88,7 +85,7 @@ export declare class TimelineFlameChartDataProvider extends Common.ObjectWrapper
     private preparePatternCanvas;
     private drawFrame;
     private drawScreenshot;
-    decorateEntry(entryIndex: number, context: CanvasRenderingContext2D, text: string | null, barX: number, barY: number, barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number, transformColor: (color: string) => string): boolean;
+    decorateEntry(entryIndex: number, context: CanvasRenderingContext2D, _text: string | null, barX: number, barY: number, barWidth: number, barHeight: number, _unclippedBarX: number, _timeToPixelRatio: number, transformColor: (color: string) => string): boolean;
     forceDecoration(entryIndex: number): boolean;
     private appendHeader;
     createSelection(entryIndex: number): TimelineSelection | null;
@@ -113,16 +110,11 @@ export declare class TimelineFlameChartDataProvider extends Common.ObjectWrapper
 export declare const InstantEventVisibleDurationMs: Trace.Types.Timing.Milli;
 export declare const enum Events {
     DATA_CHANGED = "DataChanged",
-    FLAME_CHART_ITEM_HOVERED = "FlameChartItemHovered",
-    ENTRY_LABEL_ANNOTATION_ADDED = "EntryLabelAnnotationAdded"
+    FLAME_CHART_ITEM_HOVERED = "FlameChartItemHovered"
 }
 export interface EventTypes {
     [Events.DATA_CHANGED]: void;
     [Events.FLAME_CHART_ITEM_HOVERED]: Trace.Types.Events.Event | null;
-    [Events.ENTRY_LABEL_ANNOTATION_ADDED]: {
-        entryIndex: number;
-        withLinkCreationButton: boolean;
-    };
 }
 /**
  * an entry is a trace event, they are classified into "entry types"

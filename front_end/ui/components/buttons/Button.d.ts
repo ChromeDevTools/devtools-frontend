@@ -85,6 +85,7 @@ export declare class Button extends HTMLElement {
     set iconName(iconName: string | undefined);
     set toggledIconName(toggledIconName: string);
     set toggleType(toggleType: ToggleType);
+    get variant(): Variant;
     set variant(variant: Variant);
     set size(size: Size);
     set accessibleLabel(label: string | undefined);

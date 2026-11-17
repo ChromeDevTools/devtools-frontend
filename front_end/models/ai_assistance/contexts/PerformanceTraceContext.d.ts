@@ -2,7 +2,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Trace from '../../trace/trace.js';
-import { type AiWidget, type ContextDetail, ConversationContext, type ConversationSuggestions } from '../agents/AiAgent.js';
+import { type AiWidget, type ContextDetail, ConversationContext, type ConversationSuggestions, type PromptFact } from '../agents/AiAgent.js';
 import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
 import type { AICallTree } from '../performance/AICallTree.js';
 import { AgentFocus } from '../performance/AIContext.js';
@@ -69,6 +69,12 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
      * "Ask AI".
      */
     getSuggestions(): Promise<ConversationSuggestions | undefined>;
+    /**
+     * Supplies the compressed network request column legend on the first turn when
+     * critical requests exist, without exposing static LLM format instructions in
+     * `getUserFacingDetails()` UI disclosures or mutating `getPromptDetails()`.
+     */
+    getPromptFacts(): readonly PromptFact[];
     /**
      * Returns a markdown-formatted payload containing the trace data facts
      * (summary, critical requests, activities, third-party code, and longest tasks)

@@ -13544,14 +13544,6 @@ var UIStrings22 = {
    */
   showUrlDecoded: "Show URL-decoded",
   /**
-   * @description Context menu item in the Application panel to start a chat with AI assistance.
-   */
-  startAChat: "Start a chat",
-  /**
-   * @description Context menu item in the Application panel to explain a cookie with AI assistance.
-   */
-  explainCookie: "Explain this cookie",
-  /**
    * @description Empty state header in the cookie preview of the Application panel when no cookie is selected.
    */
   noCookieSelected: "No cookie selected",
@@ -13875,14 +13867,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
     if (this.isAiButtonEnabled() && UI21.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       this.#updateAiAssistanceContext(cookie);
       if (UI21.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
-        const action8 = UI21.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString22(UIStrings22.startAChat));
-        submenu.defaultSection().appendItem(
-          i18nString22(UIStrings22.explainCookie),
-          () => action8.execute({ prompt: "What is the purpose of this cookie?" }),
-          { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
-        );
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
     }
   }
@@ -15418,15 +15403,7 @@ var UIStrings25 = {
   /**
    * @description Screen reader announcement when a DOM storage key-value item is deleted.
    */
-  domStorageItemDeleted: "The storage item was deleted",
-  /**
-   * @description Context menu item in the Application panel to start a chat with AI assistance.
-   */
-  startAChat: "Start a chat",
-  /**
-   * @description Context menu item in the Application panel to explain a DOM storage item with AI assistance.
-   */
-  explainItem: "Explain this item"
+  domStorageItemDeleted: "The storage item was deleted"
 };
 var str_25 = i18n49.i18n.registerUIStrings("panels/application/DOMStorageItemsView.ts", UIStrings25);
 var i18nString25 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
@@ -15581,14 +15558,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(openAiAssistanceId)) {
       this.#setAiStorageContext(item4);
-      const action8 = actionRegistry.getAction(openAiAssistanceId);
-      const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
-      submenu.defaultSection().appendAction(openAiAssistanceId, i18nString25(UIStrings25.startAChat));
-      submenu.defaultSection().appendItem(
-        i18nString25(UIStrings25.explainItem),
-        () => action8.execute({ prompt: "Explain this storage item." }),
-        { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".storage" }
-      );
+      contextMenu.footerSection().appendAction(openAiAssistanceId);
     }
   }
   onAiButtonClick(item4, _event) {
@@ -18878,18 +18848,6 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
 // ../../front_end/panels/application/ApplicationPanelSidebar.ts
 var UIStrings31 = {
   /**
-   * @description Context menu item to start a chat with AI in the Application panel sidebar.
-   */
-  startAChat: "Start a chat",
-  /**
-   * @description Context menu item to explain storage with AI in the Application panel sidebar.
-   */
-  explainStorage: "Explain storage",
-  /**
-   * @description Context menu item to explain cookies with AI in the Application panel sidebar.
-   */
-  explainCookies: "Explain cookies",
-  /**
    * @description Tree item label for Sub Apps in the sidebar of the Application panel.
    */
   subApps: "Sub apps",
@@ -20460,14 +20418,7 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
       if (UI32.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         UI32.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action8 = UI32.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString31(UIStrings31.startAChat));
-        submenu.defaultSection().appendItem(
-          i18nString31(UIStrings31.explainStorage),
-          () => action8.execute({ prompt: "What is the purpose of this storage bucket?" }),
-          { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".storage" }
-        );
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
     }
     void contextMenu.show();
@@ -20573,14 +20524,7 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
       if (UI32.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         UI32.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action8 = UI32.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString31(UIStrings31.startAChat));
-        submenu.defaultSection().appendItem(
-          i18nString31(UIStrings31.explainCookies),
-          () => action8.execute({ prompt: "What is the purpose of these cookies?" }),
-          { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
-        );
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
     }
     void contextMenu.show();

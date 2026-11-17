@@ -1,6 +1,6 @@
 import type * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
-import { type CompatibilityTracksAppender, type PopoverInfo, type TrackAppender, type TrackAppenderName } from './CompatibilityTracksAppender.js';
+import { type CompatibilityTracksAppender, type DrawOverride, type PopoverInfo, type TrackAppender, type TrackAppenderName } from './CompatibilityTracksAppender.js';
 export declare class InteractionsTrackAppender implements TrackAppender {
     #private;
     readonly appenderName: TrackAppenderName;
@@ -19,5 +19,6 @@ export declare class InteractionsTrackAppender implements TrackAppender {
      * Gets the color an event added by this appender should be rendered with.
      */
     colorForEvent(event: Trace.Types.Events.Event): string;
+    getDrawOverride(event: Trace.Types.Events.Event): DrawOverride | undefined;
     setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void;
 }

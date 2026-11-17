@@ -252,7 +252,7 @@ function strip(strings) {
   const stripped = strings.map((s) => s.replace(/[<>]|\n\s*/g, (s2) => {
     if (s2 === "<") {
       inTag = true;
-    } else if (inTag && s2 === ">") {
+    } else if (s2 === ">") {
       inTag = false;
     } else if (!inTag) {
       return "";

@@ -4203,6 +4203,7 @@ var ProtocolService = class {
 // ../../front_end/panels/lighthouse/LighthouseReportRenderer.ts
 var LighthouseReportRenderer_exports = {};
 __export(LighthouseReportRenderer_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   LighthouseReportRenderer: () => LighthouseReportRenderer
 });
 import * as Common3 from "../../core/common/common.js";
@@ -4218,9 +4219,124 @@ import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
 import { html, nothing, render } from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
+var { widget } = UI2.Widget;
 var MaxLengthForLinks = 40;
-var LighthouseReportRenderer = class _LighthouseReportRenderer {
-  static renderLighthouseReport(lhr, artifacts, opts) {
+function renderContent(input) {
+  switch (input.type) {
+    case "node":
+      return html`${widget(PanelsCommon.DOMLinkifier.DOMNodeLink, {
+        node: input.node,
+        options: { tooltip: input.snippet }
+      })}`;
+    case "source-location":
+      return Components.Linkifier.Linkifier.renderLinkifiedUrl(input.url, {
+        lineNumber: input.lineNumber,
+        columnNumber: input.columnNumber,
+        showColumnNumber: false,
+        maxLength: MaxLengthForLinks
+      });
+    case "report": {
+      if (!input.report) {
+        return nothing;
+      }
+      const reportEl = LighthouseReport.renderReport(input.report, {
+        disableDarkMode: true,
+        onViewTrace: input.onViewTrace,
+        onSaveFileOverride: input.onSaveFileOverride,
+        onPrintOverride: input.onPrintOverride,
+        getStandaloneReportHTML: input.getStandaloneReportHTML
+      });
+      reportEl.classList.add("lh-devtools");
+      reportEl.classList.toggle("lh-dark", input.darkMode);
+      LighthouseReportRenderer.installVisualLogging(reportEl);
+      return html`${reportEl}`;
+    }
+    default:
+      Platform.assertNever(input, "Unknown Lighthouse view input type");
+  }
+}
+var DEFAULT_VIEW = (input, _output, target) => {
+  render(renderContent(input), target);
+};
+var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widget.Widget {
+  #view;
+  #report = null;
+  #artifacts;
+  #beforePrint;
+  #afterPrint;
+  #isRendered = false;
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  get report() {
+    return this.#report;
+  }
+  set report(report) {
+    if (this.#report === report) {
+      return;
+    }
+    this.#report = report;
+    this.#isRendered = false;
+    this.requestUpdate();
+  }
+  set artifacts(artifacts) {
+    if (this.#artifacts === artifacts) {
+      return;
+    }
+    this.#artifacts = artifacts;
+    this.#isRendered = false;
+    this.requestUpdate();
+  }
+  set beforePrint(beforePrint) {
+    if (this.#beforePrint === beforePrint) {
+      return;
+    }
+    this.#beforePrint = beforePrint;
+    this.#isRendered = false;
+    this.requestUpdate();
+  }
+  set afterPrint(afterPrint) {
+    if (this.#afterPrint === afterPrint) {
+      return;
+    }
+    this.#afterPrint = afterPrint;
+    this.#isRendered = false;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
+    this.#onThemeChange();
+    if (!this.#isRendered) {
+      this.requestUpdate();
+    }
+  }
+  willHide() {
+    ThemeSupport.ThemeSupport.instance().removeEventListener(
+      ThemeSupport.ThemeChangeEvent.eventName,
+      this.#onThemeChange
+    );
+    super.willHide();
+  }
+  #onThemeChange = () => {
+    const darkMode = ThemeSupport.ThemeSupport.hasInstance() && ThemeSupport.ThemeSupport.instance().themeName() === "dark";
+    this.contentElement.querySelector(".lh-devtools")?.classList.toggle("lh-dark", darkMode);
+  };
+  performUpdate() {
+    this.#isRendered = true;
+    const darkMode = ThemeSupport.ThemeSupport.hasInstance() && ThemeSupport.ThemeSupport.instance().themeName() === "dark";
+    const reportOptions = _LighthouseReportRenderer.#createReportOptions(this.#report, this.#artifacts, {
+      beforePrint: this.#beforePrint,
+      afterPrint: this.#afterPrint
+    });
+    this.#view({ type: "report", report: this.#report, darkMode, ...reportOptions }, void 0, this.contentElement);
+    const reportEl = this.contentElement.querySelector(".lh-devtools");
+    if (this.#report && reportEl) {
+      _LighthouseReportRenderer.#finalizeRenderedReport(reportEl, this.#report, this.#artifacts, this.#view);
+    }
+  }
+  static #createReportOptions(lhr, artifacts, opts) {
     let onViewTrace = void 0;
     if (artifacts) {
       onViewTrace = async () => {
@@ -4230,6 +4346,9 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
       };
     }
     async function onSaveFileOverride(blob) {
+      if (!lhr) {
+        return;
+      }
       const domain = new Common3.ParsedURL.ParsedURL(lhr.finalUrl || lhr.finalDisplayedUrl).domain();
       const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, "_");
       const timestamp = Platform.DateUtilities.toISO8601Compact(new Date(lhr.fetchTime));
@@ -4266,13 +4385,21 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
     function getStandaloneReportHTML() {
       return Lighthouse.ReportGenerator.ReportGenerator.generateReportHtml(lhr);
     }
+    return { onViewTrace, onSaveFileOverride, onPrintOverride, getStandaloneReportHTML };
+  }
+  static #finalizeRenderedReport(reportEl, lhr, artifacts, view = DEFAULT_VIEW) {
+    reportEl._lighthouseResultForTesting = lhr;
+    reportEl._lighthouseArtifactsForTesting = artifacts;
+    void _LighthouseReportRenderer.waitForMainTargetLoad().then(() => {
+      void _LighthouseReportRenderer.linkifyNodeDetails(reportEl, view);
+      void _LighthouseReportRenderer.linkifySourceLocationDetails(reportEl, view);
+    });
+  }
+  static renderLighthouseReport(lhr, artifacts, opts) {
+    const reportOptions = _LighthouseReportRenderer.#createReportOptions(lhr, artifacts, opts);
     const reportEl = LighthouseReport.renderReport(lhr, {
-      // Disable dark mode so we can manually adjust it.
       disableDarkMode: true,
-      onViewTrace,
-      onSaveFileOverride,
-      onPrintOverride,
-      getStandaloneReportHTML
+      ...reportOptions
     });
     reportEl.classList.add("lh-devtools");
     const updateDarkModeIfNecessary = () => {
@@ -4283,13 +4410,8 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
       updateDarkModeIfNecessary
     );
     updateDarkModeIfNecessary();
-    reportEl._lighthouseResultForTesting = lhr;
-    reportEl._lighthouseArtifactsForTesting = artifacts;
     _LighthouseReportRenderer.installVisualLogging(reportEl);
-    void _LighthouseReportRenderer.waitForMainTargetLoad().then(() => {
-      void _LighthouseReportRenderer.linkifyNodeDetails(reportEl);
-      void _LighthouseReportRenderer.linkifySourceLocationDetails(reportEl);
-    });
+    _LighthouseReportRenderer.#finalizeRenderedReport(reportEl, lhr, artifacts);
     return reportEl;
   }
   /**
@@ -4328,7 +4450,7 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
     }
     await resourceTreeModel.once(SDK3.ResourceTreeModel.Events.Load);
   }
-  static async linkifyNodeDetails(el) {
+  static async linkifyNodeDetails(el, view = DEFAULT_VIEW) {
     const mainTarget = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
       return;
@@ -4351,35 +4473,32 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
       if (!node) {
         continue;
       }
-      const element = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(
-        node,
-        { tooltip: detailsItem.snippet, preventKeyboardFocus: void 0 }
-      );
       UI2.Tooltip.Tooltip.install(origHTMLElement, "");
       const screenshotElement = origHTMLElement.querySelector(".lh-element-screenshot");
-      origHTMLElement.textContent = "";
-      render(html`${screenshotElement ?? nothing}${element}`, origHTMLElement);
+      const linkContainer = document.createElement("span");
+      origHTMLElement.replaceChildren(...screenshotElement ? [screenshotElement] : [], linkContainer);
+      view({ type: "node", node, snippet: detailsItem.snippet }, void 0, linkContainer);
     }
   }
-  static async linkifySourceLocationDetails(el) {
+  static async linkifySourceLocationDetails(el, view = DEFAULT_VIEW) {
     for (const origElement of el.getElementsByClassName("lh-source-location")) {
       const origHTMLElement = origElement;
       const detailsItem = origHTMLElement.dataset;
       if (!detailsItem.sourceUrl || !detailsItem.sourceLine || !detailsItem.sourceColumn) {
         continue;
       }
-      const url = detailsItem.sourceUrl;
-      const line = Number(detailsItem.sourceLine);
-      const column = Number(detailsItem.sourceColumn);
-      const element = Components.Linkifier.Linkifier.linkifyURL(url, {
-        lineNumber: line,
-        columnNumber: column,
-        showColumnNumber: false,
-        maxLength: MaxLengthForLinks
-      });
       UI2.Tooltip.Tooltip.install(origHTMLElement, "");
-      origHTMLElement.textContent = "";
-      origHTMLElement.appendChild(element);
+      origHTMLElement.replaceChildren();
+      view(
+        {
+          type: "source-location",
+          url: detailsItem.sourceUrl,
+          lineNumber: Number(detailsItem.sourceLine),
+          columnNumber: Number(detailsItem.sourceColumn)
+        },
+        void 0,
+        origHTMLElement
+      );
     }
   }
   static installVisualLogging(el) {
@@ -4667,6 +4786,10 @@ var lighthouseStartView_css_default = `/*
   }
 }
 
+.lighthouse-launcher-row devtools-checkbox {
+  margin-left: calc(-1 * var(--sys-size-3));
+}
+
 .lighthouse-launcher-row .dimmed {
   padding-left: var(--sys-size-10);
 }
@@ -4689,7 +4812,8 @@ var lighthouseStartView_css_default = `/*
 
 .lighthouse-warning-text::before {
   content: "\u26A0";
-  margin-right: 10px;
+  margin-left: var(--sys-size-2);
+  margin-right: var(--sys-size-5);
 }
 
 .lighthouse-options {
@@ -5099,7 +5223,7 @@ var StartView = class extends UI5.Widget.Widget {
 // ../../front_end/panels/lighthouse/LighthouseStatusView.ts
 var LighthouseStatusView_exports = {};
 __export(LighthouseStatusView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   StatusPhases: () => StatusPhases,
   StatusView: () => StatusView,
   fastFactRotationInterval: () => fastFactRotationInterval,
@@ -5373,7 +5497,7 @@ var UIStrings4 = {
 var str_4 = i18n8.i18n.registerUIStrings("panels/lighthouse/LighthouseStatusView.ts", UIStrings4);
 var i18nString4 = i18n8.i18n.getLocalizedString.bind(void 0, str_4);
 var i18nLazyString2 = i18n8.i18n.getLazilyComputedLocalizedString.bind(void 0, str_4);
-var DEFAULT_VIEW = (input, _output, target) => {
+var DEFAULT_VIEW2 = (input, _output, target) => {
   const {
     statusHeader,
     statusText,
@@ -5477,7 +5601,7 @@ var StatusView = class {
       this.dialog.setSizeBehavior(UI6.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
       this.dialog.setMaxContentSize(new Geometry.Size(500, 400));
     }
-    DEFAULT_VIEW(
+    DEFAULT_VIEW2(
       {
         statusHeader: this.statusHeader,
         statusText: this.statusText,
@@ -6044,6 +6168,9 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
     this.updateSettingsPaneVisibility();
   }
   renderStartView() {
+    for (const reportWidget of this.cachedRenderedReports.values()) {
+      reportWidget.detach();
+    }
     this.auditResultsElement.removeChildren();
     this.statusView.hide();
     this.reportSelector.selectNewReport();
@@ -6082,34 +6209,41 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
     this.contentElement.classList.toggle("in-progress", false);
     this.startView.hideWidget();
     this.statusView.hide();
+    for (const reportWidget2 of this.cachedRenderedReports.values()) {
+      reportWidget2.detach();
+    }
     this.auditResultsElement.removeChildren();
     this.newButton.setEnabled(true);
     this.refreshToolbarUI();
     UI8.Context.Context.instance().setFlavor(ActiveLighthouseReport, new ActiveLighthouseReport(lighthouseResult));
-    const cachedRenderedReport = this.cachedRenderedReports.get(lighthouseResult);
-    if (cachedRenderedReport) {
-      this.auditResultsElement.appendChild(cachedRenderedReport);
-      return;
+    let reportWidget = this.cachedRenderedReports.get(lighthouseResult);
+    if (!reportWidget) {
+      reportWidget = new LighthouseReportRenderer();
+      reportWidget.report = lighthouseResult;
+      reportWidget.artifacts = artifacts;
+      reportWidget.beforePrint = this.beforePrint.bind(this);
+      reportWidget.afterPrint = this.afterPrint.bind(this);
+      this.cachedRenderedReports.set(lighthouseResult, reportWidget);
     }
-    const reportContainer = LighthouseReportRenderer.renderLighthouseReport(lighthouseResult, artifacts, {
-      beforePrint: this.beforePrint.bind(this),
-      afterPrint: this.afterPrint.bind(this)
-    });
-    this.cachedRenderedReports.set(lighthouseResult, reportContainer);
+    reportWidget.show(this.auditResultsElement);
+    if (!reportWidget.isShowing()) {
+      reportWidget.requestUpdate();
+    }
+    return reportWidget;
   }
   buildReportUI(lighthouseResult, artifacts) {
     if (lighthouseResult === null) {
       return;
     }
-    const optionElement = new Item(
-      lighthouseResult,
-      () => this.renderReport(lighthouseResult, artifacts),
-      this.renderStartView.bind(this)
-    );
+    const optionElement = new Item(lighthouseResult, () => {
+      this.renderReport(lighthouseResult, artifacts);
+    }, this.renderStartView.bind(this));
     this.reportSelector.prepend(optionElement);
     this.refreshToolbarUI();
-    this.renderReport(lighthouseResult);
-    this.auditResultsElement.querySelector(".lh-topbar__url")?.focus();
+    const reportWidget = this.renderReport(lighthouseResult);
+    void reportWidget.updateComplete.then(() => {
+      this.auditResultsElement.querySelector(".lh-topbar__url")?.focus();
+    });
   }
   handleDrop(dataTransfer) {
     const items = dataTransfer.items;

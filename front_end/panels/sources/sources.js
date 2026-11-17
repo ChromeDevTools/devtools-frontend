@@ -5915,25 +5915,6 @@ var navigatorTree_css_default = `/*
   display: inline-flex;
 }
 
-.navigator-file-tree-item devtools-icon.dot::before {
-  width: 7px;
-  height: 7px;
-  top: var(--sys-size-6);
-  left: 11px;
-}
-
-.navigator-file-tree-item:hover:not(.force-white-icons) devtools-icon.dot::before {
-  outline-color: var(--icon-gap-hover);
-}
-
-.navigator-file-tree-item.selected:not(.force-white-icons) devtools-icon.dot::before {
-  outline-color: var(--icon-gap-inactive);
-}
-
-.navigator-file-tree-item.selected.force-white-icons devtools-icon.dot::before {
-  outline-color: var(--icon-gap-focus-selected);
-}
-
 .navigator-sm-stylesheet-tree-item devtools-icon,
 .navigator-stylesheet-tree-item devtools-icon {
   color: var(--icon-file-styles);
@@ -15705,23 +15686,6 @@ var UIStrings18 = {
    */
   openInSourcesPanel: "Open in Sources panel",
   /**
-   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
-   */
-  startAChat: "Start a chat",
-  /**
-   * @description Text of a context menu item to redirect to the AI assistance panel and directly execute
-   * a prompt to assess the performance of a script.
-   */
-  assessPerformance: "Assess performance",
-  /**
-   * @description Context menu item in Sources panel to explain a script via AI.
-   */
-  explainThisScript: "Explain this script",
-  /**
-   * @description Context menu item in Sources panel to explain input handling in a script via AI.
-   */
-  explainInputHandling: "Explain input handling",
-  /**
    * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
    */
   navigatorShown: "Navigator sidebar shown",
@@ -16565,41 +16529,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       const editorElement = this.element.querySelector("devtools-text-editor");
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
         UI17.Context.Context.instance().setFlavor(Workspace23.UISourceCode.UISourceCode, uiSourceCode);
-        const action4 = UI17.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action4.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString17(UIStrings18.startAChat));
-        appendSubmenuPromptAction(
-          submenu,
-          action4,
-          i18nString17(UIStrings18.assessPerformance),
-          "Is this script optimized for performance?",
-          openAiAssistanceId + ".performance"
-        );
-        appendSubmenuPromptAction(
-          submenu,
-          action4,
-          i18nString17(UIStrings18.explainThisScript),
-          "What does this script do?",
-          openAiAssistanceId + ".script"
-        );
-        appendSubmenuPromptAction(
-          submenu,
-          action4,
-          i18nString17(UIStrings18.explainInputHandling),
-          "Does the script handle user input safely",
-          openAiAssistanceId + ".input"
-        );
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
     }
     if (uiSourceCode.contentType().hasScripts() && Bindings10.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(uiSourceCode).every((script) => script.isJavaScript())) {
       this.#callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
-    }
-    function appendSubmenuPromptAction(submenu, action4, label, prompt, jslogContext) {
-      submenu.defaultSection().appendItem(
-        label,
-        () => action4.execute({ prompt }),
-        { disabled: !action4.enabled(), jslogContext }
-      );
     }
   }
   #appendUISourceCodeFrameItems(contextMenu, target) {
@@ -17230,6 +17164,9 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       callstackSidebarPaneInstance = new _CallStackSidebarPane();
     }
     return callstackSidebarPaneInstance;
+  }
+  static removeInstance() {
+    callstackSidebarPaneInstance = void 0;
   }
   wasShown() {
     super.wasShown();

@@ -3191,6 +3191,12 @@
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "On this page you can inspect and modify animations"
   },
+  "panels/animation/AnimationTimeline.ts | animationGroupClosed": {
+    "message": "Animation group closed"
+  },
+  "panels/animation/AnimationTimeline.ts | animationGroupsCleared": {
+    "message": "All animation groups cleared"
+  },
   "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
     "message": "Animation inspection paused"
   },
@@ -3302,12 +3308,6 @@
   "panels/application/ApplicationPanelSidebar.ts | experimental": {
     "message": "Experimental"
   },
-  "panels/application/ApplicationPanelSidebar.ts | explainCookies": {
-    "message": "Explain cookies"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | explainStorage": {
-    "message": "Explain storage"
-  },
   "panels/application/ApplicationPanelSidebar.ts | extensionLocalStorage": {
     "message": "Local"
   },
@@ -3394,9 +3394,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
     "message": "Sibling sub apps"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | startAChat": {
-    "message": "Start a chat"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Storage"
@@ -4529,9 +4526,6 @@
   "panels/application/CookieItemsView.ts | cookieValue": {
     "message": "Cookie value"
   },
-  "panels/application/CookieItemsView.ts | explainCookie": {
-    "message": "Explain this cookie"
-  },
   "panels/application/CookieItemsView.ts | noCookieSelected": {
     "message": "No cookie selected"
   },
@@ -4549,9 +4543,6 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "Show URL-decoded"
-  },
-  "panels/application/CookieItemsView.ts | startAChat": {
-    "message": "Start a chat"
   },
   "panels/application/CrashReportContextView.ts | filterByText": {
     "message": "Filter by key or value"
@@ -4984,12 +4975,6 @@
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM storage items cleared"
-  },
-  "panels/application/DOMStorageItemsView.ts | explainItem": {
-    "message": "Explain this item"
-  },
-  "panels/application/DOMStorageItemsView.ts | startAChat": {
-    "message": "Start a chat"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
     "message": "Extension storage items"
@@ -7889,23 +7874,8 @@
   "panels/elements/DOMTreeContextMenu.ts | addAttribute": {
     "message": "Add attribute"
   },
-  "panels/elements/DOMTreeContextMenu.ts | addPadding": {
-    "message": "Add padding"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | alignItems": {
-    "message": "Align items"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | assessVisibility": {
-    "message": "Assess visibility"
-  },
   "panels/elements/DOMTreeContextMenu.ts | captureNodeScreenshot": {
     "message": "Capture node screenshot"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | centerElement": {
-    "message": "Center element"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | changeParentProperties": {
-    "message": "Change parent properties"
   },
   "panels/elements/DOMTreeContextMenu.ts | collapseChildren": {
     "message": "Collapse children"
@@ -7940,9 +7910,6 @@
   "panels/elements/DOMTreeContextMenu.ts | deleteElement": {
     "message": "Delete element"
   },
-  "panels/elements/DOMTreeContextMenu.ts | distributeItemsEvenly": {
-    "message": "Distribute items evenly"
-  },
   "panels/elements/DOMTreeContextMenu.ts | duplicateElement": {
     "message": "Duplicate element"
   },
@@ -7961,30 +7928,6 @@
   "panels/elements/DOMTreeContextMenu.ts | expandRecursively": {
     "message": "Expand recursively"
   },
-  "panels/elements/DOMTreeContextMenu.ts | explainContainerContext": {
-    "message": "Explain container context"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | explainContainerQueries": {
-    "message": "Explain container queries"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | explainContainerTypes": {
-    "message": "Explain container types"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | explainFlexbox": {
-    "message": "Explain flexbox"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | explainGridLayout": {
-    "message": "Explain grid layout"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | explainScrollbars": {
-    "message": "Explain scrollbars"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | explainSubgrids": {
-    "message": "Explain subgrids"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | findGridDefinition": {
-    "message": "Find grid definition"
-  },
   "panels/elements/DOMTreeContextMenu.ts | focus": {
     "message": "Focus"
   },
@@ -7994,29 +7937,17 @@
   "panels/elements/DOMTreeContextMenu.ts | paste": {
     "message": "Paste"
   },
-  "panels/elements/DOMTreeContextMenu.ts | removeScrollbars": {
-    "message": "Remove scrollbars"
-  },
   "panels/elements/DOMTreeContextMenu.ts | scrollIntoView": {
     "message": "Scroll into view"
   },
   "panels/elements/DOMTreeContextMenu.ts | showFrameDetails": {
     "message": "Show iframe details"
   },
-  "panels/elements/DOMTreeContextMenu.ts | startAChat": {
-    "message": "Start a chat"
-  },
   "panels/elements/DOMTreeContextMenu.ts | storeAsGlobalVariable": {
     "message": "Store as global variable"
   },
-  "panels/elements/DOMTreeContextMenu.ts | styleScrollbars": {
-    "message": "Style scrollbars"
-  },
   "panels/elements/DOMTreeContextMenu.ts | switchToAccessibilityTree": {
     "message": "Switch to accessibility tree"
-  },
-  "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
-    "message": "Wrap these items"
   },
   "panels/elements/DOMTreeElementWidget.ts | children": {
     "message": "Children:"
@@ -11132,9 +11063,6 @@
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
     "message": "Are you sure you want to clear browser cookies?"
   },
-  "panels/network/NetworkLogView.ts | assessSecurityHeaders": {
-    "message": "Assess security headers"
-  },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Blocked requests"
   },
@@ -11261,15 +11189,6 @@
   "panels/network/NetworkLogView.ts | editAndResendAsFetch": {
     "message": "Edit and resend as fetch"
   },
-  "panels/network/NetworkLogView.ts | explainFailures": {
-    "message": "Explain failures"
-  },
-  "panels/network/NetworkLogView.ts | explainPurpose": {
-    "message": "Explain purpose"
-  },
-  "panels/network/NetworkLogView.ts | explainSlowness": {
-    "message": "Explain slowness"
-  },
   "panels/network/NetworkLogView.ts | finishS": {
     "message": "Finish: {PH1}"
   },
@@ -11371,9 +11290,6 @@
   },
   "panels/network/NetworkLogView.ts | sSTransferred": {
     "message": "{PH1} / {PH2} transferred"
-  },
-  "panels/network/NetworkLogView.ts | startAChat": {
-    "message": "Start a chat"
   },
   "panels/network/NetworkLogView.ts | startRecording": {
     "message": "Start recording"
@@ -15737,9 +15653,6 @@
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Select folder for overrides"
   },
-  "panels/sources/SourcesPanel.ts | assessPerformance": {
-    "message": "Assess performance"
-  },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "Continue to here"
   },
@@ -15763,12 +15676,6 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Drop workspace folder here"
-  },
-  "panels/sources/SourcesPanel.ts | explainInputHandling": {
-    "message": "Explain input handling"
-  },
-  "panels/sources/SourcesPanel.ts | explainThisScript": {
-    "message": "Explain this script"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
     "message": "Group by authored/deployed"
@@ -15799,9 +15706,6 @@
   },
   "panels/sources/SourcesPanel.ts | showFunctionDefinition": {
     "message": "Show function definition"
-  },
-  "panels/sources/SourcesPanel.ts | startAChat": {
-    "message": "Start a chat"
   },
   "panels/sources/SourcesPanel.ts | storeAsGlobalVariable": {
     "message": "Store as global variable"
@@ -16937,14 +16841,8 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | addScriptToIgnoreList": {
     "message": "Add script to ignore list"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | assessThePurpose": {
-    "message": "Assess the purpose"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Dropped frame"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | findImprovements": {
-    "message": "Find improvements"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Frame"
@@ -16961,14 +16859,8 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | hideRepeatingChildren": {
     "message": "Hide repeating children"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | identifyTimeSpent": {
-    "message": "Identify time spent"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Idle frame"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | labelEntry": {
-    "message": "Label entry"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Partially-presented frame"
@@ -16981,9 +16873,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | resetTrace": {
     "message": "Reset trace"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | startAChat": {
-    "message": "Start a chat"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} at {PH2}"

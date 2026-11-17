@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Geometry from '../geometry/geometry.js';
+import { html, nothing, render } from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { GlassPane } from './GlassPane.js';
@@ -164,18 +165,14 @@ export class SuggestBox {
         }
         titleElement.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
         titleElement.createChild('span', 'spacer');
-        if (item.subtitleRenderer) {
-            const subtitleElement = item.subtitleRenderer.call(null);
-            subtitleElement.classList.add('suggestion-subtitle');
-            element.appendChild(subtitleElement);
-        }
-        else if (item.subtitle) {
+        if (!item.subtitleTemplate && item.subtitle) {
             const subtitleElement = element.createChild('span', 'suggestion-subtitle');
             subtitleElement.textContent =
                 Platform.StringUtilities.trimEndWithMaxLength(item.subtitle, maxTextLength - displayText.length);
         }
-        if (item.iconElement) {
-            element.appendChild(item.iconElement);
+        if (item.subtitleTemplate || item.iconTemplate) {
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(html `${item.subtitleTemplate ?? nothing}${item.iconTemplate ?? nothing}`, element);
         }
         return element;
     }

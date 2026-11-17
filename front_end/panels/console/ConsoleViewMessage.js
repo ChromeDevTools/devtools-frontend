@@ -52,7 +52,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, nothing, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../elements/elements.js';
@@ -60,6 +60,8 @@ import { format, updateStyle } from './ConsoleFormat.js';
 import { ConsoleInsightTeaser } from './ConsoleInsightTeaser.js';
 import consoleViewStyles from './consoleView.css.js';
 import { SymbolizedErrorWidget } from './SymbolizedErrorWidget.js';
+const { ifDefined } = Directives;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Message element text content in Console view message of the Console panel. Shown
@@ -725,17 +727,19 @@ export class ConsoleViewMessage {
         return { stackTraceElement, contentElement, messageElement, clickableElement, toggleElement };
     }
     format(rawParameters) {
-        // This node is used like a Builder. Values are continually appended onto it.
         const formattedResult = document.createElement('span');
+        const parts = [];
         if (this.messagePrefix) {
-            formattedResult.createChild('span').textContent = this.messagePrefix;
+            parts.push(html `<span>${this.messagePrefix}</span>`);
         }
         if (!rawParameters.length) {
+            if (parts.length) {
+                render(html `${parts}`, formattedResult);
+            }
             return formattedResult;
         }
         // Formatting code below assumes that parameters are all wrappers whereas frontend console
         // API allows passing arbitrary values as messages (strings, numbers, etc.). Wrap them here.
-        // FIXME: Only pass runtime wrappers here.
         let parameters = rawParameters.map(parameterToRemoteObject(this.message.runtimeModel()));
         // There can be string log and string eval result. We distinguish between them based on message type.
         const shouldFormatMessage = SDK.RemoteObject.RemoteObject.type((parameters)[0]) === 'string' &&
@@ -743,33 +747,33 @@ export class ConsoleViewMessage {
                 this.message.level === "error" /* Protocol.Log.LogEntryLevel.Error */);
         // Multiple parameters with the first being a format string. Save unused substitutions.
         if (shouldFormatMessage) {
-            parameters = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1), formattedResult);
+            parameters = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1), parts);
             if (parameters.length) {
-                UI.UIUtils.createTextChild(formattedResult, ' ');
+                parts.push(' ');
             }
         }
         // Single parameter, or unused substitutions from above.
         for (let i = 0; i < parameters.length; ++i) {
             // Inline strings when formatting.
             if (shouldFormatMessage && parameters[i].type === 'string') {
-                appendOrShow(formattedResult, this.linkifyStringAsFragment(parameters[i].description || ''));
+                parts.push(this.linkifyStringAsFragment(parameters[i].description || ''));
             }
             else {
-                appendOrShow(formattedResult, this.formatParameter(parameters[i], false, true));
+                parts.push(this.formatParameter(parameters[i], false, true));
             }
             if (i < parameters.length - 1) {
-                UI.UIUtils.createTextChild(formattedResult, ' ');
+                parts.push(' ');
             }
         }
+        render(html `${parts}`, formattedResult);
         return formattedResult;
     }
     formatParameter(output, forceObjectFormat, includePreview) {
         if (output.customPreview()) {
-            const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
-            component.object = output;
-            return component;
+            return html `${widget(ObjectUI.CustomPreviewComponent.CustomPreviewComponent, { object: output })}`;
         }
         const outputType = forceObjectFormat ? 'object' : (output.subtype || output.type);
+        const typeClasses = `object-value-${outputType} source-code`;
         let element;
         switch (outputType) {
             case 'error':
@@ -803,8 +807,7 @@ export class ConsoleViewMessage {
                 element = this.formatParameterAsObject(output, false);
                 break;
             case 'string':
-                element = this.formatParameterAsString(output);
-                break;
+                return this.formatParameterAsString(output, typeClasses);
             case 'boolean':
             case 'date':
             case 'null':
@@ -813,39 +816,31 @@ export class ConsoleViewMessage {
             case 'symbol':
             case 'undefined':
             case 'bigint':
-                element = this.formatParameterAsValue(output);
-                break;
+                return this.formatParameterAsValue(output, typeClasses);
             default:
-                element = this.formatParameterAsValue(output);
                 console.error(`Tried to format remote object of unknown type ${outputType}.`);
+                return this.formatParameterAsValue(output, typeClasses);
         }
         element.classList.add(`object-value-${outputType}`);
         element.classList.add('source-code');
         return element;
     }
-    formatParameterAsValue(obj) {
-        const result = document.createElement('span');
+    formatParameterAsValue(obj, extraClasses = '') {
         const description = obj.description || '';
-        if (description.length > getMaxTokenizableStringLength()) {
-            const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue();
-            propertyValue.text = description;
-            propertyValue.maxLength = getLongStringVisibleLength();
-            propertyValue.show(result, null, /* suppressOprhanWidgetError=*/ true);
-        }
-        else {
-            UI.UIUtils.createTextChild(result, description);
-        }
-        result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, obj), false);
-        return result;
+        const classes = extraClasses || undefined;
+        // clang-format off
+        return html `<span
+      class=${ifDefined(classes)}
+      @contextmenu=${this.contextMenuEventFired.bind(this, obj)}>${description.length > getMaxTokenizableStringLength()
+            ? widget(ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue, {
+                text: description,
+                maxLength: getLongStringVisibleLength(),
+            })
+            : description}</span>`;
+        // clang-format on
     }
     formatParameterAsTrustedType(obj) {
-        const result = document.createElement('span');
-        const trustedContentSpan = document.createElement('span');
-        trustedContentSpan.appendChild(this.formatParameterAsString(obj));
-        trustedContentSpan.classList.add('object-value-string');
-        UI.UIUtils.createTextChild(result, `${obj.className} `);
-        result.appendChild(trustedContentSpan);
-        return result;
+        return html `<span>${`${obj.className} `}<span class="object-value-string">${this.formatParameterAsString(obj)}</span></span>`;
     }
     formatParameterAsObject(obj, includePreview) {
         const titleElement = document.createElement('span');
@@ -869,7 +864,7 @@ export class ConsoleViewMessage {
             });
         }
         else if (obj.subtype === 'trustedtype') {
-            titleElement.appendChild(this.formatParameterAsTrustedType(obj));
+            render(this.formatParameterAsTrustedType(obj), titleElement);
         }
         else {
             UI.UIUtils.createTextChild(titleElement, obj.description || '');
@@ -1003,13 +998,14 @@ export class ConsoleViewMessage {
     }
     formattedParameterAsNodeForTest() {
     }
-    formatParameterAsString(output) {
+    formatParameterAsString(output, extraClasses = '') {
         const description = output.description ?? '';
         const text = Platform.StringUtilities.formatAsJSLiteral(description);
-        const result = document.createElement('span');
-        result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, output), false);
-        appendOrShow(result, this.linkifyStringAsFragment(text));
-        return result;
+        // clang-format off
+        return html `<span
+      class=${ifDefined(extraClasses || undefined)}
+      @contextmenu=${this.contextMenuEventFired.bind(this, output)}>${this.linkifyStringAsFragment(text)}</span>`;
+        // clang-format on
     }
     renderSymbolizedError(errorRemoteObject) {
         const container = document.createElement('span');
@@ -1101,38 +1097,38 @@ export class ConsoleViewMessage {
         }
         return rootElement;
     }
-    formatWithSubstitutionString(formatString, parameters, formattedResult) {
+    formatWithSubstitutionString(formatString, parameters, parts) {
         const currentStyle = new Map();
         const { tokens, args } = format(formatString, parameters);
         for (const token of tokens) {
             switch (token.type) {
                 case 'generic': {
-                    appendOrShow(formattedResult, this.formatParameter(token.value, true /* force */, false /* includePreview */));
+                    parts.push(this.formatParameter(token.value, true /* force */, false /* includePreview */));
                     break;
                 }
                 case 'optimal': {
-                    appendOrShow(formattedResult, this.formatParameter(token.value, false /* force */, true /* includePreview */));
+                    parts.push(this.formatParameter(token.value, false /* force */, true /* includePreview */));
                     break;
                 }
                 case 'string': {
                     if (currentStyle.size === 0) {
-                        appendOrShow(formattedResult, this.linkifyStringAsFragment(token.value));
+                        parts.push(this.linkifyStringAsFragment(token.value));
                     }
                     else {
                         const lines = token.value.split('\n');
                         for (let i = 0; i < lines.length; i++) {
                             if (i > 0) {
-                                formattedResult.append(document.createElement('br'));
+                                parts.push(document.createElement('br'));
                             }
                             const wrapper = document.createElement('span');
                             wrapper.style.setProperty('contain', 'paint');
                             wrapper.style.setProperty('display', 'inline-block');
                             wrapper.style.setProperty('max-width', '100%');
-                            appendOrShow(wrapper, this.linkifyStringAsFragment(lines[i]));
+                            render(html `${this.linkifyStringAsFragment(lines[i])}`, wrapper);
                             for (const [property, { value, priority }] of currentStyle) {
                                 wrapper.style.setProperty(property, value, priority);
                             }
-                            formattedResult.append(wrapper);
+                            parts.push(wrapper);
                         }
                     }
                     break;
@@ -1782,6 +1778,12 @@ export class ConsoleViewMessage {
         return executionContext ? Components.Linkifier.openInNewTabInitiatorId(executionContext) : undefined;
     }
     linkifyStringAsFragment(string) {
+        if (string.length > getMaxTokenizableStringLength()) {
+            return html `${widget(ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue, {
+                text: string,
+                maxLength: getLongStringVisibleLength(),
+            })}`;
+        }
         const initiatorId = () => this.initiatorId();
         return ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
             const options = { text, lineNumber, columnNumber, initiatorId };
@@ -2094,8 +2096,8 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
                 const formattedResult = document.createElement('span');
                 formattedResult.classList.add('console-message-text');
                 const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
-                const dataGridContainer = tableElement.createChild('span');
-                appendOrShow(tableElement, this.formatParameter(actualTable, true, false));
+                const dataGridContainer = document.createElement('span');
+                render(html `${dataGridContainer}${this.formatParameter(actualTable, true, false)}`, tableElement);
                 const shadowRoot = dataGridContainer.attachShadow({ mode: 'open' });
                 const dataGridWidget = this.dataGrid.asWidget();
                 dataGridWidget.markAsRoot();

@@ -182,7 +182,7 @@ export class NetworkLogViewColumns {
     calculatorsMap;
     lastWheelTime;
     #dataGrid;
-    splitWidget;
+    #isWaterfallVisible = false;
     waterfallColumn;
     activeScroller;
     dataGridScroller;
@@ -270,10 +270,8 @@ export class NetworkLogViewColumns {
         this.#dataGrid.setHeaderContextMenuCallback(this.#headerContextMenu.bind(this));
         this.activeWaterfallSortId = WaterfallSortIds.StartTime;
         this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid.DataGrid.Order.Ascending);
-        this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'network-panel-split-view-waterfall', 200);
         const widget = this.#dataGrid.asWidget();
         widget.setMinimumSize(150, 0);
-        this.splitWidget.setMainWidget(widget);
     }
     setupWaterfall() {
         this.waterfallColumn = new NetworkWaterfallColumn(this.networkLogView.calculator());
@@ -296,7 +294,6 @@ export class NetworkLogViewColumns {
         this.createWaterfallHeader();
         this.waterfallColumn.contentElement.classList.add('network-waterfall-view');
         this.waterfallColumn.setMinimumSize(100, 0);
-        this.splitWidget.setSidebarWidget(this.waterfallColumn);
         this.switchViewMode(false);
         function handleContextMenu(event) {
             const node = this.waterfallColumn.getNodeFromPoint(event.offsetY);
@@ -411,14 +408,14 @@ export class NetworkLogViewColumns {
             this.waterfallColumn.scheduleDraw();
         });
     }
-    show(element) {
-        this.splitWidget.show(element);
-    }
-    setHidden(value) {
-        UI.ARIAUtils.setHidden(this.splitWidget.element, value);
-    }
     dataGrid() {
         return this.#dataGrid;
+    }
+    waterfall() {
+        return this.waterfallColumn;
+    }
+    isWaterfallVisible() {
+        return this.#isWaterfallVisible;
     }
     sortByCurrentColumn() {
         this.sortHandler();
@@ -510,21 +507,23 @@ export class NetworkLogViewColumns {
         this.updateRowsSize();
     }
     setWaterfallVisibility(visible) {
-        if (!this.splitWidget) {
+        if (!this.waterfallScroller) {
             return;
         }
-        this.networkLogView.element.classList.toggle('has-waterfall', visible);
+        const visibilityChanged = this.#isWaterfallVisible !== visible;
+        this.#isWaterfallVisible = visible;
         if (visible) {
-            this.splitWidget.showBoth();
             this.activeScroller = this.waterfallScroller;
             this.waterfallScroller.scrollTop = this.dataGridScroller.scrollTop;
             this.#dataGrid.setScrollContainer(this.waterfallScroller);
         }
         else {
             this.networkLogView.removeAllNodeHighlights();
-            this.splitWidget.hideSidebar();
             this.activeScroller = this.dataGridScroller;
             this.#dataGrid.setScrollContainer(this.dataGridScroller);
+        }
+        if (visibilityChanged) {
+            this.networkLogView.requestUpdate();
         }
     }
     saveColumnsSettings() {

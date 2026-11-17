@@ -71,26 +71,6 @@ const UIStrings = {
      * @description Context menu item to restore all hidden entries in the timeline flame chart.
      */
     resetTrace: 'Reset trace',
-    /**
-     * @description Context menu item to start a chat in the AI assistance panel.
-     */
-    startAChat: 'Start a chat',
-    /**
-     * @description Context menu item to add a label annotation to an entry in the Performance panel.
-     */
-    labelEntry: 'Label entry',
-    /**
-     * @description Context menu item to assess the purpose of an entry using AI assistance in the Performance panel.
-     */
-    assessThePurpose: 'Assess the purpose',
-    /**
-     * @description Context menu item to identify time spent in a call tree using AI assistance in the Performance panel.
-     */
-    identifyTimeSpent: 'Identify time spent',
-    /**
-     * @description Context menu item to find performance improvements for a call tree using AI assistance in the Performance panel.
-     */
-    findImprovements: 'Find improvements',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -220,20 +200,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         if (perfAIEntryPointEnabled && this.parsedTrace) {
             const callTree = AIAssistance.AICallTree.AICallTree.fromEvent(entry, this.parsedTrace);
             if (callTree) {
-                const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
-                function appendSubmenuPromptAction(submenu, action, label, prompt, jslogContext) {
-                    submenu.defaultSection().appendItem(label, () => action.execute({ prompt }), { disabled: !action.enabled(), jslogContext });
-                }
-                const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, PERF_AI_ACTION_ID);
-                submenu.defaultSection().appendAction(PERF_AI_ACTION_ID, i18nString(UIStrings.startAChat));
-                submenu.defaultSection().appendItem(i18nString(UIStrings.labelEntry), () => {
-                    this.dispatchEventToListeners("EntryLabelAnnotationAdded" /* Events.ENTRY_LABEL_ANNOTATION_ADDED */, { entryIndex, withLinkCreationButton: false });
-                }, {
-                    jslogContext: 'timeline.annotations.create-entry-label',
-                });
-                appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.assessThePurpose), 'What\'s the purpose of this entry?', PERF_AI_ACTION_ID + '.purpose');
-                appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.identifyTimeSpent), 'Where is most time being spent in this call tree?', PERF_AI_ACTION_ID + '.time-spent');
-                appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.findImprovements), 'How can I reduce the time of this call tree?', PERF_AI_ACTION_ID + '.improvements');
+                contextMenu.footerSection().appendAction(PERF_AI_ACTION_ID);
             }
         }
         if (!possibleActions) {
@@ -467,11 +434,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         }
     }
     /**
-     * Reset all data other than the UI elements.
-     * This should be called when
-     * - initialized the data provider
-     * - a new trace file is coming (when `setModel()` is called)
-     * etc.
+     * Resets all per-trace data and caches while keeping cross-trace UI state
+     * (such as `#persistedGroupConfigSetting`).
      */
     reset() {
         this.currentLevel = 0;
@@ -488,6 +452,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.#entityMapper = null;
         this.#lastInitiatorEntryIndex = -1;
         this.#initiatorsCache.clear();
+        this.lastSelection = null;
     }
     maxStackDepth() {
         return this.currentLevel;
@@ -880,7 +845,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         context.strokeRect(imageX - 0.5, imageY - 0.5, Math.min(barWidth - 1, imageWidth + 1), imageHeight);
         context.restore();
     }
-    decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio, transformColor) {
+    decorateEntry(entryIndex, context, _text, barX, barY, barWidth, barHeight, _unclippedBarX, _timeToPixelRatio, transformColor) {
         const entryType = this.#entryTypeForIndex(entryIndex);
         if (entryType === "Frame" /* EntryType.FRAME */) {
             this.drawFrame(entryIndex, context, barX, barY, barWidth, barHeight, transformColor);
@@ -890,100 +855,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             void this.drawScreenshot(entryIndex, context, barX, barY, barWidth, barHeight);
             return true;
         }
-        if (entryType === "TrackAppender" /* EntryType.TRACK_APPENDER */) {
-            const entry = this.entryData[entryIndex];
-            if (Trace.Types.Events.isSyntheticInteraction(entry)) {
-                this.#drawInteractionEventWithWhiskers(context, entryIndex, text, entry, barX, barY, unclippedBarX, barWidth, barHeight, timeToPixelRatio);
-                return true;
-            }
-        }
         return false;
-    }
-    /**
-     * Draws the left and right whiskers around an interaction in the timeline.
-     * @param context the canvas that will be drawn onto
-     * @param entryIndex
-     * @param entryTitle the title of the entry
-     * @param entry the entry itself
-     * @param barX the starting X pixel position of the bar representing this event. This is clipped: if the bar is off the left side of the screen, this value will be 0
-     * @param barY the starting Y pixel position of the bar representing this event.
-     * @param unclippedBarXStartPixel the starting X pixel position of the bar representing this event, not clipped. This means if the bar is off the left of the screen this will be a negative number.
-     * @param barWidth the width of the full bar in pixels
-     * @param barHeight the height of the full bar in pixels
-     * @param timeToPixelRatio the ratio required to convert a millisecond time to a pixel value.
-     **/
-    #drawInteractionEventWithWhiskers(context, entryIndex, entryTitle, entry, barX, barY, unclippedBarXStartPixel, barWidth, barHeight, timeToPixelRatio) {
-        /**
-         * An interaction is drawn with whiskers as so:
-         * |----------[=======]-------------|
-         * => The left whisker is the event's start time (event.ts)
-         * => The box start is the event's processingStart time
-         * => The box end is the event's processingEnd time
-         * => The right whisker is the event's end time (event.ts + event.dur)
-         *
-         * When we draw the event in the InteractionsAppender, we draw a huge box
-         * that spans the entire of the above. So here we need to draw over the
-         * rectangle that is outside of {processingStart, processingEnd} and
-         * replace it with the whiskers.
-         * TODO(crbug.com/1495248): rework how we draw whiskers to avoid this inefficiency
-         */
-        const beginTime = Trace.Helpers.Timing.microToMilli(entry.ts);
-        const entireBarEndXPixel = barX + barWidth;
-        function timeToPixel(time) {
-            const timeMilli = Trace.Helpers.Timing.microToMilli(time);
-            return Math.floor(unclippedBarXStartPixel + (timeMilli - beginTime) * timeToPixelRatio);
-        }
-        context.save();
-        // Clear portions of initial rect to prepare for the ticks.
-        context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
-        let desiredBoxStartX = timeToPixel(entry.processingStart);
-        const desiredBoxEndX = timeToPixel(entry.processingEnd);
-        // If the entry has no processing duration, ensure the box is 1px wide so at least it is visible.
-        if (entry.processingEnd - entry.processingStart === 0) {
-            desiredBoxStartX -= 1;
-        }
-        context.fillRect(barX, barY - 0.5, desiredBoxStartX - barX, barHeight);
-        context.fillRect(desiredBoxEndX, barY - 0.5, entireBarEndXPixel - desiredBoxEndX, barHeight);
-        /** Draws left and right whiskers **/
-        function drawTick(begin, end, y) {
-            const tickHeightPx = 6;
-            context.moveTo(begin, y - tickHeightPx / 2);
-            context.lineTo(begin, y + tickHeightPx / 2);
-            context.moveTo(begin, y);
-            context.lineTo(end, y);
-        }
-        // The left whisker starts at the entry timestamp, and continues until the start of the box (processingStart).
-        const leftWhiskerX = timeToPixel(entry.ts);
-        // The right whisker ends at (entry.ts + entry.dur). We draw the line from the end of the box (processingEnd).
-        const rightWhiskerX = timeToPixel(Trace.Types.Timing.Micro(entry.ts + entry.dur));
-        context.beginPath();
-        context.lineWidth = 1;
-        context.strokeStyle = '#ccc';
-        const lineY = Math.floor(barY + barHeight / 2) + 0.5;
-        const leftTick = leftWhiskerX + 0.5;
-        const rightTick = rightWhiskerX - 0.5;
-        drawTick(leftTick, desiredBoxStartX, lineY);
-        drawTick(rightTick, desiredBoxEndX, lineY);
-        context.stroke();
-        if (entryTitle) {
-            // BarX will be set to 0 if the start of the box if off the screen to the
-            // left. If this happens, the desiredBoxStartX will be negative. In that
-            // case, we fallback to the BarX. This ensures that even if the box
-            // starts off-screen, we draw the text at the first visible on screen
-            // pixels, so the user can still see the event's title.
-            const textStartX = desiredBoxStartX > 0 ? desiredBoxStartX : barX;
-            context.font = this.#font;
-            const textWidth = UI.UIUtils.measureTextWidth(context, entryTitle);
-            // These numbers are duplicated from FlameChart.ts.
-            const textPadding = 5;
-            const textBaseline = 5;
-            // Only draw the text if it can fit in the amount of box that is visible.
-            if (textWidth <= desiredBoxEndX - textStartX + textPadding) {
-                context.fillStyle = this.textColor(entryIndex);
-                context.fillText(entryTitle, textStartX + textPadding, barY + barHeight - textBaseline);
-            }
-        }
-        context.restore();
     }
     forceDecoration(entryIndex) {
         const entryType = this.#entryTypeForIndex(entryIndex);
@@ -994,12 +866,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             return true;
         }
         const event = (this.entryData[entryIndex]);
-        if (Trace.Types.Events.isSyntheticInteraction(event)) {
-            // We draw interactions with whiskers, which are done via the
-            // decorateEntry() method, hence we always want to force these to be
-            // decorated.
-            return true;
-        }
         return Boolean(this.parsedTrace?.data.Warnings.perEvent.get(event));
     }
     appendHeader(title, style, selectable, expanded) {
@@ -1190,7 +1056,6 @@ export var Events;
 (function (Events) {
     Events["DATA_CHANGED"] = "DataChanged";
     Events["FLAME_CHART_ITEM_HOVERED"] = "FlameChartItemHovered";
-    Events["ENTRY_LABEL_ANNOTATION_ADDED"] = "EntryLabelAnnotationAdded";
 })(Events || (Events = {}));
 /**
  * an entry is a trace event, they are classified into "entry types"

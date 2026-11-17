@@ -4164,7 +4164,8 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     }
   };
   render7(html8`
-    <style>${Input.textInputStyles}${commentThreadWidget_css_default}</style>
+    <style>@scope to (devtools-widget > *) { ${Input.textInputStyles} }</style>
+    <style>${commentThreadWidget_css_default}</style>
     <div
       class="comment-thread-widget ${classMap2({ submitted: !showCommentInput })}"
       jslog=${VisualLogging3.popover("comment-thread")}>

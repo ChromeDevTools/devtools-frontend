@@ -16,6 +16,7 @@
     "../../../../../../front_end/core/sdk/CSSModel.test.api.ts",
     "../../../../../../front_end/core/sdk/DOMModel.test.api.ts",
     "../../../../../../front_end/core/sdk/DebuggerModel.test.api.ts",
+    "../../../../../../front_end/core/sdk/RemoteObject.test.api.ts",
     "../../../../../../front_end/core/sdk/TargetManager.test.api.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",

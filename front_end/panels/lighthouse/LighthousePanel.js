@@ -218,6 +218,9 @@ export class LighthousePanel extends UI.Panel.Panel {
         this.updateSettingsPaneVisibility();
     }
     renderStartView() {
+        for (const reportWidget of this.cachedRenderedReports.values()) {
+            reportWidget.detach();
+        }
         this.auditResultsElement.removeChildren();
         this.statusView.hide();
         this.reportSelector.selectNewReport();
@@ -256,30 +259,41 @@ export class LighthousePanel extends UI.Panel.Panel {
         this.contentElement.classList.toggle('in-progress', false);
         this.startView.hideWidget();
         this.statusView.hide();
+        for (const reportWidget of this.cachedRenderedReports.values()) {
+            reportWidget.detach();
+        }
         this.auditResultsElement.removeChildren();
         this.newButton.setEnabled(true);
         this.refreshToolbarUI();
         UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, new ActiveLighthouseReport(lighthouseResult));
-        const cachedRenderedReport = this.cachedRenderedReports.get(lighthouseResult);
-        if (cachedRenderedReport) {
-            this.auditResultsElement.appendChild(cachedRenderedReport);
-            return;
+        let reportWidget = this.cachedRenderedReports.get(lighthouseResult);
+        if (!reportWidget) {
+            reportWidget = new LighthouseReportRenderer();
+            reportWidget.report = lighthouseResult;
+            reportWidget.artifacts = artifacts;
+            reportWidget.beforePrint = this.beforePrint.bind(this);
+            reportWidget.afterPrint = this.afterPrint.bind(this);
+            this.cachedRenderedReports.set(lighthouseResult, reportWidget);
         }
-        const reportContainer = LighthouseReportRenderer.renderLighthouseReport(lighthouseResult, artifacts, {
-            beforePrint: this.beforePrint.bind(this),
-            afterPrint: this.afterPrint.bind(this),
-        });
-        this.cachedRenderedReports.set(lighthouseResult, reportContainer);
+        reportWidget.show(this.auditResultsElement);
+        if (!reportWidget.isShowing()) {
+            reportWidget.requestUpdate();
+        }
+        return reportWidget;
     }
     buildReportUI(lighthouseResult, artifacts) {
         if (lighthouseResult === null) {
             return;
         }
-        const optionElement = new Item(lighthouseResult, () => this.renderReport(lighthouseResult, artifacts), this.renderStartView.bind(this));
+        const optionElement = new Item(lighthouseResult, () => {
+            this.renderReport(lighthouseResult, artifacts);
+        }, this.renderStartView.bind(this));
         this.reportSelector.prepend(optionElement);
         this.refreshToolbarUI();
-        this.renderReport(lighthouseResult);
-        this.auditResultsElement.querySelector('.lh-topbar__url')?.focus();
+        const reportWidget = this.renderReport(lighthouseResult);
+        void reportWidget.updateComplete.then(() => {
+            this.auditResultsElement.querySelector('.lh-topbar__url')?.focus();
+        });
     }
     handleDrop(dataTransfer) {
         const items = dataTransfer.items;

@@ -653,7 +653,7 @@ __export(Dialog_exports, {
 });
 import * as Common16 from "../../core/common/common.js";
 import * as i18n27 from "../../core/i18n/i18n.js";
-import { nothing as nothing7, render as render11 } from "../lit/lit.js";
+import { nothing as nothing8, render as render12 } from "../lit/lit.js";
 import * as Buttons7 from "../components/buttons/buttons.js";
 import * as VisualLogging17 from "../visual_logging/visual_logging.js";
 
@@ -840,7 +840,7 @@ import * as Root8 from "../../core/root/root.js";
 import * as Buttons5 from "../components/buttons/buttons.js";
 import * as VisualLogging15 from "../visual_logging/visual_logging.js";
 import { createIcon as createIcon7 } from "../kit/kit.js";
-import { nothing as nothing5, render as render8 } from "../lit/lit.js";
+import { nothing as nothing6, render as render9 } from "../lit/lit.js";
 import * as SettingUIRegistration from "../settings/settings.js";
 
 // ../../front_end/ui/legacy/ContextMenu.ts
@@ -2042,18 +2042,18 @@ var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/Infobar.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var Infobar = class _Infobar {
   element;
-  shadowRoot;
-  contentElement;
-  detailsRows;
-  infoContainer;
-  infoMessage;
-  infoText;
-  actionContainer;
-  disableSetting;
-  closeButton;
-  closeCallback;
-  parentView;
-  mainRow;
+  #shadowRoot;
+  #contentElement;
+  #detailsRows;
+  #infoContainer;
+  #infoMessage;
+  #infoText;
+  #actionContainer;
+  #disableSetting;
+  #closeButton;
+  #closeCallback;
+  #parentView;
+  #mainRow;
   constructor(type, text, actions, disableSetting, jslogContext) {
     this.element = document.createElement("div");
     if (jslogContext) {
@@ -2063,58 +2063,58 @@ var Infobar = class _Infobar {
       );
     }
     this.element.classList.add("flex-none");
-    this.shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobar_css_default });
-    this.contentElement = this.shadowRoot.createChild("div", "infobar infobar-" + type);
+    this.#shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobar_css_default });
+    this.#contentElement = this.#shadowRoot.createChild("div", "infobar infobar-" + type);
     const icon = createIcon(TYPE_TO_ICON[type], type + "-icon");
-    this.contentElement.createChild("div", "icon-container").appendChild(icon);
-    this.mainRow = this.contentElement.createChild("div", "infobar-main-row");
-    this.infoContainer = this.mainRow.createChild("div", "infobar-info-container");
-    this.infoMessage = this.infoContainer.createChild("div", "infobar-info-message");
-    this.infoText = this.infoMessage.createChild("div", "infobar-info-text");
-    this.infoText.textContent = text;
-    markAsAlert(this.infoText);
-    this.actionContainer = this.infoContainer.createChild("div", "infobar-info-actions");
+    this.#contentElement.createChild("div", "icon-container").appendChild(icon);
+    this.#mainRow = this.#contentElement.createChild("div", "infobar-main-row");
+    this.#infoContainer = this.#mainRow.createChild("div", "infobar-info-container");
+    this.#infoMessage = this.#infoContainer.createChild("div", "infobar-info-message");
+    this.#infoText = this.#infoMessage.createChild("div", "infobar-info-text");
+    this.#infoText.textContent = text;
+    markAsAlert(this.#infoText);
+    this.#actionContainer = this.#infoContainer.createChild("div", "infobar-info-actions");
     let defaultActionButtonVariant = Buttons.Button.Variant.OUTLINED;
-    this.disableSetting = disableSetting || null;
+    this.#disableSetting = disableSetting || null;
     if (disableSetting) {
       const disableButton = createTextButton(
         i18nString3(UIStrings3.dontShowAgain),
-        this.onDisable.bind(this),
+        this.#onDisable.bind(this),
         { className: "infobar-button", jslogContext: "dont-show-again" }
       );
-      this.actionContainer.appendChild(disableButton);
+      this.#actionContainer.appendChild(disableButton);
       defaultActionButtonVariant = Buttons.Button.Variant.TONAL;
     }
     if (actions) {
-      this.contentElement.setAttribute("role", "group");
+      this.#contentElement.setAttribute("role", "group");
       for (const action6 of actions) {
-        const actionCallback = this.actionCallbackFactory(action6);
+        const actionCallback = this.#actionCallbackFactory(action6);
         const buttonVariant = action6.buttonVariant ?? defaultActionButtonVariant;
         const button = createTextButton(action6.text, actionCallback, {
           className: "infobar-button",
           jslogContext: action6.jslogContext,
           variant: buttonVariant
         });
-        this.actionContainer.appendChild(button);
+        this.#actionContainer.appendChild(button);
       }
     }
-    this.closeButton = this.contentElement.createChild("dt-close-button", "icon-container");
-    this.closeButton.setTabbable(true);
-    this.closeButton.setSize(Buttons.Button.Size.SMALL);
-    setDescription(this.closeButton, i18nString3(UIStrings3.close));
-    self.onInvokeElement(this.closeButton, this.dispose.bind(this));
+    this.#closeButton = this.#contentElement.createChild("dt-close-button", "icon-container");
+    this.#closeButton.setTabbable(true);
+    this.#closeButton.setSize(Buttons.Button.Size.SMALL);
+    setDescription(this.#closeButton, i18nString3(UIStrings3.close));
+    self.onInvokeElement(this.#closeButton, this.dispose.bind(this));
     if (type !== "issue" /* ISSUE */) {
-      this.contentElement.tabIndex = 0;
+      this.#contentElement.tabIndex = 0;
     }
-    setLabel(this.contentElement, text);
-    this.contentElement.addEventListener("keydown", (event) => {
+    setLabel(this.#contentElement, text);
+    this.#contentElement.addEventListener("keydown", (event) => {
       if (event.keyCode === Keys.Esc.code) {
         this.dispose();
         event.consume();
         return;
       }
     });
-    this.closeCallback = null;
+    this.#closeCallback = null;
   }
   static create(type, text, actions, disableSetting, jslogContext) {
     if (disableSetting?.get()) {
@@ -2124,22 +2124,22 @@ var Infobar = class _Infobar {
   }
   dispose() {
     this.element.remove();
-    this.onResize();
-    if (this.closeCallback) {
-      this.closeCallback.call(null);
+    this.#onResize();
+    if (this.#closeCallback) {
+      this.#closeCallback.call(null);
     }
   }
   setText(text) {
-    this.infoText.textContent = text;
-    this.onResize();
+    this.#infoText.textContent = text;
+    this.#onResize();
   }
   setCloseCallback(callback) {
-    this.closeCallback = callback;
+    this.#closeCallback = callback;
   }
   setParentView(parentView) {
-    this.parentView = parentView;
+    this.#parentView = parentView;
   }
-  actionCallbackFactory(action6) {
+  #actionCallbackFactory(action6) {
     if (!action6.delegate) {
       return action6.dismiss ? this.dispose.bind(this) : () => {
       };
@@ -2154,28 +2154,28 @@ var Infobar = class _Infobar {
       this.dispose();
     }).bind(this);
   }
-  onResize() {
-    if (this.parentView) {
-      this.parentView.doResize();
+  #onResize() {
+    if (this.#parentView) {
+      this.#parentView.doResize();
     }
   }
-  onDisable() {
-    if (this.disableSetting) {
-      this.disableSetting.set(true);
+  #onDisable() {
+    if (this.#disableSetting) {
+      this.#disableSetting.set(true);
     }
     this.dispose();
   }
   createDetailsRowMessage(message) {
-    if (!this.detailsRows) {
+    if (!this.#detailsRows) {
       const details = document.createElement("details");
       const summary = details.createChild("summary");
       const triangleIcon = createIcon("arrow-drop-down");
       summary.createChild("div", "icon-container").appendChild(triangleIcon);
-      this.contentElement.insertBefore(details, this.mainRow);
-      summary.appendChild(this.mainRow);
-      this.detailsRows = details.createChild("div", "infobar-details-rows");
+      this.#contentElement.insertBefore(details, this.#mainRow);
+      summary.appendChild(this.#mainRow);
+      this.#detailsRows = details.createChild("div", "infobar-details-rows");
     }
-    const infobarDetailsRow = this.detailsRows.createChild("div", "infobar-details-row");
+    const infobarDetailsRow = this.#detailsRows.createChild("div", "infobar-details-row");
     const detailsRowMessage = infobarDetailsRow.createChild("span", "infobar-row-message");
     if (typeof message === "string") {
       detailsRowMessage.textContent = message;
@@ -2829,6 +2829,7 @@ function instantiateWidget(element, widgetConfig2) {
   newWidget.requestUpdate();
   return newWidget;
 }
+var trackerDetachingWidgets = /* @__PURE__ */ new WeakSet();
 function setUpLifecycleTracking(element) {
   let tracker;
   if (element instanceof WidgetElement) {
@@ -2844,8 +2845,12 @@ function setUpLifecycleTracking(element) {
     }
     const widget2 = Widget.get(element);
     if (widget2) {
-      widget2.setHideOnDetach();
-      widget2.detach();
+      trackerDetachingWidgets.add(widget2);
+      try {
+        widget2.detach();
+      } finally {
+        trackerDetachingWidgets.delete(widget2);
+      }
     }
   };
   tracker.onConnect = () => {
@@ -3388,7 +3393,7 @@ var Widget = class _Widget {
       return;
     }
     cancelUpdate(this);
-    const removeFromDOM = overrideHideOnDetach || !this.shouldHideOnDetach();
+    const removeFromDOM = Boolean(overrideHideOnDetach) || !trackerDetachingWidgets.has(this) && !this.shouldHideOnDetach();
     if (this.#visible) {
       this.#hideWidget(removeFromDOM);
     } else if (removeFromDOM) {
@@ -11351,6 +11356,7 @@ __export(SuggestBox_exports, {
 import * as i18n21 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
 import * as Geometry4 from "../geometry/geometry.js";
+import { html as html6, nothing as nothing5, render as render8 } from "../lit/lit.js";
 import * as VisualLogging13 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ListControl.ts
@@ -12287,16 +12293,12 @@ var SuggestBox = class {
     }
     titleElement.createChild("span").textContent = displayText.substring(index > -1 ? index + query.length : 0);
     titleElement.createChild("span", "spacer");
-    if (item8.subtitleRenderer) {
-      const subtitleElement = item8.subtitleRenderer.call(null);
-      subtitleElement.classList.add("suggestion-subtitle");
-      element.appendChild(subtitleElement);
-    } else if (item8.subtitle) {
+    if (!item8.subtitleTemplate && item8.subtitle) {
       const subtitleElement = element.createChild("span", "suggestion-subtitle");
       subtitleElement.textContent = Platform11.StringUtilities.trimEndWithMaxLength(item8.subtitle, maxTextLength - displayText.length);
     }
-    if (item8.iconElement) {
-      element.appendChild(item8.iconElement);
+    if (item8.subtitleTemplate || item8.iconTemplate) {
+      render8(html6`${item8.subtitleTemplate ?? nothing5}${item8.iconTemplate ?? nothing5}`, element);
     }
     return element;
   }
@@ -13774,7 +13776,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
       }
     }
     this.items = [];
-    render8(nothing5, this);
+    render9(nothing6, this);
   }
   hideSeparatorDupes() {
     if (!this.items.length) {
@@ -16079,8 +16081,8 @@ div.error {
 
 // ../../front_end/ui/legacy/UIUtils.ts
 var Directives4 = Lit4.Directives;
-var html7 = Lit4.html;
-var render10 = Lit4.render;
+var html8 = Lit4.html;
+var render11 = Lit4.render;
 var UIStrings13 = {
   /**
    * @description Context menu item to open a link in a new tab.
@@ -17386,8 +17388,11 @@ var deepElementFromPoint = (document2, x, y) => {
 };
 var deepElementFromEvent = (ev) => {
   const event = ev;
-  if (!event.which && !event.pageX && !event.pageY && !event.clientX && !event.clientY && !event.movementX && !event.movementY) {
-    return null;
+  if (!event.pageX && !event.pageY && !event.clientX && !event.clientY && !event.movementX && !event.movementY) {
+    if (typeof ev.composedPath !== "function") {
+      return null;
+    }
+    return ev.composedPath().find((node) => node instanceof Element) ?? null;
   }
   const root = event.target && event.target.getComponentRoot();
   return root ? deepElementFromPoint(root, event.pageX, event.pageY) : null;
@@ -17515,7 +17520,7 @@ var PromotionManager = class _PromotionManager {
 function maybeCreateNewBadge(promotionId) {
   const promotionManager = PromotionManager.instance();
   if (promotionManager.maybeShowPromotion(promotionId)) {
-    return html7`<div class="new-badge" jslog=${VisualLogging16.badge("new-badge")}>${i18nString13(UIStrings13.new)}</div>`;
+    return html8`<div class="new-badge" jslog=${VisualLogging16.badge("new-badge")}>${i18nString13(UIStrings13.new)}</div>`;
   }
   return void 0;
 }
@@ -17868,7 +17873,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       );
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render10(template, this.#contentTemplate.content);
+    render11(template, this.#contentTemplate.content);
   }
   flushPendingMutationsForTesting() {
     const records = this.#mutationObserver.takeRecords();
@@ -18705,7 +18710,7 @@ var DialogWidget = class extends DialogWidgetBase {
   #open = false;
   #jslogContext = "";
   #dialogStack = false;
-  #content = nothing7;
+  #content = nothing8;
   #dialog = new Dialog();
   constructor(element) {
     super(element);
@@ -18765,7 +18770,7 @@ var DialogWidget = class extends DialogWidgetBase {
   }
   performUpdate() {
     if (this.open) {
-      render11(this.#content ?? nothing7, this.#dialog.contentElement);
+      render12(this.#content ?? nothing8, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
         this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
@@ -19246,7 +19251,7 @@ __export(EmptyWidget_exports, {
 });
 import "../kit/kit.js";
 import * as i18n29 from "../../core/i18n/i18n.js";
-import { html as html8, render as render12 } from "../lit/lit.js";
+import { html as html9, render as render13 } from "../lit/lit.js";
 import * as VisualLogging18 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -19279,14 +19284,14 @@ var UIStrings15 = {
 var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings15);
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render12(html8`
+  render13(html9`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}>
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? html8`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
+        ${input.link ? html9`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
       </div>
       <slot></slot>
     </div>`, target, { container: { classes: ["empty-widget-container", "empty-view-scroller"] } });
@@ -20251,7 +20256,7 @@ __export(ListWidget_exports, {
 import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform21 from "../../core/platform/platform.js";
 import * as Buttons8 from "../components/buttons/buttons.js";
-import { html as html9, nothing as nothing8, render as render13 } from "../lit/lit.js";
+import { html as html10, nothing as nothing9, render as render14 } from "../lit/lit.js";
 import * as VisualLogging20 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -20570,11 +20575,11 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render13(html9`
+    render14(html10`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          ${controlLabels?.hideEdit ? nothing8 : html9`<devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing9 : html10`<devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
@@ -21297,7 +21302,7 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
 });
 import * as i18n35 from "../../core/i18n/i18n.js";
 import * as Buttons9 from "../components/buttons/buttons.js";
-import { html as html10, render as render14 } from "../lit/lit.js";
+import { html as html11, render as render15 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -21362,8 +21367,8 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render14(
-    html10`
+  render15(
+    html11`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString18(UIStrings18.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -21985,7 +21990,7 @@ var searchableView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./searchableView.css")} */`;
 
 // ../../front_end/ui/legacy/SearchableView.ts
-var { html: html11, nothing: nothing9, render: render15, Directives: Directives5 } = Lit5;
+var { html: html12, nothing: nothing10, render: render16, Directives: Directives5 } = Lit5;
 var UIStrings19 = {
   /**
    * @description Button text and placeholder to replace the current search match in the search bar.
@@ -22060,7 +22065,7 @@ var UIStrings19 = {
 var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings19);
 var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 function renderClearButton(jslogContext, onClick) {
-  return html11`
+  return html12`
     <devtools-button class="clear-button" tabindex="-1" aria-label=${i18nString19(UIStrings19.clearInput)}
         .data=${{
     variant: Buttons10.Button.Variant.ICON,
@@ -22072,7 +22077,7 @@ function renderClearButton(jslogContext, onClick) {
         @click=${onClick}></devtools-button>`;
 }
 function renderConfigToggle(iconName, label, toggled, onClick) {
-  return html11`
+  return html12`
     <devtools-button aria-label=${label}
         .data=${{
     variant: Buttons10.Button.Variant.ICON_TOGGLE,
@@ -22088,7 +22093,7 @@ function renderConfigToggle(iconName, label, toggled, onClick) {
 }
 var DEFAULT_VIEW4 = (input, output, target) => {
   const replaceLabel = input.secondRowVisible ? i18nString19(UIStrings19.disableFindAndReplace) : i18nString19(UIStrings19.enableFindAndReplace);
-  render15(html11`
+  render16(html12`
     <style>${searchableView_css_default}</style>
     <slot></slot>
     <div class="search-bar ${input.searchIsVisible ? "" : "hidden"} ${input.secondRowVisible ? "replaceable" : ""}"
@@ -22116,7 +22121,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
             <devtools-icon name="search"></devtools-icon>
             <input type="search" id="search-input-field" class="search-replace search" autocomplete="off"
                 placeholder=${input.placeholder}
-                aria-label=${input.searchAriaLabel ?? nothing9}
+                aria-label=${input.searchAriaLabel ?? nothing10}
                 jslog=${VisualLogging24.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}
                 @keydown=${input.onSearchKeyDown}
                 @input=${input.onSearchInput}
@@ -22140,19 +22145,19 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     i18nString19(UIStrings19.matchCase),
     input.caseSensitiveToggled,
     input.onToggleCaseSensitive
-  ) : nothing9}
+  ) : nothing10}
             ${input.supportsWholeWord ? renderConfigToggle(
     "match-whole-word",
     i18nString19(UIStrings19.matchWholeWord),
     input.wholeWordToggled,
     input.onToggleWholeWord
-  ) : nothing9}
+  ) : nothing10}
             ${input.supportsRegex ? renderConfigToggle(
     "regular-expression",
     i18nString19(UIStrings19.useRegularExpression),
     input.regexToggled,
     input.onToggleRegex
-  ) : nothing9}
+  ) : nothing10}
           </div>
           <div class="input-line search-input-background"></div>
         </div>
@@ -22179,7 +22184,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
                   @click=${input.onNextClick}></devtools-button>
               <div class="toolbar-item toolbar-text search-results-matches"
                   style="font-variant-numeric: tabular-nums; color: var(--sys-color-on-surface-subtle); padding: 0 var(--sys-size-3)"
-                  aria-live="polite" aria-atomic="false" aria-label=${input.matchesAriaLabel || nothing9}>
+                  aria-live="polite" aria-atomic="false" aria-label=${input.matchesAriaLabel || nothing10}>
                 <span aria-hidden="true">${input.matchesText}</span>
               </div>
             </devtools-toolbar>
@@ -23120,7 +23125,7 @@ __export(View_exports, {
   SimpleView: () => SimpleView
 });
 import * as Platform23 from "../../core/platform/platform.js";
-import { nothing as nothing10 } from "../lit/lit.js";
+import { nothing as nothing11 } from "../lit/lit.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;
@@ -23146,7 +23151,7 @@ var SimpleView = class extends VBox {
     return false;
   }
   toolbarItems() {
-    return Promise.resolve(nothing10);
+    return Promise.resolve(nothing11);
   }
   widget() {
     return Promise.resolve(this);
@@ -23165,9 +23170,9 @@ var SimpleView = class extends VBox {
 };
 
 // ../../front_end/ui/legacy/StackPane.ts
-var { html: html12, render: render16 } = Lit6;
+var { html: html13, render: render17 } = Lit6;
 var SLOT_VIEW = (input, _output, target) => {
-  render16(html12`<slot name=${input.name}></slot>`, target);
+  render17(html13`<slot name=${input.name}></slot>`, target);
 };
 var SlotView = class extends SimpleView {
   #pane;
@@ -23192,7 +23197,7 @@ var SlotView = class extends SimpleView {
   }
 };
 var STACK_VIEW = (input, _output, target) => {
-  render16(html12`<devtools-widget ${widget(WrapperWidget, { widget: input.location.widget() })}></devtools-widget>`, target);
+  render17(html13`<devtools-widget ${widget(WrapperWidget, { widget: input.location.widget() })}></devtools-widget>`, target);
 };
 var StackPaneElement = class extends HTMLElement {
   #location = ViewManager.instance().createStackLocation();
@@ -23261,7 +23266,7 @@ __export(TargetCrashedScreen_exports, {
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n41 from "../../core/i18n/i18n.js";
-import { html as html13, render as render17 } from "../lit/lit.js";
+import { html as html14, render as render18 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -23297,8 +23302,8 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var DEFAULT_VIEW5 = (input, _output, target) => {
-  render17(
-    html13`
+  render18(
+    html14`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString21(UIStrings21.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString21(UIStrings21.oncePageIsReloadedDevtoolsWill)}</div>`,
@@ -23683,7 +23688,7 @@ var UIStrings22 = {
 var str_22 = i18n43.i18n.registerUIStrings("ui/legacy/Treeoutline.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render18 } = Lit7;
+var { render: render19 } = Lit7;
 var Events11 = /* @__PURE__ */ ((Events12) => {
   Events12["ElementAttached"] = "ElementAttached";
   Events12["ElementsDetached"] = "ElementsDetached";
@@ -24342,7 +24347,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render18(icons, this.leadingIconsElement);
+    render19(icons, this.leadingIconsElement);
   }
   setTrailingIcons(icons) {
     if (!this.trailingIconsElement && !icons.length) {
@@ -24355,7 +24360,7 @@ var TreeElement = class {
       this.listItemNode.appendChild(this.trailingIconsElement);
       this.ensureSelection();
     }
-    render18(icons, this.trailingIconsElement);
+    render19(icons, this.trailingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;

@@ -451,7 +451,7 @@ import * as Workspace from "../../models/workspace/workspace.js";
 import * as PanelsCommon3 from "../common/common.js";
 import * as TraceBounds from "../../services/trace_bounds/trace_bounds.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
-import * as Input2 from "../../ui/components/input/input.js";
+import * as Input from "../../ui/components/input/input.js";
 import * as MarkdownView5 from "../../ui/components/markdown_view/markdown_view.js";
 import * as Snackbars from "../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers from "../../ui/helpers/helpers.js";
@@ -1134,7 +1134,6 @@ __export(WalkthroughView_exports, {
 import * as i18n from "../../core/i18n/i18n.js";
 import * as AiAssistanceModel3 from "../../models/ai_assistance/ai_assistance.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
-import * as Input from "../../ui/components/input/input.js";
 import * as UI from "../../ui/legacy/legacy.js";
 import * as Lit4 from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
@@ -1503,11 +1502,8 @@ var DEFAULT_VIEW = (input, output, target) => {
     </div>
   ` : Lit4.nothing;
   render(html4`
-    <style>
-      ${Input.textInputStyles}
-      ${chatMessage_css_default}
-      ${walkthroughView_css_default}
-    </style>
+    <style>${chatMessage_css_default}</style>
+    <style>${walkthroughView_css_default}</style>
     ${input.isInlined ? renderInlineWalkthrough(input, stepsOutput, allSteps) : renderSidebarWalkthrough(input, stepsOutput, renderableSteps.length)}`, target);
 };
 var WalkthroughView = class extends UI.Widget.Widget {
@@ -2049,7 +2045,6 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       "is-first-message": input.isFirstMessage
     });
     Lit5.render(html5`
-      <style>${Input2.textInputStyles}</style>
       <style>${chatMessage_css_default}</style>
       <div class="user-query-wrapper">
         <section class=${messageClasses2} jslog=${VisualLogging2.section("question")}>
@@ -2068,7 +2063,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     "is-first-message": input.isFirstMessage
   });
   Lit5.render(html5`
-    <style>${Input2.textInputStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${Input.textInputStyles} }</style>
     <style>${chatMessage_css_default}</style>
     <section class=${messageClasses} jslog=${VisualLogging2.section("answer")}>
       ${renderWalkthroughUI(input, steps)}
@@ -4620,14 +4615,14 @@ var IndexedDB;
     KeyPathType2["Array"] = "array";
   })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
 })(IndexedDB || (IndexedDB = {}));
-var Input3;
-((Input5) => {
+var Input2;
+((Input4) => {
   let GestureSourceType;
   ((GestureSourceType2) => {
     GestureSourceType2["Default"] = "default";
     GestureSourceType2["Touch"] = "touch";
     GestureSourceType2["Mouse"] = "mouse";
-  })(GestureSourceType = Input5.GestureSourceType || (Input5.GestureSourceType = {}));
+  })(GestureSourceType = Input4.GestureSourceType || (Input4.GestureSourceType = {}));
   let MouseButton;
   ((MouseButton2) => {
     MouseButton2["None"] = "none";
@@ -4636,48 +4631,48 @@ var Input3;
     MouseButton2["Right"] = "right";
     MouseButton2["Back"] = "back";
     MouseButton2["Forward"] = "forward";
-  })(MouseButton = Input5.MouseButton || (Input5.MouseButton = {}));
+  })(MouseButton = Input4.MouseButton || (Input4.MouseButton = {}));
   let DispatchDragEventRequestType;
   ((DispatchDragEventRequestType2) => {
     DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
     DispatchDragEventRequestType2["DragOver"] = "dragOver";
     DispatchDragEventRequestType2["Drop"] = "drop";
     DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
-  })(DispatchDragEventRequestType = Input5.DispatchDragEventRequestType || (Input5.DispatchDragEventRequestType = {}));
+  })(DispatchDragEventRequestType = Input4.DispatchDragEventRequestType || (Input4.DispatchDragEventRequestType = {}));
   let DispatchKeyEventRequestType;
   ((DispatchKeyEventRequestType2) => {
     DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
     DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
     DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
     DispatchKeyEventRequestType2["Char"] = "char";
-  })(DispatchKeyEventRequestType = Input5.DispatchKeyEventRequestType || (Input5.DispatchKeyEventRequestType = {}));
+  })(DispatchKeyEventRequestType = Input4.DispatchKeyEventRequestType || (Input4.DispatchKeyEventRequestType = {}));
   let DispatchMouseEventRequestType;
   ((DispatchMouseEventRequestType2) => {
     DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
     DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(DispatchMouseEventRequestType = Input5.DispatchMouseEventRequestType || (Input5.DispatchMouseEventRequestType = {}));
+  })(DispatchMouseEventRequestType = Input4.DispatchMouseEventRequestType || (Input4.DispatchMouseEventRequestType = {}));
   let DispatchMouseEventRequestPointerType;
   ((DispatchMouseEventRequestPointerType2) => {
     DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
     DispatchMouseEventRequestPointerType2["Pen"] = "pen";
-  })(DispatchMouseEventRequestPointerType = Input5.DispatchMouseEventRequestPointerType || (Input5.DispatchMouseEventRequestPointerType = {}));
+  })(DispatchMouseEventRequestPointerType = Input4.DispatchMouseEventRequestPointerType || (Input4.DispatchMouseEventRequestPointerType = {}));
   let DispatchTouchEventRequestType;
   ((DispatchTouchEventRequestType2) => {
     DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
     DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
     DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
     DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
-  })(DispatchTouchEventRequestType = Input5.DispatchTouchEventRequestType || (Input5.DispatchTouchEventRequestType = {}));
+  })(DispatchTouchEventRequestType = Input4.DispatchTouchEventRequestType || (Input4.DispatchTouchEventRequestType = {}));
   let EmulateTouchFromMouseEventRequestType;
   ((EmulateTouchFromMouseEventRequestType2) => {
     EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
     EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(EmulateTouchFromMouseEventRequestType = Input5.EmulateTouchFromMouseEventRequestType || (Input5.EmulateTouchFromMouseEventRequestType = {}));
-})(Input3 || (Input3 = {}));
+  })(EmulateTouchFromMouseEventRequestType = Input4.EmulateTouchFromMouseEventRequestType || (Input4.EmulateTouchFromMouseEventRequestType = {}));
+})(Input2 || (Input2 = {}));
 var LayerTree;
 ((LayerTree2) => {
   let ScrollRectType;
@@ -6419,7 +6414,7 @@ import * as AiAssistanceModel5 from "../../models/ai_assistance/ai_assistance.js
 import * as PanelsCommon4 from "../common/common.js";
 import * as PanelUtils2 from "../utils/utils.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
-import * as Input4 from "../../ui/components/input/input.js";
+import * as Input3 from "../../ui/components/input/input.js";
 import * as Snackbars2 from "../../ui/components/snackbars/snackbars.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import * as Lit7 from "../../ui/lit/lit.js";
@@ -7063,7 +7058,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
     return html7`<div class=${classes}>${renderRelevantDataDisclaimer(tooltipId, input.disclaimerText)}</div>`;
   };
   Lit7.render(html7`
-    <style>${Input4.textInputStyles}</style>
+    <style>${Input3.textInputStyles}</style>
     <style>${chatInput_css_default}</style>
     ${input.isReadOnly ? html7`
         <div

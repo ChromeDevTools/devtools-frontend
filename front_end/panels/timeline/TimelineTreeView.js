@@ -18,6 +18,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { ActiveFilters } from './ActiveFilters.js';
 import * as Extensions from './extensions/extensions.js';
 import { targetForEvent } from './TargetForEvent.js';
+import timelineDetailsViewStyles from './timelineDetailsView.css.js';
 import { TimelineRegExp } from './TimelineFilters.js';
 import { rangeForSelection, } from './TimelineSelection.js';
 import timelineTreeViewStyles from './timelineTreeView.css.js';
@@ -226,8 +227,8 @@ export class TimelineTreeView extends TimelineTreeViewBase {
     constructor(element, options) {
         super(element, options);
         this.#selectedEvents = null;
-        this.element.classList.add('timeline-tree-view');
-        this.registerRequiredCSS(timelineTreeViewStyles);
+        // The details sidebar (`detailsView`) renders trace event details styled by `timelineDetailsViewStyles`.
+        this.registerRequiredCSS(timelineTreeViewStyles, timelineDetailsViewStyles);
         this.searchResults = [];
     }
     get selectedEvents() {
@@ -390,6 +391,10 @@ export class TimelineTreeView extends TimelineTreeViewBase {
     }
     wasShown() {
         super.wasShown();
+        this.element.classList.add('timeline-tree-view');
+        if (!this.#compactMode && this.splitWidget) {
+            this.splitWidget.show(this.element);
+        }
         // Only refresh if data or configuration changed while detached,
         // avoiding rebuilding the DataGrid which resets expanded nodes and
         // selection.
@@ -728,8 +733,12 @@ export class TimelineTreeView extends TimelineTreeViewBase {
         this.dispatchEventToListeners("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, { node });
     }
     willHide() {
+        this.element.classList.remove('timeline-tree-view');
         this.dataGrid.removeEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.#onDataGridSelectionChange, this);
         this.dataGrid.removeEventListener("DeselectedNode" /* DataGrid.DataGrid.Events.DESELECTED_NODE */, this.#onDataGridDeselection, this);
+        if (!this.#compactMode) {
+            this.splitWidget?.detach();
+        }
         super.willHide();
     }
     /**
@@ -1042,6 +1051,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         this.init();
         this.stackView = new TimelineStackView(this);
         this.stackView.addEventListener("SelectionChanged" /* TimelineStackView.Events.SELECTION_CHANGED */, this.onStackViewSelectionChanged, this);
+        // Surface hovers in the heaviest stack sidebar as hovers of this tree view.
+        this.stackView.addEventListener("TreeRowHovered" /* TimelineStackView.Events.TREE_ROW_HOVERED */, ({ data: node }) => this.dispatchEventToListeners("TreeRowHovered" /* TimelineTreeView.Events.TREE_ROW_HOVERED */, { node }));
     }
     refreshTree(forceRefresh = false) {
         if (this.isShowing() || forceRefresh) {

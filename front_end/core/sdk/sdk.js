@@ -16520,6 +16520,7 @@ __export(SDKSettings_exports, {
   cpuPressureSettingDescriptor: () => cpuPressureSettingDescriptor,
   cssSourceMapsEnabledSettingDescriptor: () => cssSourceMapsEnabledSettingDescriptor,
   customFormattersSettingDescriptor: () => customFormattersSettingDescriptor,
+  customNetworkConditionsSettingDescriptor: () => customNetworkConditionsSettingDescriptor,
   dataSaverSettingDescriptor: () => dataSaverSettingDescriptor,
   disableAsyncStackTracesSettingDescriptor: () => disableAsyncStackTracesSettingDescriptor,
   disablePausedStateOverlaySettingDescriptor: () => disablePausedStateOverlaySettingDescriptor,
@@ -22689,7 +22690,7 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
    *      paused position. We need the generated range to resolve variable
    *      values.
    */
-  resolveMappedScopeChain(callFrame) {
+  resolveMappedScopeChain(callFrame, scopeChain) {
     const rangeChain = this.#findGeneratedRangeChainForFrame(callFrame);
     const innerMostOriginalScope = rangeChain.at(-1)?.originalScope;
     if (innerMostOriginalScope === void 0) {
@@ -22702,7 +22703,7 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       const isFunctionScope = originalScope.isStackFrame;
       const isInnerMostFunction = isFunctionScope && !seenFunctionScope;
       const returnValue = isInnerMostFunction ? callFrame.returnValue() : null;
-      const scopeNumber = range ? findMatchingScopeNumber(callFrame, range) : void 0;
+      const scopeNumber = range ? findMatchingScopeNumber(callFrame, scopeChain, range) : void 0;
       result.push(new SourceMapScopeChainEntry(
         callFrame,
         originalScope,
@@ -22713,7 +22714,7 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       ));
       seenFunctionScope ||= isFunctionScope;
     }
-    const globalScope = callFrame.scopeChain()?.find((s) => s.type() === Debugger.ScopeType.Global);
+    const globalScope = scopeChain.find((s) => s.type() === Debugger.ScopeType.Global);
     if (globalScope) {
       result.push(globalScope);
     }
@@ -23005,8 +23006,7 @@ function positionRange(callFrame, scope) {
     end: scriptRelativePosition(range.end)
   };
 }
-function findMatchingScopeNumber(callFrame, range) {
-  const scopeChain = callFrame.scopeChain();
+function findMatchingScopeNumber(callFrame, scopeChain, range) {
   const exactMatch = scopeChain.find((scope) => {
     const scopeRange = positionRange(callFrame, scope);
     return scopeRange !== null && comparePositions2(scopeRange.start, range.start) === 0 && comparePositions2(scopeRange.end, range.end) === 0;
@@ -23704,12 +23704,12 @@ var SourceMap = class _SourceMap {
   compatibleForURL(sourceURL, other) {
     return this.embeddedContentByURL(sourceURL) === other.embeddedContentByURL(sourceURL) && this.hasIgnoreListHint(sourceURL) === other.hasIgnoreListHint(sourceURL);
   }
-  resolveScopeChain(frame) {
+  resolveScopeChain(frame, scopeChain) {
     this.#ensureSourceMapProcessed();
     if (this.#provenance === "user" /* USER */ || !this.#scopesInfo?.hasVariablesAndBindings()) {
       return null;
     }
-    return this.#scopesInfo.resolveMappedScopeChain(frame);
+    return this.#scopesInfo.resolveMappedScopeChain(frame, scopeChain);
   }
   resolveMappedVariablesAtPosition(location, ignoreInnerBlockScopes = false) {
     this.#ensureSourceMapProcessed();
@@ -28543,6 +28543,12 @@ var textEditorIndentSettingDescriptor = {
   name: "text-editor-indent",
   type: Common19.Settings.SettingType.ENUM,
   defaultValue: "    ",
+  storageType: Common19.Settings.SettingStorageType.SYNCED
+};
+var customNetworkConditionsSettingDescriptor = {
+  name: "custom-network-conditions",
+  type: Common19.Settings.SettingType.ARRAY,
+  defaultValue: [],
   storageType: Common19.Settings.SettingStorageType.SYNCED
 };
 
@@ -34095,7 +34101,6 @@ var CallFrame = class _CallFrame {
   payload;
   #location;
   #scopeChain;
-  #localScope;
   inlineFrameIndex;
   functionName;
   #functionLocation;
@@ -34108,17 +34113,12 @@ var CallFrame = class _CallFrame {
     this.payload = payload;
     this.#location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
     this.#scopeChain = [];
-    this.#localScope = null;
     this.inlineFrameIndex = inlineFrameIndex || 0;
     this.functionName = functionName ?? payload.functionName;
     this.canBeRestarted = Boolean(payload.canBeRestarted);
     this.exception = exception;
     for (let i = 0; i < payload.scopeChain.length; ++i) {
-      const scope = new Scope(this, i);
-      this.#scopeChain.push(scope);
-      if (scope.type() === Debugger.ScopeType.Local) {
-        this.#localScope = scope;
-      }
+      this.#scopeChain.push(new Scope(this, i));
     }
     if (payload.functionLocation) {
       this.#functionLocation = Location.fromPayload(debuggerModel, payload.functionLocation);
@@ -34143,11 +34143,8 @@ var CallFrame = class _CallFrame {
   get id() {
     return this.payload.callFrameId;
   }
-  scopeChain() {
+  async scopeChain() {
     return this.#scopeChain;
-  }
-  localScope() {
-    return this.#localScope;
   }
   thisObject() {
     return this.payload.this ? this.debuggerModel.runtimeModel().createRemoteObject(this.payload.this) : null;
@@ -34310,7 +34307,7 @@ var Scope = class {
     return this.#payload.emptyReason;
   }
   extraProperties() {
-    if (this !== this.#callFrame.localScope() || this.#callFrame.script.isWasm()) {
+    if (this.#type !== Debugger.ScopeType.Local || this.#callFrame.script.isWasm()) {
       return [];
     }
     const extraProperties = [];
@@ -35192,7 +35189,7 @@ var CONNECTION_TYPES = /* @__PURE__ */ new Map([
   ["wimax", Network.ConnectionType.Wimax]
 ]);
 function customUserNetworkConditionsSetting(settings) {
-  return settings.moduleSetting("custom-network-conditions");
+  return settings.resolve(customNetworkConditionsSettingDescriptor);
 }
 function activeNetworkThrottlingKeySetting(settings) {
   return settings.createSetting("active-network-condition-key", "NO_THROTTLING" /* NO_THROTTLING */);
@@ -40617,6 +40614,18 @@ function shouldGroupAnimations(firstAnimation, anim) {
   }
   return !animationTimeline && firstAnimation.startTime() === anim.startTime();
 }
+function getParticipantId(animation) {
+  const source = animation.source();
+  const timeline = animation.viewOrScrollTimeline();
+  const target = `node:${source.backendNodeId()}`;
+  const timelineId = timeline ? `|timeline:${timeline.sourceNodeId}:${timeline.axis}` : "";
+  const cssId = animation.cssId();
+  if (cssId) {
+    return `${target}|css:${JSON.stringify([cssId, animation.name()])}${timelineId}`;
+  }
+  const fingerprint = [animation.type(), animation.name()];
+  return `${target}|web:${JSON.stringify(fingerprint)}${timelineId}`;
+}
 var AnimationModel = class extends SDKModel {
   runtimeModel;
   agent;
@@ -40681,6 +40690,7 @@ var AnimationModel = class extends SDKModel {
       }
     }
     if (!foundAnimation || !foundAnimationGroup) {
+      await this.animationStarted(payload);
       return;
     }
     await foundAnimation.setPayload(payload);
@@ -40701,9 +40711,10 @@ var AnimationModel = class extends SDKModel {
     this.#flushPendingAnimations();
   }
   #matchExistingGroups(incomingGroup) {
+    const incomingParticipantIds = incomingGroup.getParticipantIds();
     let matchedGroup = null;
     for (const group of this.animationGroups.values()) {
-      if (group.matches(incomingGroup)) {
+      if (group.matches(incomingGroup, incomingParticipantIds)) {
         matchedGroup = group;
         group.rebaseTo(incomingGroup);
         break;
@@ -40750,6 +40761,12 @@ var AnimationModel = class extends SDKModel {
   }
   releaseAnimations(animations) {
     void this.agent.invoke_releaseAnimations({ animations });
+  }
+  forgetAnimationGroup(group) {
+    this.animationGroups.delete(group.id());
+    for (const animation of group.animations()) {
+      this.#animationsById.delete(animation.id());
+    }
   }
   async suspendModel() {
     await this.agent.invoke_disable().then(() => this.#reset());
@@ -41071,9 +41088,8 @@ var AnimationGroup = class {
   animations() {
     return this.#animations;
   }
-  release() {
-    this.#animationModel.animationGroups.delete(this.id());
-    this.#animationModel.releaseAnimations(this.#animationIds());
+  forget() {
+    this.#animationModel.forgetAnimationGroup(this);
   }
   #animationIds() {
     function extractId(animation) {
@@ -41129,13 +41145,13 @@ var AnimationGroup = class {
     return this.#scrollNode;
   }
   seekTo(currentTime) {
-    const animations = [];
+    const animationIds = [];
     const currentTimes = [];
     for (const animation of this.#animations) {
-      animations.push(animation.id());
+      animationIds.push(animation.id());
       currentTimes.push(animation.playbackRate() >= 0 ? currentTime : animation.endTime() - animation.startTime() - currentTime);
     }
-    void this.#animationModel.agent.invoke_seekAnimations({ animations, currentTimes });
+    void this.#animationModel.agent.invoke_seekAnimations({ animations: animationIds, currentTimes });
   }
   paused() {
     return this.#paused;
@@ -41159,23 +41175,22 @@ var AnimationGroup = class {
     }
     return this.#animationModel.agent.invoke_getCurrentTime({ id: longestAnim.id() }).then(({ currentTime }) => currentTime || 0);
   }
-  matches(group) {
-    function extractId(anim) {
-      const timelineId = (anim.viewOrScrollTimeline()?.sourceNodeId ?? "") + (anim.viewOrScrollTimeline()?.axis ?? "");
-      const regularId = anim.type() === Animation.AnimationType.WebAnimation ? anim.type() + anim.id() : anim.cssId();
-      return regularId + timelineId;
-    }
-    if (this.#animations.length !== group.#animations.length) {
+  /**
+   * Best-effort signatures for matching replays on the same element despite new
+   * protocol IDs. Animations without a cssId can match different effects; mutable
+   * timing and keyframe details are intentionally excluded.
+   * Returned as a sorted multiset: identical animations are kept as duplicates.
+   */
+  getParticipantIds() {
+    return this.#animations.map(getParticipantId).sort();
+  }
+  matches(group, participantIds) {
+    if (this.#animationModel !== group.#animationModel || this.#animations.length !== group.#animations.length) {
       return false;
     }
-    const left = this.#animations.map(extractId).sort();
-    const right = group.#animations.map(extractId).sort();
-    for (let i = 0; i < left.length; i++) {
-      if (left[i] !== right[i]) {
-        return false;
-      }
-    }
-    return true;
+    const thisParticipantIds = this.getParticipantIds();
+    const otherParticipantIds = participantIds ?? group.getParticipantIds();
+    return thisParticipantIds.every((id, index) => id === otherParticipantIds[index]);
   }
   shouldInclude(group) {
     const [firstIncomingAnimation] = group.#animations;
@@ -41186,7 +41201,11 @@ var AnimationGroup = class {
     this.#animations.push(...animations);
   }
   rebaseTo(group) {
-    this.#animationModel.releaseAnimations(this.#animationIds());
+    const incomingIds = new Set(group.#animationIds());
+    const releasedIds = this.#animationIds().filter((id) => !incomingIds.has(id));
+    if (releasedIds.length) {
+      this.#animationModel.releaseAnimations(releasedIds);
+    }
     this.#animations = group.#animations;
     this.#scrollNode = void 0;
   }

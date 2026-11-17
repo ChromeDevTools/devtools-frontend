@@ -56,6 +56,7 @@ __export(CustomPreviewComponent_exports, {
 });
 import * as Common3 from "../../../../core/common/common.js";
 import * as i18n5 from "../../../../core/i18n/i18n.js";
+import * as SDK4 from "../../../../core/sdk/sdk.js";
 import { Directives as Directives3, html as html3, nothing as nothing3, render as render3 } from "../../../lit/lit.js";
 import * as UI3 from "../../legacy.js";
 
@@ -5800,7 +5801,7 @@ var CustomPreviewComponent = class extends UI3.Widget.Widget {
     return this.#object;
   }
   set object(object) {
-    if (this.#object === object) {
+    if (this.#object === object || this.#object && object && this.#object.objectId !== void 0 && this.#object.objectId === object.objectId && this.#object instanceof SDK4.RemoteObject.RemoteObjectImpl && object instanceof SDK4.RemoteObject.RemoteObjectImpl && this.#object.runtimeModel() === object.runtimeModel()) {
       return;
     }
     this.#object = object;
@@ -5860,7 +5861,7 @@ __export(ObjectPopoverHelper_exports, {
 });
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as Platform3 from "../../../../core/platform/platform.js";
-import * as SDK4 from "../../../../core/sdk/sdk.js";
+import * as SDK5 from "../../../../core/sdk/sdk.js";
 import * as Geometry from "../../../geometry/geometry.js";
 import { Link } from "../../../kit/kit.js";
 import { render as render4 } from "../../../lit/lit.js";
@@ -5935,7 +5936,7 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
   }
   dispose() {
     if (this.resultHighlightedAsDOM) {
-      SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK4.TargetManager.TargetManager.instance());
+      SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK5.TargetManager.TargetManager.instance());
     }
     if (this.linkifier) {
       this.linkifier.dispose();
@@ -5948,7 +5949,7 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
       let linkifier = null;
       let resultHighlightedAsDOM = false;
       if (result.subtype === "node") {
-        SDK4.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result);
+        SDK5.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result);
         resultHighlightedAsDOM = true;
       }
       popover.setMaxContentSize(new Geometry.Size(300, 250));

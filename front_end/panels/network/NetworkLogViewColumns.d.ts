@@ -3,6 +3,7 @@ import type * as NetworkTimeCalculator from '../../models/network_time_calculato
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import { type NetworkNode } from './NetworkDataGridNode.js';
 import type { NetworkLogView } from './NetworkLogView.js';
+import { NetworkWaterfallColumn } from './NetworkWaterfallColumn.js';
 export declare class NetworkLogViewColumns {
     #private;
     private networkLogView;
@@ -17,7 +18,6 @@ export declare class NetworkLogViewColumns {
     private readonly popupLinkifier;
     private calculatorsMap;
     private lastWheelTime;
-    private splitWidget;
     private waterfallColumn;
     private activeScroller;
     private dataGridScroller;
@@ -47,9 +47,9 @@ export declare class NetworkLogViewColumns {
     setCalculator(x: NetworkTimeCalculator.NetworkTimeCalculator): void;
     scheduleRefresh(): void;
     private updateRowsSize;
-    show(element: Element): void;
-    setHidden(value: boolean): void;
     dataGrid(): DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>;
+    waterfall(): NetworkWaterfallColumn;
+    isWaterfallVisible(): boolean;
     sortByCurrentColumn(): void;
     filterChanged(): void;
     private sortHandler;

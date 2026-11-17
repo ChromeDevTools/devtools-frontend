@@ -4293,7 +4293,7 @@ var networkConfigView_css_default = `/*
 
 .panel-section-separator {
   height: var(--sys-size-1);
-  margin-bottom: 10px;
+  margin-bottom: var(--sys-size-6);
   background: var(--sys-color-divider);
 }
 /* Disable cache */
@@ -7119,7 +7119,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
 // ../../front_end/panels/network/RequestHeadersView.ts
 var RequestHeadersView_exports = {};
 __export(RequestHeadersView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW12,
+  DEFAULT_VIEW: () => DEFAULT_VIEW13,
   GENERAL_HEADERS_ONLY_VIEW: () => GENERAL_HEADERS_ONLY_VIEW,
   RequestHeadersView: () => RequestHeadersView,
   renderCategory: () => renderCategory,
@@ -7181,13 +7181,17 @@ import * as Search from "../search/search.js";
 // ../../front_end/panels/network/NetworkLogView.ts
 var NetworkLogView_exports = {};
 __export(NetworkLogView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   HTTPSchemas: () => HTTPSchemas,
+  MORE_FILTERS_DEFAULT_VIEW: () => MORE_FILTERS_DEFAULT_VIEW,
   MoreFiltersDropDownUI: () => MoreFiltersDropDownUI,
   NetworkLogView: () => NetworkLogView,
   computeStackTraceText: () => computeStackTraceText,
   isRequestFilteredOut: () => isRequestFilteredOut,
   overrideFilter: () => overrideFilter
 });
+import "../../ui/components/adorners/adorners.js";
+import "../../ui/kit/kit.js";
 import "../../ui/legacy/legacy.js";
 import * as Common12 from "../../core/common/common.js";
 import * as Host5 from "../../core/host/host.js";
@@ -7203,7 +7207,6 @@ import * as Persistence from "../../models/persistence/persistence.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as NetworkForward2 from "./forward/forward.js";
 import * as Sources from "../sources/sources.js";
-import * as Adorners from "../../ui/components/adorners/adorners.js";
 import * as Buttons6 from "../../ui/components/buttons/buttons.js";
 import * as RenderCoordinator3 from "../../ui/components/render_coordinator/render_coordinator.js";
 import * as DataGrid4 from "../../ui/legacy/components/data_grid/data_grid.js";
@@ -7236,6 +7239,7 @@ var dataGridAiButton_css_default = `/*
 import * as PerfUI4 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
+import { Directives as Directives9, html as html11, nothing as nothing7, render as render12 } from "../../ui/lit/lit.js";
 import * as Settings10 from "../../ui/settings/settings.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
@@ -10636,7 +10640,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   calculatorsMap;
   lastWheelTime;
   #dataGrid;
-  splitWidget;
+  #isWaterfallVisible = false;
   waterfallColumn;
   activeScroller;
   dataGridScroller;
@@ -10728,10 +10732,8 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.#dataGrid.setHeaderContextMenuCallback(this.#headerContextMenu.bind(this));
     this.activeWaterfallSortId = "startTime" /* StartTime */;
     this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid2.DataGrid.Order.Ascending);
-    this.splitWidget = new UI13.SplitWidget.SplitWidget(true, true, "network-panel-split-view-waterfall", 200);
     const widget9 = this.#dataGrid.asWidget();
     widget9.setMinimumSize(150, 0);
-    this.splitWidget.setMainWidget(widget9);
   }
   setupWaterfall() {
     this.waterfallColumn = new NetworkWaterfallColumn(this.networkLogView.calculator());
@@ -10757,7 +10759,6 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.createWaterfallHeader();
     this.waterfallColumn.contentElement.classList.add("network-waterfall-view");
     this.waterfallColumn.setMinimumSize(100, 0);
-    this.splitWidget.setSidebarWidget(this.waterfallColumn);
     this.switchViewMode(false);
     function handleContextMenu(event) {
       const node = this.waterfallColumn.getNodeFromPoint(event.offsetY);
@@ -10874,14 +10875,14 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       this.waterfallColumn.scheduleDraw();
     });
   }
-  show(element) {
-    this.splitWidget.show(element);
-  }
-  setHidden(value) {
-    UI13.ARIAUtils.setHidden(this.splitWidget.element, value);
-  }
   dataGrid() {
     return this.#dataGrid;
+  }
+  waterfall() {
+    return this.waterfallColumn;
+  }
+  isWaterfallVisible() {
+    return this.#isWaterfallVisible;
   }
   sortByCurrentColumn() {
     this.sortHandler();
@@ -10962,20 +10963,22 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.updateRowsSize();
   }
   setWaterfallVisibility(visible) {
-    if (!this.splitWidget) {
+    if (!this.waterfallScroller) {
       return;
     }
-    this.networkLogView.element.classList.toggle("has-waterfall", visible);
+    const visibilityChanged = this.#isWaterfallVisible !== visible;
+    this.#isWaterfallVisible = visible;
     if (visible) {
-      this.splitWidget.showBoth();
       this.activeScroller = this.waterfallScroller;
       this.waterfallScroller.scrollTop = this.dataGridScroller.scrollTop;
       this.#dataGrid.setScrollContainer(this.waterfallScroller);
     } else {
       this.networkLogView.removeAllNodeHighlights();
-      this.splitWidget.hideSidebar();
       this.activeScroller = this.dataGridScroller;
       this.#dataGrid.setScrollContainer(this.dataGridScroller);
+    }
+    if (visibilityChanged) {
+      this.networkLogView.requestUpdate();
     }
   }
   saveColumnsSettings() {
@@ -12040,26 +12043,6 @@ var UIStrings13 = {
    */
   moreFilters: "More filters",
   /**
-   * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
-   */
-  startAChat: "Start a chat",
-  /**
-   * @description Context menu item in Network panel to explain the purpose of a request via AI.
-   */
-  explainPurpose: "Explain purpose",
-  /**
-   * @description Context menu item in Network panel to explain why a request is slow via AI.
-   */
-  explainSlowness: "Explain slowness",
-  /**
-   * @description Context menu item in Network panel to explain why a request is failing via AI.
-   */
-  explainFailures: "Explain failures",
-  /**
-   * @description Context menu item in Network panel to assess security headers of a request via AI.
-   */
-  assessSecurityHeaders: "Assess security headers",
-  /**
    * @description A comment in a generated command indicating that the URL scheme is unsupported. The placeholder is the comment prefix (e.g. '//' or '#').
    * @example {//} PH1
    */
@@ -12067,10 +12050,149 @@ var UIStrings13 = {
 };
 var str_13 = i18n25.i18n.registerUIStrings("panels/network/NetworkLogView.ts", UIStrings13);
 var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var DEFAULT_VIEW11 = (input, _output, target) => {
+  const classes = [];
+  if (!input.isNodeSelected) {
+    classes.push("no-node-selected");
+  }
+  if (input.isGridFocused) {
+    classes.push("grid-focused");
+  }
+  if (input.isWaterfallVisible) {
+    classes.push("has-waterfall");
+  }
+  const actionName = input.recording ? "inspector-main.reload" : "network.toggle-recording";
+  const header = input.recording ? i18nString12(UIStrings13.recordingNetworkActivity) : i18nString12(UIStrings13.noNetworkActivityRecorded);
+  const instruction = input.recording ? UIStrings13.performARequestOrHitSToRecordThe : UIStrings13.recordToDisplayNetworkActivity;
+  const buttonText = input.recording ? i18nString12(UIStrings13.reloadPage) : i18nString12(UIStrings13.startRecording);
+  const description = input.recordingActionShortcut ? i18nString12(instruction, {
+    PH1: buttonText,
+    PH2: input.recordingActionShortcut
+  }) : "";
+  const summaryItems = [];
+  if (!input.showRecordingHint && input.nodeCount > 0) {
+    const appendChunk = (chunk, title, color) => {
+      summaryItems.push({ text: chunk, title: title ?? chunk, color });
+    };
+    if (input.selectedNodeCount !== input.nodeCount) {
+      appendChunk(i18nString12(UIStrings13.sSRequests, { PH1: input.selectedNodeCount, PH2: input.nodeCount }));
+      appendChunk(
+        i18nString12(UIStrings13.sSTransferred, {
+          PH1: i18n25.ByteUtilities.formatBytesToKb(input.selectedTransferSize),
+          PH2: i18n25.ByteUtilities.formatBytesToKb(input.transferSize)
+        }),
+        i18nString12(UIStrings13.sBSBTransferredOverNetwork, {
+          PH1: input.selectedTransferSize,
+          PH2: input.transferSize
+        })
+      );
+      appendChunk(
+        i18nString12(UIStrings13.sSResources, {
+          PH1: i18n25.ByteUtilities.formatBytesToKb(input.selectedResourceSize),
+          PH2: i18n25.ByteUtilities.formatBytesToKb(input.resourceSize)
+        }),
+        i18nString12(UIStrings13.sBSBResourcesLoadedByThePage, {
+          PH1: input.selectedResourceSize,
+          PH2: input.resourceSize
+        })
+      );
+    } else {
+      appendChunk(i18nString12(UIStrings13.sRequests, { PH1: input.nodeCount }));
+      appendChunk(
+        i18nString12(UIStrings13.sTransferred, { PH1: i18n25.ByteUtilities.bytesToString(input.transferSize) }),
+        i18nString12(UIStrings13.sBTransferredOverNetwork, { PH1: input.transferSize })
+      );
+      appendChunk(
+        i18nString12(UIStrings13.sResources, { PH1: i18n25.ByteUtilities.bytesToString(input.resourceSize) }),
+        i18nString12(UIStrings13.sBResourcesLoadedByThePage, { PH1: input.resourceSize })
+      );
+    }
+    if (input.baseTime !== -1 && input.maxTime !== -1) {
+      appendChunk(i18nString12(UIStrings13.finishS, {
+        PH1: i18n25.TimeUtilities.secondsToString(input.maxTime - input.baseTime)
+      }));
+      if (input.domContentLoadedTime !== -1 && input.domContentLoadedTime > input.baseTime) {
+        const domContentLoadedText = i18nString12(UIStrings13.domcontentloadedS, {
+          PH1: i18n25.TimeUtilities.secondsToString(input.domContentLoadedTime - input.baseTime)
+        });
+        appendChunk(domContentLoadedText, void 0, NetworkLogView.getDCLEventColor());
+      }
+      if (input.loadTime !== -1) {
+        const loadText = i18nString12(UIStrings13.loadS, {
+          PH1: i18n25.TimeUtilities.secondsToString(input.loadTime - input.baseTime)
+        });
+        appendChunk(loadText, void 0, NetworkLogView.getLoadEventColor());
+      }
+    }
+  }
+  render12(html11`
+    <style>${networkLogView_css_default}</style>
+    <style>@scope to (devtools-widget > *) { ${dataGridAiButton_css_default} }</style>
+    <devtools-split-view
+      direction="column"
+      sidebar-position="second"
+      name="network-panel-split-view-waterfall"
+      sidebar-initial-size="200"
+      show=${input.isWaterfallVisible ? "both" : "main"}
+      aria-hidden=${input.showRecordingHint}>
+      <div
+        slot="main"
+        ${UI14.Widget.widget(UI14.Widget.WrapperWidget, { widget: input.dataGridWidget })}>
+      </div>
+      <div
+        slot="sidebar"
+        ${UI14.Widget.widget(UI14.Widget.WrapperWidget, {
+    widget: input.isWaterfallVisible ? input.waterfallColumn : null
+  })}>
+      </div>
+    </devtools-split-view>
+    ${input.showRecordingHint ? html11`
+      <devtools-widget
+        class="network-status-pane"
+        ${UI14.Widget.widget(UI14.EmptyWidget.EmptyWidget, {
+    header,
+    text: description,
+    link: "https://developer.chrome.com/docs/devtools/network/"
+  })}>
+        ${input.onRecordingAction ? html11`
+          <devtools-button
+            .variant=${Buttons6.Button.Variant.TONAL}
+            .jslogContext=${actionName}
+            @click=${input.onRecordingAction}>
+            ${buttonText}
+          </devtools-button>
+        ` : nothing7}
+      </devtools-widget>
+    ` : nothing7}
+    <devtools-toolbar
+      class="network-summary-bar"
+      role="status"
+      aria-hidden=${input.showRecordingHint}>
+      ${summaryItems.map((item4, index) => html11`
+        ${index > 0 ? html11`<div class="toolbar-divider toolbar-item"></div>` : nothing7}
+        <div
+          class="toolbar-text toolbar-item"
+          title=${item4.title}
+          aria-label=${item4.title}
+          style=${Directives9.styleMap({ color: item4.color ? `var(${item4.color})` : void 0 })}>
+          ${item4.text}
+        </div>
+      `)}
+    </devtools-toolbar>
+  `, target, {
+    container: {
+      attributes: {
+        id: "network-container"
+      },
+      classes
+    }
+  });
+};
 var NetworkLogViewBase = Common12.ObjectWrapper.eventMixin(
   UI14.Widget.VBox
 );
 var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
+  #view;
   #networkInvertFilterSetting;
   #networkHideDataURLSetting;
   #networkHideChromeExtensions;
@@ -12094,7 +12216,17 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
   #filters;
   #timeFilter;
   #hoveredNode;
-  #recordingHint;
+  #showRecordingHintState;
+  #nodeCount;
+  #selectedNodeCount;
+  #transferSize;
+  #selectedTransferSize;
+  #resourceSize;
+  #selectedResourceSize;
+  #baseTime;
+  #maxTime;
+  #isNodeSelected;
+  #isGridFocused;
   #highlightedNode;
   #linkifier;
   // Accessed in web_tests / legacy_test_runner.
@@ -12115,17 +12247,13 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
   // Accessed in web_tests / legacy_test_runner.
   // eslint-disable-next-line @devtools/prefer-private-class-members
   dataGrid;
-  #summaryToolbar;
   #filterBar;
   #textFilterSetting;
   #networkRequestToNode;
-  constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
+  constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting, view = DEFAULT_VIEW11) {
     super();
-    this.registerRequiredCSS(networkLogView_css_default);
-    this.registerRequiredCSS(dataGridAiButton_css_default);
+    this.#view = view;
     this.setMinimumSize(50, 64);
-    this.element.id = "network-container";
-    this.element.classList.add("no-node-selected");
     this.#networkRequestToNode = /* @__PURE__ */ new WeakMap();
     this.#networkInvertFilterSetting = Common12.Settings.Settings.instance().createSetting("network-invert-filter", false);
     this.#networkHideDataURLSetting = Common12.Settings.Settings.instance().createSetting("network-hide-data-url", false);
@@ -12149,14 +12277,23 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     this.#durationCalculator = new NetworkTimeCalculator4.NetworkTransferDurationCalculator();
     this.#calculator = this.#timeCalculator;
     this.#columns = new NetworkLogViewColumns(this, this.#timeCalculator, this.#durationCalculator, networkLogLargeRowsSetting);
-    this.#columns.show(this.element);
     this.staleRequests = /* @__PURE__ */ new Set();
     this.#mainRequestLoadTime = -1;
     this.#mainRequestDOMContentLoadedTime = -1;
     this.#filters = [];
     this.#timeFilter = null;
     this.#hoveredNode = null;
-    this.#recordingHint = null;
+    this.#showRecordingHintState = false;
+    this.#nodeCount = 0;
+    this.#selectedNodeCount = 0;
+    this.#transferSize = 0;
+    this.#selectedTransferSize = 0;
+    this.#resourceSize = 0;
+    this.#selectedResourceSize = 0;
+    this.#baseTime = -1;
+    this.#maxTime = -1;
+    this.#isNodeSelected = false;
+    this.#isGridFocused = false;
     this.#highlightedNode = null;
     this.#linkifier = new Components4.Linkifier.Linkifier();
     this.recording = false;
@@ -12213,8 +12350,6 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
         /* isFromUser */
       )
     );
-    this.#summaryToolbar = this.element.createChild("devtools-toolbar", "network-summary-bar");
-    this.#summaryToolbar.setAttribute("role", "status");
     new UI14.DropTarget.DropTarget(
       this.element,
       [UI14.DropTarget.Type.File],
@@ -12246,6 +12381,40 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     if (this.#textFilterSetting.get()) {
       this.#textFilterUI.setValue(this.#textFilterSetting.get());
     }
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const actionRegistry = UI14.ActionRegistry.ActionRegistry.instance();
+    const actionName = this.recording ? "inspector-main.reload" : "network.toggle-recording";
+    const action3 = actionRegistry.hasAction(actionName) ? actionRegistry.getAction(actionName) : null;
+    const shortcutTitle = UI14.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? "";
+    this.#view(
+      {
+        recording: this.recording,
+        showRecordingHint: this.#showRecordingHintState,
+        recordingActionShortcut: shortcutTitle,
+        onRecordingAction: shortcutTitle && action3 ? () => {
+          void action3.execute();
+        } : void 0,
+        nodeCount: this.#nodeCount,
+        selectedNodeCount: this.#selectedNodeCount,
+        transferSize: this.#transferSize,
+        selectedTransferSize: this.#selectedTransferSize,
+        resourceSize: this.#resourceSize,
+        selectedResourceSize: this.#selectedResourceSize,
+        baseTime: this.#baseTime,
+        maxTime: this.#maxTime,
+        domContentLoadedTime: this.#mainRequestDOMContentLoadedTime,
+        loadTime: this.#mainRequestLoadTime,
+        isNodeSelected: this.#isNodeSelected,
+        isGridFocused: this.#isGridFocused,
+        isWaterfallVisible: this.#columns.isWaterfallVisible(),
+        dataGridWidget: this.dataGrid.asWidget(),
+        waterfallColumn: this.#columns.waterfall()
+      },
+      void 0,
+      this.contentElement
+    );
   }
   #updateGroupByFrame() {
     const value = Common12.Settings.Settings.instance().resolve(Settings10.NetworkSettings.groupByFrameSettingDescriptor).get();
@@ -12482,9 +12651,6 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
   columns() {
     return this.#columns;
   }
-  summaryToolbar() {
-    return this.#summaryToolbar;
-  }
   modelAdded(networkManager) {
     const target = networkManager.target();
     if (target.outermostTarget() !== target) {
@@ -12576,51 +12742,26 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     this.#parseFilterQuery(this.#textFilterUI.value(), this.#invertFilterUI.checked());
     this.#filterRequests();
     this.#textFilterSetting.set(this.#textFilterUI.value());
-    this.#moreFiltersDropDownUI?.updateActiveFiltersCount();
-    this.#moreFiltersDropDownUI?.updateTooltip();
     this.#columns.filterChanged();
   }
   async resetFilter() {
     this.#textFilterUI.clear();
   }
   #showRecordingHint() {
-    this.#hideRecordingHint();
-    const actionRegistry = UI14.ActionRegistry.ActionRegistry.instance();
-    const actionName = this.recording ? "inspector-main.reload" : "network.toggle-recording";
-    const action3 = actionRegistry.hasAction(actionName) ? actionRegistry.getAction(actionName) : null;
-    const shortcutTitle = UI14.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? "";
-    const header = this.recording ? i18nString12(UIStrings13.recordingNetworkActivity) : i18nString12(UIStrings13.noNetworkActivityRecorded);
-    const instruction = this.recording ? UIStrings13.performARequestOrHitSToRecordThe : UIStrings13.recordToDisplayNetworkActivity;
-    const buttonText = this.recording ? i18nString12(UIStrings13.reloadPage) : i18nString12(UIStrings13.startRecording);
-    const description = i18nString12(instruction, {
-      PH1: buttonText,
-      PH2: shortcutTitle
-    });
-    this.#recordingHint = new UI14.EmptyWidget.EmptyWidget(header, shortcutTitle ? description : "");
-    this.#recordingHint.element.classList.add("network-status-pane");
-    this.#recordingHint.link = "https://developer.chrome.com/docs/devtools/network/";
-    if (shortcutTitle && action3) {
-      const button = UI14.UIUtils.createTextButton(buttonText, () => action3.execute(), {
-        jslogContext: actionName,
-        variant: Buttons6.Button.Variant.TONAL
-      });
-      this.#recordingHint.element.appendChild(button);
-    }
-    this.#recordingHint.show(this.element);
+    this.#showRecordingHintState = true;
     this.#setHidden(true);
+    this.requestUpdate();
   }
   #hideRecordingHint() {
     this.#setHidden(false);
-    if (this.#recordingHint) {
-      this.#recordingHint.detach();
-      this.#recordingHint = null;
+    if (this.#showRecordingHintState) {
+      this.#showRecordingHintState = false;
+      UI14.ARIAUtils.LiveAnnouncer.alert(i18nString12(UIStrings13.networkDataAvailable));
+      this.requestUpdate();
     }
-    UI14.ARIAUtils.LiveAnnouncer.alert(i18nString12(UIStrings13.networkDataAvailable));
   }
   #setHidden(value) {
-    this.#columns.setHidden(value);
     this.dataGrid.setInert(value);
-    UI14.ARIAUtils.setHidden(this.#summaryToolbar, value);
   }
   elementsToRestoreScrollPositionsFor() {
     if (!this.dataGrid) {
@@ -12694,7 +12835,6 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     }
   }
   #updateSummaryBar() {
-    this.#hideRecordingHint();
     let transferSize = 0;
     let resourceSize = 0;
     let selectedNodeNumber = 0;
@@ -12726,68 +12866,20 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
         maxTime = request.endTime;
       }
     }
+    this.#nodeCount = nodeCount;
+    this.#selectedNodeCount = selectedNodeNumber;
+    this.#transferSize = transferSize;
+    this.#selectedTransferSize = selectedTransferSize;
+    this.#resourceSize = resourceSize;
+    this.#selectedResourceSize = selectedResourceSize;
+    this.#baseTime = baseTime;
+    this.#maxTime = maxTime;
     if (!nodeCount) {
       this.#showRecordingHint();
       return;
     }
-    this.#summaryToolbar.removeToolbarItems();
-    const appendChunk = (chunk, title) => {
-      const toolbarText = new UI14.Toolbar.ToolbarText(chunk);
-      toolbarText.setTitle(title ? title : chunk);
-      this.#summaryToolbar.appendToolbarItem(toolbarText);
-      return toolbarText.element;
-    };
-    if (selectedNodeNumber !== nodeCount) {
-      appendChunk(i18nString12(UIStrings13.sSRequests, { PH1: selectedNodeNumber, PH2: nodeCount }));
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(
-        i18nString12(UIStrings13.sSTransferred, {
-          PH1: i18n25.ByteUtilities.formatBytesToKb(selectedTransferSize),
-          PH2: i18n25.ByteUtilities.formatBytesToKb(transferSize)
-        }),
-        i18nString12(UIStrings13.sBSBTransferredOverNetwork, { PH1: selectedTransferSize, PH2: transferSize })
-      );
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(
-        i18nString12(UIStrings13.sSResources, {
-          PH1: i18n25.ByteUtilities.formatBytesToKb(selectedResourceSize),
-          PH2: i18n25.ByteUtilities.formatBytesToKb(resourceSize)
-        }),
-        i18nString12(UIStrings13.sBSBResourcesLoadedByThePage, { PH1: selectedResourceSize, PH2: resourceSize })
-      );
-    } else {
-      appendChunk(i18nString12(UIStrings13.sRequests, { PH1: nodeCount }));
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(
-        i18nString12(UIStrings13.sTransferred, { PH1: i18n25.ByteUtilities.bytesToString(transferSize) }),
-        i18nString12(UIStrings13.sBTransferredOverNetwork, { PH1: transferSize })
-      );
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(
-        i18nString12(UIStrings13.sResources, { PH1: i18n25.ByteUtilities.bytesToString(resourceSize) }),
-        i18nString12(UIStrings13.sBResourcesLoadedByThePage, { PH1: resourceSize })
-      );
-    }
-    if (baseTime !== -1 && maxTime !== -1) {
-      this.#summaryToolbar.appendSeparator();
-      appendChunk(i18nString12(UIStrings13.finishS, { PH1: i18n25.TimeUtilities.secondsToString(maxTime - baseTime) }));
-      if (this.#mainRequestDOMContentLoadedTime !== -1 && this.#mainRequestDOMContentLoadedTime > baseTime) {
-        this.#summaryToolbar.appendSeparator();
-        const domContentLoadedText = i18nString12(
-          UIStrings13.domcontentloadedS,
-          { PH1: i18n25.TimeUtilities.secondsToString(this.#mainRequestDOMContentLoadedTime - baseTime) }
-        );
-        appendChunk(domContentLoadedText).style.color = `var(${_NetworkLogView.getDCLEventColor()})`;
-      }
-      if (this.#mainRequestLoadTime !== -1) {
-        this.#summaryToolbar.appendSeparator();
-        const loadText = i18nString12(
-          UIStrings13.loadS,
-          { PH1: i18n25.TimeUtilities.secondsToString(this.#mainRequestLoadTime - baseTime) }
-        );
-        appendChunk(loadText).style.color = `var(${_NetworkLogView.getLoadEventColor()})`;
-      }
-    }
+    this.#hideRecordingHint();
+    this.requestUpdate();
   }
   scheduleRefresh() {
     if (this.#needsRefresh) {
@@ -12876,13 +12968,17 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     return rootNode.flatChildren();
   }
   #onDataGridFocus() {
-    if (this.dataGrid.element.matches(":focus-visible")) {
-      this.element.classList.add("grid-focused");
+    if (this.dataGrid.element.matches(":focus-visible") && !this.#isGridFocused) {
+      this.#isGridFocused = true;
+      this.requestUpdate();
     }
     this.updateNodeBackground();
   }
   #onDataGridBlur() {
-    this.element.classList.remove("grid-focused");
+    if (this.#isGridFocused) {
+      this.#isGridFocused = false;
+      this.requestUpdate();
+    }
     this.updateNodeBackground();
   }
   updateNodeBackground() {
@@ -12891,11 +12987,11 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     }
   }
   updateNodeSelectedClass(isSelected) {
-    if (isSelected) {
-      this.element.classList.remove("no-node-selected");
-    } else {
-      this.element.classList.add("no-node-selected");
+    if (this.#isNodeSelected === isSelected) {
+      return;
     }
+    this.#isNodeSelected = isSelected;
+    this.requestUpdate();
   }
   stylesChanged() {
     this.#columns.scheduleRefresh();
@@ -13129,45 +13225,8 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     if (request) {
       const openAiAssistanceId = "drjones.network-panel-context";
       if (UI14.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-        let appendSubmenuPromptAction = function(submenu2, action4, label, prompt, jslogContext) {
-          submenu2.defaultSection().appendItem(
-            label,
-            () => action4.execute({ prompt }),
-            { disabled: !action4.enabled(), jslogContext }
-          );
-        };
         UI14.Context.Context.instance().setFlavor(SDK11.NetworkRequest.NetworkRequest, request);
-        const action3 = UI14.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString12(UIStrings13.startAChat));
-        appendSubmenuPromptAction(
-          submenu,
-          action3,
-          i18nString12(UIStrings13.explainPurpose),
-          "What is the purpose of this request?",
-          openAiAssistanceId + ".purpose"
-        );
-        appendSubmenuPromptAction(
-          submenu,
-          action3,
-          i18nString12(UIStrings13.explainSlowness),
-          "Why is this request taking so long?",
-          openAiAssistanceId + ".slowness"
-        );
-        appendSubmenuPromptAction(
-          submenu,
-          action3,
-          i18nString12(UIStrings13.explainFailures),
-          "Why is the request failing?",
-          openAiAssistanceId + ".failures"
-        );
-        appendSubmenuPromptAction(
-          submenu,
-          action3,
-          i18nString12(UIStrings13.assessSecurityHeaders),
-          "Are there any security headers present?",
-          openAiAssistanceId + ".security"
-        );
+        contextMenu.footerSection().appendAction(openAiAssistanceId);
       }
       copyMenu.defaultSection().appendItem(
         i18nString12(UIStrings13.copyURL),
@@ -14061,75 +14120,26 @@ var overrideFilter = {
   content: "content",
   headers: "headers"
 };
-var MoreFiltersDropDownUI = class extends Common12.ObjectWrapper.ObjectWrapper {
-  #filterElement;
-  #dropDownButton;
-  #networkHideDataURLSetting;
-  #networkHideChromeExtensionsSetting;
-  #networkShowBlockedCookiesOnlySetting;
-  #networkOnlyBlockedRequestsSetting;
-  #networkOnlyThirdPartySetting;
-  #activeFiltersCount;
-  #activeFiltersCountAdorner;
-  constructor() {
-    super();
-    this.#networkHideDataURLSetting = Common12.Settings.Settings.instance().createSetting("network-hide-data-url", false);
-    this.#networkHideChromeExtensionsSetting = Common12.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
-    this.#networkShowBlockedCookiesOnlySetting = Common12.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
-    this.#networkOnlyBlockedRequestsSetting = Common12.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
-    this.#networkOnlyThirdPartySetting = Common12.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
-    this.#filterElement = document.createElement("div");
-    this.#filterElement.setAttribute("aria-label", "Show only/hide requests dropdown");
-    this.#filterElement.setAttribute("jslog", `${VisualLogging10.dropDown("more-filters").track({ click: true })}`);
-    this.#activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
-    this.#activeFiltersCountAdorner.name = "countWrapper";
-    this.#activeFiltersCount = document.createElement("span");
-    this.#activeFiltersCountAdorner.append(this.#activeFiltersCount);
-    this.#activeFiltersCountAdorner.classList.add("active-filters-count");
-    this.updateActiveFiltersCount();
-    this.#dropDownButton = new UI14.Toolbar.ToolbarMenuButton(
-      this.showMoreFiltersContextMenu.bind(this),
-      /* isIconDropdown=*/
-      false,
-      /* useSoftMenu=*/
-      true,
-      /* jslogContext=*/
-      void 0,
-      /* iconName=*/
-      void 0,
-      /* keepOpen=*/
-      true
-    );
-    this.#dropDownButton.setTitle(i18nString12(UIStrings13.showOnlyHideRequests));
-    this.#dropDownButton.setText(i18nString12(UIStrings13.moreFilters));
-    this.#dropDownButton.setAdorner(this.#activeFiltersCountAdorner);
-    this.#filterElement.appendChild(this.#dropDownButton.element);
-    this.#dropDownButton.element.classList.add("dropdown-filterbar");
-    this.updateTooltip();
-  }
-  #onSettingChanged() {
-    this.dispatchEventToListeners(UI14.FilterBar.FilterUIEvents.FILTER_CHANGED);
-  }
-  showMoreFiltersContextMenu(contextMenu) {
-    this.#networkHideDataURLSetting.addChangeListener(this.#onSettingChanged.bind(this));
-    this.#networkHideChromeExtensionsSetting.addChangeListener(this.#onSettingChanged.bind(this));
-    this.#networkShowBlockedCookiesOnlySetting.addChangeListener(this.#onSettingChanged.bind(this));
-    this.#networkOnlyBlockedRequestsSetting.addChangeListener(this.#onSettingChanged.bind(this));
-    this.#networkOnlyThirdPartySetting.addChangeListener(this.#onSettingChanged.bind(this));
-    contextMenu.defaultSection().appendCheckboxItem(
-      i18nString12(UIStrings13.hideDataUrls),
-      () => this.#networkHideDataURLSetting.set(!this.#networkHideDataURLSetting.get()),
-      {
-        checked: this.#networkHideDataURLSetting.get(),
-        tooltip: i18nString12(UIStrings13.hidesDataAndBlobUrls),
-        jslogContext: "hide-data-urls"
-      }
-    );
+var MORE_FILTERS_DEFAULT_VIEW = (input, _output, target) => {
+  const openMenu = (event) => {
+    const buttonElement = event.currentTarget;
+    const contextMenu = new UI14.ContextMenu.ContextMenu(event, {
+      useSoftMenu: true,
+      keepOpen: true,
+      x: buttonElement.getBoundingClientRect().left,
+      y: buttonElement.getBoundingClientRect().top + buttonElement.offsetHeight,
+      onSoftMenuClosed: () => setTimeout(() => buttonElement.removeAttribute("aria-expanded"), 50)
+    });
+    contextMenu.defaultSection().appendCheckboxItem(i18nString12(UIStrings13.hideDataUrls), input.onHideDataURLsChange, {
+      checked: input.hideDataURLs,
+      tooltip: i18nString12(UIStrings13.hidesDataAndBlobUrls),
+      jslogContext: "hide-data-urls"
+    });
     contextMenu.defaultSection().appendCheckboxItem(
       i18nString12(UIStrings13.chromeExtensions),
-      () => this.#networkHideChromeExtensionsSetting.set(!this.#networkHideChromeExtensionsSetting.get()),
+      input.onHideChromeExtensionsChange,
       {
-        checked: this.#networkHideChromeExtensionsSetting.get(),
+        checked: input.hideChromeExtensions,
         tooltip: i18nString12(UIStrings13.hideChromeExtension),
         jslogContext: "hide-extension-urls"
       }
@@ -14137,31 +14147,85 @@ var MoreFiltersDropDownUI = class extends Common12.ObjectWrapper.ObjectWrapper {
     contextMenu.defaultSection().appendSeparator();
     contextMenu.defaultSection().appendCheckboxItem(
       i18nString12(UIStrings13.hasBlockedCookies),
-      () => this.#networkShowBlockedCookiesOnlySetting.set(!this.#networkShowBlockedCookiesOnlySetting.get()),
+      input.onShowBlockedCookiesOnlyChange,
       {
-        checked: this.#networkShowBlockedCookiesOnlySetting.get(),
+        checked: input.showBlockedCookiesOnly,
         tooltip: i18nString12(UIStrings13.onlyShowRequestsWithBlockedCookies),
         jslogContext: "only-blocked-response-cookies"
       }
     );
     contextMenu.defaultSection().appendCheckboxItem(
       i18nString12(UIStrings13.blockedRequests),
-      () => this.#networkOnlyBlockedRequestsSetting.set(!this.#networkOnlyBlockedRequestsSetting.get()),
+      input.onOnlyBlockedRequestsChange,
       {
-        checked: this.#networkOnlyBlockedRequestsSetting.get(),
+        checked: input.onlyBlockedRequests,
         tooltip: i18nString12(UIStrings13.onlyShowBlockedRequests),
         jslogContext: "only-blocked-requests"
       }
     );
-    contextMenu.defaultSection().appendCheckboxItem(
-      i18nString12(UIStrings13.thirdParty),
-      () => this.#networkOnlyThirdPartySetting.set(!this.#networkOnlyThirdPartySetting.get()),
-      {
-        checked: this.#networkOnlyThirdPartySetting.get(),
-        tooltip: i18nString12(UIStrings13.onlyShowThirdPartyRequests),
-        jslogContext: "only-3rd-party-requests"
+    contextMenu.defaultSection().appendCheckboxItem(i18nString12(UIStrings13.thirdParty), input.onOnlyThirdPartyChange, {
+      checked: input.onlyThirdParty,
+      tooltip: i18nString12(UIStrings13.onlyShowThirdPartyRequests),
+      jslogContext: "only-3rd-party-requests"
+    });
+    buttonElement.setAttribute("aria-expanded", "true");
+    void contextMenu.show();
+  };
+  render12(html11`
+    <button
+      class="toolbar-button toolbar-item toolbar-has-dropdown dropdown-filterbar"
+      title=${input.tooltip}
+      aria-label=${input.tooltip}
+      aria-haspopup="true"
+      @click=${openMenu}>
+      <devtools-adorner
+        class="active-filters-count"
+        ?hidden=${input.activeFiltersCount === 0}
+        .name=${"countWrapper"}>
+        <span>${input.activeFiltersCount}</span>
+      </devtools-adorner>
+      <div class="toolbar-text">${i18nString12(UIStrings13.moreFilters)}</div>
+      <devtools-icon
+        name="triangle-down"
+        class="toolbar-dropdown-arrow">
+      </devtools-icon>
+    </button>
+  `, target, {
+    container: {
+      attributes: {
+        "aria-label": "Show only/hide requests dropdown",
+        jslog: VisualLogging10.dropDown("more-filters").track({ click: true })
       }
-    );
+    }
+  });
+};
+var MoreFiltersDropDownUI = class extends Common12.ObjectWrapper.ObjectWrapper {
+  #filterElement;
+  #view;
+  #networkHideDataURLSetting;
+  #networkHideChromeExtensionsSetting;
+  #networkShowBlockedCookiesOnlySetting;
+  #networkOnlyBlockedRequestsSetting;
+  #networkOnlyThirdPartySetting;
+  constructor(view = MORE_FILTERS_DEFAULT_VIEW) {
+    super();
+    this.#view = view;
+    this.#networkHideDataURLSetting = Common12.Settings.Settings.instance().createSetting("network-hide-data-url", false);
+    this.#networkHideChromeExtensionsSetting = Common12.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
+    this.#networkShowBlockedCookiesOnlySetting = Common12.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
+    this.#networkOnlyBlockedRequestsSetting = Common12.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
+    this.#networkOnlyThirdPartySetting = Common12.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
+    this.#networkHideDataURLSetting.addChangeListener(this.#onSettingChanged, this);
+    this.#networkHideChromeExtensionsSetting.addChangeListener(this.#onSettingChanged, this);
+    this.#networkShowBlockedCookiesOnlySetting.addChangeListener(this.#onSettingChanged, this);
+    this.#networkOnlyBlockedRequestsSetting.addChangeListener(this.#onSettingChanged, this);
+    this.#networkOnlyThirdPartySetting.addChangeListener(this.#onSettingChanged, this);
+    this.#filterElement = document.createElement("div");
+    this.performUpdate();
+  }
+  #onSettingChanged() {
+    this.performUpdate();
+    this.dispatchEventToListeners(UI14.FilterBar.FilterUIEvents.FILTER_CHANGED);
   }
   selectedFilters() {
     const filters = [
@@ -14173,17 +14237,37 @@ var MoreFiltersDropDownUI = class extends Common12.ObjectWrapper.ObjectWrapper {
     ];
     return filters;
   }
-  updateActiveFiltersCount() {
-    const count = this.selectedFilters().length;
-    this.#activeFiltersCount.textContent = count.toString();
-    count ? this.#activeFiltersCountAdorner.classList.remove("hidden") : this.#activeFiltersCountAdorner.classList.add("hidden");
-  }
-  updateTooltip() {
-    if (this.selectedFilters().length) {
-      this.#dropDownButton.setTitle(this.selectedFilters().join(", "));
-    } else {
-      this.#dropDownButton.setTitle(i18nString12(UIStrings13.showOnlyHideRequests));
-    }
+  performUpdate() {
+    const selectedFilters = this.selectedFilters();
+    const tooltip = selectedFilters.length ? selectedFilters.join(", ") : i18nString12(UIStrings13.showOnlyHideRequests);
+    this.#view(
+      {
+        activeFiltersCount: selectedFilters.length,
+        tooltip,
+        hideDataURLs: this.#networkHideDataURLSetting.get(),
+        onHideDataURLsChange: () => {
+          this.#networkHideDataURLSetting.set(!this.#networkHideDataURLSetting.get());
+        },
+        hideChromeExtensions: this.#networkHideChromeExtensionsSetting.get(),
+        onHideChromeExtensionsChange: () => {
+          this.#networkHideChromeExtensionsSetting.set(!this.#networkHideChromeExtensionsSetting.get());
+        },
+        showBlockedCookiesOnly: this.#networkShowBlockedCookiesOnlySetting.get(),
+        onShowBlockedCookiesOnlyChange: () => {
+          this.#networkShowBlockedCookiesOnlySetting.set(!this.#networkShowBlockedCookiesOnlySetting.get());
+        },
+        onlyBlockedRequests: this.#networkOnlyBlockedRequestsSetting.get(),
+        onOnlyBlockedRequestsChange: () => {
+          this.#networkOnlyBlockedRequestsSetting.set(!this.#networkOnlyBlockedRequestsSetting.get());
+        },
+        onlyThirdParty: this.#networkOnlyThirdPartySetting.get(),
+        onOnlyThirdPartyChange: () => {
+          this.#networkOnlyThirdPartySetting.set(!this.#networkOnlyThirdPartySetting.get());
+        }
+      },
+      void 0,
+      this.#filterElement
+    );
   }
   isActive() {
     return this.selectedFilters().length !== 0;
@@ -15533,7 +15617,7 @@ var SearchNetworkView = class _SearchNetworkView extends Search.SearchView.Searc
 // ../../front_end/panels/network/ShowMoreDetailsWidget.ts
 var ShowMoreDetailsWidget_exports = {};
 __export(ShowMoreDetailsWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW11,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12,
   ShowMoreDetailsWidget: () => ShowMoreDetailsWidget
 });
 import * as i18n31 from "../../core/i18n/i18n.js";
@@ -15552,9 +15636,9 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/network/ShowMoreDetailsWidget.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var { render: render12, html: html11 } = Lit2;
+var { render: render13, html: html12 } = Lit2;
 var MAX_LENGTH = 3e3;
-var DEFAULT_VIEW11 = (input, output, target) => {
+var DEFAULT_VIEW12 = (input, output, target) => {
   const onContextMenuShowMore = (event) => {
     const contextMenu = new UI16.ContextMenu.ContextMenu(event);
     if (input.copy) {
@@ -15565,11 +15649,11 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     }
     void contextMenu.show();
   };
-  render12(
-    html11`<span
+  render13(
+    html12`<span
             @contextmenu=${onContextMenuShowMore}
             >${input.showMore ? input.text : input.text.substr(0, MAX_LENGTH)}</span>
-          ${!input.showMore && input.text.length > MAX_LENGTH ? html11`<devtools-button
+          ${!input.showMore && input.text.length > MAX_LENGTH ? html12`<devtools-button
             .variant=${Buttons7.Button.Variant.OUTLINED}
             .jslogContext=${"show-more"}
             @click=${input.onToggle}>
@@ -15583,7 +15667,7 @@ var ShowMoreDetailsWidget = class extends UI16.Widget.Widget {
   #text = "";
   #showMore = false;
   #copy = null;
-  constructor(target, view = DEFAULT_VIEW11) {
+  constructor(target, view = DEFAULT_VIEW12) {
     super(target);
     this.#view = view;
   }
@@ -15619,7 +15703,7 @@ var ShowMoreDetailsWidget = class extends UI16.Widget.Widget {
 };
 
 // ../../front_end/panels/network/RequestHeadersView.ts
-var { render: render13, html: html12 } = Lit3;
+var { render: render14, html: html13 } = Lit3;
 var { widget: widget5 } = UI17.Widget;
 var UIStrings17 = {
   /**
@@ -15729,7 +15813,7 @@ function renderGeneralRows(input) {
     statusClasses.push("status-with-comment");
   }
   const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(" ");
-  return html12`<div jslog=${VisualLogging12.section("general")}>
+  return html13`<div jslog=${VisualLogging12.section("general")}>
     ${renderGeneralRow(input, i18nString16(UIStrings17.requestUrl), input.request.url(), "request-url")}
     ${input.request.statusCode ? renderGeneralRow(input, i18nString16(UIStrings17.requestMethod), input.request.requestMethod, "request-method") : Lit3.nothing}
     ${input.request.statusCode ? renderGeneralRow(input, i18nString16(UIStrings17.statusCode), statusText, "status-code", statusClasses) : Lit3.nothing}
@@ -15746,10 +15830,10 @@ function renderGeneralSection(input, forceOpen) {
     contents: renderGeneralRows(input)
   });
 }
-var DEFAULT_VIEW12 = (input, _output, target) => {
+var DEFAULT_VIEW13 = (input, _output, target) => {
   const requestHeadersText = input.request.requestHeadersText();
-  render13(
-    html12`
+  render14(
+    html13`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
         <style>${Input2.checkboxStyles}</style>
         ${renderGeneralSection(input, input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.GENERAL)}
@@ -15762,9 +15846,9 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
       additionalContent: void 0,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.EARLY_HINTS,
       loggingContext: "early-hints-headers",
-      contents: html12`
+      contents: html13`
               ${input.cacheDisabled && hasEarlyHintsPreload(input.request.earlyHintsHeaders) ? renderEarlyHintsWarning() : Lit3.nothing}
-              ${input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html12`
+              ${input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html13`
             <devtools-early-hints-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
@@ -15778,10 +15862,10 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
       title: i18nString16(UIStrings17.responseHeaders),
       headerCount: input.request.sortedResponseHeaders.length,
       checked: input.request.responseHeadersText ? input.showResponseHeadersText : void 0,
-      additionalContent: html12`<div>${renderHeaderOverridesLink(input)}${renderBackendLinkButton(input)}</div>`,
+      additionalContent: html13`<div>${renderHeaderOverridesLink(input)}${renderBackendLinkButton(input)}</div>`,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.RESPONSE,
       loggingContext: "response-headers",
-      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html12`
+      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html13`
           <devtools-response-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
@@ -15796,7 +15880,7 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
       checked: requestHeadersText ? input.showRequestHeadersText : void 0,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.REQUEST,
       loggingContext: "request-headers",
-      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html12`
+      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html13`
           <devtools-widget ${widget5(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
         request: input.request,
         toReveal: input.toReveal
@@ -15809,8 +15893,8 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
   );
 };
 var GENERAL_HEADERS_ONLY_VIEW = (input, _output, target) => {
-  render13(
-    html12`
+  render14(
+    html13`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
         <style>${Input2.checkboxStyles}</style>
         ${renderGeneralRows(input)}
@@ -15837,7 +15921,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI17.Widget.Widget {
       this.requestUpdate();
     }
   }
-  constructor(target, view = DEFAULT_VIEW12) {
+  constructor(target, view = DEFAULT_VIEW13) {
     super(target);
     this.#view = view;
   }
@@ -15981,7 +16065,7 @@ function hasEarlyHintsPreload(headers) {
   });
 }
 function renderEarlyHintsWarning() {
-  return html12`
+  return html13`
     <div class="early-hints-warning">
       <devtools-icon class="medium" name="warning-filled"></devtools-icon>
       <div>${i18nString16(UIStrings17.earlyPreloadsIgnoredCacheDisabledWarning)}</div>
@@ -15992,7 +16076,7 @@ function renderBackendLinkButton({ backendLink }) {
   if (!backendLink) {
     return Lit3.nothing;
   }
-  return html12`
+  return html13`
     <devtools-button
       class="backend-link-button"
       .variant=${Buttons8.Button.Variant.PRIMARY}
@@ -16020,10 +16104,10 @@ function renderHeaderOverridesLink(input) {
   const overridesSetting = Common14.Settings.Settings.instance().resolve(
     Persistence2.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor
   );
-  const fileIcon = html12`
+  const fileIcon = html13`
       <devtools-icon name="document" class=${"medium" + overridesSetting.get() ? "inline-icon dot purple" : "inline-icon"}>
       </devtools-icon>`;
-  return html12`
+  return html13`
       <devtools-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link hide-when-closed"
@@ -16043,12 +16127,12 @@ function renderHeaderOverridesLink(input) {
     `;
 }
 function renderRawHeaders(text) {
-  return html12`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
+  return html13`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
       ${widget5(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
 }
 function renderGeneralRow(input, name, value, id, classNames) {
   const isHighlighted = input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.GENERAL && name.toLowerCase() === input.toReveal?.header?.toLowerCase();
-  return html12`
+  return html13`
       <div class="row ${isHighlighted ? "header-highlight" : ""}">
         <div class="header-name">${name}</div>
         <div
@@ -16062,7 +16146,7 @@ function renderGeneralRow(input, name, value, id, classNames) {
 function renderCategory(data) {
   const expandedSetting = Common14.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
   const isOpen = (expandedSetting ? expandedSetting.get() : true) || data.forceOpen;
-  return html12`
+  return html13`
       <details ?open=${isOpen} @toggle=${onToggle} aria-label=${data.title}>
         <summary
           class="header"
@@ -16071,10 +16155,10 @@ function renderCategory(data) {
         >
           <div class="header-grid-container">
             <div>
-              ${data.title}${data.headerCount !== void 0 ? html12`<span class="header-count"> (${data.headerCount})</span>` : Lit3.nothing}
+              ${data.title}${data.headerCount !== void 0 ? html13`<span class="header-count"> (${data.headerCount})</span>` : Lit3.nothing}
             </div>
             <div class="hide-when-closed">
-              ${data.checked !== void 0 ? html12`
+              ${data.checked !== void 0 ? html13`
                 <devtools-checkbox .checked=${data.checked} @change=${data.onToggleRawHeaders}
                          jslog=${VisualLogging12.toggle("raw-headers").track({ change: true })}>
                   ${i18nString16(UIStrings17.raw)}
@@ -16112,7 +16196,7 @@ function renderCategory(data) {
 // ../../front_end/panels/network/RequestPayloadView.ts
 var RequestPayloadView_exports = {};
 __export(RequestPayloadView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW13,
+  DEFAULT_VIEW: () => DEFAULT_VIEW14,
   RequestPayloadView: () => RequestPayloadView
 });
 import * as Common15 from "../../core/common/common.js";
@@ -16347,7 +16431,7 @@ var objectValue_css_default = `/*
 
 // ../../front_end/panels/network/RequestPayloadView.ts
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives9, html as html13, nothing as nothing9, render as render14 } from "../../ui/lit/lit.js";
+import { Directives as Directives10, html as html14, nothing as nothing10, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
@@ -16502,7 +16586,7 @@ var requestPayloadView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestPayloadView.css")} */`;
 
 // ../../front_end/panels/network/RequestPayloadView.ts
-var { classMap: classMap3 } = Directives9;
+var { classMap: classMap3 } = Directives10;
 var { widget: widget6 } = UI18.Widget;
 var { ifExpanded } = UI18.TreeOutline;
 var UIStrings18 = {
@@ -16556,8 +16640,8 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/network/RequestPayloadView.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var DEFAULT_VIEW13 = (input, output, target) => {
-  const createViewSourceToggle = (viewSource, callback) => html13`<devtools-button
+var DEFAULT_VIEW14 = (input, output, target) => {
+  const createViewSourceToggle = (viewSource, callback) => html14`<devtools-button
       class="payload-toggle"
       jslog=${VisualLogging13.action().track({ click: true }).context("source-parse")}
       .variant=${Buttons9.Button.Variant.OUTLINED}
@@ -16576,14 +16660,14 @@ var DEFAULT_VIEW13 = (input, output, target) => {
   };
   const createSourceText = (text) => {
     const copy = () => input.copyValue(text);
-    return html13`<li role=treeitem
+    return html14`<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString17(UIStrings18.copyPayload), () => text, "copy-payload")}>
         <devtools-widget class='payload-value source-code' ${widget6(ShowMoreDetailsWidget, { text, copy })}>
         </devtools-widget>
       </li>`;
   };
   const createParsedParams = (params, decodeParameters) => params.map((param) => {
-    return html13`
+    return html14`
         <li role=treeitem
             @contextmenu=${copyValueContextmenu(
       i18nString17(UIStrings18.copyValue),
@@ -16593,7 +16677,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
       },
       "copy-value"
     )}>
-          ${param.name !== "" ? html13`
+          ${param.name !== "" ? html14`
             ${RequestPayloadView.formatParameter(param.name, "payload-name", decodeParameters)}
             ${RequestPayloadView.formatParameter(param.value, "payload-value source-code", decodeParameters)}
           ` : RequestPayloadView.formatParameter(
@@ -16611,14 +16695,14 @@ var DEFAULT_VIEW13 = (input, output, target) => {
       input.onPayloadContextMenu(contextMenu);
       void contextMenu.show();
     };
-    return html13`
+    return html14`
       <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
           toggle-on-click
           ?open=${objectTree.expanded}
           @expand=${(e) => input.onPayloadToggle(e.detail.expanded, e.detail.recursively)}
           @contextmenu=${onPayloadContextMenu}>
         ${objectTree.object.description}
-        ${objectTree.object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing9}
+        ${objectTree.object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing10}
       </li>
     `;
   };
@@ -16647,8 +16731,8 @@ var DEFAULT_VIEW13 = (input, output, target) => {
     }
     void contextMenu.show();
   };
-  render14(html13`<style>${requestPayloadView_css_default}</style>
-   <devtools-tree dense show-selection-on-keyboard-focus class=request-payload-tree .template=${html13`
+  render15(html14`<style>${requestPayloadView_css_default}</style>
+   <devtools-tree dense show-selection-on-keyboard-focus class=request-payload-tree .template=${html14`
      <style>${objectValue_css_default}</style>
      <style>${objectPropertiesSection_css_default}</style>
      <style>${requestPayloadTree_css_default}</style>
@@ -16738,7 +16822,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
       </li>
      </ul>
      `}></devtools-tree>
-   ${input.binaryPayloadContentData ? html13`
+   ${input.binaryPayloadContentData ? html14`
      <div class="raw-payload-section"
           jslog=${VisualLogging13.section().context("binary-request-payload")}>
        ${widget6((element) => {
@@ -16752,7 +16836,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
       element
     );
   })}
-     </div>` : nothing9}
+     </div>` : nothing10}
    `, target, {
     container: {
       classes: ["request-payload-view"],
@@ -16775,7 +16859,7 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
   #viewFormParamSource = false;
   #viewQueryParamSource = false;
   #refreshFormDataPromiseForTest = Promise.resolve();
-  constructor(target, view = DEFAULT_VIEW13) {
+  constructor(target, view = DEFAULT_VIEW14) {
     super();
     this.#view = view;
   }
@@ -16962,8 +17046,8 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
   static formatParameter(value, className, decodeParameters) {
     const { value: decoded, errorDecoding } = _RequestPayloadView.decodeParameter(value, decodeParameters);
     const classes = classMap3({ [className]: !!className, "empty-value": decoded === "" });
-    return html13`<div class=${classes}>
-      ${errorDecoding ? html13`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : decoded}
+    return html14`<div class=${classes}>
+      ${errorDecoding ? html14`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : decoded}
     </div>`;
   }
 };
@@ -16971,7 +17055,7 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
 // ../../front_end/panels/network/RequestPreviewView.ts
 var RequestPreviewView_exports = {};
 __export(RequestPreviewView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW16,
+  DEFAULT_VIEW: () => DEFAULT_VIEW17,
   RequestPreviewView: () => RequestPreviewView
 });
 import "../../ui/legacy/legacy.js";
@@ -16980,17 +17064,17 @@ import * as i18n39 from "../../core/i18n/i18n.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
-import { Directives as Directives11, html as html16, render as render17 } from "../../ui/lit/lit.js";
+import { Directives as Directives12, html as html17, render as render18 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/network/RequestHTMLView.ts
 var RequestHTMLView_exports = {};
 __export(RequestHTMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW14,
+  DEFAULT_VIEW: () => DEFAULT_VIEW15,
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI19 from "../../ui/legacy/legacy.js";
-import { html as html14, nothing as nothing10, render as render15 } from "../../ui/lit/lit.js";
+import { html as html15, nothing as nothing11, render as render16 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/requestHTMLView.css.js
 var requestHTMLView_css_default = `/*
@@ -17012,16 +17096,16 @@ var requestHTMLView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestHTMLView.css")} */`;
 
 // ../../front_end/panels/network/RequestHTMLView.ts
-var DEFAULT_VIEW14 = (input, _output, target) => {
-  render15(
-    html14`
+var DEFAULT_VIEW15 = (input, _output, target) => {
+  render16(
+    html15`
     <style>${requestHTMLView_css_default}</style>
     <div class="html request-view widget vbox">
-      ${input.dataURL ? html14`
+      ${input.dataURL ? html15`
         <!-- @ts-ignore -->
         <iframe class="html-preview-frame" sandbox
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
-          tabindex="-1" role="presentation"></iframe>` : nothing10}
+          tabindex="-1" role="presentation"></iframe>` : nothing11}
     </div>`,
     target
   );
@@ -17029,7 +17113,7 @@ var DEFAULT_VIEW14 = (input, _output, target) => {
 var RequestHTMLView = class _RequestHTMLView extends UI19.Widget.VBox {
   #dataURL = "";
   #view;
-  constructor(element, view = DEFAULT_VIEW14) {
+  constructor(element, view = DEFAULT_VIEW15) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -17069,7 +17153,7 @@ var RequestHTMLView = class _RequestHTMLView extends UI19.Widget.VBox {
 // ../../front_end/panels/network/SignedExchangeInfoView.ts
 var SignedExchangeInfoView_exports = {};
 __export(SignedExchangeInfoView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW15,
+  DEFAULT_VIEW: () => DEFAULT_VIEW16,
   SignedExchangeInfoView: () => SignedExchangeInfoView
 });
 import "../../ui/kit/kit.js";
@@ -17077,7 +17161,7 @@ import * as Common16 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import { Directives as Directives10, html as html15, nothing as nothing11, render as render16 } from "../../ui/lit/lit.js";
+import { Directives as Directives11, html as html16, nothing as nothing12, render as render17 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/signedExchangeInfoTree.css.js
 var signedExchangeInfoTree_css_default = `/*
@@ -17203,7 +17287,7 @@ var signedExchangeInfoView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./signedExchangeInfoView.css")} */`;
 
 // ../../front_end/panels/network/SignedExchangeInfoView.ts
-var { classMap: classMap4 } = Directives10;
+var { classMap: classMap4 } = Directives11;
 var UIStrings19 = {
   /**
    * @description Text for errors
@@ -17292,68 +17376,68 @@ var UIStrings19 = {
 };
 var str_19 = i18n37.i18n.registerUIStrings("panels/network/SignedExchangeInfoView.ts", UIStrings19);
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
-var DEFAULT_VIEW15 = (input, _output, target) => {
+var DEFAULT_VIEW16 = (input, _output, target) => {
   if (!input) {
-    render16(nothing11, target);
+    render17(nothing12, target);
     return;
   }
   const { formatHeader, formatHeaderForHexData } = SignedExchangeInfoView;
-  const renderLeaf = (content) => html15`<li role="treeitem" selectable="false">${content}</li>`;
-  const renderCategory2 = (title, children) => html15`
+  const renderLeaf = (content) => html16`<li role="treeitem" selectable="false">${content}</li>`;
+  const renderCategory2 = (title, children) => html16`
     <li role="treeitem" toggle-on-click open selectable="false">
       ${title}
       <ul role="group">${children}</ul>
     </li>`;
-  render16(
-    html15`
+  render17(
+    html16`
         <style>${signedExchangeInfoView_css_default}</style>
-        <devtools-tree dense class="signed-exchange-info-tree" .template=${html15`
+        <devtools-tree dense class="signed-exchange-info-tree" .template=${html16`
           <style>${signedExchangeInfoTree_css_default}</style>
           <ul role="tree">
             ${input.errors.length ? renderCategory2(
       i18nString18(UIStrings19.errors),
-      input.errors.map((errorMessage) => renderLeaf(html15`
+      input.errors.map((errorMessage) => renderLeaf(html16`
                   <devtools-icon name="cross-circle-filled" class="prompt-icon small"></devtools-icon><div
                       class="error-log">${errorMessage}</div>`))
-    ) : nothing11}
+    ) : nothing12}
             ${renderCategory2(
-      html15`<div class="header-name">${i18nString18(UIStrings19.signedHttpExchange)}</div><devtools-link
+      html16`<div class="header-name">${i18nString18(UIStrings19.signedHttpExchange)}</div><devtools-link
                     href="https://github.com/WICG/webpackage"
                     class="header-toggle devtools-link"
                     jslogcontext="learn-more">${i18nString18(UIStrings19.learnmore)}</devtools-link>`,
-      input.header ? html15`
-                  ${renderLeaf(html15`${formatHeader(i18nString18(UIStrings19.requestUrl), input.header.requestUrl)}${input.header.hasRedirectDestination ? html15`<devtools-link
+      input.header ? html16`
+                  ${renderLeaf(html16`${formatHeader(i18nString18(UIStrings19.requestUrl), input.header.requestUrl)}${input.header.hasRedirectDestination ? html16`<devtools-link
                           class="header-toggle devtools-link"
                           jslogcontext="redirect-destination-request"
-                          @click=${input.onViewRequest}>${i18n37.i18n.lockedString("View request")}</devtools-link>` : nothing11}`)}
+                          @click=${input.onViewRequest}>${i18n37.i18n.lockedString("View request")}</devtools-link>` : nothing12}`)}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.responseCode), input.header.responseCode))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.headerIntegrityHash), input.header.headerIntegrity))}
                   <li role="treeitem" open selectable="false">
                     ${formatHeader(i18nString18(UIStrings19.responseHeaders), "")}
-                    ${input.header.responseHeaders.length ? html15`
+                    ${input.header.responseHeaders.length ? html16`
                       <ul role="group">
                         ${input.header.responseHeaders.map((header) => renderLeaf(formatHeader(header.name, header.value)))}
                       </ul>
-                    ` : nothing11}
+                    ` : nothing12}
                   </li>
-                ` : nothing11
+                ` : nothing12
     )}
             ${(input.header?.signatures ?? []).map((signature) => renderCategory2(
       i18nString18(UIStrings19.signature),
-      html15`
+      html16`
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.label), signature.label))}
                   ${renderLeaf(formatHeaderForHexData(i18nString18(UIStrings19.signature), signature.signature, signature.hasSignatureError))}
-                  ${signature.certUrl ? renderLeaf(html15`
-                    ${formatHeader(i18nString18(UIStrings19.certificateUrl), signature.certUrl, signature.hasCertUrlError)}${signature.certificates ? html15`<devtools-link
+                  ${signature.certUrl ? renderLeaf(html16`
+                    ${formatHeader(i18nString18(UIStrings19.certificateUrl), signature.certUrl, signature.hasCertUrlError)}${signature.certificates ? html16`<devtools-link
                           class="devtools-link header-toggle"
                           jslogcontext="view-certificate"
-                          @click=${() => input.onViewCertificate(signature.certificates ?? [])}>${i18nString18(UIStrings19.viewCertificate)}</devtools-link>` : nothing11}`) : nothing11}
+                          @click=${() => input.onViewCertificate(signature.certificates ?? [])}>${i18nString18(UIStrings19.viewCertificate)}</devtools-link>` : nothing12}`) : nothing12}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.integrity), signature.integrity, signature.hasIntegrityError))}
                   ${signature.certSha256 ? renderLeaf(formatHeaderForHexData(
         i18nString18(UIStrings19.certificateSha),
         signature.certSha256,
         signature.hasCertSha256Error
-      )) : nothing11}
+      )) : nothing12}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.validityUrl), signature.validityUrl, signature.hasValidityUrlError))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.date), signature.date, signature.hasTimestampsError))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.expires), signature.expires, signature.hasTimestampsError))}
@@ -17361,13 +17445,13 @@ var DEFAULT_VIEW15 = (input, _output, target) => {
     ))}
             ${input.securityDetails ? renderCategory2(
       i18nString18(UIStrings19.certificate),
-      html15`
+      html16`
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.subject), input.securityDetails.subjectName))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.validFrom), input.securityDetails.validFrom))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.validUntil), input.securityDetails.validUntil))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.issuer), input.securityDetails.issuer))}
                 `
-    ) : nothing11}
+    ) : nothing12}
           </ul>
         `}></devtools-tree>
       `,
@@ -17378,7 +17462,7 @@ var DEFAULT_VIEW15 = (input, _output, target) => {
 var SignedExchangeInfoView = class extends UI20.Widget.VBox {
   #request;
   #view;
-  constructor(requestOrElement, elementOrView, view = DEFAULT_VIEW15) {
+  constructor(requestOrElement, elementOrView, view = DEFAULT_VIEW16) {
     super(
       requestOrElement instanceof HTMLElement ? requestOrElement : elementOrView instanceof HTMLElement ? elementOrView : void 0
     );
@@ -17469,12 +17553,12 @@ var SignedExchangeInfoView = class extends UI20.Widget.VBox {
     );
   }
   static formatHeader(name, value, highlighted) {
-    return html15`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
+    return html16`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
         class="header-separator"></span><div
         class=${classMap4({ "header-value": true, "source-code": true, "error-field": Boolean(highlighted) })}>${value}</div>`;
   }
   static formatHeaderForHexData(name, value, highlighted) {
-    return html15`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
+    return html16`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
         class="header-separator"></span><div
         class=${classMap4({ "header-value": true, "source-code": true, "hex-data": true, "error-field": Boolean(highlighted) })}>${value.replace(/(.{2})/g, "$1 ")}</div>`;
   }
@@ -17482,7 +17566,7 @@ var SignedExchangeInfoView = class extends UI20.Widget.VBox {
 
 // ../../front_end/panels/network/RequestPreviewView.ts
 var { widget: widget7 } = UI21.Widget;
-var { repeat: repeat4 } = Directives11;
+var { repeat: repeat4 } = Directives12;
 var UIStrings20 = {
   /**
    * @description Text in Request Preview View of the Network panel
@@ -17500,44 +17584,44 @@ var UIStrings20 = {
 };
 var str_20 = i18n39.i18n.registerUIStrings("panels/network/RequestPreviewView.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var DEFAULT_VIEW16 = (input, _output, target) => {
+var DEFAULT_VIEW17 = (input, _output, target) => {
   let previewTemplate;
   if (input.hasSignedExchange) {
-    previewTemplate = html16`${widget7(SignedExchangeInfoView, { request: input.request })}`;
+    previewTemplate = html17`${widget7(SignedExchangeInfoView, { request: input.request })}`;
   } else if (input.error !== null) {
-    previewTemplate = html16`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html17`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.failedToLoadResponseData),
       text: input.error
     })}`;
   } else if (input.parsedJSON) {
-    previewTemplate = html16`${widget7(SourceFrame2.JSONView.SearchableJsonView, { parsedJSON: input.parsedJSON })}`;
+    previewTemplate = html17`${widget7(SourceFrame2.JSONView.SearchableJsonView, { parsedJSON: input.parsedJSON })}`;
   } else if (input.htmlDataURL) {
-    previewTemplate = html16`${widget7(RequestHTMLView, { dataURL: input.htmlDataURL })}`;
+    previewTemplate = html17`${widget7(RequestHTMLView, { dataURL: input.htmlDataURL })}`;
   } else if (input.resourceType === Common17.ResourceType.resourceTypes.Image) {
-    previewTemplate = html16`${widget7(
+    previewTemplate = html17`${widget7(
       (element) => new SourceFrame2.ImageView.ImageView(input.mimeType, input.request, element),
       { showToolbar: true }
     )}`;
   } else if (input.resourceType === Common17.ResourceType.resourceTypes.Font) {
-    previewTemplate = html16`${widget7(
+    previewTemplate = html17`${widget7(
       (element) => new SourceFrame2.FontView.FontView(input.mimeType, input.request, element),
       { showToolbar: true }
     )}`;
   } else if (!input.isTextContent) {
-    previewTemplate = html16`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html17`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.previewNotAvailable),
       text: ""
     })}`;
   } else if (!input.hasTextContent) {
-    previewTemplate = html16`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html17`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.nothingToPreview),
       text: ""
     })}`;
   } else if (input.parsedXML) {
     const parsedXML = input.parsedXML;
-    previewTemplate = html16`${widget7((element) => SourceFrame2.XMLView.XMLView.createSearchableView(parsedXML, element))}`;
+    previewTemplate = html17`${widget7((element) => SourceFrame2.XMLView.XMLView.createSearchableView(parsedXML, element))}`;
   } else {
-    previewTemplate = html16`${widget7(
+    previewTemplate = html17`${widget7(
       (element) => new SourceFrame2.ResourceSourceFrame.SearchableContainer(
         input.request,
         input.highlighterType,
@@ -17545,8 +17629,8 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
       )
     )}`;
   }
-  render17(
-    html16`${repeat4([input.request], (request) => request, () => previewTemplate)}`,
+  render18(
+    html17`${repeat4([input.request], (request) => request, () => previewTemplate)}`,
     target,
     {
       container: {
@@ -17566,7 +17650,7 @@ var RequestPreviewView = class extends UI21.Widget.VBox {
   #parsedXML = null;
   #isTextContent = false;
   #hasTextContent = false;
-  constructor(request, view = DEFAULT_VIEW16) {
+  constructor(request, view = DEFAULT_VIEW17) {
     super(request instanceof HTMLElement ? request : void 0);
     this.#view = view;
     if (request && !(request instanceof HTMLElement)) {
@@ -17682,7 +17766,7 @@ var RequestPreviewView = class extends UI21.Widget.VBox {
 // ../../front_end/panels/network/RequestResponseView.ts
 var RequestResponseView_exports = {};
 __export(RequestResponseView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW17,
+  DEFAULT_VIEW: () => DEFAULT_VIEW18,
   RequestResponseView: () => RequestResponseView
 });
 import * as Common18 from "../../core/common/common.js";
@@ -17692,7 +17776,7 @@ import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
 import * as Lit4 from "../../ui/lit/lit.js";
-var { html: html17, render: render18 } = Lit4;
+var { html: html18, render: render19 } = Lit4;
 var UIStrings21 = {
   /**
    * @description Text in Request Response View of the Network panel if no preview can be shown
@@ -17710,22 +17794,22 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/RequestResponseView.ts", UIStrings21);
 var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var { widgetRef, widget: widget8 } = UI22.Widget;
-var DEFAULT_VIEW17 = (input, output, target) => {
+var DEFAULT_VIEW18 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils7.StreamingContentData.isError(input.contentData)) {
-    widgetTemplate = html17`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
+    widgetTemplate = html18`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.failedToLoadResponseData),
       input.contentData.error,
       element
     ))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widgetTemplate = html17`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
+    widgetTemplate = html18`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.noPreview),
       i18nString20(UIStrings21.thisRequestHasNoResponseData),
       element
     ))}`;
   } else if (input.renderAsText) {
-    widgetTemplate = html17`<devtools-widget ${widget8((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
+    widgetTemplate = html18`<devtools-widget ${widget8((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
       input.request,
       input.mimeType,
       element
@@ -17734,20 +17818,20 @@ var DEFAULT_VIEW17 = (input, output, target) => {
       output.revealPosition = widget9.revealPosition.bind(widget9);
     })}></devtools-widget>`;
   } else {
-    widgetTemplate = html17`${widget8((element) => new BinaryResourceView(
+    widgetTemplate = html18`${widget8((element) => new BinaryResourceView(
       input.contentData,
       input.request.url(),
       input.request.resourceType(),
       element
     ))}`;
   }
-  render18(widgetTemplate, target);
+  render19(widgetTemplate, target);
 };
 var RequestResponseView = class extends UI22.Widget.VBox {
   request;
   #view;
   #revealPosition;
-  constructor(request, view = DEFAULT_VIEW17) {
+  constructor(request, view = DEFAULT_VIEW18) {
     super();
     this.request = request;
     this.#view = view;
@@ -17881,7 +17965,7 @@ var resourceChunkView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./resourceChunkView.css")} */`;
 
 // ../../front_end/panels/network/ResourceChunkView.ts
-var { html: html18, render: render19, Directives: { ifDefined: ifDefined4 } } = Lit5;
+var { html: html19, render: render20, Directives: { ifDefined: ifDefined4 } } = Lit5;
 var UIStrings22 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -17936,16 +18020,16 @@ var str_22 = i18n43.i18n.registerUIStrings("panels/network/ResourceChunkView.ts"
 var i18nString21 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var i18nLazyString3 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
 function defaultHeaderTemplate() {
-  return html18`
+  return html19`
     <tr>
       <th id="data" weight="88">${i18nString21(UIStrings22.data)}</th>
       <th id="length" align="right" weight="5">${i18nString21(UIStrings22.length)}</th>
       <th id="time" sortable sort="ascending" weight="7">${i18nString21(UIStrings22.time)}</th>
     </tr>`;
 }
-var DEFAULT_VIEW18 = (input, _output, target) => {
-  render19(
-    html18`
+var DEFAULT_VIEW19 = (input, _output, target) => {
+  render20(
+    html19`
       <style>${resourceChunkView_css_default}</style>
       <div class="resource-chunk-view vbox">
         <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging15.toolbar()}>
@@ -17963,7 +18047,7 @@ var DEFAULT_VIEW18 = (input, _output, target) => {
               class="chrome-select"
               aria-label=${i18nString21(UIStrings22.filter)}
               @change=${input.onFilterTypeChange}>
-            ${FILTER_TYPES.map((item4) => html18`
+            ${FILTER_TYPES.map((item4) => html19`
               <option
                   value=${item4.name}
                   .selected=${input.selectedFilterType === item4.name}
@@ -17986,11 +18070,11 @@ var DEFAULT_VIEW18 = (input, _output, target) => {
             <devtools-data-grid autoscroll name=${input.dataGridDisplayName} striped autofocus
                 resize="last"
                 @deselect=${input.onDeselect}
-                .template=${html18`
+                .template=${html19`
                   <style>${resourceChunkView_css_default}</style>
                   <table>
                     ${input.headerTemplate}
-                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html18`
+                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html19`
                       <tr class=${ifDefined4(row.cssClass)}
                           ?selected=${row.selected}
                           data-index=${row.index}
@@ -18003,7 +18087,7 @@ var DEFAULT_VIEW18 = (input, _output, target) => {
                         ${input.columns.map((col) => {
       const value = col.id === "time" ? row.timeText : row.item.data[col.id] ?? "";
       const title = col.id === "time" ? row.timeTooltip : void 0;
-      return html18`
+      return html19`
                               <td class="resource-chunk-view-td" title=${ifDefined4(title)}
                                   data-value=${ifDefined4(typeof value === "string" ? value : void 0)}>
                                 ${value}
@@ -18016,10 +18100,10 @@ var DEFAULT_VIEW18 = (input, _output, target) => {
             </devtools-data-grid>
           </div>
           <div slot="sidebar" class="vbox flex-auto" jslog=${VisualLogging15.pane("preview").track({ resize: true })}>
-            ${input.sidebarWidget ? html18`
+            ${input.sidebarWidget ? html19`
               <devtools-widget class="vbox flex-auto">
                 ${input.sidebarWidget.element}
-              </devtools-widget>` : html18`
+              </devtools-widget>` : html19`
               <devtools-widget
                   ${UI23.Widget.widget(UI23.EmptyWidget.EmptyWidget, {
       header: i18nString21(UIStrings22.noMessageSelected),
@@ -18049,7 +18133,7 @@ var ResourceChunkView = class extends UI23.Widget.VBox {
   get headerTemplate() {
     return defaultHeaderTemplate();
   }
-  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW18) {
+  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW19) {
     super(opts);
     this.#view = view;
     this.messageFilterSetting = Common19.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");
@@ -18240,7 +18324,7 @@ var clearChunkOffsets = /* @__PURE__ */ new WeakMap();
 
 // ../../front_end/panels/network/ResourceDirectSocketChunkView.ts
 var {
-  html: html19
+  html: html20
 } = Lit6;
 var UIStrings23 = {
   /**
@@ -18276,7 +18360,7 @@ var str_23 = i18n45.i18n.registerUIStrings("panels/network/ResourceDirectSocketC
 var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var i18nLazyString4 = i18n45.i18n.getLazilyComputedLocalizedString.bind(void 0, str_23);
 function udpBoundHeaderTemplate() {
-  return html19`
+  return html20`
     <tr>
       <th id="data" weight="63">${i18nLazyString4(UIStrings23.data)}</th>
           <th id="address" align="right" weight="15">${i18nLazyString4(UIStrings23.address)}</th>

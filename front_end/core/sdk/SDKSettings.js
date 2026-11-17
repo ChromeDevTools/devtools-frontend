@@ -297,4 +297,10 @@ export const textEditorIndentSettingDescriptor = {
     defaultValue: '    ',
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const customNetworkConditionsSettingDescriptor = {
+    name: 'custom-network-conditions',
+    type: "array" /* Common.Settings.SettingType.ARRAY */,
+    defaultValue: [],
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=SDKSettings.js.map

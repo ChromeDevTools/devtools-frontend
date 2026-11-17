@@ -30,6 +30,7 @@ export declare class CallStackSidebarPane extends UI.View.SimpleView<DocumentFra
     static instance(opts?: {
         forceNew: boolean | null;
     }): CallStackSidebarPane;
+    static removeInstance(): void;
     wasShown(): void;
     flavorChanged(details: SDK.DebuggerModel.DebuggerPausedDetails | null): Promise<void>;
     performUpdate(): void;

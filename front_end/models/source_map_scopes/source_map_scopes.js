@@ -3315,18 +3315,20 @@ var resolveScope = async (script, scopeChain, debuggerWorkspaceBinding) => {
     }
   }
 };
-function shouldIgnoreScope(scope) {
+function shouldIgnoreScope(scope, hasLocalScope) {
   const type = scope.type();
   if (type === Debugger.ScopeType.Local) {
     return false;
   }
-  if (type === Debugger.ScopeType.Module && scope.callFrame().localScope() === null) {
+  if (type === Debugger.ScopeType.Module && !hasLocalScope) {
     return false;
   }
   return scope.emptyReason() !== void 0;
 }
-function visibleScopeChain(callFrame) {
-  return callFrame.scopeChain().filter((scope) => !shouldIgnoreScope(scope));
+async function visibleScopeChain(callFrame) {
+  const scopeChain = await callFrame.scopeChain();
+  const hasLocalScope = scopeChain.some((scope) => scope.type() === Debugger.ScopeType.Local);
+  return scopeChain.filter((scope) => !shouldIgnoreScope(scope, hasLocalScope));
 }
 var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding) {
   const { pluginManager } = debuggerWorkspaceBinding;
@@ -3339,18 +3341,16 @@ var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding) {
     if (!sourceMap && callFrame.debuggerModel?.sourceMapManager) {
       sourceMap = await callFrame.debuggerModel.sourceMapManager().sourceMapForClientPromise(callFrame.script);
     }
-    const mappedScopeChain = sourceMap?.resolveScopeChain(callFrame);
+    const mappedScopeChain = sourceMap?.resolveScopeChain(callFrame, await callFrame.scopeChain());
     if (mappedScopeChain) {
       return mappedScopeChain;
     }
   }
   if (callFrame.script.isWasm()) {
-    return callFrame.scopeChain();
+    return await callFrame.scopeChain();
   }
   const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
-  return visibleScopeChain(callFrame).map(
-    (scope) => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding)
-  );
+  return (await visibleScopeChain(callFrame)).map((scope) => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
 };
 function toScopeVariableMapping({ variableMapping, generatedNames }) {
   const bindings = /* @__PURE__ */ new Map();
@@ -3381,7 +3381,7 @@ var allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
       return result2;
     }
   }
-  const scopeChain = visibleScopeChain(callFrame);
+  const scopeChain = await visibleScopeChain(callFrame);
   const resolvedScopes = await Promise.all(scopeChain.map((scope) => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
   const result = resolvedScopes.map(toScopeVariableMapping);
   cachedMapByCallFrame.set(callFrame, result);
@@ -3418,7 +3418,7 @@ var allVariablesAtPosition = async (location, debuggerWorkspaceBinding) => {
   return result;
 };
 var resolveThisObject = async (callFrame, debuggerWorkspaceBinding) => {
-  const innermostScope = callFrame.scopeChain().find((scope) => !shouldIgnoreScope(scope));
+  const innermostScope = (await visibleScopeChain(callFrame)).at(0);
   if (!innermostScope) {
     return callFrame.thisObject();
   }

@@ -1,16 +1,16 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { TimelineEventOverviewCPUActivity, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness, } from './TimelineEventOverview.js';
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
+const { classMap, ifDefined, ref, styleMap } = Directives;
 /**
  * The dropdown works by returning an index which is the trace index; but we
  * also need a way to signify that the user picked the "Landing Page" option. We
@@ -76,29 +76,30 @@ const listFormatter = (function defineFormatter() {
     };
 })();
 export class TimelineHistoryManager {
-    recordings;
-    action;
-    nextNumberByDomain;
-    #button;
-    allOverviews;
-    totalHeight;
-    enabled;
-    lastActiveTrace = null;
+    #recordings;
+    #action;
+    #nextNumberByDomain;
+    #buttonItem;
+    #allOverviews;
+    #totalHeight;
+    #enabled;
+    #lastActiveTrace = null;
     #minimapComponent;
     #landingPageTitle;
     constructor(minimapComponent, isNode) {
-        this.recordings = [];
+        this.#recordings = [];
         this.#minimapComponent = minimapComponent;
-        this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
-        this.nextNumberByDomain = new Map();
-        this.#button = new ToolbarButton(this.action);
+        this.#action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
+        this.#nextNumberByDomain = new Map();
+        this.#buttonItem = new UI.Toolbar.ToolbarItem(document.createElement('button'));
+        this.#buttonItem.setEnabled(this.#action.enabled());
+        this.#action.addEventListener("Enabled" /* UI.ActionRegistration.Events.ENABLED */, event => this.#buttonItem.setEnabled(event.data));
         this.#landingPageTitle =
             isNode ? i18nString(UIStrings.nodeLandingPageTitle) : i18nString(UIStrings.landingPageTitle);
-        UI.ARIAUtils.markAsMenuButton(this.#button.element);
         this.clear();
         // Attempt to reuse the overviews coming from the panel's minimap
         // before creating new instances.
-        this.allOverviews = [
+        this.#allOverviews = [
             {
                 constructor: parsedTrace => {
                     const responsivenessOverviewFromMinimap = this.#minimapComponent?.getControls().find(control => control instanceof TimelineEventOverviewResponsiveness);
@@ -124,28 +125,25 @@ export class TimelineHistoryManager {
                 height: 8,
             },
         ];
-        this.totalHeight = this.allOverviews.reduce((acc, entry) => acc + entry.height, 0);
-        this.enabled = true;
+        this.#totalHeight = this.#allOverviews.reduce((acc, entry) => acc + entry.height, 0);
+        this.#enabled = true;
     }
     addRecording(newInput) {
         const filmStrip = newInput.filmStripForPreview;
-        this.lastActiveTrace = newInput.data;
-        this.recordings.unshift(newInput.data);
+        this.#lastActiveTrace = newInput.data;
+        this.#recordings.unshift(newInput.data);
         // Order is important: this needs to happen first because lots of the
         // subsequent code depends on us storing the preview data into the map.
         this.#buildAndStorePreviewData(newInput.data.parsedTraceIndex, newInput.parsedTrace, filmStrip);
-        const modelTitle = this.title(newInput.data);
-        this.#button.setText(modelTitle);
-        const buttonTitle = this.action.title();
-        UI.ARIAUtils.setLabel(this.#button.element, i18nString(UIStrings.currentSessionSS, { PH1: modelTitle, PH2: buttonTitle }));
-        this.updateState();
-        if (this.recordings.length <= maxRecordings) {
+        this.#updateButton();
+        this.#updateState();
+        if (this.#recordings.length <= maxRecordings) {
             return;
         }
-        const modelUsedMoreTimeAgo = this.recordings.reduce((a, b) => lastUsedTime(a.parsedTraceIndex) < lastUsedTime(b.parsedTraceIndex) ? a : b);
-        this.recordings.splice(this.recordings.indexOf(modelUsedMoreTimeAgo), 1);
+        const modelUsedMoreTimeAgo = this.#recordings.reduce((a, b) => lastUsedTime(a.parsedTraceIndex) < lastUsedTime(b.parsedTraceIndex) ? a : b);
+        this.#recordings.splice(this.#recordings.indexOf(modelUsedMoreTimeAgo), 1);
         function lastUsedTime(index) {
-            const data = TimelineHistoryManager.dataForTraceIndex(index);
+            const data = TimelineHistoryManager.#dataForTraceIndex(index);
             if (!data) {
                 throw new Error('Unable to find data for model');
             }
@@ -153,50 +151,49 @@ export class TimelineHistoryManager {
         }
     }
     setEnabled(enabled) {
-        this.enabled = enabled;
-        this.updateState();
+        this.#enabled = enabled;
+        this.#updateState();
     }
     button() {
-        return this.#button;
+        return this.#buttonItem;
     }
     clear() {
-        this.recordings = [];
-        this.lastActiveTrace = null;
-        this.updateState();
-        this.#button.setText(this.#landingPageTitle);
-        this.nextNumberByDomain.clear();
+        this.#recordings = [];
+        this.#lastActiveTrace = null;
+        this.#updateState();
+        this.#nextNumberByDomain.clear();
+        this.#updateButton();
     }
-    #getActiveTraceIndexForListControl() {
-        if (!this.lastActiveTrace) {
+    #getActiveTraceIndex() {
+        if (!this.#lastActiveTrace) {
             return -1;
         }
-        if (this.lastActiveTrace.type === 'LANDING_PAGE') {
+        if (this.#lastActiveTrace.type === 'LANDING_PAGE') {
             return LANDING_PAGE_INDEX_DROPDOWN_CHOICE;
         }
-        return this.lastActiveTrace.parsedTraceIndex;
+        return this.#lastActiveTrace.parsedTraceIndex;
     }
     async showHistoryDropDown() {
-        if (this.recordings.length < 1 || !this.enabled) {
+        if (this.#recordings.length < 1 || !this.#enabled) {
             return null;
         }
         // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
-        const activeTraceIndex = await DropDown.show(this.recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndexForListControl(), this.#button.element, this.#landingPageTitle);
+        const activeTraceIndex = await DropDown.show(this.#recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndex(), this.#buttonItem.element, this.#landingPageTitle);
         if (activeTraceIndex === null) {
             return null;
         }
-        // The ListControl class that backs the dropdown uses indexes; we represent
-        // the landing page choice via this special index.
+        // The dropdown choice uses indexes; we represent the landing page choice via this special index.
         if (activeTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE) {
             this.#setActiveTrace({ type: 'LANDING_PAGE' });
             return { type: 'LANDING_PAGE' };
         }
-        const index = this.recordings.findIndex(recording => recording.parsedTraceIndex === activeTraceIndex);
+        const index = this.#recordings.findIndex(recording => recording.parsedTraceIndex === activeTraceIndex);
         if (index < 0) {
             console.assert(false, 'selected recording not found');
             return null;
         }
-        this.#setActiveTrace(this.recordings[index]);
-        return this.recordings[index];
+        this.#setActiveTrace(this.#recordings[index]);
+        return this.#recordings[index];
     }
     cancelIfShowing() {
         DropDown.cancelIfShowing();
@@ -207,55 +204,58 @@ export class TimelineHistoryManager {
      * over only the traces.
      */
     navigate(direction) {
-        if (!this.enabled || this.lastActiveTrace === null) {
+        if (!this.#enabled || this.#lastActiveTrace === null) {
             return null;
         }
-        if (!this.lastActiveTrace || this.lastActiveTrace.type === 'LANDING_PAGE') {
+        if (!this.#lastActiveTrace || this.#lastActiveTrace.type === 'LANDING_PAGE') {
             return null;
         }
-        const index = this.recordings.findIndex(recording => {
-            return this.lastActiveTrace?.type === 'TRACE_INDEX' && recording.type === 'TRACE_INDEX' &&
-                recording.parsedTraceIndex === this.lastActiveTrace.parsedTraceIndex;
+        const index = this.#recordings.findIndex(recording => {
+            return this.#lastActiveTrace?.type === 'TRACE_INDEX' && recording.type === 'TRACE_INDEX' &&
+                recording.parsedTraceIndex === this.#lastActiveTrace.parsedTraceIndex;
         });
         if (index < 0) {
             return null;
         }
-        const newIndex = Platform.NumberUtilities.clamp(index + direction, 0, this.recordings.length - 1);
-        this.#setActiveTrace(this.recordings[newIndex]);
-        return this.recordings[newIndex];
+        const newIndex = Platform.NumberUtilities.clamp(index + direction, 0, this.#recordings.length - 1);
+        this.#setActiveTrace(this.#recordings[newIndex]);
+        return this.#recordings[newIndex];
     }
     navigateToLandingPage() {
         this.#setActiveTrace({ type: 'LANDING_PAGE' });
     }
     #setActiveTrace(item) {
         if (item.type === 'TRACE_INDEX') {
-            const data = TimelineHistoryManager.dataForTraceIndex(item.parsedTraceIndex);
+            const data = TimelineHistoryManager.#dataForTraceIndex(item.parsedTraceIndex);
             if (!data) {
                 throw new Error('Unable to find data for model');
             }
             data.lastUsed = Date.now();
         }
-        this.lastActiveTrace = item;
-        const modelTitle = this.title(item);
-        const buttonTitle = this.action.title();
-        this.#button.setText(modelTitle);
-        UI.ARIAUtils.setLabel(this.#button.element, i18nString(UIStrings.currentSessionSS, { PH1: modelTitle, PH2: buttonTitle }));
+        this.#lastActiveTrace = item;
+        this.#updateButton();
     }
-    updateState() {
-        this.action.setEnabled(this.recordings.length >= 1 && this.enabled);
+    #updateButton() {
+        const title = this.#lastActiveTrace ? this.#title(this.#lastActiveTrace) : this.#landingPageTitle;
+        const ariaLabel = this.#lastActiveTrace ?
+            i18nString(UIStrings.currentSessionSS, { PH1: title, PH2: this.#action.title() }) :
+            this.#action.title();
+        const input = {
+            title,
+            ariaLabel,
+            tooltip: this.#action.title(),
+            onClick: () => void this.#action.execute(),
+        };
+        BUTTON_VIEW(input, undefined, this.#buttonItem.element);
     }
-    static previewElement(parsedTraceIndex) {
-        const data = TimelineHistoryManager.dataForTraceIndex(parsedTraceIndex);
-        if (!data) {
-            throw new Error('Unable to find data for model');
-        }
-        return data.preview;
+    #updateState() {
+        this.#action.setEnabled(this.#recordings.length >= 1 && this.#enabled);
     }
-    title(item) {
+    #title(item) {
         if (item.type === 'LANDING_PAGE') {
             return this.#landingPageTitle;
         }
-        const data = TimelineHistoryManager.dataForTraceIndex(item.parsedTraceIndex);
+        const data = TimelineHistoryManager.#dataForTraceIndex(item.parsedTraceIndex);
         if (!data) {
             throw new Error('Unable to find data for model');
         }
@@ -264,35 +264,14 @@ export class TimelineHistoryManager {
     #buildAndStorePreviewData(parsedTraceIndex, parsedTrace, filmStrip) {
         const parsedURL = Common.ParsedURL.ParsedURL.fromString(parsedTrace.data.Meta.mainFrameURL);
         const domain = parsedURL ? parsedURL.host : '';
-        const sequenceNumber = this.nextNumberByDomain.get(domain) || 1;
+        const sequenceNumber = this.#nextNumberByDomain.get(domain) || 1;
         const titleWithSequenceNumber = domain ? i18nString(UIStrings.sD, { PH1: domain, PH2: sequenceNumber }) : `#${sequenceNumber}`;
-        this.nextNumberByDomain.set(domain, sequenceNumber + 1);
-        const preview = document.createElement('div');
-        preview.classList.add('preview-item');
-        preview.classList.add('vbox');
-        preview.setAttribute('jslog', `${VisualLogging.dropDown('timeline.history-item').track({ click: true })}`);
-        preview.style.width = `${previewWidth}px`;
+        this.#nextNumberByDomain.set(domain, sequenceNumber + 1);
         const customTitle = parsedTrace.metadata.title;
         const title = customTitle ?
             i18nString(UIStrings.customTitleWithSequence, { PH1: customTitle, PH2: titleWithSequenceNumber }) :
             titleWithSequenceNumber;
-        const data = {
-            preview,
-            title,
-            lastUsed: Date.now(),
-        };
-        parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(html `
-      ${this.#renderTextDetails(parsedTrace.metadata, title)}
-      <div class="hbox">
-        ${this.#renderScreenshotThumbnail(filmStrip)}
-        ${this.#buildOverview(parsedTrace)}
-      </div>
-    `, preview, { host: this });
-        return data.preview;
-    }
-    #renderTextDetails(metadata, title) {
+        const metadata = parsedTrace.metadata;
         let metadataText = '';
         if (metadata) {
             const parts = [
@@ -302,44 +281,24 @@ export class TimelineHistoryManager {
             ].filter(Boolean);
             metadataText = listFormatter.format(parts);
         }
-        return html `
-      <div class="text-details hbox">
-        <span class="name">${title}</span>
-        ${metadataText ? html `<span class="metadata">${metadataText}</span>` : ''}
-      </div>
-    `;
-    }
-    #renderScreenshotThumbnail(filmStrip) {
-        const thumbnailAspectRatio = 3 / 2;
-        const width = this.totalHeight * thumbnailAspectRatio + 'px';
-        const height = this.totalHeight + 'px';
-        const container = html `<div class="screenshot-thumb" style="width: ${width}; height: ${height}"></div>`;
-        if (!filmStrip) {
-            return container;
-        }
-        const lastFrame = filmStrip.frames.at(-1);
-        if (!lastFrame) {
-            return container;
-        }
-        // TODO(paulirish): Adopt Util.ImageCache
-        const uri = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(lastFrame.screenshotEvent);
-        return html `
-      <div class="screenshot-thumb" style="width: ${width}; height: ${height}">
-        <img src=${uri}>
-      </div>
-    `;
+        const screenshotEvent = filmStrip?.frames.at(-1)?.screenshotEvent ?? null;
+        const overview = this.#buildOverview(parsedTrace);
+        const data = {
+            title,
+            lastUsed: Date.now(),
+            metadataText,
+            screenshotEvent,
+            overview,
+            overviewHeight: this.#totalHeight,
+        };
+        parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
     }
     #buildOverview(parsedTrace) {
-        const container = document.createElement('div');
         const dPR = window.devicePixelRatio;
-        container.style.width = previewWidth + 'px';
-        container.style.height = this.totalHeight + 'px';
-        const canvas = container.createChild('canvas');
-        canvas.width = dPR * previewWidth;
-        canvas.height = dPR * this.totalHeight;
+        const canvas = new OffscreenCanvas(dPR * previewWidth, dPR * this.#totalHeight);
         const ctx = canvas.getContext('2d');
         let yOffset = 0;
-        for (const overview of this.allOverviews) {
+        for (const overview of this.#allOverviews) {
             const timelineOverviewComponent = overview.constructor(parsedTrace);
             timelineOverviewComponent.update();
             if (ctx) {
@@ -347,164 +306,324 @@ export class TimelineHistoryManager {
             }
             yOffset += overview.height * dPR;
         }
-        return container;
+        return canvas.transferToImageBitmap();
     }
-    static dataForTraceIndex(index) {
+    static #dataForTraceIndex(index) {
         return parsedTraceIndexToPerformancePreviewData.get(index) || null;
     }
 }
-export const maxRecordings = 5;
-export const previewWidth = 500;
-// The reason we store a global map is because the Dropdown component needs to
-// be able to read the preview data in order to show a preview in the dropdown.
-const parsedTraceIndexToPerformancePreviewData = new Map();
-export class DropDown {
-    glassPane;
-    listControl;
-    focusRestorer;
-    selectionDone;
-    #landingPageTitle;
-    contentElement;
-    constructor(availableparsedTraceIndexes, landingPageTitle) {
-        this.#landingPageTitle = landingPageTitle;
-        this.glassPane = new UI.GlassPane.GlassPane();
-        this.glassPane.setSizeBehavior("MeasureContent" /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */);
-        this.glassPane.setOutsideClickCallback(() => this.close(null));
-        this.glassPane.setPointerEventsBehavior("BlockedByGlassPane" /* UI.GlassPane.PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */);
-        this.glassPane.setAnchorBehavior("PreferBottom" /* UI.GlassPane.AnchorBehavior.PREFER_BOTTOM */);
-        this.glassPane.element.addEventListener('blur', () => this.close(null));
-        const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.glassPane.contentElement, { cssFile: timelineHistoryManagerStyles });
-        this.contentElement = shadowRoot.createChild('div', 'drop-down');
-        const listModel = new UI.ListModel.ListModel();
-        this.listControl = new UI.ListControl.ListControl(listModel, this, UI.ListControl.ListMode.NonViewport);
-        this.listControl.element.addEventListener('mousemove', this.onMouseMove.bind(this), false);
-        listModel.replaceAll(availableparsedTraceIndexes);
-        UI.ARIAUtils.markAsMenu(this.listControl.element);
-        UI.ARIAUtils.setLabel(this.listControl.element, i18nString(UIStrings.selectTimelineSession));
-        this.contentElement.appendChild(this.listControl.element);
-        this.contentElement.addEventListener('keydown', this.onKeyDown.bind(this), false);
-        this.contentElement.addEventListener('click', this.onClick.bind(this), false);
-        this.focusRestorer = new UI.UIUtils.ElementFocusRestorer(this.listControl.element);
-        this.selectionDone = null;
+function itemId(item) {
+    if (item.type === 'LANDING_PAGE') {
+        return 'history-dropdown-item-landing-page';
     }
-    static show(availableparsedTraceIndexes, activeparsedTraceIndex, anchor, landingPageTitle = i18nString(UIStrings.landingPageTitle)) {
-        if (DropDown.instance) {
-            return Promise.resolve(null);
+    return `history-dropdown-item-${item.parsedTraceIndex}`;
+}
+const thumbnailAspectRatio = 3 / 2;
+// clang-format off
+function renderScreenshotThumbnail(screenshotEvent, height) {
+    return html `
+    <div class="screenshot-thumb" style=${styleMap({ width: `${height * thumbnailAspectRatio}px`, height: `${height}px` })}>
+      ${screenshotEvent ? html `<img src=${Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(screenshotEvent)}>` : nothing}
+    </div>
+  `;
+}
+function renderOverview(overview, height) {
+    return html `
+    <div style=${styleMap({ width: `${previewWidth}px`, height: `${height}px` })}>
+      <canvas width=${overview.width} height=${overview.height} ${ref(el => {
+        if (el instanceof HTMLCanvasElement) {
+            const ctx = el.getContext('2d');
+            if (ctx) {
+                ctx.clearRect(0, 0, el.width, el.height);
+                ctx.drawImage(overview, 0, 0);
+            }
         }
-        const availableDropdownChoices = [...availableparsedTraceIndexes];
-        availableDropdownChoices.unshift(LANDING_PAGE_INDEX_DROPDOWN_CHOICE);
-        const instance = new DropDown(availableDropdownChoices, landingPageTitle);
-        return instance.show(anchor, activeparsedTraceIndex);
+    })}></canvas>
+    </div>
+  `;
+}
+function renderLandingPageContent(item) {
+    return html `
+    <devtools-icon class="back-arrow" title=${i18nString(UIStrings.backButtonTooltip)} name="arrow-back"></devtools-icon>
+    <span>${item.title}</span>
+  `;
+}
+function renderRecordingContent(data) {
+    return html `
+    <div class="text-details hbox">
+      <span class="name">${data.title}</span>
+      ${data.metadataText ? html `<span class="metadata">${data.metadataText}</span>` : nothing}
+    </div>
+    <div class="hbox">
+      ${renderScreenshotThumbnail(data.screenshotEvent, data.overviewHeight)}
+      ${renderOverview(data.overview, data.overviewHeight)}
+    </div>
+  `;
+}
+function renderEntry(item, isSelected, posInSet, setSize, onHover, onActivate) {
+    const classes = { 'preview-item': true, selected: isSelected };
+    let jslog;
+    let content;
+    switch (item.type) {
+        case 'LANDING_PAGE':
+            jslog = VisualLogging.item().track({ click: true, resize: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End' });
+            content = renderLandingPageContent(item);
+            classes['landing-page-item'] = true;
+            break;
+        case 'RECORDING':
+            jslog = VisualLogging.dropDown('timeline.history-item').track({ click: true });
+            content = renderRecordingContent(item.preview);
+            classes['vbox'] = true;
+            break;
+        default:
+            Platform.assertNever(item, 'Unknown history dropdown item');
     }
-    static cancelIfShowing() {
-        if (!DropDown.instance) {
-            return;
-        }
-        DropDown.instance.close(null);
-    }
-    show(anchor, activeparsedTraceIndex) {
-        DropDown.instance = this;
-        this.glassPane.setContentAnchorBox(anchor.boxInWindow());
-        this.glassPane.show(this.glassPane.contentElement.ownerDocument);
-        this.listControl.element.focus();
-        this.listControl.selectItem(activeparsedTraceIndex);
-        return new Promise(fulfill => {
-            this.selectionDone = fulfill;
-        });
-    }
-    onMouseMove(event) {
-        const node = event.target.enclosingNodeOrSelfWithClass('preview-item');
-        const listItem = node && this.listControl.itemForNode(node);
-        if (listItem === null) {
-            return;
-        }
-        this.listControl.selectItem(listItem);
-    }
-    onClick(event) {
-        if (!event.target.enclosingNodeOrSelfWithClass('preview-item')) {
-            return;
-        }
-        this.close(this.listControl.selectedItem());
-    }
-    onKeyDown(event) {
+    return html `
+    <div class=${classMap(classes)}
+        role="menuitem"
+        id=${itemId(item)}
+        aria-posinset=${posInSet}
+        aria-setsize=${setSize}
+        aria-selected=${ifDefined(isSelected ? 'true' : undefined)}
+        jslog=${jslog}
+        style=${styleMap({ width: `${previewWidth}px` })}
+        @mousemove=${onHover}
+        @click=${onActivate}>
+      ${content}
+    </div>
+  `;
+}
+// clang-format off
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const activeDescendantId = input.selectedItem ? itemId(input.selectedItem) : nothing;
+    const onKeyDown = (event) => {
         switch (event.key) {
-            case 'Tab':
-            case 'Escape':
-                this.close(null);
+            case 'ArrowUp':
+                input.onNavigate('previous');
+                break;
+            case 'ArrowDown':
+                input.onNavigate('next');
+                break;
+            case 'Home':
+                input.onNavigate('first');
+                break;
+            case 'End':
+                input.onNavigate('last');
                 break;
             case 'Enter':
-                this.close(this.listControl.selectedItem());
+                input.onActivateSelected();
+                break;
+            case 'Tab':
+            case 'Escape':
+                input.onCancel();
                 break;
             default:
                 return;
         }
         event.consume(true);
+    };
+    render(html `
+        <style>${timelineHistoryManagerStyles}</style>
+        <div class="drop-down">
+          <div role="menu"
+              aria-label=${i18nString(UIStrings.selectTimelineSession)}
+              tabindex="-1"
+              autofocus
+              style="overflow-y: auto"
+              aria-activedescendant=${activeDescendantId}
+              @keydown=${onKeyDown}>
+            ${input.items.map((item, index) => {
+        const isSelected = item === input.selectedItem;
+        return renderEntry(item, isSelected, index + 1, input.items.length, () => input.onHover(item), () => input.onActivate(item));
+    })}
+          </div>
+        </div>
+      `, target);
+};
+// clang-format on
+export const maxRecordings = 5;
+export const previewWidth = 500;
+// The reason we store a global map is because the Dropdown component needs to
+// be able to read the preview data in order to show a preview in the dropdown.
+const parsedTraceIndexToPerformancePreviewData = new Map();
+export class DropDown extends UI.Widget.Widget {
+    #view;
+    #items = [];
+    #selectedItem = null;
+    #glassPane = null;
+    #previousFocus = null;
+    #selectionDone = null;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: 'pure' });
+        this.#view = view;
     }
-    close(traceIndex) {
-        if (this.selectionDone) {
-            this.selectionDone(traceIndex);
+    get items() {
+        return this.#items;
+    }
+    set items(items) {
+        if (this.#items === items) {
+            return;
         }
-        this.focusRestorer.restore();
-        this.glassPane.hide();
+        this.#items = items;
+        this.requestUpdate();
+    }
+    get selectedItem() {
+        return this.#selectedItem;
+    }
+    set selectedItem(item) {
+        if (this.#selectedItem === item) {
+            return;
+        }
+        this.#selectedItem = item;
+        this.requestUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const input = {
+            items: this.#items,
+            selectedItem: this.#selectedItem,
+            onHover: item => this.#hover(item),
+            onActivate: item => this.#activate(item),
+            onNavigate: target => this.#navigate(target),
+            onActivateSelected: () => this.#activateSelected(),
+            onCancel: () => this.#close(null),
+        };
+        this.#view(input, undefined, this.contentElement);
+    }
+    static show(availableparsedTraceIndexes, activeparsedTraceIndex, anchor, landingPageTitle = i18nString(UIStrings.landingPageTitle), view = DEFAULT_VIEW) {
+        if (DropDown.instance) {
+            return Promise.resolve(null);
+        }
+        const items = [
+            { type: 'LANDING_PAGE', title: landingPageTitle },
+        ];
+        for (const traceIndex of availableparsedTraceIndexes) {
+            const preview = parsedTraceIndexToPerformancePreviewData.get(traceIndex);
+            if (!preview) {
+                throw new Error('Unable to find data for model');
+            }
+            items.push({
+                type: 'RECORDING',
+                parsedTraceIndex: traceIndex,
+                preview,
+            });
+        }
+        const instance = new DropDown(undefined, view);
+        DropDown.instance = instance;
+        instance.items = items;
+        return instance.#show(anchor, activeparsedTraceIndex);
+    }
+    static cancelIfShowing() {
+        if (!DropDown.instance) {
+            return;
+        }
+        DropDown.instance.#close(null);
+    }
+    #show(anchor, activeparsedTraceIndex) {
+        const activeItem = this.#items.find(item => {
+            if (item.type === 'LANDING_PAGE') {
+                return activeparsedTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE;
+            }
+            return item.parsedTraceIndex === activeparsedTraceIndex;
+        });
+        this.selectedItem = activeItem ?? null;
+        this.#previousFocus = UI.DOMUtilities.deepActiveElement(document);
+        this.#glassPane = new UI.GlassPane.GlassPane();
+        this.#glassPane.setSizeBehavior("MeasureContent" /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */);
+        this.#glassPane.setOutsideClickCallback(() => this.#close(null));
+        this.#glassPane.setPointerEventsBehavior("BlockedByGlassPane" /* UI.GlassPane.PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */);
+        this.#glassPane.setAnchorBehavior("PreferBottom" /* UI.GlassPane.AnchorBehavior.PREFER_BOTTOM */);
+        this.#glassPane.element.addEventListener('blur', () => this.#close(null));
+        super.show(this.#glassPane.contentElement);
+        void this.updateComplete.then(() => {
+            if (DropDown.instance !== this || !this.#glassPane) {
+                return;
+            }
+            this.#glassPane.setContentAnchorBox(anchor.boxInWindow());
+            this.#glassPane.show(this.#glassPane.contentElement.ownerDocument);
+            this.focus();
+        });
+        return new Promise(fulfill => {
+            this.#selectionDone = fulfill;
+        });
+    }
+    #navigate(target) {
+        const len = this.#items.length;
+        const current = this.#selectedItem ? this.#items.indexOf(this.#selectedItem) : -1;
+        let nextIndex;
+        switch (target) {
+            case 'first':
+                nextIndex = 0;
+                break;
+            case 'last':
+                nextIndex = len - 1;
+                break;
+            case 'previous':
+                nextIndex = current === -1 ? len - 1 : (current - 1 + len) % len;
+                break;
+            case 'next':
+                nextIndex = current === -1 ? 0 : (current + 1) % len;
+                break;
+            default:
+                Platform.assertNever(target, 'Unknown navigation target');
+        }
+        this.#selectAt(nextIndex);
+    }
+    #selectAt(index) {
+        this.selectedItem = this.#items[index];
+    }
+    #hover(item) {
+        this.selectedItem = item;
+    }
+    #activate(item) {
+        const choice = item.type === 'LANDING_PAGE' ? LANDING_PAGE_INDEX_DROPDOWN_CHOICE : item.parsedTraceIndex;
+        this.#close(choice);
+    }
+    #activateSelected() {
+        if (this.#selectedItem) {
+            this.#activate(this.#selectedItem);
+        }
+        else {
+            this.#close(null);
+        }
+    }
+    #close(traceIndex) {
+        if (DropDown.instance !== this) {
+            return;
+        }
         DropDown.instance = null;
-    }
-    createElementForItem(parsedTraceIndex) {
-        if (parsedTraceIndex === LANDING_PAGE_INDEX_DROPDOWN_CHOICE) {
-            return this.#createLandingPageListItem();
+        if (this.#selectionDone) {
+            this.#selectionDone(traceIndex);
+            this.#selectionDone = null;
         }
-        const element = TimelineHistoryManager.previewElement(parsedTraceIndex);
-        UI.ARIAUtils.markAsMenuItem(element);
-        element.classList.remove('selected');
-        return element;
-    }
-    #createLandingPageListItem() {
-        const div = document.createElement('div');
-        UI.ARIAUtils.markAsMenuItem(div);
-        div.classList.remove('selected');
-        div.classList.add('preview-item');
-        div.classList.add('landing-page-item');
-        div.style.width = `${previewWidth}px`;
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(html `
-      <devtools-icon class="back-arrow" title=${i18nString(UIStrings.backButtonTooltip)} name="arrow-back"></devtools-icon>
-      <span>${this.#landingPageTitle}</span>
-    `, div, { host: this });
-        return div;
-    }
-    heightForItem(_parsedTraceIndex) {
-        console.assert(false, 'Should not be called');
-        return 0;
-    }
-    isItemSelectable(_parsedTraceIndex) {
-        return true;
-    }
-    selectedItemChanged(_from, _to, fromElement, toElement) {
-        if (fromElement) {
-            fromElement.classList.remove('selected');
+        this.#previousFocus?.focus();
+        this.#previousFocus = null;
+        const glassPane = this.#glassPane;
+        this.#glassPane = null;
+        glassPane?.hide();
+        if (this.isShowing()) {
+            this.detach();
         }
-        if (toElement) {
-            toElement.classList.add('selected');
-        }
-    }
-    updateSelectedItemARIA(_fromElement, _toElement) {
-        return false;
     }
     static instance = null;
 }
-export class ToolbarButton extends UI.Toolbar.ToolbarItem {
-    constructor(action) {
-        const element = document.createElement('button');
-        element.classList.add('history-dropdown-button');
-        element.setAttribute('jslog', `${VisualLogging.dropDown('history')}`);
-        super(element);
-        this.element.addEventListener('click', () => void action.execute(), false);
-        this.setEnabled(action.enabled());
-        action.addEventListener("Enabled" /* UI.ActionRegistration.Events.ENABLED */, event => this.setEnabled(event.data));
-        this.setTitle(action.title());
-    }
-    setText(text) {
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(html `<span class="content">${text}</span>`, this.element, { host: this });
-    }
-}
+const BUTTON_VIEW = (input, _output, target) => {
+    render(html `<span class="content">${input.title}</span>`, target, {
+        container: {
+            classes: ['history-dropdown-button'],
+            attributes: {
+                'aria-haspopup': 'true',
+                'aria-label': input.ariaLabel,
+                title: input.tooltip,
+                jslog: `${VisualLogging.dropDown('history')}`,
+            },
+            listeners: {
+                click: input.onClick,
+            },
+        },
+    });
+};
 //# sourceMappingURL=TimelineHistoryManager.js.map

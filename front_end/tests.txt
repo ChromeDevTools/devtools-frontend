@@ -702,6 +702,7 @@ panels/timeline/AnnotationHelpers.test.js
 panels/timeline/Breadcrumbs.test.js
 panels/timeline/CountersGraph.test.js
 panels/timeline/EntriesFilter.test.js
+panels/timeline/EventsTimelineTreeView.test.js
 panels/timeline/Initiators.test.js
 panels/timeline/ModificationsManager.test.js
 panels/timeline/RecordingMetadata.test.js
@@ -788,6 +789,7 @@ testing/MutationHelpers.test.js
 testing/SnapshotTester.test.js
 testing/SourceMapEncoder.test.js
 third_party/chromium/client-variations/ClientVariations.test.js
+third_party/diff/DiffWrapper.test.js
 third_party/i18n/i18n.test.js
 ui/comments/CommentAnchorResolver.test.js
 ui/comments/CommentOverlayManager.test.js

@@ -1,6 +1,7 @@
 import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import { DataSaverOverride } from './EmulationModel.js';
+import type { Conditions } from './NetworkManager.js';
 export declare const jsSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const cssSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const preserveConsoleLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
@@ -52,3 +53,4 @@ export declare const monitoringXHREnabledSettingDescriptor: Common.Settings.Sett
 export declare const disablePausedStateOverlaySettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const preserveNetworkLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const textEditorIndentSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const customNetworkConditionsSettingDescriptor: Common.Settings.SettingDescriptor<Conditions[]>;

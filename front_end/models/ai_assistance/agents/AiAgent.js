@@ -184,6 +184,15 @@ export class ConversationContext {
         return null;
     }
     /**
+     * Returns persistent facts about the context that are only sent to the model
+     * once per conversation, reducing token usage in subsequent turns.
+     * Return stable constant `PromptFact` references so `AiAgent2` can deduplicate them.
+     * Currently only used by AiAgent2 (V1 agents use `addFact()`).
+     */
+    getPromptFacts() {
+        return [];
+    }
+    /**
      * Returns a list of context details to display to the user in the UI.
      * Currently only used by AiAgent2.
      */

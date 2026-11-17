@@ -1,3 +1,5 @@
+import '../../ui/components/adorners/adorners.js';
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -5,10 +7,35 @@ import * as Protocol from '../../generated/protocol.js';
 import * as HAR from '../../models/har/har.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type EventTypes, NetworkGroupNode, type NetworkLogViewInterface, type NetworkNode, NetworkRequestNode } from './NetworkDataGridNode.js';
 import { NetworkLogViewColumns } from './NetworkLogViewColumns.js';
+import type { NetworkWaterfallColumn } from './NetworkWaterfallColumn.js';
+export interface ViewInput {
+    recording: boolean;
+    showRecordingHint: boolean;
+    recordingActionShortcut: string;
+    onRecordingAction?: () => void;
+    nodeCount: number;
+    selectedNodeCount: number;
+    transferSize: number;
+    selectedTransferSize: number;
+    resourceSize: number;
+    selectedResourceSize: number;
+    baseTime: number;
+    maxTime: number;
+    domContentLoadedTime: number;
+    loadTime: number;
+    isNodeSelected: boolean;
+    isGridFocused: boolean;
+    isWaterfallVisible: boolean;
+    dataGridWidget: DataGrid.DataGrid.DataGridWidget<NetworkNode>;
+    waterfallColumn: NetworkWaterfallColumn;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 declare const NetworkLogViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class NetworkLogView extends NetworkLogViewBase implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
     #private;
@@ -16,7 +43,8 @@ export declare class NetworkLogView extends NetworkLogViewBase implements SDK.Ta
     private recording;
     private readonly resourceCategoryFilterUI;
     private dataGrid;
-    constructor(filterBar: UI.FilterBar.FilterBar, progressBarContainer: Element, networkLogLargeRowsSetting: Common.Settings.Setting<boolean>);
+    constructor(filterBar: UI.FilterBar.FilterBar, progressBarContainer: Element, networkLogLargeRowsSetting: Common.Settings.Setting<boolean>, view?: View);
+    performUpdate(): void;
     private static subdomains;
     private static createRequestDomainFilter;
     static getHTTPRequestsFilter(request: SDK.NetworkRequest.NetworkRequest): boolean;
@@ -25,7 +53,6 @@ export declare class NetworkLogView extends NetworkLogViewBase implements SDK.Ta
     headerHeight(): number;
     setRecording(recording: boolean): void;
     columns(): NetworkLogViewColumns;
-    summaryToolbar(): UI.Toolbar.Toolbar;
     modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void;
     modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void;
     linkifier(): Components.Linkifier.Linkifier;
@@ -83,13 +110,27 @@ export declare const overrideFilter: {
     headers: string;
 };
 export type Filter = (request: SDK.NetworkRequest.NetworkRequest) => boolean;
+export interface MoreFiltersViewInput {
+    activeFiltersCount: number;
+    tooltip: string;
+    hideDataURLs: boolean;
+    onHideDataURLsChange: () => void;
+    hideChromeExtensions: boolean;
+    onHideChromeExtensionsChange: () => void;
+    showBlockedCookiesOnly: boolean;
+    onShowBlockedCookiesOnlyChange: () => void;
+    onlyBlockedRequests: boolean;
+    onOnlyBlockedRequestsChange: () => void;
+    onlyThirdParty: boolean;
+    onOnlyThirdPartyChange: () => void;
+}
+export type MoreFiltersView = (input: MoreFiltersViewInput, output: undefined, target: HTMLElement) => void;
+export declare const MORE_FILTERS_DEFAULT_VIEW: MoreFiltersView;
 export declare class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI.FilterBar.FilterUIEventTypes> implements UI.FilterBar.FilterUI {
     #private;
-    constructor();
-    showMoreFiltersContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void;
+    constructor(view?: MoreFiltersView);
     selectedFilters(): string[];
-    updateActiveFiltersCount(): void;
-    updateTooltip(): void;
+    performUpdate(): void;
     isActive(): boolean;
     element(): HTMLDivElement;
 }

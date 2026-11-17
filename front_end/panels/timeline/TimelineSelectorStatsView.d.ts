@@ -16,7 +16,9 @@ interface ViewInput {
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class TimelineSelectorStatsView extends UI.Widget.VBox {
     #private;
-    constructor(parsedTrace: Trace.TraceModel.ParsedTrace | null, view?: View);
+    constructor(element?: HTMLElement, parsedTrace?: Trace.TraceModel.ParsedTrace | null, view?: View);
+    set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace | null);
+    wasShown(): void;
     performUpdate(): void;
     setAggregatedEvents(events: Trace.Types.Events.RecalcStyle[]): void;
 }

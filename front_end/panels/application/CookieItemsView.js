@@ -47,14 +47,6 @@ const UIStrings = {
      */
     showUrlDecoded: 'Show URL-decoded',
     /**
-     * @description Context menu item in the Application panel to start a chat with AI assistance.
-     */
-    startAChat: 'Start a chat',
-    /**
-     * @description Context menu item in the Application panel to explain a cookie with AI assistance.
-     */
-    explainCookie: 'Explain this cookie',
-    /**
      * @description Empty state header in the cookie preview of the Application panel when no cookie is selected.
      */
     noCookieSelected: 'No cookie selected',
@@ -371,10 +363,7 @@ export class CookieItemsView extends UI.Widget.VBox {
         if (this.isAiButtonEnabled() && UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
             this.#updateAiAssistanceContext(cookie);
             if (UI.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
-                const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-                const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
-                submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
-                submenu.defaultSection().appendItem(i18nString(UIStrings.explainCookie), () => action.execute({ prompt: 'What is the purpose of this cookie?' }), { disabled: !action.enabled(), jslogContext: openAiAssistanceId + '.cookies' });
+                contextMenu.footerSection().appendAction(openAiAssistanceId);
             }
         }
     }

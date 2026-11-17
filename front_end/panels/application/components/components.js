@@ -5346,7 +5346,6 @@ var { render: render5, html: html5 } = Lit3;
 var DEFAULT_VIEW5 = (input, output, target) => {
   render5(html5`
     <style>${endpointsGrid_css_default}</style>
-    <style>${UI5.inspectorCommonStyles}</style>
     <div class="endpoints-container" jslog=${VisualLogging4.section("endpoints")}>
       <div class="endpoints-header">${i18n11.i18n.lockedString("Endpoints")}</div>
       ${input.endpoints.size > 0 ? html5`

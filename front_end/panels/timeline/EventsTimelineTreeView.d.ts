@@ -10,7 +10,7 @@ export declare class EventsTimelineTreeView extends TimelineTreeView {
     private readonly filtersControl;
     private readonly delegate;
     private currentTree;
-    constructor(delegate: TimelineModeViewDelegate);
+    constructor(delegate: Pick<TimelineModeViewDelegate, 'highlightEvent'>, element?: HTMLElement);
     filters(): Trace.Extras.TraceFilter.TraceFilter[];
     set activeSelection(selection: TimelineSelection);
     buildTree(): Trace.Extras.TraceTree.Node;

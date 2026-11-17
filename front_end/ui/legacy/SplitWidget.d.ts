@@ -6,7 +6,7 @@ declare const SplitWidgetBase: Common.ObjectWrapper.EventMixin<EventTypes, typeo
 export declare class SplitWidget extends SplitWidgetBase {
     #private;
     private setting;
-    constructor(isVertical: boolean, secondIsSidebar: boolean, settingName?: string, defaultSidebarWidth?: number, defaultSidebarHeight?: number, constraintsInDip?: boolean, element?: SplitWidgetElement);
+    constructor(isVertical: boolean, secondIsSidebar: boolean, settingName?: string, defaultSidebarWidth?: number, defaultSidebarHeight?: number, constraintsInDip?: boolean, element?: HTMLElement);
     isVertical(): boolean;
     setVertical(isVertical: boolean): void;
     setAutoAdjustOrientation(autoAdjustOrientation: boolean): void;

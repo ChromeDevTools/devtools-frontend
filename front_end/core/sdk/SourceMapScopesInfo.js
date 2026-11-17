@@ -280,7 +280,7 @@ export class SourceMapScopesInfo {
      *      paused position. We need the generated range to resolve variable
      *      values.
      */
-    resolveMappedScopeChain(callFrame) {
+    resolveMappedScopeChain(callFrame, scopeChain) {
         const rangeChain = this.#findGeneratedRangeChainForFrame(callFrame);
         const innerMostOriginalScope = rangeChain.at(-1)?.originalScope;
         if (innerMostOriginalScope === undefined) {
@@ -301,11 +301,11 @@ export class SourceMapScopesInfo {
             const isFunctionScope = originalScope.isStackFrame;
             const isInnerMostFunction = isFunctionScope && !seenFunctionScope;
             const returnValue = isInnerMostFunction ? callFrame.returnValue() : null;
-            const scopeNumber = range ? findMatchingScopeNumber(callFrame, range) : undefined;
+            const scopeNumber = range ? findMatchingScopeNumber(callFrame, scopeChain, range) : undefined;
             result.push(new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction, returnValue ?? undefined, scopeNumber));
             seenFunctionScope ||= isFunctionScope;
         }
-        const globalScope = callFrame.scopeChain()?.find(s => s.type() === "global" /* Protocol.Debugger.ScopeType.Global */);
+        const globalScope = scopeChain.find(s => s.type() === "global" /* Protocol.Debugger.ScopeType.Global */);
         if (globalScope) {
             result.push(globalScope);
         }
@@ -654,8 +654,7 @@ function positionRange(callFrame, scope) {
  * @returns The scope number, or `undefined` if nothing matched. Callers should then omit `scopeNumber`
  *          and let CDP default to the inner-most scope.
  */
-export function findMatchingScopeNumber(callFrame, range) {
-    const scopeChain = callFrame.scopeChain();
+export function findMatchingScopeNumber(callFrame, scopeChain, range) {
     const exactMatch = scopeChain.find(scope => {
         const scopeRange = positionRange(callFrame, scope);
         return scopeRange !== null && comparePositions(scopeRange.start, range.start) === 0 &&

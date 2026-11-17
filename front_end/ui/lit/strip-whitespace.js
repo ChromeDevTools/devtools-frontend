@@ -41,7 +41,7 @@ function strip(strings) {
         if (s === '<') {
             inTag = true;
         }
-        else if (inTag && s === '>') {
+        else if (s === '>') {
             inTag = false;
         }
         else if (!inTag) {

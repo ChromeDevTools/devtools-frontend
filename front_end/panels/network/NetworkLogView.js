@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008, 2009 Anthony Ricaud <rik@webkit.org>
@@ -31,6 +30,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import '../../ui/components/adorners/adorners.js';
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -46,7 +47,6 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Sources from '../../panels/sources/sources.js';
-import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -54,6 +54,7 @@ import dataGridAiButtonStyles from '../../ui/legacy/components/data_grid/dataGri
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { commentForbiddenHeaders, isForbiddenHeader } from './FetchHeaderCommenting.js';
@@ -504,26 +505,6 @@ const UIStrings = {
      */
     moreFilters: 'More filters',
     /**
-     * @description Text of a context menu item to redirect to the AI assistance panel and to start a chat.
-     */
-    startAChat: 'Start a chat',
-    /**
-     * @description Context menu item in Network panel to explain the purpose of a request via AI.
-     */
-    explainPurpose: 'Explain purpose',
-    /**
-     * @description Context menu item in Network panel to explain why a request is slow via AI.
-     */
-    explainSlowness: 'Explain slowness',
-    /**
-     * @description Context menu item in Network panel to explain why a request is failing via AI.
-     */
-    explainFailures: 'Explain failures',
-    /**
-     * @description Context menu item in Network panel to assess security headers of a request via AI.
-     */
-    assessSecurityHeaders: 'Assess security headers',
-    /**
      * @description A comment in a generated command indicating that the URL scheme is unsupported. The placeholder is the comment prefix (e.g. '//' or '#').
      * @example {//} PH1
      */
@@ -536,8 +517,141 @@ var FetchStyle;
     FetchStyle[FetchStyle["BROWSER"] = 0] = "BROWSER";
     FetchStyle[FetchStyle["NODE_JS"] = 1] = "NODE_JS";
 })(FetchStyle || (FetchStyle = {}));
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const classes = [];
+    if (!input.isNodeSelected) {
+        classes.push('no-node-selected');
+    }
+    if (input.isGridFocused) {
+        classes.push('grid-focused');
+    }
+    if (input.isWaterfallVisible) {
+        classes.push('has-waterfall');
+    }
+    const actionName = input.recording ? 'inspector-main.reload' : 'network.toggle-recording';
+    const header = input.recording ? i18nString(UIStrings.recordingNetworkActivity) :
+        i18nString(UIStrings.noNetworkActivityRecorded);
+    const instruction = input.recording ? UIStrings.performARequestOrHitSToRecordThe : UIStrings.recordToDisplayNetworkActivity;
+    const buttonText = input.recording ? i18nString(UIStrings.reloadPage) : i18nString(UIStrings.startRecording);
+    // eslint-disable-next-line @devtools/l10n-i18nString-call-only-with-uistrings
+    const description = input.recordingActionShortcut ? i18nString(instruction, {
+        PH1: buttonText,
+        PH2: input.recordingActionShortcut,
+    }) :
+        '';
+    const summaryItems = [];
+    if (!input.showRecordingHint && input.nodeCount > 0) {
+        const appendChunk = (chunk, title, color) => {
+            summaryItems.push({ text: chunk, title: title ?? chunk, color });
+        };
+        if (input.selectedNodeCount !== input.nodeCount) {
+            appendChunk(i18nString(UIStrings.sSRequests, { PH1: input.selectedNodeCount, PH2: input.nodeCount }));
+            appendChunk(i18nString(UIStrings.sSTransferred, {
+                PH1: i18n.ByteUtilities.formatBytesToKb(input.selectedTransferSize),
+                PH2: i18n.ByteUtilities.formatBytesToKb(input.transferSize),
+            }), i18nString(UIStrings.sBSBTransferredOverNetwork, {
+                PH1: input.selectedTransferSize,
+                PH2: input.transferSize,
+            }));
+            appendChunk(i18nString(UIStrings.sSResources, {
+                PH1: i18n.ByteUtilities.formatBytesToKb(input.selectedResourceSize),
+                PH2: i18n.ByteUtilities.formatBytesToKb(input.resourceSize),
+            }), i18nString(UIStrings.sBSBResourcesLoadedByThePage, {
+                PH1: input.selectedResourceSize,
+                PH2: input.resourceSize,
+            }));
+        }
+        else {
+            appendChunk(i18nString(UIStrings.sRequests, { PH1: input.nodeCount }));
+            appendChunk(i18nString(UIStrings.sTransferred, { PH1: i18n.ByteUtilities.bytesToString(input.transferSize) }), i18nString(UIStrings.sBTransferredOverNetwork, { PH1: input.transferSize }));
+            appendChunk(i18nString(UIStrings.sResources, { PH1: i18n.ByteUtilities.bytesToString(input.resourceSize) }), i18nString(UIStrings.sBResourcesLoadedByThePage, { PH1: input.resourceSize }));
+        }
+        if (input.baseTime !== -1 && input.maxTime !== -1) {
+            appendChunk(i18nString(UIStrings.finishS, {
+                PH1: i18n.TimeUtilities.secondsToString(input.maxTime - input.baseTime),
+            }));
+            if (input.domContentLoadedTime !== -1 && input.domContentLoadedTime > input.baseTime) {
+                const domContentLoadedText = i18nString(UIStrings.domcontentloadedS, {
+                    PH1: i18n.TimeUtilities.secondsToString(input.domContentLoadedTime - input.baseTime),
+                });
+                appendChunk(domContentLoadedText, undefined, NetworkLogView.getDCLEventColor());
+            }
+            if (input.loadTime !== -1) {
+                const loadText = i18nString(UIStrings.loadS, {
+                    PH1: i18n.TimeUtilities.secondsToString(input.loadTime - input.baseTime),
+                });
+                appendChunk(loadText, undefined, NetworkLogView.getLoadEventColor());
+            }
+        }
+    }
+    // clang-format off
+    render(html `
+    <style>${networkLogViewStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${dataGridAiButtonStyles} }</style>
+    <devtools-split-view
+      direction="column"
+      sidebar-position="second"
+      name="network-panel-split-view-waterfall"
+      sidebar-initial-size="200"
+      show=${input.isWaterfallVisible ? 'both' : 'main'}
+      aria-hidden=${input.showRecordingHint}>
+      <div
+        slot="main"
+        ${UI.Widget.widget(UI.Widget.WrapperWidget, { widget: input.dataGridWidget })}>
+      </div>
+      <div
+        slot="sidebar"
+        ${UI.Widget.widget(UI.Widget.WrapperWidget, {
+        widget: input.isWaterfallVisible ? input.waterfallColumn : null,
+    })}>
+      </div>
+    </devtools-split-view>
+    ${input.showRecordingHint ? html `
+      <devtools-widget
+        class="network-status-pane"
+        ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, {
+        header,
+        text: description,
+        link: 'https://developer.chrome.com/docs/devtools/network/',
+    })}>
+        ${input.onRecordingAction ? html `
+          <devtools-button
+            .variant=${"tonal" /* Buttons.Button.Variant.TONAL */}
+            .jslogContext=${actionName}
+            @click=${input.onRecordingAction}>
+            ${buttonText}
+          </devtools-button>
+        ` : nothing}
+      </devtools-widget>
+    ` : nothing}
+    <devtools-toolbar
+      class="network-summary-bar"
+      role="status"
+      aria-hidden=${input.showRecordingHint}>
+      ${summaryItems.map((item, index) => html `
+        ${index > 0 ? html `<div class="toolbar-divider toolbar-item"></div>` : nothing}
+        <div
+          class="toolbar-text toolbar-item"
+          title=${item.title}
+          aria-label=${item.title}
+          style=${Directives.styleMap({ color: item.color ? `var(${item.color})` : undefined })}>
+          ${item.text}
+        </div>
+      `)}
+    </devtools-toolbar>
+  `, target, {
+        container: {
+            attributes: {
+                id: 'network-container',
+            },
+            classes,
+        },
+    });
+    // clang-format on
+};
 const NetworkLogViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class NetworkLogView extends NetworkLogViewBase {
+    #view;
     #networkInvertFilterSetting;
     #networkHideDataURLSetting;
     #networkHideChromeExtensions;
@@ -561,7 +675,17 @@ export class NetworkLogView extends NetworkLogViewBase {
     #filters;
     #timeFilter;
     #hoveredNode;
-    #recordingHint;
+    #showRecordingHintState;
+    #nodeCount;
+    #selectedNodeCount;
+    #transferSize;
+    #selectedTransferSize;
+    #resourceSize;
+    #selectedResourceSize;
+    #baseTime;
+    #maxTime;
+    #isNodeSelected;
+    #isGridFocused;
     #highlightedNode;
     #linkifier;
     // Accessed in web_tests / legacy_test_runner.
@@ -582,17 +706,13 @@ export class NetworkLogView extends NetworkLogViewBase {
     // Accessed in web_tests / legacy_test_runner.
     // eslint-disable-next-line @devtools/prefer-private-class-members
     dataGrid;
-    #summaryToolbar;
     #filterBar;
     #textFilterSetting;
     #networkRequestToNode;
-    constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
+    constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting, view = DEFAULT_VIEW) {
         super();
-        this.registerRequiredCSS(networkLogViewStyles);
-        this.registerRequiredCSS(dataGridAiButtonStyles);
+        this.#view = view;
         this.setMinimumSize(50, 64);
-        this.element.id = 'network-container';
-        this.element.classList.add('no-node-selected');
         this.#networkRequestToNode = new WeakMap();
         this.#networkInvertFilterSetting =
             Common.Settings.Settings.instance().createSetting('network-invert-filter', false);
@@ -621,14 +741,23 @@ export class NetworkLogView extends NetworkLogViewBase {
         this.#calculator = this.#timeCalculator;
         this.#columns =
             new NetworkLogViewColumns(this, this.#timeCalculator, this.#durationCalculator, networkLogLargeRowsSetting);
-        this.#columns.show(this.element);
         this.staleRequests = new Set();
         this.#mainRequestLoadTime = -1;
         this.#mainRequestDOMContentLoadedTime = -1;
         this.#filters = [];
         this.#timeFilter = null;
         this.#hoveredNode = null;
-        this.#recordingHint = null;
+        this.#showRecordingHintState = false;
+        this.#nodeCount = 0;
+        this.#selectedNodeCount = 0;
+        this.#transferSize = 0;
+        this.#selectedTransferSize = 0;
+        this.#resourceSize = 0;
+        this.#selectedResourceSize = 0;
+        this.#baseTime = -1;
+        this.#maxTime = -1;
+        this.#isNodeSelected = false;
+        this.#isGridFocused = false;
         this.#highlightedNode = null;
         this.#linkifier = new Components.Linkifier.Linkifier();
         this.recording = false;
@@ -667,8 +796,6 @@ export class NetworkLogView extends NetworkLogViewBase {
         this.#setupDataGrid();
         this.#columns.sortByCurrentColumn();
         filterBar.filterButton().addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, this.dataGrid.scheduleUpdate.bind(this.dataGrid, true /* isFromUser */));
-        this.#summaryToolbar = this.element.createChild('devtools-toolbar', 'network-summary-bar');
-        this.#summaryToolbar.setAttribute('role', 'status');
         new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.File], i18nString(UIStrings.dropHarFilesHere), this.#handleDrop.bind(this));
         Common.Settings.Settings.instance()
             .resolve(Settings.NetworkSettings.colorCodeResourceTypesSettingDescriptor)
@@ -687,6 +814,38 @@ export class NetworkLogView extends NetworkLogViewBase {
         if (this.#textFilterSetting.get()) {
             this.#textFilterUI.setValue(this.#textFilterSetting.get());
         }
+        this.requestUpdate();
+    }
+    performUpdate() {
+        const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+        const actionName = this.recording ? 'inspector-main.reload' : 'network.toggle-recording';
+        const action = actionRegistry.hasAction(actionName) ? actionRegistry.getAction(actionName) : null;
+        const shortcutTitle = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? '';
+        this.#view({
+            recording: this.recording,
+            showRecordingHint: this.#showRecordingHintState,
+            recordingActionShortcut: shortcutTitle,
+            onRecordingAction: shortcutTitle && action ?
+                () => {
+                    void action.execute();
+                } :
+                undefined,
+            nodeCount: this.#nodeCount,
+            selectedNodeCount: this.#selectedNodeCount,
+            transferSize: this.#transferSize,
+            selectedTransferSize: this.#selectedTransferSize,
+            resourceSize: this.#resourceSize,
+            selectedResourceSize: this.#selectedResourceSize,
+            baseTime: this.#baseTime,
+            maxTime: this.#maxTime,
+            domContentLoadedTime: this.#mainRequestDOMContentLoadedTime,
+            loadTime: this.#mainRequestLoadTime,
+            isNodeSelected: this.#isNodeSelected,
+            isGridFocused: this.#isGridFocused,
+            isWaterfallVisible: this.#columns.isWaterfallVisible(),
+            dataGridWidget: this.dataGrid.asWidget(),
+            waterfallColumn: this.#columns.waterfall(),
+        }, undefined, this.contentElement);
     }
     #updateGroupByFrame() {
         const value = Common.Settings.Settings.instance().resolve(Settings.NetworkSettings.groupByFrameSettingDescriptor).get();
@@ -927,9 +1086,6 @@ export class NetworkLogView extends NetworkLogViewBase {
     columns() {
         return this.#columns;
     }
-    summaryToolbar() {
-        return this.#summaryToolbar;
-    }
     modelAdded(networkManager) {
         // TODO(allada) Remove dependency on networkManager and instead use NetworkLog and PageLoad for needed data.
         const target = networkManager.target();
@@ -1000,53 +1156,26 @@ export class NetworkLogView extends NetworkLogViewBase {
         this.#parseFilterQuery(this.#textFilterUI.value(), this.#invertFilterUI.checked());
         this.#filterRequests();
         this.#textFilterSetting.set(this.#textFilterUI.value());
-        this.#moreFiltersDropDownUI?.updateActiveFiltersCount();
-        this.#moreFiltersDropDownUI?.updateTooltip();
         this.#columns.filterChanged();
     }
     async resetFilter() {
         this.#textFilterUI.clear();
     }
     #showRecordingHint() {
-        this.#hideRecordingHint();
-        const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-        const actionName = this.recording ? 'inspector-main.reload' : 'network.toggle-recording';
-        const action = actionRegistry.hasAction(actionName) ? actionRegistry.getAction(actionName) : null;
-        const shortcutTitle = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? '';
-        const header = this.recording ? i18nString(UIStrings.recordingNetworkActivity) :
-            i18nString(UIStrings.noNetworkActivityRecorded);
-        const instruction = this.recording ? UIStrings.performARequestOrHitSToRecordThe : UIStrings.recordToDisplayNetworkActivity;
-        const buttonText = this.recording ? i18nString(UIStrings.reloadPage) : i18nString(UIStrings.startRecording);
-        // eslint-disable-next-line @devtools/l10n-i18nString-call-only-with-uistrings
-        const description = i18nString(instruction, {
-            PH1: buttonText,
-            PH2: shortcutTitle,
-        });
-        this.#recordingHint = new UI.EmptyWidget.EmptyWidget(header, shortcutTitle ? description : '');
-        this.#recordingHint.element.classList.add('network-status-pane');
-        this.#recordingHint.link = 'https://developer.chrome.com/docs/devtools/network/';
-        if (shortcutTitle && action) {
-            const button = UI.UIUtils.createTextButton(buttonText, () => action.execute(), {
-                jslogContext: actionName,
-                variant: "tonal" /* Buttons.Button.Variant.TONAL */,
-            });
-            this.#recordingHint.element.appendChild(button);
-        }
-        this.#recordingHint.show(this.element);
+        this.#showRecordingHintState = true;
         this.#setHidden(true);
+        this.requestUpdate();
     }
     #hideRecordingHint() {
         this.#setHidden(false);
-        if (this.#recordingHint) {
-            this.#recordingHint.detach();
-            this.#recordingHint = null;
+        if (this.#showRecordingHintState) {
+            this.#showRecordingHintState = false;
+            UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkDataAvailable));
+            this.requestUpdate();
         }
-        UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkDataAvailable));
     }
     #setHidden(value) {
-        this.#columns.setHidden(value);
         this.dataGrid.setInert(value);
-        UI.ARIAUtils.setHidden(this.#summaryToolbar, value);
     }
     elementsToRestoreScrollPositionsFor() {
         if (!this.dataGrid) // Not initialized yet.
@@ -1118,7 +1247,6 @@ export class NetworkLogView extends NetworkLogViewBase {
         }
     }
     #updateSummaryBar() {
-        this.#hideRecordingHint();
         let transferSize = 0;
         let resourceSize = 0;
         let selectedNodeNumber = 0;
@@ -1158,51 +1286,20 @@ export class NetworkLogView extends NetworkLogViewBase {
                 maxTime = request.endTime;
             }
         }
+        this.#nodeCount = nodeCount;
+        this.#selectedNodeCount = selectedNodeNumber;
+        this.#transferSize = transferSize;
+        this.#selectedTransferSize = selectedTransferSize;
+        this.#resourceSize = resourceSize;
+        this.#selectedResourceSize = selectedResourceSize;
+        this.#baseTime = baseTime;
+        this.#maxTime = maxTime;
         if (!nodeCount) {
             this.#showRecordingHint();
             return;
         }
-        this.#summaryToolbar.removeToolbarItems();
-        const appendChunk = (chunk, title) => {
-            const toolbarText = new UI.Toolbar.ToolbarText(chunk);
-            toolbarText.setTitle(title ? title : chunk);
-            this.#summaryToolbar.appendToolbarItem(toolbarText);
-            return toolbarText.element;
-        };
-        if (selectedNodeNumber !== nodeCount) {
-            appendChunk(i18nString(UIStrings.sSRequests, { PH1: selectedNodeNumber, PH2: nodeCount }));
-            this.#summaryToolbar.appendSeparator();
-            appendChunk(i18nString(UIStrings.sSTransferred, {
-                PH1: i18n.ByteUtilities.formatBytesToKb(selectedTransferSize),
-                PH2: i18n.ByteUtilities.formatBytesToKb(transferSize),
-            }), i18nString(UIStrings.sBSBTransferredOverNetwork, { PH1: selectedTransferSize, PH2: transferSize }));
-            this.#summaryToolbar.appendSeparator();
-            appendChunk(i18nString(UIStrings.sSResources, {
-                PH1: i18n.ByteUtilities.formatBytesToKb(selectedResourceSize),
-                PH2: i18n.ByteUtilities.formatBytesToKb(resourceSize),
-            }), i18nString(UIStrings.sBSBResourcesLoadedByThePage, { PH1: selectedResourceSize, PH2: resourceSize }));
-        }
-        else {
-            appendChunk(i18nString(UIStrings.sRequests, { PH1: nodeCount }));
-            this.#summaryToolbar.appendSeparator();
-            appendChunk(i18nString(UIStrings.sTransferred, { PH1: i18n.ByteUtilities.bytesToString(transferSize) }), i18nString(UIStrings.sBTransferredOverNetwork, { PH1: transferSize }));
-            this.#summaryToolbar.appendSeparator();
-            appendChunk(i18nString(UIStrings.sResources, { PH1: i18n.ByteUtilities.bytesToString(resourceSize) }), i18nString(UIStrings.sBResourcesLoadedByThePage, { PH1: resourceSize }));
-        }
-        if (baseTime !== -1 && maxTime !== -1) {
-            this.#summaryToolbar.appendSeparator();
-            appendChunk(i18nString(UIStrings.finishS, { PH1: i18n.TimeUtilities.secondsToString(maxTime - baseTime) }));
-            if (this.#mainRequestDOMContentLoadedTime !== -1 && this.#mainRequestDOMContentLoadedTime > baseTime) {
-                this.#summaryToolbar.appendSeparator();
-                const domContentLoadedText = i18nString(UIStrings.domcontentloadedS, { PH1: i18n.TimeUtilities.secondsToString(this.#mainRequestDOMContentLoadedTime - baseTime) });
-                appendChunk(domContentLoadedText).style.color = `var(${NetworkLogView.getDCLEventColor()})`;
-            }
-            if (this.#mainRequestLoadTime !== -1) {
-                this.#summaryToolbar.appendSeparator();
-                const loadText = i18nString(UIStrings.loadS, { PH1: i18n.TimeUtilities.secondsToString(this.#mainRequestLoadTime - baseTime) });
-                appendChunk(loadText).style.color = `var(${NetworkLogView.getLoadEventColor()})`;
-            }
-        }
+        this.#hideRecordingHint();
+        this.requestUpdate();
     }
     scheduleRefresh() {
         if (this.#needsRefresh) {
@@ -1293,13 +1390,17 @@ export class NetworkLogView extends NetworkLogViewBase {
         return rootNode.flatChildren();
     }
     #onDataGridFocus() {
-        if (this.dataGrid.element.matches(':focus-visible')) {
-            this.element.classList.add('grid-focused');
+        if (this.dataGrid.element.matches(':focus-visible') && !this.#isGridFocused) {
+            this.#isGridFocused = true;
+            this.requestUpdate();
         }
         this.updateNodeBackground();
     }
     #onDataGridBlur() {
-        this.element.classList.remove('grid-focused');
+        if (this.#isGridFocused) {
+            this.#isGridFocused = false;
+            this.requestUpdate();
+        }
         this.updateNodeBackground();
     }
     updateNodeBackground() {
@@ -1308,12 +1409,11 @@ export class NetworkLogView extends NetworkLogViewBase {
         }
     }
     updateNodeSelectedClass(isSelected) {
-        if (isSelected) {
-            this.element.classList.remove('no-node-selected');
+        if (this.#isNodeSelected === isSelected) {
+            return;
         }
-        else {
-            this.element.classList.add('no-node-selected');
-        }
+        this.#isNodeSelected = isSelected;
+        this.requestUpdate();
     }
     stylesChanged() {
         this.#columns.scheduleRefresh();
@@ -1541,17 +1641,8 @@ export class NetworkLogView extends NetworkLogViewBase {
         if (request) {
             const openAiAssistanceId = 'drjones.network-panel-context';
             if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-                function appendSubmenuPromptAction(submenu, action, label, prompt, jslogContext) {
-                    submenu.defaultSection().appendItem(label, () => action.execute({ prompt }), { disabled: !action.enabled(), jslogContext });
-                }
                 UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
-                const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-                const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
-                submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
-                appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.explainPurpose), 'What is the purpose of this request?', openAiAssistanceId + '.purpose');
-                appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.explainSlowness), 'Why is this request taking so long?', openAiAssistanceId + '.slowness');
-                appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.explainFailures), 'Why is the request failing?', openAiAssistanceId + '.failures');
-                appendSubmenuPromptAction(submenu, action, i18nString(UIStrings.assessSecurityHeaders), 'Are there any security headers present?', openAiAssistanceId + '.security');
+                contextMenu.footerSection().appendAction(openAiAssistanceId);
             }
             copyMenu.defaultSection().appendItem(i18nString(UIStrings.copyURL), Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance, request.contentURL()), { jslogContext: 'copy-url' });
             copyMenu.footerSection().appendItem(filtered ? i18nString(UIStrings.copyAllListedURLs) : i18nString(UIStrings.copyAllURLs), this.#copyAllURLs.bind(this), { jslogContext: 'copy-all-urls' });
@@ -2438,18 +2529,86 @@ export const overrideFilter = {
     content: 'content',
     headers: 'headers',
 };
+export const MORE_FILTERS_DEFAULT_VIEW = (input, _output, target) => {
+    const openMenu = (event) => {
+        const buttonElement = event.currentTarget;
+        const contextMenu = new UI.ContextMenu.ContextMenu(event, {
+            useSoftMenu: true,
+            keepOpen: true,
+            x: buttonElement.getBoundingClientRect().left,
+            y: buttonElement.getBoundingClientRect().top + buttonElement.offsetHeight,
+            onSoftMenuClosed: () => setTimeout(() => buttonElement.removeAttribute('aria-expanded'), 50),
+        });
+        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.hideDataUrls), input.onHideDataURLsChange, {
+            checked: input.hideDataURLs,
+            tooltip: i18nString(UIStrings.hidesDataAndBlobUrls),
+            jslogContext: 'hide-data-urls',
+        });
+        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.chromeExtensions), input.onHideChromeExtensionsChange, {
+            checked: input.hideChromeExtensions,
+            tooltip: i18nString(UIStrings.hideChromeExtension),
+            jslogContext: 'hide-extension-urls',
+        });
+        contextMenu.defaultSection().appendSeparator();
+        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.hasBlockedCookies), input.onShowBlockedCookiesOnlyChange, {
+            checked: input.showBlockedCookiesOnly,
+            tooltip: i18nString(UIStrings.onlyShowRequestsWithBlockedCookies),
+            jslogContext: 'only-blocked-response-cookies',
+        });
+        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.blockedRequests), input.onOnlyBlockedRequestsChange, {
+            checked: input.onlyBlockedRequests,
+            tooltip: i18nString(UIStrings.onlyShowBlockedRequests),
+            jslogContext: 'only-blocked-requests',
+        });
+        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.thirdParty), input.onOnlyThirdPartyChange, {
+            checked: input.onlyThirdParty,
+            tooltip: i18nString(UIStrings.onlyShowThirdPartyRequests),
+            jslogContext: 'only-3rd-party-requests',
+        });
+        buttonElement.setAttribute('aria-expanded', 'true');
+        void contextMenu.show();
+    };
+    // clang-format off
+    render(html `
+    <button
+      class="toolbar-button toolbar-item toolbar-has-dropdown dropdown-filterbar"
+      title=${input.tooltip}
+      aria-label=${input.tooltip}
+      aria-haspopup="true"
+      @click=${openMenu}>
+      <devtools-adorner
+        class="active-filters-count"
+        ?hidden=${input.activeFiltersCount === 0}
+        .name=${'countWrapper'}>
+        <span>${input.activeFiltersCount}</span>
+      </devtools-adorner>
+      <div class="toolbar-text">${i18nString(UIStrings.moreFilters)}</div>
+      <devtools-icon
+        name="triangle-down"
+        class="toolbar-dropdown-arrow">
+      </devtools-icon>
+    </button>
+  `, target, {
+        container: {
+            attributes: {
+                'aria-label': 'Show only/hide requests dropdown',
+                jslog: VisualLogging.dropDown('more-filters').track({ click: true }),
+            },
+        },
+    });
+    // clang-format on
+};
 export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper {
     #filterElement;
-    #dropDownButton;
+    #view;
     #networkHideDataURLSetting;
     #networkHideChromeExtensionsSetting;
     #networkShowBlockedCookiesOnlySetting;
     #networkOnlyBlockedRequestsSetting;
     #networkOnlyThirdPartySetting;
-    #activeFiltersCount;
-    #activeFiltersCountAdorner;
-    constructor() {
+    constructor(view = MORE_FILTERS_DEFAULT_VIEW) {
         super();
+        this.#view = view;
         this.#networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('network-hide-data-url', false);
         this.#networkHideChromeExtensionsSetting =
             Common.Settings.Settings.instance().createSetting('network-hide-chrome-extensions', false);
@@ -2459,61 +2618,17 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper {
             Common.Settings.Settings.instance().createSetting('network-only-blocked-requests', false);
         this.#networkOnlyThirdPartySetting =
             Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false);
+        this.#networkHideDataURLSetting.addChangeListener(this.#onSettingChanged, this);
+        this.#networkHideChromeExtensionsSetting.addChangeListener(this.#onSettingChanged, this);
+        this.#networkShowBlockedCookiesOnlySetting.addChangeListener(this.#onSettingChanged, this);
+        this.#networkOnlyBlockedRequestsSetting.addChangeListener(this.#onSettingChanged, this);
+        this.#networkOnlyThirdPartySetting.addChangeListener(this.#onSettingChanged, this);
         this.#filterElement = document.createElement('div');
-        this.#filterElement.setAttribute('aria-label', 'Show only/hide requests dropdown');
-        this.#filterElement.setAttribute('jslog', `${VisualLogging.dropDown('more-filters').track({ click: true })}`);
-        this.#activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
-        this.#activeFiltersCountAdorner.name = 'countWrapper';
-        this.#activeFiltersCount = document.createElement('span');
-        this.#activeFiltersCountAdorner.append(this.#activeFiltersCount);
-        this.#activeFiltersCountAdorner.classList.add('active-filters-count');
-        this.updateActiveFiltersCount();
-        this.#dropDownButton = new UI.Toolbar.ToolbarMenuButton(this.showMoreFiltersContextMenu.bind(this), 
-        /* isIconDropdown=*/ false, /* useSoftMenu=*/ true, 
-        /* jslogContext=*/ undefined, /* iconName=*/ undefined, 
-        /* keepOpen=*/ true);
-        this.#dropDownButton.setTitle(i18nString(UIStrings.showOnlyHideRequests));
-        this.#dropDownButton.setText(i18nString(UIStrings.moreFilters));
-        this.#dropDownButton.setAdorner(this.#activeFiltersCountAdorner);
-        this.#filterElement.appendChild(this.#dropDownButton.element);
-        this.#dropDownButton.element.classList.add('dropdown-filterbar');
-        this.updateTooltip();
+        this.performUpdate();
     }
     #onSettingChanged() {
+        this.performUpdate();
         this.dispatchEventToListeners("FilterChanged" /* UI.FilterBar.FilterUIEvents.FILTER_CHANGED */);
-    }
-    showMoreFiltersContextMenu(contextMenu) {
-        this.#networkHideDataURLSetting.addChangeListener(this.#onSettingChanged.bind(this));
-        this.#networkHideChromeExtensionsSetting.addChangeListener(this.#onSettingChanged.bind(this));
-        this.#networkShowBlockedCookiesOnlySetting.addChangeListener(this.#onSettingChanged.bind(this));
-        this.#networkOnlyBlockedRequestsSetting.addChangeListener(this.#onSettingChanged.bind(this));
-        this.#networkOnlyThirdPartySetting.addChangeListener(this.#onSettingChanged.bind(this));
-        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.hideDataUrls), () => this.#networkHideDataURLSetting.set(!this.#networkHideDataURLSetting.get()), {
-            checked: this.#networkHideDataURLSetting.get(),
-            tooltip: i18nString(UIStrings.hidesDataAndBlobUrls),
-            jslogContext: 'hide-data-urls',
-        });
-        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.chromeExtensions), () => this.#networkHideChromeExtensionsSetting.set(!this.#networkHideChromeExtensionsSetting.get()), {
-            checked: this.#networkHideChromeExtensionsSetting.get(),
-            tooltip: i18nString(UIStrings.hideChromeExtension),
-            jslogContext: 'hide-extension-urls',
-        });
-        contextMenu.defaultSection().appendSeparator();
-        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.hasBlockedCookies), () => this.#networkShowBlockedCookiesOnlySetting.set(!this.#networkShowBlockedCookiesOnlySetting.get()), {
-            checked: this.#networkShowBlockedCookiesOnlySetting.get(),
-            tooltip: i18nString(UIStrings.onlyShowRequestsWithBlockedCookies),
-            jslogContext: 'only-blocked-response-cookies',
-        });
-        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.blockedRequests), () => this.#networkOnlyBlockedRequestsSetting.set(!this.#networkOnlyBlockedRequestsSetting.get()), {
-            checked: this.#networkOnlyBlockedRequestsSetting.get(),
-            tooltip: i18nString(UIStrings.onlyShowBlockedRequests),
-            jslogContext: 'only-blocked-requests',
-        });
-        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.thirdParty), () => this.#networkOnlyThirdPartySetting.set(!this.#networkOnlyThirdPartySetting.get()), {
-            checked: this.#networkOnlyThirdPartySetting.get(),
-            tooltip: i18nString(UIStrings.onlyShowThirdPartyRequests),
-            jslogContext: 'only-3rd-party-requests',
-        });
     }
     selectedFilters() {
         const filters = [
@@ -2525,19 +2640,33 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper {
         ];
         return filters;
     }
-    updateActiveFiltersCount() {
-        const count = this.selectedFilters().length;
-        this.#activeFiltersCount.textContent = count.toString();
-        count ? this.#activeFiltersCountAdorner.classList.remove('hidden') :
-            this.#activeFiltersCountAdorner.classList.add('hidden');
-    }
-    updateTooltip() {
-        if (this.selectedFilters().length) {
-            this.#dropDownButton.setTitle(this.selectedFilters().join(', '));
-        }
-        else {
-            this.#dropDownButton.setTitle(i18nString(UIStrings.showOnlyHideRequests));
-        }
+    performUpdate() {
+        const selectedFilters = this.selectedFilters();
+        const tooltip = selectedFilters.length ? selectedFilters.join(', ') : i18nString(UIStrings.showOnlyHideRequests);
+        this.#view({
+            activeFiltersCount: selectedFilters.length,
+            tooltip,
+            hideDataURLs: this.#networkHideDataURLSetting.get(),
+            onHideDataURLsChange: () => {
+                this.#networkHideDataURLSetting.set(!this.#networkHideDataURLSetting.get());
+            },
+            hideChromeExtensions: this.#networkHideChromeExtensionsSetting.get(),
+            onHideChromeExtensionsChange: () => {
+                this.#networkHideChromeExtensionsSetting.set(!this.#networkHideChromeExtensionsSetting.get());
+            },
+            showBlockedCookiesOnly: this.#networkShowBlockedCookiesOnlySetting.get(),
+            onShowBlockedCookiesOnlyChange: () => {
+                this.#networkShowBlockedCookiesOnlySetting.set(!this.#networkShowBlockedCookiesOnlySetting.get());
+            },
+            onlyBlockedRequests: this.#networkOnlyBlockedRequestsSetting.get(),
+            onOnlyBlockedRequestsChange: () => {
+                this.#networkOnlyBlockedRequestsSetting.set(!this.#networkOnlyBlockedRequestsSetting.get());
+            },
+            onlyThirdParty: this.#networkOnlyThirdPartySetting.get(),
+            onOnlyThirdPartyChange: () => {
+                this.#networkOnlyThirdPartySetting.set(!this.#networkOnlyThirdPartySetting.get());
+            },
+        }, undefined, this.#filterElement);
     }
     isActive() {
         return this.selectedFilters().length !== 0;

@@ -1,4 +1,4 @@
-import type * as SDK from '../../../../core/sdk/sdk.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
 import { ObjectTree } from './ObjectPropertiesSection.js';
 export declare class CustomPreviewSection extends UI.Widget.Widget {

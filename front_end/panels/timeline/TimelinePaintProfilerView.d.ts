@@ -13,7 +13,7 @@ export declare class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidge
     private event;
     private paintProfilerModel;
     private lastLoadedSnapshot;
-    constructor(parsedTrace: Trace.TraceModel.ParsedTrace);
+    constructor(parsedTrace: Trace.TraceModel.ParsedTrace, element?: HTMLElement);
     wasShown(): void;
     setSnapshot(snapshot: SDK.PaintProfiler.PaintProfilerSnapshot): void;
     setEvent(paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel, event: Trace.Types.Events.Event): boolean;

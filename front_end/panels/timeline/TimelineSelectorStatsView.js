@@ -184,12 +184,26 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     #lastStatsSourceEventOrEvents = null;
     #view;
     #timings = [];
-    constructor(parsedTrace, view = DEFAULT_VIEW) {
-        super();
+    constructor(element, parsedTrace = null, view = DEFAULT_VIEW) {
+        super(element);
         this.#view = view;
         this.#selectorLocations = new Map();
         this.#parsedTrace = parsedTrace;
-        this.performUpdate();
+        this.requestUpdate();
+    }
+    set parsedTrace(parsedTrace) {
+        if (this.#parsedTrace === parsedTrace) {
+            return;
+        }
+        this.#parsedTrace = parsedTrace;
+        this.#selectorLocations.clear();
+        this.#lastStatsSourceEventOrEvents = null;
+        this.#timings = [];
+        this.requestUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
     }
     #onContextMenu(e) {
         const { menu } = e.detail;

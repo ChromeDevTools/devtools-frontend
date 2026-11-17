@@ -205,6 +205,17 @@ export class PerformanceTraceContext extends ConversationContext {
         return suggestions;
     }
     /**
+     * Supplies the compressed network request column legend on the first turn when
+     * critical requests exist, without exposing static LLM format instructions in
+     * `getUserFacingDetails()` UI disclosures or mutating `getPromptDetails()`.
+     */
+    getPromptFacts() {
+        if (this.createFormatter().hasCriticalRequests()) {
+            return [PerformanceTraceFormatter.networkDataFormatFact];
+        }
+        return [];
+    }
+    /**
      * Returns a markdown-formatted payload containing the trace data facts
      * (summary, critical requests, activities, third-party code, and longest tasks)
      * to be included directly in the LLM's prompt.

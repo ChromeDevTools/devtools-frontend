@@ -70,8 +70,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     delegate;
     currentTree;
     #eventToTreeNode = new WeakMap();
-    constructor(delegate) {
-        super(undefined, { jslog: `${VisualLogging.pane('event-log').track({ resize: true })}` });
+    constructor(delegate, element) {
+        super(element, { jslog: `${VisualLogging.pane('event-log').track({ resize: true })}` });
         this.filtersControl = new Filters();
         this.filtersControl.addEventListener("FilterChanged" /* Events.FILTER_CHANGED */, this.onFilterChanged, this);
         this.init();

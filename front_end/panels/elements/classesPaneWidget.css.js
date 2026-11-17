@@ -26,14 +26,14 @@ export default `/**
 }
 
 .styles-element-classes-pane .new-class-input {
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: var(--sys-size-3);
+  padding-right: var(--sys-size-3);
   overflow: hidden;
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-extra-small);
-  line-height: 15px;
-  margin-left: 3px;
-  width: calc(100% - 7px);
+  line-height: var(--sys-typescale-body4-line-height);
+  margin: 0 var(--sys-size-3);
+  width: calc(100% - 2 * var(--sys-size-3)); /* Subtract left and right --sys-size-3 margins */
   background-color: var(--sys-color-cdt-base-container);
   cursor: text;
 

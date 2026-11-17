@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import { Directives, html, nothing, render } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { sanitizeStyle } from './CSSStyleSanitizer.js';
@@ -247,7 +248,11 @@ export class CustomPreviewComponent extends UI.Widget.Widget {
         return this.#object;
     }
     set object(object) {
-        if (this.#object === object) {
+        if (this.#object === object ||
+            (this.#object && object && this.#object.objectId !== undefined && this.#object.objectId === object.objectId &&
+                this.#object instanceof SDK.RemoteObject.RemoteObjectImpl &&
+                object instanceof SDK.RemoteObject.RemoteObjectImpl &&
+                this.#object.runtimeModel() === object.runtimeModel())) {
             return;
         }
         this.#object = object;

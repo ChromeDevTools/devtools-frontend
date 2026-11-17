@@ -12,15 +12,11 @@ export default `/*
 .drop-down {
   box-shadow: var(--drop-shadow);
   background: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-on-surface);
 }
 
 .preview-item {
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-
-  &:first-child {
-    border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  }
-
   padding: var(--sys-size-4) var(--sys-size-5);
   position: relative;
 

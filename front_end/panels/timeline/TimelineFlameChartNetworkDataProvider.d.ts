@@ -7,6 +7,10 @@ import { type TimelineSelection } from './TimelineSelection.js';
 export declare class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
     #private;
     constructor();
+    /**
+     * Resets all per-trace data and caches while keeping cross-trace UI state
+     * (such as `#persistedGroupConfigSetting`).
+     */
     reset(): void;
     setModel(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper: Trace.EntityMapper.EntityMapper): void;
     setEvents(parsedTrace: Trace.TraceModel.ParsedTrace): void;
@@ -27,40 +31,12 @@ export declare class TimelineFlameChartNetworkDataProvider implements PerfUI.Fla
     textColor(_index: number): string;
     entryTitle(index: number): string | null;
     entryFont(_index: number): string | null;
+    getDrawOverride(index: number): PerfUI.FlameChart.DrawOverride | undefined;
     /**
-     * Returns the pixels needed to decorate the event.
-     * The pixels compare to the start of the earliest event of the request.
-     *
-     * Request.beginTime(), which is used in FlameChart to calculate the unclippedBarX
-     * v
-     *    |----------------[ (URL text)    waiting time   |   request  ]--------|
-     *    ^start           ^sendStart                     ^headersEnd  ^Finish  ^end
-     * @param request
-     * @param unclippedBarX The start pixel of the request. It is calculated with request.beginTime() in FlameChart.
-     * @param timeToPixelRatio
-     * @returns the pixels to draw waiting time and left and right whiskers and url text
+     * Decorates the entry depends on the type of the event.
      */
-    getDecorationPixels(event: Trace.Types.Events.SyntheticNetworkRequest, unclippedBarX: number, timeToPixelRatio: number): {
-        sendStart: number;
-        headersEnd: number;
-        finish: number;
-        start: number;
-        end: number;
-    };
-    /**
-     * Decorates the entry depends on the type of the event:
-     * @param index
-     * @param context
-     * @param barX The x pixel of the visible part request
-     * @param barY The y pixel of the visible part request
-     * @param barWidth The width of the visible part request
-     * @param barHeight The height of the visible part request
-     * @param unclippedBarX The start pixel of the request compare to the visible area. It is calculated with request.beginTime() in FlameChart.
-     * @param timeToPixelRatio
-     * @returns if the entry needs to be decorate, which is alway true if the request has "timing" field
-     */
-    decorateEntry(index: number, context: CanvasRenderingContext2D, _text: string | null, barX: number, barY: number, barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean;
-    forceDecoration(_index: number): boolean;
+    decorateEntry(index: number, context: CanvasRenderingContext2D, _text: string | null, _barX: number, barY: number, _barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean;
+    forceDecoration(index: number): boolean;
     /**
      *In the FlameChart.ts, when filtering through the events for a level, it starts
      * from the last event of that level and stops when it hit an event that has start

@@ -163,11 +163,38 @@ export class AiAgent2 extends AiAgent {
      * large context blocks on subsequent turns in the same conversation.
      */
     #lastSentPromptDetails = null;
+    /**
+     * Tracks `PromptFact` instances already appended to `#history` in this conversation.
+     * Facts are injected into append-only history rather than AIDA's wire `request.facts`
+     * field (which `FactsToText` prepends to `current_message` on every step, repeating
+     * tokens and invalidating prefix caching) or `getPromptDetails()` (which must stay
+     * deterministic across turns for `#lastSentPromptDetails` deduplication).
+     */
+    #sentFacts = new Set();
     clearCache() {
         super.clearCache();
-        // Reset the tracker so that if conversation history is dropped (e.g., after an
-        // abort or non-MAX_STEPS error), the full context block is safely resent on the next turn.
+        // Reset both trackers so that if conversation history is rolled back (e.g., after an
+        // abort or non-MAX_STEPS error), context details and required facts are resent on retry.
         this.#lastSentPromptDetails = null;
+        this.#sentFacts.clear();
+    }
+    /**
+     * Appends any `facts` not yet recorded in `#sentFacts` to `content` under
+     * `# References` with `## ${fact.title}` subheadings.
+     */
+    #appendUnsentFacts(content, facts = []) {
+        const factSections = [];
+        for (const fact of facts) {
+            if (!this.#sentFacts.has(fact)) {
+                this.#sentFacts.add(fact);
+                factSections.push(`## ${fact.title}\n\n${fact.description.trim()}`);
+            }
+        }
+        if (factSections.length === 0) {
+            return content;
+        }
+        const references = `# References\n\n${factSections.join('\n\n')}`;
+        return content ? `${content}\n\n${references}` : references;
     }
     // TODO: The static preamble is a placeholder and will eventually live server-side.
     preamble = preamble;
@@ -329,7 +356,7 @@ ${skillsManifest}`,
     _multimodalInputType) {
         this.#pendingAutoLearnedSkills = [];
         const promptDetails = selected ? await selected.getPromptDetails() : null;
-        let enhancedQuery = query;
+        let contextDetails = '';
         if (!promptDetails) {
             // Clear the tracker when there is no context (or an unsupported context type)
             // so that if the user later switches back to a previously sent context, it is
@@ -337,29 +364,20 @@ ${skillsManifest}`,
             this.#lastSentPromptDetails = null;
         }
         else {
-            let contextDetails;
-            if (promptDetails === this.#lastSentPromptDetails) {
-                contextDetails = UNCHANGED_CONTEXT_PROMPT_NOTICE;
-            }
-            else {
-                contextDetails = promptDetails;
-                this.#lastSentPromptDetails = promptDetails;
-            }
-            enhancedQuery = `${contextDetails}
-
-# User request
-
-QUERY: ${query}`;
+            contextDetails = promptDetails === this.#lastSentPromptDetails ? UNCHANGED_CONTEXT_PROMPT_NOTICE : promptDetails;
+            this.#lastSentPromptDetails = promptDetails;
         }
+        // `autoLoadedBlock` precedes the context section in the final prompt. Run `learnSkill` before
+        // appending context facts so shared facts render at the top with the skill instructions.
+        let autoLoadedBlock = '';
         const mappedSkill = this.#skillForContext(selected);
         if (mappedSkill && SKILLS[mappedSkill] && !this.#activeSkills.has(mappedSkill)) {
-            const autoLoadedBlock = await this.learnSkill([mappedSkill]);
+            autoLoadedBlock = await this.learnSkill([mappedSkill]);
             this.#pendingAutoLearnedSkills.push(mappedSkill);
-            if (autoLoadedBlock) {
-                return `${autoLoadedBlock}\n\n${enhancedQuery}`;
-            }
         }
-        return enhancedQuery;
+        const contextBlock = this.#appendUnsentFacts(contextDetails, selected?.getPromptFacts());
+        const prefix = [autoLoadedBlock, contextBlock].filter(Boolean).join('\n\n');
+        return prefix ? `${prefix}\n\n# User request\n\nQUERY: ${query}` : query;
     }
     /**
      * Parses a completed response. Only the last line can be the follow-up
@@ -399,18 +417,19 @@ QUERY: ${query}`;
         }
     }
     async learnSkill(names) {
-        let response = '';
+        const sections = [];
         for (const name of names) {
             if (this.#activeSkills.has(name)) {
                 debugLog(`[AiAgent2] Skill '${name}' is already loaded`);
-                response += `Error: Skill '${name}' is already loaded. Call its tools directly instead of invoking learnSkills for '${name}' again.\n`;
+                sections.push(`Error: Skill '${name}' is already loaded. Call its tools directly instead of invoking learnSkills for '${name}' again.`);
                 continue;
             }
             const skillObj = SKILLS[name];
             if (skillObj) {
                 this.#activeSkills.add(name);
                 debugLog(`[AiAgent2] Loaded skill '${name}' with tools: [${skillObj.allowedTools.join(', ')}]`);
-                response += `Skill ${name} loaded. Instructions:\n${skillObj.instructions}\n`;
+                const instructions = this.#appendUnsentFacts(skillObj.instructions.trim(), skillObj.facts);
+                sections.push(`Skill ${name} loaded. Instructions:\n${instructions}`);
                 for (const toolName of skillObj.allowedTools) {
                     const tool = ToolRegistry.get(toolName);
                     if (tool) {
@@ -420,10 +439,10 @@ QUERY: ${query}`;
             }
             else {
                 debugLog(`[AiAgent2] Failed to load skill '${name}'`);
-                response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(', ')}.\n`;
+                sections.push(`Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(', ')}.`);
             }
         }
-        return response.trim();
+        return sections.join('\n\n');
     }
     #getExecutionContextNode() {
         if (this.context instanceof DOMNodeContext) {

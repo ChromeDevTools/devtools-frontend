@@ -1,4 +1,5 @@
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
+import { type LitTemplate } from '../lit/lit.js';
 import { AnchorBehavior } from './GlassPane.js';
 import { type ListDelegate } from './ListControl.js';
 export interface SuggestBoxDelegate {
@@ -50,13 +51,20 @@ export interface Suggestion {
     subtitle?: string;
     priority?: number;
     isSecondary?: boolean;
-    subtitleRenderer?: (() => Element);
+    /**
+     * Rendered in place of the plain-text `subtitle`, e.g. to show a color swatch. The template is expected to
+     * render an element with the `suggestion-subtitle` class.
+     */
+    subtitleTemplate?: LitTemplate;
     selectionRange?: {
         startColumn: number;
         endColumn: number;
     };
     hideGhostText?: boolean;
-    iconElement?: HTMLElement;
+    /**
+     * Rendered at the end of the suggestion item, e.g. to show an icon.
+     */
+    iconTemplate?: LitTemplate;
     disableAcceptSuggestionOnStopCharacters?: boolean;
 }
 export type Suggestions = Suggestion[];

@@ -245,6 +245,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         }
         return callstackSidebarPaneInstance;
     }
+    static removeInstance() {
+        callstackSidebarPaneInstance = undefined;
+    }
     wasShown() {
         super.wasShown();
         this.requestUpdate();

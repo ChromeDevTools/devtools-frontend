@@ -83,25 +83,6 @@ export default `/*
   display: inline-flex;
 }
 
-.navigator-file-tree-item devtools-icon.dot::before {
-  width: 7px;
-  height: 7px;
-  top: var(--sys-size-6);
-  left: 11px;
-}
-
-.navigator-file-tree-item:hover:not(.force-white-icons) devtools-icon.dot::before {
-  outline-color: var(--icon-gap-hover);
-}
-
-.navigator-file-tree-item.selected:not(.force-white-icons) devtools-icon.dot::before {
-  outline-color: var(--icon-gap-inactive);
-}
-
-.navigator-file-tree-item.selected.force-white-icons devtools-icon.dot::before {
-  outline-color: var(--icon-gap-focus-selected);
-}
-
 .navigator-sm-stylesheet-tree-item devtools-icon,
 .navigator-stylesheet-tree-item devtools-icon {
   color: var(--icon-file-styles);

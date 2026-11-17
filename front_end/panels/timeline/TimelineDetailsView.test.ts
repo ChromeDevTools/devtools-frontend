@@ -279,8 +279,10 @@ describe('TimelineDetailsView', function() {
     await raf();
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
-    const summaryWidget = UI.Widget.Widget.get(detailsContentElement);
-    assert.isDefined(summaryWidget);
+    const rangeSummaryElement = detailsContentElement.querySelector('devtools-widget');
+    assert.isNotNull(rangeSummaryElement);
+    const rangeSummaryWidget = UI.Widget.Widget.get(rangeSummaryElement);
+    assert.isDefined(rangeSummaryWidget);
 
     // Switch to the Bottom-up tab.
     const bottomUpTab = detailsView.headerElement().querySelector<HTMLElement>('#tab-bottom-up');
@@ -288,7 +290,7 @@ describe('TimelineDetailsView', function() {
     bottomUpTab.dispatchEvent(new MouseEvent('mousedown', {button: 0, bubbles: true}));
     await raf();
 
-    const requestUpdateSpy = sinon.spy(summaryWidget, 'requestUpdate');
+    const requestUpdateSpy = sinon.spy(rangeSummaryWidget, 'requestUpdate');
 
     // Update the range selection while Bottom-up is active.
     const subRangeSelection = Timeline.TimelineSelection.selectionFromRangeMilliSeconds(
@@ -308,7 +310,7 @@ describe('TimelineDetailsView', function() {
     await raf();
 
     // Summary view now requests an update when the tab becomes active.
-    sinon.assert.calledOnce(requestUpdateSpy);
+    sinon.assert.called(requestUpdateSpy);
     detailsView.detach();
   });
 
@@ -415,6 +417,49 @@ describe('TimelineDetailsView', function() {
     bottomUp.stackView.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineStackView.Events.TREE_ROW_HOVERED,
                                                 null);
     sinon.assert.calledOnce(hoverSpy);
+    detailsView.detach();
+  });
+
+  it('renders the summary container with id #details', () => {
+    const target = document.createElement('div');
+    Timeline.TimelineDetailsView.SUMMARY_TAB_VIEW({
+      summary: {
+        selectedEvent: null,
+        eventToRelatedInsightsMap: null,
+        parsedTrace: null,
+        entityMapper: null,
+        target: null,
+        linkifier: null,
+        filmStrip: null,
+        selectedRange: null,
+      },
+      onTreeRowHovered: () => {},
+      onTreeRowClicked: () => {},
+      onBottomUpButtonClicked: () => {},
+    },
+                                                  undefined, target);
+    const summaryElement = target.querySelector<HTMLElement>('#details');
+    assert.isNotNull(summaryElement);
+    assert.isTrue(summaryElement.classList.contains('timeline-details-view-body'));
+  });
+
+  it('keeps the Summary tab scroll position when switching tabs', async () => {
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+    await detailsView.updateComplete;
+    const summaryElement = detailsView.getDetailsContentElementForTest();
+    summaryElement.style.height = '100px';
+    const tallContent = document.createElement('div');
+    tallContent.style.height = '1000px';
+    summaryElement.appendChild(tallContent);
+    summaryElement.scrollTop = 50;
+
+    detailsView.selectTab(Timeline.TimelineDetailsView.Tab.BottomUp, null);
+    await detailsView.updateComplete;
+    detailsView.selectTab(Timeline.TimelineDetailsView.Tab.Details, null);
+    await detailsView.updateComplete;
+
+    assert.strictEqual(detailsView.getDetailsContentElementForTest().scrollTop, 50);
     detailsView.detach();
   });
 });

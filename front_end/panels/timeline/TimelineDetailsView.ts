@@ -12,7 +12,7 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {Directive, Directives, html, type LitTemplate, noChange, nothing, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -75,23 +75,144 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineDetailsView.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {widget} = UI.Widget;
 
+export enum Tab {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
+  Details = 'details',
+  EventLog = 'event-log',
+  CallTree = 'call-tree',
+  BottomUp = 'bottom-up',
+  PaintProfiler = 'paint-profiler',
+  LayerViewer = 'layer-viewer',
+  SelectorStats = 'selector-stats',
+  /* eslint-enable @typescript-eslint/naming-convention */
+}
+
+interface SelectedRange {
+  startTime: Trace.Types.Timing.Milli;
+  endTime: Trace.Types.Timing.Milli;
+  events: Trace.Types.Events.Event[];
+  selection: TimelineSelection|null;
+}
+
+/** The data shown in the Summary tab. */
+interface SummaryData {
+  selectedEvent: Trace.Types.Events.Event|null;
+  eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
+  entityMapper: Trace.EntityMapper.EntityMapper|null;
+  target: SDK.Target.Target|null;
+  linkifier: Components.Linkifier.Linkifier|null;
+  filmStrip: Trace.Extras.FilmStrip.Data|null;
+  selectedRange: SelectedRange|null;
+}
+
+type TreeRowCallback = (node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]) => void;
+
+export interface SummaryTabViewInput {
+  summary: SummaryData;
+  onTreeRowHovered: TreeRowCallback;
+  onTreeRowClicked: TreeRowCallback;
+  onBottomUpButtonClicked: (node: Trace.Extras.TraceTree.Node|null) => void;
+}
+
+export type SummaryTabView = (input: SummaryTabViewInput, output: undefined, target: HTMLElement) => void;
+
+/**
+ * Renders the summary content only when the committed summary changes, so
+ * unrelated re-renders of the details pane don't re-run the async rendering of
+ * the selected event details.
+ */
+class SummaryContentDirective extends Directive.Directive {
+  #summary?: SummaryData;
+
+  render(_summary: SummaryData, renderContent: () => LitTemplate): LitTemplate {
+    return renderContent();
+  }
+
+  override update(_part: Directive.Part, [summary, renderContent]: [SummaryData, () => LitTemplate]): LitTemplate|
+      typeof noChange {
+    if (summary === this.#summary) {
+      return noChange;
+    }
+    this.#summary = summary;
+    return this.render(summary, renderContent);
+  }
+}
+
+const summaryContent = Directive.directive(SummaryContentDirective);
+
+export const SUMMARY_TAB_VIEW: SummaryTabView =
+    (input: SummaryTabViewInput, _output: undefined, target: HTMLElement): void => {
+      const renderContent = (): LitTemplate => {
+        const summaryInput: SummaryViewInput = {
+          ...input.summary,
+          onTreeRowHovered: input.onTreeRowHovered,
+          onBottomUpButtonClicked: input.onBottomUpButtonClicked,
+          onTreeRowClicked: input.onTreeRowClicked,
+        };
+        // clang-format off
+        return html`
+          <style>${detailsViewStyles}</style>
+          ${Directives.until(renderSelectedEventDetails(summaryInput))}
+          ${input.summary.selectedRange ? generateRangeSummaryDetails(summaryInput) : nothing}
+          <devtools-widget data-related-insight-chips ${widget(
+            TimelineComponents.RelatedInsightChips.RelatedInsightChips, {
+              activeEvent: input.summary.selectedEvent,
+              eventToInsightsMap: input.summary.eventToRelatedInsightsMap,
+            })}></devtools-widget>`;
+        // clang-format on
+      };
+      // clang-format off
+      render(html`
+        <div
+            id=${Tab.Details}
+            label=${i18nString(UIStrings.summary)}
+            class="timeline-details-view timeline-details-view-body"
+            jslog=${VisualLogging.pane('details').track({resize: true})}>
+          ${summaryContent(input.summary, renderContent)}
+        </div>`, target);
+      // clang-format on
+    };
+
+/**
+ * Hosts the Summary tab. The rendered summary element is the scroll container,
+ * so its scroll position is kept when switching to another tab and back.
+ */
+class SummaryTabWidget extends UI.Widget.VBox {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
+    const summaryElement = this.contentElement.querySelector(`#${Tab.Details}`);
+    return summaryElement ? [summaryElement] : [];
+  }
+}
+
 const TimelineDetailsPaneBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
         UI.Widget.VBox,
     );
 
 export class TimelineDetailsPane extends TimelineDetailsPaneBase {
-  private readonly detailsLinkifier: Components.Linkifier.Linkifier;
+  readonly #summaryTabView: SummaryTabView;
+  readonly #detailsLinkifier = new Components.Linkifier.Linkifier();
   private tabbedPane: UI.TabbedPane.TabbedPane;
   private readonly defaultDetailsWidget: UI.Widget.VBox;
-  #summaryContent = new SummaryView();
-  #summaryContentNeedsUpdate = false;
+  #summary: SummaryData = {
+    selectedEvent: null,
+    eventToRelatedInsightsMap: null,
+    parsedTrace: null,
+    entityMapper: null,
+    target: null,
+    linkifier: null,
+    filmStrip: null,
+    selectedRange: null,
+  };
+  #renderedSummary: SummaryData = {...this.#summary};
+  #summaryNeedsUpdate = false;
   private rangeDetailViews: Map<string, TimelineTreeView>;
-  #selectedEvents?: Trace.Types.Events.Event[]|null;
+  #selectedEvents: Trace.Types.Events.Event[]|null = null;
   private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
   private lazyLayersView?: TimelineLayersView|null;
   private preferredTabId?: string;
-  private selection?: TimelineSelection|null;
+  #selection: TimelineSelection|null = null;
   #debouncedUpdateContentsFromWindow: (() => void)&
       {cancel: () => void} = Common.Debouncer.debounce(() => this.updateContentsFromWindow(), 100);
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
@@ -105,17 +226,9 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       event: Trace.Types.Events.Event,
       parsedTrace: Trace.TraceModel.ParsedTrace,
       ): TimelineDetailsPane {
-    // Provide a mock delegate to satisfy the constructor requirements.
-    // These delegate interactions are not relevant for an AI assistant widget.
-    const mockDelegate = {
-      select: () => {},
-      zoomEvent: () => {},
-      element: document.createElement('div'),
-      set3PCheckboxDisabled: () => {},
-      selectEntryAtTime: () => {},
-      highlightEvent: () => {},
-    };
-    const pane = new TimelineDetailsPane(mockDelegate);
+    // Highlighting events from the event log is not relevant for an AI
+    // assistant widget, which only shows the summary.
+    const pane = new TimelineDetailsPane({highlightEvent: () => {}});
     pane.hideHeader();
     const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     void pane
@@ -133,12 +246,14 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     return pane;
   }
 
-  constructor(delegate: TimelineModeViewDelegate) {
+  constructor(
+      delegate: Pick<TimelineModeViewDelegate, 'highlightEvent'>,
+      summaryTabView: SummaryTabView = SUMMARY_TAB_VIEW,
+  ) {
     super();
+    this.#summaryTabView = summaryTabView;
     this.registerRequiredCSS(detailsViewStyles);
     this.element.classList.add('timeline-details');
-
-    this.detailsLinkifier = new Components.Linkifier.Linkifier();
 
     this.tabbedPane = new UI.TabbedPane.TabbedPane();
     this.tabbedPane.show(this.element);
@@ -146,11 +261,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         'jslog',
         `${VisualLogging.toolbar('sidebar').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
 
-    this.defaultDetailsWidget = new UI.Widget.VBox();
-    this.defaultDetailsWidget.element.classList.add('timeline-details-view');
-    this.defaultDetailsWidget.element.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
-    this.#summaryContent.contentElement.classList.add('timeline-details-view-body');
-    this.#summaryContent.show(this.defaultDetailsWidget.contentElement);
+    this.defaultDetailsWidget = new SummaryTabWidget();
     this.appendTab(Tab.Details, i18nString(UIStrings.summary), this.defaultDetailsWidget);
     this.setPreferredTab(Tab.Details);
 
@@ -181,22 +292,36 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
 
     });
 
-    this.#summaryContent.onTreeRowHovered = (node, events) => {
-      // Re-dispatch through 3P event to get 3P dimmer.
-      this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node, events});
-    };
-    this.#summaryContent.onBottomUpButtonClicked = node => {
-      this.selectTab(Tab.BottomUp, node, AggregatedTimelineTreeView.GroupBy.ThirdParties);
-    };
-    this.#summaryContent.onTreeRowClicked = (node, events) => {
-      // Re-dispatch through 3P event to get 3P dimmer.
-      this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, {node, events});
-    };
-
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
 
     this.lazySelectorStatsView = null;
+    this.requestUpdate();
   }
+
+  override performUpdate(): void {
+    this.#summaryTabView(
+        {
+          summary: this.#renderedSummary,
+          onTreeRowHovered: this.#onTreeRowHovered,
+          onTreeRowClicked: this.#onTreeRowClicked,
+          onBottomUpButtonClicked: this.#onBottomUpButtonClicked,
+        },
+        undefined,
+        this.defaultDetailsWidget.contentElement,
+    );
+  }
+
+  readonly #onTreeRowHovered: TreeRowCallback = (node, events) => {
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node, events});
+  };
+
+  readonly #onTreeRowClicked: TreeRowCallback = (node, events) => {
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, {node, events});
+  };
+
+  readonly #onBottomUpButtonClicked = (node: Trace.Extras.TraceTree.Node|null): void => {
+    this.selectTab(Tab.BottomUp, node, AggregatedTimelineTreeView.GroupBy.ThirdParties);
+  };
 
   override wasShown(): void {
     super.wasShown();
@@ -206,8 +331,8 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     if (prev && micro &&
         (prev.entireTraceBounds !== micro.entireTraceBounds || prev.minimapTraceBounds !== micro.minimapTraceBounds ||
          prev.timelineTraceWindow !== micro.timelineTraceWindow)) {
-      if (this.selection) {
-        void this.setSelection(this.selection);
+      if (this.#selection) {
+        void this.setSelection(this.#selection);
       } else {
         this.scheduleUpdateContentsFromWindow();
       }
@@ -293,7 +418,11 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   }
 
   getDetailsContentElementForTest(): HTMLElement {
-    return this.#summaryContent.contentElement;
+    const summaryElement = this.element.querySelector<HTMLElement>(`#${Tab.Details}`);
+    if (!summaryElement) {
+      throw new Error('The summary view is not rendered.');
+    }
+    return summaryElement;
   }
 
   revealEventInTreeView(event: Trace.Types.Events.Event|null): void {
@@ -306,15 +435,15 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     if (event.updateType === 'MINIMAP_BOUNDS') {
       // If new minimap bounds are set, we might need to update the selected entry summary because
       // the links to other entries (ex. initiator) might be outside of the new breadcrumb.
-      if (this.selection) {
-        await this.setSelection(this.selection);
+      if (this.#selection) {
+        await this.setSelection(this.#selection);
       }
     }
 
     if (event.updateType === 'RESET' || event.updateType === 'VISIBLE_WINDOW') {
       // If the update type was a changing of the minimap bounds, we do not
       // need to redraw.
-      if (!this.selection) {
+      if (!this.#selection) {
         this.scheduleUpdateContentsFromWindow();
       }
     }
@@ -334,19 +463,19 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       this.#parsedTrace = data.parsedTrace;
     }
     if (data.parsedTrace) {
-      this.#summaryContent.filmStrip = Trace.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
+      this.#summary.filmStrip = Trace.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
       this.#entityMapper = data.entityMapper ?? new Trace.EntityMapper.EntityMapper(data.parsedTrace);
     } else {
-      this.#summaryContent.filmStrip = null;
+      this.#summary.filmStrip = null;
       this.#entityMapper = null;
     }
-    this.#summaryContent.selectedEvent = null;
-    this.#summaryContent.selectedRange = null;
+    this.#summary.selectedEvent = null;
+    this.#summary.selectedRange = null;
     this.#selectedEvents = data.selectedEvents;
     this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
-    this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
-    this.#summaryContent.parsedTrace = this.#parsedTrace;
-    this.#summaryContent.entityMapper = this.#entityMapper;
+    this.#summary.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
+    this.#summary.parsedTrace = this.#parsedTrace;
+    this.#summary.entityMapper = this.#entityMapper;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
       view.model = {
@@ -378,13 +507,18 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     }
 
     if (this.tabbedPane.selectedTabId !== Tab.Details) {
-      this.#summaryContentNeedsUpdate = true;
+      this.#summaryNeedsUpdate = true;
       return;
     }
 
-    this.#summaryContentNeedsUpdate = false;
-    this.#summaryContent.requestUpdate();
-    await this.#summaryContent.updateComplete;
+    this.#summaryNeedsUpdate = false;
+    this.#commitSummary();
+    this.requestUpdate();
+    await this.updateComplete;
+  }
+
+  #commitSummary(): void {
+    this.#renderedSummary = {...this.#summary};
   }
 
   private updateContents(): void {
@@ -396,7 +530,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     // Update the view that we currently have selected.
     const view = this.rangeDetailViews.get(this.tabbedPane.selectedTabId || '');
     if (view) {
-      view.activeSelection = this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max);
+      view.activeSelection = this.#selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max);
     }
   }
 
@@ -445,7 +579,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       return;
     }
     const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
-    this.updateSelectedRangeStats(visibleWindow.min, visibleWindow.max);
+    void this.updateSelectedRangeStats(visibleWindow.min, visibleWindow.max);
     this.updateContents();
   }
 
@@ -466,11 +600,11 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       return;
     }
 
-    this.#summaryContent.selectedRange = null;
-    this.#summaryContent.selectedEvent = event;
-    this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
-    this.#summaryContent.linkifier = this.detailsLinkifier;
-    this.#summaryContent.target = targetForEvent(this.#parsedTrace, event);
+    this.#summary.selectedRange = null;
+    this.#summary.selectedEvent = event;
+    this.#summary.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
+    this.#summary.linkifier = this.#detailsLinkifier;
+    this.#summary.target = targetForEvent(this.#parsedTrace, event);
     await this.updateSummaryPane();
     this.appendExtraDetailsTabsForTraceEvent(event);
   }
@@ -480,10 +614,10 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       // You can't make a selection if we have no trace data.
       return;
     }
-    this.detailsLinkifier.reset();
-    this.selection = selection;
-    if (!this.selection) {
-      this.#summaryContent.selectedEvent = null;
+    this.#detailsLinkifier.reset();
+    this.#selection = selection;
+    if (!this.#selection) {
+      this.#summary.selectedEvent = null;
       // Update instantly using forceImmediateUpdate, since we are only
       // making a single call and don't need to debounce.
       this.scheduleUpdateContentsFromWindow(/* forceImmediateUpdate */ true);
@@ -501,16 +635,17 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
       await this.#setSelectionForTraceEvent(selection.event);
     } else if (selectionIsRange(selection)) {
       const timings = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(selection.bounds);
-      this.updateSelectedRangeStats(timings.min, timings.max);
+      await this.updateSelectedRangeStats(timings.min, timings.max);
     }
 
     this.updateContents();
   }
 
   private tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
-    if (event.data.tabId === Tab.Details && this.#summaryContentNeedsUpdate) {
-      this.#summaryContentNeedsUpdate = false;
-      this.#summaryContent.requestUpdate();
+    if (event.data.tabId === Tab.Details && this.#summaryNeedsUpdate) {
+      this.#summaryNeedsUpdate = false;
+      this.#commitSummary();
+      this.requestUpdate();
     }
     if (!event.data.isUserGesture) {
       return;
@@ -599,20 +734,21 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     this.appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView);
   }
 
-  private updateSelectedRangeStats(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void {
+  private async updateSelectedRangeStats(startTime: Trace.Types.Timing.Milli,
+                                         endTime: Trace.Types.Timing.Milli): Promise<void> {
     if (!this.#selectedEvents || !this.#parsedTrace || !this.#entityMapper) {
       return;
     }
 
-    this.#summaryContent.selectedEvent = null;
-    this.#summaryContent.selectedRange = {
+    this.#summary.selectedEvent = null;
+    this.#summary.selectedRange = {
       events: this.#selectedEvents,
       startTime,
       endTime,
-      selection: this.selection ?? null,
+      selection: this.#selection,
     };
 
-    void this.updateSummaryPane();
+    await this.updateSummaryPane();
 
     // Find all recalculate style events data from range
     const isSelectorStatsEnabled =
@@ -632,92 +768,10 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   }
 }
 
-export enum Tab {
-  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
-  Details = 'details',
-  EventLog = 'event-log',
-  CallTree = 'call-tree',
-  BottomUp = 'bottom-up',
-  PaintProfiler = 'paint-profiler',
-  LayerViewer = 'layer-viewer',
-  SelectorStats = 'selector-stats',
-  /* eslint-enable @typescript-eslint/naming-convention */
-}
-
-interface SelectedRange {
-  startTime: Trace.Types.Timing.Milli;
-  endTime: Trace.Types.Timing.Milli;
-  events: Trace.Types.Events.Event[];
-  selection: TimelineSelection|null;
-}
-
-interface SummaryViewInput {
-  selectedEvent: Trace.Types.Events.Event|null;
-  eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
-  parsedTrace: Trace.TraceModel.ParsedTrace|null;
-  entityMapper: Trace.EntityMapper.EntityMapper|null;
-  target: SDK.Target.Target|null;
-  linkifier: Components.Linkifier.Linkifier|null;
-  filmStrip: Trace.Extras.FilmStrip.Data|null;
-  selectedRange: SelectedRange|null;
-  onTreeRowHovered: (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]) => void;
+interface SummaryViewInput extends SummaryData {
+  onTreeRowHovered: TreeRowCallback;
   onBottomUpButtonClicked: (_node: Trace.Extras.TraceTree.Node|null) => void;
-  onTreeRowClicked: (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]) => void;
-}
-
-type View = (input: SummaryViewInput, output: undefined, target: HTMLElement) => void;
-const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
-  // clang-format off
-  render(
-      html`
-        <style>${detailsViewStyles}</style>
-        ${Directives.until(renderSelectedEventDetails(input))}
-        ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing}
-        <devtools-widget data-related-insight-chips ${widget(
-          TimelineComponents.RelatedInsightChips.RelatedInsightChips, {
-            activeEvent: input.selectedEvent,
-            eventToInsightsMap: input.eventToRelatedInsightsMap,
-          })}></devtools-widget>
-      `,
-      target);
-  // clang-format on
-};
-
-class SummaryView extends UI.Widget.Widget {
-  #view: View;
-  selectedEvent: Trace.Types.Events.Event|null = null;
-  eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
-  parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
-  entityMapper: Trace.EntityMapper.EntityMapper|null = null;
-  target: SDK.Target.Target|null = null;
-  linkifier: Components.Linkifier.Linkifier|null = null;
-  filmStrip: Trace.Extras.FilmStrip.Data|null = null;
-  selectedRange: SelectedRange|null = null;
-  onTreeRowHovered = (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]): void => {};
-  onBottomUpButtonClicked = (_node: Trace.Extras.TraceTree.Node|null): void => {};
-  onTreeRowClicked = (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]): void => {};
-
-  constructor(element?: HTMLElement, view = SUMMARY_DEFAULT_VIEW) {
-    super(element);
-    this.#view = view;
-  }
-
-  override performUpdate(): void {
-    this.#view({
-      selectedEvent: this.selectedEvent,
-      eventToRelatedInsightsMap: this.eventToRelatedInsightsMap,
-      parsedTrace: this.parsedTrace,
-      entityMapper: this.entityMapper,
-      target: this.target,
-      linkifier: this.linkifier,
-      filmStrip: this.filmStrip,
-      selectedRange: this.selectedRange,
-      onTreeRowHovered: this.onTreeRowHovered,
-      onBottomUpButtonClicked: this.onBottomUpButtonClicked,
-      onTreeRowClicked: this.onTreeRowClicked,
-    },
-               undefined, this.contentElement);
-  }
+  onTreeRowClicked: TreeRowCallback;
 }
 
 function generateRangeSummaryDetails(input: SummaryViewInput): LitTemplate {

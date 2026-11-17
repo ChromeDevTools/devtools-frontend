@@ -72,12 +72,12 @@ function isDisallowedCssValue(value: string): boolean {
  *    `image-set()`, `-webkit-image-set()`, `src()`) so style edits cannot
  *    trigger outbound network requests.
  * 3. Validates the remaining declarations with `CSSStyleSheet` so unknown
- *    property names and invalid property values are omitted, and re-checks
- *    serialized CSSOM values against `DISALLOWED_CSS_URL_FUNCTION_REGEX`.
+ *    property names and invalid property values are omitted, re-checks
+ *    serialized CSSOM values against `DISALLOWED_CSS_URL_FUNCTION_REGEX`, and
+ *    preserves `!important` priority on valid declarations.
  */
 export async function sanitizeStyleChanges(selector: string,
                                            styles: Record<string, string>): Promise<Record<string, string>> {
-  const cssStyleValue: string[] = [];
   const changedStyles: string[] = [];
   const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
   for (const [style, value] of Object.entries(kebabStyles)) {
@@ -86,8 +86,6 @@ export async function sanitizeStyleChanges(selector: string,
     if (!value.trim() || isDisallowedCssValue(value)) {
       continue;
     }
-    // Build up the CSS style.
-    cssStyleValue.push(`${style}: ${value};`);
     // Keep track of what style changed to query later.
     changedStyles.push(style);
   }
@@ -100,8 +98,7 @@ export async function sanitizeStyleChanges(selector: string,
   }
 
   const styleSheet = new CSSStyleSheet({disabled: true});
-  // Build up the CSS stylesheet value.
-  await styleSheet.replace(`${selector} { ${cssStyleValue.join(' ')} }`);
+  await styleSheet.replace(`${selector} {}`);
 
   const sanitizedStyles: Record<string, string> = {};
   for (const cssRule of styleSheet.cssRules) {
@@ -109,12 +106,18 @@ export async function sanitizeStyleChanges(selector: string,
       continue;
     }
     for (const style of changedStyles) {
-      const value = cssRule.style.getPropertyValue(style);
+      // Parse each declaration in isolation so mixed-priority shorthand and
+      // longhand pairs do not drop the shorthand or overwrite the longhand.
+      cssRule.style.cssText = `${style}: ${kebabStyles[style]};`;
+      // Trim trailing whitespace that Blink retains before `!important` on
+      // unparsed `var()` values.
+      const value = cssRule.style.getPropertyValue(style).trim();
       // Re-check Blink's serialized CSSOM value against URL functions only;
       // Pass 1 already blocked raw `\` and `/*`, while CSSOM legitimately
       // inserts `\"` when canonicalizing quoted strings (such as `'"AI"'`).
       if (value && !DISALLOWED_CSS_URL_FUNCTION_REGEX.test(value)) {
-        sanitizedStyles[style] = value;
+        const priority = cssRule.style.getPropertyPriority(style);
+        sanitizedStyles[style] = priority === 'important' ? `${value} !important` : value;
       }
     }
   }

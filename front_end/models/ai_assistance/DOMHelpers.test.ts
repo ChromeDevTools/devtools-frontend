@@ -147,6 +147,48 @@ describe('DOMHelpers', () => {
         color: 'red',
       });
     });
+
+    it('preserves !important priority across longhand, shorthand, and var() declarations', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        height: 'auto !important',
+        padding: '10px 20px !important',
+        color: 'var(--theme-text, blue) !important',
+        fontSize: '14px',
+      });
+      assert.deepEqual(sanitized, {
+        height: 'auto !important',
+        padding: '10px 20px !important',
+        color: 'var(--theme-text, blue) !important',
+        'font-size': '14px',
+      });
+    });
+
+    it('rejects invalid CSS declarations and disallowed URL functions with !important', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        color: 'red !important',
+        width: '!important',
+        backgroundColor: 'not-a-valid-color-value !important',
+        backgroundImage: 'url("https://attacker.example/leak") !important',
+      });
+      assert.deepEqual(sanitized, {
+        color: 'red !important',
+      });
+    });
+
+    it('sanitizes mixed-priority shorthand and longhand declarations independently', async () => {
+      const sanitized = await AiAssistance.DOMHelpers.sanitizeStyleChanges('div', {
+        padding: '10px',
+        paddingTop: '20px !important',
+        margin: '8px !important',
+        marginBottom: '0px',
+      });
+      assert.deepEqual(sanitized, {
+        padding: '10px',
+        'padding-top': '20px !important',
+        margin: '8px !important',
+        'margin-bottom': '0px',
+      });
+    });
   });
 
   describe('removeInlineStyleProperties', () => {

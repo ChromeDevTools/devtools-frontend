@@ -39,7 +39,7 @@ function getFunctionDeclarations(
     aidaClient: sinon.SinonStubbedInstance<Host.AidaClient.AidaClient>,
     callIndex: number,
     ): Host.AidaClient.FunctionDeclaration[] {
-  sinon.assert.callCount(aidaClient.doConversation, callIndex + 1);
+  assert.isAbove(aidaClient.doConversation.callCount, callIndex);
   const callArgs = aidaClient.doConversation.getCall(callIndex).args[0];
   return callArgs.function_declarations ?? [];
 }
@@ -2009,6 +2009,167 @@ describe('AiAgent2', () => {
       assert.lengthOf(contextEvents, 1);
       assert.isUndefined(contextEvents[0].autoLearnedSkills);
     });
+
+    it('discards the draft and reloads an auto-learned skill on retry after a first-run abort', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: 'Answer',
+          functionCalls: [{name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME, args: {suggestions: ['s']}}],
+        }],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+      const domNodeContext =
+          new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(domNodeContext, 'getPromptDetails').resolves('DOM prompt');
+      sinon.stub(domNodeContext, 'getUserFacingDetails').resolves([{title: 'DOM', text: 'details'}]);
+
+      const abortController = new AbortController();
+      abortController.abort();
+      await Array.fromAsync(agent.run('q1', {selected: domNodeContext, signal: abortController.signal}));
+      assert.strictEqual(agent.activeSkills.size, 0);
+
+      const responses = await Array.fromAsync(agent.run('q2', {selected: domNodeContext}));
+      const callArgs = aidaClient.doConversation.getCall(1).args[0];
+      assert.isUndefined(callArgs.historical_contexts);
+      assertIsTextPart(callArgs.current_message.parts[0]);
+      assert.include(callArgs.current_message.parts[0].text, 'Skill styling loaded. Instructions:');
+      assert.include(callArgs.current_message.parts[0].text, SKILLS.styling.instructions);
+
+      const declarations = getFunctionDeclarations(aidaClient, 1).map(d => d.name);
+      assert.includeMembers(declarations, ['getStyles', 'setElementStyles', 'executeJavaScript']);
+
+      const contextEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT);
+      assert.lengthOf(contextEvents, 1);
+      assert.deepEqual(contextEvents[0].autoLearnedSkills, ['styling']);
+      const answerEvents = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ANSWER);
+      assert.lengthOf(answerEvents, 1);
+      assert.strictEqual(answerEvents[0].text, 'Answer');
+    });
+
+    it('omits uncommitted auto-loaded tools after an aborted run', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['styling']}}],
+        }],
+        [{explanation: 'Done'}],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+      const domNodeContext =
+          new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(domNodeContext, 'getPromptDetails').resolves('DOM prompt');
+
+      const abortController = new AbortController();
+      abortController.abort();
+      await Array.fromAsync(agent.run('q1', {selected: domNodeContext, signal: abortController.signal}));
+
+      await Array.fromAsync(agent.run('q2', {selected: null}));
+      const declarations = getFunctionDeclarations(aidaClient, 1).map(d => d.name);
+      assert.deepEqual(declarations, ['learnSkills', 'suggestFollowUps']);
+
+      const callArgs = aidaClient.doConversation.getCall(2).args[0];
+      const functionResponse = callArgs.current_message.parts[0];
+      assertIsFunctionResponse(functionResponse);
+      const result = functionResponse.functionResponse.response.result;
+      assert.isString(result);
+      assert.include(result, SKILLS.styling.instructions);
+      assert.notInclude(result, 'already loaded');
+    });
+
+    it('discards a mid-run learnSkills draft when a later step aborts', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['performance']}}],
+        }],
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['performance']}}],
+        }],
+        [{explanation: 'Done'}],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+
+      const abortController = new AbortController();
+      let yieldedAbort = false;
+      const gen = agent.run('q1', {selected: null, signal: abortController.signal});
+      for await (const res of gen) {
+        if (res.type === AiAssistance.AiAgent.ResponseType.ACTION) {
+          abortController.abort();
+        } else if (res.type === AiAssistance.AiAgent.ResponseType.ERROR &&
+                   res.error === AiAssistance.AiAgent.ErrorType.ABORT) {
+          yieldedAbort = true;
+        }
+      }
+
+      assert.isTrue(yieldedAbort, 'Expected an ABORT error response');
+      assert.deepEqual(agent.history, []);
+      assert.strictEqual(agent.activeSkills.size, 0);
+
+      await Array.fromAsync(agent.run('q2', {selected: null}));
+      const declarations = getFunctionDeclarations(aidaClient, 1).map(d => d.name);
+      assert.deepEqual(declarations, ['learnSkills', 'suggestFollowUps']);
+
+      const callArgs = aidaClient.doConversation.getCall(2).args[0];
+      const functionResponse = callArgs.current_message.parts[0];
+      assertIsFunctionResponse(functionResponse);
+      const result = functionResponse.functionResponse.response.result;
+      assert.isString(result);
+      assert.include(result, SKILLS.performance.instructions);
+    });
+
+    it('preserves committed skills and shared tools when a follow-up turn aborts', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}],
+        }],
+        [{explanation: 'Done'}],
+        [{explanation: 'ignored'}],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+
+      await Array.fromAsync(agent.run('q1', {selected: null}));
+
+      const domNodeContext =
+          new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(domNodeContext, 'getPromptDetails').resolves('DOM prompt');
+      const abortController = new AbortController();
+      abortController.abort();
+      await Array.fromAsync(agent.run('q2', {selected: domNodeContext, signal: abortController.signal}));
+
+      assert.lengthOf(agent.history, 4);
+      assert.deepEqual(agent.activeSkills, new Set(['lighthouse']));
+
+      await Array.fromAsync(agent.run('q3', {selected: null}));
+      const declarations = getFunctionDeclarations(aidaClient, 3).map(d => d.name);
+      assert.notInclude(declarations, 'setElementStyles');
+      assert.includeMembers(declarations, ['getStyles', 'executeJavaScript']);
+    });
+
+    it('discards uncommitted draft skills and tool declarations after early generator exit without AbortSignal',
+       async () => {
+         const agent =
+             new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient(), originLock: defaultOriginLock});
+         const domNodeContext =
+             new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+         sinon.stub(domNodeContext, 'getPromptDetails').resolves('DOM prompt');
+         sinon.stub(domNodeContext, 'getUserFacingDetails').resolves([{title: 'DOM', text: 'details'}]);
+
+         let sawContextResponse = false;
+         for await (const res of agent.run('q1', {selected: domNodeContext})) {
+           if (res.type === AiAssistance.AiAgent.ResponseType.CONTEXT) {
+             sawContextResponse = true;
+             break;
+           }
+         }
+
+         assert.isTrue(sawContextResponse);
+         assert.strictEqual(agent.activeSkills.size, 0);
+         const declaredNames =
+             agent.buildRequest({text: 'probe'}, Host.AidaClient.Role.USER).function_declarations?.map(d => d.name);
+         assert.deepEqual(declaredNames, ['learnSkills', 'suggestFollowUps']);
+       });
   });
 
   describe('context deduplication', () => {
@@ -2115,7 +2276,7 @@ describe('AiAgent2', () => {
       assert.exists(responses1.find(r => r.type === AiAssistance.AiAgent.ResponseType.ERROR &&
                                         r.error === AiAssistance.AiAgent.ErrorType.ABORT));
       assert.strictEqual(getSentPromptText(aidaClient, 1),
-                         '# Inspected element\n\nelement-B\n\n# User request\n\nQUERY: q2');
+                         `${stylingAutoLoadPrefix}# Inspected element\n\nelement-B\n\n# User request\n\nQUERY: q2`);
     });
 
     it('keeps deduplicating context details after a run reaches MAX_STEPS', async () => {
@@ -2272,6 +2433,28 @@ describe('AiAgent2', () => {
 
       const enhancedQuery = await agent.enhanceQuery('q2', context);
       assert.include(enhancedQuery, 'context details\n\n# References\n\n## Fact A\n\ndesc-A');
+    });
+
+    it('preserves committed facts while rolling back uncommitted facts when a follow-up turn aborts', async () => {
+      agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient: mockAidaClient([[{explanation: 'answer 1'}], [MockAidaAbortError]]),
+        originLock: defaultOriginLock,
+      });
+
+      const contextA = createUnmappedContext('details A', [factA]);
+      const contextB = createUnmappedContext('details B', [factA, factB]);
+
+      await Array.fromAsync(agent.run('q1', {selected: contextA}));
+      const abortResponses = await Array.fromAsync(agent.run('q2', {selected: contextB}));
+
+      assert.exists(abortResponses.find(r => r.type === AiAssistance.AiAgent.ResponseType.ERROR &&
+                                            r.error === AiAssistance.AiAgent.ErrorType.ABORT));
+
+      const enhancedQuery = await agent.enhanceQuery('q3', contextB);
+      assert.strictEqual(
+          enhancedQuery,
+          'details B\n\n# References\n\n## Fact B\n\ndesc-B\n\n# User request\n\nQUERY: q3',
+      );
     });
 
     it('omits facts on follow-up turns after a MAX_STEPS error', async () => {

@@ -13,10 +13,12 @@ import {
   AiAgent,
   type ContextResponse,
   type ConversationContext,
+  type MultimodalInput,
   type MultimodalInputType,
   type ParsedResponse,
   type PromptFact,
   type RequestOptions,
+  type ResponseData,
   ResponseType,
   SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
 } from './agents/AiAgent.js';
@@ -90,6 +92,16 @@ Your role is to help web developers debug, analyze, and optimize web application
 * **CRITICAL**: Do not write standalone scripts (such as Python or bash) or arbitrary code to interact with the environment. The only way to execute code in the inspected page is via the 'executeJavaScript' tool.
 * **CRITICAL**: Do not expose raw, internal system identifiers (such as database IDs, internal node paths, or event keys) directly to the user. Use descriptive names instead.`;
 
+/**
+ * Snapshot of loaded skills, sent prompt facts, and context tracking for either
+ * `#committedState` or an in-flight `#runDraft`.
+ */
+interface RunState {
+  skills: Set<SkillName>;
+  sentFacts: Set<PromptFact>;
+  lastSentPromptDetails: string|null;
+}
+
 export interface AiAgent2Options extends ExecuteJsAgentOptions {
   /**
    * Supplies the origin lock state for the conversation.
@@ -101,36 +113,75 @@ export interface AiAgent2Options extends ExecuteJsAgentOptions {
 
 export class AiAgent2 extends AiAgent<unknown> {
   /**
-   * Tracks the last context details sent to the LLM to prevent resending identical
-   * large context blocks on subsequent turns in the same conversation.
-   */
-  #lastSentPromptDetails: string|null = null;
-  /**
-   * Tracks `PromptFact` instances already appended to `#history` in this conversation.
+   * Tracks skills, `PromptFact` instances, and context details committed to `AiAgent.#history`.
    * Facts are injected into append-only history rather than AIDA's wire `request.facts`
    * field (which `FactsToText` prepends to `current_message` on every step, repeating
    * tokens and invalidating prefix caching) or `getPromptDetails()` (which must stay
-   * deterministic across turns for `#lastSentPromptDetails` deduplication).
+   * deterministic across turns for `lastSentPromptDetails` deduplication).
    */
-  readonly #sentFacts = new Set<PromptFact>();
+  #committedState: RunState = {
+    skills: new Set(),
+    sentFacts: new Set(),
+    lastSentPromptDetails: null,
+  };
+  /**
+   * In-flight mutations during `run()` target this draft and promote to `#committedState` in `onRunCommitted()`.
+   */
+  #runDraft: RunState|null = null;
 
-  override clearCache(): void {
-    super.clearCache();
-    // Reset both trackers so that if conversation history is rolled back (e.g., after an
-    // abort or non-MAX_STEPS error), context details and required facts are resent on retry.
-    this.#lastSentPromptDetails = null;
-    this.#sentFacts.clear();
+  /**
+   * Routes reads and mutations to `#runDraft` during `run()`, or directly to
+   * `#committedState` when idle or when `enhanceQuery()` or `learnSkill()` is called standalone outside `run()`.
+   */
+  get #state(): RunState {
+    return this.#runDraft ?? this.#committedState;
   }
 
   /**
-   * Appends any `facts` not yet recorded in `#sentFacts` to `content` under
+   * `#commitRun()` and `#createErrorResponse()` clear `#runDraft` on committed
+   * and error paths, while `finally` rolls back uncommitted drafts on early
+   * consumer `break` or empty-query returns.
+   */
+  override async *
+      run(
+          initialQuery: string,
+          options: {
+            selected: ConversationContext<unknown>|null,
+            signal?: AbortSignal,
+          },
+          multimodalInput?: MultimodalInput,
+          ): AsyncGenerator<ResponseData, void, void> {
+    try {
+      yield* super.run(initialQuery, options, multimodalInput);
+    } finally {
+      if (this.#runDraft) {
+        this.clearCache();
+      }
+    }
+  }
+
+  /**
+   * Discards the active `#runDraft` so uncommitted `skills`, `sentFacts`, and
+   * `lastSentPromptDetails` from a failed run roll back while committed state
+   * from earlier turns remains intact.
+   */
+  override clearCache(): void {
+    super.clearCache();
+    this.#runDraft = null;
+    this.#pendingAutoLearnedSkills = [];
+    this.#syncDeclaredFunctions();
+  }
+
+  /**
+   * Appends any `facts` not yet recorded in `this.#state.sentFacts` to `content` under
    * `# References` with `## ${fact.title}` subheadings.
    */
   #appendUnsentFacts(content: string, facts: readonly PromptFact[] = []): string {
+    const {sentFacts} = this.#state;
     const factSections: string[] = [];
     for (const fact of facts) {
-      if (!this.#sentFacts.has(fact)) {
-        this.#sentFacts.add(fact);
+      if (!sentFacts.has(fact)) {
+        sentFacts.add(fact);
         factSections.push(`## ${fact.title}\n\n${fact.description.trim()}`);
       }
     }
@@ -159,6 +210,13 @@ export class AiAgent2 extends AiAgent<unknown> {
   }
 
   protected override async preRun(): Promise<void> {
+    // Initialize a fresh draft from committed state to isolate mutations during this run.
+    this.#runDraft = {
+      skills: new Set(this.#committedState.skills),
+      sentFacts: new Set(this.#committedState.sentFacts),
+      lastSentPromptDetails: this.#committedState.lastSentPromptDetails,
+    };
+    this.#syncDeclaredFunctions();
     await super.preRun();
     // One-way latch: once sensitive data enters the conversation history,
     // logging must remain disabled for the lifetime of this agent instance.
@@ -193,8 +251,6 @@ export class AiAgent2 extends AiAgent<unknown> {
     }
   }
 
-  readonly #activeSkills = new Set<SkillName>();
-  readonly #declaredTools = new Set<string>();
   /**
    * Tracks skills auto-loaded during enhanceQuery() so handleContextDetails() can attach them to ContextResponse for telemetry without rendering a walkthrough step.
    */
@@ -220,7 +276,14 @@ export class AiAgent2 extends AiAgent<unknown> {
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#originLock = opts.originLock;
 
-    this.#declaredTools.add('learnSkills');
+    this.#syncDeclaredFunctions();
+  }
+
+  /**
+   * Registers baseline functions (`learnSkills` and `suggestFollowUps`) that are
+   * always available regardless of which domain skills are loaded.
+   */
+  #declareCoreFunctions(): void {
     const skillsManifest = Object.entries(SKILLS).map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
     this.declareFunction<{skills: SkillName[]}>('learnSkills', {
       description: `Loads the specified skills to gain access to their specialized tools and instructions.
@@ -254,18 +317,17 @@ ${skillsManifest}`,
         };
       },
       handler: async args => {
-        const previouslyLoaded = new Set(this.#activeSkills);
+        const previouslyLoaded = new Set(this.activeSkills);
         const result = await this.learnSkill(args.skills);
         // The LLM may hallucinate skill names. Filter out any skills that were not newly activated.
         const loadedSkills =
-            [...new Set(args.skills)].filter(skill => !previouslyLoaded.has(skill) && this.#activeSkills.has(skill));
+            [...new Set(args.skills)].filter(skill => !previouslyLoaded.has(skill) && this.activeSkills.has(skill));
         return {
           result,
           loadedSkills: loadedSkills.length > 0 ? loadedSkills : undefined,
         };
       },
     });
-    this.#declaredTools.add(SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
     this.declareFunction<{suggestions: string[]}>(SUGGEST_FOLLOW_UPS_FUNCTION_NAME, {
       description: 'Provides suggested follow-up queries or actions for the user at the end of the response.',
       parameters: {
@@ -286,6 +348,33 @@ ${skillsManifest}`,
       // Never called: AiAgent#run() and AiAgent#runFunctionCalls() intercept suggestFollowUps directly.
       handler: async () => ({result: 'Suggestions recorded.'}),
     });
+  }
+
+  /**
+   * Rebuilds `AiAgent.#functionDeclarations` from `this.activeSkills` so declared
+   * tools match the active draft or committed skills, preserving tools shared
+   * between committed and rolled-back skills.
+   */
+  #syncDeclaredFunctions(): void {
+    this.clearDeclaredFunctions();
+    this.#declareCoreFunctions();
+    const toolNames = new Set([...this.activeSkills].flatMap(name => SKILLS[name]?.allowedTools ?? []));
+    for (const toolName of toolNames) {
+      const tool = ToolRegistry.get(toolName);
+      if (tool) {
+        this.#declareTool(tool);
+      }
+    }
+  }
+
+  /**
+   * Promotes the completed `#runDraft` into `#committedState`.
+   */
+  protected override onRunCommitted(): void {
+    if (this.#runDraft) {
+      this.#committedState = this.#runDraft;
+      this.#runDraft = null;
+    }
   }
 
   /**
@@ -317,17 +406,18 @@ ${skillsManifest}`,
       // Clear the tracker when there is no context (or an unsupported context type)
       // so that if the user later switches back to a previously sent context, it is
       // sent in full again rather than deduplicated.
-      this.#lastSentPromptDetails = null;
+      this.#state.lastSentPromptDetails = null;
     } else {
-      contextDetails = promptDetails === this.#lastSentPromptDetails ? UNCHANGED_CONTEXT_PROMPT_NOTICE : promptDetails;
-      this.#lastSentPromptDetails = promptDetails;
+      contextDetails =
+          promptDetails === this.#state.lastSentPromptDetails ? UNCHANGED_CONTEXT_PROMPT_NOTICE : promptDetails;
+      this.#state.lastSentPromptDetails = promptDetails;
     }
 
     // `autoLoadedBlock` precedes the context section in the final prompt. Run `learnSkill` before
     // appending context facts so shared facts render at the top with the skill instructions.
     let autoLoadedBlock = '';
     const mappedSkill = this.#skillForContext(selected);
-    if (mappedSkill && SKILLS[mappedSkill] && !this.#activeSkills.has(mappedSkill)) {
+    if (mappedSkill && SKILLS[mappedSkill] && !this.activeSkills.has(mappedSkill)) {
       autoLoadedBlock = await this.learnSkill([mappedSkill]);
       this.#pendingAutoLearnedSkills.push(mappedSkill);
     }
@@ -374,8 +464,9 @@ ${skillsManifest}`,
 
   async learnSkill(names: SkillName[]): Promise<string> {
     const sections: string[] = [];
+    let skillsAdded = false;
     for (const name of names) {
-      if (this.#activeSkills.has(name)) {
+      if (this.activeSkills.has(name)) {
         debugLog(`[AiAgent2] Skill '${name}' is already loaded`);
         sections.push(`Error: Skill '${
             name}' is already loaded. Call its tools directly instead of invoking learnSkills for '${name}' again.`);
@@ -384,20 +475,18 @@ ${skillsManifest}`,
 
       const skillObj = SKILLS[name];
       if (skillObj) {
-        this.#activeSkills.add(name);
+        this.activeSkills.add(name);
+        skillsAdded = true;
         debugLog(`[AiAgent2] Loaded skill '${name}' with tools: [${skillObj.allowedTools.join(', ')}]`);
         const instructions = this.#appendUnsentFacts(skillObj.instructions.trim(), skillObj.facts);
         sections.push(`Skill ${name} loaded. Instructions:\n${instructions}`);
-        for (const toolName of skillObj.allowedTools) {
-          const tool = ToolRegistry.get(toolName);
-          if (tool) {
-            this.#declareTool(tool);
-          }
-        }
       } else {
         debugLog(`[AiAgent2] Failed to load skill '${name}'`);
         sections.push(`Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(', ')}.`);
       }
+    }
+    if (skillsAdded) {
+      this.#syncDeclaredFunctions();
     }
     return sections.join('\n\n');
   }
@@ -414,14 +503,10 @@ ${skillsManifest}`,
   }
 
   /**
-   * Declares a tool to be available to the agent model, verifying first that
-   * it hasn't already been declared to prevent duplicate declaration errors.
+   * Registers a tool declaration on AiAgent with the capability context.
+   * Deduplication across skills is handled by #syncDeclaredFunctions().
    */
   #declareTool(tool: Tool<ToolArgs, unknown, AllToolsCapabilities>): void {
-    if (this.#declaredTools.has(tool.name)) {
-      return;
-    }
-    this.#declaredTools.add(tool.name);
     this.declareFunction(tool.name, {
       description: tool.description,
       parameters: tool.parameters,
@@ -482,7 +567,10 @@ ${skillsManifest}`,
     return document.body ?? null;
   }
 
+  /**
+   * Returns the active draft's skills during `run()`, or `#committedState.skills` when idle.
+   */
   get activeSkills(): Set<SkillName> {
-    return this.#activeSkills;
+    return this.#state.skills;
   }
 }

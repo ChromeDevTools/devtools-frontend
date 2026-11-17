@@ -29,14 +29,18 @@ import {expectCall} from '../../testing/ExpectStubCall.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import type * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as Elements from '../elements/elements.js';
 
 import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
 import consoleViewStyles from './consoleView.css.js';
+
+const {html} = Lit;
 
 describeWithEnvironment('ConsoleViewMessage', () => {
   describe('anchor rendering', () => {
@@ -2524,6 +2528,76 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       objSpan.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
 
       sinon.assert.calledOnce(showStub);
+    });
+  });
+
+  describe('ConsoleAccessorParam', () => {
+    it('renders the getter result once the getter is invoked', async () => {
+      const view = createViewFunctionStub(Console.ConsoleViewMessage.ConsoleAccessorParam);
+      const accessorParam = new Console.ConsoleViewMessage.ConsoleAccessorParam(undefined, view);
+      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+      const callResult = {object: SDK.RemoteObject.RemoteObject.fromLocalObject(42), wasThrown: false};
+      const callFunction = sinon.stub(object, 'callFunction').resolves(callResult);
+      const template = html`42`;
+      const renderResult = sinon.stub().returns(template);
+
+      accessorParam.object = object;
+      accessorParam.propertyPath = ['a', 'b'];
+      accessorParam.renderResult = renderResult;
+      let input = await view.nextInput;
+      assert.isNull(input.result);
+      assert.exists(input.onInvoke);
+
+      input.onInvoke();
+      input = await view.nextInput;
+      sinon.assert.calledOnceWithExactly(callFunction, sinon.match.func, [{value: '["a","b"]'}]);
+      sinon.assert.calledOnceWithExactly(renderResult, callResult);
+      assert.strictEqual(input.result, template);
+    });
+
+    it('resets the result when the object changes', async () => {
+      const view = createViewFunctionStub(Console.ConsoleViewMessage.ConsoleAccessorParam);
+      const accessorParam = new Console.ConsoleViewMessage.ConsoleAccessorParam(undefined, view);
+      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+      sinon.stub(object, 'callFunction')
+          .resolves({object: SDK.RemoteObject.RemoteObject.fromLocalObject(42), wasThrown: false});
+      accessorParam.renderResult = () => html`42`;
+      accessorParam.object = object;
+      (await view.nextInput).onInvoke?.();
+      assert.exists((await view.nextInput).result);
+
+      accessorParam.object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+      assert.isNull((await view.nextInput).result);
+    });
+
+    it('ignores in-flight getter result when propertyPath changes on the same object', async () => {
+      const view = createViewFunctionStub(Console.ConsoleViewMessage.ConsoleAccessorParam);
+      const accessorParam = new Console.ConsoleViewMessage.ConsoleAccessorParam(undefined, view);
+      const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+      const {promise, resolve} = Promise.withResolvers<SDK.RemoteObject.CallFunctionResult>();
+      sinon.stub(object, 'callFunction').returns(promise);
+      const renderResult = sinon.stub().returns(html`42`);
+
+      accessorParam.object = object;
+      accessorParam.propertyPath = ['a'];
+      accessorParam.renderResult = renderResult;
+      (await view.nextInput).onInvoke?.();
+
+      accessorParam.propertyPath = ['b'];
+      assert.isNull((await view.nextInput).result);
+
+      resolve({object: SDK.RemoteObject.RemoteObject.fromLocalObject(42), wasThrown: false});
+      await promise;
+      await UI.Widget.Widget.allUpdatesComplete;
+      sinon.assert.notCalled(renderResult);
+      assert.isNull(view.input.result);
+    });
+
+    it('has nothing to invoke without an object', async () => {
+      const view = createViewFunctionStub(Console.ConsoleViewMessage.ConsoleAccessorParam);
+      const accessorParam = new Console.ConsoleViewMessage.ConsoleAccessorParam(undefined, view);
+      accessorParam.requestUpdate();
+      assert.isNull((await view.nextInput).onInvoke);
     });
   });
 });

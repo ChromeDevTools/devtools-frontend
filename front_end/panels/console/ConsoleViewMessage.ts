@@ -626,6 +626,117 @@ export class ConsoleErrorParam extends UI.Widget.Widget {
   }
 }
 
+function invokeGetter(this: Object, arrayStr: string): Object {
+  let result: Object = this;
+  const properties = JSON.parse(arrayStr);
+  for (let i = 0, n = properties.length; i < n; ++i) {
+    // @ts-expect-error callFunction expects this to be a generic Object, so while this works we can't be more specific on types.
+    result = result[properties[i]];
+  }
+  return result;
+}
+
+interface AccessorParamViewInput {
+  /** The getter's value, once the user invoked it. */
+  result: LitTemplate|null;
+  /** Invokes the getter; null when there is no object to invoke it on. */
+  onInvoke: (() => void)|null;
+}
+
+type AccessorParamView = (input: AccessorParamViewInput, output: undefined, target: HTMLElement) => void;
+
+export const ACCESSOR_PARAM_VIEW: AccessorParamView = (input, _output, target) => {
+  if (input.result) {
+    render(html`<span>${input.result}</span>`, target);
+    return;
+  }
+  const onInvoke = input.onInvoke;
+  if (!onInvoke) {
+    render(html`<span><span>${i18nString(UIStrings.dots)}</span></span>`, target);
+    return;
+  }
+  const onClick = (event: Event): void => {
+    event.consume(true);
+    onInvoke();
+  };
+  // clang-format off
+  render(html`<span><span
+    class="object-value-calculate-value-button"
+    role="button"
+    tabindex="0"
+    title=${i18nString(UIStrings.invokePropertyGetter)}
+    aria-label=${i18nString(UIStrings.invokePropertyGetter)}
+    @click=${onClick}
+    @keydown=${(event: KeyboardEvent) => {
+      if (!event.isComposing && Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+        onClick(event);
+      }
+    }}>${i18nString(UIStrings.dots)}</span></span>`, target);
+  // clang-format on
+};
+
+/** An accessor property whose value is shown once the user invokes its getter. */
+export class ConsoleAccessorParam extends UI.Widget.Widget {
+  #object: SDK.RemoteObject.RemoteObject|null = null;
+  #propertyPath: string[] = [];
+  #renderResult: (result: SDK.RemoteObject.CallFunctionResult) => LitTemplate | null = () => null;
+  #result: LitTemplate|null = null;
+  readonly #view: AccessorParamView;
+
+  constructor(element?: HTMLElement, view: AccessorParamView = ACCESSOR_PARAM_VIEW) {
+    super(element);
+    this.element.classList.remove('widget');
+    this.#view = view;
+  }
+
+  set object(object: SDK.RemoteObject.RemoteObject|null) {
+    if (this.#object === object) {
+      return;
+    }
+    this.#object = object;
+    this.#result = null;
+    this.requestUpdate();
+  }
+
+  set propertyPath(propertyPath: string[]) {
+    if (this.#propertyPath.length === propertyPath.length &&
+        this.#propertyPath.every((value, index) => value === propertyPath[index])) {
+      return;
+    }
+    this.#propertyPath = propertyPath;
+    this.#result = null;
+    this.requestUpdate();
+  }
+
+  /** Renders the getter's result, or returns null to keep showing the invoke button. */
+  set renderResult(renderResult: (result: SDK.RemoteObject.CallFunctionResult) => LitTemplate | null) {
+    this.#renderResult = renderResult;
+  }
+
+  async #invokeGetter(): Promise<void> {
+    const object = this.#object;
+    const propertyPath = this.#propertyPath;
+    if (!object) {
+      return;
+    }
+    const result = await object.callFunction(invokeGetter, [{value: JSON.stringify(propertyPath)}]);
+    if (object !== this.#object || propertyPath !== this.#propertyPath) {
+      return;
+    }
+    const template = this.#renderResult(result);
+    if (!template) {
+      return;
+    }
+    this.#result = template;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    const onInvoke = this.#object ? () => void this.#invokeGetter() : null;
+    this.#view({result: this.#result, onInvoke}, undefined, this.contentElement);
+  }
+}
+
 export class ConsoleViewMessage implements ConsoleViewportElement {
   protected message: SDK.ConsoleModel.ConsoleMessage;
   private readonly linkifier: Components.Linkifier.Linkifier;
@@ -1376,12 +1487,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     void contextMenu.show();
   }
 
-  protected renderPropertyPreviewOrAccessor(
-      object: SDK.RemoteObject.RemoteObject|null, property: Protocol.Runtime.PropertyPreview, propertyPath: Array<{
-        name: (string | symbol),
-      }>): DocumentFragment|HTMLElement {
+  protected renderPropertyPreviewOrAccessor(object: SDK.RemoteObject.RemoteObject|null,
+                                            property: Protocol.Runtime.PropertyPreview, propertyPath: Array<{
+                                              name: (string | symbol),
+                                            }>): LitTemplate {
     if (property.type === 'accessor') {
-      return this.formatAsAccessorProperty(object, propertyPath.map(property => property.name.toString()), false);
+      return this.formatAsAccessorProperty(object, propertyPath.map(prop => prop.name.toString()));
     }
     return this.renderPropertyPreview(
         property.type, 'subtype' in property ? property.subtype : undefined, null, property.value);
@@ -1438,89 +1549,41 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     // clang-format on
   }
 
-  private formatAsArrayEntry(output: SDK.RemoteObject.RemoteObject): DocumentFragment {
-    return this.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
+  private renderPropertyPreview(type: string, subtype: string|undefined, className: string|null|undefined,
+                                description: string|undefined): LitTemplate {
+    return this.previewFormatter.renderPropertyPreview(type, subtype, className, description);
   }
 
-  private renderPropertyPreview(
-      type: string, subtype: string|undefined, className: string|null|undefined,
-      description: string|undefined): DocumentFragment {
-    const fragment = document.createDocumentFragment();
-
-    render(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
-    return fragment;
+  private formatAsAccessorProperty(object: SDK.RemoteObject.RemoteObject|null, propertyPath: string[]): LitTemplate {
+    // clang-format off
+    return html`<devtools-widget
+      ${widget(ConsoleAccessorParam, {object, propertyPath, renderResult: this.#renderAccessorResult})}
+      ${widgetRef(ConsoleAccessorParam, ensureWidgetCreated)}></devtools-widget>`;
+    // clang-format on
   }
 
-  createRemoteObjectAccessorPropertySpan(
-      object: SDK.RemoteObject.RemoteObject|null, propertyPath: string[],
-      callback: (arg0: SDK.RemoteObject.CallFunctionResult) => void): HTMLElement {
-    const rootElement = document.createElement('span');
-    const element = rootElement.createChild('span');
-    element.textContent = i18nString(UIStrings.dots);
-    if (!object) {
-      return rootElement;
+  readonly #renderAccessorResult = (result: SDK.RemoteObject.CallFunctionResult): LitTemplate|null => {
+    const resultObj = result.object;
+    if (!resultObj) {
+      return null;
     }
-    element.classList.add('object-value-calculate-value-button');
-    UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.invokePropertyGetter));
-    element.addEventListener('click', onInvokeGetterClick, false);
-
-    function onInvokeGetterClick(event: Event): void {
-      event.consume();
-      if (object) {
-        void object.callFunction(invokeGetter, [{value: JSON.stringify(propertyPath)}]).then(callback);
-      }
+    if (result.wasThrown) {
+      return html`<span title=${ifDefined(resultObj.description)}>${i18nString(UIStrings.exception)}</span>`;
     }
-
-    function invokeGetter(this: Object, arrayStr: string): Object {
-      let result: Object = this;
-      const properties = JSON.parse(arrayStr);
-      for (let i = 0, n = properties.length; i < n; ++i) {
-        // @ts-expect-error callFunction expects this to be a generic Object, so while this works we can't be more specific on types.
-        result = result[properties[i]];
-      }
-      return result;
-    }
-
-    return rootElement;
-  }
-
-  private formatAsAccessorProperty(
-      object: SDK.RemoteObject.RemoteObject|null, propertyPath: string[], isArrayEntry: boolean): HTMLElement {
-    const rootElement =
-        this.createRemoteObjectAccessorPropertySpan(object, propertyPath, onInvokeGetterClick.bind(this));
-
-    function onInvokeGetterClick(this: ConsoleViewMessage, result: SDK.RemoteObject.CallFunctionResult): void {
-      const wasThrown = result.wasThrown;
-      const object = result.object;
-      if (!object) {
-        return;
-      }
-      rootElement.removeChildren();
-      if (wasThrown) {
-        const element = rootElement.createChild('span');
-        element.textContent = i18nString(UIStrings.exception);
-        UI.Tooltip.Tooltip.install(element, (object.description as string));
-      } else if (isArrayEntry) {
-        rootElement.appendChild(this.formatAsArrayEntry(object));
+    // Make a PropertyPreview from the RemoteObject similar to the backend logic.
+    const maxLength = 100;
+    const type = resultObj.type;
+    const subtype = resultObj.subtype;
+    let description = '';
+    if (type !== 'function' && resultObj.description) {
+      if (type === 'string' || subtype === 'regexp' || subtype === 'trustedtype') {
+        description = Platform.StringUtilities.trimMiddle(resultObj.description, maxLength);
       } else {
-        // Make a PropertyPreview from the RemoteObject similar to the backend logic.
-        const maxLength = 100;
-        const type = object.type;
-        const subtype = object.subtype;
-        let description = '';
-        if (type !== 'function' && object.description) {
-          if (type === 'string' || subtype === 'regexp' || subtype === 'trustedtype') {
-            description = Platform.StringUtilities.trimMiddle(object.description, maxLength);
-          } else {
-            description = Platform.StringUtilities.trimEndWithMaxLength(object.description, maxLength);
-          }
-        }
-        rootElement.appendChild(this.renderPropertyPreview(type, subtype, object.className, description));
+        description = Platform.StringUtilities.trimEndWithMaxLength(resultObj.description, maxLength);
       }
     }
-
-    return rootElement;
-  }
+    return this.renderPropertyPreview(type, subtype, resultObj.className, description);
+  };
 
   private formatWithSubstitutionString(formatString: string, parameters: SDK.RemoteObject.RemoteObject[],
                                        parts: Array<LitTemplate|Node|string>): SDK.RemoteObject.RemoteObject[] {
@@ -2613,10 +2676,9 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
         }
 
         if (columnRendered) {
-          const cellElement =
-              this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty])
-                  .firstElementChild as HTMLElement;
-          cellElement.classList.add('console-message-nowrap-below');
+          const cellElement = document.createElement('span');
+          render(this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]),
+                 cellElement, {container: {classes: ['console-message-nowrap-below']}});
           rowValue.set(cellProperty.name, cellElement);
         }
       }

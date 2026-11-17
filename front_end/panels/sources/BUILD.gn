@@ -220,6 +220,7 @@ devtools_ui_module("unittests") {
     "../common:bundle",
     "../coverage:bundle",
     "../search:bundle",
+    "../snippets:bundle",
     "components:bundle",
   ]
 }

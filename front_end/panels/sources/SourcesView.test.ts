@@ -3,28 +3,32 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, it} from 'mocha';
+import {afterEach, beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
+import {assertScreenshot, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
+import {createTarget, describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import {
   createContentProviderUISourceCodes,
   createFileSystemUISourceCode,
 } from '../../testing/UISourceCodeHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Snippets from '../snippets/snippets.js';
 
 import * as Sources from './sources.js';
 
-const {urlString} = Platform.DevToolsPath;
+const {EmptyEncodedPathString, urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('SourcesView', () => {
   beforeEach(async () => {
@@ -50,6 +54,15 @@ describeWithEnvironment('SourcesView', () => {
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+  });
+
+  afterEach(() => {
+    UI.ActionRegistry.ActionRegistry.removeInstance();
+    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+    Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
+    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
   });
 
   it('renders the placeholder correctly', async () => {
@@ -93,6 +106,15 @@ describeWithEnvironment('SourcesView', () => {
     });
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+  });
+
+  afterEach(() => {
+    UI.ActionRegistry.ActionRegistry.removeInstance();
+    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+    Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
+    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
   });
 
   it('creates editor tabs only for in-scope uiSourceCodes', async () => {
@@ -370,5 +392,160 @@ describeWithEnvironment('SourcesView', () => {
 
     sourceFrameA.dispose();
     sourcesView.detach();
+  });
+
+  it('has no aXe violations in the editor pane with open snippet tabs', async () => {
+    const NO_REQUIRED_CHILDREN_RULESET = {
+      'aria-required-children': {
+        enabled: false,
+        selector: ':not(.tabbed-pane-header-tabs)',
+      },
+      'aria-allowed-attr': {
+        enabled: false,
+        selector: '.cm-content',
+      },
+    };
+
+    registerActions([
+      {
+        actionId: 'debugger.toggle-pause',
+        category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+        title: i18n.i18n.lockedLazyString('Pause script execution'),
+      },
+      {
+        actionId: 'debugger.step-over',
+        category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+        title: i18n.i18n.lockedLazyString('Step over next function call'),
+      },
+      {
+        actionId: 'debugger.step-into',
+        category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+        title: i18n.i18n.lockedLazyString('Step into next function call'),
+      },
+      {
+        actionId: 'debugger.step-out',
+        category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+        title: i18n.i18n.lockedLazyString('Step out of current function'),
+      },
+      {
+        actionId: 'debugger.step',
+        category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+        title: i18n.i18n.lockedLazyString('Step'),
+      },
+      {
+        actionId: 'debugger.toggle-breakpoints-active',
+        category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+        title: i18n.i18n.lockedLazyString('Deactivate breakpoints'),
+      },
+      {
+        actionId: 'debugger.run-snippet',
+        category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+        title: i18n.i18n.lockedLazyString('Run snippet'),
+      },
+    ]);
+
+    for (const {id, title} of [{id: 'sources.watch', title: 'Watch'},
+                               {id: 'sources.js-breakpoints', title: 'Breakpoints'},
+                               {id: 'sources.scope-chain', title: 'Scope'},
+                               {id: 'sources.threads', title: 'Threads'},
+    ] as const) {
+      UI.ViewManager.registerViewExtension({
+        id,
+        title: i18n.i18n.lockedLazyString(title),
+        commandPrompt: i18n.i18n.lockedLazyString(`Show ${title}`),
+        persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+        async loadView() {
+          return new UI.View.SimpleView({
+            title: i18n.i18n.lockedString(title),
+            viewId: id,
+          });
+        },
+      });
+    }
+
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const isolatedFileSystemManager = Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance({
+      forceNew: true,
+    });
+    const fileSystemWorkspaceBinding =
+        new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(isolatedFileSystemManager, workspace);
+    isolatedFileSystemManager.addPlatformFileSystem(urlString`snippet://`,
+                                                    new Snippets.ScriptSnippetFileSystem.SnippetFileSystem());
+
+    // eslint-disable-next-line prefer-const
+    let sourcesPanel: Sources.SourcesPanel.SourcesPanel|undefined;
+    UI.ViewManager.registerLocationResolver({
+      name: UI.ViewManager.ViewLocationValues.PANEL,
+      category: UI.ViewManager.ViewLocationCategory.PANEL,
+      async loadResolver() {
+        return UI.InspectorView.InspectorView.instance();
+      },
+    });
+    UI.ViewManager.registerViewExtension({
+      location: UI.ViewManager.ViewLocationValues.PANEL,
+      id: 'sources',
+      title: i18n.i18n.lockedLazyString('Sources'),
+      commandPrompt: i18n.i18n.lockedLazyString('Show Sources'),
+      async loadView() {
+        assert.exists(sourcesPanel);
+        return sourcesPanel;
+      },
+    });
+    const universe = new TestUniverse();
+    setTestUniverseForWidgets(universe);
+    UI.ViewManager.ViewManager.instance({forceNew: true, universe});
+
+    sourcesPanel = new Sources.SourcesPanel.SourcesPanel();
+    sinon.stub(Sources.SourcesPanel.SourcesPanel, 'instance').returns(sourcesPanel);
+    Common.Revealer.registerRevealer({
+      contextTypes: () => [Workspace.UISourceCode.UISourceCode],
+      destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+      async loadRevealer() {
+        return new Sources.SourcesPanel.UISourceCodeRevealer();
+      },
+    });
+
+    try {
+      await sourcesPanel.sourcesView().updateComplete;
+      const inspectorView = UI.InspectorView.InspectorView.instance();
+      renderElementIntoDOM(inspectorView, {width: 800, height: 600, includeCommonStyles: true});
+      UI.Context.Context.instance().setFlavor(SDK.Target.Target, target1);
+
+      await UI.ViewManager.ViewManager.instance().showView('sources');
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const projects = workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem);
+      const snippetsProject =
+          projects.find(project => Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(
+                                       project) === Persistence.PlatformFileSystem.PlatformFileSystemType.SNIPPETS);
+      assert.exists(snippetsProject);
+
+      const uiSourceCode1 = await snippetsProject.createFile(EmptyEncodedPathString, null, '');
+      assert.exists(uiSourceCode1);
+      await Common.Revealer.reveal(uiSourceCode1);
+      const uiSourceCode2 = await snippetsProject.createFile(EmptyEncodedPathString, null, '');
+      assert.exists(uiSourceCode2);
+      await Common.Revealer.reveal(uiSourceCode2);
+
+      const sourcesView = sourcesPanel.sourcesView();
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const tabbedPane = sourcesView.contentElement.querySelector('devtools-tabbed-pane');
+      assert.exists(tabbedPane);
+      assert.deepEqual(tabbedPane.tabs.map(tab => tab.title), ['Script snippet #1', 'Script snippet #2']);
+
+      await UI.ViewManager.ViewManager.instance().showView('sources');
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isAbove(sourcesView.contentElement.getBoundingClientRect().width, 0);
+      assert.isAbove(sourcesView.contentElement.getBoundingClientRect().height, 0);
+      assert.isEmpty(await getAxeViolations(sourcesView.contentElement, NO_REQUIRED_CHILDREN_RULESET));
+    } finally {
+      UI.Context.Context.instance().flavor(Sources.TabbedEditorContainer.TabbedEditorContainer)?.closeAllFiles();
+      window.removeEventListener('beforeunload', sourcesPanel.handleBeforeUnload, true);
+      sourcesPanel.detach();
+      fileSystemWorkspaceBinding.dispose();
+      Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
+      UI.Context.Context.instance().setFlavor(SDK.Target.Target, null);
+    }
   });
 });

@@ -18,13 +18,27 @@ import {StubIssue} from '../../testing/StubIssue.js';
 import {recordedMetricsContain, setupUserMetricHooks} from '../../testing/UserMetricsHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import * as IssuesComponents from './components/components.js';
 import * as Issues from './issues.js';
 
-const {MIXED_CONTENT_ROWS_VIEW, REQUEST_ROWS_VIEW} = Issues.IssueView;
+const {DEFAULT_VIEW, MIXED_CONTENT_ROWS_VIEW, REQUEST_ROWS_VIEW} = Issues.IssueView;
 
 function createAggregatedIssue(code = 'code'): IssuesManager.IssueAggregator.AggregatedIssue {
   const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
   return new IssuesManager.IssueAggregator.AggregatedIssue(code, aggregationKey);
+}
+
+function createHeaderInput(overrides: Partial<Issues.IssueView.ViewInput> = {}): Issues.IssueView.ViewInput {
+  return {
+    iconName: 'issue-text-filled',
+    iconTitle: 'Improvement issue' as Platform.UIString.LocalizedString,
+    aggregatedIssuesCount: 3,
+    title: 'Mock issue',
+    isHidden: false,
+    hideIssuesMenuLabel: 'Hide issues like this' as Platform.UIString.LocalizedString,
+    onToggleHideIssues: () => {},
+    ...overrides,
+  };
 }
 
 describeWithEnvironment('IssueView', () => {
@@ -205,6 +219,108 @@ describeWithEnvironment('IssueView', () => {
     assert.exists(link);
     assert.strictEqual(link.getAttribute('href'), 'https://example.com/learn');
     assert.strictEqual(link.textContent, 'Learn more: Example article');
+  });
+
+  describe('presenter', () => {
+    function createPresenter(aggregatedIssue = createAggregatedIssue()) {
+      aggregatedIssue.addInstance(StubIssue.createFromRequestIds(['id1']));
+      const view = sinon.stub<Parameters<Issues.IssueView.View>, void>();
+      const presenter =
+          new Issues.IssueView.IssueView(aggregatedIssue, {title: 'Mock issue', links: [], markdown: []}, view);
+      const treeOutline = new UI.TreeOutline.TreeOutline();
+      treeOutline.appendChild(presenter);
+      return {aggregatedIssue, presenter, view};
+    }
+
+    it('renders the issue header into the list item when attached', () => {
+      const {presenter, view} = createPresenter();
+
+      sinon.assert.calledOnce(view);
+      const [input, output, target] = view.lastCall.args;
+      assert.strictEqual(input.title, 'Mock issue');
+      assert.strictEqual(input.aggregatedIssuesCount, 1);
+      assert.strictEqual(input.iconName, 'issue-text-filled');
+      assert.strictEqual(input.iconTitle, 'An improvement issue: there is an opportunity to improve the page');
+      assert.isFalse(input.isHidden);
+      assert.strictEqual(input.hideIssuesMenuLabel, 'Hide issues like this');
+      assert.isUndefined(output);
+      assert.strictEqual(target, presenter.listItemElement);
+    });
+
+    it('offers to unhide issues like this one for hidden issues', () => {
+      const aggregatedIssue = createAggregatedIssue();
+      sinon.stub(aggregatedIssue, 'isHidden').returns(true);
+      const {view} = createPresenter(aggregatedIssue);
+
+      const [input] = view.lastCall.args;
+      assert.isTrue(input.isHidden);
+      assert.strictEqual(input.hideIssuesMenuLabel, 'Unhide issues like this');
+    });
+
+    it('hides issues with the same code when the hide issues action is invoked', () => {
+      const {view} = createPresenter(createAggregatedIssue('MockIssueCode'));
+
+      view.lastCall.args[0].onToggleHideIssues();
+
+      assert.strictEqual(IssuesManager.IssuesManager.getHideIssueByCodeSetting().get()['MockIssueCode'],
+                         IssuesManager.IssuesManager.IssueStatus.HIDDEN);
+    });
+
+    it('re-renders the header with the new aggregated issue count when expanded after setIssue', () => {
+      const {presenter, view} = createPresenter();
+      const newAggregatedIssue = createAggregatedIssue();
+      newAggregatedIssue.addInstance(StubIssue.createFromRequestIds(['id1']));
+      newAggregatedIssue.addInstance(StubIssue.createFromRequestIds(['id2']));
+
+      presenter.setIssue(newAggregatedIssue);
+      presenter.expand();
+
+      sinon.assert.calledTwice(view);
+      assert.strictEqual(view.lastCall.args[0].aggregatedIssuesCount, 2);
+    });
+  });
+
+  describe('view', () => {
+    it('renders the issue kind icon, aggregated issues count and title', async () => {
+      const target = renderElementIntoDOM(document.createElement('li'));
+
+      DEFAULT_VIEW(createHeaderInput(), undefined, target);
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const icon = target.querySelector('devtools-icon');
+      assert.exists(icon);
+      assert.isTrue(icon.classList.contains('leading-issue-icon'));
+      assert.strictEqual(icon.name, 'issue-text-filled');
+      assert.strictEqual(icon.title, 'Improvement issue');
+      assert.strictEqual(target.querySelector('.aggregated-issues-count span')?.textContent, '3');
+      assert.strictEqual(target.querySelector('.header .title')?.textContent, 'Mock issue');
+    });
+
+    it('renders the hide issues menu widget in the header', async () => {
+      const target = renderElementIntoDOM(document.createElement('li'));
+
+      DEFAULT_VIEW(createHeaderInput(), undefined, target);
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const menuElement = target.querySelector<UI.Widget.WidgetElement<UI.Widget.Widget>>('.header devtools-widget');
+      assert.exists(menuElement);
+      assert.instanceOf(menuElement.getWidget(), IssuesComponents.HideIssuesMenu.HideIssuesMenu);
+      assert.isTrue(menuElement.classList.contains('hide-issues-menu'));
+    });
+
+    it('applies the issue and hidden-issue classes to the target', async () => {
+      const target = renderElementIntoDOM(document.createElement('li'));
+
+      DEFAULT_VIEW(createHeaderInput({isHidden: true}), undefined, target);
+      assert.isTrue(target.classList.contains('issue'));
+      assert.isTrue(target.classList.contains('hidden-issue'));
+
+      DEFAULT_VIEW(createHeaderInput({isHidden: false}), undefined, target);
+      assert.isTrue(target.classList.contains('issue'));
+      assert.isFalse(target.classList.contains('hidden-issue'));
+      assert.lengthOf(target.querySelectorAll('.header'), 1);
+      await UI.Widget.Widget.allUpdatesComplete;
+    });
   });
 
   describe('request rows view', () => {

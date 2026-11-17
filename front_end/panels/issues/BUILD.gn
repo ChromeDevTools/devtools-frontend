@@ -124,5 +124,6 @@ devtools_ui_module("unittests") {
     "../../panels/network/forward:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
+    "./components:bundle",
   ]
 }

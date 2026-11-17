@@ -1,9 +1,10 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../ui/components/adorners/adorners.js';
 import '../../ui/components/request_link_icon/request_link_icon.js';
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -13,11 +14,9 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import type * as Logs from '../../models/logs/logs.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
-import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import type * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
-import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -43,6 +42,7 @@ import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
 
 const {ifDefined} = Directives;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -358,31 +358,60 @@ class IssueBodyTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
+export interface ViewInput {
+  iconName: string;
+  iconTitle: Platform.UIString.LocalizedString;
+  aggregatedIssuesCount: number;
+  title: string;
+  isHidden: boolean;
+  hideIssuesMenuLabel: Platform.UIString.LocalizedString;
+  onToggleHideIssues: () => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <div class="header">
+      <devtools-icon class="leading-issue-icon extra-large"
+                     .name=${input.iconName}
+                     title=${input.iconTitle}></devtools-icon>
+      <devtools-adorner class="aggregated-issues-count" .name=${'countWrapper'}>
+        <span>${input.aggregatedIssuesCount}</span>
+      </devtools-adorner>
+      <div class="title">${input.title}</div>
+      ${widget(Components.HideIssuesMenu.HideIssuesMenu, {
+        menuItemLabel: input.hideIssuesMenuLabel,
+        menuItemAction: input.onToggleHideIssues,
+      })}
+    </div>
+  `, target, {container: {classes: input.isHidden ? ['issue', 'hidden-issue'] : ['issue']}});
+  // clang-format on
+};
+
 export class IssueView extends UI.TreeOutline.TreeElement {
   #issue: IssuesManager.IssueAggregator.AggregatedIssue;
   #description: IssuesManager.MarkdownIssueDescription.IssueDescription;
   override toggleOnClick: boolean;
   affectedResources: UI.TreeOutline.TreeElement;
   readonly #affectedResourceViews: AffectedResourcesView[];
-  #aggregatedIssuesCount: HTMLElement|null;
-  #issueKindIcon: Icon|null = null;
-  #hasBeenExpandedBefore: boolean;
+  #hasBeenExpandedBefore = false;
   #throttle: Common.Throttler.Throttler;
   #needsUpdateOnExpand = true;
-  #hiddenIssuesMenu?: Components.HideIssuesMenu.HideIssuesMenu;
   #contentCreated = false;
+  readonly #view: View;
 
   constructor(issue: IssuesManager.IssueAggregator.AggregatedIssue,
-              description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
+              description: IssuesManager.MarkdownIssueDescription.IssueDescription, view: View = DEFAULT_VIEW) {
     super(undefined, undefined, Platform.StringUtilities.toKebabCase(issue.getCategory()));
     this.#issue = issue;
     this.#description = description;
+    this.#view = view;
     this.#throttle = new Common.Throttler.Throttler(250);
 
     this.toggleOnClick = true;
-    this.listItemElement.classList.add('issue');
-    this.childrenListElement.classList.add('issue-body');
-    this.childrenListElement.classList.add(IssueView.#getBodyCSSClass(this.#issue.getKind()));
+    this.childrenListElement.classList.add('issue-body', IssueView.#getBodyCSSClass(this.#issue.getKind()));
 
     this.affectedResources = this.#createAffectedResources();
     this.#affectedResourceViews = [
@@ -407,9 +436,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedLazyLoadImagesView(this, this.#issue, 'lazy-load-image-details'),
       new AffectedSelectivePermissionsInterventionView(this, this.#issue, 'selective-permissions-intervention-details'),
     ];
-    this.#hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
-    this.#aggregatedIssuesCount = null;
-    this.#hasBeenExpandedBefore = false;
   }
 
   /**
@@ -449,7 +475,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   createContent(): void {
-    this.#appendHeader();
+    this.#render();
     this.#createBody();
     this.appendChild(this.affectedResources);
     const visibleAffectedResource: AffectedResourcesView[] = [];
@@ -479,29 +505,29 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     }
   }
 
-  #appendHeader(): void {
-    const header = document.createElement('div');
-    header.classList.add('header');
-    this.#issueKindIcon = new Icon();
-    this.#issueKindIcon.classList.add('leading-issue-icon', 'extra-large');
-    this.#aggregatedIssuesCount = document.createElement('span');
-    const countAdorner = new Adorners.Adorner.Adorner();
-    countAdorner.name = 'countWrapper';
-    countAdorner.append(this.#aggregatedIssuesCount);
-    countAdorner.classList.add('aggregated-issues-count');
-    header.appendChild(this.#issueKindIcon);
-    header.appendChild(countAdorner);
-
-    const title = document.createElement('div');
-    title.classList.add('title');
-    title.textContent = this.#description.title;
-    header.appendChild(title);
-    if (this.#hiddenIssuesMenu) {
-      this.#hiddenIssuesMenu.show(header, undefined, /* suppressOrphanWidgetError= */ true);
-    }
-    this.#updateFromIssue();
-    this.listItemElement.appendChild(header);
+  #render(): void {
+    const kind = this.#issue.getKind();
+    const isHidden = this.#issue.isHidden();
+    const input: ViewInput = {
+      iconName: IssueCounter.IssueCounter.getIssueKindIconName(kind),
+      iconTitle: IssuesManager.Issue.getIssueKindDescription(kind),
+      aggregatedIssuesCount: this.#issue.getAggregatedIssuesCount(),
+      title: this.#description.title,
+      isHidden,
+      hideIssuesMenuLabel: isHidden ? i18nString(UIStrings.unhideIssuesLikeThis) :
+                                      i18nString(UIStrings.hideIssuesLikeThis),
+      onToggleHideIssues: this.#onToggleHideIssues,
+    };
+    this.#view(input, undefined, this.listItemElement);
   }
+
+  readonly #onToggleHideIssues = (): void => {
+    const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
+    const values = setting.get();
+    values[this.#issue.code()] = this.#issue.isHidden() ? IssuesManager.IssuesManager.IssueStatus.UNHIDDEN :
+                                                          IssuesManager.IssuesManager.IssueStatus.HIDDEN;
+    setting.set(values);
+  };
 
   override onexpand(): void {
     const category = this.#issue.getCategory();
@@ -523,29 +549,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       for (const view of this.#affectedResourceViews) {
         view.expandIfOneResource();
       }
-    }
-  }
-
-  #updateFromIssue(): void {
-    if (this.#issueKindIcon) {
-      const kind = this.#issue.getKind();
-      this.#issueKindIcon.name = IssueCounter.IssueCounter.getIssueKindIconName(kind);
-      this.#issueKindIcon.title = IssuesManager.Issue.getIssueKindDescription(kind);
-    }
-    if (this.#aggregatedIssuesCount) {
-      this.#aggregatedIssuesCount.textContent = `${this.#issue.getAggregatedIssuesCount()}`;
-    }
-    this.listItemElement.classList.toggle('hidden-issue', this.#issue.isHidden());
-    if (this.#hiddenIssuesMenu) {
-      this.#hiddenIssuesMenu.menuItemLabel = this.#issue.isHidden() ? i18nString(UIStrings.unhideIssuesLikeThis) :
-                                                                      i18nString(UIStrings.hideIssuesLikeThis);
-      this.#hiddenIssuesMenu.menuItemAction = () => {
-        const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
-        const values = setting.get();
-        values[this.#issue.code()] = this.#issue.isHidden() ? IssuesManager.IssuesManager.IssueStatus.UNHIDDEN :
-                                                              IssuesManager.IssuesManager.IssueStatus.HIDDEN;
-        setting.set(values);
-      };
     }
   }
 
@@ -594,7 +597,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       this.updateAffectedResourceVisibility();
     }
     this.#needsUpdateOnExpand = !this.expanded;
-    this.#updateFromIssue();
+    this.#render();
   }
 
   update(): void {

@@ -85,7 +85,7 @@ export class AffectedElementsView extends AffectedResourcesView {
     this.#view = view;
   }
 
-  #appendAffectedElements(affectedElements: Iterable<IssuesManager.Issue.AffectedElement>): void {
+  protected appendAffectedElements(affectedElements: Iterable<IssuesManager.Issue.AffectedElement>): void {
     const rows = Array.from(affectedElements, element => this.#createAffectedElementRow(element));
     this.#view({rows}, undefined, this.affectedResources);
     this.updateAffectedResourceCount(rows.length);
@@ -111,6 +111,6 @@ export class AffectedElementsView extends AffectedResourcesView {
 
   update(): void {
     this.requestResolver.clear();
-    this.#appendAffectedElements(this.issue.elements());
+    this.appendAffectedElements(this.issue.elements());
   }
 }

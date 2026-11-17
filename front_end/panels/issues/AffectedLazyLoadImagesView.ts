@@ -7,7 +7,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {html, render} from '../../ui/lit/lit.js';
 
-import {AffectedResourcesView} from './AffectedResourcesView.js';
+import {AffectedResourcesView, type ElementCellData, renderElementCell} from './AffectedResourcesView.js';
 import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
@@ -20,24 +20,17 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedLazyLoadImagesVi
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ViewInput {
-  issues: Iterable<IssuesManager.LazyLoadImageIssue.LazyLoadImageIssue>;
-  issueCategory: IssuesManager.Issue.IssueCategory;
-  createElementCell: (element: IssuesManager.Issue.AffectedElement,
-                      category: IssuesManager.Issue.IssueCategory) => Promise<Element>;
+  elements: ElementCellData[];
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => Promise<void>;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-export const DEFAULT_VIEW: View = async (input, _output, target) => {
-  const templates = [];
-  for (const issue of input.issues) {
-    for (const element of issue.elements()) {
-      templates.push(html`<tr>
-        ${await input.createElementCell(element, input.issueCategory)}
-      </tr>`);
-    }
-  }
-  render(html`${templates}`, target);
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    ${input.elements.map(element => html`<tr>${renderElementCell(element)}</tr>`)}
+  `, target);
+  // clang-format on
 };
 
 export class AffectedLazyLoadImagesView extends AffectedResourcesView {
@@ -51,26 +44,25 @@ export class AffectedLazyLoadImagesView extends AffectedResourcesView {
 
   override update(): void {
     this.requestResolver.clear();
-    void this.#render();
+    this.#render();
   }
 
   protected override getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nElements, {n: count});
   }
 
-  async #render(): Promise<void> {
+  #render(): void {
     const issues = this.issue.getLazyLoadImageIssues();
+    const issueCategory = this.issue.getCategory();
     let count = 0;
+    const elements: ElementCellData[] = [];
     for (const issue of issues) {
       count += issue.elementCount();
+      for (const element of issue.elements()) {
+        elements.push(this.createElementCellData(element, issueCategory));
+      }
     }
     this.updateAffectedResourceCount(count);
-
-    const input = {
-      issues,
-      issueCategory: this.issue.getCategory(),
-      createElementCell: this.createElementCell.bind(this),
-    };
-    await this.#view(input, undefined, this.affectedResources);
+    this.#view({elements}, undefined, this.affectedResources);
   }
 }

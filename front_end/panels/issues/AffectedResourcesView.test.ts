@@ -6,15 +6,19 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Host from '../../core/host/host.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {render} from '../../ui/lit/lit.js';
 
 import * as Issues from './issues.js';
 
-const {AffectedResourcesView, DEFAULT_VIEW} = Issues.AffectedResourcesView;
+const {AffectedResourcesView, DEFAULT_VIEW, renderElementCell} = Issues.AffectedResourcesView;
 
 describe('AffectedResourcesView', () => {
   describe('view', () => {
@@ -64,6 +68,42 @@ describe('AffectedResourcesView', () => {
     });
   });
 
+  describeWithEnvironment('renderElementCell', () => {
+    setupLocaleHooks();
+
+    function renderCell(element: Issues.AffectedResourcesView.ElementCellData): HTMLTableCellElement {
+      const target = document.createElement('tr');
+      renderElementIntoDOM(target);
+      render(renderElementCell(element), target);
+      const cell = target.querySelector('td');
+      assert.exists(cell);
+      return cell;
+    }
+
+    it('renders the node name when the element cannot be resolved', () => {
+      const cell = renderCell({nodeName: 'img', onElementClick: () => {}});
+
+      assert.strictEqual(cell.textContent, 'img');
+      assert.isFalse(cell.classList.contains('affected-resource-element'));
+    });
+
+    it('renders a fallback text when the element has no node name', () => {
+      const cell = renderCell({nodeName: '', onElementClick: () => {}});
+
+      assert.strictEqual(cell.textContent, 'Unavailable');
+    });
+
+    it('renders a link to the element when the element can be resolved', async () => {
+      const deferredNode = new SDK.DOMModel.DeferredDOMNode(createTarget(), 42 as Protocol.DOM.BackendNodeId);
+      const cell = renderCell({nodeName: 'img', deferredNode, onElementClick: () => {}});
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      assert.isTrue(cell.classList.contains('affected-resource-element'));
+      assert.isTrue(cell.classList.contains('devtools-link'));
+      assert.lengthOf(cell.querySelectorAll('devtools-widget'), 1);
+    });
+  });
+
   describeWithEnvironment('presenter', () => {
     setupLocaleHooks();
 
@@ -85,6 +125,11 @@ describe('AffectedResourcesView', () => {
 
       override update(): void {
         this.updateAffectedResourceCount(this.count);
+      }
+
+      createElementCellDataForTest(element: IssuesManager.Issue.AffectedElement):
+          Issues.AffectedResourcesView.ElementCellData {
+        return this.createElementCellData(element, IssuesManager.Issue.IssueCategory.OTHER);
       }
     }
 
@@ -177,6 +222,38 @@ describe('AffectedResourcesView', () => {
       assert.strictEqual(label?.textContent, '1 test resources');
       assert.strictEqual(label?.parentElement, presenter.listItemElement);
       assert.isTrue(presenter.table.classList.contains('affected-resource-list'));
+    });
+
+    it('creates element cell data without a deferred node if the element has no target', () => {
+      const {presenter} = createPresenter();
+
+      const data = presenter.createElementCellDataForTest(
+          {backendNodeId: 1 as Protocol.DOM.BackendNodeId, nodeName: 'div', target: null});
+
+      assert.strictEqual(data.nodeName, 'div');
+      assert.isUndefined(data.deferredNode);
+    });
+
+    it('creates element cell data with a deferred node if the element has a target', () => {
+      const {presenter} = createPresenter();
+      const data = presenter.createElementCellDataForTest(
+          {backendNodeId: 42 as Protocol.DOM.BackendNodeId, nodeName: 'img', target: createTarget()});
+
+      assert.strictEqual(data.nodeName, 'img');
+      assert.instanceOf(data.deferredNode, SDK.DOMModel.DeferredDOMNode);
+      assert.strictEqual(data.deferredNode?.backendNodeId(), 42);
+    });
+
+    it('records a user metric when the element cell is clicked', () => {
+      const {presenter} = createPresenter();
+      const issuesPanelResourceOpened = sinon.spy(Host.userMetrics, 'issuesPanelResourceOpened');
+      const data = presenter.createElementCellDataForTest(
+          {backendNodeId: 42 as Protocol.DOM.BackendNodeId, nodeName: 'img', target: createTarget()});
+
+      data.onElementClick();
+
+      sinon.assert.calledOnceWithExactly(issuesPanelResourceOpened, IssuesManager.Issue.IssueCategory.OTHER,
+                                         Issues.AffectedResourcesView.AffectedItem.ELEMENT);
     });
   });
 });

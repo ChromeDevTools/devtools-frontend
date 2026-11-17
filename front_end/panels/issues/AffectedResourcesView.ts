@@ -1,8 +1,6 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -12,10 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
-import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
-import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as PanelsCommon from '../common/common.js';
@@ -23,6 +18,7 @@ import * as PanelsCommon from '../common/common.js';
 import type {IssueView} from './IssueView.js';
 
 const {classMap, ref} = Directives;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -55,11 +51,26 @@ export const extractShortPath = (path: Platform.DevToolsPath.UrlString): string 
   return (/[^/]+$/.exec(path) || /[^/]+\/$/.exec(path) || [''])[0];
 };
 
-export interface CreateRequestCellOptions {
-  linkToPreflight?: boolean;
-  highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
-  networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
-  additionalOnClickAction?: () => void;
+export interface ElementCellData {
+  nodeName: string;
+  deferredNode?: SDK.DOMModel.DeferredDOMNode;
+  onElementClick: () => void;
+}
+
+export function renderElementCell(element: ElementCellData): LitTemplate {
+  const {deferredNode} = element;
+  if (!deferredNode) {
+    return html`<td>${element.nodeName || i18nString(UIStrings.unavailable)}</td>`;
+  }
+  // clang-format off
+  return html`
+    <td class="affected-resource-element devtools-link">${
+      widget(PanelsCommon.DOMLinkifier.DeferredDOMNodeLink, {
+        deferredNode,
+        options: {textContent: element.nodeName || undefined, onClick: element.onElementClick},
+      })}</td>
+  `;
+  // clang-format on
 }
 
 export interface FrameCellData {
@@ -156,6 +167,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
     this.#render();
 
+    // eslint-disable-next-line @devtools/no-imperative-dom-api
     const body = new UI.TreeOutline.TreeElement();
     let table: HTMLTableElement|undefined;
     tableView({
@@ -277,71 +289,15 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     };
   }
 
-  protected createFrameCell(frameId: Protocol.Page.FrameId,
-                            issueCategory: IssuesManager.Issue.IssueCategory): HTMLElement {
-    const frame = this.#resolveFrameId(frameId);
-    const url = frame && (frame.unreachableUrl() || frame.url) || i18nString(UIStrings.unknown);
-
-    const frameCell = document.createElement('td');
-    frameCell.classList.add('affected-resource-cell');
-    if (frame) {
-      const icon = new Icon();
-      icon.name = 'code-circle';
-      icon.classList.add('link', 'elements-panel', 'medium');
-      icon.onclick = async () => {
+  protected createElementCellData({backendNodeId, nodeName, target}: IssuesManager.Issue.AffectedElement,
+                                  issueCategory: IssuesManager.Issue.IssueCategory): ElementCellData {
+    return {
+      nodeName,
+      deferredNode: target ? new SDK.DOMModel.DeferredDOMNode(target, backendNodeId) : undefined,
+      onElementClick: () => {
         Host.userMetrics.issuesPanelResourceOpened(issueCategory, AffectedItem.ELEMENT);
-        const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-        if (frame) {
-          const ownerNode = await frame.getOwnerDOMNodeOrDocument();
-          if (ownerNode) {
-            void Common.Revealer.reveal(ownerNode);
-          }
-        }
-      };
-      icon.title = i18nString(UIStrings.clickToRevealTheFramesDomNodeIn);
-      frameCell.appendChild(icon);
-    }
-    frameCell.appendChild(document.createTextNode(url));
-    frameCell.onmouseenter = () => {
-      const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-      if (frame) {
-        void frame.highlight();
-      }
+      },
     };
-    frameCell.onmouseleave = () =>
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
-    return frameCell;
-  }
-
-  protected createRequestCell(affectedRequest: Protocol.Audits.AffectedRequest,
-                              options: CreateRequestCellOptions = {}): HTMLElement {
-    const requestCell = document.createElement('td');
-    requestCell.classList.add('affected-resource-cell');
-    const requestLinkIcon = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
-    requestLinkIcon.data = {...options, affectedRequest, requestResolver: this.requestResolver, displayURL: true};
-    requestCell.appendChild(requestLinkIcon);
-    return requestCell;
-  }
-
-  protected async createElementCell({backendNodeId, nodeName, target}: IssuesManager.Issue.AffectedElement,
-                                    issueCategory: IssuesManager.Issue.IssueCategory): Promise<Element> {
-    if (!target) {
-      const cellElement = document.createElement('td');
-      cellElement.textContent = nodeName || i18nString(UIStrings.unavailable);
-      return cellElement;
-    }
-
-    function sendTelemetry(): void {
-      Host.userMetrics.issuesPanelResourceOpened(issueCategory, AffectedItem.ELEMENT);
-    }
-
-    const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
-    const anchor = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(
-        deferredDOMNode, {textContent: nodeName || undefined, onClick: sendTelemetry});
-    const cellElement = document.createElement('td');
-    cellElement.classList.add('affected-resource-element', 'devtools-link');
-    render(anchor, cellElement);
-    return cellElement;
   }
 
   abstract update(): void;

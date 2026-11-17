@@ -594,16 +594,16 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   readonly #customLocationsSetting: Common.Settings.Setting<LocationDescription[]>;
   #timezoneError = '';
   #localeError = '';
-  private readonly deviceOrientationSetting: Common.Settings.Setting<string>;
-  private deviceOrientation: SDK.EmulationModel.DeviceOrientation;
-  private deviceOrientationOverrideEnabled: boolean;
+  readonly #deviceOrientationSetting: Common.Settings.Setting<string>;
+  #deviceOrientation: SDK.EmulationModel.DeviceOrientation;
+  #deviceOrientationOverrideEnabled: boolean;
   #selectedOrientation: string = NonPresetOptions.NoOverride;
   #animateOrientation = false;
   // The input to focus after the next update. Set when a custom location or orientation is selected.
   #inputToFocus?: 'latitude'|'alpha';
-  private boxMatrix?: DOMMatrix;
-  private mouseDownVector?: Geometry.Vector|null;
-  private originalBoxMatrix?: DOMMatrix;
+  #boxMatrix?: DOMMatrix;
+  #mouseDownVector?: Geometry.Vector|null;
+  #originalBoxMatrix?: DOMMatrix;
   readonly #cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
   readonly #hardwareConcurrencyCheckbox: HTMLElement;
   readonly #hardwareConcurrencyDetails: HTMLElement[];
@@ -621,10 +621,10 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.#customLocationsSetting = Common.Settings.Settings.instance().resolve(
         SettingUIRegistration.EmulationSettings.emulationLocationsSettingDescriptor);
 
-    this.deviceOrientationSetting =
+    this.#deviceOrientationSetting =
         Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
-    this.deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this.deviceOrientationSetting.get());
-    this.deviceOrientationOverrideEnabled = false;
+    this.#deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this.#deviceOrientationSetting.get());
+    this.#deviceOrientationOverrideEnabled = false;
 
     const {checkbox, numericInput, reset, warning} =
         MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
@@ -651,8 +651,8 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       onLocationKeyDown: this.#onLocationKeyDown.bind(this),
     };
     const orientationInput: OrientationViewInput = {
-      orientation: this.deviceOrientation,
-      orientationOverrideEnabled: this.deviceOrientationOverrideEnabled,
+      orientation: this.#deviceOrientation,
+      orientationOverrideEnabled: this.#deviceOrientationOverrideEnabled,
       selectedOrientation: this.#selectedOrientation,
       animateOrientation: this.#animateOrientation,
       onOrientationSelectChange: this.orientationSelectChanged.bind(this),
@@ -870,7 +870,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     const value = (event.currentTarget as HTMLSelectElement).value;
     this.#selectedOrientation = value;
     this.#inputToFocus = value === NonPresetOptions.Custom ? 'alpha' : undefined;
-    this.deviceOrientationOverrideEnabled = value !== NonPresetOptions.NoOverride;
+    this.#deviceOrientationOverrideEnabled = value !== NonPresetOptions.NoOverride;
 
     // Setting the device orientation schedules an update of the view.
     if (value === NonPresetOptions.NoOverride) {
@@ -880,23 +880,24 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       this.resetDeviceOrientation();
     } else {
       const parsedValue = JSON.parse(value);
-      this.deviceOrientation = new SDK.EmulationModel.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);
-      this.setDeviceOrientation(this.deviceOrientation, DeviceOrientationModificationSource.SELECT_PRESET);
+      this.#deviceOrientation =
+          new SDK.EmulationModel.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);
+      this.setDeviceOrientation(this.#deviceOrientation, DeviceOrientationModificationSource.SELECT_PRESET);
     }
   }
 
   private applyDeviceOrientation(): void {
-    if (this.deviceOrientationOverrideEnabled) {
-      this.deviceOrientationSetting.set(this.deviceOrientation.toSetting());
+    if (this.#deviceOrientationOverrideEnabled) {
+      this.#deviceOrientationSetting.set(this.#deviceOrientation.toSetting());
     }
     for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      void emulationModel.emulateDeviceOrientation(
-          this.deviceOrientationOverrideEnabled ? this.deviceOrientation : null);
+      void emulationModel.emulateDeviceOrientation(this.#deviceOrientationOverrideEnabled ? this.#deviceOrientation :
+                                                                                            null);
     }
   }
 
   private applyDeviceOrientationUserInput(input: HTMLInputElement): void {
-    const {alpha, beta, gamma} = this.deviceOrientation;
+    const {alpha, beta, gamma} = this.#deviceOrientation;
     const values = {alpha: String(alpha), beta: String(beta), gamma: String(gamma), [input.name]: input.value.trim()};
     this.#selectedOrientation = NonPresetOptions.Custom;
     this.setDeviceOrientation(
@@ -918,7 +919,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     }
 
     const animate = modificationSource !== DeviceOrientationModificationSource.USER_DRAG;
-    this.deviceOrientation = deviceOrientation;
+    this.#deviceOrientation = deviceOrientation;
     this.setBoxOrientation(animate);
     this.applyDeviceOrientation();
     this.requestUpdate();
@@ -980,38 +981,38 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     //    the X axis in the CSS coordinate space (i.e. when all angles are 0 we
     //    cannot see its screen in DevTools).
     //
-    // |this.boxMatrix| is set in the Device Orientation coordinate space
+    // |this.#boxMatrix| is set in the Device Orientation coordinate space
     // because it represents the phone model we show users and also because the
     // calculations in Geometry.EulerAngles assume this coordinate space (so
     // we apply the rotations in the Z-X'-Y'' order).
     // The CSS transforms, on the other hand, are done in the CSS coordinate
     // space, so we need to convert 2) to 1) while keeping 3) in mind. We can
     // cover 3) by swapping the Y and Z axes, and 2) by inverting the X axis.
-    const {alpha, beta, gamma} = this.deviceOrientation;
-    this.boxMatrix = new DOMMatrixReadOnly().rotate(0, 0, alpha).rotate(beta, 0, 0).rotate(0, gamma, 0);
+    const {alpha, beta, gamma} = this.#deviceOrientation;
+    this.#boxMatrix = new DOMMatrixReadOnly().rotate(0, 0, alpha).rotate(beta, 0, 0).rotate(0, gamma, 0);
   }
 
   private onBoxDrag(mouseMoveVector: Geometry.Vector, shiftKey: boolean): void {
-    if (!this.mouseDownVector) {
+    if (!this.#mouseDownVector) {
       return;
     }
 
     let axis, angle;
     if (shiftKey) {
       axis = new Geometry.Vector(0, 0, 1);
-      angle = (mouseMoveVector.x - this.mouseDownVector.x) * ShiftDragOrientationSpeed;
+      angle = (mouseMoveVector.x - this.#mouseDownVector.x) * ShiftDragOrientationSpeed;
     } else {
-      axis = Geometry.crossProduct(this.mouseDownVector, mouseMoveVector);
-      angle = Geometry.calculateAngle(this.mouseDownVector, mouseMoveVector);
+      axis = Geometry.crossProduct(this.#mouseDownVector, mouseMoveVector);
+      angle = Geometry.calculateAngle(this.#mouseDownVector, mouseMoveVector);
     }
 
     // See the comment in setBoxOrientation() for a longer explanation about
     // the CSS coordinate space, the Device Orientation coordinate space and
     // the conversions we make. |axis| and |angle| are in the CSS coordinate
-    // space, while |this.originalBoxMatrix| is rotated and in the Device
+    // space, while |this.#originalBoxMatrix| is rotated and in the Device
     // Orientation coordinate space, which is why we swap Y and Z and invert X.
     const currentMatrix =
-        new DOMMatrixReadOnly().rotateAxisAngle(-axis.x, axis.z, axis.y, angle).multiply(this.originalBoxMatrix);
+        new DOMMatrixReadOnly().rotateAxisAngle(-axis.x, axis.z, axis.y, angle).multiply(this.#originalBoxMatrix);
 
     const eulerAngles = Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(currentMatrix);
     const newOrientation =
@@ -1021,12 +1022,12 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   }
 
   private onBoxDragStart(mouseDownVector: Geometry.Vector): boolean {
-    if (!this.deviceOrientationOverrideEnabled) {
+    if (!this.#deviceOrientationOverrideEnabled) {
       return false;
     }
 
-    this.mouseDownVector = mouseDownVector;
-    this.originalBoxMatrix = this.boxMatrix;
+    this.#mouseDownVector = mouseDownVector;
+    this.#originalBoxMatrix = this.#boxMatrix;
     return true;
   }
 }

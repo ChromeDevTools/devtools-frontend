@@ -6,20 +6,23 @@ import {assert} from 'chai';
 import {beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
-import type * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithEnvironment('LighthousePanel', () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   let Lighthouse: typeof LighthouseModule;
   let target: SDK.Target.Target;
+  let prerenderTarget: SDK.Target.Target;
   let resourceTreeModelNavigate: sinon.SinonStub;
   let protocolService: LighthouseModule.LighthouseProtocolService.ProtocolService;
   let controller: LighthouseModule.LighthouseController.LighthouseController;
@@ -43,8 +46,9 @@ describeWithEnvironment('LighthousePanel', () => {
     Lighthouse = await import('./lighthouse.js');
     Lighthouse.LighthouseController.clearSettingsCacheForTest();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
-    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
+    target.setInspectedURL(urlString`${URL}`);
     sinon.stub(target.pageAgent(), 'invoke_getNavigationHistory').resolves({
       currentIndex: 0,
       entries: [{url: URL}],
@@ -54,11 +58,6 @@ describeWithEnvironment('LighthousePanel', () => {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);
     resourceTreeModelNavigate = sinon.stub(resourceTreeModel, 'navigate').resolves();
-    sinon.stub(resourceTreeModel, 'addEventListener')
-        .callThrough()
-        .withArgs(SDK.ResourceTreeModel.Events.Load, sinon.match.any)
-        .callsArgWithAsync(1, {resourceTreeModel, loadTime: 0})
-        .returns({} as Common.EventTarget.EventDescriptor);
 
     protocolService = new Lighthouse.LighthouseProtocolService.ProtocolService();
     sinon.stub(protocolService, 'attach').resolves();
@@ -89,16 +88,104 @@ describeWithEnvironment('LighthousePanel', () => {
         Lighthouse.LighthousePanel.ActiveLighthouseReport);
   });
 
-  it('waits for main target to load before linkifying', async () => {
+  it('linkifies report nodes on render and re-linkifies on primary target load', async () => {
+    const linkifyStub =
+        sinon.stub(Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer, 'linkifyNodeDetails').resolves();
     const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
-    void instance.handleCompleteRun();
+    renderElementIntoDOM(instance);
 
-    await new Promise<void>(
-        resolve => sinon.stub(Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer, 'linkifyNodeDetails')
-                       .callsFake((_: Element) => {
-                         resolve();
-                         return Promise.resolve();
-                       }));
+    await instance.handleCompleteRun();
+    await UI.Widget.Widget.allUpdatesComplete;
+    sinon.assert.calledOnce(linkifyStub);
+
+    const prerenderResourceTreeModel = prerenderTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(prerenderResourceTreeModel);
+    prerenderResourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load,
+                                                        {resourceTreeModel: prerenderResourceTreeModel, loadTime: 0});
+    await raf();
+    sinon.assert.calledOnce(linkifyStub);
+
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 0});
+    await raf();
+    sinon.assert.calledTwice(linkifyStub);
+    assert.isTrue(linkifyStub.firstCall.args[2]?.aborted);
+    instance.detach();
+  });
+
+  it('aborts linkification on detach and re-linkifies when shown again', async () => {
+    const linkifyStub =
+        sinon.stub(Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer, 'linkifyNodeDetails').resolves();
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+    renderElementIntoDOM(instance);
+
+    await instance.handleCompleteRun();
+    await UI.Widget.Widget.allUpdatesComplete;
+    sinon.assert.calledOnce(linkifyStub);
+
+    instance.detach();
+    assert.isTrue(linkifyStub.firstCall.args[2]?.aborted);
+
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 0});
+    await raf();
+    sinon.assert.calledOnce(linkifyStub);
+
+    renderElementIntoDOM(instance);
+    await raf();
+    sinon.assert.calledTwice(linkifyStub);
+    instance.detach();
+  });
+
+  it('unlinks report nodes when primary target loads an unrelated URL', async () => {
+    const linkifyStub =
+        sinon.stub(Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer, 'linkifyNodeDetails').resolves();
+    const unlinkSpy = sinon.spy(Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer, 'unlinkNodeDetails');
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+    renderElementIntoDOM(instance);
+
+    await instance.handleCompleteRun();
+    await UI.Widget.Widget.allUpdatesComplete;
+    sinon.assert.calledOnce(linkifyStub);
+
+    target.setInspectedURL(urlString`http://other.example.com`);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 0});
+    await raf();
+
+    sinon.assert.calledOnce(linkifyStub);
+    sinon.assert.calledOnce(unlinkSpy);
+    instance.detach();
+  });
+
+  it('defers linkifying until shown when report renders while hidden', async () => {
+    const linkifyStub =
+        sinon.stub(Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer, 'linkifyNodeDetails').resolves();
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+
+    await instance.handleCompleteRun();
+    await UI.Widget.Widget.allUpdatesComplete;
+    sinon.assert.notCalled(linkifyStub);
+
+    renderElementIntoDOM(instance);
+    await raf();
+    sinon.assert.calledOnce(linkifyStub);
+    instance.detach();
+  });
+
+  it('shows the report widget only once when completing a run', async () => {
+    const showSpy = sinon.spy(Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.prototype, 'show');
+    const detachSpy = sinon.spy(Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.prototype, 'detach');
+
+    const instance = Lighthouse.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+    await instance.handleCompleteRun();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    sinon.assert.calledOnce(showSpy);
+    sinon.assert.notCalled(detachSpy);
   });
 
   it('can receive an external request and trigger a recording', async () => {

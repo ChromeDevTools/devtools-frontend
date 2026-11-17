@@ -146,6 +146,43 @@ describeWithEnvironment('LighthouseReportRenderer', () => {
     assert.strictEqual(sourceElement.innerHTML, originalHtml);
   });
 
+  it('keeps the existing link element when re-linkifying resolves the same DOMNode', async () => {
+    sourceElement.innerHTML = LH_NODE_HTML(PATH, SNIPPET);
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    sinon.stub(domModel, 'pushNodeByPathToFrontend').withArgs(PATH).resolves(NODE_ID);
+    sinon.stub(domModel, 'nodeForId').withArgs(NODE_ID).returns(NODE);
+    const view = sinon.stub<Parameters<View>, void>();
+
+    await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement, view);
+    const firstContainer = sourceElement.firstElementChild?.firstElementChild;
+    assert.exists(firstContainer);
+
+    await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement, view);
+    sinon.assert.calledOnce(view);
+    assert.strictEqual(sourceElement.firstElementChild?.firstElementChild, firstContainer);
+  });
+
+  it('reverts a linked node back to plain text when a subsequent pass cannot resolve it', async () => {
+    sourceElement.innerHTML = `<div class="lh-node" data-path="${PATH}" data-snippet="${
+        SNIPPET}" title="div.hero"><div class="lh-element-screenshot"></div><div class="lh-node__snippet">${
+        SNIPPET}</div></div>`;
+    const originalHtml = sourceElement.firstElementChild?.innerHTML;
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const pushNodeStub = sinon.stub(domModel, 'pushNodeByPathToFrontend').withArgs(PATH).resolves(NODE_ID);
+    sinon.stub(domModel, 'nodeForId').withArgs(NODE_ID).returns(NODE);
+
+    await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);
+    assert.strictEqual((sourceElement.firstElementChild as HTMLElement).title, '');
+
+    pushNodeStub.withArgs(PATH).resolves(null);
+    await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);
+
+    assert.strictEqual(sourceElement.firstElementChild?.innerHTML, originalHtml);
+    assert.strictEqual((sourceElement.firstElementChild as HTMLElement).title, 'div.hero');
+  });
+
   describe('linkifySourceLocationDetails', () => {
     it('passes the source location to the view and clears the placeholder', async () => {
       sourceElement.innerHTML = LH_SOURCE_LOCATION_HTML(SOURCE_URL, '10', '5');

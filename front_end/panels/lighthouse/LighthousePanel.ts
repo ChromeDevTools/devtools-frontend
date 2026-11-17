@@ -317,7 +317,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   private renderReport(lighthouseResult: LighthouseModel.ReporterTypes.ReportJSON,
-                       artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts): LighthouseReportRenderer {
+                       artifacts?: LighthouseModel.ReporterTypes.RunnerResultArtifacts): void {
     this.toggleSettingsDisplay(false);
     this.contentElement.classList.toggle('in-progress', false);
     this.startView.hideWidget();
@@ -341,10 +341,6 @@ export class LighthousePanel extends UI.Panel.Panel {
       this.cachedRenderedReports.set(lighthouseResult, reportWidget);
     }
     reportWidget.show(this.auditResultsElement);
-    if (!reportWidget.isShowing()) {
-      reportWidget.requestUpdate();
-    }
-    return reportWidget;
   }
 
   private buildReportUI(
@@ -357,10 +353,10 @@ export class LighthousePanel extends UI.Panel.Panel {
     const optionElement = new Item(lighthouseResult, () => {
       this.renderReport(lighthouseResult, artifacts);
     }, this.renderStartView.bind(this));
+    // prepend() synchronously selects optionElement, which calls renderReport().
     this.reportSelector.prepend(optionElement);
-    this.refreshToolbarUI();
-    const reportWidget = this.renderReport(lighthouseResult);
-    void reportWidget.updateComplete.then(() => {
+    const reportWidget = this.cachedRenderedReports.get(lighthouseResult);
+    void reportWidget?.updateComplete.then(() => {
       (this.auditResultsElement.querySelector('.lh-topbar__url') as HTMLElement | null)?.focus();
     });
   }

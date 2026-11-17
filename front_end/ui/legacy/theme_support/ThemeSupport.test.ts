@@ -34,6 +34,11 @@ describeWithEnvironment('ThemeSupport', () => {
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, colorSource);
   }
 
+  function dispatchCaretBlinkIntervalChanged(caretBlinkInterval: number): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
+        Host.InspectorFrontendHostAPI.Events.CaretBlinkIntervalChanged, caretBlinkInterval);
+  }
+
   beforeEach(() => {
     document.documentElement.classList.remove('baseline-default', 'baseline-grayscale', 'theme-with-dark-background');
     initialRootClasses = Array.from(document.documentElement.classList);
@@ -574,6 +579,228 @@ describeWithEnvironment('ThemeSupport', () => {
 
       const computedBackgroundColor = window.getComputedStyle(element).backgroundColor;
       assert.strictEqual(computedBackgroundColor, 'rgb(20, 108, 46)');
+    });
+  });
+
+  describe('caretBlinkInterval', () => {
+    it('normalizes valid non-negative finite numbers and rejects invalid values', () => {
+      assert.isTrue(Object.is(ThemeSupport.normalizeCaretBlinkInterval(0), 0));
+      assert.isTrue(Object.is(ThemeSupport.normalizeCaretBlinkInterval(-0), 0));
+      assert.strictEqual(ThemeSupport.normalizeCaretBlinkInterval(500), 500);
+      assert.strictEqual(ThemeSupport.normalizeCaretBlinkInterval(750), 750);
+
+      assert.isUndefined(ThemeSupport.normalizeCaretBlinkInterval(undefined));
+      assert.isUndefined(ThemeSupport.normalizeCaretBlinkInterval(null));
+      assert.isUndefined(ThemeSupport.normalizeCaretBlinkInterval(-1));
+      assert.isUndefined(ThemeSupport.normalizeCaretBlinkInterval(NaN));
+      assert.isUndefined(ThemeSupport.normalizeCaretBlinkInterval(Infinity));
+      assert.isUndefined(ThemeSupport.normalizeCaretBlinkInterval(-Infinity));
+      assert.isUndefined(ThemeSupport.normalizeCaretBlinkInterval('0'));
+      assert.isUndefined(ThemeSupport.normalizeCaretBlinkInterval({}));
+    });
+
+    it('returns undefined by default and reflects updateHostConfig after instance creation', () => {
+      assert.isUndefined(themeSupport.caretBlinkInterval());
+
+      updateHostConfig({caretBlinkInterval: 0});
+      assert.isTrue(Object.is(themeSupport.caretBlinkInterval(), 0));
+
+      updateHostConfig({caretBlinkInterval: 500});
+      assert.strictEqual(themeSupport.caretBlinkInterval(), 500);
+    });
+
+    it('reads initial caretBlinkInterval synchronously from getHostConfig', () => {
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+      updateHostConfig({caretBlinkInterval: 500});
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig')
+          .callsFake(callback => callback({caretBlinkInterval: 0}));
+
+      themeSupport = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+      assert.isTrue(Object.is(themeSupport.caretBlinkInterval(), 0));
+    });
+
+    it('updates caretBlinkInterval asynchronously from getHostConfig without triggering ThemeChangeEvent or colors.css',
+       () => {
+         sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+         let asyncCallback: ((config: Root.Runtime.HostConfig) => void)|undefined;
+         sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig').callsFake(callback => {
+           asyncCallback = callback;
+         });
+         updateHostConfig({caretBlinkInterval: 500});
+         themeSupport = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+         const onCaretBlinkChange = sinon.spy();
+         const onThemeChange = sinon.spy();
+         themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, onCaretBlinkChange);
+         themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, onThemeChange);
+
+         assert.strictEqual(themeSupport.caretBlinkInterval(), 500);
+         assert.isDefined(asyncCallback);
+         asyncCallback!({caretBlinkInterval: 0});
+
+         assert.isTrue(Object.is(themeSupport.caretBlinkInterval(), 0));
+         sinon.assert.calledOnce(onCaretBlinkChange);
+         sinon.assert.notCalled(onThemeChange);
+         assert.isEmpty(document.querySelectorAll(COLORS_CSS_SELECTOR));
+       });
+
+    it('ignores late getHostConfig callbacks after dispose', () => {
+      let disposedCallback: ((config: Root.Runtime.HostConfig) => void)|undefined;
+      const getHostConfigStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig').callsFake(callback => {
+            disposedCallback = callback;
+          });
+
+      const oldInstance = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+      const oldListener = sinon.spy();
+      oldInstance.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, oldListener);
+
+      getHostConfigStub.callsFake(() => {});
+      themeSupport = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+
+      assert.isDefined(disposedCallback);
+      disposedCallback!({caretBlinkInterval: 0});
+      assert.isUndefined(oldInstance.caretBlinkInterval());
+      sinon.assert.notCalled(oldListener);
+    });
+
+    it('ignores late getHostConfig callbacks superseded by a live event', () => {
+      let liveRaceCallback: ((config: Root.Runtime.HostConfig) => void)|undefined;
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig').callsFake(callback => {
+        liveRaceCallback = callback;
+      });
+      themeSupport = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+      const currentListener = sinon.spy();
+      themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, currentListener);
+
+      dispatchCaretBlinkIntervalChanged(750);
+      assert.strictEqual(themeSupport.caretBlinkInterval(), 750);
+      sinon.assert.calledOnce(currentListener);
+
+      assert.isDefined(liveRaceCallback);
+      liveRaceCallback!({caretBlinkInterval: 0});
+      assert.strictEqual(themeSupport.caretBlinkInterval(), 750);
+      sinon.assert.calledOnce(currentListener);
+    });
+
+    it('updates caretBlinkInterval on live CaretBlinkIntervalChanged events', () => {
+      updateHostConfig({caretBlinkInterval: 500});
+      assert.strictEqual(themeSupport.caretBlinkInterval(), 500);
+
+      const onCaretBlinkChange = sinon.spy();
+      themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, onCaretBlinkChange);
+
+      dispatchCaretBlinkIntervalChanged(0);
+      assert.isTrue(Object.is(themeSupport.caretBlinkInterval(), 0));
+      sinon.assert.calledOnce(onCaretBlinkChange);
+
+      dispatchCaretBlinkIntervalChanged(500);
+      assert.strictEqual(themeSupport.caretBlinkInterval(), 500);
+      sinon.assert.calledTwice(onCaretBlinkChange);
+
+      dispatchCaretBlinkIntervalChanged(0);
+      assert.isTrue(Object.is(themeSupport.caretBlinkInterval(), 0));
+      sinon.assert.calledThrice(onCaretBlinkChange);
+    });
+
+    it('pins live CaretBlinkIntervalChanged value matching hostConfig without firing a duplicate event', () => {
+      updateHostConfig({caretBlinkInterval: 500});
+      const onCaretBlinkChange = sinon.spy();
+      themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, onCaretBlinkChange);
+
+      dispatchCaretBlinkIntervalChanged(500);
+      sinon.assert.notCalled(onCaretBlinkChange);
+
+      updateHostConfig({caretBlinkInterval: 250});
+      assert.strictEqual(themeSupport.caretBlinkInterval(), 500);
+    });
+
+    it('pins getHostConfig caretBlinkInterval matching hostConfig across subsequent updateHostConfig', () => {
+      updateHostConfig({caretBlinkInterval: 500});
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig')
+          .callsFake(callback => callback({caretBlinkInterval: 500}));
+
+      themeSupport = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+      const onCaretBlinkChange = sinon.spy();
+      themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, onCaretBlinkChange);
+
+      updateHostConfig({caretBlinkInterval: 0});
+      assert.strictEqual(themeSupport.caretBlinkInterval(), 500);
+      sinon.assert.notCalled(onCaretBlinkChange);
+
+      dispatchCaretBlinkIntervalChanged(0);
+      assert.isTrue(Object.is(themeSupport.caretBlinkInterval(), 0));
+      sinon.assert.calledOnce(onCaretBlinkChange);
+    });
+
+    it('deduplicates identical live CaretBlinkIntervalChanged values including -0', () => {
+      const onCaretBlinkChange = sinon.spy();
+      themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, onCaretBlinkChange);
+
+      dispatchCaretBlinkIntervalChanged(0);
+      sinon.assert.calledOnce(onCaretBlinkChange);
+
+      dispatchCaretBlinkIntervalChanged(0);
+      dispatchCaretBlinkIntervalChanged(-0);
+      sinon.assert.calledOnce(onCaretBlinkChange);
+    });
+
+    it('ignores invalid CaretBlinkIntervalChanged payloads', () => {
+      dispatchCaretBlinkIntervalChanged(0);
+      const onCaretBlinkChange = sinon.spy();
+      themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, onCaretBlinkChange);
+
+      dispatchCaretBlinkIntervalChanged(-1);
+      dispatchCaretBlinkIntervalChanged(Number.NaN);
+      dispatchCaretBlinkIntervalChanged('bad' as unknown as number);
+
+      assert.isTrue(Object.is(themeSupport.caretBlinkInterval(), 0));
+      sinon.assert.notCalled(onCaretBlinkChange);
+    });
+
+    it('preserves getComputedValue cache and skips ThemeChangeEvent on CaretBlinkIntervalChanged', () => {
+      const cachedValue = themeSupport.getComputedValue('--sys-color-primary');
+      const newStyle = document.createElement('style');
+      newStyle.textContent = ':root { --sys-color-primary: green; }';
+      document.head.appendChild(newStyle);
+      injectedElements.push(newStyle);
+
+      const onThemeChange = sinon.spy();
+      themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, onThemeChange);
+
+      dispatchCaretBlinkIntervalChanged(0);
+
+      assert.strictEqual(themeSupport.getComputedValue('--sys-color-primary'), cachedValue);
+      sinon.assert.notCalled(onThemeChange);
+    });
+
+    it('cleans up CaretBlinkIntervalChanged listener when recreated with forceNew', () => {
+      const priorInstance = themeSupport;
+      const priorListener = sinon.spy();
+      priorInstance.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, priorListener);
+
+      const nextInstance = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
+      const nextListener = sinon.spy();
+      nextInstance.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, nextListener);
+
+      dispatchCaretBlinkIntervalChanged(0);
+
+      sinon.assert.notCalled(priorListener);
+      assert.isUndefined(priorInstance.caretBlinkInterval());
+      sinon.assert.calledOnce(nextListener);
+      assert.isTrue(Object.is(nextInstance.caretBlinkInterval(), 0));
+    });
+
+    it('preserves caretBlinkInterval across addDocumentToTheme', () => {
+      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(true);
+      dispatchCaretBlinkIntervalChanged(0);
+      const onCaretBlinkChange = sinon.spy();
+      themeSupport.addEventListener(ThemeSupport.CaretBlinkIntervalChangeEvent.eventName, onCaretBlinkChange);
+
+      const secondaryDoc = document.implementation.createHTMLDocument();
+      themeSupport.addDocumentToTheme(secondaryDoc);
+
+      assert.isTrue(Object.is(themeSupport.caretBlinkInterval(), 0));
+      sinon.assert.notCalled(onCaretBlinkChange);
     });
   });
 });

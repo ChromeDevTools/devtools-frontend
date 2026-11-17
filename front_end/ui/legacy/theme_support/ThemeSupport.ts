@@ -49,6 +49,8 @@ export class ThemeSupport extends EventTarget {
 
   readonly #documentsToTheme = new Set<Document>([document]);
   #pendingUserColorSource?: Root.Runtime.UserColorSource;
+  #caretBlinkInterval?: number;
+  #disposed = false;
   readonly #documentColorSource = new WeakMap<Document, Root.Runtime.UserColorSource>();
   readonly #latestColorsCssLink = new WeakMap<Document, HTMLLinkElement>();
 
@@ -59,6 +61,9 @@ export class ThemeSupport extends EventTarget {
       (event: Common.EventTarget.EventTargetEvent<Root.Runtime.UserColorSource|void>): void => {
         this.fetchColorsAndApplyHostTheme(typeof event.data === 'string' ? event.data : undefined);
       };
+  readonly #onCaretBlinkIntervalChangeListener = (event: Common.EventTarget.EventTargetEvent<number>): void => {
+    this.#setCaretBlinkInterval(event.data);
+  };
 
   private constructor(private setting: Common.Settings.Setting<string>) {
     super();
@@ -73,25 +78,36 @@ export class ThemeSupport extends EventTarget {
     setting.addChangeListener(this.#onThemeChangeListener);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+        Host.InspectorFrontendHostAPI.Events.CaretBlinkIntervalChanged, this.#onCaretBlinkIntervalChangeListener);
 
     // `Root.Runtime.hostConfig` is fetched during startup before this listener
     // is registered, so a Chrome theme change in between would be missed.
     // Re-query the host's current color source now that the listener is in
     // place, and apply it if it has changed.
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.getHostConfig(config => {
+      if (this.#disposed) {
+        return;
+      }
       const colorSource = config.userColorSource;
       if (colorSource && colorSource !== (this.#pendingUserColorSource ?? Root.Runtime.hostConfig.userColorSource)) {
         this.fetchColorsAndApplyHostTheme(colorSource);
+      }
+      if (this.#caretBlinkInterval === undefined) {
+        this.#setCaretBlinkInterval(config.caretBlinkInterval);
       }
     });
   }
 
   #dispose(): void {
+    this.#disposed = true;
     this.#darkThemeMediaQuery.removeEventListener('change', this.#onThemeChangeListener);
     this.#highContrastMediaQuery.removeEventListener('change', this.#onThemeChangeListener);
     this.setting.removeChangeListener(this.#onThemeChangeListener);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.CaretBlinkIntervalChanged, this.#onCaretBlinkIntervalChangeListener);
   }
 
   static hasInstance(): boolean {
@@ -162,6 +178,22 @@ export class ThemeSupport extends EventTarget {
 
   themeName(): string {
     return this.#themeName;
+  }
+
+  caretBlinkInterval(): number|undefined {
+    return this.#caretBlinkInterval ?? normalizeCaretBlinkInterval(Root.Runtime.hostConfig.caretBlinkInterval);
+  }
+
+  #setCaretBlinkInterval(value: unknown): void {
+    const normalized = normalizeCaretBlinkInterval(value);
+    if (normalized === undefined) {
+      return;
+    }
+    const previous = this.caretBlinkInterval();
+    this.#caretBlinkInterval = normalized;
+    if (normalized !== previous) {
+      this.dispatchEvent(new CaretBlinkIntervalChangeEvent());
+    }
   }
 
   #applyTheme(): void {
@@ -252,10 +284,25 @@ export class ThemeSupport extends EventTarget {
   }
 }
 
+export function normalizeCaretBlinkInterval(value: unknown): number|undefined {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+    return undefined;
+  }
+  return value === 0 ? 0 : value;
+}
+
 export class ThemeChangeEvent extends Event {
   static readonly eventName = 'themechange';
 
   constructor() {
     super(ThemeChangeEvent.eventName, {bubbles: true, composed: true});
+  }
+}
+
+export class CaretBlinkIntervalChangeEvent extends Event {
+  static readonly eventName = 'caretblinkintervalchange';
+
+  constructor() {
+    super(CaretBlinkIntervalChangeEvent.eventName, {bubbles: true, composed: true});
   }
 }

@@ -18,6 +18,7 @@ export enum Events {
   /* eslint-disable @typescript-eslint/naming-convention -- Accessed from web_tests */
   AppendedToURL = 'appendedToURL',
   CanceledSaveURL = 'canceledSaveURL',
+  CaretBlinkIntervalChanged = 'caretBlinkIntervalChanged',
   ColorThemeChanged = 'colorThemeChanged',
   ContextMenuCleared = 'contextMenuCleared',
   ContextMenuItemSelected = 'contextMenuItemSelected',
@@ -50,6 +51,7 @@ export enum Events {
 export const EventDescriptors: ReadonlyArray<readonly[Events, readonly string[], boolean?]> = [
   [Events.AppendedToURL, ['url']],
   [Events.CanceledSaveURL, ['url']],
+  [Events.CaretBlinkIntervalChanged, ['caretBlinkInterval']],
   [Events.ColorThemeChanged, ['colorSource']],
   [Events.ContextMenuCleared, []],
   [Events.ContextMenuItemSelected, ['id']],
@@ -243,6 +245,7 @@ export interface DevicesDiscoveryConfig {
 export interface EventTypes {
   [Events.AppendedToURL]: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString;
   [Events.CanceledSaveURL]: Platform.DevToolsPath.UrlString;
+  [Events.CaretBlinkIntervalChanged]: number;
   [Events.ColorThemeChanged]: Root.Runtime.UserColorSource|void;
   [Events.ContextMenuCleared]: void;
   [Events.ContextMenuItemSelected]: number;

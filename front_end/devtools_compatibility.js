@@ -138,7 +138,11 @@
         // We can safely ignore the events since they also arrive on the DevTools `window` object.
         return;
       }
-      inspectorFrontendAPI[method].apply(inspectorFrontendAPI, args);
+      const handler = inspectorFrontendAPI[method];
+      if (typeof handler !== 'function') {
+        return;
+      }
+      handler.apply(inspectorFrontendAPI, args);
     }
 
     // API methods below this line --------------------------------------------
@@ -366,6 +370,13 @@
     colorThemeChanged(colorSource) {
       syncLegacyUserColorSource(colorSource);
       this._dispatchOnInspectorFrontendAPI('colorThemeChanged', colorSource !== undefined ? [colorSource] : []);
+    }
+
+    /**
+     * @param {number} caretBlinkInterval
+     */
+    caretBlinkIntervalChanged(caretBlinkInterval) {
+      this._dispatchOnInspectorFrontendAPI('caretBlinkIntervalChanged', [caretBlinkInterval]);
     }
 
     /**

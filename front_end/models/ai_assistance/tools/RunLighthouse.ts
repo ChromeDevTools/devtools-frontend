@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as LHModel from '../../lighthouse/lighthouse.js';
 import {LighthouseContext} from '../contexts/LighthouseContext.js';
 import type {LighthouseCategoryArg} from '../data_formatters/LighthouseFormatter.js';
@@ -13,6 +14,7 @@ import {
   type ContextTool,
   type LighthouseRecordingCapability,
   PermissionPrompt,
+  type TargetCapability,
   type ToolArgs,
   ToolName,
 } from './Tool.js';
@@ -33,7 +35,8 @@ function resolveMode(params: RunLighthouseArgs): LHModel.RunTypes.RunMode {
  * Runs Lighthouse audits on the inspected page and sets the resulting report as the active conversation context.
  */
 export class RunLighthouseTool implements
-    ContextTool<RunLighthouseArgs, LHModel.ReporterTypes.ReportJSON, BaseToolCapability&LighthouseRecordingCapability> {
+    ContextTool<RunLighthouseArgs, LHModel.ReporterTypes.ReportJSON,
+                BaseToolCapability&LighthouseRecordingCapability&TargetCapability> {
   readonly name: ToolName = ToolName.RUN_LIGHTHOUSE;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
@@ -75,8 +78,16 @@ export class RunLighthouseTool implements
     };
   }
 
-  async handler(params: RunLighthouseArgs, context: BaseToolCapability&LighthouseRecordingCapability):
+  async handler(params: RunLighthouseArgs, context: BaseToolCapability&LighthouseRecordingCapability&TargetCapability):
       Promise<ContextHandlerResult<LHModel.ReporterTypes.ReportJSON>> {
+    // Check before mode validation so an unsupported mode does not trigger a
+    // wasted retry turn while execution is paused.
+    if (context.getTarget()?.model(SDK.DebuggerModel.DebuggerModel)?.isPaused()) {
+      return {
+        error:
+            'Error: Cannot run Lighthouse because JavaScript execution is paused on a breakpoint. Do not retry; ask the user to resume execution in the Sources panel first.',
+      };
+    }
     const mode = resolveMode(params);
     if (params.categoryId !== 'all') {
       const supportedModes = LHModel.RunTypes.CATEGORY_SUPPORTED_MODES[params.categoryId];

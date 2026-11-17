@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 import type {AgentFocus} from '../performance/AIContext.js';
 
@@ -13,6 +14,7 @@ import {
   type ContextTool,
   type PerformanceRecordingCapability,
   PermissionPrompt,
+  type TargetCapability,
   ToolName,
 } from './Tool.js';
 
@@ -23,7 +25,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 
 export class RecordPerformanceTraceTool implements
-    ContextTool<Record<string, never>, AgentFocus, BaseToolCapability&PerformanceRecordingCapability> {
+    ContextTool<Record<string, never>, AgentFocus, BaseToolCapability&PerformanceRecordingCapability&TargetCapability> {
   readonly name: ToolName = ToolName.RECORD_PERFORMANCE_TRACE;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.NEVER;
   readonly description: string =
@@ -47,10 +49,17 @@ export class RecordPerformanceTraceTool implements
     };
   }
 
-  async handler(_params: Record<string, never>, capabilities: BaseToolCapability&PerformanceRecordingCapability):
-      Promise<ContextHandlerResult<AgentFocus>> {
+  async handler(_params: Record<string, never>,
+                capabilities: BaseToolCapability&PerformanceRecordingCapability&
+                TargetCapability): Promise<ContextHandlerResult<AgentFocus>> {
     if (!capabilities.performanceRecordAndReload) {
       return {error: 'Performance recording is not available.'};
+    }
+    if (capabilities.getTarget()?.model(SDK.DebuggerModel.DebuggerModel)?.isPaused()) {
+      return {
+        error:
+            'Error: Cannot record a performance trace because JavaScript execution is paused on a breakpoint. Do not retry; ask the user to resume execution in the Sources panel first.',
+      };
     }
     try {
       const result = await capabilities.performanceRecordAndReload();

@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import * as sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -59,6 +60,90 @@ describeWithEnvironment('LocationsSettingsTab', () => {
     // The tab listens to setting change listeners, so it should auto-update.
     await tab.updateComplete;
     await assertScreenshot('sensors/LocationsSettingsTab/populated.png');
+  });
+});
+
+describeWithEnvironment('LocationsSettingsTab accessibility', () => {
+  let tab: Sensors.LocationsSettingsTab.LocationsSettingsTab;
+
+  beforeEach(async () => {
+    const customSetting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor);
+    const {defaultValue} = SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor;
+    if (typeof defaultValue !== 'function') {
+      customSetting.set(defaultValue.map(location => ({...location})));
+    }
+
+    tab = renderElementIntoDOM(new Sensors.LocationsSettingsTab.LocationsSettingsTab(),
+                               {includeCommonStyles: true, width: 780, height: 530});
+    tab.element.style.display = 'flex';
+    tab.element.style.width = '780px';
+    tab.element.style.height = '400px';
+    await UI.Widget.Widget.allUpdatesComplete;
+  });
+
+  afterEach(async () => {
+    UI.Dialog.Dialog.getInstance()?.hide();
+    await UI.Widget.Widget.allUpdatesComplete;
+  });
+
+  it('has no aXe violations when opening the add location dialog', async () => {
+    const addLocationButton = tab.contentElement.querySelector('.add-locations-button');
+    assert.instanceOf(addLocationButton, HTMLElement);
+    addLocationButton.click();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const dialogContent = UI.Dialog.Dialog.getInstance()?.contentElement.querySelector('.location-dialog-content');
+    assert.instanceOf(dialogContent, HTMLElement);
+    const rect = dialogContent.getBoundingClientRect();
+    assert.isAbove(rect.width, 0);
+    assert.isAbove(rect.height, 0);
+
+    assert.deepEqual(await getAxeViolations(dialogContent), []);
+  });
+
+  it('displays validation errors for invalid inputs with no aXe violations', async () => {
+    const addLocationButton = tab.contentElement.querySelector('.add-locations-button');
+    assert.instanceOf(addLocationButton, HTMLElement);
+    addLocationButton.click();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const dialogContent = UI.Dialog.Dialog.getInstance()?.contentElement.querySelector('.location-dialog-content');
+    assert.instanceOf(dialogContent, HTMLElement);
+
+    const nameInput = dialogContent.querySelector('input[placeholder="Location name"]');
+    const latitudeInput = dialogContent.querySelector('input[placeholder="Latitude"]');
+    const longitudeInput = dialogContent.querySelector('input[placeholder="Longitude"]');
+    const saveButton = dialogContent.querySelector('.save-button');
+    assert.instanceOf(nameInput, HTMLInputElement);
+    assert.instanceOf(latitudeInput, HTMLInputElement);
+    assert.instanceOf(longitudeInput, HTMLInputElement);
+    assert.instanceOf(saveButton, HTMLElement);
+
+    nameInput.value = '';
+    saveButton.click();
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(dialogContent.querySelector('.editor-field-error')?.textContent?.trim(),
+                       'Location name can’t be empty');
+
+    nameInput.value = 'location';
+    latitudeInput.value = 'a.a';
+    saveButton.click();
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(dialogContent.querySelector('.editor-field-error')?.textContent?.trim(),
+                       'Latitude must be a number');
+
+    latitudeInput.value = '1.1';
+    longitudeInput.value = '1a.1';
+    saveButton.click();
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(dialogContent.querySelector('.editor-field-error')?.textContent?.trim(),
+                       'Longitude must be a number');
+
+    const rect = dialogContent.getBoundingClientRect();
+    assert.isAbove(rect.width, 0);
+    assert.isAbove(rect.height, 0);
+    assert.deepEqual(await getAxeViolations(dialogContent), []);
   });
 });
 

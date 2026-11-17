@@ -287,4 +287,35 @@ describe('ConsoleMessage', () => {
     assert.strictEqual(consoleModel.messages()[0].level, Protocol.Log.LogEntryLevel.Verbose);
     assert.strictEqual(consoleModel.errors(), 0);
   });
+
+  describe('evaluateCommandInConsole', () => {
+    function setup() {
+      const target = universe.createTarget();
+      const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel)!;
+      const executionContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
+      executionContext.runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel)!;
+      executionContext.debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+      const invalidateScopeChains = executionContext.debuggerModel.invalidateScopeChains as sinon.SinonStub;
+      const commandMessage = consoleModel.addCommandMessage(executionContext, 'x = 42');
+      return {consoleModel, executionContext, commandMessage, invalidateScopeChains};
+    }
+
+    it('invalidates the scope chains of the debugger, as the command could have assigned to variables', async () => {
+      const {consoleModel, executionContext, commandMessage, invalidateScopeChains} = setup();
+      executionContext.evaluateWithSelectedFrameFallback.resolves({object: new SDK.RemoteObject.LocalJSONObject(42)});
+
+      await consoleModel.evaluateCommandInConsole(executionContext, commandMessage, 'x = 42', false);
+
+      sinon.assert.calledOnce(invalidateScopeChains);
+    });
+
+    it('does not invalidate the scope chains if the command could not be evaluated', async () => {
+      const {consoleModel, executionContext, commandMessage, invalidateScopeChains} = setup();
+      executionContext.evaluateWithSelectedFrameFallback.resolves({error: 'Execution context was destroyed'});
+
+      await consoleModel.evaluateCommandInConsole(executionContext, commandMessage, 'x = 42', false);
+
+      sinon.assert.notCalled(invalidateScopeChains);
+    });
+  });
 });

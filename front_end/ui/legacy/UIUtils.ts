@@ -2562,11 +2562,8 @@ export type BindToSettingOpts = ((newSettingValue: string) => boolean)|{
   jslog?: boolean,
 };
 export const bindToSetting =
-    (settingOrName: string|Common.Settings.Setting<boolean|string>|Common.Settings.RegExpSetting,
+    (setting: Common.Settings.Setting<boolean|string>|Common.Settings.RegExpSetting,
      optionsOrValidator?: BindToSettingOpts): ReturnType<typeof Directives.ref> => {
-      const setting = typeof settingOrName === 'string' ?
-          Common.Settings.Settings.instance().moduleSetting(settingOrName) :
-          settingOrName;
 
       let stringValidator: ((newSettingValue: string) => boolean)|undefined;
       let jslog = true;

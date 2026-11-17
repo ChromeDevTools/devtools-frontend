@@ -51,7 +51,7 @@ describeWithEnvironment('ProfileSidebarTreeElement', () => {
     assert.isTrue(query('.titles').classList.contains('no-subtitle'));
     assert.strictEqual(query('.titles > .title-container > .title').textContent, 'Profile 1');
     assert.strictEqual(query('.titles > .subtitle').textContent, '');
-    assert.strictEqual(query('devtools-button').title, 'Profile options');
+    assert.strictEqual(query('devtools-menu-button').title, 'Profile options');
     assert.strictEqual(listItem.getAttribute('aria-description'), 'Test profile type');
   });
 
@@ -155,14 +155,6 @@ describeWithEnvironment('ProfileSidebarTreeElement', () => {
     sinon.assert.calledOnceWithExactly(removeProfile, profile);
   });
 
-  it('shows the context menu from the menu button', () => {
-    const {query} = setUp();
-    const show = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-
-    query('devtools-button').click();
-    sinon.assert.calledOnce(show);
-  });
-
   it('shows the context menu on right click', () => {
     const {listItem} = setUp();
     const show = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
@@ -178,6 +170,27 @@ describeWithEnvironment('ProfileSidebarTreeElement', () => {
     profile.updateStatus('Loading\u2026', true);
     assert.strictEqual(query('.subtitle').textContent, '');
     assert.isFalse(query('.icon').classList.contains('spinner'));
+  });
+
+  it('passes its state to the view', () => {
+    const profileType = new Profiler.ProfileHeader.ProfileType('test-profile-type', 'Test profile type');
+    const profile = new Profiler.ProfileHeader.ProfileHeader(profileType, 'Profile 1');
+    const view = sinon.stub<Parameters<Profiler.ProfileSidebarTreeElement.View>, void>();
+    const treeElement = new Profiler.ProfileSidebarTreeElement.ProfileSidebarTreeElement(
+        createDataDisplayDelegate(), profile, 'heap-snapshot-sidebar-tree-item', view);
+    const input = (): Profiler.ProfileSidebarTreeElement.ViewInput => view.lastCall.args[0];
+    sinon.assert.calledOnce(view);
+    assert.deepInclude(input(), {title: 'Profile 1', subtitle: null, wait: false, editing: false});
+
+    profile.updateStatus('Loading\u2026', true);
+    assert.deepInclude(input(), {title: 'Profile 1', subtitle: 'Loading\u2026', wait: true, editing: false});
+
+    treeElement.setMainTitle('Run 2');
+    assert.strictEqual(input().title, 'Run 2');
+
+    const contextMenu = sinon.createStubInstance(UI.ContextMenu.ContextMenu);
+    input().populateContextMenu(contextMenu);
+    sinon.assert.calledOnceWithExactly(contextMenu.appendItemsAtLocation, 'profilerMenu');
   });
 
   it('renders normal and small items', async () => {

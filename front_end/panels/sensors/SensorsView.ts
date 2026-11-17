@@ -284,8 +284,7 @@ interface OrientationViewInput {
   selectedOrientation: string;
   animateOrientation: boolean;
   onOrientationSelectChange: (value: string) => void;
-  onOrientationChange: (event: Event) => void;
-  onOrientationKeyDown: (event: KeyboardEvent) => void;
+  onOrientationFieldChange: (name: string, value: string) => void;
   onOrientationReset: () => void;
   /** @returns whether the drag should start. */
   onStageDragStart: (mouseDownVector: Geometry.Vector) => boolean;
@@ -495,8 +494,8 @@ function renderDeviceOrientationSection(input: OrientationViewInput, output: Vie
                   .value=${roundAngle(input.orientation.alpha)}
                   name="alpha"
                   ${Directives.ref((el: Element | undefined) => { output.focusAlphaInput = el ? () => (el as HTMLInputElement).focus() : undefined; })}
-                  @change=${input.onOrientationChange}
-                  @keydown=${input.onOrientationKeyDown}
+                  @change=${(event: Event) => applyValidInput(event, input.onOrientationFieldChange)}
+                  @keydown=${(event: KeyboardEvent) => stepOrApplyInput(event, input.onOrientationFieldChange)}
                   @focus=${selectInputContent}
                 >
                 <label for="alpha-input">${i18nString(UIStrings.alpha)}</label>
@@ -512,8 +511,8 @@ function renderDeviceOrientationSection(input: OrientationViewInput, output: Vie
                   required
                   .value=${roundAngle(input.orientation.beta)}
                   name="beta"
-                  @change=${input.onOrientationChange}
-                  @keydown=${input.onOrientationKeyDown}
+                  @change=${(event: Event) => applyValidInput(event, input.onOrientationFieldChange)}
+                  @keydown=${(event: KeyboardEvent) => stepOrApplyInput(event, input.onOrientationFieldChange)}
                   @focus=${selectInputContent}
                 >
                 <label for="beta-input">${i18nString(UIStrings.beta)}</label>
@@ -529,8 +528,8 @@ function renderDeviceOrientationSection(input: OrientationViewInput, output: Vie
                   required
                   .value=${roundAngle(input.orientation.gamma)}
                   name="gamma"
-                  @change=${input.onOrientationChange}
-                  @keydown=${input.onOrientationKeyDown}
+                  @change=${(event: Event) => applyValidInput(event, input.onOrientationFieldChange)}
+                  @keydown=${(event: KeyboardEvent) => stepOrApplyInput(event, input.onOrientationFieldChange)}
                   @focus=${selectInputContent}
                 >
                 <label for="gamma-input">${i18nString(UIStrings.gamma)}</label>
@@ -682,8 +681,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       selectedOrientation: this.#selectedOrientation,
       animateOrientation: this.#animateOrientation,
       onOrientationSelectChange: this.#orientationSelectChanged.bind(this),
-      onOrientationChange: this.#onOrientationChange.bind(this),
-      onOrientationKeyDown: this.#onOrientationKeyDown.bind(this),
+      onOrientationFieldChange: this.#applyDeviceOrientationUserInput.bind(this),
       onOrientationReset: this.#resetDeviceOrientation.bind(this),
       onStageDragStart: this.#onBoxDragStart.bind(this),
       onStageDrag: this.#onBoxDrag.bind(this),
@@ -881,9 +879,9 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     }
   }
 
-  #applyDeviceOrientationUserInput(input: HTMLInputElement): void {
+  #applyDeviceOrientationUserInput(name: string, value: string): void {
     const {alpha, beta, gamma} = this.#deviceOrientation;
-    const values = {alpha: String(alpha), beta: String(beta), gamma: String(gamma), [input.name]: input.value.trim()};
+    const values = {alpha: String(alpha), beta: String(beta), gamma: String(gamma), [name]: value};
     this.#selectedOrientation = NonPresetOptions.Custom;
     this.#setDeviceOrientation(
         SDK.EmulationModel.DeviceOrientation.parseUserInput(values.alpha, values.beta, values.gamma),
@@ -911,38 +909,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(
         UIStrings.deviceOrientationSetToAlphaSBeta,
         {PH1: deviceOrientation.alpha, PH2: deviceOrientation.beta, PH3: deviceOrientation.gamma}));
-  }
-
-  #onOrientationChange(event: Event): void {
-    const input = event.currentTarget as HTMLInputElement;
-    if (input.checkValidity()) {
-      this.#applyDeviceOrientationUserInput(input);
-    }
-  }
-
-  #onOrientationKeyDown(event: KeyboardEvent): void {
-    const input = event.currentTarget as HTMLInputElement;
-    if (event.key === 'Enter' && !event.isComposing) {
-      if (input.checkValidity()) {
-        this.#applyDeviceOrientationUserInput(input);
-      }
-      event.preventDefault();
-      return;
-    }
-
-    const value = UI.UIUtils.modifiedFloatNumber(parseFloat(input.value), event, 1);
-    if (value === null) {
-      return;
-    }
-    const prevValue = input.value;
-    input.value = String(value);
-    if (input.checkValidity()) {
-      this.#applyDeviceOrientationUserInput(input);
-    } else {
-      // If ArrowUp/ArrowDown adjusts the value out of bounds, we reset it.
-      input.value = prevValue;
-    }
-    event.preventDefault();
   }
 
   #setBoxOrientation(animate: boolean): void {

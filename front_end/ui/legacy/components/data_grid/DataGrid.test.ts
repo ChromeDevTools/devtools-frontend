@@ -351,6 +351,255 @@ describeWithEnvironment('DataGrid', () => {
     assert.strictEqual(dataGrid.selectedNode, node2);
     assert.strictEqual(document.activeElement, dataGrid.element);
   });
+
+  describe('tree operations', () => {
+    function dumpDataGrid<T>(
+        root: DataGrid.DataGrid.DataGridNode<T>,
+        descentIntoCollapsed = false,
+        prefix = '',
+        ): string[] {
+      const lines: string[] = [];
+      const suffix = root.selected ? ' <- selected' : '';
+      assert.exists(root.dataGrid, 'Node is not attached to a DataGrid');
+      const columnKeys = Object.keys(root.dataGrid.columns);
+      const outputColumns: unknown[] = [];
+      for (const key of columnKeys) {
+        if (key in root.data) {
+          outputColumns.push(root.data[key]);
+        }
+      }
+      if (outputColumns.length) {
+        lines.push(prefix + outputColumns.join(' | ') + suffix);
+      }
+
+      if (!descentIntoCollapsed && !root.expanded) {
+        return lines;
+      }
+      for (const child of root.children) {
+        lines.push(...dumpDataGrid(child, descentIntoCollapsed, prefix + ' '));
+      }
+      return lines;
+    }
+
+    function validateDataGrid<T>(root: DataGrid.DataGrid.DataGridNode<T>): void {
+      const children = root.children;
+
+      for (let i = 0; i < children.length; ++i) {
+        const child = children[i];
+        assert.strictEqual(child.parent, root);
+        assert.strictEqual(child.nextSibling, i + 1 === children.length ? null : children[i + 1]);
+        assert.strictEqual(child.previousSibling, i ? children[i - 1] : null);
+        if (child.parent && !child.parent.isRoot) {
+          assert.strictEqual(child.depth, root.depth + 1);
+        }
+        validateDataGrid(child);
+      }
+
+      const selectedNode = root.dataGrid?.selectedNode;
+      if (!root.parent && selectedNode) {
+        assert.isTrue(selectedNode.selectable);
+        let node: DataGrid.DataGrid.DataGridNode<T>|null = selectedNode;
+        while (node && node !== root) {
+          node = node.parent;
+        }
+        assert.strictEqual(node, root);
+      }
+    }
+
+    function dumpAndValidateDataGrid<T>(root: DataGrid.DataGrid.DataGridNode<T>): string[] {
+      const lines = dumpDataGrid(root);
+      validateDataGrid(root);
+      return lines;
+    }
+
+    it('toggles the striped-data-grid class via setStriped', () => {
+      const columns: DataGrid.DataGrid.ColumnDescriptor[] = [{id: 'id', sortable: false}];
+      const dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: 'Test', columns});
+
+      assert.isFalse(dataGrid.element.classList.contains('striped-data-grid'));
+      dataGrid.setStriped(true);
+      assert.isTrue(dataGrid.element.classList.contains('striped-data-grid'));
+      dataGrid.setStriped(false);
+      assert.isFalse(dataGrid.element.classList.contains('striped-data-grid'));
+    });
+
+    it('maintains tree hierarchy across node mutations', () => {
+      const columns: DataGrid.DataGrid.ColumnDescriptor[] = [{id: 'id', sortable: false}];
+      const dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: 'Test', columns});
+      const a = new DataGrid.DataGrid.DataGridNode({id: 'a'});
+      const aa = new DataGrid.DataGrid.DataGridNode({id: 'aa'});
+      const aaa = new DataGrid.DataGrid.DataGridNode({id: 'aaa'});
+      const aab = new DataGrid.DataGrid.DataGridNode({id: 'aab'});
+      const ab = new DataGrid.DataGrid.DataGridNode({id: 'ab'});
+      const b = new DataGrid.DataGrid.DataGridNode({id: 'b'});
+      const root = dataGrid.rootNode();
+
+      // Append children to a detached node and verify attaching the subtree propagates dataGrid.
+      aa.appendChild(aaa);
+      aa.appendChild(aab);
+
+      // Attach the tree to the root node.
+      root.appendChild(a);
+      a.appendChild(aa);
+      a.appendChild(ab);
+      root.appendChild(b);
+      assert.strictEqual(aaa.dataGrid, dataGrid);
+      assert.strictEqual(aab.dataGrid, dataGrid);
+
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        ' b',
+      ]);
+
+      a.expand();
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  aa',
+        '  ab',
+        ' b',
+      ]);
+
+      aa.expand();
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  aa',
+        '   aaa',
+        '   aab',
+        '  ab',
+        ' b',
+      ]);
+
+      a.collapse();
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        ' b',
+      ]);
+
+      a.expand();
+      aa.appendChild(aaa);
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  aa',
+        '   aab',
+        '   aaa',
+        '  ab',
+        ' b',
+      ]);
+
+      aa.appendChild(aaa);
+      aa.appendChild(aab);
+      const aac = new DataGrid.DataGrid.DataGridNode({id: 'aac'});
+      aa.appendChild(aac);
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  aa',
+        '   aaa',
+        '   aab',
+        '   aac',
+        '  ab',
+        ' b',
+      ]);
+
+      aa.insertChild(aac, 0);
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  aa',
+        '   aac',
+        '   aaa',
+        '   aab',
+        '  ab',
+        ' b',
+      ]);
+
+      ab.appendChild(aac);
+      ab.expand();
+      aac.select();
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  aa',
+        '   aaa',
+        '   aab',
+        '  ab',
+        '   aac <- selected',
+        ' b',
+      ]);
+
+      ab.removeChild(aac);
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  aa',
+        '   aaa',
+        '   aab',
+        '  ab',
+        ' b <- selected',
+      ]);
+
+      ab.appendChild(aac);
+      aac.revealAndSelect();
+      aa.removeChildren();
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  aa',
+        '  ab',
+        '   aac <- selected',
+        ' b',
+      ]);
+
+      ab.appendChild(aac);
+      aac.revealAndSelect();
+      a.removeChild(aa);
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        '  ab',
+        '   aac <- selected',
+        ' b',
+      ]);
+
+      a.removeChild(ab);
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' a',
+        ' b <- selected',
+      ]);
+
+      root.removeChildren();
+      assert.deepEqual(dumpAndValidateDataGrid(root), []);
+      assert.isNull(dataGrid.selectedNode);
+    });
+
+    it('updates rendered columns across dynamic column changes', () => {
+      const columns: DataGrid.DataGrid.ColumnDescriptor[] = [{id: 'id', sortable: false}];
+      const dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: 'Test', columns});
+      const a = new DataGrid.DataGrid.DataGridNode({id: 'TextData', secondCol: 'a foo'});
+      const b = new DataGrid.DataGrid.DataGridNode({id: 'NullData', secondCol: null});
+      const root = dataGrid.rootNode();
+
+      root.appendChild(a);
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' TextData',
+      ]);
+
+      dataGrid.addColumn({id: 'secondCol', sortable: false});
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' TextData | a foo',
+      ]);
+
+      root.appendChild(b);
+      dataGrid.autoSizeColumns(20, 80);
+      // Max column text lengths are 8 ('TextData'/'NullData') and 5 ('a foo'): 8/13 rounds to 62%, 5/13 to 38%.
+      assert.strictEqual(dataGrid.columns['id'].weight, 62);
+      assert.strictEqual(dataGrid.columns['secondCol'].weight, 38);
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' TextData | a foo',
+        ' NullData | ',
+      ]);
+
+      dataGrid.removeColumn('secondCol');
+      assert.deepEqual(dumpAndValidateDataGrid(root), [
+        ' TextData',
+        ' NullData',
+      ]);
+    });
+  });
 });
 
 describe('DataGridImpl', () => {

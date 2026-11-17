@@ -631,7 +631,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.#hardwareConcurrencyCheckbox = checkbox;
     this.#hardwareConcurrencyDetails = [numericInput.element, reset.element, warning.element];
 
-    this.setBoxOrientation(false);
+    this.#setBoxOrientation(false);
   }
 
   override performUpdate(): void {
@@ -655,12 +655,12 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       orientationOverrideEnabled: this.#deviceOrientationOverrideEnabled,
       selectedOrientation: this.#selectedOrientation,
       animateOrientation: this.#animateOrientation,
-      onOrientationSelectChange: this.orientationSelectChanged.bind(this),
+      onOrientationSelectChange: this.#orientationSelectChanged.bind(this),
       onOrientationChange: this.#onOrientationChange.bind(this),
       onOrientationKeyDown: this.#onOrientationKeyDown.bind(this),
-      onOrientationReset: this.resetDeviceOrientation.bind(this),
-      onStageDragStart: this.onBoxDragStart.bind(this),
-      onStageDrag: this.onBoxDrag.bind(this),
+      onOrientationReset: this.#resetDeviceOrientation.bind(this),
+      onStageDragStart: this.#onBoxDragStart.bind(this),
+      onStageDrag: this.#onBoxDrag.bind(this),
     };
     const input: ViewInput = {
       ...locationInput,
@@ -732,14 +732,14 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
           coordinates.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY, false);
     }
 
-    this.applyLocation();
+    this.#applyLocation();
     this.requestUpdate();
   }
 
   #onLocationChange(event: Event): void {
     const input = event.currentTarget as HTMLInputElement;
     if (input.checkValidity()) {
-      this.applyLocationUserInput(input);
+      this.#applyLocationUserInput(input);
     }
   }
 
@@ -747,7 +747,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     const input = event.currentTarget as HTMLInputElement;
     if (event.key === 'Enter') {
       if (input.checkValidity()) {
-        this.applyLocationUserInput(input);
+        this.#applyLocationUserInput(input);
       }
       event.preventDefault();
       return;
@@ -765,7 +765,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     const prevValue = input.value;
     input.value = String(value);
     if (input.checkValidity()) {
-      this.applyLocationUserInput(input);
+      this.#applyLocationUserInput(input);
     } else {
       // If ArrowUp/ArrowDown adjusts the value out of bounds, we reset it.
       input.value = prevValue;
@@ -773,7 +773,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     event.preventDefault();
   }
 
-  private applyLocationUserInput(input: HTMLInputElement): void {
+  #applyLocationUserInput(input: HTMLInputElement): void {
     // Only the changed input is read, the other values are taken from the current location.
     const {latitude, longitude, timezoneId: timezone, locale, accuracy} = this.#location;
     const values = {
@@ -795,11 +795,11 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
     this.#customLocationSelected = true;
     this.#location = location;
-    this.applyLocation();
+    this.#applyLocation();
     this.requestUpdate();
   }
 
-  private applyLocation(): void {
+  #applyLocation(): void {
     if (this.#locationOverrideEnabled) {
       this.#locationSetting.set(this.#location.toSetting());
     } else {
@@ -866,7 +866,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     return getOptionTitle('no-override') || 'No override';
   }
 
-  private orientationSelectChanged(event: Event): void {
+  #orientationSelectChanged(event: Event): void {
     const value = (event.currentTarget as HTMLSelectElement).value;
     this.#selectedOrientation = value;
     this.#inputToFocus = value === NonPresetOptions.Custom ? 'alpha' : undefined;
@@ -874,19 +874,19 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
     // Setting the device orientation schedules an update of the view.
     if (value === NonPresetOptions.NoOverride) {
-      this.applyDeviceOrientation();
+      this.#applyDeviceOrientation();
       this.requestUpdate();
     } else if (value === NonPresetOptions.Custom) {
-      this.resetDeviceOrientation();
+      this.#resetDeviceOrientation();
     } else {
       const parsedValue = JSON.parse(value);
       this.#deviceOrientation =
           new SDK.EmulationModel.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);
-      this.setDeviceOrientation(this.#deviceOrientation, DeviceOrientationModificationSource.SELECT_PRESET);
+      this.#setDeviceOrientation(this.#deviceOrientation, DeviceOrientationModificationSource.SELECT_PRESET);
     }
   }
 
-  private applyDeviceOrientation(): void {
+  #applyDeviceOrientation(): void {
     if (this.#deviceOrientationOverrideEnabled) {
       this.#deviceOrientationSetting.set(this.#deviceOrientation.toSetting());
     }
@@ -896,32 +896,31 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     }
   }
 
-  private applyDeviceOrientationUserInput(input: HTMLInputElement): void {
+  #applyDeviceOrientationUserInput(input: HTMLInputElement): void {
     const {alpha, beta, gamma} = this.#deviceOrientation;
     const values = {alpha: String(alpha), beta: String(beta), gamma: String(gamma), [input.name]: input.value.trim()};
     this.#selectedOrientation = NonPresetOptions.Custom;
-    this.setDeviceOrientation(
+    this.#setDeviceOrientation(
         SDK.EmulationModel.DeviceOrientation.parseUserInput(values.alpha, values.beta, values.gamma),
         DeviceOrientationModificationSource.USER_INPUT);
   }
 
-  private resetDeviceOrientation(): void {
+  #resetDeviceOrientation(): void {
     this.#selectedOrientation = '[0, 90, 0]';
-    this.setDeviceOrientation(
-        new SDK.EmulationModel.DeviceOrientation(0, 90, 0), DeviceOrientationModificationSource.RESET_BUTTON);
+    this.#setDeviceOrientation(new SDK.EmulationModel.DeviceOrientation(0, 90, 0),
+                               DeviceOrientationModificationSource.RESET_BUTTON);
   }
 
-  private setDeviceOrientation(
-      deviceOrientation: SDK.EmulationModel.DeviceOrientation|null,
-      modificationSource: DeviceOrientationModificationSource): void {
+  #setDeviceOrientation(deviceOrientation: SDK.EmulationModel.DeviceOrientation|null,
+                        modificationSource: DeviceOrientationModificationSource): void {
     if (!deviceOrientation) {
       return;
     }
 
     const animate = modificationSource !== DeviceOrientationModificationSource.USER_DRAG;
     this.#deviceOrientation = deviceOrientation;
-    this.setBoxOrientation(animate);
-    this.applyDeviceOrientation();
+    this.#setBoxOrientation(animate);
+    this.#applyDeviceOrientation();
     this.requestUpdate();
 
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(
@@ -932,7 +931,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   #onOrientationChange(event: Event): void {
     const input = event.currentTarget as HTMLInputElement;
     if (input.checkValidity()) {
-      this.applyDeviceOrientationUserInput(input);
+      this.#applyDeviceOrientationUserInput(input);
     }
   }
 
@@ -940,7 +939,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     const input = event.currentTarget as HTMLInputElement;
     if (event.key === 'Enter') {
       if (input.checkValidity()) {
-        this.applyDeviceOrientationUserInput(input);
+        this.#applyDeviceOrientationUserInput(input);
       }
       event.preventDefault();
       return;
@@ -953,7 +952,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     const prevValue = input.value;
     input.value = String(value);
     if (input.checkValidity()) {
-      this.applyDeviceOrientationUserInput(input);
+      this.#applyDeviceOrientationUserInput(input);
     } else {
       // If ArrowUp/ArrowDown adjusts the value out of bounds, we reset it.
       input.value = prevValue;
@@ -961,7 +960,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     event.preventDefault();
   }
 
-  private setBoxOrientation(animate: boolean): void {
+  #setBoxOrientation(animate: boolean): void {
     this.#animateOrientation = animate;
 
     // It is important to explain the multiple conversions happening here. A
@@ -992,7 +991,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.#boxMatrix = new DOMMatrixReadOnly().rotate(0, 0, alpha).rotate(beta, 0, 0).rotate(0, gamma, 0);
   }
 
-  private onBoxDrag(mouseMoveVector: Geometry.Vector, shiftKey: boolean): void {
+  #onBoxDrag(mouseMoveVector: Geometry.Vector, shiftKey: boolean): void {
     if (!this.#mouseDownVector) {
       return;
     }
@@ -1006,7 +1005,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       angle = Geometry.calculateAngle(this.#mouseDownVector, mouseMoveVector);
     }
 
-    // See the comment in setBoxOrientation() for a longer explanation about
+    // See the comment in #setBoxOrientation() for a longer explanation about
     // the CSS coordinate space, the Device Orientation coordinate space and
     // the conversions we make. |axis| and |angle| are in the CSS coordinate
     // space, while |this.#originalBoxMatrix| is rotated and in the Device
@@ -1018,10 +1017,10 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     const newOrientation =
         new SDK.EmulationModel.DeviceOrientation(eulerAngles.alpha, eulerAngles.beta, eulerAngles.gamma);
     this.#selectedOrientation = NonPresetOptions.Custom;
-    this.setDeviceOrientation(newOrientation, DeviceOrientationModificationSource.USER_DRAG);
+    this.#setDeviceOrientation(newOrientation, DeviceOrientationModificationSource.USER_DRAG);
   }
 
-  private onBoxDragStart(mouseDownVector: Geometry.Vector): boolean {
+  #onBoxDragStart(mouseDownVector: Geometry.Vector): boolean {
     if (!this.#deviceOrientationOverrideEnabled) {
       return false;
     }

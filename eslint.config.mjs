@@ -1126,7 +1126,6 @@ export default defineConfig([
       'front_end/panels/screencast/ScreencastView.ts',
       'front_end/panels/security/SecurityModel.ts',
       'front_end/panels/sensors/LocationsSettingsTab.ts',
-      'front_end/panels/sensors/SensorsView.ts',
       'front_end/panels/settings/FrameworkIgnoreListSettingsTab.ts',
       'front_end/panels/settings/KeybindsSettingsTab.ts',
       'front_end/panels/settings/SettingsScreen.ts',

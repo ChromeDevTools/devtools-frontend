@@ -49,6 +49,22 @@ describeWithEnvironment('SensorsView', () => {
     assert.include(options, 'Test Location');
   });
 
+  it('picks up changes of the custom locations that happen while it is hidden', async () => {
+    const customLocationsSetting =
+        Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor);
+    const titles = (): Array<string|null> =>
+        Array.from(view.contentElement.querySelectorAll('.geo-fields option'), option => option.textContent);
+
+    view.hideWidget();
+    customLocationsSetting.set([{title: 'Hidden Location', lat: 1, long: 2, timezoneId: '', locale: '', accuracy: 0}]);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.notInclude(titles(), 'Hidden Location');
+
+    view.showWidget();
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.include(titles(), 'Hidden Location');
+  });
+
   describe('Location select', () => {
     const BERLIN = {
       title: 'Berlin',

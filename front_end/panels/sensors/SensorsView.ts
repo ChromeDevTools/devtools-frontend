@@ -620,7 +620,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
     this.#customLocationsSetting = Common.Settings.Settings.instance().resolve(
         SettingUIRegistration.EmulationSettings.emulationLocationsSettingDescriptor);
-    this.#customLocationsSetting.addChangeListener(() => this.requestUpdate());
 
     this.deviceOrientationSetting =
         Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
@@ -828,11 +827,13 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
                                                 this.requestUpdate, this);
     this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.requestUpdate, this);
+    this.#customLocationsSetting.addChangeListener(this.requestUpdate, this);
     this.requestUpdate();
   }
 
   override willHide(): void {
     super.willHide();
+    this.#customLocationsSetting.removeChangeListener(this.requestUpdate, this);
     this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED,
                                                    this.requestUpdate, this);
     this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.requestUpdate,

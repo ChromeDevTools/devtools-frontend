@@ -103,6 +103,36 @@ export interface SettingsCreationOptions {
 
 type NoFunction<T> = T extends(...args: never[]) => unknown ? never : T;
 
+/** A change of the value of a setting. */
+export interface SettingChange {
+  name: string;
+  /** The value that the change listeners of the setting receive. */
+  value: unknown;
+}
+
+const enum Events {
+  SETTING_CHANGED = 'SettingChanged',
+}
+
+interface EventTypes {
+  [Events.SETTING_CHANGED]: SettingChange;
+}
+
+/**
+ * The event target that all settings share. A setting dispatches its changes here with its name as the event
+ * type. This class also reports each of these changes to the listeners of all settings.
+ */
+class SettingsEventSupport extends ObjectWrapper<GenericEvents> {
+  readonly allSettings = new ObjectWrapper<EventTypes>();
+
+  override dispatchEventToListeners(settingName: string, value?: unknown): void {
+    // A listener of the setting can change the setting again. The listeners of all settings get this change
+    // first, so that they get the changes in the order they happen.
+    this.allSettings.dispatchEventToListeners(Events.SETTING_CHANGED, {name: settingName, value});
+    super.dispatchEventToListeners(settingName, value);
+  }
+}
+
 export class Settings {
   readonly syncedStorage: SettingsStorage;
   readonly globalStorage: SettingsStorage;
@@ -111,7 +141,7 @@ export class Settings {
   readonly #settingRegistrations: SettingRegistration[];
   readonly #sessionStorage = new SettingsStorage({});
   settingNameSet: Set<string> = new Set<string>();
-  #eventSupport = new ObjectWrapper<GenericEvents>();
+  #eventSupport = new SettingsEventSupport();
   #registry = new Map<string, Setting<unknown>>();
   readonly moduleSettings: Map<string, Setting<unknown>> = new Map<string, Setting<unknown>>();
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
@@ -261,6 +291,15 @@ export class Settings {
   /** The event target shared by all settings. Change listeners are registered with the setting name as event type. */
   get eventTargetForTest(): ObjectWrapper<GenericEvents> {
     return this.#eventSupport;
+  }
+
+  /** Calls `listener` when the value of any setting changes. This includes the settings that are created later. */
+  addChangeListener(listener: (event: EventTargetEvent<SettingChange>) => void, thisObject?: Object): EventDescriptor {
+    return this.#eventSupport.allSettings.addEventListener(Events.SETTING_CHANGED, listener, thisObject);
+  }
+
+  removeChangeListener(listener: (event: EventTargetEvent<SettingChange>) => void, thisObject?: Object): void {
+    this.#eventSupport.allSettings.removeEventListener(Events.SETTING_CHANGED, listener, thisObject);
   }
 
   /**

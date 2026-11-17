@@ -221,6 +221,88 @@ describe('Settings instance', () => {
     }));
   });
 
+  describe('addChangeListener', () => {
+    let settings: Common.Settings.Settings;
+    let changes: Common.Settings.SettingChange[];
+    let listener: (event: Common.EventTarget.EventTargetEvent<Common.Settings.SettingChange>) => void;
+    let listenerDescriptor: Common.EventTarget.EventDescriptor;
+
+    beforeEach(() => {
+      const storage = new SettingsStorage({});
+      settings = new Common.Settings.Settings({
+        syncedStorage: storage,
+        globalStorage: storage,
+        localStorage: storage,
+        settingRegistrations: [],
+        console: new Common.Console.Console(),
+      });
+      changes = [];
+      listener = event => {
+        changes.push(event.data);
+      };
+      listenerDescriptor = settings.addChangeListener(listener);
+    });
+
+    it('notifies the listener when any setting changes', () => {
+      settings.createSetting('first-setting', 'initial value').set('new value');
+      settings.createSetting('second-setting', false).set(true);
+
+      assert.deepEqual(changes, [
+        {name: 'first-setting', value: 'new value'},
+        {name: 'second-setting', value: true},
+      ]);
+    });
+
+    it('notifies the listener in the order of the changes when a setting listener changes the setting again', () => {
+      const setting = settings.createSetting('test-setting', 'initial value');
+      setting.addChangeListener(event => {
+        if (event.data === 'first value') {
+          setting.set('second value');
+        }
+      });
+
+      setting.set('first value');
+
+      assert.deepEqual(changes, [
+        {name: 'test-setting', value: 'first value'},
+        {name: 'test-setting', value: 'second value'},
+      ]);
+    });
+
+    it('does not notify a listener removed via removeEventListeners', () => {
+      Common.EventTarget.removeEventListeners([listenerDescriptor]);
+
+      settings.createSetting('test-setting', false).set(true);
+
+      assert.isEmpty(changes);
+    });
+
+    it('does not notify a listener removed via removeChangeListener', () => {
+      settings.removeChangeListener(listener);
+
+      settings.createSetting('test-setting', false).set(true);
+
+      assert.isEmpty(changes);
+    });
+
+    it('does not notify a listener removed via removeChangeListener with thisObject', () => {
+      const thisObject = {};
+      const boundChanges: Common.Settings.SettingChange[] = [];
+      const boundListener = (event: Common.EventTarget.EventTargetEvent<Common.Settings.SettingChange>) => {
+        boundChanges.push(event.data);
+      };
+      settings.addChangeListener(boundListener, thisObject);
+
+      settings.removeChangeListener(boundListener);
+      settings.createSetting('first-setting', false).set(true);
+      assert.lengthOf(boundChanges, 1);
+
+      settings.removeChangeListener(boundListener, thisObject);
+      settings.createSetting('second-setting', false).set(true);
+      assert.lengthOf(boundChanges, 1);
+    });
+  });
+
   it('retrieves registered settings', () => {
     const storage = new Common.Settings.SettingsStorage({});
     const settings = new Common.Settings.Settings({

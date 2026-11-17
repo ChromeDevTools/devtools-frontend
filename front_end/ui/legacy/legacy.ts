@@ -22,6 +22,7 @@ import * as GlassPane from './GlassPane.js';
 import * as Infobar from './Infobar.js';
 import * as InplaceEditor from './InplaceEditor.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
+import * as InspectorDrawerView from './InspectorDrawerView.js';
 import * as InspectorView from './InspectorView.js';
 import * as KeyboardShortcut from './KeyboardShortcut.js';
 import * as LinkContextMenuProvider from './LinkContextMenuProvider.js';
@@ -80,6 +81,7 @@ export {
   Infobar,
   InplaceEditor,
   inspectorCommonStyles,
+  InspectorDrawerView,
   InspectorView,
   KeyboardShortcut,
   LinkContextMenuProvider,

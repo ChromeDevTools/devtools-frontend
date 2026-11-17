@@ -68,7 +68,6 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorDrawerView.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface InspectorDrawerViewOptions {
-  splitWidget: SplitWidget;
   revealDrawer: () => void;
   isVisible: () => boolean;
   drawerLabel: string;
@@ -89,6 +88,7 @@ interface InspectorDrawerViewOptions {
     inspectorHeight: number,
   };
   setInspectorMinimumSize: (width: number, height: number) => void;
+  splitWidget?: SplitWidget;
 }
 
 interface InspectorDrawerPresentation {
@@ -100,7 +100,7 @@ interface InspectorDrawerPresentation {
 export class InspectorDrawerView {
   readonly tabbedLocation: TabbedViewLocation;
   readonly tabbedPane: DrawerTabbedPane;
-  readonly #splitWidget: SplitWidget;
+  #splitWidget: SplitWidget|null = null;
   readonly #drawerMinimizedSetting: Common.Settings.Setting<boolean>;
   readonly #verticalExpandedMinimumWidth: number;
   readonly #minimumSizes: {
@@ -109,6 +109,12 @@ export class InspectorDrawerView {
     inspectorHeight: number,
   };
   readonly #setInspectorMinimumSize: (width: number, height: number) => void;
+  #isVertical: boolean;
+  #isMinimized = false;
+  #showMode: ShowMode = ShowMode.ONLY_MAIN;
+  #hasExplicitShowMode = false;
+  #pendingDrawerSize: number|null = null;
+  #pendingInitialTabId: string|null = null;
   #drawerSizeBeforeMinimize = 0;
   #wasVerticalAndMinimized = false;
   readonly #toggleOrientationButton: ToolbarButton;
@@ -121,7 +127,7 @@ export class InspectorDrawerView {
   readonly #isConsoleOpenInMainAndDrawer: (tabId: string) => boolean;
 
   constructor(options: InspectorDrawerViewOptions) {
-    this.#splitWidget = options.splitWidget;
+    this.#isVertical = options.isVertical;
     this.#verticalExpandedMinimumWidth = options.verticalExpandedMinimumWidth;
     this.#minimumSizes = options.minimumSizes;
     this.#setInspectorMinimumSize = options.setInspectorMinimumSize;
@@ -145,6 +151,7 @@ export class InspectorDrawerView {
       this.#moreTabsButton.setTitle(i18nString(UIStrings.moreTools));
     }
     this.tabbedPane = this.tabbedLocation.tabbedPane() as DrawerTabbedPane;
+    this.#pendingInitialTabId = this.tabbedPane.selectedTabId;
     this.tabbedPane.element.classList.add('drawer-tabbed-pane');
     this.tabbedPane.element.setAttribute('jslog', `${VisualLogging.drawer()}`);
 
@@ -173,22 +180,97 @@ export class InspectorDrawerView {
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabInvoked, this.#drawerTabInvoked, this);
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.#drawerTabSelected, this);
     this.tabbedPane.setTabDelegate(options.tabDelegate);
-    const selectedDrawerTab = this.tabbedPane.selectedTabId;
-    if (this.#splitWidget.showMode() !== ShowMode.ONLY_MAIN && selectedDrawerTab) {
-      this.#onTabSelected(selectedDrawerTab);
-    }
 
     const drawerElement = this.tabbedPane.element;
     ARIAUtils.markAsComplementary(drawerElement);
     ARIAUtils.setLabel(drawerElement, options.drawerLabel);
-    this.#splitWidget.installResizer(this.tabbedPane.headerElement());
-    this.#splitWidget.setSidebarWidget(this.tabbedPane);
 
     this.tabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('drawer').track({
                                                    drag: true,
                                                    keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space',
                                                  })}`);
-    this.#updatePresentation(false);
+    if (options.splitWidget) {
+      this.attachSplitWidget(options.splitWidget);
+    } else {
+      this.#updatePresentation(false);
+    }
+  }
+
+  attachSplitWidget(splitWidget: SplitWidget): void {
+    if (this.#splitWidget === splitWidget) {
+      return;
+    }
+
+    const previousSplitWidget = this.#splitWidget;
+    if (previousSplitWidget) {
+      previousSplitWidget.uninstallResizer(this.tabbedPane.headerElement());
+      this.#isVertical = previousSplitWidget.isVertical();
+      this.#showMode = previousSplitWidget.showMode();
+      this.#isMinimized = previousSplitWidget.isSidebarMinimized();
+      this.#hasExplicitShowMode = true;
+      if (this.#pendingDrawerSize === null) {
+        if (!this.#isMinimized && previousSplitWidget.sidebarSize() > 0) {
+          this.#pendingDrawerSize = previousSplitWidget.sidebarSize();
+        } else if (this.#isMinimized && this.#drawerSizeBeforeMinimize > 0) {
+          this.#pendingDrawerSize = this.#drawerSizeBeforeMinimize;
+        }
+      }
+      if (this.#showMode === ShowMode.ONLY_MAIN) {
+        previousSplitWidget.hideSidebar(false);
+      } else if (this.#showMode === ShowMode.ONLY_SIDEBAR) {
+        previousSplitWidget.hideMain(false);
+      }
+      this.tabbedPane.detach();
+    }
+
+    this.#splitWidget = splitWidget;
+    if (splitWidget.isVertical() !== this.#isVertical) {
+      splitWidget.setVertical(this.#isVertical);
+    }
+
+    splitWidget.installResizer(this.tabbedPane.headerElement());
+    splitWidget.setSidebarWidget(this.tabbedPane);
+
+    const pendingDrawerSize = this.#pendingDrawerSize;
+    this.#pendingDrawerSize = null;
+
+    if (this.#hasExplicitShowMode) {
+      this.applyState(this.#showMode, this.#isMinimized);
+    } else {
+      this.#showMode = splitWidget.showMode();
+      if (this.#isMinimized && splitWidget.showMode() === ShowMode.BOTH) {
+        this.setMinimized(true);
+      } else {
+        this.#isMinimized = false;
+        this.#updatePresentation(false);
+      }
+    }
+
+    if (pendingDrawerSize !== null) {
+      if (this.isMinimized()) {
+        this.#drawerSizeBeforeMinimize = pendingDrawerSize;
+      } else {
+        splitWidget.setSidebarSize(pendingDrawerSize);
+      }
+    }
+
+    this.#reportPendingInitialTabIfVisible();
+  }
+
+  #reportPendingInitialTabIfVisible(): void {
+    if (this.#pendingInitialTabId && this.showMode() !== ShowMode.ONLY_MAIN) {
+      const tabId = this.#pendingInitialTabId;
+      this.#pendingInitialTabId = null;
+      this.#onTabSelected(tabId);
+    }
+  }
+
+  showMode(): ShowMode {
+    return this.#splitWidget ? this.#splitWidget.showMode() : this.#showMode;
+  }
+
+  sidebarIsShowing(): boolean {
+    return this.#splitWidget ? this.#splitWidget.sidebarIsShowing() : this.#showMode !== ShowMode.ONLY_MAIN;
   }
 
   restoreMinimizedStateFromSettings(): void {
@@ -197,24 +279,48 @@ export class InspectorDrawerView {
     }
 
     // The drawer starts hidden; show it first, then minimize.
-    this.#splitWidget.showBoth();
+    this.#showMode = ShowMode.BOTH;
+    if (this.#splitWidget) {
+      this.#splitWidget.showBoth();
+    } else {
+      this.#hasExplicitShowMode = true;
+    }
     this.setMinimized(true);
+    this.#reportPendingInitialTabIfVisible();
   }
 
   setVertical(shouldBeVertical: boolean): void {
-    if (shouldBeVertical === this.#splitWidget.isVertical()) {
+    if (shouldBeVertical === this.isVertical()) {
       return;
     }
 
-    const previousShowMode = this.#splitWidget.showMode();
+    const previousShowMode = this.showMode();
     const wasDrawerMinimized = this.isMinimized();
 
-    this.#splitWidget.setVertical(shouldBeVertical);
+    this.#isVertical = shouldBeVertical;
+    this.#splitWidget?.setVertical(shouldBeVertical);
     this.#updatePresentation(wasDrawerMinimized);
-    this.applyState(previousShowMode, wasDrawerMinimized);
+    if (this.#splitWidget || this.#hasExplicitShowMode) {
+      this.applyState(previousShowMode, wasDrawerMinimized);
+    }
   }
 
   applyState(showMode: ShowMode, minimized: boolean): void {
+    this.#showMode = showMode;
+    if (!this.#splitWidget) {
+      this.#hasExplicitShowMode = true;
+      const shouldBeMinimized = showMode === ShowMode.BOTH && minimized;
+      if (showMode === ShowMode.BOTH) {
+        this.setMinimized(shouldBeMinimized);
+      } else {
+        this.#isMinimized = false;
+        this.#updatePresentation(false);
+        this.#drawerMinimizedSetting.set(false);
+      }
+      this.#reportPendingInitialTabIfVisible();
+      return;
+    }
+
     if (this.#splitWidget.showMode() !== showMode) {
       switch (showMode) {
         case ShowMode.BOTH:
@@ -232,31 +338,46 @@ export class InspectorDrawerView {
     const shouldBeMinimized = showMode === ShowMode.BOTH && minimized;
     if (showMode === ShowMode.BOTH) {
       this.setMinimized(shouldBeMinimized);
+      this.#reportPendingInitialTabIfVisible();
       return;
     }
 
+    this.#isMinimized = false;
     this.#splitWidget.setSidebarMinimized(false);
     this.#splitWidget.setResizable(false);
     this.#updatePresentation(false);
     this.#drawerMinimizedSetting.set(false);
+    this.#reportPendingInitialTabIfVisible();
   }
 
   show(hasTargetDrawer: boolean): void {
     const wasDrawerVisible = this.isVisibleForEvents();
     this.tabbedPane.setAutoSelectFirstItemOnShow(!hasTargetDrawer);
-    this.#splitWidget.showBoth();
+    this.#showMode = ShowMode.BOTH;
+    if (this.#splitWidget) {
+      this.#splitWidget.showBoth();
+    } else {
+      this.#hasExplicitShowMode = true;
+    }
     this.#updatePresentation(this.isMinimized());
     this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
+    this.#reportPendingInitialTabIfVisible();
   }
 
   hide(): void {
     const wasDrawerVisible = this.isVisibleForEvents();
     const wasMinimized = this.isMinimized();
-    this.#splitWidget.hideSidebar(!wasMinimized);
+    this.#showMode = ShowMode.ONLY_MAIN;
+    if (this.#splitWidget) {
+      this.#splitWidget.hideSidebar(!wasMinimized);
+    } else {
+      this.#hasExplicitShowMode = true;
+    }
+    this.#isMinimized = false;
     this.#updatePresentation(false);
     if (wasMinimized) {
-      this.#splitWidget.setSidebarMinimized(false);
-      this.#splitWidget.setResizable(true);
+      this.#splitWidget?.setSidebarMinimized(false);
+      this.#splitWidget?.setResizable(true);
     }
     this.#drawerMinimizedSetting.set(false);
     this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
@@ -264,46 +385,51 @@ export class InspectorDrawerView {
 
   setMinimized(minimized: boolean): void {
     const wasDrawerVisible = this.isVisibleForEvents();
-    if (minimized && !this.isMinimized()) {
+    if (minimized && !this.isMinimized() && this.#splitWidget) {
       this.#drawerSizeBeforeMinimize = this.#splitWidget.sidebarSize();
     }
 
+    this.#isMinimized = minimized;
     this.#updatePresentation(minimized);
-    this.#splitWidget.setSidebarMinimized(minimized);
+    this.#splitWidget?.setSidebarMinimized(minimized);
     this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
-    this.#splitWidget.setResizable(!minimized);
+    this.#splitWidget?.setResizable(!minimized);
     this.#drawerMinimizedSetting.set(minimized);
-    if (!minimized && this.#drawerSizeBeforeMinimize > 0) {
+    if (!minimized && this.#drawerSizeBeforeMinimize > 0 && this.#splitWidget) {
       this.#splitWidget.setSidebarSize(this.#drawerSizeBeforeMinimize);
     }
   }
 
   drawerVisible(): boolean {
-    return this.tabbedPane.isShowing();
+    return this.#splitWidget?.isShowing() ? this.tabbedPane.isShowing() : this.sidebarIsShowing();
   }
 
   isVisibleForEvents(): boolean {
-    return this.#splitWidget.sidebarIsShowing() && !this.isMinimized();
+    return this.sidebarIsShowing() && !this.isMinimized();
   }
 
   drawerSize(): number {
-    return this.#splitWidget.sidebarSize();
+    return this.#splitWidget ? this.#splitWidget.sidebarSize() : (this.#pendingDrawerSize ?? 0);
   }
 
   setDrawerSize(size: number): void {
+    if (!this.#splitWidget) {
+      this.#pendingDrawerSize = size;
+      return;
+    }
     this.#splitWidget.setSidebarSize(size);
   }
 
   totalSize(): number {
-    return this.#splitWidget.totalSize();
+    return this.#splitWidget ? this.#splitWidget.totalSize() : 0;
   }
 
   isMinimized(): boolean {
-    return this.#splitWidget.isSidebarMinimized();
+    return this.#splitWidget ? this.#splitWidget.isSidebarMinimized() : this.#isMinimized;
   }
 
   isVertical(): boolean {
-    return this.#splitWidget.isVertical();
+    return this.#splitWidget ? this.#splitWidget.isVertical() : this.#isVertical;
   }
 
   updatePresentation({isVertical, isMinimized, verticalExpandedMinimumWidth}: InspectorDrawerPresentation): void {
@@ -343,12 +469,11 @@ export class InspectorDrawerView {
   }
 
   #updatePresentation(minimized: boolean): void {
-    const requireVerticalMinimumWidth =
-        this.#splitWidget.isVertical() && this.#splitWidget.sidebarIsShowing() && !minimized;
+    const requireVerticalMinimumWidth = this.isVertical() && this.sidebarIsShowing() && !minimized;
     this.#setInspectorMinimumSize(requireVerticalMinimumWidth ? this.#minimumSizes.inspectorWidthWhenVertical :
                                                                 this.#minimumSizes.inspectorWidthWhenHorizontal,
                                   this.#minimumSizes.inspectorHeight);
-    const drawerIsVertical = this.#splitWidget.isVertical();
+    const drawerIsVertical = this.isVertical();
     this.updatePresentation({
       isVertical: drawerIsVertical,
       isMinimized: minimized,
@@ -366,6 +491,7 @@ export class InspectorDrawerView {
 
   #drawerTabSelected(event: Common.EventTarget.EventTargetEvent<EventData>): void {
     const {tabId, prevTabId, isUserGesture} = event.data;
+    this.#pendingInitialTabId = null;
     this.#onTabSelected(tabId);
 
     if (this.#isConsoleOpenInMainAndDrawer(tabId)) {

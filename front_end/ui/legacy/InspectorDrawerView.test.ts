@@ -8,10 +8,13 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import {getElementWithinComponent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import {getElementWithinComponent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
+import {html, render} from '../lit/lit.js';
 
 import * as LegacyUI from './legacy.js';
 
@@ -995,6 +998,365 @@ describe('InspectorDrawerView', () => {
       await waitForDockSideChangeHandled;
 
       assert.strictEqual(inspectorView.constraints().minimum.width, 250);
+    });
+  });
+
+  describe('lazy SplitWidget attachment', () => {
+    function createUnattachedDrawerView({
+      isVertical = false,
+      setInspectorMinimumSize = sinon.spy(),
+      onTabSelected = sinon.spy(),
+    }: {
+      isVertical?: boolean,
+      setInspectorMinimumSize?: sinon.SinonSpy,
+      onTabSelected?: sinon.SinonSpy,
+    } = {}): LegacyUI.InspectorDrawerView.InspectorDrawerView {
+      return new LegacyUI.InspectorDrawerView.InspectorDrawerView({
+        revealDrawer: () => {},
+        isVisible: () => true,
+        drawerLabel: 'Drawer',
+        onToggleMinimized: () => {},
+        onHide: () => {},
+        onToggleOrientation: () => {},
+        onExpandFromMinimized: () => {},
+        onMinimizeFromTabInteraction: () => {},
+        onTabSelected,
+        isConsoleOpenInMainAndDrawer: () => false,
+        tabDelegate: new LegacyUI.InspectorView.InspectorViewTabDelegate(),
+        enableOrientationToggle: true,
+        isVertical,
+        verticalExpandedMinimumWidth: 280,
+        minimumSizes: {
+          inspectorWidthWhenVertical: 530,
+          inspectorWidthWhenHorizontal: 250,
+          inspectorHeight: 72,
+        },
+        setInspectorMinimumSize,
+      });
+    }
+
+    it('can be constructed without a SplitWidget', () => {
+      const setInspectorMinimumSize = sinon.spy();
+      const drawerView = createUnattachedDrawerView({isVertical: false, setInspectorMinimumSize});
+
+      assert.strictEqual(drawerView.showMode(), LegacyUI.SplitWidget.ShowMode.ONLY_MAIN);
+      assert.isFalse(drawerView.sidebarIsShowing());
+      assert.isFalse(drawerView.drawerVisible());
+      assert.isFalse(drawerView.isMinimized());
+      assert.isFalse(drawerView.isVertical());
+      sinon.assert.calledOnceWithExactly(setInspectorMinimumSize, 250, 72);
+    });
+
+    it('mirrors state before attachSplitWidget and applies it on attachment idempotently', () => {
+      const drawerView = createUnattachedDrawerView({isVertical: false});
+
+      drawerView.show(false);
+      assert.strictEqual(drawerView.showMode(), LegacyUI.SplitWidget.ShowMode.BOTH);
+      assert.isTrue(drawerView.sidebarIsShowing());
+      assert.isTrue(drawerView.drawerVisible());
+
+      drawerView.setVertical(true);
+      assert.isTrue(drawerView.isVertical());
+
+      drawerView.setDrawerSize(320);
+      assert.strictEqual(drawerView.drawerSize(), 320);
+
+      drawerView.setMinimized(true);
+      assert.isTrue(drawerView.isMinimized());
+
+      drawerView.hide();
+      assert.strictEqual(drawerView.showMode(), LegacyUI.SplitWidget.ShowMode.ONLY_MAIN);
+      assert.isFalse(drawerView.sidebarIsShowing());
+      assert.isFalse(drawerView.isMinimized());
+
+      drawerView.show(false);
+      drawerView.setDrawerSize(300);
+      drawerView.setMinimized(true);
+
+      const splitWidget = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      splitWidget.hideSidebar();
+      renderElementIntoDOM(splitWidget, {includeCommonStyles: true, width: 800, height: 600});
+      const installResizerSpy = sinon.spy(splitWidget, 'installResizer');
+
+      drawerView.attachSplitWidget(splitWidget);
+
+      assert.strictEqual(splitWidget.sidebarWidget(), drawerView.tabbedPane);
+      assert.isTrue(splitWidget.isVertical());
+      assert.strictEqual(splitWidget.showMode(), LegacyUI.SplitWidget.ShowMode.BOTH);
+      assert.isTrue(splitWidget.isSidebarMinimized());
+      assert.isFalse(splitWidget.isResizable());
+      sinon.assert.calledOnceWithExactly(installResizerSpy, drawerView.tabbedPane.headerElement());
+
+      drawerView.attachSplitWidget(splitWidget);
+      sinon.assert.calledOnce(installResizerSpy);
+
+      drawerView.setMinimized(false);
+      assert.strictEqual(splitWidget.sidebarSize(), 300);
+    });
+
+    it('preserves pre-existing ShowMode.BOTH on attached SplitWidget when no explicit show mode was set', () => {
+      const drawerView = createUnattachedDrawerView({isVertical: true});
+      const splitWidget = new LegacyUI.SplitWidget.SplitWidget(true, true, undefined, 200, 200);
+      renderElementIntoDOM(splitWidget, {includeCommonStyles: true, width: 800, height: 600});
+
+      drawerView.attachSplitWidget(splitWidget);
+
+      assert.strictEqual(splitWidget.showMode(), LegacyUI.SplitWidget.ShowMode.BOTH);
+      assert.strictEqual(drawerView.showMode(), LegacyUI.SplitWidget.ShowMode.BOTH);
+      assert.isTrue(drawerView.sidebarIsShowing());
+      assert.isTrue(drawerView.drawerVisible());
+    });
+
+    it('applies pending drawer size when attached expanded', () => {
+      const expandedDrawerView = createUnattachedDrawerView({isVertical: false});
+      expandedDrawerView.show(false);
+      expandedDrawerView.setDrawerSize(300);
+
+      const expandedSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      expandedSplit.hideSidebar();
+      renderElementIntoDOM(expandedSplit, {includeCommonStyles: true, width: 800, height: 600});
+      expandedDrawerView.attachSplitWidget(expandedSplit);
+      assert.strictEqual(expandedSplit.sidebarSize(), 300);
+    });
+
+    it('applies pending drawer size when un-minimized after attach and mount', () => {
+      const minimizedDrawerView = createUnattachedDrawerView({isVertical: false});
+      minimizedDrawerView.show(false);
+      minimizedDrawerView.setDrawerSize(300);
+      minimizedDrawerView.setMinimized(true);
+
+      const minimizedSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      minimizedSplit.hideSidebar();
+      minimizedDrawerView.attachSplitWidget(minimizedSplit);
+      renderElementIntoDOM(minimizedSplit, {includeCommonStyles: true, width: 800, height: 600});
+
+      assert.isTrue(minimizedSplit.isSidebarMinimized());
+      minimizedDrawerView.setMinimized(false);
+      assert.strictEqual(minimizedSplit.sidebarSize(), 300);
+    });
+
+    it('preserves minimized setting across unattached setVertical before restoreMinimizedStateFromSettings', () => {
+      const minimizedSetting = Settings.instance().createLocalSetting(DRAWER_MINIMIZED_SETTING_NAME, true);
+      minimizedSetting.set(true);
+
+      const drawerView = createUnattachedDrawerView({isVertical: false});
+      drawerView.setVertical(true);
+      assert.isTrue(minimizedSetting.get());
+
+      drawerView.restoreMinimizedStateFromSettings();
+
+      const splitWidget = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      splitWidget.hideSidebar();
+      renderElementIntoDOM(splitWidget, {includeCommonStyles: true, width: 800, height: 600});
+      drawerView.attachSplitWidget(splitWidget);
+
+      assert.isTrue(splitWidget.isVertical());
+      assert.strictEqual(splitWidget.showMode(), LegacyUI.SplitWidget.ShowMode.BOTH);
+      assert.isTrue(splitWidget.isSidebarMinimized());
+    });
+
+    it('uninstalls resizer from previous SplitWidget and carries over state when replaced', () => {
+      const firstSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      renderElementIntoDOM(firstSplit,
+                           {includeCommonStyles: true, width: 800, height: 600, allowMultipleChildren: true});
+      const drawerView = new LegacyUI.InspectorDrawerView.InspectorDrawerView({
+        revealDrawer: () => {},
+        isVisible: () => true,
+        drawerLabel: 'Drawer',
+        onToggleMinimized: () => {},
+        onHide: () => {},
+        onToggleOrientation: () => {},
+        onExpandFromMinimized: () => {},
+        onMinimizeFromTabInteraction: () => {},
+        onTabSelected: () => {},
+        isConsoleOpenInMainAndDrawer: () => false,
+        tabDelegate: new LegacyUI.InspectorView.InspectorViewTabDelegate(),
+        enableOrientationToggle: true,
+        isVertical: false,
+        verticalExpandedMinimumWidth: 280,
+        minimumSizes: {
+          inspectorWidthWhenVertical: 530,
+          inspectorWidthWhenHorizontal: 250,
+          inspectorHeight: 72,
+        },
+        setInspectorMinimumSize: () => {},
+        splitWidget: firstSplit,
+      });
+
+      drawerView.show(false);
+      drawerView.setVertical(true);
+      drawerView.setDrawerSize(320);
+
+      const uninstallResizerSpy = sinon.spy(firstSplit, 'uninstallResizer');
+      const secondSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      secondSplit.hideSidebar();
+      renderElementIntoDOM(secondSplit,
+                           {includeCommonStyles: true, width: 800, height: 600, allowMultipleChildren: true});
+
+      drawerView.attachSplitWidget(secondSplit);
+
+      sinon.assert.calledOnceWithExactly(uninstallResizerSpy, drawerView.tabbedPane.headerElement());
+      assert.isTrue(secondSplit.isVertical());
+      assert.strictEqual(secondSplit.showMode(), LegacyUI.SplitWidget.ShowMode.BOTH);
+      assert.strictEqual(secondSplit.sidebarSize(), 320);
+      assert.strictEqual(secondSplit.sidebarWidget(), drawerView.tabbedPane);
+    });
+
+    it('fires onTabSelected once when a tab is appended and a mounted SplitWidget in ShowMode.BOTH is attached', () => {
+      const onTabSelected = sinon.spy();
+      const drawerView = createUnattachedDrawerView({isVertical: false, onTabSelected});
+      drawerView.tabbedPane.appendTab('console-view', 'Console', new LegacyUI.Widget.Widget());
+      sinon.assert.notCalled(onTabSelected);
+
+      const firstSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      renderElementIntoDOM(firstSplit,
+                           {includeCommonStyles: true, width: 800, height: 600, allowMultipleChildren: true});
+      drawerView.attachSplitWidget(firstSplit);
+      sinon.assert.calledOnceWithExactly(onTabSelected, 'console-view');
+
+      const secondSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      renderElementIntoDOM(secondSplit,
+                           {includeCommonStyles: true, width: 800, height: 600, allowMultipleChildren: true});
+      drawerView.attachSplitWidget(secondSplit);
+      sinon.assert.calledOnceWithExactly(onTabSelected, 'console-view');
+    });
+
+    it('does not re-fire onTabSelected on attach when a tab was already selected while unattached', () => {
+      const onTabSelected = sinon.spy();
+      const drawerView = createUnattachedDrawerView({isVertical: false, onTabSelected});
+      drawerView.tabbedPane.appendTab('console-view', 'Console', new LegacyUI.Widget.Widget());
+      drawerView.tabbedPane.selectTab('console-view');
+      sinon.assert.calledOnceWithExactly(onTabSelected, 'console-view');
+
+      const splitWidget = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      renderElementIntoDOM(splitWidget, {includeCommonStyles: true, width: 800, height: 600});
+      drawerView.attachSplitWidget(splitWidget);
+      sinon.assert.calledOnceWithExactly(onTabSelected, 'console-view');
+    });
+
+    it('reports a pre-selected tab restored during createTabbedLocation once showMode is not ONLY_MAIN', () => {
+      const testTabId = 'test-preselected-drawer-tab';
+      LegacyUI.ViewManager.registerViewExtension({
+        id: testTabId,
+        location: LegacyUI.ViewManager.ViewLocationValues.DRAWER_VIEW,
+        persistence: LegacyUI.ViewManager.ViewPersistence.PERMANENT,
+        commandPrompt: () => i18n.i18n.lockedString('Test drawer tab'),
+        title: () => i18n.i18n.lockedString('Test drawer tab'),
+        async loadView() {
+          return new LegacyUI.Widget.Widget();
+        },
+      });
+      Settings.instance().createSetting('drawer-view-selected-tab', testTabId).set(testTabId);
+      LegacyUI.ViewManager.ViewManager.instance({forceNew: true, universe: new TestUniverse()});
+
+      try {
+        const onTabSelected = sinon.spy();
+        const drawerView = createUnattachedDrawerView({isVertical: false, onTabSelected});
+        assert.strictEqual(drawerView.tabbedPane.selectedTabId, testTabId);
+        sinon.assert.notCalled(onTabSelected);
+
+        drawerView.show(false);
+        sinon.assert.calledOnceWithExactly(onTabSelected, testTabId);
+
+        const splitWidget = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+        renderElementIntoDOM(splitWidget, {includeCommonStyles: true, width: 800, height: 600});
+        drawerView.attachSplitWidget(splitWidget);
+        sinon.assert.calledOnceWithExactly(onTabSelected, testTabId);
+      } finally {
+        LegacyUI.ViewManager.maybeRemoveViewExtension(testTabId);
+        LegacyUI.ViewManager.ViewManager.removeInstance();
+      }
+    });
+
+    it('flushes in-flight hide animation on previous SplitWidget when replaced', async () => {
+      const firstSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      renderElementIntoDOM(firstSplit,
+                           {includeCommonStyles: true, width: 800, height: 600, allowMultipleChildren: true});
+      const drawerView = createUnattachedDrawerView({isVertical: false});
+      drawerView.attachSplitWidget(firstSplit);
+      drawerView.show(false);
+
+      const clock = sinon.useFakeTimers({toFake: ['requestAnimationFrame', 'cancelAnimationFrame', 'performance']});
+      try {
+        drawerView.hide();
+
+        const secondSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+        renderElementIntoDOM(secondSplit,
+                             {includeCommonStyles: true, width: 800, height: 600, allowMultipleChildren: true});
+        drawerView.attachSplitWidget(secondSplit);
+        drawerView.show(false);
+
+        clock.tick(100);
+        assert.strictEqual(secondSplit.sidebarWidget(), drawerView.tabbedPane);
+        assert.isTrue(drawerView.tabbedPane.isShowing());
+      } finally {
+        clock.restore();
+      }
+      await raf();
+    });
+
+    it('detaches tabbedPane from previous devtools-split-view in ShowMode.ONLY_MAIN when replaced', () => {
+      const container = renderElementIntoDOM(new LegacyUI.Widget.VBox());
+      let firstSplit!: LegacyUI.SplitWidget.SplitWidget;
+      let secondSplit!: LegacyUI.SplitWidget.SplitWidget;
+      render(html`
+            <devtools-split-view show="both" ${
+                 LegacyUI.Widget.widgetRef(LegacyUI.SplitWidget.SplitWidget,
+                                           w => {
+                                             firstSplit = w;
+                                           })}></devtools-split-view>
+            <devtools-split-view show="main" ${
+                 LegacyUI.Widget.widgetRef(LegacyUI.SplitWidget.SplitWidget,
+                                           w => {
+                                             secondSplit = w;
+                                           })}></devtools-split-view>
+          `,
+             container.contentElement);
+
+      const drawerView = createUnattachedDrawerView({isVertical: false});
+      drawerView.attachSplitWidget(firstSplit);
+      drawerView.hide();
+      assert.strictEqual(firstSplit.showMode(), LegacyUI.SplitWidget.ShowMode.ONLY_MAIN);
+      assert.isTrue(firstSplit.element.contains(drawerView.tabbedPane.element));
+
+      drawerView.attachSplitWidget(secondSplit);
+      assert.isFalse(firstSplit.element.contains(drawerView.tabbedPane.element));
+      assert.notInclude(firstSplit.children(), drawerView.tabbedPane);
+      assert.strictEqual(secondSplit.sidebarWidget(), drawerView.tabbedPane);
+    });
+
+    it('preserves #drawerSizeBeforeMinimize across SplitWidget replacement while minimized', () => {
+      const firstSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      renderElementIntoDOM(firstSplit, {includeCommonStyles: true, width: 800, height: 600});
+      const drawerView = createUnattachedDrawerView({isVertical: false});
+      drawerView.attachSplitWidget(firstSplit);
+      drawerView.show(false);
+      drawerView.setDrawerSize(320);
+      drawerView.setMinimized(true);
+
+      firstSplit.detach();
+      const secondSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      secondSplit.hideSidebar();
+      renderElementIntoDOM(secondSplit, {width: 800, height: 600, allowMultipleChildren: true});
+      drawerView.attachSplitWidget(secondSplit);
+
+      assert.isTrue(drawerView.isMinimized());
+      assert.isTrue(secondSplit.isSidebarMinimized());
+
+      drawerView.setMinimized(false);
+      assert.strictEqual(secondSplit.sidebarSize(), 320);
+    });
+
+    it('keeps drawerVisible() true after show(false) when attached to an unmounted SplitWidget', () => {
+      const drawerView = createUnattachedDrawerView({isVertical: false});
+      drawerView.show(false);
+
+      const unmountedSplit = new LegacyUI.SplitWidget.SplitWidget(false, true, undefined, 200, 200);
+      unmountedSplit.hideSidebar();
+      drawerView.attachSplitWidget(unmountedSplit);
+
+      assert.isFalse(unmountedSplit.isShowing());
+      assert.isTrue(drawerView.drawerVisible());
     });
   });
 });

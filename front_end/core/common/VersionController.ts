@@ -99,7 +99,8 @@ export class VersionController {
 
   updateVersionFrom3To4(): void {
     const advancedMode = this.#settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
-    this.#settings.moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
+    const newSettingName = 'showAdvancedHeapSnapshotProperties';
+    this.#settings.createSetting(newSettingName, false).set(advancedMode.get());
     this.#removeSetting(advancedMode);
   }
 

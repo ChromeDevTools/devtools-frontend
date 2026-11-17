@@ -128,6 +128,18 @@ describe('VersionController', () => {
     });
   });
 
+  describe('updateVersionFrom3To4', () => {
+    it('migrates showHeaSnapshotObjectsHiddenProperties to showAdvancedHeapSnapshotProperties', () => {
+      const versionController = new Common.VersionController.VersionController(settings);
+      settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false).set(true);
+
+      versionController.updateVersionFrom3To4();
+
+      assert.isFalse(globalStorage.has('showHeaSnapshotObjectsHiddenProperties'));
+      assert.strictEqual(globalStorage.get('showAdvancedHeapSnapshotProperties'), 'true');
+    });
+  });
+
   describe('updateVersionFrom31To32', () => {
     it('correctly adds resourceTypeName to breakpoints', () => {
       const versionController = new Common.VersionController.VersionController(settings);

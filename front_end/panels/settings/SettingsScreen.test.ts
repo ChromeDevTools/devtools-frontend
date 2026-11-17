@@ -11,6 +11,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, registerTestTeardown} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -31,7 +32,14 @@ describe('SettingsScreen', () => {
 
   const tabIds = ['preferences', 'keybinds'] as const;
 
-  function setup() {
+  interface TestTabRegistration {
+    id: Lowercase<string>;
+    title?: string;
+    iconName?: string;
+    order?: number;
+  }
+
+  function setup(tabs: readonly TestTabRegistration[] = tabIds.map(id => ({id}))) {
     const tabLinks = new Map<string, HTMLAnchorElement>();
     const universe = new TestUniverse();
     setTestUniverseForWidgets(universe);
@@ -44,12 +52,14 @@ describe('SettingsScreen', () => {
     sinon.stub(UI.DockController.DockController, 'instance').returns(new UI.DockController.DockController(false));
     sinon.stub(UI.UIUserMetrics.UIUserMetrics, 'instance').returns(new UI.UIUserMetrics.UIUserMetrics());
 
-    for (const id of tabIds) {
+    for (const {id, title = id, iconName, order} of tabs) {
       UI.ViewManager.registerViewExtension({
         id,
         location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
-        title: () => i18n.i18n.lockedString(id),
-        commandPrompt: () => i18n.i18n.lockedString(id),
+        title: () => i18n.i18n.lockedString(title),
+        commandPrompt: () => i18n.i18n.lockedString(title),
+        order,
+        iconName,
         async loadView() {
           const widget = new UI.Widget.Widget();
           const link = document.createElement('a');
@@ -77,6 +87,7 @@ describe('SettingsScreen', () => {
     }
     Settings.SettingsScreen.SettingsScreen.removeInstanceForTesting();
     UI.ViewManager.resetViewRegistration();
+    UI.ActionRegistry.ActionRegistry.reset();
   });
 
   it('exposes settings tabs in a named non-modal dialog', async () => {
@@ -179,6 +190,74 @@ describe('SettingsScreen', () => {
     assert.isFalse(keybindsWidget.classList.contains('hidden'));
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(tabLinks.get('keybinds')?.isConnected);
+  });
+
+  it('has no aXe violations in the settings menu', async () => {
+    setup([
+      {id: 'preferences', title: 'Preferences', iconName: 'gear', order: 0},
+      {id: 'workspace', title: 'Workspace', iconName: 'folder', order: 1},
+      {id: 'experiments', title: 'Experiments', iconName: 'experiment', order: 3},
+      {id: 'blackbox', title: 'Ignore list', iconName: 'clear-list', order: 4},
+      {id: 'devices', title: 'Devices', iconName: 'devices', order: 30},
+      {id: 'throttling-conditions', title: 'Throttling', iconName: 'performance', order: 35},
+      {id: 'emulation-locations', title: 'Locations', iconName: 'location-on', order: 40},
+      {id: 'keybinds', title: 'Shortcuts', iconName: 'keyboard', order: 100},
+    ]);
+    renderElementIntoDOM(UI.InspectorView.InspectorView.instance(), {
+      width: 800,
+      height: 600,
+      includeCommonStyles: true,
+    });
+    UI.ActionRegistration.registerActionExtension({
+      category: UI.ActionRegistration.ActionCategory.SETTINGS,
+      actionId: 'settings.show',
+      title: () => i18n.i18n.lockedString('Settings'),
+      async loadActionDelegate() {
+        return new Settings.SettingsScreen.ActionDelegate();
+      },
+      iconClass: UI.ActionRegistration.IconClass.LARGEICON_SETTINGS_GEAR,
+    });
+    UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+
+    // The `settings.show` action delegate fires showSettingsScreen() without
+    // awaiting it, so wait for the returned promise before running aXe to
+    // make sure that the tab selection and focus have settled.
+    const showSettingsScreenSpy = sinon.spy(Settings.SettingsScreen.SettingsScreen, 'showSettingsScreen');
+    await UI.ActionRegistry.ActionRegistry.instance().getAction('settings.show').execute();
+    sinon.assert.calledOnceWithExactly(showSettingsScreenSpy, {focusTabHeader: true});
+    await showSettingsScreenSpy.firstCall.returnValue;
+
+    const settingsScreen = Settings.SettingsScreen.SettingsScreen.instance();
+    const tabbedPaneElement = settingsScreen.contentElement.querySelector('devtools-tabbed-pane');
+    assert.exists(tabbedPaneElement);
+    const tabbedPane = UI.Widget.Widget.get(tabbedPaneElement);
+    assert.instanceOf(tabbedPane, UI.TabbedPane.TabbedPane);
+
+    await tabbedPane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const focusedTab = UI.DOMUtilities.deepActiveElement(document);
+    assert.exists(focusedTab);
+    assert.strictEqual(focusedTab.getAttribute('role'), 'tab');
+    assert.strictEqual(focusedTab.getAttribute('aria-selected'), 'true');
+
+    assert.deepEqual(
+        tabbedPane.tabIds(),
+        [
+          'preferences',
+          'workspace',
+          'experiments',
+          'blackbox',
+          'devices',
+          'throttling-conditions',
+          'emulation-locations',
+          'keybinds',
+        ],
+    );
+    assert.isAbove(tabbedPane.headerElement().getBoundingClientRect().width, 0);
+    assert.isAbove(tabbedPane.tabsElement.getBoundingClientRect().height, 0);
+    assert.isEmpty(await getAxeViolations(tabbedPane.headerElement()));
+    assert.isEmpty(await getAxeViolations(tabbedPane.tabsElement));
   });
 });
 

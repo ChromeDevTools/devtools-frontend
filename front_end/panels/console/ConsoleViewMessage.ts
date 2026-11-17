@@ -83,6 +83,56 @@ function ensureWidgetCreated(): void {
  */
 const SELECTABLE_ATTRIBUTE = 'data-console-selectable';
 
+function tokenizeMessageText(string: string): Array<{
+  text: string,
+  type?: string,
+}> {
+  const {tokenizerRegexes, tokenizerTypes} = getOrCreateTokenizers();
+  if (string.length > getMaxTokenizableStringLength()) {
+    return [{text: string, type: undefined}];
+  }
+  const results = TextUtils.TextUtils.Utils.splitStringByRegexes(string, tokenizerRegexes);
+  return results.map(result => ({text: result.value, type: tokenizerTypes[result.regexIndex]}));
+}
+
+function tokenizeAndLinkify<T>(string: string,
+                               linkifier: (arg0: string, arg1: Platform.DevToolsPath.UrlString, arg2?: number,
+                                           arg3?: number) => T): Array<T|string> {
+  const nodes: Array<T|string> = [];
+  const tokens = tokenizeMessageText(string);
+  let isBlob = false;
+  for (const token of tokens) {
+    if (!token.text) {
+      continue;
+    }
+    if (isBlob) {
+      token.text = `blob:${token.text}`;
+      isBlob = !isBlob;
+    }
+    if (token.text === '\'blob:' && token === tokens[0]) {
+      isBlob = true;
+      token.text = '\'';
+    }
+    switch (token.type) {
+      case 'url': {
+        const realURL = (token.text.startsWith('www.') ? 'http://' + token.text : token.text);
+        const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(realURL);
+        const sourceURL = Common.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(splitResult.url);
+        if (splitResult) {
+          nodes.push(linkifier(token.text, sourceURL, splitResult.lineNumber, splitResult.columnNumber));
+        } else {
+          nodes.push(linkifier(token.text, Platform.DevToolsPath.EmptyUrlString));
+        }
+        break;
+      }
+      default:
+        nodes.push(token.text);
+        break;
+    }
+  }
+  return nodes;
+}
+
 const enum SelectableKind {
   /** The element hosts a widget whose `linkElements` are selectable. */
   LINKS = 'links',
@@ -1612,7 +1662,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
               wrapper.style.setProperty('contain', 'paint');
               wrapper.style.setProperty('display', 'inline-block');
               wrapper.style.setProperty('max-width', '100%');
-              render(html`${this.linkifyStringAsFragment(lines[i])}`, wrapper);
+              render(this.linkifyStringAsFragment(lines[i]), wrapper);
               for (const [property, {value, priority}] of currentStyle) {
                 wrapper.style.setProperty(property, value, priority);
               }
@@ -2280,38 +2330,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return propertyValue;
     }
     const container = document.createDocumentFragment();
-    const tokens = ConsoleViewMessage.tokenizeMessageText(string);
-    let isBlob = false;
-    for (const token of tokens) {
-      if (!token.text) {
-        continue;
-      }
-      if (isBlob) {
-        token.text = `blob:${token.text}`;
-        isBlob = !isBlob;
-      }
-      if (token.text === '\'blob:' && token === tokens[0]) {
-        isBlob = true;
-        token.text = '\'';
-      }
-      switch (token.type) {
-        case 'url': {
-          const realURL = (token.text.startsWith('www.') ? 'http://' + token.text : token.text);
-          const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(realURL);
-          const sourceURL = Common.ParsedURL.ParsedURL.removeWasmFunctionInfoFromURL(splitResult.url);
-          let linkNode;
-          if (splitResult) {
-            linkNode = linkifier(token.text, sourceURL, splitResult.lineNumber, splitResult.columnNumber);
-          } else {
-            linkNode = linkifier(token.text, Platform.DevToolsPath.EmptyUrlString);
-          }
-          container.appendChild(linkNode);
-          break;
-        }
-        default:
-          container.appendChild(document.createTextNode(token.text));
-          break;
-      }
+    for (const item of tokenizeAndLinkify(string, linkifier)) {
+      container.appendChild(typeof item === 'string' ? document.createTextNode(item) : item);
     }
     return container;
   }
@@ -2336,7 +2356,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return executionContext ? Components.Linkifier.openInNewTabInitiatorId(executionContext) : undefined;
   }
 
-  private linkifyStringAsFragment(string: string): DocumentFragment|LitTemplate {
+  private linkifyStringAsFragment(string: string): LitTemplate {
     if (string.length > getMaxTokenizableStringLength()) {
       return html`${widget(ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue, {
         text: string,
@@ -2344,26 +2364,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       })}`;
     }
     const initiatorId = (): Components.Linkifier.OpenInNewTabInitiatorId|undefined => this.initiatorId();
-    return ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
-      const options = {text, lineNumber, columnNumber, initiatorId};
-      const linkElement =
-          Components.Linkifier.Linkifier.linkifyURL(url, (options as Components.Linkifier.LinkifyURLOptions));
-      linkElement.tabIndex = -1;
-      linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
-      return linkElement;
-    }) as DocumentFragment;
-  }
-
-  private static tokenizeMessageText(string: string): Array<{
-    text: string,
-    type?: string,
-  }> {
-    const {tokenizerRegexes, tokenizerTypes} = getOrCreateTokenizers();
-    if (string.length > getMaxTokenizableStringLength()) {
-      return [{text: string, type: undefined}];
-    }
-    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(string, tokenizerRegexes);
-    return results.map(result => ({text: result.value, type: tokenizerTypes[result.regexIndex]}));
+    const parts = tokenizeAndLinkify(
+        string,
+        (text, url, lineNumber, columnNumber) => Components.Linkifier.Linkifier.renderLinkifiedUrl(
+            url,
+            {text, lineNumber, columnNumber, initiatorId, onRef: link => link.setAttribute(SELECTABLE_ATTRIBUTE, '')}));
+    return html`${parts}`;
   }
 
   groupKey(): string {
@@ -2374,7 +2380,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   groupTitle(): string {
-    const tokens = ConsoleViewMessage.tokenizeMessageText(this.message.messageText);
+    const tokens = tokenizeMessageText(this.message.messageText);
     const result = tokens.reduce((acc, token) => {
       let text: Common.UIString.LocalizedString|string = token.text;
       if (token.type === 'url') {

@@ -2248,6 +2248,41 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       assert.strictEqual(element.deepTextContent(), 'Message format number 1, 2 and 3.5');
     });
 
+    it('renders pure inline string tokens without wrapper elements', async () => {
+      const element = await createMessageElement('hello', [SDK.RemoteObject.RemoteObject.fromLocalObject('world')]);
+      const messageText = element.querySelector('.console-message-text');
+      assert.exists(messageText);
+      assert.strictEqual(messageText.childElementCount, 0);
+      assert.strictEqual(messageText.textContent, 'hello world');
+    });
+
+    it('linkifies URLs in formatted strings and makes them keyboard-selectable', async () => {
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          'Visit %s now',
+          {
+            type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+            parameters: [
+              SDK.RemoteObject.RemoteObject.fromLocalObject('Visit %s now'),
+              SDK.RemoteObject.RemoteObject.fromLocalObject('https://example.com/page.js:10:5'),
+            ],
+          },
+      );
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const element = message.toMessageElement();
+      renderElementIntoDOM(element);
+      await UI.Widget.Widget.allUpdatesComplete;
+      await raf();
+
+      const link = element.querySelector<HTMLElement>('.console-message-text .devtools-link');
+      assert.exists(link);
+      assert.strictEqual(link.tabIndex, -1);
+      assert.isTrue(message.maybeHandleOnKeyDown(new KeyboardEvent('keydown', {key: 'ArrowDown'})));
+      assert.isTrue(link.hasFocus());
+    });
+
     it('formats strings correctly', async () => {
       const element = await createMessageElement(
           'Message %s for %s',

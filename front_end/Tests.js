@@ -24,6 +24,8 @@
   let UI;
   /** @type {import('./models/workspace/workspace.js')} */
   let Workspace;
+  /** @type {import('./ui/settings/settings.js')} */
+  let SettingsUI;
   const TestSuite = class {
     /**
      * Test suite for interactive UI tests.
@@ -136,6 +138,7 @@
       SDK,
       UI,
       Workspace,
+      SettingsUI,
     ] =
          await Promise.all([
            self.runtime.loadLegacyModule('core/common/common.js'),
@@ -144,6 +147,7 @@
            self.runtime.loadLegacyModule('core/sdk/sdk.js'),
            self.runtime.loadLegacyModule('ui/legacy/legacy.js'),
            self.runtime.loadLegacyModule('models/workspace/workspace.js'),
+           self.runtime.loadLegacyModule('ui/settings/settings.js'),
          ]));
 
     // We have to map 'Host.InspectorFrontendHost' as the C++ uses it directly.
@@ -776,7 +780,9 @@
       this.releaseControl();
     });
 
-    Common.Settings.Settings.instance().moduleSetting('active-keybind-set').set('vsCode');
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.MainSettings.activeKeybindSetSettingDescriptor)
+        .set('vsCode');
   };
 
   TestSuite.prototype.testDispatchKeyEventDoesNotCrash = function() {

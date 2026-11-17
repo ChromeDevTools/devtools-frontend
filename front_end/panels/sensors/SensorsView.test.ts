@@ -449,6 +449,23 @@ describeWithEnvironment('SensorsView', () => {
       assert.isTrue(locationSetting.get().includes('45'));
     });
 
+    it('applies a location input on Enter, but not while an IME composition is confirmed', () => {
+      const locationSetting = Common.Settings.Settings.instance().createSetting('emulation.location-override', '');
+      const timezoneInput = view.contentElement.querySelector('#timezone-input') as HTMLInputElement;
+      assert.exists(timezoneInput);
+      timezoneInput.value = 'Europe/Berlin';
+
+      const composing = new KeyboardEvent('keydown', {key: 'Enter', isComposing: true, cancelable: true});
+      timezoneInput.dispatchEvent(composing);
+      assert.isFalse(composing.defaultPrevented);
+      assert.isFalse(locationSetting.get().includes('Europe/Berlin'));
+
+      const enter = new KeyboardEvent('keydown', {key: 'Enter', cancelable: true});
+      timezoneInput.dispatchEvent(enter);
+      assert.isTrue(enter.defaultPrevented);
+      assert.isTrue(locationSetting.get().includes('Europe/Berlin'));
+    });
+
     it('modifies latitude input on ArrowUp key', () => {
       const latitudeInput = view.contentElement.querySelector('#latitude-input') as HTMLInputElement;
       assert.exists(latitudeInput);
@@ -740,6 +757,22 @@ describeWithEnvironment('SensorsView', () => {
 
       const orientationSetting =
           Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
+      assert.isTrue(orientationSetting.get().includes('45'));
+    });
+
+    it('applies the alpha input on Enter, but not while an IME composition is confirmed', () => {
+      const orientationSetting =
+          Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
+      alphaInput.value = '45';
+
+      const composing = new KeyboardEvent('keydown', {key: 'Enter', isComposing: true, cancelable: true});
+      alphaInput.dispatchEvent(composing);
+      assert.isFalse(composing.defaultPrevented);
+      assert.isFalse(orientationSetting.get().includes('45'));
+
+      const enter = new KeyboardEvent('keydown', {key: 'Enter', cancelable: true});
+      alphaInput.dispatchEvent(enter);
+      assert.isTrue(enter.defaultPrevented);
       assert.isTrue(orientationSetting.get().includes('45'));
     });
 

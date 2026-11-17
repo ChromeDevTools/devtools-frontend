@@ -745,7 +745,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
   #onLocationKeyDown(event: KeyboardEvent): void {
     const input = event.currentTarget as HTMLInputElement;
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.isComposing) {
       if (input.checkValidity()) {
         this.#applyLocationUserInput(input.name, input.value.trim());
       }
@@ -936,7 +936,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
   #onOrientationKeyDown(event: KeyboardEvent): void {
     const input = event.currentTarget as HTMLInputElement;
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.isComposing) {
       if (input.checkValidity()) {
         this.#applyDeviceOrientationUserInput(input);
       }

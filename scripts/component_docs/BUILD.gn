@@ -29,6 +29,7 @@ ts_library("docs_environment") {
     "../../front_end/core/common:bundle",
     "../../front_end/testing",
     "../../front_end/ui/legacy/theme_support:bundle",
+    "../../front_end/ui/settings:bundle",
   ]
   data_deps = [ "../../front_end/Images" ]
 }

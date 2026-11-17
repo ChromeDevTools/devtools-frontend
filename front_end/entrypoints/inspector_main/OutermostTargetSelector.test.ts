@@ -194,6 +194,16 @@ describeWithEnvironment('OutermostTargetSelector', () => {
       assert.strictEqual(menuItems[1].querySelector('.title')?.textContent, `${'a'.repeat(99)}…`);
     });
 
+    it('sizes the dropdown button to its title', () => {
+      const target = renderView({items: [{title: 'Main', subtitle: ''}]});
+      const button = target.querySelector<HTMLButtonElement>('button#outermost-target-selector-button');
+      assert.exists(button);
+      const {width, height} = button.getBoundingClientRect();
+      // The button shrinks to fit a short title and fits into the toolbar.
+      assert.isBelow(width, 120);
+      assert.isAtMost(height, 20);
+    });
+
     it('forwards button and menu events from the view', () => {
       const onToggleMenu = sinon.spy();
       const onCloseMenu = sinon.spy();

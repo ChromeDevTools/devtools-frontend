@@ -57,6 +57,38 @@ describeWithEnvironment('SplitWidget', () => {
     assert.strictEqual(widget.resizerElement().getAttribute('jslog'), 'Resizer; track: drag');
   });
 
+  it('exposes the resizer element as a CSS part', () => {
+    const widget = new SplitWidget(true, false);
+    assert.strictEqual(widget.resizerElement().getAttribute('part'), 'resizer');
+  });
+
+  it('styles only its own resizer through ::part(resizer)', async () => {
+    const container = renderElementIntoDOM(new UI.Widget.VBox());
+    let outerSplitWidget!: UI.SplitWidget.SplitWidget;
+    let innerSplitWidget!: UI.SplitWidget.SplitWidget;
+
+    // clang-format off
+    render(html`
+      <style>.outer::part(resizer) { transform: translateX(2px); }</style>
+      <devtools-split-view class="outer" direction="column"
+                           ${widgetRef(SplitWidget, e => {outerSplitWidget = e;})}>
+        <devtools-split-view slot="main" direction="row"
+                             ${widgetRef(SplitWidget, e => {innerSplitWidget = e;})}>
+          <div slot="main">Inner main content</div>
+          <div slot="sidebar">Inner sidebar content</div>
+        </devtools-split-view>
+        <div slot="sidebar">Sidebar content</div>
+      </devtools-split-view>`,
+        container.contentElement);
+    // clang-format on
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.exists(outerSplitWidget);
+    assert.exists(innerSplitWidget);
+    assert.strictEqual(getComputedStyle(outerSplitWidget.resizerElement()).transform, 'matrix(1, 0, 0, 1, 2, 0)');
+    assert.strictEqual(getComputedStyle(innerSplitWidget.resizerElement()).transform, 'none');
+  });
+
   it('stacks the widgets when an auto-oriented split widget is narrow', () => {
     const container = document.createElement('div');
     container.style.display = 'flex';

@@ -186,9 +186,10 @@ findings):
   cleanup-only tail CL.
 - **Never add Piper `KEY=VALUE` tags:** Flag any column-0 lines matching
   `TAG=`, `CONV=`, `BUG=`, `FIXED=`, or `MARKDOWN=true`. DevTools commit
-  descriptions must use standard Git trailers (`Bug:`, `Fixed:`) only; Piper
-  tags break Git trailer parsing and are rejected by `PRESUBMIT.py`. Agent
-  conversations should be linked out of band via
+  descriptions must use standard Git trailers (such as `Bug:`, `Fixed:`, and
+  `Ai-Assisted: true` for AI-assisted CLs) rather than Piper tags, which break
+  Git trailer parsing and are rejected by `PRESUBMIT.py`. Agent conversations
+  should be linked out of band via
   `git config --global cl.upload-conversation-id true`.
 - **UI Eng Vision migration completeness & `Fixed:` vs `Bug:`**: Flag
   `Fixed: <id>` on UI Eng Vision migration CLs when core violations remain in

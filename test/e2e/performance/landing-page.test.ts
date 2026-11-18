@@ -28,7 +28,7 @@ const HISTOGRAM_SELECTOR = '.bucket-summaries.histogram';
 const SETUP_FIELD_BUTTON_SELECTOR = 'devtools-button[data-field-data-setup]';
 const ENABLE_FIELD_BUTTON_SELECTOR = 'devtools-button[data-field-data-enable]';
 const ADVANCED_DETAILS_SELECTOR = '.content summary';
-const OVERRIDE_FIELD_CHECKBOX_SELECTOR = '.content input[type="checkbox"]';
+const OVERRIDE_FIELD_CHECKBOX_SELECTOR = '.content devtools-checkbox';
 const OVERRIDE_FIELD_TEXT_SELECTOR = '.content input[type="text"]';
 
 async function installLCPListener(session: puppeteer.CDPSession): Promise<() => Promise<void>> {

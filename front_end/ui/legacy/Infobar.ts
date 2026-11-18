@@ -135,7 +135,6 @@ export class Infobar extends Widget<ShadowRoot> {
   readonly #view: View;
   #detailsRows: readonly DetailsRowMessage[] = [];
   #closeCallback: (() => void)|null = null;
-  #parentView?: Widget;
   #needsUpdate = true;
 
   constructor(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
@@ -281,10 +280,6 @@ export class Infobar extends Widget<ShadowRoot> {
     this.#closeCallback = callback;
   }
 
-  setParentView(parentView: Widget): void {
-    this.#parentView = parentView;
-  }
-
   override wasShown(): void {
     super.wasShown();
     if (this.#needsUpdate) {
@@ -326,7 +321,7 @@ export class Infobar extends Widget<ShadowRoot> {
   }
 
   #onResize(): void {
-    (this.#parentView ?? this.parentWidget())?.doResize();
+    this.parentWidget()?.doResize();
   }
 
   #onDisable(): void {

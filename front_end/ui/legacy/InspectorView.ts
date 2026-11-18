@@ -1,7 +1,6 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -22,7 +21,7 @@ import type {ContextMenu} from './ContextMenu.js';
 import {Dialog} from './Dialog.js';
 import {DockController, DockState, Events as DockControllerEvents} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
-import {Infobar, Type as InfobarType} from './Infobar.js';
+import {Infobar, type InfobarAction, Type as InfobarType} from './Infobar.js';
 import {InspectorDrawerView} from './InspectorDrawerView.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import type {Panel} from './Panel.js';
@@ -31,11 +30,12 @@ import {StatusBarWidget} from './StatusBar.js';
 import {type EventData, Events as TabbedPaneEvents, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
 import {Tooltip} from './Tooltip.js';
 import {UIUserMetrics} from './UIUserMetrics.js';
-import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
+import type {TabbedViewLocation, View as TabbedView, ViewLocation, ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
 import {VBox, type Widget, widget, WidgetFocusRestorer} from './Widget.js';
 
-const {html} = Lit;
+const {Directives, html, nothing, render} = Lit;
+const {ref, repeat} = Directives;
 
 const UIStrings = {
   /**
@@ -148,30 +148,79 @@ interface ScrollState {
   scrollLeft: number;
 }
 
+export interface InfobarSpec {
+  key: string;
+  type: InfobarType;
+  text: string;
+  actions: InfobarAction[];
+  disableSetting: Common.Settings.Setting<boolean>|null;
+  jslogContext: string;
+  onClose: () => void;
+}
+
+export interface ViewInput {
+  infobars: readonly InfobarSpec[];
+  statusBarVisible: boolean;
+}
+
+export interface ViewOutput {
+  attachSplitWidget?: (showSplitWidget: (parentElement: HTMLElement) => void) => void;
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  let splitContainer: Element|undefined;
+  // clang-format off
+  render(html`
+    ${input.infobars.length > 0 ? html`
+      <div class="flex-none">
+        ${repeat(input.infobars, bar => bar.key, bar => widget(Infobar, {
+          type: bar.type,
+          text: bar.text,
+          actions: bar.actions,
+          disableSetting: bar.disableSetting,
+          jslogContext: bar.jslogContext,
+          onClose: bar.onClose,
+        }))}
+      </div>
+    ` : nothing}
+    <div style="display: contents" ${ref(el => { splitContainer = el; })}></div>
+    ${input.statusBarVisible ? html`
+      <devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>
+    ` : nothing}
+  `, target);
+  // clang-format on
+  output.attachSplitWidget = showSplitWidget => {
+    if (splitContainer instanceof HTMLElement) {
+      showSplitWidget(splitContainer);
+    }
+  };
+};
+
 export class InspectorView extends VBox implements ViewLocationResolver {
+  readonly #view: View;
   readonly #drawerOrientationByDockSetting: Common.Settings.Setting<DrawerOrientationByDockMode>;
   readonly #drawerSplitWidget: SplitWidget;
   readonly #drawerView: InspectorDrawerView;
   readonly #tabDelegate: InspectorViewTabDelegate;
-  #infoBarDiv: HTMLDivElement|null = null;
   readonly #tabbedLocation: TabbedViewLocation;
   readonly tabbedPane: TabbedPane;
   readonly #keyDownBound: (event: KeyboardEvent) => void;
+  #infobars: InfobarSpec[] = [];
+  #statusBarVisible = false;
+  #needsUpdate = true;
   #currentPanelLocked?: boolean;
   #focusRestorer?: WidgetFocusRestorer|null;
   #mainPanelAtDrawerFocus: string|null = null;
   #ownerSplitWidget?: SplitWidget;
-  #reloadRequiredInfobar?: Infobar;
-  #chromeRestartRequiredInfobar?: Infobar;
-  #debuggedTabReloadRequiredInfobar?: Infobar;
-  #selectOverrideFolderInfobar?: Infobar;
   #resizeObserver: ResizeObserver;
   #drawerShowModeBeforeDockSideChange: ShowMode|null = null;
   #drawerMinimizedBeforeDockSideChange: boolean|null = null;
-  #statusBarContainer?: HTMLDivElement;
 
-  constructor(element?: HTMLElement) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
+    this.#view = view;
     GlassPane.setContainer(this.element);
     this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
 
@@ -187,7 +236,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.#drawerSplitWidget = new SplitWidget(isVertical, true, 'inspector.drawer-split-view-state', 200, 200);
     this.#drawerSplitWidget.hideSidebar();
     this.#drawerSplitWidget.enableShowModeSaving();
-    this.#drawerSplitWidget.show(this.element);
 
     this.#tabDelegate = new InspectorViewTabDelegate();
 
@@ -234,9 +282,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     }
 
     if (shouldShowLocaleInfobar()) {
-      const infobar = createLocaleInfobar();
-      infobar.setParentView(this);
-      this.#attachInfobar(infobar);
+      this.#infobars.push(createLocaleInfobarSpec(() => this.#removeInfobar('locale-mismatch')));
     }
     this.#resizeObserver = new ResizeObserver(this.#observedResize.bind(this));
     DockController.instance().addEventListener(DockControllerEvents.BEFORE_DOCK_SIDE_CHANGED,
@@ -247,6 +293,28 @@ export class InspectorView extends VBox implements ViewLocationResolver {
                                                this.#restoreDrawerStateAfterDockSideChange, this);
 
     this.#drawerView.restoreMinimizedStateFromSettings();
+    this.performUpdate();
+  }
+
+  override requestUpdate(): void {
+    this.#needsUpdate = true;
+    super.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#needsUpdate = false;
+    const input: ViewInput = {
+      infobars: this.#infobars,
+      statusBarVisible: this.#statusBarVisible,
+    };
+    const output: ViewOutput = {};
+    this.#view(input, output, this.contentElement);
+    if (!this.#drawerSplitWidget.parentWidget()) {
+      output.attachSplitWidget?.(parent => {
+        this.#drawerSplitWidget.show(parent);
+        this.setDefaultFocusedChild(this.#drawerSplitWidget);
+      });
+    }
   }
 
   #createMainTabbedLocation(): TabbedViewLocation {
@@ -297,10 +365,11 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   static instance(opts: {
     forceNew?: boolean|null,
     element?: HTMLElement,
+    view?: View,
   }|undefined = {forceNew: null}): InspectorView {
-    const {forceNew, element} = opts;
+    const {forceNew, element, view} = opts;
     if (!inspectorViewInstance || forceNew) {
-      inspectorViewInstance = new InspectorView(element);
+      inspectorViewInstance = new InspectorView(element, view);
     }
 
     return inspectorViewInstance;
@@ -378,6 +447,9 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
   override wasShown(): void {
     super.wasShown();
+    if (this.#needsUpdate) {
+      this.requestUpdate();
+    }
     this.#resizeObserver.observe(this.element);
     this.#observedResize();
     this.element.ownerDocument.addEventListener('keydown', this.#keyDownBound, false);
@@ -425,7 +497,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     ]);
   }
 
-  addPanel(view: View): void {
+  addPanel(view: TabbedView): void {
     this.#tabbedLocation.appendView(view);
   }
 
@@ -743,28 +815,49 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.ownerSplit()?.setSidebarMinimized(false);
   }
 
+  #hasInfobar(key: string): boolean {
+    return this.#infobars.some(bar => bar.key === key);
+  }
+
+  #addInfobar(spec: InfobarSpec): void {
+    this.#infobars = [...this.#infobars, spec];
+    this.requestUpdate();
+  }
+
+  #removeInfobar(key: string): void {
+    if (!this.#hasInfobar(key)) {
+      return;
+    }
+    this.#infobars = this.#infobars.filter(bar => bar.key !== key);
+    if (key === 'debugged-tab-reload-required') {
+      SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
+                                                                     SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+                                                                     this.removeDebuggedTabReloadRequiredWarning, this);
+    }
+    this.requestUpdate();
+  }
+
   displayDebuggedTabReloadRequiredWarning(message: string): void {
-    if (!this.#debuggedTabReloadRequiredInfobar) {
-      const infobar = new Infobar(
-          InfobarType.INFO, message,
-          [
-            {
-              text: i18nString(UIStrings.reloadDebuggedTab),
-              delegate: () => {
-                reloadDebuggedTab();
-                this.removeDebuggedTabReloadRequiredWarning();
-              },
-              dismiss: false,
-              buttonVariant: Buttons.Button.Variant.PRIMARY,
-              jslogContext: 'main.debug-reload',
+    if (!this.#hasInfobar('debugged-tab-reload-required')) {
+      this.#addInfobar({
+        key: 'debugged-tab-reload-required',
+        type: InfobarType.INFO,
+        text: message,
+        actions: [
+          {
+            text: i18nString(UIStrings.reloadDebuggedTab),
+            delegate: () => {
+              reloadDebuggedTab();
+              this.removeDebuggedTabReloadRequiredWarning();
             },
-          ],
-          undefined, 'reload-required');
-      infobar.setParentView(this);
-      this.#attachInfobar(infobar);
-      this.#debuggedTabReloadRequiredInfobar = infobar;
-      infobar.setCloseCallback(() => {
-        this.#debuggedTabReloadRequiredInfobar = undefined;
+            dismiss: false,
+            buttonVariant: Buttons.Button.Variant.PRIMARY,
+            jslogContext: 'main.debug-reload',
+          },
+        ],
+        disableSetting: null,
+        jslogContext: 'reload-required',
+        onClose: () => this.#removeInfobar('debugged-tab-reload-required'),
       });
 
       SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -774,115 +867,87 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   removeDebuggedTabReloadRequiredWarning(): void {
-    if (this.#debuggedTabReloadRequiredInfobar) {
-      this.#debuggedTabReloadRequiredInfobar.dispose();
-      SDK.TargetManager.TargetManager.instance().removeModelListener(
-          SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-          this.removeDebuggedTabReloadRequiredWarning, this);
-    }
+    this.#removeInfobar('debugged-tab-reload-required');
   }
 
   displayReloadRequiredWarning(message: string): void {
-    if (!this.#reloadRequiredInfobar && !this.#chromeRestartRequiredInfobar) {
-      const infobar = new Infobar(
-          InfobarType.INFO, message,
-          [
-            {
-              text: i18nString(UIStrings.reloadDevtools),
-              delegate: () => reloadDevTools(),
-              dismiss: false,
-              buttonVariant: Buttons.Button.Variant.PRIMARY,
-              jslogContext: 'main.debug-reload',
-            },
-          ],
-          undefined, 'reload-required');
-      infobar.setParentView(this);
-      this.#attachInfobar(infobar);
-      this.#reloadRequiredInfobar = infobar;
-      infobar.setCloseCallback(() => {
-        this.#reloadRequiredInfobar = undefined;
+    if (!this.#hasInfobar('reload-required') && !this.#hasInfobar('chrome-restart-required')) {
+      this.#addInfobar({
+        key: 'reload-required',
+        type: InfobarType.INFO,
+        text: message,
+        actions: [
+          {
+            text: i18nString(UIStrings.reloadDevtools),
+            delegate: () => reloadDevTools(),
+            dismiss: false,
+            buttonVariant: Buttons.Button.Variant.PRIMARY,
+            jslogContext: 'main.debug-reload',
+          },
+        ],
+        disableSetting: null,
+        jslogContext: 'reload-required',
+        onClose: () => this.#removeInfobar('reload-required'),
       });
     }
   }
 
   displayChromeRestartRequiredWarning(message: string): void {
-    if (this.#reloadRequiredInfobar) {
-      this.#reloadRequiredInfobar.dispose();
-    }
-    if (!this.#chromeRestartRequiredInfobar) {
-      const infobar = new Infobar(
-          InfobarType.INFO, message,
-          [
-            {
-              text: i18nString(UIStrings.restartChrome),
-              delegate: () => {
-                if (confirm(i18nString(UIStrings.areYouSureYouWantToRestartChrome))) {
-                  Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
-                }
-              },
-              dismiss: false,
-              buttonVariant: Buttons.Button.Variant.PRIMARY,
-              jslogContext: 'main.chrome-restart-chrome',
+    this.#removeInfobar('reload-required');
+    if (!this.#hasInfobar('chrome-restart-required')) {
+      this.#addInfobar({
+        key: 'chrome-restart-required',
+        type: InfobarType.INFO,
+        text: message,
+        actions: [
+          {
+            text: i18nString(UIStrings.restartChrome),
+            delegate: () => {
+              if (confirm(i18nString(UIStrings.areYouSureYouWantToRestartChrome))) {
+                Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
+              }
             },
-          ],
-          undefined, 'reload-required');
-      infobar.setParentView(this);
-      this.#attachInfobar(infobar);
-      this.#chromeRestartRequiredInfobar = infobar;
-      infobar.setCloseCallback(() => {
-        this.#chromeRestartRequiredInfobar = undefined;
+            dismiss: false,
+            buttonVariant: Buttons.Button.Variant.PRIMARY,
+            jslogContext: 'main.chrome-restart-chrome',
+          },
+        ],
+        disableSetting: null,
+        jslogContext: 'reload-required',
+        onClose: () => this.#removeInfobar('chrome-restart-required'),
       });
     }
   }
 
   displaySelectOverrideFolderInfobar(callback: () => void): void {
-    if (!this.#selectOverrideFolderInfobar) {
-      const infobar = new Infobar(
-          InfobarType.INFO, i18nString(UIStrings.selectOverrideFolder),
-          [
-            {
-              text: i18nString(UIStrings.selectFolder),
-              delegate: () => callback(),
-              dismiss: true,
-              buttonVariant: Buttons.Button.Variant.TONAL,
-              jslogContext: 'select-folder',
-            },
-          ],
-          undefined, 'select-override-folder');
-      infobar.setParentView(this);
-      this.#attachInfobar(infobar);
-      this.#selectOverrideFolderInfobar = infobar;
-      infobar.setCloseCallback(() => {
-        this.#selectOverrideFolderInfobar = undefined;
+    if (!this.#hasInfobar('select-override-folder')) {
+      this.#addInfobar({
+        key: 'select-override-folder',
+        type: InfobarType.INFO,
+        text: i18nString(UIStrings.selectOverrideFolder),
+        actions: [
+          {
+            text: i18nString(UIStrings.selectFolder),
+            delegate: () => callback(),
+            dismiss: true,
+            buttonVariant: Buttons.Button.Variant.TONAL,
+            jslogContext: 'select-folder',
+          },
+        ],
+        disableSetting: null,
+        jslogContext: 'select-override-folder',
+        onClose: () => this.#removeInfobar('select-override-folder'),
       });
     }
   }
 
   renderStatusBar(visible = true): void {
-    if (!this.#statusBarContainer) {
-      this.#statusBarContainer = document.createElement('div');
-      this.#statusBarContainer.style.display = 'contents';
-      this.element.appendChild(this.#statusBarContainer);
+    if (this.#statusBarVisible === visible) {
+      return;
     }
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    Lit.render(
-        visible ? html`<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>` : Lit.nothing,
-        this.#statusBarContainer);
-  }
-
-  #createInfoBarDiv(): void {
-    if (!this.#infoBarDiv) {
-      this.#infoBarDiv = document.createElement('div');
-      this.#infoBarDiv.classList.add('flex-none');
-      this.contentElement.insertBefore(this.#infoBarDiv, this.contentElement.firstChild);
-    }
-  }
-
-  #attachInfobar(infobar: Infobar): void {
-    this.#createInfoBarDiv();
-    if (this.#infoBarDiv) {
-      infobar.show(this.#infoBarDiv);
-    }
+    this.#statusBarVisible = visible;
+    this.requestUpdate();
+    void this.updateComplete.then(() => this.doResize());
   }
 }
 
@@ -908,7 +973,7 @@ function shouldShowLocaleInfobar(): boolean {
       i18n.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
 }
 
-function createLocaleInfobar(): Infobar {
+function createLocaleInfobarSpec(onDismiss: () => void): InfobarSpec {
   const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
   const locale = new Intl.Locale(closestSupportedLocale);
@@ -916,35 +981,41 @@ function createLocaleInfobar(): Infobar {
       new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language || 'en') || 'English';
 
   const languageSetting = Common.Settings.Settings.instance().moduleSetting<string>('language');
-  const infobar = new Infobar(
-      InfobarType.INFO, i18nString(UIStrings.devToolsLanguageMissmatch, {PH1: closestSupportedLanguageInCurrentLocale}),
-      [
-        {
-          text: i18nString(UIStrings.setToBrowserLanguage),
-          delegate: () => {
-            languageSetting.set('browserLanguage');
-            getDisableLocaleInfoBarSetting().set(true);
-            reloadDevTools();
-          },
-          dismiss: true,
-          jslogContext: 'set-to-browser-language',
+  return {
+    key: 'locale-mismatch',
+    type: InfobarType.INFO,
+    text: i18nString(UIStrings.devToolsLanguageMissmatch, {PH1: closestSupportedLanguageInCurrentLocale}),
+    actions: [
+      {
+        text: i18nString(UIStrings.setToBrowserLanguage),
+        delegate: () => {
+          languageSetting.set('browserLanguage');
+          getDisableLocaleInfoBarSetting().set(true);
+          reloadDevTools();
         },
-        {
-          text: i18nString(UIStrings.setToSpecificLanguage, {PH1: closestSupportedLanguageInCurrentLocale}),
-          delegate: () => {
-            languageSetting.set(closestSupportedLocale);
-            getDisableLocaleInfoBarSetting().set(true);
-            reloadDevTools();
-          },
-          dismiss: true,
-          jslogContext: 'set-to-specific-language',
+        dismiss: true,
+        jslogContext: 'set-to-browser-language',
+      },
+      {
+        text: i18nString(UIStrings.setToSpecificLanguage, {PH1: closestSupportedLanguageInCurrentLocale}),
+        delegate: () => {
+          languageSetting.set(closestSupportedLocale);
+          getDisableLocaleInfoBarSetting().set(true);
+          reloadDevTools();
         },
-      ],
-      getDisableLocaleInfoBarSetting(), 'language-mismatch');
-  // Closing the infobar with the close button or Esc also answers it, so that
-  // we notify users only once.
-  infobar.setCloseCallback(() => getDisableLocaleInfoBarSetting().set(true));
-  return infobar;
+        dismiss: true,
+        jslogContext: 'set-to-specific-language',
+      },
+    ],
+    disableSetting: getDisableLocaleInfoBarSetting(),
+    jslogContext: 'language-mismatch',
+    // Closing the infobar with the close button or Esc also answers it, so that
+    // we notify users only once.
+    onClose: () => {
+      getDisableLocaleInfoBarSetting().set(true);
+      onDismiss();
+    },
+  };
 }
 
 function reloadDevTools(): void {

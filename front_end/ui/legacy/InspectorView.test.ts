@@ -9,10 +9,18 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import {assertScreenshot, getElementWithinComponent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {deinitializeGlobalVars, initializeGlobalVars, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {
+  createTarget,
+  deinitializeGlobalVars,
+  initializeGlobalVars,
+  updateHostConfig,
+} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as LegacyUI from './legacy.js';
 
@@ -76,10 +84,11 @@ describe('InspectorView', () => {
   });
 
   describe('reload required warnings', () => {
-    it('displays both debugged tab and devtools reload warnings independently', () => {
+    it('displays both debugged tab and devtools reload warnings independently', async () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.displayDebuggedTabReloadRequiredWarning('Debugged tab reload required');
       inspectorView.displayReloadRequiredWarning('DevTools reload required');
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
 
       // The infobars are added to a flex-none div within the content element.
       // We expect two children in that div.
@@ -90,33 +99,36 @@ describe('InspectorView', () => {
       const firstInfobar = infoBarDiv.children[0];
       const secondInfobar = infoBarDiv.children[1];
 
-      assert.exists(firstInfobar.shadowRoot);
-      assert.exists(secondInfobar.shadowRoot);
+      assert.instanceOf(firstInfobar, HTMLElement);
+      assert.instanceOf(secondInfobar, HTMLElement);
 
-      const firstLabel = firstInfobar.shadowRoot.querySelector('.infobar-info-text');
-      const secondLabel = secondInfobar.shadowRoot.querySelector('.infobar-info-text');
+      const firstLabel = getElementWithinComponent(firstInfobar, '.infobar-info-text', HTMLElement);
+      const secondLabel = getElementWithinComponent(secondInfobar, '.infobar-info-text', HTMLElement);
 
-      assert.exists(firstLabel);
-      assert.exists(secondLabel);
       assert.strictEqual(firstLabel.textContent, 'Debugged tab reload required');
       assert.strictEqual(secondLabel.textContent, 'DevTools reload required');
     });
 
-    it('removes debugged tab reload warning and allows showing it again', () => {
+    it('removes debugged tab reload warning and allows showing it again', async () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.removeDebuggedTabReloadRequiredWarning();
       inspectorView.displayDebuggedTabReloadRequiredWarning('Debugged tab reload required');
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
 
       const infoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
       assert.exists(infoBarDiv);
       assert.strictEqual(infoBarDiv.childElementCount, 1);
 
       inspectorView.removeDebuggedTabReloadRequiredWarning();
-      assert.strictEqual(infoBarDiv.childElementCount, 0);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      assert.isNull(inspectorView.contentElement.querySelector('.flex-none'));
 
       inspectorView.displayDebuggedTabReloadRequiredWarning('Debugged tab reload required again');
-      assert.strictEqual(infoBarDiv.childElementCount, 1);
-      const readdedInfobar = infoBarDiv.children[0];
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      const readdedInfoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
+      assert.exists(readdedInfoBarDiv);
+      assert.strictEqual(readdedInfoBarDiv.childElementCount, 1);
+      const readdedInfobar = readdedInfoBarDiv.children[0];
       assert.instanceOf(readdedInfobar, HTMLElement);
       const label = getElementWithinComponent(readdedInfobar, '.infobar-info-text', HTMLElement);
       assert.strictEqual(label.textContent, 'Debugged tab reload required again');
@@ -124,13 +136,14 @@ describe('InspectorView', () => {
   });
 
   describe('select override folder infobar', () => {
-    it('displays the infobar once until dismissed and invokes the callback on action click', () => {
+    it('displays the infobar once until dismissed and invokes the callback on action click', async () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       const firstCallback = sinon.spy();
       const secondCallback = sinon.spy();
 
       inspectorView.displaySelectOverrideFolderInfobar(firstCallback);
       inspectorView.displaySelectOverrideFolderInfobar(secondCallback);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
 
       const infoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
       assert.exists(infoBarDiv);
@@ -143,47 +156,51 @@ describe('InspectorView', () => {
 
       const selectButton = getElementWithinComponent(infobar, 'devtools-button', HTMLElement);
       selectButton.click();
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.calledOnce(firstCallback);
       sinon.assert.notCalled(secondCallback);
-      assert.strictEqual(infoBarDiv.childElementCount, 0);
+      assert.isNull(inspectorView.contentElement.querySelector('.flex-none'));
 
       inspectorView.displaySelectOverrideFolderInfobar(secondCallback);
-      assert.strictEqual(infoBarDiv.childElementCount, 1);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      const readdedInfoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
+      assert.exists(readdedInfoBarDiv);
+      assert.strictEqual(readdedInfoBarDiv.childElementCount, 1);
     });
   });
 
   describe('Chrome restart required warnings', () => {
-    function assertShowsOnlyChromeRestartWarning(inspectorView: LegacyUI.InspectorView.InspectorView) {
+    async function assertShowsOnlyChromeRestartWarning(inspectorView: LegacyUI.InspectorView.InspectorView) {
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
       const infoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
       assert.exists(infoBarDiv);
       assert.strictEqual(infoBarDiv.childElementCount, 1);
 
       const infobar = infoBarDiv.children[0];
-      assert.exists(infobar.shadowRoot);
-      const label = infobar.shadowRoot.querySelector('.infobar-info-text');
-      assert.exists(label);
+      assert.instanceOf(infobar, HTMLElement);
+      const label = getElementWithinComponent(infobar, '.infobar-info-text', HTMLElement);
       assert.strictEqual(label.textContent, 'Chrome restart required');
     }
 
-    it('displays Chrome restart warning', () => {
+    it('displays Chrome restart warning', async () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.displayChromeRestartRequiredWarning('Chrome restart required');
-      assertShowsOnlyChromeRestartWarning(inspectorView);
+      await assertShowsOnlyChromeRestartWarning(inspectorView);
     });
 
-    it('hides reload warning when Chrome restart warning is displayed', () => {
+    it('hides reload warning when Chrome restart warning is displayed', async () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.displayReloadRequiredWarning('Reload required');
       inspectorView.displayChromeRestartRequiredWarning('Chrome restart required');
-      assertShowsOnlyChromeRestartWarning(inspectorView);
+      await assertShowsOnlyChromeRestartWarning(inspectorView);
     });
 
-    it('does not display reload warning when Chrome restart warning is already displayed', () => {
+    it('does not display reload warning when Chrome restart warning is already displayed', async () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.displayChromeRestartRequiredWarning('Chrome restart required');
       inspectorView.displayReloadRequiredWarning('Reload required');
-      assertShowsOnlyChromeRestartWarning(inspectorView);
+      await assertShowsOnlyChromeRestartWarning(inspectorView);
     });
   });
 
@@ -215,17 +232,33 @@ describe('InspectorView', () => {
       createDevToolsLocale('en-US');
     });
 
-    it('is not shown again after the user closes it', () => {
+    it('is not shown again after the user closes it', async () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
       const infobar = findLanguageMismatchInfobar(inspectorView);
-      assert.exists(infobar);
+      assert.instanceOf(infobar, HTMLElement);
 
-      const closeButton = infobar.shadowRoot?.querySelector<HTMLElement>('dt-close-button');
-      assert.exists(closeButton);
+      const closeButton = getElementWithinComponent(infobar, 'dt-close-button', HTMLElement);
       closeButton.click();
 
       assert.isTrue(Common.Settings.Settings.instance().createSetting('disable-locale-info-bar', false).get());
-      assert.notExists(findLanguageMismatchInfobar(InspectorView.instance({forceNew: true})));
+      const nextInspectorView = InspectorView.instance({forceNew: true});
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      assert.notExists(findLanguageMismatchInfobar(nextInspectorView));
+    });
+
+    it('focuses the main tabbed pane when the language mismatch infobar is shown on a connected element', async () => {
+      const container = renderElementIntoDOM(new LegacyUI.Widget.VBox());
+      const host = container.contentElement.createChild('div');
+      LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+      const inspectorView = new InspectorView(host);
+      inspectorView.show(container.contentElement);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      assert.exists(findLanguageMismatchInfobar(inspectorView));
+
+      inspectorView.focus();
+
+      assert.isTrue(inspectorView.tabbedPane.hasFocus());
     });
   });
 
@@ -443,6 +476,137 @@ describe('InspectorView', () => {
       inspectorView.toggleDrawerOrientation();
 
       assert.isFalse(inspectorView.isDrawerOrientationVertical());
+    });
+  });
+
+  describe('presenter', () => {
+    it('removes debugged tab reload warning on PrimaryPageChanged', async () => {
+      LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+      const view = createViewFunctionStub(InspectorView);
+      const inspectorView = new InspectorView(undefined, view);
+      const target = createTarget();
+
+      try {
+        const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+        assert.exists(resourceTreeModel);
+
+        inspectorView.displayDebuggedTabReloadRequiredWarning('Reload page msg');
+        let input = await view.nextInput;
+        assert.lengthOf(input.infobars, 1);
+
+        resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+          frame: sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame),
+          type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
+        });
+        input = await view.nextInput;
+        assert.isEmpty(input.infobars);
+      } finally {
+        inspectorView.removeDebuggedTabReloadRequiredWarning();
+        target.dispose('test');
+      }
+    });
+
+    it('unregisters PrimaryPageChanged listener when debugged tab reload warning is closed', async () => {
+      LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+      const view = createViewFunctionStub(InspectorView);
+      const inspectorView = new InspectorView(undefined, view);
+      const removeSpy = sinon.spy(inspectorView, 'removeDebuggedTabReloadRequiredWarning');
+      const target = createTarget();
+
+      try {
+        const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+        assert.exists(resourceTreeModel);
+
+        inspectorView.displayDebuggedTabReloadRequiredWarning('Reload page msg');
+        let input = await view.nextInput;
+        assert.lengthOf(input.infobars, 1);
+
+        input.infobars[0].onClose();
+        input = await view.nextInput;
+        assert.isEmpty(input.infobars);
+
+        resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+          frame: sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame),
+          type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
+        });
+        sinon.assert.notCalled(removeSpy);
+      } finally {
+        inspectorView.removeDebuggedTabReloadRequiredWarning();
+        target.dispose('test');
+      }
+    });
+
+    it('calls doResize when infobars are added and removed while showing', async () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      const doResizeStub = sinon.stub(inspectorView, 'doResize');
+
+      const addResize = expectCall(doResizeStub);
+      inspectorView.displayDebuggedTabReloadRequiredWarning('Reload page msg');
+      await addResize;
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      sinon.assert.calledOnce(doResizeStub);
+
+      doResizeStub.resetHistory();
+      const removeResize = expectCall(doResizeStub);
+      inspectorView.removeDebuggedTabReloadRequiredWarning();
+      await removeResize;
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      sinon.assert.calledOnce(doResizeStub);
+    });
+
+    it('renders and unmounts StatusBarWidget based on renderStatusBar and triggers doResize', async () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      const doResizeStub = sinon.stub(inspectorView, 'doResize');
+
+      inspectorView.renderStatusBar(false);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      assert.isNull(inspectorView.contentElement.querySelector('devtools-widget.flex-none'));
+      sinon.assert.notCalled(doResizeStub);
+
+      const showResize = expectCall(doResizeStub);
+      inspectorView.renderStatusBar(true);
+      await showResize;
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      const statusBarHost = inspectorView.contentElement.querySelector('devtools-widget.flex-none');
+      assert.exists(statusBarHost);
+      const statusBarWidget = LegacyUI.Widget.Widget.get(statusBarHost);
+      assert.instanceOf(statusBarWidget, LegacyUI.StatusBar.StatusBarWidget);
+      assert.isTrue(statusBarWidget.isShowing());
+
+      doResizeStub.resetHistory();
+      const hideResize = expectCall(doResizeStub);
+      inspectorView.renderStatusBar(false);
+      await hideResize;
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.isNull(inspectorView.contentElement.querySelector('devtools-widget.flex-none'));
+      assert.isFalse(statusBarWidget.isShowing());
+    });
+
+    it('renders pending infobar updates when re-shown after detach', async () => {
+      const container = renderElementIntoDOM(new LegacyUI.Widget.VBox());
+      LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+      const inspectorView = InspectorView.instance({forceNew: true});
+      inspectorView.show(container.contentElement);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+      inspectorView.displayReloadRequiredWarning('DevTools reload required');
+      inspectorView.detach();
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+      assert.isNull(inspectorView.contentElement.querySelector('.flex-none'));
+
+      inspectorView.show(container.contentElement);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+      const infoBarDiv = inspectorView.contentElement.querySelector('.flex-none');
+      assert.exists(infoBarDiv);
+      assert.strictEqual(infoBarDiv.childElementCount, 1);
+      const infobar = infoBarDiv.children[0];
+      assert.instanceOf(infobar, HTMLElement);
+      const label = getElementWithinComponent(infobar, '.infobar-info-text', HTMLElement);
+      assert.strictEqual(label.textContent, 'DevTools reload required');
     });
   });
 });

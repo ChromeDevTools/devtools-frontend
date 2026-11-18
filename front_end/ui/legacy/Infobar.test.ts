@@ -322,11 +322,10 @@ describeWithEnvironment('Infobar', () => {
       sinon.assert.calledOnce(parentKeyDown);
     });
 
-    it('calls parentView.doResize() when dismissed after setParentView', () => {
+    it('calls parentWidget.doResize() when dismissed', () => {
       const parentView = renderElementIntoDOM(new UI.Widget.VBox());
       const doResizeSpy = sinon.spy(parentView, 'doResize');
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Message');
-      infobar.setParentView(parentView);
       infobar.show(parentView.element);
 
       infobar.dispose();
@@ -335,11 +334,10 @@ describeWithEnvironment('Infobar', () => {
       assert.isFalse(infobar.element.isConnected);
     });
 
-    it('calls parentView.doResize() when setText is called after setParentView', () => {
+    it('calls parentWidget.doResize() when setText is called', () => {
       const parentView = renderElementIntoDOM(new UI.Widget.VBox());
       const doResizeSpy = sinon.spy(parentView, 'doResize');
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.INFO, 'Initial text');
-      infobar.setParentView(parentView);
       infobar.show(parentView.element);
 
       infobar.setText('Updated text');
@@ -524,22 +522,6 @@ describeWithEnvironment('Infobar Widget', () => {
 
     const infobar = new UI.Infobar.Infobar(undefined, view);
     infobar.show(parentView.element);
-    await infobar.updateComplete;
-
-    infobar.text = 'New';
-    sinon.assert.notCalled(doResizeSpy);
-    await infobar.updateComplete;
-    sinon.assert.calledOnce(doResizeSpy);
-  });
-
-  it('calls setParentView target doResize() after text property update completes', async () => {
-    const view = createViewFunctionStub(UI.Infobar.Infobar);
-    const parentView = renderElementIntoDOM(new UI.Widget.VBox());
-    const doResizeSpy = sinon.spy(parentView, 'doResize');
-
-    const infobar = new UI.Infobar.Infobar(undefined, view);
-    infobar.setParentView(parentView);
-    renderElementIntoDOM(infobar, {allowMultipleChildren: true});
     await infobar.updateComplete;
 
     infobar.text = 'New';

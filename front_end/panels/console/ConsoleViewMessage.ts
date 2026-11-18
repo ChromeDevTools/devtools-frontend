@@ -70,6 +70,110 @@ import {SymbolizedErrorWidget} from './SymbolizedErrorWidget.js';
 const {ifDefined, until} = Directives;
 const {widget, widgetRef} = UI.Widget;
 
+/**
+ * Used with `widgetRef` to create a widget as soon as its element is rendered,
+ * even if the message is not attached yet (the viewport renders lazily).
+ */
+function ensureWidgetCreated(): void {
+}
+
+/**
+ * Marks an element that keyboard navigation inside a console message can move
+ * focus to. The value is a `SelectableKind`, or empty for a focusable element.
+ */
+const SELECTABLE_ATTRIBUTE = 'data-console-selectable';
+
+const enum SelectableKind {
+  /** The element hosts a widget whose `linkElements` are selectable. */
+  LINKS = 'links',
+  /** The element hosts a `DOMTreeWidget`; selecting it selects the root node. */
+  DOM_TREE = 'dom-tree',
+  /** The element hosts an object properties section; selecting it focuses its tree. */
+  OBJECT = 'object',
+}
+
+interface SelectableChild {
+  element: HTMLElement;
+  forceSelect: () => void;
+}
+
+/**
+ * The order in which the parts of a message are visited: the message text, then
+ * the source location anchor (which comes first in the DOM, but is shown at the
+ * end of the line), then everything else, such as the stack trace.
+ */
+function selectableRank(element: Element): number {
+  if (element.closest('.console-message-text')) {
+    return 0;
+  }
+  if (element.closest('.console-message-anchor')) {
+    return 1;
+  }
+  return 2;
+}
+
+function collectSelectableElements(root: Element|ShadowRoot, rank: number|undefined,
+                                   result: Array<{element: HTMLElement, rank: number}>): void {
+  for (const element of root.querySelectorAll<HTMLElement>('*')) {
+    const elementRank = rank ?? selectableRank(element);
+    if (element.hasAttribute(SELECTABLE_ATTRIBUTE)) {
+      result.push({element, rank: elementRank});
+    }
+    if (element.shadowRoot) {
+      collectSelectableElements(element.shadowRoot, elementRank, result);
+    }
+  }
+}
+
+function selectableChildrenOf(element: HTMLElement): SelectableChild[] {
+  switch (element.getAttribute(SELECTABLE_ATTRIBUTE)) {
+    case SelectableKind.LINKS: {
+      const linkWidget = UI.Widget.Widget.get(element);
+      if (!(linkWidget instanceof SymbolizedErrorWidget) &&
+          !(linkWidget instanceof Components.JSPresentationUtils.StackTracePreviewContent)) {
+        return [];
+      }
+      return linkWidget.linkElements.map(link => ({element: link, forceSelect: () => link.focus()}));
+    }
+    case SelectableKind.DOM_TREE: {
+      const domTree = UI.Widget.Widget.get(element);
+      const node = domTree instanceof Elements.DOMTreeWidget.DOMTreeWidget ? domTree.rootDOMNode : null;
+      if (!node || !(domTree instanceof Elements.DOMTreeWidget.DOMTreeWidget)) {
+        return [];
+      }
+      return [{element, forceSelect: () => domTree.selectDOMNode(node, /* focus= */ true)}];
+    }
+    case SelectableKind.OBJECT:
+      return [{
+        element,
+        forceSelect: () => {
+          const tree = element.querySelector<HTMLElement>('devtools-tree');
+          tree?.focus();
+          if (tree && !tree.hasFocus()) {
+            tree.focus();
+          }
+        },
+      }];
+    default:
+      return [{element, forceSelect: () => element.focus()}];
+  }
+}
+
+/**
+ * Collects what keyboard navigation can focus inside `root` from the rendered
+ * DOM, so that asynchronously rendered parts (DOM trees, symbolized errors,
+ * stack traces) are picked up without bookkeeping.
+ */
+function collectSelectableChildren(root: HTMLElement|null): SelectableChild[] {
+  if (!root) {
+    return [];
+  }
+  const elements: Array<{element: HTMLElement, rank: number}> = [];
+  collectSelectableElements(root, undefined, elements);
+  elements.sort((a, b) => a.rank - b.rank);
+  return elements.flatMap(({element}) => selectableChildrenOf(element));
+}
+
 const UIStrings = {
   /**
    * @description Message element text content in Console view message of the Console panel. Shown
@@ -297,15 +401,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   private repeatCountInternal: number;
   private closeGroupDecorationCount: number;
   private consoleGroupInternal: ConsoleGroupViewMessage|null;
-  private selectableChildren: Array<{
-    element: HTMLElement,
-    forceSelect: () => void,
-  }>;
   // Re-formatting reuses these, so that the rendered parameters keep their
   // identity and async content isn't requested and rendered again.
   readonly #remoteObjects = new WeakMap<Protocol.Runtime.RemoteObject, SDK.RemoteObject.RemoteObject>();
-  readonly #objectSelectableItems =
-      new WeakMap<SDK.RemoteObject.RemoteObject, {element: HTMLElement, forceSelect: () => void}>();
   readonly #objectFunctionTitlePromises = new WeakMap<SDK.RemoteObject.RemoteObject, Promise<LitTemplate>>();
   readonly #functionParameterPromises =
       new WeakMap<SDK.RemoteObject.RemoteObject, Map<boolean, Promise<LitTemplate>>>();
@@ -357,7 +455,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.issueResolver = issueResolver;
     this.repeatCountInternal = 1;
     this.closeGroupDecorationCount = 0;
-    this.selectableChildren = [];
     this.messageResized = onResize;
     this.elementInternal = null;
 
@@ -555,7 +652,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           request, request.url(), request.url(), undefined, undefined, 'network-request');
       // Focus is handled by the viewport.
       linkElement.tabIndex = -1;
-      this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
+      linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
       messageElement.appendChild(linkElement);
       if (request.failed) {
         UI.UIUtils.createTextChildren(messageElement, ' ', request.localizedFailDescription || '');
@@ -578,7 +675,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
                 Components.Linkifier.Linkifier.linkifyURL(
                     url, ({text, lineNumber, columnNumber, initiatorId} as Components.Linkifier.LinkifyURLOptions));
             linkElement.tabIndex = -1;
-            this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
+            linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
             return linkElement;
           });
       appendOrShow(messageElement, fragment);
@@ -651,10 +748,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.
     if (anchorElement) {
       anchorElement.tabIndex = -1;
-      this.selectableChildren.push({
-        element: anchorElement,
-        forceSelect: () => anchorElement.focus(),
-      });
+      anchorElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
       const anchorWrapperElement = document.createElement('span');
       anchorWrapperElement.classList.add('console-message-anchor');
       anchorWrapperElement.appendChild(anchorElement);
@@ -765,21 +859,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent();
     stackTracePreview.options = {widthConstrained: true};
     if (stackTraceTarget && stackTrace) {
-      const selectableChildIndex = this.selectableChildren.length;
       const stackTracePromise = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                                     .createStackTraceFromProtocolRuntime(stackTrace, stackTraceTarget)
                                     .then(stackTrace => {
                                       stackTracePreview.stackTrace = stackTrace;
                                       return stackTracePreview.updateComplete;
-                                    })
-                                    .then(() => {
-                                      const selectableLinks = stackTracePreview.linkElements.map(
-                                          (element: HTMLElement) => ({element, forceSelect: () => element.focus()}));
-                                      this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
                                     });
       this.#formatErrorStackPromiseForTest =
           Promise.all([this.#formatErrorStackPromiseForTest, stackTracePromise]).then(() => {});
     }
+    stackTracePreview.element.setAttribute(SELECTABLE_ATTRIBUTE, SelectableKind.LINKS);
     stackTracePreview.markAsRoot();
     stackTracePreview.show(stackTraceElement);
     // The stack trace preview is a root widget, so it does not learn about the
@@ -961,18 +1050,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return renderTitleSpan(extraClasses, true);
     }
 
-    let selectableItem = this.#objectSelectableItems.get(obj);
-    if (!selectableItem) {
-      selectableItem = {
-        element: document.createElement('span'),
-        forceSelect: () => {},
-      };
-      this.#objectSelectableItems.set(obj, selectableItem);
-    }
-    if (!this.selectableChildren.includes(selectableItem)) {
-      this.selectableChildren.push(selectableItem);
-    }
-
     const noteTitle = this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult ?
         i18nString(UIStrings.thisValueWillNotBeCollectedUntil) :
         i18nString(UIStrings.thisValueWasEvaluatedUponFirst);
@@ -989,22 +1066,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     // clang-format off
     return html`<span class=${ifDefined(extraClasses || undefined)}><devtools-widget
       class="console-view-object-properties-section"
+      data-console-selectable=${SelectableKind.OBJECT}
       ${widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
         root: obj,
         title: sectionTitle,
         linkifier: this.linkifier,
         onTreeResized: this.#onTreeResized,
       })}
-      ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, section => {
-        selectableItem.element = section.element;
-        selectableItem.forceSelect = () => {
-          const tree = section.element.querySelector<HTMLElement>('devtools-tree');
-          tree?.focus();
-          if (tree && !tree.hasFocus()) {
-            tree.focus();
-          }
-        };
-      })}></devtools-widget></span>`;
+      ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, ensureWidgetCreated)}></devtools-widget></span>`;
     // clang-format on
   }
 
@@ -1139,10 +1208,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         return;
       }
       domTree.rootDOMNode = node;
-      this.selectableChildren.push({
-        element: domTree.element,
-        forceSelect: () => domTree.selectDOMNode(node, /* focus= */ true),
-      });
+      domTree.element.setAttribute(SELECTABLE_ATTRIBUTE, SelectableKind.DOM_TREE);
       // The node arrives asynchronously, after the message was measured.
       dispatchDimensionChange();
       this.formattedParameterAsNodeForTest();
@@ -1169,7 +1235,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const container = document.createElement('span');
     const widget = new SymbolizedErrorWidget();
     widget.ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
-    const selectableChildIndex = this.selectableChildren.length;
+    widget.element.setAttribute(SELECTABLE_ATTRIBUTE, SelectableKind.LINKS);
 
     const format = async(): Promise<void> => {
       const error = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(
@@ -1178,9 +1244,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         widget.error = error;
       }
       await widget.updateComplete;
-      const selectableLinks =
-          widget.linkElements.map((element: HTMLElement) => ({element, forceSelect: () => element.focus()}));
-      this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
     };
 
     this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, format()]).then(() => {});
@@ -1429,10 +1492,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
   }
 
+  private get selectableChildren(): SelectableChild[] {
+    return collectSelectableChildren(this.elementInternal);
+  }
+
   protected focusedChildIndex(): number {
-    if (!this.selectableChildren.length) {
-      return -1;
-    }
     return this.selectableChildren.findIndex(child => child.element.hasFocus());
   }
 
@@ -1471,7 +1535,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     if (event.key === 'ArrowUp') {
       const firstVisibleChild = this.nearestVisibleChild(0);
-      if (this.selectableChildren[focusedChildIndex] === firstVisibleChild && firstVisibleChild) {
+      if (firstVisibleChild && this.selectableChildren[focusedChildIndex]?.element === firstVisibleChild.element) {
         this.elementInternal?.focus();
         return true;
       }
@@ -1499,24 +1563,22 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return false;
   }
 
-  private nearestVisibleChild(fromIndex: number, backwards?: boolean): {
-    element: Element,
-    forceSelect: () => void,
-  }|null {
-    const childCount = this.selectableChildren.length;
+  private nearestVisibleChild(fromIndex: number, backwards?: boolean): SelectableChild|null {
+    const children = this.selectableChildren;
+    const childCount = children.length;
     if (fromIndex < 0 || fromIndex >= childCount) {
       return null;
     }
     const direction = backwards ? -1 : 1;
     let index = fromIndex;
 
-    while (!this.selectableChildren[index].element.offsetParent) {
+    while (!children[index].element.offsetParent) {
       index += direction;
       if (index < 0 || index >= childCount) {
         return null;
       }
     }
-    return this.selectableChildren[index];
+    return children[index];
   }
 
   focusLastChildOrSelf(): void {
@@ -2038,7 +2100,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const linkElement =
           Components.Linkifier.Linkifier.linkifyURL(url, (options as Components.Linkifier.LinkifyURLOptions));
       linkElement.tabIndex = -1;
-      this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
+      linkElement.setAttribute(SELECTABLE_ATTRIBUTE, '');
       return linkElement;
     }) as DocumentFragment;
   }

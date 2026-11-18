@@ -129,6 +129,44 @@ describeWithEnvironment('NetworkPanel', () => {
     assert.lengthOf(pane.querySelectorAll('devtools-checkbox'), 4);
     assert.isFunction(output.openFileSelector);
   });
+
+  it('toggles overview pane visibility independently of film strip view', () => {
+    const showOverviewSetting = Common.Settings.Settings.instance().createSetting('network-log-show-overview', true);
+    const showFilmstripSetting =
+        Common.Settings.Settings.instance().createSetting('network-record-film-strip-setting', false);
+
+    const isOverviewShowing = (): boolean => {
+      const overviewElement = networkPanel.element.querySelector('#network-overview-pane');
+      const widget = overviewElement ? UI.Widget.Widget.get(overviewElement) : undefined;
+      return widget instanceof PerfUI.TimelineOverviewPane.TimelineOverviewPane && widget.isShowing();
+    };
+
+    const isFilmstripShowing = (): boolean => {
+      const filmStripElement = networkPanel.element.querySelector('.network-film-strip');
+      const widget = filmStripElement ? UI.Widget.Widget.get(filmStripElement) : undefined;
+      return widget instanceof PerfUI.FilmStripView.FilmStripView && widget.isShowing();
+    };
+
+    showOverviewSetting.set(false);
+    showFilmstripSetting.set(false);
+    assert.isFalse(isOverviewShowing());
+    assert.isFalse(isFilmstripShowing());
+
+    showOverviewSetting.set(true);
+    showFilmstripSetting.set(false);
+    assert.isTrue(isOverviewShowing());
+    assert.isFalse(isFilmstripShowing());
+
+    showOverviewSetting.set(false);
+    showFilmstripSetting.set(true);
+    assert.isFalse(isOverviewShowing());
+    assert.isTrue(isFilmstripShowing());
+
+    showOverviewSetting.set(true);
+    showFilmstripSetting.set(true);
+    assert.isTrue(isOverviewShowing());
+    assert.isTrue(isFilmstripShowing());
+  });
 });
 
 describeWithEnvironment('BackendLinking', () => {

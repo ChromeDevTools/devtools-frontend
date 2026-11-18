@@ -1,6 +1,6 @@
 ---
 name: network
-description: Analyzing network traffic, network requests, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.
+description: Analyzing network traffic, network requests, request initiator chains, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.
 allowed-tools:
   - listNetworkRequests
   - getNetworkRequestDetails
@@ -13,7 +13,7 @@ allowed-tools:
    - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.
 
 2. **Inspect Request Details (`getNetworkRequestDetails`)**:
-   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (queueing, connection stalled, request sent, waiting for server response, content download, and total duration), status text, and response body.
+   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (queueing, connection stalled, request sent, waiting for server response, content download, and total duration), status text, response body, and request initiator chain.
    - If `# Selected network request` was provided in this conversation, it already contains this full output for its `Request ID`; do not call `getNetworkRequestDetails` for that same `id` unless its status was `pending`.
 
 # Considerations

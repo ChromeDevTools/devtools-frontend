@@ -3,10 +3,7 @@
 // found in the LICENSE file.
 
 import * as Bindings from '../../bindings/bindings.js';
-import * as Logs from '../../logs/logs.js';
 import type * as Workspace from '../../workspace/workspace.js';
-
-import {formatRequestInitiatorChain} from './NetworkRequestFormatter.js';
 
 const MAX_FILE_SIZE = 5_000;
 
@@ -61,48 +58,39 @@ export class FileFormatter {
 
   #file: Workspace.UISourceCode.UISourceCode;
   #debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
-  #networkLog: Logs.NetworkLog.NetworkLog;
   constructor(
       file: Workspace.UISourceCode.UISourceCode,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding =
           // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
-      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-      networkLog: Logs.NetworkLog.NetworkLog = Logs.NetworkLog.NetworkLog.instance(),
   ) {
     this.#file = file;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    this.#networkLog = networkLog;
   }
 
   formatFile(options: FormatFileOptions = {}): string {
     const sourceMapDetails = FileFormatter.formatSourceMapDetails(this.#file, this.#debuggerWorkspaceBinding);
-    const lines = [
+    return [
       `File name: ${this.#file.displayName()}`,
       `URL: ${this.#file.url()}`,
       sourceMapDetails,
-    ];
-    const resource = Bindings.ResourceUtils.resourceForURL(this.#file.url());
-    if (resource?.request) {
-      lines.push(`Request initiator chain:
-${formatRequestInitiatorChain(resource.request, this.#networkLog)}`);
-    }
-    lines.push(`File content:
-${this.#formatFileContent(options.offset ?? 0)}`);
-    return lines.filter(line => line.trim() !== '').join('\n');
+      this.#formatFileContent(options.offset ?? 0),
+    ].filter(Boolean)
+        .join('\n');
   }
 
   /**
-   * Returns at most `MAX_FILE_SIZE` characters starting at `offset`. If the
-   * content continues past that, a notice after the code block gives the
-   * offset where the next part starts, so the model can read the rest instead
-   * of re-requesting the same part.
+   * Formats the file content section with at most `MAX_FILE_SIZE` characters
+   * starting at `offset`. Non-zero offsets label the header with the character
+   * range, and truncated parts append a notice with the next part's offset.
    */
   #formatFileContent(offset: number): string {
     const contentData = this.#file.workingCopyContentData();
     const content = contentData.isTextContent ? contentData.text : '<binary data>';
     const end = Math.min(offset + MAX_FILE_SIZE, content.length);
-    const codeBlock = `\`\`\`
+    const header = offset > 0 ? `File content (characters ${offset}-${end} of ${content.length}):` : 'File content:';
+    const codeBlock = `${header}
+\`\`\`
 ${content.slice(offset, end)}
 \`\`\``;
     if (end === content.length) {

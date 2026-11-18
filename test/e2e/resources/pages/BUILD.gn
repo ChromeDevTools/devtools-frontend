@@ -5,5 +5,9 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("pages") {
-  sources = [ "hello-world.html" ]
+  sources = [
+    "hello-world.html",
+    "workers-on-navigation/index.html",
+    "workers-on-navigation/worker.js",
+  ]
 }

@@ -10,6 +10,7 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "advancedApp.css",
     "deviceModeView.css",
     "inspectedPagePlaceholder.css",
     "mediaQueryInspector.css",

@@ -1,30 +1,112 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Foundation from '../../foundation/foundation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as Lit from '../../ui/lit/lit.js';
 
+import advancedAppStyles from './advancedApp.css.js';
 import {DeviceModeView} from './DeviceModeView.js';
 import {type Bounds, Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 
+const {html, render} = Lit;
+const {widget, widgetRef} = UI.Widget;
+
 let appInstance: AdvancedApp|null = null;
 
+export interface ViewInput {
+  direction: 'row'|'column';
+  sidebarPosition: 'first'|'second';
+  show: UI.SplitWidget.ShowAttribute;
+  /** Offsets the resizer towards the inspected page when docked to the side. */
+  dockSide: UI.DockController.DockState;
+  /** Makes the main tab bar header act as an additional resizer when docked to the bottom. */
+  topResizerEnabled: boolean;
+  /** `null` while undocked. */
+  deviceModeView: DeviceModeView|null;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  let rootSplitWidget: UI.SplitWidget.SplitWidget|undefined;
+  let inspectorView: UI.InspectorView.InspectorView|undefined;
+  // clang-format off
+  render(html`
+    <style>${advancedAppStyles}</style>
+    <devtools-split-view
+        autofocus
+        data-dock-side=${input.dockSide}
+        direction=${input.direction}
+        sidebar-position=${input.sidebarPosition}
+        name="inspector-view.split-view-state"
+        sidebar-initial-width="555"
+        sidebar-initial-height="300"
+        constraints-in-dip
+        show=${input.show}
+        ${widgetRef(UI.SplitWidget.SplitWidget, splitWidget => {
+          rootSplitWidget = splitWidget;
+        })}>
+      <devtools-widget
+          slot="main"
+          ${widget(UI.Widget.WrapperWidget, {widget: input.deviceModeView})}>
+      </devtools-widget>
+      <devtools-widget
+          slot="sidebar"
+          autofocus
+          ${widget(element => UI.InspectorView.InspectorView.instance({element}))}
+          ${widgetRef(UI.InspectorView.InspectorView, widget => {
+            inspectorView = widget;
+          })}>
+      </devtools-widget>
+    </devtools-split-view>
+  `, target);
+  // clang-format on
+  if (rootSplitWidget && inspectorView) {
+    rootSplitWidget.toggleResizer(inspectorView.topResizerElement(), input.topResizerEnabled);
+  }
+};
+
+export interface ToolboxViewInput {
+  /** `null` while docked. */
+  deviceModeView: DeviceModeView|null;
+}
+
+export type ToolboxView = (input: ToolboxViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_TOOLBOX_VIEW: ToolboxView = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    ${widget(UI.Widget.WrapperWidget, {widget: input.deviceModeView})}
+  `, target);
+  // clang-format on
+};
+
 export class AdvancedApp implements UI.App.App {
-  #rootSplitWidget!: UI.SplitWidget.SplitWidget;
-  #deviceModeView!: DeviceModeView;
-  #inspectedPagePlaceholder!: InspectedPagePlaceholder;
+  readonly #universe: Foundation.Universe.Universe;
+  readonly #view: View;
+  readonly #toolboxView: ToolboxView;
+  #rootView?: UI.RootView.RootView;
+  #deviceModeView?: DeviceModeView;
+  #inspectedPagePlaceholder?: InspectedPagePlaceholder;
   #toolboxWindow?: Window|null;
   #toolboxRootView?: UI.RootView.RootView;
-  #changingDockSide?: boolean;
-  readonly #universe: Foundation.Universe.Universe;
+  #changingDockSide = false;
+  #direction: ViewInput['direction'] = 'row';
+  #sidebarPosition: ViewInput['sidebarPosition'] = 'second';
+  #show: UI.SplitWidget.ShowAttribute = 'both';
+  #dockSide: UI.DockController.DockState = UI.DockController.DockState.BOTTOM;
+  #topResizerEnabled = false;
 
-  constructor(universe: Foundation.Universe.Universe) {
+  constructor(universe: Foundation.Universe.Universe, view: View = DEFAULT_VIEW,
+              toolboxView: ToolboxView = DEFAULT_TOOLBOX_VIEW) {
     this.#universe = universe;
+    this.#view = view;
+    this.#toolboxView = toolboxView;
     UI.DockController.DockController.instance().addEventListener(UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED,
                                                                  this.#openToolboxWindow, this);
   }
@@ -47,17 +129,10 @@ export class AdvancedApp implements UI.App.App {
   }
 
   presentUI(document: Document): void {
-    const rootView = new UI.RootView.RootView(this.#universe);
-
-    this.#rootSplitWidget =
-        new UI.SplitWidget.SplitWidget(false, true, 'inspector-view.split-view-state', 555, 300, true);
-    this.#rootSplitWidget.show(rootView.element);
-    this.#rootSplitWidget.setSidebarWidget(UI.InspectorView.InspectorView.instance());
-    this.#rootSplitWidget.setDefaultFocusedChild(UI.InspectorView.InspectorView.instance());
-    UI.InspectorView.InspectorView.instance().setOwnerSplit(this.#rootSplitWidget);
+    this.#rootView = new UI.RootView.RootView(this.#universe);
 
     this.#inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
-    this.#inspectedPagePlaceholder.addEventListener(Events.UPDATE, this.#onSetInspectedPageBounds.bind(this), this);
+    this.#inspectedPagePlaceholder.addEventListener(Events.UPDATE, this.#onSetInspectedPageBounds, this);
     this.#deviceModeView = new DeviceModeView();
 
     UI.DockController.DockController.instance().addEventListener(UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED,
@@ -69,8 +144,8 @@ export class AdvancedApp implements UI.App.App {
     this.#onDockSideChange();
 
     console.timeStamp('AdvancedApp.attachToBody');
-    rootView.attachToDocument(document);
-    rootView.focus();
+    this.#rootView.attachToDocument(document);
+    this.#rootView.focus();
     this.#inspectedPagePlaceholder.update();
   }
 
@@ -97,30 +172,53 @@ export class AdvancedApp implements UI.App.App {
     this.#toolboxRootView = new UI.RootView.RootView(this.#universe);
     this.#toolboxRootView.attachToDocument(toolboxDocument);
 
-    this.#updateDeviceModeView();
+    this.#performUpdate();
   }
 
-  #updateDeviceModeView(): void {
-    if (this.#isDocked()) {
-      this.#rootSplitWidget.setMainWidget(this.#deviceModeView);
-    } else if (this.#toolboxRootView) {
-      this.#deviceModeView.show(this.#toolboxRootView.element);
+  /**
+   * Renders synchronously, because the dock side change handlers measure the
+   * inspected page placeholder right after changing the layout.
+   */
+  #performUpdate(): void {
+    if (!this.#rootView || !this.#deviceModeView) {
+      return;
+    }
+    const docked = this.#isDocked();
+    const viewInput: ViewInput = {
+      direction: this.#direction,
+      sidebarPosition: this.#sidebarPosition,
+      show: this.#show,
+      dockSide: this.#dockSide,
+      topResizerEnabled: this.#topResizerEnabled,
+      deviceModeView: docked ? this.#deviceModeView : null,
+    };
+    // Render the view releasing the device mode view (`null`) before the view
+    // acquiring it, so `WrapperWidget` detaches it before reparenting.
+    if (docked) {
+      if (this.#toolboxRootView) {
+        this.#toolboxView({deviceModeView: null}, undefined, this.#toolboxRootView.contentElement);
+      }
+      this.#view(viewInput, undefined, this.#rootView.contentElement);
+    } else {
+      this.#view(viewInput, undefined, this.#rootView.contentElement);
+      if (this.#toolboxRootView) {
+        this.#toolboxView({deviceModeView: this.#deviceModeView}, undefined, this.#toolboxRootView.contentElement);
+      }
     }
   }
 
   #onBeforeDockSideChange(event: Common.EventTarget.EventTargetEvent<UI.DockController.ChangeEvent>): void {
     if (event.data.to === UI.DockController.DockState.UNDOCKED && this.#toolboxRootView) {
       // Hide inspectorView and force layout to mimic the undocked state.
-      this.#rootSplitWidget.hideSidebar();
-      this.#inspectedPagePlaceholder.update();
+      this.#show = 'main';
+      this.#performUpdate();
+      this.#inspectedPagePlaceholder?.update();
     }
 
     this.#changingDockSide = true;
   }
 
   #onDockSideChange(event?: Common.EventTarget.EventTargetEvent<UI.DockController.ChangeEvent>): void {
-    this.#updateDeviceModeView();
-
     const toDockSide = event ? event.data.to : UI.DockController.DockController.instance().dockSide();
     if (toDockSide === undefined) {
       throw new Error('Got onDockSideChange event with unexpected undefined for dockSide()');
@@ -129,10 +227,11 @@ export class AdvancedApp implements UI.App.App {
       this.#updateForUndocked();
     } else if (this.#toolboxRootView && event && event.data.from === UI.DockController.DockState.UNDOCKED) {
       // Don't update yet for smooth transition.
-      this.#rootSplitWidget.hideSidebar();
+      this.#show = 'main';
     } else {
       this.#updateForDocked(toDockSide);
     }
+    this.#performUpdate();
   }
 
   #onAfterDockSideChange(event: Common.EventTarget.EventTargetEvent<UI.DockController.ChangeEvent>): void {
@@ -142,30 +241,26 @@ export class AdvancedApp implements UI.App.App {
     }
     if (event.data.from && event.data.from === UI.DockController.DockState.UNDOCKED) {
       this.#updateForDocked(event.data.to);
+      this.#performUpdate();
     }
     this.#changingDockSide = false;
-    this.#inspectedPagePlaceholder.update();
+    this.#inspectedPagePlaceholder?.update();
   }
 
   #updateForDocked(dockSide: UI.DockController.DockState): void {
-    const resizerElement = (this.#rootSplitWidget.resizerElement() as HTMLElement);
-    resizerElement.style.transform = dockSide === UI.DockController.DockState.RIGHT ? 'translateX(2px)' :
-        dockSide === UI.DockController.DockState.LEFT                               ? 'translateX(-2px)' :
-                                                                                      '';
-    this.#rootSplitWidget.setVertical(dockSide === UI.DockController.DockState.RIGHT ||
-                                      dockSide === UI.DockController.DockState.LEFT);
-    this.#rootSplitWidget.setSecondIsSidebar(dockSide === UI.DockController.DockState.RIGHT ||
-                                             dockSide === UI.DockController.DockState.BOTTOM);
-    this.#rootSplitWidget.toggleResizer(this.#rootSplitWidget.resizerElement(), true);
-    this.#rootSplitWidget.toggleResizer(UI.InspectorView.InspectorView.instance().topResizerElement(),
-                                        dockSide === UI.DockController.DockState.BOTTOM);
-    this.#rootSplitWidget.showBoth();
+    const isVertical = dockSide === UI.DockController.DockState.RIGHT || dockSide === UI.DockController.DockState.LEFT;
+    const isSidebarSecond =
+        dockSide === UI.DockController.DockState.RIGHT || dockSide === UI.DockController.DockState.BOTTOM;
+    this.#direction = isVertical ? 'column' : 'row';
+    this.#sidebarPosition = isSidebarSecond ? 'second' : 'first';
+    this.#show = 'both';
+    this.#dockSide = dockSide;
+    this.#topResizerEnabled = dockSide === UI.DockController.DockState.BOTTOM;
   }
 
   #updateForUndocked(): void {
-    this.#rootSplitWidget.toggleResizer(this.#rootSplitWidget.resizerElement(), false);
-    this.#rootSplitWidget.toggleResizer(UI.InspectorView.InspectorView.instance().topResizerElement(), false);
-    this.#rootSplitWidget.hideMain();
+    this.#show = 'sidebar';
+    this.#topResizerEnabled = false;
   }
 
   #isDocked(): boolean {
@@ -173,7 +268,7 @@ export class AdvancedApp implements UI.App.App {
   }
 
   #onSetInspectedPageBounds(event: Common.EventTarget.EventTargetEvent<Bounds>): void {
-    if (this.#changingDockSide) {
+    if (this.#changingDockSide || !this.#inspectedPagePlaceholder) {
       return;
     }
     const window = this.#inspectedPagePlaceholder.element.window();

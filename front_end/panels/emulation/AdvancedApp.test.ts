@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -372,5 +372,248 @@ describeWithEnvironment('AdvancedApp docking', () => {
   it('focuses the inspector view when presented', () => {
     presentApp();
     assert.isTrue(UI.InspectorView.InspectorView.instance().hasFocus());
+  });
+
+  describe('view input', () => {
+    type ViewSpy = sinon.SinonSpy<Parameters<Emulation.AdvancedApp.View>, void>;
+    type ToolboxViewSpy = sinon.SinonSpy<Parameters<Emulation.AdvancedApp.ToolboxView>, void>;
+
+    function createApp(): {
+      dockController: UI.DockController.DockController,
+      app: Emulation.AdvancedApp.AdvancedApp,
+      view: ViewSpy,
+      toolboxView: ToolboxViewSpy,
+    } {
+      const dockController = UI.DockController.DockController.instance({forceNew: true, canDock: true});
+      const view: ViewSpy = sinon.spy<Emulation.AdvancedApp.View>(() => {});
+      const toolboxView: ToolboxViewSpy = sinon.spy<Emulation.AdvancedApp.ToolboxView>(() => {});
+      const app = new Emulation.AdvancedApp.AdvancedApp(new TestUniverse(), view, toolboxView);
+      dockController.initialize();
+      app.presentUI(document);
+      respondToSetIsDocked();
+      return {dockController, app, view, toolboxView};
+    }
+
+    function loadToolbox(app: Emulation.AdvancedApp.AdvancedApp): void {
+      const toolboxDocument = toolboxFrame.contentDocument;
+      assert.exists(toolboxDocument);
+      app.deviceModeEmulationFrameLoaded(toolboxDocument);
+    }
+
+    function lastInput(view: ViewSpy): Emulation.AdvancedApp.ViewInput {
+      return view.lastCall.args[0];
+    }
+
+    it('renders the docked layout for each dock side', () => {
+      const {dockController, view, toolboxView} = createApp();
+      const {deviceModeView} = lastInput(view);
+      assert.instanceOf(deviceModeView, Emulation.DeviceModeView.DeviceModeView);
+      assert.deepEqual(lastInput(view), {
+        direction: 'column',
+        sidebarPosition: 'second',
+        show: 'both',
+        dockSide: DockState.RIGHT,
+        topResizerEnabled: false,
+        deviceModeView,
+      });
+
+      dockController.setDockSide(DockState.LEFT);
+      assert.deepEqual(lastInput(view), {
+        direction: 'column',
+        sidebarPosition: 'first',
+        show: 'both',
+        dockSide: DockState.LEFT,
+        topResizerEnabled: false,
+        deviceModeView,
+      });
+
+      dockController.setDockSide(DockState.BOTTOM);
+      assert.deepEqual(lastInput(view), {
+        direction: 'row',
+        sidebarPosition: 'second',
+        show: 'both',
+        dockSide: DockState.BOTTOM,
+        topResizerEnabled: true,
+        deviceModeView,
+      });
+      sinon.assert.notCalled(toolboxView);
+    });
+
+    it('leaves the device mode view detached when starting undocked', () => {
+      Common.Settings.Settings.instance().moduleSetting('currentDockState').set(DockState.UNDOCKED);
+      const {view, toolboxView} = createApp();
+
+      assert.deepEqual(lastInput(view), {
+        direction: 'row',
+        sidebarPosition: 'second',
+        show: 'sidebar',
+        dockSide: DockState.BOTTOM,
+        topResizerEnabled: false,
+        deviceModeView: null,
+      });
+      sinon.assert.notCalled(toolboxView);
+    });
+
+    it('detaches the device mode view from the DevTools window while the toolbox loads', () => {
+      const {dockController, view, toolboxView} = createApp();
+
+      dockController.setDockSide(DockState.UNDOCKED);
+      respondToSetIsDocked();
+
+      assert.deepInclude(lastInput(view), {show: 'sidebar', topResizerEnabled: false, deviceModeView: null});
+      sinon.assert.notCalled(toolboxView);
+    });
+
+    it('moves the device mode view to the toolbox once it is loaded', () => {
+      const {dockController, app, view, toolboxView} = createApp();
+      const {deviceModeView} = lastInput(view);
+      dockController.setDockSide(DockState.UNDOCKED);
+
+      loadToolbox(app);
+
+      assert.deepInclude(lastInput(view), {show: 'sidebar', topResizerEnabled: false, deviceModeView: null});
+      sinon.assert.calledWith(toolboxView.lastCall, {deviceModeView});
+      // The DevTools window releases the device mode view before the toolbox picks it up.
+      assert.isTrue(view.lastCall.calledBefore(toolboxView.lastCall));
+    });
+
+    it('only shows the device mode view right before undocking with a loaded toolbox', () => {
+      const {dockController, app, view, toolboxView} = createApp();
+      const {deviceModeView} = lastInput(view);
+      dockController.setDockSide(DockState.UNDOCKED);
+      loadToolbox(app);
+      respondToSetIsDocked();
+      dockController.setDockSide(DockState.RIGHT);
+      respondToSetIsDocked();
+      view.resetHistory();
+      toolboxView.resetHistory();
+
+      dockController.setDockSide(DockState.UNDOCKED);
+
+      // Before the dock side changes, the inspector view is hidden to mimic the undocked layout.
+      assert.deepInclude(view.firstCall.args[0], {show: 'main', deviceModeView});
+      assert.deepInclude(lastInput(view), {show: 'sidebar', topResizerEnabled: false, deviceModeView: null});
+      sinon.assert.calledWith(toolboxView.lastCall, {deviceModeView});
+      // When undocking, the DevTools window releases the device mode view before the toolbox picks it up.
+      assert.isTrue(view.lastCall.calledBefore(toolboxView.lastCall));
+    });
+
+    it('waits for the embedder before showing the inspector view when docking with a loaded toolbox', () => {
+      const {dockController, app, view, toolboxView} = createApp();
+      const {deviceModeView} = lastInput(view);
+      dockController.setDockSide(DockState.UNDOCKED);
+      loadToolbox(app);
+      respondToSetIsDocked();
+      view.resetHistory();
+      toolboxView.resetHistory();
+
+      dockController.setDockSide(DockState.BOTTOM);
+      assert.deepInclude(lastInput(view), {show: 'main', deviceModeView});
+      sinon.assert.calledWith(toolboxView.lastCall, {deviceModeView: null});
+      // When docking back, the toolbox releases the device mode view before the DevTools window picks it up.
+      assert.isTrue(toolboxView.lastCall.calledBefore(view.lastCall));
+
+      respondToSetIsDocked();
+      assert.deepEqual(lastInput(view), {
+        direction: 'row',
+        sidebarPosition: 'second',
+        show: 'both',
+        dockSide: DockState.BOTTOM,
+        topResizerEnabled: true,
+        deviceModeView,
+      });
+    });
+
+    it('docks to the latest dock side when undocking and docking again in quick succession', () => {
+      const {dockController, app, view} = createApp();
+      dockController.setDockSide(DockState.UNDOCKED);
+      loadToolbox(app);
+      respondToSetIsDocked();
+      dockController.setDockSide(DockState.RIGHT);
+      respondToSetIsDocked();
+
+      dockController.setDockSide(DockState.UNDOCKED);
+      dockController.setDockSide(DockState.LEFT);
+      respondToSetIsDocked();
+
+      assert.deepInclude(lastInput(view),
+                         {show: 'both', dockSide: DockState.LEFT, sidebarPosition: 'first', topResizerEnabled: false});
+    });
+  });
+
+  describe('DEFAULT_VIEW', () => {
+    async function renderView(input: Partial<Emulation.AdvancedApp.ViewInput>, target?: UI.Widget.VBox): Promise<{
+      splitWidget: UI.SplitWidget.SplitWidget,
+      target: UI.Widget.VBox,
+    }> {
+      const container = target ?? renderElementIntoDOM(new UI.Widget.VBox(), {allowMultipleChildren: true});
+      Emulation.AdvancedApp.DEFAULT_VIEW({
+        direction: 'column',
+        sidebarPosition: 'second',
+        show: 'both',
+        dockSide: DockState.RIGHT,
+        topResizerEnabled: false,
+        deviceModeView: null,
+        ...input,
+      },
+                                         undefined, container.contentElement);
+      // The split view picks up its slotted widgets on `slotchange`.
+      await UI.Widget.Widget.allUpdatesComplete;
+      return {splitWidget: getRootSplitWidget(), target: container};
+    }
+
+    it('renders the device mode view and the inspector view side by side', async () => {
+      const deviceModeView = new Emulation.DeviceModeView.DeviceModeView();
+      const {splitWidget} = await renderView({deviceModeView});
+
+      assert.isTrue(splitWidget.isVertical());
+      assert.isTrue(splitWidget.isSidebarSecond());
+      assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
+      assert.strictEqual(splitWidget.sidebarWidget(), UI.InspectorView.InspectorView.instance());
+      assert.isTrue(splitWidget.mainWidget()?.element.contains(deviceModeView.element));
+    });
+
+    it('renders the inspector view below the page when docked to bottom', async () => {
+      const {splitWidget} = await renderView({direction: 'row', sidebarPosition: 'second', dockSide: DockState.BOTTOM});
+
+      assert.isFalse(splitWidget.isVertical());
+      assert.isTrue(splitWidget.isSidebarSecond());
+    });
+
+    it('detaches the device mode view synchronously when deviceModeView becomes null', async () => {
+      const deviceModeView = new Emulation.DeviceModeView.DeviceModeView();
+      const {target} = await renderView({deviceModeView});
+      assert.isTrue(deviceModeView.isShowing());
+
+      const {splitWidget} =
+          await renderView({show: 'sidebar', dockSide: DockState.UNDOCKED, deviceModeView: null}, target);
+
+      assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_SIDEBAR);
+      assert.isFalse(deviceModeView.isShowing());
+      assert.isNull(deviceModeView.parentWidget());
+      assert.strictEqual(splitWidget.sidebarWidget(), UI.InspectorView.InspectorView.instance());
+    });
+
+    it('toggles the inspector view tab header as a resizer via topResizerEnabled', async () => {
+      const {target} = await renderView({direction: 'row', dockSide: DockState.BOTTOM, topResizerEnabled: true});
+      const topResizerElement = UI.InspectorView.InspectorView.instance().topResizerElement();
+      assert.isTrue(startsResize(topResizerElement));
+
+      await renderView({direction: 'column', dockSide: DockState.RIGHT, topResizerEnabled: false}, target);
+      assert.isFalse(startsResize(topResizerElement));
+    });
+
+    const RESIZER_TRANSFORMS = [
+      {dockSide: DockState.RIGHT, transform: 'matrix(1, 0, 0, 1, 2, 0)'},
+      {dockSide: DockState.LEFT, transform: 'matrix(1, 0, 0, 1, -2, 0)'},
+      {dockSide: DockState.BOTTOM, transform: 'none'},
+    ];
+
+    for (const {dockSide, transform} of RESIZER_TRANSFORMS) {
+      it(`offsets the resizer towards the inspected page when docked to ${dockSide}`, async () => {
+        const {splitWidget} = await renderView({dockSide});
+        assert.strictEqual(getComputedStyle(splitWidget.resizerElement()).transform, transform);
+      });
+    }
   });
 });

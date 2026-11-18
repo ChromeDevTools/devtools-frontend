@@ -244,7 +244,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   #currentPanelLocked?: boolean;
   #focusRestorer?: WidgetFocusRestorer|null;
   #mainPanelAtDrawerFocus: string|null = null;
-  #ownerSplitWidget?: SplitWidget;
   #resizeObserver: ResizeObserver;
   #drawerShowModeBeforeDockSideChange: ShowMode|null = null;
   #drawerMinimizedBeforeDockSideChange: boolean|null = null;
@@ -895,14 +894,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     UIUserMetrics.instance().panelShown(tabId, false);
   }
 
-  setOwnerSplit(splitWidget: SplitWidget): void {
-    this.#ownerSplitWidget = splitWidget;
-  }
-
   ownerSplit(): SplitWidget|null {
-    if (this.#ownerSplitWidget) {
-      return this.#ownerSplitWidget;
-    }
     const parent = this.parentWidget();
     return parent instanceof SplitWidget ? parent : null;
   }

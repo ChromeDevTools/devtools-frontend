@@ -156,10 +156,17 @@ generated_ts("generate_protocol_typescript") {
     "../../scripts/package.json",
     "../../scripts/protocol_typescript/protocol_dts_generator.ts",
     "../../scripts/protocol_typescript/protocol_schema.d.ts",
-    "../../third_party/node/node.py",
-    "../../third_party/node/node_path.py",
     _protocol_json,
   ]
+
+  # Like node.gni, use //third_party/node: the DEPS checkout in a standalone
+  # build and Chromium's own copy in a Chromium build. The generator doesn't
+  # import anything from node_modules, so it doesn't need the DevTools node.py.
+  _node_dir = "//third_party/node"
+  inputs += [ "$_node_dir/node.py" ]
+  if (!build_with_chromium) {
+    inputs += [ "$_node_dir/node_path.py" ]
+  }
   if (host_os == "linux") {
     inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
   } else if (host_os == "win") {
@@ -177,6 +184,8 @@ generated_ts("generate_protocol_typescript") {
     "$target_gen_dir/protocol-proxy-api.d.ts",
   ]
   args = [
+    "--node-dir",
+    rebase_path(_node_dir, root_build_dir),
     "--output-dir",
     rebase_path(target_gen_dir, root_build_dir),
     rebase_path(_protocol_json, root_build_dir),

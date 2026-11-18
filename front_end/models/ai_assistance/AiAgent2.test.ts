@@ -1662,10 +1662,25 @@ describe('AiAgent2', () => {
 
       const secondCallArgs = aidaClient.doConversation.getCall(1).args[0];
       const historicalContexts = secondCallArgs.historical_contexts ?? [];
-      assert.lengthOf(historicalContexts, 2);
+      assert.lengthOf(historicalContexts, 3);
       assert.strictEqual(historicalContexts[0].role, Host.AidaClient.Role.USER);
       assert.strictEqual(historicalContexts[1].role, Host.AidaClient.Role.MODEL);
-      assert.deepEqual(historicalContexts[1].parts, [{text: 'Answer to user query'}]);
+      assert.deepEqual(historicalContexts[1].parts, [
+        {text: 'Answer to user query'},
+        {
+          functionCall: {
+            name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+            args: {suggestions: ['First suggestion', 'Second suggestion']},
+          },
+        },
+      ]);
+      assert.strictEqual(historicalContexts[2].role, Host.AidaClient.Role.ROLE_UNSPECIFIED);
+      assert.deepEqual(historicalContexts[2].parts, [{
+                         functionResponse: {
+                           name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+                           response: {result: 'Suggestions recorded.'},
+                         },
+                       }]);
     });
 
     it('sanitizes suggestFollowUps arguments', async () => {
@@ -1713,7 +1728,7 @@ describe('AiAgent2', () => {
       assert.isUndefined(secondAnswer.suggestions);
     });
 
-    it('yields an UNKNOWN error when suggestFollowUps is called without explanation text', async () => {
+    it('rolls back draft state when the step after empty-text suggestFollowUps returns empty text', async () => {
       const aidaClient = mockAidaClient([
         [{
           explanation: '',
@@ -1723,30 +1738,36 @@ describe('AiAgent2', () => {
           }],
         }],
         [{
+          explanation: '',
+        }],
+        [{
           explanation: 'Subsequent answer',
         }],
       ]);
       const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+      const domNodeContext =
+          new AiAssistance.DOMNodeContext.DOMNodeContext(sinon.createStubInstance(SDK.DOMModel.DOMNode));
+      sinon.stub(domNodeContext, 'getPromptDetails').resolves('DOM prompt');
+      sinon.stub(domNodeContext, 'getUserFacingDetails').resolves([{title: 'DOM', text: 'details'}]);
 
-      const firstResponses = await Array.fromAsync(agent.run('first question', {selected: null}));
+      const firstResponses = await Array.fromAsync(agent.run('first question', {selected: domNodeContext}));
 
-      // Verify that only 1 doConversation call was made and the turn ended with an error.
-      sinon.assert.calledOnce(aidaClient.doConversation);
-
+      sinon.assert.calledTwice(aidaClient.doConversation);
       const errorResponse = firstResponses.find((r): r is AiAssistance.AiAgent.ErrorResponse =>
                                                     r.type === AiAssistance.AiAgent.ResponseType.ERROR);
       assert.exists(errorResponse);
       assert.strictEqual(errorResponse.error, AiAssistance.AiAgent.ErrorType.UNKNOWN);
+      assert.strictEqual(agent.activeSkills.size, 0);
 
       // Run second turn and verify historical_contexts does not store the failed turn.
       await Array.fromAsync(agent.run('second question', {selected: null}));
-      sinon.assert.calledTwice(aidaClient.doConversation);
+      sinon.assert.callCount(aidaClient.doConversation, 3);
 
-      const secondCallArgs = aidaClient.doConversation.getCall(1).args[0];
-      assert.isUndefined(secondCallArgs.historical_contexts);
+      const thirdCallArgs = aidaClient.doConversation.getCall(2).args[0];
+      assert.isUndefined(thirdCallArgs.historical_contexts);
     });
 
-    it('does not store suggestFollowUps in historical_contexts when concluding after a tool call', async () => {
+    it('stores suggestFollowUps in historical_contexts when concluding after a tool call', async () => {
       const aidaClient = mockAidaClient([
         [{
           explanation: '',
@@ -1776,13 +1797,13 @@ describe('AiAgent2', () => {
       assert.strictEqual(answer.text, 'Answer after tool');
       assert.deepEqual(answer.suggestions, ['Follow-up after tool']);
 
-      // Run second turn and verify historical_contexts contains the tool turn and answer text, but not suggestFollowUps.
+      // Run second turn and verify historical_contexts contains the tool turn, answer text, and suggestFollowUps.
       await Array.fromAsync(agent.run('second question', {selected: null}));
       sinon.assert.callCount(aidaClient.doConversation, 3);
 
       const thirdCallArgs = aidaClient.doConversation.getCall(2).args[0];
       const historicalContexts = thirdCallArgs.historical_contexts ?? [];
-      assert.lengthOf(historicalContexts, 4);
+      assert.lengthOf(historicalContexts, 5);
       assert.strictEqual(historicalContexts[0].role, Host.AidaClient.Role.USER);
       assert.strictEqual(historicalContexts[1].role, Host.AidaClient.Role.MODEL);
       assert.lengthOf(historicalContexts[1].parts, 1);
@@ -1796,7 +1817,23 @@ describe('AiAgent2', () => {
       assert.strictEqual(historicalContexts[2].parts[0].functionResponse.name, 'learnSkills');
 
       assert.strictEqual(historicalContexts[3].role, Host.AidaClient.Role.MODEL);
-      assert.deepEqual(historicalContexts[3].parts, [{text: 'Answer after tool'}]);
+      assert.deepEqual(historicalContexts[3].parts, [
+        {text: 'Answer after tool'},
+        {
+          functionCall: {
+            name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+            args: {suggestions: ['Follow-up after tool']},
+          },
+        },
+      ]);
+
+      assert.strictEqual(historicalContexts[4].role, Host.AidaClient.Role.ROLE_UNSPECIFIED);
+      assert.deepEqual(historicalContexts[4].parts, [{
+                         functionResponse: {
+                           name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+                           response: {result: 'Suggestions recorded.'},
+                         },
+                       }]);
     });
 
     it('handles parallel learnSkills and suggestFollowUps calls', async () => {
@@ -1860,6 +1897,37 @@ describe('AiAgent2', () => {
       assert.exists(answer);
       assert.strictEqual(answer.text, 'Final answer');
       assert.deepEqual(answer.suggestions, ['Final suggestion']);
+    });
+
+    it('ignores premature suggestFollowUps calls when the final step omits suggestFollowUps', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [
+            {
+              name: 'learnSkills',
+              args: {skills: ['styling']},
+            },
+            {
+              name: AiAssistance.AiAgent.SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
+              args: {suggestions: ['Premature']},
+            },
+          ],
+        }],
+        [{
+          explanation: 'Final answer',
+        }],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+
+      const responses = await Array.fromAsync(agent.run('question', {selected: null}));
+
+      sinon.assert.calledTwice(aidaClient.doConversation);
+      const answer = responses.find((r): r is AiAssistance.AiAgent.AnswerResponse =>
+                                        r.type === AiAssistance.AiAgent.ResponseType.ANSWER);
+      assert.exists(answer);
+      assert.strictEqual(answer.text, 'Final answer');
+      assert.isUndefined(answer.suggestions);
     });
   });
   describe('Auto-learn skills', () => {

@@ -103,3 +103,17 @@ devtools_foundation_module("foundation_unittests") {
     "../workspace:bundle",
   ]
 }
+
+devtools_api_test_module("api_tests") {
+  sources = [ "NetworkPersistenceManager.test.api.ts" ]
+
+  ts_deps = [
+    ":bundle",
+    "../../../test/api",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../core/text_utils:bundle",
+    "../workspace:bundle",
+  ]
+}

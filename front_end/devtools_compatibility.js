@@ -1050,7 +1050,10 @@
       'GenericIssue::ManualTextPolicyControlledFeatureInfo': 116,
       'GenericIssue::GeolocationPromptWithoutUserGesture': 117,
       'CorsIssue::InvalidLocalNetworkAccess': 118,
-      MAX_VALUE: 119,
+      'ElementAccessibilityIssue::AnchorMenuDescendant': 119,
+      'ElementAccessibilityIssue::InteractiveContentMenuDescendant': 120,
+      'ElementAccessibilityIssue::TextMenuDescendant': 121,
+      MAX_VALUE: 122,
     },
     DeveloperResourceLoaded: {
       LOAD_THROUGH_PAGE_VIA_TARGET: 0,

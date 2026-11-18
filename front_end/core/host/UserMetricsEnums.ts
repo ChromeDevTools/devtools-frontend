@@ -639,8 +639,11 @@ export enum IssueCreated {
   'GenericIssue::ManualTextPolicyControlledFeatureInfo' = 116,
   'GenericIssue::GeolocationPromptWithoutUserGesture' = 117,
   'CorsIssue::InvalidLocalNetworkAccess' = 118,
+  'ElementAccessibilityIssue::AnchorMenuDescendant' = 119,
+  'ElementAccessibilityIssue::InteractiveContentMenuDescendant' = 120,
+  'ElementAccessibilityIssue::TextMenuDescendant' = 121,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 119,
+  MAX_VALUE = 122,
 }
 
 export enum DeveloperResourceLoaded {

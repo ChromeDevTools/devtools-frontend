@@ -272,8 +272,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     assert.lengthOf(dataRows, 1);
 
     // The event from a different origin should show up when the origin checkbox is checked.
-    const originCheckbox =
-        view.contentElement.querySelector<HTMLInputElement>('label.checkbox-label input[type="checkbox"]');
+    const originCheckbox = view.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('devtools-checkbox');
     assert.exists(originCheckbox);
     originCheckbox.checked = true;
     originCheckbox.dispatchEvent(new Event('change'));

@@ -13,7 +13,6 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -148,8 +147,8 @@ export interface ViewInput {
   onSave: () => void;
   toggleRecording: () => void;
   onSelectEvent: (event: EventData) => void;
-  onOriginCheckboxChanged: (event: Event) => void;
-  onStorageKeyCheckboxChanged: (event: Event) => void;
+  onOriginCheckboxChanged: (checked: boolean) => void;
+  onStorageKeyCheckboxChanged: (checked: boolean) => void;
   isOriginCheckboxChecked: boolean;
   isStorageKeyCheckboxChecked: boolean;
   createLearnMoreLink: () => Platform.DevToolsPath.UrlString;
@@ -200,7 +199,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
   // clang-format off
   render(html`
     <style>${backgroundServiceViewStyles}</style>
-    <style>${Input.checkboxStyles}</style>
     <div class="background-service-view">
       <devtools-toolbar class="background-service-toolbar" jslog=${VisualLogging.toolbar()}>
         <devtools-button title=${buttonTooltip}
@@ -224,20 +222,21 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
             .iconName=${'download'} .variant=${Buttons.Button.Variant.TOOLBAR}
             .jslogContext=${'background-service.save-events'}></devtools-button>
         <div class="toolbar-divider"></div>
-        <label title=${i18nString(UIStrings.showEventsFromOtherDomains)} class="checkbox-label"
-            jslog=${VisualLogging.toggle('show-events-from-other-domains').track({click: true})}
-        >
-          <input type="checkbox" .checked=${input.isOriginCheckboxChecked} @change=${input.onOriginCheckboxChanged}>
+        <devtools-checkbox
+            title=${i18nString(UIStrings.showEventsFromOtherDomains)}
+            .checked=${input.isOriginCheckboxChecked}
+            @change=${(e: Event) => input.onOriginCheckboxChanged((e.target as UI.UIUtils.CheckboxLabel).checked)}
+            jslog=${VisualLogging.toggle('show-events-from-other-domains').track({click: true})}>
           ${i18nString(UIStrings.showEventsFromOtherDomains)}
-        </label>
-        <label title=${i18nString(UIStrings.showEventsForOtherStorageKeys)} class="checkbox-label"
-            jslog=${VisualLogging.toggle('show-events-from-other-partitions').track({click: true})}
-        >
-          <input type="checkbox" .checked=${input.isStorageKeyCheckboxChecked}
-              @change=${input.onStorageKeyCheckboxChanged}
-          >
+        </devtools-checkbox>
+        <devtools-checkbox
+            title=${i18nString(UIStrings.showEventsForOtherStorageKeys)}
+            .checked=${input.isStorageKeyCheckboxChecked}
+            @change=${(e: Event) =>
+                input.onStorageKeyCheckboxChanged((e.target as UI.UIUtils.CheckboxLabel).checked)}
+            jslog=${VisualLogging.toggle('show-events-from-other-partitions').track({click: true})}>
           ${i18nString(UIStrings.showEventsForOtherStorageKeys)}
-        </label>
+        </devtools-checkbox>
       </devtools-toolbar>
       ${input.events.length === 0 ? (input.isRecording ? html`
         ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, {
@@ -575,14 +574,12 @@ export class BackgroundServiceView extends UI.Widget.Widget {
         this.#selectedEvent = event;
         this.requestUpdate();
       },
-      onOriginCheckboxChanged: (event: Event) => {
-        const checkbox = event.target as HTMLInputElement;
-        this.#isOriginCheckboxChecked = checkbox.checked;
+      onOriginCheckboxChanged: (checked: boolean) => {
+        this.#isOriginCheckboxChecked = checked;
         this.refreshView();
       },
-      onStorageKeyCheckboxChanged: (event: Event) => {
-        const checkbox = event.target as HTMLInputElement;
-        this.#isStorageKeyCheckboxChecked = checkbox.checked;
+      onStorageKeyCheckboxChanged: (checked: boolean) => {
+        this.#isStorageKeyCheckboxChecked = checked;
         this.refreshView();
       },
       isOriginCheckboxChecked: this.#isOriginCheckboxChecked,

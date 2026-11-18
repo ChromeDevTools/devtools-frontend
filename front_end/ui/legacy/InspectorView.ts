@@ -25,17 +25,17 @@ import {Infobar, type InfobarAction, Type as InfobarType} from './Infobar.js';
 import {InspectorDrawerView} from './InspectorDrawerView.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import type {Panel} from './Panel.js';
-import {type ShowMode, SplitWidget} from './SplitWidget.js';
+import {type SettingForOrientation, ShowMode, SplitWidget} from './SplitWidget.js';
 import {StatusBarWidget} from './StatusBar.js';
 import {type EventData, Events as TabbedPaneEvents, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
 import {Tooltip} from './Tooltip.js';
 import {UIUserMetrics} from './UIUserMetrics.js';
 import type {TabbedViewLocation, View as TabbedView, ViewLocation, ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
-import {VBox, type Widget, widget, WidgetFocusRestorer} from './Widget.js';
+import {VBox, type Widget, widget, WidgetFocusRestorer, widgetRef} from './Widget.js';
 
 const {Directives, html, nothing, render} = Lit;
-const {ref, repeat} = Directives;
+const {repeat} = Directives;
 
 const UIStrings = {
   /**
@@ -148,6 +148,11 @@ interface ScrollState {
   scrollLeft: number;
 }
 
+interface DrawerSplitViewStateSetting {
+  vertical?: Partial<SettingForOrientation>;
+  horizontal?: Partial<SettingForOrientation>;
+}
+
 export interface InfobarSpec {
   key: string;
   type: InfobarType;
@@ -160,17 +165,20 @@ export interface InfobarSpec {
 
 export interface ViewInput {
   infobars: readonly InfobarSpec[];
+  isVerticalSplit: boolean;
+  isDrawerOpen: boolean;
   statusBarVisible: boolean;
+  onDrawerOpenChanged: (isOpen: boolean) => void;
 }
 
 export interface ViewOutput {
-  attachSplitWidget?: (showSplitWidget: (parentElement: HTMLElement) => void) => void;
+  attachSplitPanels?: (mainWidget: Widget, attachDrawer: (splitWidget: SplitWidget) => void) => void;
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
-  let splitContainer: Element|undefined;
+  let drawerSplitWidget: SplitWidget|undefined;
   // clang-format off
   render(html`
     ${input.infobars.length > 0 ? html`
@@ -185,31 +193,54 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         }))}
       </div>
     ` : nothing}
-    <div style="display: contents" ${ref(el => { splitContainer = el; })}></div>
+    <devtools-split-view
+        autofocus
+        direction=${input.isVerticalSplit ? 'column' : 'row'}
+        sidebar-position="second"
+        name="inspector.drawer-split-view-state"
+        sidebar-initial-size="200"
+        show=${input.isDrawerOpen ? 'both' : 'main'}
+        @change=${(e: Event) => {
+          if (e.target === e.currentTarget && e instanceof CustomEvent) {
+            input.onDrawerOpenChanged(e.detail !== ShowMode.ONLY_MAIN);
+          }
+        }}
+        ${widgetRef(SplitWidget, splitWidget => {
+          drawerSplitWidget = splitWidget;
+        })}>
+    </devtools-split-view>
     ${input.statusBarVisible ? html`
       <devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>
     ` : nothing}
   `, target);
   // clang-format on
-  output.attachSplitWidget = showSplitWidget => {
-    if (splitContainer instanceof HTMLElement) {
-      showSplitWidget(splitContainer);
+  output.attachSplitPanels = (mainWidget: Widget, attachDrawer: (splitWidget: SplitWidget) => void): void => {
+    if (!drawerSplitWidget) {
+      return;
     }
+    if (drawerSplitWidget.mainWidget() !== mainWidget) {
+      drawerSplitWidget.setMainWidget(mainWidget);
+      drawerSplitWidget.setDefaultFocusedChild(mainWidget);
+    }
+    attachDrawer(drawerSplitWidget);
   };
 };
 
 export class InspectorView extends VBox implements ViewLocationResolver {
   readonly #view: View;
   readonly #drawerOrientationByDockSetting: Common.Settings.Setting<DrawerOrientationByDockMode>;
-  readonly #drawerSplitWidget: SplitWidget;
+  readonly #drawerSplitViewStateSetting: Common.Settings.Setting<DrawerSplitViewStateSetting>;
   readonly #drawerView: InspectorDrawerView;
   readonly #tabDelegate: InspectorViewTabDelegate;
   readonly #tabbedLocation: TabbedViewLocation;
   readonly tabbedPane: TabbedPane;
   readonly #keyDownBound: (event: KeyboardEvent) => void;
+  #isVerticalSplit: boolean;
+  #drawerShowMode: ShowMode;
   #infobars: InfobarSpec[] = [];
   #statusBarVisible = false;
   #needsUpdate = true;
+  #updatingDrawerState = false;
   #currentPanelLocked?: boolean;
   #focusRestorer?: WidgetFocusRestorer|null;
   #mainPanelAtDrawerFocus: string|null = null;
@@ -231,17 +262,16 @@ export class InspectorView extends VBox implements ViewLocationResolver {
           [DockMode.SIDE]: DrawerOrientation.UNSET,
           [DockMode.UNDOCKED]: DrawerOrientation.UNSET,
         });
+    this.#drawerSplitViewStateSetting = Common.Settings.Settings.instance().createSetting<DrawerSplitViewStateSetting>(
+        'inspector.drawer-split-view-state', {});
     const initialOrientation = this.#getOrientationForDockMode();
-    const isVertical = initialOrientation === DrawerOrientation.VERTICAL;
-    this.#drawerSplitWidget = new SplitWidget(isVertical, true, 'inspector.drawer-split-view-state', 200, 200);
-    this.#drawerSplitWidget.hideSidebar();
-    this.#drawerSplitWidget.enableShowModeSaving();
+    this.#isVerticalSplit = initialOrientation === DrawerOrientation.VERTICAL;
+    this.#drawerShowMode = this.#readSavedDrawerShowMode(this.#isVerticalSplit) ?? ShowMode.ONLY_MAIN;
 
     this.#tabDelegate = new InspectorViewTabDelegate();
 
     // Create drawer tabbed pane.
     this.#drawerView = new InspectorDrawerView({
-      splitWidget: this.#drawerSplitWidget,
       revealDrawer: this.showDrawer.bind(this, {
         focus: false,
         hasTargetDrawer: true,
@@ -257,7 +287,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       isConsoleOpenInMainAndDrawer: tabId => tabId === 'console-view' && this.tabbedPane.selectedTabId === 'console',
       tabDelegate: this.#tabDelegate,
       enableOrientationToggle: Boolean(Root.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
-      isVertical,
+      isVertical: this.#isVerticalSplit,
       verticalExpandedMinimumWidth: MIN_VERTICAL_DRAWER_WIDTH,
       minimumSizes: {
         inspectorWidthWhenVertical: MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER,
@@ -270,8 +300,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     // Create main area tabbed pane.
     this.#tabbedLocation = this.#createMainTabbedLocation();
     this.tabbedPane = this.#tabbedLocation.tabbedPane();
-    this.#drawerSplitWidget.setMainWidget(this.tabbedPane);
-    this.#drawerSplitWidget.setDefaultFocusedChild(this.tabbedPane);
 
     this.#keyDownBound = this.#keyDown.bind(this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
@@ -292,8 +320,28 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     DockController.instance().addEventListener(DockControllerEvents.AFTER_DOCK_SIDE_CHANGED,
                                                this.#restoreDrawerStateAfterDockSideChange, this);
 
-    this.#drawerView.restoreMinimizedStateFromSettings();
+    this.#runWithDrawerStateUpdate(() => {
+      // Restore minimized state before syncing non-ONLY_MAIN showMode so applyState(..., false)
+      // does not clear the persisted 'inspector.drawer-minimized' local setting at startup.
+      this.#drawerView.restoreMinimizedStateFromSettings();
+      if (this.#drawerView.isMinimized()) {
+        this.#drawerShowMode = this.#drawerView.showMode();
+        this.#saveDrawerShowMode(this.#drawerShowMode);
+      } else if (this.#drawerShowMode !== ShowMode.ONLY_MAIN) {
+        this.#drawerView.applyState(this.#drawerShowMode, false);
+      }
+    });
     this.performUpdate();
+  }
+
+  #runWithDrawerStateUpdate(fn: () => void): void {
+    const wasUpdating = this.#updatingDrawerState;
+    this.#updatingDrawerState = true;
+    try {
+      fn();
+    } finally {
+      this.#updatingDrawerState = wasUpdating;
+    }
   }
 
   override requestUpdate(): void {
@@ -305,16 +353,16 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.#needsUpdate = false;
     const input: ViewInput = {
       infobars: this.#infobars,
+      isVerticalSplit: this.#isVerticalSplit,
+      isDrawerOpen: this.#drawerShowMode !== ShowMode.ONLY_MAIN,
       statusBarVisible: this.#statusBarVisible,
+      onDrawerOpenChanged: this.#onDrawerOpenChanged,
     };
     const output: ViewOutput = {};
     this.#view(input, output, this.contentElement);
-    if (!this.#drawerSplitWidget.parentWidget()) {
-      output.attachSplitWidget?.(parent => {
-        this.#drawerSplitWidget.show(parent);
-        this.setDefaultFocusedChild(this.#drawerSplitWidget);
-      });
-    }
+    this.#runWithDrawerStateUpdate(() => {
+      output.attachSplitPanels?.(this.tabbedPane, splitWidget => this.#drawerView.attachSplitWidget(splitWidget));
+    });
   }
 
   #createMainTabbedLocation(): TabbedViewLocation {
@@ -416,18 +464,62 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     return orientation;
   }
 
+  #drawerOrientationKey(isVertical = this.#isVerticalSplit): 'vertical'|'horizontal' {
+    return isVertical ? 'vertical' : 'horizontal';
+  }
+
+  #readSavedDrawerShowMode(isVertical: boolean): ShowMode|undefined {
+    return this.#drawerSplitViewStateSetting.get()[this.#drawerOrientationKey(isVertical)]?.showMode;
+  }
+
+  #saveDrawerShowMode(showMode: ShowMode): void {
+    const key = this.#drawerOrientationKey();
+    const state = this.#drawerSplitViewStateSetting.get();
+    this.#drawerSplitViewStateSetting.set({
+      ...state,
+      [key]: {
+        ...state[key],
+        showMode,
+      },
+    });
+  }
+
+  #setDrawerShowMode(showMode: ShowMode): void {
+    if (this.#drawerShowMode === showMode) {
+      return;
+    }
+    this.#drawerShowMode = showMode;
+    this.#saveDrawerShowMode(showMode);
+    this.requestUpdate();
+  }
+
+  readonly #onDrawerOpenChanged = (isOpen: boolean): void => {
+    if (this.#updatingDrawerState) {
+      return;
+    }
+    this.#applyDrawerState(isOpen ? ShowMode.BOTH : ShowMode.ONLY_MAIN, this.isDrawerMinimized());
+  };
+
   #applyDrawerOrientation(orientation: Omit<DrawerOrientation, DrawerOrientation.UNSET>): void {
     const shouldBeVertical = orientation === DrawerOrientation.VERTICAL;
-    const isVertical = this.#drawerView.isVertical();
-    if (shouldBeVertical === isVertical) {
+    if (shouldBeVertical === this.#isVerticalSplit && shouldBeVertical === this.#drawerView.isVertical()) {
       return;
     }
 
-    this.#drawerView.setVertical(shouldBeVertical);
+    this.#isVerticalSplit = shouldBeVertical;
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.setVertical(shouldBeVertical);
+    });
+    this.#drawerShowMode = this.#drawerView.showMode();
+    this.#saveDrawerShowMode(this.#drawerShowMode);
+    this.requestUpdate();
   }
 
   #applyDrawerState(showMode: ShowMode, minimized: boolean): void {
-    this.#drawerView.applyState(showMode, minimized);
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.applyState(showMode, minimized);
+    });
+    this.#setDrawerShowMode(this.#drawerView.showMode());
   }
 
   #observedResize(): void {
@@ -577,7 +669,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       return;
     }
     this.#applyDrawerOrientationForDockSide();
-    this.#drawerView.show(hasTargetDrawer);
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.show(hasTargetDrawer);
+    });
+    this.#setDrawerShowMode(this.#drawerView.showMode());
     if (focus) {
       this.#focusRestorer = new WidgetFocusRestorer(this.#drawerView.tabbedPane);
       this.#mainPanelAtDrawerFocus = this.tabbedPane.selectedTabId;
@@ -613,7 +708,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     }
     this.#focusRestorer = null;
     this.#mainPanelAtDrawerFocus = null;
-    this.#drawerView.hide();
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.hide();
+    });
+    this.#setDrawerShowMode(this.#drawerView.showMode());
     this.#restoreMainPanelScrollState(scrollState);
     ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerHidden));
   }
@@ -650,7 +748,9 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   setDrawerMinimized(minimized: boolean): void {
     // Preserve main panel scroll positions across the drawer layout change.
     const scrollState = this.#captureMainPanelScrollState();
-    this.#drawerView.setMinimized(minimized);
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.setMinimized(minimized);
+    });
     this.#restoreMainPanelScrollState(scrollState);
   }
 

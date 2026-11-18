@@ -386,6 +386,7 @@ export class InspectorDrawerView {
   }
 
   applyState(showMode: ShowMode, minimized: boolean): void {
+    const wasDrawerVisible = this.#showMode !== ShowMode.ONLY_MAIN && !this.#isMinimized;
     this.#showMode = showMode;
     if (!this.#splitWidget) {
       this.#hasExplicitShowMode = true;
@@ -417,7 +418,7 @@ export class InspectorDrawerView {
 
     const shouldBeMinimized = showMode === ShowMode.BOTH && minimized;
     if (showMode === ShowMode.BOTH) {
-      this.setMinimized(shouldBeMinimized);
+      this.#setMinimizedInternal(shouldBeMinimized, wasDrawerVisible);
       this.#reportPendingInitialTabIfVisible();
       return;
     }
@@ -427,6 +428,7 @@ export class InspectorDrawerView {
     this.#splitWidget.setResizable(false);
     this.#updatePresentation(false);
     this.#drawerMinimizedSetting.set(false);
+    this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
     this.#reportPendingInitialTabIfVisible();
   }
 
@@ -464,7 +466,10 @@ export class InspectorDrawerView {
   }
 
   setMinimized(minimized: boolean): void {
-    const wasDrawerVisible = this.isVisibleForEvents();
+    this.#setMinimizedInternal(minimized, this.isVisibleForEvents());
+  }
+
+  #setMinimizedInternal(minimized: boolean, wasDrawerVisible: boolean): void {
     if (minimized && !this.isMinimized() && this.#splitWidget) {
       this.#drawerSizeBeforeMinimize = this.#splitWidget.sidebarSize();
     }

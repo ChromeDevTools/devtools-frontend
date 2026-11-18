@@ -406,7 +406,7 @@ describe('Recorder', function() {
       it('should toggle code view with shortcut', async ({inspectedPage, devToolsPage}) => {
         await openRecorderAndStartRecording(devToolsPage, inspectedPage);
         async function getSplitWidgetVisibility() {
-          const splitView = await devToolsPage.waitFor('devtools-split-view');
+          const splitView = await devToolsPage.waitFor('devtools-split-view:has(> #recording-code-pane)');
           return await splitView.evaluate(el => {
             return el.getAttribute('show');
           });

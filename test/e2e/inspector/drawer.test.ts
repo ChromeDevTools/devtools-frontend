@@ -12,7 +12,7 @@ import type {DevToolsPage} from '../shared/DevToolsPage.js';
 const MINIMIZE_BUTTON_SELECTOR = '[aria-label="Minimize drawer"]';
 const EXPAND_BUTTON_SELECTOR = '[aria-label="Expand drawer"]';
 const CLOSE_BUTTON_SELECTOR = '[aria-label="Close drawer"]';
-const DRAWER_SELECTOR = '.drawer-tabbed-pane';
+const DRAWER_SELECTOR = '.drawer-tabbed-pane:not(.hidden)';
 const MINIMIZED_VERTICAL_CLASS = 'drawer-minimized-vertical';
 const MOVE_TO_DRAWER_SELECTOR = '[aria-label="Move to drawer"]';
 type DockSide = 'bottom'|'right'|'left'|'undocked';

@@ -263,7 +263,7 @@ describe('InspectorView', () => {
   });
 
   describe('action delegate', () => {
-    it('main.toggle-drawer triggers animated hide when drawer is expanded and visible', () => {
+    it('main.toggle-drawer triggers animated hide when drawer is expanded and visible', async () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       assert.isTrue(inspectorView.drawerVisible());
@@ -272,6 +272,7 @@ describe('InspectorView', () => {
 
       const delegate = new LegacyUI.InspectorView.ActionDelegate();
       delegate.handleAction({} as LegacyUI.Context.Context, 'main.toggle-drawer');
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
 
       sinon.assert.calledOnceWithExactly(hideSidebarSpy, true);
     });
@@ -477,9 +478,175 @@ describe('InspectorView', () => {
 
       assert.isFalse(inspectorView.isDrawerOrientationVertical());
     });
+
+    it('calls wasShown once on drawerSplitWidget and tabbedPane on mount', () => {
+      const splitWasShown = sinon.spy(LegacyUI.SplitWidget.SplitWidget.prototype, 'wasShown');
+      const tabbedPaneWasShown = sinon.spy(LegacyUI.TabbedPane.TabbedPane.prototype, 'wasShown');
+
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
+
+      assert.lengthOf(splitWasShown.thisValues.filter(v => v === drawerSplitWidget), 1);
+      assert.lengthOf(tabbedPaneWasShown.thisValues.filter(v => v === inspectorView.tabbedPane), 1);
+    });
   });
 
   describe('presenter', () => {
+    function setupDrawerStateSetting(): Common.Settings.Setting<{
+      vertical?: Partial<LegacyUI.SplitWidget.SettingForOrientation>,
+      horizontal?: Partial<LegacyUI.SplitWidget.SettingForOrientation>,
+    }> {
+      const stateSetting = Common.Settings.Settings.instance().createSetting<{
+        vertical?: Partial<LegacyUI.SplitWidget.SettingForOrientation>,
+        horizontal?: Partial<LegacyUI.SplitWidget.SettingForOrientation>,
+      }>('inspector.drawer-split-view-state', {});
+      stateSetting.set({
+        vertical: {showMode: LegacyUI.SplitWidget.ShowMode.BOTH, size: 320},
+        horizontal: {showMode: LegacyUI.SplitWidget.ShowMode.ONLY_MAIN, size: 240},
+      });
+      return stateSetting;
+    }
+
+    it('restores saved vertical drawer open state for bottom dock without clobbering size', () => {
+      const stateSetting = setupDrawerStateSetting();
+      LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+
+      const bottomView = createViewFunctionStub(InspectorView);
+      new InspectorView(undefined, bottomView);
+      assert.isEmpty(bottomView.input.infobars);
+      assert.isTrue(bottomView.input.isVerticalSplit);
+      assert.isTrue(bottomView.input.isDrawerOpen);
+      assert.isFalse(bottomView.input.statusBarVisible);
+      assert.deepEqual(stateSetting.get().vertical, {showMode: LegacyUI.SplitWidget.ShowMode.BOTH, size: 320});
+    });
+
+    it('restores saved horizontal drawer open state for side dock without clobbering size', () => {
+      const stateSetting = setupDrawerStateSetting();
+      LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.RIGHT);
+
+      const rightView = createViewFunctionStub(InspectorView);
+      new InspectorView(undefined, rightView);
+      assert.isEmpty(rightView.input.infobars);
+      assert.isFalse(rightView.input.isVerticalSplit);
+      assert.isFalse(rightView.input.isDrawerOpen);
+      assert.isFalse(rightView.input.statusBarVisible);
+      assert.deepEqual(stateSetting.get().horizontal, {showMode: LegacyUI.SplitWidget.ShowMode.ONLY_MAIN, size: 240});
+    });
+
+    it('restores drawer as minimized when both showMode BOTH and drawer-minimized setting are saved', () => {
+      setupDrawerStateSetting();
+      const minimizedSetting =
+          Common.Settings.Settings.instance().createLocalSetting('inspector.drawer-minimized', false);
+      minimizedSetting.set(true);
+
+      LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+      const view = createViewFunctionStub(InspectorView);
+      new InspectorView(undefined, view);
+      sinon.assert.calledOnce(view);
+      assert.isTrue(view.input.isDrawerOpen);
+      assert.isTrue(minimizedSetting.get());
+
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      assert.isTrue(inspectorView.isDrawerMinimized());
+      assert.isTrue(minimizedSetting.get());
+    });
+
+    it('persists drawer open state per orientation across show, orientation toggle, close, and split-view change',
+       async () => {
+         const stateSetting = Common.Settings.Settings.instance().createSetting<{
+           vertical?: Partial<LegacyUI.SplitWidget.SettingForOrientation>,
+           horizontal?: Partial<LegacyUI.SplitWidget.SettingForOrientation>,
+         }>('inspector.drawer-split-view-state', {});
+         stateSetting.set({
+           vertical: {size: 320},
+           horizontal: {size: 240},
+         });
+
+         LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
+         const view = createViewFunctionStub(InspectorView);
+         const inspectorView = new InspectorView(undefined, view);
+
+         assert.isTrue(view.input.isVerticalSplit);
+         assert.isFalse(view.input.isDrawerOpen);
+
+         inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+         let input = await view.nextInput;
+         assert.isTrue(input.isDrawerOpen);
+         assert.deepEqual(stateSetting.get().vertical, {size: 320, showMode: LegacyUI.SplitWidget.ShowMode.BOTH});
+         assert.deepEqual(stateSetting.get().horizontal, {size: 240});
+
+         inspectorView.toggleDrawerOrientation({force: LegacyUI.InspectorView.DrawerOrientation.HORIZONTAL});
+         input = await view.nextInput;
+         assert.isFalse(input.isVerticalSplit);
+         assert.isTrue(input.isDrawerOpen);
+         assert.deepEqual(stateSetting.get().horizontal, {size: 240, showMode: LegacyUI.SplitWidget.ShowMode.BOTH});
+
+         inspectorView.closeDrawer();
+         input = await view.nextInput;
+         assert.isFalse(input.isDrawerOpen);
+         assert.deepEqual(stateSetting.get().horizontal,
+                          {size: 240, showMode: LegacyUI.SplitWidget.ShowMode.ONLY_MAIN});
+
+         input.onDrawerOpenChanged(true);
+         input = await view.nextInput;
+         assert.isTrue(input.isDrawerOpen);
+         assert.isTrue(inspectorView.drawerVisible());
+         assert.deepEqual(stateSetting.get().horizontal, {size: 240, showMode: LegacyUI.SplitWidget.ShowMode.BOTH});
+
+         inspectorView.toggleDrawerOrientation({force: LegacyUI.InspectorView.DrawerOrientation.VERTICAL});
+         input = await view.nextInput;
+         assert.isTrue(input.isVerticalSplit);
+         assert.isTrue(input.isDrawerOpen);
+         assert.isTrue(inspectorView.drawerVisible());
+         assert.deepEqual(stateSetting.get().vertical, {size: 320, showMode: LegacyUI.SplitWidget.ShowMode.BOTH});
+       });
+
+    it('syncs InspectorDrawerView and emits PaneVisibilityChanged when SplitWidget showMode changes directly', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      const drawerLocation = inspectorView.resolveLocation('drawer-view') as LegacyUI.View.TabbedViewLocation | null;
+      assert.exists(drawerLocation);
+      const drawerTabbedPane = drawerLocation.tabbedPane();
+      const paneVisibilityEvents: boolean[] = [];
+      drawerTabbedPane.addEventListener(LegacyUI.TabbedPane.Events.PaneVisibilityChanged, event => {
+        paneVisibilityEvents.push(event.data.isVisible);
+      });
+
+      const drawerSplitWidget = getDrawerSplitWidget(inspectorView);
+      drawerSplitWidget.showBoth();
+      assert.isTrue(inspectorView.drawerVisible());
+      assert.include(paneVisibilityEvents, true);
+
+      drawerSplitWidget.hideSidebar(false);
+      assert.isFalse(inspectorView.drawerVisible());
+      assert.isTrue(paneVisibilityEvents[0]);
+      assert.isFalse(paneVisibilityEvents[paneVisibilityEvents.length - 1]);
+
+      drawerSplitWidget.showBoth();
+      inspectorView.setDrawerMinimized(true);
+      assert.isTrue(inspectorView.isDrawerMinimized());
+      drawerSplitWidget.hideSidebar(false);
+      assert.isFalse(inspectorView.isDrawerMinimized());
+      assert.isFalse(Common.Settings.Settings.instance().createLocalSetting('inspector.drawer-minimized', false).get());
+    });
+
+    it('ignores bubbling native change events from child panels inside devtools-split-view', async () => {
+      const stateSetting = setupDrawerStateSetting();
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+      const splitElement = inspectorView.contentElement.querySelector('devtools-split-view');
+      assert.instanceOf(splitElement, HTMLElement);
+      assert.isTrue(splitElement.contains(inspectorView.tabbedPane.element));
+
+      const inputElement = document.createElement('input');
+      inspectorView.tabbedPane.element.appendChild(inputElement);
+      inputElement.dispatchEvent(new Event('change', {bubbles: true}));
+      await LegacyUI.Widget.Widget.allUpdatesComplete;
+
+      assert.strictEqual(stateSetting.get().vertical?.showMode, LegacyUI.SplitWidget.ShowMode.BOTH);
+      assert.strictEqual(splitElement.getAttribute('show'), 'both');
+    });
+
     it('removes debugged tab reload warning on PrimaryPageChanged', async () => {
       LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true}).setDockSide(DockState.BOTTOM);
       const view = createViewFunctionStub(InspectorView);

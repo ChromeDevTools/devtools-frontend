@@ -616,4 +616,38 @@ describeWithEnvironment('SplitWidget', () => {
       dipWidget.detach();
     });
   });
+
+  it('does not invoke show-mode methods redundantly when show attribute matches current showMode', async () => {
+    const container = renderElementIntoDOM(new UI.Widget.VBox());
+    let splitWidget!: UI.SplitWidget.SplitWidget;
+
+    const renderWithShow = (show: 'main'|'sidebar'|'both') => {
+      render(html`<devtools-split-view direction="column" show=${show} ${widgetRef(SplitWidget, w => {
+               splitWidget = w;
+             })}></devtools-split-view>`, container.contentElement);
+    };
+
+    renderWithShow('main');
+    assert.exists(splitWidget);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.strictEqual(splitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_MAIN);
+
+    const hideSidebarSpy = sinon.spy(splitWidget, 'hideSidebar');
+    const hideMainSpy = sinon.spy(splitWidget, 'hideMain');
+    const showBothSpy = sinon.spy(splitWidget, 'showBoth');
+
+    // Re-rendering with the already-active showMode does not snap/re-invoke hideSidebar.
+    renderWithShow('main');
+    sinon.assert.notCalled(hideSidebarSpy);
+
+    // Transitioning to 'sidebar', then re-rendering 'sidebar' calls hideMain once.
+    renderWithShow('sidebar');
+    renderWithShow('sidebar');
+    sinon.assert.calledOnce(hideMainSpy);
+
+    // Transitioning to 'both', then re-rendering 'both' calls showBoth once.
+    renderWithShow('both');
+    renderWithShow('both');
+    sinon.assert.calledOnce(showBothSpy);
+  });
 });

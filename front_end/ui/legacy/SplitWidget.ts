@@ -979,11 +979,17 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
       widget.setSecondIsSidebar(newValue === 'second');
     } else if (name === 'show') {
       if (newValue === 'main') {
-        widget.hideSidebar();
+        if (widget.showMode() !== ShowMode.ONLY_MAIN) {
+          widget.hideSidebar();
+        }
       } else if (newValue === 'sidebar') {
-        widget.hideMain();
+        if (widget.showMode() !== ShowMode.ONLY_SIDEBAR) {
+          widget.hideMain();
+        }
       } else if (newValue === 'both' || newValue === null) {
-        widget.showBoth();
+        if (widget.showMode() !== ShowMode.BOTH) {
+          widget.showBoth();
+        }
       }
     }
   }

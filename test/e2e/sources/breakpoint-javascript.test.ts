@@ -80,11 +80,11 @@ describe('The Sources Tab', function() {
 
     // Disable breakpoint. This time, we should not pause but be able to
     // run the script until the end.
-    await devToolsPage.click(`[aria-label="${CLICK_BREAKPOINT_SCRIPT}"] [aria-label="checked"] input`);
+    await devToolsPage.click(`[aria-label="${CLICK_BREAKPOINT_SCRIPT}"] [aria-label="checked"] devtools-checkbox`);
     await inspectedPage.evaluate('f2();');
 
     // Re-enable breakpoint. Again, we should expect a pause and resume to finish the script.
-    await devToolsPage.click(`[aria-label="${CLICK_BREAKPOINT_SCRIPT}"] [aria-label="unchecked"] input`);
+    await devToolsPage.click(`[aria-label="${CLICK_BREAKPOINT_SCRIPT}"] [aria-label="unchecked"] devtools-checkbox`);
     await testScriptPauseAndResume(CLICK_BREAKPOINT_SCRIPT, inspectedPage, devToolsPage);
   });
 

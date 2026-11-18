@@ -172,7 +172,7 @@ describe('Multi-Workers', function() {
         await addBreakpointForLine(devToolsPage, 6);
 
         const bpEntry = await devToolsPage.waitFor(BREAKPOINT_ITEM_SELECTOR);
-        const bpCheckbox = await bpEntry?.$('input');
+        const bpCheckbox = await bpEntry?.$('devtools-checkbox');
         assert.isOk(bpCheckbox);
         await bpCheckbox.click();
         await devToolsPage.waitFor('.cm-breakpoint-disabled');

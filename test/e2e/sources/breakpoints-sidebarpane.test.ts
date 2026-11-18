@@ -138,7 +138,7 @@ describe('The Breakpoints Sidebar', () => {
        const breakpointItem = await devToolsPage.waitFor(FIRST_BREAKPOINT_ITEM_SELECTOR, breakpointView);
        assert.isOk(breakpointItem);
 
-       const checkbox = await breakpointItem.$('input');
+       const checkbox = await breakpointItem.$('devtools-checkbox');
        assert.isOk(checkbox);
        await devToolsPage.clickElement(checkbox);
 

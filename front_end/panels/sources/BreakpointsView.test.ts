@@ -318,7 +318,8 @@ function checkCodeSnippet(
   assert.strictEqual(snippetElement.textContent, breakpointItem.codeSnippet);
 }
 
-function checkCheckboxState(checkbox: HTMLInputElement, breakpointItem: Sources.BreakpointsView.BreakpointItem): void {
+function checkCheckboxState(checkbox: UI.UIUtils.CheckboxLabel,
+                            breakpointItem: Sources.BreakpointsView.BreakpointItem): void {
   const checked = checkbox.checked;
   const indeterminate = checkbox.indeterminate;
   if (breakpointItem.status === Sources.BreakpointsView.BreakpointStatus.INDETERMINATE) {
@@ -1087,9 +1088,9 @@ describe('BreakpointsView', () => {
       const renderedItem = renderedBreakpointItems[i];
       assert.instanceOf(renderedItem, HTMLDivElement);
 
-      const inputElement = renderedItem.querySelector('input');
-      assert.instanceOf(inputElement, HTMLInputElement);
-      checkCheckboxState(inputElement, breakpointItems[i]);
+      const checkboxElement = renderedItem.querySelector('devtools-checkbox');
+      assert.instanceOf(checkboxElement, UI.UIUtils.CheckboxLabel);
+      checkCheckboxState(checkboxElement, breakpointItems[i]);
     }
   });
 
@@ -1189,8 +1190,8 @@ describe('BreakpointsView', () => {
     const renderedItem = component.contentElement.querySelector(BREAKPOINT_ITEM_SELECTOR);
     assert.instanceOf(renderedItem, HTMLDivElement);
 
-    const checkbox = renderedItem.querySelector('input');
-    assert.instanceOf(checkbox, HTMLInputElement);
+    const checkbox = renderedItem.querySelector('devtools-checkbox');
+    assert.instanceOf(checkbox, UI.UIUtils.CheckboxLabel);
     const checked = checkbox.checked;
 
     const controller = Sources.BreakpointsView.BreakpointsSidebarController.instance();
@@ -1330,8 +1331,8 @@ describe('BreakpointsView', () => {
       assert.isNotNull(component.contentElement);
       const firstGroupSummary = component.contentElement.querySelector(SUMMARY_SELECTOR);
       assert.exists(firstGroupSummary);
-      const groupCheckbox = firstGroupSummary.querySelector('input');
-      assert.instanceOf(groupCheckbox, HTMLInputElement);
+      const groupCheckbox = firstGroupSummary.querySelector('devtools-checkbox');
+      assert.instanceOf(groupCheckbox, UI.UIUtils.CheckboxLabel);
 
       assert.isTrue(groupCheckbox.checked);
     });
@@ -1354,8 +1355,8 @@ describe('BreakpointsView', () => {
       assert.isNotNull(component.contentElement);
       const firstGroupSummary = component.contentElement.querySelector(SUMMARY_SELECTOR);
       assert.exists(firstGroupSummary);
-      const groupCheckbox = firstGroupSummary.querySelector('input');
-      assert.instanceOf(groupCheckbox, HTMLInputElement);
+      const groupCheckbox = firstGroupSummary.querySelector('devtools-checkbox');
+      assert.instanceOf(groupCheckbox, UI.UIUtils.CheckboxLabel);
 
       assert.isFalse(groupCheckbox.checked);
     });
@@ -1380,8 +1381,8 @@ describe('BreakpointsView', () => {
       assert.isNotNull(component.contentElement);
       const firstGroupSummary = component.contentElement.querySelector(SUMMARY_SELECTOR);
       assert.exists(firstGroupSummary);
-      const groupCheckbox = firstGroupSummary.querySelector('input');
-      assert.instanceOf(groupCheckbox, HTMLInputElement);
+      const groupCheckbox = firstGroupSummary.querySelector('devtools-checkbox');
+      assert.instanceOf(groupCheckbox, UI.UIUtils.CheckboxLabel);
 
       // Wait until we receive all events fired that notify us of disabled breakpoints.
       const waitForEventPromise = waitForCheckboxToggledEventsWithCheckedUpdate(numBreakpointItems, false);
@@ -1410,8 +1411,8 @@ describe('BreakpointsView', () => {
       assert.isNotNull(component.contentElement);
       const firstGroupSummary = component.contentElement.querySelector(SUMMARY_SELECTOR);
       assert.exists(firstGroupSummary);
-      const groupCheckbox = firstGroupSummary.querySelector('input');
-      assert.instanceOf(groupCheckbox, HTMLInputElement);
+      const groupCheckbox = firstGroupSummary.querySelector('devtools-checkbox');
+      assert.instanceOf(groupCheckbox, UI.UIUtils.CheckboxLabel);
 
       // Wait until we receive all events fired that notify us of enabled breakpoints.
       const waitForEventPromise = waitForCheckboxToggledEventsWithCheckedUpdate(numBreakpointItems, true);
@@ -1541,15 +1542,15 @@ describe('BreakpointsView', () => {
           component.contentElement.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(pauseOnUncaughtExceptionsItem);
 
-      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('devtools-checkbox');
+      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, UI.UIUtils.CheckboxLabel);
       assert.isFalse(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.contentElement?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(pauseOnCaughtExceptionsItem);
 
-      const pauseOnCaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
-      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('devtools-checkbox');
+      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, UI.UIUtils.CheckboxLabel);
       assert.isFalse(pauseOnCaughtExceptionsCheckbox.checked);
     });
 
@@ -1561,17 +1562,17 @@ describe('BreakpointsView', () => {
           component.contentElement.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(pauseOnUncaughtExceptionsItem);
 
-      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('devtools-checkbox');
       assert.exists(pauseOnUncaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, UI.UIUtils.CheckboxLabel);
       assert.isTrue(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.contentElement?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(pauseOnCaughtExceptionsItem);
 
-      const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
+      const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('devtools-checkbox');
       assert.exists(pauseOnCaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, UI.UIUtils.CheckboxLabel);
       assert.isFalse(pauseOnCaughtExceptionsCheckbox.checked);
     });
 
@@ -1583,17 +1584,17 @@ describe('BreakpointsView', () => {
           component.contentElement.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(pauseOnUncaughtExceptionsItem);
 
-      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('input');
+      const pauseOnUncaughtExceptionsCheckbox = pauseOnUncaughtExceptionsItem.querySelector('devtools-checkbox');
       assert.exists(pauseOnUncaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, HTMLInputElement);
+      assert.instanceOf(pauseOnUncaughtExceptionsCheckbox, UI.UIUtils.CheckboxLabel);
       assert.isTrue(pauseOnUncaughtExceptionsCheckbox.checked);
 
       const pauseOnCaughtExceptionsItem = component.contentElement?.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(pauseOnCaughtExceptionsItem);
 
-      const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('input');
+      const pauseOnCaughtExceptionsCheckbox = pauseOnCaughtExceptionsItem.querySelector('devtools-checkbox');
       assert.exists(pauseOnCaughtExceptionsCheckbox);
-      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, HTMLInputElement);
+      assert.instanceOf(pauseOnCaughtExceptionsCheckbox, UI.UIUtils.CheckboxLabel);
       assert.isTrue(pauseOnCaughtExceptionsCheckbox.checked);
     });
 
@@ -1604,8 +1605,8 @@ describe('BreakpointsView', () => {
       const item = component.contentElement.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(item);
 
-      const checkbox = item.querySelector('input');
-      assert.instanceOf(checkbox, HTMLInputElement);
+      const checkbox = item.querySelector('devtools-checkbox');
+      assert.instanceOf(checkbox, UI.UIUtils.CheckboxLabel);
       const {checked} = checkbox;
 
       const controller = Sources.BreakpointsView.BreakpointsSidebarController.instance();
@@ -1623,8 +1624,8 @@ describe('BreakpointsView', () => {
       const item = component.contentElement.querySelector(PAUSE_ON_CAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(item);
 
-      const checkbox = item.querySelector('input');
-      assert.instanceOf(checkbox, HTMLInputElement);
+      const checkbox = item.querySelector('devtools-checkbox');
+      assert.instanceOf(checkbox, UI.UIUtils.CheckboxLabel);
       const {checked} = checkbox;
 
       const controller = Sources.BreakpointsView.BreakpointsSidebarController.instance();
@@ -1642,8 +1643,8 @@ describe('BreakpointsView', () => {
       const item = component.contentElement.querySelector(PAUSE_ON_UNCAUGHT_EXCEPTIONS_SELECTOR);
       assert.exists(item);
 
-      const checkbox = item.querySelector('input');
-      assert.instanceOf(checkbox, HTMLInputElement);
+      const checkbox = item.querySelector('devtools-checkbox');
+      assert.instanceOf(checkbox, UI.UIUtils.CheckboxLabel);
       const {checked} = checkbox;
 
       const controller = Sources.BreakpointsView.BreakpointsSidebarController.instance();
@@ -2043,9 +2044,8 @@ describe('BreakpointsView', () => {
       const component = await createPopulatedBreakpointsView();
 
       const conditionalIndicator =
-          component.contentElement.querySelector('.breakpoint-item.conditional-breakpoint > label > .type-indicator');
-      const logpointIndicator =
-          component.contentElement.querySelector('.breakpoint-item.logpoint > label > .type-indicator');
+          component.contentElement.querySelector('.breakpoint-item.conditional-breakpoint > .type-indicator');
+      const logpointIndicator = component.contentElement.querySelector('.breakpoint-item.logpoint > .type-indicator');
       assert.exists(conditionalIndicator);
       assert.exists(logpointIndicator);
 
@@ -2059,9 +2059,8 @@ describe('BreakpointsView', () => {
       const component = await createPopulatedBreakpointsView();
 
       const conditionalIndicator =
-          component.contentElement.querySelector('.breakpoint-item.conditional-breakpoint > label > .type-indicator');
-      const logpointIndicator =
-          component.contentElement.querySelector('.breakpoint-item.logpoint > label > .type-indicator');
+          component.contentElement.querySelector('.breakpoint-item.conditional-breakpoint > .type-indicator');
+      const logpointIndicator = component.contentElement.querySelector('.breakpoint-item.logpoint > .type-indicator');
       assert.exists(conditionalIndicator);
       assert.exists(logpointIndicator);
 

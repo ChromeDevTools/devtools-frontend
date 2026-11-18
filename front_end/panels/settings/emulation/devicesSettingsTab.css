@@ -46,11 +46,7 @@
 }
 
 .devices-list-checkbox {
-  height: var(--sys-size-6);
-  width: var(--sys-size-6);
-  margin: var(--sys-size-2) 5px var(--sys-size-2) var(--sys-size-2);
-  flex: none;
-  pointer-events: none;
+  max-width: 100%;
 }
 
 .device-name {

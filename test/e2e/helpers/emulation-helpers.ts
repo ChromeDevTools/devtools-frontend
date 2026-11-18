@@ -136,9 +136,9 @@ export const enableEmulationDevice = async(devToolsPage: DevToolsPage, deviceNam
     if (titleEl) {
       const title = await titleEl.evaluate(el => el.textContent?.trim());
       if (title === deviceName) {
-        const checkbox = await devToolsPage.$('input.devices-list-checkbox', item);
+        const checkbox = await devToolsPage.$('devtools-checkbox.devices-list-checkbox', item);
         if (checkbox) {
-          const checked = await checkbox.evaluate(el => (el as HTMLInputElement).checked);
+          const checked = await checkbox.evaluate(el => (el as HTMLElement & {checked: boolean}).checked);
           if (!checked) {
             await checkbox.click();
           }

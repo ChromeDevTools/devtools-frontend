@@ -6,8 +6,10 @@ import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
 
 import * as EmulationModel from '../../../models/emulation/emulation.js';
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {getAxeViolations} from '../../../testing/AxeHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Emulation from './emulation.js';
 
@@ -202,6 +204,109 @@ describeWithEnvironment('DevicesSettingsTab', () => {
     assert.include(titles, 'Foldables');
     assert.include(titles, 'Tablets & Desktops');
     assert.include(titles, 'Smart Displays');
+  });
+
+  it('toggles device visibility through the device list checkboxes', async () => {
+    const customDevice = createCustomDevice();
+    customDevice.setShow(false);
+    const defaultDevice = createCustomDevice();
+    defaultDevice.title = 'Default phone';
+    defaultDevice.setShow(true);
+    const toggled: Array<{title: string, custom: boolean, show: boolean}> = [];
+    const target = document.createElement('div');
+    renderElementIntoDOM(target, {includeCommonStyles: true, width: 500});
+
+    Emulation.DevicesSettingsTab.DEFAULT_VIEW({
+      customDevices: [customDevice],
+      defaultDeviceGroups: [{title: 'Mobile', hidden: false, devices: [defaultDevice]}],
+      editorState: null,
+      successMessage: '',
+      onAddCustomDevice: () => {},
+      onToggleDevice: (device, custom, show) => toggled.push({title: device.title, custom, show}),
+      onBeginEdit: () => {},
+      onRemoveDevice: () => {},
+      onEditorInput: () => {},
+      onClientHintsChange: () => {},
+      onCommitEdit: () => {},
+      onCancelEdit: () => {},
+    },
+                                              {}, target);
+
+    const checkboxes = [...target.querySelectorAll('devtools-checkbox.devices-list-checkbox')];
+    assert.lengthOf(checkboxes, 2);
+    assert.instanceOf(checkboxes[0], UI.UIUtils.CheckboxLabel);
+    assert.instanceOf(checkboxes[1], UI.UIUtils.CheckboxLabel);
+    assert.isFalse(checkboxes[0].checked);
+    assert.isTrue(checkboxes[1].checked);
+
+    checkboxes[0].click();
+    checkboxes[1].click();
+
+    assert.deepEqual(toggled, [
+      {title: 'Test phone', custom: true, show: true},
+      {title: 'Default phone', custom: false, show: false},
+    ]);
+  });
+
+  it('has zero aXe violations for device list checkboxes', async () => {
+    const customDevice = createCustomDevice();
+    const defaultDevice = createCustomDevice();
+    defaultDevice.title = 'Default phone';
+    const target = document.createElement('div');
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    Emulation.DevicesSettingsTab.DEFAULT_VIEW({
+      customDevices: [customDevice],
+      defaultDeviceGroups: [{title: 'Mobile', hidden: false, devices: [defaultDevice]}],
+      editorState: null,
+      successMessage: '',
+      onAddCustomDevice: () => {},
+      onToggleDevice: () => {},
+      onBeginEdit: () => {},
+      onRemoveDevice: () => {},
+      onEditorInput: () => {},
+      onClientHintsChange: () => {},
+      onCommitEdit: () => {},
+      onCancelEdit: () => {},
+    },
+                                              {}, target);
+
+    assert.isEmpty(await getAxeViolations(target));
+  });
+
+  it('renders device list checkboxes', async () => {
+    const customDeviceA = createCustomDevice();
+    customDeviceA.title = 'Custom Phone';
+    customDeviceA.setShow(true);
+    const customDeviceB = createCustomDevice();
+    customDeviceB.title = 'Custom Tablet';
+    customDeviceB.setShow(false);
+    const defaultDeviceA = createCustomDevice();
+    defaultDeviceA.title = 'Pixel 8';
+    defaultDeviceA.setShow(true);
+    const defaultDeviceB = createCustomDevice();
+    defaultDeviceB.title = 'Pixel 9';
+    defaultDeviceB.setShow(false);
+    const target = document.createElement('div');
+    renderElementIntoDOM(target, {includeCommonStyles: true, width: 450});
+
+    Emulation.DevicesSettingsTab.DEFAULT_VIEW({
+      customDevices: [customDeviceA, customDeviceB],
+      defaultDeviceGroups: [{title: 'Mobile', hidden: false, devices: [defaultDeviceA, defaultDeviceB]}],
+      editorState: null,
+      successMessage: '',
+      onAddCustomDevice: () => {},
+      onToggleDevice: () => {},
+      onBeginEdit: () => {},
+      onRemoveDevice: () => {},
+      onEditorInput: () => {},
+      onClientHintsChange: () => {},
+      onCommitEdit: () => {},
+      onCancelEdit: () => {},
+    },
+                                              {}, target);
+
+    await assertScreenshot('settings/devices_settings_tab.png');
   });
 
   it('omits safe-area and cutout fields when mobile safe area emulation is disabled', async () => {

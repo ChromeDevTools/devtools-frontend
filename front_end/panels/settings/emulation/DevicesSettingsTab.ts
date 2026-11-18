@@ -11,7 +11,6 @@ import * as Root from '../../../core/root/root.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as Input from '../../../ui/components/input/input.js';
 import type * as Lists from '../../../ui/components/lists/lists.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../../ui/lit/lit.js';
@@ -336,20 +335,19 @@ interface DeviceItemViewInput {
 function renderDeviceItem(input: DeviceItemViewInput): LitTemplate {
   // clang-format off
   return html`
-    <label class="devices-list-item" tabindex="-1">
-      <input
+    <div class="devices-list-item" tabindex="-1">
+      <devtools-checkbox
         class="devices-list-checkbox"
-        type="checkbox"
         .checked=${live(input.checked)}
         jslog=${VisualLogging.toggle().track({click: true})}
-        @click=${(event: Event) => {
-          const checkbox = event.currentTarget as HTMLInputElement;
+        @change=${(event: Event) => {
+          const checkbox = event.currentTarget as UI.UIUtils.CheckboxLabel;
           input.onToggle(checkbox.checked);
-          event.consume();
         }}
-      />
-      <span class="device-name">${input.title}</span>
-    </label>
+      >
+        <span class="device-name">${input.title}</span>
+      </devtools-checkbox>
+    </div>
   `;
   // clang-format on
 }
@@ -617,7 +615,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
   // clang-format off
   render(html`
-    <style>${Input.checkboxStyles}</style>
     <style>${devicesSettingsTabStyles}</style>
     <div class="settings-card-container-wrapper">
       <div class="settings-card-container ignore-list-settings">

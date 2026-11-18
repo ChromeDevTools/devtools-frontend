@@ -21,7 +21,6 @@ devtools_ui_module("emulation") {
     "../../../generated",
     "../../../models/emulation:bundle",
     "../../../ui/components/buttons:bundle",
-    "../../../ui/components/input:bundle",
     "../../../ui/components/lists:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
@@ -69,5 +68,6 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../../models/emulation:bundle",
     "../../../testing",
+    "../../../ui/legacy:bundle",
   ]
 }

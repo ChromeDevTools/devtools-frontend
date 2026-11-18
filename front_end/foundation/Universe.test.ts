@@ -11,6 +11,7 @@ import * as Host from '../core/host/host.js';
 import type * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
+import * as DevToolsState from '../models/devtools_state/devtools_state.js';
 import {MockCDPConnection} from '../testing/MockCDPConnection.js';
 import {setupRuntimeHooks} from '../testing/RuntimeHelpers.js';
 import {DEFAULT_SETTING_REGISTRATIONS_FOR_TEST} from '../testing/SettingsHelpers.js';
@@ -278,5 +279,31 @@ describe('Universe', () => {
     universe.dispose();
 
     sinon.assert.calledOnce(disposeSpy);
+  });
+
+  it('wires StateManager to settings changes', () => {
+    const universe = new Foundation.Universe.Universe({
+      settingsCreationOptions: createSettingsCreationOptions(),
+      hostConfig: {} as Root.Runtime.HostConfig,
+      inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+      supportsEmulation: false,
+    });
+    const listener = sinon.spy();
+    universe.stateManager.addEventListener(DevToolsState.State.Events.STATE_CHANGED, listener);
+
+    universe.settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(true);
+
+    sinon.assert.calledOnce(listener);
+    assert.deepEqual(universe.stateManager.nonDefaultStates(), [
+      {kind: DevToolsState.State.StateKind.CACHE_DISABLED, value: true, isDefault: false},
+    ]);
+
+    universe.stateManager.reset(DevToolsState.State.StateKind.CACHE_DISABLED);
+    assert.deepEqual(universe.stateManager.nonDefaultStates(), []);
+    universe.dispose();
+
+    listener.resetHistory();
+    universe.settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(true);
+    sinon.assert.notCalled(listener);
   });
 });

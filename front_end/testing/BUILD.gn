@@ -90,6 +90,7 @@ ts_library("testing") {
     "../models/comment_manager:bundle",
     "../models/cpu_profile:bundle",
     "../models/crux-manager:bundle",
+    "../models/devtools_state:bundle",
     "../models/emulation:bundle",
     "../models/extensions:bundle",
     "../models/formatter:bundle",

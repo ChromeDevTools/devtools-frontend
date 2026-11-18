@@ -17,6 +17,7 @@ import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as ChangeTracker from '../models/change_tracker/change_tracker.js';
 import * as CommentManager from '../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
+import * as DevToolsState from '../models/devtools_state/devtools_state.js';
 import * as Emulation from '../models/emulation/emulation.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
@@ -144,6 +145,12 @@ export class TestUniverse implements Foundation.Universe.Universe {
     [
       CrUXManager.CrUXManager,
       () => new CrUXManager.CrUXManager(this.targetManager, this.settings),
+    ],
+    [
+      DevToolsState.StateManager.StateManager,
+      () => new DevToolsState.StateManager.StateManager([
+        new DevToolsState.SettingsStateProvider.SettingsStateProvider(this.settings),
+      ]),
     ],
     [
       IssuesManager.DOMIssuesManager.DOMIssuesManager,
@@ -361,6 +368,9 @@ export class TestUniverse implements Foundation.Universe.Universe {
     if (this.#context.has(CommentManager.CD4ABridge.CD4ABridge)) {
       this.cd4aBridge.dispose();
     }
+    if (this.#context.has(DevToolsState.StateManager.StateManager)) {
+      this.stateManager.dispose();
+    }
     if (this.#context.has(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager)) {
       this.isolatedFileSystemManager.dispose();
     }
@@ -567,6 +577,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
 
   get settings(): Common.Settings.Settings {
     return this.get(Common.Settings.Settings);
+  }
+
+  get stateManager(): DevToolsState.StateManager.StateManager {
+    return this.get(DevToolsState.StateManager.StateManager);
   }
 
   get workspace(): Workspace.Workspace.WorkspaceImpl {

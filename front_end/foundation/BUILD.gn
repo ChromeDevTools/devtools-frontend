@@ -21,6 +21,7 @@ devtools_foundation_module("foundation") {
     "../models/change_tracker:bundle",
     "../models/comment_manager:bundle",
     "../models/crux-manager:bundle",
+    "../models/devtools_state:bundle",
     "../models/emulation:bundle",
     "../models/issues_manager:bundle",
     "../models/javascript_metadata:bundle",
@@ -73,6 +74,7 @@ devtools_foundation_module("unittests") {
     "../core/root:bundle",
     "../core/sdk:bundle",
     "../generated",
+    "../models/devtools_state:bundle",
     "../testing",
   ]
 }

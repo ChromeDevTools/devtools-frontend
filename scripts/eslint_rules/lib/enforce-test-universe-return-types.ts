@@ -23,6 +23,7 @@ const ALLOWED_RETURN_TYPES = new Set([
   'CommentManager.CD4ABridge.CD4ABridge',
   'CommentManager.CommentManager.CommentManager',
   'CrUXManager.CrUXManager',
+  'DevToolsState.StateManager.StateManager',
   'Host.AidaClient.HostConfigTracker',
   'Host.GdpClient.GdpClient',
   'Emulation.DeviceModeModel.DeviceModeModel',

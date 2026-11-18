@@ -16,7 +16,7 @@ import * as RenderCoordinator from '../components/render_coordinator/render_coor
 
 import * as UI from './legacy.js';
 
-const {html} = Lit;
+const {html, render} = Lit;
 const {Widget} = UI.Widget;
 
 function checkFocus(id: string) {
@@ -165,6 +165,25 @@ describeWithEnvironment('Widget', () => {
       sinon.assert.calledOnce(parentWasShown);
       sinon.assert.calledOnce(childOnResize);
       sinon.assert.calledOnce(parentOnResize);
+    });
+
+    it('calls `wasShown` once in parent-before-child order for pre-created declarative child widgets', () => {
+      class ChildWidget extends Widget {}
+
+      const parentWidget = new Widget();
+      const parentWasShown = sinon.spy(parentWidget, 'wasShown');
+      let childWidget!: ChildWidget;
+      render(html`<devtools-widget ${UI.Widget.widget(ChildWidget)} ${UI.Widget.widgetRef(ChildWidget, w => {
+               childWidget = w;
+             })}></devtools-widget>`, parentWidget.contentElement);
+      assert.instanceOf(childWidget, ChildWidget);
+      const childWasShown = sinon.spy(childWidget, 'wasShown');
+
+      renderElementIntoDOM(parentWidget);
+
+      sinon.assert.calledOnce(parentWasShown);
+      sinon.assert.calledOnce(childWasShown);
+      sinon.assert.callOrder(parentWasShown, childWasShown);
     });
 
     it('automatically detaches from any previous parent', () => {

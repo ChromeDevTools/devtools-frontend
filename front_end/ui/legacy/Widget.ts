@@ -889,10 +889,6 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
 
     this.#visible = true;
 
-    if (!wasVisible && this.parentIsShowing()) {
-      this.processWillShow();
-    }
-
     this.element.classList.remove('hidden');
 
     // Reparent
@@ -911,7 +907,12 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
       this.element.removeAttribute('autofocus');
     }
 
+    // Mark the parent showing only after DOM insertion: nested WidgetElement
+    // children created while detached connect and show themselves synchronously
+    // during insertion, so setting #isShowing beforehand would run their
+    // wasShown() early and then a second time in processWasShown() below.
     if (!wasVisible && this.parentIsShowing()) {
+      this.processWillShow();
       this.processWasShown();
     }
 

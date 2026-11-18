@@ -6,6 +6,7 @@
 from os import path as os_path
 import platform
 import subprocess
+import sys
 import os
 
 
@@ -43,9 +44,25 @@ def GetBinaryPath(node_dir=None):
         return devtools_checkout_path
     if node_dir is not None:
         return os_path.join(node_dir, *relative)
-    # Assume we are in a chromium checkout.
-    return os_path.join(os.path.dirname(__file__), '..', '..', '..', '..',
-                        'node', *relative)
+    # Inside of a Chromium checkout, use the node binary of Chromium.
+    chromium_root = _FindChromiumRoot()
+    if chromium_root is not None:
+        return os_path.join(chromium_root, 'third_party', 'node', *relative)
+    return devtools_checkout_path
+
+
+def _FindChromiumRoot():
+    """Returns the root of the Chromium checkout DevTools is part of, or None
+    for a standalone checkout. See scripts/find_chromium_root.py."""
+    scripts_dir = os_path.join(os_path.dirname(os_path.abspath(__file__)),
+                               '..', '..', 'scripts')
+    old_sys_path = sys.path[:]
+    try:
+        sys.path.append(scripts_dir)
+        from find_chromium_root import find_chromium_root
+    finally:
+        sys.path = old_sys_path
+    return find_chromium_root()
 
 
 if __name__ == '__main__':

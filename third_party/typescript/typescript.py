@@ -25,10 +25,27 @@ def GetBinaryPath():
     if os_path.exists(devtools_checkout_path):
         return os_path.normpath(devtools_checkout_path)
 
-    # Assume we are in a chromium checkout.
-    return os_path.normpath(
-        os_path.join(os_path.dirname(__file__), '..', '..', '..', '..',
-                     'typescript', *relative))
+    # Inside of a Chromium checkout, use the TypeScript binary of Chromium.
+    chromium_root = _FindChromiumRoot()
+    if chromium_root is not None:
+        return os_path.normpath(
+            os_path.join(chromium_root, 'third_party', 'typescript',
+                         *relative))
+    return os_path.normpath(devtools_checkout_path)
+
+
+def _FindChromiumRoot():
+    """Returns the root of the Chromium checkout DevTools is part of, or None
+    for a standalone checkout. See scripts/find_chromium_root.py."""
+    scripts_dir = os_path.join(os_path.dirname(os_path.abspath(__file__)),
+                               '..', '..', 'scripts')
+    old_sys_path = sys.path[:]
+    try:
+        sys.path.append(scripts_dir)
+        from find_chromium_root import find_chromium_root
+    finally:
+        sys.path = old_sys_path
+    return find_chromium_root()
 
 
 def RunTypeScriptRaw(cmd_parts, stdout=None):

@@ -82,11 +82,11 @@ import { CdpFrame } from './Frame.js';
 import { FrameManager } from './FrameManager.js';
 import { FrameManagerEvent } from './FrameManagerEvents.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
-import { MAIN_WORLD } from './IsolatedWorlds.js';
+import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
 import { releaseObject } from './JSHandle.js';
 import { CdpScreenRecording } from './ScreenRecording.js';
 import { Tracing } from './Tracing.js';
-import { convertConsoleMessageLevel, createClientError, createConsoleMessage, pageBindingInitString, } from './utils.js';
+import { convertConsoleMessageLevel, createClientError, createConsoleMessage, createRemoteException, pageBindingInitString, } from './utils.js';
 import { WebMCP } from './WebMCP.js';
 import { CdpWebWorker } from './WebWorker.js';
 /**
@@ -178,6 +178,12 @@ export class CdpPage extends Page {
         });
         frameManagerEmitter.on(FrameManagerEvent.FrameNavigated, frame => {
             this.emit("framenavigated" /* PageEvent.FrameNavigated */, frame);
+        });
+        frameManagerEmitter.on(FrameManagerEvent.FrameNavigatedWithinDocument, frame => {
+            this.emit("framenavigatedsamedocument" /* PageEvent.FrameNavigatedSameDocument */, frame);
+        });
+        frameManagerEmitter.on(FrameManagerEvent.FrameNavigatedNewDocument, frame => {
+            this.emit("framenavigatednewdocument" /* PageEvent.FrameNavigatedNewDocument */, frame);
         });
         frameManagerEmitter.on(FrameManagerEvent.ConsoleApiCalled, ([world, event]) => {
             this.#onConsoleAPI(world, event);
@@ -292,13 +298,14 @@ export class CdpPage extends Page {
             this.emit("load" /* PageEvent.Load */, undefined);
         });
         clientEmitter.on('Page.javascriptDialogOpening', this.#onDialog.bind(this));
-        clientEmitter.on('Runtime.exceptionThrown', this.#handleException.bind(this));
+        clientEmitter.on('Runtime.exceptionThrown', this.#onExceptionThrown.bind(this));
         clientEmitter.on('Inspector.targetCrashed', this.#onTargetCrashed.bind(this));
         clientEmitter.on('Performance.metrics', this.#emitMetrics.bind(this));
         clientEmitter.on('Log.entryAdded', this.#onLogEntryAdded.bind(this));
         clientEmitter.on('Page.fileChooserOpened', this.#onFileChooser.bind(this));
     }
     #onDetachedFromTarget = (target) => {
+        this.#frameManager.onDetachedFromTarget(target);
         const sessionId = target._session()?.id();
         const worker = this.#workers.get(sessionId);
         if (!worker) {
@@ -309,9 +316,12 @@ export class CdpPage extends Page {
     };
     #onAttachedToTarget = (session) => {
         assert(session instanceof CdpCDPSession);
-        this.#frameManager.onAttachedToTarget(session.target());
-        if (session.target()._getTargetInfo().type === 'worker') {
-            const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#handleException.bind(this), this.#frameManager.networkManager, this.logger);
+        const target = session.target();
+        this.#frameManager.onAttachedToTarget(target);
+        if (target._getTargetInfo().type === 'worker') {
+            const worker = new CdpWebWorker(session, target, this.#handleException.bind(this), this.logger, this.#frameManager.networkManager, () => {
+                return this.listenerCount("exception" /* PageEvent.Exception */) > 0;
+            });
             this.#workers.set(session.id(), worker);
             worker.internalEmitter.on(WebWorkerEvent.Console, message => {
                 const noListenersForConsoleOnPage = this.listenerCount("console" /* PageEvent.Console */) === 0;
@@ -329,6 +339,9 @@ export class CdpPage extends Page {
                     return;
                 }
                 this.#emitConsoleMessage(message);
+            });
+            worker.internalEmitter.on(WebWorkerEvent.Exception, exception => {
+                this.emit("exception" /* PageEvent.Exception */, exception);
             });
             this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
@@ -467,6 +480,24 @@ export class CdpPage extends Page {
             this.#fileChooserDeferreds.delete(deferred);
             throw error;
         }
+        finally {
+            // Once nobody is waiting anymore, stop intercepting so that file choosers
+            // opened later (e.g. by a user of a headful browser) are shown again.
+            if (this.#fileChooserDeferreds.size === 0) {
+                await this.#disableFileChooserInterception();
+            }
+        }
+    }
+    async #disableFileChooserInterception() {
+        try {
+            await this.#primaryTargetClient.send('Page.setInterceptFileChooserDialog', {
+                enabled: false,
+            });
+        }
+        catch (err) {
+            // If the session is gone, the interception went away with it.
+            this.logger?.(DEBUG_PREFIXES.error)?.(err);
+        }
     }
     async setGeolocation(options) {
         return await this.#emulationManager.setGeolocation(options);
@@ -604,7 +635,7 @@ export class CdpPage extends Page {
                 await this.#primaryTargetClient.send('Network.deleteCookies', {
                     ...item,
                     partitionKey: {
-                        topLevelSite: url.origin.replace(`:${url.port}`, ''),
+                        topLevelSite: `${url.protocol}//${url.hostname}`,
                         hasCrossSiteAncestor: false,
                     },
                 });
@@ -744,6 +775,69 @@ export class CdpPage extends Page {
     #handleException(exception) {
         this.emit("pageerror" /* PageEvent.PageError */, createClientError(exception.exceptionDetails));
     }
+    #onExceptionThrown(event) {
+        this.#handleException(event);
+        this.#onMainTargetException(event);
+    }
+    #onMainTargetException(event) {
+        const env_3 = { stack: [], error: void 0, hasError: false };
+        try {
+            const details = event.exceptionDetails;
+            if (this.listenerCount("exception" /* PageEvent.Exception */) === 0) {
+                // Nobody can use a handle, but the browser keeps the exception alive
+                // until it is released.
+                if (details.exception) {
+                    void releaseObject(this.#primaryTargetClient, details.exception, this.logger);
+                }
+                return;
+            }
+            // Disposed when this scope ends, i.e. right after dispatch. This is a no-op
+            // if a listener called `move()` on the handle.
+            const handle = __addDisposableResource(env_3, this.#createExceptionHandle(details), false);
+            this.emit("exception" /* PageEvent.Exception */, createRemoteException(details, handle));
+        }
+        catch (e_3) {
+            env_3.error = e_3;
+            env_3.hasError = true;
+        }
+        finally {
+            __disposeResources(env_3);
+        }
+    }
+    #createExceptionHandle(details) {
+        const remoteObject = details.exception;
+        if (!remoteObject?.objectId) {
+            return;
+        }
+        const world = this.#findWorldByExecutionContextId(details.executionContextId);
+        if (world) {
+            return world.createCdpHandle(remoteObject);
+        }
+        // We cannot bind the handle to a realm, but the remote object must still
+        // be released to avoid leaking it.
+        void releaseObject(this.#primaryTargetClient, remoteObject, this.logger);
+        return;
+    }
+    #findWorldByExecutionContextId(executionContextId) {
+        if (executionContextId === undefined) {
+            return;
+        }
+        for (const frame of this.#frameManager.frames()) {
+            // Execution context IDs are only unique per session.
+            if (frame.client !== this.#primaryTargetClient) {
+                continue;
+            }
+            for (const world of [
+                frame.worlds[MAIN_WORLD],
+                frame.worlds[PUPPETEER_WORLD],
+            ]) {
+                if (world.context?.id === executionContextId) {
+                    return world;
+                }
+            }
+        }
+        return;
+    }
     #onConsoleAPI(world, event, values) {
         if (!values) {
             values = event.args.map(arg => {
@@ -815,6 +909,7 @@ export class CdpPage extends Page {
         this.emit("dialog" /* PageEvent.Dialog */, dialog);
     }
     async reload(options) {
+        options?.signal?.throwIfAborted();
         const [result] = await Promise.all([
             this.waitForNavigation({
                 ...options,
@@ -836,6 +931,7 @@ export class CdpPage extends Page {
         return await this.#go(+1, options);
     }
     async #go(delta, options) {
+        options.signal?.throwIfAborted();
         const history = await this.#primaryTargetClient.send('Page.getNavigationHistory');
         const entry = history.entries[history.currentIndex + delta];
         if (!entry) {
@@ -904,10 +1000,10 @@ export class CdpPage extends Page {
         await this.#frameManager.networkManager.setCacheEnabled(enabled);
     }
     async _screenshot(options) {
-        const env_3 = { stack: [], error: void 0, hasError: false };
+        const env_4 = { stack: [], error: void 0, hasError: false };
         try {
             const { fromSurface, omitBackground, optimizeForSpeed, quality, clip: userClip, type, captureBeyondViewport, } = options;
-            const stack = __addDisposableResource(env_3, new AsyncDisposableStack(), true);
+            const stack = __addDisposableResource(env_4, new AsyncDisposableStack(), true);
             if (omitBackground && (type === 'png' || type === 'webp')) {
                 await this.#emulationManager.setTransparentBackgroundColor();
                 stack.defer(async () => {
@@ -938,12 +1034,12 @@ export class CdpPage extends Page {
             });
             return data;
         }
-        catch (e_3) {
-            env_3.error = e_3;
-            env_3.hasError = true;
+        catch (e_4) {
+            env_4.error = e_4;
+            env_4.hasError = true;
         }
         finally {
-            const result_1 = __disposeResources(env_3);
+            const result_1 = __disposeResources(env_4);
             if (result_1)
                 await result_1;
         }
@@ -995,9 +1091,9 @@ export class CdpPage extends Page {
         return typedArray;
     }
     async close(options = { runBeforeUnload: undefined }) {
-        const env_4 = { stack: [], error: void 0, hasError: false };
+        const env_5 = { stack: [], error: void 0, hasError: false };
         try {
-            const _guard = __addDisposableResource(env_4, await this.browserContext().waitForScreenshotOperations(), false);
+            const _guard = __addDisposableResource(env_5, await this.browserContext().waitForScreenshotOperations(), false);
             const connection = this.#primaryTargetClient.connection();
             assert(connection, 'Connection closed. Most likely the page has been closed.');
             const runBeforeUnload = !!options.runBeforeUnload;
@@ -1011,12 +1107,12 @@ export class CdpPage extends Page {
                 await this.#tabTarget._isClosedDeferred.valueOrThrow();
             }
         }
-        catch (e_4) {
-            env_4.error = e_4;
-            env_4.hasError = true;
+        catch (e_5) {
+            env_5.error = e_5;
+            env_5.hasError = true;
         }
         finally {
-            __disposeResources(env_4);
+            __disposeResources(env_5);
         }
     }
     isClosed() {

@@ -74,8 +74,7 @@ export class PuppeteerNode extends Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        options.logger ??= debug;
-        return super.connect(options);
+        return super.connect({ ...options, logger: options.logger ?? debug });
     }
     /**
      * Launches a browser instance with given arguments and options when
@@ -114,14 +113,14 @@ export class PuppeteerNode extends Puppeteer {
      * @param options - Options to configure launching behavior.
      */
     async launch(options = {}) {
-        options.logger ??= debug;
+        const logger = options.logger ?? debug;
         const { browser = await this.defaultBrowser() } = options;
         this.#lastLaunchedBrowser = browser;
         if (!['chrome', 'firefox'].includes(browser)) {
             throw new Error(`Unknown product: ${browser}`);
         }
-        this.#launcher = this.#getLauncher(browser, options.logger);
-        return await this.#launcher.launch(options);
+        this.#launcher = this.#getLauncher(browser, logger);
+        return await this.#launcher.launch({ ...options, logger });
     }
     #getLauncher(browser, logger) {
         if (this.#launcher && this.#launcher.browser === browser) {

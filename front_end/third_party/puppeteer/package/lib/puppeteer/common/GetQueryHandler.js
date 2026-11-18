@@ -55,7 +55,9 @@ export function getQueryHandlerAndSelector(selector) {
         }
         return {
             updatedSelector: JSON.stringify(pSelector),
-            polling: hasAria ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */,
+            polling: hasAria || hasPseudoClasses
+                ? "raf" /* PollingOptions.RAF */
+                : "mutation" /* PollingOptions.MUTATION */,
             QueryHandler: PQueryHandler,
         };
     }

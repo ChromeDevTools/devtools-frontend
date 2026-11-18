@@ -56,7 +56,7 @@ import { ExposableFunction } from './ExposedFunction.js';
 import { BidiHTTPRequest, requests } from './HTTPRequest.js';
 import { emitRequestFailed, emitRequestFinished } from './NetworkEvents.js';
 import { BidiFrameRealm } from './Realm.js';
-import { getConsoleMessage, isConsoleLogEntry, isJavaScriptLogEntry, rewriteNavigationError, } from './util.js';
+import { getConsoleMessage, isConsoleLogEntry, createPageErrorFromLogEntry, createRemoteExceptionFromLogEntry, isJavaScriptLogEntry, rewriteNavigationError, } from './util.js';
 import { BidiWebWorker } from './WebWorker.js';
 let BidiFrame = (() => {
     var _a;
@@ -200,7 +200,12 @@ let BidiFrame = (() => {
             this.browsingContext.on('navigation', navigation => {
                 navigation.once('fragment', () => {
                     this.page().trustedEmitter.emit("framenavigated" /* PageEvent.FrameNavigated */, this);
+                    this.page().trustedEmitter.emit("framenavigatedsamedocument" /* PageEvent.FrameNavigatedSameDocument */, this);
                 });
+            });
+            this.browsingContext.on('historyUpdated', () => {
+                this.page().trustedEmitter.emit("framenavigated" /* PageEvent.FrameNavigated */, this);
+                this.page().trustedEmitter.emit("framenavigatedsamedocument" /* PageEvent.FrameNavigatedSameDocument */, this);
             });
             this.browsingContext.on('load', () => {
                 this.page().trustedEmitter.emit("load" /* PageEvent.Load */, undefined);
@@ -209,6 +214,7 @@ let BidiFrame = (() => {
                 this._hasStartedLoading = true;
                 this.page().trustedEmitter.emit("domcontentloaded" /* PageEvent.DOMContentLoaded */, undefined);
                 this.page().trustedEmitter.emit("framenavigated" /* PageEvent.FrameNavigated */, this);
+                this.page().trustedEmitter.emit("framenavigatednewdocument" /* PageEvent.FrameNavigatedNewDocument */, this);
             });
             this.browsingContext.on('userprompt', userPrompt => {
                 this.page().trustedEmitter.emit("dialog" /* PageEvent.Dialog */, BidiDialog.from(userPrompt));
@@ -217,14 +223,14 @@ let BidiFrame = (() => {
                 if (this._id !== entry.source.context) {
                     return;
                 }
+                // Chromium sets `source.context` of dedicated worker logs to the frame
+                // that created the worker, so they pass the context check above. Since
+                // BidiWorkerRealm emits them (console messages and exceptions) with the
+                // correct worker and realm we can skip them here.
+                if (this.#isWorkerRealm(entry.source.realm)) {
+                    return;
+                }
                 if (isConsoleLogEntry(entry)) {
-                    // Chromium sets `source.context` of dedicated worker logs to the frame
-                    // that created the worker, so they pass the context check above. Since
-                    // BidiWorkerRealm emits them with the correct worker and realm we can
-                    // skip them here.
-                    if (this.#isWorkerRealm(entry.source.realm)) {
-                        return;
-                    }
                     const page = this.page();
                     if (!page.listenerCount("console" /* PageEvent.Console */) &&
                         !page.browserContext().listenerCount("console" /* BrowserContextEvent.Console */) &&
@@ -237,21 +243,8 @@ let BidiFrame = (() => {
                     page.emitConsoleMessage(getConsoleMessage(entry, args, this));
                 }
                 else if (isJavaScriptLogEntry(entry)) {
-                    const error = new Error(entry.text ?? '');
-                    const messageHeight = error.message.split('\n').length;
-                    const messageLines = error.stack.split('\n').splice(0, messageHeight);
-                    const stackLines = [];
-                    if (entry.stackTrace) {
-                        for (const frame of entry.stackTrace.callFrames) {
-                            // Note we need to add `1` because the values are 0-indexed.
-                            stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber + 1}:${frame.columnNumber + 1})`);
-                            if (stackLines.length >= Error.stackTraceLimit) {
-                                break;
-                            }
-                        }
-                    }
-                    error.stack = [...messageLines, ...stackLines].join('\n');
-                    this.page().trustedEmitter.emit("pageerror" /* PageEvent.PageError */, error);
+                    this.page().trustedEmitter.emit("pageerror" /* PageEvent.PageError */, createPageErrorFromLogEntry(entry));
+                    this.page().trustedEmitter.emit("exception" /* PageEvent.Exception */, createRemoteExceptionFromLogEntry(entry));
                 }
                 else {
                     this.#logger?.(DEBUG_PREFIXES.error)?.(`Unhandled LogEntry with type "${entry.type}", text "${entry.text}" and level "${entry.level}"`);
@@ -330,6 +323,7 @@ let BidiFrame = (() => {
             });
         }
         async goto(url, options = {}) {
+            options.signal?.throwIfAborted();
             const [response] = await Promise.all([
                 this.waitForNavigation(options),
                 // Some implementations currently only report errors when the
@@ -355,12 +349,13 @@ let BidiFrame = (() => {
             return response;
         }
         async setContent(html, options = {}) {
+            options.signal?.throwIfAborted();
             await Promise.all([
                 this.setFrameContent(html),
                 firstValueFrom(combineLatest([
                     this.#waitForLoad$(options),
                     this.#waitForNetworkIdle$(options),
-                ])),
+                ]).pipe(raceWith(fromAbortSignal(options.signal)))),
             ]);
         }
         async waitForNavigation(options = {}) {
@@ -369,9 +364,13 @@ let BidiFrame = (() => {
                 return frame.#detached$();
             });
             return await firstValueFrom(combineLatest([
-                race(fromEmitterEvent(this.browsingContext, 'navigation'), fromEmitterEvent(this.browsingContext, 'historyUpdated').pipe(map(() => {
-                    return null;
-                })))
+                race(fromEmitterEvent(this.browsingContext, 'navigation'), ...(options.ignoreSameDocumentNavigation
+                    ? []
+                    : [
+                        fromEmitterEvent(this.browsingContext, 'historyUpdated').pipe(map(() => {
+                            return null;
+                        })),
+                    ]))
                     .pipe(first())
                     .pipe(switchMap(navigation => {
                     if (navigation === null) {

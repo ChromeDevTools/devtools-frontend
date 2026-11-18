@@ -3,9 +3,18 @@ import type { ExecutionContext } from './ExecutionContext.js';
 /**
  * @internal
  */
+export interface BindingOptions {
+    /** Whether to dispose node arguments after the binding call finishes. */
+    ownsArguments?: boolean;
+    /** Whether to dispose a returned handle after forwarding it to the page. */
+    ownsResult?: boolean;
+}
+/**
+ * @internal
+ */
 export declare class Binding {
     #private;
-    constructor(name: string, fn: (...args: unknown[]) => unknown, initSource: string, logger: Logger);
+    constructor(name: string, fn: (...args: unknown[]) => unknown, initSource: string, logger: Logger, options?: BindingOptions);
     get name(): string;
     get initSource(): string;
     /**

@@ -68,11 +68,15 @@ export class Binding {
     #fn;
     #initSource;
     #logger;
-    constructor(name, fn, initSource, logger) {
+    #ownsArguments;
+    #ownsResult;
+    constructor(name, fn, initSource, logger, options = {}) {
         this.#name = name;
         this.#fn = fn;
         this.#initSource = initSource;
         this.#logger = logger;
+        this.#ownsArguments = options.ownsArguments ?? false;
+        this.#ownsResult = options.ownsResult ?? false;
     }
     get name() {
         return this.#name;
@@ -88,82 +92,87 @@ export class Binding {
      * @param args - Plain arguments from CDP.
      */
     async run(context, id, args, isTrivial) {
-        const stack = new DisposableStack();
-        const cdpName = CDP_BINDING_PREFIX + this.#name;
+        const env_1 = { stack: [], error: void 0, hasError: false };
         try {
-            if (!isTrivial) {
-                const env_1 = { stack: [], error: void 0, hasError: false };
-                try {
-                    // Getting non-trivial arguments.
-                    const handles = __addDisposableResource(env_1, await context.evaluateHandle((name, seq) => {
-                        // @ts-expect-error Code is evaluated in a different context.
-                        return globalThis[name].args.get(seq);
-                    }, cdpName, id), false);
-                    const properties = await handles.getProperties();
-                    for (const [index, handle] of properties) {
-                        // This is not straight-forward since some arguments can stringify, but
-                        // aren't plain objects so add subtypes when the use-case arises.
-                        if (index in args) {
-                            switch (handle.remoteObject().subtype) {
-                                case 'node':
-                                    args[+index] = handle;
-                                    break;
-                                default:
-                                    stack.use(handle);
+            const stack = __addDisposableResource(env_1, new DisposableStack(), false);
+            const cdpName = CDP_BINDING_PREFIX + this.#name;
+            try {
+                if (!isTrivial) {
+                    const env_2 = { stack: [], error: void 0, hasError: false };
+                    try {
+                        // Getting non-trivial arguments.
+                        const handles = __addDisposableResource(env_2, await context.evaluateHandle((name, seq) => {
+                            // @ts-expect-error Code is evaluated in a different context.
+                            return globalThis[name].args.get(seq);
+                        }, cdpName, id), false);
+                        const properties = await handles.getProperties();
+                        for (const [index, handle] of properties) {
+                            // This is not straight-forward since some arguments can stringify, but
+                            // aren't plain objects so add subtypes when the use-case arises.
+                            if (index in args && handle.remoteObject().subtype === 'node') {
+                                args[+index] = handle;
+                                // Exposed functions can retain node arguments beyond this call.
+                                if (!this.#ownsArguments) {
+                                    continue;
+                                }
                             }
-                        }
-                        else {
                             stack.use(handle);
                         }
                     }
+                    catch (e_1) {
+                        env_2.error = e_1;
+                        env_2.hasError = true;
+                    }
+                    finally {
+                        __disposeResources(env_2);
+                    }
                 }
-                catch (e_1) {
-                    env_1.error = e_1;
-                    env_1.hasError = true;
+                const result = await this.#fn(...args);
+                if (this.#ownsResult && result instanceof JSHandle) {
+                    stack.use(result);
                 }
-                finally {
-                    __disposeResources(env_1);
-                }
+                await context.evaluate((name, seq, result) => {
+                    // @ts-expect-error Code is evaluated in a different context.
+                    const callbacks = globalThis[name].callbacks;
+                    callbacks.get(seq).resolve(result);
+                    callbacks.delete(seq);
+                }, cdpName, id, result);
             }
-            await context.evaluate((name, seq, result) => {
-                // @ts-expect-error Code is evaluated in a different context.
-                const callbacks = globalThis[name].callbacks;
-                callbacks.get(seq).resolve(result);
-                callbacks.delete(seq);
-            }, cdpName, id, await this.#fn(...args));
-            for (const arg of args) {
-                if (arg instanceof JSHandle) {
-                    stack.use(arg);
+            catch (error) {
+                if (isErrorLike(error)) {
+                    await context
+                        .evaluate((name, seq, message, stack) => {
+                        const error = new Error(message);
+                        error.stack = stack;
+                        // @ts-expect-error Code is evaluated in a different context.
+                        const callbacks = globalThis[name].callbacks;
+                        callbacks.get(seq).reject(error);
+                        callbacks.delete(seq);
+                    }, cdpName, id, error.message, error.stack)
+                        .catch(error => {
+                        this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                    });
+                }
+                else {
+                    await context
+                        .evaluate((name, seq, error) => {
+                        // @ts-expect-error Code is evaluated in a different context.
+                        const callbacks = globalThis[name].callbacks;
+                        callbacks.get(seq).reject(error);
+                        callbacks.delete(seq);
+                    }, cdpName, id, error)
+                        .catch(error => {
+                        this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+                    });
                 }
             }
         }
-        catch (error) {
-            if (isErrorLike(error)) {
-                await context
-                    .evaluate((name, seq, message, stack) => {
-                    const error = new Error(message);
-                    error.stack = stack;
-                    // @ts-expect-error Code is evaluated in a different context.
-                    const callbacks = globalThis[name].callbacks;
-                    callbacks.get(seq).reject(error);
-                    callbacks.delete(seq);
-                }, cdpName, id, error.message, error.stack)
-                    .catch(error => {
-                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
-                });
-            }
-            else {
-                await context
-                    .evaluate((name, seq, error) => {
-                    // @ts-expect-error Code is evaluated in a different context.
-                    const callbacks = globalThis[name].callbacks;
-                    callbacks.get(seq).reject(error);
-                    callbacks.delete(seq);
-                }, cdpName, id, error)
-                    .catch(error => {
-                    this.#logger?.(DEBUG_PREFIXES.error)?.(error);
-                });
-            }
+        catch (e_2) {
+            env_1.error = e_2;
+            env_1.hasError = true;
+        }
+        finally {
+            __disposeResources(env_1);
         }
     }
 }

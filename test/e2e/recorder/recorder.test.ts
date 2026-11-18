@@ -462,6 +462,7 @@ describe('Recorder', function() {
                  ['custom-button'],
                  ['xpath//html/body/custom-button'],
                  ['pierce/custom-button'],
+                 ['text/Click me'],
                ],
              }],
            },

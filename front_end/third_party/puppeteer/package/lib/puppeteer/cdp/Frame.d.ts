@@ -58,6 +58,7 @@ export declare class CdpFrame extends Frame {
         referrerPolicy?: string;
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
+        signal?: AbortSignal;
     }): Promise<HTTPResponse | null>;
     waitForNavigation(options?: WaitForOptions): Promise<HTTPResponse | null>;
     get client(): CDPSession;

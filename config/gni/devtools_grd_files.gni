@@ -2416,6 +2416,7 @@ grd_files_unbundled_sources = [
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/PierceQueryHandler.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/Puppeteer.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/QueryHandler.js",
+  "front_end/third_party/puppeteer/package/lib/puppeteer/common/RemoteException.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/ScriptInjector.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/SecurityDetails.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/common/SupportedBrowser.js",

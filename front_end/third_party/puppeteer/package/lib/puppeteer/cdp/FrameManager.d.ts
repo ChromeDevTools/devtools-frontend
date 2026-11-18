@@ -3,6 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import type { Browser } from '../api/Browser.js';
 import { type CDPSession } from '../api/CDPSession.js';
 import { type NewDocumentScriptEvaluation } from '../api/Page.js';
 import type { WebWorker } from '../api/WebWorker.js';
@@ -40,6 +41,7 @@ export declare class FrameManager extends EventEmitter<FrameManagerEvents> {
     private setupEventListeners;
     initialize(client: CDPSession, frame?: CdpFrame | null): Promise<void>;
     page(): CdpPage;
+    browser(): Browser;
     worker(client: CDPSession): WebWorker | null;
     mainFrame(): CdpFrame;
     frames(): CdpFrame[];
@@ -49,6 +51,7 @@ export declare class FrameManager extends EventEmitter<FrameManagerEvents> {
     evaluateOnNewDocument(source: string): Promise<NewDocumentScriptEvaluation>;
     removeScriptToEvaluateOnNewDocument(identifier: string): Promise<void>;
     onAttachedToTarget(target: CdpTarget): void;
+    onDetachedFromTarget(target: CdpTarget): void;
     _deviceRequestPromptManager(client: CDPSession): CdpDeviceRequestPromptManager;
 }
 //# sourceMappingURL=FrameManager.d.ts.map

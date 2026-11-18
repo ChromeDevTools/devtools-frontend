@@ -36,6 +36,11 @@ export declare class TargetManager extends EventEmitter<TargetManagerEvents> imp
     getChildTargets(target: CdpTarget): ReadonlySet<CdpTarget>;
     dispose(): void;
     getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
+    /**
+     * Returns the attached iframe target that has the given frame as its root
+     * frame.
+     */
+    getFrameTarget(frameId: string): CdpTarget | undefined;
     getDiscoveredTargetInfos(): ReadonlyMap<string, Protocol.Target.TargetInfo>;
     /**
      * Helper to validate URL against blocklist patterns

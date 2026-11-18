@@ -3080,7 +3080,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      * Emit an event and call any associated listeners.
      *
      * @param type - the event you'd like to emit
-     * @param eventData - any data you'd like to emit with the event
+     * @param event - any data you'd like to emit with the event
      * @returns `true` if there are any listeners, `false` if there are not.
      */
     emit(type, event) {
@@ -4164,7 +4164,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.17.0';
+  const packageVersion = '25.18.1';
   // x-release-please-end
 
   /**
@@ -4656,7 +4656,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   function fromAbortSignal(signal, cause) {
-    return signal ? fromEvent(signal, 'abort').pipe(map(() => {
+    return signal ? defer(() => {
+      return signal.aborted ? of(undefined) : fromEvent(signal, 'abort');
+    }).pipe(map(() => {
       if (signal.reason instanceof Error) {
         signal.reason.cause = cause;
         throw signal.reason;
@@ -5177,9 +5179,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      */
     async waitForTarget(predicate, options = {}) {
       const {
-        timeout: ms = 30000
+        timeout: ms = 30000,
+        signal
       } = options;
-      return await firstValueFrom(merge(fromEmitterEvent(this, "targetcreated" /* BrowserContextEvent.TargetCreated */), fromEmitterEvent(this, "targetchanged" /* BrowserContextEvent.TargetChanged */), from(this.targets())).pipe(filterAsync(predicate), raceWith(timeout(ms))));
+      return await firstValueFrom(merge(fromEmitterEvent(this, "targetcreated" /* BrowserContextEvent.TargetCreated */), fromEmitterEvent(this, "targetchanged" /* BrowserContextEvent.TargetChanged */), from(this.targets())).pipe(filterAsync(predicate), raceWith(fromAbortSignal(signal), timeout(ms))));
     }
     /**
      * Removes cookie in this browser context.
@@ -5614,7 +5617,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$d = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$e = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -5647,7 +5650,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$d = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$e = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -5694,7 +5697,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       hasError: false
     };
     try {
-      const array = __addDisposableResource$d(env_1, await iterator.evaluateHandle(async (iterator, size) => {
+      const array = __addDisposableResource$e(env_1, await iterator.evaluateHandle(async (iterator, size) => {
         const results = [];
         while (results.length < size) {
           const result = await iterator.next();
@@ -5707,7 +5710,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }, size), false);
       const properties = await array.getProperties();
       const handles = properties.values();
-      const stack = __addDisposableResource$d(env_1, new DisposableStack(), false);
+      const stack = __addDisposableResource$e(env_1, new DisposableStack(), false);
       stack.defer(() => {
         for (const handle_1 of handles) {
           const env_2 = {
@@ -5716,13 +5719,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             hasError: false
           };
           try {
-            const handle = __addDisposableResource$d(env_2, handle_1, false);
+            const handle = __addDisposableResource$e(env_2, handle_1, false);
             handle[disposeSymbol]();
           } catch (e_2) {
             env_2.error = e_2;
             env_2.hasError = true;
           } finally {
-            __disposeResources$d(env_2);
+            __disposeResources$e(env_2);
           }
         }
       });
@@ -5732,7 +5735,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       env_1.error = e_1;
       env_1.hasError = true;
     } finally {
-      __disposeResources$d(env_1);
+      __disposeResources$e(env_1);
     }
   }
   /**
@@ -5755,7 +5758,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       hasError: false
     };
     try {
-      const generatorHandle = __addDisposableResource$d(env_3, await handle.evaluateHandle(iterable => {
+      const generatorHandle = __addDisposableResource$e(env_3, await handle.evaluateHandle(iterable => {
         return async function* () {
           yield* iterable;
         }();
@@ -5765,7 +5768,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       env_3.error = e_3;
       env_3.hasError = true;
     } finally {
-      __disposeResources$d(env_3);
+      __disposeResources$e(env_3);
     }
   }
 
@@ -5799,7 +5802,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     // have to make it public.
     return new _LazyArg(get);
   });
-  var __addDisposableResource$c = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$d = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -5832,7 +5835,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$c = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$d = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -5915,7 +5918,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         hasError: false
       };
       try {
-        const handle = __addDisposableResource$c(env_1, await element.evaluateHandle(this._querySelectorAll, selector, LazyArg.create(context => {
+        const handle = __addDisposableResource$d(env_1, await element.evaluateHandle(this._querySelectorAll, selector, LazyArg.create(context => {
           return context.puppeteerUtil;
         })), false);
         yield* transposeIterableHandle(handle);
@@ -5923,7 +5926,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         env_1.error = e_1;
         env_1.hasError = true;
       } finally {
-        __disposeResources$c(env_1);
+        __disposeResources$d(env_1);
       }
     }
     /**
@@ -5938,7 +5941,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         hasError: false
       };
       try {
-        const result = __addDisposableResource$c(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
+        const result = __addDisposableResource$d(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
           return context.puppeteerUtil;
         })), false);
         if (!(_isElementHandle in result)) {
@@ -5949,7 +5952,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         env_2.error = e_2;
         env_2.hasError = true;
       } finally {
-        __disposeResources$c(env_2);
+        __disposeResources$d(env_2);
       }
     }
     /**
@@ -5967,7 +5970,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       };
       try {
         let frame;
-        const element = __addDisposableResource$c(env_3, await (async () => {
+        const element = __addDisposableResource$d(env_3, await (async () => {
           if (!(_isElementHandle in elementOrFrame)) {
             frame = elementOrFrame;
             return;
@@ -5990,7 +5993,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           };
           try {
             signal?.throwIfAborted();
-            const handle = __addDisposableResource$c(env_4, await frame.isolatedRealm().waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
+            const handle = __addDisposableResource$d(env_4, await frame.isolatedRealm().waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
               const querySelector = PuppeteerUtil.createFunction(query);
               const node = await querySelector(root ?? document, selector, PuppeteerUtil);
               return PuppeteerUtil.checkVisibility(node, visible);
@@ -6013,7 +6016,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             env_4.error = e_3;
             env_4.hasError = true;
           } finally {
-            __disposeResources$c(env_4);
+            __disposeResources$d(env_4);
           }
         } catch (error) {
           if (!isErrorLike(error)) {
@@ -6030,7 +6033,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         env_3.error = e_4;
         env_3.hasError = true;
       } finally {
-        __disposeResources$c(env_3);
+        __disposeResources$d(env_3);
       }
     }
   }
@@ -6122,7 +6125,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   }) => {
     return cssQuerySelectorAll(element, selector);
   });
-  const source = "\"use strict\";var b=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var Y=Object.getOwnPropertyNames;var G=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)b(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of Y(e))!G.call(t,n)&&n!==r&&b(t,n,{get:()=>e[n],enumerable:!(o=X(e,n))||o.enumerable});return t};var z=t=>J(b({},\"__esModule\",{value:!0}),t);var Se={};l(Se,{default:()=>Te});module.exports=z(Se);var g=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},h=class extends g{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#s&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#t;#o;#n=new Promise(e=>{this.#o=e});#s;#l;constructor(e){e&&e.timeout>0&&(this.#l=new h(e.message),this.#s=setTimeout(()=>{this.reject(this.#l)},e.timeout))}#a(e){clearTimeout(this.#s),this.#t=e,this.#o()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#a(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#a(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#t}#i;valueOrThrow(){return this.#i||(this.#i=(async()=>{if(await this.#n,this.#r)throw this.#t;return this.#t})()),this.#i}};var W=new Map,F=t=>{let e=W.get(t);return e||(e=new Function(`return ${t}`)(),W.set(t,e),e)};var E={};l(E,{ariaQuerySelector:()=>K,ariaQuerySelectorAll:()=>x});var K=(t,e)=>globalThis.__ariaQuerySelector(t,e),x=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var v={};l(v,{cssQuerySelector:()=>Z,cssQuerySelectorAll:()=>ee});var Z=(t,e)=>t.querySelector(e),ee=function(t,e){return t.querySelectorAll(e)};var P={};l(P,{CustomQuerySelectorRegistry:()=>p,customQuerySelectors:()=>A});var p=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},A=new p;var R={};l(R,{pierceQuerySelector:()=>te,pierceQuerySelectorAll:()=>re});var te=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},re=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var y=(t,e)=>{if(!t)throw new Error(e)};var oe={childList:!0,subtree:!0,attributes:!0};function ne(t){return t.nodeType===Node.ELEMENT_NODE||t.nodeType===Node.DOCUMENT_FRAGMENT_NODE}function se(t){return t.parentNode??t.host??null}function ie(t,e){let r=t,o;for(;o=se(r);){if(e.has(o))return!0;r=o}return!1}var w=class{#e;#r;#t;#o=new WeakSet;#n;#s=!1;constructor(e,r){this.#e=e,this.#r=r}async start(){if(this.#s)return;let e=this.#n=c.create(),r=await this.#e();if(!this.#s){if(r){e.resolve(r);return}this.#o=new WeakSet,this.#t=new MutationObserver(async o=>{this.#a(o);let n=await this.#e();n&&(e.resolve(n),await this.stop())}),this.#l(this.#r)}}#l(e){!this.#t||this.#o.has(e)||(this.#o.add(e),this.#t.observe(e,oe),this.#i(e))}#a(e){let r=new Set;for(let o of e)for(let n of o.addedNodes)ne(n)&&r.add(n);for(let o of r)ie(o,r)||this.#i(o)}#i(e){let r=document.createTreeWalker(e,NodeFilter.SHOW_ELEMENT);do{let{shadowRoot:o}=r.currentNode;o&&this.#l(o)}while(r.nextNode())}async stop(){this.#s=!0,this.#n&&(this.#n.finished()||this.#n.reject(new Error(\"Polling stopped\")),this.#t&&(this.#t.disconnect(),this.#t=void 0))}result(){return y(this.#n,\"Polling never started.\"),this.#n.valueOrThrow()}},N=class{#e;#r;#t=!1;constructor(e){this.#e=e}async start(){if(this.#t)return;let e=this.#r=c.create(),r=await this.#e();if(this.#t)return;if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){this.#t=!0,this.#r&&(this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\")))}result(){return y(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},T=class{#e;#r;#t;#o;#n=!1;constructor(e,r){this.#e=e,this.#r=r}async start(){if(this.#n)return;let e=this.#o=c.create(),r=await this.#e();if(!this.#n){if(r){e.resolve(r);return}this.#t=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}}async stop(){this.#n=!0,this.#o&&(this.#o.finished()||this.#o.reject(new Error(\"Polling stopped\")),this.#t&&(clearInterval(this.#t),this.#t=void 0))}result(){return y(this.#o,\"Polling never started.\"),this.#o.valueOrThrow()}};var L={};l(L,{PCombinator:()=>V,pQuerySelector:()=>we,pQuerySelectorAll:()=>B});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>f});var le=new Set([\"checkbox\",\"image\",\"radio\"]),ae=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!le.has(t.type),ce=new Set([\"SCRIPT\",\"STYLE\"]),d=t=>!ce.has(t.nodeName)&&!document.head?.contains(t),O=new WeakMap,H=t=>{for(;t;)O.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},j=new WeakSet,I,ue=()=>{let t=globalThis.MutationObserver;if(!t)throw new Error(\"MutationObserver is not available in this environment.\");return I||(I=new t(e=>{for(let r of e)H(r.target)})),I},u=t=>{let e=O.get(t);if(e||(e={full:\"\",immediate:[]},!d(t)))return e;let r=\"\";if(ae(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{H(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=u(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=u(t.shadowRoot).full),j.has(t)||(ue().observe(t,{childList:!0,characterData:!0,subtree:!0}),j.add(t))}return O.set(t,e),e};var f=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&d(o)){let n;o.shadowRoot?n=f(o.shadowRoot,e):n=f(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&d(t)&&u(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>fe,pierce:()=>S,pierceAll:()=>M});var de=[\"hidden\",\"collapse\"],fe=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement??t.parentNode?.host:t;if(!r)return e===!1;let o=window.getComputedStyle(r),n=o&&!de.includes(o.visibility)&&!me(r);return e===n?t:!1};function me(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var he=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*S(t){he(t)?yield t.shadowRoot:yield t}function*M(t){t=S(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var _={};l(_,{xpathQuerySelectorAll:()=>D});var D=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let m=0;m<i.length;m++)s=i[m],yield s,i[m]=null};var pe=/[-\\w\\P{ASCII}*]/u,V=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(V||{}),U=t=>\"querySelectorAll\"in t,q=class{#e;#r=[];#t=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#o()}async run(){for(typeof this.#t==\"string\"&&this.#t.trimStart()===\":scope\"&&this.#o();this.#t!==void 0;this.#o()){let e=this.#t;typeof e==\"string\"?e[0]&&pe.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){U(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!U(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*f(r,e.value);break;case\"xpath\":yield*D(r,e.value);break;case\"aria\":yield*x(r,e.value);break;default:let o=A.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#o(){if(this.#r.length!==0){this.#t=this.#r.shift();return}if(this.#e.length===0){this.#t=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,S),this.#o();break}case\">>>\":{this.elements=a.flatMap(this.elements,M),this.#o();break}default:this.#r=e,this.#o();break}}},Q=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},$=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?$(o,i):r<n?-1:1},ye=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new Q;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>$(o,n)).map(([o])=>o)},B=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return ye(a.flatMap(r,o=>{let n=new q(t,o);return n.run(),n.elements}))},we=async function(t,e){for await(let r of B(t,e))return r;return null};var Ne=Object.freeze({...E,...P,...R,...L,...C,...k,..._,...v,Deferred:c,createFunction:F,createTextContent:u,IntervalPoller:T,isSuitableNodeForTextMatching:d,MutationPoller:w,RAFPoller:N}),Te=Ne;\n";
+  const source = "\"use strict\";var b=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var Y=Object.getOwnPropertyNames;var G=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)b(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of Y(e))!G.call(t,n)&&n!==r&&b(t,n,{get:()=>e[n],enumerable:!(o=X(e,n))||o.enumerable});return t};var z=t=>J(b({},\"__esModule\",{value:!0}),t);var Se={};l(Se,{default:()=>Te});module.exports=z(Se);var g=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},h=class extends g{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#s&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#t;#o;#n=new Promise(e=>{this.#o=e});#s;#l;constructor(e){e&&e.timeout>0&&(this.#l=new h(e.message),this.#s=setTimeout(()=>{this.reject(this.#l)},e.timeout))}#a(e){clearTimeout(this.#s),this.#t=e,this.#o()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#a(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#a(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#t}#i;valueOrThrow(){return this.#i||(this.#i=(async()=>{if(await this.#n,this.#r)throw this.#t;return this.#t})()),this.#i}};var W=new Map,F=t=>{let e=W.get(t);return e||(e=new Function(`return ${t}`)(),W.set(t,e),e)};var E={};l(E,{ariaQuerySelector:()=>K,ariaQuerySelectorAll:()=>x});var K=(t,e)=>globalThis.__ariaQuerySelector(t,e),x=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var v={};l(v,{cssQuerySelector:()=>Z,cssQuerySelectorAll:()=>ee});var Z=(t,e)=>t.querySelector(e),ee=function(t,e){return t.querySelectorAll(e)};var P={};l(P,{CustomQuerySelectorRegistry:()=>p,customQuerySelectors:()=>A});var p=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},A=new p;var R={};l(R,{pierceQuerySelector:()=>te,pierceQuerySelectorAll:()=>re});var te=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},re=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var y=(t,e)=>{if(!t)throw new Error(e)};var oe={childList:!0,subtree:!0,attributes:!0};function ne(t){return t.nodeType===Node.ELEMENT_NODE||t.nodeType===Node.DOCUMENT_FRAGMENT_NODE}function se(t){return t.parentNode??t.host??null}function ie(t,e){let r=t,o;for(;o=se(r);){if(e.has(o))return!0;r=o}return!1}var w=class{#e;#r;#t;#o=new WeakSet;#n;#s=!1;constructor(e,r){this.#e=e,this.#r=r}async start(){if(this.#s)return;let e=this.#n=c.create(),r=await this.#e();if(!this.#s){if(r){e.resolve(r);return}this.#o=new WeakSet,this.#t=new MutationObserver(async o=>{this.#a(o);let n=await this.#e();n&&(e.resolve(n),await this.stop())}),this.#l(this.#r)}}#l(e){!this.#t||this.#o.has(e)||(this.#o.add(e),this.#t.observe(e,oe),this.#i(e))}#a(e){let r=new Set;for(let o of e)for(let n of o.addedNodes)ne(n)&&r.add(n);for(let o of r)ie(o,r)||this.#i(o)}#i(e){let r=document.createTreeWalker(e,NodeFilter.SHOW_ELEMENT);do{let{shadowRoot:o}=r.currentNode;o&&this.#l(o)}while(r.nextNode())}async stop(){this.#s=!0,this.#n&&(this.#n.finished()||this.#n.reject(new Error(\"Polling stopped\")),this.#t&&(this.#t.disconnect(),this.#t=void 0))}result(){return y(this.#n,\"Polling never started.\"),this.#n.valueOrThrow()}},N=class{#e;#r;#t=!1;constructor(e){this.#e=e}async start(){if(this.#t)return;let e=this.#r=c.create(),r=await this.#e();if(this.#t)return;if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){this.#t=!0,this.#r&&(this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\")))}result(){return y(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},T=class{#e;#r;#t;#o;#n=!1;constructor(e,r){this.#e=e,this.#r=r}async start(){if(this.#n)return;let e=this.#o=c.create(),r=await this.#e();if(!this.#n){if(r){e.resolve(r);return}this.#t=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}}async stop(){this.#n=!0,this.#o&&(this.#o.finished()||this.#o.reject(new Error(\"Polling stopped\")),this.#t&&(clearInterval(this.#t),this.#t=void 0))}result(){return y(this.#o,\"Polling never started.\"),this.#o.valueOrThrow()}};var L={};l(L,{PCombinator:()=>V,pQuerySelector:()=>we,pQuerySelectorAll:()=>B});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>f});var le=new Set([\"checkbox\",\"image\",\"radio\"]),ae=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!le.has(t.type),ce=new Set([\"SCRIPT\",\"STYLE\"]),d=t=>!ce.has(t.nodeName)&&!document.head?.contains(t),O=new WeakMap,H=t=>{for(;t;)O.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},j=new WeakSet,I,ue=()=>{let t=globalThis.MutationObserver;if(!t)throw new Error(\"MutationObserver is not available in this environment.\");return I||(I=new t(e=>{for(let r of e)H(r.target)})),I},u=t=>{let e=O.get(t);if(e||(e={full:\"\",immediate:[]},!d(t)))return e;let r=\"\";if(ae(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{H(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=u(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=u(t.shadowRoot).full),j.has(t)||(ue().observe(t,{childList:!0,characterData:!0,subtree:!0}),j.add(t))}return O.set(t,e),e};var f=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&d(o))for(let n of f(o,e))yield n,r=!0;if(t instanceof Element&&t.shadowRoot)for(let o of f(t.shadowRoot,e))yield o,r=!0;r||t instanceof Element&&d(t)&&u(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>fe,pierce:()=>S,pierceAll:()=>M});var de=[\"hidden\",\"collapse\"],fe=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement??t.parentNode?.host:t;if(!r)return e===!1;let o=window.getComputedStyle(r),n=o&&!de.includes(o.visibility)&&!me(r);return e===n?t:!1};function me(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var he=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*S(t){he(t)?yield t.shadowRoot:yield t}function*M(t){t=S(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var _={};l(_,{xpathQuerySelectorAll:()=>D});var D=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let m=0;m<i.length;m++)s=i[m],yield s,i[m]=null};var pe=/[-\\w\\P{ASCII}*]/u,V=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(V||{}),U=t=>\"querySelectorAll\"in t,q=class{#e;#r=[];#t=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#o()}async run(){for(typeof this.#t==\"string\"&&this.#t.trimStart()===\":scope\"&&this.#o();this.#t!==void 0;this.#o()){let e=this.#t;typeof e==\"string\"?e[0]&&pe.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){U(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!U(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*f(r,e.value);break;case\"xpath\":yield*D(r,e.value);break;case\"aria\":yield*x(r,e.value);break;default:let o=A.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#o(){if(this.#r.length!==0){this.#t=this.#r.shift();return}if(this.#e.length===0){this.#t=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,S),this.#o();break}case\">>>\":{this.elements=a.flatMap(this.elements,M),this.#o();break}default:this.#r=e,this.#o();break}}},Q=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},$=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?$(o,i):r<n?-1:1},ye=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new Q;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>$(o,n)).map(([o])=>o)},B=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return ye(a.flatMap(r,o=>{let n=new q(t,o);return n.run(),n.elements}))},we=async function(t,e){for await(let r of B(t,e))return r;return null};var Ne=Object.freeze({...E,...P,...R,...L,...C,...k,..._,...v,Deferred:c,createFunction:F,createTextContent:u,IntervalPoller:T,isSuitableNodeForTextMatching:d,MutationPoller:w,RAFPoller:N}),Te=Ne;\n";
 
   /**
    * @license
@@ -6707,7 +6710,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       return {
         updatedSelector: JSON.stringify(pSelector),
-        polling: hasAria ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */,
+        polling: hasAria || hasPseudoClasses ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */,
         QueryHandler: PQueryHandler
       };
     } catch {
@@ -6724,7 +6727,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$b = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$c = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -6757,7 +6760,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$b = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$c = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -6887,13 +6890,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             mutex = new Mutex();
             mutexes.set(key, mutex);
           }
-          const _ = __addDisposableResource$b(env_1, await mutex.acquire(), true);
+          const _ = __addDisposableResource$c(env_1, await mutex.acquire(), true);
           return await target.call(this, ...args);
         } catch (e_1) {
           env_1.error = e_1;
           env_1.hasError = true;
         } finally {
-          const result_1 = __disposeResources$b(env_1);
+          const result_1 = __disposeResources$c(env_1);
           if (result_1) await result_1;
         }
       };
@@ -6948,7 +6951,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$a = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$b = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -6981,7 +6984,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$a = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$b = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -7114,7 +7117,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             hasError: false
           };
           try {
-            const handle = __addDisposableResource$a(env_1, results[key], false);
+            const handle = __addDisposableResource$b(env_1, results[key], false);
             if (handle) {
               map.set(value, handle.move());
             }
@@ -7122,7 +7125,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             env_1.error = e_1;
             env_1.hasError = true;
           } finally {
-            __disposeResources$a(env_1);
+            __disposeResources$b(env_1);
           }
         }
         return map;
@@ -7179,7 +7182,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     })();
     return _classThis;
   })();
-  var __addDisposableResource$9 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$a = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -7212,7 +7215,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$9 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$a = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -7513,13 +7516,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         hasError: false
       };
       try {
-        const handle = __addDisposableResource$9(env_1, await this.waitHandle(options), false);
+        const handle = __addDisposableResource$a(env_1, await this.waitHandle(options), false);
         return await handle.jsonValue();
       } catch (e_1) {
         env_1.error = e_1;
         env_1.hasError = true;
       } finally {
-        __disposeResources$9(env_1);
+        __disposeResources$a(env_1);
       }
     }
     /**
@@ -8074,7 +8077,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$9 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -8107,7 +8110,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$8 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$9 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -8459,7 +8462,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         };
         try {
           pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-          const elementHandle = __addDisposableResource$8(env_1, await this.$(selector), false);
+          const elementHandle = __addDisposableResource$9(env_1, await this.$(selector), false);
           if (!elementHandle) {
             throw new Error(`Error: failed to find element matching selector "${selector}"`);
           }
@@ -8468,7 +8471,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_1.error = e_1;
           env_1.hasError = true;
         } finally {
-          __disposeResources$8(env_1);
+          __disposeResources$9(env_1);
         }
       }
       /**
@@ -8528,7 +8531,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         try {
           pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
           const results = await this.$$(selector);
-          const elements = __addDisposableResource$8(env_2, await this.evaluateHandle((_, ...elements) => {
+          const elements = __addDisposableResource$9(env_2, await this.evaluateHandle((_, ...elements) => {
             return elements;
           }, ...results), false);
           const [result] = await Promise.all([elements.evaluate(pageFunction, ...args), ...results.map(results => {
@@ -8539,7 +8542,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_2.error = e_2;
           env_2.hasError = true;
         } finally {
-          __disposeResources$8(env_2);
+          __disposeResources$9(env_2);
         }
       }
       /**
@@ -9195,7 +9198,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           await this.assertConnectedElement();
           // eslint-disable-next-line @puppeteer/use-using -- Returns `this`.
           const handle = await _assertClassBrand(_ElementHandle_brand, this, _asSVGElementHandle).call(this);
-          const target = __addDisposableResource$8(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
+          const target = __addDisposableResource$9(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
           return await (target ?? this).evaluate(async (element, threshold) => {
             const visibleRatio = await new Promise(resolve => {
               const observer = new IntersectionObserver(entries => {
@@ -9210,7 +9213,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_5.error = e_5;
           env_5.hasError = true;
         } finally {
-          __disposeResources$8(env_5);
+          __disposeResources$9(env_5);
         }
       }
       /**
@@ -9685,7 +9688,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_3, await frame.frameElement(), false);
+          const handle = __addDisposableResource$9(env_3, await frame.frameElement(), false);
           if (!handle) {
             throw new Error('Unsupported frame type');
           }
@@ -9714,7 +9717,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_3.error = e_3;
           env_3.hasError = true;
         } finally {
-          __disposeResources$8(env_3);
+          __disposeResources$9(env_3);
         }
       }
       const box = boxes.find(box => {
@@ -9758,7 +9761,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$8(env_4, await frame.frameElement(), false);
+          const handle = __addDisposableResource$9(env_4, await frame.frameElement(), false);
           if (!handle) {
             throw new Error('Unsupported frame type');
           }
@@ -9784,7 +9787,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_4.error = e_4;
           env_4.hasError = true;
         } finally {
-          __disposeResources$8(env_4);
+          __disposeResources$9(env_4);
         }
       }
       return point;
@@ -9959,7 +9962,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -9992,7 +9995,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$7 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$8 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -10191,7 +10194,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           if (!parentFrame) {
             return null;
           }
-          const list = __addDisposableResource$7(env_1, await parentFrame.isolatedRealm().evaluateHandle(() => {
+          const list = __addDisposableResource$8(env_1, await parentFrame.isolatedRealm().evaluateHandle(() => {
             return document.querySelectorAll('iframe,frame');
           }), false);
           for await (const iframe_1 of transposeIterableHandle(list)) {
@@ -10201,7 +10204,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
               hasError: false
             };
             try {
-              const iframe = __addDisposableResource$7(env_2, iframe_1, false);
+              const iframe = __addDisposableResource$8(env_2, iframe_1, false);
               const frame = await iframe.contentFrame();
               if (frame?._id === this._id) {
                 return await parentFrame.mainRealm().adoptHandle(iframe);
@@ -10210,7 +10213,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
               env_2.error = e_1;
               env_2.hasError = true;
             } finally {
-              __disposeResources$7(env_2);
+              __disposeResources$8(env_2);
             }
           }
           return null;
@@ -10218,7 +10221,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_1.error = e_2;
           env_1.hasError = true;
         } finally {
-          __disposeResources$7(env_1);
+          __disposeResources$8(env_1);
         }
       }
       /**
@@ -10600,7 +10603,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         if (path) {
           content = await environment.value.readFile(path, 'utf8');
           content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
-          options.content = content;
+          options = {
+            ...options,
+            content
+          };
         }
         return await this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({
           url,
@@ -10657,7 +10663,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$7(env_3, await this.$(selector), false);
+          const handle = __addDisposableResource$8(env_3, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.click(options);
           await handle.dispose();
@@ -10665,7 +10671,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_3.error = e_3;
           env_3.hasError = true;
         } finally {
-          __disposeResources$7(env_3);
+          __disposeResources$8(env_3);
         }
       }
       /**
@@ -10681,14 +10687,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$7(env_4, await this.$(selector), false);
+          const handle = __addDisposableResource$8(env_4, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.focus();
         } catch (e_4) {
           env_4.error = e_4;
           env_4.hasError = true;
         } finally {
-          __disposeResources$7(env_4);
+          __disposeResources$8(env_4);
         }
       }
       /**
@@ -10705,14 +10711,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$7(env_5, await this.$(selector), false);
+          const handle = __addDisposableResource$8(env_5, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.hover();
         } catch (e_5) {
           env_5.error = e_5;
           env_5.hasError = true;
         } finally {
-          __disposeResources$7(env_5);
+          __disposeResources$8(env_5);
         }
       }
       /**
@@ -10740,14 +10746,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$7(env_6, await this.$(selector), false);
+          const handle = __addDisposableResource$8(env_6, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           return await handle.select(...values);
         } catch (e_6) {
           env_6.error = e_6;
           env_6.hasError = true;
         } finally {
-          __disposeResources$7(env_6);
+          __disposeResources$8(env_6);
         }
       }
       /**
@@ -10763,14 +10769,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$7(env_7, await this.$(selector), false);
+          const handle = __addDisposableResource$8(env_7, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.tap();
         } catch (e_7) {
           env_7.error = e_7;
           env_7.hasError = true;
         } finally {
-          __disposeResources$7(env_7);
+          __disposeResources$8(env_7);
         }
       }
       /**
@@ -10801,14 +10807,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$7(env_8, await this.$(selector), false);
+          const handle = __addDisposableResource$8(env_8, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.type(text, options);
         } catch (e_8) {
           env_8.error = e_8;
           env_8.hasError = true;
         } finally {
-          __disposeResources$7(env_8);
+          __disposeResources$8(env_8);
         }
       }
       /**
@@ -12036,7 +12042,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$6 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -12069,7 +12075,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$6 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$7 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -13073,7 +13079,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           hasError: false
         };
         try {
-          const _guard = __addDisposableResource$6(env_2, await this.browserContext().startScreenshot(), false);
+          const _guard = __addDisposableResource$7(env_2, await this.browserContext().startScreenshot(), false);
           const options = {
             ...userOptions,
             clip: userOptions.clip ? {
@@ -13114,7 +13120,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             }
           }
           setDefaultScreenshotOptions(options);
-          const stack = __addDisposableResource$6(env_2, new AsyncDisposableStack(), true);
+          const stack = __addDisposableResource$7(env_2, new AsyncDisposableStack(), true);
           if (options.clip) {
             if (options.fullPage) {
               throw new Error("'clip' and 'fullPage' are mutually exclusive");
@@ -13159,7 +13165,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           env_2.error = e_2;
           env_2.hasError = true;
         } finally {
-          const result_1 = __disposeResources$6(env_2);
+          const result_1 = __disposeResources$7(env_2);
           if (result_1) await result_1;
         }
       }
@@ -13552,7 +13558,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       };
       try {
         const viewport = this.viewport();
-        const stack = __addDisposableResource$6(env_1, new DisposableStack(), false);
+        const stack = __addDisposableResource$7(env_1, new DisposableStack(), false);
         if (viewport && viewport.deviceScaleFactor !== 0) {
           await this.setViewport({
             ...viewport,
@@ -13574,7 +13580,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         env_1.error = e_1;
         env_1.hasError = true;
       } finally {
-        __disposeResources$6(env_1);
+        __disposeResources$7(env_1);
       }
     }
   })();
@@ -13670,6 +13676,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           break;
       }
       _classPrivateFieldSet(_args, this, args);
+      if (_classPrivateFieldGet(_signal, this)?.aborted) {
+        void this.terminate(_classPrivateFieldGet(_signal, this).reason);
+        return;
+      }
       _classPrivateFieldGet(_world, this).taskManager.add(this);
       if (options.timeout) {
         _classPrivateFieldSet(_timeoutError2, this, new TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`));
@@ -14082,8 +14092,83 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     WebWorkerEvent["Console"] = "console";
     /**
      * Emitted when the worker throws an exception.
+     *
+     * @deprecated Use {@link WebWorkerEvent.Exception} instead.
      */
     WebWorkerEvent["Error"] = "error";
+    /**
+     * Emitted when an uncaught exception happens within the worker. Contains a
+     * {@link RemoteException}.
+     *
+     * @remarks
+     * The {@link RemoteException.handle | handle} of the exception is disposed
+     * right after the event has been dispatched. Call `move()` on it
+     * synchronously inside the listener to keep it alive.
+     */
+    WebWorkerEvent["Exception"] = "exception";
+    /**
+     * Emitted when the worker issues a request. Contains a {@link HTTPRequest}.
+     *
+     * @remarks
+     * Only supported with CDP. With WebDriver BiDi these events are never
+     * emitted.
+     *
+     * For service workers and shared workers, network events are only
+     * delivered once a {@link WebWorker} instance exists, i.e. after
+     * {@link Target.worker} has been called. Requests issued before that,
+     * such as requests made while a service worker starts up, are not
+     * reported.
+     *
+     * Listeners are bound to this worker instance: if the worker is terminated
+     * and restarted (e.g. an idle extension service worker), a new
+     * {@link WebWorker} is created and listeners must be re-attached.
+     *
+     * Requests issued by service workers and shared workers cannot be
+     * intercepted: `request.continue()`, `abort()` and `respond()` throw.
+     *
+     * @experimental
+     */
+    WebWorkerEvent["Request"] = "request";
+    /**
+     * Emitted when a request issued by the worker is served from cache.
+     * Contains a {@link HTTPRequest}.
+     *
+     * @remarks
+     * The same delivery rules as for {@link WebWorkerEvent.Request} apply.
+     *
+     * @experimental
+     */
+    WebWorkerEvent["RequestServedFromCache"] = "requestservedfromcache";
+    /**
+     * Emitted when a response is received for a request issued by the worker.
+     * Contains a {@link HTTPResponse}.
+     *
+     * @remarks
+     * The same delivery rules as for {@link WebWorkerEvent.Request} apply.
+     *
+     * @experimental
+     */
+    WebWorkerEvent["Response"] = "response";
+    /**
+     * Emitted when a request issued by the worker fails. Contains a
+     * {@link HTTPRequest}.
+     *
+     * @remarks
+     * The same delivery rules as for {@link WebWorkerEvent.Request} apply.
+     *
+     * @experimental
+     */
+    WebWorkerEvent["RequestFailed"] = "requestfailed";
+    /**
+     * Emitted when a request issued by the worker finishes successfully.
+     * Contains a {@link HTTPRequest}.
+     *
+     * @remarks
+     * The same delivery rules as for {@link WebWorkerEvent.Request} apply.
+     *
+     * @experimental
+     */
+    WebWorkerEvent["RequestFinished"] = "requestfinished";
   })(exports.WebWorkerEvent || (exports.WebWorkerEvent = {}));
   /**
    * This class represents a
@@ -14202,7 +14287,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2018 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$5 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$6 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -14235,7 +14320,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$5 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$6 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -14375,7 +14460,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             if (!root.payload.backendDOMNodeId) {
               return;
             }
-            const handle = __addDisposableResource$5(env_1, await _classPrivateFieldGet(_realm, this).adoptBackendNode(root.payload.backendDOMNodeId), false);
+            const handle = __addDisposableResource$6(env_1, await _classPrivateFieldGet(_realm, this).adoptBackendNode(root.payload.backendDOMNodeId), false);
             if (!handle || !('contentFrame' in handle)) {
               return;
             }
@@ -14394,7 +14479,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             env_1.error = e_1;
             env_1.hasError = true;
           } finally {
-            __disposeResources$5(env_1);
+            __disposeResources$6(env_1);
           }
         }
         await Promise.all(root.children.map(child => {
@@ -14677,7 +14762,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             if (_classPrivateFieldGet(_realm2, this).environment._loaderId !== _classPrivateFieldGet(_loaderId, this)) {
               return null;
             }
-            const handle = __addDisposableResource$5(env_2, await _classPrivateFieldGet(_realm2, this).adoptBackendNode(this.payload.backendDOMNodeId), false);
+            const handle = __addDisposableResource$6(env_2, await _classPrivateFieldGet(_realm2, this).adoptBackendNode(this.payload.backendDOMNodeId), false);
             // Since Text nodes are not elements, we want to
             // return a handle to the parent element for them.
             return await handle.evaluateHandle(node => {
@@ -14692,7 +14777,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             env_2.error = e_2;
             env_2.hasError = true;
           } finally {
-            __disposeResources$5(env_2);
+            __disposeResources$6(env_2);
           }
         },
         backendNodeId: this.payload.backendDOMNodeId,
@@ -14917,6 +15002,175 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
 
   /**
    * @license
+   * Copyright 2026 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * A protocol-agnostic description of an uncaught exception thrown in a page
+   * or worker. Dispatched via the `exception` event on {@link Page} and
+   * {@link WebWorker}.
+   *
+   * @remarks
+   * Unlike the deprecated `pageerror` event, `RemoteException` does not
+   * reconstruct a Node.js `Error`. When the protocol supports it (CDP), it
+   * exposes the live remote exception value through {@link RemoteException.handle}.
+   *
+   * @example
+   *
+   * ```ts
+   * page.on('exception', exception => {
+   *   console.log(exception.name(), exception.text());
+   *   console.log(exception.location());
+   * });
+   * ```
+   *
+   * @public
+   */
+  var _text2 = /*#__PURE__*/new WeakMap();
+  var _name3 = /*#__PURE__*/new WeakMap();
+  var _stackTrace = /*#__PURE__*/new WeakMap();
+  var _location = /*#__PURE__*/new WeakMap();
+  var _handle2 = /*#__PURE__*/new WeakMap();
+  var _rawExceptionDetails = /*#__PURE__*/new WeakMap();
+  class RemoteException {
+    /**
+     * @internal
+     */
+    constructor(options) {
+      _classPrivateFieldInitSpec(this, _text2, void 0);
+      _classPrivateFieldInitSpec(this, _name3, void 0);
+      _classPrivateFieldInitSpec(this, _stackTrace, void 0);
+      _classPrivateFieldInitSpec(this, _location, void 0);
+      _classPrivateFieldInitSpec(this, _handle2, void 0);
+      _classPrivateFieldInitSpec(this, _rawExceptionDetails, void 0);
+      _classPrivateFieldSet(_text2, this, options.text);
+      _classPrivateFieldSet(_name3, this, options.name);
+      _classPrivateFieldSet(_stackTrace, this, options.stackTrace);
+      _classPrivateFieldSet(_location, this, options.stackTrace[0] ?? options.location ?? {});
+      _classPrivateFieldSet(_handle2, this, options.handle);
+      _classPrivateFieldSet(_rawExceptionDetails, this, options.rawExceptionDetails);
+    }
+    /**
+     * The text of the exception as rendered by the browser, for example
+     * `Error: boom` or
+     * `TypeError: Cannot read properties of undefined (reading 'foo')`.
+     *
+     * @remarks
+     * For errors this is `${name}: ${message}` (or just the name if the
+     * message is empty), without the stack. For other thrown values it is
+     * their description, for example `Object` for a plain object or the
+     * string itself for a thrown string.
+     */
+    text() {
+      return _classPrivateFieldGet(_text2, this);
+    }
+    /**
+     * The name of the exception, for example `Error`, `TypeError`,
+     * `SyntaxError` or `AbortError`.
+     *
+     * @remarks
+     * This is the `name` of the thrown error as rendered by the browser, which
+     * can differ from its constructor (for example `AbortError` for a
+     * `DOMException`).
+     *
+     * Empty string if the thrown value is not an error, for example a
+     * primitive, a plain object or a symbol.
+     *
+     * Always `null` with WebDriver BiDi, which does not report the name of the
+     * exception.
+     */
+    name() {
+      return _classPrivateFieldGet(_name3, this);
+    }
+    /**
+     * The call frames on the stack at the time the exception was thrown,
+     * innermost first.
+     *
+     * @remarks
+     * Empty for compilation and syntax errors.
+     */
+    stackTrace() {
+      return _classPrivateFieldGet(_stackTrace, this);
+    }
+    /**
+     * The primary location where the exception occurred.
+     *
+     * @remarks
+     * For runtime errors this is `stackTrace()[0]`. For compilation and syntax
+     * errors (where `stackTrace()` is empty), it falls back to the top-level
+     * coordinates reported for the exception.
+     */
+    location() {
+      return _classPrivateFieldGet(_location, this);
+    }
+    /**
+     * The live remote exception value, if available.
+     *
+     * @remarks
+     * Only available with CDP, when the browser reports a reference to the
+     * thrown value (objects and symbols) and Puppeteer can bind it to the
+     * worker, the main world of a frame or Puppeteer's own isolated world.
+     *
+     * It is `undefined`:
+     *
+     * - for thrown primitives other than symbols;
+     *
+     * - for exceptions thrown in other isolated worlds, for example ones
+     *   created by extensions or via CDP;
+     *
+     * - for exceptions thrown by code that Puppeteer injected, for example from
+     *   a callback scheduled inside {@link Page.evaluate}, because the browser
+     *   does not report a remote exception object for them;
+     *
+     * - always with WebDriver BiDi.
+     *
+     * The handle is **disposed automatically right after the `exception` event
+     * has been dispatched** so that the browser can release the exception. To
+     * keep using it beyond the synchronous part of your listener, call
+     * {@link JSHandle.move} synchronously inside the listener and dispose of
+     * the handle yourself once you are done with it:
+     *
+     * ```ts
+     * page.on('exception', async exception => {
+     *   // Must be called before the first `await`.
+     *   const handle = exception.handle()?.move();
+     *   if (!handle) {
+     *     return;
+     *   }
+     *   try {
+     *     const code = await handle.evaluate(error => {
+     *       return (error as {code?: string}).code;
+     *     });
+     *     console.log(code);
+     *   } finally {
+     *     await handle.dispose();
+     *   }
+     * });
+     * ```
+     *
+     * Using the handle after an `await` without calling `move()` first will
+     * throw because the handle has already been disposed.
+     *
+     * The handle is shared by all listeners of the event: calling `move()`
+     * returns the same `JSHandle` instance in every listener, and disposing it
+     * invalidates it for all of them. If more than one listener needs the handle
+     * after the event, have only one of them call `move()` and dispose of it.
+     */
+    handle() {
+      return _classPrivateFieldGet(_handle2, this);
+    }
+    /**
+     * The raw CDP exception details. `undefined` with WebDriver BiDi.
+     *
+     * @internal
+     */
+    _rawExceptionDetails() {
+      return _classPrivateFieldGet(_rawExceptionDetails, this);
+    }
+  }
+
+  /**
+   * @license
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
@@ -15001,6 +15255,56 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       name
     };
   };
+  /**
+   * @internal
+   */
+  function createRemoteException(details, handle) {
+    let text;
+    let name;
+    const exception = details.exception;
+    if (!exception) {
+      // The browser reports no exception value for exceptions thrown by code
+      // that Puppeteer injected, e.g. a callback scheduled inside
+      // `Page.evaluate`. Report them like `createClientError` does.
+      text = details.text;
+      name = 'Error';
+    } else if (exception.type === 'object' && exception.subtype === 'error') {
+      // The description is the error as rendered by the browser
+      // (`${error.name}: ${error.message}`) followed by the stack, if any.
+      text = (exception.description ?? '').split('\n    at ')[0];
+      const header = text.split('\n')[0];
+      const separator = header.indexOf(': ');
+      name = separator === -1 ? header : header.slice(0, separator);
+    } else if (exception.objectId) {
+      // A non-error object or a symbol was thrown.
+      text = exception.description ?? '';
+      name = '';
+    } else {
+      // A primitive value was thrown.
+      text = exception.description ?? String(valueFromPrimitiveRemoteObject(exception));
+      name = '';
+    }
+    const stackTrace = (details.stackTrace?.callFrames ?? []).map(frame => {
+      return {
+        url: frame.url,
+        lineNumber: frame.lineNumber,
+        columnNumber: frame.columnNumber,
+        functionName: frame.functionName
+      };
+    });
+    return new RemoteException({
+      text,
+      name,
+      stackTrace,
+      location: {
+        url: details.url,
+        lineNumber: details.lineNumber,
+        columnNumber: details.columnNumber
+      },
+      handle,
+      rawExceptionDetails: details
+    });
+  }
   /**
    * @internal
    */
@@ -15153,7 +15457,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         return method;
     }
   }
-  var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$5 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -15186,7 +15490,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$4 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$5 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -15221,23 +15525,29 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  var _name3 = /*#__PURE__*/new WeakMap();
+  var _name4 = /*#__PURE__*/new WeakMap();
   var _fn2 = /*#__PURE__*/new WeakMap();
   var _initSource = /*#__PURE__*/new WeakMap();
   var _logger7 = /*#__PURE__*/new WeakMap();
+  var _ownsArguments = /*#__PURE__*/new WeakMap();
+  var _ownsResult = /*#__PURE__*/new WeakMap();
   class Binding {
-    constructor(name, fn, initSource, logger) {
-      _classPrivateFieldInitSpec(this, _name3, void 0);
+    constructor(name, fn, initSource, logger, options = {}) {
+      _classPrivateFieldInitSpec(this, _name4, void 0);
       _classPrivateFieldInitSpec(this, _fn2, void 0);
       _classPrivateFieldInitSpec(this, _initSource, void 0);
       _classPrivateFieldInitSpec(this, _logger7, void 0);
-      _classPrivateFieldSet(_name3, this, name);
+      _classPrivateFieldInitSpec(this, _ownsArguments, void 0);
+      _classPrivateFieldInitSpec(this, _ownsResult, void 0);
+      _classPrivateFieldSet(_name4, this, name);
       _classPrivateFieldSet(_fn2, this, fn);
       _classPrivateFieldSet(_initSource, this, initSource);
       _classPrivateFieldSet(_logger7, this, logger);
+      _classPrivateFieldSet(_ownsArguments, this, options.ownsArguments ?? false);
+      _classPrivateFieldSet(_ownsResult, this, options.ownsResult ?? false);
     }
     get name() {
-      return _classPrivateFieldGet(_name3, this);
+      return _classPrivateFieldGet(_name4, this);
     }
     get initSource() {
       return _classPrivateFieldGet(_initSource, this);
@@ -15250,77 +15560,85 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      * @param args - Plain arguments from CDP.
      */
     async run(context, id, args, isTrivial) {
-      const stack = new DisposableStack();
-      const cdpName = CDP_BINDING_PREFIX + _classPrivateFieldGet(_name3, this);
+      const env_1 = {
+        stack: [],
+        error: void 0,
+        hasError: false
+      };
       try {
-        if (!isTrivial) {
-          const env_1 = {
-            stack: [],
-            error: void 0,
-            hasError: false
-          };
-          try {
-            // Getting non-trivial arguments.
-            const handles = __addDisposableResource$4(env_1, await context.evaluateHandle((name, seq) => {
-              // @ts-expect-error Code is evaluated in a different context.
-              return globalThis[name].args.get(seq);
-            }, cdpName, id), false);
-            const properties = await handles.getProperties();
-            for (const [index, handle] of properties) {
-              // This is not straight-forward since some arguments can stringify, but
-              // aren't plain objects so add subtypes when the use-case arises.
-              if (index in args) {
-                switch (handle.remoteObject().subtype) {
-                  case 'node':
-                    args[+index] = handle;
-                    break;
-                  default:
-                    stack.use(handle);
+        const stack = __addDisposableResource$5(env_1, new DisposableStack(), false);
+        const cdpName = CDP_BINDING_PREFIX + _classPrivateFieldGet(_name4, this);
+        try {
+          if (!isTrivial) {
+            const env_2 = {
+              stack: [],
+              error: void 0,
+              hasError: false
+            };
+            try {
+              // Getting non-trivial arguments.
+              const handles = __addDisposableResource$5(env_2, await context.evaluateHandle((name, seq) => {
+                // @ts-expect-error Code is evaluated in a different context.
+                return globalThis[name].args.get(seq);
+              }, cdpName, id), false);
+              const properties = await handles.getProperties();
+              for (const [index, handle] of properties) {
+                // This is not straight-forward since some arguments can stringify, but
+                // aren't plain objects so add subtypes when the use-case arises.
+                if (index in args && handle.remoteObject().subtype === 'node') {
+                  args[+index] = handle;
+                  // Exposed functions can retain node arguments beyond this call.
+                  if (!_classPrivateFieldGet(_ownsArguments, this)) {
+                    continue;
+                  }
                 }
-              } else {
                 stack.use(handle);
               }
+            } catch (e_1) {
+              env_2.error = e_1;
+              env_2.hasError = true;
+            } finally {
+              __disposeResources$5(env_2);
             }
-          } catch (e_1) {
-            env_1.error = e_1;
-            env_1.hasError = true;
-          } finally {
-            __disposeResources$4(env_1);
           }
-        }
-        await context.evaluate((name, seq, result) => {
-          // @ts-expect-error Code is evaluated in a different context.
-          const callbacks = globalThis[name].callbacks;
-          callbacks.get(seq).resolve(result);
-          callbacks.delete(seq);
-        }, cdpName, id, await _classPrivateFieldGet(_fn2, this).call(this, ...args));
-        for (const arg of args) {
-          if (arg instanceof JSHandle) {
-            stack.use(arg);
+          const result = await _classPrivateFieldGet(_fn2, this).call(this, ...args);
+          if (_classPrivateFieldGet(_ownsResult, this) && result instanceof JSHandle) {
+            stack.use(result);
           }
-        }
-      } catch (error) {
-        if (isErrorLike(error)) {
-          await context.evaluate((name, seq, message, stack) => {
-            const error = new Error(message);
-            error.stack = stack;
+          await context.evaluate((name, seq, result) => {
             // @ts-expect-error Code is evaluated in a different context.
             const callbacks = globalThis[name].callbacks;
-            callbacks.get(seq).reject(error);
+            callbacks.get(seq).resolve(result);
             callbacks.delete(seq);
-          }, cdpName, id, error.message, error.stack).catch(error => {
-            _classPrivateFieldGet(_logger7, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
-          });
-        } else {
-          await context.evaluate((name, seq, error) => {
-            // @ts-expect-error Code is evaluated in a different context.
-            const callbacks = globalThis[name].callbacks;
-            callbacks.get(seq).reject(error);
-            callbacks.delete(seq);
-          }, cdpName, id, error).catch(error => {
-            _classPrivateFieldGet(_logger7, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
-          });
+          }, cdpName, id, result);
+        } catch (error) {
+          if (isErrorLike(error)) {
+            await context.evaluate((name, seq, message, stack) => {
+              const error = new Error(message);
+              error.stack = stack;
+              // @ts-expect-error Code is evaluated in a different context.
+              const callbacks = globalThis[name].callbacks;
+              callbacks.get(seq).reject(error);
+              callbacks.delete(seq);
+            }, cdpName, id, error.message, error.stack).catch(error => {
+              _classPrivateFieldGet(_logger7, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+            });
+          } else {
+            await context.evaluate((name, seq, error) => {
+              // @ts-expect-error Code is evaluated in a different context.
+              const callbacks = globalThis[name].callbacks;
+              callbacks.get(seq).reject(error);
+              callbacks.delete(seq);
+            }, cdpName, id, error).catch(error => {
+              _classPrivateFieldGet(_logger7, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+            });
+          }
         }
+      } catch (e_2) {
+        env_1.error = e_2;
+        env_1.hasError = true;
+      } finally {
+        __disposeResources$5(env_1);
       }
     }
   }
@@ -17134,6 +17452,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     FrameManagerEvent.FrameSwapped = Symbol('FrameManager.FrameSwapped');
     FrameManagerEvent.LifecycleEvent = Symbol('FrameManager.LifecycleEvent');
     FrameManagerEvent.FrameNavigatedWithinDocument = Symbol('FrameManager.FrameNavigatedWithinDocument');
+    FrameManagerEvent.FrameNavigatedNewDocument = Symbol('FrameManager.FrameNavigatedNewDocument');
     FrameManagerEvent.ConsoleApiCalled = Symbol('FrameManager.ConsoleApiCalled');
     FrameManagerEvent.BindingCalled = Symbol('FrameManager.BindingCalled');
   })(exports.FrameManagerEvent || (exports.FrameManagerEvent = {}));
@@ -17532,7 +17851,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$3 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -17565,7 +17884,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     return value;
   };
-  var __disposeResources$3 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$4 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -17603,7 +17922,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _client6 = /*#__PURE__*/new WeakMap();
   var _world3 = /*#__PURE__*/new WeakMap();
   var _id4 = /*#__PURE__*/new WeakMap();
-  var _name4 = /*#__PURE__*/new WeakMap();
+  var _name5 = /*#__PURE__*/new WeakMap();
   var _disposables = /*#__PURE__*/new WeakMap();
   var _logger13 = /*#__PURE__*/new WeakMap();
   var _bindings = /*#__PURE__*/new WeakMap();
@@ -17615,17 +17934,39 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     static getOrCreateAriaQuerySelectorBinding(logger) {
       return _assertClassBrand(ExecutionContext, this, _ariaQuerySelectorBinding)._ ?? (_ariaQuerySelectorBinding._ = _assertClassBrand(ExecutionContext, this, new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne, '',
       // custom init
-      logger)));
+      logger, {
+        ownsArguments: true,
+        ownsResult: true
+      })));
     }
     static getOrCreateAriaQuerySelectorAllBinding(logger) {
       return _assertClassBrand(ExecutionContext, this, _ariaQuerySelectorAllBinding)._ ?? (_ariaQuerySelectorAllBinding._ = _assertClassBrand(ExecutionContext, this, new Binding('__ariaQuerySelectorAll', async (element, selector) => {
-        const results = ARIAQueryHandler.queryAll(element, selector);
-        return await element.realm.evaluateHandle((...elements) => {
-          return elements;
-        }, ...(await AsyncIterableUtil.collect(results)));
+        const env_1 = {
+          stack: [],
+          error: void 0,
+          hasError: false
+        };
+        try {
+          const stack = __addDisposableResource$4(env_1, new DisposableStack(), false);
+          // The stack keeps these handles alive until the result array is created.
+          const elements = await AsyncIterableUtil.collect(AsyncIterableUtil.map(ARIAQueryHandler.queryAll(element, selector), async result => {
+            return stack.use(result);
+          }));
+          return await element.realm.evaluateHandle((...elements) => {
+            return elements;
+          }, ...elements);
+        } catch (e_1) {
+          env_1.error = e_1;
+          env_1.hasError = true;
+        } finally {
+          __disposeResources$4(env_1);
+        }
       }, '',
       // custom init
-      logger)));
+      logger, {
+        ownsArguments: true,
+        ownsResult: true
+      })));
     }
     constructor(client, contextPayload, world, logger) {
       super(undefined, logger);
@@ -17633,7 +17974,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _client6, void 0);
       _classPrivateFieldInitSpec(this, _world3, void 0);
       _classPrivateFieldInitSpec(this, _id4, void 0);
-      _classPrivateFieldInitSpec(this, _name4, void 0);
+      _classPrivateFieldInitSpec(this, _name5, void 0);
       _classPrivateFieldInitSpec(this, _disposables, new DisposableStack());
       _classPrivateFieldInitSpec(this, _logger13, void 0);
       // Contains mapping from functions that should be bound to Puppeteer functions.
@@ -17648,7 +17989,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldSet(_logger13, this, logger);
       _classPrivateFieldSet(_id4, this, contextPayload.id);
       if (contextPayload.name) {
-        _classPrivateFieldSet(_name4, this, contextPayload.name);
+        _classPrivateFieldSet(_name5, this, contextPayload.name);
       }
       const clientEmitter = _classPrivateFieldGet(_disposables, this).use(new EventEmitter(_classPrivateFieldGet(_client6, this)));
       clientEmitter.on('Runtime.bindingCalled', _assertClassBrand(_ExecutionContext_brand, this, _onBindingCalled).bind(this));
@@ -17791,7 +18132,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
   }
   async function _addBinding(binding) {
-    const env_1 = {
+    const env_2 = {
       stack: [],
       error: void 0,
       hasError: false
@@ -17800,11 +18141,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (_classPrivateFieldGet(_bindings, this).has(binding.name)) {
         return;
       }
-      const _ = __addDisposableResource$3(env_1, await _classPrivateFieldGet(_mutex2, this).acquire(), false);
+      const _ = __addDisposableResource$4(env_2, await _classPrivateFieldGet(_mutex2, this).acquire(), false);
       try {
-        await _classPrivateFieldGet(_client6, this).send('Runtime.addBinding', _classPrivateFieldGet(_name4, this) ? {
+        await _classPrivateFieldGet(_client6, this).send('Runtime.addBinding', _classPrivateFieldGet(_name5, this) ? {
           name: CDP_BINDING_PREFIX + binding.name,
-          executionContextName: _classPrivateFieldGet(_name4, this)
+          executionContextName: _classPrivateFieldGet(_name5, this)
         } : {
           name: CDP_BINDING_PREFIX + binding.name,
           executionContextId: _classPrivateFieldGet(_id4, this)
@@ -17827,11 +18168,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         }
         _classPrivateFieldGet(_logger13, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
       }
-    } catch (e_1) {
-      env_1.error = e_1;
-      env_1.hasError = true;
+    } catch (e_2) {
+      env_2.error = e_2;
+      env_2.hasError = true;
     } finally {
-      __disposeResources$3(env_1);
+      __disposeResources$4(env_2);
     }
   }
   async function _onBindingCalled(event) {
@@ -18033,1274 +18374,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  var _world4 = /*#__PURE__*/new WeakMap();
   var _client7 = /*#__PURE__*/new WeakMap();
-  var _id5 = /*#__PURE__*/new WeakMap();
-  var _targetType2 = /*#__PURE__*/new WeakMap();
-  var _logger14 = /*#__PURE__*/new WeakMap();
-  var _emitter2 = /*#__PURE__*/new WeakMap();
-  var _workerLoaded = /*#__PURE__*/new WeakMap();
-  class CdpWebWorker extends WebWorker {
-    get internalEmitter() {
-      return _classPrivateFieldGet(_emitter2, this);
-    }
-    constructor(client, url, targetId, targetType, exceptionThrown, networkManager, logger) {
-      super(url);
-      _classPrivateFieldInitSpec(this, _world4, void 0);
-      _classPrivateFieldInitSpec(this, _client7, void 0);
-      _classPrivateFieldInitSpec(this, _id5, void 0);
-      _classPrivateFieldInitSpec(this, _targetType2, void 0);
-      _classPrivateFieldInitSpec(this, _logger14, void 0);
-      _classPrivateFieldInitSpec(this, _emitter2, void 0);
-      _classPrivateFieldInitSpec(this, _workerLoaded, new Deferred());
-      _classPrivateFieldSet(_id5, this, targetId);
-      _classPrivateFieldSet(_client7, this, client);
-      _classPrivateFieldSet(_logger14, this, logger);
-      _classPrivateFieldSet(_targetType2, this, targetType);
-      _classPrivateFieldSet(_world4, this, new IsolatedWorld(this, new TimeoutSettings(), MAIN_WORLD, logger));
-      _classPrivateFieldSet(_emitter2, this, new EventEmitter(undefined, logger));
-      _classPrivateFieldGet(_client7, this).once('Runtime.executionContextCreated', async event => {
-        _classPrivateFieldGet(_world4, this).setContext(new ExecutionContext(client, event.context, _classPrivateFieldGet(_world4, this), logger));
-      });
-      _classPrivateFieldGet(_client7, this).once('Inspector.workerScriptLoaded', () => {
-        _classPrivateFieldGet(_workerLoaded, this).resolve();
-      });
-      _classPrivateFieldGet(_world4, this).emitter.on('consoleapicalled', async event => {
-        try {
-          const values = event.args.map(arg => {
-            return _classPrivateFieldGet(_world4, this).createCdpHandle(arg);
-          });
-          const noInternalListeners = _classPrivateFieldGet(_emitter2, this).listenerCount(exports.WebWorkerEvent.Console) === 0;
-          const noWorkerListeners = this.listenerCount(exports.WebWorkerEvent.Console) === 0;
-          if (noInternalListeners && noWorkerListeners) {
-            // eslint-disable-next-line max-len -- The comment is long.
-            // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
-            for (const value of values) {
-              void value.dispose().catch(err => {
-                return _classPrivateFieldGet(_logger14, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
-              });
-            }
-            return;
-          }
-          const consoleMessages = createConsoleMessage(event, values, _classPrivateFieldGet(_id5, this), undefined, this);
-          _classPrivateFieldGet(_emitter2, this).emit(exports.WebWorkerEvent.Console, consoleMessages);
-          if (!noWorkerListeners) {
-            this.emit(exports.WebWorkerEvent.Console, consoleMessages);
-          }
-        } catch (err) {
-          _classPrivateFieldGet(_logger14, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
-        }
-      });
-      _classPrivateFieldGet(_client7, this).on('Runtime.exceptionThrown', exceptionThrown);
-      _classPrivateFieldGet(_client7, this).once(exports.CDPSessionEvent.Disconnected, () => {
-        // The worker might be destroyed before its script loads (e.g. a 404
-        // script), in which case `Inspector.workerScriptLoaded` never fires.
-        _classPrivateFieldGet(_workerLoaded, this).reject(new TargetCloseError('Worker was closed before its script finished loading'));
-        _classPrivateFieldGet(_world4, this).dispose();
-      });
-      // This might fail if the target is closed before we receive all execution contexts.
-      networkManager?.addClient(_classPrivateFieldGet(_client7, this)).catch(err => {
-        return _classPrivateFieldGet(_logger14, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
-      });
-      _classPrivateFieldGet(_client7, this).send('Runtime.enable').catch(err => {
-        return _classPrivateFieldGet(_logger14, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
-      });
-    }
-    mainRealm() {
-      return _classPrivateFieldGet(_world4, this);
-    }
-    get client() {
-      return _classPrivateFieldGet(_client7, this);
-    }
-    async close() {
-      switch (_classPrivateFieldGet(_targetType2, this)) {
-        case exports.TargetType.SERVICE_WORKER:
-          {
-            // For service workers we need to close the target and detach to allow
-            // the worker to stop.
-            await this.client.connection()?.send('Target.closeTarget', {
-              targetId: _classPrivateFieldGet(_id5, this)
-            });
-            await this.client.connection()?.send('Target.detachFromTarget', {
-              sessionId: this.client.id()
-            });
-            break;
-          }
-        case exports.TargetType.SHARED_WORKER:
-          {
-            await this.client.connection()?.send('Target.closeTarget', {
-              targetId: _classPrivateFieldGet(_id5, this)
-            });
-            break;
-          }
-        default:
-          // Dedicated workers do not support `Target.closeTarget`. Evaluate on
-          // the realm directly so that closing does not wait for the worker
-          // script to load.
-          await _classPrivateFieldGet(_world4, this).evaluate(() => {
-            self.close();
-          });
-      }
-    }
-    async evaluate(func, ...args) {
-      await _classPrivateFieldGet(_workerLoaded, this).valueOrThrow();
-      return await super.evaluate(func, ...args);
-    }
-    async evaluateHandle(func, ...args) {
-      await _classPrivateFieldGet(_workerLoaded, this).valueOrThrow();
-      return await super.evaluateHandle(func, ...args);
-    }
-  }
-
-  /**
-   * @license
-   * Copyright 2019 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * @internal
-   */
-  var _context = /*#__PURE__*/new WeakMap();
-  var _emitter3 = /*#__PURE__*/new WeakMap();
-  var _worldId = /*#__PURE__*/new WeakMap();
-  var _origin = /*#__PURE__*/new WeakMap();
-  var _frameOrWorker = /*#__PURE__*/new WeakMap();
-  var _logger15 = /*#__PURE__*/new WeakMap();
-  var _IsolatedWorld_brand = /*#__PURE__*/new WeakSet();
-  class IsolatedWorld extends Realm {
-    constructor(frameOrWorker, timeoutSettings, worldId, logger) {
-      super(timeoutSettings);
-      _classPrivateMethodInitSpec(this, _IsolatedWorld_brand);
-      _classPrivateFieldInitSpec(this, _context, void 0);
-      _classPrivateFieldInitSpec(this, _emitter3, new EventEmitter());
-      _classPrivateFieldInitSpec(this, _worldId, void 0);
-      _classPrivateFieldInitSpec(this, _origin, void 0);
-      _classPrivateFieldInitSpec(this, _frameOrWorker, void 0);
-      _classPrivateFieldInitSpec(this, _logger15, void 0);
-      _classPrivateFieldSet(_frameOrWorker, this, frameOrWorker);
-      _classPrivateFieldSet(_worldId, this, worldId);
-      _classPrivateFieldSet(_logger15, this, logger);
-    }
-    get environment() {
-      return _classPrivateFieldGet(_frameOrWorker, this);
-    }
-    get client() {
-      return _classPrivateFieldGet(_frameOrWorker, this).client;
-    }
-    get emitter() {
-      return _classPrivateFieldGet(_emitter3, this);
-    }
-    setContext(context) {
-      _classPrivateFieldGet(_context, this)?.[disposeSymbol]();
-      context.once('disposed', _assertClassBrand(_IsolatedWorld_brand, this, _onContextDisposed).bind(this));
-      context.on('consoleapicalled', _assertClassBrand(_IsolatedWorld_brand, this, _onContextConsoleApiCalled).bind(this));
-      context.on('bindingcalled', _assertClassBrand(_IsolatedWorld_brand, this, _onContextBindingCalled).bind(this));
-      _classPrivateFieldSet(_context, this, context);
-      _classPrivateFieldGet(_emitter3, this).emit('context', context);
-      void this.taskManager.rerunAll();
-    }
-    hasContext() {
-      return !!_classPrivateFieldGet(_context, this);
-    }
-    get context() {
-      return _classPrivateFieldGet(_context, this);
-    }
-    async evaluateHandle(pageFunction, ...args) {
-      pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
-      // This code needs to schedule evaluateHandle call synchronously (at
-      // least when the context is there) so we cannot unconditionally
-      // await.
-      let context = _assertClassBrand(_IsolatedWorld_brand, this, _executionContext).call(this);
-      if (!context) {
-        context = await _assertClassBrand(_IsolatedWorld_brand, this, _waitForExecutionContext).call(this);
-      }
-      return await context.evaluateHandle(pageFunction, ...args);
-    }
-    async evaluate(pageFunction, ...args) {
-      pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
-      // This code needs to schedule evaluate call synchronously (at
-      // least when the context is there) so we cannot unconditionally
-      // await.
-      let context = _assertClassBrand(_IsolatedWorld_brand, this, _executionContext).call(this);
-      if (!context) {
-        context = await _assertClassBrand(_IsolatedWorld_brand, this, _waitForExecutionContext).call(this);
-      }
-      return await context.evaluate(pageFunction, ...args);
-    }
-    async adoptBackendNode(backendNodeId) {
-      // This code needs to schedule resolveNode call synchronously (at
-      // least when the context is there) so we cannot unconditionally
-      // await.
-      let context = _assertClassBrand(_IsolatedWorld_brand, this, _executionContext).call(this);
-      if (!context) {
-        context = await _assertClassBrand(_IsolatedWorld_brand, this, _waitForExecutionContext).call(this);
-      }
-      const {
-        object
-      } = await this.client.send('DOM.resolveNode', {
-        backendNodeId: backendNodeId,
-        executionContextId: context.id
-      });
-      return this.createCdpHandle(object);
-    }
-    async adoptHandle(handle) {
-      if (handle.realm === this) {
-        // If the context has already adopted this handle, clone it so downstream
-        // disposal doesn't become an issue.
-        return await handle.evaluateHandle(value => {
-          return value;
-        });
-      }
-      const nodeInfo = await this.client.send('DOM.describeNode', {
-        objectId: handle.id
-      });
-      return await this.adoptBackendNode(nodeInfo.node.backendNodeId);
-    }
-    async transferHandle(handle) {
-      if (handle.realm === this) {
-        return handle;
-      }
-      // Implies it's a primitive value, probably.
-      if (handle.remoteObject().objectId === undefined) {
-        return handle;
-      }
-      const info = await this.client.send('DOM.describeNode', {
-        objectId: handle.remoteObject().objectId
-      });
-      const newHandle = await this.adoptBackendNode(info.node.backendNodeId);
-      await handle.dispose();
-      return newHandle;
-    }
-    /**
-     * @internal
-     */
-    createCdpHandle(remoteObject) {
-      if (remoteObject.subtype === 'node') {
-        return new CdpElementHandle(this, remoteObject, _classPrivateFieldGet(_logger15, this));
-      }
-      return new CdpJSHandle(this, remoteObject, _classPrivateFieldGet(_logger15, this));
-    }
-    [disposeSymbol]() {
-      _classPrivateFieldGet(_context, this)?.[disposeSymbol]();
-      _classPrivateFieldGet(_emitter3, this).emit('disposed', undefined);
-      _classPrivateFieldGet(_emitter3, this).removeAllListeners();
-      super[disposeSymbol]();
-    }
-    get origin() {
-      return _classPrivateFieldGet(_origin, this);
-    }
-    set origin(origin) {
-      _classPrivateFieldSet(_origin, this, origin);
-    }
-    setWorldId(worldId) {
-      _classPrivateFieldSet(_worldId, this, worldId);
-    }
-    async extension() {
-      if (_classPrivateFieldGet(_frameOrWorker, this) instanceof CdpWebWorker) {
-        throw new Error('Unable to get extension from Realm');
-      }
-      if (_classPrivateFieldGet(_worldId, this) === MAIN_WORLD) {
-        return null;
-      }
-      if (typeof _classPrivateFieldGet(_worldId, this) === 'string') {
-        const extensions = await _classPrivateFieldGet(_frameOrWorker, this)._frameManager.page().browser().extensions();
-        return extensions.get(_classPrivateFieldGet(_worldId, this)) ?? null;
-      }
-      return null;
-    }
-  }
-
-  /**
-   * @license
-   * Copyright 2019 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  function _onContextDisposed() {
-    _classPrivateFieldSet(_context, this, undefined);
-    if ('clearDocumentHandle' in _classPrivateFieldGet(_frameOrWorker, this)) {
-      _classPrivateFieldGet(_frameOrWorker, this).clearDocumentHandle();
-    }
-  }
-  function _onContextConsoleApiCalled(event) {
-    _classPrivateFieldGet(_emitter3, this).emit('consoleapicalled', event);
-  }
-  function _onContextBindingCalled(event) {
-    _classPrivateFieldGet(_emitter3, this).emit('bindingcalled', event);
-  }
-  function _executionContext() {
-    if (this.disposed) {
-      throw new Error(`Execution context is not available in detached frame or worker "${this.environment.url()}" (are you trying to evaluate?)`);
-    }
-    return _classPrivateFieldGet(_context, this);
-  }
-  /**
-   * Waits for the next context to be set on the isolated world.
-   */
-  async function _waitForExecutionContext() {
-    const error = new Error('Execution context was destroyed');
-    const result = await firstValueFrom(fromEmitterEvent(_classPrivateFieldGet(_emitter3, this), 'context').pipe(raceWith(fromEmitterEvent(_classPrivateFieldGet(_emitter3, this), 'disposed').pipe(map(() => {
-      // The message has to match the CDP message expected by the WaitTask class.
-      throw error;
-    })), timeout(this.timeoutSettings.timeout()))));
-    return result;
-  }
-  const puppeteerToProtocolLifecycle = new Map([['load', 'load'], ['domcontentloaded', 'DOMContentLoaded'], ['networkidle0', 'networkIdle'], ['networkidle2', 'networkAlmostIdle']]);
-  /**
-   * @internal
-   */
-  var _expectedLifecycle = /*#__PURE__*/new WeakMap();
-  var _frame2 = /*#__PURE__*/new WeakMap();
-  var _timeout3 = /*#__PURE__*/new WeakMap();
-  var _navigationRequest = /*#__PURE__*/new WeakMap();
-  var _subscriptions2 = /*#__PURE__*/new WeakMap();
-  var _initialLoaderId = /*#__PURE__*/new WeakMap();
-  var _terminationDeferred = /*#__PURE__*/new WeakMap();
-  var _sameDocumentNavigationDeferred = /*#__PURE__*/new WeakMap();
-  var _lifecycleDeferred = /*#__PURE__*/new WeakMap();
-  var _newDocumentNavigationDeferred = /*#__PURE__*/new WeakMap();
-  var _error3 = /*#__PURE__*/new WeakMap();
-  var _hasSameDocumentNavigation = /*#__PURE__*/new WeakMap();
-  var _swapped = /*#__PURE__*/new WeakMap();
-  var _navigationResponseReceived = /*#__PURE__*/new WeakMap();
-  var _LifecycleWatcher_brand = /*#__PURE__*/new WeakSet();
-  class LifecycleWatcher {
-    constructor(networkManager, _frame3, waitUntil, timeout, signal) {
-      _classPrivateMethodInitSpec(this, _LifecycleWatcher_brand);
-      _classPrivateFieldInitSpec(this, _expectedLifecycle, void 0);
-      _classPrivateFieldInitSpec(this, _frame2, void 0);
-      _classPrivateFieldInitSpec(this, _timeout3, void 0);
-      _classPrivateFieldInitSpec(this, _navigationRequest, null);
-      _classPrivateFieldInitSpec(this, _subscriptions2, new DisposableStack());
-      _classPrivateFieldInitSpec(this, _initialLoaderId, void 0);
-      _classPrivateFieldInitSpec(this, _terminationDeferred, void 0);
-      _classPrivateFieldInitSpec(this, _sameDocumentNavigationDeferred, Deferred.create());
-      _classPrivateFieldInitSpec(this, _lifecycleDeferred, Deferred.create());
-      _classPrivateFieldInitSpec(this, _newDocumentNavigationDeferred, Deferred.create());
-      _classPrivateFieldInitSpec(this, _error3, new Error('LifecycleWatcher terminated'));
-      _classPrivateFieldInitSpec(this, _hasSameDocumentNavigation, void 0);
-      _classPrivateFieldInitSpec(this, _swapped, void 0);
-      _classPrivateFieldInitSpec(this, _navigationResponseReceived, void 0);
-      if (Array.isArray(waitUntil)) {
-        waitUntil = waitUntil.slice();
-      } else if (typeof waitUntil === 'string') {
-        waitUntil = [waitUntil];
-      }
-      _classPrivateFieldSet(_initialLoaderId, this, _frame3._loaderId);
-      _classPrivateFieldSet(_expectedLifecycle, this, waitUntil.map(value => {
-        const protocolEvent = puppeteerToProtocolLifecycle.get(value);
-        assert(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
-        return protocolEvent;
-      }));
-      signal?.addEventListener('abort', () => {
-        if (signal.reason instanceof Error) {
-          signal.reason.cause = _classPrivateFieldGet(_error3, this);
-        }
-        _classPrivateFieldGet(_terminationDeferred, this).reject(signal.reason);
-      });
-      _classPrivateFieldSet(_frame2, this, _frame3);
-      _classPrivateFieldSet(_timeout3, this, timeout);
-      const frameManagerEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame3._frameManager));
-      frameManagerEmitter.on(exports.FrameManagerEvent.LifecycleEvent, _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).bind(this));
-      const frameEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame3));
-      frameEmitter.on(exports.FrameEvent.FrameNavigatedWithinDocument, _assertClassBrand(_LifecycleWatcher_brand, this, _navigatedWithinDocument).bind(this));
-      frameEmitter.on(exports.FrameEvent.FrameNavigated, _assertClassBrand(_LifecycleWatcher_brand, this, _navigated).bind(this));
-      frameEmitter.on(exports.FrameEvent.FrameSwapped, _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).bind(this));
-      frameEmitter.on(exports.FrameEvent.FrameSwappedByActivation, _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).bind(this));
-      frameEmitter.on(exports.FrameEvent.FrameDetached, _assertClassBrand(_LifecycleWatcher_brand, this, _onFrameDetached).bind(this));
-      const networkManagerEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(networkManager));
-      networkManagerEmitter.on(exports.NetworkManagerEvent.Request, _assertClassBrand(_LifecycleWatcher_brand, this, _onRequest).bind(this));
-      networkManagerEmitter.on(exports.NetworkManagerEvent.Response, _assertClassBrand(_LifecycleWatcher_brand, this, _onResponse).bind(this));
-      networkManagerEmitter.on(exports.NetworkManagerEvent.RequestFailed, _assertClassBrand(_LifecycleWatcher_brand, this, _onRequestFailed).bind(this));
-      _classPrivateFieldSet(_terminationDeferred, this, Deferred.create({
-        timeout: _classPrivateFieldGet(_timeout3, this),
-        message: `Navigation timeout of ${_classPrivateFieldGet(_timeout3, this)} ms exceeded`
-      }));
-      _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
-    }
-    async navigationResponse() {
-      // Continue with a possibly null response.
-      await _classPrivateFieldGet(_navigationResponseReceived, this)?.valueOrThrow();
-      return _classPrivateFieldGet(_navigationRequest, this) ? _classPrivateFieldGet(_navigationRequest, this).response() : null;
-    }
-    sameDocumentNavigationPromise() {
-      return _classPrivateFieldGet(_sameDocumentNavigationDeferred, this).valueOrThrow();
-    }
-    newDocumentNavigationPromise() {
-      return _classPrivateFieldGet(_newDocumentNavigationDeferred, this).valueOrThrow();
-    }
-    lifecyclePromise() {
-      return _classPrivateFieldGet(_lifecycleDeferred, this).valueOrThrow();
-    }
-    terminationPromise() {
-      return _classPrivateFieldGet(_terminationDeferred, this).valueOrThrow();
-    }
-    dispose() {
-      _classPrivateFieldGet(_subscriptions2, this).dispose();
-      _classPrivateFieldGet(_error3, this).cause = new Error('LifecycleWatcher disposed');
-      _classPrivateFieldGet(_terminationDeferred, this).resolve(_classPrivateFieldGet(_error3, this));
-    }
-  }
-
-  /**
-   * @license
-   * Copyright 2017 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  function _onRequest(request) {
-    if (request.frame() !== _classPrivateFieldGet(_frame2, this) || !request.isNavigationRequest()) {
-      return;
-    }
-    _classPrivateFieldSet(_navigationRequest, this, request);
-    // Resolve previous navigation response in case there are multiple
-    // navigation requests reported by the backend. This generally should not
-    // happen by it looks like it's possible.
-    _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
-    _classPrivateFieldSet(_navigationResponseReceived, this, Deferred.create());
-    if (request.response() !== null) {
-      _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
-    }
-  }
-  function _onRequestFailed(request) {
-    if (_classPrivateFieldGet(_navigationRequest, this)?.id !== request.id) {
-      return;
-    }
-    _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
-  }
-  function _onResponse(response) {
-    if (_classPrivateFieldGet(_navigationRequest, this)?.id !== response.request().id) {
-      return;
-    }
-    _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
-  }
-  function _onFrameDetached(frame) {
-    if (_classPrivateFieldGet(_frame2, this) === frame) {
-      _classPrivateFieldGet(_error3, this).message = 'Navigating frame was detached';
-      _classPrivateFieldGet(_terminationDeferred, this).resolve(_classPrivateFieldGet(_error3, this));
-      return;
-    }
-    _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
-  }
-  function _navigatedWithinDocument() {
-    _classPrivateFieldSet(_hasSameDocumentNavigation, this, true);
-    _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
-  }
-  function _navigated(navigationType) {
-    if (navigationType === 'BackForwardCacheRestore') {
-      return _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).call(this);
-    }
-    _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
-  }
-  function _frameSwapped() {
-    _classPrivateFieldSet(_swapped, this, true);
-    _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
-  }
-  function _checkLifecycleComplete() {
-    // We expect navigation to commit.
-    if (!checkLifecycle(_classPrivateFieldGet(_frame2, this), _classPrivateFieldGet(_expectedLifecycle, this))) {
-      return;
-    }
-    _classPrivateFieldGet(_lifecycleDeferred, this).resolve();
-    if (_classPrivateFieldGet(_hasSameDocumentNavigation, this)) {
-      _classPrivateFieldGet(_sameDocumentNavigationDeferred, this).resolve(undefined);
-    }
-    if (_classPrivateFieldGet(_swapped, this) || _classPrivateFieldGet(_frame2, this)._loaderId !== _classPrivateFieldGet(_initialLoaderId, this)) {
-      _classPrivateFieldGet(_newDocumentNavigationDeferred, this).resolve(undefined);
-    }
-    function checkLifecycle(frame, expectedLifecycle) {
-      for (const event of expectedLifecycle) {
-        if (!frame._lifecycleEvents.has(event)) {
-          return false;
-        }
-      }
-      for (const child of frame.childFrames()) {
-        if (child._hasStartedLoading && !checkLifecycle(child, expectedLifecycle)) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
-  var __runInitializers$1 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i = 0; i < initializers.length; i++) {
-      value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-    }
-    return useValue ? value : void 0;
-  };
-  var __esDecorate$1 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-    function accept(f) {
-      if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
-      return f;
-    }
-    var kind = contextIn.kind,
-      key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-    var _,
-      done = false;
-    for (var i = decorators.length - 1; i >= 0; i--) {
-      var context = {};
-      for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-      for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-      context.addInitializer = function (f) {
-        if (done) throw new TypeError("Cannot add initializers after decoration has completed");
-        extraInitializers.push(accept(f || null));
-      };
-      var result = (0, decorators[i])(kind === "accessor" ? {
-        get: descriptor.get,
-        set: descriptor.set
-      } : descriptor[key], context);
-      if (kind === "accessor") {
-        if (result === void 0) continue;
-        if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-        if (_ = accept(result.get)) descriptor.get = _;
-        if (_ = accept(result.set)) descriptor.set = _;
-        if (_ = accept(result.init)) initializers.unshift(_);
-      } else if (_ = accept(result)) {
-        if (kind === "field") initializers.unshift(_);else descriptor[key] = _;
-      }
-    }
-    if (target) Object.defineProperty(target, contextIn.name, descriptor);
-    done = true;
-  };
-  /**
-   * @internal
-   */
-  let CdpFrame = ((_ref3, _CdpFrame, _url3, _detached2, _client8, _logger16, _CdpFrame_brand) => {
-    let _classSuper = Frame;
-    let _instanceExtraInitializers = [];
-    let _goto_decorators;
-    let _waitForNavigation_decorators;
-    let _setContent_decorators;
-    let _addPreloadScript_decorators;
-    let _addExposedFunctionBinding_decorators;
-    let _removeExposedFunctionBinding_decorators;
-    let _waitForDevicePrompt_decorators;
-    return _url3 = /*#__PURE__*/new WeakMap(), _detached2 = /*#__PURE__*/new WeakMap(), _client8 = /*#__PURE__*/new WeakMap(), _logger16 = /*#__PURE__*/new WeakMap(), _CdpFrame_brand = /*#__PURE__*/new WeakSet(), _ref3 = (_goto_decorators = [throwIfDetached], _waitForNavigation_decorators = [throwIfDetached], _setContent_decorators = [throwIfDetached], _addPreloadScript_decorators = [throwIfDetached], _addExposedFunctionBinding_decorators = [throwIfDetached], _removeExposedFunctionBinding_decorators = [throwIfDetached], _waitForDevicePrompt_decorators = [throwIfDetached], disposeSymbol), _CdpFrame = class CdpFrame extends _classSuper {
-      constructor(frameManager, frameId, parentFrameId, client, logger) {
-        super(logger);
-        _classPrivateMethodInitSpec(this, _CdpFrame_brand);
-        _classPrivateFieldInitSpec(this, _url3, (__runInitializers$1(this, _instanceExtraInitializers), ''));
-        _classPrivateFieldInitSpec(this, _detached2, false);
-        _classPrivateFieldInitSpec(this, _client8, void 0);
-        _defineProperty(this, "_frameManager", void 0);
-        _defineProperty(this, "_loaderId", '');
-        _defineProperty(this, "_lifecycleEvents", new Set());
-        _defineProperty(this, "_id", void 0);
-        _defineProperty(this, "_parentId", void 0);
-        _defineProperty(this, "accessibility", void 0);
-        _defineProperty(this, "worlds", void 0);
-        _defineProperty(this, "extensionWorlds", {});
-        _classPrivateFieldInitSpec(this, _logger16, void 0);
-        this._frameManager = frameManager;
-        _classPrivateFieldSet(_url3, this, '');
-        this._id = frameId;
-        this._parentId = parentFrameId;
-        _classPrivateFieldSet(_detached2, this, false);
-        _classPrivateFieldSet(_client8, this, client);
-        _classPrivateFieldSet(_logger16, this, logger);
-        this._loaderId = '';
-        this.worlds = {
-          [MAIN_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings, MAIN_WORLD, logger),
-          [PUPPETEER_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings, PUPPETEER_WORLD, logger)
-        };
-        this.accessibility = new Accessibility(this.worlds[MAIN_WORLD], frameId, logger);
-        this.on(exports.FrameEvent.FrameSwappedByActivation, () => {
-          // Emulate loading process for swapped frames.
-          this._onLoadingStarted();
-          this._onLoadingStopped();
-        });
-        this.registerWorldListeners(this.worlds[MAIN_WORLD]);
-      }
-      /**
-       * @internal
-       */
-      registerWorldListeners(world) {
-        world.emitter.on('consoleapicalled', event => {
-          this._frameManager.emit(exports.FrameManagerEvent.ConsoleApiCalled, [world, event]);
-        });
-        world.emitter.on('bindingcalled', event => {
-          this._frameManager.emit(exports.FrameManagerEvent.BindingCalled, [world, event]);
-        });
-      }
-      /**
-       * This is used internally in DevTools.
-       *
-       * @internal
-       */
-      _client() {
-        return _classPrivateFieldGet(_client8, this);
-      }
-      /**
-       * Updates the frame ID with the new ID. This happens when the main frame is
-       * replaced by a different frame.
-       */
-      updateId(id) {
-        this._id = id;
-      }
-      updateClient(client) {
-        _classPrivateFieldSet(_client8, this, client);
-      }
-      page() {
-        return this._frameManager.page();
-      }
-      async goto(url, options = {}) {
-        if (!this.page()._isUrlAllowed(url)) {
-          throw new Error(`Navigation to ${url} is blocked by blocklist/allowlist rules`);
-        }
-        const {
-          referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'],
-          referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'],
-          waitUntil = ['load'],
-          timeout = this._frameManager.timeoutSettings.navigationTimeout()
-        } = options;
-        let ensureNewDocumentNavigation = false;
-        const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
-        let error = await Deferred.race([navigate(_classPrivateFieldGet(_client8, this), url, referer, referrerPolicy ? referrerPolicyToProtocol(referrerPolicy) : undefined, this._id), watcher.terminationPromise()]);
-        if (!error) {
-          error = await Deferred.race([watcher.terminationPromise(), ensureNewDocumentNavigation ? watcher.newDocumentNavigationPromise() : watcher.sameDocumentNavigationPromise()]);
-        }
-        try {
-          if (error) {
-            throw error;
-          }
-          const result = await Deferred.race([watcher.terminationPromise(), watcher.navigationResponse()]);
-          if (result instanceof Error) {
-            throw result;
-          }
-          return result ?? null;
-        } finally {
-          watcher.dispose();
-        }
-        async function navigate(client, url, referrer, referrerPolicy, frameId) {
-          try {
-            const response = await client.send('Page.navigate', {
-              url,
-              referrer,
-              frameId,
-              referrerPolicy
-            });
-            ensureNewDocumentNavigation = !!response.loaderId;
-            if (response.errorText === 'net::ERR_HTTP_RESPONSE_CODE_FAILURE') {
-              return null;
-            }
-            return response.errorText ? new Error(`${response.errorText} at ${url}`) : null;
-          } catch (error) {
-            if (isErrorLike(error)) {
-              return error;
-            }
-            throw error;
-          }
-        }
-      }
-      async waitForNavigation(options = {}) {
-        const {
-          waitUntil = ['load'],
-          timeout = this._frameManager.timeoutSettings.navigationTimeout(),
-          signal
-        } = options;
-        const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
-        const error = await Deferred.race([watcher.terminationPromise(), ...(options.ignoreSameDocumentNavigation ? [] : [watcher.sameDocumentNavigationPromise()]), watcher.newDocumentNavigationPromise()]);
-        try {
-          if (error) {
-            throw error;
-          }
-          const result = await Deferred.race([watcher.terminationPromise(), watcher.navigationResponse()]);
-          if (result instanceof Error) {
-            throw error;
-          }
-          return result || null;
-        } finally {
-          watcher.dispose();
-        }
-      }
-      get client() {
-        return _classPrivateFieldGet(_client8, this);
-      }
-      mainRealm() {
-        return this.worlds[MAIN_WORLD];
-      }
-      isolatedRealm() {
-        return this.worlds[PUPPETEER_WORLD];
-      }
-      async setContent(html, options = {}) {
-        const {
-          waitUntil = ['load'],
-          timeout = this._frameManager.timeoutSettings.navigationTimeout()
-        } = options;
-        // We rely upon the fact that the document is reopened, which resets the
-        // frame lifecycle with an "init" lifecycle event.
-        // @see https://crrev.com/608658
-        await this.setFrameContent(html);
-        const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
-        const error = await Deferred.race([watcher.terminationPromise(), watcher.lifecyclePromise()]);
-        watcher.dispose();
-        if (error) {
-          throw error;
-        }
-      }
-      /**
-       * @internal
-       */
-      async setFrameContent(content) {
-        // Writing the content from the page would go through document.write, which
-        // makes Chrome treat parser-blocking cross-site scripts in it as an
-        // intervention candidate and may block them outright.
-        await _classPrivateFieldGet(_client8, this).send('Page.setDocumentContent', {
-          frameId: this._id,
-          html: content
-        });
-      }
-      url() {
-        return _classPrivateFieldGet(_url3, this);
-      }
-      parentFrame() {
-        return this._frameManager._frameTree.parentFrame(this._id) || null;
-      }
-      childFrames() {
-        return this._frameManager._frameTree.childFrames(this._id);
-      }
-      async addPreloadScript(preloadScript) {
-        const parentFrame = this.parentFrame();
-        if (parentFrame && _classPrivateFieldGet(_client8, this) === parentFrame.client) {
-          return;
-        }
-        if (preloadScript.getIdForFrame(this)) {
-          return;
-        }
-        const {
-          identifier
-        } = await _classPrivateFieldGet(_client8, this).send('Page.addScriptToEvaluateOnNewDocument', {
-          source: preloadScript.source
-        });
-        preloadScript.setIdForFrame(this, identifier);
-      }
-      async addExposedFunctionBinding(binding) {
-        // If a frame has not started loading, it might never start. Rely on
-        // addScriptToEvaluateOnNewDocument in that case.
-        if (this !== this._frameManager.mainFrame() && !this._hasStartedLoading) {
-          return;
-        }
-        await Promise.all([_classPrivateFieldGet(_client8, this).send('Runtime.addBinding', {
-          name: CDP_BINDING_PREFIX + binding.name
-        }), this.evaluate(binding.initSource).catch(error => {
-          _classPrivateFieldGet(_logger16, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
-        })]);
-      }
-      async removeExposedFunctionBinding(binding) {
-        // If a frame has not started loading, it might never start. Rely on
-        // addScriptToEvaluateOnNewDocument in that case.
-        if (this !== this._frameManager.mainFrame() && !this._hasStartedLoading) {
-          return;
-        }
-        await Promise.all([_classPrivateFieldGet(_client8, this).send('Runtime.removeBinding', {
-          name: CDP_BINDING_PREFIX + binding.name
-        }), this.evaluate(name => {
-          // Removes the dangling Puppeteer binding wrapper.
-          // @ts-expect-error: In a different context.
-          globalThis[name] = undefined;
-        }, binding.name).catch(error => {
-          _classPrivateFieldGet(_logger16, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
-        })]);
-      }
-      async waitForDevicePrompt(options = {}) {
-        return await _assertClassBrand(_CdpFrame_brand, this, _deviceRequestPromptManager).call(this).waitForDevicePrompt(options);
-      }
-      _navigated(framePayload) {
-        this._name = framePayload.name;
-        _classPrivateFieldSet(_url3, this, `${framePayload.url}${framePayload.urlFragment || ''}`);
-      }
-      _navigatedWithinDocument(url) {
-        _classPrivateFieldSet(_url3, this, url);
-      }
-      _onLifecycleEvent(loaderId, name) {
-        if (name === 'init') {
-          this._loaderId = loaderId;
-          this._lifecycleEvents.clear();
-        }
-        this._lifecycleEvents.add(name);
-      }
-      _onLoadingStopped() {
-        this._lifecycleEvents.add('DOMContentLoaded');
-        this._lifecycleEvents.add('load');
-      }
-      _onLoadingStarted() {
-        this._hasStartedLoading = true;
-      }
-      get detached() {
-        return _classPrivateFieldGet(_detached2, this);
-      }
-      [_ref3]() {
-        if (_classPrivateFieldGet(_detached2, this)) {
-          return;
-        }
-        _classPrivateFieldSet(_detached2, this, true);
-        this.worlds[MAIN_WORLD][disposeSymbol]();
-        this.worlds[PUPPETEER_WORLD][disposeSymbol]();
-        for (const extensionWorld of Object.values(this.extensionWorlds)) {
-          extensionWorld[disposeSymbol]();
-        }
-        super[disposeSymbol]();
-      }
-      exposeFunction() {
-        throw new UnsupportedOperation();
-      }
-      async frameElement() {
-        const parent = this.parentFrame();
-        if (!parent) {
-          return null;
-        }
-        const {
-          backendNodeId
-        } = await parent.client.send('DOM.getFrameOwner', {
-          frameId: this._id
-        });
-        return await parent.mainRealm().adoptBackendNode(backendNodeId);
-      }
-      /**
-       * @public
-       */
-      extensionRealms() {
-        return Object.values(this.extensionWorlds);
-      }
-    }, (() => {
-      const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-      __esDecorate$1(_CdpFrame, null, _goto_decorators, {
-        kind: "method",
-        name: "goto",
-        static: false,
-        private: false,
-        access: {
-          has: obj => "goto" in obj,
-          get: obj => obj.goto
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpFrame, null, _waitForNavigation_decorators, {
-        kind: "method",
-        name: "waitForNavigation",
-        static: false,
-        private: false,
-        access: {
-          has: obj => "waitForNavigation" in obj,
-          get: obj => obj.waitForNavigation
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpFrame, null, _setContent_decorators, {
-        kind: "method",
-        name: "setContent",
-        static: false,
-        private: false,
-        access: {
-          has: obj => "setContent" in obj,
-          get: obj => obj.setContent
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpFrame, null, _addPreloadScript_decorators, {
-        kind: "method",
-        name: "addPreloadScript",
-        static: false,
-        private: false,
-        access: {
-          has: obj => "addPreloadScript" in obj,
-          get: obj => obj.addPreloadScript
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpFrame, null, _addExposedFunctionBinding_decorators, {
-        kind: "method",
-        name: "addExposedFunctionBinding",
-        static: false,
-        private: false,
-        access: {
-          has: obj => "addExposedFunctionBinding" in obj,
-          get: obj => obj.addExposedFunctionBinding
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpFrame, null, _removeExposedFunctionBinding_decorators, {
-        kind: "method",
-        name: "removeExposedFunctionBinding",
-        static: false,
-        private: false,
-        access: {
-          has: obj => "removeExposedFunctionBinding" in obj,
-          get: obj => obj.removeExposedFunctionBinding
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      __esDecorate$1(_CdpFrame, null, _waitForDevicePrompt_decorators, {
-        kind: "method",
-        name: "waitForDevicePrompt",
-        static: false,
-        private: false,
-        access: {
-          has: obj => "waitForDevicePrompt" in obj,
-          get: obj => obj.waitForDevicePrompt
-        },
-        metadata: _metadata
-      }, null, _instanceExtraInitializers);
-      if (_metadata) Object.defineProperty(_CdpFrame, Symbol.metadata, {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-        value: _metadata
-      });
-    })(), _CdpFrame;
-    function _deviceRequestPromptManager() {
-      return this._frameManager._deviceRequestPromptManager(_classPrivateFieldGet(_client8, this));
-    }
-  })();
-  /**
-   * @internal
-   */
-  function referrerPolicyToProtocol(referrerPolicy) {
-    // See
-    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#type-ReferrerPolicy
-    // We need to convert from Web-facing phase to CDP's camelCase.
-    return referrerPolicy.replaceAll(/-./g, match => {
-      return match[1].toUpperCase();
-    });
-  }
-
-  /**
-   * @license
-   * Copyright 2026 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * @internal
-   */
-  var _code2 = /*#__PURE__*/new WeakMap();
-  var _details = /*#__PURE__*/new WeakMap();
-  class CdpIssue {
-    constructor(issue) {
-      _classPrivateFieldInitSpec(this, _code2, void 0);
-      _classPrivateFieldInitSpec(this, _details, void 0);
-      _classPrivateFieldSet(_code2, this, issue.code);
-      _classPrivateFieldSet(_details, this, issue.details);
-    }
-    get code() {
-      return _classPrivateFieldGet(_code2, this);
-    }
-    get details() {
-      return _classPrivateFieldGet(_details, this);
-    }
-  }
-
-  /**
-   * @license
-   * Copyright 2024 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * @internal
-   */
-  var _id6 = /*#__PURE__*/new WeakMap();
-  var _source = /*#__PURE__*/new WeakMap();
-  var _frameToId = /*#__PURE__*/new WeakMap();
-  class CdpPreloadScript {
-    constructor(mainFrame, id, source) {
-      /**
-       * This is the ID of the preload script returned by
-       * Page.addScriptToEvaluateOnNewDocument in the main frame.
-       *
-       * Sub-frames would get a different CDP ID because
-       * addScriptToEvaluateOnNewDocument is called for each subframe. But
-       * users only see this ID and subframe IDs are internal to Puppeteer.
-       */
-      _classPrivateFieldInitSpec(this, _id6, void 0);
-      _classPrivateFieldInitSpec(this, _source, void 0);
-      _classPrivateFieldInitSpec(this, _frameToId, new WeakMap());
-      _classPrivateFieldSet(_id6, this, id);
-      _classPrivateFieldSet(_source, this, source);
-      _classPrivateFieldGet(_frameToId, this).set(mainFrame, id);
-    }
-    get id() {
-      return _classPrivateFieldGet(_id6, this);
-    }
-    get source() {
-      return _classPrivateFieldGet(_source, this);
-    }
-    getIdForFrame(frame) {
-      return _classPrivateFieldGet(_frameToId, this).get(frame);
-    }
-    setIdForFrame(frame, identifier) {
-      _classPrivateFieldGet(_frameToId, this).set(frame, identifier);
-    }
-  }
-
-  /**
-   * @license
-   * Copyright 2022 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * @internal
-   */
-  var _client9 = /*#__PURE__*/new WeakMap();
-  var _timeoutSettings = /*#__PURE__*/new WeakMap();
-  var _id7 = /*#__PURE__*/new WeakMap();
-  var _handled3 = /*#__PURE__*/new WeakMap();
-  var _waitForDevicePromises = /*#__PURE__*/new WeakMap();
-  var _subscriptions3 = /*#__PURE__*/new WeakMap();
-  var _CdpDeviceRequestPrompt_brand = /*#__PURE__*/new WeakSet();
-  class CdpDeviceRequestPrompt extends DeviceRequestPrompt {
-    constructor(client, timeoutSettings, firstEvent) {
-      super();
-      _classPrivateMethodInitSpec(this, _CdpDeviceRequestPrompt_brand);
-      _classPrivateFieldInitSpec(this, _client9, void 0);
-      _classPrivateFieldInitSpec(this, _timeoutSettings, void 0);
-      _classPrivateFieldInitSpec(this, _id7, void 0);
-      _classPrivateFieldInitSpec(this, _handled3, false);
-      _classPrivateFieldInitSpec(this, _waitForDevicePromises, new Set());
-      _classPrivateFieldInitSpec(this, _subscriptions3, new DisposableStack());
-      _classPrivateFieldSet(_client9, this, client);
-      _classPrivateFieldSet(_timeoutSettings, this, timeoutSettings);
-      _classPrivateFieldSet(_id7, this, firstEvent.id);
-      const clientEmitter = _classPrivateFieldGet(_subscriptions3, this).use(new EventEmitter(_classPrivateFieldGet(_client9, this)));
-      clientEmitter.on('DeviceAccess.deviceRequestPrompted', _assertClassBrand(_CdpDeviceRequestPrompt_brand, this, _updateDevices).bind(this));
-      _assertClassBrand(_CdpDeviceRequestPrompt_brand, this, _updateDevices).call(this, firstEvent);
-    }
-    async waitForDevice(filter, options = {}) {
-      for (const device of this.devices) {
-        if (filter(device)) {
-          return device;
-        }
-      }
-      const {
-        timeout = _classPrivateFieldGet(_timeoutSettings, this).timeout()
-      } = options;
-      const deferred = Deferred.create({
-        message: `Waiting for \`DeviceRequestPromptDevice\` failed: ${timeout}ms exceeded`,
-        timeout
-      });
-      if (options.signal) {
-        options.signal.addEventListener('abort', () => {
-          deferred.reject(options.signal?.reason);
-        }, {
-          once: true
-        });
-      }
-      const handle = {
-        filter,
-        promise: deferred
-      };
-      _classPrivateFieldGet(_waitForDevicePromises, this).add(handle);
-      try {
-        return await deferred.valueOrThrow();
-      } finally {
-        _classPrivateFieldGet(_waitForDevicePromises, this).delete(handle);
-      }
-    }
-    async select(device) {
-      assert(this.devices.includes(device), 'Cannot select unknown device!');
-      assert(!_classPrivateFieldGet(_handled3, this), 'Cannot select DeviceRequestPrompt which is already handled!');
-      _classPrivateFieldGet(_subscriptions3, this).dispose();
-      _classPrivateFieldSet(_handled3, this, true);
-      await _classPrivateFieldGet(_client9, this).send('DeviceAccess.selectPrompt', {
-        id: _classPrivateFieldGet(_id7, this),
-        deviceId: device.id
-      });
-    }
-    async cancel() {
-      assert(!_classPrivateFieldGet(_handled3, this), 'Cannot cancel DeviceRequestPrompt which is already handled!');
-      _classPrivateFieldGet(_subscriptions3, this).dispose();
-      _classPrivateFieldSet(_handled3, this, true);
-      await _classPrivateFieldGet(_client9, this).send('DeviceAccess.cancelPrompt', {
-        id: _classPrivateFieldGet(_id7, this)
-      });
-    }
-  }
-  /**
-   * @internal
-   */
-  function _updateDevices(event) {
-    if (event.id !== _classPrivateFieldGet(_id7, this)) {
-      return;
-    }
-    for (const rawDevice of event.devices) {
-      if (this.devices.some(device => {
-        return device.id === rawDevice.id;
-      })) {
-        continue;
-      }
-      const newDevice = {
-        id: rawDevice.id,
-        name: rawDevice.name
-      };
-      this.devices.push(newDevice);
-      for (const waitForDevicePromise of _classPrivateFieldGet(_waitForDevicePromises, this)) {
-        if (waitForDevicePromise.filter(newDevice)) {
-          waitForDevicePromise.promise.resolve(newDevice);
-        }
-      }
-    }
-  }
-  var _client0 = /*#__PURE__*/new WeakMap();
-  var _timeoutSettings2 = /*#__PURE__*/new WeakMap();
-  var _deviceRequestPromptDeferreds = /*#__PURE__*/new WeakMap();
-  var _CdpDeviceRequestPromptManager_brand = /*#__PURE__*/new WeakSet();
-  class CdpDeviceRequestPromptManager {
-    constructor(client, timeoutSettings) {
-      _classPrivateMethodInitSpec(this, _CdpDeviceRequestPromptManager_brand);
-      _classPrivateFieldInitSpec(this, _client0, void 0);
-      _classPrivateFieldInitSpec(this, _timeoutSettings2, void 0);
-      _classPrivateFieldInitSpec(this, _deviceRequestPromptDeferreds, new Set());
-      _classPrivateFieldSet(_client0, this, client);
-      _classPrivateFieldSet(_timeoutSettings2, this, timeoutSettings);
-      _classPrivateFieldGet(_client0, this).on('DeviceAccess.deviceRequestPrompted', event => {
-        _assertClassBrand(_CdpDeviceRequestPromptManager_brand, this, _onDeviceRequestPrompted).call(this, event);
-      });
-      _classPrivateFieldGet(_client0, this).on('Target.detachedFromTarget', () => {
-        _classPrivateFieldSet(_client0, this, null);
-      });
-    }
-    async waitForDevicePrompt(options = {}) {
-      assert(_classPrivateFieldGet(_client0, this) !== null, 'Cannot wait for device prompt through detached session!');
-      const needsEnable = _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).size === 0;
-      let enablePromise;
-      if (needsEnable) {
-        enablePromise = _classPrivateFieldGet(_client0, this).send('DeviceAccess.enable');
-      }
-      const {
-        timeout = _classPrivateFieldGet(_timeoutSettings2, this).timeout()
-      } = options;
-      const deferred = Deferred.create({
-        message: `Waiting for \`DeviceRequestPrompt\` failed: ${timeout}ms exceeded`,
-        timeout
-      });
-      if (options.signal) {
-        options.signal.addEventListener('abort', () => {
-          deferred.reject(options.signal?.reason);
-        }, {
-          once: true
-        });
-      }
-      _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).add(deferred);
-      try {
-        const [result] = await Promise.all([deferred.valueOrThrow(), enablePromise]);
-        return result;
-      } finally {
-        _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).delete(deferred);
-      }
-    }
-  }
-
-  /**
-   * @license
-   * Copyright 2022 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * Keeps track of the page frame tree and it's is managed by
-   * {@link FrameManager}. FrameTree uses frame IDs to reference frame and it
-   * means that referenced frames might not be in the tree anymore. Thus, the tree
-   * structure is eventually consistent.
-   * @internal
-   */
-  function _onDeviceRequestPrompted(event) {
-    if (!_classPrivateFieldGet(_deviceRequestPromptDeferreds, this).size) {
-      return;
-    }
-    assert(_classPrivateFieldGet(_client0, this) !== null);
-    const devicePrompt = new CdpDeviceRequestPrompt(_classPrivateFieldGet(_client0, this), _classPrivateFieldGet(_timeoutSettings2, this), event);
-    for (const promise of _classPrivateFieldGet(_deviceRequestPromptDeferreds, this)) {
-      promise.resolve(devicePrompt);
-    }
-    _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).clear();
-  }
-  var _frames = /*#__PURE__*/new WeakMap();
-  var _parentIds = /*#__PURE__*/new WeakMap();
-  var _childIds = /*#__PURE__*/new WeakMap();
-  var _mainFrame = /*#__PURE__*/new WeakMap();
-  var _isMainFrameStale = /*#__PURE__*/new WeakMap();
-  var _waitRequests = /*#__PURE__*/new WeakMap();
-  class FrameTree {
-    constructor() {
-      _classPrivateFieldInitSpec(this, _frames, new Map());
-      // frameID -> parentFrameID
-      _classPrivateFieldInitSpec(this, _parentIds, new Map());
-      // frameID -> childFrameIDs
-      _classPrivateFieldInitSpec(this, _childIds, new Map());
-      _classPrivateFieldInitSpec(this, _mainFrame, void 0);
-      _classPrivateFieldInitSpec(this, _isMainFrameStale, false);
-      _classPrivateFieldInitSpec(this, _waitRequests, new Map());
-    }
-    getMainFrame() {
-      return _classPrivateFieldGet(_mainFrame, this);
-    }
-    getById(frameId) {
-      return _classPrivateFieldGet(_frames, this).get(frameId);
-    }
-    /**
-     * Returns a promise that is resolved once the frame with
-     * the given ID is added to the tree.
-     */
-    waitForFrame(frameId) {
-      const frame = this.getById(frameId);
-      if (frame) {
-        return Promise.resolve(frame);
-      }
-      const deferred = Deferred.create();
-      const callbacks = _classPrivateFieldGet(_waitRequests, this).get(frameId) || new Set();
-      callbacks.add(deferred);
-      return deferred.valueOrThrow();
-    }
-    frames() {
-      return Array.from(_classPrivateFieldGet(_frames, this).values());
-    }
-    addFrame(frame) {
-      _classPrivateFieldGet(_frames, this).set(frame._id, frame);
-      if (frame._parentId) {
-        _classPrivateFieldGet(_parentIds, this).set(frame._id, frame._parentId);
-        if (!_classPrivateFieldGet(_childIds, this).has(frame._parentId)) {
-          _classPrivateFieldGet(_childIds, this).set(frame._parentId, new Set());
-        }
-        _classPrivateFieldGet(_childIds, this).get(frame._parentId).add(frame._id);
-      } else if (!_classPrivateFieldGet(_mainFrame, this) || _classPrivateFieldGet(_isMainFrameStale, this)) {
-        _classPrivateFieldSet(_mainFrame, this, frame);
-        _classPrivateFieldSet(_isMainFrameStale, this, false);
-      }
-      _classPrivateFieldGet(_waitRequests, this).get(frame._id)?.forEach(request => {
-        return request.resolve(frame);
-      });
-    }
-    removeFrame(frame) {
-      _classPrivateFieldGet(_frames, this).delete(frame._id);
-      _classPrivateFieldGet(_parentIds, this).delete(frame._id);
-      if (frame._parentId) {
-        _classPrivateFieldGet(_childIds, this).get(frame._parentId)?.delete(frame._id);
-      } else {
-        _classPrivateFieldSet(_isMainFrameStale, this, true);
-      }
-    }
-    childFrames(frameId) {
-      const childIds = _classPrivateFieldGet(_childIds, this).get(frameId);
-      if (!childIds) {
-        return [];
-      }
-      return Array.from(childIds).map(id => {
-        return this.getById(id);
-      }).filter(frame => {
-        return frame !== undefined;
-      });
-    }
-    parentFrame(frameId) {
-      const parentId = _classPrivateFieldGet(_parentIds, this).get(frameId);
-      return parentId ? this.getById(parentId) : undefined;
-    }
-  }
-
-  /**
-   * @internal
-   */
-  var _client1 = /*#__PURE__*/new WeakMap();
   var _fetchClient = /*#__PURE__*/new WeakMap();
   var _isNavigationRequest = /*#__PURE__*/new WeakMap();
-  var _url4 = /*#__PURE__*/new WeakMap();
+  var _url3 = /*#__PURE__*/new WeakMap();
   var _resourceType = /*#__PURE__*/new WeakMap();
   var _method = /*#__PURE__*/new WeakMap();
   var _hasPostData = /*#__PURE__*/new WeakMap();
@@ -19308,17 +18385,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _postDataBytes = /*#__PURE__*/new WeakMap();
   var _hasCompletePostData = /*#__PURE__*/new WeakMap();
   var _headers2 = /*#__PURE__*/new WeakMap();
-  var _frame4 = /*#__PURE__*/new WeakMap();
+  var _frame2 = /*#__PURE__*/new WeakMap();
   var _initiator = /*#__PURE__*/new WeakMap();
-  var _logger17 = /*#__PURE__*/new WeakMap();
+  var _logger14 = /*#__PURE__*/new WeakMap();
   var _resolution = /*#__PURE__*/new WeakMap();
   var _worker2 = /*#__PURE__*/new WeakMap();
   class CdpHTTPRequest extends HTTPRequest {
     get client() {
-      return _classPrivateFieldGet(_client1, this);
+      return _classPrivateFieldGet(_client7, this);
     }
     set client(newClient) {
-      _classPrivateFieldSet(_client1, this, newClient);
+      _classPrivateFieldSet(_client7, this, newClient);
     }
     /**
      * @internal
@@ -19332,10 +18409,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     constructor(client, frame, worker, interceptionId, allowInterception, data, redirectChain, logger, fetchClient = client) {
       super();
       _defineProperty(this, "id", void 0);
-      _classPrivateFieldInitSpec(this, _client1, void 0);
+      _classPrivateFieldInitSpec(this, _client7, void 0);
       _classPrivateFieldInitSpec(this, _fetchClient, void 0);
       _classPrivateFieldInitSpec(this, _isNavigationRequest, void 0);
-      _classPrivateFieldInitSpec(this, _url4, void 0);
+      _classPrivateFieldInitSpec(this, _url3, void 0);
       _classPrivateFieldInitSpec(this, _resourceType, void 0);
       _classPrivateFieldInitSpec(this, _method, void 0);
       _classPrivateFieldInitSpec(this, _hasPostData, false);
@@ -19343,18 +18420,18 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _postDataBytes, void 0);
       _classPrivateFieldInitSpec(this, _hasCompletePostData, false);
       _classPrivateFieldInitSpec(this, _headers2, {});
-      _classPrivateFieldInitSpec(this, _frame4, void 0);
+      _classPrivateFieldInitSpec(this, _frame2, void 0);
       _classPrivateFieldInitSpec(this, _initiator, void 0);
-      _classPrivateFieldInitSpec(this, _logger17, void 0);
+      _classPrivateFieldInitSpec(this, _logger14, void 0);
       _classPrivateFieldInitSpec(this, _resolution, null);
       _classPrivateFieldInitSpec(this, _worker2, void 0);
-      _classPrivateFieldSet(_logger17, this, logger);
-      _classPrivateFieldSet(_client1, this, client);
+      _classPrivateFieldSet(_logger14, this, logger);
+      _classPrivateFieldSet(_client7, this, client);
       _classPrivateFieldSet(_fetchClient, this, fetchClient);
       this.id = data.requestId;
       _classPrivateFieldSet(_isNavigationRequest, this, data.requestId === data.loaderId && data.type === 'Document');
       this._interceptionId = interceptionId;
-      _classPrivateFieldSet(_url4, this, data.request.url + (data.request.urlFragment ?? ''));
+      _classPrivateFieldSet(_url3, this, data.request.url + (data.request.urlFragment ?? ''));
       _classPrivateFieldSet(_resourceType, this, (data.type || 'other').toLowerCase());
       _classPrivateFieldSet(_method, this, data.request.method);
       if (data.request.postDataEntries && data.request.postDataEntries.length > 0) {
@@ -19371,7 +18448,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         _classPrivateFieldSet(_postData, this, data.request.postData);
       }
       _classPrivateFieldSet(_hasPostData, this, data.request.hasPostData ?? false);
-      _classPrivateFieldSet(_frame4, this, frame);
+      _classPrivateFieldSet(_frame2, this, frame);
       _classPrivateFieldSet(_worker2, this, worker);
       this._redirectChain = redirectChain;
       _classPrivateFieldSet(_initiator, this, data.initiator);
@@ -19384,7 +18461,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
     }
     url() {
-      return _classPrivateFieldGet(_url4, this);
+      return _classPrivateFieldGet(_url3, this);
     }
     resourceType() {
       return _classPrivateFieldGet(_resourceType, this);
@@ -19411,12 +18488,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         return _classPrivateFieldGet(_postDataBytes, this);
       }
       try {
-        const result = await _classPrivateFieldGet(_client1, this).send('Network.getRequestPostData', {
+        const result = await _classPrivateFieldGet(_client7, this).send('Network.getRequestPostData', {
           requestId: this.id
         });
         return stringToTypedArray(result.postData, result.base64Encoded);
       } catch (err) {
-        _classPrivateFieldGet(_logger17, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+        _classPrivateFieldGet(_logger14, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
         return;
       }
     }
@@ -19428,13 +18505,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return this._response;
     }
     page() {
-      return _classPrivateFieldGet(_frame4, this)?.page() ?? null;
+      return _classPrivateFieldGet(_frame2, this)?.page() ?? null;
     }
     worker() {
       return _classPrivateFieldGet(_worker2, this);
     }
     frame() {
-      return _classPrivateFieldGet(_frame4, this);
+      return _classPrivateFieldGet(_frame2, this);
     }
     isNavigationRequest() {
       return _classPrivateFieldGet(_isNavigationRequest, this);
@@ -19483,7 +18560,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         headers: headers ? headersArray(headers) : undefined
       }).catch(error => {
         this.interception.handled = false;
-        return handleError(error, _classPrivateFieldGet(_logger17, this));
+        return handleError(error, _classPrivateFieldGet(_logger14, this));
       });
     }
     async _respond(response) {
@@ -19525,7 +18602,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         body: parsedBody?.base64
       }).catch(error => {
         this.interception.handled = false;
-        return handleError(error, _classPrivateFieldGet(_logger17, this));
+        return handleError(error, _classPrivateFieldGet(_logger14, this));
       });
     }
     async _abort(errorReason) {
@@ -19541,7 +18618,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         requestId: this._interceptionId,
         errorReason: errorReason || 'Failed'
       }).catch(error => {
-        return handleError(error, _classPrivateFieldGet(_logger17, this));
+        return handleError(error, _classPrivateFieldGet(_logger14, this));
       });
     }
     /**
@@ -20166,7 +19243,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _handlers3 = /*#__PURE__*/new WeakMap();
   var _clients = /*#__PURE__*/new WeakMap();
   var _networkEnabled = /*#__PURE__*/new WeakMap();
-  var _logger18 = /*#__PURE__*/new WeakMap();
+  var _logger15 = /*#__PURE__*/new WeakMap();
   var _NetworkManager_brand = /*#__PURE__*/new WeakSet();
   class NetworkManager extends EventEmitter {
     constructor(frameManager, networkEnabled = true, logger) {
@@ -20189,10 +19266,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _handlers3, [['Fetch.requestPaused', _assertClassBrand(_NetworkManager_brand, this, _onRequestPaused)], ['Fetch.authRequired', _assertClassBrand(_NetworkManager_brand, this, _onAuthRequired)], ['Network.requestWillBeSent', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSent)], ['Network.requestWillBeSentExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSentExtraInfo)], ['Network.requestServedFromCache', _assertClassBrand(_NetworkManager_brand, this, _onRequestServedFromCache)], ['Network.responseReceived', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceived)], ['Network.loadingFinished', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFinished)], ['Network.loadingFailed', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFailed)], ['Network.responseReceivedExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceivedExtraInfo)], [exports.CDPSessionEvent.Disconnected, _assertClassBrand(_NetworkManager_brand, this, _removeClient)]]);
       _classPrivateFieldInitSpec(this, _clients, new Map());
       _classPrivateFieldInitSpec(this, _networkEnabled, void 0);
-      _classPrivateFieldInitSpec(this, _logger18, void 0);
+      _classPrivateFieldInitSpec(this, _logger15, void 0);
       _classPrivateFieldSet(_frameManager, this, frameManager);
       _classPrivateFieldSet(_networkEnabled, this, networkEnabled ?? true);
-      _classPrivateFieldSet(_logger18, this, logger);
+      _classPrivateFieldSet(_logger15, this, logger);
     }
     async addClient(client) {
       if (!_classPrivateFieldGet(_networkEnabled, this) || _classPrivateFieldGet(_clients, this).has(client)) {
@@ -20290,21 +19367,16 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       await _assertClassBrand(_NetworkManager_brand, this, _applyToAllClients).call(this, _assertClassBrand(_NetworkManager_brand, this, _applyProtocolRequestInterception).bind(this));
     }
   }
-
-  /**
-   * @license
-   * Copyright 2017 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
   function _canIgnoreError(error) {
     return isErrorLike(error) && (isTargetClosedError(error) || error.message.includes('Not supported') || error.message.includes("wasn't found"));
   }
   async function _removeClient(client) {
     _classPrivateFieldGet(_clients, this).get(client)?.dispose();
     _classPrivateFieldGet(_clients, this).delete(client);
-    // Only dedicated workers leave requests pending when their session goes
-    // away. The worker is still known here: the session is closed before the
-    // page handles the target detaching.
+    // Only worker sessions (dedicated workers tracked by the page, and
+    // service/shared workers with their own manager) leave requests pending
+    // when their session goes away. The worker is still known here: the
+    // session is closed before its owner handles the target detaching.
     if (!_classPrivateFieldGet(_frameManager, this).worker(client)) {
       return;
     }
@@ -20396,7 +19468,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (nothingToEmulate && !_classPrivateFieldGet(_userAgentOverrideApplied, this)) {
       return;
     }
-    const userAgent = _classPrivateFieldGet(_userAgent, this) ?? (await _classPrivateFieldGet(_frameManager, this).page().browser().userAgent());
+    const userAgent = _classPrivateFieldGet(_userAgent, this) ?? (await _classPrivateFieldGet(_frameManager, this).browser().userAgent());
     if (userAgent === undefined) {
       return;
     }
@@ -20463,7 +19535,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       } = event;
       const previousRequestWillBeSent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(networkRequestId);
       if (previousRequestWillBeSent && event.redirectResponse) {
-        _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, previousRequestWillBeSent.client, previousRequestWillBeSent.event, undefined);
+        _assertClassBrand(_NetworkManager_brand, this, _onRequest).call(this, previousRequestWillBeSent.client, previousRequestWillBeSent.event, undefined);
       }
       _classPrivateFieldGet(_networkEventManager, this).storeRequestWillBeSent(networkRequestId, event, client);
       /**
@@ -20477,12 +19549,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           client: fetchClient
         } = requestPaused;
         _assertClassBrand(_NetworkManager_brand, this, _patchRequestEventHeaders).call(this, event, requestPausedEvent);
-        _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, event, requestPausedEvent.requestId, fetchClient);
+        _assertClassBrand(_NetworkManager_brand, this, _onRequest).call(this, client, event, requestPausedEvent.requestId, fetchClient);
         _classPrivateFieldGet(_networkEventManager, this).forgetRequestPaused(networkRequestId);
       }
       return;
     }
-    _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, event, undefined);
+    _assertClassBrand(_NetworkManager_brand, this, _onRequest).call(this, client, event, undefined);
   }
   function _onAuthRequired(client, event) {
     let response = 'Default';
@@ -20507,7 +19579,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         password
       }
     }).catch(err => {
-      _classPrivateFieldGet(_logger18, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+      _classPrivateFieldGet(_logger15, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
     });
   }
   /**
@@ -20522,7 +19594,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       void client.send('Fetch.continueRequest', {
         requestId: event.requestId
       }).catch(err => {
-        _classPrivateFieldGet(_logger18, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+        _classPrivateFieldGet(_logger15, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
       });
     }
     const {
@@ -20553,12 +19625,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     // Redirect requests have the same `requestId`. Wait for the redirect's
     // own Network.requestWillBeSent.
     if (requestWillBeSentEvent.request.url !== event.request.url || requestWillBeSentEvent.request.method !== event.request.method) {
-      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, networkClient, requestWillBeSentEvent, undefined);
+      _assertClassBrand(_NetworkManager_brand, this, _onRequest).call(this, networkClient, requestWillBeSentEvent, undefined);
       _classPrivateFieldGet(_networkEventManager, this).storeRequestPaused(networkRequestId, event, client);
       return;
     }
     _assertClassBrand(_NetworkManager_brand, this, _patchRequestEventHeaders).call(this, requestWillBeSentEvent, event);
-    _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, networkClient, requestWillBeSentEvent, fetchRequestId, client);
+    _assertClassBrand(_NetworkManager_brand, this, _onRequest).call(this, networkClient, requestWillBeSentEvent, fetchRequestId, client);
   }
   function _isRestartedRequest(request, event) {
     // Only a request with no response yet can be restarted. Redirects are
@@ -20582,7 +19654,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       // If the user already resolved the interception, the restarted job needs
       // the same resolution or the request hangs.
       void request._replayInterception().catch(err => {
-        _classPrivateFieldGet(_logger18, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+        _classPrivateFieldGet(_logger15, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
       });
     }
   }
@@ -20598,11 +19670,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     // still want to dispatch it for the interception by the user.
     const frame = event.frameId ? _classPrivateFieldGet(_frameManager, this).frame(event.frameId) : null;
     const worker = _classPrivateFieldGet(_frameManager, this).worker(client);
-    const request = new CdpHTTPRequest(client, frame, worker, event.requestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, [], _classPrivateFieldGet(_logger18, this));
+    const request = new CdpHTTPRequest(client, frame, worker, event.requestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, [], _classPrivateFieldGet(_logger15, this));
     this.emit(exports.NetworkManagerEvent.Request, request);
     void request.finalizeInterceptions();
   }
-  function _onRequest2(client, event, fetchRequestId, fetchClient = client, fromMemoryCache = false) {
+  function _onRequest(client, event, fetchRequestId, fetchClient = client, fromMemoryCache = false) {
     // With request interception enabled, Network.loadingFailed may have
     // arrived before the Fetch.requestPaused that created this request.
     const storedRequestWillBeSent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(event.requestId);
@@ -20646,7 +19718,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     const frame = event.frameId ? _classPrivateFieldGet(_frameManager, this).frame(event.frameId) : null;
     const worker = _classPrivateFieldGet(_frameManager, this).worker(client);
-    const request = new CdpHTTPRequest(client, frame, worker, fetchRequestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, redirectChain, _classPrivateFieldGet(_logger18, this), fetchClient);
+    const request = new CdpHTTPRequest(client, frame, worker, fetchRequestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, redirectChain, _classPrivateFieldGet(_logger15, this), fetchClient);
     const extraInfo = _classPrivateFieldGet(_networkEventManager, this).requestExtraInfo(event.requestId).shift();
     if (extraInfo) {
       request.updateHeaders(extraInfo.headers);
@@ -20681,11 +19753,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     // If request ended up being served from cache, we need to convert
     // requestWillBeSentEvent to a HTTP request.
     if (!request && requestWillBeSent) {
-      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, requestWillBeSent.event, undefined, client, true);
+      _assertClassBrand(_NetworkManager_brand, this, _onRequest).call(this, client, requestWillBeSent.event, undefined, client, true);
       request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
     }
     if (!request) {
-      _classPrivateFieldGet(_logger18, this)?.call(this, DEBUG_PREFIXES.error)?.(new Error(`Request ${event.requestId} was served from cache but we could not find the corresponding request object`));
+      _classPrivateFieldGet(_logger15, this)?.call(this, DEBUG_PREFIXES.error)?.(new Error(`Request ${event.requestId} was served from cache but we could not find the corresponding request object`));
       return;
     }
     this.emit(exports.NetworkManagerEvent.RequestServedFromCache, request);
@@ -20707,7 +19779,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     const extraInfos = _classPrivateFieldGet(_networkEventManager, this).responseExtraInfo(responseReceived.requestId);
     if (extraInfos.length) {
-      _classPrivateFieldGet(_logger18, this)?.call(this, DEBUG_PREFIXES.error)?.(new Error('Unexpected extraInfo events for request ' + responseReceived.requestId));
+      _classPrivateFieldGet(_logger15, this)?.call(this, DEBUG_PREFIXES.error)?.(new Error('Unexpected extraInfo events for request ' + responseReceived.requestId));
     }
     // Chromium sends wrong extraInfo events for responses served from cache.
     // See https://github.com/puppeteer/puppeteer/issues/9965 and
@@ -20741,7 +19813,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     const redirectInfo = _classPrivateFieldGet(_networkEventManager, this).takeQueuedRedirectInfo(event.requestId);
     if (redirectInfo) {
       _classPrivateFieldGet(_networkEventManager, this).responseExtraInfo(event.requestId).push(event);
-      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, redirectInfo.client, redirectInfo.event, redirectInfo.fetchRequestId, redirectInfo.fetchClient);
+      _assertClassBrand(_NetworkManager_brand, this, _onRequest).call(this, redirectInfo.client, redirectInfo.event, redirectInfo.fetchRequestId, redirectInfo.fetchClient);
       return;
     }
     // We may have skipped response and loading events because we didn't have
@@ -20839,6 +19911,1466 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       request.client = client;
     }
   }
+  var __addDisposableResource$3 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+      if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+      var dispose, inner;
+      if (async) {
+        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+        dispose = value[Symbol.asyncDispose];
+      }
+      if (dispose === void 0) {
+        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+        dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
+      }
+      if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
+      env.stack.push({
+        value: value,
+        dispose: dispose,
+        async: async
+      });
+    } else if (async) {
+      env.stack.push({
+        async: true
+      });
+    }
+    return value;
+  };
+  var __disposeResources$3 = undefined && undefined.__disposeResources || function (SuppressedError) {
+    return function (env) {
+      function fail(e) {
+        env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+        env.hasError = true;
+      }
+      var r,
+        s = 0;
+      function next() {
+        while (r = env.stack.pop()) {
+          try {
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
+          } catch (e) {
+            fail(e);
+          }
+        }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
+        if (env.hasError) throw env.error;
+      }
+      return next();
+    };
+  }(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+  });
+  /**
+   * @internal
+   */
+  var _world4 = /*#__PURE__*/new WeakMap();
+  var _client8 = /*#__PURE__*/new WeakMap();
+  var _id5 = /*#__PURE__*/new WeakMap();
+  var _targetType2 = /*#__PURE__*/new WeakMap();
+  var _logger16 = /*#__PURE__*/new WeakMap();
+  var _hasOwnerExceptionListeners = /*#__PURE__*/new WeakMap();
+  var _emitter2 = /*#__PURE__*/new WeakMap();
+  var _workerLoaded = /*#__PURE__*/new WeakMap();
+  var _CdpWebWorker_brand = /*#__PURE__*/new WeakSet();
+  class CdpWebWorker extends WebWorker {
+    get internalEmitter() {
+      return _classPrivateFieldGet(_emitter2, this);
+    }
+    constructor(_client9, _target2, exceptionThrown, _logger17, _networkManager, hasOwnerExceptionListeners = () => {
+      return false;
+    }) {
+      super(_target2.url());
+      /**
+       * Network manager for workers that are not owned by a page (service and
+       * shared workers). It only tracks this worker's session.
+       */
+      _classPrivateMethodInitSpec(this, _CdpWebWorker_brand);
+      _classPrivateFieldInitSpec(this, _world4, void 0);
+      _classPrivateFieldInitSpec(this, _client8, void 0);
+      _classPrivateFieldInitSpec(this, _id5, void 0);
+      _classPrivateFieldInitSpec(this, _targetType2, void 0);
+      _classPrivateFieldInitSpec(this, _logger16, void 0);
+      _classPrivateFieldInitSpec(this, _hasOwnerExceptionListeners, void 0);
+      _classPrivateFieldInitSpec(this, _emitter2, void 0);
+      _classPrivateFieldInitSpec(this, _workerLoaded, new Deferred());
+      _classPrivateFieldSet(_id5, this, _target2._targetId);
+      _classPrivateFieldSet(_client8, this, _client9);
+      _classPrivateFieldSet(_logger16, this, _logger17);
+      _classPrivateFieldSet(_hasOwnerExceptionListeners, this, hasOwnerExceptionListeners);
+      _classPrivateFieldSet(_targetType2, this, _target2.type());
+      _classPrivateFieldSet(_world4, this, new IsolatedWorld(this, new TimeoutSettings(), MAIN_WORLD, _logger17));
+      _classPrivateFieldSet(_emitter2, this, new EventEmitter(undefined, _logger17));
+      _classPrivateFieldGet(_client8, this).once('Runtime.executionContextCreated', async event => {
+        _classPrivateFieldGet(_world4, this).setContext(new ExecutionContext(_client9, event.context, _classPrivateFieldGet(_world4, this), _logger17));
+      });
+      _classPrivateFieldGet(_client8, this).once('Inspector.workerScriptLoaded', () => {
+        _classPrivateFieldGet(_workerLoaded, this).resolve();
+      });
+      _classPrivateFieldGet(_world4, this).emitter.on('consoleapicalled', async event => {
+        try {
+          const values = event.args.map(arg => {
+            return _classPrivateFieldGet(_world4, this).createCdpHandle(arg);
+          });
+          const noInternalListeners = _classPrivateFieldGet(_emitter2, this).listenerCount(exports.WebWorkerEvent.Console) === 0;
+          const noWorkerListeners = this.listenerCount(exports.WebWorkerEvent.Console) === 0;
+          if (noInternalListeners && noWorkerListeners) {
+            // eslint-disable-next-line max-len -- The comment is long.
+            // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
+            for (const value of values) {
+              void value.dispose().catch(err => {
+                return _classPrivateFieldGet(_logger16, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+              });
+            }
+            return;
+          }
+          const consoleMessages = createConsoleMessage(event, values, _classPrivateFieldGet(_id5, this), undefined, this);
+          _classPrivateFieldGet(_emitter2, this).emit(exports.WebWorkerEvent.Console, consoleMessages);
+          if (!noWorkerListeners) {
+            this.emit(exports.WebWorkerEvent.Console, consoleMessages);
+          }
+        } catch (err) {
+          _classPrivateFieldGet(_logger16, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+        }
+      });
+      _classPrivateFieldGet(_client8, this).on('Runtime.exceptionThrown', event => {
+        exceptionThrown(event);
+        _assertClassBrand(_CdpWebWorker_brand, this, _onException).call(this, event);
+      });
+      _classPrivateFieldGet(_client8, this).once(exports.CDPSessionEvent.Disconnected, () => {
+        // The worker might be destroyed before its script loads (e.g. a 404
+        // script), in which case `Inspector.workerScriptLoaded` never fires.
+        _classPrivateFieldGet(_workerLoaded, this).reject(new TargetCloseError('Worker was closed before its script finished loading'));
+        _classPrivateFieldGet(_world4, this).dispose();
+      });
+      const netManager = _networkManager ?? _assertClassBrand(_CdpWebWorker_brand, this, _createOwnNetworkManager).call(this, _target2, _logger17);
+      // This might fail if the target is closed before we receive all execution contexts.
+      netManager.addClient(_classPrivateFieldGet(_client8, this)).catch(err => {
+        return _classPrivateFieldGet(_logger16, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+      });
+      // Must run after addClient(): addClient() synchronously registers the
+      // manager's Disconnected listener, which emits RequestFailed for pending
+      // requests (NetworkManager#removeClient). #forwardNetworkEvents()
+      // registers a later Disconnected listener that stops forwarding, so the
+      // opposite order would drop those RequestFailed events.
+      _assertClassBrand(_CdpWebWorker_brand, this, _forwardNetworkEvents).call(this, netManager);
+      _classPrivateFieldGet(_client8, this).send('Runtime.enable').catch(err => {
+        return _classPrivateFieldGet(_logger16, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+      });
+    }
+    mainRealm() {
+      return _classPrivateFieldGet(_world4, this);
+    }
+    get client() {
+      return _classPrivateFieldGet(_client8, this);
+    }
+    async close() {
+      switch (_classPrivateFieldGet(_targetType2, this)) {
+        case exports.TargetType.SERVICE_WORKER:
+          {
+            // For service workers we need to close the target and detach to allow
+            // the worker to stop.
+            await this.client.connection()?.send('Target.closeTarget', {
+              targetId: _classPrivateFieldGet(_id5, this)
+            });
+            await this.client.connection()?.send('Target.detachFromTarget', {
+              sessionId: this.client.id()
+            });
+            break;
+          }
+        case exports.TargetType.SHARED_WORKER:
+          {
+            await this.client.connection()?.send('Target.closeTarget', {
+              targetId: _classPrivateFieldGet(_id5, this)
+            });
+            break;
+          }
+        default:
+          // Dedicated workers do not support `Target.closeTarget`. Evaluate on
+          // the realm directly so that closing does not wait for the worker
+          // script to load.
+          await _classPrivateFieldGet(_world4, this).evaluate(() => {
+            self.close();
+          });
+      }
+    }
+    async evaluate(func, ...args) {
+      await _classPrivateFieldGet(_workerLoaded, this).valueOrThrow();
+      return await super.evaluate(func, ...args);
+    }
+    async evaluateHandle(func, ...args) {
+      await _classPrivateFieldGet(_workerLoaded, this).valueOrThrow();
+      return await super.evaluateHandle(func, ...args);
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2019 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * @internal
+   */
+  function _createOwnNetworkManager(target, logger) {
+    return new NetworkManager({
+      frame: () => {
+        return null;
+      },
+      worker: client => {
+        return client === _classPrivateFieldGet(_client8, this) ? this : null;
+      },
+      browser: () => {
+        return target.browser();
+      }
+    }, target.browser().isNetworkEnabled(), logger);
+  }
+  /**
+   * Utility method to check if the request is owned by the current WebWorker
+   */
+  function _isOwn(request) {
+    return request.worker() === this;
+  }
+  /**
+   * Re-emits network events that belong to this worker. The network manager
+   * may be shared with a page (dedicated workers), so events are filtered by
+   * `request.worker()`.
+   */
+  function _forwardNetworkEvents(networkManager) {
+    const emitter = new EventEmitter(networkManager);
+    emitter.on(exports.NetworkManagerEvent.Request, request => {
+      if (_assertClassBrand(_CdpWebWorker_brand, this, _isOwn).call(this, request)) {
+        this.emit(exports.WebWorkerEvent.Request, request);
+      }
+    });
+    emitter.on(exports.NetworkManagerEvent.RequestServedFromCache, request => {
+      if (_assertClassBrand(_CdpWebWorker_brand, this, _isOwn).call(this, request)) {
+        this.emit(exports.WebWorkerEvent.RequestServedFromCache, request);
+      }
+    });
+    emitter.on(exports.NetworkManagerEvent.Response, response => {
+      if (_assertClassBrand(_CdpWebWorker_brand, this, _isOwn).call(this, response.request())) {
+        this.emit(exports.WebWorkerEvent.Response, response);
+      }
+    });
+    emitter.on(exports.NetworkManagerEvent.RequestFailed, request => {
+      if (_assertClassBrand(_CdpWebWorker_brand, this, _isOwn).call(this, request)) {
+        this.emit(exports.WebWorkerEvent.RequestFailed, request);
+      }
+    });
+    emitter.on(exports.NetworkManagerEvent.RequestFinished, request => {
+      if (_assertClassBrand(_CdpWebWorker_brand, this, _isOwn).call(this, request)) {
+        this.emit(exports.WebWorkerEvent.RequestFinished, request);
+      }
+    });
+    _classPrivateFieldGet(_client8, this).once(exports.CDPSessionEvent.Disconnected, () => {
+      emitter.removeAllListeners();
+    });
+  }
+  function _onException(event) {
+    const env_1 = {
+      stack: [],
+      error: void 0,
+      hasError: false
+    };
+    try {
+      const details = event.exceptionDetails;
+      if (this.listenerCount(exports.WebWorkerEvent.Exception) === 0 && !_classPrivateFieldGet(_hasOwnerExceptionListeners, this).call(this)) {
+        // Nobody can use a handle, but the browser keeps the exception alive
+        // until it is released.
+        if (details.exception) {
+          void releaseObject(_classPrivateFieldGet(_client8, this), details.exception, _classPrivateFieldGet(_logger16, this));
+        }
+        return;
+      }
+      // Disposed when this scope ends, i.e. right after dispatch. This is a no-op
+      // if a listener called `move()` on the handle.
+      const handle = __addDisposableResource$3(env_1, details.exception?.objectId ? _classPrivateFieldGet(_world4, this).createCdpHandle(details.exception) : undefined, false);
+      const exception = createRemoteException(details, handle);
+      // Emitted internally first so that the page can forward it before the
+      // handle is disposed.
+      _classPrivateFieldGet(_emitter2, this).emit(exports.WebWorkerEvent.Exception, exception);
+      this.emit(exports.WebWorkerEvent.Exception, exception);
+    } catch (e_1) {
+      env_1.error = e_1;
+      env_1.hasError = true;
+    } finally {
+      __disposeResources$3(env_1);
+    }
+  }
+  var _context = /*#__PURE__*/new WeakMap();
+  var _emitter3 = /*#__PURE__*/new WeakMap();
+  var _worldId = /*#__PURE__*/new WeakMap();
+  var _origin = /*#__PURE__*/new WeakMap();
+  var _frameOrWorker = /*#__PURE__*/new WeakMap();
+  var _logger18 = /*#__PURE__*/new WeakMap();
+  var _IsolatedWorld_brand = /*#__PURE__*/new WeakSet();
+  class IsolatedWorld extends Realm {
+    constructor(frameOrWorker, timeoutSettings, worldId, logger) {
+      super(timeoutSettings);
+      _classPrivateMethodInitSpec(this, _IsolatedWorld_brand);
+      _classPrivateFieldInitSpec(this, _context, void 0);
+      _classPrivateFieldInitSpec(this, _emitter3, new EventEmitter());
+      _classPrivateFieldInitSpec(this, _worldId, void 0);
+      _classPrivateFieldInitSpec(this, _origin, void 0);
+      _classPrivateFieldInitSpec(this, _frameOrWorker, void 0);
+      _classPrivateFieldInitSpec(this, _logger18, void 0);
+      _classPrivateFieldSet(_frameOrWorker, this, frameOrWorker);
+      _classPrivateFieldSet(_worldId, this, worldId);
+      _classPrivateFieldSet(_logger18, this, logger);
+    }
+    get environment() {
+      return _classPrivateFieldGet(_frameOrWorker, this);
+    }
+    get client() {
+      return _classPrivateFieldGet(_frameOrWorker, this).client;
+    }
+    get emitter() {
+      return _classPrivateFieldGet(_emitter3, this);
+    }
+    setContext(context) {
+      _classPrivateFieldGet(_context, this)?.[disposeSymbol]();
+      context.once('disposed', _assertClassBrand(_IsolatedWorld_brand, this, _onContextDisposed).bind(this));
+      context.on('consoleapicalled', _assertClassBrand(_IsolatedWorld_brand, this, _onContextConsoleApiCalled).bind(this));
+      context.on('bindingcalled', _assertClassBrand(_IsolatedWorld_brand, this, _onContextBindingCalled).bind(this));
+      _classPrivateFieldSet(_context, this, context);
+      _classPrivateFieldGet(_emitter3, this).emit('context', context);
+      void this.taskManager.rerunAll();
+    }
+    hasContext() {
+      return !!_classPrivateFieldGet(_context, this);
+    }
+    get context() {
+      return _classPrivateFieldGet(_context, this);
+    }
+    async evaluateHandle(pageFunction, ...args) {
+      pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
+      // This code needs to schedule evaluateHandle call synchronously (at
+      // least when the context is there) so we cannot unconditionally
+      // await.
+      let context = _assertClassBrand(_IsolatedWorld_brand, this, _executionContext).call(this);
+      if (!context) {
+        context = await _assertClassBrand(_IsolatedWorld_brand, this, _waitForExecutionContext).call(this);
+      }
+      return await context.evaluateHandle(pageFunction, ...args);
+    }
+    async evaluate(pageFunction, ...args) {
+      pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
+      // This code needs to schedule evaluate call synchronously (at
+      // least when the context is there) so we cannot unconditionally
+      // await.
+      let context = _assertClassBrand(_IsolatedWorld_brand, this, _executionContext).call(this);
+      if (!context) {
+        context = await _assertClassBrand(_IsolatedWorld_brand, this, _waitForExecutionContext).call(this);
+      }
+      return await context.evaluate(pageFunction, ...args);
+    }
+    async adoptBackendNode(backendNodeId) {
+      // This code needs to schedule resolveNode call synchronously (at
+      // least when the context is there) so we cannot unconditionally
+      // await.
+      let context = _assertClassBrand(_IsolatedWorld_brand, this, _executionContext).call(this);
+      if (!context) {
+        context = await _assertClassBrand(_IsolatedWorld_brand, this, _waitForExecutionContext).call(this);
+      }
+      const {
+        object
+      } = await this.client.send('DOM.resolveNode', {
+        backendNodeId: backendNodeId,
+        executionContextId: context.id
+      });
+      return this.createCdpHandle(object);
+    }
+    async adoptHandle(handle) {
+      if (handle.realm === this) {
+        // If the context has already adopted this handle, clone it so downstream
+        // disposal doesn't become an issue.
+        return await handle.evaluateHandle(value => {
+          return value;
+        });
+      }
+      const nodeInfo = await this.client.send('DOM.describeNode', {
+        objectId: handle.id
+      });
+      return await this.adoptBackendNode(nodeInfo.node.backendNodeId);
+    }
+    async transferHandle(handle) {
+      if (handle.realm === this) {
+        return handle;
+      }
+      // Implies it's a primitive value, probably.
+      if (handle.remoteObject().objectId === undefined) {
+        return handle;
+      }
+      const info = await this.client.send('DOM.describeNode', {
+        objectId: handle.remoteObject().objectId
+      });
+      const newHandle = await this.adoptBackendNode(info.node.backendNodeId);
+      await handle.dispose();
+      return newHandle;
+    }
+    /**
+     * @internal
+     */
+    createCdpHandle(remoteObject) {
+      if (remoteObject.subtype === 'node') {
+        return new CdpElementHandle(this, remoteObject, _classPrivateFieldGet(_logger18, this));
+      }
+      return new CdpJSHandle(this, remoteObject, _classPrivateFieldGet(_logger18, this));
+    }
+    [disposeSymbol]() {
+      _classPrivateFieldGet(_context, this)?.[disposeSymbol]();
+      _classPrivateFieldGet(_emitter3, this).emit('disposed', undefined);
+      _classPrivateFieldGet(_emitter3, this).removeAllListeners();
+      super[disposeSymbol]();
+    }
+    get origin() {
+      return _classPrivateFieldGet(_origin, this);
+    }
+    set origin(origin) {
+      _classPrivateFieldSet(_origin, this, origin);
+    }
+    setWorldId(worldId) {
+      _classPrivateFieldSet(_worldId, this, worldId);
+    }
+    async extension() {
+      if (_classPrivateFieldGet(_frameOrWorker, this) instanceof CdpWebWorker) {
+        throw new Error('Unable to get extension from Realm');
+      }
+      if (_classPrivateFieldGet(_worldId, this) === MAIN_WORLD) {
+        return null;
+      }
+      if (typeof _classPrivateFieldGet(_worldId, this) === 'string') {
+        const extensions = await _classPrivateFieldGet(_frameOrWorker, this)._frameManager.page().browser().extensions();
+        return extensions.get(_classPrivateFieldGet(_worldId, this)) ?? null;
+      }
+      return null;
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2019 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  function _onContextDisposed() {
+    _classPrivateFieldSet(_context, this, undefined);
+    if ('clearDocumentHandle' in _classPrivateFieldGet(_frameOrWorker, this)) {
+      _classPrivateFieldGet(_frameOrWorker, this).clearDocumentHandle();
+    }
+  }
+  function _onContextConsoleApiCalled(event) {
+    _classPrivateFieldGet(_emitter3, this).emit('consoleapicalled', event);
+  }
+  function _onContextBindingCalled(event) {
+    _classPrivateFieldGet(_emitter3, this).emit('bindingcalled', event);
+  }
+  function _executionContext() {
+    if (this.disposed) {
+      throw new Error(`Execution context is not available in detached frame or worker "${this.environment.url()}" (are you trying to evaluate?)`);
+    }
+    return _classPrivateFieldGet(_context, this);
+  }
+  /**
+   * Waits for the next context to be set on the isolated world.
+   */
+  async function _waitForExecutionContext() {
+    const error = new Error('Execution context was destroyed');
+    const result = await firstValueFrom(fromEmitterEvent(_classPrivateFieldGet(_emitter3, this), 'context').pipe(raceWith(fromEmitterEvent(_classPrivateFieldGet(_emitter3, this), 'disposed').pipe(map(() => {
+      // The message has to match the CDP message expected by the WaitTask class.
+      throw error;
+    })), timeout(this.timeoutSettings.timeout()))));
+    return result;
+  }
+  const puppeteerToProtocolLifecycle = new Map([['load', 'load'], ['domcontentloaded', 'DOMContentLoaded'], ['networkidle0', 'networkIdle'], ['networkidle2', 'networkAlmostIdle']]);
+  /**
+   * @internal
+   */
+  var _expectedLifecycle = /*#__PURE__*/new WeakMap();
+  var _frame3 = /*#__PURE__*/new WeakMap();
+  var _timeout3 = /*#__PURE__*/new WeakMap();
+  var _navigationRequest = /*#__PURE__*/new WeakMap();
+  var _subscriptions2 = /*#__PURE__*/new WeakMap();
+  var _initialLoaderId = /*#__PURE__*/new WeakMap();
+  var _terminationDeferred = /*#__PURE__*/new WeakMap();
+  var _sameDocumentNavigationDeferred = /*#__PURE__*/new WeakMap();
+  var _lifecycleDeferred = /*#__PURE__*/new WeakMap();
+  var _newDocumentNavigationDeferred = /*#__PURE__*/new WeakMap();
+  var _error3 = /*#__PURE__*/new WeakMap();
+  var _hasSameDocumentNavigation = /*#__PURE__*/new WeakMap();
+  var _swapped = /*#__PURE__*/new WeakMap();
+  var _navigationResponseReceived = /*#__PURE__*/new WeakMap();
+  var _LifecycleWatcher_brand = /*#__PURE__*/new WeakSet();
+  class LifecycleWatcher {
+    constructor(networkManager, _frame4, waitUntil, timeout, signal) {
+      _classPrivateMethodInitSpec(this, _LifecycleWatcher_brand);
+      _classPrivateFieldInitSpec(this, _expectedLifecycle, void 0);
+      _classPrivateFieldInitSpec(this, _frame3, void 0);
+      _classPrivateFieldInitSpec(this, _timeout3, void 0);
+      _classPrivateFieldInitSpec(this, _navigationRequest, null);
+      _classPrivateFieldInitSpec(this, _subscriptions2, new DisposableStack());
+      _classPrivateFieldInitSpec(this, _initialLoaderId, void 0);
+      _classPrivateFieldInitSpec(this, _terminationDeferred, void 0);
+      _classPrivateFieldInitSpec(this, _sameDocumentNavigationDeferred, Deferred.create());
+      _classPrivateFieldInitSpec(this, _lifecycleDeferred, Deferred.create());
+      _classPrivateFieldInitSpec(this, _newDocumentNavigationDeferred, Deferred.create());
+      _classPrivateFieldInitSpec(this, _error3, new Error('LifecycleWatcher terminated'));
+      _classPrivateFieldInitSpec(this, _hasSameDocumentNavigation, void 0);
+      _classPrivateFieldInitSpec(this, _swapped, void 0);
+      _classPrivateFieldInitSpec(this, _navigationResponseReceived, void 0);
+      if (Array.isArray(waitUntil)) {
+        waitUntil = waitUntil.slice();
+      } else if (typeof waitUntil === 'string') {
+        waitUntil = [waitUntil];
+      }
+      _classPrivateFieldSet(_initialLoaderId, this, _frame4._loaderId);
+      _classPrivateFieldSet(_expectedLifecycle, this, waitUntil.map(value => {
+        const protocolEvent = puppeteerToProtocolLifecycle.get(value);
+        assert(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
+        return protocolEvent;
+      }));
+      _classPrivateFieldSet(_frame3, this, _frame4);
+      _classPrivateFieldSet(_timeout3, this, timeout);
+      const frameManagerEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame4._frameManager));
+      frameManagerEmitter.on(exports.FrameManagerEvent.LifecycleEvent, _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).bind(this));
+      const frameEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame4));
+      frameEmitter.on(exports.FrameEvent.FrameNavigatedWithinDocument, _assertClassBrand(_LifecycleWatcher_brand, this, _navigatedWithinDocument).bind(this));
+      frameEmitter.on(exports.FrameEvent.FrameNavigated, _assertClassBrand(_LifecycleWatcher_brand, this, _navigated).bind(this));
+      frameEmitter.on(exports.FrameEvent.FrameSwapped, _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).bind(this));
+      frameEmitter.on(exports.FrameEvent.FrameSwappedByActivation, _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).bind(this));
+      frameEmitter.on(exports.FrameEvent.FrameDetached, _assertClassBrand(_LifecycleWatcher_brand, this, _onFrameDetached).bind(this));
+      const networkManagerEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(networkManager));
+      networkManagerEmitter.on(exports.NetworkManagerEvent.Request, _assertClassBrand(_LifecycleWatcher_brand, this, _onRequest2).bind(this));
+      networkManagerEmitter.on(exports.NetworkManagerEvent.Response, _assertClassBrand(_LifecycleWatcher_brand, this, _onResponse).bind(this));
+      networkManagerEmitter.on(exports.NetworkManagerEvent.RequestFailed, _assertClassBrand(_LifecycleWatcher_brand, this, _onRequestFailed).bind(this));
+      _classPrivateFieldSet(_terminationDeferred, this, Deferred.create({
+        timeout: _classPrivateFieldGet(_timeout3, this),
+        message: `Navigation timeout of ${_classPrivateFieldGet(_timeout3, this)} ms exceeded`
+      }));
+      if (signal) {
+        const onAbort = () => {
+          if (signal.reason instanceof Error) {
+            signal.reason.cause = _classPrivateFieldGet(_error3, this);
+          }
+          _classPrivateFieldGet(_terminationDeferred, this).reject(signal.reason);
+        };
+        if (signal.aborted) {
+          onAbort();
+        } else {
+          signal.addEventListener('abort', onAbort, {
+            once: true
+          });
+          _classPrivateFieldGet(_subscriptions2, this).defer(() => {
+            signal.removeEventListener('abort', onAbort);
+          });
+        }
+      }
+      _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
+    }
+    async navigationResponse() {
+      // Continue with a possibly null response.
+      await _classPrivateFieldGet(_navigationResponseReceived, this)?.valueOrThrow();
+      return _classPrivateFieldGet(_navigationRequest, this) ? _classPrivateFieldGet(_navigationRequest, this).response() : null;
+    }
+    sameDocumentNavigationPromise() {
+      return _classPrivateFieldGet(_sameDocumentNavigationDeferred, this).valueOrThrow();
+    }
+    newDocumentNavigationPromise() {
+      return _classPrivateFieldGet(_newDocumentNavigationDeferred, this).valueOrThrow();
+    }
+    lifecyclePromise() {
+      return _classPrivateFieldGet(_lifecycleDeferred, this).valueOrThrow();
+    }
+    terminationPromise() {
+      return _classPrivateFieldGet(_terminationDeferred, this).valueOrThrow();
+    }
+    dispose() {
+      _classPrivateFieldGet(_subscriptions2, this).dispose();
+      _classPrivateFieldGet(_error3, this).cause = new Error('LifecycleWatcher disposed');
+      _classPrivateFieldGet(_terminationDeferred, this).resolve(_classPrivateFieldGet(_error3, this));
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2017 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  function _onRequest2(request) {
+    if (request.frame() !== _classPrivateFieldGet(_frame3, this) || !request.isNavigationRequest()) {
+      return;
+    }
+    _classPrivateFieldSet(_navigationRequest, this, request);
+    // Resolve previous navigation response in case there are multiple
+    // navigation requests reported by the backend. This generally should not
+    // happen by it looks like it's possible.
+    _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
+    _classPrivateFieldSet(_navigationResponseReceived, this, Deferred.create());
+    if (request.response() !== null) {
+      _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
+    }
+  }
+  function _onRequestFailed(request) {
+    if (_classPrivateFieldGet(_navigationRequest, this)?.id !== request.id) {
+      return;
+    }
+    _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
+  }
+  function _onResponse(response) {
+    if (_classPrivateFieldGet(_navigationRequest, this)?.id !== response.request().id) {
+      return;
+    }
+    _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
+  }
+  function _onFrameDetached(frame) {
+    if (_classPrivateFieldGet(_frame3, this) === frame) {
+      _classPrivateFieldGet(_error3, this).message = 'Navigating frame was detached';
+      _classPrivateFieldGet(_terminationDeferred, this).resolve(_classPrivateFieldGet(_error3, this));
+      return;
+    }
+    _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
+  }
+  function _navigatedWithinDocument() {
+    _classPrivateFieldSet(_hasSameDocumentNavigation, this, true);
+    _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
+  }
+  function _navigated(navigationType) {
+    if (navigationType === 'BackForwardCacheRestore') {
+      return _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).call(this);
+    }
+    _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
+  }
+  function _frameSwapped() {
+    _classPrivateFieldSet(_swapped, this, true);
+    _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).call(this);
+  }
+  function _checkLifecycleComplete() {
+    // We expect navigation to commit.
+    if (!checkLifecycle(_classPrivateFieldGet(_frame3, this), _classPrivateFieldGet(_expectedLifecycle, this))) {
+      return;
+    }
+    _classPrivateFieldGet(_lifecycleDeferred, this).resolve();
+    if (_classPrivateFieldGet(_hasSameDocumentNavigation, this)) {
+      _classPrivateFieldGet(_sameDocumentNavigationDeferred, this).resolve(undefined);
+    }
+    if (_classPrivateFieldGet(_swapped, this) || _classPrivateFieldGet(_frame3, this)._loaderId !== _classPrivateFieldGet(_initialLoaderId, this)) {
+      _classPrivateFieldGet(_newDocumentNavigationDeferred, this).resolve(undefined);
+    }
+    function checkLifecycle(frame, expectedLifecycle) {
+      for (const event of expectedLifecycle) {
+        if (!frame._lifecycleEvents.has(event)) {
+          return false;
+        }
+      }
+      for (const child of frame.childFrames()) {
+        if (child._hasStartedLoading && !checkLifecycle(child, expectedLifecycle)) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+  var __runInitializers$1 = undefined && undefined.__runInitializers || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+      value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+  };
+  var __esDecorate$1 = undefined && undefined.__esDecorate || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) {
+      if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
+      return f;
+    }
+    var kind = contextIn.kind,
+      key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _,
+      done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+      var context = {};
+      for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+      for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+      context.addInitializer = function (f) {
+        if (done) throw new TypeError("Cannot add initializers after decoration has completed");
+        extraInitializers.push(accept(f || null));
+      };
+      var result = (0, decorators[i])(kind === "accessor" ? {
+        get: descriptor.get,
+        set: descriptor.set
+      } : descriptor[key], context);
+      if (kind === "accessor") {
+        if (result === void 0) continue;
+        if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+        if (_ = accept(result.get)) descriptor.get = _;
+        if (_ = accept(result.set)) descriptor.set = _;
+        if (_ = accept(result.init)) initializers.unshift(_);
+      } else if (_ = accept(result)) {
+        if (kind === "field") initializers.unshift(_);else descriptor[key] = _;
+      }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+  };
+  /**
+   * @internal
+   */
+  let CdpFrame = ((_ref3, _CdpFrame, _url4, _detached2, _client0, _logger19, _CdpFrame_brand) => {
+    let _classSuper = Frame;
+    let _instanceExtraInitializers = [];
+    let _goto_decorators;
+    let _waitForNavigation_decorators;
+    let _setContent_decorators;
+    let _addPreloadScript_decorators;
+    let _addExposedFunctionBinding_decorators;
+    let _removeExposedFunctionBinding_decorators;
+    let _waitForDevicePrompt_decorators;
+    return _url4 = /*#__PURE__*/new WeakMap(), _detached2 = /*#__PURE__*/new WeakMap(), _client0 = /*#__PURE__*/new WeakMap(), _logger19 = /*#__PURE__*/new WeakMap(), _CdpFrame_brand = /*#__PURE__*/new WeakSet(), _ref3 = (_goto_decorators = [throwIfDetached], _waitForNavigation_decorators = [throwIfDetached], _setContent_decorators = [throwIfDetached], _addPreloadScript_decorators = [throwIfDetached], _addExposedFunctionBinding_decorators = [throwIfDetached], _removeExposedFunctionBinding_decorators = [throwIfDetached], _waitForDevicePrompt_decorators = [throwIfDetached], disposeSymbol), _CdpFrame = class CdpFrame extends _classSuper {
+      constructor(frameManager, frameId, parentFrameId, client, logger) {
+        super(logger);
+        _classPrivateMethodInitSpec(this, _CdpFrame_brand);
+        _classPrivateFieldInitSpec(this, _url4, (__runInitializers$1(this, _instanceExtraInitializers), ''));
+        _classPrivateFieldInitSpec(this, _detached2, false);
+        _classPrivateFieldInitSpec(this, _client0, void 0);
+        _defineProperty(this, "_frameManager", void 0);
+        _defineProperty(this, "_loaderId", '');
+        _defineProperty(this, "_lifecycleEvents", new Set());
+        _defineProperty(this, "_id", void 0);
+        _defineProperty(this, "_parentId", void 0);
+        _defineProperty(this, "accessibility", void 0);
+        _defineProperty(this, "worlds", void 0);
+        _defineProperty(this, "extensionWorlds", {});
+        _classPrivateFieldInitSpec(this, _logger19, void 0);
+        this._frameManager = frameManager;
+        _classPrivateFieldSet(_url4, this, '');
+        this._id = frameId;
+        this._parentId = parentFrameId;
+        _classPrivateFieldSet(_detached2, this, false);
+        _classPrivateFieldSet(_client0, this, client);
+        _classPrivateFieldSet(_logger19, this, logger);
+        this._loaderId = '';
+        this.worlds = {
+          [MAIN_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings, MAIN_WORLD, logger),
+          [PUPPETEER_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings, PUPPETEER_WORLD, logger)
+        };
+        this.accessibility = new Accessibility(this.worlds[MAIN_WORLD], frameId, logger);
+        this.on(exports.FrameEvent.FrameSwappedByActivation, () => {
+          // Emulate loading process for swapped frames.
+          this._onLoadingStarted();
+          this._onLoadingStopped();
+        });
+        this.registerWorldListeners(this.worlds[MAIN_WORLD]);
+      }
+      /**
+       * @internal
+       */
+      registerWorldListeners(world) {
+        world.emitter.on('consoleapicalled', event => {
+          this._frameManager.emit(exports.FrameManagerEvent.ConsoleApiCalled, [world, event]);
+        });
+        world.emitter.on('bindingcalled', event => {
+          this._frameManager.emit(exports.FrameManagerEvent.BindingCalled, [world, event]);
+        });
+      }
+      /**
+       * This is used internally in DevTools.
+       *
+       * @internal
+       */
+      _client() {
+        return _classPrivateFieldGet(_client0, this);
+      }
+      /**
+       * Updates the frame ID with the new ID. This happens when the main frame is
+       * replaced by a different frame.
+       */
+      updateId(id) {
+        this._id = id;
+      }
+      updateClient(client) {
+        _classPrivateFieldSet(_client0, this, client);
+      }
+      page() {
+        return this._frameManager.page();
+      }
+      async goto(url, options = {}) {
+        if (!this.page()._isUrlAllowed(url)) {
+          throw new Error(`Navigation to ${url} is blocked by blocklist/allowlist rules`);
+        }
+        const {
+          referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'],
+          referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'],
+          waitUntil = ['load'],
+          timeout = this._frameManager.timeoutSettings.navigationTimeout(),
+          signal
+        } = options;
+        signal?.throwIfAborted();
+        let ensureNewDocumentNavigation = false;
+        const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
+        try {
+          let error = await Deferred.race([navigate(_classPrivateFieldGet(_client0, this), url, referer, referrerPolicy ? referrerPolicyToProtocol(referrerPolicy) : undefined, this._id), watcher.terminationPromise()]);
+          if (!error) {
+            error = await Deferred.race([watcher.terminationPromise(), ensureNewDocumentNavigation ? watcher.newDocumentNavigationPromise() : watcher.sameDocumentNavigationPromise()]);
+          }
+          if (error) {
+            throw error;
+          }
+          const result = await Deferred.race([watcher.terminationPromise(), watcher.navigationResponse()]);
+          if (result instanceof Error) {
+            throw result;
+          }
+          return result ?? null;
+        } finally {
+          watcher.dispose();
+        }
+        async function navigate(client, url, referrer, referrerPolicy, frameId) {
+          try {
+            const response = await client.send('Page.navigate', {
+              url,
+              referrer,
+              frameId,
+              referrerPolicy
+            });
+            ensureNewDocumentNavigation = !!response.loaderId;
+            if (response.errorText === 'net::ERR_HTTP_RESPONSE_CODE_FAILURE') {
+              return null;
+            }
+            return response.errorText ? new Error(`${response.errorText} at ${url}`) : null;
+          } catch (error) {
+            if (isErrorLike(error)) {
+              return error;
+            }
+            throw error;
+          }
+        }
+      }
+      async waitForNavigation(options = {}) {
+        const {
+          waitUntil = ['load'],
+          timeout = this._frameManager.timeoutSettings.navigationTimeout(),
+          signal
+        } = options;
+        const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
+        try {
+          const error = await Deferred.race([watcher.terminationPromise(), ...(options.ignoreSameDocumentNavigation ? [] : [watcher.sameDocumentNavigationPromise()]), watcher.newDocumentNavigationPromise()]);
+          if (error) {
+            throw error;
+          }
+          const result = await Deferred.race([watcher.terminationPromise(), watcher.navigationResponse()]);
+          if (result instanceof Error) {
+            throw result;
+          }
+          return result || null;
+        } finally {
+          watcher.dispose();
+        }
+      }
+      get client() {
+        return _classPrivateFieldGet(_client0, this);
+      }
+      mainRealm() {
+        return this.worlds[MAIN_WORLD];
+      }
+      isolatedRealm() {
+        return this.worlds[PUPPETEER_WORLD];
+      }
+      async setContent(html, options = {}) {
+        const {
+          waitUntil = ['load'],
+          timeout = this._frameManager.timeoutSettings.navigationTimeout(),
+          signal
+        } = options;
+        signal?.throwIfAborted();
+        // We rely upon the fact that the document is reopened, which resets the
+        // frame lifecycle with an "init" lifecycle event.
+        // @see https://crrev.com/608658
+        await firstValueFrom(from(this.setFrameContent(html)).pipe(raceWith(fromAbortSignal(signal))));
+        const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
+        try {
+          const error = await Deferred.race([watcher.terminationPromise(), watcher.lifecyclePromise()]);
+          if (error) {
+            throw error;
+          }
+        } finally {
+          watcher.dispose();
+        }
+      }
+      /**
+       * @internal
+       */
+      async setFrameContent(content) {
+        // Writing the content from the page would go through document.write, which
+        // makes Chrome treat parser-blocking cross-site scripts in it as an
+        // intervention candidate and may block them outright.
+        await _classPrivateFieldGet(_client0, this).send('Page.setDocumentContent', {
+          frameId: this._id,
+          html: content
+        });
+      }
+      url() {
+        return _classPrivateFieldGet(_url4, this);
+      }
+      parentFrame() {
+        return this._frameManager._frameTree.parentFrame(this._id) || null;
+      }
+      childFrames() {
+        return this._frameManager._frameTree.childFrames(this._id);
+      }
+      async addPreloadScript(preloadScript) {
+        const parentFrame = this.parentFrame();
+        if (parentFrame && _classPrivateFieldGet(_client0, this) === parentFrame.client) {
+          return;
+        }
+        if (preloadScript.getIdForFrame(this)) {
+          return;
+        }
+        const {
+          identifier
+        } = await _classPrivateFieldGet(_client0, this).send('Page.addScriptToEvaluateOnNewDocument', {
+          source: preloadScript.source
+        });
+        preloadScript.setIdForFrame(this, identifier);
+      }
+      async addExposedFunctionBinding(binding) {
+        // If a frame has not started loading, it might never start. Rely on
+        // addScriptToEvaluateOnNewDocument in that case.
+        if (this !== this._frameManager.mainFrame() && !this._hasStartedLoading) {
+          return;
+        }
+        await Promise.all([_classPrivateFieldGet(_client0, this).send('Runtime.addBinding', {
+          name: CDP_BINDING_PREFIX + binding.name
+        }), this.evaluate(binding.initSource).catch(error => {
+          _classPrivateFieldGet(_logger19, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+        })]);
+      }
+      async removeExposedFunctionBinding(binding) {
+        // If a frame has not started loading, it might never start. Rely on
+        // addScriptToEvaluateOnNewDocument in that case.
+        if (this !== this._frameManager.mainFrame() && !this._hasStartedLoading) {
+          return;
+        }
+        await Promise.all([_classPrivateFieldGet(_client0, this).send('Runtime.removeBinding', {
+          name: CDP_BINDING_PREFIX + binding.name
+        }), this.evaluate(name => {
+          // Removes the dangling Puppeteer binding wrapper.
+          // @ts-expect-error: In a different context.
+          globalThis[name] = undefined;
+        }, binding.name).catch(error => {
+          _classPrivateFieldGet(_logger19, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+        })]);
+      }
+      async waitForDevicePrompt(options = {}) {
+        return await _assertClassBrand(_CdpFrame_brand, this, _deviceRequestPromptManager).call(this).waitForDevicePrompt(options);
+      }
+      _navigated(framePayload) {
+        this._name = framePayload.name;
+        _classPrivateFieldSet(_url4, this, `${framePayload.url}${framePayload.urlFragment || ''}`);
+      }
+      _navigatedWithinDocument(url) {
+        _classPrivateFieldSet(_url4, this, url);
+      }
+      _onLifecycleEvent(loaderId, name) {
+        if (name === 'init') {
+          this._loaderId = loaderId;
+          this._lifecycleEvents.clear();
+        }
+        this._lifecycleEvents.add(name);
+      }
+      _onLoadingStopped() {
+        this._lifecycleEvents.add('DOMContentLoaded');
+        this._lifecycleEvents.add('load');
+      }
+      _onLoadingStarted() {
+        this._hasStartedLoading = true;
+      }
+      get detached() {
+        return _classPrivateFieldGet(_detached2, this);
+      }
+      [_ref3]() {
+        if (_classPrivateFieldGet(_detached2, this)) {
+          return;
+        }
+        _classPrivateFieldSet(_detached2, this, true);
+        this.worlds[MAIN_WORLD][disposeSymbol]();
+        this.worlds[PUPPETEER_WORLD][disposeSymbol]();
+        for (const extensionWorld of Object.values(this.extensionWorlds)) {
+          extensionWorld[disposeSymbol]();
+        }
+        super[disposeSymbol]();
+      }
+      exposeFunction() {
+        throw new UnsupportedOperation();
+      }
+      async frameElement() {
+        const parent = this.parentFrame();
+        if (!parent) {
+          return null;
+        }
+        const {
+          backendNodeId
+        } = await parent.client.send('DOM.getFrameOwner', {
+          frameId: this._id
+        });
+        return await parent.mainRealm().adoptBackendNode(backendNodeId);
+      }
+      /**
+       * @public
+       */
+      extensionRealms() {
+        return Object.values(this.extensionWorlds);
+      }
+    }, (() => {
+      const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+      __esDecorate$1(_CdpFrame, null, _goto_decorators, {
+        kind: "method",
+        name: "goto",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "goto" in obj,
+          get: obj => obj.goto
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      __esDecorate$1(_CdpFrame, null, _waitForNavigation_decorators, {
+        kind: "method",
+        name: "waitForNavigation",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "waitForNavigation" in obj,
+          get: obj => obj.waitForNavigation
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      __esDecorate$1(_CdpFrame, null, _setContent_decorators, {
+        kind: "method",
+        name: "setContent",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "setContent" in obj,
+          get: obj => obj.setContent
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      __esDecorate$1(_CdpFrame, null, _addPreloadScript_decorators, {
+        kind: "method",
+        name: "addPreloadScript",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "addPreloadScript" in obj,
+          get: obj => obj.addPreloadScript
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      __esDecorate$1(_CdpFrame, null, _addExposedFunctionBinding_decorators, {
+        kind: "method",
+        name: "addExposedFunctionBinding",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "addExposedFunctionBinding" in obj,
+          get: obj => obj.addExposedFunctionBinding
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      __esDecorate$1(_CdpFrame, null, _removeExposedFunctionBinding_decorators, {
+        kind: "method",
+        name: "removeExposedFunctionBinding",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "removeExposedFunctionBinding" in obj,
+          get: obj => obj.removeExposedFunctionBinding
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      __esDecorate$1(_CdpFrame, null, _waitForDevicePrompt_decorators, {
+        kind: "method",
+        name: "waitForDevicePrompt",
+        static: false,
+        private: false,
+        access: {
+          has: obj => "waitForDevicePrompt" in obj,
+          get: obj => obj.waitForDevicePrompt
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      if (_metadata) Object.defineProperty(_CdpFrame, Symbol.metadata, {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: _metadata
+      });
+    })(), _CdpFrame;
+    function _deviceRequestPromptManager() {
+      return this._frameManager._deviceRequestPromptManager(_classPrivateFieldGet(_client0, this));
+    }
+  })();
+  /**
+   * @internal
+   */
+  function referrerPolicyToProtocol(referrerPolicy) {
+    // See
+    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#type-ReferrerPolicy
+    // We need to convert from Web-facing phase to CDP's camelCase.
+    return referrerPolicy.replaceAll(/-./g, match => {
+      return match[1].toUpperCase();
+    });
+  }
+
+  /**
+   * @license
+   * Copyright 2026 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * @internal
+   */
+  var _code2 = /*#__PURE__*/new WeakMap();
+  var _details = /*#__PURE__*/new WeakMap();
+  class CdpIssue {
+    constructor(issue) {
+      _classPrivateFieldInitSpec(this, _code2, void 0);
+      _classPrivateFieldInitSpec(this, _details, void 0);
+      _classPrivateFieldSet(_code2, this, issue.code);
+      _classPrivateFieldSet(_details, this, issue.details);
+    }
+    get code() {
+      return _classPrivateFieldGet(_code2, this);
+    }
+    get details() {
+      return _classPrivateFieldGet(_details, this);
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2024 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * @internal
+   */
+  var _id6 = /*#__PURE__*/new WeakMap();
+  var _source = /*#__PURE__*/new WeakMap();
+  var _frameToId = /*#__PURE__*/new WeakMap();
+  class CdpPreloadScript {
+    constructor(mainFrame, id, source) {
+      /**
+       * This is the ID of the preload script returned by
+       * Page.addScriptToEvaluateOnNewDocument in the main frame.
+       *
+       * Sub-frames would get a different CDP ID because
+       * addScriptToEvaluateOnNewDocument is called for each subframe. But
+       * users only see this ID and subframe IDs are internal to Puppeteer.
+       */
+      _classPrivateFieldInitSpec(this, _id6, void 0);
+      _classPrivateFieldInitSpec(this, _source, void 0);
+      _classPrivateFieldInitSpec(this, _frameToId, new WeakMap());
+      _classPrivateFieldSet(_id6, this, id);
+      _classPrivateFieldSet(_source, this, source);
+      _classPrivateFieldGet(_frameToId, this).set(mainFrame, id);
+    }
+    get id() {
+      return _classPrivateFieldGet(_id6, this);
+    }
+    get source() {
+      return _classPrivateFieldGet(_source, this);
+    }
+    getIdForFrame(frame) {
+      return _classPrivateFieldGet(_frameToId, this).get(frame);
+    }
+    setIdForFrame(frame, identifier) {
+      _classPrivateFieldGet(_frameToId, this).set(frame, identifier);
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2022 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * @internal
+   */
+  var _client1 = /*#__PURE__*/new WeakMap();
+  var _timeoutSettings = /*#__PURE__*/new WeakMap();
+  var _id7 = /*#__PURE__*/new WeakMap();
+  var _handled3 = /*#__PURE__*/new WeakMap();
+  var _waitForDevicePromises = /*#__PURE__*/new WeakMap();
+  var _subscriptions3 = /*#__PURE__*/new WeakMap();
+  var _CdpDeviceRequestPrompt_brand = /*#__PURE__*/new WeakSet();
+  class CdpDeviceRequestPrompt extends DeviceRequestPrompt {
+    constructor(client, timeoutSettings, firstEvent) {
+      super();
+      _classPrivateMethodInitSpec(this, _CdpDeviceRequestPrompt_brand);
+      _classPrivateFieldInitSpec(this, _client1, void 0);
+      _classPrivateFieldInitSpec(this, _timeoutSettings, void 0);
+      _classPrivateFieldInitSpec(this, _id7, void 0);
+      _classPrivateFieldInitSpec(this, _handled3, false);
+      _classPrivateFieldInitSpec(this, _waitForDevicePromises, new Set());
+      _classPrivateFieldInitSpec(this, _subscriptions3, new DisposableStack());
+      _classPrivateFieldSet(_client1, this, client);
+      _classPrivateFieldSet(_timeoutSettings, this, timeoutSettings);
+      _classPrivateFieldSet(_id7, this, firstEvent.id);
+      const clientEmitter = _classPrivateFieldGet(_subscriptions3, this).use(new EventEmitter(_classPrivateFieldGet(_client1, this)));
+      clientEmitter.on('DeviceAccess.deviceRequestPrompted', _assertClassBrand(_CdpDeviceRequestPrompt_brand, this, _updateDevices).bind(this));
+      _assertClassBrand(_CdpDeviceRequestPrompt_brand, this, _updateDevices).call(this, firstEvent);
+    }
+    async waitForDevice(filter, options = {}) {
+      for (const device of this.devices) {
+        if (filter(device)) {
+          return device;
+        }
+      }
+      const {
+        timeout = _classPrivateFieldGet(_timeoutSettings, this).timeout()
+      } = options;
+      const deferred = Deferred.create({
+        message: `Waiting for \`DeviceRequestPromptDevice\` failed: ${timeout}ms exceeded`,
+        timeout
+      });
+      if (options.signal) {
+        options.signal.addEventListener('abort', () => {
+          deferred.reject(options.signal?.reason);
+        }, {
+          once: true
+        });
+      }
+      const handle = {
+        filter,
+        promise: deferred
+      };
+      _classPrivateFieldGet(_waitForDevicePromises, this).add(handle);
+      try {
+        return await deferred.valueOrThrow();
+      } finally {
+        _classPrivateFieldGet(_waitForDevicePromises, this).delete(handle);
+      }
+    }
+    async select(device) {
+      assert(this.devices.includes(device), 'Cannot select unknown device!');
+      assert(!_classPrivateFieldGet(_handled3, this), 'Cannot select DeviceRequestPrompt which is already handled!');
+      _classPrivateFieldGet(_subscriptions3, this).dispose();
+      _classPrivateFieldSet(_handled3, this, true);
+      await _classPrivateFieldGet(_client1, this).send('DeviceAccess.selectPrompt', {
+        id: _classPrivateFieldGet(_id7, this),
+        deviceId: device.id
+      });
+    }
+    async cancel() {
+      assert(!_classPrivateFieldGet(_handled3, this), 'Cannot cancel DeviceRequestPrompt which is already handled!');
+      _classPrivateFieldGet(_subscriptions3, this).dispose();
+      _classPrivateFieldSet(_handled3, this, true);
+      await _classPrivateFieldGet(_client1, this).send('DeviceAccess.cancelPrompt', {
+        id: _classPrivateFieldGet(_id7, this)
+      });
+    }
+  }
+  /**
+   * @internal
+   */
+  function _updateDevices(event) {
+    if (event.id !== _classPrivateFieldGet(_id7, this)) {
+      return;
+    }
+    for (const rawDevice of event.devices) {
+      if (this.devices.some(device => {
+        return device.id === rawDevice.id;
+      })) {
+        continue;
+      }
+      const newDevice = {
+        id: rawDevice.id,
+        name: rawDevice.name
+      };
+      this.devices.push(newDevice);
+      for (const waitForDevicePromise of _classPrivateFieldGet(_waitForDevicePromises, this)) {
+        if (waitForDevicePromise.filter(newDevice)) {
+          waitForDevicePromise.promise.resolve(newDevice);
+        }
+      }
+    }
+  }
+  var _client10 = /*#__PURE__*/new WeakMap();
+  var _timeoutSettings2 = /*#__PURE__*/new WeakMap();
+  var _deviceRequestPromptDeferreds = /*#__PURE__*/new WeakMap();
+  var _CdpDeviceRequestPromptManager_brand = /*#__PURE__*/new WeakSet();
+  class CdpDeviceRequestPromptManager {
+    constructor(client, timeoutSettings) {
+      _classPrivateMethodInitSpec(this, _CdpDeviceRequestPromptManager_brand);
+      _classPrivateFieldInitSpec(this, _client10, void 0);
+      _classPrivateFieldInitSpec(this, _timeoutSettings2, void 0);
+      _classPrivateFieldInitSpec(this, _deviceRequestPromptDeferreds, new Set());
+      _classPrivateFieldSet(_client10, this, client);
+      _classPrivateFieldSet(_timeoutSettings2, this, timeoutSettings);
+      _classPrivateFieldGet(_client10, this).on('DeviceAccess.deviceRequestPrompted', event => {
+        _assertClassBrand(_CdpDeviceRequestPromptManager_brand, this, _onDeviceRequestPrompted).call(this, event);
+      });
+      _classPrivateFieldGet(_client10, this).on('Target.detachedFromTarget', () => {
+        _classPrivateFieldSet(_client10, this, null);
+      });
+    }
+    async waitForDevicePrompt(options = {}) {
+      assert(_classPrivateFieldGet(_client10, this) !== null, 'Cannot wait for device prompt through detached session!');
+      const needsEnable = _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).size === 0;
+      let enablePromise;
+      if (needsEnable) {
+        enablePromise = _classPrivateFieldGet(_client10, this).send('DeviceAccess.enable');
+      }
+      const {
+        timeout = _classPrivateFieldGet(_timeoutSettings2, this).timeout()
+      } = options;
+      const deferred = Deferred.create({
+        message: `Waiting for \`DeviceRequestPrompt\` failed: ${timeout}ms exceeded`,
+        timeout
+      });
+      if (options.signal) {
+        options.signal.addEventListener('abort', () => {
+          deferred.reject(options.signal?.reason);
+        }, {
+          once: true
+        });
+      }
+      _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).add(deferred);
+      try {
+        const [result] = await Promise.all([deferred.valueOrThrow(), enablePromise]);
+        return result;
+      } finally {
+        _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).delete(deferred);
+      }
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2022 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * Keeps track of the page frame tree and it's is managed by
+   * {@link FrameManager}. FrameTree uses frame IDs to reference frame and it
+   * means that referenced frames might not be in the tree anymore. Thus, the tree
+   * structure is eventually consistent.
+   * @internal
+   */
+  function _onDeviceRequestPrompted(event) {
+    if (!_classPrivateFieldGet(_deviceRequestPromptDeferreds, this).size) {
+      return;
+    }
+    assert(_classPrivateFieldGet(_client10, this) !== null);
+    const devicePrompt = new CdpDeviceRequestPrompt(_classPrivateFieldGet(_client10, this), _classPrivateFieldGet(_timeoutSettings2, this), event);
+    for (const promise of _classPrivateFieldGet(_deviceRequestPromptDeferreds, this)) {
+      promise.resolve(devicePrompt);
+    }
+    _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).clear();
+  }
+  var _frames = /*#__PURE__*/new WeakMap();
+  var _parentIds = /*#__PURE__*/new WeakMap();
+  var _childIds = /*#__PURE__*/new WeakMap();
+  var _mainFrame = /*#__PURE__*/new WeakMap();
+  var _isMainFrameStale = /*#__PURE__*/new WeakMap();
+  var _waitRequests = /*#__PURE__*/new WeakMap();
+  class FrameTree {
+    constructor() {
+      _classPrivateFieldInitSpec(this, _frames, new Map());
+      // frameID -> parentFrameID
+      _classPrivateFieldInitSpec(this, _parentIds, new Map());
+      // frameID -> childFrameIDs
+      _classPrivateFieldInitSpec(this, _childIds, new Map());
+      _classPrivateFieldInitSpec(this, _mainFrame, void 0);
+      _classPrivateFieldInitSpec(this, _isMainFrameStale, false);
+      _classPrivateFieldInitSpec(this, _waitRequests, new Map());
+    }
+    getMainFrame() {
+      return _classPrivateFieldGet(_mainFrame, this);
+    }
+    getById(frameId) {
+      return _classPrivateFieldGet(_frames, this).get(frameId);
+    }
+    /**
+     * Returns a promise that is resolved once the frame with
+     * the given ID is added to the tree.
+     */
+    waitForFrame(frameId) {
+      const frame = this.getById(frameId);
+      if (frame) {
+        return Promise.resolve(frame);
+      }
+      const deferred = Deferred.create();
+      const callbacks = _classPrivateFieldGet(_waitRequests, this).get(frameId) || new Set();
+      callbacks.add(deferred);
+      return deferred.valueOrThrow();
+    }
+    frames() {
+      return Array.from(_classPrivateFieldGet(_frames, this).values());
+    }
+    addFrame(frame) {
+      _classPrivateFieldGet(_frames, this).set(frame._id, frame);
+      if (frame._parentId) {
+        _classPrivateFieldGet(_parentIds, this).set(frame._id, frame._parentId);
+        if (!_classPrivateFieldGet(_childIds, this).has(frame._parentId)) {
+          _classPrivateFieldGet(_childIds, this).set(frame._parentId, new Set());
+        }
+        _classPrivateFieldGet(_childIds, this).get(frame._parentId).add(frame._id);
+      } else if (!_classPrivateFieldGet(_mainFrame, this) || _classPrivateFieldGet(_isMainFrameStale, this)) {
+        _classPrivateFieldSet(_mainFrame, this, frame);
+        _classPrivateFieldSet(_isMainFrameStale, this, false);
+      }
+      _classPrivateFieldGet(_waitRequests, this).get(frame._id)?.forEach(request => {
+        return request.resolve(frame);
+      });
+    }
+    removeFrame(frame) {
+      _classPrivateFieldGet(_frames, this).delete(frame._id);
+      _classPrivateFieldGet(_parentIds, this).delete(frame._id);
+      if (frame._parentId) {
+        _classPrivateFieldGet(_childIds, this).get(frame._parentId)?.delete(frame._id);
+      } else {
+        _classPrivateFieldSet(_isMainFrameStale, this, true);
+      }
+    }
+    childFrames(frameId) {
+      const childIds = _classPrivateFieldGet(_childIds, this).get(frameId);
+      if (!childIds) {
+        return [];
+      }
+      return Array.from(childIds).map(id => {
+        return this.getById(id);
+      }).filter(frame => {
+        return frame !== undefined;
+      });
+    }
+    parentFrame(frameId) {
+      const parentId = _classPrivateFieldGet(_parentIds, this).get(frameId);
+      return parentId ? this.getById(parentId) : undefined;
+    }
+  }
+
+  /**
+   * @license
+   * Copyright 2017 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
   var __addDisposableResource$2 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
@@ -20911,28 +21443,28 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   var _page = /*#__PURE__*/new WeakMap();
-  var _networkManager = /*#__PURE__*/new WeakMap();
+  var _networkManager2 = /*#__PURE__*/new WeakMap();
   var _timeoutSettings3 = /*#__PURE__*/new WeakMap();
   var _isolatedWorlds = /*#__PURE__*/new WeakMap();
-  var _client10 = /*#__PURE__*/new WeakMap();
+  var _client11 = /*#__PURE__*/new WeakMap();
   var _scriptsToEvaluateOnNewDocument = /*#__PURE__*/new WeakMap();
   var _bindings2 = /*#__PURE__*/new WeakMap();
   var _frameNavigatedReceived = /*#__PURE__*/new WeakMap();
   var _deviceRequestPromptManagerMap = /*#__PURE__*/new WeakMap();
   var _frameTreeHandled = /*#__PURE__*/new WeakMap();
-  var _logger19 = /*#__PURE__*/new WeakMap();
+  var _logger20 = /*#__PURE__*/new WeakMap();
   var _FrameManager_brand = /*#__PURE__*/new WeakSet();
   class FrameManager extends EventEmitter {
     get timeoutSettings() {
       return _classPrivateFieldGet(_timeoutSettings3, this);
     }
     get networkManager() {
-      return _classPrivateFieldGet(_networkManager, this);
+      return _classPrivateFieldGet(_networkManager2, this);
     }
     get client() {
-      return _classPrivateFieldGet(_client10, this);
+      return _classPrivateFieldGet(_client11, this);
     }
-    constructor(_client11, page, timeoutSettings, logger) {
+    constructor(_client12, page, timeoutSettings, logger) {
       super(undefined, logger);
       /**
        * Called when the frame's client is disconnected. We don't know if the
@@ -20941,31 +21473,32 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
        */
       _classPrivateMethodInitSpec(this, _FrameManager_brand);
       _classPrivateFieldInitSpec(this, _page, void 0);
-      _classPrivateFieldInitSpec(this, _networkManager, void 0);
+      _classPrivateFieldInitSpec(this, _networkManager2, void 0);
       _classPrivateFieldInitSpec(this, _timeoutSettings3, void 0);
       _classPrivateFieldInitSpec(this, _isolatedWorlds, new Set());
-      _classPrivateFieldInitSpec(this, _client10, void 0);
+      _classPrivateFieldInitSpec(this, _client11, void 0);
       _classPrivateFieldInitSpec(this, _scriptsToEvaluateOnNewDocument, new Map());
       _classPrivateFieldInitSpec(this, _bindings2, new Set());
       _defineProperty(this, "_frameTree", new FrameTree());
       /**
-       * Set of frame IDs stored to indicate if a frame has received a
-       * frameNavigated event so that frame tree responses could be ignored as the
-       * frameNavigated event usually contains the latest information.
+       * For each session, the IDs of the frames that have received a
+       * frameNavigated event on that session. The frame tree response of the
+       * session is ignored for these frames because the frameNavigated event
+       * usually contains the latest information.
        */
-      _classPrivateFieldInitSpec(this, _frameNavigatedReceived, new Set());
+      _classPrivateFieldInitSpec(this, _frameNavigatedReceived, new WeakMap());
       _classPrivateFieldInitSpec(this, _deviceRequestPromptManagerMap, new WeakMap());
       _classPrivateFieldInitSpec(this, _frameTreeHandled, void 0);
-      _classPrivateFieldInitSpec(this, _logger19, void 0);
-      _classPrivateFieldSet(_client10, this, _client11);
+      _classPrivateFieldInitSpec(this, _logger20, void 0);
+      _classPrivateFieldSet(_client11, this, _client12);
       _classPrivateFieldSet(_page, this, page);
-      _classPrivateFieldSet(_networkManager, this, new NetworkManager(this, page.browser().isNetworkEnabled(), logger));
+      _classPrivateFieldSet(_networkManager2, this, new NetworkManager(this, page.browser().isNetworkEnabled(), logger));
       _classPrivateFieldSet(_timeoutSettings3, this, timeoutSettings);
-      _classPrivateFieldSet(_logger19, this, logger);
-      this.setupEventListeners(_classPrivateFieldGet(_client10, this));
-      _client11.once(exports.CDPSessionEvent.Disconnected, () => {
-        void _assertClassBrand(_FrameManager_brand, this, _onClientDisconnect).call(this, _client11).catch(error => {
-          _classPrivateFieldGet(_logger19, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+      _classPrivateFieldSet(_logger20, this, logger);
+      this.setupEventListeners(_classPrivateFieldGet(_client11, this));
+      _client12.once(exports.CDPSessionEvent.Disconnected, () => {
+        void _assertClassBrand(_FrameManager_brand, this, _onClientDisconnect).call(this, _client12).catch(error => {
+          _classPrivateFieldGet(_logger20, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
       });
     }
@@ -20975,29 +21508,29 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      * its frame tree and ID.
      */
     async swapFrameTree(client) {
-      _classPrivateFieldSet(_client10, this, client);
+      _classPrivateFieldSet(_client11, this, client);
       const frame = this._frameTree.getMainFrame();
       if (frame) {
-        _classPrivateFieldGet(_frameNavigatedReceived, this).add(_classPrivateFieldGet(_client10, this).target()._targetId);
+        _assertClassBrand(_FrameManager_brand, this, _navigatedFrames).call(this, client).add(_classPrivateFieldGet(_client11, this).target()._targetId);
         this._frameTree.removeFrame(frame);
-        frame.updateId(_classPrivateFieldGet(_client10, this).target()._targetId);
+        frame.updateId(_classPrivateFieldGet(_client11, this).target()._targetId);
         this._frameTree.addFrame(frame);
         frame.updateClient(client);
       }
       this.setupEventListeners(client);
       client.once(exports.CDPSessionEvent.Disconnected, () => {
         void _assertClassBrand(_FrameManager_brand, this, _onClientDisconnect).call(this, client).catch(error => {
-          _classPrivateFieldGet(_logger19, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+          _classPrivateFieldGet(_logger20, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
       });
       await this.initialize(client, frame);
-      await _classPrivateFieldGet(_networkManager, this).addClient(client);
+      await _classPrivateFieldGet(_networkManager2, this).addClient(client);
       if (frame) {
         frame.emit(exports.FrameEvent.FrameSwappedByActivation, undefined);
       }
     }
     async registerSpeculativeSession(client) {
-      await _classPrivateFieldGet(_networkManager, this).addClient(client);
+      await _classPrivateFieldGet(_networkManager2, this).addClient(client);
     }
     setupEventListeners(session) {
       session.on('Page.frameAttached', async event => {
@@ -21005,25 +21538,25 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         _assertClassBrand(_FrameManager_brand, this, _onFrameAttached).call(this, session, event.frameId, event.parentFrameId);
       });
       session.on('Page.frameNavigated', async event => {
-        _classPrivateFieldGet(_frameNavigatedReceived, this).add(event.frame.id);
+        _assertClassBrand(_FrameManager_brand, this, _navigatedFrames).call(this, session).add(event.frame.id);
         await _classPrivateFieldGet(_frameTreeHandled, this)?.valueOrThrow();
-        void _assertClassBrand(_FrameManager_brand, this, _onFrameNavigated).call(this, event.frame, event.type);
+        void _assertClassBrand(_FrameManager_brand, this, _onFrameNavigated).call(this, session, event.frame, event.type);
       });
       session.on('Page.navigatedWithinDocument', async event => {
         await _classPrivateFieldGet(_frameTreeHandled, this)?.valueOrThrow();
-        _assertClassBrand(_FrameManager_brand, this, _onFrameNavigatedWithinDocument).call(this, event.frameId, event.url);
+        _assertClassBrand(_FrameManager_brand, this, _onFrameNavigatedWithinDocument).call(this, session, event.frameId, event.url);
       });
       session.on('Page.frameDetached', async event => {
         await _classPrivateFieldGet(_frameTreeHandled, this)?.valueOrThrow();
-        _assertClassBrand(_FrameManager_brand, this, _onFrameDetached2).call(this, event.frameId, event.reason);
+        _assertClassBrand(_FrameManager_brand, this, _onFrameDetached2).call(this, session, event.frameId, event.reason);
       });
       session.on('Page.frameStartedLoading', async event => {
         await _classPrivateFieldGet(_frameTreeHandled, this)?.valueOrThrow();
-        _assertClassBrand(_FrameManager_brand, this, _onFrameStartedLoading).call(this, event.frameId);
+        _assertClassBrand(_FrameManager_brand, this, _onFrameStartedLoading).call(this, session, event.frameId);
       });
       session.on('Page.frameStoppedLoading', async event => {
         await _classPrivateFieldGet(_frameTreeHandled, this)?.valueOrThrow();
-        _assertClassBrand(_FrameManager_brand, this, _onFrameStoppedLoading).call(this, event.frameId);
+        _assertClassBrand(_FrameManager_brand, this, _onFrameStoppedLoading).call(this, session, event.frameId);
       });
       session.on('Runtime.executionContextCreated', async event => {
         await _classPrivateFieldGet(_frameTreeHandled, this)?.valueOrThrow();
@@ -21031,7 +21564,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
       session.on('Page.lifecycleEvent', async event => {
         await _classPrivateFieldGet(_frameTreeHandled, this)?.valueOrThrow();
-        _assertClassBrand(_FrameManager_brand, this, _onLifecycleEvent).call(this, event);
+        _assertClassBrand(_FrameManager_brand, this, _onLifecycleEvent).call(this, session, event);
       });
       session.on('Audits.issueAdded', event => {
         _classPrivateFieldGet(_page, this).emit("issue" /* PageEvent.Issue */, new CdpIssue(event.issue));
@@ -21045,7 +21578,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         // therefore, it needs to happen synchronously. At the same time we
         // should not start processing execution context and frame events before
         // we received the initial information about the frame tree.
-        await Promise.all([_classPrivateFieldGet(_networkManager, this).addClient(client), client.send('Page.enable'), client.send('Page.getFrameTree').then(({
+        await Promise.all([_classPrivateFieldGet(_networkManager2, this).addClient(client), client.send('Page.enable'), client.send('Page.getFrameTree').then(({
           frameTree
         }) => {
           _assertClassBrand(_FrameManager_brand, this, _handleFrameTree).call(this, client, frameTree);
@@ -21070,6 +21603,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     page() {
       return _classPrivateFieldGet(_page, this);
+    }
+    browser() {
+      return _classPrivateFieldGet(_page, this).browser();
     }
     worker(client) {
       return _classPrivateFieldGet(_page, this).worker(client);
@@ -21126,7 +21662,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         return frame._client().send('Page.removeScriptToEvaluateOnNewDocument', {
           identifier
         }).catch(error => {
-          _classPrivateFieldGet(_logger19, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+          _classPrivateFieldGet(_logger20, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
       }));
     }
@@ -21140,8 +21676,31 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       this.setupEventListeners(target._session());
       void this.initialize(target._session(), frame).catch(error => {
-        _classPrivateFieldGet(_logger19, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+        _classPrivateFieldGet(_logger20, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
       });
+    }
+    onDetachedFromTarget(target) {
+      if (target._getTargetInfo().type !== 'iframe') {
+        return;
+      }
+      const frame = this.frame(target._targetId);
+      if (frame) {
+        // The frame is in the same process as its parent frame again or it is
+        // about to be removed.
+        //
+        // If an OOP iframe becomes a normal iframe again, Chrome removes the
+        // target when the navigation is ready to commit. The session of the
+        // parent frame reports Page.frameAttached, Page.frameNavigated and
+        // Runtime.executionContextCreated for the frame after the commit.
+        // Thus, the frame must belong to the session of the parent frame
+        // before these events arrive. The events that the session of the
+        // parent frame reports for the frame while the target is attached are
+        // not handled.
+        //
+        // If an OOP iframe is removed, Page.frameDetached arrives before the
+        // target is gone, and the frame is not known here.
+        _assertClassBrand(_FrameManager_brand, this, _updateClients).call(this, frame);
+      }
     }
     _deviceRequestPromptManager(client) {
       let manager = _classPrivateFieldGet(_deviceRequestPromptManagerMap, this).get(client);
@@ -21174,7 +21733,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       // If the disconnected client is not the current one, it means a swap
       // has already happened.
-      if (_classPrivateFieldGet(_client10, this) !== client) {
+      if (_classPrivateFieldGet(_client11, this) !== client) {
         return;
       }
       if (!_classPrivateFieldGet(_page, this).browser().connected || _classPrivateFieldGet(_page, this).isClosed()) {
@@ -21208,20 +21767,83 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       __disposeResources$2(env_1);
     }
   }
+  function _navigatedFrames(session) {
+    let frameIds = _classPrivateFieldGet(_frameNavigatedReceived, this).get(session);
+    if (!frameIds) {
+      frameIds = new Set();
+      _classPrivateFieldGet(_frameNavigatedReceived, this).set(session, frameIds);
+    }
+    return frameIds;
+  }
+  /**
+   * Returns the session of the iframe target that has the frame as its root
+   * frame, if the target manager reported such a target.
+   */
+  function _targetSession(frameId) {
+    return _classPrivateFieldGet(_client11, this).target()._targetManager().getFrameTarget(frameId)?._session();
+  }
+  /**
+   * Returns the session that the frame belongs to: the session of the
+   * nearest iframe target in the ancestor chain, or the session of the page.
+   * Only the target manager defines the targets, the events of a session do
+   * not change the result.
+   */
+  function _sessionOf(frame) {
+    let current = frame;
+    while (current) {
+      if (!current._parentId) {
+        return _classPrivateFieldGet(_client11, this);
+      }
+      const session = _assertClassBrand(_FrameManager_brand, this, _targetSession).call(this, current._id);
+      if (session) {
+        return session;
+      }
+      current = this.frame(current._parentId);
+    }
+    // A part of the ancestor chain is not known yet.
+    return frame.client;
+  }
+  function _belongsTo(frame, session) {
+    return _assertClassBrand(_FrameManager_brand, this, _sessionOf).call(this, frame) === session;
+  }
+  /**
+   * Returns the frame if its events are expected on the given session.
+   */
+  function _frameOf(session, frameId) {
+    const frame = this.frame(frameId);
+    if (!frame || !_assertClassBrand(_FrameManager_brand, this, _belongsTo).call(this, frame, session)) {
+      return null;
+    }
+    return frame;
+  }
+  /**
+   * Sets the client of the frame and of the descendants that do not have a
+   * target of their own.
+   */
+  function _updateClients(frame) {
+    frame.updateClient(_assertClassBrand(_FrameManager_brand, this, _sessionOf).call(this, frame));
+    for (const child of frame.childFrames()) {
+      if (!_assertClassBrand(_FrameManager_brand, this, _targetSession).call(this, child._id)) {
+        _assertClassBrand(_FrameManager_brand, this, _updateClients).call(this, child);
+      }
+    }
+  }
   async function _forEachFrame(action) {
     await Promise.all(this.frames().map(async frame => {
+      // The client can change while the action is in progress.
+      const client = frame._client();
       try {
         await action(frame);
       } catch (error) {
         // Only an out-of-process frame has a session of its own to lose.
-        if (frame._client() === _classPrivateFieldGet(_client10, this) || !isErrorLike(error) || !isTargetClosedError(error)) {
+        if (client === _classPrivateFieldGet(_client11, this) || !isErrorLike(error) || !isTargetClosedError(error)) {
           throw error;
         }
       }
     }));
   }
-  function _onLifecycleEvent(event) {
-    const frame = this.frame(event.frameId);
+  function _onLifecycleEvent(session, event) {
+    const frame = _assertClassBrand(_FrameManager_brand, this, _frameOf).call(this, session, event.frameId);
     if (!frame) {
       return;
     }
@@ -21229,15 +21851,15 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     this.emit(exports.FrameManagerEvent.LifecycleEvent, frame);
     frame.emit(exports.FrameEvent.LifecycleEvent, undefined);
   }
-  function _onFrameStartedLoading(frameId) {
-    const frame = this.frame(frameId);
+  function _onFrameStartedLoading(session, frameId) {
+    const frame = _assertClassBrand(_FrameManager_brand, this, _frameOf).call(this, session, frameId);
     if (!frame) {
       return;
     }
     frame._onLoadingStarted();
   }
-  function _onFrameStoppedLoading(frameId) {
-    const frame = this.frame(frameId);
+  function _onFrameStoppedLoading(session, frameId) {
+    const frame = _assertClassBrand(_FrameManager_brand, this, _frameOf).call(this, session, frameId);
     if (!frame) {
       return;
     }
@@ -21246,13 +21868,15 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     frame.emit(exports.FrameEvent.LifecycleEvent, undefined);
   }
   function _handleFrameTree(session, frameTree) {
-    if (frameTree.frame.parentId) {
-      _assertClassBrand(_FrameManager_brand, this, _onFrameAttached).call(this, session, frameTree.frame.id, frameTree.frame.parentId);
+    const parentId = _assertClassBrand(_FrameManager_brand, this, _parentFrameId).call(this, session, frameTree.frame.id, frameTree.frame.parentId);
+    if (parentId) {
+      _assertClassBrand(_FrameManager_brand, this, _onFrameAttached).call(this, session, frameTree.frame.id, parentId);
     }
-    if (!_classPrivateFieldGet(_frameNavigatedReceived, this).has(frameTree.frame.id)) {
-      void _assertClassBrand(_FrameManager_brand, this, _onFrameNavigated).call(this, frameTree.frame, 'Navigation');
+    const navigatedFrames = _assertClassBrand(_FrameManager_brand, this, _navigatedFrames).call(this, session);
+    if (!navigatedFrames.has(frameTree.frame.id)) {
+      void _assertClassBrand(_FrameManager_brand, this, _onFrameNavigated).call(this, session, frameTree.frame, 'Navigation');
     } else {
-      _classPrivateFieldGet(_frameNavigatedReceived, this).delete(frameTree.frame.id);
+      navigatedFrames.delete(frameTree.frame.id);
     }
     if (!frameTree.childFrames) {
       return;
@@ -21261,26 +21885,46 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _assertClassBrand(_FrameManager_brand, this, _handleFrameTree).call(this, session, child);
     }
   }
+  /**
+   * For the root frame of an iframe target, the target info provides the
+   * parent frame.
+   */
+  function _parentFrameId(session, frameId, parentFrameId) {
+    const target = _classPrivateFieldGet(_client11, this).target()._targetManager().getFrameTarget(frameId);
+    if (target?._session() === session) {
+      return target._getTargetInfo().parentFrameId ?? parentFrameId;
+    }
+    return parentFrameId;
+  }
   function _onFrameAttached(session, frameId, parentFrameId) {
     let frame = this.frame(frameId);
     if (frame) {
-      const parentFrame = this.frame(parentFrameId);
-      if (session && parentFrame && frame.client !== parentFrame?.client) {
-        // If an OOP iframes becomes a normal iframe
-        // again it is first attached to the parent frame before the
-        // target is removed.
-        frame.updateClient(session);
-      }
+      // The session of a known frame only changes when the target manager
+      // reports that the target of the frame is attached or gone. If an OOP
+      // iframe becomes a normal iframe again, its target is gone before this
+      // event arrives (see onDetachedFromTarget).
       return;
     }
-    frame = new CdpFrame(this, frameId, parentFrameId, session, _classPrivateFieldGet(_logger19, this));
+    const parentFrame = this.frame(parentFrameId);
+    const targetSession = _assertClassBrand(_FrameManager_brand, this, _targetSession).call(this, frameId);
+    if (targetSession !== session && parentFrame && !_assertClassBrand(_FrameManager_brand, this, _belongsTo).call(this, parentFrame, session)) {
+      // A frame is reported on the session of its target or on the session
+      // of its parent frame.
+      return;
+    }
+    frame = new CdpFrame(this, frameId, parentFrameId, targetSession ?? session, _classPrivateFieldGet(_logger20, this));
     this._frameTree.addFrame(frame);
     this.emit(exports.FrameManagerEvent.FrameAttached, frame);
   }
-  async function _onFrameNavigated(framePayload, navigationType) {
+  async function _onFrameNavigated(session, framePayload, navigationType) {
     const frameId = framePayload.id;
-    const isMainFrame = !framePayload.parentId;
     let frame = this._frameTree.getById(frameId);
+    const isMainFrame = !framePayload.parentId;
+    // A frame navigation is reported on the session of the frame. A new main
+    // frame is reported on the session of the page.
+    if (frame ? !_assertClassBrand(_FrameManager_brand, this, _belongsTo).call(this, frame, session) : isMainFrame && session !== _classPrivateFieldGet(_client11, this)) {
+      return;
+    }
     // Detach all child frames first.
     if (frame) {
       for (const child of frame.childFrames()) {
@@ -21295,13 +21939,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         frame._id = frameId;
       } else {
         // Initial main frame navigation.
-        frame = new CdpFrame(this, frameId, undefined, _classPrivateFieldGet(_client10, this), _classPrivateFieldGet(_logger19, this));
+        frame = new CdpFrame(this, frameId, undefined, _classPrivateFieldGet(_client11, this), _classPrivateFieldGet(_logger20, this));
       }
       this._frameTree.addFrame(frame);
     }
     frame = await this._frameTree.waitForFrame(frameId);
+    if (!_assertClassBrand(_FrameManager_brand, this, _belongsTo).call(this, frame, session)) {
+      return;
+    }
     frame._navigated(framePayload);
     this.emit(exports.FrameManagerEvent.FrameNavigated, frame);
+    this.emit(exports.FrameManagerEvent.FrameNavigatedNewDocument, frame);
     frame.emit(exports.FrameEvent.FrameNavigated, navigationType);
   }
   async function _createIsolatedWorld(session, name) {
@@ -21323,25 +21971,34 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         worldName: name,
         grantUniveralAccess: true
       }).catch(error => {
-        _classPrivateFieldGet(_logger19, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+        _classPrivateFieldGet(_logger20, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
       });
     }));
     _classPrivateFieldGet(_isolatedWorlds, this).add(key);
   }
-  function _onFrameNavigatedWithinDocument(frameId, url) {
-    const frame = this.frame(frameId);
+  function _onFrameNavigatedWithinDocument(session, frameId, url) {
+    const frame = _assertClassBrand(_FrameManager_brand, this, _frameOf).call(this, session, frameId);
     if (!frame) {
       return;
     }
     frame._navigatedWithinDocument(url);
-    this.emit(exports.FrameManagerEvent.FrameNavigatedWithinDocument, frame);
     frame.emit(exports.FrameEvent.FrameNavigatedWithinDocument, undefined);
     this.emit(exports.FrameManagerEvent.FrameNavigated, frame);
+    this.emit(exports.FrameManagerEvent.FrameNavigatedWithinDocument, frame);
     frame.emit(exports.FrameEvent.FrameNavigated, 'Navigation');
   }
-  function _onFrameDetached2(frameId, reason) {
+  function _onFrameDetached2(session, frameId, reason) {
     const frame = this.frame(frameId);
     if (!frame) {
+      return;
+    }
+    // The detachment is reported on the session of the frame or on the
+    // session of one of its ancestors.
+    let ancestor = frame;
+    while (ancestor && !_assertClassBrand(_FrameManager_brand, this, _belongsTo).call(this, ancestor, session)) {
+      ancestor = ancestor.parentFrame();
+    }
+    if (!ancestor) {
       return;
     }
     switch (reason) {
@@ -21378,7 +22035,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     let world;
     if (frame) {
       // Only care about execution contexts created for the current session.
-      if (frame.client !== session) {
+      if (frame.client !== session || !_assertClassBrand(_FrameManager_brand, this, _belongsTo).call(this, frame, session)) {
         return;
       }
       if (contextPayload.auxData && contextPayload.auxData['isDefault']) {
@@ -21391,13 +22048,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       } else if (_assertClassBrand(_FrameManager_brand, this, _isExtensionOrigin).call(this, origin)) {
         const extId = _assertClassBrand(_FrameManager_brand, this, _extractExtensionId).call(this, origin);
         if (!extId) {
-          _classPrivateFieldGet(_logger19, this)?.call(this, DEBUG_PREFIXES.error)?.('Error while parsing extension id');
+          _classPrivateFieldGet(_logger20, this)?.call(this, DEBUG_PREFIXES.error)?.('Error while parsing extension id');
           return;
         }
         if (frame.extensionWorlds[extId]) {
           world = frame.extensionWorlds[extId];
         } else {
-          world = new IsolatedWorld(frame, this.timeoutSettings, extId, _classPrivateFieldGet(_logger19, this));
+          world = new IsolatedWorld(frame, this.timeoutSettings, extId, _classPrivateFieldGet(_logger20, this));
           frame.extensionWorlds[extId] = world;
           frame.registerWorldListeners(world);
           world.origin = origin;
@@ -21409,7 +22066,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     if (!world) {
       return;
     }
-    const context = new ExecutionContext(frame?.client || _classPrivateFieldGet(_client10, this), contextPayload, world, _classPrivateFieldGet(_logger19, this));
+    const context = new ExecutionContext(frame?.client || _classPrivateFieldGet(_client11, this), contextPayload, world, _classPrivateFieldGet(_logger20, this));
     world.setContext(context);
   }
   function _removeFramesRecursively(frame) {
@@ -22811,20 +23468,20 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  var _client12 = /*#__PURE__*/new WeakMap();
+  var _client13 = /*#__PURE__*/new WeakMap();
   var _pressedKeys = /*#__PURE__*/new WeakMap();
   var _CdpKeyboard_brand = /*#__PURE__*/new WeakSet();
   class CdpKeyboard extends Keyboard {
     constructor(client) {
       super();
       _classPrivateMethodInitSpec(this, _CdpKeyboard_brand);
-      _classPrivateFieldInitSpec(this, _client12, void 0);
+      _classPrivateFieldInitSpec(this, _client13, void 0);
       _classPrivateFieldInitSpec(this, _pressedKeys, new Set());
       _defineProperty(this, "_modifiers", 0);
-      _classPrivateFieldSet(_client12, this, client);
+      _classPrivateFieldSet(_client13, this, client);
     }
     updateClient(client) {
-      _classPrivateFieldSet(_client12, this, client);
+      _classPrivateFieldSet(_client13, this, client);
     }
     async down(key, options = {
       text: undefined,
@@ -22835,7 +23492,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldGet(_pressedKeys, this).add(description.code);
       this._modifiers |= _assertClassBrand(_CdpKeyboard_brand, this, _modifierBit).call(this, description.key);
       const text = options.text === undefined ? description.text : options.text;
-      await _classPrivateFieldGet(_client12, this).send('Input.dispatchKeyEvent', {
+      await _classPrivateFieldGet(_client13, this).send('Input.dispatchKeyEvent', {
         type: text ? 'keyDown' : 'rawKeyDown',
         modifiers: this._modifiers,
         windowsVirtualKeyCode: description.keyCode,
@@ -22853,7 +23510,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const description = _assertClassBrand(_CdpKeyboard_brand, this, _keyDescriptionForString).call(this, key);
       this._modifiers &= ~_assertClassBrand(_CdpKeyboard_brand, this, _modifierBit).call(this, description.key);
       _classPrivateFieldGet(_pressedKeys, this).delete(description.code);
-      await _classPrivateFieldGet(_client12, this).send('Input.dispatchKeyEvent', {
+      await _classPrivateFieldGet(_client13, this).send('Input.dispatchKeyEvent', {
         type: 'keyUp',
         modifiers: this._modifiers,
         key: description.key,
@@ -22863,7 +23520,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
     }
     async sendCharacter(char) {
-      await _classPrivateFieldGet(_client12, this).send('Input.insertText', {
+      await _classPrivateFieldGet(_client13, this).send('Input.insertText', {
         text: char
       });
     }
@@ -22994,7 +23651,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  var _client13 = /*#__PURE__*/new WeakMap();
+  var _client14 = /*#__PURE__*/new WeakMap();
   var _keyboard = /*#__PURE__*/new WeakMap();
   var _state2 = /*#__PURE__*/new WeakMap();
   var _CdpMouse_brand = /*#__PURE__*/new WeakSet();
@@ -23003,7 +23660,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     constructor(client, keyboard) {
       super();
       _classPrivateMethodInitSpec(this, _CdpMouse_brand);
-      _classPrivateFieldInitSpec(this, _client13, void 0);
+      _classPrivateFieldInitSpec(this, _client14, void 0);
       _classPrivateFieldInitSpec(this, _keyboard, void 0);
       _classPrivateFieldInitSpec(this, _state2, {
         position: {
@@ -23014,11 +23671,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
       // Transactions can run in parallel, so we store each of them in this array.
       _classPrivateFieldInitSpec(this, _transactions, []);
-      _classPrivateFieldSet(_client13, this, client);
+      _classPrivateFieldSet(_client14, this, client);
       _classPrivateFieldSet(_keyboard, this, keyboard);
     }
     updateClient(client) {
-      _classPrivateFieldSet(_client13, this, client);
+      _classPrivateFieldSet(_client14, this, client);
     }
     async reset() {
       const actions = [];
@@ -23055,7 +23712,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             buttons,
             position
           } = _classPrivateGetter(_CdpMouse_brand, this, _get_state);
-          return _classPrivateFieldGet(_client13, this).send('Input.dispatchMouseEvent', {
+          return _classPrivateFieldGet(_client14, this).send('Input.dispatchMouseEvent', {
             type: 'mouseMoved',
             modifiers: _classPrivateFieldGet(_keyboard, this)._modifiers,
             buttons,
@@ -23085,7 +23742,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           buttons,
           position
         } = _classPrivateGetter(_CdpMouse_brand, this, _get_state);
-        return _classPrivateFieldGet(_client13, this).send('Input.dispatchMouseEvent', {
+        return _classPrivateFieldGet(_client14, this).send('Input.dispatchMouseEvent', {
           type: 'mousePressed',
           modifiers: _classPrivateFieldGet(_keyboard, this)._modifiers,
           clickCount,
@@ -23115,7 +23772,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           buttons,
           position
         } = _classPrivateGetter(_CdpMouse_brand, this, _get_state);
-        return _classPrivateFieldGet(_client13, this).send('Input.dispatchMouseEvent', {
+        return _classPrivateFieldGet(_client14, this).send('Input.dispatchMouseEvent', {
           type: 'mouseReleased',
           modifiers: _classPrivateFieldGet(_keyboard, this)._modifiers,
           clickCount,
@@ -23169,7 +23826,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         position,
         buttons
       } = _classPrivateGetter(_CdpMouse_brand, this, _get_state);
-      await _classPrivateFieldGet(_client13, this).send('Input.dispatchMouseEvent', {
+      await _classPrivateFieldGet(_client14, this).send('Input.dispatchMouseEvent', {
         type: 'mouseWheel',
         pointerType: 'mouse',
         modifiers: _classPrivateFieldGet(_keyboard, this)._modifiers,
@@ -23181,7 +23838,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     async drag(start, target) {
       const promise = new Promise(resolve => {
-        _classPrivateFieldGet(_client13, this).once('Input.dragIntercepted', event => {
+        _classPrivateFieldGet(_client14, this).once('Input.dragIntercepted', event => {
           return resolve(event.data);
         });
       });
@@ -23191,7 +23848,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return await promise;
     }
     async dragEnter(target, data) {
-      await _classPrivateFieldGet(_client13, this).send('Input.dispatchDragEvent', {
+      await _classPrivateFieldGet(_client14, this).send('Input.dispatchDragEvent', {
         type: 'dragEnter',
         x: target.x,
         y: target.y,
@@ -23200,7 +23857,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
     }
     async dragOver(target, data) {
-      await _classPrivateFieldGet(_client13, this).send('Input.dispatchDragEvent', {
+      await _classPrivateFieldGet(_client14, this).send('Input.dispatchDragEvent', {
         type: 'dragOver',
         x: target.x,
         y: target.y,
@@ -23209,7 +23866,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
     }
     async drop(target, data) {
-      await _classPrivateFieldGet(_client13, this).send('Input.dispatchDragEvent', {
+      await _classPrivateFieldGet(_client14, this).send('Input.dispatchDragEvent', {
         type: 'drop',
         x: target.x,
         y: target.y,
@@ -23282,28 +23939,28 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _started = /*#__PURE__*/new WeakMap();
   var _touchScreen = /*#__PURE__*/new WeakMap();
   var _touchPoint = /*#__PURE__*/new WeakMap();
-  var _client14 = /*#__PURE__*/new WeakMap();
+  var _client15 = /*#__PURE__*/new WeakMap();
   var _keyboard2 = /*#__PURE__*/new WeakMap();
   class CdpTouchHandle {
     constructor(client, touchScreen, keyboard, touchPoint) {
       _classPrivateFieldInitSpec(this, _started, false);
       _classPrivateFieldInitSpec(this, _touchScreen, void 0);
       _classPrivateFieldInitSpec(this, _touchPoint, void 0);
-      _classPrivateFieldInitSpec(this, _client14, void 0);
+      _classPrivateFieldInitSpec(this, _client15, void 0);
       _classPrivateFieldInitSpec(this, _keyboard2, void 0);
-      _classPrivateFieldSet(_client14, this, client);
+      _classPrivateFieldSet(_client15, this, client);
       _classPrivateFieldSet(_touchScreen, this, touchScreen);
       _classPrivateFieldSet(_keyboard2, this, keyboard);
       _classPrivateFieldSet(_touchPoint, this, touchPoint);
     }
     updateClient(client) {
-      _classPrivateFieldSet(_client14, this, client);
+      _classPrivateFieldSet(_client15, this, client);
     }
     async start() {
       if (_classPrivateFieldGet(_started, this)) {
         throw new TouchError('Touch has already started');
       }
-      await _classPrivateFieldGet(_client14, this).send('Input.dispatchTouchEvent', {
+      await _classPrivateFieldGet(_client15, this).send('Input.dispatchTouchEvent', {
         type: 'touchStart',
         touchPoints: [_classPrivateFieldGet(_touchPoint, this)],
         modifiers: _classPrivateFieldGet(_keyboard2, this)._modifiers
@@ -23313,14 +23970,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     move(x, y) {
       _classPrivateFieldGet(_touchPoint, this).x = Math.round(x);
       _classPrivateFieldGet(_touchPoint, this).y = Math.round(y);
-      return _classPrivateFieldGet(_client14, this).send('Input.dispatchTouchEvent', {
+      return _classPrivateFieldGet(_client15, this).send('Input.dispatchTouchEvent', {
         type: 'touchMove',
         touchPoints: [_classPrivateFieldGet(_touchPoint, this)],
         modifiers: _classPrivateFieldGet(_keyboard2, this)._modifiers
       });
     }
     async end() {
-      await _classPrivateFieldGet(_client14, this).send('Input.dispatchTouchEvent', {
+      await _classPrivateFieldGet(_client15, this).send('Input.dispatchTouchEvent', {
         type: 'touchEnd',
         touchPoints: [_classPrivateFieldGet(_touchPoint, this)],
         modifiers: _classPrivateFieldGet(_keyboard2, this)._modifiers
@@ -23331,18 +23988,18 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @internal
    */
-  var _client15 = /*#__PURE__*/new WeakMap();
+  var _client16 = /*#__PURE__*/new WeakMap();
   var _keyboard3 = /*#__PURE__*/new WeakMap();
   class CdpTouchscreen extends Touchscreen {
     constructor(client, keyboard) {
       super();
-      _classPrivateFieldInitSpec(this, _client15, void 0);
+      _classPrivateFieldInitSpec(this, _client16, void 0);
       _classPrivateFieldInitSpec(this, _keyboard3, void 0);
-      _classPrivateFieldSet(_client15, this, client);
+      _classPrivateFieldSet(_client16, this, client);
       _classPrivateFieldSet(_keyboard3, this, keyboard);
     }
     updateClient(client) {
-      _classPrivateFieldSet(_client15, this, client);
+      _classPrivateFieldSet(_client16, this, client);
       this.touches.forEach(t => {
         t.updateClient(client);
       });
@@ -23357,7 +24014,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         force: 0.5,
         id
       };
-      const touch = new CdpTouchHandle(_classPrivateFieldGet(_client15, this), this, _classPrivateFieldGet(_keyboard3, this), touchPoint);
+      const touch = new CdpTouchHandle(_classPrivateFieldGet(_client16, this), this, _classPrivateFieldGet(_keyboard3, this), touchPoint);
       await touch.start();
       this.touches.push(touch);
       return touch;
@@ -23538,27 +24195,27 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    *
    * @public
    */
-  var _client16 = /*#__PURE__*/new WeakMap();
+  var _client17 = /*#__PURE__*/new WeakMap();
   var _recording = /*#__PURE__*/new WeakMap();
   var _path2 = /*#__PURE__*/new WeakMap();
-  var _logger20 = /*#__PURE__*/new WeakMap();
+  var _logger21 = /*#__PURE__*/new WeakMap();
   class Tracing {
     /**
      * @internal
      */
     constructor(client, logger) {
-      _classPrivateFieldInitSpec(this, _client16, void 0);
+      _classPrivateFieldInitSpec(this, _client17, void 0);
       _classPrivateFieldInitSpec(this, _recording, false);
       _classPrivateFieldInitSpec(this, _path2, void 0);
-      _classPrivateFieldInitSpec(this, _logger20, void 0);
-      _classPrivateFieldSet(_client16, this, client);
-      _classPrivateFieldSet(_logger20, this, logger);
+      _classPrivateFieldInitSpec(this, _logger21, void 0);
+      _classPrivateFieldSet(_client17, this, client);
+      _classPrivateFieldSet(_logger21, this, logger);
     }
     /**
      * @internal
      */
     updateClient(client) {
-      _classPrivateFieldSet(_client16, this, client);
+      _classPrivateFieldSet(_client17, this, client);
     }
     /**
      * Starts a trace for the current page.
@@ -23589,7 +24246,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
       _classPrivateFieldSet(_path2, this, path);
       _classPrivateFieldSet(_recording, this, true);
-      await _classPrivateFieldGet(_client16, this).send('Tracing.start', {
+      await _classPrivateFieldGet(_client17, this).send('Tracing.start', {
         transferMode: 'ReturnAsStream',
         traceConfig: {
           excludedCategories,
@@ -23604,11 +24261,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      */
     async stop() {
       const contentDeferred = Deferred.create();
-      _classPrivateFieldGet(_client16, this).once('Tracing.tracingComplete', async event => {
+      _classPrivateFieldGet(_client17, this).once('Tracing.tracingComplete', async event => {
         try {
           assert(event.stream, 'Missing "stream"');
-          const readable = await getReadableFromProtocolStream(_classPrivateFieldGet(_client16, this), event.stream);
-          const typedArray = await getReadableAsTypedArray(readable, _classPrivateFieldGet(_path2, this), _classPrivateFieldGet(_logger20, this));
+          const readable = await getReadableFromProtocolStream(_classPrivateFieldGet(_client17, this), event.stream);
+          const typedArray = await getReadableAsTypedArray(readable, _classPrivateFieldGet(_path2, this), _classPrivateFieldGet(_logger21, this));
           contentDeferred.resolve(typedArray ?? undefined);
         } catch (error) {
           if (isErrorLike(error)) {
@@ -23618,7 +24275,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           }
         }
       });
-      await _classPrivateFieldGet(_client16, this).send('Tracing.end');
+      await _classPrivateFieldGet(_client17, this).send('Tracing.end');
       _classPrivateFieldSet(_recording, this, false);
       return await contentDeferred.valueOrThrow();
     }
@@ -23737,7 +24394,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   /**
    * @public
    */
-  var _logger21 = /*#__PURE__*/new WeakMap();
+  var _logger22 = /*#__PURE__*/new WeakMap();
   class WebMCPToolCall {
     /**
      * @internal
@@ -23755,15 +24412,15 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
        * The input parameters used for the call.
        */
       _defineProperty(this, "input", void 0);
-      _classPrivateFieldInitSpec(this, _logger21, void 0);
+      _classPrivateFieldInitSpec(this, _logger22, void 0);
       this.id = invocationId;
       this.tool = tool;
-      _classPrivateFieldSet(_logger21, this, logger);
+      _classPrivateFieldSet(_logger22, this, logger);
       try {
         this.input = JSON.parse(input);
       } catch (error) {
         this.input = {};
-        _classPrivateFieldGet(_logger21, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+        _classPrivateFieldGet(_logger22, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
       }
     }
   }
@@ -23787,11 +24444,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @experimental
    * @public
    */
-  var _client17 = /*#__PURE__*/new WeakMap();
+  var _client18 = /*#__PURE__*/new WeakMap();
   var _frameManager2 = /*#__PURE__*/new WeakMap();
   var _tools = /*#__PURE__*/new WeakMap();
   var _pendingCalls = /*#__PURE__*/new WeakMap();
-  var _logger22 = /*#__PURE__*/new WeakMap();
+  var _logger23 = /*#__PURE__*/new WeakMap();
   var _subscriptions4 = /*#__PURE__*/new WeakMap();
   var _onToolsAdded = /*#__PURE__*/new WeakMap();
   var _onToolsRemoved = /*#__PURE__*/new WeakMap();
@@ -23806,11 +24463,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     constructor(client, frameManager, logger) {
       super(undefined, logger);
       _classPrivateMethodInitSpec(this, _WebMCP_brand);
-      _classPrivateFieldInitSpec(this, _client17, void 0);
+      _classPrivateFieldInitSpec(this, _client18, void 0);
       _classPrivateFieldInitSpec(this, _frameManager2, void 0);
       _classPrivateFieldInitSpec(this, _tools, new Map());
       _classPrivateFieldInitSpec(this, _pendingCalls, new Map());
-      _classPrivateFieldInitSpec(this, _logger22, void 0);
+      _classPrivateFieldInitSpec(this, _logger23, void 0);
       _classPrivateFieldInitSpec(this, _subscriptions4, new DisposableStack());
       _classPrivateFieldInitSpec(this, _onToolsAdded, event => {
         const tools = [];
@@ -23850,7 +24507,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         if (!tool) {
           return;
         }
-        const call = new WebMCPToolCall(event.invocationId, tool, event.input, _classPrivateFieldGet(_logger22, this));
+        const call = new WebMCPToolCall(event.invocationId, tool, event.input, _classPrivateFieldGet(_logger23, this));
         _classPrivateFieldGet(_pendingCalls, this).set(call.id, call);
         tool.emit('toolinvoked', call);
         this.emit('toolinvoked', call);
@@ -23884,24 +24541,24 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           });
         }
       });
-      _classPrivateFieldSet(_client17, this, client);
+      _classPrivateFieldSet(_client18, this, client);
       _classPrivateFieldSet(_frameManager2, this, frameManager);
-      _classPrivateFieldSet(_logger22, this, logger);
+      _classPrivateFieldSet(_logger23, this, logger);
       _assertClassBrand(_WebMCP_brand, this, _bindListeners).call(this);
     }
     /**
      * @internal
      */
     async initialize() {
-      return await _classPrivateFieldGet(_client17, this).send('WebMCP.enable').catch(err => {
-        _classPrivateFieldGet(_logger22, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+      return await _classPrivateFieldGet(_client18, this).send('WebMCP.enable').catch(err => {
+        _classPrivateFieldGet(_logger23, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
       });
     }
     /**
      * @internal
      */
     async invokeTool(tool, input) {
-      return await _classPrivateFieldGet(_client17, this).send('WebMCP.invokeTool', {
+      return await _classPrivateFieldGet(_client18, this).send('WebMCP.invokeTool', {
         frameId: tool.frame._id,
         toolName: tool.name,
         input
@@ -23911,10 +24568,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      * @internal
      */
     async cancelInvocation(invocationId) {
-      return await _classPrivateFieldGet(_client17, this).send('WebMCP.cancelInvocation', {
+      return await _classPrivateFieldGet(_client18, this).send('WebMCP.cancelInvocation', {
         invocationId
       }).catch(err => {
-        _classPrivateFieldGet(_logger22, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+        _classPrivateFieldGet(_logger23, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
       });
     }
     /**
@@ -23931,7 +24588,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     updateClient(client) {
       _classPrivateFieldGet(_subscriptions4, this).dispose();
       _classPrivateFieldSet(_subscriptions4, this, new DisposableStack());
-      _classPrivateFieldSet(_client17, this, client);
+      _classPrivateFieldSet(_client18, this, client);
       _assertClassBrand(_WebMCP_brand, this, _bindListeners).call(this);
     }
   }
@@ -23947,7 +24604,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     });
   }
   function _bindListeners() {
-    const clientEmitter = _classPrivateFieldGet(_subscriptions4, this).use(new EventEmitter(_classPrivateFieldGet(_client17, this)));
+    const clientEmitter = _classPrivateFieldGet(_subscriptions4, this).use(new EventEmitter(_classPrivateFieldGet(_client18, this)));
     clientEmitter.on('WebMCP.toolsAdded', _classPrivateFieldGet(_onToolsAdded, this));
     clientEmitter.on('WebMCP.toolsRemoved', _classPrivateFieldGet(_onToolsRemoved, this));
     clientEmitter.on('WebMCP.toolInvoked', _classPrivateFieldGet(_onToolInvoked, this));
@@ -24077,7 +24734,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       return page;
     }
-    constructor(client, _target2, logger) {
+    constructor(client, _target3, logger) {
       super(logger);
       _classPrivateMethodInitSpec(this, _CdpPage_brand);
       _classPrivateFieldInitSpec(this, _closed2, false);
@@ -24104,6 +24761,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _serviceWorkerBypassed, false);
       _classPrivateFieldInitSpec(this, _userDragInterceptionEnabled, false);
       _classPrivateFieldInitSpec(this, _onDetachedFromTarget, target => {
+        _classPrivateFieldGet(_frameManager3, this).onDetachedFromTarget(target);
         const sessionId = target._session()?.id();
         const worker = _classPrivateFieldGet(_workers, this).get(sessionId);
         if (!worker) {
@@ -24114,9 +24772,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
       _classPrivateFieldInitSpec(this, _onAttachedToTarget, session => {
         assert(session instanceof CdpCDPSession);
-        _classPrivateFieldGet(_frameManager3, this).onAttachedToTarget(session.target());
-        if (session.target()._getTargetInfo().type === 'worker') {
-          const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), _assertClassBrand(_CdpPage_brand, this, _handleException).bind(this), _classPrivateFieldGet(_frameManager3, this).networkManager, this.logger);
+        const target = session.target();
+        _classPrivateFieldGet(_frameManager3, this).onAttachedToTarget(target);
+        if (target._getTargetInfo().type === 'worker') {
+          const worker = new CdpWebWorker(session, target, _assertClassBrand(_CdpPage_brand, this, _handleException).bind(this), this.logger, _classPrivateFieldGet(_frameManager3, this).networkManager, () => {
+            return this.listenerCount("exception" /* PageEvent.Exception */) > 0;
+          });
           _classPrivateFieldGet(_workers, this).set(session.id(), worker);
           worker.internalEmitter.on(exports.WebWorkerEvent.Console, message => {
             const noListenersForConsoleOnPage = this.listenerCount("console" /* PageEvent.Console */) === 0;
@@ -24133,6 +24794,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             }
             _assertClassBrand(_CdpPage_brand, this, _emitConsoleMessage).call(this, message);
           });
+          worker.internalEmitter.on(exports.WebWorkerEvent.Exception, exception => {
+            this.emit("exception" /* PageEvent.Exception */, exception);
+          });
           this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
         session.on(exports.CDPSessionEvent.Ready, _classPrivateFieldGet(_onAttachedToTarget, this));
@@ -24143,8 +24807,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldSet(_tabTarget, this, _classPrivateFieldGet(_tabTargetClient, this).target());
       assert(_classPrivateFieldGet(_tabTarget, this), 'Tab target is not defined.');
       this._tabId = _classPrivateFieldGet(_tabTarget, this)._getTargetInfo().targetId;
-      _classPrivateFieldSet(_primaryTarget, this, _target2);
-      _classPrivateFieldSet(_targetManager, this, _target2._targetManager());
+      _classPrivateFieldSet(_primaryTarget, this, _target3);
+      _classPrivateFieldSet(_targetManager, this, _target3._targetManager());
       _classPrivateFieldSet(_keyboard4, this, new CdpKeyboard(client));
       _classPrivateFieldSet(_mouse, this, new CdpMouse(client, _classPrivateFieldGet(_keyboard4, this)));
       _classPrivateFieldSet(_touchscreen, this, new CdpTouchscreen(client, _classPrivateFieldGet(_keyboard4, this)));
@@ -24166,6 +24830,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
       frameManagerEmitter.on(exports.FrameManagerEvent.FrameNavigated, frame => {
         this.emit("framenavigated" /* PageEvent.FrameNavigated */, frame);
+      });
+      frameManagerEmitter.on(exports.FrameManagerEvent.FrameNavigatedWithinDocument, frame => {
+        this.emit("framenavigatedsamedocument" /* PageEvent.FrameNavigatedSameDocument */, frame);
+      });
+      frameManagerEmitter.on(exports.FrameManagerEvent.FrameNavigatedNewDocument, frame => {
+        this.emit("framenavigatednewdocument" /* PageEvent.FrameNavigatedNewDocument */, frame);
       });
       frameManagerEmitter.on(exports.FrameManagerEvent.ConsoleApiCalled, ([world, event]) => {
         _assertClassBrand(_CdpPage_brand, this, _onConsoleAPI2).call(this, world, event);
@@ -24303,6 +24973,12 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       } catch (error) {
         _classPrivateFieldGet(_fileChooserDeferreds, this).delete(deferred);
         throw error;
+      } finally {
+        // Once nobody is waiting anymore, stop intercepting so that file choosers
+        // opened later (e.g. by a user of a headful browser) are shown again.
+        if (_classPrivateFieldGet(_fileChooserDeferreds, this).size === 0) {
+          await _assertClassBrand(_CdpPage_brand, this, _disableFileChooserInterception).call(this);
+        }
       }
     }
     async setGeolocation(options) {
@@ -24425,7 +25101,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           await _classPrivateFieldGet(_primaryTargetClient, this).send('Network.deleteCookies', {
             ...item,
             partitionKey: {
-              topLevelSite: url.origin.replace(`:${url.port}`, ''),
+              topLevelSite: `${url.protocol}//${url.hostname}`,
               hasCrossSiteAncestor: false
             }
           });
@@ -24544,6 +25220,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
     }
     async reload(options) {
+      options?.signal?.throwIfAborted();
       const [result] = await Promise.all([this.waitForNavigation({
         ...options,
         ignoreSameDocumentNavigation: true
@@ -24618,7 +25295,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       await _classPrivateFieldGet(_frameManager3, this).networkManager.setCacheEnabled(enabled);
     }
     async _screenshot(options) {
-      const env_3 = {
+      const env_4 = {
         stack: [],
         error: void 0,
         hasError: false
@@ -24633,7 +25310,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           type,
           captureBeyondViewport
         } = options;
-        const stack = __addDisposableResource$1(env_3, new AsyncDisposableStack(), true);
+        const stack = __addDisposableResource$1(env_4, new AsyncDisposableStack(), true);
         if (omitBackground && (type === 'png' || type === 'webp')) {
           await _classPrivateFieldGet(_emulationManager, this).setTransparentBackgroundColor();
           stack.defer(async () => {
@@ -24678,11 +25355,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           captureBeyondViewport
         });
         return data;
-      } catch (e_3) {
-        env_3.error = e_3;
-        env_3.hasError = true;
+      } catch (e_4) {
+        env_4.error = e_4;
+        env_4.hasError = true;
       } finally {
-        const result_1 = __disposeResources$1(env_3);
+        const result_1 = __disposeResources$1(env_4);
         if (result_1) await result_1;
       }
     }
@@ -24753,13 +25430,13 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     async close(options = {
       runBeforeUnload: undefined
     }) {
-      const env_4 = {
+      const env_5 = {
         stack: [],
         error: void 0,
         hasError: false
       };
       try {
-        const _guard = __addDisposableResource$1(env_4, await this.browserContext().waitForScreenshotOperations(), false);
+        const _guard = __addDisposableResource$1(env_5, await this.browserContext().waitForScreenshotOperations(), false);
         const connection = _classPrivateFieldGet(_primaryTargetClient, this).connection();
         assert(connection, 'Connection closed. Most likely the page has been closed.');
         const runBeforeUnload = !!options.runBeforeUnload;
@@ -24771,11 +25448,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           });
           await _classPrivateFieldGet(_tabTarget, this)._isClosedDeferred.valueOrThrow();
         }
-      } catch (e_4) {
-        env_4.error = e_4;
-        env_4.hasError = true;
+      } catch (e_5) {
+        env_5.error = e_5;
+        env_5.hasError = true;
       } finally {
-        __disposeResources$1(env_4);
+        __disposeResources$1(env_5);
       }
     }
     isClosed() {
@@ -24887,7 +25564,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       this.emit("load" /* PageEvent.Load */, undefined);
     });
     clientEmitter.on('Page.javascriptDialogOpening', _assertClassBrand(_CdpPage_brand, this, _onDialog).bind(this));
-    clientEmitter.on('Runtime.exceptionThrown', _assertClassBrand(_CdpPage_brand, this, _handleException).bind(this));
+    clientEmitter.on('Runtime.exceptionThrown', _assertClassBrand(_CdpPage_brand, this, _onExceptionThrown).bind(this));
     clientEmitter.on('Inspector.targetCrashed', _assertClassBrand(_CdpPage_brand, this, _onTargetCrashed).bind(this));
     clientEmitter.on('Performance.metrics', _assertClassBrand(_CdpPage_brand, this, _emitMetrics).bind(this));
     clientEmitter.on('Log.entryAdded', _assertClassBrand(_CdpPage_brand, this, _onLogEntryAdded).bind(this));
@@ -24933,6 +25610,16 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       __disposeResources$1(env_1);
     }
   }
+  async function _disableFileChooserInterception() {
+    try {
+      await _classPrivateFieldGet(_primaryTargetClient, this).send('Page.setInterceptFileChooserDialog', {
+        enabled: false
+      });
+    } catch (err) {
+      // If the session is gone, the interception went away with it.
+      this.logger?.(DEBUG_PREFIXES.error)?.(err);
+    }
+  }
   function _onTargetCrashed() {
     this.emit("error" /* PageEvent.Error */, new Error('Page crashed!'));
   }
@@ -24975,6 +25662,68 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   }
   function _handleException(exception) {
     this.emit("pageerror" /* PageEvent.PageError */, createClientError(exception.exceptionDetails));
+  }
+  function _onExceptionThrown(event) {
+    _assertClassBrand(_CdpPage_brand, this, _handleException).call(this, event);
+    _assertClassBrand(_CdpPage_brand, this, _onMainTargetException).call(this, event);
+  }
+  function _onMainTargetException(event) {
+    const env_3 = {
+      stack: [],
+      error: void 0,
+      hasError: false
+    };
+    try {
+      const details = event.exceptionDetails;
+      if (this.listenerCount("exception" /* PageEvent.Exception */) === 0) {
+        // Nobody can use a handle, but the browser keeps the exception alive
+        // until it is released.
+        if (details.exception) {
+          void releaseObject(_classPrivateFieldGet(_primaryTargetClient, this), details.exception, this.logger);
+        }
+        return;
+      }
+      // Disposed when this scope ends, i.e. right after dispatch. This is a no-op
+      // if a listener called `move()` on the handle.
+      const handle = __addDisposableResource$1(env_3, _assertClassBrand(_CdpPage_brand, this, _createExceptionHandle).call(this, details), false);
+      this.emit("exception" /* PageEvent.Exception */, createRemoteException(details, handle));
+    } catch (e_3) {
+      env_3.error = e_3;
+      env_3.hasError = true;
+    } finally {
+      __disposeResources$1(env_3);
+    }
+  }
+  function _createExceptionHandle(details) {
+    const remoteObject = details.exception;
+    if (!remoteObject?.objectId) {
+      return;
+    }
+    const world = _assertClassBrand(_CdpPage_brand, this, _findWorldByExecutionContextId).call(this, details.executionContextId);
+    if (world) {
+      return world.createCdpHandle(remoteObject);
+    }
+    // We cannot bind the handle to a realm, but the remote object must still
+    // be released to avoid leaking it.
+    void releaseObject(_classPrivateFieldGet(_primaryTargetClient, this), remoteObject, this.logger);
+    return;
+  }
+  function _findWorldByExecutionContextId(executionContextId) {
+    if (executionContextId === undefined) {
+      return;
+    }
+    for (const frame of _classPrivateFieldGet(_frameManager3, this).frames()) {
+      // Execution context IDs are only unique per session.
+      if (frame.client !== _classPrivateFieldGet(_primaryTargetClient, this)) {
+        continue;
+      }
+      for (const world of [frame.worlds[MAIN_WORLD], frame.worlds[PUPPETEER_WORLD]]) {
+        if (world.context?.id === executionContextId) {
+          return world;
+        }
+      }
+    }
+    return;
   }
   function _onConsoleAPI2(world, event, values) {
     if (!values) {
@@ -25050,6 +25799,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     this.emit("dialog" /* PageEvent.Dialog */, dialog);
   }
   async function _go(delta, options) {
+    options.signal?.throwIfAborted();
     const history = await _classPrivateFieldGet(_primaryTargetClient, this).send('Page.getNavigationHistory');
     const entry = history.entries[history.currentIndex + delta];
     if (!entry) {
@@ -25290,7 +26040,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
   }
   var _browser2 = /*#__PURE__*/new WeakMap();
-  var _logger23 = /*#__PURE__*/new WeakMap();
+  var _logger24 = /*#__PURE__*/new WeakMap();
   var _CdpExtension_brand = /*#__PURE__*/new WeakSet();
   class CdpExtension extends Extension {
     /*
@@ -25301,9 +26051,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateMethodInitSpec(this, _CdpExtension_brand);
       // needed to access the CDPSession to trigger an extension action.
       _classPrivateFieldInitSpec(this, _browser2, void 0);
-      _classPrivateFieldInitSpec(this, _logger23, void 0);
+      _classPrivateFieldInitSpec(this, _logger24, void 0);
       _classPrivateFieldSet(_browser2, this, browser);
-      _classPrivateFieldSet(_logger23, this, logger);
+      _classPrivateFieldSet(_logger24, this, logger);
     }
     async workers() {
       const targets = _classPrivateFieldGet(_browser2, this).targets();
@@ -25316,7 +26066,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           return await target.worker();
         } catch (err) {
           if (_assertClassBrand(_CdpExtension_brand, this, _canIgnoreError2).call(this, err)) {
-            _classPrivateFieldGet(_logger23, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+            _classPrivateFieldGet(_logger24, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
             return null;
           }
           throw err;
@@ -25337,7 +26087,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           return await target.asPage();
         } catch (err) {
           if (_assertClassBrand(_CdpExtension_brand, this, _canIgnoreError2).call(this, err)) {
-            _classPrivateFieldGet(_logger23, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+            _classPrivateFieldGet(_logger24, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
             return null;
           }
           throw err;
@@ -25379,7 +26129,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _targetInfo = /*#__PURE__*/new WeakMap();
   var _targetManager2 = /*#__PURE__*/new WeakMap();
   var _sessionFactory = /*#__PURE__*/new WeakMap();
-  var _logger24 = /*#__PURE__*/new WeakMap();
+  var _logger25 = /*#__PURE__*/new WeakMap();
   var _childTargets = /*#__PURE__*/new WeakMap();
   class CdpTarget extends Target {
     /**
@@ -25394,7 +26144,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _targetInfo, void 0);
       _classPrivateFieldInitSpec(this, _targetManager2, void 0);
       _classPrivateFieldInitSpec(this, _sessionFactory, void 0);
-      _classPrivateFieldInitSpec(this, _logger24, void 0);
+      _classPrivateFieldInitSpec(this, _logger25, void 0);
       _classPrivateFieldInitSpec(this, _childTargets, new Set());
       _defineProperty(this, "_initializedDeferred", Deferred.create());
       _defineProperty(this, "_isClosedDeferred", Deferred.create());
@@ -25408,7 +26158,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldSet(_browserContext, this, browserContext);
       this._targetId = targetInfo.targetId;
       _classPrivateFieldSet(_sessionFactory, this, sessionFactory);
-      _classPrivateFieldSet(_logger24, this, logger);
+      _classPrivateFieldSet(_logger25, this, logger);
       if (_classPrivateFieldGet(_session, this)) {
         _classPrivateFieldGet(_session, this).setTarget(this);
       }
@@ -25423,7 +26173,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (!this._asPagePromise) {
         const session = this._session();
         this._asPagePromise = (session ? Promise.resolve(session) : this._sessionFactory()(/* isAutoAttachEmulated=*/false)).then(client => {
-          return CdpPage._create(client, this, null, _classPrivateFieldGet(_logger24, this));
+          return CdpPage._create(client, this, null, _classPrivateFieldGet(_logger25, this));
         });
       }
       return (await this._asPagePromise) ?? null;
@@ -25609,7 +26359,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (!_classPrivateFieldGet(_workerPromise, this)) {
         const session = this._session();
         _classPrivateFieldSet(_workerPromise, this, (session ? Promise.resolve(session) : this._sessionFactory()(/* isAutoAttachEmulated=*/false)).then(client => {
-          const worker = new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => {} /* exceptionThrown */, undefined /* networkManager */, this.logger);
+          // Service and shared workers create their own NetworkManager.
+          const worker = new CdpWebWorker(client, this, () => {} /* exceptionThrown */, this.logger);
           _assertClassBrand(_WorkerTarget_brand, this, _bubbleConsoleMessages).call(this, worker);
           return worker;
         }));
@@ -25678,7 +26429,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _blocklist = /*#__PURE__*/new WeakMap();
   var _allowlist = /*#__PURE__*/new WeakMap();
   var _networkConditionsSessions = /*#__PURE__*/new WeakMap();
-  var _logger25 = /*#__PURE__*/new WeakMap();
+  var _logger26 = /*#__PURE__*/new WeakMap();
   var _TargetManager_brand = /*#__PURE__*/new WeakSet();
   var _silentDetach = /*#__PURE__*/new WeakMap();
   var _getParentTarget = /*#__PURE__*/new WeakMap();
@@ -25746,17 +26497,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
        * re-apply network conditions at runtime.
        */
       _classPrivateFieldInitSpec(this, _networkConditionsSessions, new Map());
-      _classPrivateFieldInitSpec(this, _logger25, void 0);
+      _classPrivateFieldInitSpec(this, _logger26, void 0);
       _classPrivateFieldInitSpec(this, _silentDetach, async (session, parentSession) => {
         await session.send('Runtime.runIfWaitingForDebugger').catch(error => {
-          _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+          _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
         // We don't use `session.detach()` because that dispatches all commands on
         // the connection instead of the parent session.
         await parentSession.send('Target.detachFromTarget', {
           sessionId: session.id()
         }).catch(error => {
-          _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+          _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
       });
       _classPrivateFieldInitSpec(this, _getParentTarget, parentSession => {
@@ -25864,7 +26615,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             // are awaited after resuming it.
             const networkConditionsSetUp = _classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo);
             await session.send('Runtime.runIfWaitingForDebugger').catch(error => {
-              _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+              _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
             });
             await networkConditionsSetUp;
             // An already exposed WorkerTarget (created on the silent-detach path)
@@ -25929,7 +26680,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           autoAttach: true,
           filter: _classPrivateFieldGet(_discoveryFilter, this)
         }), _classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo), session.send('Runtime.runIfWaitingForDebugger')]).catch(error => {
-          _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+          _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
       });
       _classPrivateFieldInitSpec(this, _onDetachedFromTarget2, (parentSession, event) => {
@@ -26031,7 +26782,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           matchedNetworkConditions
         }));
         return Promise.all(promises).catch(error => {
-          _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+          _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
       });
       if (blocklist?.length && allowlist?.length) {
@@ -26041,7 +26792,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldSet(_targetFilterCallback, this, targetFilterCallback);
       _classPrivateFieldSet(_targetFactory, this, targetFactory);
       _classPrivateFieldSet(_waitForInitiallyDiscoveredTargets, this, waitForInitiallyDiscoveredTargets);
-      _classPrivateFieldSet(_logger25, this, logger);
+      _classPrivateFieldSet(_logger26, this, logger);
       _classPrivateFieldSet(_blocklist, this, _assertClassBrand(_TargetManager_brand, this, _mapPatterns).call(this, blocklist));
       _classPrivateFieldSet(_allowlist, this, _assertClassBrand(_TargetManager_brand, this, _mapPatterns).call(this, allowlist));
       const connectionEmitter = _classPrivateFieldGet(_subscriptions5, this).use(new EventEmitter(_classPrivateFieldGet(_connection4, this)));
@@ -26081,6 +26832,17 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     getAvailableTargets() {
       return _classPrivateFieldGet(_attachedTargetsByTargetId, this);
+    }
+    /**
+     * Returns the attached iframe target that has the given frame as its root
+     * frame.
+     */
+    getFrameTarget(frameId) {
+      const target = _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(frameId);
+      if (!target || target._getTargetInfo().type !== 'iframe' || !target._session()) {
+        return undefined;
+      }
+      return target;
     }
     getDiscoveredTargetInfos() {
       return _classPrivateFieldGet(_discoveredTargetsByTargetId, this);
@@ -26188,7 +26950,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         continue;
       }
       promises.push(_classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo, forceClear).catch(error => {
-        _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+        _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
       }));
     }
     await Promise.all(promises);
@@ -26206,7 +26968,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         continue;
       }
       promises.push(_classPrivateFieldGet(_connection4, this)._createSession(targetInfo, true).catch(error => {
-        _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+        _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
       }));
     }
     await Promise.all(promises);
@@ -27045,7 +27807,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   var _ws = /*#__PURE__*/new WeakMap();
-  var _logger26 = /*#__PURE__*/new WeakMap();
+  var _logger27 = /*#__PURE__*/new WeakMap();
   class BrowserWebSocketTransport {
     static create(url, _headers, logger,
     // Accepted so this stays call-compatible with NodeWebSocketTransport, which
@@ -27063,11 +27825,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     constructor(ws, logger) {
       _classPrivateFieldInitSpec(this, _ws, void 0);
-      _classPrivateFieldInitSpec(this, _logger26, void 0);
+      _classPrivateFieldInitSpec(this, _logger27, void 0);
       _defineProperty(this, "onmessage", void 0);
       _defineProperty(this, "onclose", void 0);
       _classPrivateFieldSet(_ws, this, ws);
-      _classPrivateFieldSet(_logger26, this, logger);
+      _classPrivateFieldSet(_logger27, this, logger);
       _classPrivateFieldGet(_ws, this).addEventListener('message', event => {
         if (this.onmessage) {
           this.onmessage.call(null, event.data);
@@ -27080,7 +27842,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       });
       // Silently log all errors - we don't know what to do with them.
       _classPrivateFieldGet(_ws, this).addEventListener('error', err => {
-        _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+        _classPrivateFieldGet(_logger27, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
       });
     }
     send(message) {
@@ -29185,9 +29947,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '157.0.8103.50',
-    'chrome-headless-shell': '157.0.8103.50',
-    firefox: 'stable_159.0.1'
+    chrome: '157.0.8103.78',
+    'chrome-headless-shell': '157.0.8103.78',
+    firefox: 'stable_160.0'
   });
 
   /**
@@ -29305,6 +30067,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   exports.RETRY_DELAY = RETRY_DELAY;
   exports.RaceLocator = RaceLocator;
   exports.Realm = Realm;
+  exports.RemoteException = RemoteException;
   exports.SOURCE_URL_REGEX = SOURCE_URL_REGEX;
   exports.STATUS_TEXTS = STATUS_TEXTS;
   exports.ScreenRecording = ScreenRecording;
@@ -29348,6 +30111,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   exports.createEvaluationError = createEvaluationError;
   exports.createIncrementalIdGenerator = createIncrementalIdGenerator;
   exports.createProtocolErrorMessage = createProtocolErrorMessage;
+  exports.createRemoteException = createRemoteException;
   exports.createResponseBodyStream = createResponseBodyStream;
   exports.customQueryHandlers = customQueryHandlers;
   exports.debug = debug;

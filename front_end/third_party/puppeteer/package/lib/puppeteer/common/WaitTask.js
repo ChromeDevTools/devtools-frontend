@@ -41,6 +41,10 @@ export class WaitTask {
                 break;
         }
         this.#args = args;
+        if (this.#signal?.aborted) {
+            void this.terminate(this.#signal.reason);
+            return;
+        }
         this.#world.taskManager.add(this);
         if (options.timeout) {
             this.#timeoutError = new TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`);

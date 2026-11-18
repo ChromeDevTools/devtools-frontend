@@ -279,6 +279,8 @@ SOURCES = [
   "package/lib/puppeteer/common/Puppeteer.js",
   "package/lib/puppeteer/common/QueryHandler.d.ts",
   "package/lib/puppeteer/common/QueryHandler.js",
+  "package/lib/puppeteer/common/RemoteException.d.ts",
+  "package/lib/puppeteer/common/RemoteException.js",
   "package/lib/puppeteer/common/ScriptInjector.d.ts",
   "package/lib/puppeteer/common/ScriptInjector.js",
   "package/lib/puppeteer/common/SecurityDetails.d.ts",

@@ -321,16 +321,24 @@ let BidiBrowserContext = (() => {
             if (origin === '*') {
                 throw new UnsupportedOperation('Origin (*) is not supported by WebDriver BiDi');
             }
-            await Promise.all(permissions.map(permission => {
-                if (permission.permission.allowWithoutSanitization) {
+            // Validate all descriptors before sending any commands, so that an
+            // unsupported descriptor does not leave permissions partially applied.
+            for (const { permission } of permissions) {
+                if (permission.allowWithoutSanitization) {
                     throw new UnsupportedOperation('allowWithoutSanitization is not supported by WebDriver BiDi');
                 }
-                if (permission.permission.panTiltZoom) {
+                if (permission.panTiltZoom) {
                     throw new UnsupportedOperation('panTiltZoom is not supported by WebDriver BiDi');
                 }
-                if (permission.permission.userVisibleOnly) {
+                if (permission.userVisibleOnly) {
                     throw new UnsupportedOperation('userVisibleOnly is not supported by WebDriver BiDi');
                 }
+                if (permission.sysex) {
+                    throw new UnsupportedOperation('sysex is not supported by WebDriver BiDi');
+                }
+            }
+            await Promise.all(permissions.map(permission => {
+                this.#overrides.push({ origin, permission: permission.permission.name });
                 return this.userContext.setPermissions(origin, {
                     name: permission.permission.name,
                 }, permission.state);

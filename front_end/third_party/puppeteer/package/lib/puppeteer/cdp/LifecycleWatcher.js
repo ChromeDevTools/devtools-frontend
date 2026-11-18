@@ -47,12 +47,6 @@ export class LifecycleWatcher {
             assert(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
             return protocolEvent;
         });
-        signal?.addEventListener('abort', () => {
-            if (signal.reason instanceof Error) {
-                signal.reason.cause = this.#error;
-            }
-            this.#terminationDeferred.reject(signal.reason);
-        });
         this.#frame = frame;
         this.#timeout = timeout;
         const frameManagerEmitter = this.#subscriptions.use(new EventEmitter(frame._frameManager));
@@ -71,6 +65,23 @@ export class LifecycleWatcher {
             timeout: this.#timeout,
             message: `Navigation timeout of ${this.#timeout} ms exceeded`,
         });
+        if (signal) {
+            const onAbort = () => {
+                if (signal.reason instanceof Error) {
+                    signal.reason.cause = this.#error;
+                }
+                this.#terminationDeferred.reject(signal.reason);
+            };
+            if (signal.aborted) {
+                onAbort();
+            }
+            else {
+                signal.addEventListener('abort', onAbort, { once: true });
+                this.#subscriptions.defer(() => {
+                    signal.removeEventListener('abort', onAbort);
+                });
+            }
+        }
         this.#checkLifecycleComplete();
     }
     #onRequest(request) {

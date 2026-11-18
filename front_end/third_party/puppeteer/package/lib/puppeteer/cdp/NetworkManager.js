@@ -93,9 +93,10 @@ export class NetworkManager extends EventEmitter {
     async #removeClient(client) {
         this.#clients.get(client)?.dispose();
         this.#clients.delete(client);
-        // Only dedicated workers leave requests pending when their session goes
-        // away. The worker is still known here: the session is closed before the
-        // page handles the target detaching.
+        // Only worker sessions (dedicated workers tracked by the page, and
+        // service/shared workers with their own manager) leave requests pending
+        // when their session goes away. The worker is still known here: the
+        // session is closed before its owner handles the target detaching.
         if (!this.#frameManager.worker(client)) {
             return;
         }
@@ -258,8 +259,7 @@ export class NetworkManager extends EventEmitter {
         if (nothingToEmulate && !this.#userAgentOverrideApplied) {
             return;
         }
-        const userAgent = this.#userAgent ??
-            (await this.#frameManager.page().browser().userAgent());
+        const userAgent = this.#userAgent ?? (await this.#frameManager.browser().userAgent());
         if (userAgent === undefined) {
             return;
         }

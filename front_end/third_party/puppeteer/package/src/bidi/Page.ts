@@ -331,8 +331,12 @@ export class BidiPage extends Page {
   override async reload(
     options: ReloadOptions = {},
   ): Promise<BidiHTTPResponse | null> {
+    options.signal?.throwIfAborted();
     const [response] = await Promise.all([
-      this.#frame.waitForNavigation(options),
+      this.#frame.waitForNavigation({
+        ...options,
+        ignoreSameDocumentNavigation: true,
+      }),
       this.#frame.browsingContext.reload({
         ignoreCache: options.ignoreCache ? true : undefined,
       }),
@@ -1053,13 +1057,17 @@ export class BidiPage extends Page {
     delta: number,
     options: WaitForOptions,
   ): Promise<HTTPResponse | null> {
+    options.signal?.throwIfAborted();
     const controller = new AbortController();
+    const signal = options.signal
+      ? AbortSignal.any([options.signal, controller.signal])
+      : controller.signal;
 
     try {
       const [response] = await Promise.all([
         this.waitForNavigation({
           ...options,
-          signal: controller.signal,
+          signal,
         }),
         this.#frame.browsingContext.traverseHistory(delta),
       ]);
@@ -1280,7 +1288,10 @@ export function convertCookiesSameSiteCdpToBiDi(
 export function convertCookiesExpiryCdpToBiDi(
   expiry: number | undefined,
 ): number | undefined {
-  return [undefined, -1].includes(expiry) ? undefined : expiry;
+  if (expiry === undefined || expiry === -1) {
+    return undefined;
+  }
+  return Math.floor(expiry);
 }
 
 export function convertCookiesPartitionKeyFromPuppeteerToBiDi(

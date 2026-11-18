@@ -18,6 +18,7 @@ export var FrameManagerEvent;
     FrameManagerEvent.FrameSwapped = Symbol('FrameManager.FrameSwapped');
     FrameManagerEvent.LifecycleEvent = Symbol('FrameManager.LifecycleEvent');
     FrameManagerEvent.FrameNavigatedWithinDocument = Symbol('FrameManager.FrameNavigatedWithinDocument');
+    FrameManagerEvent.FrameNavigatedNewDocument = Symbol('FrameManager.FrameNavigatedNewDocument');
     FrameManagerEvent.ConsoleApiCalled = Symbol('FrameManager.ConsoleApiCalled');
     FrameManagerEvent.BindingCalled = Symbol('FrameManager.BindingCalled');
 })(FrameManagerEvent || (FrameManagerEvent = {}));

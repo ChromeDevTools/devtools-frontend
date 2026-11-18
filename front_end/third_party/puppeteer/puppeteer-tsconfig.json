@@ -133,6 +133,7 @@
     "package/lib/puppeteer/common/PierceQueryHandler.js",
     "package/lib/puppeteer/common/Puppeteer.js",
     "package/lib/puppeteer/common/QueryHandler.js",
+    "package/lib/puppeteer/common/RemoteException.js",
     "package/lib/puppeteer/common/ScriptInjector.js",
     "package/lib/puppeteer/common/SecurityDetails.js",
     "package/lib/puppeteer/common/SupportedBrowser.js",

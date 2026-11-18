@@ -66,12 +66,13 @@ import { getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, Puppet
 import { UnsupportedOperation } from '../index-browser.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { stringifyFunction } from '../util/Function.js';
+import { DedicatedWorkerRealm } from './core/Realm.js';
 import { BidiDeserializer } from './Deserializer.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { ExposableFunction } from './ExposedFunction.js';
 import { BidiJSHandle } from './JSHandle.js';
 import { BidiSerializer } from './Serializer.js';
-import { createEvaluationError, getConsoleMessage, isConsoleLogEntry, rewriteEvaluationError, } from './util.js';
+import { createEvaluationError, createPageErrorFromLogEntry, createRemoteExceptionFromLogEntry, getConsoleMessage, isConsoleLogEntry, isJavaScriptLogEntry, rewriteEvaluationError, } from './util.js';
 /**
  * @internal
  */
@@ -335,10 +336,21 @@ export class BidiWorkerRealm extends BidiRealm {
     initialize() {
         super.initialize();
         this.realm.on('log', entry => {
+            const page = this.#worker.frame.page();
+            if (isJavaScriptLogEntry(entry)) {
+                const exception = createRemoteExceptionFromLogEntry(entry);
+                this.#worker.emit(WebWorkerEvent.Exception, exception);
+                // Match CDP: exceptions in dedicated workers are also reported on the
+                // page that owns the worker, including the deprecated `pageerror`.
+                if (this.realm instanceof DedicatedWorkerRealm) {
+                    page.trustedEmitter.emit("pageerror" /* PageEvent.PageError */, createPageErrorFromLogEntry(entry));
+                    page.trustedEmitter.emit("exception" /* PageEvent.Exception */, exception);
+                }
+                return;
+            }
             if (!isConsoleLogEntry(entry)) {
                 return;
             }
-            const page = this.#worker.frame.page();
             const context = page.browserContext();
             if (!this.#worker.listenerCount(WebWorkerEvent.Console) &&
                 !page.listenerCount("console" /* PageEvent.Console */) &&

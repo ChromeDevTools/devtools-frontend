@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { filter, from, fromEvent, map, mergeMap, NEVER, Observable, timer, } from '../../third_party/rxjs/rxjs.js';
+import { defer, filter, from, fromEvent, map, mergeMap, NEVER, Observable, of, timer, } from '../../third_party/rxjs/rxjs.js';
 import { URLPattern } from '../../third_party/urlpattern-polyfill/urlpattern-polyfill.js';
 import { environment } from '../environment.js';
 import { assert } from '../util/assert.js';
@@ -369,7 +369,9 @@ export function fromEmitterEvent(emitter, eventName) {
  */
 export function fromAbortSignal(signal, cause) {
     return signal
-        ? fromEvent(signal, 'abort').pipe(map(() => {
+        ? defer(() => {
+            return signal.aborted ? of(undefined) : fromEvent(signal, 'abort');
+        }).pipe(map(() => {
             if (signal.reason instanceof Error) {
                 signal.reason.cause = cause;
                 throw signal.reason;

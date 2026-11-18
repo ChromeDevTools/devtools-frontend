@@ -8,6 +8,7 @@ import type { Frame } from '../api/Frame.js';
 import type { WebWorker } from '../api/WebWorker.js';
 import { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { ConsoleMessageLocation, ConsoleMessageType } from '../common/ConsoleMessage.js';
+import { RemoteException } from '../common/RemoteException.js';
 import type { BidiElementHandle } from './bidi.js';
 import { BidiJSHandle } from './JSHandle.js';
 /**
@@ -33,6 +34,23 @@ export declare function isConsoleLogEntry(event: Bidi.Log.Entry): event is Bidi.
  * @internal
  */
 export declare function isJavaScriptLogEntry(event: Bidi.Log.Entry): event is Bidi.Log.JavascriptLogEntry;
+/**
+ * Creates the `Error` dispatched by the deprecated `pageerror` event from a
+ * WebDriver BiDi JavaScript log entry.
+ *
+ * @internal
+ */
+export declare function createPageErrorFromLogEntry(entry: Bidi.Log.JavascriptLogEntry): Error;
+/**
+ * Creates a {@link RemoteException} from a WebDriver BiDi JavaScript log entry.
+ *
+ * @remarks
+ * WebDriver BiDi does not expose the exception name nor a remote reference to
+ * the thrown value, so `name()` is `null` and `handle()` is `undefined`.
+ *
+ * @internal
+ */
+export declare function createRemoteExceptionFromLogEntry(entry: Bidi.Log.JavascriptLogEntry): RemoteException;
 /**
  * @internal
  */

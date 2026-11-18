@@ -8,6 +8,7 @@ import type { Frame } from '../api/Frame.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import type { WebWorker } from '../api/WebWorker.js';
 import { ConsoleMessage, type ConsoleMessageType } from '../common/ConsoleMessage.js';
+import { RemoteException } from '../common/RemoteException.js';
 /**
  * @internal
  */
@@ -16,6 +17,10 @@ export declare function createConsoleMessage(event: Protocol.Runtime.ConsoleAPIC
  * @internal
  */
 export declare function createEvaluationError(details: Protocol.Runtime.ExceptionDetails): unknown;
+/**
+ * @internal
+ */
+export declare function createRemoteException(details: Protocol.Runtime.ExceptionDetails, handle?: JSHandle): RemoteException;
 /**
  * @internal
  */

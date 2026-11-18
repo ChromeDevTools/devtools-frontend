@@ -136,6 +136,19 @@ export class TargetManager extends EventEmitter {
     getAvailableTargets() {
         return this.#attachedTargetsByTargetId;
     }
+    /**
+     * Returns the attached iframe target that has the given frame as its root
+     * frame.
+     */
+    getFrameTarget(frameId) {
+        const target = this.#attachedTargetsByTargetId.get(frameId);
+        if (!target ||
+            target._getTargetInfo().type !== 'iframe' ||
+            !target._session()) {
+            return undefined;
+        }
+        return target;
+    }
     getDiscoveredTargetInfos() {
         return this.#discoveredTargetsByTargetId;
     }

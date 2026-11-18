@@ -48,6 +48,7 @@ import {
 } from '../common/EventEmitter.js';
 import type {FileChooser} from '../common/FileChooser.js';
 import type {PDFOptions} from '../common/PDFOptions.js';
+import type {RemoteException} from '../common/RemoteException.js';
 import {TimeoutSettings} from '../common/TimeoutSettings.js';
 import type {
   Awaitable,
@@ -576,6 +577,16 @@ export const enum PageEvent {
    * Emitted when the page crashes. Will contain an `Error`.
    */
   Error = 'error',
+  /**
+   * Emitted when an uncaught exception happens within the page or one of its
+   * dedicated workers. Contains a {@link RemoteException}.
+   *
+   * @remarks
+   * The {@link RemoteException.handle | handle} of the exception is disposed
+   * right after the event has been dispatched. Call `move()` on it
+   * synchronously inside the listener to keep it alive.
+   */
+  Exception = 'exception',
   /** Emitted when a frame is attached. Will contain a {@link Frame}. */
   FrameAttached = 'frameattached',
   /** Emitted when a frame is detached. Will contain a {@link Frame}. */
@@ -583,8 +594,32 @@ export const enum PageEvent {
   /**
    * Emitted when a frame is navigated to a new URL. Will contain a
    * {@link Frame}.
+   *
+   * @remarks
+   * This event is emitted for both same-document navigations (for example,
+   * fragment navigations) and navigations to a new document. Use
+   * {@link PageEvent.FrameNavigatedSameDocument} or
+   * {@link PageEvent.FrameNavigatedNewDocument} to distinguish between the
+   * two.
    */
   FrameNavigated = 'framenavigated',
+  /**
+   * Emitted when a frame navigates within the same document, for example, to
+   * a different fragment (`#hash`) or via the History API. Will contain a
+   * {@link Frame}.
+   *
+   * @remarks
+   * Emitted after {@link PageEvent.FrameNavigated}.
+   */
+  FrameNavigatedSameDocument = 'framenavigatedsamedocument',
+  /**
+   * Emitted when a frame is navigated to a new document. Will contain a
+   * {@link Frame}.
+   *
+   * @remarks
+   * Emitted after {@link PageEvent.FrameNavigated}.
+   */
+  FrameNavigatedNewDocument = 'framenavigatednewdocument',
   /**
    * Emitted when the JavaScript
    * {@link https://developer.mozilla.org/en-US/docs/Web/Events/load | load}
@@ -606,6 +641,8 @@ export const enum PageEvent {
   /**
    * Emitted when an uncaught exception happens within the page. Contains an
    * `Error` or data of type unknown.
+   *
+   * @deprecated Use {@link PageEvent.Exception} instead.
    */
   PageError = 'pageerror',
   /**
@@ -696,9 +733,12 @@ export interface PageEvents extends Record<EventType, unknown> {
   [PageEvent.DOMContentLoaded]: undefined;
   [PageEvent.Issue]: Issue;
   [PageEvent.Error]: Error;
+  [PageEvent.Exception]: RemoteException;
   [PageEvent.FrameAttached]: Frame;
   [PageEvent.FrameDetached]: Frame;
   [PageEvent.FrameNavigated]: Frame;
+  [PageEvent.FrameNavigatedSameDocument]: Frame;
+  [PageEvent.FrameNavigatedNewDocument]: Frame;
   [PageEvent.Load]: undefined;
   [PageEvent.Metrics]: {title: string; metrics: Metrics};
   [PageEvent.PageError]: Error | unknown;
@@ -1828,8 +1868,8 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
   /**
    * @param userAgent - Specific user agent to use in this page
-   * @param userAgentData - Specific user agent client hint data to use in this
-   * page
+   * @param userAgentMetadata - Specific user agent client hint data to use in
+   * this page
    * @returns Promise which resolves when the user agent is set.
    * @deprecated Use {@link Page.(setUserAgent:2) } instead.
    */

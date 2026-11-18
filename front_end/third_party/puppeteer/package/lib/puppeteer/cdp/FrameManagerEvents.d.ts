@@ -20,6 +20,7 @@ export declare namespace FrameManagerEvent {
     const FrameSwapped: unique symbol;
     const LifecycleEvent: unique symbol;
     const FrameNavigatedWithinDocument: unique symbol;
+    const FrameNavigatedNewDocument: unique symbol;
     const ConsoleApiCalled: unique symbol;
     const BindingCalled: unique symbol;
 }
@@ -33,6 +34,7 @@ export interface FrameManagerEvents extends Record<EventType, unknown> {
     [FrameManagerEvent.FrameSwapped]: CdpFrame;
     [FrameManagerEvent.LifecycleEvent]: CdpFrame;
     [FrameManagerEvent.FrameNavigatedWithinDocument]: CdpFrame;
+    [FrameManagerEvent.FrameNavigatedNewDocument]: CdpFrame;
     [FrameManagerEvent.ConsoleApiCalled]: [
         IsolatedWorld,
         Protocol.Runtime.ConsoleAPICalledEvent

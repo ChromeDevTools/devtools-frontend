@@ -702,7 +702,7 @@ let Frame = (() => {
             if (path) {
                 content = await environment.value.readFile(path, 'utf8');
                 content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
-                options.content = content;
+                options = { ...options, content };
             }
             return await this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ url, content }) => {
                 return await new Promise((resolve, reject) => {

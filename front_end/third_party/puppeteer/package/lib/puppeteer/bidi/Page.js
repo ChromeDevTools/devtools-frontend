@@ -326,8 +326,12 @@ let BidiPage = (() => {
             }
         }
         async reload(options = {}) {
+            options.signal?.throwIfAborted();
             const [response] = await Promise.all([
-                this.#frame.waitForNavigation(options),
+                this.#frame.waitForNavigation({
+                    ...options,
+                    ignoreSameDocumentNavigation: true,
+                }),
                 this.#frame.browsingContext.reload({
                     ignoreCache: options.ignoreCache ? true : undefined,
                 }),
@@ -828,12 +832,16 @@ let BidiPage = (() => {
             return await this.#go(1, options);
         }
         async #go(delta, options) {
+            options.signal?.throwIfAborted();
             const controller = new AbortController();
+            const signal = options.signal
+                ? AbortSignal.any([options.signal, controller.signal])
+                : controller.signal;
             try {
                 const [response] = await Promise.all([
                     this.waitForNavigation({
                         ...options,
-                        signal: controller.signal,
+                        signal,
                     }),
                     this.#frame.browsingContext.traverseHistory(delta),
                 ]);
@@ -1010,7 +1018,10 @@ export function convertCookiesSameSiteCdpToBiDi(sameSite) {
     }
 }
 export function convertCookiesExpiryCdpToBiDi(expiry) {
-    return [undefined, -1].includes(expiry) ? undefined : expiry;
+    if (expiry === undefined || expiry === -1) {
+        return undefined;
+    }
+    return Math.floor(expiry);
 }
 export function convertCookiesPartitionKeyFromPuppeteerToBiDi(partitionKey) {
     if (partitionKey === undefined || typeof partitionKey === 'string') {

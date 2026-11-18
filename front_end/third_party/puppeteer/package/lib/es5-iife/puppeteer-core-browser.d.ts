@@ -1227,6 +1227,35 @@ export declare abstract class BrowserLauncher {
 }
 
 /**
+ * A single location in the JavaScript stack.
+ *
+ * @remarks
+ * Line and column numbers are 0-based and refer to the raw (possibly
+ * minified) script coordinates as reported by the browser.
+ *
+ * @public
+ */
+export declare interface CallFrame {
+  /**
+   * URL of the script if known or `undefined` otherwise.
+   */
+  url?: string;
+  /**
+   * 0-based line number.
+   */
+  lineNumber?: number;
+  /**
+   * 0-based column number.
+   */
+  columnNumber?: number;
+  /**
+   * Name of the function. Empty string for anonymous functions and top-level
+   * code.
+   */
+  functionName?: string;
+}
+
+/**
  * @public
  */
 export declare type CDPEvents = {
@@ -1364,7 +1393,8 @@ export declare interface ChromeSettings {
   /**
    * Tells Puppeteer to not download the browser during installation.
    *
-   * Can be overridden by `PUPPETEER_CHROME_SKIP_DOWNLOAD`.
+   * Can be overridden by `PUPPETEER_CHROME_SKIP_DOWNLOAD`
+   * or `PUPPETEER_SKIP_CHROME_DOWNLOAD`.
    *
    * @defaultValue false
    */
@@ -1384,8 +1414,7 @@ export declare interface ChromeSettings {
   /**
    * Specifies a certain version of the browser you'd like Puppeteer to use.
    *
-   * Can be overridden by `PUPPETEER_CHROME_VERSION`
-   * or `PUPPETEER_SKIP_CHROME_DOWNLOAD`.
+   * Can be overridden by `PUPPETEER_CHROME_VERSION`.
    *
    * See {@link PuppeteerNode.launch | puppeteer.launch} on how executable path
    * is inferred.
@@ -3169,7 +3198,7 @@ export declare class EventEmitter<
    * Emit an event and call any associated listeners.
    *
    * @param type - the event you'd like to emit
-   * @param eventData - any data you'd like to emit with the event
+   * @param event - any data you'd like to emit with the event
    * @returns `true` if there are any listeners, `false` if there are not.
    */
   emit<Key extends keyof EventsWithWildcard<Events>>(
@@ -3402,7 +3431,8 @@ export declare interface FirefoxSettings {
   /**
    * Tells Puppeteer to not download the browser during installation.
    *
-   * Can be overridden by `PUPPETEER_FIREFOX_SKIP_DOWNLOAD`.
+   * Can be overridden by `PUPPETEER_FIREFOX_SKIP_DOWNLOAD`
+   * or `PUPPETEER_SKIP_FIREFOX_DOWNLOAD`.
    *
    * @defaultValue true
    */
@@ -7208,8 +7238,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
   abstract setExtraHTTPHeaders(headers: HeadersInput): Promise<void>;
   /**
    * @param userAgent - Specific user agent to use in this page
-   * @param userAgentData - Specific user agent client hint data to use in this
-   * page
+   * @param userAgentMetadata - Specific user agent client hint data to use in
+   * this page
    * @returns Promise which resolves when the user agent is set.
    * @deprecated Use {@link Page.(setUserAgent:2) } instead.
    */
@@ -8457,6 +8487,16 @@ export declare const enum PageEvent {
    * Emitted when the page crashes. Will contain an `Error`.
    */
   Error = 'error',
+  /**
+   * Emitted when an uncaught exception happens within the page or one of its
+   * dedicated workers. Contains a {@link RemoteException}.
+   *
+   * @remarks
+   * The {@link RemoteException.handle | handle} of the exception is disposed
+   * right after the event has been dispatched. Call `move()` on it
+   * synchronously inside the listener to keep it alive.
+   */
+  Exception = 'exception',
   /** Emitted when a frame is attached. Will contain a {@link Frame}. */
   FrameAttached = 'frameattached',
   /** Emitted when a frame is detached. Will contain a {@link Frame}. */
@@ -8464,8 +8504,32 @@ export declare const enum PageEvent {
   /**
    * Emitted when a frame is navigated to a new URL. Will contain a
    * {@link Frame}.
+   *
+   * @remarks
+   * This event is emitted for both same-document navigations (for example,
+   * fragment navigations) and navigations to a new document. Use
+   * {@link PageEvent.FrameNavigatedSameDocument} or
+   * {@link PageEvent.FrameNavigatedNewDocument} to distinguish between the
+   * two.
    */
   FrameNavigated = 'framenavigated',
+  /**
+   * Emitted when a frame navigates within the same document, for example, to
+   * a different fragment (`#hash`) or via the History API. Will contain a
+   * {@link Frame}.
+   *
+   * @remarks
+   * Emitted after {@link PageEvent.FrameNavigated}.
+   */
+  FrameNavigatedSameDocument = 'framenavigatedsamedocument',
+  /**
+   * Emitted when a frame is navigated to a new document. Will contain a
+   * {@link Frame}.
+   *
+   * @remarks
+   * Emitted after {@link PageEvent.FrameNavigated}.
+   */
+  FrameNavigatedNewDocument = 'framenavigatednewdocument',
   /**
    * Emitted when the JavaScript
    * {@link https://developer.mozilla.org/en-US/docs/Web/Events/load | load}
@@ -8487,6 +8551,8 @@ export declare const enum PageEvent {
   /**
    * Emitted when an uncaught exception happens within the page. Contains an
    * `Error` or data of type unknown.
+   *
+   * @deprecated Use {@link PageEvent.Exception} instead.
    */
   PageError = 'pageerror',
   /**
@@ -8577,9 +8643,12 @@ export declare interface PageEvents extends Record<EventType, unknown> {
   [PageEvent.DOMContentLoaded]: undefined;
   [PageEvent.Issue]: Issue;
   [PageEvent.Error]: Error;
+  [PageEvent.Exception]: RemoteException;
   [PageEvent.FrameAttached]: Frame;
   [PageEvent.FrameDetached]: Frame;
   [PageEvent.FrameNavigated]: Frame;
+  [PageEvent.FrameNavigatedSameDocument]: Frame;
+  [PageEvent.FrameNavigatedNewDocument]: Frame;
   [PageEvent.Load]: undefined;
   [PageEvent.Metrics]: {
     title: string;
@@ -9133,6 +9202,7 @@ declare namespace Puppeteer_2 {
     PaperFormat,
     PDFOptions,
     SupportedBrowser,
+    CallFrame,
     AwaitablePredicate,
     Moveable,
     AwaitableIterable,
@@ -9208,6 +9278,7 @@ declare namespace Puppeteer_2 {
     EventEmitter,
     FileChooser,
     Puppeteer,
+    RemoteException,
     SecurityDetails,
     disposeSymbol,
     asyncDisposeSymbol,
@@ -9617,6 +9688,130 @@ export declare interface ReloadOptions extends WaitForOptions {
 export declare interface RemoteAddress {
   ip?: string;
   port?: number;
+}
+
+/**
+ * A protocol-agnostic description of an uncaught exception thrown in a page
+ * or worker. Dispatched via the `exception` event on {@link Page} and
+ * {@link WebWorker}.
+ *
+ * @remarks
+ * Unlike the deprecated `pageerror` event, `RemoteException` does not
+ * reconstruct a Node.js `Error`. When the protocol supports it (CDP), it
+ * exposes the live remote exception value through {@link RemoteException.handle}.
+ *
+ * @example
+ *
+ * ```ts
+ * page.on('exception', exception => {
+ *   console.log(exception.name(), exception.text());
+ *   console.log(exception.location());
+ * });
+ * ```
+ *
+ * @public
+ */
+export declare class RemoteException {
+  
+  /**
+   * The text of the exception as rendered by the browser, for example
+   * `Error: boom` or
+   * `TypeError: Cannot read properties of undefined (reading 'foo')`.
+   *
+   * @remarks
+   * For errors this is `${name}: ${message}` (or just the name if the
+   * message is empty), without the stack. For other thrown values it is
+   * their description, for example `Object` for a plain object or the
+   * string itself for a thrown string.
+   */
+  text(): string;
+  /**
+   * The name of the exception, for example `Error`, `TypeError`,
+   * `SyntaxError` or `AbortError`.
+   *
+   * @remarks
+   * This is the `name` of the thrown error as rendered by the browser, which
+   * can differ from its constructor (for example `AbortError` for a
+   * `DOMException`).
+   *
+   * Empty string if the thrown value is not an error, for example a
+   * primitive, a plain object or a symbol.
+   *
+   * Always `null` with WebDriver BiDi, which does not report the name of the
+   * exception.
+   */
+  name(): string | null;
+  /**
+   * The call frames on the stack at the time the exception was thrown,
+   * innermost first.
+   *
+   * @remarks
+   * Empty for compilation and syntax errors.
+   */
+  stackTrace(): CallFrame[];
+  /**
+   * The primary location where the exception occurred.
+   *
+   * @remarks
+   * For runtime errors this is `stackTrace()[0]`. For compilation and syntax
+   * errors (where `stackTrace()` is empty), it falls back to the top-level
+   * coordinates reported for the exception.
+   */
+  location(): CallFrame;
+  /**
+   * The live remote exception value, if available.
+   *
+   * @remarks
+   * Only available with CDP, when the browser reports a reference to the
+   * thrown value (objects and symbols) and Puppeteer can bind it to the
+   * worker, the main world of a frame or Puppeteer's own isolated world.
+   *
+   * It is `undefined`:
+   *
+   * - for thrown primitives other than symbols;
+   *
+   * - for exceptions thrown in other isolated worlds, for example ones
+   *   created by extensions or via CDP;
+   *
+   * - for exceptions thrown by code that Puppeteer injected, for example from
+   *   a callback scheduled inside {@link Page.evaluate}, because the browser
+   *   does not report a remote exception object for them;
+   *
+   * - always with WebDriver BiDi.
+   *
+   * The handle is **disposed automatically right after the `exception` event
+   * has been dispatched** so that the browser can release the exception. To
+   * keep using it beyond the synchronous part of your listener, call
+   * {@link JSHandle.move} synchronously inside the listener and dispose of
+   * the handle yourself once you are done with it:
+   *
+   * ```ts
+   * page.on('exception', async exception => {
+   *   // Must be called before the first `await`.
+   *   const handle = exception.handle()?.move();
+   *   if (!handle) {
+   *     return;
+   *   }
+   *   try {
+   *     const code = await handle.evaluate(error => {
+   *       return (error as {code?: string}).code;
+   *     });
+   *     console.log(code);
+   *   } finally {
+   *     await handle.dispose();
+   *   }
+   * });
+   * ```
+   *
+   * Using the handle after an `await` without calling `move()` first will
+   * throw because the handle has already been disposed.
+   *
+   * The handle is shared by all listeners of the event: calling `move()`
+   * returns the same `JSHandle` instance in every listener, and disposing it
+   * invalidates it for all of them. If more than one listener needs the handle
+   * after the event, have only one of them call `move()` and dispose of it.
+   */
+  handle(): JSHandle | undefined;
 }
 
 /**
@@ -10806,8 +11001,83 @@ export declare enum WebWorkerEvent {
   Console = 'console',
   /**
    * Emitted when the worker throws an exception.
+   *
+   * @deprecated Use {@link WebWorkerEvent.Exception} instead.
    */
   Error = 'error',
+  /**
+   * Emitted when an uncaught exception happens within the worker. Contains a
+   * {@link RemoteException}.
+   *
+   * @remarks
+   * The {@link RemoteException.handle | handle} of the exception is disposed
+   * right after the event has been dispatched. Call `move()` on it
+   * synchronously inside the listener to keep it alive.
+   */
+  Exception = 'exception',
+  /**
+   * Emitted when the worker issues a request. Contains a {@link HTTPRequest}.
+   *
+   * @remarks
+   * Only supported with CDP. With WebDriver BiDi these events are never
+   * emitted.
+   *
+   * For service workers and shared workers, network events are only
+   * delivered once a {@link WebWorker} instance exists, i.e. after
+   * {@link Target.worker} has been called. Requests issued before that,
+   * such as requests made while a service worker starts up, are not
+   * reported.
+   *
+   * Listeners are bound to this worker instance: if the worker is terminated
+   * and restarted (e.g. an idle extension service worker), a new
+   * {@link WebWorker} is created and listeners must be re-attached.
+   *
+   * Requests issued by service workers and shared workers cannot be
+   * intercepted: `request.continue()`, `abort()` and `respond()` throw.
+   *
+   * @experimental
+   */
+  Request = 'request',
+  /**
+   * Emitted when a request issued by the worker is served from cache.
+   * Contains a {@link HTTPRequest}.
+   *
+   * @remarks
+   * The same delivery rules as for {@link WebWorkerEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestServedFromCache = 'requestservedfromcache',
+  /**
+   * Emitted when a response is received for a request issued by the worker.
+   * Contains a {@link HTTPResponse}.
+   *
+   * @remarks
+   * The same delivery rules as for {@link WebWorkerEvent.Request} apply.
+   *
+   * @experimental
+   */
+  Response = 'response',
+  /**
+   * Emitted when a request issued by the worker fails. Contains a
+   * {@link HTTPRequest}.
+   *
+   * @remarks
+   * The same delivery rules as for {@link WebWorkerEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestFailed = 'requestfailed',
+  /**
+   * Emitted when a request issued by the worker finishes successfully.
+   * Contains a {@link HTTPRequest}.
+   *
+   * @remarks
+   * The same delivery rules as for {@link WebWorkerEvent.Request} apply.
+   *
+   * @experimental
+   */
+  RequestFinished = 'requestfinished',
 }
 
 /**
@@ -10816,6 +11086,12 @@ export declare enum WebWorkerEvent {
 export declare interface WebWorkerEvents extends Record<EventType, unknown> {
   [WebWorkerEvent.Console]: ConsoleMessage;
   [WebWorkerEvent.Error]: Error;
+  [WebWorkerEvent.Exception]: RemoteException;
+  [WebWorkerEvent.Request]: HTTPRequest;
+  [WebWorkerEvent.RequestServedFromCache]: HTTPRequest;
+  [WebWorkerEvent.Response]: HTTPResponse;
+  [WebWorkerEvent.RequestFailed]: HTTPRequest;
+  [WebWorkerEvent.RequestFinished]: HTTPRequest;
 }
 
 /**

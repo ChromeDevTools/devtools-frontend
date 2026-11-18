@@ -77,17 +77,31 @@ export class ExecutionContext extends EventEmitter {
     static #ariaQuerySelectorBinding;
     static getOrCreateAriaQuerySelectorBinding(logger) {
         return (this.#ariaQuerySelectorBinding ??= new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne, '', // custom init
-        logger));
+        logger, { ownsArguments: true, ownsResult: true }));
     }
     static #ariaQuerySelectorAllBinding;
     static getOrCreateAriaQuerySelectorAllBinding(logger) {
         return (this.#ariaQuerySelectorAllBinding ??= new Binding('__ariaQuerySelectorAll', (async (element, selector) => {
-            const results = ARIAQueryHandler.queryAll(element, selector);
-            return await element.realm.evaluateHandle((...elements) => {
-                return elements;
-            }, ...(await AsyncIterableUtil.collect(results)));
+            const env_1 = { stack: [], error: void 0, hasError: false };
+            try {
+                const stack = __addDisposableResource(env_1, new DisposableStack(), false);
+                // The stack keeps these handles alive until the result array is created.
+                const elements = await AsyncIterableUtil.collect(AsyncIterableUtil.map(ARIAQueryHandler.queryAll(element, selector), async (result) => {
+                    return stack.use(result);
+                }));
+                return await element.realm.evaluateHandle((...elements) => {
+                    return elements;
+                }, ...elements);
+            }
+            catch (e_1) {
+                env_1.error = e_1;
+                env_1.hasError = true;
+            }
+            finally {
+                __disposeResources(env_1);
+            }
         }), '', // custom init
-        logger));
+        logger, { ownsArguments: true, ownsResult: true }));
     }
     #client;
     #world;
@@ -125,12 +139,12 @@ export class ExecutionContext extends EventEmitter {
     // first one to set up the binding in the page before running the others.
     #mutex = new Mutex();
     async #addBinding(binding) {
-        const env_1 = { stack: [], error: void 0, hasError: false };
+        const env_2 = { stack: [], error: void 0, hasError: false };
         try {
             if (this.#bindings.has(binding.name)) {
                 return;
             }
-            const _ = __addDisposableResource(env_1, await this.#mutex.acquire(), false);
+            const _ = __addDisposableResource(env_2, await this.#mutex.acquire(), false);
             try {
                 await this.#client.send('Runtime.addBinding', this.#name
                     ? {
@@ -161,12 +175,12 @@ export class ExecutionContext extends EventEmitter {
                 this.#logger?.(DEBUG_PREFIXES.error)?.(error);
             }
         }
-        catch (e_1) {
-            env_1.error = e_1;
-            env_1.hasError = true;
+        catch (e_2) {
+            env_2.error = e_2;
+            env_2.hasError = true;
         }
         finally {
-            __disposeResources(env_1);
+            __disposeResources(env_2);
         }
     }
     async #onBindingCalled(event) {

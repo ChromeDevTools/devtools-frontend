@@ -37,9 +37,11 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
+import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { Frame, FrameEvent, throwIfDetached } from '../api/Frame.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { UnsupportedOperation } from '../common/Errors.js';
+import { fromAbortSignal } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -147,22 +149,23 @@ let CdpFrame = (() => {
             if (!this.page()._isUrlAllowed(url)) {
                 throw new Error(`Navigation to ${url} is blocked by blocklist/allowlist rules`);
             }
-            const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
+            const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), signal, } = options;
+            signal?.throwIfAborted();
             let ensureNewDocumentNavigation = false;
-            const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
-            let error = await Deferred.race([
-                navigate(this.#client, url, referer, referrerPolicy ? referrerPolicyToProtocol(referrerPolicy) : undefined, this._id),
-                watcher.terminationPromise(),
-            ]);
-            if (!error) {
-                error = await Deferred.race([
-                    watcher.terminationPromise(),
-                    ensureNewDocumentNavigation
-                        ? watcher.newDocumentNavigationPromise()
-                        : watcher.sameDocumentNavigationPromise(),
-                ]);
-            }
+            const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
             try {
+                let error = await Deferred.race([
+                    navigate(this.#client, url, referer, referrerPolicy ? referrerPolicyToProtocol(referrerPolicy) : undefined, this._id),
+                    watcher.terminationPromise(),
+                ]);
+                if (!error) {
+                    error = await Deferred.race([
+                        watcher.terminationPromise(),
+                        ensureNewDocumentNavigation
+                            ? watcher.newDocumentNavigationPromise()
+                            : watcher.sameDocumentNavigationPromise(),
+                    ]);
+                }
                 if (error) {
                     throw error;
                 }
@@ -202,20 +205,20 @@ let CdpFrame = (() => {
         async waitForNavigation(options = {}) {
             const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), signal, } = options;
             const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
-            const error = await Deferred.race([
-                watcher.terminationPromise(),
-                ...(options.ignoreSameDocumentNavigation
-                    ? []
-                    : [watcher.sameDocumentNavigationPromise()]),
-                watcher.newDocumentNavigationPromise(),
-            ]);
             try {
+                const error = await Deferred.race([
+                    watcher.terminationPromise(),
+                    ...(options.ignoreSameDocumentNavigation
+                        ? []
+                        : [watcher.sameDocumentNavigationPromise()]),
+                    watcher.newDocumentNavigationPromise(),
+                ]);
                 if (error) {
                     throw error;
                 }
                 const result = await Deferred.race([watcher.terminationPromise(), watcher.navigationResponse()]);
                 if (result instanceof Error) {
-                    throw error;
+                    throw result;
                 }
                 return result || null;
             }
@@ -233,19 +236,24 @@ let CdpFrame = (() => {
             return this.worlds[PUPPETEER_WORLD];
         }
         async setContent(html, options = {}) {
-            const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
+            const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), signal, } = options;
+            signal?.throwIfAborted();
             // We rely upon the fact that the document is reopened, which resets the
             // frame lifecycle with an "init" lifecycle event.
             // @see https://crrev.com/608658
-            await this.setFrameContent(html);
-            const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
-            const error = await Deferred.race([
-                watcher.terminationPromise(),
-                watcher.lifecyclePromise(),
-            ]);
-            watcher.dispose();
-            if (error) {
-                throw error;
+            await firstValueFrom(from(this.setFrameContent(html)).pipe(raceWith(fromAbortSignal(signal))));
+            const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout, signal);
+            try {
+                const error = await Deferred.race([
+                    watcher.terminationPromise(),
+                    watcher.lifecyclePromise(),
+                ]);
+                if (error) {
+                    throw error;
+                }
+            }
+            finally {
+                watcher.dispose();
             }
         }
         /**

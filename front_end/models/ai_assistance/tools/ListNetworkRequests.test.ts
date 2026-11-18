@@ -80,6 +80,64 @@ requestId3;https://3rdparty.com/jquery.js;200;3\xA0s;5.0\xA0kB`;
                      }]);
   });
 
+  it('formats request durations across in-flight, missing-timing, and zero-duration states', async () => {
+    const req1 = createNetworkRequest({
+      requestId: 'req1',
+      url: 'https://example.com/inflight',
+      documentURL: 'https://example.com/',
+      statusCode: 0,
+    });
+    req1.setIssueTime(1, 1);
+
+    const req2 = createNetworkRequest({
+      requestId: 'req2',
+      url: 'https://example.com/aborted',
+      documentURL: 'https://example.com/',
+      statusCode: 0,
+      finished: true,
+    });
+
+    const req3 = createNetworkRequest({
+      requestId: 'req3',
+      url: 'https://example.com/preserved',
+      documentURL: 'https://example.com/',
+      statusCode: 0,
+    });
+    req3.setIssueTime(1, 1);
+    req3.preserved = true;
+
+    const req4 = createNetworkRequest({
+      requestId: 'req4',
+      url: 'https://example.com/zero',
+      documentURL: 'https://example.com/',
+      statusCode: 200,
+      finished: true,
+    });
+    req4.setIssueTime(1, 1);
+    req4.endTime = 1;
+
+    networkLog.requests.returns([req1, req2, req3, req4]);
+
+    const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
+    const context = {
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+      }),
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsResult(response);
+
+    const expectedResult = `origin: https://example.com (omitted from same-origin /... URLs)
+id;url;status;duration;size
+req1;/inflight;0;pending;0.0\xA0kB
+req2;/aborted;0;-;0.0\xA0kB
+req3;/preserved;0;-;0.0\xA0kB
+req4;/zero;200;0\xA0s;0.0\xA0kB`;
+    assert.strictEqual(response.result, expectedResult);
+  });
+
   it('filters out cross-origin requests', async () => {
     const request1 = createNetworkRequest({
       requestId: 'requestId1',

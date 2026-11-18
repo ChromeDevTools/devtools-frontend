@@ -27,11 +27,24 @@ describe('AiAssistance', () => {
 
     it('handles zero', () => {
       assert.strictEqual(AiAssistance.UnitFormatters.seconds(0), '0\xA0s');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(-0), '0\xA0s');
     });
 
     it('handles large numbers', () => {
       assert.strictEqual(AiAssistance.UnitFormatters.seconds(Infinity), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(-Infinity), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(NaN), '-');
       assert.strictEqual(AiAssistance.UnitFormatters.seconds(Number.MAX_VALUE), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(1e308), '-');
+    });
+
+    it('scales negative values across unit thresholds', () => {
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(-1.234), '-1.2\xA0s');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(-0.1234), '-123\xA0ms');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(-0.0001234), '-0.1\xA0ms');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(-0.0000123), '-12\xA0μs');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(-0.0000004), '0\xA0μs');
+      assert.strictEqual(AiAssistance.UnitFormatters.seconds(-Number.MAX_VALUE), '-');
     });
   });
 
@@ -46,11 +59,22 @@ describe('AiAssistance', () => {
 
     it('handles zero', () => {
       assert.strictEqual(AiAssistance.UnitFormatters.millis(0), '0\xA0ms');
+      assert.strictEqual(AiAssistance.UnitFormatters.millis(-0), '0\xA0ms');
     });
 
     it('handles large numbers', () => {
       assert.strictEqual(AiAssistance.UnitFormatters.millis(Infinity), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.millis(-Infinity), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.millis(NaN), '-');
       assert.strictEqual(AiAssistance.UnitFormatters.millis(Number.MAX_VALUE), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.millis(-Number.MAX_VALUE), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.millis(1e308), '-');
+    });
+
+    it('formats negative milliseconds with matching precision', () => {
+      assert.strictEqual(AiAssistance.UnitFormatters.millis(-123.45), '-123\xA0ms');
+      assert.strictEqual(AiAssistance.UnitFormatters.millis(-0.12), '-0.1\xA0ms');
+      assert.strictEqual(AiAssistance.UnitFormatters.millis(-0.04), '0\xA0ms');
     });
   });
 
@@ -66,11 +90,23 @@ describe('AiAssistance', () => {
 
     it('formats 0 as an integer', () => {
       assert.strictEqual(AiAssistance.UnitFormatters.micros(0), '0\xA0μs');
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(-0), '0\xA0μs');
     });
 
     it('handles large numbers', () => {
       assert.strictEqual(AiAssistance.UnitFormatters.micros(Infinity), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(-Infinity), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(NaN), '-');
       assert.strictEqual(AiAssistance.UnitFormatters.micros(Number.MAX_VALUE), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(-Number.MAX_VALUE), '-');
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(1e308), '-');
+    });
+
+    it('scales negative microseconds across the 100µs threshold', () => {
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(-12.34), '-12\xA0μs');
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(-123.4), '-0.1\xA0ms');
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(-1234.5), '-1\xA0ms');
+      assert.strictEqual(AiAssistance.UnitFormatters.micros(-0.4), '0\xA0μs');
     });
   });
 

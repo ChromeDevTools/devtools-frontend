@@ -94,6 +94,23 @@ function formatRequestUrl(rawUrl: string, baseOrigin: string): string {
 }
 
 /**
+ * Formats a request's duration for the compact network table, distinguishing in-flight
+ * requests (`pending`) from completed or unloaded requests that lack timing data (`-`).
+ */
+function formatRequestDuration(request: SDK.NetworkRequest.NetworkRequest): string {
+  // Check >= 0 first so 0s data: URLs and synthetic requests with valid timing format normally.
+  if (request.duration >= 0) {
+    return seconds(request.duration);
+  }
+  // `duration` is -1 when `startTime` or `endTime` is unset. Finished requests without
+  // timing data and unfinished requests preserved from an unloaded page will never complete.
+  if (request.finished || request.preserved) {
+    return '-';
+  }
+  return 'pending';
+}
+
+/**
  * A tool that lists all network requests recorded by DevTools.
  * Returns a compact semicolon-delimited table of requests initiated by the conversation's established origin.
  */
@@ -176,8 +193,8 @@ export class ListNetworkRequestsTool implements
     for (const request of requestsToShow) {
       const id = request.requestId().replace(/[\r\n]+/g, '');
       const url = formatRequestUrl(request.url(), baseOrigin);
-      lines.push(
-          `${id};${url};${request.statusCode};${seconds(request.duration)};${formatBytesToKb(request.transferSize)}`);
+      const duration = formatRequestDuration(request);
+      lines.push(`${id};${url};${request.statusCode};${duration};${formatBytesToKb(request.transferSize)}`);
     }
 
     return {

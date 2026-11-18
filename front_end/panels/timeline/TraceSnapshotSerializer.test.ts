@@ -38,6 +38,8 @@ describeWithEnvironment('TraceSnapshotSerializer', function() {
     const clsTrace = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz', {withModificationsManager: true});
     const clsSnapshot = await captureTraceSnapshot(clsTrace);
     assert.isTrue(Object.values(clsSnapshot.flamechart.main.drawings).some(v => v.startsWith('override pos(')));
+    assert.isTrue(Object.values(clsSnapshot.flamechart.network.drawings).some(v => v.startsWith('override pos(')));
+    assert.isTrue(Object.values(clsSnapshot.flamechart.network.levels).flat().some(l => l.includes('drawOverride')));
   });
 
   it('guards marker NaN durations', async function() {

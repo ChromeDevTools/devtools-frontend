@@ -242,7 +242,7 @@ function captureFlameChart(provider: AnyFlameChartProvider, parsedTrace: Trace.T
     const decorations = data.entryDecorations?.[i] ?? [];
     const decTypes = decorations.map(d => d.type).sort().join('+') || '-';
     const forced = provider.forceDecoration(i);
-    const hasOverride = isMainProvider && Boolean(provider.getDrawOverride(i));
+    const hasOverride = Boolean(provider.getDrawOverride(i));
     const appearance = [
       JSON.stringify(title),
       `bg=${provider.entryColor(i) || '-'}`,
@@ -386,9 +386,7 @@ class CanvasRecorder {
     this.#target.reset();
     this.#calls.length = 0;
     const width = durationMs * PX_PER_MS;
-    const override = chart instanceof Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider ?
-        chart.getDrawOverride(index) :
-        undefined;
+    const override = chart.getDrawOverride(index);
     if (override) {
       const pos = override(this.context, 0, 0, width, BAR_HEIGHT, ms => (ms - startMs) * PX_PER_MS, color => color);
       const z = pos.z !== undefined ? `,z=${pos.z}` : '';

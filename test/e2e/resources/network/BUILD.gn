@@ -25,6 +25,8 @@ copy_to_gen("network") {
     "json-subtype-ld.rawresponse",
     "last-modified.html",
     "last-modified.rawresponse",
+    "memory-cached-resource/abe.png",
+    "memory-cached-resource/memory-cached-resource.html",
     "preload.html",
     "requests.html",
     "resources-from-cache.html",

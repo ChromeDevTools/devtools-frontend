@@ -11,8 +11,8 @@ import os
 from node_path import GetBinaryPath
 
 
-def RunNode(cmd_parts, output=subprocess.PIPE):
-    cmd = [GetBinaryPath()] + cmd_parts
+def RunNode(cmd_parts, output=subprocess.PIPE, node_dir=None):
+    cmd = [GetBinaryPath(node_dir)] + cmd_parts
     env = os.environ.copy()
     devtools_root = os.path.abspath(
         os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -42,11 +42,19 @@ def RunNode(cmd_parts, output=subprocess.PIPE):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
+    # Accept --node-dir <dir> as the first arguments: the `third_party/node`
+    # directory to take the node binary from if this checkout doesn't have
+    # its own. The build passes `//third_party/node`, so we don't have to know
+    # where DevTools is located inside of a Chromium checkout.
+    node_dir = None
+    if len(args) > 1 and args[0] == '--node-dir':
+        node_dir = args[1]
+        args = args[2:]
     # Accept --output as the first argument, and then remove
     # it from the args entirely if present.
     if len(args) > 0 and args[0] == '--output':
         output = None
-        args = sys.argv[2:]
+        args = args[1:]
     else:
         output = subprocess.PIPE
 
@@ -61,4 +69,4 @@ if __name__ == '__main__':
             node_flags.append(arg)
         else:
             rest_args.append(arg)
-    RunNode(node_flags + rest_args, output)
+    RunNode(node_flags + rest_args, output, node_dir)

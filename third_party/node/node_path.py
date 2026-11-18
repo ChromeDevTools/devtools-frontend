@@ -19,7 +19,14 @@ def get_mac_architecture():
     return platform.machine()
 
 
-def GetBinaryPath():
+def GetBinaryPath(node_dir=None):
+    """Returns the path to the node binary.
+
+    Args:
+      node_dir: The `third_party/node` directory to take the binary from, if
+          this checkout doesn't have its own. Inside of a Chromium checkout
+          the node binary is only part of Chromium's `//third_party/node`.
+    """
     if platform.machine() == 'arm64':
         darwin_path = 'mac_arm64'
         darwin_name = 'node-darwin-arm64'
@@ -34,6 +41,8 @@ def GetBinaryPath():
     devtools_checkout_path = os.path.join(os.path.dirname(__file__), *relative)
     if os_path.exists(devtools_checkout_path):
         return devtools_checkout_path
+    if node_dir is not None:
+        return os_path.join(node_dir, *relative)
     # Assume we are in a chromium checkout.
     return os_path.join(os.path.dirname(__file__), '..', '..', '..', '..',
                         'node', *relative)

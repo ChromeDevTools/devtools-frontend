@@ -67,8 +67,15 @@ template("node_script_test") {
   script_test(target_name) {
     script = devtools_location_prepend + "third_party/node/node.py"
 
+    # Pass //third_party/node to node.py: the DEPS checkout in a standalone
+    # build and Chromium's own copy in a Chromium build, where the DevTools
+    # checkout has no node binary. This way node.py doesn't have to know where
+    # DevTools is located inside of the Chromium checkout.
+    _rebased_node_dir = rebase_path("//third_party/node", root_build_dir)
     _rebased_script = rebase_path(invoker.script, root_build_dir)
     args = [
+      "--node-dir",
+      "@WrappedPath(${_rebased_node_dir})",
       "--output",
       "@WrappedPath(${_rebased_script})",
     ]

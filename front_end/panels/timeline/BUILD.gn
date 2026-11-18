@@ -252,5 +252,6 @@ devtools_ui_module("unittests") {
     "../../ui/settings:bundle",
     "../../ui/visual_logging:bundle",
     "./components:bundle",
+    "./overlays:bundle",
   ]
 }

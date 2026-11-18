@@ -137,10 +137,10 @@ export class TimelineCommentController {
   }
 
   /**
-   * Sets the active trace and updates the COMMENT_PIN overlays to match its
-   * threads.
+   * Sets the active trace, or clears it when `null`, and updates the
+   * COMMENT_PIN overlays to match its threads.
    */
-  setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): void {
+  setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null): void {
     this.#parsedTrace = parsedTrace;
     this.#syncCommentOverlays();
   }
@@ -198,7 +198,7 @@ export class TimelineCommentController {
   }
 
   /**
-   * Returns an identifier for the active trace, or null if no trace is active.
+   * Returns an identifier for `parsedTrace`.
    *
    * The identifier is derived from the trace bounds, which are fixed for a
    * recording: they do not change when the trace is zoomed or breadcrumbs are
@@ -206,11 +206,8 @@ export class TimelineCommentController {
    * therefore survive switching between traces in the history dropdown, and
    * threads from one recording should not show on another.
    */
-  #traceId(): string|null {
-    if (!this.#parsedTrace) {
-      return null;
-    }
-    const {min, max} = this.#parsedTrace.data.Meta.traceBounds;
+  #traceId(parsedTrace: Trace.TraceModel.ParsedTrace): string {
+    const {min, max} = parsedTrace.data.Meta.traceBounds;
     return `trace-${min}-${max}`;
   }
 
@@ -276,16 +273,16 @@ export class TimelineCommentController {
   }
 
   #syncCommentOverlays(): void {
-    const existingOverlays = this.#delegate.overlays.overlaysOfType<Trace.Types.Overlays.CommentPin>('COMMENT_PIN');
-    const currentTraceId = this.#traceId();
     const parsedTrace = this.#parsedTrace;
-    // Before the first trace is set, no thread matches the active trace and
-    // no COMMENT_PIN overlays exist.
-    if (!currentTraceId || !parsedTrace) {
+    if (!parsedTrace) {
+      this.#delegate.overlays.removeOverlaysOfType('COMMENT_PIN');
+      this.#onOverlaysUpdated();
       return;
     }
 
-    let mutationsMade = false;
+    const existingOverlays = this.#delegate.overlays.overlaysOfType<Trace.Types.Overlays.CommentPin>('COMMENT_PIN');
+    const currentTraceId = this.#traceId(parsedTrace);
+    let overlaysAdded = false;
     const validThreadIds = new Set<string>();
 
     for (const thread of this.#commentManager.getCommentThreads()) {
@@ -313,22 +310,22 @@ export class TimelineCommentController {
         entry: event,
         commentThreadId: thread.id,
       });
-      mutationsMade = true;
+      overlaysAdded = true;
     }
 
     for (const overlay of existingOverlays) {
       if (!validThreadIds.has(overlay.commentThreadId)) {
         this.#delegate.overlays.remove(overlay);
-        mutationsMade = true;
       }
     }
 
-    if (mutationsMade) {
+    if (overlaysAdded) {
       void this.#delegate.overlays.update();
     } else {
-      // Overlays#reset() clears previous overlays before setParsedTrace() runs.
-      // Run #onOverlaysUpdated() so notifyCustomAnchorsMoved() still fires when
-      // the new trace adds no comment pins of its own.
+      // Overlays#remove() and Overlays#reset() remove overlays without
+      // dispatching OverlaysUpdated. Run #onOverlaysUpdated() so
+      // notifyCustomAnchorsMoved() still fires when pins were removed or the
+      // new trace has none.
       this.#onOverlaysUpdated();
     }
   }
@@ -391,7 +388,8 @@ export class TimelineCommentController {
    */
   #resolveTimelineAnchor(element: Element, options?: {clientX: number, clientY: number, forHover?: boolean}):
       Comments.CommentAnchorResolver.CustomAnchorResult|null {
-    if (!options) {
+    const parsedTrace = this.#parsedTrace;
+    if (!options || !parsedTrace) {
       return null;
     }
     const entry = this.#resolveEntryAtCoordinates(element, options.clientX, options.clientY);
@@ -407,10 +405,6 @@ export class TimelineCommentController {
       };
     }
 
-    const traceId = this.#traceId();
-    if (!traceId) {
-      return null;
-    }
     const {flameChart, dataProvider, chartLocation, canvas, entryIndex, event, highlightRect} = entry;
     // Events that EventsSerializer cannot key, such as JS samples, get a
     // synthetic key that encodes the chart and the entry index.
@@ -434,29 +428,18 @@ export class TimelineCommentController {
         vePath: VisualLogging.getVePath(element),
         textSignature: entryName,
         timeline: {
-          traceId,
+          traceId: this.#traceId(parsedTrace),
           traceEventKey,
           entryName,
           startTimeMicro,
           durationMicro,
           chartLocation,
         },
-        agentContext: this.#agentContextFor(entry),
+        agentContext: agentContextForEntry(event, this.#trackNameFor(entry), parsedTrace),
       },
       anchorElement: canvas,
       highlightRect,
     };
-  }
-
-  /**
-   * Returns the lines that describe the entry to the AI agent, or undefined
-   * if no trace is active.
-   */
-  #agentContextFor(entry: ResolvedEntry): string[]|undefined {
-    if (!this.#parsedTrace) {
-      return undefined;
-    }
-    return agentContextForEntry(entry.event, this.#trackNameFor(entry), this.#parsedTrace);
   }
 
   /**

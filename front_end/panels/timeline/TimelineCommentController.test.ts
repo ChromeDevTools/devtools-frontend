@@ -24,6 +24,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import * as Overlays from './overlays/overlays.js';
 import * as Timeline from './timeline.js';
 
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
@@ -43,6 +44,7 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 interface Setup {
   commentManager: CommentManager.CommentManager.CommentManager;
   flameChartView: Timeline.TimelineFlameChartView.TimelineFlameChartView;
+  parsedTrace: Trace.TraceModel.ParsedTrace;
   traceId: string;
 }
 
@@ -56,7 +58,7 @@ async function setupFlameChartView(context: Mocha.Context): Promise<Setup> {
   flameChartView.setModel(parsedTrace, new Map());
   // Matches the trace ID format that TimelineCommentController stores on anchors.
   const {min, max} = parsedTrace.data.Meta.traceBounds;
-  return {commentManager, flameChartView, traceId: `trace-${min}-${max}`};
+  return {commentManager, flameChartView, parsedTrace, traceId: `trace-${min}-${max}`};
 }
 
 /**
@@ -451,6 +453,67 @@ describe('TimelineCommentController', function() {
       const pins = commentPins(setup.flameChartView);
       assert.lengthOf(pins, 1);
       assert.strictEqual(pins[0].entry, childEvent);
+    });
+
+    it('removes comment pin overlays and notifies when the parsed trace is cleared', async function() {
+      const setup = await setupFlameChartView(this);
+      const {flameChartView, parsedTrace} = setup;
+      // renderWidgetInVbox() attaches flameChartView's private controller to
+      // its canvases and Overlays instance. Clear that resolver and use a
+      // separate Overlays instance so only the standalone controller below
+      // handles resolution and moved notifications.
+      Comments.CommentAnchorResolver.clearCustomAnchorResolversForTest();
+
+      const overlays = new Overlays.Overlays.Overlays({
+        container: document.createElement('div'),
+        flameChartsContainers: {
+          main: flameChartView.getMainFlameChart().element,
+          network: flameChartView.getNetworkFlameChart().element,
+        },
+        charts: {
+          mainChart: flameChartView.getMainFlameChart(),
+          mainProvider: flameChartView.getMainDataProvider(),
+          networkChart: flameChartView.getNetworkFlameChart(),
+          networkProvider: flameChartView.getNetworkDataProvider(),
+        },
+        entryQueries: {
+          parsedTrace: () => null,
+          isEntryCollapsedByUser: () => false,
+          firstVisibleParentForEntry: () => null,
+        },
+      });
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      const controller = new Timeline.TimelineCommentController.TimelineCommentController({
+        mainFlameChart: flameChartView.getMainFlameChart(),
+        networkFlameChart: flameChartView.getNetworkFlameChart(),
+        mainDataProvider: flameChartView.getMainDataProvider(),
+        networkDataProvider: flameChartView.getNetworkDataProvider(),
+        overlays,
+        eventsSerializer: new Trace.EventsSerializer.EventsSerializer(),
+      },
+                                                                                          commentManager);
+
+      controller.wasShown();
+      try {
+        controller.setParsedTrace(parsedTrace);
+        const thread = commentManager.createCommentThread(anchorForMainEntry(setup, 0), 'Comment');
+        assert.lengthOf(overlays.overlaysOfType<Trace.Types.Overlays.CommentPin>('COMMENT_PIN'), 1);
+        assert.isNotNull(Comments.CommentAnchorResolver.getCustomAnchorElement(thread.anchor));
+
+        movedListener.resetHistory();
+        controller.setParsedTrace(null);
+
+        assert.isEmpty(overlays.overlaysOfType<Trace.Types.Overlays.CommentPin>('COMMENT_PIN'));
+        assert.isNull(Comments.CommentAnchorResolver.getCustomAnchorElement(thread.anchor));
+        sinon.assert.calledOnce(movedListener);
+        const mainFlameChart = flameChartView.getMainFlameChart();
+        const canvas = mainFlameChart.getCanvas();
+        const coordinates = clientCoordinatesForEntry(mainFlameChart, 0);
+        assert.isNull(resolverFor(canvas).resolve(canvas, coordinates));
+        assert.isNull(resolverFor(canvas).resolve(canvas, {...coordinates, forHover: true}));
+      } finally {
+        controller.willHide();
+      }
     });
   });
 

@@ -1882,7 +1882,7 @@
     {
       // https://drafts.csswg.org/css-values-5/#ident
       name: "CSSIdentFunction",
-      status: "test",
+      status: "experimental",
     },
     {
       // https://chromestatus.com/feature/5078177326170112
@@ -2859,6 +2859,12 @@
       status: "test"
     },
     {
+      // Dispatch beforeinput for IME operations with an EditContext.
+      // See https://crbug.com/41489598
+      name: "EditContextBeforeInputForIme",
+      status: "stable",
+    },
+    {
       // Schedule a main frame when EditContext.updateControlBounds() or
       // updateSelectionBounds() changes the bounds of the active EditContext,
       // so the new bounds are sent to the browser in TextInputStateChanged even
@@ -2882,6 +2888,13 @@
       // Update EditContext selectionStart/End before TextUpdateEvent while
       // handling deletion. See https://crbug.com/529413105
       name: "EditContextSelectionUpdateBeforeTextUpdateEvent",
+      status: "stable",
+    },
+    {
+      // Merge a pasted single-item list into an empty list item that is
+      // itself the editable root instead of nesting the list inside it.
+      // crbug.com/41103797
+      name: "EditingPasteListIntoRootListItem",
       status: "stable",
     },
     {
@@ -3030,6 +3043,13 @@
       origin_trial_feature_name: "ExtendedTextMetrics",
       origin_trial_allows_third_party: true,
       status: "experimental",
+    },
+    {
+      // Delete exact UTF-16 code units in
+      // InputMethodController::ExtendSelectionAndDelete() rather than snapping
+      // to grapheme cluster boundaries. See https://crbug.com/505643410.
+      name: "ExtendSelectionAndDeleteInCodeUnits",
+      status: "stable",
     },
     {
       name: "ExtensionScriptTagging",
@@ -3373,6 +3393,10 @@
       status: "stable",
     },
     {
+      name: "FirstLineBoxDecorationInkOverflow",
+      status: "stable",
+    },
+    {
       // It turned out that this fix was wrong. The plan is to turn it off, and
       // remove if that goes well. crbug.com/41362700
       name: "FirstLineTextMetrics",
@@ -3546,6 +3570,18 @@
     {
       name: "FreezeFramesOnVisibility",
       status: "experimental",
+    },
+    {
+      // Kill switch for pausing OfflineAudioContext rendering in BFCache.
+      // crbug.com/583125654
+      name: "FreezeOfflineAudioContextInBFCache",
+      status: "stable",
+    },
+    {
+      // Kill switch for freezing Worklets in BFCache.
+      // crbug.com/583125654
+      name: "FreezeWorkletsInBFCache",
+      status: "stable",
     },
     {
       name: "GamepadButtonTypes",
@@ -3904,6 +3940,15 @@
       status: "stable",
     },
     {
+      // Makes importScripts() reject data:, blob: and filesystem: URLs unless
+      // their MIME type is a JavaScript MIME type.
+      // https://html.spec.whatwg.org/C/#fetch-a-classic-worker-imported-script
+      // https://github.com/whatwg/html/issues/8869
+      // crbug.com/582540332
+      name: "IgnoreSchemeExemptionForImportScriptsMimeTypeCheck",
+      status: "experimental",
+    },
+    {
       name: "ImageDataPixelFormat",
       status: "stable",
     },
@@ -4007,6 +4052,7 @@
       // Enables the defaultindeterminate attribute on <input type="checkbox">.
       // https://github.com/MicrosoftEdge/MSEdgeExplainers/blob/main/DefaultIndeterminate/explainer.md
       name: "InputDefaultIndeterminateAttribute",
+      status: "test",
     },
     {
       // Prevents running DefaultEventHandler on disabled input elements.
@@ -6366,6 +6412,13 @@
       name: "SharedWorker",
       browser_process_read_write_access: true,
       public: true,
+      status: "stable",
+    },
+    {
+      // Kill switch for crbug.com/583449815. Initializes the data attribute of
+      // the SharedWorker connect event to the empty string.
+      // https://html.spec.whatwg.org/multipage/workers.html#run-a-worker
+      name: "SharedWorkerConnectEventEmptyStringData",
       status: "stable",
     },
     {

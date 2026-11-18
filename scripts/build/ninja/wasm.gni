@@ -27,9 +27,15 @@ template("wasm_module") {
       devtools_location_prepend + "package.json",
       devtools_location_prepend + "scripts/build/wasm_sourcemap.mjs",
       devtools_location_prepend + "scripts/node_modules_hook.mjs",
-      devtools_location_prepend + "third_party/node/node.py",
-      devtools_location_prepend + "third_party/node/node_path.py",
     ]
+
+    # Like node.gni, use //third_party/node: the DEPS checkout in a standalone
+    # build and Chromium's own copy in a Chromium build.
+    _node_dir = "//third_party/node"
+    inputs += [ "$_node_dir/node.py" ]
+    if (!build_with_chromium) {
+      inputs += [ "$_node_dir/node_path.py" ]
+    }
     if (host_os == "win") {
       inputs += [
         "//third_party/node/win/node.exe",
@@ -63,6 +69,8 @@ template("wasm_module") {
     ]
     data = process_file_template(invoker.sources, outputs)
     args = [
+      "--node-dir",
+      rebase_path(_node_dir, root_build_dir),
       "{{source}}",
       rebase_path("$target_gen_dir/{{source_name_part}}.wasm", root_build_dir),
     ]

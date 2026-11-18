@@ -39,6 +39,12 @@ def script_main(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('input')
     parser.add_argument('output')
+    # The build passes `//third_party/node`: the DEPS checkout in a standalone
+    # build and Chromium's own copy in a Chromium build. This way we don't have
+    # to know where DevTools is located inside of the Chromium checkout.
+    parser.add_argument('--node-dir',
+                        default=path.join(REPO_DIR, 'third_party', 'node'),
+                        help='Directory that contains node.py.')
     options = parser.parse_args(args)
 
     sourcemap = f'{options.output}.map'
@@ -63,17 +69,19 @@ def script_main(args):
         leb_len += 1
     offset = int(offset) + 1 + leb_len
 
-    node = path.realpath(path.join(REPO_DIR, 'third_party', 'node', 'node.py'))
+    # Chromium's node.py doesn't print the output of the script when it is run
+    # from the command line, so import it and use the output RunNode() returns.
+    sys.path.append(path.abspath(options.node_dir))
+    import node  # pylint: disable=import-outside-toplevel,import-error
+
     sourcemap2json = path.realpath(
         path.join(REPO_DIR, 'scripts', 'build', 'wasm_sourcemap.mjs'))
-    sourcemap_contents = subprocess.check_output([
-        sys.executable, node, '--output', sourcemap2json, '--input', sourcemap,
-        '--offset',
-        '%s' % (offset)
-    ])
+    sourcemap_contents = node.RunNode(
+        [sourcemap2json, '--input', sourcemap, '--offset',
+         '%s' % (offset)])
 
     json_file = f'{options.output}.map.json'
-    with open(json_file, 'wb') as output:
+    with open(json_file, 'w', encoding='utf-8', newline='') as output:
         output.write(sourcemap_contents)
 
     return 0

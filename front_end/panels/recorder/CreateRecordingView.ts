@@ -178,7 +178,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     html`
       <style>${createRecordingViewStyles}</style>
       <style>${Input.textInputStyles}</style>
-      <style>${Input.checkboxStyles}</style>
       <div class="wrapper" jslog=${VisualLogging.section('create-recording-view')}>
         <div class="header-wrapper">
           <h1>${i18nString(UIStrings.createRecording)}</h1>
@@ -244,20 +243,16 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         <div class="checkbox-container">
           ${repeat(selectorTypes, item => {
             return html`
-              <label class="checkbox-label selector-type">
-                <input
-                  @keydown=${onKeyDown}
-                  .value=${item.selectorType}
-                  jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${item.selectorType}`)}
-                  .checked=${item.checked}
-                  type="checkbox"
-                  @change=${(e:Event) => onUpdate({
-                    selectorType: item.selectorType,
-                    checked: (e.target as HTMLInputElement).checked,
-                  })}
-                />
-                ${selectorTypeToLabel.get(item.selectorType) || item.selectorType}
-              </label>
+              <devtools-checkbox
+                class="selector-type"
+                @keydown=${onKeyDown}
+                jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${item.selectorType}`)}
+                .checked=${item.checked}
+                @change=${(e: Event) => onUpdate({
+                  selectorType: item.selectorType,
+                  checked: (e.target as UI.UIUtils.CheckboxLabel).checked,
+                })}
+              >${selectorTypeToLabel.get(item.selectorType) || item.selectorType}</devtools-checkbox>
             `;
           })}
         </div>

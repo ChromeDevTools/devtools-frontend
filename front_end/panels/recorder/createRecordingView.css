@@ -69,24 +69,10 @@ h1 {
   justify-content: space-between;
 }
 
-.checkbox-label {
-  display: inline-flex;
-  align-items: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  gap: var(--sys-size-3);
-  line-height: 1.1;
-  padding: var(--sys-size-3);
-}
-
 .checkbox-container {
   display: flex;
   flex-flow: row wrap;
   gap: var(--sys-size-5);
-}
-
-input[type="checkbox"]:focus-visible {
-  outline: var(--sys-color-state-focus-ring) auto var(--sys-size-1);
 }
 
 devtools-icon[name="help"] {

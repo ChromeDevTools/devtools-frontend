@@ -149,5 +149,34 @@ describeWithEnvironment('CreateRecordingView', () => {
                                        {}, target);
       await assertScreenshot('CreateRecordingView/error-view.png');
     });
+
+    it('notifies onUpdate when a selector type checkbox is toggled', async () => {
+      const onUpdate = sinon.stub();
+      const target = document.createElement('div');
+      renderElementIntoDOM(target, {includeCommonStyles: true});
+      CreateRecordingView.DEFAULT_VIEW(
+          {
+            name: 'test',
+            selectorAttribute: '',
+            selectorTypes: [
+              {selectorType: Models.Schema.SelectorType.CSS, checked: true},
+              {selectorType: Models.Schema.SelectorType.ARIA, checked: false},
+            ],
+            onRecordingStarted: sinon.stub(),
+            onRecordingCancelled: sinon.stub(),
+            onErrorReset: sinon.stub(),
+            onUpdate,
+          },
+          {},
+          target,
+      );
+      const checkboxes = target.querySelectorAll('devtools-checkbox');
+      assert.lengthOf(checkboxes, 2);
+      checkboxes[1].click();
+      sinon.assert.calledOnceWithExactly(onUpdate, {
+        selectorType: Models.Schema.SelectorType.ARIA,
+        checked: true,
+      });
+    });
   });
 });

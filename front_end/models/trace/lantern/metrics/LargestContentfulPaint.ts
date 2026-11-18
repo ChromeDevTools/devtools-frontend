@@ -131,12 +131,16 @@ class LargestContentfulPaint extends Metric {
     return urlMatches[0];
   }
 
-  static isSameFrameTextLcp(processedNavigation: Types.Simulation.ProcessedNavigation): boolean {
+  static isSameFrameLcp(processedNavigation: Types.Simulation.ProcessedNavigation): boolean {
     const {firstContentfulPaint: fcp, largestContentfulPaint: lcp} = processedNavigation.timestamps;
     if (!lcp) {
       return false;
     }
-    return Math.abs(lcp - fcp) <= SAME_FRAME_TIMESTAMP_TOLERANCE_US &&
+    return Math.abs(lcp - fcp) <= SAME_FRAME_TIMESTAMP_TOLERANCE_US;
+  }
+
+  static isSameFrameTextLcp(processedNavigation: Types.Simulation.ProcessedNavigation): boolean {
+    return LargestContentfulPaint.isSameFrameLcp(processedNavigation) &&
         processedNavigation.largestContentfulPaintEvt?.args?.data?.type === 'text';
   }
 
@@ -213,6 +217,24 @@ class LargestContentfulPaint extends Metric {
       return simulationResult;
     }
 
+    // When an image LCP is painted in the same frame as FCP, keep the full pessimistic graph
+    // during simulation for realistic network/CPU contention, but read the LCP resource's own
+    // completion time (floored by pessimistic FCP) rather than waiting for unrelated
+    // fast-finish requests (ads, analytics, offscreen assets) that also finished before LCP.
+    // Match by node.id because nodeTimings keys are cloned nodes from getPessimisticGraph.
+    // If the LCP node is absent from the pessimistic graph (e.g. a progressive image whose
+    // networkEndTime > lcp), fall through to the existing max-over-nodes fallback.
+    if (extras?.lcpNodeId && extras.fcpResult) {
+      for (const [node, timing] of simulationResult.nodeTimings) {
+        if (node.type === 'network' && node.id === extras.lcpNodeId) {
+          return {
+            timeInMs: Math.max(timing.endTime, extras.fcpResult.pessimisticEstimate.timeInMs),
+            nodeTimings: simulationResult.nodeTimings,
+          };
+        }
+      }
+    }
+
     const nodeTimesNotOffscreenImages = Array.from(simulationResult.nodeTimings.entries())
                                             .filter(entry => LargestContentfulPaint.isNotLowPriorityImageNode(entry[0]))
                                             .map(entry => entry[1].endTime);
@@ -229,7 +251,12 @@ class LargestContentfulPaint extends Metric {
       throw new Core.LanternError('FCP is required to calculate the LCP metric');
     }
 
-    const metricResult = super.compute(data, extras);
+    // Only apply the LCP-node pessimistic readout when image LCP occurs in the same frame as FCP.
+    // For post-FCP image LCPs, the full pessimistic graph still stands in for post-FCP render delay.
+    const lcpNode = LargestContentfulPaint.isSameFrameLcp(data.processedNavigation) ?
+        LargestContentfulPaint.findLcpNode(data.graph, data.processedNavigation) :
+        null;
+    const metricResult = super.compute(data, {...extras, lcpNodeId: lcpNode?.id});
     metricResult.timing = Math.max(metricResult.timing, fcpResult.timing);
     return metricResult;
   }

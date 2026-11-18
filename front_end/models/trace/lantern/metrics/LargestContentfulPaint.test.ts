@@ -371,5 +371,207 @@ describe('Metrics: Lantern LCP', function() {
       assert.sameMembers(collectNodeIds(lcpResult.optimisticGraph), ['doc', 'lazy-hero']);
       assert.isAbove(lcpResult.optimisticEstimate.timeInMs, fcpResult.optimisticEstimate.timeInMs);
     });
+
+    it('uses the LCP node endTime (floored by pessimistic FCP) for same-frame image LCP instead of unrelated requests',
+       () => {
+         const doc = createNetworkNode({
+           requestId: 'doc',
+           url: 'https://example.com/',
+           resourceType: 'Document',
+           priority: 'VeryHigh',
+           transferSize: 5_000,
+           rendererStartTime: 0,
+           networkEndTime: 100,
+         });
+         doc.setIsMainDocument(true);
+
+         const lcpImage = createNetworkNode({
+           requestId: 'hero',
+           url: 'https://example.com/hero.jpg',
+           resourceType: 'Image',
+           priority: 'High',
+           transferSize: 50_000,
+           rendererStartTime: 100,
+           networkEndTime: 300,
+         });
+         doc.addDependent(lcpImage);
+
+         const slowTracker = createNetworkNode({
+           requestId: 'tracker',
+           url: 'https://ads.example.com/collect',
+           resourceType: 'Fetch',
+           priority: 'High',
+           transferSize: 2_000_000,
+           rendererStartTime: 120,
+           networkEndTime: 450,
+         });
+         doc.addDependent(slowTracker);
+
+         const simulator = new Simulator({observedThroughput: 240_000, rtt: 150, throughput: 1_600_000});
+         const processedNavigation: Lantern.Types.Simulation.ProcessedNavigation = {
+           timestamps: {
+             firstContentfulPaint: 500_000,
+             largestContentfulPaint: 500_000,
+           },
+           largestContentfulPaintEvt: {args: {frame: 'MAIN_FRAME', data: {type: 'image'}}},
+           lcpRequestId: 'hero',
+         };
+
+         const data = {simulator, graph: doc, processedNavigation};
+         const fcpResult = FirstContentfulPaint.compute(data);
+         const lcpResult = LargestContentfulPaint.compute(data, {fcpResult});
+
+         // The unrelated slow tracker is still in pessimisticGraph for contention,
+         // but pessimisticEstimate.timeInMs reflects the LCP image, not the tracker.
+         assert.include(collectNodeIds(lcpResult.pessimisticGraph), 'tracker');
+         const heroTiming = [...lcpResult.pessimisticEstimate.nodeTimings]
+                                .find(([node]) => node.type === 'network' && node.id === 'hero')
+                                ?.[1];
+         const trackerTiming = [...lcpResult.pessimisticEstimate.nodeTimings]
+                                   .find(([node]) => node.type === 'network' && node.id === 'tracker')
+                                   ?.[1];
+         assert.isDefined(heroTiming);
+         assert.isDefined(trackerTiming);
+         assert.isBelow(lcpResult.pessimisticEstimate.timeInMs, trackerTiming.endTime);
+         assert.strictEqual(
+             lcpResult.pessimisticEstimate.timeInMs,
+             Math.max(heroTiming.endTime, fcpResult.pessimisticEstimate.timeInMs),
+         );
+
+         // When image LCP occurs in a later frame than FCP, keep the existing max-over-nodes behavior.
+         const afterFcpNav: Lantern.Types.Simulation.ProcessedNavigation = {
+           ...processedNavigation,
+           timestamps: {
+             firstContentfulPaint: 150_000,
+             largestContentfulPaint: 500_000,
+           },
+         };
+         const afterFcpFcp = FirstContentfulPaint.compute({simulator, graph: doc, processedNavigation: afterFcpNav});
+         const afterFcpLcp = LargestContentfulPaint.compute({simulator, graph: doc, processedNavigation: afterFcpNav},
+                                                            {fcpResult: afterFcpFcp});
+         assert.strictEqual(afterFcpLcp.pessimisticEstimate.timeInMs, trackerTiming.endTime);
+       });
+
+    it('floors pessimisticEstimate at pessimistic FCP when a same-frame LCP image finishes before FCP', () => {
+      const doc = createNetworkNode({
+        requestId: 'doc',
+        url: 'https://example.com/',
+        resourceType: 'Document',
+        priority: 'VeryHigh',
+        transferSize: 5_000,
+        rendererStartTime: 0,
+        networkEndTime: 100,
+      });
+      doc.setIsMainDocument(true);
+
+      const blockingCss = createNetworkNode({
+        requestId: 'blocking-css',
+        url: 'https://example.com/styles.css',
+        resourceType: 'Stylesheet',
+        priority: 'VeryHigh',
+        renderBlocking: 'blocking',
+        transferSize: 300_000,
+        rendererStartTime: 100,
+        networkEndTime: 350,
+      });
+      doc.addDependent(blockingCss);
+
+      const smallPreloadedHero = createNetworkNode({
+        requestId: 'hero',
+        url: 'https://cdn.example.com/hero.jpg',
+        resourceType: 'Image',
+        priority: 'High',
+        transferSize: 5_000,
+        rendererStartTime: 100,
+        networkEndTime: 200,
+      });
+      doc.addDependent(smallPreloadedHero);
+
+      const simulator = new Simulator({observedThroughput: 240_000, rtt: 150, throughput: 1_600_000});
+      const processedNavigation: Lantern.Types.Simulation.ProcessedNavigation = {
+        timestamps: {
+          firstContentfulPaint: 400_000,
+          largestContentfulPaint: 400_000,
+        },
+        largestContentfulPaintEvt: {args: {frame: 'MAIN_FRAME', data: {type: 'image'}}},
+        lcpRequestId: 'hero',
+      };
+
+      const data = {simulator, graph: doc, processedNavigation};
+      const fcpResult = FirstContentfulPaint.compute(data);
+      const lcpResult = LargestContentfulPaint.compute(data, {fcpResult});
+
+      const heroTiming = [...lcpResult.pessimisticEstimate.nodeTimings]
+                             .find(([node]) => node.type === 'network' && node.id === 'hero')
+                             ?.[1];
+      assert.isDefined(heroTiming);
+      assert.isBelow(heroTiming.endTime, fcpResult.pessimisticEstimate.timeInMs);
+      assert.strictEqual(lcpResult.pessimisticEstimate.timeInMs, fcpResult.pessimisticEstimate.timeInMs);
+    });
+
+    it('falls back to max-over-nodes when a same-frame LCP image is absent from pessimisticGraph or LCP is text',
+       () => {
+         const doc = createNetworkNode({
+           requestId: 'doc',
+           url: 'https://example.com/',
+           resourceType: 'Document',
+           priority: 'VeryHigh',
+           transferSize: 5_000,
+           rendererStartTime: 0,
+           networkEndTime: 100,
+         });
+         doc.setIsMainDocument(true);
+
+         // Progressive image that starts before LCP (so findLcpNode finds it) but finishes after LCP
+         // (so getPessimisticGraph excludes it).
+         const progressiveHero = createNetworkNode({
+           requestId: 'hero',
+           url: 'https://example.com/hero.jpg',
+           resourceType: 'Image',
+           priority: 'High',
+           transferSize: 50_000,
+           rendererStartTime: 100,
+           networkEndTime: 600,
+         });
+         doc.addDependent(progressiveHero);
+
+         const otherResource = createNetworkNode({
+           requestId: 'other',
+           url: 'https://example.com/other.js',
+           resourceType: 'Script',
+           priority: 'High',
+           renderBlocking: 'non_blocking',
+           transferSize: 200_000,
+           rendererStartTime: 110,
+           networkEndTime: 400,
+         });
+         doc.addDependent(otherResource);
+
+         const simulator = new Simulator({observedThroughput: 240_000, rtt: 150, throughput: 1_600_000});
+
+         const imageNav: Lantern.Types.Simulation.ProcessedNavigation = {
+           timestamps: {firstContentfulPaint: 500_000, largestContentfulPaint: 500_000},
+           largestContentfulPaintEvt: {args: {frame: 'MAIN_FRAME', data: {type: 'image'}}},
+           lcpRequestId: 'hero',
+         };
+         const fcpImage = FirstContentfulPaint.compute({simulator, graph: doc, processedNavigation: imageNav});
+         const lcpImage = LargestContentfulPaint.compute({simulator, graph: doc, processedNavigation: imageNav},
+                                                         {fcpResult: fcpImage});
+         assert.notInclude(collectNodeIds(lcpImage.pessimisticGraph), 'hero');
+         const otherTiming = [...lcpImage.pessimisticEstimate.nodeTimings]
+                                 .find(([node]) => node.type === 'network' && node.id === 'other')
+                                 ?.[1];
+         assert.isDefined(otherTiming);
+         assert.strictEqual(lcpImage.pessimisticEstimate.timeInMs, otherTiming.endTime);
+
+         const textNav: Lantern.Types.Simulation.ProcessedNavigation = {
+           timestamps: {firstContentfulPaint: 150_000, largestContentfulPaint: 500_000},
+           largestContentfulPaintEvt: {args: {frame: 'MAIN_FRAME', data: {type: 'text'}}},
+         };
+         const fcpText = FirstContentfulPaint.compute({simulator, graph: doc, processedNavigation: textNav});
+         const lcpText = LargestContentfulPaint.compute({simulator, graph: doc, processedNavigation: textNav},
+                                                        {fcpResult: fcpText});
+         assert.strictEqual(lcpText.pessimisticEstimate.timeInMs, lcpImage.pessimisticEstimate.timeInMs);
+       });
   });
 });

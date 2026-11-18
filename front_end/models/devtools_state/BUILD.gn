@@ -10,6 +10,7 @@ devtools_foundation_module("devtools_state") {
   sources = [
     "State.ts",
     "StateManager.ts",
+    "providers/CPUThrottlingStateProvider.ts",
     "providers/SettingsStateProvider.ts",
   ]
 
@@ -39,6 +40,7 @@ devtools_foundation_module("foundation_unittests") {
 
   sources = [
     "StateManager.test.ts",
+    "providers/CPUThrottlingStateProvider.test.ts",
     "providers/SettingsStateProvider.test.ts",
   ]
 

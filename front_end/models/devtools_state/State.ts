@@ -6,6 +6,7 @@ import type * as Common from '../../core/common/common.js';
 
 /** Names each DevTools state tracked by `StateManager`. */
 export const enum StateKind {
+  CPU_THROTTLING = 'cpu-throttling',
   CACHE_DISABLED = 'cache-disabled',
   JAVASCRIPT_DISABLED = 'java-script-disabled',
 }

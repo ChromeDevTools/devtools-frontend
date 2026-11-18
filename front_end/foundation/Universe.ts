@@ -249,6 +249,7 @@ export class Universe {
     context.set(ChangeTracker.ChangeTracker.ChangeTracker, changeTracker);
 
     const stateManager = new DevToolsState.StateManager.StateManager([
+      new DevToolsState.CPUThrottlingStateProvider.CPUThrottlingStateProvider(cpuThrottlingManager),
       new DevToolsState.SettingsStateProvider.SettingsStateProvider(settings),
     ]);
     context.set(DevToolsState.StateManager.StateManager, stateManager);

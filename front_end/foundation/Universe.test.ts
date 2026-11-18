@@ -306,4 +306,30 @@ describe('Universe', () => {
     universe.settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(true);
     sinon.assert.notCalled(listener);
   });
+
+  it('wires StateManager to CPU throttling changes', () => {
+    const universe = new Foundation.Universe.Universe({
+      settingsCreationOptions: createSettingsCreationOptions(),
+      hostConfig: {} as Root.Runtime.HostConfig,
+      inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+      supportsEmulation: false,
+    });
+    const listener = sinon.spy();
+    universe.stateManager.addEventListener(DevToolsState.State.Events.STATE_CHANGED, listener);
+
+    universe.cpuThrottlingManager.setCPUThrottlingRate(4);
+
+    sinon.assert.calledOnce(listener);
+    assert.deepEqual(universe.stateManager.nonDefaultStates(), [
+      {kind: DevToolsState.State.StateKind.CPU_THROTTLING, value: 4, isDefault: false},
+    ]);
+
+    universe.stateManager.reset(DevToolsState.State.StateKind.CPU_THROTTLING);
+    assert.deepEqual(universe.stateManager.nonDefaultStates(), []);
+    universe.dispose();
+
+    listener.resetHistory();
+    universe.cpuThrottlingManager.setCPUThrottlingRate(4);
+    sinon.assert.notCalled(listener);
+  });
 });

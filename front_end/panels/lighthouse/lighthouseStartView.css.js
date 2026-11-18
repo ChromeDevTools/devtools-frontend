@@ -73,10 +73,14 @@ export default `/*
 .lighthouse-radio {
   display: flex;
   align-items: center;
+
+  input {
+    margin-bottom: 0;
+  }
 }
 
 .lighthouse-radio-text {
-  margin-left: 3px;
+  margin-left: var(--sys-size-2);
 }
 
 .lighthouse-start-button-container {

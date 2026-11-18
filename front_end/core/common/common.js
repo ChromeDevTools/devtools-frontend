@@ -3475,7 +3475,19 @@ var PRIVILEGED_SCHEMES = /* @__PURE__ */ new Set([
   "chrome-untrusted:",
   "devtools:",
   "file:",
-  "isolated-app:"
+  "isolated-app:",
+  // ChromeOS-only scheme serving local files on external mounts (MTP
+  // devices, chrome.fileSystemProvider mounts, ARC content). Extensions must
+  // not reach these documents: the browser-side extension model treats the
+  // scheme as fully restricted (not in URLPattern::kValidSchemes), and the
+  // allowFileAccess gate in RegisteredExtension.isAllowedOnTarget
+  // (panels/common/ExtensionServer.ts) only recognizes the literal 'file:'
+  // protocol, so without this entry a devtools_page extension without file
+  // access could read local files on external mounts.
+  "externalfile:",
+  // Android-specific schemes.
+  "content:",
+  "chrome-native:"
 ]);
 function isPrivilegedScheme(url) {
   const parsed = parseUnwrappedURL(url);
@@ -5029,7 +5041,8 @@ var VersionController = class _VersionController {
   }
   updateVersionFrom3To4() {
     const advancedMode = this.#settings.createSetting("showHeaSnapshotObjectsHiddenProperties", false);
-    this.#settings.moduleSetting("showAdvancedHeapSnapshotProperties").set(advancedMode.get());
+    const newSettingName = "showAdvancedHeapSnapshotProperties";
+    this.#settings.createSetting(newSettingName, false).set(advancedMode.get());
     this.#removeSetting(advancedMode);
   }
   updateVersionFrom4To5() {
@@ -5459,19 +5472,15 @@ var VersionController = class _VersionController {
     }
   }
   updateVersionFrom37To38() {
-    const getConsoleInsightsEnabledSetting = () => {
-      try {
-        return this.#settings.moduleSetting("console-insights-enabled");
-      } catch {
-        return;
-      }
-    };
-    const consoleInsightsEnabled = getConsoleInsightsEnabledSetting();
+    if (!this.#settings.globalStorage.has("console-insights-enabled")) {
+      return;
+    }
+    const consoleInsightsEnabled = this.#settings.createSetting("console-insights-enabled", false);
     const onboardingFinished = this.#settings.createLocalSetting("console-insights-onboarding-finished", false);
-    if (consoleInsightsEnabled && consoleInsightsEnabled.get() === true && onboardingFinished.get() === false) {
+    if (consoleInsightsEnabled.get() === true && onboardingFinished.get() === false) {
       consoleInsightsEnabled.set(false);
     }
-    if (consoleInsightsEnabled && consoleInsightsEnabled.get() === false) {
+    if (consoleInsightsEnabled.get() === false) {
       onboardingFinished.set(false);
     }
   }
@@ -5505,16 +5514,12 @@ var VersionController = class _VersionController {
    *    setting.
    */
   updateVersionFrom39To40() {
-    const hasCustomNetworkConditionsSetting = () => {
-      try {
-        this.#settings.moduleSetting("custom-network-conditions");
-        return true;
-      } catch {
-        return false;
-      }
-    };
-    if (hasCustomNetworkConditionsSetting()) {
-      const conditionsSetting = this.#settings.moduleSetting("custom-network-conditions");
+    if (this.#settings.syncedStorage.has("custom-network-conditions")) {
+      const conditionsSetting = this.#settings.createSetting(
+        "custom-network-conditions",
+        [],
+        "Synced" /* SYNCED */
+      );
       const customConditions = conditionsSetting.get();
       if (customConditions?.length > 0) {
         customConditions.forEach((condition, i) => {
@@ -5649,6 +5654,13 @@ var SettingAvailability = /* @__PURE__ */ ((SettingAvailability2) => {
   SettingAvailability2[SettingAvailability2["DISABLED"] = 3] = "DISABLED";
   return SettingAvailability2;
 })(SettingAvailability || {});
+var SettingsEventSupport = class extends ObjectWrapper {
+  allSettings = new ObjectWrapper();
+  dispatchEventToListeners(settingName, value) {
+    this.allSettings.dispatchEventToListeners("SettingChanged" /* SETTING_CHANGED */, { name: settingName, value });
+    super.dispatchEventToListeners(settingName, value);
+  }
+};
 var Settings = class _Settings {
   syncedStorage;
   globalStorage;
@@ -5656,7 +5668,7 @@ var Settings = class _Settings {
   #settingRegistrations;
   #sessionStorage = new SettingsStorage({});
   settingNameSet = /* @__PURE__ */ new Set();
-  #eventSupport = new ObjectWrapper();
+  #eventSupport = new SettingsEventSupport();
   #registry = /* @__PURE__ */ new Map();
   moduleSettings = /* @__PURE__ */ new Map();
   #logSettingAccess;
@@ -5777,6 +5789,13 @@ var Settings = class _Settings {
   /** The event target shared by all settings. Change listeners are registered with the setting name as event type. */
   get eventTargetForTest() {
     return this.#eventSupport;
+  }
+  /** Calls `listener` when the value of any setting changes. This includes the settings that are created later. */
+  addChangeListener(listener, thisObject) {
+    return this.#eventSupport.allSettings.addEventListener("SettingChanged" /* SETTING_CHANGED */, listener, thisObject);
+  }
+  removeChangeListener(listener, thisObject) {
+    this.#eventSupport.allSettings.removeEventListener("SettingChanged" /* SETTING_CHANGED */, listener, thisObject);
   }
   /**
    * Get setting via key, and create a new setting if the requested setting does not exist.

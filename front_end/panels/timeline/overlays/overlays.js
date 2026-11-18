@@ -407,6 +407,12 @@ var Overlays = class extends EventTarget {
   remove(overlay) {
     const htmlElement = this.#overlaysToElements.get(overlay);
     if (htmlElement && this.#overlaysContainer) {
+      if (overlay.type === "BOTTOM_INFO_BAR") {
+        this.#detachBottomInfoBar(htmlElement);
+        if (overlay.infobar instanceof UI.Infobar.Infobar) {
+          overlay.infobar.detach();
+        }
+      }
       this.#overlaysContainer.removeChild(htmlElement);
     }
     this.#overlaysToElements.delete(overlay);
@@ -434,6 +440,16 @@ var Overlays = class extends EventTarget {
    * scratch and remove all overlays relating to the previous trace.
    */
   reset() {
+    for (const [overlay, htmlElement] of this.#overlaysToElements) {
+      if (overlay.type === "BOTTOM_INFO_BAR") {
+        if (htmlElement) {
+          this.#detachBottomInfoBar(htmlElement);
+        }
+        if (overlay.infobar instanceof UI.Infobar.Infobar) {
+          overlay.infobar.detach();
+        }
+      }
+    }
     if (this.#overlaysContainer) {
       this.#overlaysContainer.innerHTML = "";
     }
@@ -621,6 +637,11 @@ var Overlays = class extends EventTarget {
       default: {
         Platform.TypeScriptUtilities.assertNever(overlay, `Unknown overlay: ${JSON.stringify(overlay)}`);
       }
+    }
+  }
+  #detachBottomInfoBar(element) {
+    for (const child of Array.from(element.children)) {
+      UI.Widget.Widget.get(child)?.detach();
     }
   }
   #positionInfoBarBanner(overlay, element) {
@@ -1265,14 +1286,15 @@ var Overlays = class extends EventTarget {
       case "TIMINGS_MARKER":
         break;
       case "BOTTOM_INFO_BAR": {
-        if (!(overlay.infobar.element instanceof HTMLElement)) {
+        if (!(overlay.infobar instanceof UI.Infobar.Infobar)) {
           return;
         }
         if (element.contains(overlay.infobar.element)) {
           return;
         }
+        this.#detachBottomInfoBar(element);
         element.innerHTML = "";
-        element.appendChild(overlay.infobar.element);
+        overlay.infobar.show(element, void 0, true);
         break;
       }
       case "COMMENT_PIN":

@@ -1549,7 +1549,7 @@ var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.Objec
     console.assert(!binding.fileSystem.isDirty() || !binding.network.isDirty());
     if (binding.fileSystem.isDirty()) {
       this.syncWorkingCopy(binding.fileSystem);
-    } else if (binding.network.isDirty()) {
+    } else if (binding.network.isDirty() && !binding.network.workingCopyIsPageDriven()) {
       this.syncWorkingCopy(binding.network);
     } else if (binding.network.hasCommits() && binding.network.content() !== binding.fileSystem.content()) {
       binding.network.setWorkingCopy(binding.network.content());
@@ -1614,6 +1614,9 @@ var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.Objec
       return;
     }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
+    if (uiSourceCode === binding.network && uiSourceCode.workingCopyIsPageDriven()) {
+      return;
+    }
     if (!uiSourceCode.isDirty()) {
       mutedWorkingCopies.add(binding);
       other.resetWorkingCopy();
@@ -4919,6 +4922,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {

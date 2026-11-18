@@ -137,6 +137,10 @@ export async function evaluateScriptSnippet(uiSourceCode) {
         generatePreview: true,
         replMode: true,
     }, true, true);
+    if (!('error' in result)) {
+        // The snippet could have assigned to variables of the paused call frames.
+        executionContext.debuggerModel.invalidateScopeChains();
+    }
     if ('exceptionDetails' in result && result.exceptionDetails) {
         consoleModel?.addMessage(SDK.ConsoleModel.ConsoleMessage.fromException(runtimeModel, result.exceptionDetails, /* messageType */ undefined, /* timestamp */ undefined, url));
         return;

@@ -1,7 +1,7 @@
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
+import * as ComputedStyleModule from '../../models/computed_style/computed_style.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type Category } from './PropertyNameCategories.js';
@@ -62,7 +62,6 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     private createTreeNodeRenderer;
     private buildTreeNode;
     private handleContextMenuEvent;
-    private computeNonInheritedProperties;
     private onRegexToggled;
     private onFilterChanged;
     filterComputedStyles(regex: RegExp | null): Promise<void>;

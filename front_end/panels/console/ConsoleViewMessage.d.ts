@@ -6,6 +6,7 @@ import type * as IssuesManager from '../../models/issues_manager/issues_manager.
 import * as Logs from '../../models/logs/logs.js';
 import { Icon } from '../../ui/kit/kit.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
@@ -24,7 +25,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private readonly messageResized;
     protected elementInternal: HTMLElement | null;
     protected consoleRowWrapper: HTMLElement | null;
-    private readonly previewFormatter;
+    protected readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
     private searchRegexInternal;
     protected messageIcon: Icon | null;
     private traceExpanded;

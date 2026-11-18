@@ -7241,9 +7241,6 @@
   "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
     "message": "Conditional breakpoint"
   },
-  "panels/console/ConsoleViewMessage.ts | collapseChildren": {
-    "message": "Collapse children"
-  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Console"
   },
@@ -7276,9 +7273,6 @@
   },
   "panels/console/ConsoleViewMessage.ts | exception": {
     "message": "<exception>"
-  },
-  "panels/console/ConsoleViewMessage.ts | expandRecursively": {
-    "message": "Expand recursively"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
     "message": "Understand this error"
@@ -10154,12 +10148,6 @@
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
-    "message": "CPU throttling"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
     "message": "CPU throttling is enabled"
   },
@@ -10180,12 +10168,6 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Offline"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
-    "message": "{PH1} – recommended"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "Reset to the default value"
@@ -10780,9 +10762,6 @@
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Network"
-  },
-  "panels/network/NetworkConfigView.ts | saveDataSettingTooltip": {
-    "message": "Override the value reported by navigator.connection.saveData on the page"
   },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "Use browser default"

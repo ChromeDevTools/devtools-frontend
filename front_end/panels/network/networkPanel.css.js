@@ -88,7 +88,7 @@ export default `/*
   width: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
-#network-overview-panel {
+#network-overview-pane {
   flex: none;
   position: relative;
 }

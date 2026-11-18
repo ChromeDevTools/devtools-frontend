@@ -195,9 +195,6 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper {
     featurePromotionId() {
         return this.actionRegistration.featurePromotionId;
     }
-    setting() {
-        return this.actionRegistration.setting;
-    }
     condition() {
         return this.actionRegistration.condition;
     }
@@ -222,17 +219,6 @@ export function reset() {
 export function getRegisteredActionExtensions() {
     return Array.from(registeredActions.values())
         .filter(action => {
-        const settingName = action.setting();
-        try {
-            if (settingName && !Common.Settings.Settings.instance().moduleSetting(settingName).get()) {
-                return false;
-            }
-        }
-        catch (err) {
-            if (err.message.startsWith('No setting registered')) {
-                return false;
-            }
-        }
         return Root.Runtime.Runtime.isDescriptorEnabled({
             experiment: action.experiment(),
             condition: action.condition(),

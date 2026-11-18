@@ -50,6 +50,7 @@
     "../../../../../../front_end/ui/settings/EmulationSettings.ts",
     "../../../../../../front_end/ui/settings/InspectorMainSettings.ts",
     "../../../../../../front_end/ui/settings/LayerViewerSettings.ts",
+    "../../../../../../front_end/ui/settings/LighthouseSettings.ts",
     "../../../../../../front_end/ui/settings/MainSettings.ts",
     "../../../../../../front_end/ui/settings/NetworkSettings.ts",
     "../../../../../../front_end/ui/settings/SettingUIRegistration.ts",

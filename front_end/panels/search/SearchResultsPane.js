@@ -235,6 +235,10 @@ export class SearchResultsPane extends UI.Widget.VBox {
         let match;
         const matchRanges = [];
         while ((regex.lastIndex < lineContent.length) && (match = regex.exec(lineContent))) {
+            if (match[0].length === 0) {
+                regex.lastIndex = match.index + 1;
+                continue;
+            }
             matchRanges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
         }
         return matchRanges;

@@ -2480,6 +2480,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -3699,6 +3700,7 @@ var ScopeChainResolver = class _ScopeChainResolver extends Common.ObjectWrapper.
   }
   modelAdded(debuggerModel) {
     debuggerModel.addEventListener(SDK3.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
+    debuggerModel.addEventListener(SDK3.DebuggerModel.Events.ScopeChainsInvalidated, this.#scopeChainsInvalidated, this);
     debuggerModel.sourceMapManager().addEventListener(
       SDK3.SourceMapManager.Events.SourceMapAttached,
       this.#sourceMapChanged,
@@ -3712,6 +3714,11 @@ var ScopeChainResolver = class _ScopeChainResolver extends Common.ObjectWrapper.
   }
   modelRemoved(debuggerModel) {
     debuggerModel.removeEventListener(SDK3.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
+    debuggerModel.removeEventListener(
+      SDK3.DebuggerModel.Events.ScopeChainsInvalidated,
+      this.#scopeChainsInvalidated,
+      this
+    );
     debuggerModel.sourceMapManager().removeEventListener(
       SDK3.SourceMapManager.Events.SourceMapAttached,
       this.#sourceMapChanged,
@@ -3743,6 +3750,12 @@ var ScopeChainResolver = class _ScopeChainResolver extends Common.ObjectWrapper.
   #invalidate(script) {
     this.#cache.delete(script);
     this.dispatchEventToListeners("ScopeChainInvalidated" /* SCOPE_CHAIN_INVALIDATED */, script);
+  }
+  #scopeChainsInvalidated(event) {
+    const callFrames = event.data.debuggerPausedDetails()?.callFrames ?? [];
+    for (const script of new Set(callFrames.map((callFrame) => callFrame.script))) {
+      this.#invalidate(script);
+    }
   }
   #debugInfoAttached(event) {
     this.#invalidate(event.data);

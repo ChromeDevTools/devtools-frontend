@@ -4,7 +4,6 @@
 
 /**
  * This file is auto-generated, do not edit manually. *
- * Re-generate with: scripts/tools/dt.py generate-protocol-resources.
  */
 
 
@@ -17524,6 +17523,7 @@ export namespace Preload {
     FormSubmitWhenPrerendering = 'FormSubmitWhenPrerendering',
     CrossDocumentRestart = 'CrossDocumentRestart',
     PrefetchFailedCrossOriginSubframe = 'PrefetchFailedCrossOriginSubframe',
+    UnexpectedMainFrameNavigation = 'UnexpectedMainFrameNavigation',
   }
 
   /**

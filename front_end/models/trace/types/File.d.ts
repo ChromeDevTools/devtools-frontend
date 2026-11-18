@@ -93,9 +93,6 @@ export interface EntriesLinkAnnotationSerialized {
 /**
  * `Annotation` are the user-created annotations that are saved into the metadata.
  * Those annotations are rendered on the timeline by `Overlays.ts`
- *
- * TODO: Implement other OverlayAnnotations (annotated time ranges, links between entries).
- * TODO: Save/load overlay annotations to/from the trace file.
  */
 export type Annotation = EntryLabelAnnotation | TimeRangeAnnotation | EntriesLinkAnnotation;
 export declare function isTimeRangeAnnotation(annotation: Annotation): annotation is TimeRangeAnnotation;

@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 import * as Emulation from '../emulation/emulation.js';
 const UIStrings = {
     /**
@@ -617,7 +618,7 @@ export function getPresets() {
         presets = [
             // configID maps to Lighthouse's Object.keys(config.categories)[0] value
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catPerfSettingDescriptor),
                 configID: 'performance',
                 title: i18nLazyString(UIStrings.performance),
                 description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
@@ -625,7 +626,7 @@ export function getPresets() {
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE,
             },
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-a11y'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catA11ySettingDescriptor),
                 configID: 'accessibility',
                 title: i18nLazyString(UIStrings.accessibility),
                 description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
@@ -633,7 +634,7 @@ export function getPresets() {
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY,
             },
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-best-practices'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catBestPracticesSettingDescriptor),
                 configID: 'best-practices',
                 title: i18nLazyString(UIStrings.bestPractices),
                 description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
@@ -641,7 +642,7 @@ export function getPresets() {
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES,
             },
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-seo'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catSeoSettingDescriptor),
                 configID: 'seo',
                 title: i18nLazyString(UIStrings.seo),
                 description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),

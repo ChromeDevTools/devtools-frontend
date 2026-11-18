@@ -160,6 +160,9 @@
       "path": "../search/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../snippets/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "components/bundle-tsconfig.ref.json"
     }
   ]

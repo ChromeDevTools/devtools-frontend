@@ -30,6 +30,7 @@
     "../../../../../../front_end/ui/legacy/ListModel.test.ts",
     "../../../../../../front_end/ui/legacy/ListWidget.test.ts",
     "../../../../../../front_end/ui/legacy/PlusButton.test.ts",
+    "../../../../../../front_end/ui/legacy/ProgressIndicator.test.ts",
     "../../../../../../front_end/ui/legacy/SearchableView.test.ts",
     "../../../../../../front_end/ui/legacy/ShortcutRegistry.test.ts",
     "../../../../../../front_end/ui/legacy/SoftContextMenu.test.ts",

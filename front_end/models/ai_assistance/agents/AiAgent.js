@@ -286,9 +286,9 @@ export class AiAgent {
         this.#facts.clear();
     }
     /**
-     * Clears any subclass-specific caches. This is called when a run encounters
-     * an error (e.g., cross-origin navigation, abort, or execution error) to
-     * prevent unvalidated cached data from being replayed in subsequent runs.
+     * Clears subclass-specific caches after a non-`MAX_STEPS` error (such as
+     * cross-origin navigation, abort, or execution failure) when uncommitted
+     * `runEntries` are discarded instead of committed to `#history`.
      */
     clearCache() {
     }
@@ -314,12 +314,19 @@ export class AiAgent {
         return [];
     }
     buildRequest(part, role) {
+        return this.#buildRequest(part, role, this.#history);
+    }
+    /**
+     * Constructs the AIDA conversation request, accepting an explicit `history`
+     * array so active runs can include uncommitted `runEntries` alongside `#history`.
+     */
+    #buildRequest(part, role, history) {
         const parts = Array.isArray(part) ? part : [part];
         const currentMessage = {
             parts,
             role,
         };
-        const history = [...this.#history];
+        const historicalContexts = history.length ? [...history] : undefined;
         const declarations = [];
         for (const [name, definition] of this.#functionDeclarations.entries()) {
             declarations.push({
@@ -339,7 +346,7 @@ export class AiAgent {
             client: Host.AidaClient.CLIENT_NAME,
             current_message: currentMessage,
             preamble,
-            historical_contexts: history.length ? history : undefined,
+            historical_contexts: historicalContexts,
             facts: facts.length ? facts : undefined,
             ...(enableAidaFunctionCalling ? { function_declarations: declarations } : {}),
             options: {
@@ -402,25 +409,15 @@ export class AiAgent {
         return response;
     }
     /**
-     * Parses a streaming text response into a
-     * though/action/title/answer/suggestions component.
+     * Parses a partial or completed model text response into answer text and
+     * optional follow-up suggestions.
+     *
+     * By default, extracts `SUGGESTIONS:` text directives for V1 agents
+     * (`StylingAgent`, `PerformanceAgent`). `AiAgent2` overrides this method
+     * because V2 receives suggestions from `suggestFollowUps` tool calls.
      */
     parseTextResponse(response) {
         return this.parseTextResponseForSuggestions(response.trim());
-    }
-    /**
-     * Parses the text of a response that is still streaming. Only the `answer`
-     * of the result is shown, as a partial answer. By default, partial answers
-     * use the same parsing as completed answers.
-     *
-     * This hook exists so that `AiAgent2` (AI V2) can parse follow-up
-     * suggestions differently without changing the V1 agents. Remove it once
-     * AI V2 ships and the V1 agents are removed. b/568697679 explores getting
-     * suggestions from a function call instead of parsing them from text,
-     * which would remove the need for this parsing.
-     */
-    parsePartialTextResponse(response) {
-        return this.parseTextResponse(response);
     }
     async finalizeAnswer(answer) {
         return answer;
@@ -451,6 +448,22 @@ export class AiAgent {
      */
     async preRun() {
     }
+    /**
+     * Appends the completed run's messages to `#history` and notifies subclasses
+     * to promote their in-flight run drafts.
+     */
+    #commitRun(runEntries) {
+        this.#history.push(...runEntries);
+        this.onRunCommitted();
+    }
+    /**
+     * Called after `#commitRun()` appends a run's messages to `#history` on final
+     * answers, `CONTEXT_CHANGE`, and `MAX_STEPS`, and skipped on aborts, errors,
+     * or early generator exits. Subclasses can override this method to promote
+     * per-run draft state to session state.
+     */
+    onRunCommitted() {
+    }
     async *run(initialQuery, options, multimodalInput) {
         await options.selected?.refresh();
         // Reset context on each run so cleared selections (`null`) do not leave
@@ -463,8 +476,9 @@ export class AiAgent {
         }
         Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
         const query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
+        const runEntries = [];
         // Request is built here to capture history up to this point.
-        let request = this.buildRequest(query, Host.AidaClient.Role.USER);
+        let request = this.#buildRequest(query, Host.AidaClient.Role.USER, [...this.#history, ...runEntries]);
         const clientFeatureName = Host.AidaClient.getClientFeatureName(this.clientFeature);
         debugLog(`[AiAgent] Starting conversation with client ${clientFeatureName}, userTier ${this.userTier}`);
         yield* this.handleContextDetails(options.selected);
@@ -487,7 +501,7 @@ export class AiAgent {
                     textResponse = fetchResult.text ?? '';
                     functionCalls = fetchResult.functionCalls;
                     if (!functionCalls && !fetchResult.completed) {
-                        const parsed = this.parsePartialTextResponse(textResponse);
+                        const parsed = this.parseTextResponse(textResponse);
                         const partialAnswer = 'answer' in parsed ? parsed.answer : '';
                         if (!partialAnswer) {
                             continue;
@@ -507,12 +521,12 @@ export class AiAgent {
                 yield this.#createErrorResponse(error);
                 break;
             }
-            this.#history.push(request.current_message);
+            runEntries.push(request.current_message);
             // If the model calls other tools alongside suggestFollowUps, the investigation is still in progress,
             // so premature suggestions are discarded until the concluding turn.
             const hasOtherFunctionCalls = Boolean(functionCalls?.some(call => call.name !== SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
             if (!functionCalls || !hasOtherFunctionCalls) {
-                yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId);
+                yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId, runEntries);
                 break;
             }
             if (textResponse) {
@@ -520,7 +534,7 @@ export class AiAgent {
                 yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId);
             }
             debugLog(`[AiAgent] Step ${i + 1}: Model requested function calls:`, functionCalls);
-            const outcome = yield* this.#runFunctionCalls(functionCalls, textResponse, options);
+            const outcome = yield* this.#runFunctionCalls(functionCalls, textResponse, options, runEntries);
             if (outcome.type === 'contextChanged') {
                 return;
             }
@@ -531,14 +545,15 @@ export class AiAgent {
                 // Normally, the functionResponses are pushed at the start of the next
                 // iteration. Since no further iteration will run, push them here so the
                 // last functionCalls are not left unpaired in history.
-                this.#history.push({
+                runEntries.push({
                     parts: outcome.functionResponses,
                     role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
                 });
+                this.#commitRun(runEntries);
                 yield this.#createErrorResponse("max-steps" /* ErrorType.MAX_STEPS */);
                 break;
             }
-            request = this.buildRequest(outcome.functionResponses, Host.AidaClient.Role.ROLE_UNSPECIFIED);
+            request = this.#buildRequest(outcome.functionResponses, Host.AidaClient.Role.ROLE_UNSPECIFIED, [...this.#history, ...runEntries]);
         }
         if (isDebugMode()) {
             dispatchAiAssistanceDoneEvent();
@@ -554,7 +569,7 @@ export class AiAgent {
      *   `suggestFollowUps`) and yields a completed `ANSWER` with follow-up
      *   suggestions.
      */
-    async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId) {
+    async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId, runEntries) {
         if (!textResponse) {
             debugLog('[AiAgent] Model returned an empty text response without tool calls:', { step: stepIndex + 1, rpcId, functionCalls });
             yield this.#createErrorResponse("unknown" /* ErrorType.UNKNOWN */);
@@ -564,16 +579,15 @@ export class AiAgent {
         const followUpSuggestions = sanitizeSuggestionsList(lastSuggestCall?.args?.suggestions);
         const parsedResponse = this.parseTextResponse(textResponse);
         debugLog(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
-        this.#history.push({
+        runEntries.push({
             parts: [{
                     text: parsedResponse.answer,
                 }],
             role: Host.AidaClient.Role.MODEL,
         });
-        // Fall back to text-parsed `SUGGESTIONS:` while server-side preambles still
-        // emit text directives.
-        // TODO(b/568697679): Remove `parsedResponse.suggestions` fallback once
-        // `suggestFollowUps` is deployed and the server-side preamble is updated.
+        this.#commitRun(runEntries);
+        // The `parsedResponse.suggestions` fallback for text-parsed `SUGGESTIONS:`
+        // remains only while V1 agents (`StylingAgent`, `PerformanceAgent`) exist.
         const suggestions = followUpSuggestions ?? parsedResponse.suggestions;
         yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId, suggestions);
     }
@@ -598,14 +612,13 @@ export class AiAgent {
      * The model's text and all calls are stored in history as one MODEL turn.
      * Every `functionCall` in history gets a matching `functionResponse`: in the
      * returned `functionResponses`, or, after a context change, in history
-     * directly. When the run stops, the ERROR response removes the run from
-     * history instead.
+     * directly. When the run stops, uncommitted `runEntries` are discarded.
      */
-    async *#runFunctionCalls(functionCalls, textResponse, options) {
+    async *#runFunctionCalls(functionCalls, textResponse, options, runEntries) {
         // Each call keeps its own `thoughtSignature`, if it has one.
         const modelParts = textResponse ? [{ text: textResponse }] : [];
         modelParts.push(...functionCalls.map(functionCall => ({ functionCall })));
-        this.#history.push({
+        runEntries.push({
             parts: modelParts,
             role: Host.AidaClient.Role.MODEL,
         });
@@ -631,17 +644,17 @@ export class AiAgent {
                 }
                 const result = yield* this.#callFunction(functionCall.name, functionCall.args, options);
                 if (options.signal?.aborted) {
-                    // The remaining calls do not run. The ABORT response removes the run
-                    // from history.
+                    // The remaining calls do not run. The ABORT response discards the uncommitted `runEntries`.
                     yield this.#createErrorResponse("abort" /* ErrorType.ABORT */);
                     return { type: 'stopped' };
                 }
                 if ('context' in result) {
                     functionResponses.push(...this.#contextChangeResponses(functionCall, functionCalls.slice(index + 1), result.description));
-                    this.#history.push({
+                    runEntries.push({
                         parts: functionResponses,
                         role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
                     });
+                    this.#commitRun(runEntries);
                     yield {
                         type: "context-change" /* ResponseType.CONTEXT_CHANGE */,
                         description: result.description,
@@ -926,15 +939,9 @@ export class AiAgent {
             }
         }
     }
-    #removeLastRunParts() {
-        this.#history.splice(this.#history.findLastIndex(item => {
-            return item.role === Host.AidaClient.Role.USER;
-        }));
-    }
     #createErrorResponse(error) {
-        // If we hit MAX_STEPS, we still want to keep the call history as this may be relevant for follow-up requests.
+        // MAX_STEPS runs commit their history before yielding this error, so preserve subclass caches for follow-up requests.
         if (error !== "max-steps" /* ErrorType.MAX_STEPS */) {
-            this.#removeLastRunParts();
             this.clearCache();
         }
         if (error !== "abort" /* ErrorType.ABORT */) {
@@ -947,9 +954,10 @@ export class AiAgent {
     }
 }
 /**
- * Validates and sanitizes raw follow-up suggestions from the model (either
- * `args.suggestions` from a `suggestFollowUps` tool call or a `JSON.parse`d
- * `SUGGESTIONS:` text directive).
+ * Validates and sanitizes raw follow-up suggestions from the model. Used for
+ * `args.suggestions` from `suggestFollowUps` tool calls, and for parsed
+ * `SUGGESTIONS:` text directives while V1 agents (`StylingAgent`,
+ * `PerformanceAgent`) exist.
  *
  * Expects `parsed` to be a `string[]`, but accepts `unknown` because model
  * output is untrusted. Returns non-empty string items with whitespace
@@ -983,8 +991,8 @@ export function sanitizeSuggestionsList(parsed) {
  * Returns `undefined` if `suggestions` is not valid JSON, not an array, or no
  * items remain.
  *
- * TODO(b/568697679): Remove this JSON-string wrapper and consolidate into a
- * single function once legacy `SUGGESTIONS:` text parsing is removed.
+ * This JSON-string sanitization wrapper remains only while V1 agents
+ * (`StylingAgent`, `PerformanceAgent`) exist.
  */
 export function sanitizeSuggestions(suggestions) {
     try {

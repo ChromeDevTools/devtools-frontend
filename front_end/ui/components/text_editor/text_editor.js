@@ -397,7 +397,7 @@ __export(AiCodeCompletionProvider_exports, {
 import * as Common5 from "../../../core/common/common.js";
 import * as Host6 from "../../../core/host/host.js";
 import * as i18n12 from "../../../core/i18n/i18n.js";
-import * as Root5 from "../../../core/root/root.js";
+import * as Root6 from "../../../core/root/root.js";
 import * as AiCodeCompletion from "../../../models/ai_code_completion/ai_code_completion.js";
 import * as AiCodeGeneration5 from "../../../models/ai_code_generation/ai_code_generation.js";
 import * as CodeMirror3 from "../../../third_party/codemirror.next/codemirror.next.js";
@@ -755,7 +755,7 @@ __export(AiCodeGenerationProvider_exports, {
 import * as Common4 from "../../../core/common/common.js";
 import * as Host5 from "../../../core/host/host.js";
 import * as i18n11 from "../../../core/i18n/i18n.js";
-import * as Root4 from "../../../core/root/root.js";
+import * as Root5 from "../../../core/root/root.js";
 import * as AiCodeGeneration3 from "../../../models/ai_code_generation/ai_code_generation.js";
 import * as CodeMirror2 from "../../../third_party/codemirror.next/codemirror.next.js";
 import * as UI6 from "../../legacy/legacy.js";
@@ -1556,8 +1556,11 @@ __export(config_exports, {
   conservativeCompletion: () => conservativeCompletion,
   contentIncludingHint: () => contentIncludingHint,
   domWordWrap: () => domWordWrap,
+  drawSelectionCompartment: () => drawSelectionCompartment,
   dummyDarkTheme: () => dummyDarkTheme,
   dynamicSetting: () => dynamicSetting,
+  getConfiguredDrawSelectionExtension: () => getConfiguredDrawSelectionExtension,
+  getDrawSelectionExtension: () => getDrawSelectionExtension,
   hasActiveAiSuggestion: () => hasActiveAiSuggestion,
   indentUnit: () => indentUnit2,
   removeTooltipHost: () => removeTooltipHost,
@@ -1571,11 +1574,13 @@ __export(config_exports, {
 });
 import * as Common3 from "../../../core/common/common.js";
 import * as i18n9 from "../../../core/i18n/i18n.js";
+import * as Root4 from "../../../core/root/root.js";
 import * as SDK from "../../../core/sdk/sdk.js";
 import * as TextUtils from "../../../core/text_utils/text_utils.js";
 import * as CM3 from "../../../third_party/codemirror.next/codemirror.next.js";
 import { Icon } from "../../kit/kit.js";
 import * as UI5 from "../../legacy/legacy.js";
+import * as ThemeSupport from "../../legacy/theme_support/theme_support.js";
 import * as SettingsUI from "../../settings/settings.js";
 import * as VisualLogging4 from "../../visual_logging/visual_logging.js";
 import * as CodeHighlighter from "../code_highlighter/code_highlighter.js";
@@ -1803,10 +1808,10 @@ var DynamicSetting = class _DynamicSetting {
   compartment = new CM3.Compartment();
   setting;
   get settingName() {
-    return typeof this.setting === "string" ? this.setting : this.setting.name;
+    return this.setting.name;
   }
   settingValue() {
-    return (typeof this.setting === "string" ? Common3.Settings.Settings.instance().moduleSetting(this.setting) : Common3.Settings.Settings.instance().resolve(this.setting)).get();
+    return Common3.Settings.Settings.instance().resolve(this.setting).get();
   }
   instance() {
     return [
@@ -2038,6 +2043,30 @@ function themeIsDark() {
 }
 var dummyDarkTheme = CM3.EditorView.theme({}, { dark: true });
 var themeSelection = new CM3.Compartment();
+var drawSelectionCompartment = new CM3.Compartment();
+var defaultDrawSelection = CM3.drawSelection();
+var nonBlinkingDrawSelection = CM3.drawSelection({ cursorBlinkRate: 0 });
+var cachedDrawSelectionExtensions = /* @__PURE__ */ new Map([[0, nonBlinkingDrawSelection]]);
+function getDrawSelectionExtension(caretBlinkInterval) {
+  const normalized = ThemeSupport.normalizeCaretBlinkInterval(caretBlinkInterval);
+  if (normalized === void 0) {
+    return defaultDrawSelection;
+  }
+  const cursorBlinkRate = normalized * 2;
+  if (!Number.isFinite(cursorBlinkRate)) {
+    return defaultDrawSelection;
+  }
+  let extension = cachedDrawSelectionExtensions.get(cursorBlinkRate);
+  if (!extension) {
+    extension = CM3.drawSelection({ cursorBlinkRate });
+    cachedDrawSelectionExtensions.set(cursorBlinkRate, extension);
+  }
+  return extension;
+}
+function getConfiguredDrawSelectionExtension() {
+  const caretBlinkInterval = ThemeSupport.ThemeSupport.hasInstance() ? ThemeSupport.ThemeSupport.instance().caretBlinkInterval() : Root4.Runtime.hostConfig.caretBlinkInterval;
+  return getDrawSelectionExtension(caretBlinkInterval);
+}
 function theme() {
   return [editorTheme, themeIsDark() ? themeSelection.of(dummyDarkTheme) : themeSelection.of([])];
 }
@@ -2054,7 +2083,7 @@ function baseConfiguration(text) {
     CM3.highlightSpecialChars(),
     CM3.highlightSelectionMatches(),
     CM3.history(),
-    CM3.drawSelection(),
+    drawSelectionCompartment.of(getConfiguredDrawSelectionExtension()),
     CM3.EditorState.allowMultipleSelections.of(true),
     CM3.indentOnInput(),
     CM3.syntaxHighlighting(CodeHighlighter.CodeHighlighter.highlightStyle),
@@ -2401,7 +2430,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     }
     this.#aiCodeGeneration = new AiCodeGeneration3.AiCodeGeneration.AiCodeGeneration({
       aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: !Root4.Runtime.hostConfig.aidaAvailability?.disallowLogging
+      serverSideLoggingEnabled: !Root5.Runtime.hostConfig.aidaAvailability?.disallowLogging
     });
     this.#editor?.dispatch({
       effects: [this.#generationTeaserCompartment.reconfigure([aiCodeGenerationTeaserExtension(this.#generationTeaser)])]
@@ -2500,7 +2529,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (this.#aiCodeGenerationOnboardingCompletedSetting.get()) {
       return true;
     }
-    const noLogging = Root4.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root4.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    const noLogging = Root5.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue === Root5.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     const resolved = await AiCodeGenerationUpgradeDialog.show({ noLogging });
     this.#aiCodeGenerationOnboardingCompletedSetting.set(resolved);
     return resolved;
@@ -2854,7 +2883,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
       {
         aidaClient: this.#aidaClient,
-        serverSideLoggingEnabled: !Root5.Runtime.hostConfig.aidaAvailability?.disallowLogging
+        serverSideLoggingEnabled: !Root6.Runtime.hostConfig.aidaAvailability?.disallowLogging
       },
       void 0,
       this.#aiCodeCompletionConfig.completionContext.stopSequences
@@ -4371,7 +4400,7 @@ __export(TextEditor_exports, {
 import * as Common6 from "../../../core/common/common.js";
 import * as CodeMirror7 from "../../../third_party/codemirror.next/codemirror.next.js";
 import * as UI9 from "../../legacy/legacy.js";
-import * as ThemeSupport from "../../legacy/theme_support/theme_support.js";
+import * as ThemeSupport3 from "../../legacy/theme_support/theme_support.js";
 import * as CodeHighlighter3 from "../code_highlighter/code_highlighter.js";
 var TextEditor = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
@@ -4392,17 +4421,33 @@ var TextEditor = class extends HTMLElement {
     }
   };
   #devtoolsResizeObserver = new ResizeObserver(this.#resizeListener);
+  #observedThemeSupport;
   #themeListener = () => {
     const editor = this.#activeEditor;
-    if (!editor) {
+    if (!editor || !ThemeSupport3.ThemeSupport.hasInstance()) {
       return;
     }
-    const isDark = ThemeSupport.ThemeSupport.instance().themeName() === "dark";
+    const isDark = ThemeSupport3.ThemeSupport.instance().themeName() === "dark";
     const currentTheme = themeSelection.get(editor.state);
     if (currentTheme === void 0 || currentTheme === dummyDarkTheme === isDark) {
       return;
     }
     editor.dispatch({ effects: themeSelection.reconfigure(isDark ? dummyDarkTheme : []) });
+  };
+  #caretBlinkIntervalListener = () => {
+    const editor = this.#activeEditor;
+    if (!editor) {
+      return;
+    }
+    const current = drawSelectionCompartment.get(editor.state);
+    if (current === void 0) {
+      return;
+    }
+    const expected = getConfiguredDrawSelectionExtension();
+    if (current === expected) {
+      return;
+    }
+    editor.dispatch({ effects: drawSelectionCompartment.reconfigure(expected) });
   };
   static get observedAttributes() {
     return ["data-file-path"];
@@ -4451,8 +4496,9 @@ var TextEditor = class extends HTMLElement {
     });
     this.#ensureSettingListeners();
     this.#startObservingResize();
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#themeListener);
+    this.#attachThemeSupportListeners();
     this.#themeListener();
+    this.#caretBlinkIntervalListener();
     return this.#activeEditor;
   }
   get editor() {
@@ -4478,6 +4524,7 @@ var TextEditor = class extends HTMLElement {
     if (this.#activeEditor) {
       this.#activeEditor.setState(state);
       this.#ensureSettingListeners();
+      this.#caretBlinkIntervalListener();
     }
   }
   scrollEventHandledToSaveScrollPositionForTest() {
@@ -4487,6 +4534,9 @@ var TextEditor = class extends HTMLElement {
       this.#createEditor();
     } else {
       this.#activeEditor.dispatch({ effects: this.#lastScrollSnapshot });
+      this.#attachThemeSupportListeners();
+      this.#themeListener();
+      this.#caretBlinkIntervalListener();
     }
   }
   disconnectedCallback() {
@@ -4495,14 +4545,38 @@ var TextEditor = class extends HTMLElement {
       this.#pendingState = this.#activeEditor.state;
       this.#devtoolsResizeObserver.disconnect();
       window.removeEventListener("resize", this.#resizeListener);
-      ThemeSupport.ThemeSupport.instance().removeEventListener(
-        ThemeSupport.ThemeChangeEvent.eventName,
-        this.#themeListener
-      );
+      this.#detachThemeSupportListeners();
       this.#activeEditor.destroy();
       this.#activeEditor = void 0;
       this.#ensureSettingListeners();
     }
+  }
+  #attachThemeSupportListeners() {
+    if (!ThemeSupport3.ThemeSupport.hasInstance()) {
+      return;
+    }
+    const themeSupport = ThemeSupport3.ThemeSupport.instance();
+    if (this.#observedThemeSupport === themeSupport) {
+      return;
+    }
+    this.#detachThemeSupportListeners();
+    this.#observedThemeSupport = themeSupport;
+    themeSupport.addEventListener(ThemeSupport3.ThemeChangeEvent.eventName, this.#themeListener);
+    themeSupport.addEventListener(
+      ThemeSupport3.CaretBlinkIntervalChangeEvent.eventName,
+      this.#caretBlinkIntervalListener
+    );
+  }
+  #detachThemeSupportListeners() {
+    if (!this.#observedThemeSupport) {
+      return;
+    }
+    this.#observedThemeSupport.removeEventListener(ThemeSupport3.ThemeChangeEvent.eventName, this.#themeListener);
+    this.#observedThemeSupport.removeEventListener(
+      ThemeSupport3.CaretBlinkIntervalChangeEvent.eventName,
+      this.#caretBlinkIntervalListener
+    );
+    this.#observedThemeSupport = void 0;
   }
   focus() {
     this.editor.focus();
@@ -4524,7 +4598,7 @@ var TextEditor = class extends HTMLElement {
           this.#activeEditor.dispatch({ effects: change });
         }
       };
-      const setting = typeof dynamicSetting2.setting === "string" ? Common6.Settings.Settings.instance().moduleSetting(dynamicSetting2.setting) : Common6.Settings.Settings.instance().resolve(dynamicSetting2.setting);
+      const setting = Common6.Settings.Settings.instance().resolve(dynamicSetting2.setting);
       setting.addChangeListener(handler);
       this.#activeSettingListeners.push([setting, handler]);
     }

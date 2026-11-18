@@ -383,7 +383,12 @@ export class RemoteObjectImpl extends RemoteObject {
             silent: true,
         });
         const error = response.getError();
-        return error || response.exceptionDetails ? error || response.result.description : undefined;
+        if (error || response.exceptionDetails) {
+            return error || response.result.description;
+        }
+        // Mutating an object (or running a setter) can stale inline previews and captured variables.
+        this.debuggerModel().invalidateScopeChains();
+        return undefined;
     }
     async deleteProperty(name) {
         if (!this.#objectId) {
@@ -402,6 +407,8 @@ export class RemoteObjectImpl extends RemoteObject {
         if (!response.result.value) {
             return 'Failed to delete property.';
         }
+        // Deleting a property can stale inline previews of the object.
+        this.debuggerModel().invalidateScopeChains();
         return undefined;
     }
     async callFunction(functionDeclaration, args, params) {
@@ -492,6 +499,8 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
         if (error) {
             return error;
         }
+        // Others (e.g. the inline values in the editor) hold on to the previous value of the variable.
+        this.debuggerModel().invalidateScopeChains();
         if (this.#savedScopeProperties) {
             for (const property of this.#savedScopeProperties) {
                 if (property.name === name) {

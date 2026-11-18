@@ -2506,6 +2506,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -3078,6 +3079,7 @@ var Runtime;
 import * as EmulationModel from "../../models/emulation/emulation.js";
 import * as LighthouseModel from "../../models/lighthouse/lighthouse.js";
 import * as UI from "../../ui/legacy/legacy.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
 import * as Emulation2 from "../emulation/emulation.js";
 var UIStrings = {
   /**
@@ -3672,7 +3674,7 @@ function getPresets() {
     presets = [
       // configID maps to Lighthouse's Object.keys(config.categories)[0] value
       {
-        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-perf"),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catPerfSettingDescriptor),
         configID: "performance",
         title: i18nLazyString(UIStrings.performance),
         description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
@@ -3680,7 +3682,7 @@ function getPresets() {
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-a11y"),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catA11ySettingDescriptor),
         configID: "accessibility",
         title: i18nLazyString(UIStrings.accessibility),
         description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
@@ -3688,7 +3690,9 @@ function getPresets() {
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-best-practices"),
+        setting: Common.Settings.Settings.instance().resolve(
+          SettingsUI.LighthouseSettings.catBestPracticesSettingDescriptor
+        ),
         configID: "best-practices",
         title: i18nLazyString(UIStrings.bestPractices),
         description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
@@ -3696,7 +3700,7 @@ function getPresets() {
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES
       },
       {
-        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-seo"),
+        setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catSeoSettingDescriptor),
         configID: "seo",
         title: i18nLazyString(UIStrings.seo),
         description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
@@ -4258,6 +4262,17 @@ function renderContent(input) {
 var DEFAULT_VIEW = (input, _output, target) => {
   render(renderContent(input), target);
 };
+var nodeLinkState = /* @__PURE__ */ new WeakMap();
+function restorePlainNode(element) {
+  const state = nodeLinkState.get(element);
+  if (!state) {
+    return;
+  }
+  nodeLinkState.delete(element);
+  const screenshotElement = element.querySelector(".lh-element-screenshot");
+  element.replaceChildren(...screenshotElement ? [screenshotElement] : [], ...state.fallbackNodes);
+  UI2.Tooltip.Tooltip.install(element, state.title);
+}
 var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widget.Widget {
   #view;
   #report = null;
@@ -4265,6 +4280,7 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widge
   #beforePrint;
   #afterPrint;
   #isRendered = false;
+  #linkifyController;
   constructor(element, view = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
@@ -4307,12 +4323,25 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widge
   wasShown() {
     super.wasShown();
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
+    SDK3.TargetManager.TargetManager.instance().addModelListener(
+      SDK3.ResourceTreeModel.ResourceTreeModel,
+      SDK3.ResourceTreeModel.Events.Load,
+      this.#onTargetLoad
+    );
     this.#onThemeChange();
     if (!this.#isRendered) {
       this.requestUpdate();
+    } else {
+      this.#linkifyNodes();
     }
   }
   willHide() {
+    this.#linkifyController?.abort();
+    SDK3.TargetManager.TargetManager.instance().removeModelListener(
+      SDK3.ResourceTreeModel.ResourceTreeModel,
+      SDK3.ResourceTreeModel.Events.Load,
+      this.#onTargetLoad
+    );
     ThemeSupport.ThemeSupport.instance().removeEventListener(
       ThemeSupport.ThemeChangeEvent.eventName,
       this.#onThemeChange
@@ -4323,6 +4352,36 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widge
     const darkMode = ThemeSupport.ThemeSupport.hasInstance() && ThemeSupport.ThemeSupport.instance().themeName() === "dark";
     this.contentElement.querySelector(".lh-devtools")?.classList.toggle("lh-dark", darkMode);
   };
+  #onTargetLoad = (event) => {
+    if (event.data.resourceTreeModel.target() !== SDK3.TargetManager.TargetManager.instance().primaryPageTarget()) {
+      return;
+    }
+    this.#linkifyNodes();
+  };
+  #linkifyNodes() {
+    this.#linkifyController?.abort();
+    const reportEl = this.contentElement.querySelector(".lh-devtools");
+    if (!this.#report || !reportEl) {
+      return;
+    }
+    if (!_LighthouseReportRenderer.#targetMatchesReport(this.#report)) {
+      _LighthouseReportRenderer.unlinkNodeDetails(reportEl);
+      return;
+    }
+    const controller = new AbortController();
+    this.#linkifyController = controller;
+    void _LighthouseReportRenderer.linkifyNodeDetails(reportEl, this.#view, controller.signal);
+  }
+  static #targetMatchesReport(lhr) {
+    const inspectedURL = SDK3.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
+    if (!inspectedURL) {
+      return false;
+    }
+    const targetURL = Common3.ParsedURL.ParsedURL.urlWithoutHash(inspectedURL);
+    return [lhr.finalDisplayedUrl, lhr.mainDocumentUrl, lhr.finalUrl].some(
+      (url) => url !== void 0 && url !== "" && Common3.ParsedURL.ParsedURL.urlWithoutHash(url) === targetURL
+    );
+  }
   performUpdate() {
     this.#isRendered = true;
     const darkMode = ThemeSupport.ThemeSupport.hasInstance() && ThemeSupport.ThemeSupport.instance().themeName() === "dark";
@@ -4334,6 +4393,9 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widge
     const reportEl = this.contentElement.querySelector(".lh-devtools");
     if (this.#report && reportEl) {
       _LighthouseReportRenderer.#finalizeRenderedReport(reportEl, this.#report, this.#artifacts, this.#view);
+      if (this.isShowing()) {
+        this.#linkifyNodes();
+      }
     }
   }
   static #createReportOptions(lhr, artifacts, opts) {
@@ -4375,7 +4437,9 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widge
         return;
       }
       printWindow.document.body.replaceWith(clonedReport);
-      await _LighthouseReportRenderer.linkifyNodeDetails(clonedReport);
+      if (lhr && _LighthouseReportRenderer.#targetMatchesReport(lhr)) {
+        await _LighthouseReportRenderer.linkifyNodeDetails(clonedReport);
+      }
       opts?.beforePrint?.();
       printWindow.focus();
       printWindow.print();
@@ -4390,10 +4454,7 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widge
   static #finalizeRenderedReport(reportEl, lhr, artifacts, view = DEFAULT_VIEW) {
     reportEl._lighthouseResultForTesting = lhr;
     reportEl._lighthouseArtifactsForTesting = artifacts;
-    void _LighthouseReportRenderer.waitForMainTargetLoad().then(() => {
-      void _LighthouseReportRenderer.linkifyNodeDetails(reportEl, view);
-      void _LighthouseReportRenderer.linkifySourceLocationDetails(reportEl, view);
-    });
+    void _LighthouseReportRenderer.linkifySourceLocationDetails(reportEl, view);
   }
   static renderLighthouseReport(lhr, artifacts, opts) {
     const reportOptions = _LighthouseReportRenderer.#createReportOptions(lhr, artifacts, opts);
@@ -4439,18 +4500,12 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widge
     topbar?.remove();
     return reportEl;
   }
-  static async waitForMainTargetLoad() {
-    const mainTarget = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!mainTarget) {
-      return;
+  static unlinkNodeDetails(el) {
+    for (const origElement of el.getElementsByClassName("lh-node")) {
+      restorePlainNode(origElement);
     }
-    const resourceTreeModel = mainTarget.model(SDK3.ResourceTreeModel.ResourceTreeModel);
-    if (!resourceTreeModel) {
-      return;
-    }
-    await resourceTreeModel.once(SDK3.ResourceTreeModel.Events.Load);
   }
-  static async linkifyNodeDetails(el, view = DEFAULT_VIEW) {
+  static async linkifyNodeDetails(el, view = DEFAULT_VIEW, signal) {
     const mainTarget = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
       return;
@@ -4460,23 +4515,34 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer extends UI2.Widge
       return;
     }
     for (const origElement of el.getElementsByClassName("lh-node")) {
+      if (signal?.aborted) {
+        return;
+      }
       const origHTMLElement = origElement;
       const detailsItem = origHTMLElement.dataset;
       if (!detailsItem.path) {
         continue;
       }
       const nodeId = await domModel.pushNodeByPathToFrontend(detailsItem.path);
-      if (!nodeId) {
-        continue;
+      if (signal?.aborted) {
+        return;
       }
-      const node = domModel.nodeForId(nodeId);
+      const node = nodeId ? domModel.nodeForId(nodeId) : null;
       if (!node) {
+        restorePlainNode(origHTMLElement);
         continue;
       }
-      UI2.Tooltip.Tooltip.install(origHTMLElement, "");
+      const existingState = nodeLinkState.get(origHTMLElement);
+      if (existingState?.node === node) {
+        continue;
+      }
       const screenshotElement = origHTMLElement.querySelector(".lh-element-screenshot");
+      const fallbackNodes = existingState ? existingState.fallbackNodes : [...origHTMLElement.childNodes].filter((child) => child !== screenshotElement);
+      const title = existingState ? existingState.title : origHTMLElement.title;
+      UI2.Tooltip.Tooltip.install(origHTMLElement, "");
       const linkContainer = document.createElement("span");
       origHTMLElement.replaceChildren(...screenshotElement ? [screenshotElement] : [], linkContainer);
+      nodeLinkState.set(origHTMLElement, { fallbackNodes, title, node });
       view({ type: "node", node, snippet: detailsItem.snippet }, void 0, linkContainer);
     }
   }
@@ -4746,10 +4812,14 @@ var lighthouseStartView_css_default = `/*
 .lighthouse-radio {
   display: flex;
   align-items: center;
+
+  input {
+    margin-bottom: 0;
+  }
 }
 
 .lighthouse-radio-text {
-  margin-left: 3px;
+  margin-left: var(--sys-size-2);
 }
 
 .lighthouse-start-button-container {
@@ -6226,10 +6296,6 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
       this.cachedRenderedReports.set(lighthouseResult, reportWidget);
     }
     reportWidget.show(this.auditResultsElement);
-    if (!reportWidget.isShowing()) {
-      reportWidget.requestUpdate();
-    }
-    return reportWidget;
   }
   buildReportUI(lighthouseResult, artifacts) {
     if (lighthouseResult === null) {
@@ -6239,9 +6305,8 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
       this.renderReport(lighthouseResult, artifacts);
     }, this.renderStartView.bind(this));
     this.reportSelector.prepend(optionElement);
-    this.refreshToolbarUI();
-    const reportWidget = this.renderReport(lighthouseResult);
-    void reportWidget.updateComplete.then(() => {
+    const reportWidget = this.cachedRenderedReports.get(lighthouseResult);
+    void reportWidget?.updateComplete.then(() => {
       this.auditResultsElement.querySelector(".lh-topbar__url")?.focus();
     });
   }

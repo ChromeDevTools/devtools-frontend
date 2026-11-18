@@ -3,14 +3,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelsCommon from '../common/common.js';
 export import CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
-export interface CPUThrottlingSelectorWrapper {
-    control: UI.Toolbar.ToolbarComboBox;
-    updateRecommendedOption(recommendedOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption | null): void;
-}
 export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<void> {
     #private;
-    private readonly cpuThrottlingControls;
-    private readonly cpuThrottlingOptions;
     private readonly customNetworkConditionsSetting;
     private readonly currentNetworkThrottlingConditionKeySetting;
     private readonly calibratedCpuThrottlingSetting;
@@ -28,8 +22,6 @@ export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrappe
     setCPUThrottlingOption(option: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption): void;
     private onCalibratedSettingChanged;
     onCPUThrottlingRateChangedOnSDK(rate: number): void;
-    createCPUThrottlingSelector(): CPUThrottlingSelectorWrapper;
-    createSaveDataOverrideSelector(className?: string): HTMLSelectElement;
     /** Hardware Concurrency doesn't store state in a setting. */
     createHardwareConcurrencySelector(): {
         numericInput: UI.Toolbar.ToolbarItem;

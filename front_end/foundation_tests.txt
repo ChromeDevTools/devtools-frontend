@@ -33,6 +33,7 @@ core/host/DispatchHttpRequestClient.test.js
 core/host/GcaClient.test.js
 core/host/GdpClient.test.js
 core/host/Platform.test.js
+core/host/ResourceLoader.test.js
 core/i18n/ByteUtilities.test.js
 core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js

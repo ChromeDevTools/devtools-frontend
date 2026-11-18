@@ -16,6 +16,7 @@
     "../../../../../../front_end/panels/issues/AffectedDescendantsWithinSelectElementView.test.ts",
     "../../../../../../front_end/panels/issues/AffectedLazyLoadImagesView.test.ts",
     "../../../../../../front_end/panels/issues/AffectedMetadataAllowedSitesView.test.ts",
+    "../../../../../../front_end/panels/issues/AffectedResourcesView.test.ts",
     "../../../../../../front_end/panels/issues/AffectedSelectivePermissionsInterventionView.test.ts",
     "../../../../../../front_end/panels/issues/GenericIssueDetailsView.test.ts",
     "../../../../../../front_end/panels/issues/IssueView.test.ts",
@@ -36,6 +37,9 @@
       "path": "../../core/host/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
@@ -48,13 +52,22 @@
       "path": "../../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/logs/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/workspace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../network/forward/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "components/bundle-tsconfig.ref.json"
     }
   ]
 }

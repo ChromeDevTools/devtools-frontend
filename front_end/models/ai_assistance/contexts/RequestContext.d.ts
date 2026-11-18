@@ -15,6 +15,10 @@ export declare class RequestContext extends ConversationContext<SDK.NetworkReque
     getOrigin(): SDK.SecurityOrigin.SecurityOrigin;
     getItem(): SDK.NetworkRequest.NetworkRequest;
     getTitle(): string;
+    /**
+     * Includes the request ID so the model can match this request to
+     * `listNetworkRequests` rows without calling `getNetworkRequestDetails`.
+     */
     getPromptDetails(): Promise<string | null>;
     getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]] | null>;
 }

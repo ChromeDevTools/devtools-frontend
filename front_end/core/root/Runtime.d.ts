@@ -312,6 +312,12 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
      * delivered via the `ColorThemeChanged` host event.
      */
     userColorSource: UserColorSource;
+    /**
+     * The OS caret blink interval in milliseconds at startup (`0` disables
+     * blinking). Live updates are delivered via the `CaretBlinkIntervalChanged`
+     * host event.
+     */
+    caretBlinkInterval: number;
     devToolsEnableOriginBoundCookies: HostConfigEnableOriginBoundCookies;
     devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab;
     devToolsJpegXlImageFormat: HostConfigJpegXlImageFormat;

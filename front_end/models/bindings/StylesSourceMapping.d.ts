@@ -24,7 +24,7 @@ export declare class StyleFile implements TextUtils.ContentProvider.ContentProvi
     constructor(cssModel: SDK.CSSModel.CSSModel, project: ContentProviderBasedProject, header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
     addHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): void;
     removeHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): void;
-    styleSheetChanged(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): void;
+    styleSheetChanged(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, edit?: SDK.CSSModel.Edit): void;
     private workingCopyCommitted;
     private workingCopyChanged;
     private mirrorContent;

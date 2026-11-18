@@ -12,6 +12,12 @@ interface ViewInput {
 }
 type View = (input: ViewInput, output: undefined, target: HTMLElement | ShadowRoot) => void;
 export declare class TypeToAllowDialog {
+    #private;
+    /**
+     * Returns true if `input` matches `phrase`, optionally wrapped in matching
+     * quote characters from any supported locale's quote style.
+     */
+    static matchesPhrase(input: string, phrase: string): boolean;
     static show(options: {
         jslogContext: {
             dialog: string;

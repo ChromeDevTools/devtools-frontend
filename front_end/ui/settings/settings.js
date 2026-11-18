@@ -314,6 +314,40 @@ var chromeWindowSettingDescriptor = {
   storageType: Common5.Settings.SettingStorageType.SYNCED
 };
 
+// ../../front_end/ui/settings/LighthouseSettings.ts
+var LighthouseSettings_exports = {};
+__export(LighthouseSettings_exports, {
+  catA11ySettingDescriptor: () => catA11ySettingDescriptor,
+  catBestPracticesSettingDescriptor: () => catBestPracticesSettingDescriptor,
+  catPerfSettingDescriptor: () => catPerfSettingDescriptor,
+  catSeoSettingDescriptor: () => catSeoSettingDescriptor
+});
+import * as Common6 from "../../core/common/common.js";
+var catPerfSettingDescriptor = {
+  name: "lighthouse.cat-perf",
+  type: Common6.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var catA11ySettingDescriptor = {
+  name: "lighthouse.cat-a11y",
+  type: Common6.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var catBestPracticesSettingDescriptor = {
+  name: "lighthouse.cat-best-practices",
+  type: Common6.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var catSeoSettingDescriptor = {
+  name: "lighthouse.cat-seo",
+  type: Common6.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+
 // ../../front_end/ui/settings/MainSettings.ts
 var MainSettings_exports = {};
 __export(MainSettings_exports, {
@@ -328,64 +362,64 @@ __export(MainSettings_exports, {
   uiThemeSettingDescriptor: () => uiThemeSettingDescriptor,
   userShortcutsSettingDescriptor: () => userShortcutsSettingDescriptor
 });
-import * as Common6 from "../../core/common/common.js";
+import * as Common7 from "../../core/common/common.js";
 var uiThemeSettingDescriptor = {
   name: "ui-theme",
-  type: Common6.Settings.SettingType.ENUM,
+  type: Common7.Settings.SettingType.ENUM,
   defaultValue: "systemPreferred",
-  storageType: Common6.Settings.SettingStorageType.SYNCED
+  storageType: Common7.Settings.SettingStorageType.SYNCED
 };
 var chromeThemeColorsSettingDescriptor = {
   name: "chrome-theme-colors",
-  type: Common6.Settings.SettingType.BOOLEAN,
+  type: Common7.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common6.Settings.SettingStorageType.SYNCED
+  storageType: Common7.Settings.SettingStorageType.SYNCED
 };
 var sidebarPositionSettingDescriptor = {
   name: "sidebar-position",
-  type: Common6.Settings.SettingType.ENUM,
+  type: Common7.Settings.SettingType.ENUM,
   defaultValue: "auto",
-  storageType: Common6.Settings.SettingStorageType.SYNCED
+  storageType: Common7.Settings.SettingStorageType.SYNCED
 };
 var languageSettingDescriptor = {
   name: "language",
-  type: Common6.Settings.SettingType.ENUM,
+  type: Common7.Settings.SettingType.ENUM,
   defaultValue: "en-US",
-  storageType: Common6.Settings.SettingStorageType.SYNCED
+  storageType: Common7.Settings.SettingStorageType.SYNCED
 };
 var shortcutPanelSwitchSettingDescriptor = {
   name: "shortcut-panel-switch",
-  type: Common6.Settings.SettingType.BOOLEAN,
+  type: Common7.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common6.Settings.SettingStorageType.SYNCED
+  storageType: Common7.Settings.SettingStorageType.SYNCED
 };
 var currentDockStateSettingDescriptor = {
   name: "currentDockState",
-  type: Common6.Settings.SettingType.ENUM,
+  type: Common7.Settings.SettingType.ENUM,
   defaultValue: "right"
 };
 var activeKeybindSetSettingDescriptor = {
   name: "active-keybind-set",
-  type: Common6.Settings.SettingType.ENUM,
+  type: Common7.Settings.SettingType.ENUM,
   defaultValue: "devToolsDefault",
-  storageType: Common6.Settings.SettingStorageType.SYNCED
+  storageType: Common7.Settings.SettingStorageType.SYNCED
 };
 var syncPreferencesSettingDescriptor = {
   name: "sync-preferences",
-  type: Common6.Settings.SettingType.BOOLEAN,
+  type: Common7.Settings.SettingType.BOOLEAN,
   defaultValue: false
 };
 var userShortcutsSettingDescriptor = {
   name: "user-shortcuts",
-  type: Common6.Settings.SettingType.ARRAY,
+  type: Common7.Settings.SettingType.ARRAY,
   defaultValue: [],
-  storageType: Common6.Settings.SettingStorageType.SYNCED
+  storageType: Common7.Settings.SettingStorageType.SYNCED
 };
 var searchAsYouTypeSettingDescriptor = {
   name: "search-as-you-type",
-  type: Common6.Settings.SettingType.BOOLEAN,
+  type: Common7.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common6.Settings.SettingStorageType.LOCAL
+  storageType: Common7.Settings.SettingStorageType.LOCAL
 };
 
 // ../../front_end/ui/settings/NetworkSettings.ts
@@ -395,24 +429,24 @@ __export(NetworkSettings_exports, {
   groupByFrameSettingDescriptor: () => groupByFrameSettingDescriptor,
   showOptionsToGenerateHarWithSensitiveDataSettingDescriptor: () => showOptionsToGenerateHarWithSensitiveDataSettingDescriptor
 });
-import * as Common7 from "../../core/common/common.js";
+import * as Common8 from "../../core/common/common.js";
 var showOptionsToGenerateHarWithSensitiveDataSettingDescriptor = {
   name: "network.show-options-to-generate-har-with-sensitive-data",
-  type: Common7.Settings.SettingType.BOOLEAN,
+  type: Common8.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common7.Settings.SettingStorageType.SYNCED
+  storageType: Common8.Settings.SettingStorageType.SYNCED
 };
 var colorCodeResourceTypesSettingDescriptor = {
   name: "network-color-code-resource-types",
-  type: Common7.Settings.SettingType.BOOLEAN,
+  type: Common8.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common7.Settings.SettingStorageType.SYNCED
+  storageType: Common8.Settings.SettingStorageType.SYNCED
 };
 var groupByFrameSettingDescriptor = {
   name: "network.group-by-frame",
-  type: Common7.Settings.SettingType.BOOLEAN,
+  type: Common8.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common7.Settings.SettingStorageType.SYNCED
+  storageType: Common8.Settings.SettingStorageType.SYNCED
 };
 
 // ../../front_end/ui/settings/SettingUIRegistration.ts
@@ -425,19 +459,19 @@ __export(SettingUIRegistration_exports, {
   resetSettings: () => resetSettings,
   resolve: () => resolve
 });
-import * as Common8 from "../../core/common/common.js";
+import * as Common9 from "../../core/common/common.js";
 var registeredSettings = /* @__PURE__ */ new Map();
 function register(settingDescriptor, settingUIDescriptor) {
   const settingName = settingDescriptor.name;
   if (registeredSettings.has(settingName)) {
     throw new Error(`Duplicate setting name '${settingName}'`);
   }
-  Common8.SettingRegistration.registerCategoryOrder(settingUIDescriptor.category, settingUIDescriptor.order);
+  Common9.SettingRegistration.registerCategoryOrder(settingUIDescriptor.category, settingUIDescriptor.order);
   registeredSettings.set(settingName, { descriptor: settingDescriptor, uiDescriptor: settingUIDescriptor });
 }
 function getRegisteredSettings() {
   const combined = /* @__PURE__ */ new Map();
-  for (const legacy of Common8.SettingRegistration.getRegisteredSettings()) {
+  for (const legacy of Common9.SettingRegistration.getRegisteredSettings()) {
     combined.set(legacy.settingName, {
       descriptor: {
         name: legacy.settingName,
@@ -506,7 +540,7 @@ function resolve(settingDescriptor) {
 }
 function resetSettings() {
   for (const { uiDescriptor } of registeredSettings.values()) {
-    Common8.SettingRegistration.removeCategoryOrder(uiDescriptor.category, uiDescriptor.order);
+    Common9.SettingRegistration.removeCategoryOrder(uiDescriptor.category, uiDescriptor.order);
   }
   registeredSettings.clear();
 }
@@ -532,104 +566,104 @@ __export(SourcesSettings_exports, {
   textEditorCodeFoldingSettingDescriptor: () => textEditorCodeFoldingSettingDescriptor,
   textEditorTabMovesFocusSettingDescriptor: () => textEditorTabMovesFocusSettingDescriptor
 });
-import * as Common9 from "../../core/common/common.js";
+import * as Common10 from "../../core/common/common.js";
 var navigatorGroupByFolderSettingDescriptor = {
   name: "navigator-group-by-folder",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true
 };
 var navigatorGroupByAuthoredSettingDescriptor = {
   name: "navigator-group-by-authored",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: false
 };
 var navigatorJustMyCodeSettingDescriptor = {
   name: "navigator-just-my-code",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: false
 };
 var searchInAnonymousAndContentScriptsSettingDescriptor = {
   name: "search-in-anonymous-and-content-scripts",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var autoRevealInNavigatorSettingDescriptor = {
   name: "auto-reveal-in-navigator",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var textEditorTabMovesFocusSettingDescriptor = {
   name: "text-editor-tab-moves-focus",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var textEditorAutoDetectIndentSettingDescriptor = {
   name: "text-editor-auto-detect-indent",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var textEditorAutocompletionSettingDescriptor = {
   name: "text-editor-autocompletion",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var textEditorBracketClosingSettingDescriptor = {
   name: "text-editor-bracket-closing",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var textEditorBracketMatchingSettingDescriptor = {
   name: "text-editor-bracket-matching",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true
 };
 var textEditorCodeFoldingSettingDescriptor = {
   name: "text-editor-code-folding",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var showWhitespacesInEditorSettingDescriptor = {
   name: "show-whitespaces-in-editor",
-  type: Common9.Settings.SettingType.ENUM,
+  type: Common10.Settings.SettingType.ENUM,
   defaultValue: "original",
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var sourcesWordWrapSettingDescriptor = {
   name: "sources.word-wrap",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var inlineVariableValuesSettingDescriptor = {
   name: "inline-variable-values",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var autoFocusOnDebuggerPausedEnabledSettingDescriptor = {
   name: "auto-focus-on-debugger-paused-enabled",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var autoPrettyPrintMinifiedSettingDescriptor = {
   name: "auto-pretty-print-minified",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 var allowScrollPastEofSettingDescriptor = {
   name: "allow-scroll-past-eof",
-  type: Common9.Settings.SettingType.BOOLEAN,
+  type: Common10.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common9.Settings.SettingStorageType.SYNCED
+  storageType: Common10.Settings.SettingStorageType.SYNCED
 };
 
 // ../../front_end/ui/settings/TimelineSettings.ts
@@ -654,114 +688,114 @@ __export(TimelineSettings_exports, {
   timelineShowMemorySettingDescriptor: () => timelineShowMemorySettingDescriptor,
   timelineShowScreenshotsSettingDescriptor: () => timelineShowScreenshotsSettingDescriptor
 });
-import * as Common10 from "../../core/common/common.js";
+import * as Common11 from "../../core/common/common.js";
 var timelineShowAllEventsSettingDescriptor = {
   name: "timeline-show-all-events",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SYNCED
+  storageType: Common11.Settings.SettingStorageType.SYNCED
 };
 var timelineDebugModeSettingDescriptor = {
   name: "timeline-debug-mode",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SYNCED
+  storageType: Common11.Settings.SettingStorageType.SYNCED
 };
 var annotationsHiddenSettingDescriptor = {
   name: "annotations-hidden",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SYNCED
+  storageType: Common11.Settings.SettingStorageType.SYNCED
 };
 var timelineInvalidationTrackingSettingDescriptor = {
   name: "timeline-invalidation-tracking",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SYNCED
+  storageType: Common11.Settings.SettingStorageType.SYNCED
 };
 var timelineDisableJsSamplingSettingDescriptor = {
   name: "timeline-disable-js-sampling",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SESSION
+  storageType: Common11.Settings.SettingStorageType.SESSION
 };
 var timelineCaptureLayersAndPicturesSettingDescriptor = {
   name: "timeline-capture-layers-and-pictures",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SESSION
+  storageType: Common11.Settings.SettingStorageType.SESSION
 };
 var timelineCaptureSelectorStatsSettingDescriptor = {
   name: "timeline-capture-selector-stats",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SESSION
+  storageType: Common11.Settings.SettingStorageType.SESSION
 };
 var timelineScreenshotCaptureModeSettingDescriptor = {
   name: "timeline-screenshot-capture-mode",
-  type: Common10.Settings.SettingType.ENUM,
+  type: Common11.Settings.SettingType.ENUM,
   defaultValue: "auto",
-  storageType: Common10.Settings.SettingStorageType.SESSION
+  storageType: Common11.Settings.SettingStorageType.SESSION
 };
 var timelineShowScreenshotsSettingDescriptor = {
   name: "timeline-show-screenshots",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common10.Settings.SettingStorageType.GLOBAL
+  storageType: Common11.Settings.SettingStorageType.GLOBAL
 };
 var timelineShowMemorySettingDescriptor = {
   name: "timeline-show-memory",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SESSION
+  storageType: Common11.Settings.SettingStorageType.SESSION
 };
 var timelineDimThirdPartiesSettingDescriptor = {
   name: "timeline-dim-third-parties",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: Common10.Settings.SettingStorageType.SESSION
+  storageType: Common11.Settings.SettingStorageType.SESSION
 };
 var timelineShowExtensionDataSettingDescriptor = {
   name: "timeline-show-extension-data",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common10.Settings.SettingStorageType.GLOBAL
+  storageType: Common11.Settings.SettingStorageType.GLOBAL
 };
 var timelineCountersGraphJsHeapSizeUsedSettingDescriptor = {
   name: "timeline-counters-graph-js-heap-size-used",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common10.Settings.SettingStorageType.GLOBAL
+  storageType: Common11.Settings.SettingStorageType.GLOBAL
 };
 var timelineCountersGraphDocumentsSettingDescriptor = {
   name: "timeline-counters-graph-documents",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common10.Settings.SettingStorageType.GLOBAL
+  storageType: Common11.Settings.SettingStorageType.GLOBAL
 };
 var timelineCountersGraphNodesSettingDescriptor = {
   name: "timeline-counters-graph-nodes",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common10.Settings.SettingStorageType.GLOBAL
+  storageType: Common11.Settings.SettingStorageType.GLOBAL
 };
 var timelineCountersGraphJsEventListenersSettingDescriptor = {
   name: "timeline-counters-graph-js-event-listeners",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common10.Settings.SettingStorageType.GLOBAL
+  storageType: Common11.Settings.SettingStorageType.GLOBAL
 };
 var timelineCountersGraphGpuMemoryUsedKbSettingDescriptor = {
   name: "timeline-counters-graph-gpu-memory-used-kb",
-  type: Common10.Settings.SettingType.BOOLEAN,
+  type: Common11.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: Common10.Settings.SettingStorageType.GLOBAL
+  storageType: Common11.Settings.SettingStorageType.GLOBAL
 };
 var flamechartSelectedNavigationSettingDescriptor = {
   name: "flamechart-selected-navigation",
-  type: Common10.Settings.SettingType.ENUM,
+  type: Common11.Settings.SettingType.ENUM,
   defaultValue: "classic",
-  storageType: Common10.Settings.SettingStorageType.SYNCED
+  storageType: Common11.Settings.SettingStorageType.SYNCED
 };
 
 // ../../front_end/ui/settings/WhatsNewSettings.ts
@@ -769,10 +803,10 @@ var WhatsNewSettings_exports = {};
 __export(WhatsNewSettings_exports, {
   showReleaseNoteSettingDescriptor: () => showReleaseNoteSettingDescriptor
 });
-import * as Common11 from "../../core/common/common.js";
+import * as Common12 from "../../core/common/common.js";
 var showReleaseNoteSettingDescriptor = {
   name: "help.show-release-note",
-  type: Common11.Settings.SettingType.BOOLEAN,
+  type: Common12.Settings.SettingType.BOOLEAN,
   defaultValue: true
 };
 export {
@@ -781,6 +815,7 @@ export {
   EmulationSettings_exports as EmulationSettings,
   InspectorMainSettings_exports as InspectorMainSettings,
   LayerViewerSettings_exports as LayerViewerSettings,
+  LighthouseSettings_exports as LighthouseSettings,
   MainSettings_exports as MainSettings,
   NetworkSettings_exports as NetworkSettings,
   SettingUIRegistration_exports as SettingUIRegistration,

@@ -17,10 +17,16 @@ export declare class ThemeSupport extends EventTarget {
     addDocumentToTheme(document: Document): void;
     getComputedValue(propertyName: string, target?: Element | null): string;
     themeName(): string;
+    caretBlinkInterval(): number | undefined;
     static clearThemeCache(): void;
     fetchColorsAndApplyHostTheme(colorSource?: Root.Runtime.UserColorSource): void;
 }
+export declare function normalizeCaretBlinkInterval(value: unknown): number | undefined;
 export declare class ThemeChangeEvent extends Event {
     static readonly eventName = "themechange";
+    constructor();
+}
+export declare class CaretBlinkIntervalChangeEvent extends Event {
+    static readonly eventName = "caretblinkintervalchange";
     constructor();
 }

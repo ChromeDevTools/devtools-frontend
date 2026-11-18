@@ -73,6 +73,12 @@ export interface SettingsCreationOptions {
     console: Console;
 }
 type NoFunction<T> = T extends (...args: never[]) => unknown ? never : T;
+/** A change of the value of a setting. */
+export interface SettingChange {
+    name: string;
+    /** The value that the change listeners of the setting receive. */
+    value: unknown;
+}
 export declare class Settings {
     #private;
     readonly syncedStorage: SettingsStorage;
@@ -108,6 +114,9 @@ export declare class Settings {
     settingForTest(settingName: string): Setting<unknown>;
     /** The event target shared by all settings. Change listeners are registered with the setting name as event type. */
     get eventTargetForTest(): ObjectWrapper<GenericEvents>;
+    /** Calls `listener` when the value of any setting changes. This includes the settings that are created later. */
+    addChangeListener(listener: (event: EventTargetEvent<SettingChange>) => void, thisObject?: Object): EventDescriptor;
+    removeChangeListener(listener: (event: EventTargetEvent<SettingChange>) => void, thisObject?: Object): void;
     /**
      * Get setting via key, and create a new setting if the requested setting does not exist.
      * @param key kebab-case string ID

@@ -55,7 +55,7 @@ var codeBlock_css_default = `/*
 }
 
 .codeblock .editor-wrapper:has(.heading) {
-  padding: var(--sys-size-3) var(--sys-size-4) 0 5px;
+  padding: var(--sys-size-3) var(--sys-size-4) 0;
 }
 
 .codeblock:not(:has(.toolbar)) .editor-wrapper {
@@ -1089,13 +1089,23 @@ var MarkdownInsightRenderer = class extends MarkdownLitRenderer {
     switch (token.type) {
       case "heading":
         return this.renderHeading(token);
-      case "link":
-      case "image": {
+      case "link": {
         const sanitizedUrl = this.sanitizeUrl(token.href);
         if (!sanitizedUrl) {
           return null;
         }
-        return html5`${token.text ?? token.href}`;
+        const codeUrl = html5`<code class=${this.customClassMapForToken("codespan")}>${sanitizedUrl}</code>`;
+        const label = typeof token.text === "string" ? token.text.trim() : "";
+        if (label && this.sanitizeUrl(label) !== sanitizedUrl) {
+          return html5`${this.renderText(token)} (${codeUrl})`;
+        }
+        return codeUrl;
+      }
+      case "image": {
+        if (!this.sanitizeUrl(token.href)) {
+          return null;
+        }
+        return html5`${token.text || token.href}`;
       }
       case "code":
         return html5`<devtools-code-block

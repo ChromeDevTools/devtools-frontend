@@ -657,9 +657,9 @@ export declare abstract class AiAgent<T> {
     removeFact(fact: Host.AidaClient.RequestFact): boolean;
     clearFacts(): void;
     /**
-     * Clears any subclass-specific caches. This is called when a run encounters
-     * an error (e.g., cross-origin navigation, abort, or execution error) to
-     * prevent unvalidated cached data from being replayed in subsequent runs.
+     * Clears subclass-specific caches after a non-`MAX_STEPS` error (such as
+     * cross-origin navigation, abort, or execution failure) when uncommitted
+     * `runEntries` are discarded instead of committed to `#history`.
      */
     clearCache(): void;
     /**
@@ -690,22 +690,14 @@ export declare abstract class AiAgent<T> {
      */
     parseTextResponseForSuggestions(text: string): ParsedResponse;
     /**
-     * Parses a streaming text response into a
-     * though/action/title/answer/suggestions component.
+     * Parses a partial or completed model text response into answer text and
+     * optional follow-up suggestions.
+     *
+     * By default, extracts `SUGGESTIONS:` text directives for V1 agents
+     * (`StylingAgent`, `PerformanceAgent`). `AiAgent2` overrides this method
+     * because V2 receives suggestions from `suggestFollowUps` tool calls.
      */
     parseTextResponse(response: string): ParsedResponse;
-    /**
-     * Parses the text of a response that is still streaming. Only the `answer`
-     * of the result is shown, as a partial answer. By default, partial answers
-     * use the same parsing as completed answers.
-     *
-     * This hook exists so that `AiAgent2` (AI V2) can parse follow-up
-     * suggestions differently without changing the V1 agents. Remove it once
-     * AI V2 ships and the V1 agents are removed. b/568697679 explores getting
-     * suggestions from a function call instead of parsing them from text,
-     * which would remove the need for this parsing.
-     */
-    protected parsePartialTextResponse(response: string): ParsedResponse;
     protected finalizeAnswer(answer: AnswerResponse): Promise<AnswerResponse>;
     /**
      * Declare a function that the AI model can call.
@@ -725,15 +717,23 @@ export declare abstract class AiAgent<T> {
      * context and before the request is built.
      */
     protected preRun(): Promise<void>;
+    /**
+     * Called after `#commitRun()` appends a run's messages to `#history` on final
+     * answers, `CONTEXT_CHANGE`, and `MAX_STEPS`, and skipped on aborts, errors,
+     * or early generator exits. Subclasses can override this method to promote
+     * per-run draft state to session state.
+     */
+    protected onRunCommitted(): void;
     run(initialQuery: string, options: {
         selected: ConversationContext<T> | null;
         signal?: AbortSignal;
     }, multimodalInput?: MultimodalInput): AsyncGenerator<ResponseData, void, void>;
 }
 /**
- * Validates and sanitizes raw follow-up suggestions from the model (either
- * `args.suggestions` from a `suggestFollowUps` tool call or a `JSON.parse`d
- * `SUGGESTIONS:` text directive).
+ * Validates and sanitizes raw follow-up suggestions from the model. Used for
+ * `args.suggestions` from `suggestFollowUps` tool calls, and for parsed
+ * `SUGGESTIONS:` text directives while V1 agents (`StylingAgent`,
+ * `PerformanceAgent`) exist.
  *
  * Expects `parsed` to be a `string[]`, but accepts `unknown` because model
  * output is untrusted. Returns non-empty string items with whitespace
@@ -747,8 +747,8 @@ export declare function sanitizeSuggestionsList(parsed: unknown): [string, ...st
  * Returns `undefined` if `suggestions` is not valid JSON, not an array, or no
  * items remain.
  *
- * TODO(b/568697679): Remove this JSON-string wrapper and consolidate into a
- * single function once legacy `SUGGESTIONS:` text parsing is removed.
+ * This JSON-string sanitization wrapper remains only while V1 agents
+ * (`StylingAgent`, `PerformanceAgent`) exist.
  */
 export declare function sanitizeSuggestions(suggestions: string): [string, ...string[]] | undefined;
 /**

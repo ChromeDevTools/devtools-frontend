@@ -120,7 +120,7 @@ export class StylesSourceMapping {
         }
         const styleFile = this.#styleFiles.get(header.resourceURL());
         if (styleFile) {
-            styleFile.styleSheetChanged(header);
+            styleFile.styleSheetChanged(header, event.data.edit);
         }
     }
     dispose() {
@@ -139,6 +139,9 @@ export class StyleFile {
     uiSourceCode;
     #eventListeners;
     #throttler = new Common.Throttler.Throttler(200);
+    // True once a stylesheet in this StyleFile changes without a DevTools edit;
+    // cleared when a user edit or commit from uiSourceCode updates Blink.
+    #hasPageDrivenChanges = false;
     #terminated = false;
     #isAddingRevision;
     #isUpdatingHeaders;
@@ -172,10 +175,13 @@ export class StyleFile {
         this.headers.delete(header);
         NetworkProject.removeFrameAttribution(this.uiSourceCode, header.frameId);
     }
-    styleSheetChanged(header) {
+    styleSheetChanged(header, edit) {
         console.assert(this.headers.has(header));
         if (this.#isUpdatingHeaders || !this.headers.has(header)) {
             return;
+        }
+        if (!edit) {
+            this.#hasPageDrivenChanges = true;
         }
         const mirrorContentBound = this.mirrorContent.bind(this, header, true /* majorChange */);
         void this.#throttler.schedule(mirrorContentBound, "Default" /* Common.Throttler.Scheduling.DEFAULT */);
@@ -188,7 +194,7 @@ export class StyleFile {
         void this.#throttler.schedule(mirrorContentBound, "AsSoonAsPossible" /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */);
     }
     workingCopyChanged() {
-        if (this.#isAddingRevision) {
+        if (this.#isAddingRevision || this.uiSourceCode.workingCopyIsPageDriven()) {
             return;
         }
         const mirrorContentBound = this.mirrorContent.bind(this, this.uiSourceCode, false /* majorChange */);
@@ -211,9 +217,14 @@ export class StyleFile {
             return;
         }
         if (fromProvider !== this.uiSourceCode) {
+            const isPageDriven = this.#hasPageDrivenChanges || NetworkProject.isSourceURLSynthesized(this.uiSourceCode);
             this.#isAddingRevision = true;
-            this.uiSourceCode.setWorkingCopy(newContent);
+            this.uiSourceCode.setWorkingCopy(newContent, { isPageDriven });
             this.#isAddingRevision = false;
+            if (isPageDriven) {
+                this.styleFileSyncedForTest();
+                return;
+            }
         }
         this.#isUpdatingHeaders = true;
         const promises = [];
@@ -226,6 +237,9 @@ export class StyleFile {
         // ------ ASYNC ------
         await Promise.all(promises);
         this.#isUpdatingHeaders = false;
+        if (fromProvider === this.uiSourceCode && (majorChange || this.uiSourceCode.isDirty())) {
+            this.#hasPageDrivenChanges = false;
+        }
         this.styleFileSyncedForTest();
     }
     styleFileSyncedForTest() {

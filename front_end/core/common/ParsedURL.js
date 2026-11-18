@@ -86,6 +86,18 @@ const PRIVILEGED_SCHEMES = new Set([
     'devtools:',
     'file:',
     'isolated-app:',
+    // ChromeOS-only scheme serving local files on external mounts (MTP
+    // devices, chrome.fileSystemProvider mounts, ARC content). Extensions must
+    // not reach these documents: the browser-side extension model treats the
+    // scheme as fully restricted (not in URLPattern::kValidSchemes), and the
+    // allowFileAccess gate in RegisteredExtension.isAllowedOnTarget
+    // (panels/common/ExtensionServer.ts) only recognizes the literal 'file:'
+    // protocol, so without this entry a devtools_page extension without file
+    // access could read local files on external mounts.
+    'externalfile:',
+    // Android-specific schemes.
+    'content:',
+    'chrome-native:',
 ]);
 /**
  * Returns true if the URL uses a privileged scheme (or is a `blob:`/`filesystem:` URL wrapping one).

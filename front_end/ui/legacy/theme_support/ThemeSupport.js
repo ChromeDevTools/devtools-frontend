@@ -44,6 +44,8 @@ export class ThemeSupport extends EventTarget {
     computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
     #documentsToTheme = new Set([document]);
     #pendingUserColorSource;
+    #caretBlinkInterval;
+    #disposed = false;
     #documentColorSource = new WeakMap();
     #latestColorsCssLink = new WeakMap();
     #darkThemeMediaQuery;
@@ -51,6 +53,9 @@ export class ThemeSupport extends EventTarget {
     #onThemeChangeListener = () => this.#applyTheme();
     #onHostThemeChangeListener = (event) => {
         this.fetchColorsAndApplyHostTheme(typeof event.data === 'string' ? event.data : undefined);
+    };
+    #onCaretBlinkIntervalChangeListener = (event) => {
+        this.#setCaretBlinkInterval(event.data);
     };
     constructor(setting) {
         super();
@@ -64,22 +69,31 @@ export class ThemeSupport extends EventTarget {
         this.#highContrastMediaQuery.addEventListener('change', this.#onThemeChangeListener);
         setting.addChangeListener(this.#onThemeChangeListener);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.CaretBlinkIntervalChanged, this.#onCaretBlinkIntervalChangeListener);
         // `Root.Runtime.hostConfig` is fetched during startup before this listener
         // is registered, so a Chrome theme change in between would be missed.
         // Re-query the host's current color source now that the listener is in
         // place, and apply it if it has changed.
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.getHostConfig(config => {
+            if (this.#disposed) {
+                return;
+            }
             const colorSource = config.userColorSource;
             if (colorSource && colorSource !== (this.#pendingUserColorSource ?? Root.Runtime.hostConfig.userColorSource)) {
                 this.fetchColorsAndApplyHostTheme(colorSource);
             }
+            if (this.#caretBlinkInterval === undefined) {
+                this.#setCaretBlinkInterval(config.caretBlinkInterval);
+            }
         });
     }
     #dispose() {
+        this.#disposed = true;
         this.#darkThemeMediaQuery.removeEventListener('change', this.#onThemeChangeListener);
         this.#highContrastMediaQuery.removeEventListener('change', this.#onThemeChangeListener);
         this.setting.removeChangeListener(this.#onThemeChangeListener);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.ColorThemeChanged, this.#onHostThemeChangeListener);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.CaretBlinkIntervalChanged, this.#onCaretBlinkIntervalChangeListener);
     }
     static hasInstance() {
         return typeof themeSupportInstance !== 'undefined';
@@ -137,6 +151,20 @@ export class ThemeSupport extends EventTarget {
     }
     themeName() {
         return this.#themeName;
+    }
+    caretBlinkInterval() {
+        return this.#caretBlinkInterval ?? normalizeCaretBlinkInterval(Root.Runtime.hostConfig.caretBlinkInterval);
+    }
+    #setCaretBlinkInterval(value) {
+        const normalized = normalizeCaretBlinkInterval(value);
+        if (normalized === undefined) {
+            return;
+        }
+        const previous = this.caretBlinkInterval();
+        this.#caretBlinkInterval = normalized;
+        if (normalized !== previous) {
+            this.dispatchEvent(new CaretBlinkIntervalChangeEvent());
+        }
     }
     #applyTheme() {
         for (const document of this.#documentsToTheme) {
@@ -216,10 +244,22 @@ export class ThemeSupport extends EventTarget {
         document.body.appendChild(newColorsCssLink);
     }
 }
+export function normalizeCaretBlinkInterval(value) {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+        return undefined;
+    }
+    return value === 0 ? 0 : value;
+}
 export class ThemeChangeEvent extends Event {
     static eventName = 'themechange';
     constructor() {
         super(ThemeChangeEvent.eventName, { bubbles: true, composed: true });
+    }
+}
+export class CaretBlinkIntervalChangeEvent extends Event {
+    static eventName = 'caretblinkintervalchange';
+    constructor() {
+        super(CaretBlinkIntervalChangeEvent.eventName, { bubbles: true, composed: true });
     }
 }
 //# sourceMappingURL=ThemeSupport.js.map

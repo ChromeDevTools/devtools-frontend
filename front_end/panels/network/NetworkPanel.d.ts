@@ -28,10 +28,22 @@ export declare class BackendLinking {
         url: URL;
     } | null;
 }
+export interface SettingsPaneViewInput {
+    showSettingsPane: boolean;
+    largeRowsSetting: Common.Settings.Setting<boolean>;
+    groupByFrameSetting: Common.Settings.Setting<boolean>;
+    showOverviewSetting: Common.Settings.Setting<boolean>;
+    recordFilmStripSetting: Common.Settings.Setting<boolean>;
+    onLoadFromFile: (file: File) => void;
+}
+export interface SettingsPaneViewOutput {
+    openFileSelector?: () => void;
+}
+export type SettingsPaneView = (input: SettingsPaneViewInput, output: SettingsPaneViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_SETTINGS_PANE_VIEW: SettingsPaneView;
 export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu
     .Provider<SDK.NetworkRequest.NetworkRequest | SDK.Resource.Resource | Workspace.UISourceCode.UISourceCode>, UI.View.ViewLocationResolver {
-    private readonly networkLogShowOverviewSetting;
-    private readonly networkLogLargeRowsSetting;
+    #private;
     private readonly networkRecordFilmStripSetting;
     private readonly toggleRecordAction;
     private pendingStopTimer;
@@ -42,7 +54,6 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     private readonly panelToolbar;
     private readonly rightToolbar;
     private readonly filterBar;
-    private showSettingsPaneSetting;
     private readonly filmStripPlaceholderElement;
     private readonly overviewPane;
     private readonly networkOverview;
@@ -52,7 +63,6 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     private readonly sidebarLocation;
     private readonly progressBarContainer;
     networkLogView: NetworkLogView;
-    private readonly fileSelectorElement;
     private readonly detailsWidget;
     private readonly closeButtonElement;
     private preserveLogSetting;
@@ -60,7 +70,7 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     private readonly throttlingSelect;
     private readonly displayScreenshotDelay;
     readonly backendLinking: BackendLinking | null;
-    constructor(displayScreenshotDelay: number);
+    constructor(displayScreenshotDelay: number, settingsPaneView?: SettingsPaneView);
     static instance(opts?: {
         forceNew: boolean;
         displayScreenshotDelay?: number;
@@ -81,11 +91,10 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     private willReloadPage;
     private load;
     private stopFilmStripRecording;
-    private toggleLargerRequests;
-    private toggleShowOverview;
     private toggleRecordFilmStrip;
     private resetFilmStripView;
     elementsToRestoreScrollPositionsFor(): Element[];
+    performUpdate(): void;
     wasShown(): void;
     willHide(): void;
     revealAndHighlightRequest(request: SDK.NetworkRequest.NetworkRequest): void;
@@ -99,7 +108,6 @@ export declare class NetworkPanel extends UI.Panel.Panel implements UI.ContextMe
     private updateNetworkItemView;
     private clearNetworkItemView;
     private createNetworkItemView;
-    private updateUI;
     appendApplicableItems(this: NetworkPanel, event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: SDK.NetworkRequest.NetworkRequest | SDK.Resource.Resource | Workspace.UISourceCode.UISourceCode | SDK.TraceObject.RevealableNetworkRequest): void;
     private onFilmFrameSelected;
     private onFilmFrameEnter;

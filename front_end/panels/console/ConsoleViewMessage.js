@@ -60,8 +60,8 @@ import { format, updateStyle } from './ConsoleFormat.js';
 import { ConsoleInsightTeaser } from './ConsoleInsightTeaser.js';
 import consoleViewStyles from './consoleView.css.js';
 import { SymbolizedErrorWidget } from './SymbolizedErrorWidget.js';
-const { ifDefined } = Directives;
-const { widget } = UI.Widget;
+const { ifDefined, until } = Directives;
+const { widget, widgetRef } = UI.Widget;
 const UIStrings = {
     /**
      * @description Message element text content in Console view message of the Console panel. Shown
@@ -234,14 +234,6 @@ const UIStrings = {
      * @description Submenu item to copy table as CSV.
      */
     copyAsCsv: 'Copy as CSV',
-    /**
-     * @description Text to expand something recursively
-     */
-    expandRecursively: 'Expand recursively',
-    /**
-     * @description Text to collapse children of a parent group
-     */
-    collapseChildren: 'Collapse children',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -290,6 +282,12 @@ export class ConsoleViewMessage {
     closeGroupDecorationCount;
     consoleGroupInternal;
     selectableChildren;
+    // Re-formatting reuses these, so that the rendered parameters keep their
+    // identity and async content isn't requested and rendered again.
+    #remoteObjects = new WeakMap();
+    #objectSelectableItems = new WeakMap();
+    #objectFunctionTitlePromises = new WeakMap();
+    #functionParameterPromises = new WeakMap();
     // Trees rendering logged DOM nodes; they follow the message visibility.
     domTreeWidgets = [];
     // Stack trace previews are also root widgets and follow the message visibility.
@@ -740,7 +738,7 @@ export class ConsoleViewMessage {
         }
         // Formatting code below assumes that parameters are all wrappers whereas frontend console
         // API allows passing arbitrary values as messages (strings, numbers, etc.). Wrap them here.
-        let parameters = rawParameters.map(parameterToRemoteObject(this.message.runtimeModel()));
+        let parameters = rawParameters.map(parameter => this.#parameterToRemoteObject(parameter));
         // There can be string log and string eval result. We distinguish between them based on message type.
         const shouldFormatMessage = SDK.RemoteObject.RemoteObject.type((parameters)[0]) === 'string' &&
             (this.message.type !== SDK.ConsoleModel.FrontendMessageType.Result ||
@@ -780,8 +778,7 @@ export class ConsoleViewMessage {
                 element = this.renderSymbolizedError(output);
                 break;
             case 'function':
-                element = this.formatParameterAsFunction(output, includePreview);
-                break;
+                return this.formatParameterAsFunction(output, includePreview, typeClasses);
             case 'array':
             case 'arraybuffer':
             case 'blob':
@@ -798,14 +795,15 @@ export class ConsoleViewMessage {
             case 'weakmap':
             case 'weakset':
             case 'webassemblymemory':
-                element = this.formatParameterAsObject(output, includePreview);
-                break;
+                return this.formatParameterAsObject(output, includePreview, typeClasses);
             case 'node':
-                element = output.isNode() ? this.formatParameterAsNode(output) : this.formatParameterAsObject(output, false);
+                if (!output.isNode()) {
+                    return this.formatParameterAsObject(output, false, typeClasses);
+                }
+                element = this.formatParameterAsNode(output);
                 break;
             case 'trustedtype':
-                element = this.formatParameterAsObject(output, false);
-                break;
+                return this.formatParameterAsObject(output, false, typeClasses);
             case 'string':
                 return this.formatParameterAsString(output, typeClasses);
             case 'boolean':
@@ -842,93 +840,134 @@ export class ConsoleViewMessage {
     formatParameterAsTrustedType(obj) {
         return html `<span>${`${obj.className} `}<span class="object-value-string">${this.formatParameterAsString(obj)}</span></span>`;
     }
-    formatParameterAsObject(obj, includePreview) {
-        const titleElement = document.createElement('span');
-        titleElement.tabIndex = -1;
-        titleElement.classList.add('console-object');
-        const renderPreview = (includeNullOrUndefined) => {
-            if (obj.preview) {
-                titleElement.classList.add('console-object-preview');
-                render(html `${this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined)}${ObjectUI.ObjectPropertiesSection.getMemoryIcon(obj)}`, titleElement);
+    formatParameterAsObject(obj, includePreview, extraClasses = '') {
+        const isExpandable = Boolean(obj.hasChildren && !obj.customPreview());
+        const renderTitleSpan = (extraSpanClasses = '', withContextMenu = false, filterChanged = false, includeNullOrUndefinedValues = true) => {
+            const showPreview = Boolean((includePreview || filterChanged) && obj.preview);
+            const spanClasses = [
+                'console-object',
+                showPreview ? 'console-object-preview' : '',
+                !showPreview && obj.type === 'function' ? 'object-value-function' : '',
+                extraSpanClasses,
+            ].filter(Boolean).join(' ');
+            let inner;
+            if (showPreview && obj.preview) {
+                inner = html `${this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefinedValues)}${ObjectUI.ObjectPropertiesSection.getMemoryIcon(obj)}`;
             }
+            else if (obj.type === 'function') {
+                inner = html `${until(this.#getObjectFunctionTitlePromise(obj))}`;
+            }
+            else if (obj.subtype === 'trustedtype') {
+                inner = this.formatParameterAsTrustedType(obj);
+            }
+            else {
+                inner = obj.description || '';
+            }
+            // clang-format off
+            return html `<span
+            tabindex="-1"
+            class=${spanClasses}
+            @contextmenu=${withContextMenu ? this.contextMenuEventFired.bind(this, obj) : nothing}>${inner}</span>`;
+            // clang-format on
         };
-        if (includePreview && obj.preview) {
-            renderPreview(true);
+        if (!isExpandable) {
+            return renderTitleSpan(extraClasses, true);
         }
-        else if (obj.type === 'function') {
-            titleElement.classList.add('object-value-function');
-            void ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(obj, false).then(t => {
-                const fragment = document.createDocumentFragment();
-                render(t, fragment, { host: this });
-                titleElement.insertBefore(fragment, titleElement.firstChild);
-            });
+        let selectableItem = this.#objectSelectableItems.get(obj);
+        if (!selectableItem) {
+            selectableItem = {
+                element: document.createElement('span'),
+                forceSelect: () => { },
+            };
+            this.#objectSelectableItems.set(obj, selectableItem);
         }
-        else if (obj.subtype === 'trustedtype') {
-            render(this.formatParameterAsTrustedType(obj), titleElement);
+        if (!this.selectableChildren.includes(selectableItem)) {
+            this.selectableChildren.push(selectableItem);
         }
-        else {
-            UI.UIUtils.createTextChild(titleElement, obj.description || '');
-        }
-        if (!obj.hasChildren || obj.customPreview()) {
-            return titleElement;
-        }
-        const container = document.createElement('span');
-        const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-        section.markAsRoot();
-        const treeElement = section.element;
-        treeElement.classList.add('console-view-object-properties-section');
-        titleElement.addEventListener('contextmenu', (event) => {
-            event.consume(true);
-            const contextMenu = new UI.ContextMenu.ContextMenu(event);
-            contextMenu.appendApplicableItems(obj);
-            if (obj instanceof SDK.RemoteObject.LocalJSONObject) {
-                contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), () => section.objectTree?.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH), { jslogContext: 'expand-recursively' });
-                contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), () => section.objectTree?.collapseRecursively(), { jslogContext: 'collapse-children' });
-            }
-            void contextMenu.show();
-        });
-        section.root = obj;
-        section.title =
-            html `<style>${consoleViewStyles}</style>${titleElement}<span class="object-state-note info-note" title=${this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult ?
-                i18nString(UIStrings.thisValueWillNotBeCollectedUntil) :
-                i18nString(UIStrings.thisValueWasEvaluatedUponFirst)}></span>`;
-        section.linkifier = this.linkifier;
-        this.selectableChildren.push({
-            element: treeElement,
-            forceSelect: () => { },
-        });
-        if (section.objectTree) {
-            const resizeEvent = { data: treeElement };
-            section.objectTree.addEventListener("children-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, () => this.messageResized(resizeEvent));
-            section.objectTree.addEventListener("expanded-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, () => this.messageResized(resizeEvent));
-            section.objectTree.addEventListener("filter-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.FILTER_CHANGED */, () => renderPreview(section.objectTree?.includeNullOrUndefinedValues || false));
-        }
-        section.show(container);
-        return container;
+        const noteTitle = this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult ?
+            i18nString(UIStrings.thisValueWillNotBeCollectedUntil) :
+            i18nString(UIStrings.thisValueWasEvaluatedUponFirst);
+        const sectionTitle = ({ filterChanged, includeNullOrUndefinedValues, }) => {
+            return html `<style>${consoleViewStyles}</style>${renderTitleSpan('', false, filterChanged, includeNullOrUndefinedValues)}<span
+          class="object-state-note info-note" title=${noteTitle}></span>`;
+        };
+        // clang-format off
+        return html `<span class=${ifDefined(extraClasses || undefined)}><devtools-widget
+      class="console-view-object-properties-section"
+      ${widget(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+            root: obj,
+            title: sectionTitle,
+            linkifier: this.linkifier,
+            onTreeResized: this.#onTreeResized,
+        })}
+      ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget, section => {
+            selectableItem.element = section.element;
+            selectableItem.forceSelect = () => {
+                const tree = section.element.querySelector('devtools-tree');
+                tree?.focus();
+                if (tree && !tree.hasFocus()) {
+                    tree.focus();
+                }
+            };
+        })}></devtools-widget></span>`;
+        // clang-format on
     }
-    formatParameterAsFunction(originalFunction, includePreview) {
-        const result = document.createElement('span');
-        void SDK.RemoteObject.RemoteFunction.objectAsFunction(originalFunction)
-            .targetFunction()
-            .then(formatTargetFunction.bind(this));
-        return result;
-        function formatTargetFunction(targetFunction) {
-            const promise = ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, true, includePreview);
-            if (targetFunction !== originalFunction) {
-                const note = result.createChild('span', 'object-state-note info-note');
-                UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.functionWasResolvedFromBound));
-            }
-            result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, originalFunction), false);
-            void promise.then(t => {
-                const fragment = document.createDocumentFragment();
-                render(t, fragment, { host: this });
-                result.insertBefore(fragment, result.firstChild);
-                this.formattedParameterAsFunctionForTest();
-            });
+    formatParameterAsFunction(originalFunction, includePreview, extraClasses = '') {
+        const previewKey = Boolean(includePreview);
+        let byPreview = this.#functionParameterPromises.get(originalFunction);
+        if (!byPreview) {
+            byPreview = new Map();
+            this.#functionParameterPromises.set(originalFunction, byPreview);
         }
+        let promise = byPreview.get(previewKey);
+        if (!promise) {
+            promise = SDK.RemoteObject.RemoteFunction.objectAsFunction(originalFunction)
+                .targetFunction()
+                .then(async (targetFunction) => {
+                const fnTemplate = await ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, true, includePreview);
+                const isBound = targetFunction !== originalFunction;
+                // clang-format off
+                return html `<span
+                        @contextmenu=${this.contextMenuEventFired.bind(this, originalFunction)}>${fnTemplate}${isBound
+                    ? html `<span
+                              class="object-state-note info-note"
+                              title=${i18nString(UIStrings.functionWasResolvedFromBound)}></span>`
+                    : nothing}</span>`;
+                // clang-format on
+            });
+            byPreview.set(previewKey, promise);
+        }
+        void promise.then(() => {
+            queueMicrotask(() => this.formattedParameterAsFunctionForTest());
+        });
+        return html `<span class=${ifDefined(extraClasses || undefined)}>${until(promise)}</span>`;
     }
+    // Sniffed in web_tests and unit tests.
     formattedParameterAsFunctionForTest() {
     }
+    #parameterToRemoteObject(parameter) {
+        const toRemoteObject = parameterToRemoteObject(this.message.runtimeModel());
+        if (typeof parameter !== 'object' || parameter instanceof SDK.RemoteObject.RemoteObject) {
+            return toRemoteObject(parameter);
+        }
+        let remoteObject = this.#remoteObjects.get(parameter);
+        if (!remoteObject) {
+            remoteObject = toRemoteObject(parameter);
+            this.#remoteObjects.set(parameter, remoteObject);
+        }
+        return remoteObject;
+    }
+    #getObjectFunctionTitlePromise(obj) {
+        let promise = this.#objectFunctionTitlePromises.get(obj);
+        if (!promise) {
+            promise = ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(obj, false);
+            this.#objectFunctionTitlePromises.set(obj, promise);
+        }
+        return promise;
+    }
+    #onTreeResized = (element) => {
+        this.messageResized({ data: element });
+    };
     contextMenuEventFired(obj, event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
         contextMenu.appendApplicableItems(obj);
@@ -982,7 +1021,7 @@ export class ConsoleViewMessage {
             if (!node) {
                 this.domTreeWidgets.splice(this.domTreeWidgets.indexOf(domTree), 1);
                 domTree.detach();
-                result.appendChild(this.formatParameterAsObject(remoteObject, false));
+                render(this.formatParameterAsObject(remoteObject, false), result);
                 return;
             }
             domTree.rootDOMNode = node;

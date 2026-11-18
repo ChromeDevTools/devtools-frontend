@@ -9,9 +9,13 @@ var ComputedStyleModel_exports = {};
 __export(ComputedStyleModel_exports, {
   ComputedStyle: () => ComputedStyle,
   ComputedStyleModel: () => ComputedStyleModel,
-  Events: () => Events
+  Events: () => Events,
+  computeNonInheritedProperties: () => computeNonInheritedProperties,
+  filterComputedStyleProperties: () => filterComputedStyleProperties,
+  propertySorter: () => propertySorter
 });
 import * as Common from "../../core/common/common.js";
+import * as Platform from "../../core/platform/platform.js";
 import * as SDK from "../../core/sdk/sdk.js";
 var ComputedStyleModel = class extends Common.ObjectWrapper.ObjectWrapper {
   #node = null;
@@ -184,6 +188,59 @@ var ComputedStyle = class {
     this.computedStyle = computedStyle;
   }
 };
+var alwaysShownComputedProperties = /* @__PURE__ */ new Set(["display", "height", "width"]);
+function propertySorter(propA, propB) {
+  if (propA.startsWith("--") !== propB.startsWith("--")) {
+    return propA.startsWith("--") ? 1 : -1;
+  }
+  if (propA.startsWith("-webkit") !== propB.startsWith("-webkit")) {
+    return propA.startsWith("-webkit") ? 1 : -1;
+  }
+  const canonicalA = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propA);
+  const canonicalB = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propB);
+  return Platform.StringUtilities.compare(canonicalA, canonicalB);
+}
+function computeNonInheritedProperties(matchedStyles) {
+  const result = /* @__PURE__ */ new Set();
+  for (const style of matchedStyles.nodeStyles()) {
+    for (const property of style.allProperties()) {
+      if (!matchedStyles.propertyState(property)) {
+        continue;
+      }
+      result.add(SDK.CSSMetadata.cssMetadata().canonicalPropertyName(property.name));
+    }
+  }
+  return result;
+}
+function filterComputedStyleProperties(computedStyle, matchedStyles, options) {
+  const showAll = options?.showAll ?? false;
+  const sort = options?.sort ?? true;
+  const extraProperties = options?.extraProperties ? new Set(options.extraProperties) : null;
+  const uniqueProperties = sort ? [...computedStyle.keys()].sort(propertySorter) : computedStyle.keys();
+  const nonInheritedProperties = computeNonInheritedProperties(matchedStyles);
+  const result = [];
+  for (const propertyName of uniqueProperties) {
+    const propertyValue = computedStyle.get(propertyName) || "";
+    const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
+    const isInherited = !nonInheritedProperties.has(canonicalName);
+    const isExtraProperty = extraProperties?.has(propertyName) ?? false;
+    if (!showAll && isInherited && !alwaysShownComputedProperties.has(propertyName) && !isExtraProperty) {
+      continue;
+    }
+    if (!showAll && propertyName.startsWith("--") && !isExtraProperty) {
+      continue;
+    }
+    if (propertyName !== canonicalName && propertyValue === computedStyle.get(canonicalName) && !isExtraProperty) {
+      continue;
+    }
+    result.push({
+      name: propertyName,
+      value: propertyValue,
+      inherited: isInherited
+    });
+  }
+  return result;
+}
 export {
   ComputedStyleModel_exports as ComputedStyleModel
 };

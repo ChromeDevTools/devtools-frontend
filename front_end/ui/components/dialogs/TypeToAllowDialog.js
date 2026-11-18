@@ -67,6 +67,41 @@ const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class TypeToAllowDialog {
+    static #QUOTE_PAIRS = [
+        ['"', '"'],
+        ['\'', '\''],
+        ['“', '”'],
+        ['”', '”'],
+        ['‘', '’'],
+        ['‘', '\''],
+        ['„', '“'],
+        ['„', '”'],
+        ['«', '»'],
+        ['»', '«'],
+        ['「', '」'],
+    ];
+    /**
+     * Returns true if `input` matches `phrase`, optionally wrapped in matching
+     * quote characters from any supported locale's quote style.
+     */
+    static matchesPhrase(input, phrase) {
+        if (phrase.length === 0) {
+            return false;
+        }
+        const trimmed = input.trim();
+        if (trimmed === phrase) {
+            return true;
+        }
+        for (const [open, close] of TypeToAllowDialog.#QUOTE_PAIRS) {
+            if (trimmed.length >= open.length + close.length && trimmed.startsWith(open) && trimmed.endsWith(close)) {
+                const inner = trimmed.slice(open.length, trimmed.length - close.length).trim();
+                if (inner === phrase) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     static async show(options, view = DEFAULT_VIEW) {
         const dialog = new UI.Dialog.Dialog(options.jslogContext.dialog);
         dialog.setMaxContentSize(new Geometry.Size(504, 340));
@@ -92,7 +127,7 @@ export class TypeToAllowDialog {
                         resolve(false);
                     },
                     onAllow: () => {
-                        resolve(currentValue === options.typePhrase || currentValue === `'${options.typePhrase}'`);
+                        resolve(TypeToAllowDialog.matchesPhrase(currentValue, options.typePhrase));
                     },
                     onCancel: () => {
                         resolve(false);

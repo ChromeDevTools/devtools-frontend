@@ -42,9 +42,13 @@ export class RequestContext extends ConversationContext {
             accessingSecurityOrigin: this.#request.initiatorSecurityOrigin(),
         });
     }
+    /**
+     * Includes the request ID so the model can match this request to
+     * `listNetworkRequests` rows without calling `getNetworkRequestDetails`.
+     */
     async getPromptDetails() {
         const formatter = this.#createFormatter();
-        return `# Selected network request\n${await formatter.formatNetworkRequest()}`;
+        return `# Selected network request\nRequest ID: ${this.#request.requestId()}\n${await formatter.formatNetworkRequest()}`;
     }
     async getUserFacingDetails() {
         const formatter = this.#createFormatter();

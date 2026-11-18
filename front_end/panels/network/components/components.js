@@ -28,203 +28,205 @@ var RequestHeadersView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.header {
-  background-color: var(--sys-color-surface1);
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-  line-height: 25px;
-  padding: 0 5px;
-}
-
-.header::marker {
-  font-size: var(--sys-typescale-body5-size);
-  line-height: 1;
-}
-
-.header:focus {
-  background-color: var(--sys-color-state-header-hover);
-}
-
-.header:focus-visible {
-  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-  outline-offset: calc(-1 * var(--sys-size-2));
-}
-
-details[open] .header-count {
-  display: none;
-}
-
-details .hide-when-closed {
-  display: none;
-}
-
-details[open] .hide-when-closed {
-  display: revert;
-}
-
-details summary input {
-  vertical-align: middle;
-}
-
-.row {
-  display: flex;
-  line-height: 18px;
-  padding-left: var(--sys-size-5);
-  gap: var(--sys-size-6);
-  user-select: text;
-  margin: var(--sys-size-3) 0;
-}
-
-div.raw-headers-row {
-  display: block;
-}
-
-.row:first-of-type {
-  margin-top: var(--sys-size-5);
-}
-
-.row:last-child {
-  margin-bottom: var(--sys-size-5);
-}
-
-.header-name {
-  color: var(--sys-color-on-surface-subtle);
-  font: var(--sys-typescale-body5-medium);
-  width: 30%;
-  min-width: var(--sys-size-23);
-  max-width: var(--sys-size-28);
-  flex-shrink: 0;
-  text-transform: capitalize;
-}
-
-.header-value {
-  word-break: break-all;
-  display: flex;
-  align-items: center;
-  gap: var(--sys-size-2);
-  font: var(--sys-typescale-body4-regular);
-}
-
-.header-name,
-.header-value {
-  &::selection {
-    color: var(--sys-color-on-tonal-container);
-    background-color: var(--sys-color-tonal-container);
+@scope to (devtools-widget > *) {
+  .header {
+    background-color: var(--sys-color-surface1);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    line-height: 25px;
+    padding: 0 5px;
   }
-}
 
-.green-circle::before,
-.red-circle::before,
-.yellow-circle::before {
-  content: '';
-  display: inline-block;
-  width: var(--sys-size-6);
-  height: var(--sys-size-6);
-  border-radius: var(--sys-size-4);
-  vertical-align: text-top;
-  margin-right: var(--sys-size-2);
-}
+  .header::marker {
+    font-size: var(--sys-typescale-body5-size);
+    line-height: 1;
+  }
 
-.green-circle::before {
-  background-color: var(--sys-color-green-bright);
-}
+  .header:focus {
+    background-color: var(--sys-color-state-header-hover);
+  }
 
-.red-circle::before {
-  background-color: var(--sys-color-error-bright);
-}
+  .header:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: calc(-1 * var(--sys-size-2));
+  }
 
-.yellow-circle::before {
-  background-color: var(--issue-color-yellow);
-}
+  details[open] .header-count {
+    display: none;
+  }
 
-.status-with-comment {
-  color: var(--sys-color-token-subtle);
-}
+  details .hide-when-closed {
+    display: none;
+  }
 
-.early-hints-warning {
-  display: flex;
-  align-items: center;
-  gap: var(--sys-size-4);
-  margin: var(--sys-size-3);
-  padding: var(--sys-size-5);
-  border-radius: var(--sys-shape-corner-medium-small);
-  color: var(--sys-color-on-yellow-container);
-  background-color: var(--sys-color-yellow-container);
-  font: var(--sys-typescale-body4-regular);
-}
+  details[open] .hide-when-closed {
+    display: revert;
+  }
 
-.raw-headers {
-  font-family: var(--source-code-font-family);
-  font-size: var(--source-code-font-size);
-  white-space: pre-wrap;
-  word-break: break-all;
-}
+  details summary input {
+    vertical-align: middle;
+  }
 
-.link,
-.devtools-link {
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-  outline-offset: var(--sys-size-2);
-}
+  .row {
+    display: flex;
+    line-height: 18px;
+    padding-left: var(--sys-size-5);
+    gap: var(--sys-size-6);
+    user-select: text;
+    margin: var(--sys-size-3) 0;
+  }
 
-.inline-icon {
-  vertical-align: sub;
-}
+  div.raw-headers-row {
+    display: block;
+  }
 
-.header-grid-container {
-  display: inline-grid;
-  grid-template-columns: 156px 50px 1fr;
-  gap: var(--sys-size-3);
-  /* Make this fit into the same line as the summary marker */
-  width: calc(100% - 15px);
-}
+  .row:first-of-type {
+    margin-top: var(--sys-size-5);
+  }
 
-.header-grid-container div:last-child {
-  text-align: right;
-  white-space: nowrap;
-}
+  .row:last-child {
+    margin-bottom: var(--sys-size-5);
+  }
 
-.header .devtools-link {
-  color: var(--sys-color-on-surface);
-}
+  .header-name {
+    color: var(--sys-color-on-surface-subtle);
+    font: var(--sys-typescale-body5-medium);
+    width: 30%;
+    min-width: var(--sys-size-23);
+    max-width: var(--sys-size-28);
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
 
-devtools-link {
-  position: relative;
-}
+  .header-value {
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-2);
+    font: var(--sys-typescale-body4-regular);
+  }
 
-devtools-link .inline-icon {
-  padding-right: 3px;
-  vertical-align: middle;
-}
+  .header-name,
+  .header-value {
+    &::selection {
+      color: var(--sys-color-on-tonal-container);
+      background-color: var(--sys-color-tonal-container);
+    }
+  }
 
-.purple.dot::before {
-  background-color: var(--sys-color-purple-bright);
-  content: var(--image-file-empty);
-  width: var(--sys-size-4);
-  height: var(--sys-size-4);
-  border-radius: var(--sys-shape-corner-full);
-  outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
-  left: 9px;
-  position: absolute;
-  top: 11px;
-  z-index: 1;
-}
+  .green-circle::before,
+  .red-circle::before,
+  .yellow-circle::before {
+    content: '';
+    display: inline-block;
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    border-radius: var(--sys-size-4);
+    vertical-align: text-top;
+    margin-right: var(--sys-size-2);
+  }
 
-summary label {
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-  gap: var(--sys-size-3);
-}
+  .green-circle::before {
+    background-color: var(--sys-color-green-bright);
+  }
 
-summary devtools-checkbox {
-  margin-top: var(--sys-size-1);
-}
+  .red-circle::before {
+    background-color: var(--sys-color-error-bright);
+  }
 
-.backend-link-button {
-  margin-left: var(--sys-size-4);
-  vertical-align: middle;
+  .yellow-circle::before {
+    background-color: var(--issue-color-yellow);
+  }
+
+  .status-with-comment {
+    color: var(--sys-color-token-subtle);
+  }
+
+  .early-hints-warning {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-4);
+    margin: var(--sys-size-3);
+    padding: var(--sys-size-5);
+    border-radius: var(--sys-shape-corner-medium-small);
+    color: var(--sys-color-on-yellow-container);
+    background-color: var(--sys-color-yellow-container);
+    font: var(--sys-typescale-body4-regular);
+  }
+
+  .raw-headers {
+    font-family: var(--source-code-font-family);
+    font-size: var(--source-code-font-size);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .link,
+  .devtools-link {
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    outline-offset: var(--sys-size-2);
+  }
+
+  .inline-icon {
+    vertical-align: sub;
+  }
+
+  .header-grid-container {
+    display: inline-grid;
+    grid-template-columns: 156px 50px 1fr;
+    gap: var(--sys-size-3);
+    /* Make this fit into the same line as the summary marker */
+    width: calc(100% - 15px);
+  }
+
+  .header-grid-container div:last-child {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .header .devtools-link {
+    color: var(--sys-color-on-surface);
+  }
+
+  devtools-link {
+    position: relative;
+  }
+
+  devtools-link .inline-icon {
+    padding-right: 3px;
+    vertical-align: middle;
+  }
+
+  .purple.dot::before {
+    background-color: var(--sys-color-purple-bright);
+    content: var(--image-file-empty);
+    width: var(--sys-size-4);
+    height: var(--sys-size-4);
+    border-radius: var(--sys-shape-corner-full);
+    outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
+    left: 9px;
+    position: absolute;
+    top: 11px;
+    z-index: 1;
+  }
+
+  summary label {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    gap: var(--sys-size-3);
+  }
+
+  summary devtools-checkbox {
+    margin-top: var(--sys-size-1);
+  }
+
+  .backend-link-button {
+    margin-left: var(--sys-size-4);
+    vertical-align: middle;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./RequestHeadersView.css")} */`;
@@ -488,8 +490,10 @@ var DirectSocketConnectionView = class extends UI.Widget.Widget {
 // ../../front_end/panels/network/components/EditableSpan.ts
 var EditableSpan_exports = {};
 __export(EditableSpan_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   EditableSpan: () => EditableSpan
 });
+import * as UI2 from "../../../ui/legacy/legacy.js";
 import { Directives, html as html2, render as render2 } from "../../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -500,91 +504,116 @@ var EditableSpan_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
-  display: inline;
-}
-
-.editable {
-  cursor: text;
-  overflow-wrap: anywhere;
-  min-height: 18px;
-  line-height: 18px;
-  min-width: 0.5em;
-  background: transparent;
-  border: none;
-  border-radius: var(--sys-shape-corner-extra-small);
-  outline: none;
-  display: inline-block;
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-
-  &:hover {
-    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+@scope to (devtools-widget > *) {
+  :scope {
+    display: inline;
   }
 
-  &:focus {
-    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
-  }
-}
+  .editable {
+    cursor: text;
+    overflow-wrap: anywhere;
+    min-height: 18px;
+    line-height: 18px;
+    min-width: 0.5em;
+    background: transparent;
+    border: none;
+    border-radius: var(--sys-shape-corner-extra-small);
+    outline: none;
+    display: inline-block;
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
 
-.editable::selection {
-  color: var(--sys-color-on-tonal-container);
-  background-color: var(--sys-color-tonal-container);
+    &:hover {
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    }
+
+    &:focus {
+      border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
+    }
+
+    &::selection {
+      color: var(--sys-color-on-tonal-container);
+      background-color: var(--sys-color-tonal-container);
+    }
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./EditableSpan.css")} */`;
 
 // ../../front_end/panels/network/components/EditableSpan.ts
-var EditableSpan = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #editableRef = Directives.createRef();
-  #value = "";
-  get value() {
-    return this.#value;
-  }
-  set value(value2) {
-    this.#value = value2;
-    this.performUpdate();
-  }
-  #onKeyDown(event) {
+var DEFAULT_VIEW2 = (input, output, target) => {
+  const onFocusIn = (event) => {
+    const span = event.target;
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(span);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  };
+  const onKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       event.target?.blur();
     }
+  };
+  render2(html2`
+    <style>${EditableSpan_css_default}</style>
+    <span
+      ${Directives.ref((el) => {
+    if (el instanceof HTMLElement) {
+      output.focus = () => el.focus();
+    } else {
+      output.focus = void 0;
+    }
+  })}
+      contenteditable="plaintext-only"
+      class="editable"
+      tabindex="0"
+      .innerText=${Directives.live(input.value)}
+      jslog=${VisualLogging2.value("header-editor").track({ change: true, keydown: "Enter|Escape" })}
+      @focusin=${onFocusIn}
+      @keydown=${onKeyDown}
+      @input=${(event) => input.onInput(event.target.innerText)}
+      ></span>`, target);
+};
+var EditableSpan = class extends UI2.Widget.Widget {
+  #view;
+  #viewOutput = {};
+  #value = "";
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element);
+    this.#view = view;
   }
-  #onInput(event) {
-    this.#value = event.target.innerText;
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
-  #selectAllText(event) {
-    const target = event.target;
-    const selection = window.getSelection();
-    const range = document.createRange();
-    range.selectNodeContents(target);
-    selection?.removeAllRanges();
-    selection?.addRange(range);
+  get value() {
+    return this.#value;
   }
+  set value(value2) {
+    if (this.#value === value2) {
+      return;
+    }
+    this.#value = value2;
+    this.requestUpdate();
+  }
+  #onInput = (value2) => {
+    this.#value = value2;
+  };
   performUpdate() {
-    render2(html2`
-      <style>${EditableSpan_css_default}</style>
-      <span
-        ${Directives.ref(this.#editableRef)}
-        contenteditable="plaintext-only"
-        class="editable"
-        tabindex="0"
-        .innerText=${Directives.live(this.#value)}
-        jslog=${VisualLogging2.value("header-editor").track({ change: true, keydown: "Enter|Escape" })}
-        @focusin=${this.#selectAllText.bind(this)}
-        @keydown=${this.#onKeyDown.bind(this)}
-        @input=${this.#onInput.bind(this)}
-        ></span>`, this.#shadow, { host: this });
+    const viewInput = {
+      value: this.#value,
+      onInput: this.#onInput
+    };
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
   focus() {
-    requestAnimationFrame(() => {
-      this.#editableRef.value?.focus();
+    void this.updateComplete.then(() => {
+      this.#viewOutput.focus?.();
     });
   }
 };
-customElements.define("devtools-editable-span", EditableSpan);
 
 // ../../front_end/panels/network/components/HeaderSectionRow.ts
 var HeaderSectionRow_exports = {};
@@ -605,7 +634,7 @@ import * as SDK2 from "../../../core/sdk/sdk.js";
 import * as ClientVariations from "../../../third_party/chromium/client-variations/client-variations.js";
 import * as Buttons from "../../../ui/components/buttons/buttons.js";
 import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
-import * as UI2 from "../../../ui/legacy/legacy.js";
+import * as UI3 from "../../../ui/legacy/legacy.js";
 import * as Lit2 from "../../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -810,6 +839,7 @@ devtools-link .inline-icon {
 
 // ../../front_end/panels/network/components/HeaderSectionRow.ts
 var { render: render3, html: html3 } = Lit2;
+var { widget } = UI3.Widget;
 var UIStrings2 = {
   /**
    * @description A context menu item to copy the value of a header.
@@ -929,13 +959,13 @@ var HeaderSectionRow = class extends HTMLElement {
           ${this.#header.headerNotSet ? html3`<div class="header-badge header-badge-text">${i18n3.i18n.lockedString("not-set")}</div> ` : Lit2.nothing}
           ${isHeaderNameEditable && !this.#isValidHeaderName ? html3`<devtools-icon class="inline-icon disallowed-characters medium" title=${UIStrings2.headerNamesOnlyLetters} name='cross-circle-filled'>
             </devtools-icon>` : Lit2.nothing}
-          ${isHeaderNameEditable && !this.#header.isDeleted ? html3`<devtools-editable-span
+          ${isHeaderNameEditable && !this.#header.isDeleted ? html3`<devtools-widget
               @focusout=${this.#onHeaderNameFocusOut}
               @keydown=${this.#onKeyDown}
               @input=${this.#onHeaderNameEdit}
               @paste=${this.#onHeaderNamePaste}
-              .value=${this.#header.name}
-            ></devtools-editable-span>` : this.#header.name}
+              ${widget(EditableSpan, { value: this.#header.name })}
+            ></devtools-widget>` : this.#header.name}
         </div>
         <div
           class=${headerValueClasses}
@@ -982,13 +1012,13 @@ var HeaderSectionRow = class extends HTMLElement {
     `;
     }
     return html3`
-      <devtools-editable-span
+      <devtools-widget
         @focusout=${this.#onHeaderValueFocusOut}
         @input=${this.#onHeaderValueEdit}
         @paste=${this.#onHeaderValueEdit}
         @keydown=${this.#onKeyDown}
-        .value=${this.#header.value || ""}
-      ></devtools-editable-span>
+        ${widget(EditableSpan, { value: this.#header.value || "" })}
+      ></devtools-widget>
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
       <devtools-button
         title=${i18nString2(UIStrings2.removeOverride)}
@@ -1016,7 +1046,7 @@ var HeaderSectionRow = class extends HTMLElement {
   }
   focus() {
     requestAnimationFrame(() => {
-      const editableName = this.#shadow.querySelector(".header-name devtools-editable-span");
+      const editableName = this.#shadow.querySelector(".header-name devtools-widget");
       editableName?.focus();
     });
   }
@@ -1068,7 +1098,7 @@ var HeaderSectionRow = class extends HTMLElement {
     return Lit2.nothing;
   }
   #onHeaderValueFocusOut(event) {
-    const target = event.target;
+    const target = UI3.Widget.Widget.get(event.currentTarget);
     if (!this.#header) {
       return;
     }
@@ -1083,7 +1113,7 @@ var HeaderSectionRow = class extends HTMLElement {
     this.#header.originalName = "";
   }
   #onHeaderNameFocusOut(event) {
-    const target = event.target;
+    const target = UI3.Widget.Widget.get(event.currentTarget);
     if (!this.#header) {
       return;
     }
@@ -1102,36 +1132,39 @@ var HeaderSectionRow = class extends HTMLElement {
     if (!this.#header) {
       return;
     }
-    const headerValueElement = this.#shadow.querySelector(".header-value devtools-editable-span");
-    if (this.#header.originalValue) {
-      headerValueElement.value = this.#header?.originalValue;
+    const headerValueWidget = this.#shadow.querySelector(".header-value devtools-widget")?.getWidget();
+    if (this.#header.originalValue && headerValueWidget) {
+      headerValueWidget.value = this.#header.originalValue;
     }
     this.dispatchEvent(new HeaderRemovedEvent(this.#header.name, this.#header.value || ""));
   }
   #onKeyDown(event) {
-    const target = event.target;
+    const currentTarget = event.currentTarget;
+    const target = UI3.Widget.Widget.get(currentTarget);
     if (event.key === "Escape") {
       event.consume();
-      if (target.matches(".header-name devtools-editable-span")) {
+      if (currentTarget.matches(".header-name devtools-widget")) {
         target.value = this.#header?.name || "";
         this.#onHeaderNameEdit(event);
-      } else if (target.matches(".header-value devtools-editable-span")) {
+      } else if (currentTarget.matches(".header-value devtools-widget")) {
         target.value = this.#header?.value || "";
         this.#onHeaderValueEdit(event);
         if (this.#header?.originalName) {
-          const headerNameElement = this.#shadow.querySelector(".header-name devtools-editable-span");
-          headerNameElement.value = this.#header.originalName;
-          this.#header.originalName = "";
-          headerNameElement.dispatchEvent(new Event("input"));
-          headerNameElement.focus();
+          const headerNameWidget = this.#shadow.querySelector(".header-name devtools-widget")?.getWidget();
+          if (headerNameWidget) {
+            headerNameWidget.value = this.#header.originalName;
+            this.#header.originalName = "";
+            headerNameWidget.dispatchDOMEvent(new Event("input"));
+            headerNameWidget.focus();
+          }
           return;
         }
       }
-      target.blur();
+      event.target.blur();
     }
   }
   #onHeaderNameEdit(event) {
-    const editable = event.target;
+    const editable = UI3.Widget.Widget.get(event.currentTarget);
     const isValidName = isValidHeaderName(editable.value);
     if (this.#isValidHeaderName !== isValidName) {
       this.#isValidHeaderName = isValidName;
@@ -1139,7 +1172,7 @@ var HeaderSectionRow = class extends HTMLElement {
     }
   }
   #onHeaderValueEdit(event) {
-    const editable = event.target;
+    const editable = UI3.Widget.Widget.get(event.currentTarget);
     const isEdited = this.#header?.originalValue !== void 0 && !compareHeaders(this.#header?.originalValue || "", editable.value);
     if (this.#isHeaderValueEdited !== isEdited) {
       this.#isHeaderValueEdited = isEdited;
@@ -1153,13 +1186,13 @@ var HeaderSectionRow = class extends HTMLElement {
     if (!event.clipboardData) {
       return;
     }
-    const nameEl = event.target;
+    const nameWidget = UI3.Widget.Widget.get(event.currentTarget);
     const clipboardText = event.clipboardData.getData("text/plain") || "";
     const separatorPosition = clipboardText.indexOf(":");
     if (separatorPosition < 1) {
-      nameEl.value = clipboardText;
+      nameWidget.value = clipboardText;
       event.preventDefault();
-      nameEl.dispatchEvent(new Event("input", { bubbles: true }));
+      nameWidget.dispatchDOMEvent(new Event("input", { bubbles: true }));
       return;
     }
     if (this.#header) {
@@ -1167,13 +1200,13 @@ var HeaderSectionRow = class extends HTMLElement {
     }
     const headerValue = clipboardText.substring(separatorPosition + 1, clipboardText.length).trim();
     const headerName = clipboardText.substring(0, separatorPosition);
-    nameEl.value = headerName;
-    nameEl.dispatchEvent(new Event("input"));
-    const valueEL = this.#shadow.querySelector(".header-value devtools-editable-span");
-    if (valueEL) {
-      valueEL.focus();
-      valueEL.value = headerValue;
-      valueEL.dispatchEvent(new Event("input"));
+    nameWidget.value = headerName;
+    nameWidget.dispatchDOMEvent(new Event("input"));
+    const valueWidget = this.#shadow.querySelector(".header-value devtools-widget")?.getWidget();
+    if (valueWidget) {
+      valueWidget.value = headerValue;
+      valueWidget.focus();
+      valueWidget.dispatchDOMEvent(new Event("input"));
     }
     event.preventDefault();
   }
@@ -1183,7 +1216,7 @@ var HeaderSectionRow = class extends HTMLElement {
     }
     event.stopPropagation();
     event.preventDefault();
-    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI3.ContextMenu.ContextMenu(event);
     contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.copyValue), () => {
       Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#header?.value || "");
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.NetworkPanelCopyValue);
@@ -1202,14 +1235,13 @@ var EditingAllowedStatus = /* @__PURE__ */ ((EditingAllowedStatus2) => {
 // ../../front_end/panels/network/components/RequestHeaderSection.ts
 var RequestHeaderSection_exports = {};
 __export(RequestHeaderSection_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
-  RequestHeaderSection: () => RequestHeaderSection,
-  requestHeadersViewStyles: () => RequestHeadersView_css_default
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  RequestHeaderSection: () => RequestHeaderSection
 });
 import "../../../ui/kit/kit.js";
 import * as i18n5 from "../../../core/i18n/i18n.js";
 import * as Platform2 from "../../../core/platform/platform.js";
-import * as UI3 from "../../../ui/legacy/legacy.js";
+import * as UI4 from "../../../ui/legacy/legacy.js";
 import * as Lit3 from "../../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
 import * as NetworkForward from "../forward/forward.js";
@@ -1311,7 +1343,7 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/network/components/RequestHeaderSection.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   const headers = input.headers;
   render4(html4`
     <style>${RequestHeaderSection_css_default}</style>
@@ -1344,11 +1376,11 @@ function renderProvisionalHeadersWarning(isRequestCached) {
     </div>
   `;
 }
-var RequestHeaderSection = class extends UI3.Widget.Widget {
+var RequestHeaderSection = class extends UI4.Widget.Widget {
   #request = null;
   #headers = [];
   #view;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -1392,7 +1424,7 @@ var RequestHeaderSection = class extends UI3.Widget.Widget {
 // ../../front_end/panels/network/components/RequestTrustTokensView.ts
 var RequestTrustTokensView_exports = {};
 __export(RequestTrustTokensView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   RequestTrustTokensView: () => RequestTrustTokensView,
   statusConsideredSuccess: () => statusConsideredSuccess
 });
@@ -3672,6 +3704,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -4241,7 +4274,7 @@ var Runtime;
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/panels/network/components/RequestTrustTokensView.ts
-import * as UI4 from "../../../ui/legacy/legacy.js";
+import * as UI5 from "../../../ui/legacy/legacy.js";
 import * as Lit4 from "../../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -4410,7 +4443,7 @@ var renderParameterSection = (params) => {
     <devtools-report-divider></devtools-report-divider>
   `;
 };
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   render5(html5`
     <style>${RequestTrustTokensView_css_default}</style>
     <devtools-report>
@@ -4419,10 +4452,10 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     </devtools-report>
   `, target);
 };
-var RequestTrustTokensView = class extends UI4.Widget.Widget {
+var RequestTrustTokensView = class extends UI5.Widget.Widget {
   #request = null;
   #view;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element);
     this.#view = view;
   }
@@ -4540,7 +4573,7 @@ import * as Persistence from "../../../models/persistence/persistence.js";
 import * as NetworkForward2 from "../forward/forward.js";
 import * as Sources from "../../sources/sources.js";
 import * as Buttons2 from "../../../ui/components/buttons/buttons.js";
-import * as UI5 from "../../../ui/legacy/legacy.js";
+import * as UI6 from "../../../ui/legacy/legacy.js";
 import { html as html6, nothing as nothing5, render as render6 } from "../../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -5009,7 +5042,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
       Common2.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(true);
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {
-      UI5.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
+      UI6.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources.SourcesNavigator.OverridesNavigatorView.setupNewWorkspace();
         await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
       });

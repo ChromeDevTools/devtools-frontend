@@ -95,6 +95,12 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     get callFrames(): CallFrame[] | null;
     debuggerPausedDetails(): DebuggerPausedDetails | null;
     /**
+     * Call this after running code in the paused target that can assign to variables (e.g. a console evaluation).
+     * The scope chains of the paused call frames are re-fetched on demand afterwards. Listeners are expected to
+     * recompute whatever they derived from a scope chain, similar to what happens after a step.
+     */
+    invalidateScopeChains(): void;
+    /**
      * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
      */
     private setDebuggerPausedDetails;
@@ -163,7 +169,8 @@ export declare enum Events {
     DiscardedAnonymousScriptSource = "DiscardedAnonymousScriptSource",
     GlobalObjectCleared = "GlobalObjectCleared",
     CallFrameSelected = "CallFrameSelected",
-    DebuggerIsReadyToPause = "DebuggerIsReadyToPause"
+    DebuggerIsReadyToPause = "DebuggerIsReadyToPause",
+    ScopeChainsInvalidated = "ScopeChainsInvalidated"
 }
 export interface EventTypes {
     [Events.DebuggerWasEnabled]: DebuggerModel;
@@ -176,6 +183,7 @@ export interface EventTypes {
     [Events.CallFrameSelected]: DebuggerModel;
     [Events.DebuggerIsReadyToPause]: DebuggerModel;
     [Events.DebugInfoAttached]: Script;
+    [Events.ScopeChainsInvalidated]: DebuggerModel;
 }
 export declare class Location {
     debuggerModel: DebuggerModel;
@@ -217,6 +225,11 @@ export declare class CallFrame {
     static fromPayloadArray(debuggerModel: DebuggerModel, callFrames: Protocol.Debugger.CallFrame[], exception: RemoteObject | null): CallFrame[];
     createVirtualCallFrame(inlineFrameIndex: number, name: string): CallFrame;
     get id(): Protocol.Debugger.CallFrameId;
+    /**
+     * Call this after running code in the paused target that can assign to variables. The scope chain V8
+     * reported with the pause is a snapshot, so it is re-fetched the next time it is requested.
+     */
+    markScopeChainStale(): void;
     scopeChain(): Promise<Scope[]>;
     thisObject(): RemoteObject | null;
     returnValue(): RemoteObject | null;

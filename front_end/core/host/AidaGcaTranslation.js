@@ -78,10 +78,6 @@ function mapCommonAidaRequestFields(aidaRequest, gcaRequest) {
             temperature: aidaRequest.options.temperature,
         };
     }
-    if (aidaRequest.metadata?.string_session_id) {
-        // Populate top-level sessionId for server-side session affinity; labels['session_id'] only sets a sanitized GCP label.
-        gcaRequest.sessionId = aidaRequest.metadata.string_session_id;
-    }
 }
 export function gcaResponseToAidaDoConversationResponse(response) {
     const functionCalls = [];
@@ -514,6 +510,13 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
         if (finishReason && BLOCKING_FINISH_REASONS.has(finishReason)) {
             return [blockedChunk(metadata, `GCA response blocked: ${finishReason}`)];
         }
+        // Other non-`STOP` reasons (e.g. `MALFORMED_FUNCTION_CALL`) are model generation errors
+        // rather than policy blocks, so return an `error` chunk to throw `AidaUnknownError`.
+        // (`MAX_TOKENS` is handled below because earlier chunks may already have valid partial output.)
+        if (finishReason && finishReason !== 'STOP' && finishReason !== 'FINISH_REASON_UNSPECIFIED' &&
+            finishReason !== 'MAX_TOKENS') {
+            return [{ error: { status: finishReason, message: `GCA response finished with ${finishReason}` } }];
+        }
         // Trailing chunks without parts still yield metadata so the client receives the final
         // rpcGlobalId, modelVersion, usageMetadata, and citationMetadata.
         const chunks = parts.length === 0 ? [{ metadata }] : parts.map(part => {
@@ -543,6 +546,11 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
             }
             return aidaChunkResponse;
         });
+        // Unlike other failure reasons, `MAX_TOKENS` can follow valid partial output from earlier
+        // chunks, so `AidaClient` decides at stream end whether the stream produced any output.
+        if (finishReason === 'MAX_TOKENS') {
+            chunks[0].finishReason = finishReason;
+        }
         AIDA.debugLog('Translation succeeded:', JSON.stringify(response), JSON.stringify(chunks));
         return chunks;
     }

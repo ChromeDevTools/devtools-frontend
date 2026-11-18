@@ -276,10 +276,6 @@ export class LighthousePanel extends UI.Panel.Panel {
             this.cachedRenderedReports.set(lighthouseResult, reportWidget);
         }
         reportWidget.show(this.auditResultsElement);
-        if (!reportWidget.isShowing()) {
-            reportWidget.requestUpdate();
-        }
-        return reportWidget;
     }
     buildReportUI(lighthouseResult, artifacts) {
         if (lighthouseResult === null) {
@@ -288,10 +284,10 @@ export class LighthousePanel extends UI.Panel.Panel {
         const optionElement = new Item(lighthouseResult, () => {
             this.renderReport(lighthouseResult, artifacts);
         }, this.renderStartView.bind(this));
+        // prepend() synchronously selects optionElement, which calls renderReport().
         this.reportSelector.prepend(optionElement);
-        this.refreshToolbarUI();
-        const reportWidget = this.renderReport(lighthouseResult);
-        void reportWidget.updateComplete.then(() => {
+        const reportWidget = this.cachedRenderedReports.get(lighthouseResult);
+        void reportWidget?.updateComplete.then(() => {
             this.auditResultsElement.querySelector('.lh-topbar__url')?.focus();
         });
     }

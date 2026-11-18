@@ -51,18 +51,23 @@ export class GetStylesTool {
     /**
      * Handles the request to retrieve computed and authored CSS styles for specified elements.
      *
-     * Resolves element backend node IDs using the primary page target and verifies that each
-     * element's security origin matches the established origin lock before querying CSS models.
+     * Normalizes and expands shorthand property names, resolves element backend node IDs using the
+     * primary page target, and verifies that each element's security origin matches the established
+     * origin lock before querying CSS models.
      */
     async handler(params, context, _options) {
-        const widgets = [];
-        const result = {};
+        const propertySets = this.#resolveStyleProperties(params.styleProperties);
+        if ('error' in propertySets) {
+            return propertySets;
+        }
+        const { expandedProperties, authoredProperties } = propertySets;
         const target = context.getTarget();
         if (!target) {
             return { error: 'Error: Could not find the inspected page.' };
         }
+        const widgets = [];
+        const result = {};
         for (const uid of params.elements) {
-            result[uid] = { computed: {}, authored: {} };
             const node = new SDK.DOMModel.DeferredDOMNode(target, uid);
             const resolved = await node.resolvePromise();
             if (!resolved) {
@@ -88,28 +93,83 @@ export class GetStylesTool {
                     computedStyles: styles,
                     backendNodeId: node.backendNodeId(),
                     matchedCascade: matchedStyles,
-                    properties: params.styleProperties,
+                    properties: [...expandedProperties],
                 },
             });
-            for (const prop of params.styleProperties) {
-                result[uid].computed[prop] = styles.get(prop);
+            const computed = {};
+            for (const prop of expandedProperties) {
+                computed[prop] = styles.get(prop);
             }
-            for (const style of matchedStyles.nodeStyles()) {
-                for (const property of style.allProperties()) {
-                    if (!params.styleProperties.includes(property.name)) {
-                        continue;
-                    }
-                    const state = matchedStyles.propertyState(property);
-                    if (state === "Active" /* SDK.CSSMatchedStyles.PropertyState.ACTIVE */) {
-                        result[uid].authored[property.name] = property.value;
-                    }
-                }
-            }
+            result[uid] = {
+                computed,
+                authored: this.#collectAuthoredStyles(matchedStyles, authoredProperties),
+            };
         }
         return {
             result: JSON.stringify(result, null, 2),
             widgets,
         };
+    }
+    /**
+     * Normalizes requested CSS property names, rejects "all" and "*", and computes
+     * separate property sets for computed-style lookups and authored-rule matching.
+     */
+    #resolveStyleProperties(styleProperties) {
+        const cssMetadata = SDK.CSSMetadata.cssMetadata();
+        const expandedProperties = new Set();
+        for (const rawProperty of styleProperties) {
+            const trimmed = rawProperty.trim();
+            if (!trimmed) {
+                continue;
+            }
+            const canonical = trimmed.startsWith('--') ? trimmed : trimmed.toLowerCase();
+            if (canonical === 'all' || canonical === '*') {
+                return {
+                    error: 'Error: Generic values like "all" or "*" are not supported. Provide specific CSS property names.',
+                };
+            }
+            expandedProperties.add(canonical);
+            // getComputedStyle() returns only resolved longhands, so expand shorthands into longhands.
+            for (const longhand of cssMetadata.getLonghands(canonical) ?? []) {
+                expandedProperties.add(longhand);
+            }
+        }
+        // Authored rules can set requested longhands through a parent shorthand, such as an unexpanded var() declaration.
+        // Track parent shorthands separately from expandedProperties so computed and widget properties do not widen.
+        const authoredProperties = new Set(expandedProperties);
+        for (const prop of expandedProperties) {
+            for (const shorthand of cssMetadata.getShorthands(prop) ?? []) {
+                // CSSMetadata registers "all" as a parent shorthand for almost every standard CSS property.
+                if (shorthand !== 'all') {
+                    authoredProperties.add(shorthand);
+                }
+            }
+        }
+        return { expandedProperties, authoredProperties };
+    }
+    /**
+     * Collects active, non-empty authored CSS declarations matching `authoredProperties`
+     * across the element's matched style cascade.
+     */
+    #collectAuthoredStyles(matchedStyles, authoredProperties) {
+        const authored = {};
+        for (const style of matchedStyles.nodeStyles()) {
+            for (const property of style.allProperties()) {
+                if (!authoredProperties.has(property.name)) {
+                    continue;
+                }
+                // Blink does not expand var() shorthands at parse time, so CSSProperty creates
+                // active implicit longhands with empty values. Skip those empty longhands so
+                // authored does not report "".
+                if (property.implicit && !property.value) {
+                    continue;
+                }
+                if (matchedStyles.propertyState(property) === "Active" /* SDK.CSSMatchedStyles.PropertyState.ACTIVE */) {
+                    authored[property.name] = property.value;
+                }
+            }
+        }
+        return authored;
     }
 }
 //# sourceMappingURL=GetStyles.js.map

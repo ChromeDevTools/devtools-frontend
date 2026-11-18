@@ -129,6 +129,16 @@ export async function getAxeViolations(element, rules) {
     if (!axeInstance) {
         throw new Error('axe-core is not loaded.');
     }
+    // Modern axe-core supports WAI-ARIA 1.1 global `aria-details` as an idref
+    // (used by `<devtools-tooltip variant="rich">`), but the bundled v3.3.2
+    // marks it unsupported without an idref type. Remove once axe-core is updated.
+    const lookupTable = axeInstance.commons?.aria?.lookupTable;
+    if (lookupTable) {
+        lookupTable.attributes['aria-details'] = { type: 'idref', allowEmpty: true, unsupported: false };
+        if (!lookupTable.globalAttributes.includes('aria-details')) {
+            lookupTable.globalAttributes.push('aria-details');
+        }
+    }
     axeInstance.configure({ ...DEFAULT_CONFIG });
     const target = element instanceof ShadowRoot ? element.host : element;
     const results = await axeInstance.run(target, { rules: { ...DISABLED_RULES, ...rules } });

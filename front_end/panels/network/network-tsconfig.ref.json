@@ -131,9 +131,6 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/input/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../ui/components/lists/bundle-tsconfig.ref.json"
     },
     {
@@ -162,9 +159,6 @@
     },
     {
       "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../ui/legacy/components/settings_ui/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/legacy/components/source_frame/bundle-tsconfig.ref.json"

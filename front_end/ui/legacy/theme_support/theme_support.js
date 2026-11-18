@@ -18,10 +18,20 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
       Host.InspectorFrontendHostAPI.Events.ColorThemeChanged,
       this.#onHostThemeChangeListener
     );
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+      Host.InspectorFrontendHostAPI.Events.CaretBlinkIntervalChanged,
+      this.#onCaretBlinkIntervalChangeListener
+    );
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.getHostConfig((config) => {
+      if (this.#disposed) {
+        return;
+      }
       const colorSource = config.userColorSource;
       if (colorSource && colorSource !== (this.#pendingUserColorSource ?? Root.Runtime.hostConfig.userColorSource)) {
         this.fetchColorsAndApplyHostTheme(colorSource);
+      }
+      if (this.#caretBlinkInterval === void 0) {
+        this.#setCaretBlinkInterval(config.caretBlinkInterval);
       }
     });
   }
@@ -30,6 +40,8 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
   computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
   #documentsToTheme = /* @__PURE__ */ new Set([document]);
   #pendingUserColorSource;
+  #caretBlinkInterval;
+  #disposed = false;
   #documentColorSource = /* @__PURE__ */ new WeakMap();
   #latestColorsCssLink = /* @__PURE__ */ new WeakMap();
   #darkThemeMediaQuery;
@@ -38,13 +50,21 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
   #onHostThemeChangeListener = (event) => {
     this.fetchColorsAndApplyHostTheme(typeof event.data === "string" ? event.data : void 0);
   };
+  #onCaretBlinkIntervalChangeListener = (event) => {
+    this.#setCaretBlinkInterval(event.data);
+  };
   #dispose() {
+    this.#disposed = true;
     this.#darkThemeMediaQuery.removeEventListener("change", this.#onThemeChangeListener);
     this.#highContrastMediaQuery.removeEventListener("change", this.#onThemeChangeListener);
     this.setting.removeChangeListener(this.#onThemeChangeListener);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
       Host.InspectorFrontendHostAPI.Events.ColorThemeChanged,
       this.#onHostThemeChangeListener
+    );
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+      Host.InspectorFrontendHostAPI.Events.CaretBlinkIntervalChanged,
+      this.#onCaretBlinkIntervalChangeListener
     );
   }
   static hasInstance() {
@@ -93,6 +113,20 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
   }
   themeName() {
     return this.#themeName;
+  }
+  caretBlinkInterval() {
+    return this.#caretBlinkInterval ?? normalizeCaretBlinkInterval(Root.Runtime.hostConfig.caretBlinkInterval);
+  }
+  #setCaretBlinkInterval(value) {
+    const normalized = normalizeCaretBlinkInterval(value);
+    if (normalized === void 0) {
+      return;
+    }
+    const previous = this.caretBlinkInterval();
+    this.#caretBlinkInterval = normalized;
+    if (normalized !== previous) {
+      this.dispatchEvent(new CaretBlinkIntervalChangeEvent());
+    }
   }
   #applyTheme() {
     for (const document2 of this.#documentsToTheme) {
@@ -167,14 +201,28 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     document2.body.appendChild(newColorsCssLink);
   }
 };
+function normalizeCaretBlinkInterval(value) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
+    return void 0;
+  }
+  return value === 0 ? 0 : value;
+}
 var ThemeChangeEvent = class _ThemeChangeEvent extends Event {
   static eventName = "themechange";
   constructor() {
     super(_ThemeChangeEvent.eventName, { bubbles: true, composed: true });
   }
 };
+var CaretBlinkIntervalChangeEvent = class _CaretBlinkIntervalChangeEvent extends Event {
+  static eventName = "caretblinkintervalchange";
+  constructor() {
+    super(_CaretBlinkIntervalChangeEvent.eventName, { bubbles: true, composed: true });
+  }
+};
 export {
+  CaretBlinkIntervalChangeEvent,
   ThemeChangeEvent,
-  ThemeSupport
+  ThemeSupport,
+  normalizeCaretBlinkInterval
 };
 //# sourceMappingURL=theme_support.js.map

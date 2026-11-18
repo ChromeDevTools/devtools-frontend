@@ -30,6 +30,9 @@
     },
     {
       "path": "../../front_end/ui/legacy/theme_support/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/ui/settings/bundle-tsconfig.ref.json"
     }
   ]
 }

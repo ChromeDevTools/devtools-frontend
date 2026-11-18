@@ -14,8 +14,9 @@ export declare function stringifyObjectOnThePage(this: unknown): string;
  *    `image-set()`, `-webkit-image-set()`, `src()`) so style edits cannot
  *    trigger outbound network requests.
  * 3. Validates the remaining declarations with `CSSStyleSheet` so unknown
- *    property names and invalid property values are omitted, and re-checks
- *    serialized CSSOM values against `DISALLOWED_CSS_URL_FUNCTION_REGEX`.
+ *    property names and invalid property values are omitted, re-checks
+ *    serialized CSSOM values against `DISALLOWED_CSS_URL_FUNCTION_REGEX`, and
+ *    preserves `!important` priority on valid declarations.
  */
 export declare function sanitizeStyleChanges(selector: string, styles: Record<string, string>): Promise<Record<string, string>>;
 /**

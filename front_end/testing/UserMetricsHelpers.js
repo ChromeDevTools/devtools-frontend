@@ -1,8 +1,8 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { afterEach, beforeEach } from 'mocha';
 import * as Host from '../core/host/host.js';
+import { beforeEachWithTeardown } from './TestTeardown.js';
 /**
  * @returns True, iff a metric event with the provided name and code was recorded. False otherwise.
  */
@@ -22,7 +22,7 @@ export function resetRecordedMetrics() {
     }
 }
 export function setupUserMetricHooks() {
-    beforeEach(() => {
+    beforeEachWithTeardown(() => {
         const mockEnumCodes = new Map();
         function getMockEnumCode(enumName, prop) {
             if (prop === 'MAX_VALUE') {
@@ -74,8 +74,7 @@ export function setupUserMetricHooks() {
                 });
             },
         });
-    });
-    afterEach(() => {
+    }, () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         const globalObject = globalThis;
         delete globalObject.DevToolsMetrics;

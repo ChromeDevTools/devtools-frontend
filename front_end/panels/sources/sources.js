@@ -4601,6 +4601,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -10600,6 +10601,12 @@ var DebuggerPlugin = class extends Plugin {
       this.callFrameChanged,
       this
     );
+    this.#scopeChainResolver = SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance();
+    this.#scopeChainResolver.addEventListener(
+      SourceMapScopes.ScopeChainResolver.Events.SCOPE_CHAIN_INVALIDATED,
+      this.#scopeChainInvalidated,
+      this
+    );
     this.updateScriptFiles();
     this.muted = this.uiSourceCode.isDirty();
     this.initializedMuted = this.muted;
@@ -10642,9 +10649,11 @@ var DebuggerPlugin = class extends Plugin {
   #activeBreakpointEditRequest = void 0;
   #scheduledFinishingActiveDialog = false;
   missingDebugInfoBar = null;
+  #infobarContainers = /* @__PURE__ */ new WeakMap();
   #sourcesPanelDebuggedMetricsRecorded = false;
   loader;
   ignoreListCallback;
+  #scopeChainResolver;
   editorExtension() {
     const handlers = this.shortcutHandlers();
     return [
@@ -10795,13 +10804,36 @@ var DebuggerPlugin = class extends Plugin {
     this.attachInfobar(this.ignoreListInfobar);
   }
   attachInfobar(bar) {
-    if (this.editor) {
-      this.editor.dispatch({ effects: SourceFrame5.SourceFrame.addSourceFrameInfobar.of({ element: bar.element }) });
+    if (!this.editor) {
+      return;
     }
+    const existing = this.#infobarContainers.get(bar);
+    if (existing?.editor === this.editor && bar.isShowing() && existing.container.isConnected) {
+      return;
+    }
+    if (existing) {
+      bar.detach();
+      existing.editor.dispatch(
+        { effects: SourceFrame5.SourceFrame.removeSourceFrameInfobar.of({ element: existing.container }) }
+      );
+      this.#infobarContainers.delete(bar);
+    }
+    const container = this.editor.editor.dom.ownerDocument.createElement("div");
+    bar.show(container, void 0, true);
+    this.#infobarContainers.set(bar, { container, editor: this.editor });
+    this.editor.dispatch({ effects: SourceFrame5.SourceFrame.addSourceFrameInfobar.of({ element: container }) });
   }
   removeInfobar(bar) {
-    if (this.editor && bar) {
-      this.editor.dispatch({ effects: SourceFrame5.SourceFrame.removeSourceFrameInfobar.of({ element: bar.element }) });
+    if (!bar) {
+      return;
+    }
+    const existing = this.#infobarContainers.get(bar);
+    this.#infobarContainers.delete(bar);
+    bar.detach();
+    if (existing) {
+      existing.editor.dispatch(
+        { effects: SourceFrame5.SourceFrame.removeSourceFrameInfobar.of({ element: existing.container }) }
+      );
     }
   }
   hideIgnoreListInfobar() {
@@ -11970,6 +12002,18 @@ var DebuggerPlugin = class extends Plugin {
       this.setExecutionLocation(null);
     }
   }
+  /**
+   * The scope mappings are derived from the resolved scope chain of the selected call frame. Once that is
+   * invalidated (e.g. a console evaluation assigned to a variable), recompute them and the inline values.
+   */
+  #scopeChainInvalidated(event) {
+    const frameFlavor = UI11.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+    if (frameFlavor?.sdkFrame.script !== event.data) {
+      return;
+    }
+    this.#scopeMappingsCache.clear();
+    void this.updateValueDecorations();
+  }
   setExecutionLocation(executionLocation) {
     if (this.executionLocation === executionLocation || !this.editor) {
       return;
@@ -11999,6 +12043,9 @@ var DebuggerPlugin = class extends Plugin {
   }
   dispose() {
     this.hideIgnoreListInfobar();
+    if (this.missingDebugInfoBar) {
+      this.missingDebugInfoBar.dispose();
+    }
     if (this.sourceMapInfobar) {
       this.sourceMapInfobar.dispose();
     }
@@ -12035,6 +12082,11 @@ var DebuggerPlugin = class extends Plugin {
     UI11.Context.Context.instance().removeFlavorChangeListener(
       StackTrace.StackTrace.DebuggableFrameFlavor,
       this.callFrameChanged,
+      this
+    );
+    this.#scopeChainResolver.removeEventListener(
+      SourceMapScopes.ScopeChainResolver.Events.SCOPE_CHAIN_INVALIDATED,
+      this.#scopeChainInvalidated,
       this
     );
   }

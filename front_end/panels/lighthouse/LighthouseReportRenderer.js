@@ -53,6 +53,17 @@ function renderContent(input) {
 export const DEFAULT_VIEW = (input, _output, target) => {
     render(renderContent(input), target);
 };
+const nodeLinkState = new WeakMap();
+function restorePlainNode(element) {
+    const state = nodeLinkState.get(element);
+    if (!state) {
+        return;
+    }
+    nodeLinkState.delete(element);
+    const screenshotElement = element.querySelector('.lh-element-screenshot');
+    element.replaceChildren(...(screenshotElement ? [screenshotElement] : []), ...state.fallbackNodes);
+    UI.Tooltip.Tooltip.install(element, state.title);
+}
 export class LighthouseReportRenderer extends UI.Widget.Widget {
     #view;
     #report = null;
@@ -60,6 +71,7 @@ export class LighthouseReportRenderer extends UI.Widget.Widget {
     #beforePrint;
     #afterPrint;
     #isRendered = false;
+    #linkifyController;
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
@@ -102,12 +114,18 @@ export class LighthouseReportRenderer extends UI.Widget.Widget {
     wasShown() {
         super.wasShown();
         ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
+        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#onTargetLoad);
         this.#onThemeChange();
         if (!this.#isRendered) {
             this.requestUpdate();
         }
+        else {
+            this.#linkifyNodes();
+        }
     }
     willHide() {
+        this.#linkifyController?.abort();
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#onTargetLoad);
         ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
         super.willHide();
     }
@@ -115,6 +133,34 @@ export class LighthouseReportRenderer extends UI.Widget.Widget {
         const darkMode = ThemeSupport.ThemeSupport.hasInstance() && ThemeSupport.ThemeSupport.instance().themeName() === 'dark';
         this.contentElement.querySelector('.lh-devtools')?.classList.toggle('lh-dark', darkMode);
     };
+    #onTargetLoad = (event) => {
+        if (event.data.resourceTreeModel.target() !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+            return;
+        }
+        this.#linkifyNodes();
+    };
+    #linkifyNodes() {
+        this.#linkifyController?.abort();
+        const reportEl = this.contentElement.querySelector('.lh-devtools');
+        if (!this.#report || !reportEl) {
+            return;
+        }
+        if (!LighthouseReportRenderer.#targetMatchesReport(this.#report)) {
+            LighthouseReportRenderer.unlinkNodeDetails(reportEl);
+            return;
+        }
+        const controller = new AbortController();
+        this.#linkifyController = controller;
+        void LighthouseReportRenderer.linkifyNodeDetails(reportEl, this.#view, controller.signal);
+    }
+    static #targetMatchesReport(lhr) {
+        const inspectedURL = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
+        if (!inspectedURL) {
+            return false;
+        }
+        const targetURL = Common.ParsedURL.ParsedURL.urlWithoutHash(inspectedURL);
+        return [lhr.finalDisplayedUrl, lhr.mainDocumentUrl, lhr.finalUrl].some(url => url !== undefined && url !== '' && Common.ParsedURL.ParsedURL.urlWithoutHash(url) === targetURL);
+    }
     performUpdate() {
         this.#isRendered = true;
         const darkMode = ThemeSupport.ThemeSupport.hasInstance() && ThemeSupport.ThemeSupport.instance().themeName() === 'dark';
@@ -126,6 +172,9 @@ export class LighthouseReportRenderer extends UI.Widget.Widget {
         const reportEl = this.contentElement.querySelector('.lh-devtools');
         if (this.#report && reportEl) {
             LighthouseReportRenderer.#finalizeRenderedReport(reportEl, this.#report, this.#artifacts, this.#view);
+            if (this.isShowing()) {
+                this.#linkifyNodes();
+            }
         }
     }
     static #createReportOptions(lhr, artifacts, opts) {
@@ -158,7 +207,9 @@ export class LighthouseReportRenderer extends UI.Widget.Widget {
                 return;
             }
             printWindow.document.body.replaceWith(clonedReport);
-            await LighthouseReportRenderer.linkifyNodeDetails(clonedReport);
+            if (lhr && LighthouseReportRenderer.#targetMatchesReport(lhr)) {
+                await LighthouseReportRenderer.linkifyNodeDetails(clonedReport);
+            }
             opts?.beforePrint?.();
             printWindow.focus();
             printWindow.print();
@@ -176,10 +227,7 @@ export class LighthouseReportRenderer extends UI.Widget.Widget {
         reportEl._lighthouseResultForTesting = lhr;
         // @ts-expect-error Expose Artifacts on DOM for e2e tests
         reportEl._lighthouseArtifactsForTesting = artifacts;
-        void LighthouseReportRenderer.waitForMainTargetLoad().then(() => {
-            void LighthouseReportRenderer.linkifyNodeDetails(reportEl, view);
-            void LighthouseReportRenderer.linkifySourceLocationDetails(reportEl, view);
-        });
+        void LighthouseReportRenderer.linkifySourceLocationDetails(reportEl, view);
     }
     static renderLighthouseReport(lhr, artifacts, opts) {
         const reportOptions = LighthouseReportRenderer.#createReportOptions(lhr, artifacts, opts);
@@ -225,18 +273,12 @@ export class LighthouseReportRenderer extends UI.Widget.Widget {
         topbar?.remove();
         return reportEl;
     }
-    static async waitForMainTargetLoad() {
-        const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-        if (!mainTarget) {
-            return;
+    static unlinkNodeDetails(el) {
+        for (const origElement of el.getElementsByClassName('lh-node')) {
+            restorePlainNode(origElement);
         }
-        const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-        if (!resourceTreeModel) {
-            return;
-        }
-        await resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
     }
-    static async linkifyNodeDetails(el, view = DEFAULT_VIEW) {
+    static async linkifyNodeDetails(el, view = DEFAULT_VIEW, signal) {
         const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!mainTarget) {
             return;
@@ -246,23 +288,36 @@ export class LighthouseReportRenderer extends UI.Widget.Widget {
             return;
         }
         for (const origElement of el.getElementsByClassName('lh-node')) {
+            if (signal?.aborted) {
+                return;
+            }
             const origHTMLElement = origElement;
             const detailsItem = origHTMLElement.dataset;
             if (!detailsItem.path) {
                 continue;
             }
             const nodeId = await domModel.pushNodeByPathToFrontend(detailsItem.path);
-            if (!nodeId) {
-                continue;
+            if (signal?.aborted) {
+                return;
             }
-            const node = domModel.nodeForId(nodeId);
+            const node = nodeId ? domModel.nodeForId(nodeId) : null;
             if (!node) {
+                restorePlainNode(origHTMLElement);
                 continue;
             }
-            UI.Tooltip.Tooltip.install(origHTMLElement, '');
+            const existingState = nodeLinkState.get(origHTMLElement);
+            if (existingState?.node === node) {
+                continue;
+            }
             const screenshotElement = origHTMLElement.querySelector('.lh-element-screenshot');
+            const fallbackNodes = existingState ?
+                existingState.fallbackNodes :
+                [...origHTMLElement.childNodes].filter(child => child !== screenshotElement);
+            const title = existingState ? existingState.title : origHTMLElement.title;
+            UI.Tooltip.Tooltip.install(origHTMLElement, '');
             const linkContainer = document.createElement('span');
             origHTMLElement.replaceChildren(...(screenshotElement ? [screenshotElement] : []), linkContainer);
+            nodeLinkState.set(origHTMLElement, { fallbackNodes, title, node });
             view({ type: 'node', node, snippet: detailsItem.snippet }, undefined, linkContainer);
         }
     }

@@ -29,7 +29,6 @@ export declare class Action extends Common.ObjectWrapper.ObjectWrapper<EventType
     configurableBindings(): boolean;
     experiment(): string | undefined;
     featurePromotionId(): string | undefined;
-    setting(): string | undefined;
     condition(): Root.Runtime.Condition | undefined;
     order(): number | undefined;
 }
@@ -248,13 +247,6 @@ export interface ActionRegistration {
      * Whether an action needs to be promoted. A new badge is shown next to the menu items then.
      */
     featurePromotionId?: string;
-    /**
-     * The name of the setting an action is associated with. Enabling and
-     * disabling the declared setting will enable and disable the action
-     * respectively. Note that changing the setting requires a reload for it to
-     * apply to action registration.
-     */
-    setting?: string;
     /**
      * A condition is a function that will make the action available if it
      * returns true, and not available, otherwise. Make sure that objects you

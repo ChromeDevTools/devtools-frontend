@@ -51,6 +51,14 @@ export declare class SplitWidget extends SplitWidgetBase {
     toggleSidebar(): boolean;
 }
 export type ShowAttribute = 'main' | 'sidebar' | 'both';
+/**
+ * `<devtools-split-view>` hosts a `SplitWidget`.
+ *
+ * `direction`, `sidebar-position`, and `show` can change at any time.
+ * `name`, `sidebar-initial-size`, `sidebar-initial-width`,
+ * `sidebar-initial-height`, and `constraints-in-dip` are only read when
+ * the widget is created.
+ */
 export declare class SplitWidgetElement extends WidgetElement<SplitWidget> {
     static readonly observedAttributes: string[];
     constructor();

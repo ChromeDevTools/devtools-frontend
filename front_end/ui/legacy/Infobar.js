@@ -1,15 +1,15 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+import '../kit/kit.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import { createIcon } from '../kit/kit.js';
-import * as ARIAUtils from './ARIAUtils.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as Buttons from '../components/buttons/buttons.js';
+import { Directives, html, nothing, render } from '../lit/lit.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 import infobarStyles from './infobar.css.js';
-import { Keys } from './KeyboardShortcut.js';
-import { createShadowRootWithCoreStyles, createTextButton } from './UIUtils.js';
+import { Widget, WidgetElement } from './Widget.js';
+const { ifDefined } = Directives;
 const UIStrings = {
     /**
      * @description Button text to permanently dismiss an infobar and prevent it from appearing again.
@@ -22,91 +22,206 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Infobar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class Infobar {
-    element;
-    #shadowRoot;
-    #contentElement;
-    #detailsRows;
-    #infoContainer;
-    #infoMessage;
-    #infoText;
-    #actionContainer;
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const defaultActionButtonVariant = input.hasDisableSetting ? "tonal" /* Buttons.Button.Variant.TONAL */ : "outlined" /* Buttons.Button.Variant.OUTLINED */;
+    // clang-format off
+    const mainRow = html `
+    <div class="infobar-main-row">
+      <div class="infobar-info-container">
+        <div class="infobar-info-message">
+          <div class="infobar-info-text" role="alert" aria-live="polite">${input.text}</div>
+        </div>
+        <div class="infobar-info-actions">
+          ${input.hasDisableSetting ? html `
+            <devtools-button
+                class="infobar-button"
+                .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
+                .jslogContext=${'dont-show-again'}
+                @click=${input.onDisable}>${i18nString(UIStrings.dontShowAgain)}</devtools-button>` : nothing}
+          ${input.actions ? input.actions.map(action => html `
+            <devtools-button
+                class="infobar-button"
+                .variant=${action.buttonVariant ?? defaultActionButtonVariant}
+                .jslogContext=${action.jslogContext}
+                @click=${() => input.onAction(action)}>${action.text}</devtools-button>`) : nothing}
+        </div>
+      </div>
+    </div>`;
+    // clang-format on
+    const onKeyDown = (event) => {
+        if (Platform.KeyboardUtilities.isEscKey(event)) {
+            input.onDismiss();
+            event.consume();
+        }
+    };
+    const jslog = input.jslogContext ?
+        `${VisualLogging.dialog(input.jslogContext).track({ resize: true, keydown: 'Enter|Escape' })}` :
+        undefined;
+    // clang-format off
+    render(html `
+    <style>${infobarStyles}</style>
+    <div
+        class=${`infobar infobar-${input.type}`}
+        role=${ifDefined(input.actions ? 'group' : undefined)}
+        tabindex=${ifDefined(input.type !== "issue" /* Type.ISSUE */ ? 0 : undefined)}
+        aria-label=${input.text}
+        @keydown=${onKeyDown}>
+      <div class="icon-container">
+        <devtools-icon class=${`${input.type}-icon`} name=${TYPE_TO_ICON[input.type]}></devtools-icon>
+      </div>
+      ${input.detailsRows.length > 0 ? html `
+        <details>
+          <summary>
+            <div class="icon-container">
+              <devtools-icon name="arrow-drop-down"></devtools-icon>
+            </div>
+            ${mainRow}
+          </summary>
+          <div class="infobar-details-rows">
+            ${input.detailsRows.map(message => html `
+              <div class="infobar-details-row"><span class="infobar-row-message">${message}</span></div>`)}
+          </div>
+        </details>` : mainRow}
+      <dt-close-button
+          class="icon-container"
+          aria-description=${i18nString(UIStrings.close)}
+          .tabbable=${true}
+          .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
+          @click=${input.onDismiss}></dt-close-button>
+    </div>`, target, {
+        container: {
+            classes: ['flex-none'],
+            ...(jslog ? { attributes: { jslog } } : {}),
+        },
+    });
+    // clang-format on
+};
+export class Infobar extends Widget {
+    #type;
+    #text;
+    #actions;
     #disableSetting;
-    #closeButton;
-    #closeCallback;
+    #jslogContext;
+    #view;
+    #detailsRows = [];
+    #closeCallback = null;
     #parentView;
-    #mainRow;
-    constructor(type, text, actions, disableSetting, jslogContext) {
-        this.element = document.createElement('div');
-        if (jslogContext) {
-            this.element.setAttribute('jslog', `${VisualLogging.dialog(jslogContext).track({ resize: true, keydown: 'Enter|Escape' })}`);
+    #needsUpdate = true;
+    constructor(typeOrElement, textOrView, actions, disableSetting, jslogContext, view = DEFAULT_VIEW) {
+        if (typeof typeOrElement === 'string') {
+            super(undefined, { useShadowDom: 'pure' });
+            this.#type = typeOrElement;
+            this.#text = typeof textOrView === 'string' ? textOrView : '';
+            this.#actions = actions;
+            this.#disableSetting = disableSetting || null;
+            this.#jslogContext = jslogContext;
+            this.#view = view;
+            // Flush initial render synchronously for legacy positional callers such as OverlaysImpl
+            // (#positionInfoBarBanner) that measure clientHeight immediately and synchronous DOM unit tests.
+            this.performUpdate();
         }
-        this.element.classList.add('flex-none');
-        this.#shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobarStyles });
-        this.#contentElement = this.#shadowRoot.createChild('div', 'infobar infobar-' + type);
-        const icon = createIcon(TYPE_TO_ICON[type], type + '-icon');
-        this.#contentElement.createChild('div', 'icon-container').appendChild(icon);
-        this.#mainRow = this.#contentElement.createChild('div', 'infobar-main-row');
-        this.#infoContainer = this.#mainRow.createChild('div', 'infobar-info-container');
-        this.#infoMessage = this.#infoContainer.createChild('div', 'infobar-info-message');
-        this.#infoText = this.#infoMessage.createChild('div', 'infobar-info-text');
-        this.#infoText.textContent = text;
-        ARIAUtils.markAsAlert(this.#infoText);
-        this.#actionContainer = this.#infoContainer.createChild('div', 'infobar-info-actions');
-        let defaultActionButtonVariant = "outlined" /* Buttons.Button.Variant.OUTLINED */;
-        this.#disableSetting = disableSetting || null;
-        if (disableSetting) {
-            const disableButton = createTextButton(i18nString(UIStrings.dontShowAgain), this.#onDisable.bind(this), { className: 'infobar-button', jslogContext: 'dont-show-again' });
-            this.#actionContainer.appendChild(disableButton);
-            // If we have a disable button, make the other buttons tonal (if not otherwise specified).
-            defaultActionButtonVariant = "tonal" /* Buttons.Button.Variant.TONAL */;
+        else {
+            super(typeOrElement, { useShadowDom: 'pure' });
+            this.#type = "info" /* Type.INFO */;
+            this.#text = '';
+            this.#disableSetting = null;
+            this.#view = typeof textOrView === 'function' ? textOrView : DEFAULT_VIEW;
         }
-        if (actions) {
-            this.#contentElement.setAttribute('role', 'group');
-            for (const action of actions) {
-                const actionCallback = this.#actionCallbackFactory(action);
-                const buttonVariant = action.buttonVariant ?? defaultActionButtonVariant;
-                const button = createTextButton(action.text, actionCallback, {
-                    className: 'infobar-button',
-                    jslogContext: action.jslogContext,
-                    variant: buttonVariant,
-                });
-                this.#actionContainer.appendChild(button);
-            }
-        }
-        this.#closeButton = this.#contentElement.createChild('dt-close-button', 'icon-container');
-        this.#closeButton.setTabbable(true);
-        this.#closeButton.setSize("SMALL" /* Buttons.Button.Size.SMALL */);
-        ARIAUtils.setDescription(this.#closeButton, i18nString(UIStrings.close));
-        self.onInvokeElement(this.#closeButton, this.dispose.bind(this));
-        if (type !== "issue" /* Type.ISSUE */) {
-            this.#contentElement.tabIndex = 0;
-        }
-        ARIAUtils.setLabel(this.#contentElement, text);
-        this.#contentElement.addEventListener('keydown', event => {
-            if (event.keyCode === Keys.Esc.code) {
-                this.dispose();
-                event.consume();
-                return;
-            }
-        });
-        this.#closeCallback = null;
     }
-    static create(type, text, actions, disableSetting, jslogContext) {
+    static create(type, text, actions, disableSetting, jslogContext, view = DEFAULT_VIEW) {
         if (disableSetting?.get()) {
             return null;
         }
-        return new Infobar(type, text, actions, disableSetting, jslogContext);
+        return new Infobar(type, text, actions, disableSetting, jslogContext, view);
+    }
+    get type() {
+        return this.#type;
+    }
+    set type(type) {
+        if (this.#type === type) {
+            return;
+        }
+        this.#type = type;
+        this.#needsUpdate = true;
+        this.requestUpdate();
+    }
+    get text() {
+        return this.#text;
+    }
+    set text(text) {
+        if (this.#text === text) {
+            return;
+        }
+        this.#text = text;
+        this.#needsUpdate = true;
+        this.requestUpdate();
+        void this.updateComplete.then(() => this.#onResize());
+    }
+    get actions() {
+        return this.#actions;
+    }
+    set actions(actions) {
+        if (this.#actions === actions) {
+            return;
+        }
+        this.#actions = actions;
+        this.#needsUpdate = true;
+        this.requestUpdate();
+    }
+    get disableSetting() {
+        return this.#disableSetting;
+    }
+    set disableSetting(disableSetting) {
+        if (this.#disableSetting === disableSetting) {
+            return;
+        }
+        this.#disableSetting = disableSetting;
+        this.#needsUpdate = true;
+        this.requestUpdate();
+    }
+    get jslogContext() {
+        return this.#jslogContext;
+    }
+    set jslogContext(jslogContext) {
+        if (this.#jslogContext === jslogContext) {
+            return;
+        }
+        this.#jslogContext = jslogContext;
+        this.#needsUpdate = true;
+        this.requestUpdate();
+    }
+    get detailsRows() {
+        return this.#detailsRows;
+    }
+    set detailsRows(detailsRows) {
+        if (this.#detailsRows === detailsRows) {
+            return;
+        }
+        this.#detailsRows = detailsRows;
+        this.#needsUpdate = true;
+        this.requestUpdate();
+    }
+    get onClose() {
+        return this.#closeCallback;
+    }
+    set onClose(callback) {
+        this.#closeCallback = callback;
     }
     dispose() {
-        this.element.remove();
-        this.#onResize();
+        if (!(this.element instanceof WidgetElement)) {
+            this.detach();
+        }
         if (this.#closeCallback) {
             this.#closeCallback.call(null);
         }
     }
     setText(text) {
-        this.#infoText.textContent = text;
+        if (this.#text === text) {
+            return;
+        }
+        this.#text = text;
+        // TODO: migrate to `requestUpdate()` once legacy synchronous callers use declarative views.
+        this.performUpdate();
         this.#onResize();
     }
     setCloseCallback(callback) {
@@ -115,24 +230,40 @@ export class Infobar {
     setParentView(parentView) {
         this.#parentView = parentView;
     }
-    #actionCallbackFactory(action) {
-        if (!action.delegate) {
-            return action.dismiss ? this.dispose.bind(this) : () => { };
+    wasShown() {
+        super.wasShown();
+        if (this.#needsUpdate) {
+            this.requestUpdate();
         }
-        if (!action.dismiss) {
-            return action.delegate;
+    }
+    wasHidden() {
+        super.wasHidden();
+        this.#onResize();
+    }
+    performUpdate() {
+        this.#needsUpdate = false;
+        this.#view({
+            type: this.#type,
+            text: this.#text,
+            actions: this.#actions,
+            hasDisableSetting: Boolean(this.#disableSetting),
+            jslogContext: this.#jslogContext,
+            detailsRows: this.#detailsRows,
+            onDisable: this.#onDisable.bind(this),
+            onAction: this.#onAction.bind(this),
+            onDismiss: this.dispose.bind(this),
+        }, undefined, this.contentElement);
+    }
+    #onAction(action) {
+        if (action.delegate) {
+            action.delegate();
         }
-        return (() => {
-            if (action.delegate) {
-                action.delegate();
-            }
+        if (action.dismiss) {
             this.dispose();
-        }).bind(this);
+        }
     }
     #onResize() {
-        if (this.#parentView) {
-            this.#parentView.doResize();
-        }
+        (this.#parentView ?? this.parentWidget())?.doResize();
     }
     #onDisable() {
         if (this.#disableSetting) {
@@ -141,24 +272,9 @@ export class Infobar {
         this.dispose();
     }
     createDetailsRowMessage(message) {
-        if (!this.#detailsRows) {
-            const details = document.createElement('details');
-            const summary = details.createChild('summary');
-            const triangleIcon = createIcon('arrow-drop-down');
-            summary.createChild('div', 'icon-container').appendChild(triangleIcon);
-            this.#contentElement.insertBefore(details, this.#mainRow);
-            summary.appendChild(this.#mainRow);
-            this.#detailsRows = details.createChild('div', 'infobar-details-rows');
-        }
-        const infobarDetailsRow = this.#detailsRows.createChild('div', 'infobar-details-row');
-        const detailsRowMessage = infobarDetailsRow.createChild('span', 'infobar-row-message');
-        if (typeof message === 'string') {
-            detailsRowMessage.textContent = message;
-        }
-        else {
-            detailsRowMessage.appendChild(message);
-        }
-        return detailsRowMessage;
+        this.#detailsRows = [...this.#detailsRows, message];
+        // TODO: migrate to `requestUpdate()` once legacy synchronous callers use declarative views.
+        this.performUpdate();
     }
 }
 export var Type;

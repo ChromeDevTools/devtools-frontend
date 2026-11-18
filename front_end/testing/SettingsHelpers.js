@@ -1,8 +1,8 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { afterEach, beforeEach } from 'mocha';
 import * as Common from '../core/common/common.js';
+import { beforeEachWithTeardown } from './TestTeardown.js';
 function createSettingValue(category, settingName, defaultValue, settingType = "boolean" /* Common.Settings.SettingType.BOOLEAN */, title, options) {
     return {
         category,
@@ -218,8 +218,7 @@ export function cleanupSettings() {
     Common.Settings.resetSettings();
 }
 export function setupSettingsHooks() {
-    beforeEach(() => setupSettings(true));
-    afterEach(cleanupSettings);
+    beforeEachWithTeardown(() => setupSettings(true), cleanupSettings);
 }
 export function createSettingsForTest(settingRegistrations = DEFAULT_SETTING_REGISTRATIONS_FOR_TEST.slice(0)) {
     const storage = new Common.Settings.SettingsStorage({});

@@ -1,6 +1,5 @@
 /**
  * This file is auto-generated, do not edit manually. *
- * Re-generate with: scripts/tools/dt.py generate-protocol-resources.
  */
 export type integer = number;
 export type binary = string;
@@ -16263,7 +16262,8 @@ export declare namespace Preload {
         PrerenderHostReused = "PrerenderHostReused",
         FormSubmitWhenPrerendering = "FormSubmitWhenPrerendering",
         CrossDocumentRestart = "CrossDocumentRestart",
-        PrefetchFailedCrossOriginSubframe = "PrefetchFailedCrossOriginSubframe"
+        PrefetchFailedCrossOriginSubframe = "PrefetchFailedCrossOriginSubframe",
+        UnexpectedMainFrameNavigation = "UnexpectedMainFrameNavigation"
     }
     /**
      * Preloading status values, see also PreloadingTriggeringOutcome. This

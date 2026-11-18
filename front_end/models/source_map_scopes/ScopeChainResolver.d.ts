@@ -10,8 +10,10 @@ import type * as Bindings from '../bindings/bindings.js';
  * given pause, without redundant CDP evaluations.
  *
  * The cache for a script is invalidated whenever debugging info (e.g. from a debugger language plugin)
- * or a source map is attached to or detached from that script. The {@link Events.SCOPE_CHAIN_INVALIDATED}
- * event is dispatched afterwards, so consumers can re-resolve the scope chain.
+ * or a source map is attached to or detached from that script. The cache for all the scripts on the call
+ * stack is invalidated when the debugger invalidates the scope chains of the paused call frames. The
+ * {@link Events.SCOPE_CHAIN_INVALIDATED} event is dispatched afterwards, so consumers can re-resolve the
+ * scope chain.
  */
 export declare class ScopeChainResolver extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
     #private;

@@ -1180,6 +1180,9 @@ export class DevToolsCloseButton extends HTMLElement {
     setSize(size) {
         this.#button.size = size;
     }
+    set size(size) {
+        this.setSize(size);
+    }
     setTabbable(tabbable) {
         if (tabbable) {
             this.#button.tabIndex = 0;
@@ -1187,6 +1190,9 @@ export class DevToolsCloseButton extends HTMLElement {
         else {
             this.#button.tabIndex = -1;
         }
+    }
+    set tabbable(tabbable) {
+        this.setTabbable(tabbable);
     }
     focus() {
         this.#button.focus();
@@ -2191,10 +2197,7 @@ export const bindCheckboxImpl = function (input, apply, metric) {
         },
     };
 };
-export const bindToSetting = (settingOrName, optionsOrValidator) => {
-    const setting = typeof settingOrName === 'string' ?
-        Common.Settings.Settings.instance().moduleSetting(settingOrName) :
-        settingOrName;
+export const bindToSetting = (setting, optionsOrValidator) => {
     let stringValidator;
     let jslog = true;
     if (typeof optionsOrValidator === 'function') {

@@ -1,8 +1,8 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { afterEach, beforeEach } from 'mocha';
 import * as i18n from '../core/i18n/i18n.js';
+import { beforeEachWithTeardown } from './TestTeardown.js';
 // The build generates en-US.json from all UIStrings. A non-literal import
 // specifier keeps TypeScript from reading it, so a change to a UI string does
 // not type-check this module again.
@@ -27,7 +27,6 @@ export function deinitializeGlobalLocaleVars() {
     i18n.DevToolsLocale.DevToolsLocale.removeInstance();
 }
 export function setupLocaleHooks() {
-    beforeEach(async () => await initializeGlobalLocaleVars());
-    afterEach(deinitializeGlobalLocaleVars);
+    beforeEachWithTeardown(initializeGlobalLocaleVars, deinitializeGlobalLocaleVars);
 }
 //# sourceMappingURL=LocaleHelpers.js.map

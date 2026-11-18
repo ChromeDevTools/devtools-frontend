@@ -37,7 +37,7 @@ export class StylePropertyHighlighter {
         }
         const [section] = block.sections;
         section.showAllItems();
-        PanelUtils.highlightElement(block.titleElement());
+        this.styleSidebarPane.highlightSectionBlock(block);
     }
     findAndHighlightSection(sectionName, blockName, treeScopeDistance = -1) {
         const block = this.styleSidebarPane.getSectionBlockByName(blockName);

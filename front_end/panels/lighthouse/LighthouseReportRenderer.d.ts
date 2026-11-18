@@ -55,8 +55,8 @@ export declare class LighthouseReportRenderer extends UI.Widget.Widget {
      * section heading with a larger animated gauge, which this widget does not use.
      */
     static renderLighthouseScores(lhr: LighthouseModel.ReporterTypes.ReportJSON): HTMLElement | null;
-    static waitForMainTargetLoad(): Promise<void>;
-    static linkifyNodeDetails(el: Element, view?: View): Promise<void>;
+    static unlinkNodeDetails(el: Element): void;
+    static linkifyNodeDetails(el: Element, view?: View, signal?: AbortSignal): Promise<void>;
     static linkifySourceLocationDetails(el: Element, view?: View): Promise<void>;
     static installVisualLogging(el: Element): void;
 }

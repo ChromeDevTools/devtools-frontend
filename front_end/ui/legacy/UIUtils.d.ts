@@ -185,7 +185,9 @@ export declare class DevToolsCloseButton extends HTMLElement {
     constructor();
     setAccessibleName(name: string): void;
     setSize(size: Buttons.Button.Size): void;
+    set size(size: Buttons.Button.Size);
     setTabbable(tabbable: boolean): void;
+    set tabbable(tabbable: boolean);
     focus(): void;
 }
 export declare function bindInput(input: HTMLInputElement, apply: (arg0: string) => void, validate: (arg0: string) => boolean, numeric: boolean, modifierMultiplier?: number): {
@@ -324,7 +326,7 @@ export type BindToSettingOpts = ((newSettingValue: string) => boolean) | {
     validator?: (newSettingValue: string) => boolean;
     jslog?: boolean;
 };
-export declare const bindToSetting: (settingOrName: string | Common.Settings.Setting<boolean | string> | Common.Settings.RegExpSetting, optionsOrValidator?: BindToSettingOpts) => ReturnType<typeof Directives.ref>;
+export declare const bindToSetting: (setting: Common.Settings.Setting<boolean | string> | Common.Settings.RegExpSetting, optionsOrValidator?: BindToSettingOpts) => ReturnType<typeof Directives.ref>;
 /**
  * Track toggle action as a whole or
  * track on and off action separately.

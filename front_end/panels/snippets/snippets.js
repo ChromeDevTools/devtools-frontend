@@ -2290,6 +2290,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -3006,6 +3007,9 @@ async function evaluateScriptSnippet(uiSourceCode) {
     true,
     true
   );
+  if (!("error" in result)) {
+    executionContext.debuggerModel.invalidateScopeChains();
+  }
   if ("exceptionDetails" in result && result.exceptionDetails) {
     consoleModel?.addMessage(SDK.ConsoleModel.ConsoleMessage.fromException(
       runtimeModel,

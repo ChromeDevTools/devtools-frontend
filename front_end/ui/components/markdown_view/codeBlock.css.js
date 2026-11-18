@@ -38,7 +38,7 @@ export default `/*
 }
 
 .codeblock .editor-wrapper:has(.heading) {
-  padding: var(--sys-size-3) var(--sys-size-4) 0 5px;
+  padding: var(--sys-size-3) var(--sys-size-4) 0;
 }
 
 .codeblock:not(:has(.toolbar)) .editor-wrapper {

@@ -93,7 +93,7 @@ export class PreRegisteredView {
     widget() {
         if (this.widgetPromise === null) {
             if (!this.universe) {
-                throw new Error('Creating views via ViewManager requires a Foundation.Universe');
+                throw new Error(`Creating views via ViewManager requires a Foundation.Universe (view: ${this.viewRegistration.id})`);
             }
             this.widgetPromise = this.viewRegistration.loadView(this.universe);
         }

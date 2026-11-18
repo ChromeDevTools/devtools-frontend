@@ -33,6 +33,7 @@ core/host/DispatchHttpRequestClient.test.js
 core/host/GcaClient.test.js
 core/host/GdpClient.test.js
 core/host/Platform.test.js
+core/host/ResourceLoader.test.js
 core/i18n/ByteUtilities.test.js
 core/i18n/DevToolsLocale.test.js
 core/i18n/NumberFormatter.test.js
@@ -553,6 +554,7 @@ panels/explain/components/ConsoleInsight.test.js
 panels/issues/AffectedDescendantsWithinSelectElementView.test.js
 panels/issues/AffectedLazyLoadImagesView.test.js
 panels/issues/AffectedMetadataAllowedSitesView.test.js
+panels/issues/AffectedResourcesView.test.js
 panels/issues/AffectedSelectivePermissionsInterventionView.test.js
 panels/issues/GenericIssueDetailsView.test.js
 panels/issues/IssueView.test.js
@@ -628,6 +630,7 @@ panels/profiler/HeapSnapshotView.test.js
 panels/profiler/HeapTimelineOverview.test.js
 panels/profiler/IsolateSelector.test.js
 panels/profiler/ProfileFlameChartDataProvider.test.js
+panels/profiler/ProfileSidebarTreeElement.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js
 panels/recorder/CreateRecordingView.test.js
@@ -663,6 +666,7 @@ panels/settings/AISettingsTab.test.js
 panels/settings/BackendLinkingSettingsTab.test.js
 panels/settings/EditFileSystemView.test.js
 panels/settings/FrameworkIgnoreListSettingsTab.test.js
+panels/settings/KeybindsSettingsTab.test.js
 panels/settings/SettingsScreen.test.js
 panels/settings/WorkspaceSettingsTab.test.js
 panels/settings/components/SyncSection.test.js
@@ -718,6 +722,7 @@ panels/timeline/TimelineFlameChartNetworkDataProvider.test.js
 panels/timeline/TimelineFlameChartView.test.js
 panels/timeline/TimelineHistoryManager.test.js
 panels/timeline/TimelineInvariants.test.js
+panels/timeline/TimelineLandingPage.test.js
 panels/timeline/TimelineLoader.test.js
 panels/timeline/TimelineMiniMap.test.js
 panels/timeline/TimelinePanel.test.js
@@ -788,6 +793,7 @@ testing/MockScopeChain.test.js
 testing/MutationHelpers.test.js
 testing/SnapshotTester.test.js
 testing/SourceMapEncoder.test.js
+testing/TestTeardown.test.js
 third_party/chromium/client-variations/ClientVariations.test.js
 third_party/diff/DiffWrapper.test.js
 third_party/i18n/i18n.test.js
@@ -799,6 +805,7 @@ ui/components/code_highlighter/CodeHighlighter.test.js
 ui/components/dialogs/ButtonDialog.test.js
 ui/components/dialogs/Dialog.test.js
 ui/components/dialogs/ShortcutDialog.test.js
+ui/components/dialogs/TypeToAllowDialog.test.js
 ui/components/diff_view/DiffView.test.js
 ui/components/expandable_list/ExpandableList.test.js
 ui/components/helpers/helpers.test.js
@@ -865,6 +872,7 @@ ui/legacy/ListControl.test.js
 ui/legacy/ListModel.test.js
 ui/legacy/ListWidget.test.js
 ui/legacy/PlusButton.test.js
+ui/legacy/ProgressIndicator.test.js
 ui/legacy/SearchableView.test.js
 ui/legacy/ShortcutRegistry.test.js
 ui/legacy/SoftContextMenu.test.js
@@ -914,6 +922,7 @@ ui/legacy/components/perf_ui/LineLevelProfile.test.js
 ui/legacy/components/perf_ui/PieChart.test.js
 ui/legacy/components/perf_ui/TimelineGrid.test.js
 ui/legacy/components/perf_ui/TimelineOverviewCalculator.test.js
+ui/legacy/components/perf_ui/TimelineOverviewPane.test.js
 ui/legacy/components/quick_open/CommandMenu.test.js
 ui/legacy/components/quick_open/FilteredListWidget.test.js
 ui/legacy/components/quick_open/QuickOpen.test.js

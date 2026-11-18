@@ -297,9 +297,6 @@ var Action = class extends Common2.ObjectWrapper.ObjectWrapper {
   featurePromotionId() {
     return this.actionRegistration.featurePromotionId;
   }
-  setting() {
-    return this.actionRegistration.setting;
-  }
   condition() {
     return this.actionRegistration.condition;
   }
@@ -323,16 +320,6 @@ function reset() {
 }
 function getRegisteredActionExtensions() {
   return Array.from(registeredActions.values()).filter((action6) => {
-    const settingName = action6.setting();
-    try {
-      if (settingName && !Common2.Settings.Settings.instance().moduleSetting(settingName).get()) {
-        return false;
-      }
-    } catch (err) {
-      if (err.message.startsWith("No setting registered")) {
-        return false;
-      }
-    }
     return Root.Runtime.Runtime.isDescriptorEnabled({
       experiment: action6.experiment(),
       condition: action6.condition()
@@ -641,7 +628,7 @@ __export(ARIAUtils_exports, {
   setValueText: () => setValueText,
   unsetExpandable: () => unsetExpandable
 });
-import * as Platform16 from "../../core/platform/platform.js";
+import * as Platform17 from "../../core/platform/platform.js";
 
 // ../../front_end/ui/legacy/Dialog.ts
 var Dialog_exports = {};
@@ -653,7 +640,7 @@ __export(Dialog_exports, {
 });
 import * as Common16 from "../../core/common/common.js";
 import * as i18n27 from "../../core/i18n/i18n.js";
-import { nothing as nothing8, render as render12 } from "../lit/lit.js";
+import { nothing as nothing9, render as render13 } from "../lit/lit.js";
 import * as Buttons7 from "../components/buttons/buttons.js";
 import * as VisualLogging17 from "../visual_logging/visual_logging.js";
 
@@ -835,12 +822,12 @@ __export(Toolbar_exports, {
 });
 import * as Common14 from "../../core/common/common.js";
 import * as i18n23 from "../../core/i18n/i18n.js";
-import * as Platform13 from "../../core/platform/platform.js";
+import * as Platform14 from "../../core/platform/platform.js";
 import * as Root8 from "../../core/root/root.js";
 import * as Buttons5 from "../components/buttons/buttons.js";
 import * as VisualLogging15 from "../visual_logging/visual_logging.js";
-import { createIcon as createIcon7 } from "../kit/kit.js";
-import { nothing as nothing6, render as render9 } from "../lit/lit.js";
+import { createIcon as createIcon6 } from "../kit/kit.js";
+import { nothing as nothing7, render as render10 } from "../lit/lit.js";
 import * as SettingUIRegistration from "../settings/settings.js";
 
 // ../../front_end/ui/legacy/ContextMenu.ts
@@ -859,7 +846,7 @@ __export(ContextMenu_exports, {
 import * as Host8 from "../../core/host/host.js";
 import * as Root7 from "../../core/root/root.js";
 import * as Buttons4 from "../components/buttons/buttons.js";
-import { html as html5, render as render7 } from "../lit/lit.js";
+import { html as html6, render as render8 } from "../lit/lit.js";
 import * as VisualLogging11 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ShortcutRegistry.ts
@@ -876,7 +863,7 @@ import * as Common3 from "../../core/common/common.js";
 import * as Host2 from "../../core/host/host.js";
 import * as Platform4 from "../../core/platform/platform.js";
 import * as VisualLogging from "../visual_logging/visual_logging.js";
-import * as Settings3 from "../settings/settings.js";
+import * as Settings2 from "../settings/settings.js";
 
 // ../../front_end/ui/legacy/KeyboardShortcut.ts
 var KeyboardShortcut_exports = {};
@@ -1223,12 +1210,12 @@ var ShortcutRegistry = class _ShortcutRegistry {
     this.consumePrefix = null;
     this.devToolsDefaultShortcutActions = /* @__PURE__ */ new Set();
     this.disabledDefaultShortcutsForAction = new Platform4.MapUtilities.Multimap();
-    this.keybindSetSetting = Common3.Settings.Settings.instance().resolve(Settings3.MainSettings.activeKeybindSetSettingDescriptor);
+    this.keybindSetSetting = Common3.Settings.Settings.instance().resolve(Settings2.MainSettings.activeKeybindSetSettingDescriptor);
     this.keybindSetSetting.addChangeListener((event) => {
       Host2.userMetrics.keybindSetSettingChanged(event.data);
       this.registerBindings();
     });
-    this.userShortcutsSetting = Common3.Settings.Settings.instance().resolve(Settings3.MainSettings.userShortcutsSettingDescriptor);
+    this.userShortcutsSetting = Common3.Settings.Settings.instance().resolve(Settings2.MainSettings.userShortcutsSettingDescriptor);
     this.userShortcutsSetting.addChangeListener(this.registerBindings, this);
     this.registerBindings();
   }
@@ -1633,9 +1620,9 @@ __export(SoftContextMenu_exports, {
   SoftContextMenu: () => SoftContextMenu
 });
 import * as i18n19 from "../../core/i18n/i18n.js";
-import { createIcon as createIcon6 } from "../kit/kit.js";
+import { createIcon as createIcon5 } from "../kit/kit.js";
 import * as VisualLogging10 from "../visual_logging/visual_logging.js";
-import { render as render6 } from "../lit/lit.js";
+import { render as render7 } from "../lit/lit.js";
 
 // ../../front_end/ui/legacy/InspectorView.ts
 var InspectorView_exports = {};
@@ -1652,7 +1639,7 @@ import * as i18n17 from "../../core/i18n/i18n.js";
 import * as Root6 from "../../core/root/root.js";
 import * as SDK from "../../core/sdk/sdk.js";
 import * as Buttons3 from "../components/buttons/buttons.js";
-import { createIcon as createIcon5 } from "../kit/kit.js";
+import { createIcon as createIcon4 } from "../kit/kit.js";
 import * as Lit3 from "../lit/lit.js";
 import * as SettingsUI2 from "../settings/settings.js";
 import * as VisualLogging9 from "../visual_logging/visual_logging.js";
@@ -1844,13 +1831,16 @@ var CloseButtonProvider = class _CloseButtonProvider {
 // ../../front_end/ui/legacy/Infobar.ts
 var Infobar_exports = {};
 __export(Infobar_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   Infobar: () => Infobar,
   Type: () => Type2
 });
+import "../kit/kit.js";
 import * as i18n5 from "../../core/i18n/i18n.js";
+import * as Platform6 from "../../core/platform/platform.js";
 import * as Buttons from "../components/buttons/buttons.js";
+import { Directives as Directives2, html as html2, nothing as nothing2, render } from "../lit/lit.js";
 import * as VisualLogging3 from "../visual_logging/visual_logging.js";
-import { createIcon } from "../kit/kit.js";
 
 // gen/front_end/ui/legacy/infobar.css.js
 var infobar_css_default = `/*
@@ -2026,482 +2016,6 @@ details {
 }
 
 /*# sourceURL=${import.meta.resolve("./infobar.css")} */`;
-
-// ../../front_end/ui/legacy/Infobar.ts
-var UIStrings3 = {
-  /**
-   * @description Button text to permanently dismiss an infobar and prevent it from appearing again.
-   */
-  dontShowAgain: "Don\u2019t show again",
-  /**
-   * @description Accessible label for the close button in an infobar.
-   */
-  close: "Close"
-};
-var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/Infobar.ts", UIStrings3);
-var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var Infobar = class _Infobar {
-  element;
-  #shadowRoot;
-  #contentElement;
-  #detailsRows;
-  #infoContainer;
-  #infoMessage;
-  #infoText;
-  #actionContainer;
-  #disableSetting;
-  #closeButton;
-  #closeCallback;
-  #parentView;
-  #mainRow;
-  constructor(type, text, actions, disableSetting, jslogContext) {
-    this.element = document.createElement("div");
-    if (jslogContext) {
-      this.element.setAttribute(
-        "jslog",
-        `${VisualLogging3.dialog(jslogContext).track({ resize: true, keydown: "Enter|Escape" })}`
-      );
-    }
-    this.element.classList.add("flex-none");
-    this.#shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobar_css_default });
-    this.#contentElement = this.#shadowRoot.createChild("div", "infobar infobar-" + type);
-    const icon = createIcon(TYPE_TO_ICON[type], type + "-icon");
-    this.#contentElement.createChild("div", "icon-container").appendChild(icon);
-    this.#mainRow = this.#contentElement.createChild("div", "infobar-main-row");
-    this.#infoContainer = this.#mainRow.createChild("div", "infobar-info-container");
-    this.#infoMessage = this.#infoContainer.createChild("div", "infobar-info-message");
-    this.#infoText = this.#infoMessage.createChild("div", "infobar-info-text");
-    this.#infoText.textContent = text;
-    markAsAlert(this.#infoText);
-    this.#actionContainer = this.#infoContainer.createChild("div", "infobar-info-actions");
-    let defaultActionButtonVariant = Buttons.Button.Variant.OUTLINED;
-    this.#disableSetting = disableSetting || null;
-    if (disableSetting) {
-      const disableButton = createTextButton(
-        i18nString3(UIStrings3.dontShowAgain),
-        this.#onDisable.bind(this),
-        { className: "infobar-button", jslogContext: "dont-show-again" }
-      );
-      this.#actionContainer.appendChild(disableButton);
-      defaultActionButtonVariant = Buttons.Button.Variant.TONAL;
-    }
-    if (actions) {
-      this.#contentElement.setAttribute("role", "group");
-      for (const action6 of actions) {
-        const actionCallback = this.#actionCallbackFactory(action6);
-        const buttonVariant = action6.buttonVariant ?? defaultActionButtonVariant;
-        const button = createTextButton(action6.text, actionCallback, {
-          className: "infobar-button",
-          jslogContext: action6.jslogContext,
-          variant: buttonVariant
-        });
-        this.#actionContainer.appendChild(button);
-      }
-    }
-    this.#closeButton = this.#contentElement.createChild("dt-close-button", "icon-container");
-    this.#closeButton.setTabbable(true);
-    this.#closeButton.setSize(Buttons.Button.Size.SMALL);
-    setDescription(this.#closeButton, i18nString3(UIStrings3.close));
-    self.onInvokeElement(this.#closeButton, this.dispose.bind(this));
-    if (type !== "issue" /* ISSUE */) {
-      this.#contentElement.tabIndex = 0;
-    }
-    setLabel(this.#contentElement, text);
-    this.#contentElement.addEventListener("keydown", (event) => {
-      if (event.keyCode === Keys.Esc.code) {
-        this.dispose();
-        event.consume();
-        return;
-      }
-    });
-    this.#closeCallback = null;
-  }
-  static create(type, text, actions, disableSetting, jslogContext) {
-    if (disableSetting?.get()) {
-      return null;
-    }
-    return new _Infobar(type, text, actions, disableSetting, jslogContext);
-  }
-  dispose() {
-    this.element.remove();
-    this.#onResize();
-    if (this.#closeCallback) {
-      this.#closeCallback.call(null);
-    }
-  }
-  setText(text) {
-    this.#infoText.textContent = text;
-    this.#onResize();
-  }
-  setCloseCallback(callback) {
-    this.#closeCallback = callback;
-  }
-  setParentView(parentView) {
-    this.#parentView = parentView;
-  }
-  #actionCallbackFactory(action6) {
-    if (!action6.delegate) {
-      return action6.dismiss ? this.dispose.bind(this) : () => {
-      };
-    }
-    if (!action6.dismiss) {
-      return action6.delegate;
-    }
-    return (() => {
-      if (action6.delegate) {
-        action6.delegate();
-      }
-      this.dispose();
-    }).bind(this);
-  }
-  #onResize() {
-    if (this.#parentView) {
-      this.#parentView.doResize();
-    }
-  }
-  #onDisable() {
-    if (this.#disableSetting) {
-      this.#disableSetting.set(true);
-    }
-    this.dispose();
-  }
-  createDetailsRowMessage(message) {
-    if (!this.#detailsRows) {
-      const details = document.createElement("details");
-      const summary = details.createChild("summary");
-      const triangleIcon = createIcon("arrow-drop-down");
-      summary.createChild("div", "icon-container").appendChild(triangleIcon);
-      this.#contentElement.insertBefore(details, this.#mainRow);
-      summary.appendChild(this.#mainRow);
-      this.#detailsRows = details.createChild("div", "infobar-details-rows");
-    }
-    const infobarDetailsRow = this.#detailsRows.createChild("div", "infobar-details-row");
-    const detailsRowMessage = infobarDetailsRow.createChild("span", "infobar-row-message");
-    if (typeof message === "string") {
-      detailsRowMessage.textContent = message;
-    } else {
-      detailsRowMessage.appendChild(message);
-    }
-    return detailsRowMessage;
-  }
-};
-var Type2 = /* @__PURE__ */ ((Type4) => {
-  Type4["WARNING"] = "warning";
-  Type4["INFO"] = "info";
-  Type4["ISSUE"] = "issue";
-  Type4["ERROR"] = "error";
-  return Type4;
-})(Type2 || {});
-var TYPE_TO_ICON = {
-  ["warning" /* WARNING */]: "warning",
-  ["info" /* INFO */]: "info",
-  ["issue" /* ISSUE */]: "issue-text-filled",
-  ["error" /* ERROR */]: "cross-circle"
-};
-
-// ../../front_end/ui/legacy/InspectorDrawerView.ts
-import * as Common10 from "../../core/common/common.js";
-import * as i18n15 from "../../core/i18n/i18n.js";
-import * as Root5 from "../../core/root/root.js";
-import * as VisualLogging8 from "../visual_logging/visual_logging.js";
-
-// gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
-var inspectorDrawerTabbedPane_css_default = `/*
- * Copyright 2026 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.drawer-tabbed-pane.drawer-minimized-vertical {
-  /* 28px toolbar width minus 1px SplitWidget splitter border. */
-  min-width: calc(var(--sys-size-12) - var(--sys-size-1));
-  width: calc(var(--sys-size-12) - var(--sys-size-1));
-}
-
-.hide-element {
-  display: none;
-}
-
-.collapsed-vertical-drawer-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.collapsed-vertical-drawer-header {
-  flex-direction: column;
-  flex-basis: 100% !important; /* stylelint-disable-line declaration-no-important */
-  border-bottom: none;
-}
-
-.collapsed-vertical-drawer-right-toolbar {
-  margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
-  flex-direction: column;
-  align-items: center;
-  height: auto;
-  width: 100%;
-}
-
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: auto !important; /* stylelint-disable-line declaration-no-important */
-  width: 100%;
-  padding: 0 !important; /* stylelint-disable-line declaration-no-important */
-  gap: 0;
-}
-
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
-  margin: 0 auto;
-  padding: 0;
-  padding-right: var(--sys-size-1);
-  width: 100%;
-  height: var(--toolbar-height);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-spacer {
-  display: none;
-}
-
-/*# sourceURL=${import.meta.resolve("./inspectorDrawerTabbedPane.css")} */`;
-
-// ../../front_end/ui/legacy/SplitWidget.ts
-var SplitWidget_exports = {};
-__export(SplitWidget_exports, {
-  Events: () => Events5,
-  ShowMode: () => ShowMode,
-  SplitWidget: () => SplitWidget,
-  SplitWidgetElement: () => SplitWidgetElement
-});
-import * as Common7 from "../../core/common/common.js";
-import * as Platform6 from "../../core/platform/platform.js";
-import * as Geometry2 from "../geometry/geometry.js";
-import * as VisualLogging4 from "../visual_logging/visual_logging.js";
-
-// ../../front_end/ui/legacy/ResizerWidget.ts
-var ResizerWidget_exports = {};
-__export(ResizerWidget_exports, {
-  Events: () => Events3,
-  ResizerWidget: () => ResizerWidget,
-  SimpleResizerWidget: () => SimpleResizerWidget
-});
-import * as Common5 from "../../core/common/common.js";
-var ResizerWidget = class extends Common5.ObjectWrapper.ObjectWrapper {
-  #isEnabled = true;
-  #elements = /* @__PURE__ */ new Set();
-  #installDragOnMouseDownBound;
-  #cursor = "nwse-resize";
-  #startX;
-  #startY;
-  constructor() {
-    super();
-    this.#installDragOnMouseDownBound = this.#installDragOnMouseDown.bind(this);
-  }
-  isEnabled() {
-    return this.#isEnabled;
-  }
-  setEnabled(enabled) {
-    this.#isEnabled = enabled;
-    this.updateElementCursors();
-  }
-  elements() {
-    return [...this.#elements];
-  }
-  addElement(element) {
-    if (!this.#elements.has(element)) {
-      this.#elements.add(element);
-      element.addEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
-      this.#updateElementCursor(element);
-    }
-  }
-  removeElement(element) {
-    if (this.#elements.has(element)) {
-      this.#elements.delete(element);
-      element.removeEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
-      element.style.removeProperty("cursor");
-    }
-  }
-  updateElementCursors() {
-    this.#elements.forEach(this.#updateElementCursor.bind(this));
-  }
-  #updateElementCursor(element) {
-    if (this.#isEnabled) {
-      element.style.setProperty("cursor", this.cursor());
-      element.style.setProperty("touch-action", "none");
-    } else {
-      element.style.removeProperty("cursor");
-      element.style.removeProperty("touch-action");
-    }
-  }
-  cursor() {
-    return this.#cursor;
-  }
-  setCursor(cursor) {
-    this.#cursor = cursor;
-    this.updateElementCursors();
-  }
-  #installDragOnMouseDown(event) {
-    const element = event.target;
-    if (!this.#elements.has(element)) {
-      return false;
-    }
-    elementDragStart(element, this.#dragStart.bind(this), (event2) => {
-      this.#drag(event2);
-    }, this.#dragEnd.bind(this), this.cursor(), event);
-    return void 0;
-  }
-  #dragStart(event) {
-    if (!this.#isEnabled) {
-      return false;
-    }
-    this.#startX = event.pageX;
-    this.#startY = event.pageY;
-    this.sendDragStart(this.#startX, this.#startY);
-    return true;
-  }
-  sendDragStart(x, y) {
-    this.dispatchEventToListeners("ResizeStart" /* RESIZE_START */, { startX: x, currentX: x, startY: y, currentY: y });
-  }
-  #drag(event) {
-    if (!this.#isEnabled) {
-      this.#dragEnd(event);
-      return true;
-    }
-    this.sendDragMove(this.#startX, event.pageX, this.#startY, event.pageY, event.shiftKey);
-    event.preventDefault();
-    return false;
-  }
-  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    this.dispatchEventToListeners("ResizeUpdateXY" /* RESIZE_UPDATE_XY */, { startX, currentX, startY, currentY, shiftKey });
-  }
-  #dragEnd(_event) {
-    this.dispatchEventToListeners("ResizeEnd" /* RESIZE_END */);
-    this.#startX = void 0;
-    this.#startY = void 0;
-  }
-};
-var Events3 = /* @__PURE__ */ ((Events12) => {
-  Events12["RESIZE_START"] = "ResizeStart";
-  Events12["RESIZE_UPDATE_XY"] = "ResizeUpdateXY";
-  Events12["RESIZE_UPDATE_POSITION"] = "ResizeUpdatePosition";
-  Events12["RESIZE_END"] = "ResizeEnd";
-  return Events12;
-})(Events3 || {});
-var SimpleResizerWidget = class extends ResizerWidget {
-  #isVertical = true;
-  isVertical() {
-    return this.#isVertical;
-  }
-  /**
-   * Vertical widget resizes height (along y-axis).
-   */
-  setVertical(vertical) {
-    this.#isVertical = vertical;
-    this.updateElementCursors();
-  }
-  cursor() {
-    return this.#isVertical ? "ns-resize" : "ew-resize";
-  }
-  sendDragStart(x, y) {
-    const position = this.#isVertical ? y : x;
-    this.dispatchEventToListeners("ResizeStart" /* RESIZE_START */, { startPosition: position, currentPosition: position });
-  }
-  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    if (this.#isVertical) {
-      this.dispatchEventToListeners(
-        "ResizeUpdatePosition" /* RESIZE_UPDATE_POSITION */,
-        { startPosition: startY, currentPosition: currentY, shiftKey }
-      );
-    } else {
-      this.dispatchEventToListeners(
-        "ResizeUpdatePosition" /* RESIZE_UPDATE_POSITION */,
-        { startPosition: startX, currentPosition: currentX, shiftKey }
-      );
-    }
-  }
-};
-
-// gen/front_end/ui/legacy/splitWidget.css.js
-var splitWidget_css_default = `/*
- * Copyright 2026 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.shadow-split-widget {
-  display: flex;
-  overflow: hidden;
-}
-
-.shadow-split-widget-contents {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  contain: layout size style;
-}
-
-.shadow-split-widget-sidebar {
-  flex: none;
-}
-
-.shadow-split-widget-main,
-.shadow-split-widget-sidebar.maximized {
-  flex: auto;
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-resizer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: var(--sys-size-4);
-  z-index: 4000;
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-resizer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: var(--sys-size-4);
-  z-index: 4000;
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
-  border: 0 !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
-  border: 0;
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
-  border: 0;
-  border-left: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-  border: 0;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-  border: 0;
-  border-right: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
-  pointer-events: none;
-}
-
-:host {
-  display: flex;
-}
-
-/*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
 
 // ../../front_end/ui/legacy/Widget.ts
 var Widget_exports = {};
@@ -3819,6 +3333,590 @@ var WrapperWidget = class extends Widget {
   }
 };
 
+// ../../front_end/ui/legacy/Infobar.ts
+var { ifDefined } = Directives2;
+var UIStrings3 = {
+  /**
+   * @description Button text to permanently dismiss an infobar and prevent it from appearing again.
+   */
+  dontShowAgain: "Don\u2019t show again",
+  /**
+   * @description Accessible label for the close button in an infobar.
+   */
+  close: "Close"
+};
+var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/Infobar.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+var DEFAULT_VIEW = (input, _output, target) => {
+  const defaultActionButtonVariant = input.hasDisableSetting ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.OUTLINED;
+  const mainRow = html2`
+    <div class="infobar-main-row">
+      <div class="infobar-info-container">
+        <div class="infobar-info-message">
+          <div class="infobar-info-text" role="alert" aria-live="polite">${input.text}</div>
+        </div>
+        <div class="infobar-info-actions">
+          ${input.hasDisableSetting ? html2`
+            <devtools-button
+                class="infobar-button"
+                .variant=${Buttons.Button.Variant.OUTLINED}
+                .jslogContext=${"dont-show-again"}
+                @click=${input.onDisable}>${i18nString3(UIStrings3.dontShowAgain)}</devtools-button>` : nothing2}
+          ${input.actions ? input.actions.map((action6) => html2`
+            <devtools-button
+                class="infobar-button"
+                .variant=${action6.buttonVariant ?? defaultActionButtonVariant}
+                .jslogContext=${action6.jslogContext}
+                @click=${() => input.onAction(action6)}>${action6.text}</devtools-button>`) : nothing2}
+        </div>
+      </div>
+    </div>`;
+  const onKeyDown = (event) => {
+    if (Platform6.KeyboardUtilities.isEscKey(event)) {
+      input.onDismiss();
+      event.consume();
+    }
+  };
+  const jslog = input.jslogContext ? `${VisualLogging3.dialog(input.jslogContext).track({ resize: true, keydown: "Enter|Escape" })}` : void 0;
+  render(
+    html2`
+    <style>${infobar_css_default}</style>
+    <div
+        class=${`infobar infobar-${input.type}`}
+        role=${ifDefined(input.actions ? "group" : void 0)}
+        tabindex=${ifDefined(input.type !== "issue" /* ISSUE */ ? 0 : void 0)}
+        aria-label=${input.text}
+        @keydown=${onKeyDown}>
+      <div class="icon-container">
+        <devtools-icon class=${`${input.type}-icon`} name=${TYPE_TO_ICON[input.type]}></devtools-icon>
+      </div>
+      ${input.detailsRows.length > 0 ? html2`
+        <details>
+          <summary>
+            <div class="icon-container">
+              <devtools-icon name="arrow-drop-down"></devtools-icon>
+            </div>
+            ${mainRow}
+          </summary>
+          <div class="infobar-details-rows">
+            ${input.detailsRows.map((message) => html2`
+              <div class="infobar-details-row"><span class="infobar-row-message">${message}</span></div>`)}
+          </div>
+        </details>` : mainRow}
+      <dt-close-button
+          class="icon-container"
+          aria-description=${i18nString3(UIStrings3.close)}
+          .tabbable=${true}
+          .size=${Buttons.Button.Size.SMALL}
+          @click=${input.onDismiss}></dt-close-button>
+    </div>`,
+    target,
+    {
+      container: {
+        classes: ["flex-none"],
+        ...jslog ? { attributes: { jslog } } : {}
+      }
+    }
+  );
+};
+var Infobar = class _Infobar extends Widget {
+  #type;
+  #text;
+  #actions;
+  #disableSetting;
+  #jslogContext;
+  #view;
+  #detailsRows = [];
+  #closeCallback = null;
+  #parentView;
+  #needsUpdate = true;
+  constructor(typeOrElement, textOrView, actions, disableSetting, jslogContext, view = DEFAULT_VIEW) {
+    if (typeof typeOrElement === "string") {
+      super(void 0, { useShadowDom: "pure" });
+      this.#type = typeOrElement;
+      this.#text = typeof textOrView === "string" ? textOrView : "";
+      this.#actions = actions;
+      this.#disableSetting = disableSetting || null;
+      this.#jslogContext = jslogContext;
+      this.#view = view;
+      this.performUpdate();
+    } else {
+      super(typeOrElement, { useShadowDom: "pure" });
+      this.#type = "info" /* INFO */;
+      this.#text = "";
+      this.#disableSetting = null;
+      this.#view = typeof textOrView === "function" ? textOrView : DEFAULT_VIEW;
+    }
+  }
+  static create(type, text, actions, disableSetting, jslogContext, view = DEFAULT_VIEW) {
+    if (disableSetting?.get()) {
+      return null;
+    }
+    return new _Infobar(type, text, actions, disableSetting, jslogContext, view);
+  }
+  get type() {
+    return this.#type;
+  }
+  set type(type) {
+    if (this.#type === type) {
+      return;
+    }
+    this.#type = type;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+  get text() {
+    return this.#text;
+  }
+  set text(text) {
+    if (this.#text === text) {
+      return;
+    }
+    this.#text = text;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+    void this.updateComplete.then(() => this.#onResize());
+  }
+  get actions() {
+    return this.#actions;
+  }
+  set actions(actions) {
+    if (this.#actions === actions) {
+      return;
+    }
+    this.#actions = actions;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+  get disableSetting() {
+    return this.#disableSetting;
+  }
+  set disableSetting(disableSetting) {
+    if (this.#disableSetting === disableSetting) {
+      return;
+    }
+    this.#disableSetting = disableSetting;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+  get jslogContext() {
+    return this.#jslogContext;
+  }
+  set jslogContext(jslogContext) {
+    if (this.#jslogContext === jslogContext) {
+      return;
+    }
+    this.#jslogContext = jslogContext;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+  get detailsRows() {
+    return this.#detailsRows;
+  }
+  set detailsRows(detailsRows) {
+    if (this.#detailsRows === detailsRows) {
+      return;
+    }
+    this.#detailsRows = detailsRows;
+    this.#needsUpdate = true;
+    this.requestUpdate();
+  }
+  get onClose() {
+    return this.#closeCallback;
+  }
+  set onClose(callback) {
+    this.#closeCallback = callback;
+  }
+  dispose() {
+    if (!(this.element instanceof WidgetElement)) {
+      this.detach();
+    }
+    if (this.#closeCallback) {
+      this.#closeCallback.call(null);
+    }
+  }
+  setText(text) {
+    if (this.#text === text) {
+      return;
+    }
+    this.#text = text;
+    this.performUpdate();
+    this.#onResize();
+  }
+  setCloseCallback(callback) {
+    this.#closeCallback = callback;
+  }
+  setParentView(parentView) {
+    this.#parentView = parentView;
+  }
+  wasShown() {
+    super.wasShown();
+    if (this.#needsUpdate) {
+      this.requestUpdate();
+    }
+  }
+  wasHidden() {
+    super.wasHidden();
+    this.#onResize();
+  }
+  performUpdate() {
+    this.#needsUpdate = false;
+    this.#view(
+      {
+        type: this.#type,
+        text: this.#text,
+        actions: this.#actions,
+        hasDisableSetting: Boolean(this.#disableSetting),
+        jslogContext: this.#jslogContext,
+        detailsRows: this.#detailsRows,
+        onDisable: this.#onDisable.bind(this),
+        onAction: this.#onAction.bind(this),
+        onDismiss: this.dispose.bind(this)
+      },
+      void 0,
+      this.contentElement
+    );
+  }
+  #onAction(action6) {
+    if (action6.delegate) {
+      action6.delegate();
+    }
+    if (action6.dismiss) {
+      this.dispose();
+    }
+  }
+  #onResize() {
+    (this.#parentView ?? this.parentWidget())?.doResize();
+  }
+  #onDisable() {
+    if (this.#disableSetting) {
+      this.#disableSetting.set(true);
+    }
+    this.dispose();
+  }
+  createDetailsRowMessage(message) {
+    this.#detailsRows = [...this.#detailsRows, message];
+    this.performUpdate();
+  }
+};
+var Type2 = /* @__PURE__ */ ((Type4) => {
+  Type4["WARNING"] = "warning";
+  Type4["INFO"] = "info";
+  Type4["ISSUE"] = "issue";
+  Type4["ERROR"] = "error";
+  return Type4;
+})(Type2 || {});
+var TYPE_TO_ICON = {
+  ["warning" /* WARNING */]: "warning",
+  ["info" /* INFO */]: "info",
+  ["issue" /* ISSUE */]: "issue-text-filled",
+  ["error" /* ERROR */]: "cross-circle"
+};
+
+// ../../front_end/ui/legacy/InspectorDrawerView.ts
+import * as Common10 from "../../core/common/common.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import * as Root5 from "../../core/root/root.js";
+import * as VisualLogging8 from "../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
+var inspectorDrawerTabbedPane_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.drawer-tabbed-pane.drawer-minimized-vertical {
+  /* 28px toolbar width minus 1px SplitWidget splitter border. */
+  min-width: calc(var(--sys-size-12) - var(--sys-size-1));
+  width: calc(var(--sys-size-12) - var(--sys-size-1));
+}
+
+.hide-element {
+  display: none;
+}
+
+.collapsed-vertical-drawer-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.collapsed-vertical-drawer-header {
+  flex-direction: column;
+  flex-basis: 100% !important; /* stylelint-disable-line declaration-no-important */
+  border-bottom: none;
+}
+
+.collapsed-vertical-drawer-right-toolbar {
+  margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  width: 100%;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto !important; /* stylelint-disable-line declaration-no-important */
+  width: 100%;
+  padding: 0 !important; /* stylelint-disable-line declaration-no-important */
+  gap: 0;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
+  margin: 0 auto;
+  padding: 0;
+  padding-right: var(--sys-size-1);
+  width: 100%;
+  height: var(--toolbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-spacer {
+  display: none;
+}
+
+/*# sourceURL=${import.meta.resolve("./inspectorDrawerTabbedPane.css")} */`;
+
+// ../../front_end/ui/legacy/SplitWidget.ts
+var SplitWidget_exports = {};
+__export(SplitWidget_exports, {
+  Events: () => Events5,
+  ShowMode: () => ShowMode,
+  SplitWidget: () => SplitWidget,
+  SplitWidgetElement: () => SplitWidgetElement
+});
+import * as Common7 from "../../core/common/common.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as Geometry2 from "../geometry/geometry.js";
+import * as VisualLogging4 from "../visual_logging/visual_logging.js";
+
+// ../../front_end/ui/legacy/ResizerWidget.ts
+var ResizerWidget_exports = {};
+__export(ResizerWidget_exports, {
+  Events: () => Events3,
+  ResizerWidget: () => ResizerWidget,
+  SimpleResizerWidget: () => SimpleResizerWidget
+});
+import * as Common5 from "../../core/common/common.js";
+var ResizerWidget = class extends Common5.ObjectWrapper.ObjectWrapper {
+  #isEnabled = true;
+  #elements = /* @__PURE__ */ new Set();
+  #installDragOnMouseDownBound;
+  #cursor = "nwse-resize";
+  #startX;
+  #startY;
+  constructor() {
+    super();
+    this.#installDragOnMouseDownBound = this.#installDragOnMouseDown.bind(this);
+  }
+  isEnabled() {
+    return this.#isEnabled;
+  }
+  setEnabled(enabled) {
+    this.#isEnabled = enabled;
+    this.updateElementCursors();
+  }
+  elements() {
+    return [...this.#elements];
+  }
+  addElement(element) {
+    if (!this.#elements.has(element)) {
+      this.#elements.add(element);
+      element.addEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
+      this.#updateElementCursor(element);
+    }
+  }
+  removeElement(element) {
+    if (this.#elements.has(element)) {
+      this.#elements.delete(element);
+      element.removeEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
+      element.style.removeProperty("cursor");
+    }
+  }
+  updateElementCursors() {
+    this.#elements.forEach(this.#updateElementCursor.bind(this));
+  }
+  #updateElementCursor(element) {
+    if (this.#isEnabled) {
+      element.style.setProperty("cursor", this.cursor());
+      element.style.setProperty("touch-action", "none");
+    } else {
+      element.style.removeProperty("cursor");
+      element.style.removeProperty("touch-action");
+    }
+  }
+  cursor() {
+    return this.#cursor;
+  }
+  setCursor(cursor) {
+    this.#cursor = cursor;
+    this.updateElementCursors();
+  }
+  #installDragOnMouseDown(event) {
+    const element = event.target;
+    if (!this.#elements.has(element)) {
+      return false;
+    }
+    elementDragStart(element, this.#dragStart.bind(this), (event2) => {
+      this.#drag(event2);
+    }, this.#dragEnd.bind(this), this.cursor(), event);
+    return void 0;
+  }
+  #dragStart(event) {
+    if (!this.#isEnabled) {
+      return false;
+    }
+    this.#startX = event.pageX;
+    this.#startY = event.pageY;
+    this.sendDragStart(this.#startX, this.#startY);
+    return true;
+  }
+  sendDragStart(x, y) {
+    this.dispatchEventToListeners("ResizeStart" /* RESIZE_START */, { startX: x, currentX: x, startY: y, currentY: y });
+  }
+  #drag(event) {
+    if (!this.#isEnabled) {
+      this.#dragEnd(event);
+      return true;
+    }
+    this.sendDragMove(this.#startX, event.pageX, this.#startY, event.pageY, event.shiftKey);
+    event.preventDefault();
+    return false;
+  }
+  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
+    this.dispatchEventToListeners("ResizeUpdateXY" /* RESIZE_UPDATE_XY */, { startX, currentX, startY, currentY, shiftKey });
+  }
+  #dragEnd(_event) {
+    this.dispatchEventToListeners("ResizeEnd" /* RESIZE_END */);
+    this.#startX = void 0;
+    this.#startY = void 0;
+  }
+};
+var Events3 = /* @__PURE__ */ ((Events12) => {
+  Events12["RESIZE_START"] = "ResizeStart";
+  Events12["RESIZE_UPDATE_XY"] = "ResizeUpdateXY";
+  Events12["RESIZE_UPDATE_POSITION"] = "ResizeUpdatePosition";
+  Events12["RESIZE_END"] = "ResizeEnd";
+  return Events12;
+})(Events3 || {});
+var SimpleResizerWidget = class extends ResizerWidget {
+  #isVertical = true;
+  isVertical() {
+    return this.#isVertical;
+  }
+  /**
+   * Vertical widget resizes height (along y-axis).
+   */
+  setVertical(vertical) {
+    this.#isVertical = vertical;
+    this.updateElementCursors();
+  }
+  cursor() {
+    return this.#isVertical ? "ns-resize" : "ew-resize";
+  }
+  sendDragStart(x, y) {
+    const position = this.#isVertical ? y : x;
+    this.dispatchEventToListeners("ResizeStart" /* RESIZE_START */, { startPosition: position, currentPosition: position });
+  }
+  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
+    if (this.#isVertical) {
+      this.dispatchEventToListeners(
+        "ResizeUpdatePosition" /* RESIZE_UPDATE_POSITION */,
+        { startPosition: startY, currentPosition: currentY, shiftKey }
+      );
+    } else {
+      this.dispatchEventToListeners(
+        "ResizeUpdatePosition" /* RESIZE_UPDATE_POSITION */,
+        { startPosition: startX, currentPosition: currentX, shiftKey }
+      );
+    }
+  }
+};
+
+// gen/front_end/ui/legacy/splitWidget.css.js
+var splitWidget_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.shadow-split-widget {
+  display: flex;
+  overflow: hidden;
+}
+
+.shadow-split-widget-contents {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  contain: layout size style;
+}
+
+.shadow-split-widget-sidebar {
+  flex: none;
+}
+
+.shadow-split-widget-main,
+.shadow-split-widget-sidebar.maximized {
+  flex: auto;
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--sys-size-4);
+  z-index: 4000;
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-resizer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--sys-size-4);
+  z-index: 4000;
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
+  border: 0 !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
+  border: 0;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
+  border: 0;
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
+  border: 0;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
+  border: 0;
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
+  pointer-events: none;
+}
+
+:host {
+  display: flex;
+}
+
+/*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
+
 // ../../front_end/ui/legacy/ZoomManager.ts
 var ZoomManager_exports = {};
 __export(ZoomManager_exports, {
@@ -4388,13 +4486,13 @@ var SplitWidget = class extends SplitWidgetBase {
     }
     const totalPreferred = preferredMainSize + preferredSidebarSize;
     if (totalPreferred <= totalSize) {
-      return Platform6.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
+      return Platform7.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
     }
     if (minMainSize + minSidebarSize <= totalSize) {
       const delta = totalPreferred - totalSize;
       const sidebarDelta = delta * preferredSidebarSize / totalPreferred;
       sidebarSize = preferredSidebarSize - sidebarDelta;
-      return Platform6.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
+      return Platform7.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
     }
     return Math.max(0, totalSize - minMainSize);
   }
@@ -4605,16 +4703,18 @@ var SplitWidgetElement = class extends WidgetElement {
       const secondIsSidebar = element.getAttribute("sidebar-position") === "second";
       const settingName = element.getAttribute("name") ?? void 0;
       const sidebarSize = parseFloat(element.getAttribute("sidebar-initial-size") || "");
-      const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : void 0;
-      const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : void 0;
+      const sidebarWidth = parseFloat(element.getAttribute("sidebar-initial-width") || "");
+      const sidebarHeight = parseFloat(element.getAttribute("sidebar-initial-height") || "");
+      const fallbackSize = !isNaN(sidebarSize) ? sidebarSize : 200;
+      const defaultSidebarWidth = !isNaN(sidebarWidth) ? sidebarWidth : fallbackSize;
+      const defaultSidebarHeight = !isNaN(sidebarHeight) ? sidebarHeight : fallbackSize;
       const widget2 = new SplitWidget(
         vertical,
         secondIsSidebar,
         settingName,
         defaultSidebarWidth,
         defaultSidebarHeight,
-        /* constraintsInDip=*/
-        false,
+        element.hasAttribute("constraints-in-dip"),
         element
       );
       if (element.getAttribute("sidebar-initial-size") === "minimized") {
@@ -4682,12 +4782,12 @@ __export(TabbedPane_exports, {
 });
 import * as Common8 from "../../core/common/common.js";
 import * as i18n7 from "../../core/i18n/i18n.js";
-import * as Platform7 from "../../core/platform/platform.js";
+import * as Platform8 from "../../core/platform/platform.js";
 import * as Buttons2 from "../components/buttons/buttons.js";
-import { nothing as nothing2, render } from "../lit/lit.js";
+import { nothing as nothing3, render as render2 } from "../lit/lit.js";
 import * as VisualLogging5 from "../visual_logging/visual_logging.js";
 import * as Geometry3 from "../geometry/geometry.js";
-import { createIcon as createIcon2, Icon } from "../kit/kit.js";
+import { createIcon, Icon } from "../kit/kit.js";
 
 // gen/front_end/ui/legacy/tabbedPane.css.js
 var tabbedPane_css_default = `/*
@@ -5495,12 +5595,12 @@ var TabbedPane = class extends TabbedPaneBase {
   }
   selectNextTab() {
     const index = this.#tabs.indexOf(this.currentTab);
-    const nextIndex = Platform7.NumberUtilities.mod(index + 1, this.#tabs.length);
+    const nextIndex = Platform8.NumberUtilities.mod(index + 1, this.#tabs.length);
     this.selectTab(this.#tabs[nextIndex].id, true);
   }
   selectPrevTab() {
     const index = this.#tabs.indexOf(this.currentTab);
-    const nextIndex = Platform7.NumberUtilities.mod(index - 1, this.#tabs.length);
+    const nextIndex = Platform8.NumberUtilities.mod(index - 1, this.#tabs.length);
     this.selectTab(this.#tabs[nextIndex].id, true);
   }
   getTabIndex(id2) {
@@ -5677,11 +5777,11 @@ var TabbedPane = class extends TabbedPaneBase {
     }
     if (this.placeholderContainerElement) {
       if (element instanceof Element) {
-        render(nothing2, this.placeholderContainerElement);
+        render2(nothing3, this.placeholderContainerElement);
         this.placeholderContainerElement.removeChildren();
         this.placeholderContainerElement.appendChild(element);
       } else {
-        render(element, this.placeholderContainerElement);
+        render2(element, this.placeholderContainerElement);
       }
     }
   }
@@ -5699,7 +5799,7 @@ var TabbedPane = class extends TabbedPaneBase {
         if (this.placeholderElement instanceof Element) {
           this.placeholderContainerElement.appendChild(this.placeholderElement);
         } else {
-          render(this.placeholderElement, this.placeholderContainerElement);
+          render2(this.placeholderElement, this.placeholderContainerElement);
         }
         if (this.focusedPlaceholderElement) {
           this.setDefaultFocusedElement(this.focusedPlaceholderElement);
@@ -5741,7 +5841,7 @@ var TabbedPane = class extends TabbedPaneBase {
     const dropDownContainer = document.createElement("div");
     dropDownContainer.classList.add("tabbed-pane-header-tabs-drop-down-container");
     dropDownContainer.setAttribute("jslog", `${VisualLogging5.dropDown("more-tabs").track({ click: true })}`);
-    const chevronIcon = createIcon2("chevron-double-right", "chevron-icon");
+    const chevronIcon = createIcon("chevron-double-right", "chevron-icon");
     const moreTabsString = i18nString4(UIStrings4.moreTabs);
     dropDownContainer.title = moreTabsString;
     markAsMenuButton(dropDownContainer);
@@ -5796,7 +5896,7 @@ var TabbedPane = class extends TabbedPaneBase {
     void menu5.show().then(() => setExpanded(this.dropDownButton, menu5.isHostedMenuOpen()));
   }
   dropDownKeydown(event) {
-    if (Platform7.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+    if (Platform8.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.dropDownButton.click();
       event.consume(true);
     }
@@ -6304,7 +6404,7 @@ var TabbedPaneTab = class {
       const suffixElement = measuring ? this.suffixElement.cloneNode(true) : this.suffixElement;
       suffixElementContainer.appendChild(suffixElement);
     } else {
-      render(this.suffixElement, suffixElementContainer);
+      render2(this.suffixElement, suffixElementContainer);
     }
     titleElement.insertAdjacentElement("afterend", suffixElementContainer);
     tabSuffixElements.set(tabElement, suffixElementContainer);
@@ -6948,10 +7048,10 @@ __export(ViewManager_exports, {
 import * as Common9 from "../../core/common/common.js";
 import * as Host5 from "../../core/host/host.js";
 import * as i18n13 from "../../core/i18n/i18n.js";
-import * as Platform8 from "../../core/platform/platform.js";
+import * as Platform9 from "../../core/platform/platform.js";
 import * as Root4 from "../../core/root/root.js";
-import { createIcon as createIcon4 } from "../kit/kit.js";
-import { nothing as nothing3, render as render3 } from "../lit/lit.js";
+import { createIcon as createIcon3 } from "../kit/kit.js";
+import { nothing as nothing4, render as render4 } from "../lit/lit.js";
 import * as VisualLogging7 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/PlusButton.ts
@@ -6965,7 +7065,7 @@ __export(PlusButton_exports, {
 });
 import * as Host4 from "../../core/host/host.js";
 import * as i18n11 from "../../core/i18n/i18n.js";
-import { Directives as Directives2, html as html2, render as render2 } from "../lit/lit.js";
+import { Directives as Directives3, html as html3, render as render3 } from "../lit/lit.js";
 
 // ../../front_end/ui/legacy/ViewRegistration.ts
 import * as i18n9 from "../../core/i18n/i18n.js";
@@ -7189,10 +7289,10 @@ function revealOverflowTab(tabbedPane, tabId) {
   );
 }
 var PLUS_BUTTON_VIEW = (input, output, target) => {
-  render2(
-    html2`
+  render3(
+    html3`
         <devtools-menu-button
-            ${Directives2.ref((el) => {
+            ${Directives3.ref((el) => {
       output.button = el;
     })}
             slot="trailing-button"
@@ -7227,7 +7327,7 @@ __export(StackedPane_exports, {
   ExpandableContainerWidget: () => ExpandableContainerWidget,
   StackedPane: () => StackedPane
 });
-import { createIcon as createIcon3 } from "../kit/kit.js";
+import { createIcon as createIcon2 } from "../kit/kit.js";
 import * as VisualLogging6 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/viewContainers.css.js
@@ -7342,7 +7442,7 @@ var ExpandableContainerWidget = class extends VBox {
       keydown: "Enter|Space|ArrowLeft|ArrowRight"
     })}`);
     markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = createIcon3("triangle-right", "title-expand-icon");
+    this.titleExpandIcon = createIcon2("triangle-right", "title-expand-icon");
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
     createTextChild(this.titleElement, titleText);
@@ -7588,7 +7688,7 @@ var PreRegisteredView = class {
   }
   async toolbarItems() {
     if (!this.viewRegistration.hasToolbar) {
-      return nothing3;
+      return nothing4;
     }
     const provider = await this.widget();
     return provider.toolbarItems();
@@ -7596,7 +7696,9 @@ var PreRegisteredView = class {
   widget() {
     if (this.widgetPromise === null) {
       if (!this.universe) {
-        throw new Error("Creating views via ViewManager requires a Foundation.Universe");
+        throw new Error(
+          `Creating views via ViewManager requires a Foundation.Universe (view: ${this.viewRegistration.id})`
+        );
       }
       this.widgetPromise = this.viewRegistration.loadView(this.universe);
     }
@@ -7657,7 +7759,7 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
       if (this.views.has(viewId)) {
         throw new Error(`Duplicate view id '${viewId}'`);
       }
-      if (!Platform8.StringUtilities.isExtendedKebabCase(viewId)) {
+      if (!Platform9.StringUtilities.isExtendedKebabCase(viewId)) {
         throw new Error(`Invalid view ID '${viewId}'`);
       }
       this.views.set(viewId, view);
@@ -7677,11 +7779,11 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
     viewManagerInstance = void 0;
   }
   static createToolbar(toolbarItems) {
-    if (toolbarItems === nothing3) {
+    if (toolbarItems === nothing4) {
       return null;
     }
     const toolbar5 = document.createElement("devtools-toolbar");
-    render3(toolbarItems, toolbar5);
+    render4(toolbarItems, toolbar5);
     return toolbar5;
   }
   static setWidgetForView(view, widget2) {
@@ -8068,7 +8170,7 @@ var TabbedLocation = class _TabbedLocation extends Location {
     );
     const iconName = view.iconName();
     if (iconName) {
-      const icon = createIcon4(iconName);
+      const icon = createIcon3(iconName);
       this.#tabbedPane.setTabIcon(view.viewId(), icon);
     }
   }
@@ -8568,7 +8670,7 @@ var InspectorDrawerView = class {
 // ../../front_end/ui/legacy/StatusBar.ts
 var StatusBar_exports = {};
 __export(StatusBar_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   StatusBarWidget: () => StatusBarWidget
 });
 import * as Lit2 from "../lit/lit.js";
@@ -8603,9 +8705,9 @@ var statusBar_css_default = `/* Copyright 2026 The Chromium Authors
 /*# sourceURL=${import.meta.resolve("./statusBar.css")} */`;
 
 // ../../front_end/ui/legacy/StatusBar.ts
-var { html: html3, render: render4 } = Lit2;
-var DEFAULT_VIEW = (_input, _output, target) => {
-  render4(html3`
+var { html: html4, render: render5 } = Lit2;
+var DEFAULT_VIEW2 = (_input, _output, target) => {
+  render5(html4`
     <style>${statusBar_css_default}</style>
     <div class="status-bar"></div>
   `, target);
@@ -8615,7 +8717,7 @@ var StatusBarWidget = class extends Widget {
   #containerElement;
   #widgets = [];
   #viewsLoadedPromise;
-  constructor(element, view = DEFAULT_VIEW) {
+  constructor(element, view = DEFAULT_VIEW2) {
     super(element);
     this.#view = view;
   }
@@ -8720,7 +8822,7 @@ var UIUserMetrics = class _UIUserMetrics {
 };
 
 // ../../front_end/ui/legacy/InspectorView.ts
-var { html: html4 } = Lit3;
+var { html: html5 } = Lit3;
 var UIStrings9 = {
   /**
    * @description Announcement text for screen readers when the drawer is minimized.
@@ -9088,7 +9190,7 @@ var InspectorView = class _InspectorView extends VBox {
       let icon = null;
       if (warnings.length !== 0) {
         const warning = warnings.length === 1 ? warnings[0] : "\xB7 " + warnings.join("\n\xB7 ");
-        icon = createIcon5("warning-filled", "small");
+        icon = createIcon4("warning-filled", "small");
         icon.classList.add("warning");
         Tooltip.install(icon, warning);
       }
@@ -9444,7 +9546,7 @@ var InspectorView = class _InspectorView extends VBox {
       this.element.appendChild(this.#statusBarContainer);
     }
     Lit3.render(
-      visible ? html4`<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>` : Lit3.nothing,
+      visible ? html5`<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>` : Lit3.nothing,
       this.#statusBarContainer
     );
   }
@@ -9457,7 +9559,9 @@ var InspectorView = class _InspectorView extends VBox {
   }
   attachInfobar(infobar) {
     this.createInfoBarDiv();
-    this.infoBarDiv?.appendChild(infobar.element);
+    if (this.infoBarDiv) {
+      infobar.show(this.infoBarDiv);
+    }
   }
 };
 function getDisableLocaleInfoBarSetting() {
@@ -9921,7 +10025,7 @@ var SoftContextMenu = class _SoftContextMenu {
       menuItemElement.setAttribute("data-action-id", item8.id.toString());
     }
     if (menuContainsCheckbox) {
-      const checkMarkElement = createIcon6("checkmark", "checkmark");
+      const checkMarkElement = createIcon5("checkmark", "checkmark");
       menuItemElement.appendChild(checkMarkElement);
     }
     if (item8.tooltip) {
@@ -9946,7 +10050,7 @@ var SoftContextMenu = class _SoftContextMenu {
       if (item8.element instanceof Element) {
         wrapper.appendChild(item8.element);
       } else {
-        render6(item8.element, wrapper);
+        render7(item8.element, wrapper);
       }
       const customElement = item8.element instanceof Element ? item8.element : wrapper.firstElementChild;
       if (customElement instanceof HTMLElement && customElement.classList.contains("location-menu")) {
@@ -9969,7 +10073,7 @@ var SoftContextMenu = class _SoftContextMenu {
         menuItemElement.appendChild(item8.element);
       } else {
         const fragment = document.createDocumentFragment();
-        render6(item8.element, fragment);
+        render7(item8.element, fragment);
         menuItemElement.appendChild(fragment);
       }
     }
@@ -9996,7 +10100,7 @@ var SoftContextMenu = class _SoftContextMenu {
     }
     setLabel(menuItemElement, accessibleName);
     if (item8.isExperimentalFeature) {
-      const experimentIcon = createIcon6("experiment");
+      const experimentIcon = createIcon5("experiment");
       menuItemElement.appendChild(experimentIcon);
     }
     this.detailsForElementMap.set(menuItemElement, detailsForElement);
@@ -10011,12 +10115,12 @@ var SoftContextMenu = class _SoftContextMenu {
       subItems: item8.subItems
     });
     if (menuContainsCheckbox) {
-      const checkMarkElement = createIcon6("checkmark", "checkmark soft-context-menu-item-checkmark");
+      const checkMarkElement = createIcon5("checkmark", "checkmark soft-context-menu-item-checkmark");
       menuItemElement.appendChild(checkMarkElement);
     }
     createTextChild(menuItemElement, item8.label || "");
     setExpanded(menuItemElement, false);
-    const subMenuArrowElement = createIcon6("keyboard-arrow-right", "soft-context-menu-item-submenu-arrow");
+    const subMenuArrowElement = createIcon5("keyboard-arrow-right", "soft-context-menu-item-submenu-arrow");
     menuItemElement.appendChild(subMenuArrowElement);
     menuItemElement.addEventListener("mousedown", this.menuItemMouseDown.bind(this), false);
     menuItemElement.addEventListener("mouseup", this.menuItemMouseUp.bind(this), false);
@@ -11271,8 +11375,8 @@ var MenuButton = class extends HTMLElement {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
     const accessibleLabel = this.accessibleLabel ?? this.title;
-    render7(
-      html5`
+    render8(
+      html6`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
                          .variant=${Buttons4.Button.Variant.ICON}
@@ -11344,7 +11448,7 @@ __export(TextPrompt_exports, {
   TextPromptElement: () => TextPromptElement
 });
 import * as Common13 from "../../core/common/common.js";
-import * as Platform12 from "../../core/platform/platform.js";
+import * as Platform13 from "../../core/platform/platform.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as VisualLogging14 from "../visual_logging/visual_logging.js";
 
@@ -11354,9 +11458,9 @@ __export(SuggestBox_exports, {
   SuggestBox: () => SuggestBox
 });
 import * as i18n21 from "../../core/i18n/i18n.js";
-import * as Platform11 from "../../core/platform/platform.js";
+import * as Platform12 from "../../core/platform/platform.js";
 import * as Geometry4 from "../geometry/geometry.js";
-import { html as html6, nothing as nothing5, render as render8 } from "../lit/lit.js";
+import { html as html7, nothing as nothing6, render as render9 } from "../lit/lit.js";
 import * as VisualLogging13 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ListControl.ts
@@ -11365,7 +11469,7 @@ __export(ListControl_exports, {
   ListControl: () => ListControl,
   ListMode: () => ListMode
 });
-import * as Platform10 from "../../core/platform/platform.js";
+import * as Platform11 from "../../core/platform/platform.js";
 import * as VisualLogging12 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ListModel.ts
@@ -11375,7 +11479,7 @@ __export(ListModel_exports, {
   ListModel: () => ListModel
 });
 import * as Common12 from "../../core/common/common.js";
-import * as Platform9 from "../../core/platform/platform.js";
+import * as Platform10 from "../../core/platform/platform.js";
 var ListModel = class extends Common12.ObjectWrapper.ObjectWrapper {
   items;
   constructor(items) {
@@ -11411,7 +11515,7 @@ var ListModel = class extends Common12.ObjectWrapper.ObjectWrapper {
     this.replaced(index, [], 1);
   }
   insertWithComparator(value, comparator) {
-    this.insert(Platform9.ArrayUtilities.lowerBound(this.items, value, comparator), value);
+    this.insert(Platform10.ArrayUtilities.lowerBound(this.items, value, comparator), value);
   }
   join(separator) {
     return this.items.join(separator);
@@ -11582,7 +11686,7 @@ var ListControl = class {
     const viewportHeight = this.element.offsetHeight;
     this.clearViewport();
     this.updateViewport(
-      Platform10.NumberUtilities.clamp(scrollTop, 0, this.totalHeight() - viewportHeight),
+      Platform11.NumberUtilities.clamp(scrollTop, 0, this.totalHeight() - viewportHeight),
       viewportHeight
     );
   }
@@ -11723,7 +11827,7 @@ var ListControl = class {
     if (center) {
       const scrollTo = (top + bottom) / 2 - viewportHeight / 2;
       this.updateViewport(
-        Platform10.NumberUtilities.clamp(scrollTo, 0, this.totalHeight() - viewportHeight),
+        Platform11.NumberUtilities.clamp(scrollTo, 0, this.totalHeight() - viewportHeight),
         viewportHeight
       );
       return;
@@ -11780,10 +11884,10 @@ var ListControl = class {
     if (this.mode === "UI.ListMode.VariousHeightItems" /* VariousHeightItems */) {
       return Math.min(
         this.model.length - 1,
-        Platform10.ArrayUtilities.lowerBound(
+        Platform11.ArrayUtilities.lowerBound(
           this.variableOffsets,
           offset,
-          Platform10.ArrayUtilities.DEFAULT_COMPARATOR,
+          Platform11.ArrayUtilities.DEFAULT_COMPARATOR,
           0,
           this.model.length
         )
@@ -11936,7 +12040,7 @@ var ListControl = class {
     const scrollTop = this.element.scrollTop;
     if (this.renderedHeight < viewportHeight || totalHeight < viewportHeight) {
       this.clearViewport();
-      this.updateViewport(Platform10.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+      this.updateViewport(Platform11.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
       return;
     }
     const heightDelta = totalHeight - this.renderedHeight;
@@ -11959,7 +12063,7 @@ var ListControl = class {
       return;
     }
     this.clearViewport();
-    this.updateViewport(Platform10.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+    this.updateViewport(Platform11.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
     this.refreshARIA();
   }
   invalidateNonViewportMode(start, remove, add) {
@@ -12282,7 +12386,7 @@ var SuggestBox = class {
     }
     element.tabIndex = -1;
     const maxTextLength = 50 + query.length;
-    const displayText = Platform11.StringUtilities.trimEndWithMaxLength((item8.title || item8.text).trim(), maxTextLength).replace(/\n/g, "\u21B5");
+    const displayText = Platform12.StringUtilities.trimEndWithMaxLength((item8.title || item8.text).trim(), maxTextLength).replace(/\n/g, "\u21B5");
     const titleElement = element.createChild("span", "suggestion-title");
     const index = displayText.toLowerCase().indexOf(query.toLowerCase());
     if (index > 0) {
@@ -12295,10 +12399,10 @@ var SuggestBox = class {
     titleElement.createChild("span", "spacer");
     if (!item8.subtitleTemplate && item8.subtitle) {
       const subtitleElement = element.createChild("span", "suggestion-subtitle");
-      subtitleElement.textContent = Platform11.StringUtilities.trimEndWithMaxLength(item8.subtitle, maxTextLength - displayText.length);
+      subtitleElement.textContent = Platform12.StringUtilities.trimEndWithMaxLength(item8.subtitle, maxTextLength - displayText.length);
     }
     if (item8.subtitleTemplate || item8.iconTemplate) {
-      render8(html6`${item8.subtitleTemplate ?? nothing5}${item8.iconTemplate ?? nothing5}`, element);
+      render9(html7`${item8.subtitleTemplate ?? nothing6}${item8.iconTemplate ?? nothing6}`, element);
     }
     return element;
   }
@@ -12688,7 +12792,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
         /* commit=*/
         true
       );
-    } else if (Platform12.KeyboardUtilities.isEscKey(event)) {
+    } else if (Platform13.KeyboardUtilities.isEscKey(event)) {
       this.#done(
         event,
         /* commit=*/
@@ -12959,8 +13063,8 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     if (!this.element().hasFocus()) {
       if (this.#savedSelection) {
         const textLength = this.text().length;
-        const anchorColumn = Platform12.NumberUtilities.clamp(this.#savedSelection.anchorColumn, 0, textLength);
-        const focusColumn = Platform12.NumberUtilities.clamp(this.#savedSelection.focusColumn, 0, textLength);
+        const anchorColumn = Platform13.NumberUtilities.clamp(this.#savedSelection.anchorColumn, 0, textLength);
+        const focusColumn = Platform13.NumberUtilities.clamp(this.#savedSelection.focusColumn, 0, textLength);
         this.setDOMSelection(anchorColumn, focusColumn);
       } else {
         this.moveCaretToEndOfPrompt();
@@ -13122,7 +13226,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     let text = this.text();
     const currentEntry = event.data;
     if (event.inputType === "insertFromPaste" && text.includes("\n")) {
-      text = Platform12.StringUtilities.stripLineBreaks(text);
+      text = Platform13.StringUtilities.stripLineBreaks(text);
       this.setText(text);
     }
     const caretPosition = this.getCaretPosition();
@@ -13150,7 +13254,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     const beforeRange = document.createRange();
     beforeRange.setStart(this.element(), 0);
     beforeRange.setEnd(container, offset);
-    return Platform12.NumberUtilities.clamp(beforeRange.toString().length, 0, textLength);
+    return Platform13.NumberUtilities.clamp(beforeRange.toString().length, 0, textLength);
   }
   #saveSelection() {
     if (!this.#element || !this.element().isConnected || !this.element().hasFocus()) {
@@ -13365,8 +13469,8 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
       return;
     }
     const length = node.length;
-    const anchorOffset = Platform12.NumberUtilities.clamp(startColumn, 0, length);
-    const focusOffset = Platform12.NumberUtilities.clamp(endColumn, 0, length);
+    const anchorOffset = Platform13.NumberUtilities.clamp(startColumn, 0, length);
+    const focusOffset = Platform13.NumberUtilities.clamp(endColumn, 0, length);
     this.#savedSelection = { anchorColumn: anchorOffset, focusColumn: focusOffset };
     this.element().getComponentSelection()?.setBaseAndExtent(node, anchorOffset, node, focusOffset);
   }
@@ -13776,7 +13880,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
       }
     }
     this.items = [];
-    render9(nothing6, this);
+    render10(nothing7, this);
   }
   hideSeparatorDupes() {
     if (!this.items.length) {
@@ -14110,7 +14214,7 @@ var ToolbarInput = class _ToolbarInput extends ToolbarItem {
     if (event.key === "Enter" && this.prompt.text()) {
       this.dispatchEventToListeners(_ToolbarInput.Event.ENTER_PRESSED, this.prompt.text());
     }
-    if (!Platform13.KeyboardUtilities.isEscKey(event) || !this.prompt.text()) {
+    if (!Platform14.KeyboardUtilities.isEscKey(event) || !this.prompt.text()) {
       return;
     }
     this.setValue("", true);
@@ -14139,7 +14243,7 @@ var ToolbarFilter = class extends ToolbarInput {
       jslogContext || "filter",
       element
     );
-    const filterIcon = createIcon7("filter");
+    const filterIcon = createIcon6("filter");
     this.element.prepend(filterIcon);
     this.element.classList.add("toolbar-filter");
     if (showRegexToggle) {
@@ -14356,7 +14460,7 @@ var ToolbarMenuButton = class extends ToolbarItem {
     this.title = "";
     if (!isIconDropdown) {
       this.element.classList.add("toolbar-has-dropdown");
-      const dropdownArrowIcon = createIcon7("triangle-down", "toolbar-dropdown-arrow");
+      const dropdownArrowIcon = createIcon6("triangle-down", "toolbar-dropdown-arrow");
       this.element.appendChild(dropdownArrowIcon);
     }
     if (jslogContext) {
@@ -14512,7 +14616,7 @@ var ToolbarComboBox = class extends ToolbarItem {
       option.value = value;
     }
     if (!jslogContext) {
-      jslogContext = value ? Platform13.StringUtilities.toKebabCase(value) : void 0;
+      jslogContext = value ? Platform14.StringUtilities.toKebabCase(value) : void 0;
     }
     option.setAttribute("jslog", `${VisualLogging15.item(jslogContext).track({ click: true })}`);
     return option;
@@ -14674,7 +14778,7 @@ var ToolbarItemLocation = /* @__PURE__ */ ((ToolbarItemLocation2) => {
 import * as Common15 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n25 from "../../core/i18n/i18n.js";
-import * as Platform15 from "../../core/platform/platform.js";
+import * as Platform16 from "../../core/platform/platform.js";
 import * as Buttons6 from "../components/buttons/buttons.js";
 import * as Geometry5 from "../geometry/geometry.js";
 import { Icon as Icon2 } from "../kit/kit.js";
@@ -16080,9 +16184,9 @@ div.error {
 /*# sourceURL=${import.meta.resolve("./smallBubble.css")} */`;
 
 // ../../front_end/ui/legacy/UIUtils.ts
-var Directives4 = Lit4.Directives;
-var html8 = Lit4.html;
-var render11 = Lit4.render;
+var Directives5 = Lit4.Directives;
+var html9 = Lit4.html;
+var render12 = Lit4.render;
 var UIStrings13 = {
   /**
    * @description Context menu item to open a link in a new tab.
@@ -16420,7 +16524,7 @@ function modifiedHexValue(hexString, event) {
     delta *= -1;
   }
   const maxValue = Math.pow(16, hexStrLen) - 1;
-  const result = Platform15.NumberUtilities.clamp(number + delta, 0, maxValue);
+  const result = Platform16.NumberUtilities.clamp(number + delta, 0, maxValue);
   let resultString = result.toString(16).toUpperCase();
   for (let i = 0, lengthDelta = hexStrLen - resultString.length; i < lengthDelta; ++i) {
     resultString = "0" + resultString;
@@ -16720,7 +16824,7 @@ var LongClickController = class _LongClickController {
   editKey;
   longClickData;
   longClickInterval;
-  constructor(element, callback, isEditKeyFunc = (event) => Platform15.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+  constructor(element, callback, isEditKeyFunc = (event) => Platform16.KeyboardUtilities.isEnterOrSpaceKey(event)) {
     this.element = element;
     this.callback = callback;
     this.editKey = isEditKeyFunc;
@@ -16861,12 +16965,12 @@ function createSelect(name, options) {
         optGroup.label = key;
         for (const child of value) {
           if (typeof child === "string") {
-            optGroup.appendChild(createOption(child, child, Platform15.StringUtilities.toKebabCase(child)));
+            optGroup.appendChild(createOption(child, child, Platform16.StringUtilities.toKebabCase(child)));
           }
         }
       }
     } else if (typeof option === "string") {
-      select.add(createOption(option, option, Platform15.StringUtilities.toKebabCase(option)));
+      select.add(createOption(option, option, Platform16.StringUtilities.toKebabCase(option)));
     }
   }
   return select;
@@ -17121,12 +17225,18 @@ var DevToolsCloseButton = class extends HTMLElement {
   setSize(size) {
     this.#button.size = size;
   }
+  set size(size) {
+    this.setSize(size);
+  }
   setTabbable(tabbable) {
     if (tabbable) {
       this.#button.tabIndex = 0;
     } else {
       this.#button.tabIndex = -1;
     }
+  }
+  set tabbable(tabbable) {
+    this.setTabbable(tabbable);
   }
   focus() {
     this.#button.focus();
@@ -17219,10 +17329,10 @@ function trimText(context, text, maxWidth, trimFunction) {
   return text !== "\u2026" ? text : "";
 }
 function trimTextMiddle(context, text, maxWidth) {
-  return trimText(context, text, maxWidth, (text2, width) => Platform15.StringUtilities.trimMiddle(text2, width));
+  return trimText(context, text, maxWidth, (text2, width) => Platform16.StringUtilities.trimMiddle(text2, width));
 }
 function trimTextEnd(context, text, maxWidth) {
-  return trimText(context, text, maxWidth, (text2, width) => Platform15.StringUtilities.trimEndWithMaxLength(text2, width));
+  return trimText(context, text, maxWidth, (text2, width) => Platform16.StringUtilities.trimEndWithMaxLength(text2, width));
 }
 function measureTextWidth(context, text) {
   const maxCacheableLength = 200;
@@ -17520,7 +17630,7 @@ var PromotionManager = class _PromotionManager {
 function maybeCreateNewBadge(promotionId) {
   const promotionManager = PromotionManager.instance();
   if (promotionManager.maybeShowPromotion(promotionId)) {
-    return html8`<div class="new-badge" jslog=${VisualLogging16.badge("new-badge")}>${i18nString13(UIStrings13.new)}</div>`;
+    return html9`<div class="new-badge" jslog=${VisualLogging16.badge("new-badge")}>${i18nString13(UIStrings13.new)}</div>`;
   }
   return void 0;
 }
@@ -17532,7 +17642,7 @@ function bindToAction(actionName) {
   function actionEnabledChanged(event) {
     setEnabled(event.data);
   }
-  return Directives4.ref((e) => {
+  return Directives5.ref((e) => {
     if (!e || !(e instanceof Buttons6.Button.Button)) {
       action6.removeEventListener("Enabled" /* ENABLED */, actionEnabledChanged);
       action6.removeEventListener("Toggled" /* TOGGLED */, toggled);
@@ -17873,7 +17983,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       );
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render11(template, this.#contentTemplate.content);
+    render12(template, this.#contentTemplate.content);
   }
   flushPendingMutationsForTesting() {
     const records = this.#mutationObserver.takeRecords();
@@ -18018,7 +18128,7 @@ var ClonedRefDirective = class _ClonedRefDirective extends Lit4.AsyncDirective.A
       return;
     }
     const directives = _ClonedRefDirective.#directivesByElement;
-    Platform15.MapUtilities.getWithDefault(directives, this.#templateElement, () => /* @__PURE__ */ new Set()).add(this);
+    Platform16.MapUtilities.getWithDefault(directives, this.#templateElement, () => /* @__PURE__ */ new Set()).add(this);
   }
   #untrackTemplateElement() {
     if (this.#templateElement) {
@@ -18074,8 +18184,7 @@ var bindCheckboxImpl = function(input, apply, metric) {
     }
   };
 };
-var bindToSetting = (settingOrName, optionsOrValidator) => {
-  const setting = typeof settingOrName === "string" ? Common15.Settings.Settings.instance().moduleSetting(settingOrName) : settingOrName;
+var bindToSetting = (setting, optionsOrValidator) => {
   let stringValidator;
   let jslog = true;
   if (typeof optionsOrValidator === "function") {
@@ -18092,7 +18201,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
     setValue(setting.get());
   }
   if (setting.type() === Common15.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === "boolean") {
-    return Directives4.ref((e) => {
+    return Directives5.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         cleanup?.();
@@ -18124,7 +18233,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
   }
   const jslogBuilder = jslog ? VisualLogging16.toggle(setting.name).track({ change: true }) : null;
   if (setting.type() === Common15.Settings.SettingType.REGEX || setting instanceof Common15.Settings.RegExpSetting) {
-    return Directives4.ref((e) => {
+    return Directives5.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         cleanup?.();
@@ -18153,7 +18262,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
     });
   }
   if (typeof setting.defaultValue === "string") {
-    return Directives4.ref((e) => {
+    return Directives5.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         cleanup?.();
@@ -18710,7 +18819,7 @@ var DialogWidget = class extends DialogWidgetBase {
   #open = false;
   #jslogContext = "";
   #dialogStack = false;
-  #content = nothing8;
+  #content = nothing9;
   #dialog = new Dialog();
   constructor(element) {
     super(element);
@@ -18770,7 +18879,7 @@ var DialogWidget = class extends DialogWidgetBase {
   }
   performUpdate() {
     if (this.open) {
-      render12(this.#content ?? nothing8, this.#dialog.contentElement);
+      render13(this.#content ?? nothing9, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
         this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
@@ -19095,7 +19204,7 @@ var LiveAnnouncer = class _LiveAnnouncer {
     const dialog3 = Dialog.getInstance();
     const element = _LiveAnnouncer.getOrCreateAnnouncerElement(dialog3?.isShowing() ? dialog3.contentElement : void 0, role);
     const announcedMessage = element.textContent === message ? `${message}\xA0` : message;
-    element.textContent = Platform16.StringUtilities.trimEndWithMaxLength(announcedMessage, 1e4);
+    element.textContent = Platform17.StringUtilities.trimEndWithMaxLength(announcedMessage, 1e4);
   }
   static getOrCreateAnnouncerElement(container = document.body, role, opts) {
     const existingAnnouncerElement = _LiveAnnouncer.#announcerElementsByRole[role].get(container);
@@ -19251,7 +19360,7 @@ __export(EmptyWidget_exports, {
 });
 import "../kit/kit.js";
 import * as i18n29 from "../../core/i18n/i18n.js";
-import { html as html9, render as render13 } from "../lit/lit.js";
+import { html as html10, render as render14 } from "../lit/lit.js";
 import * as VisualLogging18 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -19283,15 +19392,15 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings15);
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var DEFAULT_VIEW2 = (input, _output, target) => {
-  render13(html9`
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  render14(html10`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}>
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? html9`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
+        ${input.link ? html10`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
       </div>
       <slot></slot>
     </div>`, target, { container: { classes: ["empty-widget-container", "empty-view-scroller"] } });
@@ -19301,7 +19410,7 @@ var EmptyWidget = class extends VBox {
   #text;
   #link;
   #view;
-  constructor(headerOrElement, text = "", element, view = DEFAULT_VIEW2) {
+  constructor(headerOrElement, text = "", element, view = DEFAULT_VIEW3) {
     const header = typeof headerOrElement === "string" ? headerOrElement : "";
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;
@@ -19345,7 +19454,7 @@ __export(FilterBar_exports, {
 import * as Common17 from "../../core/common/common.js";
 import * as Host10 from "../../core/host/host.js";
 import * as i18n31 from "../../core/i18n/i18n.js";
-import * as Platform18 from "../../core/platform/platform.js";
+import * as Platform19 from "../../core/platform/platform.js";
 import * as VisualLogging19 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/filter.css.js
@@ -19866,7 +19975,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrap
       )) {
         event.consume(true);
       }
-    } else if (Platform18.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+    } else if (Platform19.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.onTypeFilterClicked(event);
     }
   }
@@ -19957,7 +20066,7 @@ var FilterSuggestionBuilder_exports = {};
 __export(FilterSuggestionBuilder_exports, {
   FilterSuggestionBuilder: () => FilterSuggestionBuilder
 });
-import * as Platform19 from "../../core/platform/platform.js";
+import * as Platform20 from "../../core/platform/platform.js";
 var FilterSuggestionBuilder = class {
   keys;
   valueSorter;
@@ -19978,7 +20087,7 @@ var FilterSuggestionBuilder = class {
     const valueDelimiterIndex = prefix.indexOf(":");
     const suggestions = [];
     if (valueDelimiterIndex === -1) {
-      const matcher = new RegExp("^" + Platform19.StringUtilities.escapeForRegExp(prefix), "i");
+      const matcher = new RegExp("^" + Platform20.StringUtilities.escapeForRegExp(prefix), "i");
       for (const key of this.keys) {
         if (matcher.test(key)) {
           suggestions.push({ text: modifier + key + ":" });
@@ -19987,7 +20096,7 @@ var FilterSuggestionBuilder = class {
     } else {
       const key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
       const value = prefix.substring(valueDelimiterIndex + 1);
-      const matcher = new RegExp("^" + Platform19.StringUtilities.escapeForRegExp(value), "i");
+      const matcher = new RegExp("^" + Platform20.StringUtilities.escapeForRegExp(value), "i");
       const values = Array.from(this.valuesMap.get(key) || /* @__PURE__ */ new Set());
       this.valueSorter(key, values);
       for (const item8 of values) {
@@ -20048,7 +20157,7 @@ __export(InplaceEditor_exports, {
   Config: () => Config,
   InplaceEditor: () => InplaceEditor
 });
-import * as Platform20 from "../../core/platform/platform.js";
+import * as Platform21 from "../../core/platform/platform.js";
 var inplaceEditorInstance = null;
 var InplaceEditor = class _InplaceEditor {
   focusRestorer;
@@ -20149,7 +20258,7 @@ var InplaceEditor = class _InplaceEditor {
       if (event.key === "Enter" && !event.shiftKey) {
         return "commit";
       }
-      if (event.keyCode === Keys.Esc.code || event.key === Platform20.KeyboardUtilities.ESCAPE_KEY) {
+      if (event.keyCode === Keys.Esc.code || event.key === Platform21.KeyboardUtilities.ESCAPE_KEY) {
         return "cancel";
       }
       if (event.key === "Tab") {
@@ -20254,9 +20363,9 @@ __export(ListWidget_exports, {
   ListWidget: () => ListWidget
 });
 import * as i18n33 from "../../core/i18n/i18n.js";
-import * as Platform21 from "../../core/platform/platform.js";
+import * as Platform22 from "../../core/platform/platform.js";
 import * as Buttons8 from "../components/buttons/buttons.js";
-import { html as html10, nothing as nothing9, render as render14 } from "../lit/lit.js";
+import { html as html11, nothing as nothing10, render as render15 } from "../lit/lit.js";
 import * as VisualLogging20 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -20575,11 +20684,11 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render14(html10`
+    render15(html11`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          ${controlLabels?.hideEdit ? nothing9 : html10`<devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing10 : html11`<devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
@@ -20699,7 +20808,7 @@ var Editor = class {
     this.element.setAttribute("jslog", `${VisualLogging20.pane("editor").track({ resize: true })}`);
     this.element.addEventListener(
       "keydown",
-      onKeyDown.bind(null, Platform21.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)),
+      onKeyDown.bind(null, Platform22.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)),
       false
     );
     this.#contentElement = this.element.createChild("div", "editor-content");
@@ -20756,7 +20865,7 @@ var Editor = class {
       option.textContent = options[index];
       option.setAttribute(
         "jslog",
-        `${VisualLogging20.item(Platform21.StringUtilities.toKebabCase(options[index])).track({ click: true })}`
+        `${VisualLogging20.item(Platform22.StringUtilities.toKebabCase(options[index])).track({ click: true })}`
       );
     }
     if (title) {
@@ -21251,6 +21360,7 @@ var ProgressIndicator = class extends HTMLElement {
       this.#stopButton = this.#contentElement.createChild("button", "progress-indicator-shadow-stop-button");
       this.#stopButton.addEventListener("click", () => {
         this.canceled = true;
+        this.dispatchEvent(new Event("canceled"));
       });
     }
   }
@@ -21297,12 +21407,12 @@ customElements.define("devtools-progress", ProgressIndicator);
 // ../../front_end/ui/legacy/RemoteDebuggingTerminatedScreen.ts
 var RemoteDebuggingTerminatedScreen_exports = {};
 __export(RemoteDebuggingTerminatedScreen_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   RemoteDebuggingTerminatedScreen: () => RemoteDebuggingTerminatedScreen
 });
 import * as i18n35 from "../../core/i18n/i18n.js";
 import * as Buttons9 from "../components/buttons/buttons.js";
-import { html as html11, render as render15 } from "../lit/lit.js";
+import { html as html12, render as render16 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -21366,9 +21476,9 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var DEFAULT_VIEW3 = (input, _output, target) => {
-  render15(
-    html11`
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render16(
+    html12`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString18(UIStrings18.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -21385,7 +21495,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
   );
 };
 var RemoteDebuggingTerminatedScreen = class _RemoteDebuggingTerminatedScreen extends VBox {
-  constructor(reason, view = DEFAULT_VIEW3) {
+  constructor(reason, view = DEFAULT_VIEW4) {
     super({ useShadowDom: true });
     const input = {
       reason,
@@ -21810,17 +21920,17 @@ var RootView = class extends VBox {
 // ../../front_end/ui/legacy/SearchableView.ts
 var SearchableView_exports = {};
 __export(SearchableView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   SearchConfig: () => SearchConfig,
   SearchableView: () => SearchableView
 });
 import * as Common18 from "../../core/common/common.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
-import * as Platform22 from "../../core/platform/platform.js";
+import * as Platform23 from "../../core/platform/platform.js";
 import * as VisualLogging24 from "../visual_logging/visual_logging.js";
 import * as Buttons10 from "../components/buttons/buttons.js";
 import * as Lit5 from "../lit/lit.js";
-import * as Settings12 from "../settings/settings.js";
+import * as Settings11 from "../settings/settings.js";
 
 // gen/front_end/ui/legacy/searchableView.css.js
 var searchableView_css_default = `/*
@@ -21990,7 +22100,7 @@ var searchableView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./searchableView.css")} */`;
 
 // ../../front_end/ui/legacy/SearchableView.ts
-var { html: html12, nothing: nothing10, render: render16, Directives: Directives5 } = Lit5;
+var { html: html13, nothing: nothing11, render: render17, Directives: Directives6 } = Lit5;
 var UIStrings19 = {
   /**
    * @description Button text and placeholder to replace the current search match in the search bar.
@@ -22065,7 +22175,7 @@ var UIStrings19 = {
 var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings19);
 var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 function renderClearButton(jslogContext, onClick) {
-  return html12`
+  return html13`
     <devtools-button class="clear-button" tabindex="-1" aria-label=${i18nString19(UIStrings19.clearInput)}
         .data=${{
     variant: Buttons10.Button.Variant.ICON,
@@ -22077,7 +22187,7 @@ function renderClearButton(jslogContext, onClick) {
         @click=${onClick}></devtools-button>`;
 }
 function renderConfigToggle(iconName, label, toggled, onClick) {
-  return html12`
+  return html13`
     <devtools-button aria-label=${label}
         .data=${{
     variant: Buttons10.Button.Variant.ICON_TOGGLE,
@@ -22091,14 +22201,14 @@ function renderConfigToggle(iconName, label, toggled, onClick) {
   }}
         @click=${onClick}></devtools-button>`;
 }
-var DEFAULT_VIEW4 = (input, output, target) => {
+var DEFAULT_VIEW5 = (input, output, target) => {
   const replaceLabel = input.secondRowVisible ? i18nString19(UIStrings19.disableFindAndReplace) : i18nString19(UIStrings19.enableFindAndReplace);
-  render16(html12`
+  render17(html13`
     <style>${searchableView_css_default}</style>
     <slot></slot>
     <div class="search-bar ${input.searchIsVisible ? "" : "hidden"} ${input.secondRowVisible ? "replaceable" : ""}"
         style="order: 100"
-        ${Directives5.ref((el) => {
+        ${Directives6.ref((el) => {
     output.footerElementContainer = el;
   })}>
       <div class="toolbar-search" jslog=${VisualLogging24.toolbar("search").track({ resize: true })}>
@@ -22121,11 +22231,11 @@ var DEFAULT_VIEW4 = (input, output, target) => {
             <devtools-icon name="search"></devtools-icon>
             <input type="search" id="search-input-field" class="search-replace search" autocomplete="off"
                 placeholder=${input.placeholder}
-                aria-label=${input.searchAriaLabel ?? nothing10}
+                aria-label=${input.searchAriaLabel ?? nothing11}
                 jslog=${VisualLogging24.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}
                 @keydown=${input.onSearchKeyDown}
                 @input=${input.onSearchInput}
-                ${Directives5.ref((el) => {
+                ${Directives6.ref((el) => {
     output.searchInputElement = el;
   })}>
           </div>
@@ -22133,7 +22243,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
             <input class="search-replace" placeholder=${i18nString19(UIStrings19.replace)}
                 jslog=${VisualLogging24.textField("replace").track({ change: true, keydown: "Enter" })}
                 @keydown=${input.onReplaceKeyDown}
-                ${Directives5.ref((el) => {
+                ${Directives6.ref((el) => {
     output.replaceInputElement = el;
   })}>
             ${renderClearButton("clear-replace-input", input.onClearReplaceInput)}
@@ -22145,19 +22255,19 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     i18nString19(UIStrings19.matchCase),
     input.caseSensitiveToggled,
     input.onToggleCaseSensitive
-  ) : nothing10}
+  ) : nothing11}
             ${input.supportsWholeWord ? renderConfigToggle(
     "match-whole-word",
     i18nString19(UIStrings19.matchWholeWord),
     input.wholeWordToggled,
     input.onToggleWholeWord
-  ) : nothing10}
+  ) : nothing11}
             ${input.supportsRegex ? renderConfigToggle(
     "regular-expression",
     i18nString19(UIStrings19.useRegularExpression),
     input.regexToggled,
     input.onToggleRegex
-  ) : nothing10}
+  ) : nothing11}
           </div>
           <div class="input-line search-input-background"></div>
         </div>
@@ -22184,7 +22294,7 @@ var DEFAULT_VIEW4 = (input, output, target) => {
                   @click=${input.onNextClick}></devtools-button>
               <div class="toolbar-item toolbar-text search-results-matches"
                   style="font-variant-numeric: tabular-nums; color: var(--sys-color-on-surface-subtle); padding: 0 var(--sys-size-3)"
-                  aria-live="polite" aria-atomic="false" aria-label=${input.matchesAriaLabel || nothing10}>
+                  aria-live="polite" aria-atomic="false" aria-label=${input.matchesAriaLabel || nothing11}>
                 <span aria-hidden="true">${input.matchesText}</span>
               </div>
             </devtools-toolbar>
@@ -22244,7 +22354,7 @@ var SearchableView = class extends VBox {
   #historyPosition = 0;
   currentQuery;
   valueChangedTimeoutId;
-  constructor(searchableOrElement, replaceableOrView, settingName, element, view = DEFAULT_VIEW4) {
+  constructor(searchableOrElement, replaceableOrView, settingName, element, view = DEFAULT_VIEW5) {
     const isElement = searchableOrElement instanceof HTMLElement || searchableOrElement === void 0;
     super(isElement ? searchableOrElement : element, { useShadowDom: true });
     this.#view = isElement && typeof replaceableOrView === "function" ? replaceableOrView : view;
@@ -22559,7 +22669,7 @@ var SearchableView = class extends VBox {
       event.consume(true);
       return;
     }
-    if (Platform22.KeyboardUtilities.isEscKey(event)) {
+    if (Platform23.KeyboardUtilities.isEscKey(event)) {
       this.closeSearch();
       event.consume(true);
       return;
@@ -22650,7 +22760,7 @@ var SearchableView = class extends VBox {
     if (this.#history.length === this.#historyPosition + 1) {
       this.#history[this.#historyPosition] = this.searchInputElement.value;
     }
-    if (!Common18.Settings.Settings.instance().resolve(Settings12.MainSettings.searchAsYouTypeSettingDescriptor).get()) {
+    if (!Common18.Settings.Settings.instance().resolve(Settings11.MainSettings.searchAsYouTypeSettingDescriptor).get()) {
       this.clearSearch();
       return;
     }
@@ -22695,7 +22805,7 @@ var SearchConfig = class {
     } catch {
     }
     if (!regex) {
-      regex = Platform22.StringUtilities.createPlainTextSearchRegex(query, modifiers);
+      regex = Platform23.StringUtilities.createPlainTextSearchRegex(query, modifiers);
     }
     if (this.wholeWord) {
       let { source } = regex;
@@ -22721,7 +22831,7 @@ __export(SoftDropDown_exports, {
 });
 import * as i18n39 from "../../core/i18n/i18n.js";
 import * as Geometry6 from "../geometry/geometry.js";
-import { createIcon as createIcon8 } from "../kit/kit.js";
+import { createIcon as createIcon7 } from "../kit/kit.js";
 import * as VisualLogging25 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/softDropDown.css.js
@@ -22859,7 +22969,7 @@ var SoftDropDown = class {
     this.element.classList.add("soft-dropdown");
     appendStyle(this.element, softDropDownButton_css_default);
     this.titleElement = this.element.createChild("span", "title");
-    const dropdownArrowIcon = createIcon8("triangle-down");
+    const dropdownArrowIcon = createIcon7("triangle-down");
     this.element.appendChild(dropdownArrowIcon);
     setExpanded(this.element, false);
     this.glassPane = new GlassPane();
@@ -23124,8 +23234,8 @@ var View_exports = {};
 __export(View_exports, {
   SimpleView: () => SimpleView
 });
-import * as Platform23 from "../../core/platform/platform.js";
-import { nothing as nothing11 } from "../lit/lit.js";
+import * as Platform24 from "../../core/platform/platform.js";
+import { nothing as nothing12 } from "../lit/lit.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;
@@ -23134,7 +23244,7 @@ var SimpleView = class extends VBox {
     const optionsObj = elementOrOptions instanceof HTMLElement || elementOrOptions === void 0 ? options : elementOrOptions;
     this.#title = optionsObj.title;
     this.#viewId = optionsObj.viewId;
-    if (!Platform23.StringUtilities.isExtendedKebabCase(this.#viewId)) {
+    if (!Platform24.StringUtilities.isExtendedKebabCase(this.#viewId)) {
       throw new TypeError(`Invalid view ID '${this.#viewId}'`);
     }
   }
@@ -23151,7 +23261,7 @@ var SimpleView = class extends VBox {
     return false;
   }
   toolbarItems() {
-    return Promise.resolve(nothing11);
+    return Promise.resolve(nothing12);
   }
   widget() {
     return Promise.resolve(this);
@@ -23170,9 +23280,9 @@ var SimpleView = class extends VBox {
 };
 
 // ../../front_end/ui/legacy/StackPane.ts
-var { html: html13, render: render17 } = Lit6;
+var { html: html14, render: render18 } = Lit6;
 var SLOT_VIEW = (input, _output, target) => {
-  render17(html13`<slot name=${input.name}></slot>`, target);
+  render18(html14`<slot name=${input.name}></slot>`, target);
 };
 var SlotView = class extends SimpleView {
   #pane;
@@ -23197,7 +23307,7 @@ var SlotView = class extends SimpleView {
   }
 };
 var STACK_VIEW = (input, _output, target) => {
-  render17(html13`<devtools-widget ${widget(WrapperWidget, { widget: input.location.widget() })}></devtools-widget>`, target);
+  render18(html14`<devtools-widget ${widget(WrapperWidget, { widget: input.location.widget() })}></devtools-widget>`, target);
 };
 var StackPaneElement = class extends HTMLElement {
   #location = ViewManager.instance().createStackLocation();
@@ -23262,11 +23372,11 @@ customElements.define("devtools-stack-pane", StackPaneElement);
 // ../../front_end/ui/legacy/TargetCrashedScreen.ts
 var TargetCrashedScreen_exports = {};
 __export(TargetCrashedScreen_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n41 from "../../core/i18n/i18n.js";
-import { html as html14, render as render18 } from "../lit/lit.js";
+import { html as html15, render as render19 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -23301,9 +23411,9 @@ var UIStrings21 = {
 };
 var str_21 = i18n41.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  render18(
-    html14`
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render19(
+    html15`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString21(UIStrings21.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString21(UIStrings21.oncePageIsReloadedDevtoolsWill)}</div>`,
@@ -23312,7 +23422,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
 };
 var TargetCrashedScreen = class extends VBox {
   hideCallback;
-  constructor(hideCallback, view = DEFAULT_VIEW5) {
+  constructor(hideCallback, view = DEFAULT_VIEW6) {
     super({ useShadowDom: true });
     view({}, void 0, this.contentElement);
     this.hideCallback = hideCallback;
@@ -23339,7 +23449,7 @@ __export(Treeoutline_exports, {
 import * as Common19 from "../../core/common/common.js";
 import * as Host13 from "../../core/host/host.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
-import * as Platform25 from "../../core/platform/platform.js";
+import * as Platform26 from "../../core/platform/platform.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as Highlighting from "../components/highlighting/highlighting.js";
 import * as Lit7 from "../lit/lit.js";
@@ -23688,7 +23798,7 @@ var UIStrings22 = {
 var str_22 = i18n43.i18n.registerUIStrings("ui/legacy/Treeoutline.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render19 } = Lit7;
+var { render: render20 } = Lit7;
 var Events11 = /* @__PURE__ */ ((Events12) => {
   Events12["ElementAttached"] = "ElementAttached";
   Events12["ElementsDetached"] = "ElementsDetached";
@@ -23934,7 +24044,7 @@ var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
       let scrollParentElement = this.element;
       while (getComputedStyle(scrollParentElement).overflow === "visible" && scrollParentElement.parentElementOrShadowHost()) {
         const parent = scrollParentElement.parentElementOrShadowHost();
-        Platform25.assertNotNullOrUndefined(parent);
+        Platform26.assertNotNullOrUndefined(parent);
         scrollParentElement = parent;
       }
       const viewRect = scrollParentElement.getBoundingClientRect();
@@ -24150,9 +24260,9 @@ var TreeElement = class {
     }
     let insertionIndex;
     if (comparator) {
-      insertionIndex = Platform25.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
+      insertionIndex = Platform26.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
     } else if (this.treeOutline?.comparator) {
-      insertionIndex = Platform25.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
+      insertionIndex = Platform26.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
     } else {
       insertionIndex = this.childrenInternal.length;
     }
@@ -24347,7 +24457,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render19(icons, this.leadingIconsElement);
+    render20(icons, this.leadingIconsElement);
   }
   setTrailingIcons(icons) {
     if (!this.trailingIconsElement && !icons.length) {
@@ -24360,7 +24470,7 @@ var TreeElement = class {
       this.listItemNode.appendChild(this.trailingIconsElement);
       this.ensureSelection();
     }
-    render19(icons, this.trailingIconsElement);
+    render20(icons, this.trailingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;
@@ -24903,12 +25013,12 @@ var TreeSearch = class _TreeSearch extends Common19.ObjectWrapper.ObjectWrapper 
     view.updateCurrentMatchIndex(this.#currentMatchIndex);
   }
   next() {
-    this.#currentMatchIndex = Platform25.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
+    this.#currentMatchIndex = Platform26.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
     this.dispatchEventToListeners(_TreeSearch.Events.SEARCH_CHANGED);
     return this.currentMatch();
   }
   prev() {
-    this.#currentMatchIndex = Platform25.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
+    this.#currentMatchIndex = Platform26.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
     this.dispatchEventToListeners(_TreeSearch.Events.SEARCH_CHANGED);
     return this.currentMatch();
   }
@@ -24954,7 +25064,7 @@ var TreeSearch = class _TreeSearch extends Common19.ObjectWrapper.ObjectWrapper 
     this.#reset();
     for (const _ of this.#innerSearch(node, currentMatch, jumpBackwards, match)) {
     }
-    this.#currentMatchIndex = Platform25.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
+    this.#currentMatchIndex = Platform26.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
     this.dispatchEventToListeners(_TreeSearch.Events.SEARCH_CHANGED);
     return this.#matches.length;
   }

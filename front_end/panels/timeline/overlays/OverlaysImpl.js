@@ -428,6 +428,12 @@ export class Overlays extends EventTarget {
     remove(overlay) {
         const htmlElement = this.#overlaysToElements.get(overlay);
         if (htmlElement && this.#overlaysContainer) {
+            if (overlay.type === 'BOTTOM_INFO_BAR') {
+                this.#detachBottomInfoBar(htmlElement);
+                if (overlay.infobar instanceof UI.Infobar.Infobar) {
+                    overlay.infobar.detach();
+                }
+            }
             this.#overlaysContainer.removeChild(htmlElement);
         }
         this.#overlaysToElements.delete(overlay);
@@ -455,6 +461,16 @@ export class Overlays extends EventTarget {
      * scratch and remove all overlays relating to the previous trace.
      */
     reset() {
+        for (const [overlay, htmlElement] of this.#overlaysToElements) {
+            if (overlay.type === 'BOTTOM_INFO_BAR') {
+                if (htmlElement) {
+                    this.#detachBottomInfoBar(htmlElement);
+                }
+                if (overlay.infobar instanceof UI.Infobar.Infobar) {
+                    overlay.infobar.detach();
+                }
+            }
+        }
         if (this.#overlaysContainer) {
             this.#overlaysContainer.innerHTML = '';
         }
@@ -669,6 +685,11 @@ export class Overlays extends EventTarget {
             default: {
                 Platform.TypeScriptUtilities.assertNever(overlay, `Unknown overlay: ${JSON.stringify(overlay)}`);
             }
+        }
+    }
+    #detachBottomInfoBar(element) {
+        for (const child of Array.from(element.children)) {
+            UI.Widget.Widget.get(child)?.detach();
         }
     }
     #positionInfoBarBanner(overlay, element) {
@@ -1469,7 +1490,7 @@ export class Overlays extends EventTarget {
             case 'TIMINGS_MARKER':
                 break;
             case 'BOTTOM_INFO_BAR': {
-                if (!(overlay.infobar.element instanceof HTMLElement)) {
+                if (!(overlay.infobar instanceof UI.Infobar.Infobar)) {
                     return;
                 }
                 if (element.contains(overlay.infobar.element)) {
@@ -1477,9 +1498,10 @@ export class Overlays extends EventTarget {
                 }
                 // This overlay is a singleton; this means it could be updated with a
                 // different info bar. So we need to clear out the existing contents
-                // before appending the infobar, just in case.
+                // before showing the infobar, just in case.
+                this.#detachBottomInfoBar(element);
                 element.innerHTML = '';
-                element.appendChild(overlay.infobar.element);
+                overlay.infobar.show(element, undefined, true);
                 break;
             }
             case 'COMMENT_PIN':

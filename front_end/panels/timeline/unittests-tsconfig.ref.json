@@ -34,6 +34,7 @@
     "../../../../../../front_end/panels/timeline/TimelineHistoryManager.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineInvariants.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineInvariants.ts",
+    "../../../../../../front_end/panels/timeline/TimelineLandingPage.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineLoader.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineMiniMap.test.ts",
     "../../../../../../front_end/panels/timeline/TimelinePanel.test.ts",

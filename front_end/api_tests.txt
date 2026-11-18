@@ -6,3 +6,4 @@ core/sdk/TargetManager.test.api.js
 entrypoints/heap_snapshot_worker/HeapSnapshot.test.api.js
 foundation/Universe.test.api.js
 models/source_map_scopes/NamesResolver.test.api.js
+models/source_map_scopes/ScopeChainResolver.test.api.js

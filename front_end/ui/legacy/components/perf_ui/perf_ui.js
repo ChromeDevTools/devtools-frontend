@@ -7427,6 +7427,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -9223,6 +9224,7 @@ var TimelineOverviewCalculator = class {
 // ../../front_end/ui/legacy/components/perf_ui/TimelineOverviewPane.ts
 var TimelineOverviewPane_exports = {};
 __export(TimelineOverviewPane_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   Events: () => Events4,
   OverviewInfo: () => OverviewInfo,
   TimelineOverviewBase: () => TimelineOverviewBase,
@@ -9231,6 +9233,7 @@ __export(TimelineOverviewPane_exports, {
 import * as Common5 from "../../../../core/common/common.js";
 import * as Trace4 from "../../../../models/trace/trace.js";
 import * as TraceBounds from "../../../../services/trace_bounds/trace_bounds.js";
+import { Directives, html as html3, nothing as nothing2, render as render3 } from "../../../lit/lit.js";
 import * as VisualLogging5 from "../../../visual_logging/visual_logging.js";
 import * as UI6 from "../../legacy.js";
 import * as ThemeSupport7 from "../../theme_support/theme_support.js";
@@ -9262,14 +9265,99 @@ var timelineOverviewInfo_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineOverviewInfo.css")} */`;
 
 // ../../front_end/ui/legacy/components/perf_ui/TimelineOverviewPane.ts
+var { ref, styleMap } = Directives;
+var BRACKET_TRIANGLE_SIZE = 5;
+function bracketPoints({ left, right }) {
+  const size = BRACKET_TRIANGLE_SIZE;
+  return `${left},0 ${left},${size} ${left + size - 1},1 ${right - size - 1},1 ${right},${size} ${right},0`;
+}
+var renderOverviewGridView = (input, output, target) => {
+  const onPointerDown = (event) => {
+    if (!(event.target instanceof HTMLElement)) {
+      return;
+    }
+    event.target.setPointerCapture(event.pointerId);
+    input.onPointerDown();
+  };
+  const onPointerUp = (event) => {
+    if (!(event.target instanceof HTMLElement)) {
+      return;
+    }
+    if (event.target.hasPointerCapture(event.pointerId)) {
+      event.target.releasePointerCapture(event.pointerId);
+    }
+    input.onPointerUp();
+  };
+  const onPointerMove = (event) => {
+    if (!(event.target instanceof Element) || !(event.currentTarget instanceof Element)) {
+      return;
+    }
+    const offsetLeftRelativeToCursorArea = event.target.getBoundingClientRect().left - event.currentTarget.getBoundingClientRect().left;
+    input.onCursorMove(event.offsetX + offsetLeftRelativeToCursorArea);
+  };
+  render3(html3`
+    <div
+      class="overview-grid-cursor-area"
+      @pointerdown=${onPointerDown}
+      @pointerup=${onPointerUp}
+      @pointercancel=${onPointerUp}
+      @pointermove=${onPointerMove}
+      @pointerleave=${input.onCursorLeave}
+      ${ref((element) => {
+    output.cursorAreaLeft = element instanceof HTMLElement ? () => element.getBoundingClientRect().left : void 0;
+  })}></div>
+    <div
+      class="overview-grid-cursor-position"
+      style=${styleMap({
+    left: `${input.cursorPosition}px`,
+    visibility: input.cursorVisible ? "visible" : "hidden"
+  })}
+      ${ref((element) => {
+    output.cursorAnchorBox = element instanceof HTMLElement ? () => element.boxInWindow() : void 0;
+  })}></div>
+  `, target, {
+    container: {
+      attributes: {
+        jslog: `${VisualLogging5.timeline(`${input.prefix}-overview`).track({ click: true, drag: true, hover: true })}`
+      }
+    }
+  });
+};
+var DEFAULT_VIEW = (input, output, target) => {
+  const { highlight } = input;
+  const overviewGridElement = input.overviewGrid.element;
+  render3(html3`
+    ${overviewGridElement}
+    <svg class="timeline-minimap-dim-highlight-svg" ?hidden=${!highlight}>
+      <defs>
+        <mask id="${input.prefix}-dim-highlight-cutouts">
+          <rect width="100%" height="100%" fill="hsl(0deg 0% 95%)"></rect>
+          <rect class="punch" x=${highlight?.left ?? nothing2} y="0"
+              width=${highlight ? highlight.right - highlight.left : nothing2} height="100%" fill="black"></rect>
+        </mask>
+      </defs>
+      <rect class="background" width="100%" height="100%" fill=${input.highlightBackgroundColor}
+          mask="url(#${input.prefix}-dim-highlight-cutouts)" style="mix-blend-mode: saturation"></rect>
+      <polygon ?hidden=${!highlight?.withBracket} fill=${input.highlightBracketColor}
+          points=${highlight?.withBracket ? bracketPoints(highlight) : nothing2}></polygon>
+    </svg>
+  `, target, {
+    container: {
+      attributes: { id: `${input.prefix}-overview-pane` }
+    }
+  });
+  renderOverviewGridView(input, output, overviewGridElement);
+  renderOverviewInfoView(input, output, input.overviewInfo.contentRoot);
+};
+var renderOverviewInfoView = (input, _output, target) => {
+  render3(html3`<div class="overview-info">${input.overviewInfoElements}</div>`, target);
+};
 var TimelineOverviewPaneBase = Common5.ObjectWrapper.eventMixin(
   UI6.Widget.VBox
 );
 var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
   overviewCalculator;
   overviewGrid;
-  cursorArea;
-  cursorElement;
   overviewControls = [];
   markers = /* @__PURE__ */ new Map();
   overviewInfo;
@@ -9281,33 +9369,55 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
   windowEndTime = Trace4.Types.Timing.Milli(Infinity);
   muteOnWindowChanged = false;
   hasPointer = false;
-  #dimHighlightSVG;
+  #prefix;
+  #view;
+  #viewOutput = {};
+  #cursorVisible = false;
+  #overviewInfoVisible = false;
+  #overviewInfoElements = [];
+  #highlight = null;
   #boundOnThemeChanged = this.#onThemeChanged.bind(this);
-  constructor(prefixOrElement = "timeline") {
+  #onPointerDownBound = this.#onPointerDown.bind(this);
+  #onPointerUpBound = this.#onPointerUp.bind(this);
+  #onCursorMoveBound = this.#onCursorMove.bind(this);
+  #onCursorLeaveBound = this.hideCursor.bind(this);
+  constructor(prefixOrElement = "timeline", view = DEFAULT_VIEW) {
     super(prefixOrElement instanceof HTMLElement ? prefixOrElement : void 0);
-    const prefix = typeof prefixOrElement === "string" ? prefixOrElement : "timeline";
-    this.element.id = prefix + "-overview-pane";
+    this.#prefix = typeof prefixOrElement === "string" ? prefixOrElement : "timeline";
+    this.#view = view;
     this.overviewCalculator = new TimelineOverviewCalculator();
-    this.overviewGrid = new OverviewGrid(prefix, this.overviewCalculator);
-    this.overviewGrid.element.setAttribute(
-      "jslog",
-      `${VisualLogging5.timeline(`${prefix}-overview`).track({ click: true, drag: true, hover: true })}`
-    );
-    this.element.appendChild(this.overviewGrid.element);
-    this.cursorArea = this.overviewGrid.element.createChild("div", "overview-grid-cursor-area");
-    this.cursorElement = this.overviewGrid.element.createChild("div", "overview-grid-cursor-position");
-    this.cursorArea.addEventListener("pointerdown", this.onMouseDown.bind(this), true);
-    this.cursorArea.addEventListener("pointerup", this.onMouseCancel.bind(this), true);
-    this.cursorArea.addEventListener("pointercancel", this.onMouseCancel.bind(this), true);
-    this.cursorArea.addEventListener("pointermove", this.onMouseMove.bind(this), true);
-    this.cursorArea.addEventListener("pointerleave", this.hideCursor.bind(this), true);
+    this.overviewGrid = new OverviewGrid(this.#prefix, this.overviewCalculator);
     this.overviewGrid.setResizeEnabled(false);
     this.overviewGrid.addEventListener("WindowChangedWithPosition" /* WINDOW_CHANGED_WITH_POSITION */, this.onWindowChanged, this);
     this.overviewGrid.addEventListener("BreadcrumbAdded" /* BREADCRUMB_ADDED */, this.onBreadcrumbAdded, this);
     this.overviewGrid.setClickHandler(this.onClick.bind(this));
-    this.overviewInfo = new OverviewInfo(this.cursorElement);
-    this.#dimHighlightSVG = UI6.UIUtils.createSVGChild(this.element, "svg", "timeline-minimap-dim-highlight-svg hidden");
-    this.#initializeDimHighlightSVG();
+    this.overviewInfo = new OverviewInfo();
+    this.#render();
+  }
+  performUpdate() {
+    this.#render();
+  }
+  #render() {
+    const themeSupport = ThemeSupport7.ThemeSupport.instance();
+    this.#view(
+      {
+        prefix: this.#prefix,
+        overviewGrid: this.overviewGrid,
+        overviewInfo: this.overviewInfo,
+        overviewInfoElements: this.#overviewInfoElements,
+        cursorPosition: this.cursorPosition,
+        cursorVisible: this.#cursorVisible,
+        highlight: this.#highlight,
+        highlightBackgroundColor: themeSupport.getComputedValue("--color-background"),
+        highlightBracketColor: themeSupport.getComputedValue("--sys-color-state-on-header-hover"),
+        onPointerDown: this.#onPointerDownBound,
+        onPointerUp: this.#onPointerUpBound,
+        onCursorMove: this.#onCursorMoveBound,
+        onCursorLeave: this.#onCursorLeaveBound
+      },
+      this.#viewOutput,
+      this.contentElement
+    );
   }
   enableCreateBreadcrumbsButton() {
     const breadcrumbsElement = this.overviewGrid.enableCreateBreadcrumbsButton();
@@ -9322,27 +9432,42 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
       return;
     }
     event.target.setPointerCapture(event.pointerId);
-    this.overviewInfo.hide();
-    this.hasPointer = true;
+    this.#onPointerDown();
   }
   onMouseCancel(event) {
     if (!(event.target instanceof HTMLElement)) {
       return;
     }
-    event.target.releasePointerCapture(event.pointerId);
-    this.overviewInfo.show();
-    this.hasPointer = false;
+    if (event.target.hasPointerCapture(event.pointerId)) {
+      event.target.releasePointerCapture(event.pointerId);
+    }
+    this.#onPointerUp();
   }
   onMouseMove(event) {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+    const cursorAreaLeft = this.#viewOutput.cursorAreaLeft?.() ?? 0;
+    const offsetLeftRelativeToCursorArea = event.target.getBoundingClientRect().left - cursorAreaLeft;
+    this.#onCursorMove(event.offsetX + offsetLeftRelativeToCursorArea);
+  }
+  #onPointerDown() {
+    this.#overviewInfoVisible = false;
+    this.overviewInfo.hide();
+    this.hasPointer = true;
+  }
+  #onPointerUp() {
+    this.#overviewInfoVisible = true;
+    this.overviewInfo.show(this.#viewOutput.cursorAnchorBox?.() ?? null);
+    this.hasPointer = false;
+  }
+  #onCursorMove(position) {
     if (!this.cursorEnabled) {
       return;
     }
-    const mouseEvent = event;
-    const target = event.target;
-    const offsetLeftRelativeToCursorArea = target.getBoundingClientRect().left - this.cursorArea.getBoundingClientRect().left;
-    this.cursorPosition = mouseEvent.offsetX + offsetLeftRelativeToCursorArea;
-    this.cursorElement.style.left = this.cursorPosition + "px";
-    this.cursorElement.style.visibility = "visible";
+    this.cursorPosition = position;
+    this.#cursorVisible = true;
+    this.requestUpdate();
     const timeInMilliSeconds = this.overviewCalculator.positionToTime(this.cursorPosition);
     const timeWindow = this.overviewGrid.calculateWindowValue();
     if (Trace4.Types.Timing.Milli(timeWindow.rawStartValue) <= timeInMilliSeconds && timeInMilliSeconds <= Trace4.Types.Timing.Milli(timeWindow.rawEndValue)) {
@@ -9352,25 +9477,35 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
       this.dispatchEventToListeners("OverviewPaneMouseLeave" /* OVERVIEW_PANE_MOUSE_LEAVE */);
     }
     if (!this.hasPointer) {
-      void this.overviewInfo.setContent(this.buildOverviewInfo());
+      void this.updateOverviewInfo();
     }
   }
-  async buildOverviewInfo() {
-    const document2 = this.element.ownerDocument;
+  async updateOverviewInfo() {
+    this.#overviewInfoVisible = true;
     const x = this.cursorPosition;
     const elements = await Promise.all(this.overviewControls.map((control) => control.overviewInfoPromise(x)));
-    const fragment = document2.createDocumentFragment();
-    const nonNullElements = elements.filter((element) => element !== null);
-    fragment.append(...nonNullElements);
-    return fragment;
+    if (!this.#overviewInfoVisible) {
+      return;
+    }
+    this.#overviewInfoElements = elements.filter((element) => element !== null);
+    this.requestUpdate();
+    await this.updateComplete;
+    if (!this.#overviewInfoVisible) {
+      return;
+    }
+    this.overviewInfo.show(this.#viewOutput.cursorAnchorBox?.() ?? null);
   }
   hideCursor() {
-    this.cursorElement.style.visibility = "hidden";
+    this.#cursorVisible = false;
+    this.#overviewInfoVisible = false;
+    this.#overviewInfoElements = [];
+    this.requestUpdate();
     this.dispatchEventToListeners("OverviewPaneMouseLeave" /* OVERVIEW_PANE_MOUSE_LEAVE */);
     this.overviewInfo.hide();
   }
   #onThemeChanged() {
     this.scheduleUpdate();
+    this.requestUpdate();
   }
   wasShown() {
     super.wasShown();
@@ -9381,12 +9516,14 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
       ThemeSupport7.ThemeChangeEvent.eventName,
       this.#boundOnThemeChanged
     );
+    this.requestUpdate();
   }
   willHide() {
     ThemeSupport7.ThemeSupport.instance().removeEventListener(
       ThemeSupport7.ThemeChangeEvent.eventName,
       this.#boundOnThemeChanged
     );
+    this.#overviewInfoVisible = false;
     this.overviewInfo.hide();
     super.willHide();
   }
@@ -9486,6 +9623,8 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
     for (const control of this.overviewControls) {
       control.reset();
     }
+    this.#overviewInfoVisible = false;
+    this.#overviewInfoElements = [];
     this.overviewInfo.hide();
     this.scheduleUpdate();
   }
@@ -9539,69 +9678,24 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
     this.muteOnWindowChanged = false;
   }
   /**
-   * This function will create three rectangles and a polygon, which will be use to highlight the time range.
+   * Desaturates the overview outside of the given time bounds.
+   *
+   * @param bounds the time bounds to keep saturated.
+   * @param withBracket whether to draw a bracket above the time bounds.
    */
-  #initializeDimHighlightSVG() {
-    const defs = UI6.UIUtils.createSVGChild(this.#dimHighlightSVG, "defs");
-    const mask = UI6.UIUtils.createSVGChild(defs, "mask");
-    mask.id = "dim-highlight-cutouts";
-    const showAllRect = UI6.UIUtils.createSVGChild(mask, "rect");
-    showAllRect.setAttribute("width", "100%");
-    showAllRect.setAttribute("height", "100%");
-    showAllRect.setAttribute("fill", "hsl(0deg 0% 95%)");
-    const desaturateRect = UI6.UIUtils.createSVGChild(this.#dimHighlightSVG, "rect", "background");
-    desaturateRect.setAttribute("width", "100%");
-    desaturateRect.setAttribute("height", "100%");
-    desaturateRect.setAttribute("fill", ThemeSupport7.ThemeSupport.instance().getComputedValue("--color-background"));
-    desaturateRect.setAttribute("mask", `url(#${mask.id})`);
-    desaturateRect.style.mixBlendMode = "saturation";
-    const punchRect = UI6.UIUtils.createSVGChild(mask, "rect", "punch");
-    punchRect.setAttribute("y", "0");
-    punchRect.setAttribute("height", "100%");
-    punchRect.setAttribute("fill", "black");
-    const bracketColor = ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-state-on-header-hover");
-    const bracket = UI6.UIUtils.createSVGChild(this.#dimHighlightSVG, "polygon");
-    bracket.setAttribute("fill", bracketColor);
-    ThemeSupport7.ThemeSupport.instance().addEventListener(ThemeSupport7.ThemeChangeEvent.eventName, () => {
-      const desaturateRect2 = this.#dimHighlightSVG.querySelector("rect.background");
-      desaturateRect2?.setAttribute("fill", ThemeSupport7.ThemeSupport.instance().getComputedValue("--color-background"));
-      const bracket2 = this.#dimHighlightSVG.querySelector("polygon");
-      bracket2?.setAttribute(
-        "fill",
-        ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-state-on-header-hover")
-      );
-    });
-  }
-  #addBracket(left, right) {
-    const TRIANGLE_SIZE = 5;
-    const bracket = this.#dimHighlightSVG.querySelector("polygon");
-    bracket?.setAttribute(
-      "points",
-      `${left},0 ${left},${TRIANGLE_SIZE} ${left + TRIANGLE_SIZE - 1},1 ${right - TRIANGLE_SIZE - 1},1 ${right},${TRIANGLE_SIZE} ${right},0`
-    );
-    bracket?.classList.remove("hidden");
-  }
-  #hideBracket() {
-    const bracket = this.#dimHighlightSVG.querySelector("polygon");
-    bracket?.classList.add("hidden");
-  }
   highlightBounds(bounds, withBracket) {
-    const left = this.overviewCalculator.computePosition(Trace4.Helpers.Timing.microToMilli(bounds.min));
-    const right = this.overviewCalculator.computePosition(Trace4.Helpers.Timing.microToMilli(bounds.max));
     this.#dimMarkers(bounds);
-    const punchRect = this.#dimHighlightSVG.querySelector("rect.punch");
-    punchRect?.setAttribute("x", left.toString());
-    punchRect?.setAttribute("width", (right - left).toString());
-    if (withBracket) {
-      this.#addBracket(left, right);
-    } else {
-      this.#hideBracket();
-    }
-    this.#dimHighlightSVG.classList.remove("hidden");
+    this.#highlight = {
+      left: this.overviewCalculator.computePosition(Trace4.Helpers.Timing.microToMilli(bounds.min)),
+      right: this.overviewCalculator.computePosition(Trace4.Helpers.Timing.microToMilli(bounds.max)),
+      withBracket
+    };
+    this.requestUpdate();
   }
   clearBoundsHighlight() {
     this.#dimMarkers();
-    this.#dimHighlightSVG.classList.add("hidden");
+    this.#highlight = null;
+    this.requestUpdate();
   }
 };
 var Events4 = /* @__PURE__ */ ((Events5) => {
@@ -9668,39 +9762,26 @@ var TimelineOverviewBase = class extends UI6.Widget.VBox {
   }
 };
 var OverviewInfo = class {
-  anchorElement;
-  glassPane;
-  visible;
-  element;
-  constructor(anchor) {
-    this.anchorElement = anchor;
-    this.glassPane = new UI6.GlassPane.GlassPane();
-    this.glassPane.setPointerEventsBehavior(UI6.GlassPane.PointerEventsBehavior.PIERCE_CONTENTS);
-    this.glassPane.setMarginBehavior(UI6.GlassPane.MarginBehavior.DEFAULT_MARGIN);
-    this.glassPane.setSizeBehavior(UI6.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    this.visible = false;
-    this.element = UI6.UIUtils.createShadowRootWithCoreStyles(this.glassPane.contentElement, { cssFile: timelineOverviewInfo_css_default }).createChild("div", "overview-info");
+  #glassPane;
+  contentRoot;
+  constructor() {
+    this.#glassPane = new UI6.GlassPane.GlassPane();
+    this.#glassPane.setPointerEventsBehavior(UI6.GlassPane.PointerEventsBehavior.PIERCE_CONTENTS);
+    this.#glassPane.setMarginBehavior(UI6.GlassPane.MarginBehavior.DEFAULT_MARGIN);
+    this.#glassPane.setSizeBehavior(UI6.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    this.contentRoot = UI6.UIUtils.createShadowRootWithCoreStyles(
+      this.#glassPane.contentElement,
+      { cssFile: timelineOverviewInfo_css_default }
+    );
   }
-  async setContent(contentPromise) {
-    this.visible = true;
-    const content = await contentPromise;
-    if (!this.visible) {
-      return;
-    }
-    this.element.removeChildren();
-    this.element.appendChild(content);
-    this.glassPane.setContentAnchorBox(this.anchorElement.boxInWindow());
-    if (!this.glassPane.isShowing()) {
-      this.glassPane.show(this.anchorElement.ownerDocument);
+  show(anchorBox) {
+    this.#glassPane.setContentAnchorBox(anchorBox);
+    if (!this.#glassPane.isShowing()) {
+      this.#glassPane.show(window.document);
     }
   }
   hide() {
-    this.visible = false;
-    this.glassPane.hide();
-  }
-  show() {
-    this.visible = true;
-    this.glassPane.show(window.document);
+    this.#glassPane.hide();
   }
 };
 export {

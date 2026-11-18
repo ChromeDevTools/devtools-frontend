@@ -4,6 +4,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { targetForEvent } from './TargetForEvent.js';
 import { TimelineRegExp } from './TimelineFilters.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 /**
@@ -11,6 +12,35 @@ import { type TimelineSelection } from './TimelineSelection.js';
  * https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/main/front_end/panels/timeline/README.md#timeline-tree-views
  */
 declare const TimelineTreeViewBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>;
+export declare const enum CellKind {
+    NAME = "name"
+}
+/** Parameters needed to linkify the top call frame of an event in the view layer. */
+export interface TopCallFrameLinkInput {
+    event: Trace.Types.Events.Event;
+    target: ReturnType<typeof targetForEvent>;
+    linkifier: Components.Linkifier.Linkifier;
+    isFreshOrEnhanced: boolean;
+    maxLength?: number;
+}
+/** Presentation data for the activity (or 1st / 3rd party) name cell of a timeline tree row. */
+export interface NameCellViewInput {
+    columnId: string;
+    kind: CellKind.NAME;
+    name: string;
+    iconColor?: string;
+    /** The accessible name of the icon, which is the title of the event's category. */
+    iconLabel?: string;
+    badge?: string;
+    topCallFrameLink?: TopCallFrameLinkInput;
+}
+export interface GridRowViewOutput {
+    appendContextMenuItems?: (contextMenu: UI.ContextMenu.ContextMenu) => void;
+}
+/**
+ * Computes the presentation data of the name cell for `profileNode`.
+ */
+export declare function nameCellViewInput(treeView: TimelineTreeView, profileNode: Trace.Extras.TraceTree.Node, columnId: string): NameCellViewInput;
 export declare class TimelineTreeView extends TimelineTreeViewBase implements UI.SearchableView.Searchable {
     #private;
     private searchResults;
@@ -144,8 +174,8 @@ export declare class GridNode extends DataGrid.SortableDataGrid.SortableDataGrid
     protected grandTotalTime: number;
     protected maxSelfTime: number;
     protected maxTotalTime: number;
-    linkElement: Element | null;
     constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number, maxTotalTime: number, treeView: TimelineTreeView);
+    appendLinkContextMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void;
     createCell(columnId: string): HTMLElement;
     private createNameCell;
     private createValueCell;
@@ -172,7 +202,6 @@ export declare class AggregatedTimelineTreeView extends TimelineTreeView {
     displayInfoForGroupNode(node: Trace.Extras.TraceTree.Node): {
         name: string;
         color: string;
-        icon?: Element;
     };
     populateToolbar(toolbar: UI.Toolbar.Toolbar): void;
     private buildHeaviestStack;

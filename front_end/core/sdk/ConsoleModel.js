@@ -115,6 +115,8 @@ export class ConsoleModel extends SDKModel {
         if ('error' in result) {
             return;
         }
+        // The command could have assigned to variables of the paused call frames.
+        executionContext.debuggerModel.invalidateScopeChains();
         try {
             await this.#console.showPromise();
         }

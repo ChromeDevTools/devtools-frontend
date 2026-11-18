@@ -1541,7 +1541,6 @@ export class NetworkLogView extends NetworkLogViewBase {
         this.#updateSummaryBar();
         this.scheduleRefresh();
     }
-    // TODO(crbug.com/1477668)
     setTextFilterValue(filterString) {
         this.#textFilterUI.setValue(filterString);
         this.#networkHideDataURLSetting.set(false);

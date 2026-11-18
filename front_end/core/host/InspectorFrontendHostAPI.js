@@ -9,6 +9,7 @@ export var Events;
     /* eslint-disable @typescript-eslint/naming-convention -- Accessed from web_tests */
     Events["AppendedToURL"] = "appendedToURL";
     Events["CanceledSaveURL"] = "canceledSaveURL";
+    Events["CaretBlinkIntervalChanged"] = "caretBlinkIntervalChanged";
     Events["ColorThemeChanged"] = "colorThemeChanged";
     Events["ContextMenuCleared"] = "contextMenuCleared";
     Events["ContextMenuItemSelected"] = "contextMenuItemSelected";
@@ -40,6 +41,7 @@ export var Events;
 export const EventDescriptors = [
     [Events.AppendedToURL, ['url']],
     [Events.CanceledSaveURL, ['url']],
+    [Events.CaretBlinkIntervalChanged, ['caretBlinkInterval']],
     [Events.ColorThemeChanged, ['colorSource']],
     [Events.ContextMenuCleared, []],
     [Events.ContextMenuItemSelected, ['id']],

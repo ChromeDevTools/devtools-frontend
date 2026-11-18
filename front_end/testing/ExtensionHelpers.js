@@ -1,7 +1,6 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { afterEach, beforeEach } from 'mocha';
 import sinon from 'sinon';
 import * as Host from '../core/host/host.js';
 import * as SDK from '../core/sdk/sdk.js';
@@ -11,6 +10,7 @@ import * as Workspace from '../models/workspace/workspace.js';
 import * as PanelCommon from '../panels/common/common.js';
 import { deinitializeGlobalVars, initializeGlobalVars, setupActionRegistry, } from './EnvironmentHelpers.js';
 import { MockDebuggerBackend } from './MockScopeChain.js';
+import { beforeEachWithTeardown } from './TestTeardown.js';
 export function getExtensionOrigin() {
     return window.location.origin;
 }
@@ -45,11 +45,9 @@ export function setupDevtoolsExtensionHooks(extension = {}, keysToForward = []) 
         window.chrome = chrome;
         context.chrome = chrome;
     }
-    beforeEach(async () => {
-        await initializeGlobalVars();
-    });
+    beforeEachWithTeardown(initializeGlobalVars, deinitializeGlobalVars);
     setupActionRegistry();
-    beforeEach(() => {
+    beforeEachWithTeardown(() => {
         cleanupExtensionHelper();
         const backend = new MockDebuggerBackend();
         context.backend = backend;
@@ -62,11 +60,7 @@ export function setupDevtoolsExtensionHooks(extension = {}, keysToForward = []) 
         const networkLog = new Logs.NetworkLog.NetworkLog(backend.universe.targetManager, backend.universe.settings);
         sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(networkLog);
         setupExtensionHelper();
-    });
-    afterEach(async () => {
-        cleanupExtensionHelper();
-        await deinitializeGlobalVars();
-    });
+    }, cleanupExtensionHelper);
     return context;
 }
 //# sourceMappingURL=ExtensionHelpers.js.map

@@ -14,8 +14,10 @@ import { resolveScopeChain } from './NamesResolver.js';
  * given pause, without redundant CDP evaluations.
  *
  * The cache for a script is invalidated whenever debugging info (e.g. from a debugger language plugin)
- * or a source map is attached to or detached from that script. The {@link Events.SCOPE_CHAIN_INVALIDATED}
- * event is dispatched afterwards, so consumers can re-resolve the scope chain.
+ * or a source map is attached to or detached from that script. The cache for all the scripts on the call
+ * stack is invalidated when the debugger invalidates the scope chains of the paused call frames. The
+ * {@link Events.SCOPE_CHAIN_INVALIDATED} event is dispatched afterwards, so consumers can re-resolve the
+ * scope chain.
  */
 export class ScopeChainResolver extends Common.ObjectWrapper.ObjectWrapper {
     #debuggerWorkspaceBinding;
@@ -34,11 +36,13 @@ export class ScopeChainResolver extends Common.ObjectWrapper.ObjectWrapper {
     }
     modelAdded(debuggerModel) {
         debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
+        debuggerModel.addEventListener(SDK.DebuggerModel.Events.ScopeChainsInvalidated, this.#scopeChainsInvalidated, this);
         debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapChanged, this);
         debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this.#sourceMapChanged, this);
     }
     modelRemoved(debuggerModel) {
         debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
+        debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ScopeChainsInvalidated, this.#scopeChainsInvalidated, this);
         debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapChanged, this);
         debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this.#sourceMapChanged, this);
     }
@@ -62,6 +66,12 @@ export class ScopeChainResolver extends Common.ObjectWrapper.ObjectWrapper {
     #invalidate(script) {
         this.#cache.delete(script);
         this.dispatchEventToListeners("ScopeChainInvalidated" /* Events.SCOPE_CHAIN_INVALIDATED */, script);
+    }
+    #scopeChainsInvalidated(event) {
+        const callFrames = event.data.debuggerPausedDetails()?.callFrames ?? [];
+        for (const script of new Set(callFrames.map(callFrame => callFrame.script))) {
+            this.#invalidate(script);
+        }
     }
     #debugInfoAttached(event) {
         this.#invalidate(event.data);

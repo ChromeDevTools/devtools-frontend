@@ -39,6 +39,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     #lastAcceptedContent = null;
     #workingCopy = null;
     #workingCopyGetter = null;
+    #workingCopyIsPageDriven = false;
     #disableEdit = false;
     #contentEncoded;
     #isKnownThirdParty = false;
@@ -296,6 +297,9 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     hasCommits() {
         return this.#hasCommits;
     }
+    workingCopyIsPageDriven() {
+        return this.#workingCopyIsPageDriven;
+    }
     workingCopy() {
         return this.workingCopyContent().content || '';
     }
@@ -321,10 +325,12 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     #resetWorkingCopy() {
         this.#workingCopy = null;
         this.#workingCopyGetter = null;
+        this.#workingCopyIsPageDriven = false;
     }
-    setWorkingCopy(newWorkingCopy) {
+    setWorkingCopy(newWorkingCopy, options) {
         this.#workingCopy = newWorkingCopy;
         this.#workingCopyGetter = null;
+        this.#workingCopyIsPageDriven = Boolean(options?.isPageDriven);
         this.#workingCopyChanged();
     }
     setContent(content, isBase64) {
@@ -336,6 +342,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     }
     setWorkingCopyGetter(workingCopyGetter) {
         this.#workingCopyGetter = workingCopyGetter;
+        this.#workingCopyIsPageDriven = false;
         this.#workingCopyChanged();
     }
     #workingCopyChanged() {

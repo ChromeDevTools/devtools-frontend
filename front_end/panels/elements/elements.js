@@ -2285,6 +2285,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -3330,7 +3331,6 @@ import * as Bindings3 from "../../models/bindings/bindings.js";
 import * as ChangeTracker from "../../models/change_tracker/change_tracker.js";
 import * as CodeMirror from "../../third_party/codemirror.next/codemirror.next.js";
 import * as TextEditor2 from "../../ui/components/text_editor/text_editor.js";
-import { createIcon as createIcon3 } from "../../ui/kit/kit.js";
 import * as InlineEditor2 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
@@ -3338,6 +3338,7 @@ import { Directives as Directives3, html as html10, nothing as nothing4, render 
 import * as SettingsUI3 from "../../ui/settings/settings.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "../common/common.js";
+import * as PanelUtils2 from "../utils/utils.js";
 import * as ElementsComponents4 from "./components/components.js";
 
 // ../../front_end/panels/elements/ElementsSidebarPane.ts
@@ -10944,7 +10945,7 @@ var StylePropertyHighlighter = class {
     }
     const [section5] = block.sections;
     section5.showAllItems();
-    PanelUtils.highlightElement(block.titleElement());
+    this.styleSidebarPane.highlightSectionBlock(block);
   }
   findAndHighlightSection(sectionName, blockName, treeScopeDistance = -1) {
     const block = this.styleSidebarPane.getSectionBlockByName(blockName);
@@ -11768,6 +11769,48 @@ var TOOLBAR_PANE_SLIDE_IN_ANIMATION = "styles-element-state-pane-slidein";
 var TOOLBAR_PANE_SLIDE_OUT_ANIMATION = "styles-element-state-pane-slideout";
 var { ref: ref5, styleMap } = Directives3;
 var { widget: widget4 } = UI10.Widget;
+function sectionBlockTitleClasses(block) {
+  const classes = ["sidebar-separator"];
+  if (block.title?.layerName !== void 0) {
+    classes.push("layer-separator");
+  }
+  if (block.expandable && !block.expanded) {
+    classes.push("empty-section");
+  }
+  return classes;
+}
+function renderSectionBlockTitleContent(block, onRevealLayer) {
+  const title = block.title;
+  if (!title) {
+    return nothing4;
+  }
+  if (title.layerName !== void 0) {
+    return html10`
+      <div>${title.text}</div>
+      ${title.canRevealLayer ? html10`
+        <button class="link" title=${i18nString7(UIStrings7.clickToRevealLayer)}
+            jslog=${VisualLogging6.action("css-layers").track({ click: true })}
+            @click=${() => onRevealLayer(title.layerName ?? "")}>
+          ${title.layerName}
+        </button>
+      ` : html10`
+        <div>${title.layerName}</div>
+      `}
+    `;
+  }
+  return html10`
+    ${block.expandable ? html10`
+      <devtools-icon class="section-block-expand-icon"
+          name=${block.expanded ? "triangle-down" : "triangle-right"}>
+      </devtools-icon>
+    ` : nothing4}
+    ${title.text}
+    ${title.node ? widget4(PanelsCommon2.DOMLinkifier.DOMNodeLink, {
+    node: title.node,
+    options: { preventKeyboardFocus: true }
+  }) : nothing4}
+  `;
+}
 var initializedToolbarLocations = /* @__PURE__ */ new WeakMap();
 function renderToolbarAndEmptyState(input) {
   return html10`
@@ -11822,6 +11865,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
   #showNoMatches = false;
   #headerContainer = document.createElement("div");
   #toolbarItems = [];
+  #blockTitleContainers = /* @__PURE__ */ new WeakMap();
   sectionsContainer;
   sectionByElement = /* @__PURE__ */ new WeakMap();
   #swatchPopoverHelper = new InlineEditor2.SwatchPopoverHelper.SwatchPopoverHelper();
@@ -12586,9 +12630,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     let index = 0;
     let elementToFocus = null;
     for (const block of this.sectionBlocks) {
-      const titleElement = block.titleElement();
-      if (titleElement) {
-        fragment.appendChild(titleElement);
+      if (block.title) {
+        const container = this.#renderBlockTitleContainer(block);
+        fragment.appendChild(container);
       }
       for (const section5 of block.sections) {
         fragment.appendChild(section5.element);
@@ -13033,6 +13077,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     }
     this.#showNoMatches = !hasAnyVisibleBlock;
     this.visibleSections = visibleSections;
+    for (const block of this.sectionBlocks) {
+      if (block.title) {
+        this.#renderBlockTitleContainer(block);
+      }
+    }
     this.#renderHeader();
   }
   wasShown() {
@@ -13056,7 +13105,48 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     }
   }
   getSectionBlockByName(name) {
-    return this.sectionBlocks.find((block) => block.titleElement()?.textContent === name);
+    return this.sectionBlocks.find((block) => block.titleText() === name);
+  }
+  highlightSectionBlock(block) {
+    const el = this.#blockTitleContainers.get(block);
+    if (el) {
+      PanelUtils2.PanelUtils.highlightElement(el);
+    }
+  }
+  #renderBlockTitleContainer(block) {
+    let container = this.#blockTitleContainers.get(block);
+    if (!container) {
+      container = document.createElement("div");
+      this.#blockTitleContainers.set(block, container);
+      block.onExpandedChanged = () => this.#renderBlockTitleContainer(block);
+    }
+    const jslog = block.title?.jslogContext ? VisualLogging6.sectionHeader(block.title.jslogContext) : void 0;
+    render7(
+      renderSectionBlockTitleContent(block, (name) => LayersWidget.instance().revealLayer(name)),
+      container,
+      {
+        container: {
+          classes: sectionBlockTitleClasses(block),
+          attributes: {
+            hidden: block.isHidden(),
+            jslog,
+            role: block.expandable ? "button" : void 0,
+            tabindex: block.expandable ? "0" : void 0,
+            "aria-expanded": block.expandable ? String(block.expanded) : void 0
+          },
+          listeners: block.expandable ? {
+            click: () => block.expand(!block.expanded),
+            keydown: (e) => {
+              if (e instanceof KeyboardEvent && !e.isComposing && Platform4.KeyboardUtilities.isEnterOrSpaceKey(e)) {
+                e.consume(true);
+                block.expand(!block.expanded);
+              }
+            }
+          } : void 0
+        }
+      }
+    );
+    return container;
   }
   allSections() {
     let sections = [];
@@ -13285,125 +13375,108 @@ var Events = /* @__PURE__ */ ((Events3) => {
 })(Events || {});
 var MAX_LINK_LENGTH = 23;
 var SectionBlock = class _SectionBlock {
-  constructor(titleElement, expandable, expandedByDefault, id = "main") {
+  constructor(title, expandable, expandedByDefault, id = "main") {
     this.id = id;
-    this.#titleElement = titleElement;
+    this.title = title;
+    this.expandable = Boolean(expandable && title);
     this.sections = [];
     this.#expanded = expandedByDefault ?? false;
-    if (expandable && titleElement instanceof HTMLElement) {
-      this.#icon = createIcon3(this.#expanded ? "triangle-down" : "triangle-right", "section-block-expand-icon");
-      titleElement.classList.toggle("empty-section", !this.#expanded);
-      UI10.ARIAUtils.setExpanded(titleElement, this.#expanded);
-      titleElement.appendChild(this.#icon);
-      titleElement.tabIndex = -1;
-      titleElement.addEventListener("click", () => this.expand(!this.#expanded), false);
-    }
   }
   id;
-  #titleElement;
+  title;
+  expandable;
   sections;
   childBlocks = [];
+  /** Called when the block is expanded or collapsed, so that the owner can re-render its title. */
+  onExpandedChanged;
   #expanded = false;
-  #icon;
+  #hidden = false;
+  get expanded() {
+    return this.#expanded;
+  }
   expand(expand2) {
-    if (!this.#titleElement || !this.#icon) {
+    if (!this.expandable) {
       return;
     }
-    this.#titleElement.classList.toggle("empty-section", !expand2);
-    this.#icon.name = expand2 ? "triangle-down" : "triangle-right";
-    UI10.ARIAUtils.setExpanded(this.#titleElement, expand2);
     this.#expanded = expand2;
     this.sections.forEach((section5) => section5.element.classList.toggle("hidden", !expand2));
+    this.onExpandedChanged?.();
   }
   static createPseudoTypeBlock(pseudoType, pseudoArgument) {
-    const separatorElement = document.createElement("div");
-    separatorElement.className = "sidebar-separator";
-    separatorElement.setAttribute("jslog", `${VisualLogging6.sectionHeader("pseudotype")}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : "";
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
-    separatorElement.textContent = i18nString7(UIStrings7.pseudoSElement, { PH1: pseudoTypeString });
-    return new _SectionBlock(separatorElement, false, false, `pseudo:${pseudoType}:${pseudoArgument ?? ""}`);
+    return new _SectionBlock(
+      { text: i18nString7(UIStrings7.pseudoSElement, { PH1: pseudoTypeString }), jslogContext: "pseudotype" },
+      false,
+      false,
+      `pseudo:${pseudoType}:${pseudoArgument ?? ""}`
+    );
   }
   static async createInheritedPseudoTypeBlock(pseudoType, pseudoArgument, node) {
-    const separatorElement = document.createElement("div");
-    separatorElement.className = "sidebar-separator";
-    separatorElement.setAttribute("jslog", `${VisualLogging6.sectionHeader("inherited-pseudotype")}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : "";
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
-    UI10.UIUtils.createTextChild(separatorElement, i18nString7(UIStrings7.inheritedFromSPseudoOf, { PH1: pseudoTypeString }));
-    const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, { preventKeyboardFocus: true });
-    render7(link2, separatorElement);
     return new _SectionBlock(
-      separatorElement,
+      {
+        text: i18nString7(UIStrings7.inheritedFromSPseudoOf, { PH1: pseudoTypeString }),
+        jslogContext: "inherited-pseudotype",
+        node
+      },
       false,
       false,
       `inherited-pseudo:${pseudoType}:${pseudoArgument ?? ""}:${node.id}`
     );
   }
   static createRegisteredPropertiesBlock(expandedByDefault) {
-    const separatorElement = document.createElement("div");
-    const block = new _SectionBlock(separatorElement, true, expandedByDefault, "registered-properties");
-    separatorElement.className = "sidebar-separator";
-    separatorElement.appendChild(document.createTextNode(REGISTERED_PROPERTY_SECTION_NAME));
-    return block;
+    return new _SectionBlock({ text: REGISTERED_PROPERTY_SECTION_NAME }, true, expandedByDefault, "registered-properties");
   }
   static createFunctionBlock(expandedByDefault) {
-    const separatorElement = document.createElement("div");
-    const block = new _SectionBlock(separatorElement, true, expandedByDefault, "functions");
-    separatorElement.className = "sidebar-separator";
-    separatorElement.appendChild(document.createTextNode(FUNCTION_SECTION_NAME));
-    return block;
+    return new _SectionBlock({ text: FUNCTION_SECTION_NAME }, true, expandedByDefault, "functions");
   }
   static createKeyframesBlock(keyframesName) {
-    const separatorElement = document.createElement("div");
-    separatorElement.className = "sidebar-separator";
-    separatorElement.setAttribute("jslog", `${VisualLogging6.sectionHeader("keyframes")}`);
-    separatorElement.textContent = `@keyframes ${keyframesName}`;
-    return new _SectionBlock(separatorElement, false, false, `keyframes:${keyframesName}`);
+    return new _SectionBlock(
+      { text: `@keyframes ${keyframesName}`, jslogContext: "keyframes" },
+      false,
+      false,
+      `keyframes:${keyframesName}`
+    );
   }
   static createAtRuleBlock(expandedByDefault) {
-    const separatorElement = document.createElement("div");
-    const block = new _SectionBlock(separatorElement, true, expandedByDefault, "at-rules");
-    separatorElement.className = "sidebar-separator";
-    separatorElement.appendChild(document.createTextNode(i18nString7(UIStrings7.atRuleSection)));
-    return block;
+    return new _SectionBlock({ text: i18nString7(UIStrings7.atRuleSection) }, true, expandedByDefault, "at-rules");
   }
   static createPositionTryBlock(positionTryName) {
-    const separatorElement = document.createElement("div");
-    separatorElement.className = "sidebar-separator";
-    separatorElement.setAttribute("jslog", `${VisualLogging6.sectionHeader("position-try")}`);
-    separatorElement.textContent = `@position-try ${positionTryName}`;
-    return new _SectionBlock(separatorElement, false, false, `position-try:${positionTryName}`);
+    return new _SectionBlock(
+      { text: `@position-try ${positionTryName}`, jslogContext: "position-try" },
+      false,
+      false,
+      `position-try:${positionTryName}`
+    );
   }
   static async createInheritedNodeBlock(node) {
-    const separatorElement = document.createElement("div");
-    separatorElement.className = "sidebar-separator";
-    separatorElement.setAttribute("jslog", `${VisualLogging6.sectionHeader("inherited")}`);
-    UI10.UIUtils.createTextChild(separatorElement, i18nString7(UIStrings7.inheritedFroms));
-    const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, {
-      preventKeyboardFocus: true
-    });
-    render7(link2, separatorElement);
-    return new _SectionBlock(separatorElement, false, false, `inherited-node:${node.id}`);
+    return new _SectionBlock(
+      { text: i18nString7(UIStrings7.inheritedFroms), jslogContext: "inherited", node },
+      false,
+      false,
+      `inherited-node:${node.id}`
+    );
   }
   static createLayerBlock(rule, parentBlockId = "main") {
-    const separatorElement = document.createElement("div");
-    separatorElement.className = "sidebar-separator layer-separator";
-    separatorElement.setAttribute("jslog", `${VisualLogging6.sectionHeader("layer")}`);
-    UI10.UIUtils.createTextChild(separatorElement.createChild("div"), i18nString7(UIStrings7.layer));
     const layers = rule.layers;
     if (!layers.length && rule.origin === CSS2.StyleSheetOrigin.UserAgent) {
       const name2 = rule.origin === CSS2.StyleSheetOrigin.UserAgent ? "\xA0user\xA0agent\xA0stylesheet" : "\xA0implicit\xA0outer\xA0layer";
-      UI10.UIUtils.createTextChild(separatorElement.createChild("div"), name2);
-      return new _SectionBlock(separatorElement, false, false, `layer:${parentBlockId}:${name2}`);
+      return new _SectionBlock(
+        { text: i18nString7(UIStrings7.layer), jslogContext: "layer", layerName: name2, canRevealLayer: false },
+        false,
+        false,
+        `layer:${parentBlockId}:${name2}`
+      );
     }
-    const layerLink = separatorElement.createChild("button");
-    layerLink.className = "link";
-    layerLink.title = i18nString7(UIStrings7.clickToRevealLayer);
     const name = layers.map((layer) => SDK6.CSSModel.CSSModel.readableLayerName(layer.text)).join(".");
-    layerLink.textContent = name;
-    layerLink.onclick = () => LayersWidget.instance().revealLayer(name);
-    return new _SectionBlock(separatorElement, false, false, `layer:${parentBlockId}:${name}`);
+    return new _SectionBlock(
+      { text: i18nString7(UIStrings7.layer), jslogContext: "layer", layerName: name, canRevealLayer: true },
+      false,
+      false,
+      `layer:${parentBlockId}:${name}`
+    );
   }
   updateFilter() {
     let numVisibleSections = 0;
@@ -13413,13 +13486,25 @@ var SectionBlock = class _SectionBlock {
     for (const section5 of this.sections) {
       numVisibleSections += section5.updateFilter() ? 1 : 0;
     }
-    if (this.#titleElement) {
-      this.#titleElement.classList.toggle("hidden", numVisibleSections === 0);
+    if (this.title) {
+      this.#hidden = numVisibleSections === 0;
     }
     return numVisibleSections;
   }
-  titleElement() {
-    return this.#titleElement;
+  /**
+   * Whether the title of this block is hidden because none of its sections match the current filter.
+   */
+  isHidden() {
+    return this.#hidden;
+  }
+  /**
+   * The text content of the rendered title, or `null` if the block has no title.
+   */
+  titleText() {
+    if (!this.title) {
+      return null;
+    }
+    return `${this.title.text}${this.title.layerName ?? ""}`;
   }
 };
 var IdleCallbackManager = class {
@@ -14074,8 +14159,8 @@ var buttonProviderInstance2;
 var ButtonProvider2 = class _ButtonProvider {
   button;
   constructor() {
-    const action3 = UI10.ActionRegistry.ActionRegistry.instance().getAction("elements.new-style-rule");
-    this.button = UI10.Toolbar.Toolbar.createActionButton(action3);
+    const action4 = UI10.ActionRegistry.ActionRegistry.instance().getAction("elements.new-style-rule");
+    this.button = UI10.Toolbar.Toolbar.createActionButton(action4);
     this.button.setLongClickable(true);
     new UI10.UIUtils.LongClickController(this.button.element, this.longClicked.bind(this));
     UI10.Context.Context.instance().addFlavorChangeListener(SDK6.DOMModel.DOMNode, onNodeChanged.bind(this));
@@ -15169,6 +15254,7 @@ import * as Common7 from "../../core/common/common.js";
 import * as i18n20 from "../../core/i18n/i18n.js";
 import * as Platform6 from "../../core/platform/platform.js";
 import * as SDK9 from "../../core/sdk/sdk.js";
+import * as ComputedStyleModule from "../../models/computed_style/computed_style.js";
 import * as TreeOutline7 from "../../ui/components/tree_outline/tree_outline.js";
 import * as InlineEditor4 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
@@ -15549,17 +15635,6 @@ var navigateToSource = (cssProperty, event) => {
   void Common7.Revealer.reveal(cssProperty);
   event?.consume(true);
 };
-var propertySorter = (propA, propB) => {
-  if (propA.startsWith("--") !== propB.startsWith("--")) {
-    return propA.startsWith("--") ? 1 : -1;
-  }
-  if (propA.startsWith("-webkit") !== propB.startsWith("-webkit")) {
-    return propA.startsWith("-webkit") ? 1 : -1;
-  }
-  const canonicalA = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propA);
-  const canonicalB = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propB);
-  return Platform6.StringUtilities.compare(canonicalA, canonicalB);
-};
 var DEFAULT_VIEW4 = (input, _output, target) => {
   render9(html12`
     <style>${computedStyleWidget_css_default}</style>
@@ -15780,28 +15855,16 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
   async rebuildAlphabeticalList(nodeStyle, matchedStyles) {
     this.imagePreviewPopover.hide();
     this.linkifier.reset();
-    const uniqueProperties = [...nodeStyle.computedStyle.keys()];
-    uniqueProperties.sort(propertySorter);
     const node = nodeStyle.node;
     const propertyTraces = this.#propertyTraces || /* @__PURE__ */ new Map();
-    const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
-    const showInherited = this.#shouldShowAllStyles();
-    const tree3 = [];
-    for (const propertyName of uniqueProperties) {
-      const propertyValue = nodeStyle.computedStyle.get(propertyName) || "";
-      const canonicalName = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
-      const isInherited = !nonInheritedProperties.has(canonicalName);
-      if (!showInherited && isInherited && !alwaysShownComputedProperties.has(propertyName)) {
-        continue;
-      }
-      if (!showInherited && propertyName.startsWith("--")) {
-        continue;
-      }
-      if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName)) {
-        continue;
-      }
-      tree3.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited));
-    }
+    const properties = ComputedStyleModule.ComputedStyleModel.filterComputedStyleProperties(
+      nodeStyle.computedStyle,
+      matchedStyles,
+      { showAll: this.#shouldShowAllStyles() }
+    );
+    const tree3 = properties.map(
+      (property) => this.buildTreeNode(propertyTraces, property.name, property.value, property.inherited)
+    );
     const defaultRenderer = this.createTreeNodeRenderer(propertyTraces, node, matchedStyles);
     this.#treeData = {
       tree: tree3,
@@ -15819,41 +15882,33 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
     }
     const node = nodeStyle.node;
     const propertyTraces = this.#propertyTraces || /* @__PURE__ */ new Map();
-    const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
-    const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
+    const properties = ComputedStyleModule.ComputedStyleModel.filterComputedStyleProperties(
+      nodeStyle.computedStyle,
+      matchedStyles,
+      { showAll: this.showInheritedComputedStylePropertiesSetting.get(), sort: false }
+    );
     const propertiesByCategory = /* @__PURE__ */ new Map();
     const tree3 = [];
-    for (const [propertyName, propertyValue] of nodeStyle.computedStyle) {
-      const canonicalName = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
-      const isInherited = !nonInheritedProperties.has(canonicalName);
-      if (!showInherited && isInherited && !alwaysShownComputedProperties.has(propertyName)) {
-        continue;
-      }
-      if (!showInherited && propertyName.startsWith("--")) {
-        continue;
-      }
-      if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName)) {
-        continue;
-      }
-      const categories = categorizePropertyName(propertyName);
+    for (const property of properties) {
+      const categories = categorizePropertyName(property.name);
       for (const category of categories) {
         if (!propertiesByCategory.has(category)) {
           propertiesByCategory.set(category, []);
         }
-        propertiesByCategory.get(category)?.push(propertyName);
+        propertiesByCategory.get(category)?.push(property);
       }
     }
     this.#computedStylesTree.removeChildren();
     for (const category of DefaultCategoryOrder) {
-      const properties = propertiesByCategory.get(category);
-      if (properties && properties.length > 0) {
-        const propertyNodes = [];
-        for (const propertyName of properties) {
-          const propertyValue = nodeStyle.computedStyle.get(propertyName) || "";
-          const canonicalName = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
-          const isInherited = !nonInheritedProperties.has(canonicalName);
-          propertyNodes.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited, category));
-        }
+      const categoryProperties = propertiesByCategory.get(category);
+      if (categoryProperties && categoryProperties.length > 0) {
+        const propertyNodes = categoryProperties.map((property) => this.buildTreeNode(
+          propertyTraces,
+          property.name,
+          property.value,
+          property.inherited,
+          category
+        ));
         tree3.push({ id: category, treeNodeData: { tag: "category", name: category }, children: async () => propertyNodes });
       }
     }
@@ -15957,18 +16012,6 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
     );
     void contextMenu.show();
   }
-  computeNonInheritedProperties(matchedStyles) {
-    const result = /* @__PURE__ */ new Set();
-    for (const style of matchedStyles.nodeStyles()) {
-      for (const property of style.allProperties()) {
-        if (!matchedStyles.propertyState(property)) {
-          continue;
-        }
-        result.add(SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(property.name));
-      }
-    }
-    return result;
-  }
   #buildFilterRegex(text) {
     if (!text) {
       return null;
@@ -16052,7 +16095,6 @@ var ComputedStyleWidget = class extends UI13.Widget.VBox {
   }
 };
 var maxLinkLength = 30;
-var alwaysShownComputedProperties = /* @__PURE__ */ new Set(["display", "height", "width"]);
 
 // ../../front_end/panels/elements/DOMTreeWidget.ts
 var DOMTreeWidget_exports = {};
@@ -18620,9 +18662,9 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI16.Widget.Widge
         aiButtonTitle: this.isAiButtonEnabled() ? UI16.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button").title() : void 0,
         onAiButtonClick: (ev) => {
           ev.stopPropagation();
-          const action3 = UI16.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button");
-          if (action3) {
-            void action3.execute();
+          const action4 = UI16.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button");
+          if (action4) {
+            void action4.execute();
           }
         },
         editorState: this.#editorState,

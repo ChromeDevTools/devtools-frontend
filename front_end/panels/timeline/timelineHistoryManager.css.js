@@ -20,10 +20,6 @@ export default `/*
   padding: var(--sys-size-4) var(--sys-size-5);
   position: relative;
 
-  .metadata {
-    margin-left: 3px;
-  }
-
   /* done this way because if we have a border it
    * awkwardly merges in a diagonal with the top and
    * bottom border */

@@ -253,6 +253,8 @@ export default `/*
 .data-grid tbody tr.revealed.selected {
   background-color: var(--sys-color-neutral-container);
   color: inherit;
+  outline: var(--sys-size-1) solid var(--sys-color-on-surface-subtle);
+  outline-offset: calc(-1 * var(--sys-size-1));
 
   & ::selection {
     background-color: var(--sys-color-state-focus-select);
@@ -408,6 +410,7 @@ export default `/*
     color: HighlightText;
   }
 
+  .data-grid tbody tr.revealed.selected,
   .data-grid:focus-visible tbody tr.revealed.selected {
     outline-color: HighlightText;
   }

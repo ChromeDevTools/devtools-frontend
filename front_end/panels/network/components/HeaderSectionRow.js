@@ -13,8 +13,10 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import { EditableSpan } from './EditableSpan.js';
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 const { render, html } = Lit;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description A context menu item to copy the value of a header.
@@ -156,13 +158,13 @@ export class HeaderSectionRow extends HTMLElement {
             html `<devtools-icon class="inline-icon disallowed-characters medium" title=${UIStrings.headerNamesOnlyLetters} name='cross-circle-filled'>
             </devtools-icon>` : Lit.nothing}
           ${isHeaderNameEditable && !this.#header.isDeleted ?
-            html `<devtools-editable-span
+            html `<devtools-widget
               @focusout=${this.#onHeaderNameFocusOut}
               @keydown=${this.#onKeyDown}
               @input=${this.#onHeaderNameEdit}
               @paste=${this.#onHeaderNamePaste}
-              .value=${this.#header.name}
-            ></devtools-editable-span>` :
+              ${widget(EditableSpan, { value: this.#header.name })}
+            ></devtools-widget>` :
             this.#header.name}
         </div>
         <div
@@ -214,13 +216,13 @@ export class HeaderSectionRow extends HTMLElement {
     `;
         }
         return html `
-      <devtools-editable-span
+      <devtools-widget
         @focusout=${this.#onHeaderValueFocusOut}
         @input=${this.#onHeaderValueEdit}
         @paste=${this.#onHeaderValueEdit}
         @keydown=${this.#onKeyDown}
-        .value=${this.#header.value || ''}
-      ></devtools-editable-span>
+        ${widget(EditableSpan, { value: this.#header.value || '' })}
+      ></devtools-widget>
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
       <devtools-button
         title=${i18nString(UIStrings.removeOverride)}
@@ -247,7 +249,7 @@ export class HeaderSectionRow extends HTMLElement {
     }
     focus() {
         requestAnimationFrame(() => {
-            const editableName = this.#shadow.querySelector('.header-name devtools-editable-span');
+            const editableName = this.#shadow.querySelector('.header-name devtools-widget');
             editableName?.focus();
         });
     }
@@ -311,7 +313,7 @@ export class HeaderSectionRow extends HTMLElement {
         return Lit.nothing;
     }
     #onHeaderValueFocusOut(event) {
-        const target = event.target;
+        const target = UI.Widget.Widget.get(event.currentTarget);
         if (!this.#header) {
             return;
         }
@@ -328,7 +330,7 @@ export class HeaderSectionRow extends HTMLElement {
         this.#header.originalName = '';
     }
     #onHeaderNameFocusOut(event) {
-        const target = event.target;
+        const target = UI.Widget.Widget.get(event.currentTarget);
         if (!this.#header) {
             return;
         }
@@ -350,37 +352,41 @@ export class HeaderSectionRow extends HTMLElement {
         if (!this.#header) {
             return;
         }
-        const headerValueElement = this.#shadow.querySelector('.header-value devtools-editable-span');
-        if (this.#header.originalValue) {
-            headerValueElement.value = this.#header?.originalValue;
+        const headerValueWidget = this.#shadow.querySelector('.header-value devtools-widget')?.getWidget();
+        if (this.#header.originalValue && headerValueWidget) {
+            headerValueWidget.value = this.#header.originalValue;
         }
         this.dispatchEvent(new HeaderRemovedEvent(this.#header.name, this.#header.value || ''));
     }
     #onKeyDown(event) {
-        const target = event.target;
+        const currentTarget = event.currentTarget;
+        const target = UI.Widget.Widget.get(currentTarget);
         if (event.key === 'Escape') {
             event.consume();
-            if (target.matches('.header-name devtools-editable-span')) {
+            if (currentTarget.matches('.header-name devtools-widget')) {
                 target.value = this.#header?.name || '';
                 this.#onHeaderNameEdit(event);
             }
-            else if (target.matches('.header-value devtools-editable-span')) {
+            else if (currentTarget.matches('.header-value devtools-widget')) {
                 target.value = this.#header?.value || '';
                 this.#onHeaderValueEdit(event);
                 if (this.#header?.originalName) {
-                    const headerNameElement = this.#shadow.querySelector('.header-name devtools-editable-span');
-                    headerNameElement.value = this.#header.originalName;
-                    this.#header.originalName = '';
-                    headerNameElement.dispatchEvent(new Event('input'));
-                    headerNameElement.focus();
+                    const headerNameWidget = this.#shadow.querySelector('.header-name devtools-widget')
+                        ?.getWidget();
+                    if (headerNameWidget) {
+                        headerNameWidget.value = this.#header.originalName;
+                        this.#header.originalName = '';
+                        headerNameWidget.dispatchDOMEvent(new Event('input'));
+                        headerNameWidget.focus();
+                    }
                     return;
                 }
             }
-            target.blur();
+            event.target.blur();
         }
     }
     #onHeaderNameEdit(event) {
-        const editable = event.target;
+        const editable = UI.Widget.Widget.get(event.currentTarget);
         const isValidName = isValidHeaderName(editable.value);
         if (this.#isValidHeaderName !== isValidName) {
             this.#isValidHeaderName = isValidName;
@@ -388,7 +394,7 @@ export class HeaderSectionRow extends HTMLElement {
         }
     }
     #onHeaderValueEdit(event) {
-        const editable = event.target;
+        const editable = UI.Widget.Widget.get(event.currentTarget);
         const isEdited = this.#header?.originalValue !== undefined && !compareHeaders(this.#header?.originalValue || '', editable.value);
         if (this.#isHeaderValueEdited !== isEdited) {
             this.#isHeaderValueEdited = isEdited;
@@ -402,14 +408,14 @@ export class HeaderSectionRow extends HTMLElement {
         if (!event.clipboardData) {
             return;
         }
-        const nameEl = event.target;
+        const nameWidget = UI.Widget.Widget.get(event.currentTarget);
         const clipboardText = event.clipboardData.getData('text/plain') || '';
         const separatorPosition = clipboardText.indexOf(':');
         if (separatorPosition < 1) {
             // Not processing further either case 'abc' or ':abc'
-            nameEl.value = clipboardText;
+            nameWidget.value = clipboardText;
             event.preventDefault();
-            nameEl.dispatchEvent(new Event('input', { bubbles: true }));
+            nameWidget.dispatchDOMEvent(new Event('input', { bubbles: true }));
             return;
         }
         if (this.#header) {
@@ -417,13 +423,13 @@ export class HeaderSectionRow extends HTMLElement {
         }
         const headerValue = clipboardText.substring(separatorPosition + 1, clipboardText.length).trim();
         const headerName = clipboardText.substring(0, separatorPosition);
-        nameEl.value = headerName;
-        nameEl.dispatchEvent(new Event('input'));
-        const valueEL = this.#shadow.querySelector('.header-value devtools-editable-span');
-        if (valueEL) {
-            valueEL.focus();
-            valueEL.value = headerValue;
-            valueEL.dispatchEvent(new Event('input'));
+        nameWidget.value = headerName;
+        nameWidget.dispatchDOMEvent(new Event('input'));
+        const valueWidget = this.#shadow.querySelector('.header-value devtools-widget')?.getWidget();
+        if (valueWidget) {
+            valueWidget.value = headerValue;
+            valueWidget.focus();
+            valueWidget.dispatchDOMEvent(new Event('input'));
         }
         event.preventDefault();
     }

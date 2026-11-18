@@ -2662,6 +2662,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -4703,8 +4704,8 @@ var SymbolizedErrorWidget = class extends UI2.Widget.Widget {
 };
 
 // ../../front_end/panels/console/ConsoleViewMessage.ts
-var { ifDefined } = Directives;
-var { widget: widget2 } = UI3.Widget;
+var { ifDefined, until } = Directives;
+var { widget: widget2, widgetRef } = UI3.Widget;
 var UIStrings2 = {
   /**
    * @description Message element text content in Console view message of the Console panel. Shown
@@ -4876,15 +4877,7 @@ var UIStrings2 = {
   /**
    * @description Submenu item to copy table as CSV.
    */
-  copyAsCsv: "Copy as CSV",
-  /**
-   * @description Text to expand something recursively
-   */
-  expandRecursively: "Expand recursively",
-  /**
-   * @description Text to collapse children of a parent group
-   */
-  collapseChildren: "Collapse children"
+  copyAsCsv: "Copy as CSV"
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/console/ConsoleViewMessage.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -4935,6 +4928,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   closeGroupDecorationCount;
   consoleGroupInternal;
   selectableChildren;
+  // Re-formatting reuses these, so that the rendered parameters keep their
+  // identity and async content isn't requested and rendered again.
+  #remoteObjects = /* @__PURE__ */ new WeakMap();
+  #objectSelectableItems = /* @__PURE__ */ new WeakMap();
+  #objectFunctionTitlePromises = /* @__PURE__ */ new WeakMap();
+  #functionParameterPromises = /* @__PURE__ */ new WeakMap();
   // Trees rendering logged DOM nodes; they follow the message visibility.
   domTreeWidgets = [];
   // Stack trace previews are also root widgets and follow the message visibility.
@@ -5393,7 +5392,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       }
       return formattedResult;
     }
-    let parameters = rawParameters.map(parameterToRemoteObject(this.message.runtimeModel()));
+    let parameters = rawParameters.map((parameter) => this.#parameterToRemoteObject(parameter));
     const shouldFormatMessage = SDK3.RemoteObject.RemoteObject.type(parameters[0]) === "string" && (this.message.type !== SDK3.ConsoleModel.FrontendMessageType.Result || this.message.level === Log.LogEntryLevel.Error);
     if (shouldFormatMessage) {
       parameters = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1), parts);
@@ -5426,8 +5425,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         element = this.renderSymbolizedError(output);
         break;
       case "function":
-        element = this.formatParameterAsFunction(output, includePreview);
-        break;
+        return this.formatParameterAsFunction(output, includePreview, typeClasses);
       case "array":
       case "arraybuffer":
       case "blob":
@@ -5444,14 +5442,15 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       case "weakmap":
       case "weakset":
       case "webassemblymemory":
-        element = this.formatParameterAsObject(output, includePreview);
-        break;
+        return this.formatParameterAsObject(output, includePreview, typeClasses);
       case "node":
-        element = output.isNode() ? this.formatParameterAsNode(output) : this.formatParameterAsObject(output, false);
+        if (!output.isNode()) {
+          return this.formatParameterAsObject(output, false, typeClasses);
+        }
+        element = this.formatParameterAsNode(output);
         break;
       case "trustedtype":
-        element = this.formatParameterAsObject(output, false);
-        break;
+        return this.formatParameterAsObject(output, false, typeClasses);
       case "string":
         return this.formatParameterAsString(output, typeClasses);
       case "boolean":
@@ -5484,106 +5483,127 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   formatParameterAsTrustedType(obj) {
     return html3`<span>${`${obj.className} `}<span class="object-value-string">${this.formatParameterAsString(obj)}</span></span>`;
   }
-  formatParameterAsObject(obj, includePreview) {
-    const titleElement = document.createElement("span");
-    titleElement.tabIndex = -1;
-    titleElement.classList.add("console-object");
-    const renderPreview = (includeNullOrUndefined) => {
-      if (obj.preview) {
-        titleElement.classList.add("console-object-preview");
-        render3(
-          html3`${this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined)}${ObjectUI3.ObjectPropertiesSection.getMemoryIcon(obj)}`,
-          titleElement
-        );
+  formatParameterAsObject(obj, includePreview, extraClasses = "") {
+    const isExpandable = Boolean(obj.hasChildren && !obj.customPreview());
+    const renderTitleSpan = (extraSpanClasses = "", withContextMenu = false, filterChanged = false, includeNullOrUndefinedValues = true) => {
+      const showPreview = Boolean((includePreview || filterChanged) && obj.preview);
+      const spanClasses = [
+        "console-object",
+        showPreview ? "console-object-preview" : "",
+        !showPreview && obj.type === "function" ? "object-value-function" : "",
+        extraSpanClasses
+      ].filter(Boolean).join(" ");
+      let inner;
+      if (showPreview && obj.preview) {
+        inner = html3`${this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefinedValues)}${ObjectUI3.ObjectPropertiesSection.getMemoryIcon(obj)}`;
+      } else if (obj.type === "function") {
+        inner = html3`${until(this.#getObjectFunctionTitlePromise(obj))}`;
+      } else if (obj.subtype === "trustedtype") {
+        inner = this.formatParameterAsTrustedType(obj);
+      } else {
+        inner = obj.description || "";
       }
+      return html3`<span
+            tabindex="-1"
+            class=${spanClasses}
+            @contextmenu=${withContextMenu ? this.contextMenuEventFired.bind(this, obj) : nothing3}>${inner}</span>`;
     };
-    if (includePreview && obj.preview) {
-      renderPreview(true);
-    } else if (obj.type === "function") {
-      titleElement.classList.add("object-value-function");
-      void ObjectUI3.ObjectPropertiesSection.formatObjectAsFunction(obj, false).then((t) => {
-        const fragment = document.createDocumentFragment();
-        render3(t, fragment, { host: this });
-        titleElement.insertBefore(fragment, titleElement.firstChild);
-      });
-    } else if (obj.subtype === "trustedtype") {
-      render3(this.formatParameterAsTrustedType(obj), titleElement);
-    } else {
-      UI3.UIUtils.createTextChild(titleElement, obj.description || "");
+    if (!isExpandable) {
+      return renderTitleSpan(extraClasses, true);
     }
-    if (!obj.hasChildren || obj.customPreview()) {
-      return titleElement;
+    let selectableItem = this.#objectSelectableItems.get(obj);
+    if (!selectableItem) {
+      selectableItem = {
+        element: document.createElement("span"),
+        forceSelect: () => {
+        }
+      };
+      this.#objectSelectableItems.set(obj, selectableItem);
     }
-    const container = document.createElement("span");
-    const section = new ObjectUI3.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
-    section.markAsRoot();
-    const treeElement = section.element;
-    treeElement.classList.add("console-view-object-properties-section");
-    titleElement.addEventListener("contextmenu", (event) => {
-      event.consume(true);
-      const contextMenu = new UI3.ContextMenu.ContextMenu(event);
-      contextMenu.appendApplicableItems(obj);
-      if (obj instanceof SDK3.RemoteObject.LocalJSONObject) {
-        contextMenu.viewSection().appendItem(
-          i18nString2(UIStrings2.expandRecursively),
-          () => section.objectTree?.expandRecursively(ObjectUI3.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH),
-          { jslogContext: "expand-recursively" }
-        );
-        contextMenu.viewSection().appendItem(
-          i18nString2(UIStrings2.collapseChildren),
-          () => section.objectTree?.collapseRecursively(),
-          { jslogContext: "collapse-children" }
-        );
-      }
-      void contextMenu.show();
-    });
-    section.root = obj;
-    section.title = html3`<style>${consoleView_css_default}</style>${titleElement}<span class="object-state-note info-note" title=${this.message.type === SDK3.ConsoleModel.FrontendMessageType.QueryObjectResult ? i18nString2(UIStrings2.thisValueWillNotBeCollectedUntil) : i18nString2(UIStrings2.thisValueWasEvaluatedUponFirst)}></span>`;
-    section.linkifier = this.linkifier;
-    this.selectableChildren.push({
-      element: treeElement,
-      forceSelect: () => {
-      }
-    });
-    if (section.objectTree) {
-      const resizeEvent = { data: treeElement };
-      section.objectTree.addEventListener(
-        ObjectUI3.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
-        () => this.messageResized(resizeEvent)
-      );
-      section.objectTree.addEventListener(
-        ObjectUI3.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED,
-        () => this.messageResized(resizeEvent)
-      );
-      section.objectTree.addEventListener(
-        ObjectUI3.ObjectPropertiesSection.ObjectTreeNodeBase.Events.FILTER_CHANGED,
-        () => renderPreview(section.objectTree?.includeNullOrUndefinedValues || false)
-      );
+    if (!this.selectableChildren.includes(selectableItem)) {
+      this.selectableChildren.push(selectableItem);
     }
-    section.show(container);
-    return container;
+    const noteTitle = this.message.type === SDK3.ConsoleModel.FrontendMessageType.QueryObjectResult ? i18nString2(UIStrings2.thisValueWillNotBeCollectedUntil) : i18nString2(UIStrings2.thisValueWasEvaluatedUponFirst);
+    const sectionTitle = ({
+      filterChanged,
+      includeNullOrUndefinedValues
+    }) => {
+      return html3`<style>${consoleView_css_default}</style>${renderTitleSpan("", false, filterChanged, includeNullOrUndefinedValues)}<span
+          class="object-state-note info-note" title=${noteTitle}></span>`;
+    };
+    return html3`<span class=${ifDefined(extraClasses || void 0)}><devtools-widget
+      class="console-view-object-properties-section"
+      ${widget2(ObjectUI3.ObjectPropertiesSection.ObjectPropertiesSectionWidget, {
+      root: obj,
+      title: sectionTitle,
+      linkifier: this.linkifier,
+      onTreeResized: this.#onTreeResized
+    })}
+      ${widgetRef(ObjectUI3.ObjectPropertiesSection.ObjectPropertiesSectionWidget, (section) => {
+      selectableItem.element = section.element;
+      selectableItem.forceSelect = () => {
+        const tree = section.element.querySelector("devtools-tree");
+        tree?.focus();
+        if (tree && !tree.hasFocus()) {
+          tree.focus();
+        }
+      };
+    })}></devtools-widget></span>`;
   }
-  formatParameterAsFunction(originalFunction, includePreview) {
-    const result = document.createElement("span");
-    void SDK3.RemoteObject.RemoteFunction.objectAsFunction(originalFunction).targetFunction().then(formatTargetFunction.bind(this));
-    return result;
-    function formatTargetFunction(targetFunction) {
-      const promise = ObjectUI3.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, true, includePreview);
-      if (targetFunction !== originalFunction) {
-        const note = result.createChild("span", "object-state-note info-note");
-        UI3.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.functionWasResolvedFromBound));
-      }
-      result.addEventListener("contextmenu", this.contextMenuEventFired.bind(this, originalFunction), false);
-      void promise.then((t) => {
-        const fragment = document.createDocumentFragment();
-        render3(t, fragment, { host: this });
-        result.insertBefore(fragment, result.firstChild);
-        this.formattedParameterAsFunctionForTest();
-      });
+  formatParameterAsFunction(originalFunction, includePreview, extraClasses = "") {
+    const previewKey = Boolean(includePreview);
+    let byPreview = this.#functionParameterPromises.get(originalFunction);
+    if (!byPreview) {
+      byPreview = /* @__PURE__ */ new Map();
+      this.#functionParameterPromises.set(originalFunction, byPreview);
     }
+    let promise = byPreview.get(previewKey);
+    if (!promise) {
+      promise = SDK3.RemoteObject.RemoteFunction.objectAsFunction(originalFunction).targetFunction().then(async (targetFunction) => {
+        const fnTemplate = await ObjectUI3.ObjectPropertiesSection.formatObjectAsFunction(
+          targetFunction,
+          true,
+          includePreview
+        );
+        const isBound = targetFunction !== originalFunction;
+        return html3`<span
+                        @contextmenu=${this.contextMenuEventFired.bind(this, originalFunction)}>${fnTemplate}${isBound ? html3`<span
+                              class="object-state-note info-note"
+                              title=${i18nString2(UIStrings2.functionWasResolvedFromBound)}></span>` : nothing3}</span>`;
+      });
+      byPreview.set(previewKey, promise);
+    }
+    void promise.then(() => {
+      queueMicrotask(() => this.formattedParameterAsFunctionForTest());
+    });
+    return html3`<span class=${ifDefined(extraClasses || void 0)}>${until(promise)}</span>`;
   }
+  // Sniffed in web_tests and unit tests.
   formattedParameterAsFunctionForTest() {
   }
+  #parameterToRemoteObject(parameter) {
+    const toRemoteObject = parameterToRemoteObject(this.message.runtimeModel());
+    if (typeof parameter !== "object" || parameter instanceof SDK3.RemoteObject.RemoteObject) {
+      return toRemoteObject(parameter);
+    }
+    let remoteObject = this.#remoteObjects.get(parameter);
+    if (!remoteObject) {
+      remoteObject = toRemoteObject(parameter);
+      this.#remoteObjects.set(parameter, remoteObject);
+    }
+    return remoteObject;
+  }
+  #getObjectFunctionTitlePromise(obj) {
+    let promise = this.#objectFunctionTitlePromises.get(obj);
+    if (!promise) {
+      promise = ObjectUI3.ObjectPropertiesSection.formatObjectAsFunction(obj, false);
+      this.#objectFunctionTitlePromises.set(obj, promise);
+    }
+    return promise;
+  }
+  #onTreeResized = (element) => {
+    this.messageResized({ data: element });
+  };
   contextMenuEventFired(obj, event) {
     const contextMenu = new UI3.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(obj);
@@ -5630,7 +5650,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       if (!node) {
         this.domTreeWidgets.splice(this.domTreeWidgets.indexOf(domTree), 1);
         domTree.detach();
-        result.appendChild(this.formatParameterAsObject(remoteObject, false));
+        render3(this.formatParameterAsObject(remoteObject, false), result);
         return;
       }
       domTree.rootDOMNode = node;
@@ -9269,10 +9289,11 @@ import * as Bindings5 from "../../models/bindings/bindings.js";
 import * as Formatter2 from "../../models/formatter/formatter.js";
 import * as SourceMapScopes from "../../models/source_map_scopes/source_map_scopes.js";
 import * as CodeMirror2 from "../../third_party/codemirror.next/codemirror.next.js";
+import * as Dialogs3 from "../../ui/components/dialogs/dialogs.js";
 import * as TextEditor2 from "../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI5 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html8, nothing as nothing7, render as render8 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html9, nothing as nothing8, render as render9 } from "../../ui/lit/lit.js";
 import * as Settings10 from "../../ui/settings/settings.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
@@ -9285,7 +9306,7 @@ __export(ConsolePanel_exports, {
   WrapperView: () => WrapperView
 });
 import * as UI10 from "../../ui/legacy/legacy.js";
-import { html as html7, render as render7 } from "../../ui/lit/lit.js";
+import { html as html8, render as render8 } from "../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/console/ConsoleView.ts
@@ -9293,7 +9314,9 @@ var ConsoleView_exports = {};
 __export(ConsoleView_exports, {
   ActionDelegate: () => ActionDelegate,
   ConsoleView: () => ConsoleView,
-  ConsoleViewFilter: () => ConsoleViewFilter
+  ConsoleViewFilter: () => ConsoleViewFilter,
+  PROGRESS_VIEW: () => PROGRESS_VIEW,
+  SETTINGS_PANE_VIEW: () => SETTINGS_PANE_VIEW
 });
 import "../../ui/legacy/legacy.js";
 import * as Common6 from "../../core/common/common.js";
@@ -9313,9 +9336,9 @@ import * as CodeHighlighter3 from "../../ui/components/code_highlighter/code_hig
 import * as Highlighting2 from "../../ui/components/highlighting/highlighting.js";
 import * as IssueCounter2 from "../../ui/components/issue_counter/issue_counter.js";
 import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
-import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
+import { html as html7, nothing as nothing7, render as render7 } from "../../ui/lit/lit.js";
 import * as Settings8 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import { AiCodeCompletionSummaryToolbar } from "../common/common.js";
@@ -9584,6 +9607,72 @@ var MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
 var DISCLAIMER_TOOLTIP_ID = "console-ai-code-completion-disclaimer-tooltip";
 var SPINNER_TOOLTIP_ID = "console-ai-code-completion-spinner-tooltip";
 var CITATIONS_TOOLTIP_ID = "console-ai-code-completion-citations-tooltip";
+var { bindToSetting } = UI9.UIUtils;
+function renderSettingsPane(input) {
+  return html7`<div
+      class="console-settings-pane"
+      ?hidden=${!input.showSettingsPane}
+      role="group"
+      aria-label=${i18nString5(UIStrings5.consoleSettings)}>
+    <devtools-checkbox
+        title=${input.networkMessagesTitle}
+        ${bindToSetting(input.networkMessagesSetting)}>
+      ${i18nString5(UIStrings5.networkMessages)}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString5(UIStrings5.logXMLHttpRequests)}
+        ${bindToSetting(input.monitoringXHREnabledSetting)}>
+      ${i18nString5(UIStrings5.logXMLHttpRequests)}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString5(UIStrings5.doNotClearLogOnPageReload)}
+        ${bindToSetting(input.preserveConsoleLogSetting)}>
+      ${i18nString5(UIStrings5.preserveLog)}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString5(UIStrings5.eagerlyEvaluateTextInThePrompt)}
+        ${bindToSetting(input.consoleEagerEvalSetting)}>
+      ${input.consoleEagerEvalLabel}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString5(UIStrings5.onlyShowMessagesFromTheCurrentContext)}
+        ${bindToSetting(input.filterByExecutionContextSetting)}>
+      ${i18nString5(UIStrings5.selectedContextOnly)}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString5(UIStrings5.autocompleteFromHistory)}
+        ${bindToSetting(input.consoleHistoryAutocompleteSetting)}>
+      ${input.consoleHistoryAutocompleteLabel}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString5(UIStrings5.groupSimilarMessagesInConsole)}
+        ${bindToSetting(input.groupSimilarSetting)}>
+      ${input.groupSimilarLabel}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString5(UIStrings5.treatEvaluationAsUserActivation)}
+        ${bindToSetting(input.userActivationEvalSetting)}>
+      ${input.userActivationEvalLabel}
+    </devtools-checkbox>
+    <devtools-checkbox
+        title=${i18nString5(UIStrings5.showCorsErrorsInConsole)}
+        ${bindToSetting(input.showCorsErrorsSetting)}>
+      ${input.showCorsErrorsLabel}
+    </devtools-checkbox>
+  </div>`;
+}
+var SETTINGS_PANE_VIEW = (input, _output, target) => {
+  render7(renderSettingsPane(input), target);
+};
+var PROGRESS_VIEW = (progressInput, _output, target) => {
+  render7(progressInput ? html7`
+    <devtools-progress
+        .title=${progressInput.title}
+        .worked=${progressInput.worked}
+        .totalWork=${progressInput.totalWork}
+        @canceled=${progressInput.onCancel}>
+    </devtools-progress>` : nothing7, target);
+};
 var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   #searchableView;
   sidebar;
@@ -9611,6 +9700,11 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   showCorsErrorsSetting;
   timestampsSetting;
   consoleHistoryAutocompleteSetting;
+  #monitoringXHREnabledSetting;
+  #consoleEagerEvalSetting;
+  #preserveConsoleLogSetting;
+  #userActivationEvalSetting;
+  #settingsPaneContainer = document.createElement("div");
   selfXssWarningDisabledSetting;
   pinPane;
   viewport;
@@ -9631,6 +9725,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   buildHiddenCacheTimeout;
   searchShouldJumpBackwards;
   searchProgressIndicator;
+  #progress = null;
   #searchTimeoutId;
   muteViewportUpdates;
   waitForScrollTimeout;
@@ -9647,8 +9742,12 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   aiCodeCompletionConfig;
   aiCodeCompletionSummaryToolbarContainer;
   aiCodeCompletionSummaryToolbar;
-  constructor(viewportThrottlerTimeout) {
+  #settingsPaneView;
+  #progressView;
+  constructor(viewportThrottlerTimeout, settingsPaneView = SETTINGS_PANE_VIEW, progressView = PROGRESS_VIEW) {
     super();
+    this.#settingsPaneView = settingsPaneView;
+    this.#progressView = progressView;
     this.setMinimumSize(0, 35);
     this.registerRequiredCSS(
       consoleView_css_default,
@@ -9765,7 +9864,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     toolbar2.appendSeparator();
     toolbar2.appendToolbarItem(this.filterStatusText);
     toolbar2.appendToolbarItem(this.showSettingsPaneButton);
-    const monitoringXHREnabledSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.monitoringXHREnabledSettingDescriptor);
+    this.#monitoringXHREnabledSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.monitoringXHREnabledSettingDescriptor);
     this.timestampsSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleTimestampsEnabledSettingDescriptor);
     this.consoleHistoryAutocompleteSetting = Common6.Settings.Settings.instance().resolve(
       Settings8.ConsoleSettings.consoleHistoryAutocompleteSettingDescriptor
@@ -9775,64 +9874,12 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       false,
       Common6.Settings.SettingStorageType.SYNCED
     );
-    const settingsPane = this.contentsElement.createChild("div", "console-settings-pane");
-    UI9.ARIAUtils.setLabel(settingsPane, i18nString5(UIStrings5.consoleSettings));
-    UI9.ARIAUtils.markAsGroup(settingsPane);
-    const consoleEagerEvalSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleEagerEvalSettingDescriptor);
-    const preserveConsoleLogSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.preserveConsoleLogSettingDescriptor);
-    const userActivationEvalSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.consoleUserActivationEvalSettingDescriptor);
-    settingsPane.append(
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString5(UIStrings5.networkMessages),
-        this.filter.networkMessagesSetting,
-        Settings8.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString5(UIStrings5.logXMLHttpRequests),
-        monitoringXHREnabledSetting
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString5(UIStrings5.preserveLog),
-        preserveConsoleLogSetting,
-        i18nString5(UIStrings5.doNotClearLogOnPageReload)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings8.SettingUIRegistration.resolve(consoleEagerEvalSetting.descriptor()).title,
-        consoleEagerEvalSetting,
-        i18nString5(UIStrings5.eagerlyEvaluateTextInThePrompt)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString5(UIStrings5.selectedContextOnly),
-        this.filter.filterByExecutionContextSetting,
-        i18nString5(UIStrings5.onlyShowMessagesFromTheCurrentContext)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings8.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title,
-        this.consoleHistoryAutocompleteSetting,
-        i18nString5(UIStrings5.autocompleteFromHistory)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings8.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
-        this.groupSimilarSetting,
-        i18nString5(UIStrings5.groupSimilarMessagesInConsole)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings8.SettingUIRegistration.resolve(userActivationEvalSetting.descriptor()).title,
-        userActivationEvalSetting,
-        i18nString5(UIStrings5.treatEvaluationAsUserActivation)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        Settings8.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title,
-        this.showCorsErrorsSetting,
-        i18nString5(UIStrings5.showCorsErrorsInConsole)
-      )
-    );
-    if (!this.showSettingsPaneSetting.get()) {
-      settingsPane.classList.add("hidden");
-    }
-    this.showSettingsPaneSetting.addChangeListener(
-      () => settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get())
-    );
+    this.#consoleEagerEvalSetting = Common6.Settings.Settings.instance().resolve(Settings8.ConsoleSettings.consoleEagerEvalSettingDescriptor);
+    this.#preserveConsoleLogSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.preserveConsoleLogSettingDescriptor);
+    this.#userActivationEvalSetting = Common6.Settings.Settings.instance().resolve(SDK7.SDKSettings.consoleUserActivationEvalSettingDescriptor);
+    this.#settingsPaneContainer.style.display = "contents";
+    this.contentsElement.appendChild(this.#settingsPaneContainer);
+    this.showSettingsPaneSetting.addChangeListener(() => this.requestUpdate());
     this.pinPane = new ConsolePinPane(() => this.prompt.focus());
     this.pinPane.element.classList.add("console-view-pinpane");
     this.pinPane.element.classList.remove("flex-auto");
@@ -9908,6 +9955,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     this.updateFilterStatus();
     this.timestampsSetting.addChangeListener(this.consoleTimestampsSettingChanged, this);
     this.registerWithMessageSink();
+    this.requestUpdate();
     UI9.Context.Context.instance().addFlavorChangeListener(
       SDK7.RuntimeModel.ExecutionContext,
       this.executionContextChanged,
@@ -9959,6 +10007,45 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
       this.#onIssuesCountUpdateBound
     );
+  }
+  #createProgressViewInput() {
+    const progress = this.#progress;
+    if (!progress) {
+      return null;
+    }
+    return {
+      title: progress.title ?? "",
+      worked: progress.worked,
+      totalWork: progress.totalWork,
+      onCancel: () => {
+        progress.canceled = true;
+      }
+    };
+  }
+  performUpdate() {
+    this.#settingsPaneView(
+      {
+        showSettingsPane: this.showSettingsPaneSetting.get(),
+        networkMessagesSetting: this.filter.networkMessagesSetting,
+        networkMessagesTitle: Settings8.SettingUIRegistration.resolve(this.filter.networkMessagesSetting.descriptor()).title,
+        monitoringXHREnabledSetting: this.#monitoringXHREnabledSetting,
+        preserveConsoleLogSetting: this.#preserveConsoleLogSetting,
+        consoleEagerEvalSetting: this.#consoleEagerEvalSetting,
+        consoleEagerEvalLabel: Settings8.SettingUIRegistration.resolve(this.#consoleEagerEvalSetting.descriptor()).title,
+        filterByExecutionContextSetting: this.filter.filterByExecutionContextSetting,
+        consoleHistoryAutocompleteSetting: this.consoleHistoryAutocompleteSetting,
+        consoleHistoryAutocompleteLabel: Settings8.SettingUIRegistration.resolve(this.consoleHistoryAutocompleteSetting.descriptor()).title,
+        groupSimilarSetting: this.groupSimilarSetting,
+        groupSimilarLabel: Settings8.SettingUIRegistration.resolve(this.groupSimilarSetting.descriptor()).title,
+        userActivationEvalSetting: this.#userActivationEvalSetting,
+        userActivationEvalLabel: Settings8.SettingUIRegistration.resolve(this.#userActivationEvalSetting.descriptor()).title,
+        showCorsErrorsSetting: this.showCorsErrorsSetting,
+        showCorsErrorsLabel: Settings8.SettingUIRegistration.resolve(this.showCorsErrorsSetting.descriptor()).title
+      },
+      void 0,
+      this.#settingsPaneContainer
+    );
+    this.#progressView(this.#createProgressViewInput(), void 0, this.progressToolbarItem.element);
   }
   static clearConsoleViewInstanceForTest() {
     consoleViewInstance = null;
@@ -10632,14 +10719,21 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
       Date.now()
     );
     const stream = new Bindings4.FileUtils.FileOutputStream(Workspace2.FileManager.FileManager.instance());
-    const progressIndicator = document.createElement("devtools-progress");
-    progressIndicator.title = i18nString5(UIStrings5.writingFile);
-    progressIndicator.totalWork = this.itemCount();
+    const progress = new Common6.Progress.Progress();
+    progress.title = i18nString5(UIStrings5.writingFile);
+    progress.totalWork = this.itemCount();
+    const progressIndicator = new Common6.Progress.ProgressProxy(progress, () => {
+      if (this.#progress === progress) {
+        this.#progress = null;
+      }
+      this.requestUpdate();
+    }, () => this.requestUpdate());
     const chunkSize = 350;
     if (!await stream.open(filename)) {
       return;
     }
-    this.progressToolbarItem.element.appendChild(progressIndicator);
+    this.#progress = progress;
+    this.requestUpdate();
     let messageIndex = 0;
     while (messageIndex < this.itemCount() && !progressIndicator.canceled) {
       const messageContents = [];
@@ -10900,10 +10994,17 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     if (shouldJump) {
       this.searchShouldJumpBackwards = Boolean(jumpBackwards);
     }
-    this.searchProgressIndicator = document.createElement("devtools-progress");
-    this.searchProgressIndicator.title = i18nString5(UIStrings5.searching);
-    this.searchProgressIndicator.totalWork = this.visibleViewMessages.length;
-    this.progressToolbarItem.element.appendChild(this.searchProgressIndicator);
+    const progress = new Common6.Progress.Progress();
+    progress.title = i18nString5(UIStrings5.searching);
+    progress.totalWork = this.visibleViewMessages.length;
+    this.searchProgressIndicator = new Common6.Progress.ProgressProxy(progress, () => {
+      if (this.#progress === progress) {
+        this.#progress = null;
+      }
+      this.requestUpdate();
+    }, () => this.requestUpdate());
+    this.#progress = progress;
+    this.requestUpdate();
     this.#search(0);
   }
   cleanupAfterSearch() {
@@ -11282,7 +11383,7 @@ var consoleMessageToViewMessage = /* @__PURE__ */ new WeakMap();
 // ../../front_end/panels/console/ConsolePanel.ts
 var { widget: widget4 } = UI10.Widget;
 var DEFAULT_VIEW6 = (input, _output, target) => {
-  render7(html7`
+  render8(html8`
     ${widget4(UI10.Widget.WrapperWidget, {
     widget: input.showConsoleView ? ConsoleView.instance() : null
   })}
@@ -11492,7 +11593,7 @@ var ConsolePromptBase = Common7.ObjectWrapper.eventMixin(
   UI11.Widget.Widget
 );
 var DEFAULT_VIEW7 = (input, output, target) => {
-  render8(html8`
+  render9(html9`
     <style>${consolePrompt_css_default}</style>
     <div class="console-prompt-editor-container">
       <devtools-text-editor
@@ -11514,7 +11615,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     output.getBelowEditorHeight = e instanceof HTMLElement ? () => e.offsetHeight : void 0;
   })}
     >
-      <div class="console-eager-inner-preview">${input.preview ?? nothing7}</div>
+      <div class="console-eager-inner-preview">${input.preview ?? nothing8}</div>
       <devtools-icon name="chevron-left-dot" class="preview-result-icon medium"></devtools-icon>
     </div>
     <devtools-icon
@@ -11840,7 +11941,7 @@ var ConsolePrompt = class extends ConsolePromptBase {
     if (!this.editor) {
       return;
     }
-    if (this.#selfXssWarningShown && (this.text() === i18nString6(UIStrings6.allowPasting) || this.text() === `'${i18nString6(UIStrings6.allowPasting)}'`)) {
+    if (this.#selfXssWarningShown && Dialogs3.TypeToAllowDialog.TypeToAllowDialog.matchesPhrase(this.text(), i18nString6(UIStrings6.allowPasting))) {
       Common7.Console.Console.instance().log(this.text());
       this.editor.dispatch({
         changes: { from: 0, to: this.editor.state.doc.length },

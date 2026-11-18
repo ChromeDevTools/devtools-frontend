@@ -22,6 +22,23 @@ export var SettingAvailability;
      */
     SettingAvailability[SettingAvailability["DISABLED"] = 3] = "DISABLED";
 })(SettingAvailability || (SettingAvailability = {}));
+var Events;
+(function (Events) {
+    Events["SETTING_CHANGED"] = "SettingChanged";
+})(Events || (Events = {}));
+/**
+ * The event target that all settings share. A setting dispatches its changes here with its name as the event
+ * type. This class also reports each of these changes to the listeners of all settings.
+ */
+class SettingsEventSupport extends ObjectWrapper {
+    allSettings = new ObjectWrapper();
+    dispatchEventToListeners(settingName, value) {
+        // A listener of the setting can change the setting again. The listeners of all settings get this change
+        // first, so that they get the changes in the order they happen.
+        this.allSettings.dispatchEventToListeners("SettingChanged" /* Events.SETTING_CHANGED */, { name: settingName, value });
+        super.dispatchEventToListeners(settingName, value);
+    }
+}
 export class Settings {
     syncedStorage;
     globalStorage;
@@ -29,7 +46,7 @@ export class Settings {
     #settingRegistrations;
     #sessionStorage = new SettingsStorage({});
     settingNameSet = new Set();
-    #eventSupport = new ObjectWrapper();
+    #eventSupport = new SettingsEventSupport();
     #registry = new Map();
     moduleSettings = new Map();
     #logSettingAccess;
@@ -135,6 +152,13 @@ export class Settings {
     /** The event target shared by all settings. Change listeners are registered with the setting name as event type. */
     get eventTargetForTest() {
         return this.#eventSupport;
+    }
+    /** Calls `listener` when the value of any setting changes. This includes the settings that are created later. */
+    addChangeListener(listener, thisObject) {
+        return this.#eventSupport.allSettings.addEventListener("SettingChanged" /* Events.SETTING_CHANGED */, listener, thisObject);
+    }
+    removeChangeListener(listener, thisObject) {
+        this.#eventSupport.allSettings.removeEventListener("SettingChanged" /* Events.SETTING_CHANGED */, listener, thisObject);
     }
     /**
      * Get setting via key, and create a new setting if the requested setting does not exist.

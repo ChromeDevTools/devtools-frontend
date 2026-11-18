@@ -87,6 +87,7 @@
     "../../../../../front_end/testing/StubIssue.ts",
     "../../../../../front_end/testing/StyleHelpers.ts",
     "../../../../../front_end/testing/TargetHelpers.ts",
+    "../../../../../front_end/testing/TestTeardown.ts",
     "../../../../../front_end/testing/TestUniverse.ts",
     "../../../../../front_end/testing/TraceHelpers.ts",
     "../../../../../front_end/testing/TraceHelpersCore.ts",

@@ -6,7 +6,8 @@ export interface GetStylesArgs extends ToolArgs {
     styleProperties: string[];
     explanation: string;
 }
-export declare class GetStylesTool implements DataTool<GetStylesArgs, unknown, BaseToolCapability & TargetCapability & OriginLockCapability> {
+export declare class GetStylesTool implements DataTool<GetStylesArgs, string, BaseToolCapability & TargetCapability & OriginLockCapability> {
+    #private;
     readonly name: ToolName;
     readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
@@ -19,8 +20,9 @@ export declare class GetStylesTool implements DataTool<GetStylesArgs, unknown, B
     /**
      * Handles the request to retrieve computed and authored CSS styles for specified elements.
      *
-     * Resolves element backend node IDs using the primary page target and verifies that each
-     * element's security origin matches the established origin lock before querying CSS models.
+     * Normalizes and expands shorthand property names, resolves element backend node IDs using the
+     * primary page target, and verifies that each element's security origin matches the established
+     * origin lock before querying CSS models.
      */
-    handler(params: GetStylesArgs, context: BaseToolCapability & TargetCapability & OriginLockCapability, _options?: FunctionHandlerOptions): Promise<DataHandlerResult<unknown>>;
+    handler(params: GetStylesArgs, context: BaseToolCapability & TargetCapability & OriginLockCapability, _options?: FunctionHandlerOptions): Promise<DataHandlerResult<string>>;
 }

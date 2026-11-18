@@ -1312,7 +1312,42 @@ var DEFAULT_VIEW = (input, _output, target) => {
     </div>
   `, target);
 };
-var TypeToAllowDialog = class {
+var TypeToAllowDialog = class _TypeToAllowDialog {
+  static #QUOTE_PAIRS = [
+    ['"', '"'],
+    ["'", "'"],
+    ["\u201C", "\u201D"],
+    ["\u201D", "\u201D"],
+    ["\u2018", "\u2019"],
+    ["\u2018", "'"],
+    ["\u201E", "\u201C"],
+    ["\u201E", "\u201D"],
+    ["\xAB", "\xBB"],
+    ["\xBB", "\xAB"],
+    ["\u300C", "\u300D"]
+  ];
+  /**
+   * Returns true if `input` matches `phrase`, optionally wrapped in matching
+   * quote characters from any supported locale's quote style.
+   */
+  static matchesPhrase(input, phrase) {
+    if (phrase.length === 0) {
+      return false;
+    }
+    const trimmed = input.trim();
+    if (trimmed === phrase) {
+      return true;
+    }
+    for (const [open, close2] of _TypeToAllowDialog.#QUOTE_PAIRS) {
+      if (trimmed.length >= open.length + close2.length && trimmed.startsWith(open) && trimmed.endsWith(close2)) {
+        const inner = trimmed.slice(open.length, trimmed.length - close2.length).trim();
+        if (inner === phrase) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
   static async show(options, view = DEFAULT_VIEW) {
     const dialog2 = new UI3.Dialog.Dialog(options.jslogContext.dialog);
     dialog2.setMaxContentSize(new Geometry.Size(504, 340));
@@ -1339,7 +1374,7 @@ var TypeToAllowDialog = class {
               resolve(false);
             },
             onAllow: () => {
-              resolve(currentValue === options.typePhrase || currentValue === `'${options.typePhrase}'`);
+              resolve(_TypeToAllowDialog.matchesPhrase(currentValue, options.typePhrase));
             },
             onCancel: () => {
               resolve(false);

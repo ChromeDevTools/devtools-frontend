@@ -1,7 +1,6 @@
 import '../../../ui/kit/kit.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type { EditableSpan } from './EditableSpan.js';
 export declare const isValidHeaderName: (headerName: string) => boolean;
 export declare const compareHeaders: (first: string | null | undefined, second: string | null | undefined) => boolean;
 export declare class HeaderEditedEvent extends Event {
@@ -31,7 +30,6 @@ export declare class HeaderSectionRow extends HTMLElement {
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-header-section-row': HeaderSectionRow;
-        'devtools-editable-span': EditableSpan;
     }
     interface HTMLElementEventMap {
         [HeaderEditedEvent.eventName]: HeaderEditedEvent;

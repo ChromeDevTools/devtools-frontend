@@ -77,7 +77,8 @@ export class VersionController {
     }
     updateVersionFrom3To4() {
         const advancedMode = this.#settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
-        this.#settings.moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
+        const newSettingName = 'showAdvancedHeapSnapshotProperties';
+        this.#settings.createSetting(newSettingName, false).set(advancedMode.get());
         this.#removeSetting(advancedMode);
     }
     updateVersionFrom4To5() {
@@ -550,20 +551,15 @@ export class VersionController {
         }
     }
     updateVersionFrom37To38() {
-        const getConsoleInsightsEnabledSetting = () => {
-            try {
-                return this.#settings.moduleSetting('console-insights-enabled');
-            }
-            catch {
-                return;
-            }
-        };
-        const consoleInsightsEnabled = getConsoleInsightsEnabledSetting();
+        if (!this.#settings.globalStorage.has('console-insights-enabled')) {
+            return;
+        }
+        const consoleInsightsEnabled = this.#settings.createSetting('console-insights-enabled', false);
         const onboardingFinished = this.#settings.createLocalSetting('console-insights-onboarding-finished', false);
-        if (consoleInsightsEnabled && consoleInsightsEnabled.get() === true && onboardingFinished.get() === false) {
+        if (consoleInsightsEnabled.get() === true && onboardingFinished.get() === false) {
             consoleInsightsEnabled.set(false);
         }
-        if (consoleInsightsEnabled && consoleInsightsEnabled.get() === false) {
+        if (consoleInsightsEnabled.get() === false) {
             onboardingFinished.set(false);
         }
     }
@@ -605,17 +601,7 @@ export class VersionController {
      *    setting.
      */
     updateVersionFrom39To40() {
-        const hasCustomNetworkConditionsSetting = () => {
-            try {
-                // this will error if it does not exist
-                this.#settings.moduleSetting('custom-network-conditions');
-                return true;
-            }
-            catch {
-                return false;
-            }
-        };
-        if (hasCustomNetworkConditionsSetting()) {
+        if (this.#settings.syncedStorage.has('custom-network-conditions')) {
             /**
              * We added keys to custom network throttling conditions in M140, so we
              * need to go through any existing profiles the user has and add the key to
@@ -625,7 +611,7 @@ export class VersionController {
              * objects, and we need to set the right key on each one. The actual keys &
              * values in the object are not important.
              */
-            const conditionsSetting = this.#settings.moduleSetting('custom-network-conditions');
+            const conditionsSetting = this.#settings.createSetting('custom-network-conditions', [], "Synced" /* SettingStorageType.SYNCED */);
             const customConditions = conditionsSetting.get();
             if (customConditions?.length > 0) {
                 customConditions.forEach((condition, i) => {

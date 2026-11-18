@@ -128,15 +128,20 @@ export declare class ObjectTreeNode extends ObjectTreeNodeBase {
 export declare function compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, sortPropertiesAlphabetically?: boolean): number;
 export declare function valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, details?: SDK.DebuggerModel.FunctionDetails | null, linkify?: boolean): LitTemplate;
 export declare function getMemoryIcon(object: SDK.RemoteObject.RemoteObject, expression?: string): LitTemplate;
+export type ObjectPropertiesSectionTitle = Element | TemplateResult | ((options: {
+    filterChanged: boolean;
+    includeNullOrUndefinedValues: boolean;
+}) => Element | TemplateResult);
 export declare class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     #private;
+    onTreeResized?: (element: HTMLElement) => void;
     constructor(element?: HTMLElement, view?: ObjectPropertiesSectionView);
     get root(): SDK.RemoteObject.RemoteObject | undefined;
     set root(val: SDK.RemoteObject.RemoteObject);
     get objectTree(): ObjectTree | undefined;
     set objectTree(val: ObjectTree | undefined);
-    get title(): Element | TemplateResult | undefined;
-    set title(val: Element | TemplateResult | undefined);
+    get title(): ObjectPropertiesSectionTitle | undefined;
+    set title(val: ObjectPropertiesSectionTitle | undefined);
     get skipProto(): boolean;
     set skipProto(val: boolean);
     get linkifier(): Components.Linkifier.Linkifier | undefined;
@@ -147,6 +152,7 @@ export declare class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     performUpdate(): void;
     onDetach(): void;
     wasShown(): void;
+    willHide(): void;
     private onRootItemContextMenu;
 }
 export declare const enum ObjectPropertiesMode {

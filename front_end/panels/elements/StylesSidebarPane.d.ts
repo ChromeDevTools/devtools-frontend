@@ -124,6 +124,7 @@ export declare class StylesSidebarPane extends StylesSidebarPaneBase implements 
     willHide(): void;
     hideAllPopovers(): void;
     getSectionBlockByName(name: string): SectionBlock | undefined;
+    highlightSectionBlock(block: SectionBlock): void;
     allSections(): StylePropertiesSection[];
     private clipboardCopy;
     showToolbarPane(widget: UI.Widget.Widget | null, toggle: UI.Toolbar.ToolbarToggle | null): void;
@@ -147,12 +148,32 @@ export interface EventTypes {
     [Events.INITIAL_UPDATE_COMPLETED]: void;
     [Events.STYLES_UPDATE_COMPLETED]: StylesUpdateCompletedEvent;
 }
+/**
+ * Describes the separator that is rendered above the sections of a {@link SectionBlock}.
+ */
+export interface SectionBlockTitle {
+    /** Text of the separator. For layer separators, this is the "Layer" label. */
+    text: string;
+    /** Context of the `sectionHeader` visual logging element, if any. */
+    jslogContext?: string;
+    /** Node to link to after the text, e.g. for blocks of inherited styles. */
+    node?: SDK.DOMModel.DOMNode;
+    /** Name of the layer, for layer separators. */
+    layerName?: string;
+    /** Whether the layer name is rendered as a link that reveals the layer in the layer tree. */
+    canRevealLayer?: boolean;
+}
 export declare class SectionBlock {
     #private;
     readonly id: string;
+    readonly title: SectionBlockTitle | null;
+    readonly expandable: boolean;
     sections: StylePropertiesSection[];
     childBlocks: SectionBlock[];
-    constructor(titleElement: Element | null, expandable?: boolean, expandedByDefault?: boolean, id?: string);
+    /** Called when the block is expanded or collapsed, so that the owner can re-render its title. */
+    onExpandedChanged?: () => void;
+    constructor(title: SectionBlockTitle | null, expandable?: boolean, expandedByDefault?: boolean, id?: string);
+    get expanded(): boolean;
     expand(expand: boolean): void;
     static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string | null): SectionBlock;
     static createInheritedPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string | null, node: SDK.DOMModel.DOMNode): Promise<SectionBlock>;
@@ -164,7 +185,14 @@ export declare class SectionBlock {
     static createInheritedNodeBlock(node: SDK.DOMModel.DOMNode): Promise<SectionBlock>;
     static createLayerBlock(rule: SDK.CSSRule.CSSStyleRule, parentBlockId?: string): SectionBlock;
     updateFilter(): number;
-    titleElement(): Element | null;
+    /**
+     * Whether the title of this block is hidden because none of its sections match the current filter.
+     */
+    isHidden(): boolean;
+    /**
+     * The text content of the rendered title, or `null` if the block has no title.
+     */
+    titleText(): string | null;
 }
 export declare class IdleCallbackManager {
     private discarded;

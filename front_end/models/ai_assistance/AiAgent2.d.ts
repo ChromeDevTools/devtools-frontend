@@ -24,15 +24,11 @@ export declare class AiAgent2 extends AiAgent<unknown> {
     constructor(opts: AiAgent2Options);
     enhanceQuery(query: string, selected?: ConversationContext<unknown> | null, _multimodalInputType?: MultimodalInputType): Promise<string>;
     /**
-     * Parses a completed response. Only the last line can be the follow-up
-     * suggestions directive. See `parseCompletedSuggestions()`.
+     * `AiAgent2` receives follow-up suggestions from `suggestFollowUps` tool
+     * calls rather than text parsing. Overrides `AiAgent#parseTextResponse()` so
+     * V2 responses do not inherit V1 `parseTextResponseForSuggestions()`.
      */
     parseTextResponse(response: string): ParsedResponse;
-    /**
-     * Parses a response that is still streaming, hiding a suggestions directive
-     * on the last line. See `hideStreamingSuggestions()`.
-     */
-    protected parsePartialTextResponse(response: string): ParsedResponse;
     handleContextDetails(selected: ConversationContext<unknown> | null): AsyncGenerator<ContextResponse, void, void>;
     learnSkill(names: SkillName[]): Promise<string>;
     get activeSkills(): Set<SkillName>;

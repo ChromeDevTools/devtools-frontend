@@ -538,6 +538,20 @@ export class DebuggerModel extends SDKModel {
         return this.#debuggerPausedDetails;
     }
     /**
+     * Call this after running code in the paused target that can assign to variables (e.g. a console evaluation).
+     * The scope chains of the paused call frames are re-fetched on demand afterwards. Listeners are expected to
+     * recompute whatever they derived from a scope chain, similar to what happens after a step.
+     */
+    invalidateScopeChains() {
+        const callFrames = this.#debuggerPausedDetails?.callFrames ?? [];
+        for (const callFrame of callFrames) {
+            callFrame.markScopeChainStale();
+        }
+        if (callFrames.length > 0) {
+            this.dispatchEventToListeners(Events.ScopeChainsInvalidated, this);
+        }
+    }
+    /**
      * @returns null if the pause was presented, or the step to issue instead, as decided by the before-paused callback.
      */
     async setDebuggerPausedDetails(debuggerPausedDetails) {
@@ -870,6 +884,7 @@ export var Events;
     Events["GlobalObjectCleared"] = "GlobalObjectCleared";
     Events["CallFrameSelected"] = "CallFrameSelected";
     Events["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
+    Events["ScopeChainsInvalidated"] = "ScopeChainsInvalidated";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Events || (Events = {}));
 class DebuggerDispatcher {
@@ -969,7 +984,9 @@ export class CallFrame {
     script;
     payload;
     #location;
-    #scopeChain;
+    /** Shared with the virtual call frames of this call frame, as they share the payload. */
+    #scopeChainState = { stale: false };
+    #scopes;
     inlineFrameIndex;
     functionName;
     #functionLocation;
@@ -981,14 +998,10 @@ export class CallFrame {
         this.script = script;
         this.payload = payload;
         this.#location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
-        this.#scopeChain = [];
         this.inlineFrameIndex = inlineFrameIndex || 0;
         this.functionName = functionName ?? payload.functionName;
         this.canBeRestarted = Boolean(payload.canBeRestarted);
         this.exception = exception;
-        for (let i = 0; i < payload.scopeChain.length; ++i) {
-            this.#scopeChain.push(new Scope(this, i));
-        }
         if (payload.functionLocation) {
             this.#functionLocation = Location.fromPayload(debuggerModel, payload.functionLocation);
         }
@@ -1008,13 +1021,46 @@ export class CallFrame {
         return result;
     }
     createVirtualCallFrame(inlineFrameIndex, name) {
-        return new CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name, this.exception);
+        const callFrame = new CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name, this.exception);
+        callFrame.#scopeChainState = this.#scopeChainState;
+        return callFrame;
     }
     get id() {
         return this.payload.callFrameId;
     }
+    /**
+     * Call this after running code in the paused target that can assign to variables. The scope chain V8
+     * reported with the pause is a snapshot, so it is re-fetched the next time it is requested.
+     */
+    markScopeChainStale() {
+        this.#scopeChainState.stale = true;
+    }
     async scopeChain() {
-        return this.#scopeChain;
+        const state = this.#scopeChainState;
+        while (state.stale || state.refetch) {
+            if (!state.refetch) {
+                state.stale = false;
+                state.refetch = this.#refetchScopeChain();
+            }
+            await state.refetch;
+        }
+        const payload = this.payload.scopeChain;
+        if (this.#scopes?.payload !== payload) {
+            this.#scopes = { payload, chain: payload.map((_, ordinal) => new Scope(this, ordinal)) };
+        }
+        return this.#scopes.chain;
+    }
+    async #refetchScopeChain() {
+        try {
+            const response = await this.debuggerModel.agent.invoke_getScopeChain({ callFrameId: this.id });
+            // Older backends don't support `Debugger.getScopeChain`. We stick with the scope chain we have then.
+            if (!response.getError()) {
+                this.payload.scopeChain = response.scopeChain;
+            }
+        }
+        finally {
+            this.#scopeChainState.refetch = undefined;
+        }
     }
     thisObject() {
         return this.payload.this ? this.debuggerModel.runtimeModel().createRemoteObject(this.payload.this) : null;

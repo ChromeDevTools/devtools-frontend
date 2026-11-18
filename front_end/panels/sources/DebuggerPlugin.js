@@ -206,9 +206,11 @@ export class DebuggerPlugin extends Plugin {
     #activeBreakpointEditRequest = undefined;
     #scheduledFinishingActiveDialog = false;
     missingDebugInfoBar = null;
+    #infobarContainers = new WeakMap();
     #sourcesPanelDebuggedMetricsRecorded = false;
     loader;
     ignoreListCallback;
+    #scopeChainResolver;
     constructor(uiSourceCode, transformer) {
         super(uiSourceCode);
         this.transformer = transformer;
@@ -225,6 +227,9 @@ export class DebuggerPlugin extends Plugin {
         this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
         Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
         UI.Context.Context.instance().addFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
+        // TODO(crbug.com/458180550): Receive the ScopeChainResolver via constructor.
+        this.#scopeChainResolver = SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance();
+        this.#scopeChainResolver.addEventListener("ScopeChainInvalidated" /* SourceMapScopes.ScopeChainResolver.Events.SCOPE_CHAIN_INVALIDATED */, this.#scopeChainInvalidated, this);
         this.updateScriptFiles();
         this.muted = this.uiSourceCode.isDirty();
         this.initializedMuted = this.muted;
@@ -377,13 +382,32 @@ export class DebuggerPlugin extends Plugin {
         this.attachInfobar(this.ignoreListInfobar);
     }
     attachInfobar(bar) {
-        if (this.editor) {
-            this.editor.dispatch({ effects: SourceFrame.SourceFrame.addSourceFrameInfobar.of({ element: bar.element }) });
+        if (!this.editor) {
+            return;
         }
+        const existing = this.#infobarContainers.get(bar);
+        if (existing?.editor === this.editor && bar.isShowing() && existing.container.isConnected) {
+            return;
+        }
+        if (existing) {
+            bar.detach();
+            existing.editor.dispatch({ effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of({ element: existing.container }) });
+            this.#infobarContainers.delete(bar);
+        }
+        const container = this.editor.editor.dom.ownerDocument.createElement('div');
+        bar.show(container, undefined, true);
+        this.#infobarContainers.set(bar, { container, editor: this.editor });
+        this.editor.dispatch({ effects: SourceFrame.SourceFrame.addSourceFrameInfobar.of({ element: container }) });
     }
     removeInfobar(bar) {
-        if (this.editor && bar) {
-            this.editor.dispatch({ effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of({ element: bar.element }) });
+        if (!bar) {
+            return;
+        }
+        const existing = this.#infobarContainers.get(bar);
+        this.#infobarContainers.delete(bar);
+        bar.detach();
+        if (existing) {
+            existing.editor.dispatch({ effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of({ element: existing.container }) });
         }
     }
     hideIgnoreListInfobar() {
@@ -1463,6 +1487,18 @@ export class DebuggerPlugin extends Plugin {
             this.setExecutionLocation(null);
         }
     }
+    /**
+     * The scope mappings are derived from the resolved scope chain of the selected call frame. Once that is
+     * invalidated (e.g. a console evaluation assigned to a variable), recompute them and the inline values.
+     */
+    #scopeChainInvalidated(event) {
+        const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
+        if (frameFlavor?.sdkFrame.script !== event.data) {
+            return;
+        }
+        this.#scopeMappingsCache.clear();
+        void this.updateValueDecorations();
+    }
     setExecutionLocation(executionLocation) {
         if (this.executionLocation === executionLocation || !this.editor) {
             return;
@@ -1493,6 +1529,9 @@ export class DebuggerPlugin extends Plugin {
     }
     dispose() {
         this.hideIgnoreListInfobar();
+        if (this.missingDebugInfoBar) {
+            this.missingDebugInfoBar.dispose();
+        }
         if (this.sourceMapInfobar) {
             this.sourceMapInfobar.dispose();
         }
@@ -1513,6 +1552,7 @@ export class DebuggerPlugin extends Plugin {
         // still running or scheduled will early return and not do any work.
         this.editor = undefined;
         UI.Context.Context.instance().removeFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
+        this.#scopeChainResolver.removeEventListener("ScopeChainInvalidated" /* SourceMapScopes.ScopeChainResolver.Events.SCOPE_CHAIN_INVALIDATED */, this.#scopeChainInvalidated, this);
     }
     /**
      * Only records metrics once per DebuggerPlugin instance and must only be

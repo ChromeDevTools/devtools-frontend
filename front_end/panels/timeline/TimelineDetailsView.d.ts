@@ -1,24 +1,60 @@
 import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as TimelineComponents from './components/components.js';
 import type { TimelineModeViewDelegate } from './TimelinePanel.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 import { AggregatedTimelineTreeView, TimelineTreeView } from './TimelineTreeView.js';
+export declare enum Tab {
+    Details = "details",
+    EventLog = "event-log",
+    CallTree = "call-tree",
+    BottomUp = "bottom-up",
+    PaintProfiler = "paint-profiler",
+    LayerViewer = "layer-viewer",
+    SelectorStats = "selector-stats"
+}
+interface SelectedRange {
+    startTime: Trace.Types.Timing.Milli;
+    endTime: Trace.Types.Timing.Milli;
+    events: Trace.Types.Events.Event[];
+    selection: TimelineSelection | null;
+}
+/** The data shown in the Summary tab. */
+interface SummaryData {
+    selectedEvent: Trace.Types.Events.Event | null;
+    eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap | null;
+    parsedTrace: Trace.TraceModel.ParsedTrace | null;
+    entityMapper: Trace.EntityMapper.EntityMapper | null;
+    target: SDK.Target.Target | null;
+    linkifier: Components.Linkifier.Linkifier | null;
+    filmStrip: Trace.Extras.FilmStrip.Data | null;
+    selectedRange: SelectedRange | null;
+}
+type TreeRowCallback = (node: Trace.Extras.TraceTree.Node | null, events?: Trace.Types.Events.Event[]) => void;
+export interface SummaryTabViewInput {
+    summary: SummaryData;
+    onTreeRowHovered: TreeRowCallback;
+    onTreeRowClicked: TreeRowCallback;
+    onBottomUpButtonClicked: (node: Trace.Extras.TraceTree.Node | null) => void;
+}
+export type SummaryTabView = (input: SummaryTabViewInput, output: undefined, target: HTMLElement) => void;
+export declare const SUMMARY_TAB_VIEW: SummaryTabView;
 declare const TimelineDetailsPaneBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>;
 export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     #private;
-    private readonly detailsLinkifier;
     private tabbedPane;
     private readonly defaultDetailsWidget;
     private rangeDetailViews;
     private lazyPaintProfilerView?;
     private lazyLayersView?;
     private preferredTabId?;
-    private selection?;
     private lazySelectorStatsView;
     static makeEventWidget(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): TimelineDetailsPane;
-    constructor(delegate: TimelineModeViewDelegate);
+    constructor(delegate: Pick<TimelineModeViewDelegate, 'highlightEvent'>, summaryTabView?: SummaryTabView);
+    performUpdate(): void;
     wasShown(): void;
     willHide(): void;
     /**
@@ -70,14 +106,5 @@ export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     private appendExtraDetailsTabsForTraceEvent;
     private showEventInPaintProfiler;
     private updateSelectedRangeStats;
-}
-export declare enum Tab {
-    Details = "details",
-    EventLog = "event-log",
-    CallTree = "call-tree",
-    BottomUp = "bottom-up",
-    PaintProfiler = "paint-profiler",
-    LayerViewer = "layer-viewer",
-    SelectorStats = "selector-stats"
 }
 export {};

@@ -48,3 +48,16 @@ export declare class ComputedStyle {
     computedStyle: Map<string, string>;
     constructor(node: SDK.DOMModel.DOMNode, computedStyle: Map<string, string>);
 }
+export interface ComputedStyleProperty {
+    name: string;
+    value: string;
+    inherited: boolean;
+}
+export interface FilterComputedStylePropertiesOptions {
+    showAll?: boolean;
+    extraProperties?: Iterable<string>;
+    sort?: boolean;
+}
+export declare function propertySorter(propA: string, propB: string): number;
+export declare function computeNonInheritedProperties(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): Set<string>;
+export declare function filterComputedStyleProperties(computedStyle: ReadonlyMap<string, string>, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, options?: FilterComputedStylePropertiesOptions): ComputedStyleProperty[];

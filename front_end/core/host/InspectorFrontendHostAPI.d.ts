@@ -10,6 +10,7 @@ declare global {
 export declare enum Events {
     AppendedToURL = "appendedToURL",
     CanceledSaveURL = "canceledSaveURL",
+    CaretBlinkIntervalChanged = "caretBlinkIntervalChanged",
     ColorThemeChanged = "colorThemeChanged",
     ContextMenuCleared = "contextMenuCleared",
     ContextMenuItemSelected = "contextMenuItemSelected",
@@ -175,6 +176,7 @@ export interface DevicesDiscoveryConfig {
 export interface EventTypes {
     [Events.AppendedToURL]: Platform.DevToolsPath.RawPathString | Platform.DevToolsPath.UrlString;
     [Events.CanceledSaveURL]: Platform.DevToolsPath.UrlString;
+    [Events.CaretBlinkIntervalChanged]: number;
     [Events.ColorThemeChanged]: Root.Runtime.UserColorSource | void;
     [Events.ContextMenuCleared]: void;
     [Events.ContextMenuItemSelected]: number;

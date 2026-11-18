@@ -33,11 +33,14 @@ export declare class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<Eve
     forceLoadOnCheckContent(): void;
     addRevision(content: string): void;
     hasCommits(): boolean;
+    workingCopyIsPageDriven(): boolean;
     workingCopy(): string;
     workingCopyContent(): TextUtils.ContentProvider.DeferredContent;
     workingCopyContentData(): TextUtils.ContentData.ContentData;
     resetWorkingCopy(): void;
-    setWorkingCopy(newWorkingCopy: string): void;
+    setWorkingCopy(newWorkingCopy: string, options?: {
+        isPageDriven?: boolean;
+    }): void;
     setContent(content: string, isBase64: boolean): void;
     setWorkingCopyGetter(workingCopyGetter: () => string): void;
     removeWorkingCopyGetter(): void;

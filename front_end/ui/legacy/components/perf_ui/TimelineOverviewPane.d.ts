@@ -1,14 +1,55 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../legacy.js';
+import { OverviewGrid } from './OverviewGrid.js';
 import { TimelineOverviewCalculator } from './TimelineOverviewCalculator.js';
+export interface HighlightRange {
+    left: number;
+    right: number;
+    withBracket: boolean;
+}
+export interface ViewInput {
+    /**
+     * Prefix for the element ids and the visual logging context, for example
+     * `timeline` or `network`.
+     */
+    prefix: string;
+    /**
+     * The `OverviewGrid`, which is the resizer and canvas host of the overview:
+     * the grid manages the time grid, the window resizers and the overview
+     * control canvases in it. The view places it in the pane and adds the cursor
+     * to it.
+     */
+    overviewGrid: OverviewGrid;
+    overviewInfo: OverviewInfo;
+    overviewInfoElements: readonly Element[];
+    cursorPosition: number;
+    cursorVisible: boolean;
+    highlight: HighlightRange | null;
+    highlightBackgroundColor: string;
+    highlightBracketColor: string;
+    onPointerDown: () => void;
+    onPointerUp: () => void;
+    onCursorMove: (position: number) => void;
+    onCursorLeave: () => void;
+}
+export interface ViewOutput {
+    /**
+     * Returns the left edge of the cursor area in client coordinates.
+     */
+    cursorAreaLeft?: () => number;
+    /**
+     * Returns the box of the cursor marker. The overview info is anchored to it.
+     */
+    cursorAnchorBox?: () => AnchorBox;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 declare const TimelineOverviewPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class TimelineOverviewPane extends TimelineOverviewPaneBase {
     #private;
     readonly overviewCalculator: TimelineOverviewCalculator;
     private readonly overviewGrid;
-    private readonly cursorArea;
-    private cursorElement;
     private overviewControls;
     private markers;
     private readonly overviewInfo;
@@ -20,12 +61,13 @@ export declare class TimelineOverviewPane extends TimelineOverviewPaneBase {
     private windowEndTime;
     private muteOnWindowChanged;
     private hasPointer;
-    constructor(prefixOrElement?: string | HTMLElement);
+    constructor(prefixOrElement?: string | HTMLElement, view?: View);
+    performUpdate(): void;
     enableCreateBreadcrumbsButton(): void;
     private onMouseDown;
     private onMouseCancel;
     private onMouseMove;
-    private buildOverviewInfo;
+    private updateOverviewInfo;
     private hideCursor;
     wasShown(): void;
     willHide(): void;
@@ -44,6 +86,12 @@ export declare class TimelineOverviewPane extends TimelineOverviewPaneBase {
     private onWindowChanged;
     setWindowTimes(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void;
     private updateWindow;
+    /**
+     * Desaturates the overview outside of the given time bounds.
+     *
+     * @param bounds the time bounds to keep saturated.
+     * @param withBracket whether to draw a bracket above the time bounds.
+     */
     highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicro, withBracket: boolean): void;
     clearBoundsHighlight(): void;
 }
@@ -98,13 +146,10 @@ export declare class TimelineOverviewBase extends UI.Widget.VBox implements Time
     setCanvasSize(width: number, height: number): void;
 }
 export declare class OverviewInfo {
-    private readonly anchorElement;
-    private glassPane;
-    private visible;
-    private readonly element;
-    constructor(anchor: Element);
-    setContent(contentPromise: Promise<DocumentFragment>): Promise<void>;
+    #private;
+    readonly contentRoot: ShadowRoot;
+    constructor();
+    show(anchorBox: AnchorBox | null): void;
     hide(): void;
-    show(): void;
 }
 export {};

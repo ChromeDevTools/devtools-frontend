@@ -156,7 +156,6 @@ export interface GenerateContentRequest {
     labels?: Record<string, string>;
     safetySettings?: SafetySetting[];
     generationConfig?: GenerationConfig;
-    sessionId?: string;
 }
 export interface AiCodeConfig {
     experience: string;

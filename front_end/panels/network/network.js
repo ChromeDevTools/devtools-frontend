@@ -2083,13 +2083,13 @@ var IndexedDB;
   })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
 })(IndexedDB || (IndexedDB = {}));
 var Input;
-((Input3) => {
+((Input2) => {
   let GestureSourceType;
   ((GestureSourceType2) => {
     GestureSourceType2["Default"] = "default";
     GestureSourceType2["Touch"] = "touch";
     GestureSourceType2["Mouse"] = "mouse";
-  })(GestureSourceType = Input3.GestureSourceType || (Input3.GestureSourceType = {}));
+  })(GestureSourceType = Input2.GestureSourceType || (Input2.GestureSourceType = {}));
   let MouseButton;
   ((MouseButton2) => {
     MouseButton2["None"] = "none";
@@ -2098,47 +2098,47 @@ var Input;
     MouseButton2["Right"] = "right";
     MouseButton2["Back"] = "back";
     MouseButton2["Forward"] = "forward";
-  })(MouseButton = Input3.MouseButton || (Input3.MouseButton = {}));
+  })(MouseButton = Input2.MouseButton || (Input2.MouseButton = {}));
   let DispatchDragEventRequestType;
   ((DispatchDragEventRequestType2) => {
     DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
     DispatchDragEventRequestType2["DragOver"] = "dragOver";
     DispatchDragEventRequestType2["Drop"] = "drop";
     DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
-  })(DispatchDragEventRequestType = Input3.DispatchDragEventRequestType || (Input3.DispatchDragEventRequestType = {}));
+  })(DispatchDragEventRequestType = Input2.DispatchDragEventRequestType || (Input2.DispatchDragEventRequestType = {}));
   let DispatchKeyEventRequestType;
   ((DispatchKeyEventRequestType2) => {
     DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
     DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
     DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
     DispatchKeyEventRequestType2["Char"] = "char";
-  })(DispatchKeyEventRequestType = Input3.DispatchKeyEventRequestType || (Input3.DispatchKeyEventRequestType = {}));
+  })(DispatchKeyEventRequestType = Input2.DispatchKeyEventRequestType || (Input2.DispatchKeyEventRequestType = {}));
   let DispatchMouseEventRequestType;
   ((DispatchMouseEventRequestType2) => {
     DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
     DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(DispatchMouseEventRequestType = Input3.DispatchMouseEventRequestType || (Input3.DispatchMouseEventRequestType = {}));
+  })(DispatchMouseEventRequestType = Input2.DispatchMouseEventRequestType || (Input2.DispatchMouseEventRequestType = {}));
   let DispatchMouseEventRequestPointerType;
   ((DispatchMouseEventRequestPointerType2) => {
     DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
     DispatchMouseEventRequestPointerType2["Pen"] = "pen";
-  })(DispatchMouseEventRequestPointerType = Input3.DispatchMouseEventRequestPointerType || (Input3.DispatchMouseEventRequestPointerType = {}));
+  })(DispatchMouseEventRequestPointerType = Input2.DispatchMouseEventRequestPointerType || (Input2.DispatchMouseEventRequestPointerType = {}));
   let DispatchTouchEventRequestType;
   ((DispatchTouchEventRequestType2) => {
     DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
     DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
     DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
     DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
-  })(DispatchTouchEventRequestType = Input3.DispatchTouchEventRequestType || (Input3.DispatchTouchEventRequestType = {}));
+  })(DispatchTouchEventRequestType = Input2.DispatchTouchEventRequestType || (Input2.DispatchTouchEventRequestType = {}));
   let EmulateTouchFromMouseEventRequestType;
   ((EmulateTouchFromMouseEventRequestType2) => {
     EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
     EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(EmulateTouchFromMouseEventRequestType = Input3.EmulateTouchFromMouseEventRequestType || (Input3.EmulateTouchFromMouseEventRequestType = {}));
+  })(EmulateTouchFromMouseEventRequestType = Input2.EmulateTouchFromMouseEventRequestType || (Input2.EmulateTouchFromMouseEventRequestType = {}));
 })(Input || (Input = {}));
 var LayerTree;
 ((LayerTree2) => {
@@ -3308,6 +3308,7 @@ var Preload;
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
     PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
+    PrerenderFinalStatus2["UnexpectedMainFrameNavigation"] = "UnexpectedMainFrameNavigation";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -4317,7 +4318,7 @@ var networkConfigView_css_default = `/*
 .network-config-throttling {
   select {
     width: 100%;
-    max-width: 250px;
+    max-width: var(--sys-size-28);
   }
 
   .network-config-fields {
@@ -4347,7 +4348,7 @@ var networkConfigView_css_default = `/*
 
 .network-config-ua select {
   width: calc(100% - var(--sys-size-9));
-  max-width: 250px;
+  max-width: var(--sys-size-28);
 }
 
 .network-config-ua-custom {
@@ -4405,10 +4406,6 @@ var UIStrings5 = {
    * @description Section header for network throttling settings in network conditions view of the Network panel.
    */
   networkThrottling: "Network",
-  /**
-   * @description Tooltip and accessible label for the save data override selector.
-   */
-  saveDataSettingTooltip: "Override the value reported by navigator.connection.saveData on the page",
   /**
    * @description Section header for user agent settings in network conditions view of the Network panel.
    */
@@ -4510,8 +4507,6 @@ function renderNetworkThrottlingSection() {
   })}></select>
     <select
         class="chrome-select"
-        title=${i18nString5(UIStrings5.saveDataSettingTooltip)}
-        aria-label=${i18nString5(UIStrings5.saveDataSettingTooltip)}
         ${UI5.Widget.widget(MobileThrottling2.ThrottlingManager.SaveDataOverrideSelect)}></select>
   `);
 }
@@ -7137,18 +7132,228 @@ import * as Persistence2 from "../../models/persistence/persistence.js";
 import * as Workspace3 from "../../models/workspace/workspace.js";
 import * as NetworkForward5 from "./forward/forward.js";
 import * as Buttons8 from "../../ui/components/buttons/buttons.js";
-import * as Input2 from "../../ui/components/input/input.js";
 import * as UI17 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
 import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 import * as Sources2 from "../sources/sources.js";
 import * as NetworkComponents from "./components/components.js";
 
+// gen/front_end/panels/network/components/RequestHeadersView.css.js
+var RequestHeadersView_css_default = `/*
+ * Copyright 2022 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  .header {
+    background-color: var(--sys-color-surface1);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    line-height: 25px;
+    padding: 0 5px;
+  }
+
+  .header::marker {
+    font-size: var(--sys-typescale-body5-size);
+    line-height: 1;
+  }
+
+  .header:focus {
+    background-color: var(--sys-color-state-header-hover);
+  }
+
+  .header:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: calc(-1 * var(--sys-size-2));
+  }
+
+  details[open] .header-count {
+    display: none;
+  }
+
+  details .hide-when-closed {
+    display: none;
+  }
+
+  details[open] .hide-when-closed {
+    display: revert;
+  }
+
+  details summary input {
+    vertical-align: middle;
+  }
+
+  .row {
+    display: flex;
+    line-height: 18px;
+    padding-left: var(--sys-size-5);
+    gap: var(--sys-size-6);
+    user-select: text;
+    margin: var(--sys-size-3) 0;
+  }
+
+  div.raw-headers-row {
+    display: block;
+  }
+
+  .row:first-of-type {
+    margin-top: var(--sys-size-5);
+  }
+
+  .row:last-child {
+    margin-bottom: var(--sys-size-5);
+  }
+
+  .header-name {
+    color: var(--sys-color-on-surface-subtle);
+    font: var(--sys-typescale-body5-medium);
+    width: 30%;
+    min-width: var(--sys-size-23);
+    max-width: var(--sys-size-28);
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
+
+  .header-value {
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-2);
+    font: var(--sys-typescale-body4-regular);
+  }
+
+  .header-name,
+  .header-value {
+    &::selection {
+      color: var(--sys-color-on-tonal-container);
+      background-color: var(--sys-color-tonal-container);
+    }
+  }
+
+  .green-circle::before,
+  .red-circle::before,
+  .yellow-circle::before {
+    content: '';
+    display: inline-block;
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    border-radius: var(--sys-size-4);
+    vertical-align: text-top;
+    margin-right: var(--sys-size-2);
+  }
+
+  .green-circle::before {
+    background-color: var(--sys-color-green-bright);
+  }
+
+  .red-circle::before {
+    background-color: var(--sys-color-error-bright);
+  }
+
+  .yellow-circle::before {
+    background-color: var(--issue-color-yellow);
+  }
+
+  .status-with-comment {
+    color: var(--sys-color-token-subtle);
+  }
+
+  .early-hints-warning {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-4);
+    margin: var(--sys-size-3);
+    padding: var(--sys-size-5);
+    border-radius: var(--sys-shape-corner-medium-small);
+    color: var(--sys-color-on-yellow-container);
+    background-color: var(--sys-color-yellow-container);
+    font: var(--sys-typescale-body4-regular);
+  }
+
+  .raw-headers {
+    font-family: var(--source-code-font-family);
+    font-size: var(--source-code-font-size);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .link,
+  .devtools-link {
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    outline-offset: var(--sys-size-2);
+  }
+
+  .inline-icon {
+    vertical-align: sub;
+  }
+
+  .header-grid-container {
+    display: inline-grid;
+    grid-template-columns: 156px 50px 1fr;
+    gap: var(--sys-size-3);
+    /* Make this fit into the same line as the summary marker */
+    width: calc(100% - 15px);
+  }
+
+  .header-grid-container div:last-child {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .header .devtools-link {
+    color: var(--sys-color-on-surface);
+  }
+
+  devtools-link {
+    position: relative;
+  }
+
+  devtools-link .inline-icon {
+    padding-right: 3px;
+    vertical-align: middle;
+  }
+
+  .purple.dot::before {
+    background-color: var(--sys-color-purple-bright);
+    content: var(--image-file-empty);
+    width: var(--sys-size-4);
+    height: var(--sys-size-4);
+    border-radius: var(--sys-shape-corner-full);
+    outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
+    left: 9px;
+    position: absolute;
+    top: 11px;
+    z-index: 1;
+  }
+
+  summary label {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    gap: var(--sys-size-3);
+  }
+
+  summary devtools-checkbox {
+    margin-top: var(--sys-size-1);
+  }
+
+  .backend-link-button {
+    margin-left: var(--sys-size-4);
+    vertical-align: middle;
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./RequestHeadersView.css")} */`;
+
 // ../../front_end/panels/network/NetworkPanel.ts
 var NetworkPanel_exports = {};
 __export(NetworkPanel_exports, {
   ActionDelegate: () => ActionDelegate2,
   BackendLinking: () => BackendLinking2,
+  DEFAULT_SETTINGS_PANE_VIEW: () => DEFAULT_SETTINGS_PANE_VIEW,
   FilmStripRecorder: () => FilmStripRecorder,
   NetworkLogWithFilterRevealer: () => NetworkLogWithFilterRevealer,
   NetworkPanel: () => NetworkPanel,
@@ -7171,8 +7376,8 @@ import * as Workspace2 from "../../models/workspace/workspace.js";
 import * as NetworkForward4 from "./forward/forward.js";
 import * as Tracing2 from "../../services/tracing/tracing.js";
 import * as PerfUI5 from "../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
+import { Directives as Directives10, html as html12, render as render13 } from "../../ui/lit/lit.js";
 import * as Settings12 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling3 from "../mobile_throttling/mobile_throttling.js";
@@ -13115,7 +13320,6 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     this.#updateSummaryBar();
     this.scheduleRefresh();
   }
-  // TODO(crbug.com/1477668)
   setTextFilterValue(filterString) {
     this.#textFilterUI.setValue(filterString);
     this.#networkHideDataURLSetting.set(false);
@@ -14363,7 +14567,7 @@ var networkPanel_css_default = `/*
   width: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
-#network-overview-panel {
+#network-overview-pane {
   flex: none;
   position: relative;
 }
@@ -14527,15 +14731,18 @@ var NetworkSearchScope = class _NetworkSearchScope {
       return stringMatchesQuery(`${header.name}: ${header.value}`);
     }
     function stringMatchesQuery(string) {
-      const flags = searchConfig.ignoreCase() ? "i" : "";
-      const regExps = searchConfig.queries().map((query) => new RegExp(Platform7.StringUtilities.escapeForRegExp(query), flags));
+      const regExps = searchConfig.queries().map((query) => Platform7.StringUtilities.createSearchRegex(
+        query,
+        !searchConfig.ignoreCase(),
+        searchConfig.isRegex()
+      ));
       let pos = 0;
       for (const regExp of regExps) {
-        const match = string.substr(pos).match(regExp);
-        if (match?.index === void 0) {
+        regExp.lastIndex = pos;
+        if (!regExp.exec(string)) {
           return false;
         }
-        pos += match.index + match[0].length;
+        pos = regExp.lastIndex;
       }
       return true;
     }
@@ -14613,6 +14820,7 @@ var NetworkSearchResult = class {
 };
 
 // ../../front_end/panels/network/NetworkPanel.ts
+var { bindToSetting } = UI15.UIUtils;
 var UIStrings15 = {
   /**
    * @description Text to close something
@@ -14815,9 +15023,39 @@ var BackendLinking2 = class {
     return null;
   }
 };
+function renderSettingsPane(input, output) {
+  return html12`
+    <div class="network-settings-pane" ?hidden=${!input.showSettingsPane}>
+      <devtools-checkbox title=${i18nString14(UIStrings15.showMoreInformationInRequestRows)}
+          ${bindToSetting(input.largeRowsSetting)}>${i18nString14(UIStrings15.useLargeRequestRows)}</devtools-checkbox>
+      <devtools-checkbox title=${i18nString14(UIStrings15.groupRequestsByTopLevelRequest)}
+          ${bindToSetting(input.groupByFrameSetting)}>${i18nString14(UIStrings15.groupByFrame)}</devtools-checkbox>
+      <devtools-checkbox title=${i18nString14(UIStrings15.showOverviewOfNetworkRequests)}
+          ${bindToSetting(input.showOverviewSetting)}>${i18nString14(UIStrings15.showOverview)}</devtools-checkbox>
+      <devtools-checkbox title=${i18nString14(UIStrings15.captureScreenshotsWhenLoadingA)}
+          ${bindToSetting(input.recordFilmStripSetting)}>${i18nString14(UIStrings15.captureScreenshots)}</devtools-checkbox>
+    </div>
+    <input type="file" hidden tabindex="-1"
+        ${Directives10.ref((el) => {
+    output.openFileSelector = el instanceof HTMLInputElement ? () => el.click() : void 0;
+  })}
+        @click=${(event) => {
+    if (event.target instanceof HTMLInputElement) {
+      event.target.value = "";
+    }
+  }}
+        @change=${(event) => {
+    if (event.target instanceof HTMLInputElement && event.target.files?.length) {
+      input.onLoadFromFile(event.target.files[0]);
+    }
+  }}>`;
+}
+var DEFAULT_SETTINGS_PANE_VIEW = (input, output, target) => {
+  render13(renderSettingsPane(input, output), target);
+};
 var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
-  networkLogShowOverviewSetting;
-  networkLogLargeRowsSetting;
+  #networkLogShowOverviewSetting;
+  #networkLogLargeRowsSetting;
   networkRecordFilmStripSetting;
   toggleRecordAction;
   pendingStopTimer;
@@ -14828,7 +15066,7 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
   panelToolbar;
   rightToolbar;
   filterBar;
-  showSettingsPaneSetting;
+  #showSettingsPaneSetting;
   filmStripPlaceholderElement;
   overviewPane;
   networkOverview;
@@ -14838,7 +15076,9 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
   sidebarLocation;
   progressBarContainer;
   networkLogView;
-  fileSelectorElement;
+  #settingsPaneContainer = document.createElement("div");
+  #settingsPaneOutput = {};
+  #groupByFrameSetting;
   detailsWidget;
   closeButtonElement;
   preserveLogSetting;
@@ -14846,14 +15086,16 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
   throttlingSelect;
   displayScreenshotDelay;
   backendLinking;
-  constructor(displayScreenshotDelay) {
+  #settingsPaneView;
+  constructor(displayScreenshotDelay, settingsPaneView = DEFAULT_SETTINGS_PANE_VIEW) {
     super("network");
+    this.#settingsPaneView = settingsPaneView;
     this.registerRequiredCSS(networkPanel_css_default);
     const backendLinkingSetting = Common13.Settings.Settings.instance().maybeResolve(backendLinkingRulesSettingDescriptor);
     this.backendLinking = "setting" in backendLinkingSetting ? new BackendLinking2(backendLinkingSetting.setting) : null;
     this.displayScreenshotDelay = displayScreenshotDelay;
-    this.networkLogShowOverviewSetting = Common13.Settings.Settings.instance().createSetting("network-log-show-overview", true);
-    this.networkLogLargeRowsSetting = Common13.Settings.Settings.instance().createSetting("network-log-large-rows", false);
+    this.#networkLogShowOverviewSetting = Common13.Settings.Settings.instance().createSetting("network-log-show-overview", true);
+    this.#networkLogLargeRowsSetting = Common13.Settings.Settings.instance().createSetting("network-log-large-rows", false);
     this.networkRecordFilmStripSetting = Common13.Settings.Settings.instance().createSetting("network-record-film-strip-setting", false);
     this.toggleRecordAction = UI15.ActionRegistry.ActionRegistry.instance().getAction("network.toggle-recording");
     this.networkItemView = null;
@@ -14872,41 +15114,15 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     this.filterBar = new UI15.FilterBar.FilterBar("network-panel", true);
     this.filterBar.show(panel3.contentElement);
     this.filterBar.addEventListener(UI15.FilterBar.FilterBarEvents.CHANGED, this.handleFilterChanged.bind(this));
-    const settingsPane = panel3.contentElement.createChild("div", "network-settings-pane");
-    settingsPane.append(
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString14(UIStrings15.useLargeRequestRows),
-        this.networkLogLargeRowsSetting,
-        i18nString14(UIStrings15.showMoreInformationInRequestRows)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString14(UIStrings15.groupByFrame),
-        Common13.Settings.Settings.instance().resolve(Settings12.NetworkSettings.groupByFrameSettingDescriptor),
-        i18nString14(UIStrings15.groupRequestsByTopLevelRequest)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString14(UIStrings15.showOverview),
-        this.networkLogShowOverviewSetting,
-        i18nString14(UIStrings15.showOverviewOfNetworkRequests)
-      ),
-      SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString14(UIStrings15.captureScreenshots),
-        this.networkRecordFilmStripSetting,
-        i18nString14(UIStrings15.captureScreenshotsWhenLoadingA)
-      )
-    );
-    this.showSettingsPaneSetting = Common13.Settings.Settings.instance().createSetting("network-show-settings-toolbar", false);
-    settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get());
-    this.showSettingsPaneSetting.addChangeListener(
-      () => settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get())
-    );
+    this.#groupByFrameSetting = Common13.Settings.Settings.instance().resolve(Settings12.NetworkSettings.groupByFrameSettingDescriptor);
+    this.#showSettingsPaneSetting = Common13.Settings.Settings.instance().createSetting("network-show-settings-toolbar", false);
+    panel3.contentElement.appendChild(this.#settingsPaneContainer);
     this.filmStripPlaceholderElement = panel3.contentElement.createChild("div", "network-film-strip-placeholder");
     this.overviewPane = new PerfUI5.TimelineOverviewPane.TimelineOverviewPane("network");
     this.overviewPane.addEventListener(
       PerfUI5.TimelineOverviewPane.Events.OVERVIEW_PANE_WINDOW_CHANGED,
       this.onWindowChanged.bind(this)
     );
-    this.overviewPane.element.id = "network-overview-panel";
     this.networkOverview = new NetworkOverview();
     this.overviewPane.setOverviewControls([this.networkOverview]);
     this.overviewPlaceholderElement = panel3.contentElement.createChild("div");
@@ -14944,12 +15160,8 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     splitWidget.setDefaultFocusedChild(panel3);
     this.setDefaultFocusedChild(splitWidget);
     this.progressBarContainer = document.createElement("div");
-    this.networkLogView = new NetworkLogView(this.filterBar, this.progressBarContainer, this.networkLogLargeRowsSetting);
+    this.networkLogView = new NetworkLogView(this.filterBar, this.progressBarContainer, this.#networkLogLargeRowsSetting);
     this.splitWidget.setSidebarWidget(this.networkLogView);
-    this.fileSelectorElement = UI15.UIUtils.createFileSelectorElement(
-      this.networkLogView.onLoadFromFile.bind(this.networkLogView)
-    );
-    panel3.element.appendChild(this.fileSelectorElement);
     this.detailsWidget = new UI15.Widget.VBox();
     this.detailsWidget.element.classList.add("network-details-view");
     this.splitWidget.setMainWidget(this.detailsWidget);
@@ -14959,8 +15171,8 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
       await action3.execute();
     }, false);
     this.closeButtonElement.style.margin = "0 5px";
-    this.networkLogShowOverviewSetting.addChangeListener(this.toggleShowOverview, this);
-    this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
+    this.#networkLogShowOverviewSetting.addChangeListener(this.#toggleShowOverview, this);
+    this.#networkLogLargeRowsSetting.addChangeListener(this.#toggleLargerRequests, this);
     this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
     this.preserveLogSetting = Common13.Settings.Settings.instance().resolve(SDK12.SDKSettings.preserveNetworkLogSettingDescriptor);
     this.recordLogSetting = Common13.Settings.Settings.instance().resolve(Logs6.NetworkLog.recordNetworkLogSettingDescriptor);
@@ -14968,10 +15180,11 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     this.throttlingSelect = this.createThrottlingConditionsSelect();
     this.setupToolbarButtons(splitWidget);
     this.toggleRecord(this.recordLogSetting.get());
-    this.toggleShowOverview();
-    this.toggleLargerRequests();
+    this.#toggleShowOverview();
+    this.#toggleLargerRequests();
     this.toggleRecordFilmStrip();
-    this.updateUI();
+    this.#updateUI();
+    this.performUpdate();
     SDK12.TargetManager.TargetManager.instance().addModelListener(
       SDK12.ResourceTreeModel.ResourceTreeModel,
       SDK12.ResourceTreeModel.Events.WillReloadPage,
@@ -15086,7 +15299,7 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     this.rightToolbar.appendToolbarItem(new UI15.Toolbar.ToolbarItem(this.progressBarContainer));
     this.rightToolbar.appendSeparator();
     this.rightToolbar.appendToolbarItem(new UI15.Toolbar.ToolbarSettingToggle(
-      this.showSettingsPaneSetting,
+      this.#showSettingsPaneSetting,
       "gear",
       i18nString14(UIStrings15.networkSettings),
       "gear-filled",
@@ -15108,7 +15321,7 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     const importHarButton = new UI15.Toolbar.ToolbarButton(i18nString14(UIStrings15.importHarFile), "import", void 0, "import-har");
     importHarButton.addEventListener(
       UI15.Toolbar.ToolbarButton.Events.CLICK,
-      () => this.fileSelectorElement.click(),
+      () => this.#settingsPaneOutput.openFileSelector?.(),
       this
     );
     this.panelToolbar.appendToolbarItem(importHarButton);
@@ -15202,11 +15415,11 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     }
     delete this.pendingStopTimer;
   }
-  toggleLargerRequests() {
-    this.updateUI();
+  #toggleLargerRequests() {
+    this.#updateUI();
   }
-  toggleShowOverview() {
-    const toggled = this.networkLogShowOverviewSetting.get();
+  #toggleShowOverview() {
+    const toggled = this.#networkLogShowOverviewSetting.get();
     if (toggled) {
       this.overviewPane.show(this.overviewPlaceholderElement);
     } else {
@@ -15249,12 +15462,31 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
   elementsToRestoreScrollPositionsFor() {
     return this.networkLogView.elementsToRestoreScrollPositionsFor();
   }
+  performUpdate() {
+    this.#settingsPaneView(
+      {
+        showSettingsPane: this.#showSettingsPaneSetting.get(),
+        largeRowsSetting: this.#networkLogLargeRowsSetting,
+        groupByFrameSetting: this.#groupByFrameSetting,
+        showOverviewSetting: this.#networkLogShowOverviewSetting,
+        recordFilmStripSetting: this.networkRecordFilmStripSetting,
+        onLoadFromFile: (file) => {
+          void this.networkLogView.onLoadFromFile(file);
+        }
+      },
+      this.#settingsPaneOutput,
+      this.#settingsPaneContainer
+    );
+  }
   wasShown() {
     super.wasShown();
     UI15.Context.Context.instance().setFlavor(_NetworkPanel, this);
+    this.#showSettingsPaneSetting.addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
     UI15.UIUserMetrics.UIUserMetrics.instance().panelLoaded("network", "DevTools.Launch.Network");
   }
   willHide() {
+    this.#showSettingsPaneSetting.removeChangeListener(this.requestUpdate, this);
     UI15.Context.Context.instance().setFlavor(_NetworkPanel, null);
     super.willHide();
   }
@@ -15306,18 +15538,18 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
         networkItemView.focus();
       }
     }
-    this.updateUI();
+    this.#updateUI();
   }
   hideRequestPanel() {
     this.clearNetworkItemView();
     this.splitWidget.hideMain();
-    this.updateUI();
+    this.#updateUI();
   }
   updateNetworkItemView() {
     if (this.splitWidget.showMode() === UI15.SplitWidget.ShowMode.BOTH) {
       this.clearNetworkItemView();
       this.createNetworkItemView();
-      this.updateUI();
+      this.#updateUI();
     }
   }
   clearNetworkItemView() {
@@ -15336,11 +15568,11 @@ var NetworkPanel = class _NetworkPanel extends UI15.Panel.Panel {
     this.splitWidget.showBoth();
     return this.networkItemView;
   }
-  updateUI() {
+  #updateUI() {
     if (this.detailsWidget) {
       this.detailsWidget.element.classList.toggle(
         "network-details-view-tall-header",
-        this.networkLogLargeRowsSetting.get()
+        this.#networkLogLargeRowsSetting.get()
       );
     }
     if (this.networkLogView) {
@@ -15636,7 +15868,7 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("panels/network/ShowMoreDetailsWidget.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var { render: render13, html: html12 } = Lit2;
+var { render: render14, html: html13 } = Lit2;
 var MAX_LENGTH = 3e3;
 var DEFAULT_VIEW12 = (input, output, target) => {
   const onContextMenuShowMore = (event) => {
@@ -15649,11 +15881,11 @@ var DEFAULT_VIEW12 = (input, output, target) => {
     }
     void contextMenu.show();
   };
-  render13(
-    html12`<span
+  render14(
+    html13`<span
             @contextmenu=${onContextMenuShowMore}
             >${input.showMore ? input.text : input.text.substr(0, MAX_LENGTH)}</span>
-          ${!input.showMore && input.text.length > MAX_LENGTH ? html12`<devtools-button
+          ${!input.showMore && input.text.length > MAX_LENGTH ? html13`<devtools-button
             .variant=${Buttons7.Button.Variant.OUTLINED}
             .jslogContext=${"show-more"}
             @click=${input.onToggle}>
@@ -15703,7 +15935,7 @@ var ShowMoreDetailsWidget = class extends UI16.Widget.Widget {
 };
 
 // ../../front_end/panels/network/RequestHeadersView.ts
-var { render: render14, html: html13 } = Lit3;
+var { render: render15, html: html14 } = Lit3;
 var { widget: widget5 } = UI17.Widget;
 var UIStrings17 = {
   /**
@@ -15813,7 +16045,7 @@ function renderGeneralRows(input) {
     statusClasses.push("status-with-comment");
   }
   const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(" ");
-  return html13`<div jslog=${VisualLogging12.section("general")}>
+  return html14`<div jslog=${VisualLogging12.section("general")}>
     ${renderGeneralRow(input, i18nString16(UIStrings17.requestUrl), input.request.url(), "request-url")}
     ${input.request.statusCode ? renderGeneralRow(input, i18nString16(UIStrings17.requestMethod), input.request.requestMethod, "request-method") : Lit3.nothing}
     ${input.request.statusCode ? renderGeneralRow(input, i18nString16(UIStrings17.statusCode), statusText, "status-code", statusClasses) : Lit3.nothing}
@@ -15832,10 +16064,9 @@ function renderGeneralSection(input, forceOpen) {
 }
 var DEFAULT_VIEW13 = (input, _output, target) => {
   const requestHeadersText = input.request.requestHeadersText();
-  render14(
-    html13`
-        <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
-        <style>${Input2.checkboxStyles}</style>
+  render15(
+    html14`
+        <style>${RequestHeadersView_css_default}</style>
         ${renderGeneralSection(input, input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.GENERAL)}
         ${!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0 ? Lit3.nothing : renderCategory({
       name: "early-hints-headers",
@@ -15846,9 +16077,9 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
       additionalContent: void 0,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.EARLY_HINTS,
       loggingContext: "early-hints-headers",
-      contents: html13`
+      contents: html14`
               ${input.cacheDisabled && hasEarlyHintsPreload(input.request.earlyHintsHeaders) ? renderEarlyHintsWarning() : Lit3.nothing}
-              ${input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html13`
+              ${input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html14`
             <devtools-early-hints-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
@@ -15862,10 +16093,10 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
       title: i18nString16(UIStrings17.responseHeaders),
       headerCount: input.request.sortedResponseHeaders.length,
       checked: input.request.responseHeadersText ? input.showResponseHeadersText : void 0,
-      additionalContent: html13`<div>${renderHeaderOverridesLink(input)}${renderBackendLinkButton(input)}</div>`,
+      additionalContent: html14`<div>${renderHeaderOverridesLink(input)}${renderBackendLinkButton(input)}</div>`,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.RESPONSE,
       loggingContext: "response-headers",
-      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html13`
+      contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html14`
           <devtools-response-header-section .data=${{
         request: input.request,
         toReveal: input.toReveal
@@ -15880,7 +16111,7 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
       checked: requestHeadersText ? input.showRequestHeadersText : void 0,
       forceOpen: input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.REQUEST,
       loggingContext: "request-headers",
-      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html13`
+      contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html14`
           <devtools-widget ${widget5(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
         request: input.request,
         toReveal: input.toReveal
@@ -15893,10 +16124,9 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
   );
 };
 var GENERAL_HEADERS_ONLY_VIEW = (input, _output, target) => {
-  render14(
-    html13`
-        <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
-        <style>${Input2.checkboxStyles}</style>
+  render15(
+    html14`
+        <style>${RequestHeadersView_css_default}</style>
         ${renderGeneralRows(input)}
       `,
     target,
@@ -16065,7 +16295,7 @@ function hasEarlyHintsPreload(headers) {
   });
 }
 function renderEarlyHintsWarning() {
-  return html13`
+  return html14`
     <div class="early-hints-warning">
       <devtools-icon class="medium" name="warning-filled"></devtools-icon>
       <div>${i18nString16(UIStrings17.earlyPreloadsIgnoredCacheDisabledWarning)}</div>
@@ -16076,7 +16306,7 @@ function renderBackendLinkButton({ backendLink }) {
   if (!backendLink) {
     return Lit3.nothing;
   }
-  return html13`
+  return html14`
     <devtools-button
       class="backend-link-button"
       .variant=${Buttons8.Button.Variant.PRIMARY}
@@ -16104,10 +16334,10 @@ function renderHeaderOverridesLink(input) {
   const overridesSetting = Common14.Settings.Settings.instance().resolve(
     Persistence2.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor
   );
-  const fileIcon = html13`
+  const fileIcon = html14`
       <devtools-icon name="document" class=${"medium" + overridesSetting.get() ? "inline-icon dot purple" : "inline-icon"}>
       </devtools-icon>`;
-  return html13`
+  return html14`
       <devtools-link
           href="https://goo.gle/devtools-override"
           class="link devtools-link hide-when-closed"
@@ -16127,12 +16357,12 @@ function renderHeaderOverridesLink(input) {
     `;
 }
 function renderRawHeaders(text) {
-  return html13`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
+  return html14`<div class="row raw-headers-row"><devtools-widget  class=raw-headers
       ${widget5(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
 }
 function renderGeneralRow(input, name, value, id, classNames) {
   const isHighlighted = input.toReveal?.section === NetworkForward5.UIRequestLocation.UIHeaderSection.GENERAL && name.toLowerCase() === input.toReveal?.header?.toLowerCase();
-  return html13`
+  return html14`
       <div class="row ${isHighlighted ? "header-highlight" : ""}">
         <div class="header-name">${name}</div>
         <div
@@ -16146,7 +16376,7 @@ function renderGeneralRow(input, name, value, id, classNames) {
 function renderCategory(data) {
   const expandedSetting = Common14.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
   const isOpen = (expandedSetting ? expandedSetting.get() : true) || data.forceOpen;
-  return html13`
+  return html14`
       <details ?open=${isOpen} @toggle=${onToggle} aria-label=${data.title}>
         <summary
           class="header"
@@ -16155,10 +16385,10 @@ function renderCategory(data) {
         >
           <div class="header-grid-container">
             <div>
-              ${data.title}${data.headerCount !== void 0 ? html13`<span class="header-count"> (${data.headerCount})</span>` : Lit3.nothing}
+              ${data.title}${data.headerCount !== void 0 ? html14`<span class="header-count"> (${data.headerCount})</span>` : Lit3.nothing}
             </div>
             <div class="hide-when-closed">
-              ${data.checked !== void 0 ? html13`
+              ${data.checked !== void 0 ? html14`
                 <devtools-checkbox .checked=${data.checked} @change=${data.onToggleRawHeaders}
                          jslog=${VisualLogging12.toggle("raw-headers").track({ change: true })}>
                   ${i18nString16(UIStrings17.raw)}
@@ -16431,7 +16661,7 @@ var objectValue_css_default = `/*
 
 // ../../front_end/panels/network/RequestPayloadView.ts
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives10, html as html14, nothing as nothing10, render as render15 } from "../../ui/lit/lit.js";
+import { Directives as Directives11, html as html15, nothing as nothing10, render as render16 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
@@ -16586,7 +16816,7 @@ var requestPayloadView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestPayloadView.css")} */`;
 
 // ../../front_end/panels/network/RequestPayloadView.ts
-var { classMap: classMap3 } = Directives10;
+var { classMap: classMap3 } = Directives11;
 var { widget: widget6 } = UI18.Widget;
 var { ifExpanded } = UI18.TreeOutline;
 var UIStrings18 = {
@@ -16641,7 +16871,7 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("panels/network/RequestPayloadView.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW14 = (input, output, target) => {
-  const createViewSourceToggle = (viewSource, callback) => html14`<devtools-button
+  const createViewSourceToggle = (viewSource, callback) => html15`<devtools-button
       class="payload-toggle"
       jslog=${VisualLogging13.action().track({ click: true }).context("source-parse")}
       .variant=${Buttons9.Button.Variant.OUTLINED}
@@ -16660,14 +16890,14 @@ var DEFAULT_VIEW14 = (input, output, target) => {
   };
   const createSourceText = (text) => {
     const copy = () => input.copyValue(text);
-    return html14`<li role=treeitem
+    return html15`<li role=treeitem
       @contextmenu=${copyValueContextmenu(i18nString17(UIStrings18.copyPayload), () => text, "copy-payload")}>
         <devtools-widget class='payload-value source-code' ${widget6(ShowMoreDetailsWidget, { text, copy })}>
         </devtools-widget>
       </li>`;
   };
   const createParsedParams = (params, decodeParameters) => params.map((param) => {
-    return html14`
+    return html15`
         <li role=treeitem
             @contextmenu=${copyValueContextmenu(
       i18nString17(UIStrings18.copyValue),
@@ -16677,7 +16907,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       },
       "copy-value"
     )}>
-          ${param.name !== "" ? html14`
+          ${param.name !== "" ? html15`
             ${RequestPayloadView.formatParameter(param.name, "payload-name", decodeParameters)}
             ${RequestPayloadView.formatParameter(param.value, "payload-value source-code", decodeParameters)}
           ` : RequestPayloadView.formatParameter(
@@ -16695,7 +16925,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       input.onPayloadContextMenu(contextMenu);
       void contextMenu.show();
     };
-    return html14`
+    return html15`
       <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
           toggle-on-click
           ?open=${objectTree.expanded}
@@ -16731,8 +16961,8 @@ var DEFAULT_VIEW14 = (input, output, target) => {
     }
     void contextMenu.show();
   };
-  render15(html14`<style>${requestPayloadView_css_default}</style>
-   <devtools-tree dense show-selection-on-keyboard-focus class=request-payload-tree .template=${html14`
+  render16(html15`<style>${requestPayloadView_css_default}</style>
+   <devtools-tree dense show-selection-on-keyboard-focus class=request-payload-tree .template=${html15`
      <style>${objectValue_css_default}</style>
      <style>${objectPropertiesSection_css_default}</style>
      <style>${requestPayloadTree_css_default}</style>
@@ -16822,7 +17052,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       </li>
      </ul>
      `}></devtools-tree>
-   ${input.binaryPayloadContentData ? html14`
+   ${input.binaryPayloadContentData ? html15`
      <div class="raw-payload-section"
           jslog=${VisualLogging13.section().context("binary-request-payload")}>
        ${widget6((element) => {
@@ -17046,8 +17276,8 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
   static formatParameter(value, className, decodeParameters) {
     const { value: decoded, errorDecoding } = _RequestPayloadView.decodeParameter(value, decodeParameters);
     const classes = classMap3({ [className]: !!className, "empty-value": decoded === "" });
-    return html14`<div class=${classes}>
-      ${errorDecoding ? html14`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : decoded}
+    return html15`<div class=${classes}>
+      ${errorDecoding ? html15`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : decoded}
     </div>`;
   }
 };
@@ -17064,7 +17294,7 @@ import * as i18n39 from "../../core/i18n/i18n.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
-import { Directives as Directives12, html as html17, render as render18 } from "../../ui/lit/lit.js";
+import { Directives as Directives13, html as html18, render as render19 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/network/RequestHTMLView.ts
@@ -17074,7 +17304,7 @@ __export(RequestHTMLView_exports, {
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI19 from "../../ui/legacy/legacy.js";
-import { html as html15, nothing as nothing11, render as render16 } from "../../ui/lit/lit.js";
+import { html as html16, nothing as nothing11, render as render17 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/requestHTMLView.css.js
 var requestHTMLView_css_default = `/*
@@ -17097,11 +17327,11 @@ var requestHTMLView_css_default = `/*
 
 // ../../front_end/panels/network/RequestHTMLView.ts
 var DEFAULT_VIEW15 = (input, _output, target) => {
-  render16(
-    html15`
+  render17(
+    html16`
     <style>${requestHTMLView_css_default}</style>
     <div class="html request-view widget vbox">
-      ${input.dataURL ? html15`
+      ${input.dataURL ? html16`
         <!-- @ts-ignore -->
         <iframe class="html-preview-frame" sandbox
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
@@ -17161,7 +17391,7 @@ import * as Common16 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import { Directives as Directives11, html as html16, nothing as nothing12, render as render17 } from "../../ui/lit/lit.js";
+import { Directives as Directives12, html as html17, nothing as nothing12, render as render18 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/signedExchangeInfoTree.css.js
 var signedExchangeInfoTree_css_default = `/*
@@ -17287,7 +17517,7 @@ var signedExchangeInfoView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./signedExchangeInfoView.css")} */`;
 
 // ../../front_end/panels/network/SignedExchangeInfoView.ts
-var { classMap: classMap4 } = Directives11;
+var { classMap: classMap4 } = Directives12;
 var UIStrings19 = {
   /**
    * @description Text for errors
@@ -17378,35 +17608,35 @@ var str_19 = i18n37.i18n.registerUIStrings("panels/network/SignedExchangeInfoVie
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW16 = (input, _output, target) => {
   if (!input) {
-    render17(nothing12, target);
+    render18(nothing12, target);
     return;
   }
   const { formatHeader, formatHeaderForHexData } = SignedExchangeInfoView;
-  const renderLeaf = (content) => html16`<li role="treeitem" selectable="false">${content}</li>`;
-  const renderCategory2 = (title, children) => html16`
+  const renderLeaf = (content) => html17`<li role="treeitem" selectable="false">${content}</li>`;
+  const renderCategory2 = (title, children) => html17`
     <li role="treeitem" toggle-on-click open selectable="false">
       ${title}
       <ul role="group">${children}</ul>
     </li>`;
-  render17(
-    html16`
+  render18(
+    html17`
         <style>${signedExchangeInfoView_css_default}</style>
-        <devtools-tree dense class="signed-exchange-info-tree" .template=${html16`
+        <devtools-tree dense class="signed-exchange-info-tree" .template=${html17`
           <style>${signedExchangeInfoTree_css_default}</style>
           <ul role="tree">
             ${input.errors.length ? renderCategory2(
       i18nString18(UIStrings19.errors),
-      input.errors.map((errorMessage) => renderLeaf(html16`
+      input.errors.map((errorMessage) => renderLeaf(html17`
                   <devtools-icon name="cross-circle-filled" class="prompt-icon small"></devtools-icon><div
                       class="error-log">${errorMessage}</div>`))
     ) : nothing12}
             ${renderCategory2(
-      html16`<div class="header-name">${i18nString18(UIStrings19.signedHttpExchange)}</div><devtools-link
+      html17`<div class="header-name">${i18nString18(UIStrings19.signedHttpExchange)}</div><devtools-link
                     href="https://github.com/WICG/webpackage"
                     class="header-toggle devtools-link"
                     jslogcontext="learn-more">${i18nString18(UIStrings19.learnmore)}</devtools-link>`,
-      input.header ? html16`
-                  ${renderLeaf(html16`${formatHeader(i18nString18(UIStrings19.requestUrl), input.header.requestUrl)}${input.header.hasRedirectDestination ? html16`<devtools-link
+      input.header ? html17`
+                  ${renderLeaf(html17`${formatHeader(i18nString18(UIStrings19.requestUrl), input.header.requestUrl)}${input.header.hasRedirectDestination ? html17`<devtools-link
                           class="header-toggle devtools-link"
                           jslogcontext="redirect-destination-request"
                           @click=${input.onViewRequest}>${i18n37.i18n.lockedString("View request")}</devtools-link>` : nothing12}`)}
@@ -17414,7 +17644,7 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.headerIntegrityHash), input.header.headerIntegrity))}
                   <li role="treeitem" open selectable="false">
                     ${formatHeader(i18nString18(UIStrings19.responseHeaders), "")}
-                    ${input.header.responseHeaders.length ? html16`
+                    ${input.header.responseHeaders.length ? html17`
                       <ul role="group">
                         ${input.header.responseHeaders.map((header) => renderLeaf(formatHeader(header.name, header.value)))}
                       </ul>
@@ -17424,11 +17654,11 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
     )}
             ${(input.header?.signatures ?? []).map((signature) => renderCategory2(
       i18nString18(UIStrings19.signature),
-      html16`
+      html17`
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.label), signature.label))}
                   ${renderLeaf(formatHeaderForHexData(i18nString18(UIStrings19.signature), signature.signature, signature.hasSignatureError))}
-                  ${signature.certUrl ? renderLeaf(html16`
-                    ${formatHeader(i18nString18(UIStrings19.certificateUrl), signature.certUrl, signature.hasCertUrlError)}${signature.certificates ? html16`<devtools-link
+                  ${signature.certUrl ? renderLeaf(html17`
+                    ${formatHeader(i18nString18(UIStrings19.certificateUrl), signature.certUrl, signature.hasCertUrlError)}${signature.certificates ? html17`<devtools-link
                           class="devtools-link header-toggle"
                           jslogcontext="view-certificate"
                           @click=${() => input.onViewCertificate(signature.certificates ?? [])}>${i18nString18(UIStrings19.viewCertificate)}</devtools-link>` : nothing12}`) : nothing12}
@@ -17445,7 +17675,7 @@ var DEFAULT_VIEW16 = (input, _output, target) => {
     ))}
             ${input.securityDetails ? renderCategory2(
       i18nString18(UIStrings19.certificate),
-      html16`
+      html17`
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.subject), input.securityDetails.subjectName))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.validFrom), input.securityDetails.validFrom))}
                   ${renderLeaf(formatHeader(i18nString18(UIStrings19.validUntil), input.securityDetails.validUntil))}
@@ -17553,12 +17783,12 @@ var SignedExchangeInfoView = class extends UI20.Widget.VBox {
     );
   }
   static formatHeader(name, value, highlighted) {
-    return html16`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
+    return html17`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
         class="header-separator"></span><div
         class=${classMap4({ "header-value": true, "source-code": true, "error-field": Boolean(highlighted) })}>${value}</div>`;
   }
   static formatHeaderForHexData(name, value, highlighted) {
-    return html16`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
+    return html17`<div class=${classMap4({ "header-name": true, "error-field": Boolean(highlighted) })}>${name}: </div><span
         class="header-separator"></span><div
         class=${classMap4({ "header-value": true, "source-code": true, "hex-data": true, "error-field": Boolean(highlighted) })}>${value.replace(/(.{2})/g, "$1 ")}</div>`;
   }
@@ -17566,7 +17796,7 @@ var SignedExchangeInfoView = class extends UI20.Widget.VBox {
 
 // ../../front_end/panels/network/RequestPreviewView.ts
 var { widget: widget7 } = UI21.Widget;
-var { repeat: repeat4 } = Directives12;
+var { repeat: repeat4 } = Directives13;
 var UIStrings20 = {
   /**
    * @description Text in Request Preview View of the Network panel
@@ -17587,41 +17817,41 @@ var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var DEFAULT_VIEW17 = (input, _output, target) => {
   let previewTemplate;
   if (input.hasSignedExchange) {
-    previewTemplate = html17`${widget7(SignedExchangeInfoView, { request: input.request })}`;
+    previewTemplate = html18`${widget7(SignedExchangeInfoView, { request: input.request })}`;
   } else if (input.error !== null) {
-    previewTemplate = html17`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html18`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.failedToLoadResponseData),
       text: input.error
     })}`;
   } else if (input.parsedJSON) {
-    previewTemplate = html17`${widget7(SourceFrame2.JSONView.SearchableJsonView, { parsedJSON: input.parsedJSON })}`;
+    previewTemplate = html18`${widget7(SourceFrame2.JSONView.SearchableJsonView, { parsedJSON: input.parsedJSON })}`;
   } else if (input.htmlDataURL) {
-    previewTemplate = html17`${widget7(RequestHTMLView, { dataURL: input.htmlDataURL })}`;
+    previewTemplate = html18`${widget7(RequestHTMLView, { dataURL: input.htmlDataURL })}`;
   } else if (input.resourceType === Common17.ResourceType.resourceTypes.Image) {
-    previewTemplate = html17`${widget7(
+    previewTemplate = html18`${widget7(
       (element) => new SourceFrame2.ImageView.ImageView(input.mimeType, input.request, element),
       { showToolbar: true }
     )}`;
   } else if (input.resourceType === Common17.ResourceType.resourceTypes.Font) {
-    previewTemplate = html17`${widget7(
+    previewTemplate = html18`${widget7(
       (element) => new SourceFrame2.FontView.FontView(input.mimeType, input.request, element),
       { showToolbar: true }
     )}`;
   } else if (!input.isTextContent) {
-    previewTemplate = html17`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html18`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.previewNotAvailable),
       text: ""
     })}`;
   } else if (!input.hasTextContent) {
-    previewTemplate = html17`${widget7(UI21.EmptyWidget.EmptyWidget, {
+    previewTemplate = html18`${widget7(UI21.EmptyWidget.EmptyWidget, {
       header: i18nString19(UIStrings20.nothingToPreview),
       text: ""
     })}`;
   } else if (input.parsedXML) {
     const parsedXML = input.parsedXML;
-    previewTemplate = html17`${widget7((element) => SourceFrame2.XMLView.XMLView.createSearchableView(parsedXML, element))}`;
+    previewTemplate = html18`${widget7((element) => SourceFrame2.XMLView.XMLView.createSearchableView(parsedXML, element))}`;
   } else {
-    previewTemplate = html17`${widget7(
+    previewTemplate = html18`${widget7(
       (element) => new SourceFrame2.ResourceSourceFrame.SearchableContainer(
         input.request,
         input.highlighterType,
@@ -17629,8 +17859,8 @@ var DEFAULT_VIEW17 = (input, _output, target) => {
       )
     )}`;
   }
-  render18(
-    html17`${repeat4([input.request], (request) => request, () => previewTemplate)}`,
+  render19(
+    html18`${repeat4([input.request], (request) => request, () => previewTemplate)}`,
     target,
     {
       container: {
@@ -17776,7 +18006,7 @@ import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
 import * as Lit4 from "../../ui/lit/lit.js";
-var { html: html18, render: render19 } = Lit4;
+var { html: html19, render: render20 } = Lit4;
 var UIStrings21 = {
   /**
    * @description Text in Request Response View of the Network panel if no preview can be shown
@@ -17797,19 +18027,19 @@ var { widgetRef, widget: widget8 } = UI22.Widget;
 var DEFAULT_VIEW18 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils7.StreamingContentData.isError(input.contentData)) {
-    widgetTemplate = html18`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
+    widgetTemplate = html19`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.failedToLoadResponseData),
       input.contentData.error,
       element
     ))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widgetTemplate = html18`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
+    widgetTemplate = html19`${widget8((element) => new UI22.EmptyWidget.EmptyWidget(
       i18nString20(UIStrings21.noPreview),
       i18nString20(UIStrings21.thisRequestHasNoResponseData),
       element
     ))}`;
   } else if (input.renderAsText) {
-    widgetTemplate = html18`<devtools-widget ${widget8((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
+    widgetTemplate = html19`<devtools-widget ${widget8((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
       input.request,
       input.mimeType,
       element
@@ -17818,14 +18048,14 @@ var DEFAULT_VIEW18 = (input, output, target) => {
       output.revealPosition = widget9.revealPosition.bind(widget9);
     })}></devtools-widget>`;
   } else {
-    widgetTemplate = html18`${widget8((element) => new BinaryResourceView(
+    widgetTemplate = html19`${widget8((element) => new BinaryResourceView(
       input.contentData,
       input.request.url(),
       input.request.resourceType(),
       element
     ))}`;
   }
-  render19(widgetTemplate, target);
+  render20(widgetTemplate, target);
 };
 var RequestResponseView = class extends UI22.Widget.VBox {
   request;
@@ -17965,7 +18195,7 @@ var resourceChunkView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./resourceChunkView.css")} */`;
 
 // ../../front_end/panels/network/ResourceChunkView.ts
-var { html: html19, render: render20, Directives: { ifDefined: ifDefined4 } } = Lit5;
+var { html: html20, render: render21, Directives: { ifDefined: ifDefined4 } } = Lit5;
 var UIStrings22 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -18020,7 +18250,7 @@ var str_22 = i18n43.i18n.registerUIStrings("panels/network/ResourceChunkView.ts"
 var i18nString21 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var i18nLazyString3 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
 function defaultHeaderTemplate() {
-  return html19`
+  return html20`
     <tr>
       <th id="data" weight="88">${i18nString21(UIStrings22.data)}</th>
       <th id="length" align="right" weight="5">${i18nString21(UIStrings22.length)}</th>
@@ -18028,8 +18258,8 @@ function defaultHeaderTemplate() {
     </tr>`;
 }
 var DEFAULT_VIEW19 = (input, _output, target) => {
-  render20(
-    html19`
+  render21(
+    html20`
       <style>${resourceChunkView_css_default}</style>
       <div class="resource-chunk-view vbox">
         <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging15.toolbar()}>
@@ -18047,7 +18277,7 @@ var DEFAULT_VIEW19 = (input, _output, target) => {
               class="chrome-select"
               aria-label=${i18nString21(UIStrings22.filter)}
               @change=${input.onFilterTypeChange}>
-            ${FILTER_TYPES.map((item4) => html19`
+            ${FILTER_TYPES.map((item4) => html20`
               <option
                   value=${item4.name}
                   .selected=${input.selectedFilterType === item4.name}
@@ -18070,11 +18300,11 @@ var DEFAULT_VIEW19 = (input, _output, target) => {
             <devtools-data-grid autoscroll name=${input.dataGridDisplayName} striped autofocus
                 resize="last"
                 @deselect=${input.onDeselect}
-                .template=${html19`
+                .template=${html20`
                   <style>${resourceChunkView_css_default}</style>
                   <table>
                     ${input.headerTemplate}
-                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html19`
+                    ${Lit5.Directives.repeat(input.rows, (row) => row.chunk, (row) => html20`
                       <tr class=${ifDefined4(row.cssClass)}
                           ?selected=${row.selected}
                           data-index=${row.index}
@@ -18087,7 +18317,7 @@ var DEFAULT_VIEW19 = (input, _output, target) => {
                         ${input.columns.map((col) => {
       const value = col.id === "time" ? row.timeText : row.item.data[col.id] ?? "";
       const title = col.id === "time" ? row.timeTooltip : void 0;
-      return html19`
+      return html20`
                               <td class="resource-chunk-view-td" title=${ifDefined4(title)}
                                   data-value=${ifDefined4(typeof value === "string" ? value : void 0)}>
                                 ${value}
@@ -18100,10 +18330,10 @@ var DEFAULT_VIEW19 = (input, _output, target) => {
             </devtools-data-grid>
           </div>
           <div slot="sidebar" class="vbox flex-auto" jslog=${VisualLogging15.pane("preview").track({ resize: true })}>
-            ${input.sidebarWidget ? html19`
+            ${input.sidebarWidget ? html20`
               <devtools-widget class="vbox flex-auto">
                 ${input.sidebarWidget.element}
-              </devtools-widget>` : html19`
+              </devtools-widget>` : html20`
               <devtools-widget
                   ${UI23.Widget.widget(UI23.EmptyWidget.EmptyWidget, {
       header: i18nString21(UIStrings22.noMessageSelected),
@@ -18324,7 +18554,7 @@ var clearChunkOffsets = /* @__PURE__ */ new WeakMap();
 
 // ../../front_end/panels/network/ResourceDirectSocketChunkView.ts
 var {
-  html: html20
+  html: html21
 } = Lit6;
 var UIStrings23 = {
   /**
@@ -18360,7 +18590,7 @@ var str_23 = i18n45.i18n.registerUIStrings("panels/network/ResourceDirectSocketC
 var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var i18nLazyString4 = i18n45.i18n.getLazilyComputedLocalizedString.bind(void 0, str_23);
 function udpBoundHeaderTemplate() {
-  return html20`
+  return html21`
     <tr>
       <th id="data" weight="63">${i18nLazyString4(UIStrings23.data)}</th>
           <th id="address" align="right" weight="15">${i18nLazyString4(UIStrings23.address)}</th>

@@ -98,6 +98,9 @@
       "path": "../front_end/models/comment_manager/comment_manager-tsconfig.ref.json"
     },
     {
+      "path": "../front_end/models/computed_style/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../front_end/models/crux-manager/crux-manager-tsconfig.ref.json"
     },
     {

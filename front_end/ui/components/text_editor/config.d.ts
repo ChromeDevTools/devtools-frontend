@@ -5,13 +5,13 @@ export declare const dynamicSetting: CM.Facet<DynamicSetting<unknown>, ReadonlyA
 export declare class DynamicSetting<T> {
     private readonly getExtension;
     compartment: CM.Compartment;
-    readonly setting: string | Common.Settings.SettingDescriptor<T>;
-    constructor(setting: string | Common.Settings.SettingDescriptor<T>, getExtension: (value: T) => CM.Extension);
+    readonly setting: Common.Settings.SettingDescriptor<T>;
+    constructor(setting: Common.Settings.SettingDescriptor<T>, getExtension: (value: T) => CM.Extension);
     get settingName(): string;
     settingValue(): T;
     instance(): CM.Extension;
     sync(state: CM.EditorState, value: T): CM.StateEffect<unknown> | null;
-    static bool(setting: string | Common.Settings.SettingDescriptor<boolean>, enabled: CM.Extension, disabled?: CM.Extension): DynamicSetting<boolean>;
+    static bool(setting: Common.Settings.SettingDescriptor<boolean>, enabled: CM.Extension, disabled?: CM.Extension): DynamicSetting<boolean>;
     static none: ReadonlyArray<DynamicSetting<unknown>>;
 }
 export declare const tabMovesFocus: DynamicSetting<boolean>;
@@ -32,6 +32,9 @@ export declare const domWordWrap: DynamicSetting<boolean>;
 export declare const sourcesWordWrap: DynamicSetting<boolean>;
 export declare const dummyDarkTheme: CM.Extension;
 export declare const themeSelection: CM.Compartment;
+export declare const drawSelectionCompartment: CM.Compartment;
+export declare function getDrawSelectionExtension(caretBlinkInterval?: number): CM.Extension;
+export declare function getConfiguredDrawSelectionExtension(): CM.Extension;
 export declare function theme(): CM.Extension;
 export declare function baseConfiguration(text: string | CM.Text): CM.Extension;
 export declare const closeBrackets: DynamicSetting<boolean>;

@@ -178,6 +178,7 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   #lastAcceptedContent = null;
   #workingCopy = null;
   #workingCopyGetter = null;
+  #workingCopyIsPageDriven = false;
   #disableEdit = false;
   #contentEncoded;
   #isKnownThirdParty = false;
@@ -424,6 +425,9 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   hasCommits() {
     return this.#hasCommits;
   }
+  workingCopyIsPageDriven() {
+    return this.#workingCopyIsPageDriven;
+  }
   workingCopy() {
     return this.workingCopyContent().content || "";
   }
@@ -453,10 +457,12 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   #resetWorkingCopy() {
     this.#workingCopy = null;
     this.#workingCopyGetter = null;
+    this.#workingCopyIsPageDriven = false;
   }
-  setWorkingCopy(newWorkingCopy) {
+  setWorkingCopy(newWorkingCopy, options) {
     this.#workingCopy = newWorkingCopy;
     this.#workingCopyGetter = null;
+    this.#workingCopyIsPageDriven = Boolean(options?.isPageDriven);
     this.#workingCopyChanged();
   }
   setContent(content, isBase64) {
@@ -468,6 +474,7 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   }
   setWorkingCopyGetter(workingCopyGetter) {
     this.#workingCopyGetter = workingCopyGetter;
+    this.#workingCopyIsPageDriven = false;
     this.#workingCopyChanged();
   }
   #workingCopyChanged() {

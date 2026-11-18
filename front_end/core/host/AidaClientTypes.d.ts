@@ -371,6 +371,8 @@ export interface AidaChunkResponse {
     error?: string | Record<string, unknown>;
     /** Why GCA blocked the prompt or the response, for the `AidaBlockError` message. */
     blockMessage?: string;
+    /** Non-`STOP` GCA `finishReason` (for example `MAX_TOKENS`) that fails the stream if it produced no output. */
+    finishReason?: string;
 }
 export declare function debugLog(...log: unknown[]): void;
 export {};

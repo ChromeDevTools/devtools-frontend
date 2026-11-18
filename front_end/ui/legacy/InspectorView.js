@@ -738,7 +738,9 @@ export class InspectorView extends VBox {
     }
     attachInfobar(infobar) {
         this.createInfoBarDiv();
-        this.infoBarDiv?.appendChild(infobar.element);
+        if (this.infoBarDiv) {
+            infobar.show(this.infoBarDiv);
+        }
     }
 }
 function getDisableLocaleInfoBarSetting() {

@@ -6,13 +6,15 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as Buttons from '../components/buttons/buttons.js';
+import {html, nothing, render} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import drawerTabbedPaneStyles from './inspectorDrawerTabbedPane.css.js';
 import {ShowMode, type SplitWidget} from './SplitWidget.js';
 import {type EventData, Events as TabbedPaneEvents, TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
-import {ToolbarButton, type ToolbarMenuButton} from './Toolbar.js';
+import type {ToolbarMenuButton} from './Toolbar.js';
 import type {TabbedViewLocation} from './View.js';
 import {ViewManager} from './ViewManager.js';
 
@@ -67,6 +69,57 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorDrawerView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface ToolbarViewInput {
+  isVertical: boolean;
+  isMinimized: boolean;
+  showOrientationToggle: boolean;
+  onToggleOrientation: () => void;
+  onToggleMinimized: () => void;
+  onClose: () => void;
+}
+
+export type ToolbarView = (input: ToolbarViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_TOOLBAR_VIEW: ToolbarView = (input, _output, target) => {
+  const minimizeExpandIcon = input.isMinimized ? (input.isVertical ? 'right-panel-open' : 'bottom-panel-open') :
+                                                 (input.isVertical ? 'right-panel-close' : 'bottom-panel-close');
+  const minimizeExpandLabel =
+      input.isMinimized ? i18nString(UIStrings.expandDrawer) : i18nString(UIStrings.minimizeDrawer);
+  const orientationIcon = input.isVertical ? 'dock-bottom' : 'dock-right';
+  const orientationLabel = i18nString(UIStrings.toggleDrawerOrientation);
+  const closeLabel = i18nString(UIStrings.closeDrawer);
+
+  // clang-format off
+  render(html`
+    ${input.showOrientationToggle ? html`
+      <devtools-button
+          class="toolbar-button"
+          .iconName=${orientationIcon}
+          .variant=${Buttons.Button.Variant.ICON}
+          .accessibleLabel=${orientationLabel}
+          .title=${orientationLabel}
+          jslog=${VisualLogging.toggle('toggle-drawer-orientation').track({click: true})}
+          @click=${() => input.onToggleOrientation()}></devtools-button>` : nothing}
+    <devtools-button
+        class="toolbar-button"
+        .iconName=${minimizeExpandIcon}
+        .variant=${Buttons.Button.Variant.ICON}
+        .accessibleLabel=${minimizeExpandLabel}
+        .title=${minimizeExpandLabel}
+        jslog=${VisualLogging.toggle('minimize-drawer').track({click: true})}
+        @click=${() => input.onToggleMinimized()}></devtools-button>
+    <devtools-button
+        class="toolbar-button"
+        .iconName=${'cross'}
+        .variant=${Buttons.Button.Variant.ICON}
+        .accessibleLabel=${closeLabel}
+        .title=${closeLabel}
+        jslog=${VisualLogging.close('close-drawer').track({click: true})}
+        @click=${() => input.onClose()}></devtools-button>
+  `, target);
+  // clang-format on
+};
+
 interface InspectorDrawerViewOptions {
   revealDrawer: () => void;
   isVisible: () => boolean;
@@ -89,6 +142,7 @@ interface InspectorDrawerViewOptions {
   };
   setInspectorMinimumSize: (width: number, height: number) => void;
   splitWidget?: SplitWidget;
+  toolbarView?: ToolbarView;
 }
 
 interface InspectorDrawerPresentation {
@@ -117,9 +171,11 @@ export class InspectorDrawerView {
   #pendingInitialTabId: string|null = null;
   #drawerSizeBeforeMinimize = 0;
   #wasVerticalAndMinimized = false;
-  readonly #toggleOrientationButton: ToolbarButton;
-  readonly #minimizeExpandButton: ToolbarButton;
-  readonly #closeDrawerButton: ToolbarButton;
+  readonly #toolbarView: ToolbarView;
+  readonly #enableOrientationToggle: boolean;
+  readonly #onToggleMinimized: () => void;
+  readonly #onHide: () => void;
+  readonly #onToggleOrientation: () => void;
   readonly #moreTabsButton: ToolbarMenuButton|null;
   readonly #onExpandFromMinimized: () => void;
   readonly #onMinimizeFromTabInteraction: () => void;
@@ -131,6 +187,11 @@ export class InspectorDrawerView {
     this.#verticalExpandedMinimumWidth = options.verticalExpandedMinimumWidth;
     this.#minimumSizes = options.minimumSizes;
     this.#setInspectorMinimumSize = options.setInspectorMinimumSize;
+    this.#toolbarView = options.toolbarView ?? DEFAULT_TOOLBAR_VIEW;
+    this.#enableOrientationToggle = options.enableOrientationToggle;
+    this.#onToggleMinimized = options.onToggleMinimized;
+    this.#onHide = options.onHide;
+    this.#onToggleOrientation = options.onToggleOrientation;
     this.#onExpandFromMinimized = options.onExpandFromMinimized;
     this.#onMinimizeFromTabInteraction = options.onMinimizeFromTabInteraction;
     this.#onTabSelected = options.onTabSelected;
@@ -155,28 +216,6 @@ export class InspectorDrawerView {
     this.tabbedPane.element.classList.add('drawer-tabbed-pane');
     this.tabbedPane.element.setAttribute('jslog', `${VisualLogging.drawer()}`);
 
-    this.#minimizeExpandButton = new ToolbarButton(
-        i18nString(UIStrings.minimizeDrawer), options.isVertical ? 'right-panel-close' : 'bottom-panel-close');
-    this.#minimizeExpandButton.element.setAttribute(
-        'jslog', `${VisualLogging.toggle('minimize-drawer').track({click: true})}`);
-    this.#minimizeExpandButton.addEventListener(ToolbarButton.Events.CLICK, options.onToggleMinimized);
-
-    this.#closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'cross');
-    this.#closeDrawerButton.element.setAttribute(
-        'jslog', `${VisualLogging.close('close-drawer').track({click: true})}`);
-    this.#closeDrawerButton.addEventListener(ToolbarButton.Events.CLICK, options.onHide);
-
-    this.#toggleOrientationButton = new ToolbarButton(
-        i18nString(UIStrings.toggleDrawerOrientation), options.isVertical ? 'dock-bottom' : 'dock-right');
-    this.#toggleOrientationButton.element.setAttribute(
-        'jslog', `${VisualLogging.toggle('toggle-drawer-orientation').track({click: true})}`);
-    this.#toggleOrientationButton.addEventListener(ToolbarButton.Events.CLICK, options.onToggleOrientation);
-
-    if (options.enableOrientationToggle) {
-      this.tabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
-    }
-    this.tabbedPane.rightToolbar().appendToolbarItem(this.#minimizeExpandButton);
-    this.tabbedPane.rightToolbar().appendToolbarItem(this.#closeDrawerButton);
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabInvoked, this.#drawerTabInvoked, this);
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.#drawerTabSelected, this);
     this.tabbedPane.setTabDelegate(options.tabDelegate);
@@ -433,8 +472,15 @@ export class InspectorDrawerView {
   }
 
   updatePresentation({isVertical, isMinimized, verticalExpandedMinimumWidth}: InspectorDrawerPresentation): void {
-    this.#toggleOrientationButton.setGlyph(isVertical ? 'dock-bottom' : 'dock-right');
-    this.#updateMinimizeExpandButton(isVertical, isMinimized);
+    this.#toolbarView({
+      isVertical,
+      isMinimized,
+      showOrientationToggle: this.#enableOrientationToggle,
+      onToggleOrientation: this.#onToggleOrientation,
+      onToggleMinimized: this.#onToggleMinimized,
+      onClose: this.#onHide,
+    },
+                      undefined, this.tabbedPane.rightToolbar());
 
     const isVerticalAndMinimized = isVertical && isMinimized;
     if (isVerticalAndMinimized) {
@@ -455,17 +501,6 @@ export class InspectorDrawerView {
       this.tabbedPane.restoreAfterVerticalMinimized();
     }
     this.#wasVerticalAndMinimized = isVerticalAndMinimized;
-  }
-
-  #updateMinimizeExpandButton(isVertical: boolean, isMinimized: boolean): void {
-    if (isMinimized) {
-      this.#minimizeExpandButton.setGlyph(isVertical ? 'right-panel-open' : 'bottom-panel-open');
-      this.#minimizeExpandButton.setTitle(i18nString(UIStrings.expandDrawer));
-      return;
-    }
-
-    this.#minimizeExpandButton.setGlyph(isVertical ? 'right-panel-close' : 'bottom-panel-close');
-    this.#minimizeExpandButton.setTitle(i18nString(UIStrings.minimizeDrawer));
   }
 
   #updatePresentation(minimized: boolean): void {

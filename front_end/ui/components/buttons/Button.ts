@@ -187,6 +187,10 @@ export class Button extends HTMLElement {
     this.#render();
   }
 
+  get iconName(): string|undefined {
+    return this.#props.iconName;
+  }
+
   set iconName(iconName: string|undefined) {
     this.#props.iconName = iconName;
     this.#render();

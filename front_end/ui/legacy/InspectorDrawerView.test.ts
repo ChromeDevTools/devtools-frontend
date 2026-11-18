@@ -14,6 +14,7 @@ import {deinitializeGlobalVars, initializeGlobalVars, updateHostConfig} from '..
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import * as Buttons from '../components/buttons/buttons.js';
 import {html, render} from '../lit/lit.js';
 
 import * as LegacyUI from './legacy.js';
@@ -63,6 +64,50 @@ describe('InspectorDrawerView', () => {
     const location = inspectorView.resolveLocation('drawer-view') as LegacyUI.View.TabbedViewLocation | null;
     assert.exists(location);
     return location.tabbedPane();
+  }
+
+  function createUnattachedDrawerView({
+    isVertical = false,
+    enableOrientationToggle = true,
+    onToggleMinimized = () => {},
+    onHide = () => {},
+    onToggleOrientation = () => {},
+    setInspectorMinimumSize = sinon.spy(),
+    onTabSelected = sinon.spy(),
+    toolbarView,
+  }: {
+    isVertical?: boolean,
+    enableOrientationToggle?: boolean,
+    onToggleMinimized?: () => void,
+    onHide?: () => void,
+    onToggleOrientation?: () => void,
+    setInspectorMinimumSize?: sinon.SinonSpy,
+    onTabSelected?: sinon.SinonSpy,
+    toolbarView?: LegacyUI.InspectorDrawerView.ToolbarView,
+  } = {}): LegacyUI.InspectorDrawerView.InspectorDrawerView {
+    return new LegacyUI.InspectorDrawerView.InspectorDrawerView({
+      revealDrawer: () => {},
+      isVisible: () => true,
+      drawerLabel: 'Drawer',
+      onToggleMinimized,
+      onHide,
+      onToggleOrientation,
+      onExpandFromMinimized: () => {},
+      onMinimizeFromTabInteraction: () => {},
+      onTabSelected,
+      isConsoleOpenInMainAndDrawer: () => false,
+      tabDelegate: new LegacyUI.InspectorView.InspectorViewTabDelegate(),
+      enableOrientationToggle,
+      isVertical,
+      verticalExpandedMinimumWidth: 280,
+      minimumSizes: {
+        inspectorWidthWhenVertical: 530,
+        inspectorWidthWhenHorizontal: 250,
+        inspectorHeight: 72,
+      },
+      setInspectorMinimumSize,
+      toolbarView,
+    });
   }
 
   beforeEach(() => {
@@ -364,7 +409,8 @@ describe('InspectorDrawerView', () => {
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
       assert.instanceOf(drawerElement, HTMLElement);
-      const expandButton = getElementWithinComponent(drawerElement, '[aria-label="Expand drawer"]', HTMLElement);
+      const expandButton = getElementWithinComponent(drawerElement, 'devtools-button[accessibleLabel="Expand drawer"]',
+                                                     Buttons.Button.Button);
 
       expandButton.click();
 
@@ -778,7 +824,7 @@ describe('InspectorDrawerView', () => {
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
       assert.exists(drawerElement);
-      const expandButton = drawerElement.shadowRoot!.querySelector('[aria-label="Expand drawer"]');
+      const expandButton = drawerElement.shadowRoot!.querySelector('[accessibleLabel="Expand drawer"]');
       assert.exists(expandButton, 'button should have "Expand drawer" title when minimized');
     });
 
@@ -789,7 +835,7 @@ describe('InspectorDrawerView', () => {
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
       assert.exists(drawerElement);
-      const minimizeButton = drawerElement.shadowRoot!.querySelector('[aria-label="Minimize drawer"]');
+      const minimizeButton = drawerElement.shadowRoot!.querySelector('[accessibleLabel="Minimize drawer"]');
       assert.exists(minimizeButton, 'button should have "Minimize drawer" title when expanded');
     });
 
@@ -802,7 +848,7 @@ describe('InspectorDrawerView', () => {
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
       assert.exists(drawerElement);
-      const expandButton = drawerElement.shadowRoot!.querySelector('[aria-label="Expand drawer"]');
+      const expandButton = drawerElement.shadowRoot!.querySelector('[accessibleLabel="Expand drawer"]');
       assert.exists(expandButton, 'button should have "Expand drawer" title when minimized');
     });
 
@@ -813,7 +859,7 @@ describe('InspectorDrawerView', () => {
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
       assert.exists(drawerElement);
-      const minimizeButton = drawerElement.shadowRoot!.querySelector('[aria-label="Minimize drawer"]');
+      const minimizeButton = drawerElement.shadowRoot!.querySelector('[accessibleLabel="Minimize drawer"]');
       assert.exists(minimizeButton, 'button should have "Minimize drawer" title when expanded');
     });
 
@@ -824,12 +870,12 @@ describe('InspectorDrawerView', () => {
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
       assert.exists(drawerElement);
-      let expandButton = drawerElement.shadowRoot!.querySelector('[aria-label="Expand drawer"]');
+      let expandButton = drawerElement.shadowRoot!.querySelector('[accessibleLabel="Expand drawer"]');
       assert.exists(expandButton, 'button should show "Expand drawer" when minimized in vertical');
 
       inspectorView.toggleDrawerOrientation({force: LegacyUI.InspectorView.DrawerOrientation.HORIZONTAL});
 
-      expandButton = drawerElement.shadowRoot!.querySelector('[aria-label="Expand drawer"]');
+      expandButton = drawerElement.shadowRoot!.querySelector('[accessibleLabel="Expand drawer"]');
       assert.exists(expandButton, 'button should show "Expand drawer" when minimized in horizontal');
     });
   });
@@ -871,7 +917,8 @@ describe('InspectorDrawerView', () => {
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
       assert.exists(drawerElement);
-      const orientationButton = drawerElement.shadowRoot!.querySelector('[aria-label="Toggle drawer orientation"]');
+      const orientationButton =
+          drawerElement.shadowRoot!.querySelector('[accessibleLabel="Toggle drawer orientation"]');
       assert.exists(orientationButton, 'toggle orientation button should exist in drawer toolbar');
     });
 
@@ -882,7 +929,7 @@ describe('InspectorDrawerView', () => {
 
       const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
       assert.exists(drawerElement);
-      const closeButton = drawerElement.shadowRoot!.querySelector('[aria-label="Close drawer"]');
+      const closeButton = drawerElement.shadowRoot!.querySelector('[accessibleLabel="Close drawer"]');
       assert.exists(closeButton, 'close drawer button should exist in drawer toolbar');
     });
 
@@ -1002,39 +1049,6 @@ describe('InspectorDrawerView', () => {
   });
 
   describe('lazy SplitWidget attachment', () => {
-    function createUnattachedDrawerView({
-      isVertical = false,
-      setInspectorMinimumSize = sinon.spy(),
-      onTabSelected = sinon.spy(),
-    }: {
-      isVertical?: boolean,
-      setInspectorMinimumSize?: sinon.SinonSpy,
-      onTabSelected?: sinon.SinonSpy,
-    } = {}): LegacyUI.InspectorDrawerView.InspectorDrawerView {
-      return new LegacyUI.InspectorDrawerView.InspectorDrawerView({
-        revealDrawer: () => {},
-        isVisible: () => true,
-        drawerLabel: 'Drawer',
-        onToggleMinimized: () => {},
-        onHide: () => {},
-        onToggleOrientation: () => {},
-        onExpandFromMinimized: () => {},
-        onMinimizeFromTabInteraction: () => {},
-        onTabSelected,
-        isConsoleOpenInMainAndDrawer: () => false,
-        tabDelegate: new LegacyUI.InspectorView.InspectorViewTabDelegate(),
-        enableOrientationToggle: true,
-        isVertical,
-        verticalExpandedMinimumWidth: 280,
-        minimumSizes: {
-          inspectorWidthWhenVertical: 530,
-          inspectorWidthWhenHorizontal: 250,
-          inspectorHeight: 72,
-        },
-        setInspectorMinimumSize,
-      });
-    }
-
     it('can be constructed without a SplitWidget', () => {
       const setInspectorMinimumSize = sinon.spy();
       const drawerView = createUnattachedDrawerView({isVertical: false, setInspectorMinimumSize});
@@ -1357,6 +1371,176 @@ describe('InspectorDrawerView', () => {
 
       assert.isFalse(unmountedSplit.isShowing());
       assert.isTrue(drawerView.drawerVisible());
+    });
+  });
+
+  describe('toolbar view', () => {
+    function createToolbarInput(overrides: Partial<LegacyUI.InspectorDrawerView.ToolbarViewInput> = {}):
+        LegacyUI.InspectorDrawerView.ToolbarViewInput {
+      return {
+        isVertical: false,
+        isMinimized: false,
+        showOrientationToggle: true,
+        onToggleOrientation: sinon.spy(),
+        onToggleMinimized: sinon.spy(),
+        onClose: sinon.spy(),
+        ...overrides,
+      };
+    }
+
+    function getToolbarButtons(target: HTMLElement): Buttons.Button.Button[] {
+      return [...target.querySelectorAll<Buttons.Button.Button>('devtools-button')];
+    }
+
+    it('renders minimize/expand and close buttons, and includes orientation toggle only when enabled', () => {
+      const target = document.createElement('devtools-toolbar');
+      renderElementIntoDOM(target);
+
+      LegacyUI.InspectorDrawerView.DEFAULT_TOOLBAR_VIEW(createToolbarInput({showOrientationToggle: false}), undefined,
+                                                        target);
+      assert.deepEqual(getToolbarButtons(target).map(button => button.accessibleLabel),
+                       ['Minimize drawer', 'Close drawer']);
+
+      LegacyUI.InspectorDrawerView.DEFAULT_TOOLBAR_VIEW(createToolbarInput({showOrientationToggle: true}), undefined,
+                                                        target);
+      assert.deepEqual(getToolbarButtons(target).map(button => button.accessibleLabel),
+                       ['Toggle drawer orientation', 'Minimize drawer', 'Close drawer']);
+    });
+
+    it('updates button labels, titles, and icons across all orientation and minimized combinations', () => {
+      const target = document.createElement('devtools-toolbar');
+      renderElementIntoDOM(target);
+
+      const cases = [
+        {
+          isVertical: true,
+          isMinimized: false,
+          orientationIcon: 'dock-bottom',
+          minimizeLabel: 'Minimize drawer',
+          minimizeIcon: 'right-panel-close',
+        },
+        {
+          isVertical: true,
+          isMinimized: true,
+          orientationIcon: 'dock-bottom',
+          minimizeLabel: 'Expand drawer',
+          minimizeIcon: 'right-panel-open',
+        },
+        {
+          isVertical: false,
+          isMinimized: false,
+          orientationIcon: 'dock-right',
+          minimizeLabel: 'Minimize drawer',
+          minimizeIcon: 'bottom-panel-close',
+        },
+        {
+          isVertical: false,
+          isMinimized: true,
+          orientationIcon: 'dock-right',
+          minimizeLabel: 'Expand drawer',
+          minimizeIcon: 'bottom-panel-open',
+        },
+      ];
+
+      for (const testCase of cases) {
+        LegacyUI.InspectorDrawerView.DEFAULT_TOOLBAR_VIEW(
+            createToolbarInput({isVertical: testCase.isVertical, isMinimized: testCase.isMinimized}), undefined,
+            target);
+        const [orientationButton, minimizeButton, closeButton] = getToolbarButtons(target);
+        assert.instanceOf(orientationButton, Buttons.Button.Button);
+        assert.instanceOf(minimizeButton, Buttons.Button.Button);
+        assert.instanceOf(closeButton, Buttons.Button.Button);
+
+        assert.strictEqual(orientationButton.accessibleLabel, 'Toggle drawer orientation');
+        assert.strictEqual(orientationButton.title, 'Toggle drawer orientation');
+        assert.strictEqual(orientationButton.iconName, testCase.orientationIcon);
+
+        assert.strictEqual(minimizeButton.accessibleLabel, testCase.minimizeLabel);
+        assert.strictEqual(minimizeButton.title, testCase.minimizeLabel);
+        assert.strictEqual(minimizeButton.iconName, testCase.minimizeIcon);
+
+        assert.strictEqual(closeButton.accessibleLabel, 'Close drawer');
+        assert.strictEqual(closeButton.title, 'Close drawer');
+        assert.strictEqual(closeButton.iconName, 'cross');
+      }
+    });
+
+    it('invokes toolbar callbacks on button click', () => {
+      const target = document.createElement('devtools-toolbar');
+      renderElementIntoDOM(target);
+      const onToggleOrientation = sinon.spy();
+      const onToggleMinimized = sinon.spy();
+      const onClose = sinon.spy();
+
+      LegacyUI.InspectorDrawerView.DEFAULT_TOOLBAR_VIEW(
+          createToolbarInput({onToggleOrientation, onToggleMinimized, onClose}), undefined, target);
+      const [orientationButton, minimizeButton, closeButton] = getToolbarButtons(target);
+
+      orientationButton.click();
+      sinon.assert.calledOnce(onToggleOrientation);
+      sinon.assert.notCalled(onToggleMinimized);
+      sinon.assert.notCalled(onClose);
+
+      minimizeButton.click();
+      sinon.assert.calledOnce(onToggleMinimized);
+
+      closeButton.click();
+      sinon.assert.calledOnce(onClose);
+    });
+
+    it('passes state and delegates callbacks to injected toolbarView', () => {
+      let latestInput: LegacyUI.InspectorDrawerView.ToolbarViewInput|undefined;
+      const toolbarView = sinon.spy<LegacyUI.InspectorDrawerView.ToolbarView>(input => {
+        latestInput = input;
+      });
+      const onToggleOrientation = sinon.spy();
+      const onToggleMinimized = sinon.spy();
+      const onHide = sinon.spy();
+
+      const drawerView = createUnattachedDrawerView({
+        enableOrientationToggle: true,
+        isVertical: false,
+        onToggleOrientation,
+        onToggleMinimized,
+        onHide,
+        toolbarView,
+      });
+
+      sinon.assert.calledOnce(toolbarView);
+      assert.exists(latestInput);
+      assert.isFalse(latestInput.isVertical);
+      assert.isFalse(latestInput.isMinimized);
+      assert.isTrue(latestInput.showOrientationToggle);
+
+      latestInput.onToggleOrientation();
+      sinon.assert.calledOnce(onToggleOrientation);
+      latestInput.onToggleMinimized();
+      sinon.assert.calledOnce(onToggleMinimized);
+      latestInput.onClose();
+      sinon.assert.calledOnce(onHide);
+
+      drawerView.setVertical(true);
+      sinon.assert.calledTwice(toolbarView);
+      assert.isTrue(latestInput.isVertical);
+      assert.isFalse(latestInput.isMinimized);
+
+      drawerView.setMinimized(true);
+      sinon.assert.calledThrice(toolbarView);
+      assert.isTrue(latestInput.isVertical);
+      assert.isTrue(latestInput.isMinimized);
+    });
+
+    it('forwards enableOrientationToggle=false to injected toolbarView', () => {
+      let latestInput: LegacyUI.InspectorDrawerView.ToolbarViewInput|undefined;
+      const toolbarView = sinon.spy<LegacyUI.InspectorDrawerView.ToolbarView>(input => {
+        latestInput = input;
+      });
+
+      createUnattachedDrawerView({enableOrientationToggle: false, toolbarView});
+
+      sinon.assert.calledOnce(toolbarView);
+      assert.exists(latestInput);
+      assert.isFalse(latestInput.showOrientationToggle);
     });
   });
 });

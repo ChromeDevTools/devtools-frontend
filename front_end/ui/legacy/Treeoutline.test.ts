@@ -7,7 +7,7 @@ import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
-import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {dispatchKeyDownEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import * as Lit from '../../ui/lit/lit.js';
 
@@ -192,6 +192,61 @@ describe('TreeOutline', () => {
 
       assert.isTrue(parent.expanded, 'precondition: the tree item should be expanded');
       sinon.assert.notCalled(statusStub);
+    });
+  });
+
+  describe('deferredScrollIntoView', () => {
+    function createScrollableTree(): {scroller: HTMLElement, items: UI.TreeOutline.TreeElement[]} {
+      // This structure matches the Elements panel: the scroll container has a
+      // top padding and a positioned element is between it and the tree.
+      const scroller = document.createElement('div');
+      scroller.style.cssText = 'overflow: auto; height: 100px; padding: 2px 0 0;';
+      const positionedWrapper = document.createElement('div');
+      positionedWrapper.style.position = 'relative';
+      scroller.appendChild(positionedWrapper);
+      const tree = new UI.TreeOutline.TreeOutlineInShadow();
+      positionedWrapper.appendChild(tree.element);
+      renderElementIntoDOM(scroller);
+      const items = [];
+      for (let i = 0; i < 50; i++) {
+        const item = new UI.TreeOutline.TreeElement(`item ${i}`, false);
+        tree.appendChild(item);
+        items.push(item);
+      }
+      return {scroller, items};
+    }
+
+    function isVisible(scroller: HTMLElement, item: UI.TreeOutline.TreeElement): boolean {
+      const itemRect = item.listItemElement.getBoundingClientRect();
+      const viewRect = scroller.getBoundingClientRect();
+      return itemRect.top >= viewRect.top && itemRect.top < viewRect.bottom;
+    }
+
+    it('does not scroll when the item is visible', async () => {
+      const {scroller, items} = createScrollableTree();
+      scroller.scrollTop = 100;
+      const visibleItem = items.find(item => isVisible(scroller, item) && item !== items[0]);
+      assert.exists(visibleItem);
+      // Skip the first visible item: it can be partially above the viewport.
+      const target = items[items.indexOf(visibleItem) + 1];
+      assert.isTrue(isVisible(scroller, target), 'precondition: the item should be visible');
+
+      for (let i = 0; i < 3; i++) {
+        target.reveal();
+        await raf();
+        assert.strictEqual(scroller.scrollTop, 100);
+      }
+    });
+
+    it('scrolls when the item is not visible', async () => {
+      const {scroller, items} = createScrollableTree();
+      const target = items[40];
+      assert.isFalse(isVisible(scroller, target), 'precondition: the item should not be visible');
+
+      target.reveal();
+      await raf();
+
+      assert.isTrue(isVisible(scroller, target));
     });
   });
 });

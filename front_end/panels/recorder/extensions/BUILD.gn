@@ -26,5 +26,6 @@ devtools_entrypoint("bundle") {
     "../../../ui/components/docs/*",
     "../components:*",
     "../converters:*",
+    "../testing:*",
   ]
 }

@@ -5,6 +5,8 @@
 import {assert} from 'chai';
 import {after, afterEach, beforeEach, describe, it} from 'mocha';
 
+import * as Platform from '../../core/platform/platform.js';
+import * as PublicExtensions from '../../models/extensions/extensions.js';
 import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
@@ -497,6 +499,69 @@ describeWithEnvironment('RecorderPanel', () => {
       );
       assert.isFalse(
           panel.isActionPossible(RecorderActions.TOGGLE_CODE_VIEW),
+      );
+    });
+  });
+
+  describe('Extension converters', () => {
+    const channels: MessageChannel[] = [];
+
+    afterEach(() => {
+      const pluginManager = PublicExtensions.RecorderPluginManager.RecorderPluginManager.instance();
+      for (const plugin of pluginManager.plugins()) {
+        pluginManager.removePlugin(plugin);
+      }
+      for (const channel of channels.splice(0)) {
+        channel.port1.close();
+        channel.port2.close();
+      }
+    });
+
+    it('preserves extension converter IDs when registration order changes', async () => {
+      const pluginManager = PublicExtensions.RecorderPluginManager.RecorderPluginManager.instance();
+      const channelA = new MessageChannel();
+      const channelB = new MessageChannel();
+      channels.push(channelA, channelB);
+      const pluginA = new PublicExtensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(
+          'Export A',
+          channelA.port1,
+          ['export'],
+          Platform.DevToolsPath.urlString`chrome-extension://ext-a`,
+          pluginManager,
+          'text/javascript',
+      );
+      const pluginB = new PublicExtensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(
+          'Export B',
+          channelB.port1,
+          ['export'],
+          Platform.DevToolsPath.urlString`chrome-extension://ext-b`,
+          pluginManager,
+          'text/javascript',
+      );
+
+      pluginManager.addPlugin(pluginA);
+      pluginManager.addPlugin(pluginB);
+
+      const panel = await setupPanel(makeRecording());
+      assert.deepEqual(
+          panel.extensionConverters.map(converter => converter.getId()),
+          [
+            'extension_chrome-extension://ext-a_Export A',
+            'extension_chrome-extension://ext-b_Export B',
+          ],
+      );
+
+      pluginManager.removePlugin(pluginA);
+      pluginManager.removePlugin(pluginB);
+      pluginManager.addPlugin(pluginB);
+      pluginManager.addPlugin(pluginA);
+
+      assert.deepEqual(
+          panel.extensionConverters.map(converter => converter.getId()),
+          [
+            'extension_chrome-extension://ext-b_Export B',
+            'extension_chrome-extension://ext-a_Export A',
+          ],
       );
     });
   });

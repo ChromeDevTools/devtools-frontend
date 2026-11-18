@@ -5,7 +5,54 @@
 import sinon from 'sinon';
 
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Extensions from '../extensions/extensions.js';
 import * as Models from '../models/models.js';
+
+export class TestExtension implements Extensions.ExtensionManager.Extension {
+  readonly #name: string;
+  readonly #origin: string;
+  readonly #mediaType?: string;
+  readonly #sourceMapSuffix: string;
+
+  constructor(
+      name: string,
+      origin = 'chrome-extension://ext-a',
+      mediaType: string|undefined = 'text/javascript',
+      sourceMapSuffix = '',
+  ) {
+    this.#name = name;
+    this.#origin = origin;
+    this.#mediaType = mediaType;
+    this.#sourceMapSuffix = sourceMapSuffix;
+  }
+
+  getName(): string {
+    return this.#name;
+  }
+
+  getOrigin(): string {
+    return this.#origin;
+  }
+
+  getMediaType(): string|undefined {
+    return this.#mediaType;
+  }
+
+  stringify(recording: Object): Promise<string> {
+    return Promise.resolve(`${this.#name}:${JSON.stringify(recording)}${this.#sourceMapSuffix}`);
+  }
+
+  stringifyStep(step: Object): Promise<string> {
+    return Promise.resolve(`${this.#name}:${JSON.stringify(step)}`);
+  }
+
+  getCapabilities(): Array<'replay'|'export'> {
+    return ['export'];
+  }
+
+  replay(_recording: Object): void {
+  }
+}
 
 export interface ClientMock {
   send(): sinon.SinonStub;

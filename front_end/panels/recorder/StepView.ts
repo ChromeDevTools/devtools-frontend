@@ -791,7 +791,7 @@ export class StepView extends UI.Widget.Widget<ShadowRoot> {
     if (this.#viewInput.step) {
       for (const converter of this.#viewInput.builtInConverters || []) {
         actions.push({
-          id: COPY_ACTION_PREFIX + Platform.StringUtilities.toKebabCase(converter.getId()),
+          id: COPY_ACTION_PREFIX + converter.getId(),
           label: converter.getFormatName(),
           group: 'copy',
           groupTitle: i18nString(UIStrings.copyAs),
@@ -799,7 +799,7 @@ export class StepView extends UI.Widget.Widget<ShadowRoot> {
       }
       for (const converter of this.#viewInput.extensionConverters || []) {
         actions.push({
-          id: COPY_ACTION_PREFIX + Platform.StringUtilities.toKebabCase(converter.getId()),
+          id: COPY_ACTION_PREFIX + converter.getId(),
           label: converter.getFormatName(),
           group: 'copy',
           groupTitle: i18nString(UIStrings.copyAs),
@@ -837,7 +837,9 @@ export class StepView extends UI.Widget.Widget<ShadowRoot> {
         this.#handleStepAction(
             new Menus.Menu.MenuItemSelectedEvent(preferredCopyAction.id),
         );
-      }, {jslogContext: preferredCopyAction.id});
+      }, {
+        jslogContext: preferredCopyAction.jslogContext ?? Platform.StringUtilities.toKebabCase(preferredCopyAction.id),
+      });
     }
 
     if (copyActions.length) {
@@ -850,7 +852,7 @@ export class StepView extends UI.Widget.Widget<ShadowRoot> {
           this.#handleStepAction(
               new Menus.Menu.MenuItemSelectedEvent(item.id),
           );
-        }, {jslogContext: item.id});
+        }, {jslogContext: item.jslogContext ?? Platform.StringUtilities.toKebabCase(item.id)});
       }
     }
   }

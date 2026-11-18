@@ -19,6 +19,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Converters from './converters/converters.js';
 import * as Models from './models/models.js';
 import {RecordingView, StepView} from './recorder.js';
+import {TestExtension} from './testing/RecorderHelpers.js';
 
 describeWithEnvironment('RecordingView', () => {
   setupActionRegistry();
@@ -32,6 +33,7 @@ describeWithEnvironment('RecordingView', () => {
   const views: RecordingView.RecordingView[] = [];
 
   afterEach(async () => {
+    recorderSettingsMock.preferredCopyFormat = Models.ConverterIds.ConverterIds.JSON;
     // Unregister global listeners in willHide to prevent leaks.
     for (const view of views) {
       view.willHide();
@@ -207,6 +209,35 @@ describeWithEnvironment('RecordingView', () => {
       const input = await view.nextInput;
       assert.strictEqual(input.recorderSettings?.preferredCopyFormat, Models.ConverterIds.ConverterIds.REPLAY);
       assert.strictEqual(recorderSettingsMock.preferredCopyFormat, Models.ConverterIds.ConverterIds.REPLAY);
+    }
+  });
+
+  it('uses the saved extension converter ID even when extension converters are reordered', async () => {
+    const converterA = new Converters.ExtensionConverter.ExtensionConverter(
+        new TestExtension('Export A', 'chrome-extension://ext-a'),
+    );
+    const converterB = new Converters.ExtensionConverter.ExtensionConverter(
+        new TestExtension('Export B', 'chrome-extension://ext-b'),
+    );
+    const [view, component] = await createView();
+    component.extensionConverters = [converterA, converterB];
+    await view.nextInput;
+
+    view.input.showCodeToggle();
+    await view.nextInput;
+
+    view.input.onCodeFormatChange(converterB.getId());
+    {
+      const input = await view.nextInput;
+      assert.strictEqual(recorderSettingsMock.preferredCopyFormat, 'extension_chrome-extension://ext-b_Export B');
+      assert.strictEqual(input.editorState?.doc.toString(), `Export B:${JSON.stringify(userFlow)}`);
+    }
+
+    component.extensionConverters = [converterB, converterA];
+    {
+      const input = await view.nextInput;
+      assert.strictEqual(input.converterId, 'extension_chrome-extension://ext-b_Export B');
+      assert.strictEqual(input.editorState?.doc.toString(), `Export B:${JSON.stringify(userFlow)}`);
     }
   });
 

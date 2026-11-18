@@ -41,6 +41,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "ExtensionConverter.test.ts",
     "LighthouseConverter.test.ts",
     "PuppeteerConverter.test.ts",
     "PuppeteerReplayConverter.test.ts",
@@ -56,5 +57,6 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../../testing",
     "../models:bundle",
+    "../testing",
   ]
 }

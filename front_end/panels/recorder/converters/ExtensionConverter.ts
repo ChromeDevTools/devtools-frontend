@@ -11,16 +11,14 @@ import type {Converter} from './Converter.js';
 export const EXTENSION_PREFIX = 'extension_';
 
 export class ExtensionConverter implements Converter {
-  #idx: number;
   #extension: Extension.ExtensionManager.Extension;
 
-  constructor(idx: number, extension: Extension.ExtensionManager.Extension) {
-    this.#idx = idx;
+  constructor(extension: Extension.ExtensionManager.Extension) {
     this.#extension = extension;
   }
 
   getId(): string {
-    return EXTENSION_PREFIX + this.#idx;
+    return `${EXTENSION_PREFIX}${this.#extension.getOrigin()}_${this.#extension.getName()}`;
   }
 
   getFormatName(): string {

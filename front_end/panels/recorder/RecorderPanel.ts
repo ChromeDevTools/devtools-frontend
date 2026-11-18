@@ -887,8 +887,8 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
 
   #updateExtensions(extensions: Extensions.ExtensionManager.Extension[]): void {
     this.extensionConverters =
-        extensions.filter(extension => extension.getCapabilities().includes('export')).map((extension, idx) => {
-          return new Converters.ExtensionConverter.ExtensionConverter(idx, extension);
+        extensions.filter(extension => extension.getCapabilities().includes('export')).map(extension => {
+          return new Converters.ExtensionConverter.ExtensionConverter(extension);
         });
     this.replayExtensions = extensions.filter(extension => extension.getCapabilities().includes('replay'));
   }

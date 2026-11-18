@@ -122,6 +122,8 @@ devtools_ui_module("unittests") {
   ts_deps = [
     ":bundle",
     "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../models/extensions:bundle",
     "../../testing",
     "../../ui/components/menus:bundle",
     "../../ui/components/suggestion_input:bundle",

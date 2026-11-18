@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import {
@@ -15,10 +15,16 @@ import * as Menus from '../../ui/components/menus/menus.js';
 import * as Converters from './converters/converters.js';
 import * as Models from './models/models.js';
 import {StepView} from './recorder.js';
+import {TestExtension} from './testing/RecorderHelpers.js';
 
 describeWithEnvironment('StepView', () => {
   const step = {type: Models.Schema.StepType.Scroll as const};
   const section = {title: 'test', steps: [step], url: 'https://example.com'};
+
+  afterEach(() => {
+    const settings = new Models.RecorderSettings.RecorderSettings();
+    settings.preferredCopyFormat = Models.ConverterIds.ConverterIds.JSON;
+  });
 
   async function createStepView(
       viewFunction: ViewFunctionStub<typeof StepView.StepView>,
@@ -216,6 +222,36 @@ describeWithEnvironment('StepView', () => {
       viewFunction.input.handleStepAction(new Menus.Menu.MenuItemSelectedEvent('copy-step-as-json'));
 
       sinon.assert.calledOnce(onCopyStepSpy);
+    });
+
+    it('saves the exact extension converter ID as preferredCopyFormat when copying via extension', async () => {
+      const extensionConverter = new Converters.ExtensionConverter.ExtensionConverter(
+          new TestExtension('Custom Exporter'),
+      );
+      const viewFunction = createViewFunctionStub(StepView.StepView);
+      const component = await createStepView(viewFunction, {
+        step,
+        extensionConverters: [extensionConverter],
+      });
+      const onCopyStepSpy = sinon.spy();
+      component.onCopyStep = onCopyStepSpy;
+
+      const action = viewFunction.input.actions.find(item => item.label === 'Custom Exporter');
+      assert.deepEqual(action, {
+        id: 'copy-step-as-extension_chrome-extension://ext-a_Custom Exporter',
+        label: 'Custom Exporter',
+        group: 'copy',
+        groupTitle: 'Copy as',
+        jslogContext: 'copy-step-as-extension',
+      });
+
+      viewFunction.input.handleStepAction(
+          new Menus.Menu.MenuItemSelectedEvent('copy-step-as-extension_chrome-extension://ext-a_Custom Exporter'),
+      );
+
+      sinon.assert.calledOnce(onCopyStepSpy);
+      const settings = new Models.RecorderSettings.RecorderSettings();
+      assert.strictEqual(settings.preferredCopyFormat, 'extension_chrome-extension://ext-a_Custom Exporter');
     });
   });
 

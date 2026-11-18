@@ -10,6 +10,7 @@ ts_library("testing") {
   sources = [ "RecorderHelpers.ts" ]
   ts_deps = [
     "../../../core/sdk:bundle",
+    "../extensions:bundle",
     "../models:bundle",
   ]
 }

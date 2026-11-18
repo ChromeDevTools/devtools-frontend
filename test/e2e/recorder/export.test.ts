@@ -30,6 +30,9 @@ describe('Recorder', function() {
             getName() {
               return 'TestExtension';
             },
+            getOrigin() {
+              return 'chrome-extension://test';
+            },
             getMediaType() {
               return 'text/javascript';
             },

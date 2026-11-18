@@ -104,7 +104,7 @@ function mochaGrep(): Config['mochaGrep'] {
   const isFixed = Boolean(options['fgrep']);
   const grep: Config['mochaGrep'] = isFixed ? {fgrep: options['fgrep']} : {grep: options['grep']};
 
-  if (options['invert']) {
+  if (options['invert-grep']) {
     grep.invert = true;
   }
   return grep;
@@ -202,7 +202,7 @@ export const TestConfig: Config = {
   tests: parsedTests,
   excludedTests: parsedExcludedTests,
   verbose: Number(options['verbose'] ?? 0),
-  artifactsDir: options['artifacts-dir'] || getDefaultArtifactDir(),
+  artifactsDir: options['artifacts-dir'] ? path.resolve(options['artifacts-dir']) : getDefaultArtifactDir(),
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
   enabledFeatures: parseFeatures(options['enable-features']),
   disabledFeatures: parseFeatures(options['disable-features']),

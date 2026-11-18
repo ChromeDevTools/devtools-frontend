@@ -56,3 +56,8 @@ node_ts_library("implementation") {
     "test_server.ts",
   ]
 }
+
+node_ts_library("unittests") {
+  sources = [ "test_config.test.ts" ]
+  ts_deps = [ ":implementation" ]
+}

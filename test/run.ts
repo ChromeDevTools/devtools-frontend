@@ -9,7 +9,7 @@ import * as path from 'node:path';
 import yargs from 'yargs';
 import unparse from 'yargs-unparser';
 
-import {commandLineArgs, expandResponseFiles} from './conductor/commandline.js';
+import {commandLineArgs, expandResponseFiles, normalizeForwardedOptions} from './conductor/commandline.js';
 import {
   BUILD_ROOT,
   BUILD_WITH_CHROMIUM,
@@ -74,18 +74,7 @@ function forwardOptions(): string[] {
 
   // @ts-expect-error yargs and unparse have slightly different types
   const unparsed = unparse(forwardedOptions);
-  const args: string[] = [];
-  for (let i = 0; i < unparsed.length - 1; i++) {
-    if (unparsed[i].startsWith('--') && !Number.isNaN(Number(unparsed[i + 1]))) {
-      // Mocha errors on --repeat 1 as it expects --repeat=1. We assume
-      // that this is the same for all args followed by a number.
-      args.push(`${unparsed[i]}=${unparsed[i + 1]}`);
-      i++;
-    } else {
-      args.push(unparsed[i]);
-    }
-  }
-  return args;
+  return normalizeForwardedOptions(unparsed);
 }
 
 function runProcess(exe: string, args: string[], options: childProcess.SpawnSyncOptionsWithStringEncoding) {
@@ -483,6 +472,7 @@ function main() {
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/gn_deps_verifier/tests')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/ai_assistance')),
     new ScriptTests(path.join(SOURCE_ROOT, 'test/ai_evals/report')),
+    new ScriptTests(path.join(SOURCE_ROOT, 'test/conductor')),
   ];
 
   if (!options['skip-ninja']) {

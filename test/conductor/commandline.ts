@@ -45,6 +45,24 @@ export function asArray(value?: string|string[]): string[] {
   return [value];
 }
 
+export function normalizeForwardedOptions(unparsed: readonly string[]): string[] {
+  const args: string[] = [];
+  for (let i = 0; i < unparsed.length; i++) {
+    const arg = unparsed[i];
+    const next = unparsed[i + 1];
+    if (arg.startsWith('--') && arg !== '--' && !arg.includes('=') && next !== undefined && next.trim() !== '' &&
+        !Number.isNaN(Number(next))) {
+      // Mocha errors on --repeat 1 as it expects --repeat=1. We assume
+      // that this is the same for all args followed by a number.
+      args.push(`${arg}=${next}`);
+      i++;
+    } else {
+      args.push(arg);
+    }
+  }
+  return args;
+}
+
 function validateDiffBehaviors(args?: string|string[]) {
   const failed = [];
   for (const arg of asArray(args)) {

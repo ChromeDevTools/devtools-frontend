@@ -56,6 +56,7 @@ group("unittests") {
     "../inspector_overlay:test_inputs",
     "../inspector_overlay:unittests",
     "../mcp:foundation_unittests",
+    "conductor:unittests",
     "shared",
     "unit:devtools_node_unit_tests",
     "unit:devtools_unit_tests",

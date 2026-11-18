@@ -25,6 +25,7 @@ const SCRIPT_TEST_DIRECTORIES = [
   'scripts/gn_deps_verifier/tests',
   'scripts/ai_assistance',
   'test/ai_evals/report',
+  'test/conductor',
 ];
 
 export function loadScriptTests(): string[] {

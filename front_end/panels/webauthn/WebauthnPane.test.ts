@@ -11,6 +11,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 
 import type * as WebauthnModule from './webauthn.js';
 
@@ -24,8 +25,8 @@ describeWithEnvironment('WebAuthn pane', () => {
 
   it('disables the large blob checkbox if resident key is disabled', async () => {
     const panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
-    const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
-    const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
+    const largeBlob = panel.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('#large-blob');
+    const residentKeys = panel.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('#resident-key');
 
     if (!largeBlob || !residentKeys) {
       assert.fail('Required checkbox not found');
@@ -61,6 +62,33 @@ describeWithEnvironment('WebAuthn pane', () => {
     assert.isFalse(largeBlob.checked);
   });
 
+  it('checks and disables hmac-secret when hmac-secret-mc is enabled', async () => {
+    const panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
+    renderElementIntoDOM(panel);
+    const hmacSecret = panel.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('#hmac-secret');
+    const hmacSecretMc = panel.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('#hmac-secret-mc');
+
+    if (!hmacSecret || !hmacSecretMc) {
+      assert.fail('Required checkbox not found');
+    }
+
+    assert.isFalse(hmacSecret.checked);
+    assert.isFalse(hmacSecret.disabled);
+    assert.isFalse(hmacSecretMc.checked);
+
+    hmacSecretMc.click();
+    await panel.updateComplete;
+    assert.isTrue(hmacSecretMc.checked);
+    assert.isTrue(hmacSecret.checked);
+    assert.isTrue(hmacSecret.disabled);
+
+    hmacSecretMc.click();
+    await panel.updateComplete;
+    assert.isFalse(hmacSecretMc.checked);
+    assert.isTrue(hmacSecret.checked);
+    assert.isFalse(hmacSecret.disabled);
+  });
+
   let target: SDK.Target.Target;
   let model: SDK.WebAuthnModel.WebAuthnModel;
   let panel: WebauthnModule.WebauthnPane.WebauthnPaneImpl;
@@ -77,8 +105,8 @@ describeWithEnvironment('WebAuthn pane', () => {
     });
 
     it('adds an authenticator with large blob option', async () => {
-      const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
-      const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
+      const largeBlob = panel.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('#large-blob');
+      const residentKeys = panel.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('#resident-key');
 
       if (!largeBlob || !residentKeys) {
         assert.fail('Required checkbox not found');
@@ -102,8 +130,8 @@ describeWithEnvironment('WebAuthn pane', () => {
     });
 
     it('adds an authenticator without the large blob option', async () => {
-      const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
-      const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
+      const largeBlob = panel.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('#large-blob');
+      const residentKeys = panel.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('#resident-key');
 
       if (!largeBlob || !residentKeys) {
         assert.fail('Required checkbox not found');

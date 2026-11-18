@@ -488,16 +488,19 @@ function main() {
   if (!options['skip-ninja']) {
     // For a devtools only checkout, it is fast enough to build everything. For
     // a chromium checkout we want to build only the targets that are needed.
+    // The location of DevTools inside of the chromium checkout, as a GN label
+    // prefix (e.g. `third_party/devtools`).
+    const devtoolsDir = path.relative(CHECKOUT_ROOT, SOURCE_ROOT).split(path.sep).join('/');
     const targets = BUILD_WITH_CHROMIUM ?
         [
           'chrome',
-          'third_party/devtools-frontend/src/test:test',
-          'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
-          'third_party/devtools-frontend/src/test/api:devtools_api_tests',
-          'third_party/devtools-frontend/src/test/e2e:devtools_e2e_tests',
-          'third_party/devtools-frontend/src/test/scripts:devtools_script_tests',
-          'third_party/devtools-frontend/src/test/unit:devtools_node_unit_tests',
-          'third_party/devtools-frontend/src/test/unit:devtools_unit_tests',
+          `${devtoolsDir}/test:test`,
+          `${devtoolsDir}/scripts/hosted_mode:hosted_mode`,
+          `${devtoolsDir}/test/api:devtools_api_tests`,
+          `${devtoolsDir}/test/e2e:devtools_e2e_tests`,
+          `${devtoolsDir}/test/scripts:devtools_script_tests`,
+          `${devtoolsDir}/test/unit:devtools_node_unit_tests`,
+          `${devtoolsDir}/test/unit:devtools_unit_tests`,
         ] :
         [];
     const {status} = ninja(isAIAgent() ? 'pipe' : 'inherit', ...targets);

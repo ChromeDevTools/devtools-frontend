@@ -12,6 +12,7 @@ import { hideBin } from 'yargs/helpers';
 import { FeatureSet, gnArgsForTarget } from './devtools_build.mjs';
 import {
   downloadedChromeBinaryPath,
+  devtoolsPathRelativeToRoot,
   isInChromiumDirectory,
   rootPath,
 } from './devtools_paths.js';
@@ -306,9 +307,11 @@ async function start() {
 
   // Open with our freshly built DevTools front-end.
   const genDir = path.join(rootPath(), 'out', target, 'gen');
-  const customDevToolsFrontEndPath = isInChromiumDirectory().isInChromium
-    ? path.join(genDir, 'third_party', 'devtools-frontend', 'src', 'front_end')
-    : path.join(genDir, 'front_end');
+  const customDevToolsFrontEndPath = path.join(
+    genDir,
+    devtoolsPathRelativeToRoot(),
+    'front_end',
+  );
   args.push(`--custom-devtools-frontend=file://${customDevToolsFrontEndPath}`);
 
   // Chrome flags and URLs.

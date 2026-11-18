@@ -6,6 +6,7 @@ import childProcess from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
+import {devtoolsRootPath, isInChromiumDirectory} from './devtools_paths.js';
 import {includes, isDir, isFile, parseArgs} from './utils.js';
 
 const Flags = {
@@ -21,9 +22,7 @@ const IS_DEBUG_ENABLED =
 const CUSTOM_CHROMIUM_PATH = parseArgs(process.argv)[Flags.CHROMIUM_PATH];
 const TARGET = parseArgs(process.argv)[Flags.TARGET] || 'Release';
 
-const CURRENT_PATH = process.env.PWD || process.cwd();  // Using env.PWD to account for symlinks.
-const isThirdParty = CURRENT_PATH.includes('third_party');
-const CHROMIUM_SRC_PATH = CUSTOM_CHROMIUM_PATH || getChromiumSrcPath(isThirdParty);
+const CHROMIUM_SRC_PATH = CUSTOM_CHROMIUM_PATH || getChromiumSrcPath();
 const RELEASE_PATH = path.resolve(CHROMIUM_SRC_PATH, 'out', TARGET);
 const BLINK_TEST_PATH = path.resolve(
     CHROMIUM_SRC_PATH,
@@ -32,13 +31,7 @@ const BLINK_TEST_PATH = path.resolve(
     'tools',
     'run_web_tests.py',
 );
-const DEVTOOLS_PATH = path.resolve(
-    CHROMIUM_SRC_PATH,
-    'third_party',
-    'devtools-frontend',
-    'src',
-);
-const CACHE_PATH = path.resolve(DEVTOOLS_PATH, '.test_cache');
+const CACHE_PATH = path.resolve(devtoolsRootPath(), '.test_cache');
 
 function main() {
   if (!isDir(CACHE_PATH)) {
@@ -60,14 +53,15 @@ function main() {
 }
 main();
 
-function getChromiumSrcPath(isThirdParty) {
-  if (isThirdParty) {
-    // Assume we're in `chromium/src/third_party/devtools-frontend/src`.
-    return path.resolve(CURRENT_PATH, '..', '..', '..');
+function getChromiumSrcPath() {
+  const {isInChromium, chromiumDirectory} = isInChromiumDirectory();
+  if (isInChromium) {
+    // DevTools is part of a Chromium checkout.
+    return chromiumDirectory;
   }
   // Assume we're in `devtools/devtools-frontend`, where `devtools` is
   // on the same level as `chromium`.
-  const srcPath = path.resolve(CURRENT_PATH, '..', '..', 'chromium', 'src');
+  const srcPath = path.resolve(devtoolsRootPath(), '..', '..', 'chromium', 'src');
   if (!isDir(srcPath)) {
     throw new Error(
         `Chromium source directory not found at \`${srcPath}\`. ` +

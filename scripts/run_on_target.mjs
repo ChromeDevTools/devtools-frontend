@@ -9,6 +9,10 @@ import { pathToFileURL } from 'node:url';
 import yargs from 'yargs';
 import unparse from 'yargs-unparser';
 
+import {
+  devtoolsPathRelativeToRoot,
+  isInChromiumDirectory,
+} from './devtools_paths.js';
 import { ENV, getEnvString } from './env-utils.mjs';
 
 const argv = yargs(process.argv.slice(2))
@@ -47,19 +51,14 @@ let cwd = path.join(sourceRoot, 'out', target);
 
 if (!fs.existsSync(cwd)) {
   // Check if we are in a Chromium checkout and look for the out folder there.
-  const maybeChromiumRoot = path.dirname(
-    path.dirname(path.dirname(sourceRoot)),
-  );
-  if (
-    sourceRoot ===
-    path.join(maybeChromiumRoot, 'third_party', 'devtools-frontend', 'src')
-  ) {
-    sourceRoot = maybeChromiumRoot;
+  const { isInChromium, chromiumDirectory } = isInChromiumDirectory();
+  if (isInChromium) {
+    sourceRoot = chromiumDirectory;
     cwd = path.join(sourceRoot, 'out', target);
     const pathParts = script.split(path.sep);
     if (pathParts[0] === 'gen') {
       pathParts.shift();
-      pathParts.unshift('gen', 'third_party', 'devtools-frontend', 'src');
+      pathParts.unshift('gen', devtoolsPathRelativeToRoot());
       script = pathParts.join(path.sep);
     }
   }

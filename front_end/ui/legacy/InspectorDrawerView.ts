@@ -1,7 +1,6 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -10,7 +9,6 @@ import * as Buttons from '../components/buttons/buttons.js';
 import {html, nothing, render} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
-import * as ARIAUtils from './ARIAUtils.js';
 import drawerTabbedPaneStyles from './inspectorDrawerTabbedPane.css.js';
 import {ShowMode, type SplitWidget} from './SplitWidget.js';
 import {type EventData, Events as TabbedPaneEvents, TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
@@ -20,26 +18,75 @@ import {ViewManager} from './ViewManager.js';
 
 const VERTICAL_MINIMIZED_DRAWER_SIZE = 27;
 
+export interface DrawerTabbedPaneViewInput {
+  isVerticalMinimized: boolean;
+  label: string;
+}
+
+export type DrawerTabbedPaneView =
+    (input: DrawerTabbedPaneViewInput, output: undefined, target: HTMLElement|ShadowRoot) => void;
+
+export const DEFAULT_DRAWER_TABBED_PANE_VIEW: DrawerTabbedPaneView = (input, _output, target) => {
+  // clang-format off
+  render(
+      html`<style>${drawerTabbedPaneStyles}</style>`,
+      target,
+      {
+        container: {
+          classes: [
+            'drawer-tabbed-pane',
+            ...(input.isVerticalMinimized ? ['drawer-minimized-vertical'] : []),
+          ],
+          attributes: {
+            role: 'complementary',
+            'aria-label': input.label,
+            jslog: `${VisualLogging.drawer()}`,
+          },
+        },
+      },
+  );
+  // clang-format on
+};
+
 class DrawerTabbedPane extends TabbedPane {
-  constructor() {
+  readonly #label: string;
+  readonly #view: DrawerTabbedPaneView;
+  #isVerticalMinimized = false;
+  #renderedVerticalMinimized = false;
+
+  constructor(label: string, view: DrawerTabbedPaneView = DEFAULT_DRAWER_TABBED_PANE_VIEW) {
     super();
-    this.registerRequiredCSS(drawerTabbedPaneStyles);
+    this.#label = label;
+    this.#view = view;
+    // Perform initial render synchronously so host classes, ARIA attributes, and
+    // shadow styles are applied before callers or tests inspect `tabbedPane.element`.
+    this.performUpdate();
   }
 
   setVerticalMinimized(isMinimized: boolean): void {
-    this.element.classList.toggle('drawer-minimized-vertical', isMinimized);
-    this.contentElement.classList.toggle('collapsed-vertical-drawer-container', isMinimized);
-    this.tabbedPaneContentElement().classList.toggle('hide-element', isMinimized);
-    this.headerElement().classList.toggle('collapsed-vertical-drawer-header', isMinimized);
-    this.headerContentsElement.classList.toggle('hide-element', isMinimized);
-    this.leftToolbar().classList.toggle('hide-element', isMinimized);
-    this.rightToolbar().classList.toggle('collapsed-vertical-drawer-right-toolbar', isMinimized);
-    this.rightToolbar().classList.toggle('collapsed-vertical-drawer-toolbar-content', isMinimized);
+    if (this.#isVerticalMinimized === isMinimized) {
+      return;
+    }
+    this.#isVerticalMinimized = isMinimized;
+    // Flush synchronously so callers such as showDrawer({focus: true}) and
+    // drawerTabbedPane.focus() see the unhidden .tabbed-pane-content immediately.
+    this.performUpdate();
   }
 
-  restoreAfterVerticalMinimized(): void {
-    this.clearMeasuredWidths();
-    this.headerResized();
+  override performUpdate(): void {
+    if (#view in this && this.element.shadowRoot) {
+      this.#view({
+        isVerticalMinimized: this.#isVerticalMinimized,
+        label: this.#label,
+      },
+                 undefined, this.element.shadowRoot);
+      const wasVerticalMinimized = this.#renderedVerticalMinimized;
+      this.#renderedVerticalMinimized = this.#isVerticalMinimized;
+      if (wasVerticalMinimized && !this.#isVerticalMinimized) {
+        this.clearMeasuredWidths();
+      }
+    }
+    super.performUpdate();
   }
 }
 
@@ -143,6 +190,7 @@ interface InspectorDrawerViewOptions {
   setInspectorMinimumSize: (width: number, height: number) => void;
   splitWidget?: SplitWidget;
   toolbarView?: ToolbarView;
+  drawerTabbedPaneView?: DrawerTabbedPaneView;
 }
 
 interface InspectorDrawerPresentation {
@@ -170,7 +218,6 @@ export class InspectorDrawerView {
   #pendingDrawerSize: number|null = null;
   #pendingInitialTabId: string|null = null;
   #drawerSizeBeforeMinimize = 0;
-  #wasVerticalAndMinimized = false;
   readonly #toolbarView: ToolbarView;
   readonly #enableOrientationToggle: boolean;
   readonly #onToggleMinimized: () => void;
@@ -200,7 +247,7 @@ export class InspectorDrawerView {
         Common.Settings.Settings.instance().createLocalSetting('inspector.drawer-minimized', false);
     this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, 'drawer-view', true, true, {
       isLocationVisible: options.isVisible,
-      tabbedPaneFactory: () => new DrawerTabbedPane(),
+      tabbedPaneFactory: () => new DrawerTabbedPane(options.drawerLabel, options.drawerTabbedPaneView),
       plusButton: {title: i18nString(UIStrings.moreTools), jslogContext: 'plus-button-drawer'},
     });
     // When the plus button is disabled we keep the legacy left-toolbar
@@ -213,16 +260,10 @@ export class InspectorDrawerView {
     }
     this.tabbedPane = this.tabbedLocation.tabbedPane() as DrawerTabbedPane;
     this.#pendingInitialTabId = this.tabbedPane.selectedTabId;
-    this.tabbedPane.element.classList.add('drawer-tabbed-pane');
-    this.tabbedPane.element.setAttribute('jslog', `${VisualLogging.drawer()}`);
 
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabInvoked, this.#drawerTabInvoked, this);
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.#drawerTabSelected, this);
     this.tabbedPane.setTabDelegate(options.tabDelegate);
-
-    const drawerElement = this.tabbedPane.element;
-    ARIAUtils.markAsComplementary(drawerElement);
-    ARIAUtils.setLabel(drawerElement, options.drawerLabel);
 
     this.tabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('drawer').track({
                                                    drag: true,
@@ -496,11 +537,6 @@ export class InspectorDrawerView {
     if (this.#moreTabsButton) {
       this.#moreTabsButton.setVisible(!isVerticalAndMinimized);
     }
-
-    if (!isVerticalAndMinimized && this.#wasVerticalAndMinimized) {
-      this.tabbedPane.restoreAfterVerticalMinimized();
-    }
-    this.#wasVerticalAndMinimized = isVerticalAndMinimized;
   }
 
   #updatePresentation(minimized: boolean): void {

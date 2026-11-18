@@ -75,6 +75,7 @@ describe('InspectorDrawerView', () => {
     setInspectorMinimumSize = sinon.spy(),
     onTabSelected = sinon.spy(),
     toolbarView,
+    drawerTabbedPaneView,
   }: {
     isVertical?: boolean,
     enableOrientationToggle?: boolean,
@@ -84,6 +85,7 @@ describe('InspectorDrawerView', () => {
     setInspectorMinimumSize?: sinon.SinonSpy,
     onTabSelected?: sinon.SinonSpy,
     toolbarView?: LegacyUI.InspectorDrawerView.ToolbarView,
+    drawerTabbedPaneView?: LegacyUI.InspectorDrawerView.DrawerTabbedPaneView,
   } = {}): LegacyUI.InspectorDrawerView.InspectorDrawerView {
     return new LegacyUI.InspectorDrawerView.InspectorDrawerView({
       revealDrawer: () => {},
@@ -107,6 +109,7 @@ describe('InspectorDrawerView', () => {
       },
       setInspectorMinimumSize,
       toolbarView,
+      drawerTabbedPaneView,
     });
   }
 
@@ -768,7 +771,7 @@ describe('InspectorDrawerView', () => {
       assert.isFalse(drawerElement.classList.contains('drawer-minimized-vertical'));
     });
 
-    it('adds collapsed-vertical-drawer CSS classes on sub-elements when vertical and minimized', () => {
+    it('applies vertical collapsed layout styles to sub-elements when vertical and minimized', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       inspectorView.setDrawerMinimized(true);
@@ -781,18 +784,18 @@ describe('InspectorDrawerView', () => {
 
       const header = shadow.querySelector('.tabbed-pane-header');
       assert.exists(header);
-      assert.isTrue(header.classList.contains('collapsed-vertical-drawer-header'));
+      assert.strictEqual(getComputedStyle(header).flexDirection, 'column');
 
       const headerContents = shadow.querySelector('.tabbed-pane-header-contents');
       assert.exists(headerContents);
-      assert.isTrue(headerContents.classList.contains('hide-element'));
+      assert.strictEqual(getComputedStyle(headerContents).display, 'none');
 
       const content = shadow.querySelector('.tabbed-pane-content');
       assert.exists(content);
-      assert.isTrue(content.classList.contains('hide-element'));
+      assert.strictEqual(getComputedStyle(content).display, 'none');
     });
 
-    it('removes collapsed CSS classes when expanded', () => {
+    it('restores expanded layout styles on sub-elements when expanded', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       inspectorView.setDrawerMinimized(true);
@@ -806,11 +809,35 @@ describe('InspectorDrawerView', () => {
 
       const header = shadow.querySelector('.tabbed-pane-header');
       assert.exists(header);
-      assert.isFalse(header.classList.contains('collapsed-vertical-drawer-header'));
+      assert.strictEqual(getComputedStyle(header).flexDirection, 'row');
 
       const headerContents = shadow.querySelector('.tabbed-pane-header-contents');
       assert.exists(headerContents);
-      assert.isFalse(headerContents.classList.contains('hide-element'));
+      assert.notStrictEqual(getComputedStyle(headerContents).display, 'none');
+
+      const content = shadow.querySelector('.tabbed-pane-content');
+      assert.exists(content);
+      assert.notStrictEqual(getComputedStyle(content).display, 'none');
+    });
+
+    it('focuses active drawer tab immediately after setDrawerMinimized(false)', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      const drawerTabbedPane = getDrawerTabbedPane(inspectorView);
+      const tabView = new LegacyUI.Widget.Widget();
+      const focusableButton = document.createElement('button');
+      tabView.contentElement.appendChild(focusableButton);
+      tabView.setDefaultFocusedElement(focusableButton);
+      drawerTabbedPane.appendTab('focus-test-tab', 'Focus Test', tabView);
+      drawerTabbedPane.selectTab('focus-test-tab');
+
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+      inspectorView.setDrawerMinimized(true);
+      assert.notStrictEqual(document.activeElement, focusableButton);
+
+      inspectorView.setDrawerMinimized(false);
+      drawerTabbedPane.focus();
+
+      assert.strictEqual(document.activeElement, focusableButton);
     });
   });
 
@@ -935,13 +962,13 @@ describe('InspectorDrawerView', () => {
 
     it('hides the plus button when vertical and minimized', () => {
       // The plus button is slotted into the `trailing-button` slot,
-      // which lives inside `headerContentsElement`. When the drawer is
-      // vertically minimized `headerContentsElement` receives the
-      // `hide-element` class — hiding the slot (and therefore the
-      // slotted plus button) along with the tab strip. If the slot
-      // is ever relocated outside that container the plus button would
-      // remain visible in the collapsed drawer strip and overlap the
-      // close/orientation buttons.
+      // which lives inside `.tabbed-pane-header-contents`. When the
+      // drawer is vertically minimized `:host(.drawer-minimized-vertical)`
+      // hides `.tabbed-pane-header-contents` — hiding the slot (and
+      // therefore the slotted plus button) along with the tab strip.
+      // If the slot is ever relocated outside that container the plus
+      // button would remain visible in the collapsed drawer strip and
+      // overlap the close/orientation buttons.
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       assert.isTrue(inspectorView.isDrawerOrientationVertical());
@@ -952,9 +979,9 @@ describe('InspectorDrawerView', () => {
       assert.exists(drawerElement);
       const trailingSlot = drawerElement.shadowRoot!.querySelector('slot[name="trailing-button"]');
       assert.exists(trailingSlot, 'drawer TabbedPane must declare a `trailing-button` slot for the plus button');
-      const hiddenAncestor = trailingSlot.closest('.hide-element');
-      assert.exists(hiddenAncestor,
-                    'trailing-button slot must live inside a `.hide-element` container while vertically minimized');
+      assert.exists(trailingSlot.parentElement);
+      assert.strictEqual(getComputedStyle(trailingSlot.parentElement).display, 'none',
+                         'trailing-button slot container must be hidden while vertically minimized');
     });
   });
 
@@ -1541,6 +1568,69 @@ describe('InspectorDrawerView', () => {
       sinon.assert.calledOnce(toolbarView);
       assert.exists(latestInput);
       assert.isFalse(latestInput.showOrientationToggle);
+    });
+  });
+
+  describe('drawer tabbed pane view', () => {
+    it('renders non-empty styles into shadow root and applies host classes and ARIA attributes', () => {
+      const host = document.createElement('div');
+      host.classList.add('tabbed-pane');
+      const shadowRoot = host.attachShadow({mode: 'open'});
+      renderElementIntoDOM(host);
+
+      LegacyUI.InspectorDrawerView.DEFAULT_DRAWER_TABBED_PANE_VIEW({isVerticalMinimized: false, label: 'Drawer'},
+                                                                   undefined, shadowRoot);
+
+      const style = shadowRoot.querySelector('style');
+      assert.exists(style);
+      assert.isNotEmpty(style.textContent);
+      assert.isTrue(host.classList.contains('tabbed-pane'));
+      assert.isTrue(host.classList.contains('drawer-tabbed-pane'));
+      assert.isFalse(host.classList.contains('drawer-minimized-vertical'));
+      assert.strictEqual(host.getAttribute('role'), 'complementary');
+      assert.strictEqual(host.getAttribute('aria-label'), 'Drawer');
+      assert.strictEqual(host.getAttribute('jslog'), 'Drawer');
+    });
+
+    it('toggles drawer-minimized-vertical while preserving pre-existing host classes', () => {
+      const host = document.createElement('div');
+      host.classList.add('tabbed-pane');
+      const shadowRoot = host.attachShadow({mode: 'open'});
+      renderElementIntoDOM(host);
+
+      LegacyUI.InspectorDrawerView.DEFAULT_DRAWER_TABBED_PANE_VIEW({isVerticalMinimized: true, label: 'Drawer'},
+                                                                   undefined, shadowRoot);
+      assert.isTrue(host.classList.contains('tabbed-pane'));
+      assert.isTrue(host.classList.contains('drawer-tabbed-pane'));
+      assert.isTrue(host.classList.contains('drawer-minimized-vertical'));
+
+      LegacyUI.InspectorDrawerView.DEFAULT_DRAWER_TABBED_PANE_VIEW({isVerticalMinimized: false, label: 'Drawer'},
+                                                                   undefined, shadowRoot);
+      assert.isTrue(host.classList.contains('tabbed-pane'));
+      assert.isTrue(host.classList.contains('drawer-tabbed-pane'));
+      assert.isFalse(host.classList.contains('drawer-minimized-vertical'));
+    });
+
+    it('passes vertical minimized state and label to injected drawerTabbedPaneView', () => {
+      let latestInput: LegacyUI.InspectorDrawerView.DrawerTabbedPaneViewInput|undefined;
+      const drawerTabbedPaneView = sinon.spy<LegacyUI.InspectorDrawerView.DrawerTabbedPaneView>(input => {
+        latestInput = input;
+      });
+
+      const drawerView = createUnattachedDrawerView({isVertical: true, drawerTabbedPaneView});
+
+      sinon.assert.calledOnce(drawerTabbedPaneView);
+      assert.exists(latestInput);
+      assert.isFalse(latestInput.isVerticalMinimized);
+      assert.strictEqual(latestInput.label, 'Drawer');
+
+      drawerView.setMinimized(true);
+      sinon.assert.calledTwice(drawerTabbedPaneView);
+      assert.isTrue(latestInput.isVerticalMinimized);
+
+      drawerView.setMinimized(false);
+      sinon.assert.calledThrice(drawerTabbedPaneView);
+      assert.isFalse(latestInput.isVerticalMinimized);
     });
   });
 });

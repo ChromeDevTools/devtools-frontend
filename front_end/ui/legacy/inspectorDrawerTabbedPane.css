@@ -4,37 +4,30 @@
  * found in the LICENSE file.
  */
 
-.drawer-tabbed-pane.drawer-minimized-vertical {
+:host(.drawer-minimized-vertical) {
   /* 28px toolbar width minus 1px SplitWidget splitter border. */
   min-width: calc(var(--sys-size-12) - var(--sys-size-1));
   width: calc(var(--sys-size-12) - var(--sys-size-1));
 }
 
-.hide-element {
-  display: none;
-}
-
-.collapsed-vertical-drawer-container {
+:host(.drawer-minimized-vertical) .tabbed-pane-shadow {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.collapsed-vertical-drawer-header {
+:host(.drawer-minimized-vertical) :is(.tabbed-pane-content, .tabbed-pane-header-contents, .tabbed-pane-left-toolbar) {
+  display: none;
+}
+
+:host(.drawer-minimized-vertical) .tabbed-pane-header {
   flex-direction: column;
   flex-basis: 100% !important; /* stylelint-disable-line declaration-no-important */
   border-bottom: none;
 }
 
-.collapsed-vertical-drawer-right-toolbar {
+:host(.drawer-minimized-vertical) devtools-toolbar.tabbed-pane-right-toolbar {
   margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
-  flex-direction: column;
-  align-items: center;
-  height: auto;
-  width: 100%;
-}
-
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -44,7 +37,7 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
   gap: 0;
 }
 
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
+:host(.drawer-minimized-vertical) .tabbed-pane-right-toolbar .toolbar-button {
   margin: 0 auto;
   padding: 0;
   padding-right: var(--sys-size-1);
@@ -53,8 +46,4 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-spacer {
-  display: none;
 }

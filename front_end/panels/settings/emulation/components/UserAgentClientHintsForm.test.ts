@@ -16,6 +16,7 @@ import {
 import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
 import * as EmulationComponents from './components.js';
@@ -759,15 +760,15 @@ describe('UserAgentClientHintsForm', () => {
       const {input, callbacks} = createViewInput({formFactors: ['Desktop', 'Mobile']});
       const {target} = renderView(input);
 
-      assert.lengthOf(queryAll(target, '.form-factor-checkbox-label', HTMLLabelElement),
+      assert.lengthOf(queryAll(target, '.form-factor-checkbox-label', UI.UIUtils.CheckboxLabel),
                       ALL_PROTOCOL_FORM_FACTORS.length);
       for (const formFactor of ALL_PROTOCOL_FORM_FACTORS) {
-        const checkbox = query(target, `input[value="${formFactor}"]`, HTMLInputElement);
+        const checkbox = query(target, `devtools-checkbox[value="${formFactor}"]`, UI.UIUtils.CheckboxLabel);
         assert.strictEqual(checkbox.checked, input.formFactors.includes(formFactor), formFactor);
       }
 
-      query(target, 'input[value="Tablet"]', HTMLInputElement).click();
-      query(target, 'input[value="Mobile"]', HTMLInputElement).click();
+      query(target, 'devtools-checkbox[value="Tablet"]', UI.UIUtils.CheckboxLabel).click();
+      query(target, 'devtools-checkbox[value="Mobile"]', UI.UIUtils.CheckboxLabel).click();
 
       assert.deepEqual(callbacks.onFormFactorChange.args, [['Tablet', true], ['Mobile', false]]);
     });
@@ -787,11 +788,10 @@ describe('UserAgentClientHintsForm', () => {
 
       const modelInput = query(target, 'input[placeholder="Device model (Sec-CH-UA-Model)"]', HTMLInputElement);
       assert.isTrue(modelInput.classList.contains('device-model-input'));
-      const checkbox = query(target, '.mobile-checkbox-container input[type="checkbox"]', HTMLInputElement);
+      const checkbox = query(target, 'devtools-checkbox.mobile-checkbox-container', UI.UIUtils.CheckboxLabel);
       assert.isFalse(checkbox.checked);
 
-      checkbox.checked = true;
-      dispatchInputEvent(checkbox);
+      checkbox.click();
 
       sinon.assert.calledOnceWithExactly(callbacks.onMobileChange, true);
     });

@@ -9,7 +9,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as Input from '../../../../ui/components/input/input.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -622,19 +621,21 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       const value = (event.target as HTMLInputElement).value;
       input.onTextFieldChange('model', value);
     };
-    const handleMobileChange = (event: KeyboardEvent): void => {
-      const value = (event.target as HTMLInputElement).checked;
+    const handleMobileChange = (event: Event): void => {
+      const value = (event.target as UI.UIUtils.CheckboxLabel).checked;
       input.onMobileChange(value);
     };
     const mobileCheckboxInput = input.showMobileCheckbox ? html`
-      <label class="mobile-checkbox-container">
-        <input type="checkbox" @input=${handleMobileChange} .checked=${input.mobile}
-          jslog=${VisualLogging.toggle('mobile').track({
+      <devtools-checkbox
+        class="mobile-checkbox-container"
+        @change=${handleMobileChange}
+        .checked=${input.mobile}
+        jslog=${VisualLogging.toggle('mobile').track({
       click: true,
     })}
-        />
+      >
         ${i18nString(UIStrings.mobileCheckboxLabel)}
-      </label>
+      </devtools-checkbox>
     ` :
                                                            Lit.nothing;
     return html`
@@ -842,18 +843,17 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       const label = i18nString(UIStrings[labelStringId]);
 
       return html`
-        <label class="form-factor-checkbox-label">
-          <input
-            type="checkbox"
-            .checked=${isChecked}
-            value=${ffValue}
-            jslog=${VisualLogging.toggle(Platform.StringUtilities.toKebabCase(ffValue)).track({
+        <devtools-checkbox
+          class="form-factor-checkbox-label"
+          .checked=${isChecked}
+          value=${ffValue}
+          jslog=${VisualLogging.toggle(Platform.StringUtilities.toKebabCase(ffValue)).track({
         click: true,
       })}
-            @change=${(e: Event) => input.onFormFactorChange(ffValue, (e.target as HTMLInputElement).checked)}
-          />
+          @change=${(e: Event) => input.onFormFactorChange(ffValue, (e.target as UI.UIUtils.CheckboxLabel).checked)}
+        >
           ${label}
-        </label>
+        </devtools-checkbox>
       `;
     });
 
@@ -915,7 +915,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 
   // clang-format off
   const template = html`
-    <style>@scope to (devtools-widget > *) { ${Input.checkboxStyles} }</style>
     <style>${userAgentClientHintsFormStyles}</style>
     <section class="root">
       <div class="tree-title">

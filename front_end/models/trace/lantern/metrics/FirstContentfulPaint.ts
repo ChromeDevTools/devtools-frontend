@@ -25,6 +25,15 @@ interface FirstPaintBasedGraphOpts<T> {
   additionalCpuNodesToTreatAsRenderBlocking?: (node: Graph.CPUNode) => boolean;
 }
 
+function getMainFrameId(dependencyGraph: Graph.Node): string|undefined {
+  const root = dependencyGraph.getRootNode();
+  return root.type === Graph.BaseNode.types.NETWORK ? root.request.frameId : undefined;
+}
+
+function isMainFrameNode(node: Graph.NetworkNode, mainFrameId: string|undefined): boolean {
+  return !mainFrameId || !node.request.frameId || node.request.frameId === mainFrameId;
+}
+
 class FirstContentfulPaint extends Metric {
   static override get coefficients(): MetricCoefficients {
     return {
@@ -166,20 +175,25 @@ class FirstContentfulPaint extends Metric {
 
   static override getOptimisticGraph<T>(
       dependencyGraph: Graph.Node<T>, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node<T> {
+    const mainFrameId = getMainFrameId(dependencyGraph);
     return this.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
       // In the optimistic graph we exclude resources that appeared to be render-blocking but were
       // initiated by a script. While they typically have a very high importance and tend to have a
       // significant impact on the page's content, these resources don't technically block rendering.
-      treatNodeAsRenderBlocking: node => node.hasRenderBlockingPriority() && node.initiatorType !== 'script',
+      // Subframe resources cannot block main-frame FCP.
+      treatNodeAsRenderBlocking: node =>
+          isMainFrameNode(node, mainFrameId) && node.hasRenderBlockingPriority() && node.initiatorType !== 'script',
     });
   }
 
   static override getPessimisticGraph<T>(
       dependencyGraph: Graph.Node<T>, processedNavigation: Types.Simulation.ProcessedNavigation): Graph.Node<T> {
+    const mainFrameId = getMainFrameId(dependencyGraph);
     return this.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
-      treatNodeAsRenderBlocking: node => node.hasRenderBlockingPriority(),
+      // Subframe resources cannot block main-frame FCP.
+      treatNodeAsRenderBlocking: node => isMainFrameNode(node, mainFrameId) && node.hasRenderBlockingPriority(),
     });
   }
 }

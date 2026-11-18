@@ -108,4 +108,56 @@ describe('Metrics: Lantern FCP', function() {
        const multiNavResult = FirstContentfulPaint.compute(multiNavData);
        assert.strictEqual(Math.round(multiNavResult.timing), 6296);
      });
+
+  it('should exclude render-blocking subframe resources from FCP graphs', async function() {
+    const data = await getComputationDataFromFixture(this, {parsedTrace});
+    const rootNode = data.graph.getRootNode();
+    assert(rootNode.type === 'network');
+    const mainFrameId = rootNode.request.frameId;
+    assert.isDefined(mainFrameId);
+
+    const fcpTs = data.processedNavigation.timestamps.firstContentfulPaint;
+    const makeScript = (requestId: string, frameId: string|undefined): Lantern.Graph.NetworkNode => {
+      const node = new Lantern.Graph.NetworkNode({
+        requestId,
+        url: `https://embed.example.com/${requestId}.js`,
+        resourceType: 'Script',
+        priority: 'High',
+        renderBlocking: 'in_body_parser_blocking',
+        frameId,
+        rendererStartTime: rootNode.request.rendererStartTime + 1,
+        networkRequestTime: rootNode.request.networkRequestTime + 1,
+        responseHeadersEndTime: rootNode.request.networkRequestTime + 2,
+        networkEndTime: (fcpTs / 1000) - 1,
+        transferSize: 500_000,
+        initiator: {type: 'parser', url: 'https://embed.example.com/'},
+        parsedURL: {scheme: 'https', host: 'embed.example.com', securityOrigin: 'https://embed.example.com'},
+      } as Lantern.Types.NetworkRequest);
+      node.addDependency(rootNode);
+      return node;
+    };
+
+    makeScript('subframe-script', 'SUBFRAME_ID');
+    makeScript('mainframe-script', mainFrameId);
+    makeScript('no-frame-script', undefined);
+
+    const optGraph = FirstContentfulPaint.getOptimisticGraph(data.graph, data.processedNavigation);
+    const pessGraph = FirstContentfulPaint.getPessimisticGraph(data.graph, data.processedNavigation);
+
+    const collectIds = (graph: Lantern.Graph.Node): string[] => {
+      const ids: string[] = [];
+      graph.traverse(node => {
+        if (node.type === 'network') {
+          ids.push(node.id);
+        }
+      });
+      return ids;
+    };
+
+    for (const ids of [collectIds(optGraph), collectIds(pessGraph)]) {
+      assert.notInclude(ids, 'subframe-script');
+      assert.include(ids, 'mainframe-script');
+      assert.include(ids, 'no-frame-script');
+    }
+  });
 });

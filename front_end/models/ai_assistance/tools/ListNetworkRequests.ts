@@ -93,21 +93,40 @@ function formatRequestUrl(rawUrl: string, baseOrigin: string): string {
   return cleanUrl;
 }
 
+export type RequestDurationState = {
+  type: 'value',
+  seconds: number,
+}|{type: 'pending'}|{type: 'unavailable'};
+
 /**
- * Formats a request's duration for the compact network table, distinguishing in-flight
- * requests (`pending`) from completed or unloaded requests that lack timing data (`-`).
+ * Classifies a request's duration state, distinguishing in-flight requests (`pending`)
+ * from completed or unloaded requests that lack timing data (`unavailable`).
  */
-function formatRequestDuration(request: SDK.NetworkRequest.NetworkRequest): string {
-  // Check >= 0 first so 0s data: URLs and synthetic requests with valid timing format normally.
+export function requestDurationState(request: SDK.NetworkRequest.NetworkRequest): RequestDurationState {
+  // Check >= 0 first so 0s data: URLs and synthetic requests with valid timing classify as `value`.
   if (request.duration >= 0) {
-    return seconds(request.duration);
+    return {type: 'value', seconds: request.duration};
   }
   // `duration` is -1 when `startTime` or `endTime` is unset. Finished requests without
   // timing data and unfinished requests preserved from an unloaded page will never complete.
-  if (request.finished || request.preserved) {
-    return '-';
+  return request.finished || request.preserved ? {type: 'unavailable'} : {type: 'pending'};
+}
+
+/**
+ * Formats a request's duration for the compact model table.
+ */
+function formatRequestDuration(request: SDK.NetworkRequest.NetworkRequest): string {
+  const state = requestDurationState(request);
+  switch (state.type) {
+    case 'value':
+      return seconds(state.seconds);
+    case 'unavailable':
+      return '-';
+    case 'pending':
+      return 'pending';
+    default:
+      Platform.assertNever(state, 'Unknown RequestDurationState type');
   }
-  return 'pending';
 }
 
 /**

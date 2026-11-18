@@ -407,6 +407,14 @@ const UIStringsNotTranslate = {
    */
   networkRequests: 'Network requests',
   /**
+   * @description Time cell text for a network request that is still in flight.
+   */
+  networkRequestPending: 'Pending',
+  /**
+   * @description Time cell text for a network request that has no timing data.
+   */
+  networkRequestDurationUnknown: '(unknown)',
+  /**
    * @description Accessible label for the reveal button in the network requests list widget.
    */
   revealFirstNetworkRequest: 'Reveal first network request in Network panel',
@@ -1539,6 +1547,25 @@ async function makeSourceFilesListWidget(widgetData: AiAssistanceModel.AiAgent.S
 
 const expandedNetworkRequestsWidgets = new WeakSet<AiAssistanceModel.AiAgent.NetworkRequestsListAiWidget>();
 
+/**
+ * Formats a request's duration for the widget time column with localized units and the
+ * Network panel's "Pending" and "(unknown)" labels. Unlike the Network panel, finished
+ * requests without timing data show "(unknown)" because they will never complete.
+ */
+function formatNetworkRequestDuration(request: SDK.NetworkRequest.NetworkRequest): string {
+  const state = AiAssistanceModel.ListNetworkRequests.requestDurationState(request);
+  switch (state.type) {
+    case 'value':
+      return i18n.TimeUtilities.secondsToString(state.seconds);
+    case 'pending':
+      return lockedString(UIStringsNotTranslate.networkRequestPending);
+    case 'unavailable':
+      return lockedString(UIStringsNotTranslate.networkRequestDurationUnknown);
+    default:
+      Platform.assertNever(state, 'Unknown RequestDurationState type');
+  }
+}
+
 // A widget with a table of the list of network requests sent to the agent.
 // Only show 15 requests maximum in collapsed version. The rest of the requests
 // will be hidden unless the user clicks "Show all".
@@ -1574,7 +1601,7 @@ async function makeNetworkRequestsListWidget(widgetData: AiAssistanceModel.AiAge
               <td>${request.name()}</td>
               <td>${request.statusCode}</td>
               <td>${i18n.ByteUtilities.formatBytesToKb(request.transferSize)}</td>
-              <td>${i18n.TimeUtilities.secondsToString(request.duration)}</td>
+              <td>${formatNetworkRequestDuration(request)}</td>
             </tr>
           `)}
         </table>

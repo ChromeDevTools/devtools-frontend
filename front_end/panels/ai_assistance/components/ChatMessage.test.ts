@@ -25,6 +25,7 @@ import {
   updateHostConfig,
   waitFor,
 } from '../../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import {
   getBaseTraceHandlerData,
   makeFakeParsedTrace,
@@ -1884,6 +1885,61 @@ describeWithEnvironment('ChatMessage', () => {
           expandButton.textContent?.trim(),
           'Show all 17 network requests',
       );
+    });
+
+    it('renders pending and unknown durations in the NETWORK_REQUESTS_LIST widget time column', async () => {
+      const inflight = createNetworkRequest({
+        requestId: 'req1',
+        url: 'https://example.com/inflight',
+      });
+      inflight.setIssueTime(1, 1);
+
+      const finishedWithoutTiming = createNetworkRequest({
+        requestId: 'req2',
+        url: 'https://example.com/finished-no-timing',
+        finished: true,
+      });
+
+      const preserved = createNetworkRequest({
+        requestId: 'req3',
+        url: 'https://example.com/preserved',
+      });
+      preserved.setIssueTime(1, 1);
+      preserved.preserved = true;
+
+      const completed = createNetworkRequest({
+        requestId: 'req4',
+        url: 'https://example.com/completed',
+        finished: true,
+      });
+      completed.setIssueTime(1, 1);
+      completed.endTime = 2;
+
+      const widget: AIAssistanceModel.AiAgent.NetworkRequestsListAiWidget = {
+        name: 'NETWORK_REQUESTS_LIST',
+        data: {
+          requests: [inflight, finishedWithoutTiming, preserved, completed],
+        },
+      };
+
+      const message: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [
+          {
+            type: 'widget',
+            widgets: [widget],
+          },
+        ],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({message});
+      const widgetContainer = await waitFor('.network-requests-widget', targetElement);
+      assert.isNotNull(widgetContainer);
+      const timeCells =
+          Array.from(widgetContainer.querySelectorAll('table tr td:nth-child(4)')).map(td => td.textContent);
+      assert.deepEqual(timeCells, ['Pending', '(unknown)', '(unknown)', '1.00\xA0s']);
     });
 
     it('shows a snackbar with the error message when reveal fails', async () => {

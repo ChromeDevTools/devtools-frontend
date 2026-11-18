@@ -885,6 +885,42 @@ describeWithEnvironment('NetworkLogView', () => {
     assert.strictEqual((networkColumnWidget).showMode(), UI.SplitWidget.ShowMode.BOTH);
   });
 
+  it('preserves scroll position when showing waterfall column', async () => {
+    const columnSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
+    columnSettings.set({
+      waterfall: {visible: true, title: 'waterfall'},
+    });
+    for (let i = 0; i < 30; i++) {
+      createNetworkRequest(`https://example.com/request-${i}`, {finished: true});
+    }
+    networkLogView = createNetworkLogView();
+    renderElementIntoDOM(networkLogView, {includeCommonStyles: true, width: 600, height: 200});
+    const columns = networkLogView.columns();
+    const dataGrid = columns.dataGrid();
+
+    columns.switchViewMode(true);
+    await networkLogView.updateComplete;
+    await raf();
+    await RenderCoordinator.done();
+
+    columns.switchViewMode(false);
+    await networkLogView.updateComplete;
+    await raf();
+    await RenderCoordinator.done();
+
+    dataGrid.keepScrollingToBottom = false;
+    dataGrid.scrollContainer.scrollTop = 100;
+    assert.strictEqual(dataGrid.scrollContainer.scrollTop, 100);
+
+    columns.switchViewMode(true);
+    await networkLogView.updateComplete;
+    await raf();
+    await RenderCoordinator.done();
+
+    assert.isTrue(dataGrid.scrollContainer.classList.contains('network-waterfall-v-scroll'));
+    assert.strictEqual(dataGrid.scrollContainer.scrollTop, 100);
+  });
+
   it('persists waterfall and custom header column visibility across reloads', async () => {
     const columnSettings = Common.Settings.Settings.instance().createSetting<Record<string, {
       visible: boolean,

@@ -952,6 +952,7 @@ export class NetworkLogView extends NetworkLogViewBase implements
         undefined,
         this.contentElement,
     );
+    this.#columns.updateWaterfallScroller();
   }
 
   #updateGroupByFrame(): void {

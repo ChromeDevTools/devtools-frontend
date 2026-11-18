@@ -254,6 +254,7 @@ export class NetworkLogViewColumns {
   }
 
   wasShown(): void {
+    this.updateWaterfallScroller();
     this.updateRowsSize();
   }
 
@@ -590,17 +591,33 @@ export class NetworkLogViewColumns {
     }
     const visibilityChanged = this.#isWaterfallVisible !== visible;
     this.#isWaterfallVisible = visible;
-    if (visible) {
-      this.activeScroller = this.waterfallScroller;
-      this.waterfallScroller.scrollTop = this.dataGridScroller.scrollTop;
-      this.#dataGrid.setScrollContainer(this.waterfallScroller);
-    } else {
+    if (!visible) {
       this.networkLogView.removeAllNodeHighlights();
-      this.activeScroller = this.dataGridScroller;
-      this.#dataGrid.setScrollContainer(this.dataGridScroller);
     }
+    this.updateWaterfallScroller();
     if (visibilityChanged) {
       this.networkLogView.requestUpdate();
+    }
+  }
+
+  updateWaterfallScroller(): void {
+    if (!this.waterfallScroller) {
+      return;
+    }
+    if (this.#isWaterfallVisible) {
+      if (this.waterfallColumn.isShowing() && this.activeScroller !== this.waterfallScroller) {
+        this.activeScroller = this.waterfallScroller;
+        this.waterfallScrollerContent.style.height =
+            this.dataGridScroller.scrollHeight - this.#dataGrid.headerHeight() + 'px';
+        this.waterfallScroller.scrollTop = this.dataGridScroller.scrollTop;
+        this.#dataGrid.setScrollContainer(this.waterfallScroller);
+      }
+    } else if (this.activeScroller !== this.dataGridScroller) {
+      if (this.waterfallColumn.isShowing()) {
+        this.dataGridScroller.scrollTop = this.waterfallScroller.scrollTop;
+      }
+      this.activeScroller = this.dataGridScroller;
+      this.#dataGrid.setScrollContainer(this.dataGridScroller);
     }
   }
 

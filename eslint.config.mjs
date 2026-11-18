@@ -1068,7 +1068,6 @@ export default defineConfig([
       'front_end/panels/elements/StylePropertyHighlighter.ts',
       'front_end/panels/elements/StylePropertyTreeElement.ts',
       'front_end/panels/elements/StylesSidebarPane.ts',
-      'front_end/panels/emulation/AdvancedApp.ts',
       'front_end/panels/emulation/DeviceModeToolbar.ts',
       'front_end/panels/emulation/DeviceModeView.ts',
       'front_end/panels/emulation/MediaQueryInspector.ts',

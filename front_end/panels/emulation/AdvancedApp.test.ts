@@ -161,17 +161,55 @@ describeWithEnvironment('AdvancedApp docking', () => {
   });
 
   /**
-   * Presents the AdvancedApp docked to the right, after it was undocked once so that the toolbox is loaded.
+   * Presents the AdvancedApp, docked to the right by default.
    */
-  function presentAppWithLoadedToolbox(): {
+  function presentApp(): {
     dockController: UI.DockController.DockController,
-    rootSplitWidget: UI.SplitWidget.SplitWidget,
+    app: Emulation.AdvancedApp.AdvancedApp,
   } {
     const dockController = UI.DockController.DockController.instance({forceNew: true, canDock: true});
     const app = Emulation.AdvancedApp.AdvancedApp.instance(new TestUniverse());
     dockController.initialize();
     app.presentUI(document);
     respondToSetIsDocked();
+    return {dockController, app};
+  }
+
+  function getRootSplitWidget(): UI.SplitWidget.SplitWidget {
+    const rootSplitWidget = UI.InspectorView.InspectorView.instance().parentWidget();
+    assert.instanceOf(rootSplitWidget, UI.SplitWidget.SplitWidget);
+    return rootSplitWidget;
+  }
+
+  function findDeviceModeView(doc: Document): Emulation.DeviceModeView.DeviceModeView|null {
+    for (const element of doc.body.querySelectorAll('*')) {
+      const widget = UI.Widget.Widget.get(element);
+      if (widget instanceof Emulation.DeviceModeView.DeviceModeView) {
+        return widget;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Presses the pointer on `element` and releases it again, and reports whether a resizer started a drag.
+   */
+  function startsResize(element: Element): boolean {
+    const pointerDown = new PointerEvent('pointerdown', {bubbles: true, cancelable: true, button: 0});
+    element.dispatchEvent(pointerDown);
+    element.ownerDocument.dispatchEvent(new PointerEvent('pointerup', {bubbles: true, button: 0}));
+    return pointerDown.defaultPrevented;
+  }
+
+  /**
+   * Presents the AdvancedApp docked to the right, after it was undocked once so that the toolbox is loaded.
+   */
+  async function presentAppWithLoadedToolbox(): Promise<{
+    dockController: UI.DockController.DockController,
+    rootSplitWidget: UI.SplitWidget.SplitWidget,
+  }> {
+    const {dockController, app} = presentApp();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     dockController.setDockSide(DockState.UNDOCKED);
     const toolboxDocument = toolboxFrame.contentDocument;
@@ -180,15 +218,15 @@ describeWithEnvironment('AdvancedApp docking', () => {
     respondToSetIsDocked();
     dockController.setDockSide(DockState.RIGHT);
     respondToSetIsDocked();
+    await UI.Widget.Widget.allUpdatesComplete;
 
-    const rootSplitWidget = UI.InspectorView.InspectorView.instance().parentWidget();
-    assert.instanceOf(rootSplitWidget, UI.SplitWidget.SplitWidget);
+    const rootSplitWidget = getRootSplitWidget();
     assert.strictEqual(rootSplitWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
     return {dockController, rootSplitWidget};
   }
 
-  it('shows the inspector view after undocking and docking again in quick succession', () => {
-    const {dockController, rootSplitWidget} = presentAppWithLoadedToolbox();
+  it('shows the inspector view after undocking and docking again in quick succession', async () => {
+    const {dockController, rootSplitWidget} = await presentAppWithLoadedToolbox();
 
     dockController.setDockSide(DockState.UNDOCKED);
     dockController.setDockSide(DockState.BOTTOM);
@@ -198,8 +236,8 @@ describeWithEnvironment('AdvancedApp docking', () => {
     assert.isTrue(UI.InspectorView.InspectorView.instance().isShowing());
   });
 
-  it('only shows the inspector view after docking and undocking again in quick succession', () => {
-    const {dockController, rootSplitWidget} = presentAppWithLoadedToolbox();
+  it('only shows the inspector view after docking and undocking again in quick succession', async () => {
+    const {dockController, rootSplitWidget} = await presentAppWithLoadedToolbox();
     dockController.setDockSide(DockState.UNDOCKED);
     respondToSetIsDocked();
 
@@ -210,5 +248,129 @@ describeWithEnvironment('AdvancedApp docking', () => {
     // The device mode view lives in the toolbox window, so the inspector view must take up the whole DevTools window.
     assert.strictEqual(rootSplitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_SIDEBAR);
     assert.isTrue(UI.InspectorView.InspectorView.instance().isShowing());
+  });
+
+  const DOCKED_LAYOUTS = [
+    {dockSide: DockState.RIGHT, isVertical: true, isSidebarSecond: true},
+    {dockSide: DockState.LEFT, isVertical: true, isSidebarSecond: false},
+    {dockSide: DockState.BOTTOM, isVertical: false, isSidebarSecond: true},
+  ];
+
+  for (const {dockSide, isVertical, isSidebarSecond} of DOCKED_LAYOUTS) {
+    it(`shows the device mode view next to the inspector view when docked to ${dockSide}`, async () => {
+      const {dockController} = presentApp();
+      if (dockSide !== DockState.BOTTOM) {
+        dockController.setDockSide(DockState.BOTTOM);
+        respondToSetIsDocked();
+      }
+      dockController.setDockSide(dockSide);
+      respondToSetIsDocked();
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const rootSplitWidget = getRootSplitWidget();
+      assert.strictEqual(rootSplitWidget.isVertical(), isVertical);
+      assert.strictEqual(rootSplitWidget.isSidebarSecond(), isSidebarSecond);
+      assert.strictEqual(rootSplitWidget.showMode(), UI.SplitWidget.ShowMode.BOTH);
+      assert.isTrue(rootSplitWidget.isResizable());
+      assert.isTrue(UI.InspectorView.InspectorView.instance().isShowing());
+
+      const deviceModeView = findDeviceModeView(document);
+      assert.exists(deviceModeView);
+      assert.isTrue(deviceModeView.isShowing());
+      assert.isTrue(rootSplitWidget.mainWidget()?.element.contains(deviceModeView.element));
+    });
+
+    it(`uses the tab header as a resizer only when docked to bottom (docked to ${dockSide})`, () => {
+      const {dockController} = presentApp();
+      const topResizerElement = UI.InspectorView.InspectorView.instance().topResizerElement();
+      if (dockSide !== DockState.BOTTOM) {
+        dockController.setDockSide(DockState.BOTTOM);
+        respondToSetIsDocked();
+        assert.isTrue(startsResize(topResizerElement));
+      }
+      dockController.setDockSide(dockSide);
+      respondToSetIsDocked();
+
+      assert.strictEqual(startsResize(topResizerElement), dockSide === DockState.BOTTOM);
+    });
+  }
+
+  it('only shows the inspector view when undocked before the toolbox is loaded', async () => {
+    const {dockController} = presentApp();
+    await UI.Widget.Widget.allUpdatesComplete;
+    dockController.setDockSide(DockState.UNDOCKED);
+    respondToSetIsDocked();
+
+    const rootSplitWidget = getRootSplitWidget();
+    assert.strictEqual(rootSplitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_SIDEBAR);
+    assert.isFalse(rootSplitWidget.isResizable());
+    assert.isTrue(UI.InspectorView.InspectorView.instance().isShowing());
+    assert.isFalse(startsResize(UI.InspectorView.InspectorView.instance().topResizerElement()));
+
+    assert.isNull(findDeviceModeView(document));
+    const toolboxDocument = toolboxFrame.contentDocument;
+    assert.exists(toolboxDocument);
+    assert.isNull(findDeviceModeView(toolboxDocument));
+  });
+
+  it('moves the device mode view into the toolbox when undocked', () => {
+    const {dockController, app} = presentApp();
+    dockController.setDockSide(DockState.UNDOCKED);
+    const toolboxDocument = toolboxFrame.contentDocument;
+    assert.exists(toolboxDocument);
+    app.deviceModeEmulationFrameLoaded(toolboxDocument);
+    respondToSetIsDocked();
+
+    const rootSplitWidget = getRootSplitWidget();
+    assert.strictEqual(rootSplitWidget.showMode(), UI.SplitWidget.ShowMode.ONLY_SIDEBAR);
+    assert.isFalse(rootSplitWidget.isResizable());
+    assert.isNull(findDeviceModeView(document));
+    const deviceModeView = findDeviceModeView(toolboxDocument);
+    assert.exists(deviceModeView);
+    assert.isTrue(deviceModeView.isShowing());
+  });
+
+  it('moves the device mode view back from the toolbox when docked again', async () => {
+    const {rootSplitWidget} = await presentAppWithLoadedToolbox();
+    const toolboxDocument = toolboxFrame.contentDocument;
+    assert.exists(toolboxDocument);
+
+    assert.isNull(findDeviceModeView(toolboxDocument));
+    const deviceModeView = findDeviceModeView(document);
+    assert.exists(deviceModeView);
+    assert.isTrue(deviceModeView.isShowing());
+    assert.isTrue(rootSplitWidget.mainWidget()?.element.contains(deviceModeView.element));
+  });
+
+  it('does not set the inspected page bounds when starting undocked', () => {
+    Common.Settings.Settings.instance().moduleSetting('currentDockState').set(DockState.UNDOCKED);
+    const setInspectedPageBounds =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'setInspectedPageBounds');
+
+    presentApp();
+
+    sinon.assert.notCalled(setInspectedPageBounds);
+    assert.strictEqual(getRootSplitWidget().showMode(), UI.SplitWidget.ShowMode.ONLY_SIDEBAR);
+    assert.isNull(findDeviceModeView(document));
+  });
+
+  it('does not set the inspected page bounds while the dock side changes', () => {
+    const setInspectedPageBounds =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'setInspectedPageBounds');
+    const {dockController} = presentApp();
+    sinon.assert.called(setInspectedPageBounds);
+    setInspectedPageBounds.resetHistory();
+
+    dockController.setDockSide(DockState.BOTTOM);
+    Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance().update();
+    sinon.assert.notCalled(setInspectedPageBounds);
+
+    respondToSetIsDocked();
+    sinon.assert.called(setInspectedPageBounds);
+  });
+
+  it('focuses the inspector view when presented', () => {
+    presentApp();
+    assert.isTrue(UI.InspectorView.InspectorView.instance().hasFocus());
   });
 });

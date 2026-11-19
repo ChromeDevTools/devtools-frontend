@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as ConverterIds from './ConverterIds.js';
+import * as NavigationGuard from './NavigationGuard.js';
 import * as RecorderSettings from './RecorderSettings.js';
 import * as RecorderShortcutHelper from './RecorderShortcutHelper.js';
 import * as RecordingPlayer from './RecordingPlayer.js';
@@ -19,6 +20,7 @@ import * as Tooltip from './Tooltip.js';
 
 export {
   ConverterIds,
+  NavigationGuard,
   RecorderSettings,
   RecorderShortcutHelper,
   RecordingPlayer,

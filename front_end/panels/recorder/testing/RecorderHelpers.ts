@@ -64,31 +64,85 @@ export const createCustomStep = (): Models.Schema.Step => ({
   parameters: {},
 });
 
-export const installMocksForRecordingPlayer = (): void => {
-  const mock = {
-    page: {
-      _client: () => ({
-        send: sinon.stub().resolves(),
-      }),
-      frames: () => [{
-        client: {send: sinon.stub().resolves()},
-        goto: sinon.stub().resolves(),
-      }],
-      mainFrame: () => mock.page.frames()[0],
-      evaluate: () => '',
-      url() {
-        return '';
-      },
-      bringToFront() {
-        return Promise.resolve();
-      },
+export interface MockFrame {
+  _id: string;
+  client: {
+    send: sinon.SinonStub,
+    on: sinon.SinonStub,
+    off: sinon.SinonStub,
+    detached?: boolean,
+  };
+  url: () => string;
+  goto?: sinon.SinonStub;
+}
+
+export interface MockPage {
+  _client: () => MockFrame['client'];
+  on: sinon.SinonStub;
+  off: sinon.SinonStub;
+  frames: () => MockFrame[];
+  mainFrame: () => MockFrame;
+  evaluate: () => string;
+  url: () => string;
+  bringToFront: () => Promise<void>;
+}
+
+export interface RecordingPlayerMocks {
+  /** The `send` method of the CDP session of the mock page. */
+  send: sinon.SinonStub;
+  mainFrame: MockFrame;
+  /** Sends a `Fetch.requestPaused` event to the listeners of the CDP session. */
+  emitRequestPaused(event: {
+    requestId: string,
+    frameId: string,
+    request: {url: string},
+    responseStatusCode?: number,
+    responseHeaders?: Array<{name: string, value: string}>,
+  }): void;
+}
+
+export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
+  const listeners = new Map<string, Set<(data: unknown) => void>>();
+  const on = sinon.stub().callsFake((event: string, listener: (data: unknown) => void) => {
+    listeners.set(event, (listeners.get(event) ?? new Set()).add(listener));
+  });
+  const off = sinon.stub().callsFake((event: string, listener: (data: unknown) => void) => {
+    listeners.get(event)?.delete(listener);
+  });
+  const emit = (event: string, data: unknown): void => {
+    for (const listener of [...(listeners.get(event) ?? [])]) {
+      listener(data);
+    }
+  };
+  const client = {send: sinon.stub().resolves(), on, off, detached: false};
+  const mainFrame: MockFrame = {_id: 'main-frame', client, url: () => '', goto: sinon.stub().resolves()};
+  const page: MockPage = {
+    _client: () => client,
+    on,
+    off,
+    frames: () => [mainFrame],
+    mainFrame: () => mainFrame,
+    evaluate: () => '',
+    url() {
+      return '';
     },
+    bringToFront() {
+      return Promise.resolve();
+    },
+  };
+  const mock = {
+    page,
     browser: {
-      pages: () => [mock.page],
+      pages: () => [page],
       disconnect: () => sinon.stub().resolves(),
     },
   };
   sinon.stub(Models.RecordingPlayer.RecordingPlayer, 'connectPuppeteer').resolves(mock as never);
+  return {
+    send: client.send,
+    mainFrame,
+    emitRequestPaused: event => emit('Fetch.requestPaused', event),
+  };
 };
 
 export const installMocksForTargetManager = (): void => {

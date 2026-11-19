@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import type {Target} from 'puppeteer-core';
 
 import type {AssertedEventType, StepType} from '../../../front_end/panels/recorder/models/Schema.js';
+import {expectError} from '../../conductor/events.js';
 import {describe, it} from '../conductor/mocha-interface.js';
 import {
   clickSelectButtonItem,
@@ -580,6 +581,93 @@ describe('Recorder', function() {
       );
       assert.isOk(frame, 'Frame that the target page navigated to is not found');
     });
+
+    it('should block navigations to origins that are not in the recording', async ({inspectedPage, devToolsPage}) => {
+      const blockedUrl = `${inspectedPage.getOopifResourcesPath()}/recorder/recorder2.html`;
+      expectError(`Replay error Navigation to ${blockedUrl} is not allowed`);
+      await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+        title: 'Test Recording',
+        steps: [
+          {
+            type: 'navigate' as StepType.Navigate,
+            url: `${inspectedPage.getResourcesPath()}/recorder/recorder.html`,
+          },
+          {
+            // Puppeteer can evaluate the expression more than one time, thus
+            // the expression only adds a link. The click step starts the
+            // navigation one time.
+            type: 'waitForExpression' as StepType.WaitForExpression,
+            target: 'main',
+            expression: `(document.body.innerHTML = '<a id="blocked" href="${blockedUrl}">blocked</a>', true)`,
+          },
+          {
+            type: 'click' as StepType.Click,
+            target: 'main',
+            selectors: [['#blocked']],
+            offsetX: 1,
+            offsetY: 1,
+          },
+          {
+            // The page from the blocked origin contains this element. The step
+            // keeps the replay active until the navigation request is handled.
+            type: 'waitForElement' as StepType.WaitForElement,
+            target: 'main',
+            selectors: [['a[href="recorder.html"]']],
+            timeout: 2000,
+          },
+        ],
+      },
+                                             undefined);
+
+      // The aborted request replaces the document with the Chrome error page.
+      assert.notStrictEqual(inspectedPage.page.url(), blockedUrl);
+      assert.isNull(await inspectedPage.page.$('a[href="recorder.html"]'));
+      const error = await devToolsPage.waitFor('.error');
+      const message = await error.evaluate(el => el.textContent);
+      assert.include(message, `Navigation to ${blockedUrl} is not allowed`);
+    });
+
+    it('should block navigation back to the pre-replay origin when a navigate step runs first',
+       async ({inspectedPage, devToolsPage}) => {
+         // The inspected page starts on localhost. The recording navigates to
+         // devtools.oopif.test first, so localhost must not be allowed.
+         const blockedUrl = `${inspectedPage.getResourcesPath()}/recorder/recorder2.html`;
+         expectError(`Replay error Navigation to ${blockedUrl} is not allowed`);
+         await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+           title: 'Test Recording',
+           steps: [
+             {
+               type: 'navigate' as StepType.Navigate,
+               url: `${inspectedPage.getOopifResourcesPath()}/recorder/recorder.html`,
+             },
+             {
+               type: 'waitForExpression' as StepType.WaitForExpression,
+               target: 'main',
+               expression: `(document.body.innerHTML = '<a id="blocked" href="${blockedUrl}">blocked</a>', true)`,
+             },
+             {
+               type: 'click' as StepType.Click,
+               target: 'main',
+               selectors: [['#blocked']],
+               offsetX: 1,
+               offsetY: 1,
+             },
+             {
+               type: 'waitForElement' as StepType.WaitForElement,
+               target: 'main',
+               selectors: [['a[href="recorder.html"]']],
+               timeout: 2000,
+             },
+           ],
+         },
+                                                undefined);
+
+         assert.notStrictEqual(inspectedPage.page.url(), blockedUrl);
+         assert.isNull(await inspectedPage.page.$('a[href="recorder.html"]'));
+         const error = await devToolsPage.waitFor('.error');
+         const message = await error.evaluate(el => el.textContent);
+         assert.include(message, `Navigation to ${blockedUrl} is not allowed`);
+       });
 
     it('should replay when clicked on slow replay', async ({inspectedPage, devToolsPage}) => {
       await setupRecorderWithScript(devToolsPage, inspectedPage, {

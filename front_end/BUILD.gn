@@ -317,6 +317,7 @@ group("api_tests") {
     "foundation:api_tests",
     "models/persistence:api_tests",
     "models/source_map_scopes:api_tests",
+    "panels/recorder/models:api_tests",
   ]
 }
 

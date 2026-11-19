@@ -1971,6 +1971,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/recorder/injected/selectors/XPath.js",
   "front_end/panels/recorder/injected/util.js",
   "front_end/panels/recorder/models/ConverterIds.js",
+  "front_end/panels/recorder/models/NavigationGuard.js",
   "front_end/panels/recorder/models/RecorderSettings.js",
   "front_end/panels/recorder/models/RecorderShortcutHelper.js",
   "front_end/panels/recorder/models/RecordingPlayer.js",

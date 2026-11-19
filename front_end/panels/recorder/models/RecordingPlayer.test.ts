@@ -11,6 +11,7 @@ import {
   createCustomStep,
   installMocksForRecordingPlayer,
   installMocksForTargetManager,
+  type RecordingPlayerMocks,
 } from '../testing/RecorderHelpers.js';
 
 import * as Models from './models.js';
@@ -57,9 +58,11 @@ describe('RecordingPlayer', () => {
     return stopEvent;
   }
 
+  let mocks: RecordingPlayerMocks;
+
   beforeEach(() => {
     installMocksForTargetManager();
-    installMocksForRecordingPlayer();
+    mocks = installMocksForRecordingPlayer();
   });
 
   afterEach(() => {
@@ -330,6 +333,159 @@ describe('RecordingPlayer', () => {
       assert.isNotNull(error);
       assert.strictEqual(error.message, `Navigation to ${url} is not allowed, due to blocked schema`);
       sinon.assert.calledWith(console.error as sinon.SinonStub, 'Replay error', error.message);
+    });
+  });
+
+  describe('Navigation guard', () => {
+    const blockedUrl = 'https://other.test/landing';
+    const blockedMessage =
+        `Navigation to ${blockedUrl} is not allowed, because the recording does not contain its origin`;
+    const fetchEnablePattern = {patterns: [{urlPattern: '*', resourceType: 'Document', requestStage: 'Response'}]};
+
+    /**
+     * Replays a recording that navigates to https://allowed.test and calls
+     * `beforeSecondStep` before the second step.
+     */
+    async function replay(beforeSecondStep: () => void, extraSteps: Models.Schema.Step[] = []): Promise<{
+      error: Error | null,
+      steps: number,
+    }> {
+      recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+          {
+            title: 'test',
+            steps: [
+              {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+              createCustomStep(),
+              createCustomStep(),
+              ...extraSteps,
+            ],
+          },
+          {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+      );
+      let steps = 0;
+      const result = new Promise<Error|null>(resolve => {
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data), {once: true});
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+      });
+      recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, ({data: {resolve}}) => {
+        steps++;
+        if (steps === 2) {
+          beforeSecondStep();
+        }
+        resolve();
+      });
+      await recordingPlayer.play();
+      return {error: await result, steps};
+    }
+
+    it('pauses only document responses during the replay', async () => {
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      const fetchCalls = mocks.send.args.filter(([method]) => method.startsWith('Fetch.'));
+      assert.deepEqual(fetchCalls, [
+        ['Fetch.enable', fetchEnablePattern],
+        ['Fetch.disable'],
+      ]);
+    });
+
+    it('continues navigations to an origin from the recording', async () => {
+      const {error, steps} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: 'https://allowed.test/next'},
+          responseStatusCode: 200,
+        });
+      });
+
+      assert.isNull(error);
+      assert.strictEqual(steps, 3);
+      sinon.assert.calledWith(mocks.send, 'Fetch.continueRequest', {requestId: '1'});
+      sinon.assert.neverCalledWith(mocks.send, 'Fetch.failRequest');
+    });
+
+    it('fails main frame navigations to an origin that is not in the recording', async () => {
+      sinon.stub(console, 'error');
+      const {error, steps} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 200,
+        });
+      });
+
+      assert.strictEqual(error?.message, blockedMessage);
+      assert.strictEqual(steps, 2);
+      sinon.assert.calledWith(mocks.send, 'Fetch.failRequest', {requestId: '1', errorReason: 'BlockedByClient'});
+      sinon.assert.neverCalledWith(mocks.send, 'Fetch.continueRequest');
+    });
+
+    it('continues subframe navigations', async () => {
+      const {error, steps} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'subframe',
+          request: {url: blockedUrl},
+          responseStatusCode: 200,
+        });
+      });
+
+      assert.isNull(error);
+      assert.strictEqual(steps, 3);
+      sinon.assert.calledWith(mocks.send, 'Fetch.continueRequest', {requestId: '1'});
+    });
+
+    it('skips runStep if a navigation was blocked during beforeEachStep', async () => {
+      sinon.stub(console, 'error');
+      recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+          {
+            title: 'test',
+            steps: [
+              {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/first'},
+              {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/second'},
+            ],
+          },
+          {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+      );
+      let steps = 0;
+      const result = new Promise<Error|null>(resolve => {
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data), {once: true});
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+      });
+      recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, ({data: {resolve}}) => {
+        steps++;
+        if (steps === 2) {
+          mocks.emitRequestPaused({
+            requestId: '1',
+            frameId: 'main-frame',
+            request: {url: blockedUrl},
+            responseStatusCode: 200,
+          });
+        }
+        resolve();
+      });
+      await recordingPlayer.play();
+
+      assert.strictEqual((await result)?.message, blockedMessage);
+      sinon.assert.calledOnceWithExactly(mocks.mainFrame.goto!, 'https://allowed.test/first');
+    });
+
+    it('does not run steps if the guard blocks a navigation before the runner starts', async () => {
+      sinon.stub(console, 'error');
+      mocks.send.withArgs('Fetch.enable').callsFake(async () => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 200,
+        });
+      });
+      const {error, steps} = await replay(() => {});
+
+      assert.strictEqual(error?.message, blockedMessage);
+      assert.strictEqual(steps, 0);
     });
   });
 });

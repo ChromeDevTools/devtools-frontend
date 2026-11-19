@@ -9,6 +9,7 @@ import("../../../../scripts/build/typescript/typescript.gni")
 devtools_ui_module("recorder") {
   sources = [
     "ConverterIds.ts",
+    "NavigationGuard.ts",
     "RecorderSettings.ts",
     "RecorderShortcutHelper.ts",
     "RecordingPlayer.ts",
@@ -62,6 +63,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "NavigationGuard.test.ts",
     "RecorderSettings.test.ts",
     "RecorderShortcutHelper.test.ts",
     "RecordingPlayer.test.ts",
@@ -78,5 +80,14 @@ devtools_ui_module("unittests") {
     "../../../core/platform:bundle",
     "../../../testing",
     "../testing",
+  ]
+}
+
+devtools_api_test_module("api_tests") {
+  sources = [ "NavigationGuard.test.api.ts" ]
+
+  ts_deps = [
+    ":recorder",
+    "../../../../test/api",
   ]
 }

@@ -13,6 +13,7 @@ import * as PuppeteerService from '../../../services/puppeteer/puppeteer.js';
 import * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 
+import {NavigationGuard} from './NavigationGuard.js';
 import type {Step, UserFlow} from './Schema.js';
 
 export const enum PlayRecordingSpeed {
@@ -231,6 +232,9 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.aborted = false;
 
     const player = this;
+    // Stops the runner and the waits for breakpoints and for the replay speed
+    // when the guard blocks a navigation.
+    const guard = new NavigationGuard(this.userFlow, page.url(), () => this.abort());
     class ExtensionWithBreak extends PuppeteerReplay.PuppeteerRunnerExtension {
       readonly #speed: PlayRecordingSpeed;
 
@@ -277,6 +281,9 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           step: PuppeteerReplay.Schema.Step,
           flow: PuppeteerReplay.Schema.UserFlow,
           ): Promise<void> {
+        if (guard.error) {
+          return;
+        }
         // When replaying on a DevTools target we skip setViewport and navigate steps
         // because navigation and viewport changes are not supported there.
         if (Common.ParsedURL.schemeIs(page?.url() as Platform.DevToolsPath.UrlString, 'devtools:') &&
@@ -297,18 +304,29 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       speed: this.speed,
     });
 
-    this.#runner = await PuppeteerReplay.createRunner(this.userFlow, extension);
     let error: Error|undefined;
 
     try {
-      await this.#runner.run();
+      await guard.guardPage(page);
+      this.#runner = await PuppeteerReplay.createRunner(this.userFlow, extension);
+      // `run()` resets the abort state of the runner.
+      if (!guard.error && !this.aborted) {
+        await this.#runner.run();
+      }
     } catch (err) {
       error = err;
-      console.error('Replay error', err.message);
     } finally {
+      await guard.dispose();
+      // A blocked navigation is the cause of the errors that follow it.
+      error = guard.error ?? error;
+      if (error) {
+        console.error('Replay error', error.message);
+      }
       await RecordingPlayer.disconnectPuppeteer(browser);
     }
-    if (this.aborted) {
+    if (guard.error) {
+      this.dispatchEventToListeners(Events.ERROR, guard.error);
+    } else if (this.aborted) {
       this.dispatchEventToListeners(Events.ABORT);
     } else if (error) {
       this.dispatchEventToListeners(Events.ERROR, error);

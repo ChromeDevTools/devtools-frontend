@@ -89,6 +89,7 @@ copy_to_gen("sources") {
     "reload-breakpoints-with-source-maps-target.js",
     "reload-breakpoints-with-source-maps.html",
     "reload-breakpoints-with-source-maps.map",
+    "resource-script-mapping/multiple-scripts.html",
     "restart-frame.html",
     "script-with-sourcemap-without-mappings.html",
     "script-with-sourcemap-without-mappings.js",

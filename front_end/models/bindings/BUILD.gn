@@ -145,3 +145,14 @@ devtools_foundation_module("foundation_unittests") {
     "../workspace:bundle",
   ]
 }
+
+devtools_api_test_module("api_tests") {
+  sources = [ "ResourceMapping.test.api.ts" ]
+
+  ts_deps = [
+    "../../../test/api",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+  ]
+}

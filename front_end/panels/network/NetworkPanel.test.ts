@@ -45,7 +45,7 @@ describeWithEnvironment('NetworkPanel', () => {
   const tracingTests = (inScope: boolean) => () => {
     it('starts recording on page reload', async () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-      Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
+      Common.Settings.Settings.instance().createSetting('network-record-film-strip-setting', false).set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);
       const tracingManager = target.model(Tracing.TracingManager.TracingManager);
@@ -57,7 +57,7 @@ describeWithEnvironment('NetworkPanel', () => {
 
     it('stops recording on page load', async () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-      Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
+      Common.Settings.Settings.instance().createSetting('network-record-film-strip-setting', false).set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);
       const tracingManager = target.model(Tracing.TracingManager.TracingManager);
@@ -76,7 +76,7 @@ describeWithEnvironment('NetworkPanel', () => {
   describe('out of scpe', tracingTests(false));
 
   it('filters network log when a film strip frame is selected', async () => {
-    Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
+    Common.Settings.Settings.instance().createSetting('network-record-film-strip-setting', false).set(true);
     const filmStripElement = networkPanel.element.querySelector('.network-film-strip');
     assert.instanceOf(filmStripElement, HTMLElement);
     const filmStripView = UI.Widget.Widget.get(filmStripElement) as PerfUI.FilmStripView.FilmStripView;

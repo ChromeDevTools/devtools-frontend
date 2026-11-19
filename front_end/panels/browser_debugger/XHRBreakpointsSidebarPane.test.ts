@@ -8,6 +8,7 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -498,6 +499,52 @@ describe('XHRBreakpointsSidebarPane', () => {
       assert.strictEqual(pane.focusedBreakpoint, 'api/v2');
       assert.strictEqual(entries[0].getAttribute('tabindex'), '-1');
       assert.strictEqual(entries[1].getAttribute('tabindex'), '0');
+    });
+  });
+
+  describe('accessibility', () => {
+    it('has no accessibility violations when empty', async () => {
+      const pane = BrowserDebugger.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane.instance();
+      renderElementIntoDOM(pane, {includeCommonStyles: true, width: 300});
+      await pane.updateComplete;
+
+      const emptyMessage = pane.contentElement.querySelector<HTMLElement>('.gray-info-message');
+      assert.exists(emptyMessage);
+      assert.strictEqual(emptyMessage.textContent?.trim(), 'No breakpoints');
+      assert.isAbove(emptyMessage.getBoundingClientRect().height, 0);
+
+      const violations = await getAxeViolations(pane.contentElement);
+      assert.deepEqual(violations, []);
+    });
+
+    it('has no accessibility violations with an active XHR breakpoint', async () => {
+      const pane = BrowserDebugger.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane.instance();
+      renderElementIntoDOM(pane, {includeCommonStyles: true, width: 300});
+      assert.strictEqual(BrowserDebugger.XHRBreakpointsSidebarPane.XHRBreakpointsSidebarPane.instance(), pane);
+      pane.setBreakpoint('test xhr breakpoint', true);
+      await pane.updateComplete;
+
+      assert.isTrue(SDK.DOMDebuggerModel.DOMDebuggerManager.instance().xhrBreakpoints().get('test xhr breakpoint'));
+
+      const list = pane.contentElement.querySelector<HTMLElement>('.breakpoint-list');
+      assert.exists(list);
+      assert.isFalse(list.hidden);
+      assert.strictEqual(list.getAttribute('role'), 'list');
+      assert.strictEqual(list.getAttribute('aria-label'), 'XHR/fetch breakpoints');
+
+      const entry = pane.contentElement.querySelector<HTMLElement>('.breakpoint-entry');
+      assert.exists(entry);
+      assert.strictEqual(entry.getAttribute('role'), 'checkbox');
+      assert.strictEqual(entry.getAttribute('aria-checked'), 'true');
+      assert.strictEqual(entry.getAttribute('aria-label'), 'URL contains "test xhr breakpoint"');
+      assert.isAbove(entry.getBoundingClientRect().height, 0);
+
+      const prompt = entry.querySelector<HTMLElement>('devtools-prompt');
+      assert.exists(prompt);
+      assert.strictEqual(prompt.textContent?.trim(), 'URL contains "test xhr breakpoint"');
+
+      const violations = await getAxeViolations(pane.contentElement);
+      assert.deepEqual(violations, []);
     });
   });
 });

@@ -241,6 +241,37 @@ describeWithEnvironment('RecordingView', () => {
     }
   });
 
+  it('does not reconvert code when converter or settings references are unchanged', async () => {
+    const converter = new Converters.ExtensionConverter.ExtensionConverter(
+        new TestExtension('Export A', 'chrome-extension://ext-a'),
+    );
+    const stringifySpy = sinon.spy(converter, 'stringify');
+    const [view, component] = await createView();
+    const converters = [converter];
+    component.extensionConverters = converters;
+    await view.nextInput;
+
+    view.input.onCodeFormatChange(converter.getId());
+    const input = await view.nextInput;
+    assert.strictEqual(input.editorState?.doc.toString(), `Export A:${JSON.stringify(userFlow)}`);
+    await doubleRaf();
+    sinon.assert.callCount(stringifySpy, 1);
+
+    const builtInConverters = component.builtInConverters;
+    const recorderSettings = component.recorderSettings;
+    const viewCallCount = view.callCount;
+    component.extensionConverters = converters;
+    component.builtInConverters = builtInConverters;
+    component.recorderSettings = recorderSettings;
+    await doubleRaf();
+    sinon.assert.callCount(stringifySpy, 1);
+    sinon.assert.callCount(view, viewCallCount);
+
+    component.extensionConverters = [converter];
+    await view.nextInput;
+    sinon.assert.callCount(stringifySpy, 2);
+  });
+
   it('should select the step that starts a section when the section is clicked', async () => {
     const [view] = await createView();
     const causingStep = {type: Models.Schema.StepType.Click as const, selectors: ['#link'], offsetX: 1, offsetY: 1};

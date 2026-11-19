@@ -888,6 +888,9 @@ export class RecordingView extends UI.Widget.Widget {
     return this.#extensionConverters;
   }
   set extensionConverters(converters: readonly Converters.Converter.Converter[]) {
+    if (this.#extensionConverters === converters) {
+      return;
+    }
     this.#extensionConverters = converters;
     void this.#convertToCode();
   }
@@ -911,6 +914,9 @@ export class RecordingView extends UI.Widget.Widget {
     return this.#recorderSettings;
   }
   set recorderSettings(settings: Models.RecorderSettings.RecorderSettings|undefined) {
+    if (this.#recorderSettings === settings) {
+      return;
+    }
     this.#recorderSettings = settings;
     this.#converterId = this.recorderSettings?.preferredCopyFormat ?? this.#builtInConverters[0]?.getId();
     void this.#convertToCode();
@@ -921,6 +927,9 @@ export class RecordingView extends UI.Widget.Widget {
     return this.#builtInConverters;
   }
   set builtInConverters(converters: readonly Converters.Converter.Converter[]) {
+    if (this.#builtInConverters === converters) {
+      return;
+    }
     this.#builtInConverters = converters;
     this.#converterId = this.recorderSettings?.preferredCopyFormat ?? this.#builtInConverters[0]?.getId();
     void this.#convertToCode();

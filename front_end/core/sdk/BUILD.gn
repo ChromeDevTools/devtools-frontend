@@ -281,6 +281,7 @@ devtools_api_test_module("api_tests") {
     "DOMModel.test.api.ts",
     "DebuggerModel.test.api.ts",
     "HeapProfilerModel.test.api.ts",
+    "NetworkManager.test.api.ts",
     "NetworkRequest.test.api.ts",
     "RemoteObject.test.api.ts",
     "TargetManager.test.api.ts",
@@ -289,6 +290,7 @@ devtools_api_test_module("api_tests") {
   ts_deps = [
     ":bundle",
     "../../../test/api",
+    "../../generated",
     "../../testing",
     "../common:bundle",
     "../text_utils:bundle",

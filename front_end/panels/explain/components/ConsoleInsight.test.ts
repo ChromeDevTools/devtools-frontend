@@ -859,4 +859,111 @@ after
     setColorScheme('dark');
     await assertScreenshot('explain/console_insight_sources_open_dark.png');
   });
+
+  it('filters out non-http(s) and invalid URLs from citations and related content', async () => {
+    let view;
+    ({view, component} = await createConsoleInsightWidget({
+       aidaClient: {
+         async *
+             doConversation() {
+               yield {
+                 explanation: 'This is not a real answer, it is just a test.',
+                 metadata: {
+                   rpcGlobalId: 0,
+                   attributionMetadata: {
+                     attributionAction: Host.AidaClient.RecitationAction.CITE,
+                     citations: [
+                       {
+                         startIndex: 0,
+                         endIndex: 4,
+                         uri: 'devtools://devtools/bundled/devtools_app.html',
+                         sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                       },
+                       {
+                         startIndex: 12,
+                         endIndex: 16,
+                         uri: 'http://www.wiki.test',
+                         sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                       },
+                       {
+                         startIndex: 26,
+                         endIndex: 30,
+                         uri: 'https://www.wiki.test/valid',
+                         sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                       },
+                       {
+                         startIndex: 5,
+                         endIndex: 9,
+                         uri: 'javascript:alert(1)',
+                         sourceType: Host.AidaClient.CitationSourceType.TRAINING_DATA,
+                       },
+                       {
+                         startIndex: 5,
+                         endIndex: 9,
+                         uri: 'javascript:alert(1)',
+                         repository: 'chromedevtools/devtools-frontend',
+                         sourceType: Host.AidaClient.CitationSourceType.TRAINING_DATA,
+                       },
+                     ],
+                   },
+                   factualityMetadata: {
+                     facts: [
+                       {sourceUri: 'file:///etc/passwd'},
+                       {sourceUri: 'data:text/html,hi'},
+                       {sourceUri: 'not a url'},
+                       {sourceUri: 'https://www.fact.test/valid'},
+                     ],
+                   },
+                 },
+                 completed: true,
+               };
+             },
+         registerClientEvent: sinon.spy(),
+       },
+     }));
+    renderElementIntoDOM(component);
+    const nextInput = await view.nextInput;
+    if (nextInput.state.type !== Explain.State.INSIGHT) {
+      assert.fail('Expected INSIGHT state');
+    }
+    const insight = nextInput.state;
+
+    assert.deepEqual(insight.directCitationUrls, ['http://www.wiki.test', 'https://www.wiki.test/valid']);
+    assert.deepEqual(insight.relatedUrls,
+                     ['https://www.fact.test/valid', 'https://www.github.com/chromedevtools/devtools-frontend']);
+    const citationLinkTexts = insight.tokens.flatMap(token => {
+      if (!('tokens' in token) || !Array.isArray(token.tokens)) {
+        return [];
+      }
+      return token.tokens.flatMap(
+          subToken => subToken.type === 'citation' && 'linkText' in subToken ? [subToken.linkText] : []);
+    });
+    assert.deepEqual(citationLinkTexts, [1, 2]);
+  });
+
+  it('hides references details when all citation and factuality URLs are rejected', () => {
+    const target = createTarget('574px', '200px');
+    Explain.DEFAULT_VIEW({
+      ...DEFAULT_INPUT,
+      state: {
+        type: Explain.State.INSIGHT,
+        tokens: [],
+        validMarkdown: true,
+        explanation: 'test',
+        sources: [],
+        metadata: {
+          factualityMetadata: {
+            facts: [{sourceUri: 'devtools://devtools/bundled/devtools_app.html'}],
+          },
+        },
+        isPageReloadRecommended: false,
+        completed: true,
+        directCitationUrls: [],
+        relatedUrls: [],
+      },
+    },
+                         createViewOutput(), target);
+
+    assert.isNull(target.querySelector('details.references'));
+  });
 });

@@ -277,10 +277,6 @@ const markedExtension = {
   renderer: () => '',
 };
 
-function isSearchRagResponse(metadata: Host.AidaClient.ResponseMetadata): boolean {
-  return Boolean(metadata.factualityMetadata?.facts.length);
-}
-
 const blockPropagation = (e: Event): void => e.stopPropagation();
 
 function renderSearchButton(onSearch: ViewInput['callbacks']['onSearch']): Lit.TemplateResult {
@@ -403,7 +399,7 @@ function renderInsight(
           </devtools-markdown-view>`: insight.explanation
         }
         ${insight.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : Lit.nothing}
-        ${isSearchRagResponse(insight.metadata) ? html`
+        ${(insight.directCitationUrls.length > 0 || insight.relatedUrls.length > 0) ? html`
           <details
             class="references"
             ?open=${areReferenceDetailsOpen}
@@ -1047,17 +1043,25 @@ export class ConsoleInsight extends UI.Widget.Widget {
     await this.#generateInsight();
   }
 
+  /**
+   * Injects numbered `[^1]`, `[^2]` footnote markers into the explanation text
+   * for HTTP(S) `WORLD_FACTS` citations and returns the ordered URLs.
+   */
   #insertCitations(explanation: string, metadata: Host.AidaClient.ResponseMetadata):
       {explanationWithCitations: string, directCitationUrls: string[]} {
     const directCitationUrls: string[] = [];
-    if (!isSearchRagResponse(metadata) || !metadata.attributionMetadata) {
+    // Console Insights only surfaces citations when AIDA used Search RAG (`factualityMetadata.facts`).
+    if (!metadata.factualityMetadata?.facts.length || !metadata.attributionMetadata) {
       return {explanationWithCitations: explanation, directCitationUrls};
     }
 
     const {attributionMetadata} = metadata;
+    // Filter HTTP(S) URLs before sorting so footnote numbers stay contiguous, and keep raw URIs
+    // so `URL#toString()` trailing slashes do not alter display or deduplication.
     const sortedCitations =
         attributionMetadata.citations
-            .filter(citation => citation.sourceType === Host.AidaClient.CitationSourceType.WORLD_FACTS)
+            .filter(citation => citation.sourceType === Host.AidaClient.CitationSourceType.WORLD_FACTS &&
+                        Boolean(citation.uri && this.#renderer.sanitizeUrl(citation.uri)))
             .sort((a, b) => (b.endIndex || 0) - (a.endIndex || 0));
     let explanationWithCitations = explanation;
     for (const [index, citation] of sortedCitations.entries()) {
@@ -1098,25 +1102,42 @@ export class ConsoleInsight extends UI.Widget.Widget {
     }
   }
 
+  /**
+   * Collects HTTP(S) reference URLs not already cited inline in the explanation:
+   * Search RAG web sources (`factualityMetadata.facts`) and open-source code
+   * recitation sources (`TRAINING_DATA` citations, falling back to the cited
+   * GitHub repository when `citation.uri` is missing or non-HTTP(S)).
+   */
   #deriveRelatedUrls(directCitationUrls: string[], metadata: Host.AidaClient.ResponseMetadata): string[] {
     if (!metadata.factualityMetadata?.facts.length) {
       return [];
     }
 
-    const relatedUrls =
-        metadata.factualityMetadata.facts.filter(fact => fact.sourceUri && !directCitationUrls.includes(fact.sourceUri))
-            .map(fact => fact.sourceUri as string) ||
-        [];
-    const trainingDataUrls =
-        metadata.attributionMetadata?.citations
-            .filter(
-                citation => citation.sourceType === Host.AidaClient.CitationSourceType.TRAINING_DATA &&
-                    (citation.uri || citation.repository))
-            .map(citation => citation.uri || `https://www.github.com/${citation.repository}`) ||
-        [];
-    const dedupedTrainingDataUrls =
-        [...new Set(trainingDataUrls.filter(url => !relatedUrls.includes(url) && !directCitationUrls.includes(url)))];
-    relatedUrls.push(...dedupedTrainingDataUrls);
+    const seen = new Set(directCitationUrls);
+    const relatedUrls: string[] = [];
+    const addIfValid = (maybeUrl: string|undefined): boolean => {
+      if (!maybeUrl || !this.#renderer.sanitizeUrl(maybeUrl)) {
+        return false;
+      }
+      if (!seen.has(maybeUrl)) {
+        seen.add(maybeUrl);
+        relatedUrls.push(maybeUrl);
+      }
+      return true;
+    };
+
+    for (const fact of metadata.factualityMetadata.facts) {
+      addIfValid(fact.sourceUri);
+    }
+
+    for (const citation of metadata.attributionMetadata?.citations ?? []) {
+      if (citation.sourceType === Host.AidaClient.CitationSourceType.TRAINING_DATA && !addIfValid(citation.uri) &&
+          citation.repository) {
+        // Fall back to the cited GitHub repository when `citation.uri` is missing or non-HTTP(S).
+        addIfValid(`https://www.github.com/${citation.repository}`);
+      }
+    }
+
     return relatedUrls;
   }
 

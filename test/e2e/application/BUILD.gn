@@ -9,6 +9,7 @@ node_ts_library("application") {
     "cookies.test.ts",
     "crash-report-context.test.ts",
     "frame-tree.test.ts",
+    "local-storage.test.ts",
     "manifest.test.ts",
     "reporting-api.test.ts",
     "resource-tree.test.ts",

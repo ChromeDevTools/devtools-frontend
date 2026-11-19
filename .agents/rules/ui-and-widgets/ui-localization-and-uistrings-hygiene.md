@@ -5,10 +5,10 @@ severity: should_fix
 ---
 
 **Rule.** Define user-facing strings in sentence-case UIStrings using complete sentences and i18nTemplate for embedded elements, and prune unused entries
-- **Look for**: String concatenation around `i18nString(...)`, HTML/DOM elements interpolated without `i18nTemplate` (prefer `i18nTemplate(str_, UIStrings.foo, {PH1: html`...`})` from `ui/lit/lit.js` and declarative `<devtools-link>` inside Lit view functions over `uiI18n.getFormatLocalizedStringTemplate` and imperative `Link.create`), Title Case labels in `UIStrings`, unlocalized English literals in templates, or unused keys in `UIStrings`.
+- **Look for**: String concatenation around `i18nString(...)`, HTML/DOM elements interpolated without `i18nTemplate` (prefer `i18nTemplate(str_, UIStrings.foo, {PH1: html`...`})` from `ui/lit/lit.js` and declarative `<devtools-link>` inside Lit view functions over `uiI18n.getFormatLocalizedStringTemplate` and imperative `Link.create`), unescaped literal `{...}` braces in `UIStrings` messages (escape with ICU single quotes `'{'...'}'` or pass via `{PH1}`), hand-edited `front_end/core/i18n/locales/*.json` locale files, Title Case labels in `UIStrings`, unlocalized English literals in templates, or unused keys in `UIStrings`.
 - **Do not flag**: Technical protocol identifiers, MIME types, or strings in `UIStringsNotTranslate` / `i18n.i18n.lockedString(...)`. Pre-existing `UIStrings` entries (such as legacy Title Case strings) or pre-existing unlocalized string literals that are moved verbatim from imperative DOM creation into a Lit template during a refactoring CL.
 
-**Why.** Concatenating translated fragments breaks word order in non-English locales, title-Cased strings violate Chromium UX standards, translating English-only experimental strings wastes localization quota, and unused `UIStrings` entries bloat locale bundles.
+**Why.** Concatenating translated fragments breaks word order in non-English locales, unescaped `{...}` braces fail ICU message parsing, hand-editing generated `locales/*.json` bundles breaks localization rolls, title-Cased strings violate Chromium UX standards, translating English-only experimental strings wastes localization quota, and unused `UIStrings` entries bloat locale bundles.
 
 ## Examples
 
@@ -19,7 +19,7 @@ const UIStrings = {
   learnMoreAbout: 'Learn More About ', // Title case + fragmented sentence
   unusedKey: 'Old label',
 } as const;
-html`${i18nString(UIStrings.learnMoreAbout)}<x-link href=${url}>CORS</x-link>`
+html`${i18nString(UIStrings.learnMoreAbout)}<devtools-link href=${url} jslogcontext="learn-more">CORS</devtools-link>`
 ```
 
 Good:
@@ -32,5 +32,5 @@ const UIStrings = {
    */
   learnMoreAbout: 'Learn more about {PH1}',
 } as const;
-html`${i18nTemplate(UIStrings.learnMoreAbout, {PH1: html`<x-link href=${url}>CORS</x-link>`})}`
+html`${i18nTemplate(str_, UIStrings.learnMoreAbout, {PH1: html`<devtools-link href=${url} jslogcontext="learn-more">CORS</devtools-link>`})}`
 ```

@@ -6,7 +6,7 @@ severity: should_fix
 
 **Rule.** Store DOM node metadata in WeakMap or WeakRef collections and clean up observers when elements detach
 - **Look for**: Strong `Map<Element, ...>` / `Set<Element>` collections holding DOM/model associations, `WeakMap` values retaining strong references back to their DOM keys, `ResizeObserver`/`IntersectionObserver` without `.unobserve()`/`.disconnect()` on teardown, or `ref(el => ...)` callbacks that do not handle `el === undefined`.
-- **Do not flag**: Module-level `WeakMap<Element, ...>` globals whose values do not strongly reference the key, or short-lived local maps created and discarded within a single synchronous function call.
+- **Do not flag**: Module-level `WeakMap<Element, ...>` globals whose values do not strongly reference the key, short-lived local maps created and discarded within a single synchronous function call, `Lit.Directives.createRef()` (`Ref<T>` objects auto-cleared to `undefined` on disconnect), or strong `Map`/`Set` collections keyed by pure presenter/domain model nodes (not DOM `Element`s or detached `SDK.Target`s) cleaned up on item removal.
 
 **Why.** Retaining DOM `Element` or `SDK.Target` references in strong `Map`/`Set` collections (or in `WeakMap` values that hold strong references back to their keys) prevents detached DOM trees from being garbage-collected, while leaving `ResizeObserver`, `MutationObserver`, or `Lit.Directives.ref` callbacks active after unmount leaks memory.
 

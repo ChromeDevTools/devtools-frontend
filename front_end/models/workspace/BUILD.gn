@@ -109,3 +109,14 @@ devtools_foundation_module("foundation_unittests") {
     "../bindings:bundle",
   ]
 }
+
+devtools_api_test_module("api_tests") {
+  sources = [ "WorkspaceImpl.test.api.ts" ]
+
+  ts_deps = [
+    ":bundle",
+    "../../../test/api",
+    "../../core/common:bundle",
+    "../../core/text_utils:bundle",
+  ]
+}

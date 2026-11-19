@@ -611,7 +611,10 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
       }
       await Promise.all(updatePromises);
     }
-    this.#uiSourceCode.addRevision(text.value());
+    const updatedContent = text.value();
+    if (updatedContent !== content) {
+      this.#uiSourceCode.addRevision(updatedContent);
+    }
   }
 
   addResource(resource: SDK.Resource.Resource): void {

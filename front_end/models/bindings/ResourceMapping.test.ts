@@ -4,11 +4,12 @@
 
 import {assert} from 'chai';
 import {afterEach, beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createResource, getMainFrame, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
@@ -134,6 +135,67 @@ describe('ResourceMapping', () => {
     createResource(getMainFrame(target), otherUrl, 'text/html', '');
     uiSourceCode = workspace.uiSourceCodeForURL(otherUrl) as Workspace.UISourceCode.UISourceCode;
     assert.isNotNull(uiSourceCode);
+  });
+
+  describe('inline stylesheet changes', () => {
+    const originalCSS = 'body { color: red; }';
+    const originalContent = `<style>${originalCSS}</style>`;
+    const styleSheetId = 'inline-style' as Protocol.DOM.StyleSheetId;
+    let cssModel: SDK.CSSModel.CSSModel;
+
+    beforeEach(() => {
+      uiSourceCode.setContent(originalContent, false);
+      cssModel = target.model(SDK.CSSModel.CSSModel)!;
+      cssModel.styleSheetAdded({
+        styleSheetId,
+        frameId: getMainFrame(target).id,
+        sourceURL: url,
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        title: '',
+        disabled: false,
+        isInline: true,
+        isMutable: false,
+        isConstructed: false,
+        startLine: 0,
+        startColumn: '<style>'.length,
+        endLine: 0,
+        endColumn: '<style>'.length + originalCSS.length,
+        length: originalCSS.length,
+      });
+    });
+
+    for (const {
+           name,
+           newText,
+           expectedContent,
+         } of [{name: 'does not commit CSSOM notifications without an edit', newText: undefined, expectedContent: null},
+               {name: 'does not commit edits with unchanged text', newText: originalCSS, expectedContent: null},
+               {
+                 name: 'commits inline stylesheet edits that change the document',
+                 newText: 'body { color: blue; }',
+                 expectedContent: '<style>body { color: blue; }</style>',
+               },
+    ]) {
+      it(name, async () => {
+        const committed = sinon.spy();
+        workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommitted, committed);
+        const edit = newText === undefined ?
+            undefined :
+            new SDK.CSSModel.Edit(styleSheetId, new TextUtils.TextRange.TextRange(0, 0, 0, originalCSS.length), newText,
+                                  null);
+
+        cssModel.fireStyleSheetChanged(styleSheetId, edit);
+        await new Promise<void>(resolve => setTimeout(resolve, 0));
+
+        if (expectedContent === null) {
+          sinon.assert.notCalled(committed);
+        } else {
+          sinon.assert.calledOnce(committed);
+          assert.strictEqual(committed.firstCall.args[0].data.uiSourceCode, uiSourceCode);
+          assert.strictEqual(committed.firstCall.args[0].data.content, expectedContent);
+        }
+      });
+    }
   });
 
   describe('uiLocationToJSLocations', () => {

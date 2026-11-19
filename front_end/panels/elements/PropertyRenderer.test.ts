@@ -131,6 +131,80 @@ describeWithEnvironment('PropertyRenderer', () => {
         ['/* c3 */', ''],
       ]);
     });
+
+    it('passes callbacks to match renderers for a single node and for an array', () => {
+      const matchedResult = SDK.CSSPropertyParser.matchDeclaration('color', 'red blue',
+                                                                   [new SDK.CSSPropertyParserMatchers.ColorMatcher()]);
+      assert.exists(matchedResult);
+      const nodes =
+          SDK.CSSPropertyParser.ASTUtils.siblings(SDK.CSSPropertyParser.ASTUtils.declValue(matchedResult.ast.tree));
+      assert.lengthOf(nodes, 2);
+
+      const seen: Elements.PropertyRenderer.RenderingCallbacks[] = [];
+      const colorRenderer: Elements.PropertyRenderer.MatchRenderer<SDK.CSSPropertyParser.Match> = {
+        matchType: SDK.CSSPropertyParserMatchers.ColorMatch,
+        render(_match, context) {
+          seen.push(context.callbacks);
+          return nothing;
+        },
+      };
+      const context = new Elements.PropertyRenderer.RenderingContext(
+          matchedResult.ast, null, new Map([[colorRenderer.matchType, colorRenderer]]), matchedResult);
+      const callbacks: Elements.PropertyRenderer.RenderingCallbacks = {onColor: () => {}};
+
+      Elements.PropertyRenderer.Renderer.render(nodes[0], context, callbacks);
+      assert.deepEqual(seen, [callbacks]);
+
+      seen.length = 0;
+      Elements.PropertyRenderer.Renderer.render(nodes, context, callbacks);
+      assert.deepEqual(seen, [callbacks, callbacks]);
+    });
+
+    it('does not forward callbacks into nested Renderer.render calls', () => {
+      const matchedResult = SDK.CSSPropertyParser.matchDeclaration('color', 'hsl(120deg, 100%, 50%)', [
+        new SDK.CSSPropertyParserMatchers.ColorMatcher(),
+        new SDK.CSSPropertyParserMatchers.AngleMatcher(),
+      ]);
+      assert.exists(matchedResult);
+      const valueNode = SDK.CSSPropertyParser.ASTUtils.declValue(matchedResult.ast.tree);
+      assert.exists(valueNode);
+
+      let outerCallbacks: Elements.PropertyRenderer.RenderingCallbacks|undefined;
+      let innerCallbacks: Elements.PropertyRenderer.RenderingCallbacks|undefined;
+      const renderers = new Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>,
+                                Elements.PropertyRenderer.MatchRenderer<SDK.CSSPropertyParser.Match>>([
+        [
+          SDK.CSSPropertyParserMatchers.ColorMatch,
+          {
+            matchType: SDK.CSSPropertyParserMatchers.ColorMatch,
+            render(match, context) {
+              outerCallbacks = context.callbacks;
+              return Elements.PropertyRenderer.Renderer
+                  .render(SDK.CSSPropertyParser.ASTUtils.children(match.node), context)
+                  .nodes;
+            },
+          },
+        ],
+        [
+          SDK.CSSPropertyParserMatchers.AngleMatch,
+          {
+            matchType: SDK.CSSPropertyParserMatchers.AngleMatch,
+            render(_match, context) {
+              innerCallbacks = context.callbacks;
+              return nothing;
+            },
+          },
+        ],
+      ]);
+      const context = new Elements.PropertyRenderer.RenderingContext(matchedResult.ast, null, renderers, matchedResult);
+      const callbacks: Elements.PropertyRenderer.RenderingCallbacks = {onColor: () => {}};
+
+      Elements.PropertyRenderer.Renderer.render(valueNode, context, callbacks);
+
+      assert.strictEqual(outerCallbacks, callbacks);
+      assert.exists(innerCallbacks);
+      assert.deepEqual(innerCallbacks, {});
+    });
   });
 
   describe('URLRenderer', () => {

@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import type * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {AsyncDirective, Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
@@ -502,6 +503,22 @@ export const CSSControlMap: MapConstructor = Map;
 export type CSSControlMap = Map<string, HTMLElement[]>;
 
 /**
+ * Callbacks passed by a parent renderer to `Renderer.render` to observe values reported by its direct children.
+ * Callbacks are not forwarded automatically into nested `Renderer.render` calls.
+ */
+export interface RenderingCallbacks {
+  /**
+   * Called by a child color renderer during initial render and whenever the color changes. Receives a CSS color
+   * string when the child does not resolve to a `Common.Color.Color` (for example, `color-mix()`).
+   */
+  onColor?: (color: Common.Color.Color|string) => void;
+  /**
+   * Called by a child angle renderer whenever the angle changes.
+   */
+  onAngle?: (angle: InlineEditor.CSSAngleUtils.Angle) => void;
+}
+
+/**
  * Records that the text of `original` was modified to `value`, e.g. because the user changed it in an editor. In a
  * `ComputedText`, a ValueEdit stands in for `original`: it takes over the range of `original` and substitutes `value`
  * for its text. This keeps modifications separate from `original.computedText()`, which stands for the result of
@@ -667,7 +684,7 @@ export class RenderingContext {
               readonly matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
               readonly cssControls?: CSSControlMap|undefined, readonly options: {readonly?: boolean} = {},
               readonly tracing?: TracingContext|undefined, readonly signal?: AbortSignal|undefined,
-              readonly edits?: ValueUpdateTracking|undefined) {
+              readonly edits?: ValueUpdateTracking|undefined, readonly callbacks: RenderingCallbacks = {}) {
   }
 
   // Records that a renderer changed the text of `match` to `value`, e.g. because the user picked a color, so that the
@@ -736,23 +753,26 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
       tracing: TracingContext|undefined,
       signal: AbortSignal|undefined,
       edits: ValueUpdateTracking|undefined,
+      callbacks: RenderingCallbacks|undefined,
   ) {
     super(ast);
     this.#matchedResult = matchedResult;
     this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options,
-                                         tracing, signal, edits);
+                                         tracing, signal, edits, callbacks);
   }
 
-  static render(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[],
-                context: RenderingContext): {nodes: LitTemplate, cssControls: CSSControlMap} {
+  // Renders `nodeOrNodes` and passes `callbacks` to the renderers of the matches in them. The callbacks of `context`
+  // are not forwarded automatically; see `RenderingCallbacks`.
+  static render(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[], context: RenderingContext,
+                callbacks?: RenderingCallbacks): {nodes: LitTemplate, cssControls: CSSControlMap} {
     if (!Array.isArray(nodeOrNodes)) {
-      return this.render([nodeOrNodes], context);
+      return this.render([nodeOrNodes], context, callbacks);
     }
     const cssControls = new CSSControlMap();
     const renderers =
         nodeOrNodes.map(node => this.walkExcludingSuccessors(
                             context.ast.subtree(node), context.property, context.renderers, context.matchedResult,
-                            cssControls, context.options, context.tracing, context.signal, context.edits));
+                            cssControls, context.options, context.tracing, context.signal, context.edits, callbacks));
     const nodes = renderers.reduce((nodes: LitTemplate[], renderer) => {
       if (renderer !== renderers[0]) {
         const spacing = precedingSpace(renderer.ast.tree, context.ast, context.matchedResult);

@@ -60,6 +60,15 @@ describeWithEnvironment('AISettingsTab', () => {
     });
   }
 
+  function resolveConditionalSetting<R>(descriptor: Common.Settings.ConditionalSettingDescriptor<boolean, R>):
+      Common.Settings.Setting<boolean> {
+    const res = Common.Settings.Settings.instance().maybeResolve(descriptor);
+    if (!('setting' in res)) {
+      assert.fail('Expected setting to be available');
+    }
+    return res.setting;
+  }
+
   async function setupWidget(): Promise<{
     widget: Settings.AISettingsTab.AISettingsTab,
     view: ViewFunctionStub<typeof Settings.AISettingsTab.AISettingsTab>,
@@ -75,10 +84,10 @@ describeWithEnvironment('AISettingsTab', () => {
   }
 
   it('renders disclaimers and settings', async () => {
-    Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').set(true);
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
-    Common.Settings.Settings.instance().moduleSetting('ai-annotations-enabled').set(true);
-    Common.Settings.Settings.instance().moduleSetting('ai-code-completion-enabled').set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).set(true);
+    Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false).set(true);
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
 
     const {view} = await setupWidget();
 
@@ -102,10 +111,10 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('has different dislaimers for managed users which have logging disabled', async () => {
-    Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').set(true);
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
-    Common.Settings.Settings.instance().moduleSetting('ai-annotations-enabled').set(true);
-    Common.Settings.Settings.instance().moduleSetting('ai-code-completion-enabled').set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).set(true);
+    Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false).set(true);
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-enabled', false).set(true);
     updateHostConfig({
       aidaAvailability: {
         enabled: true,
@@ -131,8 +140,8 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('has explain this resource enabled', async () => {
-    Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').set(true);
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).set(true);
     mockHostConfigWithExplainThisResourceEnabled();
 
     const {view} = await setupWidget();
@@ -147,39 +156,39 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('can turn feature on, which automatically expands it', async () => {
-    Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').set(false);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).set(false);
     const {view} = await setupWidget();
 
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').get());
+    assert.isFalse(resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).get());
     const setting = view.input.settingToParams.entries().next();
     assert.exists(setting.value);
     assert.isFalse(setting.value[1].settingExpandState.isSettingExpanded);
 
     view.input.toggleSetting(setting.value[0], new Switch.Switch.SwitchChangeEvent(true));
-    assert.isTrue(Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').get());
+    assert.isTrue(resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).get());
     assert.isTrue(setting.value[1].settingExpandState.isSettingExpanded);
   });
 
   it('can expand and collapse details via click', async () => {
-    Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').set(false);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).set(false);
     const {view} = await setupWidget();
 
     const setting = view.input.settingToParams.entries().next();
     assert.exists(setting.value);
     assert.isFalse(setting.value[1].settingExpandState.isSettingExpanded);
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').get());
+    assert.isFalse(resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).get());
 
     view.input.expandSetting(setting.value[0]);
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').get());
+    assert.isFalse(resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).get());
     assert.isTrue(setting.value[1].settingExpandState.isSettingExpanded);
 
     view.input.expandSetting(setting.value[0]);
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('console-insights-enabled').get());
+    assert.isFalse(resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor).get());
     assert.isFalse(setting.value[1].settingExpandState.isSettingExpanded);
   });
 
   it('can turn feature off without collapsing it', async () => {
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).set(true);
     const {view} = await setupWidget();
 
     const settingToParams = view.input.settingToParams.entries();
@@ -188,11 +197,11 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.exists(setting.value);
 
     view.input.expandSetting(setting.value[0]);
-    assert.isTrue(Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').get());
+    assert.isTrue(resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).get());
     assert.isTrue(setting.value[1].settingExpandState.isSettingExpanded);
 
     view.input.toggleSetting(setting.value[0], new MouseEvent('click'));
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').get());
+    assert.isFalse(resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).get());
     assert.isTrue(setting.value[1].settingExpandState.isSettingExpanded);
   });
 
@@ -274,8 +283,8 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('can turn feature off and clear history', async () => {
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-history-entries').set([{}, {}]);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).set(true);
+    Common.Settings.Settings.instance().createSetting<unknown[]>('ai-assistance-history-entries', []).set([{}, {}]);
     const {view} = await setupWidget();
 
     const settingToParams = view.input.settingToParams.entries();
@@ -284,13 +293,13 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.exists(setting.value);
 
     view.input.toggleSetting(setting.value[0], new MouseEvent('click'));
-    assert.isFalse(Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').get());
+    assert.isFalse(resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).get());
     assert.isTrue(deleteAiAssistanceHistoryStub.called,
                   'Expected AiHistoryStorage deleteAll to be called but it is not called');
   });
 
   it('shows AI assistance setting strings', async () => {
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).set(true);
 
     const {view} = await setupWidget();
 
@@ -315,7 +324,7 @@ describeWithEnvironment('AISettingsTab', () => {
         enterprisePolicyValue: 1,  // ALLOW_WITHOUT_LOGGING
       },
     });
-    Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
+    resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor).set(true);
 
     const {view} = await setupWidget();
 
@@ -328,7 +337,8 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('marks the V2 opt-in dialog as seen when turning on AI assistance', async () => {
-    const aiAssistanceEnabledSetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled');
+    const aiAssistanceEnabledSetting =
+        resolveConditionalSetting(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor);
     aiAssistanceEnabledSetting.set(false);
     const v2OptInSeenSetting = Common.Settings.Settings.instance().resolve(
         AiAssistanceModel.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor);
@@ -504,7 +514,8 @@ describeWithEnvironment('AISettingsTab', () => {
       it('ignores other settings', async () => {
         const {widget, highlightAllowedTools} = await showWidget();
 
-        widget.highlightObject(Common.Settings.Settings.instance().moduleSetting('console-insights-enabled'));
+        widget.highlightObject(
+            resolveConditionalSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor));
         await widget.updateComplete;
 
         sinon.assert.notCalled(highlightAllowedTools);

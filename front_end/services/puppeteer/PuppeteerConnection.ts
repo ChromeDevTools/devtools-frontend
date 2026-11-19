@@ -16,6 +16,26 @@ class ProtocolError extends Error {
 }
 
 /**
+ * CDP commands that send input to a page, run script in a page, read objects
+ * of a page, or navigate a page.
+ */
+const PAGE_INPUT_COMMANDS = new Set([
+  'DOM.focus',
+  'DOM.scrollIntoViewIfNeeded',
+  'DOM.setFileInputFiles',
+  'Page.navigate',
+  'Page.navigateToHistoryEntry',
+  'Page.reload',
+  'Runtime.callFunctionOn',
+  'Runtime.evaluate',
+  'Runtime.getProperties',
+]);
+
+function isPageInputCommand(method: string): boolean {
+  return method.startsWith('Input.') || PAGE_INPUT_COMMANDS.has(method);
+}
+
+/**
  * This class serves as a puppeteer.Connection while sending/receiving CDP messages
  * over DevTools' own SessionRouter.
  *
@@ -28,6 +48,7 @@ export class PuppeteerConnectionAdapter extends puppeteer.Connection implements
     ProtocolClient.CDPConnection.CDPConnectionObserver {
   readonly #connection: ProtocolClient.CDPConnection.CDPConnection;
   readonly #sessionId: Protocol.Target.SessionID;
+  #pageInputError?: Error;
 
   constructor(connection: ProtocolClient.CDPConnection.CDPConnection, sessionId: Protocol.Target.SessionID) {
     // url is an empty string in this case parallel to:
@@ -47,11 +68,23 @@ export class PuppeteerConnectionAdapter extends puppeteer.Connection implements
     this.#sessionId = sessionId;
   }
 
+  /**
+   * Rejects with `error` all later commands that send input to a page, run
+   * script in a page, or navigate a page. Other commands, for example the
+   * commands that disable CDP domains, continue to work.
+   */
+  blockPageInput(error: Error): void {
+    this.#pageInputError ??= error;
+  }
+
   // eslint-disable-next-line @devtools/no-underscored-properties
   override _rawSend(
       _callbacks: unknown, method: string|number|symbol, params: unknown, sessionId?: string,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       _options?: unknown): Promise<any> {
+    if (this.#pageInputError && typeof method === 'string' && isPageInputCommand(method)) {
+      return Promise.reject(this.#pageInputError);
+    }
     return this.#connection
         .send(
             method as ProtocolClient.CDPConnection.Command,
@@ -100,7 +133,7 @@ export class PuppeteerConnectionHelper {
   }): Promise<{
     page: puppeteer.Page | null,
     browser: puppeteer.Browser,
-    puppeteerConnection: puppeteer.Connection,
+    puppeteerConnection: PuppeteerConnectionAdapter,
   }> {
     const {connection, targetId, sessionId, isPageTargetCallback} = options;
     const puppeteerConnection = new PuppeteerConnectionAdapter(connection, sessionId);

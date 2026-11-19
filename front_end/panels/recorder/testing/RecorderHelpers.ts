@@ -100,6 +100,8 @@ export interface MockTarget {
 export interface RecordingPlayerMocks {
   /** The `send` method of the CDP session of the mock page. */
   send: sinon.SinonStub;
+  /** The `blockPageInput` method of the mock Puppeteer connection. */
+  blockPageInput: sinon.SinonStub;
   /** The tab session, which is the parent of the CDP session of the mock page. */
   tabSession: unknown;
   /** The child targets of the tab target, for example prerender targets. */
@@ -185,8 +187,10 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
           signal.addEventListener('abort', () => reject(new Error('The wait for the mock target was aborted')));
         });
       });
+  const blockPageInput = sinon.stub();
   const mock = {
     page,
+    connection: {blockPageInput},
     browser: {
       pages: () => Promise.resolve(pages),
       waitForTarget,
@@ -202,6 +206,7 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
   sinon.stub(Models.RecordingPlayer.RecordingPlayer, 'connectPuppeteer').resolves(mock as never);
   return {
     send: client.send,
+    blockPageInput,
     tabSession,
     tabChildTargets,
     mainFrame,

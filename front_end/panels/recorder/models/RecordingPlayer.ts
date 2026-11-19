@@ -90,6 +90,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   static async connectPuppeteer(): Promise<{
     page: puppeteer.Page,
     browser: puppeteer.Browser,
+    connection: Pick<PuppeteerService.PuppeteerConnection.PuppeteerConnectionAdapter, 'blockPageInput'>,
   }> {
     const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
     if (!rootTarget) {
@@ -163,7 +164,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       );
     });
 
-    return {page, browser};
+    return {page, browser, connection: puppeteerConnection};
   }
 
   static async disconnectPuppeteer(browser: puppeteer.Browser): Promise<void> {
@@ -228,13 +229,19 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   async play(): Promise<void> {
-    const {page, browser} = await RecordingPlayer.connectPuppeteer();
+    const {page, browser, connection} = await RecordingPlayer.connectPuppeteer();
     this.aborted = false;
 
     const player = this;
-    // Stops the runner and the waits for breakpoints and for the replay speed
-    // when the guard blocks a navigation.
-    const guard = new NavigationGuard(this.userFlow, page.url(), () => this.abort());
+    const guard = new NavigationGuard(this.userFlow, page.url(), () => {
+      // The step in progress must not send more input, because the page can
+      // be at an origin that is not in the recording.
+      if (guard.error) {
+        connection.blockPageInput(guard.error);
+      }
+      // Stop the runner and the waits for breakpoints and for the replay speed.
+      this.abort();
+    });
     class ExtensionWithBreak extends PuppeteerReplay.PuppeteerRunnerExtension {
       readonly #speed: PlayRecordingSpeed;
 
@@ -300,11 +307,18 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           // sends input to the target.
           const timeout = step.timeout || flow?.timeout || this.timeout;
           await guard.guardStepTarget(this.browser, step.target, timeout);
-          if (guard.error) {
-            return;
-          }
         }
-        await super.runStep(step, flow);
+        // The guard can have an error, or the user can abort the replay, while
+        // the calls above are in progress. Do not start the step then.
+        if (guard.error || player.aborted) {
+          return;
+        }
+        // After an error of the guard, the Puppeteer connection rejects page
+        // input, but Puppeteer locators try again until the step timeout. Do
+        // not wait for the step in that case.
+        const stepPromise = super.runStep(step, flow);
+        stepPromise.catch(() => {});
+        await Promise.race([stepPromise, guard.errorOrDisposePromise]);
       }
     }
 

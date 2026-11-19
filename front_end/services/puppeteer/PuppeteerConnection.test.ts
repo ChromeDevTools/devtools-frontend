@@ -47,4 +47,38 @@ describe('PuppeteerConnectionAdapter', () => {
       assert.strictEqual(error.data, 'Some data');
     }
   });
+
+  it('rejects page input commands after blockPageInput() and sends other commands', async () => {
+    const connection = new MockConnection();
+    const sent: string[] = [];
+    connection.send = ((method: string) => {
+                        sent.push(method);
+                        return Promise.resolve({result: {}});
+                      }) as typeof connection.send;
+    const adapter = new PuppeteerService.PuppeteerConnection.PuppeteerConnectionAdapter(
+        connection,
+        'test-session-id' as Protocol.Target.SessionID,
+    );
+
+    await adapter._rawSend('some-callbacks', 'Input.dispatchMouseEvent', {});
+    const error = new Error('Navigation is not allowed');
+    adapter.blockPageInput(error);
+
+    const blockedMethods = [
+      'Input.dispatchMouseEvent',
+      'Input.insertText',
+      'Runtime.evaluate',
+      'Runtime.getProperties',
+      'DOM.scrollIntoViewIfNeeded',
+      'Page.navigate',
+    ];
+    for (const method of blockedMethods) {
+      const result = await adapter._rawSend('some-callbacks', method, {}).then(() => null, (err: Error) => err);
+      assert.strictEqual(result, error, `${method} must be rejected`);
+    }
+    await adapter._rawSend('some-callbacks', 'Fetch.disable', {});
+    await adapter._rawSend('some-callbacks', 'Runtime.disable', {});
+
+    assert.deepEqual(sent, ['Input.dispatchMouseEvent', 'Fetch.disable', 'Runtime.disable']);
+  });
 });

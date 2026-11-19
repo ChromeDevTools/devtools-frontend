@@ -628,10 +628,24 @@ describe('RecordingPlayer', () => {
       sinon.assert.neverCalledWith(mocks.send, 'Fetch.continueRequest');
     });
 
+    it('blocks the page input of the Puppeteer connection when a navigation is blocked', async () => {
+      sinon.stub(console, 'error');
+      const blockedReplay = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 200,
+        });
+      });
+      sinon.assert.calledOnceWithExactly(mocks.blockPageInput, blockedReplay.error);
+    });
+
     it('removes the session history of the page at the start of the replay', async () => {
       const {error} = await replay(() => {});
 
       assert.isNull(error);
+      sinon.assert.notCalled(mocks.blockPageInput);
       sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
     });
 
@@ -1228,6 +1242,43 @@ describe('RecordingPlayer', () => {
       sinon.assert.calledOnceWithExactly(mocks.mainFrame.goto!, 'https://allowed.test/first');
     });
 
+    it('does not start a step if a navigation is blocked while the page comes to the front', async () => {
+      sinon.stub(console, 'error');
+      let bringToFrontCalls = 0;
+      mocks.pages[0].bringToFront = async () => {
+        bringToFrontCalls++;
+        if (bringToFrontCalls === 2) {
+          // The second step called `bringToFront()`, and it has not started yet.
+          mocks.emitRequestPaused({
+            requestId: '1',
+            frameId: 'main-frame',
+            request: {url: blockedUrl},
+            responseStatusCode: 200,
+          });
+        }
+      };
+      recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+          {
+            title: 'test',
+            steps: [
+              {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/first'},
+              {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/second'},
+            ],
+          },
+          {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+      );
+      const result = new Promise<Error|null>(resolve => {
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data), {once: true});
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+      });
+      recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, ({data: {resolve}}) => resolve());
+
+      await recordingPlayer.play();
+
+      assert.strictEqual((await result)?.message, blockedMessage);
+      sinon.assert.calledOnceWithExactly(mocks.mainFrame.goto!, 'https://allowed.test/first');
+    });
+
     it('checks all documents of a prerender session before the page uses the session', async () => {
       sinon.stub(console, 'error');
       const listeners: Array<(event: unknown) => void> = [];
@@ -1382,6 +1433,45 @@ describe('RecordingPlayer', () => {
       });
 
       assert.include(error?.message, 'Could not enable the navigation guard: protocol failure');
+    });
+
+    it('does not wait for the step in progress after the guard blocks a navigation', async () => {
+      sinon.stub(console, 'error');
+      // The step does not complete before the end of the replay.
+      const step = Promise.withResolvers<void>();
+      mocks.mainFrame.goto!.callsFake(() => {
+        setTimeout(() => {
+          mocks.emitRequestPaused({
+            requestId: '1',
+            frameId: 'main-frame',
+            request: {url: blockedUrl},
+            responseStatusCode: 200,
+          });
+        }, 0);
+        return step.promise;
+      });
+      recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+          {
+            title: 'test',
+            steps: [{type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'}, createCustomStep()],
+          },
+          {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+      );
+      let steps = 0;
+      const result = new Promise<Error|null>(resolve => {
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data), {once: true});
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+      });
+      recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, ({data: {resolve}}) => {
+        steps++;
+        resolve();
+      });
+
+      await recordingPlayer.play();
+
+      assert.strictEqual((await result)?.message, blockedMessage);
+      assert.strictEqual(steps, 1);
+      step.resolve();
     });
 
     it('does not run steps if the guard blocks a navigation before the runner starts', async () => {

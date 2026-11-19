@@ -200,6 +200,7 @@ export class NavigationGuard {
   readonly #abortController = new AbortController();
   readonly #stepTargetUrls = new Set<string>();
   readonly #watchedBrowsers = new Set<puppeteer.Browser>();
+  readonly #errorOrDispose = Promise.withResolvers<void>();
 
   /**
    * @param onError The guard calls it each time it blocks a navigation or
@@ -217,9 +218,18 @@ export class NavigationGuard {
     return this.#error;
   }
 
+  /**
+   * Resolves when the guard has an error or when `dispose()` is called. Use
+   * it to stop a wait for an operation that the guard blocked.
+   */
+  get errorOrDisposePromise(): Promise<void> {
+    return this.#errorOrDispose.promise;
+  }
+
   #block(url: string): void {
     this.#error ??= new Error(`Navigation to ${url} is not allowed, because the recording does not contain its origin`);
     this.#abortController.abort();
+    this.#errorOrDispose.resolve();
     this.#onError();
   }
 
@@ -227,6 +237,7 @@ export class NavigationGuard {
     const message = err instanceof Error ? err.message : String(err);
     this.#error ??= new Error(`Could not enable the navigation guard: ${message}`);
     this.#abortController.abort();
+    this.#errorOrDispose.resolve();
     this.#onError();
   }
 
@@ -590,6 +601,7 @@ export class NavigationGuard {
   async dispose(): Promise<void> {
     this.#disposed = true;
     this.#abortController.abort();
+    this.#errorOrDispose.resolve();
     for (const cleanup of this.#cleanups.splice(0)) {
       await cleanup();
     }

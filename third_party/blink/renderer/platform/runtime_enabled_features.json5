@@ -937,10 +937,6 @@
       status: "stable",
     },
     {
-      name: "BackgroundClipTextDecoration",
-      status: "stable",
-    },
-    {
       name: "BackgroundFetch",
       public: true,
       status: "stable",
@@ -1457,6 +1453,12 @@
       name: "CompositeHoverStyle",
     },
     {
+      // Kill switch for compositing SVG transform animations under non-default
+      // zoom (e.g. high-DPI device scale factor or CSS zoom).
+      name: "CompositeZoomedSVGTransformAnimations",
+      status: "stable",
+    },
+    {
       name: "CompositingDecisionAtAnimationPhaseBoundaries"
     },
     {
@@ -1736,12 +1738,6 @@
       status: "stable",
     },
     {
-      // Attempts to "fold" a calc() value to NaN or +/-Infinity when producing
-      // a CalculationValue. Can produce incorrect results if the expression
-      // contains percentages.
-      name: "CSSCalcEarlyNaNAndInfFolding",
-    },
-    {
       // Support CSS Values Level 4 calc simplification and serialization
       // as specified in the specs below.
       // https://drafts.csswg.org/css-values-4/#calc-simplification
@@ -1769,6 +1765,13 @@
       // https://drafts.csswg.org/selectors-4/#attribute-case
       name: "CSSCaseSensitiveSelector",
       status: "test",
+    },
+    {
+      // color-mix() with one color, or with more than two colors.
+      // https://drafts.csswg.org/css-color-5/#color-mix
+      // https://crbug.com/407806416
+      name: "CSSColorMixVariadic",
+      status: "experimental",
     },
     {
       name: "CSSColorTypedOM",
@@ -1864,6 +1867,13 @@
       status: "stable",
     },
     {
+      // Cross-track reading order for `reading-flow: grid-lanes-flow`.
+      // https://drafts.csswg.org/css-display-4/#reading-flow
+      name: "CSSGridLanesCrossTrackReadingFlow",
+      status: "experimental",
+      depends_on: ["CSSGridLanesLayout"],
+    },
+    {
       name: "CSSGridLanesLayout",
       status: "experimental",
       public: true,
@@ -1945,11 +1955,6 @@
       name: "CSSLineClampAsShorthand",
       depends_on: ["CSSLineClamp"],
       status: "test"
-    },
-    {
-      name: "CSSLineClampLineBreakingEllipsis",
-      depends_on: ["CSSLineClamp"],
-      status: "experimental",
     },
     {
       // https://chromestatus.com/feature/5095153430822912
@@ -2063,6 +2068,10 @@
     {
       name: "CSSProgressNotationNoClamp",
       status: "experimental",
+    },
+    {
+      name: "CSSPropertyDescriptorsOptional",
+      status: "test",
     },
     {
       // For ::column pseudo-element for fragment styling.
@@ -3192,16 +3201,13 @@
       // the support of the browser process to fully enable the feature.
       // Enabling this runtime enabled feature alone has no effect.
       public: true,
-      status: "stable",
     },
     {
       name: "FencedFramesAPIChanges",
       // Various new IDL attributes on the <fencedframe> element (such as
       // `config`, `sandbox`, and `allow`).
-      base_feature_status: "enabled",
+      base_feature_status: "disabled",
       copied_from_base_feature_if: "enabled_or_overridden",
-      status: "stable",
-
     },
     {
       // Allows fenced frames to access unpartioned data via Shared Storage in
@@ -3449,6 +3455,12 @@
       name: "FocusResetEvent",
       status: "experimental",
     },
+    // Offset adjust the focus ring's outer stroke radius.
+    // see http://crbug.com/556789070.
+    {
+      name: "FocusRingOffsetAdjustedOuterRadius",
+      status: "stable",
+    },
     {
       // Respects explicit outline colors for focus rings in dark mode and uses
       // an off-white default. https://issues.chromium.org/issues/480978106
@@ -3487,11 +3499,6 @@
     },
     {
       name: "FontFormatAvar2",
-      status: "stable",
-    },
-    {
-      // crbug.com/41170551
-      name: "FontLanguageOverride",
       status: "stable",
     },
     {
@@ -4647,6 +4654,14 @@
     // https://crbug.com/534781954
     {
       name: "ModuleMapDoNotCacheFailedFetch",
+      status: "stable",
+    },
+    // Checks that an existing module map entry's integrity metadata matches
+    // the consumer's integrity metadata before reusing the entry.
+    // https://github.com/whatwg/html/pull/12922
+    // https://crbug.com/502822515 https://crbug.com/556858866
+    {
+      name: "ModuleMapMatchIntegrity",
       status: "stable",
     },
     // ModulePreloadReferrer enables modulepreload to send proper referrer
@@ -6060,13 +6075,6 @@
       name: "ScrollVisibilityHiddenScrollers",
       status: "stable",
     },
-    // Allows CSS styling of browser search results.
-    // https://issues.chromium.org/issues/339298411
-    // https://chromestatus.com/feature/5195073796177920
-    {
-      name: "SearchTextHighlightPseudo",
-      status: "stable",
-    },
     // SecurePaymentConfirmation has shipped on some platforms, but its
     // availability is controlled by the browser process (via the
     // SecurePaymentConfirmationBrowser feature), as it requires browser
@@ -6244,12 +6252,6 @@
       // customizable trigger button through the flat tree.
       // See https://chromestatus.com/feature/5127427618635776
       name: "SelectUsesFlatTree",
-    },
-    {
-      name: "SendBeaconThrowForBlobWithNonSimpleType",
-      public: true,
-      status: "stable",
-      base_feature: "none",
     },
     {
       name: "SendEarlyLastBeginMainFrame",
@@ -6468,6 +6470,13 @@
       // context.
       name: "SkipCompositingStaticBackdropFilterAnimation",
       status: "stable",
+    },
+    {
+      // Kill switch for not dispatching DOMActivate when there are no listeners
+      // for it. Nothing else handles it once activation behavior is cleaned up.
+      name: "SkipDOMActivateWithoutListeners",
+      status: "stable",
+      depends_on: ["CleanUpActivationBehavior"],
     },
     {
       // Improves performance of event dispatching by skipping the capture
@@ -6960,6 +6969,11 @@
     {
       name: "TableIsAutoFixedLayout",
       status: "test",
+    },
+    {
+      // Kill switch for crbug.com/40507408.
+      name: "TableWhitespaceAfterInline",
+      status: "stable",
     },
     {
       name: "TabSizeInRubyBase",

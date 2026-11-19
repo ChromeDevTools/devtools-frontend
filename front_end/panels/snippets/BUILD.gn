@@ -49,13 +49,18 @@ devtools_entrypoint("bundle") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [ "ScriptSnippetFileSystem.test.ts" ]
+  sources = [
+    "EvaluateScriptSnippet.test.ts",
+    "ScriptSnippetFileSystem.test.ts",
+  ]
 
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../core/text_utils:bundle",
+    "../../generated",
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",
     "../../testing",

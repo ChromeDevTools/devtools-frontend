@@ -8,9 +8,12 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {getAxeViolations} from '../../testing/AxeHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {createTarget, describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import * as BrowserDebugger from './browser_debugger.js';
 
@@ -32,13 +35,23 @@ describeWithEnvironment('ObjectEventListenersSidebarPane', () => {
       type: Protocol.Runtime.RemoteObjectType.Object,
       objectId: objectId as Protocol.Runtime.RemoteObjectId,
       className: target.type() === SDK.Target.Type.ServiceWorker ? 'ServiceWorkerGlobalScope' : 'Window',
+      description: target.type() === SDK.Target.Type.ServiceWorker ? 'ServiceWorkerGlobalScope' : 'Window',
     });
     // No framework event listeners are registered in the page.
+    const emptyEventListeners = runtimeModel.createRemoteObject({
+      type: Protocol.Runtime.RemoteObjectType.Object,
+      subtype: Protocol.Runtime.RemoteObjectSubtype.Array,
+      objectId: `${objectId}-framework-event-listeners` as Protocol.Runtime.RemoteObjectId,
+      description: 'Array(0)',
+    });
     const frameworkListenersResult = runtimeModel.createRemoteObject({
       type: Protocol.Runtime.RemoteObjectType.Object,
       objectId: `${objectId}-framework-listeners` as Protocol.Runtime.RemoteObjectId,
     });
-    sinon.stub(frameworkListenersResult, 'getOwnProperties').resolves({properties: [], internalProperties: []});
+    sinon.stub(frameworkListenersResult, 'getOwnProperties').resolves({
+      properties: [new SDK.RemoteObject.RemoteObjectProperty('eventListeners', emptyEventListeners)],
+      internalProperties: [],
+    });
     sinon.stub(globalObject, 'callFunction').resolves({object: frameworkListenersResult, wasThrown: false});
 
     const executionContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
@@ -137,5 +150,118 @@ describeWithEnvironment('ObjectEventListenersSidebarPane', () => {
     assert.exists(pane.contentElement.querySelector('.placeholder'));
 
     pane.detach();
+  });
+
+  it('expands global window touchstart listener details and has no accessibility violations', async () => {
+    registerNoopActions(['browser-debugger.refresh-global-event-listeners']);
+    setUpEnvironment();
+    const pageTarget = createTarget();
+    const domDebuggerModel = pageTarget.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+    const debuggerModel = pageTarget.model(SDK.DebuggerModel.DebuggerModel);
+    const runtimeModel = pageTarget.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(domDebuggerModel);
+    assert.exists(debuggerModel);
+    assert.exists(runtimeModel);
+
+    const {executionContext, globalObject: windowObject} = createExecutionContext(pageTarget, 'window');
+    const handler = runtimeModel.createRemoteObject({
+      type: Protocol.Runtime.RemoteObjectType.Function,
+      description: '() => console.log',
+    });
+    const script = debuggerModel.parsedScriptSource(
+        '1' as Protocol.Runtime.ScriptId,
+        'http://localhost/devtools/a11y-axe-core/sources/global-listeners-sidebar-a11y-test.js' as
+            ReturnType<SDK.Script.Script['contentURL']>,
+        0,
+        0,
+        27,
+        0,
+        1,
+        '',
+        null,
+        undefined,
+        false,
+        false,
+        0,
+        false,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+    );
+    const location = debuggerModel.createRawLocation(script, 16, 34);
+
+    const listener = new SDK.DOMDebuggerModel.EventListener(
+        domDebuggerModel,
+        windowObject,
+        'touchstart',
+        /* useCapture */ false,
+        /* passive */ true,
+        /* once */ false,
+        handler,
+        handler,
+        location,
+        /* customRemoveFunction */ null,
+        SDK.DOMDebuggerModel.EventListener.Origin.RAW,
+    );
+    sinon.stub(domDebuggerModel, 'eventListeners').withArgs(windowObject).resolves([listener]);
+
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+
+    const pane = new BrowserDebugger.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane();
+    renderElementIntoDOM(pane, {width: 400, height: 400, includeCommonStyles: true});
+    const toolbar = document.createElement('devtools-toolbar');
+    renderElementIntoDOM(toolbar, {allowMultipleChildren: true});
+    Lit.render(pane.toolbarItems(), toolbar);
+
+    await pane.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const refreshButton = toolbar.querySelector('devtools-button');
+    assert.exists(refreshButton);
+    assert.isEmpty(await getAxeViolations(toolbar));
+
+    const tree = pane.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    tree.flushPendingUpdatesForTesting();
+    const typeElement = tree.getInternalTreeOutlineForTest().rootElement().firstChild();
+    assert.exists(typeElement);
+    assert.strictEqual(typeElement.titleElement.textContent?.trim(), 'touchstart');
+
+    typeElement.expand();
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+    tree.flushPendingUpdatesForTesting();
+
+    const listenerElement = typeElement.firstChild();
+    assert.exists(listenerElement);
+    assert.strictEqual(listenerElement.listItemElement.dataset.origin, 'Raw');
+
+    listenerElement.expand();
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+    tree.flushPendingUpdatesForTesting();
+
+    const detailsText = listenerElement.listItemElement.textContent?.replaceAll(/\s+/g, ' ').trim() ?? '';
+    assert.include(detailsText, 'Window');
+    assert.include(detailsText, 'Toggle passive');
+    assert.include(detailsText, 'global-listeners-sidebar-a11y-test.js:17');
+    assert.exists(listenerElement.listItemElement.querySelector('devtools-button[title="Delete event listener"]'));
+
+    const propertyRows =
+        listenerElement.children().map(row => row.listItemElement.textContent?.replaceAll(/\s+/g, ' ').trim() ?? '');
+    assert.deepEqual(propertyRows, [
+      'handler: () => console.log',
+      'once: false',
+      'passive: true',
+      'useCapture: false',
+    ]);
+
+    const rect = pane.contentElement.getBoundingClientRect();
+    assert.isAbove(rect.width, 0);
+    assert.isAbove(rect.height, 0);
+    assert.isEmpty(await getAxeViolations(pane.contentElement));
   });
 });

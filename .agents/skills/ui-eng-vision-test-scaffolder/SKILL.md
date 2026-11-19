@@ -187,7 +187,7 @@ Always detect the execution environment first to run tests successfully:
 
 ### Scenario E: Lightweight Test Hook Gotchas (`describe` vs `describeWithEnvironment`)
 
-*   Prefer `describe` with lightweight hooks (`setupLocaleHooks()`, `setupSettingsHooks()`) when full `describeWithEnvironment` is unnecessary.
+*   Do **not** use `describeWithEnvironment` or `describeWithMockConnection` in new or migrated unit tests. Use plain `describe` (from `'mocha'`) with `TestUniverse` and modular setup hooks (`setupLocaleHooks()`, `setupSettingsHooks()`, `setupRuntimeHooks()`; see `foundation-test-migration`).
 *   **Always reset singleton registries in `afterEach`**:
     When registering actions, shortcuts, or context menus in tests, singleton registries MUST be reset in `afterEach`:
 

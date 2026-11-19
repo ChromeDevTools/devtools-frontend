@@ -124,6 +124,15 @@ findings):
   that it passes on `<body>` of the main frame.
 - **Right suite:** Ask whether an E2E test could be a unit test, or whether the
   E2E coverage is intentional for a user story. See `devtools-testing-guidance`.
+- **No `describeWithEnvironment` or `describeWithMockConnection`:** Flag newly
+  added `describeWithEnvironment` or `describeWithMockConnection` suite blocks
+  in new or migrated unit tests; prescribe plain `describe` (from `'mocha'`)
+  with `TestUniverse` and modular setup hooks (`setupLocaleHooks()`,
+  `setupSettingsHooks()`, `setupRuntimeHooks()`; see
+  `foundation-test-migration`) instead. Do not require a small bugfix CL that
+  only adds or updates an `it()` inside an untouched pre-existing
+  `describeWithEnvironment` or `describeWithMockConnection` suite to migrate the
+  whole file.
 - **E2E selectors match real UI:** Labels and `aria-label`s must match the
   actual strings, for example "Show user agent shadow DOM" and not "User agent
   shadow DOM". Check that the setting being toggled actually affects the

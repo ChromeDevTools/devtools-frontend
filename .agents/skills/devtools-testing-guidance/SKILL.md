@@ -19,7 +19,7 @@ This guide outlines when and how to select the appropriate test suite when writi
 Use unit tests for isolated testing of individual functions, classes, models, helpers, and UI components.
 
 - **Utilities & Framework:**
-  - Use `TestUniverse` (and foundation test helpers) for easy, isolated setup of required dependencies and models.
+  - Do **not** use `describeWithEnvironment` or `describeWithMockConnection` in new or migrated unit tests. Use plain `describe` (`import {describe, it} from 'mocha';`) with `TestUniverse` (`front_end/testing/TestUniverse.js`) and modular setup hooks (`setupLocaleHooks()`, `setupSettingsHooks()`, `setupRuntimeHooks()`; see `foundation-test-migration`) for isolated setup of required dependencies and models.
   - For testing UI widgets, use stubbed view functions and screenshot assertions rather than spinning up heavy DOM/browser infrastructure.
 - **Location:** Co-located next to their implementation files (e.g. `TimelinePanel.ts` and `TimelinePanel.test.ts`).
 - **Test functions:** import `describe`, `it`, `beforeEach`, etc. from `mocha` (e.g. `import {describe, it} from 'mocha';`). They are not available as globals.

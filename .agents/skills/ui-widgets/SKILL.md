@@ -192,7 +192,7 @@ Never combine a `.hidden` CSS class (`classMap({hidden: ...})` or `classList.tog
     }
   }
   ```
-  `instantiateWidget` automatically resolves dependencies from `Universe` and passes them as constructor parameter #2. In unit tests using `renderElementIntoDOM`, `TestUniverse` handles injection automatically (override via `setTestUniverseForWidgets`).
+  `instantiateWidget` automatically resolves dependencies from `Universe` via `UniverseRequestEvent` and passes them as constructor parameter #2. When mounting widgets declaratively via `widget(...)` inside `renderElementIntoDOM`, a default `TestUniverse` answers `UniverseRequestEvent` automatically (override via `setTestUniverseForWidgets`); when instantiating `new MyWidget(...)` directly in presenter unit tests, construct `const universe = new TestUniverse();` and pass `[universe.targetManager, ...]` as constructor parameter #2.
 
 ## Step-by-Step Implementation Example
 
@@ -348,7 +348,7 @@ export class ParentWidget extends UI.Widget.Widget {
 
 Ship unit tests in the **same CL** as the presenter/view change (never defer tests to a follow-up test-only CL). Testing focuses on the Presenter's logic using `createViewFunctionStub`, while template layout is covered by `assertScreenshot` / E2E tests (per `docs/ui_engineering.md`). When adding targeted unit tests for view rendering, name the suite `describe('view', ...)` (never `describe('... DEFAULT_VIEW', ...)`), and avoid 80–150 line synthetic `DEFAULT_VIEW` DOM assertion suites that duplicate presenter tests. Note that `new MyWidget()` defaults `this.element` to `<div class="widget">`, so Light DOM stylesheets written with an explicit `@scope (devtools-widget)` root require `new MyWidget(document.createElement('devtools-widget'))` (or mounting via `${widget(MyWidget)}`) in unit and screenshot tests.
 
-* **`describeWithEnvironment`**: Sets up the testing environment.
+* **`describe` + modular hooks / `TestUniverse`**: Use plain `describe` (from `'mocha'`) with modular setup hooks (`setupLocaleHooks()`, `setupSettingsHooks()`, `setupRuntimeHooks()`) and `TestUniverse` (see `foundation-test-migration`). Do **not** use `describeWithEnvironment` or `describeWithMockConnection` in new or migrated unit tests. For direct presenter tests (`new MyWidget(...)` with `createViewFunctionStub`) on widgets declaring `INJECT`, instantiate `const universe = new TestUniverse();` and pass `[universe.targetManager, ...]` as constructor argument #2 (`new MyWidget(...)` runs before `renderElementIntoDOM(widget)` calls `widget.show(container)`, so `setTestUniverseForWidgets` does not populate `INJECT` constructor parameters there). For widgets mounted declaratively via the `widget(...)` directive, `renderElementIntoDOM` supplies a default `TestUniverse` automatically via `UniverseRequestEvent` (overridable with `setTestUniverseForWidgets`).
 * **`createViewFunctionStub`**: Stubs the view to capture `input` data.
 * **`renderElementIntoDOM`**: Marks the widget as root and attaches it to the DOM to trigger lifecycle methods (like `wasShown`).
 * **`view.nextInput`**: A promise that resolves with the next `input` when the widget re-renders.
@@ -357,17 +357,22 @@ Ship unit tests in the **same CL** as the presenter/view change (never defer tes
 ```ts
 // front_end/panels/my_example/MyExampleWidget.test.ts
 
+import {assert} from 'chai';
+import {describe, it} from 'mocha';
+
 import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as MyExample from './my_example.js';
 
 const {MyExampleWidget} = MyExample.MyExampleWidget;
 
-describeWithEnvironment('MyExampleWidget', () => {
+describe('MyExampleWidget', () => {
+  setupLocaleHooks();
+
   // Helper to set up the widget with a stubbed view.
   async function createWidget() {
     // 1. Stub the view function.

@@ -23,7 +23,7 @@ Use this template for modules that should be platform-agnostic.
 ## Migration Guide
 
 ### 1. Replace Heavy Helpers
-Avoid `describeWithEnvironment` or `describeWithMockConnection`.
+Do **not** use `describeWithEnvironment` or `describeWithMockConnection`; both are banned in new and migrated unit tests.
 
 Instead, use standard `describe` and initialize environment hooks at the top-level `describe` block. **Crucial:** Without `setupRuntimeHooks`, tests creating SDK models will crash due to uninitialized experiments (e.g. `capture-node-creation-stacks`).
 

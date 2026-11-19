@@ -22,7 +22,7 @@ Investigate what files are being tested, start location should be `front_end/`.C
   - Import cross-module code via module entrypoints (e.g., `import * as Module from '../module/module.js'`).
   - Always use `import * as` for cross-module imports.
   - TypeScript imports in DevTools **must** use `.js` file extensions (e.g., `./data_grid.js`).
-- **Environment & Setup Selection:**
+- **Environment & Setup Selection:** `describeWithEnvironment` and `describeWithMockConnection` are banned in all new and migrated unit tests; both foundation and UI/widget tests use plain `describe` (from `'mocha'`) with `TestUniverse` and modular setup hooks (`setupLocaleHooks()`, `setupSettingsHooks()`, `setupRuntimeHooks()`).
   - **Foundation / Non-UI Tests:** Follow the `foundation-test-migration` skill. Use `TestUniverse` and setup hooks (`setupLocaleHooks()`, `setupSettingsHooks()`, `setupRuntimeHooks()`) instead of DOM-heavy singletons or `describeWithEnvironment`. Use `universe.createTarget()` and `MockCDPConnection` for CDP mocking.
   - **UI & Widget Tests:** Follow the `devtools-ui-widgets` skill. Use `renderElementIntoDOM` from `front_end/testing/DOMHelpers.js` for mounting elements, or `createViewFunctionStub` and `view.nextInput` from `front_end/testing/ViewFunctionHelpers.js` for testing MVP widgets.
 - **Code Comments:**
@@ -102,11 +102,17 @@ import * as DataGrid from 'devtools/ui/legacy/components/data_grid/data_grid.js'
 #### Converted UI Test (`DataGrid.test.ts`)
 
 ```typescript
+import {assert} from 'chai';
+import {describe, it} from 'mocha';
+
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
+
 import * as DataGrid from './data_grid.js';
 
-describeWithEnvironment('DataGrid', () => {
+describe('DataGrid', () => {
+  setupLocaleHooks();
+
   it('tests long text in datagrid', () => {
     // ... setup grid ...
     const grid = new DataGrid.DataGrid.DataGridImpl({...});

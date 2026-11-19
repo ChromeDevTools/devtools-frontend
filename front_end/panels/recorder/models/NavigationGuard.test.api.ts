@@ -24,6 +24,9 @@ describe('NavigationGuard API Test', () => {
     return `${inspectedPage.getResourcesPath('devtools.oopif.test')}/recorder/${file}`;
   }
 
+  /** For each guard, a promise that resolves when the guard reports its first error. */
+  const errorReported = new WeakMap<NavigationGuard, Promise<void>>();
+
   /**
    * Enables a guard on the inspected page for a recording that navigates to
    * the recorded origin and then runs `extraSteps`.
@@ -34,7 +37,12 @@ describe('NavigationGuard API Test', () => {
       title: 'test',
       steps: [{type: 'navigate', url: recorded(inspectedPage, 'recorder.html')}, ...extraSteps],
     } as UserFlow;
-    const guard = new NavigationGuard(flow, inspectedPage.page.url(), () => {});
+    let reportError = (): void => {};
+    const reported = new Promise<void>(resolve => {
+      reportError = resolve;
+    });
+    const guard = new NavigationGuard(flow, inspectedPage.page.url(), () => reportError());
+    errorReported.set(guard, reported);
     await guard.guardPage(inspectedPage.page as never);
     return guard;
   }
@@ -47,6 +55,12 @@ describe('NavigationGuard API Test', () => {
     } catch (err) {
       return (err as Error).message;
     }
+  }
+
+  async function waitForError(guard: NavigationGuard): Promise<Error> {
+    await errorReported.get(guard);
+    assert.isOk(guard.error, 'The guard did not report an error');
+    return guard.error;
   }
 
   it('continues a main frame navigation to an origin from the recording', async ({inspectedPage}) => {
@@ -68,6 +82,36 @@ describe('NavigationGuard API Test', () => {
       assert.strictEqual(guard.error?.message,
                          `Navigation to ${url} is not allowed, because the recording does not contain its origin`);
       assert.notStrictEqual(inspectedPage.page.url(), url);
+    } finally {
+      await guard.dispose();
+    }
+  });
+
+  it('continues a redirect response and checks the response that commits', async ({inspectedPage}) => {
+    const guard = await guardInspectedPage(inspectedPage);
+    try {
+      // The redirect and its destination are on the recorded origin.
+      assert.isNull(await navigate(inspectedPage, recorded(inspectedPage, 'redirect.rawresponse')));
+      assert.strictEqual(inspectedPage.page.url(), recorded(inspectedPage, 'recorder2.html'));
+      assert.isUndefined(guard.error);
+
+      // The guard continues the redirect response of the other origin. It
+      // fails the response of the destination, which is on the same origin.
+      assert.include(await navigate(inspectedPage, other(inspectedPage, 'redirect.rawresponse')),
+                     'net::ERR_BLOCKED_BY_CLIENT');
+      const error = await waitForError(guard);
+      assert.include(error.message, `Navigation to ${other(inspectedPage, 'recorder2.html')} is not allowed`);
+    } finally {
+      await guard.dispose();
+    }
+  });
+
+  it('continues a download from an origin that is not in the recording', async ({inspectedPage}) => {
+    const guard = await guardInspectedPage(inspectedPage);
+    try {
+      // A download does not commit a document. Chrome aborts the navigation.
+      assert.include(await navigate(inspectedPage, other(inspectedPage, 'download.txt')), 'net::ERR_ABORTED');
+      assert.isUndefined(guard.error);
     } finally {
       await guard.dispose();
     }

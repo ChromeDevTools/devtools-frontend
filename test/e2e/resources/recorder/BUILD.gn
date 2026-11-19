@@ -7,6 +7,8 @@ import("../../../../scripts/build/ninja/copy.gni")
 copy_to_gen("recorder") {
   sources = [
     "checkbox.html",
+    "download.txt",
+    "download.txt.headers",
     "form.html",
     "iframe1.html",
     "iframe2.html",
@@ -19,6 +21,7 @@ copy_to_gen("recorder") {
     "programmatic-navigation-on-keydown.html",
     "recorder.html",
     "recorder2.html",
+    "redirect.rawresponse",
     "scroll-into-view.html",
     "scroll.html",
     "select.html",

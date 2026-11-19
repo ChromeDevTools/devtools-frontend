@@ -405,6 +405,167 @@ describe('RecordingPlayer', () => {
       sinon.assert.neverCalledWith(mocks.send, 'Fetch.failRequest');
     });
 
+    it('continues HTTP redirect responses from unrecorded origins', async () => {
+      const {error, steps} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: 'https://sso.test/bounce'},
+          responseStatusCode: 302,
+          responseHeaders: [{name: 'Location', value: 'https://allowed.test/done'}],
+        });
+      });
+
+      assert.isNull(error);
+      assert.strictEqual(steps, 3);
+      sinon.assert.calledWith(mocks.send, 'Fetch.continueRequest', {requestId: '1'});
+      sinon.assert.neverCalledWith(mocks.send, 'Fetch.failRequest');
+    });
+
+    it('fails 304 responses from unrecorded origins', async () => {
+      sinon.stub(console, 'error');
+      const {error} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 304,
+        });
+      });
+
+      assert.strictEqual(error?.message, blockedMessage);
+    });
+
+    it('fails 302 responses without a Location header from unrecorded origins', async () => {
+      sinon.stub(console, 'error');
+      const {error} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 302,
+          responseHeaders: [],
+        });
+      });
+
+      assert.strictEqual(error?.message, blockedMessage);
+    });
+
+    it('fails 302 responses with an invalid Location header from unrecorded origins', async () => {
+      sinon.stub(console, 'error');
+      const {error} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 302,
+          responseHeaders: [{name: 'Location', value: 'http://['}],
+        });
+      });
+
+      assert.strictEqual(error?.message, blockedMessage);
+    });
+
+    it('continues Content-Disposition attachment downloads from unrecorded origins', async () => {
+      const {error, steps} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: 'https://cdn.test/report.pdf'},
+          responseStatusCode: 200,
+          responseHeaders: [{name: 'Content-Disposition', value: 'attachment; filename="report.pdf"'}],
+        });
+      });
+
+      assert.isNull(error);
+      assert.strictEqual(steps, 3);
+      sinon.assert.calledWith(mocks.send, 'Fetch.continueRequest', {requestId: '1'});
+      sinon.assert.neverCalledWith(mocks.send, 'Fetch.failRequest');
+    });
+
+    it('fails responses with more than one Content-Disposition header from unrecorded origins', async () => {
+      sinon.stub(console, 'error');
+      const {error} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 200,
+          responseHeaders: [
+            {name: 'Content-Disposition', value: 'inline'},
+            {name: 'Content-Disposition', value: 'attachment'},
+          ],
+        });
+      });
+
+      assert.strictEqual(error?.message, blockedMessage);
+    });
+
+    it('continues downloads with HTTP whitespace around the attachment type', async () => {
+      const {error} = await replay(() => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: 'https://cdn.test/report.pdf'},
+          responseStatusCode: 200,
+          responseHeaders: [{name: 'Content-Disposition', value: ' \tattachment \t; filename="report.pdf"'}],
+        });
+      });
+
+      assert.isNull(error);
+      sinon.assert.calledWith(mocks.send, 'Fetch.continueRequest', {requestId: '1'});
+    });
+
+    for (const [name, whitespace] of [['vertical tab', '\v'], ['form feed', '\f'], ['no-break space', '\u00a0']]) {
+      it(`fails responses with a ${name} before the attachment type from unrecorded origins`, async () => {
+        sinon.stub(console, 'error');
+        const {error} = await replay(() => {
+          mocks.emitRequestPaused({
+            requestId: '1',
+            frameId: 'main-frame',
+            request: {url: blockedUrl},
+            responseStatusCode: 200,
+            responseHeaders: [{name: 'Content-Disposition', value: `${whitespace}attachment`}],
+          });
+        });
+
+        assert.strictEqual(error?.message, blockedMessage);
+      });
+    }
+
+    for (const status of [302, 404, 500]) {
+      it(`fails ${status} responses with a Content-Disposition attachment header from unrecorded origins`, async () => {
+        sinon.stub(console, 'error');
+        const {error} = await replay(() => {
+          mocks.emitRequestPaused({
+            requestId: '1',
+            frameId: 'main-frame',
+            request: {url: blockedUrl},
+            responseStatusCode: status,
+            responseHeaders: [{name: 'Content-Disposition', value: 'attachment'}],
+          });
+        });
+
+        assert.strictEqual(error?.message, blockedMessage);
+      });
+    }
+
+    it('fails non-attachment Content-Disposition tokens from unrecorded origins', async () => {
+      sinon.stub(console, 'error');
+      for (const value of ['attachment-foo', 'attachment/foo']) {
+        const {error} = await replay(() => {
+          mocks.emitRequestPaused({
+            requestId: '1',
+            frameId: 'main-frame',
+            request: {url: blockedUrl},
+            responseStatusCode: 200,
+            responseHeaders: [{name: 'Content-Disposition', value}],
+          });
+        });
+        assert.strictEqual(error?.message, blockedMessage);
+      }
+    });
+
     it('fails main frame navigations to an origin that is not in the recording', async () => {
       sinon.stub(console, 'error');
       const {error, steps} = await replay(() => {

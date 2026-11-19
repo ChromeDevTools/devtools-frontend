@@ -9,11 +9,14 @@ import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 import type {UserFlow} from './Schema.js';
 
 const NON_INTERACTIVE_STEP_TYPES = new Set<string>(['setViewport', 'emulateNetworkConditions']);
+const REDIRECT_STATUS_CODES = new Set([301, 302, 303, 307, 308]);
 
 interface FetchRequestPausedEvent {
   requestId: string;
   frameId: string;
   request: {url: string};
+  responseStatusCode?: number;
+  responseHeaders?: Array<{name: string, value: string}>;
 }
 
 export interface AllowedNavigations {
@@ -65,6 +68,40 @@ function shouldAllowCurrentUrl(flow: UserFlow, currentUrl: string): boolean {
   return true;
 }
 
+function isRedirectResponse(event: FetchRequestPausedEvent): boolean {
+  if (event.responseStatusCode === undefined || !REDIRECT_STATUS_CODES.has(event.responseStatusCode)) {
+    return false;
+  }
+  const locationHeader = event.responseHeaders?.find(header => header.name.toLowerCase() === 'location');
+  const locationValue = locationHeader?.value.trim();
+  if (!locationValue) {
+    return false;
+  }
+  try {
+    new URL(locationValue, event.request.url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function isAttachmentResponse(event: FetchRequestPausedEvent): boolean {
+  // Chrome downloads only a successful response. For other status codes, it
+  // shows an error page or commits the response body.
+  const status = event.responseStatusCode;
+  if (status === undefined || status < 200 || status > 299) {
+    return false;
+  }
+  // If a response has more than one Content-Disposition header, Chrome can
+  // use a value that is not `attachment`. Accept only one header.
+  const dispositions =
+      event.responseHeaders?.filter(header => header.name.toLowerCase() === 'content-disposition') ?? [];
+  // Chrome removes only HTTP whitespace (space and tab) around the type. The
+  // `\s` class also matches other characters, for which Chrome does not find
+  // the `attachment` type.
+  return dispositions.length === 1 && /^[ \t]*attachment[ \t]*(?:;|$)/i.test(dispositions[0].value);
+}
+
 /**
  * Collects the navigations that a replay of `flow` is allowed to make: all
  * URLs in the recording, plus `currentUrl` if an interactive step can run
@@ -107,6 +144,8 @@ export function isNavigationAllowed(url: string, allowed: AllowedNavigations): b
 /**
  * Stops a replay if a page commits a navigation to an origin that is not in
  * the recording. The guard pauses document responses with the Fetch domain.
+ * It continues HTTP redirect hops and attachment downloads, because they do
+ * not commit a document.
  */
 export class NavigationGuard {
   readonly #allowedNavigations: AllowedNavigations;
@@ -139,7 +178,8 @@ export class NavigationGuard {
     this.#guardedClients.add(client);
     const onRequestPaused = (event: FetchRequestPausedEvent): void => {
       const isSubframe = event.frameId !== guardedPage.mainFrame()._id;
-      if (isSubframe || isNavigationAllowed(event.request.url, this.#allowedNavigations)) {
+      if (isSubframe || isRedirectResponse(event) || isAttachmentResponse(event) ||
+          isNavigationAllowed(event.request.url, this.#allowedNavigations)) {
         // The request can be gone already, for example if the page closed.
         void client.send('Fetch.continueRequest', {requestId: event.requestId}).catch(() => {});
         return;

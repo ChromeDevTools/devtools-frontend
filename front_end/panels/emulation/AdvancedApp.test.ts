@@ -8,73 +8,21 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as Platform from '../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {
-  deinitializeGlobalVars,
-  describeWithEnvironment,
-  initializeGlobalVars,
-} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Emulation from './emulation.js';
 
 describeWithEnvironment('AdvancedApp', () => {
-  beforeEach(async () => {
-    await deinitializeGlobalVars();
-    Common.Settings.registerSettingsForTest([
-      {
-        category: Common.Settings.SettingCategory.GLOBAL,
-        settingName: 'currentDockState',
-        settingType: Common.Settings.SettingType.ENUM,
-        defaultValue: 'right',
-        options: [
-          {
-            value: 'right',
-            text: () => 'right' as Platform.UIString.LocalizedString,
-            title: () => 'Dock to right' as Platform.UIString.LocalizedString,
-            raw: false,
-          },
-          {
-            value: 'bottom',
-            text: () => 'bottom' as Platform.UIString.LocalizedString,
-            title: () => 'Dock to bottom' as Platform.UIString.LocalizedString,
-            raw: false,
-          },
-          {
-            value: 'left',
-            text: () => 'left' as Platform.UIString.LocalizedString,
-            title: () => 'Dock to left' as Platform.UIString.LocalizedString,
-            raw: false,
-          },
-          {
-            value: 'undocked',
-            text: () => 'undocked' as Platform.UIString.LocalizedString,
-            title: () => 'Undock' as Platform.UIString.LocalizedString,
-            raw: false,
-          },
-        ],
-      },
-      {
-        category: Common.Settings.SettingCategory.APPEARANCE,
-        storageType: Common.Settings.SettingStorageType.SYNCED,
-        settingName: 'chrome-theme-colors',
-        settingType: Common.Settings.SettingType.BOOLEAN,
-        defaultValue: true,
-        reloadRequired: true,
-      },
-    ]);
-    await initializeGlobalVars({reset: false});
-  });
-
-  afterEach(async () => {
+  afterEach(() => {
     Emulation.AdvancedApp.AdvancedApp.removeInstance();
-    await deinitializeGlobalVars();
   });
 
   it('updates colors node link on ColorThemeChanged', async () => {
@@ -343,7 +291,9 @@ describeWithEnvironment('AdvancedApp docking', () => {
   });
 
   it('does not set the inspected page bounds when starting undocked', () => {
-    Common.Settings.Settings.instance().moduleSetting('currentDockState').set(DockState.UNDOCKED);
+    Common.Settings.Settings.instance()
+        .resolve(SettingsUI.MainSettings.currentDockStateSettingDescriptor)
+        .set(DockState.UNDOCKED);
     const setInspectedPageBounds =
         sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'setInspectedPageBounds');
 
@@ -440,7 +390,9 @@ describeWithEnvironment('AdvancedApp docking', () => {
     });
 
     it('leaves the device mode view detached when starting undocked', () => {
-      Common.Settings.Settings.instance().moduleSetting('currentDockState').set(DockState.UNDOCKED);
+      Common.Settings.Settings.instance()
+          .resolve(SettingsUI.MainSettings.currentDockStateSettingDescriptor)
+          .set(DockState.UNDOCKED);
       const {view, toolboxView} = createApp();
 
       assert.deepEqual(lastInput(view), {

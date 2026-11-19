@@ -16,7 +16,7 @@ import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import type * as Bindings from './bindings.js';
+import * as Bindings from './bindings.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -48,16 +48,26 @@ describe('CSSWorkspaceBinding', () => {
   ];
 
   const sourceMapContent = encodeSourceMap(mappings, 'http://example.com');
+  const emptySourceMapWithoutContent = encodeSourceMap(['0:0 => empty.scss:0:0'], 'http://example.com');
+  const emptySourceMapWithContent = encodeSourceMap(['0:0 => empty.scss:0:0'], 'http://example.com');
+  emptySourceMapWithContent.sourcesContent = ['/* scss */\n'];
 
   beforeEach(() => {
     sourceMapContent.sourcesContent = [scssContent];
+    const mockedResources = new Map<string, string>([
+      ['http://example.com/example.css.map', JSON.stringify(sourceMapContent)],
+      ['http://example.com/empty.css.map', JSON.stringify(emptySourceMapWithoutContent)],
+      ['http://example.com/empty-embedded.css.map', JSON.stringify(emptySourceMapWithContent)],
+      ['http://example.com/empty.scss', ''],
+    ]);
     universe = new TestUniverse({
       pageResourceLoaderOptions: {
         loadOverride: async (url: string) => {
-          if (url === 'http://example.com/example.css.map') {
+          const content = mockedResources.get(url);
+          if (content !== undefined) {
             return {
               success: true,
-              content: JSON.stringify(sourceMapContent),
+              content,
               errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
             };
           }
@@ -232,5 +242,72 @@ describe('CSSWorkspaceBinding', () => {
     // Value mapping (tests nameRange/valueRange extraction combined with rawLocationToUILocation)
     testPropertyUILocation(true, 2, 4, scssUISourceCode, 2, 2);
     testPropertyUILocation(false, 2, 6, scssUISourceCode, 2, 5);
+  });
+
+  async function attachScssSourceMapAndVerify(
+      styleSheetId: string,
+      cssURL: Platform.DevToolsPath.UrlString,
+      title: string,
+      sourceMapURL: string,
+      expectedResolvedSourceMapURL: Platform.DevToolsPath.UrlString,
+      expectedContent: string,
+      ): Promise<void> {
+    const target = universe.createTarget();
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+
+    const scssUISourceCodePromise = waitForUISourceCodeAdded(urlString`http://example.com/empty.scss`);
+
+    cssModel.styleSheetAdded({
+      styleSheetId: styleSheetId as Protocol.DOM.StyleSheetId,
+      frameId: 'frame' as Protocol.Page.FrameId,
+      sourceURL: cssURL,
+      origin: 'regular' as Protocol.CSS.StyleSheetOrigin,
+      title,
+      disabled: false,
+      isInline: false,
+      isMutable: false,
+      isConstructed: false,
+      loadingFailed: false,
+      startLine: 0,
+      startColumn: 0,
+      length: 50,
+      endLine: 1,
+      endColumn: 0,
+      sourceMapURL,
+    });
+
+    const scssUISourceCode = await scssUISourceCodePromise;
+    await cssWorkspaceBinding.pendingLiveLocationChangesPromise();
+
+    assert.strictEqual(scssUISourceCode.mimeType(), 'text/x-scss');
+    assert.deepEqual(Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(scssUISourceCode), [cssURL]);
+    assert.deepEqual(cssWorkspaceBinding.sourceMapURLsForUISourceCode(scssUISourceCode),
+                     [expectedResolvedSourceMapURL]);
+
+    const contentData = await scssUISourceCode.requestContentData();
+    assert.strictEqual(TextUtils.ContentData.ContentData.textOr(contentData, null), expectedContent);
+  }
+
+  it('registers SCSS UISourceCode with text/x-scss MIME type when source map lacks sourcesContent', async () => {
+    await attachScssSourceMapAndVerify(
+        'empty-stylesheet',
+        urlString`http://example.com/empty.css`,
+        'empty.css',
+        'empty.css.map',
+        urlString`http://example.com/empty.css.map`,
+        '',
+    );
+  });
+
+  it('registers SCSS UISourceCode with text/x-scss MIME type when source map includes sourcesContent', async () => {
+    await attachScssSourceMapAndVerify(
+        'empty-embedded-stylesheet',
+        urlString`http://example.com/empty-embedded.css`,
+        'empty-embedded.css',
+        'http://example.com/empty-embedded.css.map',
+        urlString`http://example.com/empty-embedded.css.map`,
+        '/* scss */\n',
+    );
   });
 });

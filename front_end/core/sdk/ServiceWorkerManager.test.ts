@@ -6,7 +6,11 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {waitForTarget} from '../../testing/TargetHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
@@ -468,6 +472,9 @@ describe('ServiceWorkerVersion', () => {
 });
 
 describe('ServiceWorkerManager', () => {
+  setupLocaleHooks();
+  setupRuntimeHooks();
+
   it('disables forceUpdateOnPageLoad when DevTools is offline even if service-worker-update-on-reload setting is enabled',
      () => {
        const universe = new TestUniverse();
@@ -490,4 +497,175 @@ describe('ServiceWorkerManager', () => {
 
        manager.dispose();
      });
+
+  it('enables Debugger without DOM or CSS commands on ServiceWorker attach, suspend, and resume', async () => {
+    const autoStartModels = new Set(
+        [...SDK.SDKModel.SDKModel.registeredModels].filter(([, info]) => info.autostart).map(([model]) => model));
+    const universe = new TestUniverse({overrideAutoStartModels: autoStartModels});
+
+    try {
+      const connection = new MockCDPConnection([
+        ['Debugger.enable', () => ({result: {debuggerId: 'debugger-1' as Protocol.Runtime.UniqueDebuggerId}})],
+        ['Debugger.disable', () => ({result: {}})],
+        ['Runtime.runIfWaitingForDebugger', () => ({result: {}})],
+      ]);
+      const sendSpy = sinon.spy(connection, 'send');
+
+      const tabTarget = universe.createTarget({
+        id: 'tab-target' as Protocol.Target.TargetID,
+        type: SDK.Target.Type.TAB,
+        connection,
+      });
+      const frameTarget = universe.createTarget({
+        id: 'frame-target' as Protocol.Target.TargetID,
+        type: SDK.Target.Type.FRAME,
+        parentTarget: tabTarget,
+        url: 'http://127.0.0.1:8000/devtools/resources/inspected-page.html',
+      });
+      const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(frameTarget);
+      const serviceWorkerManager = frameTarget.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
+      assert.exists(serviceWorkerManager);
+
+      const primaryPageTarget = universe.targetManager.primaryPageTarget();
+      assert.exists(primaryPageTarget);
+      assert.strictEqual(primaryPageTarget, frameTarget);
+
+      const swSessionId = 'sw-session-1' as Protocol.Target.SessionID;
+      const swTargetId = 'sw-target-1' as Protocol.Target.TargetID;
+      const swScriptUrl = 'http://127.0.0.1:8000/devtools/service-workers/resources/service-worker-empty.js';
+      const swScopeUrl = 'http://127.0.0.1:8000/devtools/service-workers/resources/scope1/';
+      const registrationId = 'reg-1' as Protocol.ServiceWorker.RegistrationID;
+      const versionId = '1';
+
+      const swTargetPromise = waitForTarget(
+          universe, target => target.id() === swTargetId && target.type() === SDK.Target.Type.ServiceWorker);
+
+      await childTargetManager.attachedToTarget({
+        sessionId: swSessionId,
+        targetInfo: {
+          targetId: swTargetId,
+          type: 'service_worker',
+          title: swScriptUrl,
+          url: swScriptUrl,
+          attached: true,
+          canAccessOpener: false,
+        },
+        waitingForDebugger: true,
+      });
+
+      const swTarget = await swTargetPromise;
+      assert.strictEqual(swTarget.type(), SDK.Target.Type.ServiceWorker);
+      assert.isNull(swTarget.model(SDK.DOMModel.DOMModel));
+      assert.isNull(swTarget.model(SDK.CSSModel.CSSModel));
+
+      const swDebuggerModel = swTarget.model(SDK.DebuggerModel.DebuggerModel);
+      assert.exists(swDebuggerModel);
+      if (!swDebuggerModel.debuggerId()) {
+        await swDebuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+      }
+
+      const primarySessionId = primaryPageTarget.sessionId;
+      const commandsForSession = (sessionId: string) =>
+          sendSpy.getCalls()
+              .filter(call => call.args[2] === sessionId)
+              .map(call => ({method: call.args[0] as string, params: call.args[1]}));
+
+      // Control check: the primary FRAME target sends DOM.enable and CSS.enable, whereas the
+      // ServiceWorker session sends Debugger.enable and zero DOM.* or CSS.* commands.
+      const frameInitialCommands = commandsForSession(primarySessionId).map(cmd => cmd.method);
+      assert.include(frameInitialCommands, 'DOM.enable');
+      assert.include(frameInitialCommands, 'CSS.enable');
+
+      const swInitialCommands = commandsForSession(swSessionId);
+      assert.isFalse(swInitialCommands.some(cmd => cmd.method.startsWith('DOM.') || cmd.method.startsWith('CSS.')),
+                     'Unexpected DOM.* or CSS.* command sent to ServiceWorker session on attach');
+      assert.deepEqual(swInitialCommands.filter(cmd => cmd.method === 'Debugger.enable'),
+                       [{method: 'Debugger.enable', params: {maxScriptsCacheSize: 100000000}}]);
+
+      connection.dispatchEvent(
+          'ServiceWorker.workerRegistrationUpdated',
+          {registrations: [{registrationId, scopeURL: swScopeUrl, isDeleted: false}]},
+          primarySessionId,
+      );
+      connection.dispatchEvent(
+          'ServiceWorker.workerVersionUpdated',
+          {
+            versions: [{
+              registrationId,
+              versionId,
+              scriptURL: swScriptUrl,
+              runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting,
+              status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing,
+            }],
+          },
+          primarySessionId,
+      );
+      connection.dispatchEvent(
+          'ServiceWorker.workerVersionUpdated',
+          {
+            versions: [{
+              registrationId,
+              versionId,
+              scriptURL: swScriptUrl,
+              runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running,
+              status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated,
+              targetId: swTargetId,
+            }],
+          },
+          primarySessionId,
+      );
+      connection.dispatchEvent(
+          'Runtime.executionContextCreated',
+          {
+            context: {
+              id: 1 as Protocol.Runtime.ExecutionContextId,
+              origin: 'http://127.0.0.1:8000',
+              name: swScriptUrl,
+              uniqueId: 'sw-context-1',
+            },
+          },
+          swSessionId,
+      );
+      connection.dispatchEvent(
+          'ServiceWorker.workerRegistrationUpdated',
+          {registrations: [{registrationId, scopeURL: swScopeUrl, isDeleted: false}]},
+          primarySessionId,
+      );
+
+      assert.strictEqual(serviceWorkerManager.registrations().size, 1);
+      const swExecutionContexts = swTarget.model(SDK.RuntimeModel.RuntimeModel)?.executionContexts();
+      assert.exists(swExecutionContexts);
+      assert.lengthOf(swExecutionContexts, 1);
+      assert.strictEqual(swExecutionContexts[0].label(), ' #1 (activated)');
+
+      const commandCountBeforeSuspend = sendSpy.callCount;
+      await universe.targetManager.suspendAllTargets();
+      assert.isTrue(universe.targetManager.allTargetsSuspended());
+      assert.isTrue(swTarget.suspended());
+
+      const swSuspendCommands = sendSpy.getCalls()
+                                    .slice(commandCountBeforeSuspend)
+                                    .filter(call => call.args[2] === swSessionId)
+                                    .map(call => call.args[0] as string);
+      assert.include(swSuspendCommands, 'Debugger.disable');
+      assert.isFalse(swSuspendCommands.some(method => method.startsWith('DOM.') || method.startsWith('CSS.')),
+                     'Unexpected DOM.* or CSS.* command sent to ServiceWorker session during suspend');
+
+      const commandCountBeforeResume = sendSpy.callCount;
+      await universe.targetManager.resumeAllTargets();
+      assert.isFalse(universe.targetManager.allTargetsSuspended());
+      assert.isFalse(swTarget.suspended());
+
+      const swResumeCommands = sendSpy.getCalls()
+                                   .slice(commandCountBeforeResume)
+                                   .filter(call => call.args[2] === swSessionId)
+                                   .map(call => ({method: call.args[0] as string, params: call.args[1]}));
+      assert.isFalse(swResumeCommands.some(cmd => cmd.method.startsWith('DOM.') || cmd.method.startsWith('CSS.')),
+                     'Unexpected DOM.* or CSS.* command sent to ServiceWorker session during resume');
+      assert.deepEqual(swResumeCommands.filter(cmd => cmd.method === 'Debugger.enable'),
+                       [{method: 'Debugger.enable', params: {maxScriptsCacheSize: 100000000}}]);
+    } finally {
+      universe.dispose();
+    }
+  });
 });

@@ -596,7 +596,7 @@ export interface MessageInput {
   isLastMessage: boolean;
   isFirstMessage: boolean;
   prompt: string;
-  canShowFeedbackForm: boolean;
+  canShowFreeFormFeedback: boolean;
   markdownRenderer: MarkdownView.MarkdownView.MarkdownLitRenderer;
   onSuggestionClick: (suggestion: string) => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
@@ -2142,7 +2142,7 @@ export class ChatMessage extends UI.Widget.Widget {
   isLoading = false;
   isReadOnly = false;
   prompt = '';
-  canShowFeedbackForm = false;
+  canShowFreeFormFeedback = false;
   isLastMessage = false;
   isFirstMessage = false;
   markdownRenderer!: MarkdownView.MarkdownView.MarkdownLitRenderer;
@@ -2191,7 +2191,7 @@ export class ChatMessage extends UI.Widget.Widget {
       message,
       isLoading: this.isLoading,
       isReadOnly: this.isReadOnly,
-      canShowFeedbackForm: this.canShowFeedbackForm,
+      canShowFreeFormFeedback: this.canShowFreeFormFeedback,
       markdownRenderer: this.markdownRenderer,
       isLastMessage: this.isLastMessage,
       isFirstMessage: this.isFirstMessage,
@@ -2298,7 +2298,7 @@ export class ChatMessage extends UI.Widget.Widget {
     }
 
     this.#currentRating = rating;
-    this.#isShowingFeedbackForm = this.canShowFeedbackForm;
+    this.#isShowingFeedbackForm = this.canShowFreeFormFeedback;
     if (this.message.entity === ChatMessageEntity.MODEL && this.message.rpcId) {
       this.onFeedbackSubmit(this.message.rpcId, rating);
     }

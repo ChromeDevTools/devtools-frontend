@@ -65,7 +65,7 @@ describeWithEnvironment('ChatMessage', () => {
       isFirstMessage: false,
       prompt: 'test prompt',
       markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
-      canShowFeedbackForm: true,
+      canShowFreeFormFeedback: true,
       onSuggestionClick: sinon.stub(),
       onCopyResponseClick: sinon.stub(),
       onFeedbackSubmit: sinon.stub(),
@@ -115,7 +115,7 @@ describeWithEnvironment('ChatMessage', () => {
           },
           isLoading: false,
           isReadOnly: false,
-          canShowFeedbackForm: false,
+          canShowFreeFormFeedback: false,
           markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
           currentRating: undefined,
           suggestions: props.suggestions,
@@ -488,9 +488,9 @@ describeWithEnvironment('ChatMessage', () => {
     });
   });
 
-  it('should show the feedback form when canShowFeedbackForm is true', async () => {
+  it('should show the feedback form when canShowFreeFormFeedback is true', async () => {
     const [view] = createComponent({
-      canShowFeedbackForm: true,
+      canShowFreeFormFeedback: true,
     });
 
     sinon.assert.callCount(view, 1);
@@ -507,9 +507,9 @@ describeWithEnvironment('ChatMessage', () => {
     }
   });
 
-  it('should not show the feedback form when canShowFeedbackForm is false', async () => {
+  it('should not show the feedback form when canShowFreeFormFeedback is false', async () => {
     const [view] = createComponent({
-      canShowFeedbackForm: false,
+      canShowFreeFormFeedback: false,
     });
 
     sinon.assert.callCount(view, 1);
@@ -1484,7 +1484,7 @@ describeWithEnvironment('ChatMessage', () => {
             },
             isLoading: false,
             isReadOnly: false,
-            canShowFeedbackForm: true,
+            canShowFreeFormFeedback: true,
             markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
             currentRating: undefined,
             walkthrough: {...DEFAULT_WALKTHROUGH},
@@ -1524,7 +1524,7 @@ describeWithEnvironment('ChatMessage', () => {
             },
             isLoading: false,
             isReadOnly: false,
-            canShowFeedbackForm: false,
+            canShowFreeFormFeedback: false,
             markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
             currentRating: undefined,
             walkthrough: {...DEFAULT_WALKTHROUGH},
@@ -1563,7 +1563,7 @@ describeWithEnvironment('ChatMessage', () => {
             },
             isLoading: false,
             isReadOnly: false,
-            canShowFeedbackForm: false,
+            canShowFreeFormFeedback: false,
             markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
             currentRating: undefined,
             walkthrough: {...DEFAULT_WALKTHROUGH},
@@ -1604,7 +1604,7 @@ describeWithEnvironment('ChatMessage', () => {
             },
             isLoading: false,
             isReadOnly: false,
-            canShowFeedbackForm: false,
+            canShowFreeFormFeedback: false,
             markdownRenderer: new AiAssistance.MarkdownRendererWithCodeBlock(),
             currentRating: undefined,
             walkthrough: {...DEFAULT_WALKTHROUGH},

@@ -87,7 +87,7 @@ export interface Props {
   messages: Message[];
   context: AiAssistanceModel.AiAgent.ConversationContext<unknown>|null;
   isContextSelected: boolean;
-  canShowFeedbackForm: boolean;
+  canShowFreeFormFeedback: boolean;
   isLoading: boolean;
   conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
   isReadOnly: boolean;
@@ -155,7 +155,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                   message,
                   isLoading: input.isLoading && index === input.messages.length - 1,
                   isReadOnly: input.isReadOnly,
-                  canShowFeedbackForm: input.canShowFeedbackForm,
+                  canShowFreeFormFeedback: input.canShowFreeFormFeedback,
                   markdownRenderer: input.markdownRenderer,
                   isLastMessage: index === input.messages.length - 1,
                   isFirstMessage: index === 0,

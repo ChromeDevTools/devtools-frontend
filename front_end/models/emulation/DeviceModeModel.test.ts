@@ -1066,6 +1066,52 @@ describe('DeviceModeModel', () => {
       assert.isTrue(autoAdjustSetting.get());
       assert.strictEqual(deviceModeModel.scaleSetting().get(), scaleBefore);
     });
+
+    it('preserves a saved fixed scale when re-emulating the active device', () => {
+      const autoAdjustSetting = universe.settings.createSetting('emulation.auto-adjust-scale', true);
+      const device1 = createDevice('Device 1');
+
+      // After setAvailableSize().
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device1, device1.modes[0], 1);
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device1, device1.modes[0]);
+
+      assert.isFalse(autoAdjustSetting.get());
+      assert.strictEqual(deviceModeModel.scaleSetting().get(), 1);
+
+      // Before setAvailableSize().
+      const uninitializedModel = new EmulationModel.DeviceModeModel.DeviceModeModel(
+          universe.targetManager, universe.settings, universe.multitargetNetworkManager);
+      try {
+        uninitializedModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device1, device1.modes[0]);
+        uninitializedModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device1, device1.modes[0]);
+        uninitializedModel.setAvailableSize(new Platform.Size(100, 100), new Platform.Size(100, 100));
+
+        assert.isFalse(autoAdjustSetting.get());
+        assert.strictEqual(uninitializedModel.scaleSetting().get(), 1);
+      } finally {
+        uninitializedModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+      }
+    });
+
+    it('computes fit scale when emulating responsive mode twice before setAvailableSize', () => {
+      universe.settings.createSetting('emulation.device-width', 400).set(1000);
+      universe.settings.createSetting('emulation.device-scale-map', {}).set({
+        Responsive: {scale: 1, autoAdjust: true},
+      });
+
+      const uninitializedModel = new EmulationModel.DeviceModeModel.DeviceModeModel(
+          universe.targetManager, universe.settings, universe.multitargetNetworkManager);
+      try {
+        uninitializedModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+        uninitializedModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+        uninitializedModel.setAvailableSize(new Platform.Size(500, 500), new Platform.Size(500, 500));
+
+        assert.strictEqual(uninitializedModel.scaleSetting().get(), 0.5);
+        assert.strictEqual(uninitializedModel.scale(), 0.5);
+      } finally {
+        uninitializedModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+      }
+    });
   });
 
   it('updates scale to fit in responsive mode when setAvailableSize is called after emulate', () => {

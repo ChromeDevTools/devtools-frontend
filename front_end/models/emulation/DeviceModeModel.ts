@@ -361,7 +361,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   emulate(type: Type, device: EmulatedDevice|null, mode: Mode|null, scale?: number): void {
     const resetPageScaleFactor = this.#type !== type || this.#device !== device || this.#mode !== mode;
-    const deviceChanged = this.#type !== type || this.#device !== device;
 
     this.#type = type;
 
@@ -373,18 +372,16 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         this.#mode = mode;
         this.#device = device;
 
-        if (deviceChanged) {
-          const map = this.#deviceScaleMapSetting.get();
-          const savedDevice = map[device.title];
-          if (savedDevice) {
-            this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
-            // An explicitly requested scale takes precedence over the saved one.
-            if (scale === undefined && !savedDevice.autoAdjust && savedDevice.scale > 0) {
-              scale = savedDevice.scale;
-            }
-          } else {
-            this.#autoAdjustScaleSetting.set(scale === undefined);
+        const map = this.#deviceScaleMapSetting.get();
+        const savedDevice = map[device.title];
+        if (savedDevice) {
+          this.#autoAdjustScaleSetting.set(savedDevice.autoAdjust);
+          // An explicitly requested scale takes precedence over the saved one.
+          if (scale === undefined && !savedDevice.autoAdjust && savedDevice.scale > 0) {
+            scale = savedDevice.scale;
           }
+        } else {
+          this.#autoAdjustScaleSetting.set(scale === undefined);
         }
 
         if (scale !== undefined) {
@@ -401,7 +398,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         this.#mode = null;
         this.#autoFitScaleOnInitialize = false;
 
-        if (deviceChanged && type === Type.Responsive) {
+        if (type === Type.Responsive) {
           const map = this.#deviceScaleMapSetting.get();
           const savedDevice = map['Responsive'];
           if (savedDevice) {

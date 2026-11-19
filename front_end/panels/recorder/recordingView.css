@@ -88,8 +88,41 @@
 
   .content {
     grid-area: section;
-    align-self: start;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /*
+   * Continues the timeline from the last step to the next section. It has a
+   * height when the screenshot is taller than the steps. Its position matches
+   * the center of the timeline column in timelineSection.css.
+   */
+  .timeline-filler {
+    --override-color-recording-successful-text: #36a854;
+
+    flex: 1;
+    width: var(--sys-size-2);
+    margin-inline-start: calc(var(--timeline-section-inset-inline-start) + (var(--sys-size-8) - var(--sys-size-2)) / 2);
+    background-color: var(--sys-color-primary);
+  }
+
+  .timeline-filler.is-error {
+    background-color: var(--sys-color-error);
+  }
+
+  .was-successful .timeline-filler {
+    animation: flash-timeline-filler 2s;
+  }
+
+  @keyframes flash-timeline-filler {
+    25% {
+      background-color: var(--override-color-recording-successful-text);
+    }
+
+    75% {
+      background-color: var(--override-color-recording-successful-text);
+    }
   }
 
   .step {

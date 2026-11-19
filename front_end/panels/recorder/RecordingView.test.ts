@@ -342,17 +342,19 @@ describeWithEnvironment('RecordingView', () => {
 
     async function renderRecordingView(width: number, options: {
       currentError?: Error,
+      errorStepIndex?: number,
       height?: number,
+      screenshot?: Models.ScreenshotStorage.Screenshot,
       withSettings?: boolean,
     } = {}): Promise<RecordingView.RecordingView> {
       const steps = makeSteps();
       const sections = Models.Section.buildSections(steps);
-      sections[0].screenshot = screenshot;
+      sections[0].screenshot = options.screenshot ?? screenshot;
       const component = new RecordingView.RecordingView();
       Object.assign(component, {
         recording: {title: 'Recording', steps},
         sections,
-        currentStep: options.currentError ? steps[2] : undefined,
+        currentStep: options.currentError ? steps[options.errorStepIndex ?? 2] : undefined,
         currentError: options.currentError,
         settings: options.withSettings ? {
           viewportSettings: {
@@ -461,6 +463,55 @@ describeWithEnvironment('RecordingView', () => {
     it('draws the timeline after a failed step as an error', async () => {
       await renderRecordingView(600, {currentError: new Error('Timed out')});
       await assertScreenshot('recorder/RecordingView_error.png');
+    });
+
+    describe('with a screenshot that is taller than the steps of its section', () => {
+      const tallScreenshot = ('data:image/svg+xml,' +
+                              encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="600">' +
+                                                 '<rect width="200" height="600" fill="#4285f4"/></svg>')) as
+          Models.ScreenshotStorage.Screenshot;
+
+      /**
+       * Returns the first section, its steps container and its timeline filler.
+       */
+      function getTimelineParts(component: RecordingView.RecordingView):
+          {section: Element, steps: Element, filler: Element} {
+        const section = component.contentElement.querySelector('.section');
+        assert.exists(section);
+        const steps = section.querySelector('.steps');
+        assert.exists(steps);
+        const filler = section.querySelector('.timeline-filler');
+        assert.exists(filler);
+        return {section, steps, filler};
+      }
+
+      it('continues the timeline from the last step to the next section', async () => {
+        const component = await renderRecordingView(600, {height: 800, screenshot: tallScreenshot});
+        const {section, steps, filler} = getTimelineParts(component);
+        const sectionRect = section.getBoundingClientRect();
+        const stepsRect = steps.getBoundingClientRect();
+        const fillerRect = filler.getBoundingClientRect();
+
+        // The steps are shorter than the screenshot.
+        assert.isBelow(stepsRect.bottom, sectionRect.bottom);
+        assert.strictEqual(fillerRect.top, stepsRect.bottom);
+        assert.strictEqual(fillerRect.bottom, sectionRect.bottom);
+        // The filler is a 2px line in the center of the 16px timeline column. The column starts after the 104px
+        // inset that the section reserves for the screenshot.
+        assert.strictEqual(fillerRect.left - sectionRect.left, 104 + 7);
+        assert.strictEqual(fillerRect.width, 2);
+        assert.isFalse(filler.classList.contains('is-error'));
+        // The timeline ends at the last step of the recording.
+        assert.lengthOf(component.contentElement.querySelectorAll('.timeline-filler'), 1);
+      });
+
+      it('draws the timeline after a failed last step of the section as an error', async () => {
+        const component = await renderRecordingView(
+            600, {height: 800, screenshot: tallScreenshot, currentError: new Error('Timed out'), errorStepIndex: 3});
+        const {filler} = getTimelineParts(component);
+
+        assert.isTrue(filler.classList.contains('is-error'));
+      });
     });
 
     it('only selects sections that are started by the selected step', () => {

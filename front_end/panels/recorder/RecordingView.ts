@@ -33,7 +33,8 @@ import {
   StepView,
 } from './StepView.js';
 
-const {html} = Lit;
+const {html, nothing} = Lit;
+const {classMap} = Lit.Directives;
 const {widget} = UI.Widget;
 
 const UIStrings = {
@@ -659,6 +660,10 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                       : null
                   }
                 </div>
+                ${i < input.sections.length - 1 ? html`<div class=${classMap({
+                  'timeline-filler': true,
+                  'is-error': getPreviousState(i + 1, -1) === State.ERROR,
+                })}></div>` : nothing}
               </div>
             </div>
         `,

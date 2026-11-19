@@ -168,7 +168,9 @@ describeWithEnvironment('SourcesSearchScope', () => {
       projectType: Workspace.Workspace.projectTypes.ContentScripts,
       universe: backend.universe,
     });
-    Common.Settings.Settings.instance().moduleSetting('skip-content-scripts').set(false);
+    Common.Settings.Settings.instance()
+        .resolve(Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor)
+        .set(false);
 
     const scope = new Sources.SourcesSearchScope.SourcesSearchScope();
     const searchConfig = new Workspace.SearchConfig.SearchConfig('window.foo', true, false);

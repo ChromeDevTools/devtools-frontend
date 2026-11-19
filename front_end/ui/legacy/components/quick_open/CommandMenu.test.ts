@@ -13,6 +13,7 @@ import {
   deinitializeGlobalVars,
   initializeGlobalVars,
 } from '../../../../testing/EnvironmentHelpers.js';
+import * as SettingsUI from '../../../settings/settings.js';
 import * as UI from '../../legacy.js';
 
 import * as QuickOpen from './quick_open.js';
@@ -25,54 +26,35 @@ describe('CommandMenu', () => {
   const settingCategory = Common.Settings.SettingCategory.CONSOLE;
 
   before(async () => {
-    Common.Settings.registerSettingsForTest(
-        [{
-          category: settingCategory,
-          title: i18n.i18n.lockedLazyString(settingTitle),
-          settingType: Common.Settings.SettingType.BOOLEAN,
-          settingName,
-          defaultValue: false,
-          options: [
-            {
-              value: true,
-              title: i18n.i18n.lockedLazyString(enableTitle),
-            },
-            {
-              value: false,
-              title: i18n.i18n.lockedLazyString(disableTitle),
-            },
-          ],
-        }],
-        true);
-    await initializeGlobalVars({reset: false});
+    SettingsUI.SettingUIRegistration.resetSettings();
+    const mockSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+      name: settingName,
+      type: Common.Settings.SettingType.BOOLEAN,
+      defaultValue: false,
+    };
+    SettingsUI.SettingUIRegistration.register(mockSettingDescriptor, {
+      category: settingCategory,
+      title: i18n.i18n.lockedLazyString(settingTitle),
+      options: [
+        {
+          value: true,
+          title: i18n.i18n.lockedLazyString(enableTitle),
+        },
+        {
+          value: false,
+          title: i18n.i18n.lockedLazyString(disableTitle),
+        },
+      ],
+    });
+    await initializeGlobalVars();
   });
 
   after(async () => {
+    SettingsUI.SettingUIRegistration.resetSettings();
     await deinitializeGlobalVars();
   });
 
-  it('adds commands for changing a setting\'s value', async () => {
-    const settingCategory = Common.Settings.SettingCategory.CONSOLE;
-    Common.Settings.registerSettingsForTest(
-        [{
-          category: settingCategory,
-          title: i18n.i18n.lockedLazyString(settingTitle),
-          settingType: Common.Settings.SettingType.BOOLEAN,
-          settingName,
-          defaultValue: false,
-          options: [
-            {
-              value: true,
-              title: i18n.i18n.lockedLazyString(enableTitle),
-            },
-            {
-              value: false,
-              title: i18n.i18n.lockedLazyString(disableTitle),
-            },
-          ],
-        }],
-        true);
-
+  it('adds commands for changing a setting\'s value', () => {
     const allCommands = QuickOpen.CommandMenu.CommandMenu.instance({forceNew: true}).commands();
     const disableSettingCommands = allCommands.filter(
         command => command.title === disableTitle &&

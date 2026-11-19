@@ -882,6 +882,28 @@ describe('RecordingPlayer', () => {
            assert.strictEqual(steps, 0);
          });
 
+      it('stops the replay if a step targets an OOPIF on a page from an unrecorded origin before a navigate step',
+         async () => {
+           sinon.stub(console, 'error');
+           const oopifUrl = 'https://oopif.test/frame.html';
+           const oopifFrame = {_id: 'oopif', client: mocks.mainFrame.client, url: () => oopifUrl};
+           mocks.mainFrame.url = () => blockedUrl;
+           mocks.pages[0].url = () => blockedUrl;
+           Object.assign(mocks.pages[0], {waitForFrame: async () => oopifFrame});
+           mocks.frames.push(oopifFrame);
+           mocks.targets.push({url: () => oopifUrl, page: async () => null});
+
+           // The first step has a different target, thus the guard does not
+           // check the frames of the inspected page at the start of the replay.
+           const {error} = await replaySteps([
+             {type: Models.Schema.StepType.Close, target: oopifUrl},
+             {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+           ]);
+
+           assert.strictEqual(error?.message, blockedMessage);
+           sinon.assert.notCalled(mocks.mainFrame.goto!);
+         });
+
       function createPrerenderSession() {
         return {send: sinon.stub().resolves(), on: sinon.stub(), off: sinon.stub(), detached: false};
       }
@@ -949,6 +971,27 @@ describe('RecordingPlayer', () => {
         sinon.assert.calledWith(session.send, 'Fetch.enable', fetchEnablePattern);
         sinon.assert.neverCalledWith(session.send, 'Page.getFrameTree');
       });
+
+      it('checks a prerendered page if a step targets an OOPIF on the inspected page before a navigate step',
+         async () => {
+           sinon.stub(console, 'error');
+           const oopifUrl = 'https://oopif.test/frame.html';
+           const oopifFrame = {_id: 'oopif', client: mocks.mainFrame.client, url: () => oopifUrl};
+           Object.assign(mocks.pages[0], {waitForFrame: async () => oopifFrame});
+           mocks.frames.push(oopifFrame);
+           mocks.targets.push({url: () => oopifUrl, page: async () => null});
+           const session = createPrerenderSession();
+           mocks.tabChildTargets.push({_subtype: () => 'prerender', _session: () => session, url: () => blockedUrl});
+
+           // The page can activate the prerendered page after the input of the first step.
+           const {error} = await replaySteps([
+             {type: Models.Schema.StepType.Close, target: oopifUrl},
+             {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+           ]);
+
+           assert.strictEqual(error?.message, blockedMessage);
+           sinon.assert.notCalled(mocks.mainFrame.goto!);
+         });
 
       it('removes the session history if the recording has subframe steps, also if all entries are allowed',
          async () => {

@@ -191,6 +191,8 @@ export class NavigationGuard {
   readonly #replayUsesCurrentPage: boolean;
   readonly #onError: () => void;
   readonly #guardedPages = new Set<puppeteer.Page>();
+  /** The pages for which the guard checked the documents from before the guard. */
+  readonly #checkedPages = new Set<puppeteer.Page>();
   readonly #guardedClients = new Set<puppeteer.CDPSession>();
   readonly #prerenderClients = new Set<puppeteer.CDPSession>();
   readonly #cleanups: Array<() => Promise<void>> = [];
@@ -371,12 +373,65 @@ export class NavigationGuard {
   }
 
   /**
+   * Returns the prerendered pages of `guardedPage` that have a session. The
+   * session of a prerendered page is a child of the tab session.
+   * `browser.targets()` does not contain prerender targets, thus use the
+   * child targets of the tab target.
+   */
+  #prerenderTargets(guardedPage: puppeteer.Page): Array<{session: puppeteer.CDPSession, url: string}> {
+    const pageSession = guardedPage.mainFrame().client;
+    const tabSession = pageSession.parentSession();
+    if (!tabSession || tabSession === pageSession) {
+      return [];
+    }
+    const tabTarget = (tabSession as unknown as {target(): puppeteer.Target}).target();
+    const result: Array<{session: puppeteer.CDPSession, url: string}> = [];
+    for (const prerenderTarget of tabTarget._childTargets()) {
+      const session = prerenderTarget._session();
+      if (prerenderTarget._subtype() === 'prerender' && session) {
+        result.push({session, url: prerenderTarget.url()});
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Checks the documents that `guardedPage` has now: the frames and the
+   * prerendered pages. They loaded without a check, and a step can send input
+   * to them before they navigate. Checks each page one time only.
+   */
+  async #checkExistingDocuments(guardedPage: puppeteer.Page): Promise<void> {
+    if (this.#checkedPages.has(guardedPage)) {
+      return;
+    }
+    this.#checkedPages.add(guardedPage);
+    for (const frame of guardedPage.frames()) {
+      this.#checkFrameUrl(frame, guardedPage);
+    }
+    for (const {session, url} of this.#prerenderTargets(guardedPage)) {
+      // The guard cannot pause the responses of a session without the
+      // interception. `guardPage` reports the failure for an open session.
+      if (this.#guardedClients.has(session)) {
+        await this.#checkExistingPrerender(session, url);
+      }
+    }
+  }
+
+  /**
    * Enables the guard on all frames of `guardedPage`. The guard also checks
    * the URLs that the frames have now, if `checkExistingFrames` is true or if
    * a step can send input to the inspected page before the page navigates.
+   * A later call with `checkExistingFrames` set to true does this check for a
+   * page that has the guard already.
    */
   async guardPage(guardedPage: puppeteer.Page, checkExistingFrames: boolean): Promise<void> {
     if (this.#guardedPages.has(guardedPage)) {
+      // The first call for the inspected page does not check the frames if
+      // the replay navigates the page first. A step with a different target
+      // can send input to a frame of the page before that navigation.
+      if (checkExistingFrames) {
+        await this.#checkExistingDocuments(guardedPage);
+      }
       return;
     }
     this.#guardedPages.add(guardedPage);
@@ -414,14 +469,7 @@ export class NavigationGuard {
       });
       // The page can have a prerendered page from before the replay. Its
       // session is attached already, and its document loaded without a check.
-      // `browser.targets()` does not contain prerender targets, thus use the
-      // child targets of the tab target.
-      const tabTarget = (tabSession as unknown as {target(): puppeteer.Target}).target();
-      for (const prerenderTarget of tabTarget._childTargets()) {
-        const session = prerenderTarget._session();
-        if (prerenderTarget._subtype() !== 'prerender' || !session) {
-          continue;
-        }
+      for (const {session} of this.#prerenderTargets(guardedPage)) {
         this.#prerenderClients.add(session);
         try {
           await this.#guardClient(session, guardedPage);
@@ -430,13 +478,6 @@ export class NavigationGuard {
           if (!session.detached && !isSessionClosedError(err)) {
             this.#failGuard(err);
           }
-          continue;
-        }
-        // If the replay navigates the page first, that navigation removes the
-        // prerendered pages of the current document. Such a page cannot get
-        // input, thus its document must not stop the replay.
-        if (checkExistingFrames || this.#replayUsesCurrentPage) {
-          await this.#checkExistingPrerender(session, prerenderTarget.url());
         }
       }
     }
@@ -450,12 +491,11 @@ export class NavigationGuard {
         }
       }
     }
+    // If the replay navigates the page first, that navigation removes the
+    // frames and the prerendered pages of the current document. They cannot
+    // get input, thus their documents must not stop the replay.
     if (checkExistingFrames || this.#replayUsesCurrentPage) {
-      // The frames loaded without a check. A step can send input to them
-      // before they navigate.
-      for (const frame of guardedPage.frames()) {
-        this.#checkFrameUrl(frame, guardedPage);
-      }
+      await this.#checkExistingDocuments(guardedPage);
     }
     await this.#removeHistory(guardedPage, /* navigateAwayIfDisallowed= */ !checkExistingFrames);
   }

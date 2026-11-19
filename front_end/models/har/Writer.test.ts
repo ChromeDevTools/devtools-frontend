@@ -8,6 +8,7 @@ import {describe, it} from 'mocha';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
+import type * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 
@@ -141,5 +142,150 @@ describe('HARWriter', () => {
                                         }));
 
     assert.deepEqual(exportedMessages, expectedMessages);
+  });
+
+  it('exports text and base64-encoded binary response content via stream write', async () => {
+    const cssText = [
+      '.image-background {',
+      '    background-image: url("resource.php?type=image&random=1&size=200");',
+      '}',
+      '',
+      '.image-background-2 {',
+      '    background-image: url("resource.php?type=image&random=1&size=300");',
+      '}',
+      '',
+      '@font-face {',
+      '    font-family: Example;',
+      '    src: url("example.ttf");',
+      '}',
+      '',
+    ].join('\n');
+    const binaryBase64 = 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4v' +
+        'MDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5f' +
+        'YGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6P' +
+        'kJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/' +
+        'wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v' +
+        '8PHy8/T19vf4+fr7/P3+/w==';
+
+    const createContentRequest = (
+                                     requestId: string,
+                                     url: string,
+                                     mimeType: string,
+                                     content: string,
+                                     isBase64: boolean,
+                                     size: number,
+                                     startTime: number,
+                                     ): SDK.NetworkRequest.NetworkRequest => {
+      const documentUrl = 'http://127.0.0.1:8000/devtools/network/har-content.html';
+      const responseHeadersText = `HTTP/1.1 200 OK\r\nContent-Type: ${mimeType}\r\n\r\n`;
+      const request = createNetworkRequest({
+        requestId,
+        url,
+        documentURL: documentUrl,
+        frameId: 'frame-1',
+        loaderId: 'loader-1',
+        requestMethod: 'GET',
+        statusCode: 200,
+        statusText: 'OK',
+        mimeType,
+        resourceType: Common.ResourceType.resourceTypes.XHR,
+        requestHeaders: [{name: 'Host', value: '127.0.0.1:8000'}],
+        responseHeaders: [{name: 'Content-Type', value: mimeType}],
+        initiator: {
+          type: 'script' as Protocol.Network.InitiatorType,
+          url: documentUrl,
+          requestId: 'r-parent' as Protocol.Network.RequestId,
+          lineNumber: 1,
+          stack: {
+            callFrames: [{
+              functionName: 'runTest',
+              scriptId: '1' as Protocol.Runtime.ScriptId,
+              url: documentUrl,
+              lineNumber: 10,
+              columnNumber: 4,
+            }],
+          },
+        },
+        finished: true,
+        contentData: new TextUtils.ContentData.ContentData(content, isBase64, mimeType),
+      });
+      request.setRemoteAddress('127.0.0.1', 8000);
+      request.connectionId = '1';
+      request.setRequestHeadersText('GET /devtools/network/resources HTTP/1.1\r\nHost: 127.0.0.1:8000\r\n\r\n');
+      request.responseHeadersText = responseHeadersText;
+      request.resourceSize = size;
+      request.setTransferSize(responseHeadersText.length + size);
+      // Set timing after setIssueTime so startTime stays at timing.requestTime (> issueTime).
+      request.setIssueTime(startTime - 0.005, startTime - 0.005);
+      request.timing = {
+        requestTime: startTime,
+        proxyStart: -1,
+        proxyEnd: -1,
+        dnsStart: -1,
+        dnsEnd: -1,
+        connectStart: -1,
+        connectEnd: -1,
+        sslStart: -1,
+        sslEnd: -1,
+        workerStart: -1,
+        workerReady: -1,
+        workerFetchStart: -1,
+        workerRespondWithSettled: -1,
+        sendStart: 0.5,
+        sendEnd: 1.0,
+        pushStart: 0,
+        pushEnd: 0,
+        receiveHeadersStart: 1.0,
+        receiveHeadersEnd: 2.0,
+      };
+      return request;
+    };
+
+    const cssRequest = createContentRequest(
+        'r-css',
+        'http://127.0.0.1:8000/devtools/network/resources/initiator.css',
+        'text/css',
+        cssText,
+        false,
+        262,
+        1000,
+    );
+    const binaryRequest = createContentRequest(
+        'r-bin',
+        'http://127.0.0.1:8000/devtools/network/resources/binary.data',
+        'application/octet-stream',
+        binaryBase64,
+        true,
+        256,
+        1001,
+    );
+
+    const stream = new Common.StringOutputStream.StringOutputStream();
+    const progress = new Common.Progress.Progress();
+    await HAR.Writer.Writer.write(stream, [cssRequest, binaryRequest], {sanitize: false}, progress);
+    await stream.close();
+
+    const entries = JSON.parse(stream.data()).log.entries;
+    assert.lengthOf(entries, 2);
+
+    const cssEntry = entries.find((entry: {request: {url: string}}) => /\/initiator\.css$/.test(entry.request.url));
+    assert.exists(cssEntry);
+    assert.notProperty(cssEntry.response.content, 'encoding');
+    assert.deepEqual(cssEntry.response.content, {
+      compression: 0,
+      mimeType: 'text/css',
+      size: 262,
+      text: cssText,
+    });
+
+    const binaryEntry = entries.find((entry: {request: {url: string}}) => /\/binary\.data$/.test(entry.request.url));
+    assert.exists(binaryEntry);
+    assert.deepEqual(binaryEntry.response.content, {
+      compression: 0,
+      encoding: 'base64',
+      mimeType: 'application/octet-stream',
+      size: 256,
+      text: binaryBase64,
+    });
   });
 });

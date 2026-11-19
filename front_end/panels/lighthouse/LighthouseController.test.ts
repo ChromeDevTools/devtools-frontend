@@ -56,7 +56,7 @@ describeWithEnvironment('LighthouseController', () => {
       const controller = new Lighthouse.LighthouseController.LighthouseController(protocolService);
 
       Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catSeoSettingDescriptor).set(false);
-      Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf').set(true);
+      Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catPerfSettingDescriptor).set(true);
 
       const categories = controller.getCategoryIDs();
       assert.isFalse(categories.includes('seo'));
@@ -69,7 +69,7 @@ describeWithEnvironment('LighthouseController', () => {
          const controller = new Lighthouse.LighthouseController.LighthouseController(protocolService);
 
          Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catSeoSettingDescriptor).set(false);
-         Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf').set(false);
+         Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catPerfSettingDescriptor).set(false);
 
          const categoriesNoAI = controller.getCategoryIDs({isAIControlled: false, mode: 'navigation'});
          assert.deepEqual(categoriesNoAI, ['accessibility', 'best-practices']);

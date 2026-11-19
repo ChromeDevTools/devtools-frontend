@@ -88,6 +88,160 @@ describe('HAR', function() {
 
         snapshotTester.assert(this, JSON.stringify(log, null, 2));
       });
+
+      it('exports POST request bodySize and postData for UTF-8 and binary payloads', async () => {
+        const postUrl = urlString`http://127.0.0.1:8000/devtools/network/resources/echo-payload.php`;
+        const responseHeadersText = 'HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n';
+        const stack: Protocol.Runtime.StackTrace = {
+          callFrames: [{
+            functionName: 'doPost',
+            scriptId: '1' as Protocol.Runtime.ScriptId,
+            url: 'http://127.0.0.1:8000/devtools/resources/inspected-page.html',
+            lineNumber: 0,
+            columnNumber: 0,
+          }],
+        };
+        const timing: Protocol.Network.ResourceTiming = {
+          requestTime: 1000,
+          proxyStart: -1,
+          proxyEnd: -1,
+          dnsStart: -1,
+          dnsEnd: -1,
+          connectStart: -1,
+          connectEnd: -1,
+          sslStart: -1,
+          sslEnd: -1,
+          workerStart: -1,
+          workerReady: -1,
+          workerFetchStart: -1,
+          workerRespondWithSettled: -1,
+          sendStart: 0.5,
+          sendEnd: 1.0,
+          pushStart: 0,
+          pushEnd: 0,
+          receiveHeadersStart: 2.0,
+          receiveHeadersEnd: 2.5,
+        };
+
+        const testCases = [
+          {
+            label: '1-byte UTF-8',
+            payload: '1 byte utf-8 char: a',
+            contentType: 'text/plain;charset=UTF-8',
+            responseBodySize: 20,
+            transferSize: 79,
+            expectedBodySize: 20,
+            expectedMimeType: 'text/plain;charset=UTF-8',
+            expectedText: '1 byte utf-8 char: a',
+            expectedRequestHeadersSize: 100,
+          },
+          {
+            label: '2-byte UTF-8',
+            payload: '2 byte utf-8 char: ž',
+            contentType: 'text/plain;charset=UTF-8',
+            responseBodySize: 21,
+            transferSize: 80,
+            expectedBodySize: 21,
+            expectedMimeType: 'text/plain;charset=UTF-8',
+            expectedText: '2 byte utf-8 char: ž',
+            expectedRequestHeadersSize: 100,
+          },
+          {
+            label: '3-byte UTF-8',
+            payload: '3 byte utf-8 char: ツ',
+            contentType: 'text/plain;charset=UTF-8',
+            responseBodySize: 22,
+            transferSize: 81,
+            expectedBodySize: 22,
+            expectedMimeType: 'text/plain;charset=UTF-8',
+            expectedText: '3 byte utf-8 char: ツ',
+            expectedRequestHeadersSize: 100,
+          },
+          {
+            label: '4-byte UTF-8',
+            payload: '4 byte utf-8 char: 🔥',
+            contentType: 'text/plain;charset=UTF-8',
+            responseBodySize: 23,
+            transferSize: 82,
+            expectedBodySize: 23,
+            expectedMimeType: 'text/plain;charset=UTF-8',
+            expectedText: '4 byte utf-8 char: 🔥',
+            expectedRequestHeadersSize: 100,
+          },
+          {
+            label: 'binary TypedArray without Content-Type',
+            payload: new TextDecoder('utf-8').decode(new Uint8Array([67, 114])),
+            contentType: undefined,
+            responseBodySize: 2,
+            transferSize: 61,
+            expectedBodySize: 2,
+            expectedMimeType: '',
+            expectedText: 'Cr',
+            expectedRequestHeadersSize: 60,
+          },
+        ];
+
+        const requests = testCases.map((testCase, index) => {
+          const request = createNetworkRequest({
+            requestId: `post-${index}` as Protocol.Network.RequestId,
+            url: postUrl,
+            documentURL: 'http://127.0.0.1:8000/devtools/resources/inspected-page.html',
+            requestMethod: 'POST',
+            requestHeaders: testCase.contentType ? [{name: 'Content-Type', value: testCase.contentType}] : [],
+            resourceType: Common.ResourceType.resourceTypes.XHR,
+            initiator: {type: Protocol.Network.InitiatorType.Script, stack},
+            timing,
+          });
+          request.setIssueTime(1000, 1000);
+          request.responseReceivedTime = 1000.01;
+          request.endTime = 1000.02;
+          request.setRequestFormData(true, testCase.payload);
+          request.addExtraResponseInfo({
+            blockedResponseCookies: [],
+            responseHeaders: [{name: 'Content-Type', value: 'text/html; charset=UTF-8'}],
+            resourceIPAddressSpace: Protocol.Network.IPAddressSpace.Local,
+            statusCode: 200,
+            responseHeadersText,
+            cookiePartitionKeyOpaque: undefined,
+            exemptedResponseCookies: undefined,
+          });
+          request.setTransferSize(testCase.transferSize);
+          request.resourceSize = testCase.responseBodySize;
+          return request;
+        });
+
+        const log = await HAR.Log.Log.build(requests, {sanitize: false});
+
+        assert.lengthOf(log.entries, 5);
+        for (const [index, testCase] of testCases.entries()) {
+          const entry = log.entries[index];
+          assert.strictEqual(entry.request.url, postUrl, `${testCase.label}: url`);
+          assert.strictEqual(entry.request.bodySize, testCase.expectedBodySize, `${testCase.label}: bodySize`);
+          assert.deepEqual(
+              entry.request.postData,
+              {
+                mimeType: testCase.expectedMimeType,
+                text: testCase.expectedText,
+              },
+              `${testCase.label}: postData`,
+          );
+          assert.strictEqual(
+              entry.request.headersSize,
+              testCase.expectedRequestHeadersSize,
+              `${testCase.label}: request headersSize`,
+          );
+          assert.strictEqual(entry.response.headersSize, 59, `${testCase.label}: response headersSize`);
+          assert.strictEqual(
+              entry.response.bodySize,
+              testCase.responseBodySize,
+              `${testCase.label}: response bodySize`,
+          );
+          assert.strictEqual(entry.response.content.compression, 0, `${testCase.label}: response compression`);
+          assert.strictEqual(entry.timings.dns, -1, `${testCase.label}: timings.dns`);
+          assert.strictEqual(entry.timings.connect, -1, `${testCase.label}: timings.connect`);
+          assert.deepEqual(entry._initiator?.stack, stack, `${testCase.label}: initiator stack`);
+        }
+      });
     });
 
     describe('Entry', () => {

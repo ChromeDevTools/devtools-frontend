@@ -140,7 +140,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
       renderElementIntoDOM(domTree);
       domTree.detach();
 
-      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      const setting =
+          Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor);
       setting.set(false);
       assert.isTrue(domTree.showComments);
 
@@ -150,7 +151,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
 
     it('retains an explicit showComments=false override when shown if the setting has not changed', () => {
-      const setting = Common.Settings.Settings.instance().moduleSetting('show-html-comments');
+      const setting =
+          Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor);
       setting.set(true);
 
       const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
@@ -6173,7 +6175,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
 
     it('displays author shadow roots and hides user-agent ones unless show-ua-shadow-dom is enabled', async () => {
-      const setting = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom');
+      const setting =
+          Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showUAShadowDOMSettingDescriptor);
       const {domTree, domModel} = setupDOMTreeWidget(target);
       try {
         setting.set(false);

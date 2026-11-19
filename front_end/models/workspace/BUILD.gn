@@ -111,12 +111,17 @@ devtools_foundation_module("foundation_unittests") {
 }
 
 devtools_api_test_module("api_tests") {
-  sources = [ "WorkspaceImpl.test.api.ts" ]
+  sources = [
+    "IgnoreListManager.test.api.ts",
+    "WorkspaceImpl.test.api.ts",
+  ]
 
   ts_deps = [
     ":bundle",
     "../../../test/api",
     "../../core/common:bundle",
+    "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
+    "../formatter:bundle",
   ]
 }

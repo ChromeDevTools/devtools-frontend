@@ -103,20 +103,24 @@ First, define the styles within an @scope block in your CSS file:
 Then, import and use these styles in your widget's view function:
 ```ts
 /* myWidget.ts */
-import {html} from 'lit-html';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import myWidgetStyles from './myWidget.css.js';
 
-render(html`
-  <style>
-    ${myWidgetStyles}
-  </style>
-  <div class="container">
-    <h3 class="title">My Widget</h3>
-    ...
-    ${widget(NestedWidget)}
-  </div>
-`, this.element);
+const {widget} = UI.Widget;
+
+export const DEFAULT_VIEW = (_input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  render(html`
+    <style>
+      ${myWidgetStyles}
+    </style>
+    <div class="container">
+      <h3 class="title">My Widget</h3>
+      ...
+      ${widget(NestedWidget)}
+    </div>
+  `, target);
+};
 ```
 
 In this example, the `.title` style will apply within the parent widget but will not leak into the nested widget. Two automated lint rules enforce this encapsulation:
@@ -128,7 +132,7 @@ In this example, the `.title` style will apply within the parent widget but will
 
 1. **`:scope` instead of `:host`**: `:host` is Shadow DOM-only and never matches inside `@scope`. Style the widget's root container element with `:scope`.
 2. **Theme-aware tokens instead of theme or platform classes**: Because selectors inside `@scope` without `:scope` or `&` receive an implicit `:scope ` descendant prefix, selectors like `.theme-with-dark-background .foo` or `:host-context(.theme-with-dark-background) .foo` look for ancestor theme classes *inside* the scoped subtree and never match. Use theme-aware design tokens (`--sys-color-*` / `--app-color-*`) instead.
-3. **Shared stylesheets**: Do not inject `inspectorCommonStyles` or `textButtonStyles` into Light DOM views (`installComponentRootStyles()` already applies them to the document and shadow roots). Wrap other shared stylesheets inline as `<style>@scope to (devtools-widget > *) { ${styles} }</style>` so their Shadow DOM consumers stay unaffected. Note that inline wrapping disables CSS hot reload in DevTools-on-DevTools for that `<style>` element.
+3. **Shared stylesheets**: Do not inject `inspectorCommonStyles` or `textButtonStyles` into Light DOM views (`installComponentRootStyles()` already applies them to the document and shadow roots). When a `.css` file (with no `:host`, `:root`, or ancestor theme selectors) is shared only between Light DOM and `useShadowDom` or `useShadowDom: 'pure'` widgets, wrap the `.css` file directly in `@scope to (devtools-widget > *)` (`:scope` matches the shadow host in `useShadowDom: 'pure'`) and import `./Foo.css.js` directly rather than via a namespace import (`Foo.barStyles`), preserving CSS hot reload in DevTools-on-DevTools. Wrap other shared stylesheets inline as `<style>@scope to (devtools-widget > *) { ${styles} }</style>` so their Shadow DOM consumers stay unaffected. Note that inline wrapping disables CSS hot reload in DevTools-on-DevTools for that `<style>` element.
 4. **Lower boundary and imperative child widgets**: The `(devtools-widget > *)` lower boundary stops cascading into declarative `<devtools-widget>` children (`${widget(...)}`), but it does **not** stop at legacy imperatively attached `<div class="widget">` children (`childWidget.show(container)`).
 5. **`<devtools-data-grid>`**: Inside a `<devtools-data-grid>`, any `<style>` tags must be placed as direct children of the `<table>` element. `<style>` tags inside `<devtools-data-grid>` stay connected in Light DOM, so their stylesheets still require `@scope`.
 
@@ -138,42 +142,50 @@ In this example, the `.title` style will apply within the parent widget but will
 <devtools-widget ${widget(ElementsPanel)}>
   <devtools-split-view>
     <devtools-widget slot="main" ${widget(ElementsTree)}></devtools-widget>
-    <devtools-tab-pane slot="sidebar">
-      ${widget(StylesPane, {element: input.element})}
-      ${widget(ComputedPane, {element: input.element})}
-      ...
-    </devtools-tab-pane>
+    <devtools-tabbed-pane slot="sidebar">
+      <devtools-widget id="styles" label="Styles" ${widget(StylesPane, {node: input.node})}></devtools-widget>
+      <devtools-widget id="computed" label="Computed" ${widget(ComputedPane, {node: input.node})}></devtools-widget>
+    </devtools-tabbed-pane>
   </devtools-split-view>
 </devtools-widget>
 ```
 
 ```ts
-type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
-const DEFAULT_VIEW = (input, output, target) => {
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+const DEFAULT_VIEW: View = (input, _output, target) => {
   render(html`
-    ${widget(MetricsPane, {element: input.element})}
+    ${widget(MetricsPane, {node: input.node})}
     <devtools-toolbar>
-      <devtools-filter-input @change=${input.onFilter}></devtools-filter-input>
+      <devtools-toolbar-input type="filter" @change=${input.onFilter}></devtools-toolbar-input>
       <devtools-checkbox @change=${input.onShowAll}>Show All</devtools-checkbox>
       <devtools-checkbox @change=${input.onGroup}>Group</devtools-checkbox>
     </devtools-toolbar>
-    <devtools-tree-outline>
-      ${input.properties.map(p => html`<li>
-        <dt>${p.key}</dt><dd>${renderValue(p.value)}</dd>
-        <ol>${p.subproperties.map(...)}
-        </li>`)}
-    </devtools-tree-outline>
+    <devtools-tree .template=${html`
+      <ul role="tree">
+        ${input.properties.map(p => html`
+          <li role="treeitem">
+            <span class="key">${p.key}</span>: <span class="value">${renderValue(p.value)}</span>
+            ${p.subproperties.length ? html`
+              <ul role="group">
+                ${p.subproperties.map(sub => html`
+                  <li role="treeitem">${sub.key}: ${renderValue(sub.value)}</li>`)}
+              </ul>` : nothing}
+          </li>`)}
+      </ul>
+    `}></devtools-tree>
   `, target);
 };
 
-class StylesPane extends UI.Widget {
+class StylesPane extends UI.Widget.Widget {
   #view: View;
-  constructor(element, view = DEFAULT_VIEW) {
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
     this.#view = view;
   }
 
-  performUpdate() {
-    this.#view(inputPlaceholder, this.#outputPlaceholder, this.contentElement);
+  override performUpdate(): void {
+    this.#view(inputPlaceholder, undefined, this.contentElement);
   }
 }
 ```
@@ -193,23 +205,25 @@ When testing presenters, rely on observable effects such as view updates or mode
 
 ```ts
 // ✅ recommended: stub the view function using createViewFunctionStub.
-import {createViewFunctionStub} from './ViewFunctionHelpers.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+
 const view = createViewFunctionStub(Presenter);
-const presenter = new Presenter(view);
+const presenter = new Presenter(undefined, view);
 
 // ✅ recommended: expect a view stub call in response to presenter behavior.
-present.show();
+renderElementIntoDOM(presenter);
 const input = await view.nextInput;
 
 // ✅ recommended: expect a view stub call in response to an event from the view.
 input.onEvent();
-assert.deepStrictEqual(await view.nextInput, {});
+assert.deepEqual(await view.nextInput, {});
 
 // ❌ not recommended: Widget.updateComplete only reports a current view update
 // operation status and might create flakiness depending on doSomething() implementation.
 presenter.doSomething();
 await presenter.updateComplete;
-assert.deepStrictEqual(view.lastCall.args[0], {});
+assert.deepEqual(view.lastCall.args[0], {});
 
 // ❌ not recommended: awaiting for the present logic to finish might
 // not account for async or throttled view updates.
@@ -232,7 +246,7 @@ const presenter = new Presenter();
 // presenter's logic.
 const modelCall = expectCall(cssModel.headersForSourceURL, {
   fakeFn: () => {
-    return false,
+    return [];
   },
 });
 // ✅ recommended: expect view calls to result in output based
@@ -245,7 +259,7 @@ presenter.doSomething();
 const [url] = await modelCall;
 assert.strictEqual(url, '...');
 
-assert.deepStrictEqual((await viewCall).headersForSourceURL, [{...}]);
+assert.deepEqual((await viewCall).headersForSourceURL, []);
 
 // ❌ not recommended: mocking CDP responses to make the models behave in a certain way
 // while testing a presenter is fragile.
@@ -391,7 +405,7 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div>
-      <div class="some-class container" @click=${this.onClick.bind(this)}></div>
+      <div class="some-class container" @click=${input.onClick}></div>
     </div>`,
     target);
 };
@@ -420,6 +434,16 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div style="width:100%; margin-left:10px"></div>`,
+    target);
+};
+```
+
+When inline style values are dynamic, use `Directives.styleMap` rather than interpolating expressions into a `style="..."` attribute string:
+
+```typescript
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html`
+    <div style=${Directives.styleMap({width: `${input.width}px`, marginLeft: '10px'})}></div>`,
     target);
 };
 ```
@@ -512,8 +536,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <devtools-toolbar>
         <devtools-toolbar-input class="completions" type="filter" placeholder="some-placeholder"
             list="completions" id="some-filter" aria-hidden="true"
-            @change=${this.onFilterChanged.bind(this)} style="flex-grow:0.5; flex-shrink:1">
-          <datalist id="completions">${this.complete.bind(this)}</datalist>
+            @change=${input.onFilterChanged} style="flex-grow:0.5; flex-shrink:1">
+          <datalist id="completions">
+            ${input.completions.map(completion => html`<option value=${completion}></option>`)}
+          </datalist>
         </devtools-toolbar-input>
       </devtools-toolbar>
     </div>`,
@@ -596,7 +622,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 ## Migrating `UI.Toolbar.ToolbarButton`
 
-Replace the imperative creation of a `ToolbarButton` with the declarative `<devtools-button>` component. For icon-only buttons, always bind `.accessibleLabel` (in addition to `title`) because `<devtools-button>` sets `role="presentation"` on its host element and forwards `.accessibleLabel` to its inner `<button>`.
+Replace the imperative creation of a `ToolbarButton` with the declarative `<devtools-button>` component. Follow three binding rules on `<devtools-button>`:
+- Place `.iconName=${...}` **before** `.variant=${...}`. `Button.set variant` immediately triggers `#render()` and throws an error when `iconName` is not yet set on `ICON` or `TOOLBAR` buttons.
+- Bind `.title=${...}` as a JavaScript property rather than the `title=${...}` HTML attribute whenever the tooltip can change across renders. `Buttons.Button.Button` overrides `set title` to re-render the inner `<button>`'s `title` and `aria-label`, with no `attributeChangedCallback` for `title`.
+- For icon-only buttons, bind `.accessibleLabel` (in addition to `.title`) because `<devtools-button>` sets `role="presentation"` on its host element and forwards `.accessibleLabel` to its inner `<button>`.
 
 **Before:**
 ```typescript
@@ -620,10 +649,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div>
       <devtools-toolbar>
-        <devtools-button title=${i18nString(UIStrings.editName)}
-            .accessibleLabel=${i18nString(UIStrings.editName)} @click=${this.onClick.bind(this)}
-            .variant=${Buttons.Button.Variant.TOOLBAR} .iconName=${'edit'}
-            .jslogContext=${'edit-name'}></devtools-button>
+        <devtools-button
+            .iconName=${'edit'}
+            .variant=${Buttons.Button.Variant.TOOLBAR}
+            .title=${i18nString(UIStrings.editName)}
+            .accessibleLabel=${i18nString(UIStrings.editName)}
+            .jslogContext=${'edit-name'}
+            @click=${input.onClick}></devtools-button>
       </devtools-toolbar>
     </div>`,
     target);
@@ -684,7 +716,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           hidden="hidden" href="https://www.google.com" id="some-id" name="some-name" rel="some-rel"
           scope="some-scope">
       <input type="text" placeholder="some-placeholder" value="some-value"
-          ?disabled=${!this.enabled} checked>
+          ?disabled=${!input.enabled} checked>
     </div>`,
     target);
 };
@@ -726,8 +758,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           <option value="1" jslog=${VisualLogging.dropDown('1').track({click: true})}>Option 1</option>
         </select>
       </label>
-      <devtools-button class="some-class" title=${i18nString(UIStrings.someTitle)} @click=${onClick}
-          .jslogContext=${'some-button'} .variant=${Buttons.Button.Variant.PRIMARY}>Some button</devtools-button>
+      <devtools-button class="some-class"
+          .iconName=${'some-icon'}
+          .variant=${Buttons.Button.Variant.PRIMARY}
+          .title=${i18nString(UIStrings.someTitle)}
+          .jslogContext=${'some-button'}
+          @click=${input.onClick}>Some button</devtools-button>
     </div>`,
     target);
 };
@@ -763,7 +799,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 ## Migrating `Buttons.Button.Button` with ARIA and Tooltip helpers
 
-Replace the imperative creation of a `Button` and subsequent modifications with ARIA and Tooltip helpers with a single declarative `<devtools-button>` component, setting properties like `role` and `title`.
+Replace the imperative creation of a `Button` and subsequent modifications with ARIA and Tooltip helpers with a single declarative `<devtools-button>` component in `DEFAULT_VIEW`.
 
 **Before:**
 ```typescript
@@ -786,24 +822,19 @@ class SomeWidget extends UI.Widget.Widget {
 **After:**
 ```typescript
 
-class SomeWidget extends UI.Widget.Widget {
-  constructor() {
-    super();
-    this.button = html`
-    <devtools-button role="presentation" title=${i18nString(UIStrings.someTooltip)}
-        .data=${{
-      jslogContext: 'some-button',
-      variant: Buttons.Button.Variant.PRIMARY,
-      title: i18nString(UIStrings.someTitle),
-    }}
-    ></devtools-button>`;
-  }
-}
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html`
+    <devtools-button role="presentation"
+        .variant=${Buttons.Button.Variant.PRIMARY}
+        .title=${i18nString(UIStrings.someTooltip)}
+        .jslogContext=${'some-button'}></devtools-button>`,
+    target);
+};
 ```
 
 ## Migrating `Icon`
 
-Replace the imperative `Icon` creation with the declarative `<devtools-icon>` component.
+Replace the imperative `Icon` creation with the declarative `<devtools-icon>` component. Keep a side-effect `import '../../ui/kit/kit.js';` (and `"../../ui/kit:bundle"` in `BUILD.gn`) so the `<devtools-icon>` custom element stays registered in isolated unit and screenshot tests.
 
 **Before:**
 ```typescript
@@ -821,6 +852,7 @@ class SomeWidget extends UI.Widget.Widget {
 **After:**
 ```typescript
 
+import '../../ui/kit/kit.js';
 
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
@@ -834,7 +866,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 ## Migrating Checkboxes
 
-Replace various imperative checkbox creation methods with the declarative `<devtools-checkbox>` component. For settings-backed checkboxes, use the `bindToSetting` directive.
+Replace various imperative checkbox creation methods with the declarative `<devtools-checkbox>` component. For settings-backed checkboxes, use the `UI.UIUtils.bindToSetting` directive. When migrating `UI.UIUtils.CheckboxLabel.create(title, ...)` or `SettingsUI.SettingsUI.createSettingCheckbox(title, setting)`, preserve `title=${title}` on `<devtools-checkbox>` so E2E helpers that query `[title="..."]` continue to match.
 
 **Before:**
 ```typescript
@@ -865,18 +897,22 @@ class SomeWidget extends UI.Widget.Widget {
 
 
 export const DEFAULT_VIEW = (input, _output, target) => {
+  const {bindToSetting} = UI.UIUtils;
   render(html`
     <div>
-      <devtools-checkbox class="small" checked>${i18nString(UIStrings.someTitle)}</devtools-checkbox>
+      <devtools-checkbox class="small" title=${i18nString(UIStrings.someTooltip)} .jslogContext=${'some-checkbox'} checked>
+        ${i18nString(UIStrings.someTitle)}
+      </devtools-checkbox>
       <devtools-checkbox></devtools-checkbox>
-      <devtools-checkbox class="small">:hover</devtools-checkbox>
+      <devtools-checkbox class="small" .jslogContext=${'some-other-checkbox'}>:hover</devtools-checkbox>
       <devtools-toolbar>
         <devtools-checkbox title=${i18nString(UIStrings.someToolbarTooltip)}
-            @click=${this.someToolbarCheckboxClicked.bind(this)}
+            @click=${input.onToolbarCheckboxClick}
             .jslogContext=${'some-toolbar-checkbox'}>${i18nString(UIStrings.someToolbarTitle)}</devtools-checkbox>
         <devtools-checkbox title=${i18nString(UIStrings.someToolbarTooltip)}
-            ${bindToSetting(this.someSetting)}>${i18nString(UIStrings.alternateToolbarTitle)}</devtools-checkbox>
-        <devtools-checkbox ${bindToSetting(this.someOtherSetting)}>${this.someOtherSetting.title()}</devtools-checkbox>
+            ${bindToSetting(input.someSetting)}>${i18nString(UIStrings.alternateToolbarTitle)}</devtools-checkbox>
+        <devtools-checkbox title=${input.someOtherSetting.title()}
+            ${bindToSetting(input.someOtherSetting)}>${input.someOtherSetting.title()}</devtools-checkbox>
       </devtools-toolbar>
     </div>`,
     target);
@@ -964,7 +1000,7 @@ class SomeWidget extends UI.Widget.Widget {
 **After:**
 ```typescript
 export const DEFAULT_VIEW = (input, _output, target) => {
-  const {bindToSetting} = UI.SettingsUI;
+  const {bindToSetting} = UI.UIUtils;
   const showAllPropertiesSetting = Common.Settings.Settings.instance().createSetting('show-all-properties', false);
   render(html`
     <div>
@@ -1003,7 +1039,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <devtools-toolbar>
         <select class="the-toolbar-combox" title="Combox" aria-label="Combox"
             jslog=${VisualLogging.dropDown('some-toolbar-combox').track({change: true})}
-            @change=${this.someToolbarComboBoxClicked.bind(this)}></select>
+            @change=${input.onComboBoxChange}></select>
       </devtools-toolbar>
     </div>`,
     target);
@@ -1052,15 +1088,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <div class="toolbar-divider"></div>
         <select title="aria-label" aria-label="aria-label"
             jslog=${VisualLogging.dropDown('combo-box').track({change: true})}
-            @change=${this.onSelect.bind(this)}>
+            @change=${input.onSelect}>
           <option value="1" jslog=${VisualLogging.item('option-1').track({click: true})}>Option 1</option>
           <option value="2">Option 2</option>
         </select>
         <div class="toolbar-spacer"></div>
-        <devtools-button title="Click me" .variant=${Buttons.Button.Variant.TOOLBAR}
-            .iconName=${'largeicon-add'} disabled></devtools-button>
-        <devtools-button title="Other button" ?disabled=${!this.isEnabled}
-            .variant=${Buttons.Button.Variant.TOOLBAR} .iconName=${'largeicon-delete'}></devtools-button>
+        <devtools-button .iconName=${'largeicon-add'} .variant=${Buttons.Button.Variant.TOOLBAR}
+            .title=${'Click me'} disabled></devtools-button>
+        <devtools-button .iconName=${'largeicon-delete'} .variant=${Buttons.Button.Variant.TOOLBAR}
+            .title=${'Other button'} ?disabled=${!input.isEnabled}></devtools-button>
         <div class="toolbar-divider"></div>
         <div class="toolbar-divider"></div>
         <div class="toolbar-spacer"></div>
@@ -1132,7 +1168,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 ## Migrating `SortableDataGrid`, `ViewportDataGrid`, `DataGridImpl`
 
-Replace the imperative `SortableDataGrid`, `ViewportDataGrid`, or `DataGridImpl` with the declarative `<devtools-data-grid>` component. Columns are defined using `<th>` elements inside a `<table>`.
+Replace the imperative `SortableDataGrid`, `ViewportDataGrid`, or `DataGridImpl` with the declarative `<devtools-data-grid>` component. Columns are defined using `<th>` elements inside a `<table>`. When rows contain child widgets via `${widget(...)}`, key `Directives.repeat` by the data item identity (`item => item`) rather than by array index (`(_item, index) => index`). `DataGridElement` clones `<td>` subtrees with `cloneNode(true)`, so in-place widget parameter updates on an existing `<template>` row do not propagate to shadow clones unless the `<tr>` is replaced.
 
 **Before:**
 ```typescript
@@ -1184,13 +1220,20 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div>
       <devtools-data-grid name=${i18nString(UIStrings.someTitle)} striped
-          @sort=${this.#sortMediaQueryDataGrid.bind(this)}>
+          @sort=${input.onSort}>
         <table>
           <tr>
             <th id="node-id" weight="50" sortable>${i18nString(UIStrings.element)}</th>
             <th id="declaration">${i18nString(UIStrings.declaration)}</th>
             <th id="source-url" weight="100" align="right">${i18nString(UIStrings.source)}</th>
           </tr>
+          ${Directives.repeat(input.items, item => item, item => html`
+            <tr>
+              <td>${item.id}</td>
+              <td>${item.declaration}</td>
+              <td>${widget(SourceCellWidget, {sourceUrl: item.sourceUrl})}</td>
+            </tr>
+          `)}
         </table>
       </devtools-data-grid>
     </div>`,
@@ -1200,7 +1243,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 ## Migrating `DataGridNode.createCell`
 
-The `createCell` method in a `DataGridNode` can be refactored to return a lit-html template for the cell's content, making it declarative.
+Prefer migrating the whole grid to `<devtools-data-grid>`. When migrating `DataGridNode.createCell` incrementally, delegate to a 3-parameter module-level view function (`CELL_VIEW`). Because `this.createTD(columnId)` already returns a `<td>` element, render cell contents directly into `cell` and apply cell classes via `{container: {classes: [...]}}` rather than nesting a second `<td>` inside `cell`.
 
 **Before:**
 ```typescript
@@ -1218,13 +1261,16 @@ class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Element
 **After:**
 ```typescript
 
+const CELL_VIEW = (input: {id: string}, _output: undefined, target: HTMLElement): void => {
+  render(html`<span class="node-id-text">${input.id}</span>`, target, {
+    container: {classes: ['node-id']},
+  });
+};
+
 class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<ElementNode> {
   override createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
-    render(html`
-      <td class="node-id">
-        <span class="node-id-text">${this.data.id}</span>
-      </td>`, cell);
+    CELL_VIEW({id: String(this.data.id)}, undefined, cell);
     return cell;
   }
 }
@@ -1244,7 +1290,7 @@ class SomeWidget extends UI.Widget.Widget {
     this.#splitWidget.show(this.element);
 
     this.#mainContainer = new UI.SplitWidget.SplitWidget(true, true);
-    this.#resultsContainer = new UI.Widget.EmptyWidget();
+    this.#resultsContainer = new UI.EmptyWidget.EmptyWidget('', '');
     this.#elementContainer = new DetailsView();
 
     this.#mainContainer.setMainWidget(this.#resultsContainer);
@@ -1267,13 +1313,13 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div>
-      <devtools-split-view direction=${this.vertical ? 'column' : 'row'} sidebar-position="first"
+      <devtools-split-view direction=${input.vertical ? 'column' : 'row'} sidebar-position="first"
           sidebar-initial-size="200">
         <devtools-widget slot="sidebar" ${widget(SidebarPanel,
-            {minimumSize: {width: 100, height: 25}})}></devtools-widget>
-        <devtools-split-view direction="column" sidebar-position="second" slot="main"
-            direction="row" sidebar-position="$this.dockedLeft ? 'second' : 'first'}">
-          <devtools-widget slot="main" ${widget(UI.Widget.EmptyWidget)}></devtools-widget>
+            {minimumSize: new Geometry.Size(100, 25)})}></devtools-widget>
+        <devtools-split-view slot="main"
+            direction="row" sidebar-position=${input.dockedLeft ? 'second' : 'first'}>
+          <devtools-widget slot="main" ${widget(UI.EmptyWidget.EmptyWidget)}></devtools-widget>
           <devtools-widget slot="sidebar" ${widget(DetailsView)}></devtools-widget>
         </devtools-split-view>
       </devtools-split-view>
@@ -1289,8 +1335,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
 `WrapperWidget` is only justified when reparenting a shared stateful singleton across multiple containers (such as `ConsoleView.instance()` or `SourcesView`) or bridging an opaque `UI.Widget` returned by an external factory. When using `WrapperWidget`, note that it sets `display: contents` on its `<devtools-widget>` host element, so never put sizing, border, or background classes on the `<devtools-widget>` hosting `WrapperWidget` (wrap it in a `<div>` instead).
 
-### Preserving `showMode` Settings
-When migrating a `SplitWidget` that persists sidebar visibility (e.g. via `splitWidget.showModeSetting()`), bind the setting's value to the `<devtools-split-view show=${input.showMode}>` property (`Both`, `OnlyMain`, or `OnlySidebar`) to preserve user settings and layout state across sessions.
+### `<devtools-split-view>` Migration Rules & `showMode` Ownership
+1. **Reconciled `show` attribute values & presenter-owned `showMode` (no `save-show-mode`):** `<devtools-split-view>`'s `show` attribute accepts `'both'`, `'main'`, or `'sidebar'`, whereas `UI.SplitWidget.ShowMode` (emitted in `@change` `e.detail` and stored in settings) uses `'Both'`, `'OnlyMain'`, and `'OnlySidebar'`. Map `ShowMode` to `'both' | 'main' | 'sidebar'` in `DEFAULT_VIEW`. Do **not** add a `save-show-mode` attribute or call `enableShowModeSaving()` on `<devtools-split-view>`, because internal `SplitWidget` mutations desynchronize Lit's `show=${...}` binding across `direction` changes. Instead, let the presenter own `showMode` (per orientation when needed), persist it alongside `size` in the split-view setting, and bind `show=${...}` declaratively.
+2. **Guard `@change` against bubbling child events:** `<devtools-split-view>` dispatches a non-bubbling `new CustomEvent('change', {detail: widget.showMode()})` on itself, while native `<input>` and `<select>` controls inside slotted light-DOM panes dispatch bubbling `Event('change')` events with `e.detail === undefined`. Guard `@change` listeners with `if (e.target === e.currentTarget && e instanceof CustomEvent)` before reading `e.detail`.
+3. **Migrating `UI.Panel.PanelWithSidebar` subclasses:** `PanelWithSidebar` already slots its own `mainWidget` and `sidebarWidget` `VBox` instances into `this.splitWidget().element`, so rendering `<devtools-widget slot="main|sidebar">` into `this.splitWidget().element` creates untracked duplicate children. Change the base class to `UI.Panel.Panel` (which extends `VBox` -> `Widget` and inherits `requestUpdate()`) and render `<devtools-split-view>` declaratively in `DEFAULT_VIEW`.
+4. **Exclude `.hidden` in E2E visibility selectors:** `<devtools-split-view>` hides inactive panes via `hideWidget()` (adding `.hidden`) rather than detaching them from the DOM. Update E2E `waitFor` and `waitForNone` selectors to exclude `.hidden` (for example, `.drawer-tabbed-pane:not(.hidden)`).
 
 ## Migrating `UI.ARIAUtils` helpers
 
@@ -1335,7 +1384,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         <li role="treeitem"></li>
       </ul>
       <span role="alert" aria-live="polite">Alert</span>
-      <input role="slider" aria-valuemin="10" aria-valuemax="100" aria-invalid=${this.valid}>
+      <input role="slider" aria-valuemin="10" aria-valuemax="100" aria-invalid=${input.valid}>
       <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0.5"
           aria-valuetext="50% done"></div>
     </div>`,
@@ -1354,7 +1403,7 @@ class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
     const widget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.nothingToSeeHere), this.explanation);
-    widget.link = 'http://www.google.com';
+    widget.link = Platform.DevToolsPath.urlString`https://www.google.com`;
     widget.show(this.element);
   }
 }
@@ -1367,9 +1416,11 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html`
     <div>
-      ${widget(UI.EmptyWidget.EmptyWidget,{
-          header: i18nString(UIStrings.nothingToSeeHere), text: this.explanation,
-          link: 'http://www.google.com',})}
+      ${widget(UI.EmptyWidget.EmptyWidget, {
+          header: i18nString(UIStrings.nothingToSeeHere),
+          text: input.explanation,
+          link: Platform.DevToolsPath.urlString`https://www.google.com`,
+      })}
     </div>`,
     target);
 };
@@ -1383,6 +1434,7 @@ Replace imperative `TextPrompt` or `UI.InplaceEditor` creation with the declarat
 1. **Prompt Owns the Content (`<slot>`)**: When `editing` is `false`, `<devtools-prompt>` renders `<span class="entrypoint"><slot></slot></span>` in shadow DOM. Therefore, `<devtools-prompt>` **must contain the display text/title directly as a child** (`<devtools-prompt ...>${title}</devtools-prompt>`) and live inside the element container (e.g., inside `<devtools-checkbox>`).
 2. **Do Not Conditionally Swap Elements**: Do NOT render `<devtools-prompt>` conditionally *in place of* a `<span>` or text node (`isEditing ? html`<devtools-prompt>...` : html`<span>${title}</span>``). Mount `<devtools-prompt>` unconditionally, holding the text content at all times, and only toggle its boolean property `?editing=${item === input.editingItem}`.
 3. **Conditional Input Styling**: Because `<devtools-prompt>` is present in both display and editing modes, any input-mode borders or background classes must be applied conditionally (e.g., `class=${Directives.classMap({'condition-input': isEditing})}`) so non-editing rows remain unbordered.
+4. **Preserve `UI.UIUtils.markBeingEdited`**: Pair `UI.UIUtils.markBeingEdited(container, true)` and `UI.UIUtils.markBeingEdited(container, false)` when starting and finishing `<devtools-prompt ?editing>` edits so `UI.UIUtils.isBeingEdited(...)` continues to suppress focus theft during active renames. Update E2E tests that previously waited on `.being-edited` to wait on `devtools-prompt[editing]`.
 
 **Before (`InplaceEditor` or imperative `TextPrompt`):**
 ```typescript
@@ -1515,12 +1567,19 @@ argument render only if the current tree node is expanded.
    (`TreeViewElement` or `TreeViewTreeElement`) or add public getters (such as `get scriptsTree()`)
    on presenters. Render leading icons, labels, tooltips, and trailing actions inline inside
    `<li role="treeitem">` and drive selection, expansion, and default focus declaratively via
-   `?selected`, `?open`, `@select`, `@expand`, and `autofocus`. Return `nothing` rather than an
+   `?selected`, `?open`, `@select`, `@expand`, and `autofocus`. Guard `@select` handlers with
+   `Boolean(e.detail?.selectedByUser)` when presenter selection is already set, because
+   `TreeViewElement.focus()` selects the first child with `selectedByUser: false` when no item is
+   selected yet. Style `.tree-outline li > .tree-element-title` with
+   `display: flex; align-items: center; width: 100%` when rendering custom icons or spans so flex
+   children do not wrap and get clipped by `overflow: hidden`. Return `nothing` rather than an
    empty container for trailing icons when none exist, and do not duplicate `class="tree-element-title"`
    on inner spans (which compounds opacity styling).
 2. **Persistent prompt & child widget isolation for editable rows**:
    Always keep `<devtools-prompt value=${...} ?editing=${...}>` persistently mounted in the row
-   template and toggle `?editing` declaratively. Do not duplicate `aria-label` on inner prompts
+   template and toggle `?editing` declaratively, pairing `UI.UIUtils.markBeingEdited(container, true)`
+   and `UI.UIUtils.markBeingEdited(container, false)` so `UI.UIUtils.isBeingEdited` suppresses
+   focus theft. Do not duplicate `aria-label` on inner prompts
    when the enclosing `<li role="treeitem">` already provides the accessible name. Furthermore,
    because `<devtools-tree>` clones light DOM into shadow DOM and re-clones an entire `<li role="treeitem">`
    on light-DOM attribute mutations, wrap editable prompts inside a small child `UI.Widget`
@@ -1530,8 +1589,10 @@ argument render only if the current tree node is expanded.
 3. **Custom elements with JavaScript property state**:
    Custom elements rendered inside `<devtools-tree>` whose state is set via JS properties (`.data`)
    must override `cloneNode(deep)` to copy `.data` and reflect dynamic state via a DOM attribute
-   (such as `data-badge=${...}`) so `<devtools-tree>`'s `MutationObserver` detects changes and
-   refreshes shadow clones.
+   (such as `data-badge=${...}` on an inner `<span>`) so `<devtools-tree>`'s `MutationObserver` detects changes and
+   refreshes shadow clones. Do **not** put that reflective attribute on `<li role="treeitem">` itself,
+   because `TreeViewElement.updateNode` returns early when the mutation target is `<li role="treeitem">`
+   without scheduling `refreshSoon()` to re-clone row content.
 
 ## Refactoring UI.Toolbar.Provider
 
@@ -1561,23 +1622,32 @@ export class NodeIndicator implements UI.Toolbar.Provider {
 
 **After:**
 ```typescript
-export const DEFAULT_VIEW: View = (input, output, target) => {
-  // Implementation of the View using Lit.render() (omitted for brevity).
+type View = (input: ViewInput, output: undefined, target: HTMLElement|ShadowRoot) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // Implementation of the View using render().
+  render(html`<span>${input.label}</span>`, target);
 };
 
-export class NodeIndicator extends UI.Widget.Widget {
+export class NodeIndicator extends UI.Widget.Widget<ShadowRoot> {
   readonly #view: View;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
     this.#view = view;
   }
 
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
-    const input = {
+    const input: ViewInput = {
       // Whatever input the View needs.
+      label: 'Node',
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }
 
@@ -1588,10 +1658,9 @@ export class NodeIndicatorProvider implements UI.Toolbar.Provider {
 
   private constructor() {
     this.#widgetElement = document.createElement('devtools-widget') as UI.Widget.WidgetElement<NodeIndicator>;
-    this.#widgetElement.widgetConfig = UI.Widget.widgetConfig(NodeIndicator);
+    new NodeIndicator(this.#widgetElement);
 
     this.#toolbarItem = new UI.Toolbar.ToolbarItem(this.#widgetElement);
-    this.#toolbarItem.setVisible(false);
   }
 
   item(): UI.Toolbar.ToolbarItem|null {
@@ -1607,6 +1676,34 @@ export class NodeIndicatorProvider implements UI.Toolbar.Provider {
     return nodeIndicatorProviderInstance;
   }
 }
+```
+
+If a widget-backed `ToolbarItem` needs to start hidden, call `toolbarItem.setVisible(false)` after `show()` or from `performUpdate()` rather than in the provider constructor. Calling `setVisible(false)` while `<devtools-widget>` is still detached adds `.hidden` to the host element, which `Widget.show()` strips when `Toolbar.appendToolbarItem()` connects the item.
+
+### Lightweight `ToolbarItem` Button Views
+
+When a toolbar item owner only renders a custom `<button>` without needing an independent `UI.Widget` lifecycle, pass a real element directly to `new UI.Toolbar.ToolbarItem(document.createElement('button'))` and render into `toolbarItem.element` via a 3-parameter view function using `render(..., target, {container})`. Never render into `document.createDocumentFragment()` and pass `fragment.firstElementChild` to `ToolbarItem`, because reparenting the element into a toolbar detaches it from Lit's `ChildPart` markers inside the fragment:
+
+```typescript
+interface ButtonViewInput {
+  title: string;
+  tooltip: string;
+  onClick: () => void;
+}
+
+const BUTTON_VIEW = (input: ButtonViewInput, _output: undefined, target: HTMLElement): void => {
+  render(html`<span class="content">${input.title}</span>`, target, {
+    container: {
+      classes: ['history-dropdown-button'],
+      attributes: {
+        'aria-haspopup': 'true',
+        title: input.tooltip,
+        jslog: `${VisualLogging.dropDown('history')}`,
+      },
+      listeners: {click: input.onClick},
+    },
+  });
+};
 ```
 
 ## Highlighting text
@@ -1631,21 +1728,194 @@ The component will automatically sort and merge the ranges provided.
 In this example, the ranges `1,3` and `2,3` will be merged into `1,4`. The
 ranges `10,2` and the current range `5,3` will also be highlighted.
 
+## Migrating `UI.ListControl`
+
+Replace `UI.ListControl` (and `UI.ListModel` / `UI.ListControl.ListDelegate`) in `ListMode.NonViewport` with declarative Lit rendering inside `DEFAULT_VIEW`. Preserve `ListControl`'s accessibility, keyboard, and visual-logging behavior:
+
+1. **Container & item ARIA parity**: Render a scrollable container (`overflow-y: auto` in CSS) with `role="listbox"` (or `role="menu"` with `aria-label` for menu dropdowns) and direct `role="option"` (or `role="menuitem"`) children via `.map((item, index) => ...)`, setting `aria-setsize=${input.items.length}`, `aria-posinset=${index + 1}`, and `aria-selected=${isSelected ? 'true' : 'false'}`. Choose one WAI-ARIA composite focus pattern and never mix both:
+   - **Roving `tabindex` on items** (recommended when items track `keydown` via `VisualLogging.item()`): set `tabindex="-1"` on the container (with **no** `aria-activedescendant`), bind `tabindex=${isFocused ? 0 : -1}`, `?autofocus=${isFocused && !item.hidden}`, and `@keydown` on each `role="option"`, and expose a `focusItem` callback on `ViewOutput` so the presenter moves DOM focus and scrolls the target option into view after `await this.updateComplete`.
+   - **Container focus with `aria-activedescendant`** (used in transient popups such as `TimelineHistoryManager` `DropDown`): keep DOM focus, `tabindex="0"` (or `tabindex="-1" autofocus`), `@keydown`, and `aria-activedescendant=${ifDefined(selectedId)}` on the container, and omit `tabindex` on items.
+2. **Keyboard navigation & default `jslog`**: Handle `ArrowUp` and `ArrowDown` with wrap-around while skipping hidden items, plus `Home` and `End` (`PageUp` and `PageDown` are no-ops in `NonViewport` mode). On items that do not define a custom `jslog`, apply `ListControl`'s default `VisualLogging.item().track({click: true, resize: true, keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End'})`.
+3. **Domain `Item` callbacks & view-owned `ContextMenu`**: Pass read-only domain or view-model `Item` objects (along with `selectedItem: Item|null` and `focusedItem: Item|null`) in `ViewInput` and callbacks (`onSelect: (item: Item) => void`) rather than array indices, which become stale across concurrent rebuilds. Construct `new UI.ContextMenu.ContextMenu(event)`, invoke `input.onContextMenu(item, contextMenu)`, and call `void contextMenu.show()` inside `DEFAULT_VIEW` so DOM `Event` objects stay in the view.
+4. **Separate `#rebuildItems()` from `performUpdate()` & remove dead `:first-child` CSS**: Rebuild item objects only when model data changes (`#rebuildItems()`), never inside `performUpdate()`, so UI toggles (such as filter or ignore-list checkboxes) do not recreate items or reset selection. Audit stylesheet rules on list items for `:first-child`: `UI.ListControl` always prepended an empty top spacer `<div>`, so `:first-child` item rules never matched before migration and activate once items render as direct children.
+
+**Before:**
+```typescript
+class CallStackPane extends UI.Widget.VBox implements UI.ListControl.ListDelegate<Item> {
+  readonly #items = new UI.ListModel.ListModel<Item>();
+  readonly #list = new UI.ListControl.ListControl(this.#items, this, UI.ListControl.ListMode.NonViewport);
+
+  constructor() {
+    super();
+    this.contentElement.appendChild(this.#list.element);
+  }
+
+  createElementForItem(item: Item): Element {
+    const element = document.createElement('div');
+    element.className = 'list-item';
+    element.textContent = item.title;
+    return element;
+  }
+
+  heightForItem(_item: Item): number {
+    return 0;
+  }
+
+  isItemSelectable(_item: Item): boolean {
+    return true;
+  }
+
+  selectedItemChanged(_from: Item|null, _to: Item|null, _fromEl: HTMLElement|null, _toEl: HTMLElement|null): void {}
+  updateSelectedItemARIA(_fromEl: Element|null, _toEl: Element|null): boolean {
+    return false;
+  }
+}
+```
+
+**After:**
+```typescript
+export interface ViewInput {
+  items: readonly Item[];
+  selectedItem: Item|null;
+  focusedItem: Item|null;
+  onSelect: (item: Item) => void;
+  onNavigate: (item: Item, key: 'ArrowUp'|'ArrowDown'|'Home'|'End') => void;
+  onContextMenu: (item: Item, menu: UI.ContextMenu.ContextMenu) => void;
+}
+
+export interface ViewOutput {
+  focusItem?: (item: Item) => void;
+}
+
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const {classMap, ref} = Directives;
+  const itemElements = new WeakMap<Item, HTMLElement>();
+  output.focusItem = (item: Item): void => {
+    const element = itemElements.get(item);
+    element?.focus();
+    element?.scrollIntoView({block: 'nearest'});
+  };
+  render(html`
+    <div class="item-list"
+        role="listbox"
+        tabindex="-1"
+        ?hidden=${input.items.length === 0}>
+      ${input.items.map((item, index) => {
+        const isSelected = item === input.selectedItem;
+        const isFocused = item === input.focusedItem;
+        return html`
+          <div ${ref(el => {
+                if (el instanceof HTMLElement) {
+                  itemElements.set(item, el);
+                } else {
+                  itemElements.delete(item);
+                }
+              })}
+              class=${classMap({'list-item': true, selected: isSelected})}
+              role="option"
+              aria-setsize=${input.items.length}
+              aria-posinset=${index + 1}
+              aria-selected=${isSelected ? 'true' : 'false'}
+              ?hidden=${item.hidden}
+              tabindex=${isFocused ? 0 : -1}
+              ?autofocus=${isFocused && !item.hidden}
+              jslog=${VisualLogging.item().track({
+                click: true,
+                resize: true,
+                keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End',
+              })}
+              @click=${() => input.onSelect(item)}
+              @contextmenu=${(event: Event) => {
+                const menu = new UI.ContextMenu.ContextMenu(event);
+                input.onContextMenu(item, menu);
+                void menu.show();
+              }}
+              @keydown=${(event: KeyboardEvent) => {
+                if (event.key === 'ArrowUp' || event.key === 'ArrowDown' ||
+                    event.key === 'Home' || event.key === 'End') {
+                  input.onNavigate(item, event.key);
+                  event.consume(true);
+                }
+              }}>
+            ${item.title}
+          </div>`;
+      })}
+    </div>
+  `, target);
+};
+
+class CallStackPane extends UI.Widget.VBox {
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
+  #items: Item[] = [];
+  #selectedItem: Item|null = null;
+  #focusedItem: Item|null = null;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          items: this.#items,
+          selectedItem: this.#selectedItem,
+          focusedItem: this.#focusedItem,
+          onSelect: item => {
+            this.#selectedItem = item;
+            this.#focusedItem = item;
+            this.requestUpdate();
+          },
+          onNavigate: (item, key) => void this.#onNavigate(item, key),
+          onContextMenu: (_item, _menu) => {},
+        },
+        this.#viewOutput,
+        this.contentElement,
+    );
+  }
+
+  async #onNavigate(item: Item, key: 'ArrowUp'|'ArrowDown'|'Home'|'End'): Promise<void> {
+    const visible = this.#items.filter(candidate => !candidate.hidden);
+    if (visible.length === 0) {
+      return;
+    }
+    const curr = visible.indexOf(item);
+    const targetItem = key === 'Home' ? visible[0] :
+        key === 'End'                 ? visible[visible.length - 1] :
+        key === 'ArrowDown'           ? visible[curr === -1 ? 0 : (curr + 1) % visible.length] :
+                                        visible[curr <= 0 ? visible.length - 1 : curr - 1];
+    this.#focusedItem = targetItem;
+    this.requestUpdate();
+    await this.updateComplete;
+    this.#viewOutput.focusItem?.(targetItem);
+  }
+}
+```
+
 ## Migrating `UI.ListWidget.ListWidget`
 
 Replace the legacy imperative `UI.ListWidget.ListWidget` (which rendered inline editing controls and required custom delegates) with the modern `<devtools-list>` component.
 
 **Anti-pattern — Do NOT pass `list: UI.ListWidget.ListWidget` in `ViewInput` to `WrapperWidget`:**
 Do not keep `this.list = new UI.ListWidget.ListWidget(this)` and `implements UI.ListWidget.Delegate` on the presenter (imperatively calling `this.list.clear()`, `this.list.appendItem()`, `this.list.addNewItem()`), render `renderItem`/`beginEdit` into `DocumentFragment` adapters, and mount `this.list` via `UI.Widget.WrapperWidget`. That leaks a view widget into the presenter's state and misuses `WrapperWidget`. Instead:
-- **Recommended (`<devtools-list>`)**: Replace `UI.ListWidget` and `UI.ListWidget.Delegate` with `<devtools-list>`, passing pure data (`items`, `editingIndex`, `validationError`) and callbacks (`onEdit`, `onDelete`, `onCommitEdit`, `onCancelEdit`) in `ViewInput`, and rendering all markup inside `DEFAULT_VIEW`.
+- **Recommended (`<devtools-list>`)**: Replace `UI.ListWidget` and `UI.ListWidget.Delegate` with `<devtools-list>`, passing pure data (`items`, `editingItem`, `validationError`) and domain-item callbacks (`onEdit: (item: Item) => void`, `onDelete: (item: Item) => void`, `onCommitEdit`, `onCancelEdit`) in `ViewInput`, and rendering all markup inside `DEFAULT_VIEW`.
 - **Incremental fallback (if preserving legacy `ListWidget.Editor` DOM/screenshot goldens temporarily)**: Move `ListWidget` and `ListWidget.Delegate` ownership out of the presenter and into the view layer — pass only pure data and callbacks in `ViewInput`, encapsulate `ListWidget` + `ListWidget.Delegate` inside a small view-layer child `Widget` instantiated via `${widget(...)}` in `DEFAULT_VIEW`, and expose a narrow action callback on `ViewOutput` (e.g. `output.addNewItem = () => ...`) if needed.
 
 ### Guidelines
 1. **Dialogue Modals for Complex Editors:** If the editor contains multiple input fields (e.g., location details, headers), show the editor in a modal card dialog powered by `UI.Dialog.Dialog`.
 2. **Inline Prompts or Rows for Trivial Editors:** If the editor is trivial (i.e., a single text input, such as URL pattern or regex ignore-list rules), handle editing inline using a `<devtools-prompt>` component (see `RequestConditionsDrawer.ts`) or an inline editor row in the template (see `EditFileSystemView.ts`). When using `<devtools-prompt>`, clicking the item focuses the prompt and toggles `editing` mode inline, dispatching `@commit` and `@cancel` events to update the state.
-3. **Conditionally render list:** Use `<devtools-list>` and conditionally render it inside the card only if the list has elements (`input.locations.length > 0`). This ensures empty state layout rules are correctly applied and prevents extra spacing/gaps.
-4. **Declarative dialog views:** Define the edit/add modal content in a separate, customizable view function (e.g. `DEFAULT_DIALOG_VIEW`). Instantiating `UI.Dialog.Dialog` in the class is fine, but its content rendering should be driven declaratively by the dialog view function.
-5. **Common styles integration:** Ensure `{includeCommonStyles: true}` is passed when rendering elements into the DOM inside test setups to import proper layout variables and global typography styles (e.g. Roboto).
+3. **Persistent `.editor-container` & `.value` Binding for Inline Multi-Field Editors:** When rendering an inline multi-field editor that hosts child widgets via `${widget(...)}`, keep `.editor-container` mounted in the DOM and toggle `?hidden=${!input.editorState}` rather than conditionally returning `nothing`, so child widgets are not disconnected and recreated between add and edit flows. When `#onEditorInput` calls `this.performUpdate()` synchronously so submit-button disabled state updates immediately on `'input'`, bind `.value=${editorState.values[name]}` without `Directives.live(...)` (and reset `#editorValues` on cancel or commit) so a synchronous re-render on the first control in a batch helper does not overwrite pending DOM `.value` assignments on sibling controls.
+4. **Conditionally render list:** Use `<devtools-list>` and conditionally render it inside the card only if the list has elements (`input.items.length > 0`). This ensures empty state layout rules are correctly applied and prevents extra spacing/gaps.
+5. **Declarative dialog views:** Define the edit/add modal content in a separate, customizable 3-parameter view function (e.g. `DEFAULT_DIALOG_VIEW = (input, _output: undefined, target) => ...`). Instantiating `UI.Dialog.Dialog` in the class is fine, but its content rendering should be driven declaratively by the dialog view function.
+6. **Common styles integration:** Ensure `{includeCommonStyles: true}` is passed when rendering elements into the DOM inside test setups to import proper layout variables and global typography styles (e.g. Roboto).
 
 **Before:**
 ```typescript
@@ -1679,10 +1949,10 @@ class SettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<Locat
 **After:**
 ```typescript
 export interface SettingsTabInput {
-  items: Location[];
+  items: readonly Location[];
   onAddClicked: () => void;
-  onEdit: (index: number) => void;
-  onDelete: (index: number) => void;
+  onEdit: (item: Location) => void;
+  onDelete: (item: Location) => void;
 }
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
@@ -1692,8 +1962,18 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         <devtools-list
           .editable=${true}
           .deletable=${true}
-          @edit=${(e: Lists.List.ItemEditEvent) => input.onEdit(e.detail.index)}
-          @delete=${(e: Lists.List.ItemRemoveEvent) => input.onDelete(e.detail.index)}>
+          @edit=${(e: Lists.List.ItemEditEvent) => {
+            const item = input.items[e.detail.index];
+            if (item) {
+              input.onEdit(item);
+            }
+          }}
+          @delete=${(e: Lists.List.ItemRemoveEvent) => {
+            const item = input.items[e.detail.index];
+            if (item) {
+              input.onDelete(item);
+            }
+          }}>
           ${input.items.map((item, index) => html`
             <div slot="slot-${index}">
               <span>${item.title}</span>
@@ -1701,7 +1981,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           `)}
         </devtools-list>
       ` : nothing}
-      <devtools-button @click=${input.onAddClicked}>Add location</devtools-button>
+      <devtools-button .variant=${Buttons.Button.Variant.OUTLINED} @click=${input.onAddClicked}>
+        Add location
+      </devtools-button>
     </devtools-card>
   `, target);
 };
@@ -1714,12 +1996,20 @@ export interface SettingsTabDialogInput {
   onSave: () => void;
 }
 
-export const DEFAULT_DIALOG_VIEW = (input: SettingsTabDialogInput, target: HTMLElement) => {
+export const DEFAULT_DIALOG_VIEW = (
+    input: SettingsTabDialogInput,
+    _output: undefined,
+    target: HTMLElement,
+): void => {
   render(html`
     <div class="editor-container">
       <input type="text" .value=${input.editingValues.title} @input=${(e: Event) => input.onTitleInput((e.target as HTMLInputElement).value)}>
-      <devtools-button @click=${input.onCancel}>Cancel</devtools-button>
-      <devtools-button @click=${input.onSave}>Save</devtools-button>
+      <devtools-button .variant=${Buttons.Button.Variant.OUTLINED} @click=${input.onCancel}>
+        Cancel
+      </devtools-button>
+      <devtools-button .variant=${Buttons.Button.Variant.PRIMARY} @click=${input.onSave}>
+        Save
+      </devtools-button>
     </div>
   `, target);
 };

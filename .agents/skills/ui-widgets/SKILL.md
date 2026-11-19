@@ -19,22 +19,30 @@ Adhere strictly to the Model-View-Presenter (MVP) architecture.
 * MUST extend a base `UI.Widget` class (e.g., `UI.Widget.Widget`). Note that `UI.Widget.Widget` is not an `HTMLElement` and must be appended via `.show()` or `UI.Widget.widget`
 * Constructor MUST assign the injected view function to a private `#view` field.
 * Constructor MUST call `super()`. If taking `element?: HTMLElement`, pass it to `super(element)`. `super(true)` is forbidden. Do not pass `classes` or `jslog` in `WidgetOptions` (`super(..., {classes: [...], jslog: ...})`); instead, pass container CSS classes and `jslog` via the third parameter of `render(template, target, {container: {classes: [...], attributes: {jslog: ...}}})` in the view function (and if the widget uses shadow DOM, pass `useShadowDom: 'pure'` and extend `Widget<ShadowRoot>` / `VBox<ShadowRoot>` with `target: HTMLElement|DocumentFragment` so `render()` applies `container.classes` and `container.attributes` to the shadow host `this.element`).
+  * **Light DOM vs. `useShadowDom: 'pure'`:** Light DOM (`super(element)`) is the default. Use `useShadowDom: 'pure'` (`Widget<ShadowRoot>` / `VBox<ShadowRoot>`) only when `<slot>` projection is needed or an inline `<style>` tag pollutes ancestor `.textContent` assertions in tests (`axe_core_test_runner.js` already normalizes `ShadowRoot` to `element.host`). Note that on legacy `useShadowDom: true` widgets, `this.contentElement` is an inner `<div class="widget">` inside the shadow root rather than the host `this.element`, whereas `useShadowDom: 'pure'` sets `this.contentElement` to the `ShadowRoot` itself (`ui/lit/render.ts` applies `container` options to `shadowRoot.host`).
+  * **Multi-branch `container` options:** Views with multiple `render()` branches that pass `{container: {classes, attributes}}` MUST pass identical `container` options on **every** `render()` branch, because omitting them strips previously applied `classes` and `attributes` (such as `jslog`) on branch switches.
+  * **Dual-overload `Widget<ShadowRoot>` promotion:** When keeping a legacy positional constructor alongside `(element?: HTMLElement, view?: View)`, place `constructor(element?: HTMLElement, view?: View);` **last** before the implementation signature and type `View`'s target as `HTMLElement|ShadowRoot` so `ConstructorParameters` and `ViewFunctionHelpers` (`strictFunctionTypes`) resolve cleanly.
 * Dependencies from `Universe` SHOULD be requested via static `INJECT`: `static override readonly INJECT = [...] as const;` and received as constructor parameter #2 (`[dep1, dep2]: UI.Widget.WidgetDependencies<typeof MyWidget>`).
-* Styling MUST be handled within the View. `this.registerCSSFiles()` is forbidden.
+* Styling MUST be handled within the View. `this.registerRequiredCSS()` is forbidden.
 * Initial render MUST be triggered in `override wasShown(): void` by calling `this.requestUpdate()`. External model, workspace, and setting subscriptions SHOULD be attached in `wasShown()` and detached symmetrically in `willHide()`, reconciling incremental state changes that occurred while hidden rather than unconditionally calling `reset()` and wiping populated presenter state (such as open tree folders or selection) on every re-show.
+  * **`#needsUpdate` guard across `detach()` / re-show:** When a widget flushes `performUpdate()` in a legacy positional constructor or can have updates queued before `detach()` cancels them, guard `wasShown()` with `#needsUpdate = true` (set `this.#needsUpdate = true` before `this.requestUpdate()` in setters, clear `this.#needsUpdate = false` in `performUpdate()`, and check `if (this.#needsUpdate) { this.requestUpdate(); }` in `wasShown()`) instead of `#hasRendered = false` (which drops updates cancelled by `detach()`).
+  * **Notifying manual-layout parents after dynamic child removal (`wasHidden()`):** Most widgets do not need manual parent resize notifications. When a dynamically dismissed child widget (such as `Infobar`) sits inside a manual-layout parent that requires `this.parentWidget()?.doResize()` after the child leaves the DOM, hook `override wasHidden()` rather than `dispose()` or `override onDetach()` (`dispose()` runs while `<devtools-widget>` is still connected, and `<devtools-widget>` disconnect skips `onDetach()`).
 * MUST hold all UI state as private class fields (e.g., `#counter`).
-* To schedule a UI update, MUST call `this.requestUpdate()` asynchronously across all presenter methods, property setters, and event handlers. `performUpdate()` MUST NOT be called directly (except in `UI.Panel`/`UI.Dialog` subclasses where `requestUpdate()` is unavailable or when synchronous layout measurement is documented as strictly required). Presenter and presenter-node classes MUST NOT expose imperative view-refresh methods (e.g., `updateTrailingIcons()`, `updateIcon()`); all visual output should be derived declaratively in the view function.
+* To schedule a UI update, MUST call `this.requestUpdate()` asynchronously across all presenter methods, property setters, and event handlers. `performUpdate()` MUST NOT be called directly (except in `UI.Dialog.Dialog` / `UI.GlassPane.GlassPane` wrappers where `requestUpdate()` is unavailable because they wrap an internal `#widget` instead of extending `Widget`—note `UI.Panel.Panel` extends `VBox` -> `Widget` and **does** inherit `requestUpdate()`, as does `UI.Dialog.DialogWidget`—or when synchronous layout measurement is documented as strictly required). Presenter and presenter-node classes MUST NOT expose imperative view-refresh methods (e.g., `updateTrailingIcons()`, `updateIcon()`); all visual output should be derived declaratively in the view function.
+  * **Never call `this.requestUpdate()` reentrantly inside `performUpdate()`:** Doing so triggers `UpdateState.INTERRUPTED`, aborts the active update controller, and queues a redundant animation frame. Call `this.requestUpdate()` at top-level event and action entrypoints instead of inside helpers called during `performUpdate()`.
+  * **Blink `web_tests` & synchronous `performUpdate()` exceptions:** Never call `this.performUpdate()` synchronously as a workaround for legacy Blink `web_tests` (update those web tests to `await UI.Widget.Widget.allUpdatesComplete` instead). Synchronous `this.performUpdate()` is justified only when: (1) a caller immediately invokes `.focus()` on a child right after unhiding its container, or (2) `PopoverHelper`, tooltip bounds, or a legacy positional caller measures layout synchronously before `requestAnimationFrame` (including under `sinon.useFakeTimers()` where `clock.restore()` runs before the next frame).
 
 ### View (`function`) Rules
 
 * MUST be a pure function, typically named `DEFAULT_VIEW`, in the same file as the Presenter.
-* MUST use the signature: `(input: ViewInput, output: ViewOutput, target: HTMLElement)`.
+* MUST use the signature: `(input: ViewInput, output: ViewOutput, target: HTMLElement): void` (ESLint's `isViewFunction` requires 3 identifier parameters ending with `input`, `output`, and `target`/`element`/`container`, returning `void` or `Promise<void>` or omitting the return annotation).
   * `input`: Data and event handlers from the Presenter.
-  * `output`: Callbacks for imperative actions (e.g., focus) provided to the Presenter. If unused, the `output` parameter should be typed as `undefined` in the view's signature, and `undefined` should be passed from the presenter.
-  * `target`: The HTML element to render into.
+  * `output`: Callbacks for imperative actions (e.g., focus) provided to the Presenter. If unused, `@devtools/no-empty-view-output` requires typing the `output` parameter as `undefined` (never `{}`, `object`, `Record<string, never>`, or an empty `ViewOutput` interface) in the view's signature, and `undefined` should be passed from the presenter.
+  * `target`: The HTML element (or `ShadowRoot` / `DocumentFragment`) to render into.
 * The `input` parameter MUST NOT be destructured. Always use `input.propertyName`.
 * Responsibility: Render a `lit-html` template into `target`.
   * **Template Formatting & Whitespace:** The custom `html` tag from `ui/lit/lit.js` (`front_end/ui/lit/strip-whitespace.ts`) automatically strips `\n\s*` outside of `<...>` tags at runtime, so multi-line formatting between text interpolations and inline elements (`<span>`, etc.) does not introduce whitespace text nodes.
+* **Event & callback contracts:** Unpack DOM events (`event.preventDefault()`, `(e.target as HTMLInputElement).checked`, `e.detail`) and construct/show context menus (`const contextMenu = new UI.ContextMenu.ContextMenu(event); input.onContextMenu(item, contextMenu); void contextMenu.show();`) inside `DEFAULT_VIEW` rather than forwarding DOM `Event` objects to the presenter. Pass domain `Item` objects in callbacks (`onSelect: (item: Item) => void`), never array indices that go stale across concurrent rebuilds. Because `ui/lit/render.ts` passes no `host` option to Lit, `@event=${fn}` bindings require arrow functions or `.bind(this)` (Lit swaps the stored callback on re-render without re-registering DOM listeners).
 * MUST NOT hold state, fetch data, or perform business logic.
 
 #### Helper Functions in Views vs. Child Widgets
@@ -43,7 +51,7 @@ Complex views and repeated item rows should be broken down using pure helper fun
 
 ```ts
 // clang-format off
-const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const renderHeader = (): LitTemplate => {
     return html`<h1>${input.title}</h1>`;
   };
@@ -60,29 +68,33 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 ### Composition
 
 * To render a child widget, the parent's View MUST use the lit-html directive `UI.Widget.widget`.
-* **Prefer `${widget(WidgetClass, {params})}` directly as a child expression** over `<devtools-widget ${widget(WidgetClass, {params})}></devtools-widget>`. Only use an explicit `<devtools-widget>` tag when you need to set other HTML attributes/classes, apply additional directives (such as `widgetRef` or `ref`), or provide child nodes.
+* **Prefer `${widget(WidgetClass, {params})}` directly as a child expression** over `<devtools-widget ${widget(WidgetClass, {params})}></devtools-widget>`. Never double-wrap `<devtools-widget>${widget(WidgetClass, {params})}</devtools-widget>`, because `widget()` as a child expression already renders `<devtools-widget>`. Only use an explicit `<devtools-widget>` tag when you need to set other HTML attributes/classes, apply additional directives (such as `widgetRef` or `ref`), or provide child nodes.
 * **Strongly prefer the two-argument `widget(WidgetClass, {params})` form** over the single-argument factory callback `widget(element => new WidgetClass(element, ...))`. The two-argument form automatically updates properties and calls `requestUpdate()` on subsequent renders, whereas a factory callback only runs once on initial instantiation.
-* If a child widget currently exposes imperative setter methods (e.g., `setStorageKey(key)` or `setStorageBucket(bucket)`) instead of public properties/setters, convert them into standard TypeScript setters (`set storageKey(key)`, `set storageBucket(bucket)`) on the child widget so it can be instantiated and updated declaratively via the two-argument `widget(WidgetClass, {params})` directive.
+* If a child widget currently exposes imperative setter methods (e.g., `setStorageKey(key)` or `setStorageBucket(bucket)`) instead of public properties/setters, convert them into standard TypeScript setters (`set storageKey(key)`, `set storageBucket(bucket)`) on the child widget so it can be instantiated and updated declaratively via the two-argument `widget(WidgetClass, {params})` directive. Setter implementations should short-circuit when the value is unchanged and call `this.requestUpdate()`.
 * Configuration is passed via the parameters.
 * Properties passed from a parent MUST be declared as public fields or setters on the child presenter class.
 * The framework automatically updates these properties and calls `requestUpdate()` on the child when the parent re-renders.
+* **Memoize `widget()` reference props:** `WidgetDirective` compares each `widgetParams` entry with strict `!==` and calls `child.requestUpdate()` whenever any reference changes. Memoize object, array, `Set`, and callback props instead of allocating fresh literals or `.bind(this)` closures in `performUpdate()`.
 * **Avoid `UI.Widget.WrapperWidget`:** Do **NOT** pass `UI.Widget` instances (such as `new ChildWidget()`, `UI.TabbedPane.TabbedPane` / `tabbedLocation.tabbedPane()`, `StackLocation.widget()`, `UI.ListWidget.ListWidget`, or `UI.SplitWidget.SplitWidget`) via `ViewInput` to wrap in `UI.Widget.WrapperWidget`.
   * **Child widgets:** Refactor the child widget to accept `element?: HTMLElement` in its constructor and setters for its state, and instantiate it declaratively in the view with `${widget(ChildWidget, {...})}`.
   * **`TabbedPane` and `StackLocation`:** Create tabbed panes and stack panes declaratively in the view using `<devtools-tabbed-pane>` (or `${widget(UI.TabbedPane.TabbedPane, ...)}`) and `<devtools-stack-pane>` rather than passing a `TabbedPane` or `StackLocation.widget()` instance through `ViewInput` to `WrapperWidget`.
   * **`UI.ListWidget.ListWidget` and `UI.ListWidget.Delegate`:** Do NOT keep `this.list` and `UI.ListWidget.Delegate` on the presenter (calling `this.list.clear()`, `this.list.appendItem()`, `this.list.addNewItem()`, rendering `renderItem`/`beginEdit` into a `DocumentFragment`, and mounting `this.list` via `WrapperWidget`). Replace `ListWidget` + `ListWidget.Delegate` with `<devtools-list>` (`ui/components/lists/lists.js`) driven by pure `ViewInput` data and callbacks (using `<devtools-prompt>`, an inline editor row, or `UI.Dialog.Dialog` for editing). If legacy `ListWidget.Editor` DOM/screenshot goldens must be preserved temporarily in an incremental CL, move `ListWidget` + `ListWidget.Delegate` ownership into the view layer (e.g. a small view-layer child class extending `UI.ListWidget.ListWidget` directly and instantiated via `${widget(...)}` in `DEFAULT_VIEW`, without `WrapperWidget`) so the presenter only passes pure data and callbacks in `ViewInput`.
   * `WrapperWidget` is only justified when reparenting a shared stateful singleton across multiple containers (such as `ConsoleView.instance()` or `SourcesView`) or bridging an opaque `UI.Widget` returned by an external factory. Remember that `WrapperWidget` sets `display: contents` on its `<devtools-widget>` host element, so never put sizing, border, or background classes on that `<devtools-widget>` host (wrap it in a `<div>` instead).
+* **External imperative DOM hosts & `widgetCounterMap`:** `Node.prototype.appendChild`, `insertBefore`, `removeChild`, and `removeChildren` throw on widget elements, and `markAsExternallyManaged()` under-counts ancestor `widgetCounterMap` on `detach()` (`#showWidget` skips incrementing while `detach()` still decrements). When mounting a widget into external imperative DOM (such as CodeMirror panels), call `widget.show(container, undefined, true)` after the external host connects `container` to the DOM, paired with `widget.detach()` before `container` is removed.
+* **`SwatchPopoverHelper` triggers:** Bind `@mousedown=${(e: Event) => e.consume()}` on the trigger element so `SwatchPopoverHelper`'s document `mousedown` listener does not close the popover before `click` fires, and `await child.updateComplete` (obtained via `widgetRef`) before `SwatchPopoverHelper.show()`.
+* **Non-widget render adapters:** For CodeMirror `WidgetType.toDOM()` or `ListWidget.Delegate.renderItem()`, render a 3-parameter view `(input, _output: undefined, target: DocumentFragment): void` into `document.createDocumentFragment()` and return `fragment.firstElementChild`. For `UI.Toolbar.Provider` items that do not need a full `Widget`, pass a real element to `new UI.Toolbar.ToolbarItem(document.createElement('button'))` and call `render(tpl, toolbarItem.element, {container: {classes, attributes, listeners}})` directly (never render into a `DocumentFragment` and reparent `fragment.firstElementChild`, which detaches Lit's `ChildPart` markers), or return `<devtools-button>` templates from `toolbarItems()`.
 * **Listening to Child Widget Events (`eventMixin`):** When a child `UI.Widget` uses `Common.ObjectWrapper.eventMixin(UI.Widget.Widget)`, calling `this.dispatchEventToListeners(Events.FOO, payload)` also dispatches a non-bubbling `new CustomEvent(Events.FOO, {detail: payload})` on the widget's host `<devtools-widget>` element. Parent Lit templates can listen declaratively with `<devtools-widget ${widget(ChildWidget, {...})} @Foo=${(e: CustomEvent<Payload>) => input.onFoo(e.detail)}></devtools-widget>` (Lit preserves the case of `@Foo` from the template string). This only works on the `<devtools-widget>` element itself (the `CustomEvent` does not bubble) and only for `UI.Widget` classes using `eventMixin` (plain `ObjectWrapper` subclasses do not have `dispatchDOMEvent`).
 
 ## Refactoring Legacy Components
 
-When migrating imperative components (extending `UI.VBox`, `UI.Panel`, or `HTMLElement`) to the MVP architecture:
+When migrating imperative components (extending `UI.Widget.VBox`, `UI.Panel.Panel`, or `HTMLElement`) to the MVP architecture:
 
 1.  **Analyze Rendering Logic:** Identify where DOM is created (constructor, `wasShown`, imperative methods). This logic moves to the `DEFAULT_VIEW`.
 2.  **Convert Base Class:**
-    *   Prefer extending `UI.Widget.Widget`.
-    *   **Special Case:** If the component *must* extend `UI.Panel.Panel` or `UI.Dialog.Dialog` (to retain specific functionality), you cannot use `requestUpdate()`. Instead, call `this.performUpdate()` directly on state changes.
-3.  **State Migration:** Move DOM-stored state to private class fields.
-4.  **Update Usage:** Replace `new MyComponent()` instantiations with declarative `widget(MyComponent, {params})` in parent templates.
+    *   Prefer extending `UI.Widget.Widget` (or `UI.Panel.Panel` for panels, which extends `VBox` -> `Widget` and **does** inherit `requestUpdate()`).
+    *   **Special Case:** `UI.Dialog.Dialog` and `UI.GlassPane.GlassPane` wrap an internal `#widget` instead of extending `Widget`, so render into `this.contentElement` directly via a view function (or compose `UI.Dialog.DialogWidget` declaratively via ``${widget(UI.Dialog.DialogWidget, {open, content: html`...`})}`` in a parent view rather than subclassing it).
+3.  **State Migration:** Move DOM-stored state to `#private` class fields and schedule updates via `this.requestUpdate()`.
+4.  **Update Usage:** Replace `new MyComponent()` instantiations with declarative `${widget(MyComponent, {params})}` in parent templates.
 5.  **Scoping Styles:** Ensure your CSS file uses an `@scope to (devtools-widget > *)` block to prevent style leaks. Land `@scope` CSS wrapping in its own small, standalone CL separate from widget migration CLs so visual regressions are easy to bisect:
     ```css
     @scope to (devtools-widget > *) {
@@ -123,7 +135,7 @@ render(html`
 **Key `@scope` Gotchas & Rules:**
 *   **`:scope` instead of `:host`**: `:host` is Shadow DOM-only and never matches inside `@scope`. Style the widget's root container element with `:scope`.
 *   **Theme-aware tokens instead of theme or platform classes**: Because un-anchored selectors inside `@scope` receive an implicit `:scope ` prefix, selectors like `.theme-with-dark-background .foo` or `:host-context(...)` look inside the widget for the ancestor class and never match. Use theme-aware design tokens (`--sys-color-*` / `--app-color-*`) instead.
-*   **Shared stylesheets**: Do not inject `inspectorCommonStyles` or `textButtonStyles` into Light DOM views (`installComponentRootStyles()` already injects them globally into the document and shadow roots). Wrap other shared stylesheets inline as `<style>@scope to (devtools-widget > *) { ${styles} }</style>` so Shadow DOM consumers stay unaffected.
+*   **Shared stylesheets**: Do not inject `inspectorCommonStyles` or `textButtonStyles` into Light DOM views (`installComponentRootStyles()` already injects them globally into the document and shadow roots). When a `.css` file (with no `:host`, `:root`, or ancestor theme selectors) is shared only between Light DOM and `useShadowDom` / `useShadowDom: 'pure'` widgets, wrap the `.css` file directly in `@scope to (devtools-widget > *)` (`:scope` matches the shadow host in `useShadowDom: 'pure'`) and import `./Foo.css.js` directly rather than via a namespace import (`Foo.barStyles`), preserving CSS hot reload. Wrap other shared stylesheets inline as `<style>@scope to (devtools-widget > *) { ${styles} }</style>` so Shadow DOM consumers stay unaffected.
 *   **Lower boundary and imperative child widgets**: The `(devtools-widget > *)` lower boundary stops cascading into declarative `<devtools-widget>` children (`${widget(...)}`), but it does **not** stop at legacy imperatively attached `<div class="widget">` children (`childWidget.show(container)`).
 *   **Small, Standalone CLs**: Always land `@scope` CSS wrapping in a dedicated, standalone CL separate from logic, template, or widget-promotion CLs so visual regressions are easy to bisect.
 
@@ -131,7 +143,7 @@ render(html`
 
 ### Legacy Interop & Refs
 *   **Raw Elements:** Use `Directives.ref` (from `ui/lit/lit.js`) to obtain a reference to a raw `HTMLElement` only when strictly required for legacy imperative APIs (e.g., `splitWidget.installResizer(element)`). When a shared DevTools UI primitive (`ui/kit`, `ui/components`, `ui/legacy`) would force callers to use `ref(...)` + imperative setters just to link elements together (such as a `<devtools-menu>` trigger anchor), extend the shared primitive with an HTML-native ID/attribute API in a standalone prerequisite CL rather than adding `ref(...)` boilerplate at call sites.
-*   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget inside the view function if you need to call imperative methods on it. **Do NOT store child widget instances on `ViewOutput` as a final result** (doing so is only acceptable temporarily in intermediate migration CLs). Instead, either supply all needed configuration declaratively through setters/inputs on the child widget, or if imperative calls are strictly necessary, expose narrow action functions on `ViewOutput` (e.g., `output.doLayout = () => splitWidget.doLayout()`, `output.revealPosition = pos => childWidget.revealPosition(pos)`). Do not keep `get*ForTest()` methods that return child widget instances via `ViewOutput`; tests should query rendered `<devtools-widget>` elements via `.getWidget()` or assert on `ViewInput` via `createViewFunctionStub`.
+*   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget inside the view function if you need to call imperative methods on it. **Do NOT store child widget instances on `ViewOutput` as a final result** (doing so is only acceptable temporarily in intermediate migration CLs). Instead, either supply all needed configuration declaratively through setters/inputs on the child widget, or if imperative calls are strictly necessary, expose narrow action functions on `ViewOutput` (e.g., `output.doLayout = () => splitWidget.doLayout()`, `output.revealPosition = pos => childWidget.revealPosition(pos)`). Do not keep `get*ForTest()` methods that return child widget instances via `ViewOutput`; tests should query rendered `<devtools-widget>` elements via `.getWidget()` or assert on `ViewInput` via `createViewFunctionStub`. **Do** preserve existing live presenter notification hooks (such as `updatedForTest()`) at their original call points when legacy Blink `web_tests` await them via `TestRunner.addSniffer`.
 
 ### Visibility (`?hidden` Attribute Only)
 Toggle element visibility declaratively using the HTML `?hidden` attribute:
@@ -144,11 +156,17 @@ Never combine a `.hidden` CSS class (`classMap({hidden: ...})` or `classList.tog
 ### Declarative Default Focus (`autofocus` / `?autofocus`)
 `UI.Widget.prototype.focus()` natively queries `[autofocus]` via `getDefaultFocusedElement()` across both plain HTML elements (e.g. `<devtools-tree autofocus>`) and child widgets. Mark the default focus target with `autofocus` or `?autofocus=${...}` directly in the Lit template (ensuring at most one element has `autofocus` in any render state) instead of overriding `focus()`, calling `this.setDefaultFocusedElement(...)`, plumbing focus closures through `ViewOutput`, or mutating `element.autofocus` / `setAttribute('autofocus', ...)` / `toggleAttribute('autofocus', ...)` imperatively in TypeScript or `ref(...)` callbacks.
 
+### Directives & Built-in Elements
+*   **Leaf `ref()` text helpers & `<canvas>`:** Never attach a `textContent`-mutating `ref()` helper (`setTextContentTruncatedIfNeeded`, `highlightRangesWithStyleClass`) to an element that also contains `${...}` `ChildPart` expressions (mutating `textContent` removes Lit's `ChildPart` markers and throws on re-render); isolate it on an empty leaf `<span ${ref(...)}></span>`. In `<canvas ${ref(el => ...)}>`, always call `ctx.clearRect(0, 0, el.width, el.height)` before `ctx.drawImage(...)` because inline `ref` closures re-run on every render.
+*   **`ifDefined` & `styleMap`:** Destructure `const {ifDefined} = Directives;` (`lit-analyzer` rejects `Directives.ifDefined(...)` on string attributes), and use `Directives.styleMap({...})` for dynamic inline styles instead of interpolated `style="..."` strings.
+*   **`<devtools-data-grid>`:** Key `Directives.repeat` by data item identity (`item => item`) rather than array index whenever cells contain `${widget(...)}`, because `DataGridElement` clones `<td>` cells with `cloneNode(true)` and misses in-place widget updates unless the `<tr>` is replaced.
+*   **`<devtools-button>`, `<devtools-checkbox>`, & `<devtools-icon>`:** On `<devtools-button>`, place `.iconName=${...}` **before** `.variant=${...}` (`set variant` renders immediately and throws if `iconName` is unset for `ICON`/`TOOLBAR` variants) and bind `.title=${...}` as a JS property rather than `title=${...}` so dynamic updates re-render the inner `<button>`. On `<devtools-checkbox>`, preserve `title=${title}` alongside `${UI.UIUtils.bindToSetting(setting)}` (when migrating `CheckboxLabel` or `SettingsUI.SettingsUI.createSettingCheckbox`) for `[title="..."]` E2E selectors. For `<devtools-icon>`, keep a side-effect `import '../../ui/kit/kit.js';` (and `../../ui/kit:bundle` in `BUILD.gn`) so the custom element registers in isolated tests.
+
 ### `<devtools-tree>` & Editable `<devtools-prompt ?editing>` Rows
-*   Keep `<devtools-tree>` (`ui/kit/kit.js`) contracts intact without widening `front_end/ui/legacy/Treeoutline.ts` (`TreeViewElement`/`TreeViewTreeElement`). Drive selection and expansion purely via `?selected`, `?open`, `@select`, and `@expand`.
-*   Keep `<devtools-prompt ?editing>` persistently mounted in the DOM and toggle `?editing` declaratively; do not duplicate `aria-label` on inner prompts when the `<li role="treeitem">` already labels the row.
+*   Keep `<devtools-tree>` (`ui/legacy/legacy.js`) contracts intact without widening `front_end/ui/legacy/Treeoutline.ts` (`TreeViewElement`/`TreeViewTreeElement`). Drive selection and expansion purely via `?selected`, `?open`, `@select`, and `@expand`. Guard `@select` handlers with `Boolean(e.detail?.selectedByUser)` when presenter selection is already set, because `TreeViewElement.focus()` selects the first child with `selectedByUser: false`.
+*   Keep `<devtools-prompt ?editing>` persistently mounted in the DOM and toggle `?editing` declaratively; do not duplicate `aria-label` on inner prompts when the `<li role="treeitem">` already labels the row. Pair `UI.UIUtils.markBeingEdited(container, true)` and `UI.UIUtils.markBeingEdited(container, false)` so `UI.UIUtils.isBeingEdited` suppresses focus theft.
 *   **Child widget isolation for editable tree rows:** Because `<devtools-tree>` clones light DOM into shadow DOM and re-clones an `<li role="treeitem">` whenever any descendant attribute mutates, place editable prompts inside a small child `UI.Widget` (`${widget(RowPromptWidget, {...})}`) so toggling `?editing` updates the child widget in place without triggering a tree re-clone and blurring the active input.
-*   Custom elements inside `<devtools-tree>` templates whose state is passed via JS properties (`.data`) must override `cloneNode(deep)` to copy `.data` and reflect dynamic state via DOM attributes so shadow clones update reliably.
+*   Custom elements inside `<devtools-tree>` templates whose state is passed via JS properties (`.data`) must override `cloneNode(deep)` to copy `.data` and reflect dynamic state via DOM attributes so shadow clones update reliably. Place reflective attributes such as `data-badge=${badge}` on an inner `<span>` (never on `<li role="treeitem">`, where `TreeViewElement.updateNode` returns early without calling `refreshSoon()`), and style `.tree-outline li > .tree-element-title` with `display: flex; align-items: center; width: 100%` so custom icons/spans do not wrap and clip.
 
 ### Dependencies
 
@@ -194,8 +212,8 @@ Example: `front_end/panels/my_example/MyExampleWidget.ts`.
 ```ts
 // front_end/panels/my_example/MyExampleWidget.ts
 
-import {html, render} from '../../ui/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import myExampleWidgetStyles from './myExampleWidget.css.js';
 
@@ -246,7 +264,7 @@ export class MyExampleWidget extends UI.Widget.Widget {
   #handleButtonClick = (): void => {
     this.#counter++;
     this.requestUpdate();
-  }
+  };
 
   override performUpdate(): void {
     const viewInput = {
@@ -266,11 +284,11 @@ Example: `front_end/panels/parent/ParentWidget.ts`. Demonstrates passing state v
 ```ts
 // front_end/panels/parent/ParentWidget.ts
 
-import {html, render} from '../../ui/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {MyExampleWidget} from '../my_example/MyExampleWidget.ts';
+import {html, render} from '../../ui/lit/lit.js';
+import * as MyExample from '../my_example/my_example.js';
 
-import parentWidgetStyles from './parentWidgetStyles.css';
+import parentWidgetStyles from './parentWidgetStyles.css.js';
 
 const {widget} = UI.Widget;
 
@@ -281,7 +299,7 @@ interface ViewInput {
 
 // Parent View
 // clang-format off
-const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLElement): void => {
+const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   render(html`
     <style>${parentWidgetStyles}</style>
     <div class="parent-container">
@@ -289,7 +307,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLElement):
       <button @click=${input.onTitleChange}>Change Child Title</button>
 
       <!-- Pass properties to the child widget. -->
-      ${widget(MyExampleWidget, {title: input.title})}
+      ${widget(MyExample.MyExampleWidget.MyExampleWidget, {title: input.title})}
     </div>
   `, target);
 };
@@ -312,10 +330,10 @@ export class ParentWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #handleChangeTitleClick = () => {
+  #handleChangeTitleClick = (): void => {
     this.#childTitle = `Title set at ${new Date().toLocaleTimeString()}`;
     this.requestUpdate();
-  }
+  };
 
   override performUpdate(): void {
     this.#view({
@@ -328,11 +346,11 @@ export class ParentWidget extends UI.Widget.Widget {
 
 ### 3\. Testing Widgets
 
-Ship unit tests in the **same CL** as the presenter/view change (never defer tests to a follow-up test-only CL). Testing focuses on the Presenter's logic using `createViewFunctionStub`, while template layout is covered by `assertScreenshot` / E2E tests (per `docs/ui_engineering.md`). When adding targeted unit tests for view rendering, name the suite `describe('view', ...)` (never `describe('... DEFAULT_VIEW', ...)`), and avoid 80–150 line synthetic `DEFAULT_VIEW` DOM assertion suites that duplicate presenter tests.
+Ship unit tests in the **same CL** as the presenter/view change (never defer tests to a follow-up test-only CL). Testing focuses on the Presenter's logic using `createViewFunctionStub`, while template layout is covered by `assertScreenshot` / E2E tests (per `docs/ui_engineering.md`). When adding targeted unit tests for view rendering, name the suite `describe('view', ...)` (never `describe('... DEFAULT_VIEW', ...)`), and avoid 80–150 line synthetic `DEFAULT_VIEW` DOM assertion suites that duplicate presenter tests. Note that `new MyWidget()` defaults `this.element` to `<div class="widget">`, so Light DOM stylesheets written with an explicit `@scope (devtools-widget)` root require `new MyWidget(document.createElement('devtools-widget'))` (or mounting via `${widget(MyWidget)}`) in unit and screenshot tests.
 
 * **`describeWithEnvironment`**: Sets up the testing environment.
 * **`createViewFunctionStub`**: Stubs the view to capture `input` data.
-* **`renderElementIntoDOM`**: Attaches the widget to the DOM to trigger lifecycle methods (like `wasShown`).
+* **`renderElementIntoDOM`**: Marks the widget as root and attaches it to the DOM to trigger lifecycle methods (like `wasShown`).
 * **`view.nextInput`**: A promise that resolves with the next `input` when the widget re-renders.
 * **Simulating Events**: Invoke callbacks directly (e.g., `view.input.onButtonClick()`), do not interact with the DOM.
 
@@ -344,11 +362,10 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
-import * as MyExampleWidget from './MyExampleWidget.js';
+import * as MyExample from './my_example.js';
 
-const {MyExampleWidget} = MyExampleWidget;
+const {MyExampleWidget} = MyExample.MyExampleWidget;
 
 describeWithEnvironment('MyExampleWidget', () => {
   // Helper to set up the widget with a stubbed view.
@@ -360,7 +377,6 @@ describeWithEnvironment('MyExampleWidget', () => {
     const widget = new MyExampleWidget(undefined, view);
 
     // 3. Render the widget into the DOM (triggers `wasShown`).
-    widget.markAsRoot();
     renderElementIntoDOM(widget);
 
     // 4. Wait for the initial render.

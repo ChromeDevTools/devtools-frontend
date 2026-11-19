@@ -157,20 +157,20 @@ function renderLabel(
 
 export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
-  private readonly view: typeof DEFAULT_VIEW;
+  readonly #view: typeof DEFAULT_VIEW;
   readonly mediaThrottler: Common.Throttler.Throttler = new Common.Throttler.Throttler(0);
   readonly #targetManager = SDK.TargetManager.TargetManager.instance();
   readonly #zoomManager = UI.ZoomManager.ZoomManager.instance();
   #getWidthCallback?: () => number;
   #setWidthCallback?: (arg0: number) => void;
   #scale: number;
-  private cssModel?: SDK.CSSModel.CSSModel;
-  private cachedQueryModels?: MediaQueryUIModel[];
+  #cssModel?: SDK.CSSModel.CSSModel;
+  #cachedQueryModels?: MediaQueryUIModel[];
 
   constructor(element?: HTMLElement,
               view: (input: ViewInput, _output: undefined, target: DocumentFragment) => void = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
-    this.view = view;
+    this.#view = view;
     this.#scale = 1;
   }
 
@@ -197,23 +197,24 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     if (cssModel.target() !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
-    this.cssModel = cssModel;
-    this.cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.scheduleMediaQueriesUpdate, this);
-    this.cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.scheduleMediaQueriesUpdate, this);
-    this.cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.scheduleMediaQueriesUpdate, this);
-    this.cssModel.addEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.scheduleMediaQueriesUpdate, this);
+    this.#cssModel = cssModel;
+    this.#cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.#scheduleMediaQueriesUpdate, this);
+    this.#cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.#scheduleMediaQueriesUpdate, this);
+    this.#cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.#scheduleMediaQueriesUpdate, this);
+    this.#cssModel.addEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.#scheduleMediaQueriesUpdate,
+                                    this);
   }
 
   modelRemoved(cssModel: SDK.CSSModel.CSSModel): void {
-    if (cssModel !== this.cssModel) {
+    if (cssModel !== this.#cssModel) {
       return;
     }
-    this.cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.scheduleMediaQueriesUpdate, this);
-    this.cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.scheduleMediaQueriesUpdate, this);
-    this.cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.scheduleMediaQueriesUpdate, this);
-    this.cssModel.removeEventListener(
-        SDK.CSSModel.Events.MediaQueryResultChanged, this.scheduleMediaQueriesUpdate, this);
-    delete this.cssModel;
+    this.#cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.#scheduleMediaQueriesUpdate, this);
+    this.#cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.#scheduleMediaQueriesUpdate, this);
+    this.#cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.#scheduleMediaQueriesUpdate, this);
+    this.#cssModel.removeEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.#scheduleMediaQueriesUpdate,
+                                       this);
+    this.#cssModel = undefined;
   }
 
   get scale(): number {
@@ -228,7 +229,7 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     this.requestUpdate();
   }
 
-  private onMediaQueryClicked(model: MediaQueryUIModel): void {
+  #onMediaQueryClicked(model: MediaQueryUIModel): void {
     const modelMaxWidth = model.maxWidthExpression();
     const modelMinWidth = model.minWidthExpression();
 
@@ -248,8 +249,8 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     }
   }
 
-  private onContextMenu(event: Event, locations: SDK.CSSModel.CSSLocation[]): void {
-    if (!this.cssModel?.isEnabled()) {
+  #onContextMenu(event: Event, locations: SDK.CSSModel.CSSLocation[]): void {
+    if (!this.#cssModel?.isEnabled()) {
       return;
     }
 
@@ -274,32 +275,32 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     for (let i = 0; i < contextMenuItems.length; ++i) {
       const title = contextMenuItems[i];
       subMenuItem.defaultSection().appendItem(
-          title, this.revealSourceLocation.bind(this, (uiLocations.get(title) as Workspace.UISourceCode.UILocation)),
+          title, this.#revealSourceLocation.bind(this, (uiLocations.get(title) as Workspace.UISourceCode.UILocation)),
           {jslogContext: 'reveal-in-source'});
     }
     void contextMenu.show();
   }
 
-  private revealSourceLocation(location: Workspace.UISourceCode.UILocation): void {
+  #revealSourceLocation(location: Workspace.UISourceCode.UILocation): void {
     void Common.Revealer.reveal(location);
   }
 
-  private scheduleMediaQueriesUpdate(): void {
+  #scheduleMediaQueriesUpdate(): void {
     if (!this.isShowing()) {
       return;
     }
-    void this.mediaThrottler.schedule(this.refetchMediaQueries.bind(this));
+    void this.mediaThrottler.schedule(this.#refetchMediaQueries.bind(this));
   }
 
-  private refetchMediaQueries(): Promise<void> {
-    if (!this.isShowing() || !this.cssModel) {
+  #refetchMediaQueries(): Promise<void> {
+    if (!this.isShowing() || !this.#cssModel) {
       return Promise.resolve();
     }
 
-    return this.cssModel.getMediaQueries().then(this.rebuildMediaQueries.bind(this));
+    return this.#cssModel.getMediaQueries().then(this.#rebuildMediaQueries.bind(this));
   }
 
-  private squashAdjacentEqual(models: MediaQueryUIModel[]): MediaQueryUIModel[] {
+  #squashAdjacentEqual(models: MediaQueryUIModel[]): MediaQueryUIModel[] {
     const filtered = [];
     for (let i = 0; i < models.length; ++i) {
       const last = filtered[filtered.length - 1];
@@ -310,7 +311,7 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     return filtered;
   }
 
-  private rebuildMediaQueries(cssMedias: SDK.CSSMedia.CSSMedia[]): void {
+  #rebuildMediaQueries(cssMedias: SDK.CSSMedia.CSSMedia[]): void {
     let queryModels: MediaQueryUIModel[] = [];
     for (let i = 0; i < cssMedias.length; ++i) {
       const cssMedia = cssMedias[i];
@@ -326,16 +327,17 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
       }
     }
     queryModels.sort(compareModels);
-    queryModels = this.squashAdjacentEqual(queryModels);
+    queryModels = this.#squashAdjacentEqual(queryModels);
 
-    let allEqual: (boolean|undefined) = this.cachedQueryModels && this.cachedQueryModels.length === queryModels.length;
+    let allEqual: (boolean|undefined) =
+        this.#cachedQueryModels && this.#cachedQueryModels.length === queryModels.length;
     for (let i = 0; allEqual && i < queryModels.length; ++i) {
-      allEqual = allEqual && this.cachedQueryModels?.[i].equals(queryModels[i]);
+      allEqual = allEqual && this.#cachedQueryModels?.[i].equals(queryModels[i]);
     }
     if (allEqual) {
       return;
     }
-    this.cachedQueryModels = queryModels;
+    this.#cachedQueryModels = queryModels;
     this.requestUpdate();
 
     function compareModels(model1: MediaQueryUIModel, model2: MediaQueryUIModel): number {
@@ -343,14 +345,14 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     }
   }
 
-  private buildMediaQueryMarkers(): MediaQueryMarker[] {
-    if (!this.cachedQueryModels) {
+  #buildMediaQueryMarkers(): MediaQueryMarker[] {
+    if (!this.#cachedQueryModels) {
       return [];
     }
 
     const markers: MediaQueryMarker[] = [];
     let lastMarker: MediaQueryMarker|null = null;
-    for (const model of this.cachedQueryModels) {
+    for (const model of this.#cachedQueryModels) {
       if (lastMarker?.model.dimensionsEqual(model)) {
         lastMarker.active = lastMarker.active || model.active();
       } else {
@@ -370,7 +372,7 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     return markers;
   }
 
-  private zoomFactor(): number {
+  #zoomFactor(): number {
     return UI.ZoomManager.ZoomManager.instance().zoomFactor() / this.#scale;
   }
 
@@ -378,7 +380,7 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     super.wasShown();
     this.#targetManager.observeModels(SDK.CSSModel.CSSModel, this);
     this.#zoomManager.addEventListener(UI.ZoomManager.Events.ZOOM_CHANGED, this.requestUpdate, this);
-    this.scheduleMediaQueriesUpdate();
+    this.#scheduleMediaQueriesUpdate();
     // TODO(crbug.com/407750803): Revisit once DeviceModeView is migrated.
     this.performUpdate();  // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
   }
@@ -387,8 +389,8 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     super.willHide();
     this.#targetManager.unobserveModels(SDK.CSSModel.CSSModel, this);
     // `unobserveModels()` doesn't call `modelRemoved()`, so stop listening to the CSS model explicitly.
-    if (this.cssModel) {
-      this.modelRemoved(this.cssModel);
+    if (this.#cssModel) {
+      this.modelRemoved(this.#cssModel);
     }
     this.#zoomManager.removeEventListener(UI.ZoomManager.Events.ZOOM_CHANGED, this.requestUpdate, this);
   }
@@ -397,15 +399,15 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     if (!this.isShowing() || !this.getWidthCallback || !this.setWidthCallback) {
       return;
     }
-    const markers = Map.groupBy(this.buildMediaQueryMarkers(), marker => marker.model.section());
+    const markers = Map.groupBy(this.#buildMediaQueryMarkers(), marker => marker.model.section());
 
-    this.view({
-      zoomFactor: this.zoomFactor(),
+    this.#view({
+      zoomFactor: this.#zoomFactor(),
       markers,
-      onMediaQueryClicked: this.onMediaQueryClicked.bind(this),
-      onContextMenu: this.onContextMenu.bind(this),
+      onMediaQueryClicked: this.#onMediaQueryClicked.bind(this),
+      onContextMenu: this.#onContextMenu.bind(this),
     },
-              undefined, this.contentElement);
+               undefined, this.contentElement);
   }
 }
 
@@ -416,7 +418,7 @@ export const enum Section {
 }
 
 export class MediaQueryUIModel {
-  private cssMedia: SDK.CSSMedia.CSSMedia;
+  readonly #cssMedia: SDK.CSSMedia.CSSMedia;
   readonly #minWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null;
   readonly #maxWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null;
   readonly #active: boolean;
@@ -425,7 +427,7 @@ export class MediaQueryUIModel {
   constructor(
       cssMedia: SDK.CSSMedia.CSSMedia, minWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null,
       maxWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null, active: boolean) {
-    this.cssMedia = cssMedia;
+    this.#cssMedia = cssMedia;
     this.#minWidthExpression = minWidthExpression;
     this.#maxWidthExpression = maxWidthExpression;
     this.#active = active;
@@ -546,12 +548,12 @@ export class MediaQueryUIModel {
   }
 
   mediaText(): string {
-    return this.cssMedia.text || '';
+    return this.#cssMedia.text || '';
   }
 
   rawLocation(): SDK.CSSModel.CSSLocation|null {
     if (!this.#rawLocation) {
-      this.#rawLocation = this.cssMedia.rawLocation();
+      this.#rawLocation = this.#cssMedia.rawLocation();
     }
     return this.#rawLocation;
   }

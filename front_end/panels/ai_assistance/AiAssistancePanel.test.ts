@@ -405,6 +405,19 @@ describeWithEnvironment('AI Assistance Panel', () => {
       assert.isFalse(aidaClientEvent.disable_user_content_logging);
     });
 
+    it('should not allow showing the feedback form even when logging is enabled', async () => {
+      updateHostConfig({
+        aidaAvailability: {
+          enabled: true,
+          disallowLogging: false,
+        },
+      });
+      const {view} = await createAiAssistancePanel();
+
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.isFalse(view.input.props.canShowFreeFormFeedback);
+    });
+
     it('should send POSITIVE rating to aida client when the user clicks on positive rating', async () => {
       updateHostConfig({
         aidaAvailability: {

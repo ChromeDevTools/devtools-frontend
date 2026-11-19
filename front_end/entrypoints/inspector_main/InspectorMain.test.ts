@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -15,7 +16,11 @@ import {
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 
 import * as InspectorMain from './inspector_main.js';
@@ -232,5 +237,102 @@ describeWithEnvironment('InspectorMainImpl', () => {
     assert.notStrictEqual(prerenderTarget.name(), 'Main');
     assert.strictEqual(mainFrameTarget.name(), 'Main');
     Root.Runtime.Runtime.setQueryParamForTesting('targetType', '');
+  });
+});
+
+describe('BackendSettingsSync', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+    sinon.stub(Common.Settings.Settings, 'instance').returns(universe.settings);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+  });
+
+  afterEach(() => {
+    universe.dispose();
+  });
+
+  function setupSyncWithTargets() {
+    const connection = new MockCDPConnection();
+    const setFocusEmulationEnabled = sinon.spy();
+    const setAdBlockingEnabled = sinon.spy();
+    connection.setSuccessHandler('Emulation.setFocusEmulationEnabled', setFocusEmulationEnabled);
+    connection.setSuccessHandler('Page.setAdBlockingEnabled', setAdBlockingEnabled);
+
+    const tabTarget =
+        universe.createTarget({id: 'tab' as Protocol.Target.TargetID, type: SDK.Target.Type.TAB, connection});
+    const primaryTarget = universe.createTarget({id: 'primary' as Protocol.Target.TargetID, parentTarget: tabTarget});
+    universe.createTarget({id: 'iframe' as Protocol.Target.TargetID, parentTarget: primaryTarget});
+    universe.createTarget({
+      id: 'worker' as Protocol.Target.TargetID,
+      type: SDK.Target.Type.Worker,
+      parentTarget: primaryTarget,
+    });
+    universe.createTarget({
+      id: 'service-worker' as Protocol.Target.TargetID,
+      type: SDK.Target.Type.ServiceWorker,
+      parentTarget: tabTarget,
+    });
+
+    new InspectorMain.InspectorMain.BackendSettingsSync();
+    return {
+      setFocusEmulationEnabled,
+      setAdBlockingEnabled,
+      tabTarget,
+      primaryTarget,
+    };
+  }
+
+  it('syncs emulate-page-focus setting changes only to the outermost frame target', () => {
+    const {setFocusEmulationEnabled, setAdBlockingEnabled} = setupSyncWithTargets();
+    const emulatePageFocusSetting = universe.settings.resolve(SDK.SDKSettings.emulatePageFocusSettingDescriptor);
+
+    assert.isFalse(emulatePageFocusSetting.get());
+    assert.deepEqual(setFocusEmulationEnabled.args, [[{enabled: false}, 'primary']]);
+    assert.deepEqual(setAdBlockingEnabled.args, [[{enabled: false}, 'primary']]);
+
+    emulatePageFocusSetting.set(true);
+    assert.deepEqual(setFocusEmulationEnabled.args, [
+      [{enabled: false}, 'primary'],
+      [{enabled: true}, 'primary'],
+    ]);
+    assert.deepEqual(setAdBlockingEnabled.args, [
+      [{enabled: false}, 'primary'],
+      [{enabled: false}, 'primary'],
+    ]);
+
+    emulatePageFocusSetting.set(false);
+    assert.deepEqual(setFocusEmulationEnabled.args, [
+      [{enabled: false}, 'primary'],
+      [{enabled: true}, 'primary'],
+      [{enabled: false}, 'primary'],
+    ]);
+  });
+
+  it('applies current focus emulation setting only to newly added outermost frame targets', () => {
+    const {tabTarget, primaryTarget, setFocusEmulationEnabled, setAdBlockingEnabled} = setupSyncWithTargets();
+    const emulatePageFocusSetting = universe.settings.resolve(SDK.SDKSettings.emulatePageFocusSettingDescriptor);
+
+    emulatePageFocusSetting.set(true);
+    setFocusEmulationEnabled.resetHistory();
+    setAdBlockingEnabled.resetHistory();
+
+    universe.createTarget({id: 'new-iframe' as Protocol.Target.TargetID, parentTarget: primaryTarget});
+    universe.createTarget({
+      id: 'new-worker' as Protocol.Target.TargetID,
+      type: SDK.Target.Type.Worker,
+      parentTarget: primaryTarget,
+    });
+    sinon.assert.notCalled(setFocusEmulationEnabled);
+    sinon.assert.notCalled(setAdBlockingEnabled);
+
+    universe.createTarget({id: 'prerender' as Protocol.Target.TargetID, parentTarget: tabTarget, subtype: 'prerender'});
+    assert.deepEqual(setFocusEmulationEnabled.args, [[{enabled: true}, 'prerender']]);
+    assert.deepEqual(setAdBlockingEnabled.args, [[{enabled: false}, 'prerender']]);
   });
 });

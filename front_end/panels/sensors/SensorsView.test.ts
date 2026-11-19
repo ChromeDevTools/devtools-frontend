@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -11,6 +12,8 @@ import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as Geometry from '../../ui/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 
@@ -1103,6 +1106,126 @@ describeWithEnvironment('SensorsView', () => {
       select.dispatchEvent(new Event('change'));
       assert.strictEqual(CPUThrottlingManager.instance().effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
     });
+  });
+});
+
+describeWithEnvironment('SensorsView presenter', () => {
+  const BERLIN = {
+    title: 'Berlin',
+    lat: 52.52,
+    long: 13.405,
+    timezoneId: 'Europe/Berlin',
+    locale: 'de-DE',
+    accuracy: 50,
+  };
+
+  async function createPresenter() {
+    const settings = Common.Settings.Settings.instance();
+    settings.resolve(SettingsUI.EmulationSettings.emulationLocationsSettingDescriptor).set([BERLIN]);
+    const output = {focusLatitudeInput: sinon.stub(), focusAlphaInput: sinon.stub()};
+    const view = createViewFunctionStub(Sensors.SensorsView.SensorsView, output);
+    const widget = new Sensors.SensorsView.SensorsView(
+        undefined, [settings, SDK.TargetManager.TargetManager.instance(), CPUThrottlingManager.instance()], view);
+    renderElementIntoDOM(widget);
+    await view.nextInput;
+    return {view, output, settings};
+  }
+
+  it('passes the initial state to the view', async () => {
+    const {view} = await createPresenter();
+
+    assert.isFalse(view.input.locationOverrideEnabled);
+    assert.strictEqual(view.input.selectedLocationIndex, 0);
+    assert.deepEqual(view.input.customLocations, [BERLIN]);
+    assert.isFalse(view.input.orientationOverrideEnabled);
+    assert.strictEqual(view.input.selectedOrientation, 'noOverride');
+  });
+
+  it('applies a custom location that is selected', async () => {
+    const {view, settings} = await createPresenter();
+
+    view.input.onLocationSelectChange(JSON.stringify(BERLIN));
+    const input = await view.nextInput;
+
+    assert.isTrue(input.locationOverrideEnabled);
+    assert.strictEqual(input.selectedLocationIndex, 1);
+    assert.strictEqual(input.location.latitude, 52.52);
+    assert.strictEqual(input.location.timezoneId, 'Europe/Berlin');
+    assert.strictEqual(settings.createSetting('emulation.location-override', '').get(),
+                       '52.52@13.405:Europe/Berlin:de-DE::50');
+  });
+
+  it('selects "Other…" when a field of a custom location changes', async () => {
+    const {view} = await createPresenter();
+    view.input.onLocationSelectChange(JSON.stringify(BERLIN));
+    await view.nextInput;
+
+    view.input.onLocationFieldChange('latitude', '10');
+    let input = await view.nextInput;
+
+    assert.strictEqual(input.selectedLocationIndex, 2);
+    assert.strictEqual(input.location.latitude, 10);
+    assert.strictEqual(input.location.longitude, 13.405);
+
+    // "Other…" stays selected when the values match the custom location again.
+    view.input.onLocationFieldChange('latitude', '52.52');
+    input = await view.nextInput;
+
+    assert.strictEqual(input.selectedLocationIndex, 2);
+  });
+
+  it('asks the view to focus the latitude input when "Other…" is selected', async () => {
+    const {view, output} = await createPresenter();
+
+    view.input.onLocationSelectChange('custom');
+    const input = await view.nextInput;
+
+    assert.isTrue(input.locationOverrideEnabled);
+    sinon.assert.calledOnce(output.focusLatitudeInput);
+    sinon.assert.notCalled(output.focusAlphaInput);
+  });
+
+  it('applies an orientation preset that is selected', async () => {
+    const {view, settings} = await createPresenter();
+
+    view.input.onOrientationSelectChange('[90, 0, -90]');
+    const input = await view.nextInput;
+
+    assert.isTrue(input.orientationOverrideEnabled);
+    assert.strictEqual(input.selectedOrientation, '[90, 0, -90]');
+    assert.deepInclude(input.orientation, {alpha: 90, beta: 0, gamma: -90});
+    assert.isTrue(input.animateOrientation);
+    assert.deepEqual(JSON.parse(settings.createSetting('emulation.device-orientation-override', '').get()),
+                     {alpha: 90, beta: 0, gamma: -90});
+  });
+
+  it('resets to portrait and asks the view to focus the alpha input for a custom orientation', async () => {
+    const {view, output} = await createPresenter();
+
+    view.input.onOrientationSelectChange('custom');
+    const input = await view.nextInput;
+
+    assert.strictEqual(input.selectedOrientation, '[0, 90, 0]');
+    assert.deepInclude(input.orientation, {alpha: 0, beta: 90, gamma: 0});
+    sinon.assert.calledOnce(output.focusAlphaInput);
+    sinon.assert.notCalled(output.focusLatitudeInput);
+  });
+
+  it('only rotates the device by dragging the stage while the override is on', async () => {
+    const {view} = await createPresenter();
+    const dragStart = new Geometry.Vector(0, 0, 1);
+    assert.isFalse(view.input.onStageDragStart(dragStart));
+
+    view.input.onOrientationSelectChange('[0, 90, 0]');
+    await view.nextInput;
+    assert.isTrue(view.input.onStageDragStart(dragStart));
+    view.input.onStageDrag(new Geometry.Vector(0.5, 0, Math.sqrt(0.75)), false);
+    const input = await view.nextInput;
+
+    assert.strictEqual(input.selectedOrientation, 'custom');
+    assert.isFalse(input.animateOrientation);
+    const {alpha, beta, gamma} = input.orientation;
+    assert.notDeepEqual([alpha, beta, gamma], [0, 90, 0]);
   });
 });
 

@@ -86,6 +86,7 @@ ts_library("unittests") {
     "../../generated",
     "../../testing",
     "../../ui/components/render_coordinator:bundle",
+    "../../ui/geometry:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
     "../../ui/settings:bundle",

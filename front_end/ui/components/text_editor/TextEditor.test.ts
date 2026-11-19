@@ -25,6 +25,7 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 import * as ScopesCodec from '../../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as UI from '../../legacy/legacy.js';
 import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
+import * as SettingsUI from '../../settings/settings.js';
 
 import * as TextEditor from './text_editor.js';
 
@@ -83,13 +84,15 @@ describeWithEnvironment('TextEditor', () => {
           makeState('line1  \n  line2( )\n\tline3  ', TextEditor.Config.showWhitespace.instance()));
       renderElementIntoDOM(editor);
       assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-trailingWhitespace, .cm-highlightedSpaces'), 0);
-      Common.Settings.Settings.instance().moduleSetting('show-whitespaces-in-editor').set('all');
+      const showWhitespacesSetting = Common.Settings.Settings.instance().resolve(
+          SettingsUI.SourcesSettings.showWhitespacesInEditorSettingDescriptor);
+      showWhitespacesSetting.set('all');
       assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-highlightedSpaces'), 4);
       assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-highlightedTab'), 1);
-      Common.Settings.Settings.instance().moduleSetting('show-whitespaces-in-editor').set('trailing');
+      showWhitespacesSetting.set('trailing');
       assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-highlightedSpaces'), 0);
       assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-trailingWhitespace'), 2);
-      Common.Settings.Settings.instance().moduleSetting('show-whitespaces-in-editor').set('none');
+      showWhitespacesSetting.set('none');
       assert.lengthOf(editor.editor.dom.querySelectorAll('.cm-trailingWhitespace, .cm-highlightedSpaces'), 0);
       editor.remove();
     });

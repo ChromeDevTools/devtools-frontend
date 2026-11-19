@@ -55,11 +55,15 @@ devtools_entrypoint("meta") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [ "LayersPanel.test.ts" ]
+  sources = [
+    "LayerTreeModel.test.ts",
+    "LayersPanel.test.ts",
+  ]
 
   ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
+    "../../generated",
     "../../testing",
     "../../ui/legacy:bundle",
   ]

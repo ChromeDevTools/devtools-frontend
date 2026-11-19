@@ -6,7 +6,6 @@ import {assert} from 'chai';
 import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
-import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -24,12 +23,6 @@ describeWithEnvironment('ServiceWorkersView', () => {
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     sinon.stub(SDK.TargetManager.TargetManager.instance(), 'primaryPageTarget').returns(target);
-    Common.Settings.registerSettingExtension({
-      category: Common.Settings.SettingCategory.MOBILE,
-      settingName: 'service-worker-update-on-reload',
-      settingType: Common.Settings.SettingType.BOOLEAN,
-      defaultValue: false,
-    });
   });
 
   afterEach(() => {

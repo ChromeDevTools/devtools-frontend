@@ -617,6 +617,12 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|
 type View = typeof DEFAULT_VIEW;
 
 export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
+  static override readonly INJECT: readonly[typeof Common.Settings.Settings,
+                                            typeof SDK.TargetManager.TargetManager,
+                                            typeof SDK.CPUThrottlingManager.CPUThrottlingManager,
+  ] = [Common.Settings.Settings, SDK.TargetManager.TargetManager, SDK.CPUThrottlingManager.CPUThrottlingManager] as
+      const;
+
   readonly #view: View;
   readonly #output: ViewOutput = {};
   readonly #locationSetting: Common.Settings.Setting<string>;
@@ -637,23 +643,27 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   #boxMatrix?: DOMMatrix;
   #mouseDownVector?: Geometry.Vector|null;
   #originalBoxMatrix?: DOMMatrix;
+  readonly #settings: Common.Settings.Settings;
+  readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
 
-  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+  constructor(element: HTMLElement|undefined,
+              [settings, targetManager, cpuThrottlingManager]: UI.Widget.WidgetDependencies<typeof SensorsView>,
+              view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
     this.#view = view;
+    this.#settings = settings;
+    this.#targetManager = targetManager;
+    this.#cpuThrottlingManager = cpuThrottlingManager;
 
-    this.#cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
-
-    this.#locationSetting = Common.Settings.Settings.instance().createSetting('emulation.location-override', '');
+    this.#locationSetting = settings.createSetting('emulation.location-override', '');
     this.#location = SDK.EmulationModel.Location.parseSetting(this.#locationSetting.get());
     this.#locationOverrideEnabled = false;
 
-    this.#customLocationsSetting = Common.Settings.Settings.instance().resolve(
-        SettingUIRegistration.EmulationSettings.emulationLocationsSettingDescriptor);
+    this.#customLocationsSetting =
+        settings.resolve(SettingUIRegistration.EmulationSettings.emulationLocationsSettingDescriptor);
 
-    this.#deviceOrientationSetting =
-        Common.Settings.Settings.instance().createSetting('emulation.device-orientation-override', '');
+    this.#deviceOrientationSetting = settings.createSetting('emulation.device-orientation-override', '');
     this.#deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this.#deviceOrientationSetting.get());
     this.#deviceOrientationOverrideEnabled = false;
 
@@ -689,11 +699,10 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     const input: ViewInput = {
       ...locationInput,
       ...orientationInput,
-      touchSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.touchSettingDescriptor),
-      idleDetectionSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
-      cpuPressureSetting: Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
-      cpuPerformanceSetting:
-          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),
+      touchSetting: this.#settings.resolve(SDK.SDKSettings.touchSettingDescriptor),
+      idleDetectionSetting: this.#settings.resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
+      cpuPressureSetting: this.#settings.resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
+      cpuPerformanceSetting: this.#settings.resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor),
       cpuPerformanceNoOverrideLabel: this.#cpuPerformanceNoOverrideLabel(),
     };
     this.#view(input, this.#output, this.contentElement);
@@ -789,7 +798,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     } else {
       this.#locationSetting.set('');
     }
-    for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of this.#targetManager.models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.emulateLocation(this.#locationOverrideEnabled ? this.#location : null).catch(err => {
         switch (err.type) {
           case 'emulation-set-timezone': {
@@ -873,7 +882,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
     if (this.#deviceOrientationOverrideEnabled) {
       this.#deviceOrientationSetting.set(this.#deviceOrientation.toSetting());
     }
-    for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of this.#targetManager.models(SDK.EmulationModel.EmulationModel)) {
       void emulationModel.emulateDeviceOrientation(this.#deviceOrientationOverrideEnabled ? this.#deviceOrientation :
                                                                                             null);
     }

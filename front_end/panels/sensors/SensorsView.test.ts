@@ -18,11 +18,19 @@ import * as Sensors from './sensors.js';
 
 const {CPUPerformanceTier, CPUThrottlingManager} = SDK.CPUThrottlingManager;
 
+function createSensorsView(): Sensors.SensorsView.SensorsView {
+  return new Sensors.SensorsView.SensorsView(undefined, [
+    Common.Settings.Settings.instance(),
+    SDK.TargetManager.TargetManager.instance(),
+    CPUThrottlingManager.instance(),
+  ]);
+}
+
 describeWithEnvironment('SensorsView', () => {
   let view: Sensors.SensorsView.SensorsView;
 
   beforeEach(async () => {
-    view = new Sensors.SensorsView.SensorsView();
+    view = createSensorsView();
     renderElementIntoDOM(view);
     await UI.Widget.Widget.allUpdatesComplete;
   });
@@ -878,7 +886,7 @@ describeWithEnvironment('SensorsView', () => {
       assert.exists(target.model(SDK.EmulationModel.EmulationModel));
 
       view.detach();
-      view = new Sensors.SensorsView.SensorsView();
+      view = createSensorsView();
       renderElementIntoDOM(view);
       await settled();
     });
@@ -1069,7 +1077,7 @@ describeWithEnvironment('SensorsView', () => {
       CPUThrottlingManager.instance().setCPUThrottlingRate(4);
       await UI.Widget.Widget.allUpdatesComplete;
 
-      const localView = new Sensors.SensorsView.SensorsView();
+      const localView = createSensorsView();
       renderElementIntoDOM(localView, {allowMultipleChildren: true});
       await UI.Widget.Widget.allUpdatesComplete;
 
@@ -1112,8 +1120,7 @@ describeWithEnvironment('SensorsView screenshots', () => {
     }]);
     // The view is taller than the screenshot viewport. Render it at a fixed
     // size and let it scroll, like the drawer does.
-    view = renderElementIntoDOM(new Sensors.SensorsView.SensorsView(),
-                                {includeCommonStyles: true, width: 600, height: 480});
+    view = renderElementIntoDOM(createSensorsView(), {includeCommonStyles: true, width: 600, height: 480});
     view.element.style.overflowY = 'auto';
     await UI.Widget.Widget.allUpdatesComplete;
   });

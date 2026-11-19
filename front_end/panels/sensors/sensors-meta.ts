@@ -166,13 +166,14 @@ UI.ViewManager.registerViewExtension({
   id: 'sensors',
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
-  async loadView() {
+  async loadView(universe) {
     const [Sensors] = await Promise.all([
       loadEmulationModule(),
       // Ensure that this is available when the sensors panel is constructed.
-      SDK.CPUThrottlingManager.CPUThrottlingManager.instance().updateHostDefaultCPUPerformanceTier(),
+      universe.cpuThrottlingManager.updateHostDefaultCPUPerformanceTier(),
     ]);
-    return new Sensors.SensorsView.SensorsView();
+    return new Sensors.SensorsView.SensorsView(
+        undefined, [universe.settings, universe.targetManager, universe.cpuThrottlingManager]);
   },
   tags: [
     i18nLazyString(UIStrings.geolocation),

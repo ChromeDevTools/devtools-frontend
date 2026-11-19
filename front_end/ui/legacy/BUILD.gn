@@ -235,6 +235,7 @@ devtools_ui_module("unittests") {
     "../components/render_coordinator:bundle",
     "../kit:bundle",
     "../lit:bundle",
+    "../settings:bundle",
     "../visual_logging:bundle",
     "./components/quick_open:bundle",
   ]

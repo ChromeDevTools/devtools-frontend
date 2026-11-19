@@ -8,50 +8,21 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
 } from '../../testing/EnvironmentHelpers.js';
+import * as SettingsUI from '../settings/settings.js';
 
 import * as LegacyUI from './legacy.js';
 
 async function registerDockingSettings(currentValue: string) {
-  Common.Settings.registerSettingsForTest([{
-    category: Common.Settings.SettingCategory.GLOBAL,
-    settingName: 'currentDockState',
-    settingType: Common.Settings.SettingType.ENUM,
-    defaultValue: currentValue,
-    options: [
-      {
-        value: 'right',
-        text: () => 'right' as Platform.UIString.LocalizedString,
-        title: () => 'Dock to right' as Platform.UIString.LocalizedString,
-        raw: false,
-      },
-      {
-        value: 'bottom',
-        text: () => 'bottom' as Platform.UIString.LocalizedString,
-        title: () => 'Dock to bottom' as Platform.UIString.LocalizedString,
-        raw: false,
-      },
-      {
-        value: 'left',
-        text: () => 'left' as Platform.UIString.LocalizedString,
-        title: () => 'Dock to left' as Platform.UIString.LocalizedString,
-        raw: false,
-      },
-      {
-        value: 'undocked',
-        text: () => 'undocked' as Platform.UIString.LocalizedString,
-        title: () => 'Undock' as Platform.UIString.LocalizedString,
-        raw: false,
-      },
-    ],
-  }]);
   Root.Runtime.experiments.clearForTest();
-  await initializeGlobalVars({reset: false});
+  await initializeGlobalVars();
+  Common.Settings.Settings.instance()
+      .resolve(SettingsUI.MainSettings.currentDockStateSettingDescriptor)
+      .set(currentValue);
 }
 
 describe('DockController', () => {

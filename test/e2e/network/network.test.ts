@@ -11,6 +11,7 @@ import {
   getNumberOfRequests,
   getSelectedRequestName,
   navigateToNetworkTab,
+  openNetworkTab,
   selectRequestByName,
   setCacheDisabled,
   setKeepLog,
@@ -30,6 +31,64 @@ describe('The Network Tab', function() {
     await navigateToNetworkTab(devToolsPage, inspectedPage, 'empty.html');
     await setCacheDisabled(devToolsPage, true);
     await setKeepLog(devToolsPage, false);
+  }
+
+  async function enableNetworkColumn(devToolsPage: DevToolsPage, title: string, submenu?: string) {
+    await devToolsPage.click('pierce/thead .name-column', {clickOptions: {button: 'right'}});
+    if (submenu) {
+      await devToolsPage.click(`aria/${submenu}`);
+    }
+    await devToolsPage.click(`aria/${title}, unchecked`);
+    await devToolsPage.waitForNone('.soft-context-menu');
+  }
+
+  async function waitForRequestRowColumns(
+      devToolsPage: DevToolsPage,
+      requestName: string,
+      columnIds: readonly string[],
+      ): Promise<Record<string, string>> {
+    return await devToolsPage.waitForFunction(async () => {
+      return await devToolsPage.evaluate((name, cols) => {
+        const rows = Array.from(document.querySelectorAll('.network-log-grid tbody tr'));
+        const row = rows.find(r => r.querySelector('.name-column')?.textContent === name);
+        const timeText = row?.querySelector('.time-column')?.textContent ?? '';
+        if (!row || !timeText || timeText === 'Pending' ||
+            row.querySelector('.status-column')?.textContent !== '200OK') {
+          return undefined;
+        }
+        const values: Record<string, string> = {};
+        for (const col of cols) {
+          const cell = row.querySelector(`.${col}-column`);
+          if (!cell) {
+            return undefined;
+          }
+          values[col] = cell.textContent ?? '';
+        }
+        return values;
+      }, requestName, [...columnIds]);
+    });
+  }
+
+  async function loadXhrTestPage(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+    await navigateToNetworkTabEmptyPage(devToolsPage, inspectedPage);
+    await inspectedPage.goTo(`https://127.0.0.1:${inspectedPage.serverPort}/test/e2e/resources/network/xhr.html`, {
+      waitUntil: 'networkidle0',
+    });
+  }
+
+  async function loadCacheableXhrInNetworkTab(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+    await inspectedPage.goTo(`https://127.0.0.1:${inspectedPage.serverPort}/test/e2e/resources/network/hello.html`);
+    await openNetworkTab(devToolsPage);
+    await setCacheDisabled(devToolsPage, true);
+    await inspectedPage.evaluate(async () => {
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'cacheable.rawresponse?xhr');
+        xhr.onload = () => resolve();
+        xhr.onerror = () => reject(new Error('XHR failed'));
+        xhr.send();
+      });
+    });
   }
 
   it('displays requests', async ({devToolsPage, inspectedPage}) => {
@@ -140,6 +199,102 @@ describe('The Network Tab', function() {
       return values.includes('true');
     });
   });
+
+  it('displays visible basic request columns with matching cell data', async ({devToolsPage, inspectedPage}) => {
+    await loadXhrTestPage(devToolsPage, inspectedPage);
+
+    for (const title of ['Method', 'Protocol', 'Scheme', 'Domain']) {
+      await enableNetworkColumn(devToolsPage, title);
+    }
+
+    const values = await waitForRequestRowColumns(devToolsPage, 'image.svg/test/e2e/resources/network', [
+      'name',
+      'method',
+      'status',
+      'protocol',
+      'scheme',
+      'domain',
+      'type',
+      'initiator',
+    ]);
+    assert.deepEqual(values, {
+      name: 'image.svg/test/e2e/resources/network',
+      method: 'GET',
+      status: '200OK',
+      protocol: 'http/1.1',
+      scheme: 'https',
+      domain: '127.0.0.1',
+      type: 'xhr',
+      initiator: 'xhr.html:9Script',
+    });
+  });
+
+  it('displays visible connection, cookie, and priority columns with matching cell data',
+     async ({devToolsPage, inspectedPage}) => {
+       await loadXhrTestPage(devToolsPage, inspectedPage);
+
+       for (const title of ['Remote address', 'Cookies', 'Set cookies', 'Priority']) {
+         await enableNetworkColumn(devToolsPage, title);
+       }
+
+       const values = await waitForRequestRowColumns(devToolsPage, 'image.svg/test/e2e/resources/network', [
+         'remote-address',
+         'cookies',
+         'set-cookies',
+         'priority',
+       ]);
+       assert.deepEqual(values, {
+         'remote-address': `127.0.0.1:${inspectedPage.serverPort}`,
+         cookies: '0',
+         'set-cookies': '0',
+         priority: 'HighHigh',
+       });
+     });
+
+  it('displays visible cache, connection, and vary response header columns', async ({devToolsPage, inspectedPage}) => {
+    await loadCacheableXhrInNetworkTab(devToolsPage, inspectedPage);
+
+    for (const title of ['Cache-Control', 'Connection', 'Vary']) {
+      await enableNetworkColumn(devToolsPage, title, 'Response headers');
+    }
+
+    const values = await waitForRequestRowColumns(
+        devToolsPage,
+        'cacheable.rawresponse?xhr/test/e2e/resources/network',
+        [
+          'response-header-cache-control',
+          'response-header-connection',
+          'response-header-vary',
+        ],
+    );
+    assert.deepEqual(values, {
+      'response-header-cache-control': 'max-age=315360000',
+      'response-header-connection': 'close',
+      'response-header-vary': 'Origin',
+    });
+  });
+
+  it('displays visible content encoding and content length response header columns',
+     async ({devToolsPage, inspectedPage}) => {
+       await loadCacheableXhrInNetworkTab(devToolsPage, inspectedPage);
+
+       for (const title of ['Content-Encoding', 'Content-Length']) {
+         await enableNetworkColumn(devToolsPage, title, 'Response headers');
+       }
+
+       const values = await waitForRequestRowColumns(
+           devToolsPage,
+           'cacheable.rawresponse?xhr/test/e2e/resources/network',
+           [
+             'response-header-content-encoding',
+             'response-header-content-length',
+           ],
+       );
+       assert.deepEqual(values, {
+         'response-header-content-encoding': '',
+         'response-header-content-length': '28',
+       });
+     });
 
   describe('with durable messages', function() {
     setup({enabledFeatures: ['DevToolsEnableDurableMessages']});

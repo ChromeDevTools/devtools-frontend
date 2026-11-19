@@ -809,6 +809,11 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
   }
   #extensionViewShowRequestedListener?:
       (event: Common.EventTarget.EventTargetEvent<PublicExtensions.RecorderPluginManager.ViewDescriptor>) => void;
+  #extensionsUpdatedDescriptor?: Common.EventTarget.EventDescriptor;
+  readonly #onExtensionsUpdated =
+      (event: Common.EventTarget.EventTargetEvent<Extensions.ExtensionManager.Extension[]>): void => {
+        this.#updateExtensions(event.data);
+      };
 
   #recorderSettings = new Models.RecorderSettings.RecorderSettings();
   #shortcutHelper = new Models.RecorderShortcutHelper.RecorderShortcutHelper();
@@ -851,13 +856,16 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
 
     const extensionManager = Extensions.ExtensionManager.ExtensionManager.instance();
     this.#updateExtensions(extensionManager.extensions());
-    extensionManager.addEventListener(Extensions.ExtensionManager.Events.EXTENSIONS_UPDATED, event => {
-      this.#updateExtensions(event.data);
-    });
   }
 
   override wasShown(): void {
     super.wasShown();
+    if (!this.#extensionsUpdatedDescriptor) {
+      const extensionManager = Extensions.ExtensionManager.ExtensionManager.instance();
+      this.#extensionsUpdatedDescriptor = extensionManager.addEventListener(
+          Extensions.ExtensionManager.Events.EXTENSIONS_UPDATED, this.#onExtensionsUpdated);
+      this.#updateExtensions(extensionManager.extensions());
+    }
     UI.Context.Context.instance().setFlavor(RecorderPanel, this);
     this.requestUpdate();
     void this.updateComplete.then(() => {
@@ -867,12 +875,20 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
 
   override willHide(): void {
     super.willHide();
+    if (this.#extensionsUpdatedDescriptor) {
+      Common.EventTarget.removeEventListeners([this.#extensionsUpdatedDescriptor]);
+      this.#extensionsUpdatedDescriptor = undefined;
+    }
     UI.Context.Context.instance().setFlavor(RecorderPanel, null);
   }
 
   override onDetach(): void {
     super.onDetach();
 
+    if (this.#extensionsUpdatedDescriptor) {
+      Common.EventTarget.removeEventListeners([this.#extensionsUpdatedDescriptor]);
+      this.#extensionsUpdatedDescriptor = undefined;
+    }
     if (this.currentRecordingSession) {
       void this.currentRecordingSession.stop();
     }

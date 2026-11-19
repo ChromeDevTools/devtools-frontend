@@ -11,6 +11,17 @@ import * as Logs from '../models/logs/logs.js';
 import * as Console from '../panels/console/console.js';
 import * as Components from '../ui/legacy/components/utils/utils.js';
 
+export {
+  checkForUnexpectedConsoleLogs,
+  type ConsoleLike,
+  type ConsoleLogTracker,
+  createConsoleLogTracker,
+  expectConsoleLogs,
+  type ExpectedConsoleLogs,
+  startTrackingConsoleLogs,
+  stopTrackingConsoleLogs,
+} from './TrackConsoleLogs.js';
+
 export function createConsoleViewMessageWithStubDeps(rawMessage: SDK.ConsoleModel.ConsoleMessage): {
   message: Console.ConsoleViewMessage.ConsoleViewMessage,
   linkifier: sinon.SinonStubbedInstance<Components.Linkifier.Linkifier>,

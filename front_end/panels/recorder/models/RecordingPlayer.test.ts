@@ -860,6 +860,7 @@ describe('RecordingPlayer', () => {
       });
 
       it('ignores a Fetch.enable failure on a subframe if the recording has no subframe steps', async () => {
+        sinon.stub(console, 'error');
         mocks.frames.push({_id: 'subframe', client: createFailingSession(), url: () => 'https://ads.test/'});
 
         const {error, steps} = await replaySteps([createCustomStep()]);
@@ -1044,6 +1045,7 @@ describe('RecordingPlayer', () => {
     });
 
     it('ignores Fetch.enable rejection on a non-frame session or a closed session', async () => {
+      sinon.stub(console, 'error');
       const workerSession = {
         send: sinon.stub().rejects(new Error('Fetch.enable was not found')),
         on: sinon.stub(),

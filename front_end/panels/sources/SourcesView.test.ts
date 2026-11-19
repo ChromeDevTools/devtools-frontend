@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -16,7 +16,12 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {getAxeViolations} from '../../testing/AxeHelpers.js';
 import {assertScreenshot, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
+import {
+  beforeEachWithTeardown,
+  createTarget,
+  describeWithEnvironment,
+  registerActions,
+} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {
   createContentProviderUISourceCodes,
@@ -31,39 +36,39 @@ import * as Sources from './sources.js';
 const {EmptyEncodedPathString, urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('SourcesView', () => {
-  beforeEach(async () => {
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
-    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
-      forceNew: true,
-      targetManager,
-      workspace,
-      debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance(),
-    });
-    Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-  });
-
-  afterEach(() => {
-    UI.ActionRegistry.ActionRegistry.removeInstance();
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-    Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
-    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
-  });
+  beforeEachWithTeardown(
+      async () => {
+        const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+        const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+        const targetManager = SDK.TargetManager.TargetManager.instance();
+        const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+        const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+        const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+          forceNew: true,
+          resourceMapping,
+          targetManager,
+          ignoreListManager,
+          workspace,
+        });
+        const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+          forceNew: true,
+          targetManager,
+          workspace,
+          debuggerWorkspaceBinding,
+          settings: Common.Settings.Settings.instance(),
+        });
+        Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+        UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+      },
+      () => {
+        UI.ActionRegistry.ActionRegistry.removeInstance();
+        UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+        Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
+        Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
+      });
 
   it('renders the placeholder correctly', async () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
@@ -78,44 +83,44 @@ describeWithEnvironment('SourcesView', () => {
   let target1: SDK.Target.Target;
   let target2: SDK.Target.Target;
 
-  beforeEach(() => {
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-    target1 = createTarget();
-    target2 = createTarget();
-    const targetManager = target1.targetManager();
-    targetManager.setScopeTarget(target1);
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+  beforeEachWithTeardown(
+      () => {
+        const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+        UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+        target1 = createTarget();
+        target2 = createTarget();
+        const targetManager = target1.targetManager();
+        targetManager.setScopeTarget(target1);
+        const workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
-    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
-      forceNew: true,
-      targetManager,
-      workspace,
-      debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance(),
-    });
-    Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-  });
-
-  afterEach(() => {
-    UI.ActionRegistry.ActionRegistry.removeInstance();
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-    Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
-    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
-  });
+        const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+        Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
+        const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+        const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+          forceNew: true,
+          resourceMapping,
+          targetManager,
+          ignoreListManager,
+          workspace,
+        });
+        const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+          forceNew: true,
+          targetManager,
+          workspace,
+          debuggerWorkspaceBinding,
+          settings: Common.Settings.Settings.instance(),
+        });
+        Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+      },
+      () => {
+        UI.ActionRegistry.ActionRegistry.removeInstance();
+        UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+        Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
+        Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
+      });
 
   it('creates editor tabs only for in-scope uiSourceCodes', async () => {
     createContentProviderUISourceCodes({
@@ -543,9 +548,12 @@ describeWithEnvironment('SourcesView', () => {
       UI.Context.Context.instance().flavor(Sources.TabbedEditorContainer.TabbedEditorContainer)?.closeAllFiles();
       window.removeEventListener('beforeunload', sourcesPanel.handleBeforeUnload, true);
       sourcesPanel.detach();
+      UI.InspectorView.InspectorView.instance().detach();
+      UI.InspectorView.InspectorView.removeInstance();
       fileSystemWorkspaceBinding.dispose();
       Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
       UI.Context.Context.instance().setFlavor(SDK.Target.Target, null);
+      await UI.Widget.Widget.allUpdatesComplete;
     }
   });
 });

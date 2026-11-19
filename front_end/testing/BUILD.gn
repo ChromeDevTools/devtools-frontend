@@ -57,6 +57,7 @@ ts_library("testing") {
     "TraceHelpersCore.ts",
     "TraceLoader.ts",
     "TrackAsyncOperations.ts",
+    "TrackConsoleLogs.ts",
     "UISourceCodeHelpers.ts",
     "UserMetricsHelpers.ts",
     "ViewFunctionHelpers.ts",
@@ -160,6 +161,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "ConsoleHelpers.test.ts",
     "MockCDPConnection.test.ts",
     "MockScopeChain.test.ts",
     "MutationHelpers.test.ts",

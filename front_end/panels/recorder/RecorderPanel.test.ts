@@ -506,7 +506,12 @@ describeWithEnvironment('RecorderPanel', () => {
   describe('Extension converters', () => {
     const channels: MessageChannel[] = [];
 
-    afterEach(() => {
+    afterEach(async () => {
+      if (panel) {
+        panel.detach();
+        await doubleRaf();
+        panel = null;
+      }
       const pluginManager = PublicExtensions.RecorderPluginManager.RecorderPluginManager.instance();
       for (const plugin of pluginManager.plugins()) {
         pluginManager.removePlugin(plugin);
@@ -555,6 +560,8 @@ describeWithEnvironment('RecorderPanel', () => {
       pluginManager.removePlugin(pluginB);
       pluginManager.addPlugin(pluginB);
       pluginManager.addPlugin(pluginA);
+      await panel.updateComplete;
+      await doubleRaf();
 
       assert.deepEqual(
           panel.extensionConverters.map(converter => converter.getId()),

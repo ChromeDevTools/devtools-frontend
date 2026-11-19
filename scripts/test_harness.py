@@ -375,6 +375,62 @@ class DevToolsTestHarness(unittest.TestCase):
                 'PASS',
             })
 
+    def test_unit_unexpected_console_error(self):
+        test_file = "test/harness/unit/unexpected_console_error.test.ts"
+        suite_prefix = f"{test_file}:unexpected_console_error_harness"
+        abs_test_file = self._resolve_test_file(test_file)
+        stdout, stderr, exit_code = self.run_test_with_output([
+            "node_modules/karma/bin/karma", "start",
+            os.path.join(self.gen_dir, "test/unit/karma.conf.js"), "--",
+            abs_test_file
+        ])
+        self.assertEqual(exit_code, 1)
+        self.assertNotIn("Karma exited early", stdout)
+        self.assertNotIn("Karma exited early", stderr)
+        self.assertIn("Failed tests (4):", stdout)
+        self.assertIn("original failure", stdout)
+        self.assertIn(f"{suite_prefix}:fails_when_console.error_is_called",
+                      stdout)
+        self.assertIn(f"{suite_prefix}:fails_when_console.warn_is_called",
+                      stdout)
+        self.assertIn(
+            f"{suite_prefix}:fails_when_teardown_calls_console.error", stdout)
+        self.assertIn(
+            f"{suite_prefix}:"
+            "preserves_original_failure_when_console.error_is_also_called",
+            stdout)
+
+        results, rdb_exit_code = self.run_unit_test(test_file)
+        self.assertEqual(rdb_exit_code, 1)
+        self.assertEqual(
+            len(results), 8,
+            f"Expected 8 test results (3 PASS + afterEach FAIL, 1 FAIL, 1 PASS), got {len(results)}"
+        )
+        by_id = {}
+        for r in results:
+            by_id.setdefault(r.get('testId'), []).append(r.get('status'))
+        self.assertEqual(
+            sorted(
+                by_id.get(f'{suite_prefix}:fails_when_console.error_is_called',
+                          [])), ['FAIL', 'PASS'])
+        self.assertEqual(
+            sorted(
+                by_id.get(f'{suite_prefix}:fails_when_console.warn_is_called',
+                          [])), ['FAIL', 'PASS'])
+        self.assertEqual(
+            sorted(
+                by_id.get(
+                    f'{suite_prefix}:fails_when_teardown_calls_console.error',
+                    [])), ['FAIL', 'PASS'])
+        self.assertEqual(
+            by_id.get(
+                f'{suite_prefix}:'
+                'preserves_original_failure_when_console.error_is_also_called'
+            ), ['FAIL'])
+        self.assertEqual(
+            by_id.get(f'{suite_prefix}:passes_subsequent_clean_test'),
+            ['PASS'])
+
     def test_unit_before_each_hook(self):
         results, exit_code = self.run_unit_test(
             "test/harness/unit/before_each_hook_fail.test.ts")
@@ -966,8 +1022,23 @@ if __name__ == '__main__':
 
     DevToolsTestHarness.target_name = args.target
     DevToolsTestHarness.build_dir = os.path.join('out', args.target)
-    DevToolsTestHarness.gen_dir = os.path.join(DevToolsTestHarness.build_dir,
-                                               'gen')
+    standalone_karma = os.path.join(DevToolsTestHarness.build_dir, 'gen',
+                                    'test', 'unit', 'karma.conf.js')
+    if os.path.isfile(standalone_karma):
+        DevToolsTestHarness.gen_dir = os.path.join(
+            DevToolsTestHarness.build_dir, 'gen')
+    else:
+        chromium_build_dir = os.path.normpath(
+            os.path.join('..', '..', '..', 'out', args.target))
+        if os.path.isdir(chromium_build_dir):
+            DevToolsTestHarness.build_dir = chromium_build_dir
+            DevToolsTestHarness.gen_dir = os.path.join(chromium_build_dir,
+                                                       'gen', 'third_party',
+                                                       'devtools-frontend',
+                                                       'src')
+        else:
+            DevToolsTestHarness.gen_dir = os.path.join(
+                DevToolsTestHarness.build_dir, 'gen')
     DevToolsTestHarness.debug_mode = args.debug
 
     unittest.main(argv=[sys.argv[0]] + unittest_args)

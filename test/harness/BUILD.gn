@@ -57,6 +57,7 @@ devtools_ui_module("unit_fixtures") {
     "unit/screenshot_retry.test.ts",
     "unit/sinon_restore.test.ts",
     "unit/snapshot.test.ts",
+    "unit/unexpected_console_error.test.ts",
     "unit/unit.test.ts",
     "unit/unit_2.test.ts",
     "unit/widget_update_after_failure.test.ts",

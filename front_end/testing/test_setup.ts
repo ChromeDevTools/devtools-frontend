@@ -28,6 +28,7 @@ import {
   startTrackingAsyncActivity,
   stopTrackingAsyncActivity,
 } from './TrackAsyncOperations.js';
+import {checkForUnexpectedConsoleLogs, startTrackingConsoleLogs, stopTrackingConsoleLogs} from './TrackConsoleLogs.js';
 
 /**
  * `hasOnly` is not part of Mocha's public API.
@@ -72,6 +73,7 @@ beforeEach(async function(this: Mocha.Context) {
   // Clear out any Sinon stubs or spies between individual tests.
   sinon.restore();
   stopTrackingAsyncActivity();
+  stopTrackingConsoleLogs();
   if (hasPendingTestTeardowns()) {
     const title = this.currentTest?.fullTitle();
     console.error(`Leftover test teardowns before "${
@@ -102,6 +104,7 @@ beforeEach(async function(this: Mocha.Context) {
   ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
 
   startTrackingAsyncActivity();
+  startTrackingConsoleLogs();
 });
 
 afterEach(async function() {
@@ -137,6 +140,10 @@ afterEach(async function() {
   // the order in the root beforeEach.
   await run(() => sinon.restore());
   await run(() => stopTrackingAsyncActivity());
+  if (this.currentTest?.state === 'passed') {
+    await run(() => checkForUnexpectedConsoleLogs(title));
+  }
+  await run(() => stopTrackingConsoleLogs());
 
   if (errors.length === 0) {
     return;

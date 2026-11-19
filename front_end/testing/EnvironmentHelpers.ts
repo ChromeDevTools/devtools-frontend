@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, before, describe} from 'mocha';
+import {describe} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../core/common/common.js';
@@ -33,6 +33,7 @@ let UI: typeof UIModule;
 
 export {createTarget, waitForTarget} from './TargetHelpers.js';
 export {beforeEachWithTeardown, registerTestTeardown} from './TestTeardown.js';
+export {expectConsoleLogs} from './TrackConsoleLogs.js';
 
 export function registerActions(actions: UIModule.ActionRegistration.ActionRegistration[]): void {
   for (const action of actions) {
@@ -182,47 +183,6 @@ export function setupActionRegistry(): void {
           UI.ActionRegistry.ActionRegistry.removeInstance();
         }
       });
-}
-
-/** This needs to be invoked within a describe block, rather than within an it() block. **/
-export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[], error?: string[]}): void {
-  const {error, warn, log} = console;
-  before(() => {
-    if (expectedLogs.log) {
-      // eslint-disable-next-line no-console
-      console.log = (...data: unknown[]) => {
-        if (!expectedLogs.log?.includes(data.join(' '))) {
-          log(...data);
-        }
-      };
-    }
-    if (expectedLogs.warn) {
-      console.warn = (...data: unknown[]) => {
-        if (!expectedLogs.warn?.includes(data.join(' '))) {
-          warn(...data);
-        }
-      };
-    }
-    if (expectedLogs.error) {
-      console.error = (...data: unknown[]) => {
-        if (!expectedLogs.error?.includes(data.join(' '))) {
-          error(...data);
-        }
-      };
-    }
-  });
-  after(() => {
-    if (expectedLogs.log) {
-      // eslint-disable-next-line no-console
-      console.log = log;
-    }
-    if (expectedLogs.warn) {
-      console.warn = warn;
-    }
-    if (expectedLogs.error) {
-      console.error = error;
-    }
-  });
 }
 
 let userAgentStub: sinon.SinonStub|undefined;

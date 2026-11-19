@@ -26,7 +26,7 @@ Good:
 ```ts
 const view = createViewFunctionStub(MyWidget);
 const widget = new MyWidget(undefined, view);
-widget.wasShown();
-view.input.onActionClick();
+renderElementIntoDOM(widget);
+(await view.nextInput).onActionClick();
 assert.strictEqual((await view.nextInput).statusText, 'Updated');
 ```

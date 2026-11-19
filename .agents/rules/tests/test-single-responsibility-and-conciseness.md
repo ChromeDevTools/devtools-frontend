@@ -5,10 +5,10 @@ severity: should_fix
 ---
 
 **Rule.** Keep each it() block focused on a single behavior and prune duplicate or obsolete tests when features change
-- **Look for**: `it('... and ...')` blocks testing multiple orthogonal interactions sequentially, nested `{ ... }` scope blocks inside a single `it()`, or identical test cases duplicated across `describe` blocks.
+- **Look for**: `it('... and ...')` blocks testing multiple orthogonal interactions sequentially, nested `{ ... }` scope blocks inside a single `it()`, identical test cases duplicated across `describe` blocks, or unused `beforeEach` setup, stubs, or local helpers that no `it()` in the CL exercises.
 - **Do not flag**: Multi-step stateful workflow tests where earlier steps are required preconditions to reach the state under test.
 
-**Why.** Combining multiple independent user interactions or feature scenarios into a single monolithic `it()` block obscures failure root causes, while leaving duplicate or orphaned tests behind increases suite runtime and maintenance burden.
+**Why.** Combining multiple independent user interactions or feature scenarios into a single monolithic `it()` block obscures failure root causes, while leaving duplicate or orphaned tests, or unused `beforeEach` setup and helpers, behind increases suite runtime and maintenance burden.
 
 ## Examples
 

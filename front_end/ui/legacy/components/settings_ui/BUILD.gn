@@ -49,6 +49,7 @@ devtools_ui_module("unittests") {
     "../../../../core/i18n:bundle",
     "../../../../testing",
     "../../../../ui/legacy:bundle",
+    "../../../../ui/settings:bundle",
     "../../../lit:bundle",
   ]
 }

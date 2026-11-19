@@ -3,38 +3,41 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import {createSettingsForTest} from '../../../../testing/SettingsHelpers.js';
 import * as Lit from '../../../lit/lit.js';
+import * as SettingUIRegistration from '../../../settings/settings.js';
 import * as UI from '../../legacy.js';
 
 import * as SettingsUI from './settings_ui.js';
 
 describeWithEnvironment('SettingsUI', () => {
-  function setup(
-      options: Common.Settings.SettingExtensionOption[] =
-          [
-            {value: 'a', text: 'A', title: () => i18n.i18n.lockedString('A'), raw: true},
-            {value: 'b', text: 'B', title: () => i18n.i18n.lockedString('B'), raw: true},
-          ],
-      registrationOverrides: Partial<Common.Settings.SettingRegistration> = {}) {
-    const registration: Common.Settings.SettingRegistration = {
-      settingName: 'test-setting',
-      settingType: Common.Settings.SettingType.ENUM,
+  afterEach(() => {
+    SettingUIRegistration.SettingUIRegistration.resetSettings();
+  });
+
+  function setup(options: Common.Settings.SettingExtensionOption[] =
+                     [
+                       {value: 'a', text: 'A', title: () => i18n.i18n.lockedString('A'), raw: true},
+                       {value: 'b', text: 'B', title: () => i18n.i18n.lockedString('B'), raw: true},
+                     ],
+                 uiOverrides: Partial<SettingUIRegistration.SettingUIRegistration.SettingUIDescriptor> = {}) {
+    const descriptor: Common.Settings.SettingDescriptor<string> = {
+      name: 'test-setting',
+      type: Common.Settings.SettingType.ENUM,
       defaultValue: 'a',
+    };
+    SettingUIRegistration.SettingUIRegistration.register(descriptor, {
       options,
       title: () => i18n.i18n.lockedString('Test Setting'),
-      ...registrationOverrides,
-    };
-    Common.Settings.registerSettingExtension(registration);
-    const settings = createSettingsForTest([registration]);
-    return settings.moduleSetting('test-setting');
+      ...uiOverrides,
+    });
+    return Common.Settings.Settings.instance().resolve(descriptor);
   }
 
   it('renders a setting select', () => {
@@ -150,11 +153,11 @@ describeWithEnvironment('SettingsUI', () => {
 
   describe('renderControlForSetting', () => {
     it('renders a checkbox for a boolean setting', () => {
-      const setting = createSettingsForTest([{
-                        settingName: 'test-boolean-setting',
-                        settingType: Common.Settings.SettingType.BOOLEAN,
-                        defaultValue: false,
-                      }]).moduleSetting('test-boolean-setting');
+      const setting = Common.Settings.Settings.instance().resolve({
+        name: 'test-boolean-setting',
+        type: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: false,
+      });
 
       const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
       assert.notStrictEqual(template, Lit.nothing);
@@ -168,16 +171,17 @@ describeWithEnvironment('SettingsUI', () => {
     });
 
     it('renders a select for an enum setting', () => {
-      const registration: Common.Settings.SettingRegistration = {
-        settingName: 'test-enum-setting',
-        settingType: Common.Settings.SettingType.ENUM,
+      const descriptor: Common.Settings.SettingDescriptor<string> = {
+        name: 'test-enum-setting',
+        type: Common.Settings.SettingType.ENUM,
         defaultValue: 'a',
+      };
+      SettingUIRegistration.SettingUIRegistration.register(descriptor, {
         options: [
           {value: 'a', text: 'A', title: () => i18n.i18n.lockedString('A'), raw: true},
         ],
-      };
-      Common.Settings.registerSettingExtension(registration);
-      const setting = createSettingsForTest([registration]).moduleSetting('test-enum-setting');
+      });
+      const setting = Common.Settings.Settings.instance().resolve(descriptor);
 
       const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
       assert.notStrictEqual(template, Lit.nothing);
@@ -192,11 +196,11 @@ describeWithEnvironment('SettingsUI', () => {
 
     it('returns nothing for an unsupported setting type', () => {
       const consoleErrorStub = sinon.stub(console, 'error');
-      const setting = createSettingsForTest([{
-                        settingName: 'test-array-setting',
-                        settingType: Common.Settings.SettingType.ARRAY,
-                        defaultValue: [],
-                      }]).moduleSetting('test-array-setting');
+      const setting = Common.Settings.Settings.instance().resolve({
+        name: 'test-array-setting',
+        type: Common.Settings.SettingType.ARRAY,
+        defaultValue: [],
+      });
 
       const template = SettingsUI.SettingsUI.renderControlForSetting(setting);
       assert.strictEqual(template, Lit.nothing);

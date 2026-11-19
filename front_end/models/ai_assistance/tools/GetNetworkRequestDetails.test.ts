@@ -337,4 +337,50 @@ describe('GetNetworkRequestDetailsTool', () => {
     const response = await tool.handler({id: 'harRequestId'}, context);
     assertIsError(response, 'No request found');
   });
+
+  function createEstablishedOriginContext(origin = 'https://example.com'):
+      AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.OriginLockCapability {
+    return {
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({
+        status: 'ESTABLISHED_ORIGIN',
+        origin: SDK.SecurityOrigin.SecurityOrigin.create(origin),
+      }),
+    };
+  }
+
+  it('returns an eventKey hint error when a trace eventKey is passed and no request matches', async () => {
+    sinon.stub(networkLog, 'requests').returns([]);
+    const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
+
+    const response = await tool.handler({id: 's-760'}, createEstablishedOriginContext());
+    assertIsError(
+        response,
+        'No request found. "s-760" is a performance trace eventKey, not a network request ID. Use getTraceEventByKey to inspect trace events, or call listNetworkRequests to find network request IDs.',
+    );
+  });
+
+  it('returns the request normally when a live request has an eventKey-shaped requestId', async () => {
+    const request = createNetworkRequest({
+      requestId: 's-760',
+      url: 'https://example.com/api/users',
+      documentURL: 'https://example.com/',
+      statusCode: 200,
+      finished: true,
+    });
+    sinon.stub(networkLog, 'requests').returns([request]);
+    const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
+
+    const response = await tool.handler({id: 's-760'}, createEstablishedOriginContext());
+    assertIsResult(response);
+    assert.isString(response.result);
+    assert.include(response.result, 'Request: https://example.com/api/users');
+  });
+
+  it('returns the generic not-found error when a non-eventKey unknown id is passed', async () => {
+    sinon.stub(networkLog, 'requests').returns([]);
+    const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
+
+    const response = await tool.handler({id: 'unknown-id'}, createEstablishedOriginContext());
+    assertIsError(response, 'No request found');
+  });
 });

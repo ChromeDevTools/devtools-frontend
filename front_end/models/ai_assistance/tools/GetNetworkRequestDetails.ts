@@ -25,6 +25,13 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
+/**
+ * Matches single-index `eventKey` strings from `Trace.EventsSerializer#keyForEvent()`
+ * in `(eventKey: ...)` trace tool output. Examples include `"s-760"` for
+ * `EventKeyType.SYNTHETIC_EVENT` network requests and `"r-1234"` for `EventKeyType.RAW_EVENT`.
+ */
+const TRACE_EVENT_KEY_REGEX = /^[a-z]+-\d+$/;
+
 export interface GetNetworkRequestDetailsArgs extends ToolArgs {
   id: string;
 }
@@ -97,6 +104,15 @@ export class GetNetworkRequestDetailsTool implements
     });
 
     if (!request) {
+      // Trace tools such as getInsightDetails label network events with eventKey strings
+      // rather than NetworkLog request IDs. Return a redirect hint instead of querying
+      // PerformanceTraceContext, which lacks response bodies and NetworkLog origin-lock checks.
+      if (TRACE_EVENT_KEY_REGEX.test(args.id)) {
+        return {
+          error: `No request found. "${
+              args.id}" is a performance trace eventKey, not a network request ID. Use getTraceEventByKey to inspect trace events, or call listNetworkRequests to find network request IDs.`,
+        };
+      }
       return {
         error: 'No request found',
       };

@@ -796,4 +796,215 @@ describe('NamesResolver API Test', () => {
          }
        }
      });
+
+  it('resolves expressions in webpack bundled scripts with line-by-line source maps', async ({
+                                                                                        inspectedPage,
+                                                                                        universe,
+                                                                                      }) => {
+    const primaryTarget = universe.targetManager.primaryPageTarget();
+    assert.isNotNull(primaryTarget);
+
+    const debuggerModel = primaryTarget.model(SDK.DebuggerModel.DebuggerModel);
+    assert.isNotNull(debuggerModel);
+
+    await inspectedPage.goToHtml('<!DOCTYPE html><html><body></body></html>');
+
+    const sourceMap = {
+      version: 3,
+      file: 'resolve-expressions-webpack-bundle.js',
+      mappings: [
+        ';;AAAA;AACA;AACA;;;;ACFA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;;;;;ACPA',
+        ';;;;;ACAA;AACA;AACA;AACA;AACA;AACA;AACA;;;;;;;;;;;;;;ACNA;AACA;AACA',
+        ';AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA',
+      ].join(''),
+      sources: [
+        'webpack://webpack-simple/webpack/bootstrap',
+        'webpack://webpack-simple/webpack/runtime/define property getters',
+        'webpack://webpack-simple/webpack/runtime/hasOwnProperty shorthand',
+        'webpack://webpack-simple/webpack/runtime/make namespace object',
+        'webpack://webpack-simple/./resolve-expressions-webpack-authored.js',
+      ],
+      sourcesContent: [
+        '// The require scope\nvar __webpack_require__ = {};\n\n',
+        [
+          '// define getter functions for harmony exports',
+          '__webpack_require__.d = (exports, definition) => {',
+          '\tfor(var key in definition) {',
+          '\t\tif(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {',
+          '\t\t\tObject.defineProperty(exports, key, { enumerable: true, get: definition[key] });',
+          '\t\t}',
+          '\t}',
+          '};',
+        ].join('\n'),
+        '__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))',
+        [
+          '// define __esModule on exports',
+          '__webpack_require__.r = (exports) => {',
+          '\tif(typeof Symbol !== \'undefined\' && Symbol.toStringTag) {',
+          '\t\tObject.defineProperty(exports, Symbol.toStringTag, { value: \'Module\' });',
+          '\t}',
+          '\tObject.defineProperty(exports, \'__esModule\', { value: true });',
+          '};',
+        ].join('\n'),
+        [
+          '',
+          'export class Foo {',
+          '  #prop = [25, 42];',
+          '',
+          '  foo() {',
+          '    let [a, b] = this.#prop;',
+          '    a++;',
+          '    debugger;',
+          '    return a + b;',
+          '  }',
+          '}',
+          '',
+          'export const fooInstance = new Foo();',
+          '',
+          'export function testFunction() {',
+          '  fooInstance.foo();',
+          '}',
+          '',
+        ].join('\n'),
+      ],
+      names: [],
+      sourceRoot: '',
+    };
+    const sourceMapUrl =
+        `data:application/json;charset=utf-8;base64,${Platform.StringUtilities.toBase64(JSON.stringify(sourceMap))}`;
+
+    const bundleCode = [
+      '/******/ // (() => { // webpackBootstrap',
+      '/******/ \t"use strict";',
+      '/******/ \t// The require scope',
+      '/******/ \tvar __webpack_require__ = {};',
+      '/******/ \t',
+      '/************************************************************************/',
+      '/******/ \t/* webpack/runtime/define property getters */',
+      '/******/ \t(() => {',
+      '/******/ \t\t// define getter functions for harmony exports',
+      '/******/ \t\t__webpack_require__.d = (exports, definition) => {',
+      '/******/ \t\t\tfor(var key in definition) {',
+      '/******/ \t\t\t\tif(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {',
+      '/******/ \t\t\t\t\tObject.defineProperty(exports, key, { enumerable: true, get: definition[key] });',
+      '/******/ \t\t\t\t}',
+      '/******/ \t\t\t}',
+      '/******/ \t\t};',
+      '/******/ \t})();',
+      '/******/ \t',
+      '/******/ \t/* webpack/runtime/hasOwnProperty shorthand */',
+      '/******/ \t(() => {',
+      '/******/ \t\t__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))',
+      '/******/ \t})();',
+      '/******/ \t',
+      '/******/ \t/* webpack/runtime/make namespace object */',
+      '/******/ \t(() => {',
+      '/******/ \t\t// define __esModule on exports',
+      '/******/ \t\t__webpack_require__.r = (exports) => {',
+      '/******/ \t\t\tif(typeof Symbol !== \'undefined\' && Symbol.toStringTag) {',
+      '/******/ \t\t\t\tObject.defineProperty(exports, Symbol.toStringTag, { value: \'Module\' });',
+      '/******/ \t\t\t}',
+      '/******/ \t\t\tObject.defineProperty(exports, \'__esModule\', { value: true });',
+      '/******/ \t\t};',
+      '/******/ \t})();',
+      '/******/ \t',
+      '/************************************************************************/',
+      'var __webpack_exports__ = {};',
+      '/*!******************!*\\',
+      '  !*** ./index.js ***!',
+      '  \\******************/',
+      '__webpack_require__.r(__webpack_exports__);',
+      '/* harmony export */ __webpack_require__.d(__webpack_exports__, {',
+      '/* harmony export */   "Foo": () => (/* binding */ Foo),',
+      '/* harmony export */   "fooInstance": () => (/* binding */ fooInstance),',
+      '/* harmony export */   "testFunction": () => (/* binding */ testFunction)',
+      '/* harmony export */ });',
+      '',
+      'class Foo {',
+      '  #prop = [25, 42];',
+      '',
+      '  foo() {',
+      '    let [a, b] = this.#prop;',
+      '    a++;',
+      '    debugger;',
+      '    return a + b;',
+      '  }',
+      '}',
+      '',
+      'const fooInstance = new Foo();',
+      '',
+      'function testFunction() {',
+      '  fooInstance.foo();',
+      '}',
+      '',
+      '/******/ // })()',
+      ';',
+      '//# sourceURL=resolve-expressions-webpack-bundle.js',
+      `//# sourceMappingURL=${sourceMapUrl}`,
+    ].join('\n');
+
+    const pausedPromise = debuggerModel.once(SDK.DebuggerModel.Events.DebuggerPaused);
+    await inspectedPage.evaluate((src: string) => {
+      const script = document.createElement('script');
+      script.textContent = src;
+      document.body.appendChild(script);
+    }, bundleCode);
+
+    void inspectedPage.evaluate(() => {
+      setTimeout((window as unknown as {testFunction: () => void}).testFunction, 0);
+    });
+    await pausedPromise;
+
+    try {
+      const callFrames = debuggerModel.debuggerPausedDetails()?.callFrames;
+      assert.isDefined(callFrames);
+      assert.isNotEmpty(callFrames);
+      const callFrame = callFrames[0];
+      assert.strictEqual(callFrame.functionName, 'foo');
+
+      const attachedSourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(callFrame.script);
+      assert.isDefined(attachedSourceMap);
+      const authoredSourceUrl =
+          attachedSourceMap.sourceURLs().find(url => url.endsWith('resolve-expressions-webpack-authored.js'));
+      assert.isDefined(authoredSourceUrl);
+      await universe.debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURLPromise(
+          debuggerModel, authoredSourceUrl, callFrame.script.isContentScript());
+
+      const mappings =
+          await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame, universe.debuggerWorkspaceBinding);
+      assert.deepEqual(
+          mappings.map(mapping => ({bindings: [...mapping.bindings], generatedNames: mapping.generatedNames})), [
+            {bindings: [], generatedNames: ['this', 'a', 'b']},
+            {
+              bindings: [],
+              generatedNames: [
+                '__webpack_require__',
+                'Object',
+                'Symbol',
+                '__webpack_exports__',
+                'Foo',
+                'fooInstance',
+                'testFunction',
+              ],
+            },
+            {bindings: [], generatedNames: []},
+          ]);
+
+      // "this.#prop" maps to the whole assignment, but should still resolve to "this.#prop".
+      const resolvedPrivateProp =
+          await Formatter.FormatterWorkerPool.FormatterWorkerPool.instance().javaScriptSubstitute('this.#prop',
+                                                                                                  mappings);
+      assert.strictEqual(resolvedPrivateProp, 'this.#prop');
+
+      // "a" should resolve as "a++" is the only statement on the line.
+      const resolvedLocal =
+          await Formatter.FormatterWorkerPool.FormatterWorkerPool.instance().javaScriptSubstitute('a', mappings);
+      assert.strictEqual(resolvedLocal, 'a');
+    } finally {
+      if (debuggerModel.isPaused()) {
+        await debuggerModel.resume();
+      }
+      Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+    }
+  });
 });

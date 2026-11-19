@@ -672,7 +672,7 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
 
   override performUpdate(): void {
     const customLocations = this.#customLocationsSetting.get();
-    const locationInput: LocationViewInput = {
+    const input: ViewInput = {
       location: this.#location,
       locationOverrideEnabled: this.#locationOverrideEnabled,
       customLocations,
@@ -684,8 +684,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       onManageLocations: () => Common.Revealer.reveal(this.#customLocationsSetting),
       onLocationSelectChange: this.#locationSelectChanged.bind(this),
       onLocationFieldChange: this.#applyLocationUserInput.bind(this),
-    };
-    const orientationInput: OrientationViewInput = {
       orientation: this.#deviceOrientation,
       orientationOverrideEnabled: this.#deviceOrientationOverrideEnabled,
       selectedOrientation: this.#selectedOrientation,
@@ -695,10 +693,6 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
       onOrientationReset: this.#resetDeviceOrientation.bind(this),
       onStageDragStart: this.#onBoxDragStart.bind(this),
       onStageDrag: this.#onBoxDrag.bind(this),
-    };
-    const input: ViewInput = {
-      ...locationInput,
-      ...orientationInput,
       touchSetting: this.#settings.resolve(SDK.SDKSettings.touchSettingDescriptor),
       idleDetectionSetting: this.#settings.resolve(SDK.SDKSettings.idleDetectionSettingDescriptor),
       cpuPressureSetting: this.#settings.resolve(SDK.SDKSettings.cpuPressureSettingDescriptor),
@@ -991,17 +985,17 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   }
 }
 
-export const enum DeviceOrientationModificationSource {
+const enum DeviceOrientationModificationSource {
   USER_INPUT = 'userInput',
   USER_DRAG = 'userDrag',
   RESET_BUTTON = 'resetButton',
   SELECT_PRESET = 'selectPreset',
 }
 
-export const NonPresetOptions = {
+const NonPresetOptions = {
   NoOverride: 'noOverride',
   Custom: 'custom',
   Unavailable: 'unavailable',
 };
 
-export const ShiftDragOrientationSpeed = 16;
+const ShiftDragOrientationSpeed = 16;

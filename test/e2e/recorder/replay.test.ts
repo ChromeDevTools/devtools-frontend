@@ -582,6 +582,32 @@ describe('Recorder', function() {
       assert.isOk(frame, 'Frame that the target page navigated to is not found');
     });
 
+    it('should allow cross-origin iframes if the recording has no subframe steps',
+       async ({inspectedPage, devToolsPage}) => {
+         await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+           title: 'Test Recording',
+           steps: [
+             {
+               type: 'navigate' as StepType.Navigate,
+               url: `${inspectedPage.getResourcesPath()}/recorder/oopif.html`,
+             },
+             {
+               type: 'waitForExpression' as StepType.WaitForExpression,
+               target: 'main',
+               expression: 'document.querySelector("iframe") !== null',
+             },
+           ],
+         },
+                                                undefined);
+
+         // The origin of the iframe is not in the recording.
+         const frame = await inspectedPage.page.waitForFrame(
+             `${inspectedPage.getOopifResourcesPath()}/recorder/iframe1.html`,
+         );
+         assert.isOk(frame);
+         assert.isNull(await devToolsPage.$('.error'));
+       });
+
     it('should block navigations to origins that are not in the recording', async ({inspectedPage, devToolsPage}) => {
       const blockedUrl = `${inspectedPage.getOopifResourcesPath()}/recorder/recorder2.html`;
       expectError(`Replay error Navigation to ${blockedUrl} is not allowed`);
@@ -626,6 +652,50 @@ describe('Recorder', function() {
       const message = await error.evaluate(el => el.textContent);
       assert.include(message, `Navigation to ${blockedUrl} is not allowed`);
     });
+
+    it('should block navigations in OOPIFs to origins that are not in the recording',
+       async ({inspectedPage, devToolsPage}) => {
+         const oopifUrl = `${inspectedPage.getOopifResourcesPath()}/recorder/iframe1.html`;
+         const blockedUrl = `${inspectedPage.getResourcesPath('devtools.blocked.test')}/recorder/iframe2.html`;
+         expectError(`Replay error Navigation to ${blockedUrl} is not allowed`);
+         await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+           title: 'Test Recording',
+           steps: [
+             {
+               type: 'navigate' as StepType.Navigate,
+               url: `${inspectedPage.getResourcesPath()}/recorder/oopif.html`,
+             },
+             {
+               // Puppeteer can evaluate the expression more than one time, thus
+               // the expression only adds a link.
+               type: 'waitForExpression' as StepType.WaitForExpression,
+               target: oopifUrl,
+               expression: `(document.body.innerHTML = '<a id="blocked" href="${blockedUrl}">blocked</a>', true)`,
+             },
+             {
+               type: 'click' as StepType.Click,
+               target: oopifUrl,
+               selectors: [['#blocked']],
+               offsetX: 1,
+               offsetY: 1,
+             },
+             {
+               // The step keeps the replay active until the navigation request is
+               // handled. No page has this element.
+               type: 'waitForElement' as StepType.WaitForElement,
+               target: 'main',
+               selectors: [['#not-in-the-page']],
+               timeout: 2000,
+             },
+           ],
+         },
+                                                undefined);
+
+         assert.isUndefined(inspectedPage.page.frames().find(frame => frame.url() === blockedUrl));
+         const error = await devToolsPage.waitFor('.error');
+         const message = await error.evaluate(el => el.textContent);
+         assert.include(message, `Navigation to ${blockedUrl} is not allowed`);
+       });
 
     it('should block navigation back to the pre-replay origin when a navigate step runs first',
        async ({inspectedPage, devToolsPage}) => {

@@ -24,6 +24,11 @@ describe('NavigationGuard API Test', () => {
     return `${inspectedPage.getResourcesPath('devtools.oopif.test')}/recorder/${file}`;
   }
 
+  /** An origin that is in no recording of these tests. */
+  function unrecorded(inspectedPage: InspectedPage, file: string): string {
+    return `${inspectedPage.getResourcesPath('devtools.blocked.test')}/recorder/${file}`;
+  }
+
   /** For each guard, a promise that resolves when the guard reports its first error. */
   const errorReported = new WeakMap<NavigationGuard, Promise<void>>();
 
@@ -62,6 +67,8 @@ describe('NavigationGuard API Test', () => {
     assert.isOk(guard.error, 'The guard did not report an error');
     return guard.error;
   }
+
+  const subframeStep = {type: 'click', selectors: [['a']], offsetX: 1, offsetY: 1, frame: [0]};
 
   it('continues a main frame navigation to an origin from the recording', async ({inspectedPage}) => {
     const guard = await guardInspectedPage(inspectedPage);
@@ -116,6 +123,49 @@ describe('NavigationGuard API Test', () => {
       await guard.dispose();
     }
   });
+
+  it('continues a cross-origin iframe if the recording has no subframe step', async ({inspectedPage}) => {
+    const guard = await guardInspectedPage(inspectedPage);
+    try {
+      assert.isNull(await navigate(inspectedPage, recorded(inspectedPage, 'oopif.html')));
+      await inspectedPage.page.waitForFrame(other(inspectedPage, 'iframe1.html'));
+      assert.isUndefined(guard.error);
+    } finally {
+      await guard.dispose();
+    }
+  });
+
+  it('fails a cross-origin iframe if the recording has a subframe step', async ({inspectedPage}) => {
+    const guard = await guardInspectedPage(inspectedPage, [subframeStep]);
+    try {
+      assert.isNull(await navigate(inspectedPage, recorded(inspectedPage, 'oopif.html')));
+      const error = await waitForError(guard);
+      assert.include(error.message, `Navigation to ${other(inspectedPage, 'iframe1.html')} is not allowed`);
+    } finally {
+      await guard.dispose();
+    }
+  });
+
+  it('fails a navigation of an out-of-process iframe to an origin that is not in the recording',
+     async ({inspectedPage}) => {
+       const oopifUrl = other(inspectedPage, 'iframe1.html');
+       const blockedUrl = unrecorded(inspectedPage, 'iframe2.html');
+       const guard = await guardInspectedPage(inspectedPage, [{...subframeStep, frame: undefined, target: oopifUrl}]);
+       try {
+         assert.isNull(await navigate(inspectedPage, recorded(inspectedPage, 'oopif.html')));
+         const frame = await inspectedPage.page.waitForFrame(oopifUrl);
+         assert.isUndefined(guard.error);
+         await frame.evaluate((url: string) => {
+           window.location.href = url;
+         }, blockedUrl);
+         const error = await waitForError(guard);
+         assert.include(error.message, `Navigation to ${blockedUrl} is not allowed`);
+         assert.isUndefined(
+             inspectedPage.page.frames().find((frame: {url: () => string}) => frame.url() === blockedUrl));
+       } finally {
+         await guard.dispose();
+       }
+     });
 
   it('does not fail navigations after dispose()', async ({inspectedPage}) => {
     const guard = await guardInspectedPage(inspectedPage);

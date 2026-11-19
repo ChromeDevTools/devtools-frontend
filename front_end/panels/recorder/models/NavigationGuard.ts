@@ -8,6 +8,7 @@ import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 
 import type {UserFlow} from './Schema.js';
 
+const SESSION_ATTACHED = 'sessionattached' as puppeteer.CDPSessionEventSessionAttached;
 const NON_INTERACTIVE_STEP_TYPES = new Set<string>(['setViewport', 'emulateNetworkConditions']);
 const REDIRECT_STATUS_CODES = new Set([301, 302, 303, 307, 308]);
 
@@ -102,6 +103,30 @@ function isAttachmentResponse(event: FetchRequestPausedEvent): boolean {
   return dispositions.length === 1 && /^[ \t]*attachment[ \t]*(?:;|$)/i.test(dispositions[0].value);
 }
 
+function isSessionClosedError(err: unknown): boolean {
+  if (!(err instanceof Error)) {
+    return false;
+  }
+  return err.name === 'TargetCloseError' || err.message.includes('Session closed') ||
+      err.message.includes('Target closed') || err.message.includes('Session with given id not found');
+}
+
+/**
+ * Returns false only if the session is known to be of a target that has no
+ * frames, for example a worker. Puppeteer can report a session before it
+ * knows the frame of the session, thus the frames of the page cannot answer
+ * this question.
+ */
+function canHaveFrames(session: puppeteer.CDPSession): boolean {
+  try {
+    const type = (session as unknown as {target(): puppeteer.Target}).target()._getTargetInfo().type;
+    return type === 'iframe' || type === 'page';
+  } catch {
+    // The target of the session is not known.
+    return true;
+  }
+}
+
 /**
  * Collects the navigations that a replay of `flow` is allowed to make: all
  * URLs in the recording, plus `currentUrl` if an interactive step can run
@@ -128,6 +153,18 @@ export function collectAllowedNavigations(flow: UserFlow, currentUrl: string): A
   return allowed;
 }
 
+/**
+ * Returns true if a step can send input to a subframe. A target that is not
+ * 'main' is the URL of a popup or of an out-of-process iframe.
+ */
+export function hasSubframeSteps(flow: UserFlow): boolean {
+  return flow.steps.some(step => {
+    const hasFrame = 'frame' in step && Boolean(step.frame?.length);
+    const hasTarget = 'target' in step && Boolean(step.target) && step.target !== 'main';
+    return hasFrame || hasTarget;
+  });
+}
+
 export function isNavigationAllowed(url: string, allowed: AllowedNavigations): boolean {
   let parsed: URL;
   try {
@@ -149,15 +186,24 @@ export function isNavigationAllowed(url: string, allowed: AllowedNavigations): b
  */
 export class NavigationGuard {
   readonly #allowedNavigations: AllowedNavigations;
+  readonly #checkSubframes: boolean;
+  /** True if a step can send input to the page before the page navigates. */
+  readonly #replayUsesCurrentPage: boolean;
   readonly #onError: () => void;
   readonly #guardedPages = new Set<puppeteer.Page>();
   readonly #guardedClients = new Set<puppeteer.CDPSession>();
   readonly #cleanups: Array<() => Promise<void>> = [];
   #error?: Error;
+  #disposed = false;
 
-  /** @param onError The guard calls it each time it blocks a navigation. */
+  /**
+   * @param onError The guard calls it each time it blocks a navigation or
+   * cannot enable the interception.
+   */
   constructor(flow: UserFlow, currentUrl: string, onError: () => void) {
     this.#allowedNavigations = collectAllowedNavigations(flow, currentUrl);
+    this.#checkSubframes = hasSubframeSteps(flow);
+    this.#replayUsesCurrentPage = shouldAllowCurrentUrl(flow, currentUrl);
     this.#onError = onError;
   }
 
@@ -171,14 +217,32 @@ export class NavigationGuard {
     this.#onError();
   }
 
+  #failGuard(err: unknown): void {
+    const message = err instanceof Error ? err.message : String(err);
+    this.#error ??= new Error(`Could not enable the navigation guard: ${message}`);
+    this.#onError();
+  }
+
+  /**
+   * A failure to enable the interception on the session of `frame` can be
+   * ignored if the session is closed, or if the frame is a subframe and the
+   * guard does not check subframes.
+   */
+  #canIgnoreFailure(frame: Pick<puppeteer.Frame, 'client'>, guardedPage: puppeteer.Page, err: unknown): boolean {
+    if (frame.client.detached || isSessionClosedError(err)) {
+      return true;
+    }
+    return frame !== guardedPage.mainFrame() && !this.#checkSubframes;
+  }
+
   async #guardClient(client: puppeteer.CDPSession, guardedPage: puppeteer.Page): Promise<void> {
-    if (this.#guardedClients.has(client)) {
+    if (this.#disposed || this.#guardedClients.has(client)) {
       return;
     }
     this.#guardedClients.add(client);
     const onRequestPaused = (event: FetchRequestPausedEvent): void => {
       const isSubframe = event.frameId !== guardedPage.mainFrame()._id;
-      if (isSubframe || isRedirectResponse(event) || isAttachmentResponse(event) ||
+      if ((isSubframe && !this.#checkSubframes) || isRedirectResponse(event) || isAttachmentResponse(event) ||
           isNavigationAllowed(event.request.url, this.#allowedNavigations)) {
         // The request can be gone already, for example if the page closed.
         void client.send('Fetch.continueRequest', {requestId: event.requestId}).catch(() => {});
@@ -188,31 +252,105 @@ export class NavigationGuard {
       void client.send('Fetch.failRequest', {requestId: event.requestId, errorReason: 'BlockedByClient'})
           .catch(() => {});
     };
+    // Puppeteer emits this event before it resumes the new target, for
+    // example an OOPIF. `guardClient` sends `Fetch.enable` synchronously, thus
+    // the target cannot start a navigation before the interception is on.
+    const onSessionAttached = (session: puppeteer.CDPSession): void => {
+      void this.#guardClient(session, guardedPage).catch((err: unknown) => {
+        if (!this.#checkSubframes || session.detached || isSessionClosedError(err)) {
+          return;
+        }
+        // Ignore the targets that have no frames (for example, workers). They
+        // do not support the Fetch domain.
+        if (canHaveFrames(session)) {
+          this.#failGuard(err);
+        }
+      });
+    };
     client.on('Fetch.requestPaused', onRequestPaused);
-    this.#cleanups.push(async () => {
+    client.on(SESSION_ATTACHED, onSessionAttached);
+    // Register the cleanup before the command, so that `dispose()` disables
+    // the interception also while the command is in progress.
+    const cleanup = async(): Promise<void> => {
+      client.off(SESSION_ATTACHED, onSessionAttached);
       // The listener stays until the interception is off, so that it handles
       // the requests that are paused. The session can be closed already.
       await client.send('Fetch.disable').catch(() => {});
       client.off('Fetch.requestPaused', onRequestPaused);
-    });
-    await client.send(
-        'Fetch.enable',
-        {patterns: [{urlPattern: '*', resourceType: 'Document', requestStage: 'Response'}]},
-    );
+    };
+    this.#cleanups.push(cleanup);
+    try {
+      await client.send(
+          'Fetch.enable',
+          {patterns: [{urlPattern: '*', resourceType: 'Document', requestStage: 'Response'}]},
+      );
+    } catch (err) {
+      // A later framenavigated event can try again.
+      this.#guardedClients.delete(client);
+      const index = this.#cleanups.indexOf(cleanup);
+      if (index !== -1) {
+        this.#cleanups.splice(index, 1);
+      }
+      client.off(SESSION_ATTACHED, onSessionAttached);
+      client.off('Fetch.requestPaused', onRequestPaused);
+      throw err;
+    }
   }
 
-  /** Enables the guard on the main frame of `guardedPage`. */
+  // Finds the documents that loaded without a paused response.
+  #checkFrameUrl(frame: Pick<puppeteer.Frame, 'url'|'client'>, guardedPage: puppeteer.Page): void {
+    const url = frame.url();
+    const isSubframe = frame !== guardedPage.mainFrame();
+    // about: pages and the Chrome error page do not come from the network.
+    if ((isSubframe && !this.#checkSubframes) || !url || url.startsWith('about:') || url.startsWith('chrome-error:')) {
+      return;
+    }
+    if (!isNavigationAllowed(url, this.#allowedNavigations)) {
+      this.#block(url);
+    }
+  }
+
+  /** Enables the guard on all frames of `guardedPage`. */
   async guardPage(guardedPage: puppeteer.Page): Promise<void> {
     if (this.#guardedPages.has(guardedPage)) {
       return;
     }
     this.#guardedPages.add(guardedPage);
-    // Chrome pauses the responses for the main frame in the session of the page.
-    await this.#guardClient(guardedPage.mainFrame().client, guardedPage);
+    const onFrameNavigated = (frame: Pick<puppeteer.Frame, 'url'|'client'>): void => {
+      // The frame can have a new session, for example for an OOPIF.
+      void this.#guardClient(frame.client, guardedPage).catch((err: unknown) => {
+        if (!this.#canIgnoreFailure(frame, guardedPage, err)) {
+          this.#failGuard(err);
+        }
+      });
+      this.#checkFrameUrl(frame, guardedPage);
+    };
+    guardedPage.on('framenavigated', onFrameNavigated as never);
+    this.#cleanups.push(async () => {
+      guardedPage.off('framenavigated', onFrameNavigated as never);
+    });
+    for (const frame of guardedPage.frames()) {
+      try {
+        await this.#guardClient(frame.client, guardedPage);
+      } catch (err) {
+        // The replay cannot continue without the guard on the main frame.
+        if (frame === guardedPage.mainFrame() || !this.#canIgnoreFailure(frame, guardedPage, err)) {
+          throw err;
+        }
+      }
+    }
+    if (this.#replayUsesCurrentPage) {
+      // The frames loaded before the replay, without a check. A step can
+      // send input to them before they navigate.
+      for (const frame of guardedPage.frames()) {
+        this.#checkFrameUrl(frame, guardedPage);
+      }
+    }
   }
 
   /** Disables the interception and removes all listeners. */
   async dispose(): Promise<void> {
+    this.#disposed = true;
     for (const cleanup of this.#cleanups.splice(0)) {
       await cleanup();
     }

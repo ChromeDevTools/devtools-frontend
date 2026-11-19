@@ -91,6 +91,7 @@ export interface RecordingPlayerMocks {
   /** The `send` method of the CDP session of the mock page. */
   send: sinon.SinonStub;
   mainFrame: MockFrame;
+  frames: MockFrame[];
   /** Sends a `Fetch.requestPaused` event to the listeners of the CDP session. */
   emitRequestPaused(event: {
     requestId: string,
@@ -99,6 +100,10 @@ export interface RecordingPlayerMocks {
     responseStatusCode?: number,
     responseHeaders?: Array<{name: string, value: string}>,
   }): void;
+  /** Sends a `framenavigated` event to the listeners of the mock page. */
+  emitFrameNavigated(frame: unknown): void;
+  /** Sends a `sessionattached` event to the listeners of the CDP session. */
+  emitSessionAttached(session: unknown): void;
 }
 
 export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
@@ -116,11 +121,12 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
   };
   const client = {send: sinon.stub().resolves(), on, off, detached: false};
   const mainFrame: MockFrame = {_id: 'main-frame', client, url: () => '', goto: sinon.stub().resolves()};
+  const frames: MockFrame[] = [mainFrame];
   const page: MockPage = {
     _client: () => client,
     on,
     off,
-    frames: () => [mainFrame],
+    frames: () => frames,
     mainFrame: () => mainFrame,
     evaluate: () => '',
     url() {
@@ -141,7 +147,10 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
   return {
     send: client.send,
     mainFrame,
+    frames,
     emitRequestPaused: event => emit('Fetch.requestPaused', event),
+    emitFrameNavigated: frame => emit('framenavigated', frame),
+    emitSessionAttached: session => emit('sessionattached', session),
   };
 };
 

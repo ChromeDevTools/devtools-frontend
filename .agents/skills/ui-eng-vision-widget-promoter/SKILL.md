@@ -55,6 +55,50 @@ clean `UI.Widget` classes that use native update rendering delegates.
           }
         ```
 
+    *   **Dual-Overload `Widget<ShadowRoot>` Promotion**: When promoting a class
+        that uses `useShadowDom: 'pure'` (`Widget<ShadowRoot>`) while temporarily
+        retaining a legacy positional constructor overload:
+        1.  Place `constructor(element?: HTMLElement, view?: View);` **last**
+            before the implementation signature so
+            `ConstructorParameters<typeof MyWidget>` resolves the declarative
+            overload for `widget()` and `createViewFunctionStub()`.
+        2.  Type `View`'s `target` parameter as `HTMLElement|ShadowRoot` so it
+            satisfies `ViewFunctionHelpers.ts`'s `ViewFunctionLike`
+            (`target: HTMLElement`) under `strictFunctionTypes`:
+
+        ```typescript
+        export type View = (input: ViewInput, output: undefined, target: HTMLElement|ShadowRoot) => void;
+
+        export class MyWidget extends UI.Widget.Widget<ShadowRoot> {
+          readonly #view: View;
+          #text = '';
+          #needsUpdate = true;
+
+          constructor(legacyText: string, view?: View);
+          constructor(element?: HTMLElement, view?: View);
+          constructor(textOrElement?: string|HTMLElement, view: View = DEFAULT_VIEW) {
+            super(textOrElement instanceof HTMLElement ? textOrElement : undefined, {useShadowDom: 'pure'});
+            this.#view = view;
+            if (typeof textOrElement === 'string') {
+              this.#text = textOrElement;
+              this.performUpdate();
+            }
+          }
+
+          override wasShown(): void {
+            super.wasShown();
+            if (this.#needsUpdate) {
+              this.requestUpdate();
+            }
+          }
+
+          override performUpdate(): void {
+            this.#needsUpdate = false;
+            this.#view({text: this.#text}, undefined, this.contentElement);
+          }
+        }
+        ```
+
     *   Implement the standard modern `performUpdate()` override on the widget:
 
         ```typescript
@@ -75,19 +119,23 @@ clean `UI.Widget` classes that use native update rendering delegates.
     *   **Strongly prefer the two-argument `widget(MyWidgetClass, {params})` form** over the single-argument factory callback `widget(element => new MyWidgetClass(element, ...))`. The single-argument factory only runs on initial creation and does not update properties on subsequent re-renders. If the child widget only exposes `setFoo(...)` methods, convert them into `set foo(...)` setters so they can be passed via the second argument of `widget()`.
     *   **Do NOT Use `UI.Widget.WrapperWidget` for Child Widgets or Layout Containers**: Never instantiate a child widget or layout container in the presenter (`this.#child = new ChildWidget()`, `UI.TabbedPane.TabbedPane` / `tabbedLocation.tabbedPane()`, `StackLocation.widget()`, `UI.ListWidget.ListWidget`) and pass it via `ViewInput` to `UI.Widget.WrapperWidget`. Child widgets and containers must be created declaratively in the view (`${widget(ChildWidget, {...})}`, `<devtools-tabbed-pane>`, `<devtools-stack-pane>`, `<devtools-list>`). `WrapperWidget` is only justified when reparenting a shared stateful singleton across multiple containers (such as `ConsoleView.instance()` or `SourcesView`) or bridging an opaque `UI.Widget` returned by an external factory. In particular, when migrating classes that use `UI.ListWidget.ListWidget` and `UI.ListWidget.Delegate`, do not keep `this.list` and `ListWidget.Delegate` on the presenter with `DocumentFragment` adapters and `WrapperWidget`; either replace `ListWidget` with `<devtools-list>` (recommended) or move `ListWidget` + `ListWidget.Delegate` ownership into the view layer (extending `UI.ListWidget.ListWidget` directly rather than `WrapperWidget`) behind pure `ViewInput` data and callbacks.
     *   **No Widget References on `ViewOutput`**: Keeping child `UI.Widget` instances on `ViewOutput` (e.g., `output.childWidget = w`) is not a good practice and must not remain in the final result (it is only acceptable temporarily in intermediate CLs). Either supply all configuration through setters on the child widget, or if imperative action calls are strictly needed, expose individual functions on `ViewOutput` (such as `output.doLayout = () => w.doLayout()` or `output.scrollWidgetToSomething = () => w.scrollToSomething()`). Remove legacy `get*ForTest()` methods that were only used to grab child widgets from `ViewOutput` and update tests to query the DOM (`view.contentElement.querySelector(...)?.getWidget()`) or inspect `ViewInput`.
+        *   **Preserve Live `*ForTest()` Lifecycle Hooks**: Do not remove live `*ForTest()` notification hooks (such as `updatedForTest()`, `eventListenersArrivedForTest()`, or `resetForTest()`) that `legacy_test_runner` or `blink/web_tests` await via `TestRunner.addSniffer`.
     *   Inspect instantiator files (e.g., `ApplicationPanelSidebar.ts`) and
         decouple any direct accesses to `.element`.
 
 4.  **Verify Full MVP Architecture Completeness**:
     *   Ensure the constructor accepts `element?: HTMLElement` as its first parameter and `view: View = DEFAULT_VIEW` as its last parameter.
-    *   If `Universe` dependencies are used, declare `static override readonly INJECT = [...] as const;` and receive them as constructor parameter #2.
+    *   If `Universe` dependencies are used, declare `static override readonly INJECT = [...] as const;` and receive them as constructor parameter #2 (omit parameter #2 when `INJECT` is empty).
     *   If shadow DOM is needed, use `super(element, {useShadowDom: 'pure'})` (never legacy `useShadowDom: true`).
     *   Trigger initial renders and external subscriptions in `wasShown()`, detaching them symmetrically in `willHide()`. Reconcile state incrementally rather than wiping populated presenter state via `reset()` on every re-show.
+    *   **Guard `wasShown()` with `#needsUpdate = true` When Needed**: When a dual-constructor widget runs a synchronous `this.performUpdate()` in its legacy constructor or can have updates queued before `detach()` (which cancels pending updates via `cancelUpdate()`), track `#needsUpdate = true`: set `this.#needsUpdate = true` before `this.requestUpdate()` in every reactive setter, clear `this.#needsUpdate = false` in `performUpdate()`, and check `if (this.#needsUpdate) { this.requestUpdate(); }` in `override wasShown()`. Do not use `#hasRendered`, which drops updates cancelled during `detach()`.
     *   Use `this.requestUpdate()` across all presenter methods and setters; avoid synchronous `this.performUpdate()` calls or custom `#renderView()` methods.
+        *   **Never Call `this.requestUpdate()` Re-Entrantly Inside `performUpdate()`**: Never call `this.requestUpdate()` inside helpers invoked synchronously during `performUpdate()`, which enters `UpdateState.INTERRUPTED`, aborts the active update controller, and schedules a redundant animation-frame render pass.
     *   Use declarative `autofocus` for default focus targets rather than imperative `focus()` overrides or `ViewOutput` focus closures.
     *   **`UI.Toolbar.Provider` Visibility Sync**: When promoting a `UI.Toolbar.Provider` to `UI.Widget` with `new UI.Toolbar.ToolbarItem(this.element)`, remember that `Widget.#showWidget()` strips `'hidden'` from `this.element` on mount. Re-apply `this.#toolbarItem.setVisible(...)` in `override show(...)` and `override wasShown()`, and test mounting into a `<devtools-toolbar>` while initially hidden.
     *   Verify that no legacy `UI.TreeOutline`, `extends UI.TreeOutline.TreeElement` subclasses, `UI.ListControl`, `UI.ListWidget`, or `UI.InplaceEditor` remain before marking `Fixed: <id>`. If any remain, use `Bug: <id>`.
     *   Verify that Light DOM stylesheets satisfy `@devtools/no-unscoped-light-dom-styles` (removed from the `eslint.config.mjs` `burndown` list) and pass `plugin/check_scope_selectors` (`:scope` instead of `:host`, theme-aware tokens instead of ancestor theme/platform classes) before marking `Fixed: <id>`.
+    *   Convert internal `private` members to `#private` and remove the file from the `@devtools/prefer-private-class-members` ignore list in `eslint.config.mjs` (verifying with `./dt lint <file>`) before marking `Fixed: <id>`.
 
 --------------------------------------------------------------------------------
 
@@ -103,8 +151,9 @@ clean `UI.Widget` classes that use native update rendering delegates.
 *Before reporting back or committing, re-read the instructions and verify:*
 1.  ❓ **Decoupling**: Did I remove all direct `.element` or `.contentElement` couplings from instantiator files?
 2.  ❓ **Inheritance**: Does the class now cleanly inherit from `UI.Widget` or its variants?
-3.  ❓ **Injectability & Dependencies**: Is the constructor signature `(element?: HTMLElement, [...]: WidgetDependencies, view: View = DEFAULT_VIEW)` with `static override readonly INJECT`?
+3.  ❓ **Injectability & Dependencies**: Is the constructor signature `(element?: HTMLElement, [...]: WidgetDependencies, view: View = DEFAULT_VIEW)` (omitting `WidgetDependencies` when `INJECT` is empty)?
 4.  ❓ **Lifecycle & Reactivity**: Does presenter code call `this.requestUpdate()` asynchronously (no synchronous `performUpdate()`), with non-destructive `wasShown()`/`willHide()` subscriptions?
 5.  ❓ **No Legacy Controls**: Are all `TreeOutline`/`TreeElement` subclasses, `ListControl`, and `InplaceEditor` instances eliminated before using `Fixed: <id>`?
 6.  ❓ **Build**: Does the code compile and do tests pass?
 7.  ❓ **CSS @scope Completeness**: Does the Light DOM widget satisfy `@devtools/no-unscoped-light-dom-styles` (removed from the `eslint.config.mjs` burndown list) and `plugin/check_scope_selectors` (`:scope` instead of `:host`, theme-aware tokens) before marking `Fixed: <id>`?
+8.  ❓ **ES Private Fields Cleanup**: Are internal `private` members migrated to `#private` and is the file removed from the `@devtools/prefer-private-class-members` ignore list in `eslint.config.mjs` before marking `Fixed: <id>`?

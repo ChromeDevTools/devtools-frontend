@@ -21,7 +21,7 @@ principles.
 1.  **NEVER Break the Build**: Code must compile and tests must pass at all steps. If you change a class API or method signature, you **MUST** update its usage in the same CL to maintain stability.
 2.  **Strict Intermediate Stability**: Do not leave the code in a broken state between passes.
 3.  **No Beautification of Adjacent Code**: Do NOT fix unrelated typos, formatting issues, or lint warnings in code you aren't actively migrating.
-4.  **No Monolithic Refactors**: Do NOT batch Lit conversion and Widget Promotion in the same pass. Keep CLs small and focused.
+4.  **No Monolithic Refactors**: Do NOT batch Lit conversion and Widget Promotion in the same pass (except for small `< 150` LOC leaf widgets). Keep CLs small and focused.
 
 
 --------------------------------------------------------------------------------
@@ -70,8 +70,10 @@ principles.
 11. **Pre-flight Clarification**: Before starting, verify if the task is
     underspecified or ambiguous. If so, point this out and ask for
     clarifications before proceeding.
-12. **Step Sizing (`<= 350` Lines) & 100% Live-Code Rule**: Keep every CL at or
-    under **`350` changed lines (`insertions + deletions`)**. Every CL must
+12. **Step Sizing (`~35–200` LOC Target, `<= 350` Ceiling) & 100% Live-Code Rule**:
+    Aim for **`~35–200` LOC** in-place CLs (small `< 150` LOC leaf widgets may
+    complete in one CL), and keep every CL at or under **`350` changed lines
+    (`insertions + deletions`)**. Every CL must
     execute 100% of its new view and presenter code in production, remove the
     imperative code it replaces, and include unit tests covering that behavior in
     the **same CL**. Never create a CL that adds an unused `DEFAULT_VIEW` or
@@ -187,6 +189,8 @@ The plan you generate **MUST** follow this structure:
 *   **Actions**:
     1.  Perform the **Cross-Repo Runtime Coupling Check** against `legacy_test_runner` and `blink_web_tests` first.
     2.  Convert internal TypeScript `private` fields/methods to ES `#private` (except those reflectively accessed by web tests).
+        *   Remove the target file from the `@devtools/prefer-private-class-members` ignore list in `eslint.config.mjs` (never combine a top-level inline `/* eslint-disable @devtools/prefer-private-class-members */` with an `eslint.config.mjs` ignore entry, because `eslint --fix` strips the inline disable while the rule is off in `eslint.config.mjs`).
+        *   Run `./dt lint <file>` to apply the AST autofixer, then manually convert cross-instance `other.m()` calls and rewrite `this.#fn = this.#fn.bind(this)` to arrow properties (`#fn = (): void => { ... }`). Preserve TypeScript `private` with `// eslint-disable-next-line @devtools/prefer-private-class-members` only for `Object.create` prototypes or legacy `*TestRunner.js` / `blink/web_tests` hooks.
     3.  Identify and remove unused dead code, redundant containers, or obsolete split widgets in a dedicated prefactor CL so mechanical renames don't clutter logic and view CLs.
     4.  Verify that all tests and lints pass and stage this prefactor CL before proceeding to logic consolidation.
 
@@ -290,8 +294,10 @@ Decompose the work into a 4-phase sequence of small, self-contained CLs
     subscriptions from `constructor()` into `wasShown()` / `willHide()`,
     reconciling incremental changes that occurred while hidden rather than
     calling `reset()` and wiping open folders or selection on every re-show.
-2.  **Universe Dependency Injection**: Add `static override readonly INJECT` and
-    the standard MVP constructor `(element?: HTMLElement, [...]: WidgetDependencies, view: View = DEFAULT_VIEW)`.
+2.  **Universe Dependency Injection**: When `Universe` dependencies are used,
+    add `static override readonly INJECT` and the standard MVP constructor
+    `(element?: HTMLElement, [...]: WidgetDependencies, view: View = DEFAULT_VIEW)`
+    (omit the `WidgetDependencies` parameter when `INJECT` is empty).
 3.  **Private Fields & Completeness**: Convert remaining TypeScript `private`
     members to `#private` (after verifying they are not reflectively accessed in
     `legacy_test_runner` or `blink/web_tests`), and mark `Fixed: <id>` on this
@@ -303,7 +309,16 @@ Decompose the work into a 4-phase sequence of small, self-contained CLs
 
 > [!WARNING]
 > A clean `@devtools/no-imperative-dom-api` ESLint run does **NOT** prove a UI
-> Eng Vision migration is complete. The linter does not flag `extends UI.TreeOutline.TreeElement` subclasses or `UI.ListControl`.
+> Eng Vision migration is complete. The rule does **not** flag
+> `extends UI.TreeOutline.TreeElement` subclasses, `new MyTreeElementSubclass(...)`,
+> `UI.InplaceEditor`, unchained `createIcon()` calls (for example, passed directly
+> to `this.setLeadingIcons([icon])`), or unattached
+> `new UI.{TabbedPane,TextPrompt,FilterBar}` instances (when not
+> attached to `this.element` or `this.contentElement`). Conversely, non-`UI.Widget`
+> helper classes that own `this.element` or `this.contentElement` **are** flagged.
+> To inspect suppressed violations despite a file-level disable, run from the
+> `devtools-frontend` root:
+> `vpython3 third_party/node/node.py --output node_modules/eslint/bin/eslint.js --no-inline-config --rule '@devtools/no-imperative-dom-api: error' -f json <file>`
 
 Before closing a UI Eng Vision migration issue with `Fixed: <id>`, verify every
 requirement below. If any item remains incomplete, use `Bug: <id>` and address
@@ -312,8 +327,9 @@ it in a follow-up CL:
 1.  **No Legacy Widgets**: Zero references to `UI.TreeOutline`, `TreeElement`
     subclasses, `UI.ListControl`, `UI.ListWidget`, or `UI.InplaceEditor`.
 2.  **Standard MVP Constructor**: Constructor accepts `element?: HTMLElement` as
-    its first parameter, resolves dependencies via `static override readonly INJECT`,
-    and accepts an injectable `view: View = DEFAULT_VIEW`.
+    its first parameter, receives `[...]: UI.Widget.WidgetDependencies<typeof MyWidget>`
+    as parameter #2 **only** when `static override readonly INJECT` is non-empty,
+    and accepts an injectable `view: View = DEFAULT_VIEW` last.
 3.  **Widget Update Lifecycle**: Renders exclusively via `override performUpdate(): void`
     and `this.requestUpdate()` (no custom `#renderView()` bypasses or synchronous
     `performUpdate()` calls in presenter methods).
@@ -323,5 +339,8 @@ it in a follow-up CL:
 5.  **Declarative Primitives**: Uses `<devtools-tree>`, `<devtools-list>`,
     persistent `<devtools-prompt ?editing>`, `?hidden=${...}` exclusively
     (without `.hidden` classes), and declarative `autofocus` for default focus.
-6.  **ES Private Fields**: Uses ECMAScript `#private` fields and methods for all
-    internal members not accessed by `legacy_test_runner` or `blink/web_tests`.
+6.  **ES Private Fields & Config Cleanup**: Uses ECMAScript `#private` fields and
+    methods for all internal members not on `Object.create` prototypes or
+    accessed by `legacy_test_runner` / `blink/web_tests`, removes the file from
+    the `@devtools/prefer-private-class-members` ignore list in
+    `eslint.config.mjs`, and passes `./dt lint <file>`.

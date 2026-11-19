@@ -16,11 +16,14 @@ logical regressions are introduced during modernization.
 
 1.  **Verify Existing Tests**:
 
-    *   Inspect the corresponding unit test file (e.g., `IndexedDBViews.test.ts`
-        for `IndexedDBViews.ts`) under the target folder or `test/unittests/`.
+    *   Inspect the co-located unit and screenshot test file alongside the
+        implementation in `front_end/**/*.test.ts` (for example,
+        `front_end/panels/application/IndexedDBViews.test.ts` for
+        `IndexedDBViews.ts`).
     *   Check for **logic tests** (verifying presenter interactions and view function callbacks).
-    *   Check for screenshot or interaction tests (under `test/interactions/` or
-        `test/goldens/`) matching the visual component to verify layout and styling.
+    *   Check for `assertScreenshot(...)` golden tests in the co-located
+        `*.test.ts` file (with Linux golden PNGs under `test/goldens/linux/`) and
+        full-browser E2E tests under `test/e2e/` to verify layout and styling.
 
 2.  **Detect Sub-component Testing Gaps (Hybrid Files)**:
 
@@ -50,12 +53,40 @@ logical regressions are introduced during modernization.
             describe('view', () => {
               it('renders the base state', async () => {
                 const target = document.createElement('div');
+                target.style.width = '600px';
+                target.style.height = '400px';
                 renderElementIntoDOM(target, {includeCommonStyles: true});
                 MyComponent.DEFAULT_VIEW(mockViewInput, undefined, target);
                 await assertScreenshot('my_component/base.png');
               });
             });
             ```
+
+        *   **Keep `assertScreenshot` Containers Within Karma's Iframe Viewport**:
+            Prefer `600x400` for compact component views (and `<= 600px` tall,
+            such as `800x600`, for full panels or split views) so containers fit
+            inside Karma's ~`685px`-tall test iframe without triggering and
+            capturing Karma's outer iframe scrollbar.
+        *   **Pass `document.createElement('devtools-widget')` for `@scope (devtools-widget)` Light DOM Widgets**:
+            `new MyWidget()` defaults `this.element` to `<div class="widget">`
+            rather than `<devtools-widget>`. When testing a Light DOM widget
+            whose stylesheet uses an explicit `@scope (devtools-widget)` root,
+            instantiate `new MyWidget(document.createElement('devtools-widget'))`
+            (or mount via `UI.Widget.widget(...)`) so `@scope` rules match.
+        *   **Direct `DEFAULT_VIEW` Tests Hosting `<devtools-split-view>` or `WrapperWidget`**:
+            When calling `DEFAULT_VIEW(input, output, target)` directly for views
+            that render `<devtools-split-view>`, `UI.Widget.WrapperWidget`, or
+            imperatively attached child widgets:
+            -   Mount a root `UI.Widget.VBox` (`const container = renderElementIntoDOM(new UI.Widget.VBox()).contentElement;`)
+                instead of a plain `document.createElement('div')`, otherwise
+                `widgetCounterMap` underflows during `cleanTestDOM()` and throws
+                `Attempt to modify widget with native DOM method removeChild`.
+            -   Pass real child `UI.Widget.Widget` instances (such as
+                `new UI.Widget.VBox()`) instead of
+                `sinon.createStubInstance(MyWidget)` (which stubs `constraints()`
+                to return `undefined` and throws on mount).
+            -   Call `UI.Widget.Widget.get(container)?.detachChildWidgets()`
+                before teardown when child widgets are attached imperatively.
 
     *   **Implementation-Decoupled Helpers & Screenshot Baselines Before Replacing Legacy Widgets**:
         When scaffolding unit tests ahead of replacing a legacy widget engine
@@ -115,7 +146,7 @@ Always detect the execution environment first to run tests successfully:
         1.  Export `depot_tools` path:
 
             ```bash
-            export PATH=$PATH:/path/to/depot_tools
+            export PATH="/path/to/depot_tools:$PATH"
             ```
 
         2.  Initialize the depot_tools binaries by running update/gclient help
@@ -183,6 +214,9 @@ Always detect the execution environment first to run tests successfully:
 
 *   **Drain `RenderCoordinator` in `afterEach` for Nested Dialog Components**:
     When a mounted panel or widget instantiates components that chain 3+ nested `ScheduledRender` passes (such as `<devtools-shortcut-dialog>` or `<devtools-perf-export-trace-options>` -> `ButtonDialog` -> `Dialog`), call `await RenderCoordinator.done()` after `detach()` in `afterEach`. Synchronous `0ms` tests otherwise exceed `checkForPendingActivity`'s retry budget under `--repeat=10` CQ flake detection.
+
+*   **Advance Fake rAF (`+16ms`) After Timer-Triggered `requestUpdate()` Under `sinon.useFakeTimers()`**:
+    `UI.Widget.prototype.requestUpdate()` schedules `performUpdate()` on fake `window.requestAnimationFrame` (`+16ms`). Advance an additional animation frame (`await clock.tickAsync(16)` or `clock.tick(16)`) after fake-timer callbacks that trigger `requestUpdate()` (for example, `clock.tick(300)` for a popover delay) before asserting, before the test finishes when suite-level `afterEach` hooks reset state ahead of `test_setup.ts` (which otherwise drains and restores fake timers automatically, while `@devtools/no-manual-sinon-restore` forbids `.restore()` in `after`/`afterEach`), and before any mid-test `clock.restore()`.
 
 --------------------------------------------------------------------------------
 

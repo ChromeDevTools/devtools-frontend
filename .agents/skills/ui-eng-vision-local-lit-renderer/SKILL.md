@@ -51,11 +51,21 @@ existing element containers.
 
         ```typescript
         import {html, nothing, render, Directives, type LitTemplate} from '../../ui/lit/lit.js';
+
+        const {ifDefined, ref, styleMap} = Directives;
         ```
 
     *   **NEVER** use namespace imports like `import * as Lit` or reference
         `Lit.nothing` / `Lit.render`. Named imports enable better tree-shaking and
         maintain consistent codebase style.
+    *   **Destructure `const {ifDefined} = Directives` for Attribute Bindings**:
+        `lit-analyzer`'s `no-incompatible-type-binding` rule only recognizes the
+        bare identifier `ifDefined(value)` for `string | undefined` bindings on
+        string attributes and rejects `Directives.ifDefined(value)`.
+    *   **Use `Directives.styleMap({...})` for Dynamic Styles**: Never write
+        interpolated `style="width: ${x}px"` strings in Lit templates. Bind
+        ``style=${styleMap({width: `${x}px`})}`` (or `Directives.styleMap({...})`)
+        instead.
 
 4.  **Modern Component Mapping**:
     *   **MANDATORY**: You **MUST** read and load [ui_engineering.md](../../../docs/ui_engineering.md) first to understand specific component mappings (e.g., Toolbar vs `devtools-toolbar`). Do not assume standard Lit defaults.
@@ -103,6 +113,16 @@ existing element containers.
         intermediate layout branches, extract them into parameterized helper
         functions inside the class scope returning `LitTemplate`. This avoids
         monoliths, preserves readability, and reuses template cache strategies.
+    *   **Isolate Text-Mutating `ref()` Callbacks on Empty Leaf `<span>` Elements**:
+        Never attach a `ref(...)` callback that mutates `el.textContent` or child
+        nodes (such as `el.setTextContentTruncatedIfNeeded(...)` or
+        `UI.UIUtils.highlightRangesWithStyleClass(...)`) to an element that also
+        contains Lit `${...}` child expressions. Setting `el.textContent`
+        detaches Lit's internal `ChildPart` comment markers and causes subsequent
+        in-place updates to throw
+        `TypeError: Cannot read properties of null (reading 'nextSibling')`.
+        Isolate imperative text mutations on a dedicated empty leaf
+        `<span ${ref(el => { ... })}></span>`.
 
 10. **Visual Parity, CSS Adaptation, and Accessibility**:
 
@@ -119,6 +139,14 @@ existing element containers.
         (setting `title` or HTML `aria-label` alone leaves the inner shadow
         `<button>` unnamed under `axe-core` because `<devtools-button>` sets
         `role="presentation"` on its host).
+        -   **Place `.iconName=${...}` BEFORE `.variant=${...}`**: When binding
+            individual `<devtools-button>` properties, `Button.set variant` runs
+            `#render()` immediately and throws `Error: Icon button requires an icon`
+            (or `Toolbar button requires an icon`) if `.iconName` is not yet set.
+        -   **Bind Dynamic `.title=${...}` as a JS Property**: `Buttons.Button.Button`
+            overrides `set title(title: string)` to re-render its inner `<button>`
+            without an `attributeChangedCallback`, so HTML `title=${...}` leaves
+            dynamic tooltip and `aria-label` updates one render behind.
     *   **Accessibility Preservation**: Convert custom accessibility
         instrumentation (like `ARIAUtils.markAsAlert()`) to native ARIA
         attributes in the template (e.g., `role="alert"`, `aria-live="polite"`).
@@ -242,6 +270,13 @@ existing element containers.
         (like `!input.isTraceApp`) in the `DEFAULT_VIEW` template (e.g.,
         `show=${!input.isTraceApp && input.isSidebarOpen ? 'both' : 'main'}`)
         rather than baking them into the presenter's setting state.
+    *   **Guard `@change` Against Bubbling Native `change` Events**: Always guard
+        `<devtools-split-view>` `@change` listeners with
+        `if (e.target === e.currentTarget && e instanceof CustomEvent)` before
+        reading `e.detail`. `SplitWidgetElement` dispatches a non-bubbling
+        `CustomEvent('change', {detail: showMode})` on itself, whereas native
+        `<input>` and `<select>` controls inside light-DOM child slots dispatch
+        bubbling `Event('change')` events with `e.detail === undefined`.
     *   **Clean Up Resizers**: Do not leave unused `resizer-widget` classes in
         templates; `<devtools-split-view>` manages its own built-in splitter
         unless custom elements are explicitly registered with `installResizer`.
@@ -262,6 +297,7 @@ existing element containers.
 
     *   Do not attempt to convert every helper method and UI component in a single monolithic commit. Break the template extraction into **small, self-contained micro-commits** (e.g., migrating one helper method, toolbar button, or list item render at a time).
     *   Verify with build and run tests after each micro-commit to guarantee zero regressions and 100% visual parity before moving to the next compartment.
+    *   **Use `--no-fix` When Linting Partially Migrated Classes**: `./dt lint` runs `eslint --fix`. While imperative `this.element` / `this.contentElement` mutations still remain in a partially migrated class, pass `--no-fix` so `@devtools/no-imperative-dom-api`'s autofixer does not insert duplicate `export const DEFAULT_VIEW` stubs or rewrite `document.createElement` into invalid `TemplateResult` code.
     *   Provide the exact list of files and commit message when presenting progress so the change history remains atomic and easy to review.
 
 17. **Wait for confirmation**:

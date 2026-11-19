@@ -29,6 +29,17 @@ whenever a CL changes UI layout, styling, or rendered appearance.
   logic moves that leave DOM structure and CSS untouched, or removals of
   provably unreferenced CSS selectors or files (which touch CSS without
   changing rendered appearance).
+- **Karma golden container height (`<= 600px`):** Flag explicit screenshot test
+  containers taller than `600px` (prefer `600x400` for compact views and at most
+  `800x600` for full panels/split views inside Karma's ~`685px`-tall test
+  iframe) so Karma's outer iframe scrollbar is not captured in golden PNGs.
+- **Standalone `GlassPane` widget rendering:** Never reparent a `GlassPane`'s
+  `contentElement` with native `appendChild` (which throws in `Widget.ts`).
+  Render the hosted widget standalone via
+  `renderElementIntoDOM(widget, {includeCommonStyles: true})`, and verify the
+  widget's own root CSS sets an explicit foreground `color` (such as
+  `color: var(--sys-color-on-surface)`) when it previously inherited text color
+  from `GlassPane`.
 
 ## 2. Flex, Sizing, and Overflow Clipping (`<devtools-widget>` & Popovers)
 
@@ -49,6 +60,20 @@ whenever a CL changes UI layout, styling, or rendered appearance.
   - **Multi-branch `render(..., target)` views:** Every `render(..., target)`
     branch in a view function must pass `{container: {classes: [...]}}`, or
     `render()` will strip those classes when switching branches/states.
+- **`.widget` / `.flex-auto` stretch inside horizontal flex rows:** `Widget`
+  adds `.widget` (`flex: auto` in `inspectorCommon.css`, plus `.flex-auto` when
+  `useShadowDom: true`). When migrating a leaf custom element or inline control
+  to a `UI.Widget` inside a horizontal flex row (such as a header or toolbar),
+  verify `flex: none` is set on the widget host so it does not stretch and shift
+  clickable hit targets away from inner buttons.
+- **Shadow DOM `:host(.cls)` `(0,2,0)` specificity vs. `inspectorCommon.css`:**
+  `:host(.cls)` has `(0,2,0)` specificity (`:host` plus `.cls`), higher than a
+  plain `.cls` `(0,1,0)`. Check selectors like
+  `:host(.minimized) devtools-toolbar.right-toolbar .toolbar-button` `(0,4,1)`,
+  which can tie or override `inspectorCommon.css` rules such as
+  `devtools-toolbar:not([floating]) > .toolbar-button:last-child:not(:first-child, select)`
+  `(0,4,1)` and shift button margins. Drop redundant tag qualifiers to preserve
+  cascade order.
 - **`WrapperWidget` uses `display: contents`:** Flag any width, height, flex,
   overflow, border, or background styling placed on a `<devtools-widget>` host
   that mounts `UI.Widget.WrapperWidget`. Wrap it in a sized `<div>` instead.
@@ -74,10 +99,20 @@ whenever a CL changes UI layout, styling, or rendered appearance.
 - **Keyboard `@select` vs. mouse `@click`:** Ensure arrow-key navigation
   triggers the same preview/highlight side effects (e.g. DOM node overlay
   highlight) as clicking the row, respecting `e.detail.selectedByUser`.
+  - On `<devtools-tree autofocus>`, `TreeViewElement.focus()` selects the first
+    child with `selectedByUser: false` if focused before an async
+    `updateComplete` applies presenter selection, so verify `@select` handlers
+    check `Boolean(e.detail?.selectedByUser)` and ignore `!selectedByUser`
+    fallback selections when presenter selection is already non-null.
 - **Inline text selection & editing:** Check that `user-select` rules inside
   tree rows still allow partial token selection where expected, and keep
   editable `<devtools-prompt ?editing>` inside a child `${widget(...)}` so
   attribute mutations do not re-clone the row and blur focus.
+  - When replacing `UI.InplaceEditor`, preserve
+    `UI.UIUtils.markBeingEdited(..., true/false)` calls so
+    `UI.UIUtils.isBeingEdited(...)` guards still suppress focus theft during
+    renames, and update E2E selectors from `.being-edited` to
+    `devtools-prompt[editing]`.
 
 ## 4. `@scope` Visual Parity Checks
 
@@ -86,3 +121,23 @@ whenever a CL changes UI layout, styling, or rendered appearance.
 - Check removed selectors for layout side effects on legacy imperative child
   widgets (`childWidget.show(container)` renders `<div class="widget">`, which
   is *not* stopped by the `(devtools-widget > *)` lower boundary).
+
+## 5. `UI.ListControl` & Imperative `<canvas>` `ref()` Parity Checks
+
+- **`UI.ListControl` dead `:first-child` spacer CSS:** `UI.ListControl` always
+  inserts an empty top spacer `<div>` as its first child, so `.item:first-child`
+  CSS rules never matched. Replacing `ListControl` with a Lit `.map()` activates
+  those rules for the first item. Audit and remove dead `:first-child` rules so
+  top borders and padding stay unchanged.
+- **`UI.ListControl` listbox ARIA & keyboard navigation:** When replacing
+  `UI.ListControl` (`NonViewport` mode) with a declarative list, verify the
+  container keeps `role="listbox"` (or `role="menu"` where overridden),
+  `tabindex="-1"`, `overflow-y: auto`, and `ArrowUp`/`ArrowDown` (wrap-around)
+  plus `Home`/`End` navigation skipping hidden items, and verify items keep
+  `role="option"`, `aria-selected`, `aria-setsize`, `aria-posinset` (plus
+  `aria-activedescendant` where used), and item `jslog` tracking.
+- **`<canvas>` `clearRect` before `drawImage` in `ref()`:** Lit re-runs inline
+  `ref(el => ...)` closures on every render. Whenever a `<canvas>` is drawn in a
+  `ref()` callback, verify `ctx.clearRect(0, 0, canvas.width, canvas.height)`
+  runs before `drawImage` so semi-transparent pixels do not composite darker on
+  re-renders.

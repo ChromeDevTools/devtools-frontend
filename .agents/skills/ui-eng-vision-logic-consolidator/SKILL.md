@@ -41,18 +41,24 @@ consolidating them into private helper methods with explicit data contracts.
         #staleWarningVisible: boolean;
         ```
 
-    *   Replace direct mutations of UI with updates to these member variables,
-        followed by a call to the public `performUpdate()` method that is
-        calling previously extracted update helpers. Use this specific
-        identifier.
-
-    *   If there's only one or two update helpers, consider inlining them into the
-        `performUpdate`.
+    *   Replace direct mutations of UI with updates to these `#private` member
+        variables, then trigger a single consolidated update path:
+        -   **Logic First (imperative constructor DOM remains)**: Call a private
+            imperative helper (e.g., `this.#updateUI()`) that updates existing
+            element references in place (inlining if there are only one or two
+            update helpers). Do **not** call `this.performUpdate()` synchronously
+            on state updates.
+        -   **Lit First (Lit template already owns the container)**: Schedule
+            asynchronous updates via `this.requestUpdate()`.
 
 4.  **Extract/Consolidate Rendering Operations**:
 
-    *   If Logic First (imperative DOM remains), make sure all updates to the UI
-        go through the performUpdate method
+    *   If Logic First (imperative constructor DOM remains), route all UI
+        mutations through private `#update*()` helpers. **Never** define
+        `override performUpdate()` calling `render(..., this.contentElement)`
+        while imperative constructor DOM on `this.contentElement` still exists,
+        because `instantiateWidget()` calls `requestUpdate()` automatically and
+        prepends duplicate DOM nodes and IDs alongside the constructor children.
     *   If Lit First (Lit template already exists), make sure there's a single
         master call to Lit render inside performUpdate. The master template
         might include calls to the helper functions e.g.
@@ -111,5 +117,4 @@ consolidating them into private helper methods with explicit data contracts.
 2.  ❓ **State Completeness & Utility**: Are all state variables actually read in this CL, with no write-only placeholders?
 3.  ❓ **Cleanup Preserved**: Are resizer/listener uninstallation calls preserved during reference consolidation?
 4.  ❓ **Build**: Does the code still compile?
-
-
+5.  ❓ **No Premature `performUpdate()`**: Did I avoid synchronous `performUpdate()` calls on state updates and avoid `render(..., this.contentElement)` while imperative constructor DOM remains?

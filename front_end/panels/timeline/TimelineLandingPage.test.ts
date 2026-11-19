@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 import {afterEach, describe, it} from 'mocha';
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -16,6 +15,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Timeline from './timeline.js';
 
@@ -29,24 +29,22 @@ describeWithEnvironment('TimelinePanel landing page', () => {
     SDK.PageResourceLoader.PageResourceLoader.removeInstance();
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
     Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
+    SettingsUI.SettingUIRegistration.resetSettings();
   });
 
   describe('accessibility', () => {
     it('has no aXe violations', async () => {
-      const toolbarCheckboxSettings: Array<[string, boolean, string]> = [
-        ['timeline-show-screenshots', true, 'Screenshots'],
-        ['timeline-show-memory', false, 'Memory'],
-        ['timeline-dim-third-parties', false, 'Dim 3rd parties'],
-      ];
-      for (const [settingName, defaultValue, title] of toolbarCheckboxSettings) {
-        Common.SettingRegistration.maybeRemoveSettingExtension(settingName);
-        Common.SettingRegistration.registerSettingExtension({
-          category: Common.Settings.SettingCategory.NONE,
-          settingName,
-          settingType: Common.Settings.SettingType.BOOLEAN,
-          defaultValue,
-          title: () => i18n.i18n.lockedString(title),
-        });
+      const toolbarCheckboxSettings = [
+        [SettingsUI.TimelineSettings.timelineShowScreenshotsSettingDescriptor, 'Screenshots'],
+        [SettingsUI.TimelineSettings.timelineShowMemorySettingDescriptor, 'Memory'],
+        [SettingsUI.TimelineSettings.timelineDimThirdPartiesSettingDescriptor, 'Dim 3rd parties'],
+      ] as const;
+      for (const [descriptor, title] of toolbarCheckboxSettings) {
+        if (!SettingsUI.SettingUIRegistration.maybeResolve(descriptor)?.title) {
+          SettingsUI.SettingUIRegistration.register(descriptor, {
+            title: () => i18n.i18n.lockedString(title),
+          });
+        }
       }
 
       registerActions([

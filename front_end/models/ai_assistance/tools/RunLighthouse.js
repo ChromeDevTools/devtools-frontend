@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as LHModel from '../../lighthouse/lighthouse.js';
 import { LighthouseContext } from '../contexts/LighthouseContext.js';
 // Runtime fallback in case an LLM call omits the required `mode` argument.
@@ -49,6 +50,13 @@ export class RunLighthouseTool {
         };
     }
     async handler(params, context) {
+        // Check before mode validation so an unsupported mode does not trigger a
+        // wasted retry turn while execution is paused.
+        if (context.getTarget()?.model(SDK.DebuggerModel.DebuggerModel)?.isPaused()) {
+            return {
+                error: 'Error: Cannot run Lighthouse because JavaScript execution is paused on a breakpoint. Do not retry; ask the user to resume execution in the Sources panel first.',
+            };
+        }
         const mode = resolveMode(params);
         if (params.categoryId !== 'all') {
             const supportedModes = LHModel.RunTypes.CATEGORY_SUPPORTED_MODES[params.categoryId];

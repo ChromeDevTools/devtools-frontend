@@ -1,7 +1,6 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -26,8 +25,9 @@ import { Events as TabbedPaneEvents } from './TabbedPane.js';
 import { Tooltip } from './Tooltip.js';
 import { UIUserMetrics } from './UIUserMetrics.js';
 import { ViewManager } from './ViewManager.js';
-import { VBox, widget, WidgetFocusRestorer } from './Widget.js';
-const { html } = Lit;
+import { VBox, widget, WidgetFocusRestorer, widgetRef } from './Widget.js';
+const { Directives, html, nothing, render } = Lit;
+const { repeat } = Directives;
 const UIStrings = {
     /**
      * @description Announcement text for screen readers when the drawer is minimized.
@@ -125,66 +125,110 @@ export var DockMode;
     DockMode["SIDE"] = "side";
     DockMode["UNDOCKED"] = "undocked";
 })(DockMode || (DockMode = {}));
+export const DEFAULT_VIEW = (input, output, target) => {
+    let drawerSplitWidget;
+    // clang-format off
+    render(html `
+    ${input.infobars.length > 0 ? html `
+      <div class="flex-none">
+        ${repeat(input.infobars, bar => bar.key, bar => widget(Infobar, {
+        type: bar.type,
+        text: bar.text,
+        actions: bar.actions,
+        disableSetting: bar.disableSetting,
+        jslogContext: bar.jslogContext,
+        onClose: bar.onClose,
+    }))}
+      </div>
+    ` : nothing}
+    <devtools-split-view
+        autofocus
+        direction=${input.isVerticalSplit ? 'column' : 'row'}
+        sidebar-position="second"
+        name="inspector.drawer-split-view-state"
+        sidebar-initial-size="200"
+        show=${input.isDrawerOpen ? 'both' : 'main'}
+        @change=${(e) => {
+        if (e.target === e.currentTarget && e instanceof CustomEvent) {
+            input.onDrawerOpenChanged(e.detail !== "OnlyMain" /* ShowMode.ONLY_MAIN */);
+        }
+    }}
+        ${widgetRef(SplitWidget, splitWidget => {
+        drawerSplitWidget = splitWidget;
+    })}>
+    </devtools-split-view>
+    ${input.statusBarVisible ? html `
+      <devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>
+    ` : nothing}
+  `, target);
+    // clang-format on
+    output.attachSplitPanels = (mainWidget, attachDrawer) => {
+        if (!drawerSplitWidget) {
+            return;
+        }
+        if (drawerSplitWidget.mainWidget() !== mainWidget) {
+            drawerSplitWidget.setMainWidget(mainWidget);
+            drawerSplitWidget.setDefaultFocusedChild(mainWidget);
+        }
+        attachDrawer(drawerSplitWidget);
+    };
+};
 export class InspectorView extends VBox {
-    drawerOrientationByDockSetting;
-    drawerSplitWidget;
+    #view;
+    #drawerOrientationByDockSetting;
+    #drawerSplitViewStateSetting;
     #drawerView;
-    tabDelegate;
-    drawerTabbedLocation;
-    drawerTabbedPane;
-    infoBarDiv;
-    tabbedLocation;
+    #tabDelegate;
+    #tabbedLocation;
     tabbedPane;
-    keyDownBound;
-    currentPanelLocked;
-    focusRestorer;
+    #keyDownBound;
+    #isVerticalSplit;
+    #drawerShowMode;
+    #infobars = [];
+    #statusBarVisible = false;
+    #needsUpdate = true;
+    #updatingDrawerState = false;
+    #currentPanelLocked;
+    #focusRestorer;
     #mainPanelAtDrawerFocus = null;
-    ownerSplitWidget;
-    reloadRequiredInfobar;
-    #chromeRestartRequiredInfobar;
-    #debuggedTabReloadRequiredInfobar;
-    #selectOverrideFolderInfobar;
     #resizeObserver;
     #drawerShowModeBeforeDockSideChange = null;
     #drawerMinimizedBeforeDockSideChange = null;
-    #statusBarContainer;
-    constructor(element) {
+    constructor(element, view = DEFAULT_VIEW) {
         super(element);
+        this.#view = view;
         GlassPane.setContainer(this.element);
         this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
         // DevTools sidebar is a vertical split of main tab bar panels and a drawer.
-        this.drawerOrientationByDockSetting =
+        this.#drawerOrientationByDockSetting =
             Common.Settings.Settings.instance().createSetting('inspector.drawer-orientation-by-dock-mode', {
                 [DockMode.BOTTOM]: DrawerOrientation.UNSET,
                 [DockMode.SIDE]: DrawerOrientation.UNSET,
                 [DockMode.UNDOCKED]: DrawerOrientation.UNSET,
             });
+        this.#drawerSplitViewStateSetting = Common.Settings.Settings.instance().createSetting('inspector.drawer-split-view-state', {});
         const initialOrientation = this.#getOrientationForDockMode();
-        const isVertical = initialOrientation === DrawerOrientation.VERTICAL;
-        this.drawerSplitWidget = new SplitWidget(isVertical, true, 'inspector.drawer-split-view-state', 200, 200);
-        this.drawerSplitWidget.hideSidebar();
-        this.drawerSplitWidget.enableShowModeSaving();
-        this.drawerSplitWidget.show(this.element);
-        this.tabDelegate = new InspectorViewTabDelegate();
+        this.#isVerticalSplit = initialOrientation === DrawerOrientation.VERTICAL;
+        this.#drawerShowMode = this.#readSavedDrawerShowMode(this.#isVerticalSplit) ?? "OnlyMain" /* ShowMode.ONLY_MAIN */;
+        this.#tabDelegate = new InspectorViewTabDelegate();
         // Create drawer tabbed pane.
         this.#drawerView = new InspectorDrawerView({
-            splitWidget: this.drawerSplitWidget,
             revealDrawer: this.showDrawer.bind(this, {
                 focus: false,
                 hasTargetDrawer: true,
             }),
-            isVisible: () => this.drawerSplitWidget.sidebarIsShowing() && !this.drawerSplitWidget.isSidebarMinimized(),
+            isVisible: () => Boolean(this.#drawerView?.isVisibleForEvents()),
             drawerLabel: i18nString(UIStrings.drawer),
             onToggleMinimized: this.toggleDrawerMinimized.bind(this),
             onHide: this.closeDrawer.bind(this),
             onToggleOrientation: this.toggleDrawerOrientation.bind(this),
             onExpandFromMinimized: this.#expandDrawerFromInteraction.bind(this),
             onMinimizeFromTabInteraction: this.minimizeDrawer.bind(this),
-            onTabSelected: this.tabSelected.bind(this),
+            onTabSelected: this.#tabSelected.bind(this),
             isConsoleOpenInMainAndDrawer: tabId => tabId === 'console-view' && this.tabbedPane.selectedTabId === 'console',
-            tabDelegate: this.tabDelegate,
+            tabDelegate: this.#tabDelegate,
             enableOrientationToggle: Boolean(Root.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
-            isVertical,
+            isVertical: this.#isVerticalSplit,
             verticalExpandedMinimumWidth: MIN_VERTICAL_DRAWER_WIDTH,
             minimumSizes: {
                 inspectorWidthWhenVertical: MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER,
@@ -193,30 +237,86 @@ export class InspectorView extends VBox {
             },
             setInspectorMinimumSize: this.setMinimumSize.bind(this),
         });
-        this.drawerTabbedLocation = this.#drawerView.tabbedLocation;
-        this.drawerTabbedPane = this.#drawerView.tabbedPane;
         // Create main area tabbed pane.
-        this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance), 'panel', true, true, {
+        this.#tabbedLocation = this.#createMainTabbedLocation();
+        this.tabbedPane = this.#tabbedLocation.tabbedPane();
+        this.#keyDownBound = this.#keyDown.bind(this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
+        function showPanel({ data: panelName }) {
+            void this.showPanel(panelName);
+        }
+        if (shouldShowLocaleInfobar()) {
+            this.#infobars.push(createLocaleInfobarSpec(() => this.#removeInfobar('locale-mismatch')));
+        }
+        this.#resizeObserver = new ResizeObserver(this.#observedResize.bind(this));
+        DockController.instance().addEventListener("BeforeDockSideChanged" /* DockControllerEvents.BEFORE_DOCK_SIDE_CHANGED */, this.#rememberDrawerStateBeforeDockSideChange, this);
+        DockController.instance().addEventListener("DockSideChanged" /* DockControllerEvents.DOCK_SIDE_CHANGED */, this.#applyDrawerOrientationForDockSide, this);
+        DockController.instance().addEventListener("AfterDockSideChanged" /* DockControllerEvents.AFTER_DOCK_SIDE_CHANGED */, this.#restoreDrawerStateAfterDockSideChange, this);
+        this.#runWithDrawerStateUpdate(() => {
+            // Restore minimized state before syncing non-ONLY_MAIN showMode so applyState(..., false)
+            // does not clear the persisted 'inspector.drawer-minimized' local setting at startup.
+            this.#drawerView.restoreMinimizedStateFromSettings();
+            if (this.#drawerView.isMinimized()) {
+                this.#drawerShowMode = this.#drawerView.showMode();
+                this.#saveDrawerShowMode(this.#drawerShowMode);
+            }
+            else if (this.#drawerShowMode !== "OnlyMain" /* ShowMode.ONLY_MAIN */) {
+                this.#drawerView.applyState(this.#drawerShowMode, false);
+            }
+        });
+        this.performUpdate();
+    }
+    #runWithDrawerStateUpdate(fn) {
+        const wasUpdating = this.#updatingDrawerState;
+        this.#updatingDrawerState = true;
+        try {
+            fn();
+        }
+        finally {
+            this.#updatingDrawerState = wasUpdating;
+        }
+    }
+    requestUpdate() {
+        this.#needsUpdate = true;
+        super.requestUpdate();
+    }
+    performUpdate() {
+        this.#needsUpdate = false;
+        const input = {
+            infobars: this.#infobars,
+            isVerticalSplit: this.#isVerticalSplit,
+            isDrawerOpen: this.#drawerShowMode !== "OnlyMain" /* ShowMode.ONLY_MAIN */,
+            statusBarVisible: this.#statusBarVisible,
+            onDrawerOpenChanged: this.#onDrawerOpenChanged,
+        };
+        const output = {};
+        this.#view(input, output, this.contentElement);
+        this.#runWithDrawerStateUpdate(() => {
+            output.attachSplitPanels?.(this.tabbedPane, splitWidget => this.#drawerView.attachSplitWidget(splitWidget));
+        });
+    }
+    #createMainTabbedLocation() {
+        const tabbedLocation = ViewManager.instance().createTabbedLocation(Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance), 'panel', true, true, {
             defaultTab: Root.Runtime.Runtime.queryParam('panel'),
             plusButton: { jslogContext: 'plus-button-panel' },
         });
-        this.tabbedPane = this.tabbedLocation.tabbedPane();
-        this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
-        this.tabbedPane.element.classList.add('main-tabbed-pane');
+        const tabbedPane = tabbedLocation.tabbedPane();
+        tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
+        tabbedPane.element.classList.add('main-tabbed-pane');
         // The 'Inspect element' and 'Device mode' buttons in the tabs toolbar takes longer to load than
         // the tabs themselves, so a space equal to the buttons' total width is preemptively allocated
         // to prevent to prevent a shift in the tab layout. Note that when DevTools cannot be docked,
         // the Device mode button is not added and so the allocated space is smaller.
         const allocatedSpace = Root.Runtime.conditions.canDock() ? '69px' : '41px';
-        this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
-        this.tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
-        const selectedTab = this.tabbedPane.selectedTabId;
+        tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
+        tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, (event) => this.#tabSelected(event.data.tabId), this);
+        const selectedTab = tabbedPane.selectedTabId;
         if (selectedTab) {
             UIUserMetrics.instance().panelShown(selectedTab, true);
         }
-        this.tabbedPane.setAccessibleName(i18nString(UIStrings.panels));
-        this.tabbedPane.setTabDelegate(this.tabDelegate);
-        const mainHeaderElement = this.tabbedPane.headerElement();
+        tabbedPane.setAccessibleName(i18nString(UIStrings.panels));
+        tabbedPane.setTabDelegate(this.#tabDelegate);
+        const mainHeaderElement = tabbedPane.headerElement();
         ARIAUtils.markAsNavigation(mainHeaderElement);
         ARIAUtils.setLabel(mainHeaderElement, i18nString(UIStrings.mainToolbar));
         mainHeaderElement.setAttribute('jslog', `${VisualLogging.toolbar('main').track({
@@ -224,32 +324,16 @@ export class InspectorView extends VBox {
             keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space',
         })}`);
         // Store the initial selected panel for use in launch histograms
-        UIUserMetrics.instance().setLaunchPanel(this.tabbedPane.selectedTabId);
+        UIUserMetrics.instance().setLaunchPanel(tabbedPane.selectedTabId);
         if (Host.InspectorFrontendHost.isUnderTest()) {
-            this.tabbedPane.setAutoSelectFirstItemOnShow(false);
+            tabbedPane.setAutoSelectFirstItemOnShow(false);
         }
-        this.drawerSplitWidget.setMainWidget(this.tabbedPane);
-        this.drawerSplitWidget.setDefaultFocusedChild(this.tabbedPane);
-        this.keyDownBound = this.keyDown.bind(this);
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
-        function showPanel({ data: panelName }) {
-            void this.showPanel(panelName);
-        }
-        if (shouldShowLocaleInfobar()) {
-            const infobar = createLocaleInfobar();
-            infobar.setParentView(this);
-            this.attachInfobar(infobar);
-        }
-        this.#resizeObserver = new ResizeObserver(this.#observedResize.bind(this));
-        DockController.instance().addEventListener("BeforeDockSideChanged" /* DockControllerEvents.BEFORE_DOCK_SIDE_CHANGED */, this.#rememberDrawerStateBeforeDockSideChange, this);
-        DockController.instance().addEventListener("DockSideChanged" /* DockControllerEvents.DOCK_SIDE_CHANGED */, this.#applyDrawerOrientationForDockSide, this);
-        DockController.instance().addEventListener("AfterDockSideChanged" /* DockControllerEvents.AFTER_DOCK_SIDE_CHANGED */, this.#restoreDrawerStateAfterDockSideChange, this);
-        this.#drawerView.restoreMinimizedStateFromSettings();
+        return tabbedLocation;
     }
     static instance(opts = { forceNew: null }) {
-        const { forceNew, element } = opts;
+        const { forceNew, element, view } = opts;
         if (!inspectorViewInstance || forceNew) {
-            inspectorViewInstance = new InspectorView(element);
+            inspectorViewInstance = new InspectorView(element, view);
         }
         return inspectorViewInstance;
     }
@@ -278,7 +362,7 @@ export class InspectorView extends VBox {
     }
     #getOrientationForDockMode() {
         const dockMode = this.#getDockMode();
-        const orientationSetting = this.drawerOrientationByDockSetting.get();
+        const orientationSetting = this.#drawerOrientationByDockSetting.get();
         let orientation = orientationSetting[dockMode];
         if (orientation === DrawerOrientation.UNSET) {
             // Apply defaults: horizontal for side-dock, vertical for bottom-dock.
@@ -286,16 +370,55 @@ export class InspectorView extends VBox {
         }
         return orientation;
     }
-    #applyDrawerOrientation(orientation) {
-        const shouldBeVertical = orientation === DrawerOrientation.VERTICAL;
-        const isVertical = this.#drawerView.isVertical();
-        if (shouldBeVertical === isVertical) {
+    #drawerOrientationKey(isVertical = this.#isVerticalSplit) {
+        return isVertical ? 'vertical' : 'horizontal';
+    }
+    #readSavedDrawerShowMode(isVertical) {
+        return this.#drawerSplitViewStateSetting.get()[this.#drawerOrientationKey(isVertical)]?.showMode;
+    }
+    #saveDrawerShowMode(showMode) {
+        const key = this.#drawerOrientationKey();
+        const state = this.#drawerSplitViewStateSetting.get();
+        this.#drawerSplitViewStateSetting.set({
+            ...state,
+            [key]: {
+                ...state[key],
+                showMode,
+            },
+        });
+    }
+    #setDrawerShowMode(showMode) {
+        if (this.#drawerShowMode === showMode) {
             return;
         }
-        this.#drawerView.setVertical(shouldBeVertical);
+        this.#drawerShowMode = showMode;
+        this.#saveDrawerShowMode(showMode);
+        this.requestUpdate();
+    }
+    #onDrawerOpenChanged = (isOpen) => {
+        if (this.#updatingDrawerState) {
+            return;
+        }
+        this.#applyDrawerState(isOpen ? "Both" /* ShowMode.BOTH */ : "OnlyMain" /* ShowMode.ONLY_MAIN */, this.isDrawerMinimized());
+    };
+    #applyDrawerOrientation(orientation) {
+        const shouldBeVertical = orientation === DrawerOrientation.VERTICAL;
+        if (shouldBeVertical === this.#isVerticalSplit && shouldBeVertical === this.#drawerView.isVertical()) {
+            return;
+        }
+        this.#isVerticalSplit = shouldBeVertical;
+        this.#runWithDrawerStateUpdate(() => {
+            this.#drawerView.setVertical(shouldBeVertical);
+        });
+        this.#drawerShowMode = this.#drawerView.showMode();
+        this.#saveDrawerShowMode(this.#drawerShowMode);
+        this.requestUpdate();
     }
     #applyDrawerState(showMode, minimized) {
-        this.#drawerView.applyState(showMode, minimized);
+        this.#runWithDrawerStateUpdate(() => {
+            this.#drawerView.applyState(showMode, minimized);
+        });
+        this.#setDrawerShowMode(this.#drawerView.showMode());
     }
     #observedResize() {
         const rect = this.element.getBoundingClientRect();
@@ -313,18 +436,21 @@ export class InspectorView extends VBox {
     }
     wasShown() {
         super.wasShown();
+        if (this.#needsUpdate) {
+            this.requestUpdate();
+        }
         this.#resizeObserver.observe(this.element);
         this.#observedResize();
-        this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
+        this.element.ownerDocument.addEventListener('keydown', this.#keyDownBound, false);
         this.#applyDrawerOrientationForDockSide();
     }
     willHide() {
         super.willHide();
         this.#resizeObserver.unobserve(this.element);
-        this.element.ownerDocument.removeEventListener('keydown', this.keyDownBound, false);
+        this.element.ownerDocument.removeEventListener('keydown', this.#keyDownBound, false);
     }
     #rememberDrawerStateBeforeDockSideChange() {
-        this.#drawerShowModeBeforeDockSideChange = this.drawerSplitWidget.showMode();
+        this.#drawerShowModeBeforeDockSideChange = this.#drawerView.showMode();
         this.#drawerMinimizedBeforeDockSideChange = this.isDrawerMinimized();
     }
     #restoreDrawerStateAfterDockSideChange() {
@@ -339,10 +465,10 @@ export class InspectorView extends VBox {
     }
     resolveLocation(locationName) {
         if (locationName === 'drawer-view') {
-            return this.drawerTabbedLocation;
+            return this.#drawerView.tabbedLocation;
         }
         if (locationName === 'panel') {
-            return this.tabbedLocation;
+            return this.#tabbedLocation;
         }
         return null;
     }
@@ -353,7 +479,7 @@ export class InspectorView extends VBox {
         ]);
     }
     addPanel(view) {
-        this.tabbedLocation.appendView(view);
+        this.#tabbedLocation.appendView(view);
     }
     hasPanel(panelName) {
         return this.tabbedPane.hasTab(panelName);
@@ -366,20 +492,20 @@ export class InspectorView extends VBox {
         return await view.widget();
     }
     onSuspendStateChanged(allTargetsSuspended) {
-        this.currentPanelLocked = allTargetsSuspended;
-        this.tabbedPane.setCurrentTabLocked(this.currentPanelLocked);
-        this.tabbedPane.leftToolbar().setEnabled(!this.currentPanelLocked);
-        this.tabbedPane.rightToolbar().setEnabled(!this.currentPanelLocked);
+        this.#currentPanelLocked = allTargetsSuspended;
+        this.tabbedPane.setCurrentTabLocked(this.#currentPanelLocked);
+        this.tabbedPane.leftToolbar().setEnabled(!this.#currentPanelLocked);
+        this.tabbedPane.rightToolbar().setEnabled(!this.#currentPanelLocked);
     }
     canSelectPanel(panelName) {
-        return !this.currentPanelLocked || this.tabbedPane.selectedTabId === panelName;
+        return !this.#currentPanelLocked || this.tabbedPane.selectedTabId === panelName;
     }
     async showPanel(panelName) {
         await ViewManager.instance().showView(panelName);
     }
     setPanelWarnings(tabId, warnings) {
         // Find the tabbed location where the panel lives
-        const tabbedPane = this.getTabbedPaneForTabId(tabId);
+        const tabbedPane = this.#getTabbedPaneForTabId(tabId);
         if (tabbedPane) {
             let icon = null;
             if (warnings.length !== 0) {
@@ -391,14 +517,14 @@ export class InspectorView extends VBox {
             tabbedPane.setTrailingTabIcon(tabId, icon);
         }
     }
-    getTabbedPaneForTabId(tabId) {
+    #getTabbedPaneForTabId(tabId) {
         // Tab exists in the main panel
         if (this.tabbedPane.hasTab(tabId)) {
             return this.tabbedPane;
         }
         // Tab exists in the drawer
-        if (this.drawerTabbedPane.hasTab(tabId)) {
-            return this.drawerTabbedPane;
+        if (this.#drawerView.tabbedPane.hasTab(tabId)) {
+            return this.#drawerView.tabbedPane;
         }
         // Tab is not open
         return null;
@@ -410,7 +536,7 @@ export class InspectorView extends VBox {
         // Both checks are needed: during an animated hide, drawerVisible()
         // (tabbedPane.isShowing()) remains true until the animation completes and
         // the widget is detached, but sidebarIsShowing() turns false synchronously.
-        if (this.#drawerView.drawerVisible() && this.drawerSplitWidget.sidebarIsShowing()) {
+        if (this.#drawerView.drawerVisible() && this.#drawerView.sidebarIsShowing()) {
             // Only expand a minimized drawer when the user explicitly requested
             // focus (e.g. keyboard shortcut or direct action). Programmatic calls
             // (like tab switches) should not auto-expand.
@@ -421,13 +547,16 @@ export class InspectorView extends VBox {
             return;
         }
         this.#applyDrawerOrientationForDockSide();
-        this.#drawerView.show(hasTargetDrawer);
+        this.#runWithDrawerStateUpdate(() => {
+            this.#drawerView.show(hasTargetDrawer);
+        });
+        this.#setDrawerShowMode(this.#drawerView.showMode());
         if (focus) {
-            this.focusRestorer = new WidgetFocusRestorer(this.drawerTabbedPane);
+            this.#focusRestorer = new WidgetFocusRestorer(this.#drawerView.tabbedPane);
             this.#mainPanelAtDrawerFocus = this.tabbedPane.selectedTabId;
         }
         else {
-            this.focusRestorer = null;
+            this.#focusRestorer = null;
             this.#mainPanelAtDrawerFocus = null;
         }
         ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerShown));
@@ -439,7 +568,7 @@ export class InspectorView extends VBox {
         if (!this.#drawerView.drawerVisible()) {
             return;
         }
-        this.focusRestorer = null;
+        this.#focusRestorer = null;
         this.#mainPanelAtDrawerFocus = null;
         this.setDrawerMinimized(true);
         ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerMinimized));
@@ -450,21 +579,24 @@ export class InspectorView extends VBox {
         }
         // Preserve main panel scroll positions across the drawer layout change.
         const scrollState = this.#captureMainPanelScrollState();
-        if (this.focusRestorer && this.#mainPanelAtDrawerFocus === this.tabbedPane.selectedTabId) {
-            this.focusRestorer.restore();
+        if (this.#focusRestorer && this.#mainPanelAtDrawerFocus === this.tabbedPane.selectedTabId) {
+            this.#focusRestorer.restore();
         }
-        this.focusRestorer = null;
+        this.#focusRestorer = null;
         this.#mainPanelAtDrawerFocus = null;
-        this.#drawerView.hide();
+        this.#runWithDrawerStateUpdate(() => {
+            this.#drawerView.hide();
+        });
+        this.#setDrawerShowMode(this.#drawerView.showMode());
         this.#restoreMainPanelScrollState(scrollState);
         ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerHidden));
     }
     toggleDrawerOrientation({ force } = {}) {
-        if (!this.drawerTabbedPane.isShowing()) {
+        if (!this.#drawerView.drawerVisible()) {
             return;
         }
         const dockMode = this.#getDockMode();
-        const currentSettings = this.drawerOrientationByDockSetting.get();
+        const currentSettings = this.#drawerOrientationByDockSetting.get();
         let newOrientation;
         if (force) {
             newOrientation = force;
@@ -475,18 +607,20 @@ export class InspectorView extends VBox {
                 currentOrientation === DrawerOrientation.VERTICAL ? DrawerOrientation.HORIZONTAL : DrawerOrientation.VERTICAL;
         }
         currentSettings[dockMode] = newOrientation;
-        this.drawerOrientationByDockSetting.set(currentSettings);
+        this.#drawerOrientationByDockSetting.set(currentSettings);
         this.#applyDrawerOrientation(newOrientation);
     }
     isUserExplicitlyUpdatedDrawerOrientation() {
-        const orientationSetting = this.drawerOrientationByDockSetting.get();
+        const orientationSetting = this.#drawerOrientationByDockSetting.get();
         const dockMode = this.#getDockMode();
         return orientationSetting[dockMode] !== DrawerOrientation.UNSET;
     }
     setDrawerMinimized(minimized) {
         // Preserve main panel scroll positions across the drawer layout change.
         const scrollState = this.#captureMainPanelScrollState();
-        this.#drawerView.setMinimized(minimized);
+        this.#runWithDrawerStateUpdate(() => {
+            this.#drawerView.setMinimized(minimized);
+        });
         this.#restoreMainPanelScrollState(scrollState);
     }
     // Showing, hiding, or minimizing the drawer causes SplitWidget to
@@ -554,7 +688,7 @@ export class InspectorView extends VBox {
             return;
         }
         const minimized = this.isDrawerMinimized();
-        if (minimized && this.drawerTabbedPane.selectedTabId === 'console-view' &&
+        if (minimized && this.#drawerView.tabbedPane.selectedTabId === 'console-view' &&
             this.tabbedPane.selectedTabId === 'console') {
             return;
         }
@@ -573,7 +707,7 @@ export class InspectorView extends VBox {
         this.setDrawerMinimized(false);
         ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerExpanded));
     }
-    keyDown(event) {
+    #keyDown(event) {
         if (!KeyboardShortcut.eventHasCtrlEquivalentKey(event) || event.altKey || event.shiftKey) {
             return;
         }
@@ -590,7 +724,7 @@ export class InspectorView extends VBox {
             if (panelIndex !== -1) {
                 const panelName = this.tabbedPane.tabIds()[panelIndex];
                 if (panelName) {
-                    if (!Dialog.hasInstance() && !this.currentPanelLocked) {
+                    if (!Dialog.hasInstance() && !this.#currentPanelLocked) {
                         void this.showPanel(panelName);
                         void VisualLogging.logKeyDown(null, event, `panel-by-index-${panelName}`);
                     }
@@ -608,16 +742,10 @@ export class InspectorView extends VBox {
     toolbarItemResized() {
         this.tabbedPane.headerResized();
     }
-    tabSelected(tabId) {
+    #tabSelected(tabId) {
         UIUserMetrics.instance().panelShown(tabId, false);
     }
-    setOwnerSplit(splitWidget) {
-        this.ownerSplitWidget = splitWidget;
-    }
     ownerSplit() {
-        if (this.ownerSplitWidget) {
-            return this.ownerSplitWidget;
-        }
         const parent = this.parentWidget();
         return parent instanceof SplitWidget ? parent : null;
     }
@@ -627,120 +755,126 @@ export class InspectorView extends VBox {
     restore() {
         this.ownerSplit()?.setSidebarMinimized(false);
     }
+    #hasInfobar(key) {
+        return this.#infobars.some(bar => bar.key === key);
+    }
+    #addInfobar(spec) {
+        this.#infobars = [...this.#infobars, spec];
+        this.requestUpdate();
+    }
+    #removeInfobar(key) {
+        if (!this.#hasInfobar(key)) {
+            return;
+        }
+        this.#infobars = this.#infobars.filter(bar => bar.key !== key);
+        if (key === 'debugged-tab-reload-required') {
+            SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
+        }
+        this.requestUpdate();
+    }
     displayDebuggedTabReloadRequiredWarning(message) {
-        if (!this.#debuggedTabReloadRequiredInfobar) {
-            const infobar = new Infobar("info" /* InfobarType.INFO */, message, [
-                {
-                    text: i18nString(UIStrings.reloadDebuggedTab),
-                    delegate: () => {
-                        reloadDebuggedTab();
-                        this.removeDebuggedTabReloadRequiredWarning();
+        if (!this.#hasInfobar('debugged-tab-reload-required')) {
+            this.#addInfobar({
+                key: 'debugged-tab-reload-required',
+                type: "info" /* InfobarType.INFO */,
+                text: message,
+                actions: [
+                    {
+                        text: i18nString(UIStrings.reloadDebuggedTab),
+                        delegate: () => {
+                            reloadDebuggedTab();
+                            this.removeDebuggedTabReloadRequiredWarning();
+                        },
+                        dismiss: false,
+                        buttonVariant: "primary" /* Buttons.Button.Variant.PRIMARY */,
+                        jslogContext: 'main.debug-reload',
                     },
-                    dismiss: false,
-                    buttonVariant: "primary" /* Buttons.Button.Variant.PRIMARY */,
-                    jslogContext: 'main.debug-reload',
-                },
-            ], undefined, 'reload-required');
-            infobar.setParentView(this);
-            this.attachInfobar(infobar);
-            this.#debuggedTabReloadRequiredInfobar = infobar;
-            infobar.setCloseCallback(() => {
-                this.#debuggedTabReloadRequiredInfobar = undefined;
+                ],
+                disableSetting: null,
+                jslogContext: 'reload-required',
+                onClose: () => this.#removeInfobar('debugged-tab-reload-required'),
             });
             SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
         }
     }
     removeDebuggedTabReloadRequiredWarning() {
-        if (this.#debuggedTabReloadRequiredInfobar) {
-            this.#debuggedTabReloadRequiredInfobar.dispose();
-            SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
-        }
+        this.#removeInfobar('debugged-tab-reload-required');
     }
     displayReloadRequiredWarning(message) {
-        if (!this.reloadRequiredInfobar && !this.#chromeRestartRequiredInfobar) {
-            const infobar = new Infobar("info" /* InfobarType.INFO */, message, [
-                {
-                    text: i18nString(UIStrings.reloadDevtools),
-                    delegate: () => reloadDevTools(),
-                    dismiss: false,
-                    buttonVariant: "primary" /* Buttons.Button.Variant.PRIMARY */,
-                    jslogContext: 'main.debug-reload',
-                },
-            ], undefined, 'reload-required');
-            infobar.setParentView(this);
-            this.attachInfobar(infobar);
-            this.reloadRequiredInfobar = infobar;
-            infobar.setCloseCallback(() => {
-                this.reloadRequiredInfobar = undefined;
+        if (!this.#hasInfobar('reload-required') && !this.#hasInfobar('chrome-restart-required')) {
+            this.#addInfobar({
+                key: 'reload-required',
+                type: "info" /* InfobarType.INFO */,
+                text: message,
+                actions: [
+                    {
+                        text: i18nString(UIStrings.reloadDevtools),
+                        delegate: () => reloadDevTools(),
+                        dismiss: false,
+                        buttonVariant: "primary" /* Buttons.Button.Variant.PRIMARY */,
+                        jslogContext: 'main.debug-reload',
+                    },
+                ],
+                disableSetting: null,
+                jslogContext: 'reload-required',
+                onClose: () => this.#removeInfobar('reload-required'),
             });
         }
     }
     displayChromeRestartRequiredWarning(message) {
-        if (this.reloadRequiredInfobar) {
-            this.reloadRequiredInfobar.dispose();
-        }
-        if (!this.#chromeRestartRequiredInfobar) {
-            const infobar = new Infobar("info" /* InfobarType.INFO */, message, [
-                {
-                    text: i18nString(UIStrings.restartChrome),
-                    delegate: () => {
-                        if (confirm(i18nString(UIStrings.areYouSureYouWantToRestartChrome))) {
-                            Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
-                        }
+        this.#removeInfobar('reload-required');
+        if (!this.#hasInfobar('chrome-restart-required')) {
+            this.#addInfobar({
+                key: 'chrome-restart-required',
+                type: "info" /* InfobarType.INFO */,
+                text: message,
+                actions: [
+                    {
+                        text: i18nString(UIStrings.restartChrome),
+                        delegate: () => {
+                            if (confirm(i18nString(UIStrings.areYouSureYouWantToRestartChrome))) {
+                                Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
+                            }
+                        },
+                        dismiss: false,
+                        buttonVariant: "primary" /* Buttons.Button.Variant.PRIMARY */,
+                        jslogContext: 'main.chrome-restart-chrome',
                     },
-                    dismiss: false,
-                    buttonVariant: "primary" /* Buttons.Button.Variant.PRIMARY */,
-                    jslogContext: 'main.chrome-restart-chrome',
-                },
-            ], undefined, 'reload-required');
-            infobar.setParentView(this);
-            this.attachInfobar(infobar);
-            this.#chromeRestartRequiredInfobar = infobar;
-            infobar.setCloseCallback(() => {
-                this.#chromeRestartRequiredInfobar = undefined;
+                ],
+                disableSetting: null,
+                jslogContext: 'reload-required',
+                onClose: () => this.#removeInfobar('chrome-restart-required'),
             });
         }
     }
     displaySelectOverrideFolderInfobar(callback) {
-        if (!this.#selectOverrideFolderInfobar) {
-            const infobar = new Infobar("info" /* InfobarType.INFO */, i18nString(UIStrings.selectOverrideFolder), [
-                {
-                    text: i18nString(UIStrings.selectFolder),
-                    delegate: () => callback(),
-                    dismiss: true,
-                    buttonVariant: "tonal" /* Buttons.Button.Variant.TONAL */,
-                    jslogContext: 'select-folder',
-                },
-            ], undefined, 'select-override-folder');
-            infobar.setParentView(this);
-            this.attachInfobar(infobar);
-            this.#selectOverrideFolderInfobar = infobar;
-            infobar.setCloseCallback(() => {
-                this.#selectOverrideFolderInfobar = undefined;
+        if (!this.#hasInfobar('select-override-folder')) {
+            this.#addInfobar({
+                key: 'select-override-folder',
+                type: "info" /* InfobarType.INFO */,
+                text: i18nString(UIStrings.selectOverrideFolder),
+                actions: [
+                    {
+                        text: i18nString(UIStrings.selectFolder),
+                        delegate: () => callback(),
+                        dismiss: true,
+                        buttonVariant: "tonal" /* Buttons.Button.Variant.TONAL */,
+                        jslogContext: 'select-folder',
+                    },
+                ],
+                disableSetting: null,
+                jslogContext: 'select-override-folder',
+                onClose: () => this.#removeInfobar('select-override-folder'),
             });
         }
     }
     renderStatusBar(visible = true) {
-        if (!this.#statusBarContainer) {
-            this.#statusBarContainer = document.createElement('div');
-            this.#statusBarContainer.style.display = 'contents';
-            this.element.appendChild(this.#statusBarContainer);
+        if (this.#statusBarVisible === visible) {
+            return;
         }
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        Lit.render(visible ? html `<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>` : Lit.nothing, this.#statusBarContainer);
-    }
-    createInfoBarDiv() {
-        if (!this.infoBarDiv) {
-            this.infoBarDiv = document.createElement('div');
-            this.infoBarDiv.classList.add('flex-none');
-            this.contentElement.insertBefore(this.infoBarDiv, this.contentElement.firstChild);
-        }
-    }
-    attachInfobar(infobar) {
-        this.createInfoBarDiv();
-        if (this.infoBarDiv) {
-            infobar.show(this.infoBarDiv);
-        }
+        this.#statusBarVisible = visible;
+        this.requestUpdate();
+        void this.updateComplete.then(() => this.doResize());
     }
 }
 function getDisableLocaleInfoBarSetting() {
@@ -761,38 +895,47 @@ function shouldShowLocaleInfobar() {
     return !i18n.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) &&
         i18n.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
 }
-function createLocaleInfobar() {
+function createLocaleInfobarSpec(onDismiss) {
     const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
     const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
     const locale = new Intl.Locale(closestSupportedLocale);
     const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: 'language' }).of(locale.language || 'en') || 'English';
     const languageSetting = Common.Settings.Settings.instance().moduleSetting('language');
-    const infobar = new Infobar("info" /* InfobarType.INFO */, i18nString(UIStrings.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
-        {
-            text: i18nString(UIStrings.setToBrowserLanguage),
-            delegate: () => {
-                languageSetting.set('browserLanguage');
-                getDisableLocaleInfoBarSetting().set(true);
-                reloadDevTools();
+    return {
+        key: 'locale-mismatch',
+        type: "info" /* InfobarType.INFO */,
+        text: i18nString(UIStrings.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }),
+        actions: [
+            {
+                text: i18nString(UIStrings.setToBrowserLanguage),
+                delegate: () => {
+                    languageSetting.set('browserLanguage');
+                    getDisableLocaleInfoBarSetting().set(true);
+                    reloadDevTools();
+                },
+                dismiss: true,
+                jslogContext: 'set-to-browser-language',
             },
-            dismiss: true,
-            jslogContext: 'set-to-browser-language',
-        },
-        {
-            text: i18nString(UIStrings.setToSpecificLanguage, { PH1: closestSupportedLanguageInCurrentLocale }),
-            delegate: () => {
-                languageSetting.set(closestSupportedLocale);
-                getDisableLocaleInfoBarSetting().set(true);
-                reloadDevTools();
+            {
+                text: i18nString(UIStrings.setToSpecificLanguage, { PH1: closestSupportedLanguageInCurrentLocale }),
+                delegate: () => {
+                    languageSetting.set(closestSupportedLocale);
+                    getDisableLocaleInfoBarSetting().set(true);
+                    reloadDevTools();
+                },
+                dismiss: true,
+                jslogContext: 'set-to-specific-language',
             },
-            dismiss: true,
-            jslogContext: 'set-to-specific-language',
+        ],
+        disableSetting: getDisableLocaleInfoBarSetting(),
+        jslogContext: 'language-mismatch',
+        // Closing the infobar with the close button or Esc also answers it, so that
+        // we notify users only once.
+        onClose: () => {
+            getDisableLocaleInfoBarSetting().set(true);
+            onDismiss();
         },
-    ], getDisableLocaleInfoBarSetting(), 'language-mismatch');
-    // Closing the infobar with the close button or Esc also answers it, so that
-    // we notify users only once.
-    infobar.setCloseCallback(() => getDisableLocaleInfoBarSetting().set(true));
-    return infobar;
+    };
 }
 function reloadDevTools() {
     if (DockController.instance().canDock() && DockController.instance().dockSide() === "undocked" /* DockState.UNDOCKED */) {

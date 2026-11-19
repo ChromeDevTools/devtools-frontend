@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
-const { render, html, Directives: { ref } } = Lit;
-const DEFAULT_VIEW = (input, output, target) => {
+import { Directives, html, render } from '../../ui/lit/lit.js';
+const { ref } = Directives;
+export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `<iframe
-    ${ref(element => { output.iframe = element; })}
+    ${ref(element => {
+        output.getContentWindow = element instanceof HTMLIFrameElement ? () => element.contentWindow : undefined;
+    })}
     src=${input.src}
     allow="language-model; summarizer; translator; language-detector; writer; rewriter; proofreader; clipboard-write; autoplay"
     class=${input.className}
@@ -16,71 +18,118 @@ const DEFAULT_VIEW = (input, output, target) => {
 };
 export class ExtensionView extends UI.Widget.Widget {
     #server;
-    #id;
-    #src;
-    #className;
-    #iframe;
+    #id = '';
+    #src = '';
+    #className = '';
+    #getContentWindow;
+    #hasRendered = false;
     #frameIndex;
+    #isNotifiedShown = false;
     #view;
-    constructor(server, id, src, className, view = DEFAULT_VIEW) {
-        super();
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element);
         this.#view = view;
-        this.#server = server;
-        this.#src = src;
-        this.#className = className;
-        this.#id = id;
         this.setHideOnDetach(); // Override
-        void this.performUpdate();
+    }
+    set data({ server, id, src, className }) {
+        const targetChanged = server !== this.#server || id !== this.#id;
+        const srcChanged = src !== this.#src;
+        const classNameChanged = className !== this.#className;
+        if (!targetChanged && !srcChanged && !classNameChanged) {
+            return;
+        }
+        if ((targetChanged || srcChanged) && this.#isNotifiedShown && this.#server && this.#id) {
+            this.#isNotifiedShown = false;
+            this.#server.notifyViewHidden(this.#id);
+        }
+        this.#server = server;
+        this.#id = id;
+        this.#className = className;
+        if (srcChanged) {
+            this.#src = src;
+            this.#frameIndex = undefined;
+        }
+        if (srcChanged || classNameChanged) {
+            this.requestUpdate();
+        }
+        if (this.isShowing() && typeof this.#frameIndex === 'number' && !this.#isNotifiedShown && this.#server &&
+            this.#id) {
+            this.#isNotifiedShown = true;
+            this.#server.notifyViewShown(this.#id, this.#frameIndex);
+        }
     }
     performUpdate() {
+        this.#hasRendered = true;
         const output = {};
         this.#view({
             src: this.#src,
             className: this.#className,
             onLoad: this.onLoad.bind(this),
         }, output, this.element);
-        if (output.iframe) {
-            this.#iframe = output.iframe;
-        }
+        this.#getContentWindow = output.getContentWindow;
     }
     wasShown() {
+        if (!this.#hasRendered) {
+            this.requestUpdate();
+        }
         super.wasShown();
-        if (typeof this.#frameIndex === 'number') {
+        if (typeof this.#frameIndex === 'number' && !this.#isNotifiedShown && this.#server && this.#id) {
+            this.#isNotifiedShown = true;
             this.#server.notifyViewShown(this.#id, this.#frameIndex);
         }
     }
     willHide() {
         super.willHide();
-        if (typeof this.#frameIndex === 'number') {
+        if (typeof this.#frameIndex === 'number' && this.#isNotifiedShown && this.#server && this.#id) {
+            this.#isNotifiedShown = false;
             this.#server.notifyViewHidden(this.#id);
         }
     }
     onLoad() {
-        if (!this.#iframe) {
+        const contentWindow = this.#getContentWindow?.();
+        if (!contentWindow) {
             return;
         }
         const frames = window.frames;
-        this.#frameIndex = Array.prototype.indexOf.call(frames, this.#iframe.contentWindow);
-        if (this.isShowing()) {
+        this.#frameIndex = Array.prototype.indexOf.call(frames, contentWindow);
+        if (this.isShowing() && !this.#isNotifiedShown && this.#server && this.#id) {
+            this.#isNotifiedShown = true;
             this.#server.notifyViewShown(this.#id, this.#frameIndex);
         }
     }
 }
 export class ExtensionNotifierView extends UI.Widget.VBox {
-    server;
-    id;
-    constructor(server, id) {
-        super();
-        this.server = server;
-        this.id = id;
+    #server;
+    #id = '';
+    #isNotifiedShown = false;
+    set data({ server, id }) {
+        if (server === this.#server && id === this.#id) {
+            return;
+        }
+        if (this.#isNotifiedShown && this.#server && this.#id) {
+            this.#isNotifiedShown = false;
+            this.#server.notifyViewHidden(this.#id);
+        }
+        this.#server = server;
+        this.#id = id;
+        if (this.isShowing() && !this.#isNotifiedShown && this.#server && this.#id) {
+            this.#isNotifiedShown = true;
+            this.#server.notifyViewShown(this.#id);
+        }
     }
     wasShown() {
         super.wasShown();
-        this.server.notifyViewShown(this.id);
+        if (!this.#isNotifiedShown && this.#server && this.#id) {
+            this.#isNotifiedShown = true;
+            this.#server.notifyViewShown(this.#id);
+        }
     }
     willHide() {
         super.willHide();
-        this.server.notifyViewHidden(this.id);
+        if (this.#isNotifiedShown && this.#server && this.#id) {
+            this.#isNotifiedShown = false;
+            this.#server.notifyViewHidden(this.#id);
+        }
     }
 }
 export class ExtensionIframe {

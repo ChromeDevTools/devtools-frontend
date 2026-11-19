@@ -10,6 +10,7 @@ const defaultTimeFormatterOptions = {
     unitDisplay: 'narrow',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
+    signDisplay: 'negative',
 };
 const defaultByteFormatterOptions = {
     style: 'unit',
@@ -67,7 +68,7 @@ const byteFormatters = {
     }),
 };
 function numberIsTooLarge(x) {
-    return !Number.isFinite(x) || x === Number.MAX_VALUE;
+    return !Number.isFinite(x) || Math.abs(x) > Number.MAX_SAFE_INTEGER;
 }
 export function seconds(x) {
     if (numberIsTooLarge(x)) {
@@ -77,10 +78,10 @@ export function seconds(x) {
         return formatAndEnsureSpace(timeFormatters.second, x);
     }
     const asMilli = x * 1_000;
-    if (asMilli < 1) {
+    if (Math.abs(asMilli) < 1) {
         return micros(x * 1_000_000);
     }
-    if (asMilli < 1_000) {
+    if (Math.abs(asMilli) < 1_000) {
         return millis(asMilli);
     }
     return formatAndEnsureSpace(timeFormatters.second, x);
@@ -89,7 +90,7 @@ export function millis(x) {
     if (numberIsTooLarge(x)) {
         return '-';
     }
-    if (x < 1) {
+    if (Math.abs(x) < 1) {
         return formatAndEnsureSpace(timeFormatters.milliWithPrecision, x);
     }
     return formatAndEnsureSpace(timeFormatters.milli, x);
@@ -98,7 +99,7 @@ export function micros(x) {
     if (numberIsTooLarge(x)) {
         return '-';
     }
-    if (x < 100) {
+    if (Math.abs(x) < 100) {
         return formatAndEnsureSpace(timeFormatters.micro, x);
     }
     const asMilli = x / 1_000;

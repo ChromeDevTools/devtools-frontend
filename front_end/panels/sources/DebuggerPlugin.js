@@ -903,7 +903,7 @@ export class DebuggerPlugin extends Plugin {
         const callFrame = debuggableFrame.sdkFrame;
         const url = this.uiSourceCode.url();
         const uiPositionToEditorOffset = (lineNumber, columnNumber) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
-        const scopeChain = await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(callFrame);
+        const scopeChain = await this.#scopeChainResolver.resolveScopeChain(callFrame);
         const localOriginalScope = scopeChain
             .find((s) => s instanceof SDK.SourceMapScopeChainEntry.SourceMapScopeChainEntry &&
             s.type() === "local" /* Protocol.Debugger.ScopeType.Local */)

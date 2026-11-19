@@ -48,6 +48,7 @@
   "front_end/models/computed_style/computed_style.js",
   "front_end/models/cpu_profile/cpu_profile.js",
   "front_end/models/crux-manager/crux-manager.js",
+  "front_end/models/devtools_state/devtools_state.js",
   "front_end/models/elements/elements.js",
   "front_end/models/emulation/emulation.js",
   "front_end/models/extensions/extensions.js",

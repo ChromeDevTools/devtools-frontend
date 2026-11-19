@@ -248,13 +248,6 @@ export declare class CookieTreeElement extends ApplicationPanelTreeElement {
     private handleContextMenuEvent;
     onselect(selectedByUser?: boolean): boolean;
 }
-export declare class StorageCategoryView extends UI.Widget.VBox {
-    private emptyWidget;
-    constructor();
-    setText(text: string): void;
-    setHeadline(header: string): void;
-    setLink(link: Platform.DevToolsPath.UrlString | null): void;
-}
 export declare class ResourcesSection implements SDK.TargetManager.Observer {
     panel: ResourcesPanel;
     private readonly treeElement;

@@ -1095,6 +1095,7 @@ function determineOptionFromRate(rate, currentOption) {
 // ../../front_end/panels/common/ExtensionPanel.ts
 var ExtensionPanel_exports = {};
 __export(ExtensionPanel_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   ExtensionButton: () => ExtensionButton,
   ExtensionPanel: () => ExtensionPanel,
   ExtensionSidebarPane: () => ExtensionSidebarPane
@@ -1102,23 +1103,26 @@ __export(ExtensionPanel_exports, {
 import * as Platform from "../../core/platform/platform.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as Extensions from "../../models/extensions/extensions.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html5, render as render5 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/common/ExtensionView.ts
 var ExtensionView_exports = {};
 __export(ExtensionView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   ExtensionIframe: () => ExtensionIframe,
   ExtensionNotifierView: () => ExtensionNotifierView,
   ExtensionView: () => ExtensionView
 });
 import * as UI4 from "../../ui/legacy/legacy.js";
-import * as Lit2 from "../../ui/lit/lit.js";
-var { render: render4, html: html4, Directives: { ref } } = Lit2;
+import { Directives as Directives2, html as html4, render as render4 } from "../../ui/lit/lit.js";
+var { ref } = Directives2;
 var DEFAULT_VIEW3 = (input, output, target) => {
   render4(html4`<iframe
     ${ref((element) => {
-    output.iframe = element;
+    output.getContentWindow = element instanceof HTMLIFrameElement ? () => element.contentWindow : void 0;
   })}
     src=${input.src}
     allow="language-model; summarizer; translator; language-detector; writer; rewriter; proofreader; clipboard-write; autoplay"
@@ -1127,23 +1131,47 @@ var DEFAULT_VIEW3 = (input, output, target) => {
 };
 var ExtensionView = class extends UI4.Widget.Widget {
   #server;
-  #id;
-  #src;
-  #className;
-  #iframe;
+  #id = "";
+  #src = "";
+  #className = "";
+  #getContentWindow;
+  #hasRendered = false;
   #frameIndex;
+  #isNotifiedShown = false;
   #view;
-  constructor(server, id, src, className, view = DEFAULT_VIEW3) {
-    super();
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element);
     this.#view = view;
-    this.#server = server;
-    this.#src = src;
-    this.#className = className;
-    this.#id = id;
     this.setHideOnDetach();
-    void this.performUpdate();
+  }
+  set data({ server, id, src, className }) {
+    const targetChanged = server !== this.#server || id !== this.#id;
+    const srcChanged = src !== this.#src;
+    const classNameChanged = className !== this.#className;
+    if (!targetChanged && !srcChanged && !classNameChanged) {
+      return;
+    }
+    if ((targetChanged || srcChanged) && this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = false;
+      this.#server.notifyViewHidden(this.#id);
+    }
+    this.#server = server;
+    this.#id = id;
+    this.#className = className;
+    if (srcChanged) {
+      this.#src = src;
+      this.#frameIndex = void 0;
+    }
+    if (srcChanged || classNameChanged) {
+      this.requestUpdate();
+    }
+    if (this.isShowing() && typeof this.#frameIndex === "number" && !this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
+      this.#server.notifyViewShown(this.#id, this.#frameIndex);
+    }
   }
   performUpdate() {
+    this.#hasRendered = true;
     const output = {};
     this.#view(
       {
@@ -1154,48 +1182,70 @@ var ExtensionView = class extends UI4.Widget.Widget {
       output,
       this.element
     );
-    if (output.iframe) {
-      this.#iframe = output.iframe;
-    }
+    this.#getContentWindow = output.getContentWindow;
   }
   wasShown() {
+    if (!this.#hasRendered) {
+      this.requestUpdate();
+    }
     super.wasShown();
-    if (typeof this.#frameIndex === "number") {
+    if (typeof this.#frameIndex === "number" && !this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
       this.#server.notifyViewShown(this.#id, this.#frameIndex);
     }
   }
   willHide() {
     super.willHide();
-    if (typeof this.#frameIndex === "number") {
+    if (typeof this.#frameIndex === "number" && this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = false;
       this.#server.notifyViewHidden(this.#id);
     }
   }
   onLoad() {
-    if (!this.#iframe) {
+    const contentWindow = this.#getContentWindow?.();
+    if (!contentWindow) {
       return;
     }
     const frames = window.frames;
-    this.#frameIndex = Array.prototype.indexOf.call(frames, this.#iframe.contentWindow);
-    if (this.isShowing()) {
+    this.#frameIndex = Array.prototype.indexOf.call(frames, contentWindow);
+    if (this.isShowing() && !this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
       this.#server.notifyViewShown(this.#id, this.#frameIndex);
     }
   }
 };
 var ExtensionNotifierView = class extends UI4.Widget.VBox {
-  server;
-  id;
-  constructor(server, id) {
-    super();
-    this.server = server;
-    this.id = id;
+  #server;
+  #id = "";
+  #isNotifiedShown = false;
+  set data({ server, id }) {
+    if (server === this.#server && id === this.#id) {
+      return;
+    }
+    if (this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = false;
+      this.#server.notifyViewHidden(this.#id);
+    }
+    this.#server = server;
+    this.#id = id;
+    if (this.isShowing() && !this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
+      this.#server.notifyViewShown(this.#id);
+    }
   }
   wasShown() {
     super.wasShown();
-    this.server.notifyViewShown(this.id);
+    if (!this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = true;
+      this.#server.notifyViewShown(this.#id);
+    }
   }
   willHide() {
     super.willHide();
-    this.server.notifyViewHidden(this.id);
+    if (this.#isNotifiedShown && this.#server && this.#id) {
+      this.#isNotifiedShown = false;
+      this.#server.notifyViewHidden(this.#id);
+    }
   }
 };
 var ExtensionIframe = class {
@@ -1238,37 +1288,92 @@ var ExtensionIframe = class {
 };
 
 // ../../front_end/panels/common/ExtensionPanel.ts
+var { repeat, styleMap } = Directives3;
+var { widget: widget2, widgetRef } = UI5.Widget;
+var DEFAULT_VIEW4 = (input, output, target) => {
+  render5(html5`
+    <devtools-toolbar ?hidden=${input.toolbarItems.length === 0}>
+      ${repeat(input.toolbarItems, (item2) => item2.id, (item2) => html5`
+        <devtools-button
+          class="toolbar-button toolbar-item"
+          style=${styleMap({ backgroundImage: item2.iconURL ? `url(${item2.iconURL})` : void 0 })}
+          title=${item2.tooltip}
+          ?disabled=${item2.disabled}
+          .data=${{
+    variant: Buttons3.Button.Variant.TEXT,
+    reducedFocusRing: true,
+    title: item2.tooltip,
+    disabled: item2.disabled
+  }}
+          @click=${item2.onClick}
+        ></devtools-button>
+      `)}
+    </devtools-toolbar>
+    <devtools-widget class="vbox flex-auto"
+      ${widget2(UI5.SearchableView.SearchableView, { searchProvider: input.searchProvider })}
+      ${widgetRef(UI5.SearchableView.SearchableView, (e) => {
+    output.searchableView = e;
+  })}>
+      ${widget2(ExtensionView, {
+    data: {
+      server: input.server,
+      id: input.id,
+      src: input.pageURL,
+      className: "extension"
+    }
+  })}
+    </devtools-widget>
+  `, target);
+};
 var ExtensionPanel = class extends UI5.Panel.Panel {
-  server;
-  id;
-  panelToolbar;
+  #server;
+  #id;
+  #pageURL;
+  #toolbarItems = [];
+  #view;
   #searchableView;
-  constructor(server, panelName, id, pageURL) {
+  constructor(server, panelName, id, pageURL, view = DEFAULT_VIEW4) {
     super(panelName);
-    this.server = server;
-    this.id = id;
+    this.#server = server;
+    this.#id = id;
+    this.#pageURL = pageURL;
+    this.#view = view;
     this.setHideOnDetach();
-    this.panelToolbar = this.element.createChild("devtools-toolbar", "hidden");
-    this.#searchableView = new UI5.SearchableView.SearchableView(this, null);
-    this.#searchableView.show(this.element);
-    const extensionView = new ExtensionView(server, this.id, pageURL, "extension");
-    extensionView.show(this.#searchableView.element);
+    this.performUpdate();
+  }
+  performUpdate() {
+    const output = {};
+    this.#view(
+      {
+        server: this.#server,
+        id: this.#id,
+        pageURL: this.#pageURL,
+        searchProvider: this,
+        toolbarItems: this.#toolbarItems.map((item2) => item2.data())
+      },
+      output,
+      this.element
+    );
+    if (output.searchableView) {
+      this.#searchableView = output.searchableView;
+    }
   }
   addToolbarItem(item2) {
-    this.panelToolbar.classList.remove("hidden");
-    this.panelToolbar.appendToolbarItem(item2);
+    item2.setOnUpdate(() => this.requestUpdate());
+    this.#toolbarItems.push(item2);
+    this.requestUpdate();
   }
   onSearchCanceled() {
-    this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
-    this.#searchableView.updateSearchMatchesCount(0);
+    this.#server.notifySearchAction(this.#id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
+    this.#searchableView?.updateSearchMatchesCount(0);
   }
   searchableView() {
-    return this.#searchableView;
+    return this.#searchableView ?? null;
   }
   performSearch(searchConfig, _shouldJump, _jumpBackwards) {
     const query = searchConfig.query;
-    this.server.notifySearchAction(
-      this.id,
+    this.#server.notifySearchAction(
+      this.#id,
       Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch,
       query
     );
@@ -1277,11 +1382,11 @@ var ExtensionPanel = class extends UI5.Panel.Panel {
     return false;
   }
   jumpToNextSearchResult() {
-    this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
+    this.#server.notifySearchAction(this.#id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
   }
   jumpToPreviousSearchResult() {
-    this.server.notifySearchAction(
-      this.id,
+    this.#server.notifySearchAction(
+      this.#id,
       Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult
     );
   }
@@ -1296,30 +1401,45 @@ var ExtensionPanel = class extends UI5.Panel.Panel {
   }
 };
 var ExtensionButton = class {
-  id;
-  #toolbarButton;
+  #id;
+  #server;
+  #iconURL = "";
+  #tooltip = "";
+  #disabled = false;
+  #onUpdate;
   constructor(server, id, iconURL, tooltip, disabled) {
-    this.id = id;
-    this.#toolbarButton = new UI5.Toolbar.ToolbarButton("", "");
-    this.#toolbarButton.addEventListener(
-      UI5.Toolbar.ToolbarButton.Events.CLICK,
-      server.notifyButtonClicked.bind(server, this.id)
-    );
+    this.#server = server;
+    this.#id = id;
     this.update(iconURL, tooltip, disabled);
+  }
+  setOnUpdate(onUpdate) {
+    this.#onUpdate = onUpdate;
   }
   update(iconURL, tooltip, disabled) {
     if (typeof iconURL === "string") {
-      this.#toolbarButton.setBackgroundImage(iconURL);
+      this.#iconURL = iconURL;
     }
     if (typeof tooltip === "string") {
-      this.#toolbarButton.setTitle(tooltip);
+      this.#tooltip = tooltip;
     }
     if (typeof disabled === "boolean") {
-      this.#toolbarButton.setEnabled(!disabled);
+      this.#disabled = disabled;
     }
+    this.#onUpdate?.();
+  }
+  data() {
+    return {
+      id: this.#id,
+      iconURL: this.#iconURL,
+      tooltip: this.#tooltip,
+      disabled: this.#disabled,
+      onClick: () => {
+        this.#server.notifyButtonClicked(this.#id);
+      }
+    };
   }
   toolbarButton() {
-    return this.#toolbarButton;
+    return this;
   }
 };
 var hashIdentifier = (id) => Platform.StringUtilities.hashCode(id).toString(36);
@@ -1367,7 +1487,8 @@ var ExtensionSidebarPane = class extends UI5.View.SimpleView {
     if (this.extensionView) {
       this.extensionView.detach(true);
     }
-    this.extensionView = new ExtensionView(this.server, this.#id, url, "extension fill");
+    this.extensionView = new ExtensionView();
+    this.extensionView.data = { server: this.server, id: this.#id, src: url, className: "extension fill" };
     this.extensionView.show(this.element);
     if (!this.element.style.height) {
       this.setHeight("150px");
@@ -1393,7 +1514,8 @@ var ExtensionSidebarPane = class extends UI5.View.SimpleView {
       this.extensionView.detach(true);
       delete this.extensionView;
     }
-    this.objectPropertiesView = new ExtensionNotifierView(this.server, this.#id);
+    this.objectPropertiesView = new ExtensionNotifierView();
+    this.objectPropertiesView.data = { server: this.server, id: this.#id };
     this.objectPropertiesView.show(this.element);
   }
   #setObject(object, title, callback) {
@@ -1422,7 +1544,7 @@ var ExtensionSidebarPane = class extends UI5.View.SimpleView {
 // ../../front_end/panels/common/ExtensionServer.ts
 var ExtensionServer_exports = {};
 __export(ExtensionServer_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   Events: () => Events,
   ExtensionFramesWidget: () => ExtensionFramesWidget,
   ExtensionServer: () => ExtensionServer,
@@ -1445,8 +1567,8 @@ import * as Workspace from "../../models/workspace/workspace.js";
 import * as Components from "../../ui/legacy/components/utils/utils.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
-import { Directives as Directives2, html as html5, render as render5 } from "../../ui/lit/lit.js";
-var { ifDefined, repeat } = Directives2;
+import { Directives as Directives4, html as html6, render as render6 } from "../../ui/lit/lit.js";
+var { ifDefined, repeat: repeat2 } = Directives4;
 var extensionOrigins = /* @__PURE__ */ new WeakMap();
 var extensionServerInstance;
 function parseCanonicalURL(url) {
@@ -1546,9 +1668,9 @@ var RevealableNetworkRequestFilter = class {
   }
   filter;
 };
-var DEFAULT_VIEW4 = (input, _output, target) => {
-  render5(html5`
-    ${repeat(input.frames, (frame) => frame.key, (frame) => html5`
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render6(html6`
+    ${repeat2(input.frames, (frame) => frame.key, (frame) => html6`
       <iframe
         src=${frame.startPage}
         data-devtools-extension=${ifDefined(frame.name)}
@@ -1560,7 +1682,7 @@ var ExtensionFramesWidget = class extends UI6.Widget.Widget {
   #view;
   #frames = [];
   #nextKey = 0;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
   }
@@ -3410,7 +3532,7 @@ import * as Platform3 from "../../core/platform/platform.js";
 import * as Persistence from "../../models/persistence/persistence.js";
 import * as Workspace3 from "../../models/workspace/workspace.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
-import { html as html6 } from "../../ui/lit/lit.js";
+import { html as html7 } from "../../ui/lit/lit.js";
 var UIStrings4 = {
   /**
    * @description Tooltip text indicating that a file is linked to a source map.
@@ -3451,7 +3573,7 @@ var PersistenceUtils = class _PersistenceUtils {
         return null;
       }
       const dotClass = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() === binding.fileSystem.project() ? "purple" : "green";
-      return html6`<devtools-icon class="small dot ${dotClass}" name="document"
+      return html7`<devtools-icon class="small dot ${dotClass}" name="document"
                                  title=${_PersistenceUtils.tooltipForUISourceCode(binding.network)}>
                   </devtools-icon>`;
     }
@@ -3461,9 +3583,9 @@ var PersistenceUtils = class _PersistenceUtils {
     if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
       uiSourceCode
     )) {
-      return html6`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
+      return html7`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
     }
-    return html6`<devtools-icon class="small" name="document"
+    return html7`<devtools-icon class="small" name="document"
                                title=${_PersistenceUtils.tooltipForUISourceCode(uiSourceCode)}>
                 </devtools-icon>`;
   }
@@ -3494,7 +3616,7 @@ import * as Common6 from "../../core/common/common.js";
 import * as i18n13 from "../../core/i18n/i18n.js";
 import * as SDK4 from "../../core/sdk/sdk.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html7, nothing as nothing3, render as render6 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html8, nothing as nothing3, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
@@ -3556,8 +3678,8 @@ var domLinkifier_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./domLinkifier.css")} */`;
 
 // ../../front_end/panels/common/DOMLinkifier.ts
-var { classMap, ifDefined: ifDefined2 } = Directives3;
-var { widget: widget2 } = UI7.Widget;
+var { classMap, ifDefined: ifDefined2 } = Directives5;
+var { widget: widget3 } = UI7.Widget;
 var UIStrings5 = {
   /**
    * @description Text displayed when trying to create a link to a node in the UI, but the node
@@ -3568,8 +3690,8 @@ var UIStrings5 = {
 };
 var str_5 = i18n13.i18n.registerUIStrings("panels/common/DOMLinkifier.ts", UIStrings5);
 var i18nString5 = i18n13.i18n.getLocalizedString.bind(void 0, str_5);
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  render6(html7`${input.tagName || input.pseudo ? html7`
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  render7(html8`${input.tagName || input.pseudo ? html8`
     <style>${domLinkifier_css_default}</style>
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
@@ -3588,10 +3710,10 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     ...input.classes.map((c) => `.${c}`),
     input.pseudo ? `::${input.pseudo}` : ""
   ].join(" ")}>${[
-    input.tagName ? html7`<span class="node-label-name">${input.tagName}</span>` : nothing3,
-    input.id ? html7`<span class="node-label-id">#${input.id}</span>` : nothing3,
-    ...input.classes.map((className) => html7`<span class="extra node-label-class">.${className}</span>`),
-    input.pseudo ? html7`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing3
+    input.tagName ? html8`<span class="node-label-name">${input.tagName}</span>` : nothing3,
+    input.id ? html8`<span class="node-label-id">#${input.id}</span>` : nothing3,
+    ...input.classes.map((className) => html8`<span class="extra node-label-class">.${className}</span>`),
+    input.pseudo ? html8`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing3
   ]}</button>
     </span>` : i18nString5(UIStrings5.node)}`, target);
 };
@@ -3599,7 +3721,7 @@ var DOMNodeLink = class extends UI7.Widget.Widget {
   #node = void 0;
   #options = void 0;
   #view;
-  constructor(element, node, options, view = DEFAULT_VIEW5) {
+  constructor(element, node, options, view = DEFAULT_VIEW6) {
     super(element, { useShadowDom: true });
     this.element.classList.remove("vbox");
     this.#node = node;
@@ -3693,7 +3815,7 @@ var DOMNodeLink = class extends UI7.Widget.Widget {
   }
 };
 var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
-  render6(html7`
+  render7(html8`
       <style>${domLinkifier_css_default}</style>
       <button class="node-link text-button link-style"
           jslog=${VisualLogging2.link("node").track({ click: true })}
@@ -3772,10 +3894,10 @@ var Linkifier3 = class _Linkifier {
   }
   linkify(node, options) {
     if (node instanceof SDK4.DOMModel.DOMNode) {
-      return html7`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
+      return html8`<devtools-widget ${widget3((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html8`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     if (node instanceof SDK4.DOMModel.DeferredDOMNode) {
-      return html7`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
+      return html8`<devtools-widget ${widget3((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html8`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     throw new Error("Can't linkify non-node");
   }
@@ -3785,7 +3907,7 @@ var Linkifier3 = class _Linkifier {
 var CommentThreadWidget_exports = {};
 __export(CommentThreadWidget_exports, {
   CommentThreadWidget: () => CommentThreadWidget,
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   computeCommentTitle: () => computeCommentTitle,
   inputDisclaimer: () => inputDisclaimer
 });
@@ -3794,11 +3916,11 @@ import "../../ui/components/tooltips/tooltips.js";
 import * as Host5 from "../../core/host/host.js";
 import * as i18n15 from "../../core/i18n/i18n.js";
 import * as SDK5 from "../../core/sdk/sdk.js";
-import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as Buttons4 from "../../ui/components/buttons/buttons.js";
 import * as Input from "../../ui/components/input/input.js";
 import * as MarkdownView from "../../ui/components/markdown_view/markdown_view.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
-import * as Lit3 from "../../ui/lit/lit.js";
+import * as Lit2 from "../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/commentThreadWidget.css.js
@@ -4033,8 +4155,8 @@ var commentThreadWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./commentThreadWidget.css")} */`;
 
 // ../../front_end/panels/common/CommentThreadWidget.ts
-var { html: html8, render: render7, Directives: { classMap: classMap2, createRef, ref: ref2 } } = Lit3;
-var { widget: widget3 } = UI8.Widget;
+var { html: html9, render: render8, Directives: { classMap: classMap2, createRef, ref: ref2 } } = Lit2;
+var { widget: widget4 } = UI8.Widget;
 var UIStrings6 = {
   /**
    * @description Text next to the checkmark in the comment thread header indicating that comments have been sent to
@@ -4101,7 +4223,7 @@ var lockedString3 = i18n15.i18n.lockedString;
 function inputDisclaimer() {
   return lockedString3(UIStringsNotTranslate2.inputDisclaimer);
 }
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW7 = (input, _output, target) => {
   const hasComment = input.comments.length > 0;
   const showCommentInput = !hasComment || input.isEditing;
   let buttonText;
@@ -4123,19 +4245,19 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   };
   const renderHeaderStatus = () => {
     if (!hasComment) {
-      return Lit3.nothing;
+      return Lit2.nothing;
     }
     switch (input.status) {
       case "SENT_TO_AGENT":
         if (input.transmitted) {
-          return html8`
+          return html9`
             <div class="working-status">
               <devtools-spinner></devtools-spinner>
               <span>${i18nString6(UIStrings6.working)}</span>
             </div>
           `;
         }
-        return html8`
+        return html9`
           <div class="sent-status">
             <devtools-icon
               class="check-icon"
@@ -4147,23 +4269,23 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         `;
       // clang-format on
       case "ACTIVE":
-        return html8`
+        return html9`
           <devtools-button
             class="delete-button"
             aria-label=${i18nString6(UIStrings6.deleteQueuedComment)}
             .iconName=${"bin"}
-            .variant=${Buttons3.Button.Variant.ICON}
-            .size=${Buttons3.Button.Size.SMALL}
+            .variant=${Buttons4.Button.Variant.ICON}
+            .size=${Buttons4.Button.Size.SMALL}
             .title=${i18nString6(UIStrings6.deleteQueuedComment)}
             @click=${input.onDeleteQueuedComment}
           ></devtools-button>
         `;
       // clang-format on
       default:
-        return Lit3.nothing;
+        return Lit2.nothing;
     }
   };
-  render7(html8`
+  render8(html9`
     <style>@scope to (devtools-widget > *) { ${Input.textInputStyles} }</style>
     <style>${commentThreadWidget_css_default}</style>
     <div
@@ -4171,14 +4293,14 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       jslog=${VisualLogging3.popover("comment-thread")}>
       <div class="header">
         <span class="selected-item">
-          ${"node" in input.title ? widget3(DOMNodeLink, { node: input.title.node }) : html8`<span class="selected-item-text">${input.title.text}</span>`}
+          ${"node" in input.title ? widget4(DOMNodeLink, { node: input.title.node }) : html9`<span class="selected-item-text">${input.title.text}</span>`}
         </span>
         <div class="header-actions">
           ${renderHeaderStatus()}
         </div>
       </div>
 
-      ${showCommentInput ? html8`
+      ${showCommentInput ? html9`
         <textarea
           ${ref2(input.textAreaRef)}
           class="devtools-text-input input"
@@ -4228,7 +4350,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
             ${buttonText}
           </devtools-button>
         </div>
-      ` : html8`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? html8`
+      ` : html9`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? html9`
           <div class="comment-text"
             @click=${() => {
     input.onSetEditMode(true);
@@ -4236,7 +4358,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           >
             ${comment.text}
           </div>
-        ` : html8`
+        ` : html9`
           <div class="agent-response">
             <div class="elbow"></div>
             <div class="response-content">
@@ -4250,11 +4372,11 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         `)}</div>
       `}
 
-      ${input.elementRemoved ? html8`
+      ${input.elementRemoved ? html9`
         <div class="element-removed-banner" role="status">
           <span>${i18nString6(UIStrings6.elementNoLongerAvailable)}</span>
         </div>
-      ` : Lit3.nothing}
+      ` : Lit2.nothing}
     </div>
   `, target);
 };
@@ -4274,7 +4396,7 @@ var CommentThreadWidget = class extends UI8.Widget.Widget {
   onDeleteQueuedComment;
   onSaveEdit;
   onStartEdit;
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element);
     this.#view = view;
   }
@@ -4421,7 +4543,7 @@ import * as Root2 from "../../core/root/root.js";
 import * as CommentManager from "../../models/comment_manager/comment_manager.js";
 import * as Comments from "../../ui/comments/comments.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
-import * as Lit4 from "../../ui/lit/lit.js";
+import * as Lit3 from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/commentsOverlay.css.js
 var commentsOverlay_css_default = `/*
@@ -4525,11 +4647,11 @@ var UIStrings7 = {
 var str_7 = i18n17.i18n.registerUIStrings("panels/common/CommentsOverlayWidget.ts", UIStrings7);
 var i18nString7 = i18n17.i18n.getLocalizedString.bind(void 0, str_7);
 var {
-  html: html9,
-  render: render8,
+  html: html10,
+  render: render9,
   nothing: nothing5,
-  Directives: { classMap: classMap3, repeat: repeat2, styleMap }
-} = Lit4;
+  Directives: { classMap: classMap3, repeat: repeat3, styleMap: styleMap2 }
+} = Lit3;
 var POPUP_MARGIN = 8;
 var PIN_HEIGHT = 30;
 var POPUP_WIDTH = 288;
@@ -4566,13 +4688,13 @@ function renderAnchorHighlight(thread, highlight) {
   if (!thread || !highlight?.visible) {
     return nothing5;
   }
-  return html9`
+  return html10`
     <div
       class=${classMap3({
     "comment-anchor-highlight": true,
     resolved: thread.status === "RESOLVED"
   })}
-      style=${styleMap({
+      style=${styleMap2({
     transform: `translate3d(${highlight.left}px, ${highlight.top}px, 0)`,
     width: `${highlight.width}px`,
     height: `${highlight.height}px`
@@ -4580,14 +4702,14 @@ function renderAnchorHighlight(thread, highlight) {
     </div>
   `;
 }
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  render8(html9`
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  render9(html10`
     <style>${commentsOverlay_css_default}</style>
     <div class="comments-overlay-container">
-      ${input.hoverHighlight && input.hoverHighlight.visible ? html9`
+      ${input.hoverHighlight && input.hoverHighlight.visible ? html10`
         <div
           class="comment-hover-highlight"
-          style=${styleMap({
+          style=${styleMap2({
     transform: `translate3d(${input.hoverHighlight.left}px, ${input.hoverHighlight.top}px, 0)`,
     width: `${input.hoverHighlight.width}px`,
     height: `${input.hoverHighlight.height}px`
@@ -4596,14 +4718,14 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       ` : nothing5}
       ${renderAnchorHighlight(input.activeThread, input.activeHighlight)}
       ${renderAnchorHighlight(input.hoveredThread, input.hoveredHighlight)}
-      ${repeat2(
+      ${repeat3(
     input.pins.filter((p) => p.visible),
     (p) => p.id,
-    (p) => html9`
+    (p) => html10`
           <div
             class="comment-pin"
             aria-hidden="true"
-            style=${styleMap({
+            style=${styleMap2({
       transform: `translate3d(${p.left}px, ${p.top}px, 0)`
     })}
             @click=${() => input.onPinClick(p.id)}
@@ -4618,7 +4740,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
           </div>
         `
   )}
-      ${repeat2(
+      ${repeat3(
     getPopupItems(input),
     // Keyed by thread so that the popup DOM (and focus) is kept when a
     // hover preview becomes the open thread.
@@ -4631,10 +4753,10 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       const topOffset = item2.anchoredToPin ? item2.position.top + PIN_HEIGHT : item2.position.top - POPUP_MARGIN;
       const maxTop = target.clientHeight - (item2.anchoredToPin ? POPUP_HEIGHT : POPUP_MARGIN);
       const popupTop = Math.min(Math.max(POPUP_MARGIN, topOffset), Math.max(POPUP_MARGIN, maxTop));
-      return html9`
+      return html10`
             <div
               class="comment-popup-widget"
-              style=${styleMap({
+              style=${styleMap2({
         transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)${item2.anchoredToPin ? "" : " translateY(-100%)"}`
       })}
               @mouseenter=${item2.isHoverPreview ? input.onPopupMouseEnter : nothing5}
@@ -4726,7 +4848,7 @@ var CommentsOverlayWidget = class extends UI9.Widget.Widget {
     }
     this.#commentManager.getCommentThread(this.#activeThreadId)?.markResponseSeen();
   }
-  constructor(element, [commentManager], view = DEFAULT_VIEW7) {
+  constructor(element, [commentManager], view = DEFAULT_VIEW8) {
     super(element, { useShadowDom: false });
     this.#view = view;
     this.#commentManager = commentManager;
@@ -5252,12 +5374,12 @@ var ButtonProvider = class {
 var CommentsStatusBarPill_exports = {};
 __export(CommentsStatusBarPill_exports, {
   CommentsStatusBarPill: () => CommentsStatusBarPill,
-  DEFAULT_VIEW: () => DEFAULT_VIEW8
+  DEFAULT_VIEW: () => DEFAULT_VIEW9
 });
 import * as i18n19 from "../../core/i18n/i18n.js";
 import * as CommentManager3 from "../../models/comment_manager/comment_manager.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
-import * as Lit5 from "../../ui/lit/lit.js";
+import * as Lit4 from "../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/commentsStatusBarPill.css.js
@@ -5309,12 +5431,12 @@ var UIStrings8 = {
 };
 var str_8 = i18n19.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings8);
 var i18nString8 = i18n19.i18n.getLocalizedString.bind(void 0, str_8);
-var { html: html10, render: render9 } = Lit5;
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var { html: html11, render: render10 } = Lit4;
+var DEFAULT_VIEW9 = (input, _output, target) => {
   const tooltip = input.threads.flatMap((thread) => thread.comments.map((comment) => comment.text)).join("\n");
-  render9(html10`
+  render10(html11`
     <style>${commentsStatusBarPill_css_default}</style>
-    ${input.threads.length <= 0 ? Lit5.nothing : html10`
+    ${input.threads.length <= 0 ? Lit4.nothing : html11`
       <button
         class="devtools-pill"
         title=${tooltip}
@@ -5323,9 +5445,9 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
         @click=${input.onPillClick}
         jslog=${VisualLogging4.action("comments-status-bar-pill").track({ click: true })}>
         <span>${i18nString8(UIStrings8.viewComments)}</span>
-        ${input.unseenResponseCount > 0 ? html10`
+        ${input.unseenResponseCount > 0 ? html11`
           <span class="comments-counter-badge">${input.unseenResponseCount}</span>
-        ` : Lit5.nothing}
+        ` : Lit4.nothing}
       </button>
     `}
   `, target);
@@ -5334,7 +5456,7 @@ var CommentsStatusBarPill = class extends UI10.Widget.Widget {
   static INJECT = [CommentManager3.CommentManager.CommentManager];
   #view;
   #commentManager;
-  constructor(element, [commentManager], view = DEFAULT_VIEW8) {
+  constructor(element, [commentManager], view = DEFAULT_VIEW9) {
     super(element);
     this.#view = view;
     this.#commentManager = commentManager;

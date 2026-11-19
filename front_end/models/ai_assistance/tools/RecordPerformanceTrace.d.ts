@@ -1,7 +1,7 @@
 import * as Host from '../../../core/host/host.js';
 import type { AgentFocus } from '../performance/AIContext.js';
-import { type BaseToolCapability, type ContextHandlerResult, type ContextTool, type PerformanceRecordingCapability, PermissionPrompt, ToolName } from './Tool.js';
-export declare class RecordPerformanceTraceTool implements ContextTool<Record<string, never>, AgentFocus, BaseToolCapability & PerformanceRecordingCapability> {
+import { type BaseToolCapability, type ContextHandlerResult, type ContextTool, type PerformanceRecordingCapability, PermissionPrompt, type TargetCapability, ToolName } from './Tool.js';
+export declare class RecordPerformanceTraceTool implements ContextTool<Record<string, never>, AgentFocus, BaseToolCapability & PerformanceRecordingCapability & TargetCapability> {
     readonly name: ToolName;
     readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
@@ -10,5 +10,5 @@ export declare class RecordPerformanceTraceTool implements ContextTool<Record<st
         title: string;
         action: string;
     };
-    handler(_params: Record<string, never>, capabilities: BaseToolCapability & PerformanceRecordingCapability): Promise<ContextHandlerResult<AgentFocus>>;
+    handler(_params: Record<string, never>, capabilities: BaseToolCapability & PerformanceRecordingCapability & TargetCapability): Promise<ContextHandlerResult<AgentFocus>>;
 }

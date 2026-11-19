@@ -92,6 +92,7 @@ export class SplitWidget extends SplitWidgetBase {
         });
         this.#resizerElement = this.contentElement.createChild('div', 'shadow-split-widget-resizer');
         this.#resizerElement.setAttribute('jslog', `${VisualLogging.resizer().track({ drag: true })}`);
+        this.#resizerElement.setAttribute('part', 'resizer');
         this.#resizerWidget = new SimpleResizerWidget();
         this.#resizerWidget.setEnabled(true);
         this.#resizerWidget.addEventListener("ResizeStart" /* ResizerWidgetEvents.RESIZE_START */, this.#onResizeStart, this);
@@ -844,13 +845,19 @@ export class SplitWidgetElement extends WidgetElement {
         }
         else if (name === 'show') {
             if (newValue === 'main') {
-                widget.hideSidebar();
+                if (widget.showMode() !== "OnlyMain" /* ShowMode.ONLY_MAIN */) {
+                    widget.hideSidebar();
+                }
             }
             else if (newValue === 'sidebar') {
-                widget.hideMain();
+                if (widget.showMode() !== "OnlySidebar" /* ShowMode.ONLY_SIDEBAR */) {
+                    widget.hideMain();
+                }
             }
             else if (newValue === 'both' || newValue === null) {
-                widget.showBoth();
+                if (widget.showMode() !== "Both" /* ShowMode.BOTH */) {
+                    widget.showBoth();
+                }
             }
         }
     }

@@ -33,8 +33,8 @@ export declare class LighthouseFormatter {
      */
     formatReport(report: LHModel.ReporterTypes.ReportJSON, categoryId: LighthouseCategoryArg): string;
     /**
-     * Returns a markdown list of all audits in a given category.
-     * Highlight failing audits (score < 90).
+     * Formats non-hidden failing, errored, and detail-bearing informative audits in a
+     * category, capping large tables, sub-item lists, and network-tree branches.
      */
     audits(report: LHModel.ReporterTypes.ReportJSON, categoryOrId: LHModel.RunTypes.CategoryId | LHModel.ReporterTypes.CategoryJSON): string;
 }

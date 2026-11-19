@@ -23,6 +23,7 @@ export interface Extras {
     optimistic: boolean;
     fcpResult?: MetricResult;
     lcpResult?: MetricResult;
+    lcpNodeId?: string;
     interactiveResult?: MetricResult;
     observedSpeedIndex?: number;
 }

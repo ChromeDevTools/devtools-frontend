@@ -226,6 +226,9 @@
       "path": "../common/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../layer_viewer/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "components/bundle-tsconfig.ref.json"
     },
     {

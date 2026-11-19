@@ -49,15 +49,24 @@ export class EmptyWidget extends VBox {
         // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
         this.performUpdate();
     }
+    get link() {
+        return this.#link;
+    }
     set link(link) {
         this.#link = link;
         // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
         this.performUpdate();
     }
+    get text() {
+        return this.#text;
+    }
     set text(text) {
         this.#text = text;
         // TODO: migrate to `requestUpdate()` once callers don't manipulate DOM directly and synchronously anymore.
         this.performUpdate();
+    }
+    get header() {
+        return this.#header;
     }
     set header(header) {
         this.#header = header;

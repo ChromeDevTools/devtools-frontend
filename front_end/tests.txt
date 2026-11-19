@@ -227,6 +227,9 @@ models/comment_manager/CommentThread.test.js
 models/computed_style/ComputedStyleModel.test.js
 models/cpu_profile/CPUProfileDataModel.test.js
 models/crux-manager/CrUXManager.test.js
+models/devtools_state/StateManager.test.js
+models/devtools_state/providers/CPUThrottlingStateProvider.test.js
+models/devtools_state/providers/SettingsStateProvider.test.js
 models/elements/DOMChanges.test.js
 models/elements/StyleChanges.test.js
 models/emulation/DeviceModeModel.test.js
@@ -725,10 +728,12 @@ panels/timeline/TimelineInvariants.test.js
 panels/timeline/TimelineLandingPage.test.js
 panels/timeline/TimelineLoader.test.js
 panels/timeline/TimelineMiniMap.test.js
+panels/timeline/TimelinePaintProfilerView.test.js
 panels/timeline/TimelinePanel.test.js
 panels/timeline/TimelineSelection.test.js
 panels/timeline/TimelineTreeView.test.js
 panels/timeline/TimelineUIUtils.test.js
+panels/timeline/TraceSnapshotSerializer.test.js
 panels/timeline/TrackConfigBanner.test.js
 panels/timeline/TrackConfiguration.test.js
 panels/timeline/components/BreadcrumbsUI.test.js

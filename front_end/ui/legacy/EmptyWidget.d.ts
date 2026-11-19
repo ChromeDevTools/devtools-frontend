@@ -10,8 +10,11 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement | Document
 export declare class EmptyWidget extends VBox<ShadowRoot> {
     #private;
     constructor(headerOrElement: string | HTMLElement, text?: string, element?: HTMLElement, view?: View);
+    get link(): Platform.DevToolsPath.UrlString | undefined | null;
     set link(link: Platform.DevToolsPath.UrlString | undefined | null);
+    get text(): string;
     set text(text: string);
+    get header(): string;
     set header(header: string);
     performUpdate(): void;
 }

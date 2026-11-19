@@ -1,82 +1,96 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Geometry from '../../ui/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 import timelinePaintProfilerStyles from './timelinePaintProfiler.css.js';
 import { TracingFrameLayerTree } from './TracingLayerTree.js';
-const { html, render } = Lit;
-const { createRef, ref } = Lit.Directives;
-export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
-    logAndImageSplitWidget;
-    imageView;
-    paintProfilerView;
-    logTreeView;
-    needsUpdateWhenVisible;
-    pendingSnapshot;
-    event;
-    paintProfilerModel;
-    lastLoadedSnapshot;
+const { ifDefined, styleMap } = Directives;
+const { widget } = UI.Widget;
+export const DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `
+    <style>${timelinePaintProfilerStyles}</style>
+    <div class="timeline-paint-profiler-view vbox flex-auto">
+      <devtools-widget class="timeline-paint-profiler-bar"
+          ${widget(LayerViewer.PaintProfilerView.PaintProfilerView, {
+        showImageCallback: input.onShowImage,
+        snapshotAndLog: { snapshot: input.snapshot, log: input.log, clipRect: input.clipRect },
+    })}
+          @WindowChanged=${(e) => input.onWindowChanged(e.detail)}>
+      </devtools-widget>
+      <devtools-split-view direction="column" sidebar-position="first" name="timeline-paint-profiler-log-split">
+        <devtools-widget slot="sidebar"
+            ${widget(LayerViewer.PaintProfilerView.PaintProfilerCommandLogView, {
+        commandLog: input.log,
+        selectionWindow: input.selectionWindow,
+    })}>
+        </devtools-widget>
+        <devtools-widget slot="main"
+            ${widget(TimelinePaintImageView, {
+        imageURL: input.imageURL,
+        maskRectangle: input.clipRect,
+    })}>
+        </devtools-widget>
+      </devtools-split-view>
+    </div>`, target);
+    // clang-format on
+};
+export class TimelinePaintProfilerView extends UI.Widget.VBox {
+    #view;
+    #needsUpdateWhenVisible = false;
+    #pendingSnapshot = null;
+    #event = null;
+    #paintProfilerModel = null;
+    #lastLoadedSnapshot = null;
     #parsedTrace;
-    constructor(parsedTrace, element) {
-        super(false, false, /* settingName */ undefined, /* defaultSidebarWidth */ undefined, 
-        /* defaultSidebarHeight */ undefined, /* constraintsInDip */ undefined, element);
-        this.setSidebarSize(60);
-        this.setResizable(false);
+    #snapshot = null;
+    #log = [];
+    #clipRect = null;
+    #selectionWindow = null;
+    #imageURL = undefined;
+    constructor(element, parsedTrace, view = DEFAULT_VIEW) {
+        super(element);
         this.#parsedTrace = parsedTrace;
-        this.logAndImageSplitWidget = new UI.SplitWidget.SplitWidget(true, false, 'timeline-paint-profiler-log-split');
-        this.setMainWidget(this.logAndImageSplitWidget);
-        this.imageView = new TimelinePaintImageView();
-        this.logAndImageSplitWidget.setMainWidget(this.imageView);
-        this.paintProfilerView = new LayerViewer.PaintProfilerView.PaintProfilerView();
-        this.paintProfilerView.showImageCallback = this.imageView.showImage.bind(this.imageView);
-        this.paintProfilerView.addEventListener("WindowChanged" /* LayerViewer.PaintProfilerView.Events.WINDOW_CHANGED */, this.onWindowChanged, this);
-        this.setSidebarWidget(this.paintProfilerView);
-        this.logTreeView = new LayerViewer.PaintProfilerView.PaintProfilerCommandLogView();
-        this.logAndImageSplitWidget.setSidebarWidget(this.logTreeView);
-        this.needsUpdateWhenVisible = false;
-        this.pendingSnapshot = null;
-        this.event = null;
-        this.paintProfilerModel = null;
-        this.lastLoadedSnapshot = null;
+        this.#view = view;
     }
     wasShown() {
         super.wasShown();
-        if (this.needsUpdateWhenVisible) {
-            this.needsUpdateWhenVisible = false;
-            this.update();
+        this.requestUpdate();
+        if (this.#needsUpdateWhenVisible) {
+            this.#needsUpdateWhenVisible = false;
+            this.#updateSnapshot();
         }
     }
     setSnapshot(snapshot) {
-        this.releaseSnapshot();
-        this.pendingSnapshot = snapshot;
-        this.event = null;
-        this.updateWhenVisible();
+        this.#releaseSnapshot();
+        this.#pendingSnapshot = snapshot;
+        this.#event = null;
+        this.#updateWhenVisible();
     }
     #rasterEventHasTile(event) {
         const data = event.args.tileData;
         if (!data) {
             return false;
         }
-        const frame = this.#parsedTrace.data.Frames.framesById[data.sourceFrameNumber];
+        const frame = this.#parsedTrace?.data.Frames.framesById[data.sourceFrameNumber];
         if (!frame?.layerTree) {
             return false;
         }
         return true;
     }
     setEvent(paintProfilerModel, event) {
-        this.releaseSnapshot();
-        this.paintProfilerModel = paintProfilerModel;
-        this.pendingSnapshot = null;
-        this.event = event;
-        this.updateWhenVisible();
+        this.#releaseSnapshot();
+        this.#paintProfilerModel = paintProfilerModel;
+        this.#pendingSnapshot = null;
+        this.#event = event;
+        this.#updateWhenVisible();
         if (Trace.Types.Events.isPaint(event)) {
-            const snapshot = this.#parsedTrace.data.LayerTree.paintsToSnapshots.get(event);
+            const snapshot = this.#parsedTrace?.data.LayerTree.paintsToSnapshots.get(event);
             return Boolean(snapshot);
         }
         if (Trace.Types.Events.isRasterTask(event)) {
@@ -84,12 +98,12 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         }
         return false;
     }
-    updateWhenVisible() {
+    #updateWhenVisible() {
         if (this.isShowing()) {
-            this.update();
+            this.#updateSnapshot();
         }
         else {
-            this.needsUpdateWhenVisible = true;
+            this.#needsUpdateWhenVisible = true;
         }
     }
     async #rasterTilePromise(rasterEvent) {
@@ -104,7 +118,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         if (!target) {
             return null;
         }
-        const frame = this.#parsedTrace.data.Frames.framesById[data.sourceFrameNumber];
+        const frame = this.#parsedTrace?.data.Frames.framesById[data.sourceFrameNumber];
         if (!frame?.layerTree) {
             return null;
         }
@@ -112,23 +126,24 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         const tracingLayerTree = await layerTree.layerTreePromise();
         return tracingLayerTree ? await tracingLayerTree.pictureForRasterTile(data.tileId.id_ref) : null;
     }
-    update() {
-        this.logTreeView.commandLog = [];
-        void this.paintProfilerView.setSnapshotAndLog(null, [], null);
+    #updateSnapshot() {
+        this.#snapshot = null;
+        this.#log = [];
+        this.requestUpdate();
         let snapshotPromise;
-        if (this.pendingSnapshot) {
-            snapshotPromise = Promise.resolve({ rect: null, snapshot: this.pendingSnapshot });
+        if (this.#pendingSnapshot) {
+            snapshotPromise = Promise.resolve({ rect: null, snapshot: this.#pendingSnapshot });
         }
-        else if (this.event && this.paintProfilerModel && Trace.Types.Events.isPaint(this.event)) {
+        else if (this.#event && this.#paintProfilerModel && Trace.Types.Events.isPaint(this.#event)) {
             // When we process events (TimelineModel#processEvent) and find a
             // snapshot event, we look for the last paint that occurred and link the
             // snapshot to that paint event. That is why here if the event is a Paint
             // event, we look to see if it has had a matching picture event set for
             // it.
-            const snapshotEvent = this.#parsedTrace.data.LayerTree.paintsToSnapshots.get(this.event);
+            const snapshotEvent = this.#parsedTrace?.data.LayerTree.paintsToSnapshots.get(this.#event);
             if (snapshotEvent) {
                 const encodedData = snapshotEvent.args.snapshot.skp64;
-                snapshotPromise = this.paintProfilerModel.loadSnapshot(encodedData).then(snapshot => {
+                snapshotPromise = this.#paintProfilerModel.loadSnapshot(encodedData).then(snapshot => {
                     return snapshot && { rect: null, snapshot };
                 });
             }
@@ -136,67 +151,87 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
                 snapshotPromise = Promise.resolve(null);
             }
         }
-        else if (this.event && Trace.Types.Events.isRasterTask(this.event)) {
-            snapshotPromise = this.#rasterTilePromise(this.event);
+        else if (this.#event && Trace.Types.Events.isRasterTask(this.#event)) {
+            snapshotPromise = this.#rasterTilePromise(this.#event);
         }
         else {
             console.assert(false, 'Unexpected event type or no snapshot');
             return;
         }
         void snapshotPromise.then(snapshotWithRect => {
-            this.releaseSnapshot();
+            this.#releaseSnapshot();
             if (!snapshotWithRect) {
-                this.imageView.showImage();
+                this.#imageURL = undefined;
+                this.requestUpdate();
                 return;
             }
             const snapshot = snapshotWithRect.snapshot;
-            this.lastLoadedSnapshot = snapshot;
-            this.imageView.setMask(snapshotWithRect.rect);
+            this.#lastLoadedSnapshot = snapshot;
+            this.#clipRect = snapshotWithRect.rect;
+            this.requestUpdate();
             void snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log || []));
         });
         function onCommandLogDone(snapshot, clipRect, log) {
-            this.logTreeView.commandLog = log || [];
-            void this.paintProfilerView.setSnapshotAndLog(snapshot, log || [], clipRect);
+            this.#snapshot = snapshot;
+            this.#log = log || [];
+            this.#clipRect = clipRect;
+            this.requestUpdate();
         }
     }
-    releaseSnapshot() {
-        if (!this.lastLoadedSnapshot) {
+    #releaseSnapshot() {
+        if (!this.#lastLoadedSnapshot) {
             return;
         }
-        this.lastLoadedSnapshot.release();
-        this.lastLoadedSnapshot = null;
+        this.#lastLoadedSnapshot.release();
+        this.#lastLoadedSnapshot = null;
     }
-    onWindowChanged() {
-        this.logTreeView.selectionWindow = this.paintProfilerView.selectionWindow();
+    #onShowImage = (imageURL) => {
+        this.#imageURL = imageURL;
+        this.requestUpdate();
+    };
+    #onWindowChanged = (selectionWindow) => {
+        this.#selectionWindow = selectionWindow;
+        this.requestUpdate();
+    };
+    performUpdate() {
+        const input = {
+            snapshot: this.#snapshot,
+            log: this.#log,
+            clipRect: this.#clipRect,
+            selectionWindow: this.#selectionWindow,
+            imageURL: this.#imageURL,
+            onShowImage: this.#onShowImage,
+            onWindowChanged: this.#onWindowChanged,
+        };
+        this.#view(input, undefined, this.contentElement);
     }
 }
-export const DEFAULT_VIEW = (input, output, target) => {
-    const imageElementRef = createRef();
+export const IMAGE_VIEW_DEFAULT_VIEW = (input, _output, target) => {
+    const onLoad = (event) => {
+        if (event.target instanceof HTMLImageElement) {
+            input.onImageLoaded(event.target.naturalWidth, event.target.naturalHeight);
+        }
+    };
     // clang-format off
     render(html `
-  <div class="paint-profiler-image-view fill">
-    <div class="paint-profiler-image-container" style="-webkit-transform: ${input.imageContainerWebKitTransform}">
-      <img src=${input.imageURL} display=${input.imageContainerHidden ? 'none' : 'block'} ${ref(imageElementRef)}>
-      <div style=${Lit.Directives.styleMap({
+        <style>${timelinePaintProfilerStyles}</style>
+        <div class="paint-profiler-image-view fill">
+          <div class="paint-profiler-image-container"
+              ?hidden=${input.imageContainerHidden}
+              style=${styleMap({ '-webkit-transform': input.imageContainerWebKitTransform })}>
+            <img src=${ifDefined(input.imageURL || undefined)} @load=${onLoad}>
+            <div style=${styleMap({
         display: input.maskElementHidden ? 'none' : 'block',
         ...input.maskElementStyle
     })}>
-      </div>
-    </div>
-  </div>`, target);
+            </div>
+          </div>
+        </div>`, target);
     // clang-format on
-    // The elements are guaranteed to exist after render completes
-    // because they are not conditionally rendered within the template.
-    const imageElement = imageElementRef.value;
-    if (!imageElement?.naturalHeight || !imageElement.naturalWidth) {
-        throw new Error('ImageElement were not found in the TimelinePaintImageView.');
-    }
-    output.imageElementNaturalHeight = imageElement.naturalHeight;
-    output.imageElementNaturalWidth = imageElement.naturalWidth;
 };
 export class TimelinePaintImageView extends UI.Widget.Widget {
     transformController;
-    maskRectangle;
+    #maskRectangle = null;
     #inputData = {
         maskElementHidden: true,
         imageContainerHidden: true,
@@ -206,12 +241,15 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     };
     #view;
     #imageElementDimensions;
-    constructor(view = DEFAULT_VIEW) {
-        super();
-        this.registerRequiredCSS(timelinePaintProfilerStyles);
+    constructor(element, view = IMAGE_VIEW_DEFAULT_VIEW) {
+        super(element);
         this.#view = view;
         this.transformController = new LayerViewer.TransformController.TransformController((this.contentElement), true);
         this.transformController.addEventListener("TransformChanged" /* LayerViewer.TransformController.Events.TRANSFORM_CHANGED */, this.updateImagePosition, this);
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
     }
     onResize() {
         this.requestUpdate();
@@ -230,14 +268,14 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
         const scale = clientHeight / height;
         const oldMaskStyle = JSON.stringify(this.#inputData.maskElementStyle);
         let newMaskStyle = {};
-        if (this.maskRectangle) {
+        if (this.#maskRectangle) {
             newMaskStyle = {
                 width: width + 'px',
                 height: height + 'px',
-                borderLeftWidth: this.maskRectangle.x + 'px',
-                borderTopWidth: this.maskRectangle.y + 'px',
-                borderRightWidth: (width - this.maskRectangle.x - this.maskRectangle.width) + 'px',
-                borderBottomWidth: (height - this.maskRectangle.y - this.maskRectangle.height) + 'px',
+                borderLeftWidth: this.#maskRectangle.x + 'px',
+                borderTopWidth: this.#maskRectangle.y + 'px',
+                borderRightWidth: (width - this.#maskRectangle.x - this.#maskRectangle.width) + 'px',
+                borderBottomWidth: (height - this.#maskRectangle.y - this.#maskRectangle.height) + 'px',
             };
         }
         this.#inputData.maskElementStyle = newMaskStyle;
@@ -262,29 +300,45 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
             this.requestUpdate();
         }
     }
-    showImage(imageURL) {
-        this.#inputData.imageContainerHidden = !imageURL;
-        if (imageURL) {
-            this.#inputData.imageURL = imageURL;
+    set imageURL(imageURL) {
+        if (this.imageURL === imageURL) {
+            return;
         }
+        this.#imageElementDimensions = undefined;
+        // Drop the previous image's geometry until the new image reports its size.
+        this.#inputData.maskElementStyle = {};
+        this.#inputData.imageContainerWebKitTransform = '';
+        this.#inputData.imageContainerHidden = !imageURL;
+        this.#inputData.imageURL = imageURL ?? '';
         this.requestUpdate();
+    }
+    get imageURL() {
+        return this.#inputData.imageContainerHidden ? undefined : this.#inputData.imageURL;
+    }
+    set maskRectangle(maskRectangle) {
+        if (this.#maskRectangle === maskRectangle) {
+            return;
+        }
+        this.#maskRectangle = maskRectangle;
+        this.#inputData.maskElementHidden = !maskRectangle;
+        this.updateImagePosition();
+        this.requestUpdate();
+    }
+    get maskRectangle() {
+        return this.#maskRectangle;
+    }
+    #onImageLoaded = (naturalWidth, naturalHeight) => {
+        this.#imageElementDimensions = { naturalHeight, naturalWidth };
+        this.updateImagePosition();
+    };
+    showImage(imageURL) {
+        this.imageURL = imageURL;
     }
     setMask(maskRectangle) {
         this.maskRectangle = maskRectangle;
-        this.#inputData.maskElementHidden = !maskRectangle;
-        this.requestUpdate();
     }
     performUpdate() {
-        const output = {};
-        this.#view(this.#inputData, output, this.contentElement);
-        if (output.imageElementNaturalHeight !== undefined && output.imageElementNaturalWidth !== undefined) {
-            this.#imageElementDimensions = {
-                naturalHeight: output.imageElementNaturalHeight,
-                naturalWidth: output.imageElementNaturalWidth,
-            };
-        }
-        // Image can only be updated to correctly fit the component when the component has loaded.
-        this.updateImagePosition();
+        this.#view({ ...this.#inputData, onImageLoaded: this.#onImageLoaded }, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=TimelinePaintProfilerView.js.map

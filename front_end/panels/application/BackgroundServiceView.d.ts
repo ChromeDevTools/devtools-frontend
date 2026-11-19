@@ -13,8 +13,8 @@ export interface ViewInput {
     onSave: () => void;
     toggleRecording: () => void;
     onSelectEvent: (event: EventData) => void;
-    onOriginCheckboxChanged: (event: Event) => void;
-    onStorageKeyCheckboxChanged: (event: Event) => void;
+    onOriginCheckboxChanged: (checked: boolean) => void;
+    onStorageKeyCheckboxChanged: (checked: boolean) => void;
     isOriginCheckboxChecked: boolean;
     isStorageKeyCheckboxChecked: boolean;
     createLearnMoreLink: () => Platform.DevToolsPath.UrlString;

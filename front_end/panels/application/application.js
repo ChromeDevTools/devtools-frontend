@@ -22,7 +22,6 @@ __export(ApplicationPanelSidebar_exports, {
   IndexedDBTreeElement: () => IndexedDBTreeElement,
   ResourcesSection: () => ResourcesSection,
   ServiceWorkersTreeElement: () => ServiceWorkersTreeElement,
-  StorageCategoryView: () => StorageCategoryView,
   StorageTreeElement: () => StorageTreeElement,
   SubAppsTreeElement: () => SubAppsTreeElement
 });
@@ -1079,13 +1078,13 @@ var IndexedDB;
   })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
 })(IndexedDB || (IndexedDB = {}));
 var Input;
-((Input3) => {
+((Input2) => {
   let GestureSourceType;
   ((GestureSourceType2) => {
     GestureSourceType2["Default"] = "default";
     GestureSourceType2["Touch"] = "touch";
     GestureSourceType2["Mouse"] = "mouse";
-  })(GestureSourceType = Input3.GestureSourceType || (Input3.GestureSourceType = {}));
+  })(GestureSourceType = Input2.GestureSourceType || (Input2.GestureSourceType = {}));
   let MouseButton;
   ((MouseButton2) => {
     MouseButton2["None"] = "none";
@@ -1094,47 +1093,47 @@ var Input;
     MouseButton2["Right"] = "right";
     MouseButton2["Back"] = "back";
     MouseButton2["Forward"] = "forward";
-  })(MouseButton = Input3.MouseButton || (Input3.MouseButton = {}));
+  })(MouseButton = Input2.MouseButton || (Input2.MouseButton = {}));
   let DispatchDragEventRequestType;
   ((DispatchDragEventRequestType2) => {
     DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
     DispatchDragEventRequestType2["DragOver"] = "dragOver";
     DispatchDragEventRequestType2["Drop"] = "drop";
     DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
-  })(DispatchDragEventRequestType = Input3.DispatchDragEventRequestType || (Input3.DispatchDragEventRequestType = {}));
+  })(DispatchDragEventRequestType = Input2.DispatchDragEventRequestType || (Input2.DispatchDragEventRequestType = {}));
   let DispatchKeyEventRequestType;
   ((DispatchKeyEventRequestType2) => {
     DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
     DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
     DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
     DispatchKeyEventRequestType2["Char"] = "char";
-  })(DispatchKeyEventRequestType = Input3.DispatchKeyEventRequestType || (Input3.DispatchKeyEventRequestType = {}));
+  })(DispatchKeyEventRequestType = Input2.DispatchKeyEventRequestType || (Input2.DispatchKeyEventRequestType = {}));
   let DispatchMouseEventRequestType;
   ((DispatchMouseEventRequestType2) => {
     DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
     DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(DispatchMouseEventRequestType = Input3.DispatchMouseEventRequestType || (Input3.DispatchMouseEventRequestType = {}));
+  })(DispatchMouseEventRequestType = Input2.DispatchMouseEventRequestType || (Input2.DispatchMouseEventRequestType = {}));
   let DispatchMouseEventRequestPointerType;
   ((DispatchMouseEventRequestPointerType2) => {
     DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
     DispatchMouseEventRequestPointerType2["Pen"] = "pen";
-  })(DispatchMouseEventRequestPointerType = Input3.DispatchMouseEventRequestPointerType || (Input3.DispatchMouseEventRequestPointerType = {}));
+  })(DispatchMouseEventRequestPointerType = Input2.DispatchMouseEventRequestPointerType || (Input2.DispatchMouseEventRequestPointerType = {}));
   let DispatchTouchEventRequestType;
   ((DispatchTouchEventRequestType2) => {
     DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
     DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
     DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
     DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
-  })(DispatchTouchEventRequestType = Input3.DispatchTouchEventRequestType || (Input3.DispatchTouchEventRequestType = {}));
+  })(DispatchTouchEventRequestType = Input2.DispatchTouchEventRequestType || (Input2.DispatchTouchEventRequestType = {}));
   let EmulateTouchFromMouseEventRequestType;
   ((EmulateTouchFromMouseEventRequestType2) => {
     EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
     EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(EmulateTouchFromMouseEventRequestType = Input3.EmulateTouchFromMouseEventRequestType || (Input3.EmulateTouchFromMouseEventRequestType = {}));
+  })(EmulateTouchFromMouseEventRequestType = Input2.EmulateTouchFromMouseEventRequestType || (Input2.EmulateTouchFromMouseEventRequestType = {}));
 })(Input || (Input = {}));
 var LayerTree;
 ((LayerTree2) => {
@@ -4744,7 +4743,6 @@ import * as SDK4 from "../../core/sdk/sdk.js";
 import * as Bindings from "../../models/bindings/bindings.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
-import * as Input2 from "../../ui/components/input/input.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import { html as html3, render as render3 } from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
@@ -4980,7 +4978,6 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   `;
   render3(html3`
     <style>${backgroundServiceView_css_default}</style>
-    <style>${Input2.checkboxStyles}</style>
     <div class="background-service-view">
       <devtools-toolbar class="background-service-toolbar" jslog=${VisualLogging2.toolbar()}>
         <devtools-button title=${buttonTooltip}
@@ -5004,20 +5001,20 @@ var DEFAULT_VIEW2 = (input, output, target) => {
             .iconName=${"download"} .variant=${Buttons2.Button.Variant.TOOLBAR}
             .jslogContext=${"background-service.save-events"}></devtools-button>
         <div class="toolbar-divider"></div>
-        <label title=${i18nString3(UIStrings3.showEventsFromOtherDomains)} class="checkbox-label"
-            jslog=${VisualLogging2.toggle("show-events-from-other-domains").track({ click: true })}
-        >
-          <input type="checkbox" .checked=${input.isOriginCheckboxChecked} @change=${input.onOriginCheckboxChanged}>
+        <devtools-checkbox
+            title=${i18nString3(UIStrings3.showEventsFromOtherDomains)}
+            .checked=${input.isOriginCheckboxChecked}
+            @change=${(e) => input.onOriginCheckboxChanged(e.target.checked)}
+            jslog=${VisualLogging2.toggle("show-events-from-other-domains").track({ click: true })}>
           ${i18nString3(UIStrings3.showEventsFromOtherDomains)}
-        </label>
-        <label title=${i18nString3(UIStrings3.showEventsForOtherStorageKeys)} class="checkbox-label"
-            jslog=${VisualLogging2.toggle("show-events-from-other-partitions").track({ click: true })}
-        >
-          <input type="checkbox" .checked=${input.isStorageKeyCheckboxChecked}
-              @change=${input.onStorageKeyCheckboxChanged}
-          >
+        </devtools-checkbox>
+        <devtools-checkbox
+            title=${i18nString3(UIStrings3.showEventsForOtherStorageKeys)}
+            .checked=${input.isStorageKeyCheckboxChecked}
+            @change=${(e) => input.onStorageKeyCheckboxChanged(e.target.checked)}
+            jslog=${VisualLogging2.toggle("show-events-from-other-partitions").track({ click: true })}>
           ${i18nString3(UIStrings3.showEventsForOtherStorageKeys)}
-        </label>
+        </devtools-checkbox>
       </devtools-toolbar>
       ${input.events.length === 0 ? input.isRecording ? html3`
         ${UI4.Widget.widget(UI4.EmptyWidget.EmptyWidget, {
@@ -5324,14 +5321,12 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.Widg
         this.#selectedEvent = event;
         this.requestUpdate();
       },
-      onOriginCheckboxChanged: (event) => {
-        const checkbox = event.target;
-        this.#isOriginCheckboxChecked = checkbox.checked;
+      onOriginCheckboxChanged: (checked) => {
+        this.#isOriginCheckboxChecked = checked;
         this.refreshView();
       },
-      onStorageKeyCheckboxChanged: (event) => {
-        const checkbox = event.target;
-        this.#isStorageKeyCheckboxChecked = checkbox.checked;
+      onStorageKeyCheckboxChanged: (checked) => {
+        this.#isStorageKeyCheckboxChecked = checked;
         this.refreshView();
       },
       isOriginCheckboxChecked: this.#isOriginCheckboxChecked,
@@ -15892,15 +15887,17 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
   }
   showCategoryView(categoryName, categoryHeadline, categoryDescription, categoryLink) {
     if (!this.categoryView) {
-      this.categoryView = new StorageCategoryView();
+      this.categoryView = new UI26.EmptyWidget.EmptyWidget(categoryHeadline, categoryDescription);
+      this.categoryView.element.classList.add("storage-view");
+    } else {
+      this.categoryView.header = categoryHeadline;
+      this.categoryView.text = categoryDescription;
     }
     this.categoryView.element.setAttribute(
       "jslog",
       `${VisualLogging18.pane().context(Platform9.StringUtilities.toKebabCase(categoryName))}`
     );
-    this.categoryView.setHeadline(categoryHeadline);
-    this.categoryView.setText(categoryDescription);
-    this.categoryView.setLink(categoryLink);
+    this.categoryView.link = categoryLink;
     this.showView(this.categoryView);
   }
   showDOMStorage(domStorage) {
@@ -20539,24 +20536,6 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
     const storageItem = this.#getStorageItem();
     UI32.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
     return false;
-  }
-};
-var StorageCategoryView = class extends UI32.Widget.VBox {
-  emptyWidget;
-  constructor() {
-    super();
-    this.element.classList.add("storage-view");
-    this.emptyWidget = new UI32.EmptyWidget.EmptyWidget("", "");
-    this.emptyWidget.show(this.element);
-  }
-  setText(text) {
-    this.emptyWidget.text = text;
-  }
-  setHeadline(header) {
-    this.emptyWidget.header = header;
-  }
-  setLink(link2) {
-    this.emptyWidget.link = link2;
   }
 };
 var ResourcesSection = class {

@@ -2013,6 +2013,14 @@ var UIStringsNotTranslate = {
    */
   networkRequests: "Network requests",
   /**
+   * @description Time cell text for a network request that is still in flight.
+   */
+  networkRequestPending: "Pending",
+  /**
+   * @description Time cell text for a network request that has no timing data.
+   */
+  networkRequestDurationUnknown: "(unknown)",
+  /**
    * @description Accessible label for the reveal button in the network requests list widget.
    */
   revealFirstNetworkRequest: "Reveal first network request in Network panel",
@@ -2764,6 +2772,19 @@ async function makeSourceFilesListWidget(widgetData) {
   };
 }
 var expandedNetworkRequestsWidgets = /* @__PURE__ */ new WeakSet();
+function formatNetworkRequestDuration(request) {
+  const state = AiAssistanceModel4.ListNetworkRequests.requestDurationState(request);
+  switch (state.type) {
+    case "value":
+      return i18n3.TimeUtilities.secondsToString(state.seconds);
+    case "pending":
+      return lockedString2(UIStringsNotTranslate.networkRequestPending);
+    case "unavailable":
+      return lockedString2(UIStringsNotTranslate.networkRequestDurationUnknown);
+    default:
+      Platform3.assertNever(state, "Unknown RequestDurationState type");
+  }
+}
 async function makeNetworkRequestsListWidget(widgetData) {
   const requests = widgetData.data.requests;
   if (requests.length === 0) {
@@ -2789,7 +2810,7 @@ async function makeNetworkRequestsListWidget(widgetData) {
               <td>${request.name()}</td>
               <td>${request.statusCode}</td>
               <td>${i18n3.ByteUtilities.formatBytesToKb(request.transferSize)}</td>
-              <td>${i18n3.TimeUtilities.secondsToString(request.duration)}</td>
+              <td>${formatNetworkRequestDuration(request)}</td>
             </tr>
           `)}
         </table>

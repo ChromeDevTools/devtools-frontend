@@ -995,7 +995,7 @@ var DEFAULT_VIEW = (input, output, target) => {
     </devtools-button>
   ` : Lit.nothing;
   const template = html`
-    <style>${Input.checkboxStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${Input.checkboxStyles} }</style>
     <style>${userAgentClientHintsForm_css_default}</style>
     <section class="root">
       <div class="tree-title">

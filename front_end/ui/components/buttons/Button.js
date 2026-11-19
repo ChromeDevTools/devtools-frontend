@@ -94,6 +94,9 @@ export class Button extends HTMLElement {
         this.#props.inverseColorTheme = data.inverseColorTheme;
         this.#render();
     }
+    get iconName() {
+        return this.#props.iconName;
+    }
     set iconName(iconName) {
         this.#props.iconName = iconName;
         this.#render();

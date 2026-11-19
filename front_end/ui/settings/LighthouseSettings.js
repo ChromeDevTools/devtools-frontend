@@ -26,4 +26,16 @@ export const catSeoSettingDescriptor = {
     defaultValue: true,
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const catAgenticBrowsingSettingDescriptor = {
+    name: 'lighthouse.cat-agentic-browsing',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: false,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const deviceTypeSettingDescriptor = {
+    name: 'lighthouse.device-type',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: 'mobile',
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=LighthouseSettings.js.map

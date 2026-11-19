@@ -9,25 +9,36 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.paint-profiler-image-view {
-  overflow: hidden;
-}
+@scope to (devtools-widget > *) {
+  .timeline-paint-profiler-view {
+    overflow: hidden;
+  }
 
-.paint-profiler-image-view .paint-profiler-image-container {
-  transform-origin: 0 0;
-}
+  .timeline-paint-profiler-view > .timeline-paint-profiler-bar {
+    flex: none;
+    height: 60px;
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 
-.paint-profiler-image-view .paint-profiler-image-container div {
-  border-color: var(--sys-size-1) solid var(--sys-color-divider);
-  border-style: solid;
-  z-index: 100;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
+  .paint-profiler-image-view {
+    overflow: hidden;
+  }
 
-.paint-profiler-image-view img {
-  border: solid var(--sys-size-1) var(--sys-color-inverse-surface);
+  .paint-profiler-image-view .paint-profiler-image-container {
+    transform-origin: 0 0;
+  }
+
+  .paint-profiler-image-view .paint-profiler-image-container div {
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .paint-profiler-image-view img {
+    border: solid var(--sys-size-1) var(--sys-color-inverse-surface);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./timelinePaintProfiler.css')} */`;

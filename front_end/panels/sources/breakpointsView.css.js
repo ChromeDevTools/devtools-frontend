@@ -26,13 +26,6 @@ export default `/*
     text-decoration: underline;
   }
 
-  input {
-    height: var(--sys-size-6);
-    width: var(--sys-size-6);
-    flex-shrink: 0;
-    margin: var(--sys-size-3) 0;
-  }
-
   details {
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     padding: var(--sys-size-2) 0;
@@ -171,20 +164,15 @@ export default `/*
     background-color: var(--sys-color-tonal-container);
   }
 
-  .breakpoint-item.logpoint > label > .type-indicator {
+  .breakpoint-item.logpoint > .type-indicator {
     border-color: var(--sys-color-pink-bright);
   }
 
-  .breakpoint-item.conditional-breakpoint > label > .type-indicator {
+  .breakpoint-item.conditional-breakpoint > .type-indicator {
     border-color: var(--sys-color-orange-bright);
   }
 
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-  }
-
-  .checkbox-label > input {
+  .breakpoint-item > devtools-checkbox {
     margin-left: var(--sys-size-8);
     margin-right: var(--sys-size-4);
   }
@@ -199,7 +187,7 @@ export default `/*
     }
   }
 
-  input.group-checkbox {
+  devtools-checkbox.group-checkbox {
     margin: 0;
     display: none;
   }
@@ -226,25 +214,15 @@ export default `/*
     margin-bottom: var(--sys-size-2);
   }
 
-  .pause-on-caught-exceptions > .checkbox-label > input,
-  .pause-on-uncaught-exceptions > .checkbox-label > input {
+  .pause-on-caught-exceptions > devtools-checkbox,
+  .pause-on-uncaught-exceptions > devtools-checkbox {
     margin-left: var(--sys-size-4);
-  }
-
-  .pause-on-caught-exceptions > .checkbox-label > span,
-  .pause-on-uncaught-exceptions > .checkbox-label > span {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+    max-width: calc(100% - var(--sys-size-4));
   }
 
   .pause-on-uncaught-exceptions,
   .pause-on-caught-exceptions {
     padding-right: var(--sys-size-5);
-
-    & > label {
-      width: fit-content;
-    }
   }
 
   details > summary:focus,

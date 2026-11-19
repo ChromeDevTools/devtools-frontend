@@ -1,13 +1,29 @@
 import { ShowMode, type SplitWidget } from './SplitWidget.js';
 import { TabbedPane, type TabbedPaneTabDelegate } from './TabbedPane.js';
 import type { TabbedViewLocation } from './View.js';
-declare class DrawerTabbedPane extends TabbedPane {
-    constructor();
-    setVerticalMinimized(isMinimized: boolean): void;
-    restoreAfterVerticalMinimized(): void;
+export interface DrawerTabbedPaneViewInput {
+    isVerticalMinimized: boolean;
+    label: string;
 }
+export type DrawerTabbedPaneView = (input: DrawerTabbedPaneViewInput, output: undefined, target: HTMLElement | ShadowRoot) => void;
+export declare const DEFAULT_DRAWER_TABBED_PANE_VIEW: DrawerTabbedPaneView;
+declare class DrawerTabbedPane extends TabbedPane {
+    #private;
+    constructor(label: string, view?: DrawerTabbedPaneView);
+    setVerticalMinimized(isMinimized: boolean): void;
+    performUpdate(): void;
+}
+export interface ToolbarViewInput {
+    isVertical: boolean;
+    isMinimized: boolean;
+    showOrientationToggle: boolean;
+    onToggleOrientation: () => void;
+    onToggleMinimized: () => void;
+    onClose: () => void;
+}
+export type ToolbarView = (input: ToolbarViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_TOOLBAR_VIEW: ToolbarView;
 interface InspectorDrawerViewOptions {
-    splitWidget: SplitWidget;
     revealDrawer: () => void;
     isVisible: () => boolean;
     drawerLabel: string;
@@ -28,6 +44,9 @@ interface InspectorDrawerViewOptions {
         inspectorHeight: number;
     };
     setInspectorMinimumSize: (width: number, height: number) => void;
+    splitWidget?: SplitWidget;
+    toolbarView?: ToolbarView;
+    drawerTabbedPaneView?: DrawerTabbedPaneView;
 }
 interface InspectorDrawerPresentation {
     isVertical: boolean;
@@ -39,6 +58,9 @@ export declare class InspectorDrawerView {
     readonly tabbedLocation: TabbedViewLocation;
     readonly tabbedPane: DrawerTabbedPane;
     constructor(options: InspectorDrawerViewOptions);
+    attachSplitWidget(splitWidget: SplitWidget): void;
+    showMode(): ShowMode;
+    sidebarIsShowing(): boolean;
     restoreMinimizedStateFromSettings(): void;
     setVertical(shouldBeVertical: boolean): void;
     applyState(showMode: ShowMode, minimized: boolean): void;

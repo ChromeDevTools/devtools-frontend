@@ -20378,6 +20378,19 @@ function originatingElement(node) {
   }
   return current;
 }
+async function parentElementInFlatTree(node) {
+  if (node.hasAssignedSlot()) {
+    return await node.assignedSlot?.deferredNode.resolvePromise() ?? null;
+  }
+  let parent = node.parentNode;
+  while (parent?.isShadowRoot()) {
+    parent = parent.parentNode;
+  }
+  if (!parent || parent.nodeType() === 9 /* DOCUMENT_NODE */) {
+    return null;
+  }
+  return parent;
+}
 function treeScopeNodeId(node, property) {
   return property.ownerStyle.type === "Inline" /* Inline */ ? node.getTreeRoot()?.backendNodeId() : property.ownerStyle.parentRule?.treeScope;
 }
@@ -20524,16 +20537,19 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       inheritedResult.matchedCSSRules = cleanUserAgentPayload(inheritedResult.matchedCSSRules);
     }
     this.#environmentVariables = await this.cssModel().getEnvironmentVariables();
-    this.#mainDOMCascade = await this.buildMainCascade(
+    const maxInheritedDepth = Math.max(inheritedPayload?.length ?? 0, inheritedPseudoPayload?.length ?? 0);
+    const inheritedNodes = await this.resolveInheritedParentNodes(maxInheritedDepth);
+    this.#mainDOMCascade = this.buildMainCascade(
       inlinePayload,
       attributesPayload,
       matchedPayload,
       inheritedPayload,
       animationStylesPayload,
       transitionsStylePayload,
-      inheritedAnimatedPayload
+      inheritedAnimatedPayload,
+      inheritedNodes
     );
-    [this.#pseudoDOMCascades, this.#customHighlightPseudoDOMCascades] = this.buildPseudoCascades(pseudoPayload, inheritedPseudoPayload);
+    [this.#pseudoDOMCascades, this.#customHighlightPseudoDOMCascades] = this.buildPseudoCascades(pseudoPayload, inheritedPseudoPayload, inheritedNodes);
     for (const domCascade of Array.from(this.#customHighlightPseudoDOMCascades.values()).concat(Array.from(this.#pseudoDOMCascades.values())).concat(this.#mainDOMCascade)) {
       for (const style of domCascade.styles()) {
         this.#styleToDOMCascade.set(style, domCascade);
@@ -20548,7 +20564,19 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       this.#functionRuleMap.set(rule.functionName().text, rules);
     }
   }
-  async buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload) {
+  async resolveInheritedParentNodes(maxDepth) {
+    const parents = [];
+    let current = this.#node;
+    for (let i = 0; i < maxDepth; ++i) {
+      current = await parentElementInFlatTree(current);
+      if (!current) {
+        break;
+      }
+      parents.push(current);
+    }
+    return parents;
+  }
+  buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload, inheritedNodes) {
     const nodeCascades = [];
     const nodeStyles = [];
     function addAttributesStyle() {
@@ -20595,14 +20623,8 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       false
       /* #isInherited */
     ));
-    let parentNode = this.#node.parentNode;
-    const traverseParentInFlatTree = async (node) => {
-      if (node.hasAssignedSlot()) {
-        return await node.assignedSlot?.deferredNode.resolvePromise() ?? null;
-      }
-      return node.parentNode;
-    };
-    for (let i = 0; parentNode && inheritedPayload && i < inheritedPayload.length; ++i) {
+    for (let i = 0; inheritedPayload && i < inheritedPayload.length && i < inheritedNodes.length; ++i) {
+      const parentNode = inheritedNodes[i];
       const inheritedStyles = [];
       const entryPayload = inheritedPayload[i];
       const inheritedAnimatedEntryPayload = inheritedAnimatedPayload[i];
@@ -20656,12 +20678,10 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
         inheritedStyles.push(inheritedRule.style);
         this.#inheritedStyles.add(inheritedRule.style);
       }
-      const node = parentNode;
-      parentNode = await traverseParentInFlatTree(parentNode);
       nodeCascades.push(new NodeCascade(
         this,
         inheritedStyles,
-        node,
+        parentNode,
         true
         /* #isInherited */
       ));
@@ -20713,7 +20733,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       }
     }
   }
-  buildPseudoCascades(pseudoPayload, inheritedPseudoPayload) {
+  buildPseudoCascades(pseudoPayload, inheritedPseudoPayload, inheritedNodes) {
     const pseudoInheritanceCascades = /* @__PURE__ */ new Map();
     const customHighlightPseudoInheritanceCascades = /* @__PURE__ */ new Map();
     if (!pseudoPayload) {
@@ -20760,8 +20780,8 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       }
     }
     if (inheritedPseudoPayload) {
-      let parentNode = this.#node.parentNode;
-      for (let i = 0; parentNode && i < inheritedPseudoPayload.length; ++i) {
+      for (let i = 0; i < inheritedPseudoPayload.length && i < inheritedNodes.length; ++i) {
+        const parentNode = inheritedNodes[i];
         const inheritedPseudoMatches = inheritedPseudoPayload[i].pseudoElements;
         for (let j = 0; j < inheritedPseudoMatches.length; ++j) {
           const inheritedEntryPayload = inheritedPseudoMatches[j];
@@ -20800,7 +20820,6 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
             }
           }
         }
-        parentNode = parentNode.parentNode;
       }
     }
     for (const [pseudoType, nodeCascade] of pseudoCascades.entries()) {
@@ -34211,15 +34230,19 @@ var CallFrame = class _CallFrame {
     const evaluateResponse = await this.debuggerModel.agent.invoke_evaluateOnCallFrame(
       { callFrameId: this.id, expression, silent: true, objectGroup: "backtrace" }
     );
-    if (evaluateResponse.getError() || evaluateResponse.exceptionDetails) {
+    if (evaluateResponse.getError()) {
+      return null;
+    }
+    if (evaluateResponse.exceptionDetails) {
+      this.debuggerModel.invalidateScopeChains();
       return null;
     }
     const response = await this.debuggerModel.agent.invoke_setReturnValue({ newValue: evaluateResponse.result });
-    if (response.getError()) {
-      return null;
+    if (!response.getError()) {
+      this.#returnValue = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
     }
-    this.#returnValue = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
-    return this.#returnValue;
+    this.debuggerModel.invalidateScopeChains();
+    return response.getError() ? null : this.#returnValue;
   }
   location() {
     return this.#location;

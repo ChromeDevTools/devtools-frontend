@@ -1,15 +1,17 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import { Icon } from '../../ui/kit/kit.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, render } from '../../ui/lit/lit.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
+import hardwareConcurrencySelectorStyles from './hardwareConcurrencySelector.css.js';
 export var CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 const UIStrings = {
     /**
@@ -66,11 +68,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     calibratedCpuThrottlingSetting;
     lastNetworkThrottlingConditions;
     cpuThrottlingManager;
-    #hardwareConcurrencyOverrideEnabled = false;
     #currentCPUThrottlingOption = PanelsCommon.CPUThrottlingOption.NoThrottlingOption;
-    get hardwareConcurrencyOverrideEnabled() {
-        return this.#hardwareConcurrencyOverrideEnabled;
-    }
     constructor(settings) {
         super();
         this.cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
@@ -163,63 +161,6 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         this.#currentCPUThrottlingOption = option;
         this.updatePanelIcon();
     }
-    /** Hardware Concurrency doesn't store state in a setting. */
-    createHardwareConcurrencySelector() {
-        const numericInput = new UI.Toolbar.ToolbarItem(UI.UIUtils.createInput('devtools-text-input', 'number', 'hardware-concurrency'));
-        numericInput.setTitle(i18nString(UIStrings.hardwareConcurrencySettingLabel));
-        const inputElement = numericInput.element;
-        inputElement.min = '1';
-        numericInput.setEnabled(false);
-        const checkbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.hardwareConcurrency), false, i18nString(UIStrings.hardwareConcurrencySettingLabel), 'hardware-concurrency');
-        const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo', undefined, 'hardware-concurrency-reset');
-        reset.setTitle(i18nString(UIStrings.resetConcurrency));
-        const icon = new Icon();
-        icon.name = 'warning-filled';
-        icon.classList.add('small');
-        const warning = new UI.Toolbar.ToolbarItem(icon);
-        warning.setTitle(i18nString(UIStrings.excessConcurrency));
-        checkbox.disabled = true; // Prevent modification while still wiring things up asynchronously below
-        reset.element.classList.add('concurrency-hidden');
-        warning.element.classList.add('concurrency-hidden');
-        void this.cpuThrottlingManager.getHardwareConcurrency().then(defaultValue => {
-            if (defaultValue === undefined) {
-                return;
-            }
-            const setHardwareConcurrency = (value) => {
-                if (value >= 1) {
-                    this.cpuThrottlingManager.setHardwareConcurrency(value);
-                }
-                if (value > defaultValue) {
-                    warning.element.classList.remove('concurrency-hidden');
-                }
-                else {
-                    warning.element.classList.add('concurrency-hidden');
-                }
-                if (value === defaultValue) {
-                    reset.element.classList.add('concurrency-hidden');
-                }
-                else {
-                    reset.element.classList.remove('concurrency-hidden');
-                }
-            };
-            inputElement.value = `${defaultValue}`;
-            inputElement.oninput = () => setHardwareConcurrency(Number(inputElement.value));
-            checkbox.disabled = false;
-            checkbox.addEventListener('change', () => {
-                this.#hardwareConcurrencyOverrideEnabled = checkbox.checked;
-                numericInput.setEnabled(this.hardwareConcurrencyOverrideEnabled);
-                setHardwareConcurrency(this.hardwareConcurrencyOverrideEnabled ? Number(inputElement.value) : defaultValue);
-            });
-            reset.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, () => {
-                inputElement.value = `${defaultValue}`;
-                setHardwareConcurrency(defaultValue);
-            });
-        });
-        return { numericInput, reset, warning, checkbox };
-    }
-    setHardwareConcurrency(concurrency) {
-        this.cpuThrottlingManager.setHardwareConcurrency(concurrency);
-    }
     effectiveCPUPerformanceTier() {
         return this.cpuThrottlingManager.effectiveCPUPerformanceTier();
     }
@@ -230,6 +171,142 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
         const knownCurrentConditions = this.#getCurrentNetworkConditions();
         return !SDK.NetworkManager.networkConditionsEqual(networkConditions, knownCurrentConditions);
+    }
+}
+export const DEFAULT_HARDWARE_CONCURRENCY_VIEW = (input, _output, target) => {
+    const showReset = input.overrideEnabled && input.value !== input.defaultValue;
+    const showWarning = input.overrideEnabled && input.value > input.defaultValue;
+    const onInput = (event) => {
+        const value = event.target.value;
+        // Keep the field empty while the user clears it to type a new value.
+        if (value !== '') {
+            input.onInput(Number(value));
+        }
+    };
+    // clang-format off
+    render(html `
+    <style>${hardwareConcurrencySelectorStyles}</style>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.hardwareConcurrency)}
+        .checked=${input.overrideEnabled}
+        ?disabled=${!input.initialized}
+        .jslogContext=${'hardware-concurrency'}
+        @change=${(e) => input.onToggle(e.target.checked)}>
+      ${i18nString(UIStrings.hardwareConcurrency)}
+      <div class="devtools-checkbox-subtitle">${i18nString(UIStrings.hardwareConcurrencySettingLabel)}</div>
+    </devtools-checkbox>
+    <div class="concurrency-details">
+      <input
+          class="harmony-input"
+          type="number"
+          min="1"
+          spellcheck="false"
+          .value=${Directives.live(input.initialized ? String(input.value) : '')}
+          ?disabled=${!input.overrideEnabled}
+          title=${i18nString(UIStrings.hardwareConcurrencySettingLabel)}
+          aria-label=${i18nString(UIStrings.hardwareConcurrencySettingLabel)}
+          jslog=${VisualLogging.textField('hardware-concurrency').track({ keydown: 'Enter', change: true })}
+          @input=${onInput} />
+      <devtools-button
+          class=${Directives.classMap({ 'concurrency-hidden': !showReset })}
+          .iconName=${'undo'}
+          .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+          .title=${i18nString(UIStrings.resetConcurrency)}
+          .accessibleLabel=${i18nString(UIStrings.resetConcurrency)}
+          .jslogContext=${'hardware-concurrency-reset'}
+          @click=${input.onReset}>
+      </devtools-button>
+      <devtools-icon
+          name="warning-filled"
+          class=${Directives.classMap({
+        small: true,
+        'concurrency-hidden': !showWarning,
+    })}
+          title=${i18nString(UIStrings.excessConcurrency)}
+          aria-label=${i18nString(UIStrings.excessConcurrency)}>
+      </devtools-icon>
+    </div>
+  `, target, { container: { classes: ['concurrency-section'] } });
+    // clang-format on
+};
+/** Hardware Concurrency doesn't store state in a setting. */
+export class HardwareConcurrencySelector extends UI.Widget.Widget {
+    #view;
+    #cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+    #defaultValue;
+    #loadingDefaultValue = false;
+    #value = 0;
+    #overrideEnabled = false;
+    constructor(element, view = DEFAULT_HARDWARE_CONCURRENCY_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    wasShown() {
+        super.wasShown();
+        if (this.#defaultValue === undefined && !this.#loadingDefaultValue) {
+            void this.#loadDefaultValue();
+        }
+        this.requestUpdate();
+    }
+    async #loadDefaultValue() {
+        this.#loadingDefaultValue = true;
+        try {
+            const defaultValue = await this.#cpuThrottlingManager.getHardwareConcurrency();
+            this.#defaultValue = defaultValue;
+            this.#value = defaultValue;
+            this.requestUpdate();
+        }
+        catch {
+            // Reading the default value fails if, for example, the page navigates
+            // meanwhile. Keep the controls disabled and retry when shown again.
+        }
+        finally {
+            this.#loadingDefaultValue = false;
+        }
+    }
+    #applyConcurrency(value) {
+        if (value >= 1) {
+            this.#cpuThrottlingManager.setHardwareConcurrency(value);
+        }
+    }
+    #onToggle(enabled) {
+        if (this.#defaultValue === undefined) {
+            return;
+        }
+        this.#overrideEnabled = enabled;
+        this.#applyConcurrency(enabled ? this.#value : this.#defaultValue);
+        this.requestUpdate();
+    }
+    #onInput(value) {
+        if (this.#defaultValue === undefined) {
+            return;
+        }
+        this.#value = value;
+        if (this.#overrideEnabled) {
+            this.#applyConcurrency(value);
+        }
+        this.requestUpdate();
+    }
+    #onReset() {
+        if (this.#defaultValue === undefined) {
+            return;
+        }
+        this.#value = this.#defaultValue;
+        if (this.#overrideEnabled) {
+            this.#applyConcurrency(this.#defaultValue);
+        }
+        this.requestUpdate();
+    }
+    performUpdate() {
+        this.#view({
+            initialized: this.#defaultValue !== undefined,
+            overrideEnabled: this.#overrideEnabled,
+            value: this.#value,
+            defaultValue: this.#defaultValue ?? 0,
+            onToggle: this.#onToggle.bind(this),
+            onInput: this.#onInput.bind(this),
+            onReset: this.#onReset.bind(this),
+        }, undefined, this.contentElement);
     }
 }
 export const DEFAULT_SAVE_DATA_VIEW = (input, _output, target) => {

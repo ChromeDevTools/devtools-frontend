@@ -5,48 +5,103 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
 import { ExtensionNotifierView, ExtensionView } from './ExtensionView.js';
+const { repeat, styleMap } = Directives;
+const { widget, widgetRef } = UI.Widget;
+export const DEFAULT_VIEW = (input, output, target) => {
+    // clang-format off
+    render(html `
+    <devtools-toolbar ?hidden=${input.toolbarItems.length === 0}>
+      ${repeat(input.toolbarItems, item => item.id, item => html `
+        <devtools-button
+          class="toolbar-button toolbar-item"
+          style=${styleMap({ backgroundImage: item.iconURL ? `url(${item.iconURL})` : undefined })}
+          title=${item.tooltip}
+          ?disabled=${item.disabled}
+          .data=${{
+        variant: "text" /* Buttons.Button.Variant.TEXT */,
+        reducedFocusRing: true,
+        title: item.tooltip,
+        disabled: item.disabled,
+    }}
+          @click=${item.onClick}
+        ></devtools-button>
+      `)}
+    </devtools-toolbar>
+    <devtools-widget class="vbox flex-auto"
+      ${widget(UI.SearchableView.SearchableView, { searchProvider: input.searchProvider })}
+      ${widgetRef(UI.SearchableView.SearchableView, e => {
+        output.searchableView = e;
+    })}>
+      ${widget(ExtensionView, {
+        data: {
+            server: input.server,
+            id: input.id,
+            src: input.pageURL,
+            className: 'extension',
+        },
+    })}
+    </devtools-widget>
+  `, target);
+    // clang-format on
+};
 export class ExtensionPanel extends UI.Panel.Panel {
-    server;
-    id;
-    panelToolbar;
+    #server;
+    #id;
+    #pageURL;
+    #toolbarItems = [];
+    #view;
     #searchableView;
-    constructor(server, panelName, id, pageURL) {
+    constructor(server, panelName, id, pageURL, view = DEFAULT_VIEW) {
         super(panelName);
-        this.server = server;
-        this.id = id;
+        this.#server = server;
+        this.#id = id;
+        this.#pageURL = pageURL;
+        this.#view = view;
         this.setHideOnDetach();
-        this.panelToolbar = this.element.createChild('devtools-toolbar', 'hidden');
-        this.#searchableView = new UI.SearchableView.SearchableView(this, null);
-        this.#searchableView.show(this.element);
-        const extensionView = new ExtensionView(server, this.id, pageURL, 'extension');
-        extensionView.show(this.#searchableView.element);
+        this.performUpdate();
+    }
+    performUpdate() {
+        const output = {};
+        this.#view({
+            server: this.#server,
+            id: this.#id,
+            pageURL: this.#pageURL,
+            searchProvider: this,
+            toolbarItems: this.#toolbarItems.map(item => item.data()),
+        }, output, this.element);
+        if (output.searchableView) {
+            this.#searchableView = output.searchableView;
+        }
     }
     addToolbarItem(item) {
-        this.panelToolbar.classList.remove('hidden');
-        this.panelToolbar.appendToolbarItem(item);
+        item.setOnUpdate(() => this.requestUpdate());
+        this.#toolbarItems.push(item);
+        this.requestUpdate();
     }
     onSearchCanceled() {
-        this.server.notifySearchAction(this.id, "cancelSearch" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch */);
-        this.#searchableView.updateSearchMatchesCount(0);
+        this.#server.notifySearchAction(this.#id, "cancelSearch" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch */);
+        this.#searchableView?.updateSearchMatchesCount(0);
     }
     searchableView() {
-        return this.#searchableView;
+        return this.#searchableView ?? null;
     }
     performSearch(searchConfig, _shouldJump, _jumpBackwards) {
         const query = searchConfig.query;
-        this.server.notifySearchAction(this.id, "performSearch" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch */, query);
+        this.#server.notifySearchAction(this.#id, "performSearch" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch */, query);
     }
     supportsMatchCounts() {
         return false;
     }
     jumpToNextSearchResult() {
-        this.server.notifySearchAction(this.id, "nextSearchResult" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult */);
+        this.#server.notifySearchAction(this.#id, "nextSearchResult" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult */);
     }
     jumpToPreviousSearchResult() {
-        this.server.notifySearchAction(this.id, "previousSearchResult" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult */);
+        this.#server.notifySearchAction(this.#id, "previousSearchResult" /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult */);
     }
     supportsCaseSensitiveSearch() {
         return false;
@@ -59,27 +114,45 @@ export class ExtensionPanel extends UI.Panel.Panel {
     }
 }
 export class ExtensionButton {
-    id;
-    #toolbarButton;
+    #id;
+    #server;
+    #iconURL = '';
+    #tooltip = '';
+    #disabled = false;
+    #onUpdate;
     constructor(server, id, iconURL, tooltip, disabled) {
-        this.id = id;
-        this.#toolbarButton = new UI.Toolbar.ToolbarButton('', '');
-        this.#toolbarButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, server.notifyButtonClicked.bind(server, this.id));
+        this.#server = server;
+        this.#id = id;
         this.update(iconURL, tooltip, disabled);
+    }
+    setOnUpdate(onUpdate) {
+        this.#onUpdate = onUpdate;
     }
     update(iconURL, tooltip, disabled) {
         if (typeof iconURL === 'string') {
-            this.#toolbarButton.setBackgroundImage(iconURL);
+            this.#iconURL = iconURL;
         }
         if (typeof tooltip === 'string') {
-            this.#toolbarButton.setTitle(tooltip);
+            this.#tooltip = tooltip;
         }
         if (typeof disabled === 'boolean') {
-            this.#toolbarButton.setEnabled(!disabled);
+            this.#disabled = disabled;
         }
+        this.#onUpdate?.();
+    }
+    data() {
+        return {
+            id: this.#id,
+            iconURL: this.#iconURL,
+            tooltip: this.#tooltip,
+            disabled: this.#disabled,
+            onClick: () => {
+                this.#server.notifyButtonClicked(this.#id);
+            },
+        };
     }
     toolbarButton() {
-        return this.#toolbarButton;
+        return this;
     }
 }
 // Generates stable hash-based id usable as (part of) viewId for any unicode string.
@@ -122,7 +195,8 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
         if (this.extensionView) {
             this.extensionView.detach(true);
         }
-        this.extensionView = new ExtensionView(this.server, this.#id, url, 'extension fill');
+        this.extensionView = new ExtensionView();
+        this.extensionView.data = { server: this.server, id: this.#id, src: url, className: 'extension fill' };
         this.extensionView.show(this.element);
         if (!this.element.style.height) {
             this.setHeight('150px');
@@ -150,7 +224,8 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
             this.extensionView.detach(true);
             delete this.extensionView;
         }
-        this.objectPropertiesView = new ExtensionNotifierView(this.server, this.#id);
+        this.objectPropertiesView = new ExtensionNotifierView();
+        this.objectPropertiesView.data = { server: this.server, id: this.#id };
         this.objectPropertiesView.show(this.element);
     }
     #setObject(object, title, callback) {

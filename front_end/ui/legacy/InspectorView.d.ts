@@ -1,10 +1,12 @@
+import * as Common from '../../core/common/common.js';
 import type { ActionDelegate as ActionDelegateInterface } from './ActionRegistration.js';
 import type { Context } from './Context.js';
 import type { ContextMenu } from './ContextMenu.js';
+import { type InfobarAction, Type as InfobarType } from './Infobar.js';
 import type { Panel } from './Panel.js';
 import { SplitWidget } from './SplitWidget.js';
 import { type TabbedPane, type TabbedPaneTabDelegate } from './TabbedPane.js';
-import type { View, ViewLocation, ViewLocationResolver } from './View.js';
+import type { View as TabbedView, ViewLocation, ViewLocationResolver } from './View.js';
 import { VBox, type Widget } from './Widget.js';
 export declare enum DrawerOrientation {
     VERTICAL = "vertical",
@@ -21,25 +23,37 @@ export interface DrawerOrientationByDockMode {
     [DockMode.SIDE]: DrawerOrientation;
     [DockMode.UNDOCKED]: DrawerOrientation;
 }
+export interface InfobarSpec {
+    key: string;
+    type: InfobarType;
+    text: string;
+    actions: InfobarAction[];
+    disableSetting: Common.Settings.Setting<boolean> | null;
+    jslogContext: string;
+    onClose: () => void;
+}
+export interface ViewInput {
+    infobars: readonly InfobarSpec[];
+    isVerticalSplit: boolean;
+    isDrawerOpen: boolean;
+    statusBarVisible: boolean;
+    onDrawerOpenChanged: (isOpen: boolean) => void;
+}
+export interface ViewOutput {
+    attachSplitPanels?: (mainWidget: Widget, attachDrawer: (splitWidget: SplitWidget) => void) => void;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class InspectorView extends VBox implements ViewLocationResolver {
     #private;
-    private readonly drawerOrientationByDockSetting;
-    private readonly drawerSplitWidget;
-    private readonly tabDelegate;
-    private readonly drawerTabbedLocation;
-    private drawerTabbedPane;
-    private infoBarDiv;
-    private readonly tabbedLocation;
     readonly tabbedPane: TabbedPane;
-    private readonly keyDownBound;
-    private currentPanelLocked?;
-    private focusRestorer?;
-    private ownerSplitWidget?;
-    private reloadRequiredInfobar?;
-    constructor(element?: HTMLElement);
+    constructor(element?: HTMLElement, view?: View);
+    requestUpdate(): void;
+    performUpdate(): void;
     static instance(opts?: {
         forceNew?: boolean | null;
         element?: HTMLElement;
+        view?: View;
     } | undefined): InspectorView;
     static maybeGetInspectorViewInstance(): InspectorView | null;
     static removeInstance(): void;
@@ -48,14 +62,13 @@ export declare class InspectorView extends VBox implements ViewLocationResolver 
     willHide(): void;
     resolveLocation(locationName: string): ViewLocation | null;
     createToolbars(): Promise<void>;
-    addPanel(view: View): void;
+    addPanel(view: TabbedView): void;
     hasPanel(panelName: string): boolean;
     panel(panelName: string): Promise<Panel>;
     onSuspendStateChanged(allTargetsSuspended: boolean): void;
     canSelectPanel(panelName: string): boolean;
     showPanel(panelName: string): Promise<void>;
     setPanelWarnings(tabId: string, warnings: string[]): void;
-    private getTabbedPaneForTabId;
     currentPanelDeprecated(): Widget | null;
     showDrawer({ focus, hasTargetDrawer }: {
         focus: boolean;
@@ -75,12 +88,9 @@ export declare class InspectorView extends VBox implements ViewLocationResolver 
     isDrawerMinimized(): boolean;
     toggleDrawerMinimized(): void;
     isDrawerOrientationVertical(): boolean;
-    private keyDown;
     onResize(): void;
     topResizerElement(): Element;
     toolbarItemResized(): void;
-    private tabSelected;
-    setOwnerSplit(splitWidget: SplitWidget): void;
     ownerSplit(): SplitWidget | null;
     minimize(): void;
     restore(): void;
@@ -90,8 +100,6 @@ export declare class InspectorView extends VBox implements ViewLocationResolver 
     displayChromeRestartRequiredWarning(message: string): void;
     displaySelectOverrideFolderInfobar(callback: () => void): void;
     renderStatusBar(visible?: boolean): void;
-    private createInfoBarDiv;
-    private attachInfobar;
 }
 export declare class ActionDelegate implements ActionDelegateInterface {
     handleAction(_context: Context, actionId: string): boolean;

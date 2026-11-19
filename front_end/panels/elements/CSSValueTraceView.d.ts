@@ -1,13 +1,15 @@
+import '../../ui/kit/kit.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import { type MatchRenderer } from './PropertyRenderer.js';
 export interface ViewInput {
-    substitutions: Lit.LitTemplate[];
-    evaluations: Lit.LitTemplate[];
+    substitutions: LitTemplate[];
+    evaluations: LitTemplate[];
     onToggle: () => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class CSSValueTraceView extends UI.Widget.VBox {
     #private;
     constructor(element?: HTMLElement, view?: View);

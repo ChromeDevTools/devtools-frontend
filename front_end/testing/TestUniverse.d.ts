@@ -11,6 +11,7 @@ import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as ChangeTracker from '../models/change_tracker/change_tracker.js';
 import * as CommentManager from '../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
+import * as DevToolsState from '../models/devtools_state/devtools_state.js';
 import * as Emulation from '../models/emulation/emulation.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
@@ -98,6 +99,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get targetManager(): SDK.TargetManager.TargetManager;
     get userBadges(): Badges.UserBadges;
     get settings(): Common.Settings.Settings;
+    get stateManager(): DevToolsState.StateManager.StateManager;
     get workspace(): Workspace.Workspace.WorkspaceImpl;
     get workspaceDiff(): WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
 }

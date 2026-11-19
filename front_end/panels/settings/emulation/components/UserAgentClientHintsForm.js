@@ -805,7 +805,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format on
     // clang-format off
     const template = html `
-    <style>${Input.checkboxStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${Input.checkboxStyles} }</style>
     <style>${userAgentClientHintsFormStyles}</style>
     <section class="root">
       <div class="tree-title">

@@ -227,6 +227,9 @@ models/comment_manager/CommentThread.test.js
 models/computed_style/ComputedStyleModel.test.js
 models/cpu_profile/CPUProfileDataModel.test.js
 models/crux-manager/CrUXManager.test.js
+models/devtools_state/StateManager.test.js
+models/devtools_state/providers/CPUThrottlingStateProvider.test.js
+models/devtools_state/providers/SettingsStateProvider.test.js
 models/elements/DOMChanges.test.js
 models/elements/StyleChanges.test.js
 models/emulation/DeviceModeModel.test.js

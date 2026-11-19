@@ -87,14 +87,6 @@ details > summary {
   }
 }
 
-input[type="checkbox"] {
-  height: var(--sys-size-6);
-  width: var(--sys-size-6);
-  min-height: var(--sys-size-6);
-  min-width: var(--sys-size-6);
-  margin: var(--sys-size-4);
-}
-
 input[type="text"][disabled] {
   color: var(--sys-color-state-disabled);
 }

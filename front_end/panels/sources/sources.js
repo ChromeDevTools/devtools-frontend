@@ -801,7 +801,6 @@ import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as Bindings from "../../models/bindings/bindings.js";
 import * as Breakpoints from "../../models/breakpoints/breakpoints.js";
 import * as Workspace from "../../models/workspace/workspace.js";
-import * as Input from "../../ui/components/input/input.js";
 import * as RenderCoordinator from "../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import * as Lit from "../../ui/lit/lit.js";
@@ -829,13 +828,6 @@ var breakpointsView_css_default = `/*
   .code-snippet:hover {
     color: var(--sys-color-on-surface);
     text-decoration: underline;
-  }
-
-  input {
-    height: var(--sys-size-6);
-    width: var(--sys-size-6);
-    flex-shrink: 0;
-    margin: var(--sys-size-3) 0;
   }
 
   details {
@@ -976,20 +968,15 @@ var breakpointsView_css_default = `/*
     background-color: var(--sys-color-tonal-container);
   }
 
-  .breakpoint-item.logpoint > label > .type-indicator {
+  .breakpoint-item.logpoint > .type-indicator {
     border-color: var(--sys-color-pink-bright);
   }
 
-  .breakpoint-item.conditional-breakpoint > label > .type-indicator {
+  .breakpoint-item.conditional-breakpoint > .type-indicator {
     border-color: var(--sys-color-orange-bright);
   }
 
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-  }
-
-  .checkbox-label > input {
+  .breakpoint-item > devtools-checkbox {
     margin-left: var(--sys-size-8);
     margin-right: var(--sys-size-4);
   }
@@ -1004,7 +991,7 @@ var breakpointsView_css_default = `/*
     }
   }
 
-  input.group-checkbox {
+  devtools-checkbox.group-checkbox {
     margin: 0;
     display: none;
   }
@@ -1031,25 +1018,15 @@ var breakpointsView_css_default = `/*
     margin-bottom: var(--sys-size-2);
   }
 
-  .pause-on-caught-exceptions > .checkbox-label > input,
-  .pause-on-uncaught-exceptions > .checkbox-label > input {
+  .pause-on-caught-exceptions > devtools-checkbox,
+  .pause-on-uncaught-exceptions > devtools-checkbox {
     margin-left: var(--sys-size-4);
-  }
-
-  .pause-on-caught-exceptions > .checkbox-label > span,
-  .pause-on-uncaught-exceptions > .checkbox-label > span {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+    max-width: calc(100% - var(--sys-size-4));
   }
 
   .pause-on-uncaught-exceptions,
   .pause-on-caught-exceptions {
     padding-right: var(--sys-size-5);
-
-    & > label {
-      width: fit-content;
-    }
   }
 
   details > summary:focus,
@@ -1678,7 +1655,6 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
 };
 var DEFAULT_VIEW3 = (input, _output, target) => {
   render3(html4`
-    <style>${Input.checkboxStyles}</style>
     <style>${breakpointsView_css_default}</style>
     <div jslog=${VisualLogging3.section("sources.js-breakpoints")} id="devtools-breakpoint-view">
       <div class='pause-on-uncaught-exceptions'
@@ -1688,10 +1664,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           role='checkbox'
           aria-checked=${input.pauseOnUncaughtExceptions}
           data-first-pause>
-        <label class='checkbox-label'>
-          <input type='checkbox' tabindex=-1 class="small" .checked=${input.pauseOnUncaughtExceptions} @change=${input.onPauseOnUncaughtExceptionsStateChanged} jslog=${VisualLogging3.toggle("pause-uncaught").track({ change: true })}>
-          <span>${i18nString3(UIStrings3.pauseOnUncaughtExceptions)}</span>
-        </label>
+        <devtools-checkbox class='small' tabindex=-1 .checked=${input.pauseOnUncaughtExceptions} @change=${input.onPauseOnUncaughtExceptionsStateChanged} jslog=${VisualLogging3.toggle("pause-uncaught").track({ change: true })}>${i18nString3(UIStrings3.pauseOnUncaughtExceptions)}</devtools-checkbox>
       </div>
       <div class='pause-on-caught-exceptions'
             tabindex='-1'
@@ -1700,10 +1673,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             role='checkbox'
             aria-checked=${input.pauseOnCaughtExceptions}
             data-last-pause>
-          <label class='checkbox-label'>
-            <input data-pause-on-caught-checkbox type='checkbox' class="small" tabindex=-1 .checked=${input.pauseOnCaughtExceptions} @change=${input.onPauseOnCaughtExceptionsStateChanged.bind(void 0)} jslog=${VisualLogging3.toggle("pause-on-caught-exception").track({ change: true })}>
-            <span>${i18nString3(UIStrings3.pauseOnCaughtExceptions)}</span>
-          </label>
+        <devtools-checkbox data-pause-on-caught-checkbox class='small' tabindex=-1 .checked=${input.pauseOnCaughtExceptions} @change=${input.onPauseOnCaughtExceptionsStateChanged} jslog=${VisualLogging3.toggle("pause-on-caught-exception").track({ change: true })}>${i18nString3(UIStrings3.pauseOnCaughtExceptions)}</devtools-checkbox>
       </div>
       <div role=tree>
         ${repeat(
@@ -1725,12 +1695,12 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                 <span class='group-header' aria-hidden=true>
                   <span class='group-icon-or-disable'>
                     <devtools-icon name="file-script"></devtools-icon>
-                    <input class='group-checkbox small' type='checkbox'
+                    <devtools-checkbox class='group-checkbox small'
                           aria-label=''
                           .checked=${group.breakpointItems.some((item2) => item2.status === "ENABLED" /* ENABLED */)}
                           @change=${input.groupCheckboxToggled.bind(void 0, group)}
                           tabindex=-1
-                          jslog=${VisualLogging3.toggle("breakpoint-group").track({ change: true })}>
+                          jslog=${VisualLogging3.toggle("breakpoint-group").track({ change: true })}></devtools-checkbox>
                   </span>
                   <span class='group-header-title' title=${group.url}>
                     ${group.name}
@@ -1767,17 +1737,15 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                     @contextmenu=${input.itemContextMenuHandler.bind(void 0, item2, group.editable)}
                     @click=${input.itemClickHandler}
                     @keydown=${input.keyDownHandler}>
-                  <label class='checkbox-label'>
-                    <span class='type-indicator'></span>
-                    <input type='checkbox'
-                          aria-label=${item2.location}
-                          class='small'
-                          ?indeterminate=${item2.status === "INDETERMINATE" /* INDETERMINATE */}
-                          .checked=${item2.status === "ENABLED" /* ENABLED */}
-                          @change=${input.itemCheckboxToggled.bind(void 0, item2)}
-                          tabindex=-1
-                          jslog=${VisualLogging3.toggle("breakpoint").track({ change: true })}>
-                  </label>
+                  <span class='type-indicator'></span>
+                  <devtools-checkbox
+                        aria-label=${item2.location}
+                        class='small'
+                        ?indeterminate=${item2.status === "INDETERMINATE" /* INDETERMINATE */}
+                        .checked=${item2.status === "ENABLED" /* ENABLED */}
+                        @change=${input.itemCheckboxToggled.bind(void 0, item2)}
+                        tabindex=-1
+                        jslog=${VisualLogging3.toggle("breakpoint").track({ change: true })}></devtools-checkbox>
                   <span class='code-snippet' @click=${input.itemSnippetClickHandler.bind(void 0, item2)}
                           title=${ifDefined(input.itemDetails.get(item2.id)?.codeSnippetTooltip)}
                           jslog=${VisualLogging3.action("sources.jump-to-breakpoint").track({ click: true })}>${input.itemDetails.get(item2.id)?.codeSnippet}</span>
@@ -1955,9 +1923,9 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
     if (Platform2.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       const currentTarget = event.currentTarget;
       await this.#setSelected(currentTarget);
-      const input = currentTarget.querySelector("input");
-      if (input) {
-        input.click();
+      const checkbox = currentTarget.querySelector("devtools-checkbox");
+      if (checkbox) {
+        checkbox.click();
       }
       event.consume();
     }
@@ -2157,7 +2125,7 @@ import * as Bindings11 from "../../models/bindings/bindings.js";
 import * as Persistence11 from "../../models/persistence/persistence.js";
 import * as StackTrace5 from "../../models/stack_trace/stack_trace.js";
 import * as Workspace25 from "../../models/workspace/workspace.js";
-import * as Input3 from "../../ui/components/input/input.js";
+import * as Input2 from "../../ui/components/input/input.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
 import { Directives as Directives5, html as html19, nothing as nothing12, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
@@ -3375,14 +3343,14 @@ var IndexedDB;
     KeyPathType2["Array"] = "array";
   })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
 })(IndexedDB || (IndexedDB = {}));
-var Input2;
-((Input4) => {
+var Input;
+((Input3) => {
   let GestureSourceType;
   ((GestureSourceType2) => {
     GestureSourceType2["Default"] = "default";
     GestureSourceType2["Touch"] = "touch";
     GestureSourceType2["Mouse"] = "mouse";
-  })(GestureSourceType = Input4.GestureSourceType || (Input4.GestureSourceType = {}));
+  })(GestureSourceType = Input3.GestureSourceType || (Input3.GestureSourceType = {}));
   let MouseButton;
   ((MouseButton2) => {
     MouseButton2["None"] = "none";
@@ -3391,48 +3359,48 @@ var Input2;
     MouseButton2["Right"] = "right";
     MouseButton2["Back"] = "back";
     MouseButton2["Forward"] = "forward";
-  })(MouseButton = Input4.MouseButton || (Input4.MouseButton = {}));
+  })(MouseButton = Input3.MouseButton || (Input3.MouseButton = {}));
   let DispatchDragEventRequestType;
   ((DispatchDragEventRequestType2) => {
     DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
     DispatchDragEventRequestType2["DragOver"] = "dragOver";
     DispatchDragEventRequestType2["Drop"] = "drop";
     DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
-  })(DispatchDragEventRequestType = Input4.DispatchDragEventRequestType || (Input4.DispatchDragEventRequestType = {}));
+  })(DispatchDragEventRequestType = Input3.DispatchDragEventRequestType || (Input3.DispatchDragEventRequestType = {}));
   let DispatchKeyEventRequestType;
   ((DispatchKeyEventRequestType2) => {
     DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
     DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
     DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
     DispatchKeyEventRequestType2["Char"] = "char";
-  })(DispatchKeyEventRequestType = Input4.DispatchKeyEventRequestType || (Input4.DispatchKeyEventRequestType = {}));
+  })(DispatchKeyEventRequestType = Input3.DispatchKeyEventRequestType || (Input3.DispatchKeyEventRequestType = {}));
   let DispatchMouseEventRequestType;
   ((DispatchMouseEventRequestType2) => {
     DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
     DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(DispatchMouseEventRequestType = Input4.DispatchMouseEventRequestType || (Input4.DispatchMouseEventRequestType = {}));
+  })(DispatchMouseEventRequestType = Input3.DispatchMouseEventRequestType || (Input3.DispatchMouseEventRequestType = {}));
   let DispatchMouseEventRequestPointerType;
   ((DispatchMouseEventRequestPointerType2) => {
     DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
     DispatchMouseEventRequestPointerType2["Pen"] = "pen";
-  })(DispatchMouseEventRequestPointerType = Input4.DispatchMouseEventRequestPointerType || (Input4.DispatchMouseEventRequestPointerType = {}));
+  })(DispatchMouseEventRequestPointerType = Input3.DispatchMouseEventRequestPointerType || (Input3.DispatchMouseEventRequestPointerType = {}));
   let DispatchTouchEventRequestType;
   ((DispatchTouchEventRequestType2) => {
     DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
     DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
     DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
     DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
-  })(DispatchTouchEventRequestType = Input4.DispatchTouchEventRequestType || (Input4.DispatchTouchEventRequestType = {}));
+  })(DispatchTouchEventRequestType = Input3.DispatchTouchEventRequestType || (Input3.DispatchTouchEventRequestType = {}));
   let EmulateTouchFromMouseEventRequestType;
   ((EmulateTouchFromMouseEventRequestType2) => {
     EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
     EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
     EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
     EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
-  })(EmulateTouchFromMouseEventRequestType = Input4.EmulateTouchFromMouseEventRequestType || (Input4.EmulateTouchFromMouseEventRequestType = {}));
-})(Input2 || (Input2 = {}));
+  })(EmulateTouchFromMouseEventRequestType = Input3.EmulateTouchFromMouseEventRequestType || (Input3.EmulateTouchFromMouseEventRequestType = {}));
+})(Input || (Input = {}));
 var LayerTree;
 ((LayerTree2) => {
   let ScrollRectType;
@@ -11364,7 +11332,7 @@ var DebuggerPlugin = class extends Plugin {
     const callFrame = debuggableFrame.sdkFrame;
     const url = this.uiSourceCode.url();
     const uiPositionToEditorOffset = (lineNumber, columnNumber) => this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(lineNumber, columnNumber)) ?? null;
-    const scopeChain = await SourceMapScopes.ScopeChainResolver.ScopeChainResolver.instance().resolveScopeChain(callFrame);
+    const scopeChain = await this.#scopeChainResolver.resolveScopeChain(callFrame);
     const localOriginalScope = scopeChain.find((s) => s instanceof SDK9.SourceMapScopeChainEntry.SourceMapScopeChainEntry && s.type() === Debugger.ScopeType.Local)?.originalScope();
     const functionOffsetPromise = localOriginalScope ? Promise.resolve(uiPositionToEditorOffset(localOriginalScope.start.line, localOriginalScope.start.column)) : this.#rawLocationToEditorOffset(callFrame.functionLocation(), url);
     const executionOffsetPromise = this.#rawLocationToEditorOffset(callFrame.location(), url);
@@ -17140,7 +17108,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
     `;
   };
   render15(html19`
-    <style>${Input3.checkboxStyles}</style>
+    <style>${Input2.checkboxStyles}</style>
     <style>${callStackSidebarPane_css_default}</style>
     <div
       class="ignore-listed-message"

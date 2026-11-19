@@ -12,7 +12,6 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Input from '../../ui/components/input/input.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -406,7 +405,6 @@ export class BreakpointsSidebarController {
 export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
-    <style>${Input.checkboxStyles}</style>
     <style>${breakpointsViewStyles}</style>
     <div jslog=${VisualLogging.section('sources.js-breakpoints')} id="devtools-breakpoint-view">
       <div class='pause-on-uncaught-exceptions'
@@ -416,10 +414,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           role='checkbox'
           aria-checked=${input.pauseOnUncaughtExceptions}
           data-first-pause>
-        <label class='checkbox-label'>
-          <input type='checkbox' tabindex=-1 class="small" .checked=${input.pauseOnUncaughtExceptions} @change=${input.onPauseOnUncaughtExceptionsStateChanged} jslog=${VisualLogging.toggle('pause-uncaught').track({ change: true })}>
-          <span>${i18nString(UIStrings.pauseOnUncaughtExceptions)}</span>
-        </label>
+        <devtools-checkbox class='small' tabindex=-1 .checked=${input.pauseOnUncaughtExceptions} @change=${input.onPauseOnUncaughtExceptionsStateChanged} jslog=${VisualLogging.toggle('pause-uncaught').track({ change: true })}>${i18nString(UIStrings.pauseOnUncaughtExceptions)}</devtools-checkbox>
       </div>
       <div class='pause-on-caught-exceptions'
             tabindex='-1'
@@ -428,10 +423,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             role='checkbox'
             aria-checked=${input.pauseOnCaughtExceptions}
             data-last-pause>
-          <label class='checkbox-label'>
-            <input data-pause-on-caught-checkbox type='checkbox' class="small" tabindex=-1 .checked=${input.pauseOnCaughtExceptions} @change=${input.onPauseOnCaughtExceptionsStateChanged.bind(this)} jslog=${VisualLogging.toggle('pause-on-caught-exception').track({ change: true })}>
-            <span>${i18nString(UIStrings.pauseOnCaughtExceptions)}</span>
-          </label>
+        <devtools-checkbox data-pause-on-caught-checkbox class='small' tabindex=-1 .checked=${input.pauseOnCaughtExceptions} @change=${input.onPauseOnCaughtExceptionsStateChanged} jslog=${VisualLogging.toggle('pause-on-caught-exception').track({ change: true })}>${i18nString(UIStrings.pauseOnCaughtExceptions)}</devtools-checkbox>
       </div>
       <div role=tree>
         ${repeat(input.breakpointGroups, group => group.url, (group, groupIndex) => html `
@@ -450,12 +442,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                 <span class='group-header' aria-hidden=true>
                   <span class='group-icon-or-disable'>
                     <devtools-icon name="file-script"></devtools-icon>
-                    <input class='group-checkbox small' type='checkbox'
+                    <devtools-checkbox class='group-checkbox small'
                           aria-label=''
                           .checked=${group.breakpointItems.some(item => item.status === "ENABLED" /* BreakpointStatus.ENABLED */)}
                           @change=${input.groupCheckboxToggled.bind(undefined, group)}
                           tabindex=-1
-                          jslog=${VisualLogging.toggle('breakpoint-group').track({ change: true })}>
+                          jslog=${VisualLogging.toggle('breakpoint-group').track({ change: true })}></devtools-checkbox>
                   </span>
                   <span class='group-header-title' title=${group.url}>
                     ${group.name}
@@ -489,17 +481,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                     @contextmenu=${input.itemContextMenuHandler.bind(undefined, item, group.editable)}
                     @click=${input.itemClickHandler}
                     @keydown=${input.keyDownHandler}>
-                  <label class='checkbox-label'>
-                    <span class='type-indicator'></span>
-                    <input type='checkbox'
-                          aria-label=${item.location}
-                          class='small'
-                          ?indeterminate=${item.status === "INDETERMINATE" /* BreakpointStatus.INDETERMINATE */}
-                          .checked=${item.status === "ENABLED" /* BreakpointStatus.ENABLED */}
-                          @change=${input.itemCheckboxToggled.bind(undefined, item)}
-                          tabindex=-1
-                          jslog=${VisualLogging.toggle('breakpoint').track({ change: true })}>
-                  </label>
+                  <span class='type-indicator'></span>
+                  <devtools-checkbox
+                        aria-label=${item.location}
+                        class='small'
+                        ?indeterminate=${item.status === "INDETERMINATE" /* BreakpointStatus.INDETERMINATE */}
+                        .checked=${item.status === "ENABLED" /* BreakpointStatus.ENABLED */}
+                        @change=${input.itemCheckboxToggled.bind(undefined, item)}
+                        tabindex=-1
+                        jslog=${VisualLogging.toggle('breakpoint').track({ change: true })}></devtools-checkbox>
                   <span class='code-snippet' @click=${input.itemSnippetClickHandler.bind(undefined, item)}
                           title=${ifDefined(input.itemDetails.get(item.id)?.codeSnippetTooltip)}
                           jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({ click: true })}>${input.itemDetails.get(item.id)?.codeSnippet}</span>
@@ -678,9 +668,9 @@ export class BreakpointsView extends UI.Widget.VBox {
         if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
             const currentTarget = event.currentTarget;
             await this.#setSelected(currentTarget);
-            const input = currentTarget.querySelector('input');
-            if (input) {
-                input.click();
+            const checkbox = currentTarget.querySelector('devtools-checkbox');
+            if (checkbox) {
+                checkbox.click();
             }
             event.consume();
         }

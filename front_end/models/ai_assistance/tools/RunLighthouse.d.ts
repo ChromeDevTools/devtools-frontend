@@ -1,7 +1,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as LHModel from '../../lighthouse/lighthouse.js';
 import type { LighthouseCategoryArg } from '../data_formatters/LighthouseFormatter.js';
-import { type BaseToolCapability, type ContextHandlerResult, type ContextTool, type LighthouseRecordingCapability, PermissionPrompt, type ToolArgs, ToolName } from './Tool.js';
+import { type BaseToolCapability, type ContextHandlerResult, type ContextTool, type LighthouseRecordingCapability, PermissionPrompt, type TargetCapability, type ToolArgs, ToolName } from './Tool.js';
 export interface RunLighthouseArgs extends ToolArgs {
     explanation: string;
     categoryId: LighthouseCategoryArg;
@@ -10,7 +10,7 @@ export interface RunLighthouseArgs extends ToolArgs {
 /**
  * Runs Lighthouse audits on the inspected page and sets the resulting report as the active conversation context.
  */
-export declare class RunLighthouseTool implements ContextTool<RunLighthouseArgs, LHModel.ReporterTypes.ReportJSON, BaseToolCapability & LighthouseRecordingCapability> {
+export declare class RunLighthouseTool implements ContextTool<RunLighthouseArgs, LHModel.ReporterTypes.ReportJSON, BaseToolCapability & LighthouseRecordingCapability & TargetCapability> {
     readonly name: ToolName;
     readonly permissionPrompt: PermissionPrompt;
     readonly description: string;
@@ -20,5 +20,5 @@ export declare class RunLighthouseTool implements ContextTool<RunLighthouseArgs,
         thought: string;
         action: string;
     };
-    handler(params: RunLighthouseArgs, context: BaseToolCapability & LighthouseRecordingCapability): Promise<ContextHandlerResult<LHModel.ReporterTypes.ReportJSON>>;
+    handler(params: RunLighthouseArgs, context: BaseToolCapability & LighthouseRecordingCapability & TargetCapability): Promise<ContextHandlerResult<LHModel.ReporterTypes.ReportJSON>>;
 }

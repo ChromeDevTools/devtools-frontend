@@ -33671,13 +33671,13 @@
                         },
                         {
                             "name": "value",
-                            "description": "Remote object value in case of primitive values or JSON values (if it was requested).",
+                            "description": "Remote object value in case of primitive values or JSON values (if it was requested).\nNot set in `deep` serialization mode, see `deepSerializedValue`.",
                             "optional": true,
                             "type": "any"
                         },
                         {
                             "name": "unserializableValue",
-                            "description": "Primitive value which can not be JSON-stringified does not have `value`, but gets this\nproperty.",
+                            "description": "Primitive value which can not be JSON-stringified does not have `value`, but gets this\nproperty. Not set in `deep` serialization mode, see `deepSerializedValue`.",
                             "optional": true,
                             "$ref": "UnserializableValue"
                         },

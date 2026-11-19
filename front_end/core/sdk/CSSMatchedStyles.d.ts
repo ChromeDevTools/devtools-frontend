@@ -55,6 +55,7 @@ export declare class CSSMatchedStyles {
     static create(payload: CSSMatchedStylesPayload): Promise<CSSMatchedStyles>;
     private constructor();
     private init;
+    private resolveInheritedParentNodes;
     private buildMainCascade;
     /**
      * Pseudo rule matches received via the inspector protocol are grouped by pseudo type.

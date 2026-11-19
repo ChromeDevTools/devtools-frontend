@@ -294,7 +294,6 @@ export class FieldSettingsDialog extends HTMLElement {
         const output = html `
       <style>${fieldSettingsDialogStyles}</style>
       <style>${Input.textInputStyles}</style>
-      <style>${Input.checkboxStyles}</style>
       <div class="open-button-section">${this.#renderOpenButton()}</div>
       <devtools-dialog
         @clickoutsidedialog=${this.#closeDialog}
@@ -327,16 +326,13 @@ export class FieldSettingsDialog extends HTMLElement {
             <div class="advanced-section-contents">
               ${this.#renderOriginMapGrid()}
               <hr class="divider">
-              <label class="url-override">
-                <input
-                  type="checkbox"
-                  .checked=${this.#urlOverrideEnabled}
-                  @change=${this.#onUrlOverrideEnabledChange}
-                  aria-label=${i18nString(UIStrings.onlyFetchFieldData)}
-                  jslog=${VisualLogging.toggle().track({ click: true }).context('field-url-override-enabled')}
-                />
-                ${i18nString(UIStrings.onlyFetchFieldData)}
-              </label>
+              <devtools-checkbox
+                class="url-override"
+                .checked=${this.#urlOverrideEnabled}
+                @change=${this.#onUrlOverrideEnabledChange}
+                aria-label=${i18nString(UIStrings.onlyFetchFieldData)}
+                jslog=${VisualLogging.toggle().track({ click: true }).context('field-url-override-enabled')}
+              >${i18nString(UIStrings.onlyFetchFieldData)}</devtools-checkbox>
               <input
                 type="text"
                 @keyup=${this.#onUrlOverrideChange}

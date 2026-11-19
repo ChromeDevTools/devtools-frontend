@@ -39,7 +39,6 @@ export declare class Infobar extends Widget<ShadowRoot> {
     dispose(): void;
     setText(text: string): void;
     setCloseCallback(callback: (() => void) | null): void;
-    setParentView(parentView: Widget): void;
     wasShown(): void;
     wasHidden(): void;
     performUpdate(): void;

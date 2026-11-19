@@ -3,6 +3,13 @@
 // found in the LICENSE file.
 import * as Graph from '../graph/graph.js';
 import { Metric } from './Metric.js';
+function getMainFrameId(dependencyGraph) {
+    const root = dependencyGraph.getRootNode();
+    return root.type === Graph.BaseNode.types.NETWORK ? root.request.frameId : undefined;
+}
+function isMainFrameNode(node, mainFrameId) {
+    return !mainFrameId || !node.request.frameId || node.request.frameId === mainFrameId;
+}
 class FirstContentfulPaint extends Metric {
     static get coefficients() {
         return {
@@ -118,18 +125,22 @@ class FirstContentfulPaint extends Metric {
         });
     }
     static getOptimisticGraph(dependencyGraph, processedNavigation) {
+        const mainFrameId = getMainFrameId(dependencyGraph);
         return this.getFirstPaintBasedGraph(dependencyGraph, {
             cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
             // In the optimistic graph we exclude resources that appeared to be render-blocking but were
             // initiated by a script. While they typically have a very high importance and tend to have a
             // significant impact on the page's content, these resources don't technically block rendering.
-            treatNodeAsRenderBlocking: node => node.hasRenderBlockingPriority() && node.initiatorType !== 'script',
+            // Subframe resources cannot block main-frame FCP.
+            treatNodeAsRenderBlocking: node => isMainFrameNode(node, mainFrameId) && node.hasRenderBlockingPriority() && node.initiatorType !== 'script',
         });
     }
     static getPessimisticGraph(dependencyGraph, processedNavigation) {
+        const mainFrameId = getMainFrameId(dependencyGraph);
         return this.getFirstPaintBasedGraph(dependencyGraph, {
             cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
-            treatNodeAsRenderBlocking: node => node.hasRenderBlockingPriority(),
+            // Subframe resources cannot block main-frame FCP.
+            treatNodeAsRenderBlocking: node => isMainFrameNode(node, mainFrameId) && node.hasRenderBlockingPriority(),
         });
     }
 }

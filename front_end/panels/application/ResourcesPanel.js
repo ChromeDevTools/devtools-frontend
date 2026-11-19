@@ -10,7 +10,7 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import { nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import { ApplicationPanelSidebar, StorageCategoryView } from './ApplicationPanelSidebar.js';
+import { ApplicationPanelSidebar } from './ApplicationPanelSidebar.js';
 import { CookieItemsView } from './CookieItemsView.js';
 import { DeviceBoundSessionsView } from './DeviceBoundSessionsView.js';
 import { DOMStorageItemsView } from './DOMStorageItemsView.js';
@@ -124,12 +124,15 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     }
     showCategoryView(categoryName, categoryHeadline, categoryDescription, categoryLink) {
         if (!this.categoryView) {
-            this.categoryView = new StorageCategoryView();
+            this.categoryView = new UI.EmptyWidget.EmptyWidget(categoryHeadline, categoryDescription);
+            this.categoryView.element.classList.add('storage-view');
+        }
+        else {
+            this.categoryView.header = categoryHeadline;
+            this.categoryView.text = categoryDescription;
         }
         this.categoryView.element.setAttribute('jslog', `${VisualLogging.pane().context(Platform.StringUtilities.toKebabCase(categoryName))}`);
-        this.categoryView.setHeadline(categoryHeadline);
-        this.categoryView.setText(categoryDescription);
-        this.categoryView.setLink(categoryLink);
+        this.categoryView.link = categoryLink;
         this.showView(this.categoryView);
     }
     showDOMStorage(domStorage) {

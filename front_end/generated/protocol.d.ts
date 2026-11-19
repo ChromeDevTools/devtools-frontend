@@ -20681,11 +20681,12 @@ export declare namespace Runtime {
         className?: string;
         /**
          * Remote object value in case of primitive values or JSON values (if it was requested).
+         * Not set in `deep` serialization mode, see `deepSerializedValue`.
          */
         value?: any;
         /**
          * Primitive value which can not be JSON-stringified does not have `value`, but gets this
-         * property.
+         * property. Not set in `deep` serialization mode, see `deepSerializedValue`.
          */
         unserializableValue?: UnserializableValue;
         /**

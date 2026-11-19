@@ -175,6 +175,20 @@ function originatingElement(node) {
     }
     return current;
 }
+// Mirrors Blink's FlatTreeTraversal::ParentElement: follows assigned <slot>, skips ShadowRoot, stops at Document.
+async function parentElementInFlatTree(node) {
+    if (node.hasAssignedSlot()) {
+        return await node.assignedSlot?.deferredNode.resolvePromise() ?? null;
+    }
+    let parent = node.parentNode;
+    while (parent?.isShadowRoot()) {
+        parent = parent.parentNode;
+    }
+    if (!parent || parent.nodeType() === 9 /* NodeType.DOCUMENT_NODE */) {
+        return null;
+    }
+    return parent;
+}
 function treeScopeNodeId(node, property) {
     return property.ownerStyle.type === Type.Inline ? node.getTreeRoot()?.backendNodeId() :
         property.ownerStyle.parentRule?.treeScope;
@@ -304,9 +318,12 @@ export class CSSMatchedStyles {
             inheritedResult.matchedCSSRules = cleanUserAgentPayload(inheritedResult.matchedCSSRules);
         }
         this.#environmentVariables = await this.cssModel().getEnvironmentVariables();
-        this.#mainDOMCascade = await this.buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload);
+        // Resolve flat-tree ancestors once so main, animated, and pseudo inherited cascades stay aligned.
+        const maxInheritedDepth = Math.max(inheritedPayload?.length ?? 0, inheritedPseudoPayload?.length ?? 0);
+        const inheritedNodes = await this.resolveInheritedParentNodes(maxInheritedDepth);
+        this.#mainDOMCascade = this.buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload, inheritedNodes);
         [this.#pseudoDOMCascades, this.#customHighlightPseudoDOMCascades] =
-            this.buildPseudoCascades(pseudoPayload, inheritedPseudoPayload);
+            this.buildPseudoCascades(pseudoPayload, inheritedPseudoPayload, inheritedNodes);
         for (const domCascade of Array.from(this.#customHighlightPseudoDOMCascades.values())
             .concat(Array.from(this.#pseudoDOMCascades.values()))
             .concat(this.#mainDOMCascade)) {
@@ -323,7 +340,19 @@ export class CSSMatchedStyles {
             this.#functionRuleMap.set(rule.functionName().text, rules);
         }
     }
-    async buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload) {
+    async resolveInheritedParentNodes(maxDepth) {
+        const parents = [];
+        let current = this.#node;
+        for (let i = 0; i < maxDepth; ++i) {
+            current = await parentElementInFlatTree(current);
+            if (!current) {
+                break;
+            }
+            parents.push(current);
+        }
+        return parents;
+    }
+    buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload, inheritedNodes) {
         const nodeCascades = [];
         const nodeStyles = [];
         function addAttributesStyle() {
@@ -369,15 +398,9 @@ export class CSSMatchedStyles {
             addAttributesStyle.call(this);
         }
         nodeCascades.push(new NodeCascade(this, nodeStyles, this.#node, false /* #isInherited */));
-        // Walk the node structure and identify styles with inherited properties.
-        let parentNode = this.#node.parentNode;
-        const traverseParentInFlatTree = async (node) => {
-            if (node.hasAssignedSlot()) {
-                return await node.assignedSlot?.deferredNode.resolvePromise() ?? null;
-            }
-            return node.parentNode;
-        };
-        for (let i = 0; parentNode && inheritedPayload && i < inheritedPayload.length; ++i) {
+        // Pair each inherited payload entry with its resolved flat-tree ancestor node.
+        for (let i = 0; inheritedPayload && i < inheritedPayload.length && i < inheritedNodes.length; ++i) {
+            const parentNode = inheritedNodes[i];
             const inheritedStyles = [];
             const entryPayload = inheritedPayload[i];
             const inheritedAnimatedEntryPayload = inheritedAnimatedPayload[i];
@@ -424,9 +447,7 @@ export class CSSMatchedStyles {
                 inheritedStyles.push(inheritedRule.style);
                 this.#inheritedStyles.add(inheritedRule.style);
             }
-            const node = parentNode;
-            parentNode = await traverseParentInFlatTree(parentNode);
-            nodeCascades.push(new NodeCascade(this, inheritedStyles, node, true /* #isInherited */));
+            nodeCascades.push(new NodeCascade(this, inheritedStyles, parentNode, true /* #isInherited */));
         }
         return new DOMInheritanceCascade(this, nodeCascades, this.#registeredProperties);
     }
@@ -470,7 +491,7 @@ export class CSSMatchedStyles {
             }
         }
     }
-    buildPseudoCascades(pseudoPayload, inheritedPseudoPayload) {
+    buildPseudoCascades(pseudoPayload, inheritedPseudoPayload, inheritedNodes) {
         const pseudoInheritanceCascades = new Map();
         const customHighlightPseudoInheritanceCascades = new Map();
         if (!pseudoPayload) {
@@ -504,8 +525,8 @@ export class CSSMatchedStyles {
             }
         }
         if (inheritedPseudoPayload) {
-            let parentNode = this.#node.parentNode;
-            for (let i = 0; parentNode && i < inheritedPseudoPayload.length; ++i) {
+            for (let i = 0; i < inheritedPseudoPayload.length && i < inheritedNodes.length; ++i) {
+                const parentNode = inheritedNodes[i];
                 const inheritedPseudoMatches = inheritedPseudoPayload[i].pseudoElements;
                 for (let j = 0; j < inheritedPseudoMatches.length; ++j) {
                     const inheritedEntryPayload = inheritedPseudoMatches[j];
@@ -533,7 +554,6 @@ export class CSSMatchedStyles {
                         }
                     }
                 }
-                parentNode = parentNode.parentNode;
             }
         }
         // Now that we've built the arrays of NodeCascades for each pseudo type, convert them into

@@ -4,6 +4,7 @@
     "outDir": "."
   },
   "files": [
+    "hardwareConcurrencySelector.css.js",
     "throttlingSettingsTab.css.js"
   ]
 }

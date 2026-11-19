@@ -137,6 +137,7 @@
     "package/lib/puppeteer/common/PierceQueryHandler.d.ts",
     "package/lib/puppeteer/common/Puppeteer.d.ts",
     "package/lib/puppeteer/common/QueryHandler.d.ts",
+    "package/lib/puppeteer/common/RemoteException.d.ts",
     "package/lib/puppeteer/common/ScriptInjector.d.ts",
     "package/lib/puppeteer/common/SecurityDetails.d.ts",
     "package/lib/puppeteer/common/SupportedBrowser.d.ts",

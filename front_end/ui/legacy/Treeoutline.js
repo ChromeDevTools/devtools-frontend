@@ -324,7 +324,6 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
             // scrolls in both directions even if only one is necessary to bring the
             // item into view.
             const itemRect = this.treeElementToScrollIntoView.listItemElement.getBoundingClientRect();
-            const treeRect = this.contentElement.getBoundingClientRect();
             // Usually, this.element is the tree container that scrolls. But sometimes
             // (i.e. in the Elements panel), its parent is.
             let scrollParentElement = this.element;
@@ -335,19 +334,22 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
                 scrollParentElement = parent;
             }
             const viewRect = scrollParentElement.getBoundingClientRect();
-            const currentScrollX = viewRect.left - treeRect.left;
-            const currentScrollY = viewRect.top - treeRect.top + this.contentElement.offsetTop;
+            // Read the scroll position from the scroll container. Do not derive it
+            // from the tree position: padding or positioned elements between the
+            // scroll container and the tree make the derived value incorrect.
+            const currentScrollX = scrollParentElement.scrollLeft;
+            const currentScrollY = scrollParentElement.scrollTop;
             // Only scroll into view on each axis if the item is not visible at all
             // but if we do scroll and centerUponScrollIntoView is true
             // then we center the top left corner of the item in view.
-            let deltaLeft = itemRect.left - treeRect.left;
+            let deltaLeft = itemRect.left - viewRect.left - scrollParentElement.clientLeft + currentScrollX;
             if (deltaLeft > currentScrollX && deltaLeft < currentScrollX + viewRect.width) {
                 deltaLeft = currentScrollX;
             }
             else if (this.centerUponScrollIntoView) {
                 deltaLeft = deltaLeft - viewRect.width / 2;
             }
-            let deltaTop = itemRect.top - treeRect.top;
+            let deltaTop = itemRect.top - viewRect.top - scrollParentElement.clientTop + currentScrollY;
             if (deltaTop > currentScrollY && deltaTop < currentScrollY + viewRect.height) {
                 deltaTop = currentScrollY;
             }

@@ -17,7 +17,10 @@ export declare function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>
 export declare class Highlighting {
     #private;
     static readonly REGISTRY_NAME = "css-value-tracing";
+    readonly onEnter: (e: Event) => void;
+    readonly onExit: (e: Event) => void;
     constructor();
+    registerMatchElement(match: SDK.CSSPropertyParser.Match, element: HTMLElement): void;
     addMatch(match: SDK.CSSPropertyParser.Match, nodes: Node[]): void;
 }
 /**
@@ -39,6 +42,12 @@ export declare class TracingContext {
     #private;
     readonly expandPercentagesInShorthands: boolean;
     constructor(highlighting: Highlighting, expandPercentagesInShorthands: boolean, initialLonghandOffset?: number, matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching);
+    enableAutofocusOnFirstMatch(): void;
+    beginMatch(): void;
+    endMatch(hasOutput: boolean): {
+        substituted: boolean;
+        autofocus: boolean;
+    };
     get highlighting(): Highlighting;
     get root(): {
         match: SDK.CSSPropertyParser.Match;
@@ -83,11 +92,12 @@ export declare class ValueEditEvent extends CustomEvent<string> {
     static readonly eventName = "valueedit";
     constructor(value: string);
 }
-interface EditableContentViewInput {
+export interface ViewInput {
     editedValue: string | null;
-    onValueEdit: (event: ValueEditEvent) => void;
+    onValueEdit: (value: string) => void;
 }
-type EditableContentView = (input: EditableContentViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
+export declare const DEFAULT_VIEW: View;
 /**
  * Hosts a value part that can be edited through an inline swatch or icon.
  *
@@ -97,7 +107,7 @@ type EditableContentView = (input: EditableContentViewInput, output: undefined, 
  **/
 export declare class EditableContent extends UI.Widget.Widget<DocumentFragment> {
     #private;
-    constructor(element?: HTMLElement, view?: EditableContentView);
+    constructor(element?: HTMLElement, view?: View);
     performUpdate(): void;
 }
 export declare class RenderingContext {
@@ -157,8 +167,7 @@ export declare class Renderer extends SDK.CSSPropertyParser.TreeWalker {
 }
 declare const URLRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.URLMatch>;
 export declare class URLRenderer extends URLRendererBase {
-    private readonly rule;
-    private readonly node;
+    #private;
     constructor(rule: SDK.CSSRule.CSSRule | null, node: SDK.DOMModel.DOMNode | null);
     render(match: SDK.CSSPropertyParserMatchers.URLMatch): LitTemplate;
 }

@@ -70,10 +70,14 @@
     "../../../../../../front_end/panels/timeline/TimelineLandingPage.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineLoader.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineMiniMap.test.ts",
+    "../../../../../../front_end/panels/timeline/TimelinePaintProfilerView.test.ts",
     "../../../../../../front_end/panels/timeline/TimelinePanel.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineSelection.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineTreeView.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineUIUtils.test.ts",
+    "../../../../../../front_end/panels/timeline/TraceSnapshotHarness.ts",
+    "../../../../../../front_end/panels/timeline/TraceSnapshotSerializer.test.ts",
+    "../../../../../../front_end/panels/timeline/TraceSnapshotSerializer.ts",
     "../../../../../../front_end/panels/timeline/TrackConfigBanner.test.ts",
     "../../../../../../front_end/panels/timeline/TrackConfiguration.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
@@ -131,6 +135,9 @@
       "path": "../../models/workspace/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../layer_viewer/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../services/trace_bounds/bundle-tsconfig.ref.json"
     },
     {
@@ -156,6 +163,9 @@
     },
     {
       "path": "../../ui/legacy/theme_support/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"

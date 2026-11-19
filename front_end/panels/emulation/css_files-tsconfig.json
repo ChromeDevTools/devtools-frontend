@@ -4,6 +4,7 @@
     "outDir": "."
   },
   "files": [
+    "advancedApp.css.js",
     "deviceModeView.css.js",
     "inspectedPagePlaceholder.css.js",
     "mediaQueryInspector.css.js"

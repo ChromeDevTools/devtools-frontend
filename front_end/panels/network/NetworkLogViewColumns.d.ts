@@ -58,6 +58,7 @@ export declare class NetworkLogViewColumns {
     switchViewMode(gridMode: boolean): void;
     private toggleColumnVisibility;
     private setWaterfallVisibility;
+    updateWaterfallScroller(): void;
     private saveColumnsSettings;
     private loadCustomColumnsAndSettings;
     private makeHeaderFragment;

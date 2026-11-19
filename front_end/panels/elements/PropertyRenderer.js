@@ -1,14 +1,13 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { AsyncDirective, Directive, html, nothing, render } from '../../ui/lit/lit.js';
+import { AsyncDirective, Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import { unescapeCssString } from './StylesSidebarPane.js';
@@ -67,16 +66,35 @@ export class Highlighting {
     #nodesForMatches = new Map();
     #matchesForNodes = new Map();
     #registry;
-    #boundOnEnter;
-    #boundOnExit;
+    onEnter;
+    onExit;
     constructor() {
         const registry = CSS.highlights.get(Highlighting.REGISTRY_NAME);
         this.#registry = registry ?? new Highlight();
         if (!registry) {
             CSS.highlights.set(Highlighting.REGISTRY_NAME, this.#registry);
         }
-        this.#boundOnExit = this.#onExit.bind(this);
-        this.#boundOnEnter = this.#onEnter.bind(this);
+        this.onExit = this.#onExit.bind(this);
+        this.onEnter = this.#onEnter.bind(this);
+    }
+    registerMatchElement(match, element) {
+        const existingMatches = this.#matchesForNodes.get(element);
+        if (existingMatches?.includes(match)) {
+            return;
+        }
+        const ranges = this.#nodesForMatches.get(match);
+        if (ranges) {
+            ranges.push([element]);
+        }
+        else {
+            this.#nodesForMatches.set(match, [[element]]);
+        }
+        if (existingMatches) {
+            existingMatches.push(match);
+        }
+        else {
+            this.#matchesForNodes.set(element, [match]);
+        }
     }
     addMatch(match, nodes) {
         if (nodes.length > 0) {
@@ -97,22 +115,30 @@ export class Highlighting {
                 this.#matchesForNodes.set(node, [match]);
             }
             if (node instanceof HTMLElement) {
-                node.onmouseenter = this.#boundOnEnter;
-                node.onmouseleave = this.#boundOnExit;
-                node.onfocus = this.#boundOnEnter;
-                node.onblur = this.#boundOnExit;
+                node.onmouseenter = this.onEnter;
+                node.onmouseleave = this.onExit;
+                node.onfocus = this.onEnter;
+                node.onblur = this.onExit;
                 node.tabIndex = 0;
             }
         }
     }
     *#nodeRangesHitByMouseEvent(e) {
+        let hitTabbableMatch = false;
         for (const node of e.composedPath()) {
             const matches = this.#matchesForNodes.get(node);
-            if (matches) {
-                for (const match of matches) {
-                    yield* this.#nodesForMatches.get(match) ?? [];
-                }
+            if (!matches) {
+                continue;
+            }
+            const isTabbable = node instanceof HTMLElement && node.hasAttribute('tabindex');
+            if (hitTabbableMatch && isTabbable) {
                 break;
+            }
+            for (const match of matches) {
+                yield* this.#nodesForMatches.get(match) ?? [];
+            }
+            if (isTabbable) {
+                hitTabbableMatch = true;
             }
         }
     }
@@ -139,32 +165,26 @@ export class Highlighting {
         }
     }
 }
-class HighlightDirective extends Directive.Directive {
-    #startNode = null;
-    update(part, [highlighting, match]) {
-        if (part.type !== Directive.PartType.CHILD) {
-            return nothing;
-        }
-        this.#startNode ??= part.startNode?.parentNode?.firstChild ?? null;
-        const nodes = [];
-        for (let node = this.#startNode?.nextSibling; node && node !== part.startNode; node = node.nextSibling) {
-            if (!(node instanceof Comment)) {
-                nodes.push(node);
-            }
-        }
-        highlighting.addMatch(match, nodes);
-        return nothing;
-    }
-    render(_highlighting, _match) {
-        return nothing;
-    }
-}
-const highlightDirective = Directive.directive(HighlightDirective);
-function highlight(highlighting, match, template) {
+function highlight(highlighting, match, template, tabbable = true, autofocus = false) {
     if (!highlighting) {
         return template;
     }
-    return html `${template}${highlightDirective(highlighting, match)}`;
+    const register = Directives.ref(element => {
+        if (element instanceof HTMLElement) {
+            highlighting.registerMatchElement(match, element);
+        }
+    });
+    if (!tabbable) {
+        return html `<span ${register}>${template}</span>`;
+    }
+    return html `<span
+      tabindex="0"
+      ?autofocus=${autofocus}
+      @mouseenter=${highlighting.onEnter}
+      @mouseleave=${highlighting.onExit}
+      @focus=${highlighting.onEnter}
+      @blur=${highlighting.onExit}
+      ${register}>${template}</span>`;
 }
 class LazyEvaluationBlackboard {
     #result;
@@ -230,6 +250,8 @@ export class TracingContext {
     #root = null;
     #propertyName;
     #asyncEvalCallbacks = [];
+    #autofocusNextMatch = false;
+    #matchStack = [];
     expandPercentagesInShorthands;
     constructor(highlighting, expandPercentagesInShorthands, initialLonghandOffset = 0, matchedResult) {
         this.#highlighting = highlighting;
@@ -238,6 +260,41 @@ export class TracingContext {
         this.#propertyName = matchedResult?.ast.propertyName ?? null;
         this.#longhandOffset = initialLonghandOffset;
         this.expandPercentagesInShorthands = expandPercentagesInShorthands;
+    }
+    #rootTracing() {
+        return this.#parent ? this.#parent.#rootTracing() : this;
+    }
+    enableAutofocusOnFirstMatch() {
+        this.#rootTracing().#autofocusNextMatch = true;
+    }
+    beginMatch() {
+        const root = this.#rootTracing();
+        const parentFrame = root.#matchStack.at(-1);
+        let autofocus = false;
+        if (parentFrame?.substituted && parentFrame.autofocus && !parentFrame.hasChildMatch) {
+            autofocus = true;
+            parentFrame.autofocus = false;
+        }
+        else if (root.#autofocusNextMatch) {
+            autofocus = true;
+            root.#autofocusNextMatch = false;
+        }
+        if (parentFrame) {
+            parentFrame.hasChildMatch = true;
+        }
+        root.#matchStack.push({ autofocus, hasChildMatch: false, substituted: false });
+    }
+    endMatch(hasOutput) {
+        const root = this.#rootTracing();
+        const frame = root.#matchStack.pop();
+        if (!frame) {
+            return { substituted: false, autofocus: false };
+        }
+        const substituted = frame.substituted && frame.hasChildMatch;
+        if (!hasOutput && frame.autofocus) {
+            root.#autofocusNextMatch = true;
+        }
+        return { substituted, autofocus: hasOutput && !substituted && frame.autofocus };
     }
     get highlighting() {
         return this.#highlighting;
@@ -339,6 +396,10 @@ export class TracingContext {
         if (this.#substitutionDepth <= 0) {
             this.#setHasMoreSubstitutions();
             return null;
+        }
+        const parentFrame = this.#rootTracing().#matchStack.at(-1);
+        if (parentFrame) {
+            parentFrame.substituted = true;
         }
         const child = new TracingContext(this.#highlighting, this.expandPercentagesInShorthands);
         child.#parent = this;
@@ -472,8 +533,12 @@ export class ValueEditEvent extends CustomEvent {
         super(ValueEditEvent.eventName, { bubbles: true, detail: value });
     }
 }
-const EDITABLE_CONTENT_DEFAULT_VIEW = (input, _output, target) => {
-    render(html `<slot name="icon" @valueedit=${input.onValueEdit}></slot>${input.editedValue ?? html `<slot></slot>`}`, target);
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const onValueEdit = (event) => {
+        event.stopPropagation();
+        input.onValueEdit(event.detail);
+    };
+    render(html `<slot name="icon" @valueedit=${onValueEdit}></slot>${input.editedValue ?? html `<slot></slot>`}`, target);
 };
 /**
  * Hosts a value part that can be edited through an inline swatch or icon.
@@ -485,16 +550,19 @@ const EDITABLE_CONTENT_DEFAULT_VIEW = (input, _output, target) => {
 export class EditableContent extends UI.Widget.Widget {
     #editedValue = null;
     #view;
-    constructor(element, view = EDITABLE_CONTENT_DEFAULT_VIEW) {
+    constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: 'pure' });
         this.element.classList.remove('widget');
         this.#view = view;
         // Render synchronously so that `<slot name="icon">` is in the DOM before synchronous callers dispatch edits.
         this.performUpdate();
     }
-    #onValueEdit = (event) => {
-        event.stopPropagation();
-        this.#editedValue = event.detail;
+    #onValueEdit = (value) => {
+        if (this.#editedValue === value) {
+            return;
+        }
+        this.#editedValue = value;
+        // Render synchronously so that synchronous callers (e.g. `renderedPropertyText()`) observe the updated text immediately.
         this.performUpdate();
     };
     performUpdate() {
@@ -598,8 +666,12 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         const renderer = match &&
             this.#context.renderers.get(match.constructor);
         if (renderer || match instanceof SDK.CSSPropertyParserMatchers.TextMatch) {
+            this.#context.tracing?.beginMatch();
             const rendered = renderer?.render(match, this.#context) ?? html `<span>${match.text}</span>`;
-            const output = highlight(this.#context.tracing?.highlighting, match, rendered);
+            const { substituted, autofocus } = this.#context.tracing?.endMatch(rendered !== nothing) ?? { substituted: false, autofocus: false };
+            const output = rendered === nothing ?
+                nothing :
+                highlight(this.#context.tracing?.highlighting, match, rendered, !substituted, autofocus);
             this.renderedMatchForTest(output, match);
             if (this.#output.some(t => t !== nothing)) {
                 const spacing = precedingSpace(node, this.#context.ast, this.#matchedResult);
@@ -685,24 +757,22 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
 const URLRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.URLMatch);
 // clang-format off
 export class URLRenderer extends URLRendererBase {
-    rule;
-    node;
     // clang-format on
+    #rule;
+    #node;
     constructor(rule, node) {
         super();
-        this.rule = rule;
-        this.node = node;
+        this.#rule = rule;
+        this.#node = node;
     }
     render(match) {
         const url = unescapeCssString(match.url);
-        const container = document.createDocumentFragment();
-        UI.UIUtils.createTextChild(container, 'url(');
         let hrefUrl = null;
-        if (this.rule?.resourceURL()) {
-            hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
+        if (this.#rule?.resourceURL()) {
+            hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.#rule.resourceURL(), url);
         }
-        else if (this.node) {
-            hrefUrl = this.node.resolveURL(url);
+        else if (this.#node) {
+            hrefUrl = this.#node.resolveURL(url);
         }
         const link = ImagePreviewPopover.setImageUrl(Components.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
             text: url,
@@ -714,9 +784,7 @@ export class URLRenderer extends URLRendererBase {
             bypassURLTrimming: true,
             showColumnNumber: false,
         }), hrefUrl || url);
-        container.appendChild(link);
-        UI.UIUtils.createTextChild(container, ')');
-        return html `${[container]}`;
+        return html `url(${link})`;
     }
 }
 const StringRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.StringMatch);
@@ -724,10 +792,7 @@ const StringRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.StringMatc
 export class StringRenderer extends StringRendererBase {
     // clang-format on
     render(match) {
-        const element = document.createElement('span');
-        element.innerText = match.text;
-        UI.Tooltip.Tooltip.install(element, unescapeCssString(match.text));
-        return html `${[element]}`;
+        return html `<span title=${unescapeCssString(match.text)}>${match.text}</span>`;
     }
 }
 const BinOpRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch);
@@ -737,7 +802,7 @@ export class BinOpRenderer extends BinOpRendererBase {
     render(match, context) {
         const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node)
             .map(child => html `<span>${Renderer.render(child, context).nodes}</span>`);
-        return html `${[lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs]}`;
+        return html `${lhs} ${binop} ${rhs}`;
     }
 }
 //# sourceMappingURL=PropertyRenderer.js.map

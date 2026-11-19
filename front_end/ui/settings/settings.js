@@ -318,9 +318,11 @@ var chromeWindowSettingDescriptor = {
 var LighthouseSettings_exports = {};
 __export(LighthouseSettings_exports, {
   catA11ySettingDescriptor: () => catA11ySettingDescriptor,
+  catAgenticBrowsingSettingDescriptor: () => catAgenticBrowsingSettingDescriptor,
   catBestPracticesSettingDescriptor: () => catBestPracticesSettingDescriptor,
   catPerfSettingDescriptor: () => catPerfSettingDescriptor,
-  catSeoSettingDescriptor: () => catSeoSettingDescriptor
+  catSeoSettingDescriptor: () => catSeoSettingDescriptor,
+  deviceTypeSettingDescriptor: () => deviceTypeSettingDescriptor
 });
 import * as Common6 from "../../core/common/common.js";
 var catPerfSettingDescriptor = {
@@ -345,6 +347,18 @@ var catSeoSettingDescriptor = {
   name: "lighthouse.cat-seo",
   type: Common6.Settings.SettingType.BOOLEAN,
   defaultValue: true,
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var catAgenticBrowsingSettingDescriptor = {
+  name: "lighthouse.cat-agentic-browsing",
+  type: Common6.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common6.Settings.SettingStorageType.SYNCED
+};
+var deviceTypeSettingDescriptor = {
+  name: "lighthouse.device-type",
+  type: Common6.Settings.SettingType.ENUM,
+  defaultValue: "mobile",
   storageType: Common6.Settings.SettingStorageType.SYNCED
 };
 

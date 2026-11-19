@@ -384,6 +384,7 @@
   "front_end/models/logs/logs.js",
   "front_end/models/comment_manager/comment_manager.js",
   "front_end/models/change_tracker/change_tracker.js",
+  "front_end/models/devtools_state/devtools_state.js",
   "front_end/models/issues_manager/descriptions/bounceTrackingMitigations.md",
   "front_end/models/issues_manager/descriptions/clientHintMetaTagAllowListInvalidOrigin.md",
   "front_end/models/issues_manager/descriptions/clientHintMetaTagModifiedHTML.md",

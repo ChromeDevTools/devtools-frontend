@@ -6,6 +6,11 @@ import { bytes, millis } from './UnitFormatters.js';
 // (defined in Lighthouse's `report/renderer/util.js`). The pre-built report bundle does
 // not export `Util`, so this threshold is defined locally.
 const PASS_THRESHOLD = 0.9;
+// Cap per-audit detail sections so large reports fit within the prompt budget.
+// Single-category `getLighthouseAudits` calls bypass `MAX_FUNCTION_RESULT_BYTE_LENGTH`.
+const MAX_TABLE_ITEMS = 10;
+const MAX_SUB_ITEMS = 5;
+const MAX_NON_LONGEST_SIBLINGS = 3;
 const AUDIT_TABLE_COLUMN_KEYS = new Map([
     // For webmcp-registered-tools, only include the tool name and description to
     // keep the output concise (omitting inputSchema, source, and element).
@@ -145,8 +150,8 @@ export class LighthouseFormatter {
         return this.audits(report, categoryId);
     }
     /**
-     * Returns a markdown list of all audits in a given category.
-     * Highlight failing audits (score < 90).
+     * Formats non-hidden failing, errored, and detail-bearing informative audits in a
+     * category, capping large tables, sub-item lists, and network-tree branches.
      */
     audits(report, categoryOrId) {
         const category = typeof categoryOrId === 'string' ? report.categories[categoryOrId] : categoryOrId;
@@ -302,25 +307,58 @@ export class LighthouseFormatter {
                 return '';
         }
     }
+    /**
+     * Formats a Lighthouse critical-request `network-tree`, appending a count of
+     * requests omitted by `#formatNetworkTreeNodes`. Every formatted node emits
+     * one line, so omitted requests equal total tree nodes minus `nodeLines.length`.
+     */
     #formatNetworkTree(details) {
         if (Object.keys(details.chains).length === 0) {
             return '';
         }
-        const lines = [`Maximum critical path latency: ${millis(details.longestChain.duration)}`];
-        lines.push(...this.#formatNetworkTreeNodes(details.chains, 0));
+        const nodeLines = this.#formatNetworkTreeNodes(details.chains, 0);
+        const omittedCount = this.#countNetworkTreeNodes(details.chains) - nodeLines.length;
+        const lines = [
+            `Maximum critical path latency: ${millis(details.longestChain.duration)}`,
+            ...nodeLines,
+        ];
+        if (omittedCount > 0) {
+            lines.push(`- ...and ${omittedCount} more ${omittedCount === 1 ? 'request' : 'requests'} omitted`);
+        }
         return lines.join('\n');
     }
+    /**
+     * Formats request nodes at `depth`: all `isLongest` critical-chain nodes
+     * first, followed by up to `MAX_NON_LONGEST_SIBLINGS` other sibling requests.
+     * Formats `children` only for `isLongest` nodes so the critical chain appears
+     * in full without expanding every sibling's dependency tree.
+     */
     #formatNetworkTreeNodes(nodes, depth) {
-        const lines = [];
+        const allNodes = Object.values(nodes);
+        const visibleNodes = [
+            ...allNodes.filter(node => node.isLongest),
+            ...allNodes.filter(node => !node.isLongest).slice(0, MAX_NON_LONGEST_SIBLINGS),
+        ];
         const indent = '  '.repeat(depth);
-        for (const node of Object.values(nodes)) {
+        const lines = [];
+        for (const node of visibleNodes) {
             const longestSuffix = node.isLongest ? ' (longest chain)' : '';
             lines.push(`${indent}- ${node.url} (${millis(node.navStartToEndTime)}, ${bytes(node.transferSize)})${longestSuffix}`);
-            if (node.children) {
+            if (node.isLongest && node.children) {
                 lines.push(...this.#formatNetworkTreeNodes(node.children, depth + 1));
             }
         }
         return lines;
+    }
+    /**
+     * Recursively counts every request node across `nodes` and all descendant `children`.
+     */
+    #countNetworkTreeNodes(nodes) {
+        let count = 0;
+        for (const node of Object.values(nodes)) {
+            count += 1 + (node.children ? this.#countNetworkTreeNodes(node.children) : 0);
+        }
+        return count;
     }
     #formatList(details, auditId) {
         const itemStrings = [];
@@ -385,43 +423,91 @@ export class LighthouseFormatter {
         const lines = [];
         const allowedKeys = auditId ? AUDIT_TABLE_COLUMN_KEYS.get(auditId) : undefined;
         const filteredHeadings = allowedKeys ? headings.filter(h => allowedKeys.has(h.key)) : headings;
+        let emittedItems = 0;
+        let omittedItems = 0;
         for (const item of items) {
             const itemLines = [];
             for (const heading of filteredHeadings) {
-                const value = item[heading.key];
+                // Sub-item-only columns can set `heading.key` to `null` or `""` at runtime.
+                const value = heading.key ? item[heading.key] : undefined;
                 const formattedValues = this.#formatTableValues(value, heading.valueType);
                 for (const { labelSuffix, value: v } of formattedValues) {
                     const baseLabel = heading.label || heading.key;
                     const label = labelSuffix ? `${baseLabel} ${labelSuffix}` : baseLabel;
                     itemLines.push(`  * **${label}**: ${this.#toSingleLine(v)}`);
                 }
-                const subItems = item.subItems;
-                // subItems can technically be a string (TableItemValue), but we
-                // only care about it here if it's a SubItemsJSON (type:
-                // 'subitems'), which represents a nested table of values.
-                if (subItems && typeof subItems === 'object' && 'type' in subItems && subItems.type === 'subitems' &&
-                    heading.subItemsHeading) {
-                    for (const subItem of subItems.items) {
-                        const subValue = subItem[heading.subItemsHeading.key];
-                        // Skip sub-item values that are identical to the main item's value
-                        // for the same heading to avoid redundant output (e.g. if both
-                        // show the same "Est Savings" value).
-                        if (subValue === value) {
-                            continue;
-                        }
-                        const formattedSubValues = this.#formatTableValues(subValue, heading.subItemsHeading.valueType);
-                        for (const { value: v } of formattedSubValues) {
-                            itemLines.push(`    * ${this.#toSingleLine(v)}`);
-                        }
-                    }
-                }
             }
-            if (itemLines.length > 0) {
-                lines.push(`- Item:`);
+            const subItems = item.subItems;
+            // subItems can technically be a string (TableItemValue), but we
+            // only care about it here if it's a SubItemsJSON (type:
+            // 'subitems'), which represents a nested table of values.
+            if (subItems && typeof subItems === 'object' && 'type' in subItems && subItems.type === 'subitems') {
+                itemLines.push(...this.#formatSubItems(item, subItems.items, filteredHeadings));
+            }
+            if (itemLines.length === 0) {
+                continue;
+            }
+            if (emittedItems < MAX_TABLE_ITEMS) {
+                lines.push('- Item:');
                 lines.push(...itemLines);
+                emittedItems++;
+            }
+            else {
+                omittedItems++;
             }
         }
+        if (omittedItems > 0) {
+            lines.push(`- ...and ${omittedItems} more ${omittedItems === 1 ? 'item' : 'items'} omitted`);
+        }
         return lines.join('\n');
+    }
+    /**
+     * Formats up to `MAX_SUB_ITEMS` non-empty sub-items for a table `item` and
+     * appends an omitted count when more sub-items exist.
+     */
+    #formatSubItems(item, subItems, headings) {
+        const formatted = subItems.map(subItem => this.#formatSubItem(item, subItem, headings))
+            .filter((line) => Boolean(line));
+        if (formatted.length === 0) {
+            return [];
+        }
+        const visible = formatted.slice(0, MAX_SUB_ITEMS);
+        const omittedCount = formatted.length - visible.length;
+        const lines = ['  * **Sub-items**:', ...visible.map(line => `    * ${line}`)];
+        if (omittedCount > 0) {
+            lines.push(`    * ...and ${omittedCount} more ${omittedCount === 1 ? 'sub-item' : 'sub-items'} omitted`);
+        }
+        return lines;
+    }
+    /**
+     * Formats one sub-item row across `headings` that define `subItemsHeading`,
+     * returning `null` when every column is empty or matches the parent `item`.
+     */
+    #formatSubItem(item, subItem, headings) {
+        const parts = [];
+        for (const heading of headings) {
+            if (!heading.subItemsHeading) {
+                continue;
+            }
+            const parentValue = heading.key ? item[heading.key] : undefined;
+            const subValue = subItem[heading.subItemsHeading.key];
+            if (subValue === parentValue) {
+                continue;
+            }
+            // Sub-item headings omit `valueType` when inheriting the parent column's unit.
+            // Reuse the parent column label only when the sub-item keeps the same `valueType`.
+            const valueType = heading.subItemsHeading.valueType ?? heading.valueType;
+            const baseLabel = valueType === heading.valueType ? heading.label : '';
+            for (const { labelSuffix, value } of this.#formatTableValues(subValue, valueType)) {
+                const text = this.#toSingleLine(value);
+                if (!text) {
+                    continue;
+                }
+                const label = [baseLabel, labelSuffix].filter(Boolean).join(' ');
+                parts.push(label ? `${label}: ${text}` : text);
+            }
+        }
+        return parts.length > 0 ? parts.join(', ') : null;
     }
     #formatTableValues(value, valueType) {
         if (value === undefined || value === null) {
@@ -451,6 +537,8 @@ export class LighthouseFormatter {
                     }
                     return [{ value: parts.join(':') }];
                 }
+                case 'subitems':
+                    return [];
             }
         }
         return [];

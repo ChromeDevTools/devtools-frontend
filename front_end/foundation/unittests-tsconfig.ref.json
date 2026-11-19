@@ -39,6 +39,9 @@
       "path": "../generated/generated-tsconfig.ref.json"
     },
     {
+      "path": "../models/devtools_state/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../testing/testing-tsconfig.ref.json"
     }
   ]

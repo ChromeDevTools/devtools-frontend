@@ -13,6 +13,7 @@ import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as ChangeTracker from '../models/change_tracker/change_tracker.js';
 import * as CommentManager from '../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
+import * as DevToolsState from '../models/devtools_state/devtools_state.js';
 import * as Emulation from '../models/emulation/emulation.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
@@ -149,6 +150,11 @@ export class Universe {
         }
         const changeTracker = new ChangeTracker.ChangeTracker.ChangeTracker(commentManager);
         context.set(ChangeTracker.ChangeTracker.ChangeTracker, changeTracker);
+        const stateManager = new DevToolsState.StateManager.StateManager([
+            new DevToolsState.CPUThrottlingStateProvider.CPUThrottlingStateProvider(cpuThrottlingManager),
+            new DevToolsState.SettingsStateProvider.SettingsStateProvider(settings),
+        ]);
+        context.set(DevToolsState.StateManager.StateManager, stateManager);
         this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
         context.set(AutofillManager.AutofillManager.AutofillManager, this.autofillManager);
     }
@@ -156,6 +162,7 @@ export class Universe {
     dispose() {
         // TODO(crbug.com/542394587): Track these in a DisposableStack.
         this.cd4aBridge?.dispose();
+        this.context.get(DevToolsState.StateManager.StateManager).dispose();
         this.context.get(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager).dispose();
         if (this.initAutomaticFilesystem) {
             this.context.get(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager).dispose();
@@ -263,6 +270,9 @@ export class Universe {
     }
     get settings() {
         return this.context.get(Common.Settings.Settings);
+    }
+    get stateManager() {
+        return this.context.get(DevToolsState.StateManager.StateManager);
     }
     get targetManager() {
         return this.context.get(SDK.TargetManager.TargetManager);

@@ -1,15 +1,32 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type { ExtensionServer } from './ExtensionServer.js';
+export interface ToolbarButtonData {
+    id: string;
+    iconURL: string;
+    tooltip: string;
+    disabled: boolean;
+    onClick: () => void;
+}
+export interface ViewInput {
+    server: ExtensionServer;
+    id: string;
+    pageURL: string;
+    searchProvider: UI.SearchableView.Searchable;
+    toolbarItems: ToolbarButtonData[];
+}
+export interface ViewOutput {
+    searchableView?: UI.SearchableView.SearchableView;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable {
     #private;
-    private readonly server;
-    private readonly id;
-    private readonly panelToolbar;
-    constructor(server: ExtensionServer, panelName: string, id: string, pageURL: string);
-    addToolbarItem(item: UI.Toolbar.ToolbarItem): void;
+    constructor(server: ExtensionServer, panelName: string, id: string, pageURL: string, view?: View);
+    performUpdate(): void;
+    addToolbarItem(item: ExtensionButton): void;
     onSearchCanceled(): void;
-    searchableView(): UI.SearchableView.SearchableView;
+    searchableView(): UI.SearchableView.SearchableView | null;
     performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, _jumpBackwards?: boolean): void;
     supportsMatchCounts(): boolean;
     jumpToNextSearchResult(): void;
@@ -20,10 +37,11 @@ export declare class ExtensionPanel extends UI.Panel.Panel implements UI.Searcha
 }
 export declare class ExtensionButton {
     #private;
-    private readonly id;
     constructor(server: ExtensionServer, id: string, iconURL: string, tooltip?: string, disabled?: boolean);
+    setOnUpdate(onUpdate: () => void): void;
     update(iconURL?: string, tooltip?: string, disabled?: boolean): void;
-    toolbarButton(): UI.Toolbar.ToolbarButton;
+    data(): ToolbarButtonData;
+    toolbarButton(): ExtensionButton;
 }
 export declare class ExtensionSidebarPane extends UI.View.SimpleView {
     #private;

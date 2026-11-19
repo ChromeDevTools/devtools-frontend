@@ -2293,6 +2293,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "inspector-stylesheet",
   "inspector.drawer-orientation",
   "inspector.drawer-orientation-by-dock-mode",
+  "inspector.drawer-split-view-state",
   "installability",
   "installing-entry-inspect",
   "instance-id",

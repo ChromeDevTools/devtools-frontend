@@ -1640,24 +1640,6 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
         return false;
     }
 }
-export class StorageCategoryView extends UI.Widget.VBox {
-    emptyWidget;
-    constructor() {
-        super();
-        this.element.classList.add('storage-view');
-        this.emptyWidget = new UI.EmptyWidget.EmptyWidget('', '');
-        this.emptyWidget.show(this.element);
-    }
-    setText(text) {
-        this.emptyWidget.text = text;
-    }
-    setHeadline(header) {
-        this.emptyWidget.header = header;
-    }
-    setLink(link) {
-        this.emptyWidget.link = link;
-    }
-}
 export class ResourcesSection {
     panel;
     treeElement;

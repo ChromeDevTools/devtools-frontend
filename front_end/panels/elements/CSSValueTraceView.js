@@ -1,13 +1,14 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import cssValueTraceViewStyles from './cssValueTraceView.css.js';
 import { Highlighting, Renderer, RenderingContext, TracingContext, } from './PropertyRenderer.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
-const { html, render, Directives: { classMap, ifDefined } } = Lit;
-function defaultView(input, output, target) {
+const { classMap, ifDefined } = Directives;
+export const DEFAULT_VIEW = (input, _output, target) => {
     const substitutions = [...input.substitutions];
     const evaluations = [...input.evaluations];
     const finalResult = evaluations.pop() ?? substitutions.pop();
@@ -28,7 +29,7 @@ function defaultView(input, output, target) {
           <span class="trace-line">${firstEvaluation}</span>`
         : html `
           <details @toggle=${input.onToggle} ?hidden=${hiddenSummary}>
-            <summary tabindex=${ifDefined(summaryTabIndex)}>
+            <summary tabindex=${ifDefined(summaryTabIndex)} ?autofocus=${!hiddenSummary && input.substitutions.length === 0}>
               <span class="trace-line-icon" aria-label="is equal to">\u21b3</span>
               <devtools-icon class="marker"></devtools-icon>
               <span class="trace-line">${firstEvaluation}</span>
@@ -43,7 +44,7 @@ function defaultView(input, output, target) {
           <span class="trace-line-icon" aria-label="is equal to" ?hidden=${singleResult}>\u21b3</span>
           <span class=${classMap({ 'trace-line': true, 'full-row': singleResult })}>
             ${finalResult}
-          </span>` : ''}
+          </span>` : nothing}
       </div>`, target);
     // clang-format on
     function onKeyDown(e) {
@@ -55,7 +56,7 @@ function defaultView(input, output, target) {
         }
         // Capture tab focus within
         if (e.key === 'Tab') {
-            const tabstops = this.querySelectorAll('[tabindex]') ?? [];
+            const tabstops = this.querySelectorAll('[tabindex]:not([tabindex="-1"])') ?? [];
             const firstTabStop = tabstops[0];
             const lastTabStop = tabstops[tabstops.length - 1];
             if (e.target === lastTabStop && !e.shiftKey) {
@@ -72,14 +73,14 @@ function defaultView(input, output, target) {
             }
         }
     }
-}
+};
 export class CSSValueTraceView extends UI.Widget.VBox {
     #highlighting;
     #view;
     #evaluations = [];
     #substitutions = [];
     #pendingFocus = false;
-    constructor(element, view = defaultView) {
+    constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
         this.requestUpdate();
@@ -102,6 +103,9 @@ export class CSSValueTraceView extends UI.Widget.VBox {
         const evaluations = [];
         const tracing = new TracingContext(this.#highlighting, expandPercentagesInShorthands, shorthandPositionOffset, matchedResult);
         while (tracing.nextSubstitution()) {
+            if (substitutions.length === 0) {
+                tracing.enableAutofocusOnFirstMatch();
+            }
             const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, 
             /* cssControls */ undefined, 
             /* options */ {}, tracing, signal);
@@ -118,10 +122,25 @@ export class CSSValueTraceView extends UI.Widget.VBox {
         }
         this.#substitutions = substitutions;
         this.#evaluations = [];
+        let firstSuccessfulEvalStep = null;
         for (const [index, success] of (await Promise.all(asyncCallbackResults)).entries()) {
             if (success) {
+                firstSuccessfulEvalStep ??= index + 1;
                 this.#evaluations.push(evaluations[index]);
             }
+        }
+        if (this.#substitutions.length === 0 && firstSuccessfulEvalStep !== null &&
+            (this.#evaluations.length === 1 || this.#evaluations.length === 2)) {
+            const autofocusTracing = new TracingContext(this.#highlighting, expandPercentagesInShorthands, shorthandPositionOffset, matchedResult);
+            for (let step = 0; step < firstSuccessfulEvalStep; step++) {
+                autofocusTracing.nextEvaluation();
+            }
+            autofocusTracing.enableAutofocusOnFirstMatch();
+            const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, 
+            /* cssControls */ undefined, 
+            /* options */ {}, autofocusTracing, signal);
+            this.#evaluations[0] = Renderer.render(matchedResult.ast.tree, context).nodes;
+            await autofocusTracing.runAsyncEvaluations();
         }
         if (this.#substitutions.length === 0 && this.#evaluations.length === 0) {
             const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, undefined, {}, undefined, signal);
@@ -137,9 +156,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
             onToggle: () => this.onResize(),
         };
         this.#view(viewInput, undefined, this.contentElement);
-        const tabStop = this.contentElement.querySelector('[tabindex]');
-        this.setDefaultFocusedElement(tabStop);
-        if (tabStop && this.#pendingFocus) {
+        if (this.#pendingFocus && this.getDefaultFocusedElement()) {
             this.focus();
             this.resetPendingFocus();
         }

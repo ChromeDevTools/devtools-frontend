@@ -846,6 +846,7 @@ export class NetworkLogView extends NetworkLogViewBase {
             dataGridWidget: this.dataGrid.asWidget(),
             waterfallColumn: this.#columns.waterfall(),
         }, undefined, this.contentElement);
+        this.#columns.updateWaterfallScroller();
     }
     #updateGroupByFrame() {
         const value = Common.Settings.Settings.instance().resolve(Settings.NetworkSettings.groupByFrameSettingDescriptor).get();

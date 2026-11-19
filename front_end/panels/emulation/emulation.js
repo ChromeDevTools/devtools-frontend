@@ -8,11 +8,34 @@ var __export = (target, all) => {
 var AdvancedApp_exports = {};
 __export(AdvancedApp_exports, {
   AdvancedApp: () => AdvancedApp,
-  AdvancedAppProvider: () => AdvancedAppProvider
+  AdvancedAppProvider: () => AdvancedAppProvider,
+  DEFAULT_TOOLBOX_VIEW: () => DEFAULT_TOOLBOX_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import * as Host3 from "../../core/host/host.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
+import * as Lit from "../../ui/lit/lit.js";
+
+// gen/front_end/panels/emulation/advancedApp.css.js
+var advancedApp_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  /* Move the resizer of the root split towards the inspected page when docked to the side. */
+  devtools-split-view[data-dock-side="right"]::part(resizer) {
+    transform: translateX(2px);
+  }
+
+  devtools-split-view[data-dock-side="left"]::part(resizer) {
+    transform: translateX(-2px);
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./advancedApp.css")} */`;
 
 // ../../front_end/panels/emulation/DeviceModeView.ts
 var DeviceModeView_exports = {};
@@ -2833,20 +2856,72 @@ function getQuadBoundingBox(quad) {
 }
 
 // ../../front_end/panels/emulation/AdvancedApp.ts
+var { html: html4, render: render4 } = Lit;
+var { widget: widget3, widgetRef } = UI5.Widget;
 var appInstance = null;
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  let rootSplitWidget;
+  let inspectorView;
+  render4(html4`
+    <style>${advancedApp_css_default}</style>
+    <devtools-split-view
+        autofocus
+        data-dock-side=${input.dockSide}
+        direction=${input.direction}
+        sidebar-position=${input.sidebarPosition}
+        name="inspector-view.split-view-state"
+        sidebar-initial-width="555"
+        sidebar-initial-height="300"
+        constraints-in-dip
+        show=${input.show}
+        ${widgetRef(UI5.SplitWidget.SplitWidget, (splitWidget) => {
+    rootSplitWidget = splitWidget;
+  })}>
+      <devtools-widget
+          slot="main"
+          ${widget3(UI5.Widget.WrapperWidget, { widget: input.deviceModeView })}>
+      </devtools-widget>
+      <devtools-widget
+          slot="sidebar"
+          autofocus
+          ${widget3((element) => UI5.InspectorView.InspectorView.instance({ element }))}
+          ${widgetRef(UI5.InspectorView.InspectorView, (widget4) => {
+    inspectorView = widget4;
+  })}>
+      </devtools-widget>
+    </devtools-split-view>
+  `, target);
+  if (rootSplitWidget && inspectorView) {
+    rootSplitWidget.toggleResizer(inspectorView.topResizerElement(), input.topResizerEnabled);
+  }
+};
+var DEFAULT_TOOLBOX_VIEW = (input, _output, target) => {
+  render4(html4`
+    ${widget3(UI5.Widget.WrapperWidget, { widget: input.deviceModeView })}
+  `, target);
+};
 var AdvancedApp = class _AdvancedApp {
-  rootSplitWidget;
-  deviceModeView;
-  inspectedPagePlaceholder;
-  toolboxWindow;
-  toolboxRootView;
-  changingDockSide;
   #universe;
-  constructor(universe) {
+  #view;
+  #toolboxView;
+  #rootView;
+  #deviceModeView;
+  #inspectedPagePlaceholder;
+  #toolboxWindow;
+  #toolboxRootView;
+  #changingDockSide = false;
+  #direction = "row";
+  #sidebarPosition = "second";
+  #show = "both";
+  #dockSide = UI5.DockController.DockState.BOTTOM;
+  #topResizerEnabled = false;
+  constructor(universe, view = DEFAULT_VIEW3, toolboxView = DEFAULT_TOOLBOX_VIEW) {
     this.#universe = universe;
+    this.#view = view;
+    this.#toolboxView = toolboxView;
     UI5.DockController.DockController.instance().addEventListener(
       UI5.DockController.Events.BEFORE_DOCK_SIDE_CHANGED,
-      this.openToolboxWindow,
+      this.#openToolboxWindow,
       this
     );
   }
@@ -2866,45 +2941,40 @@ var AdvancedApp = class _AdvancedApp {
     appInstance = null;
   }
   presentUI(document2) {
-    const rootView = new UI5.RootView.RootView(this.#universe);
-    this.rootSplitWidget = new UI5.SplitWidget.SplitWidget(false, true, "inspector-view.split-view-state", 555, 300, true);
-    this.rootSplitWidget.show(rootView.element);
-    this.rootSplitWidget.setSidebarWidget(UI5.InspectorView.InspectorView.instance());
-    this.rootSplitWidget.setDefaultFocusedChild(UI5.InspectorView.InspectorView.instance());
-    UI5.InspectorView.InspectorView.instance().setOwnerSplit(this.rootSplitWidget);
-    this.inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
-    this.inspectedPagePlaceholder.addEventListener("Update" /* UPDATE */, this.onSetInspectedPageBounds.bind(this), this);
-    this.deviceModeView = new DeviceModeView();
+    this.#rootView = new UI5.RootView.RootView(this.#universe);
+    this.#inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
+    this.#inspectedPagePlaceholder.addEventListener("Update" /* UPDATE */, this.#onSetInspectedPageBounds, this);
+    this.#deviceModeView = new DeviceModeView();
     UI5.DockController.DockController.instance().addEventListener(
       UI5.DockController.Events.BEFORE_DOCK_SIDE_CHANGED,
-      this.onBeforeDockSideChange,
+      this.#onBeforeDockSideChange,
       this
     );
     UI5.DockController.DockController.instance().addEventListener(
       UI5.DockController.Events.DOCK_SIDE_CHANGED,
-      this.onDockSideChange,
+      this.#onDockSideChange,
       this
     );
     UI5.DockController.DockController.instance().addEventListener(
       UI5.DockController.Events.AFTER_DOCK_SIDE_CHANGED,
-      this.onAfterDockSideChange,
+      this.#onAfterDockSideChange,
       this
     );
-    this.onDockSideChange();
+    this.#onDockSideChange();
     console.timeStamp("AdvancedApp.attachToBody");
-    rootView.attachToDocument(document2);
-    rootView.focus();
-    this.inspectedPagePlaceholder.update();
+    this.#rootView.attachToDocument(document2);
+    this.#rootView.focus();
+    this.#inspectedPagePlaceholder.update();
   }
-  openToolboxWindow(event) {
+  #openToolboxWindow(event) {
     if (event.data.to !== UI5.DockController.DockState.UNDOCKED) {
       return;
     }
-    if (this.toolboxWindow) {
+    if (this.#toolboxWindow) {
       return;
     }
     const url = window.location.href.replace("devtools_app.html", "device_mode_emulation_frame.html");
-    this.toolboxWindow = window.open(url, void 0);
+    this.#toolboxWindow = window.open(url, void 0);
   }
   deviceModeEmulationFrameLoaded(toolboxDocument) {
     ThemeSupport.ThemeSupport.instance().addDocumentToTheme(toolboxDocument);
@@ -2912,81 +2982,97 @@ var AdvancedApp = class _AdvancedApp {
     UI5.UIUtils.addPlatformClass(toolboxDocument.documentElement);
     UI5.UIUtils.installComponentRootStyles(toolboxDocument.body);
     UI5.ContextMenu.ContextMenu.installHandler(toolboxDocument);
-    this.toolboxRootView = new UI5.RootView.RootView(this.#universe);
-    this.toolboxRootView.attachToDocument(toolboxDocument);
-    this.updateDeviceModeView();
+    this.#toolboxRootView = new UI5.RootView.RootView(this.#universe);
+    this.#toolboxRootView.attachToDocument(toolboxDocument);
+    this.#performUpdate();
   }
-  updateDeviceModeView() {
-    if (this.isDocked()) {
-      this.rootSplitWidget.setMainWidget(this.deviceModeView);
-    } else if (this.toolboxRootView) {
-      this.deviceModeView.show(this.toolboxRootView.element);
+  /**
+   * Renders synchronously, because the dock side change handlers measure the
+   * inspected page placeholder right after changing the layout.
+   */
+  #performUpdate() {
+    if (!this.#rootView || !this.#deviceModeView) {
+      return;
+    }
+    const docked = this.#isDocked();
+    const viewInput = {
+      direction: this.#direction,
+      sidebarPosition: this.#sidebarPosition,
+      show: this.#show,
+      dockSide: this.#dockSide,
+      topResizerEnabled: this.#topResizerEnabled,
+      deviceModeView: docked ? this.#deviceModeView : null
+    };
+    if (docked) {
+      if (this.#toolboxRootView) {
+        this.#toolboxView({ deviceModeView: null }, void 0, this.#toolboxRootView.contentElement);
+      }
+      this.#view(viewInput, void 0, this.#rootView.contentElement);
+    } else {
+      this.#view(viewInput, void 0, this.#rootView.contentElement);
+      if (this.#toolboxRootView) {
+        this.#toolboxView({ deviceModeView: this.#deviceModeView }, void 0, this.#toolboxRootView.contentElement);
+      }
     }
   }
-  onBeforeDockSideChange(event) {
-    if (event.data.to === UI5.DockController.DockState.UNDOCKED && this.toolboxRootView) {
-      this.rootSplitWidget.hideSidebar();
-      this.inspectedPagePlaceholder.update();
+  #onBeforeDockSideChange(event) {
+    if (event.data.to === UI5.DockController.DockState.UNDOCKED && this.#toolboxRootView) {
+      this.#show = "main";
+      this.#performUpdate();
+      this.#inspectedPagePlaceholder?.update();
     }
-    this.changingDockSide = true;
+    this.#changingDockSide = true;
   }
-  onDockSideChange(event) {
-    this.updateDeviceModeView();
+  #onDockSideChange(event) {
     const toDockSide = event ? event.data.to : UI5.DockController.DockController.instance().dockSide();
     if (toDockSide === void 0) {
       throw new Error("Got onDockSideChange event with unexpected undefined for dockSide()");
     }
     if (toDockSide === UI5.DockController.DockState.UNDOCKED) {
-      this.updateForUndocked();
-    } else if (this.toolboxRootView && event && event.data.from === UI5.DockController.DockState.UNDOCKED) {
-      this.rootSplitWidget.hideSidebar();
+      this.#updateForUndocked();
+    } else if (this.#toolboxRootView && event && event.data.from === UI5.DockController.DockState.UNDOCKED) {
+      this.#show = "main";
     } else {
-      this.updateForDocked(toDockSide);
+      this.#updateForDocked(toDockSide);
     }
+    this.#performUpdate();
   }
-  onAfterDockSideChange(event) {
-    if (!this.changingDockSide) {
+  #onAfterDockSideChange(event) {
+    if (!this.#changingDockSide) {
       return;
     }
     if (event.data.from && event.data.from === UI5.DockController.DockState.UNDOCKED) {
-      this.updateForDocked(event.data.to);
+      this.#updateForDocked(event.data.to);
+      this.#performUpdate();
     }
-    this.changingDockSide = false;
-    this.inspectedPagePlaceholder.update();
+    this.#changingDockSide = false;
+    this.#inspectedPagePlaceholder?.update();
   }
-  updateForDocked(dockSide) {
-    const resizerElement = this.rootSplitWidget.resizerElement();
-    resizerElement.style.transform = dockSide === UI5.DockController.DockState.RIGHT ? "translateX(2px)" : dockSide === UI5.DockController.DockState.LEFT ? "translateX(-2px)" : "";
-    this.rootSplitWidget.setVertical(
-      dockSide === UI5.DockController.DockState.RIGHT || dockSide === UI5.DockController.DockState.LEFT
-    );
-    this.rootSplitWidget.setSecondIsSidebar(
-      dockSide === UI5.DockController.DockState.RIGHT || dockSide === UI5.DockController.DockState.BOTTOM
-    );
-    this.rootSplitWidget.toggleResizer(this.rootSplitWidget.resizerElement(), true);
-    this.rootSplitWidget.toggleResizer(
-      UI5.InspectorView.InspectorView.instance().topResizerElement(),
-      dockSide === UI5.DockController.DockState.BOTTOM
-    );
-    this.rootSplitWidget.showBoth();
+  #updateForDocked(dockSide) {
+    const isVertical = dockSide === UI5.DockController.DockState.RIGHT || dockSide === UI5.DockController.DockState.LEFT;
+    const isSidebarSecond = dockSide === UI5.DockController.DockState.RIGHT || dockSide === UI5.DockController.DockState.BOTTOM;
+    this.#direction = isVertical ? "column" : "row";
+    this.#sidebarPosition = isSidebarSecond ? "second" : "first";
+    this.#show = "both";
+    this.#dockSide = dockSide;
+    this.#topResizerEnabled = dockSide === UI5.DockController.DockState.BOTTOM;
   }
-  updateForUndocked() {
-    this.rootSplitWidget.toggleResizer(this.rootSplitWidget.resizerElement(), false);
-    this.rootSplitWidget.toggleResizer(UI5.InspectorView.InspectorView.instance().topResizerElement(), false);
-    this.rootSplitWidget.hideMain();
+  #updateForUndocked() {
+    this.#show = "sidebar";
+    this.#topResizerEnabled = false;
   }
-  isDocked() {
+  #isDocked() {
     return UI5.DockController.DockController.instance().dockSide() !== UI5.DockController.DockState.UNDOCKED;
   }
-  onSetInspectedPageBounds(event) {
-    if (this.changingDockSide) {
+  #onSetInspectedPageBounds(event) {
+    if (this.#changingDockSide || !this.#inspectedPagePlaceholder) {
       return;
     }
-    const window2 = this.inspectedPagePlaceholder.element.window();
+    const window2 = this.#inspectedPagePlaceholder.element.window();
     if (!window2.innerWidth || !window2.innerHeight) {
       return;
     }
-    if (!this.inspectedPagePlaceholder.isShowing()) {
+    if (!this.#inspectedPagePlaceholder.isShowing()) {
       return;
     }
     const bounds = event.data;

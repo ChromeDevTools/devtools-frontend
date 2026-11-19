@@ -82,6 +82,7 @@ export declare class Button extends HTMLElement {
      * for increased type-safety.
      */
     set data(data: ButtonData);
+    get iconName(): string | undefined;
     set iconName(iconName: string | undefined);
     set toggledIconName(toggledIconName: string);
     set toggleType(toggleType: ToggleType);

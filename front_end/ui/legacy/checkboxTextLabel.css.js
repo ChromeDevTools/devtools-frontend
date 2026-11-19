@@ -44,7 +44,8 @@ input {
   }
 }
 
-.devtools-checkbox-subtitle {
+.devtools-checkbox-subtitle,
+::slotted(.devtools-checkbox-subtitle) {
   color: var(--sys-color-token-subtle);
   white-space: break-spaces;
 }

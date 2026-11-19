@@ -105,7 +105,6 @@ export class Infobar extends Widget {
     #view;
     #detailsRows = [];
     #closeCallback = null;
-    #parentView;
     #needsUpdate = true;
     constructor(typeOrElement, textOrView, actions, disableSetting, jslogContext, view = DEFAULT_VIEW) {
         if (typeof typeOrElement === 'string') {
@@ -227,9 +226,6 @@ export class Infobar extends Widget {
     setCloseCallback(callback) {
         this.#closeCallback = callback;
     }
-    setParentView(parentView) {
-        this.#parentView = parentView;
-    }
     wasShown() {
         super.wasShown();
         if (this.#needsUpdate) {
@@ -263,7 +259,7 @@ export class Infobar extends Widget {
         }
     }
     #onResize() {
-        (this.#parentView ?? this.parentWidget())?.doResize();
+        this.parentWidget()?.doResize();
     }
     #onDisable() {
         if (this.#disableSetting) {

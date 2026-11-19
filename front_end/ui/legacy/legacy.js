@@ -640,8 +640,8 @@ __export(Dialog_exports, {
 });
 import * as Common16 from "../../core/common/common.js";
 import * as i18n27 from "../../core/i18n/i18n.js";
-import { nothing as nothing9, render as render13 } from "../lit/lit.js";
-import * as Buttons7 from "../components/buttons/buttons.js";
+import { nothing as nothing10, render as render14 } from "../lit/lit.js";
+import * as Buttons8 from "../components/buttons/buttons.js";
 import * as VisualLogging17 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/dialog.css.js
@@ -824,10 +824,10 @@ import * as Common14 from "../../core/common/common.js";
 import * as i18n23 from "../../core/i18n/i18n.js";
 import * as Platform14 from "../../core/platform/platform.js";
 import * as Root8 from "../../core/root/root.js";
-import * as Buttons5 from "../components/buttons/buttons.js";
+import * as Buttons6 from "../components/buttons/buttons.js";
 import * as VisualLogging15 from "../visual_logging/visual_logging.js";
 import { createIcon as createIcon6 } from "../kit/kit.js";
-import { nothing as nothing7, render as render10 } from "../lit/lit.js";
+import { nothing as nothing8, render as render11 } from "../lit/lit.js";
 import * as SettingUIRegistration from "../settings/settings.js";
 
 // ../../front_end/ui/legacy/ContextMenu.ts
@@ -845,8 +845,8 @@ __export(ContextMenu_exports, {
 });
 import * as Host8 from "../../core/host/host.js";
 import * as Root7 from "../../core/root/root.js";
-import * as Buttons4 from "../components/buttons/buttons.js";
-import { html as html6, render as render8 } from "../lit/lit.js";
+import * as Buttons5 from "../components/buttons/buttons.js";
+import { html as html7, render as render9 } from "../lit/lit.js";
 import * as VisualLogging11 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ShortcutRegistry.ts
@@ -1622,12 +1622,13 @@ __export(SoftContextMenu_exports, {
 import * as i18n19 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon5 } from "../kit/kit.js";
 import * as VisualLogging10 from "../visual_logging/visual_logging.js";
-import { render as render7 } from "../lit/lit.js";
+import { render as render8 } from "../lit/lit.js";
 
 // ../../front_end/ui/legacy/InspectorView.ts
 var InspectorView_exports = {};
 __export(InspectorView_exports, {
   ActionDelegate: () => ActionDelegate,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   DockMode: () => DockMode,
   DrawerOrientation: () => DrawerOrientation,
   InspectorView: () => InspectorView,
@@ -1638,7 +1639,7 @@ import * as Host7 from "../../core/host/host.js";
 import * as i18n17 from "../../core/i18n/i18n.js";
 import * as Root6 from "../../core/root/root.js";
 import * as SDK from "../../core/sdk/sdk.js";
-import * as Buttons3 from "../components/buttons/buttons.js";
+import * as Buttons4 from "../components/buttons/buttons.js";
 import { createIcon as createIcon4 } from "../kit/kit.js";
 import * as Lit3 from "../lit/lit.js";
 import * as SettingsUI2 from "../settings/settings.js";
@@ -2843,9 +2844,6 @@ var Widget = class _Widget {
       return;
     }
     this.#visible = true;
-    if (!wasVisible && this.parentIsShowing()) {
-      this.processWillShow();
-    }
     this.element.classList.remove("hidden");
     if (this.element.parentNode !== parentElement) {
       if (!this.#externallyManaged) {
@@ -2862,6 +2860,7 @@ var Widget = class _Widget {
       this.element.removeAttribute("autofocus");
     }
     if (!wasVisible && this.parentIsShowing()) {
+      this.processWillShow();
       this.processWasShown();
     }
     if (this.#parentWidget && this.hasNonZeroConstraints()) {
@@ -3428,7 +3427,6 @@ var Infobar = class _Infobar extends Widget {
   #view;
   #detailsRows = [];
   #closeCallback = null;
-  #parentView;
   #needsUpdate = true;
   constructor(typeOrElement, textOrView, actions, disableSetting, jslogContext, view = DEFAULT_VIEW) {
     if (typeof typeOrElement === "string") {
@@ -3546,9 +3544,6 @@ var Infobar = class _Infobar extends Widget {
   setCloseCallback(callback) {
     this.#closeCallback = callback;
   }
-  setParentView(parentView) {
-    this.#parentView = parentView;
-  }
   wasShown() {
     super.wasShown();
     if (this.#needsUpdate) {
@@ -3586,7 +3581,7 @@ var Infobar = class _Infobar extends Widget {
     }
   }
   #onResize() {
-    (this.#parentView ?? this.parentWidget())?.doResize();
+    this.parentWidget()?.doResize();
   }
   #onDisable() {
     if (this.#disableSetting) {
@@ -3614,9 +3609,17 @@ var TYPE_TO_ICON = {
 };
 
 // ../../front_end/ui/legacy/InspectorDrawerView.ts
+var InspectorDrawerView_exports = {};
+__export(InspectorDrawerView_exports, {
+  DEFAULT_DRAWER_TABBED_PANE_VIEW: () => DEFAULT_DRAWER_TABBED_PANE_VIEW,
+  DEFAULT_TOOLBAR_VIEW: () => DEFAULT_TOOLBAR_VIEW,
+  InspectorDrawerView: () => InspectorDrawerView
+});
 import * as Common10 from "../../core/common/common.js";
 import * as i18n15 from "../../core/i18n/i18n.js";
 import * as Root5 from "../../core/root/root.js";
+import * as Buttons3 from "../components/buttons/buttons.js";
+import { html as html4, nothing as nothing5, render as render5 } from "../lit/lit.js";
 import * as VisualLogging8 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
@@ -3626,37 +3629,30 @@ var inspectorDrawerTabbedPane_css_default = `/*
  * found in the LICENSE file.
  */
 
-.drawer-tabbed-pane.drawer-minimized-vertical {
+:host(.drawer-minimized-vertical) {
   /* 28px toolbar width minus 1px SplitWidget splitter border. */
   min-width: calc(var(--sys-size-12) - var(--sys-size-1));
   width: calc(var(--sys-size-12) - var(--sys-size-1));
 }
 
-.hide-element {
-  display: none;
-}
-
-.collapsed-vertical-drawer-container {
+:host(.drawer-minimized-vertical) .tabbed-pane-shadow {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.collapsed-vertical-drawer-header {
+:host(.drawer-minimized-vertical) :is(.tabbed-pane-content, .tabbed-pane-header-contents, .tabbed-pane-left-toolbar) {
+  display: none;
+}
+
+:host(.drawer-minimized-vertical) .tabbed-pane-header {
   flex-direction: column;
   flex-basis: 100% !important; /* stylelint-disable-line declaration-no-important */
   border-bottom: none;
 }
 
-.collapsed-vertical-drawer-right-toolbar {
+:host(.drawer-minimized-vertical) devtools-toolbar.tabbed-pane-right-toolbar {
   margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
-  flex-direction: column;
-  align-items: center;
-  height: auto;
-  width: 100%;
-}
-
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -3666,7 +3662,7 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
   gap: 0;
 }
 
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
+:host(.drawer-minimized-vertical) .tabbed-pane-right-toolbar .toolbar-button {
   margin: 0 auto;
   padding: 0;
   padding-right: var(--sys-size-1);
@@ -3675,10 +3671,6 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-spacer {
-  display: none;
 }
 
 /*# sourceURL=${import.meta.resolve("./inspectorDrawerTabbedPane.css")} */`;
@@ -4050,6 +4042,7 @@ var SplitWidget = class extends SplitWidgetBase {
     });
     this.#resizerElement = this.contentElement.createChild("div", "shadow-split-widget-resizer");
     this.#resizerElement.setAttribute("jslog", `${VisualLogging4.resizer().track({ drag: true })}`);
+    this.#resizerElement.setAttribute("part", "resizer");
     this.#resizerWidget = new SimpleResizerWidget();
     this.#resizerWidget.setEnabled(true);
     this.#resizerWidget.addEventListener("ResizeStart" /* RESIZE_START */, this.#onResizeStart, this);
@@ -4747,11 +4740,17 @@ var SplitWidgetElement = class extends WidgetElement {
       widget2.setSecondIsSidebar(newValue === "second");
     } else if (name === "show") {
       if (newValue === "main") {
-        widget2.hideSidebar();
+        if (widget2.showMode() !== "OnlyMain" /* ONLY_MAIN */) {
+          widget2.hideSidebar();
+        }
       } else if (newValue === "sidebar") {
-        widget2.hideMain();
+        if (widget2.showMode() !== "OnlySidebar" /* ONLY_SIDEBAR */) {
+          widget2.hideMain();
+        }
       } else if (newValue === "both" || newValue === null) {
-        widget2.showBoth();
+        if (widget2.showMode() !== "Both" /* BOTH */) {
+          widget2.showBoth();
+        }
       }
     }
   }
@@ -8366,24 +8365,60 @@ var StackLocation = class extends Location {
 
 // ../../front_end/ui/legacy/InspectorDrawerView.ts
 var VERTICAL_MINIMIZED_DRAWER_SIZE = 27;
+var DEFAULT_DRAWER_TABBED_PANE_VIEW = (input, _output, target) => {
+  render5(
+    html4`<style>${inspectorDrawerTabbedPane_css_default}</style>`,
+    target,
+    {
+      container: {
+        classes: [
+          "drawer-tabbed-pane",
+          ...input.isVerticalMinimized ? ["drawer-minimized-vertical"] : []
+        ],
+        attributes: {
+          role: "complementary",
+          "aria-label": input.label,
+          jslog: `${VisualLogging8.drawer()}`
+        }
+      }
+    }
+  );
+};
 var DrawerTabbedPane = class extends TabbedPane {
-  constructor() {
+  #label;
+  #view;
+  #isVerticalMinimized = false;
+  #renderedVerticalMinimized = false;
+  constructor(label, view = DEFAULT_DRAWER_TABBED_PANE_VIEW) {
     super();
-    this.registerRequiredCSS(inspectorDrawerTabbedPane_css_default);
+    this.#label = label;
+    this.#view = view;
+    this.performUpdate();
   }
   setVerticalMinimized(isMinimized) {
-    this.element.classList.toggle("drawer-minimized-vertical", isMinimized);
-    this.contentElement.classList.toggle("collapsed-vertical-drawer-container", isMinimized);
-    this.tabbedPaneContentElement().classList.toggle("hide-element", isMinimized);
-    this.headerElement().classList.toggle("collapsed-vertical-drawer-header", isMinimized);
-    this.headerContentsElement.classList.toggle("hide-element", isMinimized);
-    this.leftToolbar().classList.toggle("hide-element", isMinimized);
-    this.rightToolbar().classList.toggle("collapsed-vertical-drawer-right-toolbar", isMinimized);
-    this.rightToolbar().classList.toggle("collapsed-vertical-drawer-toolbar-content", isMinimized);
+    if (this.#isVerticalMinimized === isMinimized) {
+      return;
+    }
+    this.#isVerticalMinimized = isMinimized;
+    this.performUpdate();
   }
-  restoreAfterVerticalMinimized() {
-    this.clearMeasuredWidths();
-    this.headerResized();
+  performUpdate() {
+    if (#view in this && this.element.shadowRoot) {
+      this.#view(
+        {
+          isVerticalMinimized: this.#isVerticalMinimized,
+          label: this.#label
+        },
+        void 0,
+        this.element.shadowRoot
+      );
+      const wasVerticalMinimized = this.#renderedVerticalMinimized;
+      this.#renderedVerticalMinimized = this.#isVerticalMinimized;
+      if (wasVerticalMinimized && !this.#isVerticalMinimized) {
+        this.clearMeasuredWidths();
+      }
+    }
+    super.performUpdate();
   }
 };
 var UIStrings8 = {
@@ -8410,29 +8445,75 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("ui/legacy/InspectorDrawerView.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var DEFAULT_TOOLBAR_VIEW = (input, _output, target) => {
+  const minimizeExpandIcon = input.isMinimized ? input.isVertical ? "right-panel-open" : "bottom-panel-open" : input.isVertical ? "right-panel-close" : "bottom-panel-close";
+  const minimizeExpandLabel = input.isMinimized ? i18nString8(UIStrings8.expandDrawer) : i18nString8(UIStrings8.minimizeDrawer);
+  const orientationIcon = input.isVertical ? "dock-bottom" : "dock-right";
+  const orientationLabel = i18nString8(UIStrings8.toggleDrawerOrientation);
+  const closeLabel = i18nString8(UIStrings8.closeDrawer);
+  render5(html4`
+    ${input.showOrientationToggle ? html4`
+      <devtools-button
+          class="toolbar-button"
+          .iconName=${orientationIcon}
+          .variant=${Buttons3.Button.Variant.ICON}
+          .accessibleLabel=${orientationLabel}
+          .title=${orientationLabel}
+          jslog=${VisualLogging8.toggle("toggle-drawer-orientation").track({ click: true })}
+          @click=${() => input.onToggleOrientation()}></devtools-button>` : nothing5}
+    <devtools-button
+        class="toolbar-button"
+        .iconName=${minimizeExpandIcon}
+        .variant=${Buttons3.Button.Variant.ICON}
+        .accessibleLabel=${minimizeExpandLabel}
+        .title=${minimizeExpandLabel}
+        jslog=${VisualLogging8.toggle("minimize-drawer").track({ click: true })}
+        @click=${() => input.onToggleMinimized()}></devtools-button>
+    <devtools-button
+        class="toolbar-button"
+        .iconName=${"cross"}
+        .variant=${Buttons3.Button.Variant.ICON}
+        .accessibleLabel=${closeLabel}
+        .title=${closeLabel}
+        jslog=${VisualLogging8.close("close-drawer").track({ click: true })}
+        @click=${() => input.onClose()}></devtools-button>
+  `, target);
+};
 var InspectorDrawerView = class {
   tabbedLocation;
   tabbedPane;
-  #splitWidget;
+  #splitWidget = null;
   #drawerMinimizedSetting;
   #verticalExpandedMinimumWidth;
   #minimumSizes;
   #setInspectorMinimumSize;
+  #isVertical;
+  #isMinimized = false;
+  #showMode = "OnlyMain" /* ONLY_MAIN */;
+  #hasExplicitShowMode = false;
+  #pendingDrawerSize = null;
+  #pendingInitialTabId = null;
   #drawerSizeBeforeMinimize = 0;
-  #wasVerticalAndMinimized = false;
-  #toggleOrientationButton;
-  #minimizeExpandButton;
-  #closeDrawerButton;
+  #toolbarView;
+  #enableOrientationToggle;
+  #onToggleMinimized;
+  #onHide;
+  #onToggleOrientation;
   #moreTabsButton;
   #onExpandFromMinimized;
   #onMinimizeFromTabInteraction;
   #onTabSelected;
   #isConsoleOpenInMainAndDrawer;
   constructor(options) {
-    this.#splitWidget = options.splitWidget;
+    this.#isVertical = options.isVertical;
     this.#verticalExpandedMinimumWidth = options.verticalExpandedMinimumWidth;
     this.#minimumSizes = options.minimumSizes;
     this.#setInspectorMinimumSize = options.setInspectorMinimumSize;
+    this.#toolbarView = options.toolbarView ?? DEFAULT_TOOLBAR_VIEW;
+    this.#enableOrientationToggle = options.enableOrientationToggle;
+    this.#onToggleMinimized = options.onToggleMinimized;
+    this.#onHide = options.onHide;
+    this.#onToggleOrientation = options.onToggleOrientation;
     this.#onExpandFromMinimized = options.onExpandFromMinimized;
     this.#onMinimizeFromTabInteraction = options.onMinimizeFromTabInteraction;
     this.#onTabSelected = options.onTabSelected;
@@ -8440,7 +8521,7 @@ var InspectorDrawerView = class {
     this.#drawerMinimizedSetting = Common10.Settings.Settings.instance().createLocalSetting("inspector.drawer-minimized", false);
     this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, "drawer-view", true, true, {
       isLocationVisible: options.isVisible,
-      tabbedPaneFactory: () => new DrawerTabbedPane(),
+      tabbedPaneFactory: () => new DrawerTabbedPane(options.drawerLabel, options.drawerTabbedPaneView),
       plusButton: { title: i18nString8(UIStrings8.moreTools), jslogContext: "plus-button-drawer" }
     });
     if (Root5.Runtime.hostConfig.devToolsPlusButton?.enabled) {
@@ -8450,73 +8531,128 @@ var InspectorDrawerView = class {
       this.#moreTabsButton.setTitle(i18nString8(UIStrings8.moreTools));
     }
     this.tabbedPane = this.tabbedLocation.tabbedPane();
-    this.tabbedPane.element.classList.add("drawer-tabbed-pane");
-    this.tabbedPane.element.setAttribute("jslog", `${VisualLogging8.drawer()}`);
-    this.#minimizeExpandButton = new ToolbarButton(
-      i18nString8(UIStrings8.minimizeDrawer),
-      options.isVertical ? "right-panel-close" : "bottom-panel-close"
-    );
-    this.#minimizeExpandButton.element.setAttribute(
-      "jslog",
-      `${VisualLogging8.toggle("minimize-drawer").track({ click: true })}`
-    );
-    this.#minimizeExpandButton.addEventListener(ToolbarButton.Events.CLICK, options.onToggleMinimized);
-    this.#closeDrawerButton = new ToolbarButton(i18nString8(UIStrings8.closeDrawer), "cross");
-    this.#closeDrawerButton.element.setAttribute(
-      "jslog",
-      `${VisualLogging8.close("close-drawer").track({ click: true })}`
-    );
-    this.#closeDrawerButton.addEventListener(ToolbarButton.Events.CLICK, options.onHide);
-    this.#toggleOrientationButton = new ToolbarButton(
-      i18nString8(UIStrings8.toggleDrawerOrientation),
-      options.isVertical ? "dock-bottom" : "dock-right"
-    );
-    this.#toggleOrientationButton.element.setAttribute(
-      "jslog",
-      `${VisualLogging8.toggle("toggle-drawer-orientation").track({ click: true })}`
-    );
-    this.#toggleOrientationButton.addEventListener(ToolbarButton.Events.CLICK, options.onToggleOrientation);
-    if (options.enableOrientationToggle) {
-      this.tabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
-    }
-    this.tabbedPane.rightToolbar().appendToolbarItem(this.#minimizeExpandButton);
-    this.tabbedPane.rightToolbar().appendToolbarItem(this.#closeDrawerButton);
+    this.#pendingInitialTabId = this.tabbedPane.selectedTabId;
     this.tabbedPane.addEventListener("TabInvoked" /* TabInvoked */, this.#drawerTabInvoked, this);
     this.tabbedPane.addEventListener("TabSelected" /* TabSelected */, this.#drawerTabSelected, this);
     this.tabbedPane.setTabDelegate(options.tabDelegate);
-    const selectedDrawerTab = this.tabbedPane.selectedTabId;
-    if (this.#splitWidget.showMode() !== "OnlyMain" /* ONLY_MAIN */ && selectedDrawerTab) {
-      this.#onTabSelected(selectedDrawerTab);
-    }
-    const drawerElement = this.tabbedPane.element;
-    markAsComplementary(drawerElement);
-    setLabel(drawerElement, options.drawerLabel);
-    this.#splitWidget.installResizer(this.tabbedPane.headerElement());
-    this.#splitWidget.setSidebarWidget(this.tabbedPane);
     this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging8.toolbar("drawer").track({
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
-    this.#updatePresentation(false);
+    if (options.splitWidget) {
+      this.attachSplitWidget(options.splitWidget);
+    } else {
+      this.#updatePresentation(false);
+    }
+  }
+  attachSplitWidget(splitWidget) {
+    if (this.#splitWidget === splitWidget) {
+      return;
+    }
+    const previousSplitWidget = this.#splitWidget;
+    if (previousSplitWidget) {
+      previousSplitWidget.uninstallResizer(this.tabbedPane.headerElement());
+      this.#isVertical = previousSplitWidget.isVertical();
+      this.#showMode = previousSplitWidget.showMode();
+      this.#isMinimized = previousSplitWidget.isSidebarMinimized();
+      this.#hasExplicitShowMode = true;
+      if (this.#pendingDrawerSize === null) {
+        if (!this.#isMinimized && previousSplitWidget.sidebarSize() > 0) {
+          this.#pendingDrawerSize = previousSplitWidget.sidebarSize();
+        } else if (this.#isMinimized && this.#drawerSizeBeforeMinimize > 0) {
+          this.#pendingDrawerSize = this.#drawerSizeBeforeMinimize;
+        }
+      }
+      if (this.#showMode === "OnlyMain" /* ONLY_MAIN */) {
+        previousSplitWidget.hideSidebar(false);
+      } else if (this.#showMode === "OnlySidebar" /* ONLY_SIDEBAR */) {
+        previousSplitWidget.hideMain(false);
+      }
+      this.tabbedPane.detach();
+    }
+    this.#splitWidget = splitWidget;
+    if (splitWidget.isVertical() !== this.#isVertical) {
+      splitWidget.setVertical(this.#isVertical);
+    }
+    splitWidget.installResizer(this.tabbedPane.headerElement());
+    splitWidget.setSidebarWidget(this.tabbedPane);
+    const pendingDrawerSize = this.#pendingDrawerSize;
+    this.#pendingDrawerSize = null;
+    if (this.#hasExplicitShowMode) {
+      this.applyState(this.#showMode, this.#isMinimized);
+    } else {
+      this.#showMode = splitWidget.showMode();
+      if (this.#isMinimized && splitWidget.showMode() === "Both" /* BOTH */) {
+        this.setMinimized(true);
+      } else {
+        this.#isMinimized = false;
+        this.#updatePresentation(false);
+      }
+    }
+    if (pendingDrawerSize !== null) {
+      if (this.isMinimized()) {
+        this.#drawerSizeBeforeMinimize = pendingDrawerSize;
+      } else {
+        splitWidget.setSidebarSize(pendingDrawerSize);
+      }
+    }
+    this.#reportPendingInitialTabIfVisible();
+  }
+  #reportPendingInitialTabIfVisible() {
+    if (this.#pendingInitialTabId && this.showMode() !== "OnlyMain" /* ONLY_MAIN */) {
+      const tabId = this.#pendingInitialTabId;
+      this.#pendingInitialTabId = null;
+      this.#onTabSelected(tabId);
+    }
+  }
+  showMode() {
+    return this.#splitWidget ? this.#splitWidget.showMode() : this.#showMode;
+  }
+  sidebarIsShowing() {
+    return this.#splitWidget ? this.#splitWidget.sidebarIsShowing() : this.#showMode !== "OnlyMain" /* ONLY_MAIN */;
   }
   restoreMinimizedStateFromSettings() {
     if (!this.#drawerMinimizedSetting.get()) {
       return;
     }
-    this.#splitWidget.showBoth();
+    this.#showMode = "Both" /* BOTH */;
+    if (this.#splitWidget) {
+      this.#splitWidget.showBoth();
+    } else {
+      this.#hasExplicitShowMode = true;
+    }
     this.setMinimized(true);
+    this.#reportPendingInitialTabIfVisible();
   }
   setVertical(shouldBeVertical) {
-    if (shouldBeVertical === this.#splitWidget.isVertical()) {
+    if (shouldBeVertical === this.isVertical()) {
       return;
     }
-    const previousShowMode = this.#splitWidget.showMode();
+    const previousShowMode = this.showMode();
     const wasDrawerMinimized = this.isMinimized();
-    this.#splitWidget.setVertical(shouldBeVertical);
+    this.#isVertical = shouldBeVertical;
+    this.#splitWidget?.setVertical(shouldBeVertical);
     this.#updatePresentation(wasDrawerMinimized);
-    this.applyState(previousShowMode, wasDrawerMinimized);
+    if (this.#splitWidget || this.#hasExplicitShowMode) {
+      this.applyState(previousShowMode, wasDrawerMinimized);
+    }
   }
   applyState(showMode, minimized) {
+    const wasDrawerVisible = this.#showMode !== "OnlyMain" /* ONLY_MAIN */ && !this.#isMinimized;
+    this.#showMode = showMode;
+    if (!this.#splitWidget) {
+      this.#hasExplicitShowMode = true;
+      const shouldBeMinimized2 = showMode === "Both" /* BOTH */ && minimized;
+      if (showMode === "Both" /* BOTH */) {
+        this.setMinimized(shouldBeMinimized2);
+      } else {
+        this.#isMinimized = false;
+        this.#updatePresentation(false);
+        this.#drawerMinimizedSetting.set(false);
+      }
+      this.#reportPendingInitialTabIfVisible();
+      return;
+    }
     if (this.#splitWidget.showMode() !== showMode) {
       switch (showMode) {
         case "Both" /* BOTH */:
@@ -8532,71 +8668,104 @@ var InspectorDrawerView = class {
     }
     const shouldBeMinimized = showMode === "Both" /* BOTH */ && minimized;
     if (showMode === "Both" /* BOTH */) {
-      this.setMinimized(shouldBeMinimized);
+      this.#setMinimizedInternal(shouldBeMinimized, wasDrawerVisible);
+      this.#reportPendingInitialTabIfVisible();
       return;
     }
+    this.#isMinimized = false;
     this.#splitWidget.setSidebarMinimized(false);
     this.#splitWidget.setResizable(false);
     this.#updatePresentation(false);
     this.#drawerMinimizedSetting.set(false);
+    this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
+    this.#reportPendingInitialTabIfVisible();
   }
   show(hasTargetDrawer) {
     const wasDrawerVisible = this.isVisibleForEvents();
     this.tabbedPane.setAutoSelectFirstItemOnShow(!hasTargetDrawer);
-    this.#splitWidget.showBoth();
+    this.#showMode = "Both" /* BOTH */;
+    if (this.#splitWidget) {
+      this.#splitWidget.showBoth();
+    } else {
+      this.#hasExplicitShowMode = true;
+    }
     this.#updatePresentation(this.isMinimized());
     this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
+    this.#reportPendingInitialTabIfVisible();
   }
   hide() {
     const wasDrawerVisible = this.isVisibleForEvents();
     const wasMinimized = this.isMinimized();
-    this.#splitWidget.hideSidebar(!wasMinimized);
+    this.#showMode = "OnlyMain" /* ONLY_MAIN */;
+    if (this.#splitWidget) {
+      this.#splitWidget.hideSidebar(!wasMinimized);
+    } else {
+      this.#hasExplicitShowMode = true;
+    }
+    this.#isMinimized = false;
     this.#updatePresentation(false);
     if (wasMinimized) {
-      this.#splitWidget.setSidebarMinimized(false);
-      this.#splitWidget.setResizable(true);
+      this.#splitWidget?.setSidebarMinimized(false);
+      this.#splitWidget?.setResizable(true);
     }
     this.#drawerMinimizedSetting.set(false);
     this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
   }
   setMinimized(minimized) {
-    const wasDrawerVisible = this.isVisibleForEvents();
-    if (minimized && !this.isMinimized()) {
+    this.#setMinimizedInternal(minimized, this.isVisibleForEvents());
+  }
+  #setMinimizedInternal(minimized, wasDrawerVisible) {
+    if (minimized && !this.isMinimized() && this.#splitWidget) {
       this.#drawerSizeBeforeMinimize = this.#splitWidget.sidebarSize();
     }
+    this.#isMinimized = minimized;
     this.#updatePresentation(minimized);
-    this.#splitWidget.setSidebarMinimized(minimized);
+    this.#splitWidget?.setSidebarMinimized(minimized);
     this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
-    this.#splitWidget.setResizable(!minimized);
+    this.#splitWidget?.setResizable(!minimized);
     this.#drawerMinimizedSetting.set(minimized);
-    if (!minimized && this.#drawerSizeBeforeMinimize > 0) {
+    if (!minimized && this.#drawerSizeBeforeMinimize > 0 && this.#splitWidget) {
       this.#splitWidget.setSidebarSize(this.#drawerSizeBeforeMinimize);
     }
   }
   drawerVisible() {
-    return this.tabbedPane.isShowing();
+    return this.#splitWidget?.isShowing() ? this.tabbedPane.isShowing() : this.sidebarIsShowing();
   }
   isVisibleForEvents() {
-    return this.#splitWidget.sidebarIsShowing() && !this.isMinimized();
+    return this.sidebarIsShowing() && !this.isMinimized();
   }
   drawerSize() {
-    return this.#splitWidget.sidebarSize();
+    return this.#splitWidget ? this.#splitWidget.sidebarSize() : this.#pendingDrawerSize ?? 0;
   }
   setDrawerSize(size) {
+    if (!this.#splitWidget) {
+      this.#pendingDrawerSize = size;
+      return;
+    }
     this.#splitWidget.setSidebarSize(size);
   }
   totalSize() {
-    return this.#splitWidget.totalSize();
+    return this.#splitWidget ? this.#splitWidget.totalSize() : 0;
   }
   isMinimized() {
-    return this.#splitWidget.isSidebarMinimized();
+    return this.#splitWidget ? this.#splitWidget.isSidebarMinimized() : this.#isMinimized;
   }
   isVertical() {
-    return this.#splitWidget.isVertical();
+    return this.#splitWidget ? this.#splitWidget.isVertical() : this.#isVertical;
   }
   updatePresentation({ isVertical, isMinimized, verticalExpandedMinimumWidth }) {
-    this.#toggleOrientationButton.setGlyph(isVertical ? "dock-bottom" : "dock-right");
-    this.#updateMinimizeExpandButton(isVertical, isMinimized);
+    this.#toolbarView(
+      {
+        isVertical,
+        isMinimized,
+        showOrientationToggle: this.#enableOrientationToggle,
+        onToggleOrientation: this.#onToggleOrientation,
+        onToggleMinimized: this.#onToggleMinimized,
+        onClose: this.#onHide
+      },
+      void 0,
+      this.tabbedPane.rightToolbar()
+    );
     const isVerticalAndMinimized = isVertical && isMinimized;
     if (isVerticalAndMinimized) {
       this.tabbedPane.setMinimumSize(VERTICAL_MINIMIZED_DRAWER_SIZE, VERTICAL_MINIMIZED_DRAWER_SIZE);
@@ -8609,27 +8778,14 @@ var InspectorDrawerView = class {
     if (this.#moreTabsButton) {
       this.#moreTabsButton.setVisible(!isVerticalAndMinimized);
     }
-    if (!isVerticalAndMinimized && this.#wasVerticalAndMinimized) {
-      this.tabbedPane.restoreAfterVerticalMinimized();
-    }
-    this.#wasVerticalAndMinimized = isVerticalAndMinimized;
-  }
-  #updateMinimizeExpandButton(isVertical, isMinimized) {
-    if (isMinimized) {
-      this.#minimizeExpandButton.setGlyph(isVertical ? "right-panel-open" : "bottom-panel-open");
-      this.#minimizeExpandButton.setTitle(i18nString8(UIStrings8.expandDrawer));
-      return;
-    }
-    this.#minimizeExpandButton.setGlyph(isVertical ? "right-panel-close" : "bottom-panel-close");
-    this.#minimizeExpandButton.setTitle(i18nString8(UIStrings8.minimizeDrawer));
   }
   #updatePresentation(minimized) {
-    const requireVerticalMinimumWidth = this.#splitWidget.isVertical() && this.#splitWidget.sidebarIsShowing() && !minimized;
+    const requireVerticalMinimumWidth = this.isVertical() && this.sidebarIsShowing() && !minimized;
     this.#setInspectorMinimumSize(
       requireVerticalMinimumWidth ? this.#minimumSizes.inspectorWidthWhenVertical : this.#minimumSizes.inspectorWidthWhenHorizontal,
       this.#minimumSizes.inspectorHeight
     );
-    const drawerIsVertical = this.#splitWidget.isVertical();
+    const drawerIsVertical = this.isVertical();
     this.updatePresentation({
       isVertical: drawerIsVertical,
       isMinimized: minimized,
@@ -8645,6 +8801,7 @@ var InspectorDrawerView = class {
   }
   #drawerTabSelected(event) {
     const { tabId, prevTabId, isUserGesture } = event.data;
+    this.#pendingInitialTabId = null;
     this.#onTabSelected(tabId);
     if (this.#isConsoleOpenInMainAndDrawer(tabId)) {
       return;
@@ -8705,9 +8862,9 @@ var statusBar_css_default = `/* Copyright 2026 The Chromium Authors
 /*# sourceURL=${import.meta.resolve("./statusBar.css")} */`;
 
 // ../../front_end/ui/legacy/StatusBar.ts
-var { html: html4, render: render5 } = Lit2;
+var { html: html5, render: render6 } = Lit2;
 var DEFAULT_VIEW2 = (_input, _output, target) => {
-  render5(html4`
+  render6(html5`
     <style>${statusBar_css_default}</style>
     <div class="status-bar"></div>
   `, target);
@@ -8822,7 +8979,8 @@ var UIUserMetrics = class _UIUserMetrics {
 };
 
 // ../../front_end/ui/legacy/InspectorView.ts
-var { html: html5 } = Lit3;
+var { Directives: Directives4, html: html6, nothing: nothing6, render: render7 } = Lit3;
+var { repeat } = Directives4;
 var UIStrings9 = {
   /**
    * @description Announcement text for screen readers when the drawer is minimized.
@@ -8919,63 +9077,108 @@ var DockMode = /* @__PURE__ */ ((DockMode2) => {
   DockMode2["UNDOCKED"] = "undocked";
   return DockMode2;
 })(DockMode || {});
+var DEFAULT_VIEW3 = (input, output, target) => {
+  let drawerSplitWidget;
+  render7(html6`
+    ${input.infobars.length > 0 ? html6`
+      <div class="flex-none">
+        ${repeat(input.infobars, (bar) => bar.key, (bar) => widget(Infobar, {
+    type: bar.type,
+    text: bar.text,
+    actions: bar.actions,
+    disableSetting: bar.disableSetting,
+    jslogContext: bar.jslogContext,
+    onClose: bar.onClose
+  }))}
+      </div>
+    ` : nothing6}
+    <devtools-split-view
+        autofocus
+        direction=${input.isVerticalSplit ? "column" : "row"}
+        sidebar-position="second"
+        name="inspector.drawer-split-view-state"
+        sidebar-initial-size="200"
+        show=${input.isDrawerOpen ? "both" : "main"}
+        @change=${(e) => {
+    if (e.target === e.currentTarget && e instanceof CustomEvent) {
+      input.onDrawerOpenChanged(e.detail !== "OnlyMain" /* ONLY_MAIN */);
+    }
+  }}
+        ${widgetRef(SplitWidget, (splitWidget) => {
+    drawerSplitWidget = splitWidget;
+  })}>
+    </devtools-split-view>
+    ${input.statusBarVisible ? html6`
+      <devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>
+    ` : nothing6}
+  `, target);
+  output.attachSplitPanels = (mainWidget, attachDrawer) => {
+    if (!drawerSplitWidget) {
+      return;
+    }
+    if (drawerSplitWidget.mainWidget() !== mainWidget) {
+      drawerSplitWidget.setMainWidget(mainWidget);
+      drawerSplitWidget.setDefaultFocusedChild(mainWidget);
+    }
+    attachDrawer(drawerSplitWidget);
+  };
+};
 var InspectorView = class _InspectorView extends VBox {
-  drawerOrientationByDockSetting;
-  drawerSplitWidget;
+  #view;
+  #drawerOrientationByDockSetting;
+  #drawerSplitViewStateSetting;
   #drawerView;
-  tabDelegate;
-  drawerTabbedLocation;
-  drawerTabbedPane;
-  infoBarDiv;
-  tabbedLocation;
+  #tabDelegate;
+  #tabbedLocation;
   tabbedPane;
-  keyDownBound;
-  currentPanelLocked;
-  focusRestorer;
+  #keyDownBound;
+  #isVerticalSplit;
+  #drawerShowMode;
+  #infobars = [];
+  #statusBarVisible = false;
+  #needsUpdate = true;
+  #updatingDrawerState = false;
+  #currentPanelLocked;
+  #focusRestorer;
   #mainPanelAtDrawerFocus = null;
-  ownerSplitWidget;
-  reloadRequiredInfobar;
-  #chromeRestartRequiredInfobar;
-  #debuggedTabReloadRequiredInfobar;
-  #selectOverrideFolderInfobar;
   #resizeObserver;
   #drawerShowModeBeforeDockSideChange = null;
   #drawerMinimizedBeforeDockSideChange = null;
-  #statusBarContainer;
-  constructor(element) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element);
+    this.#view = view;
     GlassPane.setContainer(this.element);
     this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
-    this.drawerOrientationByDockSetting = Common11.Settings.Settings.instance().createSetting("inspector.drawer-orientation-by-dock-mode", {
+    this.#drawerOrientationByDockSetting = Common11.Settings.Settings.instance().createSetting("inspector.drawer-orientation-by-dock-mode", {
       ["bottom" /* BOTTOM */]: "unset" /* UNSET */,
       ["side" /* SIDE */]: "unset" /* UNSET */,
       ["undocked" /* UNDOCKED */]: "unset" /* UNSET */
     });
+    this.#drawerSplitViewStateSetting = Common11.Settings.Settings.instance().createSetting(
+      "inspector.drawer-split-view-state",
+      {}
+    );
     const initialOrientation = this.#getOrientationForDockMode();
-    const isVertical = initialOrientation === "vertical" /* VERTICAL */;
-    this.drawerSplitWidget = new SplitWidget(isVertical, true, "inspector.drawer-split-view-state", 200, 200);
-    this.drawerSplitWidget.hideSidebar();
-    this.drawerSplitWidget.enableShowModeSaving();
-    this.drawerSplitWidget.show(this.element);
-    this.tabDelegate = new InspectorViewTabDelegate();
+    this.#isVerticalSplit = initialOrientation === "vertical" /* VERTICAL */;
+    this.#drawerShowMode = this.#readSavedDrawerShowMode(this.#isVerticalSplit) ?? "OnlyMain" /* ONLY_MAIN */;
+    this.#tabDelegate = new InspectorViewTabDelegate();
     this.#drawerView = new InspectorDrawerView({
-      splitWidget: this.drawerSplitWidget,
       revealDrawer: this.showDrawer.bind(this, {
         focus: false,
         hasTargetDrawer: true
       }),
-      isVisible: () => this.drawerSplitWidget.sidebarIsShowing() && !this.drawerSplitWidget.isSidebarMinimized(),
+      isVisible: () => Boolean(this.#drawerView?.isVisibleForEvents()),
       drawerLabel: i18nString9(UIStrings9.drawer),
       onToggleMinimized: this.toggleDrawerMinimized.bind(this),
       onHide: this.closeDrawer.bind(this),
       onToggleOrientation: this.toggleDrawerOrientation.bind(this),
       onExpandFromMinimized: this.#expandDrawerFromInteraction.bind(this),
       onMinimizeFromTabInteraction: this.minimizeDrawer.bind(this),
-      onTabSelected: this.tabSelected.bind(this),
+      onTabSelected: this.#tabSelected.bind(this),
       isConsoleOpenInMainAndDrawer: (tabId) => tabId === "console-view" && this.tabbedPane.selectedTabId === "console",
-      tabDelegate: this.tabDelegate,
+      tabDelegate: this.#tabDelegate,
       enableOrientationToggle: Boolean(Root6.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
-      isVertical,
+      isVertical: this.#isVerticalSplit,
       verticalExpandedMinimumWidth: MIN_VERTICAL_DRAWER_WIDTH,
       minimumSizes: {
         inspectorWidthWhenVertical: MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER,
@@ -8984,50 +9187,9 @@ var InspectorView = class _InspectorView extends VBox {
       },
       setInspectorMinimumSize: this.setMinimumSize.bind(this)
     });
-    this.drawerTabbedLocation = this.#drawerView.tabbedLocation;
-    this.drawerTabbedPane = this.#drawerView.tabbedPane;
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(
-      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(
-        Host7.InspectorFrontendHost.InspectorFrontendHostInstance
-      ),
-      "panel",
-      true,
-      true,
-      {
-        defaultTab: Root6.Runtime.Runtime.queryParam("panel"),
-        plusButton: { jslogContext: "plus-button-panel" }
-      }
-    );
-    this.tabbedPane = this.tabbedLocation.tabbedPane();
-    this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
-    this.tabbedPane.element.classList.add("main-tabbed-pane");
-    const allocatedSpace = Root6.Runtime.conditions.canDock() ? "69px" : "41px";
-    this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
-    this.tabbedPane.addEventListener(
-      "TabSelected" /* TabSelected */,
-      (event) => this.tabSelected(event.data.tabId),
-      this
-    );
-    const selectedTab = this.tabbedPane.selectedTabId;
-    if (selectedTab) {
-      UIUserMetrics.instance().panelShown(selectedTab, true);
-    }
-    this.tabbedPane.setAccessibleName(i18nString9(UIStrings9.panels));
-    this.tabbedPane.setTabDelegate(this.tabDelegate);
-    const mainHeaderElement = this.tabbedPane.headerElement();
-    markAsNavigation(mainHeaderElement);
-    setLabel(mainHeaderElement, i18nString9(UIStrings9.mainToolbar));
-    mainHeaderElement.setAttribute("jslog", `${VisualLogging9.toolbar("main").track({
-      drag: true,
-      keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
-    })}`);
-    UIUserMetrics.instance().setLaunchPanel(this.tabbedPane.selectedTabId);
-    if (Host7.InspectorFrontendHost.isUnderTest()) {
-      this.tabbedPane.setAutoSelectFirstItemOnShow(false);
-    }
-    this.drawerSplitWidget.setMainWidget(this.tabbedPane);
-    this.drawerSplitWidget.setDefaultFocusedChild(this.tabbedPane);
-    this.keyDownBound = this.keyDown.bind(this);
+    this.#tabbedLocation = this.#createMainTabbedLocation();
+    this.tabbedPane = this.#tabbedLocation.tabbedPane();
+    this.#keyDownBound = this.#keyDown.bind(this);
     Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
       Host7.InspectorFrontendHostAPI.Events.ShowPanel,
       showPanel.bind(this)
@@ -9036,9 +9198,7 @@ var InspectorView = class _InspectorView extends VBox {
       void this.showPanel(panelName);
     }
     if (shouldShowLocaleInfobar()) {
-      const infobar = createLocaleInfobar();
-      infobar.setParentView(this);
-      this.attachInfobar(infobar);
+      this.#infobars.push(createLocaleInfobarSpec(() => this.#removeInfobar("locale-mismatch")));
     }
     this.#resizeObserver = new ResizeObserver(this.#observedResize.bind(this));
     DockController.instance().addEventListener(
@@ -9056,12 +9216,91 @@ var InspectorView = class _InspectorView extends VBox {
       this.#restoreDrawerStateAfterDockSideChange,
       this
     );
-    this.#drawerView.restoreMinimizedStateFromSettings();
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.restoreMinimizedStateFromSettings();
+      if (this.#drawerView.isMinimized()) {
+        this.#drawerShowMode = this.#drawerView.showMode();
+        this.#saveDrawerShowMode(this.#drawerShowMode);
+      } else if (this.#drawerShowMode !== "OnlyMain" /* ONLY_MAIN */) {
+        this.#drawerView.applyState(this.#drawerShowMode, false);
+      }
+    });
+    this.performUpdate();
+  }
+  #runWithDrawerStateUpdate(fn) {
+    const wasUpdating = this.#updatingDrawerState;
+    this.#updatingDrawerState = true;
+    try {
+      fn();
+    } finally {
+      this.#updatingDrawerState = wasUpdating;
+    }
+  }
+  requestUpdate() {
+    this.#needsUpdate = true;
+    super.requestUpdate();
+  }
+  performUpdate() {
+    this.#needsUpdate = false;
+    const input = {
+      infobars: this.#infobars,
+      isVerticalSplit: this.#isVerticalSplit,
+      isDrawerOpen: this.#drawerShowMode !== "OnlyMain" /* ONLY_MAIN */,
+      statusBarVisible: this.#statusBarVisible,
+      onDrawerOpenChanged: this.#onDrawerOpenChanged
+    };
+    const output = {};
+    this.#view(input, output, this.contentElement);
+    this.#runWithDrawerStateUpdate(() => {
+      output.attachSplitPanels?.(this.tabbedPane, (splitWidget) => this.#drawerView.attachSplitWidget(splitWidget));
+    });
+  }
+  #createMainTabbedLocation() {
+    const tabbedLocation = ViewManager.instance().createTabbedLocation(
+      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(
+        Host7.InspectorFrontendHost.InspectorFrontendHostInstance
+      ),
+      "panel",
+      true,
+      true,
+      {
+        defaultTab: Root6.Runtime.Runtime.queryParam("panel"),
+        plusButton: { jslogContext: "plus-button-panel" }
+      }
+    );
+    const tabbedPane = tabbedLocation.tabbedPane();
+    tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
+    tabbedPane.element.classList.add("main-tabbed-pane");
+    const allocatedSpace = Root6.Runtime.conditions.canDock() ? "69px" : "41px";
+    tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
+    tabbedPane.addEventListener(
+      "TabSelected" /* TabSelected */,
+      (event) => this.#tabSelected(event.data.tabId),
+      this
+    );
+    const selectedTab = tabbedPane.selectedTabId;
+    if (selectedTab) {
+      UIUserMetrics.instance().panelShown(selectedTab, true);
+    }
+    tabbedPane.setAccessibleName(i18nString9(UIStrings9.panels));
+    tabbedPane.setTabDelegate(this.#tabDelegate);
+    const mainHeaderElement = tabbedPane.headerElement();
+    markAsNavigation(mainHeaderElement);
+    setLabel(mainHeaderElement, i18nString9(UIStrings9.mainToolbar));
+    mainHeaderElement.setAttribute("jslog", `${VisualLogging9.toolbar("main").track({
+      drag: true,
+      keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
+    })}`);
+    UIUserMetrics.instance().setLaunchPanel(tabbedPane.selectedTabId);
+    if (Host7.InspectorFrontendHost.isUnderTest()) {
+      tabbedPane.setAutoSelectFirstItemOnShow(false);
+    }
+    return tabbedLocation;
   }
   static instance(opts = { forceNew: null }) {
-    const { forceNew, element } = opts;
+    const { forceNew, element, view } = opts;
     if (!inspectorViewInstance || forceNew) {
-      inspectorViewInstance = new _InspectorView(element);
+      inspectorViewInstance = new _InspectorView(element, view);
     }
     return inspectorViewInstance;
   }
@@ -9090,23 +9329,62 @@ var InspectorView = class _InspectorView extends VBox {
   }
   #getOrientationForDockMode() {
     const dockMode = this.#getDockMode();
-    const orientationSetting = this.drawerOrientationByDockSetting.get();
+    const orientationSetting = this.#drawerOrientationByDockSetting.get();
     let orientation = orientationSetting[dockMode];
     if (orientation === "unset" /* UNSET */) {
       orientation = dockMode === "bottom" /* BOTTOM */ ? "vertical" /* VERTICAL */ : "horizontal" /* HORIZONTAL */;
     }
     return orientation;
   }
-  #applyDrawerOrientation(orientation) {
-    const shouldBeVertical = orientation === "vertical" /* VERTICAL */;
-    const isVertical = this.#drawerView.isVertical();
-    if (shouldBeVertical === isVertical) {
+  #drawerOrientationKey(isVertical = this.#isVerticalSplit) {
+    return isVertical ? "vertical" : "horizontal";
+  }
+  #readSavedDrawerShowMode(isVertical) {
+    return this.#drawerSplitViewStateSetting.get()[this.#drawerOrientationKey(isVertical)]?.showMode;
+  }
+  #saveDrawerShowMode(showMode) {
+    const key = this.#drawerOrientationKey();
+    const state = this.#drawerSplitViewStateSetting.get();
+    this.#drawerSplitViewStateSetting.set({
+      ...state,
+      [key]: {
+        ...state[key],
+        showMode
+      }
+    });
+  }
+  #setDrawerShowMode(showMode) {
+    if (this.#drawerShowMode === showMode) {
       return;
     }
-    this.#drawerView.setVertical(shouldBeVertical);
+    this.#drawerShowMode = showMode;
+    this.#saveDrawerShowMode(showMode);
+    this.requestUpdate();
+  }
+  #onDrawerOpenChanged = (isOpen) => {
+    if (this.#updatingDrawerState) {
+      return;
+    }
+    this.#applyDrawerState(isOpen ? "Both" /* BOTH */ : "OnlyMain" /* ONLY_MAIN */, this.isDrawerMinimized());
+  };
+  #applyDrawerOrientation(orientation) {
+    const shouldBeVertical = orientation === "vertical" /* VERTICAL */;
+    if (shouldBeVertical === this.#isVerticalSplit && shouldBeVertical === this.#drawerView.isVertical()) {
+      return;
+    }
+    this.#isVerticalSplit = shouldBeVertical;
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.setVertical(shouldBeVertical);
+    });
+    this.#drawerShowMode = this.#drawerView.showMode();
+    this.#saveDrawerShowMode(this.#drawerShowMode);
+    this.requestUpdate();
   }
   #applyDrawerState(showMode, minimized) {
-    this.#drawerView.applyState(showMode, minimized);
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.applyState(showMode, minimized);
+    });
+    this.#setDrawerShowMode(this.#drawerView.showMode());
   }
   #observedResize() {
     const rect = this.element.getBoundingClientRect();
@@ -9120,18 +9398,21 @@ var InspectorView = class _InspectorView extends VBox {
   }
   wasShown() {
     super.wasShown();
+    if (this.#needsUpdate) {
+      this.requestUpdate();
+    }
     this.#resizeObserver.observe(this.element);
     this.#observedResize();
-    this.element.ownerDocument.addEventListener("keydown", this.keyDownBound, false);
+    this.element.ownerDocument.addEventListener("keydown", this.#keyDownBound, false);
     this.#applyDrawerOrientationForDockSide();
   }
   willHide() {
     super.willHide();
     this.#resizeObserver.unobserve(this.element);
-    this.element.ownerDocument.removeEventListener("keydown", this.keyDownBound, false);
+    this.element.ownerDocument.removeEventListener("keydown", this.#keyDownBound, false);
   }
   #rememberDrawerStateBeforeDockSideChange() {
-    this.#drawerShowModeBeforeDockSideChange = this.drawerSplitWidget.showMode();
+    this.#drawerShowModeBeforeDockSideChange = this.#drawerView.showMode();
     this.#drawerMinimizedBeforeDockSideChange = this.isDrawerMinimized();
   }
   #restoreDrawerStateAfterDockSideChange() {
@@ -9146,10 +9427,10 @@ var InspectorView = class _InspectorView extends VBox {
   }
   resolveLocation(locationName) {
     if (locationName === "drawer-view") {
-      return this.drawerTabbedLocation;
+      return this.#drawerView.tabbedLocation;
     }
     if (locationName === "panel") {
-      return this.tabbedLocation;
+      return this.#tabbedLocation;
     }
     return null;
   }
@@ -9160,7 +9441,7 @@ var InspectorView = class _InspectorView extends VBox {
     ]);
   }
   addPanel(view) {
-    this.tabbedLocation.appendView(view);
+    this.#tabbedLocation.appendView(view);
   }
   hasPanel(panelName) {
     return this.tabbedPane.hasTab(panelName);
@@ -9173,19 +9454,19 @@ var InspectorView = class _InspectorView extends VBox {
     return await view.widget();
   }
   onSuspendStateChanged(allTargetsSuspended) {
-    this.currentPanelLocked = allTargetsSuspended;
-    this.tabbedPane.setCurrentTabLocked(this.currentPanelLocked);
-    this.tabbedPane.leftToolbar().setEnabled(!this.currentPanelLocked);
-    this.tabbedPane.rightToolbar().setEnabled(!this.currentPanelLocked);
+    this.#currentPanelLocked = allTargetsSuspended;
+    this.tabbedPane.setCurrentTabLocked(this.#currentPanelLocked);
+    this.tabbedPane.leftToolbar().setEnabled(!this.#currentPanelLocked);
+    this.tabbedPane.rightToolbar().setEnabled(!this.#currentPanelLocked);
   }
   canSelectPanel(panelName) {
-    return !this.currentPanelLocked || this.tabbedPane.selectedTabId === panelName;
+    return !this.#currentPanelLocked || this.tabbedPane.selectedTabId === panelName;
   }
   async showPanel(panelName) {
     await ViewManager.instance().showView(panelName);
   }
   setPanelWarnings(tabId, warnings) {
-    const tabbedPane = this.getTabbedPaneForTabId(tabId);
+    const tabbedPane = this.#getTabbedPaneForTabId(tabId);
     if (tabbedPane) {
       let icon = null;
       if (warnings.length !== 0) {
@@ -9197,12 +9478,12 @@ var InspectorView = class _InspectorView extends VBox {
       tabbedPane.setTrailingTabIcon(tabId, icon);
     }
   }
-  getTabbedPaneForTabId(tabId) {
+  #getTabbedPaneForTabId(tabId) {
     if (this.tabbedPane.hasTab(tabId)) {
       return this.tabbedPane;
     }
-    if (this.drawerTabbedPane.hasTab(tabId)) {
-      return this.drawerTabbedPane;
+    if (this.#drawerView.tabbedPane.hasTab(tabId)) {
+      return this.#drawerView.tabbedPane;
     }
     return null;
   }
@@ -9210,7 +9491,7 @@ var InspectorView = class _InspectorView extends VBox {
     return ViewManager.instance().materializedWidget(this.tabbedPane.selectedTabId || "");
   }
   showDrawer({ focus, hasTargetDrawer }) {
-    if (this.#drawerView.drawerVisible() && this.drawerSplitWidget.sidebarIsShowing()) {
+    if (this.#drawerView.drawerVisible() && this.#drawerView.sidebarIsShowing()) {
       if (focus && this.isDrawerMinimized()) {
         this.setDrawerMinimized(false);
         LiveAnnouncer.alert(i18nString9(UIStrings9.drawerExpanded));
@@ -9218,12 +9499,15 @@ var InspectorView = class _InspectorView extends VBox {
       return;
     }
     this.#applyDrawerOrientationForDockSide();
-    this.#drawerView.show(hasTargetDrawer);
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.show(hasTargetDrawer);
+    });
+    this.#setDrawerShowMode(this.#drawerView.showMode());
     if (focus) {
-      this.focusRestorer = new WidgetFocusRestorer(this.drawerTabbedPane);
+      this.#focusRestorer = new WidgetFocusRestorer(this.#drawerView.tabbedPane);
       this.#mainPanelAtDrawerFocus = this.tabbedPane.selectedTabId;
     } else {
-      this.focusRestorer = null;
+      this.#focusRestorer = null;
       this.#mainPanelAtDrawerFocus = null;
     }
     LiveAnnouncer.alert(i18nString9(UIStrings9.drawerShown));
@@ -9235,7 +9519,7 @@ var InspectorView = class _InspectorView extends VBox {
     if (!this.#drawerView.drawerVisible()) {
       return;
     }
-    this.focusRestorer = null;
+    this.#focusRestorer = null;
     this.#mainPanelAtDrawerFocus = null;
     this.setDrawerMinimized(true);
     LiveAnnouncer.alert(i18nString9(UIStrings9.drawerMinimized));
@@ -9245,21 +9529,24 @@ var InspectorView = class _InspectorView extends VBox {
       return;
     }
     const scrollState = this.#captureMainPanelScrollState();
-    if (this.focusRestorer && this.#mainPanelAtDrawerFocus === this.tabbedPane.selectedTabId) {
-      this.focusRestorer.restore();
+    if (this.#focusRestorer && this.#mainPanelAtDrawerFocus === this.tabbedPane.selectedTabId) {
+      this.#focusRestorer.restore();
     }
-    this.focusRestorer = null;
+    this.#focusRestorer = null;
     this.#mainPanelAtDrawerFocus = null;
-    this.#drawerView.hide();
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.hide();
+    });
+    this.#setDrawerShowMode(this.#drawerView.showMode());
     this.#restoreMainPanelScrollState(scrollState);
     LiveAnnouncer.alert(i18nString9(UIStrings9.drawerHidden));
   }
   toggleDrawerOrientation({ force } = {}) {
-    if (!this.drawerTabbedPane.isShowing()) {
+    if (!this.#drawerView.drawerVisible()) {
       return;
     }
     const dockMode = this.#getDockMode();
-    const currentSettings = this.drawerOrientationByDockSetting.get();
+    const currentSettings = this.#drawerOrientationByDockSetting.get();
     let newOrientation;
     if (force) {
       newOrientation = force;
@@ -9268,17 +9555,19 @@ var InspectorView = class _InspectorView extends VBox {
       newOrientation = currentOrientation === "vertical" /* VERTICAL */ ? "horizontal" /* HORIZONTAL */ : "vertical" /* VERTICAL */;
     }
     currentSettings[dockMode] = newOrientation;
-    this.drawerOrientationByDockSetting.set(currentSettings);
+    this.#drawerOrientationByDockSetting.set(currentSettings);
     this.#applyDrawerOrientation(newOrientation);
   }
   isUserExplicitlyUpdatedDrawerOrientation() {
-    const orientationSetting = this.drawerOrientationByDockSetting.get();
+    const orientationSetting = this.#drawerOrientationByDockSetting.get();
     const dockMode = this.#getDockMode();
     return orientationSetting[dockMode] !== "unset" /* UNSET */;
   }
   setDrawerMinimized(minimized) {
     const scrollState = this.#captureMainPanelScrollState();
-    this.#drawerView.setMinimized(minimized);
+    this.#runWithDrawerStateUpdate(() => {
+      this.#drawerView.setMinimized(minimized);
+    });
     this.#restoreMainPanelScrollState(scrollState);
   }
   // Showing, hiding, or minimizing the drawer causes SplitWidget to
@@ -9343,7 +9632,7 @@ var InspectorView = class _InspectorView extends VBox {
       return;
     }
     const minimized = this.isDrawerMinimized();
-    if (minimized && this.drawerTabbedPane.selectedTabId === "console-view" && this.tabbedPane.selectedTabId === "console") {
+    if (minimized && this.#drawerView.tabbedPane.selectedTabId === "console-view" && this.tabbedPane.selectedTabId === "console") {
       return;
     }
     this.setDrawerMinimized(!minimized);
@@ -9360,7 +9649,7 @@ var InspectorView = class _InspectorView extends VBox {
     this.setDrawerMinimized(false);
     LiveAnnouncer.alert(i18nString9(UIStrings9.drawerExpanded));
   }
-  keyDown(event) {
+  #keyDown(event) {
     if (!KeyboardShortcut.eventHasCtrlEquivalentKey(event) || event.altKey || event.shiftKey) {
       return;
     }
@@ -9375,7 +9664,7 @@ var InspectorView = class _InspectorView extends VBox {
       if (panelIndex !== -1) {
         const panelName = this.tabbedPane.tabIds()[panelIndex];
         if (panelName) {
-          if (!Dialog.hasInstance() && !this.currentPanelLocked) {
+          if (!Dialog.hasInstance() && !this.#currentPanelLocked) {
             void this.showPanel(panelName);
             void VisualLogging9.logKeyDown(null, event, `panel-by-index-${panelName}`);
           }
@@ -9393,16 +9682,10 @@ var InspectorView = class _InspectorView extends VBox {
   toolbarItemResized() {
     this.tabbedPane.headerResized();
   }
-  tabSelected(tabId) {
+  #tabSelected(tabId) {
     UIUserMetrics.instance().panelShown(tabId, false);
   }
-  setOwnerSplit(splitWidget) {
-    this.ownerSplitWidget = splitWidget;
-  }
   ownerSplit() {
-    if (this.ownerSplitWidget) {
-      return this.ownerSplitWidget;
-    }
     const parent = this.parentWidget();
     return parent instanceof SplitWidget ? parent : null;
   }
@@ -9412,12 +9695,35 @@ var InspectorView = class _InspectorView extends VBox {
   restore() {
     this.ownerSplit()?.setSidebarMinimized(false);
   }
+  #hasInfobar(key) {
+    return this.#infobars.some((bar) => bar.key === key);
+  }
+  #addInfobar(spec) {
+    this.#infobars = [...this.#infobars, spec];
+    this.requestUpdate();
+  }
+  #removeInfobar(key) {
+    if (!this.#hasInfobar(key)) {
+      return;
+    }
+    this.#infobars = this.#infobars.filter((bar) => bar.key !== key);
+    if (key === "debugged-tab-reload-required") {
+      SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel,
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.removeDebuggedTabReloadRequiredWarning,
+        this
+      );
+    }
+    this.requestUpdate();
+  }
   displayDebuggedTabReloadRequiredWarning(message) {
-    if (!this.#debuggedTabReloadRequiredInfobar) {
-      const infobar = new Infobar(
-        "info" /* INFO */,
-        message,
-        [
+    if (!this.#hasInfobar("debugged-tab-reload-required")) {
+      this.#addInfobar({
+        key: "debugged-tab-reload-required",
+        type: "info" /* INFO */,
+        text: message,
+        actions: [
           {
             text: i18nString9(UIStrings9.reloadDebuggedTab),
             delegate: () => {
@@ -9425,18 +9731,13 @@ var InspectorView = class _InspectorView extends VBox {
               this.removeDebuggedTabReloadRequiredWarning();
             },
             dismiss: false,
-            buttonVariant: Buttons3.Button.Variant.PRIMARY,
+            buttonVariant: Buttons4.Button.Variant.PRIMARY,
             jslogContext: "main.debug-reload"
           }
         ],
-        void 0,
-        "reload-required"
-      );
-      infobar.setParentView(this);
-      this.attachInfobar(infobar);
-      this.#debuggedTabReloadRequiredInfobar = infobar;
-      infobar.setCloseCallback(() => {
-        this.#debuggedTabReloadRequiredInfobar = void 0;
+        disableSetting: null,
+        jslogContext: "reload-required",
+        onClose: () => this.#removeInfobar("debugged-tab-reload-required")
       });
       SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel,
@@ -9447,50 +9748,37 @@ var InspectorView = class _InspectorView extends VBox {
     }
   }
   removeDebuggedTabReloadRequiredWarning() {
-    if (this.#debuggedTabReloadRequiredInfobar) {
-      this.#debuggedTabReloadRequiredInfobar.dispose();
-      SDK.TargetManager.TargetManager.instance().removeModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel,
-        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-        this.removeDebuggedTabReloadRequiredWarning,
-        this
-      );
-    }
+    this.#removeInfobar("debugged-tab-reload-required");
   }
   displayReloadRequiredWarning(message) {
-    if (!this.reloadRequiredInfobar && !this.#chromeRestartRequiredInfobar) {
-      const infobar = new Infobar(
-        "info" /* INFO */,
-        message,
-        [
+    if (!this.#hasInfobar("reload-required") && !this.#hasInfobar("chrome-restart-required")) {
+      this.#addInfobar({
+        key: "reload-required",
+        type: "info" /* INFO */,
+        text: message,
+        actions: [
           {
             text: i18nString9(UIStrings9.reloadDevtools),
             delegate: () => reloadDevTools(),
             dismiss: false,
-            buttonVariant: Buttons3.Button.Variant.PRIMARY,
+            buttonVariant: Buttons4.Button.Variant.PRIMARY,
             jslogContext: "main.debug-reload"
           }
         ],
-        void 0,
-        "reload-required"
-      );
-      infobar.setParentView(this);
-      this.attachInfobar(infobar);
-      this.reloadRequiredInfobar = infobar;
-      infobar.setCloseCallback(() => {
-        this.reloadRequiredInfobar = void 0;
+        disableSetting: null,
+        jslogContext: "reload-required",
+        onClose: () => this.#removeInfobar("reload-required")
       });
     }
   }
   displayChromeRestartRequiredWarning(message) {
-    if (this.reloadRequiredInfobar) {
-      this.reloadRequiredInfobar.dispose();
-    }
-    if (!this.#chromeRestartRequiredInfobar) {
-      const infobar = new Infobar(
-        "info" /* INFO */,
-        message,
-        [
+    this.#removeInfobar("reload-required");
+    if (!this.#hasInfobar("chrome-restart-required")) {
+      this.#addInfobar({
+        key: "chrome-restart-required",
+        type: "info" /* INFO */,
+        text: message,
+        actions: [
           {
             text: i18nString9(UIStrings9.restartChrome),
             delegate: () => {
@@ -9499,69 +9787,44 @@ var InspectorView = class _InspectorView extends VBox {
               }
             },
             dismiss: false,
-            buttonVariant: Buttons3.Button.Variant.PRIMARY,
+            buttonVariant: Buttons4.Button.Variant.PRIMARY,
             jslogContext: "main.chrome-restart-chrome"
           }
         ],
-        void 0,
-        "reload-required"
-      );
-      infobar.setParentView(this);
-      this.attachInfobar(infobar);
-      this.#chromeRestartRequiredInfobar = infobar;
-      infobar.setCloseCallback(() => {
-        this.#chromeRestartRequiredInfobar = void 0;
+        disableSetting: null,
+        jslogContext: "reload-required",
+        onClose: () => this.#removeInfobar("chrome-restart-required")
       });
     }
   }
   displaySelectOverrideFolderInfobar(callback) {
-    if (!this.#selectOverrideFolderInfobar) {
-      const infobar = new Infobar(
-        "info" /* INFO */,
-        i18nString9(UIStrings9.selectOverrideFolder),
-        [
+    if (!this.#hasInfobar("select-override-folder")) {
+      this.#addInfobar({
+        key: "select-override-folder",
+        type: "info" /* INFO */,
+        text: i18nString9(UIStrings9.selectOverrideFolder),
+        actions: [
           {
             text: i18nString9(UIStrings9.selectFolder),
             delegate: () => callback(),
             dismiss: true,
-            buttonVariant: Buttons3.Button.Variant.TONAL,
+            buttonVariant: Buttons4.Button.Variant.TONAL,
             jslogContext: "select-folder"
           }
         ],
-        void 0,
-        "select-override-folder"
-      );
-      infobar.setParentView(this);
-      this.attachInfobar(infobar);
-      this.#selectOverrideFolderInfobar = infobar;
-      infobar.setCloseCallback(() => {
-        this.#selectOverrideFolderInfobar = void 0;
+        disableSetting: null,
+        jslogContext: "select-override-folder",
+        onClose: () => this.#removeInfobar("select-override-folder")
       });
     }
   }
   renderStatusBar(visible = true) {
-    if (!this.#statusBarContainer) {
-      this.#statusBarContainer = document.createElement("div");
-      this.#statusBarContainer.style.display = "contents";
-      this.element.appendChild(this.#statusBarContainer);
+    if (this.#statusBarVisible === visible) {
+      return;
     }
-    Lit3.render(
-      visible ? html5`<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>` : Lit3.nothing,
-      this.#statusBarContainer
-    );
-  }
-  createInfoBarDiv() {
-    if (!this.infoBarDiv) {
-      this.infoBarDiv = document.createElement("div");
-      this.infoBarDiv.classList.add("flex-none");
-      this.contentElement.insertBefore(this.infoBarDiv, this.contentElement.firstChild);
-    }
-  }
-  attachInfobar(infobar) {
-    this.createInfoBarDiv();
-    if (this.infoBarDiv) {
-      infobar.show(this.infoBarDiv);
-    }
+    this.#statusBarVisible = visible;
+    this.requestUpdate();
+    void this.updateComplete.then(() => this.doResize());
   }
 };
 function getDisableLocaleInfoBarSetting() {
@@ -9577,16 +9840,17 @@ function shouldShowLocaleInfobar() {
   }
   return !i18n17.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) && i18n17.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
 }
-function createLocaleInfobar() {
+function createLocaleInfobarSpec(onDismiss) {
   const devtoolsLocale = i18n17.DevToolsLocale.DevToolsLocale.instance();
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: "language" }).of(locale.language || "en") || "English";
   const languageSetting = Common11.Settings.Settings.instance().moduleSetting("language");
-  const infobar = new Infobar(
-    "info" /* INFO */,
-    i18nString9(UIStrings9.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }),
-    [
+  return {
+    key: "locale-mismatch",
+    type: "info" /* INFO */,
+    text: i18nString9(UIStrings9.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }),
+    actions: [
       {
         text: i18nString9(UIStrings9.setToBrowserLanguage),
         delegate: () => {
@@ -9608,11 +9872,15 @@ function createLocaleInfobar() {
         jslogContext: "set-to-specific-language"
       }
     ],
-    getDisableLocaleInfoBarSetting(),
-    "language-mismatch"
-  );
-  infobar.setCloseCallback(() => getDisableLocaleInfoBarSetting().set(true));
-  return infobar;
+    disableSetting: getDisableLocaleInfoBarSetting(),
+    jslogContext: "language-mismatch",
+    // Closing the infobar with the close button or Esc also answers it, so that
+    // we notify users only once.
+    onClose: () => {
+      getDisableLocaleInfoBarSetting().set(true);
+      onDismiss();
+    }
+  };
 }
 function reloadDevTools() {
   if (DockController.instance().canDock() && DockController.instance().dockSide() === "undocked" /* UNDOCKED */) {
@@ -10050,7 +10318,7 @@ var SoftContextMenu = class _SoftContextMenu {
       if (item8.element instanceof Element) {
         wrapper.appendChild(item8.element);
       } else {
-        render7(item8.element, wrapper);
+        render8(item8.element, wrapper);
       }
       const customElement = item8.element instanceof Element ? item8.element : wrapper.firstElementChild;
       if (customElement instanceof HTMLElement && customElement.classList.contains("location-menu")) {
@@ -10073,7 +10341,7 @@ var SoftContextMenu = class _SoftContextMenu {
         menuItemElement.appendChild(item8.element);
       } else {
         const fragment = document.createDocumentFragment();
-        render7(item8.element, fragment);
+        render8(item8.element, fragment);
         menuItemElement.appendChild(fragment);
       }
     }
@@ -11375,11 +11643,11 @@ var MenuButton = class extends HTMLElement {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
     const accessibleLabel = this.accessibleLabel ?? this.title;
-    render8(
-      html6`
+    render9(
+      html7`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
-                         .variant=${Buttons4.Button.Variant.ICON}
+                         .variant=${Buttons5.Button.Variant.ICON}
                          .accessibleLabel=${accessibleLabel}
                          .buttonTitle=${accessibleLabel}
                          aria-haspopup='menu'
@@ -11460,7 +11728,7 @@ __export(SuggestBox_exports, {
 import * as i18n21 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
 import * as Geometry4 from "../geometry/geometry.js";
-import { html as html7, nothing as nothing6, render as render9 } from "../lit/lit.js";
+import { html as html8, nothing as nothing7, render as render10 } from "../lit/lit.js";
 import * as VisualLogging13 from "../visual_logging/visual_logging.js";
 
 // ../../front_end/ui/legacy/ListControl.ts
@@ -12402,7 +12670,7 @@ var SuggestBox = class {
       subtitleElement.textContent = Platform12.StringUtilities.trimEndWithMaxLength(item8.subtitle, maxTextLength - displayText.length);
     }
     if (item8.subtitleTemplate || item8.iconTemplate) {
-      render9(html7`${item8.subtitleTemplate ?? nothing6}${item8.iconTemplate ?? nothing6}`, element);
+      render10(html8`${item8.subtitleTemplate ?? nothing7}${item8.iconTemplate ?? nothing7}`, element);
     }
     return element;
   }
@@ -13691,7 +13959,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
           continue;
         }
         let item8;
-        if (element instanceof Buttons5.Button.Button) {
+        if (element instanceof Buttons6.Button.Button) {
           item8 = new ToolbarButton("", void 0, void 0, void 0, element);
         } else if (element instanceof ToolbarInputElement) {
           item8 = element.item;
@@ -13880,7 +14148,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
       }
     }
     this.items = [];
-    render10(nothing7, this);
+    render11(nothing8, this);
   }
   hideSeparatorDupes() {
     if (!this.items.length) {
@@ -14025,11 +14293,11 @@ var ToolbarButton = class _ToolbarButton extends ToolbarItem {
   adorner;
   constructor(title, glyph, text, jslogContext, button) {
     if (!button) {
-      button = new Buttons5.Button.Button();
+      button = new Buttons6.Button.Button();
       if (glyph && !text) {
-        button.data = { variant: Buttons5.Button.Variant.ICON, iconName: glyph };
+        button.data = { variant: Buttons6.Button.Variant.ICON, iconName: glyph };
       } else {
-        button.variant = Buttons5.Button.Variant.TEXT;
+        button.variant = Buttons6.Button.Variant.TEXT;
         button.reducedFocusRing = true;
         if (glyph) {
           button.iconName = glyph;
@@ -14078,7 +14346,7 @@ var ToolbarButton = class _ToolbarButton extends ToolbarItem {
       return;
     }
     this.button.textContent = text;
-    this.button.variant = Buttons5.Button.Variant.TEXT;
+    this.button.variant = Buttons6.Button.Variant.TEXT;
     this.button.reducedFocusRing = true;
     this.text = text;
   }
@@ -14094,7 +14362,7 @@ var ToolbarButton = class _ToolbarButton extends ToolbarItem {
     this.button.iconName = iconName;
   }
   setToggledIcon(toggledIconName) {
-    this.button.variant = Buttons5.Button.Variant.ICON_TOGGLE;
+    this.button.variant = Buttons6.Button.Variant.ICON_TOGGLE;
     this.button.toggledIconName = toggledIconName;
   }
   setBackgroundImage(iconURL) {
@@ -14157,18 +14425,18 @@ var ToolbarInput = class _ToolbarInput extends ToolbarItem {
       this.element.style.flexShrink = String(shrinkFactor);
     }
     const clearButtonText = i18nString12(UIStrings12.clearInput);
-    const clearButton = new Buttons5.Button.Button();
+    const clearButton = new Buttons6.Button.Button();
     clearButton.data = {
-      variant: Buttons5.Button.Variant.ICON,
+      variant: Buttons6.Button.Variant.ICON,
       iconName: "cross-circle-filled",
-      size: Buttons5.Button.Size.SMALL,
+      size: Buttons6.Button.Size.SMALL,
       title: clearButtonText
     };
     clearButton.className = "toolbar-input-clear-button";
     clearButton.setAttribute("jslog", `${VisualLogging15.action("clear").track({ click: true }).parent("mapped")}`);
     VisualLogging15.setMappedParent(clearButton, internalPromptElement);
-    clearButton.variant = Buttons5.Button.Variant.ICON;
-    clearButton.size = Buttons5.Button.Size.SMALL;
+    clearButton.variant = Buttons6.Button.Variant.ICON;
+    clearButton.size = Buttons6.Button.Size.SMALL;
     clearButton.iconName = "cross-circle-filled";
     clearButton.title = clearButtonText;
     clearButton.ariaLabel = clearButtonText;
@@ -14248,13 +14516,13 @@ var ToolbarFilter = class extends ToolbarInput {
     this.element.classList.add("toolbar-filter");
     if (showRegexToggle) {
       const regexIconName = "regular-expression";
-      const regexButton = new Buttons5.Button.Button();
+      const regexButton = new Buttons6.Button.Button();
       regexButton.data = {
-        variant: Buttons5.Button.Variant.ICON_TOGGLE,
-        size: Buttons5.Button.Size.SMALL,
+        variant: Buttons6.Button.Variant.ICON_TOGGLE,
+        size: Buttons6.Button.Size.SMALL,
         iconName: regexIconName,
         toggledIconName: regexIconName,
-        toggleType: Buttons5.Button.ToggleType.PRIMARY,
+        toggleType: Buttons6.Button.ToggleType.PRIMARY,
         toggled: false,
         checked: false,
         title: i18nString12(UIStrings12.useRegularExpression),
@@ -14411,7 +14679,7 @@ var ToolbarToggle = class extends ToolbarButton {
     super(title, glyph, "");
     this.toggledGlyph = toggledGlyph ? toggledGlyph : glyph;
     this.setToggledIcon(this.toggledGlyph || "");
-    this.setToggleType(Buttons5.Button.ToggleType.PRIMARY);
+    this.setToggleType(Buttons6.Button.ToggleType.PRIMARY);
     this.toggled(false);
     if (jslogContext) {
       this.element.setAttribute("jslog", `${VisualLogging15.toggle().track({ click: true }).context(jslogContext)}`);
@@ -14430,7 +14698,7 @@ var ToolbarToggle = class extends ToolbarButton {
     this.checked(checked);
   }
   enableToggleWithRedColor() {
-    this.setToggleType(Buttons5.Button.ToggleType.RED);
+    this.setToggleType(Buttons6.Button.ToggleType.RED);
   }
 };
 var ToolbarMenuButton = class extends ToolbarItem {
@@ -14447,8 +14715,8 @@ var ToolbarMenuButton = class extends ToolbarItem {
   constructor(contextMenuHandler, isIconDropdown, useSoftMenu, jslogContext, iconName, keepOpen) {
     let element;
     if (iconName) {
-      element = new Buttons5.Button.Button();
-      element.data = { variant: Buttons5.Button.Variant.ICON, iconName };
+      element = new Buttons6.Button.Button();
+      element.data = { variant: Buttons6.Button.Variant.ICON, iconName };
     } else {
       element = document.createElement("button");
     }
@@ -14779,7 +15047,7 @@ import * as Common15 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n25 from "../../core/i18n/i18n.js";
 import * as Platform16 from "../../core/platform/platform.js";
-import * as Buttons6 from "../components/buttons/buttons.js";
+import * as Buttons7 from "../components/buttons/buttons.js";
 import * as Geometry5 from "../geometry/geometry.js";
 import { Icon as Icon2 } from "../kit/kit.js";
 import * as Lit4 from "../lit/lit.js";
@@ -14827,7 +15095,8 @@ input {
   }
 }
 
-.devtools-checkbox-subtitle {
+.devtools-checkbox-subtitle,
+::slotted(.devtools-checkbox-subtitle) {
   color: var(--sys-color-token-subtle);
   white-space: break-spaces;
 }
@@ -16184,9 +16453,9 @@ div.error {
 /*# sourceURL=${import.meta.resolve("./smallBubble.css")} */`;
 
 // ../../front_end/ui/legacy/UIUtils.ts
-var Directives5 = Lit4.Directives;
-var html9 = Lit4.html;
-var render12 = Lit4.render;
+var Directives6 = Lit4.Directives;
+var html10 = Lit4.html;
+var render13 = Lit4.render;
 var UIStrings13 = {
   /**
    * @description Context menu item to open a link in a new tab.
@@ -16683,7 +16952,7 @@ function addPlatformClass(element) {
 }
 function installComponentRootStyles(element) {
   appendStyle(element, inspectorCommon_css_default);
-  appendStyle(element, Buttons6.textButtonStyles);
+  appendStyle(element, Buttons7.textButtonStyles);
   if (!Host9.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
     element.classList.add("overlay-scrollbar-enabled");
   }
@@ -16913,13 +17182,13 @@ var createTextChildren = (element, ...childrenText) => {
   }
 };
 function createTextButton(text, clickHandler, opts) {
-  const button = new Buttons6.Button.Button();
+  const button = new Buttons7.Button.Button();
   if (opts?.className) {
     button.className = opts.className;
   }
   button.textContent = text;
   button.iconName = opts?.icon;
-  button.variant = opts?.variant ? opts.variant : Buttons6.Button.Variant.OUTLINED;
+  button.variant = opts?.variant ? opts.variant : Buttons7.Button.Variant.OUTLINED;
   if (clickHandler) {
     button.addEventListener("click", clickHandler);
     button.addEventListener("keydown", (event) => {
@@ -17211,8 +17480,8 @@ var DevToolsCloseButton = class extends HTMLElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(this);
-    this.#button = new Buttons6.Button.Button();
-    this.#button.data = { variant: Buttons6.Button.Variant.ICON, iconName: "cross" };
+    this.#button = new Buttons7.Button.Button();
+    this.#button.data = { variant: Buttons7.Button.Variant.ICON, iconName: "cross" };
     this.#button.classList.add("close-button");
     this.#button.setAttribute("jslog", `${VisualLogging16.close().track({ click: true })}`);
     Tooltip.install(this.#button, i18nString13(UIStrings13.close));
@@ -17395,7 +17664,7 @@ var MessageDialog = class {
       const okButton = createTextButton(
         i18nString13(UIStrings13.ok),
         resolve,
-        { jslogContext: "confirm", variant: Buttons6.Button.Variant.PRIMARY }
+        { jslogContext: "confirm", variant: Buttons7.Button.Variant.PRIMARY }
       );
       content.createChild("span", "header").textContent = header;
       content.createChild("div", "message").createChild("span").textContent = message;
@@ -17429,7 +17698,7 @@ var ConfirmDialog = class {
         options?.okButtonLabel || i18nString13(UIStrings13.ok),
         /* clickHandler= */
         () => resolve(true),
-        { jslogContext: "confirm", variant: Buttons6.Button.Variant.PRIMARY }
+        { jslogContext: "confirm", variant: Buttons7.Button.Variant.PRIMARY }
       );
       buttonsBar.appendChild(okButton);
       buttonsBar.appendChild(createTextButton(
@@ -17536,7 +17805,7 @@ function focusChanged(event) {
 function createShadowRootWithCoreStyles(element, options = {}) {
   const { cssFile, delegatesFocus } = options;
   const shadowRoot = element.attachShadow({ mode: "open", delegatesFocus });
-  appendStyle(shadowRoot, inspectorCommon_css_default, Buttons6.textButtonStyles);
+  appendStyle(shadowRoot, inspectorCommon_css_default, Buttons7.textButtonStyles);
   if (Array.isArray(cssFile)) {
     appendStyle(shadowRoot, ...cssFile);
   } else if (cssFile) {
@@ -17630,7 +17899,7 @@ var PromotionManager = class _PromotionManager {
 function maybeCreateNewBadge(promotionId) {
   const promotionManager = PromotionManager.instance();
   if (promotionManager.maybeShowPromotion(promotionId)) {
-    return html9`<div class="new-badge" jslog=${VisualLogging16.badge("new-badge")}>${i18nString13(UIStrings13.new)}</div>`;
+    return html10`<div class="new-badge" jslog=${VisualLogging16.badge("new-badge")}>${i18nString13(UIStrings13.new)}</div>`;
   }
   return void 0;
 }
@@ -17642,8 +17911,8 @@ function bindToAction(actionName) {
   function actionEnabledChanged(event) {
     setEnabled(event.data);
   }
-  return Directives5.ref((e) => {
-    if (!e || !(e instanceof Buttons6.Button.Button)) {
+  return Directives6.ref((e) => {
+    if (!e || !(e instanceof Buttons7.Button.Button)) {
       action6.removeEventListener("Enabled" /* ENABLED */, actionEnabledChanged);
       action6.removeEventListener("Toggled" /* TOGGLED */, toggled);
       longClickController?.dispose();
@@ -17659,8 +17928,8 @@ function bindToAction(actionName) {
     const iconName = action6.icon() ?? "";
     const jslogContext = action6.id();
     const toggledIconName = action6.toggledIcon() ?? iconName;
-    const toggleType = action6.toggleWithRedColor() ? Buttons6.Button.ToggleType.RED : Buttons6.Button.ToggleType.PRIMARY;
-    const hasContentChildren = Array.from(e.childNodes).some((node) => !(node instanceof Buttons6.Button.Button) && (node.nodeType !== Node.TEXT_NODE || Boolean(node.textContent?.trim())));
+    const toggleType = action6.toggleWithRedColor() ? Buttons7.Button.ToggleType.RED : Buttons7.Button.ToggleType.PRIMARY;
+    const hasContentChildren = Array.from(e.childNodes).some((node) => !(node instanceof Buttons7.Button.Button) && (node.nodeType !== Node.TEXT_NODE || Boolean(node.textContent?.trim())));
     const updateLongClickOptions = () => {
       const optionButtons = Array.from(e.querySelectorAll("devtools-button"));
       if (optionButtons.length > 0 && (!toggleable || action6.toggled())) {
@@ -17675,7 +17944,7 @@ function bindToAction(actionName) {
       }
     };
     function showOptions() {
-      if (!(e instanceof Buttons6.Button.Button)) {
+      if (!(e instanceof Buttons7.Button.Button)) {
         return;
       }
       let buttons = [...e.querySelectorAll("devtools-button"), e];
@@ -17762,7 +18031,7 @@ function bindToAction(actionName) {
         jslogContext,
         title,
         accessibleLabel: title,
-        variant: Buttons6.Button.Variant.ICON_TOGGLE,
+        variant: Buttons7.Button.Variant.ICON_TOGGLE,
         iconName,
         toggledIconName,
         toggleType,
@@ -17771,14 +18040,14 @@ function bindToAction(actionName) {
       };
       toggled();
     } else if (iconName) {
-      e.data = { iconName, jslogContext, title, accessibleLabel: title, variant: Buttons6.Button.Variant.ICON };
+      e.data = { iconName, jslogContext, title, accessibleLabel: title, variant: Buttons7.Button.Variant.ICON };
       if (title) {
         setLabel(e, title);
         Tooltip.installWithActionBinding(e, title, action6.id());
       }
       updateLongClickOptions();
     } else {
-      e.data = { jslogContext, title, accessibleLabel: title, variant: Buttons6.Button.Variant.TEXT };
+      e.data = { jslogContext, title, accessibleLabel: title, variant: Buttons7.Button.Variant.TEXT };
       if (title) {
         setLabel(e, title);
       }
@@ -17983,7 +18252,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       );
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render12(template, this.#contentTemplate.content);
+    render13(template, this.#contentTemplate.content);
   }
   flushPendingMutationsForTesting() {
     const records = this.#mutationObserver.takeRecords();
@@ -18201,7 +18470,7 @@ var bindToSetting = (setting, optionsOrValidator) => {
     setValue(setting.get());
   }
   if (setting.type() === Common15.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === "boolean") {
-    return Directives5.ref((e) => {
+    return Directives6.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         cleanup?.();
@@ -18209,12 +18478,12 @@ var bindToSetting = (setting, optionsOrValidator) => {
         return;
       }
       if (jslog) {
-        const isButton = e instanceof Buttons6.Button.Button;
+        const isButton = e instanceof Buttons7.Button.Button;
         const jslogBuilder2 = VisualLogging16.toggle(setting.name).track(isButton ? { click: true } : { change: true });
         e.setAttribute("jslog", jslogBuilder2.toString());
       }
       setting.addChangeListener(settingChanged);
-      if (e instanceof Buttons6.Button.Button) {
+      if (e instanceof Buttons7.Button.Button) {
         const clickListener = () => {
           setting.set(!setting.get());
         };
@@ -18233,7 +18502,7 @@ var bindToSetting = (setting, optionsOrValidator) => {
   }
   const jslogBuilder = jslog ? VisualLogging16.toggle(setting.name).track({ change: true }) : null;
   if (setting.type() === Common15.Settings.SettingType.REGEX || setting instanceof Common15.Settings.RegExpSetting) {
-    return Directives5.ref((e) => {
+    return Directives6.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         cleanup?.();
@@ -18262,7 +18531,7 @@ var bindToSetting = (setting, optionsOrValidator) => {
     });
   }
   if (typeof setting.defaultValue === "string") {
-    return Directives5.ref((e) => {
+    return Directives6.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         cleanup?.();
@@ -18712,9 +18981,9 @@ var Dialog = class _Dialog extends DialogBase {
     this.escapeKeyCallback = callback;
   }
   addCloseButton() {
-    const button = new Buttons7.Button.Button();
+    const button = new Buttons8.Button.Button();
     button.data = {
-      variant: Buttons7.Button.Variant.ICON,
+      variant: Buttons8.Button.Variant.ICON,
       iconName: "cross",
       accessibleLabel: i18nString14(UIStrings14.close),
       jslogContext: "dialog-close",
@@ -18819,7 +19088,7 @@ var DialogWidget = class extends DialogWidgetBase {
   #open = false;
   #jslogContext = "";
   #dialogStack = false;
-  #content = nothing9;
+  #content = nothing10;
   #dialog = new Dialog();
   constructor(element) {
     super(element);
@@ -18879,7 +19148,7 @@ var DialogWidget = class extends DialogWidgetBase {
   }
   performUpdate() {
     if (this.open) {
-      render13(this.#content ?? nothing9, this.#dialog.contentElement);
+      render14(this.#content ?? nothing10, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
         this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
@@ -19360,7 +19629,7 @@ __export(EmptyWidget_exports, {
 });
 import "../kit/kit.js";
 import * as i18n29 from "../../core/i18n/i18n.js";
-import { html as html10, render as render14 } from "../lit/lit.js";
+import { html as html11, render as render15 } from "../lit/lit.js";
 import * as VisualLogging18 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -19392,15 +19661,15 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings15);
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var DEFAULT_VIEW3 = (input, _output, target) => {
-  render14(html10`
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render15(html11`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}>
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? html10`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
+        ${input.link ? html11`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
       </div>
       <slot></slot>
     </div>`, target, { container: { classes: ["empty-widget-container", "empty-view-scroller"] } });
@@ -19410,7 +19679,7 @@ var EmptyWidget = class extends VBox {
   #text;
   #link;
   #view;
-  constructor(headerOrElement, text = "", element, view = DEFAULT_VIEW3) {
+  constructor(headerOrElement, text = "", element, view = DEFAULT_VIEW4) {
     const header = typeof headerOrElement === "string" ? headerOrElement : "";
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;
@@ -19422,13 +19691,22 @@ var EmptyWidget = class extends VBox {
     this.#view = view;
     this.performUpdate();
   }
+  get link() {
+    return this.#link;
+  }
   set link(link2) {
     this.#link = link2;
     this.performUpdate();
   }
+  get text() {
+    return this.#text;
+  }
   set text(text) {
     this.#text = text;
     this.performUpdate();
+  }
+  get header() {
+    return this.#header;
   }
   set header(header) {
     this.#header = header;
@@ -20364,8 +20642,8 @@ __export(ListWidget_exports, {
 });
 import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform22 from "../../core/platform/platform.js";
-import * as Buttons8 from "../components/buttons/buttons.js";
-import { html as html11, nothing as nothing10, render as render15 } from "../lit/lit.js";
+import * as Buttons9 from "../components/buttons/buttons.js";
+import { html as html12, nothing as nothing11, render as render16 } from "../lit/lit.js";
 import * as VisualLogging20 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -20684,21 +20962,21 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render15(html11`
+    render16(html12`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          ${controlLabels?.hideEdit ? nothing10 : html11`<devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing11 : html12`<devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
-                           .variant=${Buttons8.Button.Variant.ICON}
+                           .variant=${Buttons9.Button.Variant.ICON}
                            @click=${onEditClicked}></devtools-button>`}
           <devtools-button class=toolbar-button
                            .iconName=${"bin"}
                            .jslogContext=${"remove-item"}
                            .title=${controlLabels?.delete ?? i18nString17(UIStrings17.removeString)}
-                           .variant=${Buttons8.Button.Variant.ICON}
+                           .variant=${Buttons9.Button.Variant.ICON}
                            @click=${onRemoveClicked}></devtools-button>
         </devtools-toolbar>
       </div>`, controls, { host: this });
@@ -20824,13 +21102,13 @@ var Editor = class {
     const buttonsRow = this.element.createChild("div", "editor-buttons");
     this.cancelButton = createTextButton(i18nString17(UIStrings17.cancelString), this.cancelClicked.bind(this), {
       jslogContext: "cancel",
-      variant: Buttons8.Button.Variant.OUTLINED
+      variant: Buttons9.Button.Variant.OUTLINED
     });
     this.cancelButton.setAttribute("jslog", `${VisualLogging20.action("cancel").track({ click: true })}`);
     buttonsRow.appendChild(this.cancelButton);
     this.commitButton = createTextButton("", this.commitClicked.bind(this), {
       jslogContext: "commit",
-      variant: Buttons8.Button.Variant.PRIMARY
+      variant: Buttons9.Button.Variant.PRIMARY
     });
     buttonsRow.appendChild(this.commitButton);
     this.errorMessageContainer = this.element.createChild("div", "list-widget-input-validation-error");
@@ -21407,12 +21685,12 @@ customElements.define("devtools-progress", ProgressIndicator);
 // ../../front_end/ui/legacy/RemoteDebuggingTerminatedScreen.ts
 var RemoteDebuggingTerminatedScreen_exports = {};
 __export(RemoteDebuggingTerminatedScreen_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   RemoteDebuggingTerminatedScreen: () => RemoteDebuggingTerminatedScreen
 });
 import * as i18n35 from "../../core/i18n/i18n.js";
-import * as Buttons9 from "../components/buttons/buttons.js";
-import { html as html12, render as render16 } from "../lit/lit.js";
+import * as Buttons10 from "../components/buttons/buttons.js";
+import { html as html13, render as render17 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -21476,9 +21754,9 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var DEFAULT_VIEW4 = (input, _output, target) => {
-  render16(
-    html12`
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  render17(
+    html13`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString18(UIStrings18.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -21488,14 +21766,14 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     <div class="button-container">
       <div class="button">
         <devtools-button @click=${input.onReconnect} .jslogContext=${"reconnect"}
-            .variant=${Buttons9.Button.Variant.OUTLINED}>${i18nString18(UIStrings18.reconnectDevtools)}</devtools-button>
+            .variant=${Buttons10.Button.Variant.OUTLINED}>${i18nString18(UIStrings18.reconnectDevtools)}</devtools-button>
       </div>
     </div>`,
     target
   );
 };
 var RemoteDebuggingTerminatedScreen = class _RemoteDebuggingTerminatedScreen extends VBox {
-  constructor(reason, view = DEFAULT_VIEW4) {
+  constructor(reason, view = DEFAULT_VIEW5) {
     super({ useShadowDom: true });
     const input = {
       reason,
@@ -21920,7 +22198,7 @@ var RootView = class extends VBox {
 // ../../front_end/ui/legacy/SearchableView.ts
 var SearchableView_exports = {};
 __export(SearchableView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   SearchConfig: () => SearchConfig,
   SearchableView: () => SearchableView
 });
@@ -21928,7 +22206,7 @@ import * as Common18 from "../../core/common/common.js";
 import * as i18n37 from "../../core/i18n/i18n.js";
 import * as Platform23 from "../../core/platform/platform.js";
 import * as VisualLogging24 from "../visual_logging/visual_logging.js";
-import * as Buttons10 from "../components/buttons/buttons.js";
+import * as Buttons11 from "../components/buttons/buttons.js";
 import * as Lit5 from "../lit/lit.js";
 import * as Settings11 from "../settings/settings.js";
 
@@ -22100,7 +22378,7 @@ var searchableView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./searchableView.css")} */`;
 
 // ../../front_end/ui/legacy/SearchableView.ts
-var { html: html13, nothing: nothing11, render: render17, Directives: Directives6 } = Lit5;
+var { html: html14, nothing: nothing12, render: render18, Directives: Directives7 } = Lit5;
 var UIStrings19 = {
   /**
    * @description Button text and placeholder to replace the current search match in the search bar.
@@ -22175,11 +22453,11 @@ var UIStrings19 = {
 var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings19);
 var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 function renderClearButton(jslogContext, onClick) {
-  return html13`
+  return html14`
     <devtools-button class="clear-button" tabindex="-1" aria-label=${i18nString19(UIStrings19.clearInput)}
         .data=${{
-    variant: Buttons10.Button.Variant.ICON,
-    size: Buttons10.Button.Size.SMALL,
+    variant: Buttons11.Button.Variant.ICON,
+    size: Buttons11.Button.Size.SMALL,
     jslogContext,
     title: i18nString19(UIStrings19.clearInput),
     iconName: "cross-circle-filled"
@@ -22187,39 +22465,39 @@ function renderClearButton(jslogContext, onClick) {
         @click=${onClick}></devtools-button>`;
 }
 function renderConfigToggle(iconName, label, toggled, onClick) {
-  return html13`
+  return html14`
     <devtools-button aria-label=${label}
         .data=${{
-    variant: Buttons10.Button.Variant.ICON_TOGGLE,
-    size: Buttons10.Button.Size.SMALL,
+    variant: Buttons11.Button.Variant.ICON_TOGGLE,
+    size: Buttons11.Button.Size.SMALL,
     iconName,
     toggledIconName: iconName,
     toggled,
-    toggleType: Buttons10.Button.ToggleType.PRIMARY,
+    toggleType: Buttons11.Button.ToggleType.PRIMARY,
     title: label,
     jslogContext: iconName
   }}
         @click=${onClick}></devtools-button>`;
 }
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   const replaceLabel = input.secondRowVisible ? i18nString19(UIStrings19.disableFindAndReplace) : i18nString19(UIStrings19.enableFindAndReplace);
-  render17(html13`
+  render18(html14`
     <style>${searchableView_css_default}</style>
     <slot></slot>
     <div class="search-bar ${input.searchIsVisible ? "" : "hidden"} ${input.secondRowVisible ? "replaceable" : ""}"
         style="order: 100"
-        ${Directives6.ref((el) => {
+        ${Directives7.ref((el) => {
     output.footerElementContainer = el;
   })}>
       <div class="toolbar-search" jslog=${VisualLogging24.toolbar("search").track({ resize: true })}>
         <devtools-toolbar class="replace-toggle-toolbar">
           <devtools-button class="toolbar-item" ?hidden=${!input.replaceable} aria-label=${replaceLabel}
               .data=${{
-    variant: Buttons10.Button.Variant.ICON_TOGGLE,
-    size: Buttons10.Button.Size.REGULAR,
+    variant: Buttons11.Button.Variant.ICON_TOGGLE,
+    size: Buttons11.Button.Size.REGULAR,
     iconName: "replace",
     toggledIconName: "replace",
-    toggleType: Buttons10.Button.ToggleType.PRIMARY,
+    toggleType: Buttons11.Button.ToggleType.PRIMARY,
     toggled: input.secondRowVisible,
     title: replaceLabel,
     jslogContext: "replace"
@@ -22231,11 +22509,11 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             <devtools-icon name="search"></devtools-icon>
             <input type="search" id="search-input-field" class="search-replace search" autocomplete="off"
                 placeholder=${input.placeholder}
-                aria-label=${input.searchAriaLabel ?? nothing11}
+                aria-label=${input.searchAriaLabel ?? nothing12}
                 jslog=${VisualLogging24.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}
                 @keydown=${input.onSearchKeyDown}
                 @input=${input.onSearchInput}
-                ${Directives6.ref((el) => {
+                ${Directives7.ref((el) => {
     output.searchInputElement = el;
   })}>
           </div>
@@ -22243,7 +22521,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             <input class="search-replace" placeholder=${i18nString19(UIStrings19.replace)}
                 jslog=${VisualLogging24.textField("replace").track({ change: true, keydown: "Enter" })}
                 @keydown=${input.onReplaceKeyDown}
-                ${Directives6.ref((el) => {
+                ${Directives7.ref((el) => {
     output.replaceInputElement = el;
   })}>
             ${renderClearButton("clear-replace-input", input.onClearReplaceInput)}
@@ -22255,19 +22533,19 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     i18nString19(UIStrings19.matchCase),
     input.caseSensitiveToggled,
     input.onToggleCaseSensitive
-  ) : nothing11}
+  ) : nothing12}
             ${input.supportsWholeWord ? renderConfigToggle(
     "match-whole-word",
     i18nString19(UIStrings19.matchWholeWord),
     input.wholeWordToggled,
     input.onToggleWholeWord
-  ) : nothing11}
+  ) : nothing12}
             ${input.supportsRegex ? renderConfigToggle(
     "regular-expression",
     i18nString19(UIStrings19.useRegularExpression),
     input.regexToggled,
     input.onToggleRegex
-  ) : nothing11}
+  ) : nothing12}
           </div>
           <div class="input-line search-input-background"></div>
         </div>
@@ -22276,7 +22554,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             <devtools-toolbar class="toolbar-search-options">
               <devtools-button class="toolbar-item" aria-label=${i18nString19(UIStrings19.searchPrevious)} ?disabled=${!input.navEnabled}
                   .data=${{
-    variant: Buttons10.Button.Variant.TOOLBAR,
+    variant: Buttons11.Button.Variant.TOOLBAR,
     iconName: "chevron-up",
     title: i18nString19(UIStrings19.searchPrevious),
     jslogContext: "select-previous",
@@ -22285,7 +22563,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                   @click=${input.onPrevClick}></devtools-button>
               <devtools-button class="toolbar-item" aria-label=${i18nString19(UIStrings19.searchNext)} ?disabled=${!input.navEnabled}
                   .data=${{
-    variant: Buttons10.Button.Variant.TOOLBAR,
+    variant: Buttons11.Button.Variant.TOOLBAR,
     iconName: "chevron-down",
     title: i18nString19(UIStrings19.searchNext),
     jslogContext: "select-next",
@@ -22294,14 +22572,14 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                   @click=${input.onNextClick}></devtools-button>
               <div class="toolbar-item toolbar-text search-results-matches"
                   style="font-variant-numeric: tabular-nums; color: var(--sys-color-on-surface-subtle); padding: 0 var(--sys-size-3)"
-                  aria-live="polite" aria-atomic="false" aria-label=${input.matchesAriaLabel || nothing11}>
+                  aria-live="polite" aria-atomic="false" aria-label=${input.matchesAriaLabel || nothing12}>
                 <span aria-hidden="true">${input.matchesText}</span>
               </div>
             </devtools-toolbar>
             <devtools-button class="close-search-button"
                 .data=${{
-    variant: Buttons10.Button.Variant.TOOLBAR,
-    size: Buttons10.Button.Size.REGULAR,
+    variant: Buttons11.Button.Variant.TOOLBAR,
+    size: Buttons11.Button.Size.REGULAR,
     iconName: "cross",
     title: i18nString19(UIStrings19.closeSearchBar),
     jslogContext: "close-search"
@@ -22311,7 +22589,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           <div class="second-row-buttons replace-element">
             <devtools-button class="search-action-button" ?disabled=${!input.replaceEnabled}
                 .data=${{
-    variant: Buttons10.Button.Variant.OUTLINED,
+    variant: Buttons11.Button.Variant.OUTLINED,
     title: i18nString19(UIStrings19.replace),
     jslogContext: "replace",
     disabled: !input.replaceEnabled
@@ -22319,7 +22597,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                 @click=${input.onReplaceClick}>${i18nString19(UIStrings19.replace)}</devtools-button>
             <devtools-button class="search-action-button" ?disabled=${!input.replaceEnabled}
                 .data=${{
-    variant: Buttons10.Button.Variant.OUTLINED,
+    variant: Buttons11.Button.Variant.OUTLINED,
     title: i18nString19(UIStrings19.replaceAll),
     jslogContext: "replace-all",
     disabled: !input.replaceEnabled
@@ -22354,7 +22632,7 @@ var SearchableView = class extends VBox {
   #historyPosition = 0;
   currentQuery;
   valueChangedTimeoutId;
-  constructor(searchableOrElement, replaceableOrView, settingName, element, view = DEFAULT_VIEW5) {
+  constructor(searchableOrElement, replaceableOrView, settingName, element, view = DEFAULT_VIEW6) {
     const isElement = searchableOrElement instanceof HTMLElement || searchableOrElement === void 0;
     super(isElement ? searchableOrElement : element, { useShadowDom: true });
     this.#view = isElement && typeof replaceableOrView === "function" ? replaceableOrView : view;
@@ -23235,7 +23513,7 @@ __export(View_exports, {
   SimpleView: () => SimpleView
 });
 import * as Platform24 from "../../core/platform/platform.js";
-import { nothing as nothing12 } from "../lit/lit.js";
+import { nothing as nothing13 } from "../lit/lit.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;
@@ -23261,7 +23539,7 @@ var SimpleView = class extends VBox {
     return false;
   }
   toolbarItems() {
-    return Promise.resolve(nothing12);
+    return Promise.resolve(nothing13);
   }
   widget() {
     return Promise.resolve(this);
@@ -23280,9 +23558,9 @@ var SimpleView = class extends VBox {
 };
 
 // ../../front_end/ui/legacy/StackPane.ts
-var { html: html14, render: render18 } = Lit6;
+var { html: html15, render: render19 } = Lit6;
 var SLOT_VIEW = (input, _output, target) => {
-  render18(html14`<slot name=${input.name}></slot>`, target);
+  render19(html15`<slot name=${input.name}></slot>`, target);
 };
 var SlotView = class extends SimpleView {
   #pane;
@@ -23307,7 +23585,7 @@ var SlotView = class extends SimpleView {
   }
 };
 var STACK_VIEW = (input, _output, target) => {
-  render18(html14`<devtools-widget ${widget(WrapperWidget, { widget: input.location.widget() })}></devtools-widget>`, target);
+  render19(html15`<devtools-widget ${widget(WrapperWidget, { widget: input.location.widget() })}></devtools-widget>`, target);
 };
 var StackPaneElement = class extends HTMLElement {
   #location = ViewManager.instance().createStackLocation();
@@ -23372,11 +23650,11 @@ customElements.define("devtools-stack-pane", StackPaneElement);
 // ../../front_end/ui/legacy/TargetCrashedScreen.ts
 var TargetCrashedScreen_exports = {};
 __export(TargetCrashedScreen_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n41 from "../../core/i18n/i18n.js";
-import { html as html15, render as render19 } from "../lit/lit.js";
+import { html as html16, render as render20 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -23411,9 +23689,9 @@ var UIStrings21 = {
 };
 var str_21 = i18n41.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
-var DEFAULT_VIEW6 = (input, _output, target) => {
-  render19(
-    html15`
+var DEFAULT_VIEW7 = (input, _output, target) => {
+  render20(
+    html16`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString21(UIStrings21.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString21(UIStrings21.oncePageIsReloadedDevtoolsWill)}</div>`,
@@ -23422,7 +23700,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
 };
 var TargetCrashedScreen = class extends VBox {
   hideCallback;
-  constructor(hideCallback, view = DEFAULT_VIEW6) {
+  constructor(hideCallback, view = DEFAULT_VIEW7) {
     super({ useShadowDom: true });
     view({}, void 0, this.contentElement);
     this.hideCallback = hideCallback;
@@ -23798,7 +24076,7 @@ var UIStrings22 = {
 var str_22 = i18n43.i18n.registerUIStrings("ui/legacy/Treeoutline.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render20 } = Lit7;
+var { render: render21 } = Lit7;
 var Events11 = /* @__PURE__ */ ((Events12) => {
   Events12["ElementAttached"] = "ElementAttached";
   Events12["ElementsDetached"] = "ElementsDetached";
@@ -24040,7 +24318,6 @@ var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
         return;
       }
       const itemRect = this.treeElementToScrollIntoView.listItemElement.getBoundingClientRect();
-      const treeRect = this.contentElement.getBoundingClientRect();
       let scrollParentElement = this.element;
       while (getComputedStyle(scrollParentElement).overflow === "visible" && scrollParentElement.parentElementOrShadowHost()) {
         const parent = scrollParentElement.parentElementOrShadowHost();
@@ -24048,15 +24325,15 @@ var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
         scrollParentElement = parent;
       }
       const viewRect = scrollParentElement.getBoundingClientRect();
-      const currentScrollX = viewRect.left - treeRect.left;
-      const currentScrollY = viewRect.top - treeRect.top + this.contentElement.offsetTop;
-      let deltaLeft = itemRect.left - treeRect.left;
+      const currentScrollX = scrollParentElement.scrollLeft;
+      const currentScrollY = scrollParentElement.scrollTop;
+      let deltaLeft = itemRect.left - viewRect.left - scrollParentElement.clientLeft + currentScrollX;
       if (deltaLeft > currentScrollX && deltaLeft < currentScrollX + viewRect.width) {
         deltaLeft = currentScrollX;
       } else if (this.centerUponScrollIntoView) {
         deltaLeft = deltaLeft - viewRect.width / 2;
       }
-      let deltaTop = itemRect.top - treeRect.top;
+      let deltaTop = itemRect.top - viewRect.top - scrollParentElement.clientTop + currentScrollY;
       if (deltaTop > currentScrollY && deltaTop < currentScrollY + viewRect.height) {
         deltaTop = currentScrollY;
       } else if (this.centerUponScrollIntoView) {
@@ -24457,7 +24734,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render20(icons, this.leadingIconsElement);
+    render21(icons, this.leadingIconsElement);
   }
   setTrailingIcons(icons) {
     if (!this.trailingIconsElement && !icons.length) {
@@ -24470,7 +24747,7 @@ var TreeElement = class {
       this.listItemNode.appendChild(this.trailingIconsElement);
       this.ensureSelection();
     }
-    render20(icons, this.trailingIconsElement);
+    render21(icons, this.trailingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;
@@ -25551,6 +25828,7 @@ export {
   GlassPane_exports as GlassPane,
   Infobar_exports as Infobar,
   InplaceEditor_exports as InplaceEditor,
+  InspectorDrawerView_exports as InspectorDrawerView,
   InspectorView_exports as InspectorView,
   KeyboardShortcut_exports as KeyboardShortcut,
   LinkContextMenuProvider_exports as LinkContextMenuProvider,

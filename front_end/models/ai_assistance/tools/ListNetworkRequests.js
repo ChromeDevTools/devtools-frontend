@@ -78,6 +78,35 @@ function formatRequestUrl(rawUrl, baseOrigin) {
     return cleanUrl;
 }
 /**
+ * Classifies a request's duration state, distinguishing in-flight requests (`pending`)
+ * from completed or unloaded requests that lack timing data (`unavailable`).
+ */
+export function requestDurationState(request) {
+    // Check >= 0 first so 0s data: URLs and synthetic requests with valid timing classify as `value`.
+    if (request.duration >= 0) {
+        return { type: 'value', seconds: request.duration };
+    }
+    // `duration` is -1 when `startTime` or `endTime` is unset. Finished requests without
+    // timing data and unfinished requests preserved from an unloaded page will never complete.
+    return request.finished || request.preserved ? { type: 'unavailable' } : { type: 'pending' };
+}
+/**
+ * Formats a request's duration for the compact model table.
+ */
+function formatRequestDuration(request) {
+    const state = requestDurationState(request);
+    switch (state.type) {
+        case 'value':
+            return seconds(state.seconds);
+        case 'unavailable':
+            return '-';
+        case 'pending':
+            return 'pending';
+        default:
+            Platform.assertNever(state, 'Unknown RequestDurationState type');
+    }
+}
+/**
  * A tool that lists all network requests recorded by DevTools.
  * Returns a compact semicolon-delimited table of requests initiated by the conversation's established origin.
  */
@@ -143,7 +172,8 @@ export class ListNetworkRequestsTool {
         for (const request of requestsToShow) {
             const id = request.requestId().replace(/[\r\n]+/g, '');
             const url = formatRequestUrl(request.url(), baseOrigin);
-            lines.push(`${id};${url};${request.statusCode};${seconds(request.duration)};${formatBytesToKb(request.transferSize)}`);
+            const duration = formatRequestDuration(request);
+            lines.push(`${id};${url};${request.statusCode};${duration};${formatBytesToKb(request.transferSize)}`);
         }
         return {
             result: lines.join('\n'),

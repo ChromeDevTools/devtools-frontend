@@ -78,6 +78,13 @@ var Metric = class {
 };
 
 // ../../front_end/models/trace/lantern/metrics/FirstContentfulPaint.ts
+function getMainFrameId(dependencyGraph) {
+  const root = dependencyGraph.getRootNode();
+  return root.type === Graph2.BaseNode.types.NETWORK ? root.request.frameId : void 0;
+}
+function isMainFrameNode(node, mainFrameId) {
+  return !mainFrameId || !node.request.frameId || node.request.frameId === mainFrameId;
+}
 var FirstContentfulPaint = class extends Metric {
   static get coefficients() {
     return {
@@ -170,18 +177,22 @@ var FirstContentfulPaint = class extends Metric {
     });
   }
   static getOptimisticGraph(dependencyGraph, processedNavigation) {
+    const mainFrameId = getMainFrameId(dependencyGraph);
     return this.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
       // In the optimistic graph we exclude resources that appeared to be render-blocking but were
       // initiated by a script. While they typically have a very high importance and tend to have a
       // significant impact on the page's content, these resources don't technically block rendering.
-      treatNodeAsRenderBlocking: (node) => node.hasRenderBlockingPriority() && node.initiatorType !== "script"
+      // Subframe resources cannot block main-frame FCP.
+      treatNodeAsRenderBlocking: (node) => isMainFrameNode(node, mainFrameId) && node.hasRenderBlockingPriority() && node.initiatorType !== "script"
     });
   }
   static getPessimisticGraph(dependencyGraph, processedNavigation) {
+    const mainFrameId = getMainFrameId(dependencyGraph);
     return this.getFirstPaintBasedGraph(dependencyGraph, {
       cutoffTimestamp: processedNavigation.timestamps.firstContentfulPaint,
-      treatNodeAsRenderBlocking: (node) => node.hasRenderBlockingPriority()
+      // Subframe resources cannot block main-frame FCP.
+      treatNodeAsRenderBlocking: (node) => isMainFrameNode(node, mainFrameId) && node.hasRenderBlockingPriority()
     });
   }
 };
@@ -342,12 +353,15 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
     urlMatches.sort((a, b) => a.endTime - b.endTime);
     return urlMatches[0];
   }
-  static isSameFrameTextLcp(processedNavigation) {
+  static isSameFrameLcp(processedNavigation) {
     const { firstContentfulPaint: fcp, largestContentfulPaint: lcp } = processedNavigation.timestamps;
     if (!lcp) {
       return false;
     }
-    return Math.abs(lcp - fcp) <= SAME_FRAME_TIMESTAMP_TOLERANCE_US && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === "text";
+    return Math.abs(lcp - fcp) <= SAME_FRAME_TIMESTAMP_TOLERANCE_US;
+  }
+  static isSameFrameTextLcp(processedNavigation) {
+    return _LargestContentfulPaint.isSameFrameLcp(processedNavigation) && processedNavigation.largestContentfulPaintEvt?.args?.data?.type === "text";
   }
   static getOptimisticGraph(dependencyGraph, processedNavigation) {
     const lcp = processedNavigation.timestamps.largestContentfulPaint;
@@ -408,6 +422,16 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
     if (extras?.optimistic) {
       return simulationResult;
     }
+    if (extras?.lcpNodeId && extras.fcpResult) {
+      for (const [node, timing] of simulationResult.nodeTimings) {
+        if (node.type === "network" && node.id === extras.lcpNodeId) {
+          return {
+            timeInMs: Math.max(timing.endTime, extras.fcpResult.pessimisticEstimate.timeInMs),
+            nodeTimings: simulationResult.nodeTimings
+          };
+        }
+      }
+    }
     const nodeTimesNotOffscreenImages = Array.from(simulationResult.nodeTimings.entries()).filter((entry) => _LargestContentfulPaint.isNotLowPriorityImageNode(entry[0])).map((entry) => entry[1].endTime);
     return {
       timeInMs: Math.max(...nodeTimesNotOffscreenImages),
@@ -419,7 +443,8 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
     if (!fcpResult) {
       throw new Core3.LanternError("FCP is required to calculate the LCP metric");
     }
-    const metricResult = super.compute(data, extras);
+    const lcpNode = _LargestContentfulPaint.isSameFrameLcp(data.processedNavigation) ? _LargestContentfulPaint.findLcpNode(data.graph, data.processedNavigation) : null;
+    const metricResult = super.compute(data, { ...extras, lcpNodeId: lcpNode?.id });
     metricResult.timing = Math.max(metricResult.timing, fcpResult.timing);
     return metricResult;
   }

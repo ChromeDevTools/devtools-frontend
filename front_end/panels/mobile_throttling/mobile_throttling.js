@@ -16,7 +16,7 @@ import * as SDK3 from "../../core/sdk/sdk.js";
 import * as CrUXManager from "../../models/crux-manager/crux-manager.js";
 import * as UI2 from "../../ui/legacy/legacy.js";
 import * as Lit from "../../ui/lit/lit.js";
-import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon3 from "../common/common.js";
 
 // ../../front_end/panels/mobile_throttling/ThrottlingManager.ts
@@ -24,19 +24,52 @@ var ThrottlingManager_exports = {};
 __export(ThrottlingManager_exports, {
   ActionDelegate: () => ActionDelegate,
   CPUPerformanceTier: () => CPUPerformanceTier,
+  DEFAULT_HARDWARE_CONCURRENCY_VIEW: () => DEFAULT_HARDWARE_CONCURRENCY_VIEW,
   DEFAULT_SAVE_DATA_VIEW: () => DEFAULT_SAVE_DATA_VIEW,
+  HardwareConcurrencySelector: () => HardwareConcurrencySelector,
   SaveDataOverrideSelect: () => SaveDataOverrideSelect,
   ThrottlingManager: () => ThrottlingManager,
   throttlingManager: () => throttlingManager
 });
+import "../../ui/kit/kit.js";
 import * as Common from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
 import * as i18n from "../../core/i18n/i18n.js";
 import * as SDK from "../../core/sdk/sdk.js";
-import { Icon } from "../../ui/kit/kit.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as UI from "../../ui/legacy/legacy.js";
-import { html, render } from "../../ui/lit/lit.js";
+import { Directives, html, render } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
+
+// gen/front_end/panels/mobile_throttling/hardwareConcurrencySelector.css.js
+var hardwareConcurrencySelector_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  .concurrency-details {
+    margin: var(--sys-size-5) var(--sys-size-10);
+    display: flex;
+    align-items: center;
+  }
+
+  .concurrency-details input {
+    width: 50px;
+    /* Clear out unexpected margin applied to \\'.sensors-view input\\' */
+    margin: 0;
+  }
+
+  .concurrency-hidden {
+    visibility: hidden;
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./hardwareConcurrencySelector.css")} */`;
+
+// ../../front_end/panels/mobile_throttling/ThrottlingManager.ts
 var CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 var UIStrings = {
   /**
@@ -93,11 +126,7 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
   calibratedCpuThrottlingSetting;
   lastNetworkThrottlingConditions;
   cpuThrottlingManager;
-  #hardwareConcurrencyOverrideEnabled = false;
   #currentCPUThrottlingOption = PanelsCommon.CPUThrottlingOption.NoThrottlingOption;
-  get hardwareConcurrencyOverrideEnabled() {
-    return this.#hardwareConcurrencyOverrideEnabled;
-  }
   constructor(settings) {
     super();
     this.cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
@@ -204,66 +233,6 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
     this.#currentCPUThrottlingOption = option;
     this.updatePanelIcon();
   }
-  /** Hardware Concurrency doesn't store state in a setting. */
-  createHardwareConcurrencySelector() {
-    const numericInput = new UI.Toolbar.ToolbarItem(UI.UIUtils.createInput("devtools-text-input", "number", "hardware-concurrency"));
-    numericInput.setTitle(i18nString(UIStrings.hardwareConcurrencySettingLabel));
-    const inputElement = numericInput.element;
-    inputElement.min = "1";
-    numericInput.setEnabled(false);
-    const checkbox = UI.UIUtils.CheckboxLabel.create(
-      i18nString(UIStrings.hardwareConcurrency),
-      false,
-      i18nString(UIStrings.hardwareConcurrencySettingLabel),
-      "hardware-concurrency"
-    );
-    const reset = new UI.Toolbar.ToolbarButton("Reset concurrency", "undo", void 0, "hardware-concurrency-reset");
-    reset.setTitle(i18nString(UIStrings.resetConcurrency));
-    const icon = new Icon();
-    icon.name = "warning-filled";
-    icon.classList.add("small");
-    const warning = new UI.Toolbar.ToolbarItem(icon);
-    warning.setTitle(i18nString(UIStrings.excessConcurrency));
-    checkbox.disabled = true;
-    reset.element.classList.add("concurrency-hidden");
-    warning.element.classList.add("concurrency-hidden");
-    void this.cpuThrottlingManager.getHardwareConcurrency().then((defaultValue) => {
-      if (defaultValue === void 0) {
-        return;
-      }
-      const setHardwareConcurrency = (value) => {
-        if (value >= 1) {
-          this.cpuThrottlingManager.setHardwareConcurrency(value);
-        }
-        if (value > defaultValue) {
-          warning.element.classList.remove("concurrency-hidden");
-        } else {
-          warning.element.classList.add("concurrency-hidden");
-        }
-        if (value === defaultValue) {
-          reset.element.classList.add("concurrency-hidden");
-        } else {
-          reset.element.classList.remove("concurrency-hidden");
-        }
-      };
-      inputElement.value = `${defaultValue}`;
-      inputElement.oninput = () => setHardwareConcurrency(Number(inputElement.value));
-      checkbox.disabled = false;
-      checkbox.addEventListener("change", () => {
-        this.#hardwareConcurrencyOverrideEnabled = checkbox.checked;
-        numericInput.setEnabled(this.hardwareConcurrencyOverrideEnabled);
-        setHardwareConcurrency(this.hardwareConcurrencyOverrideEnabled ? Number(inputElement.value) : defaultValue);
-      });
-      reset.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-        inputElement.value = `${defaultValue}`;
-        setHardwareConcurrency(defaultValue);
-      });
-    });
-    return { numericInput, reset, warning, checkbox };
-  }
-  setHardwareConcurrency(concurrency) {
-    this.cpuThrottlingManager.setHardwareConcurrency(concurrency);
-  }
   effectiveCPUPerformanceTier() {
     return this.cpuThrottlingManager.effectiveCPUPerformanceTier();
   }
@@ -274,6 +243,138 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
     const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     const knownCurrentConditions = this.#getCurrentNetworkConditions();
     return !SDK.NetworkManager.networkConditionsEqual(networkConditions, knownCurrentConditions);
+  }
+};
+var DEFAULT_HARDWARE_CONCURRENCY_VIEW = (input, _output, target) => {
+  const showReset = input.overrideEnabled && input.value !== input.defaultValue;
+  const showWarning = input.overrideEnabled && input.value > input.defaultValue;
+  const onInput = (event) => {
+    const value = event.target.value;
+    if (value !== "") {
+      input.onInput(Number(value));
+    }
+  };
+  render(html`
+    <style>${hardwareConcurrencySelector_css_default}</style>
+    <devtools-checkbox
+        title=${i18nString(UIStrings.hardwareConcurrency)}
+        .checked=${input.overrideEnabled}
+        ?disabled=${!input.initialized}
+        .jslogContext=${"hardware-concurrency"}
+        @change=${(e) => input.onToggle(e.target.checked)}>
+      ${i18nString(UIStrings.hardwareConcurrency)}
+      <div class="devtools-checkbox-subtitle">${i18nString(UIStrings.hardwareConcurrencySettingLabel)}</div>
+    </devtools-checkbox>
+    <div class="concurrency-details">
+      <input
+          class="harmony-input"
+          type="number"
+          min="1"
+          spellcheck="false"
+          .value=${Directives.live(input.initialized ? String(input.value) : "")}
+          ?disabled=${!input.overrideEnabled}
+          title=${i18nString(UIStrings.hardwareConcurrencySettingLabel)}
+          aria-label=${i18nString(UIStrings.hardwareConcurrencySettingLabel)}
+          jslog=${VisualLogging.textField("hardware-concurrency").track({ keydown: "Enter", change: true })}
+          @input=${onInput} />
+      <devtools-button
+          class=${Directives.classMap({ "concurrency-hidden": !showReset })}
+          .iconName=${"undo"}
+          .variant=${Buttons.Button.Variant.ICON}
+          .title=${i18nString(UIStrings.resetConcurrency)}
+          .accessibleLabel=${i18nString(UIStrings.resetConcurrency)}
+          .jslogContext=${"hardware-concurrency-reset"}
+          @click=${input.onReset}>
+      </devtools-button>
+      <devtools-icon
+          name="warning-filled"
+          class=${Directives.classMap({
+    small: true,
+    "concurrency-hidden": !showWarning
+  })}
+          title=${i18nString(UIStrings.excessConcurrency)}
+          aria-label=${i18nString(UIStrings.excessConcurrency)}>
+      </devtools-icon>
+    </div>
+  `, target, { container: { classes: ["concurrency-section"] } });
+};
+var HardwareConcurrencySelector = class extends UI.Widget.Widget {
+  #view;
+  #cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+  #defaultValue;
+  #loadingDefaultValue = false;
+  #value = 0;
+  #overrideEnabled = false;
+  constructor(element, view = DEFAULT_HARDWARE_CONCURRENCY_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    if (this.#defaultValue === void 0 && !this.#loadingDefaultValue) {
+      void this.#loadDefaultValue();
+    }
+    this.requestUpdate();
+  }
+  async #loadDefaultValue() {
+    this.#loadingDefaultValue = true;
+    try {
+      const defaultValue = await this.#cpuThrottlingManager.getHardwareConcurrency();
+      this.#defaultValue = defaultValue;
+      this.#value = defaultValue;
+      this.requestUpdate();
+    } catch {
+    } finally {
+      this.#loadingDefaultValue = false;
+    }
+  }
+  #applyConcurrency(value) {
+    if (value >= 1) {
+      this.#cpuThrottlingManager.setHardwareConcurrency(value);
+    }
+  }
+  #onToggle(enabled) {
+    if (this.#defaultValue === void 0) {
+      return;
+    }
+    this.#overrideEnabled = enabled;
+    this.#applyConcurrency(enabled ? this.#value : this.#defaultValue);
+    this.requestUpdate();
+  }
+  #onInput(value) {
+    if (this.#defaultValue === void 0) {
+      return;
+    }
+    this.#value = value;
+    if (this.#overrideEnabled) {
+      this.#applyConcurrency(value);
+    }
+    this.requestUpdate();
+  }
+  #onReset() {
+    if (this.#defaultValue === void 0) {
+      return;
+    }
+    this.#value = this.#defaultValue;
+    if (this.#overrideEnabled) {
+      this.#applyConcurrency(this.#defaultValue);
+    }
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view(
+      {
+        initialized: this.#defaultValue !== void 0,
+        overrideEnabled: this.#overrideEnabled,
+        value: this.#value,
+        defaultValue: this.#defaultValue ?? 0,
+        onToggle: this.#onToggle.bind(this),
+        onInput: this.#onInput.bind(this),
+        onReset: this.#onReset.bind(this)
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
 var DEFAULT_SAVE_DATA_VIEW = (input, _output, target) => {
@@ -485,7 +586,7 @@ globalThis.MobileThrottling = globalThis.MobileThrottling || {};
 globalThis.MobileThrottling.networkPresets = ThrottlingPresets.networkPresets;
 
 // ../../front_end/panels/mobile_throttling/CPUThrottlingSelector.ts
-var { render: render2, html: html2, Directives } = Lit;
+var { render: render2, html: html2, Directives: Directives2 } = Lit;
 var UIStrings3 = {
   /**
    * @description Text label for a selection box showing which CPU throttling option is applied.
@@ -561,7 +662,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
         const rate = option.rate();
         return html2`
             <option
-              ${Directives.ref(
+              ${Directives2.ref(
           (optionEl) => optionEl && optionsMap.set(optionEl, option)
         )}
               .value=${String(option.calibratedDeviceType ?? rate)}
@@ -569,7 +670,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
               ?disabled=${rate === 0}
               title=${title}
               aria-label=${title}
-              jslog=${VisualLogging.item(option.jslogContext).track({
+              jslog=${VisualLogging2.item(option.jslogContext).track({
           click: true
         })}
             >
@@ -581,7 +682,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
               .value=${"-1"}
               title=${calibrationLabel}
               aria-label=${calibrationLabel}
-              jslog=${VisualLogging.action(
+              jslog=${VisualLogging2.action(
         "cpu-throttling-selector-calibrate"
       ).track({ click: true })}
             >
@@ -596,7 +697,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
         attributes: {
           title: i18nString3(UIStrings3.cpuThrottling, { PH1: selectionTitle }),
           "aria-label": i18nString3(UIStrings3.cpuThrottling, { PH1: selectionTitle }),
-          jslog: `${VisualLogging.dropDown("cpu-throttling").track({ change: true })}`
+          jslog: `${VisualLogging2.dropDown("cpu-throttling").track({ change: true })}`
         }
       }
     }
@@ -801,8 +902,8 @@ import * as SDK5 from "../../core/sdk/sdk.js";
 import * as CrUXManager3 from "../../models/crux-manager/crux-manager.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
-import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
-var { render: render3, html: html3, Directives: Directives2 } = Lit2;
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
+var { render: render3, html: html3, Directives: Directives3 } = Lit2;
 var UIStrings5 = {
   /**
    * @description Text to indicate something is not enabled.
@@ -847,7 +948,7 @@ var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var optionsMap2 = /* @__PURE__ */ new WeakMap();
 var DEFAULT_VIEW2 = (input, output, target) => {
   const title = (conditions) => typeof conditions.title === "function" ? conditions.title() : conditions.title;
-  const jslog = (group, condition) => `${VisualLogging2.item(Platform.StringUtilities.toKebabCase(
+  const jslog = (group, condition) => `${VisualLogging3.item(Platform.StringUtilities.toKebabCase(
     "i18nTitleKey" in condition && condition.i18nTitleKey || title(condition)
   )).track({ click: true })}`;
   let selectedConditions = input.selectedConditions;
@@ -878,7 +979,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       (group) => html3`<optgroup
             label=${group.title}>
             ${group.items.map((condition) => html3`<option
-              ${Directives2.ref((option) => option && optionsMap2.set(option, condition))}
+              ${Directives3.ref((option) => option && optionsMap2.set(option, condition))}
               .selected=${selectedConditions ? SDK5.NetworkManager.networkConditionsEqual(condition, selectedConditions) : group === input.throttlingGroups[0]}
               value=${title(condition)}
               aria-label=${i18nString5(UIStrings5.sS, { PH1: group.title, PH2: title(condition) })}
@@ -889,17 +990,17 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     )}
         <optgroup label=${input.customConditionsGroup.title}>
           ${input.customConditionsGroup.items.map((condition) => html3`<option
-              ${Directives2.ref((option) => option && optionsMap2.set(option, condition))}
+              ${Directives3.ref((option) => option && optionsMap2.set(option, condition))}
               .selected=${Boolean(selectedConditions && SDK5.NetworkManager.networkConditionsEqual(condition, selectedConditions))}
               value=${title(condition)}
               aria-label=${i18nString5(UIStrings5.sS, { PH1: input.customConditionsGroup.title, PH2: title(condition) })}
-              jslog=${VisualLogging2.item("custom-network-throttling-item").track({ click: true })}>
+              jslog=${VisualLogging3.item("custom-network-throttling-item").track({ click: true })}>
                 ${condition === input.recommendedConditions ? i18nString5(UIStrings5.recommendedThrottling, { PH1: title(condition) }) : title(condition)}
           </option>`)}
           <option
             value=${i18nString5(UIStrings5.add)}
             aria-label=${i18nString5(UIStrings5.addS, { PH1: input.customConditionsGroup.title })}
-            jslog=${VisualLogging2.action("add").track({ click: true })}>
+            jslog=${VisualLogging3.action("add").track({ click: true })}>
               ${i18nString5(UIStrings5.add)}
           </option>
         </optgroup>`,
@@ -911,7 +1012,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         attributes: {
           disabled: input.disabled,
           "aria-label": input.title,
-          jslog: `${VisualLogging2.dropDown(input.jslogContext).track({ change: true })}`
+          jslog: `${VisualLogging3.dropDown(input.jslogContext).track({ change: true })}`
         }
       }
     }
@@ -1149,10 +1250,10 @@ import * as Common5 from "../../core/common/common.js";
 import * as i18n13 from "../../core/i18n/i18n.js";
 import * as Platform2 from "../../core/platform/platform.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
-import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as Buttons2 from "../../ui/components/buttons/buttons.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html4, nothing as nothing2, render as render4 } from "../../ui/lit/lit.js";
-import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
+import { Directives as Directives4, html as html4, nothing as nothing2, render as render4 } from "../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon5 from "../common/common.js";
 
 // ../../front_end/panels/mobile_throttling/CalibrationController.ts
@@ -1811,7 +1912,7 @@ var CPU_THROTTLING_CARD_DEFAULT_VIEW = (input, _output, target) => {
           <span>${i18nString7(UIStrings7.cpuCalibrationDescription)}</span>
           <div class="cpu-preset-section">
             ${i18nString7(UIStrings7.calibratedLowTierMobile)}
-            <div class=${Directives3.classMap({
+            <div class=${Directives4.classMap({
       "cpu-preset-result": true,
       "not-calibrated": input.lowNotCalibrated
     })}>
@@ -1820,7 +1921,7 @@ var CPU_THROTTLING_CARD_DEFAULT_VIEW = (input, _output, target) => {
           </div>
           <div class="cpu-preset-section">
             ${i18nString7(UIStrings7.calibratedMidTierMobile)}
-            <div class=${Directives3.classMap({
+            <div class=${Directives4.classMap({
       "cpu-preset-result": true,
       "not-calibrated": input.midNotCalibrated
     })}>
@@ -1832,7 +1933,7 @@ var CPU_THROTTLING_CARD_DEFAULT_VIEW = (input, _output, target) => {
               <devtools-button
                 class="calibrate-button"
                 style=${showCalibrateButton ? "" : "display: none"}
-                .variant=${Buttons.Button.Variant.PRIMARY}
+                .variant=${Buttons2.Button.Variant.PRIMARY}
                 .jslogContext=${"throttling.calibrate"}
                 @click=${input.onCalibrateClick}>
                 ${calibrateButtonText}
@@ -1840,7 +1941,7 @@ var CPU_THROTTLING_CARD_DEFAULT_VIEW = (input, _output, target) => {
               <devtools-button
                 class="cancel-button"
                 style=${showCancelButton ? "" : "display: none"}
-                .variant=${Buttons.Button.Variant.OUTLINED}
+                .variant=${Buttons2.Button.Variant.OUTLINED}
                 .jslogContext=${"throttling.calibrate-cancel"}
                 @click=${input.onCancelClick}>
                 ${i18nString7(UIStrings7.cancel)}
@@ -2113,7 +2214,7 @@ function renderEditor(input) {
   return html4`
     <div
         class="editor-container"
-        jslog=${VisualLogging3.pane("editor").track({ resize: true })}
+        jslog=${VisualLogging4.pane("editor").track({ resize: true })}
         @keydown=${(e) => {
     if (Platform2.KeyboardUtilities.isEscKey(e)) {
       e.consume(true);
@@ -2136,7 +2237,7 @@ function renderEditor(input) {
                 <div>${field.labelText}</div>
                 <div>
                   <input
-                      class=${Directives3.classMap({
+                      class=${Directives4.classMap({
       "harmony-input": true,
       input: true,
       "error-input": isInvalid
@@ -2147,8 +2248,8 @@ function renderEditor(input) {
                       aria-label=${field.labelText}
                       aria-description=${optionalStr}
                       aria-invalid=${isInvalid ? "true" : "false"}
-                      .value=${Directives3.live(input.editingValues[field.name])}
-                      jslog=${VisualLogging3.textField().track({ change: true, keydown: "Enter" }).context(field.name)}
+                      .value=${Directives4.live(input.editingValues[field.name])}
+                      jslog=${VisualLogging4.textField().track({ change: true, keydown: "Enter" }).context(field.name)}
                       @input=${(e) => input.onEditorInput(field.name, e.target.value)}>
                   <div style=${field.isOptional ? "" : "visibility: hidden"}>
                     ${optionalStr}
@@ -2177,14 +2278,14 @@ function renderEditor(input) {
       </div>
       <div class="editor-buttons">
         <devtools-button
-            .variant=${Buttons.Button.Variant.OUTLINED}
+            .variant=${Buttons2.Button.Variant.OUTLINED}
             .jslogContext=${"cancel"}
-            jslog=${VisualLogging3.action("cancel").track({ click: true })}
+            jslog=${VisualLogging4.action("cancel").track({ click: true })}
             @click=${input.onCancelEdit}>
           ${i18nString7(UIStrings7.cancel)}
         </devtools-button>
         <devtools-button
-            .variant=${Buttons.Button.Variant.PRIMARY}
+            .variant=${Buttons2.Button.Variant.PRIMARY}
             .jslogContext=${"commit"}
             .disabled=${hasErrors}
             @click=${input.onCommitEdit}>
@@ -2241,7 +2342,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                 ` : nothing2}
                 <devtools-button
                   class="add-conditions-button"
-                  .variant=${Buttons.Button.Variant.OUTLINED}
+                  .variant=${Buttons2.Button.Variant.OUTLINED}
                   .iconName=${"plus"}
                   .jslogContext=${"network.add-conditions"}
                   @click=${input.onAddCustomProfile}>
@@ -2253,7 +2354,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         </div>
       `,
     target,
-    { container: { attributes: { jslog: `${VisualLogging3.pane("throttling-conditions")}` } } }
+    { container: { attributes: { jslog: `${VisualLogging4.pane("throttling-conditions")}` } } }
   );
 };
 var EMPTY_EDITOR_VALUES = {

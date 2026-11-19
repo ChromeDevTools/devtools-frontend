@@ -650,7 +650,7 @@ export function getPresets() {
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.SEO,
             },
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-agentic-browsing'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.catAgenticBrowsingSettingDescriptor),
                 configID: 'agentic-browsing',
                 title: i18nLazyString(UIStrings.agenticBrowsing),
                 description: i18nLazyString(UIStrings.agenticBrowsingDescription),
@@ -666,7 +666,7 @@ export function getRuntimeSettings() {
     if (!runtimeSettings) {
         runtimeSettings = [
             {
-                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.device-type'),
+                setting: Common.Settings.Settings.instance().resolve(SettingsUI.LighthouseSettings.deviceTypeSettingDescriptor),
                 title: i18nLazyString(UIStrings.applyMobileEmulation),
                 description: i18nLazyString(UIStrings.applyMobileEmulationDuring),
                 setFlags: (flags, value) => {

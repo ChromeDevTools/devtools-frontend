@@ -85,6 +85,14 @@ export interface MockPage {
   evaluate: () => string;
   url: () => string;
   bringToFront: () => Promise<void>;
+  setDefaultTimeout: () => void;
+  close?: sinon.SinonStub;
+  isClosed?: () => boolean;
+}
+
+export interface MockTarget {
+  url: () => string;
+  page: () => Promise<MockPage|null>;
 }
 
 export interface RecordingPlayerMocks {
@@ -92,6 +100,12 @@ export interface RecordingPlayerMocks {
   send: sinon.SinonStub;
   mainFrame: MockFrame;
   frames: MockFrame[];
+  pages: MockPage[];
+  targets: MockTarget[];
+  /** The `waitForTarget` method of the mock browser. */
+  waitForTarget: sinon.SinonStub;
+  /** Sends a `targetcreated` event to the listeners of the mock browser. */
+  emitTargetCreated(target: MockTarget): void;
   /** Sends a `Fetch.requestPaused` event to the listeners of the CDP session. */
   emitRequestPaused(event: {
     requestId: string,
@@ -135,11 +149,37 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
     bringToFront() {
       return Promise.resolve();
     },
+    setDefaultTimeout() {},
   };
+  const pages: MockPage[] = [page];
+  const targets: MockTarget[] = [];
+  const browserListeners = new Map<string, Set<(target: MockTarget) => void>>();
+  const waitForTarget =
+      sinon.stub().callsFake(async (predicate: (target: MockTarget) => boolean, options?: {signal?: AbortSignal}) => {
+        const match = targets.find(predicate);
+        if (match) {
+          return match;
+        }
+        const signal = options?.signal;
+        if (!signal) {
+          throw new Error('Mock target not found');
+        }
+        // Wait for the target until the caller stops the wait.
+        return await new Promise<MockTarget>((_resolve, reject) => {
+          signal.addEventListener('abort', () => reject(new Error('The wait for the mock target was aborted')));
+        });
+      });
   const mock = {
     page,
     browser: {
-      pages: () => [page],
+      pages: () => Promise.resolve(pages),
+      waitForTarget,
+      on: (event: string, listener: (target: MockTarget) => void) => {
+        browserListeners.set(event, (browserListeners.get(event) ?? new Set()).add(listener));
+      },
+      off: (event: string, listener: (target: MockTarget) => void) => {
+        browserListeners.get(event)?.delete(listener);
+      },
       disconnect: () => sinon.stub().resolves(),
     },
   };
@@ -148,6 +188,14 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
     send: client.send,
     mainFrame,
     frames,
+    pages,
+    targets,
+    waitForTarget,
+    emitTargetCreated: target => {
+      for (const listener of [...(browserListeners.get('targetcreated') ?? [])]) {
+        listener(target);
+      }
+    },
     emitRequestPaused: event => emit('Fetch.requestPaused', event),
     emitFrameNavigated: frame => emit('framenavigated', frame),
     emitSessionAttached: session => emit('sessionattached', session),

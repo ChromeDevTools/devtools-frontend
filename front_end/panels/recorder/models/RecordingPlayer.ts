@@ -295,6 +295,15 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         }
         // Focus the target in case it's not focused.
         await this.page.bringToFront();
+        if ('target' in step && step.target && step.target !== 'main') {
+          // A popup opens without the guard. Enable the guard before the step
+          // sends input to the target.
+          const timeout = step.timeout || flow?.timeout || this.timeout;
+          await guard.guardStepTarget(this.browser, step.target, timeout);
+          if (guard.error) {
+            return;
+          }
+        }
         await super.runStep(step, flow);
       }
     }
@@ -307,7 +316,9 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     let error: Error|undefined;
 
     try {
-      await guard.guardPage(page);
+      // The guard checks the frames that the inspected page has now only if a
+      // step can send input to the page before the page navigates.
+      await guard.guardPage(page, /* checkExistingFrames= */ false);
       this.#runner = await PuppeteerReplay.createRunner(this.userFlow, extension);
       // `run()` resets the abort state of the runner.
       if (!guard.error && !this.aborted) {

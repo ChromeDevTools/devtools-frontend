@@ -378,6 +378,37 @@ describe('RecordingPlayer', () => {
       return {error: await result, steps};
     }
 
+    function createPopupMock(
+        url: string,
+        extraFrames: Array<{url: string, client?: {send: sinon.SinonStub, on: sinon.SinonStub, off: sinon.SinonStub}}> =
+            []) {
+      const client = {send: sinon.stub().resolves(), on: sinon.stub(), off: sinon.stub(), detached: false};
+      const mainFrame = {_id: `frame-${url}`, client, url: () => url, goto: sinon.stub().resolves()};
+      const frames = [
+        mainFrame,
+        ...extraFrames.map(
+            (f, index) => ({
+              _id: `subframe-${index}`,
+              client: f.client ?? {send: sinon.stub().resolves(), on: sinon.stub(), off: sinon.stub(), detached: false},
+              url: () => f.url,
+            })),
+      ];
+      const page = {
+        _client: () => client,
+        on: sinon.stub(),
+        off: sinon.stub(),
+        frames: () => frames,
+        mainFrame: () => mainFrame,
+        evaluate: () => '',
+        url: () => url,
+        bringToFront: () => Promise.resolve(),
+        setDefaultTimeout: () => {},
+        close: sinon.stub().resolves(),
+        isClosed: () => false,
+      };
+      return {page, client, frames};
+    }
+
     const subframeStep: Models.Schema.Step = {
       type: Models.Schema.StepType.Click,
       selectors: [['a']],
@@ -853,6 +884,161 @@ describe('RecordingPlayer', () => {
       }, [subframeCustomStep]);
 
       assert.isNull(error);
+    });
+
+    it('guards the parent popup when a step targets an OOPIF inside that popup', async () => {
+      sinon.stub(console, 'error');
+      const oopifUrl = 'https://oopif.test/frame.html';
+      const popup = createPopupMock(blockedUrl, [{url: oopifUrl}]);
+      mocks.pages.push(popup.page);
+      mocks.targets.push({url: () => oopifUrl, page: async () => null});
+
+      const {error} = await replay(() => {}, [
+        {type: Models.Schema.StepType.Close, target: oopifUrl},
+      ]);
+
+      assert.strictEqual(error?.message, blockedMessage);
+      sinon.assert.calledWith(popup.client.send, 'Fetch.enable', fetchEnablePattern);
+      sinon.assert.calledWith(popup.frames[1].client.send, 'Fetch.enable', fetchEnablePattern);
+    });
+
+    it('guards all pages that share a step target URL', async () => {
+      const popupUrl = 'https://popup.test/index.html';
+      const firstPopup = createPopupMock(popupUrl);
+      const secondPopup = createPopupMock(popupUrl);
+      mocks.pages.push(firstPopup.page, secondPopup.page);
+      mocks.targets.push(
+          {url: () => popupUrl, page: async () => firstPopup.page},
+          {url: () => popupUrl, page: async () => secondPopup.page},
+      );
+
+      const {error} = await replay(() => {}, [
+        {type: Models.Schema.StepType.Close, target: popupUrl},
+      ]);
+
+      assert.isNull(error);
+      sinon.assert.calledWith(firstPopup.client.send, 'Fetch.enable', fetchEnablePattern);
+      sinon.assert.calledWith(secondPopup.client.send, 'Fetch.enable', fetchEnablePattern);
+    });
+
+    describe('step targets that change during the replay', () => {
+      /**
+       * Replays a recording that navigates to https://allowed.test and then
+       * runs `steps`. Calls `beforeStep` with the number of each step.
+       */
+      async function replayWithHook(steps: Models.Schema.Step[],
+                                    beforeStep: (stepNumber: number) => void): Promise<Error|null> {
+        recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+            {title: 'test', steps: [{type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'}, ...steps]},
+            {speed: Models.RecordingPlayer.PlayRecordingSpeed.NORMAL},
+        );
+        let started = 0;
+        const result = new Promise<Error|null>(resolve => {
+          recordingPlayer.addEventListener(Models.RecordingPlayer.Events.ERROR, ({data}) => resolve(data),
+                                           {once: true});
+          recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => resolve(null), {once: true});
+        });
+        recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, ({data: {resolve}}) => {
+          started++;
+          beforeStep(started);
+          resolve();
+        });
+        await recordingPlayer.play();
+        return await result;
+      }
+
+      it('guards a page that gets the URL of a step target after the guard looked for the target', async () => {
+        const popupUrl = 'https://popup.test/index.html';
+        const firstPopup = createPopupMock(popupUrl);
+        const secondPopup = createPopupMock(popupUrl);
+        mocks.pages.push(firstPopup.page);
+        mocks.targets.push({url: () => popupUrl, page: async () => firstPopup.page});
+
+        const error = await replayWithHook(
+            [{type: Models.Schema.StepType.Close, target: popupUrl}, createCustomStep()], stepNumber => {
+              if (stepNumber === 3) {
+                // The step on the target is complete. A new page with the same URL opens.
+                mocks.pages.push(secondPopup.page);
+                mocks.emitTargetCreated({url: () => popupUrl, page: async () => secondPopup.page});
+              }
+            });
+
+        assert.isNull(error);
+        sinon.assert.calledWith(secondPopup.client.send, 'Fetch.enable', fetchEnablePattern);
+      });
+
+      it('does not guard a new page that does not have the URL of a step target', async () => {
+        const popupUrl = 'https://popup.test/index.html';
+        const firstPopup = createPopupMock(popupUrl);
+        const otherPopup = createPopupMock('https://popup.test/other.html');
+        mocks.pages.push(firstPopup.page);
+        mocks.targets.push({url: () => popupUrl, page: async () => firstPopup.page});
+
+        const error = await replayWithHook(
+            [{type: Models.Schema.StepType.Close, target: popupUrl}, createCustomStep()], stepNumber => {
+              if (stepNumber === 3) {
+                mocks.pages.push(otherPopup.page);
+                mocks.emitTargetCreated(
+                    {url: () => 'https://popup.test/other.html', page: async () => otherPopup.page});
+              }
+            });
+
+        assert.isNull(error);
+        sinon.assert.neverCalledWith(otherPopup.client.send, 'Fetch.enable');
+      });
+
+      it('stops the wait for a step target when the guard blocks a navigation', async () => {
+        sinon.stub(console, 'error');
+        // No target has the URL of the step. The guard blocks a navigation
+        // while the step waits for the target.
+        mocks.waitForTarget.callsFake(async (_predicate: unknown, options?: {signal?: AbortSignal}) => {
+          setTimeout(() => {
+            mocks.emitRequestPaused({
+              requestId: '1',
+              frameId: 'main-frame',
+              request: {url: blockedUrl},
+              responseStatusCode: 200,
+            });
+          }, 0);
+          return await new Promise((_resolve, reject) => {
+            options?.signal?.addEventListener('abort', () => reject(new Error('The wait was aborted')));
+          });
+        });
+
+        const error = await replayWithHook(
+            [{type: Models.Schema.StepType.Close, target: 'https://popup.test/never.html'}], () => {});
+
+        assert.strictEqual(error?.message, blockedMessage);
+        sinon.assert.calledOnce(mocks.waitForTarget);
+        assert.isTrue(mocks.waitForTarget.firstCall.args[1].signal.aborted);
+      });
+
+      it('ignores a step target page that closes while the guard starts on it', async () => {
+        const popupUrl = 'https://popup.test/index.html';
+        const popup = createPopupMock(popupUrl);
+        popup.client.send.withArgs('Fetch.enable').rejects(new Error('Protocol error (Fetch.enable): Session closed.'));
+        popup.page.isClosed = () => true;
+        mocks.pages.push(popup.page);
+        mocks.targets.push({url: () => popupUrl, page: async () => popup.page});
+
+        const error = await replayWithHook([{type: Models.Schema.StepType.Close, target: popupUrl}], () => {});
+
+        assert.isNull(error);
+      });
+
+      it('stops the replay if the guard cannot start on a step target page that is open', async () => {
+        sinon.stub(console, 'error');
+        const popupUrl = 'https://popup.test/index.html';
+        const popup = createPopupMock(popupUrl);
+        popup.client.send.withArgs('Fetch.enable').rejects(new Error('protocol failure'));
+        mocks.pages.push(popup.page);
+        mocks.targets.push({url: () => popupUrl, page: async () => popup.page});
+
+        const error = await replayWithHook([{type: Models.Schema.StepType.Close, target: popupUrl}], () => {});
+
+        assert.strictEqual(error?.message, 'protocol failure');
+        sinon.assert.notCalled(popup.page.close);
+      });
     });
 
     it('retries Fetch.enable on framenavigated when an earlier sessionattached attempt rejected', async () => {

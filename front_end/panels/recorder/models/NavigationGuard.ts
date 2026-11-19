@@ -195,6 +195,10 @@ export class NavigationGuard {
   readonly #cleanups: Array<() => Promise<void>> = [];
   #error?: Error;
   #disposed = false;
+  /** Aborted when the guard has an error or is disposed. */
+  readonly #abortController = new AbortController();
+  readonly #stepTargetUrls = new Set<string>();
+  readonly #watchedBrowsers = new Set<puppeteer.Browser>();
 
   /**
    * @param onError The guard calls it each time it blocks a navigation or
@@ -214,12 +218,14 @@ export class NavigationGuard {
 
   #block(url: string): void {
     this.#error ??= new Error(`Navigation to ${url} is not allowed, because the recording does not contain its origin`);
+    this.#abortController.abort();
     this.#onError();
   }
 
   #failGuard(err: unknown): void {
     const message = err instanceof Error ? err.message : String(err);
     this.#error ??= new Error(`Could not enable the navigation guard: ${message}`);
+    this.#abortController.abort();
     this.#onError();
   }
 
@@ -310,8 +316,12 @@ export class NavigationGuard {
     }
   }
 
-  /** Enables the guard on all frames of `guardedPage`. */
-  async guardPage(guardedPage: puppeteer.Page): Promise<void> {
+  /**
+   * Enables the guard on all frames of `guardedPage`. The guard also checks
+   * the URLs that the frames have now, if `checkExistingFrames` is true or if
+   * a step can send input to the inspected page before the page navigates.
+   */
+  async guardPage(guardedPage: puppeteer.Page, checkExistingFrames: boolean): Promise<void> {
     if (this.#guardedPages.has(guardedPage)) {
       return;
     }
@@ -339,18 +349,97 @@ export class NavigationGuard {
         }
       }
     }
-    if (this.#replayUsesCurrentPage) {
-      // The frames loaded before the replay, without a check. A step can
-      // send input to them before they navigate.
+    if (checkExistingFrames || this.#replayUsesCurrentPage) {
+      // The frames loaded without a check. A step can send input to them
+      // before they navigate.
       for (const frame of guardedPage.frames()) {
         this.#checkFrameUrl(frame, guardedPage);
       }
     }
   }
 
+  /**
+   * Enables the guard on a page that a step targets. A page that is closed
+   * cannot receive input, thus the guard ignores a failure for such a page.
+   */
+  async #guardStepTargetPage(targetPage: puppeteer.Page): Promise<void> {
+    try {
+      await this.guardPage(targetPage, /* checkExistingFrames= */ true);
+    } catch (err) {
+      if (!targetPage.isClosed() && !isSessionClosedError(err)) {
+        throw err;
+      }
+    }
+  }
+
+  /**
+   * Enables the guard on the page of `target`, and on each page that contains
+   * a frame with the URL of `target` (for example, an OOPIF in a popup).
+   */
+  async #guardPagesOfTarget(browser: puppeteer.Browser, target: Pick<puppeteer.Target, 'url'|'page'>): Promise<void> {
+    const targetUrl = target.url();
+    const targetPage = await target.page();
+    if (targetPage) {
+      await this.#guardStepTargetPage(targetPage as puppeteer.Page);
+    }
+    for (const candidatePage of await browser.pages()) {
+      if (candidatePage.url() === targetUrl || candidatePage.frames().some(frame => frame.url() === targetUrl)) {
+        await this.#guardStepTargetPage(candidatePage as puppeteer.Page);
+      }
+    }
+  }
+
+  /**
+   * Replay finds the target of a step separately, after `guardStepTarget`. In
+   * the time between, a page can open a new target with the same URL. Thus
+   * the guard also enables itself on each target that gets one of the step
+   * target URLs later.
+   */
+  #watchStepTargets(browser: puppeteer.Browser): void {
+    if (this.#watchedBrowsers.has(browser)) {
+      return;
+    }
+    this.#watchedBrowsers.add(browser);
+    const onTarget = (target: Pick<puppeteer.Target, 'url'|'page'>): void => {
+      if (this.#disposed || !this.#stepTargetUrls.has(target.url())) {
+        return;
+      }
+      void this.#guardPagesOfTarget(browser, target).catch((err: unknown) => this.#failGuard(err));
+    };
+    browser.on('targetcreated', onTarget as never);
+    browser.on('targetchanged', onTarget as never);
+    this.#cleanups.push(async () => {
+      browser.off('targetcreated', onTarget as never);
+      browser.off('targetchanged', onTarget as never);
+    });
+  }
+
+  /**
+   * Enables the guard on each page that has the URL `targetUrl` or that
+   * contains a frame with this URL (for example, an OOPIF in a popup). Waits
+   * for a target with this URL for `timeout` milliseconds at most. The wait
+   * stops when the guard has an error or is disposed.
+   */
+  async guardStepTarget(browser: puppeteer.Browser, targetUrl: string, timeout: number): Promise<void> {
+    this.#stepTargetUrls.add(targetUrl);
+    this.#watchStepTargets(browser);
+    const signal = this.#abortController.signal;
+    let target;
+    try {
+      target = await browser.waitForTarget(t => t.url() === targetUrl, {timeout, signal});
+    } catch (err) {
+      if (signal.aborted) {
+        return;
+      }
+      throw err;
+    }
+    await this.#guardPagesOfTarget(browser, target);
+  }
+
   /** Disables the interception and removes all listeners. */
   async dispose(): Promise<void> {
     this.#disposed = true;
+    this.#abortController.abort();
     for (const cleanup of this.#cleanups.splice(0)) {
       await cleanup();
     }

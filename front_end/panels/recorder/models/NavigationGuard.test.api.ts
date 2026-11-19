@@ -48,7 +48,7 @@ describe('NavigationGuard API Test', () => {
     });
     const guard = new NavigationGuard(flow, inspectedPage.page.url(), () => reportError());
     errorReported.set(guard, reported);
-    await guard.guardPage(inspectedPage.page as never);
+    await guard.guardPage(inspectedPage.page as never, /* checkExistingFrames= */ false);
     return guard;
   }
 
@@ -162,6 +162,79 @@ describe('NavigationGuard API Test', () => {
          assert.include(error.message, `Navigation to ${blockedUrl} is not allowed`);
          assert.isUndefined(
              inspectedPage.page.frames().find((frame: {url: () => string}) => frame.url() === blockedUrl));
+       } finally {
+         await guard.dispose();
+       }
+     });
+
+  /** Reads the error after an assertion that narrowed the type of `guard.error`. */
+  function errorMessage(guard: NavigationGuard): string|undefined {
+    return guard.error?.message;
+  }
+
+  /** Opens `url` in a new page with a click, and returns the new page. */
+  async function openPopup(inspectedPage: InspectedPage, url: string) {
+    await inspectedPage.page.evaluate((url: string) => {
+      const link = document.createElement('a');
+      link.id = 'open-popup';
+      link.target = '_blank';
+      link.href = url;
+      link.textContent = 'open';
+      document.body.append(link);
+    }, url);
+    await inspectedPage.page.click('#open-popup');
+    const target =
+        await inspectedPage.page.browser().waitForTarget((target: {url: () => string}) => target.url() === url);
+    const popup = await target.page();
+    assert.isOk(popup, 'The popup did not open');
+    return popup;
+  }
+
+  it('fails a navigation of a popup that a step targets to an origin that is not in the recording',
+     async ({inspectedPage}) => {
+       const popupUrl = recorded(inspectedPage, 'recorder2.html');
+       const blockedUrl = other(inspectedPage, 'recorder.html');
+       const guard = await guardInspectedPage(
+           inspectedPage, [{type: 'click', selectors: [['a']], offsetX: 1, offsetY: 1, target: popupUrl}]);
+       try {
+         assert.isNull(await navigate(inspectedPage, recorded(inspectedPage, 'recorder.html')));
+         const popup = await openPopup(inspectedPage, popupUrl);
+
+         await guard.guardStepTarget(inspectedPage.page.browser() as never, popupUrl, 5000);
+         assert.isUndefined(guard.error);
+         const navigationError = await popup.goto(blockedUrl).then(() => null, (err: Error) => err.message);
+
+         assert.include(navigationError, 'net::ERR_BLOCKED_BY_CLIENT');
+         const error = await waitForError(guard);
+         assert.include(error.message, `Navigation to ${blockedUrl} is not allowed`);
+       } finally {
+         await guard.dispose();
+       }
+     });
+
+  it('reports a popup from an origin that is not in the recording, if a step targets a frame of the popup',
+     async ({inspectedPage}) => {
+       // The recording has only the origin of the frame, not the origin of the popup.
+       const frameUrl = other(inspectedPage, 'iframe1.html');
+       const popupUrl = recorded(inspectedPage, 'oopif.html');
+       const flow = {
+         title: 'test',
+         steps: [
+           {type: 'navigate', url: other(inspectedPage, 'recorder.html')},
+           {type: 'click', selectors: [['a']], offsetX: 1, offsetY: 1, target: frameUrl},
+         ],
+       } as UserFlow;
+       const guard = new NavigationGuard(flow, inspectedPage.page.url(), () => {});
+       try {
+         await guard.guardPage(inspectedPage.page as never, /* checkExistingFrames= */ false);
+         assert.isNull(await navigate(inspectedPage, other(inspectedPage, 'recorder.html')));
+         const popup = await openPopup(inspectedPage, popupUrl);
+         await popup.waitForFrame(frameUrl);
+         assert.isUndefined(guard.error);
+
+         await guard.guardStepTarget(inspectedPage.page.browser() as never, frameUrl, 5000);
+
+         assert.include(errorMessage(guard), `Navigation to ${popupUrl} is not allowed`);
        } finally {
          await guard.dispose();
        }

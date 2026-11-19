@@ -382,7 +382,13 @@ describe('RecordingPlayer', () => {
         url: string,
         extraFrames: Array<{url: string, client?: {send: sinon.SinonStub, on: sinon.SinonStub, off: sinon.SinonStub}}> =
             []) {
-      const client = {send: sinon.stub().resolves(), on: sinon.stub(), off: sinon.stub(), detached: false};
+      const client = {
+        send: sinon.stub().resolves(),
+        on: sinon.stub(),
+        off: sinon.stub(),
+        detached: false,
+        parentSession: () => undefined,
+      };
       const mainFrame = {_id: `frame-${url}`, client, url: () => url, goto: sinon.stub().resolves()};
       const frames = [
         mainFrame,
@@ -854,6 +860,74 @@ describe('RecordingPlayer', () => {
            assert.strictEqual(error?.message, 'protocol failure');
            assert.strictEqual(steps, 0);
          });
+
+      function createPrerenderSession() {
+        return {send: sinon.stub().resolves(), on: sinon.stub(), off: sinon.stub(), detached: false};
+      }
+
+      it('stops the replay if a prerendered page has an origin that is not in the recording', async () => {
+        sinon.stub(console, 'error');
+        const session = createPrerenderSession();
+        mocks.tabChildTargets.push({_subtype: () => 'prerender', _session: () => session, url: () => blockedUrl});
+
+        // The first step is interactive. The page can activate the prerendered page before a step.
+        const {error, steps} = await replaySteps([createCustomStep()]);
+
+        assert.strictEqual(error?.message, blockedMessage);
+        assert.strictEqual(steps, 0);
+      });
+
+      it('reads the URL of a prerendered page from its session', async () => {
+        sinon.stub(console, 'error');
+        const session = createPrerenderSession();
+        session.send.withArgs('Page.getFrameTree').resolves({frameTree: {frame: {url: blockedUrl}}});
+        // The URL of the target is empty until the prerendered page commits.
+        mocks.tabChildTargets.push({_subtype: () => 'prerender', _session: () => session, url: () => ''});
+
+        const {error, steps} = await replaySteps([createCustomStep()]);
+
+        assert.strictEqual(error?.message, blockedMessage);
+        assert.strictEqual(steps, 0);
+      });
+
+      it('stops the replay if a prerendered page commits a document from an origin that is not in the recording',
+         async () => {
+           sinon.stub(console, 'error');
+           const session = createPrerenderSession();
+           let onFrameNavigated = (_event: {frame: {url: string, parentId?: string}}): void => {};
+           session.on.withArgs('Page.frameNavigated').callsFake((_name: string, listener: typeof onFrameNavigated) => {
+             onFrameNavigated = listener;
+           });
+           // The response arrived before the interception was on. The document commits later.
+           session.send.withArgs('Page.getFrameTree').callsFake(async () => {
+             setTimeout(() => {
+               onFrameNavigated({frame: {url: 'https://subframe.test/', parentId: 'parent'}});
+               onFrameNavigated({frame: {url: blockedUrl}});
+             }, 0);
+             return {frameTree: {frame: {url: ''}}};
+           });
+           mocks.tabChildTargets.push({_subtype: () => 'prerender', _session: () => session, url: () => ''});
+
+           const {error} = await replaySteps([createCustomStep(), createCustomStep()]);
+
+           assert.strictEqual(error?.message, blockedMessage);
+         });
+
+      it('does not check a prerendered page if the replay navigates the page first', async () => {
+        const session = createPrerenderSession();
+        mocks.tabChildTargets.push({_subtype: () => 'prerender', _session: () => session, url: () => blockedUrl});
+
+        // The navigation removes the prerendered pages of the current document.
+        const {error, steps} = await replaySteps([
+          {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+          createCustomStep(),
+        ]);
+
+        assert.isNull(error);
+        assert.strictEqual(steps, 2);
+        sinon.assert.calledWith(session.send, 'Fetch.enable', fetchEnablePattern);
+        sinon.assert.neverCalledWith(session.send, 'Page.getFrameTree');
+      });
     });
 
     it('ignores Fetch.enable rejection on a non-frame session or a closed session', async () => {
@@ -1096,6 +1170,105 @@ describe('RecordingPlayer', () => {
 
       assert.strictEqual((await result)?.message, blockedMessage);
       sinon.assert.calledOnceWithExactly(mocks.mainFrame.goto!, 'https://allowed.test/first');
+    });
+
+    it('checks all documents of a prerender session before the page uses the session', async () => {
+      sinon.stub(console, 'error');
+      const listeners: Array<(event: unknown) => void> = [];
+      const prerenderSession = {
+        send: sinon.stub().resolves(),
+        on: sinon.stub().callsFake((event: string, listener: (event: unknown) => void) => {
+          if (event === 'Fetch.requestPaused') {
+            listeners.push(listener);
+          }
+        }),
+        off: sinon.stub(),
+        detached: false,
+      };
+      const {error} = await replay(() => {
+        mocks.emitPrerenderSessionAttached(prerenderSession);
+        // The recording has no subframe step, and the page does not know this frame.
+        listeners[0]({
+          requestId: '1',
+          frameId: 'prerender-main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 200,
+        });
+      });
+
+      assert.strictEqual(error?.message, blockedMessage);
+      sinon.assert.calledWith(prerenderSession.send.firstCall, 'Fetch.enable', fetchEnablePattern);
+      sinon.assert.calledWith(prerenderSession.send, 'Fetch.failRequest',
+                              {requestId: '1', errorReason: 'BlockedByClient'});
+    });
+
+    it('guards a prerendered page that the page started before the replay', async () => {
+      const createSession = () =>
+          ({send: sinon.stub().resolves(), on: sinon.stub(), off: sinon.stub(), detached: false});
+      const prerenderSession = createSession();
+      const otherSession = createSession();
+      mocks.tabChildTargets.push(
+          {
+            _subtype: () => 'prerender',
+            _session: () => prerenderSession,
+            url: () => 'https://allowed.test/prerendered',
+          },
+          {_subtype: () => undefined, _session: () => otherSession, url: () => blockedUrl},
+      );
+
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      sinon.assert.calledWith(prerenderSession.send.firstCall, 'Fetch.enable', fetchEnablePattern);
+      sinon.assert.notCalled(otherSession.send);
+    });
+
+    it('ignores a prerendered page from before the replay that is closed when the guard starts', async () => {
+      const session = {
+        send: sinon.stub().rejects(new Error('Protocol error (Fetch.enable): Session closed.')),
+        on: sinon.stub(),
+        off: sinon.stub(),
+        detached: true,
+      };
+      // The guard does not check the URL of a page that is closed.
+      mocks.tabChildTargets.push({_subtype: () => 'prerender', _session: () => session, url: () => blockedUrl});
+
+      const {error, steps} = await replay(() => {});
+
+      assert.isNull(error);
+      assert.strictEqual(steps, 3);
+    });
+
+    it('fails closed if Fetch.enable rejects on a prerender session from before the replay', async () => {
+      sinon.stub(console, 'error');
+      const session = {
+        send: sinon.stub().rejects(new Error('protocol failure')),
+        on: sinon.stub(),
+        off: sinon.stub(),
+        detached: false,
+      };
+      mocks.tabChildTargets.push(
+          {_subtype: () => 'prerender', _session: () => session, url: () => 'https://allowed.test/prerendered'});
+
+      const {error, steps} = await replay(() => {});
+
+      assert.strictEqual(error?.message, 'Could not enable the navigation guard: protocol failure');
+      assert.strictEqual(steps, 0);
+    });
+
+    it('fails closed if Fetch.enable rejects on a prerender session', async () => {
+      sinon.stub(console, 'error');
+      const prerenderSession = {
+        send: sinon.stub().rejects(new Error('protocol failure')),
+        on: sinon.stub(),
+        off: sinon.stub(),
+        detached: false,
+      };
+      const {error} = await replay(() => {
+        mocks.emitPrerenderSessionAttached(prerenderSession);
+      });
+
+      assert.include(error?.message, 'Could not enable the navigation guard: protocol failure');
     });
 
     it('does not run steps if the guard blocks a navigation before the runner starts', async () => {

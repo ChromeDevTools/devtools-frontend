@@ -192,6 +192,7 @@ export class NavigationGuard {
   readonly #onError: () => void;
   readonly #guardedPages = new Set<puppeteer.Page>();
   readonly #guardedClients = new Set<puppeteer.CDPSession>();
+  readonly #prerenderClients = new Set<puppeteer.CDPSession>();
   readonly #cleanups: Array<() => Promise<void>> = [];
   #error?: Error;
   #disposed = false;
@@ -247,7 +248,11 @@ export class NavigationGuard {
     }
     this.#guardedClients.add(client);
     const onRequestPaused = (event: FetchRequestPausedEvent): void => {
-      const isSubframe = event.frameId !== guardedPage.mainFrame()._id;
+      // A prerender session has the frames of a page that can become the main
+      // frame, and `guardedPage` does not know these frames. The guard checks
+      // all their documents until the page uses this session.
+      const isInactivePrerender = this.#prerenderClients.has(client) && guardedPage.mainFrame().client !== client;
+      const isSubframe = !isInactivePrerender && event.frameId !== guardedPage.mainFrame()._id;
       if ((isSubframe && !this.#checkSubframes) || isRedirectResponse(event) || isAttachmentResponse(event) ||
           isNavigationAllowed(event.request.url, this.#allowedNavigations)) {
         // The request can be gone already, for example if the page closed.
@@ -317,6 +322,44 @@ export class NavigationGuard {
   }
 
   /**
+   * Checks the document of a prerendered page from before the replay. A
+   * response can arrive before the interception is on and commit later, and
+   * Puppeteer does not report the navigations of a prerendered page. Thus the
+   * guard reads the URL of the main frame from the session, now and for each
+   * later commit. The URL of the target is empty until the page commits.
+   */
+  async #checkExistingPrerender(session: puppeteer.CDPSession, targetUrl: string): Promise<void> {
+    const checkUrl = (url: string): void => {
+      // about: pages and the Chrome error page do not come from the network.
+      if (!url || url.startsWith('about:') || url.startsWith('chrome-error:')) {
+        return;
+      }
+      if (!isNavigationAllowed(url, this.#allowedNavigations)) {
+        this.#block(url);
+      }
+    };
+    const onFrameNavigated = (event: {frame: {url: string, parentId?: string}}): void => {
+      if (!event.frame.parentId) {
+        checkUrl(event.frame.url);
+      }
+    };
+    session.on('Page.frameNavigated', onFrameNavigated);
+    this.#cleanups.push(async () => {
+      session.off('Page.frameNavigated', onFrameNavigated);
+    });
+    try {
+      await session.send('Page.enable');
+      const tree = await session.send('Page.getFrameTree') as {frameTree?: {frame: {url: string}}} | undefined;
+      checkUrl(tree?.frameTree?.frame.url ?? targetUrl);
+    } catch (err) {
+      // A prerendered page that is closed cannot become the main frame.
+      if (!session.detached && !isSessionClosedError(err)) {
+        this.#failGuard(err);
+      }
+    }
+  }
+
+  /**
    * Enables the guard on all frames of `guardedPage`. The guard also checks
    * the URLs that the frames have now, if `checkExistingFrames` is true or if
    * a step can send input to the inspected page before the page navigates.
@@ -339,6 +382,53 @@ export class NavigationGuard {
     this.#cleanups.push(async () => {
       guardedPage.off('framenavigated', onFrameNavigated as never);
     });
+    // The session of a prerendered page is a child of the tab session. After
+    // the activation, the main frame uses this session. Puppeteer emits the
+    // event before it resumes the prerendered page, thus no request of the
+    // session starts before the interception is on.
+    const pageSession = guardedPage.mainFrame().client;
+    const tabSession = pageSession.parentSession();
+    if (tabSession && tabSession !== pageSession) {
+      const onPageSessionAttached = (session: puppeteer.CDPSession): void => {
+        this.#prerenderClients.add(session);
+        void this.#guardClient(session, guardedPage).catch((err: unknown) => {
+          if (!session.detached && !isSessionClosedError(err)) {
+            this.#failGuard(err);
+          }
+        });
+      };
+      tabSession.on(SESSION_ATTACHED, onPageSessionAttached);
+      this.#cleanups.push(async () => {
+        tabSession.off(SESSION_ATTACHED, onPageSessionAttached);
+      });
+      // The page can have a prerendered page from before the replay. Its
+      // session is attached already, and its document loaded without a check.
+      // `browser.targets()` does not contain prerender targets, thus use the
+      // child targets of the tab target.
+      const tabTarget = (tabSession as unknown as {target(): puppeteer.Target}).target();
+      for (const prerenderTarget of tabTarget._childTargets()) {
+        const session = prerenderTarget._session();
+        if (prerenderTarget._subtype() !== 'prerender' || !session) {
+          continue;
+        }
+        this.#prerenderClients.add(session);
+        try {
+          await this.#guardClient(session, guardedPage);
+        } catch (err) {
+          // A prerendered page that is closed cannot become the main frame.
+          if (!session.detached && !isSessionClosedError(err)) {
+            this.#failGuard(err);
+          }
+          continue;
+        }
+        // If the replay navigates the page first, that navigation removes the
+        // prerendered pages of the current document. Such a page cannot get
+        // input, thus its document must not stop the replay.
+        if (checkExistingFrames || this.#replayUsesCurrentPage) {
+          await this.#checkExistingPrerender(session, prerenderTarget.url());
+        }
+      }
+    }
     for (const frame of guardedPage.frames()) {
       try {
         await this.#guardClient(frame.client, guardedPage);

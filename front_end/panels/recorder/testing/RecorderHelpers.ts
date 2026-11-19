@@ -71,6 +71,7 @@ export interface MockFrame {
     on: sinon.SinonStub,
     off: sinon.SinonStub,
     detached?: boolean,
+    parentSession?: () => unknown,
   };
   url: () => string;
   goto?: sinon.SinonStub;
@@ -98,6 +99,10 @@ export interface MockTarget {
 export interface RecordingPlayerMocks {
   /** The `send` method of the CDP session of the mock page. */
   send: sinon.SinonStub;
+  /** The tab session, which is the parent of the CDP session of the mock page. */
+  tabSession: unknown;
+  /** The child targets of the tab target, for example prerender targets. */
+  tabChildTargets: unknown[];
   mainFrame: MockFrame;
   frames: MockFrame[];
   pages: MockPage[];
@@ -118,6 +123,8 @@ export interface RecordingPlayerMocks {
   emitFrameNavigated(frame: unknown): void;
   /** Sends a `sessionattached` event to the listeners of the CDP session. */
   emitSessionAttached(session: unknown): void;
+  /** Sends a `sessionattached` event to the listeners of the tab session, as for a prerendered page. */
+  emitPrerenderSessionAttached(session: unknown): void;
 }
 
 export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
@@ -133,7 +140,14 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
       listener(data);
     }
   };
-  const client = {send: sinon.stub().resolves(), on, off, detached: false};
+  const tabSessionListeners = new Set<(session: unknown) => void>();
+  const tabChildTargets: unknown[] = [];
+  const tabSession = {
+    target: () => ({_childTargets: () => tabChildTargets}),
+    on: (_event: string, listener: (session: unknown) => void) => tabSessionListeners.add(listener),
+    off: (_event: string, listener: (session: unknown) => void) => tabSessionListeners.delete(listener),
+  };
+  const client = {send: sinon.stub().resolves(), on, off, detached: false, parentSession: () => tabSession};
   const mainFrame: MockFrame = {_id: 'main-frame', client, url: () => '', goto: sinon.stub().resolves()};
   const frames: MockFrame[] = [mainFrame];
   const page: MockPage = {
@@ -186,6 +200,8 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
   sinon.stub(Models.RecordingPlayer.RecordingPlayer, 'connectPuppeteer').resolves(mock as never);
   return {
     send: client.send,
+    tabSession,
+    tabChildTargets,
     mainFrame,
     frames,
     pages,
@@ -199,6 +215,11 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
     emitRequestPaused: event => emit('Fetch.requestPaused', event),
     emitFrameNavigated: frame => emit('framenavigated', frame),
     emitSessionAttached: session => emit('sessionattached', session),
+    emitPrerenderSessionAttached: session => {
+      for (const listener of [...tabSessionListeners]) {
+        listener(session);
+      }
+    },
   };
 };
 

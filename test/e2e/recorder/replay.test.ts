@@ -823,4 +823,119 @@ describe('Recorder', function() {
     },
                                            undefined);
   });
+
+  it('should block a navigation to an unrecorded origin after the activation of a prerender from before the replay',
+     async ({inspectedPage, devToolsPage}) => {
+       const blockedUrl = `${inspectedPage.getOopifResourcesPath()}/recorder/recorder2.html`;
+       expectError(`Replay error Navigation to ${blockedUrl} is not allowed`);
+       // The inspected page starts the prerender before the replay starts.
+       await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+         title: 'Test Recording',
+         steps: [
+           {
+             type: 'click' as StepType.Click,
+             selectors: ['a'],
+             offsetX: 1,
+             offsetY: 1,
+             assertedEvents: [
+               {
+                 type: 'navigation' as AssertedEventType.Navigation,
+                 url: `${inspectedPage.getResourcesPath()}/recorder/prerendered.html`,
+               },
+             ],
+           },
+           {
+             // The page is the prerendered page after the activation.
+             type: 'waitForExpression' as StepType.WaitForExpression,
+             expression: 'document.querySelector("div")?.innerText === "true"',
+           },
+           {
+             type: 'waitForExpression' as StepType.WaitForExpression,
+             target: 'main',
+             expression: `(document.body.innerHTML = '<a id="blocked" href="${blockedUrl}">blocked</a>', true)`,
+           },
+           {
+             type: 'click' as StepType.Click,
+             target: 'main',
+             selectors: [['#blocked']],
+             offsetX: 1,
+             offsetY: 1,
+           },
+           {
+             // The page from the blocked origin contains this element. The step
+             // keeps the replay active until the navigation request is handled.
+             type: 'waitForElement' as StepType.WaitForElement,
+             target: 'main',
+             selectors: [['a[href="recorder.html"]']],
+             timeout: 2000,
+           },
+         ],
+       },
+                                              'recorder/prerender.html');
+
+       assert.notStrictEqual(inspectedPage.page.url(), blockedUrl);
+       assert.isNull(await inspectedPage.page.$('a[href="recorder.html"]'));
+       const error = await devToolsPage.waitFor('.error');
+       const message = await error.evaluate(el => el.textContent);
+       assert.include(message, `Navigation to ${blockedUrl} is not allowed`);
+     });
+
+  it('should block a navigation to an unrecorded origin after a prerender activation',
+     async ({inspectedPage, devToolsPage}) => {
+       const blockedUrl = `${inspectedPage.getOopifResourcesPath()}/recorder/recorder2.html`;
+       expectError(`Replay error Navigation to ${blockedUrl} is not allowed`);
+       await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+         title: 'Test Recording',
+         steps: [
+           {
+             type: 'navigate' as StepType.Navigate,
+             url: `${inspectedPage.getResourcesPath()}/recorder/prerender.html`,
+           },
+           {
+             type: 'click' as StepType.Click,
+             selectors: ['a'],
+             offsetX: 1,
+             offsetY: 1,
+             assertedEvents: [
+               {
+                 type: 'navigation' as AssertedEventType.Navigation,
+                 url: `${inspectedPage.getResourcesPath()}/recorder/prerendered.html`,
+               },
+             ],
+           },
+           {
+             // The page is the prerendered page after the activation.
+             type: 'waitForExpression' as StepType.WaitForExpression,
+             expression: 'document.querySelector("div")?.innerText === "true"',
+           },
+           {
+             type: 'waitForExpression' as StepType.WaitForExpression,
+             target: 'main',
+             expression: `(document.body.innerHTML = '<a id="blocked" href="${blockedUrl}">blocked</a>', true)`,
+           },
+           {
+             type: 'click' as StepType.Click,
+             target: 'main',
+             selectors: [['#blocked']],
+             offsetX: 1,
+             offsetY: 1,
+           },
+           {
+             // The page from the blocked origin contains this element. The step
+             // keeps the replay active until the navigation request is handled.
+             type: 'waitForElement' as StepType.WaitForElement,
+             target: 'main',
+             selectors: [['a[href="recorder.html"]']],
+             timeout: 2000,
+           },
+         ],
+       },
+                                              undefined);
+
+       assert.notStrictEqual(inspectedPage.page.url(), blockedUrl);
+       assert.isNull(await inspectedPage.page.$('a[href="recorder.html"]'));
+       const error = await devToolsPage.waitFor('.error');
+       const message = await error.evaluate(el => el.textContent);
+       assert.include(message, `Navigation to ${blockedUrl} is not allowed`);
+     });
 });

@@ -4,7 +4,11 @@
 
 import type * as Mocha from 'mocha';
 
-import {computeBuildTestId} from './TestIdGeneration.js';
+import {
+  checkForDuplicateTestIds,
+  computeBuildTestId,
+  listContainsTestOrSuite,
+} from './TestIdGeneration.js';
 
 export function createTestIdMap(suite: Mocha.Suite): Map<Mocha.Test, string> {
   const map = new Map<Mocha.Test, string>();
@@ -25,27 +29,12 @@ export function createTestIdMap(suite: Mocha.Suite): Map<Mocha.Test, string> {
 }
 
 export function checkForDuplicateTests(testIdMap: ReadonlyMap<Mocha.Test, string>): void {
-  const seenTestIds = new Set<string>();
-  for (const testId of testIdMap.values()) {
-    if (seenTestIds.has(testId)) {
-      throw new Error(`Duplicate test ${testId}`);
-    }
-    seenTestIds.add(testId);
-  }
+  checkForDuplicateTestIds(testIdMap.values());
 }
 
 export interface PruneSuiteOptions {
   testIds?: ReadonlySet<string>;
   skippedTests?: readonly string[];
-}
-
-export function listContainsTestOrSuite(list: Iterable<string>, testId: string): boolean {
-  for (const item of list) {
-    if (testId === item || testId.startsWith(`${item}:`)) {
-      return true;
-    }
-  }
-  return false;
 }
 
 export function pruneSuite(

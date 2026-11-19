@@ -90,3 +90,22 @@ export function formatFailedTestsSummary(failedTestIds: Iterable<string>): strin
   return `\nFailed tests (${ids.length}):\n${
       ids.map(id => `  ${id}`).join('\n')}\n\nTo rerun:\n  scripts/tools/dt.py test ${ids.join(' ')}\n\n`;
 }
+
+export function checkForDuplicateTestIds(testIds: Iterable<string>): void {
+  const seenTestIds = new Set<string>();
+  for (const testId of testIds) {
+    if (seenTestIds.has(testId)) {
+      throw new Error(`Duplicate test ${testId}`);
+    }
+    seenTestIds.add(testId);
+  }
+}
+
+export function listContainsTestOrSuite(list: Iterable<string>, testId: string): boolean {
+  for (const item of list) {
+    if (testId === item || testId.startsWith(`${item}:`)) {
+      return true;
+    }
+  }
+  return false;
+}

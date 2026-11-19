@@ -6,10 +6,12 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {
+  checkForDuplicateTestIds,
   computeBuildTestId,
   escapeTestIdBlock,
   formatFailedTestsSummary,
   generateExactTestId,
+  listContainsTestOrSuite,
 } from './TestIdGeneration.js';
 
 describe('TestIdGeneration', () => {
@@ -188,6 +190,49 @@ describe('TestIdGeneration', () => {
       const expected =
           '\nFailed tests (2):\n  front_end/core/common/Color.test.ts:color:parses_hex\n  test/e2e/console/console-log.test.ts:the_console_tab:shows_console_messages\n\nTo rerun:\n  scripts/tools/dt.py test front_end/core/common/Color.test.ts:color:parses_hex test/e2e/console/console-log.test.ts:the_console_tab:shows_console_messages\n\n';
       assert.strictEqual(formatFailedTestsSummary(failed), expected);
+    });
+  });
+
+  describe('checkForDuplicateTestIds', () => {
+    it('passes when all IDs are unique', () => {
+      assert.doesNotThrow(() => checkForDuplicateTestIds(['a:1', 'a:2']));
+    });
+
+    it('throws when duplicate IDs are present', () => {
+      assert.throws(() => checkForDuplicateTestIds(['a:1', 'a:1']), /Duplicate test a:1/);
+    });
+  });
+
+  describe('listContainsTestOrSuite', () => {
+    it('returns true when exact test ID is present in an array', () => {
+      const list = ['base/test.ts:suite:test_1', 'base/test.ts:suite:test_2'];
+      assert.isTrue(listContainsTestOrSuite(list, 'base/test.ts:suite:test_1'));
+    });
+
+    it('returns true when exact test ID is present in a set', () => {
+      const set = new Set(['base/test.ts:suite:test_1', 'base/test.ts:suite:test_2']);
+      assert.isTrue(listContainsTestOrSuite(set, 'base/test.ts:suite:test_1'));
+    });
+
+    it('returns true when a suite prefix of test ID is present', () => {
+      const list = ['base/test.ts:suite'];
+      assert.isTrue(listContainsTestOrSuite(list, 'base/test.ts:suite:test_1'));
+      assert.isTrue(listContainsTestOrSuite(list, 'base/test.ts:suite:sub_suite:test_2'));
+    });
+
+    it('returns false when test ID is not present and no suite prefix matches', () => {
+      const list = ['base/test.ts:suite:test_2', 'base/other.ts:suite'];
+      assert.isFalse(listContainsTestOrSuite(list, 'base/test.ts:suite:test_1'));
+    });
+
+    it('returns false when item in list is only a prefix without colon separator', () => {
+      const list = ['base/test.ts:suite'];
+      assert.isFalse(listContainsTestOrSuite(list, 'base/test.ts:suite_extra:test_1'));
+    });
+
+    it('returns false when list is empty', () => {
+      assert.isFalse(listContainsTestOrSuite([], 'base/test.ts:suite:test_1'));
+      assert.isFalse(listContainsTestOrSuite(new Set(), 'base/test.ts:suite:test_1'));
     });
   });
 });

@@ -95,7 +95,6 @@ devtools_ui_module("sources") {
     "../../third_party/codemirror.next:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/highlighting:bundle",
-    "../../ui/components/input:bundle",
     "../../ui/components/issue_counter:bundle",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/components/spinners:bundle",

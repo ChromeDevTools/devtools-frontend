@@ -15,7 +15,7 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, dispatchClickEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   describeWithEnvironment,
@@ -604,7 +604,7 @@ describeWithEnvironment('CallStackSidebarPane', () => {
       assert.exists(ignoreListMessage);
       assert.isFalse(ignoreListMessage.hasAttribute('hidden'));
 
-      const checkbox = container.querySelector<HTMLInputElement>('.ignore-listed-checkbox');
+      const checkbox = container.querySelector<UI.UIUtils.CheckboxLabel>('.ignore-listed-checkbox');
       assert.exists(checkbox);
       assert.isTrue(checkbox.checked);
       assert.include(checkbox.getAttribute('jslog') ?? '', 'show-ignore-listed-frames');
@@ -1126,10 +1126,10 @@ describeWithEnvironment('CallStackSidebarPane', () => {
                          'func3');
       assert.strictEqual(callStackSidebarPane.activeCallFrameItem()?.title, 'func3');
 
-      const checkbox = callStackSidebarPane.contentElement.querySelector<HTMLInputElement>('.ignore-listed-checkbox');
+      const checkbox =
+          callStackSidebarPane.contentElement.querySelector<UI.UIUtils.CheckboxLabel>('.ignore-listed-checkbox');
       assert.exists(checkbox);
-      checkbox.checked = true;
-      checkbox.dispatchEvent(new Event('change'));
+      checkbox.click();
       await callStackSidebarPane.updateComplete;
 
       items = callStackSidebarPane.contentElement.querySelectorAll<HTMLElement>('.call-frame-item');
@@ -1142,8 +1142,7 @@ describeWithEnvironment('CallStackSidebarPane', () => {
       assert.isTrue(items[2].classList.contains('selected'));
       assert.strictEqual(items[2].tabIndex, 0);
 
-      checkbox.checked = false;
-      checkbox.dispatchEvent(new Event('change'));
+      checkbox.click();
       await callStackSidebarPane.updateComplete;
 
       items = callStackSidebarPane.contentElement.querySelectorAll<HTMLElement>('.call-frame-item');
@@ -1155,6 +1154,22 @@ describeWithEnvironment('CallStackSidebarPane', () => {
       assert.strictEqual(callStackSidebarPane.activeCallFrameItem()?.title, 'func3');
       assert.isTrue(items[2].classList.contains('selected'));
       assert.strictEqual(items[2].tabIndex, 0);
+
+      callStackSidebarPane.detach();
+    });
+
+    it('renders the ignore-listed frames checkbox', async () => {
+      const {details, url2} = getPausedDetailsWithMultipleFrames();
+      Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url2);
+
+      const callStackSidebarPane = Sources.CallStackSidebarPane.CallStackSidebarPane.instance({forceNew: true});
+      renderElementIntoDOM(callStackSidebarPane, {includeCommonStyles: true});
+
+      await callStackSidebarPane.flavorChanged(details);
+      await callStackSidebarPane.updateComplete;
+      await raf();
+
+      await assertScreenshot('sources/call-stack-sidebar-pane-ignore-listed.png');
 
       callStackSidebarPane.detach();
     });

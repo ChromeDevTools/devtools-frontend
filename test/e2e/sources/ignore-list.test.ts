@@ -34,12 +34,12 @@ describe('Ignore list', function() {
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['inner', 'outer', '(anonymous)']);
 
     // Toggle to show ignore-listed frames
-    await devToolsPage.click('.ignore-listed-message-label');
+    await devToolsPage.click('.ignore-listed-checkbox');
     await devToolsPage.waitFor('.ignore-listed-call-frame:not([hidden])');
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['inner', 'innercall', 'callfunc', 'outer', '(anonymous)']);
 
     // Toggle back off
-    await devToolsPage.click('.ignore-listed-message-label');
+    await devToolsPage.click('.ignore-listed-checkbox');
     await devToolsPage.waitFor('.ignore-listed-call-frame[hidden]');
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['inner', 'outer', '(anonymous)']);
 

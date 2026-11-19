@@ -343,12 +343,12 @@ describe('The Sources Tab', function() {
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['baz', 'bar', 'foo', '(anonymous)']);
 
     // Toggle to show ignore-listed frames
-    await devToolsPage.click('.ignore-listed-message-label');
+    await devToolsPage.click('.ignore-listed-checkbox');
     await devToolsPage.waitFor('.ignore-listed-call-frame:not([hidden])');
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['baz', 'vendor', 'bar', 'foo', '(anonymous)']);
 
     // Toggle back off
-    await devToolsPage.click('.ignore-listed-message-label');
+    await devToolsPage.click('.ignore-listed-checkbox');
     await devToolsPage.waitFor('.ignore-listed-call-frame[hidden]');
     assert.deepEqual(await getCallFrameNames(devToolsPage), ['baz', 'bar', 'foo', '(anonymous)']);
 

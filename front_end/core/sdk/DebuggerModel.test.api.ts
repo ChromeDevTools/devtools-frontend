@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {describe, it} from '../../../test/api/mocha-interface.js';
+import type * as Common from '../common/common.js';
 
 import * as SDK from './sdk.js';
 
@@ -109,4 +110,52 @@ describe('DebuggerModel API Test', () => {
          }
        }
      });
+
+  it('clears the scripts list upon page reload', async ({inspectedPage, universe}) => {
+    const primaryTarget = universe.targetManager.primaryPageTarget();
+    assert.isNotNull(primaryTarget, 'Primary page target should exist');
+
+    const debuggerModel = primaryTarget.model(SDK.DebuggerModel.DebuggerModel);
+    assert.isNotNull(debuggerModel, 'DebuggerModel should exist');
+
+    // Ensure Debugger.enable has completed on the universe CDP session before evaluating scripts via inspectedPage.
+    if (!debuggerModel.isReadyToPause()) {
+      await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+    }
+
+    let onParsed: ((event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>) => void)|undefined;
+    const dummyScriptParsed = new Promise<SDK.Script.Script>(resolve => {
+      onParsed = event => {
+        if (event.data.sourceURL.includes('dummyScript.js')) {
+          resolve(event.data);
+        }
+      };
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, onParsed);
+    });
+
+    let dummyScript: SDK.Script.Script;
+    try {
+      await inspectedPage.evaluate(() => {
+        const script = document.createElement('script');
+        script.textContent = 'function foo() {} //# sourceURL=dummyScript.js';
+        document.body.appendChild(script);
+      });
+      dummyScript = await dummyScriptParsed;
+    } finally {
+      if (onParsed) {
+        debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, onParsed);
+      }
+    }
+
+    assert.strictEqual(dummyScript.sourceURL, 'dummyScript.js');
+    assert.include(debuggerModel.scripts(), dummyScript);
+    assert.deepEqual(debuggerModel.scriptsForSourceURL('dummyScript.js'), [dummyScript]);
+
+    const globalObjectCleared = debuggerModel.once(SDK.DebuggerModel.Events.GlobalObjectCleared);
+    await Promise.all([inspectedPage.reload(), globalObjectCleared]);
+
+    assert.isEmpty(debuggerModel.scripts().filter(script => script.sourceURL.includes('dummyScript.js')));
+    assert.isEmpty(debuggerModel.scriptsForSourceURL('dummyScript.js'));
+    assert.isNull(debuggerModel.scriptForId(dummyScript.scriptId));
+  });
 });

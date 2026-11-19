@@ -135,22 +135,36 @@ If a test times out (5000ms exceeded), it is usually an unhandled promise caused
 
 When a module and its tests are ready, update `BUILD.gn`:
 
-1.  Change `devtools_module` to `devtools_foundation_module` for both the module and its unittests.
-2.  Ensure the tests are grouped under a `foundation_unittests` target in the parent `BUILD.gn`.
+1. Change `devtools_module` to `devtools_foundation_module` for the module and
+   define its tests with `devtools_foundation_module("foundation_unittests")`
+   referencing `:bundle` and `../../testing` in `ts_deps` (TypeScript targets
+   belong in `ts_deps` so GN generates `tsconfig` project references, whereas
+   `deps` is reserved for non-TypeScript generator targets).
+2. Wire the new `":foundation_unittests"` target into
+   `group("foundation_unittests")` in `front_end/BUILD.gn` (and remove any
+   replaced `":unittests"` entry from `group("unittests")`) so GN emits the
+   tests into `foundation_tests.txt`. Unwired `foundation_unittests` targets
+   compile when built directly and silently never run in `./dt test` or on CQ.
 
 ```gn
-# front_end/my_module/BUILD.gn
+# front_end/models/my_module/BUILD.gn
 
 devtools_foundation_module("my_module") {
   sources = [ "MyModule.ts" ]
   ts_deps = [ "../../core/common:bundle" ]
 }
 
-devtools_foundation_module("unittests") {
+devtools_entrypoint("bundle") {
+  entrypoint = "my_module.ts"
+  ts_deps = [ ":my_module" ]
+  visibility = [ ":*" ]
+}
+
+devtools_foundation_module("foundation_unittests") {
   testonly = true
   sources = [ "MyModule.test.ts" ]
   ts_deps = [
-    ":my_module",
+    ":bundle",
     "../../testing",
   ]
 }
@@ -159,6 +173,11 @@ devtools_foundation_module("unittests") {
 ## Verification
 
 Foundation tests must pass in both Node.js and Browser runtimes.
+
+### Type-check Browser & Node targets
+```bash
+autoninja -C out/Default front_end/models/my_module:foundation_unittests
+```
 
 ### Run in Node.js
 ```bash

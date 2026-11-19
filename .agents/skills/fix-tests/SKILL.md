@@ -23,6 +23,7 @@ First, create and start two sub-agents simultaneously. One called 'local-repro' 
 ### Local reproduction (local-repro)
 
 - Use command: `./dt test --repeat=<count> path/to/foo.test.ts:exact_test_id` to locally run the tests repeatedly. Both E2E and unit tests support this. Use the exact test ID printed in the test runner output (usually the suite and test names with spaces replaced by underscores). Do not use `--grep` or a `bash` script with a `for` loop.
+- Never run multiple local E2E `local-repro` runs in parallel on the same host (`local-repro` and `bot-repro` can run concurrently because `bot-repro` runs on remote LUCI builders, whereas parallel local Headless Chrome E2E runs contend for CPU and cause artificial timeouts).
 - First run the test three times to note how long the test runs (on average).
 - Then run the test continuously for 4 minutes, while noting any failures and failure rates. If the failure rate is still 0% after that, assume the problem does not reproduce locally.
 - After the local test run completes, then show the results in a table. For example:
@@ -42,8 +43,8 @@ The second bot should do the following:
 - Create a branch with a meaningful name, such as `deflake_<test_name>`.
 - Ensure you use the instructions from the `devtools-version-control` skill to create and switch branches appropriately.
 - Make a minor, harmless modification directly to the test file being investigated (e.g., adding a comment `// Trigger stressor bot`) to ensure the commit is not empty.
-- Add this file (with `git add`) and commit it using a meaningful commit message (e.g., `git commit -m "Deflake <test name>"`). Ask the user which bug number to use for the changelist description.
-- Upload this change using `git cl upload -f`. Always use `-f` (`--force`) so the upload runs non-interactively without opening a text editor or prompt. This creates a debugging CL that all agents (like the fix agent) will continue to work on.
+- Add this file (with `git add`) and commit it using a meaningful commit message (`Deflake <test name>`) with a `Bug: <bug number>` Git trailer in the footer (ask the user which bug number to use; never use `BUG=` or Piper `KEY=VALUE` tags).
+- Upload this change as a Work-in-Progress CL using `git cl upload -f -o wip --commit-description=+` (always pass `-f` so the upload runs non-interactively, and never pass `-m "<subject>"` on initial upload, which drops the commit body and `Bug:` trailer). This creates a debugging CL that all agents (like the fix agent) will continue to work on.
 - Note the <issue number> created during upload.
 - To start the stressor bot, run this command (substituting `<test file>:exact_test_id` with the actual file and exact test ID):
   `git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p runner_args='<test file>:exact_test_id --repeat=100'`
@@ -52,6 +53,7 @@ The second bot should do the following:
 
 - Note that the test file name needs to be relative to the root, so use `test/e2e/foo.test.ts` instead of `e2e/foo.test.ts`.
 - Check the results of the stressor tests with `git cl try-results --issue=<issue number> --patchset=<patchset number>`. You can dive into each result by id using `bb get <id>`.
+  - You can also fetch all failure logs and screenshot diffs in one command via `scripts/tools/get_cl_test_results.py --cl <issue number> --output-dir <OUTPUT_DIR>` (see `devtools-verification`).
 - Once a test run completes, always report to the user how often the tests ran and what the failure rate was.
 - Critical: Make sure that at least one test ran to completion on the bot (to catch incorrect syntax for `git cl try` or incorrect test IDs).
 
@@ -75,13 +77,16 @@ The test fixing sub-agent should do the following:
 
 - Find the test in the codebase and look at its implementation. Look at the relevant production code that is being testing.
 - Look at the failures reproduced in the test (if any) by prior sub-agents.
+- Check for common UI migration E2E selector races:
+  - **Async `requestUpdate()` transitions:** Bare `waitFor('.selector')` on an already-mounted element resolves before `requestAnimationFrame` runs `performUpdate()`; wait on a compound state selector such as `waitFor('.selector.expected-class')` or `waitFor('.selector:not(.old-class)')`.
+  - **`<devtools-split-view>` hidden sidebars:** `<devtools-split-view>` hides collapsed sidebars via `hideWidget()` (`.hidden`) instead of `detach()`; include `:not(.hidden)` in `waitFor` / `waitForNone` sidebar or drawer selectors (e.g., `.drawer-tabbed-pane:not(.hidden)`).
 - Suggest a fix for the failure(s).
 - IMPORTANT: Ensure any dummy comments added earlier to trigger the stressor bot are removed before finalizing the fix.
 - Run the full verification process (TypeScript checks, and linters) as required by the repository best practices.
 - Compile and run the test locally, to make sure there are no obvious errors introduced.
-- Commit the changes (to the branch created earlier). Make sure to list (in the changelist description) the test name, the fix, reasoning for why the test failed, why the fix fixes the issue and the failure rate (if non-zero). If you were not able to reproduce the error, state that the fix is speculative. Ask the user to provide the bug number to use in the changelist description.
+- Amend the existing stressor commit on the branch (`git commit --amend`, or run `git commit` only if no commit exists on the branch yet) so the branch keeps a single commit. Make sure to list (in the changelist description) the test name, the fix, reasoning for why the test failed, why the fix fixes the issue, the failure rate (if non-zero; if you were not able to reproduce the error, state that the fix is speculative), and a `Bug: <bug number>` (or `Fixed: <bug number>`) Git trailer.
 - CRITICAL: Iff the 'local-repro' bot does not reproduce the error, the 'fix-test' agent MUST wait until the stressor bot finishes its run before uploading the fix to the server (so that the stressor try run isn't aborted prematurely). If the error reproduces locally, you can upload immediately.
-- Once it is safe to do so, upload the change with `git cl upload -f`.
+- Once it is safe to do so, upload a WIP patchset with `git cl upload -f --cq-dry-run -o wip --commit-description=+ -t "<patchset summary>"`, and complete the `ChromiumCodeReviewAgent` WIP review pass from `devtools-version-control` before marking the CL Ready for Review.
 
 ## Results
 

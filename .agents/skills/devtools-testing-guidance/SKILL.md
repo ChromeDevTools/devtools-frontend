@@ -53,3 +53,24 @@ Use E2E tests to verify real end-to-end user stories and user journeys.
 - **Location:** Defined in `test/e2e/` (e.g. `test/e2e/console/console-log.test.ts`).
 - **Test functions:** import `describe`, `it` and `setup` from `test/e2e/conductor/mocha-interface.ts` (e.g. `import {describe, it} from '../conductor/mocha-interface.js';`). They are not available as globals.
 - **BUILD.gn**: test file should be added to the `node_ts_library` target in the corresponding `BUILD.gn` file, which needs `"../conductor:implementation"` in its `ts_deps`. And `node_ts_library` in `test/e2e/BUILD.gn` for its dependencies.
+
+---
+
+## Test Discovery & Naming Pitfalls
+
+### GN Metadata Manifests in `front_end/BUILD.gn`
+
+Karma and Node test runners execute **only** the compiled test files listed in the GN `generated_file` manifests defined in `front_end/BUILD.gn`:
+
+- `generated_file("test_inputs")` writes `tests.txt` from `data_keys = ["tests"]` metadata collected across `group("unittests")`.
+- `generated_file("foundation_test_inputs")` writes `foundation_tests.txt` from `group("foundation_unittests")`.
+- `generated_file("api_test_inputs")` writes `api_tests.txt` from `group("api_tests")`.
+
+Watch out for two GN pitfalls:
+
+- **Unreachable subdirectory targets never run:** Adding a new `devtools_ui_module("unittests")` (e.g. `panels/foo/components:unittests`), `devtools_foundation_module("foundation_unittests")`, or `devtools_api_test_module("api_tests")` target in a subdirectory `BUILD.gn` does nothing unless `front_end/BUILD.gn` reaches it through the matching root `group(...)`. Build, lint, and presubmit do not warn when a test target is unreachable; always verify the test runs with a non-zero test count (see `devtools-verification`).
+- **No empty `api_tests` targets:** GN (`ts_library`) rejects empty `devtools_api_test_module("api_tests")` targets with zero `sources`. Only define an `api_tests` target when it lists at least one `.test.api.ts` file, and remove both the target and its `front_end/BUILD.gn` `group("api_tests")` entry when deleting its last test file.
+
+### Duplicate Test ID Collisions (`MochaHelpers.checkForDuplicateTests`)
+
+`MochaHelpers.checkForDuplicateTests` (`front_end/testing/MochaHelpers.ts`) normalizes Mocha suite and `it()` titles into lowercase ASCII test IDs by stripping non-ASCII characters, lone surrogates, BiDi controls, and most control characters (`TestIdGeneration.ts`). When writing parameterized `it()` loops over control characters, surrogates, or non-ASCII strings, give each test case an explicit, distinct ASCII `label` instead of interpolating raw inputs or `JSON.stringify(value)` into the `it()` title; otherwise normalized titles collide with `Duplicate test <testId>`.

@@ -13,6 +13,7 @@ description: Use when migrating Chromium layout tests to DevTools unit tests or 
 ### 2. Determine Target Location & Test Suite Type
 
 Investigate what files are being tested, start location should be `front_end/`.Consult the `devtools-testing-guidance` skill to select the appropriate test suite.
+- **Pure CDP protocol tests:** If a legacy `http/tests/devtools/` test exercises only Blink or V8 CDP backend commands (`TestRunner.*Agent.invoke_*`) without testing `front_end/` logic, migrate it in `chromium/src` to `third_party/blink/web_tests/inspector-protocol/` (or `third_party/blink/web_tests/http/tests/inspector-protocol/` when OOPIFs or an HTTP server are needed), starting any new Blink HTML test resource with `<!DOCTYPE html>`.
 
 ### 3. Convert the Test Content
 
@@ -35,6 +36,7 @@ Every newly created test file must be added to the appropriate target in its fol
 
 > [!IMPORTANT]
 > If you omit the test file from `BUILD.gn`, the test target will not be compiled by Ninja and will be skipped by test runners.
+When adding a brand-new `unittests`, `foundation_unittests`, or `api_tests` target in a subdirectory `BUILD.gn`, also wire it into the matching root `group(...)` in `front_end/BUILD.gn` (see `devtools-testing-guidance`).
 
 ### 5. Verify the Changes
 
@@ -47,15 +49,16 @@ Use the `devtools-verification` skill to build and verify your changes.
 
 ### 7. Upload the CL
 
-Follow the `version-control` skill when uploading CLs.
+Follow the `devtools-version-control` skill when uploading CLs.
 Follow the following format and constraints:
    - **Title line:** `[test-migration] Migrate <short test name> test to unit test`
    - **Body:** `This CL migrates the legacy layout test <long test name> to a unit test in <new test name>. <optional additional explanation>`
    - **Body appendix:** `https://crsrc.org/c/third_party/blink/web_tests/<long test name>;drc=4d51e9cab50efd0f8029c45a486e199a1d519fd1`
-   - **Bug line:** `Fixed: <issue number>`
+   - **Bug line:** `Bug: <issue number>` on the `devtools-frontend` CL when a follow-up `chromium/src` CL still needs to delete the legacy web test, and `Fixed: <issue number>` only on the final CL that completes the migration (such as the `chromium/src` deletion CL or a single-CL `inspector-protocol/` migration, where you may also pair the issue's active parent tracker in `Bug:`; never reference closed bug `407751692`).
    - **AI-assisted trailer:** Include `Ai-Assisted: true` in the footer block for AI-assisted CLs.
    - **Line Length Constraint:** Wrap all lines in the commit message to a maximum of 72 characters per line.
    - **No Piper tags:** Never add Piper `KEY=VALUE` tags (such as `TAG=agy` or `CONV=...`); use Git trailers only (`PRESUBMIT.py` rejects Piper tags).
+   - **Clean up `chromium/src` expectations on deletion:** When deleting the legacy `.js` and `-expected.txt` files in `chromium/src`, remove any matching entries from `TestExpectations`, `MSANExpectations`, `ASANExpectations`, `LeakExpectations`, `FlagExpectations/*`, `SlowTests`, and `NeverFixTests` under `third_party/blink/web_tests/`.
 
 Example commit message:
 
@@ -70,7 +73,7 @@ the correct expression.
 
 https://crsrc.org/c/third_party/blink/web_tests/http/tests/devtools/console/console-eval-global.js;drc=4d51e9cab50efd0f8029c45a486e199a1d519fd1
 
-Fixed: <issue number>
+Bug: <issue number>
 Ai-Assisted: true
 ```
 

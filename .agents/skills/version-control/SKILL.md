@@ -47,6 +47,7 @@ If CL B depends on CL A:
    ```
 2. Develop on branch B.
 3. When uploading B, Gerrit will show the dependency on A.
+* **Stack `eslint.config.mjs` burndown edits linearly:** Independent sibling CLs on `origin/main` that delete adjacent entries in `eslint.config.mjs` `burndown` or ignore lists (or edit the same `.test.ts` file) conflict at CQ rebase time, and any upstream commit fixing a listed file fails presubmit with `staleBurndownEntry`; stack same-area `eslint.config.mjs` cleanups linearly, or fetch, rebase onto `origin/main`, and re-run `./dt lint` before voting `Commit-Queue+2`.
 
 ### Reparenting & Detaching Landed CLs
 If you need to change the base of a branch back to the root branch (e.g., move CL B to be based on `origin/main` instead of CL A):
@@ -67,14 +68,15 @@ git rebase-update && gclient sync -Df
 * **Always use `git rebase-update` for stacks:** Never write manual `git checkout && git rebase` loops across stacked branches. `git rebase-update` automatically rebases the entire dependency graph in order.
 * **Clean up old branches first:** Before running `git rebase-update`, archive landed/closed branches (`git cl archive -f`) or mark dormant (`git config branch.<branch>.dormant true`) any obsolete branches so they do not trigger unnecessary rebase conflicts.
 * **Always sync dependencies after rebase:** Always run `gclient sync -Df` after a `git rebase-update`. CIPD dependency updates do not show up in `git status`, so skipping `gclient sync -Df` risks leaving your checkout out of sync.
+* **Audit carried-over `Code-Review+1` after `.png` golden rebases:** Gerrit copies `Code-Review+1` across rebases when the touched file list is unchanged (`has:unchanged-files`), so resolving a binary `test/goldens/linux/**/*.png` conflict with your branch's copy keeps `+1` while silently reverting an upstream `main` golden update; check `git log <old-base>..origin/main -- test/goldens/` and re-verify goldens on Linux trybots after rebasing.
 
 ### Uploading & Requesting Review
 Always run `ChromiumCodeReviewAgent` on a Work-in-Progress (WIP) CL and resolve any `ERROR` or `WARNING` findings **before** marking the CL Ready for Review or adding human reviewers.
 
 #### Step 1 — Upload as WIP and trigger AI review
-Upload without `--send-mail` (`-s`) (and without `-c` / `--use-commit-queue`, which implies `--send-mail`) so the CL stays in Work-in-Progress, and trigger a CQ dry run (`--cq-dry-run` / `-d`) before adding human reviewers to the attention set:
+Upload with `-o wip` and without `--send-mail` (`-s`) (and without `-c` / `--use-commit-queue`, which implies `--send-mail`) so Gerrit creates the CL in Work-in-Progress even when `work_in_progress_by_default` is disabled, reuse the local commit message with `--commit-description=+`, and trigger a CQ dry run (`--cq-dry-run` / `-d`) before adding human reviewers to the attention set:
 ```bash
-git cl upload -f --cq-dry-run --commit-description="<description>"
+git cl upload -f --cq-dry-run -o wip --commit-description=+
 ```
 Or, if the WIP patchset is already uploaded, vote `Commit-Queue+1` via `/google/bin/releases/gemini-agents-gerrit/gerrit`:
 ```bash
@@ -89,6 +91,7 @@ Or, if the WIP patchset is already uploaded, vote `Commit-Queue+1` via `/google/
 * Use Git trailers only; never add Piper `KEY=VALUE` tags (`TAG=`, `CONV=`, etc.), which are rejected by `PRESUBMIT.py`. Ensure `cl.upload-conversation-id` is enabled (`git config --global cl.upload-conversation-id true`) to link conversation metadata out of band.
 * Amend formatter/linter changes and fix linter issues before uploading.
 * For a brand new stack of CLs, perform the initial WIP upload on each branch individually in parent-to-child order so each CL receives its own commit description.
+* **Never pass `-m "<subject>"` on initial upload:** `-m` replaces the entire Gerrit commit description with that single line plus `Change-Id:`, dropping the commit body and `Bug:`/`Fixed:` footers and failing `CheckBugAssociationOnCommit`; pass `--commit-description=+` instead (use `-t` for patchset titles).
 
 #### Step 2 — Poll for `ChromiumCodeReviewAgent` findings
 Poll every ~60 seconds (up to ~5 minutes) until the `ChromiumCodeReviewAgent` run completes:
@@ -151,7 +154,7 @@ To check whether a DevTools commit (`devtools/devtools-frontend`) has rolled int
 | Create new CL from main | `git new-branch <name>` |
 | Create stacked CL | `git new-branch --upstream_current <name>` |
 | Update current CL | `git commit --amend` |
-| Initial WIP CL upload + CQ dry run | `git cl upload -f --cq-dry-run --commit-description="<description>"` |
+| Initial WIP CL upload + CQ dry run | `git cl upload -f --cq-dry-run -o wip --commit-description=+` |
 | Poll `ChromiumCodeReviewAgent` findings | `/google/bin/releases/gemini-agents-gerrit/gerrit findings --change=<CL> --patchset=<PS> --all --json --host=https://chromium-review.googlesource.com` |
 | Mark Ready for Review & add reviewers | `/google/bin/releases/gemini-agents-gerrit/gerrit reviewers add --change=<CL> --ready --reviewer=<emails> --host=https://chromium-review.googlesource.com` |
 | Subsequent CL upload (or update stack from leaf) | `git cl upload -f --cq-dry-run -t "<message>"` |

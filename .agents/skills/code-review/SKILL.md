@@ -128,6 +128,27 @@ findings):
   actual strings, for example "Show user agent shadow DOM" and not "User agent
   shadow DOM". Check that the setting being toggled actually affects the
   scenario.
+- **E2E async rendering & split-view selectors:** Watch for two common E2E
+  selector races:
+  - **Async `requestUpdate()` state transitions:** Bare `waitFor('.pane')` on an
+    already-mounted element resolves before the next animation frame runs
+    `performUpdate()`. Require a compound state selector such as
+    `waitFor('.pane.minimized')` or `waitFor('.pane:not(.minimized)')`.
+  - **`<devtools-split-view>` hidden sidebars:** `<devtools-split-view>` hides
+    collapsed sidebars via `hideWidget()` (adding `.hidden`) instead of
+    `detach()`. Require `:not(.hidden)` in `waitFor` / `waitForNone` sidebar or
+    drawer selectors (for example `.drawer-tabbed-pane:not(.hidden)`).
+- **Type-signature sweeps & untyped Sinon assertions:** When a constructor,
+  method, or `ViewInput` callback signature changes, check untouched `.test.ts`
+  and `.test.api.ts` callers across the repository (`devtools_entrypoint`
+  bundles with `esbuild` and `--skip-ninja` skips `tsc`, so stale cross-module
+  callers are missed until `front_end:unittests` and `front_end:api_tests`
+  build). Also inspect untyped `sinon.assert.calledOnceWithExactly(...)` and
+  `calledWith(...)` calls, where TypeScript will not flag stale argument lists.
+- **Manifest reachability in `front_end/BUILD.gn`:** When a CL adds a new
+  subdirectory `:unittests`, `:foundation_unittests`, or `:api_tests` target,
+  verify it is wired into the matching root `group(...)` in `front_end/BUILD.gn`
+  (see `devtools-testing-guidance`).
 - **Fail fast:** Throw or assert when a required value is missing. Don't let
   the test time out later.
 - **Pre-migration tests for legacy widgets:** When reviewing tests added ahead of
@@ -143,9 +164,12 @@ findings):
 - Pair every `beforeEach` singleton creation with a cleanup in `afterEach`
   (for example, `CSSWorkspaceBinding.removeInstance()` or
   `WorkspaceImpl.removeInstance()`) so that state does not leak between tests.
-- Restore fake timers in `try { … } finally { clock.restore(); }`, or use the
-  sandbox or cleanup that the test runner provides. Keep the scope of fake
-  timers small.
+- Do not add manual `try { … } finally { clock.restore(); }` or
+  `afterEach(() => sinon.restore())` boilerplate: `front_end/testing/test_setup.ts`
+  automatically drains and restores Sinon fake timers, stubs, and spies after
+  every test, and `@devtools/no-manual-sinon-restore` flags `.restore()` inside
+  `afterEach`/`after`. Only call `.restore()` mid-test when re-stubbing a method
+  or returning to real timers inside the same `it()` block.
 - Don't stub the same method twice without calling `restore()` first. Sinon
   throws `Attempted to wrap … which is already wrapped` when the object is the
   same instance.
@@ -206,10 +230,24 @@ findings):
   **not** prove completeness because ESLint misses `TreeElement` subclasses and
   `UI.ListControl`. Intermediate CLs in a multi-CL migration must use
   `Bug: <id>`, reserving `Fixed: <id>` for the final CL.
+- **Fixing legacy Blink `http/tests/devtools` web tests:** Flag presenters that
+  call synchronous `this.performUpdate()` solely to keep legacy `chromium/src`
+  `http/tests/devtools/**` web tests passing (when production code does not
+  immediately focus or measure rendered DOM). Update the web test or
+  `*TestRunner.js` helper to `await UI.Widget.Widget.allUpdatesComplete` (and
+  `devtoolsTree.flushPendingUpdatesForTesting()` when dumping `<devtools-tree>`)
+  instead.
 - **Component contract preservation**: Flag feature or panel migrations that
   widen `front_end/ui/legacy/` component contracts (such as exporting internal
   classes or turning `*ForTest()` or `*ForTesting()` methods on `Treeoutline.ts`
   into public APIs).
+- **`.agents/` rules, skills, & `docs/` changes:** Whenever a CL adds a new
+  `.agents/rules/<group>/*.md` file, require registering its path in the root
+  `DIR_METADATA` `agentic_review` block (`CheckDirMetadataFormat` in
+  `PRESUBMIT.py`) so `ChromiumCodeReviewAgent` loads it. Verify that code
+  snippets in `.agents/` and `docs/` use valid TypeScript/GN syntax, reference
+  real repository class, method, and GN target names, and preserve coverage from
+  existing rule examples.
 - Disabled tests reference a bug.
 - Presubmit, lint, and format pass. See `devtools-verification`.
 

@@ -493,4 +493,83 @@ describe('TimelineDetailsView', function() {
     assert.lengthOf(eventLogView.dataGrid.rootNode().children, 0);
     detailsView.detach();
   });
+
+  it('preserves pending window update across detach until shown again', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents: allThreadEntriesInTrace(parsedTrace),
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    });
+    await detailsView.updateComplete;
+
+    const clock = sinon.useFakeTimers();
+    const requestUpdateSpy = sinon.spy(detailsView, 'requestUpdate');
+
+    const {min, max} = parsedTrace.data.Meta.traceBounds;
+    const subBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+        min,
+        Trace.Types.Timing.Micro(max - 2_000),
+    );
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(subBounds);
+
+    detailsView.detach(/* overrideHideOnDetach= */ true);
+    await clock.tickAsync(150);
+    sinon.assert.notCalled(requestUpdateSpy);
+
+    renderElementIntoDOM(detailsView);
+    await clock.tickAsync(150);
+    sinon.assert.calledOnce(requestUpdateSpy);
+
+    clock.restore();
+    detailsView.detach(/* overrideHideOnDetach= */ true);
+  });
+
+  it('cancels pending window update when selecting a range', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents: allThreadEntriesInTrace(parsedTrace),
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    });
+    await detailsView.updateComplete;
+
+    const clock = sinon.useFakeTimers();
+    const requestUpdateSpy = sinon.spy(detailsView, 'requestUpdate');
+
+    const {min, max} = parsedTrace.data.Meta.traceBounds;
+    const windowBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+        min,
+        Trace.Types.Timing.Micro(max - 2_000),
+    );
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(windowBounds);
+
+    const rangeBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+        min,
+        Trace.Types.Timing.Micro(min + 5_000),
+    );
+    const setSelectionPromise = detailsView.setSelection(
+        Timeline.TimelineSelection.selectionFromRangeMicroSeconds(rangeBounds.min, rangeBounds.max));
+    await clock.tickAsync(20);
+    await setSelectionPromise;
+    sinon.assert.calledOnce(requestUpdateSpy);
+
+    await clock.tickAsync(150);
+    sinon.assert.calledOnce(requestUpdateSpy);
+
+    // Re-showing with unchanged bounds must not re-run a stale pending window update.
+    detailsView.detach(/* overrideHideOnDetach= */ true);
+    renderElementIntoDOM(detailsView);
+    await clock.tickAsync(150);
+    sinon.assert.calledOnce(requestUpdateSpy);
+
+    clock.restore();
+    detailsView.detach(/* overrideHideOnDetach= */ true);
+  });
 });

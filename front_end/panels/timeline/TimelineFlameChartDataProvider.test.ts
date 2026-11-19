@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -372,5 +373,22 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         trackName: 'Animations',
       },
     ]);
+  });
+
+  it('only listens to ImageCache screenshot events while connected', () => {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const onDataChanged = sinon.spy();
+    dataProvider.addEventListener(Timeline.TimelineFlameChartDataProvider.Events.DATA_CHANGED, onDataChanged);
+
+    Timeline.Utils.ImageCache.emitter.dispatchEvent(new Event('screenshot-loaded'));
+    sinon.assert.notCalled(onDataChanged);
+
+    dataProvider.connectImageCache();
+    Timeline.Utils.ImageCache.emitter.dispatchEvent(new Event('screenshot-loaded'));
+    sinon.assert.calledOnce(onDataChanged);
+
+    dataProvider.disconnectImageCache();
+    Timeline.Utils.ImageCache.emitter.dispatchEvent(new Event('screenshot-loaded'));
+    sinon.assert.calledOnce(onDataChanged);
   });
 });

@@ -48,12 +48,15 @@ interface Setup {
   traceId: string;
 }
 
+const activeFlameChartViews: Timeline.TimelineFlameChartView.TimelineFlameChartView[] = [];
+
 async function setupFlameChartView(context: Mocha.Context): Promise<Setup> {
   const parsedTrace =
       await TraceLoader.traceEngine(context, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
   const commentManager = new CommentManager.CommentManager.CommentManager();
   const flameChartView =
       new Timeline.TimelineFlameChartView.TimelineFlameChartView(new MockViewDelegate(), commentManager);
+  activeFlameChartViews.push(flameChartView);
   renderWidgetInVbox(flameChartView, {width: 1500, height: 2000});
   flameChartView.setModel(parsedTrace, new Map());
   // Matches the trace ID format that TimelineCommentController stores on anchors.
@@ -153,7 +156,11 @@ describe('TimelineCommentController', function() {
     Comments.CommentAnchorResolver.addCustomAnchorsMovedListener(movedListener);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    for (const view of activeFlameChartViews.splice(0)) {
+      view.detach();
+    }
+    await UI.Widget.Widget.allUpdatesComplete;
     // The browser autofocuses the flame chart canvas, which scrolls <body> (the
     // scroll container in tests). Reset it while the test container is still
     // in the DOM; otherwise the offset leaks into later screenshot tests.

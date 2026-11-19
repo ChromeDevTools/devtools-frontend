@@ -62,14 +62,20 @@ const DEFAULT_MS_BETWEEN_RETRIES = 150;
 // acceptable and will not fail the test.
 const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 0;
 
+/**
+ * Returns whether screenshot assertions are supported in the current test environment.
+ */
+export function areScreenshotsSupported(): boolean {
+  return platform === 'linux' || TestConfig.forceScreenshots;
+}
+
 export const assertElementScreenshotUnchanged = async(
     element: puppeteer.ElementHandle|null,
     fileName: NonNullable<puppeteer.ScreenshotOptions['path']>,
     options: Partial<puppeteer.ScreenshotOptions> = {},
     ): Promise<void> => {
   assert.isOk(element, `Given element for test ${fileName} was not found.`);
-  // Only assert screenshots on Linux, unless forceScreenshots is enabled.
-  if (platform !== 'linux' && !TestConfig.forceScreenshots) {
+  if (!areScreenshotsSupported()) {
     if (TestConfig.onDiff.update) {
       throw new Error(
           'Cannot update screenshots on non-Linux platforms. You must use a Linux machine or use the hosted screenshot bot to update screenshots.');

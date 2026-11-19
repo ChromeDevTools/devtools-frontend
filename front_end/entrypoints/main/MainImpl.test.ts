@@ -11,6 +11,7 @@ import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as PanelCommon from '../../panels/common/common.js';
 import {getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -114,10 +115,53 @@ describeWithEnvironment('ConsoleProfileFinishedListener', () => {
   });
 });
 
+let loadAppProviderForTest: (() => Promise<UI.AppProvider.AppProvider>)|null = null;
+
+UI.AppProvider.registerAppProvider({
+  condition: () => loadAppProviderForTest !== null,
+  loadAppProvider: () => loadAppProviderForTest!(),
+  order: -1,
+});
+
+function setupMainImplStubs(): void {
+  Root.Runtime.experiments.clearForTest();
+  sinon.stub(Main.MainImpl.MainImpl.prototype, 'requestAndRegisterLocaleData').resolves();
+  sinon.stub(UI.ContextMenu.ContextMenu, 'installHandler');
+  sinon.stub(UI.ARIAUtils.LiveAnnouncer, 'initializeAnnouncerElements');
+}
+
+async function teardownMainImpl(): Promise<void> {
+  loadAppProviderForTest = null;
+  await checkForPendingActivity();
+  VisualLogging.setVeDebugLoggingEnabled(false);
+  await VisualLogging.stopLogging();
+  for (const style of document.body.querySelectorAll(':scope > style')) {
+    style.remove();
+  }
+  document.body.classList.remove('overlay-scrollbar-enabled');
+  document.documentElement.classList.remove('platform-' + Host.Platform.platform());
+  Main.MainImpl.MainImpl.instanceForTest?.disposeForTest();
+  Main.MainImpl.MainImpl.instanceForTest = null;
+  Reflect.deleteProperty(globalThis, 'universe');
+  PanelCommon.ExtensionServer.ExtensionServer.removeInstance();
+  Reflect.deleteProperty(self, 'Extensions');
+}
+
 describeWithEnvironment('MainImpl clipboard forwarding', () => {
+  beforeEach(() => {
+    setupMainImplStubs();
+    loadAppProviderForTest = async () => ({
+      createApp: () => ({presentUI: () => {}}),
+    });
+    sinon.stub(UI.InspectorView.InspectorView.prototype, 'createToolbars').resolves();
+  });
+
+  afterEach(teardownMainImpl);
+
   it('dispatches a composed clipboard event when a clipboard event is triggered on an active element inside shadow DOM',
-     () => {
+     async () => {
        const main = new Main.MainImpl.MainImpl();
+       await main.readyForTest();
 
        const container = document.createElement('div');
        const shadowRoot = container.attachShadow({mode: 'open'});
@@ -140,38 +184,43 @@ describeWithEnvironment('MainImpl clipboard forwarding', () => {
        assert.isTrue((receivedEvent as CustomEvent).composed);
        assert.isTrue((receivedEvent as CustomEvent).bubbles);
      });
+
+  it('disposes the previous instance listeners when a new MainImpl is constructed', async () => {
+    const first = new Main.MainImpl.MainImpl();
+    await first.readyForTest();
+    const disposeSpy = sinon.spy(first, 'disposeForTest');
+
+    const container = document.createElement('div');
+    const input = document.createElement('input');
+    container.appendChild(input);
+    renderElementIntoDOM(container);
+    input.focus();
+
+    let copyEventsCount = 0;
+    container.addEventListener('clipboard-copy', () => {
+      copyEventsCount++;
+    });
+
+    Root.Runtime.experiments.clearForTest();
+    const second = new Main.MainImpl.MainImpl();
+    await second.readyForTest();
+
+    sinon.assert.calledOnce(disposeSpy);
+    assert.strictEqual(Main.MainImpl.MainImpl.instanceForTest, second);
+
+    // Disposing the second instance leaves no active document copy listeners from the first instance.
+    second.disposeForTest();
+    const copyEvent = new Event('copy', {bubbles: true});
+    Object.defineProperty(copyEvent, 'target', {value: document.body});
+    document.dispatchEvent(copyEvent);
+    assert.strictEqual(copyEventsCount, 0);
+  });
 });
 
 describeWithEnvironment('MainImpl VE logging startup', () => {
-  let loadAppProviderForTest: (() => Promise<UI.AppProvider.AppProvider>)|null = null;
+  beforeEach(setupMainImplStubs);
 
-  UI.AppProvider.registerAppProvider({
-    condition: () => loadAppProviderForTest !== null,
-    loadAppProvider: () => loadAppProviderForTest!(),
-    order: -1,
-  });
-
-  beforeEach(() => {
-    Root.Runtime.experiments.clearForTest();
-    sinon.stub(Main.MainImpl.MainImpl.prototype, 'requestAndRegisterLocaleData').resolves();
-    sinon.stub(UI.ContextMenu.ContextMenu, 'installHandler');
-    sinon.stub(UI.ARIAUtils.LiveAnnouncer, 'initializeAnnouncerElements');
-  });
-
-  afterEach(async () => {
-    loadAppProviderForTest = null;
-    await checkForPendingActivity();
-    VisualLogging.setVeDebugLoggingEnabled(false);
-    await VisualLogging.stopLogging();
-    for (const style of document.body.querySelectorAll(':scope > style')) {
-      style.remove();
-    }
-    document.body.classList.remove('overlay-scrollbar-enabled');
-    document.documentElement.classList.remove('platform-' + Host.Platform.platform());
-    Main.MainImpl.MainImpl.instanceForTest = null;
-    Reflect.deleteProperty(globalThis, 'universe');
-    Reflect.deleteProperty(self, 'Extensions');
-  });
+  afterEach(teardownMainImpl);
 
   it('starts VE logging only after app UI and toolbars are rendered without burning leading-edge slot', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getHostConfig')

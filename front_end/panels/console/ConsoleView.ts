@@ -464,7 +464,15 @@ export class ConsoleView extends UI.Widget.VBox implements
   private issueResolver =
       new IssuesManager.IssueResolver.IssueResolver(IssuesManager.IssuesManager.IssuesManager.instance());
   #isDetached = false;
+  #disposed = false;
+  #needsRefilterOnShow = false;
+  readonly #refilterMessages: () => Promise<void>;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
+  #onUpdateMessageListSettingChanged = (): void => this.updateMessageList();
+  #onShowSettingsPaneChanged = (): void => this.requestUpdate();
+  #onSinkMessageAdded = ({data: message}: Common.EventTarget.EventTargetEvent<Common.Console.Message>): void => {
+    this.addSinkMessage(message);
+  };
   #collapseAllButton: UI.Toolbar.ToolbarButton;
   #allCollapsed = false;
   aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
@@ -555,11 +563,11 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     this.groupSimilarSetting =
         Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor);
-    this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
+    this.groupSimilarSetting.addChangeListener(this.#onUpdateMessageListSettingChanged);
 
     this.showCorsErrorsSetting =
         Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor);
-    this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
+    this.showCorsErrorsSetting.addChangeListener(this.#onUpdateMessageListSettingChanged);
 
     const toolbar = this.consoleToolbarContainer.createChild('devtools-toolbar', 'console-main-toolbar');
     toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
@@ -619,7 +627,7 @@ export class ConsoleView extends UI.Widget.VBox implements
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.consoleUserActivationEvalSettingDescriptor);
     this.#settingsPaneContainer.style.display = 'contents';
     this.contentsElement.appendChild(this.#settingsPaneContainer);
-    this.showSettingsPaneSetting.addChangeListener(() => this.requestUpdate());
+    this.showSettingsPaneSetting.addChangeListener(this.#onShowSettingsPaneChanged);
 
     this.pinPane = new ConsolePinPane(() => this.prompt.focus());
     this.pinPane.element.classList.add('console-view-pinpane');
@@ -663,9 +671,18 @@ export class ConsoleView extends UI.Widget.VBox implements
     // All relevant live locations are created by the same linkifier, so it is enough to subscribe to
     // the linkifiers live location change event.
     const throttler = new Common.Throttler.Throttler(100);
-    const refilterMessages = (): Promise<void> => throttler.schedule(async () => this.onFilterChanged());
+    this.#refilterMessages = (): Promise<void> => throttler.schedule(async () => {
+      if (this.#disposed) {
+        return;
+      }
+      if (this.#isDetached) {
+        this.#needsRefilterOnShow = true;
+        return;
+      }
+      this.onFilterChanged();
+    });
     this.linkifier = new Components.Linkifier.Linkifier(UI.UIUtils.MaxLengthForDisplayedURLsInConsole);
-    this.linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, refilterMessages);
+    this.linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, this.#refilterMessages);
 
     this.consoleMessages = [];
     this.consoleGroupStarts = [];
@@ -917,9 +934,16 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private onFilterChanged(): void {
+    if (this.#disposed) {
+      return;
+    }
     this.filter.currentFilter.levelsMask =
         this.isSidebarOpen ? ConsoleFilter.allLevelsFilterValue() : this.filter.messageLevelFiltersSetting.get();
     this.cancelBuildHiddenCache();
+    if (this.#isDetached) {
+      this.#needsRefilterOnShow = true;
+      return;
+    }
     if (this.immediatelyFilterMessagesForTest) {
       for (const viewMessage of this.consoleMessages) {
         this.computeShouldMessageBeVisible(viewMessage);
@@ -965,9 +989,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   private registerWithMessageSink(): void {
     Common.Console.Console.instance().messages().forEach(this.addSinkMessage, this);
-    Common.Console.Console.instance().addEventListener(Common.Console.Events.MESSAGE_ADDED, ({data: message}) => {
-      this.addSinkMessage(message);
-    }, this);
+    Common.Console.Console.instance().addEventListener(Common.Console.Events.MESSAGE_ADDED, this.#onSinkMessageAdded);
   }
 
   private addSinkMessage(message: Common.Console.Message): void {
@@ -1007,6 +1029,22 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   dispose(): void {
+    this.#disposed = true;
+    this.#needsRefilterOnShow = false;
+    this.cancelBuildHiddenCache();
+    this.linkifier.removeEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, this.#refilterMessages);
+    this.linkifier.dispose();
+    this.filter.dispose();
+    this.consoleContextSelector.dispose();
+    this.groupSimilarSetting.removeChangeListener(this.#onUpdateMessageListSettingChanged);
+    this.showCorsErrorsSetting.removeChangeListener(this.#onUpdateMessageListSettingChanged);
+    this.showSettingsPaneSetting.removeChangeListener(this.#onShowSettingsPaneChanged);
+    this.consoleHistoryAutocompleteSetting.removeChangeListener(this.consoleHistoryAutocompleteChanged, this);
+    this.timestampsSetting.removeChangeListener(this.consoleTimestampsSettingChanged, this);
+    Common.Console.Console.instance().removeEventListener(Common.Console.Events.MESSAGE_ADDED,
+                                                          this.#onSinkMessageAdded);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext,
+                                                             this.executionContextChanged, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(
@@ -1030,6 +1068,10 @@ export class ConsoleView extends UI.Widget.VBox implements
                                      this.#onIssuesCountUpdateBound);
     }
     this.#isDetached = false;
+    if (this.#needsRefilterOnShow) {
+      this.#needsRefilterOnShow = false;
+      this.onFilterChanged();
+    }
     this.updateIssuesToolbarItem();
     this.viewport.refresh();
   }
@@ -1102,6 +1144,10 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   override onDetach(): void {
     this.#isDetached = true;
+    if (this.buildHiddenCacheTimeout) {
+      this.cancelBuildHiddenCache();
+      this.#needsRefilterOnShow = true;
+    }
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     issuesManager.removeEventListener(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
                                       this.#onIssuesCountUpdateBound);
@@ -1565,6 +1611,9 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private buildHiddenCache(startIndex: number, viewMessages: ConsoleViewMessage[]): void {
+    if (this.#disposed) {
+      return;
+    }
     const startTime = Date.now();
     let i;
     for (i = startIndex; i < viewMessages.length; ++i) {
@@ -1575,6 +1624,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
 
     if (i === viewMessages.length) {
+      delete this.buildHiddenCacheTimeout;
       this.updateMessageList();
       return;
     }
@@ -2021,9 +2071,9 @@ export class ConsoleViewFilter {
     this.filterByExecutionContextSetting = Common.Settings.Settings.instance().resolve(
         Settings.ConsoleSettings.selectedContextFilterEnabledSettingDescriptor);
 
-    this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
-    this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
-    this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));
+    this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged, this);
+    this.networkMessagesSetting.addChangeListener(this.onFilterChanged, this);
+    this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.onFilterChanged,
                                                           this);
 
@@ -2058,7 +2108,7 @@ export class ConsoleViewFilter {
     this.levelMenuButtonInfo.setVisible(false);
 
     this.updateLevelMenuButtonText();
-    this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText.bind(this));
+    this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText, this);
   }
 
   onMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void {
@@ -2200,6 +2250,15 @@ export class ConsoleViewFilter {
     this.networkMessagesSetting.set(true);
     this.textFilterUI.setValue('');
     this.onFilterChanged();
+  }
+
+  dispose(): void {
+    this.messageLevelFiltersSetting.removeChangeListener(this.onFilterChanged, this);
+    this.messageLevelFiltersSetting.removeChangeListener(this.updateLevelMenuButtonText, this);
+    this.networkMessagesSetting.removeChangeListener(this.onFilterChanged, this);
+    this.filterByExecutionContextSetting.removeChangeListener(this.onFilterChanged, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.onFilterChanged,
+                                                             this);
   }
 }
 

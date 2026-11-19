@@ -18,7 +18,7 @@ import * as ResultsDb from '../../test/conductor/resultsdb.js';
 import {loadTests, TestConfig} from '../../test/conductor/test_config.js';
 import {getSkippedTests, isExpectedResult} from '../../test/conductor/test_expectations.js';
 import {ScreenshotError, ScreenshotErrorReporter} from '../conductor/screenshot-error.js';
-import {assertElementScreenshotUnchanged} from '../shared/screenshots.js';
+import {areScreenshotsSupported, assertElementScreenshotUnchanged} from '../shared/screenshots.js';
 
 const require = createRequire(import.meta.url);
 
@@ -166,7 +166,8 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
             try {
               // Karma sometimes runs tests in an iframe or in the main frame.
               const testFrame = page.frames()[1] ?? page.mainFrame();
-              const element = await testFrame.waitForSelector(elementSelector);
+              const element = areScreenshotsSupported() ? await testFrame.waitForSelector(elementSelector) :
+                                                          await testFrame.$(elementSelector);
 
               await assertElementScreenshotUnchanged(element, filename, {
                 captureBeyondViewport: false,

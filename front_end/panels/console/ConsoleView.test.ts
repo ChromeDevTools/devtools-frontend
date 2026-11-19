@@ -30,6 +30,7 @@ import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Settings from '../../ui/settings/settings.js';
 import {AiCodeCompletionSummaryToolbar} from '../common/common.js';
@@ -1800,6 +1801,117 @@ describeWithEnvironment('ConsoleView', () => {
       assert.exists(consoleView.element.querySelector('#console-messages'));
       assert.exists(consoleView.element.querySelector('#console-prompt'));
       assert.isEmpty(await getAxeViolations(consoleView.element));
+    });
+  });
+
+  describe('lifecycle and filtering', () => {
+    it('defers filter updates while detached until shown again', async () => {
+      const target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+      assert.exists(consoleModel);
+
+      const networkSetting =
+          Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.networkMessagesSettingDescriptor);
+      networkSetting.set(true);
+      renderElementIntoDOM(consoleView);
+
+      addMessage(consoleModel, target, 'js info', Protocol.Runtime.ConsoleAPICalledEventType.Info,
+                 Protocol.Log.LogEntryLevel.Info);
+      consoleModel.addMessage(new SDK.ConsoleModel.ConsoleMessage(target.model(SDK.RuntimeModel.RuntimeModel),
+                                                                  Protocol.Log.LogEntrySource.Network,
+                                                                  Protocol.Log.LogEntryLevel.Info, 'network info'));
+      await consoleView.getScheduledRefreshPromiseForTest();
+      assert.strictEqual(consoleView.itemCount(), 2);
+
+      consoleView.detach();
+      await doubleRaf();
+
+      networkSetting.set(false);
+      assert.strictEqual(consoleView.itemCount(), 2);
+
+      renderElementIntoDOM(consoleView);
+      await consoleView.getScheduledRefreshPromiseForTest();
+      assert.strictEqual(consoleView.itemCount(), 1);
+    });
+
+    it('cancels pending buildHiddenCache on detach and refilters when shown again', async () => {
+      const target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+      assert.exists(consoleModel);
+
+      const networkSetting =
+          Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.networkMessagesSettingDescriptor);
+      networkSetting.set(true);
+      renderElementIntoDOM(consoleView);
+
+      addMessage(consoleModel, target, 'js info', Protocol.Runtime.ConsoleAPICalledEventType.Info,
+                 Protocol.Log.LogEntryLevel.Info);
+      consoleModel.addMessage(new SDK.ConsoleModel.ConsoleMessage(target.model(SDK.RuntimeModel.RuntimeModel),
+                                                                  Protocol.Log.LogEntrySource.Network,
+                                                                  Protocol.Log.LogEntryLevel.Info, 'network info'));
+      await consoleView.getScheduledRefreshPromiseForTest();
+      await doubleRaf();
+      assert.strictEqual(consoleView.itemCount(), 2);
+
+      let fakeTime = 1000;
+      const dateNowStub = sinon.stub(Date, 'now').callsFake(() => {
+        fakeTime += 20;
+        return fakeTime;
+      });
+      const rafSpy = sinon.spy(window, 'requestAnimationFrame');
+      const cancelRafSpy = sinon.spy(window, 'cancelAnimationFrame');
+
+      networkSetting.set(false);
+      dateNowStub.restore();
+      sinon.assert.calledOnce(rafSpy);
+
+      consoleView.detach();
+      sinon.assert.calledWithExactly(cancelRafSpy, rafSpy.firstCall.returnValue);
+      await doubleRaf();
+      assert.strictEqual(consoleView.itemCount(), 2);
+
+      renderElementIntoDOM(consoleView);
+      await consoleView.getScheduledRefreshPromiseForTest();
+      assert.strictEqual(consoleView.itemCount(), 1);
+    });
+
+    it('unsubscribes global listeners and disposes linkifier on dispose', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: 'https://example.com',
+        name: 'top',
+        uniqueId: 'top',
+      });
+      const executionContext = runtimeModel.executionContexts()[0];
+      assert.exists(executionContext);
+
+      const linkifierDisposeSpy = sinon.spy(Components.Linkifier.Linkifier.prototype, 'dispose');
+      const requestUpdateSpy = sinon.spy(consoleView, 'requestUpdate');
+
+      consoleView.dispose();
+      sinon.assert.calledOnce(linkifierDisposeSpy);
+
+      Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.networkMessagesSettingDescriptor).set(false);
+      Common.Settings.Settings.instance()
+          .resolve(Settings.ConsoleSettings.consoleGroupSimilarSettingDescriptor)
+          .set(false);
+      Common.Settings.Settings.instance()
+          .resolve(Settings.ConsoleSettings.consoleShowsCorsErrorsSettingDescriptor)
+          .set(false);
+      Common.Settings.Settings.instance()
+          .resolve(Settings.ConsoleSettings.selectedContextFilterEnabledSettingDescriptor)
+          .set(true);
+      Common.Settings.Settings.instance().createSetting('console-show-settings-toolbar', false).set(true);
+      Common.Console.Console.instance().addMessage('after dispose');
+      UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+
+      sinon.assert.notCalled(requestUpdateSpy);
+      assert.strictEqual(consoleView.itemCount(), 0);
     });
   });
 });

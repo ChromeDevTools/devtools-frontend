@@ -3667,3 +3667,20 @@ describe('Keyboard event forwarding', () => {
     assert.isTrue(forwardsH(/* ctrlKey= */ true), 'Ctrl+H did not reach DevTools');
   });
 });
+
+describeWithEnvironment('ExtensionServer.removeInstance', () => {
+  afterEach(() => {
+    PanelCommon.ExtensionServer.ExtensionServer.removeInstance();
+  });
+
+  it('disposes and clears the singleton instance', () => {
+    const server1 = PanelCommon.ExtensionServer.ExtensionServer.instance({forceNew: true});
+    const disposeSpy = sinon.spy(server1, 'dispose');
+
+    PanelCommon.ExtensionServer.ExtensionServer.removeInstance();
+
+    sinon.assert.calledOnce(disposeSpy);
+    const server2 = PanelCommon.ExtensionServer.ExtensionServer.instance();
+    assert.notStrictEqual(server2, server1);
+  });
+});

@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {afterEach, beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 
@@ -183,6 +184,14 @@ describe('RenderCoordinator', () => {
     await readDonePromise;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     assert.strictEqual((globalThis as any).__getRenderCoordinatorPendingFrames(), 0);
+  });
+
+  it('cleans up deadlock timeout promises when flushed with fake timers', () => {
+    sinon.useFakeTimers();
+    void RenderCoordinator.read('Pending Read', () => {});
+    void RenderCoordinator.write('Pending Write', () => {});
+    // Leave work queued so root afterEach exercises sinon.clock.runToLast() -> restore() -> checkForPendingActivity().
+    assert.isTrue(RenderCoordinator.hasPendingWork());
   });
 
   describe('Logger', () => {

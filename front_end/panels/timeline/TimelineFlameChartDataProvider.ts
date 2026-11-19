@@ -125,6 +125,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    */
   #initiatorsCache = new Map<number, PerfUI.FlameChart.FlameChartInitiatorData[]>();
   #persistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>|null = null;
+  #imageCacheConnected = false;
+  readonly #boundOnScreenshotLoaded = (): void => {
+    this.dispatchEventToListeners(Events.DATA_CHANGED);
+  };
 
   constructor() {
     super();
@@ -151,8 +155,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
       }
     });
-    Utils.ImageCache.emitter.addEventListener(
-        'screenshot-loaded', () => this.dispatchEventToListeners(Events.DATA_CHANGED));
 
     Common.Settings.Settings.instance()
         .resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor)
@@ -169,6 +171,22 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     Common.Settings.Settings.instance()
         .resolve(Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
+  }
+
+  connectImageCache(): void {
+    if (this.#imageCacheConnected) {
+      return;
+    }
+    this.#imageCacheConnected = true;
+    Utils.ImageCache.emitter.addEventListener('screenshot-loaded', this.#boundOnScreenshotLoaded);
+  }
+
+  disconnectImageCache(): void {
+    if (!this.#imageCacheConnected) {
+      return;
+    }
+    this.#imageCacheConnected = false;
+    Utils.ImageCache.emitter.removeEventListener('screenshot-loaded', this.#boundOnScreenshotLoaded);
   }
 
   handleTrackConfigurationChange(groups: readonly PerfUI.FlameChart.Group[], indexesInVisualOrder: number[]): void {

@@ -112,6 +112,11 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     node.id = 0 as Protocol.DOM.NodeId;
     LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
     computedStyleModel.node = node;
+    await stylesSidebarPane.updateComplete;
+  });
+
+  afterEach(async () => {
+    await stylesSidebarPane.updateComplete;
   });
 
   function addProperty(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
@@ -2219,6 +2224,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const lightDark = 'light-dark(red, blue)';
       const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
       sinon.stub(stylesSidebarPane, 'cssModel').returns(cssModel);
+      cssModel.cachedMatchedCascadeForNode.resolves(null);
       cssModel.colorScheme.resolves(undefined);
       addProperty('color-scheme', 'light dark');
       const stylePropertyTreeElement = getTreeElement('color', lightDark);

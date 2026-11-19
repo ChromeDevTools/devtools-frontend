@@ -369,6 +369,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return extensionServerInstance;
   }
 
+  static removeInstance(): void {
+    extensionServerInstance?.dispose();
+    extensionServerInstance = null;
+  }
+
   initializeExtensions(): void {
     // Defer initialization until DevTools is fully loaded.
     if (this.inspectedTabId !== null) {

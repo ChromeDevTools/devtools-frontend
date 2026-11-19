@@ -203,6 +203,31 @@ function enqueueHandler<T>(action: ACTION, label: string, callback: CoordinatorC
   return workItem.promise;
 }
 
+/**
+ * Races pending reader or writer work items against `DEADLOCK_TIMEOUT`, always
+ * cancelling the timer and settling the timeout promise so tests using fake
+ * timers do not leak pending promises during teardown.
+ */
+async function raceWithDeadlockTimeout(items: Array<WorkItem<unknown>>, errorMessage: string): Promise<void> {
+  if (items.length === 0) {
+    return;
+  }
+  const {promise: timeoutPromise, resolve: resolveTimeout, reject: rejectTimeout} = Promise.withResolvers<void>();
+  // Capture the active clearTimeout alongside setTimeout so cleanup still targets the matching
+  // timer realm if fake timers are restored before this frame settles.
+  const clearDeadlockTimeout = window.clearTimeout;
+  const timeoutId = window.setTimeout(() => rejectTimeout(new Error(errorMessage)), DEADLOCK_TIMEOUT);
+  try {
+    await Promise.race([
+      Promise.all(items.map(item => item.promise)),
+      timeoutPromise,
+    ]);
+  } finally {
+    clearDeadlockTimeout.call(window, timeoutId);
+    resolveTimeout();
+  }
+}
+
 function scheduleWork(): void {
   if (scheduledWorkId !== 0) {
     return;
@@ -236,13 +261,7 @@ function scheduleWork(): void {
 
     // Wait for them all to be done.
     try {
-      await Promise.race([
-        Promise.all(readers.map(r => r.promise)),
-        new Promise((_, reject) => {
-          window.setTimeout(
-              () => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)), DEADLOCK_TIMEOUT);
-        }),
-      ]);
+      await raceWithDeadlockTimeout(readers, `Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`);
     } catch (err) {
       rejectAll(readers, err);
     }
@@ -255,13 +274,7 @@ function scheduleWork(): void {
 
     // And wait for them to be done, too.
     try {
-      await Promise.race([
-        Promise.all(writers.map(w => w.promise)),
-        new Promise((_, reject) => {
-          window.setTimeout(
-              () => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)), DEADLOCK_TIMEOUT);
-        }),
-      ]);
+      await raceWithDeadlockTimeout(writers, `Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`);
     } catch (err) {
       rejectAll(writers, err);
     }

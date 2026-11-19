@@ -142,8 +142,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #selectedGroupName: string|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #overlaysUpdateScheduled = false;
-  #debouncedUpdateSearchResults: () => void = Common.Debouncer.debounce(() => this.updateSearchResults(false, false),
-                                                                        100);
+  #debouncedUpdateSearchResults: (() => void)&
+      {cancel: () => void} = Common.Debouncer.debounce(() => this.updateSearchResults(false, false), 100);
 
   #overlaysContainer: HTMLElement = document.createElement('div');
   #overlays: Overlays.Overlays.Overlays;
@@ -202,6 +202,10 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
    */
   #networkPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #mainPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
+  #listenersAttached = false;
+  readonly #boundOnMainDataChanged = (): void => {
+    this.mainFlameChart.scheduleUpdate();
+  };
 
   constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager) {
     super({jslog: `${VisualLogging.section('timeline.flame-chart-view')}`});
@@ -238,8 +242,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
     this.mainDataProvider = new TimelineFlameChartDataProvider();
     this.mainDataProvider.setPersistedGroupConfigSetting(this.#mainPersistedGroupConfigSetting);
-    this.mainDataProvider.addEventListener(
-        TimelineFlameChartDataProviderEvents.DATA_CHANGED, () => this.mainFlameChart.scheduleUpdate());
     this.mainDataProvider.addEventListener(
         TimelineFlameChartDataProviderEvents.FLAME_CHART_ITEM_HOVERED,
         e => this.detailsView.revealEventInTreeView(e.data));
@@ -478,7 +480,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
     this.groupBySetting = Common.Settings.Settings.instance().createSetting(
         'timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
-    this.groupBySetting.addChangeListener(this.refreshMainFlameChart, this);
     this.refreshMainFlameChart();
 
     // Comments on flame chart entries are drawn by the shared comments overlay.
@@ -494,8 +495,31 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
         },
         commentManager,
     );
+  }
 
+  #attachListeners(): void {
+    if (this.#listenersAttached) {
+      return;
+    }
+    this.#listenersAttached = true;
+    this.mainDataProvider.addEventListener(TimelineFlameChartDataProviderEvents.DATA_CHANGED,
+                                           this.#boundOnMainDataChanged);
+    this.mainDataProvider.connectImageCache();
+    this.groupBySetting.addChangeListener(this.refreshMainFlameChart, this);
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+  }
+
+  #detachListeners(): void {
+    if (!this.#listenersAttached) {
+      return;
+    }
+    this.#listenersAttached = false;
+    this.#debouncedUpdateSearchResults.cancel();
+    this.mainDataProvider.removeEventListener(TimelineFlameChartDataProviderEvents.DATA_CHANGED,
+                                              this.#boundOnMainDataChanged);
+    this.mainDataProvider.disconnectImageCache();
+    this.groupBySetting.removeChangeListener(this.refreshMainFlameChart, this);
+    TraceBounds.TraceBounds.removeListener(this.#onTraceBoundsChangeBound);
   }
 
   containingElement(): HTMLElement {
@@ -1434,15 +1458,26 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.#networkPersistedGroupConfigSetting.removeChangeListener(this.resizeToPreferredHeights, this);
     Workspace.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#boundRefreshAfterIgnoreList);
     this.#commentController.willHide();
+    this.#detachListeners();
+  }
+
+  override onDetach(): void {
+    this.#detachListeners();
+    super.onDetach();
   }
 
   override wasShown(): void {
     super.wasShown();
+    this.#attachListeners();
     this.#networkPersistedGroupConfigSetting.addChangeListener(this.resizeToPreferredHeights, this);
     Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#boundRefreshAfterIgnoreList);
     this.#commentController.wasShown();
     if (this.needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
+    }
+    if (this.#parsedTrace && TraceBounds.TraceBounds.BoundsManager.instance().state()) {
+      this.setupWindowTimes();
+      this.updateSearchResults(false, false);
     }
     this.#updateFlameCharts();
   }

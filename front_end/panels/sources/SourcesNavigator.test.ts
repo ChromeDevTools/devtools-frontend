@@ -99,7 +99,8 @@ describe('NetworkNavigatorView', () => {
       settings: backend.universe.settings,
     });
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+    sinon.stub(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, 'instance')
+        .returns(backend.universe.networkPersistenceManager);
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
     setTestUniverseForWidgets(backend.universe);
   });
@@ -785,7 +786,8 @@ describe('FilesNavigatorView', () => {
       settings: backend.universe.settings,
     });
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+    sinon.stub(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, 'instance')
+        .returns(backend.universe.networkPersistenceManager);
 
     UI.ActionRegistration.maybeRemoveActionExtension('sources.add-folder-to-workspace');
     UI.ActionRegistration.registerActionExtension({
@@ -920,6 +922,7 @@ describe('FilesNavigatorView', () => {
     assert.strictEqual(contentData.text, 'testme');
 
     project.removeProject();
+    await backend.universe.networkPersistenceManager.updateInterceptionPatternsForTests();
   });
 
   it('has no aXe violations when showing a file system folder in the navigator pane', async () => {
@@ -1059,6 +1062,7 @@ describe('FilesNavigatorView', () => {
 
       const viewManager = UI.ViewManager.ViewManager.instance({forceNew: true, universe: backend.universe});
       sourcesPanel = new Sources.SourcesPanel.SourcesPanel();
+      sinon.stub(sourcesPanel, 'setAsCurrentPanel').resolves();
       UI.ViewManager.registerLocationResolver({
         name: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
         category: UI.ViewManager.ViewLocationCategory.SOURCES,
@@ -1113,7 +1117,7 @@ describe('FilesNavigatorView', () => {
       });
       assert.isEmpty(violations);
     } finally {
-      sourcesPanel?.detach();
+      sourcesPanel?.detach(/* overrideHideOnDetach= */ true);
       if (sourcesPanel) {
         window.removeEventListener('beforeunload', sourcesPanel.handleBeforeUnload, true);
       }
@@ -1162,7 +1166,8 @@ describe('OverridesNavigatorView', () => {
       settings: backend.universe.settings,
     });
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+    sinon.stub(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, 'instance')
+        .returns(backend.universe.networkPersistenceManager);
 
     setTestUniverseForWidgets(backend.universe);
   });

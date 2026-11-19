@@ -75,6 +75,29 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     return this.#toolbarItem;
   }
 
+  dispose(): void {
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.RuntimeModel.RuntimeModel,
+                                                                   SDK.RuntimeModel.Events.ExecutionContextCreated,
+                                                                   this.onExecutionContextCreated, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.RuntimeModel.RuntimeModel,
+                                                                   SDK.RuntimeModel.Events.ExecutionContextChanged,
+                                                                   this.onExecutionContextChanged, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.RuntimeModel.RuntimeModel,
+                                                                   SDK.RuntimeModel.Events.ExecutionContextDestroyed,
+                                                                   this.onExecutionContextDestroyed, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
+                                                                   SDK.ResourceTreeModel.Events.FrameNavigated,
+                                                                   this.frameNavigated, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext,
+                                                             this.executionContextChangedExternally, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor,
+                                                             this.callFrameSelectedInUI, this);
+    SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.RuntimeModel.RuntimeModel, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.DebuggerModel.DebuggerModel,
+                                                                   SDK.DebuggerModel.Events.CallFrameSelected,
+                                                                   this.callFrameSelectedInModel, this);
+  }
+
   highlightedItemChanged(
       _from: SDK.RuntimeModel.ExecutionContext|null, to: SDK.RuntimeModel.ExecutionContext|null,
       fromElement: Element|null, toElement: Element|null): void {

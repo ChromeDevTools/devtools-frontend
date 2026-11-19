@@ -51,7 +51,7 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
   }
 
   beforeEach(async () => {
-    clock = sinon.useFakeTimers();
+    clock = sinon.useFakeTimers({shouldClearNativeTimers: true});
     updateHostConfig({
       devToolsAiCodeCompletion: {
         enabled: true,

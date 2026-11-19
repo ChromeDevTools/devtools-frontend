@@ -151,8 +151,10 @@ export class MainImpl {
   #universe!: Foundation.Universe.Universe;
   #supportsEmulation = false;
   #veLogsTestMode = false;
+  #eventListenersAbortController = new AbortController();
 
   constructor(opts?: {supportsEmulation: boolean}) {
+    MainImpl.instanceForTest?.disposeForTest();
     MainImpl.instanceForTest = this;
     this.#supportsEmulation = opts?.supportsEmulation ?? false;
     void this.#loaded();
@@ -704,12 +706,13 @@ export class MainImpl {
   }
 
   #addMainEventListeners(document: Document): void {
-    document.addEventListener('keydown', this.#postDocumentKeyDown.bind(this), false);
-    document.addEventListener('beforecopy', this.#redispatchClipboardEvent.bind(this), true);
-    document.addEventListener('copy', this.#redispatchClipboardEvent.bind(this), false);
-    document.addEventListener('cut', this.#redispatchClipboardEvent.bind(this), false);
-    document.addEventListener('paste', this.#redispatchClipboardEvent.bind(this), false);
-    document.addEventListener('contextmenu', this.#contextMenuEventFired.bind(this), true);
+    const {signal} = this.#eventListenersAbortController;
+    document.addEventListener('keydown', this.#postDocumentKeyDown.bind(this), {capture: false, signal});
+    document.addEventListener('beforecopy', this.#redispatchClipboardEvent.bind(this), {capture: true, signal});
+    document.addEventListener('copy', this.#redispatchClipboardEvent.bind(this), {capture: false, signal});
+    document.addEventListener('cut', this.#redispatchClipboardEvent.bind(this), {capture: false, signal});
+    document.addEventListener('paste', this.#redispatchClipboardEvent.bind(this), {capture: false, signal});
+    document.addEventListener('contextmenu', this.#contextMenuEventFired.bind(this), {capture: true, signal});
   }
 
   #onSuspendStateChanged(): void {
@@ -719,6 +722,10 @@ export class MainImpl {
 
   redispatchClipboardEventForTest(event: Event): void {
     this.#redispatchClipboardEvent(event);
+  }
+
+  disposeForTest(): void {
+    this.#eventListenersAbortController.abort();
   }
 
   static instanceForTest: MainImpl|null = null;

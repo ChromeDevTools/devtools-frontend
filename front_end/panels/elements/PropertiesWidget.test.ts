@@ -34,8 +34,9 @@ describeWithEnvironment('PropertiesWidget', () => {
     connection.setSuccessHandler('DOM.getNodesForSubtreeByStyle', () => ({nodeIds: []}));
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
+    await UI.Widget.Widget.allUpdatesComplete;
   });
 
   const updatesUiOnEvent = <T extends keyof SDK.DOMModel.EventTypes>(
@@ -57,7 +58,7 @@ describeWithEnvironment('PropertiesWidget', () => {
     const performUpdate = sinon.spy(view, 'performUpdate');
     model.dispatchEventToListeners(
         event, ...[node] as unknown as Common.EventTarget.EventPayloadToRestParameters<SDK.DOMModel.EventTypes, T>);
-    await view.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
     assert.strictEqual(performUpdate.called, inScope);
   };
 
@@ -130,6 +131,8 @@ describeWithEnvironment('PropertiesWidget', () => {
       objectId: '1',
       arguments: sinon.match([{objectId: '2'}]),
     }));
+    await Promise.all(callFunctionOn.returnValues);
+    await UI.Widget.Widget.allUpdatesComplete;
   });
 
   it('creates a read-only object tree', async () => {
@@ -195,6 +198,7 @@ describeWithEnvironment('PropertiesWidget', () => {
       viewFunction.input.onRegexToggled();
       await viewFunction.nextInput;
       assert.isFalse(viewFunction.input.isRegex);
+      await UI.Widget.Widget.allUpdatesComplete;
     });
   });
 
@@ -278,6 +282,7 @@ describeWithEnvironment('PropertiesWidget', () => {
         item => item.listItemElement.textContent?.includes('nested'));
     assert.exists(nestedItem);
     nestedItem.expand();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     sinon.assert.calledWith(actionTaken, Host.UserMetrics.Action.DOMPropertiesExpanded);
   });
@@ -297,9 +302,6 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       readOnly: true,
     });
     objectTree.expanded = true;
-
-    const viewFunction = createViewFunctionStub(Elements.PropertiesWidget.PropertiesWidget);
-    new Elements.PropertiesWidget.PropertiesWidget(viewFunction);
 
     if (filter) {
       objectTree.setFilter({includeNullOrUndefinedValues: false, regex: new RegExp(filter, 'i')});
@@ -323,6 +325,7 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       isRegex: false,
     },
                                            undefined, container);
+    await UI.Widget.Widget.allUpdatesComplete;
     await assertScreenshot('elements/properties_widget_no_filter.png');
   });
 
@@ -364,6 +367,7 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       isRegex: false,
     },
                                            undefined, container);
+    await UI.Widget.Widget.allUpdatesComplete;
     await assertScreenshot('elements/properties_widget_partial_filter.png');
   });
 
@@ -380,6 +384,7 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       isRegex: false,
     },
                                            undefined, container);
+    await UI.Widget.Widget.allUpdatesComplete;
     await assertScreenshot('elements/properties_widget_no_matches.png');
   });
 });

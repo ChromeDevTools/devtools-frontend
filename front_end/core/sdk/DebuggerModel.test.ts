@@ -545,12 +545,14 @@ describe('DebuggerModel', () => {
     });
 
     it('stays as is if the backend does not support Debugger.getScopeChain', async () => {
+      const consoleError = sinon.stub(console, 'error');
       const {callFrame, getScopeChain, objectIds} = setup();
       getScopeChain.callsFake(() => ({error: {message: '\'Debugger.getScopeChain\' wasn\'t found', code: -32601}}));
 
       callFrame.markScopeChainStale();
 
       assert.deepEqual(await objectIds(callFrame), ['frame-paused']);
+      sinon.assert.calledOnceWithExactly(consoleError, sinon.match('Debugger.getScopeChain'));
     });
   });
 

@@ -258,6 +258,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   readonly #rangeSelections = new Map<RangeTab, TimelineSelection>();
   readonly #renderedRangeSelections = new Map<RangeTab, TimelineSelection>();
   #selection: TimelineSelection|null = null;
+  #hasPendingWindowUpdate = false;
   #debouncedUpdateContentsFromWindow: (() => void)&
       {cancel: () => void} = Common.Debouncer.debounce(() => this.updateContentsFromWindow(), 100);
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
@@ -395,9 +396,11 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
     const micro = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro;
     const prev = this.#boundsStateWhenHidden;
-    if (prev && micro &&
-        (prev.entireTraceBounds !== micro.entireTraceBounds || prev.minimapTraceBounds !== micro.minimapTraceBounds ||
-         prev.timelineTraceWindow !== micro.timelineTraceWindow)) {
+    const boundsChanged = Boolean(prev && micro &&
+                                  (prev.entireTraceBounds !== micro.entireTraceBounds ||
+                                   prev.minimapTraceBounds !== micro.minimapTraceBounds ||
+                                   prev.timelineTraceWindow !== micro.timelineTraceWindow));
+    if (boundsChanged || this.#hasPendingWindowUpdate) {
       if (this.#selection) {
         void this.setSelection(this.#selection);
       } else {
@@ -409,9 +412,15 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
 
   override willHide(): void {
     TraceBounds.TraceBounds.removeListener(this.#onTraceBoundsChangeBound);
+    this.#debouncedUpdateContentsFromWindow.cancel();
     const micro = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro;
     this.#boundsStateWhenHidden = micro ? {...micro} : undefined;
     super.willHide();
+  }
+
+  override onDetach(): void {
+    this.#debouncedUpdateContentsFromWindow.cancel();
+    super.onDetach();
   }
 
   /**
@@ -616,18 +625,23 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
    */
   private scheduleUpdateContentsFromWindow(forceImmediateUpdate = false): void {
     if (!this.#parsedTrace) {
+      this.#hasPendingWindowUpdate = false;
       void this.updateSummaryPane();
       return;
     }
     if (forceImmediateUpdate) {
+      this.#debouncedUpdateContentsFromWindow.cancel();
+      this.#hasPendingWindowUpdate = false;
       this.updateContentsFromWindow();
       return;
     }
 
+    this.#hasPendingWindowUpdate = true;
     this.#debouncedUpdateContentsFromWindow();
   }
 
   private updateContentsFromWindow(): void {
+    this.#hasPendingWindowUpdate = false;
     const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
     if (!traceBoundsState) {
       return;
@@ -681,6 +695,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     if (selectionIsEvent(selection)) {
       // Cancel any pending debounced range stats update
       this.#debouncedUpdateContentsFromWindow.cancel();
+      this.#hasPendingWindowUpdate = false;
 
       if (Trace.Types.Events.isLegacyTimelineFrame(selection.event)) {
         this.#addLayerTreeForSelectedFrame(selection.event);
@@ -688,6 +703,8 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
 
       await this.#setSelectionForTraceEvent(selection.event);
     } else if (selectionIsRange(selection)) {
+      this.#debouncedUpdateContentsFromWindow.cancel();
+      this.#hasPendingWindowUpdate = false;
       const timings = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(selection.bounds);
       await this.updateSelectedRangeStats(timings.min, timings.max);
     }

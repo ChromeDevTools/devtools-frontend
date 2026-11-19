@@ -112,6 +112,7 @@ ts_library("unittests") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../panels/common:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
     "../../ui/visual_logging:bundle",

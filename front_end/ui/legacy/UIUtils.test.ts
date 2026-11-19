@@ -1434,6 +1434,29 @@ describe('bindToSetting (devtools-button)', () => {
 });
 
 describe('CheckboxLabel', () => {
+  it('can be unchecked after the user checked it', () => {
+    const checkbox = document.createElement('devtools-checkbox');
+    renderElementIntoDOM(checkbox);
+    checkbox.click();
+    assert.isTrue(checkbox.checked);
+
+    checkbox.checked = false;
+
+    assert.isFalse(checkbox.checked);
+  });
+
+  it('can be made indeterminate again after the user clicked it', () => {
+    const checkbox = document.createElement('devtools-checkbox');
+    renderElementIntoDOM(checkbox);
+    checkbox.indeterminate = true;
+    checkbox.click();
+    assert.isFalse(checkbox.indeterminate);
+
+    checkbox.indeterminate = true;
+
+    assert.isTrue(checkbox.indeterminate);
+  });
+
   it('treats a non-boolean falsy checked value as unchecked instead of toggling', () => {
     const checkbox = document.createElement('devtools-checkbox');
     checkbox.checked = true;

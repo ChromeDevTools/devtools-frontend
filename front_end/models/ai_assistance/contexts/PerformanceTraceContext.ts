@@ -109,8 +109,9 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
    * code from source maps using the active page target.
    *
    * Note: Function code resolution from source maps is only supported for fresh
-   * recordings (recorded in the current session on the active target page). For
-   * imported traces, it returns null to prevent mismatched source resolution.
+   * recordings (recorded in the current session on the active target page) and
+   * same-origin resources permitted by `canAccessResource()`. For imported traces
+   * or inaccessible origins, it returns null.
    */
   createFormatter(): PerformanceTraceFormatter {
     const focus = this.#focus;
@@ -119,12 +120,16 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     const isFresh = this.#freshRecordingTracker.recordingIsFresh(focus.parsedTrace);
 
     formatter.resolveFunctionCode = async (url: UrlString, line: number, column: number) => {
-      if (!target || !isFresh) {
+      if (!target || !isFresh || !this.canAccessResource(url)) {
         return null;
       }
-      return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(
+      const code = await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(
           target, url, line, column, this.#debuggerWorkspaceBinding,
           {contextLength: 200, contextLineLength: 5, appendProfileData: true});
+      if (code && !this.canAccessResource(code.functionBounds.uiSourceCode.url())) {
+        return null;
+      }
+      return code;
     };
     return formatter;
   }
@@ -162,12 +167,15 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   /**
    * Returns the security origin for the performance trace.
    *
-   * Live traces use the origin of the main frame URL.
+   * If the recorded main frame had an opaque origin (for example, a CSP-sandboxed
+   * document whose URL still has an `https:` scheme), this method returns a unique
+   * opaque origin so the trace does not inherit the URL's tuple origin.
    *
-   * Imported traces use a custom scheme (`imported-trace://${host}`) to isolate
-   * them from live pages (such as `https://${host}`). This isolation prevents
-   * cross-origin prompt injection and requires a new conversation when switching
-   * between imported traces and live pages.
+   * Otherwise, live traces use the origin of the main frame URL, and imported
+   * traces use a custom scheme (`imported-trace://${host}`) to isolate them from
+   * live pages (such as `https://${host}`). This isolation prevents cross-origin
+   * prompt injection and requires a new conversation when switching between
+   * imported traces and live pages.
    *
    * If an imported trace origin does not contain a host, this method returns a
    * unique opaque origin.
@@ -176,7 +184,9 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
    */
   override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
     if (!this.#origin) {
-      if (this.isImported()) {
+      if (this.#focus.parsedTrace.data.Meta.mainFrameIsOpaqueOrigin) {
+        this.#origin = SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+      } else if (this.isImported()) {
         this.#origin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace(
             this.#focus.parsedTrace.data.Meta.mainFrameURL,
         );

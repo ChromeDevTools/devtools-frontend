@@ -128,6 +128,7 @@ export interface TraceFrame {
   // Added to Chrome in June 2024:
   // crrev.com/c/5595033
   isInPrimaryMainFrame?: boolean;
+  isOpaqueOrigin?: boolean;
 }
 
 // Sample events.

@@ -3,17 +3,40 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as TextUtils from '../../../core/text_utils/text_utils.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
+import {getBaseTraceHandlerData} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
+import {createContentProviderUISourceCodes} from '../../../testing/UISourceCodeHelpers.js';
 import * as Trace from '../../trace/trace.js';
+import * as Workspace from '../../workspace/workspace.js';
 import * as AiAssistance from '../ai_assistance.js';
+
+const {urlString} = Platform.DevToolsPath;
+
+function createParsedTrace(metaOverrides: Partial<Trace.Handlers.ModelHandlers.Meta.MetaHandlerData> = {}):
+    Trace.TraceModel.ParsedTrace {
+  const baseTrace = getBaseTraceHandlerData();
+  const parsedTrace = getBaseTraceHandlerData({
+    Meta: {
+      ...baseTrace.data.Meta,
+      ...metaOverrides,
+    },
+  });
+  return {
+    ...parsedTrace,
+    insights: new Map(),
+  };
+}
 
 describe('PerformanceTraceContext', () => {
   setupSettingsHooks();
@@ -23,6 +46,10 @@ describe('PerformanceTraceContext', () => {
 
   beforeEach(() => {
     universe = new TestUniverse();
+  });
+
+  afterEach(() => {
+    universe.dispose();
   });
 
   it('should return prompt details correctly by combining trace formatter output', async () => {
@@ -420,20 +447,31 @@ Mock Longest Tasks`);
       assert.isTrue(context.isImported());
       assert.isTrue(context.getOrigin().isOpaque());
     });
+
+    it('returns a unique opaque origin for fresh recordings when mainFrameIsOpaqueOrigin is true', () => {
+      const mockTrace = createParsedTrace({
+        mainFrameURL: 'https://victim.example/sandboxed.html',
+        mainFrameIsOpaqueOrigin: true,
+      });
+
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      tracker.registerFreshRecording(mockTrace);
+
+      const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+
+      assert.isFalse(context.isImported());
+      assert.isTrue(context.getOrigin().isOpaque());
+      assert.isFalse(
+          context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://victim.example')));
+      assert.strictEqual(context.getTitle(), 'Trace: victim.example');
+    });
   });
 
   describe('canAccessResource', () => {
     function createMockTraceContext(mainFrameURL: string):
         AiAssistance.PerformanceTraceContext.PerformanceTraceContext {
-      const mockTrace = {
-        insights: new Map(),
-        data: {
-          Meta: {
-            mainFrameURL,
-            traceBounds: {min: 0, max: 100},
-          },
-        },
-      } as unknown as Trace.TraceModel.ParsedTrace;
+      const mockTrace = createParsedTrace({mainFrameURL});
 
       const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
       tracker.registerFreshRecording(mockTrace);
@@ -481,15 +519,7 @@ Mock Longest Tasks`);
     });
 
     it('blocks access when trace is imported', () => {
-      const mockTrace = {
-        insights: new Map(),
-        data: {
-          Meta: {
-            mainFrameURL: 'https://example.com/page.html',
-            traceBounds: {min: 0, max: 100},
-          },
-        },
-      } as unknown as Trace.TraceModel.ParsedTrace;
+      const mockTrace = createParsedTrace({mainFrameURL: 'https://example.com/page.html'});
 
       // Do NOT register with tracker so isFresh is false.
       const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
@@ -497,6 +527,88 @@ Mock Longest Tasks`);
           mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
 
       assert.isFalse(importedContext.canAccessResource('https://example.com/script.js'));
+    });
+
+    it('blocks resources on the URL tuple origin when mainFrameIsOpaqueOrigin is true', () => {
+      const mockTrace = createParsedTrace({
+        mainFrameURL: 'https://victim.example/sandboxed.html',
+        mainFrameIsOpaqueOrigin: true,
+      });
+
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      tracker.registerFreshRecording(mockTrace);
+
+      const sandboxContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+
+      assert.isFalse(sandboxContext.canAccessResource('https://victim.example/secret.js'));
+    });
+  });
+
+  describe('createFormatter', () => {
+    it('blocks resolveFunctionCode when mainFrameIsOpaqueOrigin is true', async () => {
+      universe.createTarget({url: 'https://victim.example/sandboxed.html'});
+      const mockTrace = createParsedTrace({
+        mainFrameURL: 'https://victim.example/sandboxed.html',
+        mainFrameIsOpaqueOrigin: true,
+      });
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      tracker.registerFreshRecording(mockTrace);
+
+      const projectsSpy = sinon.spy(universe.workspace, 'projectsForType');
+      const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+      const formatter = context.createFormatter();
+
+      const resolved = await formatter.resolveFunctionCode?.(urlString`https://victim.example/secret.js`, 0, 0) ?? null;
+      assert.isNull(resolved);
+      sinon.assert.notCalled(projectsSpy);
+    });
+
+    it('blocks resolveFunctionCode when source-mapped uiSourceCode resolves to a cross-origin URL', async () => {
+      const target = universe.createTarget({url: 'https://example.com/page.html'});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assert.exists(debuggerModel);
+
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/bundle.js`,
+            mimeType: 'text/javascript',
+            content: 'function bundle() { return 1; }',
+          },
+          {
+            url: urlString`https://other.example/secret.ts`,
+            mimeType: 'text/typescript',
+            content: 'function secret() { return 2; }',
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        target,
+        universe,
+      });
+
+      const rawLocation = new SDK.DebuggerModel.Location(debuggerModel, 'script-1' as Protocol.Runtime.ScriptId, 0, 0);
+      sinon.stub(universe.debuggerWorkspaceBinding, 'uiLocationToRawLocations').resolves([rawLocation]);
+      sinon.stub(universe.debuggerWorkspaceBinding, 'functionBoundsAtRawLocation').resolves({
+        uiSourceCode: uiSourceCodes[1],
+        range: new TextUtils.TextRange.TextRange(0, 0, 0, 31),
+        name: 'secret',
+      });
+
+      const mockTrace = createParsedTrace({
+        mainFrameURL: 'https://example.com/page.html',
+        mainFrameIsOpaqueOrigin: false,
+      });
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      tracker.registerFreshRecording(mockTrace);
+
+      const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+      const formatter = context.createFormatter();
+
+      const resolved = await formatter.resolveFunctionCode?.(urlString`https://example.com/bundle.js`, 0, 0) ?? null;
+      assert.isNull(resolved);
     });
   });
 });

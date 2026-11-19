@@ -240,6 +240,77 @@ describe('NavigationGuard API Test', () => {
        }
      });
 
+  it('removes a page from before the replay from the session history', async ({inspectedPage}) => {
+    // Chrome does not pause a response for a back/forward cache restore, so
+    // the guard cannot fail it. The guard removes the pages that `history.back()`
+    // could restore. The page from before the replay is on an origin that is
+    // not in the recording.
+    await inspectedPage.page.goto(other(inspectedPage, 'recorder2.html'));
+    await inspectedPage.page.goto(other(inspectedPage, 'recorder.html'));
+    const guard = await guardInspectedPage(inspectedPage);
+    try {
+      assert.strictEqual(inspectedPage.page.url(), 'about:blank');
+      assert.isNull(await navigate(inspectedPage, recorded(inspectedPage, 'recorder.html')));
+
+      await inspectedPage.page.goBack();
+      assert.strictEqual(inspectedPage.page.url(), 'about:blank');
+      // The history has no entry before about:blank.
+      await inspectedPage.page.goBack().catch(() => {});
+      assert.strictEqual(inspectedPage.page.url(), 'about:blank');
+      assert.isUndefined(guard.error);
+    } finally {
+      await guard.dispose();
+    }
+  });
+
+  it('keeps the current document if its origin is in the recording', async ({inspectedPage}) => {
+    await inspectedPage.page.goto(other(inspectedPage, 'recorder.html'));
+    await inspectedPage.page.goto(recorded(inspectedPage, 'recorder2.html'));
+    const guard = await guardInspectedPage(inspectedPage);
+    try {
+      assert.strictEqual(inspectedPage.page.url(), recorded(inspectedPage, 'recorder2.html'));
+
+      // The history has no entry before the current document.
+      await inspectedPage.page.goBack().catch(() => {});
+      assert.strictEqual(inspectedPage.page.url(), recorded(inspectedPage, 'recorder2.html'));
+      assert.isUndefined(guard.error);
+    } finally {
+      await guard.dispose();
+    }
+  });
+
+  it('keeps the session history if all entries have an origin from the recording', async ({inspectedPage}) => {
+    await inspectedPage.page.goto(recorded(inspectedPage, 'recorder.html'));
+    // Remove the entries from before the test, for example about:blank.
+    const session = await inspectedPage.page.createCDPSession();
+    await session.send('Page.resetNavigationHistory');
+    await inspectedPage.page.goto(recorded(inspectedPage, 'recorder2.html'));
+    const guard = await guardInspectedPage(inspectedPage);
+    try {
+      await inspectedPage.page.goBack();
+
+      assert.strictEqual(inspectedPage.page.url(), recorded(inspectedPage, 'recorder.html'));
+      assert.isUndefined(guard.error);
+    } finally {
+      await guard.dispose();
+    }
+  });
+
+  it('keeps the current document if the recording has no navigate step', async ({inspectedPage}) => {
+    const url = other(inspectedPage, 'recorder.html');
+    await inspectedPage.page.goto(url);
+    const flow = {title: 'test', steps: [{type: 'setViewport', width: 800, height: 600}]} as UserFlow;
+    const guard = new NavigationGuard(flow, inspectedPage.page.url(), () => {});
+    try {
+      await guard.guardPage(inspectedPage.page as never, /* checkExistingFrames= */ false);
+
+      assert.strictEqual(inspectedPage.page.url(), url);
+      assert.isUndefined(guard.error);
+    } finally {
+      await guard.dispose();
+    }
+  });
+
   it('does not fail navigations after dispose()', async ({inspectedPage}) => {
     const guard = await guardInspectedPage(inspectedPage);
     await guard.dispose();

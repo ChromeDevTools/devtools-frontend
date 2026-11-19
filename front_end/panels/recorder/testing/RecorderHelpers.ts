@@ -89,6 +89,7 @@ export interface MockPage {
   setDefaultTimeout: () => void;
   close?: sinon.SinonStub;
   isClosed?: () => boolean;
+  goto?: sinon.SinonStub;
 }
 
 export interface MockTarget {
@@ -164,6 +165,7 @@ export const installMocksForRecordingPlayer = (): RecordingPlayerMocks => {
       return Promise.resolve();
     },
     setDefaultTimeout() {},
+    goto: sinon.stub().resolves(),
   };
   const pages: MockPage[] = [page];
   const targets: MockTarget[] = [];

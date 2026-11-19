@@ -446,6 +446,66 @@ export class NavigationGuard {
         this.#checkFrameUrl(frame, guardedPage);
       }
     }
+    await this.#removeHistory(guardedPage, /* navigateAwayIfDisallowed= */ !checkExistingFrames);
+  }
+
+  /**
+   * Returns true if the URL of a frame is from an origin that is not in the
+   * recording. about: pages and the Chrome error page do not come from the
+   * network.
+   */
+  #isDisallowedUrl(url: string): boolean {
+    if (!url || url.startsWith('about:') || url.startsWith('chrome-error:')) {
+      return false;
+    }
+    return !isNavigationAllowed(url, this.#allowedNavigations);
+  }
+
+  /**
+   * Removes the session history of `guardedPage`, if it can contain a
+   * document with an origin that is not in the recording. Chrome does not
+   * pause a response for a back/forward cache restore, thus `history.back()`
+   * could show such a document from before the replay.
+   *
+   * The history reports only the URLs of main frames, and a restore reports
+   * no navigation for subframes. Thus, if the guard checks subframes, it
+   * always removes the history.
+   *
+   * If `navigateAwayIfDisallowed` is true and the current document has such
+   * an origin, the page first navigates to about:blank, so that the history
+   * does not contain this document. The guard does not change the page if it
+   * has an error or is disposed, because the replay does not run then.
+   */
+  async #removeHistory(guardedPage: puppeteer.Page, navigateAwayIfDisallowed: boolean): Promise<void> {
+    if (this.#error || this.#disposed) {
+      return;
+    }
+    const url = guardedPage.url();
+    // DevTools targets do not support navigations. See `RecordingPlayer`.
+    if (Common.ParsedURL.schemeIs(url as Platform.DevToolsPath.UrlString, 'devtools:')) {
+      return;
+    }
+    const client = guardedPage.mainFrame().client;
+    if (!this.#checkSubframes) {
+      const history = await client.send('Page.getNavigationHistory') as {entries?: Array<{url: string}>} | undefined;
+      if (this.#error || this.#disposed) {
+        return;
+      }
+      const entries = history?.entries ?? [];
+      // Keep the history, and thus the Back button, if all entries are allowed.
+      if (entries.length > 0 && entries.every(entry => isNavigationAllowed(entry.url, this.#allowedNavigations))) {
+        return;
+      }
+    }
+    const hasDisallowedDocument = this.#isDisallowedUrl(url) ||
+        (this.#checkSubframes && guardedPage.frames().some(frame => this.#isDisallowedUrl(frame.url())));
+    if (navigateAwayIfDisallowed && hasDisallowedDocument) {
+      await guardedPage.goto('about:blank');
+      if (this.#error || this.#disposed) {
+        return;
+      }
+    }
+    await client.send('Page.resetNavigationHistory');
   }
 
   /**

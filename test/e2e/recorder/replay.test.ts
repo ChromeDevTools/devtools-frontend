@@ -824,6 +824,40 @@ describe('Recorder', function() {
                                            undefined);
   });
 
+  it('should not go back to the page from before the replay with history.back()',
+     async ({inspectedPage, devToolsPage}) => {
+       // The inspected page starts on localhost, and the recording does not
+       // contain this origin. Chrome can restore such a page from the
+       // back/forward cache without a request.
+       const pageBeforeReplay = `${inspectedPage.getResourcesPath()}/recorder/recorder.html`;
+       expectError(/Replay error/);
+       await setupRecorderWithScriptAndReplay(devToolsPage, inspectedPage, {
+         title: 'Test Recording',
+         steps: [
+           {
+             type: 'navigate' as StepType.Navigate,
+             url: `${inspectedPage.getOopifResourcesPath()}/recorder/recorder.html`,
+           },
+           {
+             type: 'waitForExpression' as StepType.WaitForExpression,
+             target: 'main',
+             expression: '(history.back(), true)',
+           },
+           {
+             // The page from before the replay contains this element.
+             type: 'waitForElement' as StepType.WaitForElement,
+             target: 'main',
+             selectors: [['a[href="recorder2.html"]']],
+             timeout: 2000,
+           },
+         ],
+       },
+                                              undefined);
+
+       assert.notStrictEqual(inspectedPage.page.url(), pageBeforeReplay);
+       assert.isNull(await inspectedPage.page.$('a[href="recorder2.html"]'));
+     });
+
   it('should block a navigation to an unrecorded origin after the activation of a prerender from before the replay',
      async ({inspectedPage, devToolsPage}) => {
        const blockedUrl = `${inspectedPage.getOopifResourcesPath()}/recorder/recorder2.html`;

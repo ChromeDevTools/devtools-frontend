@@ -628,6 +628,13 @@ describe('RecordingPlayer', () => {
       sinon.assert.neverCalledWith(mocks.send, 'Fetch.continueRequest');
     });
 
+    it('removes the session history of the page at the start of the replay', async () => {
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
+    });
+
     it('continues subframe navigations if the recording has no subframe steps', async () => {
       const {error, steps} = await replay(() => {
         mocks.emitRequestPaused({
@@ -928,6 +935,55 @@ describe('RecordingPlayer', () => {
         sinon.assert.calledWith(session.send, 'Fetch.enable', fetchEnablePattern);
         sinon.assert.neverCalledWith(session.send, 'Page.getFrameTree');
       });
+
+      it('removes the session history if the recording has subframe steps, also if all entries are allowed',
+         async () => {
+           // The history does not report the frames of its entries.
+           mocks.send.withArgs('Page.getNavigationHistory').resolves({
+             entries: [{url: 'https://allowed.test/first'}, {url: 'https://allowed.test/second'}],
+           });
+
+           const {error} = await replaySteps([
+             {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+             frameCustomStep,
+           ]);
+
+           assert.isNull(error);
+           sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
+         });
+
+      it('navigates the page to about:blank if a frame is not allowed and the recording has subframe steps',
+         async () => {
+           mocks.pages[0].url = () => 'https://allowed.test/start';
+           mocks.frames.push({_id: 'subframe', client: mocks.mainFrame.client, url: () => blockedUrl});
+
+           // The replay navigates the page first, thus the guard does not report the frame.
+           const {error} = await replaySteps([
+             {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+             frameCustomStep,
+           ]);
+
+           assert.isNull(error);
+           const goto = mocks.pages[0].goto;
+           assert.isOk(goto);
+           sinon.assert.calledOnceWithExactly(goto, 'about:blank');
+         });
+
+      it('does not navigate the page for a frame that is not allowed if the recording has no subframe steps',
+         async () => {
+           mocks.pages[0].url = () => 'https://allowed.test/start';
+           mocks.frames.push({_id: 'subframe', client: mocks.mainFrame.client, url: () => blockedUrl});
+
+           const {error} = await replaySteps([
+             {type: Models.Schema.StepType.Navigate, url: 'https://allowed.test/'},
+             createCustomStep(),
+           ]);
+
+           assert.isNull(error);
+           const goto = mocks.pages[0].goto;
+           assert.isOk(goto);
+           sinon.assert.notCalled(goto);
+         });
     });
 
     it('ignores Fetch.enable rejection on a non-frame session or a closed session', async () => {
@@ -1254,6 +1310,63 @@ describe('RecordingPlayer', () => {
 
       assert.strictEqual(error?.message, 'Could not enable the navigation guard: protocol failure');
       assert.strictEqual(steps, 0);
+    });
+
+    it('keeps the session history if all entries have an origin from the recording', async () => {
+      mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        entries: [{url: 'https://allowed.test/first'}, {url: 'https://allowed.test/second'}],
+      });
+
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      sinon.assert.neverCalledWith(mocks.send, 'Page.resetNavigationHistory');
+    });
+
+    it('removes the session history if an entry has an origin that is not in the recording', async () => {
+      mocks.send.withArgs('Page.getNavigationHistory').resolves({
+        entries: [{url: blockedUrl}, {url: 'https://allowed.test/second'}],
+      });
+
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
+    });
+
+    it('navigates the page to about:blank before it removes the history, if the document is not allowed', async () => {
+      // The replay navigates the page first, and the recording does not contain this origin.
+      mocks.pages[0].url = () => 'https://unrecorded.test/page';
+
+      const {error} = await replay(() => {});
+
+      assert.isNull(error);
+      const goto = mocks.pages[0].goto;
+      assert.isOk(goto);
+      sinon.assert.calledOnceWithExactly(goto, 'about:blank');
+      sinon.assert.calledWith(mocks.send, 'Page.resetNavigationHistory');
+    });
+
+    it('does not change the page if the guard has an error before it removes the history', async () => {
+      sinon.stub(console, 'error');
+      mocks.pages[0].url = () => 'https://unrecorded.test/page';
+      mocks.send.withArgs('Fetch.enable').callsFake(async () => {
+        mocks.emitRequestPaused({
+          requestId: '1',
+          frameId: 'main-frame',
+          request: {url: blockedUrl},
+          responseStatusCode: 200,
+        });
+      });
+
+      const {error} = await replay(() => {});
+
+      assert.strictEqual(error?.message, blockedMessage);
+      const goto = mocks.pages[0].goto;
+      assert.isOk(goto);
+      sinon.assert.notCalled(goto);
+      sinon.assert.neverCalledWith(mocks.send, 'Page.getNavigationHistory');
+      sinon.assert.neverCalledWith(mocks.send, 'Page.resetNavigationHistory');
     });
 
     it('fails closed if Fetch.enable rejects on a prerender session', async () => {

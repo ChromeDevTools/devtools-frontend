@@ -1423,6 +1423,63 @@ describe('HeapSnapshot', () => {
     assert.isFalse(filteredNodeIndexes.has(nodeCIndex), 'nodeC (unreachable) should NOT be covered');
   });
 
+  it('ignores weak edges when calculating dominators and retained sizes', async () => {
+    // Mocking results of running the following code:
+    // root = [new Uint8Array(1000), new Uint8Array(1000), new Uint8Array(1000)]
+    const builder = new HeapSnapshotBuilder();
+    const rootNode = builder.rootNode;
+
+    const gcRootsNode = new HeapNode('(GC roots)');
+    rootNode.linkNode(gcRootsNode, 'element');
+
+    const windowNode = new HeapNode('Window', 20);
+    rootNode.linkNode(windowNode, 'shortcut');
+    gcRootsNode.linkNode(windowNode, 'element');
+
+    const arrayNode = new HeapNode('Array', 10);
+    windowNode.linkNode(arrayNode, 'property', 'root');
+    let prevBufferNode: HeapNode|null = null;
+    for (let i = 0; i < 3; i++) {
+      const typedArrayNode = new HeapNode('Uint8Array', 100);
+      arrayNode.linkNode(typedArrayNode, 'element');
+
+      const bufferNode = new HeapNode('ArrayBuffer', 1000);
+      typedArrayNode.linkNode(bufferNode, 'internal');
+      if (prevBufferNode) {
+        prevBufferNode.linkNode(bufferNode, 'weak', 'weak_next');
+      }
+      prevBufferNode = bufferNode;
+    }
+
+    const snapshot = await builder.createJSHeapSnapshot();
+    const nodeFilter = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
+    const aggregates = snapshot.aggregatesWithFilter(nodeFilter);
+    const arrayEntry = Object.entries(aggregates).find(([, aggregate]) => aggregate.name === 'Array');
+    assert.exists(arrayEntry, '"Array" row');
+    const [arrayClassKey, arrayAggregate] = arrayEntry;
+    assert.strictEqual(arrayAggregate.count, 1);
+    assert.strictEqual(arrayAggregate.maxRet, 3310);
+    assert.strictEqual(arrayAggregate.self, 10);
+
+    const arrayInstances =
+        snapshot.createNodesProviderForClass(arrayClassKey, nodeFilter).serializeItemsRange(0, 100).items as
+        HeapSnapshotModel.HeapSnapshotModel.Node[];
+    assert.lengthOf(arrayInstances, 1);
+    const arrayInstance = arrayInstances[0];
+    assert.strictEqual(arrayInstance.distance, 2);
+    assert.strictEqual(arrayInstance.retainedSize, 3310);
+    assert.strictEqual(arrayInstance.selfSize, 10);
+
+    const children = snapshot.createEdgesProvider(arrayInstance.nodeIndex).serializeItemsRange(0, 100).items as
+        HeapSnapshotModel.HeapSnapshotModel.Edge[];
+    assert.lengthOf(children, 3);
+    for (const child of children) {
+      assert.strictEqual(child.node.name, 'Uint8Array');
+      assert.strictEqual(child.node.selfSize, 100);
+      assert.strictEqual(child.node.retainedSize, 1100);
+    }
+  });
+
   describe('getDuplicateStrings', () => {
     it('finds duplicate strings and groups them', async () => {
       const builder = new HeapSnapshotBuilder();

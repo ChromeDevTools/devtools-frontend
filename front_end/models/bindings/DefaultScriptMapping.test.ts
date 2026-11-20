@@ -3,15 +3,19 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
 
@@ -209,5 +213,81 @@ describe('DefaultScriptMapping', () => {
     assert.strictEqual(defaultScriptMapping.scriptForUISourceCode(uiSourceCode), script);
     assert.strictEqual(Bindings.DefaultScriptMapping.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode), script);
     assert.strictEqual(Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode), target);
+  });
+});
+
+describe('DefaultScriptMapping discarded anonymous scripts', () => {
+  setupLocaleHooks();
+  setupRuntimeHooks();
+  setupSettingsHooks();
+
+  let universe: TestUniverse|undefined;
+  let connection: MockCDPConnection;
+  let target: SDK.Target.Target;
+  let workspace: Workspace.Workspace.WorkspaceImpl;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+    connection.setSuccessHandler('Debugger.enable',
+                                 () => ({debuggerId: 'DEBUGGER_ID' as Protocol.Runtime.UniqueDebuggerId}));
+    // Eagerly instantiate DebuggerWorkspaceBinding so its TargetManager observer
+    // registers DefaultScriptMapping before the target is created.
+    void universe.debuggerWorkspaceBinding;
+    target = universe.createTarget({connection});
+    workspace = universe.workspace;
+  });
+
+  afterEach(() => {
+    universe?.dispose();
+    universe = undefined;
+  });
+
+  it('discards anonymous scripts without sourceURL that fail to parse', async () => {
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
+    if (!debuggerModel.isReadyToPause()) {
+      await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+    }
+
+    let discardedScripts = 0;
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, () => {
+      ++discardedScripts;
+    });
+
+    for (let i = 0; i < 2000; ++i) {
+      const source = `#BAD SCRIPT# ${i}`;
+      connection.dispatchEvent('Debugger.scriptFailedToParse', {
+        scriptId: `${i + 1}` as Protocol.Runtime.ScriptId,
+        url: '',
+        startLine: 0,
+        startColumn: 0,
+        endLine: 0,
+        endColumn: source.length,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+        executionContextAuxData: {isDefault: true, type: 'default'},
+        sourceMapURL: '',
+        hasSourceURL: false,
+        isModule: false,
+        length: source.length,
+        stackTrace: {
+          callFrames: [{
+            functionName: 'generateErrorScripts',
+            scriptId: '0' as Protocol.Runtime.ScriptId,
+            url: '',
+            lineNumber: 0,
+            columnNumber: 0,
+          }],
+        },
+        scriptLanguage: Protocol.Debugger.ScriptLanguage.JavaScript,
+        embedderName: '',
+      },
+                               target.sessionId);
+    }
+
+    const codes = workspace.uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.Debugger);
+    assert.strictEqual(discardedScripts, 1100);
+    assert.lengthOf(codes, 900);
   });
 });

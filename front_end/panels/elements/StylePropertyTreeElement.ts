@@ -661,34 +661,6 @@ export class AttributeRenderer extends AttributeRendererBase {
   }
 }
 
-const LinearGradientRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LinearGradientMatch> =
-    rendererBase(SDK.CSSPropertyParserMatchers.LinearGradientMatch);
-// clang-format off
-export class LinearGradientRenderer extends LinearGradientRendererBase {
-  // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch, context: RenderingContext): LitTemplate {
-    const children = ASTUtils.children(match.node);
-    const {nodes, cssControls} = Renderer.render(children, context);
-    const angles = cssControls.get('angle');
-    const angle = angles?.length === 1 ? angles[0] : null;
-
-    if (angle instanceof InlineEditor.CSSAngle.CSSAngle) {
-      angle.updateProperty(context.matchedResult.getComputedText(match.node));
-      const args = ASTUtils.callArgs(match.node);
-      const angleNode = args[0]?.find(node => context.matchedResult.getMatch(node) instanceof
-                                          SDK.CSSPropertyParserMatchers.AngleMatch);
-      const angleMatch = angleNode && context.matchedResult.getMatch(angleNode);
-      if (angleMatch) {
-        angle.addEventListener(InlineEditor.InlineEditorUtils.ValueChangedEvent.eventName, ev => {
-          angle.updateProperty(
-              context.matchedResult.getComputedText(match.node, match => match === angleMatch ? ev.data.value : null));
-        });
-      }
-    }
-    return nodes;
-  }
-}
-
 const RelativeColorChannelRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch> =
     rendererBase(SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch);
 // clang-format off
@@ -741,9 +713,9 @@ export class ColorRenderer extends ColorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  #getValueChild(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): {
+  #getValueChild(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext,
+                 onAngle?: (angle: InlineEditor.CSSAngleUtils.Angle) => void): {
     valueChild: LitTemplate,
-    cssControls?: CSSControlMap,
     childTracingContexts?: TracingContext[],
   } {
     if (match.node.name !== 'CallExpression') {
@@ -755,7 +727,7 @@ export class ColorRenderer extends ColorRendererBase {
 
     const childTracingContexts = context.tracing?.evaluation([args], {match, context}) ?? undefined;
     const renderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
-    const {nodes, cssControls} = Renderer.render(args, renderingContext);
+    const {nodes} = Renderer.render(args, renderingContext, {onAngle});
     const valueChild = html`<span>${
         this.#propertyData ?
             getTracingTooltip(func, match.node, this.#propertyData.matchedStyles(),
@@ -765,11 +737,29 @@ export class ColorRenderer extends ColorRendererBase {
                               this.#propertyData.parentShorthand()?.property.name) :
             func}${nodes}</span>`;
 
-    return {valueChild, cssControls, childTracingContexts};
+    return {valueChild, childTracingContexts};
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): LitTemplate {
-    const {valueChild, cssControls, childTracingContexts} = this.#getValueChild(match, context);
+    let colorSwatch: InlineEditor.ColorSwatch.ColorSwatch|null = null;
+    // For hsl/hwb colors, hook up the angle swatch for the hue.
+    const onAngle = match.node.name === 'CallExpression' &&
+            context.ast.text(match.node.getChild('Callee')).match(/^(hsla?|hwba?)/) ?
+        (angle: InlineEditor.CSSAngleUtils.Angle) :
+        void => {
+          const hue = Common.Color.parseHueNumeric(`${angle.value}${angle.unit}`);
+          const color = colorSwatch?.color;
+          // A hue of 0 is a hue as well.
+          if (hue === null || !colorSwatch || !color) {
+            return;
+          }
+          if (color.is(Common.Color.Format.HSL) || color.is(Common.Color.Format.HSLA)) {
+            colorSwatch.setColor(new Common.Color.HSL(hue, color.s, color.l, color.alpha));
+          } else if (color.is(Common.Color.Format.HWB) || color.is(Common.Color.Format.HWBA)) {
+            colorSwatch.setColor(new Common.Color.HWB(hue, color.w, color.b, color.alpha));
+          }
+        }: undefined;
+    const {valueChild, childTracingContexts} = this.#getValueChild(match, context, onAngle);
     let colorText = context.matchedResult.getComputedText(match.node);
 
     if (match.relativeColor) {
@@ -803,33 +793,11 @@ export class ColorRenderer extends ColorRendererBase {
       }
     }
 
-    const swatch = this.renderColorSwatch(color, match, context);
-    context.addControl('color', swatch);
-
-    // For hsl/hwb colors, hook up the angle swatch for the hue.
-    if (cssControls && match.node.name === 'CallExpression' &&
-        context.ast.text(match.node.getChild('Callee')).match(/^(hsla?|hwba?)/)) {
-      const [angle] = cssControls.get('angle') ?? [];
-      if (angle instanceof InlineEditor.CSSAngle.CSSAngle) {
-        angle.updateProperty(swatch.color?.asString() ?? '');
-        angle.addEventListener(InlineEditor.InlineEditorUtils.ValueChangedEvent.eventName, ev => {
-          const hue = Common.Color.parseHueNumeric(ev.data.value);
-          const color = swatch.color;
-          if (!hue || !color) {
-            return;
-          }
-          if (color.is(Common.Color.Format.HSL) || color.is(Common.Color.Format.HSLA)) {
-            swatch.setColor(new Common.Color.HSL(hue, color.s, color.l, color.alpha));
-          } else if (color.is(Common.Color.Format.HWB) || color.is(Common.Color.Format.HWBA)) {
-            swatch.setColor(new Common.Color.HWB(hue, color.w, color.b, color.alpha));
-          }
-          angle.updateProperty(swatch.color?.asString() ?? '');
-        });
-      }
-    }
+    colorSwatch = this.renderColorSwatch(color, match, context);
+    context.addControl('color', colorSwatch);
     return this.#propertyData?.editable() ?
-        html`<devtools-widget ${widget(EditableContent)}>${swatch}${valueChild}</devtools-widget>` :
-        html`${swatch}${valueChild}`;
+        html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${valueChild}</devtools-widget>` :
+        html`${colorSwatch}${valueChild}`;
   }
 
   // Renders a swatch for `color`. When the user changes the color through the swatch, a `ValueEditEvent` is dispatched
@@ -1226,9 +1194,28 @@ export class AngleRenderer extends AngleRendererBase {
         void propertyData.applyStyleText(propertyData.renderedPropertyText(), true);
       }
     });
+
+    // Use the containing color or linear-gradient as the angle editor background. A color is always nearer than a
+    // gradient.
+    const container = context.findParent(match.node, SDK.CSSPropertyParserMatchers.ColorMatch) ??
+        context.findParent(match.node, SDK.CSSPropertyParserMatchers.LinearGradientMatch);
+    const backgroundNode =
+        container && !context.matchedResult.hasUnresolvedSubstitutions(container.node) ? container.node : null;
+    if (backgroundNode) {
+      cssAngle.updateProperty(context.matchedResult.getComputedText(backgroundNode));
+    }
+
     cssAngle.addEventListener('valuechanged', async ({data}) => {
       cssAngle.dispatchEvent(new ValueEditEvent(data.value));
       context.recordEdit(match, data.value);
+      if (backgroundNode) {
+        cssAngle.updateProperty(
+            context.matchedResult.getComputedText(backgroundNode, m => m === match ? data.value : null));
+      }
+      const angle = InlineEditor.CSSAngleUtils.parseText(data.value);
+      if (angle) {
+        context.callbacks.onAngle?.(angle);
+      }
       await propertyData.applyStyleText(propertyData.renderedPropertyText(), false);
     });
     cssAngle.addEventListener('unitchanged', ({data}) => {
@@ -1236,7 +1223,6 @@ export class AngleRenderer extends AngleRendererBase {
       context.recordEdit(match, data.value);
     });
 
-    context.addControl('angle', cssAngle);
     return html`<devtools-widget ${widget(EditableContent)}>${cssAngle}${angleText}</devtools-widget>`;
   }
 }
@@ -2524,7 +2510,6 @@ export function getPropertyRenderers(
     new CSSWideKeywordRenderer(stylesContainer, propertyData),
     new LightDarkColorRenderer(stylesContainer, matchedStyles, propertyData),
     new GridTemplateRenderer(),
-    new LinearGradientRenderer(),
     new AnchorFunctionRenderer(stylesContainer),
     new PositionAnchorRenderer(stylesContainer),
     new FlexGridRenderer(stylesContainer, propertyData),

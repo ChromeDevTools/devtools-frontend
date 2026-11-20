@@ -2320,24 +2320,59 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     });
   });
 
-  describe('LinearGradientRenderer', () => {
-    it('correctly connects to an angle match', () => {
-      const stylePropertyTreeElement = getTreeElement('background', 'linear-gradient(45deg, red, var(--blue))');
+  describe('AngleRenderer', () => {
+    // Renders `value` and returns its angle swatch along with a spy on `CSSAngle.updateProperty`.
+    function renderAngle(name: string, value: string) {
+      const updatePropertySpy = sinon.spy(InlineEditor.CSSAngle.CSSAngle.prototype, 'updateProperty');
+      const stylePropertyTreeElement = getTreeElement(name, value);
       stylePropertyTreeElement.updateTitle();
-      const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
-      assert.exists(swatch);
-      swatch.data = {
-        angleText: '45deg',
-        containingPane: document.createElement('div'),
-      };
+      assert.exists(stylePropertyTreeElement.valueElement);
+      const angle = stylePropertyTreeElement.valueElement.querySelector('devtools-css-angle');
+      assert.exists(angle);
+      return {angle, updatePropertySpy, valueElement: stylePropertyTreeElement.valueElement};
+    }
 
-      sinon.stub(swatch, 'dispatchEvent');
-      swatch.popOver();
-      const popover = swatch.querySelector('devtools-css-angle-editor');
-      assert.exists(popover);
-      const clock = popover.shadowRoot?.querySelector<HTMLElement>('.clock');
-      assert.exists(clock);
-      assert.strictEqual(clock.style.background, 'linear-gradient(45deg, red, blue)');
+    it('shows the color of an hsl() in the editor of its hue', () => {
+      const {updatePropertySpy} = renderAngle('color', 'hsl(120deg, 100%, 50%)');
+      sinon.assert.calledOnceWithExactly(updatePropertySpy, 'hsl(120deg, 100%, 50%)');
+    });
+
+    it('shows the color of an hsl() with the edited hue in the editor', () => {
+      const {angle, updatePropertySpy} = renderAngle('color', 'hsl(120deg, 100%, 50%)');
+      updatePropertySpy.resetHistory();
+      angle.updateAngle({value: 240, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
+      sinon.assert.calledOnceWithExactly(updatePropertySpy, 'hsl(240deg, 100%, 50%)');
+    });
+
+    it('shows the color of an hsl() with a hue that was edited to 0 in the editor', () => {
+      const {angle, updatePropertySpy} = renderAngle('color', 'hsl(120deg, 100%, 50%)');
+      updatePropertySpy.resetHistory();
+      angle.updateAngle({value: 0, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
+      sinon.assert.calledOnceWithExactly(updatePropertySpy, 'hsl(0deg, 100%, 50%)');
+    });
+
+    it('updates the hsl() color swatch when the hue angle is edited', () => {
+      const {angle, valueElement} = renderAngle('color', 'hsl(120deg, 100%, 50%)');
+      const colorSwatch = valueElement.querySelector('devtools-color-swatch');
+      assert.exists(colorSwatch);
+
+      angle.updateAngle({value: 240, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
+      assert.strictEqual(colorSwatch.color?.asString(Common.Color.Format.HSL), 'hsl(240deg 100% 50%)');
+
+      angle.updateAngle({value: 0, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
+      assert.strictEqual(colorSwatch.color?.asString(Common.Color.Format.HSL), 'hsl(0deg 100% 50%)');
+    });
+
+    it('shows the gradient in the editor of its angle', () => {
+      const {updatePropertySpy} = renderAngle('background', 'linear-gradient(45deg, red, var(--blue))');
+      sinon.assert.calledOnceWithExactly(updatePropertySpy, 'linear-gradient(45deg, red, blue)');
+    });
+
+    it('shows the gradient with the edited angle in the editor', () => {
+      const {angle, updatePropertySpy} = renderAngle('background', 'linear-gradient(45deg, red, var(--blue))');
+      updatePropertySpy.resetHistory();
+      angle.updateAngle({value: 50, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG});
+      sinon.assert.calledOnceWithExactly(updatePropertySpy, 'linear-gradient(50deg, red, blue)');
     });
   });
 

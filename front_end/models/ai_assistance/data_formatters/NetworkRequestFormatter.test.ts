@@ -823,4 +823,119 @@ describe('NetworkRequestFormatter', () => {
       );
     });
   });
+
+  describe('formatNetworkRequestTiming', () => {
+    function formatTiming(request: SDK.NetworkRequest.NetworkRequest): string {
+      const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+      calculator.updateBoundaries(request);
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(request, calculator, {
+        accessingSecurityOrigin: request.initiatorSecurityOrigin(),
+      });
+      return formatter.formatNetworkRequestTiming();
+    }
+
+    function createTiming(overrides: Partial<Protocol.Network.ResourceTiming> = {}): Protocol.Network.ResourceTiming {
+      return {
+        requestTime: 500,
+        proxyStart: 10,
+        proxyEnd: 25,
+        dnsStart: 30,
+        dnsEnd: 50,
+        connectStart: 50,
+        connectEnd: 120,
+        sslStart: 70,
+        sslEnd: 115,
+        workerStart: -1,
+        workerReady: -1,
+        workerFetchStart: -1,
+        workerRespondWithSettled: -1,
+        sendStart: 125,
+        sendEnd: 135,
+        pushStart: 0,
+        pushEnd: 0,
+        receiveHeadersStart: 185,
+        receiveHeadersEnd: 185,
+        ...overrides,
+      };
+    }
+
+    it('emits proxy, DNS, initial connection, and SSL phases in waterfall order', () => {
+      const request = createNetworkRequest();
+      request.setIssueTime(499.9, 500);
+      request.timing = createTiming();
+      request.endTime = 500.25;
+
+      const formatted = formatTiming(request);
+      assert.strictEqual(
+          formatted,
+          [
+            'Queued at (timestamp): 0\xA0s',
+            'Started at (timestamp): 100\xA0ms',
+            'Queueing (duration): 100\xA0ms',
+            'Connection start (stalled) (duration): 30\xA0ms',
+            'Proxy negotiation (duration): 15\xA0ms',
+            'DNS lookup (duration): 20\xA0ms',
+            'Initial connection (duration): 70\xA0ms',
+            'SSL (included in Initial connection) (duration): 45\xA0ms',
+            'Request sent (duration): 10\xA0ms',
+            'Waiting for server response (duration): 50\xA0ms',
+            'Content download (duration): 65\xA0ms',
+            'Duration (duration): 350\xA0ms',
+          ].join('\n'),
+      );
+    });
+
+    it('omits unused connection-setup phases while preserving active phases', () => {
+      const request = createNetworkRequest();
+      request.setIssueTime(499.9, 500);
+      request.timing = createTiming({
+        proxyStart: -1,
+        proxyEnd: -1,
+        sslStart: -1,
+        sslEnd: -1,
+      });
+      request.endTime = 500.25;
+
+      const formatted = formatTiming(request);
+      assert.strictEqual(
+          formatted,
+          [
+            'Queued at (timestamp): 0\xA0s',
+            'Started at (timestamp): 100\xA0ms',
+            'Queueing (duration): 100\xA0ms',
+            'Connection start (stalled) (duration): 30\xA0ms',
+            'DNS lookup (duration): 20\xA0ms',
+            'Initial connection (duration): 70\xA0ms',
+            'Request sent (duration): 10\xA0ms',
+            'Waiting for server response (duration): 50\xA0ms',
+            'Content download (duration): 65\xA0ms',
+            'Duration (duration): 350\xA0ms',
+          ].join('\n'),
+      );
+    });
+
+    it('emits fallback initial connection duration when a request fails before receiving headers', () => {
+      const request = createNetworkRequest();
+      request.setIssueTime(100, 100);
+      request.addExtraRequestInfo({
+        blockedRequestCookies: [],
+        includedRequestCookies: [],
+        requestHeaders: [],
+        connectTiming: {requestTime: 101},
+      });
+      request.endTime = 102.5;
+
+      const formatted = formatTiming(request);
+      assert.strictEqual(
+          formatted,
+          [
+            'Queued at (timestamp): 0\xA0s',
+            'Started at (timestamp): 1\xA0s',
+            'Connection start (stalled) (duration): 1\xA0s',
+            'Initial connection (duration): 1.5\xA0s',
+            'Duration (duration): 2.5\xA0s',
+          ].join('\n'),
+      );
+    });
+  });
 });

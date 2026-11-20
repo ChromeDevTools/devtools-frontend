@@ -13,7 +13,7 @@ allowed-tools:
    - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.
 
 2. **Inspect Request Details (`getNetworkRequestDetails`)**:
-   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (queueing, connection stalled, request sent, waiting for server response, content download, and total duration), status text, response body, and request initiator chain.
+   - Call `getNetworkRequestDetails` with the specific request `id` to obtain the full untruncated URL, full headers, timing phases (queueing, connection stalled, proxy negotiation, DNS lookup, initial connection including SSL, request sent, waiting for server response, content download, and total duration), status text, response body, and request initiator chain.
    - If `# Selected network request` was provided in this conversation, it already contains this full output for its `Request ID`; do not call `getNetworkRequestDetails` for that same `id` unless its status was `pending`.
 
 # Considerations

@@ -272,10 +272,17 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
     return formatRequestInitiatorChain(this.#request, networkLog);
   }
 
+  /**
+   * Formats waterfall timing phases into `Label: value` lines, omitting phases that did not occur.
+   *
+   * In `ResourceTiming`, `connectStart` to `connectEnd` spans the `sslStart` to `sslEnd` handshake.
+   * The `SSL` label notes this overlap because plain-text output lacks waterfall bars to show nested ranges.
+   */
   formatNetworkRequestTiming(): string {
+    const {RequestTimeRangeNames} = NetworkTimeCalculator;
     const results = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
 
-    const getDuration = (name: string): string|undefined => {
+    const getDuration = (name: NetworkTimeCalculator.RequestTimeRangeNames): string|undefined => {
       const result = results.find(r => r.name === name);
       if (!result) {
         return;
@@ -294,27 +301,43 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
       },
       {
         label: 'Queueing (duration)',
-        value: getDuration('queueing'),
+        value: getDuration(RequestTimeRangeNames.QUEUEING),
       },
       {
         label: 'Connection start (stalled) (duration)',
-        value: getDuration('blocking'),
+        value: getDuration(RequestTimeRangeNames.BLOCKING),
+      },
+      {
+        label: 'Proxy negotiation (duration)',
+        value: getDuration(RequestTimeRangeNames.PROXY),
+      },
+      {
+        label: 'DNS lookup (duration)',
+        value: getDuration(RequestTimeRangeNames.DNS),
+      },
+      {
+        label: 'Initial connection (duration)',
+        value: getDuration(RequestTimeRangeNames.CONNECTING),
+      },
+      {
+        label: 'SSL (included in Initial connection) (duration)',
+        value: getDuration(RequestTimeRangeNames.SSL),
       },
       {
         label: 'Request sent (duration)',
-        value: getDuration('sending'),
+        value: getDuration(RequestTimeRangeNames.SENDING),
       },
       {
         label: 'Waiting for server response (duration)',
-        value: getDuration('waiting'),
+        value: getDuration(RequestTimeRangeNames.WAITING),
       },
       {
         label: 'Content download (duration)',
-        value: getDuration('receiving'),
+        value: getDuration(RequestTimeRangeNames.RECEIVING),
       },
       {
         label: 'Duration (duration)',
-        value: getDuration('total'),
+        value: getDuration(RequestTimeRangeNames.TOTAL),
       },
     ];
 

@@ -832,7 +832,9 @@ export class SensorsView extends UI.Widget.VBox<ShadowRoot> {
   #cpuPerformanceNoOverrideLabel(): string {
     // Helper function to retrieve the tier labels (i18n) from the settings.
     const options =
-        SettingUIRegistration.SettingUIRegistration.resolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor).options;
+        SettingUIRegistration.SettingUIRegistration.maybeResolve(SDK.SDKSettings.cpuPerformanceSettingDescriptor)
+            ?.options ??
+        [];
     const getOptionTitle = (value: string): string => {
       const opt = options.find(o => o.value === value);
       if (!opt) {

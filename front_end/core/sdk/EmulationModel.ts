@@ -200,7 +200,8 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     const visionDeficiencySetting = settings.resolve(emulatedVisionDeficiencySettingDescriptor);
     this.#settingListeners.push(
         visionDeficiencySetting.addChangeListener(() => this.#emulateVisionDeficiency(visionDeficiencySetting.get())));
-    if (visionDeficiencySetting.get()) {
+    if (visionDeficiencySetting.get() &&
+        visionDeficiencySetting.get() !== Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType.None) {
       void this.#emulateVisionDeficiency(visionDeficiencySetting.get());
     }
 

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {describe, it} from '../conductor/mocha-interface.js';
+import {CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR} from '../helpers/console-helpers.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   openNetworkTab,
@@ -17,8 +18,13 @@ import {
   typeIntoQuickOpen,
 } from '../helpers/quick_open-helpers.js';
 import {
+  createNewSnippet,
   enableLocalOverrides,
+  getOpenSources,
+  openOverridesSubPane,
+  openSnippetsSubPane,
   openSourcesPanel,
+  runSnippet,
 } from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';
@@ -412,6 +418,51 @@ describe('Overrides panel', () => {
 
     assert.lengthOf(assertShowAllElements, 0);
     assert.lengthOf(assertOverridesContentElements, 1);
+  });
+
+  it('maps snippets when local overrides are enabled', async ({devToolsPage, inspectedPage}) => {
+    await devToolsPage.setupOverridesFSMocks();
+    await devToolsPage.useSoftMenu();
+    await inspectedPage.goToResource('empty.html');
+    await openSourcesPanel(devToolsPage);
+    await enableLocalOverrides(devToolsPage);
+    await devToolsPage.waitFor(OVERRIDES_FILESYSTEM_SELECTOR);
+
+    await openSnippetsSubPane(devToolsPage);
+    await createNewSnippet(devToolsPage, 'my_snippet_name', '\'hello\';');
+
+    await devToolsPage.waitFor('[aria-label="my_snippet_name, file"] [title="snippet:///my_snippet_name"]');
+    await devToolsPage.waitFor('[aria-label="my_snippet_name, file"] [data-badge="none"]');
+    assert.deepEqual(await getOpenSources(devToolsPage), ['my_snippet_name']);
+
+    await runSnippet(devToolsPage);
+
+    const bindingIcon = await devToolsPage.waitFor(
+        '[aria-label="my_snippet_name, file"] [data-badge="green"] devtools-file-source-icon');
+    assert.strictEqual(await bindingIcon.evaluate(el => el.getAttribute('title')),
+                       'Linked to snippet:///my_snippet_name');
+
+    const consoleMessage = await devToolsPage.waitForFunction(async () => {
+      const messages = await devToolsPage.$$(CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR);
+      for (const message of messages) {
+        const matches =
+            await message.evaluate(el => el.querySelector('.devtools-link')?.textContent === 'my_snippet_name:1' &&
+                                       el.querySelector('.console-message-text')?.textContent === '\'hello\'');
+        if (matches) {
+          return message;
+        }
+      }
+      return null;
+    });
+
+    await devToolsPage.click('.devtools-link', {root: consoleMessage});
+    await devToolsPage.waitFor('[aria-label="Code editor"]');
+    assert.deepEqual(await getOpenSources(devToolsPage), ['my_snippet_name']);
+
+    await openOverridesSubPane(devToolsPage);
+    await devToolsPage.waitFor('[aria-label="Clear configuration"]');
+    const overrideFiles = await devToolsPage.$$('[aria-label="Overrides panel"] .navigator-file-tree-item');
+    assert.lengthOf(overrideFiles, 0);
   });
 });
 

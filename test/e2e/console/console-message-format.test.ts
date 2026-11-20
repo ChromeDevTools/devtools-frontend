@@ -4,9 +4,12 @@
 
 import {assert} from 'chai';
 
+import {expectError} from '../../conductor/events.js';
 import {describe, it} from '../conductor/mocha-interface.js';
 import {
+  CONSOLE_ALL_MESSAGES_SELECTOR,
   getConsoleMessages,
+  navigateToConsoleTab,
   showVerboseMessages,
   waitForConsoleMessagesToBeNonEmpty,
 } from '../helpers/console-helpers.js';
@@ -309,5 +312,61 @@ describe('The Console Tab', () => {
         'After iframe navigation.',
       ]);
     });
+  });
+
+  it('formats XML documents with preserved tag casing', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('empty.html');
+    await navigateToConsoleTab(devToolsPage);
+
+    await inspectedPage.evaluate(() => {
+      // eslint-disable-next-line no-console
+      console.dirxml(new DOMParser().parseFromString('<MixedCase> Test </MixedCase>', 'text/xml'));
+      const danglingNode = document.implementation.createDocument('', 'books');
+      // eslint-disable-next-line no-console
+      console.dirxml(danglingNode.createElement('Book'));
+    });
+
+    await waitForConsoleMessagesToBeNonEmpty(devToolsPage, 2);
+    await devToolsPage.waitForFunction(async () => {
+      const trees = await devToolsPage.$$('.console-message-text devtools-tree');
+      return trees.length === 2;
+    });
+    const [documentTree, elementTree] = await devToolsPage.$$('.console-message-text devtools-tree');
+    await Promise.all([
+      devToolsPage.waitFor('li[role="treeitem"][aria-expanded="false"]', documentTree),
+      devToolsPage.waitFor('li[role="treeitem"]', elementTree),
+    ]);
+
+    // Hovering and selecting a detached DOMParser document node triggers Overlay.highlightNode.
+    const highlightErrorMessage =
+        'Request Overlay.highlightNode failed. {"code":-32600,"message":"The node\'s document is not active"}';
+    expectError(highlightErrorMessage);
+    expectError(highlightErrorMessage);
+
+    await devToolsPage.click('li[role="treeitem"][aria-expanded="false"]', {
+      root: documentTree,
+      clickOptions: {count: 2},
+    });
+    const messages = await devToolsPage.waitForFunction(async () => {
+      return await devToolsPage.evaluate((selector: string) => {
+        const messageElements = Array.from(document.querySelectorAll(selector));
+        if (messageElements.length !== 2) {
+          return undefined;
+        }
+        const documentTreeEl = messageElements[0].querySelector('devtools-tree');
+        const expandedChild = documentTreeEl?.shadowRoot?.querySelector(
+            'li[role="treeitem"][aria-expanded="true"] ~ ol.expanded li[role="treeitem"]',
+        );
+        if (!expandedChild || (expandedChild.deepTextContent() || '') === '') {
+          return undefined;
+        }
+        const textContents = messageElements.map(message => message.deepTextContent() || '');
+        return textContents.every(text => text !== '') ? textContents : undefined;
+      }, CONSOLE_ALL_MESSAGES_SELECTOR);
+    });
+    assert.deepEqual(messages, [
+      `#document (${inspectedPage.getResourcesPath()}/empty.html)<MixedCase>\u200b Test \u200b</MixedCase>\u200b`,
+      '<Book>\u200b</Book>\u200b',
+    ]);
   });
 });

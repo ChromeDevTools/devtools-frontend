@@ -20,9 +20,10 @@ import {
   waitForCSSPropertyValue,
   waitForElementsStyleSection,
 } from '../helpers/elements-helpers.js';
-import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
+import {setIgnoreListPattern, togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
+  expandSourceTreeItem,
   getBreakpointDecorators,
   getCallFrameNames,
   getValuesForScope,
@@ -31,15 +32,18 @@ import {
   openSourceCodeEditorForFile,
   openSourcesPanel,
   PAUSE_INDICATOR_SELECTOR,
+  readSourcesTreeView,
   reloadPageAndWaitForSourceFile,
   removeBreakpointForLine,
   RESUME_BUTTON,
   retrieveCodeMirrorEditorContent,
   retrieveTopCallFrameScriptLocation,
   retrieveTopCallFrameWithoutResuming,
+  SourceFileEvents,
   STEP_INTO_BUTTON,
   STEP_OUT_BUTTON,
   STEP_OVER_BUTTON,
+  waitForSourceFiles,
   waitForStackTopMatch,
 } from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
@@ -694,6 +698,95 @@ describe('The Sources Tab', function() {
 
     await devToolsPage.waitFor('[aria-label="app.scss, file"]');
   });
+});
+
+describe('The Sources Tab', () => {
+  setup({devToolsSettings: {'css-source-maps-enabled': true}});
+
+  async function readSourcesTreeExcludingPuppeteer(devToolsPage: DevToolsPage): Promise<string[]> {
+    const tree = await readSourcesTreeView(devToolsPage);
+    return tree.filter(item => !item.startsWith('pptr:'));
+  }
+
+  it('adds and removes CSS sourcemap sources when toggling CSS source maps setting',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('empty.html');
+       await openSourcesPanel(devToolsPage);
+
+       await waitForSourceFiles(
+           devToolsPage,
+           SourceFileEvents.ADDED_TO_SOURCE_TREE,
+           files => files.some(file => file.endsWith('sourcemap-origin.scss')) &&
+               files.some(file => file.endsWith('sourcemap-style-2.scss')),
+           async () => {
+             await inspectedPage.evaluate(() => {
+               const link = document.createElement('link');
+               link.rel = 'stylesheet';
+               link.href = '/test/e2e/resources/sources/sourcemap-origin.css';
+               document.head.appendChild(link);
+
+               const sourceMap = JSON.stringify({
+                 version: 3,
+                 mappings: 'AAAA,uBAAwB,CACpB,UAAW,CACP,MAAM,CAAE,cAAc,CACtB,KAAK,CAAE,IAAI',
+                 sources: ['sourcemap-style-2.scss'],
+                 names: [],
+                 file: 'sourcemap-style-2.css',
+               });
+               const style = document.createElement('style');
+               style.textContent = '@media (min-width: 6px){#container{border:1px solid blue;color:blue}}\n' +
+                   `/*# sourceURL=${location.origin}/test/e2e/resources/sources/sourcemap-style-2.css */\n` +
+                   `/*# sourceMappingURL=data:application/json;charset=utf-8,${encodeURIComponent(sourceMap)} */`;
+               document.head.appendChild(style);
+             });
+           },
+       );
+
+       await expandSourceTreeItem(devToolsPage, '[aria-label="top, frame"]');
+       await expandSourceTreeItem(devToolsPage, `[aria-label="localhost:${inspectedPage.serverPort}, domain"]`);
+       await expandSourceTreeItem(devToolsPage, '[aria-label="test/e2e/resources, nw-folder"]');
+       await expandSourceTreeItem(devToolsPage, '[aria-label="sources, nw-folder"]');
+
+       const expectedTreeWithSourceMaps = [
+         'top',
+         'localhost:XXXX',
+         'test/e2e/resources',
+         'sources',
+         'sourcemap-origin.css',
+         'sourcemap-origin.scss',
+         'sourcemap-style-2.css',
+         'sourcemap-style-2.scss',
+         'empty.html',
+       ];
+       const expectedTreeWithoutSourceMaps = [
+         'top',
+         'localhost:XXXX',
+         'test/e2e/resources',
+         'sources',
+         'sourcemap-origin.css',
+         'sourcemap-style-2.css',
+         'empty.html',
+       ];
+
+       await devToolsPage.waitForFunction(async () => {
+         const tree = await readSourcesTreeExcludingPuppeteer(devToolsPage);
+         return tree.includes('sourcemap-origin.scss') && tree.includes('sourcemap-style-2.scss');
+       });
+       assert.deepEqual(await readSourcesTreeExcludingPuppeteer(devToolsPage), expectedTreeWithSourceMaps);
+
+       await togglePreferenceInSettingsTab(devToolsPage, 'CSS source maps', false);
+       await devToolsPage.waitForFunction(async () => {
+         const tree = await readSourcesTreeExcludingPuppeteer(devToolsPage);
+         return !tree.some(item => item.endsWith('.scss'));
+       });
+       assert.deepEqual(await readSourcesTreeExcludingPuppeteer(devToolsPage), expectedTreeWithoutSourceMaps);
+
+       await togglePreferenceInSettingsTab(devToolsPage, 'CSS source maps', true);
+       await devToolsPage.waitForFunction(async () => {
+         const tree = await readSourcesTreeExcludingPuppeteer(devToolsPage);
+         return tree.includes('sourcemap-origin.scss') && tree.includes('sourcemap-style-2.scss');
+       });
+       assert.deepEqual(await readSourcesTreeExcludingPuppeteer(devToolsPage), expectedTreeWithSourceMaps);
+     });
 });
 
 describe('The Elements Tab', () => {

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {describe, it} from '../../../test/api/mocha-interface.js';
+import {describe, type InspectedPage, it} from '../../../test/api/mocha-interface.js';
 import type * as Common from '../common/common.js';
 
 import * as SDK from './sdk.js';
@@ -31,6 +31,28 @@ function waitForRequestFinished(
     networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, listener);
   });
   return {promise, dispose};
+}
+
+async function fetchAndWaitForFinished(
+    networkManager: SDK.NetworkManager.NetworkManager,
+    inspectedPage: InspectedPage,
+    url: string,
+    urlPattern: RegExp,
+    ): Promise<SDK.NetworkRequest.NetworkRequest> {
+  const waiter = waitForRequestFinished(networkManager, urlPattern);
+  try {
+    const [request] = await Promise.all([
+      waiter.promise,
+      inspectedPage.evaluate(
+          async targetUrl => {
+            await fetch(targetUrl).then(response => response.text());
+          },
+          url),
+    ]);
+    return request;
+  } finally {
+    waiter.dispose();
+  }
 }
 
 describe('NetworkRequest', () => {
@@ -87,5 +109,61 @@ describe('NetworkRequest', () => {
     } finally {
       cachedWaiter.dispose();
     }
+  });
+
+  it('tracks timing, latency, and duration for delayed responses', async ({inspectedPage, universe}) => {
+    const timerThreshold = 15;
+    const primaryTarget = universe.targetManager.primaryPageTarget();
+    assert.exists(primaryTarget);
+    const networkManager = primaryTarget.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+
+    // Ensure Network.enable has settled on primaryTarget before fetching on
+    // inspectedPage's separate CDP session.
+    await primaryTarget.networkAgent().invoke_setCacheDisabled({cacheDisabled: false});
+
+    const resourcesPath = inspectedPage.getResourcesPath();
+    const request1Url =
+        `${resourcesPath}/network/search-result-1.js?waitBeforeHeaders=100&waitBetweenChunks=100&numChunks=2`;
+    const request2Url = `${resourcesPath}/network/search-result-1.js?waitBeforeHeaders=100`;
+
+    const request1 = await fetchAndWaitForFinished(
+        networkManager,
+        inspectedPage,
+        request1Url,
+        /search-result-1\.js\?waitBeforeHeaders=100&waitBetweenChunks=100&numChunks=2$/,
+    );
+    assert.strictEqual(request1.url(), request1Url);
+    assert.strictEqual(request1.statusCode, 200);
+    assert.isAtLeast(request1.latency * 1000, 100 - timerThreshold);
+    assert.isAtLeast(request1.duration * 1000, 300 - timerThreshold);
+    assert.isAbove(request1.startTime, 0);
+    assert.isAtLeast(request1.responseReceivedTime, request1.startTime);
+    assert.isAbove(request1.endTime, request1.responseReceivedTime);
+    assert.exists(request1.timing);
+    assert.isAbove(request1.timing.requestTime, 0);
+    assert.isAtLeast(request1.timing.sendEnd, request1.timing.sendStart);
+    assert.isAtLeast(request1.timing.receiveHeadersStart, request1.timing.sendEnd);
+    assert.isAtLeast(request1.timing.receiveHeadersEnd, request1.timing.receiveHeadersStart);
+    assert.isAbove(request1.duration * 1000, request1.timing.receiveHeadersEnd);
+
+    const request2 = await fetchAndWaitForFinished(
+        networkManager,
+        inspectedPage,
+        request2Url,
+        /search-result-1\.js\?waitBeforeHeaders=100$/,
+    );
+    assert.strictEqual(request2.url(), request2Url);
+    assert.strictEqual(request2.statusCode, 200);
+    assert.isAtLeast(request2.latency * 1000, 100 - timerThreshold);
+    assert.isAtLeast(request2.duration * 1000, 100 - timerThreshold);
+    assert.isAbove(request2.startTime, 0);
+    assert.isAtLeast(request2.responseReceivedTime, request2.startTime);
+    assert.isAtLeast(request2.endTime, request2.responseReceivedTime);
+    assert.exists(request2.timing);
+    assert.isAbove(request2.timing.requestTime, 0);
+    assert.isAtLeast(request2.timing.sendEnd, request2.timing.sendStart);
+    assert.isAtLeast(request2.timing.receiveHeadersStart, request2.timing.sendEnd);
+    assert.isAtLeast(request2.timing.receiveHeadersEnd, request2.timing.receiveHeadersStart);
   });
 });

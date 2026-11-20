@@ -52,6 +52,13 @@ function setupEnvironmentHooks() {
   setupSettingsHooks();
   setupRuntimeHooks();
 
+  beforeEach(() => {
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    Common.Settings.Settings.instance()
+        .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+        .set(true);
+  });
+
   afterEach(() => {
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     for (const target of SDK.TargetManager.TargetManager.instance().targets()) {

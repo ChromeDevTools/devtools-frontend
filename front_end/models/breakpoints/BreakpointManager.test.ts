@@ -1637,6 +1637,9 @@ describe('BreakpointManager', () => {
     });
 
     it('can move breakpoints to network files that are set in override files', async () => {
+      backend.universe.settings
+          .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+          .set(true);
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons

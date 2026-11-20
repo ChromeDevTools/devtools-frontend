@@ -11,7 +11,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as DevToolsState from '../../models/devtools_state/devtools_state.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {findMenuItemWithLabel, getMenu, getMenuItemLabels} from '../../testing/ContextMenuHelpers.js';
+import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -35,8 +36,8 @@ describe('StateChangesStatusBarPills', () => {
     cacheDisabledSetting = universe.settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor);
   });
 
-  async function createWidget() {
-    const view = createViewFunctionStub(StateChangesStatusBarPills);
+  async function createWidget(outputValues?: PanelCommon.StateChangesStatusBarPills.ViewOutput) {
+    const view = createViewFunctionStub(StateChangesStatusBarPills, outputValues);
     const widget = new StateChangesStatusBarPills(undefined, [universe.stateManager], view);
     renderElementIntoDOM(widget);
     await view.nextInput;
@@ -116,6 +117,75 @@ describe('StateChangesStatusBarPills', () => {
     assert.isFalse(universe.stateManager.hasEventListeners(DevToolsState.State.Events.STATE_CHANGED));
   });
 
+  it('updates visiblePillCount when fewer pills fit', async () => {
+    universe.cpuThrottlingManager.setCPUThrottlingRate(4);
+    cacheDisabledSetting.set(true);
+    // |<-------------------- 210 -------------------->|
+    // [pill 100] (8) [pill 100]   (8) [more 24] (8) [reset 50]
+    // Space without "more": 210 - 50 - 8 = 152 (< 208 for 2 pills).
+    // Space with "more": 152 - 24 - 8 = 120 (fits 1 pill of 100).
+    const {view} = await createWidget({
+      containerWidth: () => 210,
+      containerColumnGap: () => 8,
+      pillsColumnGap: () => 8,
+      pillWidths: [() => 100, () => 100],
+      moreButtonWidth: () => 24,
+      resetAllButtonWidth: () => 50,
+    });
+
+    assert.strictEqual(view.input.visiblePillCount, 1);
+  });
+
+  it('reserves space for the overflow button when pills overflow', async () => {
+    universe.cpuThrottlingManager.setCPUThrottlingRate(4);
+    cacheDisabledSetting.set(true);
+    universe.settings.resolve(SDK.SDKSettings.javaScriptDisabledSettingDescriptor).set(true);
+    // |<------------------------- 278 ------------------------->|
+    // [pill 100] (8) [pill 100] (8) [pill 100]   (8) [more 24] (8) [reset 50]
+    // Space without "more": 278 - 50 - 8 = 220 (fits 2 pills = 208, not 3 = 316).
+    // Space with "more": 220 - 24 - 8 = 188 (fits only 1 pill, since 2 need 208).
+    const {view} = await createWidget({
+      containerWidth: () => 278,
+      containerColumnGap: () => 8,
+      pillsColumnGap: () => 8,
+      pillWidths: [() => 100, () => 100, () => 100],
+      moreButtonWidth: () => 24,
+      resetAllButtonWidth: () => 50,
+    });
+
+    assert.strictEqual(view.input.visiblePillCount, 1);
+  });
+
+  it('collapses pills that do not fit into the overflow menu', async () => {
+    universe.cpuThrottlingManager.setCPUThrottlingRate(4);
+    cacheDisabledSetting.set(true);
+    const widget = new StateChangesStatusBarPills(undefined, [universe.stateManager]);
+    renderElementIntoDOM(widget, {includeCommonStyles: true, width: 300});
+    await widget.updateComplete;
+
+    assert.lengthOf(widget.contentElement.querySelectorAll('.pill:not(.collapsed)'), 1);
+    assert.lengthOf(widget.contentElement.querySelectorAll('.pill.collapsed'), 1);
+    assert.exists(widget.contentElement.querySelector('devtools-button.more-pills:not(.collapsed)'));
+  });
+
+  it('updates visiblePillCount when the widget is resized', async () => {
+    universe.cpuThrottlingManager.setCPUThrottlingRate(4);
+    cacheDisabledSetting.set(true);
+    const widget = new StateChangesStatusBarPills(undefined, [universe.stateManager]);
+    renderElementIntoDOM(widget, {includeCommonStyles: true, width: 600});
+    await widget.updateComplete;
+
+    assert.lengthOf(widget.contentElement.querySelectorAll('.pill:not(.collapsed)'), 2);
+
+    assert.exists(widget.element.parentElement);
+    widget.element.parentElement.style.width = '300px';
+    await doubleRaf();
+    await widget.updateComplete;
+
+    assert.lengthOf(widget.contentElement.querySelectorAll('.pill:not(.collapsed)'), 1);
+    assert.lengthOf(widget.contentElement.querySelectorAll('.pill.collapsed'), 1);
+  });
+
   describe('view', () => {
     function createPill(
         id: string,
@@ -131,11 +201,16 @@ describe('StateChangesStatusBarPills', () => {
       };
     }
 
-    function renderView(pills: PanelCommon.StateChangesStatusBarPills.Pill[], onResetAll = sinon.spy(),
-                        width = 600): HTMLElement {
-      const target = document.createElement('div');
-      DEFAULT_VIEW({pills, onResetAll}, undefined, target);
-      return renderElementIntoDOM(target, {includeCommonStyles: true, width});
+    function renderView(
+        pills: PanelCommon.StateChangesStatusBarPills.Pill[],
+        onResetAll = sinon.spy(),
+        width = 600,
+        visiblePillCount = pills.length,
+        output: PanelCommon.StateChangesStatusBarPills.ViewOutput = {},
+        ): HTMLElement {
+      const target = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true, width});
+      DEFAULT_VIEW({pills, visiblePillCount, onResetAll}, output, target);
+      return target;
     }
 
     it('renders only the styles when there are no pills', () => {
@@ -166,9 +241,9 @@ describe('StateChangesStatusBarPills', () => {
       const secondPill = createPill('cache-disabled', 'Cache disabled');
       const target = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true});
       const firstPill = createPill('cpu-throttling', 'CPU (4×)', () => {
-        DEFAULT_VIEW({pills: [secondPill], onResetAll: sinon.spy()}, undefined, target);
+        DEFAULT_VIEW({pills: [secondPill], visiblePillCount: 1, onResetAll: sinon.spy()}, {}, target);
       });
-      DEFAULT_VIEW({pills: [firstPill, secondPill], onResetAll: sinon.spy()}, undefined, target);
+      DEFAULT_VIEW({pills: [firstPill, secondPill], visiblePillCount: 2, onResetAll: sinon.spy()}, {}, target);
 
       const [firstButton, secondButton] = target.querySelectorAll<Buttons.Button.Button>('.pill devtools-button');
       firstButton.focus();
@@ -181,14 +256,30 @@ describe('StateChangesStatusBarPills', () => {
       const firstPill = createPill('cpu-throttling', 'CPU (4×)');
       const target = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true});
       const secondPill = createPill('cache-disabled', 'Cache disabled', () => {
-        DEFAULT_VIEW({pills: [firstPill], onResetAll: sinon.spy()}, undefined, target);
+        DEFAULT_VIEW({pills: [firstPill], visiblePillCount: 1, onResetAll: sinon.spy()}, {}, target);
       });
-      DEFAULT_VIEW({pills: [firstPill, secondPill], onResetAll: sinon.spy()}, undefined, target);
+      DEFAULT_VIEW({pills: [firstPill, secondPill], visiblePillCount: 2, onResetAll: sinon.spy()}, {}, target);
 
       const [, secondButton] = target.querySelectorAll<Buttons.Button.Button>('.pill devtools-button');
       const resetAllButton = target.querySelector<Buttons.Button.Button>('.reset-all');
       secondButton.focus();
       secondButton.click();
+
+      assert.strictEqual(document.activeElement, resetAllButton);
+    });
+
+    it('moves focus to "Reset all" when resetting the last visible pill with overflow', () => {
+      const secondPill = createPill('cache-disabled', 'Cache disabled');
+      const target = renderElementIntoDOM(document.createElement('div'), {includeCommonStyles: true});
+      const firstPill = createPill('cpu-throttling', 'CPU (4×)', () => {
+        DEFAULT_VIEW({pills: [secondPill], visiblePillCount: 1, onResetAll: sinon.spy()}, {}, target);
+      });
+      DEFAULT_VIEW({pills: [firstPill, secondPill], visiblePillCount: 1, onResetAll: sinon.spy()}, {}, target);
+
+      const [firstButton] = target.querySelectorAll<Buttons.Button.Button>('.pill devtools-button');
+      const resetAllButton = target.querySelector<Buttons.Button.Button>('.reset-all');
+      firstButton.focus();
+      firstButton.click();
 
       assert.strictEqual(document.activeElement, resetAllButton);
     });
@@ -220,6 +311,40 @@ describe('StateChangesStatusBarPills', () => {
       renderView([createPill('cpu-throttling', 'CPU (4×)'), createPill('cache-disabled', 'Cache disabled')]);
 
       await assertScreenshot('status_bar/state_changes_pills.png');
+    });
+
+    it('returns layout callbacks on output', () => {
+      const output: PanelCommon.StateChangesStatusBarPills.ViewOutput = {};
+      const pills = [createPill('cpu-throttling', 'CPU (4×)'), createPill('cache-disabled', 'Cache disabled')];
+
+      renderView(pills, sinon.spy(), 300, 1, output);
+
+      assert.strictEqual(output.containerWidth?.(), 300);
+      assert.isAbove(output.containerColumnGap?.() ?? 0, 0);
+      assert.isAbove(output.pillsColumnGap?.() ?? 0, 0);
+      assert.lengthOf(output.pillWidths ?? [], 2);
+      assert.isAbove(output.pillWidths?.[0]() ?? 0, 0);
+      assert.isAbove(output.moreButtonWidth?.() ?? 0, 0);
+      assert.isAbove(output.resetAllButtonWidth?.() ?? 0, 0);
+    });
+
+    it('shows collapsed pills in an overflow menu', async () => {
+      const onReset = sinon.spy();
+      const pills = [createPill('cpu-throttling', 'CPU (4×)'), createPill('cache-disabled', 'Cache disabled', onReset)];
+      const target = renderView(pills, sinon.spy(), 300, 1);
+
+      const moreButton = target.querySelector<Buttons.Button.Button>('devtools-button.more-pills:not(.collapsed)');
+      assert.exists(moreButton);
+      assert.strictEqual(moreButton.title, 'More changed settings');
+
+      const menu = getMenu(() => moreButton.click());
+      assert.deepEqual(getMenuItemLabels(menu.defaultSection()), ['Enable cache']);
+      const item = findMenuItemWithLabel(menu.defaultSection(), 'Enable cache');
+      assert.exists(item);
+      menu.invokeHandler(item.id());
+
+      sinon.assert.calledOnce(onReset);
+      await assertScreenshot('status_bar/state_changes_pills_narrow.png');
     });
   });
 

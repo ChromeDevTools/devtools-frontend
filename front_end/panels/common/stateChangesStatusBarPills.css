@@ -6,6 +6,7 @@
 
 @scope to (devtools-widget > *) {
   :scope {
+    position: relative;
     display: flex;
     /* Overrides `flex: none` of the status bar items, so that the pills take the free width. */
     flex: auto;
@@ -29,11 +30,22 @@
     padding-inline-end: var(--sys-size-2);
   }
 
+  .more-pills,
   .reset-all {
     flex: none;
     align-self: center;
     /* The button is higher than the pills. The negative margin stops it from making the status bar higher. */
     margin-block: calc(-1 * var(--sys-size-3));
+  }
+
+  .collapsed {
+    position: absolute;
+    inset-inline-start: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .reset-all {
     margin-inline-start: auto;
   }
 }

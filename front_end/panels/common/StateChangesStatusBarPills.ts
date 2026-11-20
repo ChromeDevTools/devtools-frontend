@@ -45,6 +45,11 @@ const UIStrings = {
    */
   enableJavaScript: 'Enable JavaScript',
   /**
+   * @description Tooltip and accessible name of the button in the status bar at the bottom of DevTools.
+   * The button opens a menu with the changed settings pills that do not fit.
+   */
+  morePills: 'More changed settings',
+  /**
    * @description Text and tooltip of a button in the status bar at the bottom of DevTools. The button
    * changes all settings that have a pill in the status bar back to their default values.
    */
@@ -53,7 +58,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/common/StateChangesStatusBarPills.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {ref, repeat} = Directives;
+const {classMap, ref, repeat} = Directives;
 
 const cpuThrottlingRateFormatter = i18n.NumberFormatter.defineFormatter({maximumFractionDigits: 1});
 
@@ -67,12 +72,35 @@ export interface Pill {
 
 export interface ViewInput {
   pills: Pill[];
+  visiblePillCount: number;
   onResetAll: () => void;
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export interface ViewOutput {
+  containerWidth?: () => number;
+  containerColumnGap?: () => number;
+  pillsColumnGap?: () => number;
+  pillWidths?: Array<() => number>;
+  moreButtonWidth?: () => number;
+  resetAllButtonWidth?: () => number;
+}
 
-export const DEFAULT_VIEW: View = (input, _output, target) => {
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+function showOverflowMenu(event: Event, overflowPills: Pill[]): void {
+  const target = event.currentTarget as HTMLElement;
+  const rect = target.getBoundingClientRect();
+  const menu = new UI.ContextMenu.ContextMenu(event, {x: rect.left, y: rect.bottom});
+  for (const pill of overflowPills) {
+    menu.defaultSection().appendItem(pill.resetTitle, pill.onReset, {
+      jslogContext: 'reset',
+    });
+  }
+  void menu.show();
+}
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const overflowPills = input.pills.slice(input.visiblePillCount);
   const focusableElements: Array<Element|undefined> = [];
   const handlePillReset = (pill: Pill, index: number): void => {
     const currElement = focusableElements[index];
@@ -82,12 +110,25 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     }
     pill.onReset();
   };
+  output.containerWidth = () => target.clientWidth;
+  output.containerColumnGap = () => parseFloat(getComputedStyle(target).columnGap) || 0;
+  output.pillWidths = [];
+
   // clang-format off
   render(html`
     <style>${stateChangesStatusBarPillsStyles}</style>
     ${input.pills.length === 0 ? nothing : html`
-      <div class="pills">${repeat(input.pills, pill => pill.id, (pill, index) => html`
-        <span class="devtools-pill pill" jslog=${VisualLogging.item(pill.id)}>
+      <div class="pills" ${ref(element => {
+        output.pillsColumnGap = element ? () => parseFloat(getComputedStyle(element).columnGap) || 0 : undefined;
+      })}>${repeat(input.pills, pill => pill.id, (pill, index) => html`
+        <span
+          ${ref(element => {
+            if (element instanceof HTMLElement && output.pillWidths) {
+              output.pillWidths[index] = () => element.offsetWidth;
+            }
+          })}
+          class=${classMap({'devtools-pill': true, pill: true, collapsed: index >= input.visiblePillCount})}
+          jslog=${VisualLogging.item(pill.id)}>
           ${pill.title}
           <devtools-button
             .iconName=${'cross'}
@@ -97,20 +138,36 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
             .accessibleLabel=${pill.resetTitle}
             .jslogContext=${'reset'}
             ${ref(element => {
-              focusableElements[index] = element;
+              if (index < input.visiblePillCount) {
+                focusableElements[index] = element;
+              }
             })}
             @click=${() => handlePillReset(pill, index)}></devtools-button>
         </span>`)}</div>
       <devtools-button
+        ${ref(element => {
+          output.moreButtonWidth = element instanceof HTMLElement ? () => element.offsetWidth : undefined;
+          if (overflowPills.length > 0) {
+            focusableElements[input.visiblePillCount] = element;
+          }
+        })}
+        class=${classMap({'more-pills': true, collapsed: overflowPills.length === 0})}
+        .iconName=${'chevron-double-right'}
+        .variant=${Buttons.Button.Variant.ICON}
+        .size=${Buttons.Button.Size.SMALL}
+        .title=${i18nString(UIStrings.morePills)}
+        .accessibleLabel=${i18nString(UIStrings.morePills)}
+        .jslogContext=${'more'}
+        @click=${(event: Event) => showOverflowMenu(event, overflowPills)}></devtools-button>
+      <devtools-button
+        ${ref(element => {
+          output.resetAllButtonWidth = element instanceof HTMLElement ? () => element.offsetWidth : undefined;
+          focusableElements[input.visiblePillCount] = element;
+        })}
         class="reset-all"
         .variant=${Buttons.Button.Variant.TEXT}
         .title=${i18nString(UIStrings.resetAll)}
         .jslogContext=${'state-reset-all'}
-        ${ref(element => {
-          if (input.pills.length > 1) {
-            focusableElements[input.pills.length] = element;
-          }
-        })}
         @click=${input.onResetAll}>${i18nString(UIStrings.resetAll)}</devtools-button>
     `}
   `, target, {container: {attributes: {jslog: `${VisualLogging.section('state-changes')}`}}});
@@ -147,13 +204,31 @@ function toPill(state: DevToolsState.State.State, onReset: () => void): Pill {
   return {id: state.kind, title: pillTitle(state), resetTitle: pillResetTitle(state), onReset};
 }
 
+function countFittingPills(pillWidths: Array<() => number>, maxWidth: number, gap: number): number {
+  let usedWidth = 0;
+  for (let i = 0; i < pillWidths.length; i++) {
+    usedWidth += pillWidths[i]() + (i > 0 ? gap : 0);
+    if (usedWidth > maxWidth) {
+      return i;
+    }
+  }
+  return pillWidths.length;
+}
+
 /** Shows a pill for each state change in the status bar. The user can reset one change or all changes. */
 export class StateChangesStatusBarPills extends UI.Widget.Widget {
   static override readonly INJECT: readonly[typeof DevToolsState.StateManager.StateManager] =
       [DevToolsState.StateManager.StateManager] as const;
 
   readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
   readonly #stateManager: DevToolsState.StateManager.StateManager;
+  readonly #resizeObserver = new ResizeObserver(() => {
+    if (this.#updateVisiblePillCount()) {
+      this.requestUpdate();
+    }
+  });
+  #visiblePillCount = Infinity;
 
   constructor(
       element: HTMLElement|undefined,
@@ -168,10 +243,12 @@ export class StateChangesStatusBarPills extends UI.Widget.Widget {
   override wasShown(): void {
     super.wasShown();
     this.#stateManager.addEventListener(DevToolsState.State.Events.STATE_CHANGED, this.requestUpdate, this);
+    this.#resizeObserver.observe(this.contentElement);
     this.requestUpdate();
   }
 
   override willHide(): void {
+    this.#resizeObserver.disconnect();
     this.#stateManager.removeEventListener(DevToolsState.State.Events.STATE_CHANGED, this.requestUpdate, this);
     super.willHide();
   }
@@ -179,14 +256,42 @@ export class StateChangesStatusBarPills extends UI.Widget.Widget {
   override performUpdate(): void {
     const pills =
         this.#stateManager.nonDefaultStates().map(state => toPill(state, () => this.#stateManager.reset(state.kind)));
-    const viewInput: ViewInput = {
-      pills,
-      onResetAll: () => {
-        for (const pill of pills) {
-          pill.onReset();
-        }
-      },
+    const onResetAll = (): void => {
+      for (const pill of pills) {
+        pill.onReset();
+      }
     };
-    this.#view(viewInput, undefined, this.contentElement);
+    const renderView = (): void => {
+      const visiblePillCount = Math.min(this.#visiblePillCount, pills.length);
+      this.#view({pills, visiblePillCount, onResetAll}, this.#viewOutput, this.contentElement);
+    };
+    renderView();
+    if (this.#updateVisiblePillCount()) {
+      renderView();
+    }
+  }
+
+  #updateVisiblePillCount(): boolean {
+    const pillWidths = this.#viewOutput.pillWidths;
+    if (!pillWidths?.length) {
+      this.#visiblePillCount = Infinity;
+      return false;
+    }
+    const containerWidth = this.#viewOutput.containerWidth?.();
+    const moreButtonWidth = this.#viewOutput.moreButtonWidth?.();
+    const resetAllButtonWidth = this.#viewOutput.resetAllButtonWidth?.();
+    if (!containerWidth || !moreButtonWidth || !resetAllButtonWidth) {
+      return false;
+    }
+    const containerColumnGap = this.#viewOutput.containerColumnGap?.() ?? 0;
+    const pillsColumnGap = this.#viewOutput.pillsColumnGap?.() ?? 0;
+    const maxWidth = containerWidth - resetAllButtonWidth - containerColumnGap;
+    let nextCount = countFittingPills(pillWidths, maxWidth, pillsColumnGap);
+    if (nextCount < pillWidths.length) {
+      nextCount = countFittingPills(pillWidths, maxWidth - moreButtonWidth - containerColumnGap, pillsColumnGap);
+    }
+    const displayedCount = Math.min(this.#visiblePillCount, pillWidths.length);
+    this.#visiblePillCount = nextCount < pillWidths.length ? nextCount : Infinity;
+    return nextCount !== displayedCount;
   }
 }

@@ -16,6 +16,7 @@ import {expectCall} from '../../testing/ExpectStubCall.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Settings from '../../ui/settings/settings.js';
 
 import * as Console from './console.js';
 
@@ -38,6 +39,7 @@ describeWithEnvironment('ConsoleContextSelector', () => {
         .resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     registerNoopActions(['console.clear', 'console.clear.history', 'console.create-pin']);
 
+    Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleEagerEvalSettingDescriptor).set(false);
     consolePrompt = new Console.ConsolePrompt.ConsolePrompt();
     editor = consolePrompt.element.querySelector('devtools-text-editor')!;
     setCodeMirrorContent('foo');
